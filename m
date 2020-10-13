@@ -2,190 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C26D28CBE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516DC28CBE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730869AbgJMKig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
+        id S1729751AbgJMKlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729241AbgJMKig (ORCPT
+        with ESMTP id S1726510AbgJMKlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:38:36 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E013C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:38:35 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id ce10so27548108ejc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:38:35 -0700 (PDT)
+        Tue, 13 Oct 2020 06:41:11 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F70C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:41:09 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so14803235wrl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:41:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mXc/BbvWP3AIjg/haFgyy4BVln9bhjQf0eqYaY7B15o=;
-        b=q+FyDFZapM8r18jwPFsDpEnGC7eH5hdQ443Krsk3A7Pl4Z3Prf8mH9hn7UtVif5b8g
-         nAMw4bEtapNFEOc2z45erbDEoIFo51sqpiaqay9kpJ5bQCK8Sa56rJRrJKuxUrkTajr0
-         ZjpdwMdgsIYoZNDb/0lvS5WRX55WbSF2iH0NhsHB9/df8OEaSZllY3VoHp8WhthOLklF
-         StbpEvZZLWdz1jeV+Ayx38l91gPmzzDrEGvL6eZYNB5FHaVE5qPO/YrwClHHiaI63nti
-         mxFiwlC/Q1kRtV+ShbNYDef4ABM7NxKI2KkQ16ur0DYlzu8jLFtV5xmsSC3Lu5aR9qxA
-         6rFg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KGnQd8MQizROEGVqO6LoZ2ESTC7FDdoCCXNt1igE99k=;
+        b=gyi1yunutoZhUD0/UEF8Y2W7tQM6TS5jmKeONpakXd2rTbWB+a2FoTlYShvboHRUjb
+         o+OiIauitVyuRzkw2wlp8deQWzBGISweHB6VZlAgDRaF0NoeuVxg847l/A2/LVMRQJqe
+         042rOdRRsmODzQaUz5KmsV7PXCm2iIfq/P9NJvooXN0tU08fjejHSQ+S9ueQ+aE27whw
+         px2Vdl4kOBetB0bVfcXL//2xS1Y1bR9G5Y4/SYldp92Mjw39RR00M5wScVXdpvR7CZUV
+         HboDSnXSXkCB4XgTJW74jjaWEffi5v3Pi6A7v7NtoKMWoS6bakwtXPTJFSMiRY2Akdqr
+         3LJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=mXc/BbvWP3AIjg/haFgyy4BVln9bhjQf0eqYaY7B15o=;
-        b=fexsaN5yZrGNxseT+BoPQBA55vjHzH8iCEDcqiKUIMNQ3/o4ilLY50v4EWPQPzm70+
-         W0VRwV7iqfkKMmf+N0iubGKkqvxSYXi0jKqHqMowLpMIf2hv317P7wnHu4iahHeqFFqG
-         MBSDSpzHIjYP7/3bvMW+O0CI7Ok376AczpYirPLPfU9blH5Yd+jWwgvyLYDpIgDVVeBb
-         uCt7XhughcCpQa+GkDnjKj/rGj7RfeKRJOnZOCnTQIFNLNScqMRFL1faV5g/Qps7O4K+
-         K4vylvPwQNi9C12EOn+F++SWuDet9F1MCxyfJbFZPKHg4zLWW1FfozI82Zq85jQV6EbX
-         eE+Q==
-X-Gm-Message-State: AOAM532LCbD3e/Kipmng7XcOuXEdK0lsRs7WbFHHKdrWrmwBxTMZDevm
-        i+2ozkP/w8MX24zlfn1r5bD6dZmDKTk=
-X-Google-Smtp-Source: ABdhPJwZygI/XslaD4icMNfsKE2U3uiGTiFX2/3zLzhas8D3VOTFwmhlZbSJ270DMZkyCGim+Jl4gg==
-X-Received: by 2002:a17:906:268c:: with SMTP id t12mr31849104ejc.377.1602585514174;
-        Tue, 13 Oct 2020 03:38:34 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id g23sm885174edp.33.2020.10.13.03.38.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 03:38:33 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 13 Oct 2020 12:38:31 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
-Subject: [GIT PULL v2] objtool changes for v5.10
-Message-ID: <20201013103831.GB3933713@gmail.com>
-References: <20201013082625.GA775379@gmail.com>
- <20201013204312.6052157d@canb.auug.org.au>
- <20201013101056.GA3933713@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KGnQd8MQizROEGVqO6LoZ2ESTC7FDdoCCXNt1igE99k=;
+        b=uiogKzhYPL3RmBK1m53wG+md3yePeKr6mapHVNydzsOpwPaxEiCwy2e8vzU8xGD0CW
+         uPLVTV/fuYHvVXjRP8dlFdYq+d6c6piknis8LT9i0va6TDyI8oGKVyHZybqc8w03W8wN
+         /Of3janMdEerxWpOS8iwipZJN6jVIQPtYKsNgPPVBY9lJO689zSm+Ex/tniIQu0BW1G3
+         rpMDYgxWEHC72sLMWbvm+NW+PN+c+vfPsKy8mZVjGYGHgUoQfjWBKeVepzud7+XCMGoh
+         SICS7+XJBuCQ4XGNaRl+QyvO4hOVnGc5xUkEUl1+RszbwY1d5yf6f6RTaaZgr8NurRF8
+         GKQQ==
+X-Gm-Message-State: AOAM533O+e7wEu3QpEw8Ld/mSKjG/GKWlhpPeYdEsd2War+pgMCqAx9u
+        u3r0wzdgPEef+9M18UjBGviEZmGmLjXeojh8/XU=
+X-Google-Smtp-Source: ABdhPJwhYcYmIneqQARWgsNSZNyQDfcQXjguTWYNKrh+uvUlyMNyvJ07AParV+DeJy+VXRrdkVj2tk2+qAGXHb/6jhw=
+X-Received: by 2002:adf:ec0e:: with SMTP id x14mr37900205wrn.204.1602585668012;
+ Tue, 13 Oct 2020 03:41:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013101056.GA3933713@gmail.com>
+References: <1602492582-3558-1-git-send-email-shengjiu.wang@nxp.com> <20201012190037.GB17643@Asurada-Nvidia>
+In-Reply-To: <20201012190037.GB17643@Asurada-Nvidia>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Tue, 13 Oct 2020 13:40:56 +0300
+Message-ID: <CAEnQRZBrXNgMDNgQ=dMJfZQpZvdq6sUx2y21_fuk9teRd5UM0Q@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Add support for higher sample rates
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 13, 2020 at 12:29 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> Hi Shengjiu,
+>
+> On Mon, Oct 12, 2020 at 04:49:42PM +0800, Shengjiu Wang wrote:
+> > Add 88200Hz and 176400Hz sample rates support for TX.
+> > Add 88200Hz, 176400Hz, 192000Hz sample rates support for RX.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+>
+> Probably should put your own Signed-off at the bottom?
 
-* Ingo Molnar <mingo@kernel.org> wrote:
+Hi Shengjiu,
 
-> > This seems to be missing
-> > 
-> > https://lore.kernel.org/lkml/patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours/
-> > 
-> > or did that get sent in a previous pull request?
-> 
-> No, that fix is still missing, thanks for the reminder. I overlooked it 
-> thinking that it's a tooling patch - but this needs to be paired with:
-> 
->   2486baae2cf6: ("objtool: Allow nested externs to enable BUILD_BUG()")
-> 
-> I'll send a v2 pull request in an hour or two.
+Also please keep the original author of the patch. You can change that
+using git commit --amend --author="Viorel Suman <viorel.suman@nxp.com>".
 
-Linus,
+With that,
 
-Please pull the latest objtool/core git tree from:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2020-10-13
-
-   # HEAD: ab0a40ea88204e1291b56da8128e2845fec8ee88 perf build: Allow nested externs to enable BUILD_BUG() usage
-
-objtool changes for v5.10:
-
- - Most of the changes are cleanups and reorganization to make the objtool code
-   more arch-agnostic. This is in preparation for non-x86 support.
-
-Fixes:
-
- - KASAN fixes.
- - Handle unreachable trap after call to noreturn functions better.
- - Ignore unreachable fake jumps.
- - Misc smaller fixes & cleanups.
-
- Thanks,
-
-	Ingo
-
------------------->
-Ilie Halip (1):
-      objtool: Ignore unreachable trap after call to noreturn functions
-
-Jann Horn (1):
-      objtool: Permit __kasan_check_{read,write} under UACCESS
-
-Julien Thierry (16):
-      objtool: Move object file loading out of check()
-      objtool: Move ORC logic out of check()
-      objtool: Skip ORC entry creation for non-text sections
-      objtool: Define 'struct orc_entry' only when needed
-      objtool: Group headers to check in a single list
-      objtool: Make sync-check consider the target architecture
-      objtool: Move macros describing structures to arch-dependent code
-      objtool: Abstract alternative special case handling
-      objtool: Make relocation in alternative handling arch dependent
-      objtool: Rename frame.h -> objtool.h
-      objtool: Only include valid definitions depending on source file type
-      objtool: Make unwind hint definitions available to other architectures
-      objtool: Decode unwind hint register depending on architecture
-      objtool: Remove useless tests before save_reg()
-      objtool: Ignore unreachable fake jumps
-      objtool: Handle calling non-function symbols in other sections
-
-Raphael Gault (1):
-      objtool: Refactor jump table code to support other architectures
-
-Vasily Gorbik (2):
-      objtool: Allow nested externs to enable BUILD_BUG()
-      perf build: Allow nested externs to enable BUILD_BUG() usage
-
-
- MAINTAINERS                                   |   1 +
- arch/x86/include/asm/nospec-branch.h          |   2 +-
- arch/x86/include/asm/orc_types.h              |  34 ----
- arch/x86/include/asm/unwind_hints.h           |  56 ++-----
- arch/x86/kernel/kprobes/core.c                |   2 +-
- arch/x86/kernel/kprobes/opt.c                 |   2 +-
- arch/x86/kernel/reboot.c                      |   2 +-
- arch/x86/kernel/unwind_orc.c                  |  11 +-
- arch/x86/kvm/svm/svm.c                        |   2 +-
- arch/x86/kvm/vmx/nested.c                     |   2 +-
- arch/x86/kvm/vmx/vmx.c                        |   2 +-
- arch/x86/xen/enlighten_pv.c                   |   2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_msg.c           |   3 +-
- include/linux/frame.h                         |  35 ----
- include/linux/objtool.h                       | 129 +++++++++++++++
- kernel/bpf/core.c                             |   2 +-
- kernel/kexec_core.c                           |   2 +-
- tools/arch/x86/include/asm/orc_types.h        |  34 ----
- tools/include/linux/objtool.h                 | 129 +++++++++++++++
- tools/objtool/Makefile                        |   6 +-
- tools/objtool/arch.h                          |   4 +
- tools/objtool/arch/x86/Build                  |   1 +
- tools/objtool/arch/x86/decode.c               |  37 +++++
- tools/objtool/arch/x86/include/arch_special.h |  20 +++
- tools/objtool/arch/x86/special.c              | 145 ++++++++++++++++
- tools/objtool/builtin-check.c                 |  15 +-
- tools/objtool/builtin-orc.c                   |  27 ++-
- tools/objtool/check.c                         | 230 ++++++--------------------
- tools/objtool/check.h                         |   9 +-
- tools/objtool/objtool.c                       |  30 ++++
- tools/objtool/objtool.h                       |   6 +-
- tools/objtool/orc_dump.c                      |   9 +-
- tools/objtool/orc_gen.c                       |   8 +-
- tools/objtool/special.c                       |  48 +-----
- tools/objtool/special.h                       |  10 ++
- tools/objtool/sync-check.sh                   |  32 +++-
- tools/objtool/weak.c                          |   6 +-
- tools/perf/Makefile.config                    |   2 +-
- 38 files changed, 686 insertions(+), 411 deletions(-)
- delete mode 100644 include/linux/frame.h
- create mode 100644 include/linux/objtool.h
- create mode 100644 tools/include/linux/objtool.h
- create mode 100644 tools/objtool/arch/x86/include/arch_special.h
- create mode 100644 tools/objtool/arch/x86/special.c
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
