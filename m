@@ -2,103 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CEAD28C861
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91C528C86E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388669AbgJMFzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:55:14 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:41152 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388506AbgJMFzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:55:13 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX8c3QYVfhPscAA--.14939S4;
-        Tue, 13 Oct 2020 13:55:06 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 2/2] Documentation: ABI: Add /sys/firmware/lefi/boardinfo description for Loongson64
-Date:   Tue, 13 Oct 2020 13:55:02 +0800
-Message-Id: <1602568502-18044-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1602568502-18044-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1602568502-18044-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9DxX8c3QYVfhPscAA--.14939S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KryDXFWfuryUXFW3Ar43Jrb_yoW8Cryfpa
-        15Jan8GrZxG3WxXF93WFy8ZFyfZFs5JrWDGanxAr18JryDGFykZr4Uta1rZFW8Cr4rJayF
-        9F4xKr1rCF1UC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBq14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4rMxAIw2
-        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
-        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrw
-        CI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUuWlPUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S2388854AbgJMGAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 02:00:02 -0400
+Received: from mga18.intel.com ([134.134.136.126]:29997 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388373AbgJMGAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 02:00:02 -0400
+IronPort-SDR: zLkZo16pDfd0Dvi4QwpAEjKhPi8en2Hj2BLTLBhFX9QpJZXfTvBKmS3+tChMfoa6b+NIGFXkn7
+ kwzsxR5E8pig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="153686624"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="153686624"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 23:00:00 -0700
+IronPort-SDR: ITH0Jyv0qZaszAmnSosp4ikdeQAawB36eCvEPagyJbM4rNsHoRYXAUYMA/sI2FtngJ41AruHZj
+ +VXH5QxHiTuw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="299448970"
+Received: from lkp-server02.sh.intel.com (HELO b65d7201e80c) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 12 Oct 2020 22:59:58 -0700
+Received: from kbuild by b65d7201e80c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kSDLp-000015-Vw; Tue, 13 Oct 2020 05:59:57 +0000
+Date:   Tue, 13 Oct 2020 13:59:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:master] BUILD SUCCESS
+ a9863c90f5031a8fde56351f09fade3cec3ea4f0
+Message-ID: <5f85423d.g/wSXH2pBPb+ni9u%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a description for /sys/firmware/lefi/boardinfo on the Loongson
-platform.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  master
+branch HEAD: a9863c90f5031a8fde56351f09fade3cec3ea4f0  Merge branch 'urezki-pcount.2020.10.01a' into HEAD
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+elapsed time: 720m
+
+configs tested: 128
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                           se7750_defconfig
+mips                        omega2p_defconfig
+arc                        nsimosci_defconfig
+xtensa                  nommu_kc705_defconfig
+arm                       mainstone_defconfig
+openrisc                 simple_smp_defconfig
+h8300                            allyesconfig
+csky                                defconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                   sh7770_generic_defconfig
+arm                         palmz72_defconfig
+arm                      integrator_defconfig
+arm                        multi_v7_defconfig
+arm                              alldefconfig
+xtensa                    xip_kc705_defconfig
+sh                   secureedge5410_defconfig
+arm                          iop32x_defconfig
+mips                      pistachio_defconfig
+openrisc                    or1ksim_defconfig
+powerpc                 mpc85xx_cds_defconfig
+arm                            qcom_defconfig
+sh                        sh7785lcr_defconfig
+m68k                        stmark2_defconfig
+xtensa                  cadence_csp_defconfig
+x86_64                           allyesconfig
+mips                      fuloong2e_defconfig
+parisc                              defconfig
+mips                           xway_defconfig
+arm                            xcep_defconfig
+powerpc                     tqm8548_defconfig
+m68k                            q40_defconfig
+powerpc                      pmac32_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                       omap2plus_defconfig
+arm                        realview_defconfig
+mips                       lemote2f_defconfig
+mips                         cobalt_defconfig
+h8300                     edosk2674_defconfig
+powerpc                      pcm030_defconfig
+arm64                            alldefconfig
+arm                             rpc_defconfig
+powerpc                     tqm8555_defconfig
+arm                       multi_v4t_defconfig
+arm                             pxa_defconfig
+sh                          rsk7203_defconfig
+mips                            ar7_defconfig
+arm                            mmp2_defconfig
+arc                        vdk_hs38_defconfig
+mips                      malta_kvm_defconfig
+arc                            hsdk_defconfig
+alpha                            allyesconfig
+arm                           h5000_defconfig
+powerpc                  mpc885_ads_defconfig
+arc                           tb10x_defconfig
+mips                          ath25_defconfig
+parisc                           allyesconfig
+sh                     sh7710voipgw_defconfig
+nios2                         3c120_defconfig
+mips                           ip27_defconfig
+powerpc                     pq2fads_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                                defconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201012
+i386                 randconfig-a006-20201012
+i386                 randconfig-a001-20201012
+i386                 randconfig-a003-20201012
+i386                 randconfig-a004-20201012
+i386                 randconfig-a002-20201012
+x86_64               randconfig-a016-20201012
+x86_64               randconfig-a015-20201012
+x86_64               randconfig-a012-20201012
+x86_64               randconfig-a013-20201012
+x86_64               randconfig-a014-20201012
+x86_64               randconfig-a011-20201012
+i386                 randconfig-a016-20201012
+i386                 randconfig-a015-20201012
+i386                 randconfig-a013-20201012
+i386                 randconfig-a012-20201012
+i386                 randconfig-a011-20201012
+i386                 randconfig-a014-20201012
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201012
+x86_64               randconfig-a002-20201012
+x86_64               randconfig-a001-20201012
+x86_64               randconfig-a003-20201012
+x86_64               randconfig-a005-20201012
+x86_64               randconfig-a006-20201012
+
 ---
- .../ABI/testing/sysfs-firmware-lefi-boardinfo      | 35 ++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
-
-diff --git a/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo b/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
-new file mode 100644
-index 0000000..5e3f614
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-firmware-lefi-boardinfo
-@@ -0,0 +1,35 @@
-+What:		/sys/firmware/lefi/boardinfo
-+Date:		October 2020
-+Contact:	Tiezhu Yang <yangtiezhu@loongson.cn>
-+Description:
-+		Get mainboard and BIOS info easily on the Loongson platform,
-+		this is useful to point out the current used mainboard type
-+		and BIOS version when there exists problems related with
-+		hardware or firmware.
-+
-+		The related structures are already defined in the interface
-+		specification about firmware and kernel which are common
-+		requirement and specific for Loongson64, so only add a new
-+		boardinfo.c file in arch/mips/loongson64.
-+
-+		For example:
-+
-+		[loongson@linux ~]$ cat /sys/firmware/lefi/boardinfo
-+		Board Info
-+		Manufacturer            : LEMOTE
-+		Board Name              : LEMOTE-LS3A4000-7A1000-1w-V01-pc
-+		Family                  : LOONGSON3
-+
-+		BIOS Info
-+		Vendor                  : Kunlun
-+		Version                 : Kunlun-A1901-V4.1.3-20200414093938
-+		ROM Size                : 4 KB
-+		Release Date            : 2020-04-14
-+
-+		By the way, using dmidecode command can get the similar info if there
-+		exists SMBIOS in firmware, but the fact is that there is no SMBIOS on
-+		some machines, we can see nothing when execute dmidecode, like this:
-+
-+		[root@linux loongson]# dmidecode
-+		# dmidecode 2.12
-+		# No SMBIOS nor DMI entry point found, sorry.
--- 
-2.1.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
