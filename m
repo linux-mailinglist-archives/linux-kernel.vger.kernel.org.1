@@ -2,131 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2728C850
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0758528C853
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732478AbgJMFkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732465AbgJMFkC (ORCPT
+        id S1732506AbgJMFlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:41:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50760 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732457AbgJMFlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:40:02 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303C1C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:40:01 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id q202so11535578iod.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=lLlLxwkindstiYsgvq+V7GmdTNy38p3JDCqEl0KcOr8=;
-        b=rHsvzCf5Jp5VOs+we6Z62o5+FCur52EuKR+FpHxwiLs/i3l6cF9iasGGqOsHmlW8V7
-         m9+KPP/rapjvL0GxgzPyiJXTSpPIJDuNBSlcUWsgRugrTCw0z0rk0Ee5RG+2P7dup1O3
-         Lrh6mh1MhFW1r2eqQtuc+CwDPi0EJgpcVmu8jannOMO+lazwmZyDymmZynILRErJlpWS
-         L0XC1SHb6cEnln+ESu4PcLzxKS1JjDYbfim/ysoDL/02wbeFLJREjtOlD2UzjoDeY7Nz
-         NC7sChOI1c1s70zp0eWSs32pyvGX/nOxIswba0CacCIEMANDtOFy1d3W1m9aiHN7uph1
-         narw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=lLlLxwkindstiYsgvq+V7GmdTNy38p3JDCqEl0KcOr8=;
-        b=L70b4LUbXDkQ3kph9X8yEx5EtgS4BHnxSA/pCqIaQ+abnISibXjFf4VUkBNvbtt5ZB
-         2fY4C6owQv+43UZCsb/6fkt6jleLG+/g0qtovjbBNAPYB5hCEdK8XrkITDjNjfSEgPFD
-         7uhlOIxYxotVIb6P8gSDCE3yBgda1x1UzNcYZnYhN9F2NnVgySSQZ1/NWZQAI8x1icGP
-         LyRqrcutGr5WjrLUrUNOs4e5WTXle6yOjdBegEQu3XRBb7V2FMJlgRTrzdqpIEkoyjRC
-         HtO4xYzXnrJ9UM0+fRJ5iWjSwSNAbZNiSohFO/ovW4Llv+3akpRfaasHKlLQpUXf+24c
-         wEtA==
-X-Gm-Message-State: AOAM533xZdMkqZgwHPUHEtJXLFGabPctasFDdK4+PgcuAFZhBj9mt9T8
-        B1klUNfdJ/BlRlOv+/I4xbKDxmcDs/GNWla6x0Pmk+QHEJm7Dy/l
-X-Google-Smtp-Source: ABdhPJzOV9138OHri1Ki3sW6fp7w1zEtAJ6O/1xOx5+oJewYel3HpO+fIdFwQ8rsHEoc5+2Te3VmgCsJXd4N9wt4acE=
-X-Received: by 2002:a6b:b208:: with SMTP id b8mr19303340iof.36.1602567599467;
- Mon, 12 Oct 2020 22:39:59 -0700 (PDT)
+        Tue, 13 Oct 2020 01:41:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602567663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=an1gCRpqueGjFmWqkLo6oeT53oDVqi18CPdvDvMunMk=;
+        b=X3ve+OGg2MPMo+vkoCD/dib5jC633PZUlK3NfQEkMV1ZQhCZsGjDy9gTxzTd42CK4MUt7f
+        +6EbGbEofCfwBS3LBGmiQ7cYqrEeGGAa29tv5vWcA7rduYDh56cAV6S3fQvMXgIBqS/46g
+        ZwBK3p89bj4z9RsAg1rwtO41Erb+Kxc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-wFv5dTD3NV6L4xTTMKvdjg-1; Tue, 13 Oct 2020 01:41:01 -0400
+X-MC-Unique: wFv5dTD3NV6L4xTTMKvdjg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E71C21018F63;
+        Tue, 13 Oct 2020 05:40:59 +0000 (UTC)
+Received: from [10.72.13.59] (ovpn-13-59.pek2.redhat.com [10.72.13.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B11261A92A;
+        Tue, 13 Oct 2020 05:40:45 +0000 (UTC)
+Subject: Re: [RFC PATCH 10/24] vdpa: introduce config operations for
+ associating ASID to a virtqueue group
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-11-jasowang@redhat.com>
+ <20201001132927.GC32363@mtl-vdi-166.wap.labs.mlnx>
+ <70af3ff0-74ed-e519-56f5-d61e6a48767f@redhat.com>
+ <20201012065931.GA42327@mtl-vdi-166.wap.labs.mlnx>
+ <b1ac150b-0845-874f-75d0-7440133a1d41@redhat.com>
+ <20201012081725.GB42327@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <3e4a8bea-f187-3843-c1d1-75d0b86a137b@redhat.com>
+Date:   Tue, 13 Oct 2020 13:40:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 13 Oct 2020 11:09:47 +0530
-Message-ID: <CA+G9fYtwycbC+Hf9aP5Br8wq7cKWVqjhcGusn2DbJaNauGC3Og@mail.gmail.com>
-Subject: WARNING: kernel/irq/chip.c:242 __irq_startup+0xa8/0xb0
-To:     open list <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201012081725.GB42327@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On stable rc  5.8.15 the following kernel warning was noticed once
-while boot and this is hard to reproduce.
 
-metadata:
-  git branch: linux-5.8.y
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-  git commit: f4ed6fb8f1680de812daf362f28342e6bf19fdcc
-  git describe: v5.8.14-125-gf4ed6fb8f168
-  make_kernelversion: 5.8.15-rc1
-  kernel-config:
-https://builds.tuxbuild.com/5nFtomB9FDlQVjafKdyR9A/kernel.config
-
-warning log:
-----------------
-[   43.512935] ------------[ cut here ]------------
-[   43.517563] WARNING: CPU: 0 PID: 424 at kernel/irq/chip.c:242
-__irq_startup+0xa8/0xb0
-[   43.517564] Modules linked in: caam error crct10dif_ce ina2xx lm90
-qoriq_thermal fuse
-[   43.533218] CPU: 0 PID: 424 Comm: (agetty) Not tainted 5.8.15-rc1 #1
-[   43.533219] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
-[   43.533223] pstate: 60000085 (nZCv daIf -PAN -UAO BTYPE=--)
-[   43.533225] pc : __irq_startup+0xa8/0xb0
-[   43.533229] lr : irq_startup+0x64/0x140
-[   43.559218] sp : ffff800010b838c0
-[   43.559219] x29: ffff800010b838c0 x28: ffff0082cd3bab00
-[   43.559222] x27: ffffb8c772ed8ec0 x26: 0000000000020902
-[   43.573133] x25: ffffb8c771d39e68 x24: ffffb8c771d39b08
-[   43.573135] x23: 0000000000000000 x22: 0000000000000001
-[   43.573138] x21: 0000000000000001 x20: ffff0082edf42c40
-[   43.573140] x19: ffff0082ede29200 x18: 0000000000000001
-[   43.573142] x17: 0000000000000000 x16: 0000000000000000
-[   43.573145] x15: ffff0082edf430c0 x14: ffff800010bf5000
-[   43.573147] x13: ffff800010bed000 x12: ffff800010be9000
-[   43.573149] x11: 0000000000000040 x10: ffffb8c772cdb940
-[   43.573153] x9 : ffffb8c770b7fe0c x8 : ffff0082ee000270
-[   43.620866] x7 : 0000000000000000 x6 : ffffb8c772cbaa08
-[   43.620869] x5 : ffffb8c772cba000 x4 : 0000000000000504
-[   43.620871] x3 : ffff0082ede29200 x2 : 0000000003032004
-[   43.636780] x1 : 0000000003032004 x0 : ffff0082ede29258
-[   43.636783] Call trace:
-[   43.636786]  __irq_startup+0xa8/0xb0
-[   43.636789]  irq_startup+0x64/0x140
-[   43.651569]  __enable_irq+0x78/0x88
-[   43.651571]  enable_irq+0x54/0xa8
-[   43.651577]  serial8250_do_startup+0x670/0x718
-[   43.662791]  serial8250_startup+0x30/0x40
-[   43.666793]  uart_startup.part.0+0x12c/0x2e0
-[   43.671055]  uart_port_activate+0x68/0xa0
-[   43.675058]  tty_port_open+0x98/0x250
-[   43.678712]  uart_open+0x24/0x38
-[   43.681932]  tty_open+0x100/0x480
-[   43.685240]  chrdev_open+0xac/0x1a8
-[   43.688721]  do_dentry_open+0x130/0x3d0
-[   43.692548]  vfs_open+0x34/0x40
-[   43.695681]  path_openat+0x888/0xde8
-[   43.699247]  do_filp_open+0x80/0x108
-[   43.702814]  do_sys_openat2+0x1ec/0x2a8
-[   43.706642]  do_sys_open+0x60/0xa8
-[   43.710035]  __arm64_sys_openat+0x2c/0x38
-[   43.714037]  el0_svc_common.constprop.0+0x7c/0x198
-[   43.718820]  do_el0_svc+0x2c/0x98
-[   43.722128]  el0_sync_handler+0x9c/0x1b8
-[   43.726041]  el0_sync+0x158/0x180
-[   43.729347] ---[ end trace 434ed7c8787a1d1f ]---
-
-full log,
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.8.y/build/v5.8.14-125-gf4ed6fb8f168/testrun/3297947/suite/linux-log-parser/test/check-kernel-warning-93863/log
+On 2020/10/12 下午4:17, Eli Cohen wrote:
+> On Mon, Oct 12, 2020 at 03:45:10PM +0800, Jason Wang wrote:
+>>> So in theory we can have several asid's (for different virtqueues), each
+>>> one should be followed by a specific set_map call. If this is so, how do
+>>> I know if I met all the conditions run my driver? Maybe we need another
+>>> callback to let the driver know it should not expect more set_maps().
+>>
+>> This should work similarly as in the past. Two parts of the work is expected
+>> to be done by the driver:
+>>
+>> 1) store the mapping somewhere (e.g hardware) during set_map()
+>> 2) associating mapping with a specific virtqueue
+>>
+>> The only difference is that more than one mapping is used now.
+> ok, so like today, I will always get DRIVER_OK after I got all the
+> set_maps(), right?
 
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Yes.
+
+Thanks
+
+
+>
+>> For the issue of more set_maps(), driver should be always ready for the new
+>> set_maps() call instead of not expecting new set_maps() since guest memory
+>> topology could be changed due to several reasons.
+>>
+>> Qemu or vhost-vDPA will try their best to avoid the frequency of set_maps()
+>> for better performance (e.g through batched IOTLB updating). E.g there
+>> should be at most one set_map() during one time of guest booting.
+>>
+>>
+
