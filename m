@@ -2,213 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958BB28C7CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 06:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D0D28C7FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 06:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731644AbgJMEWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 00:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730799AbgJMEWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 00:22:53 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79807C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 21:22:53 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id q202so11387155iod.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 21:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=//IwPOVVvuCjBIXmLQeoJNFx0EbbrHJM3ah6uT01Ego=;
-        b=mG7JSxIKx7OxKgZZ+54+VEIw+45uG+4B3ulVHEo8cwoM1/n2kiovhznmEi/njDemZV
-         CWkv3XBKZZvbIgq6802VxX/sQCRIg698enwPjZdsuBpZ8oYpK/tbxjX6uzJRn+JYrCFu
-         itCX9koVWUZYobZXjeKBzgRHjhazD/XT1ycT7SO/gLO8GHqxtsIJ56C280XvklCvPLfq
-         2Rr5NhjgGYoMKpNLXigTBalntbfIsheGmGHGDg16R8RzhSQTz/ZCalu6tcwdBeOdJUNH
-         YjVoL2/ZnHva6LEl5ALTfA6YdYLvJ5NhmqGnj8aBUJhKBW9VyIEF4V53QTuJ4jdAxXsW
-         HaXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=//IwPOVVvuCjBIXmLQeoJNFx0EbbrHJM3ah6uT01Ego=;
-        b=giv1QtiPwn6LApeyXZInRtvt8InksJW9x6qhwJ+AJ+QzVRP0ifYDdpHjOJZhzSL7Uj
-         LjTRAjJXv1dl5fx94sEX88uXTIg6oSsvzy/x8P+iYp4gaqH9ThXlYOynzG7iZJSU9u4P
-         41zXuU5zZx3tG/qm55Z1ZUrPrWifpG/3CjcsPsj6XL1b76YtX0dbsLujI/46yLel1sql
-         gxyg0ApyLg9CjZoG6n7cNs/IX5iefJRyhGSDSh7awatvPzMxEXQ1Z9XwsLBNT/Xx6lf4
-         UtMb664WcGz7KeyIJMr8RTFEED+3PFOf5q5xzZQb1BGLR+Oa5GwlYC1HT1XObG1gdspw
-         KY7g==
-X-Gm-Message-State: AOAM5323BdXAuV+PGSZrpc3pui4rfokNBkhQ4TB7UQ58xLb3NbKjdTjM
-        sJUBeIgydyAYEKneOq6Z5ADiEgF4nmf9hm+2zA==
-X-Google-Smtp-Source: ABdhPJxpOHrOiCjAcjPDhDDPpWkuxk01wWBtR98ijqcTYBgOVQsLZNL/1x6SDTUsrj9XnEmTQZ9x42l1V1ApwgQUgSQ=
-X-Received: by 2002:a05:6602:2290:: with SMTP id d16mr18949932iod.210.1602562972556;
- Mon, 12 Oct 2020 21:22:52 -0700 (PDT)
+        id S1731684AbgJMEZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 00:25:17 -0400
+Received: from mga09.intel.com ([134.134.136.24]:4973 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728336AbgJMEZR (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 00:25:17 -0400
+IronPort-SDR: sBUxtOczoOjLmKwyCk6SeAZBX6wB9QaAGx95NpbNE4wqLgXxqZX9fT+ak+M/+QyBgLfB6x/NFo
+ RkU+81LBBu7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165957743"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="165957743"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 21:25:15 -0700
+IronPort-SDR: HFuXtPBYWM4vxnA+vU9OJhmxa+2UFOrZytghh+2W79bbkffwW+YIrkb6p0GCoGYWhAIk3oFSaD
+ WwbDbmwWyDIw==
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="530236523"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.254.215.179]) ([10.254.215.179])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 21:25:12 -0700
+Subject: Re: [PATCH v8 0/7] perf: Stream comparison
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20201009022845.13141-1-yao.jin@linux.intel.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <0bb78298-1f27-c535-2468-2c8abd5b31aa@linux.intel.com>
+Date:   Tue, 13 Oct 2020 12:25:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <1602510644-24536-1-git-send-email-kernelfans@gmail.com> <CAKc596KLgwE98Hch-WMCFM38W=FryronqASgn2ih3U_-+YU3ww@mail.gmail.com>
-In-Reply-To: <CAKc596KLgwE98Hch-WMCFM38W=FryronqASgn2ih3U_-+YU3ww@mail.gmail.com>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Tue, 13 Oct 2020 12:22:41 +0800
-Message-ID: <CAFgQCTs2r6TVEtJEt5D_OasKQZavzgRNcW1pn3Jov9e9WdqV2A@mail.gmail.com>
-Subject: Re: [PATCH] sched/cputime: correct account of irqtime
-To:     jun qian <qianjun.kernel@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201009022845.13141-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 11:10 AM jun qian <qianjun.kernel@gmail.com> wrote:
->
-> Pingfan Liu <kernelfans@gmail.com> =E4=BA=8E2020=E5=B9=B410=E6=9C=8812=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=889:54=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > __do_softirq() may be interrupted by hardware interrupts. In this case,
-> > irqtime_account_irq() will account the time slice as CPUTIME_SOFTIRQ by
-> > mistake.
-> >
-> > By passing irqtime_account_irq() an extra param about either hardirq or
-> > softirq, irqtime_account_irq() can handle the above case.
-> >
-> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Ben Segall <bsegall@google.com>
-> > Cc: Mel Gorman <mgorman@suse.de>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Andy Lutomirski <luto@kernel.org>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Allen Pais <allen.lkml@gmail.com>
-> > Cc: Romain Perier <romain.perier@gmail.com>
-> > To: linux-kernel@vger.kernel.org
-> > ---
-> >  include/linux/hardirq.h |  4 ++--
-> >  include/linux/vtime.h   | 12 ++++++------
-> >  kernel/sched/cputime.c  |  4 ++--
-> >  kernel/softirq.c        |  6 +++---
-> >  4 files changed, 13 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/include/linux/hardirq.h b/include/linux/hardirq.h
-> > index 754f67a..56e7bb5 100644
-> > --- a/include/linux/hardirq.h
-> > +++ b/include/linux/hardirq.h
-> > @@ -32,7 +32,7 @@ static __always_inline void rcu_irq_enter_check_tick(=
-void)
-> >   */
-> >  #define __irq_enter()                                  \
-> >         do {                                            \
-> > -               account_irq_enter_time(current);        \
-> > +               account_irq_enter_time(current, true);  \
-> >                 preempt_count_add(HARDIRQ_OFFSET);      \
-> >                 lockdep_hardirq_enter();                \
-> >         } while (0)
-> > @@ -63,7 +63,7 @@ void irq_enter_rcu(void);
-> >  #define __irq_exit()                                   \
-> >         do {                                            \
-> >                 lockdep_hardirq_exit();                 \
-> > -               account_irq_exit_time(current);         \
-> > +               account_irq_exit_time(current, true);   \
-> >                 preempt_count_sub(HARDIRQ_OFFSET);      \
-> >         } while (0)
-> >
-> > diff --git a/include/linux/vtime.h b/include/linux/vtime.h
-> > index 2cdeca0..294188ae1 100644
-> > --- a/include/linux/vtime.h
-> > +++ b/include/linux/vtime.h
-> > @@ -98,21 +98,21 @@ static inline void vtime_flush(struct task_struct *=
-tsk) { }
-> >
-> >
-> >  #ifdef CONFIG_IRQ_TIME_ACCOUNTING
-> > -extern void irqtime_account_irq(struct task_struct *tsk);
-> > +extern void irqtime_account_irq(struct task_struct *tsk, bool hardirq)=
-;
-> >  #else
-> > -static inline void irqtime_account_irq(struct task_struct *tsk) { }
-> > +static inline void irqtime_account_irq(struct task_struct *tsk, bool h=
-ardirq) { }
-> >  #endif
-> >
-> > -static inline void account_irq_enter_time(struct task_struct *tsk)
-> > +static inline void account_irq_enter_time(struct task_struct *tsk, boo=
-l hardirq)
-> >  {
-> >         vtime_account_irq_enter(tsk);
-> > -       irqtime_account_irq(tsk);
-> > +       irqtime_account_irq(tsk, hardirq);
-> >  }
-> >
-> > -static inline void account_irq_exit_time(struct task_struct *tsk)
-> > +static inline void account_irq_exit_time(struct task_struct *tsk, bool=
- hardirq)
-> >  {
-> >         vtime_account_irq_exit(tsk);
-> > -       irqtime_account_irq(tsk);
-> > +       irqtime_account_irq(tsk, hardirq);
-> >  }
-> >
-> >  #endif /* _LINUX_KERNEL_VTIME_H */
-> > diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-> > index 5a55d23..166f1d7 100644
-> > --- a/kernel/sched/cputime.c
-> > +++ b/kernel/sched/cputime.c
-> > @@ -47,7 +47,7 @@ static void irqtime_account_delta(struct irqtime *irq=
-time, u64 delta,
-> >   * Called before incrementing preempt_count on {soft,}irq_enter
-> >   * and before decrementing preempt_count on {soft,}irq_exit.
-> >   */
-> > -void irqtime_account_irq(struct task_struct *curr)
-> > +void irqtime_account_irq(struct task_struct *curr, bool hardirq)
-> >  {
-> >         struct irqtime *irqtime =3D this_cpu_ptr(&cpu_irqtime);
-> >         s64 delta;
-> > @@ -68,7 +68,7 @@ void irqtime_account_irq(struct task_struct *curr)
-> >          */
-> >         if (hardirq_count())
-> >                 irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
-> > -       else if (in_serving_softirq() && curr !=3D this_cpu_ksoftirqd()=
-)
-> > +       else if (in_serving_softirq() && curr !=3D this_cpu_ksoftirqd()=
- && !hardirq)
-> >                 irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
-> >  }
->
-> In my opinion, we don't need to use the hardirq flag, the code: if
-> (hardirq_count())
-> already tell us that where the delt time is from.
+Hi Jiri, Hi Arnaldo,
 
-Considering the scenario in which hardirq happens immediately after
-__do_softirq()->local_irq_enable(). The following code shows that
-hardirq_count() can not help.
-#define __irq_enter() \
-do { \
-account_irq_enter_time(current); \
-preempt_count_add(HARDIRQ_OFFSET); \
-lockdep_hardirq_enter(); \
-} while (0)
+How about v8 series? V6 got ACK from Jiri and I updated the series to v8 according to Arnaldo's 
+comments. Please let me know if there are still some issues for this version then I can continue 
+improving the patchset.
 
-Anything I missed?
+Thanks
+Jin Yao
 
-Thanks,
-Pingfan
+On 10/9/2020 10:28 AM, Jin Yao wrote:
+> Sometimes, a small change in a hot function reducing the cycles of
+> this function, but the overall workload doesn't get faster. It is
+> interesting where the cycles are moved to.
+> 
+> What it would like is to diff before/after streams. The stream is the
+> branch history which is aggregated by the branch records from perf
+> samples. For example, the callchains aggregated from the branch records.
+> By browsing the hot stream, we can understand the hot code path.
+> 
+> By browsing the hot streams, we can understand the hot code path.
+> By comparing the cycles variation of same streams between old perf
+> data and new perf data, we can understand if the cycles are moved
+> to other codes.
+> 
+> The before stream is the stream in perf.data.old. The after stream
+> is the stream in perf.data.
+> 
+> Diffing before/after streams compares top N hottest streams between
+> two perf data files.
+> 
+> If all entries of one stream in perf.data.old are fully matched with
+> all entries of another stream in perf.data, we think two streams
+> are matched, otherwise the streams are not matched.
+> 
+> For example,
+> 
+>     cycles: 1, hits: 26.80%                 cycles: 1, hits: 27.30%
+> --------------------------              --------------------------
+>               main div.c:39                           main div.c:39
+>               main div.c:44                           main div.c:44
+> 
+> The above streams are matched and we can see for the same streams the
+> cycles (1) are equal and the callchain hit percents are slightly changed
+> (26.80% vs. 27.30%). That's expected.
+> 
+> Now let's see example.
+> 
+> perf record -b ...      Generate perf.data.old with branch data
+> perf record -b ...      Generate perf.data with branch data
+> perf diff --stream
+> 
+> [ Matched hot streams ]
+> 
+> hot chain pair 1:
+>              cycles: 1, hits: 27.77%                  cycles: 1, hits: 9.24%
+>          ---------------------------              --------------------------
+>                        main div.c:39                           main div.c:39
+>                        main div.c:44                           main div.c:44
+> 
+> hot chain pair 2:
+>             cycles: 34, hits: 20.06%                cycles: 27, hits: 16.98%
+>          ---------------------------              --------------------------
+>            __random_r random_r.c:360               __random_r random_r.c:360
+>            __random_r random_r.c:388               __random_r random_r.c:388
+>            __random_r random_r.c:388               __random_r random_r.c:388
+>            __random_r random_r.c:380               __random_r random_r.c:380
+>            __random_r random_r.c:357               __random_r random_r.c:357
+>                __random random.c:293                   __random random.c:293
+>                __random random.c:293                   __random random.c:293
+>                __random random.c:291                   __random random.c:291
+>                __random random.c:291                   __random random.c:291
+>                __random random.c:291                   __random random.c:291
+>                __random random.c:288                   __random random.c:288
+>                       rand rand.c:27                          rand rand.c:27
+>                       rand rand.c:26                          rand rand.c:26
+>                             rand@plt                                rand@plt
+>                             rand@plt                                rand@plt
+>                compute_flag div.c:25                   compute_flag div.c:25
+>                compute_flag div.c:22                   compute_flag div.c:22
+>                        main div.c:40                           main div.c:40
+>                        main div.c:40                           main div.c:40
+>                        main div.c:39                           main div.c:39
+> 
+> hot chain pair 3:
+>               cycles: 9, hits: 4.48%                  cycles: 6, hits: 4.51%
+>          ---------------------------              --------------------------
+>            __random_r random_r.c:360               __random_r random_r.c:360
+>            __random_r random_r.c:388               __random_r random_r.c:388
+>            __random_r random_r.c:388               __random_r random_r.c:388
+>            __random_r random_r.c:380               __random_r random_r.c:380
+> 
+> [ Hot streams in old perf data only ]
+> 
+> hot chain 1:
+>              cycles: 18, hits: 6.75%
+>           --------------------------
+>            __random_r random_r.c:360
+>            __random_r random_r.c:388
+>            __random_r random_r.c:388
+>            __random_r random_r.c:380
+>            __random_r random_r.c:357
+>                __random random.c:293
+>                __random random.c:293
+>                __random random.c:291
+>                __random random.c:291
+>                __random random.c:291
+>                __random random.c:288
+>                       rand rand.c:27
+>                       rand rand.c:26
+>                             rand@plt
+>                             rand@plt
+>                compute_flag div.c:25
+>                compute_flag div.c:22
+>                        main div.c:40
+> 
+> hot chain 2:
+>              cycles: 29, hits: 2.78%
+>           --------------------------
+>                compute_flag div.c:22
+>                        main div.c:40
+>                        main div.c:40
+>                        main div.c:39
+> 
+> [ Hot streams in new perf data only ]
+> 
+> hot chain 1:
+>                                                       cycles: 4, hits: 4.54%
+>                                                   --------------------------
+>                                                                main div.c:42
+>                                                        compute_flag div.c:28
+> 
+> hot chain 2:
+>                                                       cycles: 5, hits: 3.51%
+>                                                   --------------------------
+>                                                                main div.c:39
+>                                                                main div.c:44
+>                                                                main div.c:42
+>                                                        compute_flag div.c:28
+>   
+>   v8:
+>   ---
+>   Rebase to perf/core
+> 
+>   v7:
+>   ---
+>   Create a new struct evlist_streams which contains ev_streams and
+>   nr_evsel, so we don't need to pass nr_evsel in stream related functions.
+> 
+>   Rename functions for better coding style.
+> 
+>   v6:
+>   ---
+>   Rebase to perf/core
+> 
+>   v5:
+>   ---
+>   1. Remove enum stream_type
+>   2. Rebase to perf/core
+> 
+>   v4:
+>   ---
+>   The previous version is too big and very hard for review.
+> 
+>   1. v4 removes the code which supports the source line mapping
+>      table and remove the source line based comparison. Now we
+>      only supports the basic functionality of stream comparison.
+> 
+>   2. Refactor the code in a generic way.
+> 
+>   v3:
+>   ---
+>   v2 has 14 patches, it's hard to review.
+>   v3 is only 7 patches for basic stream comparison.
+> 
+> Jin Yao (7):
+>    perf util: Create streams
+>    perf util: Get the evsel_streams by evsel_idx
+>    perf util: Compare two streams
+>    perf util: Link stream pair
+>    perf util: Calculate the sum of total streams hits
+>    perf util: Report hot streams
+>    perf diff: Support hot streams comparison
+> 
+>   tools/perf/Documentation/perf-diff.txt |   4 +
+>   tools/perf/builtin-diff.c              | 119 ++++++++-
+>   tools/perf/util/Build                  |   1 +
+>   tools/perf/util/callchain.c            |  99 +++++++
+>   tools/perf/util/callchain.h            |   9 +
+>   tools/perf/util/stream.c               | 342 +++++++++++++++++++++++++
+>   tools/perf/util/stream.h               |  41 +++
+>   7 files changed, 602 insertions(+), 13 deletions(-)
+>   create mode 100644 tools/perf/util/stream.c
+>   create mode 100644 tools/perf/util/stream.h
+> 
