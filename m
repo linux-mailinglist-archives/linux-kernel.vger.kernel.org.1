@@ -2,138 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67ED428D0C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C688F28D0CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389066AbgJMPAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:00:41 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:43963 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388871AbgJMPAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:00:40 -0400
-Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2FC6920647116;
-        Tue, 13 Oct 2020 17:00:37 +0200 (CEST)
-Subject: Re: i8042_init: PS/2 mouse not detected with ACPIPnP/PnPBIOS
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-input@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-References: <1a69c5bc-ccc4-68db-7871-af05a70052c9@molgen.mpg.de>
- <20201007221628.GW1009802@dtor-ws>
- <bbb70981-1242-0aea-01c9-f9507f8eae3b@molgen.mpg.de>
- <CAJZ5v0hKmESo0-kfN1+vK7to05GpVV3d7ZnO3XEsQ2jKKhvkJQ@mail.gmail.com>
- <7921b792-c99a-659c-730f-ecb25cb7f04b@molgen.mpg.de>
- <CAJZ5v0iim_XvBcjSZevEmbQb6F8bCb2jP14Ptnqd_7qfuuUHpw@mail.gmail.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <082dfba3-6187-7081-6a8c-8c38a3a95b19@molgen.mpg.de>
-Date:   Tue, 13 Oct 2020 17:00:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1730802AbgJMPBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:01:04 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38167 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730768AbgJMPA7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:00:59 -0400
+Received: by mail-oi1-f196.google.com with SMTP id h10so10120672oie.5;
+        Tue, 13 Oct 2020 08:00:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VjmNHgLrDRIv4sEY9/S/NIEnsCKdo3pbg9OQDx7zfsM=;
+        b=o4tItsk/ehPeV58oXQb9UjphtiQmUy45aS3dvj0ivP0Ykzj3QzcIM9DE45abmlEdSH
+         Mx75uEblhX/STLdKId0W9RAjC490zxzfoJ+nuXfxVAZuVHY9pI7zUPTv7ELiB9mUBpu6
+         6EzZjZKKhmGBIKOS8fnDGnM0h5N+bp5PD2K1MRTPNkTVFl0GoOAihL5bgNrOcPORLx/t
+         sYDbLRdlSzG4WHWHe9blHFJmndC6SFXI2kr3JA83YTZTP4p+NuRd6Rs5XdL8dw+ebKpf
+         VBkEIGK8Vth0HtIGjNf1nm0osB8RN/fRl/J4OEXkgOSaPtMrCLC7/D7d9yCvwkuFg/5R
+         wzWw==
+X-Gm-Message-State: AOAM53279owM+xACKHDqwRsx3XHsFYge2u2Aw7m57JqTWgQdBJKg7AYG
+        eWwIX5WhbHO0ua0XCeGb3Q==
+X-Google-Smtp-Source: ABdhPJwCck+OH36faxumQAVj/KQNA2C+VBOeoMeRMy1pFs9yE+WdJqQajF3KjiBfdH+rALx+mN/7Nw==
+X-Received: by 2002:aca:31d6:: with SMTP id x205mr72606oix.117.1602601258478;
+        Tue, 13 Oct 2020 08:00:58 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k13sm26603ooi.41.2020.10.13.08.00.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 08:00:57 -0700 (PDT)
+Received: (nullmailer pid 3507507 invoked by uid 1000);
+        Tue, 13 Oct 2020 15:00:56 -0000
+Date:   Tue, 13 Oct 2020 10:00:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
+        agross@kernel.org, gregkh@linuxfoundation.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jackp@codeaurora.org,
+        sergei.shtylyov@gmail.com
+Subject: Re: [PATCH v10 2/4] dt-bindings: usb: Add Qualcomm PMIC type C
+ controller dt-binding
+Message-ID: <20201013150056.GA3497815@bogus>
+References: <20201008235934.8931-1-wcheng@codeaurora.org>
+ <20201008235934.8931-3-wcheng@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iim_XvBcjSZevEmbQb6F8bCb2jP14Ptnqd_7qfuuUHpw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201008235934.8931-3-wcheng@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Rafael, dear Dmitry,
-
-
-Am 12.10.20 um 13:00 schrieb Rafael J. Wysocki:
-> On Mon, Oct 12, 2020 at 12:50 PM Paul Menzel wrote:
-
->> Am 12.10.20 um 12:39 schrieb Rafael J. Wysocki:
->>> On Sun, Oct 11, 2020 at 1:08 AM Paul Menzel wrote:
-
->>>> Am 08.10.20 um 00:16 schrieb Dmitry Torokhov:
->>>>
->>>>> On Wed, Oct 07, 2020 at 11:18:41PM +0200, Paul Menzel wrote:
->>>>
->>>>>> On the Asus F2A85-M PRO Linux 5.9-rc8 (and previous versions) does not
->>>>>> recognize a plugged in PS/2 mouse using the Plug & Play method. The PS/2
->>>>>> keyboard is detected fine, and using `i8042.nopnp`, the PS/2 mouse also
->>>>>> works.
->>>>>>
->>>>>>> [    1.035915] calling  i8042_init+0x0/0x42d @ 1
->>>>>>> [    1.035947] i8042: PNP: PS/2 Controller [PNP0303:PS2K] at 0x60,0x64 irq 1
->>>>>>> [    1.035948] i8042: PNP: PS/2 appears to have AUX port disabled, if this is incorrect please boot with i8042.nopnp
->>>>>>> [    1.036589] serio: i8042 KBD port at 0x60,0x64 irq 1
->>>>>>> [    1.036621] initcall i8042_init+0x0/0x42d returned 0 after 687 usecs
->>>>>>
->>>>>> But, the DSDT includes the “mouse device”. From
->>>>>>
->>>>>>        acpidump > dump.bin; acpixtract dump.bin; iasl -d *dat; more dsdt.dsl
->>>>>>
->>>>>> we get
->>>>>>
->>>>>>                    Device (PS2M)
->>>>>>                    {
->>>>>>                        Name (_HID, EisaId ("PNP0F03") /* Microsoft PS/2-style Mouse */)  // _HID: Hardware ID
->>>>>>                        Name (_CID, EisaId ("PNP0F13") /* PS/2 Mouse */) // _CID: Compatible ID
->>>>>>                        Method (_STA, 0, NotSerialized)  // _STA: Status
->>>>>>                        {
->>>>>>                            If ((IOST & 0x4000))
->>>>>>                            {
->>>>>>                                Return (0x0F)
->>>>>>                            }
->>>>>>                            Else
->>>>>>                            {
->>>>>>                                Return (Zero)
->>>>>>                            }
->>>>>>                        }
->>>>>>
->>>>>> and the identifiers PNP0F03 and PNP0F13 are both listed in the array
->>>>>> `pnp_aux_devids[]`. But adding print statements to `i8042_pnp_aux_probe()`,
->>>>>> I do not see them, so the function does not seem to be called.
->>>>>
->>>>> My guess is that _STA returns 0 indicating that the device is not
->>>>> present. I would try tracking where IOST is being set and figuring out
->>>>> why it does not have mouse bit enabled.
->>>>
->>>> Does the ACPI subsystem allow to track, how ACPI variables(?) like IOST
->>>> are read and set?
->>>
->>> My guess would be that IOST is a field in an operation region which
->>> would indicate that it is initialized by the bootstrap part of the
->>> BIOS.
->>
->> Thank you for your answer. But how can I verify that?
+On Thu, Oct 08, 2020 at 04:59:32PM -0700, Wesley Cheng wrote:
+> Introduce the dt-binding for enabling USB type C orientation and role
+> detection using the PM8150B.  The driver will be responsible for receiving
+> the interrupt at a state change on the CC lines, reading the
+> orientation/role, and communicating this information to the remote
+> clients, which can include a role switch node and a type C switch.
 > 
-> Inspecting the ACPI tables from the system in question could help you
-> to find out whether or not IOST really is a field in an operation
-> region, but its initial value may not be possible to determine this
-> way.
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  .../bindings/usb/qcom,pmic-typec.yaml         | 115 ++++++++++++++++++
+>  1 file changed, 115 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
 > 
->> Is there a Linux kernel parameter, that would print it?
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> new file mode 100644
+> index 000000000000..40e0a296f922
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> @@ -0,0 +1,115 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/usb/qcom,pmic-typec.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm PMIC based USB type C Detection Driver
+> +
+> +maintainers:
+> +  - Wesley Cheng <wcheng@codeaurora.org>
+> +
+> +description: |
+> +  Qualcomm PMIC Type C Detect
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pm8150b-usb-typec
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: Type C base address
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: CC change interrupt from PMIC
+> +
+> +  port:
+> +    description: Remote endpoint connection to the DRD switch
+> +    type: object
+
+I don't understand what this is supposed to be. You'll have to expand 
+the example or provide a block diagram of what the connections/routing 
+looks like.
+
+> +
+> +    properties:
+> +      endpoint:
+> +        description: Connection to the DRD switch being used
+> +        type: object
+> +
+> +  connector:
+> +    $ref: /connector/usb-connector.yaml#
+> +    description: Connector type for remote endpoints
+> +    type: object
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - usb-c-connector
+> +
+> +      power-role: true
+> +      data-role: true
+> +
+> +      ports:
+> +        description: Remote endpoint connections for type C paths
+> +        type: object
+> +
+> +        properties:
+> +          port@1:
+> +            description: Remote endpoints for the Super Speed path
+> +            type: object
+> +
+> +            properties:
+> +              endpoint:
+> +                description: Connection to USB type C mux node
+> +                type: object
+> +
+> +    required:
+> +      - compatible
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - connector
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    pm8150b {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        pm8150b_typec: usb-typec@1500 {
+> +            compatible = "qcom,pm8150b-usb-typec";
+> +            reg = <0x1500>;
+> +            interrupts = <0x2 0x15 0x5 IRQ_TYPE_EDGE_RISING>;
+> +
+> +            port {
+> +                usb3_role: endpoint {
+> +                    remote-endpoint = <&dwc3_drd_switch>;
+> +                };
+> +            };
+> +
+> +            connector {
+> +                compatible = "usb-c-connector";
+> +                power-role = "dual";
+> +                data-role = "dual";
+> +                ports {
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    port@0 {
+> +                        reg = <0>;
+> +                    };
+> +                    port@1 {
+> +                        reg = <1>;
+> +                        #address-cells = <1>;
+> +                        #size-cells = <0>;
+> +                        usb3_data_ss: endpoint {
+> +                            remote-endpoint = <&qmp_ss_mux>;
+> +                        };
+> +                    };
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-> Not that I know of.
-
-I created an issue in the Linux kernel bugtracker [1] and attached the 
-output of `acpidump` there.
-
-Could
-
-     If ((IOST & 0x4000))
-
-versus
-
-     If ((IOST & 0x0400))
-
-be a typo?
-
-
-Kind regards,
-
-Paul
-
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=209657
