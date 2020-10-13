@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9933C28CCFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2461328CD2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgJML4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:56:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60018 "EHLO mail.kernel.org"
+        id S1728143AbgJML5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:57:31 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34936 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727780AbgJMLzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:55:32 -0400
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 90FA62173E;
-        Tue, 13 Oct 2020 11:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602590131;
-        bh=C2W5GeQS+7lax4NZVnOhccUWWt4QYGNc1nU/WmZV4M4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q3Ld85uO14OJ4zdp1b7UN2ZI63616iIvwvgJr5ZxtVpSprY1CzZ28FXYoRfP97Gdw
-         SG+HmIluE910NkjJwYDdm1kR0nSkh/K8Jl8NZIxGk+sfEpN4juRMXht8XGksm0D4/w
-         bg+c7/78mBYw9SQxZYzONtP4gYXCi4FvO/2gtwL4=
-Received: by mail-oi1-f178.google.com with SMTP id l85so22148112oih.10;
-        Tue, 13 Oct 2020 04:55:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533YBq8hlzDNDRJlP0tkND+vGIM4oIpb5MG+vKi+lZ+5Vl2L+1gX
-        HOWHoW1eDNH0eP3O7kaYS53ZJI0wEuWKfGnAcQ==
-X-Google-Smtp-Source: ABdhPJxxYPKhssmznIx9VsXNI0i4rSVXTw07iOkQOp7rQN8Ql63pntT4PeU3qJnCUj0QuKXDxsKeqxMcWYPO54bPpq8=
-X-Received: by 2002:aca:4c52:: with SMTP id z79mr14017312oia.147.1602590130782;
- Tue, 13 Oct 2020 04:55:30 -0700 (PDT)
+        id S1727659AbgJMLys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:54:48 -0400
+IronPort-SDR: Scd0mm16A64LiqS+eh/1r45Ks+uPMg4iDIj6ll6VrSgdDmHP1qn3zi/o32A7o15W0FRGPMPBpQ
+ q8RPUMgy8j5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="227534122"
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
+   d="scan'208";a="227534122"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:54:48 -0700
+IronPort-SDR: F944B7h/7nzU6a6i3JexdZZDLrmZFFivxWDYZzRvDVoPCqI8W1H5uWlgmxy/W1luG63OD/pXOu
+ 8GdFE1RXTNJA==
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
+   d="scan'208";a="356131387"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:54:44 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kSIuA-005nGI-Dq; Tue, 13 Oct 2020 14:55:46 +0300
+Date:   Tue, 13 Oct 2020 14:55:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Pratham Pratap <prathampratap@codeaurora.org>
+Cc:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
+        rafael.j.wysocki@intel.com, mathias.nyman@linux.intel.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sallenki@codeaurora.org, mgautam@codeaurora.org,
+        jackp@codeaurora.org, stable@vger.kernel.org
+Subject: Re: [PATCH] usb: core: Don't wait for completion of urbs
+Message-ID: <20201013115546.GM4077@smile.fi.intel.com>
+References: <1602586022-13239-1-git-send-email-prathampratap@codeaurora.org>
 MIME-Version: 1.0
-References: <20201012191648.GA1908871@bogus> <61ca14fc441f92c1e7994e5bebae5c49811a3050.1602563406.git.viresh.kumar@linaro.org>
-In-Reply-To: <61ca14fc441f92c1e7994e5bebae5c49811a3050.1602563406.git.viresh.kumar@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 13 Oct 2020 06:55:19 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+Cmr=92+7aSoNpCXdCTHysvVqU2mn7=GjrUp-7Wn1QNA@mail.gmail.com>
-Message-ID: <CAL_Jsq+Cmr=92+7aSoNpCXdCTHysvVqU2mn7=GjrUp-7Wn1QNA@mail.gmail.com>
-Subject: Re: [PATCH V4] dt-bindings: mailbox : arm,mhuv2: Add bindings
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jassi Brar <jaswinder.singh@linaro.org>, morten_bp@live.dk,
-        Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        devicetree@vger.kernel.org, Sudeep Holla <Sudeep.Holla@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602586022-13239-1-git-send-email-prathampratap@codeaurora.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 11:32 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> This patch adds device tree binding for ARM Message Handling Unit (MHU)
-> controller version 2.
->
-> Based on earlier work by Morten Borup Petersen.
->
-> Co-developed-by: Tushar Khandelwal <tushar.khandelwal@arm.com>
-> Signed-off-by: Tushar Khandelwal <tushar.khandelwal@arm.com>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->
-> ---
-> V3->V4:
-> - Made interrupts property compulsory for receiver
-> - Added interrupts for both nodes in example
-> - Fixed min/max items for protocols property
-> - Don't add -tx/rx to node's name.
->
-> V2->V3:
-> - compatible is changed to arm-mhuv2-tx/rx. Later version of MHUv2
->   have an interrupt in the sender mode as well and we can't find if a
->   mailbox is sender or receiver just based on an interrupt anymore. We
->   needed a better way.
->
-> - arm-mhuv2-mode is renamed to arm,mhuv2-protocols to fit the purpose
->   better.
->
-> - Minor formatting otherwise.
->
-> Morten: Please let me know if you want me to add your signoff here from
-> some other email id as you no longer work with ARM.
-> ---
->  .../bindings/mailbox/arm,mhuv2.yaml           | 215 ++++++++++++++++++
->  1 file changed, 215 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
+On Tue, Oct 13, 2020 at 04:17:02PM +0530, Pratham Pratap wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+...
+
+> Fixes: 3e35bf39e (USB: fix codingstyle issues in drivers/usb/core/message.c)
+
+Two hints how to use Git with Linux kernel development.
+
+First is about what Greg pointed out, i.e. proper Fixes line.
+
+Add to your ~/.gitconfig the following:
+
+	[core]
+		abbrev = 12
+
+	[alias]
+		one = show -s --pretty='format:%h (\"%s\")'
+
+In result you may run
+
+	git one 3e35bf39e
+
+and use the output.
+
+Second one is about Cc list. I recommend to use
+
+	scripts/get_maintainer.pl --git --git-min-percent=67
+
+to retrieve it.
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
