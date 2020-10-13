@@ -2,224 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB9028D1B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFC828D1B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731478AbgJMQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726744AbgJMQDd (ORCPT
+        id S1731502AbgJMQDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:03:41 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:62286 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726744AbgJMQDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:03:40 -0400
+Received: from pps.filterd (m0170395.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09DG20l2031061;
+        Tue, 13 Oct 2020 12:03:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=V6fUpSuH0KXiSENVrUROmbV7tf0CzfC2LcgJGuoDiiQ=;
+ b=bE4ZoE5zaEAPUyL7wBqiImm+QRHVIi1ltbUEKX/dbMYIpQP3vaVLGX21d12XzkaTqjmG
+ ZL1J2PWdqzLOQsKySQUgEyAJ5+yvtbL7zdRIqRe0LoaVdqw+RvlK6CC5KPRj8iB/6gZ1
+ UzDnP5Oos1ed7AGYqLKV6twbGqwkB1fmJTIBrXyc0Mb6mmjoe77x1vaIy7eF+5dJKRfS
+ nIZZ+uzB4KRkK88cSoBBtHn7lS9Woiv367sJWr2ym1F8wpHmIF4Cz0s4INIHEZDojTqM
+ 1PIwsLpjHhcopUg4Wpjab2Nm/qJtc1tA2TG21zd8aOWZ7kO5rD3DlOdfbr4cP4jR3eWM LQ== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 3439mnt2k9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Oct 2020 12:03:34 -0400
+Received: from pps.filterd (m0134746.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09DFwsNC117548;
         Tue, 13 Oct 2020 12:03:33 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF048C0613D0;
-        Tue, 13 Oct 2020 09:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=Wpdl5tmrKPjaaberUFjqSupjb1ATAi0ONSt07SJCKQE=; b=Qpsok+Ackr0F9fwvi+JJfjEWBO
-        ydN8fGyBOrx2oXRI3B8z11e1rwafRpIYB7W7cVONGuNlmz/j3nlMWJQaNMvM7AbR1INCM9YFMDJ/j
-        9mbbiQHyYqSsp2i8NOGTn9wjxjzADDES40eEhTsHRv2Jy8Ese85FHspwd5wlb85CKlSvjY1bRT10/
-        FL4FQ6/86KmubEHIU2IQyrt5MB4YClGHFgQtxJ3R+KcufBFEwMquBcvgdH4Rle6jC9UpcKbAqBoIM
-        meg7RqWxMtu2k4iibade5EOZZ9SrlZXbNrr/BfMvTqq5AgpqjQScFYpiEg3otce49R8tUpntEXuLL
-        OWU6gDvA==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSMls-0007AD-36; Tue, 13 Oct 2020 16:03:28 +0000
-Subject: Re: disabling CONFIG_LED_CLASS
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Udo van den Heuvel <udovdh@xs4all.nl>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Pavel Machek <pavel@ucw.cz>
-References: <2835d02a-380b-6a3a-0e4d-abf07aee18bc@xs4all.nl>
- <53e698c1-86e4-8b1f-afb0-b8471349e701@xs4all.nl>
- <43b79598-1592-683f-46df-9e5489110780@infradead.org>
-Message-ID: <6fd1e91e-19d0-6682-dfc6-49f1cd60408b@infradead.org>
-Date:   Tue, 13 Oct 2020 09:03:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <43b79598-1592-683f-46df-9e5489110780@infradead.org>
-Content-Type: text/plain; charset=utf-8
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
+        by mx0a-00154901.pphosted.com with ESMTP id 345c08v2bs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Oct 2020 12:03:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DtOrksvm82grIvNsL0an7C9gJBVwx+pUzOhqpxYiBCGBjAzbLEvZHxqSNgXtWJGUVJDgLxlrHZqoRSeRXgDMmJ8q664j+cXIMFI/mCpFhViO61xrcMCZrt4tBHkH7NzcM4i69HIvhwtYFv+6ldRej398A+BAkErb6yM1L0PWgq89ktnKxSBzMh3xtaKK0kVVRnVhQCLYCm4Kj/QcFe5zbW5sKkjvPPRFkCfJYij5fqhOXCavoqvQ4FWbpUMVxptl+wp7nCaamRRllrEnfu82POuVbktASeOgBLHWiZNISjUtuWo8WKNWrJP6jvLkPvRojefaYn0yYAGHtoR9u+Z7hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V6fUpSuH0KXiSENVrUROmbV7tf0CzfC2LcgJGuoDiiQ=;
+ b=Kk2wWesKZrioF20uvjTgfN6cAdCGrI/VSnS1YeZapffPYIIIF/3oxhNc6/W9Uogu/cRCXvoe4pGYCmni1rFSO6pmDyt924if/JuqARcWkkn4FOkeXRDlEwbUsGhQ9+yLRgLhzZzxnPSoXxsFHIcp+mOaV/9rMC8j0c2QlRt9GekPA89mxzVRzwkV1ZvdCwA2Uj/h5Sl9i/B/SI+ad+kNhcOZh5zb7KO1AbA/EP2OzXe1NOtMfHG1+ojnf5bi7Ga4dEPTBTdQZ+zuB7IlfmH2r7Zm4+T0OKMehINFE5Y/QXaH17OF8oOVweO5iWNuVXRvC4hMUZmgRD/CSqujkaLaVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
+ s=selector1-Dell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V6fUpSuH0KXiSENVrUROmbV7tf0CzfC2LcgJGuoDiiQ=;
+ b=fA8/t/Vf97JtFnGhr4AMQ/+Q1mXNfah4DAm7viqJqiOl+iT6YxDqH1UyFYm7LS25wnQ6zRD9Rbi2SbrUiQ07NpAynzMRxLrnBGKPAHXo52uz0HMtY2rykKtl09Ju9nk1ReuOwsOWjJ8P2Qd4l20ittCremBZCYNyv+T7YyyRq6o=
+Received: from DM6PR19MB3691.namprd19.prod.outlook.com (2603:10b6:5:1d8::15)
+ by DM6PR19MB2570.namprd19.prod.outlook.com (2603:10b6:5:186::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Tue, 13 Oct
+ 2020 16:03:27 +0000
+Received: from DM6PR19MB3691.namprd19.prod.outlook.com
+ ([fe80::1c5c:e865:3afa:b3a2]) by DM6PR19MB3691.namprd19.prod.outlook.com
+ ([fe80::1c5c:e865:3afa:b3a2%6]) with mapi id 15.20.3477.020; Tue, 13 Oct 2020
+ 16:03:27 +0000
+From:   "Shen, Yijun" <Yijun.Shen@dell.com>
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        "Brown, Aaron F" <aaron.f.brown@intel.com>,
+        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     "Yuan, Perry" <Perry.Yuan@dell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [Intel-wired-lan] [PATCH 2/3] e1000e: Add Dell's Comet Lake
+ systems into s0ix heuristics
+Thread-Topic: [Intel-wired-lan] [PATCH 2/3] e1000e: Add Dell's Comet Lake
+ systems into s0ix heuristics
+Thread-Index: AQHWlWQ1Klkytgcwh0is6KJPY3WyxamLVECwgAAC44CACnJAMA==
+Date:   Tue, 13 Oct 2020 16:03:27 +0000
+Message-ID: <DM6PR19MB3691176E50F919E5CE9ED5C79A040@DM6PR19MB3691.namprd19.prod.outlook.com>
+References: <20200928044024.7595-1-mario.limonciello@dell.com>
+ <20200928044024.7595-3-mario.limonciello@dell.com>
+ <DM6PR11MB2890F9ACE2ACF01E52A1ADBDBC0A0@DM6PR11MB2890.namprd11.prod.outlook.com>
+ <DM6PR19MB263685129F30B4D7213398A9FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+In-Reply-To: <DM6PR19MB263685129F30B4D7213398A9FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-10-07T00:29:41.3594513Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=f6f3ed80-bfc9-4ff5-bce1-108640737d02;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+authentication-results: Dell.com; dkim=none (message not signed)
+ header.d=none;Dell.com; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [101.86.17.213]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7524f797-fc2d-412a-ba76-08d86f918568
+x-ms-traffictypediagnostic: DM6PR19MB2570:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR19MB25701CF54A8DE043F04BDA889A040@DM6PR19MB2570.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:1051;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: M3+Q2CJyHxDb5jCC4d67N4I79ItmeQ9pI0N/79zUf3pPNrhXbPj1xlxsmOhZD3tmj/ydL63iH+/+andQUI9E7U7mPe/pt5/C+6GJ2966i2LYtiDz1IRMcPiH/fzSmXMLntGa8wRVZTGRZhiTfVdjlENjH5RRKwVk8IWbao8gG/PXi8XPszI0y67s12FuAk8ld68bwiM12o6RzyoUTAKMYgWhfqMOzfG/h5F9FI7L23QfF9tbTkGjP7ItPYlT039xgOeZP5PK+GKni+m3qW0AGghObvTgXaqV5rX0ylAaImNrG5bp4PAMRAJrqqjjKtGEj/kBsu7WuqWDYtapcR6iGye57kbkxRA1eNFZCA3gAKqwf9YDCnj25SE8wV42O50fVsUldN4RSyzX1aTHJcxCh6hlMmeZ2geUU3u5lYJRoQ5ZKFYdxxalIPzVM6vZRa3P50meQfKVQiDQsqETkgvLrQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB3691.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(966005)(7696005)(76116006)(86362001)(52536014)(2906002)(66556008)(64756008)(66946007)(66446008)(66476007)(55016002)(4326008)(498600001)(6506007)(53546011)(26005)(186003)(110136005)(54906003)(9686003)(83380400001)(8676002)(71200400001)(83080400001)(33656002)(8936002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: zpntnF91XrVevMUJvRmfpH++9rKqdzp+sUXxzVmKs7JbVUp0tewyphELcCUCslTfvI9Rdzf1N7iEN6/UUoVlUg5wrUfXaDYJ4KJEYCrYg7Yj0Ldhrj0KO0C4KTE5tqWpGVGoeHipTFVJm5whOpILaTs61bXCosP8FjLpCsXvQKdIc1lx5vTGn2wexIwcHv+zMtDsNdQdTlSZ14+GJWVfvUIXkvet/PdsZrIfUYk0FVW++FXin7By4UPgxKZGqWPsDyv4se6Q4fMVoY05B149hepayGQlWzc8iM5+MHSXfXZ9IRfSvK/DWBMoxIJ781ElnSR8W7uGhIU8K5Rtef/xRD2KaaXVJIvRng2BN+7L23AKylWmYpKaC2d5ghZz+sOI+uKNEKoF7Fun5HNy+jIH6leX2L1ijcchDSbmPrdleV4f7l2JXuOyOKR/UC9h4GF8QlyF2F1xbv9VOYCUrZQAmUS+V0gjUhnoiCT8Lu0CfgZ4wBQW/Sw5DTz+cN5kWuqWK2vqSTdv4dKFX7rQlLk9NTHc9pLATnicuIEHhBQGBW0ZVBvnEZlIuDAV6FD4F6Kuk9wSDIs2lBV6oKn5zZKAh3LnpLy17yC7g9b2JLjhZw01IbWaLpzJ70Hujzg6yGwIbEpPX7nBVY3g5mnvghWaVA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB3691.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7524f797-fc2d-412a-ba76-08d86f918568
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2020 16:03:27.0930
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rAPdWqBmGifWKlBTulhS70roKVJin4Y+JVqGNedtPoxhc5Jl8i3EjZRNAm3CBIQ6uCYnQjQmoX2Pcy1JSzCCEw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB2570
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-13_08:2020-10-13,2020-10-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 impostorscore=0 spamscore=0 bulkscore=0 priorityscore=1501
+ suspectscore=0 adultscore=0 phishscore=0 malwarescore=0 clxscore=1011
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010130117
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ phishscore=0 adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010130118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 8:53 AM, Randy Dunlap wrote:
-> [adding LED people + list]
-> 
-> On 10/13/20 6:24 AM, Udo van den Heuvel wrote:
->> L.S.,
->>
->> Even after removing all LED referneces from .config, a `make oldconfig`
->> leads to:
->>
->> *
->> * LED Support
->> *
->> LED Support (NEW_LEDS) [Y/?] (NEW) y
->>   LED Class Support (LEDS_CLASS) [M/y/?] (NEW) n
->>
->> Where 'n' is not a valid choice.
->> So why is this LED thing forced upon us and how do we get rid of it?
->>
->> Or else please explain how to make this work on a Gigabyte Technology
->> Co., Ltd. X570 AORUS PRO...
->>
->> Kind regards,
->> Udo
->>
->>
->> On 13-10-2020 11:24, Udo van den Heuvel wrote:
->>> Hello,
->>>
->>> While looking at the 5.9 kernel config I noticed there is no easy way to
->>> disable LED support in general.
->>> There's this NEW_LEDS thing that is not shown, etc.
->>> So I get:
->>>
->>> # make oldconfig
->>> scripts/kconfig/conf  --oldconfig Kconfig
->>> *
->>> * Restart config...
->>> *
->>> *
->>> * LED Support
->>> *
->>> LED Support (NEW_LEDS) [Y/?] (NEW) y
->>>   LED Class Support (LEDS_CLASS) [M/y/?] (NEW) n
->>>
->>> CONFIG_LEDS_CLASS:
->>>
->>> This option enables the LED sysfs class in /sys/class/leds.  You'll
->>> need this to do anything useful with LEDs.  If unsure, say N.
->>>
->>> Symbol: LEDS_CLASS [=m]
->>> Type  : tristate
->>> Defined at drivers/leds/Kconfig:17
->>>   Prompt: LED Class Support
->>>   Depends on: NEW_LEDS [=y]
->>>   Location:
->>>     -> Device Drivers
->>>       -> LED Support (NEW_LEDS [=y])
->>> Selected by [m]:
->>>   - SND_HDA_GENERIC [=m] && SOUND [=y] && !UML && SND [=m] && SND_HDA
->>> [=m] && SND_HDA_GENERIC_LEDS [=y]
->>> Selected by [n]:
->>>   - TS5500 [=n] && X86_32 [=n] && MELAN [=n]
->>>   - ADB_PMU_LED [=n] && MACINTOSH_DRIVERS [=n] && PPC_PMAC && ADB_PMU [=n]
->>>   - ATH5K [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_ATH [=n]
->>> && (PCI [=y] || ATH25) && MAC80211 [=n]
->>>   - ATH9K [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_ATH [=n]
->>> && MAC80211 [=n] && HAS_DMA [=y]
->>>   - ATH9K_HTC [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_ATH
->>> [=n] && USB [=y] && MAC80211 [=n]
->>>   - CARL9170_LEDS [=n] && NETDEVICES [=y] && WLAN [=n] &&
->>> WLAN_VENDOR_ATH [=n] && CARL9170 [=n]
->>>   - BRCMSMAC [=n] && NETDEVICES [=y] && WLAN [=n] &&
->>> WLAN_VENDOR_BROADCOM [=n] && MAC80211 [=n] && BCMA_POSSIBLE [=y] &&
->>> BCMA_DRIVER_GPIO [=n]
->>>   - IWLEGACY [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_INTEL [=n]
->>>   - INPUT_WISTRON_BTNS [=n] && !UML && INPUT [=y] && INPUT_MISC [=y] &&
->>> X86_32 [=n]
->>>   - SENSORS_APPLESMC [=n] && HWMON [=y] && INPUT [=y] && X86 [=y]
->>>   - IR_REDRAT3 [=n] && RC_DEVICES [=n] && USB_ARCH_HAS_HCD [=y] &&
->>> RC_CORE [=n]
->>>   - IR_WINBOND_CIR [=n] && RC_DEVICES [=n] && (X86 [=y] && PNP [=y] ||
->>> COMPILE_TEST [=n]) && RC_CORE [=n]
->>>   - IR_TTUSBIR [=n] && RC_DEVICES [=n] && USB_ARCH_HAS_HCD [=y] &&
->>> RC_CORE [=n]
->>>   - BACKLIGHT_ADP8860 [=n] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE
->>> [=y] && I2C [=y]
->>>   - BACKLIGHT_ADP8870 [=n] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE
->>> [=y] && I2C [=y]
->>>   - BACKLIGHT_LM3639 [=n] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE
->>> [=y] && I2C [=y]
->>>   - SND_USB_TONEPORT [=n] && SOUND [=y] && !UML && SND [=m] && SND_USB
->>> [=y] && USB [=y]
->>>   - HID_LENOVO [=n] && INPUT [=y] && HID [=y]
->>>   - HID_WACOM [=n] && INPUT [=y] && HID [=y] && USB_HID [=m]
->>>   - HUAWEI_WMI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] &&
->>> ACPI_BATTERY [=n] && ACPI_WMI [=n] && INPUT [=y]
->>>   - ACER_WMI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI [=y]
->>> && BACKLIGHT_CLASS_DEVICE [=y] && SERIO_I8042 [=y] && INPUT [=y] &&
->>> (RFKILL [=n] || RFKILL [=n]=n) && ACPI_WMI [=n]
->>>   - ASUS_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
->>> [=y] && BACKLIGHT_CLASS_DEVICE [=y] && INPUT [=y] && (RFKILL [=n] ||
->>> RFKILL [=n]=n) && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n)
->>>   - ASUS_WIRELESS [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
->>> [=y] && INPUT [=y]
->>>   - ASUS_WMI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI_WMI
->>> [=n] && ACPI_BATTERY [=n] && INPUT [=y] && HWMON [=y] &&
->>> BACKLIGHT_CLASS_DEVICE [=y] && (RFKILL [=n] || RFKILL [=n]=n) &&
->>> HOTPLUG_PCI [=n] && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n)
->>>   - EEEPC_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
->>> [=y] && INPUT [=y] && (RFKILL [=n] || RFKILL [=n]=n) && (ACPI_VIDEO [=n]
->>> || ACPI_VIDEO [=n]=n) && HOTPLUG_PCI [=n] && BACKLIGHT_CLASS_DEVICE [=y]
->>>   - DELL_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && DMI
->>> [=y] && BACKLIGHT_CLASS_DEVICE [=y] && (ACPI_VIDEO [=n] || ACPI_VIDEO
->>> [=n]=n) && (RFKILL [=n] || RFKILL [=n]=n) && SERIO_I8042 [=y] &&
->>> DELL_SMBIOS [=n]
->>>   - FUJITSU_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
->>> [=y] && INPUT [=y] && BACKLIGHT_CLASS_DEVICE [=y] && (ACPI_VIDEO [=n] ||
->>> ACPI_VIDEO [=n]=n)
->>>   - HP_ACCEL [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && INPUT [=y]
->>> && ACPI [=y] && SERIO_I8042 [=y]
->>>   - THINKPAD_ACPI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
->>> [=y] && ACPI_BATTERY [=n] && INPUT [=y] && (RFKILL [=n] || RFKILL
->>> [=n]=n) && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n) &&
->>> BACKLIGHT_CLASS_DEVICE [=y]
->>>   - SAMSUNG_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] &&
->>> (RFKILL [=n] || RFKILL [=n]=n) && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n)
->>> && BACKLIGHT_CLASS_DEVICE [=y]
->>>   - ACPI_TOSHIBA [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
->>> [=y] && ACPI_WMI [=n] && BACKLIGHT_CLASS_DEVICE [=y] && INPUT [=y] &&
->>> (SERIO_I8042 [=y] || SERIO_I8042 [=y]=n) && (ACPI_VIDEO [=n] ||
->>> ACPI_VIDEO [=n]=n) && (RFKILL [=n] || RFKILL [=n]=n) && IIO [=n]
->>>   - LG_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI [=y]
->>> && ACPI_WMI [=n] && INPUT [=y]
->>>   - SYSTEM76_ACPI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI [=y]
->>>   - TOPSTAR_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
->>> [=y] && INPUT [=y]
->>>
->>>
->>> And there is no 'n' option. None of the devices as dependencies (on the
->>> left) are enabled.
->>> SND_HDA_GENERIC_LEDS is automagically enabled and disabling it via vi is
->>> no option.
->>> So how do I disable this stuff?
->>>
->>> Kind regards,
->>> Udo
+> -----Original Message-----
+> From: Limonciello, Mario <Mario_Limonciello@Dell.com>
+> Sent: Wednesday, October 7, 2020 8:30 AM
+> To: Brown, Aaron F; Kirsher, Jeffrey T; intel-wired-lan@lists.osuosl.org
+> Cc: Yuan, Perry; Shen, Yijun; linux-kernel@vger.kernel.org
+> Subject: RE: [Intel-wired-lan] [PATCH 2/3] e1000e: Add Dell's Comet Lake
+> systems into s0ix heuristics
+>=20
+>=20
+> > > From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf
+> > > Of Mario Limonciello
+> > > Sent: Sunday, September 27, 2020 9:40 PM
+> > > To: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; intel-wired-
+> > > lan@lists.osuosl.org
+> > > Cc: Perry.Yuan@dell.com; Yijun.Shen@dell.com;
+> > > linux-kernel@vger.kernel.org; Mario Limonciello
+> > > <mario.limonciello@dell.com>
+> > > Subject: [Intel-wired-lan] [PATCH 2/3] e1000e: Add Dell's Comet Lake
+> > > systems into s0ix heuristics
+> > >
+> > > Dell's Comet Lake Latitude and Precision systems containing i219LM
+> > > are properly configured and should use the s0ix flows.
+> > >
+> > > Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
+> > > ---
+> > >  drivers/net/ethernet/intel/Kconfig        |  1 +
+> > >  drivers/net/ethernet/intel/e1000e/param.c | 80
+> > > ++++++++++++++++++++++-
+> > >  2 files changed, 80 insertions(+), 1 deletion(-)
+> >
+> > Is there anyone who touched this hardware with this patch willing to
+> > provide a Tested-by:?
+> > I am happy to do regression / sanity checks against other e1000e based
+> > systems, but do not have access to these devices.
+>=20
+> Alex (Yijun) who is CC'ed did test them and I expect can add a Tested-By =
+after
+> the China holidays are over.
+>=20
 
-Hi,
+Tested-by: Yijun Shen <Yijun.shen@dell.com>
 
-I was able to disable LEDS_CLASS and NEW_LEDS after I disabled the following
-config symbols:
-
-
---- xx64/config-def64	2020-10-13 08:53:56.050501724 -0700
-+++ xx64/.config	2020-10-13 08:58:12.439205389 -0700
--CONFIG_MAC80211_LEDS=y
--CONFIG_RFKILL_LEDS=y
--# CONFIG_LED_TRIGGER_PHY is not set
--CONFIG_INPUT_LEDS=y
--# CONFIG_HID_LED is not set
--# CONFIG_USB_LED_TRIG is not set
--# CONFIG_USB_LEDS_TRIGGER_USBPORT is not set
--CONFIG_LEDS_TRIGGERS=y
--CONFIG_EEEPC_LAPTOP=y
-+# CONFIG_EEEPC_LAPTOP is not set
-
-This last one was the biggest problem for me.
-I started with x86_64 defconfig.
-
-
--- 
-~Randy
-
+> >
+> > >
+> > > diff --git a/drivers/net/ethernet/intel/Kconfig
+> > > b/drivers/net/ethernet/intel/Kconfig
+> > > index 5aa86318ed3e..280af47d74d2 100644
+> > > --- a/drivers/net/ethernet/intel/Kconfig
+> > > +++ b/drivers/net/ethernet/intel/Kconfig
+> > > @@ -58,6 +58,7 @@ config E1000
+> > >  config E1000E
+> > >  	tristate "Intel(R) PRO/1000 PCI-Express Gigabit Ethernet support"
+> > >  	depends on PCI && (!SPARC32 || BROKEN)
+> > > +	depends on DMI
+> > >  	select CRC32
+> > >  	imply PTP_1588_CLOCK
+> > >  	help
+> > > diff --git a/drivers/net/ethernet/intel/e1000e/param.c
+> > > b/drivers/net/ethernet/intel/e1000e/param.c
+> > > index e66b222c824b..58e6718c4f75 100644
+> > > --- a/drivers/net/ethernet/intel/e1000e/param.c
+> > > +++ b/drivers/net/ethernet/intel/e1000e/param.c
+> > > @@ -1,6 +1,7 @@
+> > >  // SPDX-License-Identifier: GPL-2.0
+> > >  /* Copyright(c) 1999 - 2018 Intel Corporation. */
+> > >
+> > > +#include <linux/dmi.h>
+> > >  #include <linux/netdevice.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/pci.h>
+> > > @@ -201,6 +202,80 @@ static const struct e1000e_me_supported
+> > > me_supported[] =3D {
+> > >  	{0}
+> > >  };
+> > >
+> > > +static const struct dmi_system_id s0ix_supported_systems[] =3D {
+> > > +	{
+> > > +		/* Dell Latitude 5310 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "099F"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Latitude 5410 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09A0"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Latitude 5410 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C9"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Latitude 5510 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09A1"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Precision 3550 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09A2"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Latitude 5411 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C0"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Latitude 5511 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C1"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Precision 3551 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C2"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Precision 7550 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C3"),
+> > > +		},
+> > > +	},
+> > > +	{
+> > > +		/* Dell Precision 7750 */
+> > > +		.matches =3D {
+> > > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > > +			DMI_MATCH(DMI_PRODUCT_SKU, "09C4"),
+> > > +		},
+> > > +	},
+> > > +	{ }
+> > > +};
+> > > +
+> > >  static bool e1000e_check_me(u16 device_id)  {
+> > >  	struct e1000e_me_supported *id;
+> > > @@ -599,8 +674,11 @@ void e1000e_check_options(struct
+> e1000_adapter
+> > > *adapter)
+> > >  		}
+> > >
+> > >  		if (enabled =3D=3D S0IX_HEURISTICS) {
+> > > +			/* check for allowlist of systems */
+> > > +			if (dmi_check_system(s0ix_supported_systems))
+> > > +				enabled =3D S0IX_FORCE_ON;
+> > >  			/* default to off for ME configurations */
+> > > -			if (e1000e_check_me(hw->adapter->pdev->device))
+> > > +			else if (e1000e_check_me(hw->adapter->pdev-
+> > > >device))
+> > >  				enabled =3D S0IX_FORCE_OFF;
+> > >  		}
+> > >
+> > > --
+> > > 2.25.1
+> > >
+> > > _______________________________________________
+> > > Intel-wired-lan mailing list
+> > > Intel-wired-lan@osuosl.org
+> > > https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
