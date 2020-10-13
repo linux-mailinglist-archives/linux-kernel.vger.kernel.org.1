@@ -2,105 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BBE28CE85
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C99628CE8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgJMMk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:40:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51748 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgJMMk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:40:57 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602592856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PtXsyiQpxCT6OGocoDV2xxYXmu++2jlzkrSoN+j9pRU=;
-        b=ZOhokM3pscswWs/6L/+yp+pNzzbKR8c7jaCklmGODRNv2mGh7LTgmNcJF1kgPKaKPP+ksr
-        uEHGxq9JgpE2/P1IDDG9/5nfdviWuSte26uh3HKiCx6Tm0Fmb3W/qvLWuC2LQfR1ccLXMH
-        4tVYwoWAVXzXkkxyGlg+PBU4sIPlNJwxNgJcjD9OIDv6jsUTaHFJGmuFFTbEeC4TaOSX5R
-        NCUUg36m0CJydtFo2o/uTABAnL3RiTFrVX+tILyri7ynuhNEJel+bt9y04AMjKRe/ySqBk
-        SZ1C/1reHxc0mu5bM9DqROwiunnooF60MKgeRGq+Vu1+ijO7eCKAJkuWTOn6VQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602592856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PtXsyiQpxCT6OGocoDV2xxYXmu++2jlzkrSoN+j9pRU=;
-        b=lgLaza4y48L6oQOyRBy1XqLgy1HeZ9SOaSeFB0Jhx8gOY+Qc/KdONfuORVzmHeb7Wv/FQ2
-        BFc4wukp3LfMQcDA==
-To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org,
-        Marc Zyngier <maz@kernel.org>
-Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
-In-Reply-To: <0ca196c0df5beb90b45457ac7ca5d8611d2a7a29.camel@infradead.org>
-References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org>
- <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org>
- <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org>
- <87362owhcb.fsf@nanos.tec.linutronix.de>
- <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org>
- <87tuv4uwmt.fsf@nanos.tec.linutronix.de>
- <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org>
- <874kn2s3ud.fsf@nanos.tec.linutronix.de>
- <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org>
- <87pn5or8k7.fsf@nanos.tec.linutronix.de>
- <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
- <87ft6jrdpk.fsf@nanos.tec.linutronix.de>
- <25c54f8e5da1fd5cf3b01ad2fdc1640c5d86baa1.camel@infradead.org>
- <87362jqoh3.fsf@nanos.tec.linutronix.de>
- <1abc2a34c894c32eb474a868671577f6991579df.camel@infradead.org>
- <87eem3ozxd.fsf@nanos.tec.linutronix.de>
- <0de733f6384874d68afba2606119d0d9b1e8b34e.camel@infradead.org>
- <87zh4qo4o5.fsf@nanos.tec.linutronix.de>
- <87wnzuo127.fsf@nanos.tec.linutronix.de>
- <832c2d4c11cd99382782474f51d15889ffa24407.camel@infradead.org>
- <0ca196c0df5beb90b45457ac7ca5d8611d2a7a29.camel@infradead.org>
-Date:   Tue, 13 Oct 2020 14:40:55 +0200
-Message-ID: <87tuuynvs8.fsf@nanos.tec.linutronix.de>
+        id S1728005AbgJMMlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:41:44 -0400
+Received: from mail-bn7nam10on2056.outbound.protection.outlook.com ([40.107.92.56]:52694
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727077AbgJMMlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:41:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iRBB838i14AS9DvYcr0jikoBgcGS09aQG+oLz/zKZ1rwsLVq4uieEwt4eCKAl5UtcBNRQ5VxUyvjAOsIU5Wq05tD1NCoglOzg3UhtRoXPfOg+FYDffhvsKkUEsAZvdctwynJalmUkL1tgivhVwmABLUMcaKBriFGHNgM9aZ/mxfXiG9SQsI7M468uDMRYsSOc//Xzf0zV/1g/7xwInpl71KfBoizDuE2XvfnNWVjPB76Z9HPHNDH+5nRtmRzNd9sfjYs7NoHULTn94Z4rKaIL1a5ORmn1ufOjVYGJ+j7FkkJEeUFDmbcz6AYBQhBkXqo1cuU4MDUWUx3nrZ1sllI9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gFzoAspnzrGSlxB4um6wmOt6wviJg+HS0xcX+sd2tqE=;
+ b=BJik+hVxuHtKym58J0oarAS4ZuS9DU6osC9OT2Xk5LSCcZn2JIlkrW2Gwortar1q8TwCJqisXFN1gxF8LeR2aqyXAbymfNWdyFZyVTnTF5WYeQmq7QBKZK0YElVm6mWQ+XFtU2DBI5hmzknSg+tznGF8LRfM3myGfcN5JnBvdMrnX63Rdleh6upR9A1rSByr9VCzElgJos7z6gASmVtjs2+W++46TUf4UXXRBfhNEupatYKYKy8DTrMXjJ5qiBmAiIK248TQsIAdpjec3aKXOE7nNVKdq3fouUHaVpaBwuJY3UwB6PFU6jflFpiQwvrXZ+VD+Ja3d6HyURBAWm+OjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gFzoAspnzrGSlxB4um6wmOt6wviJg+HS0xcX+sd2tqE=;
+ b=FUD+FvhD1GB3SSPJ0H8LKWmmCcqgd78xkvIzOr/Ew/YX8YdYfPWv1GVXGWqKpcrKwEZsq+YPZaXgu1lHKfrEgFncD/sMNMg0PGkPN3/QH7JYWMl4qoRfk1e39a6FG3HP4N3zICVU6SjPTsuaHAjTgIvBRgjVDzBMsklU5G7uNOw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB2419.namprd12.prod.outlook.com (2603:10b6:207:44::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Tue, 13 Oct
+ 2020 12:41:40 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
+ 12:41:40 +0000
+Subject: Re: [PATCH v2 07/24] drm: amdgpu: kernel-doc: update some adev
+ parameters
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Bernard Zhao <bernard@vivo.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Colton Lewis <colton.w.lewis@protonmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>, Dennis Li <Dennis.Li@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+ <e8d8081e713010edcae2414427fec4a497182fae.1602590106.git.mchehab+huawei@kernel.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <50178896-8166-0912-c3b3-5671b72740a5@amd.com>
+Date:   Tue, 13 Oct 2020 14:41:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <e8d8081e713010edcae2414427fec4a497182fae.1602590106.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+X-ClientProxiedBy: FRYP281CA0005.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::15)
+ To MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by FRYP281CA0005.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.12 via Frontend Transport; Tue, 13 Oct 2020 12:41:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c44a1aec-a579-450a-210d-08d86f7554f6
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2419:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB24195C3749D765664F86C65F83040@BL0PR12MB2419.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:304;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yJL2/hyRavGiweobgi2ETv/bwf9Rk2lJKu03qvVDjs/omarMkdb7IPMZkPjCRd75mMB2WAdwllYx6snKxUoAGaAbpmV1byD9OgcdPUcMYU5ksempIJxtwjXVAo4szn0HhGOk8uRhqOOS9BpQAly1yEX/p1PT+ULvnmq85gHE2BmwNxt46X0rH2rTYw/XUMu8dE8PVwKRA0DyDMx6oyLkfijYxTzY6hP6ViudmHqqskw1mC2heHKd/eHiT1ohRQsuRnJZNESPws59lU4NVqo9opzM0joZRR/wMCrPbMtL+/A+DLwoy4U3rquVXPG9hueboOi4QCSPXbof9FjB7IqOYPVGgtF3qYk9j/QG1q2fPgRS8ZUj0duKAdMvriuW6AQP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(346002)(376002)(396003)(6666004)(316002)(66556008)(66946007)(5660300002)(52116002)(54906003)(110136005)(15650500001)(66476007)(83380400001)(86362001)(186003)(2616005)(478600001)(7416002)(31686004)(31696002)(6486002)(8936002)(8676002)(2906002)(36756003)(4326008)(16526019)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: iGbubkCwWsuMXud1JJe2cgAuYD18+ubzQ7JGJLUZNmQz6Ksf49UK/3TI007ZMnuev28oQLFQ/1i8Rq1WKu1LYfujGwAd5ylYis0F4NXklbLQSk6ma/neJ/3t+TAZ7ZhLcqM46CH42xIVa7uY+zhbuAZLlatNzokPUZFM+8CpI2s+gXMj4/I/ahr/M69Rcu8PYh98ghz2u2ftEPFE2Ds8nQ3De7LvL99OBzlQCJfj0biOMZjLNFYrq42AfqZ1DsHxT5qiNZzMkXhAiz9m8gsD6yXzBPWynk/zl/+PvTtWpl3LZpoaKo04/i2Az+0S18I5JCeH12OK/qUKdcYIHcylYk19RXAKP8LArAogEmEFTnAyRYTgt9GAXjjw3bLECClM9v3nlI2fg2ASK+ibnKt/A6fVjDtEdzj+ORjjQu7W9lhy6meuxzJy8YzocFkP38GVl99dAnNRDqXAbOGgBEK6piRaPJPtnDMx6rKPf1Kn+h/Nc/1DAaXf1lCo8Kqd07waGQ+sjvk4U2l7H37hq8AMMoDdazJi8A3cEHP1/hasokQ1DwpyobThfxZMxFA0WzMIjtrXs6c34WEyFTM6jLgyGfcXUod2et3yR19geTYTuLJEXM/pZKxYbbneBYdigSRvZmkNvCgbwRXb8ncw2Qp45WraFGFlZduidG5SM03yQYpg1Oz+fJS3pdXeskr8y/zlo/vPByrifJCBHU8z5Ko0rw==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c44a1aec-a579-450a-210d-08d86f7554f6
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 12:41:40.4366
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oZvPW/yrn9rMXB5OCd3Vixejn6DfcFrcON5fwzVK+EXZcu6vc6TEmEA/1tNJXWu2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2419
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13 2020 at 12:51, David Woodhouse wrote:
-> With that realisation, I've fixed the comment in my ext_dest_id branch
-> to remove all mention of IRQ remapping. It now looks like this:
+Am 13.10.20 um 14:14 schrieb Mauro Carvalho Chehab:
+> Running "make htmldocs: produce lots of warnings on those files:
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:177: warning: Excess function parameter 'p_size' description in 'amdgpu_vram_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c:211: warning: Excess function parameter 'man' description in 'amdgpu_vram_mgr_fini'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'p_size' description in 'amdgpu_gtt_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:134: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_fini'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:90: warning: Excess function parameter 'p_size' description in 'amdgpu_gtt_mgr_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c:134: warning: Excess function parameter 'man' description in 'amdgpu_gtt_mgr_fini'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
+> 	./drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:675: warning: Excess function parameter 'dev' description in 'amdgpu_device_asic_init'
 >
-> static int x86_vector_select(struct irq_domain *d, struct irq_fwspec *fws=
-pec,
-> 			     enum irq_domain_bus_token bus_token)
-> {
-> 	/*
-> 	 * HPET and I/OAPIC drivers use irq_find_matching_irqdomain()
-> 	 * to find their parent irqdomain. For x86_vector_domain to be
-> 	 * suitable, all CPUs in the system must be reachable by its
-> 	 * x86_vector_msi_compose_msg() function. Which is only true
-> 	 * in !x2apic mode, or in x2apic physical mode if APIC IDs were
-> 	 * restricted to 8 or 15 bits at boot time. In those cases,
-> 	 * 1<<15 will *not* be a valid APIC ID.
-> 	 */
-> 	if (apic->apic_id_valid(1<<15))
-> 		return 0;
+> They're related to the repacement of some parameters by adev,
+> and due to a few renamed parameters.
 >
-> 	return x86_fwspec_is_ioapic(fwspec) || x86_fwspec_is_hpet(fwspec);
-> }
+> Update the kernel-doc documentation accordingly.
 >
-> That makes it clearer that this isn't just some incestuous interaction
-> with IRQ remapping =E2=80=94 that APIC ID limit really is the basis on wh=
-ich
-> this irqdomain, all by itself, makes the decision about whether it's
-> capable of being the parent irqdomain to the requesting device.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c   | 2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c  | 6 +++---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 5 ++---
+>   3 files changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> index f8f298b34805..fb375752feb1 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -817,7 +817,7 @@ static void amdgpu_block_invalid_wreg(struct amdgpu_device *adev,
+>   /**
+>    * amdgpu_device_asic_init - Wrapper for atom asic_init
+>    *
+> - * @dev: drm_device pointer
+> + * @adev: drm_device pointer
 
-Yes, that makes sense now.
+This should probably read amdgpu device pointer, but apart from that 
+looks good to me.
 
-Thanks,
+Christian.
 
-        tglx
+>    *
+>    * Does any asic specific work and then calls atom asic init.
+>    */
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+> index f203e4a6a3f2..5f3a04cd0fba 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+> @@ -81,8 +81,8 @@ static const struct ttm_resource_manager_func amdgpu_gtt_mgr_func;
+>   /**
+>    * amdgpu_gtt_mgr_init - init GTT manager and DRM MM
+>    *
+> - * @man: TTM memory type manager
+> - * @p_size: maximum size of GTT
+> + * @adev: amdgpu device structure
+> + * @gtt_size: maximum size of GTT
+>    *
+>    * Allocate and initialize the GTT manager.
+>    */
+> @@ -123,7 +123,7 @@ int amdgpu_gtt_mgr_init(struct amdgpu_device *adev, uint64_t gtt_size)
+>   /**
+>    * amdgpu_gtt_mgr_fini - free and destroy GTT manager
+>    *
+> - * @man: TTM memory type manager
+> + * @adev: amdgpu device structure
+>    *
+>    * Destroy and free the GTT manager, returns -EBUSY if ranges are still
+>    * allocated inside it.
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> index 01c1171afbe0..a0e787ddbbd7 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+> @@ -168,8 +168,7 @@ static const struct ttm_resource_manager_func amdgpu_vram_mgr_func;
+>   /**
+>    * amdgpu_vram_mgr_init - init VRAM manager and DRM MM
+>    *
+> - * @man: TTM memory type manager
+> - * @p_size: maximum size of VRAM
+> + * @adev: amdgpu device structure
+>    *
+>    * Allocate and initialize the VRAM manager.
+>    */
+> @@ -199,7 +198,7 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
+>   /**
+>    * amdgpu_vram_mgr_fini - free and destroy VRAM manager
+>    *
+> - * @man: TTM memory type manager
+> + * @adev: amdgpu device structure
+>    *
+>    * Destroy and free the VRAM manager, returns -EBUSY if ranges are still
+>    * allocated inside it.
+
