@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F46A28DCE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F70F28DCB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387898AbgJNJUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39968 "EHLO
+        id S1730489AbgJNJTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731026AbgJNJUn (ORCPT
+        with ESMTP id S1729386AbgJNJTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:43 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECDBC0613AF
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:49:38 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dt13so1848264ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:49:38 -0700 (PDT)
+        Wed, 14 Oct 2020 05:19:39 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CBFC0613B0;
+        Tue, 13 Oct 2020 14:51:17 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x20so905648ybs.8;
+        Tue, 13 Oct 2020 14:51:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EzSWvplMqO4cdN++0Ux5XsKlBbV7BOhF67AtXcUOeMs=;
-        b=GO89q5/UKsCuaRfA42EpuS4jIEk4259OJUr1KkM2uwbGGwvTjVKxPHUcolF8kks7Mo
-         +mkXL7oq058MeNpC93YGjZUHhm/CIWona3mza47SaubqG9vncZ7ku8lG6JauvRTbIX6P
-         OI+ObqhVYJlbnv5zPa9PqfvmwErfKwr0+UzoQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bDJBmimFNcOmrJNpw4Oo6sx1hDGNtJ/+J7J3Qbb7Q5U=;
+        b=YH2hkUqX2f8W5yQYRQMPpKC9XI12UPzVpfiS+7ZBXDRAasSrD8haZ1SNvnWNkpl18k
+         2If8oVXPZBj8gMa5G3maonPOS8P15Tn5sp6vuKqe1UjfjCaWUKv7i8HviHeTviLdszH+
+         G59RHti+FnraYoBWxm1nqK8H9WuS3kJjnoDLLAqQXnwz3dr+Zrk8u/USvWX5HWBFVskM
+         912EWpVLKSiamruMNvg4KQAF9CxzldcGQ8vLKrKR9t8I7AlL5xk/GItjVCliAuOeCQaP
+         7WEi8+GiWrgQ6ugG2vTjAj57WFFOQN4eFr/o/BqjG0oINMLB+2gmsaAvUfHNj3f5eEn0
+         hSYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EzSWvplMqO4cdN++0Ux5XsKlBbV7BOhF67AtXcUOeMs=;
-        b=n5cuZKqqwLASjf6fb8c3X7FpXmJRxoIXJZBtiYPlEzE7hU7+q/2XNmHW2eJN7S9Sqj
-         05MXU6QGVwxKC4JTK+KyCE8ZPVRDdWwsv1oVPv0o86KrnLbG3K6vT3Ry8VO7KJ176SHd
-         2TM6shWHy44HYGm4aXIjbGU7wrhDW3p2ZwVqX80HodDnddsU5i+OgOjkWy2e3yXHQbZx
-         +8FKv8tk9WlvwLFrthI9e1LmRYFIlK1UXIU8n3m7HJBoO61H/E0M+BE53/dKgGy6FzLr
-         4Ha3UcJ4BsijKxo9IwY/IE/U2d2OGrsp45XRgq7XHC2EX6jXxIvIH4NDxitI1wkHwmRB
-         xhQg==
-X-Gm-Message-State: AOAM533KqXygU6PomG7hUkj9+zogoKv+Y+mlnncKFpE5qybl6uVlLcIt
-        Ue/OWhgDzS5XjvBMUDC8u0+EjQ==
-X-Google-Smtp-Source: ABdhPJwABvCvhJd+JSDbSPUX836u6gpnht+hLXQCQn+gFf/NH+wdWUzERRS4w7diiDWA4EN5G3lHTA==
-X-Received: by 2002:a17:906:3852:: with SMTP id w18mr1824808ejc.551.1602625777024;
-        Tue, 13 Oct 2020 14:49:37 -0700 (PDT)
-Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id a12sm454869edy.87.2020.10.13.14.49.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 14:49:36 -0700 (PDT)
-Subject: Re: [PATCH 1/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        christian.brauner@ubuntu.com, containers@lists.linux-foundation.org
-References: <20201013140609.2269319-1-gscrivan@redhat.com>
- <20201013140609.2269319-2-gscrivan@redhat.com>
- <20201013210925.GJ3576660@ZenIV.linux.org.uk>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <70fa4f70-38cc-7e18-8156-65a3e50c641e@rasmusvillemoes.dk>
-Date:   Tue, 13 Oct 2020 23:49:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bDJBmimFNcOmrJNpw4Oo6sx1hDGNtJ/+J7J3Qbb7Q5U=;
+        b=eKesgDMgnj5vlXLSJaMqoQW09Wn0lXNWXttyCi7x2Ctm9IjrkdMvydet9lnAawT25S
+         famgS+cBklaKQYy7mw3l6IKQsWZ8zV6auZUYUJim1PtNnC0Mzgl4V6BObspdr+imv6on
+         hm/mbXjiR5DiAr7RpDW95ngJEGu5Y8paXOi+d9iTHyKDFPcM10fVcZjMNruYGttnB75E
+         QmTX+V6KtJleMe7LpMNm7PLdQ+eifwLVtlFsgb6hJhNixg5lW6CDNFkj8EL9YFBrJwvI
+         EroPdD7t+Izs++Y4OqSEUTZ5Ph3c4wN09mL2SBGCAapTwmF4M3T9v+Fyi2ubyU7ccC4T
+         fZng==
+X-Gm-Message-State: AOAM531HFSaH2Tkh8CpOExKBcipFpt1SmkW8ohpWXfVWIgExqXGSAWge
+        qqrgKxNb8LZjBHY6+q6KSdTpgqePxn/jH//4e+o=
+X-Google-Smtp-Source: ABdhPJxGCPKnVEzsu1M02mAZXJtBJDfgufwzl58JQIGZ2xKBkBSpNl6Dgkx6DS7D2cXXW9xRJBq/4P8awdlhDzQpkCo=
+X-Received: by 2002:a25:5507:: with SMTP id j7mr2926439ybb.214.1602625877227;
+ Tue, 13 Oct 2020 14:51:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201013210925.GJ3576660@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201013150150.14801-1-fabrizio.castro.jz@renesas.com> <20201013150150.14801-5-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20201013150150.14801-5-fabrizio.castro.jz@renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 13 Oct 2020 22:50:50 +0100
+Message-ID: <CA+V-a8tJgp1VDt9rQeRzwWcPybwU+ehyHNHaAeYJVwECPMNgFA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/5] media: dt-bindings: media: renesas,drif: Add
+ r8a77965 support
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2020 23.09, Al Viro wrote:
-> On Tue, Oct 13, 2020 at 04:06:08PM +0200, Giuseppe Scrivano wrote:
->> +		spin_lock(&cur_fds->file_lock);
->> +		fdt = files_fdtable(cur_fds);
->> +		cur_max = fdt->max_fds - 1;
->> +		max_fd = min(max_fd, cur_max);
->> +		while (fd <= max_fd)
->> +			__set_close_on_exec(fd++, fdt);
->> +		spin_unlock(&cur_fds->file_lock);
-> 
-> 	First of all, this is an atrocious way to set all bits
-> in a range.  What's more, you don't want to set it for *all*
-> bits - only for the ones present in open bitmap.  It's probably
-> harmless at the moment, but let's not create interesting surprises
-> for the future.
+Hi Fabrizio,
 
-Eh, why not? They can already be set for unallocated slots:
+Thank you for the patch.
 
-commit 5297908270549b734c7c2556745e2385b6d4941d
-Author: Mateusz Guzik <mguzik@redhat.com>
-Date:   Tue Oct 3 12:58:14 2017 +0200
+On Tue, Oct 13, 2020 at 6:25 PM Fabrizio Castro
+<fabrizio.castro.jz@renesas.com> wrote:
+>
+> The r8a77965 (a.k.a. R-Car M3-N) device tree schema is
+> compatible with the already documented R-Car Gen3 devices.
+>
+> Document r8a77965 support within renesas,drif.yaml.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> ---
+> v2->v3:
+> * New patch
+>
+>  Documentation/devicetree/bindings/media/renesas,drif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-    vfs: stop clearing close on exec when closing a fd
+Cheers,
+Prabhakar
 
-    Codepaths allocating a fd always make sure the bit is set/unset
-    depending on flags, thus clearing on close is redundant.
-
-And while we're on that subject, yours truly suggested exactly that two
-years prior [1], with a follow-up [2] in 2018 to do what wasn't done in
-5297908, but (still) seems like obvious micro-optimizations, given that
-the close_on_exec bitmap is not maintained as a subset of the open
-bitmap. Mind taking a look at [2]?
-
-[1]
-https://lore.kernel.org/lkml/1446543679-28849-1-git-send-email-linux@rasmusvillemoes.dk/t/#u
-[2]
-https://lore.kernel.org/lkml/20181024160159.25884-1-linux@rasmusvillemoes.dk/
-
-Rasmus
+> diff --git a/Documentation/devicetree/bindings/media/renesas,drif.yaml b/Documentation/devicetree/bindings/media/renesas,drif.yaml
+> index ae50b1448320..89445ddd598e 100644
+> --- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
+> +++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
+> @@ -53,6 +53,7 @@ properties:
+>        - enum:
+>          - renesas,r8a7795-drif        # R-Car H3
+>          - renesas,r8a7796-drif        # R-Car M3-W
+> +        - renesas,r8a77965-drif       # R-Car M3-N
+>          - renesas,r8a77990-drif       # R-Car E3
+>        - const: renesas,rcar-gen3-drif # Generic R-Car Gen3 compatible device
+>
+> --
+> 2.25.1
+>
