@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0312D28CFFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CD228CFFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388536AbgJMOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:14:25 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33820 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388488AbgJMOOX (ORCPT
+        id S2388555AbgJMOPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:15:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52224 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388538AbgJMOPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:14:23 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EE30A1C0B77; Tue, 13 Oct 2020 16:14:21 +0200 (CEST)
-Date:   Tue, 13 Oct 2020 16:14:21 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yu Kuai <yukuai3@huawei.com>, Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 27/38] iommu/exynos: add missing put_device() call
- in exynos_iommu_of_xlate()
-Message-ID: <20201013141421.GA22886@duo.ucw.cz>
-References: <20201005142108.650363140@linuxfoundation.org>
- <20201005142109.977461657@linuxfoundation.org>
- <CGME20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff@eucas1p1.samsung.com>
- <20201007094737.GA12593@duo.ucw.cz>
- <5b869c86-8d35-e834-4fec-6b63a942e484@samsung.com>
+        Tue, 13 Oct 2020 10:15:13 -0400
+Date:   Tue, 13 Oct 2020 16:15:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602598510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KYacgbXKXIghmtFdPVa5sF41PCDiy4UY9D7P0jt1jbk=;
+        b=tMTQJmXJIOQDjAn9dYT21+0G8Z5gXgNkV0pGGS3TX+bBTwS6+qje0M59rsHjkLKJAnzIRb
+        mP7qwK8zjG6JfK9oiOaynPDmUX6J94EASOL7eTVGaU0VHB+ATi/NGthapqW+vA/hX9DOHK
+        nPZUX9ny09CWzygxfNK9fWy0wcOveRYxdTt9VWWcvow4T4jV+2iKvYJL5wOr7D0ejsPnfQ
+        I7TC5e3hy1XvjyspavCDxQvp0HS40TX0G4vsEwNWNOmO76wSSERRzOPsGpvQLU9o/Ulknk
+        Y1lauAdQYreHao3ybw15xSxi5uxcAADTjx1OuqOaP97EX41wLDDJ4CRvYmIZbg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602598510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KYacgbXKXIghmtFdPVa5sF41PCDiy4UY9D7P0jt1jbk=;
+        b=vLEDxH4tmIykBhYqQwSG9gRU69rfY3t6Q74sgsg8hU7onhTnp+69HZkxanaV2c7Q9za44Z
+        jCB6AHCf0mUB/FDA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
+        tj@kernel.org
+Subject: Re: [PATCH 1/2] sched: Deny self-issued __set_cpus_allowed_ptr()
+ when migrate_disable()
+Message-ID: <20201013141508.u7saiudjyuvihvcx@linutronix.de>
+References: <20201005145717.346020688@infradead.org>
+ <20201013140116.26651-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5b869c86-8d35-e834-4fec-6b63a942e484@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201013140116.26651-1-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-13 15:01:15 [+0100], Valentin Schneider wrote:
+>   migrate_disable();
+>   set_cpus_allowed_ptr(current, {something excluding task_cpu(current)});
+>   affine_move_task(); <-- never returns
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/sched/core.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 4ccd1099adaa..7f4e38819de1 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2189,6 +2189,11 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>  	if (!(flags & SCA_MIGRATE_ENABLE) && cpumask_equal(&p->cpus_mask, new_mask))
+>  		goto out;
+>  
+> +	if (p == current &&
+> +	    is_migration_disabled(p) &&
+> +	    !cpumask_test_cpu(task_cpu(p), new_mask))
+> +		ret = -EBUSY;
+> +
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This shouldn't happen, right? The function may sleep so it shouldn't be
+entered with disabled migration. A WARN_ON might spot the bad caller.
 
-Hi!
-> >> From: Yu Kuai <yukuai3@huawei.com>
-> >>
-> >> [ Upstream commit 1a26044954a6d1f4d375d5e62392446af663be7a ]
-> >>
-> >> if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't h=
-ave
-> >> a corresponding put_device(). Thus add put_device() to fix the excepti=
-on
-> >> handling for this function implementation.
-> > Okay, this looks reasonable, but...
-> >
-> > Do we miss put_device() in normal path, too? I'd expect another
-> > put_device at end of exynos_iommu_of_xlate() or perhaps in release
-> > path somewhere...
->=20
-> Frankly, there is no release path, so there is no need for put_device.=20
-> Once initialized, Exynos IOMMU stays in the system forever. There is no=
-=20
-> point to remove IOMMU nor the API for that. Keeping increased refcount=20
-> for its device just matches this behavior.
->=20
-> If the missing put_device() is really a problem, then we can move it=20
-> from the error path just after data =3D platform_get_drvdata(sysmmu)=20
-> assignment. Feel free to send a patch if you think this is a more=20
-> appropriate approach.
-
-exynos_iommu_detach_device() looks like a place where resources could
-be freed? But if there's no release path, we don't really need to do anythi=
-ng.=20
-
-Sorry about the noise.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---9jxsPFA5p3P2qPhR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX4W2PQAKCRAw5/Bqldv6
-8m7vAJ4iXq02bm6+RavPQxrGMERfz/4fsQCfQdFAYbgb57aGCx7w0yA3EfNXz4Y=
-=CDgo
------END PGP SIGNATURE-----
-
---9jxsPFA5p3P2qPhR--
+Sebastian
