@@ -2,275 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AF528CEA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2420328CEA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgJMMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727782AbgJMMry (ORCPT
+        id S1727992AbgJMMrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:47:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26759 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727782AbgJMMrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:47:54 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842F2C0613D0;
-        Tue, 13 Oct 2020 05:47:53 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id m16so20301141ljo.6;
-        Tue, 13 Oct 2020 05:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZXTvUW8i/U5ht8x+SD+qkflPPjrpIHYF48QftZr+dnU=;
-        b=Tb/HEFXFqT688G41sablA8Rj4JLcFk3TxMzkrfT6uScq3/MeO3sr0c4+uYkJH10eSK
-         onifD8sknV8ZCDjbSFcoiYG2wX0/UU7Z+ZZgJoazflWqExBku4FiYfLl9vStr8FpvI0D
-         sho8c205xC1d8yQyTKcQPvlo5qBIp5mxFrr12tVCVxAyLpMJFDKK85hW3yn8a7fM9Owb
-         CkM1jCPJGASl6GAabDkxTXLN/HCr73mXAS3KfXyDLzO791VDdzKCpTWQC3oleDBFAGBL
-         XX67tjDHoU6KZ2POf6/hJD8ydBEzv3RtJc9r9bMV3tpsA0x3mjFb0VPhGo1ZEw0MDeS0
-         Dd5A==
+        Tue, 13 Oct 2020 08:47:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602593269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=diQ9Y+b1t01E3zZ97sns1AIbyqKC7Rn+2NhQYJUIcSc=;
+        b=hxUvhsZrFz1lrZZs0gA5J9Ezf3vgB838auN6hP+m4HVpj5zk78eRr7Hbjc9q57J54keBQw
+        8axxNUtx44iBVmNjLImD7AKwYzfcnaahTOqRA2FnTU0Ms2abAuRYpeoJiwS3kP9oOUOpQO
+        Dqdh8fYbLmAnZ7CAs9MLIi/LmYMECoQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-NH8S7o93O3C2m35EsLWwiw-1; Tue, 13 Oct 2020 08:47:47 -0400
+X-MC-Unique: NH8S7o93O3C2m35EsLWwiw-1
+Received: by mail-ed1-f71.google.com with SMTP id s21so8019993edi.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:47:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ZXTvUW8i/U5ht8x+SD+qkflPPjrpIHYF48QftZr+dnU=;
-        b=YwnfVTUewZj37Ne0yS8TVpVP21+jA/2JKjOK6K+a0CYe6/4vXTK8C3HmgM3RuzmKua
-         lWWrwAXYt/EugPGnv3DcXicRRWmI76W4yZw8wvCplKSE6escLtL6SJbsKGPs6ICSJA5/
-         XBQFQp40vLqBLiBY12+Be8giE3HuxhqW51EYduEcqPRy9oazfjdDkrvqfVuG9fW7D+u4
-         TisY6nPOZKiCoww+9l+1ewX33yv4Pfsoh1kJY1KovdL7Ts3EpI6QIuYME15ksmqowLeX
-         h6FpGbz1NUmAc/249CxfK6KBy5g64LZHYefwqQt0meJbr5VmR6D95TkpvbjE38kbHN1m
-         1VEw==
-X-Gm-Message-State: AOAM5319/y0FEURmeyTxzgOzo+LUxZR4VhD4bLgzvuPsQdPoQq71QuVH
-        Tt07maBBAk0LKU642/TlbAk=
-X-Google-Smtp-Source: ABdhPJwTSyYPf21swLMDZjjUHzsZ7D5xgZYB/CN/9aYHZB44K6lAxY7nrshdcW+8vKZYzye4IQiFVg==
-X-Received: by 2002:a2e:9f0f:: with SMTP id u15mr9837257ljk.80.1602593271865;
-        Tue, 13 Oct 2020 05:47:51 -0700 (PDT)
-Received: from lp-sasha.localdomain ([146.120.244.2])
-        by smtp.gmail.com with ESMTPSA id l25sm666532lfc.152.2020.10.13.05.47.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 05:47:50 -0700 (PDT)
-From:   Alexander Kapshuk <alexander.kapshuk@gmail.com>
-To:     lyude@redhat.com, bskeggs@redhat.com
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, alexander.kapshuk@gmail.com
-Subject: [PATCH v2] drm/nouveau/kms: Fix NULL pointer dereference in nouveau_connector_detect_depth
-Date:   Tue, 13 Oct 2020 15:47:25 +0300
-Message-Id: <20201013124725.2394-1-alexander.kapshuk@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        bh=diQ9Y+b1t01E3zZ97sns1AIbyqKC7Rn+2NhQYJUIcSc=;
+        b=rSda1mylHJgW6AM7ecqDH1qAaJ9rHWSoSsw4J/Klsk/D5kd9JnxE25JbvdhzXU5GhO
+         UJZ34ncWShpl7aB3qPkfpOa+aeAvx+K1YxYMnBWqVs45TH0bim/MUdHiJi9X2vD87mkC
+         wNCSf61rl5mwABq0+Il65aswusrR/Hz3BziUbMNJZ679TBdJEvy/jTms/jXkar2sLrSk
+         wmfw6j8RJzISavGmHWniLi0feJvSmApSqFBssS+U7HMSCEffprE+IwTvdEQh4/rC5cMa
+         COUUOQtv9ZHdduT3bKh4yFT7w3cJakGEHh4qBpc/2vVNmxYZPEMT2HOzwFmAfdpZad4Y
+         murA==
+X-Gm-Message-State: AOAM533pzLaJuenvaCNwDDR0SIvPn766kP4TVIRrPp3c7zwZhb5ZAjVz
+        g5IUAeF/mbWdpz4/wXJWj/hQJc0KVqlZMHHof4FGHJUbFqpCbClZBWmVvp5jkiUbRrHhobayCvy
+        eyGfMZiGvTdSAn+l2sm/XAObX
+X-Received: by 2002:a50:fd83:: with SMTP id o3mr20342989edt.17.1602593266233;
+        Tue, 13 Oct 2020 05:47:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYP45uUwLLzkXTHV9szVUHlTlurlG45v+ejbn3DPLvsWByhCTBQxZXHRj5XqIKX6HPCZGHJw==
+X-Received: by 2002:a50:fd83:: with SMTP id o3mr20342957edt.17.1602593265902;
+        Tue, 13 Oct 2020 05:47:45 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id g20sm12702761ejz.88.2020.10.13.05.47.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 05:47:45 -0700 (PDT)
+Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org,
+        srinivas.pandruvada@linux.intel.com
+Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rui.zhang@intel.com,
+        Mark Pearson <mpearson@lenovo.com>
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
+ <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
+ <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
+ <bc1a0134-5242-65d7-a753-fbec0d3bb327@linaro.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <15da0ac7-c992-067c-f101-9775bce717e0@redhat.com>
+Date:   Tue, 13 Oct 2020 14:47:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <bc1a0134-5242-65d7-a753-fbec0d3bb327@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This oops manifests itself on the following hardware:
-01:00.0 VGA compatible controller: NVIDIA Corporation G98M [GeForce G 103M] (rev a1)
+Hi,
 
-Oct 09 14:17:46 lp-sasha kernel: BUG: kernel NULL pointer dereference, address: 0000000000000000
-Oct 09 14:17:46 lp-sasha kernel: #PF: supervisor read access in kernel mode
-Oct 09 14:17:46 lp-sasha kernel: #PF: error_code(0x0000) - not-present page
-Oct 09 14:17:46 lp-sasha kernel: PGD 0 P4D 0
-Oct 09 14:17:46 lp-sasha kernel: Oops: 0000 [#1] SMP PTI
-Oct 09 14:17:46 lp-sasha kernel: CPU: 1 PID: 191 Comm: systemd-udevd Not tainted 5.9.0-rc8-next-20201009 #38
-Oct 09 14:17:46 lp-sasha kernel: Hardware name: Hewlett-Packard Compaq Presario CQ61 Notebook PC/306A, BIOS F.03 03/23/2009
-Oct 09 14:17:46 lp-sasha kernel: RIP: 0010:nouveau_connector_detect_depth+0x71/0xc0 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel: Code: 0a 00 00 48 8b 49 48 c7 87 b8 00 00 00 06 00 00 00 80 b9 4d 0a 00 00 00 75 1e 83 fa 41 75 05 48 85 c0 75 29 8b 81 10 0d 00 00 <39> 06 7c 25 f6 81 14 0d 00 00 02 75 b7 c3 80 b9 0c 0d 00 00 00 75
-Oct 09 14:17:46 lp-sasha kernel: RSP: 0018:ffffc9000028f8c0 EFLAGS: 00010297
-Oct 09 14:17:46 lp-sasha kernel: RAX: 0000000000014c08 RBX: ffff8880369d4000 RCX: ffff8880369d3000
-Oct 09 14:17:46 lp-sasha kernel: RDX: 0000000000000040 RSI: 0000000000000000 RDI: ffff8880369d4000
-Oct 09 14:17:46 lp-sasha kernel: RBP: ffff88800601cc00 R08: ffff8880051da298 R09: ffffffff8226201a
-Oct 09 14:17:46 lp-sasha kernel: R10: ffff88800469aa80 R11: ffff888004c84ff8 R12: 0000000000000000
-Oct 09 14:17:46 lp-sasha kernel: R13: ffff8880051da000 R14: 0000000000002000 R15: 0000000000000003
-Oct 09 14:17:46 lp-sasha kernel: FS:  00007fd0192b3440(0000) GS:ffff8880bc900000(0000) knlGS:0000000000000000
-Oct 09 14:17:46 lp-sasha kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Oct 09 14:17:46 lp-sasha kernel: CR2: 0000000000000000 CR3: 0000000004976000 CR4: 00000000000006e0
-Oct 09 14:17:46 lp-sasha kernel: Call Trace:
-Oct 09 14:17:46 lp-sasha kernel:  nouveau_connector_get_modes+0x1e6/0x240 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel:  ? kfree+0xb9/0x240
-Oct 09 14:17:46 lp-sasha kernel:  ? drm_connector_list_iter_next+0x7c/0xa0
-Oct 09 14:17:46 lp-sasha kernel:  drm_helper_probe_single_connector_modes+0x1ba/0x7c0
-Oct 09 14:17:46 lp-sasha kernel:  drm_client_modeset_probe+0x27e/0x1360
-Oct 09 14:17:46 lp-sasha kernel:  ? nvif_object_sclass_put+0xc/0x20 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel:  ? nouveau_cli_init+0x3cc/0x440 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel:  ? ktime_get_mono_fast_ns+0x49/0xa0
-Oct 09 14:17:46 lp-sasha kernel:  ? nouveau_drm_open+0x4e/0x180 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel:  __drm_fb_helper_initial_config_and_unlock+0x3f/0x4a0
-Oct 09 14:17:46 lp-sasha kernel:  ? drm_file_alloc+0x18f/0x260
-Oct 09 14:17:46 lp-sasha kernel:  ? mutex_lock+0x9/0x40
-Oct 09 14:17:46 lp-sasha kernel:  ? drm_client_init+0x110/0x160
-Oct 09 14:17:46 lp-sasha kernel:  nouveau_fbcon_init+0x14d/0x1c0 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel:  nouveau_drm_device_init+0x1c0/0x880 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel:  nouveau_drm_probe+0x11a/0x1e0 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel:  pci_device_probe+0xcd/0x140
-Oct 09 14:17:46 lp-sasha kernel:  really_probe+0xd8/0x400
-Oct 09 14:17:46 lp-sasha kernel:  driver_probe_device+0x4a/0xa0
-Oct 09 14:17:46 lp-sasha kernel:  device_driver_attach+0x9c/0xc0
-Oct 09 14:17:46 lp-sasha kernel:  __driver_attach+0x6f/0x100
-Oct 09 14:17:46 lp-sasha kernel:  ? device_driver_attach+0xc0/0xc0
-Oct 09 14:17:46 lp-sasha kernel:  bus_for_each_dev+0x75/0xc0
-Oct 09 14:17:46 lp-sasha kernel:  bus_add_driver+0x106/0x1c0
-Oct 09 14:17:46 lp-sasha kernel:  driver_register+0x86/0xe0
-Oct 09 14:17:46 lp-sasha kernel:  ? 0xffffffffa044e000
-Oct 09 14:17:46 lp-sasha kernel:  do_one_initcall+0x48/0x1e0
-Oct 09 14:17:46 lp-sasha kernel:  ? _cond_resched+0x11/0x60
-Oct 09 14:17:46 lp-sasha kernel:  ? kmem_cache_alloc_trace+0x19c/0x1e0
-Oct 09 14:17:46 lp-sasha kernel:  do_init_module+0x57/0x220
-Oct 09 14:17:46 lp-sasha kernel:  __do_sys_finit_module+0xa0/0xe0
-Oct 09 14:17:46 lp-sasha kernel:  do_syscall_64+0x33/0x40
-Oct 09 14:17:46 lp-sasha kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-Oct 09 14:17:46 lp-sasha kernel: RIP: 0033:0x7fd01a060d5d
-Oct 09 14:17:46 lp-sasha kernel: Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e3 70 0c 00 f7 d8 64 89 01 48
-Oct 09 14:17:46 lp-sasha kernel: RSP: 002b:00007ffc8ad38a98 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-Oct 09 14:17:46 lp-sasha kernel: RAX: ffffffffffffffda RBX: 0000563f6e7fd530 RCX: 00007fd01a060d5d
-Oct 09 14:17:46 lp-sasha kernel: RDX: 0000000000000000 RSI: 00007fd01a19f95d RDI: 000000000000000f
-Oct 09 14:17:46 lp-sasha kernel: RBP: 0000000000020000 R08: 0000000000000000 R09: 0000000000000007
-Oct 09 14:17:46 lp-sasha kernel: R10: 000000000000000f R11: 0000000000000246 R12: 00007fd01a19f95d
-Oct 09 14:17:46 lp-sasha kernel: R13: 0000000000000000 R14: 0000563f6e7fbc10 R15: 0000563f6e7fd530
-Oct 09 14:17:46 lp-sasha kernel: Modules linked in: nouveau(+) ttm xt_string xt_mark xt_LOG vgem v4l2_dv_timings uvcvideo ulpi udf ts_kmp ts_fsm ts_bm snd_aloop sil164 qat_dh895xccvf nf_nat_sip nf_nat_irc nf_nat_ftp nf_nat nf_log_ipv6 nf_log_ipv4 nf_log_common ltc2990 lcd intel_qat input_leds i2c_mux gspca_main videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common videodev mc drivetemp cuse fuse crc_itu_t coretemp ch7006 ath5k ath algif_hash
-Oct 09 14:17:46 lp-sasha kernel: CR2: 0000000000000000
-Oct 09 14:17:46 lp-sasha kernel: ---[ end trace 0ddafe218ad30017 ]---
-Oct 09 14:17:46 lp-sasha kernel: RIP: 0010:nouveau_connector_detect_depth+0x71/0xc0 [nouveau]
-Oct 09 14:17:46 lp-sasha kernel: Code: 0a 00 00 48 8b 49 48 c7 87 b8 00 00 00 06 00 00 00 80 b9 4d 0a 00 00 00 75 1e 83 fa 41 75 05 48 85 c0 75 29 8b 81 10 0d 00 00 <39> 06 7c 25 f6 81 14 0d 00 00 02 75 b7 c3 80 b9 0c 0d 00 00 00 75
-Oct 09 14:17:46 lp-sasha kernel: RSP: 0018:ffffc9000028f8c0 EFLAGS: 00010297
-Oct 09 14:17:46 lp-sasha kernel: RAX: 0000000000014c08 RBX: ffff8880369d4000 RCX: ffff8880369d3000
-Oct 09 14:17:46 lp-sasha kernel: RDX: 0000000000000040 RSI: 0000000000000000 RDI: ffff8880369d4000
-Oct 09 14:17:46 lp-sasha kernel: RBP: ffff88800601cc00 R08: ffff8880051da298 R09: ffffffff8226201a
-Oct 09 14:17:46 lp-sasha kernel: R10: ffff88800469aa80 R11: ffff888004c84ff8 R12: 0000000000000000
-Oct 09 14:17:46 lp-sasha kernel: R13: ffff8880051da000 R14: 0000000000002000 R15: 0000000000000003
-Oct 09 14:17:46 lp-sasha kernel: FS:  00007fd0192b3440(0000) GS:ffff8880bc900000(0000) knlGS:0000000000000000
-Oct 09 14:17:46 lp-sasha kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Oct 09 14:17:46 lp-sasha kernel: CR2: 0000000000000000 CR3: 0000000004976000 CR4: 00000000000006e0
+On 10/12/20 6:02 PM, Daniel Lezcano wrote:
+> On 12/10/2020 13:46, Hans de Goede wrote:
+>> Hi Daniel,
+>>
+>> On 10/12/20 12:30 PM, Daniel Lezcano wrote:
 
-The disassembly:
-Code: 0a 00 00 48 8b 49 48 c7 87 b8 00 00 00 06 00 00 00 80 b9 4d 0a 00 00 00 75 1e 83 fa 41 75 05 48 85 c0 75 29 8b 81 10 0d 00 00 <39> 06 7c 25 f6 81 14 0d 00 00 02 75 b7 c3 80 b9 0c 0d 00 00 00 75
-All code
-========
-   0:   0a 00                   or     (%rax),%al
-   2:   00 48 8b                add    %cl,-0x75(%rax)
-   5:   49                      rex.WB
-   6:   48 c7 87 b8 00 00 00    movq   $0x6,0xb8(%rdi)
-   d:   06 00 00 00
-  11:   80 b9 4d 0a 00 00 00    cmpb   $0x0,0xa4d(%rcx)
-  18:   75 1e                   jne    0x38
-  1a:   83 fa 41                cmp    $0x41,%edx
-  1d:   75 05                   jne    0x24
-  1f:   48 85 c0                test   %rax,%rax
-  22:   75 29                   jne    0x4d
-  24:   8b 81 10 0d 00 00       mov    0xd10(%rcx),%eax
-  2a:*  39 06                   cmp    %eax,(%rsi)              <-- trapping instruction
-  2c:   7c 25                   jl     0x53
-  2e:   f6 81 14 0d 00 00 02    testb  $0x2,0xd14(%rcx)
-  35:   75 b7                   jne    0xffffffffffffffee
-  37:   c3                      retq
-  38:   80 b9 0c 0d 00 00 00    cmpb   $0x0,0xd0c(%rcx)
-  3f:   75                      .byte 0x75
+<snip>
 
-Code starting with the faulting instruction
-===========================================
-   0:   39 06                   cmp    %eax,(%rsi)
-   2:   7c 25                   jl     0x29
-   4:   f6 81 14 0d 00 00 02    testb  $0x2,0xd14(%rcx)
-   b:   75 b7                   jne    0xffffffffffffffc4
-   d:   c3                      retq
-   e:   80 b9 0c 0d 00 00 00    cmpb   $0x0,0xd0c(%rcx)
-  15:   75                      .byte 0x75
+>>> Here the proposed interface is already exported in userspace via the
+>>> powercap framework which supports today the backend driver for the RAPL
+>>> register.
+>>
+>> You say that some sort of power/ balanced power / balanced /
+>> balanced performance / performance setting in is already exported
+>> through the powercap interface today (if I understand you correctly)?
+> 
+> Sorry, I was unclear. I meant 'Here the proposed interface' referring to
+> the powercap/dtpm. There is no profile interface in the powercap framework.
 
-objdump -SF --disassemble=nouveau_connector_detect_depth
-[...]
-        if (nv_connector->edid &&
-   c85e1:       83 fa 41                cmp    $0x41,%edx
-   c85e4:       75 05                   jne    c85eb <nouveau_connector_detect_depth+0x6b> (File Offset: 0xc866b)
-   c85e6:       48 85 c0                test   %rax,%rax
-   c85e9:       75 29                   jne    c8614 <nouveau_connector_detect_depth+0x94> (File Offset: 0xc8694)
-            nv_connector->type == DCB_CONNECTOR_LVDS_SPWG)
-                duallink = ((u8 *)nv_connector->edid)[121] == 2;
-        else
-                duallink = mode->clock >= bios->fp.duallink_transition_clk;
+Ah, I see.
 
-        if ((!duallink && (bios->fp.strapless_is_24bit & 1)) ||
-   c85eb:       8b 81 10 0d 00 00       mov    0xd10(%rcx),%eax
-   c85f1:       39 06                   cmp    %eax,(%rsi)
-   c85f3:       7c 25                   jl     c861a <nouveau_connector_detect_depth+0x9a> (File Offset: 0xc869a)
-            ( duallink && (bios->fp.strapless_is_24bit & 2)))
-   c85f5:       f6 81 14 0d 00 00 02    testb  $0x2,0xd14(%rcx)
-   c85fc:       75 b7                   jne    c85b5 <nouveau_connector_detect_depth+0x35> (File Offset: 0xc8635)
-                connector->display_info.bpc = 8;
-[...]
+<snip>
 
-% scripts/faddr2line /lib/modules/5.9.0-rc8-next-20201009/kernel/drivers/gpu/drm/nouveau/nouveau.ko nouveau_connector_detect_depth+0x71/0xc0
-nouveau_connector_detect_depth+0x71/0xc0:
-nouveau_connector_detect_depth at /home/sasha/linux-next/drivers/gpu/drm/nouveau/nouveau_connector.c:891
+>>> A side note, related to your proposal, not this patch. IMO it suits
+>>> better to have /sys/power/profile.
+>>>
+>>> cat /sys/power/profile
+>>>
+>>> power
+>>> balanced_power *
+>>> balanced
+>>> balanced_performance
+>>> performance
+>>>
+>>> The (*) being the active profile.
+>>
+>> Interesting the same thing was brought up in the discussion surrounding
+>> RFC which I posted.
+>>
+>> The downside against this approach is that it assumes that there
+>> only is a single system-wide settings. AFAIK that is not always
+>> the case, e.g. (AFAIK):
+>>
+>> 1. The intel pstate driver has something like this
+>>     (might this be the rapl setting you mean? )
+>>
+>> 2. The X1C8 has such a setting for the embedded-controller, controlled
+>>     through the ACPI interfaces which thinkpad-acpi used
+>>
+>> 3. The hp-wmi interface allows selecting a profile which in turn
+>>     (through AML code) sets a bunch of variables which influence how
+>>     the (dynamic, through mjg59's patches) DPTF code controls various
+>>     things
+>>
+>> At least the pstate setting and the vendor specific settings can
+>> co-exist. Also the powercap API has a notion of zones, I can see the
+>> same thing here, with a desktop e.g. having separate performance-profile
+>> selection for the CPU and a discrete GPU.
+>>
+>> So limiting the API to a single /sys/power/profile setting seems a
+>> bit limited and I have the feeling we will regret making this
+>> choice in the future.
+>>
+>> With that said your proposal would work well for the current
+>> thinkpad_acpi / hp-wmi cases, so I'm not 100% against it.
+>>
+>> This would require adding some internal API to the code which
+>> owns the /sys/power root-dir to allow registering a profile
+>> provider I guess. But that would also immediately bring the
+>> question, what if multiple drivers try to register themselves
+>> as /sys/power/profile provider ?
+> 
+> Did you consider putting the profile on a per device basis ?
+> 
+> eg.
+> 
+> /sys/devices/system/cpu/cpu[0-9]/power/profile
+> 
+> May be make 'energy_performance_preference' obsolete in
+> /sys/devices/system/cpu/cpufreq ?
+> 
+> When one device sets the profile, all children will have the same profile.
+> 
+> eg.
+> 
+> A change in /sys/devices/system/cpu/power/profile will impact all the
+> underlying cpu[0-9]/power/profile
+> 
+> Or a change in /sys/devices/power/profile will change all profiles below
+> /sys/devices.
+> 
+> Well that is a high level suggestion, I don't know how that can fit with
+> the cyclic sysfs hierarchy.
 
-It is actually line 889. See the disassembly below.
-889                     duallink = mode->clock >= bios->fp.duallink_transition_clk;
+A problem with I see with making this a per-device power setting is that
+only a few devices will actually have this; and then the question becomes
+how does userspace discover / find these devices ? Typically for these kinda
+discovery problems we use a sysfs class as a solution to group devices
+offering the same functionailty (through the same standardized sysfs API)
+together. Which circles back to my original RFC proposal for this.
 
-The NULL pointer being dereferenced is mode.
+Regards,
 
-Git bisect has identified the following commit as bad:
-f28e32d3906e drm/nouveau/kms: Don't change EDID when it hasn't actually changed
-
-Here is the chain of events that causes the oops.
-On entry to nouveau_connector_detect_lvds, edid is set to NULL.  The call
-to nouveau_connector_detect sets nv_connector->edid to valid memory,
-with status set to connector_status_connected and the flow of execution
-branching to the out label.
-
-The subsequent call to nouveau_connector_set_edid erronously clears
-nv_connector->edid, via the local edid pointer which remains set to NULL.
-
-Fix this by setting edid to the value of the just acquired
-nv_connector->edid and executing the body of nouveau_connector_set_edid
-only if nv_connector->edid and edid point to different memory addresses
-thus preventing nv_connector->edid from being turned into a dangling
-pointer.
-
-Fixes: f28e32d3906e ("drm/nouveau/kms: Don't change EDID when it hasn't actually changed")
-Signed-off-by: Alexander Kapshuk <alexander.kapshuk@gmail.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
----
-v2:
------
-- nouveau_connector_set_edid updated to do the (nv_connector->edid
-!= edid) check instead of open coding it in nouveau_connector_detect_lvds
-- added Reviewed-by: from Lyude Paul
-
- drivers/gpu/drm/nouveau/nouveau_connector.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
-index 49dd0cbc332f..5eb322276be7 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
-@@ -532,11 +532,13 @@ static void
- nouveau_connector_set_edid(struct nouveau_connector *nv_connector,
- 			   struct edid *edid)
- {
--	struct edid *old_edid = nv_connector->edid;
-+	if (nv_connector->edid != edid) {
-+		struct edid *old_edid = nv_connector->edid;
-
--	drm_connector_update_edid_property(&nv_connector->base, edid);
--	kfree(old_edid);
--	nv_connector->edid = edid;
-+		drm_connector_update_edid_property(&nv_connector->base, edid);
-+		kfree(old_edid);
-+		nv_connector->edid = edid;
-+	}
- }
-
- static enum drm_connector_status
-@@ -669,8 +671,10 @@ nouveau_connector_detect_lvds(struct drm_connector *connector, bool force)
- 	/* Try retrieving EDID via DDC */
- 	if (!drm->vbios.fp_no_ddc) {
- 		status = nouveau_connector_detect(connector, force);
--		if (status == connector_status_connected)
-+		if (status == connector_status_connected) {
-+			edid = nv_connector->edid;
- 			goto out;
-+		}
- 	}
-
- 	/* On some laptops (Sony, i'm looking at you) there appears to
---
-2.28.0
+Hans
 
