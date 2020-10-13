@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0417D28D4EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A529728D4EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732732AbgJMTs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:48:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727665AbgJMTsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:48:55 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA8A3208D5;
-        Tue, 13 Oct 2020 19:48:53 +0000 (UTC)
-Date:   Tue, 13 Oct 2020 15:48:52 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH] tracing: Check return value of __create_val_fields() before
- using its result
-Message-ID: <20201013154852.3abd8702@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1732746AbgJMTtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728114AbgJMTtE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 15:49:04 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5F5C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:49:03 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id p21so14144pju.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=azTn4fYcsb9QgmJPQAawTDMXTsFjwMYD7ZRewOEzXFg=;
+        b=Kg8ID8/atBL055e7IqeqHlAqWENd7rNwLnXooxfy359cXJDa8cbp0TpbYDmad/tgp/
+         PpyR548BF95scSSOUHfrtd7AkbrYUM5/k55hu6OU7fNJuhu37A8AZs5xXO3jX+v6oWzo
+         DZwyacrlj6RnKy0nnURgicNZqLXEMa1h+LDTe/EipksZmPR2tvhwqrZ+iuRNhFMIurLf
+         4O/ScMT/gMl7PA5GZIXV6VAsl6bqxaz+BGzVDyfgNojF7XMu7Qt0d309H9lgElZY+jRx
+         b3inkZuY+9ARcKcTeTcogzR++R/eUpWt5vKGr5LCUDo2gN3AvLvK39/OVtE8TRBgb14H
+         HqWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=azTn4fYcsb9QgmJPQAawTDMXTsFjwMYD7ZRewOEzXFg=;
+        b=PCmBpVdBMPzb0aKaJ9dH+agmWn/RX7D2qDb7q0O3ywtuqWq6yDZgH4PeJirkeRkfN0
+         8s2cGTdXLneLQaZmnX2yw5bDa86WIUhEikfzdu6DN+6XXWr6NcyDK517eLfCygJR8wFp
+         Sbq9Zi3O6f1ZXeLc4uC+CEEUSdRJl7fhmEe0CTD54QAh7iD/9b+8pEyCyMLoOv44At4G
+         4nOV04ABLgOPx5unOVmCvEMJnB3L8B/wEWrtB5GIwCt1w++PamDUfj9GNBgg1iC7zTzJ
+         3RHWaQHtG2Qaf2EJwxFCf/hVblmbyjMDPhrMlDAptv8hyWK3kC92ADnzcBICWq/mtbea
+         UeJA==
+X-Gm-Message-State: AOAM531B/8iW/rFaZ7ZmajLpco3LqnW+CCTtYixZnJLw2ip86keu0IGt
+        s7iyM+w2tG0hGRlIlb5ztA08BGdGMBXXrxCe
+X-Google-Smtp-Source: ABdhPJwWBBu+87lu3bYq2RrE/Sqnlc9DlQUMB4hrqNrFGaapPK8QPus4qi0ckowjzqSVvPlQt0zloA==
+X-Received: by 2002:a17:902:7c14:b029:d4:d894:7eed with SMTP id x20-20020a1709027c14b02900d4d8947eedmr1042992pll.81.1602618542661;
+        Tue, 13 Oct 2020 12:49:02 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id u27sm462035pgm.60.2020.10.13.12.49.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 12:49:02 -0700 (PDT)
+Subject: Re: [GIT PULL] io_uring updates for 5.10-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <36a6706d-73e1-64e7-f1f8-8f5ef246d3ea@kernel.dk>
+ <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a81737e4-44da-cffc-cba0-8aec984df240@kernel.dk>
+Date:   Tue, 13 Oct 2020 13:49:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 10/13/20 1:46 PM, Linus Torvalds wrote:
+> On Mon, Oct 12, 2020 at 6:46 AM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> Here are the io_uring updates for 5.10.
+> 
+> Very strange. My clang build gives a warning I've never seen before:
+> 
+>    /tmp/io_uring-dd40c4.s:26476: Warning: ignoring changed section
+> attributes for .data..read_mostly
+> 
+> and looking at what clang generates for the *.s file, it seems to be
+> the "section" line in:
+> 
+>         .type   io_op_defs,@object      # @io_op_defs
+>         .section        .data..read_mostly,"a",@progbits
+>         .p2align        4
+> 
+> I think it's the combination of "const" and "__read_mostly".
+> 
+> I think the warning is sensible: how can a piece of data be both
+> "const" and "__read_mostly"? If it's "const", then it's not "mostly"
+> read - it had better be _always_ read.
+> 
+> I'm letting it go, and I've pulled this (gcc doesn't complain), but
+> please have a look.
 
-After having a typo for writing a histogram trigger.
+Huh weird, I'll take a look. FWIW, the construct isn't unique across
+the kernel.
 
-Wrote:
-  echo 'hist:key=pid:ts=common_timestamp.usec' > events/sched/sched_waking/trigger
+What clang are you using?
 
-Instead of:
-  echo 'hist:key=pid:ts=common_timestamp.usecs' > events/sched/sched_waking/trigger
-
-and the following crash happened:
-
- BUG: kernel NULL pointer dereference, address: 0000000000000008
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] PREEMPT SMP PTI
- CPU: 4 PID: 1641 Comm: sh Not tainted 5.9.0-rc5-test+ #549
- Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
- RIP: 0010:event_hist_trigger_func+0x70b/0x1ee0
- Code: 24 08 89 d5 49 89 cc e9 8c 00 00 00 4c 89 f2 41 b9 00 10 00 00 4c 89 e1 44 89 ee 4c 89 ff e8 dc d3 ff ff 45 89 ea 4b 8b 14 d7 <f6> 42 08 04 74 17 41 8b 8f c0 00 00 00 8d 71 01 41 89 b7 c0 00 00
- RSP: 0018:ffff959213d53db0 EFLAGS: 00010202
- RAX: ffffffffffffffea RBX: 0000000000000000 RCX: 0000000000084c04
- RDX: 0000000000000000 RSI: df7326aefebd174c RDI: 0000000000031080
- RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000001
- R10: 0000000000000001 R11: 0000000000000046 R12: ffff959211dcf690
- R13: 0000000000000001 R14: ffff95925a36e370 R15: ffff959251c89800
- FS:  00007fb9ea934740(0000) GS:ffff95925ab00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000008 CR3: 00000000c976c005 CR4: 00000000001706e0
- Call Trace:
-  ? trigger_process_regex+0x78/0x110
-  trigger_process_regex+0xc5/0x110
-  event_trigger_write+0x71/0xd0
-  vfs_write+0xca/0x210
-  ksys_write+0x70/0xf0
-  do_syscall_64+0x33/0x40
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7fb9eaa29487
- Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-
-This was caused by accessing the hlist_data fields after the call to
-__create_val_fields() without checking if the creation succeed.
-
-Fixes: 63a1e5de3006 ("tracing: Save normal string variables")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace_events_hist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index c74a7d157306..96c3f86b81c5 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -3687,7 +3687,7 @@ static int create_var_field(struct hist_trigger_data *hist_data,
- 
- 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
- 
--	if (hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
-+	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
- 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
- 
- 	return ret;
 -- 
-2.25.4
+Jens Axboe
 
