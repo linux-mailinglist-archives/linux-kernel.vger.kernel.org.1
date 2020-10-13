@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D05428CB97
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D23828CBA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730674AbgJMK1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:27:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730508AbgJMK1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:27:02 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S1731333AbgJMK1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731170AbgJMK1i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 06:27:38 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796E0C0613D0;
+        Tue, 13 Oct 2020 03:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MZPyYVXUEYs3YSGCvJdse61SjO5uVTagum+obbVonkY=; b=hKIIxEAKckNUJZf25tZk7grtjR
+        061k1jMcJJdzSgHhPHoqHq7KxpOpAJ9WnAcphAtE6MAk0mcHVSRmU2WfRkE2HA7DtsGZat680EGsf
+        7lPabYy0sddJ+rB6EilT7IUDaZpJZYk/ByXs17UgGhNKtxJkNSCAfgaMB1nu/NKpe0HeAmvJ2USt/
+        gK8jkmD4gJKJ3S7IajAK9RkoiWC9Ji2LQFdFqjBVUvcfZxrzBf/DAysDlzfic/nC+RihtR4u8VLCj
+        uyTaLNxG0I9FL9VRKnGn79bbbwdjNSx14rN7pZjXuzafRXkhiIss1aqG6IikjM6StVuozZOpvV9lb
+        xXCq/V5g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSHWb-0002bp-TD; Tue, 13 Oct 2020 10:27:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8FA32080A;
-        Tue, 13 Oct 2020 10:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602584822;
-        bh=19VK6zpHdezOuuklZf7plr8Sr0Qgx/oJRYyG6wSDmqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tJD3ZNlx+zgGQVmwQIEJy8GJzYiSbN7sxe5T+h7NPSViVO3e/dOYlWxi5AXaAHbaH
-         24cjQgTtTOIzMvXCvwr+yVJamjEORZ6Hu+ao/OqFQS7UJ9idcv9YpeEIt91Npl6IfH
-         QmW+JGyWMkWblEEIKKUSnT9Bdd2iP1vIp7GJ48ds=
-Date:   Tue, 13 Oct 2020 11:26:56 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
-        kuhanh.murugasen.krishnan@intel.com,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/18] regmap: mmio: add config option to allow relaxed
- MMIO accesses
-Message-ID: <20201013102656.GA5425@sirena.org.uk>
-References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
- <20201012205957.889185-8-adrian.ratiu@collabora.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F323B304B90;
+        Tue, 13 Oct 2020 12:27:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 867742041906B; Tue, 13 Oct 2020 12:27:15 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 12:27:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Qian Cai <cai@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+Message-ID: <20201013102715.GX2628@hirez.programming.kicks-ass.net>
+References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+ <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
+ <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012205957.889185-8-adrian.ratiu@collabora.com>
-X-Cookie: do {
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 12, 2020 at 11:11:10AM +0800, Boqun Feng wrote:
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> I think this happened because in this commit debug_lockdep_rcu_enabled()
+> didn't adopt to the change that made lockdep_recursion a percpu
+> variable?
+> 
+> Qian, mind to try the following?
+> 
+> Although, arguably the problem still exists, i.e. we still have an RCU
+> read-side critical section inside lock_acquire(), which may be called on
 
-On Mon, Oct 12, 2020 at 11:59:46PM +0300, Adrian Ratiu wrote:
+There is actual RCU usage from the trace_lock_acquire().
 
-> -	writeb(val, ctx->regs + reg);
-> +	if (ctx->relaxed_mmio)
-> +		writeb_relaxed(val, ctx->regs + reg);
-> +	else
-> +		writeb(val, ctx->regs + reg);
+> a yet-to-online CPU, which RCU doesn't watch. I think this used to be OK
+> because we don't "free" anything from lockdep, IOW, there is no
+> synchronize_rcu() or call_rcu() that _needs_ to wait for the RCU
+> read-side critical sections inside lockdep. But now we lock class
+> recycling, so it might be a problem.
+> 
+> That said, currently validate_chain() and lock class recycling are
+> mutually excluded via graph_lock, so we are safe for this one ;-)
 
-There is no point in doing a conditional operation on every I/O, it'd be
-better to register a different set of ops when doing relaxed I/O.
+We should have a comment on that somewhere, could you write one?
 
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
+> ----------->8
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 39334d2d2b37..35d9bab65b75 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -275,8 +275,8 @@ EXPORT_SYMBOL_GPL(rcu_callback_map);
+>  
+>  noinstr int notrace debug_lockdep_rcu_enabled(void)
+>  {
+> -	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE && debug_locks &&
+> -	       current->lockdep_recursion == 0;
+> +	return rcu_scheduler_active != RCU_SCHEDULER_INACTIVE &&
+> +	       __lockdep_enabled;
+>  }
+>  EXPORT_SYMBOL_GPL(debug_lockdep_rcu_enabled);
 
------BEGIN PGP SIGNATURE-----
+Urgh, I didn't expect (and forgot to grep) lockdep_recursion users
+outside of lockdep itself :/ It looks like this is indeed the only one.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+FgOwACgkQJNaLcl1U
-h9DfBAf/aCgHrO/JPO6kC9zlq8FPBcVZgOCd/XI9J+z55ZKCSSN6Ikr+Bf8JqOpd
-E6QaabPUOJUcGLeJh3bf04rAq8De42ez6sq71N9UzwHEuQtDjqNExwkAdS5UjlD7
-2nFyJwB6xg5tFRX8yJTKI8A2i1HSWBOz7COQ9+c88EnziZHIpMVK/CKln+dUM4Iq
-SaxqQpcFtLqAOgq2EGB3SEViUui5oBGqMrKzZMNvDnHJSRqT0FijXPCw2IhOs7fe
-gEP8AL3QDSJCNe/nLC3UT1/hw1RMWbpEUN2cVWuqCnFAUrAKIIuGAQLBb4zH9AuE
-XTXIVY9BdeTsBxaQZCIQVHVn6Jvbhg==
-=S9Bp
------END PGP SIGNATURE-----
 
---mP3DRpeJDSE+ciuQ--
