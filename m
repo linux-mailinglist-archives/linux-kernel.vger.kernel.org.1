@@ -2,42 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C5628CE00
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EA128CE02
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727690AbgJMMPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:15:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41142 "EHLO mail.kernel.org"
+        id S1727717AbgJMMPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:15:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727005AbgJMMO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727022AbgJMMO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Oct 2020 08:14:57 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5739F22365;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A75122400;
         Tue, 13 Oct 2020 12:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602591295;
-        bh=8xmp8qJnTJi9IoID4I9CZ1SA+GyrMHFlPwDDsnJv+pc=;
+        bh=Xx1nqZUs1Cn9NQ/RFywLp52tQmE9pzr1tQGxN0xfLMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yLViJ5h+qtaNMckfglLOmqg8/OZ5nQsss5BBveVQVd3eigXtl2CziT68OLvI8rUY8
-         2dwS5lznQUO4HQeBnUqenOOziLykML1rSBR2JPPRwkRQ1vnqzA50udQAckzCTtyiVu
-         PT7UuqHQeRfn+vrNIpWFiwXU2ukhPauLj35aag/Q=
+        b=pLKZYwUfqS0djbTxgctSN2fB7QbIYBPSRA4YlKJTv/cs4TC6puun3kxAlJUQni4ur
+         2BZNRJJUlMcZIl/xgG4uNxuAf4MlY+AkWUJklHabE3h42dfrcUvTV+q9E90uamsN8n
+         zXTF9wjWHX/RSSVa8X/kpTRbmr/b/GgmolNhv70A=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSJCf-006Cok-Al; Tue, 13 Oct 2020 14:14:53 +0200
+        id 1kSJCf-006Coo-CF; Tue, 13 Oct 2020 14:14:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2 22/24] ice: docs fix a devlink info that broke a table
-Date:   Tue, 13 Oct 2020 14:14:49 +0200
-Message-Id: <79d341b6be03e9ffbe489d7110348357971a5fc8.1602590106.git.mchehab+huawei@kernel.org>
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kamal Heib <kamalheib1@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Parav Pandit <parav@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH v2 23/24] RDMA: add a missing kernel-doc parameter markup
+Date:   Tue, 13 Oct 2020 14:14:50 +0200
+Message-Id: <6b2ed339933d066622d5715903870676d8cc523a.1602590106.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602590106.git.mchehab+huawei@kernel.org>
 References: <cover.1602590106.git.mchehab+huawei@kernel.org>
@@ -48,41 +53,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 410d06879c01 ("ice: add the DDP Track ID to devlink info")
-added description for a new devlink field, but forgot to add
-one of its columns, causing it to break:
+Changeset 54816d3e69d1 ("RDMA: Explicitly pass in the dma_device to ib_register_device")
+added a new parameter to ib_register_device().
 
-	.../Documentation/networking/devlink/ice.rst:15: WARNING: Error parsing content block for the "list-table" directive: uniform two-level bullet list expected, but row 11 does not contain the same number of items as row 1 (3 vs 4).
+Document it.
 
-	.. list-table:: devlink info versions implemented
-	    :widths: 5 5 5 90
-...
-	    * - ``fw.app.bundle_id``
-	      - 0xc0000001
-	      - Unique identifier for the DDP package loaded in the device. Also
-	        referred to as the DDP Track ID. Can be used to uniquely identify
-	        the specific DDP package.
-
-Add the type field to the ``fw.app.bundle_id`` row.
-
-Fixes: 410d06879c01 ("ice: add the DDP Track ID to devlink info")
+Fixes: 54816d3e69d1 ("RDMA: Explicitly pass in the dma_device to ib_register_device")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/networking/devlink/ice.rst | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/core/device.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/devlink/ice.rst b/Documentation/networking/devlink/ice.rst
-index b165181d5d4d..a432dc419fa4 100644
---- a/Documentation/networking/devlink/ice.rst
-+++ b/Documentation/networking/devlink/ice.rst
-@@ -70,6 +70,7 @@ The ``ice`` driver reports the following versions
-         that both the name (as reported by ``fw.app.name``) and version are
-         required to uniquely identify the package.
-     * - ``fw.app.bundle_id``
-+      - running
-       - 0xc0000001
-       - Unique identifier for the DDP package loaded in the device. Also
-         referred to as the DDP Track ID. Can be used to uniquely identify
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index feaec8d2f0ca..a3b1fc84cdca 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1318,7 +1318,10 @@ static void prevent_dealloc_device(struct ib_device *ib_dev)
+  * ib_register_device - Register an IB device with IB core
+  * @device: Device to register
+  * @name: unique string device name. This may include a '%' which will
+- * cause a unique index to be added to the passed device name.
++ * 	  cause a unique index to be added to the passed device name.
++ * @dma_device: pointer to a DMA-capable device. If %NULL, then the IB
++ *	        device will be used. In this case the caller should fully
++ *		setup the ibdev for DMA. This usually means using dma_virt_ops.
+  *
+  * Low-level drivers use ib_register_device() to register their
+  * devices with the IB core.  All registered clients will receive a
 -- 
 2.26.2
 
