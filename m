@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B0228C66E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE39428C669
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgJMAj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 20:39:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:37649 "EHLO mga11.intel.com"
+        id S1727974AbgJMAf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 20:35:59 -0400
+Received: from vern.gendns.com ([98.142.107.122]:36066 "EHLO vern.gendns.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727403AbgJMAj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 20:39:27 -0400
-IronPort-SDR: d7BoYj5wM0vxdhHNtuOXTzJXo1wBzGN+Ta5S52RudAT0aILnKJ2Y17D5Pd/nmrBHxPyJWsgeiQ
- A9eQgV9yIPIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162358894"
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="162358894"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 17:39:26 -0700
-IronPort-SDR: y5z+hZ5cSYkx8JvU5SikKp8uKnzwJcOTZpQUxSZ2OpbG2uHta4q8jOnZrxRAVQIeMo6nhBc5zd
- USpox1hI//bQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="345083735"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Oct 2020 17:39:24 -0700
-Cc:     baolu.lu@linux.intel.com, Ashok Raj <ashok.raj@intel.com>,
-        Intel-gfx@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] Convert the intel iommu driver to the dma-iommu
- api
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
- <e999e371-6d36-ffea-542f-a5f4b230b0ed@linux.intel.com>
- <c2af9a9d-1cae-b8f7-a0b3-880574060a23@linux.intel.com>
- <8bac9e91-36a0-c1d6-a887-4d60567ac75a@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <dce088b4-38ab-a540-6ac0-05ecc0b60aae@linux.intel.com>
-Date:   Tue, 13 Oct 2020 08:32:57 +0800
+        id S1727562AbgJMAfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 20:35:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=i3DN6BtJb3Jcv8rh81sTBY6UT+tAKn+rVAVT3o7iIs0=; b=LCWAFnRQ9KOZLwI3SDaZMqncKF
+        f/DMPsIh8viZE5VxEU395L0jKfZ8dHRv62q3AUsfR32nPKPduHKBTAcODM2InG2K5L9el+tpax9lu
+        RvXe2CekmCNzDQHRTFFJMNKSPaf4ROoDVJWaiGbGvnPxPnmCMpRLLGogchn7I6YAMjMssrq+eRPnh
+        pUetcBTuhuR+6qCd1PI3sePSJ2uQYE8990YSxuSwWmq6uhcJriMzwMTZVCj3ybIcvJGvsjwZ3nE+j
+        ENd2JhPRPtymm+u+khNB97+5AQe1/KRpoi59MZmIZJ9ksLZz80kd8T/J1WfaRNPWz3zqoX6/eTzow
+        ebDqpVoQ==;
+Received: from [2600:1700:4830:165f::19e] (port=56668)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kS8HZ-0000vN-Pn; Mon, 12 Oct 2020 20:35:13 -0400
+Subject: Re: [PATCH v5 0/5] Introduce the Counter character device interface
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <caeeb0b2-6b66-b623-98e3-acdc261ec20e@lechnology.com>
+Date:   Mon, 12 Oct 2020 19:35:11 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <8bac9e91-36a0-c1d6-a887-4d60567ac75a@linux.intel.com>
+In-Reply-To: <cover.1601170670.git.vilhelm.gray@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tvrtko,
-
-On 10/12/20 4:44 PM, Tvrtko Ursulin wrote:
+On 9/26/20 9:18 PM, William Breathitt Gray wrote:
+> The following are some questions I have about this patchset:
 > 
-> On 29/09/2020 01:11, Lu Baolu wrote:
->> Hi Tvrtko,
->>
->> On 9/28/20 5:44 PM, Tvrtko Ursulin wrote:
->>>
->>> On 27/09/2020 07:34, Lu Baolu wrote:
->>>> Hi,
->>>>
->>>> The previous post of this series could be found here.
->>>>
->>>> https://lore.kernel.org/linux-iommu/20200912032200.11489-1-baolu.lu@linux.intel.com/ 
->>>>
->>>>
->>>> This version introduce a new patch [4/7] to fix an issue reported here.
->>>>
->>>> https://lore.kernel.org/linux-iommu/51a1baec-48d1-c0ac-181b-1fba92aa428d@linux.intel.com/ 
->>>>
->>>>
->>>> There aren't any other changes.
->>>>
->>>> Please help to test and review.
->>>>
->>>> Best regards,
->>>> baolu
->>>>
->>>> Lu Baolu (3):
->>>>    iommu: Add quirk for Intel graphic devices in map_sg
->>>
->>> Since I do have patches to fix i915 to handle this, do we want to 
->>> co-ordinate the two and avoid having to add this quirk and then later 
->>> remove it? Or you want to go the staged approach?
->>
->> I have no preference. It depends on which patch goes first. Let the
->> maintainers help here.
+> 1. Should standard Counter component data types be defined as u8 or u32?
 > 
-> FYI we have merged the required i915 patches to out tree last week or 
-> so. I *think* this means they will go into 5.11. So the i915 specific 
-> workaround patch will not be needed in Intel IOMMU.
+>     Many standard Counter component types such COUNTER_COMP_SIGNAL_LEVEL
+>     have standard values defined (e.g. COUNTER_SIGNAL_LEVEL_LOW and
+>     COUNTER_SIGNAL_LEVEL_HIGH). These values are currently handled by the
+>     Counter subsystem code as u8 data types.
+> 
+>     If u32 is used for these values instead, C enum structures could be
+>     used by driver authors to implicit cast these values via the driver
+>     callback parameters; userspace would still use u32 with no issue.
+> 
+>     In theory this can work because GCC will treat enums are having a
+>     32-bit size; but I worry about the possibility of build targets that
+>     have -fshort-enums enabled, resulting in enums having a size less
+>     than 32 bits. Would this be a problem?
 
-Thanks for letting us know this. I will drop the workaround patch and
-test the whole series after the next rc1.
+We shouldn't have to worry about userspace programs using -fshort-enums
+since that would break all kernel interfaces that use enums, not just
+these - so no one should be using that compiler flag.
 
-Best regards,
-baolu
+So I am in favor of using strongly typed enums with u32 as the
+"generic" enum member type.
+
+> 
+> 2. Should I have reserved members in the userspace structures?
+> 
+>     The structures in include/uapi/linux/counter.h are available to
+>     userspace applications. Should I reserve space in these structures
+>     for future additions and usage? Will endianess and packing be a
+>     concern here?
+> 
+Since there doesn't seem to be a large number of counter devices
+this probably isn't critical. Are there any aspects of counter
+devices in general that couldn't be described with the proposed
+structures? For example, could there be components more than two
+levels deep (i.e. it would need id, parent id and grandparent id
+to describe fully)?
