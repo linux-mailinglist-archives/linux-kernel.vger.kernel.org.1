@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516DC28CBE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3589728CBE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgJMKlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgJMKlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:41:11 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F70C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:41:09 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x7so14803235wrl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:41:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KGnQd8MQizROEGVqO6LoZ2ESTC7FDdoCCXNt1igE99k=;
-        b=gyi1yunutoZhUD0/UEF8Y2W7tQM6TS5jmKeONpakXd2rTbWB+a2FoTlYShvboHRUjb
-         o+OiIauitVyuRzkw2wlp8deQWzBGISweHB6VZlAgDRaF0NoeuVxg847l/A2/LVMRQJqe
-         042rOdRRsmODzQaUz5KmsV7PXCm2iIfq/P9NJvooXN0tU08fjejHSQ+S9ueQ+aE27whw
-         px2Vdl4kOBetB0bVfcXL//2xS1Y1bR9G5Y4/SYldp92Mjw39RR00M5wScVXdpvR7CZUV
-         HboDSnXSXkCB4XgTJW74jjaWEffi5v3Pi6A7v7NtoKMWoS6bakwtXPTJFSMiRY2Akdqr
-         3LJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KGnQd8MQizROEGVqO6LoZ2ESTC7FDdoCCXNt1igE99k=;
-        b=uiogKzhYPL3RmBK1m53wG+md3yePeKr6mapHVNydzsOpwPaxEiCwy2e8vzU8xGD0CW
-         uPLVTV/fuYHvVXjRP8dlFdYq+d6c6piknis8LT9i0va6TDyI8oGKVyHZybqc8w03W8wN
-         /Of3janMdEerxWpOS8iwipZJN6jVIQPtYKsNgPPVBY9lJO689zSm+Ex/tniIQu0BW1G3
-         rpMDYgxWEHC72sLMWbvm+NW+PN+c+vfPsKy8mZVjGYGHgUoQfjWBKeVepzud7+XCMGoh
-         SICS7+XJBuCQ4XGNaRl+QyvO4hOVnGc5xUkEUl1+RszbwY1d5yf6f6RTaaZgr8NurRF8
-         GKQQ==
-X-Gm-Message-State: AOAM533O+e7wEu3QpEw8Ld/mSKjG/GKWlhpPeYdEsd2War+pgMCqAx9u
-        u3r0wzdgPEef+9M18UjBGviEZmGmLjXeojh8/XU=
-X-Google-Smtp-Source: ABdhPJwhYcYmIneqQARWgsNSZNyQDfcQXjguTWYNKrh+uvUlyMNyvJ07AParV+DeJy+VXRrdkVj2tk2+qAGXHb/6jhw=
-X-Received: by 2002:adf:ec0e:: with SMTP id x14mr37900205wrn.204.1602585668012;
- Tue, 13 Oct 2020 03:41:08 -0700 (PDT)
+        id S2387492AbgJMKoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726510AbgJMKoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 06:44:01 -0400
+Received: from localhost (unknown [176.164.225.223])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47ADB20878;
+        Tue, 13 Oct 2020 10:44:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602585840;
+        bh=psDBvJi8oWnrGcNCqLJaeTbezh9cUHTezlmtlMpt3p0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qzuLxz3qfVnVnsgKQl6TXsce16FGYp+PYBChsGQgYZ9lLGphoF6hucl8TOj//WbBS
+         XqyP1Y1nibMRL23mH13Dt/pXruUAEkGGSPXvN2DNdMxZIccNPBMeOBkDO9bp+GQHky
+         Toj8lCjTvZWmG0OxoNk924byettbDTFNm7dn8Ruc=
+Date:   Tue, 13 Oct 2020 12:43:57 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     jun qian <qianjun.kernel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
+        will@kernel.org, luto@kernel.org, linux-kernel@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing
+ loop
+Message-ID: <20201013104357.GB47577@lothringen>
+References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
+ <20200915115609.85106-5-qianjun.kernel@gmail.com>
+ <878scz89tl.fsf@nanos.tec.linutronix.de>
+ <20200925004207.GE19346@lenoir>
+ <CAKc596Km6kjQcp2MJmH9BZLY_7i7yFmHDmRnaJGsm4WzUNjwaA@mail.gmail.com>
+ <20200929114428.GA56480@lothringen>
+ <20201009150139.vatmppe2e3cwtoof@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-References: <1602492582-3558-1-git-send-email-shengjiu.wang@nxp.com> <20201012190037.GB17643@Asurada-Nvidia>
-In-Reply-To: <20201012190037.GB17643@Asurada-Nvidia>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Tue, 13 Oct 2020 13:40:56 +0300
-Message-ID: <CAEnQRZBrXNgMDNgQ=dMJfZQpZvdq6sUx2y21_fuk9teRd5UM0Q@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_spdif: Add support for higher sample rates
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009150139.vatmppe2e3cwtoof@e107158-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:29 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> Hi Shengjiu,
->
-> On Mon, Oct 12, 2020 at 04:49:42PM +0800, Shengjiu Wang wrote:
-> > Add 88200Hz and 176400Hz sample rates support for TX.
-> > Add 88200Hz, 176400Hz, 192000Hz sample rates support for RX.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
->
-> Probably should put your own Signed-off at the bottom?
+On Fri, Oct 09, 2020 at 04:01:39PM +0100, Qais Yousef wrote:
+> On 09/29/20 13:44, Frederic Weisbecker wrote:
+> > > that will delay the net_rx/tx softirq to process, Peter's branch
+> > > maybe can slove
+> > > the problem
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git core/softirq
+> > 
+> > It's probably also the right time for me to resume on this patchset:
+> > 
+> > https://lwn.net/Articles/779564/
+> > 
+> > In the long term this will allow us to have per vector threads that can be
+> > individually triggered upon high loads, and even soft interruptible by
+> > other vectors from irq_exit(). Also if several vectors are on high loads
+> > at the same time, this leaves the balance decisions to the scheduler instead
+> > of all these workarounds we scratch our heads on for several years now.
+> > 
+> > Besides, I'm convinced that splitting the softirqs is something we want in
+> > the long run anyway.
+> 
+> So if I understood correctly we'll end up with a kthread for each softirq type
+> that can be scheduled individually on any CPU following the 'normal' scheduler
+> rules, correct?
+> 
+> If I got it right, I like that. I certainly think having these softirqs as RT
+> threads (like irq threads) makes a lot more sense. At least one would be able
+> to use priorities to reason about when it's okay to preempt them or not.
+> 
+> If I got it wrong, why we can't do that?
 
-Hi Shengjiu,
+We can't do that right away because some softirq vectors may rely on the
+fact that they can't be interrupted by other softirq vectors. If they use
+per cpu data, they can perfectly assume that it's locally softirq-safe
+and not use any lock to protect it, provided the data is stricly per-cpu
+of course.
 
-Also please keep the original author of the patch. You can change that
-using git commit --amend --author="Viorel Suman <viorel.suman@nxp.com>".
+So we'll need to check all the softirq handlers and make sure they don't
+do such assumption, or fix the site. I can imagine it as an iterative
+pushdown just like we did with the big kernel lock.
 
-With that,
-
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Thanks.
