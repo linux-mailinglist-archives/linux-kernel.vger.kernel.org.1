@@ -2,118 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4747A28CE40
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56C128CCB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgJMMXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:23:40 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:11698 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgJMMXk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:23:40 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201013122337epoutp018821c11d2d8f65621b6a5698977270f8~9jMRahOcQ0743707437epoutp012
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:23:37 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201013122337epoutp018821c11d2d8f65621b6a5698977270f8~9jMRahOcQ0743707437epoutp012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602591817;
-        bh=vhCHSTYT3RjO1E7ie1Ctba4Syv1zYIq8jW2a+IGfhFw=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=ZeUXEF8wTCbkqrIOFEs7EKOvLPN0uBc97xTJj7h66RHoc+b19b7ENFAdgPDT5tVCy
-         UdlHMXqqa3WCsTdXF5wF+y68JSeptrQd4+NfY0w/kLIdEes+iXnqw6XtQmZh6exCsZ
-         tTewiGrW+oN4mvjSV93ANt6lJrbJmXKSQgTzN89A=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20201013122336epcas5p1207c78dbfb3458cff07ebe7febdfa637~9jMQgruBJ2857928579epcas5p1O;
-        Tue, 13 Oct 2020 12:23:36 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        51.73.09567.84C958F5; Tue, 13 Oct 2020 21:23:36 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c~9jJjDcHse2423824238epcas5p2y;
-        Tue, 13 Oct 2020 12:20:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201013122030epsmtrp23b07696b12b136a6399a2d5972823c3a~9jJjCwY370338303383epsmtrp2-;
-        Tue, 13 Oct 2020 12:20:30 +0000 (GMT)
-X-AuditID: b6c32a4b-2f3ff7000000255f-60-5f859c48e880
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E0.15.08604.D8B958F5; Tue, 13 Oct 2020 21:20:29 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201013122028epsmtip1ce5d5d13b962ec5603d315ed66872cce~9jJh4bzSe2620526205epsmtip1j;
-        Tue, 13 Oct 2020 12:20:28 +0000 (GMT)
-From:   Surendran K <surendran.k@samsung.com>
-To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     vkoul@kernel.org, shaik.ameer@samsung.com, alim.akhtar@samsung.com,
-        pankaj.dubey@samsung.com, Surendran K <surendran.k@samsung.com>
-Subject: [PATCH] DMA: PL330: Remove unreachable code
-Date:   Tue, 13 Oct 2020 17:17:13 +0530
-Message-Id: <20201013114713.28754-1-surendran.k@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDIsWRmVeSWpSXmKPExsWy7bCmhq7HnNZ4g7sLhC0ezNvGZrF66l9W
-        i8u75rBZLNr6hd3iyMPd7Babd0xht9h55wSzA7vHplWdbB59W1YxenzeJBfAHMVlk5Kak1mW
-        WqRvl8CVsXzjM+aCQ6wVrz6lNDDuZeli5OCQEDCROH42vIuRi0NIYDejRMe/l6wQzidGiekH
-        J7BAON8YJe79/MUO03HzuT1EfC+jxM+v99ggnBYmicmdS4EcTg42AW2JD73b2UFsEQFriUcH
-        p4CNZRboZJQ4dqmdGSQhDDTp3uxFjCA2i4CqxKeGdawgNq+AjUTPx89gcQkBeYnVGw4wQ9iL
-        2CU6r9tA2C4S7ydPYYGwhSVeHd/CDmFLSXx+t5cNws6WuPGhnxXCrpCYd+MeVNxe4sCVOWD/
-        MwtoSqzfpQ8RlpWYemodE4jNLMAn0fv7CRNEnFdixzwYW1Xi5P8fUOdIS1xZtx9qvIfE9OaZ
-        YHEhgViJ7Sdfs0xglJ2FsGEBI+MqRsnUguLc9NRi0wLjvNRyveLE3OLSvHS95PzcTYzgCNfy
-        3sH46MEHvUOMTByMhxglOJiVRHjPqTfFC/GmJFZWpRblxxeV5qQWH2KU5mBREudV+nEmTkgg
-        PbEkNTs1tSC1CCbLxMEp1cDUstH7bEDCYvknj4s21u+SWyV5+vZilntKMlfvvzM32BEyZ9Hz
-        GaVtKa8Fza+Fi59nsb9UsGe6W8M8rrPfol8+dtkYobBO897WPeUP1heXPrwRFcO6ZHG1+l/x
-        6eEyq5Zq3ZYpzuDdv/xPRYi1Ajvb8ZmfN4kXXuxSyOG8sJTf1fSPS9Gegh9tU0+e31ATPfnT
-        okq2ZsWzS1blaia/3mAzY9GcJdGa350/s14zX1u73PxSm3sS6+r0x+ozfx/l7si8UXr33ybX
-        vMrJQkkfk3y+BGieMK1L8PPnjVqYHF+k4LoxmsNkfYbWSz9F/dgNUnrLUmSq90X7Sgi1hV8v
-        27r+yasO1r5ZBaZl/lFJz8SVWIozEg21mIuKEwECwMOyXwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMJMWRmVeSWpSXmKPExsWy7bCSnG7v7NZ4g/tLbSwezNvGZrF66l9W
-        i8u75rBZLNr6hd3iyMPd7Babd0xht9h55wSzA7vHplWdbB59W1YxenzeJBfAHMVlk5Kak1mW
-        WqRvl8CVsXzjM+aCQ6wVrz6lNDDuZeli5OCQEDCRuPncvouRi0NIYDejRPPVmUBxTqC4tMTH
-        87uZIWxhiZX/nrOD2EICTUwSbz6agdhsAtoSH3q3g8VFBGwlpiw7zgQyiFmgn1Fi/fl5rCAJ
-        YaAF92YvYgSxWQRUJT41rAOL8wrYSPR8/MwIsUBeYvWGA8wTGHkWMDKsYpRMLSjOTc8tNiww
-        zEst1ytOzC0uzUvXS87P3cQIDhctzR2M21d90DvEyMTBeIhRgoNZSYT3nHpTvBBvSmJlVWpR
-        fnxRaU5q8SFGaQ4WJXHeG4UL44QE0hNLUrNTUwtSi2CyTBycUg1MNQ+TJxq83hhb5x/W9zB6
-        Ns+qqG/mnJmvGldNmNH3deXt2c/MTNpvCu1MmPNxP5Nw3z3+a9F/m4q+3X+ov+rS68zZLzvE
-        wh09NSYEv7wj7L7eubNt/pTZzVPFVjHNCZk7b/JmL65db468SW92bqlfWF1ueNq36dRqj9C0
-        hrraBqaCjeHSkxqcuGyeJPqdu8V2Yv7q/NCP/i1W5zozVzx9s+KX+V3PLNsYywu6++y11Ll+
-        LPqx/d+JJu3v2Vfqz76b8bdyv5XjOl/5T7detL5b++S/xrM/WULHtE4tqxTtd0j9mlgQwHt4
-        8RL1nTlLf3oIpjr9Yctu+Gl3US/O6/Uq9p/Rh3c7X3ztLGKp79D7SImlOCPRUIu5qDgRACvm
-        y5+GAgAA
-X-CMS-MailID: 20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c
-References: <CGME20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c@epcas5p2.samsung.com>
+        id S1727189AbgJMLt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:49:27 -0400
+Received: from mga05.intel.com ([192.55.52.43]:12818 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726388AbgJMLt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:49:26 -0400
+IronPort-SDR: GIR88rKzu6XEi2xkA/TcSAv4EI3xrX9CusWWQCt+mL3VpGCod2OzSu6cZnJW9TSgoWTnU3Jm9W
+ n0SFYCyivB6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="250589292"
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
+   d="scan'208";a="250589292"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:49:25 -0700
+IronPort-SDR: fKI1CIVL3TQGd0i33Ir236iwYH6hYmucZP/YzxKQuSuYVNcZs5we04sss9kdiEzuaA2shv9ihM
+ IHGwFF2cH4Gg==
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
+   d="scan'208";a="313770836"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:49:21 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kSIox-005n54-Sf; Tue, 13 Oct 2020 14:50:23 +0300
+Date:   Tue, 13 Oct 2020 14:50:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Tali Perry <tali.perry1@gmail.com>
+Cc:     wsa@kernel.org, xqiu@google.com, kunyi@google.com,
+        benjaminfair@google.com, avifishman70@gmail.com, joel@jms.id.au,
+        tmaimon77@gmail.com, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: npcm7xx: Support changing bus speed using
+ debugfs.
+Message-ID: <20201013115023.GL4077@smile.fi.intel.com>
+References: <20201013100314.216154-1-tali.perry1@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013100314.216154-1-tali.perry1@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_setup_req(..) never returns negative value.
-Hence the condition ret < 0 is never met
+On Tue, Oct 13, 2020 at 01:03:14PM +0300, Tali Perry wrote:
+> Systems that can dynamically add and remove slave devices
+> often need to change the bus speed in runtime.
+> This patch expose the bus frequency to the user.
+> This feature can also be used for test automation.
 
-Signed-off-by: Surendran K <surendran.k@samsung.com>
----
- drivers/dma/pl330.c | 2 --
- 1 file changed, 2 deletions(-)
+> --
+> v2 -> v1:
+> 	- Fix typos.
+> 	- Remove casting to u64.
+> 	
+> v1: initial version
 
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index e9f0101d92fa..8355586c9788 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -1527,8 +1527,6 @@ static int pl330_submit_req(struct pl330_thread *thrd,
- 
- 	/* First dry run to check if req is acceptable */
- 	ret = _setup_req(pl330, 1, thrd, idx, &xs);
--	if (ret < 0)
--		goto xfer_exit;
- 
- 	if (ret > pl330->mcbufsz / 2) {
- 		dev_info(pl330->ddma.dev, "%s:%d Try increasing mcbufsz (%i/%i)\n",
+Above block should go after cutter '---' (see below) line...
+
+> Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
+> Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+> ---
+
+...here.
+
+>  drivers/i2c/busses/i2c-npcm7xx.c | 35 ++++++++++++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+
+As we discussed previously I'm not a fan of the functionality this gives and a
+way it's done, but this is debugfs and not anyhow an ABI. Also it's localized
+inside one driver. In the future we may come up with better approach.
+
+That said, no objections from me.
+
+> diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+> index 2ad166355ec9..633ac67153e2 100644
+> --- a/drivers/i2c/busses/i2c-npcm7xx.c
+> +++ b/drivers/i2c/busses/i2c-npcm7xx.c
+> @@ -2208,6 +2208,40 @@ static const struct i2c_algorithm npcm_i2c_algo = {
+>  /* i2c debugfs directory: used to keep health monitor of i2c devices */
+>  static struct dentry *npcm_i2c_debugfs_dir;
+>  
+> +static int i2c_speed_get(void *data, u64 *val)
+> +{
+> +	struct npcm_i2c *bus = data;
+> +
+> +	*val = bus->bus_freq;
+> +	return 0;
+> +}
+> +
+> +static int i2c_speed_set(void *data, u64 val)
+> +{
+> +	struct npcm_i2c *bus = data;
+> +	int ret;
+> +
+> +	if (val < I2C_FREQ_MIN_HZ || val > I2C_FREQ_MAX_HZ)
+> +		return -EINVAL;
+> +
+> +	if (val == bus->bus_freq)
+> +		return 0;
+> +
+> +	i2c_lock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
+> +
+> +	npcm_i2c_int_enable(bus, false);
+> +
+> +	ret = npcm_i2c_init_module(bus, I2C_MASTER, (u32)val);
+> +
+> +	i2c_unlock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
+> +
+> +	if (ret)
+> +		return -EAGAIN;
+> +
+> +	return 0;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(i2c_clock_ops, i2c_speed_get, i2c_speed_set, "%llu\n");
+> +
+>  static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+>  				  struct npcm_i2c *bus)
+>  {
+> @@ -2223,6 +2257,7 @@ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+>  	debugfs_create_u64("rec_succ_cnt", 0444, d, &bus->rec_succ_cnt);
+>  	debugfs_create_u64("rec_fail_cnt", 0444, d, &bus->rec_fail_cnt);
+>  	debugfs_create_u64("timeout_cnt", 0444, d, &bus->timeout_cnt);
+> +	debugfs_create_file("i2c_speed", 0644, d, bus, &i2c_clock_ops);
+>  
+>  	bus->debugfs = d;
+>  }
+> 
+> base-commit: 865c50e1d279671728c2936cb7680eb89355eeea
+> -- 
+> 2.22.0
+> 
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
