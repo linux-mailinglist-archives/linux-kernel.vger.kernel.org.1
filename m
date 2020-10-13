@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560E428DCBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E6328D739
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730462AbgJNJTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730454AbgJNJTk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:19:40 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5A9C08EC6E
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:55:09 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id e7so832947pfn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Uyn4u4zPT8lCRqg3mtYpVMsvS3nHHp0bUhsCfjjwdnM=;
-        b=uOqY26raeWXXsabUh4iq3GWqbPhntX2jAw7WlXzsOsk1n27PMJ5XJutG5KRN8kpgh4
-         uBXOZZgEQzOYxWRyhfzSTpfaqf2ehc07tSXXDCwOwm96YrAYmLN5jIyodmnumluJGMPw
-         ek0W14+MO48kiv4kacCmEdZyiVkwTKY2Z5tfvNfB4vumTwwF6wXMC320mXF849uRgiQm
-         mjEnrvex9U+gb1Qw1gXtnpBVRVX8qdDIU+R7VfWqv6kmfmuH50332RTpwCQNFc3EWxc2
-         /qsyslm6ElprPvEqQ1zYX9pWXh3KSNdu6mR4xkFE3fNBWHa/1oI6TqeMrovc6CqYZ3Db
-         OmRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Uyn4u4zPT8lCRqg3mtYpVMsvS3nHHp0bUhsCfjjwdnM=;
-        b=PF4KTDvCZ7QEPKyl0o5c4lsVQqF2XJz6+0zAFkhu9AMvZv1nyZ5/FhV2pQUn+m3MZL
-         6WXjJMiwUBbvt2nb+7P22XYTCl4s1ogjwNi5UdMWoP6gYFixAp3yald/+MFwMZQ62hmZ
-         Zgw8nXknBoe8oBTDZq4LSlXuf7PeXT7Nd6afXMoPhuinCDV1aHL/1QMfU21kt463hztJ
-         NzhlIKFQv0LzIeZ8iYSIQKX1ATj4UekYmZH01J62J089dbdETgSadd5dQ/ttlC/eg+X6
-         gn7638KJsFT7Kjmf5iYLhETinGWWk+AIA2yZhsU9b7hIdRSAgHyeyXwpdTf1Md7eiAAP
-         sc5Q==
-X-Gm-Message-State: AOAM530cYj3sox+3FdP40XF8ssW28Njsc0DONLoQsUOCkESwuvSyRSnO
-        ezkVSVMYq6I72K2LfWoCCvEgPQ==
-X-Google-Smtp-Source: ABdhPJwkIugXOlFj9UVfpNEKI0rUdxNVw1kYx+fvcOyjUsYkM61oloagp+EJB75HV4kKo4QGhnJ3Cw==
-X-Received: by 2002:a63:ec4c:: with SMTP id r12mr1598153pgj.74.1602633309170;
-        Tue, 13 Oct 2020 16:55:09 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id s24sm368443pjp.53.2020.10.13.16.55.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 16:55:08 -0700 (PDT)
-Subject: Re: [PATCH 4/4] task_work: use TIF_NOTIFY_SIGNAL if available
-To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com,
-        Roman Gershman <romger@amazon.com>
-References: <20201008152752.218889-1-axboe@kernel.dk>
- <20201008152752.218889-5-axboe@kernel.dk>
- <87362hd6ta.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <327d0ab5-a77e-8f9c-95da-d0dccece6ad8@kernel.dk>
-Date:   Tue, 13 Oct 2020 17:55:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389347AbgJMX5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:57:02 -0400
+Received: from mga07.intel.com ([134.134.136.100]:3817 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387742AbgJMX5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 19:57:02 -0400
+IronPort-SDR: oEilyMO80P99tUtBvHQyfBsYB4QsCq0vGk+hR2alHfoiSdoawQZ4FytKdy52kewP9KCgT6aTHo
+ l0/LYbpLM+vQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="230182065"
+X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
+   d="scan'208";a="230182065"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 16:57:00 -0700
+IronPort-SDR: lCvdsHw4cNTMWJa/vna7fQPxd5RyrFTF13wYh2AkHf4SXv0mM4ELq6g5e3ZAT7t1A0eXxCnwi8
+ qz1MFAWCB0PA==
+X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
+   d="scan'208";a="463687969"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 16:56:59 -0700
+Date:   Tue, 13 Oct 2020 16:56:59 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 2/9] x86/fpu: Refactor arch_set_user_pkey_access()
+ for PKS support
+Message-ID: <20201013235658.GL2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-3-ira.weiny@intel.com>
+ <7ed91cb5-93e5-67ad-ad35-8489d16d283f@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <87362hd6ta.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ed91cb5-93e5-67ad-ad35-8489d16d283f@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 5:50 PM, Thomas Gleixner wrote:
-> On Thu, Oct 08 2020 at 09:27, Jens Axboe wrote:
->> +/*
->> + * TWA_SIGNAL signaling - use TIF_NOTIFY_SIGNAL, if available, as it's faster
->> + * than TIF_SIGPENDING as there's no dependency on ->sighand. The latter is
->> + * shared for threads, and can cause contention on sighand->lock. Even for
->> + * the non-threaded case TIF_NOTIFY_SIGNAL is more efficient, as no locking
->> + * or IRQ disabling is involved for notification (or running) purposes.
->> + */
->> +static void task_work_notify_signal(struct task_struct *task)
->> +{
->> +#ifdef TIF_NOTIFY_SIGNAL
->> +	set_notify_signal(task);
->> +#else
->> +	unsigned long flags;
->> +
->> +	/*
->> +	 * Only grab the sighand lock if we don't already have some
->> +	 * task_work pending. This pairs with the smp_store_mb()
->> +	 * in get_signal(), see comment there.
->> +	 */
->> +	if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
->> +	    lock_task_sighand(task, &flags)) {
->> +		task->jobctl |= JOBCTL_TASK_WORK;
->> +		signal_wake_up(task, 0);
->> +		unlock_task_sighand(task, &flags);
->> +	}
->> +#endif
+On Tue, Oct 13, 2020 at 10:50:05AM -0700, Dave Hansen wrote:
+> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
+> > +/*
+> > + * Update the pk_reg value and return it.
 > 
-> Same #ifdeffery comment as before.
+> How about:
+> 
+> 	Replace disable bits for @pkey with values from @flags.
 
-Fixed up.
+Done.
 
--- 
-Jens Axboe
+> 
+> > + * Kernel users use the same flags as user space:
+> > + *     PKEY_DISABLE_ACCESS
+> > + *     PKEY_DISABLE_WRITE
+> > + */
+> > +u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
+> > +{
+> > +	int pkey_shift = pkey * PKR_BITS_PER_PKEY;
+> > +
+> > +	pk_reg &= ~(((1 << PKR_BITS_PER_PKEY) - 1) << pkey_shift);
+> > +
+> > +	if (flags & PKEY_DISABLE_ACCESS)
+> > +		pk_reg |= PKR_AD_BIT << pkey_shift;
+> > +	if (flags & PKEY_DISABLE_WRITE)
+> > +		pk_reg |= PKR_WD_BIT << pkey_shift;
+> 
+> I still think this deserves two lines of comments:
+> 
+> 	/* Mask out old bit values */
+> 
+> 	/* Or in new values */
+
+Sure, done.
+Ira
 
