@@ -2,226 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A92928C78D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6158928C791
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728993AbgJMDaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 23:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgJMDaV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 23:30:21 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3EFC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:30:20 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k8so15798984pfk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=veclwl1rWnO1PyZHw8dPBjATssIz1mruYYxnvO/JFq8=;
-        b=sWqJ/y9JSkmPh1tUBls/oFgZXBBJAbrSQFTt+uSGq/Iu5Cll4SUFao4LHB8uZML9Nf
-         suEOfzzkUGhoWi1X8PeH7GScXYHrF5xPgJwx1WDg8hdRc8vhZuVkpui0eXEtiy3SgcYi
-         R8EIf7ncK1EhX/rdKQOmKglxFInKA3tnaF4Wbo4C5B1WXahadXjBgxv3YEPnUBjvo1yc
-         K8QTIYwTPjSHxidx02iPEuML0hdy8P6WJiVz+ogJMp3NSuWMBYhN0PE6qUt/bP4AVwjj
-         QhMuB7hqQXpc3ZNOYun05eTJ40dodrPHEW+oE0s1QGwBm8v+icuYsiWBseFF5z4khe6e
-         RXtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=veclwl1rWnO1PyZHw8dPBjATssIz1mruYYxnvO/JFq8=;
-        b=hKhSm0Y2B2zzfmsbWPQNKqShfEFFr6E2UA4fV5J07wj/RoGG7scVvaEp41ZNqgaXj/
-         wblJ0pFbLaNivoPKXMtV1hayjAjIG34D1hoi51xGxmNInIlmWriO5gU4rIcWECBbRoqX
-         bG1mEtNcgdHtMDYbXRj6BtHI0a5Vwa9dlvjWceYfB1MC6SNlCG4oYTzFQ0W1pFAzNfDK
-         995j4vat2najBZwmf4jSPHjqe/AObbutV2Pe5GvNbMOwUd9T75eY4vWMMuyeQaWtbW8u
-         Tsj7R+4d/66pYDzHLSxfJuPqLIZCzn8wDoYrMFnJp3+Ib1id1ZvHHwPnlyzLJGefvcbc
-         Csqg==
-X-Gm-Message-State: AOAM532qc8G/bSNPGjtw9om0kNE2GmfZIo35KsvVMFpDSB4b+cDgkT8v
-        gfsVS3mvE3eTS9ztehI03lkgB72veRv9lIYyMmO20w==
-X-Google-Smtp-Source: ABdhPJwv7AqyroJZItMRGC4vj7W3CzjTFTwAXQqOupPBrXsMxczQqLtTe8ycRtlelanR0nD4qp9ozIIPCE46a16q6f4=
-X-Received: by 2002:a17:90a:b78b:: with SMTP id m11mr23945507pjr.13.1602559820309;
- Mon, 12 Oct 2020 20:30:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201010103854.66746-1-songmuchun@bytedance.com>
- <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
- <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com> <CAM_iQpXLX1xXN02idk-yU1T=AGb9JmGiLkfRGCJOxjCw-OWpfQ@mail.gmail.com>
-In-Reply-To: <CAM_iQpXLX1xXN02idk-yU1T=AGb9JmGiLkfRGCJOxjCw-OWpfQ@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 13 Oct 2020 11:29:44 +0800
-Message-ID: <CAMZfGtWhnr9_m1HSnMt9QxcT_q8XCMvbsxv9ZgzXP9D8B0qLsQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Shakeel Butt <shakeelb@google.com>,
-        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
+        id S1729064AbgJMDcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 23:32:04 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36735 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727831AbgJMDcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 23:32:04 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9Lgy0G52z9sT6;
+        Tue, 13 Oct 2020 14:31:58 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602559920;
+        bh=pcqQKMqu/v6E7EW9EuyfTuERMjMjwKZutSMUE0Itlro=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LUc7dfuoAaYhBBjbGy5C2d1n2EdgA4ONDQgSTep7yVNHy07cY7MzwbdyDm2y58Wh+
+         AnUDPBA1y/1E1zAGYzm6iZAG3MCryrC6LdCXSZBAKWgVpQqkm6vWuVcDJZan0KTt+6
+         NDwxBOSaYnSnpmhbXTNxyif8FnagU9B9SpxEwiD1xWxLq1Ons5ToI8IVHY8Ca6VAAb
+         pM/VT4bkVgnNeMuYDO9WyzQ8ykmnC1WKTqgwCu7lYIUYFH+VKJrCFMM7NpZN8iIgau
+         fmXMKcMAoydTsqXp75ILSU8btP5jcxXtCz76bM0QMAN1sfkdnm46pdw6HIa43M+2/w
+         Eay7OBoLaJtfA==
+Date:   Tue, 13 Oct 2020 14:31:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
-        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the tip tree with the pci tree
+Message-ID: <20201013143157.17997431@canb.auug.org.au>
+In-Reply-To: <20200925152118.2afb794b@canb.auug.org.au>
+References: <20200925152118.2afb794b@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Ou_=82KajkqloYjc_fX96qr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 5:47 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Sun, Oct 11, 2020 at 9:22 PM Muchun Song <songmuchun@bytedance.com> wr=
-ote:
-> >
-> > On Mon, Oct 12, 2020 at 2:39 AM Cong Wang <xiyou.wangcong@gmail.com> wr=
-ote:
-> > >
-> > > On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedance.com=
-> wrote:
-> > > >
-> > > > The amount of memory allocated to sockets buffer can become signifi=
-cant.
-> > > > However, we do not display the amount of memory consumed by sockets
-> > > > buffer. In this case, knowing where the memory is consumed by the k=
-ernel
-> > >
-> > > We do it via `ss -m`. Is it not sufficient? And if not, why not addin=
-g it there
-> > > rather than /proc/meminfo?
-> >
-> > If the system has little free memory, we can know where the memory is v=
-ia
-> > /proc/meminfo. If a lot of memory is consumed by socket buffer, we cann=
-ot
-> > know it when the Sock is not shown in the /proc/meminfo. If the unaware=
- user
-> > can't think of the socket buffer, naturally they will not `ss -m`. The
-> > end result
->
-> Interesting, we already have a few counters related to socket buffers,
-> are you saying these are not accounted in /proc/meminfo either?
+--Sig_/Ou_=82KajkqloYjc_fX96qr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, these are not accounted for in /proc/meminfo.
+Hi all,
 
-> If yes, why are page frags so special here? If not, they are more
-> important than page frags, so you probably want to deal with them
-> first.
->
->
-> > is that we still don=E2=80=99t know where the memory is consumed. And w=
-e add the
-> > Sock to the /proc/meminfo just like the memcg does('sock' item in the c=
-group
-> > v2 memory.stat). So I think that adding to /proc/meminfo is sufficient.
->
-> It looks like actually the socket page frag is already accounted,
-> for example, the tcp_sendmsg_locked():
->
->                         copy =3D min_t(int, copy, pfrag->size - pfrag->of=
-fset);
->
->                         if (!sk_wmem_schedule(sk, copy))
->                                 goto wait_for_memory;
->
+On Fri, 25 Sep 2020 15:21:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the tip tree got a conflict in:
+>=20
+>   drivers/pci/controller/vmd.c
+>=20
+> between commit:
+>=20
+>   42443f036042 ("PCI: vmd: Create IRQ Domain configuration helper")
+>=20
+> from the pci tree and commit:
+>=20
+>   585dfe8abc44 ("PCI: vmd: Dont abuse vector irqomain as parent")
+>=20
+> from the tip tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc drivers/pci/controller/vmd.c
+> index 3c4418cbde1c,aa1b12bac9a1..000000000000
+> --- a/drivers/pci/controller/vmd.c
+> +++ b/drivers/pci/controller/vmd.c
+> @@@ -304,50 -298,6 +304,50 @@@ static struct msi_domain_info vmd_msi_d
+>   	.chip		=3D &vmd_msi_controller,
+>   };
+>  =20
+>  +static void vmd_enable_msi_remapping(struct vmd_dev *vmd, bool enable)
+>  +{
+>  +	u16 reg;
+>  +
+>  +	pci_read_config_word(vmd->dev, PCI_REG_VMCONFIG, &reg);
+>  +	reg =3D enable ? (reg & ~0x2) : (reg | 0x2);
+>  +	pci_write_config_word(vmd->dev, PCI_REG_VMCONFIG, reg);
+>  +}
+>  +
+>  +static int vmd_create_irq_domain(struct vmd_dev *vmd)
+>  +{
+>  +	struct fwnode_handle *fn;
+>  +
+>  +	fn =3D irq_domain_alloc_named_id_fwnode("VMD-MSI", vmd->sysdata.domain=
+);
+>  +	if (!fn)
+>  +		return -ENODEV;
+>  +
+>  +	vmd->irq_domain =3D pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
+> - 						    x86_vector_domain);
+> ++						    NULL);
+>  +	if (!vmd->irq_domain) {
+>  +		irq_domain_free_fwnode(fn);
+>  +		return -ENODEV;
+>  +	}
+>  +
+>  +	return 0;
+>  +}
+>  +
+>  +static void vmd_remove_irq_domain(struct vmd_dev *vmd)
+>  +{
+>  +	/*
+>  +	 * Some production BIOS won't enable remapping between soft reboots.
+>  +	 * Ensure remapping is restored before unloading the driver
+>  +	 */
+>  +	if (!vmd->msix_count)
+>  +		vmd_enable_msi_remapping(vmd, true);
+>  +
+>  +	if (vmd->irq_domain) {
+>  +		struct fwnode_handle *fn =3D vmd->irq_domain->fwnode;
+>  +
+>  +		irq_domain_remove(vmd->irq_domain);
+>  +		irq_domain_free_fwnode(fn);
+>  +	}
+>  +}
+>  +
+>   static char __iomem *vmd_cfg_addr(struct vmd_dev *vmd, struct pci_bus *=
+bus,
+>   				  unsigned int devfn, int reg, int len)
+>   {
+> @@@ -717,12 -568,24 +717,18 @@@ static int vmd_enable_domain(struct vmd
+>  =20
+>   	sd->node =3D pcibus_to_node(vmd->dev->bus);
+>  =20
+>  -	fn =3D irq_domain_alloc_named_id_fwnode("VMD-MSI", vmd->sysdata.domain=
+);
+>  -	if (!fn)
+>  -		return -ENODEV;
+>  -
+>  -	vmd->irq_domain =3D pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
+>  -						    NULL);
+>  -
+>  -	if (!vmd->irq_domain) {
+>  -		irq_domain_free_fwnode(fn);
+>  -		return -ENODEV;
+>  +	if (vmd->msix_count) {
+>  +		ret =3D vmd_create_irq_domain(vmd);
+>  +		if (ret)
+>  +			return ret;
+>   	}
+>  =20
+> + 	/*
+> + 	 * Override the irq domain bus token so the domain can be distinguished
+> + 	 * from a regular PCI/MSI domain.
+> + 	 */
+> + 	irq_domain_update_bus_token(vmd->irq_domain, DOMAIN_BUS_VMD_MSI);
+> +=20
+>   	pci_add_resource(&resources, &vmd->resources[0]);
+>   	pci_add_resource_offset(&resources, &vmd->resources[1], offset[0]);
+>   	pci_add_resource_offset(&resources, &vmd->resources[2], offset[1]);
 
-Yeah, it is already accounted for. But it does not represent real memory
-usage. This is just the total amount of charged memory.
-
-For example, if a task sends a 10-byte message, it only charges one
-page to memcg. But the system may allocate 8 pages. Therefore, it
-does not truly reflect the memory allocated by the page frag memory
-allocation path.
-
->
-> >
-> > >
-> > > >  static inline void __skb_frag_unref(skb_frag_t *frag)
-> > > >  {
-> > > > -       put_page(skb_frag_page(frag));
-> > > > +       struct page *page =3D skb_frag_page(frag);
-> > > > +
-> > > > +       if (put_page_testzero(page)) {
-> > > > +               dec_sock_node_page_state(page);
-> > > > +               __put_page(page);
-> > > > +       }
-> > > >  }
-> > >
-> > > You mix socket page frag with skb frag at least, not sure this is exa=
-ctly
-> > > what you want, because clearly skb page frags are frequently used
-> > > by network drivers rather than sockets.
-> > >
-> > > Also, which one matches this dec_sock_node_page_state()? Clearly
-> > > not skb_fill_page_desc() or __skb_frag_ref().
-> >
-> > Yeah, we call inc_sock_node_page_state() in the skb_page_frag_refill().
->
-> How is skb_page_frag_refill() possibly paired with __skb_frag_unref()?
->
-> > So if someone gets the page returned by skb_page_frag_refill(), it must
-> > put the page via __skb_frag_unref()/skb_frag_unref(). We use PG_private
-> > to indicate that we need to dec the node page state when the refcount o=
-f
-> > page reaches zero.
->
-> skb_page_frag_refill() is called on frags not within an skb, for instance=
-,
-> sk_page_frag_refill() uses it for a per-socket or per-process page frag.
-> But, __skb_frag_unref() is specifically used for skb frags, which are
-> supposed to be filled by skb_fill_page_desc() (page is allocated by drive=
-r).
->
-> They are different things you are mixing them up, which looks clearly
-> wrong or at least misleading.
-
-Yeah, it looks a little strange. I just want to account for page frag
-allocations. So I have to use PG_private to distinguish the page
-from page frag or others in the __skb_frag_unref(). If the page is
-allocated from skb_page_frag_refill, we should decrease the
-statistics.
-
-Thanks.
-
->
-> Thanks.
-
-
+This is now a conflict between the pci tree and Linus' tree.
 
 --=20
-Yours,
-Muchun
+Cheers,
+Stephen Rothwell
+
+--Sig_/Ou_=82KajkqloYjc_fX96qr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FH60ACgkQAVBC80lX
+0GzhvQf/SK2A93bwmefRKIkzgHCV4c/azFrXQkwZ6LEtLDyegjwEMAvvRx5nmUtn
+4X6eQLKFzZXQaWKhhoG6yWZSVTbhqcX33pfTOj4jewTLDeXZzbK8jT10QSVUBjm/
+w9Mb/1O+oiLYBzNaEyvBAwtn0e+gp4oXiiz3ZvcteHbgUWE6g1jZsRT9XxscysU3
+/p77oEzkGAsSdYmrLMvemgh3fiZClLCnVeyRWHi0qMupwcDGdTmeT61Qqu8bNwbo
+qKiPwwSsusEguiKYBWYm492RwkqmLSxyIC6bq456ZnU2IrNvZS6IfgwuVHoWbENU
+aG+22WXJ6En3amw/NayyJOWil5ODTg==
+=GRsx
+-----END PGP SIGNATURE-----
+
+--Sig_/Ou_=82KajkqloYjc_fX96qr--
