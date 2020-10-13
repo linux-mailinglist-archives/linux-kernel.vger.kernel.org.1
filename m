@@ -2,158 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824A728CB59
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4A528CB5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgJMKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgJMKCP (ORCPT
+        id S1727715AbgJMKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:05:33 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:57528 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726495AbgJMKFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:02:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E02C0613D0;
-        Tue, 13 Oct 2020 03:02:15 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 10:02:12 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602583333;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jLGZ1IVnAZvlBiYo2syEQqJNVOael+rGLim+qGCoBoo=;
-        b=XLw2qoo8SR43phSBDgCF/tnalWXC5JBbAoj0/pGkzgxRtf749FPh6qMvOy91H5ISHRYz3d
-        lko0ga0x1u05cZtWsPtVjp+9zAAstril3CgqMadFsOz8hRy6+2hkKwG+1kJS+KQf/erAfv
-        3enrhazLZljsf/gCAb62etXvaDhhOGnmguKQ20p4wkbWxXF+LkW8EArV13LzjkXC2Dg3/e
-        Pmbo4xRBCeM+/4G+ytd19TjpBnjxs+b9dmxpNjLDRt8Qi9YNv/lWyvXXrTNqAVrGdSidgq
-        /eNrLl4VpHHJCwtPnJVsxV/eOGdE11873dEFiGF76OyNyTZn/b33xMPnENgEPA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602583333;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jLGZ1IVnAZvlBiYo2syEQqJNVOael+rGLim+qGCoBoo=;
-        b=j1RvTFRZ2s3c/KFYgNVxCH2K2kDveyYA4bTr3lFgQJp73XIbN78cwt+G3pvmt0QmJfUljg
-        PZctyY/Ap4jVC/BQ==
-From:   "tip-bot2 for Juri Lelli" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/features: Fix !CONFIG_JUMP_LABEL case
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201013053114.160628-1-juri.lelli@redhat.com>
-References: <20201013053114.160628-1-juri.lelli@redhat.com>
+        Tue, 13 Oct 2020 06:05:33 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 09DA3P1A022735;
+        Tue, 13 Oct 2020 13:03:25 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 20088)
+        id 533D8639D6; Tue, 13 Oct 2020 13:03:25 +0300 (IDT)
+From:   Tali Perry <tali.perry1@gmail.com>
+To:     wsa@kernel.org, andriy.shevchenko@linux.intel.com, xqiu@google.com,
+        kunyi@google.com, benjaminfair@google.com, avifishman70@gmail.com,
+        joel@jms.id.au, tmaimon77@gmail.com
+Cc:     linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Tali Perry <tali.perry1@gmail.com>
+Subject: [PATCH v2] i2c: npcm7xx: Support changing bus speed using debugfs.
+Date:   Tue, 13 Oct 2020 13:03:14 +0300
+Message-Id: <20201013100314.216154-1-tali.perry1@gmail.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Message-ID: <160258333212.7002.8735934317227878261.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Systems that can dynamically add and remove slave devices
+often need to change the bus speed in runtime.
+This patch expose the bus frequency to the user.
+This feature can also be used for test automation.
 
-Commit-ID:     da912c29a4a552588cbfa895487d9d5523b6faa7
-Gitweb:        https://git.kernel.org/tip/da912c29a4a552588cbfa895487d9d5523b6faa7
-Author:        Juri Lelli <juri.lelli@redhat.com>
-AuthorDate:    Tue, 13 Oct 2020 07:31:14 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 13 Oct 2020 11:33:08 +02:00
+--
+v2 -> v1:
+	- Fix typos.
+	- Remove casting to u64.
+	
+v1: initial version
 
-sched/features: Fix !CONFIG_JUMP_LABEL case
-
-Commit:
-
-  765cc3a4b224e ("sched/core: Optimize sched_feat() for !CONFIG_SCHED_DEBUG builds")
-
-made sched features static for !CONFIG_SCHED_DEBUG configurations, but
-overlooked the CONFIG_SCHED_DEBUG=y and !CONFIG_JUMP_LABEL cases.
-
-For the latter echoing changes to /sys/kernel/debug/sched_features has
-the nasty effect of effectively changing what sched_features reports,
-but without actually changing the scheduler behaviour (since different
-translation units get different sysctl_sched_features).
-
-Fix CONFIG_SCHED_DEBUG=y and !CONFIG_JUMP_LABEL configurations by properly
-restructuring ifdefs.
-
-Fixes: 765cc3a4b224e ("sched/core: Optimize sched_feat() for !CONFIG_SCHED_DEBUG builds")
-Co-developed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Patrick Bellasi <patrick.bellasi@matbug.net>
-Link: https://lore.kernel.org/r/20201013053114.160628-1-juri.lelli@redhat.com
+Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
+Signed-off-by: Tali Perry <tali.perry1@gmail.com>
 ---
- kernel/sched/core.c  |  2 +-
- kernel/sched/sched.h | 13 ++++++++++---
- 2 files changed, 11 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-npcm7xx.c | 35 ++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8160ab5..d2003a7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -44,7 +44,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
+diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+index 2ad166355ec9..633ac67153e2 100644
+--- a/drivers/i2c/busses/i2c-npcm7xx.c
++++ b/drivers/i2c/busses/i2c-npcm7xx.c
+@@ -2208,6 +2208,40 @@ static const struct i2c_algorithm npcm_i2c_algo = {
+ /* i2c debugfs directory: used to keep health monitor of i2c devices */
+ static struct dentry *npcm_i2c_debugfs_dir;
  
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
--#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_JUMP_LABEL)
-+#ifdef CONFIG_SCHED_DEBUG
- /*
-  * Debugging: various feature bits
-  *
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 28709f6..8d1ca65 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1629,7 +1629,7 @@ enum {
- 
- #undef SCHED_FEAT
- 
--#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_JUMP_LABEL)
-+#ifdef CONFIG_SCHED_DEBUG
- 
- /*
-  * To support run-time toggling of sched features, all the translation units
-@@ -1637,6 +1637,7 @@ enum {
-  */
- extern const_debug unsigned int sysctl_sched_features;
- 
-+#ifdef CONFIG_JUMP_LABEL
- #define SCHED_FEAT(name, enabled)					\
- static __always_inline bool static_branch_##name(struct static_key *key) \
- {									\
-@@ -1649,7 +1650,13 @@ static __always_inline bool static_branch_##name(struct static_key *key) \
- extern struct static_key sched_feat_keys[__SCHED_FEAT_NR];
- #define sched_feat(x) (static_branch_##x(&sched_feat_keys[__SCHED_FEAT_##x]))
- 
--#else /* !(SCHED_DEBUG && CONFIG_JUMP_LABEL) */
-+#else /* !CONFIG_JUMP_LABEL */
++static int i2c_speed_get(void *data, u64 *val)
++{
++	struct npcm_i2c *bus = data;
 +
-+#define sched_feat(x) (sysctl_sched_features & (1UL << __SCHED_FEAT_##x))
++	*val = bus->bus_freq;
++	return 0;
++}
 +
-+#endif /* CONFIG_JUMP_LABEL */
++static int i2c_speed_set(void *data, u64 val)
++{
++	struct npcm_i2c *bus = data;
++	int ret;
 +
-+#else /* !SCHED_DEBUG */
++	if (val < I2C_FREQ_MIN_HZ || val > I2C_FREQ_MAX_HZ)
++		return -EINVAL;
++
++	if (val == bus->bus_freq)
++		return 0;
++
++	i2c_lock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
++
++	npcm_i2c_int_enable(bus, false);
++
++	ret = npcm_i2c_init_module(bus, I2C_MASTER, (u32)val);
++
++	i2c_unlock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
++
++	if (ret)
++		return -EAGAIN;
++
++	return 0;
++}
++DEFINE_DEBUGFS_ATTRIBUTE(i2c_clock_ops, i2c_speed_get, i2c_speed_set, "%llu\n");
++
+ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+ 				  struct npcm_i2c *bus)
+ {
+@@ -2223,6 +2257,7 @@ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+ 	debugfs_create_u64("rec_succ_cnt", 0444, d, &bus->rec_succ_cnt);
+ 	debugfs_create_u64("rec_fail_cnt", 0444, d, &bus->rec_fail_cnt);
+ 	debugfs_create_u64("timeout_cnt", 0444, d, &bus->timeout_cnt);
++	debugfs_create_file("i2c_speed", 0644, d, bus, &i2c_clock_ops);
  
- /*
-  * Each translation unit has its own copy of sysctl_sched_features to allow
-@@ -1665,7 +1672,7 @@ static const_debug __maybe_unused unsigned int sysctl_sched_features =
- 
- #define sched_feat(x) !!(sysctl_sched_features & (1UL << __SCHED_FEAT_##x))
- 
--#endif /* SCHED_DEBUG && CONFIG_JUMP_LABEL */
-+#endif /* SCHED_DEBUG */
- 
- extern struct static_key_false sched_numa_balancing;
- extern struct static_key_false sched_schedstats;
+ 	bus->debugfs = d;
+ }
+
+base-commit: 865c50e1d279671728c2936cb7680eb89355eeea
+-- 
+2.22.0
+
