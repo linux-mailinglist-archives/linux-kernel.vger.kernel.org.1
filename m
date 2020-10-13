@@ -2,190 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14CA28CC3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF2928CC44
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730851AbgJMLIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730454AbgJMLId (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:08:33 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E339C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:08:31 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 13so20520663wmf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uvxObDwTo5Y8F/KuyP+1hkA480rLi769JHi4wPHoyZo=;
-        b=OjLB26BnBY0bTsdHD3EzrtKyC81oM/0JTZCn6CLgyXf7zcDUfy5vEiXi3UDSzVmHDi
-         +28SDYfaM8aC9c0gvCjcQjZSkVZiSn1tj4DX9sZ7XtG7z0O9zDzWRQtW0bl4JEUVlmj6
-         oHncYXBeGhKdacVIldQq+ga8Rp+OxaRjm6pSI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=uvxObDwTo5Y8F/KuyP+1hkA480rLi769JHi4wPHoyZo=;
-        b=NLjnyapUg6e8UeGYtJbpboHtTXmicRnm2KCl4+9jH/43XCefvL8RH7aXakFOMiY6pf
-         ykK2WPATdChQ/I9tPMSDPed80GbGIWn40P4KDS6K23eykuDxF/6rpeI5faUXwXA6FATs
-         qaz3mn4l5BwbQf9b6jHkY1bjWmz4NAlekdYzvgq92gTgmTTT2TqOks3QGpdA4WsfPO4x
-         gV7kksTmhFt9HTRcUKK14poRnsqW8Om8c974jK8tXYPqYY1h9bPFTVNa7tgPR4CINqsq
-         pvBXrCJllL0+kc9Yburt5z05E58ducoGCOBD5bJq/n8W4Bu/KGW+zW/Kxb3cwSBqBKc2
-         mJgQ==
-X-Gm-Message-State: AOAM532GhIXGp+4XMiqmz01ozWNNd3mhc3VODnqRPymsLq9m0i5daIdM
-        EDxupm2u43MZ/wEMKHQcKNUfxQ==
-X-Google-Smtp-Source: ABdhPJwdxWAoTqe7At2F5tTQxz1+7Sey1hlKtS1VILSfOid9lZqdcUgzZZ28B6xcbL7mDDIeJVxKpg==
-X-Received: by 2002:a1c:ddc2:: with SMTP id u185mr15579789wmg.21.1602587309567;
-        Tue, 13 Oct 2020 04:08:29 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v11sm13304289wml.26.2020.10.13.04.08.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 04:08:28 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 13:08:26 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2 22/22] drm/msm: Don't implicit-sync if only a single
- ring
-Message-ID: <20201013110826.GD438822@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20201012020958.229288-1-robdclark@gmail.com>
- <20201012020958.229288-23-robdclark@gmail.com>
- <20201012144018.GB438822@phenom.ffwll.local>
- <CAF6AEGuZ0QOCbJDTF=FsHsbJ9J5rqLLPJexk_EvX+SxPGFZLDQ@mail.gmail.com>
+        id S1730990AbgJMLJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:09:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726662AbgJMLJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:09:48 -0400
+Received: from coco.lan (unknown [95.90.213.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C746520659;
+        Tue, 13 Oct 2020 11:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602587387;
+        bh=rtkVLlfLr6PN9eUQhxVzbDDGszd1byyijI9PT2xKGqk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nZQe+kbSoOC+QbX5z+Oo7NTk9qhgO9eT7IxPVkhteoXz9VuS/foh48IK7+12oW4c9
+         GYj30PuLutNXc7Ff1M5RYkzWQbd3do+gxcnCNAnWA0mIkcSNlQpEgpiZMLHBhikYmj
+         J8xJ4eSU4G8gm4Qa/HoL/IcWSnSyQWjnAjhrC+pI=
+Date:   Tue, 13 Oct 2020 13:09:36 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org
+Cc:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
+        arnd@arndb.de, keescook@chromium.org, alan.maguire@oracle.com,
+        yzaikin@google.com, davidgow@google.com, akpm@linux-foundation.org,
+        rppt@linux.ibm.com, frowand.list@gmail.com,
+        gregkh@linuxfoundation.org, sboyd@kernel.org, logang@deltatee.com,
+        mcgrof@kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 2/5] kunit: test: create a single centralized
+ executor for all tests
+Message-ID: <20201013130936.708562f6@coco.lan>
+In-Reply-To: <20200804204745.987648-3-brendanhiggins@google.com>
+References: <20200804204745.987648-1-brendanhiggins@google.com>
+        <20200804204745.987648-3-brendanhiggins@google.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGuZ0QOCbJDTF=FsHsbJ9J5rqLLPJexk_EvX+SxPGFZLDQ@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 08:07:38AM -0700, Rob Clark wrote:
-> On Mon, Oct 12, 2020 at 7:40 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Sun, Oct 11, 2020 at 07:09:49PM -0700, Rob Clark wrote:
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > Any cross-device sync use-cases *must* use explicit sync.  And if there
-> > > is only a single ring (no-preemption), everything is FIFO order and
-> > > there is no need to implicit-sync.
-> > >
-> > > Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
-> > > is undefined when fences are not used to synchronize buffer usage across
-> > > contexts (which is the only case where multiple different priority rings
-> > > could come into play).
-> >
-> > Uh does this mean msm is broken on dri2/3 and wayland? Or I'm I just
-> > confused by your commit message?
+Em Tue,  4 Aug 2020 13:47:42 -0700
+Brendan Higgins <brendanhiggins@google.com> escreveu:
+
+> From: Alan Maguire <alan.maguire@oracle.com>
 > 
-> No, I don't think so.  If there is only a single priority level
-> ringbuffer (ie. no preemption to higher priority ring) then everything
-> is inherently FIFO order.
+> Add a centralized executor to dispatch tests rather than relying on
+> late_initcall to schedule each test suite separately. Centralized
+> execution is for built-in tests only; modules will execute tests when
+> loaded.
 
-Well eventually you get a scheduler I guess/hope :-)
+This patch adds 3 new warnings when doing "make htmldocs".
+Those two are trivial to fix:
 
-> For cases where we are sharing buffers with something external to drm,
-> explicit sync will be used.  And we don't implicit sync with display,
-> otherwise x11 (frontbuffer rendering) would not work
+	../include/kunit/test.h:282: warning: Function parameter or member '__suites' not described in 'kunit_test_suites_for_module'
+	../include/kunit/test.h:282: warning: Excess function parameter 'suites_list' description in 'kunit_test_suites_for_module'
 
-Uh now I'm even more confused. The implicit sync fences in dma_resv are
-kinda for everyone. That's also why dma_resv with the common locking
-approach is a useful idea.
-
-So display should definitely support implicit sync, and iirc msm does have
-the helper hooked up.
-
-Wrt other subsystems, I guess passing dma_fence around somehow doesn't fit
-into v4l (the patches never landed), so v4l doesn't do any kind of sync
-right now. But this could be fixed. Not sure what else is going on.
-
-So I guess I still have no idea why you put that into the commit message.
-
-btw for what you're trying to do yourself, the way to do this is to
-allocate a fence timeline for your engine, compare fences, and no-op them
-all out if their own the same timeline.
--Daniel
+<patch>
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index a423fffefea0..f2c387c60fac 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -256,9 +256,9 @@ static inline int kunit_run_all_tests(void)
+  * kunit_test_suites() - used to register one or more &struct kunit_suite
+  *			 with KUnit.
+  *
+- * @suites_list...: a statically allocated list of &struct kunit_suite.
++ * @__suites: a statically allocated list of &struct kunit_suite.
+  *
+- * Registers @suites_list with the test framework. See &struct kunit_suite for
++ * Registers @__suites with the test framework. See &struct kunit_suite for
+  * more information.
+  *
+  * If a test suite is built-in, module_init() gets translated into
+</patch>
 
 > 
-> BR,
-> -R
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Co-developed-by: Iurii Zaikin <yzaikin@google.com>
+> Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+> Co-developed-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/kunit/test.h | 67 +++++++++++++++++++++++++++++---------------
+>  lib/kunit/Makefile   |  3 +-
+>  lib/kunit/executor.c | 28 ++++++++++++++++++
+>  lib/kunit/test.c     |  2 +-
+>  4 files changed, 76 insertions(+), 24 deletions(-)
+>  create mode 100644 lib/kunit/executor.c
 > 
-> > Since for these protocols we do expect implicit sync accross processes to
-> > work. Even across devices (and nvidia have actually provided quite a bunch
-> > of patches to make this work in i915 - ttm based drivers get this right,
-> > plus dumb scanout drivers using the right helpers also get this all
-> > right).
-> > -Daniel
-> >
-> > >
-> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > ---
-> > >  drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > index 3151a0ca8904..c69803ea53c8 100644
-> > > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> > > @@ -277,7 +277,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
-> > >       return ret;
-> > >  }
-> > >
-> > > -static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-> > > +static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
-> > >  {
-> > >       int i, ret = 0;
-> > >
-> > > @@ -297,7 +297,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
-> > >                               return ret;
-> > >               }
-> > >
-> > > -             if (no_implicit)
-> > > +             if (!implicit_sync)
-> > >                       continue;
-> > >
-> > >               ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
-> > > @@ -768,7 +768,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
-> > >       if (ret)
-> > >               goto out;
-> > >
-> > > -     ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-> > > +     ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
-> > > +                     !(args->flags & MSM_SUBMIT_NO_IMPLICIT));
-> > >       if (ret)
-> > >               goto out;
-> > >
-> > > --
-> > > 2.26.2
-> > >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 47e61e1d53370..f3e86c3953a2b 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -224,7 +224,7 @@ size_t kunit_suite_num_test_cases(struct kunit_suite *suite);
+>  unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  				 struct kunit_case *test_case);
+>  
+> -int __kunit_test_suites_init(struct kunit_suite **suites);
+> +int __kunit_test_suites_init(struct kunit_suite * const * const suites);
+>  
+>  void __kunit_test_suites_exit(struct kunit_suite **suites);
+>  
+> @@ -237,34 +237,57 @@ void __kunit_test_suites_exit(struct kunit_suite **suites);
+>   * Registers @suites_list with the test framework. See &struct kunit_suite for
+>   * more information.
+>   *
+> - * When builtin, KUnit tests are all run as late_initcalls; this means
+> - * that they cannot test anything where tests must run at a different init
+> - * phase. One significant restriction resulting from this is that KUnit
+> - * cannot reliably test anything that is initialize in the late_init phase;
+> - * another is that KUnit is useless to test things that need to be run in
+> - * an earlier init phase.
+> - *
+> - * An alternative is to build the tests as a module.  Because modules
+> - * do not support multiple late_initcall()s, we need to initialize an
+> - * array of suites for a module.
+> - *
+> - * TODO(brendanhiggins@google.com): Don't run all KUnit tests as
+> - * late_initcalls.  I have some future work planned to dispatch all KUnit
+> - * tests from the same place, and at the very least to do so after
+> - * everything else is definitely initialized.
+> + * If a test suite is built-in, module_init() gets translated into
+> + * an initcall which we don't want as the idea is that for builtins
+> + * the executor will manage execution.  So ensure we do not define
+> + * module_{init|exit} functions for the builtin case when registering
+> + * suites via kunit_test_suites() below.
+>   */
+> -#define kunit_test_suites(suites_list...)				\
+> -	static struct kunit_suite *suites[] = {suites_list, NULL};	\
+> -	static int kunit_test_suites_init(void)				\
+> +#ifdef MODULE
+> +#define kunit_test_suites_for_module(__suites)				\
+> +	static int __init kunit_test_suites_init(void)			\
+>  	{								\
+> -		return __kunit_test_suites_init(suites);		\
+> +		return __kunit_test_suites_init(__suites);		\
+>  	}								\
+> -	late_initcall(kunit_test_suites_init);				\
+> +	module_init(kunit_test_suites_init);				\
+> +									\
+>  	static void __exit kunit_test_suites_exit(void)			\
+>  	{								\
+> -		return __kunit_test_suites_exit(suites);		\
+> +		return __kunit_test_suites_exit(__suites);		\
+>  	}								\
+>  	module_exit(kunit_test_suites_exit)
+> +#else
+> +#define kunit_test_suites_for_module(__suites)
+> +#endif /* MODULE */
+> +
+> +#define __kunit_test_suites(unique_array, unique_suites, ...)		       \
+> +	static struct kunit_suite *unique_array[] = { __VA_ARGS__, NULL };     \
+> +	kunit_test_suites_for_module(unique_array);			       \
+> +	static struct kunit_suite **unique_suites			       \
+> +	__used __section(.kunit_test_suites) = unique_array
+> +
+> +/**
+> + * kunit_test_suites() - used to register one or more &struct kunit_suite
+> + *			 with KUnit.
+> + *
+> + * @suites: a statically allocated list of &struct kunit_suite.
+> + *
+> + * Registers @suites with the test framework. See &struct kunit_suite for
+> + * more information.
+> + *
+> + * When builtin,  KUnit tests are all run via executor; this is done
+> + * by placing the array of struct kunit_suite * in the .kunit_test_suites
+> + * ELF section.
+> + *
+> + * An alternative is to build the tests as a module.  Because modules do not
+> + * support multiple initcall()s, we need to initialize an array of suites for a
+> + * module.
+> + *
+> + */
+> +#define kunit_test_suites(...)						\
+> +	__kunit_test_suites(__UNIQUE_ID(array),				\
+> +			    __UNIQUE_ID(suites),			\
+> +			    __VA_ARGS__)
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+But the third warning:
+
+	../include/kunit/test.h:314: warning: Excess function parameter 'suites' description in 'kunit_test_suites'
+
+is more problematic.
+
+At least for me, it sounds a **very bad** idea to not pass "array"
+and "suites" to this macro, but, instead, to rely that some
+previous code would have added such vars with those specific
+names.
+
+Also, you can't document a parameter "suites" that it is not a
+parameter.
+
+IMO, the right fix would be to define the macro as:
+
+	#define kunit_test_suites(array, suites, arg...)			\
+		__kunit_test_suites(__UNIQUE_ID(array),			\
+				    __UNIQUE_ID(suites),		\
+				    ## arg)
+
+and then document "array", "suites" and "arg" using kernel-doc
+markups.
+
+Thanks,
+Mauro
