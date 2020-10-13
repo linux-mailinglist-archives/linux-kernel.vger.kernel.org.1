@@ -2,142 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1092728CAA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7927628CAAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730774AbgJMIxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgJMIxe (ORCPT
+        id S2403925AbgJMIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:54:35 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:51974 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726825AbgJMIye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:53:34 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EA2C0613D0;
-        Tue, 13 Oct 2020 01:53:34 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id c6so10312712plr.9;
-        Tue, 13 Oct 2020 01:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LTR2IgYIK7xAE4oUdad2TPARaho3YwkIIRd1YoCTDVM=;
-        b=M3Q3PwnXWnIwDY2TCh2iHM0A7Z2qWtd6gCLk9NA/7EpCajIEyAa1GGhCoxnVgEqjUq
-         kNt69WifcadORjeHHrH4NiVFKK83XrW9w4uSnCT3AwoFEYQNJLKQ0Ug9BZbjW5rDrckb
-         Lp9NC+XvqYlyRYEDQQ18i4yJCkS9ufgUugBF5ucz3Glr32wy4yQki7X4VYzqtNIHlzG8
-         36HgX1HnEo+7tmZ9AyCKI3U/nv7aTa7jezeWzJShZeoz/nXxfjud/1gTuRqDOaTzXNU9
-         rXSDvuSv2f0BulH+josCwUUyFpj58IW/KgBOvbxOQnlQNGpykrWnYU9mnKZ2h4xJUxN1
-         XvCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LTR2IgYIK7xAE4oUdad2TPARaho3YwkIIRd1YoCTDVM=;
-        b=ZPLlX774egU4onQrT/TJkLvyP0W4OTNU9nBqSakpPz0NVHrBwf8c5mBKjIBTisdPhT
-         4j50xP8It9a+/l3CLsu6cqVt7i0H7kD7QwUWJxPt+7vNHE0Hnbd2NR+5ZObPDrz0xjYX
-         5DgKobzz/Vj8xQ8dOfgcYWgxHaffX/fz7bZzrsTtZguVCI1bRV8waGDy7/U2xVEnYLPl
-         Uvc94fLbTjs4EZLFSMvQPbq5txcpMrOGkrD7GLmTigUnNEfxikRN+OzztD14wDCwig3b
-         rZ4u+EpOuytjPnIEnZtDSSXqZxgJwhogXAvwcI62IuepsXRcsrHLbOK3NfFgpkEt8KwM
-         v03w==
-X-Gm-Message-State: AOAM531yPf+yfKiKKc7vsiECq49mjUm1HV9GmoYHa5hNG6uGgSQa5vVn
-        qygM3oQh8yuKWI3T7Tk0wesa1GQveicB8mpFRRY=
-X-Google-Smtp-Source: ABdhPJwfveAnvFxUuaP0Hm+IJS4rem56R3OLYskHyZskJpRTolMNEa7Xa7wqY/DEeNAriP4rdx4PTQ==
-X-Received: by 2002:a17:902:9a87:b029:d2:1ec0:4373 with SMTP id w7-20020a1709029a87b02900d21ec04373mr26893765plp.40.1602579214036;
-        Tue, 13 Oct 2020 01:53:34 -0700 (PDT)
-Received: from [192.168.86.81] ([106.51.240.187])
-        by smtp.gmail.com with ESMTPSA id u18sm22943727pgk.18.2020.10.13.01.53.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 01:53:33 -0700 (PDT)
-Subject: Re: [PATCH] lib: Convert test_printf.c to KUnit
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        skhan@linuxfoundation.org, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20200817043028.76502-1-98.arpi@gmail.com>
- <f408efbd-10f7-f1dd-9baa-0f1233cafffc@rasmusvillemoes.dk>
- <20200821113710.GA26290@alley> <20200821122849.GS1891694@smile.fi.intel.com>
- <20201012204625.GA56597@google.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <41038b5a-5821-a27b-ff6e-fb9f0054940b@gmail.com>
-Date:   Tue, 13 Oct 2020 14:23:29 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 13 Oct 2020 04:54:34 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201013085422euoutp02d890f598a249ee4b965768a20ff1fdd4~9gVkqGM7j0420704207euoutp02h
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:54:22 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201013085422euoutp02d890f598a249ee4b965768a20ff1fdd4~9gVkqGM7j0420704207euoutp02h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1602579262;
+        bh=Kk0LqZlSEGTzsjG1lnDEAIBRN4U5DPNxnZeDzusow58=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=Afkty+Tamg+eMzLPBS3PAyHV1zbtgSVMVR2ZlzO9g7UPlN0gfzwQiYDrg38+Nraib
+         CxIM35ry4ooQ7jlJP06hS2IETzxpWNqpxEudC2lmsnG4T7D8PA0HCjvGqteyp//Wxq
+         54xzUJKzGetexMspvDS4O3TFNIdkYzRleMW6v/eU=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201013085417eucas1p134178f01e846fc128e68ea19cac6672e~9gVfxaQcD1905519055eucas1p1A;
+        Tue, 13 Oct 2020 08:54:17 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id B8.EA.06456.93B658F5; Tue, 13
+        Oct 2020 09:54:17 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201013085416eucas1p285c57b63894f54a42fb1052cfadd7cb5~9gVfHsxSP0380703807eucas1p2Q;
+        Tue, 13 Oct 2020 08:54:16 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201013085416eusmtrp216d6e764296b285499e05b3bb43105c4~9gVfHE31j0147001470eusmtrp21;
+        Tue, 13 Oct 2020 08:54:16 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-14-5f856b39f888
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id C6.AC.06017.83B658F5; Tue, 13
+        Oct 2020 09:54:16 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201013085415eusmtip19b93c7a3b94706c32deb68cc56bd62e1~9gVesx8sY2707227072eusmtip1O;
+        Tue, 13 Oct 2020 08:54:15 +0000 (GMT)
+Subject: Re: [PATCH 4.19 27/38] iommu/exynos: add missing put_device() call
+ in exynos_iommu_of_xlate()
+To:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Yu Kuai <yukuai3@huawei.com>, Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <5b869c86-8d35-e834-4fec-6b63a942e484@samsung.com>
+Date:   Tue, 13 Oct 2020 10:54:15 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201012204625.GA56597@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201007094737.GA12593@duo.ucw.cz>
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLKsWRmVeSWpSXmKPExsWy7djPc7qW2a3xBm19rBbNi9ezWUw+NZfJ
+        4vKuOWwWRze4WGxac43NYsHGR4wWcxayObB7zJt1gsWj5chbVo9NqzrZPPbPXcPusfl0tcfn
+        TXIBbFFcNimpOZllqUX6dglcGct2zGAu+MVRceDnY9YGxiXsXYycHBICJhIrllwHs4UEVjBK
+        rF1l1MXIBWR/YZTY8v8dM4TzmVHi6c9FbDAdX/40MEEkljNKHPpxlRWi/T2jxJQuexBbWCBD
+        4lPnWRYQW0QgWOLeyQVsIA3MArMZJc6+2wzWwCZgKNH1tgtsKq+AncTdKf1gDSwCqhLT+peD
+        2aICSRLnF/5hhqgRlDg58wlYnFPAQOLZgldgdzMLyEtsfzuHGcIWl7j1ZD7YdRIC29glps1d
+        wgpxtotE//3XTBC2sMSr41ugASAj8X8nTEMzo8TDc2vZIZweRonLTTMYIaqsJe6c+wV0KgfQ
+        Ck2J9bv0IcKOEgfW3mUGCUsI8EnceCsIcQSfxKRt06HCvBIdbUIQ1WoSs46vg1t78MIl5gmM
+        SrOQvDYLyTuzkLwzC2HvAkaWVYziqaXFuempxYZ5qeV6xYm5xaV56XrJ+bmbGIGJ6PS/4592
+        MH69lHSIUYCDUYmHd4FfS7wQa2JZcWXuIUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KLDzFK
+        c7AoifMaL3oZKySQnliSmp2aWpBaBJNl4uCUamDcOqV17Zl3Zc9mvtm95Jv9EuXzFg4dgjHF
+        i8wlW65fn3XsLoP6/Tcpp72rjWacKPpaFMNrsFBG4/m6JK71kjOU7xUb7mRTXs796KKxfP9m
+        Zg/3NdU3Fxht+Va2VL/3ocqS55eztVcFFPEeczQR6HdL4z1rm+C+dlLgxgVClRO2iU0u63n1
+        wHafEktxRqKhFnNRcSIADjmf40ADAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRmVeSWpSXmKPExsVy+t/xu7oW2a3xBsuei1s0L17PZjH51Fwm
+        i8u75rBZHN3gYrFpzTU2iwUbHzFazFnI5sDuMW/WCRaPliNvWT02repk89g/dw27x+bT1R6f
+        N8kFsEXp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvHWhmZKunb2aSk5mSWpRbp2yXo
+        ZSzbMYO54BdHxYGfj1kbGJewdzFyckgImEh8+dPABGILCSxllOic4gQRl5E4Oa2BFcIWlvhz
+        rYuti5ELqOYto8Suw7fBEsICGRJ31t4Hs0UEgiXuXd3NBFLELDCbUWLys/2MEB1PGSUOXrvP
+        BlLFJmAo0fW2C8zmFbCTuDulnwXEZhFQlZjWvxzMFhVIkvh+tYsRokZQ4uTMJ2BxTgEDiWcL
+        XoGdzSxgJjFv80NmCFteYvvbOVC2uMStJ/OZJjAKzULSPgtJyywkLbOQtCxgZFnFKJJaWpyb
+        nltspFecmFtcmpeul5yfu4kRGHvbjv3csoOx613wIUYBDkYlHt4Ffi3xQqyJZcWVuYcYJTiY
+        lUR4nc6ejhPiTUmsrEotyo8vKs1JLT7EaAr03ERmKdHkfGBayCuJNzQ1NLewNDQ3Njc2s1AS
+        5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwFi2q+rx2sYJLc9rXZ4EbFl2SqwkYcH9oLdhG5Wk
+        JCOvfl88c4fTIsOQ9euW7noXu7EyY3vkzg8JK9ZfUiywvsMhGnthsZnRyewrM2xeyerJb0kO
+        FuA/sUn2P58s09KSUo3VhscmnUwMj39oepft4Vw24TXV3keeV/PxXrwk9aZiS+vulr418sZK
+        LMUZiYZazEXFiQDP6Daw0wIAAA==
+X-CMS-MailID: 20201013085416eucas1p285c57b63894f54a42fb1052cfadd7cb5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff
+References: <20201005142108.650363140@linuxfoundation.org>
+        <20201005142109.977461657@linuxfoundation.org>
+        <CGME20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff@eucas1p1.samsung.com>
+        <20201007094737.GA12593@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/20 2:16 am, Brendan Higgins wrote:
-> On Fri, Aug 21, 2020 at 03:28:49PM +0300, Andy Shevchenko wrote:
->> On Fri, Aug 21, 2020 at 01:37:10PM +0200, Petr Mladek wrote:
->>> On Mon 2020-08-17 09:06:32, Rasmus Villemoes wrote:
->>>> On 17/08/2020 06.30, Arpitha Raghunandan wrote:
->>>>> Converts test lib/test_printf.c to KUnit.
->>>>> More information about KUnit can be found at
->>>>> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
->>>>> KUnit provides a common framework for unit tests in the kernel.
->>>>
->>>> So I can continue to build a kernel with some appropriate CONFIG set to
->>>> y, boot it under virt-me, run dmesg and see if I broke printf? That's
->>>> what I do now, and I don't want to have to start using some enterprisy
->>>> framework.
->>>
->>> I had the same concern. I have tried it.
-> 
-> Sorry you feel that way. Do you have any suggestions on how we can make
-> it seem less enterprisy? Seems like there are people here who are not a
-> fan of the output format, so of which we can fix here, some of which is
-> part of KTAP[1].
-> 
->> Which raises an obvious question: did the people who convert this test this
->> themselves? Looks like a janitor work in the area without understanding the
->> area good enough.
-> 
-> Looks to me like Arpitha ran it, but you are right, we don't have a lot
-> of familiarity with this area; we were treating it as "janitor work" as
-> you say.
-> 
-> Our intention was just to take some existing tests and as non-invasively
-> as possible, get them to report using a common format, and maybe even
-> get some of the tests to follow a common pattern.
-> 
->> Probably I will NAK all those patches from now on, until it will be good commit
->> messages and cover of risen aspects, including reference to before and after
->> outcome for passed and failed test cases.
-> 
-> Fair enough, hopefully we can address these issues in the next revision.
-> 
-> One issue though, with the "before and after outcome" you are
-> referencing; are you referring to the issue that Petr pointed out in how
-> they are inconsistent:
-> 
->    + original code: vsnprintf(buf, 6, "%pi4|%pI4", ...) wrote '127.0', expected '127-0'
->    + kunit code: vsnprintf(buf, 20, "%pi4|%pI4", ...) wrote '127.000.000.001|127', expected '127-000.000.001|127'  
-> 
-> (I think Rasmus addressed this.) Or are your referring to something
-> else?
-> 
->> Brendan, I guess the ball now on your side to prove this is good activity.
-> 
-> And I see that we are off to a great start! :-)
-> 
-> In all seriousness, I am really sorry about this. I kind of bungled this
-> up trying to go after too many of these conversions at once.
-> 
-> Arpitha, can you get this follow up patch out?
-> 
+Hi Pavel,
 
-Yes, I will work on this.
+On 07.10.2020 11:47, Pavel Machek wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> [ Upstream commit 1a26044954a6d1f4d375d5e62392446af663be7a ]
+>>
+>> if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't have
+>> a corresponding put_device(). Thus add put_device() to fix the exception
+>> handling for this function implementation.
+> Okay, this looks reasonable, but...
+>
+> Do we miss put_device() in normal path, too? I'd expect another
+> put_device at end of exynos_iommu_of_xlate() or perhaps in release
+> path somewhere...
 
-> [1] https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/
-> 
+Frankly, there is no release path, so there is no need for put_device. 
+Once initialized, Exynos IOMMU stays in the system forever. There is no 
+point to remove IOMMU nor the API for that. Keeping increased refcount 
+for its device just matches this behavior.
+
+If the missing put_device() is really a problem, then we can move it 
+from the error path just after data = platform_get_drvdata(sysmmu) 
+assignment. Feel free to send a patch if you think this is a more 
+appropriate approach.
+
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
