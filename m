@@ -2,82 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F329328CB05
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716D828CAD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391443AbgJMJ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:29:27 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17682 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390610AbgJMJ30 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:29:26 -0400
-X-Greylist: delayed 906 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 05:29:26 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1602580451; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=SAAD8/h6oNsaAnnkvAEdGVgF8CkPyaNX+reytruBJJZyTqrj3Uf6NsTabdND4gAsL5YpXbGkt5n0nA3e6n8BPRKkaAzKYObZmCqsKpbnftBNaGVeQ16X1KUrCi8O0PvhIKzhQjtd9vXZCRgFcHZ8PbsCKazbVBttTqhMGDDrJ3A=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1602580451; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=VfWF0ex94HcXp8r2avWCwoZVeUv+rWL75nDheLDzqQg=; 
-        b=Cg7pNCBc/OeKyPNctrMHYPY1Iz0rvZx9r+3z33KyYnSePCfl3JpQWnoWitYXVCrVrqCU46mZaPBkgWzubualf1cisDNoazz1dl8QCNNlgLlBS4qsxwa1/QqTHb0seKUqqQVvc4X4Jj/ZzbFdeazuuP+DOme5xVx/auTj9ZpM9tI=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=euphon.net;
-        spf=pass  smtp.mailfrom=fam@euphon.net;
-        dmarc=pass header.from=<fam@euphon.net> header.from=<fam@euphon.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1602580451;
-        s=zoho; d=euphon.net; i=fam@euphon.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=VfWF0ex94HcXp8r2avWCwoZVeUv+rWL75nDheLDzqQg=;
-        b=d+F6pQszo+1Km/sUGXJutNERSVZHZlVRrfHVU3DFNRp8LybP1/kyuojTN/3LI1uX
-        3G45UeQGKTmyH6xJI6BLyDJAsadio05RZ8y0bQAuLCO8AkU01AP7IrmEpaO1MMj5TtE
-        X7x7+dfyCcZJr+YWb44YFTfy4b4G8CnBXWggok3Q=
-Received: from localhost (ec2-52-56-101-76.eu-west-2.compute.amazonaws.com [52.56.101.76]) by mx.zoho.com.cn
-        with SMTPS id 1602580448540450.3474970169616; Tue, 13 Oct 2020 17:14:08 +0800 (CST)
-From:   fam@euphon.net
-To:     linux-doc@vger.kernel.org
-Cc:     fam@euphon.net, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
-Message-ID: <20201013091404.3124178-1-fam@euphon.net>
-Subject: [PATCH] docs: Add two missing entries in vm sysctl index
-Date:   Tue, 13 Oct 2020 10:14:04 +0100
-X-Mailer: git-send-email 2.25.1
+        id S2404237AbgJMJPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:15:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:49810 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403986AbgJMJPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:15:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E5DB31B;
+        Tue, 13 Oct 2020 02:15:33 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 489213F66B;
+        Tue, 13 Oct 2020 02:15:32 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 10:15:26 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        robh@kernel.org, bhelgaas@google.com, gustavo.pimentel@synopsys.com
+Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
+ dw_child_pcie_ops
+Message-ID: <20201013091526.GA13945@e121166-lin.cambridge.arm.com>
+References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fam Zheng <famzheng@amazon.com>
+On Wed, Sep 16, 2020 at 01:41:30PM +0800, Zhiqiang Hou wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> 
+> On NXP Layerscape platforms, it results in SError in the
+> enumeration of the PCIe controller, which is not connecting
+> with an Endpoint device. And it doesn't make sense to
+> enumerate the Endpoints when the PCIe link is down. So this
+> patch added the link up check to avoid to fire configuration
+> transactions on link down bus.
+> 
+> [    0.807773] SError Interrupt on CPU2, code 0xbf000002 -- SError
+> [    0.807775] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
+> [    0.807776] Hardware name: LS1046A RDB Board (DT)
+> [    0.807777] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+> [    0.807778] pc : pci_generic_config_read+0x3c/0xe0
+> [    0.807778] lr : pci_generic_config_read+0x24/0xe0
+> [    0.807779] sp : ffff80001003b7b0
+> [    0.807780] x29: ffff80001003b7b0 x28: ffff80001003ba74
+> [    0.807782] x27: ffff000971d96800 x26: ffff00096e77e0a8
+> [    0.807784] x25: ffff80001003b874 x24: ffff80001003b924
+> [    0.807786] x23: 0000000000000004 x22: 0000000000000000
+> [    0.807788] x21: 0000000000000000 x20: ffff80001003b874
+> [    0.807790] x19: 0000000000000004 x18: ffffffffffffffff
+> [    0.807791] x17: 00000000000000c0 x16: fffffe0025981840
+> [    0.807793] x15: ffffb94c75b69948 x14: 62203a383634203a
+> [    0.807795] x13: 666e6f635f726568 x12: 202c31203d207265
+> [    0.807797] x11: 626d756e3e2d7375 x10: 656877202c307830
+> [    0.807799] x9 : 203d206e66766564 x8 : 0000000000000908
+> [    0.807801] x7 : 0000000000000908 x6 : ffff800010900000
+> [    0.807802] x5 : ffff00096e77e080 x4 : 0000000000000000
+> [    0.807804] x3 : 0000000000000003 x2 : 84fa3440ff7e7000
+> [    0.807806] x1 : 0000000000000000 x0 : ffff800010034000
+> [    0.807808] Kernel panic - not syncing: Asynchronous SError Interrupt
+> [    0.807809] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
+> [    0.807810] Hardware name: LS1046A RDB Board (DT)
+> [    0.807811] Call trace:
+> [    0.807812]  dump_backtrace+0x0/0x1c0
+> [    0.807813]  show_stack+0x18/0x28
+> [    0.807814]  dump_stack+0xd8/0x134
+> [    0.807814]  panic+0x180/0x398
+> [    0.807815]  add_taint+0x0/0xb0
+> [    0.807816]  arm64_serror_panic+0x78/0x88
+> [    0.807817]  do_serror+0x68/0x180
+> [    0.807818]  el1_error+0x84/0x100
+> [    0.807818]  pci_generic_config_read+0x3c/0xe0
+> [    0.807819]  dw_pcie_rd_other_conf+0x78/0x110
+> [    0.807820]  pci_bus_read_config_dword+0x88/0xe8
+> [    0.807821]  pci_bus_generic_read_dev_vendor_id+0x30/0x1b0
+> [    0.807822]  pci_bus_read_dev_vendor_id+0x4c/0x78
+> [    0.807823]  pci_scan_single_device+0x80/0x100
+> [    0.807824]  pci_scan_slot+0x38/0x130
+> [    0.807825]  pci_scan_child_bus_extend+0x54/0x2a0
+> [    0.807826]  pci_scan_child_bus+0x14/0x20
+> [    0.807827]  pci_scan_bridge_extend+0x230/0x570
+> [    0.807828]  pci_scan_child_bus_extend+0x134/0x2a0
+> [    0.807829]  pci_scan_root_bus_bridge+0x64/0xf0
+> [    0.807829]  pci_host_probe+0x18/0xc8
+> [    0.807830]  dw_pcie_host_init+0x220/0x378
+> [    0.807831]  ls_pcie_probe+0x104/0x140
+> [    0.807832]  platform_drv_probe+0x54/0xa8
+> [    0.807833]  really_probe+0x118/0x3e0
+> [    0.807834]  driver_probe_device+0x5c/0xc0
+> [    0.807835]  device_driver_attach+0x74/0x80
+> [    0.807835]  __driver_attach+0x8c/0xd8
+> [    0.807836]  bus_for_each_dev+0x7c/0xd8
+> [    0.807837]  driver_attach+0x24/0x30
+> [    0.807838]  bus_add_driver+0x154/0x200
+> [    0.807839]  driver_register+0x64/0x120
+> [    0.807839]  __platform_driver_probe+0x7c/0x148
+> [    0.807840]  ls_pcie_driver_init+0x24/0x30
+> [    0.807841]  do_one_initcall+0x60/0x1d8
+> [    0.807842]  kernel_init_freeable+0x1f4/0x24c
+> [    0.807843]  kernel_init+0x14/0x118
+> [    0.807843]  ret_from_fork+0x10/0x34
+> [    0.807854] SMP: stopping secondary CPUs
+> [    0.807855] Kernel Offset: 0x394c64080000 from 0xffff800010000000
+> [    0.807856] PHYS_OFFSET: 0xffff8bfd40000000
+> [    0.807856] CPU features: 0x0240022,21806000
+> [    0.807857] Memory Limit: none
+> 
+> Fixes: c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-Both seem overlooked while adding the section in the main content.
----
- Documentation/admin-guide/sysctl/vm.rst | 2 ++
- 1 file changed, 2 insertions(+)
+Rob,
 
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-=
-guide/sysctl/vm.rst
-index 4b9d2e8e9142..f455fa00c00f 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -27,6 +27,7 @@ Currently, these files are in /proc/sys/vm:
- - admin_reserve_kbytes
- - block_dump
- - compact_memory
-+- compaction_proactiveness
- - compact_unevictable_allowed
- - dirty_background_bytes
- - dirty_background_ratio
-@@ -37,6 +38,7 @@ Currently, these files are in /proc/sys/vm:
- - dirty_writeback_centisecs
- - drop_caches
- - extfrag_threshold
-+- highmem_is_dirtyable
- - hugetlb_shm_group
- - laptop_mode
- - legacy_va_layout
---=20
-2.25.1
+do you mind if I squash this in with the commit it is fixing ?
 
+Please let me know.
 
+Thanks,
+Lorenzo
+
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index c01c9d2fb3f9..e82b518430c5 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -442,6 +442,9 @@ static void __iomem *dw_pcie_other_conf_map_bus(struct pci_bus *bus,
+>  	struct pcie_port *pp = bus->sysdata;
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>  
+> +	if (!dw_pcie_link_up(pci))
+> +		return NULL;
+> +
+>  	busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
+>  		 PCIE_ATU_FUNC(PCI_FUNC(devfn));
+>  
+> -- 
+> 2.17.1
+> 
