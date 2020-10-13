@@ -2,141 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80A128D3BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1A128D3BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731452AbgJMSh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729085AbgJMSh6 (ORCPT
+        id S1731528AbgJMSjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:39:02 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:17431 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731459AbgJMSjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:37:58 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D51EC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:37:57 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id q136so421579oic.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8wS/OhEkiOS3keXiGTDs7Y3EitxUywvOHPNnihsdSyE=;
-        b=t0F+G1O57UeI6bVpdwwjjwQhbKg5SBBNcbIjsuCgtfQyj6d8rq1BA8rIz7ecaA71gc
-         T+IiHEtF2kw2edN5eOkaWaVo+yV5In0UaemYwBdjscCgWg02vLKA8ZvaYhVH1Jw++eOt
-         /sNPo4wVn1J+l+bRRXfWGk4pHrLhxEoRO3+A3qVvDzYUb+uvya2DmTzXJM0KI0fO2Mpb
-         UptCNBv+7ZuqMnEHb/0qs/9RRmkwAdHT+N3fQ3mfml0etfTfgcEE2CcyszhMK7RaoqAG
-         lJQC7yVzxzLAfFz+nYX6Tg50jYOKH6mNB8adN36wGC6EJiZ3k4d67MXZQ0Ed30Ssu62v
-         GlNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=8wS/OhEkiOS3keXiGTDs7Y3EitxUywvOHPNnihsdSyE=;
-        b=FMCvJp5YKKdu7pnpLGanPfn5IjV0wkF2ioSoQqPoA/zS8ErQF8FwctDlvldzTN8k48
-         y10mS8Vd+04THf8pfZBlwh/qG6+gx3zMfM9bZV/S3jiipxSBMcPDkwbBZkktHb8o9oKJ
-         TZHQM5Opp9NfWckKdBUk7rn4UJNS8bTM+UYSGCBENfYjv6oErDdR6bgtRcCB7MHzuSul
-         5Bcat3aIHSTuqHaf1CU1cJ4y5JDIcnJKVhRelwRAdmX1AcEMwIP+vFJaWgyt2UNKC0b+
-         vLILLN7xU0vtmBVlDfHmy9aj7mXzGNaLfWYLUOVShCL4KV5/lNtU8PbG7u5DGYqWnVCP
-         Yizw==
-X-Gm-Message-State: AOAM533qLD9f6qaTGwU5kv+t5jdIK4WtM34WF8uB6B3RdB5uGNFeUqjg
-        ZtBN/j6Os0vHmY66T2E5/D8=
-X-Google-Smtp-Source: ABdhPJy8jfVGET9TinzwOZkbkvH318fGn9A2lYtB8nLE4PiTe7K1MVbXhhTSUPGZM+TzbVYvNNMTlA==
-X-Received: by 2002:a05:6808:217:: with SMTP id l23mr711073oie.120.1602614276614;
-        Tue, 13 Oct 2020 11:37:56 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n185sm217550oia.28.2020.10.13.11.37.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 11:37:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] hwmon: (pmbus/isl68137) remove READ_TEMPERATURE_1
- telemetry for RAA228228
-To:     Alex Qiu <xqiu@google.com>,
-        Grant Peltier <grant.peltier.jg@renesas.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adam Vaughn <adam.vaughn.xh@renesas.com>,
-        Guenter Roeck <groeck7@gmail.com>
-Cc:     Jason Ling <jasonling@google.com>
-References: <CAA_a9xLcCuR+WFfNtpJgq14rGZfxcqsoVz5aNhL5XCLhV+TwNg@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <0e325e4f-bb7c-f2d3-1f16-34a89397df39@roeck-us.net>
-Date:   Tue, 13 Oct 2020 11:37:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 13 Oct 2020 14:39:02 -0400
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 09DIcO5R031196;
+        Wed, 14 Oct 2020 03:38:24 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 09DIcO5R031196
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1602614304;
+        bh=FSw3maTulNlU+aN2CgbmkmQxZxB5HXEXd7pwOOARoug=;
+        h=From:To:Cc:Subject:Date:From;
+        b=yzBWZe87pJtI2tPyByzDO/FEY7h84tzx1D4eM/9zQlWkxB/lfbyhDVTVRtydpxbVH
+         Xfc43IwcWsuQqQxh6HqMvjZrFYL2YvJfTHl0l8sF7O5ad0999FWbGMwnLWSgKK8ZX7
+         cf0MotC3C+lsI21SupzdvgZ2VaslN7MdkZ1iSK1NEedLgEJdjrryg1ynAN95KPvf+3
+         zlNibnN6hi6gNRCjumKLUecQIgwTvyz/jXaVmbDTUDCD0qrKlm3cgLJR0irucL5Seb
+         0MjDR+l1e44Ce905J1A0A1mQRwPFedVvs40tf7KwwlswbG7R3KhMcGRN2qfuAXHXYa
+         B7s7rtbc+5vOA==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kbuild: deb-pkg: do not build linux-headers package if CONFIG_MODULES=n
+Date:   Wed, 14 Oct 2020 03:38:19 +0900
+Message-Id: <20201013183821.242574-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAA_a9xLcCuR+WFfNtpJgq14rGZfxcqsoVz5aNhL5XCLhV+TwNg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 11:18 AM, Alex Qiu wrote:
-> (Intercepting the email thread...)
-> 
-> Hi Grant,
-> 
-> Looks like you made a typo in your patch:
-> 
->> + case raa_dmpvr2_2rail_nontc:
->> + info->func[0] &= ~PMBUS_HAVE_TEMP;
->> + info->func[1] &= ~PMBUS_HAVE_TEMP;
->> + fallthrough;
-> 
-> Did you mean "/* fallthrough */" instead of "fallthrough;"?
-> 
+Since commit 269a535ca931 ("modpost: generate vmlinux.symvers and
+reuse it for the second modpost"), with CONFIG_MODULES disabled,
+"make deb-pkg" (or "make bindeb-pkg") fails with:
 
-No, that is the fancy new way to indicate fallthrough in the kernel.
-It is converted to either
-	__attribute__((__fallthrough__))
-or to
-	do {} while (0)
-in include/linux/compiler_attributes.h.
+  find: ‘Module.symvers’: No such file or directory
 
-Guenter
+If CONFIG_MODULES is disabled, it doesn't really make sense to build
+the linux-headers package.
+
+Fixes: 269a535ca931 ("modpost: generate vmlinux.symvers and reuse it for the second modpost")
+Reported-by: Josh Triplett <josh@joshtriplett.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/package/builddeb |  6 ++++--
+ scripts/package/mkdebian | 19 ++++++++++++-------
+ 2 files changed, 16 insertions(+), 9 deletions(-)
+
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index 6474084c32a4..1b11f8993629 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -207,8 +207,10 @@ EOF
+ done
+ 
+ if [ "$ARCH" != "um" ]; then
+-	deploy_kernel_headers debian/linux-headers
+-	create_package linux-headers-$version debian/linux-headers
++	if is_enabled CONFIG_MODULES; then
++		deploy_kernel_headers debian/linux-headers
++		create_package linux-headers-$version debian/linux-headers
++	fi
+ 
+ 	deploy_libc_headers debian/linux-libc-dev
+ 	create_package linux-libc-dev debian/linux-libc-dev
+diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
+index 3a13b834f281..273fd6ed790e 100755
+--- a/scripts/package/mkdebian
++++ b/scripts/package/mkdebian
+@@ -184,13 +184,6 @@ Description: Linux kernel, version $version
+  This package contains the Linux kernel, modules and corresponding other
+  files, version: $version.
+ 
+-Package: $kernel_headers_packagename
+-Architecture: $debarch
+-Description: Linux kernel headers for $version on $debarch
+- This package provides kernel header files for $version on $debarch
+- .
+- This is useful for people who need to build external modules
+-
+ Package: linux-libc-dev
+ Section: devel
+ Provides: linux-kernel-headers
+@@ -201,6 +194,18 @@ Description: Linux support headers for userspace development
+ Multi-Arch: same
+ EOF
+ 
++if is_enabled CONFIG_MODULES; then
++cat <<EOF >> debian/control
++
++Package: $kernel_headers_packagename
++Architecture: $debarch
++Description: Linux kernel headers for $version on $debarch
++ This package provides kernel header files for $version on $debarch
++ .
++ This is useful for people who need to build external modules
++EOF
++fi
++
+ if is_enabled CONFIG_DEBUG_INFO; then
+ cat <<EOF >> debian/control
+ 
+-- 
+2.25.1
+
