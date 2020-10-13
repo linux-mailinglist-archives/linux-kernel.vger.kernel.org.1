@@ -2,220 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D9828CA73
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD23F28CA7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403962AbgJMIqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403952AbgJMIqY (ORCPT
+        id S2403988AbgJMIsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:48:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34463 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403825AbgJMIsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:46:24 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ECAC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:46:24 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id r10so14796895ilm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=inxASniRk+nKPwQE5RqwMS79wSDTalVbSDOYsROMjGU=;
-        b=zUwWbGL0KmDNH2kfOC2wq2piH6iJ+MHtTesnpM5Hm5g2zYrqmzxKFOkKcpI3x25PaH
-         SZ2Y20eGc4jFCIc71YeKfDzA6pMM04m5SLSiypMEAQySN1khCC8rzHGgqNyFX8Ol3gHY
-         m7pg4C58iJz/XEUmpF3G2SOMBJTfMvZPVZyPg2LbXOoJrWtOzFzPGWiyTyv0uNLMRyWQ
-         uJW6ik5C6xivO0a0UKzFkFxnvZnivJuWtAyWZJe/GinS9wQQhO+zD+TMzFDx/Sh6wHPg
-         /gORZBvZt7J0EFX+Vn4jvEA12HOP6HA/wjghntg+kaDWxs/Ed47EC7+yIGxyn/Dp3xH8
-         2FGA==
+        Tue, 13 Oct 2020 04:48:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602578925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L/QWwyJCZVVi79Fpwwugg94L9LWczQbwfUHt0ZL/p3g=;
+        b=cm3qicCZPcTEQ3IY7eKBG0DzA/LRcPTfufXqL0fSlCjoUC39E3MI7OUYHWE+yK7tleY1Wk
+        trRA7SrzBerCEoSDlmrSYDo9RNHsQCbi0TU5cbk2HXf8vCQn6yB+eTJycBx4lOArxAzmKr
+        ACa7fCdAdwrg7ulow8T4P0H15HeKYTI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-70-CoDvQx5BMAKhend5RDcSoQ-1; Tue, 13 Oct 2020 04:48:44 -0400
+X-MC-Unique: CoDvQx5BMAKhend5RDcSoQ-1
+Received: by mail-ej1-f70.google.com with SMTP id j2so7301281ejm.18
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:48:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=inxASniRk+nKPwQE5RqwMS79wSDTalVbSDOYsROMjGU=;
-        b=JdCA6NTUUkQkFyIAfzchmFGZCc8QN2m0v5couXwmmNh1lYvSAREnL+uSDl1ceQbPm6
-         Wmxp0D3yqFfKwW03YnUUVGsipffWrGesWKJaw8FWEtJIIucNR5yJ5/w1GQ9uEFOhMo+c
-         3DzC8+SA6RU5hN70QJabHhMZjuQMHYZywJq8oU+bq6iQobCxmHXVQfV/2naFyrOL2voL
-         HdbyAURqnlSuan2eJmklWy9uggIIkPNk9NkZrE+oWA/qwsh91yKeVYctIFN0HSoDPIYz
-         qyhITKyvUwX1EVFnSaFS7LGvjzpVOqhKxA9sz3Byjd4YSsJR4IHVRjOdISF7O8L2bR3E
-         sUDw==
-X-Gm-Message-State: AOAM532FkDPUD7t2C8ffeHKvwQqCU7qF92dNwlbTAHFqoUzZtEcgqIaO
-        9m4f+0Tzvl354WpbDIIOdHneE8ZRVKp+EHG3eQqQDU5e52aipL15
-X-Google-Smtp-Source: ABdhPJy32YaZGZqMwyirJbci3IlbfeRACXpCMzLMIYsB9mlyURbQD8gL/Jo+e5PYuS5Jdzwp6J72f9yb3bSvoHa1wHU=
-X-Received: by 2002:a05:6e02:4d:: with SMTP id i13mr2213600ilr.216.1602578783566;
- Tue, 13 Oct 2020 01:46:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L/QWwyJCZVVi79Fpwwugg94L9LWczQbwfUHt0ZL/p3g=;
+        b=PgWaOu670rtuD6yRDUy4ISGubuaiDIjrngoAg8HbL6ol6NKwZL20qta52+jpQWJKn0
+         xPlDhQA0IwM4Tm2PQN4pd5p/1DGLmrxGkUns26g+UNOIS8cxj86lr5gHOz9Rcy6jQvKC
+         la9HIK7IgQpMYGioafJLI8oNl8r0p6GgpZym5im2CNUoC7FhzcFIPQ4UDc0sB2Xm6FwV
+         Z0f7UOqkqtE212XE09yG9k/7dqMx69RJ/MZQJI9hzbbRYuvRC5XwRspi3421RmKSd4y0
+         jaDseJC13ljBNJYQ3TqguXu0kG+SC3te7Z4bvboukv3Yc7naPApPSsH7gcgIVDxEQstQ
+         X34Q==
+X-Gm-Message-State: AOAM532XZxNykQaZmOCanZBoWB9TK8fjO7M2EoA4fAqodU6uvKe55H33
+        EGyIr7YQhsBkXVC/FToDdwF1oQHyfOEQV1xUpr/Sq40VZRRRVAyAIwwo5Akehj50AGkBZ+Gqlnb
+        +j49k6asCEdAwmTZ8LbgyoGJ1
+X-Received: by 2002:aa7:d4d8:: with SMTP id t24mr19434261edr.247.1602578922897;
+        Tue, 13 Oct 2020 01:48:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkImKSu++3puTyZJwJQzVLd6jKat579AuQM33hTsdLksyUK9sskK1mHYSCtX/CgETiRSSYEQ==
+X-Received: by 2002:aa7:d4d8:: with SMTP id t24mr19434238edr.247.1602578922662;
+        Tue, 13 Oct 2020 01:48:42 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id m25sm11908739edp.36.2020.10.13.01.48.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 01:48:42 -0700 (PDT)
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Ed W <lists@wildgooses.com>, linux-kernel@vger.kernel.org
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+ <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+ <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9fb836bc-7d8a-b6e2-8d73-8e74a8f2e38b@redhat.com>
+Date:   Tue, 13 Oct 2020 10:48:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201012132628.130632267@linuxfoundation.org>
-In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 13 Oct 2020 14:16:11 +0530
-Message-ID: <CA+G9fYu61UPujPUSwH4bviWuQdYRty5jbyTmAeTvn92iEVCLEw@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/39] 4.4.239-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 19:03, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.239 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.239-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi Enrico and Ed W,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Quick self intro: I have take over drivers/platform/x86
+maintainership from Andy; and I'm working my way through
+the backlog of old patches in patchwork:
+https://patchwork.kernel.org/project/platform-driver-x86/list/
 
-Summary
-------------------------------------------------------------------------
+On 10/12/20 9:39 PM, Enrico Weigelt, metux IT consult wrote:
+> On 22.09.20 00:17, Ed W wrote:
+>> Hi, I've been adding support for the PC Engines APU5 board, which is a variant of the APU 2-4 boards
+>> with some nice features. The current platform driver for pcengines boards has some redundant
+>> features with regards to recent bios/firmware packages for the board as they now set the ACPI tables
+>> to indicate GPIOs for keys and leds.
+> 
+> NAK. Breaks existing userlands in the field (literally field), forcing
+> users to fw upgrade is not an option (field roll would be realy expensive).
 
-kernel: 4.4.239-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.4.y
-git commit: 36437aaa551298340a942cd706837e40efdae9c3
-git describe: v4.4.238-40-g36437aaa5512
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
-y/build/v4.4.238-40-g36437aaa5512
+Thank you Enrico, I was wondering the same (what about userspace breakage)
+when I was looking at this patch. It is good to have confirmation that
+userspace breakage is a real issue here.
 
+And I completely agree with Enrico, we cannot go and break userspace,
+so some other solution will need to be found here.
 
-No regressions (compared to build v4.4.238)
+I'm marking this series as changes requested in patchwork, please submit
+a new version which does not break existing userspace.
 
-No fixes (compared to build v4.4.238)
+Regards,
 
-Ran 15013 total tests in the following environments and test suites.
+Hans
 
-Environments
---------------
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* v4l2-compliance
-* install-android-platform-tools-r2600
-* ssuite
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.4.239-rc1
-git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
-git branch: 4.4.239-rc1-hikey-20201012-828
-git commit: 018c0e7c8dc0d88c038fd4495aa01958e4bce669
-git describe: 4.4.239-rc1-hikey-20201012-828
-Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
--oe/build/4.4.239-rc1-hikey-20201012-828
-
-
-No regressions (compared to build 4.4.239-rc1-hikey-20201011-826)
-
-No fixes (compared to build 4.4.239-rc1-hikey-20201011-826)
-
-Ran 1745 total tests in the following environments and test suites.
-
-Environments
---------------
-- hi6220-hikey - arm64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
