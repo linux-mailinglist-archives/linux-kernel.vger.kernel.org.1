@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C8128D617
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DAC28D621
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727513AbgJMVEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S1727788AbgJMVGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 17:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgJMVEY (ORCPT
+        with ESMTP id S1726652AbgJMVGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:04:24 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A728C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:04:24 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g4so960186edk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:04:24 -0700 (PDT)
+        Tue, 13 Oct 2020 17:06:06 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EDBC061755;
+        Tue, 13 Oct 2020 14:06:05 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t12so2327971ilh.3;
+        Tue, 13 Oct 2020 14:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Dpznq1bVtHuTvkgZ0V3uOe64d8urDDLe1UJMO63b1Hs=;
-        b=B7TVlQ2cGFtisTvY81goMmv1p7zhU8tVopK6OyjfNs0BEU7T2p+ZQfOnQmGLPH176X
-         Ddx44SpYCO2gquP5hbMHKic8xHREKYmC0yPabTFE1gplCRX/1peJ9ZrQtrX6RdXv81VN
-         K4JPq9b14w6YErYoiaxnLTBoSOxjd8Vw7AzCY=
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C97h+MRq5l70WYEeMsIQX2bPmyCE0QOE/Kr9SYmuEek=;
+        b=KQWyBL1B41rVXjsLWnmDO1jACfL2V7+8oLCS+mIdRxZHu+3UO/xKbs6/31FwUSQouW
+         3KLhYVndnILQx7Nh1uuKPyF8gfAL6s5H4WxAclBP+MjMr8QV03c5jwaCndPXEIeOLYlT
+         XqfBdE97RWtX6ULuJwnzhmZTSvmRrqXYtvYK/i+gGOUxtYUDnFVb8CJTJh+FHPYBdNRC
+         XJWrh7qzdDtKj9pbmQsq2X/6FvMUxeBTF/zZDyLfkYMlsKZBUlF602p1NGu2PTbQg4MB
+         17VB0huzr9Gc+9vCPUIakgKoecW7ZW1FZw/tzWwd1xu5XAAebJJ3SWwz72NlUiEocINj
+         /bkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Dpznq1bVtHuTvkgZ0V3uOe64d8urDDLe1UJMO63b1Hs=;
-        b=tplTX9ThZO9TFPuQfuTfAfrFDycTylF2xj7Rlu8MlCm45P3+C7m2xIGsjSyjOpXjZX
-         8ls/FFnpdPmZIYG0myzPxhmQhI50E7o3EtMbkxyp7RxCJTn8Ca+VyVw6HuhJEKn0QyNN
-         2/4kWGpVmULZGdOiBgCq4aezEXH7rTOmIHtOhCEmEnmFd/UvpbMhUTf0C4lhOngFxLR8
-         7f992cjvbw7hul+dIKW9ZA5DCb3FiD8wxTDOqwAwyWJ1a7XV+dbrak9qVJWyVNj85oma
-         Z4tKRZ2WokD7ZhCMPJC6dibh6x581iKyLwdNe7Gc7qZcRAPmWKoOUs610R9HEuTbcida
-         fq7Q==
-X-Gm-Message-State: AOAM532I+Ww0mOx4CNv93juPP07TYmdPdRQ85VoA8UtYiX8QjRHWulzP
-        x5dlJMlWrzcBw+5HN+Xn+R6otg==
-X-Google-Smtp-Source: ABdhPJw5D4eRrsPzQP92gAP9vfi6hiIqR+4GaLJTcdF3tCuPnywuQSebLETL8Z2Ciy7q0rfo+5zGxQ==
-X-Received: by 2002:aa7:d143:: with SMTP id r3mr1636703edo.103.1602623062929;
-        Tue, 13 Oct 2020 14:04:22 -0700 (PDT)
-Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id f23sm543444ejd.5.2020.10.13.14.04.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 14:04:22 -0700 (PDT)
-Subject: Re: [PATCH 1/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org,
-        containers@lists.linux-foundation.org
-References: <20201013140609.2269319-1-gscrivan@redhat.com>
- <20201013140609.2269319-2-gscrivan@redhat.com>
- <20201013205427.clvqno24ctwxbuyv@wittgenstein>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <22ff41f8-c009-84f4-849b-a807b7382253@rasmusvillemoes.dk>
-Date:   Tue, 13 Oct 2020 23:04:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=C97h+MRq5l70WYEeMsIQX2bPmyCE0QOE/Kr9SYmuEek=;
+        b=uh90g5gAHOJD2SC6nj5ad2YoiyHqsSgMzSy/DiivIknHN95ZljgC1QKA4Mjua7TnKs
+         Saqb0KY6ltuRQNsdiPGDXFZHI6Ko3hMbzHrWRWE/7KqZbOhz4pxj+FHRzNTZN8d7xRHl
+         al3XgaJs8lL3F2z+x9pU7xkRXyFV8o1xGVmocbV0tKIsdTwJTSaQcXmfm2/nRJZ0WBvq
+         EKAbiXmhCktuEBD70gD6Iev9dZswaCpPL6ZWeomJIGxWYYtahPxM+s8UIQYV9ZJt4q+V
+         dKwIVVx8m5kxLYBtS23TtVMy2u2bbiPVhVDBvaWXU4opbSiMi6vU4S0LPs38or6iVtQR
+         TdKw==
+X-Gm-Message-State: AOAM532nE2YlAXOkvwuM2xlHiOZS7iSKAFlTj8GYsAzaO4Z7E26BfEG5
+        +RKw1Uu7KApoxMh1K1+/cAhpw/1sA/SKxQ==
+X-Google-Smtp-Source: ABdhPJxLMtd+8d4/MGijYt4mmj6QqmasAOS6bXUzHb1bvZ3sD09AhUUGlI2RMcuTnn639csE3kcmhg==
+X-Received: by 2002:a05:6e02:ef4:: with SMTP id j20mr1466194ilk.195.1602623164229;
+        Tue, 13 Oct 2020 14:06:04 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id q196sm929652iod.17.2020.10.13.14.06.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 14:06:03 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 13 Oct 2020 17:06:02 -0400
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] io_uring updates for 5.10-rc1
+Message-ID: <20201013210602.GA1466033@rani.riverdale.lan>
+References: <36a6706d-73e1-64e7-f1f8-8f5ef246d3ea@kernel.dk>
+ <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
+ <a81737e4-44da-cffc-cba0-8aec984df240@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <20201013205427.clvqno24ctwxbuyv@wittgenstein>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <a81737e4-44da-cffc-cba0-8aec984df240@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2020 22.54, Christian Brauner wrote:
-> On Tue, Oct 13, 2020 at 04:06:08PM +0200, Giuseppe Scrivano wrote:
+On Tue, Oct 13, 2020 at 01:49:01PM -0600, Jens Axboe wrote:
+> On 10/13/20 1:46 PM, Linus Torvalds wrote:
+> > On Mon, Oct 12, 2020 at 6:46 AM Jens Axboe <axboe@kernel.dk> wrote:
+> >>
+> >> Here are the io_uring updates for 5.10.
+> > 
+> > Very strange. My clang build gives a warning I've never seen before:
+> > 
+> >    /tmp/io_uring-dd40c4.s:26476: Warning: ignoring changed section
+> > attributes for .data..read_mostly
+> > 
+> > and looking at what clang generates for the *.s file, it seems to be
+> > the "section" line in:
+> > 
+> >         .type   io_op_defs,@object      # @io_op_defs
+> >         .section        .data..read_mostly,"a",@progbits
+> >         .p2align        4
+> > 
+> > I think it's the combination of "const" and "__read_mostly".
+> > 
+> > I think the warning is sensible: how can a piece of data be both
+> > "const" and "__read_mostly"? If it's "const", then it's not "mostly"
+> > read - it had better be _always_ read.
+> > 
+> > I'm letting it go, and I've pulled this (gcc doesn't complain), but
+> > please have a look.
 > 
-> Hey Guiseppe,
+> Huh weird, I'll take a look. FWIW, the construct isn't unique across
+> the kernel.
 > 
-> Thanks for the patch!
+> What clang are you using?
 > 
->> When the flag CLOSE_RANGE_CLOEXEC is set, close_range doesn't
->> immediately close the files but it sets the close-on-exec bit.
-> 
-> Hm, please expand on the use-cases a little here so people know where
-> and how this is useful. Keeping the rationale for a change in the commit
-> log is really important.
+> -- 
+> Jens Axboe
 > 
 
-> I think I don't have quarrels with this patch in principle but I wonder
-> if something like the following wouldn't be easier to follow:
-> 
-> diff --git a/fs/file.c b/fs/file.c
-> index 21c0893f2f1d..872a4098c3be 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -672,6 +672,32 @@ int __close_fd(struct files_struct *files, unsigned fd)
->  }
->  EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
->  
-> +static inline void __range_cloexec(struct files_struct *cur_fds,
-> +				   unsigned int fd, unsigned max_fd)
-> +{
-> +	struct fdtable *fdt;
-> +	spin_lock(&cur_fds->file_lock);
-> +	fdt = files_fdtable(cur_fds);
-> +	while (fd <= max_fd)
-> +		__set_close_on_exec(fd++, fdt);
-
-Doesn't that want to be
-
-  bitmap_set(fdt->close_on_exec, fd, max_fd - fd + 1)
-
-to do word-at-a-time? I assume this would mostly be called with (3, ~0U)
-as arguments or something like that.
-
-Rasmus
+If const and non-const __read_mostly appeared in the same file, both gcc
+and clang would give errors.
