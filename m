@@ -2,332 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0064228CA63
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D9828CA73
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403932AbgJMIm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S2403962AbgJMIqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403918AbgJMIm1 (ORCPT
+        with ESMTP id S2403952AbgJMIqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:42:27 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAA3C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:42:27 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id x185so10633200vsb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:42:27 -0700 (PDT)
+        Tue, 13 Oct 2020 04:46:24 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ECAC0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:46:24 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id r10so14796895ilm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:46:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z0tT/OxWzXToVda8iVCF76v2EDXGWGffzNusJWvss8M=;
-        b=rEcfkO0NIHhLROvC5ZLcfK3iHqd8SalrVx1IENPSPL9L4RtFBwu78TU7BnEX+xg+cJ
-         TP2HCQ4n6d55TeBhx9JsQsjtafrU9hn+eTCoGMgsb1Jq6YAGG6BvOFnj4gbfGDOm9CUr
-         G4ySHoroeEO/K/MxVjyOD6J/IJBIGlTW8ug5DEqEPoxfo4e8AZzwxpqGovPe477I8wQx
-         CWq4T7FOZb3HN5rNmiAvXGkr/RyeGMICqrHOW7uxrBDBq9nMjPiDIyu2uYHrj2QU7iCR
-         V0dFbJdC++ZEw/nX1XvT2XJkZ4r53BoeC7XU6LoM2BfY3BCZ2w15qyKx1YZCVJ3GmDn0
-         LBow==
+         :cc:content-transfer-encoding;
+        bh=inxASniRk+nKPwQE5RqwMS79wSDTalVbSDOYsROMjGU=;
+        b=zUwWbGL0KmDNH2kfOC2wq2piH6iJ+MHtTesnpM5Hm5g2zYrqmzxKFOkKcpI3x25PaH
+         SZ2Y20eGc4jFCIc71YeKfDzA6pMM04m5SLSiypMEAQySN1khCC8rzHGgqNyFX8Ol3gHY
+         m7pg4C58iJz/XEUmpF3G2SOMBJTfMvZPVZyPg2LbXOoJrWtOzFzPGWiyTyv0uNLMRyWQ
+         uJW6ik5C6xivO0a0UKzFkFxnvZnivJuWtAyWZJe/GinS9wQQhO+zD+TMzFDx/Sh6wHPg
+         /gORZBvZt7J0EFX+Vn4jvEA12HOP6HA/wjghntg+kaDWxs/Ed47EC7+yIGxyn/Dp3xH8
+         2FGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z0tT/OxWzXToVda8iVCF76v2EDXGWGffzNusJWvss8M=;
-        b=kw7Df/zRRY8hbAPGF6v+kbfZWWGEqQziB7l55ATaCgAnAtxM17Op08CXeXNcJl60hP
-         t35soMYapPU7qrCUSVf0WOAMlOHV/cx6ck1cdIb8LTZMtp4pXz4wy695NzJCo3XzjtyJ
-         3nYuiNCT8J7YUoJGcCkolMDHLRgdaQBcMqgWHhm6Bemzkv8AVMN80S+OgExkS7vWbkRz
-         EPk2krHmxIo1iZPsDXe0UuHmqK+NByipa5wf1GGvvBqUJWzEWoeLwC1kiVTgK0hbEU6E
-         15Ce327CmtdPqmD64xtb2SD8stsiSydekeRiaSIEwagh7QOndayeitGkHcsFJx+VCDx+
-         9bBw==
-X-Gm-Message-State: AOAM531UIvalskQDU4+FA+l0PIp306pm+olUY2ZC3yHwEaMF7LO7pGYr
-        VCXy3iM1TkHNMU/H3z+E4caHATIM0F/OnPKdB/AEFA==
-X-Google-Smtp-Source: ABdhPJz5bidkohOEL1Mad90/4Mq0kOr+hJLXG0AGnTln12QW/VucJ7OezoBQnKjDG2AqA/MAFDjYNvTyBNcAmpZBNjI=
-X-Received: by 2002:a67:f24e:: with SMTP id y14mr15972235vsm.55.1602578546349;
- Tue, 13 Oct 2020 01:42:26 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=inxASniRk+nKPwQE5RqwMS79wSDTalVbSDOYsROMjGU=;
+        b=JdCA6NTUUkQkFyIAfzchmFGZCc8QN2m0v5couXwmmNh1lYvSAREnL+uSDl1ceQbPm6
+         Wmxp0D3yqFfKwW03YnUUVGsipffWrGesWKJaw8FWEtJIIucNR5yJ5/w1GQ9uEFOhMo+c
+         3DzC8+SA6RU5hN70QJabHhMZjuQMHYZywJq8oU+bq6iQobCxmHXVQfV/2naFyrOL2voL
+         HdbyAURqnlSuan2eJmklWy9uggIIkPNk9NkZrE+oWA/qwsh91yKeVYctIFN0HSoDPIYz
+         qyhITKyvUwX1EVFnSaFS7LGvjzpVOqhKxA9sz3Byjd4YSsJR4IHVRjOdISF7O8L2bR3E
+         sUDw==
+X-Gm-Message-State: AOAM532FkDPUD7t2C8ffeHKvwQqCU7qF92dNwlbTAHFqoUzZtEcgqIaO
+        9m4f+0Tzvl354WpbDIIOdHneE8ZRVKp+EHG3eQqQDU5e52aipL15
+X-Google-Smtp-Source: ABdhPJy32YaZGZqMwyirJbci3IlbfeRACXpCMzLMIYsB9mlyURbQD8gL/Jo+e5PYuS5Jdzwp6J72f9yb3bSvoHa1wHU=
+X-Received: by 2002:a05:6e02:4d:: with SMTP id i13mr2213600ilr.216.1602578783566;
+ Tue, 13 Oct 2020 01:46:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
- <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
- <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
- <DM6PR11MB28764EC5E1F89D417D700F29B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
- <CAPDyKFptgKG8uvKUkN56sooFL4xqaBcNdbpo645xRQqPOH4BkQ@mail.gmail.com>
- <DM6PR11MB28761F10936FF0D2695FAF19B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
- <CAPDyKFoRHsOiz9BFJ5jWyKqvdmNW9eeEmCGKYn0Q1jUzNwJZNg@mail.gmail.com> <DM6PR11MB2876DF701740F70FFD2B2D17B8080@DM6PR11MB2876.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB2876DF701740F70FFD2B2D17B8080@DM6PR11MB2876.namprd11.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 13 Oct 2020 10:41:49 +0200
-Message-ID: <CAPDyKFqB5SCfNWumhDjvH+mQxMi6bYcHSg-vBV+gWEgDee0m1Q@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-Cc:     "Hunter, Adrian" <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
+References: <20201012132628.130632267@linuxfoundation.org>
+In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 13 Oct 2020 14:16:11 +0530
+Message-ID: <CA+G9fYu61UPujPUSwH4bviWuQdYRty5jbyTmAeTvn92iEVCLEw@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/39] 4.4.239-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020 at 19:50, Zulkifli, Muhammad Husaini
-<muhammad.husaini.zulkifli@intel.com> wrote:
+On Mon, 12 Oct 2020 at 19:03, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Hi,
+> This is the start of the stable review cycle for the 4.4.239 release.
+> There are 39 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> >-----Original Message-----
-> >From: Ulf Hansson <ulf.hansson@linaro.org>
-> >Sent: Friday, October 9, 2020 2:56 PM
-> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
-> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
-> ><michal.simek@xilinx.com>; Shevchenko, Andriy
-> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux ARM
-> ><linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List <linux-
-> >kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
-> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
-> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
-> ><arnd@arndb.de>
-> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
-> >Keem Bay SOC
-> >
-> >On Thu, 8 Oct 2020 at 19:21, Zulkifli, Muhammad Husaini
-> ><muhammad.husaini.zulkifli@intel.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> >-----Original Message-----
-> >> >From: Ulf Hansson <ulf.hansson@linaro.org>
-> >> >Sent: Thursday, October 8, 2020 11:19 PM
-> >> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
-> >> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
-> >> ><michal.simek@xilinx.com>; Shevchenko, Andriy
-> >> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux ARM
-> >> ><linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List
-> >> ><linux- kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
-> >> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
-> >> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
-> >> ><arnd@arndb.de>
-> >> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1
-> >> >support for Keem Bay SOC
-> >> >
-> >> >On Thu, 8 Oct 2020 at 12:54, Zulkifli, Muhammad Husaini
-> >> ><muhammad.husaini.zulkifli@intel.com> wrote:
-> >> >>
-> >> >> Hi,
-> >> >>
-> >> >> >-----Original Message-----
-> >> >> >From: Ulf Hansson <ulf.hansson@linaro.org>
-> >> >> >Sent: Thursday, October 8, 2020 5:28 PM
-> >> >> >To: Zulkifli, Muhammad Husaini
-> >> >> ><muhammad.husaini.zulkifli@intel.com>
-> >> >> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
-> >> >> ><michal.simek@xilinx.com>; Shevchenko, Andriy
-> >> >> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux
-> >> >> >ARM <linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing
-> >> >> >List
-> >> >> ><linux- kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
-> >> >> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan
-> >Ahmad
-> >> >> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
-> >> >> ><arnd@arndb.de>
-> >> >> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1
-> >> >> >support for Keem Bay SOC
-> >> >> >
-> >> >> >On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com>
-> >> >wrote:
-> >> >> >>
-> >> >> >> From: Muhammad Husaini Zulkifli
-> >> >> >> <muhammad.husaini.zulkifli@intel.com>
-> >> >> >>
-> >> >> >> Voltage switching sequence is needed to support UHS-1 interface.
-> >> >> >> There are 2 places to control the voltage.
-> >> >> >> 1) By setting the AON register using firmware driver calling
-> >> >> >> system-level platform management layer (SMC) to set the register.
-> >> >> >> 2) By controlling the GPIO expander value to drive either 1.8V
-> >> >> >> or 3.3V for power mux input.
-> >> >> >>
-> >> >> >> Signed-off-by: Muhammad Husaini Zulkifli
-> >> >> >> <muhammad.husaini.zulkifli@intel.com>
-> >> >> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-> >> >> >> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-> >> >> >> ---
-> >> >> >>  drivers/mmc/host/sdhci-of-arasan.c | 126
-> >> >> >> +++++++++++++++++++++++++++++
-> >> >> >>  1 file changed, 126 insertions(+)
-> >> >> >>
-> >> >> >> diff --git a/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> >> b/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> >> index 46aea6516133..ea2467b0073d 100644
-> >> >> >> --- a/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> >> +++ b/drivers/mmc/host/sdhci-of-arasan.c
-> >> >> >> @@ -16,6 +16,7 @@
-> >> >> >>   */
-> >> >> >>
-> >> >> >>  #include <linux/clk-provider.h>
-> >> >> >> +#include <linux/gpio/consumer.h>
-> >> >> >>  #include <linux/mfd/syscon.h>
-> >> >> >>  #include <linux/module.h>
-> >> >> >>  #include <linux/of_device.h>
-> >> >> >> @@ -23,6 +24,7 @@
-> >> >> >>  #include <linux/regmap.h>
-> >> >> >>  #include <linux/of.h>
-> >> >> >>  #include <linux/firmware/xlnx-zynqmp.h>
-> >> >> >> +#include <linux/firmware/intel/keembay_firmware.h>
-> >> >> >>
-> >> >> >>  #include "cqhci.h"
-> >> >> >>  #include "sdhci-pltfm.h"
-> >> >> >> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
-> >> >> >>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
-> >> >> >>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
-> >> >> >>   * @quirks:            Arasan deviations from spec.
-> >> >> >> + * @uhs_gpio:          Pointer to the uhs gpio.
-> >> >> >>   */
-> >> >> >>  struct sdhci_arasan_data {
-> >> >> >>         struct sdhci_host *host; @@ -150,6 +153,7 @@ struct
-> >> >> >> sdhci_arasan_data {
-> >> >> >>         struct regmap   *soc_ctl_base;
-> >> >> >>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
-> >> >> >>         unsigned int    quirks;
-> >> >> >> +       struct gpio_desc *uhs_gpio;
-> >> >> >>
-> >> >> >>  /* Controller does not have CD wired and will not function
-> >> >> >> normally without
-> >> >> >*/
-> >> >> >>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
-> >> >> >> @@ -361,6 +365,112 @@ static int
-> >> >> >> sdhci_arasan_voltage_switch(struct
-> >> >> >mmc_host *mmc,
-> >> >> >>         return -EINVAL;
-> >> >> >>  }
-> >> >> >>
-> >> >> >> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host
-> >> >*mmc,
-> >> >> >> +                                      struct mmc_ios *ios) {
-> >> >> >> +       struct sdhci_host *host = mmc_priv(mmc);
-> >> >> >> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> >> >> >> +       struct sdhci_arasan_data *sdhci_arasan =
-> >> >sdhci_pltfm_priv(pltfm_host);
-> >> >> >> +       u16 ctrl_2, clk;
-> >> >> >> +       int ret;
-> >> >> >> +
-> >> >> >> +       switch (ios->signal_voltage) {
-> >> >> >> +       case MMC_SIGNAL_VOLTAGE_180:
-> >> >> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> >> >> >> +               clk &= ~SDHCI_CLOCK_CARD_EN;
-> >> >> >> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-> >> >> >> +
-> >> >> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> >> >> >> +               if (clk & SDHCI_CLOCK_CARD_EN)
-> >> >> >> +                       return -EAGAIN;
-> >> >> >> +
-> >> >> >> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
-> >> >> >> +                                  SDHCI_POWER_CONTROL);
-> >> >> >> +
-> >> >> >> +               /*
-> >> >> >> +                * Set VDDIO_B voltage to Low for 1.8V
-> >> >> >> +                * which is controlling by GPIO Expander.
-> >> >> >> +                */
-> >> >> >> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio,
-> >> >> >> + 0);
-> >> >> >> +
-> >> >> >> +               /*
-> >> >> >> +                * This is like a final gatekeeper. Need to
-> >> >> >> + ensure changed
-> >> >voltage
-> >> >> >> +                * is settled before and after turn on this bit.
-> >> >> >> +                */
-> >> >> >> +               usleep_range(1000, 1100);
-> >> >> >> +
-> >> >> >> +               ret =
-> >> >keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
-> >> >> >> +               if (ret)
-> >> >> >> +                       return ret;
-> >> >> >> +
-> >> >> >> +               usleep_range(1000, 1100);
-> >> >> >
-> >> >> >No, sorry, but I don't like this.
-> >> >> >
-> >> >> >This looks like a GPIO regulator with an extension of using the
-> >> >> >keembay_sd_voltage_selection() thingy. I think you can model these
-> >> >> >things behind a regulator and hook it up as a vqmmc supply in DT
-> >> >> >instead. BTW, this is the common way we deal with these things for
-> >> >> >mmc
-> >> >host drivers.
-> >> >>
-> >> >> The SDcard for Keem Bay SOC does not have its own voltage regulator.
-> >> >> There are 2 places to control the voltage.
-> >> >> 1) By setting the AON register calling system-level platform
-> >> >> management
-> >> >layer (SMC)
-> >> >>    to set the I/O pads voltage for particular GPIOs line for clk,data and cmd.
-> >> >>    The reason why I use this keembay_sd_voltage_selection() via
-> >> >> smccc
-> >> >interface it because during voltage switching
-> >> >>    I need to access to AON register. On a secure system, we could
-> >> >> not
-> >> >directly access to AON register due to some security concern from
-> >> >driver side, thus
-> >> >>    cannot exposed any register or address.
-> >> >> 2) By controlling the GPIO expander value to drive either 1.8V or
-> >> >> 3.3V for
-> >> >power mux input.
-> >> >
-> >> >I see, thanks for clarifying.
-> >> >
-> >> >To me, it sounds like the best fit is to implement a pinctrl (to
-> >> >manage the I/O
-> >> >pads) and a GPIO regulator.
-> >> >
-> >> Even with pinctrl, i still need to use the keembay_sd_voltage_selection()
-> >thingy for AON register.
-> >
-> >Yes, I am fine by that.
-> >
-> >Although, as it's really a pinctrl, it deserves to be modelled like that. Not as a
-> >soc specific hack in a mmc host driver.
-> >
-> >> Plus, the GPIO pin that control the sd-voltage is in GPIO Expander not using
-> >Keembay SOC GPIO Pin.
-> >> The best option is using the gpio consumer function to toggle the pin.
-> >
-> >As I said, please no.
-> >
-> >The common way to model this is as a GPIO regulator. In this way, you can even
-> >rely on existing mmc DT bindings. All you have to do is to hook up a vqmmc
-> >supply to the mmc node.
-> >
-> >To be clear, as long as there are no arguments for why a pinctrl and GPIO
-> >regulator can't be used - I am not going to pick up the patches.
-> As I mentioned The SDcard does not have its own voltage regulator.
-> It only uses the voltage rails on the mux input.
+> Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
+> Anything received after that time might be too late.
 >
-> There are 2 things need to be configured before getting the output voltage:
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.239-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
 >
-> 1) V_VDDIO_B :
-> Supplied voltage applied to I/O Rail which is controlled from the Always on domain using specific bits in AON_CFG1 register.
-> This is where we set for V_VDDIO_B using the keembay_sd_voltage_selection() to set either 1.8v or 3.3v depending on the bit value.
-> IMHO, we do not pinctrl to do this.
+> thanks,
 >
-> 2) V_VDDIO_B_MAIN:
-> The output V_VDDIO_B_MAIN (OUT1) will be either V_3P3_MAIN (IN1) or V_1P8_MAIN (IN2),
-> depending on the state of GPIO expander Pin value. There is a POWER MUX involving here.
-> IMHO, we do not need any gpio regulator/regulator api hook up for this.
-> Most important thing, there is no regulator ic at all.
-> We still need to manually control and toggle the pin value.
->
-> The final IO voltage is set by V_VDDIO_B (= V_VDDIO_B_MAIN after passing through voltage sense resistor).
->
-> Hope this will clarify.
+> greg k-h
 
-I think I get it, thanks.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Again, I haven't seen any reasons for why this can't be modelled as a
-pinctrl and a gpio-regulator. So, please convert it to that.
+Summary
+------------------------------------------------------------------------
 
-Kind regards
-Uffe
+kernel: 4.4.239-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 36437aaa551298340a942cd706837e40efdae9c3
+git describe: v4.4.238-40-g36437aaa5512
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.238-40-g36437aaa5512
+
+
+No regressions (compared to build v4.4.238)
+
+No fixes (compared to build v4.4.238)
+
+Ran 15013 total tests in the following environments and test suites.
+
+Environments
+--------------
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* install-android-platform-tools-r2600
+* ssuite
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.239-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.239-rc1-hikey-20201012-828
+git commit: 018c0e7c8dc0d88c038fd4495aa01958e4bce669
+git describe: 4.4.239-rc1-hikey-20201012-828
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.239-rc1-hikey-20201012-828
+
+
+No regressions (compared to build 4.4.239-rc1-hikey-20201011-826)
+
+No fixes (compared to build 4.4.239-rc1-hikey-20201011-826)
+
+Ran 1745 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
