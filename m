@@ -2,177 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14A728D292
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E5128D297
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbgJMQsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727696AbgJMQsp (ORCPT
+        id S1728481AbgJMQtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:49:39 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:38346 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727696AbgJMQti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:48:45 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F48AC0613D0;
-        Tue, 13 Oct 2020 09:48:45 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u17so88795oie.3;
-        Tue, 13 Oct 2020 09:48:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Mg/Vf27uQrH+QZr9MTsy0LWlJpcdeTpSu6ROq5/oqks=;
-        b=rxf99be+1u3xmfnKzAazaXlLwug4y9Ha9N8tYMnfpBWnfcj5yq+HQhOW9KNu12vKGm
-         DA7IosO129OvxWS+P06quSWzl5HRoDYyTJXN7FUk9yhZ+OFrzcN0px5klKPCtqhDQekp
-         BvVsywWbs+f+9yMD/+87+Ar2Z/9uRchRTp2hSe3BtKqcMhOVGvsuHxZ+GuRiSEfaM0TY
-         ixpyZ4E6//1XGP7NpJTYIqMxPce7LrK/ugnMht6VCoxGcZ3bsDrNAlCMNoRr4gyJuY9B
-         pEqJm46gOncVtL5WwwAXLDxz9ObXyi+iAMcmYQZUE4zi+7hQvbbcm7cL/VtJc57RRnwc
-         63Kg==
+        Tue, 13 Oct 2020 12:49:38 -0400
+Received: by mail-ot1-f65.google.com with SMTP id i12so650782ota.5;
+        Tue, 13 Oct 2020 09:49:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Mg/Vf27uQrH+QZr9MTsy0LWlJpcdeTpSu6ROq5/oqks=;
-        b=PD87V6+6YVuKaNOf3OpxL4SBT0C8s3jW7tNUpuThyb7XL2fjlSYqz5EDHx//xq82iw
-         B+DXYR40bWLCU2rOYWn+vtbgx69KyhnxbahBlLUof/yOr+7tO+9QiHuoQ0eFovgkH1lb
-         1mw8yj1mKkdgmS7NvO8tC1e5YKvbQ0oTgKPtfb17oHaqZWy9gb4BBuSxGxBN3An8r2yf
-         sw2fv7Aq2hpwARnvjY0N4e2uLVouQh+lpsp0G2fsAXL3niFpad5QjDNsRCBHUIW2xfx/
-         +wB2V1htpfHAcdond+asFdiLfMhfdEn/L7oD9QhDjgaqzQJrCWU6t97DpPMoc/Xlard5
-         AUwg==
-X-Gm-Message-State: AOAM532pani3MOygTSeLIEulKBtIwxyxkld4KV4jkvuEh37ocuIKBVQ2
-        1gGc5O29LIAYf4xeeVKAuyg=
-X-Google-Smtp-Source: ABdhPJyj87YRbCDfhwXXsSdbQDCnKaVwQ5liQ6F5/fX7ATWBFiVMns7zYD4gSd77pL3mAI68iHvMHQ==
-X-Received: by 2002:aca:3341:: with SMTP id z62mr340784oiz.169.1602607724538;
-        Tue, 13 Oct 2020 09:48:44 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k128sm91571oib.52.2020.10.13.09.48.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Oct 2020 09:48:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 13 Oct 2020 09:48:42 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 17/24] docs: hwmon: mp2975.rst: address some html
- build warnings
-Message-ID: <20201013164842.GI251780@roeck-us.net>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <8418e2062b82314ceae5da7404fad7b2d3a3fa9a.1602590106.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=t3HNao7Z7e7NuJhBeYuaJzFgEjzmb6YkqhZHsBnqQYs=;
+        b=VgkHl4mR+32wRGV68lBnzgHMdlQf3EwlUeO+uSWwjrbl5z2k2W6mRCJ1dujYXpPf9z
+         8xA5mDo8bBnll6Fee5Z5jQ+N1PIFXKsegj8dYHu1UnqVt5utL3wpms1aYqAoaa7WDbE1
+         foGL9NgK1DKf8mpJYFBwWsJePEBbVcF2uUmLZZ6u+ej6GcPku65vEYuqfIeDA3cOY/2C
+         5lDMR3PHxeAmshOyxg1qH7avep557WXjuOz5nNlzJUXWr13/HbTmsAK3dsGVLMUBFUS6
+         IwAHVWWcxTAQTVimSC7HDv03/uOoUM9Lbq8xDBPfRsZyVmOR87u8CNgRRkFNfcntFrx2
+         J6DQ==
+X-Gm-Message-State: AOAM5320Hw8CqwvMnt9eBV/taalMMxuNOF40qaZMJLEgVEtanj6JjFZm
+        4KA+j7tl8vYvm3SYCvd1x3nls+l3X1Vy
+X-Google-Smtp-Source: ABdhPJyH/mGcnXgbLGg8F+zEGrAXfo+6YioxMnkhPYtvGQU8P7FvyNa+0b5j5ZW/MgdzWOgEDxx/dg==
+X-Received: by 2002:a9d:66a:: with SMTP id 97mr390825otn.233.1602607776861;
+        Tue, 13 Oct 2020 09:49:36 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a16sm98061otk.39.2020.10.13.09.49.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 09:49:36 -0700 (PDT)
+Received: (nullmailer pid 3675125 invoked by uid 1000);
+        Tue, 13 Oct 2020 16:49:35 -0000
+Date:   Tue, 13 Oct 2020 11:49:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 01/23] dt-bindings: introduce silabs,wfx.yaml
+Message-ID: <20201013164935.GA3646933@bogus>
+References: <20201012104648.985256-1-Jerome.Pouiller@silabs.com>
+ <20201012104648.985256-2-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8418e2062b82314ceae5da7404fad7b2d3a3fa9a.1602590106.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201012104648.985256-2-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 02:14:44PM +0200, Mauro Carvalho Chehab wrote:
->     .../Documentation/hwmon/mp2975.rst:25: WARNING: Unexpected indentation.
->     .../Documentation/hwmon/mp2975.rst:27: WARNING: Block quote ends without a blank line; unexpected unindent.
->     .../Documentation/hwmon/mp2975.rst:69: WARNING: Unexpected indentation.
->     .../Documentation/hwmon/mp2975.rst:70: WARNING: Block quote ends without a blank line; unexpected unindent.
->     .../Documentation/hwmon/mp2975.rst:72: WARNING: Bullet list ends without a blank line; unexpected unindent.
->     .../Documentation/hwmon/mp2975.rst: WARNING: document isn't included in any toctree
+On Mon, Oct 12, 2020 at 12:46:26PM +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > 
-> List blocks should have blank lines before and after them,
-> in order to be properly parsed.
-> 
-> Fixes: 4beb7a028e9f ("hwmon: (pmbus) Add support for MPS Multi-phase mp2975 controller")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > ---
->  Documentation/hwmon/index.rst  |  1 +
->  Documentation/hwmon/mp2975.rst | 14 +++++++++++++-
->  2 files changed, 14 insertions(+), 1 deletion(-)
+>  .../bindings/net/wireless/silabs,wfx.yaml     | 125 ++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
 > 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index e6b91ab12978..b797db738225 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -132,6 +132,7 @@ Hardware Monitoring Kernel Drivers
->     mcp3021
->     menf21bmc
->     mlxreg-fan
-> +   mp2975
->     nct6683
->     nct6775
->     nct7802
-> diff --git a/Documentation/hwmon/mp2975.rst b/Documentation/hwmon/mp2975.rst
-> index 5b0609c62f48..81d816b71490 100644
-> --- a/Documentation/hwmon/mp2975.rst
-> +++ b/Documentation/hwmon/mp2975.rst
-> @@ -20,6 +20,7 @@ This driver implements support for Monolithic Power Systems, Inc. (MPS)
->  vendor dual-loop, digital, multi-phase controller MP2975.
->  
->  This device:
+> diff --git a/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml b/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> new file mode 100644
+> index 000000000000..43b5630c0407
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> @@ -0,0 +1,125 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020, Silicon Laboratories, Inc.
+> +%YAML 1.2
+> +---
 > +
->  - Supports up to two power rail.
->  - Provides 8 pulse-width modulations (PWMs), and can be configured up
->    to 8-phase operation for rail 1 and up to 4-phase operation for rail
-> @@ -32,10 +33,12 @@ This device:
->    10-mV DAC, IMVP9 mode with 5-mV DAC.
->  
->  Device supports:
+> +$id: http://devicetree.org/schemas/net/wireless/silabs,wfx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->  - SVID interface.
->  - AVSBus interface.
->  
->  Device complaint with:
+> +title: Silicon Labs WFxxx devicetree bindings
 > +
->  - PMBus rev 1.3 interface.
->  
->  Device supports direct format for reading output current, output voltage,
-> @@ -45,11 +48,14 @@ Device supports VID and direct formats for reading output voltage.
->  The below VID modes are supported: VR12, VR13, IMVP9.
->  
->  The driver provides the next attributes for the current:
+> +maintainers:
+> +  - Jérôme Pouiller <jerome.pouiller@silabs.com>
 > +
->  - for current in: input, maximum alarm;
->  - for current out input, maximum alarm and highest values;
->  - for phase current: input and label.
-> -attributes.
-> +  attributes.
+> +description:
+> +  The WFxxx chip series can be connected via SPI or via SDIO.
+
+What does this chip do? WiFi or some other wireless?
+
 > +
->  The driver exports the following attributes via the 'sysfs' files, where
+> +  For SDIO':'
 > +
->  - 'n' is number of telemetry pages (from 1 to 2);
->  - 'k' is number of configured phases (from 1 to 8);
->  - indexes 1, 1*n for "iin";
-> @@ -65,11 +71,14 @@ The driver exports the following attributes via the 'sysfs' files, where
->  **curr[1-{2n+k}]_label**
->  
->  The driver provides the next attributes for the voltage:
+> +    The driver is able to detect a WFxxx chip on SDIO bus by matching its Vendor
+> +    ID and Product ID. However, driver will only provide limited features in
+> +    this case. Thus declaring WFxxx chip in device tree is recommended (and may
+> +    become mandatory in the future).
 > +
->  - for voltage in: input, high critical threshold, high critical alarm, all only
->    from page 0;
->  - for voltage out: input, low and high critical thresholds, low and high
->    critical alarms, from pages 0 and 1;
+> +    In addition, it is recommended to declare a mmc-pwrseq on SDIO host above
+> +    WFx. Without it, you may encounter issues with warm boot. The mmc-pwrseq
+> +    should be compatible with mmc-pwrseq-simple. Please consult
+> +    Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.txt for more
+> +    information.
 > +
->  The driver exports the following attributes via the 'sysfs' files, where
+> +  For SPI':'
 > +
->  - 'n' is number of telemetry pages (from 1 to 2);
->  - indexes 1 for "iin";
->  - indexes n+1, n+2 for "vout";
-> @@ -87,9 +96,12 @@ The driver exports the following attributes via the 'sysfs' files, where
->  **in[2-{n+1}1_lcrit_alarm**
->  
->  The driver provides the next attributes for the power:
+> +    In add of the properties below, please consult
+> +    Documentation/devicetree/bindings/spi/spi-controller.yaml for optional SPI
+> +    related properties.
 > +
->  - for power in alarm and input.
->  - for power out: highest and input.
+> +  Note that in add of the properties below, the WFx driver also supports
+> +  `mac-address` and `local-mac-address` as described in
+> +  Documentation/devicetree/bindings/net/ethernet.txt
+
+Note what ethernet.txt contains... This should have a $ref to 
+ethernet-controller.yaml to express the above.
+
+You can add 'mac-address: true' if you want to be explicit about what 
+properties are used.
+
 > +
->  The driver exports the following attributes via the 'sysfs' files, where
+> +properties:
+> +  compatible:
+> +    const: silabs,wf200
+
+blank line between each DT property.
+
+> +  reg:
+> +    description:
+> +      When used on SDIO bus, <reg> must be set to 1. When used on SPI bus, it is
+> +      the chip select address of the device as defined in the SPI devices
+> +      bindings.
+> +    maxItems: 1
+> +  spi-max-frequency:
+> +    description: (SPI only) Maximum SPI clocking speed of device in Hz.
+
+No need to redefine a common property.
+
+> +    maxItems: 1
+
+Not an array. Just need:
+
+spi-max-frequency: true
+
+> +  interrupts:
+> +    description: The interrupt line. Triggers IRQ_TYPE_LEVEL_HIGH and
+> +      IRQ_TYPE_EDGE_RISING are both supported by the chip and the driver. When
+> +      SPI is used, this property is required. When SDIO is used, the "in-band"
+> +      interrupt provided by the SDIO bus is used unless an interrupt is defined
+> +      in the Device Tree.
+> +    maxItems: 1
+> +  reset-gpios:
+> +    description: (SPI only) Phandle of gpio that will be used to reset chip
+> +      during probe. Without this property, you may encounter issues with warm
+> +      boot. (For legacy purpose, the gpio in inverted when compatible ==
+> +      "silabs,wfx-spi")
 > +
->  - 'n' is number of telemetry pages (from 1 to 2);
->  - indexes 1 for "pin";
->  - indexes n+1, n+2 for "pout";
-> -- 
-> 2.26.2
-> 
+> +      For SDIO, the reset gpio should declared using a mmc-pwrseq.
+> +    maxItems: 1
+> +  wakeup-gpios:
+> +    description: Phandle of gpio that will be used to wake-up chip. Without this
+> +      property, driver will disable most of power saving features.
+> +    maxItems: 1
+> +  config-file:
+> +    description: Use an alternative file as PDS. Default is `wf200.pds`. Only
+> +      necessary for development/debug purpose.
+
+'firmware-name' is typically what we'd use here. Though if just for 
+debug/dev, perhaps do a debugfs interface for this instead. As DT should 
+come from the firmware/bootloader, requiring changing the DT for 
+dev/debug is not the easiest workflow compared to doing something from 
+userspace.
+
+> +    maxItems: 1
+
+Looks like a string, not an array.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+
+Will need additionalProperties or unevaluatedProperties depending on 
+whether you list out properties from ethernet-controller.yaml or not.
+
+Rob
