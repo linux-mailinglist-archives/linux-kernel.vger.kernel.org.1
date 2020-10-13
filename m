@@ -2,197 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB21528D546
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89F628D548
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732597AbgJMURf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 16:17:35 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:57268 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727436AbgJMURe (ORCPT
+        id S1732751AbgJMUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732536AbgJMUTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 16:17:34 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201013201722euoutp01eda78eaa6c6352dcab4cbe442dbab8a5~9pp6m1Awh0211902119euoutp012;
-        Tue, 13 Oct 2020 20:17:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201013201722euoutp01eda78eaa6c6352dcab4cbe442dbab8a5~9pp6m1Awh0211902119euoutp012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602620242;
-        bh=yuAK5blgz4+yQDehqFk6XN6ct7zGXDrK7MuXG5faAXU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ra0uGmp38jDbv4z06WV21xvwLRoWDzx4kAehpuXWzCiK4zDdhebulrQxFLJ+1Nb1v
-         f4OoZcwntclZ0CEtGxbU1ii1wvDkBe7uJMMJJ/6zBzjYeX4o4g6vO7xTIhjme1G1wo
-         YITtfz5sDW7g3AcDWfBFCLo1HSiaP+yShGKsjdNY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201013201716eucas1p20e7a97987a17545380dba9bfa96d15ea~9pp06TXeA2390923909eucas1p2b;
-        Tue, 13 Oct 2020 20:17:16 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 8E.30.06456.C4B068F5; Tue, 13
-        Oct 2020 21:17:16 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201013201715eucas1p266a9a553002a9e72e604f92c50a0f950~9ppz7Wkaz2185321853eucas1p2g;
-        Tue, 13 Oct 2020 20:17:15 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201013201715eusmtrp17a90f80d8882650a429264532ab05db9~9ppz6l7ij3121531215eusmtrp1R;
-        Tue, 13 Oct 2020 20:17:15 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-24-5f860b4c4400
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 98.3A.06314.B4B068F5; Tue, 13
-        Oct 2020 21:17:15 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201013201715eusmtip14b91fbe337393aaa3615178d7ed6a725~9ppzxNoSQ2133321333eusmtip1K;
-        Tue, 13 Oct 2020 20:17:15 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Thiago Jung Bauermann <bauerman@linux.vnet.ibm.com>,
-        AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        James Morse <james.morse@arm.com>,
-        Bhupesh Sharma <bhsharma@redhat.com>
-Subject: Re: [PATCH v2 2/2] x86: kexec_file: print appropriate variable
-Date:   Tue, 13 Oct 2020 22:17:01 +0200
-In-Reply-To: <20200430163142.27282-3-l.stelmach@samsung.com>
-        (=?utf-8?Q?=22=C5=81ukasz?= Stelmach"'s message of "Thu, 30 Apr 2020
-        18:31:42 +0200")
-Message-ID: <dleftj4kmx98zm.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 13 Oct 2020 16:19:47 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D847FC0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 13:19:46 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id l16so1948968ilt.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 13:19:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nhTxF9kZTn4QXwlE0viBXy24iL+UNB/bQsWHxd58+3A=;
+        b=lTPBGIviCJS0XkVWi0Bwb47IvvUF5R9NgubdCLLP2ptSJRzLEhOxEcUSlocEYcKzSS
+         W5bJpwwbj3QAueVsNweRPmEWBbilkknIoRgM8q/TwpxZ4U4SDeBbPpGKdZWphvKNgFSV
+         DN94hFpV1myN/clvkIS9AYApUokWMrRiSRlD0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nhTxF9kZTn4QXwlE0viBXy24iL+UNB/bQsWHxd58+3A=;
+        b=L77B9rRtCZA6+akODgV6ETnHhp7HEbIM89ZmBipLNp+Op6M/oTJZg8KGZzmA+R5VUf
+         H0gqQ7gpJcg7POTX+ERtJX95ihW2lA13q36iCrNKHiD9udMGTKMSNFsxf2RpARnTCVI+
+         ZKw0K+4WAfW6okcogGv80ohP/a+lsgBc8JwWs6a9QjSfPRqvP71X8SIw3k0WS3UyRcDv
+         JkXEeCxlHxDgwMWkS6fEwOEgSHDvT8sUg61nucKlvvPAEpRDWrVsyk29VvRWm5XXl20O
+         7c13AJxZNXP8XxOvD3giTlnuTBQl01G/bb3Q/mLdr+zoGOgscwws8gcVh6pVZ3RKZrgc
+         StRg==
+X-Gm-Message-State: AOAM530SPiAsIGIXbo7M6CENmfC6V/ujscIPA1VCbZOizVqHIDTFPgPK
+        0JYX8x7tqggfRYsKB/Dlb89bf/2uiEvkaFWRJ4So
+X-Google-Smtp-Source: ABdhPJwFfo+XbYfmplpXssGQco9373OMIZto6M/4dz2EaRjEZ7t9KtrFWJ2w17j7Yyexuy/R9SbNn0UIVmGSNI0pBpw=
+X-Received: by 2002:a05:6e02:54d:: with SMTP id i13mr1301698ils.219.1602620385949;
+ Tue, 13 Oct 2020 13:19:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeXcuO65Wp2X4ZGEyLKjIsuuRLpQVHaIionvmWu2kopuyqWkf
-        ylVbOryU5kILW1Fqy9naRJfVGvuQlqVmpJGClV281cgLaqvIdRb07fc+z/P/v//n5aUwiZYM
-        puJVKZxaJU+UkiK85sl486Jtk/SyJZkloUx9u4Ngrg88I5gh62+S8ZTlIMZ4L4jpcpYLGFt3
-        G8G8qrtKMrfaXwqYVpdJwPx8PI4zdlsRxrS9dZJM7/cGnBmzdhPrp7KjujycrSytRKzNnE2y
-        nW0PSfZbU5OQfee246z95mnW43xNskO2ELbh3DCxU3RQtEbBJcancerF646I4noq05MLZ6Z7
-        XWexTOSaYUABFNDLwax1Ej6W0BUIbniPGJBogocR1Hq7CP4whCC3bZT8p3Be0ZF8oxzB4+wR
-        jD98QdD3M09oQBRF0uFgsez3CQLpRdCiv4T7GKNzcah4dsDH0+ktYPHqhT7G6bmQ/dzy1zSA
-        NiJ4f63ibyYxvQoceq3AxzPoSKju6RLy9WnwtPij31QJxc0DyCcG+jYFOne/kI+6CUasZn/s
-        6dBXX+2vz4bGwhzcFxTo01BYsJLX5iCouTqG8zOrobPph1+7ATru3xLy81Pgzddp/L1ToKDm
-        MsaXxZCll/DTYVCV/9DvEgy5fRWIZxa6tdUC/q3yEZQbf6ELKLTkv3VK/lunZMIWo+fD3brF
-        fHkhlF3vx3heC1VVHtyECDMK4lI1ylhOE6HiToRr5EpNqio2/FiS0oYmPmPj7/pBBxppPepG
-        NIWkk8VZVp1MQsjTNBlKNwqbcPpgvdOCgnFVkoqTBoqjXjTGSMQKecZJTp0kU6cmcho3mkXh
-        0iDxshu9hyV0rDyFS+C4ZE79ryugAoIzEQTGGZJCDAc9sqKt2jmW6OOKjVErAufNjHxwcTje
-        dSbUbnxxb3eZR1e5uci8PXSw1PLeFEJ93uMdO9Sly33UE51Sd35pgVZWP1TbcurLvoS1jTuS
-        P0jTOyyJ47JLjsjPpmrXxuibvbctpYoa03lKcezd3l2mBU3wKe4sE3N85yqPFNfEySMWYGqN
-        /A/mYBctlAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJIsWRmVeSWpSXmKPExsVy+t/xu7re3G3xBpO3Klgcv76D1WLhm1Os
-        Fp83/GOzeL+sh9Fi2kZxi/v7ljNZbHp8jdXi8q45bBZLr19ksrh0YAGTxZ/9P1ksNm+aymxx
-        7dY+NouXH0+wWPzY8JjVgd/je2sfi8eaeWsYPTat6mTzuHNtD5vHu3Pn2D0eHNrM4rF5Sb3H
-        +31X2Tw+b5LzONHyhTWAK0rPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/O
-        JiU1J7MstUjfLkEv48WaioLJkhW/DzQzNzAeEO1i5OSQEDCR2De7la2LkYtDSGApo8SbW0tZ
-        uhg5gBJSEivnpkPUCEv8udYFVfOUUeLHib+MIDVsAnoSa9dGgNSICOhKXGibwgJiMws0sEic
-        O68GYgsLuEus/d3GDmILCVhL/N0+lRnEZhFQleg8sxZsJqfANEaJpRv2sYIkeAXMJXa0NTKB
-        2KIClhJbXtxnh4gLSpyc+QRqQbbE19XPmScwCsxCkpqFJDUL6DxmAU2J9bv0IcLaEssWvmaG
-        sG0l1q17z7KAkXUVo0hqaXFuem6xoV5xYm5xaV66XnJ+7iZGYFRvO/Zz8w7GSxuDDzEKcDAq
-        8fB2bGiNF2JNLCuuzD3EqAI05tGG1RcYpVjy8vNSlUR4nc6ejhPiTUmsrEotyo8vKs1JLT7E
-        aAr06ERmKdHkfGAiyiuJNzQ1NLewNDQ3Njc2s1AS5+0QOBgjJJCeWJKanZpakFoE08fEwSnV
-        wBjxaIrdhq2v1K/oz7X+a5b0x33vr+71kxblCfnqJsyLdTy3T+xlvtqMn0d2+XnGe58N/pXO
-        WffiUGK5U0Hw6ZMTdEyP1y6KfLr/e4L74lWim+8cXRy6/LjH/PDDPnfa1MLEPX0SE1bf2bKz
-        rvFxwKMLsnPeZy+Tez3h5/FbvR8U577YEc196VeEEktxRqKhFnNRcSIAG58I3AwDAAA=
-X-CMS-MailID: 20201013201715eucas1p266a9a553002a9e72e604f92c50a0f950
-X-Msg-Generator: CA
-X-RootMTR: 20201013201715eucas1p266a9a553002a9e72e604f92c50a0f950
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201013201715eucas1p266a9a553002a9e72e604f92c50a0f950
-References: <20200430163142.27282-3-l.stelmach@samsung.com>
-        <CGME20201013201715eucas1p266a9a553002a9e72e604f92c50a0f950@eucas1p2.samsung.com>
+References: <20201006001752.248564-1-atish.patra@wdc.com>
+In-Reply-To: <20201006001752.248564-1-atish.patra@wdc.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Tue, 13 Oct 2020 13:19:35 -0700
+Message-ID: <CAOnJCULba4qEO-8MmTDw5rWBep9mPUdq-iA-UpBN=-SXB13nmg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Unify NUMA implementation between ARM64 & RISC-V
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        Jia He <justin.he@arm.com>, Anup Patel <anup@brainfault.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-It was <2020-04-30 czw 18:31>, when =C5=81ukasz Stelmach wrote:
-> The value of kbuf->memsz may be different than kbuf->bufsz after calling
-> kexec_add_buffer(). Hence both values should be logged.
+On Mon, Oct 5, 2020 at 5:18 PM Atish Patra <atish.patra@wdc.com> wrote:
 >
-> Fixes: ec2b9bfaac44e ("kexec_file: Change kexec_add_buffer to take kexec_=
-buf as argument.")
-> Fixes: 27f48d3e633be ("kexec-bzImage64: support for loading bzImage using=
- 64bit entry")
-> Fixes: dd5f726076cc7 ("kexec: support for kexec on panic using new system=
- call")
-> Cc: Vivek Goyal <vgoyal@redhat.com>
-> Cc: Thiago Jung Bauermann <bauerman@linux.vnet.ibm.com>
-> Signed-off-by: =C5=81ukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  arch/x86/kernel/crash.c           | 2 +-
->  arch/x86/kernel/kexec-bzimage64.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
+> This series attempts to move the ARM64 numa implementation to common
+> code so that RISC-V can leverage that as well instead of reimplementing
+> it again.
 >
-> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-> index fd87b59452a3..d408e5b536fa 100644
-> --- a/arch/x86/kernel/crash.c
-> +++ b/arch/x86/kernel/crash.c
-> @@ -420,7 +420,7 @@ int crash_load_segments(struct kimage *image)
->  	}
->  	image->arch.elf_load_addr =3D kbuf.mem;
->  	pr_debug("Loaded ELF headers at 0x%lx bufsz=3D0x%lx memsz=3D0x%lx\n",
-> -		 image->arch.elf_load_addr, kbuf.bufsz, kbuf.bufsz);
-> +		 image->arch.elf_load_addr, kbuf.bufsz, kbuf.memsz);
->=20=20
->  	return ret;
->  }
-> diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bz=
-image64.c
-> index db6578d45157..420393c58a73 100644
-> --- a/arch/x86/kernel/kexec-bzimage64.c
-> +++ b/arch/x86/kernel/kexec-bzimage64.c
-> @@ -434,7 +434,7 @@ static void *bzImage64_load(struct kimage *image, cha=
-r *kernel,
->  		goto out_free_params;
->  	bootparam_load_addr =3D kbuf.mem;
->  	pr_debug("Loaded boot_param, command line and misc at 0x%lx bufsz=3D0x%=
-lx memsz=3D0x%lx\n",
-> -		 bootparam_load_addr, kbuf.bufsz, kbuf.bufsz);
-> +		 bootparam_load_addr, kbuf.bufsz, kbuf.memsz);
->=20=20
->  	/* Load kernel */
->  	kbuf.buffer =3D kernel + kern16_size;
-> @@ -464,7 +464,7 @@ static void *bzImage64_load(struct kimage *image, cha=
-r *kernel,
->  		initrd_load_addr =3D kbuf.mem;
->=20=20
->  		pr_debug("Loaded initrd at 0x%lx bufsz=3D0x%lx memsz=3D0x%lx\n",
-> -				initrd_load_addr, initrd_len, initrd_len);
-> +				initrd_load_addr, kbuf.bufsz, kbuf.memsz);
->=20=20
->  		setup_initrd(params, initrd_load_addr, initrd_len);
->  	}
+> RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+> modified to reuse the common implementation to avoid duplication.
+>
+> [1] https://lkml.org/lkml/2020/1/10/233
+>
+> This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+> It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+> This patch series doesn't modify the maintainers list for the common code (arch_numa)
+> as I am not sure if somebody from ARM64 community or Greg should take up the
+> maintainership. Ganapatrao was the original author of the arm64 version.
+> I would be happy to update that in the next revision once it is decided.
+>
+> # numactl --hardware
+> available: 2 nodes (0-1)
+> node 0 cpus: 0 1 2 3
+> node 0 size: 486 MB
+> node 0 free: 470 MB
+> node 1 cpus: 4 5 6 7
+> node 1 size: 424 MB
+> node 1 free: 408 MB
+> node distances:
+> node   0   1
+>   0:  10  20
+>   1:  20  10
+> # numactl -show
+> policy: default
+> preferred node: current
+> physcpubind: 0 1 2 3 4 5 6 7
+> cpubind: 0 1
+> nodebind: 0 1
+> membind: 0 1
+>
+> The patches are also available at
+> https://github.com/atishp04/linux/tree/5.10_numa_unified_v4
+>
+> For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+> https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
+>
+> Testing:
+> RISC-V:
+> Tested in Qemu and 2 socket OmniXtend FPGA.
+>
+> ARM64:
+> 2 socket kunpeng920 (4 nodes around 250G a node)
+> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>
+> There may be some minor conflicts with Mike's cleanup series [2] depending on the
+> order in which these two series are being accepted. I can rebase on top his series
+> if required.
+>
+> [2] https://lkml.org/lkml/2020/8/18/754
+>
+> Changes from v3->v4:
+> 1. Removed redundant duplicate header.
+> 2. Added Reviewed-by tags.
+>
+> Changes from v2->v3:
+> 1. Added Acked-by/Reviewed-by tags.
+> 2. Replaced asm/acpi.h with linux/acpi.h
+> 3. Defined arch_acpi_numa_init as static.
+>
+> Changes from v1->v2:
+> 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
+> 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
+> 3. Fixed few typos.
+>
+> Atish Patra (4):
+> numa: Move numa implementation to common code
+> arm64, numa: Change the numa init functions name to be generic
+> riscv: Separate memory init from paging init
+> riscv: Add numa support for riscv64 platform
+>
+> Greentime Hu (1):
+> riscv: Add support pte_protnone and pmd_protnone if
+> CONFIG_NUMA_BALANCING
+>
+> arch/arm64/Kconfig                            |  1 +
+> arch/arm64/include/asm/numa.h                 | 45 +----------------
+> arch/arm64/kernel/acpi_numa.c                 | 13 -----
+> arch/arm64/mm/Makefile                        |  1 -
+> arch/arm64/mm/init.c                          |  4 +-
+> arch/riscv/Kconfig                            | 31 +++++++++++-
+> arch/riscv/include/asm/mmzone.h               | 13 +++++
+> arch/riscv/include/asm/numa.h                 |  8 +++
+> arch/riscv/include/asm/pci.h                  | 14 ++++++
+> arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+> arch/riscv/kernel/setup.c                     | 11 ++++-
+> arch/riscv/kernel/smpboot.c                   | 12 ++++-
+> arch/riscv/mm/init.c                          | 10 +++-
+> drivers/base/Kconfig                          |  6 +++
+> drivers/base/Makefile                         |  1 +
+> .../mm/numa.c => drivers/base/arch_numa.c     | 30 ++++++++++--
+> include/asm-generic/numa.h                    | 49 +++++++++++++++++++
+> 17 files changed, 199 insertions(+), 71 deletions(-)
+> create mode 100644 arch/riscv/include/asm/mmzone.h
+> create mode 100644 arch/riscv/include/asm/numa.h
+> rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
+> create mode 100644 include/asm-generic/numa.h
+>
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Ping? Any chance this patch follows its arm64 counterpart into mainline?
+Ping ?
 
-Kind regards,
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl+GCz0ACgkQsK4enJil
-gBA+sQgAknuxR62NM6MA3eZXzg2/NIAoN5/D82mBJCWrm5Y6yYd1pR/oV9unxk1E
-p2h3xP81UUjabhiqW12zCD5Jiq2YgQCeiMWnd+0LBTuXaqXBH4jJjm0882oREBnZ
-jxWa4k+hBIh6QDgQG5UTIZoKiUMQk0l6USSN4nNSSL3c/qs1K0nM1tM1fIWR/4O+
-iLNeEdr/vKoKdj4ahrsQzmxx/dtUw0p2IyON6TGKmn+7/sEuRvrw0EaJovqepEMQ
-tBsSqfuzKHqsI4dirHdgIZ5/EtbfxwiTc844wQ9GVudga0aAXf8cWu+a3HwyA8kj
-PpOzdEklx9WQa4iiHejbvYk385ta3Q==
-=qbAv
------END PGP SIGNATURE-----
---=-=-=--
+-- 
+Regards,
+Atish
