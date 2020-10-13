@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D783B28D63D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7545E28DCFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728397AbgJMVci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:32:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32458 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726652AbgJMVci (ORCPT
+        id S2388174AbgJNJVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730999AbgJNJUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:32:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602624756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fk7xQQMQtblyklWfzN3PbY9/oXyJ1G6FiN83MbyUF4g=;
-        b=LQqxUzwLxmr2zDjAOAJJg6GvcLTAGKXvPSuOxMtUKYUM6QARm12Pqt8z2Q7ZAsvBT2BxVk
-        TMk5YQHlVBzp7TADXx9zi+3G7dVn4TBqTcDK4XpzDoEACQlMJb3Ru6MK+zFpUA+D5krna/
-        Lcucf5Q7xTqC6Yw8AQ8qskOvYi8wlPc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-R8Ach2HRP9KNwnMA_l1tuA-1; Tue, 13 Oct 2020 17:32:35 -0400
-X-MC-Unique: R8Ach2HRP9KNwnMA_l1tuA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0C82801FD8;
-        Tue, 13 Oct 2020 21:32:33 +0000 (UTC)
-Received: from w520.home (ovpn-113-35.phx2.redhat.com [10.3.113.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 11A885D9CD;
-        Tue, 13 Oct 2020 21:32:29 +0000 (UTC)
-Date:   Tue, 13 Oct 2020 15:32:29 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     <eric.auger@redhat.com>, <cohuck@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <song.bao.hua@hisilicon.com>, <linuxarm@huawei.com>
-Subject: Re: [PATCH] vfio/platform: Replace spin_lock_irqsave by spin_lock
- in hard IRQ
-Message-ID: <20201013153229.7fe74e65@w520.home>
-In-Reply-To: <1602554458-26927-1-git-send-email-tiantao6@hisilicon.com>
-References: <1602554458-26927-1-git-send-email-tiantao6@hisilicon.com>
+        Wed, 14 Oct 2020 05:20:40 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB2AC061787
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:34:35 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u21so1888538eja.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=to:from:subject:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=w10ZuoPIwCwbhv8a3DX0b8jne0U2O/g6VGYCUIOnuOY=;
+        b=TSlPJwqpWYteMMobIirFJw6tjLSWYd+9weNNzZoSps+6TK28+53PrZDS/37/C3HeTC
+         /t9Jf6XK3lZoDAtqNjbqY0sXTk69I1ndPvW7l/Aftvk6YeD758tOGMWA1yJQZODferrt
+         AF7FndMJvuhYdqoZWn7iCIMqHAmeZ23i57jkU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=w10ZuoPIwCwbhv8a3DX0b8jne0U2O/g6VGYCUIOnuOY=;
+        b=MceVOQq1E6jYGq7pVN04KpVzFQBI+2xPnLevThf6PejN1OBHjPDp0VG+whgqUknJdY
+         ZPJrgDYdgjdaU69nbxS242kTXJ9gCA1KysOEIdokBR1TaHa00qgA09UsxGBuG49fS7qR
+         mC72/nk9Ko2oDIBPvqLVruINhoX3+t2yVOwMZYqJ/otBGi00/x+iQ2Xd2/Z9A95Z6vEZ
+         EdqDHngzdFIryjvGwnU21C0ClromznZ199XpzWpPorHVROVNJ+qlF85T02q0tE0wug8o
+         eHRhoHZVh0S0Ewy1S4rKhKjxERpxkCQEFFTJ70+TbNZ6PuVh1qhwJmS9QfaQajaYrMoS
+         38qg==
+X-Gm-Message-State: AOAM530WVZEIT3frTCrE+Qwlc/awE0pDm/acnHNS5WPTkDUcc2XZ9fOb
+        XFJIaxGeOwH0dfMqh1pY1VYOsZ5grtWDCNdt5wM=
+X-Google-Smtp-Source: ABdhPJysX1ptbLnz/IWRub4YDejyLxQ0jwHAbdYfzwDuuHTwovNpyVKwzZnCOZ00xobEvV/VewawVA==
+X-Received: by 2002:a17:906:b04e:: with SMTP id bj14mr1996325ejb.254.1602624874233;
+        Tue, 13 Oct 2020 14:34:34 -0700 (PDT)
+Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
+        by smtp.gmail.com with ESMTPSA id ss7sm565707ejb.28.2020.10.13.14.34.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 14:34:33 -0700 (PDT)
+To:     Peter Rosin <peda@axentia.se>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: using one gpio for multiple dht22 sensors
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Message-ID: <91c25030-d5d1-e3e7-2d26-ac631dddc756@rasmusvillemoes.dk>
+Date:   Tue, 13 Oct 2020 23:34:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 10:00:58 +0800
-Tian Tao <tiantao6@hisilicon.com> wrote:
+Hi Peter
 
-> It is redundant to do irqsave and irqrestore in hardIRQ context.
+Since you're the author of io-channel-mux.txt, gpio-mux.txt and
+mux-controller.txt, I hope you don't mind me asking some perhaps silly
+questions.
 
-But this function is also called from non-IRQ context.  Thanks,
+I'm going to hook up a bunch of dht22 humidity (and temperature) sensors
+[1] (drivers/iio/humidity/dht11.c), but partly due to limited number of
+available gpios, I'm also going to use a 74hc4051 multiplexer [2], so
+that all the dht22's actually sit on the same gpio.
 
-Alex
- 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/vfio/platform/vfio_platform_irq.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/vfio/platform/vfio_platform_irq.c b/drivers/vfio/platform/vfio_platform_irq.c
-> index c5b09ec..24fd6c5 100644
-> --- a/drivers/vfio/platform/vfio_platform_irq.c
-> +++ b/drivers/vfio/platform/vfio_platform_irq.c
-> @@ -139,10 +139,9 @@ static int vfio_platform_set_irq_unmask(struct vfio_platform_device *vdev,
->  static irqreturn_t vfio_automasked_irq_handler(int irq, void *dev_id)
->  {
->  	struct vfio_platform_irq *irq_ctx = dev_id;
-> -	unsigned long flags;
->  	int ret = IRQ_NONE;
->  
-> -	spin_lock_irqsave(&irq_ctx->lock, flags);
-> +	spin_lock(&irq_ctx->lock);
->  
->  	if (!irq_ctx->masked) {
->  		ret = IRQ_HANDLED;
-> @@ -152,7 +151,7 @@ static irqreturn_t vfio_automasked_irq_handler(int irq, void *dev_id)
->  		irq_ctx->masked = true;
->  	}
->  
-> -	spin_unlock_irqrestore(&irq_ctx->lock, flags);
-> +	spin_unlock(&irq_ctx->lock);
->  
->  	if (ret == IRQ_HANDLED)
->  		eventfd_signal(irq_ctx->trigger, 1);
+It's pretty obvious how the multiplexer is to be described in
+device-tree (I'm probably going to send a patch to add support for an
+optional "enable-gpio", as on the 74hc4051, so that MUX_IDLE_DISCONNECT
+gets supported).
 
+It also seems like io-channel-mux should somehow magically apply to all
+kinds of iio devices, but it can't be that simple. And if it is, I can't
+figure out how to write the DT. So:
+
+- do I need to teach the dht11.c driver to be mux-aware?
+- currently, a dht11/dht22 shows up in sysfs with just two files,
+in_humidityrelative_input and in_temp_input. Now, should I end up with
+one device and, say, 2*8 files (so that it seems like one sensor with
+eight input channels), or should it show up as eight different devices?
+If the latter, I guess the device tree would end up with the same "gpios
+= " spec for all eight - is that even allowed?
+
+If you can show how the DT is supposed to describe this situation, I'll
+try to fill out the missing pieces on the driver side.
+
+[I could also just not describe the multiplexer at all and control
+everything about it by toggling gpios from userspace, and just have a
+single dht22 in DT, but I prefer doing this "the right way" if it's
+feasible.]
+
+Thanks,
+Rasmus
+
+Just FTR:
+
+[1]
+https://www.electroschematics.com/wp-content/uploads/2015/02/DHT22-datasheet.pdf
+[2] https://assets.nexperia.com/documents/data-sheet/74HC_HCT4051.pdf
