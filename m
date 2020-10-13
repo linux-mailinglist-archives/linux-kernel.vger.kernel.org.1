@@ -2,226 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD35828DD4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0E828D659
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 00:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730319AbgJNJXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731212AbgJNJWn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:22:43 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB1EC0613B1;
-        Tue, 13 Oct 2020 14:52:24 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id h9so927122ybm.4;
-        Tue, 13 Oct 2020 14:52:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aHSVzGrwxPY+5umbvS7UQaRkw2SUc5XjmhTscxoVxXY=;
-        b=AysTXKjxOkM69AqLCDBsnLHnTxWtFbL79XrhZ0Mz/aJPLK2Lsa6Ojh+WgjbKVyhiCc
-         qkM933Ne+RZu6OYJHQO5+xMBVXB8jRn/B+tdU9glVOKqDC8suXpCs3WcYFhcXZu2m5JQ
-         ZyXtaytSacEdMxuNHdpXJEdEN70O1own5Ay9cGmcG/trjYqybP5lTma3ZWnBCpF0+iaS
-         FlDB/4ISCR1au7kHRQoUrS7WNVvvUIbO2NxavrWuYkVzSjYIFI4+P/5PDgVedkd2mLJp
-         pudO02MqxDIU7HQJGjow9Sm0mNB5ZGY5n3UqU5+voQ1008oH3LSzBmP8XDsBwOfl4CeQ
-         7i5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aHSVzGrwxPY+5umbvS7UQaRkw2SUc5XjmhTscxoVxXY=;
-        b=WmtcHty+L6Es+w2tFl1omMkZNKIckbBXMtaaAOkECVd3xzJee2c1KSQSAi55WUCwzx
-         oxo9Svjc2l1KQu+NahbShhDqQ4/+BxoKDUncsVE7UEBDFPNl0NK910T7u6kpMbKRcPlw
-         sDqUiRST5Y0eEu16e/cBLdBKNGMjhmrvBBV7lI30kHZgP6ujQgJmCcSKPUxMKpCuKTAg
-         xntv7oRBASpGVjg84zCStZLz7HyWvOYlXwHLtX/Io9K6vb8HgFV9I39EBpj9mRcYzDyC
-         vsTot4GrS2zy1OilMdhNIpBCY12En+ewuUkYGfA5LxtrZEbG1Jvff62eXRbKWsGAQiD5
-         0FSA==
-X-Gm-Message-State: AOAM532k6eegg1zJu6ERAuXsSRNe7ElLxDGu6D0LNeOYxPbzMs4hAx0r
-        2AtFyxvj1YlJY4I3V4i6Q9YzD/B5JYfIKCPiD9w=
-X-Google-Smtp-Source: ABdhPJx1PTzq4G5Zx99mkZN/dFLb5s+w/lzDHXyoJVjnP6bBn5APRDjororfZanWzi0TglZPZWHQ2X1fKtDkdXLvWpM=
-X-Received: by 2002:a25:8246:: with SMTP id d6mr2814998ybn.25.1602625943672;
- Tue, 13 Oct 2020 14:52:23 -0700 (PDT)
+        id S1728288AbgJMWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 18:00:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:7336 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbgJMWA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 18:00:29 -0400
+IronPort-SDR: XdoRzCJLpv05fTpgIsPm1cW/aCyw5W0PprVZwLSzr1shFezIHtVnuLJsbM6HuvdTXwlEOef+lG
+ KEay/7MlO2gQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="250686272"
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="250686272"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 15:00:27 -0700
+IronPort-SDR: MxIwvzDdzrSq4y1zYjav5S4aRBCv387gEQkwRnWH0bZgEdYRFwFPOY2/6nEwOBNhe+h4x6SpB7
+ iCNIc6iv6n8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="390454969"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by orsmga001.jf.intel.com with ESMTP; 13 Oct 2020 15:00:27 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 13 Oct 2020 15:00:27 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 13 Oct 2020 15:00:26 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 13 Oct 2020 15:00:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bXhawVn0xXLD3g4DClLnemex0iYiymfg6JZC+jgjlVP3Y46vuQ1Gxo7OnkcZCMwWAFdtZsjKY2HIP0xCvungaNoA/9GuLuQqyw5/v8PXMYGREL925SYeC1p3KNy8MehU8iVoheYnODBg6OVKxgKX0YEzgo3i6J2gHeuInPYDAQWGpR25Waorf+RjI7yeXVb7tOsr/8+I8UESPZXFC5fe7nn5l4etv+BNFNgPs1Ip5VnFwiBn7l3U8UB4mCwIYTpiZDx0p1eNiWsy3C9YMgh7nC5Gr1CPeslRQavRD5vYid+vuBf4AbaBprSG1sfnr2qe/imd1pL15I54/slY7XKCog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Utlsb2puEfNib17J13H2h01ENPO0rap3yfKYOuxSjSQ=;
+ b=Ndxkudn5ZrhPYjUVCFzVGT+YgMW8wg61I4i+uw+LLs+Lp19dNdrYbCRjRKUZ0oL87/y8CB2GcyjhMJmYrtjryu9TLoN9wJoTTItf6bIbot959uP9XtYp0D71bexUGzFWChBD44FcAbzeOj30AainjK79+2Zmoo4gSb8ANhv0arhznXiFXCpm8FDerlvhRatXh8c+M6o2s4cflnT8E026KFRQ+97PzmK7oazQuEg95579V6d59mufkdMKjpofElwp7hlc2yyiqppN5XUDZGLNQ3+rwrvxsx7EBOtVOwGaf/1qvaTQ92WDZ+/RN+Q7QIguurHsbDCb7bTsioMaKJOsdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Utlsb2puEfNib17J13H2h01ENPO0rap3yfKYOuxSjSQ=;
+ b=LN2UAunfsPFLZozkOv7EA0NbenL7bWQSFf3hipm0oDjrqEKJrMWuomRyR4QgL+n0zy1nvYP5KlXD5jflE5BLk8S7/XYc1rlT87akWVyTWnzuqrp6P2iljUd0zAdCwKcWbQ/Ya6NQt8CzkrIVRaHseA3g83z5eFu19/uuNW6Ygfk=
+Received: from BYAPR11MB3463.namprd11.prod.outlook.com (2603:10b6:a03:1e::16)
+ by BY5PR11MB4085.namprd11.prod.outlook.com (2603:10b6:a03:18d::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Tue, 13 Oct
+ 2020 22:00:16 +0000
+Received: from BYAPR11MB3463.namprd11.prod.outlook.com
+ ([fe80::94c2:2c26:494c:98e6]) by BYAPR11MB3463.namprd11.prod.outlook.com
+ ([fe80::94c2:2c26:494c:98e6%4]) with mapi id 15.20.3477.020; Tue, 13 Oct 2020
+ 22:00:16 +0000
+From:   "Brown, Len" <len.brown@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        X86 ML <x86@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH 07/22] x86/fpu/xstate: Introduce helpers to manage an
+ xstate area dynamically
+Thread-Topic: [RFC PATCH 07/22] x86/fpu/xstate: Introduce helpers to manage an
+ xstate area dynamically
+Thread-Index: AQHWmDN2jRGFh6Yx80OtsKJINUAFuamDaHOAgBK+RfA=
+Date:   Tue, 13 Oct 2020 22:00:16 +0000
+Message-ID: <BYAPR11MB346378236EEB357339C0DD81E0040@BYAPR11MB3463.namprd11.prod.outlook.com>
+References: <20201001203913.9125-1-chang.seok.bae@intel.com>
+ <20201001203913.9125-8-chang.seok.bae@intel.com>
+ <CALCETrWjOYd4wM0Mn7fY+t4ztU99GNP77A6skNwjTViJYUEZYQ@mail.gmail.com>
+In-Reply-To: <CALCETrWjOYd4wM0Mn7fY+t4ztU99GNP77A6skNwjTViJYUEZYQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+dlp-product: dlpe-windows
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [75.100.89.66]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bd7b3160-a69f-41e2-a11d-08d86fc35e95
+x-ms-traffictypediagnostic: BY5PR11MB4085:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB408535C05AC4D47D382FF8FCE0040@BY5PR11MB4085.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fQkMV7ymkVM8Wzy822FdVWZtUEdv3dDSSIOwD7KBlP4F0DZ6O8Wi2PJ/WKaFTXScZzEHL4ClTuDYNtahuVBOb0RsDC8rrQuWv+5VxOrX5e7pcOAQTK8YJXGIbjWWBOz2LETzm3GqI6bui8+4khjyuRKUFSp92nDbe0ZX3CHjgFbzHpY2PimtLiHiSSHJ87NebS17FjZQgSwrDBc9wreC8tPNBVDVZ9pOMk82Gsf4nOatlsdxNUc68iTgvSO2t9HdCZJ8WhWjWjealNqAd3a4RUUGhCmsv5vDU0t7apUpyuyRcs54+LkfA2PEwZFutRgma2z83HlSl1HK76m8cg3rCQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3463.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(136003)(366004)(396003)(33656002)(478600001)(6636002)(2906002)(7696005)(6506007)(83380400001)(9686003)(8676002)(52536014)(4744005)(4326008)(66446008)(26005)(66556008)(66946007)(66476007)(64756008)(8936002)(186003)(55016002)(86362001)(110136005)(316002)(71200400001)(5660300002)(54906003)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: dwyanMaoLFNfjNU7ccM7mqCvq6RKREp78aGpjXycH67zWnuVsZ+LxE7VhQ8w1igV++m5pJ/wIWdXoRLrdzbzcYTltAUEjRfrhG1Gw2CGemcG8UiZdibHRsJgOJKVc1Jpp30UaBEVkPuZ0qj6vGFGndbKqwz4jlTRkx1MX1CcMgRPb90BbxTEDrlxb4VPhQO1+iM4lbyIOphsgNYfc7TwekkHwC3iZwCF0UDsdGgTo5jwQGZ5v5hJSoAn9Fv3bhfD1N+TqtEn/l/dqhKYhesmvzXrL3WRKq0z6ZVJ+mYmgbCOINfSo0H8NVpeijmTKCGfyot8cKw3BfBSlpfBcxCPdAUs6ykpIS8i3Y4BGlTL51DiUemnxu6GrPZ22AZedfUd3DudlXKOuJn7itzUMgZ7I+fYyO19yZFLT9VXxBLp3kkq2ql9NNKtZeYzteIDDFmvMces58ePOthn2r/rhPBZ0Q2oepXXb5A9Xzt/76KCZGm3dpyspazbVocS7vdBBG+XgIDZP1U/zBFTe9gXwtVs+CciuDpwycKCpP6ikfRPmUEe6IoDQUl5zZTXHJlE3nDu8Hh4QqGyJyunQQB66PginOApPIx5kfJo5gbc2LJ/DJ08LdMczsqdzj/oOplC13nMb3GH6SlxQEWGTq2WKhsb8w==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20201013150150.14801-1-fabrizio.castro.jz@renesas.com> <20201013150150.14801-6-fabrizio.castro.jz@renesas.com>
-In-Reply-To: <20201013150150.14801-6-fabrizio.castro.jz@renesas.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Tue, 13 Oct 2020 22:51:57 +0100
-Message-ID: <CA+V-a8uEnQOmJK0zxOe60EX-G-f-0V756U43myZVJDVf0eQb9Q@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] arm64: dts: r8a77965: Add DRIF support
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3463.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd7b3160-a69f-41e2-a11d-08d86fc35e95
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2020 22:00:16.6476
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OKXIcf9BbjuCISwRIGyhJKxxsx2mYq29JysHWqxAbdXoLwWLhOmicNs01JSBL/hD3XGm4Rixkk8LI77GN5IJEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4085
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabrizio,
-
-Thank you for the patch.
-
-On Tue, Oct 13, 2020 at 6:25 PM Fabrizio Castro
-<fabrizio.castro.jz@renesas.com> wrote:
->
-> Add the DRIF controller nodes for r8a77965 (a.k.a. R-Car M3-N).
->
-> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> ---
-> v2->v3:
-> * New patch
->
->  arch/arm64/boot/dts/renesas/r8a77965.dtsi | 120 ++++++++++++++++++++++
->  1 file changed, 120 insertions(+)
->
-Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-
-Cheers,
-Prabhakar
-
-> diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-> index fe4dc12e2bdf..c5a54dc7ede2 100644
-> --- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-> @@ -1550,6 +1550,126 @@ vin7csi40: endpoint@2 {
->                         };
->                 };
->
-> +               drif00: rif@e6f40000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6f40000 0 0x84>;
-> +                       interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 515>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x20>, <&dmac2 0x20>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 515>;
-> +                       renesas,bonding = <&drif01>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               drif01: rif@e6f50000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6f50000 0 0x84>;
-> +                       interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 514>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x22>, <&dmac2 0x22>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 514>;
-> +                       renesas,bonding = <&drif00>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               drif10: rif@e6f60000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6f60000 0 0x84>;
-> +                       interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 513>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x24>, <&dmac2 0x24>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 513>;
-> +                       renesas,bonding = <&drif11>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               drif11: rif@e6f70000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6f70000 0 0x84>;
-> +                       interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 512>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x26>, <&dmac2 0x26>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 512>;
-> +                       renesas,bonding = <&drif10>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               drif20: rif@e6f80000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6f80000 0 0x84>;
-> +                       interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 511>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x28>, <&dmac2 0x28>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 511>;
-> +                       renesas,bonding = <&drif21>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               drif21: rif@e6f90000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6f90000 0 0x84>;
-> +                       interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 510>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x2a>, <&dmac2 0x2a>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 510>;
-> +                       renesas,bonding = <&drif20>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               drif30: rif@e6fa0000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6fa0000 0 0x84>;
-> +                       interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 509>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x2c>, <&dmac2 0x2c>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 509>;
-> +                       renesas,bonding = <&drif31>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               drif31: rif@e6fb0000 {
-> +                       compatible = "renesas,r8a77965-drif",
-> +                                    "renesas,rcar-gen3-drif";
-> +                       reg = <0 0xe6fb0000 0 0x84>;
-> +                       interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 508>;
-> +                       clock-names = "fck";
-> +                       dmas = <&dmac1 0x2e>, <&dmac2 0x2e>;
-> +                       dma-names = "rx", "rx";
-> +                       power-domains = <&sysc R8A77965_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 508>;
-> +                       renesas,bonding = <&drif30>;
-> +                       status = "disabled";
-> +               };
-> +
->                 rcar_sound: sound@ec500000 {
->                         /*
->                          * #sound-dai-cells is required
-> --
-> 2.25.1
->
+DQoNCj4NCj4gRnJvbTogQW5keSBMdXRvbWlyc2tpIDxsdXRvQGtlcm5lbC5vcmc+IA0KPg0KPiA+
+ICsgICAgICAgLyoNCj4gPiArICAgICAgICAqIFRoZSBjYWxsZXIgbWF5IGJlIHVuZGVyIGludGVy
+cnVwdCBkaXNhYmxlZCBjb25kaXRpb24uIEVuc3VyZSBpbnRlcnJ1cHQNCj4gPiArICAgICAgICAq
+IGFsbG93YW5jZSBiZWZvcmUgdGhlIG1lbW9yeSBhbGxvY2F0aW9uLCB3aGljaCBtYXkgaW52b2x2
+ZSB3aXRoIHBhZ2UgZmF1bHRzLg0KPiA+ICsgICAgICAgICovDQo+ID4gKyAgICAgICBsb2NhbF9p
+cnFfZW5hYmxlKCk7DQoNCj4gLi4uIHlvdSBjYW4ndCBqdXN0IGVuYWJsZSBJUlFzIGhlcmUuICBJ
+ZiBJUlFzIGFyZSBvZmYsIHRoZXkncmUgb2ZmIGZvciBhIHJlYXNvbi4gIFNlY29uZGx5LCBpZiB0
+aGV5J3JlICpvbiosIHlvdSBqdXN0IGZvcmdvdCB0aGF0IGZhY3QuDQoNCkdvb2QgY2F0Y2guICBU
+aGlzIGlzIGEgdHJhcCBoYW5kbGVyIGZyb20gdXNlci1zcGFjZSBhbmQgc2hvdWxkIG5ldmVyIGJl
+IGNhbGxlZCB3aXRoIGlycXMgZGlzYWJsZWQsDQpTbyB0aGUgbG9jYWxfaXJxX2VuYWJsZSgpIHNo
+b3VsZCBiZSBkZWFkIGNvZGUuICBDaGFuZyBzdWdnZXN0ZWQgdGhhdCBoZSBlcnJvbmVvdXNseSBs
+ZWZ0IGl0IGluDQpmcm9tIGEgcHJldmlvdXMgaW1wbGVtZW50YXRpb24uDQoNCj4gPiArICAgICAg
+IC8qIFdlIG5lZWQgNjRCIGFsaWduZWQgcG9pbnRlciwgYnV0IHZtYWxsb2MoKSByZXR1cm5zIGEg
+cGFnZS1hbGlnbmVkIGFkZHJlc3MgKi8NCj4gPiArICAgICAgIHN0YXRlX3B0ciA9IHZtYWxsb2Mo
+bmV3c3opOw0KDQo+IEFuZCBhbGxvY2F0aW5nIHRoaXMgc3RhdGUgZnJvbSB2bWFsbG9jKCkgc2Vl
+bXMgcXVlc3Rpb25hYmxlLiAgV2h5IGFyZSB5b3UgZG9pbmcgdGhpcz8NCg0KV2hpbGUgdGhlIGJ1
+ZmZlciBuZWVkcyB0byBiZSB2aXJ0dWFsbHkgY29udGlndW91cywgaXQgZG9lc24ndCBuZWVkIHRv
+IGJlIHBoeXNpY2FsbHkgY29udGlndW91cywNCkFuZCBzbyB2bWFsbG9jKCkgaXMgbGVzcyBvdmVy
+aGVhZCB0aGFuIGttYWxsb2MoKSBmb3IgdGhpcy4NCg0KVGhhbmtzLA0KLUxlbg0KDQo=
