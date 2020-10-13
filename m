@@ -2,253 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386A228CE6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BBE28CE85
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727710AbgJMMg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:36:26 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:39096 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726732AbgJMMg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:36:26 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id E8E85412EB;
-        Tue, 13 Oct 2020 12:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-type:content-type:content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:date:subject
-        :subject:from:from:received:received:received; s=mta-01; t=
-        1602592579; x=1604406980; bh=zVhD6lUNMQlctSn+NLlY9tSIYRxPl0V3drX
-        /ojOm4RM=; b=UYtfeyXiCO69TIis32Rr/PaD1pBBZCZcUzzXbFVxqRgb+ax/ULV
-        zPcMrFn3cOhIcddAc3OV8v6JElEXz/JTFzxryOq80ijQstzPyPPyNQjKXzOwSU9A
-        Ti4+5UbkRmRVZPC0XvSM+K+Ejqri8ScNNZhP4gKYqw6dqSACCk3n4OE4=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4Bwg6O1ei_0M; Tue, 13 Oct 2020 15:36:19 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 553C5412CF;
-        Tue, 13 Oct 2020 15:36:16 +0300 (MSK)
-Received: from localhost.dev.yadro.com (10.199.1.110) by
- T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Tue, 13 Oct 2020 15:36:15 +0300
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>
-CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>
-Subject: [PATCH 1/1] net: ftgmac100: add handling of mdio/phy nodes for ast2400/2500
-Date:   Tue, 13 Oct 2020 15:40:14 +0300
-Message-ID: <20201013124014.2989-2-i.mikhaylov@yadro.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20201013124014.2989-1-i.mikhaylov@yadro.com>
-References: <20201013124014.2989-1-i.mikhaylov@yadro.com>
+        id S1727962AbgJMMk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:40:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51748 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727114AbgJMMk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:40:57 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602592856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PtXsyiQpxCT6OGocoDV2xxYXmu++2jlzkrSoN+j9pRU=;
+        b=ZOhokM3pscswWs/6L/+yp+pNzzbKR8c7jaCklmGODRNv2mGh7LTgmNcJF1kgPKaKPP+ksr
+        uEHGxq9JgpE2/P1IDDG9/5nfdviWuSte26uh3HKiCx6Tm0Fmb3W/qvLWuC2LQfR1ccLXMH
+        4tVYwoWAVXzXkkxyGlg+PBU4sIPlNJwxNgJcjD9OIDv6jsUTaHFJGmuFFTbEeC4TaOSX5R
+        NCUUg36m0CJydtFo2o/uTABAnL3RiTFrVX+tILyri7ynuhNEJel+bt9y04AMjKRe/ySqBk
+        SZ1C/1reHxc0mu5bM9DqROwiunnooF60MKgeRGq+Vu1+ijO7eCKAJkuWTOn6VQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602592856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PtXsyiQpxCT6OGocoDV2xxYXmu++2jlzkrSoN+j9pRU=;
+        b=lgLaza4y48L6oQOyRBy1XqLgy1HeZ9SOaSeFB0Jhx8gOY+Qc/KdONfuORVzmHeb7Wv/FQ2
+        BFc4wukp3LfMQcDA==
+To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org,
+        Marc Zyngier <maz@kernel.org>
+Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+In-Reply-To: <0ca196c0df5beb90b45457ac7ca5d8611d2a7a29.camel@infradead.org>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org>
+ <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org>
+ <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org>
+ <87362owhcb.fsf@nanos.tec.linutronix.de>
+ <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org>
+ <87tuv4uwmt.fsf@nanos.tec.linutronix.de>
+ <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org>
+ <874kn2s3ud.fsf@nanos.tec.linutronix.de>
+ <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org>
+ <87pn5or8k7.fsf@nanos.tec.linutronix.de>
+ <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
+ <87ft6jrdpk.fsf@nanos.tec.linutronix.de>
+ <25c54f8e5da1fd5cf3b01ad2fdc1640c5d86baa1.camel@infradead.org>
+ <87362jqoh3.fsf@nanos.tec.linutronix.de>
+ <1abc2a34c894c32eb474a868671577f6991579df.camel@infradead.org>
+ <87eem3ozxd.fsf@nanos.tec.linutronix.de>
+ <0de733f6384874d68afba2606119d0d9b1e8b34e.camel@infradead.org>
+ <87zh4qo4o5.fsf@nanos.tec.linutronix.de>
+ <87wnzuo127.fsf@nanos.tec.linutronix.de>
+ <832c2d4c11cd99382782474f51d15889ffa24407.camel@infradead.org>
+ <0ca196c0df5beb90b45457ac7ca5d8611d2a7a29.camel@infradead.org>
+Date:   Tue, 13 Oct 2020 14:40:55 +0200
+Message-ID: <87tuuynvs8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.199.1.110]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-phy-handle can't be handled well for ast2400/2500 which has an embedded
-MDIO controller. Add ftgmac100_mdio_setup for ast2400/2500 and initialize
-PHYs from mdio child node with of_mdiobus_register.
+On Tue, Oct 13 2020 at 12:51, David Woodhouse wrote:
+> With that realisation, I've fixed the comment in my ext_dest_id branch
+> to remove all mention of IRQ remapping. It now looks like this:
+>
+> static int x86_vector_select(struct irq_domain *d, struct irq_fwspec *fws=
+pec,
+> 			     enum irq_domain_bus_token bus_token)
+> {
+> 	/*
+> 	 * HPET and I/OAPIC drivers use irq_find_matching_irqdomain()
+> 	 * to find their parent irqdomain. For x86_vector_domain to be
+> 	 * suitable, all CPUs in the system must be reachable by its
+> 	 * x86_vector_msi_compose_msg() function. Which is only true
+> 	 * in !x2apic mode, or in x2apic physical mode if APIC IDs were
+> 	 * restricted to 8 or 15 bits at boot time. In those cases,
+> 	 * 1<<15 will *not* be a valid APIC ID.
+> 	 */
+> 	if (apic->apic_id_valid(1<<15))
+> 		return 0;
+>
+> 	return x86_fwspec_is_ioapic(fwspec) || x86_fwspec_is_hpet(fwspec);
+> }
+>
+> That makes it clearer that this isn't just some incestuous interaction
+> with IRQ remapping =E2=80=94 that APIC ID limit really is the basis on wh=
+ich
+> this irqdomain, all by itself, makes the decision about whether it's
+> capable of being the parent irqdomain to the requesting device.
 
-Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
----
- drivers/net/ethernet/faraday/ftgmac100.c | 114 ++++++++++++++---------
- 1 file changed, 69 insertions(+), 45 deletions(-)
+Yes, that makes sense now.
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 87236206366f..e32066519ec1 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1044,11 +1044,47 @@ static void ftgmac100_adjust_link(struct net_device *netdev)
- 	schedule_work(&priv->reset_task);
- }
- 
--static int ftgmac100_mii_probe(struct ftgmac100 *priv, phy_interface_t intf)
-+static int ftgmac100_mii_probe(struct net_device *netdev)
- {
--	struct net_device *netdev = priv->netdev;
-+	struct ftgmac100 *priv = netdev_priv(netdev);
-+	struct platform_device *pdev = to_platform_device(priv->dev);
-+	struct device_node *np = pdev->dev.of_node;
-+	phy_interface_t phy_intf = PHY_INTERFACE_MODE_RGMII;
- 	struct phy_device *phydev;
- 
-+	/* Get PHY mode from device-tree */
-+	if (np) {
-+		/* Default to RGMII. It's a gigabit part after all */
-+		phy_intf = of_get_phy_mode(np, &phy_intf);
-+		if (phy_intf < 0)
-+			phy_intf = PHY_INTERFACE_MODE_RGMII;
-+
-+		/* Aspeed only supports these. I don't know about other IP
-+		 * block vendors so I'm going to just let them through for
-+		 * now. Note that this is only a warning if for some obscure
-+		 * reason the DT really means to lie about it or it's a newer
-+		 * part we don't know about.
-+		 *
-+		 * On the Aspeed SoC there are additionally straps and SCU
-+		 * control bits that could tell us what the interface is
-+		 * (or allow us to configure it while the IP block is held
-+		 * in reset). For now I chose to keep this driver away from
-+		 * those SoC specific bits and assume the device-tree is
-+		 * right and the SCU has been configured properly by pinmux
-+		 * or the firmware.
-+		 */
-+		if (priv->is_aspeed &&
-+		    phy_intf != PHY_INTERFACE_MODE_RMII &&
-+		    phy_intf != PHY_INTERFACE_MODE_RGMII &&
-+		    phy_intf != PHY_INTERFACE_MODE_RGMII_ID &&
-+		    phy_intf != PHY_INTERFACE_MODE_RGMII_RXID &&
-+		    phy_intf != PHY_INTERFACE_MODE_RGMII_TXID) {
-+			netdev_warn(netdev,
-+				    "Unsupported PHY mode %s !\n",
-+				    phy_modes(phy_intf));
-+		}
-+	}
-+
- 	phydev = phy_find_first(priv->mii_bus);
- 	if (!phydev) {
- 		netdev_info(netdev, "%s: no PHY found\n", netdev->name);
-@@ -1056,7 +1092,7 @@ static int ftgmac100_mii_probe(struct ftgmac100 *priv, phy_interface_t intf)
- 	}
- 
- 	phydev = phy_connect(netdev, phydev_name(phydev),
--			     &ftgmac100_adjust_link, intf);
-+			     &ftgmac100_adjust_link, phy_intf);
- 
- 	if (IS_ERR(phydev)) {
- 		netdev_err(netdev, "%s: Could not attach to PHY\n", netdev->name);
-@@ -1601,8 +1637,8 @@ static int ftgmac100_setup_mdio(struct net_device *netdev)
- {
- 	struct ftgmac100 *priv = netdev_priv(netdev);
- 	struct platform_device *pdev = to_platform_device(priv->dev);
--	phy_interface_t phy_intf = PHY_INTERFACE_MODE_RGMII;
- 	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *mdio_np;
- 	int i, err = 0;
- 	u32 reg;
- 
-@@ -1623,39 +1659,6 @@ static int ftgmac100_setup_mdio(struct net_device *netdev)
- 		iowrite32(reg, priv->base + FTGMAC100_OFFSET_REVR);
- 	}
- 
--	/* Get PHY mode from device-tree */
--	if (np) {
--		/* Default to RGMII. It's a gigabit part after all */
--		err = of_get_phy_mode(np, &phy_intf);
--		if (err)
--			phy_intf = PHY_INTERFACE_MODE_RGMII;
--
--		/* Aspeed only supports these. I don't know about other IP
--		 * block vendors so I'm going to just let them through for
--		 * now. Note that this is only a warning if for some obscure
--		 * reason the DT really means to lie about it or it's a newer
--		 * part we don't know about.
--		 *
--		 * On the Aspeed SoC there are additionally straps and SCU
--		 * control bits that could tell us what the interface is
--		 * (or allow us to configure it while the IP block is held
--		 * in reset). For now I chose to keep this driver away from
--		 * those SoC specific bits and assume the device-tree is
--		 * right and the SCU has been configured properly by pinmux
--		 * or the firmware.
--		 */
--		if (priv->is_aspeed &&
--		    phy_intf != PHY_INTERFACE_MODE_RMII &&
--		    phy_intf != PHY_INTERFACE_MODE_RGMII &&
--		    phy_intf != PHY_INTERFACE_MODE_RGMII_ID &&
--		    phy_intf != PHY_INTERFACE_MODE_RGMII_RXID &&
--		    phy_intf != PHY_INTERFACE_MODE_RGMII_TXID) {
--			netdev_warn(netdev,
--				   "Unsupported PHY mode %s !\n",
--				   phy_modes(phy_intf));
--		}
--	}
--
- 	priv->mii_bus->name = "ftgmac100_mdio";
- 	snprintf(priv->mii_bus->id, MII_BUS_ID_SIZE, "%s-%d",
- 		 pdev->name, pdev->id);
-@@ -1667,22 +1670,22 @@ static int ftgmac100_setup_mdio(struct net_device *netdev)
- 	for (i = 0; i < PHY_MAX_ADDR; i++)
- 		priv->mii_bus->irq[i] = PHY_POLL;
- 
--	err = mdiobus_register(priv->mii_bus);
-+	mdio_np = of_get_child_by_name(np, "mdio");
-+	if (mdio_np)
-+		err = of_mdiobus_register(priv->mii_bus, mdio_np);
-+	else
-+		err = mdiobus_register(priv->mii_bus);
-+
- 	if (err) {
- 		dev_err(priv->dev, "Cannot register MDIO bus!\n");
- 		goto err_register_mdiobus;
- 	}
- 
--	err = ftgmac100_mii_probe(priv, phy_intf);
--	if (err) {
--		dev_err(priv->dev, "MII Probe failed!\n");
--		goto err_mii_probe;
--	}
-+	if (mdio_np)
-+		of_node_put(mdio_np);
- 
- 	return 0;
- 
--err_mii_probe:
--	mdiobus_unregister(priv->mii_bus);
- err_register_mdiobus:
- 	mdiobus_free(priv->mii_bus);
- 	return err;
-@@ -1836,10 +1839,23 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 	} else if (np && of_get_property(np, "phy-handle", NULL)) {
- 		struct phy_device *phy;
- 
-+		/* Support "mdio"/"phy" child nodes for ast2400/2500 with
-+		 * an embedded MDIO controller. Automatically scan the DTS for
-+		 * available PHYs and register them.
-+		 */
-+		if (of_device_is_compatible(np, "aspeed,ast2400-mac") ||
-+		    of_device_is_compatible(np, "aspeed,ast2500-mac")) {
-+			err = ftgmac100_setup_mdio(netdev);
-+			if (err)
-+				goto err_setup_mdio;
-+		}
-+
- 		phy = of_phy_get_and_connect(priv->netdev, np,
- 					     &ftgmac100_adjust_link);
- 		if (!phy) {
- 			dev_err(&pdev->dev, "Failed to connect to phy\n");
-+			if (priv->mii_bus)
-+				mdiobus_unregister(priv->mii_bus);
- 			goto err_setup_mdio;
- 		}
- 
-@@ -1860,6 +1876,14 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 		err = ftgmac100_setup_mdio(netdev);
- 		if (err)
- 			goto err_setup_mdio;
-+
-+		err = ftgmac100_mii_probe(netdev);
-+		if (err) {
-+			dev_err(priv->dev, "MII probe failed!\n");
-+			mdiobus_unregister(priv->mii_bus);
-+			goto err_setup_mdio;
-+		}
-+
- 	}
- 
- 	if (priv->is_aspeed) {
--- 
-2.21.1
+Thanks,
 
+        tglx
