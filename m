@@ -2,177 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B6528D0B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF7D28D0BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbgJMO4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:56:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730680AbgJMO4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:56:05 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 915062489E;
-        Tue, 13 Oct 2020 14:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602600964;
-        bh=oB9nt+Yg6rD9DUc9KcRhqw0n2cGgCHRUGQG2xrYn2zA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Pa6v1yfT3aJj1I9dJcXB98YMB7bSUClRd9bCRFqrIc5H6MDF4e4lo4tnsqNOTgz7q
-         gYbhAfcPi8Hb9QeaLkAH+WK6DlPihAIh0AisOdLnCN8vymguQTlm74kVmSUMOw70YA
-         OoLSsoshU94u8cEF6Ko78eQGK4NFxdhIarErqLLc=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kSLic-000r4R-Dv; Tue, 13 Oct 2020 15:56:02 +0100
+        id S1730622AbgJMO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727112AbgJMO5K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 10:57:10 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D327C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:57:08 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id dt13so158728ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MrCe+fAhHMGrdhxvZeVe4VCsJwXNPJ2vDfc4pR9NNGI=;
+        b=Y5+le0FrK0gc0sI3ClCsyabPmjiq8Lpe5XhHwVQtv+wa27I1xJq5O48lKl3HpOAA3L
+         BV4En4dVfrEvE5vUxkt5+l8Tpqvia9KZlR6VZwPkoh/qATqt3Y/qKyHpxJXUqMpaIDCs
+         Foge/AeycLUOPpNMOOZlkHil1fRi7Wxa1AwP8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MrCe+fAhHMGrdhxvZeVe4VCsJwXNPJ2vDfc4pR9NNGI=;
+        b=db28q5l6kgFas8pmTPkW85BaCLfOJYkDr8SiV/5ikFdWXwOIFW9zzbmmMsD2zUsnfS
+         tJZL73szny9rp7aJhnDTp+jRjcBE8sb+iC2UeKHP4Gx/Vkz1e91YfCyeHFdQ1XI03fJ3
+         KSGeGB9zhQZrMfJZZ4lNTz7rTSRuH64jInzNCSmB+t5G8uiF+BLSLnaGDaguNB1L3X80
+         A7Ke9E/x04qHYyRjj7JqUjTSRMpwbBJr82C00HExetdDFsnEzDraKrNSuqkEAwFRZwfs
+         g0RqLPoQHxi9U6dx8ZLCx+WJYAoshxkkBWbT8yutPDBAl4SLFQ5vtP2uSWJXcjzXmwlj
+         6+XA==
+X-Gm-Message-State: AOAM531OIGVIcuWf9trego2A21VqTrpvN7SzaaN5guwX6yfDs/E59JoG
+        GHvxts9pYrPcPdfjO0AA+dGARR5mZcbtiA==
+X-Google-Smtp-Source: ABdhPJxgUpmbFCrbN9efZDdUKEv48WBJs/56gCMiePXBMa+hA+bf8zIRSl0pUqqhLOLfgFLsQC4qNw==
+X-Received: by 2002:a17:906:bfe2:: with SMTP id vr2mr155581ejb.248.1602601026712;
+        Tue, 13 Oct 2020 07:57:06 -0700 (PDT)
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
+        by smtp.gmail.com with ESMTPSA id i18sm110813ejr.59.2020.10.13.07.57.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 07:57:05 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id f21so218567wml.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:57:05 -0700 (PDT)
+X-Received: by 2002:a1c:96ca:: with SMTP id y193mr290708wmd.22.1602601024883;
+ Tue, 13 Oct 2020 07:57:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 13 Oct 2020 15:56:01 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     "limingwang (A)" <limingwang@huawei.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
-        suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Fanhenglong <fanhenglong@huawei.com>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
-        Tangnianyao <tangnianyao@huawei.com>,
-        Jiangyifei <jiangyifei@huawei.com>,
-        "dengkai (A)" <dengkai1@huawei.com>,
-        Zhanghailiang <zhang.zhanghailiang@huawei.com>,
-        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>
-Subject: Re: [PATCH] arm64: KVM: marking pages as XN in Stage-2 does not care
- about CTR_EL0.DIC
-In-Reply-To: <d67816ef196c4375923c0672dd421be3@huawei.com>
-References: <d67816ef196c4375923c0672dd421be3@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <0bdf5768857381c082062af0b55750d8@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: limingwang@huawei.com, catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org, suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, fanhenglong@huawei.com, wanghaibin.wang@huawei.com, tangnianyao@huawei.com, jiangyifei@huawei.com, dengkai1@huawei.com, zhang.zhanghailiang@huawei.com, victor.zhangxiaofeng@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200702100017.24700-1-stanimir.varbanov@linaro.org>
+ <8dafbb4b-4626-5191-c57a-f3ef19c14618@linaro.org> <d11da037-92e5-2ee7-8723-10162d16eba9@linaro.org>
+ <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
+ <7db412a2-8fd3-6657-4fcd-1fbfde4b2c0e@linaro.org> <CAAFQd5Cw-23aE09+Gj35JN5ue_HHZQ8nyE+Bwfg5=GKA7WXTnw@mail.gmail.com>
+ <aa04e5d7-8a98-82c7-a0fe-8afe84a1d9d0@linaro.org>
+In-Reply-To: <aa04e5d7-8a98-82c7-a0fe-8afe84a1d9d0@linaro.org>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 13 Oct 2020 16:56:54 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5DP0qMExsBY4UEhP9gLNUfwokzn3S7sgkAZPMTkkt7M6w@mail.gmail.com>
+Message-ID: <CAAFQd5DP0qMExsBY4UEhP9gLNUfwokzn3S7sgkAZPMTkkt7M6w@mail.gmail.com>
+Subject: Re: [PATCH] v4l: Add source change event for colorimetry
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-13 13:56, limingwang (A) wrote:
->> Hi Li,
->> 
->> On 2020-10-12 02:08, l00484210 wrote:
->>> From: MingWang Li <limingwang@huawei.com>
->>> 
->>> When testing the ARMv8.2-TTS2UXN feature, setting bits of XN is
->>> unavailable.
->>> Because the control bit CTR_EL0.DIC is set by default on system.
->>> 
->>> But when CTR_EL0.DIC is set, software does not need to flush icache
->>> actively, instead of clearing XN bits.The patch, the commit id of
->>> which is 6ae4b6e0578886eb36cedbf99f04031d93f9e315, has implemented 
->>> the
->>> function of CTR_EL0.DIC.
->>> 
->>> Signed-off-by: MingWang Li <limingwang@huawei.com>
->>> Signed-off-by: Henglong Fan <fanhenglong@huawei.com>
->>> ---
->>>  arch/arm64/include/asm/pgtable-prot.h | 12 +-----------
->>>  1 file changed, 1 insertion(+), 11 deletions(-)
->>> 
->>> diff --git a/arch/arm64/include/asm/pgtable-prot.h
->>> b/arch/arm64/include/asm/pgtable-prot.h
->>> index 4d867c6446c4..5feb94882bf7 100644
->>> --- a/arch/arm64/include/asm/pgtable-prot.h
->>> +++ b/arch/arm64/include/asm/pgtable-prot.h
->>> @@ -79,17 +79,7 @@ extern bool arm64_use_ng_mappings;
->>>  		__val;							\
->>>  	 })
->>> 
->>> -#define PAGE_S2_XN							\
->>> -	({								\
->>> -		u64 __val;						\
->>> -		if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))		\
->>> -			__val = 0;					\
->>> -		else							\
->>> -			__val = PTE_S2_XN;				\
->>> -		__val;							\
->>> -	})
->>> -
->>> -#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) |
->>> PTE_S2_RDONLY | PAGE_S2_XN)
->>> +#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) |
->>> PTE_S2_RDONLY | PTE_S2_XN)
->>>  #define PAGE_S2_DEVICE		__pgprot(_PROT_DEFAULT |
->>> PAGE_S2_MEMATTR(DEVICE_nGnRE) | PTE_S2_RDONLY | PTE_S2_XN)
->>> 
->>>  #define PAGE_NONE		__pgprot(((_PAGE_DEFAULT) & ~PTE_VALID) |
->>> PTE_PROT_NONE | PTE_RDONLY | PTE_NG | PTE_PXN | PTE_UXN)
->> 
->> I don't understand what you are trying to achieve here.
->> 
->> This whole point of not setting XN in the page tables when DIC is 
->> present is to avoid a pointless permission fault at run time. At you 
->> noticed above, no icache invalidation is necessary. So why would you 
->> ever want to take a fault on exec the first place?
->> 
->>         M.
->> --
->> Jazz is not dead. It just smells funny...
->> 
->> 
-> Hi Marc,
-> 
-> According to ARMv8.2-TTS2UXN feature, which extends the stage 2
-> translation table access
-> permissions to provide control of whether memory is executable at EL0
-> independent of whether
-> it is executable at EL1.
-> 
-> Testing this feature in some security scenario, for example, if I want
-> to grant execute permission
-> to some memory only for EL0, but it will failed. Because KVM clears XN
-> bits at first, this means that
-> the memory can be executable in both EL0 and El1.
+On Tue, Oct 13, 2020 at 4:53 PM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+>
+>
+> On 10/13/20 5:07 PM, Tomasz Figa wrote:
+> > On Tue, Oct 13, 2020 at 3:53 PM Stanimir Varbanov
+> > <stanimir.varbanov@linaro.org> wrote:
+> >>
+> >>
+> >>
+> >> On 10/13/20 4:40 PM, Tomasz Figa wrote:
+> >>> On Tue, Oct 13, 2020 at 11:03 AM Stanimir Varbanov
+> >>> <stanimir.varbanov@linaro.org> wrote:
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> On 7/2/20 2:52 PM, Stanimir Varbanov wrote:
+> >>>>> Hi,
+> >>>>>
+> >>>>> Once we have this event there is still open question how the client will
+> >>>>> know the data buffer on which the new colorspace is valid/applied.
+> >>>>>
+> >>>>> The options could be:
+> >>>>>  * a new buffer flag and
+> >>>>>  * some information in the v4l2_event structure.
+> >>>>>
+> >>>>> Thoughts?
+> >>>>
+> >>>> Kindly ping.
+> >>>>
+> >>>
+> >>> The event itself sounds good to me, but how do we know which buffer is
+> >>> the first to have the new colorimetry?
+> >>
+> >> I think Hans have a very good idea to have width/height and colorspace
+> >> specifiers in v4l2_ext_buffer [1].
+> >>
+> >> [1] https://lkml.org/lkml/2020/9/9/531
+> >>
+> >
+> > Hmm, I think that would basically make the event obsolete and without
+> > solving that problem I suspect the event is not very useful, because
+> > one could already receive and display (incorrectly) some buffers
+> > before realizing that they have different colorimetry
+>
+> Yes, I agree. I wasn't sure does Hans's idea will be well received, thus
+> I pinged.
+>
+> >
+> > I believe for now we would have to handle this like a resolution
+> > change - flush the CAPTURE queue and the next buffer after the flush
+> > would have the new colorimetry. With the new API we could optimize the
+>
+> I'm not sure what you mean by flush capture queue? Dequeue until LAST
+> flag (EPIPE) and stop streaming g_fmt(capture queue) and decide what is
+> changed and start streaming ?
 
-KVM currently offers no support for this, and the only use we have for
-XN so far is to to ensure Data/Instruction coherency when the CPU
-doesn't offer it in HW.
+Yes, although no strict need to stop streaming, other ways are defined
+as well, e.g. DEC_CMD_START.
 
-> So the execute permission is not granted when the page table is
-> created for the first time, then
-> grant the execute permission by setting xn, based on the actual 
-> requirements.
-> 
-> And according to spec:
-> DIC, bit [29]
-> 	Instruction cache invalidation requirements for data to instruction 
-> coherence.
-> 	0b0 Instruction cache invalidation to the Point of Unification is
-> required for data to instruction coherence.
-> 	0b1 Instruction cache invalidation to the Point of Unification is not
-> required for data to instruction coherence.
-> So when DIC is set, if the memory is changed to executable, the
-> hardware will flush icache.
+Of course we would need to make appropriate changes to the spec and so
+I'd just unify it with the resolution change sequence. I think we
+could rename it to "Stream parameter change".
 
-No. The Icache *snoops* the Dcache at all times. Which is why we don't
-need to trap on execution, and we can leave the guest run without
-any intervention.
-
-> If as you said, I feel that DIC conflicts with ARMv8.2-TTS2UXN feature.
-
-There is no conflict. KVM doesn't make use of all the bells and whistle
-in the architecture, which is probably a good thing. If you feel that 
-there
-is a need for S2UXN as a security feature, we can discuss how to expose 
-this
-to the guest (because it definitely needs to know about that).
-
-But setting XN when DIC is present for no other reason than "it may be
-useful one day" doesn't make sense, and results in a massive performance
-drop on the platforms that have DIC (and I really wish they all had it).
-
-        M.
--- 
-Jazz is not dead. It just smells funny...
+>
+> > decoding by getting rid of the flushes and relying on the in-bound
+> > information.
+> >
+> > Best regards,
+> > Tomasz
+> >
+> >>>
+> >>> Best regards,
+> >>> Tomasz
+> >>>
+> >>>>>
+> >>>>> On 7/2/20 1:00 PM, Stanimir Varbanov wrote:
+> >>>>>> This event indicate that the source colorspace is changed
+> >>>>>> during run-time. The client has to retrieve the new colorspace
+> >>>>>> identifiers by getting the format (G_FMT).
+> >>>>>>
+> >>>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> >>>>>> ---
+> >>>>>>  .../userspace-api/media/v4l/vidioc-dqevent.rst        | 11 ++++++++++-
+> >>>>>>  .../userspace-api/media/videodev2.h.rst.exceptions    |  1 +
+> >>>>>>  include/uapi/linux/videodev2.h                        |  1 +
+> >>>>>>  3 files changed, 12 insertions(+), 1 deletion(-)
+> >>>>>>
+> >>>>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> >>>>>> index a9a176d5256d..3f69c753db58 100644
+> >>>>>> --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> >>>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+> >>>>>> @@ -381,7 +381,16 @@ call.
+> >>>>>>      that many Video Capture devices are not able to recover from a temporary
+> >>>>>>      loss of signal and so restarting streaming I/O is required in order for
+> >>>>>>      the hardware to synchronize to the video signal.
+> >>>>>> -
+> >>>>>> +    * - ``V4L2_EVENT_SRC_CH_COLORIMETRY``
+> >>>>>> +      - 0x0002
+> >>>>>> +      - This event gets triggered when a colorspace change is detected at
+> >>>>>> +    an input. By colorspace change here we include also changes in the
+> >>>>>> +    colorspace specifiers (transfer function, Y'CbCr encoding and
+> >>>>>> +    quantization). This event can come from an input or from video decoder.
+> >>>>>> +    Once the event has been send to the client the driver has to update
+> >>>>>> +    the colorspace specifiers internally so that they could be retrieved by
+> >>>>>> +    client. In that case queue re-negotiation is not needed as this change
+> >>>>>> +    only reflects on the interpretation of the data.
+> >>>>>>
+> >>>>>>  Return Value
+> >>>>>>  ============
+> >>>>>> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> >>>>>> index ca05e4e126b2..54fc21af852d 100644
+> >>>>>> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> >>>>>> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> >>>>>> @@ -492,6 +492,7 @@ replace define V4L2_EVENT_CTRL_CH_FLAGS ctrl-changes-flags
+> >>>>>>  replace define V4L2_EVENT_CTRL_CH_RANGE ctrl-changes-flags
+> >>>>>>
+> >>>>>>  replace define V4L2_EVENT_SRC_CH_RESOLUTION src-changes-flags
+> >>>>>> +replace define V4L2_EVENT_SRC_CH_COLORIMETRY src-changes-flags
+> >>>>>>
+> >>>>>>  replace define V4L2_EVENT_MD_FL_HAVE_FRAME_SEQ :c:type:`v4l2_event_motion_det`
+> >>>>>>
+> >>>>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> >>>>>> index 303805438814..b5838bc4e3a3 100644
+> >>>>>> --- a/include/uapi/linux/videodev2.h
+> >>>>>> +++ b/include/uapi/linux/videodev2.h
+> >>>>>> @@ -2351,6 +2351,7 @@ struct v4l2_event_frame_sync {
+> >>>>>>  };
+> >>>>>>
+> >>>>>>  #define V4L2_EVENT_SRC_CH_RESOLUTION                (1 << 0)
+> >>>>>> +#define V4L2_EVENT_SRC_CH_COLORIMETRY               (1 << 1)
+> >>>>>>
+> >>>>>>  struct v4l2_event_src_change {
+> >>>>>>      __u32 changes;
+> >>>>>>
+> >>>>>
+> >>>>
+> >>>> --
+> >>>> regards,
+> >>>> Stan
+> >>
+> >> --
+> >> regards,
+> >> Stan
+>
+> --
+> regards,
+> Stan
