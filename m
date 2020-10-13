@@ -2,141 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B85D28C75F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F2628C74D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgJMCyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 22:54:12 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:56606 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728051AbgJMCyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 22:54:11 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A759C1A1507;
-        Tue, 13 Oct 2020 04:54:09 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 69EA91A1516;
-        Tue, 13 Oct 2020 04:54:05 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 19B7F40332;
-        Tue, 13 Oct 2020 04:53:58 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: fsl_spdif: Add support for higher sample rates
-Date:   Tue, 13 Oct 2020 10:49:20 +0800
-Message-Id: <1602557360-18795-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727962AbgJMCvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 22:51:52 -0400
+Received: from mail-mw2nam12on2139.outbound.protection.outlook.com ([40.107.244.139]:62561
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726873AbgJMCvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 22:51:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=daeeRnwDjLAmu0pcOMP9GlwbT2f+XtLpP8GzpHr9LoTHtuPIYEGbD7eXqXvs8p6duB25PFkhVZi8AzT706LCdcWg+LRnBbcrupPqjKNJS35uNUkmUXacz7z3GMAAOQzOQdTQ6RH/ofADiz35M2lBMapEinPVXJIZ92Fz8wg2ZarqXsjYXzHimeaM2zo9UcgUwDEoUw0EyAWhcXZhNBR3CJhCjqTakrFSkNA6igmpMpVTVUwigZC56GwpQ8U3iAOdV0loTGGBOvgn1IBJQldN8+t87vuiZjb/tIP0UADzGsfa3zRN43i0/+7pt/AzziAPjLGWK3F4fyMGTzO/erCyhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gnyUw0+kZp2F5/rBvE1awpW0hcBGcQqpycFu5IfY48Q=;
+ b=Xz7cs6unRQNLPO3rPv4OuFmsSE43UkgJbamAV2MltGIcYbBe5dZvfNwe8ap+4LVLUjjpj1qyvwhogl5Y6FU6kzARn7lhRqySHMRz1/OsMLV89WcpPo+3CX37Bs9uMj35KiTeSKAHtC5b7/tt7fl2sAsis1MW6Qt32wqgCIgnjSaawFaFHjp0k/1+swEtrRxBJv/TwWTOfRzWzOjJu65pH/7wmJGLKhkPbe9Z911EQQXYS9i4HhPfr6gZw7W6+p7PwibRh5UG3zzgucgo1Ux2Tqhw+i5fdLexaYV9jQPwK8UDWwrb5sUZy+LBpCMqRo+TYiUe8powU8U0CopPjuK1Kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gnyUw0+kZp2F5/rBvE1awpW0hcBGcQqpycFu5IfY48Q=;
+ b=jxgr+1hyaEx2Qk9+IO0nRZOTM6oW8/JEW9fhaU3fC14oay+5efR9O/kld73cvVLaerClVDdr2pRz3wY5zmZPROEy4QqvU4nP3QLQm34iM1rZ4ZPqUAZBQngOwnQNl9k+ajyzvNQfP3rxUzNaffHJ5mcoZ4QDgDKzBEvbtgqlSBk=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6802.namprd04.prod.outlook.com (2603:10b6:a03:22d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.25; Tue, 13 Oct
+ 2020 02:51:48 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5585:3adc:f199:7d5a]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5585:3adc:f199:7d5a%8]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
+ 02:51:48 +0000
+Date:   Tue, 13 Oct 2020 10:49:31 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: Re: [PATCH v17 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
+ DP
+Message-ID: <20201013024931.GA2299@pc-user>
+References: <cover.1600423931.git.xji@analogixsemi.com>
+ <528b76c1a4f7b6ea85371bfae4bde389aec4bb24.1600423932.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <528b76c1a4f7b6ea85371bfae4bde389aec4bb24.1600423932.git.xji@analogixsemi.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [114.247.245.146]
+X-ClientProxiedBy: HKAPR03CA0016.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::21) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-user (114.247.245.146) by HKAPR03CA0016.apcprd03.prod.outlook.com (2603:1096:203:c8::21) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3477.11 via Frontend Transport; Tue, 13 Oct 2020 02:51:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cd72c370-1034-4695-49cc-08d86f22edae
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6802:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB680280A6E00506FC9EFCB749C7040@BY5PR04MB6802.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EqfH3hc77wLoBOGWyy1VQUzVY1TOdmxzMltY/MKPLh5dd+XJ9kp4KkhlyjFdMGCZ/Ls+ibDFQ3UcrqVLfwvYGzhLlK2MMcOIu/sqivEoMZZKu8pTSqJoPDCYnpuJX2+OvGtoUPIwLdDX7UU3uM+EnhhrE3/1QxuEGNvKEgpb2wkCHgkpbcy0L4ueYem9YRo4QuIpQiW20wty/P4OHmJjlzrpbmb3c+zw6LLCRH2f477tPRZcW4MzDPnwbKriWgXmw3LS82UeVc2orZdsvmHMNwRVaJE0KIVXGtsgrjWhyN+eaUEV1y9uKgZbzj/c7BXFsKIks29oBfBF4ZnV55PF+A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(366004)(39840400004)(346002)(136003)(5660300002)(110136005)(6666004)(8936002)(956004)(16526019)(54906003)(7416002)(9686003)(52116002)(316002)(33716001)(55016002)(6496006)(186003)(33656002)(558084003)(26005)(86362001)(4326008)(8676002)(1076003)(66476007)(66946007)(107886003)(66556008)(2906002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: xhXLLDpZE/XYYt2CJnDxLtOPAI1+4rk7VnJmvyOVY7e1mBu1bWl1uE6xFFN4vjksDIIu5nZ7A6JZJAQta+Z0L7443RZEcLmp4QW2x1ZvmVWgdrRUUQR+Q3VXyFFhPte3HhBp9xF0647YNZ0qRfwWOtWkaVGZdpWuRJ5l6EVplxqRZ6udJ2MfeEvaxpXwjaExb9rbP8fysuxo+JgoJ+0ZhWi7qi7prsSXi6DbdTGJHNHbhZKfbkiip2/JIxNYpnR/528xchFaB0SFGITHV/MIX16QJVXbiLbvI+viVXdW3UH4qXH1UOga5m9p4Vxr3IPeeBw/mM0fIcADKrYQ4+aiMQv3AbEbJBDyEwTXtytDqDhlgDoSm4HEDsLLIfc8oC547iNBrd0CvV+qQmR59IbkKnVaq4bOs/z+xRnbFPDhmls9rJ0RkaahGS7yiclNLdyvebCa6QbyQLhtlKjpn9YClQqxWAXTAgtTVZPsODQe/f87Z33btgz/rAdb9gg1qsIKMfM+DQyLIY4Xp79Kepm3rH6dEXf0TFwZQ2QYa3mxGYsP4O6FfK6Ncfc9psuVB+8zHS3iEV6Fj9z996gtmD9qY4pBNkLAAmddrlLOCxcF/feOPvHZGz2uINVRNwJ/eUOdFXluH+RhWTEcPxveknaXRQ==
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd72c370-1034-4695-49cc-08d86f22edae
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 02:51:48.5116
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g8ovZVo8cscZHzIncuMruPYbYp4IAk82bPnjbX2gHMONunkEdjkLvKO337nl0hSzs5naVENpnxdMM+tZJOgb2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6802
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 88200Hz and 176400Hz sample rates support for TX.
-Add 88200Hz, 176400Hz, 192000Hz sample rates support for RX.
+Hi all, would you please help to review my latest patch v17, thanks very much!
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
-changes in v2
-- reorder the signed-off
-- add acked-by Nicolin
-
- sound/soc/fsl/fsl_spdif.c | 16 +++++++++++++---
- sound/soc/fsl/fsl_spdif.h |  9 ++++++++-
- 2 files changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 4d14f4076ead..1c030142556a 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -459,10 +459,18 @@ static int spdif_set_sample_rate(struct snd_pcm_substream *substream,
- 		rate = SPDIF_TXRATE_48000;
- 		csfs = IEC958_AES3_CON_FS_48000;
- 		break;
-+	case 88200:
-+		rate = SPDIF_TXRATE_88200;
-+		csfs = IEC958_AES3_CON_FS_88200;
-+		break;
- 	case 96000:
- 		rate = SPDIF_TXRATE_96000;
- 		csfs = IEC958_AES3_CON_FS_96000;
- 		break;
-+	case 176400:
-+		rate = SPDIF_TXRATE_176400;
-+		csfs = IEC958_AES3_CON_FS_176400;
-+		break;
- 	case 192000:
- 		rate = SPDIF_TXRATE_192000;
- 		csfs = IEC958_AES3_CON_FS_192000;
-@@ -857,7 +865,7 @@ static int fsl_spdif_rxrate_info(struct snd_kcontrol *kcontrol,
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = 1;
- 	uinfo->value.integer.min = 16000;
--	uinfo->value.integer.max = 96000;
-+	uinfo->value.integer.max = 192000;
- 
- 	return 0;
- }
-@@ -1175,7 +1183,8 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- 				struct clk *clk, u64 savesub,
- 				enum spdif_txrate index, bool round)
- {
--	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
-+	static const u32 rate[] = { 32000, 44100, 48000, 88200, 96000, 176400,
-+				    192000, };
- 	bool is_sysclk = clk_is_match(clk, spdif_priv->sysclk);
- 	u64 rate_ideal, rate_actual, sub;
- 	u32 arate;
-@@ -1235,7 +1244,8 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
- static int fsl_spdif_probe_txclk(struct fsl_spdif_priv *spdif_priv,
- 				enum spdif_txrate index)
- {
--	static const u32 rate[] = { 32000, 44100, 48000, 96000, 192000 };
-+	static const u32 rate[] = { 32000, 44100, 48000, 88200, 96000, 176400,
-+				    192000, };
- 	struct platform_device *pdev = spdif_priv->pdev;
- 	struct device *dev = &pdev->dev;
- 	u64 savesub = 100000, ret;
-diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
-index e6c61e07bc1a..d5f1dfd58740 100644
---- a/sound/soc/fsl/fsl_spdif.h
-+++ b/sound/soc/fsl/fsl_spdif.h
-@@ -163,7 +163,9 @@ enum spdif_txrate {
- 	SPDIF_TXRATE_32000 = 0,
- 	SPDIF_TXRATE_44100,
- 	SPDIF_TXRATE_48000,
-+	SPDIF_TXRATE_88200,
- 	SPDIF_TXRATE_96000,
-+	SPDIF_TXRATE_176400,
- 	SPDIF_TXRATE_192000,
- };
- #define SPDIF_TXRATE_MAX		(SPDIF_TXRATE_192000 + 1)
-@@ -177,15 +179,20 @@ enum spdif_txrate {
- #define FSL_SPDIF_RATES_PLAYBACK	(SNDRV_PCM_RATE_32000 |	\
- 					 SNDRV_PCM_RATE_44100 |	\
- 					 SNDRV_PCM_RATE_48000 |	\
-+					 SNDRV_PCM_RATE_88200 | \
- 					 SNDRV_PCM_RATE_96000 |	\
-+					 SNDRV_PCM_RATE_176400 | \
- 					 SNDRV_PCM_RATE_192000)
- 
- #define FSL_SPDIF_RATES_CAPTURE		(SNDRV_PCM_RATE_16000 | \
- 					 SNDRV_PCM_RATE_32000 |	\
- 					 SNDRV_PCM_RATE_44100 | \
- 					 SNDRV_PCM_RATE_48000 |	\
-+					 SNDRV_PCM_RATE_88200 | \
- 					 SNDRV_PCM_RATE_64000 | \
--					 SNDRV_PCM_RATE_96000)
-+					 SNDRV_PCM_RATE_96000 | \
-+					 SNDRV_PCM_RATE_176400 | \
-+					 SNDRV_PCM_RATE_192000)
- 
- #define FSL_SPDIF_FORMATS_PLAYBACK	(SNDRV_PCM_FMTBIT_S16_LE | \
- 					 SNDRV_PCM_FMTBIT_S20_3LE | \
--- 
-2.27.0
-
+Best Regards,
+Xin
