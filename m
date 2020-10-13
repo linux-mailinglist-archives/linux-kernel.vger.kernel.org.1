@@ -2,218 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7D828CB27
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7656628CB2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403820AbgJMJrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:47:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727320AbgJMJrO (ORCPT
+        id S2404243AbgJMJri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:47:38 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:45914 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727320AbgJMJri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:47:14 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD51FC0613D0;
-        Tue, 13 Oct 2020 02:47:13 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b127so8260909wmb.3;
-        Tue, 13 Oct 2020 02:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0pkZBowBKroUUceO2k+iKyNXnXghOqKVRkGnVxeOM/k=;
-        b=jSVUjLotk3L7lRQ2mQMAb3IAZG5GTPbQz8m0ERkOv0mxrg/lmzkljW+0NaVy6MsPRf
-         S5L/HLVC2dilsy1QiReTKmF+skAqD1J44LeRJsHV7c/bkrgDfdUWmoWz3HQTAB5F4yic
-         R8TtTgRCShhqTCVaWr+naudfOfArY6qgodM5AwdgpJWpLsWFsaxvO1aK1XQCL/66sEAY
-         I5Z7pM+kni2tA8Xb0VngvKeq5bsBtmj5rJo26AhhTWUB1ez96Vumu42+2fLNzOenUi6T
-         6dMMLIdcM0Ljuq8hrBNzJyT3CMLlQvZnhNm0PWeCTRmf5wGOM+gdorpXZf8IbvuKMxwO
-         EbQQ==
+        Tue, 13 Oct 2020 05:47:38 -0400
+Received: by mail-oi1-f195.google.com with SMTP id j7so4276541oie.12;
+        Tue, 13 Oct 2020 02:47:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0pkZBowBKroUUceO2k+iKyNXnXghOqKVRkGnVxeOM/k=;
-        b=gx7wttHAVtMPphWnHJ9cA6Ju8VSdIHk/AHv/OlOA76ynO99C03rfRvI8YyeXBYbBbB
-         pBmcSiZUgzH6lfJK0Q2lhf/dQb8oNrgulXjzZnAv5pV1EzgiJOi4dlcUinbnNWORV2hR
-         0o9qRneAk34ZrTZ8tOdaPgi0iDCsZg3BW5rkszmj0u4XOUz2UlznXIkygr+Wy/g8rGRd
-         2/e5W3WVWGNo9PsXwwZhOx8osF6CFWazuYuyj50vj1jx0OgMNUvHfkxI7mBV/PDikBaz
-         WQJcGsIAewzm1IrTw6hWVhpLDnDXSSZPYc4CpEK9euD77q3B6kBlpP8N+a1fjfNnVHMv
-         acYg==
-X-Gm-Message-State: AOAM531hY7l9WfAb2ZEUoqSa8yY+tctYO9HIWRxed5twL8IjjO2QyJPI
-        0V1OA37FMuy25mrxXhZtPyU=
-X-Google-Smtp-Source: ABdhPJy7mVug7CTGja3u2laxFE8M9A/3NtLHEfp6WO3P78310a8PrLfwQlqMUtcgH7iTunfSFOCycQ==
-X-Received: by 2002:a1c:4909:: with SMTP id w9mr15571064wma.133.1602582432569;
-        Tue, 13 Oct 2020 02:47:12 -0700 (PDT)
-Received: from [192.168.1.10] (static-176-175-73-29.ftth.abo.bbox.fr. [176.175.73.29])
-        by smtp.gmail.com with ESMTPSA id 64sm7473601wmd.3.2020.10.13.02.47.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 02:47:11 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, Alexander Viro <aviro@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Ian Kent <raven@themaw.net>,
-        Christian Brauner <christian@brauner.io>,
-        keyrings@vger.kernel.org,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Davide Libenzi <davidel@xmailserver.org>
-Subject: Re: Regression: epoll edge-triggered (EPOLLET) for pipes/FIFOs
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-References: <CAKgNAkjMBGeAwF=2MKK758BhxvW58wYTgYKB2V-gY1PwXxrH+Q@mail.gmail.com>
- <CAHk-=wig1HDZzkDEOxsxUjr7jMU_R5Z1s+v_JnFBv4HtBfP7QQ@mail.gmail.com>
- <81229415-fb97-51f7-332c-d5e468bcbf2a@gmail.com>
- <CAHk-=wjYN_80i=9ALMwxZ77_TS_TMjkVyZ261xtuiMUaZsM4ng@mail.gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <300cb158-5ab1-ed55-404f-8abc9cbdcae0@gmail.com>
-Date:   Tue, 13 Oct 2020 11:47:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=66uxKBaPY4Ovk1ktUOH3jIWixK/5hRqlez704bXhJTo=;
+        b=gWGapRkLGR6bqyc2vCXxbhYwE209Hs8DI6fgs4gIhU9S5KM+522qE2cCd+PrzMybvO
+         f3mmyBzakj6HKspZMwLMLQJPPwr978Q/2enYlZp4fkqEMao+P29wxILUld732Qgocc8B
+         GHKhZwee8JwnZW7jZuzvZ9Osv+f1Z5ErMlfzfIHarxYdkbpMXVhJiNZkyPxVAs5vZsty
+         /1UCjWMAUTaqmXbI+tzuAVqZjjxuWenlpjqlomJUZzWLiYdaQriqhTgxj7QBVvx8bxGX
+         YmtbKp9BZsPTLhxMyWX7321VFPkthaP97/Qfsewvx09F63AWGHFIM/hllW3IsOHygIbB
+         4UDA==
+X-Gm-Message-State: AOAM530OvqcZ0R5HNUANCpTX/aYeiOQR6YWm/4oI38XRfdovVnp7mwah
+        AtumV+D6cCIphkQGqex510tPDF3gBJ81jNURL1g=
+X-Google-Smtp-Source: ABdhPJwLN64T/gaMyS/i1LmR6BIkbfw+eTtQ5cF87nW2VWME3lCQ/eIpJO7UTvEJTaK46HDjetiRlRzz1vnmwuQ0rpY=
+X-Received: by 2002:aca:4441:: with SMTP id r62mr12567647oia.153.1602582456648;
+ Tue, 13 Oct 2020 02:47:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjYN_80i=9ALMwxZ77_TS_TMjkVyZ261xtuiMUaZsM4ng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+ <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
+In-Reply-To: <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 13 Oct 2020 11:47:25 +0200
+Message-ID: <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
+ probe deferral properly
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Hi Viresh, Stephan,
 
-On 10/13/20 12:30 AM, Linus Torvalds wrote:
-> On Mon, Oct 12, 2020 at 1:30 PM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
->>
->> I don't think this is correct. The epoll(7) manual page
->> sill carries the text written long ago by Davide Libenzi,
->> the creator of epoll:
->>
->>     Since  even with edge-triggered epoll, multiple events can be gen‐
->>     erated upon receipt of multiple chunks of data, the caller has the
->>     option  to specify the EPOLLONESHOT flag, to tell epoll to disable
->>     the associated file descriptor after the receipt of an event  with
->>     epoll_wait(2).
-> 
-> Hmm.
-> 
-> The more I read that paragraph, the more I think the epoll man-page
-> really talks about something that _could_ happen due to internal
-> implementation details, but that isn't really something an epoll user
-> would _want_ to happen or depend on.
-> 
-> IOW, in that whole "even with edge-triggered epoll, multiple events
-> can be generated", I'd emphasize the *can* part (as in "might", not as
-> in "will"), and my reading is that the reason EPOLLONESHOT flag exists
-> is to avoid that whole "this is implementation-defined, and if you
-> absolutely _must_ get just a single event, you need to use
-> EPOLLONESHOT to make sure you remove yourself after you got the one
-> single event you waited for".
+On Mon, Aug 24, 2020 at 11:12 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> From: Stephan Gerhold <stephan@gerhold.net>
+>
+> cpufreq-dt is currently unable to handle -EPROBE_DEFER properly
+> because the error code is not propagated for the cpufreq_driver->init()
+> callback. Instead, it attempts to avoid the situation by temporarily
+> requesting all resources within resources_available() and releasing them
+> again immediately after. This has several disadvantages:
+>
+>   - Whenever we add something like interconnect handling to the OPP core
+>     we need to patch cpufreq-dt to request these resources early.
+>
+>   - resources_available() is only run for CPU0, but other clusters may
+>     eventually depend on other resources that are not available yet.
+>     (See FIXME comment removed by this commit...)
+>
+>   - All resources need to be looked up several times.
+>
+> Now that the OPP core can propagate -EPROBE_DEFER during initialization,
+> it would be nice to avoid all that trouble and just propagate its error
+> code when necessary.
+>
+> This commit refactors the cpufreq-dt driver to initialize private_data
+> before registering the cpufreq driver. We do this by iterating over
+> all possible CPUs and ensure that all resources are initialized:
+>
+>   1. dev_pm_opp_get_opp_table() ensures the OPP table is allocated
+>      and initialized with clock and interconnects.
+>
+>   2. dev_pm_opp_set_regulators() requests the regulators and assigns
+>      them to the OPP table.
+>
+>   3. We call dev_pm_opp_of_get_sharing_cpus() early so that we only
+>      initialize the OPP table once for each shared policy.
+>
+> With these changes, we actually end up saving a few lines of code,
+> the resources are no longer looked up multiple times and everything
+> should be much more robust.
+>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> [ Viresh: Use list_head structure for maintaining the list and minor
+>           changes ]
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-I agree that that is also a valid alternate reading of the text, 
-in particular, "can" could be read as "might" rather than "will".
+Thanks for your patch, which is now commit dc279ac6e5b4e06e ("cpufreq:
+dt: Refactor initialization to handle probe deferral properly") in
+pm/linux-next, and to which I bisected a regression.
+Reverting this commit fixes the issue.
 
-I also agree that the semantics before the change were odd
-(but see [3]).
+On r8a7791/koelsch, during resume from s2ram:
 
-But...
+     PM: suspend entry (deep)
+     Filesystems sync: 0.000 seconds
+     Freezing user space processes ... (elapsed 0.003 seconds) done.
+     OOM killer disabled.
+     Freezing remaining freezable tasks ... (elapsed 0.009 seconds) done.
+     Disabling non-boot CPUs ...
+     Enabling non-boot CPUs ...
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
+    +cpu cpu0: OPP table can't be empty
+     CPU1 is up
+     rcar-pcie fe000000.pcie: PCIe x1: link up
 
-> The corollary of that reading is that the new pipe behavior is
-> actually the _expected_ one, and the old pipe behavior where we would
-> generate multiple events is the unwanted implementation detail of
-> "this might still happen, and if you care, you will need to do extra
-> stuff".
+The cpufreq code tries to talk to the PMIC, while the I2C controller
+that hosts the PMIC is suspended, and thus any communication attempt
+times out.  __i2c_check_suspended() fails to notice that, as the
+i2c_shmobile_i2c driver doesn't have a suspend callback calling
+i2c_mark_adapter_suspended() yet.  After fixing that (will send a patch
+soon), the I2C core rightfully complains with:
 
-"expected" by who? I mean, there were established semantics
-for pipes/FIFOs in this scenario. Those semantics changed in
-Linux 5.5.
+    WARNING: CPU: 1 PID: 13 at drivers/i2c/i2c-core.h:54
+__i2c_transfer+0x4a4/0x4e4
+    i2c i2c-6: Transfer while suspended
+    CPU: 1 PID: 13 Comm: cpuhp/1 Not tainted
+5.9.0-shmobile-09581-g05a3e5886c7615b1-dirty #718
+    Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
+    [<c010dcec>] (unwind_backtrace) from [<c0109b18>] (show_stack+0x10/0x14)
+    [<c0109b18>] (show_stack) from [<c075e928>] (dump_stack+0x8c/0xac)
+    [<c075e928>] (dump_stack) from [<c011c23c>] (__warn+0xd0/0xe8)
+    [<c011c23c>] (__warn) from [<c011c2c4>] (warn_slowpath_fmt+0x70/0x9c)
+    [<c011c2c4>] (warn_slowpath_fmt) from [<c0548be8>]
+(__i2c_transfer+0x4a4/0x4e4)
+    [<c0548be8>] (__i2c_transfer) from [<c0548cd8>] (i2c_transfer+0xb0/0xf8)
+    [<c0548cd8>] (i2c_transfer) from [<c046f884>] (regmap_i2c_read+0x54/0x88)
+    [<c046f884>] (regmap_i2c_read) from [<c046b69c>]
+(_regmap_raw_read+0x118/0x1f0)
+    [<c046b69c>] (_regmap_raw_read) from [<c046b7b8>]
+(_regmap_bus_read+0x44/0x68)
+    [<c046b7b8>] (_regmap_bus_read) from [<c04698a0>] (_regmap_read+0x84/0x110)
+    [<c04698a0>] (_regmap_read) from [<c046c10c>] (regmap_read+0x40/0x58)
+    [<c046c10c>] (regmap_read) from [<c03cf0a8>]
+(regulator_get_voltage_sel_regmap+0x28/0x74)
+    [<c03cf0a8>] (regulator_get_voltage_sel_regmap) from [<c03cb29c>]
+(regulator_get_voltage_rdev+0xa4/0x14c)
+    [<c03cb29c>] (regulator_get_voltage_rdev) from [<c03cc658>]
+(regulator_get_voltage+0x2c/0x60)
+    [<c03cc658>] (regulator_get_voltage) from [<c03cd994>]
+(regulator_is_supported_voltage+0x30/0xd8)
+    [<c03cd994>] (regulator_is_supported_voltage) from [<c05a32b4>]
+(_opp_add+0x164/0x1b8)
+    [<c05a32b4>] (_opp_add) from [<c05a3388>] (_opp_add_v1+0x80/0xb8)
+    [<c05a3388>] (_opp_add_v1) from [<c05a5220>]
+(dev_pm_opp_of_add_table+0x130/0x168)
+    [<c05a5220>] (dev_pm_opp_of_add_table) from [<c05a5330>]
+(dev_pm_opp_of_cpumask_add_table+0x60/0xac)
+    [<c05a5330>] (dev_pm_opp_of_cpumask_add_table) from [<c05ab88c>]
+(cpufreq_init+0x94/0x1c4)
+    [<c05ab88c>] (cpufreq_init) from [<c05a8190>] (cpufreq_online+0x148/0x7ac)
+    [<c05a8190>] (cpufreq_online) from [<c05a87fc>]
+(cpuhp_cpufreq_online+0x8/0x10)
+    [<c05a87fc>] (cpuhp_cpufreq_online) from [<c011d088>]
+(cpuhp_invoke_callback+0xf8/0x2e4)
+    [<c011d088>] (cpuhp_invoke_callback) from [<c011d418>]
+(cpuhp_thread_fun+0xac/0x244)
+    [<c011d418>] (cpuhp_thread_fun) from [<c013c090>]
+(smpboot_thread_fn+0x19c/0x1a8)
+    [<c013c090>] (smpboot_thread_fn) from [<c0138408>] (kthread+0x104/0x110)
+    [<c0138408>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
 
-However, those established EPOLLET semantics are still (I tested
-each of these) followed by:
+Gr{oetje,eeting}s,
 
-* Sockets (tested in Internet domain)
-* Terminals
-* POSIX message queues
-* Hierarchical epoll instances; for example:
-  - epoll FD X monitors epoll FD Y with EPOLLET
-  - epoll FD Y monitors two FDs, A and B, for EPOLLIN
-  - input arrives on FD A
-  - epoll_wait on X returns EPOLLIN for FD Y
-  - next epoll_wait on X doesn't inform us that Y is ready
-  - input arrives on B
-  - epoll_wait on X returns EPOLLIN for FD Y
-
-I would say that users *expect* at least the following:
-
-* That semantics don't change unexpectedly.
-* That semantics are consistent.
-
-In Linux 5.5, the pipe EPOLLET semantics changed unexpectedly.
-And now, pipes have EPOLLET semantics that are inconsistent with
-every other type of FD (that I tested).
-
-> Anyway, I don't absolutely hate that patch of mine, but it does seem
-> nonsensical and pointless, and I think I'll just hold off on applying
-> it until we hear of something actually breaking.
-
-The problem is that sometimes it takes a very long time to hear
-of something breaking. For example, a Linux 3.5 regression in
-the POSIX message queue API was only fixed in 3.14 [1], and only
-after the breakage was reported as a man-pages bug(!) a year
-after the breakage.
-
-And sometimes, if things don't get fixed soon enough, then
-any fix will break new users. Thus we now have F_SETOWN_EX
-(2.6.32) to do what F_SETOWN used to do before a regression
-that occurred about 4 years earlier (2.6.12) (see [2]), because
-reverting the F_SETOWN semantics to what they originally 
-were might have broken some new apps that had appeared in
-those four years.
-
-> Which I suspect simply won't happen. Getting two epoll notifications
-> when the pipe state didn't really change in between is not something I
-> can see anybody really depending on.
-> 
-> You _will_ get the second notification if somebody actually emptied
-> the pipe in between, and you have a real new "edge".
-> 
-> But hey, I am continually surprised by what user space code then
-> occasionally does, despite my fairly low expectations.
-
-Yes, user space code does surprising things. But, give people
-enough time and every detail of API behavior will come
-to be depended upon by someone. We don't know if anyone
-depends on the old pipe EPOLLET behavior. I also imagine the
-chances are small, but if users do depend on it, they are
-in for an unpleasant surprise (missed notifications).
-
-We can all agree that the existing EPOLLET are perhaps strange.
-However, why change these semantics just for pipes? In other
-words, given my notes above about consistency, what is the
-argument for not applying the patch? IOW, I think "consistency"
-is a rather stronger argument than "but it seems nonsensical
-and pointless"; YMMV.
-
-Cheers,
-
-Michael
-
-[1] See the discussion of HARD_QUEUESMAX in
-https://www.man7.org/linux/man-pages/man7/mq_overview.7.html#BUGS
-
-[2]
-https://www.man7.org/linux/man-pages/man2/fcntl.2.html
-
-[3]
-Leakage of implementation details into the API is hardly
-unprecedented; thus, for example, POSIX permits spurious
-wake-ups on condition variable waiters to allow for
-efficient CV implementation on multiprocessor systems.
+                        Geert
 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
