@@ -2,161 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFFC28CBA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1109028CBA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729516AbgJMK34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:29:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:53610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729241AbgJMK34 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:29:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4122031B;
-        Tue, 13 Oct 2020 03:29:55 -0700 (PDT)
-Received: from e107158-lin (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74E8F3F66B;
-        Tue, 13 Oct 2020 03:29:54 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 11:29:51 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Patrick Bellasi <patrick.bellasi@matbug.net>
-Cc:     Yun Hsiang <hsiang023167@gmail.com>, dietmar.eggemann@arm.com,
-        peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201013102951.orcr6m4q2cb7y6zx@e107158-lin>
-References: <20201012163140.371688-1-hsiang023167@gmail.com>
- <87blh6iljc.derkling@matbug.net>
+        id S1730293AbgJMKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:30:39 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:62266 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729241AbgJMKai (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 06:30:38 -0400
+X-IronPort-AV: E=Sophos;i="5.77,370,1596492000"; 
+   d="scan'208";a="472338857"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 12:30:36 +0200
+Date:   Tue, 13 Oct 2020 12:30:36 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+cc:     cocci@systeme.lip6.fr, michal.lkml@markovi.net,
+        nicolas.palix@imag.fr, linux-kernel@vger.kernel.org,
+        Gilles.Muller@lip6.fr
+Subject: Re: [Cocci] [PATCH V2] coccinelle: iterators: Add for_each_child.cocci
+ script
+In-Reply-To: <20201012171909.ihbx73evyj5dosxl@adolin>
+Message-ID: <alpine.DEB.2.22.394.2010131226130.2674@hadrien>
+References: <20201012171909.ihbx73evyj5dosxl@adolin>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87blh6iljc.derkling@matbug.net>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 10:21, Patrick Bellasi wrote:
-> 
-> Hi Yun,
-> thanks for sharing this new implementation.
-> 
-> On Mon, Oct 12, 2020 at 18:31:40 +0200, Yun Hsiang <hsiang023167@gmail.com> wrote...
-> 
-> > If the user wants to stop controlling uclamp and let the task inherit
-> > the value from the group, we need a method to reset.
-> >
-> > Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
-> > sched_setattr syscall.
-> 
-> Looks like what you say here is not what you code, since you actually
-> add two new flags, _RESET_{MIN,MAX}.
-> 
-> I think we value instead a simple user-space interface where just the
-> additional one flag _RESET should be good enough.
-> 
-> > Signed-off-by: Yun Hsiang <hsiang023167@gmail.com>
-> > ---
-> >  include/uapi/linux/sched.h |  9 ++++++++-
-> >  kernel/sched/core.c        | 16 ++++++++++++----
-> >  2 files changed, 20 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-> > index 3bac0a8ceab2..a12e88c362d8 100644
-> > --- a/include/uapi/linux/sched.h
-> > +++ b/include/uapi/linux/sched.h
-> > @@ -132,6 +132,9 @@ struct clone_args {
-> >  #define SCHED_FLAG_KEEP_PARAMS		0x10
-> >  #define SCHED_FLAG_UTIL_CLAMP_MIN	0x20
-> >  #define SCHED_FLAG_UTIL_CLAMP_MAX	0x40
-> > +#define SCHED_FLAG_UTIL_CLAMP_RESET_MIN	0x80
-> > +#define SCHED_FLAG_UTIL_CLAMP_RESET_MAX	0x100
-> 
-> What about adding just SCHED_FLAG_UTIL_CLAMP_RESET 0x08 ...
-> 
-> >  
-> >  #define SCHED_FLAG_KEEP_ALL	(SCHED_FLAG_KEEP_POLICY | \
-> >  				 SCHED_FLAG_KEEP_PARAMS)
-> > @@ -139,10 +142,14 @@ struct clone_args {
-> >  #define SCHED_FLAG_UTIL_CLAMP	(SCHED_FLAG_UTIL_CLAMP_MIN | \
-> >  				 SCHED_FLAG_UTIL_CLAMP_MAX)
-> 
-> ... making it part of SCHED_FLAG_UTIL_CLAMP ...
-> 
-> >  
-> > +#define SCHED_FLAG_UTIL_CLAMP_RESET (SCHED_FLAG_UTIL_CLAMP_RESET_MIN | \
-> > +					SCHED_FLAG_UTIL_CLAMP_RESET_MAX)
-> > +
-> >  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
-> >  			 SCHED_FLAG_RECLAIM		| \
-> >  			 SCHED_FLAG_DL_OVERRUN		| \
-> >  			 SCHED_FLAG_KEEP_ALL		| \
-> > -			 SCHED_FLAG_UTIL_CLAMP)
-> > +			 SCHED_FLAG_UTIL_CLAMP		| \
-> > +			 SCHED_FLAG_UTIL_CLAMP_RESET)
-> 
-> 
-> ... and use it in conjunction with the existing _CLAMP_{MIN,MAX} to know
-> which clamp should be reset?
+I have one more change to suggest.  This one only affects the patch case,
+as the other cases just point to a problem but don't ompletely specify
+what to do about it.
 
-I think the RESET should restore *both* MIN and MAX and reset the user_defined
-flag. Since the latter is the main purpose of this interface, I don't think you
-can reset the user_defined flag without resetting both MIN and MAX to
-uclamp_none[UCLAMP_MIN/MAX].
+> +@ruleone depends on patch && !context && !org && !report@
+> +
+> +local idexpression r.n;
+> +iterator r.i,i1;
+> +expression e;
+> +expression list [r.n1] es;
+> +statement S;
+> +@@
+> +
+> + i(es,n,...) {
+> +   ...
+> +(
+> +   of_node_put(n);
+> +|
+> +   e = n
+> +|
+> +   return n;
+> +|
+> +   i1(...,n,...) S
+> +|
+> ++  of_node_put(n);
+> +?  return ...;
+> +)
+> +   ... when any
+> + }
 
-> 
-> >  #endif /* _UAPI_LINUX_SCHED_H */
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 9a2fbf98fd6f..ed4cb412dde7 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1207,15 +1207,22 @@ static void __setscheduler_uclamp(struct task_struct *p,
-> >  		uclamp_se_set(uc_se, clamp_value, false);
-> >  	}
-> >  
-> > -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
-> > +	if (likely(!(attr->sched_flags &
-> > +			(SCHED_FLAG_UTIL_CLAMP | SCHED_FLAG_UTIL_CLAMP_RESET))))
-> >  		return;
-> 
-> This check will not be changed, while we will have to add a bypass in
-> uclamp_validate().
-> 
-> >  
-> > -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> > +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET_MIN) {
-> > +		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
-> > +			      0, false);
-> > +	} else if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
-> >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
-> >  			      attr->sched_util_min, true);
-> >  	}
-> >
-> 
-> These checks also will have to be updated to check _RESET and
-> _{MIN,MAX} combinations.
-> 
-> Bonus point would be to be possible to pass in just the _RESET flag if
-> we want to reset both clamps. IOW, passing in _RESET only should be
-> consumed as if we passed in _RESET|_MIN|_MAX.
-> 
-> Caveat, RT tasks have got a special 'reset value' for _MIN.
-> We should check and ensure __uclamp_update_uti_min_rt_default() is
-> property called for those tasks, which likely will require some
-> additional refactoring :/
+There is one occurrence of the following code:
 
-Hmm I am probably missing something. But if the SCHED_FLAG_UTIL_CLAMP_RESET is
-set, just reset uc_se->user_defined in the loop in __setscheduler_uclamp().
-This should take care of doing the reset properly then. Including for RT tasks.
+        for_each_available_child_of_node(search, child) {
+                name = of_get_property(child, "regulator-compatible", NULL);
+                if (!name)
+                        name = child->name;
 
-So IMO you just need a single SCHED_FLAG_UTIL_CLAMP_RESET that if set in the
-attr, you just execute that loop in __setscheduler_uclamp() + reset
-uc_se->user_defined.
+                if (!strcmp(desc->of_match, name)) {
+                        of_node_put(search);
+                        return of_node_get(child);
+                }
+        }
 
-It should be invalid to pass the SCHED_FLAG_UTIL_CLAMP_RESET with
-SCHED_FLAG_UTIL_CLAMP_MIN/MAX. Both have contradictory meaning IMO.
-If user passes both we should return an EINVAL error.
+In this case, the for_each_available_child_of_node has incremented the
+reference count of child by 1, and then the return increments it again.
+It would be ok to put an of_not_put before the return, which is done by
+the above rule, but the code would be even simpler if it would just leave
+the reference count as is.  So before the current return case, you can put
+another return case that does the following:
 
-Thanks
+-  return of_node_get(n);
++  return n;
 
---
-Qais Yousef
+julia
