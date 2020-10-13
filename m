@@ -2,115 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BE928D3BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CA628D3C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731572AbgJMSjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:39:05 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:17416 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729085AbgJMSjC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:39:02 -0400
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 09DIcO5S031196;
-        Wed, 14 Oct 2020 03:38:25 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 09DIcO5S031196
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1602614305;
-        bh=0AeJnw7iffImlFmYPeg7EqKL/aadd4F/WPMGvRQhMhE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NUfnHY29lrSl80u6hHuHa8UNeHszjUa7rtYk7bFZw6sYW08AC9XntlM/EOCKkVO1+
-         FxJ1QlhruQHct3YgbtIDENSuvslVlfG2ydqt5r7xbuVvDn0zAXTeiR7mfRPk65feiT
-         n3m1kea1QlknLndmL8nyAoOdAIBCL3rLMMgnobcCYmLocDllEmWIBd66om52IM/iCu
-         lqtgIUqgFG/zxpfeoR8UnXFreK27Oj6XNBKjPB/ed7/dgI2ngMPUUjhbba8f1JGeTv
-         tEuZZvTfY0PcTWsk5pUvIYBKg0ZgIocOEscLdAqMixaPF1KZiBbnNY8cLpAEhgzfs2
-         d4rKxmT2MOLIw==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kbuild: deb-pkg: clean up package name variables
-Date:   Wed, 14 Oct 2020 03:38:20 +0900
-Message-Id: <20201013183821.242574-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201013183821.242574-1-masahiroy@kernel.org>
-References: <20201013183821.242574-1-masahiroy@kernel.org>
+        id S2388048AbgJMSkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:40:18 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:58122 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729085AbgJMSkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 14:40:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602614415; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=xeKvoKJav1RdumqBJg8HzynQcOdE4LvpfpeXKfaS0WA=;
+ b=oVclBE35Kij86uPVf6IkusndblfgqOjs4kQ9UNiU+XBIf8g1LoU5UBl952LkJ98MZcpWaz37
+ vsFjkQOEFX9T6FCK1ReV25P0uLkdDNo9QgOc/yDiXvpygxFHBeAsM0G644fDDVNx+ykvjzQw
+ S1HIr03Rcq5nkX/c2bz6qPd2zCs=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f85f48c3711fec7b1bfb92e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 18:40:12
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 86FB5C433FE; Tue, 13 Oct 2020 18:40:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F22CBC433CB;
+        Tue, 13 Oct 2020 18:40:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 13 Oct 2020 11:40:10 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mgautam@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 06/10] bus: mhi: core: Improve shutdown handling after
+ link down detection
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20201009161950.GG4810@Mani-XPS-13-9360>
+References: <1600480955-16827-1-git-send-email-bbhatt@codeaurora.org>
+ <1600480955-16827-7-git-send-email-bbhatt@codeaurora.org>
+ <20201009161950.GG4810@Mani-XPS-13-9360>
+Message-ID: <3793225dd0932d0b2a9bb5b3df293fce@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hard-code the names of linux-headers and debug packages in the
-control file.
+On 2020-10-09 09:19, Manivannan Sadhasivam wrote:
+> On Fri, Sep 18, 2020 at 07:02:31PM -0700, Bhaumik Bhatt wrote:
+>> If MHI were to attempt a device shutdown following an assumption
+> 
+> MHI host? And is this really an assumption or it is definite that the
+> link is inaccessible. Please clarify!
+> 
+Will update it to MHI host.
 
-The kernel package is different for ARCH=um. Change the code
-for better readability.
+I say assumption because we act based on the "graceful" flag passed by
+the MHI controller driver. Link may be accessible but the controller has
+instructed MHI not to do any further accesses. They may decide to set 
+the
+flag as "false" if they see any read/access issues, an actual link down
+interrupt from the bus driver or a sideband GPIO signal declaring that a
+software assert occurred on the device.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+MHI host sees that power down attempt as ungraceful and assumes that the
+controller has decided that it's either a link down or a fatal error.
 
- scripts/package/mkdebian | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Once an "ungraceful" power down attempt is made, MHI host moves to the
+LD_ERR_FATAL_DETECT pm_state and without this patch, it moved from an
+LD_ERR_FATAL_DETECT to SHUTDOWN_PROCESS state, where SHUTDOWN_PROCESS
+is defined as a register accessible state by the MHI_REG_ACCESS_VALID()
+macro.
 
-diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 273fd6ed790e..60a2a63a5e90 100755
---- a/scripts/package/mkdebian
-+++ b/scripts/package/mkdebian
-@@ -94,16 +94,16 @@ else
- 	packageversion=$version-$revision
- fi
- sourcename=$KDEB_SOURCENAME
--packagename=linux-image-$version
--kernel_headers_packagename=linux-headers-$version
--dbg_packagename=$packagename-dbg
--debarch=
--set_debarch
- 
- if [ "$ARCH" = "um" ] ; then
--	packagename=user-mode-linux-$version
-+	packagename=user-mode-linux
-+else
-+	packagename=linux-image
- fi
- 
-+debarch=
-+set_debarch
-+
- email=${DEBEMAIL-$EMAIL}
- 
- # use email string directly if it contains <email>
-@@ -178,7 +178,7 @@ Rules-Requires-Root: no
- Build-Depends: bc, rsync, kmod, cpio, bison, flex | flex:native $extra_build_depends
- Homepage: https://www.kernel.org/
- 
--Package: $packagename
-+Package: $packagename-$version
- Architecture: $debarch
- Description: Linux kernel, version $version
-  This package contains the Linux kernel, modules and corresponding other
-@@ -197,7 +197,7 @@ EOF
- if is_enabled CONFIG_MODULES; then
- cat <<EOF >> debian/control
- 
--Package: $kernel_headers_packagename
-+Package: linux-headers-$version
- Architecture: $debarch
- Description: Linux kernel headers for $version on $debarch
-  This package provides kernel header files for $version on $debarch
-@@ -209,7 +209,7 @@ fi
- if is_enabled CONFIG_DEBUG_INFO; then
- cat <<EOF >> debian/control
- 
--Package: $dbg_packagename
-+Package: linux-image-$version-dbg
- Section: debug
- Architecture: $debarch
- Description: Linux kernel debugging symbols for $version
+If someone were to do a call that needed a register access from their
+.remove() callback, for example, we could see a bus error.
+
+Moves from MHI_PM_M3 to SHUTDOWN_PROCESS and LD_ERR_FATAL_DETECT to
+SHUTDOWN_PROCESS are not allowed by use of this patch.
+
+I'll add better wording and explanation.
+
+>> that the device is inaccessible, the host currently moves to a state
+>> where device register accesses are allowed when they should not be.
+>> This would end up allowing accesses to the device register space when
+>> the link is inaccessible and can result in bus errors observed on the
+>> host. Improve shutdown handling to prevent these outcomes and do not
+>> move the MHI PM state to a register accessible state after device is
+>> assumed to be inaccessible.
+>> 
+> 
+> Apparently you are introducing a new device transition state but your
+> commit description doesn't state that :/
+> 
+> Thanks,
+> Mani
+> 
+Sure. I will add that.
+
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/init.c     |  1 +
+>>  drivers/bus/mhi/core/internal.h |  1 +
+>>  drivers/bus/mhi/core/pm.c       | 18 +++++++++++++-----
+>>  3 files changed, 15 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+>> index 9ae4c19..fa33dde 100644
+>> --- a/drivers/bus/mhi/core/init.c
+>> +++ b/drivers/bus/mhi/core/init.c
+>> @@ -37,6 +37,7 @@ const char * const 
+>> dev_state_tran_str[DEV_ST_TRANSITION_MAX] = {
+>>  	[DEV_ST_TRANSITION_MISSION_MODE] = "MISSION_MODE",
+>>  	[DEV_ST_TRANSITION_SYS_ERR] = "SYS_ERR",
+>>  	[DEV_ST_TRANSITION_DISABLE] = "DISABLE",
+>> +	[DEV_ST_TRANSITION_FATAL] = "FATAL SHUTDOWN",
+>>  };
+>> 
+>>  const char * const mhi_state_str[MHI_STATE_MAX] = {
+>> diff --git a/drivers/bus/mhi/core/internal.h 
+>> b/drivers/bus/mhi/core/internal.h
+>> index 7989269..f3b9e5a 100644
+>> --- a/drivers/bus/mhi/core/internal.h
+>> +++ b/drivers/bus/mhi/core/internal.h
+>> @@ -388,6 +388,7 @@ enum dev_st_transition {
+>>  	DEV_ST_TRANSITION_MISSION_MODE,
+>>  	DEV_ST_TRANSITION_SYS_ERR,
+>>  	DEV_ST_TRANSITION_DISABLE,
+>> +	DEV_ST_TRANSITION_FATAL,
+>>  	DEV_ST_TRANSITION_MAX,
+>>  };
+>> 
+>> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+>> index 3462d82..bce1f62 100644
+>> --- a/drivers/bus/mhi/core/pm.c
+>> +++ b/drivers/bus/mhi/core/pm.c
+>> @@ -37,9 +37,10 @@
+>>   *     M0 -> FW_DL_ERR
+>>   *     M0 -> M3_ENTER -> M3 -> M3_EXIT --> M0
+>>   * L1: SYS_ERR_DETECT -> SYS_ERR_PROCESS --> POR
+>> - * L2: SHUTDOWN_PROCESS -> DISABLE
+>> + * L2: SHUTDOWN_PROCESS -> LD_ERR_FATAL_DETECT
+>> + *     SHUTDOWN_PROCESS -> DISABLE
+>>   * L3: LD_ERR_FATAL_DETECT <--> LD_ERR_FATAL_DETECT
+>> - *     LD_ERR_FATAL_DETECT -> SHUTDOWN_PROCESS
+>> + *     LD_ERR_FATAL_DETECT -> DISABLE
+>>   */
+>>  static struct mhi_pm_transitions const dev_state_transitions[] = {
+>>  	/* L0 States */
+>> @@ -72,7 +73,7 @@ static struct mhi_pm_transitions const 
+>> dev_state_transitions[] = {
+>>  	{
+>>  		MHI_PM_M3,
+>>  		MHI_PM_M3_EXIT | MHI_PM_SYS_ERR_DETECT |
+>> -		MHI_PM_SHUTDOWN_PROCESS | MHI_PM_LD_ERR_FATAL_DETECT
+>> +		MHI_PM_LD_ERR_FATAL_DETECT
+>>  	},
+>>  	{
+>>  		MHI_PM_M3_EXIT,
+>> @@ -103,7 +104,7 @@ static struct mhi_pm_transitions const 
+>> dev_state_transitions[] = {
+>>  	/* L3 States */
+>>  	{
+>>  		MHI_PM_LD_ERR_FATAL_DETECT,
+>> -		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_SHUTDOWN_PROCESS
+>> +		MHI_PM_LD_ERR_FATAL_DETECT | MHI_PM_DISABLE
+>>  	},
+>>  };
+>> 
+>> @@ -670,6 +671,10 @@ void mhi_pm_st_worker(struct work_struct *work)
+>>  			mhi_pm_disable_transition
+>>  				(mhi_cntrl, MHI_PM_SHUTDOWN_PROCESS);
+>>  			break;
+>> +		case DEV_ST_TRANSITION_FATAL:
+>> +			mhi_pm_disable_transition
+>> +				(mhi_cntrl, MHI_PM_LD_ERR_FATAL_DETECT);
+>> +			break;
+>>  		default:
+>>  			break;
+>>  		}
+>> @@ -1039,6 +1044,7 @@ EXPORT_SYMBOL_GPL(mhi_async_power_up);
+>>  void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+>>  {
+>>  	enum mhi_pm_state cur_state;
+>> +	enum dev_st_transition next_state = DEV_ST_TRANSITION_DISABLE;
+>>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>> 
+>>  	/* If it's not a graceful shutdown, force MHI to linkdown state */
+>> @@ -1053,9 +1059,11 @@ void mhi_power_down(struct mhi_controller 
+>> *mhi_cntrl, bool graceful)
+>>  			dev_dbg(dev, "Failed to move to state: %s from: %s\n",
+>>  				to_mhi_pm_state_str(MHI_PM_LD_ERR_FATAL_DETECT),
+>>  				to_mhi_pm_state_str(mhi_cntrl->pm_state));
+>> +		else
+>> +			next_state = DEV_ST_TRANSITION_FATAL;
+>>  	}
+>> 
+>> -	mhi_queue_state_transition(mhi_cntrl, DEV_ST_TRANSITION_DISABLE);
+>> +	mhi_queue_state_transition(mhi_cntrl, next_state);
+>> 
+>>  	/* Wait for shutdown to complete */
+>>  	flush_work(&mhi_cntrl->st_worker);
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
+
 -- 
-2.25.1
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
