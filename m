@@ -2,125 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7B428D386
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97B528D387
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgJMSTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
+        id S1728231AbgJMSVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728146AbgJMSTj (ORCPT
+        with ESMTP id S1728188AbgJMSVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:19:39 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5548C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:19:38 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id i1so487059wro.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:19:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DtmadPtoPcokiIT8ReATg1pXkhzL2SuRBo5LddIMSVk=;
-        b=XaJ/M1ab0sb3wmangM5YA2nqcNI4cEEK4J6J89RdjZa7KK4sbY6rvX6VV/uDqCY7eO
-         BprKBVKFXAG30XVHwS7YwvDUaWfw0dXOKYgetZjYxpT/n+Ia5D7O55KZihuxApT5Pyki
-         sbzNbcI3uvDJ1ZBR/KYTICZUnQS/SlRcHS2ZEM/N2HSx665DzSjuHKS7vc8cWnrAYct8
-         SbiI2gfLvKdP5sLgqQkcgjoxbuFtBm2XSjhdOeuz/kSJa1/HQIiF84fRT+s+N35dz+dn
-         Bl/jOSnjWmGuofs/y0yw1TpV3mHyL/6vgt+zExdqElnlh3fGLf8nFLMl9Vf6SuTYbn3h
-         SIqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DtmadPtoPcokiIT8ReATg1pXkhzL2SuRBo5LddIMSVk=;
-        b=FuZTgCLUwR74b5NGZT7Z8+H/47wWVplAaZAipcGi7Xd/cFCl+hPsKq2f9uLfTpQtrS
-         eCI3D5y8spuxoKi75ToBpRkv/8WQBIq0BVWZvaCPDvl7aa0rC2TWW3ykP5MexNNXE6zv
-         QalcbZDrzZqbf/QH3wiKqX8rARua5NSqo4CziL5b5Wn8HPl/JGjElTyxkyEoblMYAvfa
-         ku7XyEbUo77v5AmEW6X/uSBVf3pZFtXeqKrA2wtOGOT1qtdU5hcURwSugsa/Ffj4/GEa
-         NUzoRyJBEgzUCX8SkvlqJyGhV9tKPORhEppPQQ7dtk+AARkDIxH+w4T0O05CqXZhRLEJ
-         oPSw==
-X-Gm-Message-State: AOAM533OSVJ8WAWmHNN3x2BayFhzHknV0qA0q8l8J4/AtzyRClGvmEb9
-        NsQFJ7+NgDRD4FbF7UaPXiaFoyhbL3n/GHe5
-X-Google-Smtp-Source: ABdhPJyYKFgxPBtvreY/bLMuxhTn3K88Do7E39RQO4MJweOu72cwzI7cuyOtwYsoYixEPS6WFk3dGg==
-X-Received: by 2002:adf:8541:: with SMTP id 59mr1042100wrh.61.1602613177428;
-        Tue, 13 Oct 2020 11:19:37 -0700 (PDT)
-Received: from localhost.localdomain (26.165.185.81.rev.sfr.net. [81.185.165.26])
-        by smtp.gmail.com with ESMTPSA id w11sm490261wrs.26.2020.10.13.11.19.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 11:19:36 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Cc:     matthias.bgg@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        p.zabel@pengutronix.de, chunkuang.hu@kernel.org,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH v2 2/2] drm/mediatek: mtk_hdmi: add MT8167 support for HDMI
-Date:   Tue, 13 Oct 2020 20:19:24 +0200
-Message-Id: <20201013181924.4143303-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201013181924.4143303-1-fparent@baylibre.com>
-References: <20201013181924.4143303-1-fparent@baylibre.com>
+        Tue, 13 Oct 2020 14:21:12 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B106FC0613D0;
+        Tue, 13 Oct 2020 11:21:11 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5EF43B87;
+        Tue, 13 Oct 2020 20:21:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1602613267;
+        bh=uNdQgYBn6J6CRCexb0fARlaAUo2p5ArcS4xeWUhOs6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=io1UsLL9//j2D/vqza6k35qzJzan6exhFZexus9mEjA8Unk7vMMjVG0gcle/gSGeX
+         KhjbKHCK2dY9UvFy4Gvtf/CnIuQC90glnVynYEQkJyXhM6KgXbo3zaqVUCtOJXQxqc
+         hyLuJVfPzQA1b5n3K2+2TzhqS3NTmSQqjoiTInn8=
+Date:   Tue, 13 Oct 2020 21:20:21 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-usb@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Subject: Re: [patch 2/4] media: omap3isp: Remove misleading comment
+Message-ID: <20201013182021.GE11939@pendragon.ideasonboard.com>
+References: <20201013142616.118697527@linutronix.de>
+ <20201013143731.704783731@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201013143731.704783731@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for HDMI on MT8167. HDMI on MT8167 is similar to
-MT8173/MT2701 execpt for the two registers: SYS_CFG1C and SYS_CFG20
+Hi Thomas,
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
+Thank you for the patch.
 
-Changelog:
-v2: fix name of pdata structure
+On Tue, Oct 13, 2020 at 04:26:18PM +0200, Thomas Gleixner wrote:
+> in_interrupt() covers hard and soft interrupt servicing and bottom half
+> disabled contexts, which is semantically ill defined.
+> 
+> The comment for __ccdc_lsc_configure() "Context: in_interrupt()" is
+> therefore as useful as "Context: unknown'. Remove it.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: linux-media@vger.kernel.org
 
- drivers/gpu/drm/mediatek/mtk_hdmi.c      | 7 +++++++
- drivers/gpu/drm/mediatek/mtk_hdmi_regs.h | 2 ++
- 2 files changed, 9 insertions(+)
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-index 57370c036497..484ea9cd654a 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-@@ -1835,9 +1835,16 @@ static struct mtk_hdmi_data mt8173_hdmi_driver_data = {
- 	.sys_cfg20 = HDMI_SYS_CFG20,
- };
- 
-+static struct mtk_hdmi_data mt8167_hdmi_driver_data = {
-+	.sys_cfg1c = MT8167_HDMI_SYS_CFG1C,
-+	.sys_cfg20 = MT8167_HDMI_SYS_CFG20,
-+};
-+
- static const struct of_device_id mtk_drm_hdmi_of_ids[] = {
- 	{ .compatible = "mediatek,mt8173-hdmi",
- 	  .data = &mt8173_hdmi_driver_data },
-+	{ .compatible = "mediatek,mt8167-hdmi",
-+	  .data = &mt8167_hdmi_driver_data },
- 	{}
- };
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h b/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
-index 2050ba45b23a..a0f9c367d7aa 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
-@@ -195,6 +195,7 @@
- #define GEN_RGB				(0 << 7)
- 
- #define HDMI_SYS_CFG1C		0x000
-+#define MT8167_HDMI_SYS_CFG1C	0x800
- #define HDMI_ON				BIT(0)
- #define HDMI_RST			BIT(1)
- #define ANLG_ON				BIT(2)
-@@ -211,6 +212,7 @@
- #define HTPLG_PIN_SEL_OFF		BIT(30)
- #define AES_EFUSE_ENABLE		BIT(31)
- #define HDMI_SYS_CFG20		0x004
-+#define MT8167_HDMI_SYS_CFG20	0x804
- #define DEEP_COLOR_MODE_MASK		(3 << 1)
- #define COLOR_8BIT_MODE			(0 << 1)
- #define COLOR_10BIT_MODE		(1 << 1)
+> ---
+>  drivers/media/platform/omap3isp/ispccdc.c |    5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> --- a/drivers/media/platform/omap3isp/ispccdc.c
+> +++ b/drivers/media/platform/omap3isp/ispccdc.c
+> @@ -299,11 +299,10 @@ static int ccdc_lsc_busy(struct isp_ccdc
+>  			     ISPCCDC_LSC_BUSY;
+>  }
+>  
+> -/* __ccdc_lsc_configure - Apply a new configuration to the LSC engine
+> +/*
+> + * __ccdc_lsc_configure - Apply a new configuration to the LSC engine
+>   * @ccdc: Pointer to ISP CCDC device
+>   * @req: New configuration request
+> - *
+> - * context: in_interrupt()
+>   */
+>  static int __ccdc_lsc_configure(struct isp_ccdc_device *ccdc,
+>  				struct ispccdc_lsc_config_req *req)
+> 
+
 -- 
-2.28.0
+Regards,
 
+Laurent Pinchart
