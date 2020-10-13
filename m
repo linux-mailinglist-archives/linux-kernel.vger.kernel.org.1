@@ -2,180 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4E628C785
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8288428C786
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgJMDTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 23:19:51 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:41320 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727831AbgJMDTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 23:19:50 -0400
-Received: from bogon.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxGMbPHIVfyvIcAA--.4326S2;
-        Tue, 13 Oct 2020 11:19:43 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Add set_memory_node()
-Date:   Tue, 13 Oct 2020 11:19:43 +0800
-Message-Id: <1602559183-12225-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxGMbPHIVfyvIcAA--.4326S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw4rZry5Gr4xGw4kuw4fuFg_yoWrZF1xpr
-        47ur95Gr48Wrn7W3yfJryDurWrJwnYkFW3CFW7AryDX3ZrXr17Arn3tF13CryUtrW8t3WS
-        gF1Fgry2gan2k3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48MxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5Gjg3UUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1728923AbgJMDXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 23:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727831AbgJMDXE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 23:23:04 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95935C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:23:04 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id f21so6782332qko.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8avc/64suYQeMp5GgzA5tmw2pJjaDuZSyAtFHq8gm34=;
+        b=fVshXDeXRvRHKXbkyOJuRjmLohKcGDX7DDjrMtShzKZFXCDWpDYpbtuY+9/lW0oSzn
+         v31Y9XdnWd7q2wMfv4McLozcmD21u7PQ+peYEDpsaxn+Nwf4on/ItmLJgoPxnggt+dSG
+         4BmOONWVL5NGd5aeA1Co45HuViM2EoXkePxtaJnVYtuzKej4z68hlFlNZYGza2Kb6I6M
+         KeM75AbjHbF4Cp4YlbCjsyYAQ/af4CxPjze0OrDmeo9gRqNmO12G1+FxnZja2YYiyJ3C
+         Us6YNnhsANN9wHX6gdjni8JiDL6NZcg+9eDp6WcUXAVrAyaa6Z+hX2vukQUeJJy7uHPW
+         enAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8avc/64suYQeMp5GgzA5tmw2pJjaDuZSyAtFHq8gm34=;
+        b=V3o/W7nryNaIYaZT2NyVDfQ3HJ8Cf207G6r7NwdmaT1hRRKg+JkpEMhRxryj+npcr5
+         ONORaqRZtMwjerG4ioztMqrgGkLEv065oWcVscsZjO/misIhhyA/qeGz2fWROSiytBmD
+         PIuB2aNEf8LjZ1LLQ1I+cha+ssSw/pvR6+lfDlqCxxQvzQ6wAbdQevDnULX5SjoFiHta
+         NiwPailGj08/Q4zEfZc6isIjS2ilZsthj2rVgRTnsVp6AAx+F1W/2zyk1eWvmVe7vwus
+         cxG8SQcKqfSlxO0tyXzvEKv50qIXI8TppAMKPdThievm5x3yk+aJpFwSDf64WM0VNxyr
+         Dmkg==
+X-Gm-Message-State: AOAM530hX5QRhxWLWS3RvualPDU0L/R0ZCxQP/RDTLYWMWv2QwbB1T1L
+        9md5BcJ7v8YarRK2OpesSA==
+X-Google-Smtp-Source: ABdhPJyHjdm9v8cbZa7XC7+SU1TiL3kuhYJVBffwraE+SqHVz0Unk73Y35kuNXvQXVMGxEraIGfRMw==
+X-Received: by 2002:a05:620a:677:: with SMTP id a23mr2355679qkh.428.1602559383716;
+        Mon, 12 Oct 2020 20:23:03 -0700 (PDT)
+Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
+        by smtp.gmail.com with ESMTPSA id w45sm506123qtw.96.2020.10.12.20.23.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Oct 2020 20:23:02 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 23:23:00 -0400
+From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        julien.thierry.kdev@gmail.com
+Subject: Re: [PATCH v4 1/5] arm64: Add framework to turn IPI as NMI
+Message-ID: <20201013032300.djsxeasxaqbzjhzr@gabell>
+References: <1599830924-13990-1-git-send-email-sumit.garg@linaro.org>
+ <1599830924-13990-2-git-send-email-sumit.garg@linaro.org>
+ <20201010015855.vksetnj4luft5enc@gabell>
+ <877drypgqb.wl-maz@kernel.org>
+ <20201010151307.vq74if4mndjn4nhm@gabell>
+ <CAFA6WYOHs+yYvdR-6eQR3ZJPK8nF3sN0fbd8XsQ8pwGL63cdCQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYOHs+yYvdR-6eQR3ZJPK8nF3sN0fbd8XsQ8pwGL63cdCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e7ae8d174eec ("MIPS: replace add_memory_region with memblock")
-replaced add_memory_region(, , BOOT_MEM_RAM) with memblock_add(). But
-it doesn't work well on some platforms which have NUMA like Loongson64.
-Because memblock_add() calls memblock_add_range() and sets memory at
-MAX_NUMNODES. As mm/memblock.c says, assign the region to a NUMA node
-later by using memblock_set_node(). This patch provides a NUMA port
-set_memory_node() and provides Loongson64 specific function.
+On Mon, Oct 12, 2020 at 05:49:09PM +0530, Sumit Garg wrote:
+> Hi Masa,
+> 
+> On Sat, 10 Oct 2020 at 20:43, Masayoshi Mizuma <msys.mizuma@gmail.com> wrote:
+> >
+> > On Sat, Oct 10, 2020 at 10:34:04AM +0100, Marc Zyngier wrote:
+> > > On Sat, 10 Oct 2020 02:58:55 +0100,
+> > > Masayoshi Mizuma <msys.mizuma@gmail.com> wrote:
+> > >
+> > > [...]
+> > >
+> > > > > +void ipi_nmi_setup(int cpu)
+> > > > > +{
+> > > > > + if (!ipi_desc)
+> > > > > +         return;
+> > > >
+> > > > ipi_nmi_setup() may be called twice for CPU0:
+> > > >
+> > > >   set_smp_ipi_range => set_smp_ipi_nmi => ipi_nmi_setup
+> > > >                     => ipi_setup => ipi_nmi_setup
+> > > >
+> > > > Actually, I got the following error message via the second ipi_nmi_setup():
+> > > >
+> > > >   GICv3: Pseudo-NMIs enabled using relaxed ICC_PMR_EL1 synchronisation
+> > > >   GICv3: Cannot set NMI property of enabled IRQ 8
+> > > >   genirq: Failed to setup NMI delivery: irq 8
+> > > >
+> 
+> Ah, thanks for catching this which I missed during my testing.
+> 
+> > > > Why don't we have a check to prevent that? Like as:
+> > > >
+> > > >        if (cpumask_test_cpu(cpu, ipi_desc->percpu_enabled))
+> > > >                return;
+> > >
+> > > That's definitely the wrong thing to do. prepare_nmi_setup() shouldn't
+> > > be called twice, and papering over it isn't acceptable.
+> >
+> > Got it. How about moving ipi_nmi_setup() from ipi_setup() to
+> > secondary_start_kernel() ? so that CPU0 can call ipi_nmi_setup() only
+> > from set_smp_ipi_nmi().
+> >
+> > --- a/arch/arm64/kernel/smp.c
+> > +++ b/arch/arm64/kernel/smp.c
+> > @@ -245,6 +245,7 @@ asmlinkage notrace void secondary_start_kernel(void)
+> >         notify_cpu_starting(cpu);
+> >
+> >         ipi_setup(cpu);
+> > +       ipi_nmi_setup(cpu);
+> >
+> >         store_cpu_topology(cpu);
+> >         numa_add_cpu(cpu);
+> > @@ -966,8 +967,6 @@ static void ipi_setup(int cpu)
+> >
+> >         for (i = 0; i < nr_ipi; i++)
+> >                 enable_percpu_irq(ipi_irq_base + i, 0);
+> > -
+> > -       ipi_nmi_setup(cpu);
+> >  }
+> >
+> >  #ifdef CONFIG_HOTPLUG_CPU
+> >
+> 
+> IMO, it would be more consistent to keep invocation of ipi_nmi_setup()
+> from ipi_setup(). So let me remove other invocation from
+> set_smp_ipi_nmi():
+> 
+> diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
+> index d3aa430..000e457 100644
+> --- a/arch/arm64/kernel/ipi_nmi.c
+> +++ b/arch/arm64/kernel/ipi_nmi.c
+> @@ -87,7 +87,4 @@ void __init set_smp_ipi_nmi(int ipi)
+>         ipi_desc = irq_to_desc(ipi);
+>         irq_set_status_flags(ipi, IRQ_HIDDEN);
+>         ipi_id = ipi;
+> -
+> -       /* Setup the boot CPU immediately */
+> -       ipi_nmi_setup(smp_processor_id());
+>  }
+> 
+> Do let me know if this works for you?
 
-The one of examples as follows,
-cmdline + "mem=220M@2M"
+Yes, make sense to me.
 
-arch/mips/kernel/setup.c:
-	parse_early_param();
-+	__memblock_dump_all();
-	if (usermem)
-
-Without this patch:
-...
-[    0.000000] MEMBLOCK configuration:
-[    0.000000]  memory size = 0x000000000dc00000 reserved size = 0x0000000003d74000
-[    0.000000]  memory.cnt  = 0x1
-[    0.000000]  memory[0x0]	[0x0000000000200000-0x000000000ddfffff], 0x000000000dc00000 bytes flags: 0x0
-...
-and stopped starting.
-
-With this patch:
-...
-[    0.000000] MEMBLOCK configuration:
-[    0.000000]  memory size = 0x000000000dc00000 reserved size = 0x0000000003d74000
-[    0.000000]  memory.cnt  = 0x1
-[    0.000000]  memory[0x0]	[0x0000000000200000-0x000000000ddfffff], 0x000000000dc00000 bytes on node 0 flags: 0x0
-...
-and started well.
-
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/include/asm/bootinfo.h |  4 ++++
- arch/mips/kernel/setup.c         | 12 ++++++++++++
- arch/mips/loongson64/numa.c      |  8 ++++++++
- arch/mips/sgi-ip27/ip27-memory.c |  5 +++++
- 4 files changed, 29 insertions(+)
-
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index aa03b12..29e2d9c 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -92,6 +92,10 @@ extern unsigned long mips_machtype;
- 
- extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
- 
-+#ifdef CONFIG_NUMA
-+extern void set_memory_node(phys_addr_t start, phys_addr_t size);
-+#endif
-+
- extern void prom_init(void);
- extern void prom_free_prom_memory(void);
- extern void prom_cleanup(void);
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index fb05b66..c1e282d 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -362,6 +362,9 @@ static int __init early_parse_mem(char *p)
- 		start = memparse(p + 1, &p);
- 
- 	memblock_add(start, size);
-+#ifdef CONFIG_NUMA
-+	set_memory_node(start, size);
-+#endif
- 
- 	return 0;
- }
-@@ -388,12 +391,18 @@ static int __init early_parse_memmap(char *p)
- 	if (*p == '@') {
- 		start_at = memparse(p+1, &p);
- 		memblock_add(start_at, mem_size);
-+#ifdef CONFIG_NUMA
-+		set_memory_node(start_at, mem_size);
-+#endif
- 	} else if (*p == '#') {
- 		pr_err("\"memmap=nn#ss\" (force ACPI data) invalid on MIPS\n");
- 		return -EINVAL;
- 	} else if (*p == '$') {
- 		start_at = memparse(p+1, &p);
- 		memblock_add(start_at, mem_size);
-+#ifdef CONFIG_NUMA
-+		set_memory_node(start_at, mem_size);
-+#endif
- 		memblock_reserve(start_at, mem_size);
- 	} else {
- 		pr_err("\"memmap\" invalid format!\n");
-@@ -509,6 +518,9 @@ static void __init check_kernel_sections_mem(void)
- 	if (!memblock_is_region_memory(start, size)) {
- 		pr_info("Kernel sections are not in the memory maps\n");
- 		memblock_add(start, size);
-+#ifdef CONFIG_NUMA
-+		set_memory_node(start, size);
-+#endif
- 	}
- }
- 
-diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-index cf9459f..d428058 100644
---- a/arch/mips/loongson64/numa.c
-+++ b/arch/mips/loongson64/numa.c
-@@ -234,6 +234,14 @@ void __init mem_init(void)
- 	mem_init_print_info(NULL);
- }
- 
-+void __init set_memory_node(phys_addr_t start, phys_addr_t size)
-+{
-+	u64 node_id;
-+
-+	node_id = (start >> 44) & 3;
-+	memblock_set_node(start, size, &memblock.memory, node_id);
-+}
-+
- /* All PCI device belongs to logical Node-0 */
- int pcibus_to_node(struct pci_bus *bus)
- {
-diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
-index d411e0a..f0ed2d4 100644
---- a/arch/mips/sgi-ip27/ip27-memory.c
-+++ b/arch/mips/sgi-ip27/ip27-memory.c
-@@ -427,3 +427,8 @@ void __init mem_init(void)
- 	setup_zero_pages();	/* This comes from node 0 */
- 	mem_init_print_info(NULL);
- }
-+
-+void __init set_memory_node(phys_addr_t start, phys_addr_t size)
-+{
-+
-+}
--- 
-2.1.0
-
+Thanks!
+Masa
