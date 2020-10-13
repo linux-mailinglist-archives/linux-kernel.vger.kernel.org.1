@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8526128DDAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E600B28DCFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgJNJas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:30:48 -0400
+        id S1731085AbgJNJVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:21:39 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729245AbgJNJTh (ORCPT
+        with ESMTP id S1731014AbgJNJUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:19:37 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60D3C08EADF;
-        Tue, 13 Oct 2020 16:42:49 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9sY21xJrz9sSs;
-        Wed, 14 Oct 2020 10:42:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1602632566;
-        bh=+8RyoDLMFzreOntocD8MmB6tkfPzeL+BTWjzBX1T9v4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=c89tubCZfxUFVdVaNfg1zCZGZni9WmGy0pGadJpxfmztYJy7XSY296aMWhD1XdDMl
-         FW32VW5JzIJqKVchFmF7seTXxF40q+xP/tNLk5HUBNIrLBoBgSOsWNScMjPF7ns7tT
-         28K9LlRgf0Q56x0AAr64Ifhaxe4/6UsN9/dL0TMCihMJjDVlM2W/Wgdv97qyl0gFC6
-         ek5mOnPZKRThm0MPt3qldw8zZNC9KRD0TPI9Acj5kiYR6ynnX2u9nfZTMsAfVOImvh
-         zBeXZdphTxNmpeX8V/U2P+pCrn0l6+yWhB5ksnKAeoXc/ldZkkKh+fddRiTopE4gTC
-         Le6/LRva41uZQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Qian Cai <cai@redhat.com>,
-        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] powerpc/pci: unmap legacy INTx interrupts when a PHB is removed
-In-Reply-To: <90922c43c670e4b55e6cf421be19146333e2ae7b.camel@redhat.com>
-References: <20200807101854.844619-1-clg@kaod.org> <9c5eca863c63e360662fae7597213e8927c2a885.camel@redhat.com> <fce8ffe1-521c-8344-c7ad-53550e408cdc@kaod.org> <90922c43c670e4b55e6cf421be19146333e2ae7b.camel@redhat.com>
-Date:   Wed, 14 Oct 2020 10:42:45 +1100
-Message-ID: <87tuuxzo96.fsf@mpe.ellerman.id.au>
+        Wed, 14 Oct 2020 05:20:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97E3C08EAE0;
+        Tue, 13 Oct 2020 16:42:55 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602632574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IGLsy7zJKFsqjqav7kd9QaEQcL8Zxfhq3qOudECtU88=;
+        b=ZEkE2pZN5e3HVrZrlnZgxzqhLHOl2ten8u6ZW/fchrROrt51iMxaKZCQFRtgM2Ahb/d0KO
+        EIuEkNvzuxWWXSffIJRckbZ2S2IfbQw3evLTxi3owEhy0j4gkH5qy/olsT3yc4JyL68lJ0
+        i3/jfbY2icsxkVOuHI8R2BfW7Akxj8GrU7UTHY0olmbXthblvI/fVbCyR6LkpvnxqDnOn4
+        fTlMHtA4sN3VgmDbxvwzuN97Z8ef4ygUosfvacKVu2H2mwnWZ0Z+ikpXB//YoIL+zzy0ST
+        xQ0RLPR3zKJx+TBSSL1/U7KDB4GuH7Wwjnx0GpabWRALdqGfF9dQxn+Svc0Iew==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602632574;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IGLsy7zJKFsqjqav7kd9QaEQcL8Zxfhq3qOudECtU88=;
+        b=wZINN9vNra5AzI4Mku/3oxHq3yM3IDlJvL68r8e3ye+6rkFumuUuBlt9dZ7dHODXs2NtBu
+        vOyADYUjMkpPsuCw==
+To:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org
+Cc:     peterz@infradead.org, oleg@redhat.com, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 3/4] kernel: add support for TIF_NOTIFY_SIGNAL
+In-Reply-To: <20201008152752.218889-4-axboe@kernel.dk>
+References: <20201008152752.218889-1-axboe@kernel.dk> <20201008152752.218889-4-axboe@kernel.dk>
+Date:   Wed, 14 Oct 2020 01:42:53 +0200
+Message-ID: <878sc9d75u.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qian Cai <cai@redhat.com> writes:
-> On Wed, 2020-09-23 at 09:06 +0200, C=C3=A9dric Le Goater wrote:
->> On 9/23/20 2:33 AM, Qian Cai wrote:
->> > On Fri, 2020-08-07 at 12:18 +0200, C=C3=A9dric Le Goater wrote:
->> > > When a passthrough IO adapter is removed from a pseries machine using
->> > > hash MMU and the XIVE interrupt mode, the POWER hypervisor expects t=
-he
->> > > guest OS to clear all page table entries related to the adapter. If
->> > > some are still present, the RTAS call which isolates the PCI slot
->> > > returns error 9001 "valid outstanding translations" and the removal =
-of
->> > > the IO adapter fails. This is because when the PHBs are scanned, Lin=
-ux
->> > > maps automatically the INTx interrupts in the Linux interrupt number
->> > > space but these are never removed.
->> > >=20
->> > > To solve this problem, we introduce a PPC platform specific
->> > > pcibios_remove_bus() routine which clears all interrupt mappings when
->> > > the bus is removed. This also clears the associated page table entri=
-es
->> > > of the ESB pages when using XIVE.
->> > >=20
->> > > For this purpose, we record the logical interrupt numbers of the
->> > > mapped interrupt under the PHB structure and let pcibios_remove_bus()
->> > > do the clean up.
->> > >=20
->> > > Since some PCI adapters, like GPUs, use the "interrupt-map" property
->> > > to describe interrupt mappings other than the legacy INTx interrupts,
->> > > we can not restrict the size of the mapping array to PCI_NUM_INTX. T=
-he
->> > > number of interrupt mappings is computed from the "interrupt-map"
->> > > property and the mapping array is allocated accordingly.
->> > >=20
->> > > Cc: "Oliver O'Halloran" <oohall@gmail.com>
->> > > Cc: Alexey Kardashevskiy <aik@ozlabs.ru>
->> > > Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
->> >=20
->> > Some syscall fuzzing will trigger this on POWER9 NV where the traces p=
-ointed
->> > to
->> > this patch.
->> >=20
->> > .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.conf=
-ig
->>=20
->> OK. The patch is missing a NULL assignement after kfree() and that
->> might be the issue.=20
->>=20
->> I did try PHB removal under PowerNV, so I would like to understand=20
->> how we managed to remove twice the PCI bus and possibly reproduce.=20
->> Any chance we could grab what the syscall fuzzer (syzkaller) did ?=20
+On Thu, Oct 08 2020 at 09:27, Jens Axboe wrote:
+> This adds TIF_NOTIFY_SIGNAL handling in the generic code, which if set,
+> will return true if signal_pending() is used in a wait loop. That causes
+> an exit of the loop so that notify_signal tracehooks can be run. If the
+> wait loop is currently inside a system call, the system call is restarted
+> once task_work has been processed.
 >
-> Any update on this? Maybe Michael or Stephen could drop this for now, so =
-our
-> fuzzing could continue to find something else new?
+> x86 is using the generic entry code, add the necessary TIF_NOTIFY_SIGNAL
+> definitions for it.
 
-Someone send me a revert?
+Can you please split that into core changes and a patch which adds
+support for x86?
 
-cheers
+>  static inline int signal_pending(struct task_struct *p)
+>  {
+> +#ifdef TIF_NOTIFY_SIGNAL
+
+As I said in the other thread, plase make this
+
+#if defined(CONFIG_GENERIC_ENTRY) && defined(TIF_NOTIFY_SIGNAL)
+
+> +/*
+> + * called by exit_to_user_mode_loop() if ti_work & _TIF_NOTIFY_SIGNAL. This
+> + * is currently used by TWA_SIGNAL based task_work, which requires breaking
+> + * wait loops to ensure that task_work is noticed and run.
+> + */
+> +static inline void tracehook_notify_signal(void)
+> +{
+> +#ifdef TIF_NOTIFY_SIGNAL
+
+Ditto.
+
+> +	clear_thread_flag(TIF_NOTIFY_SIGNAL);
+> +	smp_mb__after_atomic();
+> +	if (current->task_works)
+> +		task_work_run();
+> +#endif
+> +}
+> +
+> +/*
+> + * Called when we have work to process from exit_to_user_mode_loop()
+> + */
+> +static inline void set_notify_signal(struct task_struct *task)
+> +{
+> +#ifdef TIF_NOTIFY_SIGNAL
+
+And this one.
+
+Other than that, this approach of using arch_do_signal() addresses my
+earlier concerns about the syscall restart machinery.
+
+Thanks,
+
+        tglx
