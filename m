@@ -2,175 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B663D28D20A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C436F28D20C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389513AbgJMQSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:18:04 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:21313 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389429AbgJMQSD (ORCPT
+        id S2389568AbgJMQSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:18:38 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46836 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbgJMQSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:18:03 -0400
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 09DGHa36006473;
-        Wed, 14 Oct 2020 01:17:36 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 09DGHa36006473
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1602605857;
-        bh=PTNol6ZKZ6WikiQS1iwVWRfK1eVWXWR50IMrdlrgv8M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q7/RJVmC0Rm2kzu4LxJqza6MaZHKRJgBPSgg2aZOe+OkSkgURy9o9u2QyfUqYw85Z
-         lsEIBoK9SCxjmuz1dorQtiSLg6LRYBgf4TW0QkEi67tltKA31tBkkoo3xOWZcd3M5M
-         V+g8EYvhGkW++rbWQzPruAO5zLvCSUnSnzODvuboM885IU5F8khmy6b1dnrywrzGrd
-         7z2lU2frrVbEM1nW6eeszBtPmeD5l2XJ6+1kpqn8LOwZyfSnl2m1Smr43Yi1tbAIyn
-         J0btJWgtd3Sn1vLG0yoUtj+Wa22s9A5EnROF5GQi0QZyD1+VwiJV0yqL8d+94Cn30u
-         S2tqpE1EYlA2Q==
-X-Nifty-SrcIP: [209.85.215.178]
-Received: by mail-pg1-f178.google.com with SMTP id x16so17882456pgj.3;
-        Tue, 13 Oct 2020 09:17:36 -0700 (PDT)
-X-Gm-Message-State: AOAM532WH6opO6P4+foHCAe2UjSQRMA9vPHLQb3oQc+/JhbsND+Ot/MR
-        jMezjliZYjUmi3llOk5T7D8VDg1HukUyPN2Wr2Y=
-X-Google-Smtp-Source: ABdhPJzoZHD68/Bv80yh/fLdH9j83UlF0155g7tzFH3hJt8WHYLx/UCm8PIQzsWZMa1AG2H0V0LitxpCakYhO3exLY4=
-X-Received: by 2002:aa7:90cf:0:b029:156:2bff:5a87 with SMTP id
- k15-20020aa790cf0000b02901562bff5a87mr429693pfk.63.1602605855902; Tue, 13 Oct
- 2020 09:17:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201012170631.1241502-1-ujjwalkumar0501@gmail.com> <20201012170631.1241502-2-ujjwalkumar0501@gmail.com>
-In-Reply-To: <20201012170631.1241502-2-ujjwalkumar0501@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 14 Oct 2020 01:16:59 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQUXwH0KoNNQo9F1UCkkah2S1gJZKJFB1+91M3ZGSHQSQ@mail.gmail.com>
-Message-ID: <CAK7LNAQUXwH0KoNNQo9F1UCkkah2S1gJZKJFB1+91M3ZGSHQSQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] kconfig: use interpreters to invoke scripts
-To:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tue, 13 Oct 2020 12:18:38 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09DGI0xF029301;
+        Tue, 13 Oct 2020 11:18:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602605880;
+        bh=uB7tfsQ7VyKREysedNmTmoS1dzXtefnn5LzROwbyCc0=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=O2PaahNrpQ8AK6FvHL5mqgshIgpYOlE7iIzI2VtOts49fX6HiyadcNJKgaYTxmQd4
+         MeTt1l4CGMetafCt1fggchjONn5jnMViMuqV9dw9Llal1g8TeDCxUCGv1HrhqwJnw6
+         PZewCuKFKhMq9HBYJXPhwh6hAx89R9NCJvaRRpfk=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09DGI0tG001867
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 13 Oct 2020 11:18:00 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 13
+ Oct 2020 11:17:18 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 13 Oct 2020 11:17:18 -0500
+Received: from [10.250.67.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09DGHHmf075021;
+        Tue, 13 Oct 2020 11:17:17 -0500
+Subject: Re: [PATCH 1/6] dt-bindings: leds: choose correct color value of
+ multi-led
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        devicetree <devicetree@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
+ <20201013160845.1772-2-thunder.leizhen@huawei.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <1565f22c-7be9-e771-7def-afbb28ec07a7@ti.com>
+Date:   Tue, 13 Oct 2020 11:17:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20201013160845.1772-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 2:08 AM Ujjwal Kumar <ujjwalkumar0501@gmail.com> wrote:
+Zhen
+
+On 10/13/20 11:08 AM, Zhen Lei wrote:
+> The color value of multi-led is fixed to "const: 8 #LED_COLOR_ID_MULTI",
+> which is required by leds-class-multicolor.yaml.
 >
-> We cannot rely on execute bits to be set on files in the repository.
-> The build script should use the explicit interpreter when invoking any
-> script from the repository.
->
-> Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
-> Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
->
-> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
-
-
-
-The patch prefix 'kconfig:' should be used for changes
-under scripts/kconfig/.
-
-
-I want to see both prefixed with "kbuild:".
-
-1/2:   kbuild: use interpreters in Kconfig files to invoke scripts
-2/2:   kbuild: use interpreters in Makefiles to invoke scripts
-
-
-More preferably, those two patches should be squashed into a
-single patch titled "kbuild: use interpreters to invoke scripts"
-
-
-
-BTW, I notice some code left unconverted.
-
-For example,
-https://github.com/torvalds/linux/blob/master/init/Kconfig#L68
-https://github.com/torvalds/linux/blob/v5.9/certs/Makefile#L25
-
-Maybe more...
-
-
-
-I know it is difficult to cover everything, but please
-re-check the remaining code.
-
-
-
-
-
-
-
->  init/Kconfig | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>   Documentation/devicetree/bindings/leds/leds-lp55xx.yaml | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/init/Kconfig b/init/Kconfig
-> index c9446911cf41..8adf3194d26f 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -30,12 +30,12 @@ config CC_IS_GCC
->
->  config GCC_VERSION
->         int
-> -       default $(shell,$(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
-> +       default $(shell,$(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC)) if CC_IS_GCC
->         default 0
->
->  config LD_VERSION
->         int
-> -       default $(shell,$(LD) --version | $(srctree)/scripts/ld-version.sh)
-> +       default $(shell,$(LD) --version | $(AWK) -f $(srctree)/scripts/ld-version.sh)
->
->  config CC_IS_CLANG
->         def_bool $(success,echo "$(CC_VERSION_TEXT)" | grep -q clang)
-> @@ -45,20 +45,20 @@ config LD_IS_LLD
->
->  config CLANG_VERSION
->         int
-> -       default $(shell,$(srctree)/scripts/clang-version.sh $(CC))
-> +       default $(shell,$(CONFIG_SHELL) $(srctree)/scripts/clang-version.sh $(CC))
->
->  config CC_CAN_LINK
->         bool
-> -       default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
-> -       default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag))
-> +       default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag)) if 64BIT
-> +       default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag))
->
->  config CC_CAN_LINK_STATIC
->         bool
-> -       default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
-> -       default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
-> +       default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
-> +       default $(success,$(CONFIG_SHELL) $(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
->
->  config CC_HAS_ASM_GOTO
-> -       def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
-> +       def_bool $(success,$(CONFIG_SHELL) $(srctree)/scripts/gcc-goto.sh $(CC))
->
->  config CC_HAS_ASM_GOTO_OUTPUT
->         depends on CC_HAS_ASM_GOTO
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201012170631.1241502-2-ujjwalkumar0501%40gmail.com.
+> diff --git a/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+> index 58e974793a7976b..cd877e817ad1a1c 100644
+> --- a/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+> +++ b/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+> @@ -197,7 +197,7 @@ examples:
+>                  #address-cells = <1>;
+>                  #size-cells = <0>;
+>                  reg = <0x2>;
+> -               color = <LED_COLOR_ID_RGB>;
+> +               color = <LED_COLOR_ID_MULTI>;
+>                  function = LED_FUNCTION_STANDBY;
+>                  linux,default-trigger = "heartbeat";
+>   
 
+This is not correct.  ID_RGB is the correct variable here.
 
+https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/commit/?h=for-next&id=3d93edc77515c6f51fa9bbbe2185e2ec32bad024
 
--- 
-Best Regards
-Masahiro Yamada
+Correct fix is to update the leds-class-multicolor.yaml
+
+Dan
+
