@@ -2,132 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC82028D5A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF4D28D5B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgJMUpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 16:45:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:25495 "EHLO mga06.intel.com"
+        id S1727932AbgJMUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:46:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726186AbgJMUpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 16:45:41 -0400
-IronPort-SDR: mZwOtv67dqEBiGSFiQA1HH+52lu+XaatUyCHIwsEsQTVZco3BYJgpnR1BKZGjgtQ13OuzxqNuP
- qfsJLET/T3+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="227623788"
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="227623788"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 13:45:38 -0700
-IronPort-SDR: 9cNNwyFW01V43IRpBEA5F+eU6gGnvdaUqvIfWWDJoXczsQwSY988pJwnA1f05GwG/v1vkNjadd
- aJS/wzoBibsg==
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="530558193"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 13:45:37 -0700
-Date:   Tue, 13 Oct 2020 13:45:37 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Kexec Mailing List <kexec@lists.infradead.org>,
-        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-efi <linux-efi@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
-        target-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-afs@lists.infradead.org,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        linux-cachefs@redhat.com, samba-technical@lists.samba.org,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
-Message-ID: <20201013204537.GH2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-34-ira.weiny@intel.com>
- <CAPcyv4gL3jfw4d+SJGPqAD3Dp4F_K=X3domuN4ndAA1FQDGcPg@mail.gmail.com>
- <20201013193643.GK20115@casper.infradead.org>
+        id S1727397AbgJMUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 16:46:14 -0400
+Received: from coco.lan (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A34220878;
+        Tue, 13 Oct 2020 20:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602621973;
+        bh=3ApEKt0+9kZ4IhsU+7nj2jOoMK/qjUd5zeELYHUzVq8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ku0ra5WvDYWyqb8GnTCE7GaYItgoQaFxgtVOCIdaVX3aNVUwJTlsD4UopO6VkrWff
+         TeiTqe+HFvXQsleMtPC1wvwKTPtEfdfBMOja08rKjg5oET76aYazFOqtKztZaV95JP
+         21DC9p+X9K7XURU3/XcManTFm50SveGkDTl5RzIE=
+Date:   Tue, 13 Oct 2020 22:46:08 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v6 70/80] rcu/tree: docs: document bkvcache new members
+ at struct kfree_rcu_cpu
+Message-ID: <20201013224608.30dd1bc9@coco.lan>
+In-Reply-To: <20201013163404.GP3249@paulmck-ThinkPad-P72>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+        <6dd0804d6fd567f11e4c6efb767e91acca659d1f.1602589096.git.mchehab+huawei@kernel.org>
+        <20201013163404.GP3249@paulmck-ThinkPad-P72>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013193643.GK20115@casper.infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 08:36:43PM +0100, Matthew Wilcox wrote:
-> On Tue, Oct 13, 2020 at 11:44:29AM -0700, Dan Williams wrote:
-> > On Fri, Oct 9, 2020 at 12:52 PM <ira.weiny@intel.com> wrote:
-> > >
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > >
-> > > The kmap() calls in this FS are localized to a single thread.  To avoid
-> > > the over head of global PKRS updates use the new kmap_thread() call.
-> > >
-> > > Cc: Nicolas Pitre <nico@fluxnic.net>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > ---
-> > >  fs/cramfs/inode.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> > > index 912308600d39..003c014a42ed 100644
-> > > --- a/fs/cramfs/inode.c
-> > > +++ b/fs/cramfs/inode.c
-> > > @@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
-> > >                 struct page *page = pages[i];
-> > >
-> > >                 if (page) {
-> > > -                       memcpy(data, kmap(page), PAGE_SIZE);
-> > > -                       kunmap(page);
-> > > +                       memcpy(data, kmap_thread(page), PAGE_SIZE);
-> > > +                       kunmap_thread(page);
+Em Tue, 13 Oct 2020 09:34:04 -0700
+"Paul E. McKenney" <paulmck@kernel.org> escreveu:
+
+> On Tue, Oct 13, 2020 at 01:54:25PM +0200, Mauro Carvalho Chehab wrote:
+> > Changeset 53c72b590b3a ("rcu/tree: cache specified number of objects")
+> > added new members for struct kfree_rcu_cpu, but didn't add the
+> > corresponding at the kernel-doc markup, as repoted when doing
+> > "make htmldocs":
+> > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'bkvcache' not described in 'kfree_rcu_cpu'
+> > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'nr_bkv_objs' not described in 'kfree_rcu_cpu'
 > > 
-> > Why does this need a sleepable kmap? This looks like a textbook
-> > kmap_atomic() use case.
+> > So, move the description for bkvcache to kernel-doc, and add a
+> > description for nr_bkv_objs.
+> > 
+> > Fixes: 53c72b590b3a ("rcu/tree: cache specified number of objects")
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
 > 
-> There's a lot of code of this form.  Could we perhaps have:
-> 
-> static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
-> {
-> 	char *vto = kmap_atomic(to);
-> 
-> 	memcpy(vto, vfrom, size);
-> 	kunmap_atomic(vto);
-> }
-> 
-> in linux/highmem.h ?
+> Queued for review and testing, likely target v5.11.
 
-Christoph had the same idea.  I'll work on it.
+Hi Paul,
 
-Ira
+I would prefer if we could get those on 5.10, if possible.
+We're aiming to have 5.10 free of docs warnings ;-)
 
+If you prefer, I can send those patches to Linus with your
+ack.
+
+Regards,
+Mauro
+
+> 
+> 							Thanx, Paul
+> 
+> > ---
+> >  kernel/rcu/tree.c | 14 ++++++--------
+> >  1 file changed, 6 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index f78ee759af9c..03c54c3478b7 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3022,6 +3022,12 @@ struct kfree_rcu_cpu_work {
+> >   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+> >   * @initialized: The @rcu_work fields have been initialized
+> >   * @count: Number of objects for which GP not started
+> > + * @bkvcache:
+> > + *	A simple cache list that contains objects for reuse purpose.
+> > + *	In order to save some per-cpu space the list is singular.
+> > + *	Even though it is lockless an access has to be protected by the
+> > + *	per-cpu lock.
+> > + * @nr_bkv_objs: number of allocated objects at @bkvcache.
+> >   *
+> >   * This is a per-CPU structure.  The reason that it is not included in
+> >   * the rcu_data structure is to permit this code to be extracted from
+> > @@ -3037,14 +3043,6 @@ struct kfree_rcu_cpu {
+> >  	bool monitor_todo;
+> >  	bool initialized;
+> >  	int count;
+> > -
+> > -	/*
+> > -	 * A simple cache list that contains objects for
+> > -	 * reuse purpose. In order to save some per-cpu
+> > -	 * space the list is singular. Even though it is
+> > -	 * lockless an access has to be protected by the
+> > -	 * per-cpu lock.
+> > -	 */
+> >  	struct llist_head bkvcache;
+> >  	int nr_bkv_objs;
+> >  };
+> > -- 
+> > 2.26.2
+> >   
+
+
+
+Thanks,
+Mauro
