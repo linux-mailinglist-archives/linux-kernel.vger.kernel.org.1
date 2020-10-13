@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233DA28CA57
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2597E28CA5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403900AbgJMIgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
+        id S2403910AbgJMIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403873AbgJMIgt (ORCPT
+        with ESMTP id S1728702AbgJMIhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:36:49 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB247C0613D0;
-        Tue, 13 Oct 2020 01:36:48 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y12so17565595wrp.6;
-        Tue, 13 Oct 2020 01:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=NFgHTJDGAaoUGtS6KDLywzGQDD1dRCFwIz5+vO6WQ2U=;
-        b=mIZ8SF7dnY0vtR9MBXo5RBEZ6QyI7QE3y51/hFdH5ii9efEibnofweDN2HOiN8DALt
-         IVy3B3tRc/+5sfx2iCybcKzoh4oIUYljR+IQnFoffGSLFnXizOsp/mHVcylQRox+HNeE
-         L4vYZT7t/8eQ8tqd+77nXFHbbQlO4KEKhB92igdash0iQgfTe1pxYs6kk0Kih3GSJ8Zb
-         B68zEzPESYJB8UylI/wkZH5RVwONPAlrFTPPak3JDOoO0dQLU60ysGXqP6D+NwQJ5TKz
-         xyASO8UDdGC0POgBgZ1BIQ/btPTwYOffVVNr/Yg52pcDt0GMUKEYcqFuOpxGQN4Ya/Me
-         EIsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=NFgHTJDGAaoUGtS6KDLywzGQDD1dRCFwIz5+vO6WQ2U=;
-        b=a/a5zhUuLOQD9HugunbejqDI6vzw1RWuBQlFoPwKxTes1ty7Oy9Y1CaQf8vhywApzI
-         R7y3pMz0MI0tZiFQ9FaMVlVqkQN5bbZ2hn2q1iKCnDV6u+Oph5QjHH4boWRvDxPiNXFb
-         Sxe8RM2bp+UuqTzEzESJqe6xf3qiKWus4p2id8S1xZjdyPikKj5qWo/wHQjV5FyWO8mY
-         JKK1u+7n+6mf1Rl6tjLhujPsz9YMSlcsNqEvZpIXPpfXFMpdYT6l2UtHhW2gJ9l+SugK
-         niIxq68S8QcpRH9ZoBvC4IVD4CHdYBK24CeaG7svo0tO24YKL2yeGcD/hBi/Z471/iOM
-         dREA==
-X-Gm-Message-State: AOAM532feJjZi9TWlP/iP4fdBsr6RN0WSdsSD2W7V0zSXpv8EFGt52e1
-        Q6Rf/CeotJfKrpilCsW7qHU=
-X-Google-Smtp-Source: ABdhPJz52riMe2yauYB3XFkSeB7dj/Z8UH/Anz69G2LNz94UvnS48HHMWfnM4Xu76SDmf5KgNcxvCw==
-X-Received: by 2002:a5d:67d2:: with SMTP id n18mr25030984wrw.310.1602578207638;
-        Tue, 13 Oct 2020 01:36:47 -0700 (PDT)
-Received: from felia ([2001:16b8:2d05:8100:95ae:bd1a:3e4e:4242])
-        by smtp.gmail.com with ESMTPSA id u63sm26631531wmb.13.2020.10.13.01.36.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 01:36:46 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Tue, 13 Oct 2020 10:36:45 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Tue, 13 Oct 2020 04:37:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDB6C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:37:40 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kSFoH-0004G7-3T; Tue, 13 Oct 2020 10:37:29 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kSFoF-0005UK-Ab; Tue, 13 Oct 2020 10:37:27 +0200
+Date:   Tue, 13 Oct 2020 10:37:27 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-safety@lists.elisa.tech, linux-usb@vger.kernel.org
-Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
- find_tt() not returning error
-In-Reply-To: <CADVatmNcUzT6Df4+V7VdwO0AzZ=74Sai7X0aFpYU5SO7b2NVSg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2010131026590.14590@felia>
-References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu> <alpine.DEB.2.21.2010121659040.6487@felia> <20201012151816.GA1559916@kroah.com> <alpine.DEB.2.21.2010122022250.17866@felia>
- <20201013052317.GB330398@kroah.com> <alpine.DEB.2.21.2010130725370.14590@felia> <CADVatmNcUzT6Df4+V7VdwO0AzZ=74Sai7X0aFpYU5SO7b2NVSg@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Jiri Slaby <jslaby@suse.com>, kbuild-all@lists.01.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>, kernel@pengutronix.de,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v8 3/3] leds: trigger: implement a tty trigger
+Message-ID: <20201013083727.bii6p6yhdh53zbko@pengutronix.de>
+References: <20201012123358.1475928-4-u.kleine-koenig@pengutronix.de>
+ <202010122255.mTooYoPh-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cnr3vbqepw63ca5h"
+Content-Disposition: inline
+In-Reply-To: <202010122255.mTooYoPh-lkp@intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--cnr3vbqepw63ca5h
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 13 Oct 2020, Sudip Mukherjee wrote:
+Hello,
 
-> Hi Lukas,
-> 
-> On Tue, Oct 13, 2020 at 6:37 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> >
-> >
-> >
-> > On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
-> >
-> > > On Mon, Oct 12, 2020 at 08:25:30PM +0200, Lukas Bulwahn wrote:
-> > > >
-> > > >
-> > > > On Mon, 12 Oct 2020, Greg Kroah-Hartman wrote:
-> > > >
-> > > > > On Mon, Oct 12, 2020 at 05:10:21PM +0200, Lukas Bulwahn wrote:
-> > > > > > And for the static analysis finding, we need to find a way to ignore this
-> > > > > > finding without simply ignoring all findings or new findings that just
-> > > > > > look very similar to the original finding, but which are valid.
-> > > > >
-> <snip>
-> > >
-> > > Why not fix the things that it finds that are actually issues?  If there
-> > > are no actual issues found, then perhaps you should use a better tool?  :)
-> > >
-> >
-> > Completely agree. That is why I was against adding comments here and
-> > elsewhere just to have the "good feeling of doing something" after the
-> > tool reported a warning and we spend some time understanding the code to
-> > conclude that we now understand the code better than the tool.
-> 
-> I think you are missing the point here. I sent the comment not because
-> of any tool, I sent it because the code there was not that simple like
-> other drivers and at a first glance its not apparent why there are no
-> error checks. And, afaik, the only purpose of comments is to make the
-> source code easier to understand.
->
+On Mon, Oct 12, 2020 at 10:16:59PM +0800, kernel test robot wrote:
+> Hi "Uwe,
 
-That is fine. I think it is good to add comments to make the code more 
-understandable.
+I love your test report! Perhaps something to improve: The parser of the
+=46rom: line should drop the " :-)
 
-Lukas
+>    drivers/leds/trigger/ledtrig-tty.c: In function 'ledtrig_tty_work':
+> >> drivers/leds/trigger/ledtrig-tty.c:92:7: warning: variable 'firstrun' =
+set but not used [-Wunused-but-set-variable]
+>       92 |  bool firstrun =3D false;
+>          |       ^~~~~~~~
+
+Indeed, this line should just be dropped. I won't resend yet, waiting
+for some feedback first and assuming reviewers are able to interpolate
+how v9 will look like :-)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--cnr3vbqepw63ca5h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+FZ0QACgkQwfwUeK3K
+7AlByQf/QetryfgvRVepJCPyfH15sS5n6kVfHoQRw59sz8GlbqraBNtO/mF6+UWx
+U4AhTHha/Da1T97IfvJFglYMj0j/MJnWMUvN++tk2LGF2pOYhW8sxixHihHjhGvH
+9zaE/1hPU96onIA7MCoi5DN1EOlEKVHQCgtoUWODYjB4JaaoJn9sUxwF8+mab2Au
+49H7rauA8Uu7F1mU8eBrbo+Jyo40rXeCpF7gmq2D/T454+2zpTfSo/Cg65Ot6faH
+OODgcnxIzA+OS02XJphoAvbPfa0gvnY5LEoj5Wcpw9Ten+azeB+gSFBmULItMlLH
+mtfb9jHM7E9W6HJ0P8aCzhur7fT7fQ==
+=JlDd
+-----END PGP SIGNATURE-----
+
+--cnr3vbqepw63ca5h--
