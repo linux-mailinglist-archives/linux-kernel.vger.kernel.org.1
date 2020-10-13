@@ -2,155 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8455128D311
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0076628D314
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgJMRWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 13:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJMRWp (ORCPT
+        id S1729993AbgJMRXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:23:10 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:45302 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJMRXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:22:45 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F446C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:22:45 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id s1so404505qvq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=ljkCIQrwrjsGy0cTJoQSe2caDNaXNxndtQSxnTEHTS4=;
-        b=BKuOba0LLtscjZtPuBYP4WXvOyvG/bSv+0NGruQNLLHY71uSi0QBsSJschwv1erfrn
-         plbRPvm6XWLdju+9q1V/WNG0LphZYwUqUjHxmLBakesLvmxjn3yQ9ZttJ4RcDt61mYyp
-         MPBzOtiQREz9JVR9aFcec2vAV/6/C8gaMpRSnGKMfcQ/pFxsRh+fZYp2skY/i7KkM4cc
-         uoTrZBKGpyTaPsyEF+F4qTmnBrUw6e4IxPXoEoSnvSysUJkXhvoaSR4In+UAKc9UePHx
-         Z4GbUq36yG6mE10NAS98aNlVTGfrUmUHvHV4Vq2YzRUjymIkyxsezvWVDTPIqmbKlYrJ
-         To6Q==
+        Tue, 13 Oct 2020 13:23:09 -0400
+Received: by mail-ot1-f67.google.com with SMTP id f37so714662otf.12;
+        Tue, 13 Oct 2020 10:23:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=ljkCIQrwrjsGy0cTJoQSe2caDNaXNxndtQSxnTEHTS4=;
-        b=DMqOoWuJKGNGQDhhH/K5O1g7/pHTCdNGIkvCKP8NAyTTTXe+8D9raItsab0HWSupvt
-         R8XJ9hEJILP5kJYMaKCALmLKk5+Fye8hXzZ7WbkGvkZr1qn5+ypSlOkJ67Iy3WLk+Aaw
-         JUuNh6jA+qLm1Ly6V5PkF0qitfhrgU6senrWSerr33s2Eqmyk9dWjPP0jQc7KRpKERID
-         sllVhdVLwhISFObU8TcqwGizTOY93MaI4QZabkHoYwlxw+omLi7CJM50uw6qtkUQqQoi
-         sKNsPQ6Xnaq690WJeK/rqAZU4IwsDOj4WRr6c5RHfysfYqk7eaXMLIjuS0pNWfrxQI2l
-         /OvQ==
-X-Gm-Message-State: AOAM531WQN9ckUYaOuSHjGGC1M9E3qd5Qdk/jAdQVVp3PjudW+B9RRm1
-        NL4Yvxek7HLA2G9e0Lgo5hEurY/D9ZWYK80=
-X-Google-Smtp-Source: ABdhPJwOYz0tBvfJQWBtJ+py1RvlZXpskuwJH022we9jVgVviHz7OnEEQUQ17BRNuoLLBOZH7eG/m1s/P75r2UI=
-Sender: "oceanchen via sendgmr" <oceanchen@oceanchen.tao.corp.google.com>
-X-Received: from oceanchen.tao.corp.google.com ([2401:fa00:fd:2:3e52:82ff:fe5e:f3ed])
- (user=oceanchen job=sendgmr) by 2002:a0c:8c4c:: with SMTP id
- o12mr671849qvb.46.1602609764207; Tue, 13 Oct 2020 10:22:44 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 01:22:40 +0800
-Message-Id: <20201013172240.251899-1-oceanchen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH] f2fs_io: add erase option
-From:   Ocean Chen <oceanchen@google.com>
-To:     jaegeuk@kernel.org, yuchao0@huawei.com,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Cc:     oceanchen@google.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iK2FTKsI0wzDdbNjBagNnP/xaFtyfckNyRqgclbVTWg=;
+        b=jU6GFTh0KEqdRXDMfD+Jkw0bLY5lI5zfM7cYgp11p56/T5PX4FtQVn5sWYrHr1pWsd
+         D7bD/Sb81o9SK6Gjh0yqygXy5qBSUyW8H0T26ZQNNfDmAbDdzB4D8hdon6usDXtQwX1N
+         MZ/yoSkxMLzNcRQHngbW+eCNnFkWNwUuEqYUEYWCF/j3MsvGEraeczJwlcQLppu8IX9S
+         S0WBx2OEW1hZxkEEfH3KyHsexG3vV7c4SYzwhdIWMT6jgyWnP1Z/cDv8nEEmEadmKwJC
+         7v/hit1o3GN4yp9kcRihvY2NxNfvB7eghbqOOdOmbE7XKreOMefgfnFp2vYR98KoZhF1
+         XaxA==
+X-Gm-Message-State: AOAM530n1Zg7Hfg3vk02CIbFUCh/y9uvSZIqwKOu9t/RFbFjlqJJg7sm
+        l5k38ofj5qreI+OLOnk1xg==
+X-Google-Smtp-Source: ABdhPJxkI0Rvsj9nl8pA5tBEGfyLhSNzxuNulv+p19yYc67ogGvyLorOdLtkQDe+h9pS1sQekXnZrA==
+X-Received: by 2002:a9d:5547:: with SMTP id h7mr540779oti.248.1602609788809;
+        Tue, 13 Oct 2020 10:23:08 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m23sm184639ooq.30.2020.10.13.10.23.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 10:23:08 -0700 (PDT)
+Received: (nullmailer pid 3727812 invoked by uid 1000);
+        Tue, 13 Oct 2020 17:23:07 -0000
+Date:   Tue, 13 Oct 2020 12:23:07 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Kathiravan T <kathirav@codeaurora.org>
+Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, linux-mtd@lists.infradead.org, vigneshr@ti.com,
+        peter.ujfalusi@ti.com, linux-arm-msm@vger.kernel.org,
+        miquel.raynal@bootlin.com, devicetree@vger.kernel.org,
+        richard@nod.at, sivaprak@codeaurora.org,
+        boris.brezillon@collabora.com
+Subject: Re: [PATCH 1/3] dt-bindings: qcom_nandc: IPQ6018 QPIC NAND
+ documentation
+Message-ID: <20201013172307.GA3727764@bogus>
+References: <1602566124-13456-1-git-send-email-kathirav@codeaurora.org>
+ <1602566124-13456-2-git-send-email-kathirav@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602566124-13456-2-git-send-email-kathirav@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-f2fs_io erase [block_device_path]
+On Tue, 13 Oct 2020 10:45:22 +0530, Kathiravan T wrote:
+> Add the binding for the QPIC NAND used on IPQ6018 SoC.
+> 
+> Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Signed-off-by: Ocean Chen <oceanchen@google.com>
----
- tools/f2fs_io/f2fs_io.c | 53 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 52 insertions(+), 1 deletion(-)
-
-diff --git a/tools/f2fs_io/f2fs_io.c b/tools/f2fs_io/f2fs_io.c
-index 1ca82f1..cef32b1 100644
---- a/tools/f2fs_io/f2fs_io.c
-+++ b/tools/f2fs_io/f2fs_io.c
-@@ -24,13 +24,13 @@
- #include <getopt.h>
- #include <inttypes.h>
- #include <limits.h>
-+#include <linux/fs.h>
- #include <signal.h>
- #include <stdarg.h>
- #include <stdbool.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <string.h>
--#include <string.h>
- #include <sys/mman.h>
- #include <sys/sendfile.h>
- #include <sys/stat.h>
-@@ -432,6 +432,56 @@ static void do_fallocate(int argc, char **argv, const struct cmd_desc *cmd)
- 	exit(0);
- }
- 
-+#define erase_desc "erase a block device"
-+#define erase_help				\
-+"f2fs_io erase [block_device_path]\n\n"		\
-+"Send DISCARD | BLKSECDISCARD comamnd to"	\
-+"block device in block_device_path\n"		\
-+
-+static void do_erase(int argc, char **argv, const struct cmd_desc *cmd)
-+{
-+	int fd, ret;
-+	struct stat st;
-+	u64 range[2];
-+
-+	if (argc != 2) {
-+		fputs("Excess arguments\n\n", stderr);
-+		fputs(cmd->cmd_help, stderr);
-+		exit(1);
-+	}
-+
-+	if (stat(argv[1], &st) != 0) {
-+		fputs("stat error\n", stderr);
-+		exit(1);
-+	}
-+
-+	if (!S_ISBLK(st.st_mode)) {
-+		fputs(argv[1], stderr);
-+		fputs(" is not a block device\n", stderr);
-+		exit(1);
-+	}
-+
-+	fd = xopen(argv[1], O_WRONLY, 0);
-+
-+	range[0] = 0;
-+	ret = ioctl(fd, BLKGETSIZE64, &range[1]);
-+	if (ret < 0) {
-+		fputs("get size failed\n", stderr);
-+		exit(1);
-+	}
-+
-+	ret = ioctl(fd, BLKSECDISCARD, &range);
-+	if (ret < 0) {
-+		ret = ioctl(fd, BLKDISCARD, &range);
-+		if (ret < 0) {
-+			fputs("Discard failed\n", stderr);
-+			exit(1);
-+		}
-+	}
-+
-+	exit(0);
-+}
-+
- #define write_desc "write data into file"
- #define write_help					\
- "f2fs_io write [chunk_size in 4kb] [offset in chunk_size] [count] [pattern] [IO] [file_path]\n\n"	\
-@@ -951,6 +1001,7 @@ const struct cmd_desc cmd_list[] = {
- 	CMD(shutdown),
- 	CMD(pinfile),
- 	CMD(fallocate),
-+	CMD(erase),
- 	CMD(write),
- 	CMD(read),
- 	CMD(randread),
--- 
-2.28.0.1011.ga647a8990f-goog
-
+Acked-by: Rob Herring <robh@kernel.org>
