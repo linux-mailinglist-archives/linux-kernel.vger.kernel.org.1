@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6717528C79C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2059B28C7A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730051AbgJMDie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 23:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
+        id S1730566AbgJMDlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 23:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgJMDid (ORCPT
+        with ESMTP id S1727831AbgJMDlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 23:38:33 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66BCEC0613D0;
-        Mon, 12 Oct 2020 20:38:33 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9LqM62qzz9sT6;
-        Tue, 13 Oct 2020 14:38:23 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602560310;
-        bh=7Q6dHh5rKb36dYWMn1hj4Ipq04e2RltnH6fkbGLEdVo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Psw6dOKcwb8yxK40PZXIxg2bQEvdeRCxC6qojimrDEiFhRAEprYBIOZS+MwwlYB1J
-         4wlF6FkdL8h3rb52Kt6BEBKuaSFAXtzzaGFljFhhSX/ya7ixD+EfS11vZQzHljW6LQ
-         +HmNJO6mCPeJqHbJycmVX5ZIxFEhDwrPahOcMCVbD+zfmJZdOZy2S46fj9PQB3ZBk+
-         mTWjPgpfG19MBe4dEEORJkE8iydx1/WhePt/UEKRvOm3Wmsw4OnIFTIuhh7YdB1T1o
-         DPqhKJi2ggVohlZmYGsKeyUwk1Z31OuQA/KxnwIrEvrUthyJkSKd2Vhocyxqot9RDs
-         arKhsj012T/Mw==
-Date:   Tue, 13 Oct 2020 14:38:23 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jacob Pan <jacob.pan.linux@gmail.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Liu Yi L <yi.l.liu@intel.com>
-Subject: Re: linux-next: manual merge of the tip tree with the iommu tree
-Message-ID: <20201013143823.09c4ccf8@canb.auug.org.au>
-In-Reply-To: <20201002152224.3077f9f8@canb.auug.org.au>
-References: <20201002152224.3077f9f8@canb.auug.org.au>
+        Mon, 12 Oct 2020 23:41:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB81C0613D0;
+        Mon, 12 Oct 2020 20:41:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g29so16588884pgl.2;
+        Mon, 12 Oct 2020 20:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QnFBf559stGtGycK6x7rPCyISX6Wjd0zGUVwkdWXItY=;
+        b=Ic1DgpAtmYSK3H9X+FshZNBMed9A+u0Is3uJTYQoFwqpNo+dm0KU8kCJcTVb8aijJO
+         NK36xXlolH80VTP3ZdEXEWliYUj/9+t2Al50Q3uN68xRJyGb4Hnw71fxBsLcxJX5ACDc
+         +N0zKKQhQUq0Jri3ZDZC/DfQVsd7rFWFRxRjkXjtqqfEdZM+u5Y70pVzCHx/WRj/Fd1A
+         NHuc7y6eYwfORXPksrbbGewbaU6JWX0HDs3jcQC1l1Bdyrqjzdyy3DaEl3vfo1j7pqEt
+         ooz3ezPuNcvKFoxUGKoMKRGFTITVvudk3ZNtOf/O4Gpk1ymVmXzLMMu+IblYmQn4G4pp
+         7C1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QnFBf559stGtGycK6x7rPCyISX6Wjd0zGUVwkdWXItY=;
+        b=cWN7h3GdP3qEiT+8E7n5nUoC5r/YX89SJnGJ+SYzkMuBaPFhM0VUP543lguhLK7k+S
+         P8wvz8d3ODZ5/yDbMWB8EXYztGMp1nbAL80gI8r0Fv/AQwSxs4DAMHFoUZ1PlM2n3EgE
+         mEQIPYnTT875A2MM6br8sz0zee+KEYECkcKDN+8vnSi+Yx5exSvviR+H/3xNgWLlHAbS
+         S/uSKocYgpJf5gVU0cFSRMJvuD7lqut7kIG6PcqQrRyJDIknBtbm8LaUcE51pkLeubZL
+         bVRlUPt8bVFSgybHcXVdIhSN7vum2Ovyy8Bc8b6kp1PpkA9RGdXEsP5vsivIimpBZGDF
+         KolQ==
+X-Gm-Message-State: AOAM531mgzomrEibww19ZWgqier5D/D7JT7dz+8QNmsU/OvUwaIZ9jUx
+        dOQCZViQHqdZWkh3NbHzAOCJhNFR/4o=
+X-Google-Smtp-Source: ABdhPJyGwYce2sNmmbxXit4l2re9HBR70WjzKY24wEySbkGo9wMoKKJVaEd2pbN7PkAVsKz3HH/ksQ==
+X-Received: by 2002:a17:90a:62c5:: with SMTP id k5mr23551844pjs.100.1602560479246;
+        Mon, 12 Oct 2020 20:41:19 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:45e1:2200::1])
+        by smtp.gmail.com with ESMTPSA id b21sm13944484pfb.97.2020.10.12.20.41.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 20:41:18 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH] arm64: vdso32: Allow ld.lld to properly link the VDSO
+Date:   Mon, 12 Oct 2020 20:39:48 -0700
+Message-Id: <20201013033947.2257501-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7K9Y8T0hJXHA3Alfj6GYnPT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7K9Y8T0hJXHA3Alfj6GYnPT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+As it stands now, the vdso32 Makefile hardcodes the linker to ld.bfd
+using -fuse-ld=bfd with $(CC). This was taken from the arm vDSO
+Makefile, as the comment notes, done in commit d2b30cd4b722 ("ARM:
+8384/1: VDSO: force use of BFD linker").
 
-Hi all,
+Commit fe00e50b2db8 ("ARM: 8858/1: vdso: use $(LD) instead of $(CC) to
+link VDSO") changed that Makefile to use $(LD) directly instead of
+through $(CC), which matches how the rest of the kernel operates. Since
+then, LD=ld.lld means that the arm vDSO will be linked with ld.lld,
+which has shown no problems so far.
 
-On Fri, 2 Oct 2020 15:22:24 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Today's linux-next merge of the tip tree got a conflict in:
->=20
->   include/linux/iommu.h
->=20
-> between commits:
->=20
->   23cc3493b5e1 ("iommu/uapi: Rename uapi functions")
->   d90573812eea ("iommu/uapi: Handle data and argsz filled by users")
->=20
-> from the iommu tree and commit:
->=20
->   c7b6bac9c72c ("drm, iommu: Change type of pasid to u32")
->=20
-> from the tip tree.
->=20
-> I fixed it up (I used the former version) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
+Allow ld.lld to link this vDSO as we do the regular arm vDSO. To do
+this, we need to do a few things:
 
-This is now a conflict between the iommu tree and Linus' tree.
+* Add a LD_COMPAT variable, which defaults to $(CROSS_COMPILE_COMPAT)ld
+  with gcc and $(LD) if LLVM is 1, which will be ld.lld, or
+  $(CROSS_COMPILE_COMPAT)ld if not, which matches the logic of the main
+  Makefile. It is overrideable for further customization and avoiding
+  breakage.
 
---=20
-Cheers,
-Stephen Rothwell
+* Eliminate cc32-ldoption, which matches commit 055efab3120b ("kbuild:
+  drop support for cc-ldoption").
 
---Sig_/7K9Y8T0hJXHA3Alfj6GYnPT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+With those, we can use $(LD_COMPAT) in cmd_ldvdso and change the flags
+from compiler linker flags to linker flags directly. We eliminate
+-mfloat-abi=soft because it is not handled by the linker.
 
------BEGIN PGP SIGNATURE-----
+Link: https://github.com/ClangBuiltLinux/linux/issues/1033
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FIS8ACgkQAVBC80lX
-0GzIDAf/U50AodD0rWqY9ecDTxqrEPSmFoa+kZJGmnlmVZJ3IFrppebc1um7T32R
-5gBJPMit1oKX2ejhT2s2VbqBWThNoSDiETQVkNSWULejfCdMQ285yJn8PSSpFgaa
-66Ll8q+AFXQSwO/KH+4Tp/yETVKTIdwAldXRhxzAijhMdTWYAvnuWercb4W7Aa5T
-gIa5fgNs9D3Wn4vv5fU12Wn9H2P0vBuyz7lBLCe8DHCrLyo33AjTqf35dyG7Dhta
-OLRMZbhUSCgEHrshFNa9O62mbWrv58Ts86KTlGiBjRF4VaihGdXQxuoNZDZH8ilg
-r3LBFjfGCZtMtbwOM5NURxKwJ4QScg==
-=Why5
------END PGP SIGNATURE-----
+NOTE: This patch is currently based on the kbuild tree due to the
+--build-id -> --build-id=sha1 change that Bill did. If the arm64
+maintainers would prefer to take this patch, I can rebase it (althought
+presumably this won't hit mainline until at least 5.11 so it can
+probably just stay as is for now).
 
---Sig_/7K9Y8T0hJXHA3Alfj6GYnPT--
+ arch/arm64/kernel/vdso32/Makefile | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index 7f96a1a9f68c..1cf00c58805d 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -22,16 +22,21 @@ endif
+ 
+ CC_COMPAT ?= $(CC)
+ CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
++
++ifeq ($(LLVM),1)
++LD_COMPAT ?= $(LD)
++else
++LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)ld
++endif
+ else
+ CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
++LD_COMPAT ?= $(CROSS_COMPILE_COMPAT)ld
+ endif
+ 
+ cc32-option = $(call try-run,\
+         $(CC_COMPAT) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
+ cc32-disable-warning = $(call try-run,\
+ 	$(CC_COMPAT) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+-cc32-ldoption = $(call try-run,\
+-        $(CC_COMPAT) $(1) -nostdlib -x c /dev/null -o "$$TMP",$(1),$(2))
+ cc32-as-instr = $(call try-run,\
+ 	printf "%b\n" "$(1)" | $(CC_COMPAT) $(VDSO_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
+ 
+@@ -122,14 +127,10 @@ dmbinstr := $(call cc32-as-instr,dmb ishld,-DCONFIG_AS_DMB_ISHLD=1)
+ VDSO_CFLAGS += $(dmbinstr)
+ VDSO_AFLAGS += $(dmbinstr)
+ 
+-VDSO_LDFLAGS := $(VDSO_CPPFLAGS)
+ # From arm vDSO Makefile
+-VDSO_LDFLAGS += -Wl,-Bsymbolic -Wl,--no-undefined -Wl,-soname=linux-vdso.so.1
+-VDSO_LDFLAGS += -Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096
+-VDSO_LDFLAGS += -nostdlib -shared -mfloat-abi=soft
+-VDSO_LDFLAGS += -Wl,--hash-style=sysv
+-VDSO_LDFLAGS += -Wl,--build-id=sha1
+-VDSO_LDFLAGS += $(call cc32-ldoption,-fuse-ld=bfd)
++VDSO_LDFLAGS += -Bsymbolic --no-undefined -soname=linux-vdso.so.1
++VDSO_LDFLAGS += -z max-page-size=4096 -z common-page-size=4096
++VDSO_LDFLAGS += -nostdlib -shared --hash-style=sysv --build-id=sha1
+ 
+ 
+ # Borrow vdsomunge.c from the arm vDSO
+@@ -189,8 +190,8 @@ quiet_cmd_vdsold_and_vdso_check = LD32    $@
+       cmd_vdsold_and_vdso_check = $(cmd_vdsold); $(cmd_vdso_check)
+ 
+ quiet_cmd_vdsold = LD32    $@
+-      cmd_vdsold = $(CC_COMPAT) -Wp,-MD,$(depfile) $(VDSO_LDFLAGS) \
+-                   -Wl,-T $(filter %.lds,$^) $(filter %.o,$^) -o $@
++      cmd_vdsold = $(LD_COMPAT) $(VDSO_LDFLAGS) \
++                   -T $(filter %.lds,$^) $(filter %.o,$^) -o $@
+ quiet_cmd_vdsocc = CC32    $@
+       cmd_vdsocc = $(CC_COMPAT) -Wp,-MD,$(depfile) $(VDSO_CFLAGS) -c -o $@ $<
+ quiet_cmd_vdsocc_gettimeofday = CC32    $@
+
+base-commit: 172aad81a882443eefe1bd860c4eddc81b14dd5b
+-- 
+2.29.0.rc0
+
