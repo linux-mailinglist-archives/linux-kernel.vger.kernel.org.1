@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A04F28CE81
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E56828CE83
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgJMMkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:40:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:59354 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726636AbgJMMkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:40:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB9A81FB;
-        Tue, 13 Oct 2020 05:40:05 -0700 (PDT)
-Received: from e107158-lin (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FE4D3F719;
-        Tue, 13 Oct 2020 05:40:04 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 13:40:01 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     jun qian <qianjun.kernel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        will@kernel.org, luto@kernel.org, linux-kernel@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing
- loop
-Message-ID: <20201013124001.ivqr4exkidkkny3o@e107158-lin>
-References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
- <20200915115609.85106-5-qianjun.kernel@gmail.com>
- <878scz89tl.fsf@nanos.tec.linutronix.de>
- <20200925004207.GE19346@lenoir>
- <CAKc596Km6kjQcp2MJmH9BZLY_7i7yFmHDmRnaJGsm4WzUNjwaA@mail.gmail.com>
- <20200929114428.GA56480@lothringen>
- <20201009150139.vatmppe2e3cwtoof@e107158-lin.cambridge.arm.com>
- <20201013104357.GB47577@lothringen>
+        id S1727936AbgJMMkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgJMMkJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:40:09 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD804C0613D0;
+        Tue, 13 Oct 2020 05:40:09 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id n9so17457174pgf.9;
+        Tue, 13 Oct 2020 05:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IAvUP/SNXLFWxPseN2fkYDuXWsWTQevluoDNd3o/wiE=;
+        b=a+Je3JWpw3FL7os4ZqiD3XA9NL0oSpxM0YnjdnfgkgtJQLYJjWrN7QT1u9FfXXU8HE
+         ggrhutr+bnD3phA9Wd1Rqb8sOjd64N9OZrcKL8u0MI+W9ewmyNCmYKa6FbFOenT/IXjI
+         FIQtbvANvAMrmPUgeoeimxg0EF5D+PW79hLdGr1BP9/Quh8k4dlLZfNEFUXJREggJcHX
+         +L+uZR9LkgeItna44i0RCBqeyg1cVO10yNcZgeTwJq+RUWceVfkbwdo9EFYlSPSYwbu4
+         LVFwtpmRe/GP1BSylfjMC9GBoZkvD3wJkR1fAjjaUenF2g5yEoxSNT8qDPw35HfnKkEy
+         qsGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IAvUP/SNXLFWxPseN2fkYDuXWsWTQevluoDNd3o/wiE=;
+        b=PX5ltDAb43/xwFgL/Qgq0ZWkQ+u0k3rM1c/VMjYfWTPG0a++VehG/4u61/y7wdVDFw
+         RC/cX1ZWuntbgXKp6JiP/fWqXgqXAz1IWk1niK4x3HWzgt3AKavS3HKLNCzJu6rupDuL
+         6efzCvtKkgHV6jDZ/AflQ7ZasgkdjCfp4RL2EhuJsz5Okw5jIJKzYbR5I+Q7tghgX71w
+         VsmsxHDg8hbP4v+3MJtpfuL7j5NoPM+1nzqK7EEhYNRFNBeF3yK0uY1Zig9I2vPTmxuE
+         6OXAiCKBG6VpP9oGq/EzkS11GhO+z+AAPCFAs1nCMhy1HEeJywZTVo/9gbOkhxdXWXw/
+         qabQ==
+X-Gm-Message-State: AOAM53143FINPxEUxIFwsHcZEPQbmU8tHa3m6PJERBBGyWUpqMCdzyX/
+        ZPYOD8b4cMslv3VVQfeks1+i7BEIYNc=
+X-Google-Smtp-Source: ABdhPJxTBI8AyiLXFUzbUiJSkyZ9P2ttFTS6jansX6Tfmf13/pt+pyUqxOdHLiKIMveW1lByAO5sOg==
+X-Received: by 2002:a62:6082:0:b029:156:5cab:1bfc with SMTP id u124-20020a6260820000b02901565cab1bfcmr5081745pfb.69.1602592809338;
+        Tue, 13 Oct 2020 05:40:09 -0700 (PDT)
+Received: from hoboy (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id i7sm22277297pfo.208.2020.10.13.05.40.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 05:40:08 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 05:40:06 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     natechancellor@gmail.com, ndesaulniers@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] ptp: ptp_clockmatrix: initialize variables
+Message-ID: <20201013124006.GA10454@hoboy>
+References: <20201011200955.29992-1-trix@redhat.com>
+ <20201012220126.GB1310@hoboy>
+ <05da63b8-f1f5-9195-d156-0f2e7f3ea116@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201013104357.GB47577@lothringen>
+In-Reply-To: <05da63b8-f1f5-9195-d156-0f2e7f3ea116@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 12:43, Frederic Weisbecker wrote:
-> On Fri, Oct 09, 2020 at 04:01:39PM +0100, Qais Yousef wrote:
-> > On 09/29/20 13:44, Frederic Weisbecker wrote:
-> > > > that will delay the net_rx/tx softirq to process, Peter's branch
-> > > > maybe can slove
-> > > > the problem
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git core/softirq
-> > > 
-> > > It's probably also the right time for me to resume on this patchset:
-> > > 
-> > > https://lwn.net/Articles/779564/
-> > > 
-> > > In the long term this will allow us to have per vector threads that can be
-> > > individually triggered upon high loads, and even soft interruptible by
-> > > other vectors from irq_exit(). Also if several vectors are on high loads
-> > > at the same time, this leaves the balance decisions to the scheduler instead
-> > > of all these workarounds we scratch our heads on for several years now.
-> > > 
-> > > Besides, I'm convinced that splitting the softirqs is something we want in
-> > > the long run anyway.
-> > 
-> > So if I understood correctly we'll end up with a kthread for each softirq type
-> > that can be scheduled individually on any CPU following the 'normal' scheduler
-> > rules, correct?
-> > 
-> > If I got it right, I like that. I certainly think having these softirqs as RT
-> > threads (like irq threads) makes a lot more sense. At least one would be able
-> > to use priorities to reason about when it's okay to preempt them or not.
-> > 
-> > If I got it wrong, why we can't do that?
+On Mon, Oct 12, 2020 at 09:07:30PM -0700, Tom Rix wrote:
+> calling function is a print information only function that returns void.
+
+That is fine.
+
+> I do think not adding error handling is worth it.
 > 
-> We can't do that right away because some softirq vectors may rely on the
-> fact that they can't be interrupted by other softirq vectors. If they use
-> per cpu data, they can perfectly assume that it's locally softirq-safe
-> and not use any lock to protect it, provided the data is stricly per-cpu
-> of course.
-> 
-> So we'll need to check all the softirq handlers and make sure they don't
-> do such assumption, or fix the site. I can imagine it as an iterative
-> pushdown just like we did with the big kernel lock.
+> I could change the return and then the calls if if you like.
 
-Thanks Frederic. I know what to do in my free cycles now ;-)
+How about printing the version string when readable, and otherwise
+print an appropriate informative error message?
 
-FWIW, NAPI seems to have learnt the ability to use kthreads (in case you missed
-it)
-
-	https://lwn.net/Articles/833840/
-	https://lwn.net/ml/netdev/20201002222514.1159492-1-weiwan@google.com/
-
-Thanks
-
---
-Qais Yousef
+Thanks,
+Richard
