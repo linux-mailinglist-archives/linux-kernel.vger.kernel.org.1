@@ -2,134 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21E528CF82
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C0228CF84
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388056AbgJMNul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:50:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387949AbgJMNuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:50:40 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17F4F24770;
-        Tue, 13 Oct 2020 13:50:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602597040;
-        bh=ifE0Ha5o2XG4AKS/0u0N1d994tavHWMY4bLOdzKHqbM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Dw6Nvlaelu4WZC9bnk5H5VKQxCdOx0EqMkPeAAGhRvYvXkCnYp0xR8sX+QlaPNhEq
-         WXQ7PBh+Zn8Skv1OrHhiGbQRScHu6h9x86+JGZmdEGgn0UC4wgC4SRubRJHND65yvl
-         M0cOIUo70Th/S1pIBtnZQyA6X7exB0Aqzi0eM96g=
-Received: by mail-ot1-f46.google.com with SMTP id e20so18662894otj.11;
-        Tue, 13 Oct 2020 06:50:40 -0700 (PDT)
-X-Gm-Message-State: AOAM531BmjTDfcOvMMSXPEobG4ZXwKS3DIG1pJZlMHgoQmse5xk2QlAA
-        MGrdGFqPTc31nVd7eiaKc1S9Ev0KHQb+IEzZdg==
-X-Google-Smtp-Source: ABdhPJyy8pkBm/rH1RsgSNwitplg9Rb0bqHTBjDtl+Y96Z/jlmD7XWQdqpFugB9tRrh2WBnMNGylHAKIiG7F2DlEjX0=
-X-Received: by 2002:a9d:7993:: with SMTP id h19mr18816592otm.129.1602597039244;
- Tue, 13 Oct 2020 06:50:39 -0700 (PDT)
+        id S2387898AbgJMNx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727936AbgJMNx3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:53:29 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA13C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:53:28 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e18so24141293wrw.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CTB6OvgweI2R52tC86/g7f29zSqU9vcDSQYaOzrbBJA=;
+        b=CI7ZJcJmxE1tclSVzoOBMvHls7/4sOCvpghd5DRUHZMd2ZgZEXJraPWape9OEffDN7
+         WVeoV21hMblnQ9cz80CdMTf9KYNTjlS31/B9pPZTR26T2O6m2H5i7qnfxb5X0nTkGpUV
+         4vjmq0GkYY56WcIobZMsQSlzf6SbShK8E7NIZrHwXKCj2KzdzT4dfVeo4v8xoGGxlSFj
+         UcoH8U2znqqzjdw9JVmy74zYb4MX8g8ZGjtfQoa0T8MIqd/rmOsw076TocVyvTPO90Yc
+         RlKNgEg+YA6Titr11GpTA4C0rQNJpCX+mnt0dfSEJ9TqZF2OKfmkoJ1+IJQKv+zh9/Sk
+         jJaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CTB6OvgweI2R52tC86/g7f29zSqU9vcDSQYaOzrbBJA=;
+        b=A16Sv/cOZ+FbP+i9CZpTjTPwqhqRxYV/jk5gRckRxuOmpBjLfetjGHfSldUuv1bTdE
+         C1lBMDLyQskqG4UhSuJrL0chOS6nGDmEumC1G3YWG/YlH4liCYOGZfq1UmLjjn3E1yha
+         Ho78DwXUNshwNw6GzfDB2462Ky9JWzpLrNvmfUt1Ogsji7W8aySgJwwDWyBws2Dy0qwA
+         mvAASPFUOzuKM++BEv2ZH/WmLc+WVqyXt6gxJbnH7qom3dHEBd1HzB8SceaoqsctYrDl
+         n6W/k9mtl4C0/gxlvkJQTqI2nAmgcnm6YNBugT/hG6tEdBxuHAQpU30QrgJcHzK0oxOU
+         xQZQ==
+X-Gm-Message-State: AOAM530kW/Bykh+9pv4FGzd1L7NHjf8c1C7TtkmxVY/Vjs3z1zD60cIi
+        5/9O864CBNpqOH/Gc9W/n2TnWw==
+X-Google-Smtp-Source: ABdhPJw6Av1bSuxg1w5gOpe9G92yJ9ckRU8zFQzc8zsNahLtNfD86ENG0QiT+7kn4I62lUe3qU3blg==
+X-Received: by 2002:adf:979c:: with SMTP id s28mr36022446wrb.62.1602597207387;
+        Tue, 13 Oct 2020 06:53:27 -0700 (PDT)
+Received: from [192.168.1.8] (hst-221-88.medicom.bg. [84.238.221.88])
+        by smtp.googlemail.com with ESMTPSA id g14sm28510332wrx.22.2020.10.13.06.53.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 06:53:26 -0700 (PDT)
+Subject: Re: [PATCH] v4l: Add source change event for colorimetry
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>
+References: <20200702100017.24700-1-stanimir.varbanov@linaro.org>
+ <8dafbb4b-4626-5191-c57a-f3ef19c14618@linaro.org>
+ <d11da037-92e5-2ee7-8723-10162d16eba9@linaro.org>
+ <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <7db412a2-8fd3-6657-4fcd-1fbfde4b2c0e@linaro.org>
+Date:   Tue, 13 Oct 2020 16:53:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-4-badhri@google.com>
- <20201005144618.GA154206@bogus> <CAPTae5+e74k22Vcf-cnFLFGnR-mBdb9qvN6i-E-31VexhpUSeA@mail.gmail.com>
- <CAL_JsqLqs2qZqwmCOMgCeiGsw4Hj2xMAbRYqWCphH92+8T6qUg@mail.gmail.com>
-In-Reply-To: <CAL_JsqLqs2qZqwmCOMgCeiGsw4Hj2xMAbRYqWCphH92+8T6qUg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 13 Oct 2020 08:50:28 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+bhEKGXoObGWbWw=1KQAovyJgvvfJe+=n7829HhKmmSw@mail.gmail.com>
-Message-ID: <CAL_Jsq+bhEKGXoObGWbWw=1KQAovyJgvvfJe+=n7829HhKmmSw@mail.gmail.com>
-Subject: Re: [PATCH v9 03/15] dt-bindings: usb: Maxim type-c controller device
- tree binding document
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        USB <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 8:43 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Oct 7, 2020 at 7:43 PM Badhri Jagan Sridharan <badhri@google.com> wrote:
-> >
-> > Hi Robb,
-> >
-> > Thanks for the reviews ! Responses inline.
-> >
-> > Regards,
-> > Badhri
-> >
-> > On Mon, Oct 5, 2020 at 7:46 AM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Mon, Sep 28, 2020 at 07:39:52PM -0700, Badhri Jagan Sridharan wrote:
-> > > > Add device tree binding document for Maxim TCPCI based Type-C chip driver
-> > > >
-> > > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > > > ---
-> > > > Changes since v1:
-> > > > - Changing patch version to v6 to fix version number confusion.
-> > > >
-> > > > Changes since v6:
-> > > > - Migrated to yaml format.
-> > > >
-> > > > Changes since v7:
-> > > > - Rebase on usb-next
-> > > >
-> > > > Changes since v8:
-> > > > - Fix errors from make dt_binding_check as suggested by
-> > > >   Rob Herring.
-> > > > ---
-> > > >  .../devicetree/bindings/usb/maxim,tcpci.yaml  | 68 +++++++++++++++++++
-> > > >  1 file changed, 68 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..f4b5f1a09b98
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
-> > > > @@ -0,0 +1,68 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: "http://devicetree.org/schemas/usb/maxim,tcpci.yaml#"
-> > > > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > > > +
-> > > > +title: Maxim TCPCI Type-C PD controller DT bindings
-> > > > +
-> > > > +maintainers:
-> > > > +  - Badhri Jagan Sridharan <badhri@google.com>
-> > > > +
-> > > > +description: Maxim TCPCI Type-C PD controller
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    enum:
-> > > > +      - maxim,tcpci
-> > >
-> > > Is there a datasheet for this? Searching for 'tcpci' doesn't really come
-> > > up with anything other than this patch. Only chip I found is MAX77958.
-> > > Bindings are for specific h/w devices.
-> >
-> > Unfortunately the datasheet cannot be made public yet. Has the datasheet
-> > have to be made public before sending the bindings ?
->
-> No, but we need a part number or some assurance that 'tcpci' is a specific part.
 
-I guess TCPCI is USB Type-C Port Controller Interface Specification.
 
-That's just a protocol definition, not a chip. DT describes h/w which
-is more than just the protocol.
+On 10/13/20 4:40 PM, Tomasz Figa wrote:
+> On Tue, Oct 13, 2020 at 11:03 AM Stanimir Varbanov
+> <stanimir.varbanov@linaro.org> wrote:
+>>
+>> Hi,
+>>
+>> On 7/2/20 2:52 PM, Stanimir Varbanov wrote:
+>>> Hi,
+>>>
+>>> Once we have this event there is still open question how the client will
+>>> know the data buffer on which the new colorspace is valid/applied.
+>>>
+>>> The options could be:
+>>>  * a new buffer flag and
+>>>  * some information in the v4l2_event structure.
+>>>
+>>> Thoughts?
+>>
+>> Kindly ping.
+>>
+> 
+> The event itself sounds good to me, but how do we know which buffer is
+> the first to have the new colorimetry?
 
-Rob
+I think Hans have a very good idea to have width/height and colorspace
+specifiers in v4l2_ext_buffer [1].
+
+[1] https://lkml.org/lkml/2020/9/9/531
+
+> 
+> Best regards,
+> Tomasz
+> 
+>>>
+>>> On 7/2/20 1:00 PM, Stanimir Varbanov wrote:
+>>>> This event indicate that the source colorspace is changed
+>>>> during run-time. The client has to retrieve the new colorspace
+>>>> identifiers by getting the format (G_FMT).
+>>>>
+>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>>> ---
+>>>>  .../userspace-api/media/v4l/vidioc-dqevent.rst        | 11 ++++++++++-
+>>>>  .../userspace-api/media/videodev2.h.rst.exceptions    |  1 +
+>>>>  include/uapi/linux/videodev2.h                        |  1 +
+>>>>  3 files changed, 12 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+>>>> index a9a176d5256d..3f69c753db58 100644
+>>>> --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
+>>>> @@ -381,7 +381,16 @@ call.
+>>>>      that many Video Capture devices are not able to recover from a temporary
+>>>>      loss of signal and so restarting streaming I/O is required in order for
+>>>>      the hardware to synchronize to the video signal.
+>>>> -
+>>>> +    * - ``V4L2_EVENT_SRC_CH_COLORIMETRY``
+>>>> +      - 0x0002
+>>>> +      - This event gets triggered when a colorspace change is detected at
+>>>> +    an input. By colorspace change here we include also changes in the
+>>>> +    colorspace specifiers (transfer function, Y'CbCr encoding and
+>>>> +    quantization). This event can come from an input or from video decoder.
+>>>> +    Once the event has been send to the client the driver has to update
+>>>> +    the colorspace specifiers internally so that they could be retrieved by
+>>>> +    client. In that case queue re-negotiation is not needed as this change
+>>>> +    only reflects on the interpretation of the data.
+>>>>
+>>>>  Return Value
+>>>>  ============
+>>>> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+>>>> index ca05e4e126b2..54fc21af852d 100644
+>>>> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+>>>> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+>>>> @@ -492,6 +492,7 @@ replace define V4L2_EVENT_CTRL_CH_FLAGS ctrl-changes-flags
+>>>>  replace define V4L2_EVENT_CTRL_CH_RANGE ctrl-changes-flags
+>>>>
+>>>>  replace define V4L2_EVENT_SRC_CH_RESOLUTION src-changes-flags
+>>>> +replace define V4L2_EVENT_SRC_CH_COLORIMETRY src-changes-flags
+>>>>
+>>>>  replace define V4L2_EVENT_MD_FL_HAVE_FRAME_SEQ :c:type:`v4l2_event_motion_det`
+>>>>
+>>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>>>> index 303805438814..b5838bc4e3a3 100644
+>>>> --- a/include/uapi/linux/videodev2.h
+>>>> +++ b/include/uapi/linux/videodev2.h
+>>>> @@ -2351,6 +2351,7 @@ struct v4l2_event_frame_sync {
+>>>>  };
+>>>>
+>>>>  #define V4L2_EVENT_SRC_CH_RESOLUTION                (1 << 0)
+>>>> +#define V4L2_EVENT_SRC_CH_COLORIMETRY               (1 << 1)
+>>>>
+>>>>  struct v4l2_event_src_change {
+>>>>      __u32 changes;
+>>>>
+>>>
+>>
+>> --
+>> regards,
+>> Stan
+
+-- 
+regards,
+Stan
