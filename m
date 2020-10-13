@@ -2,61 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A6828CA53
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233DA28CA57
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403882AbgJMIfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:35:00 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44621 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403873AbgJMIe7 (ORCPT
+        id S2403900AbgJMIgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403873AbgJMIgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:34:59 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kSFlh-0004Wx-Fy; Tue, 13 Oct 2020 08:34:49 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] nvme-pci: Disable Write Zeroes on Sandisk Skyhawk
-Date:   Tue, 13 Oct 2020 16:34:45 +0800
-Message-Id: <20201013083445.12317-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200723155731.22313-1-kai.heng.feng@canonical.com>
-References: <20200723155731.22313-1-kai.heng.feng@canonical.com>
+        Tue, 13 Oct 2020 04:36:49 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB247C0613D0;
+        Tue, 13 Oct 2020 01:36:48 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id y12so17565595wrp.6;
+        Tue, 13 Oct 2020 01:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=NFgHTJDGAaoUGtS6KDLywzGQDD1dRCFwIz5+vO6WQ2U=;
+        b=mIZ8SF7dnY0vtR9MBXo5RBEZ6QyI7QE3y51/hFdH5ii9efEibnofweDN2HOiN8DALt
+         IVy3B3tRc/+5sfx2iCybcKzoh4oIUYljR+IQnFoffGSLFnXizOsp/mHVcylQRox+HNeE
+         L4vYZT7t/8eQ8tqd+77nXFHbbQlO4KEKhB92igdash0iQgfTe1pxYs6kk0Kih3GSJ8Zb
+         B68zEzPESYJB8UylI/wkZH5RVwONPAlrFTPPak3JDOoO0dQLU60ysGXqP6D+NwQJ5TKz
+         xyASO8UDdGC0POgBgZ1BIQ/btPTwYOffVVNr/Yg52pcDt0GMUKEYcqFuOpxGQN4Ya/Me
+         EIsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=NFgHTJDGAaoUGtS6KDLywzGQDD1dRCFwIz5+vO6WQ2U=;
+        b=a/a5zhUuLOQD9HugunbejqDI6vzw1RWuBQlFoPwKxTes1ty7Oy9Y1CaQf8vhywApzI
+         R7y3pMz0MI0tZiFQ9FaMVlVqkQN5bbZ2hn2q1iKCnDV6u+Oph5QjHH4boWRvDxPiNXFb
+         Sxe8RM2bp+UuqTzEzESJqe6xf3qiKWus4p2id8S1xZjdyPikKj5qWo/wHQjV5FyWO8mY
+         JKK1u+7n+6mf1Rl6tjLhujPsz9YMSlcsNqEvZpIXPpfXFMpdYT6l2UtHhW2gJ9l+SugK
+         niIxq68S8QcpRH9ZoBvC4IVD4CHdYBK24CeaG7svo0tO24YKL2yeGcD/hBi/Z471/iOM
+         dREA==
+X-Gm-Message-State: AOAM532feJjZi9TWlP/iP4fdBsr6RN0WSdsSD2W7V0zSXpv8EFGt52e1
+        Q6Rf/CeotJfKrpilCsW7qHU=
+X-Google-Smtp-Source: ABdhPJz52riMe2yauYB3XFkSeB7dj/Z8UH/Anz69G2LNz94UvnS48HHMWfnM4Xu76SDmf5KgNcxvCw==
+X-Received: by 2002:a5d:67d2:: with SMTP id n18mr25030984wrw.310.1602578207638;
+        Tue, 13 Oct 2020 01:36:47 -0700 (PDT)
+Received: from felia ([2001:16b8:2d05:8100:95ae:bd1a:3e4e:4242])
+        by smtp.gmail.com with ESMTPSA id u63sm26631531wmb.13.2020.10.13.01.36.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 01:36:46 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Tue, 13 Oct 2020 10:36:45 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-safety@lists.elisa.tech, linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+In-Reply-To: <CADVatmNcUzT6Df4+V7VdwO0AzZ=74Sai7X0aFpYU5SO7b2NVSg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2010131026590.14590@felia>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu> <alpine.DEB.2.21.2010121659040.6487@felia> <20201012151816.GA1559916@kroah.com> <alpine.DEB.2.21.2010122022250.17866@felia>
+ <20201013052317.GB330398@kroah.com> <alpine.DEB.2.21.2010130725370.14590@felia> <CADVatmNcUzT6Df4+V7VdwO0AzZ=74Sai7X0aFpYU5SO7b2NVSg@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like commit 5611ec2b9814 ("nvme-pci: prevent SK hynix PC400 from using
-Write Zeroes command"), Sandisk Skyhawk has the same issue:
-[ 6305.633887] blk_update_request: operation not supported error, dev nvme0n1, sector 340812032 op 0x9:(WRITE_ZEROES) flags 0x0 phys_seg 0 prio class 0
 
-So also disable Write Zeroes command on Sandisk Skyhawk.
 
-BugLink: https://bugs.launchpad.net/bugs/1899503
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/nvme/host/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+On Tue, 13 Oct 2020, Sudip Mukherjee wrote:
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 8984796db0c8..d310d7317e2a 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3187,6 +3187,8 @@ static const struct pci_device_id nvme_id_table[] = {
- 				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
- 	{ PCI_DEVICE(0x1c5c, 0x1504),   /* SK Hynix PC400 */
- 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
-+	{ PCI_DEVICE(0x15b7, 0x2001),   /*  Sandisk Skyhawk */
-+		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
- 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
- 		.driver_data = NVME_QUIRK_SINGLE_VECTOR },
--- 
-2.17.1
+> Hi Lukas,
+> 
+> On Tue, Oct 13, 2020 at 6:37 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> >
+> >
+> >
+> > On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
+> >
+> > > On Mon, Oct 12, 2020 at 08:25:30PM +0200, Lukas Bulwahn wrote:
+> > > >
+> > > >
+> > > > On Mon, 12 Oct 2020, Greg Kroah-Hartman wrote:
+> > > >
+> > > > > On Mon, Oct 12, 2020 at 05:10:21PM +0200, Lukas Bulwahn wrote:
+> > > > > > And for the static analysis finding, we need to find a way to ignore this
+> > > > > > finding without simply ignoring all findings or new findings that just
+> > > > > > look very similar to the original finding, but which are valid.
+> > > > >
+> <snip>
+> > >
+> > > Why not fix the things that it finds that are actually issues?  If there
+> > > are no actual issues found, then perhaps you should use a better tool?  :)
+> > >
+> >
+> > Completely agree. That is why I was against adding comments here and
+> > elsewhere just to have the "good feeling of doing something" after the
+> > tool reported a warning and we spend some time understanding the code to
+> > conclude that we now understand the code better than the tool.
+> 
+> I think you are missing the point here. I sent the comment not because
+> of any tool, I sent it because the code there was not that simple like
+> other drivers and at a first glance its not apparent why there are no
+> error checks. And, afaik, the only purpose of comments is to make the
+> source code easier to understand.
+>
 
+That is fine. I think it is good to add comments to make the code more 
+understandable.
+
+Lukas
