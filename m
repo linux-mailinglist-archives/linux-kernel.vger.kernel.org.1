@@ -2,112 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0827C28CB6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5A528CB72
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729346AbgJMKMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727894AbgJMKMt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:12:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9C7C0613D0;
-        Tue, 13 Oct 2020 03:12:49 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 10:12:46 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602583967;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2fmxELie1ZMn/BFrNt1wnQqSU07/ecPS/BFguewf7go=;
-        b=AgasP2MSBg6v7lhZcEXR2ZHJ7+Gspd459EP/bzK77khO5GyjE6l/BuGsT8lmOgKzrXT4rX
-        TcpDxdEG740hPcmp2xqIoCKihA/6W9VCNK4+My8pO3NjoFzeYfaty88oyeo9dC7/PrGnJr
-        t+pOy+dEsMJReeiaY3jQz2vu+SrYmTlc7bGXfywfd9Sk9lJw+iht14Gi7RdKrPIXIKwPV8
-        gdqRqK5gcYBQJkoc82a6gyEkSqk51ER/sJ9c94FTL/QBDU7XqzfvK61Zf4yw7O7a2OM3Os
-        dtD9C3Iazo9gRCbOW9OVuM8oV/iQWPbHSafmMnuSzllv23YzetvuE98E27uayg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602583967;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2fmxELie1ZMn/BFrNt1wnQqSU07/ecPS/BFguewf7go=;
-        b=Nq+TpjdnerllWGRgL/X72UNiLqKZHDSroXJJ7Xf/o/YF0IjyHr+2J3B9KExveRINrjynL2
-        C4OnS57x5IXtS1BQ==
-From:   "tip-bot2 for Vasily Gorbik" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] perf build: Allow nested externs to enable
- BUILD_BUG() usage
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: =?utf-8?q?=3Cpatch-1=2Ethread-251403=2Egit-2514037e9477=2Eyou?=
- =?utf-8?q?r-ad-here=2Ecall-01602244460-ext-7088=40work=2Ehours=3E?=
-References: =?utf-8?q?=3Cpatch-1=2Ethread-251403=2Egit-2514037e9477=2Eyour?=
- =?utf-8?q?-ad-here=2Ecall-01602244460-ext-7088=40work=2Ehours=3E?=
+        id S2387669AbgJMKPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:15:46 -0400
+Received: from ozlabs.org ([203.11.71.1]:39281 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726935AbgJMKPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 06:15:46 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9Wdp0WCgz9sVH;
+        Tue, 13 Oct 2020 21:15:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1602584142;
+        bh=SQPNY+N9Jz8DH/0ADaruUwdPNuZlX8z+oBbq3gOlFTg=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=KMycuC8kT6PHLlYV79o7xJsj3BgonMFxzrXRX5HLu1IB6bKup+zZ7BZigT6Vy8pAs
+         sJnjApueZWxgymV6aWQW16fzi6xUahpkQBRBukKizq0TtOq0VQFU/+TTMugeOPlD+T
+         Y33c2nz2s0jxYhsvVCMlfhvkItZE19O7BS5ZqjO2YrJkwzyBw2yo5cwm9g7jMKz8WA
+         9fgFerkIIzcmBQc2jsHW11hilGANJKSiwpOGxdF4uIscWPmERVHHBbnucPZqz/n+3O
+         cKpP9rcWnYtOprDjYxqxpT6XCy8bAmlASMd+RuSCfysuHZwg8jseuzvDKpgKRTQs6E
+         Ox2tsVl8+z0pQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/features: Remove CPU_FTR_NODSISRALIGN
+In-Reply-To: <cb22e9a8-4a8c-38d9-66f1-24af5ebd7520@csgroup.eu>
+References: <0346768708b69bdbfec82f6e5b0364962b9b6932.1602489812.git.christophe.leroy@csgroup.eu> <875z7ea8t7.fsf@linux.ibm.com> <cb22e9a8-4a8c-38d9-66f1-24af5ebd7520@csgroup.eu>
+Date:   Tue, 13 Oct 2020 21:15:38 +1100
+Message-ID: <87wnzuzb1x.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Message-ID: <160258396627.7002.9774762955549564502.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/core branch of tip:
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 13/10/2020 =C3=A0 09:23, Aneesh Kumar K.V a =C3=A9crit=C2=A0:
+>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>=20
+>>> CPU_FTR_NODSISRALIGN has not been used since
+>>> commit 31bfdb036f12 ("powerpc: Use instruction emulation
+>>> infrastructure to handle alignment faults")
+>>>
+>>> Remove it.
+>>>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>>   arch/powerpc/include/asm/cputable.h | 22 ++++++++++------------
+>>>   arch/powerpc/kernel/dt_cpu_ftrs.c   |  8 --------
+>>>   arch/powerpc/kernel/prom.c          |  2 +-
+>>>   3 files changed, 11 insertions(+), 21 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt=
+_cpu_ftrs.c
+>>> index 1098863e17ee..c598961d9f15 100644
+>>> --- a/arch/powerpc/kernel/dt_cpu_ftrs.c
+>>> +++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
+>>> @@ -273,13 +273,6 @@ static int __init feat_enable_idle_nap(struct dt_c=
+pu_feature *f)
+>>>   	return 1;
+>>>   }
+>>>=20=20=20
+>>> -static int __init feat_enable_align_dsisr(struct dt_cpu_feature *f)
+>>> -{
+>>> -	cur_cpu_spec->cpu_features &=3D ~CPU_FTR_NODSISRALIGN;
+>>> -
+>>> -	return 1;
+>>> -}
+>>> -
+>>>   static int __init feat_enable_idle_stop(struct dt_cpu_feature *f)
+>>>   {
+>>>   	u64 lpcr;
+>>> @@ -641,7 +634,6 @@ static struct dt_cpu_feature_match __initdata
+>>>   	{"tm-suspend-hypervisor-assist", feat_enable, CPU_FTR_P9_TM_HV_ASSIS=
+T},
+>>>   	{"tm-suspend-xer-so-bug", feat_enable, CPU_FTR_P9_TM_XER_SO_BUG},
+>>>   	{"idle-nap", feat_enable_idle_nap, 0},
+>>> -	{"alignment-interrupt-dsisr", feat_enable_align_dsisr, 0},
 
-Commit-ID:     ab0a40ea88204e1291b56da8128e2845fec8ee88
-Gitweb:        https://git.kernel.org/tip/ab0a40ea88204e1291b56da8128e2845fec8ee88
-Author:        Vasily Gorbik <gor@linux.ibm.com>
-AuthorDate:    Fri, 09 Oct 2020 14:25:23 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 13 Oct 2020 12:08:32 +02:00
+Rather than removing it entirely, I'd rather we left a comment, so that
+it's obvious that we are ignoring that feature on purpose, not because
+we forget about it.
 
-perf build: Allow nested externs to enable BUILD_BUG() usage
+eg:
 
-Currently the BUILD_BUG() macro is expanded to the following:
+diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt_cpu=
+_ftrs.c
+index f204ad79b6b5..45cb7e59bd13 100644
+--- a/arch/powerpc/kernel/dt_cpu_ftrs.c
++++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
+@@ -640,7 +640,7 @@ static struct dt_cpu_feature_match __initdata
+ 	{"tm-suspend-hypervisor-assist", feat_enable, CPU_FTR_P9_TM_HV_ASSIST},
+ 	{"tm-suspend-xer-so-bug", feat_enable, CPU_FTR_P9_TM_XER_SO_BUG},
+ 	{"idle-nap", feat_enable_idle_nap, 0},
+-	{"alignment-interrupt-dsisr", feat_enable_align_dsisr, 0},
++	// "alignment-interrupt-dsisr" ignored
+ 	{"idle-stop", feat_enable_idle_stop, 0},
+ 	{"machine-check-power8", feat_enable_mce_power8, 0},
+ 	{"performance-monitor-power8", feat_enable_pmu_power8, 0},
 
-   do {
-           extern void __compiletime_assert_0(void)
-                   __attribute__((error("BUILD_BUG failed")));
-           if (!(!(1)))
-                   __compiletime_assert_0();
-   } while (0);
 
-If used in a function body this would obviously produce build errors
-with -Wnested-externs and -Werror.
+>>>   	{"idle-stop", feat_enable_idle_stop, 0},
+>>>   	{"machine-check-power8", feat_enable_mce_power8, 0},
+>>>   	{"performance-monitor-power8", feat_enable_pmu_power8, 0},
+>>> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+>>> index c1545f22c077..a5a5acb627fe 100644
+>>> --- a/arch/powerpc/kernel/prom.c
+>>> +++ b/arch/powerpc/kernel/prom.c
+>>> @@ -165,7 +165,7 @@ static struct ibm_pa_feature {
+>>>   #ifdef CONFIG_PPC_RADIX_MMU
+>>>   	{ .pabyte =3D 40, .pabit =3D 0, .mmu_features  =3D MMU_FTR_TYPE_RADI=
+X | MMU_FTR_GTSE },
+>>>   #endif
+>>> -	{ .pabyte =3D 1,  .pabit =3D 1, .invert =3D 1, .cpu_features =3D CPU_=
+FTR_NODSISRALIGN },
+>>> +	{ .pabyte =3D 1,  .pabit =3D 1, .invert =3D 1, },
+>>>   	{ .pabyte =3D 5,  .pabit =3D 0, .cpu_features  =3D CPU_FTR_REAL_LE,
+>>>   				    .cpu_user_ftrs =3D PPC_FEATURE_TRUE_LE },
+>>=20
+>> I didn't follow this change. Should the line be dropped?
+>>=20
+>
+> Don't know. I have to look closer, I don't know what it is used for.
 
-To enable BUILD_BUG() usage in tools/arch/x86/lib/insn.c which perf
-includes in intel-pt-decoder, build perf without -Wnested-externs.
+All it does is clear the CPU feature if firmware tells us to. So if
+we're dropping the CPU feature we can drop the whole entry in the
+feature array.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # build tested
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours
----
- tools/perf/Makefile.config | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 190be4f..8137a60 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -16,7 +16,7 @@ $(shell printf "" > $(OUTPUT).config-detected)
- detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
- detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
- 
--CFLAGS := $(EXTRA_CFLAGS) $(EXTRA_WARNINGS)
-+CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
- 
- include $(srctree)/tools/scripts/Makefile.arch
- 
+cheers
