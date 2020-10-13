@@ -2,167 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456CA28CFFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B366128D000
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388570AbgJMOPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388559AbgJMOPb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:15:31 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DEEC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:15:29 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id o21so27723qtp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yDYyefM2Pzv2rMnzoJ3sgAdHit1ls0lrIdpXC5uoCyY=;
-        b=oRufayoFefL6yVwqcjc/StTCckYjROD6rXt0IMjDlM8WP+v0+Pyg4IH8wP5QXWC7xE
-         VHczL/S727NCOnUm0rQ6NzGcQJFRf4qrlo6o8tNmLcEUlKmg6jhtejwKGTwCqZWmlYdQ
-         u8c6A0D1DHq2KlQUan6qesc8xDsiIv2AJqT2baLrs8cb071V/CBslZIT6GkZriLW8lSZ
-         rCxJo+jc4LFx8GNl11cBjwT4+7DsyGey4oyUTMwwR+iwpdVcOOijti315/f0GZQOzXEe
-         bjTw7zRPcPPM2OAXuurIs/0WzWMvQF4IZtWz+Xtm2q3N27NScPxzWpQkxafeA1uJyR9P
-         ffjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yDYyefM2Pzv2rMnzoJ3sgAdHit1ls0lrIdpXC5uoCyY=;
-        b=e1QwiqH5+Y9HXG08SoZ+ZgIASE3eR5urZPLNAUdYZIpKLtTzhg34lkRYaxrkvErEZX
-         MAzcoMjL/k21Nre9hINpf5GS/Cp88XO9VFFB6alkPoKVraBanzCzGknVetEcmRdNE8WW
-         W6XS7T+ESmZCjw512r//B1DKw8BwDUeY4SISxQ/TleuP3FW2iFwZQag1PWdbTXXNZdrb
-         yvq31/CBmKihMNAMQ2i/cMZti4S8DbfkNdouXFkxpByRXZucYALorMOuJzlNp/05zBVz
-         Ma4bBk5vMu1fSWNsxpK9qK4V754hy2iUbdk3h8ZXwdDbFqBvb71s4XYAvZ805dXgT4rq
-         Cuaw==
-X-Gm-Message-State: AOAM532ye5p3/UgYc0FvVkefnHW2xMYFCUpd3LNJRuvBL3hdx9/azKo9
-        m6Ab2GmbMYNuitqYaJguWWFDzOWoyrerDdhFwvUml3rOpepDxg==
-X-Google-Smtp-Source: ABdhPJw71XsxJMOvkFMg8IysNNbT7GkDOa/n1PdYW1g0j2e2nSjqdGQZViBTdST1wPGNiMEdFBB2pqTsgEVRSTcm6YY=
-X-Received: by 2002:ac8:7773:: with SMTP id h19mr14805793qtu.337.1602598528295;
- Tue, 13 Oct 2020 07:15:28 -0700 (PDT)
+        id S2388576AbgJMOQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:16:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729032AbgJMOQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 10:16:13 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8910A247FD;
+        Tue, 13 Oct 2020 14:16:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602598572;
+        bh=5Lk25OLCC32WS63IlcGvOhBrDcQgWDeXJsC5Zyy3gvc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gbtZWHBlNeLwIICi6kiE7crT/GvF7AZBBDByae5w6Knu0AfIqirczFW23FnE/ojJq
+         Xltb/xtegpsj3onoDvKtRYU11edbX2gTqY7tyeAtchIewGRm9R0wtjXpdtkFqVz6pw
+         cIKdnzL0MMeEu9kA0HjCi2nxUpzM4rezhbNk9zYg=
+Received: by mail-ot1-f51.google.com with SMTP id i12so113495ota.5;
+        Tue, 13 Oct 2020 07:16:12 -0700 (PDT)
+X-Gm-Message-State: AOAM531rX781SwpOTQn1qCYiFuNzw8rM3d/5mH29CvGp5E0HTtricLW7
+        96xIR/evUqrVVWqqiwcv+LUq7+ID/CBwhqoR0Q==
+X-Google-Smtp-Source: ABdhPJycrrYkiUDNpjBSkSAYzAMb1vVcJHqVOx0KqxuWylYsusqkJFbzfmLBJ0Z4MepVkK3qz6EVKGpnhTz+V91NZOI=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr12866634oti.107.1602598569659;
+ Tue, 13 Oct 2020 07:16:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <c229372e5526b84ed0542028437111c2eb83d55f.1602522784.git.andreyknvl@google.com>
- <CACT4Y+aX-LN=tz2Xu3509K1tfrGiLWWKZQwMtRCg059whv-Gvg@mail.gmail.com> <CAAeHK+zur-CpmCj2bBucwVSAKkk8XBKZsQoGA8AmWraXuDctvA@mail.gmail.com>
-In-Reply-To: <CAAeHK+zur-CpmCj2bBucwVSAKkk8XBKZsQoGA8AmWraXuDctvA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Oct 2020 16:15:16 +0200
-Message-ID: <CACT4Y+ZYUWqFemUE8_xJ-XyBrvnkmiNxokrwUNjjq3ShTLTz9Q@mail.gmail.com>
-Subject: Re: [PATCH v4] kcov, usb: specify contexts for remote coverage sections
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-6-badhri@google.com>
+ <20201006182940.GA2574941@bogus> <CAPTae5L6UFGNJ0pxxfFAS3=KDNDVU-WDW-OHk6prLStbe+EaOQ@mail.gmail.com>
+In-Reply-To: <CAPTae5L6UFGNJ0pxxfFAS3=KDNDVU-WDW-OHk6prLStbe+EaOQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 13 Oct 2020 09:15:58 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKxW9BeFQGsLqa-ZRurR8gDDrTSaDYs=mj7TYtF9ZDiYQ@mail.gmail.com>
+Message-ID: <CAL_JsqKxW9BeFQGsLqa-ZRurR8gDDrTSaDYs=mj7TYtF9ZDiYQ@mail.gmail.com>
+Subject: Re: [PATCH v9 05/15] dt-bindings: connector: Add property to set
+ initial current cap for FRS
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@st.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 3:58 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> > > Currently there's a KCOV remote coverage collection section in
-> > > __usb_hcd_giveback_urb(). Initially that section was added based on the
-> > > assumption that usb_hcd_giveback_urb() can only be called in interrupt
-> > > context as indicated by a comment before it. This is what happens when
-> > > syzkaller is fuzzing the USB stack via the dummy_hcd driver.
-> > >
-> > > As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
-> > > context, provided that the caller turned off the interrupts; USB/IP does
-> > > exactly that. This can lead to a nested KCOV remote coverage collection
-> > > sections both trying to collect coverage in task context. This isn't
-> > > supported by KCOV, and leads to a WARNING.
+On Wed, Oct 7, 2020 at 8:07 PM Badhri Jagan Sridharan <badhri@google.com> wrote:
+>
+> On Tue, Oct 6, 2020 at 11:29 AM Rob Herring <robh@kernel.org> wrote:
 > >
-> > How does this recursion happen? There is literal recursion in the task
-> > context? A function starts a remote coverage section and calls another
-> > function that also starts a remote coverage section?
+> > On Mon, Sep 28, 2020 at 07:39:54PM -0700, Badhri Jagan Sridharan wrote:
+> > > This change adds frs-typec-current which allows setting the initial current
+> > > capability of the new source when vSafe5V is applied during PD3.0
+> > > sink Fast Role Swap.
+> >
+> > Shouldn't you Cc the person you copied this from?
+> Not sure whether I get this comment. The patch wasn't copied. Maybe you were
+> expecting me to CC amelie.delaunay@st.com ? if so, just now CC'ed.
 >
-> Yes, a literal recursion. Background thread for processing requests
-> for USB/IP hub (which we collect coverage from) calls
-> __usb_hcd_giveback_urb().
+> >
+> >
+> > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > > ---
+> > > Changes since v1:
+> > > - Changing patch version to v6 to fix version number confusion.
+> > >
+> > > Changes since v6:
+> > > - Removed the redundant usb-connector.txt that I created by mistake.
+> > > - Moved to yaml.
+> > >
+> > > Changes since v7:
+> > > - Rebase
+> > >
+> > > Changes since v8:
+> > > - Redefine new-source-frs-typec-current as string enums to address
+> > >   Rob Herring's comment.
+> > > ---
+> > >  .../bindings/connector/usb-connector.yaml     | 26 +++++++++++++++++++
+> > >  include/dt-bindings/usb/pd.h                  | 10 +++++++
+> > >  2 files changed, 36 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > > index 9bd52e63c935..0b8cd08a8678 100644
+> > > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > > @@ -142,6 +142,32 @@ properties:
+> > >      required:
+> > >        - port@0
+> > >
+> > > +  new-source-frs-typec-current:
+> > > +    description: Initial current capability of the new source when vSafe5V
+> > > +      is applied during PD3.0 Fast Role Swap. "Table 6-14 Fixed Supply PDO - Sink"
+> > > +      of "USB Power Delivery Specification Revision 3.0, Version 1.2" provides the
+> > > +      different power levels and "6.4.1.3.1.6 Fast Role Swap USB Type-C Current"
+> > > +      provides a detailed description of the field. The sink PDO from current source
+> > > +      reflects the current source's(i.e. transmitter of the FRS signal) power
+> > > +      requirement during fr swap. The current sink (i.e. receiver of the FRS signal),
+> > > +      a.k.a new source, should check if it will be able to satisfy the current source's,
+> > > +      new sink's, requirement during frswap before enabling the frs signal reception.
+> > > +      This property refers to maximum current capability that the current sink can
+> > > +      satisfy. During FRS, VBUS voltage is at 5V, as the partners are in implicit
+> > > +      contract, hence, the power level is only a function of the current capability.
+> > > +      "not-supported" implies sink to source fast role swap not supported.
+> > > +      "default" refers to default USB power level as described by
+> > > +      "Table 6-14 Fixed Supply PDO - Sink".
+> > > +      "1.5A" refers to 1.5A@5V.
+> > > +      "3.0A" refers to 3.0A@5V.
+> >
+> >
+> > > +
+> > > +    $ref: /schemas/types.yaml#/definitions/string
+> > > +    enum:
+> > > +      - not-supported
+> > > +      - default
+> > > +      - 1.5A
+> > > +      - 3.0A
+> >
+> > What happens if the property is not present?
 >
-> Here's the stack trace:
->
->  kcov_remote_start_usb include/linux/kcov.h:52 [inline]
->  __usb_hcd_giveback_urb+0x284/0x4b0 drivers/usb/core/hcd.c:1649
->  usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
->  vhci_urb_enqueue.cold+0x37f/0x4c5 drivers/usb/usbip/vhci_hcd.c:801
->  usb_hcd_submit_urb+0x2b1/0x20d0 drivers/usb/core/hcd.c:1547
->  usb_submit_urb+0x6e5/0x13b0 drivers/usb/core/urb.c:570
->  usb_start_wait_urb+0x10f/0x2c0 drivers/usb/core/message.c:58
->  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
->  usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
->  hub_set_address drivers/usb/core/hub.c:4472 [inline]
->  hub_port_init+0x23f6/0x2d20 drivers/usb/core/hub.c:4748
->  hub_port_connect drivers/usb/core/hub.c:5140 [inline]
->  hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
->  port_event drivers/usb/core/hub.c:5494 [inline]
->  hub_event+0x1cc9/0x38d0 drivers/usb/core/hub.c:5576
->  process_one_work+0x7b6/0x1190 kernel/workqueue.c:2269
->  worker_thread+0x94/0xdc0 kernel/workqueue.c:2415
->  kthread+0x372/0x450 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
-> > Or is there recursion between task context and softirq context?
->
-> No. This kind of recursion is actually supported by kcov right now. A
-> softirq with a coverage collection section can come in the middle of a
-> coverage collection section for a task.
->
-> > But
-> > this should not happen if softirq's disabled around
-> > usb_hcd_giveback_urb call in task context...
->
-> [...]
->
-> > We do want to collect coverage from usb_hcd_giveback_urb in the task
-> > context eventually, right?
->
-> Ideally, eventually, yes.
->
-> > Is this API supposed to be final? Or it only puts down fire re the warning?
->
-> Only puts down the fire.
->
-> > I don't understand how this API can be used in other contexts.
-> > Let's say there is recursion in task context and we want to collect
-> > coverage in task context (the function is only called in task
-> > context). This API won't help.
->
-> No, it won't. Full recursion support is required for this.
->
-> > Let's say a function is called from both task and softirq context and
-> > these can recurse (softirq arrive while in remote task section). This
-> > API won't help. It will force to choose either task or softirq, but
-> > let's say you can't make that choice because they are equally
-> > important.
->
-> This currently works, everything that happens in a softirq gets
-> associated with softirq, everything else - with the task. This seems
-> to be the only logical approach here, it makes no sense to associate
-> what happens in a softirq with the task where the softirq happened.
->
-> > The API helps to work around the unimplemented recursion in KCOV, but
-> > it's also specific to this particular case. It's not necessary that
-> > recursion is specific to one context only and it's not necessary that
-> > a user can choose to sacrifice one of the contexts.
-> > Also, if we support recursion in one way or another, we will never
-> > want to use this API, right?
->
-> Correct.
+> The behavior would be the same as "not-supported".
 
+Then you don't need 'not-supported'.
 
-I see.
-The following is simpler option that does what this patch achieves but
-in a more direct way:
+>
+> >
+> > I'm not crazy about mixing strings and what could be a number.
+>
+> v8 version[1] of the patch was using uint32. I moved to using strings
+> as you were asking to unify with the approach in [2]. Since [3] was using
+> string enums, I moved to that. I don't have a strong preference here, so
+> I can move back to using u32 if you feel so.
 
-// Because ...
-if (in_serving_softirq())
-    kcov_remote_start_usb((u64)urb->dev->bus->busnum);
+Since the u32 values are based on the USB spec, I think I prefer that.
+Should be easier to deal with in the driver than doing strcmp's.
+
+Rob
