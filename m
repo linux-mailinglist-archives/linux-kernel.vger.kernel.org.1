@@ -2,143 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276E128CC14
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321DC28CC18
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387924AbgJMK7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:59:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:55194 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728700AbgJMK7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:59:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64DBD1FB;
-        Tue, 13 Oct 2020 03:59:46 -0700 (PDT)
-Received: from [10.57.51.141] (unknown [10.57.51.141])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FE6A3F719;
-        Tue, 13 Oct 2020 03:59:45 -0700 (PDT)
-Subject: Re: [PATCH 1/2] thermal: power allocator: change the 'k_i'
- coefficient estimation
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com
-References: <20201002122416.13659-1-lukasz.luba@arm.com>
- <20201002122416.13659-2-lukasz.luba@arm.com>
- <cc0e6d85-28ad-3cfc-e5b8-75820552b716@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com>
-Date:   Tue, 13 Oct 2020 11:59:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2387958AbgJMLAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728700AbgJMLAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:00:17 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF15C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:00:16 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id j136so21293387wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9WA80PNkrI5C0OQNWClQ/raYkEl8VgDyVTNL1YpNDBQ=;
+        b=WVOC2aTpPMXchRQn3hfbZminS4eshLiFulE0QKi7EhDNBaEJkX+sKXPuhyKYHL5elw
+         9xDVhp9goIz4QeQm/DU7mWbkwLD99EQdpdO17AhjEw2FGJFQ7+HudYN2goj7L7PDWqNK
+         DrFAj3g9FgdvxqnncZQhYTUIdq0YMfnmedSYCKyvZqaYNEE46JKiAIq/bsUYvHoe71xK
+         RbWrf7ZwUWhZe3mqD0eYeM6ZCmpqfmGWg9oCQ2cmp0DCEKt2Ny2JKldng4yOSu+hdFuE
+         u2+45lmoGfn5WES58TOmR/71j80KhwPvECg54YrSkAzQ+7lk9xfbAqgAshx+qHuiqE4/
+         fSGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9WA80PNkrI5C0OQNWClQ/raYkEl8VgDyVTNL1YpNDBQ=;
+        b=uOrjQtmWTWjHpBUg13yFlK2iLOZaTVqYofna/gar/oyRCq5nspr1L0iGCW7gQXZdOE
+         1lmcJdkm9V/6x/dGyGNqvwFOD1e2LlbzGrBQlFGJ/sC04fa6fpHasUGhKnM4qV4MJpVO
+         3kVIW7xRrrkLWlhUmVriyr8l6tBsUhQFTXXIe/Wx674vQvtqpL78ZBNsZuy9BoFhKkKV
+         47Urd6So2ABpZeLOAdWOqDX+6L7P42r9VUXIf1U9OaBYgA87uI9X96Q2bAni9MxpIvHO
+         WcOvu0ndbGuHqpUnV4rFT9X1IaRyz4rILxYlDwbpIxR3D6/20FQXOwO1sUDIJLpzuvyT
+         S50w==
+X-Gm-Message-State: AOAM531PIOPdNT0yxSP3iuvtMrTHcuYyRFd9vwmnmOg7NGpV3MwNM51r
+        KclNScb4cR+pJ/viHWrScbQFGDf6u2Ygth0stwo=
+X-Google-Smtp-Source: ABdhPJz2Emc612AGRQCJLTyQrTiQtni6Jj8EdvwE6fdWKKt9ZMRSVNmj7ycQo+5/Z3iP7aLNrwJCaI38aCViU8RMat4=
+X-Received: by 2002:a7b:c317:: with SMTP id k23mr14424626wmj.44.1602586815306;
+ Tue, 13 Oct 2020 04:00:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cc0e6d85-28ad-3cfc-e5b8-75820552b716@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1602492582-3558-1-git-send-email-shengjiu.wang@nxp.com>
+ <20201012190037.GB17643@Asurada-Nvidia> <CAEnQRZBrXNgMDNgQ=dMJfZQpZvdq6sUx2y21_fuk9teRd5UM0Q@mail.gmail.com>
+ <CAA+D8AOCR+Hvq9K=LjbaPW0jJB+00nFORahErWyJJJr0LVUq4g@mail.gmail.com>
+In-Reply-To: <CAA+D8AOCR+Hvq9K=LjbaPW0jJB+00nFORahErWyJJJr0LVUq4g@mail.gmail.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Tue, 13 Oct 2020 14:00:03 +0300
+Message-ID: <CAEnQRZBbTBtJDLy9XNAFHa0hcuoU3c66kQVKsQR7MTo40NJF7A@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: Add support for higher sample rates
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Tue, Oct 13, 2020 at 1:49 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+>
+> On Tue, Oct 13, 2020 at 6:42 PM Daniel Baluta <daniel.baluta@gmail.com> wrote:
+> >
+> > On Tue, Oct 13, 2020 at 12:29 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+> > >
+> > > Hi Shengjiu,
+> > >
+> > > On Mon, Oct 12, 2020 at 04:49:42PM +0800, Shengjiu Wang wrote:
+> > > > Add 88200Hz and 176400Hz sample rates support for TX.
+> > > > Add 88200Hz, 176400Hz, 192000Hz sample rates support for RX.
+> > > >
+> > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > > Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+> > >
+> > > Probably should put your own Signed-off at the bottom?
+> >
+> > Hi Shengjiu,
+> >
+> > Also please keep the original author of the patch. You can change that
+> > using git commit --amend --author="Viorel Suman <viorel.suman@nxp.com>".
+>
+> Actually I combined my commit with viorel suman's commit to one commit,
+> not only viorel suman's.
 
-On 10/13/20 11:21 AM, Daniel Lezcano wrote:
-> 
-> Hi Lukasz,
-> 
-> On 02/10/2020 14:24, Lukasz Luba wrote:
->> Intelligent Power Allocation (IPA) is built around the PID controller
->> concept. The initialization code tries to setup the environment based on
->> the information available in DT or estimate the value based on minimum
->> power reported by each of the cooling device. The estimation will have an
->> impact on the PID controller behaviour via the related 'k_po', 'k_pu',
->> 'k_i' coefficients and also on the power budget calculation.
->>
->> This change prevents the situation when 'k_i' is relatively big compared
->> to 'k_po' and 'k_pu' values. This might happen when the estimation for
->> 'sustainable_power' returned small value, thus 'k_po' and 'k_pu' are
->> small.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/gov_power_allocator.c | 8 ++++++--
->>   1 file changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
->> index 5cb518d8f156..f69fafe486a5 100644
->> --- a/drivers/thermal/gov_power_allocator.c
->> +++ b/drivers/thermal/gov_power_allocator.c
->> @@ -131,6 +131,7 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
->>   	int ret;
->>   	int switch_on_temp;
->>   	u32 temperature_threshold;
->> +	s32 k_i;
->>   
->>   	ret = tz->ops->get_trip_temp(tz, trip_switch_on, &switch_on_temp);
->>   	if (ret)
->> @@ -156,8 +157,11 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
->>   		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
->>   			temperature_threshold;
->>   
->> -	if (!tz->tzp->k_i || force)
->> -		tz->tzp->k_i = int_to_frac(10) / 1000;
->> +	if (!tz->tzp->k_i || force) {
->> +		k_i = tz->tzp->k_pu / 10;
->> +		tz->tzp->k_i = k_i > 0 ? k_i : 1;
->> +	}
-> 
-> I do not understand the rational behind this change.
+I see. Ok then :)
 
-This is the unfortunate impact of the EM abstract scale of power values.
-IPA didn't have to deal with it, because we always had milli-Watts.
-Because the EM allows the bogoWatts and some vendors already have
-them I have to re-evaluate the IPA.
-
-> 
-> Do you have some values to share describing what would be the impact of
-> this change?
-
-Yes, here is an example:
-EM has 3 devices with abstract scale power values, where minimum power
-is 25 and max is 200. The minimum power is used by
-estimate_sustainable_power()
-as a sum of all devices' min power. Sustainable power is going to be
-estimated to 75.
-
-Then in the code we have 'temperature_threshold' which is in
-milli-Celcius, thus 15degC is 15000.
-
-We estimate 'k_po' according to:
-int_to_frac(sustainable_power) / temperature_threshold;
-
-which is:
-(75 << 10) / 15000 = ~75000 / 15000 = 5 <-- 'k_po'
-
-then k_pu:
-((2*75) << 10) / 15000 = ~150000 / 15000 = 10
-
-Then the old 'k_i' is just hard-coded 10, which is
-the same order of magnitude to what is in 'k_pu'.
-It should be 1 order of magnitude smaller than 'k_pu'.
-
-I did some experiments and the bigger 'k_i' slows down a lot
-the rising temp. That's why this change.
-
-It was OK to have k_i=10 when we were in milliWatts world,
-when the min power value was bigger, thus 'k_pu' was also bigger
-than our hard-coded 'k_i'.
-
-> 
-> Depending on the thermal behavior of a board, these coefficients could
-> be very different, no ?
-> 
-
-Yes, I strongly believe that vendor engineers will make experiments with
-these values and not go with default. Then they will store the k_pu,
-k_po, k_i via sysfs interface, with also sustainable_power.
-
-But I have to also fix the hard-coded k_i in the estimation. As
-described above, when we have small power values from abstract scale,
-the k_i stays too big.
-
-Regards,
-Lukasz
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
