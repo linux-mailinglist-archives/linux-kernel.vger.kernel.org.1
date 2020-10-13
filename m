@@ -2,160 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312C528CAC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AB828CAC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404225AbgJMJIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404121AbgJMJIP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:08:15 -0400
-Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.eu [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46F3C0613D0;
-        Tue, 13 Oct 2020 02:08:14 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2404214AbgJMJIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:08:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404121AbgJMJIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:08:13 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 8F33C634C87;
-        Tue, 13 Oct 2020 12:07:05 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kSGGv-0002fj-Dc; Tue, 13 Oct 2020 12:07:05 +0300
-Date:   Tue, 13 Oct 2020 12:07:05 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Hugues Fruchet <hugues.fruchet@st.com>
-Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alain Volmat <alain.volmat@st.com>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH] media: stm32-dcmi: add support of BT656 bus
-Message-ID: <20201013090704.GL6413@valkosipuli.retiisi.org.uk>
-References: <1602087290-18020-1-git-send-email-hugues.fruchet@st.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id EA54A208D5;
+        Tue, 13 Oct 2020 09:08:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602580093;
+        bh=p8NqRmOJyLfUXcRw4LsDuaSZ1HDIpCdA36ZLSHLW/ww=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=swrPY+ehjIps6I5ADtKcbruEshXfKuJBthgcSvqjuo1WMUGUBnYM4ZHzXxwiyTUEL
+         p9J4dqgUGTn3tyLx4F65ZDyh0S3/LCLduQ7MHIUb67SQjyZBPXsGZ6/XoNldf0MTB6
+         6HU2JMkwc8wlRjN4/YP+z3GomyCwU5XFGPufpc/U=
+Date:   Tue, 13 Oct 2020 11:08:50 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH V2 0/2]  Add module autoloading support for vop and cosm
+ driver
+Message-ID: <20201013090850.GA1922404@kroah.com>
+References: <20200929080214.23553-1-sherry.sun@nxp.com>
+ <VI1PR04MB4960EDA39029B1B1CD8FD4F792040@VI1PR04MB4960.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602087290-18020-1-git-send-email-hugues.fruchet@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <VI1PR04MB4960EDA39029B1B1CD8FD4F792040@VI1PR04MB4960.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hugues,
+On Tue, Oct 13, 2020 at 08:52:01AM +0000, Sherry Sun wrote:
+> Gentle ping....
 
-On Wed, Oct 07, 2020 at 06:14:50PM +0200, Hugues Fruchet wrote:
-> Add support of BT656 embedded synchronization bus.
-> This mode allows to save hardware synchro lines hsync & vsync
-> by replacing them with synchro codes embedded in data stream.
-> This bus type is only compatible with 8 bits width data bus.
-> Due to reserved values 0x00 & 0xff used for synchro codes,
-> valid data only vary from 0x1 to 0xfe, this is up to sensor
-> to clip accordingly pixel data. As a consequence of this
-> clipping, JPEG is not supported when using this bus type.
-> DCMI crop feature is also not available with this bus type.
+It's the merge window, sorry, this fell through the cracks before that
+happened.
 
-You can have more than 62 characters per line. In fact, 75 is the
-recommended maximum.
+Please resubmit once 5.10-rc1 comes out.
 
-You should also amend the bindings to cover BT.656 mode. Also bus-type
-should probably be made mandatory, too.
+thanks,
 
-> 
-> Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
-> ---
->  drivers/media/platform/stm32/stm32-dcmi.c | 37 +++++++++++++++++++++++++++++--
->  1 file changed, 35 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/stm32/stm32-dcmi.c b/drivers/media/platform/stm32/stm32-dcmi.c
-> index fd1c41c..d7d7cdb 100644
-> --- a/drivers/media/platform/stm32/stm32-dcmi.c
-> +++ b/drivers/media/platform/stm32/stm32-dcmi.c
-> @@ -157,6 +157,7 @@ struct stm32_dcmi {
->  	struct vb2_queue		queue;
->  
->  	struct v4l2_fwnode_bus_parallel	bus;
-> +	enum v4l2_mbus_type		bus_type;
->  	struct completion		complete;
->  	struct clk			*mclk;
->  	enum state			state;
-> @@ -777,6 +778,23 @@ static int dcmi_start_streaming(struct vb2_queue *vq, unsigned int count)
->  	if (dcmi->bus.flags & V4L2_MBUS_PCLK_SAMPLE_RISING)
->  		val |= CR_PCKPOL;
->  
-> +	/*
-> +	 * BT656 embedded synchronisation bus mode.
-> +	 *
-> +	 * Default SAV/EAV mode is supported here with default codes
-> +	 * SAV=0xff000080 & EAV=0xff00009d.
-> +	 * With DCMI this means LSC=SAV=0x80 & LEC=EAV=0x9d.
-> +	 */
-> +	if (dcmi->bus_type == V4L2_MBUS_BT656) {
-> +		val |= CR_ESS;
-> +
-> +		/* Unmask all codes */
-> +		reg_write(dcmi->regs, DCMI_ESUR, 0xffffffff);/* FEC:LEC:LSC:FSC */
-> +
-> +		/* Trig on LSC=0x80 & LEC=0x9d codes, ignore FSC and FEC */
-> +		reg_write(dcmi->regs, DCMI_ESCR, 0xff9d80ff);/* FEC:LEC:LSC:FSC */
-> +	}
-> +
->  	reg_write(dcmi->regs, DCMI_CR, val);
->  
->  	/* Set crop */
-> @@ -1067,8 +1085,9 @@ static int dcmi_set_fmt(struct stm32_dcmi *dcmi, struct v4l2_format *f)
->  	if (ret)
->  		return ret;
->  
-> -	/* Disable crop if JPEG is requested */
-> -	if (pix->pixelformat == V4L2_PIX_FMT_JPEG)
-> +	/* Disable crop if JPEG is requested or BT656 bus is selected */
-> +	if (pix->pixelformat == V4L2_PIX_FMT_JPEG &&
-> +	    dcmi->bus_type != V4L2_MBUS_BT656)
->  		dcmi->do_crop = false;
->  
->  	/* pix to mbus format */
-> @@ -1592,6 +1611,11 @@ static int dcmi_formats_init(struct stm32_dcmi *dcmi)
->  			if (dcmi_formats[i].mbus_code != mbus_code.code)
->  				continue;
->  
-> +			/* Exclude JPEG if BT656 bus is selected */
-> +			if (dcmi_formats[i].fourcc == V4L2_PIX_FMT_JPEG &&
-> +			    dcmi->bus_type == V4L2_MBUS_BT656)
-> +				continue;
-> +
->  			/* Code supported, have we got this fourcc yet? */
->  			for (j = 0; j < num_fmts; j++)
->  				if (sd_fmts[j]->fourcc ==
-> @@ -1873,9 +1897,18 @@ static int dcmi_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "CSI bus not supported\n");
->  		return -ENODEV;
->  	}
-> +
-> +	if (ep.bus_type == V4L2_MBUS_BT656 &&
-> +	    ep.bus.parallel.bus_width != 8) {
-> +		dev_err(&pdev->dev, "BT656 bus conflicts with %d bits bus width (8 bits required)\n",
-> +			ep.bus.parallel.bus_width);
-
-bus_width is unsigned here.
-
-> +		return -ENODEV;
-> +	}
-> +
->  	dcmi->bus.flags = ep.bus.parallel.flags;
->  	dcmi->bus.bus_width = ep.bus.parallel.bus_width;
->  	dcmi->bus.data_shift = ep.bus.parallel.data_shift;
-> +	dcmi->bus_type = ep.bus_type;
->  
->  	irq = platform_get_irq(pdev, 0);
->  	if (irq <= 0)
-
--- 
-Regards,
-
-Sakari Ailus
+greg k-h
