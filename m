@@ -2,141 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6D428CDD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1426128CDD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgJMMIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgJMMIp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:08:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21564C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:08:45 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kSJ6Q-0002e6-QT; Tue, 13 Oct 2020 14:08:26 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kSJ6N-0006kh-Tu; Tue, 13 Oct 2020 14:08:23 +0200
-Date:   Tue, 13 Oct 2020 14:08:23 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     f.fainelli@gmail.com, linux@roeck-us.net, jdelvare@suse.com,
-        wahrenst@gmx.net, Eric Anholt <eric@anholt.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        linux-hwmon@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: pwm: Add binding for RPi firmware PWM
- bus
-Message-ID: <20201013120823.hhy7wyqsb3f3ufnx@pengutronix.de>
-References: <20201009153031.986-1-nsaenzjulienne@suse.de>
- <20201009153031.986-2-nsaenzjulienne@suse.de>
- <20201012070132.it23vl6f3ytavqgj@pengutronix.de>
- <cc7842ed7f8a4db863024a0ff5d8b7d86de52f50.camel@suse.de>
+        id S1726583AbgJMML6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:11:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726449AbgJMML5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:11:57 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D01A22227;
+        Tue, 13 Oct 2020 12:11:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602591116;
+        bh=hqi4TDcMww2xkK2y7+nf4KOu3bRAfoi8PMh8F33W22U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RB9/urR5DElHDQrIZ0H+wvi/EjE3jE5osihe4mNoCx1CEGUNPJ0/rgF/fEUhr7Jvu
+         Hyz+mSBHBVcYvd1MZLSaiqTWyvqqKu8lxTiYj6gUs+ebWnr7uBX+8jxDxWVLNv2vTO
+         BXTAkpEVeatdjHxt5R1t9ZpIk6yWeSlxV5w8L+tM=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1B0DF403AC; Tue, 13 Oct 2020 09:11:54 -0300 (-03)
+Date:   Tue, 13 Oct 2020 09:11:54 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET v4 0/6] perf inject: Speed build-id injection
+Message-ID: <20201013121154.GA560293@kernel.org>
+References: <20201012070214.2074921-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2bsdrnlfcavnjroa"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cc7842ed7f8a4db863024a0ff5d8b7d86de52f50.camel@suse.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201012070214.2074921-1-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, Oct 12, 2020 at 04:02:08PM +0900, Namhyung Kim escreveu:
+> Hello,
+> 
+> This is the new version of speed up build-id injection.  As this is
+> to improve performance, I've added a benchmark for it.  Please look at
+> the usage in the first commit.
+> 
+> By default, it measures average processing time of 100 MMAP2 events
+> and 10000 SAMPLE events.  Below is the current result on my laptop.
+> 
+>   $ perf bench internals inject-build-id
+>   # Running 'internals/inject-build-id' benchmark:
+>     Average build-id injection took: 25.789 msec (+- 0.202 msec)
+>     Average time per event: 2.528 usec (+- 0.020 usec)
+>     Average memory usage: 8411 KB (+- 7 KB)
+> 
+> With this patchset applied, it got this:
+> 
+>   $ perf bench internals inject-build-id
+>   # Running 'internals/inject-build-id' benchmark:
+>     Average build-id injection took: 20.838 msec (+- 0.093 msec)
+>     Average time per event: 2.043 usec (+- 0.009 usec)
+>     Average memory usage: 8261 KB (+- 0 KB)
+>     Average build-id-all injection took: 19.361 msec (+- 0.118 msec)
+>     Average time per event: 1.898 usec (+- 0.012 usec)
+>     Average memory usage: 7440 KB (+- 0 KB)
+> 
+> 
+> Real usecases might be different as it depends on the number of
+> mmap/sample events as well as how many DSOs are actually hit.
+> 
+> The benchmark result now includes memory footprint in terms of maximum
+> RSS.  Also I've update the benchmark code to use timestamp so that it
+> can be queued to the ordered_events (and flushed at the end).  It's
+> also important how well it sorts the input events in the queue so I
+> randomly chose a timestamp at the beginning of each MMAP event
+> injection to resemble actual behavior.
+> 
+> As I said in other thread, perf inject currently doesn't flush the
+> input events and processes all at the end.  This gives a good speedup
+> but spends more memory (in proprotion to the input size).  While the
+> build-id-all injection bypasses the queue so it uses less memory as
+> well as faster processing.  The downside is that it'll mark all DSOs
+> as hit so later processing steps (like perf report) likely handle them
+> unnecessarily.
 
---2bsdrnlfcavnjroa
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, tested and applied, first patchkit I process using that b4 tool,
+cool!
 
-On Tue, Oct 13, 2020 at 12:35:38PM +0200, Nicolas Saenz Julienne wrote:
-> Hi Uwe, thanks for having a look at this.
->=20
-> On Mon, 2020-10-12 at 09:01 +0200, Uwe Kleine-K=F6nig wrote:
-> > On Fri, Oct 09, 2020 at 05:30:28PM +0200, Nicolas Saenz Julienne wrote:
-> > > The PWM bus controlling the fan in RPi's official PoE hat can only be
-> > > controlled by the board's co-processor.
-> > >=20
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > ---
-> > >  .../arm/bcm/raspberrypi,bcm2835-firmware.yaml | 21 +++++++++++++++++=
-++
-> > >  .../pwm/raspberrypi,firmware-pwm.h            | 13 ++++++++++++
-> > >  2 files changed, 34 insertions(+)
-> > >  create mode 100644 include/dt-bindings/pwm/raspberrypi,firmware-pwm.h
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bc=
-m2835-firmware.yaml b/Documentation/devicetree/bindings/arm/bcm/raspberrypi=
-,bcm2835-firmware.yaml
-> > > index a2c63c8b1d10..dcaf00e8602e 100644
-> > > --- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-f=
-irmware.yaml
-> > > +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-f=
-irmware.yaml
-> > > @@ -64,6 +64,22 @@ properties:
-> > >        - compatible
-> > >        - "#reset-cells"
-> > > =20
-> > > +  pwm:
-> > > +    type: object
-> > > +
-> > > +    properties:
-> > > +      compatible:
-> > > +        const: raspberrypi,firmware-pwm
-> > > +
-> > > +      "#pwm-cells":
-> > > +        const: 1
-> > > +        description: >
-> > > +          The argument is the PWM bus number.
-> >=20
-> > This is wrong. #pwm-cells specifies the number of "arguments" for
-> > phandles pointing to this node. And I would prefer this being 2 to match
-> > the stuff described in the generic pwm binding.
->=20
-> I saw buses out there with the same limitation as this one (unable to cha=
-nge
-> frequency) that used a single cell, so I whent with it. That said I'll be=
- happy
-> to change it and drop the custom *_xlate() function in benefit of the def=
-ault
-> one.
+- Arnaldo
+ 
+> 
+> This code is available at 'perf/inject-speedup-v4' branch on
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> 
+> 
+> Changes from v3:
+>  - add timestamp to the synthesized events in the benchmark
+>  - add a separate thread to read pipe in the benchmark
+> 
+> Changes from v2:
+>  - fix benchmark to read required data
+>  - add Acked-by from Jiri and Ian
+>  - pass map flag to check huge pages  (Jiri)
+>  - add comments on some functions  (Ian)
+>  - show memory (max-RSS) usage in the benchmark  (Ian)
+>  - drop build-id marking patch at the last  (Adrian)
+> 
+> 
+> Namhyung Kim (6):
+>   perf bench: Add build-id injection benchmark
+>   perf inject: Add missing callbacks in perf_tool
+>   perf inject: Enter namespace when reading build-id
+>   perf inject: Do not load map/dso when injecting build-id
+>   perf inject: Add --buildid-all option
+>   perf bench: Run inject-build-id with --buildid-all option too
+> 
+>  tools/perf/Documentation/perf-inject.txt |   6 +-
+>  tools/perf/bench/Build                   |   1 +
+>  tools/perf/bench/bench.h                 |   1 +
+>  tools/perf/bench/inject-buildid.c        | 457 +++++++++++++++++++++++
+>  tools/perf/builtin-bench.c               |   1 +
+>  tools/perf/builtin-inject.c              | 199 ++++++++--
+>  tools/perf/util/build-id.h               |   4 +
+>  tools/perf/util/map.c                    |  17 +-
+>  tools/perf/util/map.h                    |  14 +
+>  9 files changed, 645 insertions(+), 55 deletions(-)
+>  create mode 100644 tools/perf/bench/inject-buildid.c
+> 
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+> 
+> 
+> *** BLURB HERE ***
+> 
+> Namhyung Kim (6):
+>   perf bench: Add build-id injection benchmark
+>   perf inject: Add missing callbacks in perf_tool
+>   perf inject: Enter namespace when reading build-id
+>   perf inject: Do not load map/dso when injecting build-id
+>   perf inject: Add --buildid-all option
+>   perf bench: Run inject-build-id with --buildid-all option too
+> 
+>  tools/perf/Documentation/perf-inject.txt |   6 +-
+>  tools/perf/bench/Build                   |   1 +
+>  tools/perf/bench/bench.h                 |   1 +
+>  tools/perf/bench/inject-buildid.c        | 476 +++++++++++++++++++++++
+>  tools/perf/builtin-bench.c               |   1 +
+>  tools/perf/builtin-inject.c              | 199 ++++++++--
+>  tools/perf/util/build-id.h               |   4 +
+>  tools/perf/util/map.c                    |  17 +-
+>  tools/perf/util/map.h                    |  14 +
+>  9 files changed, 664 insertions(+), 55 deletions(-)
+>  create mode 100644 tools/perf/bench/inject-buildid.c
+> 
+> -- 
+> 2.28.0.1011.ga647a8990f-goog
+> 
 
-As the first cell after the phandle is for the period and only the
-second if for flags, this is a poor argument. So yes, use #pwm-cells =3D
-<2> and drop the custom xlate() function please.
+-- 
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---2bsdrnlfcavnjroa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+FmLQACgkQwfwUeK3K
-7AmcvAf/TOC7xjaX8VHqGKuKP8SuFXAeBpx7wweyGHUwVnngRBBVoyxFuERmjQ9A
-X82ItAQJnDm9CIltDSaYaGHevQkm6/DB9CdpGEbUMO3dN/av7XCfB1FcMt53xln3
-pEWJ2V7zUJZH9DkSfcMDK7KFpqnHs8G1SkKAY7O+0Hi7hkzY2x0BsXXhubotF9hA
-UAjhRtrcnZE2OdIs6sdmBaDItTWxmtVpYUvYcNbvHj3iTEDIAy3Z7oLFd3FlVcHG
-aHIoJpDvHEwD+KyEq18BgeAkLQG2KBn/zMH7zyAYwoS0bJ7LK6CdyYVm/gXbJZ4X
-bKAhLENE6NcEgV6+dQe0N+b4rIxqlA==
-=Cm8q
------END PGP SIGNATURE-----
-
---2bsdrnlfcavnjroa--
+- Arnaldo
