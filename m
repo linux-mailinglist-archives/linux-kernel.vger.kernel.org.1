@@ -2,136 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF35B28C975
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529EA28C972
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390397AbgJMHex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390362AbgJMHeu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390370AbgJMHeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 13 Oct 2020 03:34:50 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C08BC0613D0;
-        Tue, 13 Oct 2020 00:34:50 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+Received: from mail.kernel.org ([198.145.29.99]:56662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390018AbgJMHes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 03:34:48 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9S472H0Zz9sVL;
-        Tue, 13 Oct 2020 18:34:47 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602574487;
-        bh=xtWjdMs/3CDfLYum2CFyA2pchAXKUKoEOiejJZzr094=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=U1NFe6Ybo8PG/jQifUjkL56z10yrGhkMsuNfqXNifArcEohVJWOnwq28oqmsFcP8i
-         72EblQgU3GCiEnkT+UEbckXPoOCRNS2heZuDE/Kjtg1V1t1MmMXhhwl9Oq2SsSByTS
-         8zOWkiE3EBq/Ltzm9cg9JvaeeeFrWkV9kwF5jyv5Dn0BGsdhaXRU9Kt1x7++sOYurK
-         ef8TXV8/7kracBia6zebxIesY3X/SH8+yZ/DGMiU4tIvuKe+FC5NJeWl+yV9hwYTMo
-         FsQ/G5SRfqHxO33Pczk3yCPRGPhbJzmQPe4jo+TYOPw8TV40on9R6qwVY9sJ1RQ7Gh
-         3ZoR+wyIcHfKw==
-Date:   Tue, 13 Oct 2020 18:34:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- arm64 tree
-Message-ID: <20201013183446.654826bd@canb.auug.org.au>
-In-Reply-To: <20200921180353.421484e8@canb.auug.org.au>
-References: <20200921180353.421484e8@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DEAC205CA;
+        Tue, 13 Oct 2020 07:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602574486;
+        bh=GhAG0J+vJgd9zGq/7S2yLWnSWEl+GQ9Gt6oedI60JpA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fGAqznVbGa+EmEekK8WeEnc/qlcLTCEzLJHirBZmtROeXU6ZOm8ndMqttj1tdD0YG
+         w8bEdAiGO/UBFmrTsjaItMERglAGVSIu69KkiKj6OZUoW2W6fj7Nqpa9BG+pM5+j02
+         ZkXvbV2FlUwjBQXdI4kFAY/OfKMbDQnAZnRHfmnM=
+Date:   Tue, 13 Oct 2020 09:35:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+Message-ID: <20201013073524.GA1674118@kroah.com>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com>
+ <alpine.DEB.2.21.2010121550300.6487@felia>
+ <20201012145710.GA631710@rowland.harvard.edu>
+ <alpine.DEB.2.21.2010121659040.6487@felia>
+ <20201012151816.GA1559916@kroah.com>
+ <alpine.DEB.2.21.2010122022250.17866@felia>
+ <20201013052317.GB330398@kroah.com>
+ <alpine.DEB.2.21.2010130725370.14590@felia>
+ <20201013063636.GA1663576@kroah.com>
+ <alpine.DEB.2.21.2010130850410.14590@felia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wUROmdlMdSgGnPMMDIarwSo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2010130850410.14590@felia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/wUROmdlMdSgGnPMMDIarwSo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 13, 2020 at 09:16:27AM +0200, Lukas Bulwahn wrote:
+> Some others actually believe that the use of static analysis tools 
+> increase software quality and ONLY IF a static analysis tool is used, a 
+> specific level of software quality is achieved and they want to prove 
+> that the software reaches a certain level that way. (I do not 
+> understand that argument but some have been repeating it quite often 
+> around me. This argument seems to come from a specific interpretation of 
+> safety standards that claim to have methods to predict the absense of 
+> bugs up to a certain confidence.)
 
-Hi all,
+So do those others also audit the static analysis tools to ensure that
+they actually work as they "think" they do?  If not, then their
+requirement is pretty pointless :)
 
-On Mon, 21 Sep 2020 18:03:53 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->=20
->   arch/arm64/mm/mmu.c
->=20
-> between commit:
->=20
->   0178dc761368 ("arm64: mte: Use Normal Tagged attributes for the linear =
-map")
->=20
-> from the arm64 tree and commit:
->=20
->   8e19cbb9528f ("arch, drivers: replace for_each_membock() with for_each_=
-mem_range()")
->=20
-> from the akpm-current tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc arch/arm64/mm/mmu.c
-> index 087a844b4d26,64211436629d..000000000000
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@@ -493,21 -483,10 +494,15 @@@ static void __init map_mem(pgd_t *pgdp
->   #endif
->  =20
->   	/* map all the memory banks */
-> - 	for_each_memblock(memory, reg) {
-> - 		phys_addr_t start =3D reg->base;
-> - 		phys_addr_t end =3D start + reg->size;
-> -=20
-> + 	for_each_mem_range(i, &start, &end) {
->   		if (start >=3D end)
->   			break;
-> - 		if (memblock_is_nomap(reg))
-> - 			continue;
-> -=20
->  -		__map_memblock(pgdp, start, end, PAGE_KERNEL, flags);
->  +		/*
->  +		 * The linear map must allow allocation tags reading/writing
->  +		 * if MTE is present. Otherwise, it has the same attributes as
->  +		 * PAGE_KERNEL.
->  +		 */
->  +		__map_memblock(pgdp, start, end, PAGE_KERNEL_TAGGED, flags);
->   	}
->  =20
->   	/*
+> I am doing it for the fun and learning about tools, and I am not such a 
+> believer but those others would be forced by their beliefs until they 
+> understand what static analysis tools and their janitors really already 
+> contribute to the kernel development and where the real gaps might be.
+> 
+> I hope that helps to get a bit of the motivation. Consider us 
+> kernel newbies :)
 
-This is now a conflict between the akpm-current tree and Linus' tree.
+Watch out, sending patches to subsystems to "fix" issues that really
+are not real problems is a sure way to get your patches rejected and
+make maintainers grumpy.
 
---=20
-Cheers,
-Stephen Rothwell
+I recommend starting out with code that we all "know" needs help, in
+drivers/staging/ for stuff like this, so you can learn the process
+better, as well as start to understand the limitations of your tools
+better.
 
---Sig_/wUROmdlMdSgGnPMMDIarwSo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+good luck!
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FWJYACgkQAVBC80lX
-0GzP0gf/Sc5EMLCooF1Yy9HypdIBIAA2BNBwPMPQolo7juOPVrUI+betJQikWnHN
-Sc/oEc5PyBDXFRU3t5nLbdxFkOrZEYsVSRZqcarEHeMwkcgfen8+fnc0eGmNuIa4
-VBg90C7/Bd+XYTwLLrchgU3YdJNLdGnhs6dbJNwqex+PcwWawlXDSocn5eucDreU
-CkbS+4LTtGeHb/bU9kNufsnx67uCgzZiaWICuPAUYmZ7S/HQm3V2XFMRvdk0HEAX
-WvpkW/FoHm8GWwNAjyirBlgDc7+meeTiYd6zyZb2jfansyWPuv44klXIgVZgNSD2
-gGKG9L46SN93CgavXVTaKNL5lP5kAA==
-=FHGx
------END PGP SIGNATURE-----
-
---Sig_/wUROmdlMdSgGnPMMDIarwSo--
+greg k-h
