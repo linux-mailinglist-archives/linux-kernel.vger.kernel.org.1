@@ -2,206 +2,385 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C73728D3AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F5B28D3B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387485AbgJMSby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:31:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:39019 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726899AbgJMSbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:31:53 -0400
-IronPort-SDR: W8xiilTl3OxH88FCikgy1IOVIU6wcB8PvfhYPPZmjweOK2+8giAVSEDMuyYi9VfZKLhhtV00Li
- LJlK0kbY9ycg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="153794227"
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="153794227"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 11:31:45 -0700
-IronPort-SDR: N1xn0HQI0ubXW+ZZ5gn2QreU7BQoHP/0atyUS215Vn7NRjG/ItSebl73LdP+GjPjSK62O2AOZS
- e/mlDqFbQs2A==
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="346279150"
-Received: from murawskx-mobl.amr.corp.intel.com (HELO [10.209.9.29]) ([10.209.9.29])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 11:31:45 -0700
-Subject: Re: [PATCH RFC V3 4/9] x86/pks: Preserve the PKRS MSR on context
- switch
-To:     ira.weiny@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-References: <20201009194258.3207172-1-ira.weiny@intel.com>
- <20201009194258.3207172-5-ira.weiny@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <429789d3-ab5b-49c3-65c3-f0fc30a12516@intel.com>
-Date:   Tue, 13 Oct 2020 11:31:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730776AbgJMSdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729085AbgJMSdJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 14:33:09 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3990C0613D0;
+        Tue, 13 Oct 2020 11:33:08 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: nicolas)
+        with ESMTPSA id 696B71F41657
+Message-ID: <c5938e19d32379dd2545151e104731b22ea9e4d2.camel@collabora.com>
+Subject: Re: [PATCH v2] media: uapi: h264: Add documentation to the
+ interface header
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Reply-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>
+Date:   Tue, 13 Oct 2020 14:33:00 -0400
+In-Reply-To: <20200928201433.327068-1-ezequiel@collabora.com>
+References: <20200928201433.327068-1-ezequiel@collabora.com>
+Organization: Collabora
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+        boundary="=-zEbFNi+6xgf0L4bXR3i1"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201009194258.3207172-5-ira.weiny@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> The PKRS MSR is defined as a per-logical-processor register.  This
-> isolates memory access by logical CPU.  Unfortunately, the MSR is not
-> managed by XSAVE.  Therefore, tasks must save/restore the MSR value on
-> context switch.
-> 
-> Define a saved PKRS value in the task struct, as well as a cached
-> per-logical-processor MSR value which mirrors the MSR value of the
-> current CPU.  Initialize all tasks with the default MSR value.  Then, on
-> schedule in, check the saved task MSR vs the per-cpu value.  If
-> different proceed to write the MSR.  If not avoid the overhead of the
-> MSR write and continue.
 
-It's probably nice to note how the WRMSR is special here, in addition to
-the comments below.
+--=-zEbFNi+6xgf0L4bXR3i1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->  #endif /*_ASM_X86_PKEYS_INTERNAL_H */
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index 97143d87994c..da2381136b2d 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -18,6 +18,7 @@ struct vm86;
->  #include <asm/cpufeatures.h>
->  #include <asm/page.h>
->  #include <asm/pgtable_types.h>
-> +#include <asm/pkeys_common.h>
->  #include <asm/percpu.h>
->  #include <asm/msr.h>
->  #include <asm/desc_defs.h>
-> @@ -542,6 +543,11 @@ struct thread_struct {
->  
->  	unsigned int		sig_on_uaccess_err:1;
->  
-> +#ifdef	CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> +	/* Saved Protection key register for supervisor mappings */
-> +	u32			saved_pkrs;
-> +#endif
-
-Could you take a look around thread_struct and see if there are some
-other MSRs near which you can stash this?  This seems like a bit of a
-lonely place.
-
-...
->  void flush_thread(void)
->  {
->  	struct task_struct *tsk = current;
-> @@ -195,6 +212,8 @@ void flush_thread(void)
->  	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
->  
->  	fpu__clear_all(&tsk->thread.fpu);
-> +
-> +	pks_init_task(tsk);
->  }
->  
->  void disable_TSC(void)
-> @@ -644,6 +663,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
->  
->  	if ((tifp ^ tifn) & _TIF_SLD)
->  		switch_to_sld(tifn);
-> +
-> +	pks_sched_in();
->  }
->  
->  /*
-> diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
-> index 3cf8f775f36d..30f65dd3d0c5 100644
-> --- a/arch/x86/mm/pkeys.c
-> +++ b/arch/x86/mm/pkeys.c
-> @@ -229,3 +229,31 @@ u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
->  
->  	return pk_reg;
->  }
-> +
-> +DEFINE_PER_CPU(u32, pkrs_cache);
-> +
+Le lundi 28 septembre 2020 =C3=A0 17:14 -0300, Ezequiel Garcia a =C3=A9crit=
+ :
+> In preparation for making the interface public,
+> document all the structures. Special care is taken to
+> annotate those fields that depart from the H264 syntax.
+>=20
+> This commit only adds documentation and doesn't affect
+> functionality in any way.
+>=20
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+> v2:
+> * Address the feedback, commenting every field, including
+>   reserved and flags.
+> * Clarify scaling list ordering.
+> ---
+>  include/media/h264-ctrls.h | 195 +++++++++++++++++++++++++++++++++++--
+>  1 file changed, 185 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> index ec4799154438..893e21354a9b 100644
+> --- a/include/media/h264-ctrls.h
+> +++ b/include/media/h264-ctrls.h
+> @@ -46,11 +46,38 @@
+>  #define V4L2_CTRL_TYPE_H264_DECODE_PARAMS	0x0114
+>  #define V4L2_CTRL_TYPE_H264_PRED_WEIGHTS	0x0115
+> =20
 > +/**
-> + * It should also be noted that the underlying WRMSR(MSR_IA32_PKRS) is not
-> + * serializing but still maintains ordering properties similar to WRPKRU.
-> + * The current SDM section on PKRS needs updating but should be the same as
-> + * that of WRPKRU.  So to quote from the WRPKRU text:
+> + * enum v4l2_mpeg_video_h264_decode_mode - Decoding mode
 > + *
-> + * 	WRPKRU will never execute transiently. Memory accesses
-> + * 	affected by PKRU register will not execute (even transiently)
-> + * 	until all prior executions of WRPKRU have completed execution
-> + * 	and updated the PKRU register.
-> + */
-> +void write_pkrs(u32 new_pkrs)
-> +{
-> +	u32 *pkrs;
-> +
-> +	if (!static_cpu_has(X86_FEATURE_PKS))
-> +		return;
-> +
-> +	pkrs = get_cpu_ptr(&pkrs_cache);
-> +	if (*pkrs != new_pkrs) {
-> +		*pkrs = new_pkrs;
-> +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
-> +	}
-> +	put_cpu_ptr(pkrs);
-> +}
-> 
+> + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED: indicates that decodin=
+g
+> + * is performed one slice at a time. In this mode,
+> + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS must contain the parsed slice
+> + * parameters and the OUTPUT buffer must contain a single slice.
+> + * V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF feature is used
+> + * in order to support multislice frames.
+                          multi-slice or multiple slice per ?
 
-It bugs me a *bit* that this is being called in a preempt-disabled
-region, but we still bother with the get/put_cpu jazz.  Are there other
-future call-sites for this that aren't in preempt-disabled regions?
+> + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED: indicates that
+> + * decoding is performed per frame. The OUTPUT buffer must contain
+> + * all slices and also both fields. This mode is typically supported
+
+I'm surprised that this must contain both fields without distinction of
+MBAFF or alternate. We have a pretty limited interlacing coverage atm,
+are we certain this is correct ? I'm fine with that, as long as it
+matches the HW.
+
+> + * by device drivers that are able to parse the slice(s) header(s)
+> + * in hardware. When this mode is selected,
+> + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS is not used.
+> + */
+>  enum v4l2_mpeg_video_h264_decode_mode {
+>  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED,
+>  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
+>  };
+> =20
+> +/**
+> + * enum v4l2_mpeg_video_h264_start_code - Start code
+> + *
+> + * @V4L2_MPEG_VIDEO_H264_START_CODE_NONE: slices are passed
+> + * to the driver without any start code.
+> + * @V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B: slices are passed
+> + * to the driver with an Annex B start code prefix
+> + * (legal start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001).
+> + * This mode is typically supported by device drivers that parse
+> + * the start code in hardware.
+> + */
+
+Do we need to mention that not all combinations are possible ? An
+example, having START_CODE_NONE with FRAME_BASED would simply not work,
+since it's impossible to find the start/end of NAL.
+
+>  enum v4l2_mpeg_video_h264_start_code {
+>  	V4L2_MPEG_VIDEO_H264_START_CODE_NONE,
+>  	V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
+> @@ -71,6 +98,31 @@ enum v4l2_mpeg_video_h264_start_code {
+>  #define V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD		0x20
+>  #define V4L2_H264_SPS_FLAG_DIRECT_8X8_INFERENCE			0x40
+> =20
+> +/**
+> + * struct v4l2_ctrl_h264_sps - H264 sequence parameter set
+> + *
+> + * All the members on this sequence parameter set structure match the
+> + * sequence parameter set syntax as specified by the H264 specification.
+> + *
+> + * @profile_idc: see H264 specification.
+> + * @constraint_set_flags: see H264 specification.
+> + * @level_idc: see H264 specification.
+> + * @seq_parameter_set_id: see H264 specification.
+> + * @chroma_format_idc: see H264 specification.
+> + * @bit_depth_luma_minus8: see H264 specification.
+> + * @bit_depth_chroma_minus8: see H264 specification.
+> + * @log2_max_frame_num_minus4: see H264 specification.
+> + * @pic_order_cnt_type: see H264 specification.
+> + * @log2_max_pic_order_cnt_lsb_minus4: see H264 specification.
+> + * @max_num_ref_frames: see H264 specification.
+> + * @num_ref_frames_in_pic_order_cnt_cycle: see H264 specification.
+> + * @offset_for_ref_frame: see H264 specification.
+> + * @offset_for_non_ref_pic: see H264 specification.
+> + * @offset_for_top_to_bottom_field: see H264 specification.
+> + * @pic_width_in_mbs_minus1: see H264 specification.
+> + * @pic_height_in_map_units_minus1: see H264 specification.
+> + * @flags: see V4L2_H264_SPS_FLAG_{}.
+> + */
+>  struct v4l2_ctrl_h264_sps {
+>  	__u8 profile_idc;
+>  	__u8 constraint_set_flags;
+> @@ -101,6 +153,31 @@ struct v4l2_ctrl_h264_sps {
+>  #define V4L2_H264_PPS_FLAG_TRANSFORM_8X8_MODE				0x0040
+>  #define V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT			0x0080
+> =20
+> +/**
+> + * struct v4l2_ctrl_h264_pps - H264 picture parameter set
+> + *
+> + * Except where noted, all the members on this picture parameter set
+> + * structure match the sequence parameter set syntax as specified
+> + * by the H264 specification.
+> + *
+> + * In particular, V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT flag
+> + * has a specific meaning. This flag should be set if a non-flat
+> + * scaling matrix applies to the picture. In this case, applications
+> + * are expected to use V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX,
+> + * to pass the values of the non-flat matrices.
+> + *
+> + * @pic_parameter_set_id: see H264 specification.
+> + * @seq_parameter_set_id: see H264 specification.
+> + * @num_slice_groups_minus1: see H264 specification.
+> + * @num_ref_idx_l0_default_active_minus1: see H264 specification.
+> + * @num_ref_idx_l1_default_active_minus1: see H264 specification.
+> + * @weighted_bipred_idc: see H264 specification.
+> + * @pic_init_qp_minus26: see H264 specification.
+> + * @pic_init_qs_minus26: see H264 specification.
+> + * @chroma_qp_index_offset: see H264 specification.
+> + * @second_chroma_qp_index_offset: see H264 specification.
+> + * @flags: see V4L2_H264_PPS_FLAG_{}.
+> + */
+>  struct v4l2_ctrl_h264_pps {
+>  	__u8 pic_parameter_set_id;
+>  	__u8 seq_parameter_set_id;
+> @@ -115,6 +192,23 @@ struct v4l2_ctrl_h264_pps {
+>  	__u16 flags;
+>  };
+> =20
+> +/**
+> + * struct v4l2_ctrl_h264_scaling_matrix - H264 scaling matrices
+> + *
+> + * @scaling_list_4x4: scaling matrix after applying the inverse
+> + * scanning process. Expected list order is Intra Y, Intra Cb,
+> + * Intra Cr, Inter Y, Inter Cb, Inter Cr. The values on each
+> + * scaling list are expected in raster scan order.
+> + * @scaling_list_8x8: scaling matrix after applying the inverse
+> + * scanning process. Expected list order is Intra Y, Inter Y,
+> + * Intra Cb, Inter Cb, Intra Cr, Inter Cr. The values on each
+> + * scaling list are expected in raster scan order.
+> + *
+> + * Note that the list order is different for the 4x4 and 8x8
+> + * matrices as per the H264 specification, see table 7-2 "Assignment
+> + * of mnemonic names to scaling list indices and specification of
+> + * fall-back rule".
+> + */
+>  struct v4l2_ctrl_h264_scaling_matrix {
+>  	__u8 scaling_list_4x4[6][16];
+>  	__u8 scaling_list_8x8[6][64];
+> @@ -134,6 +228,16 @@ struct v4l2_h264_weight_factors {
+>  	 ((pps)->weighted_bipred_idc =3D=3D 1 && \
+>  	  (slice)->slice_type =3D=3D V4L2_H264_SLICE_TYPE_B))
+> =20
+> +/**
+> + * struct v4l2_ctrl_h264_pred_weights - Prediction weight table
+> + *
+> + * Prediction weight table, which matches the syntax specified
+> + * by the H264 specification.
+> + *
+> + * @luma_log2_weight_denom: see H264 specification.
+> + * @chroma_log2_weight_denom: see H264 specification.
+> + * @weight_factors: luma and chroma weight factors.
+> + */
+>  struct v4l2_ctrl_h264_pred_weights {
+>  	__u16 luma_log2_weight_denom;
+>  	__u16 chroma_log2_weight_denom;
+> @@ -153,19 +257,55 @@ struct v4l2_ctrl_h264_pred_weights {
+>  #define V4L2_H264_BOTTOM_FIELD_REF			0x2
+>  #define V4L2_H264_FRAME_REF				0x3
+> =20
+> +/**
+> + * struct v4l2_h264_reference - H264 picture reference
+> + *
+> + * @fields: indicates how the picture is referenced.
+> + * Valid values are V4L2_H264_{}_REF.
+> + * @index: index into v4l2_ctrl_h264_decode_params.dpb[].
+> + */
+>  struct v4l2_h264_reference {
+>  	__u8 fields;
+> -
+> -	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
+>  	__u8 index;
+>  };
+> =20
+> +/**
+> + * struct v4l2_ctrl_h264_slice_params - H264 slice parameters
+> + *
+> + * This structure holds the H264 syntax elements that are specified
+> + * as non-invariant for the slices in a given frame.
+> + *
+> + * Slice invariant syntax elements are contained in struct
+> + * v4l2_ctrl_h264_decode_params. This is done to reduce the API surface
+> + * on frame-based decoders, where slice header parsing is done by the
+> + * hardware.
+> + *
+> + * Slice invariant syntax elements are specified in specification sectio=
+n
+> + * "7.4.3 Slice header semantics".
+> + *
+> + * Except where noted, the members on this struct match the slice header=
+ syntax.
+> + *
+> + * @header_bit_size: offset in bits to slice_data() from the beginning o=
+f this slice.
+> + * @first_mb_in_slice: see H264 specification.
+> + * @slice_type: see H264 specification.
+> + * @colour_plane_id: see H264 specification.
+> + * @redundant_pic_cnt: see H264 specification.
+> + * @cabac_init_idc: see H264 specification.
+> + * @slice_qp_delta: see H264 specification.
+> + * @slice_qs_delta: see H264 specification.
+> + * @disable_deblocking_filter_idc: see H264 specification.
+> + * @slice_alpha_c0_offset_div2: see H264 specification.
+> + * @slice_beta_offset_div2: see H264 specification.
+> + * @num_ref_idx_l0_active_minus1: see H264 specification.
+> + * @num_ref_idx_l1_active_minus1: see H264 specification.
+> + * @reserved: padding field. Should be zeroed by applications.
+> + * @ref_pic_list0: reference picture list 0 after applying the per-slice=
+ modifications.
+> + * @ref_pic_list1: reference picture list 1 after applying the per-slice=
+ modifications.
+> + * @flags: see V4L2_H264_SLICE_FLAG_{}.
+> + */
+>  struct v4l2_ctrl_h264_slice_params {
+> -	/* Offset in bits to slice_data() from the beginning of this slice. */
+>  	__u32 header_bit_size;
+> -
+>  	__u32 first_mb_in_slice;
+> -
+>  	__u8 slice_type;
+>  	__u8 colour_plane_id;
+>  	__u8 redundant_pic_cnt;
+> @@ -191,22 +331,59 @@ struct v4l2_ctrl_h264_slice_params {
+>  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+>  #define V4L2_H264_DPB_ENTRY_FLAG_FIELD		0x08
+> =20
+> +/**
+> + * struct v4l2_h264_dpb_entry - H264 decoded picture buffer entry
+> + *
+> + * @reference_ts: timestamp of the V4L2 capture buffer to use as referen=
+ce.
+> + * The timestamp refers to the timestamp field in struct v4l2_buffer.
+> + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
+> + * @pic_num: matches PicNum variable assigned during the reference
+> + * picture lists construction process.
+> + * @frame_num: frame identifier which matches frame_num syntax element.
+> + * @fields: indicates how the DPB entry is referenced. Valid values are
+> + * V4L2_H264_{}_REF.
+> + * @reserved: padding field. Should be zeroed by applications.
+> + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
+> + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
+> + * Note that picture field is indicated by v4l2_buffer.field.
+> + * @flags: see V4L2_H264_DPB_ENTRY_FLAG_{}.
+> + */
+>  struct v4l2_h264_dpb_entry {
+>  	__u64 reference_ts;
+>  	__u32 pic_num;
+>  	__u16 frame_num;
+>  	__u8 fields;
+>  	__u8 reserved[5];
+> -	/* Note that field is indicated by v4l2_buffer.field */
+>  	__s32 top_field_order_cnt;
+>  	__s32 bottom_field_order_cnt;
+> -	__u32 flags; /* V4L2_H264_DPB_ENTRY_FLAG_* */
+> +	__u32 flags;
+>  };
+> =20
+>  #define V4L2_H264_DECODE_PARAM_FLAG_IDR_PIC		0x01
+>  #define V4L2_H264_DECODE_PARAM_FLAG_FIELD_PIC		0x02
+>  #define V4L2_H264_DECODE_PARAM_FLAG_BOTTOM_FIELD	0x04
+> =20
+> +/**
+> + * struct v4l2_ctrl_h264_decode_params - H264 decoding parameters
+> + *
+> + * @dpb: decoded picture buffer.
+> + * @nal_ref_idc: slice header syntax element.
+> + * @frame_num: slice header syntax element.
+> + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
+> + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
+> + * Note that picture field is indicated by v4l2_buffer.field.
+> + * @idr_pic_id: slice header syntax element.
+> + * @pic_order_cnt_lsb: slice header syntax element.
+> + * @delta_pic_order_cnt_bottom: slice header syntax element.
+> + * @delta_pic_order_cnt0: slice header syntax element.
+> + * @delta_pic_order_cnt1: slice header syntax element.
+> + * @dec_ref_pic_marking_bit_size: size in bits of dec_ref_pic_marking()
+> + * syntax element.
+> + * @pic_order_cnt_bit_size: size in bits of pic order count syntax.
+> + * @slice_group_change_cycle: slice header syntax element.
+> + * @reserved: padding field. Should be zeroed by applications.
+> + * @flags: see V4L2_H264_DECODE_PARAM_FLAG_{}.
+> + */
+>  struct v4l2_ctrl_h264_decode_params {
+>  	struct v4l2_h264_dpb_entry dpb[V4L2_H264_NUM_DPB_ENTRIES];
+>  	__u16 nal_ref_idc;
+> @@ -218,14 +395,12 @@ struct v4l2_ctrl_h264_decode_params {
+>  	__s32 delta_pic_order_cnt_bottom;
+>  	__s32 delta_pic_order_cnt0;
+>  	__s32 delta_pic_order_cnt1;
+> -	/* Size in bits of dec_ref_pic_marking() syntax element. */
+>  	__u32 dec_ref_pic_marking_bit_size;
+> -	/* Size in bits of pic order count syntax. */
+>  	__u32 pic_order_cnt_bit_size;
+>  	__u32 slice_group_change_cycle;
+> =20
+>  	__u32 reserved;
+> -	__u32 flags; /* V4L2_H264_DECODE_PARAM_FLAG_* */
+> +	__u32 flags;
+>  };
+> =20
+>  #endif
+
+--=-zEbFNi+6xgf0L4bXR3i1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSScpfJiL+hb5vvd45xUwItrAaoHAUCX4Xy3AAKCRBxUwItrAao
+HPGyAKCkf0zdBOVjJSgF/XEhY/+ZsMcB3ACfVP95YTz8Z324166t0WQ1SLVhhJE=
+=7NzU
+-----END PGP SIGNATURE-----
+
+--=-zEbFNi+6xgf0L4bXR3i1--
+
