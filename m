@@ -2,113 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1E528C682
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0404928C684
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgJMAyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 20:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
+        id S1727982AbgJMA5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 20:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727950AbgJMAyb (ORCPT
+        with ESMTP id S1727950AbgJMA5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 20:54:31 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83508C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:54:29 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id dt13so25870894ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:54:29 -0700 (PDT)
+        Mon, 12 Oct 2020 20:57:42 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9FCC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:57:42 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id e20so17093066otj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:57:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6HukdDFPy45a3aIumcfc0MFcpWuJbnHPSUT8UUjL53A=;
-        b=1bqR9/juzSQC+N9kV6Ixqtt4rzlG3KD60RzkiYZJj0EGkkWi2PHcy2THNv7PqBHxpC
-         vcetpboy/CEsWhKqw2WmuQEqg2m38fTXC+THsjqjf97UsK/bMwNbl88tYPsJlqjgHLib
-         4SU7Qez+ShkEgwgKWbIxQBfGuk369jiAAZmIO3Q0j+x3mtqLW3g0NmCuZUBq/6g4yRVy
-         btDHEINq6QEQVrA7P775+Pq/+z/4i0/ce/D019v3VOdu/oARdhodCsw4lUaJtfZbXe6C
-         VvHc3hsfOj8BxMeajh3Ee7o/fSBpR9vVich7a55GPnYohWgqYpNnjaw3Wp+Rd7ezziie
-         cuNQ==
+        bh=IpSz3HxdqBPCuQgrwDIdFKu49ndcXOrnJ/LSogHFcdo=;
+        b=YaZxFjgx8OxLAvGkEa/K8lOYgoWppNLXoHMQLq/M/T8xc0lOztQHwL6GZPWSJ7p4DZ
+         T1qV5HWZabpqYPjHqCrSTAbj34tLChVDVjzdWlWTSPgwxfcWusNj1+Kdn3SdsR2UOXx5
+         BFhADJ9a2Wv/8twux/lP3MHmwDSZjQSPJB5Do=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6HukdDFPy45a3aIumcfc0MFcpWuJbnHPSUT8UUjL53A=;
-        b=Ka4PBARQg+5tj6Rq6HDldJS8Eh28IumeoR2xMExFVRggkSq78XQS13QlAqrhb6I5Gb
-         wuwq2l+uvVbxhVvrBzqEHzS6pWpxrSSptfkt1PRp3dw9/C82F8OQ52SOvauKV5nXdoc0
-         a+RuUMhEmd2KQSa1W3k9kB+QJN7qy4Dybm6qbQ+Ax35L+r0891+j23mOm72Uma58PcBq
-         mct7LKdo13j29uktx5YKgfFjbTZ4jWTZbau8vQmE6kT15jaVJ58dauhB5DCZ5/iZGXpB
-         aa9IenlfTgmnLOF9yrlr+4fl6E1XObfMtsKxEApBwAUXvZLQxcxmZ3a78gV9+1548n3j
-         EqdQ==
-X-Gm-Message-State: AOAM531PfVRIalLOEJe6tXai2V/c345e/qs1LzpsFHdZnv1QGETYcdlZ
-        wefvJJK6cyH2qHz09WIoY5BbpM3BahEVKSGXnXqKr3BoH4R/
-X-Google-Smtp-Source: ABdhPJylnZ+0gGDHO99ud6Ze8t5ualUVdgCroLu4d6mSfa9ZZGXwZFHFaX6ABjoQ25hgWA9Rmdc0975AWl/utA6bBkA=
-X-Received: by 2002:a17:906:c1d4:: with SMTP id bw20mr30265414ejb.91.1602550468068;
- Mon, 12 Oct 2020 17:54:28 -0700 (PDT)
+        bh=IpSz3HxdqBPCuQgrwDIdFKu49ndcXOrnJ/LSogHFcdo=;
+        b=m4nolNi03lCHBn9ccxXUdsZMTONUAslZ/7H5ojkfdVP6y6BB8IHuIeuQWc3eaMIqxh
+         0me/6eOVxnQf/kvZ+Bfzvs4FdYm/DnT0Vx6Zw03Jzgtp9tiifE1gz9xfBKQ6O56n1oCu
+         mmOFc860XSbM2FWkefSwzn1YEijp3SNg8kAFmPi6F+kCVfgcR+7LZAuc3JPjYi8wugRg
+         tnsKlGrPNTOq9gvc56DX4LsdYOL2MIReEpazZ/lNJYOP8/u5WUUppJVQVpo0P38EVhnE
+         oD7uxZkVU208fpZgZlSiiTdBmh4BY1ek1vqITRHHGPWTajAeARZRLgdu/0J6yqFN4LDT
+         pO+Q==
+X-Gm-Message-State: AOAM530EwLeE4p9nkv9qER1WCpfKSuUqmi0FT/vdCMh5dtFipMNwsWsW
+        W5SAd7GpEYHFm0cfhVtTHPs4GDtyv96txjL7
+X-Google-Smtp-Source: ABdhPJwLYpxdZslxxOB9FOlDRy+E/PhEiOOcq/dG2G+E1QyfCDzk/4DZ5R5t9iz4o4R8bHwlvK+2og==
+X-Received: by 2002:a9d:75d6:: with SMTP id c22mr19085008otl.213.1602550661283;
+        Mon, 12 Oct 2020 17:57:41 -0700 (PDT)
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com. [209.85.210.42])
+        by smtp.gmail.com with ESMTPSA id 8sm10558894oii.45.2020.10.12.17.57.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Oct 2020 17:57:40 -0700 (PDT)
+Received: by mail-ot1-f42.google.com with SMTP id s66so17553528otb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:57:40 -0700 (PDT)
+X-Received: by 2002:a9d:242:: with SMTP id 60mr8187117otb.141.1602550659528;
+ Mon, 12 Oct 2020 17:57:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHC9VhTNqnzrtu1DHquVF7kK9v9tCAa8q=V3f9kUZi_nLTzfYg@mail.gmail.com>
-In-Reply-To: <CAHC9VhTNqnzrtu1DHquVF7kK9v9tCAa8q=V3f9kUZi_nLTzfYg@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 12 Oct 2020 20:54:16 -0400
-Message-ID: <CAHC9VhQrBHr00Lxeocv9FkWP5svcEF1=y_9KTRf7Q0-P2ZZJkg@mail.gmail.com>
-Subject: Re: [GIT PULL] Audit patches for v5.10
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org
+References: <20201012053557.4102148-1-acourbot@chromium.org>
+ <20201012053557.4102148-3-acourbot@chromium.org> <b9afc70f-9787-6513-29e7-41ffd6972da0@infradead.org>
+In-Reply-To: <b9afc70f-9787-6513-29e7-41ffd6972da0@infradead.org>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Tue, 13 Oct 2020 09:57:25 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MW8KvoxO8KNXM5azgijMT9aSis8ZZ=mumA0_JyQTbKyVQ@mail.gmail.com>
+Message-ID: <CAPBb6MW8KvoxO8KNXM5azgijMT9aSis8ZZ=mumA0_JyQTbKyVQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] media: mtk-vcodec: fix build breakage when one of
+ VPU or SCP is enabled
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Alexandre Courbot <gnurou@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 8:51 PM Paul Moore <paul@paul-moore.com> wrote:
+On Tue, Oct 13, 2020 at 12:00 AM Randy Dunlap <rdunlap@infradead.org> wrote:
 >
-> Hi Linus,
+> On 10/11/20 10:35 PM, Alexandre Courbot wrote:
+> > The addition of MT8183 support added a dependency on the SCP remoteproc
+> > module. However the initial patch used the "select" Kconfig directive,
+> > which may result in the SCP module to not be compiled if remoteproc was
+> > disabled. In such a case, mtk-vcodec would try to link against
+> > non-existent SCP symbols. "select" was clearly misused here as explained
+> > in kconfig-language.txt.
+> >
+> > Replace this by a "depends" directive on at least one of the VPU and
+> > SCP modules, to allow the driver to be compiled as long as one of these
+> > is enabled, and adapt the code to support this new scenario.
+> >
+> > Also adapt the Kconfig text to explain the extra requirements for MT8173
+> > and MT8183.
+> >
+> > Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 >
-> A small set of audit patches for v5.10.  There are only three patches
-> in total, and all three are trivial fixes that don't really warrant
-> any explanations beyond their descriptions.  As usual, all three
-> patches pass our test suite and as of a few minutes ago they applied
-> cleanly to your tree.  Please merge for v5.10.
+> That Ack applied to v2. I have not tested nor acked this version of the patch.
+
+Sorry about that - I was careless and left it in the log.
+
 >
-> Thanks,
-> -Paul
+> > Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >  drivers/media/platform/Kconfig                | 22 +++++++++++++++----
+> >  drivers/media/platform/mtk-vcodec/Makefile    | 10 +++++++--
+> >  .../platform/mtk-vcodec/mtk_vcodec_fw_priv.h  | 18 +++++++++++++++
+> >  3 files changed, 44 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> > index a3cb104956d5..457b6c39ddc0 100644
+> > --- a/drivers/media/platform/Kconfig
+> > +++ b/drivers/media/platform/Kconfig
+> > @@ -253,18 +253,32 @@ config VIDEO_MEDIATEK_VCODEC
+> >       depends on MTK_IOMMU || COMPILE_TEST
+> >       depends on VIDEO_DEV && VIDEO_V4L2
+> >       depends on ARCH_MEDIATEK || COMPILE_TEST
+> > +     depends on VIDEO_MEDIATEK_VPU || MTK_SCP
+> > +     # The two following lines ensure we have the same state ("m" or "y") as
+> > +     # our dependencies, to avoid missing symbols during link.
+> > +     depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
+> > +     depends on MTK_SCP || !MTK_SCP
+> >       select VIDEOBUF2_DMA_CONTIG
+> >       select V4L2_MEM2MEM_DEV
+> > -     select VIDEO_MEDIATEK_VPU
+> > -     select MTK_SCP
+> > +     select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
+> > +     select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
+> >       help
+> >           Mediatek video codec driver provides HW capability to
+> > -         encode and decode in a range of video formats
+> > -         This driver rely on VPU driver to communicate with VPU.
+> > +         encode and decode in a range of video formats on MT8173
+> > +         and MT8183.
+> > +
+> > +         Note that support for MT8173 requires VIDEO_MEDIATEK_VPU to
+> > +         also be selected. Support for MT8183 depends on MTK_SCP.
+> >
+> >           To compile this driver as modules, choose M here: the
+> >           modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
+> >
+> > +config VIDEO_MEDIATEK_VCODEC_VPU
+> > +     bool
+> > +
+> > +config VIDEO_MEDIATEK_VCODEC_SCP
+> > +     bool
+> > +
+> >  config VIDEO_MEM2MEM_DEINTERLACE
+> >       tristate "Deinterlace support"
+> >       depends on VIDEO_DEV && VIDEO_V4L2
+> > diff --git a/drivers/media/platform/mtk-vcodec/Makefile b/drivers/media/platform/mtk-vcodec/Makefile
+> > index 6e1ea3a9f052..4618d43dbbc8 100644
+> > --- a/drivers/media/platform/mtk-vcodec/Makefile
+> > +++ b/drivers/media/platform/mtk-vcodec/Makefile
+> > @@ -25,5 +25,11 @@ mtk-vcodec-enc-y := venc/venc_vp8_if.o \
+> >  mtk-vcodec-common-y := mtk_vcodec_intr.o \
+> >               mtk_vcodec_util.o \
+> >               mtk_vcodec_fw.o \
+> > -             mtk_vcodec_fw_vpu.o \
+> > -             mtk_vcodec_fw_scp.o
+> > +
+> > +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU),)
+> > +mtk-vcodec-common-y += mtk_vcodec_fw_vpu.o
+> > +endif
+> > +
+> > +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP),)
+> > +mtk-vcodec-common-y += mtk_vcodec_fw_scp.o
+> > +endif
+> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
+> > index 51f1694a7c7d..b41e66185cec 100644
+> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
+> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
+> > @@ -27,8 +27,26 @@ struct mtk_vcodec_fw_ops {
+> >       void (*release)(struct mtk_vcodec_fw *fw);
+> >  };
+> >
+> > +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU)
+> >  struct mtk_vcodec_fw *mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
+> >                                            enum mtk_vcodec_fw_use fw_use);
+> > +#else
+> > +static inline struct mtk_vcodec_fw *
+> > +mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
+> > +                    enum mtk_vcodec_fw_use fw_use)
+> > +{
+> > +     return ERR_PTR(-ENODEV);
+> > +}
+> > +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_VPU */
+> > +
+> > +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP)
+> >  struct mtk_vcodec_fw *mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev);
+> > +#else
+> > +static inline struct mtk_vcodec_fw *
+> > +mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev)
+> > +{
+> > +     return ERR_PTR(-ENODEV);
+> > +}
+> > +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_SCP */
+> >
+> >  #endif /* _MTK_VCODEC_FW_PRIV_H_ */
+> >
+>
 >
 > --
-> The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
->
->  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
->
-> are available in the Git repository at:
->
->  git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
->    stable-5.10
-
-My apologies, I mistakenly sent the branch and not the signed tag, the
-proper PR tag is below:
-
- git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
-audit-pr-20201012
-
-> for you to fetch changes up to c07203516439b9cd9f7b3cbed82a77164de5af40:
->
->  audit: Remove redundant null check (2020-08-26 09:10:39 -0400)
->
-> ----------------------------------------------------------------
-> Jules Irenge (2):
->      audit: change unnecessary globals into statics
->      audit: uninitialize variable audit_sig_sid
->
-> Xu Wang (1):
->      audit: Remove redundant null check
->
-> kernel/audit.c | 9 ++++-----
-> kernel/audit.h | 4 ----
-> 2 files changed, 4 insertions(+), 9 deletions(-)
->
-> --
-> paul moore
-> www.paul-moore.com
-
-
-
--- 
-paul moore
-www.paul-moore.com
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
