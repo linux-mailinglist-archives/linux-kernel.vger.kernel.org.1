@@ -2,72 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE4E28C8D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEF728C8E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732579AbgJMG5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 02:57:53 -0400
-Received: from smtprelay0185.hostedemail.com ([216.40.44.185]:55726 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727353AbgJMG5x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 02:57:53 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id C2FB8182CED34;
-        Tue, 13 Oct 2020 06:57:52 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:4321:5007:6119:9108:10004:10400:10848:11026:11232:11473:11658:11914:12296:12297:12555:12740:12760:12895:13069:13072:13311:13357:13439:14096:14097:14181:14659:14721:14777:21080:21433:21627:21660:21819:30003:30022:30025:30026:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: name14_1e1732027201
-X-Filterd-Recvd-Size: 2127
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 13 Oct 2020 06:57:51 +0000 (UTC)
-Message-ID: <a15a6cc0ddea068d78113f5e315eaba6f52b917a.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: fix missing whitespace in formatted email
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Mon, 12 Oct 2020 23:57:50 -0700
-In-Reply-To: <20201013063642.39810-1-dwaipayanray1@gmail.com>
-References: <20201013063642.39810-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S2389808AbgJMHAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:00:07 -0400
+Received: from ozlabs.org ([203.11.71.1]:54127 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727353AbgJMHAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 03:00:06 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9RHw4RCtz9sSs;
+        Tue, 13 Oct 2020 17:59:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602572400;
+        bh=x1KWFCxITrWKOyi5Mv/0ObqK/R6h8Do789neFaZAftg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RNv04j0Gn68mDN9Vgz52ZLJ/kY32JuKqR0hhpozs+9JwS0F3231vW19sQ6+hgynAs
+         qOto7UY456E6BN2UCg31wH3TXpddcsNZXkA0kCMX7pxwe2RvSNZOUlCbWkm1uA6c5V
+         nRFVvSasa/5Uxng3Q4vuTqXy2XTxdbtzZbqkMGSNACHZELUpfe1XxKK5GMo3GfY7r/
+         p641mcKNGMgliuHRAJSo7I/RGFZj07Q/o5JIUPMUJ/uDEZN2P8RVI5/R2jFErplk7q
+         Ibu7ZGKtCk1UyUPZypoqhaoYEXBYY2gdKwrNz+qyAdGzOivL7ZgqHVTWdnhm812TK3
+         a9p5+v6XCBGkw==
+Date:   Tue, 13 Oct 2020 17:59:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: linux-next: manual merge of the akpm-current tree with the tip tree
+Message-ID: <20201013175953.4cc33c06@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/S5OI6YLhuOrH2lenvc3BufR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-13 at 12:06 +0530, Dwaipayan Ray wrote:
-> Commit 0c01921e56f9 ("checkpatch: add new warnings to author signoff
-> checks.") introduced new checks for author sign off. The format_email
-> procedure was modified to add comment blocks to the formatted email. But
-> no space was added between the email address and mail comment.
-> 
-> This causes wrong email formatting in cases where the email is in the form
-> "author@example.com (Comment block)". The space between the address and
-> comment block is removed, which causes incorrect parsing of the
-> formatted email.
-> 
-> An evaluation on checkpatch brought up this case. For example,
-> on commit 1129d31b55d5 ("ima: Fix ima digest hash table key calculation"),
-> the following warning was reported:
-> 
-> WARNING:BAD_SIGN_OFF: email address 'David.Laight@aculab.com (big endian
-> system concerns)' might be better as 'David.Laight@aculab.com(big endian
-> system concerns)'
+--Sig_/S5OI6YLhuOrH2lenvc3BufR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Strictly, a comment or multiple comments can exist
-in any part of an email
+Hi all,
 
-"John (Jon) Smith (Smitty) <jsmith@domain.tld> (tld is the best tld)
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-> Add a single space in between the address and comment when the
-> extracted comment is not empty.
+  include/linux/sched.h
 
-So after the address is not necessarily the best
-location for a comment.
+between commit:
 
+  d741bf41d7c7 ("kprobes: Remove kretprobe hash")
 
+from the tip tree and commit:
+
+  faf4ffbfd1c5 ("fs/buffer.c: add debug print for __getblk_gfp() stall prob=
+lem")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/sched.h
+index 1695d45c2d7a,a360da173c32..000000000000
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@@ -1322,10 -1320,13 +1327,17 @@@ struct task_struct=20
+  	struct callback_head		mce_kill_me;
+  #endif
+ =20
+ +#ifdef CONFIG_KRETPROBES
+ +	struct llist_head               kretprobe_instances;
+ +#endif
+ +
++ #ifdef CONFIG_DEBUG_AID_FOR_SYZBOT
++ 	unsigned long			getblk_stamp;
++ 	unsigned int			getblk_executed;
++ 	unsigned int			getblk_bh_count;
++ 	unsigned long			getblk_bh_state;
++ #endif
++=20
+  	/*
+  	 * New fields for task_struct should be added above here, so that
+  	 * they are included in the randomized portion of task_struct.
+
+--Sig_/S5OI6YLhuOrH2lenvc3BufR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FUGkACgkQAVBC80lX
+0GzufQf+Ll91i6oCweRhM0PU25xD/psSPnXp11dDTujWUyWUxHuIynTdcbUuiSGi
+duGBzmAzh7gYUSn743m44bCQdDtQG8e2x0SVzb/bqSaYlww63GbF/DcT/fSoZpNr
+IZxUJDgXa/2w43uXu0ntgBbjqIMLPS+f8FB6BW02FI2PUnf9Ju1HlsfahmLzpKmD
+m4tCjr2LRE7j/6RIOHOoKAVgEw7PeFACBKwni6ib5feNqgn+K9BuleyoMMce39jB
+IhC9LDAxPoLrnljJCzlWaXXsMoTlJJLgBAHE4NlDkbv9vu31bezL1Mdukt36/4iT
+NT8/IqIzWzLymO7GKbL+FafXuJkOlQ==
+=ehVY
+-----END PGP SIGNATURE-----
+
+--Sig_/S5OI6YLhuOrH2lenvc3BufR--
