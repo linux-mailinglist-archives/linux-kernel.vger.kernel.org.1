@@ -2,143 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC17028D3D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B80A128D3BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388854AbgJMSmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:42:51 -0400
-Received: from pb-sasl-trial2.pobox.com ([64.147.108.86]:53763 "EHLO
-        pb-sasl-trial2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388132AbgJMSms (ORCPT
+        id S1731452AbgJMSh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729085AbgJMSh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:42:48 -0400
-X-Greylist: delayed 346 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 14:42:45 EDT
-Received: from pb-sasl-trial2.pobox.com (localhost.local [127.0.0.1])
-        by pb-sasl-trial2.pobox.com (Postfix) with ESMTP id B35092F08C;
-        Tue, 13 Oct 2020 14:36:58 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=1qdRcPgrMg9PaaTRWeHMHkWBgn4=; b=Epy+q5
-        ans9ahJwXxlQvxdjICPrBYTo3ECIn9AzWxzmuo835zX7Go5RA+la+QVdJswbYHqY
-        OA9uOWP+RHqwo1f/1Hjwskkbh9itwsmr5IKrZUme2Q4YRp5bQABuumhmd/Yh0NKM
-        sMhZUgbkZQs79wJJn2wtIPZ7EN0v5uRSG8bTQ=
-Received: from pb-smtp1.nyi.icgroup.com (pb-smtp1.pobox.com [10.90.30.53])
-        by pb-sasl-trial2.pobox.com (Postfix) with ESMTP id 7910C2F08B;
-        Tue, 13 Oct 2020 14:36:58 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=/xoWviDLFg5PKRQ9rObRWDXVC++pmZtYhfbDb0DFq7E=; b=v5OoWtflZD131TYsBl2A9g0L/PCRe2nu6sy2IJY2ys8stI3sGPGydjk9hbVpZeTUKIjemrnRhLwKFlAM+dXEIGXz5t0LfwSiRA8m7hrB4WLH79+9F2ww8ICEhYu0fLjFgoDc1lKWqG4ZKNRDYjtbn/p6CJBipu1Te7ZvLuk/HMw=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id CD98F955F4;
-        Tue, 13 Oct 2020 14:36:57 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id CF7492DA0BC7;
-        Tue, 13 Oct 2020 14:36:56 -0400 (EDT)
-Date:   Tue, 13 Oct 2020 14:36:56 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Ira Weiny <ira.weiny@intel.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
-        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
-        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new
- kmap_thread()
-In-Reply-To: <20201009195033.3208459-34-ira.weiny@intel.com>
-Message-ID: <nycvar.YSQ.7.78.906.2010131436200.2184@knanqh.ubzr>
-References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-34-ira.weiny@intel.com>
+        Tue, 13 Oct 2020 14:37:58 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D51EC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:37:57 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id q136so421579oic.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8wS/OhEkiOS3keXiGTDs7Y3EitxUywvOHPNnihsdSyE=;
+        b=t0F+G1O57UeI6bVpdwwjjwQhbKg5SBBNcbIjsuCgtfQyj6d8rq1BA8rIz7ecaA71gc
+         T+IiHEtF2kw2edN5eOkaWaVo+yV5In0UaemYwBdjscCgWg02vLKA8ZvaYhVH1Jw++eOt
+         /sNPo4wVn1J+l+bRRXfWGk4pHrLhxEoRO3+A3qVvDzYUb+uvya2DmTzXJM0KI0fO2Mpb
+         UptCNBv+7ZuqMnEHb/0qs/9RRmkwAdHT+N3fQ3mfml0etfTfgcEE2CcyszhMK7RaoqAG
+         lJQC7yVzxzLAfFz+nYX6Tg50jYOKH6mNB8adN36wGC6EJiZ3k4d67MXZQ0Ed30Ssu62v
+         GlNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8wS/OhEkiOS3keXiGTDs7Y3EitxUywvOHPNnihsdSyE=;
+        b=FMCvJp5YKKdu7pnpLGanPfn5IjV0wkF2ioSoQqPoA/zS8ErQF8FwctDlvldzTN8k48
+         y10mS8Vd+04THf8pfZBlwh/qG6+gx3zMfM9bZV/S3jiipxSBMcPDkwbBZkktHb8o9oKJ
+         TZHQM5Opp9NfWckKdBUk7rn4UJNS8bTM+UYSGCBENfYjv6oErDdR6bgtRcCB7MHzuSul
+         5Bcat3aIHSTuqHaf1CU1cJ4y5JDIcnJKVhRelwRAdmX1AcEMwIP+vFJaWgyt2UNKC0b+
+         vLILLN7xU0vtmBVlDfHmy9aj7mXzGNaLfWYLUOVShCL4KV5/lNtU8PbG7u5DGYqWnVCP
+         Yizw==
+X-Gm-Message-State: AOAM533qLD9f6qaTGwU5kv+t5jdIK4WtM34WF8uB6B3RdB5uGNFeUqjg
+        ZtBN/j6Os0vHmY66T2E5/D8=
+X-Google-Smtp-Source: ABdhPJy8jfVGET9TinzwOZkbkvH318fGn9A2lYtB8nLE4PiTe7K1MVbXhhTSUPGZM+TzbVYvNNMTlA==
+X-Received: by 2002:a05:6808:217:: with SMTP id l23mr711073oie.120.1602614276614;
+        Tue, 13 Oct 2020 11:37:56 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n185sm217550oia.28.2020.10.13.11.37.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 11:37:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: (pmbus/isl68137) remove READ_TEMPERATURE_1
+ telemetry for RAA228228
+To:     Alex Qiu <xqiu@google.com>,
+        Grant Peltier <grant.peltier.jg@renesas.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Adam Vaughn <adam.vaughn.xh@renesas.com>,
+        Guenter Roeck <groeck7@gmail.com>
+Cc:     Jason Ling <jasonling@google.com>
+References: <CAA_a9xLcCuR+WFfNtpJgq14rGZfxcqsoVz5aNhL5XCLhV+TwNg@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <0e325e4f-bb7c-f2d3-1f16-34a89397df39@roeck-us.net>
+Date:   Tue, 13 Oct 2020 11:37:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 13301A02-0D83-11EB-84D0-D152C8D8090B-78420484!pb-smtp1.pobox.com
+In-Reply-To: <CAA_a9xLcCuR+WFfNtpJgq14rGZfxcqsoVz5aNhL5XCLhV+TwNg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Oct 2020, ira.weiny@intel.com wrote:
+On 10/13/20 11:18 AM, Alex Qiu wrote:
+> (Intercepting the email thread...)
+> 
+> Hi Grant,
+> 
+> Looks like you made a typo in your patch:
+> 
+>> + case raa_dmpvr2_2rail_nontc:
+>> + info->func[0] &= ~PMBUS_HAVE_TEMP;
+>> + info->func[1] &= ~PMBUS_HAVE_TEMP;
+>> + fallthrough;
+> 
+> Did you mean "/* fallthrough */" instead of "fallthrough;"?
+> 
 
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> The kmap() calls in this FS are localized to a single thread.  To avoid
-> the over head of global PKRS updates use the new kmap_thread() call.
-> 
-> Cc: Nicolas Pitre <nico@fluxnic.net>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+No, that is the fancy new way to indicate fallthrough in the kernel.
+It is converted to either
+	__attribute__((__fallthrough__))
+or to
+	do {} while (0)
+in include/linux/compiler_attributes.h.
 
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-
->  fs/cramfs/inode.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> index 912308600d39..003c014a42ed 100644
-> --- a/fs/cramfs/inode.c
-> +++ b/fs/cramfs/inode.c
-> @@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
->  		struct page *page = pages[i];
->  
->  		if (page) {
-> -			memcpy(data, kmap(page), PAGE_SIZE);
-> -			kunmap(page);
-> +			memcpy(data, kmap_thread(page), PAGE_SIZE);
-> +			kunmap_thread(page);
->  			put_page(page);
->  		} else
->  			memset(data, 0, PAGE_SIZE);
-> @@ -826,7 +826,7 @@ static int cramfs_readpage(struct file *file, struct page *page)
->  
->  	maxblock = (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
->  	bytes_filled = 0;
-> -	pgdata = kmap(page);
-> +	pgdata = kmap_thread(page);
->  
->  	if (page->index < maxblock) {
->  		struct super_block *sb = inode->i_sb;
-> @@ -914,13 +914,13 @@ static int cramfs_readpage(struct file *file, struct page *page)
->  
->  	memset(pgdata + bytes_filled, 0, PAGE_SIZE - bytes_filled);
->  	flush_dcache_page(page);
-> -	kunmap(page);
-> +	kunmap_thread(page);
->  	SetPageUptodate(page);
->  	unlock_page(page);
->  	return 0;
->  
->  err:
-> -	kunmap(page);
-> +	kunmap_thread(page);
->  	ClearPageUptodate(page);
->  	SetPageError(page);
->  	unlock_page(page);
-> -- 
-> 2.28.0.rc0.12.gb6a658bd00c9
-> 
-> 
+Guenter
