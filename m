@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F69828D4F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA6A28D4FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732759AbgJMTuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732504AbgJMTuu (ORCPT
+        id S1728408AbgJMTxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:53:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50709 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726476AbgJMTxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:50:50 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1DCC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:50:48 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id h6so1092706lfj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oStFpL1sAklg8aQ9yJTrzYQkDSOL/BdJXdvIHiiieQ4=;
-        b=EgxwghXHbFhUzfXmwnW3oWkcTuf9hghKJ+L0vimiZ2lNhz9ijKRICn6R1+VFJwxRfd
-         3DO4aIph84yByZbN+yybxkssHP/RBykec4Cl4VJE58xKoOtU7gZtEMDeQg0S2eROjjBH
-         rhqhqOEG94lka1wG1vNOxQhSRsutJq3Z20kn8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oStFpL1sAklg8aQ9yJTrzYQkDSOL/BdJXdvIHiiieQ4=;
-        b=TPhkbgdTb9po/6mWX6zeR7vfzkWnwsOY5FpCKUGcKtfc7CzHdaOnjnS6aznFT89jrn
-         ae8OF87VURkVPl5yIjrg4sQ8K9D34y/+IQdCOTDt29SjCZDt2GZZXxCiW8fvhWAikyuu
-         NrkTGdUexyalCorjy2RtE6+h324+k+q7Rza9bl7Wq+Bqg6hkXhQFGGNDP37ME8cAu/ye
-         z21pwgw4AclL1bOtJxU46aegzXZNDP0Ww2+ZhnzzB1pzAS9FZzcy88+k/YKyJw/yuE6+
-         dCiVHJAaF5Ap8O1u7mPzAhTS0DeOzFJmVP7nEs71bke3Gz6ifCWO06A/jnGEZge9kFxG
-         md3Q==
-X-Gm-Message-State: AOAM530wp4eEh1v1BbdDTz8WYB6CJWtIyY3ifHNtuGV2K1gdenqj6pe5
-        agKW5Yb0wi9wsIzNNBKEGUG6FS4jDkVrrA==
-X-Google-Smtp-Source: ABdhPJxchILebyNFHv4zSTru8JCql2wvoi/IgFq2xMJhrQx6roVaHJL+VhWGwEz1o5Ipwg7pVgLK8A==
-X-Received: by 2002:a19:7418:: with SMTP id v24mr311401lfe.440.1602618646697;
-        Tue, 13 Oct 2020 12:50:46 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id o23sm199289lji.68.2020.10.13.12.50.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 12:50:46 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id l28so1040112lfp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:50:45 -0700 (PDT)
-X-Received: by 2002:a19:cbcb:: with SMTP id b194mr322674lfg.133.1602618645500;
- Tue, 13 Oct 2020 12:50:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <36a6706d-73e1-64e7-f1f8-8f5ef246d3ea@kernel.dk>
- <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com> <a81737e4-44da-cffc-cba0-8aec984df240@kernel.dk>
-In-Reply-To: <a81737e4-44da-cffc-cba0-8aec984df240@kernel.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 13 Oct 2020 12:50:29 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjAYpRhQkaFvqu+CnNcTHiMFrry_Ma6S8xGT_3BDEJkpA@mail.gmail.com>
-Message-ID: <CAHk-=wjAYpRhQkaFvqu+CnNcTHiMFrry_Ma6S8xGT_3BDEJkpA@mail.gmail.com>
-Subject: Re: [GIT PULL] io_uring updates for 5.10-rc1
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        Tue, 13 Oct 2020 15:53:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602618819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r8ZV+rYkGeSUFu36KKN8YPgpFKIbE9gDjxNbUNZQHuw=;
+        b=N2Cx7XIRVsThMw1w2CJYXtcB3y1tGim+OM8kHiUdX7MvdYuflyT5CsQAAxqh3RAmfSFz7W
+        cW5W3ayuOi+tvymBBAV/HJ6e2ldXpPquaY6aO4gz1jZas04C94h6jXrUHUbt48tZjpzGXK
+        fBTKb6+WtGk8eFmjsvoYbUpUxelOZmY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-uMFhaWd5PtiNzlJ5-7N3Qg-1; Tue, 13 Oct 2020 15:53:33 -0400
+X-MC-Unique: uMFhaWd5PtiNzlJ5-7N3Qg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C92DA800683;
+        Tue, 13 Oct 2020 19:53:31 +0000 (UTC)
+Received: from ovpn-118-16.rdu2.redhat.com (ovpn-118-16.rdu2.redhat.com [10.10.118.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BCA0E73664;
+        Tue, 13 Oct 2020 19:53:24 +0000 (UTC)
+Message-ID: <d14f6a08b4ada85289e70cbb34726fd084ccac05.camel@redhat.com>
+Subject: Re: Unbreakable loop in fuse_fill_write_pages()
+From:   Qian Cai <cai@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Date:   Tue, 13 Oct 2020 15:53:19 -0400
+In-Reply-To: <20201013185808.GA164772@redhat.com>
+References: <7d350903c2aa8f318f8441eaffafe10b7796d17b.camel@redhat.com>
+         <20201013184026.GC142988@redhat.com> <20201013185808.GA164772@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:49 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> What clang are you using?
+On Tue, 2020-10-13 at 14:58 -0400, Vivek Goyal wrote:
 
-I have a self-built clang version from their development tree, since
-I've been using it for the "asm goto with outputs" testing.
+> I am wondering if virtiofsd still alive and responding to requests? I
+> see another task which is blocked on getdents() for more than 120s.
+> 
+> [10580.142571][  T348] INFO: task trinity-c36:254165 blocked for more than 123
+> +seconds.
+> [10580.143924][  T348]       Tainted: G           O	 5.9.0-next-20201013+ #2
+> [10580.145158][  T348] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> +disables this message.
+> [10580.146636][  T348] task:trinity-c36     state:D stack:26704 pid:254165
+> ppid:
+> +87180 flags:0x00000004
+> [10580.148260][  T348] Call Trace:
+> [10580.148789][  T348]  __schedule+0x71d/0x1b50
+> [10580.149532][  T348]  ? __sched_text_start+0x8/0x8
+> [10580.150343][  T348]  schedule+0xbf/0x270
+> [10580.151044][  T348]  schedule_preempt_disabled+0xc/0x20
+> [10580.152006][  T348]  __mutex_lock+0x9f1/0x1360
+> [10580.152777][  T348]  ? __fdget_pos+0x9c/0xb0
+> [10580.153484][  T348]  ? mutex_lock_io_nested+0x1240/0x1240
+> [10580.154432][  T348]  ? find_held_lock+0x33/0x1c0
+> [10580.155220][  T348]  ? __fdget_pos+0x9c/0xb0
+> [10580.155934][  T348]  __fdget_pos+0x9c/0xb0
+> [10580.156660][  T348]  __x64_sys_getdents+0xff/0x230
+> 
+> May be virtiofsd crashed and hence no requests are completing leading
+> to a hard lockup?
+Virtiofsd is still working. Once this happened, I manually create a file on the
+guest (in virtiofs) and then I can see the content of it from the host.
 
-But I bet this happens with just regular reasonably up-to-date clang too.
-
-            Linus
