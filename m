@@ -2,162 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608AB28CFA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9748128CFA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388141AbgJMN6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
+        id S2388163AbgJMN7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387898AbgJMN6Z (ORCPT
+        with ESMTP id S2387613AbgJMN7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:58:25 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A75C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:58:24 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id hk7so37598pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:58:24 -0700 (PDT)
+        Tue, 13 Oct 2020 09:59:14 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C843FC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:59:13 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e2so50624wme.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:59:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4GdnNvEoUKgxX4qOhs3krtiPwGsAdHL1Le9swFYFabo=;
-        b=fqz9Lk8Tn3f41eiWhfzfyM8sxQFqw39PVqXAmHDl4gqxgy9SH4gW5iqO2xVGRNuuKT
-         EUkrFal2KddYMHBWlPPpZaToe30PfAv7tWMHNaCUCfjSXkJ6U8RD7fvoLjBPkN4/0DpV
-         KtebXA47d27sNS3Re0EncSGN7nWVKGWcSVvqOioRjyMPKhS6co87W9JFWm2YjxvrjaXO
-         8yTZ2qhubxiYsFMzoHZRUxEUhvoWRx9Da8kDirPV/3wvGgidA+SmxKBr7v8SN6JUjz9A
-         a9kLtg/5w7d/9qEmPJHW93kJgoLookI/os79BdAmmfEE16TpmvUhykapN+RqI+BiQMRk
-         srhw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYqWuTW/0Vb6gGlVF7Mqhv2moxO3xlTQ1hwvFz7tpn0=;
+        b=T0Lbzn5xsQq5ohWfhjLZa15Y2tTnWUX4qvT414oZujmvMxJo0+sBsDhdPtjbxgPZ9W
+         wz0JOI3pw+Z3affCaTtFQvUQvEtByaCYO8yuH/nfIGKpioMewNxKLWrQwtokcaUyGC6G
+         8L2NKfLyN0J8Q5JITaulmvha9GwPTCPqkKizm42ET85yAes2eo3+7/F8XzYcOoSYjqxQ
+         MTa/FQmT9gB0Dn6CNedEDebc6QFPc7nqQcFCSUeQr2OLi8qL391+dlVpOHpqHbulKAWh
+         I6CGA21MWIHW6P31zpAzghqvcjAaqMlFDV4R8F2DdcJUmlXdOLT4wrnxht3qhb2EPSYl
+         NU3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4GdnNvEoUKgxX4qOhs3krtiPwGsAdHL1Le9swFYFabo=;
-        b=F29ypkaAjX43PS6lrpomfyzzey+5f3vZNzBTjvI1+akiMyD9Sy7YuFxHww9wcF3QfB
-         Wa7REKRe8k0CD/w75MjbLjay6X5mgKLXUqEd/UdhuePFqiObjAW9qOpdMeJZrX9ELxYI
-         ocn+UgIMq1rhDJ8KNaCXuGOf7K6UOC3+AX1yVXcUl0dINd/xJKXoRI9mSDCunmH2ulki
-         EhQpBNIq4keFEkqCy7JNpqrq6hiJvSxg+jwrhwH4ol03KpIc/1x9HvZG8E1WT+YMh5yJ
-         snQlEcCTNN6vxM+x/2pcWqr9GHwZRc/SjP3GXAqcJJHr0ti/o4tzheVopQ610BXky5hp
-         qBmg==
-X-Gm-Message-State: AOAM533gPKLfKvsZRGntYnTlzvNeR+Szdda/gH0Ue2U6BkmbtK2EmgPh
-        MNuekxbwgZ9/PxCJJoIPO4YGIIt/5LLKS6KlSJIvLCWW/Ic7lA==
-X-Google-Smtp-Source: ABdhPJwvC9F2gzr+AS6o+Ox4RKAQqXdjO+PQ5LENDvXkm1/v9K/jJclxQcOPW2gVzXn/gyVhMCrZs4z/IpWWio2WRqg=
-X-Received: by 2002:a17:902:b40a:b029:d4:e1c7:db59 with SMTP id
- x10-20020a170902b40ab02900d4e1c7db59mr2623786plr.85.1602597503671; Tue, 13
- Oct 2020 06:58:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYqWuTW/0Vb6gGlVF7Mqhv2moxO3xlTQ1hwvFz7tpn0=;
+        b=mt2NeO4FthbuNASYY/yPETLusweV9Iefz1Twgkju4Zw29OthD5LRBdB81zlYTxWdRG
+         nHvQDKTm/f2X61oS7WibMktav/MlFhBV2TKCddvNGwfrWKe5ACu10f8DxS+yijfEEhOc
+         f4DU4K14lKZWfnHQygmeSPgbCcTMIhuLCNBsrts0FbO50o0Y0AKw6mhq/ta4ADgvJvz+
+         +9w4Ea6TLYuTOiYtCzenFUva66ztrUbK5mgKwg9LFdbprT6p8BJNNZI0ad6nCEHUf6bZ
+         wrxUY64PQStoyYX712u1N0iNe6M19oXwDsDui9cdZ24eGI7xrFkePzosJRLZlFShE/yD
+         YDsQ==
+X-Gm-Message-State: AOAM532zyrFhNuWs2iE+EI9C73TS9K/VTnWVB1o6r8sTzlLOuthFGr00
+        NDSCxCx92Onmo47uoLVa6B/ndQ==
+X-Google-Smtp-Source: ABdhPJxhjDWYCCReMk52XDj/uJUpC3UL0DI10mjq49N44EKAuYAhZl162evpZLmnK9N44Jw+wXmgwg==
+X-Received: by 2002:a7b:cc17:: with SMTP id f23mr58713wmh.166.1602597552536;
+        Tue, 13 Oct 2020 06:59:12 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id a199sm17785wmd.8.2020.10.13.06.59.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Oct 2020 06:59:11 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     linux-pm@vger.kernel.org
+Cc:     mdtipton@codeaurora.org, okukatla@codeaurora.org,
+        sibis@codeaurora.org, saravanak@google.com,
+        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
+        Georgi Djakov <georgi.djakov@linaro.org>
+Subject: [PATCH 1/3] interconnect: Aggregate before setting initial bandwidth
+Date:   Tue, 13 Oct 2020 16:59:11 +0300
+Message-Id: <20201013135913.29059-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <c229372e5526b84ed0542028437111c2eb83d55f.1602522784.git.andreyknvl@google.com>
- <CACT4Y+aX-LN=tz2Xu3509K1tfrGiLWWKZQwMtRCg059whv-Gvg@mail.gmail.com>
-In-Reply-To: <CACT4Y+aX-LN=tz2Xu3509K1tfrGiLWWKZQwMtRCg059whv-Gvg@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 13 Oct 2020 15:58:12 +0200
-Message-ID: <CAAeHK+zur-CpmCj2bBucwVSAKkk8XBKZsQoGA8AmWraXuDctvA@mail.gmail.com>
-Subject: Re: [PATCH v4] kcov, usb: specify contexts for remote coverage sections
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 8:46 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Mon, Oct 12, 2020 at 7:17 PM Andrey Konovalov <andreyknvl@google.com> wrote:
-> >
-> > Currently there's a KCOV remote coverage collection section in
-> > __usb_hcd_giveback_urb(). Initially that section was added based on the
-> > assumption that usb_hcd_giveback_urb() can only be called in interrupt
-> > context as indicated by a comment before it. This is what happens when
-> > syzkaller is fuzzing the USB stack via the dummy_hcd driver.
-> >
-> > As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
-> > context, provided that the caller turned off the interrupts; USB/IP does
-> > exactly that. This can lead to a nested KCOV remote coverage collection
-> > sections both trying to collect coverage in task context. This isn't
-> > supported by KCOV, and leads to a WARNING.
->
-> How does this recursion happen? There is literal recursion in the task
-> context? A function starts a remote coverage section and calls another
-> function that also starts a remote coverage section?
+When setting the initial bandwidth, make sure to call the aggregate()
+function (if such is implemented for the current provider), to handle
+cases when data needs to be aggregated first.
 
-Yes, a literal recursion. Background thread for processing requests
-for USB/IP hub (which we collect coverage from) calls
-__usb_hcd_giveback_urb().
+Fixes: b1d681d8d324 ("interconnect: Add sync state support")
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+ drivers/interconnect/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Here's the stack trace:
-
- kcov_remote_start_usb include/linux/kcov.h:52 [inline]
- __usb_hcd_giveback_urb+0x284/0x4b0 drivers/usb/core/hcd.c:1649
- usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
- vhci_urb_enqueue.cold+0x37f/0x4c5 drivers/usb/usbip/vhci_hcd.c:801
- usb_hcd_submit_urb+0x2b1/0x20d0 drivers/usb/core/hcd.c:1547
- usb_submit_urb+0x6e5/0x13b0 drivers/usb/core/urb.c:570
- usb_start_wait_urb+0x10f/0x2c0 drivers/usb/core/message.c:58
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- hub_set_address drivers/usb/core/hub.c:4472 [inline]
- hub_port_init+0x23f6/0x2d20 drivers/usb/core/hub.c:4748
- hub_port_connect drivers/usb/core/hub.c:5140 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
- port_event drivers/usb/core/hub.c:5494 [inline]
- hub_event+0x1cc9/0x38d0 drivers/usb/core/hub.c:5576
- process_one_work+0x7b6/0x1190 kernel/workqueue.c:2269
- worker_thread+0x94/0xdc0 kernel/workqueue.c:2415
- kthread+0x372/0x450 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-> Or is there recursion between task context and softirq context?
-
-No. This kind of recursion is actually supported by kcov right now. A
-softirq with a coverage collection section can come in the middle of a
-coverage collection section for a task.
-
-> But
-> this should not happen if softirq's disabled around
-> usb_hcd_giveback_urb call in task context...
-
-[...]
-
-> We do want to collect coverage from usb_hcd_giveback_urb in the task
-> context eventually, right?
-
-Ideally, eventually, yes.
-
-> Is this API supposed to be final? Or it only puts down fire re the warning?
-
-Only puts down the fire.
-
-> I don't understand how this API can be used in other contexts.
-> Let's say there is recursion in task context and we want to collect
-> coverage in task context (the function is only called in task
-> context). This API won't help.
-
-No, it won't. Full recursion support is required for this.
-
-> Let's say a function is called from both task and softirq context and
-> these can recurse (softirq arrive while in remote task section). This
-> API won't help. It will force to choose either task or softirq, but
-> let's say you can't make that choice because they are equally
-> important.
-
-This currently works, everything that happens in a softirq gets
-associated with softirq, everything else - with the task. This seems
-to be the only logical approach here, it makes no sense to associate
-what happens in a softirq with the task where the softirq happened.
-
-> The API helps to work around the unimplemented recursion in KCOV, but
-> it's also specific to this particular case. It's not necessary that
-> recursion is specific to one context only and it's not necessary that
-> a user can choose to sacrifice one of the contexts.
-> Also, if we support recursion in one way or another, we will never
-> want to use this API, right?
-
-Correct.
+diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+index eea47b4c84aa..974a66725d09 100644
+--- a/drivers/interconnect/core.c
++++ b/drivers/interconnect/core.c
+@@ -971,6 +971,9 @@ void icc_node_add(struct icc_node *node, struct icc_provider *provider)
+ 	}
+ 	node->avg_bw = node->init_avg;
+ 	node->peak_bw = node->init_peak;
++	if (provider->aggregate)
++		provider->aggregate(node, 0, node->init_avg, node->init_peak,
++				    &node->avg_bw, &node->peak_bw);
+ 	provider->set(node, node);
+ 	node->avg_bw = 0;
+ 	node->peak_bw = 0;
