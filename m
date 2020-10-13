@@ -2,314 +2,593 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB76F28D32C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE1428D32E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388556AbgJMReL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Oct 2020 13:34:11 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:44139 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgJMReK (ORCPT
+        id S2388661AbgJMRfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgJMRfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:34:10 -0400
-Received: by mail-oi1-f171.google.com with SMTP id x62so187590oix.11;
-        Tue, 13 Oct 2020 10:34:09 -0700 (PDT)
+        Tue, 13 Oct 2020 13:35:00 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EA6C0613D0;
+        Tue, 13 Oct 2020 10:34:58 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id u21so979168eja.2;
+        Tue, 13 Oct 2020 10:34:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uOXLByz02dM7zoLiRH2WAP9+6mmFcRsU4UEbZetpkas=;
+        b=iIVOR6hp8Ewl6uBwRGAOp+8rSxLjn+6VJNVfnspFkMRRqOxCykDS5hG5+aWqEXjnQ3
+         q62nsaS4g8YJnZQyLeU/2v3t1FWx3v1sEZTacAnfTAMokpym6Rf3IoByAHbEeNz1kma3
+         qUAE/x+6Ai07YQO1AaU6GX9LKqpCUlOId9YIu7z06auoUfKd0Pftuqmgfe5dQoykbK3b
+         f8RQ3zllb8cWjdgOztgVCPLcDIpQes1TNfpvMVis1n7EhMYH6F+R0q1eOGwjh26Jnnw/
+         CwbNo0lRvGhQE5UYnbZJecMFxtT4WyrZasgfehMaaKm+cnSFeQw6kqKKm+IeQB7F1ROg
+         YNjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=C3HS1ypvkJ+lkqyxbx/aW32RyhpvBAPsU9JGvVzTGBA=;
-        b=t0tr3L9bXzFpIuztI4xx0E10WPrbSiKJYDyxIxZx3sNIHsA+8f9bqldvjvtbwTD4fg
-         /B7+w6SqqA9jGPFC17igktutIih+ZLsrVyY+jlqZzqsTB8ZJqr/E+Eddc+mpagL6jNy1
-         HYvEN0VE6+eBdeIVq5QRJD9udOQAcptBfSVe4YbRzHUayvOnZBfzxuO/iU71ZDesyLVp
-         4oy8R7j198YiADM2J6bwAuJ/ZE+O0HwHG8MmZ2EaxU2PQBzShAygZRfkNMfiRggO5kZS
-         y+l8mbiw3TA2MOc6CovSRyKUPHIUHKBPfCHJyrLt4jdYCInKk/vkRRGPxfCtI/h4Smsn
-         qL5g==
-X-Gm-Message-State: AOAM533dZmrz2jsbgBOK8hILBIadaAnz7RIuPbSG/ayG2L1NyVmYBxnS
-        M0ISXx3HSxi7XQR/2F1LcN6ei08iqeMr3lERcMk=
-X-Google-Smtp-Source: ABdhPJztyDXq7LeXHVTVtd4ykTeLMqV2Kp7yXlaF3X5Jqf2e5A6e+nNfGHxbmg1WCKr4ex8f3dxnPiD7CqOucIU9KEM=
-X-Received: by 2002:aca:5256:: with SMTP id g83mr517397oib.71.1602610449342;
- Tue, 13 Oct 2020 10:34:09 -0700 (PDT)
+        bh=uOXLByz02dM7zoLiRH2WAP9+6mmFcRsU4UEbZetpkas=;
+        b=oYFuVI7f1TIHwZsCC6Q2oVAMJgxzQby7FO61xBApTMcpeshF/bTLrKDIVUKOBRX+hg
+         Kj4336xMUK/mGFGLoe+wdeou15dPJ9KxxtdxTz0lhozH6+V0TC02VBwglelk4O/triHW
+         YXeG0Yr5pLkkM/K6YuCvN7UkvCREWmZSceIQsDbJv38cbRAiDuUuVV3bwiBrJsZKWe42
+         aWI/TLbpql0bA1OnZt0ktsdzVLK24Vy9b15fe+taCkCkG5S9C1Ry59fmIwuN2ekVRjNe
+         kFEMjUOqMd9p61feNtbCGEtkg+QIIVj5Lb+OgzCxnhpR8X7fQeogy4R7tBSINq6NXwys
+         kdPA==
+X-Gm-Message-State: AOAM532IdE38bbkDYEadJRRvVFtP9HeUkX6XA/pveLgYroipcllQLhta
+        jgUGuzVyaQ/s1YcEN8hQF7Lh0E9p664=
+X-Google-Smtp-Source: ABdhPJwh8qAmweoh4uJiu/Y6ofmdluXI+w77ZCkaStn9C5D8CWT8BDsAajxLik33n6oLqobAsQrgSw==
+X-Received: by 2002:a17:906:5618:: with SMTP id f24mr889002ejq.86.1602610496810;
+        Tue, 13 Oct 2020 10:34:56 -0700 (PDT)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id gv10sm332843ejb.46.2020.10.13.10.34.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 10:34:56 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] arm64: dts: rockchip: Add basic support for
+ Kobol's Helios64
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Aditya Prayoga <aditya@kobol.io>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201013161340.720403-1-uwe@kleine-koenig.org>
+ <20201013161340.720403-3-uwe@kleine-koenig.org>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <a3957410-af99-5df4-8953-ffa3e7734aab@gmail.com>
+Date:   Tue, 13 Oct 2020 19:34:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 13 Oct 2020 19:33:58 +0200
-Message-ID: <CAJZ5v0j7XkDh9ddK0BtjWjHqC=xkcyiEEDzTJN=Lykje5-wf3w@mail.gmail.com>
-Subject: [GIT PULL] ACPI updates for v5.10-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201013161340.720403-3-uwe@kleine-koenig.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Please pull from the tag
+Hi Uwe,
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.10-rc1
+Part 1 of 2 missing here.
+Submit all patches to all maintainers and mail lists.
+Don't forget robh+dt !
 
-with top-most commit 8be2362d10e8b0ea9844706d8c388480d37226d2
+./scripts/get_maintainer.pl --noroles --norolestats --nogit-fallback
+--nogit <patch 1> <patch2>
 
- Merge branches 'acpi-extlog', 'acpi-memhotplug', 'acpi-button',
-'acpi-tools' and 'acpi-pci'
+git send-email --suppress-cc all --annotate --to <..> --cc <..> <patch
+1> <patch2>
 
-on top of commit 549738f15da0e5a00275977623be199fbbf7df50
+On 10/13/20 6:13 PM, Uwe Kleine-König wrote:
+> The hardware is described in detail on Kobol's wiki at
+> https://wiki.kobol.io/helios64/intro/.
+> 
+> Up to now the following peripherals are working:
+> 
+>  - UART
+>  - Micro-SD card
+>  - eMMC
+>  - ethernet port 1
+>  - status LED
+>  - temperature sensor on i2c bus 2
+> 
+> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
+> ---
 
- Linux 5.9-rc8
+Add a little change log here.
 
-to receive ACPI updates for 5.10-rc1.
+>  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>  .../dts/rockchip/rk3399-kobol-helios64.dts    | 378 ++++++++++++++++++
+>  2 files changed, 379 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+> index b87b1f773083..ddf07c5e5f7c 100644
+> --- a/arch/arm64/boot/dts/rockchip/Makefile
+> +++ b/arch/arm64/boot/dts/rockchip/Makefile
+> @@ -24,6 +24,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-hugsun-x99.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-captain.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-v.dtb
+> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-kobol-helios64.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-leez-p710.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+> new file mode 100644
+> index 000000000000..98a2bbed8c14
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+> @@ -0,0 +1,378 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2020 Aditya Prayoga <aditya@kobol.io>
+> + */
+> +
+> +/*
+> + * The Kobol Helios64 is a board designed to operate as a NAS and optionally
+> + * ships with an enclosing that can host five 2.5" hard disks.
+> + *
+> + * See https://wiki.kobol.io/helios64/intro/ for further details.
+> + */
+> +
+> +/dts-v1/;
+> +#include "rk3399.dtsi"
+> +#include "rk3399-opp.dtsi"
+> +
+> +/ {
+> +	model = "Kobol Helios64";
+> +	compatible = "kobol,helios64", "rockchip,rk3399";
+> +
+> +	avdd_1v8_s0: avdd-1v8-s0 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "avdd_1v8_s0";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +		vin-supply = <&vcc3v3_sys_s3>;
+> +	};
+> +
+> +	clkin_gmac: external-gmac-clock {
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <125000000>;
+> +		clock-output-names = "clkin_gmac";
+> +		#clock-cells = <0>;
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
 
-These add support for generic initiator-only proximity domains to
-the ACPI NUMA code and the architectures using it, clean up some
-non-ACPICA code referring to debug facilities from ACPICA, reduce the
-overhead related to accessing GPE registers, add a new DPTF (Dynamic
-Power and Thermal Framework) participant driver, update the ACPICA
-code in the kernel to upstream revision 20200925, add a new ACPI
-backlight whitelist entry, fix a few assorted issues and clean up
-some code.
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&fault_led &status_led>;
 
-Specifics:
+sort
 
- - Add support for generic initiator-only proximity domains to
-   the ACPI NUMA code and the architectures using it (Jonathan
-   Cameron).
+> +
+> +		fault-led {
+fault_led: led-0 {}
 
- - Clean up some non-ACPICA code referring to debug facilities from
-   ACPICA that are not actually used in there (Hanjun Guo).
+My fault.
+Change ones more...
+  # The first form is preferred, but fall back to just 'led' anywhere in the
+  # node name to at least catch some child nodes.
+  "(^led-[0-9a-f]$|led)":
 
- - Add new DPTF driver for the PCH FIVR participant (Srinivas
-   Pandruvada).
+> +			label = "helios64:red:fault";
+> +			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
+> +			default-state = "keep";
+> +		};
+> +
 
- - Reduce overhead related to accessing GPE registers in ACPICA and
-   the OS interface layer and make it possible to access GPE registers
-   using logical addresses if they are memory-mapped (Rafael Wysocki).
+> +		status-led {
 
- - Update the ACPICA code in the kernel to upstream revision 20200925
-   including changes as follows:
-   * Add predefined names from the SMBus specification (Bob Moore).
-   * Update acpi_help UUID list (Bob Moore).
-   * Return exceptions for string-to-integer conversions in iASL (Bob
-     Moore).
-   * Add a new "ALL <NameSeg>" debugger command (Bob Moore).
-   * Add support for 64 bit risc-v compilation (Colin Ian King).
-   * Do assorted cleanups (Bob Moore, Colin Ian King, Randy Dunlap).
+status_led: led-1 {}
 
- - Add new ACPI backlight whitelist entry for HP 635 Notebook (Alex
-   Hung).
+> +			label = "helios64:green:status";
+> +			gpios = <&gpio0 RK_PB4 GPIO_ACTIVE_HIGH>;
 
- - Move TPS68470 OpRegion driver to drivers/acpi/pmic/ and split out
-   Kconfig and Makefile specific for ACPI PMIC (Andy Shevchenko).
+> +			linux,default-trigger = "none";
 
- - Clean up the ACPI SoC driver for AMD SoCs (Hanjun Guo).
+Don't use 'none' for mainline.
 
- - Add missing config_item_put() to fix refcount leak (Hanjun Guo).
+> +			default-state = "on";
+> +		};
+> +	};
+> +
+> +	vcc1v8_sys_s0: vcc1v8-sys-s0 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc1v8_sys_s0";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +		vin-supply = <&vcc1v8_sys_s3>;
+> +	};
+> +
+> +	vcc3v0_sd: vcc3v0-sd {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc3v0_sd";
 
- - Drop leftover field from struct acpi_memory_device (Hanjun Guo).
+Doesn't a sd card need a on/off gpio?
+Could you check the schematics?
 
- - Make the ACPI extlog driver check for RDMSR failures (Ben
-   Hutchings).
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <3000000>;
+> +		regulator-max-microvolt = <3000000>;
+> +		vin-supply = <&vcc3v3_sys_s3>;
+> +	};
+> +
+> +	vcc3v3_sys_s3: vcc_lan: vcc3v3-sys-s3 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc3v3_sys_s3";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		vin-supply = <&vcc5v0_sys>;
+> +
+> +		regulator-state-mem {
+> +			regulator-on-in-suspend;
+> +		};
+> +	};
+> +
+> +	vcc5v0_sys: vcc5v0-sys {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc5v0_sys";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		vin-supply = <&vcc12v_dcin_bkup>;
+> +
+> +		regulator-state-mem {
+> +			regulator-on-in-suspend;
+> +		};
+> +	};
+> +
+> +	vcc12v_dcin: vcc12v-dcin {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc12v_dcin";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <12000000>;
+> +		regulator-max-microvolt = <12000000>;
+> +	};
+> +
+> +	vcc12v_dcin_bkup: vcc12v-dcin-bkup {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vcc12v_dcin_bkup";
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		regulator-min-microvolt = <12000000>;
+> +		regulator-max-microvolt = <12000000>;
+> +		vin-supply = <&vcc12v_dcin>;
+> +	};
+> +};
+> +
+> +/*
+> + * The system doesn't run stable with cpu freq enabled, so disallow the lower
+> + * frequencies until this problem is properly understood and resolved.
+> + */
+> +&cluster0_opp {
+> +        /delete-node/ opp00;
+> +        /delete-node/ opp01;
+> +        /delete-node/ opp02;
+> +        /delete-node/ opp03;
+> +        /delete-node/ opp04;
+> +};
+> +&cluster1_opp {
+> +        /delete-node/ opp00;
+> +        /delete-node/ opp01;
+> +        /delete-node/ opp02;
+> +        /delete-node/ opp03;
+> +        /delete-node/ opp04;
+> +        /delete-node/ opp05;
+> +        /delete-node/ opp06;
+> +};
+> +
+> +&cpu_b0 {
+> +	cpu-supply = <&vdd_cpu_b>;
+> +};
+> +
+> +&cpu_b1 {
+> +	cpu-supply = <&vdd_cpu_b>;
+> +};
+> +
+> +&cpu_l0 {
+> +	cpu-supply = <&vdd_cpu_l>;
+> +};
+> +
+> +&cpu_l1 {
+> +	cpu-supply = <&vdd_cpu_l>;
+> +};
+> +
+> +&cpu_l2 {
+> +	cpu-supply = <&vdd_cpu_l>;
+> +};
+> +
+> +&cpu_l3 {
+> +	cpu-supply = <&vdd_cpu_l>;
+> +};
+> +
+> +&emmc_phy {
+> +	status = "okay";
+> +};
+> +
+> +&gmac {
+> +	assigned-clock-parents = <&clkin_gmac>;
+> +	assigned-clocks = <&cru SCLK_RMII_SRC>;
+> +	clock_in_out = "input";
+> +	phy-mode = "rgmii";
+> +	phy-supply = <&vcc_lan>;
+> +	pinctrl-0 = <&rgmii_pins &rgmii_phy_reset>;
+> +	pinctrl-names = "default";
+> +	rx_delay = <0x20>;
+> +	snps,reset-active-low;
+> +	snps,reset-delays-us = <0 10000 50000>;
+> +	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
+> +	tx_delay = <0x28>;
+> +	status = "okay";
+> +};
+> +
+> +&i2c0 {
+> +	clock-frequency = <400000>;
+> +	i2c-scl-falling-time-ns = <4>;
+> +	i2c-scl-rising-time-ns = <168>;
+> +	status = "okay";
+> +
+> +	rk808: pmic@1b {
+> +		compatible = "rockchip,rk808";
+> +		reg = <0x1b>;
+> +		interrupt-parent = <&gpio0>;
+> +		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
+> +		clock-output-names = "xin32k", "rk808-clkout2";
 
- - Fix handling of lid state changes in the ACPI button driver when
-   input device is closed (Dmitry Torokhov).
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pmic_int_l>;
 
- - Fix several assorted build issues (Barnabás Pőcze, John Garry,
-   Nathan Chancellor, Tian Tao).
+sort
 
- - Drop unused inline functions and reduce code duplication by using
-   kobj_to_dev() in the NFIT parsing code (YueHaibing, Wang Qing).
+> +		vcc1-supply = <&vcc5v0_sys>;
+> +		vcc2-supply = <&vcc5v0_sys>;
+> +		vcc3-supply = <&vcc5v0_sys>;
+> +		vcc4-supply = <&vcc5v0_sys>;
+> +		vcc6-supply = <&vcc5v0_sys>;
+> +		vcc7-supply = <&vcc5v0_sys>;
+> +		vcc8-supply = <&vcc3v3_sys_s3>;
+> +		vcc9-supply = <&vcc5v0_sys>;
+> +		vcc10-supply = <&vcc5v0_sys>;
+> +		vcc11-supply = <&vcc5v0_sys>;
+> +		vcc12-supply = <&vcc3v3_sys_s3>;
+> +		vddio-supply = <&vcc3v0_s3>;
+> +		wakeup-source;
 
- - Serialize tools/power/acpi Makefile (Thomas Renninger).
+> +
 
-Thanks!
+remove empty line
+
+> +		#clock-cells = <1>;
+> +
+> +		regulators {
+> +			vdd_cpu_l: DCDC_REG2 {
+> +				regulator-name = "vdd_cpu_l";
+> +				regulator-always-on;
+> +				regulator-boot-on;
+
+> +				regulator-max-microvolt = <1350000>;
+> +				regulator-min-microvolt = <750000>;
 
 
----------------
+The rest has min above max.
+Exception to the sort rule, not sure what Heiko wants, but keep it every
+where the same.
 
-Alex Hung (1):
-      ACPI: video: use ACPI backlight for HP 635 Notebook
 
-Andy Shevchenko (3):
-      ACPI / PMIC: Split out Kconfig and Makefile specific for ACPI PMIC
-      ACPI / PMIC: Move TPS68470 OpRegion driver to drivers/acpi/pmic/
-      MAINTAINERS: Use my kernel.org address for Intel PMIC work
+> +				regulator-ramp-delay = <6001>;
+> +
+> +				regulator-state-mem {
+> +					regulator-off-in-suspend;
+> +				};
+> +			};
+> +
+> +			vcc1v8_sys_s3: DCDC_REG4 {
+> +				regulator-name = "vcc1v8_sys_s3";
+> +				regulator-always-on;
+> +				regulator-boot-on;
 
-Barnabás Pőcze (1):
-      ACPI: battery: include linux/power_supply.h
+> +				regulator-max-microvolt = <1800000>;
+> +				regulator-min-microvolt = <1800000>;
 
-Ben Hutchings (1):
-      ACPI / extlog: Check for RDMSR failure
+idem
 
-Bob Moore (6):
-      ACPICA: Add predefined names found in the SMBus sepcification
-      ACPICA: acpi_help: Update UUID list
-      ACPICA: iASL: Return exceptions for string-to-integer conversions
-      ACPICA: Debugger: Add a new command: "ALL <NameSeg>"
-      ACPICA: Remove unnecessary semicolon
-      ACPICA: Update version to 20200925 Version 20200925
+> +
+> +				regulator-state-mem {
+> +					regulator-on-in-suspend;
+> +					regulator-suspend-microvolt = <1800000>;
+> +				};
+> +			};
+> +
+> +			vcc_sdio_s0: LDO_REG4 {
+> +				regulator-name = "vcc_sdio_s0";
+> +				regulator-always-on;
+> +				regulator-boot-on;
 
-Colin Ian King (2):
-      ACPICA: Add support for 64 bit risc-v compilation
-      ACPICA: Tree-wide: fix various typos and spelling mistakes
+> +				regulator-min-microvolt = <1800000>;
+> +				regulator-max-microvolt = <3000000>;
 
-Dmitry Torokhov (1):
-      ACPI: button: fix handling lid state changes when input device closed
+keep
 
-Hanjun Guo (22):
-      ACPI: APD: Add kerneldoc for properties in struct apd_device_desc
-      ACPI: APD: Remove flags from struct apd_device_desc
-      ACPI: APD: Remove ACPI_MODULE_NAME()
-      ACPI: APD: Remove unnecessary APD_ADDR() macro stub
-      ACPI: APD: Clean up header file include statements
-      ACPI: configfs: Add missing config_item_put() to fix refcount leak
-      ACPI: cmos_rtc: Remove leftover ACPI_MODULE_NAME()
-      ACPI: LPSS: Remove ACPI_MODULE_NAME()
-      ACPI: memhotplug: Remove leftover ACPICA debug functionality
-      ACPI: platform: Remove ACPI_MODULE_NAME()
-      ACPI: container: Remove leftover ACPICA debug functionality
-      ACPI: custom_method: Remove dead ACPICA debug code
-      ACPI: debugfs: Remove dead ACPICA debug code
-      ACPI: dock: Remove dead ACPICA debug code
-      ACPI: event: Remove leftover ACPICA debug code
-      ACPI: PCI: Remove unused ACPICA debug code
-      ACPI: proc: Remove dead ACPICA debug code
-      ACPI: processor: Remove dead ACPICA debug code
-      ACPI: tiny-power-button: Remove dead ACPICA debug code
-      ACPI: video: Remove leftover ACPICA debug code
-      ACPI: wakeup: Remove dead ACPICA debug code
-      ACPI: memhotplug: Remove 'state' from struct acpi_memory_device
+> +
+> +				regulator-state-mem {
+> +					regulator-on-in-suspend;
+> +					regulator-suspend-microvolt = <3000000>;
+> +				};
+> +			};
+> +
+> +			vcc3v0_s3: LDO_REG8 {
+> +				regulator-name = "vcc3v0_s3";
+> +				regulator-always-on;
+> +				regulator-boot-on;
 
-John Garry (1):
-      ACPI: Make acpi_evaluate_dsm() prototype consistent
+> +				regulator-max-microvolt = <3000000>;
+> +				regulator-min-microvolt = <3000000>;
 
-Jonathan Cameron (12):
-      ACPI: Add out of bounds and numa_off protections to pxm_to_node()
-      ACPI: Do not create new NUMA domains from ACPI static tables
-that are not SRAT
-      ACPI: Remove side effect of partly creating a node in
-acpi_map_pxm_to_online_node()
-      ACPI: Rename acpi_map_pxm_to_online_node() to pxm_to_online_node()
-      ACPI: Remove side effect of partly creating a node in acpi_get_node()
-      irq-chip/gic-v3-its: Fix crash if ITS is in a proximity domain
-without processor or memory
-      ACPI: Support Generic Initiator only domains
-      x86: Support Generic Initiator only proximity domains
-      ACPI: Let ACPI know we support Generic Initiator Affinity Structures
-      ACPI: HMAT: Fix handling of changes from ACPI 6.2 to ACPI 6.3
-      node: Add access1 class to represent CPU to memory characteristics
-      docs: mm: numaperf.rst Add brief description for access class 1.
+change
 
-Nathan Chancellor (1):
-      ACPI / NUMA: Add stub function for pxm_to_node()
+> +
+> +				regulator-state-mem {
+> +					regulator-on-in-suspend;
+> +					regulator-suspend-microvolt = <3000000>;
+> +				};
+> +			};
+> +		};
+> +	};
+> +
+> +	vdd_cpu_b: regulator@40 {
+> +		compatible = "silergy,syr827";
+> +		reg = <0x40>;
+> +		fcs,suspend-voltage-selector = <1>;
+> +		pinctrl-0 = <&vsel1_gpio>;
+> +		pinctrl-names = "default";
+> +		regulator-always-on;
+> +		regulator-boot-on;
 
-Rafael J. Wysocki (6):
-      ACPICA: Validate GPE blocks at init time
-      ACPICA: Introduce acpi_hw_gpe_read() and acpi_hw_gpe_write()
-      ACPICA: Introduce special struct type for GPE register addresses
-      ACPICA: Add support for using logical addresses of GPE blocks
-      ACPI: OSL: Change the type of acpi_os_map_generic_address() return value
-      ACPI: OSL: Make ACPICA use logical addresses of GPE blocks
+> +		regulator-max-microvolt = <1500000>;
+> +		regulator-min-microvolt = <712500>;
 
-Randy Dunlap (1):
-      ACPICA: Drop the repeated word "an" in a comment
+change
 
-Srinivas Pandruvada (1):
-      ACPI: DPTF: Add PCH FIVR participant driver
+> +		regulator-name = "vdd_cpu_b";
+> +		regulator-ramp-delay = <1000>;
+> +		vin-supply = <&vcc5v0_sys>;
+> +
+> +		regulator-state-mem {
+> +			regulator-off-in-suspend;
+> +		};
+> +	};
+> +};
+> +
+> +&i2c2 {
+> +	clock-frequency = <400000>;
 
-Thomas Renninger (1):
-      tools/power/acpi: Serialize Makefile
+> +	i2c-scl-rising-time-ns = <160>;
+> +	i2c-scl-falling-time-ns = <30>;
 
-Tian Tao (2):
-      ACPI: PCI: update kernel-doc line comments
-      ACPI: scan: Replace ACPI_DEBUG_PRINT() with pr_debug()
+sort
 
-Wang Qing (1):
-      ACPI: NFIT: Use kobj_to_dev() instead
+> +	status = "okay";
+> +
+> +	temp@4c {
+> +		compatible = "national,lm75";
+> +		reg = <0x4c>;
+> +	};
+> +};
+> +
+> +&io_domains {
+> +	audio-supply = <&vcc1v8_sys_s0>;
+> +	bt656-supply = <&vcc1v8_sys_s0>;
+> +	gpio1830-supply = <&vcc3v0_s3>;
+> +	sdmmc-supply = <&vcc_sdio_s0>;
+> +	status = "okay";
+> +};
+> +
+> +&pinctrl {
+> +	gmac {
+> +		rgmii_phy_reset: rgmii-phy-reset {
+> +			rockchip,pins =
 
-YueHaibing (1):
-      ACPI: Remove three unused inline functions
+> +				<3 RK_PB7 RK_FUNC_GPIO &pcfg_output_low>;
 
----------------
+align on the same line similar to pmic
 
- Documentation/ABI/testing/sysfs-platform-dptf      |  16 ++
- Documentation/admin-guide/mm/numaperf.rst          |   8 +
- MAINTAINERS                                        |   4 +-
- arch/x86/include/asm/numa.h                        |   2 +
- arch/x86/kernel/setup.c                            |   1 +
- arch/x86/mm/numa.c                                 |  21 +++
- drivers/acpi/Kconfig                               |  65 +-------
- drivers/acpi/Makefile                              |  10 +-
- drivers/acpi/acpi_apd.c                            |  32 +---
- drivers/acpi/acpi_cmos_rtc.c                       |   2 -
- drivers/acpi/acpi_configfs.c                       |   1 +
- drivers/acpi/acpi_extlog.c                         |   6 +-
- drivers/acpi/acpi_lpss.c                           |   2 -
- drivers/acpi/acpi_memhotplug.c                     |  19 +--
- drivers/acpi/acpi_platform.c                       |   2 -
- drivers/acpi/acpica/acdebug.h                      |   4 +
- drivers/acpi/acpica/acglobal.h                     |   6 +
- drivers/acpi/acpica/achware.h                      |   6 +
- drivers/acpi/acpica/aclocal.h                      |  11 +-
- drivers/acpi/acpica/acpredef.h                     |  33 +++-
- drivers/acpi/acpica/dbexec.c                       |  39 +++--
- drivers/acpi/acpica/dbinput.c                      |  14 +-
- drivers/acpi/acpica/dbmethod.c                     | 167 ++++++++++++++++++---
- drivers/acpi/acpica/evgpe.c                        |   4 +-
- drivers/acpi/acpica/evgpeblk.c                     |  27 +++-
- drivers/acpi/acpica/evgpeinit.c                    |  23 ++-
- drivers/acpi/acpica/hwgpe.c                        | 102 +++++++++++--
- drivers/acpi/acpica/hwvalid.c                      |  30 ++++
- drivers/acpi/acpica/nsalloc.c                      |   2 +-
- drivers/acpi/acpica/nsarguments.c                  |   4 +-
- drivers/acpi/acpica/nsxfobj.c                      |   3 +-
- drivers/acpi/acpica/psparse.c                      |   4 +-
- drivers/acpi/acpica/utpredef.c                     |   5 +-
- drivers/acpi/acpica/utstrsuppt.c                   |  33 ++--
- drivers/acpi/apei/apei-base.c                      |   6 +-
- drivers/acpi/arm64/iort.c                          |   2 +-
- drivers/acpi/bus.c                                 |   4 +
- drivers/acpi/button.c                              |  13 +-
- drivers/acpi/container.c                           |   3 -
- drivers/acpi/custom_method.c                       |   2 -
- drivers/acpi/debugfs.c                             |   3 -
- drivers/acpi/dock.c                                |   2 -
- drivers/acpi/dptf/Kconfig                          |  14 ++
- drivers/acpi/dptf/Makefile                         |   1 +
- drivers/acpi/dptf/dptf_pch_fivr.c                  | 126 ++++++++++++++++
- drivers/acpi/dptf/int340x_thermal.c                |   1 +
- drivers/acpi/event.c                               |   3 -
- drivers/acpi/nfit/core.c                           |  10 +-
- drivers/acpi/numa/hmat.c                           |  95 +++++++++---
- drivers/acpi/numa/srat.c                           |  73 ++++++++-
- drivers/acpi/osl.c                                 |  30 ++--
- drivers/acpi/pci_root.c                            |   4 +-
- drivers/acpi/pci_slot.c                            |   3 -
- drivers/acpi/pmic/Kconfig                          |  67 +++++++++
- drivers/acpi/pmic/Makefile                         |  10 ++
- drivers/acpi/proc.c                                |   4 -
- drivers/acpi/processor_core.c                      |   3 -
- drivers/acpi/processor_thermal.c                   |   2 -
- drivers/acpi/scan.c                                |   3 +-
- drivers/acpi/tiny-power-button.c                   |   1 -
- drivers/acpi/video_detect.c                        |  12 +-
- drivers/acpi/wakeup.c                              |   2 -
- drivers/base/node.c                                |   3 +
- drivers/iommu/intel/dmar.c                         |   2 +-
- drivers/irqchip/irq-gic-v3-its.c                   |   7 +-
- include/acpi/acconfig.h                            |   2 +-
- include/acpi/acexcep.h                             |   4 +-
- include/acpi/acpi_io.h                             |   2 +-
- include/acpi/acpi_numa.h                           |   5 +
- include/acpi/acpixf.h                              |   2 +-
- include/acpi/actypes.h                             |   2 +-
- include/acpi/acuuid.h                              |   7 +
- include/acpi/battery.h                             |   2 +
- include/acpi/platform/aclinux.h                    |   7 +-
- include/linux/acpi.h                               |  27 ++--
- include/linux/nodemask.h                           |   1 +
- tools/power/acpi/Makefile                          |   2 +
- .../acpi/os_specific/service_layers/oslinuxtbl.c   |   2 +-
- 78 files changed, 955 insertions(+), 329 deletions(-)
+> +		};
+> +	};
+> +
+> +	leds {
+> +		fault_led: fault-led {
+> +			rockchip,pins =
+
+> +				<0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_down>;
+
+align
+
+> +		};
+> +
+> +		status_led: status-led {
+> +			rockchip,pins =
+
+> +				<0 RK_PB4 RK_FUNC_GPIO &pcfg_pull_down>,
+
+align
+
+> +		};
+> +	};
+> +
+> +	pmic {
+> +		pmic_int_l: pmic-int-l {
+> +			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>;
+> +		};
+> +
+> +		vsel1_gpio: vsel1-gpio {
+> +			rockchip,pins = <1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_down>;
+> +		};
+> +
+> +		vsel2_gpio: vsel2-gpio {
+> +			rockchip,pins = <1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_down>;
+> +		};
+> +	};
+> +};
+> +
+> +&pmu_io_domains {
+> +	pmu1830-supply = <&vcc3v0_s3>;
+> +	status = "okay";
+> +};
+> +
+> +&sdhci {
+> +	bus-width = <8>;
+
+> +	disable-wp;
+
+remove
+not used with emmc
+
+> +	mmc-hs200-1_8v;
+> +	non-removable;
+
+> +	supports-emmc;
+
+remove
+not a valid property for mainline
+
+> +	vqmmc-supply = <&vcc1v8_sys_s0>;
+> +	status = "okay";
+> +};
+> +
+> +&sdmmc {
+> +	bus-width = <4>;
+> +	cap-sd-highspeed;
+
+> +	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>;
+
+see regulator?
+
+> +	disable-wp;
+> +	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd &sdmmc_bus4>;
+> +	pinctrl-names = "default";
+> +	vmmc-supply = <&vcc3v0_sd>;
+> +	vqmmc-supply = <&vcc_sdio_s0>;
+> +	status = "okay";
+> +};
+> +
+> +&uart2 {
+> +	status = "okay";
+> +};
+> 
+
