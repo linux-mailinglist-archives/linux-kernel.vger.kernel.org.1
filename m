@@ -2,108 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A2A28C9B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBDF28C9B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390682AbgJMIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390648AbgJMIBg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:01:36 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE649C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:34 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id gv6so219362pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tsWTpurAuv/vlEeR04dTlVeLk9jDAutyxmmT9x78Hg4=;
-        b=VHXuf5PSGufIuEVtxw7oi/WheNmXY+Z+WfaKAzvMOxnjZwgkxR1OmEB4T8sZQewEtg
-         e1c+/oALAlAF0tmbAPm4p0htrPBmga/hDHq3dCm764yD1Y8h89UBPvIgeOxhpUkmzd9y
-         YzRv8baPNKQB6EzJLbfAejrsl+2fGLM9ZtOCQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tsWTpurAuv/vlEeR04dTlVeLk9jDAutyxmmT9x78Hg4=;
-        b=dFuVhNLL3uGDgATLL7C5CLLne676zNVIPaVI2YJvINHIKq5SASIeQnD/koKj//FdoV
-         i7KJ537o6Q8Z6fIiYmXtkj5GAMPKHpPnvS7FBnLFlH4Oj0W3z0nzuw4wx9RR0eQWDpJD
-         GP1e5RFKWFFnKIJx6z4+OSx9Rlwa3rXwulctsHLiUnnWmK/bkzU2NnmO5lsoXQnLCJ1C
-         J3kwygD0Cudfx0tZ34Ag5PGepiJ92u6bnnwAFtl0IchXW4w4nxKKhXl7PcD3I5jvQOHV
-         dhlHpr1CK4r9Izq0zO+L1Xwl15BC7yiUPfURXs9KdS2PyVrQw285rJrF5LWVR43kX8BK
-         +K+g==
-X-Gm-Message-State: AOAM532z1HUQghECJUccCICGDwswqeNeixfUCnUxttXxrV/gdAIVgUka
-        qX2EWt1Cj17WOfC/FzUj2MCqcw==
-X-Google-Smtp-Source: ABdhPJzSKtqGpIzDGHTlIfXQtiyAnZNTdOdilKUyo1dojj/V/fNN8+sHQZsbPzxjkylibFLyW4WseA==
-X-Received: by 2002:a17:90a:7d16:: with SMTP id g22mr24517159pjl.135.1602576094443;
-        Tue, 13 Oct 2020 01:01:34 -0700 (PDT)
-Received: from alex-desktop.lan (c-73-63-253-164.hsd1.ca.comcast.net. [73.63.253.164])
-        by smtp.gmail.com with ESMTPSA id y124sm14956924pfy.28.2020.10.13.01.01.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 01:01:33 -0700 (PDT)
-From:   Alexandru Stan <amstan@chromium.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Alexandru Stan <amstan@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: dts: qcom: trogdor: Add brightness-levels
-Date:   Tue, 13 Oct 2020 01:01:03 -0700
-Message-Id: <20201013010056.v2.3.Ie4d84af5a85e8dcb8f575845518fa39f324a827d@changeid>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201013080103.410133-1-amstan@chromium.org>
-References: <20201013080103.410133-1-amstan@chromium.org>
+        id S2390781AbgJMIDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:03:02 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8196 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390718AbgJMICz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 04:02:55 -0400
+IronPort-SDR: widGY6HnllUU8YE9NOMpnHEoDfRfOq4TEcNOcb/3EomO1jpX5TIPu/J19RLhr78brlFHK33OJF
+ id3poWlNsIPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162406069"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="162406069"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 01:02:53 -0700
+IronPort-SDR: q6YXQhjLdocZBRjJV11X2KMYWY8bKyHpHzhYWvYNJlidELNEYQWOZC1FO2VV/4LBkpLq0NyigQ
+ ikVQs2IQ4ZKw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="299531283"
+Received: from lkp-server02.sh.intel.com (HELO b65d7201e80c) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Oct 2020 01:02:52 -0700
+Received: from kbuild by b65d7201e80c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kSFGl-00003P-Cc; Tue, 13 Oct 2020 08:02:51 +0000
+Date:   Tue, 13 Oct 2020 16:02:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/kprobes] BUILD SUCCESS
+ 6e426e0fcd20ce144bb93e00b70df51e9f2e08c3
+Message-ID: <5f855f22.XrwxZVM8quhmzYRm%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have better interpolation for the backlight
-("backlight: pwm_bl: Fix interpolation"), we can now add the curve to
-the trogdor boards, being careful to crop the low end.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/kprobes
+branch HEAD: 6e426e0fcd20ce144bb93e00b70df51e9f2e08c3  kprobes: Replace rp->free_instance with freelist
 
-Signed-off-by: Alexandru Stan <amstan@chromium.org>
+elapsed time: 723m
+
+configs tested: 116
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                    sam440ep_defconfig
+sh                          rsk7264_defconfig
+powerpc                       ebony_defconfig
+arm                            mmp2_defconfig
+arm                           spitz_defconfig
+powerpc                  iss476-smp_defconfig
+s390                          debug_defconfig
+powerpc                      cm5200_defconfig
+sh                          rsk7201_defconfig
+arm                       mainstone_defconfig
+csky                                defconfig
+openrisc                 simple_smp_defconfig
+h8300                            allyesconfig
+arc                 nsimosci_hs_smp_defconfig
+sh                   sh7770_generic_defconfig
+arm                         palmz72_defconfig
+arm                      integrator_defconfig
+arm                        multi_v7_defconfig
+arm                              alldefconfig
+arm                      tct_hammer_defconfig
+mips                         db1xxx_defconfig
+arm                        realview_defconfig
+mips                           ip32_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                            qcom_defconfig
+sh                        sh7785lcr_defconfig
+m68k                        stmark2_defconfig
+xtensa                  cadence_csp_defconfig
+arm                             pxa_defconfig
+sh                          rsk7203_defconfig
+mips                            ar7_defconfig
+powerpc                   motionpro_defconfig
+mips                        workpad_defconfig
+parisc                              defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                         at91_dt_defconfig
+m68k                         amcore_defconfig
+sh                          lboxre2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201012
+i386                 randconfig-a006-20201012
+i386                 randconfig-a001-20201012
+i386                 randconfig-a003-20201012
+i386                 randconfig-a004-20201012
+i386                 randconfig-a002-20201012
+x86_64               randconfig-a016-20201012
+x86_64               randconfig-a015-20201012
+x86_64               randconfig-a012-20201012
+x86_64               randconfig-a013-20201012
+x86_64               randconfig-a014-20201012
+x86_64               randconfig-a011-20201012
+i386                 randconfig-a016-20201012
+i386                 randconfig-a015-20201012
+i386                 randconfig-a013-20201012
+i386                 randconfig-a012-20201012
+i386                 randconfig-a011-20201012
+i386                 randconfig-a014-20201012
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201012
+x86_64               randconfig-a002-20201012
+x86_64               randconfig-a006-20201012
+x86_64               randconfig-a001-20201012
+x86_64               randconfig-a003-20201012
+x86_64               randconfig-a005-20201012
+x86_64               randconfig-a016-20201013
+x86_64               randconfig-a015-20201013
+x86_64               randconfig-a012-20201013
+x86_64               randconfig-a013-20201013
+x86_64               randconfig-a014-20201013
+x86_64               randconfig-a011-20201013
+
 ---
-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index bf875589d364..ccdabc6c4994 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -179,6 +179,15 @@ pp3300_fp_tp: pp3300-fp-tp-regulator {
- 	backlight: backlight {
- 		compatible = "pwm-backlight";
- 
-+		/* The panels don't seem to like anything below ~ 5% */
-+		brightness-levels = <
-+			196 256 324 400 484 576 676 784 900 1024 1156 1296
-+			1444 1600 1764 1936 2116 2304 2500 2704 2916 3136
-+			3364 3600 3844 4096
-+		>;
-+		num-interpolated-steps = <64>;
-+		default-brightness-level = <951>;
-+
- 		pwms = <&cros_ec_pwm 1>;
- 		enable-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
- 		power-supply = <&ppvar_sys>;
--- 
-2.28.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
