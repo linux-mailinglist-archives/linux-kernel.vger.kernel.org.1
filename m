@@ -2,213 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1129528CEF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B3728CEF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbgJMNLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgJMNLv (ORCPT
+        id S1728581AbgJMNMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:12:21 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:38574 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728558AbgJMNMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:11:51 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D40C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:11:49 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id e17so23947334wru.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hP4I1TSE0iiKe4uFVvPyKh5ZjOZU39ztMJs9eGzKphE=;
-        b=d7rK4C8mM7F7Mme2iU2+7ZjVgizAOHZSsRSZe5ZPmBkFa7mDw5CR4Z/BftFM5EMzSn
-         5A6rRSaYV9xFqjcsRSWKas27xMHogPcTggZkiLuwP96It/VGrrLF1KBgyKV6OtGNlsFK
-         VjmRlV5FgTBf2LYV1MEXXTqpR3rIaiD4xgM7gPLQ/TfEOrpUnXicpnFfbXQKoJ0Gu4WM
-         aNy/qZKePQWr+spaE7cwccOBkp/F/ZqsRO2UVEvDk6iM5m2hF1DQC98fPByh9Xacd5Vd
-         FJJgWhfTHkZgWBM9ZjStW/z3oGUQIRDoSpoBHi8avv2MHVIomMrvaxvknNf15MYnqnXD
-         GtSQ==
+        Tue, 13 Oct 2020 09:12:21 -0400
+Received: by mail-wr1-f65.google.com with SMTP id n18so23997333wrs.5;
+        Tue, 13 Oct 2020 06:12:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hP4I1TSE0iiKe4uFVvPyKh5ZjOZU39ztMJs9eGzKphE=;
-        b=IVqk3e+IhLLQhKhJFZBbBS85Ggr1KnCZnxOHUKJcMxiIEKKWANlrmhq1V9U+8wQHqa
-         A+qB07St4EJwO5PlZD2dGdp2me4QvbDPLx7jcMCbw5QoHpF1Lla3LV92NX2M7fhtu1G9
-         EItRV+5xCjN/+3+jSrd0rxAs6kdf6HBjY74aEp+XwdM6VbClFtnd0yXyNJSKR/lTwI0Y
-         j77G/JSd9qAPPvS+n5cTMK93f5eVu6yFftJaN3xfwu36QC19Xe615Hbb47UWygspkWqc
-         YQMdlI+zMSgfzdrr0PuGWl2QKQveOnSaa4gD+NkVsG8d40xEaFq+Ruok6o/2KI6W0md4
-         A/cg==
-X-Gm-Message-State: AOAM533uczYYxUusTMRjECazlvgDCx5C/JGiIYqqiF6J2xR00SYjZpm0
-        6/VA2ZX6S/p+qgpwcL/KLK87/25g2Ldx6D093lc=
-X-Google-Smtp-Source: ABdhPJwCH8a1D0+3oh4RSFSUGPQPJdoPQvQkpSD/avgAkn1KFZidf8NIXW/31BQm3MiFaQm16TPeo37b3nLk2KIkeY4=
-X-Received: by 2002:adf:f246:: with SMTP id b6mr29643949wrp.111.1602594707982;
- Tue, 13 Oct 2020 06:11:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=xwiQxdIni+OoOgjyTcFMAfcFR0s4rkAhFvFMhOPoExM=;
+        b=TJtWLbJaZHAlQxWnuW4+9aJ85pCm3CBl2GKP3NmDKRLgX/pYwrDn2Q/iI7gW8PDs4D
+         900HsmYKN6VDi5YGEnPBbDW4I8dlEU6SpEP8F7T1r7EN0PixlJVTf1Ct6P5L3Hy7vJSy
+         uQOQcrZgEO5OvsQE3o/TCqR4hPbiFd1H+gZGwRJtl3RJ+20mNHQEl+kjdJ3dRZq02hxb
+         R4Jfjasgd9cGe4ZVz6Ud+ohpnvtCqX277cLzMjmFT4EfXod49S1+/Eo+LcqOgTL6rnkF
+         dtixV0YKwvycfx5GeZ/w2Du6v17rpwMTo5NvtrRIV9dpVbri/TWQmAwZTz13BHRes5RQ
+         y4Ew==
+X-Gm-Message-State: AOAM532j9wHffOB0+hOMffHHSmDrJLz3j6X+EhzVutaG6WJMfuHhSrtI
+        A6gOMoAfOGy/Hl0THQy+TU8DxgIqGxU=
+X-Google-Smtp-Source: ABdhPJydF+OkFkTjToGwDY4RqfrKdQfRwK+5w+ay+jROLpCMHJd9hwvt4Qa7bE5tYh2vy/3am/3HSw==
+X-Received: by 2002:adf:a415:: with SMTP id d21mr26256079wra.408.1602594737034;
+        Tue, 13 Oct 2020 06:12:17 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u195sm4860219wmu.18.2020.10.13.06.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 06:12:15 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 13:12:14 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Hyper-V commits for 5.10
+Message-ID: <20201013131214.ej4ek5expi5dywer@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-References: <20201012114623.8583-1-bernard@vivo.com>
-In-Reply-To: <20201012114623.8583-1-bernard@vivo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 13 Oct 2020 09:11:36 -0400
-Message-ID: <CADnq5_MH2EYWuumqtZ+UPF-5TAW_+91F6mHFEu3MScTGQOQ0Dg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: remove no need return value
-To:     Bernard Zhao <bernard@vivo.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Anthony Koo <Anthony.Koo@amd.com>, Aric Cyr <aric.cyr@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Yongqiang Sun <yongqiang.sun@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Jun Lei <jun.lei@amd.com>, Samson Tam <Samson.Tam@amd.com>,
-        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
-        Reza Amini <Reza.Amini@amd.com>,
-        Brandon Syu <Brandon.Syu@amd.com>,
-        Charlene Liu <Charlene.Liu@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Wyatt Wood <wyatt.wood@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org, opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi Linus,
 
-Alex
+Please pull the following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-On Mon, Oct 12, 2020 at 9:44 AM Bernard Zhao <bernard@vivo.com> wrote:
->
-> Functions (disable_all_writeback_pipes_for_stream &
-> dc_enable_stereo & dc_post_update_surfaces_to_stream)
-> always return true, there is no need to keep the return value.
-> This change is to make the code a bit more readable.
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc.c   | 17 +++++------------
->  drivers/gpu/drm/amd/display/dc/dc.h        |  2 +-
->  drivers/gpu/drm/amd/display/dc/dc_stream.h |  2 +-
->  3 files changed, 7 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-> index 92eb1ca1634f..8dc598a632b5 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-> @@ -761,7 +761,7 @@ static bool dc_construct(struct dc *dc,
->         return false;
->  }
->
-> -static bool disable_all_writeback_pipes_for_stream(
-> +static void disable_all_writeback_pipes_for_stream(
->                 const struct dc *dc,
->                 struct dc_stream_state *stream,
->                 struct dc_state *context)
-> @@ -770,8 +770,6 @@ static bool disable_all_writeback_pipes_for_stream(
->
->         for (i = 0; i < stream->num_wb_info; i++)
->                 stream->writeback_info[i].wb_enabled = false;
-> -
-> -       return true;
->  }
->
->  void apply_ctx_interdependent_lock(struct dc *dc, struct dc_state *context, struct dc_stream_state *stream, bool lock)
-> @@ -1213,13 +1211,12 @@ bool dc_validate_seamless_boot_timing(const struct dc *dc,
->         return true;
->  }
->
-> -bool dc_enable_stereo(
-> +void dc_enable_stereo(
->         struct dc *dc,
->         struct dc_state *context,
->         struct dc_stream_state *streams[],
->         uint8_t stream_count)
->  {
-> -       bool ret = true;
->         int i, j;
->         struct pipe_ctx *pipe;
->
-> @@ -1234,8 +1231,6 @@ bool dc_enable_stereo(
->                                 dc->hwss.setup_stereo(pipe, dc);
->                 }
->         }
-> -
-> -       return ret;
->  }
->
->  /*
-> @@ -1448,18 +1443,18 @@ static bool is_flip_pending_in_pipes(struct dc *dc, struct dc_state *context)
->         return false;
->  }
->
-> -bool dc_post_update_surfaces_to_stream(struct dc *dc)
-> +void dc_post_update_surfaces_to_stream(struct dc *dc)
->  {
->         int i;
->         struct dc_state *context = dc->current_state;
->
->         if ((!dc->optimized_required) || dc->optimize_seamless_boot_streams > 0)
-> -               return true;
-> +               return;
->
->         post_surface_trace(dc);
->
->         if (is_flip_pending_in_pipes(dc, context))
-> -               return true;
-> +               return;
->
->         for (i = 0; i < dc->res_pool->pipe_count; i++)
->                 if (context->res_ctx.pipe_ctx[i].stream == NULL ||
-> @@ -1472,8 +1467,6 @@ bool dc_post_update_surfaces_to_stream(struct dc *dc)
->
->         dc->optimized_required = false;
->         dc->wm_optimized_required = false;
-> -
-> -       return true;
->  }
->
->  struct dc_state *dc_create_state(struct dc *dc)
-> diff --git a/drivers/gpu/drm/amd/display/dc/dc.h b/drivers/gpu/drm/amd/display/dc/dc.h
-> index f50ef4255020..f79a3c318757 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dc.h
-> +++ b/drivers/gpu/drm/amd/display/dc/dc.h
-> @@ -962,7 +962,7 @@ struct dc_flip_addrs {
->         bool triplebuffer_flips;
->  };
->
-> -bool dc_post_update_surfaces_to_stream(
-> +void dc_post_update_surfaces_to_stream(
->                 struct dc *dc);
->
->  #include "dc_stream.h"
-> diff --git a/drivers/gpu/drm/amd/display/dc/dc_stream.h b/drivers/gpu/drm/amd/display/dc/dc_stream.h
-> index d9888f316da6..0047ab33f88e 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dc_stream.h
-> +++ b/drivers/gpu/drm/amd/display/dc/dc_stream.h
-> @@ -391,7 +391,7 @@ enum dc_status dc_validate_stream(struct dc *dc, struct dc_stream_state *stream)
->   * Enable stereo when commit_streams is not required,
->   * for example, frame alternate.
->   */
-> -bool dc_enable_stereo(
-> +void dc_enable_stereo(
->         struct dc *dc,
->         struct dc_state *context,
->         struct dc_stream_state *streams[],
-> --
-> 2.28.0
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
+
+for you to fetch changes up to 1f3aed01473c41c9f896fbf4c30d330655e8aa7c:
+
+  hv: clocksource: Add notrace attribute to read_hv_sched_clock_*() functions (2020-09-28 09:04:48 +0000)
+
+----------------------------------------------------------------
+hyperv-next for 5.10
+
+ - A patch series from Boqun Feng to support page size larger than 4K
+ - A few miscellaneous clean-up patches
+
+----------------------------------------------------------------
+Boqun Feng (11):
+      Drivers: hv: vmbus: Always use HV_HYP_PAGE_SIZE for gpadl
+      Drivers: hv: vmbus: Move __vmbus_open()
+      Drivers: hv: vmbus: Introduce types of GPADL
+      Drivers: hv: Use HV_HYP_PAGE in hv_synic_enable_regs()
+      Drivers: hv: vmbus: Move virt_to_hvpfn() to hyperv header
+      hv: hyperv.h: Introduce some hvpfn helper functions
+      hv_netvsc: Use HV_HYP_PAGE_SIZE for Hyper-V communication
+      Input: hyperv-keyboard: Use VMBUS_RING_SIZE() for ringbuffer sizes
+      HID: hyperv: Use VMBUS_RING_SIZE() for ringbuffer sizes
+      Driver: hv: util: Use VMBUS_RING_SIZE() for ringbuffer sizes
+      scsi: storvsc: Support PAGE_SIZE larger than 4K
+
+Joseph Salisbury (1):
+      x86/hyperv: Remove aliases with X64 in their name
+
+Krzysztof Wilczyński (1):
+      PCI: hv: Document missing hv_pci_protocol_negotiation() parameter
+
+Mohammed Gamal (1):
+      hv: clocksource: Add notrace attribute to read_hv_sched_clock_*() functions
+
+Olaf Hering (1):
+      drivers: hv: remove cast from hyperv_die_event
+
+ arch/x86/hyperv/hv_init.c             |   8 +-
+ arch/x86/hyperv/hv_spinlock.c         |   2 +-
+ arch/x86/include/asm/hyperv-tlfs.h    |  33 ---
+ arch/x86/kernel/cpu/mshyperv.c        |   8 +-
+ arch/x86/kvm/hyperv.c                 |  20 +-
+ drivers/clocksource/hyperv_timer.c    |   4 +-
+ drivers/hid/hid-hyperv.c              |   4 +-
+ drivers/hv/channel.c                  | 461 +++++++++++++++++++++-------------
+ drivers/hv/hv.c                       |   4 +-
+ drivers/hv/hv_util.c                  |  11 +-
+ drivers/hv/vmbus_drv.c                |   2 +-
+ drivers/input/serio/hyperv-keyboard.c |   4 +-
+ drivers/net/hyperv/netvsc.c           |   2 +-
+ drivers/net/hyperv/netvsc_drv.c       |  46 ++--
+ drivers/net/hyperv/rndis_filter.c     |  13 +-
+ drivers/pci/controller/pci-hyperv.c   |   5 +-
+ drivers/scsi/storvsc_drv.c            |  56 ++++-
+ include/linux/hyperv.h                |  68 ++++-
+ 18 files changed, 468 insertions(+), 283 deletions(-)
