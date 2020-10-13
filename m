@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDB528C6C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B3D28C6C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgJMBb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 21:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728093AbgJMBb4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 21:31:56 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF78DC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 18:31:54 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id d16so1364902iln.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 18:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0+6Ztw7jbOmA581hZd3dtxpZftTR2fcd6tnRuJa6WYo=;
-        b=pZEbmEr9bQcIZ2o9YE29d8a/NvK5F3YeHSshot4Y7g5dNDbfoCqvMnHBRCi9UJRqeN
-         Thb0/GdQ193YqnvZLBd8jn1YlAo2iKikyVMjFSVsX1wvo3IJYiFCal27S3QjDa2hgnT6
-         nrLwZmhigVmhALy8FJnOcQzyRsNYOXPA+QPtM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0+6Ztw7jbOmA581hZd3dtxpZftTR2fcd6tnRuJa6WYo=;
-        b=C34fAzUidwCXDMz4aUa4nHgEBwklVj1FyaL7cXkMWW1PFlNC52pceGaGBKMt/VqdIE
-         W5KGng+5vUENxZY/Lq1I7D9folvGb9JXZHARyL3gIlci+cOYSXV9QcNOMygDJsX2ABp6
-         OPavxLqI0jjdY+bywSE9BzQj8wyWy2bREu8WDbtQ5gA3dIAydQSkEazcsKoWrmJFacPq
-         shDDET4a8G2X4Idw19WUSiJQ6IWVyWJ/u2pNI/YGxRFNVXkszO4qfJjI+GbIdLC2nj8l
-         OBRkxwLZsMSUFb1WHG9Hi2PWBGMAfVlZj6MjdtrK2NtmgEz2XuQwXFJJd7H6SPfHuKhj
-         iI4A==
-X-Gm-Message-State: AOAM532poXiSm3kxqiBzLNLxvho2zhnTIh8Q8j2TOPZYSHyQJCySv6yA
-        gc7u2n66c/o/zKua/VXfT/cZlrGJpXqCXu+NXT27
-X-Google-Smtp-Source: ABdhPJyrzsYD5zMnBZ/1QiHJ4BOApq7CZqI4Dso1cg5+duue25ZASsBHhP1llxgj03dQFqrMSTwYL8hP5liEYyS/wtc=
-X-Received: by 2002:a92:91db:: with SMTP id e88mr1178834ill.126.1602552713836;
- Mon, 12 Oct 2020 18:31:53 -0700 (PDT)
+        id S1728190AbgJMBdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 21:33:51 -0400
+Received: from mga14.intel.com ([192.55.52.115]:3762 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728093AbgJMBdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 21:33:51 -0400
+IronPort-SDR: iOlmkTXxcELRtvg1uJ+2GzV9FjHZg8/vYP/fWEJvv+qCAQCG5HZecLzDFE7ckQV8zCil95d56s
+ H67A/q5b77xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165041736"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="165041736"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:33:50 -0700
+IronPort-SDR: x9utqNXKIYN+/Rg99JVwHdLkO+tQIKs6ku4O+BIIak0czbdJMQ1k4KskilWb/ZTaRmZvAyja5i
+ puCyjYh75Mfg==
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="313634462"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:33:50 -0700
+Date:   Mon, 12 Oct 2020 18:33:49 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Cathy Avery <cavery@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, wei.huang2@amd.com,
+        mlevitsk@redhat.com
+Subject: Re: [PATCH v2 2/2] KVM: SVM: Use a separate vmcb for the nested L2
+ guest
+Message-ID: <20201013013349.GB10366@linux.intel.com>
+References: <20201011184818.3609-1-cavery@redhat.com>
+ <20201011184818.3609-3-cavery@redhat.com>
 MIME-Version: 1.0
-References: <20201012135724.110579-1-greentime.hu@sifive.com>
-In-Reply-To: <20201012135724.110579-1-greentime.hu@sifive.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 12 Oct 2020 18:31:43 -0700
-Message-ID: <CAOnJCULYeoBGOBwbBo3izZsQpkgFvPotaH+FJ+5M2SWG=m=ypA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] irqchip/sifive-plic: Enable or disable interrupt
- based on its previous setting
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201011184818.3609-3-cavery@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 6:57 AM Greentime Hu <greentime.hu@sifive.com> wrote:
->
-> It will always enable the interrupt after calling plic_set_affinity()
-> however it should set to its previous setting. Staying disabled or enabled.
->
-> This patch can also fix this pwm hang issue in Unleashed board.
->
-> [  919.015783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  919.020922] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=105807
-> [  919.030295]  (detected by 1, t=225825 jiffies, g=1561, q=3496)
-> [  919.036109] Task dump for CPU 0:
-> [  919.039321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  919.046359] Workqueue: events set_brightness_delayed
-> [  919.051302] Call Trace:
-> [  919.053738] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [  982.035783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  982.040923] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=113325
-> [  982.050294]  (detected by 1, t=241580 jiffies, g=1561, q=3509)
-> [  982.056108] Task dump for CPU 0:
-> [  982.059321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  982.066359] Workqueue: events set_brightness_delayed
-> [  982.071302] Call Trace:
-> [  982.073739] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [..]
->
-> Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> ---
->  drivers/irqchip/irq-sifive-plic.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index eaa3e9fe54e9..4cc8a2657a6d 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -137,6 +137,7 @@ static int plic_set_affinity(struct irq_data *d,
->                              const struct cpumask *mask_val, bool force)
->  {
->         unsigned int cpu;
-> +       bool enable;
->         struct cpumask amask;
->         struct plic_priv *priv = irq_get_chip_data(d->irq);
->
-> @@ -150,8 +151,10 @@ static int plic_set_affinity(struct irq_data *d,
->         if (cpu >= nr_cpu_ids)
->                 return -EINVAL;
->
-> +       enable = !irqd_irq_disabled(d);
->         plic_irq_toggle(&priv->lmask, d, 0);
-> -       plic_irq_toggle(cpumask_of(cpu), d, 1);
-> +       /* Keep its original setting. */
-> +       plic_irq_toggle(cpumask_of(cpu), d, enable);
->
->         irq_data_update_effective_affinity(d, cpumask_of(cpu));
->
-> --
-> 2.28.0
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+On Sun, Oct 11, 2020 at 02:48:18PM -0400, Cathy Avery wrote:
+> @@ -628,8 +620,10 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>  	nested_vmcb->control.pause_filter_thresh =
+>  		svm->vmcb->control.pause_filter_thresh;
+>  
+> -	/* Restore the original control entries */
+> -	copy_vmcb_control_area(&vmcb->control, &hsave->control);
+> +	nested_svm_vmloadsave(svm->nested.vmcb02, svm->vmcb01);
+> +
+> +	svm->vmcb = svm->vmcb01;
+> +	svm->vmcb_pa = svm->vmcb01_pa;
 
-LGTM.
+I very highly recommend adding a helper to switch VMCB.  Odds are very good
+there will be more than just these two lines of boilerplate code for changing
+the active VMCB.
 
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
+>  
+>  	/* On vmexit the  GIF is set to false */
+>  	svm_set_gif(svm, false);
 
--- 
-Regards,
-Atish
+...
+
+> @@ -1121,16 +1102,24 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  	if (!(save.cr0 & X86_CR0_PG))
+>  		return -EINVAL;
+>  
+> +	svm->nested.vmcb02->control = svm->vmcb01->control;
+> +	svm->nested.vmcb02->save = svm->vmcb01->save;
+> +	svm->vmcb01->save = save;
+> +
+> +	WARN_ON(svm->vmcb == svm->nested.vmcb02);
+
+I'm pretty sure this is user triggerable.  AFAIK, nothing prevents calling
+svm_set_nested_state() while L2 is active, e.g. VMX explicitly (and forcefully)
+kicks the vCPU out of L2 in vmx_set_nested_state().
+
+> +
+> +	svm->nested.vmcb = kvm_state->hdr.svm.vmcb_pa;
+> +
+> +	svm->vmcb = svm->nested.vmcb02;
+> +	svm->vmcb_pa = svm->nested.vmcb02_pa;
+> +
+>  	/*
+> -	 * All checks done, we can enter guest mode.  L1 control fields
+> -	 * come from the nested save state.  Guest state is already
+> -	 * in the registers, the save area of the nested state instead
+> -	 * contains saved L1 state.
+> +	 * All checks done, we can enter guest mode. L2 control fields will
+> +	 * be the result of a combination of L1 and userspace indicated
+> +	 * L12.control. The save area of L1 vmcb now contains the userspace
+> +	 * indicated L1.save.
+>  	 */
+> -	copy_vmcb_control_area(&hsave->control, &svm->vmcb->control);
+> -	hsave->save = save;
+>  
+> -	svm->nested.vmcb = kvm_state->hdr.svm.vmcb_pa;
+>  	load_nested_vmcb_control(svm, &ctl);
+>  	nested_prepare_vmcb_control(svm);
+>  
