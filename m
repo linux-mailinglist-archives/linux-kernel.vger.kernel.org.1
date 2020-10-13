@@ -2,178 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FFB28CBF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C6628CBF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730752AbgJMKsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730216AbgJMKsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 13 Oct 2020 06:48:22 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:32822 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726668AbgJMKsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24516 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726901AbgJMKsV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Oct 2020 06:48:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602586100; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=GrK4ODUxeO6+CHYnqlMkafnXojyiMQ4l9xMK/kqWIb8=; b=hUWZNfG22U6ETo4wDaEIvsWAgdSfz/Kxm6A76Og3Glv73Ebv2izBCnYPdhUWue7feg3qQya8
- qOKZcZehbMH9bX9s4R/EVkHnZIWPIbyu9GvMc+7DT6OZBwD+i3e6cTDyrpZ+S52Ro7ZkL2ix
- pNptPiRBrwnjw57WXLVdIyv1S5o=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f8585b9ad37af35ec09ef5e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 10:47:21
- GMT
-Sender: prathampratap=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C946FC433CB; Tue, 13 Oct 2020 10:47:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from ppratap-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: prathampratap)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 56A3AC433C9;
-        Tue, 13 Oct 2020 10:47:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 56A3AC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=prathampratap@codeaurora.org
-From:   Pratham Pratap <prathampratap@codeaurora.org>
-To:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
-        rafael.j.wysocki@intel.com, mathias.nyman@linux.intel.com,
-        andriy.shevchenko@linux.intel.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sallenki@codeaurora.org, mgautam@codeaurora.org,
-        jackp@codeaurora.org,
-        Pratham Pratap <prathampratap@codeaurora.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] usb: core: Don't wait for completion of urbs
-Date:   Tue, 13 Oct 2020 16:17:02 +0530
-Message-Id: <1602586022-13239-1-git-send-email-prathampratap@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602586100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WyKGp1pBWxGQmg+kNRzmODkOPN7pCzfPHnO9FYGbroQ=;
+        b=DLIBXGtMLqwi8HK2AhM2bAO3RsUXI2i3Wrwu+cs/FWPcWu6+sUbBwF/zjO2PXiuCYtMAlc
+        +vyT5ypkq8khKUnsE+Q7joTVvLQu2TqpiPUfLKbhEbVw4KEsO0UmzMBQQWKHL0I/7++Kl+
+        W9v0F6xVPZlLcxFIOCrfDMeJ1mzlZ0c=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-NmPhJ1ecOOuCVEKeBQGHKA-1; Tue, 13 Oct 2020 06:48:15 -0400
+X-MC-Unique: NmPhJ1ecOOuCVEKeBQGHKA-1
+Received: by mail-wr1-f70.google.com with SMTP id u15so10729926wrn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:48:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WyKGp1pBWxGQmg+kNRzmODkOPN7pCzfPHnO9FYGbroQ=;
+        b=SyKy55Q6/I7/W9Oc+yYVCbSf+IOu+8cEaQE80gBZIBpgH7KJUBDVxbaq2b/R9MvrQL
+         Po8g9uKJ4Gnb4+6xFF3Zmw+quuYflDuW0nqMPPisHZMGOaUvZAVYHpMVmMc1LKSjnonX
+         1490wwO0N+emStr6cEwuPkR3tag4aa0S9a8qFGFCfsdE1T0umpOb5gRxFt4gqJ0Oo3HP
+         L4ActqN4gScKAwR74Axz/SLDLR3QKGQ8BbTcgt9+eqfIFimxRA+HHKxjPmtqJgRXOgWV
+         uaYQkCG8HU9TKte3ml1EkO1F5zouVk4Y1Hz9fsgbMrhlgyMRikxmLQrV14tF/c3hwY/3
+         /pLg==
+X-Gm-Message-State: AOAM533Cggc+kO4iO4L04NXNCJOJRQyk1M2pnpAFBZtkhdppAF4pZ8/C
+        oQdEqkwqzmJaaXBmaEz/hchIf2//V7JR9FNZm/auZJLs0J1O82FbWQ2RHbqsmbAaw0fjkpwTi5L
+        7dozI+6fT2M5SeA9zHsrGbHiO
+X-Received: by 2002:a5d:4a06:: with SMTP id m6mr34311269wrq.209.1602586094297;
+        Tue, 13 Oct 2020 03:48:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx95H6+L6KXCpDSgOTiCbIeuY3NKerTVReuC9fhtPnUvJAsHZayUo6pnbHsjS2jajTdqgf6wg==
+X-Received: by 2002:a5d:4a06:: with SMTP id m6mr34311245wrq.209.1602586094075;
+        Tue, 13 Oct 2020 03:48:14 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.23.182])
+        by smtp.gmail.com with ESMTPSA id 4sm29600509wrn.48.2020.10.13.03.48.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 03:48:13 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 12:48:11 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Patrick Bellasi <patrick.bellasi@matbug.net>
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, bristot@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        chris.redpath@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, valentin.schneider@arm.com
+Subject: Re: [PATCH v2] sched/features: Fix !CONFIG_JUMP_LABEL case
+Message-ID: <20201013104811.GE89256@localhost.localdomain>
+References: <20201013053114.160628-1-juri.lelli@redhat.com>
+ <878scail9o.derkling@matbug.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878scail9o.derkling@matbug.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consider a case where host is trying to submit urbs to the
-connected device while holding the us->dev_mutex and due to
-some reason it is stuck while waiting for the completion of
-the urbs. Now the scsi error mechanism kicks in and it calls
-the device reset handler which is trying to acquire the same
-mutex causing a deadlock situation.
+On 13/10/20 10:26, Patrick Bellasi wrote:
+> 
+> On Tue, Oct 13, 2020 at 07:31:14 +0200, Juri Lelli <juri.lelli@redhat.com> wrote...
+> 
+> > Commit 765cc3a4b224e ("sched/core: Optimize sched_feat() for
+> > !CONFIG_SCHED_DEBUG builds") made sched features static for
+> > !CONFIG_SCHED_DEBUG configurations, but overlooked the CONFIG_
+> > SCHED_DEBUG enabled and !CONFIG_JUMP_LABEL cases. For the latter echoing
+> > changes to /sys/kernel/debug/sched_features has the nasty effect of
+> > effectively changing what sched_features reports, but without actually
+> > changing the scheduler behaviour (since different translation units get
+> > different sysctl_sched_features).
+> 
+> Hops, yes, I think I missed to properly check that config :/
+> Good spot!
+> 
+> > Fix CONFIG_SCHED_DEBUG and !CONFIG_JUMP_LABEL configurations by properly
+> > restructuring ifdefs.
+> >
+> > Fixes: 765cc3a4b224e ("sched/core: Optimize sched_feat() for !CONFIG_SCHED_DEBUG builds")
+> > Co-developed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+> > Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+> 
+> (did you get some wrong formatting for the changelog above?)
 
-Below is the call stack of the task which acquired the mutex
-(0xFFFFFFC660447460) and waiting for completion.
+Hummm, what you mean?
 
-B::v.f_/task_0xFFFFFFC6604DB280
--000|__switch_to(prev = 0xFFFFFFC6604DB280, ?)
--001|prepare_lock_switch(inline)
--001|context_switch(inline)
--001|__schedule(?)
--002|schedule()
--003|schedule_timeout(timeout = 9223372036854775807)
--004|do_wait_for_common(x = 0xFFFFFFC660447570,
-action = 0xFFFFFF98ED5A7398, timeout = 9223372036854775807, ?)
--005|spin_unlock_irq(inline)
--005|__wait_for_common(inline)
--005|wait_for_common(inline)
--005|wait_for_completion(x = 0xFFFFFFC660447570)
--006|sg_clean(inline)
--006|usb_sg_wait()
--007|atomic64_andnot(inline)
--007|atomic_long_andnot(inline)
--007|clear_bit(inline)
--007|usb_stor_bulk_transfer_sglist(us = 0xFFFFFFC660447460,
-pipe = 3221291648, sg = 0xFFFFFFC65D6415D0, ?, length = 512,
-act_len = 0xFFFFFF801258BC90)
--008|scsi_bufflen(inline)
--008|usb_stor_bulk_srb(inline)
--008|usb_stor_Bulk_transport(srb = 0xFFFFFFC65D641438,
-us = 0xFFFFFFC660447460)
--009|test_bit(inline)
--009|usb_stor_invoke_transport(srb = 0xFFFFFFC65D641438,
-us = 0xFFFFFFC660447460)
--010|usb_stor_transparent_scsi_command(?, ?)
--011|usb_stor_control_thread(__us = 0xFFFFFFC660447460)  //us->dev_mutex
--012|kthread(_create = 0xFFFFFFC6604C5E80)
--013|ret_from_fork(asm)
- ---|end of frame
+I intended to follow
 
-Below is the call stack of the task which trying to acquire the same
-mutex(0xFFFFFFC660447460) in the error handling path.
-
-B::v.f_/task_0xFFFFFFC6609AA1C0
--000|__switch_to(prev = 0xFFFFFFC6609AA1C0, ?)
--001|prepare_lock_switch(inline)
--001|context_switch(inline)
--001|__schedule(?)
--002|schedule()
--003|schedule_preempt_disabled()
--004|__mutex_lock_common(lock = 0xFFFFFFC660447460, state = 2, ?, ?, ?,
-?, ?)
--005|__mutex_lock_slowpath(?)
--006|__cmpxchg_acq(inline)
--006|__mutex_trylock_fast(inline)
--006|mutex_lock(lock = 0xFFFFFFC660447460)   //us->dev_mutex
--007|device_reset(?)
--008|scsi_try_bus_device_reset(inline)
--008|scsi_eh_bus_device_reset(inline)
--008|scsi_eh_ready_devs(shost = 0xFFFFFFC660446C80,
-work_q = 0xFFFFFF80191C3DE8, done_q = 0xFFFFFF80191C3DD8)
--009|scsi_error_handler(data = 0xFFFFFFC660446C80)
--010|kthread(_create = 0xFFFFFFC66042C080)
--011|ret_from_fork(asm)
- ---|end of frame
-
-Fix this by adding 5 seconds timeout while waiting for completion.
-
-Fixes: 3e35bf39e (USB: fix codingstyle issues in drivers/usb/core/message.c)
-Cc: stable@vger.kernel.org
-Signed-off-by: Pratham Pratap <prathampratap@codeaurora.org>
----
- drivers/usb/core/message.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index ae1de9c..b1e839c 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -515,15 +515,13 @@ EXPORT_SYMBOL_GPL(usb_sg_init);
-  */
- void usb_sg_wait(struct usb_sg_request *io)
- {
--	int i;
-+	int i, retval;
- 	int entries = io->entries;
- 
- 	/* queue the urbs.  */
- 	spin_lock_irq(&io->lock);
- 	i = 0;
- 	while (i < entries && !io->status) {
--		int retval;
--
- 		io->urbs[i]->dev = io->dev;
- 		spin_unlock_irq(&io->lock);
- 
-@@ -569,7 +567,13 @@ void usb_sg_wait(struct usb_sg_request *io)
- 	 * So could the submit loop above ... but it's easier to
- 	 * solve neither problem than to solve both!
- 	 */
--	wait_for_completion(&io->complete);
-+	retval = wait_for_completion_timeout(&io->complete,
-+						msecs_to_jiffies(5000));
-+	if (retval == 0) {
-+		dev_err(&io->dev->dev, "%s, timed out while waiting for io_complete\n",
-+				__func__);
-+		usb_sg_cancel(io);
-+	}
- 
- 	sg_clean(io);
- }
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+https://elixir.bootlin.com/linux/latest/source/Documentation/process/submitting-patches.rst#L566
 
