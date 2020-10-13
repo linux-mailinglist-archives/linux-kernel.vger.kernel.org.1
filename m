@@ -2,118 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0058128DDA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC01228DD9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbgJNJab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
+        id S1729435AbgJNJTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729406AbgJNJTj (ORCPT
+        with ESMTP id S1726323AbgJNJTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:19:39 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C50C08EA6C
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:25:21 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b19so774155pld.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:25:21 -0700 (PDT)
+        Wed, 14 Oct 2020 05:19:36 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2655C08EA6F
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:25:22 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id o8so761918pll.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 16:25:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E/j9uq6f/xFO4LJp1BRi8dZQn9ht1b53g1oDJg2kWTw=;
-        b=h2rK0/FFMVeOpvDVT97kysRBfjSH7eTLbIW26t+7Xg5dBg4XBaBYjc0hQv+mputbfP
-         tt8PECXhxw82ijir68HsLk1YmB8AtZYty9Tel/13uJwBodg6x9InGlN4Zg+lp76QUJom
-         /10MGaLUxzXBhDHqvPo3t7Yepj1KuHtSsOhS+y9R25YZpost3vsi5xZ3Okr/diybTDS5
-         mQ8hOe39wwTo8F6msu9Lq/1VXEvSqR6ThFEq/RK/p/3ugyi7d1h1O+1CtvWJ1ec3TiFy
-         /iRmrWmy+DmDj4EBEc7QlbaHth/Xv/eXUa14kFlYwH7DQybk4dqUvjLYk+g+nkzBA/2b
-         gHXg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=T5+qdsDTVcz4rRfOTbXtw6enq/qmYTbuHet8yphp+jA=;
+        b=ebOpZ9QpXR2dftdCCIs74a47xR5rZSQ06O6dFlNcQEAIfeZpi1dAV2ByMOAfNtntVG
+         hNMJJzRMwS+AVeeUcm15xkrb5qaC+tehTlB2A9+53Yj0sYaqIi393r/3H1dYPVyJrMWi
+         q63Qz8SKpowMpVzVP2f7sjJTTTFeUZ1rrqddSWAMn4ZNHq6UrJU7Ik5hTTl20Nbwvwgn
+         zTzvM+tRVE1LKSAlhcshxsdpcQoKyAnDkvLcHZLcEuLN+DHBqSgy+rXHoWFzvVwk2LTV
+         L7ia3yKg2iNHy4I3H5JGdmD15NKhg1aqtSCh/Gu4r4FXNNRWSbcsb5Nwxddi5RD4xVAX
+         k0bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E/j9uq6f/xFO4LJp1BRi8dZQn9ht1b53g1oDJg2kWTw=;
-        b=dW2A5CwFx0vnps0GUiK1hHwco3IvtqVQZyso5x0c9MHHmTw7caBOaDTulcM2xZY5pe
-         2DDbF3Exxb09VZFntLwemWI7aBNMF/0IPrr9Xm3EehHUVE5TtWApaJY3OJ0L05h6UIZ3
-         SFzsBC0Zv5XqY9v3AYFKXZ0ykpU5sANi/t6b6H+yNiSFWYWgQlhp3jTiTkVKVtyerRk6
-         5EjAY6yUSQAkR3fdhcA388+6Gp76FO5eraePfd06BvsiasOKjZKKK+8Eoqhig9odzK27
-         plTacBOdVTLX9vZOxh+tnHvqKAnyqhzYo9B4/kjacdj4dME3tLPlq/5MgtKiQkwxT66G
-         DFQg==
-X-Gm-Message-State: AOAM530h1e476eoEjDBVabEAYjOHOT8sk2nozP8Z7F1aP7I4HbtwEuUV
-        FfivNrg/++I7ctJsfzSzkLqcsQ==
-X-Google-Smtp-Source: ABdhPJxxNdGgvFDUUyt6x/OG39E4RiwYPmag4zZ2l5CsD+N+TjAp0/4/hes+yHI9xaF+lURc0oJrdw==
-X-Received: by 2002:a17:90a:1149:: with SMTP id d9mr691859pje.227.1602631521380;
-        Tue, 13 Oct 2020 16:25:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=T5+qdsDTVcz4rRfOTbXtw6enq/qmYTbuHet8yphp+jA=;
+        b=UMti42mwDqKpKY0Q0jKVte0ireS2pkAaoON66NhCLweKMWU6JEZFfGfU0JGwL5Ao51
+         zL5zN0em/l61oRST2pu/kUhXdOKmtHI/RmOkFuZhlZ/pUExcIC4lL/cU0IYYW65EKf3B
+         6CIe2VRf7v7KmgZ/+CiX2K+tJGozBUsZaSh9jWNGTw3uNOpyq631sO/kbJtURYcsdpZV
+         iDRRjyJ1Fi71V45XKUhRl0EC4MvQw9LOkzdk1Hu6B7s9lmwALEMyMePCCDwKw8bmw3NF
+         ZFSDylet9Lmsw6QOZByhtHv91oEVO1QqRJugV68hiJFfWOLXbMfPJikAy7ST5/EvA77G
+         A+9Q==
+X-Gm-Message-State: AOAM532Qqqu+OnSh96nHnCpG0w6CxI56W5USUpriZ4ZbCMFWfZOb3dpy
+        0eHBowboZwsyZYTblBl/h3hqDA==
+X-Google-Smtp-Source: ABdhPJy1z0AeoVRv+mwnHZD4UbkBuWxHZWZnL+iRxNZht514ZKhwBML20m9YulGZdDvy/KyyR4sSLg==
+X-Received: by 2002:a17:90b:383:: with SMTP id ga3mr735456pjb.2.1602631522496;
+        Tue, 13 Oct 2020 16:25:22 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id b8sm791871pfr.159.2020.10.13.16.25.20
+        by smtp.gmail.com with ESMTPSA id b8sm791871pfr.159.2020.10.13.16.25.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 16:25:20 -0700 (PDT)
+        Tue, 13 Oct 2020 16:25:21 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org
 Cc:     guennadi.liakhovetski@linux.intel.com, arnaud.pouliquen@st.com,
         linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/9] rpmsg: Make RPMSG name service modular 
-Date:   Tue, 13 Oct 2020 17:25:10 -0600
-Message-Id: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
+Subject: [PATCH v2 1/9] rpmsg: Move rpmsg_endpoint_ops to rpmsg.h
+Date:   Tue, 13 Oct 2020 17:25:11 -0600
+Message-Id: <20201013232519.1367542-2-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
+References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good afternoon,
+Move structure rpmsg_endpoint_ops to header rpmsg.h so that it can
+be used by other entities.
 
-This set starts by making the RPMSG protocol transport agnostic by
-moving the headers it uses to generic types and using those in the
-current implementation.  From there it re-uses the work that Arnaud
-published[1] to make the name service modular. 
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+---
+ drivers/rpmsg/rpmsg_internal.h | 19 -------------------
+ include/linux/rpmsg.h          | 24 +++++++++++++++++++++---
+ 2 files changed, 21 insertions(+), 22 deletions(-)
 
-Tested on stm32mp157 with the RPMSG client sample application.  Applies
-cleanly on v5.9.
-
-Thanks,
-Mathieu
-
-[1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
-
-------
-New for V2:
-- Created new RPMSG types (Guennadi).
-- Re-worked byte conversion functions(Guennadi).
-- Added a single ->is_little_endian() operation (Arnaud).
-- Fixed byte conversion before making name service modular.
-
-Arnaud Pouliquen (4):
-  rpmsg: virtio: Rename rpmsg_create_channel
-  rpmsg: core: Add channel creation internal API
-  rpmsg: virtio: Add rpmsg channel device ops
-  rpmsg: Turn name service into a stand alone driver
-
-Mathieu Poirier (5):
-  rpmsg: Move rpmsg_endpoint_ops to rpmsg.h
-  rpmsg: Introduce __rpmsg{16|32|64} types
-  rpmsg: virtio: Move from virtio to rpmsg byte conversion
-  rpmsg: Move rpmsg_hr and rpmsg_ns_msg to header file
-  rpmsg: Make rpmsg_{register|unregister}_device() public
-
- drivers/rpmsg/Kconfig            |   8 ++
- drivers/rpmsg/Makefile           |   1 +
- drivers/rpmsg/rpmsg_core.c       |  44 +++++++
- drivers/rpmsg/rpmsg_internal.h   |  27 +---
- drivers/rpmsg/rpmsg_ns.c         | 110 +++++++++++++++++
- drivers/rpmsg/virtio_rpmsg_bus.c | 206 ++++++++++---------------------
- include/linux/rpmsg.h            |  93 ++++++++++++--
- include/linux/rpmsg_byteorder.h  |  67 ++++++++++
- include/linux/rpmsg_ns.h         |  79 ++++++++++++
- include/uapi/linux/rpmsg.h       |   3 +
- include/uapi/linux/rpmsg_types.h |  11 ++
- 11 files changed, 481 insertions(+), 168 deletions(-)
- create mode 100644 drivers/rpmsg/rpmsg_ns.c
- create mode 100644 include/linux/rpmsg_byteorder.h
- create mode 100644 include/linux/rpmsg_ns.h
- create mode 100644 include/uapi/linux/rpmsg_types.h
-
+diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+index 3fc83cd50e98..094cf968d2d3 100644
+--- a/drivers/rpmsg/rpmsg_internal.h
++++ b/drivers/rpmsg/rpmsg_internal.h
+@@ -18,25 +18,6 @@
+ #define to_rpmsg_device(d) container_of(d, struct rpmsg_device, dev)
+ #define to_rpmsg_driver(d) container_of(d, struct rpmsg_driver, drv)
+ 
+-/**
+- * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
+- * @create_ept:		create backend-specific endpoint, required
+- * @announce_create:	announce presence of new channel, optional
+- * @announce_destroy:	announce destruction of channel, optional
+- *
+- * Indirection table for the operations that a rpmsg backend should implement.
+- * @announce_create and @announce_destroy are optional as the backend might
+- * advertise new channels implicitly by creating the endpoints.
+- */
+-struct rpmsg_device_ops {
+-	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
+-					    rpmsg_rx_cb_t cb, void *priv,
+-					    struct rpmsg_channel_info chinfo);
+-
+-	int (*announce_create)(struct rpmsg_device *ept);
+-	int (*announce_destroy)(struct rpmsg_device *ept);
+-};
+-
+ /**
+  * struct rpmsg_endpoint_ops - indirection table for rpmsg_endpoint operations
+  * @destroy_ept:	see @rpmsg_destroy_ept(), required
+diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+index 9fe156d1c018..9fe1c54ae995 100644
+--- a/include/linux/rpmsg.h
++++ b/include/linux/rpmsg.h
+@@ -22,7 +22,6 @@
+ 
+ struct rpmsg_device;
+ struct rpmsg_endpoint;
+-struct rpmsg_device_ops;
+ struct rpmsg_endpoint_ops;
+ 
+ /**
+@@ -37,6 +36,27 @@ struct rpmsg_channel_info {
+ 	u32 dst;
+ };
+ 
++typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
++
++/**
++ * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
++ * @create_ept:		create backend-specific endpoint, required
++ * @announce_create:	announce presence of new channel, optional
++ * @announce_destroy:	announce destruction of channel, optional
++ *
++ * Indirection table for the operations that a rpmsg backend should implement.
++ * @announce_create and @announce_destroy are optional as the backend might
++ * advertise new channels implicitly by creating the endpoints.
++ */
++struct rpmsg_device_ops {
++	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
++					    rpmsg_rx_cb_t cb, void *priv,
++					    struct rpmsg_channel_info chinfo);
++
++	int (*announce_create)(struct rpmsg_device *ept);
++	int (*announce_destroy)(struct rpmsg_device *ept);
++};
++
+ /**
+  * rpmsg_device - device that belong to the rpmsg bus
+  * @dev: the device struct
+@@ -59,8 +79,6 @@ struct rpmsg_device {
+ 	const struct rpmsg_device_ops *ops;
+ };
+ 
+-typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
+-
+ /**
+  * struct rpmsg_endpoint - binds a local rpmsg address to its user
+  * @rpdev: rpmsg channel device
 -- 
 2.25.1
 
