@@ -2,267 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B3128CE47
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52E428CE4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgJMMYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:24:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726400AbgJMMYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:24:41 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E16A22264;
-        Tue, 13 Oct 2020 12:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602591879;
-        bh=Zel9mpx69dMPESX1kmsPy9SRW1OQQJYH/1XpuJTpKxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lueRQj7oDUjtU5nUajxAaS4RVdB+ilx0omZPBFgzRKVni6FZ5i0yVZUw9npTY68hO
-         c1sjtqBdhhAwqeUExteQ8bpCp9Tr7p7/dO9GS8814nrHaAPIvhbI5AXkgOuGCpJ3qN
-         cyaukptMK1RqNBXBZ75Y6pHvHdjCTRwQfmOsrNaE=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 533B3403AC; Tue, 13 Oct 2020 09:24:36 -0300 (-03)
-Date:   Tue, 13 Oct 2020 09:24:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Sandipan Das <sandipan@linux.ibm.com>, mpe@ellerman.id.au,
-        ravi.bangoria@linux.ibm.com, sukadev@linux.vnet.ibm.com,
-        maddy@linux.vnet.ibm.com, jolsa@redhat.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf vendor events: Fix typos in power8 PMU events
-Message-ID: <20201013122436.GB560293@kernel.org>
-References: <20201012050205.328523-1-sandipan@linux.ibm.com>
- <badc113f-3024-1317-af16-c3714605ac74@linux.ibm.com>
+        id S1727081AbgJMM03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:26:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24909 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726400AbgJMM00 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:26:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602591983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ja+r3YielG3AT3NMTjOXVQSsflGJ/Mbns2ya4m+C1ZI=;
+        b=iavwtoStIqf4KmvmlQ9zT3yVnL92tmGP/f9f3pfymhYbUenyUX93ddTtqv/udEOjNm2rh1
+        WtLHKGt3tItjkyHeAM7AX1hCKKRJ6/tNDGixfv1Rq5I4RWNCXa2ncuA+jmOc/eKjbbTQiT
+        DXAIWR+ZpSQG8CsSLOIzK88cHmFtfp4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-q_lAn4oXNcu5fETn5_g0Hw-1; Tue, 13 Oct 2020 08:26:22 -0400
+X-MC-Unique: q_lAn4oXNcu5fETn5_g0Hw-1
+Received: by mail-ed1-f72.google.com with SMTP id ay19so7938776edb.23
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:26:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=Ja+r3YielG3AT3NMTjOXVQSsflGJ/Mbns2ya4m+C1ZI=;
+        b=Fn3wUyf0ywQ1OK+UL7PpyJSRoAJYBsLrqBxxQk0mCvtc/HHpfQU2NwIBDQD2OzeZXx
+         ZdOSwEsF8Uuk61Evv/HqQG7jiklhoRg8T6zuBtDgS8EsUFpbDkcCNuVJPePJWnJzawVK
+         mynjJBn8xE0JN1R7Dz7bLyEPWEn8ih7+RUD6IfW5FmEPoAYvXulYeJzdFcwSUV9PcST7
+         cCyMsI7uwZfSxvSs8r0xr0mUynUEMJIaE1b5Q2CbG+2H5taojB5SRUvB7uDEuR6vUgi/
+         jkwAehlRL1RL6fmXJOGZpE7UefjODzUJeLC+o+tIB2a9evp3xcMC5UMqaEbTKAL5P0WP
+         fPPA==
+X-Gm-Message-State: AOAM531dWDpHJaPGQBdM9XhwMYEJw3Gzn3ykFLO8+8I+g7VlnZRPpnDk
+        X31fxTBFtXB1mg8yG7OBhCcf9hHWjzcUrsu+BuYGvuf5XqCrBCSN+8who9xYzotppoZTZv0ylhI
+        aY6onv3/R63zvluP33aRyjEAG
+X-Received: by 2002:a50:80e3:: with SMTP id 90mr20487253edb.39.1602591979976;
+        Tue, 13 Oct 2020 05:26:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHe5rkSAa0+2hTq0DHl5d18NHFGzxBrYbJUhOUgJKt9h4Wx/7FzYB2fbo3EXtdi8zCPwhVIA==
+X-Received: by 2002:a50:80e3:: with SMTP id 90mr20487227edb.39.1602591979765;
+        Tue, 13 Oct 2020 05:26:19 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id r3sm8117479edw.42.2020.10.13.05.26.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 05:26:19 -0700 (PDT)
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: [GIT PULL] platform-drivers-x86 for 5.10-1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Mark Gross <mark.gross@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Message-ID: <9335fbd5-81a2-59cb-d6ee-52e3b4de641f@redhat.com>
+Date:   Tue, 13 Oct 2020 14:26:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <badc113f-3024-1317-af16-c3714605ac74@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Oct 12, 2020 at 01:21:26PM +0530, kajoljain escreveu:
-> 
-> 
-> On 10/12/20 10:32 AM, Sandipan Das wrote:
-> > This replaces the incorrectly spelled word "localtion"
-> > with "location" in some power8 PMU event descriptions.
-> 
-> Patch looks good to me, Thanks for correcting it.
-> 
-> Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
- 
+Hi Linus,
 
-Thanks, applied.
+Here is the main PDx86 PR for v5.10. Rather calm cycle for PDx86,
+all these have been in for-next for a couple of days with no bot
+complaints.
 
-- Arnaldo
+Note this includes all the fixes which you have merged since 5.9-rc1
+(this is based on the platform-drivers-x86-v5.9-3 tag, which itself is
+based on 5.9-rc1).
 
-> Thanks,
-> Kajol Jain
-> > 
-> > Fixes: 2a81fa3bb5ed ("perf vendor events: Add power8 PMU events")
-> > Signed-off-by: Sandipan Das <sandipan@linux.ibm.com>
-> > ---
-> >  .../pmu-events/arch/powerpc/power8/cache.json    | 10 +++++-----
-> >  .../pmu-events/arch/powerpc/power8/frontend.json | 12 ++++++------
-> >  .../pmu-events/arch/powerpc/power8/marked.json   | 10 +++++-----
-> >  .../pmu-events/arch/powerpc/power8/other.json    | 16 ++++++++--------
-> >  .../arch/powerpc/power8/translation.json         |  2 +-
-> >  5 files changed, 25 insertions(+), 25 deletions(-)
-> > 
-> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/cache.json b/tools/perf/pmu-events/arch/powerpc/power8/cache.json
-> > index 6b792b2c87e2..05a17084d939 100644
-> > --- a/tools/perf/pmu-events/arch/powerpc/power8/cache.json
-> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/cache.json
-> > @@ -32,8 +32,8 @@
-> >    {
-> >      "EventCode": "0x1c04e",
-> >      "EventName": "PM_DATA_FROM_L2MISS_MOD",
-> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to a demand load",
-> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to a demand load",
-> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x3c040",
-> > @@ -74,8 +74,8 @@
-> >    {
-> >      "EventCode": "0x4c04e",
-> >      "EventName": "PM_DATA_FROM_L3MISS_MOD",
-> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to a demand load",
-> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to a demand load",
-> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x3c042",
-> > @@ -134,7 +134,7 @@
-> >    {
-> >      "EventCode": "0x4e04e",
-> >      "EventName": "PM_DPTEG_FROM_L3MISS",
-> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a data side request",
-> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a data side request",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/frontend.json b/tools/perf/pmu-events/arch/powerpc/power8/frontend.json
-> > index 1ddc30655d43..1c902a8263b6 100644
-> > --- a/tools/perf/pmu-events/arch/powerpc/power8/frontend.json
-> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/frontend.json
-> > @@ -116,8 +116,8 @@
-> >    {
-> >      "EventCode": "0x1404e",
-> >      "EventName": "PM_INST_FROM_L2MISS",
-> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to an instruction fetch (not prefetch)",
-> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to an instruction fetch (not prefetch)",
-> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x34040",
-> > @@ -158,8 +158,8 @@
-> >    {
-> >      "EventCode": "0x4404e",
-> >      "EventName": "PM_INST_FROM_L3MISS_MOD",
-> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to a instruction fetch",
-> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to a instruction fetch",
-> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x34042",
-> > @@ -320,7 +320,7 @@
-> >    {
-> >      "EventCode": "0x1504e",
-> >      "EventName": "PM_IPTEG_FROM_L2MISS",
-> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a instruction side request",
-> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a instruction side request",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > @@ -344,7 +344,7 @@
-> >    {
-> >      "EventCode": "0x4504e",
-> >      "EventName": "PM_IPTEG_FROM_L3MISS",
-> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a instruction side request",
-> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a instruction side request",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/marked.json b/tools/perf/pmu-events/arch/powerpc/power8/marked.json
-> > index 94dc58b83b7e..6de61a797bbd 100644
-> > --- a/tools/perf/pmu-events/arch/powerpc/power8/marked.json
-> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/marked.json
-> > @@ -92,7 +92,7 @@
-> >    {
-> >      "EventCode": "0x4c12e",
-> >      "EventName": "PM_MRK_DATA_FROM_L2MISS_CYC",
-> > -    "BriefDescription": "Duration in cycles to reload from a localtion other than the local core's L2 due to a marked load",
-> > +    "BriefDescription": "Duration in cycles to reload from a location other than the local core's L2 due to a marked load",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > @@ -158,13 +158,13 @@
-> >    {
-> >      "EventCode": "0x201e4",
-> >      "EventName": "PM_MRK_DATA_FROM_L3MISS",
-> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to a marked load",
-> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to a marked load",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> >      "EventCode": "0x2d12e",
-> >      "EventName": "PM_MRK_DATA_FROM_L3MISS_CYC",
-> > -    "BriefDescription": "Duration in cycles to reload from a localtion other than the local core's L3 due to a marked load",
-> > +    "BriefDescription": "Duration in cycles to reload from a location other than the local core's L3 due to a marked load",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > @@ -392,7 +392,7 @@
-> >    {
-> >      "EventCode": "0x1f14e",
-> >      "EventName": "PM_MRK_DPTEG_FROM_L2MISS",
-> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a marked data side request",
-> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a marked data side request",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > @@ -416,7 +416,7 @@
-> >    {
-> >      "EventCode": "0x4f14e",
-> >      "EventName": "PM_MRK_DPTEG_FROM_L3MISS",
-> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a marked data side request",
-> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a marked data side request",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/other.json b/tools/perf/pmu-events/arch/powerpc/power8/other.json
-> > index f4e760cab111..84a0cedf1fd9 100644
-> > --- a/tools/perf/pmu-events/arch/powerpc/power8/other.json
-> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/other.json
-> > @@ -410,8 +410,8 @@
-> >    {
-> >      "EventCode": "0x61c04e",
-> >      "EventName": "PM_DATA_ALL_FROM_L2MISS_MOD",
-> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either demand loads or data prefetch",
-> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to either demand loads or data prefetch",
-> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x63c040",
-> > @@ -470,8 +470,8 @@
-> >    {
-> >      "EventCode": "0x64c04e",
-> >      "EventName": "PM_DATA_ALL_FROM_L3MISS_MOD",
-> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either demand loads or data prefetch",
-> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to either demand loads or data prefetch",
-> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x63c042",
-> > @@ -1280,8 +1280,8 @@
-> >    {
-> >      "EventCode": "0x51404e",
-> >      "EventName": "PM_INST_ALL_FROM_L2MISS",
-> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to instruction fetches and prefetches",
-> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to instruction fetches and prefetches",
-> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x534040",
-> > @@ -1340,8 +1340,8 @@
-> >    {
-> >      "EventCode": "0x54404e",
-> >      "EventName": "PM_INST_ALL_FROM_L3MISS_MOD",
-> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to a instruction fetch",
-> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to a instruction fetch",
-> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
-> >    },
-> >    {
-> >      "EventCode": "0x534042",
-> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/translation.json b/tools/perf/pmu-events/arch/powerpc/power8/translation.json
-> > index 623e7475b010..a1657f5fdc6b 100644
-> > --- a/tools/perf/pmu-events/arch/powerpc/power8/translation.json
-> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/translation.json
-> > @@ -44,7 +44,7 @@
-> >    {
-> >      "EventCode": "0x1e04e",
-> >      "EventName": "PM_DPTEG_FROM_L2MISS",
-> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a data side request",
-> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a data side request",
-> >      "PublicDescription": ""
-> >    },
-> >    {
-> > 
+Regards,
 
--- 
+Hans
 
-- Arnaldo
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+   Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.10-1
+
+for you to fetch changes up to 1a3f7813f38e400b0b63492b626b425f0a043d0b:
+
+   MAINTAINERS: update X86 PLATFORM DRIVERS entry with new kernel.org git repo (2020-10-08 21:38:30 +0200)
+
+----------------------------------------------------------------
+platform-drivers-x86 for v5.10-1
+
+Rather calm cycle for PDx86, all these have been in for-next for
+a couple of days with no bot complaints.
+
+Highlights:
+- PMC TigerLake fixes and new RocketLake support
+- Various small fixes / updates in other drivers/tools
+
+The following is an automated git shortlog grouped by driver:
+
+MAINTAINERS:
+  -  update X86 PLATFORM DRIVERS entry with new kernel.org git repo
+  -  Update maintainers for pmc_core driver
+
+hp-wmi:
+  -  add support for thermal policy
+
+intel_pmc_core:
+  -  fix: Replace dev_dbg macro with dev_info()
+  -  Add Intel RocketLake (RKL) support
+  -  Clean up: Remove the duplicate comments and reorganize
+  -  Fix the slp_s0 counter displayed value
+  -  Fix TigerLake power gating status map
+
+mlx-platform:
+  -  Add capability field to platform FAN description
+  -  Remove PSU EEPROM configuration
+
+platform_data/mlxreg:
+  -  Extend core platform structure
+  -  Update module license
+
+pmc_core:
+  -  Use descriptive names for LPM registers
+
+tools/power/x86/intel-speed-select:
+  -  Update version for v5.10
+  -  Fix missing base-freq core IDs
+
+----------------------------------------------------------------
+Aaron Ma (1):
+       platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
+
+Andy Shevchenko (1):
+       platform/x86: intel-vbtn: Revert "Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360"
+
+David E. Box (1):
+       platform/x86: pmc_core: Use descriptive names for LPM registers
+
+Dinghao Liu (1):
+       Platform: OLPC: Fix memleak in olpc_ec_probe
+
+Ed Wildgoose (1):
+       platform/x86: pcengines-apuv2: Fix typo on define of AMD_FCH_GPIO_REG_GPIO55_DEVSLP0
+
+Elia Devito (1):
+       platform/x86: hp-wmi: add support for thermal policy
+
+Gayatri Kammela (6):
+       platform/x86: intel_pmc_core: Fix TigerLake power gating status map
+       platform/x86: intel_pmc_core: Fix the slp_s0 counter displayed value
+       platform/x86: intel_pmc_core: Clean up: Remove the duplicate comments and reorganize
+       platform/x86: intel_pmc_core: Add Intel RocketLake (RKL) support
+       platform/x86: intel_pmc_core: fix: Replace dev_dbg macro with dev_info()
+       MAINTAINERS: Update maintainers for pmc_core driver
+
+Greg Kroah-Hartman (1):
+       platform/x86: intel_pmc_core: do not create a static struct device
+
+Hans de Goede (7):
+       platform/x86: touchscreen_dmi: Add info for the MPMAN Converter9 2-in-1
+       platform/x86: asus-nb-wmi: Revert "Do not load on Asus T100TA and T200TA"
+       platform/x86: intel-vbtn: Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360
+       platform/x86: intel-vbtn: Switch to an allow-list for SW_TABLET_MODE reporting
+       MAINTAINERS: Add Mark Gross and Hans de Goede as x86 platform drivers maintainers
+       platform/x86: asus-wmi: Fix SW_TABLET_MODE always reporting 1 on many different models
+       MAINTAINERS: update X86 PLATFORM DRIVERS entry with new kernel.org git repo
+
+Jonathan Doman (1):
+       tools/power/x86/intel-speed-select: Fix missing base-freq core IDs
+
+Marius Iacob (1):
+       platform/x86: asus-wmi: Add BATC battery name to the list of supported
+
+Necip Fazil Yildiran (2):
+       platform/x86: fix kconfig dependency warning for LG_LAPTOP
+       platform/x86: fix kconfig dependency warning for FUJITSU_LAPTOP
+
+Randy Dunlap (1):
+       Documentation: laptops: thinkpad-acpi: fix underline length build warning
+
+Srinivas Pandruvada (1):
+       tools/power/x86/intel-speed-select: Update version for v5.10
+
+Tom Rix (1):
+       platform/x86: thinkpad_acpi: initialize tp_nvram_state variable
+
+Vadim Pasternak (5):
+       platform/x86: mlx-platform: Fix extended topology configuration for power supply units
+       platform/x86: mlx-platform: Remove PSU EEPROM configuration
+       platform_data/mlxreg: Update module license
+       platform_data/mlxreg: Extend core platform structure
+       platform/x86: mlx-platform: Add capability field to platform FAN description
+
+  .../admin-guide/laptops/thinkpad-acpi.rst          |   2 +-
+  MAINTAINERS                                        |  12 +-
+  drivers/platform/olpc/olpc-ec.c                    |   4 +-
+  drivers/platform/x86/Kconfig                       |   2 +
+  drivers/platform/x86/asus-nb-wmi.c                 |  56 ++++++----
+  drivers/platform/x86/asus-wmi.c                    |  17 +--
+  drivers/platform/x86/asus-wmi.h                    |   1 +
+  drivers/platform/x86/hp-wmi.c                      |  23 ++++
+  drivers/platform/x86/intel-vbtn.c                  |  52 +++++++--
+  drivers/platform/x86/intel_pmc_core.c              | 121 ++++++++++++---------
+  drivers/platform/x86/intel_pmc_core.h              |   5 +-
+  drivers/platform/x86/intel_pmc_core_pltdrv.c       |  26 +++--
+  drivers/platform/x86/mlx-platform.c                |  28 +++--
+  drivers/platform/x86/pcengines-apuv2.c             |   2 +-
+  drivers/platform/x86/thinkpad_acpi.c               |   6 +-
+  drivers/platform/x86/touchscreen_dmi.c             |  25 +++++
+  include/linux/platform_data/gpio/gpio-amd-fch.h    |   2 +-
+  include/linux/platform_data/mlxreg.h               |  34 +-----
+  tools/power/x86/intel-speed-select/isst-config.c   |  23 ++--
+  tools/power/x86/intel-speed-select/isst-core.c     |   8 +-
+  tools/power/x86/intel-speed-select/isst.h          |   2 +-
+  21 files changed, 275 insertions(+), 176 deletions(-)
+
