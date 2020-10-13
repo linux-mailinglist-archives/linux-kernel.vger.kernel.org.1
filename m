@@ -2,180 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E6728CB44
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FBD28CB49
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390506AbgJMJ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
+        id S1727214AbgJMJ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgJMJ4S (ORCPT
+        with ESMTP id S1726120AbgJMJ6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:56:18 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EF1C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:56:17 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ds1so1832890pjb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:56:17 -0700 (PDT)
+        Tue, 13 Oct 2020 05:58:23 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FBAC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:58:21 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id t25so27329954ejd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:58:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lOvbNuBRkRQie407GzVJVOf2n6wAAnp8oic0OTWh+Bc=;
-        b=lHrWeRZPxXoqU43SOZ60EkCQVA9ID9koDOnGrYihX0JfAasRug/D75Fp2WXShcPH7g
-         7gtZNOVqeA2CtpNWXdKdYeIO7W2uHciFwj64l4kZEO+5NatcXwlBD31s5XhsOMkqCcrD
-         JFFoNiQHsglaPo43l9JFNkzxqWBMr2bKoOjSNUQF+kZLBdBx3fwVV4N8KWhHgYZ9szcx
-         hp2aPzxCPcJzqTrpbnyY2qCZYHYXR/weB4dYgZsyL3kPuNKHItUBLMyELIapXU/vF24r
-         BhhkbaIwODX9F7UipLf8xt5Gt6cD4MTM+A5d7HEZjRgYtKGyd83nszGQbCA1UkIMSWXr
-         sfwA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KGj66PymmEXKJDO8ZEQ4dV/3pOkqQJIBTnNRKT6VgnY=;
+        b=bkz9pVt/0z+6dp1a45Sgz7q83y4GHjYjVZhpv2WKPWEYPmb24hIdDf16oLqAnAwJbn
+         vAnF5NqAZTuRH7eZrjJWn1T6wFZMZZRYKpmVvxjuvTPexuVaeGcWuuQA4/YA9vSoIPLd
+         SR9hYd10h2SpjvcW8Mer/uBGf/WK04xHYQsuLqUOYem8IvVQkDJN73he9Nv/jC9ugPGF
+         caT3S8AJxGaKSagF8gkGlG6YxDql7TfEVtePtOlQdEvhc5zUYya870b9o2R6J3eQFwKk
+         eP2xZDm70a7T8MtAjHOaCq2XuN1doxHK0q5NG++LQSsYP8C9eBEfXUyVTR/NIp8iMFkD
+         1MiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lOvbNuBRkRQie407GzVJVOf2n6wAAnp8oic0OTWh+Bc=;
-        b=RpUb1LQZaArPVFU6VuaMBOgxzpOS7MPRzTM/z4geeGF97kVWf46IaCO4pxL26t5EYA
-         W/BIA+22mxO/IhbKsZI8BHJ3xgJBYiqUkvcc1L5psa8pnnMa2qN6m2I4eeUcJQYo2QKs
-         ag9BWsj+Ng69GxbIR7BZ5OYbPjMOAFqPhkPe31BTcZp5p/jNv0REPXdrwLbX4otYHDK1
-         i3axdsx914ta3EJ0kcIlqWg2iBhOhvH+2uarPNOExSNt5hhV9k0l35h0Z52rh/viCD3e
-         aIqz0iCYxrkv48rtjOv1xeB1y/25+Hcm4Qz+eaYv8/qRmym+gURy3QFY7kzgZlfABVFJ
-         dGXQ==
-X-Gm-Message-State: AOAM530CrtUMu1HyktqqEJ7qHJ+RoK9K8rvljtCZv+Z/Qgm3XSsYHRh3
-        uTg7cs6TjHx+rXapMGfY41YT8Q==
-X-Google-Smtp-Source: ABdhPJw4E0wMnWwjRC1sr2bzOYapBYmacXLeYKGrOtasp3/b5pfPVT06dgs++RnqLZtuoG+WVWrfyg==
-X-Received: by 2002:a17:902:7882:b029:d3:b3bc:9d8a with SMTP id q2-20020a1709027882b02900d3b3bc9d8amr27137601pll.46.1602582976868;
-        Tue, 13 Oct 2020 02:56:16 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id f9sm26770712pjq.26.2020.10.13.02.56.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Oct 2020 02:56:16 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 15:26:13 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
- probe deferral properly
-Message-ID: <20201013095613.mbgmjwzojg5wxmau@vireshk-i7>
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
- <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
- <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KGj66PymmEXKJDO8ZEQ4dV/3pOkqQJIBTnNRKT6VgnY=;
+        b=sKBrk02HgTlSg5VnPRGu0hY0Myum5aM1AQ5305u07ygiCvrHmX24akES+UE9JNcyPN
+         +NNHWG8pPOuVQ4fK7p44XZNF0ESBqtIgBkFE1wo0cmjGLbG/WxXK/X3nutKocRA38afL
+         Bt03/1H57OTeQ8bIKVqBuNJ0LftrnXUUqdDd2asJ6jxclTbp+TGepNDSbwMvDkU3E910
+         pFHDxZMw97vCak6ad0nTQyA7HIIuwErHvzlgeuG6xn9E9kRMMLLGqh2rwrsI3D0V0gkx
+         r8Rz38islkqxYJyS12HQkfPEUzNt7py395qwwjCKxa1tqv12ChlG7Skp7IJFVPpeTag3
+         VLXQ==
+X-Gm-Message-State: AOAM533pJ84Hc6zH09Q28KgjD+dKjuJKuQTytM5frUtNhUICJGvbVwBK
+        LbujZWrRDKMF+DzIr0hc2f5fNvPk19IcZNW3Dt/b+g==
+X-Google-Smtp-Source: ABdhPJxuiSelGlMC1dIpiF3M2m+tfmeJ5+JbgRsdpEfYjmi0ot9nyY+X9aWYIn8k7xbPH1VguxnO6JbNQFUpiAG0jiE=
+X-Received: by 2002:a17:906:494:: with SMTP id f20mr31928896eja.285.1602583100513;
+ Tue, 13 Oct 2020 02:58:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201008143722.21888-2-etienne.carriere@linaro.org> <20201012141746.32575-1-sudeep.holla@arm.com>
+In-Reply-To: <20201012141746.32575-1-sudeep.holla@arm.com>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Tue, 13 Oct 2020 11:58:09 +0200
+Message-ID: <CAN5uoS_GHXv-RHJACJMJqN_xRSSWuv=mTPW_aHZv5U6PjK16xg@mail.gmail.com>
+Subject: Re: [PATCH] firmware: arm_scmi: Add missing Rx size re-initialisation
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-10-20, 11:47, Geert Uytterhoeven wrote:
-> Thanks for your patch, which is now commit dc279ac6e5b4e06e ("cpufreq:
-> dt: Refactor initialization to handle probe deferral properly") in
-> pm/linux-next, and to which I bisected a regression.
-> Reverting this commit fixes the issue.
+On Mon, 12 Oct 2020 at 16:17, Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> Few commands provide the list of description partially and require
+> to be called consecutively until all the descriptors are fetched
+> completely. In such cases, we don't release the buffers and reuse
+> them for consecutive transmits.
+>
+> However, currently we don't reset the Rx size which will be set as
+> per the response for the last transmit. This may result in incorrect
+> response size being interpretted as the firmware may repond with size
+> greater than the one set but we read only upto the size set by previous
+> response.
+>
+> Let us reset the receive buffer size to max possible in such cases as
+> we don't know the exact size of the response.
+>
+> Fixes: b6f20ff8bd94 ("firmware: arm_scmi: add common infrastructure and support for base protocol")
+> Reported-by: Etienne Carriere <etienne.carriere@linaro.org>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/firmware/arm_scmi/base.c    | 2 ++
+>  drivers/firmware/arm_scmi/clock.c   | 2 ++
+>  drivers/firmware/arm_scmi/common.h  | 8 ++++++++
+>  drivers/firmware/arm_scmi/perf.c    | 2 ++
+>  drivers/firmware/arm_scmi/sensors.c | 2 ++
+>  5 files changed, 16 insertions(+)
+>
+> Hi Etienne,
+>
+> I reworked this in a different way and hence dropped your authorship and added
+> reported by. If you prefer I can attribute you as author. I want to push
+> 2,4,5/5 as fixes and hence the rush.
 
-Strange. I had a look again and I failed to understand why it would
-happen this way.
+Hi Sudeep,
 
-> On r8a7791/koelsch, during resume from s2ram:
-> 
->      PM: suspend entry (deep)
->      Filesystems sync: 0.000 seconds
->      Freezing user space processes ... (elapsed 0.003 seconds) done.
->      OOM killer disabled.
->      Freezing remaining freezable tasks ... (elapsed 0.009 seconds) done.
->      Disabling non-boot CPUs ...
->      Enabling non-boot CPUs ...
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
->     +cpu cpu0: OPP table can't be empty
->      CPU1 is up
->      rcar-pcie fe000000.pcie: PCIe x1: link up
-> 
-> The cpufreq code tries to talk to the PMIC, while the I2C controller
-> that hosts the PMIC is suspended, and thus any communication attempt
-> times out.  __i2c_check_suspended() fails to notice that, as the
-> i2c_shmobile_i2c driver doesn't have a suspend callback calling
-> i2c_mark_adapter_suspended() yet.  After fixing that (will send a patch
-> soon), the I2C core rightfully complains with:
-> 
->     WARNING: CPU: 1 PID: 13 at drivers/i2c/i2c-core.h:54
-> __i2c_transfer+0x4a4/0x4e4
->     i2c i2c-6: Transfer while suspended
->     CPU: 1 PID: 13 Comm: cpuhp/1 Not tainted
-> 5.9.0-shmobile-09581-g05a3e5886c7615b1-dirty #718
->     Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
->     [<c010dcec>] (unwind_backtrace) from [<c0109b18>] (show_stack+0x10/0x14)
->     [<c0109b18>] (show_stack) from [<c075e928>] (dump_stack+0x8c/0xac)
->     [<c075e928>] (dump_stack) from [<c011c23c>] (__warn+0xd0/0xe8)
->     [<c011c23c>] (__warn) from [<c011c2c4>] (warn_slowpath_fmt+0x70/0x9c)
->     [<c011c2c4>] (warn_slowpath_fmt) from [<c0548be8>]
-> (__i2c_transfer+0x4a4/0x4e4)
->     [<c0548be8>] (__i2c_transfer) from [<c0548cd8>] (i2c_transfer+0xb0/0xf8)
->     [<c0548cd8>] (i2c_transfer) from [<c046f884>] (regmap_i2c_read+0x54/0x88)
->     [<c046f884>] (regmap_i2c_read) from [<c046b69c>]
-> (_regmap_raw_read+0x118/0x1f0)
->     [<c046b69c>] (_regmap_raw_read) from [<c046b7b8>]
-> (_regmap_bus_read+0x44/0x68)
->     [<c046b7b8>] (_regmap_bus_read) from [<c04698a0>] (_regmap_read+0x84/0x110)
->     [<c04698a0>] (_regmap_read) from [<c046c10c>] (regmap_read+0x40/0x58)
->     [<c046c10c>] (regmap_read) from [<c03cf0a8>]
-> (regulator_get_voltage_sel_regmap+0x28/0x74)
->     [<c03cf0a8>] (regulator_get_voltage_sel_regmap) from [<c03cb29c>]
-> (regulator_get_voltage_rdev+0xa4/0x14c)
->     [<c03cb29c>] (regulator_get_voltage_rdev) from [<c03cc658>]
-> (regulator_get_voltage+0x2c/0x60)
->     [<c03cc658>] (regulator_get_voltage) from [<c03cd994>]
-> (regulator_is_supported_voltage+0x30/0xd8)
->     [<c03cd994>] (regulator_is_supported_voltage) from [<c05a32b4>]
-> (_opp_add+0x164/0x1b8)
->     [<c05a32b4>] (_opp_add) from [<c05a3388>] (_opp_add_v1+0x80/0xb8)
->     [<c05a3388>] (_opp_add_v1) from [<c05a5220>]
-> (dev_pm_opp_of_add_table+0x130/0x168)
->     [<c05a5220>] (dev_pm_opp_of_add_table) from [<c05a5330>]
-> (dev_pm_opp_of_cpumask_add_table+0x60/0xac)
->     [<c05a5330>] (dev_pm_opp_of_cpumask_add_table) from [<c05ab88c>]
-> (cpufreq_init+0x94/0x1c4)
->     [<c05ab88c>] (cpufreq_init) from [<c05a8190>] (cpufreq_online+0x148/0x7ac)
->     [<c05a8190>] (cpufreq_online) from [<c05a87fc>]
-> (cpuhp_cpufreq_online+0x8/0x10)
->     [<c05a87fc>] (cpuhp_cpufreq_online) from [<c011d088>]
-> (cpuhp_invoke_callback+0xf8/0x2e4)
->     [<c011d088>] (cpuhp_invoke_callback) from [<c011d418>]
-> (cpuhp_thread_fun+0xac/0x244)
->     [<c011d418>] (cpuhp_thread_fun) from [<c013c090>]
-> (smpboot_thread_fn+0x19c/0x1a8)
->     [<c013c090>] (smpboot_thread_fn) from [<c0138408>] (kthread+0x104/0x110)
->     [<c0138408>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+Tags are fine like that.
+As for the content, it looks good to me.
+When trying to apply this, I failed, but I guess I'm not testing over
+the same kernel tree/branch as you.
+All in one, I am really fine with this change, I think it does the job
 
-So there is a dependency chain here. cpufreq->regulator->i2c,
-specially with the patch you pointed out, we handle defer-probing in a
-better way and so I would expect i2c driver to get in first and
-cpufreq should get registered later only. And I would have expected
-the same during suspend/resume.
+Regards,
+Etienne
 
-Can you see why this happens ?
-
--- 
-viresh
+>
+> Regards,
+> Sudeep
+>
+> diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
+> index 9853bd3c4d45..017e5d8bd869 100644
+> --- a/drivers/firmware/arm_scmi/base.c
+> +++ b/drivers/firmware/arm_scmi/base.c
+> @@ -197,6 +197,8 @@ static int scmi_base_implementation_list_get(const struct scmi_handle *handle,
+>                         protocols_imp[tot_num_ret + loop] = *(list + loop);
+>
+>                 tot_num_ret += loop_num_ret;
+> +
+> +               scmi_reset_rx_to_maxsz(handle, t);
+>         } while (loop_num_ret);
+>
+>         scmi_xfer_put(handle, t);
+> diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+> index c1cfe3ee3d55..4645677d86f1 100644
+> --- a/drivers/firmware/arm_scmi/clock.c
+> +++ b/drivers/firmware/arm_scmi/clock.c
+> @@ -192,6 +192,8 @@ scmi_clock_describe_rates_get(const struct scmi_handle *handle, u32 clk_id,
+>                 }
+>
+>                 tot_rate_cnt += num_returned;
+> +
+> +               scmi_reset_rx_to_maxsz(handle, t);
+>                 /*
+>                  * check for both returned and remaining to avoid infinite
+>                  * loop due to buggy firmware
+> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> index 37fb583f1bf5..a3f1bc44b1de 100644
+> --- a/drivers/firmware/arm_scmi/common.h
+> +++ b/drivers/firmware/arm_scmi/common.h
+> @@ -245,6 +245,14 @@ extern const struct scmi_desc scmi_mailbox_desc;
+>  extern const struct scmi_desc scmi_smc_desc;
+>  #endif
+>
+> +static inline void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
+> +                                         struct scmi_xfer *xfer)
+> +{
+> +       struct scmi_info *info = handle_to_scmi_info(handle);
+> +
+> +       xfer->rx.len = info->desc->max_msg_size;
+> +}
+> +
+>  void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr);
+>  void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id);
+>
+> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> index ed475b40bd08..82fb3babff72 100644
+> --- a/drivers/firmware/arm_scmi/perf.c
+> +++ b/drivers/firmware/arm_scmi/perf.c
+> @@ -304,6 +304,8 @@ scmi_perf_describe_levels_get(const struct scmi_handle *handle, u32 domain,
+>                 }
+>
+>                 tot_opp_cnt += num_returned;
+> +
+> +               scmi_reset_rx_to_maxsz(handle, t);
+>                 /*
+>                  * check for both returned and remaining to avoid infinite
+>                  * loop due to buggy firmware
+> diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+> index 9703cf6356a0..b4232d611033 100644
+> --- a/drivers/firmware/arm_scmi/sensors.c
+> +++ b/drivers/firmware/arm_scmi/sensors.c
+> @@ -166,6 +166,8 @@ static int scmi_sensor_description_get(const struct scmi_handle *handle,
+>                 }
+>
+>                 desc_index += num_returned;
+> +
+> +               scmi_reset_rx_to_maxsz(handle, t);
+>                 /*
+>                  * check for both returned and remaining to avoid infinite
+>                  * loop due to buggy firmware
+> --
+> 2.17.1
+>
