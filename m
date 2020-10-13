@@ -2,63 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8F428D0F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E4128D0FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbgJMPGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:06:55 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:46872 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726157AbgJMPGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:06:55 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6B7761A01DD;
-        Tue, 13 Oct 2020 17:06:53 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5EA911A01CC;
-        Tue, 13 Oct 2020 17:06:53 +0200 (CEST)
-Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 17F772032C;
-        Tue, 13 Oct 2020 17:06:53 +0200 (CEST)
-From:   Diana Craciun <diana.craciun@oss.nxp.com>
-To:     alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
-        Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH v2] vfio/fsl-mc: Fixed vfio-fsl-mc driver compilation on 32 bit
-Date:   Tue, 13 Oct 2020 18:06:51 +0300
-Message-Id: <20201013150651.12808-1-diana.craciun@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1731049AbgJMPKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgJMPKu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:10:50 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A002C0613D0;
+        Tue, 13 Oct 2020 08:10:50 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b8so11275143wrn.0;
+        Tue, 13 Oct 2020 08:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JuBX8r/Y6bGRUCSeRJ3CivsANkHlQS6AI/ICS0f0yZY=;
+        b=pRt3/UN2sjp/Id17E5+iGB+94CwhIYyP+J0ZVxahLZjhYewvdy85p6E9qVH8mcDu/w
+         Ma3byumuQbCvWjoxsAbJW0h9gvZLfP0hODyLYPb4jaAc6LzlEhDGij6xWsWm3n9sxLUf
+         Y5rBrxFXjECN11m9EMkIOKoMbnLZAve13uQMowkDZfElmt1rBDlqBQDqGG5xuxoTZTGn
+         A6f85//dkMxRUTK45bcV3JGGijKAaJzUd4tVdcH6w2iU+1IQzZjujWhrlRnaPHFO/u5I
+         TwoDZIkPmDhBYcERTV9R8lQD/E/99qfus11PWOKi7U7sNRgo9fP4mXVVptNJKNu/orur
+         1eGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JuBX8r/Y6bGRUCSeRJ3CivsANkHlQS6AI/ICS0f0yZY=;
+        b=lc/swWILOmF9u8ypz39We7eo0kmyJ4ooklmUvKrdLT+atY2bUE5Z5rTnTVXjwvSjrG
+         vCNP06GpOt1jO1I5P8SJ6SXCtLr8k4oRsaoHE0CDSm52Cp8QTEXwJb+qnCvcW1A5c1gC
+         bF+cJryD6/+X6Kr+qGXhUOxe4innhzugxCEVfLkQEr1vpF3fzo6UeUzPgP3ud6IMGoam
+         dHCfOm+BXl+WkoZmVv1IESnwGjRXvb+ZhJ+iSSivItevnnqMgc7j90Eqfe+NJ1h4TX/t
+         iS53MXV75cMWq37AR55gFXCLVdCgay8Gbp5uPFhU2N7iO1B1NqfkiylAPzL+8YHnNUhc
+         wo+w==
+X-Gm-Message-State: AOAM530d+gdlk7pl53GPOcO38u6PZBIZNQwL27V++xx8nAd3sbR8JkpV
+        c2BEYr07ToGNrM7BskrFTFPcxtNbT86hXw==
+X-Google-Smtp-Source: ABdhPJxvj/okZcxLvRTRo8EX8POYCQcaPyYdM1hZZbF6KXlzxIMolIv8YA31Et7icSS3qcMo/t9L9g==
+X-Received: by 2002:adf:f4d1:: with SMTP id h17mr107075wrp.41.1602601848929;
+        Tue, 13 Oct 2020 08:10:48 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.110])
+        by smtp.gmail.com with ESMTPSA id l11sm31014653wrt.54.2020.10.13.08.10.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 08:10:47 -0700 (PDT)
+Subject: Re: [PATCH v6 4/4] mmc: mediatek: Add subsys clock control for MT8192
+ msdc
+To:     Wenbin Mei <wenbin.mei@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com
+References: <20201012124547.16649-1-wenbin.mei@mediatek.com>
+ <20201012124547.16649-5-wenbin.mei@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <72ae1d89-fe31-4f50-15c0-29119d662ea1@gmail.com>
+Date:   Tue, 13 Oct 2020 17:10:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201012124547.16649-5-wenbin.mei@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FSL_MC_BUS on which the VFIO-FSL-MC driver is dependent on
-can be compiled on other architectures as well (not only ARM64)
-including 32 bit architectures.
-Include linux/io-64-nonatomic-hi-lo.h to make writeq/readq used
-in the driver available on 32bit platforms.
 
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
----
-v1 --> v2
- - Added prefix to patch description
 
- drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
- 1 file changed, 1 insertion(+)
+On 12/10/2020 14:45, Wenbin Mei wrote:
+> MT8192 msdc is an independent sub system, we need control more bus
+> clocks for it.
+> Add support for the additional subsys clocks to allow it to be
+> configured appropriately.
+> 
+> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> ---
+>   drivers/mmc/host/mtk-sd.c | 74 +++++++++++++++++++++++++++++----------
+>   1 file changed, 56 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index a704745e5882..c7df7510f120 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+[...]
+> +static int msdc_of_clock_parse(struct platform_device *pdev,
+> +			       struct msdc_host *host)
+> +{
+> +	int ret;
+> +
+> +	host->src_clk = devm_clk_get(&pdev->dev, "source");
+> +	if (IS_ERR(host->src_clk))
+> +		return PTR_ERR(host->src_clk);
+> +
+> +	host->h_clk = devm_clk_get(&pdev->dev, "hclk");
+> +	if (IS_ERR(host->h_clk))
+> +		return PTR_ERR(host->h_clk);
+> +
+> +	host->bus_clk = devm_clk_get_optional(&pdev->dev, "bus_clk");
+> +	if (IS_ERR(host->bus_clk))
+> +		host->bus_clk = NULL;
+> +
+> +	/*source clock control gate is optional clock*/
+> +	host->src_clk_cg = devm_clk_get_optional(&pdev->dev, "source_cg");
+> +	if (IS_ERR(host->src_clk_cg))
+> +		host->src_clk_cg = NULL;
+> +
+> +	host->sys_clk_cg = devm_clk_get_optional(&pdev->dev, "sys_cg");
+> +	if (IS_ERR(host->sys_clk_cg))
+> +		host->sys_clk_cg = NULL;
+> +
+> +	/* If present, always enable for this clock gate */
+> +	clk_prepare_enable(host->sys_clk_cg);
+> +
+> +	host->bulk_clks[0].id = "pclk_cg";
+> +	host->bulk_clks[1].id = "axi_cg";
+> +	host->bulk_clks[2].id = "ahb_cg";
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-index d009f873578c..80fc7f4ed343 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-@@ -13,6 +13,7 @@
- #include <linux/vfio.h>
- #include <linux/fsl/mc.h>
- #include <linux/delay.h>
-+#include <linux/io-64-nonatomic-hi-lo.h>
- 
- #include "vfio_fsl_mc_private.h"
- 
--- 
-2.17.1
+That looks at least suspicious. The pointers of id point to some strings defined 
+in the function. Aren't they out of scope once msdc_of_clock_parse() has returned?
 
+Regards,
+Matthias
