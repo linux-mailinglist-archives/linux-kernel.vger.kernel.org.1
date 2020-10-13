@@ -2,138 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0664D28D41A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A1228D41E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbgJMSzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:55:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:41279 "EHLO mga01.intel.com"
+        id S1728419AbgJMS4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:56:55 -0400
+Received: from mga17.intel.com ([192.55.52.151]:44127 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727033AbgJMSzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:55:31 -0400
-IronPort-SDR: q1qF5AkRN96vkbIGJRaEi4FjFVM0XOqpQ7/JqhOBu45U/R7PfYVHqp3ZD6qsI2eqrpXxnRTcou
- RPUKDVXqtKpQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="183455545"
+        id S1727033AbgJMS4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 14:56:55 -0400
+IronPort-SDR: haoDqyWVZcZww43t2U2HC9oNnz4/woBa9HxvDyAS9SXWCx7tqw2Lh3q6UuSk8SVw0NOWECs4RE
+ l3ucVH3jlWnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145829077"
 X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="183455545"
+   d="scan'208";a="145829077"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 11:55:30 -0700
-IronPort-SDR: Z0d2FdRUxpn9Lo2WjHT52tkOlQLSWbPftrqdZdlgk70MJqqCt06VSAjSo820hJEtDSQv43AdwV
- BqRQ7TchRVzQ==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 11:56:54 -0700
+IronPort-SDR: raLRTUXtVSOjhLMfYeYdRGnzdOVIY4ueopEECZr2H+GBbh+H95qwtBfdauyL8KJNgeuPWQS94c
+ gW3RJpEE8e4A==
 X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="463603361"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.131.190]) ([10.249.131.190])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 11:55:28 -0700
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
-        Len Brown <lenb@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        rafael@kernel.org, Linux PM <linux-pm@vger.kernel.org>
-References: <20201006083639.GJ3227@techsingularity.net>
- <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
- <20201006190322.GL3227@techsingularity.net>
- <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
- <20201006211820.GN3227@techsingularity.net>
- <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
- <20201008090909.GP3227@techsingularity.net>
- <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
- <20201008173436.GQ3227@techsingularity.net>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
-Date:   Tue, 13 Oct 2020 20:55:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+   d="scan'208";a="346283282"
+Received: from murawskx-mobl.amr.corp.intel.com (HELO [10.209.9.29]) ([10.209.9.29])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 11:56:54 -0700
+Subject: Re: [PATCH RFC V3 8/9] x86/fault: Report the PKRS state on fault
+To:     ira.weiny@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-9-ira.weiny@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <d6546e84-2196-25fd-3d8d-5e65fe22a71c@intel.com>
+Date:   Tue, 13 Oct 2020 11:56:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201008173436.GQ3227@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201009194258.3207172-9-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/2020 7:34 PM, Mel Gorman wrote:
-> On Thu, Oct 08, 2020 at 07:15:46PM +0200, Rafael J. Wysocki wrote:
->>> Force enabling C6
->>>
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/disable:0
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/disable:1
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/disable:0
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/default_status:enabled
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/default_status:enabled
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/default_status:enabled
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/default_status:disabled
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/default_status:enabled
->>>
->>> Note that as expected, C3 remains disabled when only C6 is forced (state3
->>> == c3, state4 == c6). While this particular workload does not appear to
->>> care as it does not remain idle for long, the exit latency difference
->>> between c3 and c6 is large so potentially a workload that idles for short
->>> durations that are somewhere between c1e and c3 exit latency might take
->>> a larger penalty exiting from c6 state if the deeper c-state is selected
->>> for idling.
->>>
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state0/residency:0
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state1/residency:2
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state2/residency:20
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state3/residency:100
->>> ./5.9.0-rc8-enable-c6/iter-0/sys/devices/system/cpu/cpu0/cpuidle/state4/residency:400
->>>
->> If you are worried that C6 might be used instead of C3 in some cases, this
->> is not going to happen.
->>
-> Ok, so it goes in the C1E direction instead. I lost track of how C-state
-> is selected based on predictions about the future. It's changed a bit
-> over time.
->   
->> I all cases in which C3 would have been used had it not been disabled, C1E
->> will be used instead.
->>
->> Which BTW indicates that using C1E more often adds a lot of latency to the
->> workload (if C3 and C6 are both disabled, C1E is used in all cases in which
->> one of them would have been used).
-> Which is weird. From the exit latency alone, I'd think it would be faster
-> to use C1E instead of C3. It implies that using C1E instead of C3/C6 has
-> some other side-effect on Haswell. At one point, there was plenty of advice
-> on disabling C1E but very little concrete information on what impact it
-> has exactly and why it might cause problems that other c-states avoid.
->
->> With C6 enabled, that state is used at
->> least sometimes (so C1E is used less often), but PC6 doesn't seem to be
->> really used - it looks like core C6 only is entered and which may be why C6
->> adds less latency than C1E (and analogously for C3).
->>
-> At the moment, I'm happy with either solution but mostly because I can't
-> tell what other trade-offs should be considered :/
->
-I talked to Len and Srinivas about this and my theory above didn't survive.
+> @@ -548,6 +549,11 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
+>  		 (error_code & X86_PF_PK)    ? "protection keys violation" :
+>  					       "permissions violation");
+>  
+> +#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> +	if (irq_state && (error_code & X86_PF_PK))
+> +		pr_alert("PKRS: 0x%x\n", irq_state->pkrs);
+> +#endif
 
-The most likely reason why you see a performance drop after enabling the 
-ACPI support (which effectively causes C3 and C6 to be disabled by 
-default on the affected machines) is because the benchmarks in question 
-require sufficiently high one-CPU performance and the CPUs cannot reach 
-high enough one-core turbo P-states without the other CPUs going into C6.
+This means everyone will see 'PKRS: 0x0', even if they're on non-PKS
+hardware.  I think I'd rather have this only show PKRS when we're on
+cpu_feature_enabled(PKS) hardware.
 
-Inspection of the ACPI tables you sent me indicates that there is a BIOS 
-switch in that system allowing C6 to be enabled.  Would it be possible 
-to check whether or not there is a BIOS setup option to change that setting?
+...
+> @@ -1148,14 +1156,15 @@ static int fault_in_kernel_space(unsigned long address)
+>   */
+>  static void
+>  do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
+> -		   unsigned long address)
+> +		   unsigned long address, irqentry_state_t *irq_state)
+>  {
+>  	/*
+> -	 * Protection keys exceptions only happen on user pages.  We
+> -	 * have no user pages in the kernel portion of the address
+> -	 * space, so do not expect them here.
+> +	 * If protection keys are not enabled for kernel space
+> +	 * do not expect Pkey errors here.
+>  	 */
 
-Also, I need to know what happens if that system is started with 
-intel_idle disabled.  That is, what idle states are visible in sysfs in 
-that configuration (what their names and descriptions are in particular) 
-and whether or not the issue is still present then.
+Let's fix the double-negative:
 
-In addition to that, can you please run the benchmark on that system 
-under turbostat both with unmodified intel_idle and with intel_idle 
-disabled and post the turbostat output in each of those cases?
+	/*
+	 * PF_PK is only expected on kernel addresses whenn
+	 * supervisor pkeys are enabled:
+	 */
 
-Cheers!
+> -	WARN_ON_ONCE(hw_error_code & X86_PF_PK);
+> +	if (!IS_ENABLED(CONFIG_ARCH_HAS_SUPERVISOR_PKEYS) ||
+> +	    !cpu_feature_enabled(X86_FEATURE_PKS))
+> +		WARN_ON_ONCE(hw_error_code & X86_PF_PK);
 
-
+Yeah, please stick X86_FEATURE_PKS in disabled-features so you can use
+cpu_feature_enabled(X86_FEATURE_PKS) by itself here..
