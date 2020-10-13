@@ -2,232 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25B328CCBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEBA28CD59
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbgJMLvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgJMLvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:51:06 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CB3C0613D0;
-        Tue, 13 Oct 2020 04:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GkH82180+DstlHWDc/8vobqjpl5vZyXRBmSo2K0Il/o=; b=WClE/LH5/0Bs/NtV8HDVtA4Esi
-        E00Oy1YuNohkMYYQnnG5ZFYLPVE0HMP09HoKIURYwG2FLyuyUrIkBDQzjfPypPxe/hyLIgkCT7nhZ
-        XuPq3uEWDaYV9Nrm0iz/MnE+Q0GB1mVzF+98iOR/NOvh5wtfAiqLfM+qCqdqYzK0RVqPykhGb/bS8
-        Y8RnxdaGhZUQUoYgBjrgY+baclj9dx1CX+fDTzg/0sH31ZvXuX3XpKSyTFGvN9JsxkqSqZeD7xA7v
-        eEWDvz9Zwfq//mY2n9AHGPQ1SvW4YUAYz7euMD8KM/aCFJMfzMlxy5PxQmN44ORllTnoXq3kMKc8S
-        PZs3/pug==;
-Received: from 54-240-197-239.amazon.com ([54.240.197.239] helo=u3832b3a9db3152.ant.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSIpa-0006hf-4q; Tue, 13 Oct 2020 11:51:02 +0000
-Message-ID: <0ca196c0df5beb90b45457ac7ca5d8611d2a7a29.camel@infradead.org>
-Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Marc Zyngier <maz@kernel.org>
-Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Tue, 13 Oct 2020 12:51:00 +0100
-In-Reply-To: <832c2d4c11cd99382782474f51d15889ffa24407.camel@infradead.org>
-References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org>
-         <20201007122046.1113577-1-dwmw2@infradead.org>
-         <20201007122046.1113577-5-dwmw2@infradead.org>
-         <87blhcx6qz.fsf@nanos.tec.linutronix.de>
-         <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org>
-         <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org>
-         <87362owhcb.fsf@nanos.tec.linutronix.de>
-         <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org>
-         <87tuv4uwmt.fsf@nanos.tec.linutronix.de>
-         <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org>
-         <874kn2s3ud.fsf@nanos.tec.linutronix.de>
-         <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org>
-         <87pn5or8k7.fsf@nanos.tec.linutronix.de>
-         <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
-         <87ft6jrdpk.fsf@nanos.tec.linutronix.de>
-         <25c54f8e5da1fd5cf3b01ad2fdc1640c5d86baa1.camel@infradead.org>
-         <87362jqoh3.fsf@nanos.tec.linutronix.de>
-         <1abc2a34c894c32eb474a868671577f6991579df.camel@infradead.org>
-         <87eem3ozxd.fsf@nanos.tec.linutronix.de>
-         <0de733f6384874d68afba2606119d0d9b1e8b34e.camel@infradead.org>
-         <87zh4qo4o5.fsf@nanos.tec.linutronix.de>
-         <87wnzuo127.fsf@nanos.tec.linutronix.de>
-         <832c2d4c11cd99382782474f51d15889ffa24407.camel@infradead.org>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-mxuMxOpgkWOobFuuEWJe"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        id S1728284AbgJML66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:58:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727530AbgJMLyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:54:44 -0400
+Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B392B222EC;
+        Tue, 13 Oct 2020 11:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602590081;
+        bh=wNtHrQYNIO2W6s56uj1ucwJ6BwOX07DtFlwqVkwd8gc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VZb8+AEMBL+Trdou9nOs/jEUDfGqnyxD3EfZZsWah24/6L3xUlTg3p0tG/1p5/RHE
+         uyPwHfMMEpuU73gsTBJtFO1XQqznMI+euRMr4t7sgVv0fKzkUFnZi39A55tKDdOopL
+         SsaQ0DHqydiojIHvzp+SYcUTv++aS34LLCZ0s/I8=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kSIt3-006CT2-2R; Tue, 13 Oct 2020 13:54:37 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Benson Leung <bleung@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Colin Cross <ccross@android.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Jeff Dike <jdike@addtoit.com>, Jens Axboe <axboe@kernel.dk>,
+        Joerg Reuter <jreuter@yaina.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jyri Sarha <jsarha@ti.com>, Kees Cook <keescook@chromium.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Moritz Fischer <mdf@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Richard Weinberger <richard@nod.at>,
+        Sean Young <sean@mess.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: [PATCH v6 00/80] htmldoc build fixes with Sphinx 2.x and 3.x
+Date:   Tue, 13 Oct 2020 13:53:15 +0200
+Message-Id: <cover.1602589096.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series actually folds the previous Sphinx 3.x patch series
+with the other patches I sent fixing warnings with Sphinx
+2.x and with kernel-doc and that weren't merged yet via
+some other tree.
 
---=-mxuMxOpgkWOobFuuEWJe
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+It is based on the top of upstream, plus the media
+pull request I sent yesterday:
 
-On Tue, 2020-10-13 at 11:53 +0100, David Woodhouse wrote:
-> On Tue, 2020-10-13 at 12:46 +0200, Thomas Gleixner wrote:
-> > And after becoming more awake, that wont work anyway because there is
-> > more than one IR domain, so there is no way to return an error "You
-> > forgot to register" obviously.
-> >=20
-> > But the APIC id (32768) valid check is also broken because IR can be
-> > enabled even without X2APIC.
->=20
-> Nope, it's perfectly OK to allow HPET and I/OAPIC to be parented in the
-> x86_vector_domain in that case, regardless of IR.
->=20
-> The *actual* criterion for x86_vector_select() returning zero to say=20
-> "don't use me" is "could there be CPUs in the system which can't be
-> reached through x86_vector_msi_compose_msg()?". It's not really about
-> IR at all.
->=20
-> The apic_id_valid(32768) check is checking precisely the right thing.
+	https://lore.kernel.org/lkml/20201012134139.0d58f5d7@coco.lan/
 
-With that realisation, I've fixed the comment in my ext_dest_id branch
-to remove all mention of IRQ remapping. It now looks like this:
+My plan is to send a pull request with those patches after Thursday's
+linux next release.
 
-static int x86_vector_select(struct irq_domain *d, struct irq_fwspec *fwspe=
-c,
-			     enum irq_domain_bus_token bus_token)
-{
-	/*
-	 * HPET and I/OAPIC drivers use irq_find_matching_irqdomain()
-	 * to find their parent irqdomain. For x86_vector_domain to be
-	 * suitable, all CPUs in the system must be reachable by its
-	 * x86_vector_msi_compose_msg() function. Which is only true
-	 * in !x2apic mode, or in x2apic physical mode if APIC IDs were
-	 * restricted to 8 or 15 bits at boot time. In those cases,
-	 * 1<<15 will *not* be a valid APIC ID.
-	 */
-	if (apic->apic_id_valid(1<<15))
-		return 0;
+On this series, I removed the patches that depend on material
+currently found only at linux-next. 
 
-	return x86_fwspec_is_ioapic(fwspec) || x86_fwspec_is_hpet(fwspec);
-}
+Mauro Carvalho Chehab (79):
+  scripts: kernel-doc: add support for typedef enum
+  scripts: kernel-doc: make it more compatible with Sphinx 3.x
+  scripts: kernel-doc: use a less pedantic markup for funcs on Sphinx
+    3.x
+  scripts: kernel-doc: fix troubles with line counts
+  scripts: kernel-doc: reimplement -nofunction argument
+  scripts: kernel-doc: fix typedef identification
+  scripts: kernel-doc: don't mangle with parameter list
+  scripts: kernel-doc: allow passing desired Sphinx C domain dialect
+  scripts: kernel-doc: fix line number handling
+  scripts: kernel-doc: try to use c:function if possible
+  docs: cdomain.py: add support for a new Sphinx 3.1+ tag
+  docs: cdomain.py: extend it to handle new Sphinx 3.x tags
+  docs: kerneldoc.py: append the name of the parsed doc file
+  docs: kerneldoc.py: add support for kerneldoc -nosymbol
+  media: docs: make CEC documents compatible with Sphinx 3.1+
+  media: docs: make V4L documents more compatible with Sphinx 3.1+
+  media: docs: make DVB documents more compatible with Sphinx 3.1+
+  media: docs: make MC documents more compatible with Sphinx 3.1+
+  media: docs: make RC documents more compatible with Sphinx 3.1+
+  media: cec-core.rst: don't use c:type for structs
+  docs: remove some replace macros like |struct foo|
+  docs: get rid of :c:type explicit declarations for structs
+  docs: trace-uses.rst: remove bogus c-domain tags
+  docs: it_IT: fix namespace collisions at locking.rst
+  docs: net: ieee802154.rst: fix C expressions
+  docs: genericirq.rst: don't document chip.c functions twice
+  docs: kernel-api.rst: drop kernel/irq/manage.c kernel-doc tag
+  docs: remove sound API duplication
+  docs: basics.rst: move kernel-doc workqueue markups to workqueue.rst
+  docs: scsi: target.rst: remove iSCSI transport class kernel-doc markup
+  docs: device_link.rst: remove duplicated kernel-doc include
+  docs: basics.rst: get rid of rcu kernel-doc macros
+  docs: pstore-blk.rst: fix kernel-doc tags
+  docs: fs: fscrypt.rst: get rid of :c:type: tags
+  docs: devices.rst: get rid of :c:type macros
+  docs: sound: writing-an-alsa-driver.rst: get rid of :c:type
+  docs: block: blk-mq.rst: get rid of :c:type
+  docs: writing-an-alsa-driver.rst: fix some bad c:func: markups
+  docs: fpga: replace :c:member: macros
+  docs: kgdb.rst: fix :c:type: usages
+  docs: libata.rst: fix a wrong usage of :c:type: tag
+  docs: infrastructure.rst: don't include firmware kernel-doc
+  docs: gpu: i915.rst: Fix several C duplication warnings
+  docs: devices.rst: fix a C reference markup
+  docs: it_IT: hacking.rst: fix a typo on a markup
+  docs: mei.rst: fix a C expression markup
+  docs: basics.rst: avoid duplicated C function declaration
+  docs: conf.py: fix c:function support with Sphinx 3.x
+  docs: conf.py: change the Sphinx 3.x+ text
+  docs: infrastructure.rst: exclude device_link_state from device.h
+  docs: zh_CN: amu.rst: fix document title markup
+  media: uAPI: buffer.rst: remove a left-over documentation
+  math64.h: kernel-docs: Convert some markups into normal comments
+  memblock: get rid of a :c:type leftover
+  dt-bindings: fix references to files converted to yaml
+  net: appletalk: Kconfig: Fix docs location
+  drivers: net: hamradio: fix document location
+  docs: powerpc: syscall64-abi.rst: fix a malformed table
+  block: bio: fix a warning at the kernel-doc markups
+  kunit: test.h: solve kernel-doc warnings
+  docs: bio: fix a kerneldoc markup
+  drivers: core: fix kernel-doc markup for dev_err_probe()
+  kunit: test.h: fix a bad kernel-doc markup
+  docs: amdgpu: fix a warning when building the documentation
+  locking/refcount: document the new "oldp" pointer value
+  usb: docs: document altmode register/unregister functions
+  nl80211: docs: add a description for s1g_cap parameter
+  IB/srpt: docs: add a description for cq_size member
+  rcu/tree: docs: document bkvcache new members at struct kfree_rcu_cpu
+  Input: sparse-keymap: add a description for @sw
+  drm/amd/display: kernel-doc: document force_timing_sync
+  drm: kernel-doc: drm_dp_helper.h: fix a typo
+  gpu: docs: amdgpu.rst: get rid of wrong kernel-doc markups
+  drm: kernel-doc: add description for a new function parameter
+  docs: virt: user_mode_linux_howto_v2.rst: fix a literal block markup
+  workqueue: fix a kernel-doc warning
+  mm/doc: fix a literal block markup
+  drm: drm_edid: remove a duplicated kernel-doc declaration
+  PM / devfreq: remove a duplicated kernel-doc markup
 
-That makes it clearer that this isn't just some incestuous interaction
-with IRQ remapping =E2=80=94 that APIC ID limit really is the basis on whic=
-h
-this irqdomain, all by itself, makes the decision about whether it's
-capable of being the parent irqdomain to the requesting device.
+Nícolas F. R. A. Prado (1):
+  docs: automarkup.py: make it ready for Sphinx 3.1+
 
-It just so happens that *if* you allow higher APIC IDs in the system
-and *if* no other irqdomains exist which take ownership of a given HPET
-or I/OAPIC, then that child device will fail to find a suitable parent
-irqdomain and will fail to initialise. And that's just how we want it.
+ Documentation/admin-guide/pm/cpufreq.rst      |  11 +-
+ Documentation/admin-guide/pstore-blk.rst      |  10 +-
+ Documentation/block/blk-mq.rst                |  12 +-
+ Documentation/block/inline-encryption.rst     |   8 +-
+ Documentation/conf.py                         |  65 +++-
+ Documentation/core-api/genericirq.rst         |   2 +
+ Documentation/core-api/kernel-api.rst         |   6 -
+ Documentation/core-api/workqueue.rst          |   2 +
+ Documentation/dev-tools/kgdb.rst              |   6 +-
+ .../bindings/display/tilcdc/tilcdc.txt        |   2 +-
+ .../bindings/mailbox/omap-mailbox.txt         |   2 +-
+ .../devicetree/bindings/media/i2c/tvp5150.txt |   2 +-
+ .../bindings/pwm/google,cros-ec-pwm.yaml      |   2 +-
+ .../bindings/soc/qcom/qcom,smd-rpm.yaml       |   2 +-
+ .../bindings/sound/google,cros-ec-codec.yaml  |   2 +-
+ Documentation/doc-guide/kernel-doc.rst        |   8 +
+ Documentation/driver-api/basics.rst           |  19 +-
+ Documentation/driver-api/device_link.rst      |  13 +-
+ Documentation/driver-api/fpga/fpga-bridge.rst |   4 +-
+ Documentation/driver-api/fpga/fpga-mgr.rst    |   6 +-
+ .../driver-api/fpga/fpga-programming.rst      |   2 +-
+ Documentation/driver-api/fpga/fpga-region.rst |   6 +-
+ Documentation/driver-api/iio/buffers.rst      |   2 +-
+ Documentation/driver-api/iio/core.rst         |   6 +-
+ Documentation/driver-api/iio/hw-consumer.rst  |   2 +-
+ .../driver-api/iio/triggered-buffers.rst      |   2 +-
+ Documentation/driver-api/iio/triggers.rst     |   4 +-
+ Documentation/driver-api/index.rst            |   1 -
+ Documentation/driver-api/infrastructure.rst   |   4 +-
+ Documentation/driver-api/libata.rst           |   2 +-
+ Documentation/driver-api/media/cec-core.rst   |   2 +-
+ .../driver-api/media/dtv-frontend.rst         |   4 +-
+ Documentation/driver-api/media/mc-core.rst    |  24 +-
+ .../driver-api/media/v4l2-controls.rst        |   2 +-
+ Documentation/driver-api/media/v4l2-dev.rst   |   8 +-
+ .../driver-api/media/v4l2-device.rst          |   6 +-
+ Documentation/driver-api/media/v4l2-event.rst |  10 +-
+ Documentation/driver-api/media/v4l2-fh.rst    |  16 +-
+ .../driver-api/media/v4l2-subdev.rst          |   2 +-
+ Documentation/driver-api/mei/mei.rst          |   2 +-
+ Documentation/driver-api/pm/cpuidle.rst       |  65 ++--
+ Documentation/driver-api/pm/devices.rst       |  26 +-
+ Documentation/driver-api/regulator.rst        |   4 +-
+ Documentation/driver-api/sound.rst            |  54 ----
+ Documentation/driver-api/target.rst           |  12 -
+ Documentation/driver-api/usb/URB.rst          |   2 +-
+ Documentation/driver-api/usb/gadget.rst       |  10 +-
+ Documentation/driver-api/usb/hotplug.rst      |   2 +-
+ Documentation/driver-api/usb/typec_bus.rst    |   8 +-
+ Documentation/filesystems/fscrypt.rst         |  61 ++--
+ Documentation/filesystems/fsverity.rst        |   2 +-
+ Documentation/gpu/amdgpu.rst                  |  11 +-
+ Documentation/gpu/i915.rst                    |  29 +-
+ Documentation/networking/ieee802154.rst       |  18 +-
+ Documentation/powerpc/syscall64-abi.rst       |  32 +-
+ Documentation/sound/designs/tracepoints.rst   |  22 +-
+ .../sound/kernel-api/alsa-driver-api.rst      |   1 +
+ .../kernel-api/writing-an-alsa-driver.rst     | 110 +++----
+ Documentation/sphinx/automarkup.py            |  69 +++-
+ Documentation/sphinx/cdomain.py               |  93 +++++-
+ Documentation/sphinx/kerneldoc.py             |  15 +-
+ Documentation/sphinx/parse-headers.pl         |   2 +-
+ Documentation/trace/ftrace-uses.rst           |  12 +-
+ .../it_IT/kernel-hacking/hacking.rst          |   2 +-
+ .../it_IT/kernel-hacking/locking.rst          |   2 +
+ .../translations/zh_CN/arm64/amu.rst          |   4 +-
+ .../media/cec/cec-func-close.rst              |  10 +-
+ .../media/cec/cec-func-ioctl.rst              |  11 +-
+ .../userspace-api/media/cec/cec-func-open.rst |  10 +-
+ .../userspace-api/media/cec/cec-func-poll.rst |  14 +-
+ .../media/cec/cec-ioc-adap-g-caps.rst         |  10 +-
+ .../media/cec/cec-ioc-adap-g-conn-info.rst    |  11 +-
+ .../media/cec/cec-ioc-adap-g-log-addrs.rst    |  20 +-
+ .../media/cec/cec-ioc-adap-g-phys-addr.rst    |  15 +-
+ .../media/cec/cec-ioc-dqevent.rst             |  15 +-
+ .../media/cec/cec-ioc-g-mode.rst              |  16 +-
+ .../media/cec/cec-ioc-receive.rst             |  18 +-
+ .../dvb/audio-bilingual-channel-select.rst    |   7 +-
+ .../media/dvb/audio-channel-select.rst        |   8 +-
+ .../media/dvb/audio-clear-buffer.rst          |   8 +-
+ .../media/dvb/audio-continue.rst              |   7 +-
+ .../userspace-api/media/dvb/audio-fclose.rst  |   7 +-
+ .../userspace-api/media/dvb/audio-fopen.rst   |   7 +-
+ .../userspace-api/media/dvb/audio-fwrite.rst  |   7 +-
+ .../media/dvb/audio-get-capabilities.rst      |   8 +-
+ .../media/dvb/audio-get-status.rst            |   8 +-
+ .../userspace-api/media/dvb/audio-pause.rst   |   9 +-
+ .../userspace-api/media/dvb/audio-play.rst    |   7 +-
+ .../media/dvb/audio-select-source.rst         |   8 +-
+ .../media/dvb/audio-set-av-sync.rst           |   8 +-
+ .../media/dvb/audio-set-bypass-mode.rst       |   9 +-
+ .../userspace-api/media/dvb/audio-set-id.rst  |   9 +-
+ .../media/dvb/audio-set-mixer.rst             |   9 +-
+ .../media/dvb/audio-set-mute.rst              |   8 +-
+ .../media/dvb/audio-set-streamtype.rst        |  10 +-
+ .../userspace-api/media/dvb/audio-stop.rst    |   9 +-
+ .../userspace-api/media/dvb/ca-fclose.rst     |   7 +-
+ .../userspace-api/media/dvb/ca-fopen.rst      |   7 +-
+ .../userspace-api/media/dvb/ca-get-cap.rst    |   8 +-
+ .../media/dvb/ca-get-descr-info.rst           |   9 +-
+ .../userspace-api/media/dvb/ca-get-msg.rst    |  10 +-
+ .../media/dvb/ca-get-slot-info.rst            |   9 +-
+ .../userspace-api/media/dvb/ca-reset.rst      |   9 +-
+ .../userspace-api/media/dvb/ca-send-msg.rst   |   9 +-
+ .../userspace-api/media/dvb/ca-set-descr.rst  |   8 +-
+ .../userspace-api/media/dvb/dmx-add-pid.rst   |  10 +-
+ .../userspace-api/media/dvb/dmx-expbuf.rst    |  11 +-
+ .../userspace-api/media/dvb/dmx-fclose.rst    |   9 +-
+ .../userspace-api/media/dvb/dmx-fopen.rst     |   5 +-
+ .../userspace-api/media/dvb/dmx-fread.rst     |   7 +-
+ .../userspace-api/media/dvb/dmx-fwrite.rst    |   6 +-
+ .../media/dvb/dmx-get-pes-pids.rst            |  12 +-
+ .../userspace-api/media/dvb/dmx-get-stc.rst   |  12 +-
+ .../userspace-api/media/dvb/dmx-mmap.rst      |  15 +-
+ .../userspace-api/media/dvb/dmx-munmap.rst    |  14 +-
+ .../userspace-api/media/dvb/dmx-qbuf.rst      |  17 +-
+ .../userspace-api/media/dvb/dmx-querybuf.rst  |   9 +-
+ .../media/dvb/dmx-remove-pid.rst              |  10 +-
+ .../userspace-api/media/dvb/dmx-reqbufs.rst   |   9 +-
+ .../media/dvb/dmx-set-buffer-size.rst         |  10 +-
+ .../media/dvb/dmx-set-filter.rst              |  12 +-
+ .../media/dvb/dmx-set-pes-filter.rst          |  13 +-
+ .../userspace-api/media/dvb/dmx-start.rst     |  11 +-
+ .../userspace-api/media/dvb/dmx-stop.rst      |   9 +-
+ .../media/dvb/fe-diseqc-recv-slave-reply.rst  |   9 +-
+ .../media/dvb/fe-diseqc-reset-overload.rst    |   9 +-
+ .../media/dvb/fe-diseqc-send-burst.rst        |  10 +-
+ .../media/dvb/fe-diseqc-send-master-cmd.rst   |   9 +-
+ .../dvb/fe-dishnetwork-send-legacy-cmd.rst    |  10 +-
+ .../media/dvb/fe-enable-high-lnb-voltage.rst  |  10 +-
+ .../userspace-api/media/dvb/fe-get-event.rst  |  12 +-
+ .../media/dvb/fe-get-frontend.rst             |  12 +-
+ .../userspace-api/media/dvb/fe-get-info.rst   |  11 +-
+ .../media/dvb/fe-get-property.rst             |  15 +-
+ .../userspace-api/media/dvb/fe-read-ber.rst   |   9 +-
+ .../media/dvb/fe-read-signal-strength.rst     |   9 +-
+ .../userspace-api/media/dvb/fe-read-snr.rst   |   9 +-
+ .../media/dvb/fe-read-status.rst              |  11 +-
+ .../media/dvb/fe-read-uncorrected-blocks.rst  |   9 +-
+ .../media/dvb/fe-set-frontend-tune-mode.rst   |  10 +-
+ .../media/dvb/fe-set-frontend.rst             |  11 +-
+ .../userspace-api/media/dvb/fe-set-tone.rst   |  10 +-
+ .../media/dvb/fe-set-voltage.rst              |  10 +-
+ .../media/dvb/frontend_f_close.rst            |   8 +-
+ .../media/dvb/frontend_f_open.rst             |  10 +-
+ .../userspace-api/media/dvb/net-add-if.rst    |   9 +-
+ .../userspace-api/media/dvb/net-get-if.rst    |  10 +-
+ .../userspace-api/media/dvb/net-remove-if.rst |  10 +-
+ .../media/dvb/video-clear-buffer.rst          |   8 +-
+ .../userspace-api/media/dvb/video-command.rst |  10 +-
+ .../media/dvb/video-continue.rst              |   8 +-
+ .../media/dvb/video-fast-forward.rst          |  10 +-
+ .../userspace-api/media/dvb/video-fclose.rst  |   6 +-
+ .../userspace-api/media/dvb/video-fopen.rst   |   6 +-
+ .../userspace-api/media/dvb/video-freeze.rst  |   8 +-
+ .../userspace-api/media/dvb/video-fwrite.rst  |   6 +-
+ .../media/dvb/video-get-capabilities.rst      |   8 +-
+ .../media/dvb/video-get-event.rst             |   8 +-
+ .../media/dvb/video-get-frame-count.rst       |   8 +-
+ .../userspace-api/media/dvb/video-get-pts.rst |   8 +-
+ .../media/dvb/video-get-size.rst              |   8 +-
+ .../media/dvb/video-get-status.rst            |   7 +-
+ .../userspace-api/media/dvb/video-play.rst    |   8 +-
+ .../media/dvb/video-select-source.rst         |   7 +-
+ .../media/dvb/video-set-blank.rst             |   8 +-
+ .../media/dvb/video-set-display-format.rst    |   8 +-
+ .../media/dvb/video-set-format.rst            |   9 +-
+ .../media/dvb/video-set-streamtype.rst        |   8 +-
+ .../media/dvb/video-slowmotion.rst            |  10 +-
+ .../media/dvb/video-stillpicture.rst          |   8 +-
+ .../userspace-api/media/dvb/video-stop.rst    |   8 +-
+ .../media/dvb/video-try-command.rst           |   8 +-
+ .../media/mediactl/media-func-close.rst       |  10 +-
+ .../media/mediactl/media-func-ioctl.rst       |  10 +-
+ .../media/mediactl/media-func-open.rst        |  10 +-
+ .../media/mediactl/media-ioc-device-info.rst  |  13 +-
+ .../mediactl/media-ioc-enum-entities.rst      |  11 +-
+ .../media/mediactl/media-ioc-enum-links.rst   |  13 +-
+ .../media/mediactl/media-ioc-g-topology.rst   |  14 +-
+ .../mediactl/media-ioc-request-alloc.rst      |  11 +-
+ .../media/mediactl/media-ioc-setup-link.rst   |  10 +-
+ .../mediactl/media-request-ioc-queue.rst      |   7 +-
+ .../mediactl/media-request-ioc-reinit.rst     |   8 +-
+ .../media/mediactl/request-api.rst            |   5 +-
+ .../media/mediactl/request-func-close.rst     |   8 +-
+ .../media/mediactl/request-func-ioctl.rst     |   8 +-
+ .../media/mediactl/request-func-poll.rst      |  12 +-
+ .../media/rc/lirc-get-features.rst            |   9 +-
+ .../media/rc/lirc-get-rec-mode.rst            |  12 +-
+ .../media/rc/lirc-get-rec-resolution.rst      |   8 +-
+ .../media/rc/lirc-get-send-mode.rst           |  14 +-
+ .../media/rc/lirc-get-timeout.rst             |  13 +-
+ .../userspace-api/media/rc/lirc-read.rst      |  10 +-
+ .../rc/lirc-set-measure-carrier-mode.rst      |   8 +-
+ .../media/rc/lirc-set-rec-carrier-range.rst   |   6 +-
+ .../media/rc/lirc-set-rec-carrier.rst         |   8 +-
+ .../media/rc/lirc-set-rec-timeout-reports.rst |   8 +-
+ .../media/rc/lirc-set-rec-timeout.rst         |  13 +-
+ .../media/rc/lirc-set-send-carrier.rst        |   8 +-
+ .../media/rc/lirc-set-send-duty-cycle.rst     |   8 +-
+ .../media/rc/lirc-set-transmitter-mask.rst    |   8 +-
+ .../media/rc/lirc-set-wideband-receiver.rst   |   8 +-
+ .../userspace-api/media/rc/lirc-write.rst     |   7 +-
+ .../userspace-api/media/v4l/buffer.rst        |  28 +-
+ .../userspace-api/media/v4l/dev-capture.rst   |   7 +-
+ .../userspace-api/media/v4l/dev-output.rst    |   7 +-
+ .../userspace-api/media/v4l/dev-raw-vbi.rst   |  19 +-
+ .../userspace-api/media/v4l/dev-rds.rst       |  12 +-
+ .../media/v4l/dev-sliced-vbi.rst              |  31 +-
+ .../userspace-api/media/v4l/diff-v4l.rst      |  39 +--
+ .../userspace-api/media/v4l/dmabuf.rst        |   8 +-
+ .../userspace-api/media/v4l/format.rst        |   7 +-
+ .../userspace-api/media/v4l/func-close.rst    |   8 +-
+ .../userspace-api/media/v4l/func-ioctl.rst    |  10 +-
+ .../userspace-api/media/v4l/func-mmap.rst     |  18 +-
+ .../userspace-api/media/v4l/func-munmap.rst   |  14 +-
+ .../userspace-api/media/v4l/func-open.rst     |  14 +-
+ .../userspace-api/media/v4l/func-poll.rst     |  40 ++-
+ .../userspace-api/media/v4l/func-read.rst     |  39 ++-
+ .../userspace-api/media/v4l/func-select.rst   |  42 ++-
+ .../userspace-api/media/v4l/func-write.rst    |  13 +-
+ .../userspace-api/media/v4l/hist-v4l2.rst     |  70 +---
+ Documentation/userspace-api/media/v4l/io.rst  |   6 +-
+ .../media/v4l/libv4l-introduction.rst         |  30 +-
+ .../userspace-api/media/v4l/mmap.rst          |  26 +-
+ .../userspace-api/media/v4l/open.rst          |  15 +-
+ Documentation/userspace-api/media/v4l/rw.rst  |  18 +-
+ .../userspace-api/media/v4l/streaming-par.rst |   5 +-
+ .../userspace-api/media/v4l/userp.rst         |  11 +-
+ .../media/v4l/vidioc-create-bufs.rst          |  11 +-
+ .../media/v4l/vidioc-cropcap.rst              |  11 +-
+ .../media/v4l/vidioc-dbg-g-chip-info.rst      |  13 +-
+ .../media/v4l/vidioc-dbg-g-register.rst       |  18 +-
+ .../media/v4l/vidioc-decoder-cmd.rst          |  19 +-
+ .../media/v4l/vidioc-dqevent.rst              |  19 +-
+ .../media/v4l/vidioc-dv-timings-cap.rst       |  17 +-
+ .../media/v4l/vidioc-encoder-cmd.rst          |  25 +-
+ .../media/v4l/vidioc-enum-dv-timings.rst      |  16 +-
+ .../media/v4l/vidioc-enum-fmt.rst             |  12 +-
+ .../media/v4l/vidioc-enum-frameintervals.rst  |  15 +-
+ .../media/v4l/vidioc-enum-framesizes.rst      |  16 +-
+ .../media/v4l/vidioc-enum-freq-bands.rst      |  12 +-
+ .../media/v4l/vidioc-enumaudio.rst            |  10 +-
+ .../media/v4l/vidioc-enumaudioout.rst         |  10 +-
+ .../media/v4l/vidioc-enuminput.rst            |  14 +-
+ .../media/v4l/vidioc-enumoutput.rst           |  13 +-
+ .../media/v4l/vidioc-enumstd.rst              |  23 +-
+ .../userspace-api/media/v4l/vidioc-expbuf.rst |  14 +-
+ .../media/v4l/vidioc-g-audio.rst              |  18 +-
+ .../media/v4l/vidioc-g-audioout.rst           |  16 +-
+ .../userspace-api/media/v4l/vidioc-g-crop.rst |  16 +-
+ .../userspace-api/media/v4l/vidioc-g-ctrl.rst |  16 +-
+ .../media/v4l/vidioc-g-dv-timings.rst         |  26 +-
+ .../userspace-api/media/v4l/vidioc-g-edid.rst |  25 +-
+ .../media/v4l/vidioc-g-enc-index.rst          |  13 +-
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |  21 +-
+ .../userspace-api/media/v4l/vidioc-g-fbuf.rst |  18 +-
+ .../userspace-api/media/v4l/vidioc-g-fmt.rst  |  22 +-
+ .../media/v4l/vidioc-g-frequency.rst          |  16 +-
+ .../media/v4l/vidioc-g-input.rst              |  15 +-
+ .../media/v4l/vidioc-g-jpegcomp.rst           |  17 +-
+ .../media/v4l/vidioc-g-modulator.rst          |  17 +-
+ .../media/v4l/vidioc-g-output.rst             |  15 +-
+ .../userspace-api/media/v4l/vidioc-g-parm.rst |  30 +-
+ .../media/v4l/vidioc-g-priority.rst           |  16 +-
+ .../media/v4l/vidioc-g-selection.rst          |  15 +-
+ .../media/v4l/vidioc-g-sliced-vbi-cap.rst     |  12 +-
+ .../userspace-api/media/v4l/vidioc-g-std.rst  |  24 +-
+ .../media/v4l/vidioc-g-tuner.rst              |  19 +-
+ .../media/v4l/vidioc-log-status.rst           |  10 +-
+ .../media/v4l/vidioc-overlay.rst              |  10 +-
+ .../media/v4l/vidioc-prepare-buf.rst          |  10 +-
+ .../userspace-api/media/v4l/vidioc-qbuf.rst   |  17 +-
+ .../media/v4l/vidioc-query-dv-timings.rst     |  15 +-
+ .../media/v4l/vidioc-querybuf.rst             |  10 +-
+ .../media/v4l/vidioc-querycap.rst             |  16 +-
+ .../media/v4l/vidioc-queryctrl.rst            |  22 +-
+ .../media/v4l/vidioc-querystd.rst             |  15 +-
+ .../media/v4l/vidioc-reqbufs.rst              |  10 +-
+ .../media/v4l/vidioc-s-hw-freq-seek.rst       |  11 +-
+ .../media/v4l/vidioc-streamon.rst             |  14 +-
+ .../v4l/vidioc-subdev-enum-frame-interval.rst |  10 +-
+ .../v4l/vidioc-subdev-enum-frame-size.rst     |  11 +-
+ .../v4l/vidioc-subdev-enum-mbus-code.rst      |  10 +-
+ .../media/v4l/vidioc-subdev-g-crop.rst        |  16 +-
+ .../media/v4l/vidioc-subdev-g-fmt.rst         |  17 +-
+ .../v4l/vidioc-subdev-g-frame-interval.rst    |  16 +-
+ .../media/v4l/vidioc-subdev-g-selection.rst   |  17 +-
+ .../media/v4l/vidioc-subdev-querycap.rst      |   9 +-
+ .../media/v4l/vidioc-subscribe-event.rst      |  17 +-
+ .../virt/uml/user_mode_linux_howto_v2.rst     |   1 +
+ Documentation/vm/hmm.rst                      |   2 +-
+ Documentation/vm/ksm.rst                      |   2 +-
+ Documentation/vm/memory-model.rst             |   6 +-
+ MAINTAINERS                                   |  16 +-
+ block/bio.c                                   |   4 +-
+ drivers/base/core.c                           |   7 +-
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |   2 +
+ drivers/gpu/drm/drm_prime.c                   |   1 +
+ drivers/infiniband/ulp/srpt/ib_srpt.h         |   1 +
+ drivers/net/appletalk/Kconfig                 |   2 +-
+ drivers/net/hamradio/scc.c                    |   2 +-
+ include/drm/drm_dp_helper.h                   |   2 +-
+ include/drm/drm_edid.h                        |   7 -
+ include/kunit/test.h                          |  16 +-
+ include/linux/devfreq.h                       |   7 +-
+ include/linux/input/sparse-keymap.h           |   1 +
+ include/linux/math64.h                        |   8 +-
+ include/linux/refcount.h                      |   7 +
+ include/linux/usb/typec_altmode.h             |  16 +
+ include/net/cfg80211.h                        |   1 +
+ kernel/rcu/tree.c                             |  14 +-
+ kernel/workqueue.c                            |   3 +
+ mm/ksm.c                                      |   2 +-
+ mm/memblock.c                                 |   8 +-
+ scripts/kernel-doc                            | 303 +++++++++++++-----
+ 316 files changed, 1921 insertions(+), 2285 deletions(-)
+ delete mode 100644 Documentation/driver-api/sound.rst
 
-Sure, we have that special case in x2apic startup where we ensure that
-if we don't have IR then we limit the APIC IDs. But that's there, and
-*this* code is perfectly self-contained and isolated.
+-- 
+2.26.2
 
---=-mxuMxOpgkWOobFuuEWJe
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAx
-MDEzMTE1MTAwWjAvBgkqhkiG9w0BCQQxIgQgwReIUkBqXhFpLZ66dnHn4guTMb8eC8it4+fJay8J
-FOMwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAGX+xtLXimYineMkgjljp3wBvDA19pl5ETq+7gNu8taH92wyENULJZ4aCjD/O9Ge
-grbk++HwLG2Ks8sTTAvd2vEXO0wUF7DsWZXkNyhnW9wDhaP+2oF4cvMFkuU9TSlq9eB76RFTKuLo
-YSSWWFD55iZNJhb0kiwj2UAzcg6qgQqsD6Zv0/PUk+MppSEdtd8Ui6XAaQ27Ih6u7KmEXYQZX03U
-vMGnsg6yLsOS2n0zT4BMFyYp068wWX7KkbTiu7tfy4xCjpqzbsuGO1vebjBsiK3Tl6PiYXkm6H1Y
-/QVf8hqj24ANvLYBLzi8oZuMcqV89W/Qm0xKHG/v9f+jqyTh0hYAAAAAAAA=
-
-
---=-mxuMxOpgkWOobFuuEWJe--
 
