@@ -2,162 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1AD28CF57
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCD628CF5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729001AbgJMNlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728980AbgJMNlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:41:12 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6E4C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:41:11 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id u21so28348067eja.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2V2YTRVuSVOcGPhuuh1GlQcD4dmudUyuY+buEnTGJbM=;
-        b=K7WctOIrky5wpsEU/mhzhXk48ILrN6QzRpAF8OFAR9mN1lByK2/acaz6Hmaxql36YG
-         ug6a/B7r6IMHN/+3a8rwT+s6ARMi2wAvxWOmYYWRyubb7ZtNf2d+q6G1gb8yTF5P0LQI
-         y42bqFItBMpEXnUTvBad1QOKkN8aRH6RYU90I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2V2YTRVuSVOcGPhuuh1GlQcD4dmudUyuY+buEnTGJbM=;
-        b=QcriFsVs3FDphP6E4cakV95iqXUabpKnrw74BNJ+JvlPodn/HNJbsrxRtjekuUFhNA
-         VWBpC3FqxIq9oUw4mcAx2yJeCgrvTwleN35oUYFfEkOG5k0dZ6hZ38Upw8+SyPQLix+u
-         jaakfpFNjRDbcmHHJjK9Pe3gKzYZghimjBYmkEV/wHAeX4pTQZlpmBmrzDByFz2yb6pO
-         y3bZzx2Rxq17pd4e/2WzDZchetObPOQZ70NvwU6uyYmpJAfOP5hC64ME6Zku9mpr6FEv
-         vt6niRRo4V4qzezG41zbqU6Nr0S8Hs+cYsAxaWhWloZjJUjGWryAASFaghvoMhdQ6B9A
-         clbQ==
-X-Gm-Message-State: AOAM533C+KM2s3iLd5vPsj/gPGcv0qgrB4Hcmk9IeCyaIHM1n4ElUhi8
-        Mrg4+/DIwYfz6coKv6XA3c6NEiFEgEQP4sdt
-X-Google-Smtp-Source: ABdhPJzGkdRsWn74jTAeNob3TGPoovx6tH2ljJwM2TiAj0Nfm0CMEt9+YBr6FC3vJu7odUR44NQF1w==
-X-Received: by 2002:a17:907:212b:: with SMTP id qo11mr32933819ejb.107.1602596469069;
-        Tue, 13 Oct 2020 06:41:09 -0700 (PDT)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
-        by smtp.gmail.com with ESMTPSA id k26sm2097eji.22.2020.10.13.06.41.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 06:41:08 -0700 (PDT)
-Received: by mail-wr1-f52.google.com with SMTP id h7so24135974wre.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:41:07 -0700 (PDT)
-X-Received: by 2002:adf:8290:: with SMTP id 16mr38164627wrc.103.1602596467217;
- Tue, 13 Oct 2020 06:41:07 -0700 (PDT)
+        id S2387613AbgJMNmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:42:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:60138 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728784AbgJMNmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:42:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A164830E;
+        Tue, 13 Oct 2020 06:42:41 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A63CD3F719;
+        Tue, 13 Oct 2020 06:42:39 -0700 (PDT)
+Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
+ cache maintenance
+To:     Christoph Hellwig <hch@infradead.org>,
+        Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>
+References: <20201001002709.21361-1-jonathan@marek.ca>
+ <20201001002709.21361-3-jonathan@marek.ca>
+ <20201002075321.GA7547@infradead.org>
+ <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
+ <20201005082914.GA31702@infradead.org>
+ <3e0b91be-e4a4-4ea5-7d58-6e71b8d51932@marek.ca>
+ <20201006072306.GA12834@infradead.org>
+ <148a1660-f0fc-7163-2240-6b94725342b5@marek.ca>
+ <20201007062519.GA23519@infradead.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <c3baadae-8e20-86a6-44f5-4571a8d3035e@arm.com>
+Date:   Tue, 13 Oct 2020 14:42:38 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <20200702100017.24700-1-stanimir.varbanov@linaro.org>
- <8dafbb4b-4626-5191-c57a-f3ef19c14618@linaro.org> <d11da037-92e5-2ee7-8723-10162d16eba9@linaro.org>
-In-Reply-To: <d11da037-92e5-2ee7-8723-10162d16eba9@linaro.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 13 Oct 2020 15:40:56 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
-Message-ID: <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
-Subject: Re: [PATCH] v4l: Add source change event for colorimetry
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201007062519.GA23519@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 11:03 AM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> Hi,
->
-> On 7/2/20 2:52 PM, Stanimir Varbanov wrote:
-> > Hi,
-> >
-> > Once we have this event there is still open question how the client will
-> > know the data buffer on which the new colorspace is valid/applied.
-> >
-> > The options could be:
-> >  * a new buffer flag and
-> >  * some information in the v4l2_event structure.
-> >
-> > Thoughts?
->
-> Kindly ping.
->
+On 2020-10-07 07:25, Christoph Hellwig wrote:
+> On Tue, Oct 06, 2020 at 09:19:32AM -0400, Jonathan Marek wrote:
+>> One example why drm/msm can't use DMA API is multiple page table support
+>> (that is landing in 5.10), which is something that definitely couldn't work
+>> with DMA API.
+>>
+>> Another one is being able to choose the address for mappings, which AFAIK
+>> DMA API can't do (somewhat related to this: qcom hardware often has ranges
+>> of allowed addresses, which the dma_mask mechanism fails to represent, what
+>> I see is drivers using dma_mask as a "maximum address", and since addresses
+>> are allocated from the top it generally works)
+> 
+> That sounds like a good enough rason to use the IOMMU API.  I just
+> wanted to make sure this really makes sense.
 
-The event itself sounds good to me, but how do we know which buffer is
-the first to have the new colorimetry?
+I still think this situation would be best handled with a variant of 
+dma_ops_bypass that also guarantees to bypass SWIOTLB, and can be set 
+automatically when attaching to an unmanaged IOMMU domain. That way the 
+device driver can make DMA API calls in the appropriate places that do 
+the right thing either way, and only needs logic to decide whether to 
+use the returned DMA addresses directly or ignore them if it knows 
+they're overridden by its own IOMMU mapping.
 
-Best regards,
-Tomasz
-
-> >
-> > On 7/2/20 1:00 PM, Stanimir Varbanov wrote:
-> >> This event indicate that the source colorspace is changed
-> >> during run-time. The client has to retrieve the new colorspace
-> >> identifiers by getting the format (G_FMT).
-> >>
-> >> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> >> ---
-> >>  .../userspace-api/media/v4l/vidioc-dqevent.rst        | 11 ++++++++++-
-> >>  .../userspace-api/media/videodev2.h.rst.exceptions    |  1 +
-> >>  include/uapi/linux/videodev2.h                        |  1 +
-> >>  3 files changed, 12 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
-> >> index a9a176d5256d..3f69c753db58 100644
-> >> --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
-> >> +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
-> >> @@ -381,7 +381,16 @@ call.
-> >>      that many Video Capture devices are not able to recover from a temporary
-> >>      loss of signal and so restarting streaming I/O is required in order for
-> >>      the hardware to synchronize to the video signal.
-> >> -
-> >> +    * - ``V4L2_EVENT_SRC_CH_COLORIMETRY``
-> >> +      - 0x0002
-> >> +      - This event gets triggered when a colorspace change is detected at
-> >> +    an input. By colorspace change here we include also changes in the
-> >> +    colorspace specifiers (transfer function, Y'CbCr encoding and
-> >> +    quantization). This event can come from an input or from video decoder.
-> >> +    Once the event has been send to the client the driver has to update
-> >> +    the colorspace specifiers internally so that they could be retrieved by
-> >> +    client. In that case queue re-negotiation is not needed as this change
-> >> +    only reflects on the interpretation of the data.
-> >>
-> >>  Return Value
-> >>  ============
-> >> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> >> index ca05e4e126b2..54fc21af852d 100644
-> >> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> >> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> >> @@ -492,6 +492,7 @@ replace define V4L2_EVENT_CTRL_CH_FLAGS ctrl-changes-flags
-> >>  replace define V4L2_EVENT_CTRL_CH_RANGE ctrl-changes-flags
-> >>
-> >>  replace define V4L2_EVENT_SRC_CH_RESOLUTION src-changes-flags
-> >> +replace define V4L2_EVENT_SRC_CH_COLORIMETRY src-changes-flags
-> >>
-> >>  replace define V4L2_EVENT_MD_FL_HAVE_FRAME_SEQ :c:type:`v4l2_event_motion_det`
-> >>
-> >> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> >> index 303805438814..b5838bc4e3a3 100644
-> >> --- a/include/uapi/linux/videodev2.h
-> >> +++ b/include/uapi/linux/videodev2.h
-> >> @@ -2351,6 +2351,7 @@ struct v4l2_event_frame_sync {
-> >>  };
-> >>
-> >>  #define V4L2_EVENT_SRC_CH_RESOLUTION                (1 << 0)
-> >> +#define V4L2_EVENT_SRC_CH_COLORIMETRY               (1 << 1)
-> >>
-> >>  struct v4l2_event_src_change {
-> >>      __u32 changes;
-> >>
-> >
->
-> --
-> regards,
-> Stan
+Robin.
