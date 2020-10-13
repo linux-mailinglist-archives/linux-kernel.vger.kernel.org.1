@@ -2,146 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B7428C728
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5287928C743
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgJMCak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 22:30:40 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33344 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728130AbgJMCaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 22:30:39 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CE49759926B025F0CED3;
-        Tue, 13 Oct 2020 10:30:36 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 13 Oct
- 2020 10:30:36 +0800
-Subject: Re: [f2fs-dev] [f2fs bug] infinite loop in
- f2fs_get_meta_page_nofail()
-To:     <jaegeuk@kernel.org>
-CC:     Eric Biggers <ebiggers@kernel.org>,
-        <syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <000000000000432c5405b1113296@google.com>
- <20201007213253.GD1530638@gmail.com> <20201007215305.GA714500@google.com>
- <c7baef0d-d459-114f-7146-627f0c4159ad@huawei.com>
- <20201009015015.GA1931838@google.com>
- <8fa4f9fe-5ca5-f3a3-c8f4-e800373c1e46@huawei.com>
- <20201009043237.GB1973455@google.com>
- <a842eec8-2dbb-aa01-cc64-c513d59cad24@huawei.com>
- <20201009145626.GA2186792@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <70faa161-bcd7-64a3-4a6c-04963c0784b6@huawei.com>
-Date:   Tue, 13 Oct 2020 10:30:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727775AbgJMCr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 22:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726791AbgJMCrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 22:47:22 -0400
+Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D04121582;
+        Tue, 13 Oct 2020 02:39:29 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 05:39:27 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     linux-integrity@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, stable@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] KEYS: trusted: Reserve TPM for seal and unseal
+ operations
+Message-ID: <20201013023927.GA71954@linux.intel.com>
+References: <20201013002815.40256-1-jarkko.sakkinen@linux.intel.com>
+ <20201013002815.40256-4-jarkko.sakkinen@linux.intel.com>
+ <b56dd2e9f3934e24f08005b9c5588c54b4837ff6.camel@HansenPartnership.com>
 MIME-Version: 1.0
-In-Reply-To: <20201009145626.GA2186792@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b56dd2e9f3934e24f08005b9c5588c54b4837ff6.camel@HansenPartnership.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jaegeuk,
-
-I guess you missed sending last applied patch to mailing list?
-
-Thanks,
-
-On 2020/10/9 22:56, jaegeuk@kernel.org wrote:
-> On 10/09, Chao Yu wrote:
->> On 2020/10/9 12:32, jaegeuk@kernel.org wrote:
->>> On 10/09, Chao Yu wrote:
->>>> On 2020/10/9 9:50, jaegeuk@kernel.org wrote:
->>>>> On 10/09, Chao Yu wrote:
->>>>>> On 2020/10/8 5:53, jaegeuk@kernel.org wrote:
->>>>>>> On 10/07, Eric Biggers wrote:
->>>>>>>> [moved linux-fsdevel to Bcc]
->>>>>>>>
->>>>>>>> On Wed, Oct 07, 2020 at 02:18:19AM -0700, syzbot wrote:
->>>>>>>>> Hello,
->>>>>>>>>
->>>>>>>>> syzbot found the following issue on:
->>>>>>>>>
->>>>>>>>> HEAD commit:    a804ab08 Add linux-next specific files for 20201006
->>>>>>>>> git tree:       linux-next
->>>>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=17fe30bf900000
->>>>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
->>>>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=ee250ac8137be41d7b13
->>>>>>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
->>>>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1336413b900000
->>>>>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f7392b900000
->>>>>>>>>
->>>>>>>>> The issue was bisected to:
->>>>>>>>>
->>>>>>>>> commit eede846af512572b1f30b34f9889d7df64c017d4
->>>>>>>>> Author: Jaegeuk Kim <jaegeuk@kernel.org>
->>>>>>>>> Date:   Fri Oct 2 21:17:35 2020 +0000
->>>>>>>>>
->>>>>>>>>         f2fs: f2fs_get_meta_page_nofail should not be failed
->>>>>>>>>
->>>>>>>>
->>>>>>>> Jaegeuk, it looks like the loop you added in the above commit doesn't terminate
->>>>>>>> if the requested page is beyond the end of the device.
->>>>>>>
->>>>>>> Yes, that will go infinite loop. Otherwise, it will trigger a panic during
->>>>>>> the device reboot. Let me think how to avoid that before trying to get the
->>>>>>> wrong lba access.
->>>>>>
->>>>>> Delivering f2fs_get_sum_page()'s return value needs a lot of codes change, I think
->>>>>> we can just zeroing sum_page in error case, as we have already shutdown f2fs via
->>>>>> calling f2fs_stop_checkpoint(), then f2fs_cp_error() will stop all updates to
->>>>>> filesystem data including summary pages.
->>>>>
->>>>> That sounds like one solution tho, I'm afraid of getting another panic by
->>>>> wrong zero'ed summary page.
->>>>
->>>> What case do you mean? maybe I missed some corner cases?
->>>
->>> I sent v2 to fix syzbot issue, which fixes wrong use of
->>> f2fs_get_meta_page_nofail.
->>
->> I agreed to fix that case, however we may encounter deadloop in other
->> places where we call f2fs_get_meta_page_nofail()? like the case that
->> filesystem will always see EIO after we shutdown device via dmflakey?
+On Mon, Oct 12, 2020 at 05:58:04PM -0700, James Bottomley wrote:
+> On Tue, 2020-10-13 at 03:28 +0300, Jarkko Sakkinen wrote:
+> [...]
+> > diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> > index 8f4ff39f51e7..f0ebce14d2f8 100644
+> > --- a/include/linux/tpm.h
+> > +++ b/include/linux/tpm.h
+> > @@ -397,6 +397,10 @@ static inline u32 tpm2_rc_value(u32 rc)
+> >  #if defined(CONFIG_TCG_TPM) || defined(CONFIG_TCG_TPM_MODULE)
+> >  
+> >  extern int tpm_is_tpm2(struct tpm_chip *chip);
+> > +extern __must_check int tpm_try_get_ops(struct tpm_chip *chip);
+> > +extern void tpm_put_ops(struct tpm_chip *chip);
+> > +extern ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct
+> > tpm_buf *buf,
+> > +				size_t min_rsp_body_length, const char
+> > *desc);
+> >  extern int tpm_pcr_read(struct tpm_chip *chip, u32 pcr_idx,
+> >  			struct tpm_digest *digest);
+> >  extern int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
+> > @@ -410,7 +414,18 @@ static inline int tpm_is_tpm2(struct tpm_chip
+> > *chip)
+> >  {
+> >  	return -ENODEV;
+> >  }
+> > -
+> > +static inline int tpm_try_get_ops(struct tpm_chip *chip)
+> > +{
+> > +	return -ENODEV;
+> > +}
+> > +static inline void tpm_put_ops(struct tpm_chip *chip)
+> > +{
+> > +}
+> > +static inline ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct
+> > tpm_buf *buf,
+> > +				       size_t min_rsp_body_length,
+> > const char *desc)
+> > +{
+> > +	return -ENODEV;
+> > +}
+> >  static inline int tpm_pcr_read(struct tpm_chip *chip, int pcr_idx,
 > 
-> We may need another option to deal with this. At least, however, it's literally
-> _nofail function which should guarantee no error, instead of hiding the error
-> with zero'ed page.
+> I don't think we want this, do we?  That's only for API access which
+> should be available when the TPM isn't selected.  Given that get/put
+> are TPM critical operations, they should only appear when inside code
+> where the TPM has already been selected.  If they appear outside TPM
+> selected code, I think we want the compile to fail, which is why we
+> don't want these backup definitions.
 > 
->>
->> Thanks,
->>
->>>
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>>>
->>>>>> Thoughts?
->>>>>>
->>>>>> Thanks,
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> - Eric
->>>>>>>
->>>>>>>
->>>>>>> _______________________________________________
->>>>>>> Linux-f2fs-devel mailing list
->>>>>>> Linux-f2fs-devel@lists.sourceforge.net
->>>>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>>>>>> .
->>>>>>>
->>>>> .
->>>>>
->>> .
->>>
-> .
-> 
+> James
+
+OK, I'll change it.
+
+Thanks.
+
+/Jarkko
