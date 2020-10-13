@@ -2,93 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B19328D27B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F1B28D27F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgJMQoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:44:09 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:22333 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727696AbgJMQoJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:44:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1602607447;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=OZ7zYsDouacPwyCPa7aXDDiin8TYVeABf/NDLjhE2OE=;
-        b=UO7ETVwGQgs2XHeWh7ulHKxSdUcZp5ji1ROY+qPMEaOvVrjb3yAlZhzqhuKXsjCyH5
-        rVKUanIA2EDena2hsjBSO3xDWxXIamLP3OWByPXjf7mqzVH9IlHeQ8/LKswKSgj3Y0yZ
-        BGV1HulF/Vzn5TgF3ljabl3A70EW/dTQMylbuAdd4TSN7WxuA3WRVI7xWa0AG0a4BGMA
-        cWhcKmdhPPurQI0uXGBPmRPpy2Mbuf+xzhxWgIIQVadcx8NXSK2jEKUB5u+lIP6N0cSh
-        UaVy8+gsi2RZyBwSvzLSDXDhm2BRlXRAfYN5z6qMXCrjIhM6HB2LKI6p1TSDPjIAp9fO
-        04fw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMJVch5mEtI"
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
-        with ESMTPSA id D0b41cw9DGhuTiE
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 13 Oct 2020 18:43:56 +0200 (CEST)
-Subject: Re: [PATCH] can: Explain PDU in CAN_ISOTP help text
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201013141341.28487-1-geert+renesas@glider.be>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <8e7bface-eef3-c5eb-a822-aec79c6992ac@hartkopp.net>
-Date:   Tue, 13 Oct 2020 18:43:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728035AbgJMQoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:44:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55464 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727958AbgJMQoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:44:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 694EBAB0E;
+        Tue, 13 Oct 2020 16:44:16 +0000 (UTC)
+To:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Marco Elver <elver@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org
+References: <20201009195411.4018141-1-keescook@chromium.org>
+ <20201009195411.4018141-4-keescook@chromium.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v2 3/3] mm/slub: Actually fix freelist pointer vs
+ redzoning
+Message-ID: <0f7dd7b2-7496-5e2d-9488-2ec9f8e90441@suse.cz>
+Date:   Tue, 13 Oct 2020 18:44:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201013141341.28487-1-geert+renesas@glider.be>
+In-Reply-To: <20201009195411.4018141-4-keescook@chromium.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/9/20 9:54 PM, Kees Cook wrote:
+> It turns out that SLUB redzoning ("slub_debug=Z") checks from
+> s->object_size rather than from s->inuse (which is normally bumped to
+> make room for the freelist pointer), so a cache created with an object
+> size less than 24 would have their freelist pointer written beyond
+> s->object_size, causing the redzone to corrupt the freelist pointer.
 
+Is this accurate? Seems to me that redzone is (re)initialized only when 
+freepointer is not active. So it is actually freelist pointer corrupting the 
+redzone...
 
-On 13.10.20 16:13, Geert Uytterhoeven wrote:
-> The help text for the CAN_ISOTP config symbol uses the acronym "PDU".
-> However, this acronym is not explained here, nor in
-> Documentation/networking/can.rst.
-> Expand the acronym to make it easier for users to decide if they need to
-> enable the CAN_ISOTP option or not.
+> This was very visible with "slub_debug=ZF":
+
+... as this report shows :)
+
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> BUG test (Tainted: G    B            ): Right Redzone overwritten
+> -----------------------------------------------------------------------------
+> 
+> INFO: 0xffff957ead1c05de-0xffff957ead1c05df @offset=1502. First byte 0x1a instead of 0xbb
+> INFO: Slab 0xffffef3950b47000 objects=170 used=170 fp=0x0000000000000000 flags=0x8000000000000200
+> INFO: Object 0xffff957ead1c05d8 @offset=1496 fp=0xffff957ead1c0620
+> 
+> Redzone  (____ptrval____): bb bb bb bb bb bb bb bb               ........
+> Object   (____ptrval____): 00 00 00 00 00 f6 f4 a5               ........
+> Redzone  (____ptrval____): 40 1d e8 1a aa                        @....
+> Padding  (____ptrval____): 00 00 00 00 00 00 00 00               ........
+> 
+> Adjust the offset to stay within s->object_size.
+> 
+> Reported-by: Marco Elver <elver@google.com>
+> Link: https://lore.kernel.org/linux-mm/20200807160627.GA1420741@elver.google.com/
+> Fixes: 89b83f282d8b (slub: avoid redzone when choosing freepointer location)
+> Tested-by: Marco Elver <elver@google.com>
+> Link: https://lore.kernel.org/lkml/CANpmjNOwZ5VpKQn+SYWovTkFB4VsT-RPwyENBmaK0dLcpqStkA@mail.gmail.com
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Yes, when you are so deep into it that PDU becomes a word like dog or 
-cat ;-)
-
-Thanks,
-Oliver
+This struggle to get it right perhaps calls for some selftests of all 
+combinations of flags that affect object layout, e.g. of 
+redzone/poison/store_user, on sizes from sizeof(void *) to e.g. 3*sizeof(void 
+*), with sanity_checks enabled. Shouldn't be too many tests...
 
 > ---
->   net/can/Kconfig | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
+>   mm/slub.c | 14 +++-----------
+>   1 file changed, 3 insertions(+), 11 deletions(-)
 > 
-> diff --git a/net/can/Kconfig b/net/can/Kconfig
-> index 224e5e0283a986d9..7c9958df91d353c8 100644
-> --- a/net/can/Kconfig
-> +++ b/net/can/Kconfig
-> @@ -62,8 +62,9 @@ config CAN_ISOTP
->   	  communication between CAN nodes via two defined CAN Identifiers.
->   	  As CAN frames can only transport a small amount of data bytes
->   	  (max. 8 bytes for 'classic' CAN and max. 64 bytes for CAN FD) this
-> -	  segmentation is needed to transport longer PDUs as needed e.g. for
-> -	  vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN traffic.
-> +	  segmentation is needed to transport longer Protocol Data Units (PDU)
-> +	  as needed e.g. for vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN
-> +	  traffic.
->   	  This protocol driver implements data transfers according to
->   	  ISO 15765-2:2016 for 'classic' CAN and CAN FD frame types.
->   	  If you want to perform automotive vehicle diagnostic services (UDS),
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 752fad36522c..6f115e56c5d0 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3637,7 +3637,6 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>   {
+>   	slab_flags_t flags = s->flags;
+>   	unsigned int size = s->object_size;
+> -	unsigned int freepointer_area;
+>   	unsigned int order;
+>   
+>   	/*
+> @@ -3646,13 +3645,6 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>   	 * the possible location of the free pointer.
+>   	 */
+>   	size = ALIGN(size, sizeof(void *));
+> -	/*
+> -	 * This is the area of the object where a freepointer can be
+> -	 * safely written. If redzoning adds more to the inuse size, we
+> -	 * can't use that portion for writing the freepointer, so
+> -	 * s->offset must be limited within this for the general case.
+> -	 */
+> -	freepointer_area = size;
+>   
+>   #ifdef CONFIG_SLUB_DEBUG
+>   	/*
+> @@ -3678,7 +3670,7 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>   
+>   	/*
+>   	 * With that we have determined the number of bytes in actual use
+> -	 * by the object. This is the potential offset to the free pointer.
+> +	 * by the object and redzoning.
+>   	 */
+>   	s->inuse = size;
+>   
+> @@ -3701,13 +3693,13 @@ static int calculate_sizes(struct kmem_cache *s, int forced_order)
+>   		 */
+>   		s->offset = size;
+>   		size += sizeof(void *);
+> -	} else if (freepointer_area > sizeof(void *)) {
+> +	} else {
+>   		/*
+>   		 * Store freelist pointer near middle of object to keep
+>   		 * it away from the edges of the object to avoid small
+>   		 * sized over/underflows from neighboring allocations.
+>   		 */
+> -		s->offset = ALIGN(freepointer_area / 2, sizeof(void *));
+> +		s->offset = ALIGN_DOWN(s->object_size / 2, sizeof(void *));
+>   	}
+>   
+>   #ifdef CONFIG_SLUB_DEBUG
 > 
+
