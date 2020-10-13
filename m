@@ -2,122 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DF428CF48
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C112828CD7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728843AbgJMNjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:39:40 -0400
-Received: from mailout12.rmx.de ([94.199.88.78]:48441 "EHLO mailout12.rmx.de"
+        id S1728531AbgJMMAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:00:16 -0400
+Received: from mga02.intel.com ([134.134.136.20]:14109 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728819AbgJMNjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:39:40 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout12.rmx.de (Postfix) with ESMTPS id 4C9c932nCCzRw7v;
-        Tue, 13 Oct 2020 15:39:35 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4C9c822gQxz2TTMg;
-        Tue, 13 Oct 2020 15:38:42 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.60) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 13 Oct
- 2020 13:58:03 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-CC:     Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: imx: Revert "spi: imx: enable runtime pm support"
-Date:   Tue, 13 Oct 2020 13:58:02 +0200
-Message-ID: <1687325.7ZoAM7eIpP@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201012140753.GF12463@pengutronix.de>
-References: <20201009042738.26602-1-ceggers@arri.de> <6367849.hfWVFoRi9M@n95hx1g2> <20201012140753.GF12463@pengutronix.de>
+        id S1728481AbgJML72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:59:28 -0400
+IronPort-SDR: PpIHyXp+/qzvkeT84o78c5M1SCrAluqNEqAKGYMU16OHAMPDZR2RrZ0Foa9+rfq/xmFiWZbcgk
+ hp7TeW7m+BVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="152827280"
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
+   d="scan'208";a="152827280"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:59:26 -0700
+IronPort-SDR: +CYsTsmY3BO6jXl4YwQVqxzg7Mj0arD3Ox/RU3pLCDxWtYp6149sOP9VzZdMh63RZ3hO4rpB44
+ 8ZJkg+6UaVKg==
+X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
+   d="scan'208";a="530368699"
+Received: from sobrien1-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.35.215])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:59:21 -0700
+Date:   Tue, 13 Oct 2020 14:59:18 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v7 1/4] KEYS: trusted: Add generic trusted keys framework
+Message-ID: <20201013115918.GB141833@linux.intel.com>
+References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
+ <1602065268-26017-2-git-send-email-sumit.garg@linaro.org>
+ <20201013014304.GC41176@linux.intel.com>
+ <CAFA6WYN1n_x1wUefXEf-4Y+bUZybNAMeD9cirvz4WQnK2E7djw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.60]
-X-RMX-ID: 20201013-153852-4C9c822gQxz2TTMg-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYN1n_x1wUefXEf-4Y+bUZybNAMeD9cirvz4WQnK2E7djw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, 12 October 2020, 16:07:53 CEST, Sascha Hauer wrote:
-> On Fri, Oct 09, 2020 at 09:48:29AM +0200, Christian Eggers wrote:
+On Tue, Oct 13, 2020 at 04:23:36PM +0530, Sumit Garg wrote:
+> On Tue, 13 Oct 2020 at 07:13, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 03:37:45PM +0530, Sumit Garg wrote:
+> > > Current trusted keys framework is tightly coupled to use TPM device as
+> > > an underlying implementation which makes it difficult for implementations
+> > > like Trusted Execution Environment (TEE) etc. to provide trusted keys
+> > > support in case platform doesn't posses a TPM device.
+> > >
+> > > Add a generic trusted keys framework where underlying implementations
+> > > can be easily plugged in. Create struct trusted_key_ops to achieve this,
+> > > which contains necessary functions of a backend.
+> > >
+> > > Also, add a module parameter in order to select a particular trust source
+> > > in case a platform support multiple trust sources.
+> > >
+> > > Suggested-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> >
+> > This is exactly kind of place where I think static_call() should be
+> > taken into use, which is a v5.10 feature [1]. For background and
+> > context, I'd read [2].
 > 
-> 525c9e5a32bd introduced pm_runtime support for the i.MX SPI driver. With
-> this pm_runtime is used to bring up the clocks initially. When CONFIG_PM
-> is disabled the clocks are no longer enabled and the driver doesn't work
-> anymore. Fix this by enabling the clocks in the probe function and
-> telling pm_runtime that the device is active using
-> pm_runtime_set_active().
+> This looks like an interesting feature. But I am not sure about the
+> real benefits that it will provide in case of trusted keys. If we are
+> looking at it performance wise then I think the gain will be
+> negligible when compared with slow TPM communication interface (eg.
+> SPI, I2C) or when compared with context switching involved in TEE.
 > 
-> Fixes: 525c9e5a32bd spi: imx: enable runtime pm support
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/spi/spi-imx.c | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
+> Also, it requires arch specific support too which currently seems to
+> be limited to x86 only.
+
+Please, do not purposely add indirect calls, unless you  must. Here it's
+not a must.
+
+static_call() is the correct kernel idiom to define what you are doing
+in this patch. arch's will catch up.
+
+> > The other thing that I see that does not make much else than additional
+> > complexity, is trusted_tpm.ko. We can do with one trusted.ko.
+> >
 > 
-> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-> index 38a5f1304cec..c796e937dc6a 100644
-> --- a/drivers/spi/spi-imx.c
-> +++ b/drivers/spi/spi-imx.c
-> @@ -1674,15 +1674,18 @@ static int spi_imx_probe(struct platform_device
-> *pdev) goto out_master_put;
->  	}
-> 
-> -	pm_runtime_enable(spi_imx->dev);
-> +	ret = clk_prepare_enable(spi_imx->clk_per);
-> +	if (ret)
-> +		goto out_master_put;
-> +
-> +	ret = clk_prepare_enable(spi_imx->clk_ipg);
-> +	if (ret)
-> +		goto out_put_per;
-> +
->  	pm_runtime_set_autosuspend_delay(spi_imx->dev, MXC_RPM_TIMEOUT);
->  	pm_runtime_use_autosuspend(spi_imx->dev);
-> -
-> -	ret = pm_runtime_get_sync(spi_imx->dev);
-> -	if (ret < 0) {
-> -		dev_err(spi_imx->dev, "failed to enable clock\n");
-> -		goto out_runtime_pm_put;
-> -	}
-> +	pm_runtime_set_active(spi_imx->dev);
-> +	pm_runtime_enable(spi_imx->dev);
-> 
->  	spi_imx->spi_clk = clk_get_rate(spi_imx->clk_per);
->  	/*
-> @@ -1719,8 +1722,12 @@ static int spi_imx_probe(struct platform_device
-> *pdev)
-> 
->  out_runtime_pm_put:
->  	pm_runtime_dont_use_autosuspend(spi_imx->dev);
-> -	pm_runtime_put_sync(spi_imx->dev);
-> +	pm_runtime_set_suspended(&pdev->dev);
->  	pm_runtime_disable(spi_imx->dev);
-> +
-> +	clk_disable_unprepare(spi_imx->clk_ipg);
-> +out_put_per:
-> +	clk_disable_unprepare(spi_imx->clk_per);
->  out_master_put:
->  	spi_master_put(master);
+> Current implementation only builds a single trusted.ko module. There
+> isn't any trusted_tpm.ko.
+> -Sumit
 
-With this patch applied, my system (!CONFIG_PM) doesn't freeze anymore when 
-the spi-imx driver is loaded.
+You're right, I'm sorry. I misread this:
 
-Thank you very much!
+-static void __exit cleanup_trusted(void)
++static void __exit exit_tpm_trusted(void)
+ {
+ 	if (chip) {
+ 		put_device(&chip->dev);
+@@ -1257,7 +1029,11 @@  static void __exit cleanup_trusted(void)
+ 	}
+ }
+ 
+-late_initcall(init_trusted);
+-module_exit(cleanup_trusted);
+-
+-MODULE_LICENSE("GPL");
++struct trusted_key_ops tpm_trusted_key_ops = {
++	.migratable = 1, /* migratable by default */
++	.init = init_tpm_trusted,
++	.seal = tpm_trusted_seal,
++	.unseal = tpm_trusted_unseal,
++	.get_random = tpm_trusted_get_random,
++	.exit = exit_tpm_trusted,
++};
 
-Tested-by: Christian Eggers <ceggers@arri.de>
-[tested for !CONFIG_PM only]
-Cc: stable@vger.kernel.org  # 5.9.x only
+Please remove "__init" and  "__exit" for the functions as they are used
+as fields as members of a struct that has neither life span. That messed
+up my head.
 
+Please use a single convention for the function names. It would
+be optimal to prefix with the subsystem name because that makes easier
+to use tracing tools:  trusted_tpm_<callback name> would work.
 
-
+/Jarkko
