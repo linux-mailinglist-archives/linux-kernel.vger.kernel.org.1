@@ -2,145 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D0F28D2EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6DD28D2EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgJMRN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 13:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33268 "EHLO
+        id S1728905AbgJMRPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726572AbgJMRN7 (ORCPT
+        with ESMTP id S1727859AbgJMRPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:13:59 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83528C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:13:59 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id o18so877389ill.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:13:59 -0700 (PDT)
+        Tue, 13 Oct 2020 13:15:22 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECBEC0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:15:22 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id n6so47896ioc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:15:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=SG2WQvOtMm43ZoNXBs6FcBpV1RJ9MUTvb2qsz7f3I8U=;
-        b=RAiFSZTMabjB/wmvhXy3hgidNNB9OhJtlp2qNrkoH2/4nX0enbVV3X4GQn/ZAoAEpY
-         +Uz84OP1sbt/d5VAMVnifY27q+cQ+ssXEKnwZjCA9zDVXyCn/5x5Bl7JMW8hAULdLadU
-         dn0BR7GDSJ4avGogpi2sQv5Uf32BUdQSCKPCE=
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language;
+        bh=PKr7Vq/qqPUHxm1qGwB++7US2ok17L2SyFB+bd51t5M=;
+        b=GBiVfTW9sPA9hnr1lVocuHkd2ol9Y1iG6UqtZTiC3GgTH+UI4hmZelRbhcVPNovwLX
+         MpjQEETf901lRykbRjt0oCWLAWQF2DMk4pj3BFEp7NVT5bYZcAdhoiQXJdmWjDzMA7DT
+         Eh8zdZLHu3iAdSB/M9Uiy22T161MJ8j1jKQY4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=SG2WQvOtMm43ZoNXBs6FcBpV1RJ9MUTvb2qsz7f3I8U=;
-        b=NCrVZ5OMGGbzC1zeoi8vJB2658KgarIMPqkQ4+iZblfqbNHblJ7glx7AanWLA+xLtI
-         dwIBF+hea82VDyaVUZixrilU2RPR2xlBNoMn8Y1pMxlWUtQRhIAnmiV7CA6l/n1buYY3
-         Vrqmwgbi1YgLMqGoysPm9yc1Ple5jtnSwz/FkEVPE5tu4Z0X+unyHuWLQb0FtwTx7S3W
-         lAF1CD3rFL81ov9WrnWPE/Nkv8uJSRcC/tE5Jrw2oGcUjAvLBvOVN9N1uD+s2JNLtVZL
-         XFaJRWkSa3AooT4lZvICpQWK6wt6cnxPYRIOVdN0/rcQVfjaz+xbqGskKDJ1Gjw1Pvrg
-         ui4A==
-X-Gm-Message-State: AOAM532liRzQ7WfmmlMcz/QAOnQqvjKu6YQFq/eUs9sB3dw14lL7mbgk
-        mMA/GussknyiyG4jtZY3R7FPL8/9DBzksA==
-X-Google-Smtp-Source: ABdhPJzQAxuII8UcXb+wyDrOmERSCJ3HKvZ8n12a+UkKuUVN3S32nQIcZf3S9Pu+Xvl1zoHH3Yf3lQ==
-X-Received: by 2002:a92:ba44:: with SMTP id o65mr802678ili.255.1602609238548;
-        Tue, 13 Oct 2020 10:13:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=PKr7Vq/qqPUHxm1qGwB++7US2ok17L2SyFB+bd51t5M=;
+        b=sscFztNlb/6kYfTKqpH3v7Ygcc7Y877D14eT3mz/2VWf76EzCmaVSJNLMdkqh9ci2P
+         ilTzvzpjwr6qRI0EtXvVFlxJLlsBlMLbMyOK4CrENdpH/QxzhWN2LPU79qGTqz/9bnd6
+         bgZ6GRqf50qsRzOti/URMb0578u8sVqjhr5q7qTd1U4GnXKbzMapRq6NR60DLz+IIP5l
+         HZ8YlKx3gLGCFCpdjF91dJbvGNIYN/ZyBZnqGL4UCsmeBL8xnkPFBRU2uBc4fbHITIOx
+         U4DMksohez/zKLjAYxq9NoZH4B4ue5M4BCxvdTo7Et5/K5OTWD8dBJpl6mBWlEUf/rq/
+         Xd9w==
+X-Gm-Message-State: AOAM532ZBUWv90JDhs8SV6bvhXUOArFhMfTU6ffY4W1KbNwU/o9hlXL6
+        fEX9h9xfaipaWZpu5PGTGlmZZA==
+X-Google-Smtp-Source: ABdhPJzqdvyL97vez1+NJ4KUJFse17yXWg7WveVX5D/7FXNoe1+SckoKGXUNeXTndO4widcJcM8Pwg==
+X-Received: by 2002:a6b:8bd7:: with SMTP id n206mr300274iod.13.1602609322123;
+        Tue, 13 Oct 2020 10:15:22 -0700 (PDT)
 Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s10sm321701ilh.33.2020.10.13.10.13.56
+        by smtp.gmail.com with ESMTPSA id s77sm485077ilk.8.2020.10.13.10.15.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 10:13:57 -0700 (PDT)
+        Tue, 13 Oct 2020 10:15:21 -0700 (PDT)
+Subject: Re: [GIT PULL] cpupower update for Linux 5.10-rc1
 To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Thomas Renninger <trenn@suse.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Cc:     Thomas Renninger <trenn@suse.de>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <396f8b57-50f5-cd20-7a32-40785e669048@linuxfoundation.org>
 From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] cpupower update for Linux 5.10-rc1
-Message-ID: <396f8b57-50f5-cd20-7a32-40785e669048@linuxfoundation.org>
-Date:   Tue, 13 Oct 2020 11:13:56 -0600
+Message-ID: <8acb2352-579f-5a5a-840c-d9330807b3f7@linuxfoundation.org>
+Date:   Tue, 13 Oct 2020 11:15:20 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <396f8b57-50f5-cd20-7a32-40785e669048@linuxfoundation.org>
 Content-Type: multipart/mixed;
- boundary="------------C51D7BB2B876C01DAAFE7104"
+ boundary="------------15D84663CDBC2E5F294D18E8"
 Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is a multi-part message in MIME format.
---------------C51D7BB2B876C01DAAFE7104
+--------------15D84663CDBC2E5F294D18E8
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hi Rafael,
+On 10/13/20 11:13 AM, Shuah Khan wrote:
+> Hi Rafael,
+> 
+> Please pull the following cpupower update for Linux 5.10-rc1 or for
+> a later rc.
+> 
+> This cpupower update for Linux 5.10-rc1 consists of minor fixes for
+> spelling and speeding up generating git version string which will
+> in turn speedup compiles.
+> 
+> diff is attached.
+> 
 
-Please pull the following cpupower update for Linux 5.10-rc1 or for
-a later rc.
-
-This cpupower update for Linux 5.10-rc1 consists of minor fixes for
-spelling and speeding up generating git version string which will
-in turn speedup compiles.
-
-diff is attached.
+Sorry. Here is the diff.
 
 thanks,
 -- Shuah
 
-----------------------------------------------------------------
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-   Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux 
-tags/linux-cpupower-5.10-rc1
-
-for you to fetch changes up to 527b7779e5ecabb057089b760140309bdcacc16a:
-
-   cpupower: speed up generating git version string (2020-08-20 13:04:47 
--0600)
-
-----------------------------------------------------------------
-linux-cpupower-5.10-rc1
-
-This cpupower update for Linux 5.10-rc1 consists of minor fixes for
-spelling and speeding up generating git version string which will
-in turn speedup compiles.
-
-----------------------------------------------------------------
-Colin Ian King (1):
-       cpupowerutils: fix spelling mistake "dependant" -> "dependent"
-
-Martin Kaistra (1):
-       cpupower: speed up generating git version string
-
-  tools/power/cpupower/Makefile                | 2 +-
-  tools/power/cpupower/debug/i386/intel_gsic.c | 2 +-
-  2 files changed, 2 insertions(+), 2 deletions(-)
-----------------------------------------------------------------
-
---------------C51D7BB2B876C01DAAFE7104
-Content-Type: text/plain; charset=UTF-8;
- name="linux-cpupower-5.10-rc1.txt"
-Content-Transfer-Encoding: base64
+--------------15D84663CDBC2E5F294D18E8
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-cpupower-5.10-rc1.diff"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename="linux-cpupower-5.10-rc1.txt"
+ filename="linux-cpupower-5.10-rc1.diff"
 
-VGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA5MTIzZTNhNzRlYzdiOTM0YTRh
-MDk5ZTk4YWY2YTYxYzJmODBiYmY1OgoKICBMaW51eCA1LjktcmMxICgyMDIwLTA4LTE2IDEz
-OjA0OjU3IC0wNzAwKQoKYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9zaXRvcnkgYXQ6
-CgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9zaHVh
-aC9saW51eCB0YWdzL2xpbnV4LWNwdXBvd2VyLTUuMTAtcmMxCgpmb3IgeW91IHRvIGZldGNo
-IGNoYW5nZXMgdXAgdG8gNTI3Yjc3NzllNWVjYWJiMDU3MDg5Yjc2MDE0MDMwOWJkY2FjYzE2
-YToKCiAgY3B1cG93ZXI6IHNwZWVkIHVwIGdlbmVyYXRpbmcgZ2l0IHZlcnNpb24gc3RyaW5n
-ICgyMDIwLTA4LTIwIDEzOjA0OjQ3IC0wNjAwKQoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpsaW51eC1jcHVwb3dl
-ci01LjEwLXJjMQoKVGhpcyBjcHVwb3dlciB1cGRhdGUgZm9yIExpbnV4IDUuMTAtcmMxIGNv
-bnNpc3RzIG9mIG1pbm9yIGZpeGVzIGZvcgpzcGVsbGluZyBhbmQgc3BlZWRpbmcgdXAgZ2Vu
-ZXJhdGluZyBnaXQgdmVyc2lvbiBzdHJpbmcgd2hpY2ggd2lsbAppbiB0dXJuIHNwZWVkdXAg
-Y29tcGlsZXMuCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNvbGluIElhbiBLaW5nICgxKToKICAgICAgY3B1cG93
-ZXJ1dGlsczogZml4IHNwZWxsaW5nIG1pc3Rha2UgImRlcGVuZGFudCIgLT4gImRlcGVuZGVu
-dCIKCk1hcnRpbiBLYWlzdHJhICgxKToKICAgICAgY3B1cG93ZXI6IHNwZWVkIHVwIGdlbmVy
-YXRpbmcgZ2l0IHZlcnNpb24gc3RyaW5nCgogdG9vbHMvcG93ZXIvY3B1cG93ZXIvTWFrZWZp
-bGUgICAgICAgICAgICAgICAgfCAyICstCiB0b29scy9wb3dlci9jcHVwb3dlci9kZWJ1Zy9p
-Mzg2L2ludGVsX2dzaWMuYyB8IDIgKy0KIDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25z
-KCspLCAyIGRlbGV0aW9ucygtKQo=
---------------C51D7BB2B876C01DAAFE7104--
+diff --git a/tools/power/cpupower/Makefile b/tools/power/cpupower/Makefile
+index c8622497ef23..c7bcddbd486d 100644
+--- a/tools/power/cpupower/Makefile
++++ b/tools/power/cpupower/Makefile
+@@ -51,7 +51,7 @@ DESTDIR ?=
+ # Package-related definitions. Distributions can modify the version
+ # and _should_ modify the PACKAGE_BUGREPORT definition
+ 
+-VERSION=			$(shell ./utils/version-gen.sh)
++VERSION:=			$(shell ./utils/version-gen.sh)
+ LIB_MAJ=			0.0.1
+ LIB_MIN=			0
+ 
+diff --git a/tools/power/cpupower/debug/i386/intel_gsic.c b/tools/power/cpupower/debug/i386/intel_gsic.c
+index e5e926f46d6b..befd837f07f8 100644
+--- a/tools/power/cpupower/debug/i386/intel_gsic.c
++++ b/tools/power/cpupower/debug/i386/intel_gsic.c
+@@ -71,7 +71,7 @@ int main (void)
+ 		printf("\tsmi_cmd=0x?? smi_port=0x?? smi_sig=1\n");
+ 		printf("\nUnfortunately, you have to know what exactly are "
+ 		       "smi_cmd and smi_port, and this\nis system "
+-		       "dependant.\n");
++		       "dependent.\n");
+ 	}
+ 	return 1;
+ }
+
+--------------15D84663CDBC2E5F294D18E8--
