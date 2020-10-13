@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8012028D36C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B3B28D36F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgJMSGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
+        id S1727875AbgJMSGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727434AbgJMSGn (ORCPT
+        with ESMTP id S1727850AbgJMSGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:06:43 -0400
+        Tue, 13 Oct 2020 14:06:53 -0400
 Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE851C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:06:42 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id n65so389890ybg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:06:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AF5C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:06:53 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id h9so419448ybm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 11:06:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cC+eIGSuy7HXFNAJKskaB1/Y6uzxiEyHcepnDUSqEgk=;
-        b=cwFNqLo6SWnhBa8+TIPZZqs2+EqrKZ7n+KoVTvTSn16WCpfefcSM0sgTuKFXrCHZTI
-         pgOYlme9rtwtzS/jiYDDdx6dx5cVq6NhS0Mh2n92YR5/zkzieYDjWXjwk+voweHZWfHr
-         5SxM1NiB5MWo2soDsoxEsfsykYZRNTro2zYfO5h/9V14gqmol8tkuSEzWSOoj1PRlj9r
-         /ks4Vv37SN7Di2pV5Jzm08ImDweBl5CF1S9Ruw2t5/EmKGgMVpDa7jSSBAcxlsgtyAIO
-         KuwxG6Lj9cWn7zSPfy8WGuXu6sqjH3gowT3GtP52pC1VuPHzvdsZ5S81u1CptVzWoHYS
-         zxuA==
+        bh=GtobIb+A6viiRru8d79APeEFh87bD0AFLsr1fjkdhuE=;
+        b=k3l9vpH1V8xOE3NCxYEK+h37hCqwUttm0yyJEAqW6aDw2VnHIDwf++fXcx5Dg58wYH
+         zEtT3t6kocHDSb1s4kBmAsYkvSp329MQ7mi+DPGDIuUbqdrYzOn5n51kOTP0kfd/zoby
+         g5TVpd1g/5/tK7T6tfgFuai9RaL2RgqlXvdDele01utn87caDonT/kcUTQUq0jP85i0z
+         Fcbnd8eM4C8hOAcco4TzRn/P2TW2e/aVfJbfw2dIhZH0/i/lyBjirA349s9Ut1zbMXry
+         I0C1dOtS9/8oryUyC2eRABikYEGu8rlBH9bFIre6il17dBNRJPlMYOp8eUgV05uSsszy
+         r5PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cC+eIGSuy7HXFNAJKskaB1/Y6uzxiEyHcepnDUSqEgk=;
-        b=U9PcmSTK+V2Hv2t1c9W9bBi2/lL1TlYjRRy/nXNvs3mzGTbK0m6hsRVFoh5CSerQw0
-         sELx8MbQvKNlW3zDVWH6Ct9CYnWDIomwA1BeEFvxyrtcWskVgDvMu6JJ/wvs1Env1+AZ
-         KfpirQR0Ex97W7umec3XCz9+7cTmI/TC8yEstSGFr69antGpfvalQfCxCpaiuMO1fkMU
-         HsrJJeVTBEd1zpibyJrqZmwrZr0CBm9MODuxo8N5LfL7g5lNdwr2l2hL/ShkCxMtPyJ3
-         vLn6rthMnWoh69Xs5Dz+OPvGYjfeToiHqlgGcfvEmV874Plln/KFH84fCj2kIU9DpzW8
-         v+mw==
-X-Gm-Message-State: AOAM531T7yRHVIATEFG7mJKUIaBVBo3ohRuWh6MLjrEWjB73eoyzdJUu
-        Nbh3867icmb8G0AdULWdRpZU848wMyy2Bq6RHP2DBQ==
-X-Google-Smtp-Source: ABdhPJxcETRToT2/6ccFA3QydpquprGux5wNNNvYW0oSrenBP4NURbNK4s1GLx0XPCwjbV+g5pdVceBXB7EuDufCdfg=
-X-Received: by 2002:a25:c512:: with SMTP id v18mr1815252ybe.20.1602612401925;
- Tue, 13 Oct 2020 11:06:41 -0700 (PDT)
+        bh=GtobIb+A6viiRru8d79APeEFh87bD0AFLsr1fjkdhuE=;
+        b=dL/0j5zeStSKVang7jik+ZYRnpLxInK5CeyEg2JVdP+m4y7tkPLVm2TwgNiKj9qLKr
+         RD+ph+FV1EHl/LTvWDRaqc443SWWbSDufXJf2CIGv6G9BC58aCFKlpVNzURCMpTNqXYF
+         cvlto40iVJblQySBzY8Su1f49A3AzVlV+I8Xz8wUn9xBDVgEvb61cQx1Wi+4ISzkcY13
+         z4DrXhqIz1Z4fWrN/ZtZkWLcUYY+2Kh8B/4943IvG4KGp9Z9MzE/zl//dsqhZlqupI+D
+         3fgcjL5Ti2T9U+zW7U2gbNJ6dT9pTAaUX18/gf5rYxf7nWNww8lQz5FTNoTvmz5cyySQ
+         69hw==
+X-Gm-Message-State: AOAM53158B+3v3F8lLxNRh9Y1+FHSM2ThslZ5XPfRmyXor9hvycaj5h6
+        f2HJ05wp+7SHL72oZQE47oYVkBCOm6NY9rhVvQyI7A==
+X-Google-Smtp-Source: ABdhPJyA9B2d4k/BLN+YlgZ956Kq0TBgqLh/LAv5CQUubzJKNNprdD+OPYvVcmMGWCijfe7bNVID4AMRQWC3bvuEBK8=
+X-Received: by 2002:a5b:88a:: with SMTP id e10mr1625126ybq.412.1602612412891;
+ Tue, 13 Oct 2020 11:06:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201013135913.29059-1-georgi.djakov@linaro.org> <20201013135913.29059-2-georgi.djakov@linaro.org>
-In-Reply-To: <20201013135913.29059-2-georgi.djakov@linaro.org>
+References: <20201013135913.29059-1-georgi.djakov@linaro.org> <20201013135913.29059-3-georgi.djakov@linaro.org>
+In-Reply-To: <20201013135913.29059-3-georgi.djakov@linaro.org>
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 13 Oct 2020 11:06:05 -0700
-Message-ID: <CAGETcx_fEy2_CkrVe9wMP+KJdbWNjVnew+9HiK06iYkniF2HNw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] interconnect: qcom: sdm845: Init BCMs before creating
+Date:   Tue, 13 Oct 2020 11:06:17 -0700
+Message-ID: <CAGETcx9kzB2QxNXUNtVx0szh4c=J=ZuBFXZDiRwb8+y-NVa1qA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] interconnect: qcom: sc7180: Init BCMs before creating
  the nodes
 To:     Georgi Djakov <georgi.djakov@linaro.org>
 Cc:     Linux PM <linux-pm@vger.kernel.org>,
@@ -73,14 +73,14 @@ On Tue, Oct 13, 2020 at 6:59 AM Georgi Djakov <georgi.djakov@linaro.org> wrote:
 > Fixes: 7d3b0b0d8184 ("interconnect: qcom: Use icc_sync_state")
 > Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 > ---
->  drivers/interconnect/qcom/sdm845.c | 6 +++---
+>  drivers/interconnect/qcom/sc7180.c | 6 +++---
 >  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/interconnect/qcom/sdm845.c b/drivers/interconnect/qcom/sdm845.c
-> index d79e3163e2c3..47556dc12ec0 100644
-> --- a/drivers/interconnect/qcom/sdm845.c
-> +++ b/drivers/interconnect/qcom/sdm845.c
-> @@ -489,6 +489,9 @@ static int qnoc_probe(struct platform_device *pdev)
+> diff --git a/drivers/interconnect/qcom/sc7180.c b/drivers/interconnect/qcom/sc7180.c
+> index bf11b82ed55c..8d9044ed18ab 100644
+> --- a/drivers/interconnect/qcom/sc7180.c
+> +++ b/drivers/interconnect/qcom/sc7180.c
+> @@ -553,6 +553,9 @@ static int qnoc_probe(struct platform_device *pdev)
 >                 return ret;
 >         }
 >
@@ -90,7 +90,7 @@ On Tue, Oct 13, 2020 at 6:59 AM Georgi Djakov <georgi.djakov@linaro.org> wrote:
 >         for (i = 0; i < num_nodes; i++) {
 >                 size_t j;
 >
-> @@ -512,9 +515,6 @@ static int qnoc_probe(struct platform_device *pdev)
+> @@ -576,9 +579,6 @@ static int qnoc_probe(struct platform_device *pdev)
 >         }
 >         data->num_nodes = num_nodes;
 >
