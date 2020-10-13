@@ -2,60 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEF328D07D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D92328D078
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730251AbgJMOmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:42:23 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:47262 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgJMOmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:42:22 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DE4221A01CC;
-        Tue, 13 Oct 2020 16:42:20 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D0DB31A0119;
-        Tue, 13 Oct 2020 16:42:20 +0200 (CEST)
-Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 8B6692037B;
-        Tue, 13 Oct 2020 16:42:20 +0200 (CEST)
-From:   Diana Craciun <diana.craciun@oss.nxp.com>
-To:     alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
-        Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH] Fixed vfio-fsl-mc driver compilation on 32 bit
-Date:   Tue, 13 Oct 2020 17:42:07 +0300
-Message-Id: <20201013144207.2599-1-diana.craciun@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730075AbgJMOmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:42:13 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:44343 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJMOmM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 10:42:12 -0400
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2171FC0017;
+        Tue, 13 Oct 2020 14:42:10 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 16:42:09 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: add trickle-voltage-millivolt
+Message-ID: <20201013144209.GW2804081@piout.net>
+References: <20201007220506.360469-1-alexandre.belloni@bootlin.com>
+ <20201013133855.GA3382613@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013133855.GA3382613@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FSL_MC_BUS on which the VFIO-FSL-MC driver is dependent on
-can be compiled on other architectures as well (not only ARM64)
-including 32 bit architectures.
-Include linux/io-64-nonatomic-hi-lo.h to make writeq/readq used
-in the driver available on 32bit platforms.
+On 13/10/2020 08:38:55-0500, Rob Herring wrote:
+> On Thu, Oct 08, 2020 at 12:05:04AM +0200, Alexandre Belloni wrote:
+> > Some RTCs have a trickle charge that is able to output different voltages
+> > depending on the type of the connected auxiliary power (battery, supercap,
+> > ...). Add a property allowing to specify the necessary voltage.
+> > 
+> > Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > ---
+> > 
+> > Changes in v2:
+> >  - use millivolt suffix instead of mV
+> 
+> Try again...
 
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
- 1 file changed, 1 insertion(+)
+Sorry, the change was wrongly squashed in patch 2/3, I've sent v3.
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-index d009f873578c..80fc7f4ed343 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-@@ -13,6 +13,7 @@
- #include <linux/vfio.h>
- #include <linux/fsl/mc.h>
- #include <linux/delay.h>
-+#include <linux/io-64-nonatomic-hi-lo.h>
- 
- #include "vfio_fsl_mc_private.h"
- 
+> 
+> > 
+> >  Documentation/devicetree/bindings/rtc/rtc.yaml | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > index ee237b2ed66a..93f04d5e5307 100644
+> > --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > @@ -42,6 +42,13 @@ properties:
+> >        Selected resistor for trickle charger. Should be given
+> >        if trickle charger should be enabled.
+> >  
+> > +  trickle-voltage-mV:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Selected voltage for trickle charger. Should be given
+> > +      if trickle charger should be enabled and the trickle voltage is different
+> > +      from the RTC main power supply.
+> > +
+> >    wakeup-source:
+> >      $ref: /schemas/types.yaml#/definitions/flag
+> >      description:
+> > -- 
+> > 2.26.2
+> > 
+
 -- 
-2.17.1
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
