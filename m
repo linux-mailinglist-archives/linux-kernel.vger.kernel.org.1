@@ -2,152 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA59328D425
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D045928D42D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732301AbgJMS74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 14:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgJMS74 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 14:59:56 -0400
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 13 Oct 2020 11:59:55 PDT
-Received: from mail1.systemli.org (mail1.systemli.org [IPv6:2001:678:a40:7000:2::14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E28C0613D0;
-        Tue, 13 Oct 2020 11:59:55 -0700 (PDT)
-Subject: Re: [PATCH 2/2] Revert "dccp: don't free ccid2_hc_tx_sock struct in
- dccp_disconnect()"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
-        s=default; t=1602615592;
-        bh=Aa9pyHjOcVbUByGQfquuzPxzq9f9clmIPBURVdjhxXc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=6IHpWSmB8zoYG6asQFqI8pGauKxsUSqDu54yoOvi2XetGybBYXP9qOyhSM/eX99qw
-         KDfiHCuIco4JN2p2GOlyy0L0gEbI2QbgjHAHPiW/RbrZqCIie8WLvl8lG/ttNki/4W
-         a1xlVs+sGxTprEXOkSFVo3M9RWePNPZ+qZPdyBE3zFs5uBvbhUSlf+jphwhS5GbXYv
-         GY7xBc54ZHolUrMUonOhiDCWTVHZ9K6WavbdCrvbdX50aEPWmpqfO13nHeF4QcUiok
-         IBlnGdXj6TvoiSZRB76SOqEhM8I7V/tutv4vQ9DOSPbiJoznk30mcSK89D3lHAgqc8
-         MRHB9+9kLA0Eg==
-To:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
-        netdev@vger.kernel.org
-Cc:     Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-3-kleber.souza@canonical.com>
-From:   Richard Sailer <richard_siegfried@systemli.org>
-Autocrypt: addr=richard_siegfried@systemli.org; prefer-encrypt=mutual;
- keydata=
- mQENBE3hr2UBCACos1E12camcYIlpe25jaqwu+ATrfuFcCIPsLmff7whzxClsaC78lsxQ3jD
- 4MIlOpkIBWJvc4sziai1P/CrafvM0DTuUasCv+mQpup6cFMWy1JmDtJ8X0Ccy/PH83e9Yjnv
- xJu0NhoQAqMZrVmXx4Q7DKcgpvkk9Oyd5u6ocfdb2GhF0Bxa7GySZyYOc4rQvduRLOdNMbnS
- 6SM+cTAhMOHtoqKWCP4EogXKALg6LDFcx8yUoMzLRy/YXsnWa1/WayG8Zr6kX84VKhTGUrdG
- Pw4Zg1cQ6vqwMZ4RwaR/9RWK2WnYr7XyOTDBgmCix5c5lu+GeLqUYUIPTvdQ7Xgwx0UhABEB
- AAG0OVJpY2hhcmQgU2llZ2ZyaWVkIFNhaWxlciA8cmljaGFyZF9zaWVnZnJpZWRAc3lzdGVt
- bGkub3JnPokBVwQTAQgAQQIbIwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAIZARYhBAYAIbmK
- zp5fVAuyN/ZBOcwFm+HhBQJanueLBQkSYNKmAAoJEPZBOcwFm+Hh+ugH/2P0yClrZkkMK5y2
- L389qNPlF8i1H77S4NE9zxiHI38jnIFLqjD4F+KzGAXNmOXCw+QYqLL+TmsuGY+5LOLtp/M4
- lG6ajVC1JCcF2+bQrDc11g7AG7A+rySX5JpqSFO7ARfLTs3iW1DoyLN7lBUtL9dV+yx9mRUv
- fx/TcB9ItPhK4rtJuWy3yg6SNBZzkgc0zsCyIkJ4dEtdEW6IgW6Qk242kMVya8fytM02EwEM
- vBTdca/duCO2tEComPeF+8WExM+BfQ+6o3kpqRsOR6Ek6wDsnalFHy8NHaicbEy7qjybGOKZ
- IdvzAyAhsmpu+5ltOfQWViNBseqRk1H9ikuTKTq5AQ0ETeGvZQEIANRmPSJX9qVU+Hi74uvD
- /LYC3wPm5kCAS0Q5jT3AC5cisu8z92b/Bt8DRKwwpu4esZisQu3RSFvnmkrllkuokSAVKxXo
- bZG2yTq+qecrvKtVH99lA0leiy5TdcJdmhJvkcQv7kvIgKYdXSW1BAhUbtX827IGAW1LCvJL
- gKqox3Ftxpi5pf/gVh7NFXU/7n6Nr3NGi5havoReeIy8iVKGFjyCFN67vlyzaTV6yTUIdrko
- StTJJ8c7ECjJSkCW34lj8mR0y9qCRK5gIZURf3jjMQBDuDvHO0XQ4mog6/oOov4vJRyNMhWT
- 2b0LG5CFJeOQTQVgfaT1MckluRBvYMZAOmkAEQEAAYkBPAQYAQIAJgIbDBYhBAYAIbmKzp5f
- VAuyN/ZBOcwFm+HhBQJanueQBQkSYNKrAAoJEPZBOcwFm+HhrCAH/2doMkTKWrIzKmBidxOR
- +hvqJfBB4GvoHBsQoqWj85DtgvE5jKc11FYzSDzQjmMKIIBwaOjjrQ8QyXm2CYJlx7/GiEJc
- F3QNa5q3GBgiyZ0h78b2Lbu/sBhaCFSXHfnriRGvIXqsxyPMllqb+LBRy56ed97OQBQX8nFI
- umdUMtt8EFK2SM0KYY1V0COcYqGHMRUiVosTV1aVwoLm2SXsB9jicPUaQbRgsPfglTn00wnl
- fhJ8bAO800MtG+LW6pzP+6EZPvnHhKBS7Xbl6bn6r2OW32T7TeFg0RJbpE/MW1gY0NjgmtWj
- vdhuvK9nHCRL2O/xLofm9aoELUaXGHoxMn4=
-Message-ID: <bb2755d3-cb80-5761-f01f-4c6da9bd31c2@systemli.org>
-Date:   Tue, 13 Oct 2020 20:59:50 +0200
+        id S2387533AbgJMTCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:02:09 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8322 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727033AbgJMTCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 15:02:09 -0400
+IronPort-SDR: Xmr+SbJbc02BdFFtq1B/XNN/rY+O3AURZMq+1IiM3dEymPTdmXIsGqsOhGIZfEUM0Bx5lvd+b+
+ 993pacOQH0KQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="162504516"
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="162504516"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 12:02:08 -0700
+IronPort-SDR: Ks8d3iW6VA2rHlMJV3z2sn2Xc4yY6st8MZ78zXSsxE3R3wJB3IbgG91rehKtBCb6H45fCfc393
+ cWtRORkWdzhQ==
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="346284561"
+Received: from murawskx-mobl.amr.corp.intel.com (HELO [10.209.9.29]) ([10.209.9.29])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 12:02:08 -0700
+Subject: Re: [PATCH RFC V3 9/9] x86/pks: Add PKS test code
+To:     ira.weiny@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-10-ira.weiny@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3f9ebe3b-5c1c-6a69-3779-6f90d66227bd@intel.com>
+Date:   Tue, 13 Oct 2020 12:02:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201013171849.236025-3-kleber.souza@canonical.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="J1wNxwe2U3hUL6xUfMbG23kWMkDthUjal"
+In-Reply-To: <20201009194258.3207172-10-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---J1wNxwe2U3hUL6xUfMbG23kWMkDthUjal
-Content-Type: multipart/mixed; boundary="WxePmLM0IhiWSQnQjcpdYpcvAqMuNppWd";
- protected-headers="v1"
-From: Richard Sailer <richard_siegfried@systemli.org>
-To: Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
- netdev@vger.kernel.org
-Cc: Gerrit Renker <gerrit@erg.abdn.ac.uk>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>,
- Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>,
- Alexey Kodanev <alexey.kodanev@oracle.com>, dccp@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <bb2755d3-cb80-5761-f01f-4c6da9bd31c2@systemli.org>
-Subject: Re: [PATCH 2/2] Revert "dccp: don't free ccid2_hc_tx_sock struct in
- dccp_disconnect()"
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-3-kleber.souza@canonical.com>
-In-Reply-To: <20201013171849.236025-3-kleber.souza@canonical.com>
+On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
+>  #ifdef CONFIG_X86_32
+>  	/*
+>  	 * We can fault-in kernel-space virtual memory on-demand. The
+> diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
+> index cc3510cde64e..f9552bd9341f 100644
+> --- a/include/linux/pkeys.h
+> +++ b/include/linux/pkeys.h
+> @@ -47,7 +47,6 @@ static inline bool arch_pkeys_enabled(void)
+>  static inline void copy_init_pkru_to_fpregs(void)
+>  {
+>  }
+> -
+>  #endif /* ! CONFIG_ARCH_HAS_PKEYS */
 
---WxePmLM0IhiWSQnQjcpdYpcvAqMuNppWd
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+^ Whitespace damage
 
-On 13/10/2020 19:18, Kleber Sacilotto de Souza wrote:
-> rom: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
->=20
-> This reverts commit 2677d20677314101293e6da0094ede7b5526d2b1.
->=20
-> This fixes an issue that after disconnect, dccps_hc_tx_ccid will still =
-be
-> kept, allowing the socket to be reused as a listener socket, and the cl=
-oned
-> socket will free its dccps_hc_tx_ccid, leading to a later use after fre=
-e,
-> when the listener socket is closed.
->=20
-> This addresses CVE-2020-16119.
->=20
-> Fixes: 2677d2067731 (dccp: don't free ccid2_hc_tx_sock struct in dccp_d=
-isconnect())
-> Reported-by: Hadar Manor
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
-> ---
-Acked-by: Richard Sailer <richard_siegfried@systemli.org>
+>  #ifndef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 0c781f912f9f..f015c09ba5a1 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2400,6 +2400,18 @@ config HYPERV_TESTING
+>  	help
+>  	  Select this option to enable Hyper-V vmbus testing.
+>  
+> +config PKS_TESTING
+> +	bool "PKey(S)upervisor testing"
 
+Seems like we need a space in there somewhere.
 
---WxePmLM0IhiWSQnQjcpdYpcvAqMuNppWd--
+> +	pid = fork();
+> +	if (pid == 0) {
+> +		fd = open("/sys/kernel/debug/x86/run_pks", O_RDWR);
+> +		if (fd < 0) {
+> +			printf("cannot open file\n");
+> +			return -1;
+> +		}
+> +
 
---J1wNxwe2U3hUL6xUfMbG23kWMkDthUjal
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Will this return code make anybody mad?  Should we have a nicer return
+code for when this is running on non-PKS hardware?
 
------BEGIN PGP SIGNATURE-----
+I'm not going to be too picky about this.  I'll just ask one question:
+Has this found real bugs for you?
 
-iQEzBAEBCgAdFiEEBgAhuYrOnl9UC7I39kE5zAWb4eEFAl+F+ScACgkQ9kE5zAWb
-4eH6sQf/Tqw4Q9r0PAI1c+stYzlcCikkYpFE33vnoG+SbiIQCBhB83rs/BxTNmxO
-mKRJpzTswAQsqrnGRCrFGcazAUJKWqhAxC6N+g0nZCDZuSVfSAAh5e6ayHP4HLJw
-SW0daEUNYkdGvYkl5Dhom35pjziR+m1RTWE2EXesA4vMpOG+WBsNyzZ1tmDDb/Ad
-nYQNfRZOZjXpFWwGg4yVl9q0kddB5RYxkYXHH1gRsMK8uvJRjGXmaj/XdNlcdyLQ
-BfwUINi94v9arFQZwnjtiKDTkpN5YaD4GLPT+ffQLcBc6P6ixa6CcCCG0khkjLu5
-dfBZ8s+blxKb/APl8JUsI6Ud9YMLVw==
-=+HsJ
------END PGP SIGNATURE-----
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
 
---J1wNxwe2U3hUL6xUfMbG23kWMkDthUjal--
