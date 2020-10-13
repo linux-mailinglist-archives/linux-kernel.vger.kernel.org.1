@@ -2,135 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A4D28CBDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C26D28CBE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731147AbgJMKgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:36:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
+        id S1730869AbgJMKig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729241AbgJMKgi (ORCPT
+        with ESMTP id S1729241AbgJMKig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:36:38 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EEEC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:36:37 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id f21so20421559wml.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:36:37 -0700 (PDT)
+        Tue, 13 Oct 2020 06:38:36 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E013C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:38:35 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ce10so27548108ejc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:38:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CiWCv3BMnudQFt/Kh0EA1mCHFgkrHwPIFYjOeIiiAgM=;
-        b=rrHdIIkHJ4RWluKR74GDVBCXZ3fHa+2GckpSDJAnPQr3LIihHVRnyUP0B3Pyy3ZhiX
-         8rSJA7CHd4bBwm+paLicw3yVKCUd7p47cqxTVZOMI8KQTToQQIRbcEkKYaCAJv5rCfEc
-         1bgA/vc4KEWcOYZ4uNSULZ7vzptJAjV8I6Yt5FQdZdfVDCfUWFaaYLymlxMbvCLnuB5g
-         k4Q1OxKAiRD5UMQFq/jNfia58Icqaqxjn9Zw637CxWxICuvMpdldIxOsG31VbTFTfcjx
-         fcwjAwQt64YG5s9nbZkfQG7kDKS53uzrSfQJevNyaAgzQJP/OvC7fnfI1m0PztItBYpx
-         0bKw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mXc/BbvWP3AIjg/haFgyy4BVln9bhjQf0eqYaY7B15o=;
+        b=q+FyDFZapM8r18jwPFsDpEnGC7eH5hdQ443Krsk3A7Pl4Z3Prf8mH9hn7UtVif5b8g
+         nAMw4bEtapNFEOc2z45erbDEoIFo51sqpiaqay9kpJ5bQCK8Sa56rJRrJKuxUrkTajr0
+         ZjpdwMdgsIYoZNDb/0lvS5WRX55WbSF2iH0NhsHB9/df8OEaSZllY3VoHp8WhthOLklF
+         StbpEvZZLWdz1jeV+Ayx38l91gPmzzDrEGvL6eZYNB5FHaVE5qPO/YrwClHHiaI63nti
+         mxFiwlC/Q1kRtV+ShbNYDef4ABM7NxKI2KkQ16ur0DYlzu8jLFtV5xmsSC3Lu5aR9qxA
+         6rFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CiWCv3BMnudQFt/Kh0EA1mCHFgkrHwPIFYjOeIiiAgM=;
-        b=bvD/JeslN9nYVumDHUXbJTPdEh07fanIU0dvhcYdUDTKiws6pnKyl4K2coOViTYlaS
-         WG90feXl3haM8lbetaFHQffmhBoaN/X4De0N+xXW745LTAWcxj0ANUfXlXDqcrKFaeou
-         Y+RLmzrSm001glVAtuUXkRg4TrJAz9o/lAhbgVh8HAEIBBpA/y50WsPtnh+TQ8GG8YzX
-         VFEYs1b6AJCtOwchYv2CajNRPpKHrpG81eDT9OSvzJa6CB0VsxUuUnq25JLI2dDj67Of
-         wqHkgJPk5tm8Bb65hsFzyJXGLzp+0SkazOFW4LR0b7hfV8ZI7Z51BN+Pdkabayz3e2fE
-         Rkmw==
-X-Gm-Message-State: AOAM533jF28LaWK5mPBKVSmLz9w9QG08lJp8M/j2ne1zRTfPt0anwO1Z
-        N9th5TzSwJOVgw28H4HWkXSPcg==
-X-Google-Smtp-Source: ABdhPJxiYcDKpnTqq5SWY21dPvFP7GNAu3f5Em/slUL6EOVBNEG9+t+pGtCNV4M0EgkRnYKNBcGB0w==
-X-Received: by 2002:a1c:1905:: with SMTP id 5mr15466149wmz.32.1602585396171;
-        Tue, 13 Oct 2020 03:36:36 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id t6sm31809439wre.30.2020.10.13.03.36.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Oct 2020 03:36:35 -0700 (PDT)
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
- bindings
-To:     Cheng-Yi Chiang <cychiang@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>, dianders@chromium.org,
-        dgreid@chromium.org, tzungbi@chromium.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
-Date:   Tue, 13 Oct 2020 11:36:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mXc/BbvWP3AIjg/haFgyy4BVln9bhjQf0eqYaY7B15o=;
+        b=fexsaN5yZrGNxseT+BoPQBA55vjHzH8iCEDcqiKUIMNQ3/o4ilLY50v4EWPQPzm70+
+         W0VRwV7iqfkKMmf+N0iubGKkqvxSYXi0jKqHqMowLpMIf2hv317P7wnHu4iahHeqFFqG
+         MBSDSpzHIjYP7/3bvMW+O0CI7Ok376AczpYirPLPfU9blH5Yd+jWwgvyLYDpIgDVVeBb
+         uCt7XhughcCpQa+GkDnjKj/rGj7RfeKRJOnZOCnTQIFNLNScqMRFL1faV5g/Qps7O4K+
+         K4vylvPwQNi9C12EOn+F++SWuDet9F1MCxyfJbFZPKHg4zLWW1FfozI82Zq85jQV6EbX
+         eE+Q==
+X-Gm-Message-State: AOAM532LCbD3e/Kipmng7XcOuXEdK0lsRs7WbFHHKdrWrmwBxTMZDevm
+        i+2ozkP/w8MX24zlfn1r5bD6dZmDKTk=
+X-Google-Smtp-Source: ABdhPJwZygI/XslaD4icMNfsKE2U3uiGTiFX2/3zLzhas8D3VOTFwmhlZbSJ270DMZkyCGim+Jl4gg==
+X-Received: by 2002:a17:906:268c:: with SMTP id t12mr31849104ejc.377.1602585514174;
+        Tue, 13 Oct 2020 03:38:34 -0700 (PDT)
+Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
+        by smtp.gmail.com with ESMTPSA id g23sm885174edp.33.2020.10.13.03.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 03:38:33 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 13 Oct 2020 12:38:31 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Gorbik <gor@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
+Subject: [GIT PULL v2] objtool changes for v5.10
+Message-ID: <20201013103831.GB3933713@gmail.com>
+References: <20201013082625.GA775379@gmail.com>
+ <20201013204312.6052157d@canb.auug.org.au>
+ <20201013101056.GA3933713@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200914080619.4178587-3-cychiang@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013101056.GA3933713@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cheng,
 
-Sorry for such late review w.r.t compatibles,
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-On 14/09/2020 09:06, Cheng-Yi Chiang wrote:
-> +---
-> +$id:http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
-> +$schema:http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
-> +
-> +maintainers:
-> +  - Rohit kumar<rohitkr@codeaurora.org>
-> +  - Cheng-Yi Chiang<cychiang@chromium.org>
-> +
-> +description:
-> +  This binding describes the SC7180 sound card which uses LPASS for audio.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sc7180-sndcard-rt5682-m98357-1mic
+> > This seems to be missing
+> > 
+> > https://lore.kernel.org/lkml/patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours/
+> > 
+> > or did that get sent in a previous pull request?
+> 
+> No, that fix is still missing, thanks for the reminder. I overlooked it 
+> thinking that it's a tooling patch - but this needs to be paired with:
+> 
+>   2486baae2cf6: ("objtool: Allow nested externs to enable BUILD_BUG()")
+> 
+> I'll send a v2 pull request in an hour or two.
 
-This information can come from the dai link description itself, why 
-should compatible string have this information?
+Linus,
 
-Can't we have better compatible string with actual board name or use the 
-same compatible name as used by other boards?
+Please pull the latest objtool/core git tree from:
 
-Can you give us some details on the advantages of doing this way?
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool-core-2020-10-13
 
-Or am I missing something?
+   # HEAD: ab0a40ea88204e1291b56da8128e2845fec8ee88 perf build: Allow nested externs to enable BUILD_BUG() usage
 
-AFAIU, you should add proper board name / model name to the compatible 
-string rather than describe how its connected. Connection is already 
-part of dai link definition.
+objtool changes for v5.10:
 
-On the other hand model property can include variant information.
-This can also be used to set card long name which will help in UCM2.
+ - Most of the changes are cleanups and reorganization to make the objtool code
+   more arch-agnostic. This is in preparation for non-x86 support.
 
-The reason I had to bring this up is because the use-space (ucm in this 
-case) will not be in a position to differentiate between different board 
-variants to select correct mixer controls, so its going to be a pain!
+Fixes:
+
+ - KASAN fixes.
+ - Handle unreachable trap after call to noreturn functions better.
+ - Ignore unreachable fake jumps.
+ - Misc smaller fixes & cleanups.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Ilie Halip (1):
+      objtool: Ignore unreachable trap after call to noreturn functions
+
+Jann Horn (1):
+      objtool: Permit __kasan_check_{read,write} under UACCESS
+
+Julien Thierry (16):
+      objtool: Move object file loading out of check()
+      objtool: Move ORC logic out of check()
+      objtool: Skip ORC entry creation for non-text sections
+      objtool: Define 'struct orc_entry' only when needed
+      objtool: Group headers to check in a single list
+      objtool: Make sync-check consider the target architecture
+      objtool: Move macros describing structures to arch-dependent code
+      objtool: Abstract alternative special case handling
+      objtool: Make relocation in alternative handling arch dependent
+      objtool: Rename frame.h -> objtool.h
+      objtool: Only include valid definitions depending on source file type
+      objtool: Make unwind hint definitions available to other architectures
+      objtool: Decode unwind hint register depending on architecture
+      objtool: Remove useless tests before save_reg()
+      objtool: Ignore unreachable fake jumps
+      objtool: Handle calling non-function symbols in other sections
+
+Raphael Gault (1):
+      objtool: Refactor jump table code to support other architectures
+
+Vasily Gorbik (2):
+      objtool: Allow nested externs to enable BUILD_BUG()
+      perf build: Allow nested externs to enable BUILD_BUG() usage
 
 
-Thanks,
-srini
+ MAINTAINERS                                   |   1 +
+ arch/x86/include/asm/nospec-branch.h          |   2 +-
+ arch/x86/include/asm/orc_types.h              |  34 ----
+ arch/x86/include/asm/unwind_hints.h           |  56 ++-----
+ arch/x86/kernel/kprobes/core.c                |   2 +-
+ arch/x86/kernel/kprobes/opt.c                 |   2 +-
+ arch/x86/kernel/reboot.c                      |   2 +-
+ arch/x86/kernel/unwind_orc.c                  |  11 +-
+ arch/x86/kvm/svm/svm.c                        |   2 +-
+ arch/x86/kvm/vmx/nested.c                     |   2 +-
+ arch/x86/kvm/vmx/vmx.c                        |   2 +-
+ arch/x86/xen/enlighten_pv.c                   |   2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c           |   3 +-
+ include/linux/frame.h                         |  35 ----
+ include/linux/objtool.h                       | 129 +++++++++++++++
+ kernel/bpf/core.c                             |   2 +-
+ kernel/kexec_core.c                           |   2 +-
+ tools/arch/x86/include/asm/orc_types.h        |  34 ----
+ tools/include/linux/objtool.h                 | 129 +++++++++++++++
+ tools/objtool/Makefile                        |   6 +-
+ tools/objtool/arch.h                          |   4 +
+ tools/objtool/arch/x86/Build                  |   1 +
+ tools/objtool/arch/x86/decode.c               |  37 +++++
+ tools/objtool/arch/x86/include/arch_special.h |  20 +++
+ tools/objtool/arch/x86/special.c              | 145 ++++++++++++++++
+ tools/objtool/builtin-check.c                 |  15 +-
+ tools/objtool/builtin-orc.c                   |  27 ++-
+ tools/objtool/check.c                         | 230 ++++++--------------------
+ tools/objtool/check.h                         |   9 +-
+ tools/objtool/objtool.c                       |  30 ++++
+ tools/objtool/objtool.h                       |   6 +-
+ tools/objtool/orc_dump.c                      |   9 +-
+ tools/objtool/orc_gen.c                       |   8 +-
+ tools/objtool/special.c                       |  48 +-----
+ tools/objtool/special.h                       |  10 ++
+ tools/objtool/sync-check.sh                   |  32 +++-
+ tools/objtool/weak.c                          |   6 +-
+ tools/perf/Makefile.config                    |   2 +-
+ 38 files changed, 686 insertions(+), 411 deletions(-)
+ delete mode 100644 include/linux/frame.h
+ create mode 100644 include/linux/objtool.h
+ create mode 100644 tools/include/linux/objtool.h
+ create mode 100644 tools/objtool/arch/x86/include/arch_special.h
+ create mode 100644 tools/objtool/arch/x86/special.c
