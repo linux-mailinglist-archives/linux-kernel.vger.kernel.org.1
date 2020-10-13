@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3660528D486
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF28828D4AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgJMTgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:36:49 -0400
-Received: from smtprelay0225.hostedemail.com ([216.40.44.225]:50550 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725919AbgJMTgs (ORCPT
+        id S1727855AbgJMTji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgJMTjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:36:48 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 9445A180A7FCA;
-        Tue, 13 Oct 2020 19:36:47 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2895:3138:3139:3140:3141:3142:3352:3622:3865:3867:3873:3874:4250:4321:5007:6119:7514:7809:9010:10004:10400:10848:11232:11658:11914:12043:12114:12297:12555:12740:12760:12895:13069:13311:13357:13439:13891:14096:14097:14181:14659:14721:21080:21433:21627:21740:30003:30054:30064:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: fork80_091106427205
-X-Filterd-Recvd-Size: 2979
-Received: from XPS-9350 (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 13 Oct 2020 19:36:45 +0000 (UTC)
-Message-ID: <b1ccdfbb3119528490ea10f40e1da084b1b23f87.camel@perches.com>
-Subject: Re: [PATCH] MAINTAINERS: jarkko.sakkinen@linux.intel.com ->
- jarkko@kernel.org
-From:   Joe Perches <joe@perches.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>
-Date:   Tue, 13 Oct 2020 12:36:44 -0700
-In-Reply-To: <20201013192524.GA164334@kernel.org>
-References: <20201013104705.140127-1-jarkko.sakkinen@linux.intel.com>
-         <dce9442565fc3176ad770788bc1cf76b02080486.camel@perches.com>
-         <20201013192524.GA164334@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 13 Oct 2020 15:39:37 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE49C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:39:37 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id l18so347648pgg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:39:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=u5ODaBfTT5W67Km3lOC3SSe3iDF1/gqpv3kYlN3EjVE=;
+        b=Yq/ei9oJTUbdXy6mESFNA7vY+sswzM+fFDcH4ntCSECKbazwi7IynQsi5sodzn6TJA
+         KfeHybgteb/MO7N2lDqFd1w099ZD6cyf2h7XqKxwN5/Ruz5Kekt7y6odT2N0MnNBtTHI
+         d5Nu8E4iJ45J4y3DpHnjdbTmY/3BgEVgQZruhLITJK0MajGBd9r1ljCH/E6u8zkjUH4e
+         SeQdiy0tD7SK2O0TZxopHlFRjjoQllVM9WmXPdRaw648fhfAA0Skw/TaK3Xn6dF55ial
+         o9EQ8ERUMvorSjDSd/brjMPw1qPLbW2k8GVEm+proXkT7mtDmGrWnW30xv+IbHwyhgHe
+         UFvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u5ODaBfTT5W67Km3lOC3SSe3iDF1/gqpv3kYlN3EjVE=;
+        b=cfhFwUOhb6PMLf5GQVDhtPyYPIU76wJS4GXfKf1WOZ4v53iBZJpr3VbVjtuTJ+ADuD
+         a2gT6vO87tuiqOpuY2QTVH9IBzvw7z80XtNLVwIrwncXHYCKe0Rcd692gVxh8KL2IWuj
+         u1Pw97bNYnPVb9NF+NR7FMHVxs3auBcoVU5YOQg1PrR/SaW10unoZZIAXZUaY2SH0JHx
+         Ti9e+f0dgP+gDeVEUOOORpje44SMS6xVGxUCKaSQPWtSExOzT5+xpI6ackueYIXn55an
+         EfSSSBppLawf7A5c01lBkMtEAPUvhQuNsFo3GUU6+D7o7Yhg2+JAkxCIq7+seBZyxPGg
+         501w==
+X-Gm-Message-State: AOAM531F79BNGNvUBERTXt/vXCsd39VdqnfOO650J0AP++vl0Nekp/zL
+        aomYgSel4sVDnQIkp2JLdKw3iw==
+X-Google-Smtp-Source: ABdhPJzkeYACJjYJ1KHRzZ0STHtXaYfBhNHzzrdVRpF1+3kfjPhiiCJMBk6o/z9i/mgqx6tQZ3DhsQ==
+X-Received: by 2002:a63:1b02:: with SMTP id b2mr973821pgb.164.1602617976821;
+        Tue, 13 Oct 2020 12:39:36 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id x1sm806247pjj.25.2020.10.13.12.39.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 12:39:36 -0700 (PDT)
+Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, peterz@infradead.org, tglx@linutronix.de,
+        live-patching@vger.kernel.org
+References: <20201005150438.6628-1-axboe@kernel.dk>
+ <20201008145610.GK9995@redhat.com>
+ <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz>
+ <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk>
+ <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk>
+ <alpine.LSU.2.21.2010121921420.10435@pobox.suse.cz>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3c3616f2-8801-1d42-6d7d-3dfbf977edb2@kernel.dk>
+Date:   Tue, 13 Oct 2020 13:39:35 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <alpine.LSU.2.21.2010121921420.10435@pobox.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-13 at 22:25 +0300, Jarkko Sakkinen wrote:
-> On Tue, Oct 13, 2020 at 08:30:38AM -0700, Joe Perches wrote:
-> > On Tue, 2020-10-13 at 13:46 +0300, Jarkko Sakkinen wrote:
-> > > Use korg address as the main communications end point. Update the
-> > > corresponding M-entries.
-> > 
-> > Maybe add an equivalent entry to .mailmap?
+On 10/12/20 11:27 AM, Miroslav Benes wrote:
+> On Sat, 10 Oct 2020, Jens Axboe wrote:
 > 
-> Ugh, neither has @linux.intel.com. So, I'll insert these two lines:
+>> On 10/9/20 9:21 AM, Jens Axboe wrote:
+>>> On 10/9/20 2:01 AM, Miroslav Benes wrote:
+>>>> On Thu, 8 Oct 2020, Oleg Nesterov wrote:
+>>>>
+>>>>> On 10/05, Jens Axboe wrote:
+>>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> The goal is this patch series is to decouple TWA_SIGNAL based task_work
+>>>>>> from real signals and signal delivery.
+>>>>>
+>>>>> I think TIF_NOTIFY_SIGNAL can have more users. Say, we can move
+>>>>> try_to_freeze() from get_signal() to tracehook_notify_signal(), kill
+>>>>> fake_signal_wake_up(), and remove freezing() from recalc_sigpending().
+>>>>>
+>>>>> Probably the same for TIF_PATCH_PENDING, klp_send_signals() can use
+>>>>> set_notify_signal() rather than signal_wake_up().
+>>>>
+>>>> Yes, that was my impression from the patch set too, when I accidentally 
+>>>> noticed it.
+>>>>
+>>>> Jens, could you CC our live patching ML when you submit v4, please? It 
+>>>> would be a nice cleanup.
+>>>
+>>> Definitely, though it'd be v5 at this point. But we really need to get
+>>> all archs supporting TIF_NOTIFY_SIGNAL first. Once we have that, there's
+>>> a whole slew of cleanups that'll fall out naturally:
+>>>
+>>> - Removal of JOBCTL_TASK_WORK
+>>> - Removal of special path for TWA_SIGNAL in task_work
+>>> - TIF_PATCH_PENDING can be converted and then removed
+>>> - try_to_freeze() cleanup that Oleg mentioned
+>>>
+>>> And probably more I'm not thinking of right now :-)
+>>
+>> Here's the current series, I took a stab at converting all archs to
+>> support TIF_NOTIFY_SIGNAL so we have a base to build on top of. Most
+>> of them were straight forward, but I need someone to fixup powerpc,
+>> verify arm and s390.
+>>
+>> But it's a decent start I think, and means that we can drop various
+>> bits as is done at the end of the series. I could swap things around
+>> a bit and avoid having the intermediate step, but I envision that
+>> getting this in all archs will take a bit longer than just signing off
+>> on the generic/x86 bits. So probably best to keep the series as it is
+>> for now, and work on getting the arch bits verified/fixed/tested.
+>>
+>> https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work
 > 
-> Jarkko Sakkinen <jarkko@kernel.org>
-> Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Thanks, Jens.
+> 
+> Crude diff for live patching on top of the series is below. Tested only on 
+> x86_64, but it passes the tests without an issue.
 
-I think a single line like works
-Jarkko Sakkinen <jarkko@kernel.org> <jarkko.sakkinen@linux.intel.com>
+Nice, thanks!
 
-Adding this to .mailmap gives:
+I'm continuing to hone the series, what's really missing so far is arch
+review. Most conversions are straight forward, some I need folks to
+definitely take a look at (arm, s390). powerpc is also a bit hair right
+now, but I'm told that 5.10 will kill a TIF flag there, so that'll make
+it trivial once I rebase on that.
 
-$ ./scripts/get_maintainer.pl -f drivers/char/tpm/tpm-sysfs.c
-Peter Huewe <peterhuewe@gmx.de> (maintainer:TPM DEVICE DRIVER)
-Jarkko Sakkinen <jarkko@kernel.org> (maintainer:TPM DEVICE DRIVER)
-Jason Gunthorpe <jgg@ziepe.ca> (reviewer:TPM DEVICE DRIVER)
-linux-integrity@vger.kernel.org (open list:TPM DEVICE DRIVER)
-linux-kernel@vger.kernel.org (open list)
+Did a few more cleanups on top, series is in the same spot. I'll repost
+once the merge window settles down.
 
-even without the MAINTAINER file changes
-
-(though you should really do those too so
- people that read the file can use the
- proper address)
-
----
-.mailmap | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/.mailmap b/.mailmap
-index e4ccac4e2f88..1e14566a3d56 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -133,6 +133,7 @@ James Ketrenos <jketreno@io.(none)>
- Jan Glauber <jan.glauber@gmail.com> <jang@de.ibm.com>
- Jan Glauber <jan.glauber@gmail.com> <jang@linux.vnet.ibm.com>
- Jan Glauber <jan.glauber@gmail.com> <jglauber@cavium.com>
-+Jarkko Sakkinen <jarkko@kernel.org> <jarkko.sakkinen@linux.intel.com>
- Jason Gunthorpe <jgg@ziepe.ca> <jgg@mellanox.com>
- Jason Gunthorpe <jgg@ziepe.ca> <jgg@nvidia.com>
- Jason Gunthorpe <jgg@ziepe.ca> <jgunthorpe@obsidianresearch.com>
-
+-- 
+Jens Axboe
 
