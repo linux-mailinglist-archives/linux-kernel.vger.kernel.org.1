@@ -2,116 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3356A28D0AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E35328D0B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgJMOwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:52:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46522 "EHLO mail.kernel.org"
+        id S1730671AbgJMOxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:53:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730236AbgJMOwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:52:20 -0400
+        id S1730236AbgJMOxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 10:53:35 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F1752489B;
-        Tue, 13 Oct 2020 14:52:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 087AE2489C;
+        Tue, 13 Oct 2020 14:53:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602600739;
-        bh=1rkYKmpMyyn97uiDmc6UodSnbIU4qXwfrC47nUMN4bw=;
+        s=default; t=1602600814;
+        bh=deMf+UyiVh07dVCA51wXAWNWae5FM0SoGd9A67zB4ug=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lxWCNYZTL2LBW0DLLDynU9GBdfM7S8DWPGQ37AF3Ym+f6crAUyiRIBqa1uWMT/hR0
-         1ZEKw8xzRQ5a50C3lQgZrbcGnC7fjG8V9kZhZHQ+xsluhdcd2YLsSWwE53rQu4wKlg
-         S2xJE2cIByLjd88+fgEI6hiIwIiKOwt5+Kk7/UlM=
+        b=1rXg93Wr67Lyf+KSoJQWVW8rz4UfIQsKlyhKRLvsTxqOIBtTqug6vCaPlxuccIQAK
+         fiyYAybDxhgBdpqJdKPSZ0qC/RhM85f5v8sM1T1r7Qm1Q9wywJSkRTQcMnAbpoRl6i
+         nATMoQtLX616HUMIxTCduUz1uWBsJ5fytQ3blztM=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5576C4047F; Tue, 13 Oct 2020 11:52:17 -0300 (-03)
-Date:   Tue, 13 Oct 2020 11:52:17 -0300
+        id 19F074047F; Tue, 13 Oct 2020 11:53:32 -0300 (-03)
+Date:   Tue, 13 Oct 2020 11:53:32 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
+        Wei Li <liwei391@huawei.com>,
         James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] perf: arm_spe: Decode memory tagging properties
-Message-ID: <20201013145217.GF1063281@kernel.org>
-References: <20200922101225.183554-1-andre.przywara@arm.com>
- <20200922101225.183554-5-andre.przywara@arm.com>
- <20200927031918.GD9677@leoy-ThinkPad-X240s>
- <20201013145103.GE1063281@kernel.org>
+        Andre Przywara <andre.przywara@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
+Subject: Re: [PATCH v2 00/14] perf arm-spe: Refactor decoding & dumping flow
+Message-ID: <20201013145332.GG1063281@kernel.org>
+References: <20200929133917.9224-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201013145103.GE1063281@kernel.org>
+In-Reply-To: <20200929133917.9224-1-leo.yan@linaro.org>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Oct 13, 2020 at 11:51:03AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Sun, Sep 27, 2020 at 11:19:18AM +0800, Leo Yan escreveu:
-> > On Tue, Sep 22, 2020 at 11:12:24AM +0100, Andre Przywara wrote:
-> > > When SPE records a physical address, it can additionally tag the event
-> > > with information from the Memory Tagging architecture extension.
-> > > 
-> > > Decode the two additional fields in the SPE event payload.
-> > > 
-> > > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > > ---
-> > >  .../util/arm-spe-decoder/arm-spe-pkt-decoder.c  | 17 ++++++++++++-----
-> > >  1 file changed, 12 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > index 943e4155b246..a033f34846a6 100644
-> > > --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> > > @@ -8,13 +8,14 @@
-> > >  #include <string.h>
-> > >  #include <endian.h>
-> > >  #include <byteswap.h>
-> > > +#include <linux/bits.h>
-> > >  
-> > >  #include "arm-spe-pkt-decoder.h"
-> > >  
-> > > -#define BIT(n)		(1ULL << (n))
-> > > -
-> > >  #define NS_FLAG		BIT(63)
-> > >  #define EL_FLAG		(BIT(62) | BIT(61))
-> > > +#define CH_FLAG		BIT(62)
-> > > +#define PAT_FLAG	GENMASK_ULL(59, 56)
-> > >  
-> > >  #define SPE_HEADER0_PAD			0x0
-> > >  #define SPE_HEADER0_END			0x1
-> > > @@ -447,10 +448,16 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> > >  			return snprintf(buf, buf_len, "%s 0x%llx el%d ns=%d",
-> > >  				        (idx == 1) ? "TGT" : "PC", payload, el, ns);
-> > >  		case 2:	return snprintf(buf, buf_len, "VA 0x%llx", payload);
-> > > -		case 3:	ns = !!(packet->payload & NS_FLAG);
-> > > +		case 3:	{
-> > > +			int ch = !!(packet->payload & CH_FLAG);
-> > > +			int pat = (packet->payload & PAT_FLAG) >> 56;
-> > > +
-> > > +			ns = !!(packet->payload & NS_FLAG);
-> > >  			payload &= ~(0xffULL << 56);
-> > > -			return snprintf(buf, buf_len, "PA 0x%llx ns=%d",
-> > > -					payload, ns);
-> > > +			return snprintf(buf, buf_len,
-> > > +					"PA 0x%llx ns=%d ch=%d, pat=%x",
-> > > +					payload, ns, ch, pat);
-> > > +			}
-> > 
-> > Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Em Tue, Sep 29, 2020 at 02:39:03PM +0100, Leo Yan escreveu:
+> The prominent issue for the SPE trace decoding and dumping is the packet
+> header and payload values are hard coded with numbers and it's not
+> readable and difficult to maintain; and has other minor issues, e.g. the
+> packet length (header + payload) calculation is not correct for some
+> packet types, and the dumping flow misses to support specific sub
+> classes for operation packet, etc.
 > 
-> Thanks, applied.
+> So this patch set is to refactor the Arm SPE decoding SPE with:
+> - Patches 01, 02 are minor cleans up;
+> - Patches 03, 04 are used to fix and polish the packet and payload
+>   length calculation;
+> - Patch 05 is to add a helper to wrap up printing strings, this can
+>   avoid bunch of duplicate code lines;
+> - Patches 06 ~ 12 are used to refactor decoding for different types
+>   packet one by one (address packet, context packet, counter packet,
+>   event packet, operation packet);
+> - Patch 13 is coming from Andre to dump memory tagging;
+> - Patch 14 is coming from Wei Li to add decoding for ARMv8.3
+>   extension, in this version it has been improved to use defined
+>   macros, also is improved for failure handling and commit log.
+> 
+> This patch set is cleanly applied on the top of perf/core branch
+> with commit a55b7bb1c146 ("perf test: Fix msan uninitialized use."),
+> and the patches have been verified on Hisilicon D06 platform and I
+> manually inspected the dumping result.
+> 
+> Changes from v1:
+> - Heavily rewrote the patch 05 for refactoring printing strings; this
+>   is fundamental change, so adjusted the sequence for patches and moved
+>   the printing string patch ahead from patch 10 (v1) to patch 05;
+> - Changed to use GENMASK_ULL() for bits mask;
+> - Added Andre's patch 13 for dumping memory tagging;
+> - Refined patch 12 for adding sub classes for Operation packet, merged
+>   some commit log from Andre's patch, which allows commit log and code
+>   to be more clear; Added "Co-developed-by: Andre Przywara" tag to
+>   reflect this.
 
-I take that back, I'm applying Leo's series that Andre reviewed instead.
+Ok, so I'll wait for v3, as Leo indicated he'll respin.
+
+Thanks,
+
+- Arnaldo
+ 
+> 
+> Andre Przywara (1):
+>   perf arm_spe: Decode memory tagging properties
+> 
+> Leo Yan (12):
+>   perf arm-spe: Include bitops.h for BIT() macro
+>   perf arm-spe: Fix a typo in comment
+>   perf arm-spe: Refactor payload length calculation
+>   perf arm-spe: Fix packet length handling
+>   perf arm-spe: Refactor printing string to buffer
+>   perf arm-spe: Refactor packet header parsing
+>   perf arm-spe: Refactor address packet handling
+>   perf arm-spe: Refactor context packet handling
+>   perf arm-spe: Refactor counter packet handling
+>   perf arm-spe: Refactor event type handling
+>   perf arm-spe: Refactor operation packet handling
+>   perf arm-spe: Add more sub classes for operation packet
+> 
+> Wei Li (1):
+>   perf arm-spe: Add support for ARMv8.3-SPE
+> 
+>  .../util/arm-spe-decoder/arm-spe-decoder.c    |  54 +-
+>  .../util/arm-spe-decoder/arm-spe-decoder.h    |  17 -
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 567 +++++++++++-------
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 124 +++-
+>  4 files changed, 478 insertions(+), 284 deletions(-)
+> 
+> -- 
+> 2.20.1
+> 
+
+-- 
 
 - Arnaldo
