@@ -2,118 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5375128C928
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667F728C92E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389969AbgJMHU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:20:29 -0400
-Received: from ozlabs.org ([203.11.71.1]:38799 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389829AbgJMHU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:20:28 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9RlY02vRz9sTs;
-        Tue, 13 Oct 2020 18:20:24 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602573626;
-        bh=zc52PmRF4enBb3KdNeN/lkY7V5Sj3aLRPfM9ZwiVhy4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S88ueZzMmWtgouo3f290oK8XH4AqwetRWbtM+P91NL+EvcurOwir41hoqYu1EqzzS
-         oajqb8/R1hpSYoDVaV1MxIXApL5frR54vp8prruEtM5Hh0uyYwWrMKJeWWg9OZkwG5
-         3AJbazqKcQRF+aJ40vJNhBQC64e0aiLLe+EIIDBXhSVA7uSOKo2XL1okHLVP9P8Fj+
-         D8hKCtztN1cP01Zw57S0q6vkEUUVzFwNuCNRbrCf29Qa84cqduCQa5ZPXCXoCDyNwv
-         8qmJJM7K9eJh0QoFxngsgF1UUsFxwaBSX9dcvFXXFmG3ALzpTQmXU+BwUqdo5FvwLB
-         70I6FG8qoRFYg==
-Date:   Tue, 13 Oct 2020 18:20:24 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the mmc tree with the samsung-krzk
- tree
-Message-ID: <20201013182024.70938a91@canb.auug.org.au>
-In-Reply-To: <20200908144622.09385c88@canb.auug.org.au>
-References: <20200908144622.09385c88@canb.auug.org.au>
+        id S2390007AbgJMHYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:24:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7918 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389874AbgJMHYB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 03:24:01 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09D71fTx169223;
+        Tue, 13 Oct 2020 03:23:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=5UaQZMBySqSsjFYkUYym+oRHH2gxwdOJZpbtpDDfvGU=;
+ b=OqDeGs33ftklJ5FxP3UlgyuTJ5t4V3XXlLDguiMXLYiIIfyBAzcJYmfUFucsEK5bdXYk
+ 1vrICIOJuRAKjFV5b8JG+lPGc1mIDTN0EieeaeI1aWO5rS1yyOthUMthsvueMXoPub4o
+ tq5WkFqRy6mrhbT98Dx9HN+Umiv/tYUITy1Fx2ZNSAJkuslx5WfdCZgMgnockOvqjjsQ
+ bkqbE/+7nvMGnQ8N/qWeeNFSqZ3LZ45pLBuqUwuLwjk/q6FNluZjpbCJrn9LzLuJmA7r
+ bSK7GreeZ2koIt9qm6okZDNvNRwkyXnCZbA5mB7CBftfPe9YBkzCadJf4rnnc+QrV8rG PA== 
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34578y10sd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Oct 2020 03:23:24 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09D7McBP019579;
+        Tue, 13 Oct 2020 07:23:24 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma02wdc.us.ibm.com with ESMTP id 3434k9dntk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Oct 2020 07:23:24 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09D7NNjv48824682
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Oct 2020 07:23:23 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18D01136055;
+        Tue, 13 Oct 2020 07:23:23 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C1A413604F;
+        Tue, 13 Oct 2020 07:23:20 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.79.218.16])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Oct 2020 07:23:19 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/features: Remove CPU_FTR_NODSISRALIGN
+In-Reply-To: <0346768708b69bdbfec82f6e5b0364962b9b6932.1602489812.git.christophe.leroy@csgroup.eu>
+References: <0346768708b69bdbfec82f6e5b0364962b9b6932.1602489812.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 13 Oct 2020 12:53:16 +0530
+Message-ID: <875z7ea8t7.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0jvQS_1F3Tf7P_dHTbis07l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-13_02:2020-10-13,2020-10-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 impostorscore=0
+ adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010130053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0jvQS_1F3Tf7P_dHTbis07l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-Hi all,
-
-On Tue, 8 Sep 2020 14:46:22 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+> CPU_FTR_NODSISRALIGN has not been used since
+> commit 31bfdb036f12 ("powerpc: Use instruction emulation
+> infrastructure to handle alignment faults")
 >
-> Today's linux-next merge of the mmc tree got a conflict in:
->=20
->   drivers/mmc/host/Kconfig
->=20
-> between commits:
->=20
->   cb6c03019cdd ("ARM: exynos: stop selecting PLAT_SAMSUNG")
->   db8230d29c3a ("ARM: s5pv210: don't imply CONFIG_PLAT_SAMSUNG")
->=20
-> from the samsung-krzk tree and commit:
->=20
->   54d8454436a2 ("mmc: host: Enable compile testing of multiple drivers")
->=20
-> from the mmc tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc drivers/mmc/host/Kconfig
-> index 0d7c61d8d1d9,dc646359b4ff..000000000000
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@@ -289,7 -301,8 +301,8 @@@ config MMC_SDHCI_TEGR
->  =20
->   config MMC_SDHCI_S3C
->   	tristate "SDHCI support on Samsung S3C SoC"
-> - 	depends on MMC_SDHCI && (PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS)
-> + 	depends on MMC_SDHCI
->  -	depends on PLAT_SAMSUNG || COMPILE_TEST
-> ++	depends on PLAT_SAMSUNG || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
->   	help
->   	  This selects the Secure Digital Host Controller Interface (SDHCI)
->   	  often referrered to as the HSMMC block in some of the Samsung S3C
+> Remove it.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/cputable.h | 22 ++++++++++------------
+>  arch/powerpc/kernel/dt_cpu_ftrs.c   |  8 --------
+>  arch/powerpc/kernel/prom.c          |  2 +-
+>  3 files changed, 11 insertions(+), 21 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+> index 9780c55f9811..accdc1286f37 100644
+> --- a/arch/powerpc/include/asm/cputable.h
+> +++ b/arch/powerpc/include/asm/cputable.h
+> @@ -137,7 +137,6 @@ static inline void cpu_feature_keys_init(void) { }
+>  #define CPU_FTR_DBELL			ASM_CONST(0x00000004)
+>  #define CPU_FTR_CAN_NAP			ASM_CONST(0x00000008)
+>  #define CPU_FTR_DEBUG_LVL_EXC		ASM_CONST(0x00000010)
+> -#define CPU_FTR_NODSISRALIGN		ASM_CONST(0x00000020)
+>  #define CPU_FTR_FPU_UNAVAILABLE		ASM_CONST(0x00000040)
+>  #define CPU_FTR_LWSYNC			ASM_CONST(0x00000080)
+>  #define CPU_FTR_NOEXECUTE		ASM_CONST(0x00000100)
+> @@ -219,7 +218,7 @@ static inline void cpu_feature_keys_init(void) { }
+>  
+>  #ifndef __ASSEMBLY__
+>  
+> -#define CPU_FTR_PPCAS_ARCH_V2	(CPU_FTR_NOEXECUTE | CPU_FTR_NODSISRALIGN)
+> +#define CPU_FTR_PPCAS_ARCH_V2	(CPU_FTR_NOEXECUTE)
+>  
+>  #define MMU_FTR_PPCAS_ARCH_V2 	(MMU_FTR_TLBIEL | MMU_FTR_16M_PAGE)
+>  
+> @@ -378,33 +377,33 @@ static inline void cpu_feature_keys_init(void) { }
+>  	    CPU_FTR_COMMON | CPU_FTR_FPU_UNAVAILABLE  | CPU_FTR_NOEXECUTE)
+>  #define CPU_FTRS_CLASSIC32	(CPU_FTR_COMMON)
+>  #define CPU_FTRS_8XX	(CPU_FTR_NOEXECUTE)
+> -#define CPU_FTRS_40X	(CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE)
+> -#define CPU_FTRS_44X	(CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE)
+> -#define CPU_FTRS_440x6	(CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE | \
+> +#define CPU_FTRS_40X	(CPU_FTR_NOEXECUTE)
+> +#define CPU_FTRS_44X	(CPU_FTR_NOEXECUTE)
+> +#define CPU_FTRS_440x6	(CPU_FTR_NOEXECUTE | \
+>  	    CPU_FTR_INDEXED_DCR)
+>  #define CPU_FTRS_47X	(CPU_FTRS_440x6)
+>  #define CPU_FTRS_E200	(CPU_FTR_SPE_COMP | \
+> -	    CPU_FTR_NODSISRALIGN | CPU_FTR_COHERENT_ICACHE | \
+> +	    CPU_FTR_COHERENT_ICACHE | \
+>  	    CPU_FTR_NOEXECUTE | \
+>  	    CPU_FTR_DEBUG_LVL_EXC)
+>  #define CPU_FTRS_E500	(CPU_FTR_MAYBE_CAN_DOZE | \
+> -	    CPU_FTR_SPE_COMP | CPU_FTR_MAYBE_CAN_NAP | CPU_FTR_NODSISRALIGN | \
+> +	    CPU_FTR_SPE_COMP | CPU_FTR_MAYBE_CAN_NAP | \
+>  	    CPU_FTR_NOEXECUTE)
+>  #define CPU_FTRS_E500_2	(CPU_FTR_MAYBE_CAN_DOZE | \
+>  	    CPU_FTR_SPE_COMP | CPU_FTR_MAYBE_CAN_NAP | \
+> -	    CPU_FTR_NODSISRALIGN | CPU_FTR_NOEXECUTE)
+> -#define CPU_FTRS_E500MC	(CPU_FTR_NODSISRALIGN | \
+> +	    CPU_FTR_NOEXECUTE)
+> +#define CPU_FTRS_E500MC	( \
+>  	    CPU_FTR_LWSYNC | CPU_FTR_NOEXECUTE | \
+>  	    CPU_FTR_DBELL | CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV)
+>  /*
+>   * e5500/e6500 erratum A-006958 is a timebase bug that can use the
+>   * same workaround as CPU_FTR_CELL_TB_BUG.
+>   */
+> -#define CPU_FTRS_E5500	(CPU_FTR_NODSISRALIGN | \
+> +#define CPU_FTRS_E5500	( \
+>  	    CPU_FTR_LWSYNC | CPU_FTR_NOEXECUTE | \
+>  	    CPU_FTR_DBELL | CPU_FTR_POPCNTB | CPU_FTR_POPCNTD | \
+>  	    CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV | CPU_FTR_CELL_TB_BUG)
+> -#define CPU_FTRS_E6500	(CPU_FTR_NODSISRALIGN | \
+> +#define CPU_FTRS_E6500	( \
+>  	    CPU_FTR_LWSYNC | CPU_FTR_NOEXECUTE | \
+>  	    CPU_FTR_DBELL | CPU_FTR_POPCNTB | CPU_FTR_POPCNTD | \
+>  	    CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV | CPU_FTR_ALTIVEC_COMP | \
+> @@ -554,7 +553,6 @@ enum {
+>  #define CPU_FTRS_DT_CPU_BASE			\
+>  	(CPU_FTR_LWSYNC |			\
+>  	 CPU_FTR_FPU_UNAVAILABLE |		\
+> -	 CPU_FTR_NODSISRALIGN |			\
+>  	 CPU_FTR_NOEXECUTE |			\
+>  	 CPU_FTR_COHERENT_ICACHE |		\
+>  	 CPU_FTR_STCX_CHECKS_ADDRESS |		\
+> diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt_cpu_ftrs.c
+> index 1098863e17ee..c598961d9f15 100644
+> --- a/arch/powerpc/kernel/dt_cpu_ftrs.c
+> +++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
+> @@ -273,13 +273,6 @@ static int __init feat_enable_idle_nap(struct dt_cpu_feature *f)
+>  	return 1;
+>  }
+>  
+> -static int __init feat_enable_align_dsisr(struct dt_cpu_feature *f)
+> -{
+> -	cur_cpu_spec->cpu_features &= ~CPU_FTR_NODSISRALIGN;
+> -
+> -	return 1;
+> -}
+> -
+>  static int __init feat_enable_idle_stop(struct dt_cpu_feature *f)
+>  {
+>  	u64 lpcr;
+> @@ -641,7 +634,6 @@ static struct dt_cpu_feature_match __initdata
+>  	{"tm-suspend-hypervisor-assist", feat_enable, CPU_FTR_P9_TM_HV_ASSIST},
+>  	{"tm-suspend-xer-so-bug", feat_enable, CPU_FTR_P9_TM_XER_SO_BUG},
+>  	{"idle-nap", feat_enable_idle_nap, 0},
+> -	{"alignment-interrupt-dsisr", feat_enable_align_dsisr, 0},
+>  	{"idle-stop", feat_enable_idle_stop, 0},
+>  	{"machine-check-power8", feat_enable_mce_power8, 0},
+>  	{"performance-monitor-power8", feat_enable_pmu_power8, 0},
+> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> index c1545f22c077..a5a5acb627fe 100644
+> --- a/arch/powerpc/kernel/prom.c
+> +++ b/arch/powerpc/kernel/prom.c
+> @@ -165,7 +165,7 @@ static struct ibm_pa_feature {
+>  #ifdef CONFIG_PPC_RADIX_MMU
+>  	{ .pabyte = 40, .pabit = 0, .mmu_features  = MMU_FTR_TYPE_RADIX | MMU_FTR_GTSE },
+>  #endif
+> -	{ .pabyte = 1,  .pabit = 1, .invert = 1, .cpu_features = CPU_FTR_NODSISRALIGN },
+> +	{ .pabyte = 1,  .pabit = 1, .invert = 1, },
+>  	{ .pabyte = 5,  .pabit = 0, .cpu_features  = CPU_FTR_REAL_LE,
+>  				    .cpu_user_ftrs = PPC_FEATURE_TRUE_LE },
 
-This is now a conflict between the mmc tree and the arm-soc tree.
+I didn't follow this change. Should the line be dropped?
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/0jvQS_1F3Tf7P_dHTbis07l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FVTgACgkQAVBC80lX
-0GyZ7wgAj3Lt90XXfhTOJCW8tl887N62mOXdr097J3Ogr+0NyyEkaudfhqQBd/0m
-D39j+aVlSLzaEXuGZcSsayEUvQ88mOsQVZIsIwRLY/kO+kjsjBpSwhPkMJ0DSb49
-KvqvnKD/gRVNK8V7e8LEuwzH5TGe2Dcw0gqEJq4ozPSkpl96RqvUBbCw08h4m/4y
-dTEBR0aeYqPTBLMrH7julZUZzqwr8dirN2oAhQxStUJtw1o3LwVjk7JgBoep9MXN
-3zrO49+J51nGHC21carbaGEvRgOSUz2QuRW0ZG891jaO1F2ju2k3n3RFpIsX8jy3
-2tI5ddo0AFi6gQXIsnGEnp/kVL7D+Q==
-=3VR4
------END PGP SIGNATURE-----
-
---Sig_/0jvQS_1F3Tf7P_dHTbis07l--
+-aneesh
