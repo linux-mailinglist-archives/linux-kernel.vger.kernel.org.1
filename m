@@ -2,99 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C8128CF4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9791428CF54
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728970AbgJMNkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:40:23 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:44389 "EHLO m42-4.mailgun.net"
+        id S1729165AbgJMNkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:40:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728899AbgJMNkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:40:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602596423; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=lGt94tJR4p8z2VZENAYILwPd3XBTRqEWZsrbh+IenL4=; b=HHo3Wbc76CO3IBtHlVg03/nbGcyFEox/wOuL653EZj+YtmX1h5MWPD6qlg31rr3O9d7wlR2B
- PtbRnb4by4sjTtjkcfWYZxerpFC8KSLXIXKe1cjpcpzMVu1BD9IQGn2SMVVZSTeup5715ebX
- WqEYsCVZW37gY6MZJykbb7VFbm8=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f85ae3942f9861fb11fe624 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 13:40:09
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B9EEBC433CB; Tue, 13 Oct 2020 13:40:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1729110AbgJMNkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:40:51 -0400
+Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03A6AC43385;
-        Tue, 13 Oct 2020 13:40:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 03A6AC43385
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH 1/2] Asoc: qcom: lpass-cpu: Fix clock disable failure
-Date:   Tue, 13 Oct 2020 19:09:46 +0530
-Message-Id: <1602596386-9886-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 5114024741;
+        Tue, 13 Oct 2020 13:40:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602596450;
+        bh=hMKks0yH+1QbT8lmw2IcB9FvKt0uw8hZHVUF20d9isU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iEP+KtkxdbveqHc3o6dc0NabtkgQBAMQRm6bRQ2wdx9i0idUyeoN5bGhVU9LshPhp
+         RQ63GxGtL7rGZLClYXAzipFBusI5YRWl3Ei/5GCzmB4WQdmknstsXe4e0k9JPY8ebc
+         MIveOdrgpZSUwYYlnCVuFPoWuCxl9brA4QH81e+I=
+Date:   Tue, 13 Oct 2020 16:40:48 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org
+Subject: Re: [PATCH v7 4/4] MAINTAINERS: Add entry for TEE based Trusted Keys
+Message-ID: <20201013134048.GA147135@kernel.org>
+References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
+ <1602065268-26017-5-git-send-email-sumit.garg@linaro.org>
+ <20201013022157.GA47751@linux.intel.com>
+ <CAFA6WYO6zNKtxhpNpTpqAjZnMPrEygs1k7Gwg3hwJV8Ynrr=qQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYO6zNKtxhpNpTpqAjZnMPrEygs1k7Gwg3hwJV8Ynrr=qQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On Tue, Oct 13, 2020 at 04:58:47PM +0530, Sumit Garg wrote:
+> On Tue, 13 Oct 2020 at 07:52, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > On Wed, Oct 07, 2020 at 03:37:48PM +0530, Sumit Garg wrote:
+> > > Add MAINTAINERS entry for TEE based Trusted Keys framework.
+> > >
+> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > > ---
+> > >  MAINTAINERS | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 48aff80..eb3d889 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -9663,6 +9663,14 @@ F:     include/keys/trusted-type.h
+> > >  F:   include/keys/trusted_tpm.h
+> > >  F:   security/keys/trusted-keys/
+> > >
+> > > +KEYS-TRUSTED-TEE
+> > > +M:   Sumit Garg <sumit.garg@linaro.org>
+> > > +L:   linux-integrity@vger.kernel.org
+> > > +L:   keyrings@vger.kernel.org
+> > > +S:   Supported
+> > > +F:   include/keys/trusted_tee.h
+> > > +F:   security/keys/trusted-keys/trusted_tee.c
+> > > +
+> > >  KEYS/KEYRINGS
+> > >  M:   David Howells <dhowells@redhat.com>
+> > >  M:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > > --
+> > > 2.7.4
+> >
+> > I'm sorry but I think I have changed my mind on this. This has been
+> > spinning for a while and sometimes conclusions change over the time.
+> >
+> > I don't think that we really need a separate subsystem tag.
+> 
+> I don't see it as a separate subsystem but rather a kind of underlying
+> trust source (TEE) driver plugged into existing trusted keys
+> subsystem. We could relate it to the RNG subsystem as well where there
+> is a subsystem maintainer and specific driver maintainers.
+> 
+> IMO, having a dedicated entry like this brings clarity in maintenance
+> and in future we may have more trust sources like this added where
+> everyone may not have access to all the trust sources to test.
 
-Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase
-instead of shutdown time. Acheive this by invoking
-clk_disable_unprepare API from cpu daiops shutdown to
-cpu daiops trigger.
-This Fix is update to the below patch.
-https://lore.kernel.org/patchwork/patch/1308101/
+More entries pointing to the exact same stuff does not necessarily mean
+clarity in my books.
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-cpu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> > I'd be for a
+> > new M-entry or R-entry to the existing subsystem tag. It's essential to
+> > have ack from someone with ARM and TEE knowledge but this way too heavy
+> > for the purpose.
+> 
+> If you still think otherwise then I am fine with a new M-entry for
+> existing trusted keys subsystem as well.
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index ba2aca3..2dfb921 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -88,8 +88,6 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
- 
--	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
--
- 	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
- }
- 
-@@ -324,6 +322,7 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		if (ret)
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
-+		clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
- 		break;
- 	}
- 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Adding a M-entry does makes sense because trusted keys backends can be
+based on various technologies and standard. It's a different in that
+sense than lets say a TPM hardware driver.
 
+> > I also see it the most manageable if the trusted keys PR's come from a
+> > single source.
+> 
+> I echo here with you to have a single source for trusted keys PR's
+> irrespective of whether we go with a separate trust source entry or
+> update existing subsystem entry.
+> 
+> -Sumit
+
+And I echo that oviously if there is someone to say the final ack about
+TEE, I will require that as the minimum to ever pick any of those
+changes :-)
+
+I would resolve this with just the M-entry, and we can *later on*
+restructure, if there is a need for that. These things are not sealed
+to stone.
+
+/Jarkko
