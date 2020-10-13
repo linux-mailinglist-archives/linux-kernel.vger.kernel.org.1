@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AAF28CDE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A05328CE03
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgJMMO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:14:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41012 "EHLO mail.kernel.org"
+        id S1727734AbgJMMPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:15:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgJMMOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:14:55 -0400
+        id S1727025AbgJMMO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:14:57 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F06DE22248;
-        Tue, 13 Oct 2020 12:14:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1D4F2242F;
+        Tue, 13 Oct 2020 12:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602591295;
-        bh=hi1aczpcTujPkeB1XjLIT9pw1YvDNzWxbCRXWh+zmzw=;
+        s=default; t=1602591296;
+        bh=qdz3piIzX1wpe0r/0uZBhudtd/hwLAcckI0SXN+J6n8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Raj9YxLe4jdAllcCxm0Y0vLP7xhTJbaUIGNFQiTvcFRchAkIByExUvohS4Ap7xwiB
-         TmLhq+TY8gLOC/Don5cRUd/BaGlrHf2UsNlFa9bpNoyAtY9h5TUndHEdPfyg5ZmFDo
-         VVa7P6AIJrtpMq16/bF4daTsQm6ra0cK83Rkj4og=
+        b=GPVOBrDn2Q7AGL2qOPD5oyQT2fyKLF0FykpUpaTQEhuV3n2eI9iwweBhXHA5HQAsx
+         mvkfMSyNG6a0PvUhdx10P1P3UBzzUpOgpiyqkqHB9+z17/k8AOKYSeEFc1FTNTAgRu
+         QM450yHUgsEyVk2j3BhNMLR+ii31Hzn2jBZkWxho=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSJCe-006Cnz-Qa; Tue, 13 Oct 2020 14:14:52 +0200
+        id 1kSJCe-006Co1-RQ; Tue, 13 Oct 2020 14:14:52 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Luke Nelson <lukenels@cs.washington.edu>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/24] docs: admin-guide: net.rst: add a missing blank line
-Date:   Tue, 13 Oct 2020 14:14:32 +0200
-Message-Id: <434c60fcbe895ba44b3beea886c7996bb20e7b50.1602590106.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        John Garry <john.garry@huawei.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 06/24] blk-mq: docs: add kernel-doc description for a new struct member
+Date:   Tue, 13 Oct 2020 14:14:33 +0200
+Message-Id: <408fac4661f48a7c0e937251880f51ae503d137b.1602590106.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602590106.git.mchehab+huawei@kernel.org>
 References: <cover.1602590106.git.mchehab+huawei@kernel.org>
@@ -49,28 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a missing blank line after a literal block, which
-causes this warning:
+As reported by kernel-doc:
+	./include/linux/blk-mq.h:267: warning: Function parameter or member 'active_queues_shared_sbitmap' not described in 'blk_mq_tag_set'
 
-	Documentation/admin-guide/sysctl/net.rst:303: WARNING: Literal block ends without a blank line; unexpected unindent.
+There is now a new member for struct blk_mq_tag_set. Add a
+description for it, based on the commit that introduced it.
 
+Fixes: f1b49fdc1c64 ("blk-mq: Record active_queues_shared_sbitmap per tag_set for when using shared sbitmap")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/sysctl/net.rst | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/blk-mq.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
-index 57fd6ce68fe0..f2ab8a5b6a4b 100644
---- a/Documentation/admin-guide/sysctl/net.rst
-+++ b/Documentation/admin-guide/sysctl/net.rst
-@@ -300,6 +300,7 @@ Note:
-       0:    0     1     2     3     4     5     6     7
-   RSS hash key:
-   84:50:f4:00:a8:15:d1:a7:e9:7f:1d:60:35:c7:47:25:42:97:74:ca:56:bb:b6:a1:d8:43:e3:c9:0c:fd:17:55:c2:3a:4d:69:ed:f1:42:89
-+
- netdev_tstamp_prequeue
- ----------------------
- 
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index b23eeca4d677..794b2a33a2c3 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -235,6 +235,8 @@ enum hctx_type {
+  * @flags:	   Zero or more BLK_MQ_F_* flags.
+  * @driver_data:   Pointer to data owned by the block driver that created this
+  *		   tag set.
++ * @active_queues_shared_sbitmap:
++ * 		   number of active request queues per tag set.
+  * @__bitmap_tags: A shared tags sbitmap, used over all hctx's
+  * @__breserved_tags:
+  *		   A shared reserved tags sbitmap, used over all hctx's
 -- 
 2.26.2
 
