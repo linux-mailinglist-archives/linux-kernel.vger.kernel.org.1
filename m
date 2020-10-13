@@ -2,189 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB22828D62D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02BB28DD30
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgJMVWY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Oct 2020 17:22:24 -0400
-Received: from mailoutvs18.siol.net ([185.57.226.209]:40435 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726652AbgJMVWX (ORCPT
+        id S1730346AbgJNJW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731041AbgJNJUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:22:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id CF05C526150;
-        Tue, 13 Oct 2020 23:22:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id prebWZDhw8fy; Tue, 13 Oct 2020 23:22:18 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id EABF2526102;
-        Tue, 13 Oct 2020 23:22:17 +0200 (CEST)
-Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 2179552615A;
-        Tue, 13 Oct 2020 23:22:16 +0200 (CEST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     =?ISO-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Subject: Re: Re: [PATCH v2] arm64: dts: allwinner: h6: add eMMC voltage property for Beelink GS1
-Date:   Tue, 13 Oct 2020 23:27:33 +0200
-Message-ID: <2745255.UFgyrzHpml@kista>
-In-Reply-To: <20201009073651.izvvjpqiqiivhknl@gilmour.lan>
-References: <20201003092001.405238-1-peron.clem@gmail.com> <CAJiuCcf8rk4t2GrS3+ANEuCtRmXoCMyzP+-x_rKrAfR-FaMaWA@mail.gmail.com> <20201009073651.izvvjpqiqiivhknl@gilmour.lan>
+        Wed, 14 Oct 2020 05:20:42 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443EEC0613E3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:29:23 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 32so1501000otm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BQVUP6sy3PX6Q3C2BLkQ+7wHeBtTeqDYnlZeUE9CcjA=;
+        b=nY30yW+WJ9MyaUbcO1v/mKwFDXq94hxYfbWo/1L56jEnYbDaOUoYy9nIdcUT28q/3c
+         Uq9y09kxs8N4qWd/Ff1kdavb8TyIc6oBlU3oviAsPjgw5zqHaKMjWs85k6EGx1lxqE03
+         VQTguqayk1ztH//dzkEuTPpRd/rbKtMe5TYkZHhAmRaVfWU6khywIlm/eXZEB8R3YU/t
+         RvblJocOk1w4YKITaedGGSW+l4IlsJxZKuoRhJl4WWr78Rm5iE0CXNAtN8R0QHvYHTcS
+         E2nLmPwqNzyIxnEb9m2N39CFYlvmttezElfEknCVV0scF33M9yCSq3OfXIi84EC3hOJ5
+         U74Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BQVUP6sy3PX6Q3C2BLkQ+7wHeBtTeqDYnlZeUE9CcjA=;
+        b=IzFBKloH/THLod9ulS8IgT50WwPBrE897NWYYYYBS1Dt3pUbpFyyCJBmiX9ibRw1dQ
+         s28jUTXMzYGDWO87b5br5K88OJ/7lz5vAe7H1/uzR4eEVN3AvPSnMrEfgk4jZ+Mws7v4
+         4r7J349UMOCFfrt+evafQA1tbTTmV04c7WtPmdGkhf/U04bl6N3xxbb1QY5YQoagALWx
+         ErIuCmkf9anG/ahQkNT0aoTg2k5sGVqvxYn9bb3AhflDU/tYY/zLSnbILS8TWI/3T5Z3
+         LoWIWQDtqoDy6XhGRIEceUEQ7MuDhq0CZ28i8qpMeQNUgDtTZYl093t3v1+/ett3nXJR
+         bH1g==
+X-Gm-Message-State: AOAM532UQsfjTX3rfsST9aiOVZ2Z3SoCCILFwlrOV4eDStlT0sD4/40v
+        tVvN9Ju+XalmtPTV8wmHEwi9+xzoig63Q4dp7OhlxQ==
+X-Google-Smtp-Source: ABdhPJyWjnabEyver0ZLJs3j3vpJ6dQJC3dFlcNQoNysjkLGxpSekou/SW+1ozZsc27Ff8tuKWkk2Jcm4I0Yp/Rrics=
+X-Received: by 2002:a9d:7b59:: with SMTP id f25mr1167062oto.306.1602624562402;
+ Tue, 13 Oct 2020 14:29:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+References: <20201013100314.216154-1-tali.perry1@gmail.com> <20201013115023.GL4077@smile.fi.intel.com>
+In-Reply-To: <20201013115023.GL4077@smile.fi.intel.com>
+From:   Alex Qiu <xqiu@google.com>
+Date:   Tue, 13 Oct 2020 14:29:11 -0700
+Message-ID: <CAA_a9xKSYjjX47AT_XduA7WyrM5nCNu4vJLUsjwBEAyy7jn0BQ@mail.gmail.com>
+Subject: Re: [PATCH v2] i2c: npcm7xx: Support changing bus speed using debugfs.
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Tali Perry <tali.perry1@gmail.com>, Wolfram Sang <wsa@kernel.org>,
+        Kun Yi <kunyi@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne petek, 09. oktober 2020 ob 09:36:51 CEST je Maxime Ripard napisal(a):
-> On Thu, Oct 08, 2020 at 10:00:06PM +0200, Clément Péron wrote:
-> > Hi Maxime,
-> > 
-> > Adding linux-sunxi and Jernej Skrabec to this discussion.
-> > 
-> > On Thu, 8 Oct 2020 at 17:10, Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > Hi Clément,
-> > >
-> > > On Mon, Oct 05, 2020 at 08:47:19PM +0200, Clément Péron wrote:
-> > > > On Mon, 5 Oct 2020 at 11:21, Maxime Ripard <maxime@cerno.tech> wrote:
-> > > > >
-> > > > > Hi Clément,
-> > > > >
-> > > > > On Sat, Oct 03, 2020 at 11:20:01AM +0200, Clément Péron wrote:
-> > > > > > Sunxi MMC driver can't distinguish at runtime what's the I/O 
-voltage
-> > > > > > for HS200 mode.
-> > > > >
-> > > > > Unfortunately, that's not true (or at least, that's not related to 
-your patch).
-> > > > >
-> > > > > > Add a property in the device-tree to notify MMC core about this
-> > > > > > configuration.
-> > > > > >
-> > > > > > Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink 
-GS1 board")
-> > > > > > Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> > > > > > ---
-> > > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
-> > > > > >  1 file changed, 1 insertion(+)
-> > > > > >
-> > > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-
-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > > > > > index 049c21718846..3f20d2c9bbbb 100644
-> > > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > > > > > @@ -145,6 +145,7 @@ &mmc2 {
-> > > > > >       vqmmc-supply = <&reg_bldo2>;
-> > > > > >       non-removable;
-> > > > > >       cap-mmc-hw-reset;
-> > > > > > +     mmc-hs200-1_8v;
-> > > > > >       bus-width = <8>;
-> > > > > >       status = "okay";
-> > > > > >  };
-> > > > >
-> > > > > I'm not really sure what you're trying to fix here, but as far as MMC
-> > > > > goes, eMMC's can support io voltage of 3.3, 1.8 and 1.2V. Modes up 
-until
-> > > > > HS DDR (50MHz in DDR) will use an IO voltage of 3.3V, higher speed 
-modes
-> > > > > (HS200 and HS400) supporting 1.8V and 1.2V.
-> > > >
-> > > > Some users report that the eMMC is not working properly on their
-> > > > Beelink GS1 boards.
-> > > >
-> > > > > The mmc-hs200-1_8v property states that the MMC controller supports 
-the
-> > > > > HS200 mode at 1.8V. Now, I can only assume that since BLDO2 is set 
-up at
-> > > > > 1.8V then otherwise, the MMC core will rightfully decide to use the
-> > > > > highest supported mode. In this case, since the driver sets it, it 
-would
-> > > > > be HS-DDR at 3.3V, which won't work with that fixed regulator.
-> > > > >
-> > > > > I can only assume that enabling HS200 at 1.8V only fixes the issue 
-you
-> > > > > have because otherwise it would use HS-DDR at 3.3V, ie not actually
-> > > > > fixing the issue but sweeping it under the rug.
-> > > > >
-> > > > > Trying to add mmc-ddr-1_8v would be a good idea
-> > > >
-> > > > Thanks for the explanation, this is indeed the correct one.
-> > > > So It looks like the SDIO controller has an issue on some boards when
-> > > > using HS-DDR mode.
-> > > >
-> > > > Is this patch acceptable with the proper commit log?
-> > >
-> > > If HS-DDR works, yes, but I assume it doesn't?
-> > 
-> > After discussing with Jernej about this issue, I understood that:
-> > - Automatic delay calibration is not implemented
-> > - We also miss some handling of DDR related bits in control register
-> > 
-> > So none of H5/H6 boards should actually work.
-> > (Some 'lucky' boards seem to work enough to switch to HS200 mode...)
-> > 
-> > To "fix" this the H5 disable the HS-DDR mode in sunxi mmc driver :
-> > https://github.com/torvalds/linux/blob/master/drivers/mmc/host/sunxi-mmc.c#L1409
-> 
-> I find it suspicious that some boards would have traces not good enough
-> for HS-DDR (50MHz in DDR) but would work fine in HS200 (200MHz in SDR).
-> If there's some mismatch on the traces, it will only be worse in HS200.
+Tested again, and the updated patch is still working.
 
-FYI, similar situation is also with Tanix TX6 board. Mine works well in HS-DDR 
-mode, but some people reported that it doesn't work for them. The only 
-possible difference could be different eMMC IC. I'll try to confirm that.
+On Tue, Oct 13, 2020 at 4:49 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Oct 13, 2020 at 01:03:14PM +0300, Tali Perry wrote:
+> > Systems that can dynamically add and remove slave devices
+> > often need to change the bus speed in runtime.
+> > This patch expose the bus frequency to the user.
+> > This feature can also be used for test automation.
+>
+> > --
+> > v2 -> v1:
+> >       - Fix typos.
+> >       - Remove casting to u64.
+> >
+> > v1: initial version
+>
+> Above block should go after cutter '---' (see below) line...
+>
+> > Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
+> > Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+Reviewed-by: Alex Qiu <xqiu@google.com>
+Tested-by: Alex Qiu <xqiu@google.com>
 
-Anyway, I did some tests on OrangePi 3 board which also have eMMC. Both modes 
-(HS-DDR and HS200) are supported and work well. Interesting observation is 
-that speed test (hdparm -t) reported 80.58 MB/sec for HS-DDR mode and 43.40 
-MB/sec for HS200. As it can be seen here, HS-DDR is quicker by a factor of 2, 
-but it should be the other way around. Reason for this is that both modes use 
-same base clock and thus HS-DDR produces higher speed.
-If I change f_max to 150 MHz (max. per datasheet for SDR @ 1.8 V) then 
-naturally HS200 mode is faster (124.63 MB/sec) as HS-DDR as it should be. This 
-would be actually correct test for problematic boards but unfortunately I 
-don't have it. I also hacked in support for HS400 (~143 MB/s) and this mode is 
-the only one which really needs calibration on my board. 
+> > ---
+>
+> ...here.
+>
+> >  drivers/i2c/busses/i2c-npcm7xx.c | 35 ++++++++++++++++++++++++++++++++
+> >  1 file changed, 35 insertions(+)
+>
+> As we discussed previously I'm not a fan of the functionality this gives and a
+> way it's done, but this is debugfs and not anyhow an ABI. Also it's localized
+> inside one driver. In the future we may come up with better approach.
+>
+> That said, no objections from me.
+>
+> > diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+> > index 2ad166355ec9..633ac67153e2 100644
+> > --- a/drivers/i2c/busses/i2c-npcm7xx.c
+> > +++ b/drivers/i2c/busses/i2c-npcm7xx.c
+> > @@ -2208,6 +2208,40 @@ static const struct i2c_algorithm npcm_i2c_algo = {
+> >  /* i2c debugfs directory: used to keep health monitor of i2c devices */
+> >  static struct dentry *npcm_i2c_debugfs_dir;
+> >
+> > +static int i2c_speed_get(void *data, u64 *val)
+> > +{
+> > +     struct npcm_i2c *bus = data;
+> > +
+> > +     *val = bus->bus_freq;
+> > +     return 0;
+> > +}
+> > +
+> > +static int i2c_speed_set(void *data, u64 val)
+> > +{
+> > +     struct npcm_i2c *bus = data;
+> > +     int ret;
+> > +
+> > +     if (val < I2C_FREQ_MIN_HZ || val > I2C_FREQ_MAX_HZ)
+> > +             return -EINVAL;
+> > +
+> > +     if (val == bus->bus_freq)
+> > +             return 0;
+> > +
+> > +     i2c_lock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
+> > +
+> > +     npcm_i2c_int_enable(bus, false);
+> > +
+> > +     ret = npcm_i2c_init_module(bus, I2C_MASTER, (u32)val);
+> > +
+> > +     i2c_unlock_bus(&bus->adap, I2C_LOCK_ROOT_ADAPTER);
+> > +
+> > +     if (ret)
+> > +             return -EAGAIN;
+> > +
+> > +     return 0;
+> > +}
+> > +DEFINE_DEBUGFS_ATTRIBUTE(i2c_clock_ops, i2c_speed_get, i2c_speed_set, "%llu\n");
+> > +
+> >  static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+> >                                 struct npcm_i2c *bus)
+> >  {
+> > @@ -2223,6 +2257,7 @@ static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+> >       debugfs_create_u64("rec_succ_cnt", 0444, d, &bus->rec_succ_cnt);
+> >       debugfs_create_u64("rec_fail_cnt", 0444, d, &bus->rec_fail_cnt);
+> >       debugfs_create_u64("timeout_cnt", 0444, d, &bus->timeout_cnt);
+> > +     debugfs_create_file("i2c_speed", 0644, d, bus, &i2c_clock_ops);
+> >
+> >       bus->debugfs = d;
+> >  }
+> >
+> > base-commit: 865c50e1d279671728c2936cb7680eb89355eeea
+> > --
+> > 2.22.0
+> >
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-Two observations from BSP driver:
-1. Module clock is disabled before adjusting DDR bit and afterwards it's re-
-enabled . That could fix some kind of glitches.
-2. SDMMC peripheral runs on higher clock than on mainline.
-
-> 
-> And for the delay calibration, iirc, that's only necessary for HS400
-> that we don't support?
-
-According to BSP driver and its DT, HS200 also needs calibration. However, it 
-seems that using it on lower speed it isn't needed.
-
-Best regards,
-Jernej
-
-> 
-> > I'm not sure about A64 but it looks like the property "mmc-hs200-1_8v"
-> > for the PineBook shows the same issue.
-> > 
-> > The proper way would of course be to implement the missing feature
-> > mentioned above.
-> > But this could take some time and as the eMMC driver is actually
-> > broken wouldn't it be better to disable the HS-DDR for H6 in the mmc
-> > driver like it's done for H5 ?
-> 
-> Have you tested with only the mmc-ddr-1_8v property?
-> 
-> Maxime
-> 
-
-
+- Alex Qiu
