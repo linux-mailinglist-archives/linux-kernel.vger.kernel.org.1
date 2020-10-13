@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3638428D330
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C9F28D331
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730361AbgJMRfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 13:35:24 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:46613 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgJMRfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:35:24 -0400
-Received: by mail-oi1-f193.google.com with SMTP id s81so180759oie.13;
-        Tue, 13 Oct 2020 10:35:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=j90o4pXE8wrwI/DObfaFUgJw3Uhg+maJFJpVAo6JkBA=;
-        b=Vby9lid004lre9qOCw/oQBsvuz+9bEM+lZmwV1Ud8DJpY0IcureVG6TsMUE6eqBxiA
-         OKQflSM67Tr4YQpH5B+OheweQ4frkwr/xJQSw/0nJioVOqC28d3aO+O7Xaw94TKqWvok
-         UeH6bEB+y/ppI169xiqOBDvrf3RJQj6siq7y0wygkImtrTqgiakz+PGqmlRRQki+qmBW
-         i5SKbDKhStQ4iwW5YWqzBaz8dHK/ujBUEJbRD+qhVheEp0mBHRa7+sa2+iyqhQS4cTkl
-         f7BLw4ZSXVIdLag2VSSJu1m4zNWqDwfskOwqQoeC7pQbvL7MG+AsZaF2iVuBT01FOSV6
-         RnOQ==
-X-Gm-Message-State: AOAM530wWDf0PLs8xEZ4o9210ffN7vic/bl+6C7oLvBnZUS55XMSGChS
-        eCVwioqS1h1Hxq93fZ5sKs2vmJ0Ww1B0FUKw9cGZhbAYiF0=
-X-Google-Smtp-Source: ABdhPJxrrZw26n5N1rCRo0ZhIngERFyu8lKE5hsJrarcEs2ViOUUgl+S4SniHKVKTkL0Sjj+1KaaSQVj6024aQwHvao=
-X-Received: by 2002:aca:fd52:: with SMTP id b79mr513288oii.69.1602610523613;
- Tue, 13 Oct 2020 10:35:23 -0700 (PDT)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 13 Oct 2020 19:35:12 +0200
-Message-ID: <CAJZ5v0gj1X7kO2uVX=zMzR6+y1BWAERT+HDT+0zY0ieXs+Lx3g@mail.gmail.com>
-Subject: [GIT PULL] PNP updates for v5.10-rc1
+        id S1727709AbgJMRg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:36:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59588 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729133AbgJMRg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 13:36:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 089F8AD6B;
+        Tue, 13 Oct 2020 17:36:25 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 19:36:15 +0200
+From:   Borislav Petkov <bp@suse.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v5.10-rc1
+Message-ID: <20201013173615.GI32151@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-Please pull from the tag
+here's the clang build warning fix from yesterday which is finally
+ready. I've added a second one from the tip's urgent queue which could
+go in now too.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pnp-5.10-rc1
+Please pull,
+thx.
 
-with top-most commit 2ef0342530b0f487a65b5f6c94c85dce5f9b53b5
+---
 
- PNP: remove the now unused pnp_find_card() function
+The following changes since commit 8b6591fd0ac8b7e8b2873703bc24b71a6f3d2d3e:
 
-on top of commit ba4f184e126b751d1bffad5897f263108befc780
+  Merge tag 'x86_platform_for_v5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2020-10-12 10:31:18 -0700)
 
- Linux 5.9-rc6
+are available in the Git repository at:
 
-to receive PNP updates for 5.10-rc1.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.10-rc1
 
-These clean the PNP code somewhat:
+for you to fetch changes up to 081dd68c89061077930ec7776d98837cb64b0405:
 
- - Remove the now unused pnp_find_card() function (Christoph Hellwig).
+  x86/platform/uv: Remove unused variable in UV5 NMI handler (2020-10-13 19:21:13 +0200)
 
- - Drop duplicate pci.h include from the quirks code and add an
-   "internal.h" include to acpi_pnp.c to fix a compiler warning (Tian
-   Tao).
+----------------------------------------------------------------
+- Fix the #DE oops message string format which confused tools parsing
+crash information. (Thomas Gleixner)
 
-Thanks!
+- Remove an unused variable in the UV5 code which was triggering a build
+warning with clang. (Mike Travis)
 
+----------------------------------------------------------------
+Mike Travis (1):
+      x86/platform/uv: Remove unused variable in UV5 NMI handler
 
----------------
+Thomas Gleixner (1):
+      x86/traps: Fix #DE Oops message regression
 
-Christoph Hellwig (1):
-      PNP: remove the now unused pnp_find_card() function
+ arch/x86/kernel/traps.c       | 2 +-
+ arch/x86/platform/uv/uv_nmi.c | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
-Tian Tao (2):
-      PNP: quirks: Fix duplicate included pci.h
-      PNP: ACPI: Fix missing-prototypes in acpi_pnp.c
+-- 
+Regards/Gruss,
+    Boris.
 
----------------
-
- Documentation/admin-guide/pnp.rst |  4 ----
- drivers/acpi/acpi_pnp.c           |  2 ++
- drivers/pnp/isapnp/compat.c       | 23 -----------------------
- drivers/pnp/quirks.c              |  2 --
- include/linux/isapnp.h            |  6 ------
- 5 files changed, 2 insertions(+), 35 deletions(-)
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
