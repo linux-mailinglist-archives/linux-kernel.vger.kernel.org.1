@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360AE28D6DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59FB28D6DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387783AbgJMXNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 19:13:08 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:35009 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729677AbgJMXNH (ORCPT
+        id S2387882AbgJMXNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:13:17 -0400
+Received: from mail-03.mail-europe.com ([91.134.188.129]:38548 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729677AbgJMXNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 19:13:07 -0400
-Date:   Tue, 13 Oct 2020 23:13:01 +0000
+        Tue, 13 Oct 2020 19:13:17 -0400
+Date:   Tue, 13 Oct 2020 23:13:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1602630785;
-        bh=HcCDjaFaXBvvfsaJrMpGL1OgdbVzNQngYH/aJmEbeyY=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=JYFxZtT3I280PMXYhCEwwRx14RYLSkfY/YZ+E+qLXiFDa6L82kH5TvtP6N9SoOY3v
-         2vu4Dh7TJ4OsyFe9Gl8ej9fIjDg+B7yzNo1fCu0AsWNlVBLlHmnUNlCYIl2kSqeBnA
-         PIdv8HxjBXMMIBFC1ErpDsPZSvIgJG8x2NRTct+g=
+        s=protonmail; t=1602630792;
+        bh=ZGVveLBSaEcJdSVGE0S5ZpuqOTafDMvhOGrHn+UDqnY=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=DH+F14PCibCY9v/+Rf2aH5sYnfCq/f8W0ku15NxWZ1qGNuf9x+0iJ5ly2RTbkyB6n
+         KNq18I+ZmoPZ99bGs7ZD9hjt3C5BpPp9s/tvyv0HDeO1R1xnC/RlnY57DYHB5zkbUE
+         pyMrewpeelsBBDNKSbTHgkNl5h0wjjG3dw+tIBHQ=
 To:     Jonathan Corbet <corbet@lwn.net>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
@@ -28,8 +28,10 @@ Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
 Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
           <nfraprado@protonmail.com>
-Subject: [PATCH v2 0/5] docs: automarkup.py: Make automarkup ready for Sphinx 3.1+
-Message-ID: <20201013231218.2750109-1-nfraprado@protonmail.com>
+Subject: [PATCH v2 1/5] docs: automarkup.py: Use new C roles in Sphinx 3
+Message-ID: <20201013231218.2750109-2-nfraprado@protonmail.com>
+In-Reply-To: <20201013231218.2750109-1-nfraprado@protonmail.com>
+References: <20201013231218.2750109-1-nfraprado@protonmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -42,63 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+While Sphinx 2 used a single c:type role for struct, union, enum and
+typedef, Sphinx 3 uses a specific role for each one.
+To keep backward compatibility, detect the Sphinx version and use the
+correct roles for that version.
 
-this patch series makes the automatic markup extension ready for Sphinx 3.1=
-+.
-It was based on Mauro's Sphinx patch series, and requires it for the namesp=
-aces
-to work, but could also be merged through the docs tree without regressions
-(other than the increased build time explained below).
+Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+---
+ Documentation/sphinx/automarkup.py | 55 ++++++++++++++++++++++++++----
+ 1 file changed, 49 insertions(+), 6 deletions(-)
 
-The first three patches make automarkup compatible with Sphinx 3.1. The fir=
-st
-patch makes use of the new C roles in Sphinx3 instead of the generic type r=
-ole
-from Sphinx 2, while patches 2 and 3 solve the warnings caused by Sphinx3's
-stricter C domain.
-
-Patch 4 adds cross-referencing to C macros with parameters for Sphinx 3.
-
-Patch 5 enables cross-referencing inside C namespaces, which are new to Sph=
-inx
-3.1.
-
-On an importante note:
-In order to be able to support automatic cross-referencing inside C namespa=
-ces,
-I needed to disable parallel source reading for Sphinx in patch 5. On my
-machine, this makes the build process take about 4 additional minutes. This=
- is
-very bad, since the documentation building process already takes too long, =
-but I
-couldn't think of a way to sidestep this issue. If anyone has any idea, it =
-would
-be greatly appreciated.
-
-Also, for some reason, disabling the source read parallelization makes
-Sphinx output 2 warnings saying so, which is another annoyance.
-
-Thanks,
-N=C3=ADcolas
-
-Changes in v2:
-- Split the single patch into patches 1, 2 and 3
-- Change sphinx version verification in patch 1
-- Thanks Mauro for the clarifications in v1:
-  - Add patches 4 and 5 for the missing functionalities
-
-N=C3=ADcolas F. R. A. Prado (5):
-  docs: automarkup.py: Use new C roles in Sphinx 3
-  docs: automarkup.py: Fix regexes to solve sphinx 3 warnings
-  docs: automarkup.py: Skip C reserved words when cross-referencing
-  docs: automarkup.py: Add cross-reference for parametrized C macros
-  docs: automarkup.py: Allow automatic cross-reference inside C
-    namespace
-
- Documentation/sphinx/automarkup.py | 188 +++++++++++++++++++++++------
- 1 file changed, 154 insertions(+), 34 deletions(-)
-
+diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/auto=
+markup.py
+index a1b0f554cd82..db13fb15cedc 100644
+--- a/Documentation/sphinx/automarkup.py
++++ b/Documentation/sphinx/automarkup.py
+@@ -23,7 +23,21 @@ from itertools import chain
+ # bit tries to restrict matches to things that won't create trouble.
+ #
+ RE_function =3D re.compile(r'(([\w_][\w\d_]+)\(\))')
+-RE_type =3D re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d_]+)')
++
++#
++# Sphinx 2 uses the same :c:type role for struct, union, enum and typedef
++#
++RE_generic_type =3D re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d=
+_]+)')
++
++#
++# Sphinx 3 uses a different C role for each one of struct, union, enum and
++# typedef
++#
++RE_struct =3D re.compile(r'\b(struct)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCII)
++RE_union =3D re.compile(r'\b(union)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCII)
++RE_enum =3D re.compile(r'\b(enum)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCII)
++RE_typedef =3D re.compile(r'\b(typedef)\s+([a-zA-Z_]\w+)', flags=3Dre.ASCI=
+I)
++
+ #
+ # Detects a reference to a documentation page of the form Documentation/..=
+. with
+ # an optional extension
+@@ -48,9 +62,22 @@ def markup_refs(docname, app, node):
+     #
+     # Associate each regex with the function that will markup its matches
+     #
+-    markup_func =3D {RE_type: markup_c_ref,
+-                   RE_function: markup_c_ref,
+-                   RE_doc: markup_doc_ref}
++    markup_func_sphinx2 =3D {RE_doc: markup_doc_ref,
++                           RE_function: markup_c_ref,
++                           RE_generic_type: markup_c_ref}
++
++    markup_func_sphinx3 =3D {RE_doc: markup_doc_ref,
++                           RE_function: markup_c_ref,
++                           RE_struct: markup_c_ref,
++                           RE_union: markup_c_ref,
++                           RE_enum: markup_c_ref,
++                           RE_typedef: markup_c_ref}
++
++    if sphinx.version_info[0] >=3D 3:
++        markup_func =3D markup_func_sphinx3
++    else:
++        markup_func =3D markup_func_sphinx2
++
+     match_iterators =3D [regex.finditer(t) for regex in markup_func]
+     #
+     # Sort all references by the starting position in text
+@@ -79,8 +106,24 @@ def markup_refs(docname, app, node):
+ # type_name) with an appropriate cross reference.
+ #
+ def markup_c_ref(docname, app, match):
+-    class_str =3D {RE_function: 'c-func', RE_type: 'c-type'}
+-    reftype_str =3D {RE_function: 'function', RE_type: 'type'}
++    class_str =3D {RE_function: 'c-func',
++                 # Sphinx 2 only
++                 RE_generic_type: 'c-type',
++                 # Sphinx 3+ only
++                 RE_struct: 'c-struct',
++                 RE_union: 'c-union',
++                 RE_enum: 'c-enum',
++                 RE_typedef: 'c-type',
++                 }
++    reftype_str =3D {RE_function: 'function',
++                   # Sphinx 2 only
++                   RE_generic_type: 'type',
++                   # Sphinx 3+ only
++                   RE_struct: 'struct',
++                   RE_union: 'union',
++                   RE_enum: 'enum',
++                   RE_typedef: 'type',
++                   }
+=20
+     cdom =3D app.env.domains['c']
+     #
 --=20
 2.28.0
 
