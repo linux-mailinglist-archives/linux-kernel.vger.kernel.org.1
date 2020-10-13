@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD8B28D15F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6142128D172
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731120AbgJMPhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730958AbgJMPhP (ORCPT
+        id S1731204AbgJMPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:46:09 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41536 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727830AbgJMPqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:37:15 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1129DC0613D0;
-        Tue, 13 Oct 2020 08:37:15 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e17so24570676wru.12;
-        Tue, 13 Oct 2020 08:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NqpGyIxGkzBe54LbECwQ4ti1dUnwF1pNvzMYS8Ni1qk=;
-        b=XVf5bQXdPjnn21q9qd8ieph25Fus4NCdbVyi2mOTg7yq1Zny8DykvIgzN+HC1fete7
-         f9vZj3i2oo5QzSR9cR7TBYe9zVSq5eUSqBVw9N3UhCNqAeMRVEsaDBlE1J9bS/HZSOEA
-         X5luf2yF6oEX+l4w4nlBDb0xq+INIf0oxr9Ujt2AKtK5CxDXedRK3/rjow/B6dg1DJJA
-         UxKmuMAMkkENLUPzht83TDPSTxMHEhPkGjDaipUMLRsiaiS86n0nOL/RdKPryYntQW+0
-         ns9bVSv3UwLJKM4j46A2GLAOa0db3yF1roJEqon0ENoym1IRmkGqx2Icqc1J3ZSi1gA2
-         JXcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NqpGyIxGkzBe54LbECwQ4ti1dUnwF1pNvzMYS8Ni1qk=;
-        b=Qd0YH2MrpRJx+a+ytLfI/U5fJ5WaxpbzefATeez5PBceBSXF+n+3kXm/jSoWpWj+cP
-         9CFKtyTTxwEkow1frl1C8eY0ZJB13qjgzt/DimotLA6u0d3gk7udF/J4fzHLnbBjEdV2
-         wBVC0o7i01a/p9spDVjexw7rtsdm16hpnYQDiim/GBVkyaUntap7QMFEYz2oICN4sWQE
-         KaDKSGZTSUvzTus6AJ80WfhC2EX+jMJebIAfiNm1ZeM/bnh5eJtoxW5gMF+Q6Nwcadzm
-         Dk5X8wmR48vZn1YzrYmjyzPubifGAxQ9yfF4jDvxhMkxmzSKGO4A0mYZUSYJLHpAOqou
-         Akpw==
-X-Gm-Message-State: AOAM531IcjoMqhVXSFMqo8EedlRTezNvL/u67GLQBfmY9Kqc06tqUMV3
-        jw1mEhwy6wp0QOL0pxvFziy2ib7v03f9bA==
-X-Google-Smtp-Source: ABdhPJyMK9WV8/XRKrMpteIuKNBL7WJ6l3g7AMZE/IEw4NZFMHr+Ee9oXn0dFKc1icYcWo3QSjPXbw==
-X-Received: by 2002:adf:ba85:: with SMTP id p5mr316139wrg.64.1602603433846;
-        Tue, 13 Oct 2020 08:37:13 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.119.110])
-        by smtp.gmail.com with ESMTPSA id f14sm30459748wrt.53.2020.10.13.08.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 08:37:13 -0700 (PDT)
-Subject: Re: [PATCH] iio: adc: mediatek: fix unset field
-To:     Fabien Parent <fparent@baylibre.com>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org
-Cc:     chun-hung.wu@mediatek.com, alexandru.ardelean@analog.com,
-        pmeerw@pmeerw.net, lars@metafoo.de, knaack.h@gmx.de,
-        jic23@kernel.org
-References: <20201012194618.2170970-1-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <61fe6278-a628-820c-6bbd-eeac51b1e7c3@gmail.com>
-Date:   Tue, 13 Oct 2020 17:37:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 13 Oct 2020 11:46:09 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 2F6A58030867;
+        Tue, 13 Oct 2020 15:46:07 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JtZOFWp1UD6R; Tue, 13 Oct 2020 18:46:05 +0300 (MSK)
+Date:   Tue, 13 Oct 2020 18:45:58 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 14/18] dt-bindings: usb: dwc3: Add Frame Length Adj
+ restrictions
+Message-ID: <20201013154558.cmz4iheaxfe44ago@mobilestation>
+References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
+ <20201010224121.12672-15-Sergey.Semin@baikalelectronics.ru>
+ <20201013123859.GD3269269@bogus>
 MIME-Version: 1.0
-In-Reply-To: <20201012194618.2170970-1-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201013123859.GD3269269@bogus>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/10/2020 21:46, Fabien Parent wrote:
-> dev_comp field is used in a couple of places but it is never set. This
-> results in kernel oops when dereferencing a NULL pointer. Set the
-> `dev_comp` field correctly in the probe function.
+On Tue, Oct 13, 2020 at 07:38:59AM -0500, Rob Herring wrote:
+> On Sun, Oct 11, 2020 at 01:41:17AM +0300, Serge Semin wrote:
+> > In accordance with the IP core databook the
+> > snps,quirk-frame-length-adjustment property can be set within [0, 0x3F].
+> > Let's make sure the DT schema applies a correct restriction on the
+> > property.
+> > 
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > ---
+> >  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> > index 36d4b8060d7c..f1e6c3dab1ff 100644
+> > --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> > @@ -226,6 +226,8 @@ properties:
+> >        length adjustment when the fladj_30mhz_sdbnd signal is invalid or
+> >        incorrect.
+> >      $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 0
+> > +    maximum: 0x3f
 > 
-> Fixes: 6d97024dce23 ("iio: adc: mediatek: mt6577-auxadc, add mt6765 support")
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 
-Ouch.
+> It's fine if you add the constraints during the conversion.
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+Ok. I'll keep it in mind next time.)
 
-> ---
->   drivers/iio/adc/mt6577_auxadc.c | 2 ++
->   1 file changed, 2 insertions(+)
+-Sergey
+
 > 
-> diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
-> index ac415cb089cd..7bd48377cd79 100644
-> --- a/drivers/iio/adc/mt6577_auxadc.c
-> +++ b/drivers/iio/adc/mt6577_auxadc.c
-> @@ -276,6 +276,8 @@ static int mt6577_auxadc_probe(struct platform_device *pdev)
->   		goto err_disable_clk;
->   	}
->   
-> +	adc_dev->dev_comp = of_device_get_match_data(&pdev->dev);
-> +
->   	mutex_init(&adc_dev->lock);
->   
->   	mt6577_auxadc_mod_reg(adc_dev->reg_base + MT6577_AUXADC_MISC,
-> 
+> >  
+> >    snps,rx-thr-num-pkt-prd:
+> >      description: |
+> > -- 
+> > 2.27.0
+> > 
