@@ -2,165 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951A028D112
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F8228D116
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389213AbgJMPRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:17:52 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22096 "EHLO mga03.intel.com"
+        id S2389247AbgJMPSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:18:13 -0400
+Received: from mga01.intel.com ([192.55.52.88]:17834 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389037AbgJMPRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:17:51 -0400
-IronPort-SDR: PrSCs7HYohF4d9oOmM3uLatoLugUo8bz4lsAVhIbQ77iPRJKoA7mrw0E/Qgqt+ojkcdEoZDs4/
- Bkruz6/mOf1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165989357"
+        id S2389037AbgJMPSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:18:11 -0400
+IronPort-SDR: j4tCWTFkZFIJdONyoSK3Tl0h4V3nqtMt/voAor1OpHD4WOU/0j92Xbm+c9Pomj9Dz6GDjvJ3Tq
+ rPXRbrTRiHmg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="183410001"
 X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="165989357"
+   d="scan'208";a="183410001"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 08:17:42 -0700
-IronPort-SDR: 044zPLbuBIIVUjmTdo4U7fsFwqakc35cG93d95yavvLXDtSSf9SRzswDKJAKHbpsD7y5Pt6T88
- mQ+5UBfolmxA==
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 08:17:54 -0700
+IronPort-SDR: 536CS6GdxDtd9/xQPjkz6Ts0KhJ596SAsKwVEUc5cSdeKRlVHcgzIZDNG2N8zDOYh2NvdFwDF4
+ YXQmh3M+gkfA==
 X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="530429894"
-Received: from isgomez-mobl.amr.corp.intel.com (HELO [10.252.133.97]) ([10.252.133.97])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 08:17:42 -0700
-Subject: Re: [PATCH v4 2/2] PCI/ERR: Split the fatal and non-fatal error
- recovery handling
-To:     Christoph Hellwig <hch@infradead.org>,
-        sathyanarayanan.nkuppuswamy@gmail.com
-Cc:     bhelgaas@google.com, okaya@kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com
-References: <5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <c6e3f1168d5d88b207b59c434792a10a7331bb89.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <20201013115600.GA11976@infradead.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <2fa2e5ed-dbfb-f335-5429-8bbb13f004e2@linux.intel.com>
-Date:   Tue, 13 Oct 2020 08:17:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="463523063"
+Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.131.190]) ([10.249.131.190])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 08:17:52 -0700
+Subject: Re: i8042_init: PS/2 mouse not detected with ACPIPnP/PnPBIOS
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Len Brown <lenb@kernel.org>, linux-input@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <1a69c5bc-ccc4-68db-7871-af05a70052c9@molgen.mpg.de>
+ <20201007221628.GW1009802@dtor-ws>
+ <bbb70981-1242-0aea-01c9-f9507f8eae3b@molgen.mpg.de>
+ <CAJZ5v0hKmESo0-kfN1+vK7to05GpVV3d7ZnO3XEsQ2jKKhvkJQ@mail.gmail.com>
+ <7921b792-c99a-659c-730f-ecb25cb7f04b@molgen.mpg.de>
+ <CAJZ5v0iim_XvBcjSZevEmbQb6F8bCb2jP14Ptnqd_7qfuuUHpw@mail.gmail.com>
+ <082dfba3-6187-7081-6a8c-8c38a3a95b19@molgen.mpg.de>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <48973620-21a8-7fef-8c99-e59c38941145@intel.com>
+Date:   Tue, 13 Oct 2020 17:17:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201013115600.GA11976@infradead.org>
+In-Reply-To: <082dfba3-6187-7081-6a8c-8c38a3a95b19@molgen.mpg.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/13/2020 5:00 PM, Paul Menzel wrote:
+> Dear Rafael, dear Dmitry,
+>
+>
+> Am 12.10.20 um 13:00 schrieb Rafael J. Wysocki:
+>> On Mon, Oct 12, 2020 at 12:50 PM Paul Menzel wrote:
+>
+>>> Am 12.10.20 um 12:39 schrieb Rafael J. Wysocki:
+>>>> On Sun, Oct 11, 2020 at 1:08 AM Paul Menzel wrote:
+>
+>>>>> Am 08.10.20 um 00:16 schrieb Dmitry Torokhov:
+>>>>>
+>>>>>> On Wed, Oct 07, 2020 at 11:18:41PM +0200, Paul Menzel wrote:
+>>>>>
+>>>>>>> On the Asus F2A85-M PRO Linux 5.9-rc8 (and previous versions) 
+>>>>>>> does not
+>>>>>>> recognize a plugged in PS/2 mouse using the Plug & Play method. 
+>>>>>>> The PS/2
+>>>>>>> keyboard is detected fine, and using `i8042.nopnp`, the PS/2 
+>>>>>>> mouse also
+>>>>>>> works.
+>>>>>>>
+>>>>>>>> [    1.035915] calling i8042_init+0x0/0x42d @ 1
+>>>>>>>> [    1.035947] i8042: PNP: PS/2 Controller [PNP0303:PS2K] at 
+>>>>>>>> 0x60,0x64 irq 1
+>>>>>>>> [    1.035948] i8042: PNP: PS/2 appears to have AUX port 
+>>>>>>>> disabled, if this is incorrect please boot with i8042.nopnp
+>>>>>>>> [    1.036589] serio: i8042 KBD port at 0x60,0x64 irq 1
+>>>>>>>> [    1.036621] initcall i8042_init+0x0/0x42d returned 0 after 
+>>>>>>>> 687 usecs
+>>>>>>>
+>>>>>>> But, the DSDT includes the “mouse device”. From
+>>>>>>>
+>>>>>>>        acpidump > dump.bin; acpixtract dump.bin; iasl -d *dat; 
+>>>>>>> more dsdt.dsl
+>>>>>>>
+>>>>>>> we get
+>>>>>>>
+>>>>>>>                    Device (PS2M)
+>>>>>>>                    {
+>>>>>>>                        Name (_HID, EisaId ("PNP0F03") /* 
+>>>>>>> Microsoft PS/2-style Mouse */)  // _HID: Hardware ID
+>>>>>>>                        Name (_CID, EisaId ("PNP0F13") /* PS/2 
+>>>>>>> Mouse */) // _CID: Compatible ID
+>>>>>>>                        Method (_STA, 0, NotSerialized)  // _STA: 
+>>>>>>> Status
+>>>>>>>                        {
+>>>>>>>                            If ((IOST & 0x4000))
+>>>>>>>                            {
+>>>>>>>                                Return (0x0F)
+>>>>>>>                            }
+>>>>>>>                            Else
+>>>>>>>                            {
+>>>>>>>                                Return (Zero)
+>>>>>>>                            }
+>>>>>>>                        }
+>>>>>>>
+>>>>>>> and the identifiers PNP0F03 and PNP0F13 are both listed in the 
+>>>>>>> array
+>>>>>>> `pnp_aux_devids[]`. But adding print statements to 
+>>>>>>> `i8042_pnp_aux_probe()`,
+>>>>>>> I do not see them, so the function does not seem to be called.
+>>>>>>
+>>>>>> My guess is that _STA returns 0 indicating that the device is not
+>>>>>> present. I would try tracking where IOST is being set and 
+>>>>>> figuring out
+>>>>>> why it does not have mouse bit enabled.
+>>>>>
+>>>>> Does the ACPI subsystem allow to track, how ACPI variables(?) like 
+>>>>> IOST
+>>>>> are read and set?
+>>>>
+>>>> My guess would be that IOST is a field in an operation region which
+>>>> would indicate that it is initialized by the bootstrap part of the
+>>>> BIOS.
+>>>
+>>> Thank you for your answer. But how can I verify that?
+>>
+>> Inspecting the ACPI tables from the system in question could help you
+>> to find out whether or not IOST really is a field in an operation
+>> region, but its initial value may not be possible to determine this
+>> way.
+>>
+>>> Is there a Linux kernel parameter, that would print it?
+>>
+>> Not that I know of.
+>
+> I created an issue in the Linux kernel bugtracker [1] and attached the 
+> output of `acpidump` there.
+>
+> Could
+>
+>     If ((IOST & 0x4000))
+>
+> versus
+>
+>     If ((IOST & 0x0400))
+>
+> be a typo?
+>
+Yes, it could.
 
 
-On 10/13/20 4:56 AM, Christoph Hellwig wrote:
-> You might want to split out pcie_do_fatal_recovery and get rid of the
-> state argument:
-This is how it was before Keith merged fatal and non-fatal error recovery
-paths. When the comparison is between additional-parameter vs new-interface
-, I choose the former. But I can merge your change in next version.
-
-> 
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index fa12f7cbc1a095..eec0d3fe9fd967 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -556,7 +556,8 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
->   
->   /* PCI error reporting and recovery */
->   pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> -			pci_channel_state_t state,
-> +			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
-> +pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
->   			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
->   
->   bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 65dff5f3457ac0..4bf7ebb34cf854 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -947,9 +947,9 @@ static void handle_error_source(struct pci_dev *dev, struct aer_err_info *info)
->   		if (pcie_aer_is_native(dev))
->   			pcie_clear_device_status(dev);
->   	} else if (info->severity == AER_NONFATAL)
-> -		pcie_do_recovery(dev, pci_channel_io_normal, aer_root_reset);
-> +		pcie_do_recovery(dev, aer_root_reset);
->   	else if (info->severity == AER_FATAL)
-> -		pcie_do_recovery(dev, pci_channel_io_frozen, aer_root_reset);
-> +		pcie_do_fatal_recovery(dev, aer_root_reset);
->   	pci_dev_put(dev);
->   }
->   
-> @@ -985,11 +985,9 @@ static void aer_recover_work_func(struct work_struct *work)
->   		}
->   		cper_print_aer(pdev, entry.severity, entry.regs);
->   		if (entry.severity == AER_NONFATAL)
-> -			pcie_do_recovery(pdev, pci_channel_io_normal,
-> -					 aer_root_reset);
-> +			pcie_do_recovery(pdev, aer_root_reset);
->   		else if (entry.severity == AER_FATAL)
-> -			pcie_do_recovery(pdev, pci_channel_io_frozen,
-> -					 aer_root_reset);
-> +			pcie_do_fatal_recovery(pdev, aer_root_reset);
->   		pci_dev_put(pdev);
->   	}
->   }
-> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-> index daa9a4153776ce..74e7d1da3cf054 100644
-> --- a/drivers/pci/pcie/dpc.c
-> +++ b/drivers/pci/pcie/dpc.c
-> @@ -233,7 +233,7 @@ static irqreturn_t dpc_handler(int irq, void *context)
->   	dpc_process_error(pdev);
->   
->   	/* We configure DPC so it only triggers on ERR_FATAL */
-> -	pcie_do_recovery(pdev, pci_channel_io_frozen, dpc_reset_link);
-> +	pcie_do_fatal_recovery(pdev, dpc_reset_link);
->   
->   	return IRQ_HANDLED;
->   }
-> diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
-> index a6b9b479b97ad0..87379bc566f691 100644
-> --- a/drivers/pci/pcie/edr.c
-> +++ b/drivers/pci/pcie/edr.c
-> @@ -183,7 +183,7 @@ static void edr_handle_event(acpi_handle handle, u32 event, void *data)
->   	 * or ERR_NONFATAL, since the link is already down, use the FATAL
->   	 * error recovery path for both cases.
->   	 */
-> -	estate = pcie_do_recovery(edev, pci_channel_io_frozen, dpc_reset_link);
-> +	estate = pcie_do_fatal_recovery(edev, dpc_reset_link);
->   
->   send_ost:
->   
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index c2ae4d08801a4d..11fcff16b17303 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -141,7 +141,7 @@ static int report_resume(struct pci_dev *dev, void *data)
->   	return 0;
->   }
->   
-> -static pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
-> +pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
->   			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
->   {
->   	struct pci_dev *udev;
-> @@ -194,15 +194,11 @@ static pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
->   }
->   
->   pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> -			pci_channel_state_t state,
->   			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
->   {
->   	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
->   	struct pci_bus *bus;
->   
-> -	if (state == pci_channel_io_frozen)
-> -		return pcie_do_fatal_recovery(dev, reset_link);
-> -
->   	/*
->   	 * Error recovery runs on all subordinates of the first downstream port.
->   	 * If the downstream port detected the error, it is cleared at the end.
-> 
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
