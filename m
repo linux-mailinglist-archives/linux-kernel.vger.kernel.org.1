@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCECF28CDEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A38828CE15
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbgJMMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:15:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41112 "EHLO mail.kernel.org"
+        id S1727028AbgJMMO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:14:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgJMMO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:14:56 -0400
+        id S1726707AbgJMMOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:14:55 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01D4F22251;
-        Tue, 13 Oct 2020 12:14:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E60CB2222C;
+        Tue, 13 Oct 2020 12:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602591295;
-        bh=GiA/YK+LRhCnfgr+mmOKXZFT0B03NQNNFawIJNWdA6I=;
+        bh=SmAgTq3qlJUPZtrrcPlH7p0JPW+Do0b4aKXp0589oHY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bxs+qOye1CX7hx51E+7Uzhg1J7AwTzRNMW4OJkUlSZFFw/LjqWoDxzp/oTVopO2dt
-         uITOc8WxWEyubN1EmPU2vnE42OYRAzB+12ReA0Rhls7FBR1Uwzn5fimHLpg45FGyyP
-         niBHbhbDoecYxtl7foW3rQM2fxR0t4IdItAecrBc=
+        b=UHWDy6x9LyZBs2RM8reUONi7qqPamxctAKrwLfsf9V10aSgSMsXZRRei0DlXADgcw
+         cHT64Igf3Q3maW8H/xrrlaUFV6v8Tl7205eOC/stw2M1ybK65OPDotSQmKi/OKMBYX
+         YNnXcYz4ChQ6LWhHr3euOvgeQ+rJG9wpbCG/6mss=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSJCf-006CoI-1N; Tue, 13 Oct 2020 14:14:53 +0200
+        id 1kSJCf-006CoL-2E; Tue, 13 Oct 2020 14:14:53 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Balbir Singh <sblbir@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 13/24] docs: i2c: index.rst: add slave-testunit-backend.rst
-Date:   Tue, 13 Oct 2020 14:14:40 +0200
-Message-Id: <8b46f6d001962e7b562c3542eb4449bd905f448a.1602590106.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 14/24] docs: conf.py: disable automarkup for Sphinx 3.x
+Date:   Tue, 13 Oct 2020 14:14:41 +0200
+Message-Id: <8394c44d193d78cd5378fe23fa9f0a2d8a9f6b33.1602590106.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602590106.git.mchehab+huawei@kernel.org>
 References: <cover.1602590106.git.mchehab+huawei@kernel.org>
@@ -47,45 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As warned by Sphinx:
+The class types changed after the C domain rewrite on
+Sphinx 3.x. Due to that, the automarkup extension is just
+generating additional noise when trying to convert structs
+and other markups into cross references.
 
-	.../Documentation/i2c/slave-testunit-backend.rst: WARNING: document isn't included in any toctree
-
-This document is not included anywhere.
-
-Fixes: a8335c64c5f0 ("i2c: add slave testunit driver")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/hw-vuln/l1d_flush.rst | 3 +--
- Documentation/i2c/index.rst                     | 1 +
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/conf.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/hw-vuln/l1d_flush.rst b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-index adc4ecc72361..f794e2b1096c 100644
---- a/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-+++ b/Documentation/admin-guide/hw-vuln/l1d_flush.rst
-@@ -22,8 +22,7 @@ mechanism
- Usage Guidelines
- ----------------
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 376dd0ddf39c..4f5d15abd047 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -37,7 +37,7 @@ needs_sphinx = '1.3'
+ # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+ # ones.
+ extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include',
+-              'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
++              'kfigure', 'sphinx.ext.ifconfig',
+               'maintainers_include', 'sphinx.ext.autosectionlabel' ]
  
--Please see document: :ref:`Documentation/userspace-api/spec_ctrl.rst` for
--details.
-+Please see document: :doc:`/userspace-api/spec_ctrl` for details.
+ #
+@@ -111,6 +111,7 @@ if major >= 3:
  
- **NOTE**: The feature is disabled by default, applications need to
- specifically opt into the feature to enable it.
-diff --git a/Documentation/i2c/index.rst b/Documentation/i2c/index.rst
-index 8b76217e370a..c8bf6f7d5286 100644
---- a/Documentation/i2c/index.rst
-+++ b/Documentation/i2c/index.rst
-@@ -38,6 +38,7 @@ Debugging
+ else:
+     extensions.append('cdomain')
++    extensions.append('automarkup')
  
-    gpio-fault-injection
-    i2c-stub
-+   slave-testunit-backend
- 
- Slave I2C
- =========
+ # Ensure that autosectionlabel will produce unique names
+ autosectionlabel_prefix_document = True
 -- 
 2.26.2
 
