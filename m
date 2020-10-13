@@ -2,158 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5F928C82D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17FE28C83E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732330AbgJMFP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:15:56 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:54560 "EHLO z5.mailgun.us"
+        id S1732388AbgJMFV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:21:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732347AbgJMFP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:15:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602566155; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=mLzptLEzGt3ap5c0T2QJDDwVUFSR6Rbgs8XlUGD7pbo=; b=TDorqUE3uSCSi4K0ZGgCHMlnqTHYFdyw4KT4zE1h879GqEcJV2URnzDPoF+b8rPCmGjrZss2
- PhGY/zseTFVKIzIHBYxz+8pcUQ3o8tkpSy5NBkS/Pld5a4qvwNQ045pOQg9PuO4N21CXmEje
- mF4KotAfJY0F9pQ5U6idDppF528=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f85380b06d81bc48dd23fc0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 05:15:55
- GMT
-Sender: kathirav=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28B84C43387; Tue, 13 Oct 2020 05:15:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1732320AbgJMFV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 01:21:56 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D47CC433CB;
-        Tue, 13 Oct 2020 05:15:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D47CC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kathirav@codeaurora.org
-From:   Kathiravan T <kathirav@codeaurora.org>
-To:     agross@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, robh+dt@kernel.org, sivaprak@codeaurora.org,
-        peter.ujfalusi@ti.com, boris.brezillon@collabora.com,
-        linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kathirav@codeaurora.org,
-        Anusha Canchi Ramachandra Rao <anusharao@codeaurora.org>
-Subject: [PATCH 3/3] arm64: dts: ipq6018: Add the QPIC peripheral nodes
-Date:   Tue, 13 Oct 2020 10:45:24 +0530
-Message-Id: <1602566124-13456-4-git-send-email-kathirav@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602566124-13456-1-git-send-email-kathirav@codeaurora.org>
-References: <1602566124-13456-1-git-send-email-kathirav@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id C4C4020872;
+        Tue, 13 Oct 2020 05:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602566514;
+        bh=OwXE0mUrRwYdSzEBDK6eQZjP0OakM/fXBcxny4Xq+7k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=deU+CRa4uzH8T+zyXk7acVOs8sL0fHLlYQBijZGWwn5C6mWkwygTdPaqY1h6KEIt4
+         sYsHg5rqB23ZQ6tL5O1rlczJc+yEOYaDtowSPqG14ZAonH8p6pP3Xx2tWfDukOJsM1
+         RNt/BV220toadS89VgomzvXmjXQRT/l5bOBS/75g=
+Date:   Tue, 13 Oct 2020 07:21:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+Message-ID: <20201013052150.GA330398@kroah.com>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com>
+ <alpine.DEB.2.21.2010121550300.6487@felia>
+ <20201012145710.GA631710@rowland.harvard.edu>
+ <alpine.DEB.2.21.2010121659040.6487@felia>
+ <20201012160013.GA632789@rowland.harvard.edu>
+ <alpine.DEB.2.21.2010122008370.17866@felia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2010122008370.17866@felia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the QPIC BAM and QPIC NAND controller support and
-enable the same in board DTS file.
+On Mon, Oct 12, 2020 at 08:17:34PM +0200, Lukas Bulwahn wrote:
+> > If you are suggesting some sort of special code annotation that the tool 
+> > would understand, I am open to that.  But I'm not aware of any even 
+> > vaguely standard way of marking up a particular function call to 
+> > indicate it will not return an error.
+> 
+> I cannot yet say if some annotation would work, we, Sudip and me, need to 
+> investigate. It could be that something like, assert(!IS_ERR(tt)), is 
+> sufficient to let the tools know that they can safely assume that the 
+> path they are complaining about is not possible.
+> 
+> We could make the assert() a nop, so it would not effect the resulting 
+> object code in any way.
 
-Co-developed-by: Anusha Canchi Ramachandra Rao <anusharao@codeaurora.org>
-Signed-off-by: Anusha Canchi Ramachandra Rao <anusharao@codeaurora.org>
-Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts | 16 ++++++++
- arch/arm64/boot/dts/qcom/ipq6018.dtsi        | 41 ++++++++++++++++++++
- 2 files changed, 57 insertions(+)
+Things like assert() have been rejected numberous times in the past in
+the kernel, good luck with that :)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts b/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts
-index b31117a93995..6e68de1a0b0a 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq6018-cp01-c1.dts
-@@ -62,3 +62,19 @@ spi_0_pins: spi-0-pins {
- 		bias-pull-down;
- 	};
- };
-+
-+&qpic_bam {
-+	status = "ok";
-+};
-+
-+&qpic_nand {
-+	status = "ok";
-+
-+	nand@0 {
-+		reg = <0>;
-+
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+		nand-bus-width = <8>;
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index 1aa8d8579463..6b13e390ee29 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -173,6 +173,17 @@ serial_3_pins: serial3-pinmux {
- 				drive-strength = <8>;
- 				bias-pull-down;
- 			};
-+
-+			qpic_pins: qpic-pins {
-+				pins = "gpio1", "gpio3", "gpio4",
-+					"gpio5", "gpio6", "gpio7",
-+					"gpio8", "gpio10", "gpio11",
-+					"gpio12", "gpio13", "gpio14",
-+					"gpio15", "gpio17";
-+				function = "qpic_pad";
-+				drive-strength = <8>;
-+				bias-disable;
-+			};
- 		};
- 
- 		gcc: gcc@1800000 {
-@@ -274,6 +285,36 @@ i2c_1: i2c@78b7000 { /* BLSP1 QUP2 */
- 			status = "disabled";
- 		};
- 
-+		qpic_bam: dma@7984000 {
-+			compatible = "qcom,bam-v1.7.0";
-+			reg = <0x07984000 0x1a000>;
-+			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&gcc GCC_QPIC_CLK>,
-+				 <&gcc GCC_QPIC_AHB_CLK>;
-+			clock-names = "iface_clk", "bam_clk";
-+			#dma-cells = <1>;
-+			qcom,ee = <0>;
-+			status = "disabled";
-+		};
-+
-+		qpic_nand: nand@79b0000 {
-+			compatible = "qcom,ipq6018-nand";
-+			reg = <0x079b0000 0x10000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			clocks = <&gcc GCC_QPIC_CLK>,
-+				 <&gcc GCC_QPIC_AHB_CLK>;
-+			clock-names = "core", "aon";
-+
-+			dmas = <&qpic_bam 0>,
-+				<&qpic_bam 1>,
-+				<&qpic_bam 2>;
-+			dma-names = "tx", "rx", "cmd";
-+			pinctrl-0 = <&qpic_pins>;
-+			pinctrl-names = "default";
-+			status = "disabled";
-+		};
-+
- 		intc: interrupt-controller@b000000 {
- 			compatible = "qcom,msm-qgic2";
- 			interrupt-controller;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+greg k-h
