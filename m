@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5B628CFCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE3528CFD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388330AbgJMOGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:06:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49912 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388242AbgJMOG2 (ORCPT
+        id S2388349AbgJMOHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388196AbgJMOHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:06:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602597987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=s2c0z0nnK5G/Cjc6T69QlHdgqzKaRCEYH2YcGXaZfvs=;
-        b=P4FirxbJIc9tN/z5XTum55FtDyvH/H098hpw1W3TAhbZ4IhJJWnqLpqaFiv+Ts8Ecv5NI2
-        jPX4F0VzHPYqjs9dWGLgY2/E/BMtHGW+1WlvihbhpmK94k/9MzgOpzbMeTPIr/mjO1h3IB
-        uOQsomr4oEOWrCZzvIpiWQWGo3a7tYM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-BqIk-o_9Ps67-_bglI0HLw-1; Tue, 13 Oct 2020 10:06:25 -0400
-X-MC-Unique: BqIk-o_9Ps67-_bglI0HLw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC27E1020905;
-        Tue, 13 Oct 2020 14:06:23 +0000 (UTC)
-Received: from lithium.redhat.com (ovpn-112-43.ams2.redhat.com [10.36.112.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B9655C1C2;
-        Tue, 13 Oct 2020 14:06:22 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        christian.brauner@ubuntu.com, containers@lists.linux-foundation.org
-Subject: [PATCH 2/2] selftests: add tests for CLOSE_RANGE_CLOEXEC
-Date:   Tue, 13 Oct 2020 16:06:09 +0200
-Message-Id: <20201013140609.2269319-3-gscrivan@redhat.com>
-In-Reply-To: <20201013140609.2269319-1-gscrivan@redhat.com>
-References: <20201013140609.2269319-1-gscrivan@redhat.com>
+        Tue, 13 Oct 2020 10:07:08 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D9BC0613D0;
+        Tue, 13 Oct 2020 07:07:07 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id de3so43854qvb.5;
+        Tue, 13 Oct 2020 07:07:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=zlJunIPW8Wajc0MiN91i37/1o2rvLQm/+3y/Aoom9SU=;
+        b=nsZug78+5p7pGKmm3DsDTOBfTQHjEv5AvUhIvb5ixEWe/iSqrf6Z/zZyayKI+2iRPK
+         MVbDBepFDBAfZ+kDIDXs6LK/CkLLlbfCZDSX6IM6CZFBfDhiodhl3Z4t4yxLo8A9Hph+
+         g+5rw80BsqfDOzW+U7wZmFf4Nmt2BWUktKEB3i1KpzXeLmuIQl/C5FKk0U8hMtwRqvIG
+         UuLcG4GpzbkDTL8oXHK7Rpv1nEj4RuAmOJ/m6iLK6zLGUb66NgsZeTi60cv6ZrRWSPiq
+         pY5j1LdT9TQhVMD8iOzG3VA+S3JpRe29B3PBLx+UR4TpFULac0bkFMMs6W3JvOkz7Uoh
+         LCQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=zlJunIPW8Wajc0MiN91i37/1o2rvLQm/+3y/Aoom9SU=;
+        b=lsFN5iPAIFChYEaJyHEMJXy/Bh7Xd71W2LFItXVvbT0F6sw9nufSBY6JGUISDmj+4N
+         5xEJVqe2xSpibygQcmuYyO7PCuGwVfHqOkcBxk+l4hA6CmJW/clbydSSaPE6nvQ1W/0+
+         bRE0wFioUj8FizEOU0WfmmKD15Dmtfp1FILlu3zMcdlA+eTYtSdy3Vwv3H/uFpPKLPEZ
+         A+eZtGzploH/6tVhYoQifX0aLSSTgKig/yvjQBrvMTqplc0bD69uTRe5KgU/qsxpIyud
+         PMEaIDNuj05o4eAz8/tO/L2iyQucu2mMwhWkK5VlZKQtGePIGKysB5OYHhR/HsnncGoD
+         lJBA==
+X-Gm-Message-State: AOAM530KRAu1B257HUe8S9OxRKgyU/DdZIHSU3D51JBlZK2XkvE7k0yJ
+        7RYdLDSW0MTyvpxoSdyWDzI=
+X-Google-Smtp-Source: ABdhPJzDNQiUNhFKePXipvWMwQCDi4CxW+qZGiarrZgLj8CrGxdwMuvHGb0Lvc6pUxy5898u1VzCzA==
+X-Received: by 2002:a05:6214:152:: with SMTP id x18mr74300qvs.41.1602598026311;
+        Tue, 13 Oct 2020 07:07:06 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:d88e])
+        by smtp.gmail.com with ESMTPSA id e4sm12149790qkb.4.2020.10.13.07.07.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 07:07:05 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 13 Oct 2020 10:07:03 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.10-rc1
+Message-ID: <20201013140703.GA3845@mtj.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
----
- .../testing/selftests/core/close_range_test.c | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
+Hello, Linus.
 
-diff --git a/tools/testing/selftests/core/close_range_test.c b/tools/testing/selftests/core/close_range_test.c
-index c99b98b0d461..b8789262cd7d 100644
---- a/tools/testing/selftests/core/close_range_test.c
-+++ b/tools/testing/selftests/core/close_range_test.c
-@@ -23,6 +23,10 @@
- #define CLOSE_RANGE_UNSHARE	(1U << 1)
- #endif
- 
-+#ifndef CLOSE_RANGE_CLOEXEC
-+#define CLOSE_RANGE_CLOEXEC	(1U << 2)
-+#endif
-+
- static inline int sys_close_range(unsigned int fd, unsigned int max_fd,
- 				  unsigned int flags)
- {
-@@ -224,4 +228,44 @@ TEST(close_range_unshare_capped)
- 	EXPECT_EQ(0, WEXITSTATUS(status));
- }
- 
-+TEST(close_range_cloexec)
-+{
-+	int i, ret;
-+	int open_fds[101];
-+
-+	for (i = 0; i < ARRAY_SIZE(open_fds); i++) {
-+		int fd;
-+
-+		fd = open("/dev/null", O_RDONLY);
-+		ASSERT_GE(fd, 0) {
-+			if (errno == ENOENT)
-+				XFAIL(return, "Skipping test since /dev/null does not exist");
-+		}
-+
-+		open_fds[i] = fd;
-+	}
-+
-+	EXPECT_EQ(-1, sys_close_range(open_fds[0], open_fds[100], -1)) {
-+		if (errno == ENOSYS)
-+			XFAIL(return, "close_range() syscall not supported");
-+	}
-+
-+	EXPECT_EQ(0, sys_close_range(open_fds[0], open_fds[50], CLOSE_RANGE_CLOEXEC));
-+
-+	for (i = 0; i <= 50; i++) {
-+		int flags = fcntl(open_fds[i], F_GETFD);
-+
-+		EXPECT_GT(flags, -1);
-+		EXPECT_EQ(flags & FD_CLOEXEC, FD_CLOEXEC);
-+	}
-+
-+	for (i = 51; i <= 100; i++) {
-+		int flags = fcntl(open_fds[i], F_GETFD);
-+
-+		EXPECT_GT(flags, -1);
-+		EXPECT_EQ(flags & FD_CLOEXEC, 0);
-+	}
-+}
-+
-+
- TEST_HARNESS_MAIN
+Two minor changes. One makes cgroup interface files ignore 0 sized writes
+rather than triggering -EINVAL on them. The other change is a cleanup which
+doesn't cause any behavior changes.
+
+Thanks.
+
+The following changes since commit 02de58b24d2e1b2cf947d57205bd2221d897193c:
+
+  Merge tag 'devicetree-fixes-for-5.9-3' of git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux (2020-09-29 17:56:30 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.10
+
+for you to fetch changes up to 65026da59cda16baf6c3e98b74ec439f366e468f:
+
+  cgroup: Zero sized write should be no-op (2020-09-30 13:52:06 -0400)
+
+----------------------------------------------------------------
+Jouni Roivas (1):
+      cgroup: Zero sized write should be no-op
+
+Wei Yang (1):
+      cgroup: remove redundant kernfs_activate in cgroup_setup_root()
+
+ kernel/cgroup/cgroup.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
 -- 
-2.26.2
-
+tejun
