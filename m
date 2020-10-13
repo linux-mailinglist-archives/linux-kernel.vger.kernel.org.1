@@ -2,141 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4FB28CEF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD6128CECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387584AbgJMNMm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Oct 2020 09:12:42 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3635 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728490AbgJMNMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:12:41 -0400
-X-Greylist: delayed 956 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 09:12:40 EDT
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 44F726526C6156BC6D5C;
-        Tue, 13 Oct 2020 20:56:41 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 13 Oct 2020 20:56:40 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Tue, 13 Oct 2020 20:56:40 +0800
-From:   "limingwang (A)" <limingwang@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fanhenglong <fanhenglong@huawei.com>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>,
-        Tangnianyao <tangnianyao@huawei.com>,
-        Jiangyifei <jiangyifei@huawei.com>,
-        "dengkai (A)" <dengkai1@huawei.com>,
-        Zhanghailiang <zhang.zhanghailiang@huawei.com>,
-        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>
-Subject: Re: [PATCH] arm64: KVM: marking pages as XN in Stage-2 does not care
- about CTR_EL0.DIC
-Thread-Topic: [PATCH] arm64: KVM: marking pages as XN in Stage-2 does not care
- about CTR_EL0.DIC
-Thread-Index: AdahWDzbwr1mcA3JQmSKPn8ti8Jsbg==
-Date:   Tue, 13 Oct 2020 12:56:40 +0000
-Message-ID: <d67816ef196c4375923c0672dd421be3@huawei.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.187.17]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728311AbgJMM4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:56:47 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37517 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728250AbgJMM4o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:56:44 -0400
+Received: by mail-oi1-f193.google.com with SMTP id t77so22376498oie.4;
+        Tue, 13 Oct 2020 05:56:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M8tT6t+SMkSYGRLbiqjiihdCsiur/8BZS3zekXOuO4c=;
+        b=UCArX8MonEEocLfBP0HI7+7/ofbGmvv/YaDLRsTwSCCx2StCUZHkhW6hQ3L0mTE+XK
+         fdh74Y6V1eHVZMsj3goHI9DF3KTkgG6usozq4XBaQNypRJDRmzeMn/e4J84ymvSJM7uH
+         fc5G2J39nhNzwtK5WuCYWFJTNik2ami27OjylvpIo1MDoN6AQnkcmBNJtJd7Ekq5f2Ms
+         1NU8z5GA/JZx+LxPYLgGe3P8gcGkMPkLEuyn5s7Jz3nbynS+SeixKh5ELQya8URrZjqP
+         XC+deQKNwMcSBTW6h6x/C+tX4baPRZuKrdwDC5irUfKpkiHmgKz+ef3uYFINh2Jj6vPR
+         q3pQ==
+X-Gm-Message-State: AOAM533iQ/tLcHU4jFBIkZu/UyrjZ5BNHEfu1kw+5gFtjTTqZlPNunoj
+        Cm7gVLUJVYg2RcPCjRvJeQ==
+X-Google-Smtp-Source: ABdhPJy0nqJVWcIvEuGEkLDuJgWPKNNfKS2wBdK+81G1IEouvcyKDFK4oBL31UtNsTqi9Qt0fW3G1w==
+X-Received: by 2002:aca:4bcd:: with SMTP id y196mr13052481oia.151.1602593801944;
+        Tue, 13 Oct 2020 05:56:41 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id b17sm11787338oog.25.2020.10.13.05.56.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 05:56:41 -0700 (PDT)
+Received: (nullmailer pid 3335678 invoked by uid 1000);
+        Tue, 13 Oct 2020 12:56:40 -0000
+Date:   Tue, 13 Oct 2020 07:56:40 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Vladimir Lypak <junak.pub@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>, linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: pinctrl: qcom: add msm8953 pinctrl
+ bindings
+Message-ID: <20201013125640.GA3335626@bogus>
+References: <20201007160611.942754-1-junak.pub@gmail.com>
+ <20201007160611.942754-2-junak.pub@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201007160611.942754-2-junak.pub@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Hi Li,
->
->On 2020-10-12 02:08, l00484210 wrote:
->> From: MingWang Li <limingwang@huawei.com>
->> 
->> When testing the ARMv8.2-TTS2UXN feature, setting bits of XN is 
->> unavailable.
->> Because the control bit CTR_EL0.DIC is set by default on system.
->> 
->> But when CTR_EL0.DIC is set, software does not need to flush icache 
->> actively, instead of clearing XN bits.The patch, the commit id of 
->> which is 6ae4b6e0578886eb36cedbf99f04031d93f9e315, has implemented the 
->> function of CTR_EL0.DIC.
->> 
->> Signed-off-by: MingWang Li <limingwang@huawei.com>
->> Signed-off-by: Henglong Fan <fanhenglong@huawei.com>
->> ---
->>  arch/arm64/include/asm/pgtable-prot.h | 12 +-----------
->>  1 file changed, 1 insertion(+), 11 deletions(-)
->> 
->> diff --git a/arch/arm64/include/asm/pgtable-prot.h
->> b/arch/arm64/include/asm/pgtable-prot.h
->> index 4d867c6446c4..5feb94882bf7 100644
->> --- a/arch/arm64/include/asm/pgtable-prot.h
->> +++ b/arch/arm64/include/asm/pgtable-prot.h
->> @@ -79,17 +79,7 @@ extern bool arm64_use_ng_mappings;
->>  		__val;							\
->>  	 })
->> 
->> -#define PAGE_S2_XN							\
->> -	({								\
->> -		u64 __val;						\
->> -		if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))		\
->> -			__val = 0;					\
->> -		else							\
->> -			__val = PTE_S2_XN;				\
->> -		__val;							\
->> -	})
->> -
->> -#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) |
->> PTE_S2_RDONLY | PAGE_S2_XN)
->> +#define PAGE_S2			__pgprot(_PROT_DEFAULT | PAGE_S2_MEMATTR(NORMAL) |
->> PTE_S2_RDONLY | PTE_S2_XN)
->>  #define PAGE_S2_DEVICE		__pgprot(_PROT_DEFAULT |
->> PAGE_S2_MEMATTR(DEVICE_nGnRE) | PTE_S2_RDONLY | PTE_S2_XN)
->> 
->>  #define PAGE_NONE		__pgprot(((_PAGE_DEFAULT) & ~PTE_VALID) |
->> PTE_PROT_NONE | PTE_RDONLY | PTE_NG | PTE_PXN | PTE_UXN)
->
->I don't understand what you are trying to achieve here.
->
->This whole point of not setting XN in the page tables when DIC is present is to avoid a pointless permission fault at run time. At you noticed above, no icache invalidation is necessary. So why would you ever want to take a fault on exec the first place?
->
->         M.
->--
->Jazz is not dead. It just smells funny...
->
->
-Hi Marc,
+On Wed, 07 Oct 2020 19:06:12 +0300, Vladimir Lypak wrote:
+> Add device tree bindings documentation for Qualcomm MSM8953
+> pinctrl driver.
+> 
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+> ---
+> Changes in V2:
+>  - removed "wakeup-parent" property.
+>  - changed pincfg property pattern to '-pins$' and added its description.
+>  - added "serial-pins" subnode to example.
+> ---
+>  .../pinctrl/qcom,msm8953-pinctrl.yaml         | 167 ++++++++++++++++++
+>  1 file changed, 167 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,msm8953-pinctrl.yaml
+> 
 
-According to ARMv8.2-TTS2UXN feature, which extends the stage 2 translation table access
-permissions to provide control of whether memory is executable at EL0 independent of whether
-it is executable at EL1. 
-
-Testing this feature in some security scenario, for example, if I want to grant execute permission
-to some memory only for EL0, but it will failed. Because KVM clears XN bits at first, this means that
-the memory can be executable in both EL0 and El1. 
-
-So the execute permission is not granted when the page table is created for the first time, then
-grant the execute permission by setting xn, based on the actual requirements.
-
-And according to spec:
-DIC, bit [29]
-	Instruction cache invalidation requirements for data to instruction coherence.
-	0b0 Instruction cache invalidation to the Point of Unification is required for data to instruction coherence.
-	0b1 Instruction cache invalidation to the Point of Unification is not required for data to instruction coherence.
-So when DIC is set, if the memory is changed to executable, the hardware will flush icache.
-
-If as you said, I feel that DIC conflicts with ARMv8.2-TTS2UXN feature.
-
-Regards,
-Mingwang
+Reviewed-by: Rob Herring <robh@kernel.org>
