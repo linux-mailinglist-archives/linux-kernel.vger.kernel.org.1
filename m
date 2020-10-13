@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03DB28D0BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969F228D0BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388972AbgJMO5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:57:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:32866 "EHLO foss.arm.com"
+        id S2389037AbgJMO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:57:46 -0400
+Received: from mga11.intel.com ([192.55.52.93]:46886 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730680AbgJMO5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:57:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A01630E;
-        Tue, 13 Oct 2020 07:57:20 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F7133F66B;
-        Tue, 13 Oct 2020 07:57:19 -0700 (PDT)
-Subject: Re: [PATCH] reset: meson: make it possible to build as a module
-To:     Neil Armstrong <narmstrong@baylibre.com>, p.zabel@pengutronix.de
-Cc:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201013133943.412119-1-narmstrong@baylibre.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f8c0feba-c235-e22f-2ea5-61e54fe97c0f@arm.com>
-Date:   Tue, 13 Oct 2020 15:57:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2388986AbgJMO5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 10:57:46 -0400
+IronPort-SDR: jdD7tUMi5mj/7+7Y+X/Gsqr5EapinvbwHp+GiGwI5NMPAUKOvlmiUUIBLAwuJEeiTSQEXrP5mB
+ HrtPRphjtGLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162457984"
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="162457984"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 07:57:45 -0700
+IronPort-SDR: E2ZndqU/Eh2zCZTPskutF2k1BHjy8PtSBHGjoLoEJijrtWmrN0n1AQVSXvf3GEERde9qmeIaCg
+ +iWJEny8D88w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="356176863"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Oct 2020 07:57:44 -0700
+Received: from [10.252.134.17] (kliang2-MOBL.ccr.corp.intel.com [10.252.134.17])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 52391580814;
+        Tue, 13 Oct 2020 07:57:43 -0700 (PDT)
+Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
+To:     Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        benh@kernel.crashing.org, paulus@samba.org,
+        David Miller <davem@davemloft.net>
+References: <20201001135749.2804-1-kan.liang@linux.intel.com>
+ <20201001135749.2804-2-kan.liang@linux.intel.com>
+ <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
+ <877drz1qbc.fsf@mpe.ellerman.id.au> <20201012084829.GA1151@willie-the-truck>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <de47984b-9a69-733c-3bd1-7b24ceb9b7f0@linux.intel.com>
+Date:   Tue, 13 Oct 2020 10:57:41 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201013133943.412119-1-narmstrong@baylibre.com>
+In-Reply-To: <20201012084829.GA1151@willie-the-truck>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-13 14:39, Neil Armstrong wrote:
-> In order to reduce the kernel Image size on multi-platform distributions,
-> make it possible to build the reset controller driver as a module.
+
+
+On 10/12/2020 4:48 AM, Will Deacon wrote:
+> On Sat, Oct 10, 2020 at 12:28:39AM +1100, Michael Ellerman wrote:
+>> Peter Zijlstra <peterz@infradead.org> writes:
+>>> Patch 4 makes it all far worse by exposing it to pretty much everybody.
+>>>
+>>> Now, I think we can fix at least the user mappings with the below delta,
+>>> but if archs are using non-page-table MMU sizes we'll need arch helpers.
+>>>
+>>> ARM64 is in that last boat.
+>>
+>> I think we probably need it to be weak so we can provide our own
+>> version.
 > 
-> This partially reverts 8290924e ("reset: meson: make it explicitly non-modular")
+> I guess the same thing applies to us, but I can't really tell how accurate
+> this stuff needs to be for userspace. If it's trying to use the page-table
+> configuration to infer properties of the TLB, that's never going to be
+> reliable because the TLB can choose both to split and coalesce entries
+> as long as software can't tell.
 > 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->   drivers/reset/Kconfig       | 4 ++--
->   drivers/reset/reset-meson.c | 7 ++++++-
->   2 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index d9efbfd29646..ab315617565f 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -94,8 +94,8 @@ config RESET_LPC18XX
->   	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
->   
->   config RESET_MESON
-> -	bool "Meson Reset Driver" if COMPILE_TEST
-> -	default ARCH_MESON
-> +	tristate "Meson Reset Driver"
-> +	default ARCH_MESON || COMPILE_TEST
 
-How about an actual dependency like:
+Hi Peter,
 
-	depends on ARCH_MESON || COMPILE_TEST
-	default ARCH_MESON
-?
+It looks like everybody wants a __weak function. If so, I guess we 
+should drop the generic code in this patch. For X86, we have existing 
+functions to retrieve the page level and the page size. I think we don't 
+need the generic code either.
+https://lkml.kernel.org/r/1549648509-12704-2-git-send-email-kan.liang@linux.intel.com/
 
-That way the option won't be presented to users where it's completely 
-irrelevant, e.g. running "make oldconfig" with an x86 distro config. It 
-always bugs me when I rebase a branch and have to manually confirm that 
-indeed I don't want to build random drivers specific to x86/RISC-V/etc. 
-SoCs for my arm64 config... ;)
+Should I send a V10 patch to drop the generic code and implement an X86 
+specific perf_get_page_size()? Will, Michael, and others can implement 
+their version later separately.
 
-Robin.
-
->   	help
->   	  This enables the reset driver for Amlogic Meson SoCs.
->   
-> diff --git a/drivers/reset/reset-meson.c b/drivers/reset/reset-meson.c
-> index 94d7ba88d7d2..434d5c0f877e 100644
-> --- a/drivers/reset/reset-meson.c
-> +++ b/drivers/reset/reset-meson.c
-> @@ -9,6 +9,7 @@
->   #include <linux/init.h>
->   #include <linux/io.h>
->   #include <linux/of.h>
-> +#include <linux/module.h>
->   #include <linux/platform_device.h>
->   #include <linux/reset-controller.h>
->   #include <linux/slab.h>
-> @@ -142,4 +143,8 @@ static struct platform_driver meson_reset_driver = {
->   		.of_match_table	= meson_reset_dt_ids,
->   	},
->   };
-> -builtin_platform_driver(meson_reset_driver);
-> +module_platform_driver(meson_reset_driver);
-> +
-> +MODULE_DESCRIPTION("Amlogic Meson Reset Controller driver");
-> +MODULE_AUTHOR("Neil Armstrong <narmstrong@baylibre.com>");
-> +MODULE_LICENSE("Dual BSD/GPL");
-> 
+Thanks,
+Kan
