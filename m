@@ -2,118 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D329228CAE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C703028CB0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403805AbgJMJUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:20:22 -0400
-Received: from mail-eopbgr70050.outbound.protection.outlook.com ([40.107.7.50]:51072
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389649AbgJMJUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:20:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fnJOcVRrqoXxXaVTitMuw+FbZN0YgB8SZLyzTWDvUtUjeTjnxL48pIeucLtFRbn6AnVvC9apUYKo0UkvxTtmhMPNxSDUnNKWT3OiSLkqsqSA+Vowtkx4p5j0njb4je+we6s5Ifk8Y8mc1e1MJcBfAQJ4IX2siIPdg2yygnowSgK6H6I/lc6VdR9GGzvqxuT5TriC49YyU5Hvt2CH0zGY5HxmFcOk5K7Gx/eZ06Qnk0P0zqk60VGG3WJj7VqnKMg73rnpmV9wWixY0ZXyIFoaTTIhnaa/MoGHqAKDvkVhrHJ+hw2K1D5MxEgs+x6ExRzmm0lDz9tTbxaVOovjBWGRFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xJyNSobTmbujRcapPeHeGOwrs7zOPRdE6HeilfKXFAM=;
- b=iQ7+oFFwvPjg+4TdhmlQ+AZz7RyCFvdfn1xPGcDZRdWIfn1m4+AQUScbyNY0gI3zyQlTceg69JobykZwEyRSBvvl/OWflc1wap5JY/WGATVZdkB0ti3DSNnMPkOxKcNE2Tj+osvm8YA2DBazFwu4lWVow/ewPEF4xl3kJNehI6m6QI1QJ6oYIwuvH088KEuX1EajF0vuvfOt7ebuGnc32/uw8A3bZBcSPSNvdPqPTLT6tV9hmPo0wxbC4ewgfNnrRl9pSO9DbW2/+N69JSxEE+JZfHxRaR3xVVq3geXbmE0qzsA7Tlf3gv/xSDD6DrorJyk6KepJkvSuxtdFxqxUKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xJyNSobTmbujRcapPeHeGOwrs7zOPRdE6HeilfKXFAM=;
- b=KEMdH9XcLYXhfuWXN8Btv6aziCO/HbOc7hUZ5IaUUZvotAg0hZ4rgFq1LmuYGgNBlTsG5+SF5BH6qTCnagHUdOEmysfOI9oVndVKVC6H1np6iG7i6TejiD0jHcxsySMxbKbFY12r2emZHs/NSgJoeTQm7ySPWXWlOfkQ/qdfHW4=
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
- by VI1PR04MB6927.eurprd04.prod.outlook.com (2603:10a6:803:139::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Tue, 13 Oct
- 2020 09:20:17 +0000
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
- 09:20:17 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
-        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>
-Subject: RE: [PATCH V2 0/2]  Add module autoloading support for vop and cosm
- driver
-Thread-Topic: [PATCH V2 0/2]  Add module autoloading support for vop and cosm
- driver
-Thread-Index: AQHWljcLdefWwQHm40iV4jMajb+Ds6mVTz3QgAAFQgCAAAJgUA==
-Date:   Tue, 13 Oct 2020 09:20:17 +0000
-Message-ID: <VI1PR04MB49609D11121E8656B31A30D192040@VI1PR04MB4960.eurprd04.prod.outlook.com>
-References: <20200929080214.23553-1-sherry.sun@nxp.com>
- <VI1PR04MB4960EDA39029B1B1CD8FD4F792040@VI1PR04MB4960.eurprd04.prod.outlook.com>
- <20201013090850.GA1922404@kroah.com>
-In-Reply-To: <20201013090850.GA1922404@kroah.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5992ec57-06f2-46ba-a34c-08d86f59333f
-x-ms-traffictypediagnostic: VI1PR04MB6927:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB692717120B47CA718D63129492040@VI1PR04MB6927.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qYTWxKJw6mayadDot7qY0TYLQne1NP1sd7mPKklhsrL2jZwZMBVQFK6hmlE1ub4wcURUm0L/qsBpyG3wTymXDDQD7e+J5fP/wGjzEUCkboukZPmh6JWMNGr8TYGxA52o5nsu4S68YZNa9t3zB2QpbwS+WG28gcCpu4GTfQYOMzguQueAAbTrBTJT6TuAy0xLkRYoehzRpHZzwutKi9VEs2jaFEUWPInX8NIQj20XOPVyMzgluYN4gl60mf6qcj1W3WDUtZ6JocviCpiStBi1PkD2NNSA2HhsJVYdbw6Po2foJhxMvQuVz9odWqHYbwtYLn4nQgFncJZfHIfYwIvGJQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(366004)(136003)(39860400002)(9686003)(4326008)(66946007)(76116006)(7696005)(6916009)(33656002)(66556008)(4744005)(64756008)(86362001)(52536014)(44832011)(66446008)(66476007)(55016002)(5660300002)(26005)(71200400001)(2906002)(186003)(478600001)(8936002)(8676002)(316002)(6506007)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: LbFd7DKwleZ3qN0nRsxFiMdFE9XUYvRejoT03LWDBxU2VOm6rI17u/cMW10kmWbrtU20PkxDbyOI3x7U73CYg3yykoKnvIks0hgEtCa7qnzsUO3MRbBMJ1q0NJg5ghJ4tAQoOghZmhVFEKAmscH8LUlFyoj3cle0ME0v6+2r7DWoD33ta/P/PQ7GWC+wfH90eSyMGS7SD3Dr61aPzy/J+fNQeDiNbzQMYrqxYr5Gt2uQwxvfBRH+9zeXA/+h0DTqE4w8cXS1ohUnHBPLAl+uQqRlak/9x8wkmZcPu5HeBJnnHyK/FY/fvXUkT7ksvezw7W5UARFjJP9JN5BjiC5s2Fkjn23yvHsrC+hNX/c2o9XLNHlFzTzEg070FcUa0Ewt4y/aORo9vc3reH/Wmxpo64yCrk4KxyfPwaHWFbJF0KXU6CqBuDw0W2DxHI1WaI6Ll6+r0FOwN7bDO9bY3tQCISy0hFApjBIijDVwd2gLzh8n08hhnvxGzaaBvbUN10MbS23dkxJoDZP7IYAvkc7KWhwMQJoHCeM52mpJAaN0j96kg3h/Tm5cl6kppL+/0lwntrtV5zfZRsbn3CA7bZTYlB0Nw4ObdlVNZVrs8/e3FpLnoCfIPO4WDtc7tMkzKsNx7uxUpNefXnYbSesOR+rIvA==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2391457AbgJMJbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:31:24 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:41139 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390610AbgJMJbX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:31:23 -0400
+X-Greylist: delayed 424 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 05:31:21 EDT
+Received: from cust-57f2be97 ([IPv6:fc0c:c196:c6c4:fdf1:aa47:ab6:e251:d2a8])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id SGXXkQ6plv4gESGXYkdALY; Tue, 13 Oct 2020 11:24:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1602581056; bh=NgBK7b0/5eOTUg7amcOBkfdAW918ABPeJjYlM7njnDs=;
+        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Pb6fbnsD7reXz4QGw38Vn/O8BFKZfbuaWButEoUeK8u/kZ5k6+/lyHCfvX4UZnKTl
+         Dk8c4vDNwT5F7dq4cR/IqNdfvvD9zCTWA1ySRNIrLb9Lu1x/haDQMYAC0uftg5Dz7S
+         Gq7a1+OztBGu12iLN57+uKrjNbVwH2Los1AwQqpGnLOc+CQVKZHzIZoP60VpF0DKta
+         Gl+esRurcKcm2g6OtkWaFTltt8nDkJ7hC/vsCo/xJUjO/lM5Uz7l7O9TZt0OXT30/6
+         XDjuYBkkAvAIoWtqrlxYgNgxmRZTFrNXxt1eE5G+LKwJNnbYSqRdWBdVyxB5qgqmVp
+         EU7yoLkwX/ltg==
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Udo van den Heuvel <udovdh@xs4all.nl>
+Subject: disabling CONFIG_LED_CLASS
+Autocrypt: addr=udovdh@xs4all.nl; prefer-encrypt=mutual; keydata=
+ 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
+Organization: hierzo
+Message-ID: <2835d02a-380b-6a3a-0e4d-abf07aee18bc@xs4all.nl>
+Date:   Tue, 13 Oct 2020 11:24:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5992ec57-06f2-46ba-a34c-08d86f59333f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2020 09:20:17.4356
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GFIPI9Uqiyyk0Kd8OJJPBRK8lq9xGNfrX9oYccrJjh7mZCMfD0n8p3cercRhP9riy2iQ99IQBIRgcHqlH9Tqdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6927
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfPXZXpWW5kOw+GFiT5Ez2Cnabcpm4YMb8KV3fTcaisaUHdn5YEnE2sysKL52Iu1v0+wU6i1T+9qCmuKxrKfrywVwbf65zt98o+/k4kmO8O8UX/kZYaNb
+ NnH6aoXESfiQ66VO9K86d+KRTLOxJSBD2fq3zU/DLPEPXKaMWMdELS3HQizSPsAoBJWGRYt6RDTdtF7GVuBsL1Rbh+GDyVQ+mGFZPX7yaN9/A4x1xRt57EDH
+ xPJiY/Lb2PjzHCAY0XX/PITVjNkOEZlfbt2y/7FvYi8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hello,
 
-> Subject: Re: [PATCH V2 0/2] Add module autoloading support for vop and
-> cosm driver
->=20
-> On Tue, Oct 13, 2020 at 08:52:01AM +0000, Sherry Sun wrote:
-> > Gentle ping....
->=20
-> It's the merge window, sorry, this fell through the cracks before that
-> happened.
->=20
-> Please resubmit once 5.10-rc1 comes out.
+While looking at the 5.9 kernel config I noticed there is no easy way to
+disable LED support in general.
+There's this NEW_LEDS thing that is not shown, etc.
+So I get:
 
-Thanks for the information, will resubmit the patches after 5.10-rc1.
+# make oldconfig
+scripts/kconfig/conf  --oldconfig Kconfig
+*
+* Restart config...
+*
+*
+* LED Support
+*
+LED Support (NEW_LEDS) [Y/?] (NEW) y
+  LED Class Support (LEDS_CLASS) [M/y/?] (NEW) n
 
-Best regards
-Sherry
+CONFIG_LEDS_CLASS:
 
->=20
-> thanks,
->=20
-> greg k-h
+This option enables the LED sysfs class in /sys/class/leds.  You'll
+need this to do anything useful with LEDs.  If unsure, say N.
+
+Symbol: LEDS_CLASS [=m]
+Type  : tristate
+Defined at drivers/leds/Kconfig:17
+  Prompt: LED Class Support
+  Depends on: NEW_LEDS [=y]
+  Location:
+    -> Device Drivers
+      -> LED Support (NEW_LEDS [=y])
+Selected by [m]:
+  - SND_HDA_GENERIC [=m] && SOUND [=y] && !UML && SND [=m] && SND_HDA
+[=m] && SND_HDA_GENERIC_LEDS [=y]
+Selected by [n]:
+  - TS5500 [=n] && X86_32 [=n] && MELAN [=n]
+  - ADB_PMU_LED [=n] && MACINTOSH_DRIVERS [=n] && PPC_PMAC && ADB_PMU [=n]
+  - ATH5K [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_ATH [=n]
+&& (PCI [=y] || ATH25) && MAC80211 [=n]
+  - ATH9K [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_ATH [=n]
+&& MAC80211 [=n] && HAS_DMA [=y]
+  - ATH9K_HTC [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_ATH
+[=n] && USB [=y] && MAC80211 [=n]
+  - CARL9170_LEDS [=n] && NETDEVICES [=y] && WLAN [=n] &&
+WLAN_VENDOR_ATH [=n] && CARL9170 [=n]
+  - BRCMSMAC [=n] && NETDEVICES [=y] && WLAN [=n] &&
+WLAN_VENDOR_BROADCOM [=n] && MAC80211 [=n] && BCMA_POSSIBLE [=y] &&
+BCMA_DRIVER_GPIO [=n]
+  - IWLEGACY [=n] && NETDEVICES [=y] && WLAN [=n] && WLAN_VENDOR_INTEL [=n]
+  - INPUT_WISTRON_BTNS [=n] && !UML && INPUT [=y] && INPUT_MISC [=y] &&
+X86_32 [=n]
+  - SENSORS_APPLESMC [=n] && HWMON [=y] && INPUT [=y] && X86 [=y]
+  - IR_REDRAT3 [=n] && RC_DEVICES [=n] && USB_ARCH_HAS_HCD [=y] &&
+RC_CORE [=n]
+  - IR_WINBOND_CIR [=n] && RC_DEVICES [=n] && (X86 [=y] && PNP [=y] ||
+COMPILE_TEST [=n]) && RC_CORE [=n]
+  - IR_TTUSBIR [=n] && RC_DEVICES [=n] && USB_ARCH_HAS_HCD [=y] &&
+RC_CORE [=n]
+  - BACKLIGHT_ADP8860 [=n] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE
+[=y] && I2C [=y]
+  - BACKLIGHT_ADP8870 [=n] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE
+[=y] && I2C [=y]
+  - BACKLIGHT_LM3639 [=n] && HAS_IOMEM [=y] && BACKLIGHT_CLASS_DEVICE
+[=y] && I2C [=y]
+  - SND_USB_TONEPORT [=n] && SOUND [=y] && !UML && SND [=m] && SND_USB
+[=y] && USB [=y]
+  - HID_LENOVO [=n] && INPUT [=y] && HID [=y]
+  - HID_WACOM [=n] && INPUT [=y] && HID [=y] && USB_HID [=m]
+  - HUAWEI_WMI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] &&
+ACPI_BATTERY [=n] && ACPI_WMI [=n] && INPUT [=y]
+  - ACER_WMI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI [=y]
+&& BACKLIGHT_CLASS_DEVICE [=y] && SERIO_I8042 [=y] && INPUT [=y] &&
+(RFKILL [=n] || RFKILL [=n]=n) && ACPI_WMI [=n]
+  - ASUS_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
+[=y] && BACKLIGHT_CLASS_DEVICE [=y] && INPUT [=y] && (RFKILL [=n] ||
+RFKILL [=n]=n) && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n)
+  - ASUS_WIRELESS [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
+[=y] && INPUT [=y]
+  - ASUS_WMI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI_WMI
+[=n] && ACPI_BATTERY [=n] && INPUT [=y] && HWMON [=y] &&
+BACKLIGHT_CLASS_DEVICE [=y] && (RFKILL [=n] || RFKILL [=n]=n) &&
+HOTPLUG_PCI [=n] && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n)
+  - EEEPC_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
+[=y] && INPUT [=y] && (RFKILL [=n] || RFKILL [=n]=n) && (ACPI_VIDEO [=n]
+|| ACPI_VIDEO [=n]=n) && HOTPLUG_PCI [=n] && BACKLIGHT_CLASS_DEVICE [=y]
+  - DELL_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && DMI
+[=y] && BACKLIGHT_CLASS_DEVICE [=y] && (ACPI_VIDEO [=n] || ACPI_VIDEO
+[=n]=n) && (RFKILL [=n] || RFKILL [=n]=n) && SERIO_I8042 [=y] &&
+DELL_SMBIOS [=n]
+  - FUJITSU_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
+[=y] && INPUT [=y] && BACKLIGHT_CLASS_DEVICE [=y] && (ACPI_VIDEO [=n] ||
+ACPI_VIDEO [=n]=n)
+  - HP_ACCEL [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && INPUT [=y]
+&& ACPI [=y] && SERIO_I8042 [=y]
+  - THINKPAD_ACPI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
+[=y] && ACPI_BATTERY [=n] && INPUT [=y] && (RFKILL [=n] || RFKILL
+[=n]=n) && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n) &&
+BACKLIGHT_CLASS_DEVICE [=y]
+  - SAMSUNG_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] &&
+(RFKILL [=n] || RFKILL [=n]=n) && (ACPI_VIDEO [=n] || ACPI_VIDEO [=n]=n)
+&& BACKLIGHT_CLASS_DEVICE [=y]
+  - ACPI_TOSHIBA [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
+[=y] && ACPI_WMI [=n] && BACKLIGHT_CLASS_DEVICE [=y] && INPUT [=y] &&
+(SERIO_I8042 [=y] || SERIO_I8042 [=y]=n) && (ACPI_VIDEO [=n] ||
+ACPI_VIDEO [=n]=n) && (RFKILL [=n] || RFKILL [=n]=n) && IIO [=n]
+  - LG_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI [=y]
+&& ACPI_WMI [=n] && INPUT [=y]
+  - SYSTEM76_ACPI [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI [=y]
+  - TOPSTAR_LAPTOP [=n] && X86 [=y] && X86_PLATFORM_DEVICES [=n] && ACPI
+[=y] && INPUT [=y]
+
+
+And there is no 'n' option. None of the devices as dependencies (on the
+left) are enabled.
+SND_HDA_GENERIC_LEDS is automagically enabled and disabling it via vi is
+no option.
+So how do I disable this stuff?
+
+Kind regards,
+Udo
