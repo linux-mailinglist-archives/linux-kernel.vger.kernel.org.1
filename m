@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D5C28C6E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D3428C6E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgJMBrA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Oct 2020 21:47:00 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3633 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728368AbgJMBrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 21:47:00 -0400
-Received: from dggeme701-chm.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 52428B01F422E592A767;
-        Tue, 13 Oct 2020 09:46:58 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme701-chm.china.huawei.com (10.1.199.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 13 Oct 2020 09:46:57 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Tue, 13 Oct 2020 09:46:57 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [Question Resend] About z3fold page migration
-Thread-Topic: [Question Resend] About z3fold page migration
-Thread-Index: AdahATPxqN5axJg6RU2xJ1rzRUeAVQ==
-Date:   Tue, 13 Oct 2020 01:46:57 +0000
-Message-ID: <5558810ec33b4b8e92145f66a4922be8@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.179.54]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728413AbgJMBrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 21:47:35 -0400
+Received: from mga02.intel.com ([134.134.136.20]:29646 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728368AbgJMBre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 21:47:34 -0400
+IronPort-SDR: Y4qO65T6j9DFybAYDbGDQwpyqGbSiQh8tCgyNze/vVyqjcO6wm/O0boZ/d1dajJaMw3nlQ0nWl
+ ZdxJ+k5rMyxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="152760954"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="152760954"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:47:34 -0700
+IronPort-SDR: NivaALxhwUwXVU6Tez3xOeY5PWOijR8tdHQf73m+YW/dQS3N39irIv9e50gK4/xVuW3vG23CzI
+ ZnrdX1H80+EQ==
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="530193113"
+Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.68]) ([10.238.4.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:47:32 -0700
+Subject: Re: [LKP] [fs] b6509f6a8c: will-it-scale.per_thread_ops -12.6%
+ regression
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <20200706012029.GZ3874@shao2-debian>
+ <6b301f34-f8fe-c626-e5e5-9af5c257c5c3@linux.intel.com>
+ <20201012081825.GR3227@techsingularity.net>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <162fe30c-21cb-4d49-15f2-394d48f4cecd@linux.intel.com>
+Date:   Tue, 13 Oct 2020 09:47:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20201012081825.GR3227@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
-> On Mon, Oct 12, 2020 at 02:00:17PM +0000, linmiaohe wrote:
->> Hi all:
->> 
->> 	Many thanks for brilliant z3fold code. I am reading it and have some questions about it. It's very nice of you if you can explain it for me.
->> 	1.page->private is used in z3fold but PagePrivate flag is never set, should we SetPagePrivate for it?
->
->No.  SetPagePrivate and page->private are related in interesting and complicated ways.  I'm working on some documentation for it at the moment, but the short answer is: no.
 
-I can't wait to read your document. PagePrivate confuses me now.
 
+On 10/12/2020 4:18 PM, Mel Gorman wrote:
+> On Mon, Oct 12, 2020 at 02:20:26PM +0800, Xing Zhengjun wrote:
+>> Hi Mel,
+>>
+>>     It is a revert commit caused the regression, Do you have a plan to fix
+>> it? Thanks. I re-test it in v5.9-rc8, the regression still existed.
+>>
+> 
+> The revert caused a *performance* regression but the original
+> performance gain caused a functional failure. The overall performance
+> should be unchanged. I have not revisited the topic since.
 >
->> 	2.Since PagePrivate flag is never set, why we ClearPagePrivate in free_z3fold_page and z3fold_page_migrate?
->
->That's probably a bug.
->
->
->> 	3.Should we add page to the unbuddied list in z3fold_page_putback() 
->> when zhdr->refcount does not reach 0 since we remove it from unbuddied list in z3fold_page_isolate? Or When we will add page to the unbuddied list after z3fold_page_putback?
->
->This one I do not know the answer to.
->
+Thanks for the explanation. We will stop tracking it.
 
-Many thanks for your reply. Enjoy your day! ;)
-
+-- 
+Zhengjun Xing
