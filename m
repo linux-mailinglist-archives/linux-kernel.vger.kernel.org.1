@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD02428D309
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8B028D30F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388353AbgJMRTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 13:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgJMRTX (ORCPT
+        id S1729605AbgJMRWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:22:32 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:40051 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgJMRWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:19:23 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AED0C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:19:23 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e18so180098wrw.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hi/aqJYx9lDP1HowNRsqMAfgvbnLyBU/Tyswx0oWrYA=;
-        b=md7BnzJBSb99UK843T7yDU4rkdMtlCNAi8Xj418lZAwmGnFkQKgSVNzWZrCQ22kZIj
-         6lxtI/o3x6XOyh/kRvWMEFseyGVA8mw5T7Rkd/9QBR1AqpHldIUT4BHO493wGlCmoOpH
-         I7yexQzoZs7X6GgN5EEmC+4Y+VlCEmJ/bMErNf1O/qyfnEXVBFit0Jdu03HrS5829HTQ
-         NKa1Y6Fq6ehVdQrfdUUtpvgWDnX1SxuuntofQhAcpMdy2NcAr8RK8rLfzNetY0GgPJyN
-         RpWSQVgkNBiD7+72nsJwSlq0nhz0PUZdEhJSbKreJTonlCPb8qq2UMuY6wNiG8DxQ3DI
-         8PTw==
+        Tue, 13 Oct 2020 13:22:32 -0400
+Received: by mail-oo1-f66.google.com with SMTP id w7so67117oow.7;
+        Tue, 13 Oct 2020 10:22:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hi/aqJYx9lDP1HowNRsqMAfgvbnLyBU/Tyswx0oWrYA=;
-        b=kc+ll2+1EK5NWHhF9Gbh7fy5XwnWcW6BycsGVQ1WFNy/XpAh/G1gyEZyndyYWL93CZ
-         8lunWuhGh14rhMstIcVolx1sjbHRbY54uyD3wOVgxw/Wcd7bKyAEOSLhea+tdjza80Lg
-         AhYpwGw6J4ZYvUMmRxUfj+DLNf6UTPkNcLiAdCVKG2VeWDBGl14azRFQ+Lq5gzdedj3R
-         URIQCsskGok7jvRmLUUA0gJtKNPmqfDGJ4H/GqtMa7i47tgBLTLtW4C3eSild6DBpJ3q
-         T/ptaSZUGes4ycgEhUspsp7pwnzrAz1MhbWI9XZgBKYtjb6jxXVBS8rS3tv7iPsPFTEW
-         VH5w==
-X-Gm-Message-State: AOAM532JRrhHw9PHYjPwQt4bv+HaxT5PP1EW9eTikDsK9PWljSQdYDaJ
-        81vhuGYQwG/j5HyYDJwLjIsV+g==
-X-Google-Smtp-Source: ABdhPJwietwj2yNqUWc59yGVuGyBA5MFBEhx8TCB8X03OJoQyr/Fo3Ktwr4wAz+DcvwRpR6q48trFA==
-X-Received: by 2002:adf:e80f:: with SMTP id o15mr808126wrm.308.1602609561969;
-        Tue, 13 Oct 2020 10:19:21 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id c18sm317609wrq.5.2020.10.13.10.19.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Oct 2020 10:19:21 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org
-Cc:     mdtipton@codeaurora.org, okukatla@codeaurora.org,
-        sibis@codeaurora.org, bjorn.andersson@linaro.org,
-        linux-kernel@vger.kernel.org,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Subject: [PATCH] interconnect: qcom: Simplify the vcd compare function
-Date:   Tue, 13 Oct 2020 20:19:23 +0300
-Message-Id: <20201013171923.7351-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VFYdK5eEI2q6HITSkcwdVxz4dDBhdqzWyeihWrwEJQY=;
+        b=gbk/pyxWUw8Aq9L7Zc8gGCzlbgwhpdUc96GKl9xr4BVFPXX6M3uY/ktF0nuuD/wBL/
+         mvLvudRUbDFQmgdVNCw5yo7qTtg9UFYlJxUSy1vjONY9osXUfFpmdLWaVUj2PaIDNlNi
+         iqOGlJLYNgb9MoKzTLvR4Q1j0nC/vm+EuRDy8GTahKgobAwB89557T/jRWR9CVQqexoZ
+         hJxfMl/8D2bGdEWndfVzF0oxMgatwr+ximaMJqbZP03waQOPEAUf5fFOMwjBjK17twOc
+         MlEXsTHlE+cSQgcgJB9skt1IOUW3DUe9P4XsbuW4S9seOzvoNSbhg4DydnL0c9Q6G6ji
+         IqyA==
+X-Gm-Message-State: AOAM533Hu/wOVROYt7O67eDlcK6rK7NCmwKkQjrCKP2jtYATct6Oe+wP
+        1PAGrNF/NA6cMoBC6W45XAr3NIbLoaTd
+X-Google-Smtp-Source: ABdhPJzsC/0Ak+zrtd70+RUds9C+1E9Lw/c+pMqT2nbpeqfiPZ/7HAznFBx2dTS3zyPXvelxW8tNZA==
+X-Received: by 2002:a05:6820:30e:: with SMTP id l14mr297849ooe.57.1602609751366;
+        Tue, 13 Oct 2020 10:22:31 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y51sm131571otb.47.2020.10.13.10.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 10:22:30 -0700 (PDT)
+Received: (nullmailer pid 3726622 invoked by uid 1000);
+        Tue, 13 Oct 2020 17:22:30 -0000
+Date:   Tue, 13 Oct 2020 12:22:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     pmeerw@pmeerw.net, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        lars@metafoo.de, knaack.h@gmx.de, matthias.bgg@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, jic23@kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: auxadc: add doc for MT8516 SoC
+Message-ID: <20201013172230.GA3726592@bogus>
+References: <20201012205218.3010868-1-fparent@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012205218.3010868-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's simplify the cmp_vcd() function and replace the conditionals
-with just a single statement, which also improves readability.
+On Mon, 12 Oct 2020 22:52:17 +0200, Fabien Parent wrote:
+> Add documentation for the auxadc binding for MT8516 SoC.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/iio/adc/mt6577_auxadc.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- drivers/interconnect/qcom/bcm-voter.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
-index 887d13721e52..1cc565bce2f4 100644
---- a/drivers/interconnect/qcom/bcm-voter.c
-+++ b/drivers/interconnect/qcom/bcm-voter.c
-@@ -41,17 +41,10 @@ struct bcm_voter {
- 
- static int cmp_vcd(void *priv, struct list_head *a, struct list_head *b)
- {
--	const struct qcom_icc_bcm *bcm_a =
--			list_entry(a, struct qcom_icc_bcm, list);
--	const struct qcom_icc_bcm *bcm_b =
--			list_entry(b, struct qcom_icc_bcm, list);
--
--	if (bcm_a->aux_data.vcd < bcm_b->aux_data.vcd)
--		return -1;
--	else if (bcm_a->aux_data.vcd == bcm_b->aux_data.vcd)
--		return 0;
--	else
--		return 1;
-+	const struct qcom_icc_bcm *bcm_a = list_entry(a, struct qcom_icc_bcm, list);
-+	const struct qcom_icc_bcm *bcm_b = list_entry(b, struct qcom_icc_bcm, list);
-+
-+	return bcm_a->aux_data.vcd - bcm_b->aux_data.vcd;
- }
- 
- static u64 bcm_div(u64 num, u32 base)
+Acked-by: Rob Herring <robh@kernel.org>
