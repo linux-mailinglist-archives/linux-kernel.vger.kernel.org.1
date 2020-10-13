@@ -2,183 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F9228CF08
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3ED28CF07
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgJMNRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728487AbgJMNRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 13 Oct 2020 09:17:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53924 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726951AbgJMNRp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+Received: from mail.kernel.org ([198.145.29.99]:36908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728373AbgJMNRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Oct 2020 09:17:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602595063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=akz97Nl+IxgVygciBQstiiS9v+v6tNAa1jQ97vPRDuI=;
-        b=OpVE4nZccjYk7jNp8jmHxrJndwJN24NjPdQu3QcTvb6lhjCwFVBIf3Oy26MVBcr1Hquj2m
-        0gJqZOq+m9mdHgUNxpiKbqhypLDngfkquTfgZ1ImswWSf1D/p0JjWLVna78SoQUrqLPyeW
-        N2gSYmMS1z4PMgSGdeRFlNn3d9m5FTo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-jSpVPhPkP9m3OhnZ_viipA-1; Tue, 13 Oct 2020 09:17:42 -0400
-X-MC-Unique: jSpVPhPkP9m3OhnZ_viipA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 129936408B;
-        Tue, 13 Oct 2020 13:17:40 +0000 (UTC)
-Received: from localhost (ovpn-12-47.pek2.redhat.com [10.72.12.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C85DD1002C00;
-        Tue, 13 Oct 2020 13:17:38 +0000 (UTC)
-Date:   Tue, 13 Oct 2020 21:17:35 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Rahul Gopakumar <gopakumarr@vmware.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Rajender M <manir@vmware.com>,
-        Yiu Cho Lau <lauyiuch@vmware.com>,
-        Peter Jonasson <pjonasson@vmware.com>,
-        Venkatesh Rajaram <rajaramv@vmware.com>
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Message-ID: <20201013131735.GL25604@MiWiFi-R3L-srv>
-References: <DM6PR05MB52921FF90FA01CC337DD23A1A4080@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201010061124.GE25604@MiWiFi-R3L-srv>
- <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id CCEDC22D2C;
+        Tue, 13 Oct 2020 13:17:44 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 09:17:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: BUG: using __this_cpu_read() in preemptible code in
+ trace_hardirqs_on
+Message-ID: <20201013091743.12c371a8@gandalf.local.home>
+In-Reply-To: <000000000000e921b305b18ba0a7@google.com>
+References: <000000000000e921b305b18ba0a7@google.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rahul,
+On Tue, 13 Oct 2020 04:22:21 -0700
+syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com> wrote:
 
-On 10/12/20 at 05:21pm, Rahul Gopakumar wrote:
-> Hi Baoquan,
+> Hello,
 > 
-> Attached collected dmesg logs for with and without
-> commit after adding memblock=debug to kernel cmdline.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    865c50e1 x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15112ef0500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c829313274207568
+> dashboard link: https://syzkaller.appspot.com/bug?extid=53f8ce8bbc07924b6417
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com
+> 
+> BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/8265
+> caller is lockdep_hardirqs_on_prepare+0x56/0x620 kernel/locking/lockdep.c:4060
+> CPU: 0 PID: 8265 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+>  check_preemption_disabled+0x13c/0x140 lib/smp_processor_id.c:48
+>  lockdep_hardirqs_on_prepare+0x56/0x620 kernel/locking/lockdep.c:4060
+>  trace_hardirqs_on+0x6f/0x80 kernel/trace/trace_preemptirq.c:49
+>  __bad_area_nosemaphore+0x89/0x510 arch/x86/mm/fault.c:797
+>  handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+>  exc_page_fault+0x129/0x240 arch/x86/mm/fault.c:1482
+>  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+> RIP: 0033:0x402d28
+> Code: 00 00 48 89 7c 24 f8 48 89 74 24 f0 48 89 54 24 e8 48 89 4c 24 e0 48 8b 74 24 f8 4c 8b 4c 24 f0 48 8b 4c 24 e8 48 8b 54 24 e0 <8b> 86 0c 01 00 00 44 8b 86 08 01 00 00 c1 e0 04 8d b8 7f 01 00 00
+> RSP: 002b:00007fce5827ec68 EFLAGS: 00010216
+> RAX: 0000000000402d00 RBX: 000000000118bfc8 RCX: 0000000020000200
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 000000000118c010 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bfd4
+> R13: 00007ffea2de495f R14: 00007fce5827f9c0 R15: 000000000118bfd4
+> BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/8265
+> caller is lockdep_hardirqs_on+0x36/0x110 kernel/locking/lockdep.c:4129
+> CPU: 0 PID: 8265 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+>  check_preemption_disabled+0x13c/0x140 lib/smp_processor_id.c:48
+>  lockdep_hardirqs_on+0x36/0x110 kernel/locking/lockdep.c:4129
+>  __bad_area_nosemaphore+0x89/0x510 arch/x86/mm/fault.c:797
 
-Can you test below draft patch and see if it works for you? 
+Peter,
 
-From a2ea6caef3c73ad9efb2dd2b48039065fe430bb2 Mon Sep 17 00:00:00 2001
-From: Baoquan He <bhe@redhat.com>
-Date: Tue, 13 Oct 2020 20:05:30 +0800
-Subject: [PATCH] mm: make memmap defer init only take effect per zone
+I'm guessing the above is:
 
-Deferred struct page init is designed to work per zone. However since
-commit 73a6e474cb376 ("mm: memmap_init: iterate over memblock regions
-rather that check each PFN"), the handling is mistakenly done in all memory
-ranges inside one zone. Especially in those unmovable zones of multiple nodes,
-memblock reservation split them into many memory ranges. This makes
-initialized struct page more than expected in early stage, then increases
-much boot time.
+static void
+__bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+		       unsigned long address, u32 pkey, int si_code)
+{
+	struct task_struct *tsk = current;
 
-Let's fix it to make the memmap defer init handled in zone wide, but not in
-memory range of one zone.
+	/* User mode accesses just cause a SIGSEGV */
+	if (user_mode(regs) && (error_code & X86_PF_USER)) {
+		/*
+		 * It's possible to have interrupts off here:
+		 */
+		local_irq_enable();
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- arch/ia64/mm/init.c | 4 ++--
- include/linux/mm.h  | 5 +++--
- mm/memory_hotplug.c | 2 +-
- mm/page_alloc.c     | 6 +++---
- 4 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index ef12e097f318..27ca549ff47e 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -536,7 +536,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
- 
- 	if (map_start < map_end)
- 		memmap_init_zone((unsigned long)(map_end - map_start),
--				 args->nid, args->zone, page_to_pfn(map_start),
-+				 args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	return 0;
- }
-@@ -546,7 +546,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
- 	     unsigned long start_pfn)
- {
- 	if (!vmem_map) {
--		memmap_init_zone(size, nid, zone, start_pfn,
-+		memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	} else {
- 		struct page *start;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ef360fe70aaf..5f9fc61d5be2 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2439,8 +2439,9 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
- #endif
- 
- extern void set_dma_reserve(unsigned long new_dma_reserve);
--extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
--		enum meminit_context, struct vmem_altmap *, int migratetype);
-+extern void memmap_init_zone(unsigned long, int, unsigned long,
-+		unsigned long, unsigned long, enum meminit_context,
-+		struct vmem_altmap *, int migratetype);
- extern void setup_per_zone_wmarks(void);
- extern int __meminit init_per_zone_wmark_min(void);
- extern void mem_init(void);
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index b44d4c7ba73b..f9a37e6abc1c 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -732,7 +732,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
- 	 * expects the zone spans the pfn range. All the pages in the range
- 	 * are reserved so nobody should be touching them so we should be safe
- 	 */
--	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
-+	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
- 			 MEMINIT_HOTPLUG, altmap, migratetype);
- 
- 	set_zone_contiguous(zone);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 2ebf9ddafa3a..e8b19fdd18ec 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6044,7 +6044,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-  * zone stats (e.g., nr_isolate_pageblock) are touched.
-  */
- void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
--		unsigned long start_pfn,
-+		unsigned long start_pfn, unsigned long zone_end_pfn,
- 		enum meminit_context context,
- 		struct vmem_altmap *altmap, int migratetype)
- {
-@@ -6080,7 +6080,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 		if (context == MEMINIT_EARLY) {
- 			if (overlap_memmap_init(zone, &pfn))
- 				continue;
--			if (defer_init(nid, pfn, end_pfn))
-+			if (defer_init(nid, pfn, zone_end_pfn))
- 				break;
- 		}
- 
-@@ -6194,7 +6194,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
--			memmap_init_zone(size, nid, zone, start_pfn,
-+			memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
- 	}
--- 
-2.17.2
+And I'm also guessing that we can call this with interrupts enabled (based
+on the comment).
+
+And we have this:
+
+   local_irq_enable()
+      trace_hardirqs_on()
+         lockdep_hardirqs_on()
+             __this_cpu_read()
+
+-- Steve
+
+
+>  handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+>  exc_page_fault+0x129/0x240 arch/x86/mm/fault.c:1482
+>  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+> RIP: 0033:0x402d28
+> Code: 00 00 48 89 7c 24 f8 48 89 74 24 f0 48 89 54 24 e8 48 89 4c 24 e0 48 8b 74 24 f8 4c 8b 4c 24 f0 48 8b 4c 24 e8 48 8b 54 24 e0 <8b> 86 0c 01 00 00 44 8b 86 08 01 00 00 c1 e0 04 8d b8 7f 01 00 00
+> RSP: 002b:00007fce5827ec68 EFLAGS: 00010216
+> RAX: 0000000000402d00 RBX: 000000000118bfc8 RCX: 0000000020000200
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 000000000118c010 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bfd4
+> R13: 00007ffea2de495f R14: 00007fce5827f9c0 R15: 000000000118bfd4
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
