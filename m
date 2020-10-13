@@ -2,98 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E42C28C855
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8EA28C857
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387950AbgJMFlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
+        id S1732494AbgJMFot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732457AbgJMFlo (ORCPT
+        with ESMTP id S1728800AbgJMFot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:41:44 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCB8C0613D0;
-        Mon, 12 Oct 2020 22:41:43 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k18so20425073wmj.5;
-        Mon, 12 Oct 2020 22:41:43 -0700 (PDT)
+        Tue, 13 Oct 2020 01:44:49 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AF0C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:44:49 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id r10so14230628ilm.11
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:44:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=d9vylN65+yzj7mksBEpuNNWYvYrmZ1UZPFWpzN8ZJnc=;
-        b=sCLwzONOmV2FgbEAOU83au8Xo+dLKC7HW9WDa6LSVfMb9V8Jl4KZPyzFI3tycA7Khb
-         sS2veNiS+XGL2ioy2cMAiCv/qr20FWJR7NpMlD42nbgcmRZdQePe/O5oOzromG/qMjoE
-         gqRdNEtLex937a3wvsxc1jwF0tBMMwDefp/2oH0Y1Zdiw/JCZtVXH0XvOXof1JzDgYNh
-         pnhtMM2uwTQpjO4oWYpG5lx1gZUF5W1Iz8uv0Rs4AZNVlnrgT+Y7bXld0EmyqEN9YsZZ
-         qKrpj1SvtscbuMFaKUbvbWvfTqhTrQ1K8QHDwKRgVYCnowgZZBvPy/oPTF6fzx1jk5ku
-         mSCQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mv6cqs+iS3nWt7sl83B1vWYXMblxkRnrK5O4id5akdI=;
+        b=xgrAJzGgLEqYR8gdhpOk5NvxeBQvAyGijClknsZ5Zd1oaYGRXs6e3A9D7l1wTPmeCp
+         FpsKxbWJeY+/HtGZA/XGNLysnCrHGf7rtgJzlJudgjeX3cgIjo3YPqvnFnbST8Z+EU3J
+         RoDhvKfYkMq//+ORyiyLxi82b4uVnTEW5gqZ2AFq3/kZ1CCHVv3ce9G8pU+YfowmnYKu
+         kCYSUjD22oDZSyCZVFLmVYrhXlLuOdepjxmb2HUS203iE+7vlyirvMoqgMExPMU3eZtj
+         EzJlKxYWnk6+0gMlqxXxXCCau9z9YkY0M9bIw6Dpos9HE5X8IVs1EC+mRPYjSZv3Yh1P
+         8+sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=d9vylN65+yzj7mksBEpuNNWYvYrmZ1UZPFWpzN8ZJnc=;
-        b=I9OZxsNrIgwYBX/4UBCIEwWg+Dg8QfFkzn2Tkj0mPT/KWHgVJwxvC50YsqpCfvzgMc
-         mig6nnXyXAT8eO1pEBRlM3h+yDDEqGXc4dyR5TyrUwPUw2PO0NyAdUg6XVh9QCiPD5QQ
-         jX4iaUVppWv39iaTGJY0+3GOLo9I1ifY/YEmdoulXMLzlE0a99g9OwKuD7oif9FGWfts
-         IMlb7Psy1XepoLZrykHgi4IhIRbC+nwBz0nJDxfk0Bbc9Wrd8QsrX5lXv6BNVeIEOSBE
-         31bk3s13saYDEHBxq7wfULDwd/YYygyMaBGGrXytVkacwy8UWirVfQn+qm98RY8j91Ul
-         CzZg==
-X-Gm-Message-State: AOAM530jfxb/F9nCYmqRNanx3MrEpuLTmOJT0BqG/dIB8sbyqjpVPr3z
-        A28iDkDbey+Puy6xt87lPFIFamzD2D2MD7UO
-X-Google-Smtp-Source: ABdhPJyBxStNdGGvixqD19QWg9HaFQ15lb9VjTESTLLFfAXCJouGCu18qM+gVBG2G2S97MUHX7rWPA==
-X-Received: by 2002:a7b:c183:: with SMTP id y3mr13768508wmi.84.1602567702684;
-        Mon, 12 Oct 2020 22:41:42 -0700 (PDT)
-Received: from felia ([2001:16b8:2d05:8100:95ae:bd1a:3e4e:4242])
-        by smtp.gmail.com with ESMTPSA id u2sm28834532wre.7.2020.10.12.22.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 22:41:42 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Tue, 13 Oct 2020 07:41:40 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-usb@vger.kernel.org
-Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
- find_tt() not returning error
-In-Reply-To: <20201013052150.GA330398@kroah.com>
-Message-ID: <alpine.DEB.2.21.2010130737430.14590@felia>
-References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu> <alpine.DEB.2.21.2010121659040.6487@felia> <20201012160013.GA632789@rowland.harvard.edu>
- <alpine.DEB.2.21.2010122008370.17866@felia> <20201013052150.GA330398@kroah.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mv6cqs+iS3nWt7sl83B1vWYXMblxkRnrK5O4id5akdI=;
+        b=jaXMvZR6GxD6WwybZEaSBmLpB6ORJYu1xKnEbRSjsNDMHUKVRxWFQrFRx7IcexMjtW
+         XKuFsb5ybGgs4XWWmjvJ7+yQp7X8DdlkSopLqZILWtkc9V/Z1epeDl/173hniqenMIGi
+         sqFYCv25kkN6lBiOJ1J8M9Mnt0zDFTUv7TgXbGhrGylC8fKQZLtAAPTcNtcuzb165gHb
+         b5wVOtgZTMOkgzM4DREu/piPBDzp8+60CCdr0ugSjw/KP97uAPDwCNeNpPTgc1OA5JrA
+         zgofuonlftXter4+RO/Ke7DlyFmPrRt8V6UY0T1Ii7awWN5tuQJsR+NUtAlsUMyXXYT1
+         nvxQ==
+X-Gm-Message-State: AOAM530UUk4/AAH8M2i0ha0Qw0Sqlbf5xxFRPglLiy+8Enz+PRBkt9RB
+        G/ze84seCmHOEtZiOOMEZXQAefZm5bClujdS9YNo+Q==
+X-Google-Smtp-Source: ABdhPJxtKYmQ3DwCirWa56MaO4tM9M8bDa79i1IZx2gFUgwbWLDsYI8EReFJz4o5QoNJuKBiax8BAMeqbhekGwr5Rqo=
+X-Received: by 2002:a92:9944:: with SMTP id p65mr1742349ili.127.1602567888091;
+ Mon, 12 Oct 2020 22:44:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201012133146.834528783@linuxfoundation.org>
+In-Reply-To: <20201012133146.834528783@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 13 Oct 2020 11:14:36 +0530
+Message-ID: <CA+G9fYsTcM-iAwno8ur3teBzakVE1EaBJ7F7FmDD7Hhewxb=vQ@mail.gmail.com>
+Subject: Re: [PATCH 5.8 000/124] 5.8.15-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
-
-> On Mon, Oct 12, 2020 at 08:17:34PM +0200, Lukas Bulwahn wrote:
-> > > If you are suggesting some sort of special code annotation that the tool 
-> > > would understand, I am open to that.  But I'm not aware of any even 
-> > > vaguely standard way of marking up a particular function call to 
-> > > indicate it will not return an error.
-> > 
-> > I cannot yet say if some annotation would work, we, Sudip and me, need to 
-> > investigate. It could be that something like, assert(!IS_ERR(tt)), is 
-> > sufficient to let the tools know that they can safely assume that the 
-> > path they are complaining about is not possible.
-> > 
-> > We could make the assert() a nop, so it would not effect the resulting 
-> > object code in any way.
-> 
-> Things like assert() have been rejected numberous times in the past in
-> the kernel, good luck with that :)
+On Mon, 12 Oct 2020 at 19:15, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.8.15 release.
+> There are 124 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 14 Oct 2020 13:31:22 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.8.15-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.8.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 >
 
-Greg, we have been warned by you now; so, we are well aware what could 
-await us just as numerous others before.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Lukas
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.8.15-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.8.y
+git commit: f4ed6fb8f1680de812daf362f28342e6bf19fdcc
+git describe: v5.8.14-125-gf4ed6fb8f168
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.8.=
+y/build/v5.8.14-125-gf4ed6fb8f168
+
+No regressions (compared to build v5.8.14-5-g0b030df1725b)
+
+No fixes (compared to build v5.8.14-5-g0b030df1725b)
+
+Ran 37577 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* libhugetlbfs
+* ltp-sched-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* ltp-tracing-tests
+* ltp-quickhit-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
