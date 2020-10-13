@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FAB28D4ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0417D28D4EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbgJMTsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:48:53 -0400
-Received: from smtprelay0202.hostedemail.com ([216.40.44.202]:54066 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727665AbgJMTsx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:48:53 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 789CC180A8142;
-        Tue, 13 Oct 2020 19:48:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:968:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1981:2194:2196:2199:2200:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4385:5007:6119:7903:10004:10400:10848:11026:11232:11657:11658:11914:12043:12050:12297:12740:12760:12895:13069:13095:13149:13230:13311:13357:13439:14096:14097:14659:14721:21080:21433:21627:21939:30029:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: grain34_5e09cac27205
-X-Filterd-Recvd-Size: 1906
-Received: from XPS-9350 (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 13 Oct 2020 19:48:50 +0000 (UTC)
-Message-ID: <575e7e2eb77ee5c26c3ac8fb6cb863890e971a16.camel@perches.com>
-Subject: Re: sysfs filenames with spaces
-From:   Joe Perches <joe@perches.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 13 Oct 2020 12:48:49 -0700
-In-Reply-To: <20201013171754.GA29185@duo.ucw.cz>
-References: <9b6f5c32d244131dbd63b55b085b3b4173144b4b.camel@perches.com>
-         <20201013171754.GA29185@duo.ucw.cz>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1732732AbgJMTs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:48:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727665AbgJMTsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 15:48:55 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA8A3208D5;
+        Tue, 13 Oct 2020 19:48:53 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 15:48:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH] tracing: Check return value of __create_val_fields() before
+ using its result
+Message-ID: <20201013154852.3abd8702@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-13 at 19:17 +0200, Pavel Machek wrote:
-> On Mon 2020-10-05 19:41:15, Joe Perches wrote:
-> > This doesn't seem like a great idea to me.
-> > 
-> > For my system I've got:
-> > 
-> > /sys/devices/platform/Fixed MDIO bus.0/
-> > /sys/bus/platform/drivers/int3401 thermal/
-> > /sys/bus/platform/drivers/int3403 thermal/
-> > /sys/bus/platform/drivers/int3400 thermal/
-> > /sys/bus/mdio_bus/drivers/Generic PHY/
-> > /sys/bus/mdio_bus/drivers/Generic Clause 45 PHY/
-> > /sys/bus/pnp/drivers/i8042 aux/
-> > /sys/bus/pnp/drivers/i8042 kbd/
-> > /sys/bus/i2c/drivers/CHT Whiskey Cove PMIC/
-> > 
-> > Could these filenames be avoided in the future or
-> > even renamed today?
-> 
-> Does not look like great idea to me, either. Hmm. Is there filename
-> with "/" in it? :-)
-> 
-> But I guess you'd need to cc relevant maintainers and that this is
-> going to be a bit of whack-a-mole.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-An option might be to convert any invalid filename
-via an alloc and substitution in sysfs_add_file
-and similar free in sysfs_remove_file.
+After having a typo for writing a histogram trigger.
 
-Emitting a logging message describing any new name
-would be useful too.
+Wrote:
+  echo 'hist:key=pid:ts=common_timestamp.usec' > events/sched/sched_waking/trigger
 
+Instead of:
+  echo 'hist:key=pid:ts=common_timestamp.usecs' > events/sched/sched_waking/trigger
+
+and the following crash happened:
+
+ BUG: kernel NULL pointer dereference, address: 0000000000000008
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] PREEMPT SMP PTI
+ CPU: 4 PID: 1641 Comm: sh Not tainted 5.9.0-rc5-test+ #549
+ Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
+ RIP: 0010:event_hist_trigger_func+0x70b/0x1ee0
+ Code: 24 08 89 d5 49 89 cc e9 8c 00 00 00 4c 89 f2 41 b9 00 10 00 00 4c 89 e1 44 89 ee 4c 89 ff e8 dc d3 ff ff 45 89 ea 4b 8b 14 d7 <f6> 42 08 04 74 17 41 8b 8f c0 00 00 00 8d 71 01 41 89 b7 c0 00 00
+ RSP: 0018:ffff959213d53db0 EFLAGS: 00010202
+ RAX: ffffffffffffffea RBX: 0000000000000000 RCX: 0000000000084c04
+ RDX: 0000000000000000 RSI: df7326aefebd174c RDI: 0000000000031080
+ RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000001
+ R10: 0000000000000001 R11: 0000000000000046 R12: ffff959211dcf690
+ R13: 0000000000000001 R14: ffff95925a36e370 R15: ffff959251c89800
+ FS:  00007fb9ea934740(0000) GS:ffff95925ab00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000008 CR3: 00000000c976c005 CR4: 00000000001706e0
+ Call Trace:
+  ? trigger_process_regex+0x78/0x110
+  trigger_process_regex+0xc5/0x110
+  event_trigger_write+0x71/0xd0
+  vfs_write+0xca/0x210
+  ksys_write+0x70/0xf0
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7fb9eaa29487
+ Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+
+This was caused by accessing the hlist_data fields after the call to
+__create_val_fields() without checking if the creation succeed.
+
+Fixes: 63a1e5de3006 ("tracing: Save normal string variables")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_events_hist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index c74a7d157306..96c3f86b81c5 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -3687,7 +3687,7 @@ static int create_var_field(struct hist_trigger_data *hist_data,
+ 
+ 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
+ 
+-	if (hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
++	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
+ 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
+ 
+ 	return ret;
+-- 
+2.25.4
 
