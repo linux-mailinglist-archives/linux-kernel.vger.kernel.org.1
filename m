@@ -2,195 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8120F28CC6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5435828CC6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgJMLWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJMLWj (ORCPT
+        id S1726681AbgJMLWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:22:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726111AbgJMLWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:22:39 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C11C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:22:38 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id p15so20541655wmi.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fJ5oEvTMrhIJU6TJSDHoIP5ntvjnxJNsVoZRzmKNhjk=;
-        b=mCM/07NWfgR7ESAK7re9knWE+j4IiffM3UnH/xxTLJkJlkDpbBUw4dLzINacMlO0Mc
-         2Ru55bizyIzd5072SajCkmPNkVkFJW96PVTh/by1xoKnHmDREX7SbL9pRUexN0xt9Bb9
-         l4xELXxKXpGtIjQcJRQXSazlfpw0vST/EnzlGyZ7G+674whCJhugCyKuUDh+PNTcNVe9
-         NRI7doQbTFX3dRItHvzm51Ubnr2po5hafoxX3YILELe37J9hNmaT9730vBqpzNWZhWWw
-         NmwYbmUg8QYOS8ANAkZLNrbABGaY22ExRCKnCxHyAOIZLT/B3Ao+m4QVZZCNe+emBzle
-         mJZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fJ5oEvTMrhIJU6TJSDHoIP5ntvjnxJNsVoZRzmKNhjk=;
-        b=ODECMHR1Zo+5uEeSKg/2HTsq3x28xlqMgUyMBC2XnuG6Co0p7i7J8se1uWnWABdEEX
-         T+RNZx9Ulljo1+VxX6KWRKyyLNRmpTjb8Wv/k5aGtu3M80LijBg7ZBaXnRiSkKd7uxMq
-         G0YcWpcCCShUAFavnUgIg41NhZxrSnIoLZaw5TE8dP2eK8Q6n86wC0D5LLGxOCHAlM2C
-         L/ZGYirO6Gs7Ws4fUZr1bPyW8YR7A4GC9Mp2iHa3DEsFAcC4kj/xR6zWlBgy6ZsagQ2s
-         ZT6xAIBbzN6zrvscCYVFYPAxy1xab4BJ2yhOIJ51b7JwXFYZ3FF3Ss8lN9mslOc5d6R+
-         2mbw==
-X-Gm-Message-State: AOAM533o8l+5iapNRr421K736/vTENwTflgobtLUgyIsqNFmaDzvmaZy
-        QE6AM1EH7wLsqJlXSxdaCf0RPg==
-X-Google-Smtp-Source: ABdhPJxgpGjpvPNqvkvpeVV38hu39Nz2gH/1ps80HXJHeUmZj3HoijT67cRMhJFN/peQjxGFbXEykQ==
-X-Received: by 2002:a7b:c741:: with SMTP id w1mr7905538wmk.67.1602588156663;
-        Tue, 13 Oct 2020 04:22:36 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8dea:c7dd:5d0e:51e6? ([2a01:e34:ed2f:f020:8dea:c7dd:5d0e:51e6])
-        by smtp.googlemail.com with ESMTPSA id p4sm28617216wru.39.2020.10.13.04.22.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 04:22:36 -0700 (PDT)
-Subject: Re: [PATCH 1/2] thermal: power allocator: change the 'k_i'
- coefficient estimation
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com
-References: <20201002122416.13659-1-lukasz.luba@arm.com>
- <20201002122416.13659-2-lukasz.luba@arm.com>
- <cc0e6d85-28ad-3cfc-e5b8-75820552b716@linaro.org>
- <5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <326a84b4-1782-9e6b-2b95-9627767dd2f8@linaro.org>
-Date:   Tue, 13 Oct 2020 13:22:35 +0200
+        Tue, 13 Oct 2020 07:22:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602588167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=ZnIDEDwpr8eBwiGr7pQeREGplO3SYMkRODVxaJ85l1g=;
+        b=eVOthJSeKYEB1U9AUSNAKzGuAWyd9vajYIXBwTRL+QaAUwxZz037I3ZWYqCcW/feGRD/+D
+        2xQA/waKmW9th8FRxQHq/dM5yGbtgmE6sLXViDmEtr4ax2y+cgU3OxSkaN0DPAFYVrKQWb
+        CnQQgSWY1yh1g0aAMkP2JQBUSu50NUE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-Nv28aKXONLKvadgXPCDQ4Q-1; Tue, 13 Oct 2020 07:22:44 -0400
+X-MC-Unique: Nv28aKXONLKvadgXPCDQ4Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7ECED802B63;
+        Tue, 13 Oct 2020 11:22:42 +0000 (UTC)
+Received: from dresden.str.redhat.com (unknown [10.40.193.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B4ED6EF53;
+        Tue, 13 Oct 2020 11:22:40 +0000 (UTC)
+Subject: Re: linux-next: manual merge of the fuse tree with Linus' tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+References: <20201013104747.559128e7@canb.auug.org.au>
+From:   Max Reitz <mreitz@redhat.com>
+Autocrypt: addr=mreitz@redhat.com; prefer-encrypt=mutual; keydata=
+ mQENBFXOJlcBCADEyyhOTsoa/2ujoTRAJj4MKA21dkxxELVj3cuILpLTmtachWj7QW+TVG8U
+ /PsMCFbpwsQR7oEy8eHHZwuGQsNpEtNC2G/L8Yka0BIBzv7dEgrPzIu+W3anZXQW4702+uES
+ U29G8TP/NGfXRRHGlbBIH9KNUnOSUD2vRtpOLXkWsV5CN6vQFYgQfFvmp5ZpPeUe6xNplu8V
+ mcTw8OSEDW/ZnxJc8TekCKZSpdzYoxfzjm7xGmZqB18VFwgJZlIibt1HE0EB4w5GsD7x5ekh
+ awIe3RwoZgZDLQMdOitJ1tUc8aqaxvgA4tz6J6st8D8pS//m1gAoYJWGwwIVj1DjTYLtABEB
+ AAG0HU1heCBSZWl0eiA8bXJlaXR6QHJlZGhhdC5jb20+iQFTBBMBCAA9AhsDBQkSzAMABQsJ
+ CAcCBhUICQoLAgQWAgMBAh4BAheABQJVzie5FRhoa3A6Ly9rZXlzLmdudXBnLm5ldAAKCRD0
+ B9sAYdXPQDcIB/9uNkbYEex1rHKz3mr12uxYMwLOOFY9fstP5aoVJQ1nWQVB6m2cfKGdcRe1
+ 2/nFaHSNAzT0NnKz2MjhZVmcrpyd2Gp2QyISCfb1FbT82GMtXFj1wiHmPb3CixYmWGQUUh+I
+ AvUqsevLA+WihgBUyaJq/vuDVM1/K9Un+w+Tz5vpeMidlIsTYhcsMhn0L9wlCjoucljvbDy/
+ 8C9L2DUdgi3XTa0ORKeflUhdL4gucWoAMrKX2nmPjBMKLgU7WLBc8AtV+84b9OWFML6NEyo4
+ 4cP7cM/07VlJK53pqNg5cHtnWwjHcbpGkQvx6RUx6F1My3y52vM24rNUA3+ligVEgPYBuQEN
+ BFXOJlcBCADAmcVUNTWT6yLWQHvxZ0o47KCP8OcLqD+67T0RCe6d0LP8GsWtrJdeDIQk+T+F
+ xO7DolQPS6iQ6Ak2/lJaPX8L0BkEAiMuLCKFU6Bn3lFOkrQeKp3u05wCSV1iKnhg0UPji9V2
+ W5eNfy8F4ZQHpeGUGy+liGXlxqkeRVhLyevUqfU0WgNqAJpfhHSGpBgihUupmyUg7lfUPeRM
+ DzAN1pIqoFuxnN+BRHdAecpsLcbR8sQddXmDg9BpSKozO/JyBmaS1RlquI8HERQoe6EynJhd
+ 64aICHDfj61rp+/0jTIcevxIIAzW70IadoS/y3DVIkuhncgDBvGbF3aBtjrJVP+5ABEBAAGJ
+ ASUEGAEIAA8FAlXOJlcCGwwFCRLMAwAACgkQ9AfbAGHVz0CbFwf9F/PXxQR9i4N0iipISYjU
+ sxVdjJOM2TMut+ZZcQ6NSMvhZ0ogQxJ+iEQ5OjnIputKvPVd5U7WRh+4lF1lB/NQGrGZQ1ic
+ alkj6ocscQyFwfib+xIe9w8TG1CVGkII7+TbS5pXHRxZH1niaRpoi/hYtgzkuOPp35jJyqT/
+ /ELbqQTDAWcqtJhzxKLE/ugcOMK520dJDeb6x2xVES+S5LXby0D4juZlvUj+1fwZu+7Io5+B
+ bkhSVPb/QdOVTpnz7zWNyNw+OONo1aBUKkhq2UIByYXgORPFnbfMY7QWHcjpBVw9MgC4tGeF
+ R4bv+1nAMMxKmb5VvQCExr0eFhJUAHAhVg==
+Message-ID: <8d19d870-a9b2-d3e1-c3f1-c86d8f910e92@redhat.com>
+Date:   Tue, 13 Oct 2020 13:22:38 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201013104747.559128e7@canb.auug.org.au>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=mreitz@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="EsQqbSlWxec3Y7P46zVPPYUQ9VH7pXK5t"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2020 12:59, Lukasz Luba wrote:
-> Hi Daniel,
-> 
-> On 10/13/20 11:21 AM, Daniel Lezcano wrote:
->>
->> Hi Lukasz,
->>
->> On 02/10/2020 14:24, Lukasz Luba wrote:
->>> Intelligent Power Allocation (IPA) is built around the PID controller
->>> concept. The initialization code tries to setup the environment based on
->>> the information available in DT or estimate the value based on minimum
->>> power reported by each of the cooling device. The estimation will
->>> have an
->>> impact on the PID controller behaviour via the related 'k_po', 'k_pu',
->>> 'k_i' coefficients and also on the power budget calculation.
->>>
->>> This change prevents the situation when 'k_i' is relatively big compared
->>> to 'k_po' and 'k_pu' values. This might happen when the estimation for
->>> 'sustainable_power' returned small value, thus 'k_po' and 'k_pu' are
->>> small.
->>>
->>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>> ---
->>>   drivers/thermal/gov_power_allocator.c | 8 ++++++--
->>>   1 file changed, 6 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/thermal/gov_power_allocator.c
->>> b/drivers/thermal/gov_power_allocator.c
->>> index 5cb518d8f156..f69fafe486a5 100644
->>> --- a/drivers/thermal/gov_power_allocator.c
->>> +++ b/drivers/thermal/gov_power_allocator.c
->>> @@ -131,6 +131,7 @@ static void estimate_pid_constants(struct
->>> thermal_zone_device *tz,
->>>       int ret;
->>>       int switch_on_temp;
->>>       u32 temperature_threshold;
->>> +    s32 k_i;
->>>         ret = tz->ops->get_trip_temp(tz, trip_switch_on,
->>> &switch_on_temp);
->>>       if (ret)
->>> @@ -156,8 +157,11 @@ static void estimate_pid_constants(struct
->>> thermal_zone_device *tz,
->>>           tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
->>>               temperature_threshold;
->>>   -    if (!tz->tzp->k_i || force)
->>> -        tz->tzp->k_i = int_to_frac(10) / 1000;
->>> +    if (!tz->tzp->k_i || force) {
->>> +        k_i = tz->tzp->k_pu / 10;
->>> +        tz->tzp->k_i = k_i > 0 ? k_i : 1;
->>> +    }
->>
->> I do not understand the rational behind this change.
-> 
-> This is the unfortunate impact of the EM abstract scale of power values.
-> IPA didn't have to deal with it, because we always had milli-Watts.
-> Because the EM allows the bogoWatts and some vendors already have
-> them I have to re-evaluate the IPA.
-> 
->>
->> Do you have some values to share describing what would be the impact of
->> this change?
-> 
-> Yes, here is an example:
-> EM has 3 devices with abstract scale power values, where minimum power
-> is 25 and max is 200. The minimum power is used by
-> estimate_sustainable_power()
-> as a sum of all devices' min power. Sustainable power is going to be
-> estimated to 75.
-> 
-> Then in the code we have 'temperature_threshold' which is in
-> milli-Celcius, thus 15degC is 15000.
-> 
-> We estimate 'k_po' according to:
-> int_to_frac(sustainable_power) / temperature_threshold;
-> 
-> which is:
-> (75 << 10) / 15000 = ~75000 / 15000 = 5 <-- 'k_po'
-> 
-> then k_pu:
-> ((2*75) << 10) / 15000 = ~150000 / 15000 = 10
-> 
-> Then the old 'k_i' is just hard-coded 10, which is
-> the same order of magnitude to what is in 'k_pu'.
-> It should be 1 order of magnitude smaller than 'k_pu'.
-> 
-> I did some experiments and the bigger 'k_i' slows down a lot
-> the rising temp. That's why this change.
-> 
-> It was OK to have k_i=10 when we were in milliWatts world,
-> when the min power value was bigger, thus 'k_pu' was also bigger
-> than our hard-coded 'k_i'.
-> 
->>
->> Depending on the thermal behavior of a board, these coefficients could
->> be very different, no ?
->>
-> 
-> Yes, I strongly believe that vendor engineers will make experiments with
-> these values and not go with default. Then they will store the k_pu,
-> k_po, k_i via sysfs interface, with also sustainable_power.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EsQqbSlWxec3Y7P46zVPPYUQ9VH7pXK5t
+Content-Type: multipart/mixed; boundary="vYDyOkLdLMLiQzSXpB4Q7J4nLDtWdztoi"
 
-IMHO it is the opposite. For what I've seen, the IPA is not used or the
-k_* are misunderstood, thus not changed. The PID regulation loop
-technique is not quite used and known by everyone.
+--vYDyOkLdLMLiQzSXpB4Q7J4nLDtWdztoi
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> But I have to also fix the hard-coded k_i in the estimation. As
-> described above, when we have small power values from abstract scale,
-> the k_i stays too big.
+On 13.10.20 01:47, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the fuse tree got a conflict in:
+>=20
+>   fs/fuse/file.c
+>=20
+> between commit:
+>=20
+>   933a3752babc ("fuse: fix the ->direct_IO() treatment of iov_iter")
+>=20
+> from Linus' tree and commit:
+>=20
+>   fcee216beb9c ("fuse: split fuse_mount off of fuse_conn")
+>=20
+> from the fuse tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-May be it is preferable to adjust the k_* dynamically given the
-undershot and overshot results? And then add a set of less opaque
-parameters for the user, like the time or watts, no?
+Thanks!  Semantically, the change looks good to me, I just noticed
+something about the indentation:
+
+> diff --cc fs/fuse/file.c
+> index 43c165e796da,53d4dd1ab992..000000000000
+> --- a/fs/fuse/file.c
+> +++ b/fs/fuse/file.c
+> @@@ -3120,17 -3156,10 +3146,18 @@@ fuse_direct_IO(struct kiocb *iocb, str=
+u
+>   =09 * By default, we want to optimize all I/Os with async request
+>   =09 * submission to the client filesystem if supported.
+>   =09 */
+> - =09io->async =3D ff->fc->async_dio;
+>  -=09io->async =3D async_dio;
+> ++=09io->async =3D ff->fm->fc->async_dio;
+>   =09io->iocb =3D iocb;
+>   =09io->blocking =3D is_sync_kiocb(iocb);
+>  =20
+>  +=09/* optimization for short read */
+>  +=09if (io->async && !io->write && offset + count > i_size) {
+> - =09=09iov_iter_truncate(iter, fuse_round_up(ff->fc, i_size - offset));
+> ++=09=09iov_iter_truncate(iter, fuse_round_up(ff->fm->fc,
+> ++=09=09=09=09  i_size - offset));
+
+Personally, I=92d align this second line to the opening parenthesis of
+fuse_round_up() (as it is done in fcee216beb9c, in a hunk not shown
+here, probably because it=92s been dropped in the merge.).
+
+Max
+
+>  +=09=09shortened =3D count - iov_iter_count(iter);
+>  +=09=09count -=3D shortened;
+>  +=09}
+>  +
+>   =09/*
+>   =09 * We cannot asynchronously extend the size of a file.
+>   =09 * In such case the aio will behave exactly like sync io.
 
 
 
+--vYDyOkLdLMLiQzSXpB4Q7J4nLDtWdztoi--
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+--EsQqbSlWxec3Y7P46zVPPYUQ9VH7pXK5t
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEkb62CjDbPohX0Rgp9AfbAGHVz0AFAl+Fjf4ACgkQ9AfbAGHV
+z0AZhwf/QNpKDlur+ESJiRf2IxJ57RHyTIgY3U3RD0f/XIW1MF9SOD9CvYx1/xlJ
+x5Vc0DQhw+JLNL6plWWfP932EoTNAktXoqzJ6ff08msFCWBxlBFebpvXKTZPvkzO
+K1nNW3CbZKJ0MT5V6Vt49lXq6NSYQctq/oTUWKmuCtLAuhB8JgVHmJIhXfl0B7sW
+cXWkw1ZHbrcJXMSc+8n98Yy+sIhBnyTDmN1dxA2Z2lme80Xm/SG3mljtknNj+wba
+QSwK6LHbbB46z2qd8XUXDSeT1CC2+Vsc9QoQbRydXLuf2jVFcIMFb/8nDxSU7mpf
+0woTu/EU8LwEAxXGV1vBIgw9sYUkRw==
+=ESf6
+-----END PGP SIGNATURE-----
+
+--EsQqbSlWxec3Y7P46zVPPYUQ9VH7pXK5t--
+
