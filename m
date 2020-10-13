@@ -2,327 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDF028D65E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 00:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94B028D662
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 00:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgJMWCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 18:02:25 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:34359 "EHLO z5.mailgun.us"
+        id S1728663AbgJMWRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 18:17:00 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:51161 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728562AbgJMWCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 18:02:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602626543; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=j2wvnj3QXykcXdMcqTw76Kbrt7Uu3aOrgnn6+mk+B20=; b=Zj/+3yA+Vje8f4xXHDqiJ/T2C9A+YLC5EDNvvK1oqLSHbcjtskkFlmk4GKBactHwQzscLpYQ
- WfQ/M2kvHirRtr0fEGM90vXxFjaaFXficzyPZCKCaCfQXvjQ/kNO9hQHVEYSw36yUNpSpXXJ
- +LCh8yj9DwWdAMzOv4q54sko0Hc=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f8623cf588858a30411caf9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 22:01:51
- GMT
-Sender: rkumbako=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B2081C433CB; Tue, 13 Oct 2020 22:01:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.64] (unknown [209.131.238.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725935AbgJMWRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 18:17:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: rkumbako)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A608CC433F1;
-        Tue, 13 Oct 2020 22:01:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A608CC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rkumbako@codeaurora.org
-Subject: Re: [PATCH 2/4] Documentation/powercap/dtpm: Add documentation for
- dtpm
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     lukasz.luba@arm.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rui.zhang@intel.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <20201006122024.14539-3-daniel.lezcano@linaro.org>
-From:   Ram Chandrasekar <rkumbako@codeaurora.org>
-Message-ID: <35e0775c-f86c-6040-7194-5b8032e92b30@codeaurora.org>
-Date:   Tue, 13 Oct 2020 16:01:47 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9qf016MZz9sVR;
+        Wed, 14 Oct 2020 09:16:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602627416;
+        bh=sDFrJVbSjAb4Na2vQERtLv1Si0Dy6RHu1h+e/9rQT34=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HsPWea3puPQlbnlAT0ovVwBHrFlhULVQTFVOmqmFHRbOLH2seV9zxxTY5KWS9t6Jp
+         d5b4mU1ZK1PCzlARXtyd9f8g/dv8frdeCOcwenSOsLNtFXLAqg0aCcFnBV2LNF9wjl
+         FJ272d4tklKQdz9kl63d2d4kupiEQrkIReyDar8zkGebeTMGnEdwUmUUq2GNOlc8i4
+         /sYg/hJ55rNKiI9cCN/FPjDrqf4WJdshFZZLHm/m6rWvde6mTD5h0IlgDJNtc4yV4N
+         K72pg3Ic1QRnAyxQt+IrWf+OBtoJ+LEoRinyeoXm79R1LwOmj6dUGmmFptPaLznYdt
+         7k2TQ+e+tvL8A==
+Date:   Wed, 14 Oct 2020 09:16:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Diana Craciun OSS <diana.craciun@oss.nxp.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Bharat Bhushan <Bharat.Bhushan@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfio tree
+Message-ID: <20201014091653.0ec43501@canb.auug.org.au>
+In-Reply-To: <276bf3f3-108b-fe60-4d17-d3f314e61db4@oss.nxp.com>
+References: <20201013140744.64937ecd@canb.auug.org.au>
+        <276bf3f3-108b-fe60-4d17-d3f314e61db4@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20201006122024.14539-3-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/CI==/4.E8yuciQQGB_eKTuJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/CI==/4.E8yuciQQGB_eKTuJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi Diana,
 
-On 10/6/2020 6:20 AM, Daniel Lezcano wrote:
-> The dynamic thermal and power management is a technique to dynamically
-> adjust the power consumption of different devices in order to ensure a
-> global thermal constraint.
-> 
-> An userspace daemon is usually monitoring the temperature and the
-> power to take immediate action on the device.
-> 
-> The DTPM framework provides an unified API to userspace to act on the
-> power.
-> 
-> Document this framework.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   Documentation/power/powercap/dtpm.rst | 222 ++++++++++++++++++++++++++
->   1 file changed, 222 insertions(+)
->   create mode 100644 Documentation/power/powercap/dtpm.rst
-> 
-> diff --git a/Documentation/power/powercap/dtpm.rst b/Documentation/power/powercap/dtpm.rst
-> new file mode 100644
-> index 000000000000..ce11cf183994
-> --- /dev/null
-> +++ b/Documentation/power/powercap/dtpm.rst
-> @@ -0,0 +1,222 @@
-> +==========================================
-> +Dynamic Thermal Power Management framework
-> +==========================================
-> +
-> +On the embedded world, the complexity of the SoC leads to an
-> +increasing number of hotspots which need to be monitored and mitigated
-> +as a whole in order to prevent the temperature to go above the
-> +normative and legally stated 'skin temperature'.
-> +
-> +Another aspect is to sustain the performance for a given power budget,
-> +for example virtual reality where the user can feel dizziness if the
-> +performance is capped while a big CPU is processing something else. Or
-> +reduce the battery charging because the dissipated power is too high
-> +compared with the power consumed by other devices.
-> +
-> +The userspace is the most adequate place to dynamically act on the
-> +different devices by limiting their power given an application
-> +profile: it has the knowledge of the platform.
-> +
-> +The Dynamic Thermal Power Management (DTPM) is a technique acting on
-> +the device power by limiting and/or balancing a power budget among
-> +different devices.
-> +
-> +The DTPM framework provides an unified interface to act on the
-> +device power.
-> +
-> +===========
-> +1. Overview
-> +===========
-> +
-> +The DTPM framework relies on the powercap framework to create the
-> +powercap entries in the sysfs directory and implement the backend
-> +driver to do the connection with the power manageable device.
-> +
-> +The DTPM is a tree representation describing the power constraints
-> +shared between devices, not their physical positions.
-> +
-> +The nodes of the tree are a virtual description aggregating the power
-> +characteristics of the children nodes and their power limitations.
-> +
-> +The leaves of the tree are the real power manageable devices.
-> +
-> +For instance:
-> +
-> +  SoC
-> +   |
-> +   `-- pkg
-> +	|
-> +	|-- pd0 (cpu0-3)
-> +	|
-> +	`-- pd1 (cpu4-5)
-> +
-> +* The pkg power will be the sum of pd0 and pd1 power numbers.
-> +
-> +  SoC (400mW - 3100mW)
-> +   |
-> +   `-- pkg (400mW - 3100mW)
-> +	|
-> +	|-- pd0 (100mW - 700mW)
-> +	|
-> +	`-- pd1 (300mW - 2400mW)
-> +
-> +* When the nodes are inserted in the tree, their power characteristics
-> +  are propagated to the parents.
-> +
-> +  SoC (600mW - 5900mW)
-> +   |
-> +   |-- pkg (400mW - 3100mW)
-> +   |    |
-> +   |    |-- pd0 (100mW - 700mW)
-> +   |    |
-> +   |    `-- pd1 (300mW - 2400mW)
-> +   |
-> +   `-- pd2 (200mW - 2800mW)
-> +
-> +* Each node have a weight on a 2^10 basis reflecting the percentage of
-> +  power consumption along the siblings.
-> +
-> +  SoC (w=1024)
-> +   |
-> +   |-- pkg (w=538)
-> +   |    |
-> +   |    |-- pd0 (w=231)
-> +   |    |
-> +   |    `-- pd1 (w=794)
-> +   |
-> +   `-- pd2 (w=486)
-> +
-> +   Note the sum of weights at the same level are equal to 1024.
-> +
-> +* When a power limitation is applied to a node, then it is distributed
-> +  along the children given their weights. For example, if we set a
-> +  power limitation of 3200mW at the 'SoC' root node, the resulting
-> +  tree will be.
-> +
-> +  SoC (w=1024) <--- power_limit = 3200mW
-> +   |
-> +   |-- pkg (w=538) --> power_limit = 1681mW
-> +   |    |
-> +   |    |-- pd0 (w=231) --> power_limit = 378mW
-> +   |    |
-> +   |    `-- pd1 (w=794) --> power_limit = 1303mW
-> +   |
-> +   `-- pd2 (w=486) --> power_limit = 1519mW
-> +
-> +====================
-> +1.1 Flat description
-> +====================
-> +
-> +A root node is created and it is the parent of all the nodes. This
-> +description is the simplest one and it is supposed to give to
-> +userspace a flat representation of all the devices supporting the
-> +power limitation without any power limitation distribution.
-> +
-> +============================
-> +1.2 Hierarchical description
-> +============================
-> +
-> +The different devices supporting the power limitation are represented
-> +hierarchically. There is one root node, all intermediate nodes are
-> +grouping the child nodes which can be intermediate nodes also or real
-> +devices.
-> +
-> +The intermediate nodes aggregate the power information and allows to
-> +set the power limit given the weight of the nodes.
-> +
-> +================
-> +2. Userspace API
-> +================
-> +
-> +As stated in the overview, the DTPM framework is built on top of the
-> +powercap framework. Thus the sysfs interface is the same, please refer
-> +to the powercap documentation for further details.
-> +
-> + * power_uw: Instantaneous power consumption. If the node is an
-> +   intermediate node, then the power consumption will be the sum of all
-> +   children power consumption.
-> +
-> + * max_power_range_uw: The power range resulting of the maximum power
-> +   minus the minimum power.
-> +
-> + * name: The name of the node. This is implementation dependant. Even
-> +   if it is not recommended for the userspace, several nodes can have
-> +   the same name.
-> +
-> + * constraint_X_name: The name of the constraint.
-> +
-> + * constraint_X_max_power_uw: The maximum power limit to be applicable
-> +   to the node.
-> +
-> + * constraint_X_power_limit_uw: The power limit to be applied to the
-> +   node. If the value contained in constraint_X_max_power_uw is set,
-> +   the constraint will be removed.
+On Tue, 13 Oct 2020 18:56:07 +0300 Diana Craciun OSS <diana.craciun@oss.nxp=
+.com> wrote:
+>
+> Hi,
+>=20
+> How does it fail? What's the error?
 
-How is power_limit_uW different from max_power_uW?
+Sorry about that:
 
-> +
-> + * constraint_X_time_window_us: The meaning of this file will depend
-> +   on the constraint number.
-> +
-> +===============
-> +2.1 Constraints
-> +===============
-> +
-> + * Constraint 0: The power limitation is immediately applied, without
-> +   limitation in time.
-> +
-> +=============
-> +3. Kernel API
-> +=============
-> +
-> +============
-> +3.1 Overview
-> +============
-> +
-> +The DTPM framework has no power limiting backend support. It is
-> +generic and provides a set of API to let the different drivers to
-> +implement the backend part for the power limitation and create a the
+drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c: In function 'vfio_fsl_mc_set_irq_tr=
+igger':
+drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c:121:8: error: implicit declaration o=
+f function 'fsl_mc_populate_irq_pool' [-Werror=3Dimplicit-function-declarat=
+ion]
+  121 |  ret =3D fsl_mc_populate_irq_pool(mc_cont,
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c:122:4: error: 'FSL_MC_IRQ_POOL_MAX_T=
+OTAL_IRQS' undeclared (first use in this function)
+  122 |    FSL_MC_IRQ_POOL_MAX_TOTAL_IRQS);
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c: In function 'vfio_fsl_mc_release':
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:178:9: error: implicit declaration of fun=
+ction 'dprc_reset_container' [-Werror=3Dimplicit-function-declaration]
+  178 |   ret =3D dprc_reset_container(mc_cont->mc_io, 0,
+      |         ^~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:181:6: error: 'DPRC_RESET_OPTION_NON_RECU=
+RSIVE' undeclared (first use in this function)
+  181 |      DPRC_RESET_OPTION_NON_RECURSIVE);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:181:6: note: each undeclared identifier i=
+s reported only once for each function it appears in
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:191:3: error: implicit declaration of fun=
+ction 'fsl_mc_cleanup_irq_pool' [-Werror=3Dimplicit-function-declaration]
+  191 |   fsl_mc_cleanup_irq_pool(mc_cont);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c: In function 'vfio_fsl_mc_ioctl':
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:316:9: error: 'DPRC_RESET_OPTION_NON_RECU=
+RSIVE' undeclared (first use in this function)
+  316 |         DPRC_RESET_OPTION_NON_RECURSIVE);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c: In function 'vfio_fsl_mc_mmap_mmio':
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:455:36: error: 'FSL_MC_REGION_CACHEABLE' =
+undeclared (first use in this function)
+  455 |  region_cacheable =3D (region.type & FSL_MC_REGION_CACHEABLE) &&
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:456:22: error: 'FSL_MC_REGION_SHAREABLE' =
+undeclared (first use in this function)
+  456 |       (region.type & FSL_MC_REGION_SHAREABLE);
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c: In function 'vfio_fsl_mc_bus_notifier':
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:522:9: error: 'struct fsl_mc_device' has =
+no member named 'driver_override'
+  522 |   mc_dev->driver_override =3D kasprintf(GFP_KERNEL, "%s",
+      |         ^~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:524:14: error: 'struct fsl_mc_device' has=
+ no member named 'driver_override'
+  524 |   if (!mc_dev->driver_override)
+      |              ^~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c: In function 'vfio_fsl_mc_init_device':
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:561:8: error: implicit declaration of fun=
+ction 'dprc_setup' [-Werror=3Dimplicit-function-declaration]
+  561 |  ret =3D dprc_setup(mc_dev);
+      |        ^~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:567:8: error: implicit declaration of fun=
+ction 'dprc_scan_container' [-Werror=3Dimplicit-function-declaration]
+  567 |  ret =3D dprc_scan_container(mc_dev, false);
+      |        ^~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:576:2: error: implicit declaration of fun=
+ction 'dprc_remove_devices' [-Werror=3Dimplicit-function-declaration]
+  576 |  dprc_remove_devices(mc_dev, NULL, 0);
+      |  ^~~~~~~~~~~~~~~~~~~
+drivers/vfio/fsl-mc/vfio_fsl_mc.c:577:2: error: implicit declaration of fun=
+ction 'dprc_cleanup' [-Werror=3Dimplicit-function-declaration]
+  577 |  dprc_cleanup(mc_dev);
+      |  ^~~~~~~~~~~~
 
-create a the -> create a
+--=20
+Cheers,
+Stephen Rothwell
 
-> +power constraints tree.
-> +
-> +It is up to the platform to provide the initialization function to
-> +allocate and link the different nodes of the tree.
-> +
-> +A special macro has the role of declaring a node and the corresponding
-> +initialization function via a description structure. This one contains
-> +an optional parent field allowing to hook different devices to an
-> +already existing tree at boot time.
-> +
-> +struct dtpm_descr my_descr = {
-> +	.name = "my_name",
-> +	.init = my_init_func,
-> +};
-> +
-> +DTPM_DECLARE(my_descr);
-> +
-> +The nodes of the DTPM tree are described with dtpm structure. The
-> +steps to add a new power limitable device is done in three steps:
-> +
-> + * Allocate the dtpm node
-> + * Set the power number of the dtpm node
-> + * Register the dtpm node
-> +
-> +The registration of the dtpm node is done with the powercap
-> +ops. Basically, it must implements the callbacks to get and set the
+--Sig_/CI==/4.E8yuciQQGB_eKTuJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-implements -> implement
+-----BEGIN PGP SIGNATURE-----
 
-> +power and the limit.
-> +
-> +Alternatively, if the node to be inserted is an intermediate one, then
-> +a simple function to insert it as a future parent is available.
-> +
-> +If a device has its power characteristics changing, then the tree must
-> +be updated with the new power numbers and weights.
-> +
-> +================
-> +3.2 Nomenclature
-> +================
-> +
-> + * dtpm_alloc() : Allocate and initialize a dtpm structure
-> +
-> + * dtpm_register() : Add the dtpm node to the tree
-> +
-> + * dtpm_register_parent() : Add an intermediate node
-> +
-> + * dtpm_unregister() : Remove the dtpm node from the tree
-> +
-> + * dtpm_update_power() : Update the power characteristics of the dtpm node
-> 
+iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+GJ1UACgkQAVBC80lX
+0Gz29Af3UcKOzLkYILRdwuiN0dJanPLzvu/R2p7yQsD53/wt1D+vUUZ8unxLFzVl
+hMO86Ih450hhSfP50/oKJEgdxo+Azz1spE5Cgv7/LjmbqeDP2/dDWiTe44ZIerHH
+Ui3sj2wEQsxdovU2v7/UwMNGRlSNcLIKhXpJ5gjpFG+sZUCCrTnZffwbIXxAZcLO
+lmCA90c9szn0O6wajVSS6FDx9uFSCq4avYfevUJvsFPTJ4c/U7UkiDCKZjFwpwdG
+3E7w8oY0OWOXjPWXE4YC7CcmexpYefkQ0uMSkUv04gch6eQJX1RDZiDLotTGGhTW
+2J7d1NjSEhNh+O4je0GD2+k6fMU8
+=mi1u
+-----END PGP SIGNATURE-----
+
+--Sig_/CI==/4.E8yuciQQGB_eKTuJ--
