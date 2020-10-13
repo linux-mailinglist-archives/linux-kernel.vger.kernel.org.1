@@ -2,133 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7784228D6A0
+	by mail.lfdr.de (Postfix) with ESMTP id E632028D6A1
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 00:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbgJMWor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 18:44:47 -0400
-Received: from smtprelay0146.hostedemail.com ([216.40.44.146]:39850 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728895AbgJMWor (ORCPT
+        id S1729365AbgJMWpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 18:45:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49039 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727360AbgJMWpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 18:44:47 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id DA480180A8127;
-        Tue, 13 Oct 2020 22:44:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:2892:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3874:4321:4384:5007:7875:8557:9592:10004:10400:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12438:12555:12663:12683:12740:12760:12895:13141:13230:13439:14093:14097:14181:14659:14721:14915:21080:21451:21627:21990:30012:30029:30054:30070:30075:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: joke67_2600c5827206
-X-Filterd-Recvd-Size: 3722
-Received: from XPS-9350 (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 13 Oct 2020 22:44:44 +0000 (UTC)
-Message-ID: <3897a8ce5760affa304952c2d30c1266589407f2.camel@perches.com>
-Subject: Re: [PATCH 0/2] module: some refactoring in module_sig_check()
-From:   Joe Perches <joe@perches.com>
-To:     Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Tue, 13 Oct 2020 15:44:42 -0700
-In-Reply-To: <789a4e5c-8efd-bb1c-86e2-eed8b2b7b0af@omprussia.ru>
-References: <789a4e5c-8efd-bb1c-86e2-eed8b2b7b0af@omprussia.ru>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Tue, 13 Oct 2020 18:45:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602629105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eL27MHQVYn4ElBKK1XQ1LogMRdkFND/1MAckF558KzI=;
+        b=Za+EAKP/Imh9W8UvYkMmVs3ZpSUoRVZxMOExz1z0iz9+OMEksgoMcU0UVTSJtFH4Mr6GYr
+        /lvfmwXeVID3+EwBcdvHTXu7IhoKGgCPAZ66RdC+5f/v5w8DOmDEn07mveVD+S8rDDnGtI
+        MfwFu5wQO0Dshkf6R/ooyq0uHnHf5Gc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-kP5hsnsGMxK64HuHe2ZLyA-1; Tue, 13 Oct 2020 18:45:04 -0400
+X-MC-Unique: kP5hsnsGMxK64HuHe2ZLyA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B9C5107AD91;
+        Tue, 13 Oct 2020 22:45:02 +0000 (UTC)
+Received: from localhost (ovpn-112-103.ams2.redhat.com [10.36.112.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 28DD25D9CD;
+        Tue, 13 Oct 2020 22:45:01 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org
+Subject: Re: [PATCH 1/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+References: <20201013140609.2269319-1-gscrivan@redhat.com>
+        <20201013140609.2269319-2-gscrivan@redhat.com>
+        <20201013205427.clvqno24ctwxbuyv@wittgenstein>
+Date:   Wed, 14 Oct 2020 00:45:00 +0200
+In-Reply-To: <20201013205427.clvqno24ctwxbuyv@wittgenstein> (Christian
+        Brauner's message of "Tue, 13 Oct 2020 22:54:27 +0200")
+Message-ID: <87imbdrbir.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-13 at 23:32 +0300, Sergey Shtylyov wrote:
-> Here are 2 patches against the 'modules-next' branch of Jessica Yu's 'linux.git' repo.
-> I'm doing some little refactoring in module_sig_check()...
-> 
-> [1/2] module: merge repetitive strings in module_sig_check()
-> [2/2] module: unindent comments in module_sig_check()
+Christian Brauner <christian.brauner@ubuntu.com> writes:
 
-I think this code is rather cryptic and could be made clearer.
+> On Tue, Oct 13, 2020 at 04:06:08PM +0200, Giuseppe Scrivano wrote:
+>
+> Hey Guiseppe,
+>
+> Thanks for the patch!
+>
+>> When the flag CLOSE_RANGE_CLOEXEC is set, close_range doesn't
+>> immediately close the files but it sets the close-on-exec bit.
+>
+> Hm, please expand on the use-cases a little here so people know where
+> and how this is useful. Keeping the rationale for a change in the commit
+> log is really important.
+>
+>> 
+>> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+>> ---
+>
+>>  fs/file.c                        | 56 ++++++++++++++++++++++----------
+>>  include/uapi/linux/close_range.h |  3 ++
+>>  2 files changed, 42 insertions(+), 17 deletions(-)
+>> 
+>> diff --git a/fs/file.c b/fs/file.c
+>> index 21c0893f2f1d..ad4ebee41e09 100644
+>> --- a/fs/file.c
+>> +++ b/fs/file.c
+>> @@ -672,6 +672,17 @@ int __close_fd(struct files_struct *files, unsigned fd)
+>>  }
+>>  EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
+>>  
+>> +static unsigned int __get_max_fds(struct files_struct *cur_fds)
+>> +{
+>> +	unsigned int max_fds;
+>> +
+>> +	rcu_read_lock();
+>> +	/* cap to last valid index into fdtable */
+>> +	max_fds = files_fdtable(cur_fds)->max_fds;
+>> +	rcu_read_unlock();
+>> +	return max_fds;
+>> +}
+>> +
+>>  /**
+>>   * __close_range() - Close all file descriptors in a given range.
+>>   *
+>> @@ -683,27 +694,23 @@ EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
+>>   */
+>>  int __close_range(unsigned fd, unsigned max_fd, unsigned int flags)
+>>  {
+>> -	unsigned int cur_max;
+>> +	unsigned int cur_max = UINT_MAX;
+>>  	struct task_struct *me = current;
+>>  	struct files_struct *cur_fds = me->files, *fds = NULL;
+>>  
+>> -	if (flags & ~CLOSE_RANGE_UNSHARE)
+>> +	if (flags & ~(CLOSE_RANGE_UNSHARE | CLOSE_RANGE_CLOEXEC))
+>>  		return -EINVAL;
+>>  
+>>  	if (fd > max_fd)
+>>  		return -EINVAL;
+>>  
+>> -	rcu_read_lock();
+>> -	cur_max = files_fdtable(cur_fds)->max_fds;
+>> -	rcu_read_unlock();
+>> -
+>> -	/* cap to last valid index into fdtable */
+>> -	cur_max--;
+>> -
+>>  	if (flags & CLOSE_RANGE_UNSHARE) {
+>>  		int ret;
+>>  		unsigned int max_unshare_fds = NR_OPEN_MAX;
+>>  
+>> +		/* cap to last valid index into fdtable */
+>> +		cur_max = __get_max_fds(cur_fds) - 1;
+>> +
+>>  		/*
+>>  		 * If the requested range is greater than the current maximum,
+>>  		 * we're closing everything so only copy all file descriptors
+>> @@ -724,16 +731,31 @@ int __close_range(unsigned fd, unsigned max_fd, unsigned int flags)
+>>  			swap(cur_fds, fds);
+>>  	}
+>>  
+>> -	max_fd = min(max_fd, cur_max);
+>> -	while (fd <= max_fd) {
+>> -		struct file *file;
+>> +	if (flags & CLOSE_RANGE_CLOEXEC) {
+>> +		struct fdtable *fdt;
+>>  
+>> -		file = pick_file(cur_fds, fd++);
+>> -		if (!file)
+>> -			continue;
+>> +		spin_lock(&cur_fds->file_lock);
+>> +		fdt = files_fdtable(cur_fds);
+>> +		cur_max = fdt->max_fds - 1;
+>> +		max_fd = min(max_fd, cur_max);
+>> +		while (fd <= max_fd)
+>> +			__set_close_on_exec(fd++, fdt);
+>> +		spin_unlock(&cur_fds->file_lock);
+>> +	} else {
+>> +		/* Initialize cur_max if needed.  */
+>> +		if (cur_max == UINT_MAX)
+>> +			cur_max = __get_max_fds(cur_fds) - 1;
+>
+> The separation between how cur_fd is retrieved in the two branches makes
+> the code more difficult to follow imho. Unless there's a clear reason
+> why you've done it that way I would think that something like the patch
+> I appended below might be a little clearer and easier to maintain(?).
 
-How about:
----
- kernel/module.c | 51 ++++++++++++++++++++++++++-------------------------
- 1 file changed, 26 insertions(+), 25 deletions(-)
+Thanks for the review!
 
-diff --git a/kernel/module.c b/kernel/module.c
-index c075a18103fb..98b3af96a5bd 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2884,46 +2884,47 @@ static int module_sig_check(struct load_info *info, int flags)
- 	 * Require flags == 0, as a module with version information
- 	 * removed is no longer the module that was signed
- 	 */
--	if (flags == 0 &&
--	    info->len > markerlen &&
--	    memcmp(mod + info->len - markerlen, MODULE_SIG_STRING, markerlen) == 0) {
-+	if (flags == 0 && info->len > markerlen &&
-+	    !memcmp(mod + info->len - markerlen, MODULE_SIG_STRING, markerlen)) {
- 		/* We truncate the module to discard the signature */
- 		info->len -= markerlen;
- 		err = mod_verify_sig(mod, info);
-+		if (!err) {
-+			info->sig_ok = true;
-+			return 0;
-+		}
- 	}
- 
-+	/*
-+	 * We don't permit modules to be loaded into trusted kernels
-+	 * without a valid signature on them, but if we're not enforcing,
-+	 * some errors are non-fatal.
-+	 */
- 	switch (err) {
--	case 0:
--		info->sig_ok = true;
--		return 0;
--
--		/* We don't permit modules to be loaded into trusted kernels
--		 * without a valid signature on them, but if we're not
--		 * enforcing, certain errors are non-fatal.
--		 */
- 	case -ENODATA:
--		reason = "Loading of unsigned module";
--		goto decide;
-+		reason = "unsigned module";
-+		break;
- 	case -ENOPKG:
--		reason = "Loading of module with unsupported crypto";
--		goto decide;
-+		reason = "module with unsupported crypto";
-+		break;
- 	case -ENOKEY:
--		reason = "Loading of module with unavailable key";
--	decide:
--		if (is_module_sig_enforced()) {
--			pr_notice("%s: %s is rejected\n", info->name, reason);
--			return -EKEYREJECTED;
--		}
--
--		return security_locked_down(LOCKDOWN_MODULE_SIGNATURE);
--
-+		reason = "module with unavailable key";
-+		break;
-+	default:
- 		/* All other errors are fatal, including nomem, unparseable
- 		 * signatures and signature check failures - even if signatures
- 		 * aren't required.
- 		 */
--	default:
- 		return err;
- 	}
-+
-+	if (is_module_sig_enforced()) {
-+		pr_notice("%s: loading of %s is rejected\n",
-+			  info->name, reason);
-+		return -EKEYREJECTED;
-+	}
-+
-+	return security_locked_down(LOCKDOWN_MODULE_SIGNATURE);
- }
- #else /* !CONFIG_MODULE_SIG */
- static int module_sig_check(struct load_info *info, int flags)
+I've opted for this version as in the flags=CLOSE_RANGE_CLOEXEC case we
+can read max_fds directly from the fds table and avoid doing it from the
+RCU critical section as well.  I'll change it in favor of more readable
+code.
 
+Giuseppe
 
