@@ -2,195 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE80E28CC54
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C789928CC55
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388056AbgJMLMu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Oct 2020 07:12:50 -0400
-Received: from aposti.net ([89.234.176.197]:58732 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729233AbgJMLMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:12:49 -0400
-Date:   Tue, 13 Oct 2020 13:12:32 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: linux-next: build failure after merge of the drm-misc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-next@vger.kernel.org, Dave Airlie <airlied@linux.ie>
-Message-Id: <WG05IQ.DABE5ILJAA631@crapouillou.net>
-In-Reply-To: <20201012152452.432c4867@canb.auug.org.au>
-References: <20201008140903.12a411b8@canb.auug.org.au>
-        <20201008154202.175fbec7@canb.auug.org.au>
-        <20201012152452.432c4867@canb.auug.org.au>
+        id S2388462AbgJMLM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:12:59 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:59340 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727457AbgJMLM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:12:59 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-59-t8cDFw9jPqqR0wly0Oe9Jg-1; Tue, 13 Oct 2020 12:12:54 +0100
+X-MC-Unique: t8cDFw9jPqqR0wly0Oe9Jg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 13 Oct 2020 12:12:54 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 13 Oct 2020 12:12:54 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'harshal chaudhari' <harshalchau04@gmail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: RE: [PATCH] char: ppdev: check if ioctl argument is present and valid
+Thread-Topic: [PATCH] char: ppdev: check if ioctl argument is present and
+ valid
+Thread-Index: AQHWoT91EN0LvzjofE2muVvqxptK+6mVYKwQ
+Date:   Tue, 13 Oct 2020 11:12:54 +0000
+Message-ID: <0eb6f48d05624c8abaf00ae1bd4d88a9@AcuMS.aculab.com>
+References: <20201008182713.2764-1-harshalchau04@gmail.com>
+ <20201009045734.GA112189@kroah.com>
+ <CADVatmONWsfsj4-WKhNAcXjKXbUrgyD6UpK+ML6TNpqtp8be9A@mail.gmail.com>
+ <CADVatmOf18xUEvjWFzenut=KsHtoEZ5OSZF1oCqFJsbkx_Mb9g@mail.gmail.com>
+ <CAFEvwukbxCY4wffd_1jLo+vjfXfBC4sFDpJ1vY4wfT+=yFA--w@mail.gmail.com>
+In-Reply-To: <CAFEvwukbxCY4wffd_1jLo+vjfXfBC4sFDpJ1vY4wfT+=yFA--w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-Le lun. 12 oct. 2020 à 15:24, Stephen Rothwell <sfr@canb.auug.org.au> 
-a écrit :
-> Hi all,
-> 
-> On Thu, 8 Oct 2020 15:42:02 +1100 Stephen Rothwell 
-> <sfr@canb.auug.org.au> wrote:
->> 
->>  On Thu, 8 Oct 2020 14:09:03 +1100 Stephen Rothwell 
->> <sfr@canb.auug.org.au> wrote:
->>  >
->>  > After merging the drm-misc tree, today's linux-next build (x86_64
->>  > allmodconfig) failed like this:
->> 
->>  In file included from include/linux/clk.h:13,
->>                   from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:10:
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 
->> 'ingenic_drm_update_palette':
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
->> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
->> 'dma_hwdesc_f0'?
->>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
->> i++) {
->>        |                                   ^~~~~~~~~~~
->>  include/linux/kernel.h:47:33: note: in definition of macro 
->> 'ARRAY_SIZE'
->>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
->> __must_be_array(arr))
->>        |                                 ^~~
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
->> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
->> 'dma_hwdesc_f0'?
->>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
->> i++) {
->>        |                                   ^~~~~~~~~~~
->>  include/linux/kernel.h:47:48: note: in definition of macro 
->> 'ARRAY_SIZE'
->>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
->> __must_be_array(arr))
->>        |                                                ^~~
->>  In file included from include/linux/bits.h:22,
->>                   from include/linux/bitops.h:5,
->>                   from drivers/gpu/drm/ingenic/ingenic-drm.h:10,
->>                   from drivers/gpu/drm/ingenic/ingenic-drm-drv.c:7:
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
->> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
->> 'dma_hwdesc_f0'?
->>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
->> i++) {
->>        |                                   ^~~~~~~~~~~
->>  include/linux/build_bug.h:16:62: note: in definition of macro 
->> 'BUILD_BUG_ON_ZERO'
->>     16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { 
->> int:(-!!(e)); })))
->>        |                                                             
->>  ^
->>  include/linux/compiler.h:224:46: note: in expansion of macro 
->> '__same_type'
->>    224 | #define __must_be_array(a) 
->> BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
->>        |                                              ^~~~~~~~~~~
->>  include/linux/kernel.h:47:59: note: in expansion of macro 
->> '__must_be_array'
->>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
->> __must_be_array(arr))
->>        |                                                           
->> ^~~~~~~~~~~~~~~
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in 
->> expansion of macro 'ARRAY_SIZE'
->>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
->> i++) {
->>        |                  ^~~~~~~~~~
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:35: error: 'struct 
->> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
->> 'dma_hwdesc_f0'?
->>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
->> i++) {
->>        |                                   ^~~~~~~~~~~
->>  include/linux/build_bug.h:16:62: note: in definition of macro 
->> 'BUILD_BUG_ON_ZERO'
->>     16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { 
->> int:(-!!(e)); })))
->>        |                                                             
->>  ^
->>  include/linux/compiler.h:224:46: note: in expansion of macro 
->> '__same_type'
->>    224 | #define __must_be_array(a) 
->> BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
->>        |                                              ^~~~~~~~~~~
->>  include/linux/kernel.h:47:59: note: in expansion of macro 
->> '__must_be_array'
->>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
->> __must_be_array(arr))
->>        |                                                           
->> ^~~~~~~~~~~~~~~
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in 
->> expansion of macro 'ARRAY_SIZE'
->>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
->> i++) {
->>        |                  ^~~~~~~~~~
->>  include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' 
->> width not an integer constant
->>     16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { 
->> int:(-!!(e)); })))
->>        |                                                   ^
->>  include/linux/compiler.h:224:28: note: in expansion of macro 
->> 'BUILD_BUG_ON_ZERO'
->>    224 | #define __must_be_array(a) 
->> BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
->>        |                            ^~~~~~~~~~~~~~~~~
->>  include/linux/kernel.h:47:59: note: in expansion of macro 
->> '__must_be_array'
->>     47 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + 
->> __must_be_array(arr))
->>        |                                                           
->> ^~~~~~~~~~~~~~~
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:448:18: note: in 
->> expansion of macro 'ARRAY_SIZE'
->>    448 |  for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); 
->> i++) {
->>        |                  ^~~~~~~~~~
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:453:9: error: 'struct 
->> ingenic_drm' has no member named 'dma_hwdescs'; did you mean 
->> 'dma_hwdesc_f0'?
->>    453 |   priv->dma_hwdescs->palette[i] = color;
->>        |         ^~~~~~~~~~~
->>        |         dma_hwdesc_f0
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c: In function 
->> 'ingenic_drm_plane_atomic_update':
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: error: 
->> 'crtc_state' undeclared (first use in this function); did you mean 
->> 'ctx_state'?
->>    467 |   crtc_state = state->crtc->state;
->>        |   ^~~~~~~~~~
->>        |   ctx_state
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:467:3: note: each 
->> undeclared identifier is reported only once for each function it 
->> appears in
->>  At top level:
->>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c:443:13: warning: 
->> 'ingenic_drm_update_palette' defined but not used [-Wunused-function]
->>    443 | static void ingenic_drm_update_palette(struct ingenic_drm 
->> *priv,
->>        |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
->> 
->>  > I noticed that the ingenic driver revert I had been waiting for 
->> appeared
->>  > in hte drm-misc tree, so I removed the BROKEN dependency for it, 
->> but it
->>  > produced the above errors, so I have marked it BROKEN again.
-> 
-> Any progress on this?  I am still marking CONFIG_DRM_INGENIC as BROKEN
-> in the drm and drm-misc trees.
-
-It should be good now.
-
-Cheers,
--Paul
-
+RnJvbTogaGFyc2hhbCBjaGF1ZGhhcmkNCj4gU2VudDogMTMgT2N0b2JlciAyMDIwIDEwOjAxDQo+
+IA0KPiBPbiBTYXQsIE9jdCAxMCwgMjAyMCBhdCAyOjQxIFBNIFN1ZGlwIE11a2hlcmplZQ0KPiA8
+c3VkaXBtLm11a2hlcmplZUBnbWFpbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gU2F0LCBPY3Qg
+MTAsIDIwMjAgYXQgMTowOCBBTSBTdWRpcCBNdWtoZXJqZWUNCj4gPiA8c3VkaXBtLm11a2hlcmpl
+ZUBnbWFpbC5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IE9uIEZyaSwgT2N0IDksIDIwMjAgYXQg
+NTo1NyBBTSBHcmVnIEtIIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4gd3JvdGU6DQo+ID4g
+PiA+DQo+ID4gPiA+IE9uIFRodSwgT2N0IDA4LCAyMDIwIGF0IDExOjU3OjEzUE0gKzA1MzAsIEhh
+cnNoYWwgQ2hhdWRoYXJpIHdyb3RlOg0KPiA+ID4gPiA+IENoZWNraW5nIHRoZSBhcmd1bWVudCBw
+YXNzZWQgdG8gdGhlIGlvY3RsIGlzIHZhbGlkDQo+ID4gPiA+ID4gb3Igbm90LiBpZiBub3QgdGhl
+biByZXR1cm4gLUVJTlZBTC4NCj4gPiA+ID4NCj4gPiA+ID4gQWxvbmcgdGhlIHRoZSBjb21tZW50
+cyB0aGF0IEFybmQgbWFkZSwgdGhpcyBpcyBub3QgdGhlIGNvcnJlY3QgdmFsdWUgdG8NCj4gPiA+
+ID4gYmUgcmV0dXJuaW5nIGZyb20gYW4gaW9jdGwgd2hlbiB5b3UgZG9uJ3QgcGFzcyBpbiB0aGUg
+Y29ycmVjdCBjb21tYW5kLg0KPiANCj4gVGhhbmtzIEdyZWcgZm9yIHRoZSBjb21tZW50LiBpIGFt
+IGNoZWNraW5nIHdpdGggdmFsdWUNCj4gLUVGQVVMVCBub3csIGkgd2lsbCBnZXQgYmFjayB0byB5
+b3Ugd2l0aCBjaGFuZ2VzIGFzIGNvbnNpZGVyYXRpb24NCj4gb2YgQXJuZCBjb21tZW50cy4NCj4g
+DQo+ID4gPiA+IEFuZCBpdCBkb2Vzbid0IG1hdGNoIHdoYXQgeW91ciBwYXRjaCBzYXlzLCBwbGVh
+c2UgYmUgY29uc2lzdGVudC4NCj4gDQo+IEkganVzdCB3YW50IHRvIHBlcmZvcm0gdGhlIEFyZ3Vt
+ZW50IGNoZWNrIGhlcmUgb25seS4gIGJhY2sgdGhlbiBpDQo+IHdhcyB0cnlpbmcgd2l0aCBhY2Nl
+c3Nfb2soKSBhcyB3ZWxsLCBidXQgYWNjZXNzX29rKCkgcmV0dXJuIHN1Y2Nlc3MNCj4gZXZlbiBp
+ZiBpIHBhc3NlZCBhIE5VTEwgcG9pbnRlci4gc28gdGhhdCdzIHdoeSBpIHJlbW92ZWQgaXQgZnJv
+bSBoZXJlLg0KDQpXaHkgYm90aGVyLg0KWW91IGhhdmUgdG8gY2hlY2sgdGhlIGNvcHlfZnJvbV91
+c2VyKCkgd2hhdGV2ZXIgZWxzZSB5b3UgbWlnaHQgaGF2ZQ0KY2hlY2tlZCBlYXJsaWVkLg0KU28g
+d2h5IG9wdGltaXNlIGZvciB0aGUgZXJyb3IgY2FzZSB0aGF0IG5ldmVyIGhhcHBlbnMuDQoNCglE
+YXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
+bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
+NzM4NiAoV2FsZXMpDQo=
 
