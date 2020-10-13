@@ -2,60 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF5E28D62A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81C628D62E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbgJMVQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:16:37 -0400
-Received: from elvis.franken.de ([193.175.24.41]:60772 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbgJMVQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:16:37 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kSRer-0001Go-00; Tue, 13 Oct 2020 23:16:33 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C9F13C0296; Tue, 13 Oct 2020 23:16:10 +0200 (CEST)
-Date:   Tue, 13 Oct 2020 23:16:10 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jinyang He <hejinyang@loongson.cn>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Add set_memory_node()
-Message-ID: <20201013211610.GA27034@alpha.franken.de>
-References: <1602559183-12225-1-git-send-email-hejinyang@loongson.cn>
+        id S1728094AbgJMVWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 17:22:32 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37603 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbgJMVWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 17:22:32 -0400
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kSRka-0007PO-QI; Tue, 13 Oct 2020 21:22:28 +0000
+Date:   Tue, 13 Oct 2020 23:22:28 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org
+Subject: Re: [PATCH 1/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+Message-ID: <20201013212228.gan6rcayveanujwd@wittgenstein>
+References: <20201013140609.2269319-1-gscrivan@redhat.com>
+ <20201013140609.2269319-2-gscrivan@redhat.com>
+ <20201013205427.clvqno24ctwxbuyv@wittgenstein>
+ <22ff41f8-c009-84f4-849b-a807b7382253@rasmusvillemoes.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1602559183-12225-1-git-send-email-hejinyang@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <22ff41f8-c009-84f4-849b-a807b7382253@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 11:19:43AM +0800, Jinyang He wrote:
-> Commit e7ae8d174eec ("MIPS: replace add_memory_region with memblock")
+On Tue, Oct 13, 2020 at 11:04:21PM +0200, Rasmus Villemoes wrote:
+> On 13/10/2020 22.54, Christian Brauner wrote:
+> > On Tue, Oct 13, 2020 at 04:06:08PM +0200, Giuseppe Scrivano wrote:
+> > 
+> > Hey Guiseppe,
+> > 
+> > Thanks for the patch!
+> > 
+> >> When the flag CLOSE_RANGE_CLOEXEC is set, close_range doesn't
+> >> immediately close the files but it sets the close-on-exec bit.
+> > 
+> > Hm, please expand on the use-cases a little here so people know where
+> > and how this is useful. Keeping the rationale for a change in the commit
+> > log is really important.
+> > 
+> 
+> > I think I don't have quarrels with this patch in principle but I wonder
+> > if something like the following wouldn't be easier to follow:
+> > 
+> > diff --git a/fs/file.c b/fs/file.c
+> > index 21c0893f2f1d..872a4098c3be 100644
+> > --- a/fs/file.c
+> > +++ b/fs/file.c
+> > @@ -672,6 +672,32 @@ int __close_fd(struct files_struct *files, unsigned fd)
+> >  }
+> >  EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
+> >  
+> > +static inline void __range_cloexec(struct files_struct *cur_fds,
+> > +				   unsigned int fd, unsigned max_fd)
+> > +{
+> > +	struct fdtable *fdt;
+> > +	spin_lock(&cur_fds->file_lock);
+> > +	fdt = files_fdtable(cur_fds);
+> > +	while (fd <= max_fd)
+> > +		__set_close_on_exec(fd++, fdt);
+> 
 
-this commit just changed code and doesn't change the problem you want to
-solve.
+(I should've warned that I just proposed this as a completely untested
+brainstorm.)
 
-> replaced add_memory_region(, , BOOT_MEM_RAM) with memblock_add(). But
-> it doesn't work well on some platforms which have NUMA like Loongson64.
-> Because memblock_add() calls memblock_add_range() and sets memory at
-> MAX_NUMNODES. As mm/memblock.c says, assign the region to a NUMA node
-> later by using memblock_set_node(). This patch provides a NUMA port
+> Doesn't that want to be
+> 
+>   bitmap_set(fdt->close_on_exec, fd, max_fd - fd + 1)
+> 
+> to do word-at-a-time? I assume this would mostly be called with (3, ~0U)
+> as arguments or something like that.
 
-so it says later, which doesn't have to be right after the memblock_add.
-I don't know why you need the whole mem=/memmap= game, but please do a
+Yes, that is the common case.
 
-for_each_memblock(...) 
-	memblock_set_node(...);
+Thanks Rasmus, I was unaware we had that function.
 
-somewhere in arch/mips/loongson64 to fix up the memory blocks as needed.
+In that case I think we'd actually need sm like:
+spin_lock(&cur_fds->file_lock);
+fdt = files_fdtable(cur_fds);
+cur_max = files_fdtable(cur_fds)->max_fds - 1;
+max_fd = min(max_fd, cur_max);
+bitmap_set(fdt->close_on_exec, fd, max_fd - fd + 1)
 
-Thomas.
+so we retrieve max_fd with the spinlock held, I think.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Christian
