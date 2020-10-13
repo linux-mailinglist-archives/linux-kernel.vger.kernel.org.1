@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB6828D502
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C1D28D516
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgJMT5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:57:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21836 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726848AbgJMT5h (ORCPT
+        id S1729241AbgJMUCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726763AbgJMUC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:57:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602619056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LRFJqT7I3kohH/YYD4XEKjFcPLlGRFDozndI1UK1Zmc=;
-        b=NIKmi/c3k21xx5Pb/FVky+XLD+Xmp9oJbSqoBJCl9lK7VEEYMNVCq//1jnHzyafQD0Rpll
-        o0exakTT5j10RljnR6uUqQYrZslf/2IVmB+OUtjLFsxzpFlUinnwaMsFQ894pLEiEz9jwf
-        5mTyzMc0aTF9OpDEubaWenr4Omr78Ho=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-193-jr1SUanyP2--xBHG_Fyx3Q-1; Tue, 13 Oct 2020 15:57:32 -0400
-X-MC-Unique: jr1SUanyP2--xBHG_Fyx3Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F32D2107AFA9;
-        Tue, 13 Oct 2020 19:57:30 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-207.rdu2.redhat.com [10.10.115.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 27B7E5D9CD;
-        Tue, 13 Oct 2020 19:57:20 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 96F1C223D0F; Tue, 13 Oct 2020 15:57:19 -0400 (EDT)
-Date:   Tue, 13 Oct 2020 15:57:19 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Qian Cai <cai@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com
-Subject: Re: Unbreakable loop in fuse_fill_write_pages()
-Message-ID: <20201013195719.GD142988@redhat.com>
-References: <7d350903c2aa8f318f8441eaffafe10b7796d17b.camel@redhat.com>
- <20201013184026.GC142988@redhat.com>
- <20201013185808.GA164772@redhat.com>
- <d14f6a08b4ada85289e70cbb34726fd084ccac05.camel@redhat.com>
+        Tue, 13 Oct 2020 16:02:28 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7997C061755;
+        Tue, 13 Oct 2020 13:02:27 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSQUX-00H96b-NT; Tue, 13 Oct 2020 20:01:49 +0000
+Date:   Tue, 13 Oct 2020 21:01:49 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>, X86 ML <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devel@driverdev.osuosl.org, linux-efi <linux-efi@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
+        target-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        linux-ext4 <linux-ext4@vger.kernel.org>, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-afs@lists.infradead.org,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        linux-cachefs@redhat.com, samba-technical@lists.samba.org,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
+Message-ID: <20201013200149.GI3576660@ZenIV.linux.org.uk>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-34-ira.weiny@intel.com>
+ <CAPcyv4gL3jfw4d+SJGPqAD3Dp4F_K=X3domuN4ndAA1FQDGcPg@mail.gmail.com>
+ <20201013193643.GK20115@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d14f6a08b4ada85289e70cbb34726fd084ccac05.camel@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20201013193643.GK20115@casper.infradead.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 03:53:19PM -0400, Qian Cai wrote:
-> On Tue, 2020-10-13 at 14:58 -0400, Vivek Goyal wrote:
+On Tue, Oct 13, 2020 at 08:36:43PM +0100, Matthew Wilcox wrote:
+
+> static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
+> {
+> 	char *vto = kmap_atomic(to);
 > 
-> > I am wondering if virtiofsd still alive and responding to requests? I
-> > see another task which is blocked on getdents() for more than 120s.
-> > 
-> > [10580.142571][  T348] INFO: task trinity-c36:254165 blocked for more than 123
-> > +seconds.
-> > [10580.143924][  T348]       Tainted: G           O	 5.9.0-next-20201013+ #2
-> > [10580.145158][  T348] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> > +disables this message.
-> > [10580.146636][  T348] task:trinity-c36     state:D stack:26704 pid:254165
-> > ppid:
-> > +87180 flags:0x00000004
-> > [10580.148260][  T348] Call Trace:
-> > [10580.148789][  T348]  __schedule+0x71d/0x1b50
-> > [10580.149532][  T348]  ? __sched_text_start+0x8/0x8
-> > [10580.150343][  T348]  schedule+0xbf/0x270
-> > [10580.151044][  T348]  schedule_preempt_disabled+0xc/0x20
-> > [10580.152006][  T348]  __mutex_lock+0x9f1/0x1360
-> > [10580.152777][  T348]  ? __fdget_pos+0x9c/0xb0
-> > [10580.153484][  T348]  ? mutex_lock_io_nested+0x1240/0x1240
-> > [10580.154432][  T348]  ? find_held_lock+0x33/0x1c0
-> > [10580.155220][  T348]  ? __fdget_pos+0x9c/0xb0
-> > [10580.155934][  T348]  __fdget_pos+0x9c/0xb0
-> > [10580.156660][  T348]  __x64_sys_getdents+0xff/0x230
-> > 
-> > May be virtiofsd crashed and hence no requests are completing leading
-> > to a hard lockup?
-> Virtiofsd is still working. Once this happened, I manually create a file on the
-> guest (in virtiofs) and then I can see the content of it from the host.
+> 	memcpy(vto, vfrom, size);
+> 	kunmap_atomic(vto);
+> }
+> 
+> in linux/highmem.h ?
 
-Hmm..., So how do I reproduce it. Just run trinity as root and it will
-reproduce after some time?
+You mean, like
+static void memcpy_from_page(char *to, struct page *page, size_t offset, size_t len)
+{
+        char *from = kmap_atomic(page);
+        memcpy(to, from + offset, len);
+        kunmap_atomic(from);
+}
 
-Vivek
+static void memcpy_to_page(struct page *page, size_t offset, const char *from, size_t len)
+{
+        char *to = kmap_atomic(page);
+        memcpy(to + offset, from, len);
+        kunmap_atomic(to);
+}
 
+static void memzero_page(struct page *page, size_t offset, size_t len)
+{
+        char *addr = kmap_atomic(page);
+        memset(addr + offset, 0, len);
+        kunmap_atomic(addr);
+}
+
+in lib/iov_iter.c?  FWIW, I don't like that "highpage" in the name and
+highmem.h as location - these make perfect sense regardless of highmem;
+they are normal memory operations with page + offset used instead of
+a pointer...
