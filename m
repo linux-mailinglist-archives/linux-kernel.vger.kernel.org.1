@@ -2,84 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7382D28CB3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2AC28CB3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389341AbgJMJzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:55:20 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:46567 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726120AbgJMJzT (ORCPT
+        id S1729168AbgJMJzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgJMJzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:55:19 -0400
-X-UUID: 2d083468002b4a54841e6fb34d9036e9-20201013
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ErW8HdEIq/FdudMvL/XJKMQpzparYDyvJJpkVDGt/9I=;
-        b=A4XIiW+zG7s81RxaMdCDqufQdbZ2FjDXvL2CrFVN760zsODjdZ1mBJ2F+RNEwF2fMV0bP2jiwcFz1BWdD7NNKVuWxg14t8IgtOTRbMQqq9rUE/EkW7gudbCMBR+87GmORZOH0JEzQxqOmgoNtMbpJOUFdoTu86RNHF0z8lowHQ0=;
-X-UUID: 2d083468002b4a54841e6fb34d9036e9-20201013
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1675622749; Tue, 13 Oct 2020 17:55:08 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Oct
- 2020 17:55:06 +0800
-Received: from [10.16.6.141] (10.16.6.141) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 13 Oct 2020 17:55:03 +0800
-Message-ID: <1602582900.10262.0.camel@mszsdaap41>
-Subject: Re: [v4 PATCH 0/2] fix scrolling of panel with small hfp or hbp
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        <huijuan.xie@mediatek.com>, <stonea168@163.com>,
-        <cawa.cheng@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 13 Oct 2020 17:55:00 +0800
-In-Reply-To: <CAAOTY_-qZni-o11HJeymH74PAFSJw-0Awdz0wdjiQ0u7Ga1MGA@mail.gmail.com>
-References: <20201010070910.11294-1-jitao.shi@mediatek.com>
-         <CAAOTY_-qZni-o11HJeymH74PAFSJw-0Awdz0wdjiQ0u7Ga1MGA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 13 Oct 2020 05:55:08 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFFDC0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:55:07 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id q5so21097510wmq.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YKvSNZR9ptBFcO/UUrxR/7or/yI++iP0x0q1ZQ9abEs=;
+        b=e67f5vWv4SyTTBTEAc0A4DjwfBj/qCC2NMYqNap0zrsSrh++RjL7CBlWcy79R6Dvx7
+         oLkmyRmfA7dTIPOVyYizGts/ef0Q9mHcqm5TJiCzbyVTlnTpFTojo6gHmtYJtQ9TJ5C8
+         KCQDUIw9lQTXo+i39SCWIoYhBI32fzZwGg3/k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YKvSNZR9ptBFcO/UUrxR/7or/yI++iP0x0q1ZQ9abEs=;
+        b=oSNz9HC9USCMshdi2FKnpn6cWEq2u1M9PezLHZZaz9kABC0JkD7InXCJGQHvoSZGSW
+         /h2Vr+Za0q2VAEyBxfHxhMlDX4swXLBt+013IhhgWHUPidkEgOa+mKc4iaD6LldHC+4l
+         uCg0b2eSoIGPh56ODRww6wWULB8/FEkWW5MRnsz6vdNsnII1LybHcoBtYfn6oe4h7HcX
+         lwoGG+wC8hNBq/YX3sp+QEMKmwUDwWgjaKafytBdVgcxkurRnQbw9MMQAAOd3+Y2ubHf
+         QNQkOIuNmQe0RkUl6AoYYd49MPuV2VhNq8yKbdHfTEVDIsvJJn49IN/TvQ3o1fawdjiC
+         4AjA==
+X-Gm-Message-State: AOAM5336FDOQ9IFm61UwNebcZcDKdQII5QH2wmyZJPORDCPjfVjc8oYQ
+        5UVhRIgFSbXjB+QsG5FybZJ8rw==
+X-Google-Smtp-Source: ABdhPJwNzHOzFBFSlEaLslgNSlVhrb2Hfm4ARc29+Fg45XaZhkHoBe0aLO3suD+2MxFxFgKOty4nLQ==
+X-Received: by 2002:a1c:6643:: with SMTP id a64mr15174306wmc.142.1602582906104;
+        Tue, 13 Oct 2020 02:55:06 -0700 (PDT)
+Received: from [172.16.11.132] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id o194sm25490462wme.24.2020.10.13.02.55.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 02:55:05 -0700 (PDT)
+Subject: Re: [PATCH] lib: Convert test_printf.c to KUnit
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Arpitha Raghunandan <98.arpi@gmail.com>,
+        skhan@linuxfoundation.org, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20200817043028.76502-1-98.arpi@gmail.com>
+ <f408efbd-10f7-f1dd-9baa-0f1233cafffc@rasmusvillemoes.dk>
+ <20200821113710.GA26290@alley> <20200821122849.GS1891694@smile.fi.intel.com>
+ <20201012204625.GA56597@google.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <876cc862-56f1-7330-f988-0248bec2fbad@rasmusvillemoes.dk>
+Date:   Tue, 13 Oct 2020 11:55:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 9058B82AC9E991BE078B9380368DAEE655AD1DF6E08AD11FCBEC7D55ED3BBE992000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201012204625.GA56597@google.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTEwLTEyIGF0IDIzOjIyICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgSml0YW86DQo+IA0KPiBKaXRhbyBTaGkgPGppdGFvLnNoaUBtZWRpYXRlay5jb20+IOaW
-vCAyMDIw5bm0MTDmnIgxMOaXpSDpgLHlha0g5LiL5Y2IMzowOeWvq+mBk++8mg0KPiA+DQo+ID4g
-Q2hhbmdlcyBzaW5jZSB2MzoNCj4gPiAgLSBSZXZlcnQgdjIsIGZvciB2MiB3aWxsIGNhdXNlIHNv
-bWUgYnJpZGdlIGljIG5vIG91dHB1dC4gdGhlIGNhdXNlDQo+ID4gICAgdGhlIHZpZGVvIGxpbmV0
-aW1lIGRvZXNuJ3QgbWF0Y2ggZGlzcGxheSBtb2RlIGZyb20gZ2V0IG1vZGUuDQo+ID4gIC0gTWFr
-ZSBzdXJlIHRoZSBob3Jpem9udGFsX2Zyb250cG9yY2hfYnl0ZSBhbmQgaG9yaXpvbnRhbF9iYWNr
-cG9yY2hfYnl0ZQ0KPiA+ICAgIGFyZSA+IDAuDQo+IA0KPiBCZWNhdXNlIHYyIGlzIG1lcmdlZCBp
-bnRvIG1haW5saW5lLCBJIHRoaW5rIHlvdSBzaG91bGQgbWVyZ2UgMS8yIGFuZA0KPiAyLzIgdG8g
-b25lIHBhdGNoIHdoaWNoIGZpeCB0aGUgcHJvYmxlbSBjYXVzZWQgYnkgdjIuDQo+IA0KPiBSZWdh
-cmRzLA0KPiBDaHVuLUt1YW5nLg0KPiANCg0KVGhhbmtzIGZvciB5b3VyIHJldmlld2luZy4NCkkn
-bGwgdXBkYXRlIG5leHQgdmVyc2lvbi4NCg0KQmVzdCBSZWdhcmRzDQpKaXRhbw0KDQo+ID4NCj4g
-PiBKaXRhbyBTaGkgKDIpOg0KPiA+ICAgUmV2ZXJ0ICJkcm0vbWVkaWF0ZWs6IGRzaTogRml4IHNj
-cm9sbGluZyBvZiBwYW5lbCB3aXRoIHNtYWxsIGhmcCBvcg0KPiA+ICAgICBoYnAiDQo+ID4gICBk
-cm0vbWVkaWF0ZWs6IGRzaTogZml4IHNjcm9sbGluZyBvZiBwYW5lbCB3aXRoIHNtYWxsIGhmcCBv
-ciBoYnANCj4gPg0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jIHwgNjUg
-KysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5n
-ZWQsIDI1IGluc2VydGlvbnMoKyksIDQwIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gLS0NCj4gPiAy
-LjEyLjUNCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xw0KPiA+IGRyaS1kZXZlbCBtYWlsaW5nIGxpc3QNCj4gPiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnDQo+ID4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9kcmktZGV2ZWwNCg0K
+On 12/10/2020 22.46, Brendan Higgins wrote:
+> On Fri, Aug 21, 2020 at 03:28:49PM +0300, Andy Shevchenko wrote:
+>> On Fri, Aug 21, 2020 at 01:37:10PM +0200, Petr Mladek wrote:
+>>> On Mon 2020-08-17 09:06:32, Rasmus Villemoes wrote:
+>>>> On 17/08/2020 06.30, Arpitha Raghunandan wrote:
+>>>>> Converts test lib/test_printf.c to KUnit.
+>>>>> More information about KUnit can be found at
+>>>>> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+>>>>> KUnit provides a common framework for unit tests in the kernel.
+>>>>
+>>>> So I can continue to build a kernel with some appropriate CONFIG set to
+>>>> y, boot it under virt-me, run dmesg and see if I broke printf? That's
+>>>> what I do now, and I don't want to have to start using some enterprisy
+>>>> framework.
+>>>
+>>> I had the same concern. I have tried it.
+> 
+> Sorry you feel that way. Do you have any suggestions on how we can make
+> it seem less enterprisy? Seems like there are people here who are not a
+> fan of the output format, so of which we can fix here, some of which is
+> part of KTAP[1].
 
+I'm fine with machine-readable TAP, but I most defintely also want
+human-readable, which means all the excessive and pointless lines need
+to go away.
+
+>> Which raises an obvious question: did the people who convert this test this
+>> themselves? Looks like a janitor work in the area without understanding the
+>> area good enough.
+> 
+> Looks to me like Arpitha ran it, but you are right, we don't have a lot
+> of familiarity with this area; we were treating it as "janitor work" as
+> you say.
+> 
+> Our intention was just to take some existing tests and as non-invasively
+> as possible, get them to report using a common format, and maybe even
+> get some of the tests to follow a common pattern.
+> 
+>> Probably I will NAK all those patches from now on, until it will be good commit
+>> messages and cover of risen aspects, including reference to before and after
+>> outcome for passed and failed test cases.
+> 
+> Fair enough, hopefully we can address these issues in the next revision.
+> 
+> One issue though, with the "before and after outcome" you are
+> referencing; are you referring to the issue that Petr pointed out in how
+> they are inconsistent:
+> 
+>    + original code: vsnprintf(buf, 6, "%pi4|%pI4", ...) wrote '127.0', expected '127-0'
+>    + kunit code: vsnprintf(buf, 20, "%pi4|%pI4", ...) wrote '127.000.000.001|127', expected '127-000.000.001|127'  
+> 
+> (I think Rasmus addressed this.) Or are your referring to something
+> else?
+
+Yeah, that change is fine and expected, can we stop bringing that up.
+
+It's all the explicit "memcmp() == 0 failed" gunk at least I am
+concerned with. If you can get rid of that (basically, stop stringifying
+the code, that's completely irrelevant) and just get the messages from
+the test itself that explains what went wrong. I'm fine with
+interspersing that with a few TAP-readable lines. But things like
+
+ Expected memcmp(test_buffer, expect, written) == 0, but
+                       memcmp(test_buffer, expect, written) == 1
+                       0 == 0
+
+are utterly useless. We're not _testing_ memcmp, we're _using_ it to
+know if vsprintf() did as we expected. So just mechanically changing
+"memcmp() == 0" into "SOME_MACRO(memcmp(), 0)" is never going to work,
+at least when SOME_MACRO does the stringify and ends up producing the
+above. But if you can end up producing
+
+[   56.795433]     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:76
+               vsnprintf(buf, 20, "%pi4|%pI4", ...) wrote
+'127.000.000.001|127', expected '127-000.000.001|127'
+
+that's fine; that's basically just prepending an EXPECTATION FAILED line
+to the existing output.
+
+So doing it properly would probably be either
+
+- change the existing pr_warn()s to use some KUNIT macro that generates
+whatever extra info is needed by TAP, in addition to the current
+human-readable message, and/or
+- just add a few lines of TAP-suitable FAIL/PASS lines here and there
+
+but let me repeat that the control flow (early returns) in do_test()
+cannot be modified.
+
+Rasmus
