@@ -2,103 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D440128CA6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0064228CA63
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403949AbgJMIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:44:19 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2975 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2403918AbgJMIoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:44:18 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 4C6FD9BD907B2567ECAD;
-        Tue, 13 Oct 2020 09:44:17 +0100 (IST)
-Received: from [127.0.0.1] (10.47.6.6) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 13 Oct
- 2020 09:44:16 +0100
-Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
- arch events
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <namhyung@kernel.org>, <kjain@linux.ibm.com>, <irogers@google.com>,
-        <yao.jin@linux.intel.com>, <yeyunfeng@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
- <20201012105430.GH1099489@krava>
- <5b0aefe2-e0d5-b5ff-654c-4e93c427050f@huawei.com>
- <20201012112419.GJ1099489@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <9e8e3d2d-d15d-13df-ab97-34df8d81a6a1@huawei.com>
-Date:   Tue, 13 Oct 2020 09:41:08 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S2403932AbgJMIm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403918AbgJMIm1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 04:42:27 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAA3C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:42:27 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id x185so10633200vsb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z0tT/OxWzXToVda8iVCF76v2EDXGWGffzNusJWvss8M=;
+        b=rEcfkO0NIHhLROvC5ZLcfK3iHqd8SalrVx1IENPSPL9L4RtFBwu78TU7BnEX+xg+cJ
+         TP2HCQ4n6d55TeBhx9JsQsjtafrU9hn+eTCoGMgsb1Jq6YAGG6BvOFnj4gbfGDOm9CUr
+         G4ySHoroeEO/K/MxVjyOD6J/IJBIGlTW8ug5DEqEPoxfo4e8AZzwxpqGovPe477I8wQx
+         CWq4T7FOZb3HN5rNmiAvXGkr/RyeGMICqrHOW7uxrBDBq9nMjPiDIyu2uYHrj2QU7iCR
+         V0dFbJdC++ZEw/nX1XvT2XJkZ4r53BoeC7XU6LoM2BfY3BCZ2w15qyKx1YZCVJ3GmDn0
+         LBow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z0tT/OxWzXToVda8iVCF76v2EDXGWGffzNusJWvss8M=;
+        b=kw7Df/zRRY8hbAPGF6v+kbfZWWGEqQziB7l55ATaCgAnAtxM17Op08CXeXNcJl60hP
+         t35soMYapPU7qrCUSVf0WOAMlOHV/cx6ck1cdIb8LTZMtp4pXz4wy695NzJCo3XzjtyJ
+         3nYuiNCT8J7YUoJGcCkolMDHLRgdaQBcMqgWHhm6Bemzkv8AVMN80S+OgExkS7vWbkRz
+         EPk2krHmxIo1iZPsDXe0UuHmqK+NByipa5wf1GGvvBqUJWzEWoeLwC1kiVTgK0hbEU6E
+         15Ce327CmtdPqmD64xtb2SD8stsiSydekeRiaSIEwagh7QOndayeitGkHcsFJx+VCDx+
+         9bBw==
+X-Gm-Message-State: AOAM531UIvalskQDU4+FA+l0PIp306pm+olUY2ZC3yHwEaMF7LO7pGYr
+        VCXy3iM1TkHNMU/H3z+E4caHATIM0F/OnPKdB/AEFA==
+X-Google-Smtp-Source: ABdhPJz5bidkohOEL1Mad90/4Mq0kOr+hJLXG0AGnTln12QW/VucJ7OezoBQnKjDG2AqA/MAFDjYNvTyBNcAmpZBNjI=
+X-Received: by 2002:a67:f24e:: with SMTP id y14mr15972235vsm.55.1602578546349;
+ Tue, 13 Oct 2020 01:42:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201012112419.GJ1099489@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.6.6]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20201008020936.19894-1-muhammad.husaini.zulkifli@intel.com>
+ <20201008020936.19894-5-muhammad.husaini.zulkifli@intel.com>
+ <CAPDyKFpUv8yeVrWVLRKvz4eKsSDdk0y4dKY2mYs07zpA2UqNdw@mail.gmail.com>
+ <DM6PR11MB28764EC5E1F89D417D700F29B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+ <CAPDyKFptgKG8uvKUkN56sooFL4xqaBcNdbpo645xRQqPOH4BkQ@mail.gmail.com>
+ <DM6PR11MB28761F10936FF0D2695FAF19B80B0@DM6PR11MB2876.namprd11.prod.outlook.com>
+ <CAPDyKFoRHsOiz9BFJ5jWyKqvdmNW9eeEmCGKYn0Q1jUzNwJZNg@mail.gmail.com> <DM6PR11MB2876DF701740F70FFD2B2D17B8080@DM6PR11MB2876.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB2876DF701740F70FFD2B2D17B8080@DM6PR11MB2876.namprd11.prod.outlook.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 13 Oct 2020 10:41:49 +0200
+Message-ID: <CAPDyKFqB5SCfNWumhDjvH+mQxMi6bYcHSg-vBV+gWEgDee0m1Q@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+ Keem Bay SOC
+To:     "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
+Cc:     "Hunter, Adrian" <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/10/2020 12:24, Jiri Olsa wrote:
-> On Mon, Oct 12, 2020 at 12:15:04PM +0100, John Garry wrote:
->> On 12/10/2020 11:54, Jiri Olsa wrote:
->>>> ff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
->>>> index 99df41a9543d..e47644cab3fa 100644
->>>> --- a/tools/perf/pmu-events/jevents.c
->>>> +++ b/tools/perf/pmu-events/jevents.c
->>>> @@ -505,20 +505,15 @@ static char *real_event(const char *name, char *event)
->>>>    }
->>>>    static int
->>>> -try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
->>>> -	  struct json_event *je)
->>>> +try_fixup(const char *fn, char *arch_std, struct json_event *je, char **event)
->>>>    {
->>>>    	/* try to find matching event from arch standard values */
->>>>    	struct event_struct *es;
->>>>    	list_for_each_entry(es, &arch_std_events, list) {
->>>>    		if (!strcmp(arch_std, es->name)) {
->>>> -			if (!eventcode && es->event) {
->>>> -				/* allow EventCode to be overridden */
->>>> -				free(je->event);
->>>> -				je->event = NULL;
->>>> -			}
->>>>    			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
->>>> +			*event = je->event;
->>> I'm bit rusty on this code, but isn't je->event NULL at this point?
->>
->> je->event should be now assigned from es->event because of
->> FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD):
->>
->> #define TRY_FIXUP_FIELD(field) do { if (es->field && !*field) {\
->> 	*field = strdup(es->field);				\
->> 	if (!*field)						\
->> 		return -ENOMEM;					\
->> } } while (0)
->>
->> And es->event should be set.
-> 
-> right, thanks
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> 
-> jirka
-> 
-> .
-> 
+On Fri, 9 Oct 2020 at 19:50, Zulkifli, Muhammad Husaini
+<muhammad.husaini.zulkifli@intel.com> wrote:
+>
+> Hi,
+>
+> >-----Original Message-----
+> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >Sent: Friday, October 9, 2020 2:56 PM
+> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
+> ><michal.simek@xilinx.com>; Shevchenko, Andriy
+> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux ARM
+> ><linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List <linux-
+> >kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
+> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
+> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
+> ><arnd@arndb.de>
+> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1 support for
+> >Keem Bay SOC
+> >
+> >On Thu, 8 Oct 2020 at 19:21, Zulkifli, Muhammad Husaini
+> ><muhammad.husaini.zulkifli@intel.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >> >-----Original Message-----
+> >> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >> >Sent: Thursday, October 8, 2020 11:19 PM
+> >> >To: Zulkifli, Muhammad Husaini <muhammad.husaini.zulkifli@intel.com>
+> >> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
+> >> ><michal.simek@xilinx.com>; Shevchenko, Andriy
+> >> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux ARM
+> >> ><linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing List
+> >> ><linux- kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
+> >> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan Ahmad
+> >> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
+> >> ><arnd@arndb.de>
+> >> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1
+> >> >support for Keem Bay SOC
+> >> >
+> >> >On Thu, 8 Oct 2020 at 12:54, Zulkifli, Muhammad Husaini
+> >> ><muhammad.husaini.zulkifli@intel.com> wrote:
+> >> >>
+> >> >> Hi,
+> >> >>
+> >> >> >-----Original Message-----
+> >> >> >From: Ulf Hansson <ulf.hansson@linaro.org>
+> >> >> >Sent: Thursday, October 8, 2020 5:28 PM
+> >> >> >To: Zulkifli, Muhammad Husaini
+> >> >> ><muhammad.husaini.zulkifli@intel.com>
+> >> >> >Cc: Hunter, Adrian <adrian.hunter@intel.com>; Michal Simek
+> >> >> ><michal.simek@xilinx.com>; Shevchenko, Andriy
+> >> >> ><andriy.shevchenko@intel.com>; linux-mmc@vger.kernel.org; Linux
+> >> >> >ARM <linux-arm-kernel@lists.infradead.org>; Linux Kernel Mailing
+> >> >> >List
+> >> >> ><linux- kernel@vger.kernel.org>; Raja Subramanian, Lakshmi Bai
+> >> >> ><lakshmi.bai.raja.subramanian@intel.com>; Wan Mohamad, Wan
+> >Ahmad
+> >> >> >Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>; Arnd Bergmann
+> >> >> ><arnd@arndb.de>
+> >> >> >Subject: Re: [PATCH v4 4/4] mmc: sdhci-of-arasan: Enable UHS-1
+> >> >> >support for Keem Bay SOC
+> >> >> >
+> >> >> >On Thu, 8 Oct 2020 at 04:12, <muhammad.husaini.zulkifli@intel.com>
+> >> >wrote:
+> >> >> >>
+> >> >> >> From: Muhammad Husaini Zulkifli
+> >> >> >> <muhammad.husaini.zulkifli@intel.com>
+> >> >> >>
+> >> >> >> Voltage switching sequence is needed to support UHS-1 interface.
+> >> >> >> There are 2 places to control the voltage.
+> >> >> >> 1) By setting the AON register using firmware driver calling
+> >> >> >> system-level platform management layer (SMC) to set the register.
+> >> >> >> 2) By controlling the GPIO expander value to drive either 1.8V
+> >> >> >> or 3.3V for power mux input.
+> >> >> >>
+> >> >> >> Signed-off-by: Muhammad Husaini Zulkifli
+> >> >> >> <muhammad.husaini.zulkifli@intel.com>
+> >> >> >> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> >> >> >> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+> >> >> >> ---
+> >> >> >>  drivers/mmc/host/sdhci-of-arasan.c | 126
+> >> >> >> +++++++++++++++++++++++++++++
+> >> >> >>  1 file changed, 126 insertions(+)
+> >> >> >>
+> >> >> >> diff --git a/drivers/mmc/host/sdhci-of-arasan.c
+> >> >> >> b/drivers/mmc/host/sdhci-of-arasan.c
+> >> >> >> index 46aea6516133..ea2467b0073d 100644
+> >> >> >> --- a/drivers/mmc/host/sdhci-of-arasan.c
+> >> >> >> +++ b/drivers/mmc/host/sdhci-of-arasan.c
+> >> >> >> @@ -16,6 +16,7 @@
+> >> >> >>   */
+> >> >> >>
+> >> >> >>  #include <linux/clk-provider.h>
+> >> >> >> +#include <linux/gpio/consumer.h>
+> >> >> >>  #include <linux/mfd/syscon.h>
+> >> >> >>  #include <linux/module.h>
+> >> >> >>  #include <linux/of_device.h>
+> >> >> >> @@ -23,6 +24,7 @@
+> >> >> >>  #include <linux/regmap.h>
+> >> >> >>  #include <linux/of.h>
+> >> >> >>  #include <linux/firmware/xlnx-zynqmp.h>
+> >> >> >> +#include <linux/firmware/intel/keembay_firmware.h>
+> >> >> >>
+> >> >> >>  #include "cqhci.h"
+> >> >> >>  #include "sdhci-pltfm.h"
+> >> >> >> @@ -136,6 +138,7 @@ struct sdhci_arasan_clk_data {
+> >> >> >>   * @soc_ctl_base:      Pointer to regmap for syscon for soc_ctl registers.
+> >> >> >>   * @soc_ctl_map:       Map to get offsets into soc_ctl registers.
+> >> >> >>   * @quirks:            Arasan deviations from spec.
+> >> >> >> + * @uhs_gpio:          Pointer to the uhs gpio.
+> >> >> >>   */
+> >> >> >>  struct sdhci_arasan_data {
+> >> >> >>         struct sdhci_host *host; @@ -150,6 +153,7 @@ struct
+> >> >> >> sdhci_arasan_data {
+> >> >> >>         struct regmap   *soc_ctl_base;
+> >> >> >>         const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
+> >> >> >>         unsigned int    quirks;
+> >> >> >> +       struct gpio_desc *uhs_gpio;
+> >> >> >>
+> >> >> >>  /* Controller does not have CD wired and will not function
+> >> >> >> normally without
+> >> >> >*/
+> >> >> >>  #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST        BIT(0)
+> >> >> >> @@ -361,6 +365,112 @@ static int
+> >> >> >> sdhci_arasan_voltage_switch(struct
+> >> >> >mmc_host *mmc,
+> >> >> >>         return -EINVAL;
+> >> >> >>  }
+> >> >> >>
+> >> >> >> +static int sdhci_arasan_keembay_voltage_switch(struct mmc_host
+> >> >*mmc,
+> >> >> >> +                                      struct mmc_ios *ios) {
+> >> >> >> +       struct sdhci_host *host = mmc_priv(mmc);
+> >> >> >> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> >> >> >> +       struct sdhci_arasan_data *sdhci_arasan =
+> >> >sdhci_pltfm_priv(pltfm_host);
+> >> >> >> +       u16 ctrl_2, clk;
+> >> >> >> +       int ret;
+> >> >> >> +
+> >> >> >> +       switch (ios->signal_voltage) {
+> >> >> >> +       case MMC_SIGNAL_VOLTAGE_180:
+> >> >> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> >> >> >> +               clk &= ~SDHCI_CLOCK_CARD_EN;
+> >> >> >> +               sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> >> >> >> +
+> >> >> >> +               clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> >> >> >> +               if (clk & SDHCI_CLOCK_CARD_EN)
+> >> >> >> +                       return -EAGAIN;
+> >> >> >> +
+> >> >> >> +               sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
+> >> >> >> +                                  SDHCI_POWER_CONTROL);
+> >> >> >> +
+> >> >> >> +               /*
+> >> >> >> +                * Set VDDIO_B voltage to Low for 1.8V
+> >> >> >> +                * which is controlling by GPIO Expander.
+> >> >> >> +                */
+> >> >> >> +               gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio,
+> >> >> >> + 0);
+> >> >> >> +
+> >> >> >> +               /*
+> >> >> >> +                * This is like a final gatekeeper. Need to
+> >> >> >> + ensure changed
+> >> >voltage
+> >> >> >> +                * is settled before and after turn on this bit.
+> >> >> >> +                */
+> >> >> >> +               usleep_range(1000, 1100);
+> >> >> >> +
+> >> >> >> +               ret =
+> >> >keembay_sd_voltage_selection(KEEMBAY_SET_1V8_VOLT);
+> >> >> >> +               if (ret)
+> >> >> >> +                       return ret;
+> >> >> >> +
+> >> >> >> +               usleep_range(1000, 1100);
+> >> >> >
+> >> >> >No, sorry, but I don't like this.
+> >> >> >
+> >> >> >This looks like a GPIO regulator with an extension of using the
+> >> >> >keembay_sd_voltage_selection() thingy. I think you can model these
+> >> >> >things behind a regulator and hook it up as a vqmmc supply in DT
+> >> >> >instead. BTW, this is the common way we deal with these things for
+> >> >> >mmc
+> >> >host drivers.
+> >> >>
+> >> >> The SDcard for Keem Bay SOC does not have its own voltage regulator.
+> >> >> There are 2 places to control the voltage.
+> >> >> 1) By setting the AON register calling system-level platform
+> >> >> management
+> >> >layer (SMC)
+> >> >>    to set the I/O pads voltage for particular GPIOs line for clk,data and cmd.
+> >> >>    The reason why I use this keembay_sd_voltage_selection() via
+> >> >> smccc
+> >> >interface it because during voltage switching
+> >> >>    I need to access to AON register. On a secure system, we could
+> >> >> not
+> >> >directly access to AON register due to some security concern from
+> >> >driver side, thus
+> >> >>    cannot exposed any register or address.
+> >> >> 2) By controlling the GPIO expander value to drive either 1.8V or
+> >> >> 3.3V for
+> >> >power mux input.
+> >> >
+> >> >I see, thanks for clarifying.
+> >> >
+> >> >To me, it sounds like the best fit is to implement a pinctrl (to
+> >> >manage the I/O
+> >> >pads) and a GPIO regulator.
+> >> >
+> >> Even with pinctrl, i still need to use the keembay_sd_voltage_selection()
+> >thingy for AON register.
+> >
+> >Yes, I am fine by that.
+> >
+> >Although, as it's really a pinctrl, it deserves to be modelled like that. Not as a
+> >soc specific hack in a mmc host driver.
+> >
+> >> Plus, the GPIO pin that control the sd-voltage is in GPIO Expander not using
+> >Keembay SOC GPIO Pin.
+> >> The best option is using the gpio consumer function to toggle the pin.
+> >
+> >As I said, please no.
+> >
+> >The common way to model this is as a GPIO regulator. In this way, you can even
+> >rely on existing mmc DT bindings. All you have to do is to hook up a vqmmc
+> >supply to the mmc node.
+> >
+> >To be clear, as long as there are no arguments for why a pinctrl and GPIO
+> >regulator can't be used - I am not going to pick up the patches.
+> As I mentioned The SDcard does not have its own voltage regulator.
+> It only uses the voltage rails on the mux input.
+>
+> There are 2 things need to be configured before getting the output voltage:
+>
+> 1) V_VDDIO_B :
+> Supplied voltage applied to I/O Rail which is controlled from the Always on domain using specific bits in AON_CFG1 register.
+> This is where we set for V_VDDIO_B using the keembay_sd_voltage_selection() to set either 1.8v or 3.3v depending on the bit value.
+> IMHO, we do not pinctrl to do this.
+>
+> 2) V_VDDIO_B_MAIN:
+> The output V_VDDIO_B_MAIN (OUT1) will be either V_3P3_MAIN (IN1) or V_1P8_MAIN (IN2),
+> depending on the state of GPIO expander Pin value. There is a POWER MUX involving here.
+> IMHO, we do not need any gpio regulator/regulator api hook up for this.
+> Most important thing, there is no regulator ic at all.
+> We still need to manually control and toggle the pin value.
+>
+> The final IO voltage is set by V_VDDIO_B (= V_VDDIO_B_MAIN after passing through voltage sense resistor).
+>
+> Hope this will clarify.
 
-"PMU events" testcase was still passing as it does not cover this 
-scenario, so I'll look to expand the test to catch such problems.
+I think I get it, thanks.
 
-Thanks,
-John
+Again, I haven't seen any reasons for why this can't be modelled as a
+pinctrl and a gpio-regulator. So, please convert it to that.
 
+Kind regards
+Uffe
