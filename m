@@ -2,88 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B00F28D454
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E0328D459
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732465AbgJMTVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:21:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726279AbgJMTVJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:21:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602616868;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8nvgtXTquS8dzOFxzvVIFZBcvvmF0cQfNkdQi9WaUQQ=;
-        b=DhBQpt094R8uljMeI2RsWQ98mkvWm8qI55NTd9kEq3yqvNAqYy7vbbxzj7Wf0V4lGquQTn
-        wy4X+biaB+65sxLlQQqCqbqyBgOE6PbUYRDps7IphfxQtavsWJMcNRKRqDQVSUmvEOrsxN
-        is7eaT/h8oJ3AevMuAhbrh5WmltH8SA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-zsrMlvLSP-e-lM1eucPdmg-1; Tue, 13 Oct 2020 15:21:04 -0400
-X-MC-Unique: zsrMlvLSP-e-lM1eucPdmg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732482AbgJMTWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:22:15 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:51332 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725919AbgJMTWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 15:22:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602616933; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=BLvUKsHh2gcPJXFOm+KsCsgg7j5b0BHxJ3Yy/jJ5lq4=; b=Cnb0HubZtqsaAK9XlbgDR6/FAOzk1YfeJJSJJXDULRDChU3Bgi5XlJLlFFHohIaJQuKLyNiG
+ Jp4x/WdubJt/qFmtahZvrFWZf6+4u4n8AMmH0h0Z2znAjNvUxdfO2dmEx9itY+vQ5WXOCRfz
+ l35trP0TeBPe4OP97Aq+c9Z/qtg=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f85fe5a4f8cc67c31708b14 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 19:22:02
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C5105C433C9; Tue, 13 Oct 2020 19:22:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.9] (unknown [117.210.180.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12F01802B7C;
-        Tue, 13 Oct 2020 19:21:03 +0000 (UTC)
-Received: from w520.home (ovpn-113-35.phx2.redhat.com [10.3.113.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B486127C21;
-        Tue, 13 Oct 2020 19:21:02 +0000 (UTC)
-Date:   Tue, 13 Oct 2020 13:21:02 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Diana Craciun <diana.craciun@oss.nxp.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        laurentiu.tudor@nxp.com
-Subject: Re: [PATCH v2] vfio/fsl-mc: Fixed vfio-fsl-mc driver compilation on
- 32 bit
-Message-ID: <20201013132102.57e431ba@w520.home>
-In-Reply-To: <20201013150651.12808-1-diana.craciun@oss.nxp.com>
-References: <20201013150651.12808-1-diana.craciun@oss.nxp.com>
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACF5CC433F1;
+        Tue, 13 Oct 2020 19:21:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ACF5CC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [2/2] drm/msm: Add support for GPU cooling
+To:     mka@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@freedesktop.org
+References: <1602176947-17385-2-git-send-email-akhilpo@codeaurora.org>
+ <20201009183640.GB1292413@google.com>
+ <cab2105e-7a8c-988f-dcc1-056692a94e8b@codeaurora.org>
+ <20201012174035.GA44627@google.com>
+ <80ded484-a058-70fc-be9d-045be2933563@codeaurora.org>
+ <20201013174038.GA424420@google.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <ae3ca3c7-fb80-e9fc-a76b-2add8969a178@codeaurora.org>
+Date:   Wed, 14 Oct 2020 00:51:55 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201013174038.GA424420@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 18:06:51 +0300
-Diana Craciun <diana.craciun@oss.nxp.com> wrote:
-
-> The FSL_MC_BUS on which the VFIO-FSL-MC driver is dependent on
-> can be compiled on other architectures as well (not only ARM64)
-> including 32 bit architectures.
-> Include linux/io-64-nonatomic-hi-lo.h to make writeq/readq used
-> in the driver available on 32bit platforms.
+On 10/13/2020 11:10 PM, mka@chromium.org wrote:
+> On Tue, Oct 13, 2020 at 07:23:34PM +0530, Akhil P Oommen wrote:
+>> On 10/12/2020 11:10 PM, mka@chromium.org wrote:
+>>> On Mon, Oct 12, 2020 at 07:03:51PM +0530, Akhil P Oommen wrote:
+>>>> On 10/10/2020 12:06 AM, mka@chromium.org wrote:
+>>>>> Hi Akhil,
+>>>>>
+>>>>> On Thu, Oct 08, 2020 at 10:39:07PM +0530, Akhil P Oommen wrote:
+>>>>>> Register GPU as a devfreq cooling device so that it can be passively
+>>>>>> cooled by the thermal framework.
+>>>>>>
+>>>>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>>>>>> ---
+>>>>>>     drivers/gpu/drm/msm/msm_gpu.c | 13 ++++++++++++-
+>>>>>>     drivers/gpu/drm/msm/msm_gpu.h |  2 ++
+>>>>>>     2 files changed, 14 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+>>>>>> index 55d1648..93ffd66 100644
+>>>>>> --- a/drivers/gpu/drm/msm/msm_gpu.c
+>>>>>> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+>>>>>> @@ -14,6 +14,7 @@
+>>>>>>     #include <generated/utsrelease.h>
+>>>>>>     #include <linux/string_helpers.h>
+>>>>>>     #include <linux/devfreq.h>
+>>>>>> +#include <linux/devfreq_cooling.h>
+>>>>>>     #include <linux/devcoredump.h>
+>>>>>>     #include <linux/sched/task.h>
+>>>>>> @@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
+>>>>>>     	if (IS_ERR(gpu->devfreq.devfreq)) {
+>>>>>>     		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
+>>>>>>     		gpu->devfreq.devfreq = NULL;
+>>>>>> +		return;
+>>>>>>     	}
+>>>>>>     	devfreq_suspend_device(gpu->devfreq.devfreq);
+>>>>>> +
+>>>>>> +	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
+>>>>>> +			gpu->devfreq.devfreq);
+>>>>>> +	if (IS_ERR(gpu->cooling)) {
+>>>>>> +		DRM_DEV_ERROR(&gpu->pdev->dev,
+>>>>>> +				"Couldn't register GPU cooling device\n");
+>>>>>> +		gpu->cooling = NULL;
+>>>>>> +	}
+>>>>>>     }
+>>>>>>     static int enable_pwrrail(struct msm_gpu *gpu)
+>>>>>> @@ -926,7 +936,6 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>>>     	msm_devfreq_init(gpu);
+>>>>>> -
+>> Will remove this unintended change.
+>>>>>>     	gpu->aspace = gpu->funcs->create_address_space(gpu, pdev);
+>>>>>>     	if (gpu->aspace == NULL)
+>>>>>> @@ -1005,4 +1014,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
+>>>>>>     		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
+>>>>>>     		msm_gem_address_space_put(gpu->aspace);
+>>>>>>     	}
+>>>>>> +
+>>>>>> +	devfreq_cooling_unregister(gpu->cooling);
+>>>>>
+>>>>> Resources should be released in reverse order, otherwise the cooling device
+>>>>> could use resources that have already been freed.
+>>>>> Why do you think this is not the correct order? If you are thinking
+>>>> about devfreq struct, it is managed device resource.
+>>>
+>>> I did not check specifically if changing the frequency really uses any of the
+>>> resources that are released previously, In any case it's not a good idea to
+>>> allow other parts of the kernel to use a half initialized/torn down device.
+>>> Even if it isn't a problem today someone could change the driver to use any
+>>> of these resources (or add a new one) in a frequency change, without even
+>>> thinking about the cooling device, just (rightfully) asuming that things are
+>>> set up and torn down in a sane order.
+>> 'sane order' relative to what specifically here? Should we worry about freq
+>> change at this point because we have already disabled gpu runtime pm and
+>> devfreq?
 > 
-> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-> ---
-> v1 --> v2
->  - Added prefix to patch description
+> GPU runtime PM and the devfreq being disabled is not evident from the context
+> of the function. You are probably right that it's not a problem in practice,
+> but why give reason for doubts in the first place if this could be avoided
+> by following a common practice?
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 > 
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> index d009f873578c..80fc7f4ed343 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> @@ -13,6 +13,7 @@
->  #include <linux/vfio.h>
->  #include <linux/fsl/mc.h>
->  #include <linux/delay.h>
-> +#include <linux/io-64-nonatomic-hi-lo.h>
->  
->  #include "vfio_fsl_mc_private.h"
->  
+Other option I see is to create a managed device resource (devm) version 
+of the devfreq_cooling_register API and use that. Is that what you are 
+trying to suggest?
 
-Thanks, applied and pushed to next.  Hopefully it's either this or the
-merge ordering biting us with linux-next.  Thanks,
-
-Alex
-
+-Akhil.
