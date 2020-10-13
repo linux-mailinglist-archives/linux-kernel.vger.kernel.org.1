@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FA728CDA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0913A28CDAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgJMMBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58030 "EHLO mail.kernel.org"
+        id S1730092AbgJMMBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:01:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727440AbgJMLym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:54:42 -0400
+        id S1727401AbgJMLyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:54:41 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7ED7F2227F;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4692722265;
         Tue, 13 Oct 2020 11:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602590080;
-        bh=ANwSfHlYycUaZxzUwSyDQzW5wFbqluFd7ZfalvckhQQ=;
+        bh=0pyzte4nOruiOG+lT9yn7ghxCXfyNWzJBTAY2OTjNYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dAvaiRBoscStIgvpVMBHjV95O1w2/By3kPHHQXi/YIEYOJiwsh7mKexOSt7yPCiGJ
-         FaHKvSAje0cvnzowi7EODboldDn91A7aaap8zFCG1qODh3Qe2atbD6pXE7VSvEv2Dv
-         aAZL0yEBpwdGq0rXdsWD5Z4Q7EWFd9rrgIXQ10rE=
+        b=mtdGYCM6lYDW4R01e5Y/uCVkYXUPSsN9UAMNIhqoAZOLC09XRPUs3kdhIXE8+4dKx
+         4fTvynonB6VYLvw4hRew20LErue0nj12awrFfHflVIQ+naxlNO4mFzDxOrCp99Lvax
+         hsbZRI9s0Ph7UDFGiyWzkRDUkl6VbebE1UxrronY=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSIt4-006CUG-AA; Tue, 13 Oct 2020 13:54:38 +0200
+        id 1kSIt4-006CUJ-Ay; Tue, 13 Oct 2020 13:54:38 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 24/80] docs: trace-uses.rst: remove bogus c-domain tags
-Date:   Tue, 13 Oct 2020 13:53:39 +0200
-Message-Id: <e1d48df962ef794f274b921c0c912176a01d533d.1602589096.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v6 25/80] docs: it_IT: fix namespace collisions at locking.rst
+Date:   Tue, 13 Oct 2020 13:53:40 +0200
+Message-Id: <0c2498def8932b0d75df2bdde7811d62b499ef10.1602589096.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602589096.git.mchehab+huawei@kernel.org>
 References: <cover.1602589096.git.mchehab+huawei@kernel.org>
@@ -49,48 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some c-domain tags that are wrong. While this won't
-cause problems with Sphinx < 3.0, this cause troubles with
-newer versions, as the C parser won't recognize the contents
-of the tag, and will drop it from the output.
+The C domain functions there collide with the English ones,
+due to namespace collision, generating lots of warnings with
+Sphinx 3.x:
 
-Let's just place them at literal blocks.
+	./include/linux/mutex.h:121: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
+	Declaration is 'mutex_init'.
+	./include/linux/mutex.h:152: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
+	Declaration is 'mutex_is_locked'.
+	./include/linux/mutex.h:226: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
+	Declaration is 'mutex_trylock_recursive'.
+	./kernel/locking/mutex.c:281: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
+	Declaration is 'mutex_lock'.
+	...
 
-Reviewed-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Add a namespace tag there, in order to prevent that.
+
+Acked-by: Federico Vaga <federico.vaga@vaga.pv.it>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/trace/ftrace-uses.rst | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ Documentation/translations/it_IT/kernel-hacking/locking.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/trace/ftrace-uses.rst b/Documentation/trace/ftrace-uses.rst
-index 2a05e770618a..a4955f7e3d19 100644
---- a/Documentation/trace/ftrace-uses.rst
-+++ b/Documentation/trace/ftrace-uses.rst
-@@ -55,17 +55,17 @@ an ftrace_ops with ftrace:
+diff --git a/Documentation/translations/it_IT/kernel-hacking/locking.rst b/Documentation/translations/it_IT/kernel-hacking/locking.rst
+index 4615df5723fb..bf1acd6204ef 100644
+--- a/Documentation/translations/it_IT/kernel-hacking/locking.rst
++++ b/Documentation/translations/it_IT/kernel-hacking/locking.rst
+@@ -1,5 +1,7 @@
+ .. include:: ../disclaimer-ita.rst
  
- Both .flags and .private are optional. Only .func is required.
++.. c:namespace:: it_IT
++
+ :Original: :ref:`Documentation/kernel-hacking/locking.rst <kernel_hacking_lock>`
+ :Translator: Federico Vaga <federico.vaga@vaga.pv.it>
  
--To enable tracing call:
-+To enable tracing call::
- 
--.. c:function::  register_ftrace_function(&ops);
-+    register_ftrace_function(&ops);
- 
--To disable tracing call:
-+To disable tracing call::
- 
--.. c:function::  unregister_ftrace_function(&ops);
-+    unregister_ftrace_function(&ops);
- 
--The above is defined by including the header:
-+The above is defined by including the header::
- 
--.. c:function:: #include <linux/ftrace.h>
-+    #include <linux/ftrace.h>
- 
- The registered callback will start being called some time after the
- register_ftrace_function() is called and before it returns. The exact time
 -- 
 2.26.2
 
