@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E8728C961
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C74C28C965
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390227AbgJMHa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390018AbgJMHa6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:30:58 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AFDC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:30:58 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n6so22400470wrm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:30:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d1itffo3X+hs/Kx12mE/CckAQ68mnKs9JtFcGt6GmGA=;
-        b=fKo8s7aGRbyQ/M1hKfql+Q8iDgL6L07G252DWiGsDX27Px293F5Ek90661OxTtJInI
-         Et8G+vGvSGKFDLSrQbZFBwno+kQhC6bvQztaaSvdMznWEWq0xuYtlahIUT4j/Qdg+NQc
-         mydgbhDVlNkcvW8DcIvoweMXXP+7NboZ8XphcCmCZLT1wyqmmxL3mu86JcTPcqSLSlLK
-         az2rhkDgmtJn4nWqPCOY8ZAJEy/p9h2SZc8/Mb8pL3Hvn8iPA3G37gnWm9kB69KV3cK5
-         hkC45e9LrAqR3B+Y9nvBUs8PvoXwiaxA1kGn68tvQxpqIzZ1+31izraYBnZ1d+dt4NPj
-         u42g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=d1itffo3X+hs/Kx12mE/CckAQ68mnKs9JtFcGt6GmGA=;
-        b=HjxfG5EF52Tzjnbh83zV/kRsv9Fib1REGcZpOcoxGIpuYNh94lqDVvvYLutIj9sIeI
-         uHM6yqEuhDBgujDiGo9O7j5ur0VIxcJQQhXi5JFl0cFYRDB1OmJXtoo/MFuYjTgqUzQf
-         jFkfQTlvg5U+D7nrFrWeVsklTPJ2DWaNI+k6B9vvaXo6uGavefLoTIKN6JopvlPY1zih
-         fHcv4+bbnYamkqxRdBUzNwcryBpeyuq42M84xDHFLy0/1AuUkqoXYGbALhNGFXFuzsaL
-         ULZ8N62LPTX68RgHTASpzV8QTH2PMOyvlO5K4wUCNeQca2pvzlTn2KcCweqE2qySL6yo
-         1Ptw==
-X-Gm-Message-State: AOAM531ns49Q/W+jfCzX5J5K8giW6i74wltp33xivfamtlBLFIlDOc0z
-        9srcQKwuVyxvLQF1CS5SzWeRyw==
-X-Google-Smtp-Source: ABdhPJwToXjrL09HlvAznisOXzNoxKEpn+drBc0B0fY4v9mtvl2Qjr6iZLO2MIRsQNf6sU6ThGFUQw==
-X-Received: by 2002:adf:e4c4:: with SMTP id v4mr8989706wrm.79.1602574257128;
-        Tue, 13 Oct 2020 00:30:57 -0700 (PDT)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id d2sm18051159wrq.34.2020.10.13.00.30.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 00:30:56 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH next] iommu: intel: don't dereference iommu_device if IOMMU_API is not built
-Date:   Tue, 13 Oct 2020 09:30:55 +0200
-Message-Id: <20201013073055.11262-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.28.0
+        id S2390349AbgJMHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:31:13 -0400
+Received: from ozlabs.org ([203.11.71.1]:38221 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390018AbgJMHbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 03:31:13 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9Rzw1m0qz9sVH;
+        Tue, 13 Oct 2020 18:31:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602574270;
+        bh=V/UtxiMXVJw0j5PGw9Bq2WshrzH3dzmQXoAanhACYH4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r5eQRHa41qZJNZpYlkT9DluxxtXHn78TAkOlG2qSVyYG8S2/IBq84BsJtfDfs8UqA
+         XnCcvS2ou9DnpN5v97kWUEKUQjPeDvvn8GRAh2afBvVVP/M97lrmTAK/+esigT2eH+
+         jbPIhyTlY8mKbZUc0WKOMJ7Njncncp6jqh7zKjKX0W5x+uQ54CsvKzrgoXYL5hpKuI
+         kVkuDLCrjVHm7mT2uLbdMxh5UMytyNTqxAEOPH8SXLWha30dxeq4Hq82cZkxyJUPnf
+         ZzObjuLyt3BaGDu+UUKW8ziB7kgKT746W1AnJ9ysquiDkaKtCtgjyiwKjjPRAxr3dS
+         OMy3A7DnMN0Yg==
+Date:   Tue, 13 Oct 2020 18:31:07 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joerg Roedel <joro@8bytes.org>, Dave Airlie <airlied@linux.ie>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Tom Murphy <murphyt7@tcd.ie>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the iommu tree
+Message-ID: <20201013183107.65c15fd5@canb.auug.org.au>
+In-Reply-To: <20200921140901.16adf8c2@canb.auug.org.au>
+References: <20200921140901.16adf8c2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/gObwaAEGm=S6y1zPfwPtW1.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+--Sig_/gObwaAEGm=S6y1zPfwPtW1.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
-with no supported address widths") dmar.c needs struct iommu_device to
-be selected. We can drop this dependency by not dereferencing struct
-iommu_device if IOMMU_API is not selected and by reusing the information
-stored in iommu->drhd->ignored instead.
+Hi all,
 
-This fixes the following build error when IOMMU_API is not selected:
+On Mon, 21 Sep 2020 14:09:01 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the iommu tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+>=20
+> drivers/gpu/drm/msm/msm_iommu.c: In function 'msm_iommu_pagetable_unmap':
+> drivers/gpu/drm/msm/msm_iommu.c:46:2: error: implicit declaration of func=
+tion 'iommu_flush_tlb_all'; did you mean 'iommu_flush_iotlb_all'? [-Werror=
+=3Dimplicit-function-declaration]
+>    46 |  iommu_flush_tlb_all(to_msm_iommu(pagetable->parent)->domain);
+>       |  ^~~~~~~~~~~~~~~~~~~
+>       |  iommu_flush_iotlb_all
+>=20
+> Caused by commit
+>=20
+>   aae4c8e27bd7 ("iommu: Rename iommu_tlb_* functions to iommu_iotlb_*")
+>=20
+> interacting with commit
+>=20
+>   b145c6e65eb0 ("drm/msm: Add support to create a local pagetable")
+>=20
+> from the drm-msm tree.
+>=20
+> I have applied the following merge fix patch.  Someone will need to tell
+> Linus about this fix up when the trees get merged.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 21 Sep 2020 14:04:14 +1000
+> Subject: [PATCH] merge fix upt for iommu_flush_iotlb_all() rename
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/gpu/drm/msm/msm_iommu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_io=
+mmu.c
+> index 3a83ffdb3b90..22ac7c692a81 100644
+> --- a/drivers/gpu/drm/msm/msm_iommu.c
+> +++ b/drivers/gpu/drm/msm/msm_iommu.c
+> @@ -43,7 +43,7 @@ static int msm_iommu_pagetable_unmap(struct msm_mmu *mm=
+u, u64 iova,
+>  		size -=3D 4096;
+>  	}
+> =20
+> -	iommu_flush_tlb_all(to_msm_iommu(pagetable->parent)->domain);
+> +	iommu_flush_iotlb_all(to_msm_iommu(pagetable->parent)->domain);
+> =20
+>  	return (unmapped =3D=3D size) ? 0 : -EINVAL;
+>  }
+> @@ -199,7 +199,7 @@ struct msm_mmu *msm_iommu_pagetable_create(struct msm=
+_mmu *parent)
+> =20
+>  	/*
+>  	 * TODO we would like each set of page tables to have a unique ASID
+> -	 * to optimize TLB invalidation.  But iommu_flush_tlb_all() will
+> +	 * to optimize TLB invalidation.  But iommu_flush_iotlb_all() will
+>  	 * end up flushing the ASID used for TTBR1 pagetables, which is not
+>  	 * what we want.  So for now just use the same ASID as TTBR1.
+>  	 */
+> --=20
+> 2.28.0
 
-drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
-drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
- 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
-                                                ^
+This merge fix up is now needed when the iommu tree and the drm tree are me=
+rged.
+--=20
+Cheers,
+Stephen Rothwell
 
-Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/iommu/intel/dmar.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--Sig_/gObwaAEGm=S6y1zPfwPtW1.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index 2d70d56d8e0d..404b40af31cb 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -1136,7 +1136,7 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
- 
- static void free_iommu(struct intel_iommu *iommu)
- {
--	if (intel_iommu_enabled && iommu->iommu.ops) {
-+	if (intel_iommu_enabled && !iommu->drhd->ignored) {
- 		iommu_device_unregister(&iommu->iommu);
- 		iommu_device_sysfs_remove(&iommu->iommu);
- 	}
--- 
-2.28.0
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FV7sACgkQAVBC80lX
+0GyRqgf/Rh1Gn5zJlXloxhJDs1NZzBo3XiaNUkZRZ2M4MEuSGUB8ReqD9UBmkQkN
+QiA5dfRteGKS71hLS8IzUk3sW7cRm5z3lMKeLpju5vJpcdd+MlZ2shYFNpB34wOj
+7N+80Z5khRT+Yficya98rRcHKGQ+OL7jxIKxKjjnlbB2XqS1PZ6eSN2PIntqYnbD
+8vKjbLAczSbMNDJNpGPk/QC+qVKKvmpNA6QWDinwNa0dFI3Y1KKZmkg5OSvhviww
+5s9IG1hQuCzksnK56umNwXOQSr07pmpk+6+TucgsEhCXKDPYTWeehLkxYlrBXP58
+uD/sWTUhI4euQO45Tt9XwoL5ZcRhZQ==
+=pFEv
+-----END PGP SIGNATURE-----
+
+--Sig_/gObwaAEGm=S6y1zPfwPtW1.--
