@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF4D28D5B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9526928D5B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgJMUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 16:46:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727397AbgJMUqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 16:46:14 -0400
-Received: from coco.lan (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A34220878;
-        Tue, 13 Oct 2020 20:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602621973;
-        bh=3ApEKt0+9kZ4IhsU+7nj2jOoMK/qjUd5zeELYHUzVq8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ku0ra5WvDYWyqb8GnTCE7GaYItgoQaFxgtVOCIdaVX3aNVUwJTlsD4UopO6VkrWff
-         TeiTqe+HFvXQsleMtPC1wvwKTPtEfdfBMOja08rKjg5oET76aYazFOqtKztZaV95JP
-         21DC9p+X9K7XURU3/XcManTFm50SveGkDTl5RzIE=
-Date:   Tue, 13 Oct 2020 22:46:08 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v6 70/80] rcu/tree: docs: document bkvcache new members
- at struct kfree_rcu_cpu
-Message-ID: <20201013224608.30dd1bc9@coco.lan>
-In-Reply-To: <20201013163404.GP3249@paulmck-ThinkPad-P72>
-References: <cover.1602589096.git.mchehab+huawei@kernel.org>
-        <6dd0804d6fd567f11e4c6efb767e91acca659d1f.1602589096.git.mchehab+huawei@kernel.org>
-        <20201013163404.GP3249@paulmck-ThinkPad-P72>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1727676AbgJMUsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:48:18 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33186 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgJMUsR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 16:48:17 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 466ABB87;
+        Tue, 13 Oct 2020 22:48:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1602622095;
+        bh=JbyDpaAPAuphVyXU/3ZjAcGlKDaeO2wByBbmG29hO4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bolecuV9yxM7cIwxOiDhjVpZLPczbUNeoYeJobM/q6Wd/KBlwe4QPFiD7TNP51EYQ
+         3ZDapUFZ1a5FvuOePr8oNe7y2je7yX1acWAE297yLye4jKe0JSeLgmY0iNW2ZfUbNG
+         Y8CMwTwKlq/oupCVjDQRgYDGIX9mpyhNmf6c65fk=
+Date:   Tue, 13 Oct 2020 23:47:29 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v3 4/5] media: dt-bindings: media: renesas,drif: Add
+ r8a77965 support
+Message-ID: <20201013204729.GM11939@pendragon.ideasonboard.com>
+References: <20201013150150.14801-1-fabrizio.castro.jz@renesas.com>
+ <20201013150150.14801-5-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201013150150.14801-5-fabrizio.castro.jz@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 13 Oct 2020 09:34:04 -0700
-"Paul E. McKenney" <paulmck@kernel.org> escreveu:
+Hi Fabrizio,
 
-> On Tue, Oct 13, 2020 at 01:54:25PM +0200, Mauro Carvalho Chehab wrote:
-> > Changeset 53c72b590b3a ("rcu/tree: cache specified number of objects")
-> > added new members for struct kfree_rcu_cpu, but didn't add the
-> > corresponding at the kernel-doc markup, as repoted when doing
-> > "make htmldocs":
-> > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'bkvcache' not described in 'kfree_rcu_cpu'
-> > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'nr_bkv_objs' not described in 'kfree_rcu_cpu'
-> > 
-> > So, move the description for bkvcache to kernel-doc, and add a
-> > description for nr_bkv_objs.
-> > 
-> > Fixes: 53c72b590b3a ("rcu/tree: cache specified number of objects")
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+Thank you for the patch.
+
+On Tue, Oct 13, 2020 at 04:01:49PM +0100, Fabrizio Castro wrote:
+> The r8a77965 (a.k.a. R-Car M3-N) device tree schema is
+> compatible with the already documented R-Car Gen3 devices.
 > 
-> Queued for review and testing, likely target v5.11.
+> Document r8a77965 support within renesas,drif.yaml.
+> 
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 
-Hi Paul,
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-I would prefer if we could get those on 5.10, if possible.
-We're aiming to have 5.10 free of docs warnings ;-)
+> ---
+> v2->v3:
+> * New patch
+> 
+>  Documentation/devicetree/bindings/media/renesas,drif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/renesas,drif.yaml b/Documentation/devicetree/bindings/media/renesas,drif.yaml
+> index ae50b1448320..89445ddd598e 100644
+> --- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
+> +++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
+> @@ -53,6 +53,7 @@ properties:
+>        - enum:
+>          - renesas,r8a7795-drif        # R-Car H3
+>          - renesas,r8a7796-drif        # R-Car M3-W
+> +        - renesas,r8a77965-drif       # R-Car M3-N
+>          - renesas,r8a77990-drif       # R-Car E3
+>        - const: renesas,rcar-gen3-drif # Generic R-Car Gen3 compatible device
+>  
 
-If you prefer, I can send those patches to Linus with your
-ack.
-
+-- 
 Regards,
-Mauro
 
-> 
-> 							Thanx, Paul
-> 
-> > ---
-> >  kernel/rcu/tree.c | 14 ++++++--------
-> >  1 file changed, 6 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index f78ee759af9c..03c54c3478b7 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3022,6 +3022,12 @@ struct kfree_rcu_cpu_work {
-> >   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
-> >   * @initialized: The @rcu_work fields have been initialized
-> >   * @count: Number of objects for which GP not started
-> > + * @bkvcache:
-> > + *	A simple cache list that contains objects for reuse purpose.
-> > + *	In order to save some per-cpu space the list is singular.
-> > + *	Even though it is lockless an access has to be protected by the
-> > + *	per-cpu lock.
-> > + * @nr_bkv_objs: number of allocated objects at @bkvcache.
-> >   *
-> >   * This is a per-CPU structure.  The reason that it is not included in
-> >   * the rcu_data structure is to permit this code to be extracted from
-> > @@ -3037,14 +3043,6 @@ struct kfree_rcu_cpu {
-> >  	bool monitor_todo;
-> >  	bool initialized;
-> >  	int count;
-> > -
-> > -	/*
-> > -	 * A simple cache list that contains objects for
-> > -	 * reuse purpose. In order to save some per-cpu
-> > -	 * space the list is singular. Even though it is
-> > -	 * lockless an access has to be protected by the
-> > -	 * per-cpu lock.
-> > -	 */
-> >  	struct llist_head bkvcache;
-> >  	int nr_bkv_objs;
-> >  };
-> > -- 
-> > 2.26.2
-> >   
-
-
-
-Thanks,
-Mauro
+Laurent Pinchart
