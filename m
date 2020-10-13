@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4B928D17D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8946628D181
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731285AbgJMPu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:50:29 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:41584 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728336AbgJMPu2 (ORCPT
+        id S1731300AbgJMPvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:51:12 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42535 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727016AbgJMPvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:50:28 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id BDADD8030865;
-        Tue, 13 Oct 2020 15:50:22 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id WSgFyl4htUsp; Tue, 13 Oct 2020 18:50:21 +0300 (MSK)
-Date:   Tue, 13 Oct 2020 18:50:20 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Rob Herring <robh@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>
-Subject: Re: [PATCH 16/18] dt-bindings: usb: meson-g12a-usb: Validate
- DWC2/DWC3 sub-nodes
-Message-ID: <20201013155020.l7uqti25kk3mhdmy@mobilestation>
-References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
- <20201010224121.12672-17-Sergey.Semin@baikalelectronics.ru>
- <20201013124203.GE3269269@bogus>
+        Tue, 13 Oct 2020 11:51:11 -0400
+Received: by mail-ot1-f66.google.com with SMTP id m13so422814otl.9;
+        Tue, 13 Oct 2020 08:51:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2/2MnqF2Gy16RxbaNIawyqqNZ0AjkNS0GYEqVgqjHYU=;
+        b=H6zgasFqBUN1pRPAaxvhhq1RWbKTRjg8ciBLC/O/tNBVy3v9p5PMORuCF0hYWMSuTb
+         Pl+OVk2lj7JyyVlNbhJ2li33JBvzkWf5tT0VAf7Z2cvSxzlfmLQlskd2Nz9LMwMbUT94
+         jslnaZUUIuOgtk7ND0SI39B/f4nP8ImygXcgjTNH/aQ2C9sfVTneNJAKXdAX2vU1yrhr
+         xxY5YPqLlL44XBkqdF0M/heHRddbyomduetOxs4g+z7s6sJeVi8wFOz0hrD8qlBoa6Me
+         uwxyWeLpC3Ele41TKvA9MswbnkOIeFejBs0g3hqCSsOqXT8v802J5cHykMVZHGYZ6oiO
+         l1TQ==
+X-Gm-Message-State: AOAM532I9x/3qiTNHo+nbrdx/wabmVFsHEfSrbflQ4MCzfG9nz59oLNW
+        mLFa18ki7pobK8xJX/MEWg==
+X-Google-Smtp-Source: ABdhPJzhkZpzL0I9XvrUKN7b6gSIA/TIkyR4RWCo85LmhUXK++724lhybp4DWdh6yU7+pdulCh3kbg==
+X-Received: by 2002:a9d:3bca:: with SMTP id k68mr207926otc.150.1602604270789;
+        Tue, 13 Oct 2020 08:51:10 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x13sm88293oot.24.2020.10.13.08.51.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 08:51:10 -0700 (PDT)
+Received: (nullmailer pid 3584956 invoked by uid 1000);
+        Tue, 13 Oct 2020 15:51:09 -0000
+Date:   Tue, 13 Oct 2020 10:51:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bogdan Togorean <bogdan.togorean@analog.com>
+Cc:     Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        devicetree@vger.kernel.org,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-media@vger.kernel.org, Shawn Tu <shawnx.tu@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] media: dt-bindings: media: i2c: Add bindings for
+ ADDI9036
+Message-ID: <20201013155109.GA3584900@bogus>
+References: <20201009113014.71531-1-bogdan.togorean@analog.com>
+ <20201009113014.71531-2-bogdan.togorean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201013124203.GE3269269@bogus>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20201009113014.71531-2-bogdan.togorean@analog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 07:42:03AM -0500, Rob Herring wrote:
-> On Sun, Oct 11, 2020 at 01:41:19AM +0300, Serge Semin wrote:
-> > Amlogic G12A USB DT sub-nodes are supposed to be compatible with the
-> > generic DWC USB2 and USB3 devices. Since now we've got DT schemas for
-> > both of the later IP cores let's make sure that the Amlogic G12A USB
-> > DT nodes are fully evaluated including the DWC sub-nodes.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > ---
-> >  .../bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml | 15 ++++++++++++++-
-> >  1 file changed, 14 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> > index 88184d7e26cc..3e8ac0ff90de 100644
-> > --- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> > +++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> > @@ -78,7 +78,20 @@ properties:
-> >  
-> >  patternProperties:
-> >    "^usb@[0-9a-f]+$":
-> > -    type: object
-> > +    allOf:
-> > +      - if:
-> > +          properties:
-> > +            compatible:
-> > +              contains:
-> > +                const: snps,dwc2
-> > +        then:
-> > +          $ref: dwc2.yaml#
-> > +      - if:
-> > +          properties:
-> > +            compatible:
-> > +              const: snps,dwc3
-> > +        then:
-> > +          $ref: snps,dwc3.yaml#
+On Fri, 09 Oct 2020 14:29:55 +0300, Bogdan Togorean wrote:
+> Add YAML device tree bindings for Analog Devices Inc. ADDI9036 CCD TOF
+> front-end.
+> 
+> Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
+> ---
+> v3: drop I2C reg description
+>     specify maxItems on reset-gpios property
+> ---
+>  .../bindings/media/i2c/adi,addi9036.yaml      | 76 +++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
 > 
 
-> It should be enough to do just:
-> 
-> oneOf:
->   - $ref: dwc2.yaml#
->   - $ref: snps,dwc3.yaml#
-
-Ah, good point! Thanks.
-
--Sergey
-
+Reviewed-by: Rob Herring <robh@kernel.org>
