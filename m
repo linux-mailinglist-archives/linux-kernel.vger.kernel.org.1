@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBEA28C84C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE2728C850
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732446AbgJMFhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
+        id S1732478AbgJMFkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726963AbgJMFhj (ORCPT
+        with ESMTP id S1732465AbgJMFkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:37:39 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87919C0613D0;
-        Mon, 12 Oct 2020 22:37:37 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id e22so26496831ejr.4;
-        Mon, 12 Oct 2020 22:37:37 -0700 (PDT)
+        Tue, 13 Oct 2020 01:40:02 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303C1C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:40:01 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id q202so11535578iod.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:40:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=gYLREbCBt05MLq9RuSN82ybwnKTixZybY8CU73x+FQs=;
-        b=Qj5hb2nQfetMWun2C/7FkWH/es32ZatL0Cnqp2RbrfMMx2+/EUqr7C0gkirXAeggO3
-         hoDYYnE+Sm2z6HT+A9GSfYXnxlvwrdUCsDLYHuUlc/l9kxKmQ7x30fINVAgDDG3S+553
-         CWPp4Wnv7RY9HcOUwxZeY78/pXcHTV48C8SuTMLM4ZYvw27y0HHf6ubgET/Qq7epT5Yj
-         HOe18eTQG/UUu1gTJUJR0wKnpdpivHucUjDUjRnF2G427S28lH17hMoDnFOsIKsQO5GW
-         +SR35piZ/dGrNDeSAhFglF9tzDGGJlmj0G1C3M6TG1q/dMtWtyBjMhX5zdTv9EBIooLf
-         Jl0A==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=lLlLxwkindstiYsgvq+V7GmdTNy38p3JDCqEl0KcOr8=;
+        b=rHsvzCf5Jp5VOs+we6Z62o5+FCur52EuKR+FpHxwiLs/i3l6cF9iasGGqOsHmlW8V7
+         m9+KPP/rapjvL0GxgzPyiJXTSpPIJDuNBSlcUWsgRugrTCw0z0rk0Ee5RG+2P7dup1O3
+         Lrh6mh1MhFW1r2eqQtuc+CwDPi0EJgpcVmu8jannOMO+lazwmZyDymmZynILRErJlpWS
+         L0XC1SHb6cEnln+ESu4PcLzxKS1JjDYbfim/ysoDL/02wbeFLJREjtOlD2UzjoDeY7Nz
+         NC7sChOI1c1s70zp0eWSs32pyvGX/nOxIswba0CacCIEMANDtOFy1d3W1m9aiHN7uph1
+         narw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=gYLREbCBt05MLq9RuSN82ybwnKTixZybY8CU73x+FQs=;
-        b=fIO0GC/tvsQ44jSmXG6HVrrYdJ4L8D37a4DDRt7i+12aJ9i3E+kT91kidPATA1a0R2
-         vCRflVlPdeg9rZiXwiZ2UD0I/tZtQtprDq3D3DFjXRbW4RiL1sG1DFh2LDR1ZRb8nR+/
-         Vqh1IUIQuiE7HfsHMCfzp0BNAcFUazOEW2C8Jg141R/XvWboD/ussMg5Zd/Ymz/T1HzV
-         KYnZzhWioWzVz1tUj6XyQtBzt2fT8GkIbLBWybc+KeJoyw0Fg84EIa8S6B8kCHnixoyq
-         K0zIVOxKPbcaMvRmQdZ62cBzfxW5eKYAOSYFMjFNhyL83Mr1U9zdHnJC0z3PCNYEnBc9
-         FqiQ==
-X-Gm-Message-State: AOAM532stO12GLxdTPbbtQXj4NvWmq26tQ4CQxoypFGReXCHgQ7ZOuTD
-        J3xyree1R7eT70yFexlq7CM=
-X-Google-Smtp-Source: ABdhPJw2++YSQXSV41iMkqWKkxe5lVcRBwcMikf48LjMGn6E+J5mnrnZBd3TBovbyjrhv3ZLRImhqQ==
-X-Received: by 2002:a17:907:33d2:: with SMTP id zk18mr32207994ejb.145.1602567456047;
-        Mon, 12 Oct 2020 22:37:36 -0700 (PDT)
-Received: from felia ([2001:16b8:2d05:8100:95ae:bd1a:3e4e:4242])
-        by smtp.gmail.com with ESMTPSA id k1sm11772846edl.0.2020.10.12.22.37.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 22:37:35 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Tue, 13 Oct 2020 07:37:34 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        linux-usb@vger.kernel.org
-Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
- find_tt() not returning error
-In-Reply-To: <20201013052317.GB330398@kroah.com>
-Message-ID: <alpine.DEB.2.21.2010130725370.14590@felia>
-References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu> <alpine.DEB.2.21.2010121659040.6487@felia> <20201012151816.GA1559916@kroah.com> <alpine.DEB.2.21.2010122022250.17866@felia>
- <20201013052317.GB330398@kroah.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=lLlLxwkindstiYsgvq+V7GmdTNy38p3JDCqEl0KcOr8=;
+        b=L70b4LUbXDkQ3kph9X8yEx5EtgS4BHnxSA/pCqIaQ+abnISibXjFf4VUkBNvbtt5ZB
+         2fY4C6owQv+43UZCsb/6fkt6jleLG+/g0qtovjbBNAPYB5hCEdK8XrkITDjNjfSEgPFD
+         7uhlOIxYxotVIb6P8gSDCE3yBgda1x1UzNcYZnYhN9F2NnVgySSQZ1/NWZQAI8x1icGP
+         LyRqrcutGr5WjrLUrUNOs4e5WTXle6yOjdBegEQu3XRBb7V2FMJlgRTrzdqpIEkoyjRC
+         HtO4xYzXnrJ9UM0+fRJ5iWjSwSNAbZNiSohFO/ovW4Llv+3akpRfaasHKlLQpUXf+24c
+         wEtA==
+X-Gm-Message-State: AOAM533xZdMkqZgwHPUHEtJXLFGabPctasFDdK4+PgcuAFZhBj9mt9T8
+        B1klUNfdJ/BlRlOv+/I4xbKDxmcDs/GNWla6x0Pmk+QHEJm7Dy/l
+X-Google-Smtp-Source: ABdhPJzOV9138OHri1Ki3sW6fp7w1zEtAJ6O/1xOx5+oJewYel3HpO+fIdFwQ8rsHEoc5+2Te3VmgCsJXd4N9wt4acE=
+X-Received: by 2002:a6b:b208:: with SMTP id b8mr19303340iof.36.1602567599467;
+ Mon, 12 Oct 2020 22:39:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 13 Oct 2020 11:09:47 +0530
+Message-ID: <CA+G9fYtwycbC+Hf9aP5Br8wq7cKWVqjhcGusn2DbJaNauGC3Og@mail.gmail.com>
+Subject: WARNING: kernel/irq/chip.c:242 __irq_startup+0xa8/0xb0
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On stable rc  5.8.15 the following kernel warning was noticed once
+while boot and this is hard to reproduce.
+
+metadata:
+  git branch: linux-5.8.y
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+  git commit: f4ed6fb8f1680de812daf362f28342e6bf19fdcc
+  git describe: v5.8.14-125-gf4ed6fb8f168
+  make_kernelversion: 5.8.15-rc1
+  kernel-config:
+https://builds.tuxbuild.com/5nFtomB9FDlQVjafKdyR9A/kernel.config
+
+warning log:
+----------------
+[   43.512935] ------------[ cut here ]------------
+[   43.517563] WARNING: CPU: 0 PID: 424 at kernel/irq/chip.c:242
+__irq_startup+0xa8/0xb0
+[   43.517564] Modules linked in: caam error crct10dif_ce ina2xx lm90
+qoriq_thermal fuse
+[   43.533218] CPU: 0 PID: 424 Comm: (agetty) Not tainted 5.8.15-rc1 #1
+[   43.533219] Hardware name: Freescale Layerscape 2088A RDB Board (DT)
+[   43.533223] pstate: 60000085 (nZCv daIf -PAN -UAO BTYPE=--)
+[   43.533225] pc : __irq_startup+0xa8/0xb0
+[   43.533229] lr : irq_startup+0x64/0x140
+[   43.559218] sp : ffff800010b838c0
+[   43.559219] x29: ffff800010b838c0 x28: ffff0082cd3bab00
+[   43.559222] x27: ffffb8c772ed8ec0 x26: 0000000000020902
+[   43.573133] x25: ffffb8c771d39e68 x24: ffffb8c771d39b08
+[   43.573135] x23: 0000000000000000 x22: 0000000000000001
+[   43.573138] x21: 0000000000000001 x20: ffff0082edf42c40
+[   43.573140] x19: ffff0082ede29200 x18: 0000000000000001
+[   43.573142] x17: 0000000000000000 x16: 0000000000000000
+[   43.573145] x15: ffff0082edf430c0 x14: ffff800010bf5000
+[   43.573147] x13: ffff800010bed000 x12: ffff800010be9000
+[   43.573149] x11: 0000000000000040 x10: ffffb8c772cdb940
+[   43.573153] x9 : ffffb8c770b7fe0c x8 : ffff0082ee000270
+[   43.620866] x7 : 0000000000000000 x6 : ffffb8c772cbaa08
+[   43.620869] x5 : ffffb8c772cba000 x4 : 0000000000000504
+[   43.620871] x3 : ffff0082ede29200 x2 : 0000000003032004
+[   43.636780] x1 : 0000000003032004 x0 : ffff0082ede29258
+[   43.636783] Call trace:
+[   43.636786]  __irq_startup+0xa8/0xb0
+[   43.636789]  irq_startup+0x64/0x140
+[   43.651569]  __enable_irq+0x78/0x88
+[   43.651571]  enable_irq+0x54/0xa8
+[   43.651577]  serial8250_do_startup+0x670/0x718
+[   43.662791]  serial8250_startup+0x30/0x40
+[   43.666793]  uart_startup.part.0+0x12c/0x2e0
+[   43.671055]  uart_port_activate+0x68/0xa0
+[   43.675058]  tty_port_open+0x98/0x250
+[   43.678712]  uart_open+0x24/0x38
+[   43.681932]  tty_open+0x100/0x480
+[   43.685240]  chrdev_open+0xac/0x1a8
+[   43.688721]  do_dentry_open+0x130/0x3d0
+[   43.692548]  vfs_open+0x34/0x40
+[   43.695681]  path_openat+0x888/0xde8
+[   43.699247]  do_filp_open+0x80/0x108
+[   43.702814]  do_sys_openat2+0x1ec/0x2a8
+[   43.706642]  do_sys_open+0x60/0xa8
+[   43.710035]  __arm64_sys_openat+0x2c/0x38
+[   43.714037]  el0_svc_common.constprop.0+0x7c/0x198
+[   43.718820]  do_el0_svc+0x2c/0x98
+[   43.722128]  el0_sync_handler+0x9c/0x1b8
+[   43.726041]  el0_sync+0x158/0x180
+[   43.729347] ---[ end trace 434ed7c8787a1d1f ]---
+
+full log,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.8.y/build/v5.8.14-125-gf4ed6fb8f168/testrun/3297947/suite/linux-log-parser/test/check-kernel-warning-93863/log
 
 
-On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
-
-> On Mon, Oct 12, 2020 at 08:25:30PM +0200, Lukas Bulwahn wrote:
-> > 
-> > 
-> > On Mon, 12 Oct 2020, Greg Kroah-Hartman wrote:
-> > 
-> > > On Mon, Oct 12, 2020 at 05:10:21PM +0200, Lukas Bulwahn wrote:
-> > > > And for the static analysis finding, we need to find a way to ignore this 
-> > > > finding without simply ignoring all findings or new findings that just 
-> > > > look very similar to the original finding, but which are valid.
-> > > 
-> > > Then I suggest you fix the tool that "flagged" this, surely this is not
-> > > the only thing it detected with a test like this, right?
-> > > 
-> > > What tool reported this?
-> > >
-> > 
-> > Sudip and I are following on clang analyzer findings.
-> > 
-> > On linux-next, there is new build target 'make clang-analyzer' that 
-> > outputs a bunch of warnings, just as you would expect from such static 
-> > analysis tools.
-> 
-> Why not fix the things that it finds that are actually issues?  If there
-> are no actual issues found, then perhaps you should use a better tool?  :)
->
-
-Completely agree. That is why I was against adding comments here and 
-elsewhere just to have the "good feeling of doing something" after the 
-tool reported a warning and we spend some time understanding the code to 
-conclude that we now understand the code better than the tool.
-
-If you know a better tool, we will use it :) unfortunately, there is no 
-easy way of finding out that a tool just reports false positives and not a 
-single true positive among 1000 reports...
-
-
-Lukas
+-- 
+Linaro LKFT
+https://lkft.linaro.org
