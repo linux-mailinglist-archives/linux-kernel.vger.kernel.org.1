@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1479F28D536
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FA328D538
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732321AbgJMUK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 16:10:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727778AbgJMUK4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 16:10:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602619855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M4AsuAeW43yYH580MNgHZBroKVMxw341h9un2tF2+5Y=;
-        b=R8RRVpwNMzdUfI+S4BhvK/EiScr2X/NJLFP7XbfWhtf3MZzvsJ3HFXNmG0Kfa7pjr5iofh
-        uvd0YSz7h+Qpf0DxpalGqSNyGz/OxaMHaKaxZMXXBXd5B3woFP+8jvGIw9JUxoKggwpLUl
-        Rc/qANu03qSNpTppX4pBxq+K/DRxIto=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-7qAJ9brcNluHxBWpjaV3Tw-1; Tue, 13 Oct 2020 16:10:53 -0400
-X-MC-Unique: 7qAJ9brcNluHxBWpjaV3Tw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732477AbgJMUL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727436AbgJMUL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 16:11:59 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 663FA1015CAE;
-        Tue, 13 Oct 2020 20:10:52 +0000 (UTC)
-Received: from ovpn-118-16.rdu2.redhat.com (ovpn-118-16.rdu2.redhat.com [10.10.118.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 05FCB10013C4;
-        Tue, 13 Oct 2020 20:10:45 +0000 (UTC)
-Message-ID: <0e2424983d6772f24374c9f3b06295bed8327b96.camel@redhat.com>
-Subject: Re: Unbreakable loop in fuse_fill_write_pages()
-From:   Qian Cai <cai@redhat.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com
-Date:   Tue, 13 Oct 2020 16:10:45 -0400
-In-Reply-To: <20201013195719.GD142988@redhat.com>
-References: <7d350903c2aa8f318f8441eaffafe10b7796d17b.camel@redhat.com>
-         <20201013184026.GC142988@redhat.com> <20201013185808.GA164772@redhat.com>
-         <d14f6a08b4ada85289e70cbb34726fd084ccac05.camel@redhat.com>
-         <20201013195719.GD142988@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        by mail.kernel.org (Postfix) with ESMTPSA id B38C220BED;
+        Tue, 13 Oct 2020 20:11:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602619918;
+        bh=Xx6L1F9q0rYk23T9RdX/EZiahjuKdggxm/95WJY7k1w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=quf1aUTWtiJWP9gzQhM9tUT5ZNpsaiIWJzQ8aymChlKiuZNmYrql8y+1QSNL/njA+
+         3yvTgSu3IJdBQApEYTWORO765YMLT2bM4OPKBLU+UeAYXKGZMMFytpZkgm4LyF2sUu
+         IBBj8FR6Ltxkc1ObX9wEhwYRucjlRInSOicna5oo=
+Received: by pali.im (Postfix)
+        id 6A24F589; Tue, 13 Oct 2020 22:11:56 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 22:11:56 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 07/23] wfx: add bus_sdio.c
+Message-ID: <20201013201156.g27gynu5bhvaubul@pali>
+References: <20201012104648.985256-1-Jerome.Pouiller@silabs.com>
+ <20201012104648.985256-8-Jerome.Pouiller@silabs.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012104648.985256-8-Jerome.Pouiller@silabs.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-13 at 15:57 -0400, Vivek Goyal wrote:
-> Hmm..., So how do I reproduce it. Just run trinity as root and it will
-> reproduce after some time?
+Hello!
 
-Only need to run it as unprivileged user after mounting virtiofs on /tmp
-(trinity will need to create and use files there) as many as CPUs as possible.
-Also, make sure your guest's memory usage does not exceed the host's /dev/shm
-size. Otherwise, horrible things could happen.
+On Monday 12 October 2020 12:46:32 Jerome Pouiller wrote:
+> +#define SDIO_VENDOR_ID_SILABS        0x0000
+> +#define SDIO_DEVICE_ID_SILABS_WF200  0x1000
+> +static const struct sdio_device_id wfx_sdio_ids[] = {
+> +	{ SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF200) },
 
-$ trinity -C 48 --arch 64
+Please move ids into common include file include/linux/mmc/sdio_ids.h
+where are all SDIO ids. Now all drivers have ids defined in that file.
 
-It might get coredump or exit due to some other unrelated reasons, so just keep
-retrying. It is best to apply your recent patch for the virtiofs false positive
-warning first, so it won't taint the kernel which will stop the trinity. Today,
-I had been able to reproduce it twice within half-hour each.
+> +	// FIXME: ignore VID/PID and only rely on device tree
+> +	// { SDIO_DEVICE(SDIO_ANY_ID, SDIO_ANY_ID) },
 
+What is the reason for ignoring vendor and device ids?
 
-
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
+> +
+> +struct sdio_driver wfx_sdio_driver = {
+> +	.name = "wfx-sdio",
+> +	.id_table = wfx_sdio_ids,
+> +	.probe = wfx_sdio_probe,
+> +	.remove = wfx_sdio_remove,
+> +	.drv = {
+> +		.owner = THIS_MODULE,
+> +		.of_match_table = wfx_sdio_of_match,
+> +	}
+> +};
+> -- 
+> 2.28.0
+> 
