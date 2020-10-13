@@ -2,140 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4239F28CF29
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE1C28CF2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgJMNbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:31:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:59982 "EHLO foss.arm.com"
+        id S1728682AbgJMNcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:32:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:59998 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727448AbgJMNbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:31:20 -0400
+        id S1727448AbgJMNcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:32:50 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2213C1FB;
-        Tue, 13 Oct 2020 06:31:19 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68C123F719;
-        Tue, 13 Oct 2020 06:31:18 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com
-Subject: [PATCH] firmware: arm_scmi: fix notifications locking
-Date:   Tue, 13 Oct 2020 14:31:09 +0100
-Message-Id: <20201013133109.49821-1-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 203771FB;
+        Tue, 13 Oct 2020 06:32:50 -0700 (PDT)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55BB03F719;
+        Tue, 13 Oct 2020 06:32:49 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 14:32:46 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Patrick Bellasi <patrick.bellasi@matbug.net>
+Cc:     Yun Hsiang <hsiang023167@gmail.com>, dietmar.eggemann@arm.com,
+        peterz@infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+Message-ID: <20201013133246.cjomufo5q7qsocrn@e107158-lin>
+References: <20201012163140.371688-1-hsiang023167@gmail.com>
+ <87blh6iljc.derkling@matbug.net>
+ <20201013102951.orcr6m4q2cb7y6zx@e107158-lin>
+ <875z7eic14.derkling@matbug.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <875z7eic14.derkling@matbug.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a protocol registers its events the notification core takes care to
-re-scan the hashtable of pending event handlers and activate all the
-possibly existent handlers that refer to any of the events just registered
-by the new protocol; when a pending handler becomes active the core takes
-also care to ask the SCMI platform to enable the corresponding events'
-notifications in the SCMI firmware.
+On 10/13/20 13:46, Patrick Bellasi wrote:
+> > So IMO you just need a single SCHED_FLAG_UTIL_CLAMP_RESET that if set in the
+> > attr, you just execute that loop in __setscheduler_uclamp() + reset
+> > uc_se->user_defined.
+> >
+> > It should be invalid to pass the SCHED_FLAG_UTIL_CLAMP_RESET with
+> > SCHED_FLAG_UTIL_CLAMP_MIN/MAX. Both have contradictory meaning IMO.
+> > If user passes both we should return an EINVAL error.
+> 
+> Passing in  _CLAMP_RESET|_CLAMP_MIN will mean reset the min value while
+> keeping the max at whatever it is. I think there could be cases where
+> this support could be on hand.
 
-If, for whatever reason, the enable fails such invalid event handler must
-be finally removed and freed but it must be treated as an active handler
-like it has just become: ensure to use the scmi_put_active_handler() helper
-which handles properly the needed additional mutexing.
+I am not convinced personally. I'm anxious about what this fine grained control
+means and how it should be used. I think less is more in this case and we can
+always relax the restriction (appropriately) later if it's *really* required.
 
-Failing to properly acquire all the needed mutexes exposes a race that
-leads to the following splat being observed:
+Particularly the fact that this user_defined is per uclamp_se and that it
+affects the cgroup behavior is implementation details this API shouldn't rely
+on. A generic RESET my uclamp settings makes more sense for me as a long term
+API to maintain.
 
-[  212.840876] ------------[ cut here ]------------
-[  212.845569] refcount_t: underflow; use-after-free.
-[  212.850544] WARNING: CPU: 0 PID: 388 at lib/refcount.c:28 refcount_warn_saturate+0xf8/0x148
-[  212.858913] Modules linked in: dummy_scmi_consumer(-) scmi_perf [last unloaded: scmi_cpufreq]
-[  212.867478] CPU: 0 PID: 388 Comm: rmmod Tainted: G        W         5.9.0-rc1-00020-g9c4395e7867d-dirty #4
-[  212.877153] Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform, BIOS EDK II Jun 30 2020
-[  212.887963] pstate: 40000005 (nZcv daif -PAN -UAO BTYPE=--)
-[  212.893554] pc : refcount_warn_saturate+0xf8/0x148
-[  212.898361] lr : refcount_warn_saturate+0xf8/0x148
-[  212.903160] sp : ffff80001298bc00
-[  212.906480] x29: ffff80001298bc00 x28: ffff00097470aac0
-[  212.911807] x27: 0000000000000000 x26: 0000000000000000
-[  212.917135] x25: ffff00097357fc80 x24: 0000000000000002
-[  212.922462] x23: ffff00097357fca8 x22: 0000000000000003
-[  212.927790] x21: ffff000974474688 x20: ffff000971e04f00
-[  212.933117] x19: 0000000000000001 x18: 0000000000000010
-[  212.938444] x17: 0000000000000000 x16: 0000000000000000
-[  212.943771] x15: ffffffffffffffff x14: ffff800012269948
-[  212.949098] x13: ffff80009298b947 x12: ffff80001298b94f
-[  212.954426] x11: 0001000000000000 x10: 0000000000000a10
-[  212.959753] x9 : ffff80001039fe88 x8 : ffff00097470b530
-[  212.965080] x7 : 00000000ffffffff x6 : ffff00097ef1b200
-[  212.970407] x5 : ffff00097ef1b200 x4 : 0000000000000000
-[  212.975734] x3 : ffff00097ef2a398 x2 : 0000000000000001
-[  212.981060] x1 : 4b16c3af5d721600 x0 : 0000000000000000
-[  212.986388] Call trace:
-[  212.988847]  refcount_warn_saturate+0xf8/0x148
-[  212.993308]  scmi_put_handler_unlocked.isra.10+0x204/0x208
-[  212.998811]  scmi_put_handler+0x50/0xa0
-[  213.002659]  scmi_unregister_notifier+0x1bc/0x240
-[  213.007385]  scmi_notify_tester_remove+0x4c/0x68 [dummy_scmi_consumer]
-[  213.013931]  scmi_dev_remove+0x54/0x68
-[  213.017695]  device_release_driver_internal+0x114/0x1e8
-[  213.022934]  driver_detach+0x58/0xe8
-[  213.026520]  bus_remove_driver+0x88/0xe0
-[  213.030454]  driver_unregister+0x38/0x68
-[  213.034389]  scmi_driver_unregister+0x1c/0x28
-[  213.038763]  scmi_drv_exit+0x1c/0xae0 [dummy_scmi_consumer]
-[  213.044354]  __arm64_sys_delete_module+0x1a4/0x268
-[  213.049160]  el0_svc_common.constprop.3+0x94/0x178
-[  213.053963]  do_el0_svc+0x2c/0x98
-[  213.057290]  el0_sync_handler+0x148/0x1a8
-[  213.061310]  el0_sync+0x158/0x180
-[  213.064632] ---[ end trace 5bff2d25d5820911 ]---
+Actually maybe we should even go for a more explicit
+SCHED_FLAG_UTIL_CLAMP_INHERIT_CGROUP flag instead. If we decide to abandon the
+support for this feature in the future, at least we can make it return an error
+without affecting other functionality because of the implicit nature of
+SCHED_FLAG_UTIL_CLAMP_RESET means inherit cgroup value too.
 
-Fixes: e7c215f358a35 ("firmware: arm_scmi: Add notification callbacks-registration")
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
+That being said, I am not strongly against the fine grained approach if that's
+what Yun wants now or what you both prefer. I just think the name of the flag
+needs to change to be more explicit too then.
 
-Applied and tested on [1] on top of :
+It'd be good to hear what others think.
 
-commit: 9724722fde8f ("firmware: arm_scmi: Add missing Rx size
-		                      re-initialisation")
+Cheers
 
-[1]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
----
----
- drivers/firmware/arm_scmi/notify.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-index 2754f9d01636..c24e427dce0d 100644
---- a/drivers/firmware/arm_scmi/notify.c
-+++ b/drivers/firmware/arm_scmi/notify.c
-@@ -1403,15 +1403,21 @@ static void scmi_protocols_late_init(struct work_struct *work)
- 				"finalized PENDING handler - key:%X\n",
- 				hndl->key);
- 			ret = scmi_event_handler_enable_events(hndl);
-+			if (ret) {
-+				dev_dbg(ni->handle->dev,
-+					"purging INVALID handler - key:%X\n",
-+					hndl->key);
-+				scmi_put_active_handler(ni, hndl);
-+			}
- 		} else {
- 			ret = scmi_valid_pending_handler(ni, hndl);
--		}
--		if (ret) {
--			dev_dbg(ni->handle->dev,
--				"purging PENDING handler - key:%X\n",
--				hndl->key);
--			/* this hndl can be only a pending one */
--			scmi_put_handler_unlocked(ni, hndl);
-+			if (ret) {
-+				dev_dbg(ni->handle->dev,
-+					"purging PENDING handler - key:%X\n",
-+					hndl->key);
-+				/* this hndl can be only a pending one */
-+				scmi_put_handler_unlocked(ni, hndl);
-+			}
- 		}
- 	}
- 	mutex_unlock(&ni->pending_mtx);
--- 
-2.17.1
-
+--
+Qais Yousef
