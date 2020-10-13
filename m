@@ -2,112 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EB528CC69
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8120F28CC6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgJMLWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:22:23 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55035 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJMLWW (ORCPT
+        id S1726575AbgJMLWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgJMLWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:22:22 -0400
-Received: by mail-io1-f72.google.com with SMTP id f6so12365399ion.21
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:22:22 -0700 (PDT)
+        Tue, 13 Oct 2020 07:22:39 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C11C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:22:38 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id p15so20541655wmi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fJ5oEvTMrhIJU6TJSDHoIP5ntvjnxJNsVoZRzmKNhjk=;
+        b=mCM/07NWfgR7ESAK7re9knWE+j4IiffM3UnH/xxTLJkJlkDpbBUw4dLzINacMlO0Mc
+         2Ru55bizyIzd5072SajCkmPNkVkFJW96PVTh/by1xoKnHmDREX7SbL9pRUexN0xt9Bb9
+         l4xELXxKXpGtIjQcJRQXSazlfpw0vST/EnzlGyZ7G+674whCJhugCyKuUDh+PNTcNVe9
+         NRI7doQbTFX3dRItHvzm51Ubnr2po5hafoxX3YILELe37J9hNmaT9730vBqpzNWZhWWw
+         NmwYbmUg8QYOS8ANAkZLNrbABGaY22ExRCKnCxHyAOIZLT/B3Ao+m4QVZZCNe+emBzle
+         mJZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=J3RNnZFCpcuOEalsh/7IWqFK2n8bnYqL+R6ovChSIjg=;
-        b=Z344ke4YXYlgzu2BYlFrp9fTX6oEZDeAzd++bsn7KWzSXUqbDV0VE0jKFXHjpJe0RP
-         BGi9iHP7yd8wcTFzN2sM1BDfFu1KT71O2PeDp2nzZNvP2NjvkZO40pksK5J6pGhYMs7j
-         3FYdrn7ue2QZbGk1KGs9IDZVskDGzqZN3B4Za6zGFHfNsg6blCFosmyvS1qFf0KnUn45
-         GRmBpKltYL0jYBp8Ai7XgJomqGlEQ4YoM6WBfc6z06m0Tm3rXeVZkUfflxNCwlPpkLA0
-         OPDP6xoG94fPebrPmjMb60H3xb4F3TiSvkDvW/Lnd7qIB7QPCTYXOoAd9HHzN2V4FdpN
-         f7LQ==
-X-Gm-Message-State: AOAM533moAqwfhyRdJ7QoV5XFT0TclrNdZD915robGZusmhL/YGWE5OP
-        AHoH4CRQ0iFlMA4cNlcn8PDBE4wo0Q3qnP4eT0adGqO9MqYp
-X-Google-Smtp-Source: ABdhPJy8mlHN++VnscA87qg6vlRcxaBBXh1wxy0KuUjn8Rn9cwPwrBHff79oFlTqPg/ALxIdoPJFEZe8Aptb8CfuW3+aiN4aUDKS
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fJ5oEvTMrhIJU6TJSDHoIP5ntvjnxJNsVoZRzmKNhjk=;
+        b=ODECMHR1Zo+5uEeSKg/2HTsq3x28xlqMgUyMBC2XnuG6Co0p7i7J8se1uWnWABdEEX
+         T+RNZx9Ulljo1+VxX6KWRKyyLNRmpTjb8Wv/k5aGtu3M80LijBg7ZBaXnRiSkKd7uxMq
+         G0YcWpcCCShUAFavnUgIg41NhZxrSnIoLZaw5TE8dP2eK8Q6n86wC0D5LLGxOCHAlM2C
+         L/ZGYirO6Gs7Ws4fUZr1bPyW8YR7A4GC9Mp2iHa3DEsFAcC4kj/xR6zWlBgy6ZsagQ2s
+         ZT6xAIBbzN6zrvscCYVFYPAxy1xab4BJ2yhOIJ51b7JwXFYZ3FF3Ss8lN9mslOc5d6R+
+         2mbw==
+X-Gm-Message-State: AOAM533o8l+5iapNRr421K736/vTENwTflgobtLUgyIsqNFmaDzvmaZy
+        QE6AM1EH7wLsqJlXSxdaCf0RPg==
+X-Google-Smtp-Source: ABdhPJxgpGjpvPNqvkvpeVV38hu39Nz2gH/1ps80HXJHeUmZj3HoijT67cRMhJFN/peQjxGFbXEykQ==
+X-Received: by 2002:a7b:c741:: with SMTP id w1mr7905538wmk.67.1602588156663;
+        Tue, 13 Oct 2020 04:22:36 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8dea:c7dd:5d0e:51e6? ([2a01:e34:ed2f:f020:8dea:c7dd:5d0e:51e6])
+        by smtp.googlemail.com with ESMTPSA id p4sm28617216wru.39.2020.10.13.04.22.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 04:22:36 -0700 (PDT)
+Subject: Re: [PATCH 1/2] thermal: power allocator: change the 'k_i'
+ coefficient estimation
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com
+References: <20201002122416.13659-1-lukasz.luba@arm.com>
+ <20201002122416.13659-2-lukasz.luba@arm.com>
+ <cc0e6d85-28ad-3cfc-e5b8-75820552b716@linaro.org>
+ <5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <326a84b4-1782-9e6b-2b95-9627767dd2f8@linaro.org>
+Date:   Tue, 13 Oct 2020 13:22:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:cc8d:: with SMTP id s13mr22843073jap.4.1602588141755;
- Tue, 13 Oct 2020 04:22:21 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 04:22:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e921b305b18ba0a7@google.com>
-Subject: BUG: using __this_cpu_read() in preemptible code in trace_hardirqs_on
-From:   syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 13/10/2020 12:59, Lukasz Luba wrote:
+> Hi Daniel,
+> 
+> On 10/13/20 11:21 AM, Daniel Lezcano wrote:
+>>
+>> Hi Lukasz,
+>>
+>> On 02/10/2020 14:24, Lukasz Luba wrote:
+>>> Intelligent Power Allocation (IPA) is built around the PID controller
+>>> concept. The initialization code tries to setup the environment based on
+>>> the information available in DT or estimate the value based on minimum
+>>> power reported by each of the cooling device. The estimation will
+>>> have an
+>>> impact on the PID controller behaviour via the related 'k_po', 'k_pu',
+>>> 'k_i' coefficients and also on the power budget calculation.
+>>>
+>>> This change prevents the situation when 'k_i' is relatively big compared
+>>> to 'k_po' and 'k_pu' values. This might happen when the estimation for
+>>> 'sustainable_power' returned small value, thus 'k_po' and 'k_pu' are
+>>> small.
+>>>
+>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>> ---
+>>>   drivers/thermal/gov_power_allocator.c | 8 ++++++--
+>>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/thermal/gov_power_allocator.c
+>>> b/drivers/thermal/gov_power_allocator.c
+>>> index 5cb518d8f156..f69fafe486a5 100644
+>>> --- a/drivers/thermal/gov_power_allocator.c
+>>> +++ b/drivers/thermal/gov_power_allocator.c
+>>> @@ -131,6 +131,7 @@ static void estimate_pid_constants(struct
+>>> thermal_zone_device *tz,
+>>>       int ret;
+>>>       int switch_on_temp;
+>>>       u32 temperature_threshold;
+>>> +    s32 k_i;
+>>>         ret = tz->ops->get_trip_temp(tz, trip_switch_on,
+>>> &switch_on_temp);
+>>>       if (ret)
+>>> @@ -156,8 +157,11 @@ static void estimate_pid_constants(struct
+>>> thermal_zone_device *tz,
+>>>           tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
+>>>               temperature_threshold;
+>>>   -    if (!tz->tzp->k_i || force)
+>>> -        tz->tzp->k_i = int_to_frac(10) / 1000;
+>>> +    if (!tz->tzp->k_i || force) {
+>>> +        k_i = tz->tzp->k_pu / 10;
+>>> +        tz->tzp->k_i = k_i > 0 ? k_i : 1;
+>>> +    }
+>>
+>> I do not understand the rational behind this change.
+> 
+> This is the unfortunate impact of the EM abstract scale of power values.
+> IPA didn't have to deal with it, because we always had milli-Watts.
+> Because the EM allows the bogoWatts and some vendors already have
+> them I have to re-evaluate the IPA.
+> 
+>>
+>> Do you have some values to share describing what would be the impact of
+>> this change?
+> 
+> Yes, here is an example:
+> EM has 3 devices with abstract scale power values, where minimum power
+> is 25 and max is 200. The minimum power is used by
+> estimate_sustainable_power()
+> as a sum of all devices' min power. Sustainable power is going to be
+> estimated to 75.
+> 
+> Then in the code we have 'temperature_threshold' which is in
+> milli-Celcius, thus 15degC is 15000.
+> 
+> We estimate 'k_po' according to:
+> int_to_frac(sustainable_power) / temperature_threshold;
+> 
+> which is:
+> (75 << 10) / 15000 = ~75000 / 15000 = 5 <-- 'k_po'
+> 
+> then k_pu:
+> ((2*75) << 10) / 15000 = ~150000 / 15000 = 10
+> 
+> Then the old 'k_i' is just hard-coded 10, which is
+> the same order of magnitude to what is in 'k_pu'.
+> It should be 1 order of magnitude smaller than 'k_pu'.
+> 
+> I did some experiments and the bigger 'k_i' slows down a lot
+> the rising temp. That's why this change.
+> 
+> It was OK to have k_i=10 when we were in milliWatts world,
+> when the min power value was bigger, thus 'k_pu' was also bigger
+> than our hard-coded 'k_i'.
+> 
+>>
+>> Depending on the thermal behavior of a board, these coefficients could
+>> be very different, no ?
+>>
+> 
+> Yes, I strongly believe that vendor engineers will make experiments with
+> these values and not go with default. Then they will store the k_pu,
+> k_po, k_i via sysfs interface, with also sustainable_power.
 
-syzbot found the following issue on:
+IMHO it is the opposite. For what I've seen, the IPA is not used or the
+k_* are misunderstood, thus not changed. The PID regulation loop
+technique is not quite used and known by everyone.
 
-HEAD commit:    865c50e1 x86/uaccess: utilize CONFIG_CC_HAS_ASM_GOTO_OUTPUT
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15112ef0500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c829313274207568
-dashboard link: https://syzkaller.appspot.com/bug?extid=53f8ce8bbc07924b6417
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> But I have to also fix the hard-coded k_i in the estimation. As
+> described above, when we have small power values from abstract scale,
+> the k_i stays too big.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com
-
-BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/8265
-caller is lockdep_hardirqs_on_prepare+0x56/0x620 kernel/locking/lockdep.c:4060
-CPU: 0 PID: 8265 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- check_preemption_disabled+0x13c/0x140 lib/smp_processor_id.c:48
- lockdep_hardirqs_on_prepare+0x56/0x620 kernel/locking/lockdep.c:4060
- trace_hardirqs_on+0x6f/0x80 kernel/trace/trace_preemptirq.c:49
- __bad_area_nosemaphore+0x89/0x510 arch/x86/mm/fault.c:797
- handle_page_fault arch/x86/mm/fault.c:1429 [inline]
- exc_page_fault+0x129/0x240 arch/x86/mm/fault.c:1482
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
-RIP: 0033:0x402d28
-Code: 00 00 48 89 7c 24 f8 48 89 74 24 f0 48 89 54 24 e8 48 89 4c 24 e0 48 8b 74 24 f8 4c 8b 4c 24 f0 48 8b 4c 24 e8 48 8b 54 24 e0 <8b> 86 0c 01 00 00 44 8b 86 08 01 00 00 c1 e0 04 8d b8 7f 01 00 00
-RSP: 002b:00007fce5827ec68 EFLAGS: 00010216
-RAX: 0000000000402d00 RBX: 000000000118bfc8 RCX: 0000000020000200
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 000000000118c010 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bfd4
-R13: 00007ffea2de495f R14: 00007fce5827f9c0 R15: 000000000118bfd4
-BUG: using __this_cpu_read() in preemptible [00000000] code: syz-executor.0/8265
-caller is lockdep_hardirqs_on+0x36/0x110 kernel/locking/lockdep.c:4129
-CPU: 0 PID: 8265 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- check_preemption_disabled+0x13c/0x140 lib/smp_processor_id.c:48
- lockdep_hardirqs_on+0x36/0x110 kernel/locking/lockdep.c:4129
- __bad_area_nosemaphore+0x89/0x510 arch/x86/mm/fault.c:797
- handle_page_fault arch/x86/mm/fault.c:1429 [inline]
- exc_page_fault+0x129/0x240 arch/x86/mm/fault.c:1482
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
-RIP: 0033:0x402d28
-Code: 00 00 48 89 7c 24 f8 48 89 74 24 f0 48 89 54 24 e8 48 89 4c 24 e0 48 8b 74 24 f8 4c 8b 4c 24 f0 48 8b 4c 24 e8 48 8b 54 24 e0 <8b> 86 0c 01 00 00 44 8b 86 08 01 00 00 c1 e0 04 8d b8 7f 01 00 00
-RSP: 002b:00007fce5827ec68 EFLAGS: 00010216
-RAX: 0000000000402d00 RBX: 000000000118bfc8 RCX: 0000000020000200
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 000000000118c010 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bfd4
-R13: 00007ffea2de495f R14: 00007fce5827f9c0 R15: 000000000118bfd4
+May be it is preferable to adjust the k_* dynamically given the
+undershot and overshot results? And then add a set of less opaque
+parameters for the user, like the time or watts, no?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
