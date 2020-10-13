@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2461328CD2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9BC28CD1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgJML5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:57:31 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34936 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727659AbgJMLys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:54:48 -0400
-IronPort-SDR: Scd0mm16A64LiqS+eh/1r45Ks+uPMg4iDIj6ll6VrSgdDmHP1qn3zi/o32A7o15W0FRGPMPBpQ
- q8RPUMgy8j5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="227534122"
-X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
-   d="scan'208";a="227534122"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:54:48 -0700
-IronPort-SDR: F944B7h/7nzU6a6i3JexdZZDLrmZFFivxWDYZzRvDVoPCqI8W1H5uWlgmxy/W1luG63OD/pXOu
- 8GdFE1RXTNJA==
-X-IronPort-AV: E=Sophos;i="5.77,370,1596524400"; 
-   d="scan'208";a="356131387"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 04:54:44 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kSIuA-005nGI-Dq; Tue, 13 Oct 2020 14:55:46 +0300
-Date:   Tue, 13 Oct 2020 14:55:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pratham Pratap <prathampratap@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
-        rafael.j.wysocki@intel.com, mathias.nyman@linux.intel.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sallenki@codeaurora.org, mgautam@codeaurora.org,
-        jackp@codeaurora.org, stable@vger.kernel.org
-Subject: Re: [PATCH] usb: core: Don't wait for completion of urbs
-Message-ID: <20201013115546.GM4077@smile.fi.intel.com>
-References: <1602586022-13239-1-git-send-email-prathampratap@codeaurora.org>
+        id S1727884AbgJML45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:56:57 -0400
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.25]:25293 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727823AbgJML4P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:56:15 -0400
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QLpd5ylWvMDXmEVBDI4vdCIAd4eCQfPA=="
+X-RZG-CLASS-ID: mo00
+Received: from sender
+        by smtp.strato.de (RZmta 47.2.1 SBL|AUTH)
+        with ESMTPSA id e003b5w9DBu1j3P
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 13 Oct 2020 13:56:01 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 13:55:46 +0200
+From:   Olaf Hering <olaf@aepfle.de>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>
+Subject: Re: [PATCH v1] hv_balloon: disable warning when floor reached
+Message-ID: <20201013135546.3c5b7feb.olaf@aepfle.de>
+In-Reply-To: <20201013111921.2fa4608c.olaf@aepfle.de>
+References: <20201008071216.16554-1-olaf@aepfle.de>
+        <20201008091539.060c79c3.olaf@aepfle.de>
+        <20201013091717.q24ypswqgmednofr@liuwe-devbox-debian-v2>
+        <20201013111921.2fa4608c.olaf@aepfle.de>
+X-Mailer: Claws Mail 2020.08.19 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602586022-13239-1-git-send-email-prathampratap@codeaurora.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/58I9z82b3mdGOqVUji+3aMv"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 04:17:02PM +0530, Pratham Pratap wrote:
+--Sig_/58I9z82b3mdGOqVUji+3aMv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-...
+Am Tue, 13 Oct 2020 11:19:21 +0200
+schrieb Olaf Hering <olaf@aepfle.de>:
 
-> Fixes: 3e35bf39e (USB: fix codingstyle issues in drivers/usb/core/message.c)
+> A message is generated every 5 minutes. Unclear why this remained unnotic=
+ed since at least v5.3. I have added debug to my distro kernel to see what =
+the involved variable values are. More info later today.
 
-Two hints how to use Git with Linux kernel development.
+The actual values for avail_pages, num_pages and floor are shown below.
+The VM has min 512M, startup 1024M. If I interpret it correctly, the host r=
+equests to balloon down 83MB, while the VM has ~596MB assigned according to=
+ the GUI. free still reports 878MB.
 
-First is about what Greg pointed out, i.e. proper Fixes line.
+Olaf
 
-Add to your ~/.gitconfig the following:
+[   66.917948] hv_balloon: Max. dynamic memory size: 2222 MB
+[  331.839393] hv_balloon: Balloon request will be partially fulfilled. (65=
+875 32768 54728) Balloon floor reached.
+[  331.847451] hv_balloon: Balloon request will be partially fulfilled. (54=
+745 21621 54728) Balloon floor reached.
+[  331.848480] hv_balloon: Balloon request will be partially fulfilled. (54=
+745 21604 54728) Balloon floor reached.
+[  331.849465] hv_balloon: Balloon request will be partially fulfilled. (54=
+745 21587 54728) Balloon floor reached.
+[  331.850463] hv_balloon: Balloon request will be partially fulfilled. (54=
+745 21570 54728) Balloon floor reached.
+[  331.851393] hv_balloon: Balloon request will be partially fulfilled. (54=
+682 21553 54728) Balloon floor reached.
+[  631.814538] hv_balloon: Balloon request will be partially fulfilled. (54=
+801 21553 54728) Balloon floor reached.
+[  631.819084] hv_balloon: Balloon request will be partially fulfilled. (54=
+801 21480 54728) Balloon floor reached.
+[  631.823487] hv_balloon: Balloon request will be partially fulfilled. (54=
+738 21407 54728) Balloon floor reached.
+[  631.825832] hv_balloon: Balloon request will be partially fulfilled. (54=
+738 21397 54728) Balloon floor reached.
+[  631.827988] hv_balloon: Balloon request will be partially fulfilled. (54=
+738 21387 54728) Balloon floor reached.
+[  631.830111] hv_balloon: Balloon request will be partially fulfilled. (54=
+738 21377 54728) Balloon floor reached.
+[  931.814649] hv_balloon: Balloon request will be partially fulfilled. (54=
+406 21367 54728) Balloon floor reached.
+[ 1231.829087] hv_balloon: Balloon request will be partially fulfilled. (54=
+408 21367 54728) Balloon floor reached.
+[ 1531.859374] hv_balloon: Balloon request will be partially fulfilled. (54=
+416 21367 54728) Balloon floor reached.
+[ 1831.874813] hv_balloon: Balloon request will be partially fulfilled. (54=
+408 21367 54728) Balloon floor reached.
+[ 2131.878262] hv_balloon: Balloon request will be partially fulfilled. (54=
+672 21367 54728) Balloon floor reached.
+[ 2431.895144] hv_balloon: Balloon request will be partially fulfilled. (54=
+532 21367 54728) Balloon floor reached.
+[ 2731.916792] hv_balloon: Balloon request will be partially fulfilled. (54=
+609 21367 54728) Balloon floor reached.
+[ 3031.922862] hv_balloon: Balloon request will be partially fulfilled. (54=
+597 21367 54728) Balloon floor reached.
+[ 3331.949145] hv_balloon: Balloon request will be partially fulfilled. (54=
+615 21367 54728) Balloon floor reached.
+[ 3631.957564] hv_balloon: Balloon request will be partially fulfilled. (54=
+540 21367 54728) Balloon floor reached.
+[ 3931.969477] hv_balloon: Balloon request will be partially fulfilled. (53=
+057 21367 54728) Balloon floor reached.
 
-	[core]
-		abbrev = 12
+--Sig_/58I9z82b3mdGOqVUji+3aMv
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
 
-	[alias]
-		one = show -s --pretty='format:%h (\"%s\")'
+-----BEGIN PGP SIGNATURE-----
 
-In result you may run
+iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAl+FlcIACgkQ86SN7mm1
+DoCaUxAAkbDbD842M0QWng9KwNyveXgyjfC4xKISgJr4rU/6uu+/eSGdWnyYE+g7
+XTzB62kJ6waDqloDR+Qud0lJdzvnZVaqUjpMwkzpwgZipS+8JYH+49IBb2WymylC
+P/QdTdggKgALCCw9G42Tenyhd/cuTEMvgziDb7CEOFQy8AQlX6/eIBwqlIls85jc
+nK67jc6nkiwQ6gnbYn8MEdSeatscLFw5FgBjKGLX8EmIlHWdj4QPCxt3x5dQ316n
+zgg/s3SbP5jeSKsYt5dl7i/CYdgaGQVuyEvNFeG1ZlcVH7ukmwFqRtqn5Kd94J+3
+t/18pJ2GvD6DtANUWVubslV7yQOo0KU/WEfDFJ4A1ldqzF2ayOqVlnZ8x+w46H1E
+67n08nI4yOJ6PznYsFJUTSKWIw11TDPZ6ciKczfj+jPzPt9sP+a6phN2DR0vUye3
+vqU/d/sVyP4ECsyJtd63hI20Uq5an28TmfRD05GPEdF9cjg3hu6NpiG22r4LnbW2
+w4+YqLgxEAzu698T1BxQ3yEqabzbXaI57bAKoynZsNCYkPJz6cCbfM+B50+NvNJU
+h5Uewk5kkd2DYaRQEqHRiInMEWTV0dFH9nY4ULwpsGMug7OaGJJSL5AvwHK4gWQM
+HI67kwZ0LDwb9dRxOYetzHPUrzeqKRK63nDTQzCS/2hfxAO5m88=
+=3Bmh
+-----END PGP SIGNATURE-----
 
-	git one 3e35bf39e
-
-and use the output.
-
-Second one is about Cc list. I recommend to use
-
-	scripts/get_maintainer.pl --git --git-min-percent=67
-
-to retrieve it.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--Sig_/58I9z82b3mdGOqVUji+3aMv--
