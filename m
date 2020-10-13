@@ -2,158 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120FD28CCB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4747A28CE40
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgJMLru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:47:50 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:37894 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgJMLru (ORCPT
+        id S1726707AbgJMMXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:23:40 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:11698 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbgJMMXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:47:50 -0400
-Received: by mail-ej1-f66.google.com with SMTP id ce10so27817816ejc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:47:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=i6F3ntqpv7+kG4Lj/AZ48KfYE2KTrNQ6TzJRQGKnSs8=;
-        b=KH7zukDc/RcdPRVcqfjKHdHWGLUYv8reN0rdN9+QBoxcyvijn7rRkULQFAnvudj8Ss
-         zZtZW3XjgC8b0KFtYfEJUeRwJxQItW5Pb+I0oq3L1+LxffAcJVQ68Waz3jLRMbHfV8ex
-         KiNTSjqu11ceZU+fPTI0uR9qOyyYNFoYOSytIUFjCILaLfPucLxiJ63CR2pcc10ne6F8
-         s67YMxjeRUSThwICY+OivTnYxJuYnrKelCO6DaEs9+AvjdUTMmeAmmLaeuBhqpcowV07
-         jT4sLUT+KWryRbcxeTcFRgnpi25rPbDAshrflLnX+hzzrFXyn6ztdgMvLk+7Y1akfVld
-         zY1A==
-X-Gm-Message-State: AOAM531em8QPwF5ZKqVqdi+kW6aBKR3otaNu8z5Oyn2E4fhK99/U53Gu
-        RQOlBog43EAgBImDWOwrKf1yeqEAwsVZOqhD
-X-Google-Smtp-Source: ABdhPJyJ1+Jgp7cKIYPl4y1+vg4+fr4KN5mt1PoocxykwSUsSeGD9VP7d8Yq/s0hz9qypQPQu1aFHQ==
-X-Received: by 2002:a17:906:cca9:: with SMTP id or9mr32013632ejb.451.1602589665391;
-        Tue, 13 Oct 2020 04:47:45 -0700 (PDT)
-Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
-        by smtp.gmail.com with ESMTPSA id m6sm13289444ejl.94.2020.10.13.04.47.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 04:47:44 -0700 (PDT)
-References: <20201012163140.371688-1-hsiang023167@gmail.com>
- <87blh6iljc.derkling@matbug.net>
- <20201013102951.orcr6m4q2cb7y6zx@e107158-lin>
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Patrick Bellasi <patrick.bellasi@matbug.net>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Yun Hsiang <hsiang023167@gmail.com>, dietmar.eggemann@arm.com,
-        peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-In-reply-to: <20201013102951.orcr6m4q2cb7y6zx@e107158-lin>
-Message-ID: <875z7eic14.derkling@matbug.net>
-Date:   Tue, 13 Oct 2020 13:46:31 +0200
-MIME-Version: 1.0
-Content-Type: text/plain
+        Tue, 13 Oct 2020 08:23:40 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201013122337epoutp018821c11d2d8f65621b6a5698977270f8~9jMRahOcQ0743707437epoutp012
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:23:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201013122337epoutp018821c11d2d8f65621b6a5698977270f8~9jMRahOcQ0743707437epoutp012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1602591817;
+        bh=vhCHSTYT3RjO1E7ie1Ctba4Syv1zYIq8jW2a+IGfhFw=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=ZeUXEF8wTCbkqrIOFEs7EKOvLPN0uBc97xTJj7h66RHoc+b19b7ENFAdgPDT5tVCy
+         UdlHMXqqa3WCsTdXF5wF+y68JSeptrQd4+NfY0w/kLIdEes+iXnqw6XtQmZh6exCsZ
+         tTewiGrW+oN4mvjSV93ANt6lJrbJmXKSQgTzN89A=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20201013122336epcas5p1207c78dbfb3458cff07ebe7febdfa637~9jMQgruBJ2857928579epcas5p1O;
+        Tue, 13 Oct 2020 12:23:36 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        51.73.09567.84C958F5; Tue, 13 Oct 2020 21:23:36 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c~9jJjDcHse2423824238epcas5p2y;
+        Tue, 13 Oct 2020 12:20:30 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201013122030epsmtrp23b07696b12b136a6399a2d5972823c3a~9jJjCwY370338303383epsmtrp2-;
+        Tue, 13 Oct 2020 12:20:30 +0000 (GMT)
+X-AuditID: b6c32a4b-2f3ff7000000255f-60-5f859c48e880
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E0.15.08604.D8B958F5; Tue, 13 Oct 2020 21:20:29 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201013122028epsmtip1ce5d5d13b962ec5603d315ed66872cce~9jJh4bzSe2620526205epsmtip1j;
+        Tue, 13 Oct 2020 12:20:28 +0000 (GMT)
+From:   Surendran K <surendran.k@samsung.com>
+To:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     vkoul@kernel.org, shaik.ameer@samsung.com, alim.akhtar@samsung.com,
+        pankaj.dubey@samsung.com, Surendran K <surendran.k@samsung.com>
+Subject: [PATCH] DMA: PL330: Remove unreachable code
+Date:   Tue, 13 Oct 2020 17:17:13 +0530
+Message-Id: <20201013114713.28754-1-surendran.k@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDIsWRmVeSWpSXmKPExsWy7bCmhq7HnNZ4g7sLhC0ezNvGZrF66l9W
+        i8u75rBZLNr6hd3iyMPd7Babd0xht9h55wSzA7vHplWdbB59W1YxenzeJBfAHMVlk5Kak1mW
+        WqRvl8CVsXzjM+aCQ6wVrz6lNDDuZeli5OCQEDCROH42vIuRi0NIYDejRMe/l6wQzidGiekH
+        J7BAON8YJe79/MUO03HzuT1EfC+jxM+v99ggnBYmicmdS4EcTg42AW2JD73b2UFsEQFriUcH
+        p4CNZRboZJQ4dqmdGSQhDDTp3uxFjCA2i4CqxKeGdawgNq+AjUTPx89gcQkBeYnVGw4wQ9iL
+        2CU6r9tA2C4S7ydPYYGwhSVeHd/CDmFLSXx+t5cNws6WuPGhnxXCrpCYd+MeVNxe4sCVOWD/
+        MwtoSqzfpQ8RlpWYemodE4jNLMAn0fv7CRNEnFdixzwYW1Xi5P8fUOdIS1xZtx9qvIfE9OaZ
+        YHEhgViJ7Sdfs0xglJ2FsGEBI+MqRsnUguLc9NRi0wLjvNRyveLE3OLSvHS95PzcTYzgCNfy
+        3sH46MEHvUOMTByMhxglOJiVRHjPqTfFC/GmJFZWpRblxxeV5qQWH2KU5mBREudV+nEmTkgg
+        PbEkNTs1tSC1CCbLxMEp1cDUstH7bEDCYvknj4s21u+SWyV5+vZilntKMlfvvzM32BEyZ9Hz
+        GaVtKa8Fza+Fi59nsb9UsGe6W8M8rrPfol8+dtkYobBO897WPeUP1heXPrwRFcO6ZHG1+l/x
+        6eEyq5Zq3ZYpzuDdv/xPRYi1Ajvb8ZmfN4kXXuxSyOG8sJTf1fSPS9Gegh9tU0+e31ATPfnT
+        okq2ZsWzS1blaia/3mAzY9GcJdGa350/s14zX1u73PxSm3sS6+r0x+ozfx/l7si8UXr33ybX
+        vMrJQkkfk3y+BGieMK1L8PPnjVqYHF+k4LoxmsNkfYbWSz9F/dgNUnrLUmSq90X7Sgi1hV8v
+        27r+yasO1r5ZBaZl/lFJz8SVWIozEg21mIuKEwECwMOyXwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMJMWRmVeSWpSXmKPExsWy7bCSnG7v7NZ4g/tLbSwezNvGZrF66l9W
+        i8u75rBZLNr6hd3iyMPd7Babd0xht9h55wSzA7vHplWdbB59W1YxenzeJBfAHMVlk5Kak1mW
+        WqRvl8CVsXzjM+aCQ6wVrz6lNDDuZeli5OCQEDCRuPncvouRi0NIYDejRPPVmUBxTqC4tMTH
+        87uZIWxhiZX/nrOD2EICTUwSbz6agdhsAtoSH3q3g8VFBGwlpiw7zgQyiFmgn1Fi/fl5rCAJ
+        YaAF92YvYgSxWQRUJT41rAOL8wrYSPR8/MwIsUBeYvWGA8wTGHkWMDKsYpRMLSjOTc8tNiww
+        zEst1ytOzC0uzUvXS87P3cQIDhctzR2M21d90DvEyMTBeIhRgoNZSYT3nHpTvBBvSmJlVWpR
+        fnxRaU5q8SFGaQ4WJXHeG4UL44QE0hNLUrNTUwtSi2CyTBycUg1MNQ+TJxq83hhb5x/W9zB6
+        Ns+qqG/mnJmvGldNmNH3deXt2c/MTNpvCu1MmPNxP5Nw3z3+a9F/m4q+3X+ov+rS68zZLzvE
+        wh09NSYEv7wj7L7eubNt/pTZzVPFVjHNCZk7b/JmL65db468SW92bqlfWF1ueNq36dRqj9C0
+        hrraBqaCjeHSkxqcuGyeJPqdu8V2Yv7q/NCP/i1W5zozVzx9s+KX+V3PLNsYywu6++y11Ll+
+        LPqx/d+JJu3v2Vfqz76b8bdyv5XjOl/5T7detL5b++S/xrM/WULHtE4tqxTtd0j9mlgQwHt4
+        8RL1nTlLf3oIpjr9Yctu+Gl3US/O6/Uq9p/Rh3c7X3ztLGKp79D7SImlOCPRUIu5qDgRACvm
+        y5+GAgAA
+X-CMS-MailID: 20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c
+References: <CGME20201013122030epcas5p2e576d5a2ebfaf9df8078e6ee70f3765c@epcas5p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+_setup_req(..) never returns negative value.
+Hence the condition ret < 0 is never met
 
-On Tue, Oct 13, 2020 at 12:29:51 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
+Signed-off-by: Surendran K <surendran.k@samsung.com>
+---
+ drivers/dma/pl330.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> On 10/13/20 10:21, Patrick Bellasi wrote:
->> 
-
-[...]
-
->> > +#define SCHED_FLAG_UTIL_CLAMP_RESET (SCHED_FLAG_UTIL_CLAMP_RESET_MIN | \
->> > +					SCHED_FLAG_UTIL_CLAMP_RESET_MAX)
->> > +
->> >  #define SCHED_FLAG_ALL	(SCHED_FLAG_RESET_ON_FORK	| \
->> >  			 SCHED_FLAG_RECLAIM		| \
->> >  			 SCHED_FLAG_DL_OVERRUN		| \
->> >  			 SCHED_FLAG_KEEP_ALL		| \
->> > -			 SCHED_FLAG_UTIL_CLAMP)
->> > +			 SCHED_FLAG_UTIL_CLAMP		| \
->> > +			 SCHED_FLAG_UTIL_CLAMP_RESET)
->> 
->> 
->> ... and use it in conjunction with the existing _CLAMP_{MIN,MAX} to know
->> which clamp should be reset?
->
-> I think the RESET should restore *both* MIN and MAX and reset the user_defined
-> flag. Since the latter is the main purpose of this interface, I don't think you
-> can reset the user_defined flag without resetting both MIN and MAX to
-> uclamp_none[UCLAMP_MIN/MAX].
-
-We can certainly set one clamp and not the other, and indeed the
-user_defined flag is per-clamp_id, thus we can reset one clamp while
-still keeping user-defined the other one.
-
-
->> >  #endif /* _UAPI_LINUX_SCHED_H */
->> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> > index 9a2fbf98fd6f..ed4cb412dde7 100644
->> > --- a/kernel/sched/core.c
->> > +++ b/kernel/sched/core.c
->> > @@ -1207,15 +1207,22 @@ static void __setscheduler_uclamp(struct task_struct *p,
->> >  		uclamp_se_set(uc_se, clamp_value, false);
->> >  	}
->> >  
->> > -	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
->> > +	if (likely(!(attr->sched_flags &
->> > +			(SCHED_FLAG_UTIL_CLAMP | SCHED_FLAG_UTIL_CLAMP_RESET))))
->> >  		return;
->> 
->> This check will not be changed, while we will have to add a bypass in
->> uclamp_validate().
->> 
->> >  
->> > -	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
->> > +	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_RESET_MIN) {
->> > +		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
->> > +			      0, false);
->> > +	} else if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
->> >  		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
->> >  			      attr->sched_util_min, true);
->> >  	}
->> >
->> 
->> These checks also will have to be updated to check _RESET and
->> _{MIN,MAX} combinations.
->> 
->> Bonus point would be to be possible to pass in just the _RESET flag if
->> we want to reset both clamps. IOW, passing in _RESET only should be
->> consumed as if we passed in _RESET|_MIN|_MAX.
->> 
->> Caveat, RT tasks have got a special 'reset value' for _MIN.
->> We should check and ensure __uclamp_update_uti_min_rt_default() is
->> property called for those tasks, which likely will require some
->> additional refactoring :/
->
-> Hmm I am probably missing something. But if the SCHED_FLAG_UTIL_CLAMP_RESET is
-> set, just reset uc_se->user_defined in the loop in __setscheduler_uclamp().
-> This should take care of doing the reset properly then. Including for
-> RT tasks.
-
-Yes and no. Yes because in principle we can just reset the flag for a
-clamp_id without updating the request values, as it is done by the
-snippets above, and the internals should work.
-
-However, we will end up reporting the old values when reading from
-user-space. We should better check all those reporting code paths or...
-just update the requested values as Yun is proposing above.
-
-I like better Yun approach so that we keep internal data structures
-aligned with features.
-
-> So IMO you just need a single SCHED_FLAG_UTIL_CLAMP_RESET that if set in the
-> attr, you just execute that loop in __setscheduler_uclamp() + reset
-> uc_se->user_defined.
->
-> It should be invalid to pass the SCHED_FLAG_UTIL_CLAMP_RESET with
-> SCHED_FLAG_UTIL_CLAMP_MIN/MAX. Both have contradictory meaning IMO.
-> If user passes both we should return an EINVAL error.
-
-Passing in  _CLAMP_RESET|_CLAMP_MIN will mean reset the min value while
-keeping the max at whatever it is. I think there could be cases where
-this support could be on hand.
-
-However, as in my previous email, by passing in only _CLAMP_RESET, we
-should go an reset both.
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index e9f0101d92fa..8355586c9788 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -1527,8 +1527,6 @@ static int pl330_submit_req(struct pl330_thread *thrd,
+ 
+ 	/* First dry run to check if req is acceptable */
+ 	ret = _setup_req(pl330, 1, thrd, idx, &xs);
+-	if (ret < 0)
+-		goto xfer_exit;
+ 
+ 	if (ret > pl330->mcbufsz / 2) {
+ 		dev_info(pl330->ddma.dev, "%s:%d Try increasing mcbufsz (%i/%i)\n",
+-- 
+2.17.1
 
