@@ -2,207 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D2628D29F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AEE28D2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387526AbgJMQuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:50:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59406 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387919AbgJMQuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:50:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CEF98B2F2;
-        Tue, 13 Oct 2020 16:50:49 +0000 (UTC)
-Message-ID: <c171c837a31dea34c845478b7c7d4bdef865b5e0.camel@suse.de>
-Subject: Re: [PATCH 3/3] pwm: Add Raspberry Pi Firmware based PWM bus
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     f.fainelli@gmail.com, linux@roeck-us.net, jdelvare@suse.com,
-        wahrenst@gmx.net, Eric Anholt <eric@anholt.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 13 Oct 2020 18:50:47 +0200
-In-Reply-To: <20201013121758.gl6ni4b47ei2bhdf@pengutronix.de>
-References: <20201009153031.986-1-nsaenzjulienne@suse.de>
-         <20201009153031.986-4-nsaenzjulienne@suse.de>
-         <20201012070626.fzjhp3tkmgglqnm4@pengutronix.de>
-         <7899e490543723c97ffad6f42942907f8db6b9b4.camel@suse.de>
-         <20201013121758.gl6ni4b47ei2bhdf@pengutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-QQL4Z9L5K9obB4kJlsj+"
-User-Agent: Evolution 3.36.5 
+        id S2387553AbgJMQxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:53:20 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:39140 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727696AbgJMQxU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:53:20 -0400
+Received: by mail-ej1-f65.google.com with SMTP id lw21so760607ejb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 09:53:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=E5dq2k/kyKUZ06hCnaaoTuCwfc83kyj6EFYwzSuOeXk=;
+        b=B1qtbOd9DbQw6UZUbgLYr6Yk/3Dcvw8k3zM9KGA7aXEJwUH+zzP1ICGh5UOAKWib/s
+         UBJmjVyqJ8ETzblhk4oQucf1dMj4SD7yhDKdu6e9hTmE0f/iVPiaOdN6aTfCYmtYLhm6
+         M4Wbk/vraapCJ4zop3clmIbDCbYhhMPcKdFZElVj7L1c+4xtIZAOAU9EFoC6940tiiDS
+         CGz+g8whKNte7gWfJkr8JYp8993DU7xRFYSTC8Vh3Oow9piuqbQfcK08qGq6ediZMfew
+         z8CFXZw3nGfUS9EH/zbsQrTT9OMVAYbgpJq8hKFI8uwce10cM+erpYX1446a/h2bVVYt
+         FgtA==
+X-Gm-Message-State: AOAM531+rArq8GgUP2HBw1v32Ltl0/eKWPdOg9WxyJa7nUWaxB5K3Ydr
+        TUq0ftVO9YS+Be1PXSxYQ4V7r+MW/Y/dO6tt
+X-Google-Smtp-Source: ABdhPJwopx3Is1xqbuu7+GazOyrxcECqDe6yintbboXqp8cdX7DG42fRhHTegI4+o9yo5wyCM5+Sug==
+X-Received: by 2002:a17:906:3cc:: with SMTP id c12mr694333eja.216.1602607997748;
+        Tue, 13 Oct 2020 09:53:17 -0700 (PDT)
+Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
+        by smtp.gmail.com with ESMTPSA id zk17sm256341ejb.125.2020.10.13.09.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 09:53:16 -0700 (PDT)
+References: <20201012163140.371688-1-hsiang023167@gmail.com>
+ <87blh6iljc.derkling@matbug.net>
+ <20201013102951.orcr6m4q2cb7y6zx@e107158-lin>
+ <875z7eic14.derkling@matbug.net>
+ <20201013133246.cjomufo5q7qsocrn@e107158-lin>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Yun Hsiang <hsiang023167@gmail.com>, dietmar.eggemann@arm.com,
+        peterz@infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+In-reply-to: <20201013133246.cjomufo5q7qsocrn@e107158-lin>
+Message-ID: <87362ihxvw.derkling@matbug.net>
+Date:   Tue, 13 Oct 2020 18:52:03 +0200
 MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-QQL4Z9L5K9obB4kJlsj+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 13, 2020 at 15:32:46 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
 
-Hi Uwe,
+> On 10/13/20 13:46, Patrick Bellasi wrote:
+>> > So IMO you just need a single SCHED_FLAG_UTIL_CLAMP_RESET that if set in the
+>> > attr, you just execute that loop in __setscheduler_uclamp() + reset
+>> > uc_se->user_defined.
+>> >
+>> > It should be invalid to pass the SCHED_FLAG_UTIL_CLAMP_RESET with
+>> > SCHED_FLAG_UTIL_CLAMP_MIN/MAX. Both have contradictory meaning IMO.
+>> > If user passes both we should return an EINVAL error.
+>> 
+>> Passing in  _CLAMP_RESET|_CLAMP_MIN will mean reset the min value while
+>> keeping the max at whatever it is. I think there could be cases where
+>> this support could be on hand.
+>
+> I am not convinced personally. I'm anxious about what this fine grained control
+> means and how it should be used. I think less is more in this case and we can
+> always relax the restriction (appropriately) later if it's *really* required.
+>
+> Particularly the fact that this user_defined is per uclamp_se and that it
+> affects the cgroup behavior is implementation details this API shouldn't rely
+> on.
 
-On Tue, 2020-10-13 at 14:17 +0200, Uwe Kleine-K=C3=B6nig wrote:
-> Hello Nicolas,
->=20
-> On Tue, Oct 13, 2020 at 01:20:00PM +0200, Nicolas Saenz Julienne wrote:
-> > On Mon, 2020-10-12 at 09:06 +0200, Uwe Kleine-K=C3=B6nig wrote:
-> > > > +	depends on RASPBERRYPI_FIRMWARE || (COMPILE_TEST && !RASPBERRYPI_=
-FIRMWARE)
-> > >=20
-> > > This is more complicated than necessary.
-> > >=20
-> > > 	depends on RASPBERRYPI_FIRMWARE || COMPILE_TEST
-> > >=20
-> > > is logically equivalent.
-> >=20
-> > It's not exactly the same, see patch 7ed915059c300 ("gpio: raspberrypi-=
-ext: fix
-> > firmware dependency ") which explains why this pattern is needed.
+The user_defined flag is an implementation details: true, but since the
+beginning uclamp _always_ allowed a task to set only one of its clamp
+values.
 
-I'll add a comment.
-
-> Hmm, this is strange, but if Arnd doesn't know a better solution, then
-> be it so. Is this idiom usual enough to not justify a comment?
->=20
-> > > What happens if duty_cycle happens to be bigger than RPI_PWM_MAX_DUTY=
-?
-> > >=20
-> > > I think the right thing to do here is:
-> > >=20
-> > > 	if (state->period < RPI_PWM_PERIOD_NS ||
-> >=20
-> > Why not using state->period !=3D RPI_PWM_PERIOD_NS here?
->=20
-> From the consumer's point of view having to hit the only correct period
-> is hard. So the usual convention is to provide the biggest period not
-> bigger than the requested one. (The idea for the future is to provide a
-> pwm_round_state() function which allows to find out the effect of
-> pwm_apply_state() with the same arguments. This then allows to
-> efficiently find the best setting for the consumer.)
-
-Fair enough.
-
-> > > Huh, why do you have to do this twice, just with different error
-> > > messages? I assume you want to set RPI_PWM_DEF_DUTY_REG? What is the
-> > > effect of writing this property?
-> >=20
-> > Obviously, I failed to change the register name.
-> >=20
-> > This is supposed to set the default duty cycle after resetting the boar=
-d. I
-> > added it so as to keep compatibility with the downstream version of thi=
-s.
-> >=20
-> > I'll add a comment to explain this.
->=20
-> fine.
->=20
-> > > > +	int ret;
-> > > > +
-> > > > +	firmware_node =3D of_get_parent(dev->of_node);
-> > > > +	if (!firmware_node) {
-> > > > +		dev_err(dev, "Missing firmware node\n");
-> > > > +		return -ENOENT;
-> > > > +	}
-> > > > +
-> > > > +	firmware =3D rpi_firmware_get(firmware_node);
-> > > > +	of_node_put(firmware_node);
-> > > > +	if (!firmware)
-> > > > +		return -EPROBE_DEFER;
-> > >=20
-> > > I don't see a mechanism that prevents the driver providing the firmwa=
-re
-> > > going away while the PWM is still in use.
-> >=20
-> > There isn't an explicit one. But since you depend on a symbol from the =
-firmware
-> > driver you won't be able to remove the kernel module before removing th=
-e PMW
-> > one.
->=20
-> this prevents the that the module is unloaded, but not that the driver
-> is unbound.
-
-Yes, if you were to unbind the firmware device all devices that depend on i=
-t
-(there are a bunch of them) would access freed memory. Yet again, there is =
-no
-hotplug functionality, so short of being useful for development it'd be ver=
-y
-rare for someone to unbind it. We've been living with it as such for a long
-time. Not to say that is something not to fix, but from my perspective it's
-just a corner-case.
-
-We are using 'simple-mfd' in order to probe all devices under the
-firmware interface, so my first intuition would be to add support for
-automatically unbinding of consumer devices in of/platform.c. See:
-
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index b557a0fcd4ba..d24f2412d518 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -390,7 +390,13 @@ static int of_platform_bus_create(struct device_node *=
-bus,
-        }
-=20
-        dev =3D of_platform_device_create_pdata(bus, bus_id, platform_data,=
- parent);
--       if (!dev || !of_match_node(matches, bus))
-+       if (!dev)
-+               return 0;
-+
-+       if (parent && of_device_is_compatible(parent->of_node, "simple-mfd"=
-))
-+               device_link_add(&dev->dev, parent, DL_FLAG_AUTOREMOVE_CONSU=
-MER);
-+
-+       if (!of_match_node(matches, bus))
-                return 0;
-=20
-        for_each_child_of_node(bus, child) {
-
-If this is too much for OF maintainers, we could simply create the link upo=
-n
-calling rpi_firmware_get().
-
-This solves the problem of getting a kernel panic because of the use after
-free, but you'll still get some warnings after unbinding from the GPIO
-subsystem, for example, as we just removed a gpiochip that still has consum=
-ers
-up. I guess device links only go so far.
-
-Any ideas/comments?
-
-Regards,
-Nicolas
+That's why we have UTIL_CLAMP_{MIN,MAX} as separate flags and all the
+logic in place to set only one of the two.
 
 
---=-QQL4Z9L5K9obB4kJlsj+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+> A generic RESET my uclamp settings makes more sense for me as a long term
+> API to maintain.
+>
+> Actually maybe we should even go for a more explicit
+> SCHED_FLAG_UTIL_CLAMP_INHERIT_CGROUP flag instead. If we decide to abandon the
+> support for this feature in the future, at least we can make it return an error
+> without affecting other functionality because of the implicit nature of
+> SCHED_FLAG_UTIL_CLAMP_RESET means inherit cgroup value too.
 
------BEGIN PGP SIGNATURE-----
+That's not true and it's an even worst implementation detail what you
+want to expose.
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+F2ucACgkQlfZmHno8
-x/4aKQf+OCDTj2+VaoKNpvJzA4yuSworog5ZQ/I2NeExhZZbxPTs2V2Y/HGEHegl
-n3ejX6yJGqpUsWoeqy5XXDVJhnPSfBTQRWjwzipuI6vUX0PLtJCW9GW5awPc1sTm
-NF2NOFeM0WNPaodHNqzT6JXRbYRRx1EN3NzdfMX89NZ+cx0fQSQBzeXSlqhIWvlC
-rEfGZD3hMMHr/NXzomTPgIp1Wgtq9VRcSs/gGvOzaxYqqSUKrBZf1mnMhwcM5Byb
-KHUJW+hIyCRiTUHrUGItXhRZK3lRHxZDbEN46T8HmtrV6cCRaFTCU2ozTALD47Mn
-CdvAxBZhwALSZ4+AfjB/JwB2C/HfOA==
-=DfAb
------END PGP SIGNATURE-----
+A task without a task specific clamp _always_ inherits the system
+defaults. Resetting a task specific clamp already makes sense also
+_without_ cgroups. It means: just do whatever the system allows you to
+do.
 
---=-QQL4Z9L5K9obB4kJlsj+--
+Only if you are running with CGRoups enabled and the task happens to be
+_not_ in the root group, the "CGroups inheritance" happens.
+But that's exactly an internal detail a task should not care about.
+
+
+> That being said, I am not strongly against the fine grained approach if that's
+> what Yun wants now or what you both prefer.
+
+It's not a fine grained approach, it's just adding a reset mechanism for
+what uclamp already allows to do: setting min and max clamps
+independently.
+
+Regarding use cases, I also believe we have many more use cases of tasks
+interested in setting/resetting just one clamp than tasks interested in
+"fine grain" controlling both clamps at the same time.
+
+
+> I just think the name of the flag needs to change to be more explicit
+> too then.
+
+I don't agree on that and, again, I see much more fine grained details and
+internals exposure in what you propose compared to a single generic
+_RESET flag.
+
+> It'd be good to hear what others think.
+
+I agree on that ;)
 
