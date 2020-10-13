@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8C828C9AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB56D28C9B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390623AbgJMIBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        id S2390660AbgJMIBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390591AbgJMIBb (ORCPT
+        with ESMTP id S2390588AbgJMIBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:01:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F93AC0613D5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:30 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a17so1663593pju.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:30 -0700 (PDT)
+        Tue, 13 Oct 2020 04:01:32 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E762C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:32 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id o9so10234885plx.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OHUIn9W1x+5KlmekZkhiHQBGgSSK4eQqcPUC6t+lfRc=;
-        b=NJoBFLThsczUbwkvrp7kZrvgmTGRNmb1Sil1e6gp0V7/Jrytl6je5a6cMug39yDVNc
-         eJtOflG1IKbxzT0NaS0Z6IFsddksIW5hXejbBHY0KWuZf7IUTIFEfNI8E3GriO32yJIo
-         eey5IHvSrLZWHWpJ2p43kLBrOmK4ZiBpVN6Mg=
+        bh=PX6utEv95nZrK8Cio4KcHOFe3eh1+n1xQTOKgWru7Q8=;
+        b=Yq/nvpaQ5Hpx/VK+3t8sVeKV8lzlwCiDy9N4+pw8gUCZpI3XS9cL9KwWtSFkhWhisR
+         LGmwRdWOc8I/GXFP/OoRfZ5q2niv7Jht6WP1s7Niv6VRkxKqD+4GSHYXr/EGk+DgX4ts
+         Psnki/01Xl8AnE4gxxe2SnN1XiYtoSXrDxcqE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OHUIn9W1x+5KlmekZkhiHQBGgSSK4eQqcPUC6t+lfRc=;
-        b=q4vPpdib2ZNr4eeL5tclWqE6omzltd4QXQ6hEw4hwZ/tKAVPsNlGJSrQhLMCXEOsi4
-         j7H0JoUB1E0LdDyRtIRpYfJrCkvtLWqf0XUqkMjT7rGMafwz795uk03u1EkCfZNTUbdZ
-         P0Y2Miyv+iveKjS9CxnPOeG43VYh7PTF+rE5XvEf9fvXi4dj4GnZtkJoOxLSmqRxs1W1
-         MLnZvlbmmngPLr4uAgY5KftOUSF8OstAqeCko9JLOi9f2IYLUFEJJ8AyYdUGLwO3ocT/
-         jQPfsQtiq83DkNFSl9ixkTy6H0+9N+33Ipo5GVJbP/ntTQpnvjzwwAE9MGpE9JhRI0Pl
-         AiHw==
-X-Gm-Message-State: AOAM530/AP/x5JOkm9UiIZ6v333uwlECozZin6PV0wb9ny7QdIWZ0/X4
-        qd+V/uhpBDO2aweKW4SB/kh+9Q==
-X-Google-Smtp-Source: ABdhPJz191HpdE/vjX+LToftssVvpvCdV+wFU6xQmnXmYjzutm9Exh6Wi2eBL8fi0ndngxp3bHcTHA==
-X-Received: by 2002:a17:902:eacc:b029:d3:b362:72c0 with SMTP id p12-20020a170902eaccb02900d3b36272c0mr26510337pld.23.1602576089722;
-        Tue, 13 Oct 2020 01:01:29 -0700 (PDT)
+        bh=PX6utEv95nZrK8Cio4KcHOFe3eh1+n1xQTOKgWru7Q8=;
+        b=C9Aag5JL+di9S9PO75xEolcEW/r9kOFjHKXC+imqN8Ah1SAQGW1k+nHLaaqtoxtCD9
+         PDq7QPEUmuSmNhSKrEVsuLmZNYgl+eguivtLEP5cCvNdj+1F88FM+WImaADrbTxwdUdz
+         tRCRn56un0M35RBA+90R3P5lbjR9/jF9CtXpOk6BHleSTlfNrnxvisORR9B42SQjICE5
+         wbJzcBBE6kJ17X3C/g/GHpm99i/kE+dm2GXm964dC6TLIU4Yn0MVLVCfbhgv2gOtQvst
+         37F2cwZJsxYe1oQhTMoN3ltOcIR6vNbSYA4NxLJtDqAXDPd+rMmMkrIMwbMK2hvMNfa8
+         KM5w==
+X-Gm-Message-State: AOAM530kSr89MFSesfEE2B5k+ldiqxGI8X6cIi5KhRmsSphnccnBXrjh
+        68/Oyy3bpevf/AYrbYA/YFZdcQ==
+X-Google-Smtp-Source: ABdhPJwy8G+WoGa8xfqN7S2NUeVNZqaFQcnZEV3UAVpca7MBw+WNfz5pRUiBOuT/fqofn7wEFblptA==
+X-Received: by 2002:a17:90a:160f:: with SMTP id n15mr24051942pja.75.1602576092037;
+        Tue, 13 Oct 2020 01:01:32 -0700 (PDT)
 Received: from alex-desktop.lan (c-73-63-253-164.hsd1.ca.comcast.net. [73.63.253.164])
-        by smtp.gmail.com with ESMTPSA id y124sm14956924pfy.28.2020.10.13.01.01.27
+        by smtp.gmail.com with ESMTPSA id y124sm14956924pfy.28.2020.10.13.01.01.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 01:01:29 -0700 (PDT)
+        Tue, 13 Oct 2020 01:01:31 -0700 (PDT)
 From:   Alexandru Stan <amstan@chromium.org>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
@@ -60,11 +60,11 @@ Cc:     Douglas Anderson <dianders@chromium.org>,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Matthias Kaehlcke <mka@chromium.org>,
         Alexandru Stan <amstan@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: [PATCH v2 1/3] backlight: pwm_bl: Fix interpolation
-Date:   Tue, 13 Oct 2020 01:01:01 -0700
-Message-Id: <20201013010056.v2.1.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: [PATCH v2 2/3] ARM: dts: rockchip: veyron: Remove 0 point from brightness-levels
+Date:   Tue, 13 Oct 2020 01:01:02 -0700
+Message-Id: <20201013010056.v2.2.I96b8d872ec51171f19274e43e96cadc092881271@changeid>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201013080103.410133-1-amstan@chromium.org>
 References: <20201013080103.410133-1-amstan@chromium.org>
@@ -74,158 +74,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Whenever num-interpolated-steps was larger than the distance
-between 2 consecutive brightness levels the table would get really
-discontinuous. The slope of the interpolation would stick with
-integers only and if it was 0 the whole line segment would get skipped.
+After the "PWM backlight interpolation adjustments" patches, the
+backlight interpolation works a little differently. The way these
+dts files were working before was relying on a bug (IMHO).
 
-Example settings:
-	brightness-levels = <0 1 2 4 8 16 32 64 128 256>;
-	num-interpolated-steps = <16>;
+Remove the 0-3 range since otherwise we would have a 252 long
+interpolation that would slowly go between 0 and 3, looking really bad
+in userspace.
 
-The distances between 1 2 4 and 8 would be 1, and only starting with 16
-it would start to interpolate properly.
-
-Let's change it so there's always interpolation happening, even if
-there's no enough points available (read: values in the table would
-appear more than once). This should match the expected behavior much
-more closely.
+We don't need the 0% point, userspace seems to handle this just fine
+because it uses the bl_power property to turn off the display.
 
 Signed-off-by: Alexandru Stan <amstan@chromium.org>
 ---
 
- drivers/video/backlight/pwm_bl.c | 70 ++++++++++++++------------------
- 1 file changed, 31 insertions(+), 39 deletions(-)
+ arch/arm/boot/dts/rk3288-veyron-jaq.dts    | 2 +-
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts | 2 +-
+ arch/arm/boot/dts/rk3288-veyron-tiger.dts  | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
-index dfc760830eb9..3e77f6b73fd9 100644
---- a/drivers/video/backlight/pwm_bl.c
-+++ b/drivers/video/backlight/pwm_bl.c
-@@ -230,8 +230,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 				  struct platform_pwm_backlight_data *data)
- {
- 	struct device_node *node = dev->of_node;
--	unsigned int num_levels = 0;
--	unsigned int levels_count;
-+	unsigned int num_levels;
- 	unsigned int num_steps = 0;
- 	struct property *prop;
- 	unsigned int *table;
-@@ -260,12 +259,11 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 	if (!prop)
- 		return 0;
+diff --git a/arch/arm/boot/dts/rk3288-veyron-jaq.dts b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+index af77ab20586d..4a148cf1defc 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-jaq.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
+@@ -20,7 +20,7 @@ / {
  
--	data->max_brightness = length / sizeof(u32);
-+	num_levels = length / sizeof(u32);
+ &backlight {
+ 	/* Jaq panel PWM must be >= 3%, so start non-zero brightness at 8 */
+-	brightness-levels = <0 8 255>;
++	brightness-levels = <8 255>;
+ 	num-interpolated-steps = <247>;
+ };
  
- 	/* read brightness levels from DT property */
--	if (data->max_brightness > 0) {
--		size_t size = sizeof(*data->levels) * data->max_brightness;
--		unsigned int i, j, n = 0;
-+	if (num_levels > 0) {
-+		size_t size = sizeof(*data->levels) * num_levels;
+diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+index f8b69e0a16a0..82fc6fba9999 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
+@@ -39,7 +39,7 @@ volum_up {
  
- 		data->levels = devm_kzalloc(dev, size, GFP_KERNEL);
- 		if (!data->levels)
-@@ -273,7 +271,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
+ &backlight {
+ 	/* Minnie panel PWM must be >= 1%, so start non-zero brightness at 3 */
+-	brightness-levels = <0 3 255>;
++	brightness-levels = <3 255>;
+ 	num-interpolated-steps = <252>;
+ };
  
- 		ret = of_property_read_u32_array(node, "brightness-levels",
- 						 data->levels,
--						 data->max_brightness);
-+						 num_levels);
- 		if (ret < 0)
- 			return ret;
+diff --git a/arch/arm/boot/dts/rk3288-veyron-tiger.dts b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
+index 069f0c2c1fdf..52a84cbe7a90 100644
+--- a/arch/arm/boot/dts/rk3288-veyron-tiger.dts
++++ b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
+@@ -23,7 +23,7 @@ / {
  
-@@ -298,7 +296,13 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 		 * between two points.
- 		 */
- 		if (num_steps) {
--			if (data->max_brightness < 2) {
-+			unsigned int num_input_levels = num_levels;
-+			unsigned int i;
-+			u32 x1, x2, x, dx;
-+			u32 y1, y2;
-+			s64 dy;
-+
-+			if (num_input_levels < 2) {
- 				dev_err(dev, "can't interpolate\n");
- 				return -EINVAL;
- 			}
-@@ -308,14 +312,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 			 * taking in consideration the number of interpolated
- 			 * steps between two levels.
- 			 */
--			for (i = 0; i < data->max_brightness - 1; i++) {
--				if ((data->levels[i + 1] - data->levels[i]) /
--				   num_steps)
--					num_levels += num_steps;
--				else
--					num_levels++;
--			}
--			num_levels++;
-+			num_levels = (num_input_levels - 1) * num_steps + 1;
- 			dev_dbg(dev, "new number of brightness levels: %d\n",
- 				num_levels);
+ &backlight {
+ 	/* Tiger panel PWM must be >= 1%, so start non-zero brightness at 3 */
+-	brightness-levels = <0 3 255>;
++	brightness-levels = <3 255>;
+ 	num-interpolated-steps = <252>;
+ };
  
-@@ -327,24 +324,25 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 			table = devm_kzalloc(dev, size, GFP_KERNEL);
- 			if (!table)
- 				return -ENOMEM;
--
--			/* Fill the interpolated table. */
--			levels_count = 0;
--			for (i = 0; i < data->max_brightness - 1; i++) {
--				value = data->levels[i];
--				n = (data->levels[i + 1] - value) / num_steps;
--				if (n > 0) {
--					for (j = 0; j < num_steps; j++) {
--						table[levels_count] = value;
--						value += n;
--						levels_count++;
--					}
--				} else {
--					table[levels_count] = data->levels[i];
--					levels_count++;
-+			/*
-+			 * Fill the interpolated table[x] = y
-+			 * by draw lines between each (x1, y1) to (x2, y2).
-+			 */
-+			dx = num_steps;
-+			for (i = 0; i < num_input_levels - 1; i++) {
-+				x1 = i * dx;
-+				x2 = x1 + dx;
-+				y1 = data->levels[i];
-+				y2 = data->levels[i + 1];
-+				dy = (s64)y2 - y1;
-+
-+				for (x = x1; x < x2; x++) {
-+					table[x] = y1 +
-+						div_s64(dy * ((s64)x - x1), dx);
- 				}
- 			}
--			table[levels_count] = data->levels[i];
-+			/* Fill in the last point, since no line starts here. */
-+			table[x2] = y2;
- 
- 			/*
- 			 * As we use interpolation lets remove current
-@@ -353,15 +351,9 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 			 */
- 			devm_kfree(dev, data->levels);
- 			data->levels = table;
--
--			/*
--			 * Reassign max_brightness value to the new total number
--			 * of brightness levels.
--			 */
--			data->max_brightness = num_levels;
- 		}
- 
--		data->max_brightness--;
-+		data->max_brightness = num_levels - 1;
- 	}
- 
- 	return 0;
 -- 
 2.28.0
 
