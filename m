@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE1028C744
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6040628C734
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgJMCrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 22:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60358 "EHLO mail.kernel.org"
+        id S1727671AbgJMCoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 22:44:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51305 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727075AbgJMCrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 22:47:22 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D716421D7F;
-        Tue, 13 Oct 2020 02:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602556902;
-        bh=LQiPOpY968vM15ws6eatLn5hkMoc6C69BAyptP8yb3s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WJfKJAakgAD7qjFI7I8d62+38dQW/gR39Oyw6pqDzFE53FhoKsmUCSBRe90Jac+65
-         ueYxxyOXZybO0c9hRkwD2mzsyekqicomiCZkaJ3QCTTGddOyuRxFwPeVwEWxY1i6N6
-         pYLvroZxwpBga1g3+1vSai6CI9au7JSEOt5Da1C8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 980AA35229C4; Mon, 12 Oct 2020 19:41:42 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 19:41:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S1726893AbgJMCoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 22:44:23 -0400
+IronPort-SDR: B1kp5NLImV8kaLcHd4OSebv2l8lBrmOJbEPrHmLDqBkF2Va8u3CKgnAdec/tg24UYIsUHafOl9
+ avut6fpWh//A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165047936"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="165047936"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 19:44:23 -0700
+IronPort-SDR: lWdiXz+T4KiijsEjiqrjEYORvDRsWS2jBywAPiYgeffHw8AGc2wVXmy1vxOXpUSEbdN2/OTD0i
+ LPE87mIblDSw==
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="530208643"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 19:44:18 -0700
+Date:   Tue, 13 Oct 2020 10:44:16 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] RCU changes for v5.10
-Message-ID: <20201013024142.GK3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201012141451.GA3425471@gmail.com>
- <CAHk-=wiWowWNsrOh+Ye+b_x=7_4MQmvXq0cdmLwqr2=YYj-jgA@mail.gmail.com>
- <20201012214405.GI3249@paulmck-ThinkPad-P72>
- <CAHk-=wgYr6DHdK1p5RTa4yemf=6t86UtRnY4VhKjcvovBxO_hw@mail.gmail.com>
- <20201012235426.GJ3249@paulmck-ThinkPad-P72>
- <CAHk-=whQDWhcH6jTJuS_OFpdnuh9mMHt7x7hJ5OocLVfgfKEqA@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20201013024416.GN1057@shuo-intel.sh.intel.com>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com>
+ <20200922114311.38804-5-shuo.a.liu@intel.com>
+ <20200927105152.GG88650@kroah.com>
+ <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com>
+ <20200930111612.GZ2628@hirez.programming.kicks-ass.net>
+ <20200930161036.GY28786@gate.crashing.org>
+ <20200930171346.GC2628@hirez.programming.kicks-ass.net>
+ <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
+ <20201012084431.GK1057@shuo-intel.sh.intel.com>
+ <20201012164916.GA613777@rani.riverdale.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whQDWhcH6jTJuS_OFpdnuh9mMHt7x7hJ5OocLVfgfKEqA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201012164916.GA613777@rani.riverdale.lan>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:14:42PM -0700, Linus Torvalds wrote:
-> On Mon, Oct 12, 2020 at 4:54 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > In CONFIG_PREEMPT_NONE=y kernels, RCU has no way to tell whether or
-> > not its caller holds a raw spinlock, which some callers do.
-> 
-> Only kfree_rcu()? (And apparently eventually call_rcu())?
+On Mon 12.Oct'20 at 12:49:16 -0400, Arvind Sankar wrote:
+>On Mon, Oct 12, 2020 at 04:44:31PM +0800, Shuo A Liu wrote:
+>> On Wed 30.Sep'20 at 12:14:03 -0700, Nick Desaulniers wrote:
+>> >On Wed, Sep 30, 2020 at 10:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>> >>
+>> >> On Wed, Sep 30, 2020 at 11:10:36AM -0500, Segher Boessenkool wrote:
+>> >>
+>> >> > Since this variable is a local register asm, on entry to the asm the
+>> >> > compiler guarantees that the value lives in the assigned register (the
+>> >> > "r8" hardware register in this case).  This all works completely fine.
+>> >> > This is the only guaranteed behaviour for local register asm (well,
+>> >> > together with analogous behaviour for outputs).
+>> >>
+>> >> Right, that's what they're trying to achieve. The hypervisor calling
+>> >> convention needs that variable in %r8 (which is somewhat unfortunate).
+>> >>
+>> >> AFAIK this is the first such use in the kernel, but at least the gcc-4.9
+>> >> (our oldest supported version) claims to support this.
+>> >>
+>> >> So now we need to know if clang will actually do this too..
+>> >
+>> >Does clang support register local storage? Let's use godbolt.org to find out:
+>> >https://godbolt.org/z/YM45W5
+>> >Looks like yes. You can even check different GCC versions via the
+>> >dropdown in the top right.
+>> >
+>> >The -ffixed-* flags are less well supported in Clang; they need to be
+>> >reimplemented on a per-backend basis. aarch64 is relatively well
+>> >supported, but other arches not so much IME.
+>> >
+>> >Do we need register local storage here?
+>> >
+>> >static inline long bar(unsigned long hcall_id)
+>> >{
+>> >  long result;
+>> >  asm volatile("movl %1, %%r8d\n\t"
+>> >  "vmcall\n\t"
+>> >    : "=a" (result)
+>> >    : "ir" (hcall_id)
+>> >    : );
+>> >  return result;
+>> >}
+>>
+>> Yeah, this approach is also mentioned in the changelog. I will change to
+>> this way to follow your preference. With an addtional "r8" clobber what
+>> Arvind mentioned.
+>>
+>> Thanks
+>> shuo
+>
+>Btw, I noticed that arch/x86/xen/hypercall.h uses register-local
+>variables already for its hypercalls for quite some time, so this
+>wouldn't be unprecedented. [0]
+>
+>Do these calls also need a memory clobber? The KVM/xen hypercall functions
+>all have one.
 
-Yes.  The other RCU APIs either only use raw spinlocks themselves on
-the one hand or must be called from schedulable contexts on the other.
+Yes. it's needed. I will add it. Thanks
 
-> And since we have lockdep, and it warns about it, and raw spinlocks
-> are really really rare, do we really need to then disable this simple
-> optimization for everybody else?
-> 
-> We have been very successful with "don't do that then" rules.
-> 
-> Eg, you cannot do normal memory allocations inside a spinlock (or you
-> have to mark them with GFP_ATOMIC, and not all allocations can be
-> marked as such), and this has been the case basically forever. And we
-> have debug code and tools that will check that.
-> 
-> Why is it impossible to just say "you can't do kfree_rcu() while
-> holding a raw spinlock"?
-> 
-> Particularly for something like kfree_rcu() and particularly if it's
-> just about raw spinlocks, it would seem to be very natural to just say
-> "just delay freeing it until after you've released the raw spinlock".
-> 
-> Because I sure hope that you don't find raw spinlock users in random
-> places. It should be stuff like core scheduling, RCU itself, etc.
-
-True enough, but core stuff does use RCU, some of it while holding
-raw spinlocks.
-
-And you are right that "just don't do that, defer it instead" is often
-very effective.  In fact, I defer wakeups within RCU in order to avoid
-deadlocks with the scheduler.  It is simple in concept, and it does
-work, but it is also a disproportionate source of bugs.  Most of which
-rcutorture finds in the safety and comfort of my own system, thankfully,
-but some do escape.  Maybe I am overreacting, but I have been burned
-often enough that I feel the need to avoid this.
-
-Plus I did oversimplify.  CONFIG_PREEMPT_COUNT also allows the call_rcu()
-portion to avoid deadlocks with the current non-lockless memory allocator.
-
-So if the answer from you on global CONFIG_PREEMPT_COUNT=y and from
-the MM guys on lockless allocation is irrevocably "@#$@#$ NO!" or the
-current-day bowdlerized equivalent, I will take the scheduling delays
-in the shorts and defer allocation.
-
-> > Making CONFIG_PREEMPT_COUNT unconditional allows
-> > RCU to make this determination.
-> 
-> I understand _that_ part, but the thing I find objectionable is how a
-> small piece of code seems to want to change the rules we have had in
-> the kernel since basically day #1.
-> 
-> (Ok, so the preempt count itself is much more recent than "day #1",
-> but the basic non-counting spinlocks do go back to very early in the
-> SMP stages).
-
-Understood, a count-free CONFIG_PREEMPT_NONE has been in place in the
-Linux kernel for an extremely long time.  And I also understand that
-adding CONFIG_PREEMPT_COUNT=y everywhere is a pervasive change that is
-not to be taken lightly.
-
-							Thanx, Paul
+>
+>Thanks.
+>
+>[0] e74359028d548 ("xen64: fix calls into hypercall page")
