@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5397128CF69
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21E528CF82
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387819AbgJMNp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:45:58 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:54192 "EHLO z5.mailgun.us"
+        id S2388056AbgJMNul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:50:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387783AbgJMNp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:45:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602596757; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=zuP68KS+m7yiu7lWb1w/0cX8d1l6eBr2he/ZnT7A7RY=; b=oC6JqJPwN1N4cproxcdQR3FmiA61N8MQJxZwa11F6eY3n93VqhYTAOCsXwcffECA5eJHwvjw
- wnkp2O354UC0ycwI4nJQ8ojwxZ1GHUDmyJU6oLogtZT5tSbgUnv0lZ8FfRjR0Vv1jBf1F4Qb
- /yRIig1ds75h6aKJVSkPZ0UwAdc=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f85af94ef891f1ee2f122bc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 13:45:56
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62260C43382; Tue, 13 Oct 2020 13:45:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S2387949AbgJMNuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:50:40 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E2A98C433CB;
-        Tue, 13 Oct 2020 13:45:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E2A98C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH] Asoc: qcom: lpass-cpu: Fix dp audio failure on monitors
-Date:   Tue, 13 Oct 2020 19:15:28 +0530
-Message-Id: <1602596728-11783-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 17F4F24770;
+        Tue, 13 Oct 2020 13:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602597040;
+        bh=ifE0Ha5o2XG4AKS/0u0N1d994tavHWMY4bLOdzKHqbM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Dw6Nvlaelu4WZC9bnk5H5VKQxCdOx0EqMkPeAAGhRvYvXkCnYp0xR8sX+QlaPNhEq
+         WXQ7PBh+Zn8Skv1OrHhiGbQRScHu6h9x86+JGZmdEGgn0UC4wgC4SRubRJHND65yvl
+         M0cOIUo70Th/S1pIBtnZQyA6X7exB0Aqzi0eM96g=
+Received: by mail-ot1-f46.google.com with SMTP id e20so18662894otj.11;
+        Tue, 13 Oct 2020 06:50:40 -0700 (PDT)
+X-Gm-Message-State: AOAM531BmjTDfcOvMMSXPEobG4ZXwKS3DIG1pJZlMHgoQmse5xk2QlAA
+        MGrdGFqPTc31nVd7eiaKc1S9Ev0KHQb+IEzZdg==
+X-Google-Smtp-Source: ABdhPJyy8pkBm/rH1RsgSNwitplg9Rb0bqHTBjDtl+Y96Z/jlmD7XWQdqpFugB9tRrh2WBnMNGylHAKIiG7F2DlEjX0=
+X-Received: by 2002:a9d:7993:: with SMTP id h19mr18816592otm.129.1602597039244;
+ Tue, 13 Oct 2020 06:50:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200929024004.244992-1-badhri@google.com> <20200929024004.244992-4-badhri@google.com>
+ <20201005144618.GA154206@bogus> <CAPTae5+e74k22Vcf-cnFLFGnR-mBdb9qvN6i-E-31VexhpUSeA@mail.gmail.com>
+ <CAL_JsqLqs2qZqwmCOMgCeiGsw4Hj2xMAbRYqWCphH92+8T6qUg@mail.gmail.com>
+In-Reply-To: <CAL_JsqLqs2qZqwmCOMgCeiGsw4Hj2xMAbRYqWCphH92+8T6qUg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 13 Oct 2020 08:50:28 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+bhEKGXoObGWbWw=1KQAovyJgvvfJe+=n7829HhKmmSw@mail.gmail.com>
+Message-ID: <CAL_Jsq+bhEKGXoObGWbWw=1KQAovyJgvvfJe+=n7829HhKmmSw@mail.gmail.com>
+Subject: Re: [PATCH v9 03/15] dt-bindings: usb: Maxim type-c controller device
+ tree binding document
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        USB <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+On Tue, Oct 13, 2020 at 8:43 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Oct 7, 2020 at 7:43 PM Badhri Jagan Sridharan <badhri@google.com> wrote:
+> >
+> > Hi Robb,
+> >
+> > Thanks for the reviews ! Responses inline.
+> >
+> > Regards,
+> > Badhri
+> >
+> > On Mon, Oct 5, 2020 at 7:46 AM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Mon, Sep 28, 2020 at 07:39:52PM -0700, Badhri Jagan Sridharan wrote:
+> > > > Add device tree binding document for Maxim TCPCI based Type-C chip driver
+> > > >
+> > > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > > > ---
+> > > > Changes since v1:
+> > > > - Changing patch version to v6 to fix version number confusion.
+> > > >
+> > > > Changes since v6:
+> > > > - Migrated to yaml format.
+> > > >
+> > > > Changes since v7:
+> > > > - Rebase on usb-next
+> > > >
+> > > > Changes since v8:
+> > > > - Fix errors from make dt_binding_check as suggested by
+> > > >   Rob Herring.
+> > > > ---
+> > > >  .../devicetree/bindings/usb/maxim,tcpci.yaml  | 68 +++++++++++++++++++
+> > > >  1 file changed, 68 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..f4b5f1a09b98
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/usb/maxim,tcpci.yaml
+> > > > @@ -0,0 +1,68 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: "http://devicetree.org/schemas/usb/maxim,tcpci.yaml#"
+> > > > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > > > +
+> > > > +title: Maxim TCPCI Type-C PD controller DT bindings
+> > > > +
+> > > > +maintainers:
+> > > > +  - Badhri Jagan Sridharan <badhri@google.com>
+> > > > +
+> > > > +description: Maxim TCPCI Type-C PD controller
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    enum:
+> > > > +      - maxim,tcpci
+> > >
+> > > Is there a datasheet for this? Searching for 'tcpci' doesn't really come
+> > > up with anything other than this patch. Only chip I found is MAX77958.
+> > > Bindings are for specific h/w devices.
+> >
+> > Unfortunately the datasheet cannot be made public yet. Has the datasheet
+> > have to be made public before sending the bindings ?
+>
+> No, but we need a part number or some assurance that 'tcpci' is a specific part.
 
-Make LPASS_HDMI_TX_PARITY_ADDR reg as volatile to fix
-dp audio failure with external monitors.
-This patch is upgrade to below patch series.
-https://lore.kernel.org/patchwork/project/lkml/list/?series=466460
+I guess TCPCI is USB Type-C Port Controller Interface Specification.
 
-Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-cpu.c | 2 ++
- 1 file changed, 2 insertions(+)
+That's just a protocol definition, not a chip. DT describes h/w which
+is more than just the protocol.
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index ba2aca3..78de888 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -660,6 +660,8 @@ static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned int reg)
- 		return true;
- 	if (reg == LPASS_HDMI_TX_LEGACY_ADDR(v))
- 		return true;
-+	if (reg == LPASS_HDMI_TX_PARITY_ADDR(v))
-+		return true;
- 
- 	for (i = 0; i < v->rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACURR_REG(v, i))
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+Rob
