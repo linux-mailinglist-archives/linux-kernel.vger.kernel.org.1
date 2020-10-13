@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2597E28CA5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D440128CA6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403910AbgJMIhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728702AbgJMIhk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:37:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDB6C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:37:40 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kSFoH-0004G7-3T; Tue, 13 Oct 2020 10:37:29 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kSFoF-0005UK-Ab; Tue, 13 Oct 2020 10:37:27 +0200
-Date:   Tue, 13 Oct 2020 10:37:27 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, kbuild-all@lists.01.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, kernel@pengutronix.de,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v8 3/3] leds: trigger: implement a tty trigger
-Message-ID: <20201013083727.bii6p6yhdh53zbko@pengutronix.de>
-References: <20201012123358.1475928-4-u.kleine-koenig@pengutronix.de>
- <202010122255.mTooYoPh-lkp@intel.com>
+        id S2403949AbgJMIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:44:19 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2975 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2403918AbgJMIoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 04:44:18 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 4C6FD9BD907B2567ECAD;
+        Tue, 13 Oct 2020 09:44:17 +0100 (IST)
+Received: from [127.0.0.1] (10.47.6.6) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 13 Oct
+ 2020 09:44:16 +0100
+Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
+ arch events
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <namhyung@kernel.org>, <kjain@linux.ibm.com>, <irogers@google.com>,
+        <yao.jin@linux.intel.com>, <yeyunfeng@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
+ <20201012105430.GH1099489@krava>
+ <5b0aefe2-e0d5-b5ff-654c-4e93c427050f@huawei.com>
+ <20201012112419.GJ1099489@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <9e8e3d2d-d15d-13df-ab97-34df8d81a6a1@huawei.com>
+Date:   Tue, 13 Oct 2020 09:41:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cnr3vbqepw63ca5h"
-Content-Disposition: inline
-In-Reply-To: <202010122255.mTooYoPh-lkp@intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20201012112419.GJ1099489@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.6.6]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/10/2020 12:24, Jiri Olsa wrote:
+> On Mon, Oct 12, 2020 at 12:15:04PM +0100, John Garry wrote:
+>> On 12/10/2020 11:54, Jiri Olsa wrote:
+>>>> ff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+>>>> index 99df41a9543d..e47644cab3fa 100644
+>>>> --- a/tools/perf/pmu-events/jevents.c
+>>>> +++ b/tools/perf/pmu-events/jevents.c
+>>>> @@ -505,20 +505,15 @@ static char *real_event(const char *name, char *event)
+>>>>    }
+>>>>    static int
+>>>> -try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
+>>>> -	  struct json_event *je)
+>>>> +try_fixup(const char *fn, char *arch_std, struct json_event *je, char **event)
+>>>>    {
+>>>>    	/* try to find matching event from arch standard values */
+>>>>    	struct event_struct *es;
+>>>>    	list_for_each_entry(es, &arch_std_events, list) {
+>>>>    		if (!strcmp(arch_std, es->name)) {
+>>>> -			if (!eventcode && es->event) {
+>>>> -				/* allow EventCode to be overridden */
+>>>> -				free(je->event);
+>>>> -				je->event = NULL;
+>>>> -			}
+>>>>    			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
+>>>> +			*event = je->event;
+>>> I'm bit rusty on this code, but isn't je->event NULL at this point?
+>>
+>> je->event should be now assigned from es->event because of
+>> FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD):
+>>
+>> #define TRY_FIXUP_FIELD(field) do { if (es->field && !*field) {\
+>> 	*field = strdup(es->field);				\
+>> 	if (!*field)						\
+>> 		return -ENOMEM;					\
+>> } } while (0)
+>>
+>> And es->event should be set.
+> 
+> right, thanks
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> 
+> jirka
+> 
+> .
+> 
 
---cnr3vbqepw63ca5h
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+"PMU events" testcase was still passing as it does not cover this 
+scenario, so I'll look to expand the test to catch such problems.
 
-Hello,
+Thanks,
+John
 
-On Mon, Oct 12, 2020 at 10:16:59PM +0800, kernel test robot wrote:
-> Hi "Uwe,
-
-I love your test report! Perhaps something to improve: The parser of the
-=46rom: line should drop the " :-)
-
->    drivers/leds/trigger/ledtrig-tty.c: In function 'ledtrig_tty_work':
-> >> drivers/leds/trigger/ledtrig-tty.c:92:7: warning: variable 'firstrun' =
-set but not used [-Wunused-but-set-variable]
->       92 |  bool firstrun =3D false;
->          |       ^~~~~~~~
-
-Indeed, this line should just be dropped. I won't resend yet, waiting
-for some feedback first and assuming reviewers are able to interpolate
-how v9 will look like :-)
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---cnr3vbqepw63ca5h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+FZ0QACgkQwfwUeK3K
-7AlByQf/QetryfgvRVepJCPyfH15sS5n6kVfHoQRw59sz8GlbqraBNtO/mF6+UWx
-U4AhTHha/Da1T97IfvJFglYMj0j/MJnWMUvN++tk2LGF2pOYhW8sxixHihHjhGvH
-9zaE/1hPU96onIA7MCoi5DN1EOlEKVHQCgtoUWODYjB4JaaoJn9sUxwF8+mab2Au
-49H7rauA8Uu7F1mU8eBrbo+Jyo40rXeCpF7gmq2D/T454+2zpTfSo/Cg65Ot6faH
-OODgcnxIzA+OS02XJphoAvbPfa0gvnY5LEoj5Wcpw9Ten+azeB+gSFBmULItMlLH
-mtfb9jHM7E9W6HJ0P8aCzhur7fT7fQ==
-=JlDd
------END PGP SIGNATURE-----
-
---cnr3vbqepw63ca5h--
