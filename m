@@ -2,87 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA6428D273
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E6A28D26E
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728180AbgJMQlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727351AbgJMQle (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:41:34 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9866C0613D0;
-        Tue, 13 Oct 2020 09:41:33 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id d28so645405ote.1;
-        Tue, 13 Oct 2020 09:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=uVnUPjf6UDmTMbA38iBDaXkpX5nU/iLbKZkL+pZkbSo=;
-        b=DGPzH955WfvrbjYpMZJQQ9Sh+IRT0DFvjHx0nwOjGnneTww+kdMz/YK3xquauVJ75V
-         kQoQTBQzAxbclWAZa7G5owTYu9xBtemGN9HNvNL79gPrRy+TtPQgzEpSCeN3h2kDM7X9
-         vNxaINGCrW075YJ6npbfq+ICm1HB6a5PrPCnBBpp6JH0wLpUBE0R4OXhTM49X533/S7s
-         vbMctZg7M3P1rS3AY1qhwoBuBvN4hioVQafd/ct80Z1xCb3+lB1IZUfc119rc/S+VmEw
-         qu7MWjQLAvUSzdQgMsmnMvEoZ2U71Q2QEADAYZyv+x0z2fcWvlpXjRjz9P/v0KsD5MT7
-         Ukhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uVnUPjf6UDmTMbA38iBDaXkpX5nU/iLbKZkL+pZkbSo=;
-        b=d/xjvWT0M0Ofroe4dBUZ8oxKo7KhWRSAegI0zJx2b1Tl++571fOgykudXft1HdJWug
-         hXaAbzbXP0lSWMfDMivYOiyHZ5b55GPrlbT3/m6jDcFQKHF8TGsR3i5jVsBBS2RCnPIA
-         5kt3raviWBW2FCutddeVyBJrFB2CB2CQ7tX6RQC6Vc6Xho6Lc+KkTPRihdqS4+VzMqd+
-         2B9VS3YlUbdOl55c9edZTjl8GrwvAlmtP/tobPA/3tL1wmhVfE8fniGxEWDPBDPR03Do
-         99B0DCUyZuWQskbdNrZdhYM2IPKWo+JFeXsZCyz/Y0otcxFU1iADfzLBECwpQk7fNxwn
-         G4VA==
-X-Gm-Message-State: AOAM533QC4sDkcRUiD4dM9Wwx9U6b3kjswVgo0guBtjzZBZJKO8kPh2q
-        1rWHPuf5NxoK2/Ma7ClaC+w=
-X-Google-Smtp-Source: ABdhPJyUOkIsnlqvZpr++AbjzCP5gpYyDLtSnDslaGlmwJrQhbVWp4TKTyBMSgNWxoa+1ZpZaS8gvQ==
-X-Received: by 2002:a05:6830:14d0:: with SMTP id t16mr364219otq.362.1602607293355;
-        Tue, 13 Oct 2020 09:41:33 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c18sm95590oib.34.2020.10.13.09.41.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Oct 2020 09:41:32 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
+        id S1728128AbgJMQld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:41:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727351AbgJMQld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:41:33 -0400
+Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43F3C252B7;
+        Tue, 13 Oct 2020 16:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602607292;
+        bh=0msVrQvAOZphZx72FStCi9QydHchqZLVK6UljUe25gk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=N04fmgQIl+uJB1yw3//AgVPz27tiQSFbKU+cvYQ1G7u59nN0r4o/dgdi9+E0JarXY
+         UKUBQovqWKo6mWHfJ8st0YMg4v5ad1UvNz9bPWG0XMy2Ih8Ze9IfuaMMwNmaVXDDNv
+         veeb9sAOVzJj367gxjWUmRwm5huCHwL0Unozu3Ho=
 Date:   Tue, 13 Oct 2020 09:41:31 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 000/124] 5.8.15-rc1 review
-Message-ID: <20201013164131.GF251780@roeck-us.net>
-References: <20201012133146.834528783@linuxfoundation.org>
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
+        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
+Subject: [GIT PULL] iomap: new code for 5.10-rc1
+Message-ID: <20201013164131.GB9832@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012133146.834528783@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 03:30:04PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.15 release.
-> There are 124 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Oct 2020 13:31:22 +0000.
-> Anything received after that time might be too late.
-> 
+Hi Linus,
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+Please pull these new changes to the iomap code for 5.10.  There's not a
+lot of new stuff going on here -- a little bit of code refactoring to
+make iomap workable with btrfs' fsync locking model, cleanups in
+preparation for adding THP support for filesystems, and fixing a data
+corruption issue for blocksize < pagesize filesystems.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+The branch merges cleanly with your HEAD branch as of a few minutes ago.
+Please let me know if there are any strange problems.  It's been a
+pretty quiet cycle, so I don't anticipate any more iomap pulls other
+than whatever new bug fixes show up.
 
-Guenter
+--D
+
+The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
+
+  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.10-merge-4
+
+for you to fetch changes up to 1a31182edd0083bb9f26e582ed39f92f898c4d0a:
+
+  iomap: Call inode_dio_end() before generic_write_sync() (2020-09-28 08:51:08 -0700)
+
+----------------------------------------------------------------
+New code for 5.10:
+- Don't WARN_ON weird states that unprivileged users can create.
+- Don't invalidate page cache when direct writes want to fall back to
+  buffered.
+- Fix some problems when readahead ios fail.
+- Fix a problem where inline data pages weren't getting flushed during
+  an unshare operation.
+- Rework iomap to support arbitrarily many blocks per page in
+  preparation to support THP for the page cache.
+- Fix a bug in the blocksize < pagesize buffered io path where we could
+  fail to initialize the many-blocks-per-page uptodate bitmap correctly
+  when the backing page is actually up to date.  This could cause us to
+  forget to write out dirty pages.
+- Split out the generic_write_sync at the end of the directio write path
+  so that btrfs can drop the inode lock before sync'ing the file.
+- Call inode_dio_end before trying to sync the file after a O_DSYNC
+  direct write (instead of afterwards) to match the behavior of the
+  old directio code.
+
+----------------------------------------------------------------
+Andreas Gruenbacher (1):
+      iomap: Fix direct I/O write consistency check
+
+Christoph Hellwig (1):
+      iomap: Allow filesystem to call iomap_dio_complete without i_rwsem
+
+Goldwyn Rodrigues (1):
+      iomap: Call inode_dio_end() before generic_write_sync()
+
+Matthew Wilcox (Oracle) (12):
+      iomap: Clear page error before beginning a write
+      iomap: Mark read blocks uptodate in write_begin
+      iomap: Fix misplaced page flushing
+      fs: Introduce i_blocks_per_page
+      iomap: Use kzalloc to allocate iomap_page
+      iomap: Use bitmap ops to set uptodate bits
+      iomap: Support arbitrarily many blocks per page
+      iomap: Convert read_count to read_bytes_pending
+      iomap: Convert write_count to write_bytes_pending
+      iomap: Convert iomap_write_end types
+      iomap: Change calling convention for zeroing
+      iomap: Set all uptodate bits for an Uptodate page
+
+Nikolay Borisov (1):
+      iomap: Use round_down/round_up macros in __iomap_write_begin
+
+Qian Cai (1):
+      iomap: fix WARN_ON_ONCE() from unprivileged users
+
+ fs/dax.c                |  13 ++--
+ fs/iomap/buffered-io.c  | 194 ++++++++++++++++++++----------------------------
+ fs/iomap/direct-io.c    |  49 +++++++++---
+ fs/jfs/jfs_metapage.c   |   2 +-
+ fs/xfs/xfs_aops.c       |   2 +-
+ include/linux/dax.h     |   3 +-
+ include/linux/iomap.h   |   5 ++
+ include/linux/pagemap.h |  16 ++++
+ 8 files changed, 150 insertions(+), 134 deletions(-)
