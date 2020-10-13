@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCA128D4DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB9328D4E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732369AbgJMTpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
+        id S1732441AbgJMTqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731913AbgJMTpo (ORCPT
+        with ESMTP id S1728042AbgJMTqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:45:44 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0271C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:45:43 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id o18so723375edq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:45:43 -0700 (PDT)
+        Tue, 13 Oct 2020 15:46:45 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470E9C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:46:45 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id m20so669639ljj.5
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:46:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zz37D07nBex4LXRsGO0eeoEF5U7Zs7MdOvVJudSqras=;
-        b=QVCTfmGMkYn1oWoGZZpsGwjnyAgSJvogqrPoMtEQB9Cw4phzdyL69I9T4OkhHTJqa6
-         a2fe37CLNljzqeSkUEGEmzMStvdcqrsFj+qdkHBoS+9hrDgEDRfWtJ0MQZ+X5yXeBhCa
-         1zGsJCYgsaQvAZ1B8SQOis1XtgWOgMJCDL/Z8=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GnNbqPovdhhp/fFyFjEzT72km0kDum6U0o2/AnLokdo=;
+        b=gyj5i+wwTxy1FvnaKNiokrbfndglfYSKftj2nRRImiAHAM+okhvBdLpD0Tf0qe1T4V
+         1U1VCpZuIgFUOqXksG42UsQ7xXowOU+3ysWzrzfTi7DgFKut4WuG4GJhn02tb7vs+Mnn
+         FbLy5mk8ODWETTAdFfGv99U4LuXochk30UC9Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zz37D07nBex4LXRsGO0eeoEF5U7Zs7MdOvVJudSqras=;
-        b=fLbZ/wcPALkSszV/8cCRjYRppkfgJRifVWQNF404f+M/sz8E8rP04gdnFoUVUmG/AG
-         Wc9BsQ+qtOTzgToPqAiD3K+L/+Yq2MCR3DHu8dOFKIge2VLhb1b1Et/A88lLf5CUaQ0l
-         M4xbost3YRqT1ZDA/ixDeEJ5O1yeSsgWA0Ou1F92UfViMiNPnpIZSuOivFoZntMc0Dy9
-         gv4O1rag7cEd/6VfbIxna73Q1VQm2G6dmyYFPv5L9HhwVLnBQsrt12tT9ni5KU/5I8qq
-         ChpqU/56PQe2clxTy3lj91p0YACUSSJO0DbOEcAOUqd8v65woQydwunFJ3XNbpP1+Eve
-         OPfQ==
-X-Gm-Message-State: AOAM533nba4J1/k6KxmEjU0yMxPf/luW85L7Sf8/U1CnW6TjkFxK+Y1s
-        HmAHsU39x/r7/KbqcxEQDkvE60itVp5a7GZZs6U=
-X-Google-Smtp-Source: ABdhPJxCrmFOwGq3qX7GfcYdHiczoNdh4mmaHubZt8CgKaHIAmUtY8CUbLj46QYhjPDpp81Nts0ffA==
-X-Received: by 2002:a05:6402:a4f:: with SMTP id bt15mr1260487edb.345.1602618342320;
-        Tue, 13 Oct 2020 12:45:42 -0700 (PDT)
-Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id bx24sm459542ejb.51.2020.10.13.12.45.40
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GnNbqPovdhhp/fFyFjEzT72km0kDum6U0o2/AnLokdo=;
+        b=aPEDEH+zQcYzQ22D/pNEP5yb1icERK/LG13/n7p6YJdS1JKNB1Pe9ZURDfWXqgSHVG
+         S4XBNaee16Mwzf0z5iBLz4wzqMagsgkKpqXMw0ffhP2s6C+/NBuFXTdoi1eC8kdEqyOh
+         1POwmwyOkV9lDyylsbzUh5nVRuu0lDTwZyONwo7Xv4sRB+JWLcpwYP73awfiYmaJN3zT
+         e5FsfyAMD1Ym/8oY3GyUn6BgSPk8i79Gq6XyopBKIWQqNmfNBJAIOmgMj5EHBP/qJkvv
+         dx/Bsfe8EkQJHi8SyZ3EPPSGH4wnqi+neQ4ZBwT6Khs5VhJu1Q+WqPC/qsgkJHN1r7ku
+         Q0sQ==
+X-Gm-Message-State: AOAM5309gVhwWMUpDRe8KAb05WmQKY9JIGkNW597DH6dSL2E1vy4qF5K
+        VhqPtgD8JuqqeUtgwf/qMR55NN55jS+2Ew==
+X-Google-Smtp-Source: ABdhPJz77NSmUgdOhFLZnUeL0lN8VjtFZCTpbn2FQogZSrVgxiEFneYB1xLTSSmnsMErYs//yDRHdQ==
+X-Received: by 2002:a2e:82cf:: with SMTP id n15mr413477ljh.394.1602618403273;
+        Tue, 13 Oct 2020 12:46:43 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id b14sm229733lff.300.2020.10.13.12.46.41
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 12:45:41 -0700 (PDT)
-Subject: Re: [PATCH] kcmp: add separate Kconfig symbol for kcmp syscall
-To:     Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Cyrill Gorcunov <gorcunov@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200710075632.14661-1-linux@rasmusvillemoes.dk>
- <20200710155719.GN12769@casper.infradead.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <20a80bdc-7a5d-c08b-e27b-bea38c378b6c@rasmusvillemoes.dk>
-Date:   Tue, 13 Oct 2020 21:45:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 13 Oct 2020 12:46:42 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id j30so1078037lfp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:46:41 -0700 (PDT)
+X-Received: by 2002:ac2:5f48:: with SMTP id 8mr326393lfz.344.1602618401593;
+ Tue, 13 Oct 2020 12:46:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200710155719.GN12769@casper.infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <36a6706d-73e1-64e7-f1f8-8f5ef246d3ea@kernel.dk>
+In-Reply-To: <36a6706d-73e1-64e7-f1f8-8f5ef246d3ea@kernel.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 13 Oct 2020 12:46:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
+Message-ID: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
+Subject: Re: [GIT PULL] io_uring updates for 5.10-rc1
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/2020 17.57, Matthew Wilcox wrote:
-> On Fri, Jul 10, 2020 at 09:56:31AM +0200, Rasmus Villemoes wrote:
->> The ability to check open file descriptions for equality (without
->> resorting to unreliable fstat() and fcntl(F_GETFL) comparisons) can be
->> useful outside of the checkpoint/restore use case - for example,
->> systemd uses kcmp() to deduplicate the per-service file descriptor
->> store.
->>
->> Make it possible to have the kcmp() syscall without the full
->> CONFIG_CHECKPOINT_RESTORE.
-> 
-> If systemd is using it, is it even worth making it conditional any more?
-> Maybe for CONFIG_EXPERT builds, it could be de-selectable.
-> 
+On Mon, Oct 12, 2020 at 6:46 AM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> Here are the io_uring updates for 5.10.
 
-[hm, I dropped the ball, sorry for the necromancy]
+Very strange. My clang build gives a warning I've never seen before:
 
-Well, first, I don't want to change any defaults here, if that is to be
-done, it should be a separate patch.
+   /tmp/io_uring-dd40c4.s:26476: Warning: ignoring changed section
+attributes for .data..read_mostly
 
-Second, yes, systemd uses it for the de-duplication, and for that reason
-recommends CONFIG_CHECKPOINT_RESTORE (at least, according to their
-README) - but I'm not aware of any daemons that actually make use of
-systemd's file descriptor store, so it's not really something essential
-to every systemd-based system out there. It would be nice if systemd
-could change its recommendation to just CONFIG_KCMP_SYSCALL.
+and looking at what clang generates for the *.s file, it seems to be
+the "section" line in:
 
-But it's also useful for others, e.g. I have some code that wants to
-temporarily replace stdin/stdout/stderr with some other file
-descriptors, but needs to preserve the '0 is a dup of 1, or not' state
-(i.e., is the same struct file) - that cannot reliably be determined
-from fstat()/lseek(SEEK_CUR)/F_GETFL or whatever else one could throw at
-an fd.
+        .type   io_op_defs,@object      # @io_op_defs
+        .section        .data..read_mostly,"a",@progbits
+        .p2align        4
 
-Rasmus
+I think it's the combination of "const" and "__read_mostly".
+
+I think the warning is sensible: how can a piece of data be both
+"const" and "__read_mostly"? If it's "const", then it's not "mostly"
+read - it had better be _always_ read.
+
+I'm letting it go, and I've pulled this (gcc doesn't complain), but
+please have a look.
+
+                 Linus
