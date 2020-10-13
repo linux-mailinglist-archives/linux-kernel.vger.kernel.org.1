@@ -2,404 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CD428CE43
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B3128CE47
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgJMMXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgJMMXv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:23:51 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45391C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:23:49 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id c21so3794346ljj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:23:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZrjiOcdm0pKRodvUlxkeQ8J127iIfDZEkBWmG6GzZSM=;
-        b=wNzI6EXXLHND5/Uw5EOFRFzgmNiG0D6tOn/7lI72s+0zWQ9pJTqD2hJYy1gTf5kXpA
-         qRKrqE5nw2hMyk+qja54m067uyek22/YgholvlIC0GcQAQJJhN8aJt9/bUWuFfSMb+6u
-         BzelN+pPcD4BYZzP3wCmnZLhg0bKMajF+lu1vzCzYVsrvCTNUpdnxQOPv5HjKnsaOJyK
-         Trh5ehFQ+jUfS4Twm5DWZWqd66WIeFC4sVwndowkupGgQ+koBanb4J6IOi5OsRIYzTIn
-         aHfFwtdsu82gguR0/Frx3bOUoFzmY+mH9Ys3Z+8fDylgDrflxNTcHDylnKKbT1NLyZxD
-         UPyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZrjiOcdm0pKRodvUlxkeQ8J127iIfDZEkBWmG6GzZSM=;
-        b=q21uukE0VE/Abnf8+88A7cuaiGflbBXNSld6+8OOvnYN/mMmIg7qK8wjbAiZ5J9FtP
-         5G4/E2p/mIWj9wCEzQwkW3oqy7DLLSrw8VTDf64dTBKAYSG0AXpcAqFrJaDqUeLHSTDi
-         qFN9i/0pwO86MjnMGY/H6Vl9DVLmRN4PShh3i8lF+wYR3vtq9I/IjkJxP7/vIKPx8FvL
-         Mv904crhryClnwY35vN6ql54BkYM46AX5UuCAsrNNdJhbn/r6qJVPDHy1Ek2Ek83jQy3
-         8yGMbBQsoZhARauk19/gywjGJ09Yb6jmanQAEYO1oQQ7W1c3LlVK2G5pXZN9plwKBzTM
-         vlvQ==
-X-Gm-Message-State: AOAM531NflVJPJwl+B61yuyoXh9Sa3+GcFSdttkiiMrME7T93reDUeEt
-        CllX+N/Y8h7v82iKyLFOaqWB0w==
-X-Google-Smtp-Source: ABdhPJwyLkxW5iOkM8sY/6MXEco3tfayQFsludZxRGKyxGCdXDEzjYIB5CXZvx38y4gpNmtiflFjgA==
-X-Received: by 2002:a05:651c:d3:: with SMTP id 19mr3602967ljr.180.1602591827524;
-        Tue, 13 Oct 2020 05:23:47 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-180-91.NA.cust.bahnhof.se. [98.128.180.91])
-        by smtp.gmail.com with ESMTPSA id u14sm5176845lji.83.2020.10.13.05.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 05:23:46 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>, linux-pm@vger.kernel.org
-Cc:     Peng Fan <peng.fan@nxp.com>, Sudeep Holla <sudeep.holla@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] PM: domains: Add support for PM domain on/off notifiers for genpd
-Date:   Tue, 13 Oct 2020 14:23:39 +0200
-Message-Id: <20201013122339.450955-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726999AbgJMMYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:24:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726400AbgJMMYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:24:41 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E16A22264;
+        Tue, 13 Oct 2020 12:24:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602591879;
+        bh=Zel9mpx69dMPESX1kmsPy9SRW1OQQJYH/1XpuJTpKxs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lueRQj7oDUjtU5nUajxAaS4RVdB+ilx0omZPBFgzRKVni6FZ5i0yVZUw9npTY68hO
+         c1sjtqBdhhAwqeUExteQ8bpCp9Tr7p7/dO9GS8814nrHaAPIvhbI5AXkgOuGCpJ3qN
+         cyaukptMK1RqNBXBZ75Y6pHvHdjCTRwQfmOsrNaE=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 533B3403AC; Tue, 13 Oct 2020 09:24:36 -0300 (-03)
+Date:   Tue, 13 Oct 2020 09:24:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     Sandipan Das <sandipan@linux.ibm.com>, mpe@ellerman.id.au,
+        ravi.bangoria@linux.ibm.com, sukadev@linux.vnet.ibm.com,
+        maddy@linux.vnet.ibm.com, jolsa@redhat.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf vendor events: Fix typos in power8 PMU events
+Message-ID: <20201013122436.GB560293@kernel.org>
+References: <20201012050205.328523-1-sandipan@linux.ibm.com>
+ <badc113f-3024-1317-af16-c3714605ac74@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <badc113f-3024-1317-af16-c3714605ac74@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A device may have specific HW constraints that must be obeyed to, before
-its corresponding PM domain (genpd) can be powered off - and vice verse at
-power on. These constraints can't be managed through the regular runtime PM
-based deployment for a device, because the access pattern for it, isn't
-always request based. In other words, using the runtime PM callbacks to
-deal with the constraints doesn't work for these cases.
+Em Mon, Oct 12, 2020 at 01:21:26PM +0530, kajoljain escreveu:
+> 
+> 
+> On 10/12/20 10:32 AM, Sandipan Das wrote:
+> > This replaces the incorrectly spelled word "localtion"
+> > with "location" in some power8 PMU event descriptions.
+> 
+> Patch looks good to me, Thanks for correcting it.
+> 
+> Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
+ 
 
-For these reasons, let's instead add a PM domain power on/off notification
-mechanism to genpd. To add/remove a notifier for a device, the device must
-already have been attached to the genpd, which also means that it needs to
-be a part of the PM domain topology.
+Thanks, applied.
 
-To add/remove a notifier, let's introduce two genpd specific functions:
- - dev_pm_genpd_add|remove_notifier()
+- Arnaldo
 
-Note that, to further clarify when genpd power on/off notifiers may be
-used, one can compare with the existing CPU_CLUSTER_PM_ENTER|EXIT
-notifiers. In the long run, the genpd power on/off notifiers should be able
-to replace them, but that requires additional genpd based platform support
-for the current users.
+> Thanks,
+> Kajol Jain
+> > 
+> > Fixes: 2a81fa3bb5ed ("perf vendor events: Add power8 PMU events")
+> > Signed-off-by: Sandipan Das <sandipan@linux.ibm.com>
+> > ---
+> >  .../pmu-events/arch/powerpc/power8/cache.json    | 10 +++++-----
+> >  .../pmu-events/arch/powerpc/power8/frontend.json | 12 ++++++------
+> >  .../pmu-events/arch/powerpc/power8/marked.json   | 10 +++++-----
+> >  .../pmu-events/arch/powerpc/power8/other.json    | 16 ++++++++--------
+> >  .../arch/powerpc/power8/translation.json         |  2 +-
+> >  5 files changed, 25 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/cache.json b/tools/perf/pmu-events/arch/powerpc/power8/cache.json
+> > index 6b792b2c87e2..05a17084d939 100644
+> > --- a/tools/perf/pmu-events/arch/powerpc/power8/cache.json
+> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/cache.json
+> > @@ -32,8 +32,8 @@
+> >    {
+> >      "EventCode": "0x1c04e",
+> >      "EventName": "PM_DATA_FROM_L2MISS_MOD",
+> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to a demand load",
+> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to a demand load",
+> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x3c040",
+> > @@ -74,8 +74,8 @@
+> >    {
+> >      "EventCode": "0x4c04e",
+> >      "EventName": "PM_DATA_FROM_L3MISS_MOD",
+> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to a demand load",
+> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to a demand load",
+> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x3c042",
+> > @@ -134,7 +134,7 @@
+> >    {
+> >      "EventCode": "0x4e04e",
+> >      "EventName": "PM_DPTEG_FROM_L3MISS",
+> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a data side request",
+> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a data side request",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/frontend.json b/tools/perf/pmu-events/arch/powerpc/power8/frontend.json
+> > index 1ddc30655d43..1c902a8263b6 100644
+> > --- a/tools/perf/pmu-events/arch/powerpc/power8/frontend.json
+> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/frontend.json
+> > @@ -116,8 +116,8 @@
+> >    {
+> >      "EventCode": "0x1404e",
+> >      "EventName": "PM_INST_FROM_L2MISS",
+> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to an instruction fetch (not prefetch)",
+> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to an instruction fetch (not prefetch)",
+> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x34040",
+> > @@ -158,8 +158,8 @@
+> >    {
+> >      "EventCode": "0x4404e",
+> >      "EventName": "PM_INST_FROM_L3MISS_MOD",
+> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to a instruction fetch",
+> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to a instruction fetch",
+> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x34042",
+> > @@ -320,7 +320,7 @@
+> >    {
+> >      "EventCode": "0x1504e",
+> >      "EventName": "PM_IPTEG_FROM_L2MISS",
+> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a instruction side request",
+> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a instruction side request",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > @@ -344,7 +344,7 @@
+> >    {
+> >      "EventCode": "0x4504e",
+> >      "EventName": "PM_IPTEG_FROM_L3MISS",
+> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a instruction side request",
+> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a instruction side request",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/marked.json b/tools/perf/pmu-events/arch/powerpc/power8/marked.json
+> > index 94dc58b83b7e..6de61a797bbd 100644
+> > --- a/tools/perf/pmu-events/arch/powerpc/power8/marked.json
+> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/marked.json
+> > @@ -92,7 +92,7 @@
+> >    {
+> >      "EventCode": "0x4c12e",
+> >      "EventName": "PM_MRK_DATA_FROM_L2MISS_CYC",
+> > -    "BriefDescription": "Duration in cycles to reload from a localtion other than the local core's L2 due to a marked load",
+> > +    "BriefDescription": "Duration in cycles to reload from a location other than the local core's L2 due to a marked load",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > @@ -158,13 +158,13 @@
+> >    {
+> >      "EventCode": "0x201e4",
+> >      "EventName": "PM_MRK_DATA_FROM_L3MISS",
+> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to a marked load",
+> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to a marked load",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> >      "EventCode": "0x2d12e",
+> >      "EventName": "PM_MRK_DATA_FROM_L3MISS_CYC",
+> > -    "BriefDescription": "Duration in cycles to reload from a localtion other than the local core's L3 due to a marked load",
+> > +    "BriefDescription": "Duration in cycles to reload from a location other than the local core's L3 due to a marked load",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > @@ -392,7 +392,7 @@
+> >    {
+> >      "EventCode": "0x1f14e",
+> >      "EventName": "PM_MRK_DPTEG_FROM_L2MISS",
+> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a marked data side request",
+> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a marked data side request",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > @@ -416,7 +416,7 @@
+> >    {
+> >      "EventCode": "0x4f14e",
+> >      "EventName": "PM_MRK_DPTEG_FROM_L3MISS",
+> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L3 due to a marked data side request",
+> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L3 due to a marked data side request",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/other.json b/tools/perf/pmu-events/arch/powerpc/power8/other.json
+> > index f4e760cab111..84a0cedf1fd9 100644
+> > --- a/tools/perf/pmu-events/arch/powerpc/power8/other.json
+> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/other.json
+> > @@ -410,8 +410,8 @@
+> >    {
+> >      "EventCode": "0x61c04e",
+> >      "EventName": "PM_DATA_ALL_FROM_L2MISS_MOD",
+> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either demand loads or data prefetch",
+> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to either demand loads or data prefetch",
+> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L2 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x63c040",
+> > @@ -470,8 +470,8 @@
+> >    {
+> >      "EventCode": "0x64c04e",
+> >      "EventName": "PM_DATA_ALL_FROM_L3MISS_MOD",
+> > -    "BriefDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either demand loads or data prefetch",
+> > -    "PublicDescription": "The processor's data cache was reloaded from a localtion other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> > +    "BriefDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to either demand loads or data prefetch",
+> > +    "PublicDescription": "The processor's data cache was reloaded from a location other than the local core's L3 due to either only demand loads or demand loads plus prefetches if MMCR1[16] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x63c042",
+> > @@ -1280,8 +1280,8 @@
+> >    {
+> >      "EventCode": "0x51404e",
+> >      "EventName": "PM_INST_ALL_FROM_L2MISS",
+> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to instruction fetches and prefetches",
+> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to instruction fetches and prefetches",
+> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L2 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x534040",
+> > @@ -1340,8 +1340,8 @@
+> >    {
+> >      "EventCode": "0x54404e",
+> >      "EventName": "PM_INST_ALL_FROM_L3MISS_MOD",
+> > -    "BriefDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to a instruction fetch",
+> > -    "PublicDescription": "The processor's Instruction cache was reloaded from a localtion other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> > +    "BriefDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to a instruction fetch",
+> > +    "PublicDescription": "The processor's Instruction cache was reloaded from a location other than the local core's L3 due to either an instruction fetch or instruction fetch plus prefetch if MMCR1[17] is 1"
+> >    },
+> >    {
+> >      "EventCode": "0x534042",
+> > diff --git a/tools/perf/pmu-events/arch/powerpc/power8/translation.json b/tools/perf/pmu-events/arch/powerpc/power8/translation.json
+> > index 623e7475b010..a1657f5fdc6b 100644
+> > --- a/tools/perf/pmu-events/arch/powerpc/power8/translation.json
+> > +++ b/tools/perf/pmu-events/arch/powerpc/power8/translation.json
+> > @@ -44,7 +44,7 @@
+> >    {
+> >      "EventCode": "0x1e04e",
+> >      "EventName": "PM_DPTEG_FROM_L2MISS",
+> > -    "BriefDescription": "A Page Table Entry was loaded into the TLB from a localtion other than the local core's L2 due to a data side request",
+> > +    "BriefDescription": "A Page Table Entry was loaded into the TLB from a location other than the local core's L2 due to a data side request",
+> >      "PublicDescription": ""
+> >    },
+> >    {
+> > 
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
-
-Changes in v3:
-	- Adopted suggestions from Peng Fan to allow more fine grained levels of
-	notifications, which is needed on some NXP platforms.
-	- Move the code that fires the notifications into _genpd_power_on|off(),
-	as it simply fits better in there.
-
-Note that, I understand that some of us may be occupied with dealing with the
-merge window, but I still wanted to get this submitted to allow those that have
-some time to review and test.
-
-Kind regards
-Ulf Hansson
-
----
- drivers/base/power/domain.c | 161 +++++++++++++++++++++++++++++++++---
- include/linux/pm_domain.h   |  22 +++++
- 2 files changed, 171 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 05bb4d4401b2..c2a8821bdb26 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -413,28 +413,47 @@ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
- 	unsigned int state_idx = genpd->state_idx;
- 	ktime_t time_start;
- 	s64 elapsed_ns;
--	int ret;
-+	int ret, nr_calls = 0;
-+
-+	/* Notify consumers that we are about to power on. */
-+	ret = __raw_notifier_call_chain(&genpd->power_notifiers,
-+					GENPD_NOTIFY_PRE_ON, NULL, -1,
-+					&nr_calls);
-+	ret = notifier_to_errno(ret);
-+	if (ret)
-+		goto err;
- 
- 	if (!genpd->power_on)
--		return 0;
-+		goto out;
- 
--	if (!timed)
--		return genpd->power_on(genpd);
-+	if (!timed) {
-+		ret = genpd->power_on(genpd);
-+		if (ret)
-+			goto err;
-+
-+		goto out;
-+	}
- 
- 	time_start = ktime_get();
- 	ret = genpd->power_on(genpd);
- 	if (ret)
--		return ret;
-+		goto err;
- 
- 	elapsed_ns = ktime_to_ns(ktime_sub(ktime_get(), time_start));
- 	if (elapsed_ns <= genpd->states[state_idx].power_on_latency_ns)
--		return ret;
-+		goto out;
- 
- 	genpd->states[state_idx].power_on_latency_ns = elapsed_ns;
- 	genpd->max_off_time_changed = true;
- 	pr_debug("%s: Power-%s latency exceeded, new value %lld ns\n",
- 		 genpd->name, "on", elapsed_ns);
- 
-+out:
-+	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_ON, NULL);
-+	return 0;
-+err:
-+	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
-+				NULL);
- 	return ret;
- }
- 
-@@ -443,29 +462,51 @@ static int _genpd_power_off(struct generic_pm_domain *genpd, bool timed)
- 	unsigned int state_idx = genpd->state_idx;
- 	ktime_t time_start;
- 	s64 elapsed_ns;
--	int ret;
-+	int ret, nr_calls = 0;
-+
-+	/* Notify consumers that we are about to power off. */
-+	ret = __raw_notifier_call_chain(&genpd->power_notifiers,
-+					GENPD_NOTIFY_PRE_OFF, NULL, -1,
-+					&nr_calls);
-+	ret = notifier_to_errno(ret);
-+	if (ret)
-+		goto busy;
- 
- 	if (!genpd->power_off)
--		return 0;
-+		goto out;
-+
-+	if (!timed) {
-+		ret = genpd->power_off(genpd);
-+		if (ret)
-+			goto busy;
- 
--	if (!timed)
--		return genpd->power_off(genpd);
-+		goto out;
-+	}
- 
- 	time_start = ktime_get();
- 	ret = genpd->power_off(genpd);
- 	if (ret)
--		return ret;
-+		goto busy;
- 
- 	elapsed_ns = ktime_to_ns(ktime_sub(ktime_get(), time_start));
- 	if (elapsed_ns <= genpd->states[state_idx].power_off_latency_ns)
--		return 0;
-+		goto out;
- 
- 	genpd->states[state_idx].power_off_latency_ns = elapsed_ns;
- 	genpd->max_off_time_changed = true;
- 	pr_debug("%s: Power-%s latency exceeded, new value %lld ns\n",
- 		 genpd->name, "off", elapsed_ns);
- 
-+out:
-+	raw_notifier_call_chain(&genpd->power_notifiers, GENPD_NOTIFY_OFF,
-+				NULL);
- 	return 0;
-+busy:
-+	if (nr_calls)
-+		__raw_notifier_call_chain(&genpd->power_notifiers,
-+					  GENPD_NOTIFY_ON, NULL, nr_calls - 1,
-+					  NULL);
-+	return ret;
- }
- 
- /**
-@@ -1592,6 +1633,101 @@ int pm_genpd_remove_device(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(pm_genpd_remove_device);
- 
-+/**
-+ * dev_pm_genpd_add_notifier - Add a genpd power on/off notifier for @dev
-+ *
-+ * @dev: Device that should be associated with the notifier
-+ * @nb: The notifier block to register
-+ *
-+ * Users may call this function to add a genpd power on/off notifier for an
-+ * attached @dev. Only one notifier per device is allowed. The notifier is
-+ * sent when genpd is powering on/off the PM domain.
-+ *
-+ * It is assumed that the user guarantee that the genpd wouldn't be detached
-+ * while this routine is getting called.
-+ *
-+ * Returns 0 on success and negative error values on failures.
-+ */
-+int dev_pm_genpd_add_notifier(struct device *dev, struct notifier_block *nb)
-+{
-+	struct generic_pm_domain *genpd;
-+	struct generic_pm_domain_data *gpd_data;
-+	int ret;
-+
-+	genpd = dev_to_genpd_safe(dev);
-+	if (!genpd)
-+		return -ENODEV;
-+
-+	if (WARN_ON(!dev->power.subsys_data ||
-+		     !dev->power.subsys_data->domain_data))
-+		return -EINVAL;
-+
-+	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
-+	if (gpd_data->power_nb)
-+		return -EEXIST;
-+
-+	genpd_lock(genpd);
-+	ret = raw_notifier_chain_register(&genpd->power_notifiers, nb);
-+	genpd_unlock(genpd);
-+
-+	if (ret) {
-+		dev_warn(dev, "failed to add notifier for PM domain %s\n",
-+			 genpd->name);
-+		return ret;
-+	}
-+
-+	gpd_data->power_nb = nb;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_genpd_add_notifier);
-+
-+/**
-+ * dev_pm_genpd_remove_notifier - Remove a genpd power on/off notifier for @dev
-+ *
-+ * @dev: Device that is associated with the notifier
-+ *
-+ * Users may call this function to remove a genpd power on/off notifier for an
-+ * attached @dev.
-+ *
-+ * It is assumed that the user guarantee that the genpd wouldn't be detached
-+ * while this routine is getting called.
-+ *
-+ * Returns 0 on success and negative error values on failures.
-+ */
-+int dev_pm_genpd_remove_notifier(struct device *dev)
-+{
-+	struct generic_pm_domain *genpd;
-+	struct generic_pm_domain_data *gpd_data;
-+	int ret;
-+
-+	genpd = dev_to_genpd_safe(dev);
-+	if (!genpd)
-+		return -ENODEV;
-+
-+	if (WARN_ON(!dev->power.subsys_data ||
-+		     !dev->power.subsys_data->domain_data))
-+		return -EINVAL;
-+
-+	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
-+	if (!gpd_data->power_nb)
-+		return -ENODEV;
-+
-+	genpd_lock(genpd);
-+	ret = raw_notifier_chain_unregister(&genpd->power_notifiers,
-+					    gpd_data->power_nb);
-+	genpd_unlock(genpd);
-+
-+	if (ret) {
-+		dev_warn(dev, "failed to remove notifier for PM domain %s\n",
-+			 genpd->name);
-+		return ret;
-+	}
-+
-+	gpd_data->power_nb = NULL;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_genpd_remove_notifier);
-+
- static int genpd_add_subdomain(struct generic_pm_domain *genpd,
- 			       struct generic_pm_domain *subdomain)
- {
-@@ -1762,6 +1898,7 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 	INIT_LIST_HEAD(&genpd->parent_links);
- 	INIT_LIST_HEAD(&genpd->child_links);
- 	INIT_LIST_HEAD(&genpd->dev_list);
-+	RAW_INIT_NOTIFIER_HEAD(&genpd->power_notifiers);
- 	genpd_lock_init(genpd);
- 	genpd->gov = gov;
- 	INIT_WORK(&genpd->power_off_work, genpd_power_off_work_fn);
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 66f3c5d64d81..db039da0aba2 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -68,6 +68,13 @@ enum gpd_status {
- 	GENPD_STATE_OFF,	/* PM domain is off */
- };
- 
-+enum genpd_notication {
-+	GENPD_NOTIFY_PRE_OFF = 0,
-+	GENPD_NOTIFY_OFF,
-+	GENPD_NOTIFY_PRE_ON,
-+	GENPD_NOTIFY_ON,
-+};
-+
- struct dev_power_governor {
- 	bool (*power_down_ok)(struct dev_pm_domain *domain);
- 	bool (*suspend_ok)(struct device *dev);
-@@ -112,6 +119,7 @@ struct generic_pm_domain {
- 	cpumask_var_t cpus;		/* A cpumask of the attached CPUs */
- 	int (*power_off)(struct generic_pm_domain *domain);
- 	int (*power_on)(struct generic_pm_domain *domain);
-+	struct raw_notifier_head power_notifiers; /* Power on/off notifiers */
- 	struct opp_table *opp_table;	/* OPP table of the genpd */
- 	unsigned int (*opp_to_performance_state)(struct generic_pm_domain *genpd,
- 						 struct dev_pm_opp *opp);
-@@ -178,6 +186,7 @@ struct generic_pm_domain_data {
- 	struct pm_domain_data base;
- 	struct gpd_timing_data td;
- 	struct notifier_block nb;
-+	struct notifier_block *power_nb;
- 	int cpu;
- 	unsigned int performance_state;
- 	void *data;
-@@ -204,6 +213,8 @@ int pm_genpd_init(struct generic_pm_domain *genpd,
- 		  struct dev_power_governor *gov, bool is_off);
- int pm_genpd_remove(struct generic_pm_domain *genpd);
- int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state);
-+int dev_pm_genpd_add_notifier(struct device *dev, struct notifier_block *nb);
-+int dev_pm_genpd_remove_notifier(struct device *dev);
- 
- extern struct dev_power_governor simple_qos_governor;
- extern struct dev_power_governor pm_domain_always_on_gov;
-@@ -251,6 +262,17 @@ static inline int dev_pm_genpd_set_performance_state(struct device *dev,
- 	return -ENOTSUPP;
- }
- 
-+static inline int dev_pm_genpd_add_notifier(struct device *dev,
-+					    struct notifier_block *nb)
-+{
-+	return -ENOTSUPP;
-+}
-+
-+static inline int dev_pm_genpd_remove_notifier(struct device *dev)
-+{
-+	return -ENOTSUPP;
-+}
-+
- #define simple_qos_governor		(*(struct dev_power_governor *)(NULL))
- #define pm_domain_always_on_gov		(*(struct dev_power_governor *)(NULL))
- #endif
 -- 
-2.25.1
 
+- Arnaldo
