@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6040628C734
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A65728C735
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbgJMCoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 22:44:24 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51305 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726893AbgJMCoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 22:44:23 -0400
-IronPort-SDR: B1kp5NLImV8kaLcHd4OSebv2l8lBrmOJbEPrHmLDqBkF2Va8u3CKgnAdec/tg24UYIsUHafOl9
- avut6fpWh//A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165047936"
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="165047936"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 19:44:23 -0700
-IronPort-SDR: lWdiXz+T4KiijsEjiqrjEYORvDRsWS2jBywAPiYgeffHw8AGc2wVXmy1vxOXpUSEbdN2/OTD0i
- LPE87mIblDSw==
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="530208643"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 19:44:18 -0700
-Date:   Tue, 13 Oct 2020 10:44:16 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
-Message-ID: <20201013024416.GN1057@shuo-intel.sh.intel.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-5-shuo.a.liu@intel.com>
- <20200927105152.GG88650@kroah.com>
- <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com>
- <20200930111612.GZ2628@hirez.programming.kicks-ass.net>
- <20200930161036.GY28786@gate.crashing.org>
- <20200930171346.GC2628@hirez.programming.kicks-ass.net>
- <CAKwvOdnpU=w4uStcP+UUr9wfoE5U-hW0cMt1bizcX4zQ4=-gOg@mail.gmail.com>
- <20201012084431.GK1057@shuo-intel.sh.intel.com>
- <20201012164916.GA613777@rani.riverdale.lan>
+        id S1727154AbgJMCp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 22:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726511AbgJMCpZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 22:45:25 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C476FC0613D0;
+        Mon, 12 Oct 2020 19:45:25 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id l85so20889260oih.10;
+        Mon, 12 Oct 2020 19:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vZTbY4ShhrUv//2VK29yAWGy/g3LO64/rb+sQCyegOQ=;
+        b=VBUKIfL8soO6/VWyli861iToCaYbpd+QOyNJbE+8U5PLnX9wGz2xXhYmNSouy4f0Md
+         iig+kLaS/LdoCnY5iiTjitLUKUHg6SeXJpnJuG+zruwehAtH10ksY2mEMVihvo7ygVQ4
+         nFyyt3X+FY/FSftH5/xKqAAnYz1pACXmPOu5VnxsySouxk3nf/a3McUZyYS50bHTjwM7
+         eexOBDVEKDpkbdE84sIEUboP3yXcxahKdz7Td96ur7WcgbcXFyxSXxg5TjSr+YhD2I9k
+         o+jq9+WS8g4VPaML2qqldtmAvLY/AYFtFr7Bxl3ydKjdFHYx0AD+HXTcGqaEmmRh1cyM
+         4LWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vZTbY4ShhrUv//2VK29yAWGy/g3LO64/rb+sQCyegOQ=;
+        b=axT9EPk3SSbHzHPx7fMk5XjRNKb5d3S63H2jkxSCYq/6RFUFfX0qBzyueNszQBpqXN
+         tr4BvIL2+AIrnPMzOFveJ1W8KdoziAukrWgVwg1x4Iloii6NjVj2v8gblYy5XLAKGIyG
+         cqAN7NOy2MozmUtuQFoosD02f3AyHxCshAx9mNeZZbk9lR4/8gASCLFBRJj+p9L030Fe
+         w2L+eCvpHBBo6ds8UXCH3TqwNp0u8UY8oIuAD1seoFUISzrFqjD4iRWOt5e3wkeZS90O
+         MsayvRsuOMoobdGdabZfiUbJFaugj1f4O4h66CowlBcHQbj5mgK5EqkcWqrdLbagTJ34
+         uX4g==
+X-Gm-Message-State: AOAM531FJglwylS8LXKkhlBmQ6VqWbH5Hf9xEPPF5suJ6kkXvZb83uAa
+        B7pQKtnLurkVgqGJIKMx0NPBRH6qeXysvGXegOg=
+X-Google-Smtp-Source: ABdhPJzXv8XjFlSJhZQcHJtIqnVcHRwWkhQpDEv50RxyifDLE0hGnMIkdx5eZHJ0yf+Ul5ig1if0+P9WDPQt+UvXks4=
+X-Received: by 2002:aca:f455:: with SMTP id s82mr13204747oih.40.1602557125107;
+ Mon, 12 Oct 2020 19:45:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201012164916.GA613777@rani.riverdale.lan>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+References: <cover.1602093760.git.yuleixzhang@tencent.com> <678F3D1BB717D949B966B68EAEB446ED49E01801@dggemm526-mbx.china.huawei.com>
+In-Reply-To: <678F3D1BB717D949B966B68EAEB446ED49E01801@dggemm526-mbx.china.huawei.com>
+From:   yulei zhang <yulei.kernel@gmail.com>
+Date:   Tue, 13 Oct 2020 10:45:14 +0800
+Message-ID: <CACZOiM2UbA-1hTVQkA4sjX+PVduCdjycFdenR2QxPqkG8kYxpg@mail.gmail.com>
+Subject: Re: [PATCH 00/35] Enhance memory utilization with DMEMFS
+To:     "Zengtao (B)" <prime.zeng@hisilicon.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xiaoguangrong.eric@gmail.com" <xiaoguangrong.eric@gmail.com>,
+        "kernellwp@gmail.com" <kernellwp@gmail.com>,
+        "lihaiwei.kernel@gmail.com" <lihaiwei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12.Oct'20 at 12:49:16 -0400, Arvind Sankar wrote:
->On Mon, Oct 12, 2020 at 04:44:31PM +0800, Shuo A Liu wrote:
->> On Wed 30.Sep'20 at 12:14:03 -0700, Nick Desaulniers wrote:
->> >On Wed, Sep 30, 2020 at 10:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
->> >>
->> >> On Wed, Sep 30, 2020 at 11:10:36AM -0500, Segher Boessenkool wrote:
->> >>
->> >> > Since this variable is a local register asm, on entry to the asm the
->> >> > compiler guarantees that the value lives in the assigned register (the
->> >> > "r8" hardware register in this case).  This all works completely fine.
->> >> > This is the only guaranteed behaviour for local register asm (well,
->> >> > together with analogous behaviour for outputs).
->> >>
->> >> Right, that's what they're trying to achieve. The hypervisor calling
->> >> convention needs that variable in %r8 (which is somewhat unfortunate).
->> >>
->> >> AFAIK this is the first such use in the kernel, but at least the gcc-4.9
->> >> (our oldest supported version) claims to support this.
->> >>
->> >> So now we need to know if clang will actually do this too..
->> >
->> >Does clang support register local storage? Let's use godbolt.org to find out:
->> >https://godbolt.org/z/YM45W5
->> >Looks like yes. You can even check different GCC versions via the
->> >dropdown in the top right.
->> >
->> >The -ffixed-* flags are less well supported in Clang; they need to be
->> >reimplemented on a per-backend basis. aarch64 is relatively well
->> >supported, but other arches not so much IME.
->> >
->> >Do we need register local storage here?
->> >
->> >static inline long bar(unsigned long hcall_id)
->> >{
->> >  long result;
->> >  asm volatile("movl %1, %%r8d\n\t"
->> >  "vmcall\n\t"
->> >    : "=a" (result)
->> >    : "ir" (hcall_id)
->> >    : );
->> >  return result;
->> >}
->>
->> Yeah, this approach is also mentioned in the changelog. I will change to
->> this way to follow your preference. With an addtional "r8" clobber what
->> Arvind mentioned.
->>
->> Thanks
->> shuo
+On Mon, Oct 12, 2020 at 7:57 PM Zengtao (B) <prime.zeng@hisilicon.com> wrote:
 >
->Btw, I noticed that arch/x86/xen/hypercall.h uses register-local
->variables already for its hypercalls for quite some time, so this
->wouldn't be unprecedented. [0]
 >
->Do these calls also need a memory clobber? The KVM/xen hypercall functions
->all have one.
+> > -----Original Message-----
+> > From: yulei.kernel@gmail.com [mailto:yulei.kernel@gmail.com]
+> > Sent: Thursday, October 08, 2020 3:54 PM
+> > To: akpm@linux-foundation.org; naoya.horiguchi@nec.com;
+> > viro@zeniv.linux.org.uk; pbonzini@redhat.com
+> > Cc: linux-fsdevel@vger.kernel.org; kvm@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; xiaoguangrong.eric@gmail.com;
+> > kernellwp@gmail.com; lihaiwei.kernel@gmail.com; Yulei Zhang
+> > Subject: [PATCH 00/35] Enhance memory utilization with DMEMFS
+> >
+> > From: Yulei Zhang <yuleixzhang@tencent.com>
+> >
+> > In current system each physical memory page is assocaited with
+> > a page structure which is used to track the usage of this page.
+> > But due to the memory usage rapidly growing in cloud environment,
+> > we find the resource consuming for page structure storage becomes
+> > highly remarkable. So is it an expense that we could spare?
+> >
+> > This patchset introduces an idea about how to save the extra
+> > memory through a new virtual filesystem -- dmemfs.
+> >
+> > Dmemfs (Direct Memory filesystem) is device memory or reserved
+> > memory based filesystem. This kind of memory is special as it
+> > is not managed by kernel and most important it is without 'struct page'.
+> > Therefore we can leverage the extra memory from the host system
+> > to support more tenants in our cloud service.
+> >
+> > We uses a kernel boot parameter 'dmem=' to reserve the system
+> > memory when the host system boots up, the details can be checked
+> > in /Documentation/admin-guide/kernel-parameters.txt.
+> >
+> > Theoretically for each 4k physical page it can save 64 bytes if
+> > we drop the 'struct page', so for guest memory with 320G it can
+> > save about 5G physical memory totally.
+>
+> Sounds interesting, but seems your patch only support x86, have you
+>  considered aarch64?
+>
+> Regards
+> Zengtao
 
-Yes. it's needed. I will add it. Thanks
-
->
->Thanks.
->
->[0] e74359028d548 ("xen64: fix calls into hypercall page")
+Thanks, so far we only verify it on x86 server, may extend to arm platform
+in the future.
