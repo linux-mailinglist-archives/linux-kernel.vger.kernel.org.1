@@ -2,316 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA1528D144
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB7028D142
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389505AbgJMP3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
+        id S2389454AbgJMP3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389428AbgJMP3U (ORCPT
+        with ESMTP id S2389307AbgJMP3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:29:20 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DC4C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:29:19 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a17so50990pju.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:29:19 -0700 (PDT)
+        Tue, 13 Oct 2020 11:29:12 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD709C0613D0;
+        Tue, 13 Oct 2020 08:29:11 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id q5so98452wmq.0;
+        Tue, 13 Oct 2020 08:29:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xmr9b2Ggp8vOLTZ40kBRiYw2atMdRLPI8Ee7OiUDyHc=;
-        b=lyyUl7Z9ThTPlq9D2rp4fQb4kHeOa2+gyk1WzoDlJ81EPW4a1S7cHQBclhadcWkuts
-         +pTnQ3BZKMze2oN803izG6UhpDN8TPayQltN5p0sSHSa3Q7nCT+5KEjjlqOjqputq3cc
-         4ogahHM0g0MZkQrVz8qlPbLicoR/9tbhsyClHF7hnEIXQcCq7uSJUv6sqHyRTrUSFtQv
-         BQmWSD9+Sr2Tj/3BgV3HG+/mxrzsOUcpmJyZhsAwfAMUHuCWlTKpgYgQNlx6jCKoLHTC
-         GgKJH5amJfyNqn+3LnJT3B77eLhaVCn3vQhI6w1MfbWQSBHHuO6zwVOyO2t8ZT6AwxZ8
-         Pizg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mjiyjVsGGXyDjzrsZuC1J4LlhI+CHkfPoB5QM0hQOC4=;
+        b=sjRGH2PXzw0V9eOoQIG6NTECrQgppWtQCeoH6EqFPQpDJlEkYOZvgwNM3pJaYvIykb
+         a21zOdrGlVqrMNRSfCf3awaV70i0Bf5cC5SRjASUBZu899J7I4UwL0WztUwkqoHw3/Li
+         y2TdGz7FsiW7uRf0pysSwsNjMXIWswFk5pZSYrJ4P2qmDNWX8ohK05dPHjh5MMG7e7HU
+         PeF+dONFIs9p7kUyTh5h2km7WrnqnzYBDQxvLm3gSbCUfP9X2nDkACJmt613k0E5QSzU
+         oUyTmlNkd3KBKPfBrvtOfnCcOln+alEeZTW92HMunW4NHgfO+gE2a8QmH55NO3wK6OzS
+         5GzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xmr9b2Ggp8vOLTZ40kBRiYw2atMdRLPI8Ee7OiUDyHc=;
-        b=EOKN8cKKNruqDXEpnv7pvRqc/iW/VqBasgGnP/zrlzvTLGcC7ANu3oz5Vo0GwaIgse
-         RlzmjOIhlwOeL7o6zM3XeUNWcuktVBPH65cnQ53napnP+6Sw2SwIBUbkVeQfe9/2piF1
-         eZIsVXB8f6UreVnzeVCXxf16waWZJFa9LZhd4rJhhQkBQPwVRWnL2NjNKdzOOVDd5doe
-         iqRh/49ZIRTeF0cBoDUc4lBbu7HZvIleBtP4y73Fb9UMwwqUmd3Tb28G4S1AUNnyaRia
-         ixJlf7QwF5jwkc+jLU27fLokdevBCuq75ht+RS5TCm4DX6N1jLifLfrQ6GG8e26Hi7SI
-         J70Q==
-X-Gm-Message-State: AOAM533ITtuQkVhJk68gB/l0zLJoL+/JthsaWVc20isUDjfdNTLSqS1d
-        8lnl/P6d2k8m+rHHAy9GGKMi3rGVGRjXbC5hjIc8+w==
-X-Google-Smtp-Source: ABdhPJza1dCd7KiemxFvOO8CGqWiAW2qXHNbFR3rDPenQOK0HTo9HZRimzAjnS7d53o9A0B4BtDP+1rwCnL2rU9nptk=
-X-Received: by 2002:a17:902:7681:b029:d2:88b1:b130 with SMTP id
- m1-20020a1709027681b02900d288b1b130mr393135pll.20.1602602959313; Tue, 13 Oct
- 2020 08:29:19 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mjiyjVsGGXyDjzrsZuC1J4LlhI+CHkfPoB5QM0hQOC4=;
+        b=lGINjHEy0MoBxtfqp0OLrReH23i1l7GgwPzOqDBa5t+Drxt8VXXYwsglxoGD7QY02S
+         l6tJVWK5mjoRZEihnZAkSNysT4u6w4YWZ8fgqFgZIlUTIvbnVQgJO5KBtisxMfKJWKs/
+         geMsHgWYjRiAnEEowe5KB+Uizb0yb7I4jA5E6CdyNm/fVWMv3ZxWvO3Eu/qV0yS0qdy+
+         HEv1DKxnsi/c4wYEYqIBedvuxvCZD3sOHdBdZYpHdNn7iJHc2y2nHVAjYW9y3yAAnSCv
+         LDeAA/i9Me4PEZSJfB0w0nsYzUTQ3JMvEo4jetcF4NIsa0gSItYk16OdJvd25LC68SzF
+         2IWw==
+X-Gm-Message-State: AOAM533xgQcl+j9B2h3wJGol0ssV+Dy598KIMx9k524t3I5euJCVLYeB
+        F1gl8a7dTshNWQOI9E0huADmMYQigzfdMw==
+X-Google-Smtp-Source: ABdhPJw4prU04oixGXNv11ba1nnr8682cUZNiDAAoVcJ0ibWqNyHNPuAZ5moFweZHKugXeG3NgEikg==
+X-Received: by 2002:a1c:32c6:: with SMTP id y189mr411620wmy.51.1602602950342;
+        Tue, 13 Oct 2020 08:29:10 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.119.110])
+        by smtp.gmail.com with ESMTPSA id x65sm129753wmg.1.2020.10.13.08.29.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 08:29:09 -0700 (PDT)
+Subject: Re: [PATCH 2/2] arm64: dts: mediatek: mt8516: add auxadc node
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>, linux-iio@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, pmeerw@pmeerw.net,
+        lars@metafoo.de, knaack.h@gmx.de, jic23@kernel.org
+References: <20201012205218.3010868-1-fparent@baylibre.com>
+ <20201012205218.3010868-2-fparent@baylibre.com>
+ <81a12664-639e-20cc-8b49-6bcb53822a3f@gmail.com>
+ <CAOwMV_yqK+yLZH1tOSeUHP7qz35k-bYmWf7jg6qQpvhO9LeJ6g@mail.gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <ab900e0f-fd5f-a1cc-8300-b681c97f7231@gmail.com>
+Date:   Tue, 13 Oct 2020 17:29:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201010103854.66746-1-songmuchun@bytedance.com>
- <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
- <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com>
- <CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com>
- <CAMZfGtXVKER_GM-wwqxrUshDzcEg9FkS3x_BaMTVyeqdYPGSkw@mail.gmail.com>
- <9262ea44-fc3a-0b30-54dd-526e16df85d1@gmail.com> <CAMZfGtVF6OjNuJFUExRMY1k-EaDS744=nKy6_a2cYdrJRncTgQ@mail.gmail.com>
- <20201013080906.GD4251@kernel.org>
-In-Reply-To: <20201013080906.GD4251@kernel.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 13 Oct 2020 23:28:41 +0800
-Message-ID: <CAMZfGtXX3xYjM49E3X1XByHmY-2B+B1VCXYArH+qeJ0Ci+RD4w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Shakeel Butt <shakeelb@google.com>,
-        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
-        Michel Lespinasse <walken@google.com>,
-        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
-        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAOwMV_yqK+yLZH1tOSeUHP7qz35k-bYmWf7jg6qQpvhO9LeJ6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 4:09 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Mon, Oct 12, 2020 at 05:53:01PM +0800, Muchun Song wrote:
-> > On Mon, Oct 12, 2020 at 5:24 PM Eric Dumazet <eric.dumazet@gmail.com> w=
-rote:
-> > >
-> > > On 10/12/20 10:39 AM, Muchun Song wrote:
-> > > > On Mon, Oct 12, 2020 at 3:42 PM Eric Dumazet <edumazet@google.com> =
-wrote:
-> > > >>
-> > > >> On Mon, Oct 12, 2020 at 6:22 AM Muchun Song <songmuchun@bytedance.=
-com> wrote:
-> > > >>>
-> > > >>> On Mon, Oct 12, 2020 at 2:39 AM Cong Wang <xiyou.wangcong@gmail.c=
-om> wrote:
-> > > >>>>
-> > > >>>> On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedanc=
-e.com> wrote:
-> > > >>>>>
-> > > >>>>> The amount of memory allocated to sockets buffer can become sig=
-nificant.
-> > > >>>>> However, we do not display the amount of memory consumed by soc=
-kets
-> > > >>>>> buffer. In this case, knowing where the memory is consumed by t=
-he kernel
-> > > >>>>
-> > > >>>> We do it via `ss -m`. Is it not sufficient? And if not, why not =
-adding it there
-> > > >>>> rather than /proc/meminfo?
-> > > >>>
-> > > >>> If the system has little free memory, we can know where the memor=
-y is via
-> > > >>> /proc/meminfo. If a lot of memory is consumed by socket buffer, w=
-e cannot
-> > > >>> know it when the Sock is not shown in the /proc/meminfo. If the u=
-naware user
-> > > >>> can't think of the socket buffer, naturally they will not `ss -m`=
-. The
-> > > >>> end result
-> > > >>> is that we still don=E2=80=99t know where the memory is consumed.=
- And we add the
-> > > >>> Sock to the /proc/meminfo just like the memcg does('sock' item in=
- the cgroup
-> > > >>> v2 memory.stat). So I think that adding to /proc/meminfo is suffi=
-cient.
-> > > >>>
-> > > >>>>
-> > > >>>>>  static inline void __skb_frag_unref(skb_frag_t *frag)
-> > > >>>>>  {
-> > > >>>>> -       put_page(skb_frag_page(frag));
-> > > >>>>> +       struct page *page =3D skb_frag_page(frag);
-> > > >>>>> +
-> > > >>>>> +       if (put_page_testzero(page)) {
-> > > >>>>> +               dec_sock_node_page_state(page);
-> > > >>>>> +               __put_page(page);
-> > > >>>>> +       }
-> > > >>>>>  }
-> > > >>>>
-> > > >>>> You mix socket page frag with skb frag at least, not sure this i=
-s exactly
-> > > >>>> what you want, because clearly skb page frags are frequently use=
-d
-> > > >>>> by network drivers rather than sockets.
-> > > >>>>
-> > > >>>> Also, which one matches this dec_sock_node_page_state()? Clearly
-> > > >>>> not skb_fill_page_desc() or __skb_frag_ref().
-> > > >>>
-> > > >>> Yeah, we call inc_sock_node_page_state() in the skb_page_frag_ref=
-ill().
-> > > >>> So if someone gets the page returned by skb_page_frag_refill(), i=
-t must
-> > > >>> put the page via __skb_frag_unref()/skb_frag_unref(). We use PG_p=
-rivate
-> > > >>> to indicate that we need to dec the node page state when the refc=
-ount of
-> > > >>> page reaches zero.
-> > > >>>
-> > > >>
-> > > >> Pages can be transferred from pipe to socket, socket to pipe (spli=
-ce()
-> > > >> and zerocopy friends...)
-> > > >>
-> > > >>  If you want to track TCP memory allocations, you always can look =
-at
-> > > >> /proc/net/sockstat,
-> > > >> without adding yet another expensive memory accounting.
-> > > >
-> > > > The 'mem' item in the /proc/net/sockstat does not represent real
-> > > > memory usage. This is just the total amount of charged memory.
-> > > >
-> > > > For example, if a task sends a 10-byte message, it only charges one
-> > > > page to memcg. But the system may allocate 8 pages. Therefore, it
-> > > > does not truly reflect the memory allocated by the above memory
-> > > > allocation path. We can see the difference via the following messag=
-e.
-> > > >
-> > > > cat /proc/net/sockstat
-> > > >   sockets: used 698
-> > > >   TCP: inuse 70 orphan 0 tw 617 alloc 134 mem 13
-> > > >   UDP: inuse 90 mem 4
-> > > >   UDPLITE: inuse 0
-> > > >   RAW: inuse 1
-> > > >   FRAG: inuse 0 memory 0
-> > > >
-> > > > cat /proc/meminfo | grep Sock
-> > > >   Sock:              13664 kB
-> > > >
-> > > > The /proc/net/sockstat only shows us that there are 17*4 kB TCP
-> > > > memory allocations. But apply this patch, we can see that we truly
-> > > > allocate 13664 kB(May be greater than this value because of per-cpu
-> > > > stat cache). Of course the load of the example here is not high. In
-> > > > some high load cases, I believe the difference here will be even
-> > > > greater.
-> > > >
-> > >
-> > > This is great, but you have not addressed my feedback.
-> > >
-> > > TCP memory allocations are bounded by /proc/sys/net/ipv4/tcp_mem
-> > >
-> > > Fact that the memory is forward allocated or not is a detail.
-> > >
-> > > If you think we must pre-allocate memory, instead of forward allocati=
-ons,
-> > > your patch does not address this. Adding one line per consumer in /pr=
-oc/meminfo looks
-> > > wrong to me.
-> >
-> > I think that the consumer which consumes a lot of memory should be adde=
-d
-> > to the /proc/meminfo. This can help us know the user of large memory.
-> >
-> > >
-> > > If you do not want 9.37 % of physical memory being possibly used by T=
-CP,
-> > > just change /proc/sys/net/ipv4/tcp_mem accordingly ?
-> >
-> > We are not complaining about TCP using too much memory, but how do
-> > we know that TCP uses a lot of memory. When I firstly face this problem=
-,
-> > I do not know who uses the 25GB memory and it is not shown in the /proc=
-/meminfo.
-> > If we can know the amount memory of the socket buffer via /proc/meminfo=
-, we
-> > may not need to spend a lot of time troubleshooting this problem. Not e=
-veryone
-> > knows that a lot of memory may be used here. But I believe many people
-> > should know /proc/meminfo to confirm memory users.
->
-> If I undestand correctly, the problem you are trying to solve is to
-> simplify troubleshooting of memory usage for people who may not be aware
-> that networking stack can be a large memory consumer.
-
-Yeah, you are right. Although the information provided by /proc/net/socksta=
-t
-is not accurate, it can also provide some valuable information. I think tha=
-t it
-might be better if we can add a total amount socket buffer to /proc/meminfo=
-.
-The amount socket buffer statistics can be from /proc/net/sockstat directly=
-.
-
-Thanks.
-
->
-> For that a paragraph in 'man 5 proc' maybe a good start:
->
-> From ddbcf38576d1a2b0e36fe25a27350d566759b664 Mon Sep 17 00:00:00 2001
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> Date: Tue, 13 Oct 2020 11:07:35 +0300
-> Subject: [PATCH] proc.5: meminfo: add not anout network stack memory
->  consumption
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  man5/proc.5 | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/man5/proc.5 b/man5/proc.5
-> index ed309380b..8414676f1 100644
-> --- a/man5/proc.5
-> +++ b/man5/proc.5
-> @@ -3478,6 +3478,14 @@ Except as noted below,
->  all of the fields have been present since at least Linux 2.6.0.
->  Some fields are displayed only if the kernel was configured
->  with various options; those dependencies are noted in the list.
-> +.IP
-> +Note that significant part of memory allocated by the network stack
-> +is not accounted in the file.
-> +The memory consumption of the network stack can be queried
-> +using
-> +.IR /proc/net/sockstat
-> +or
-> +.BR ss (8)
->  .RS
->  .TP
->  .IR MemTotal " %lu"
-> --
-> 2.25.4
->
->
 
 
---=20
-Yours,
-Muchun
+On 13/10/2020 11:06, Fabien Parent wrote:
+> Hi Matthias,
+> 
+>> Any reason you don't enable the status in the pumpkin dts?
+> 
+> No particular reasons. I looked at what other MTK SoC did for this IP,
+> and half went with the status to be disabled and the other half went
+> with an enabled status.  So I went the mt8183 way since it is the last
+> MTK SoC to have been merged and disabled by default. If you think it
+> is better to be enabled by default, I can change it, I don't have any
+> strong opinion about this.
+> 
+
+Well on mt8183 it is missing the thermal driver although as you can read the 
+values via sysfs I'd say to enable it. No need to resend just because of that. 
+I'll take the patch as-is as soon as Jonathan takes 1/2.
+
+Regards,
+Matthias
