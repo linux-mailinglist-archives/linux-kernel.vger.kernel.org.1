@@ -2,189 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9001F28C96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9FF28C970
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390237AbgJMHcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390018AbgJMHcL (ORCPT
+        id S2390340AbgJMHeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:34:44 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:57140 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2390018AbgJMHeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:32:11 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD872C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:32:10 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id ce10so26821142ejc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:32:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EBnPOk6UkZ2F+SuQHIFBXLKygxskZgQmYn6+lyWYOcc=;
-        b=dl63OWGsBErXB8vhxdL5BHnoiQE4nvGXw7ahxuIvjvwkSxo0rIJfmh2HbQmuDqobZD
-         O79faqGLXUxQWMqnkLDupX3Qlcnm5KbmLrc9ndqebz/yVDu/mVztar6ZEU8ghhy3FIdp
-         zcYyqwQ2S9zAmoCB/0PWwneKEvF0dsUufVnfHCPOtM2crSWKEvkf4lUrtJCW6d5PmYlp
-         cXaTyKiTdcT2juPh/21pwYRTXorTnGspxb8U+TXV8rNiYCyYMok7eE6vlVpa6FECPfBw
-         FsFh+Re0pHVfiT80c7yNGwh5joA3i7Gdmjd0XtPuEhYo1R5HK8qFM2ZhI1nZRu83piWC
-         T2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=EBnPOk6UkZ2F+SuQHIFBXLKygxskZgQmYn6+lyWYOcc=;
-        b=Vq4B6cd1HnsRBH2lazBGICubY4/oL+D9j5Q48WdP/AWjH/eUYh8eBw7hzrXB4fGezn
-         e5SGTZujsYY7zg3m9D/sJvvxXoJzmXGdGQl50DHc9bLC3qVdh4lxPu8SGQ9WJLJQTDXE
-         4edqwqsfQzT9CSYcFWm0PEIDd0k9qwcUTkypUE0qp+yv57+0KW/OFoBPvZdjp+RyezFj
-         gSkGHifVhykp8b4eVqi/Kz3P+KqBBTXo263jQRA20hlV5zunq4kx2GQw2HTUGpn7+Wy0
-         CaFMFyjCnKUoZsTpuGmwYQBg70mx2GjsgsmG4dk7k7eFBL8RHJsn21K3YWxSZW+NlJzy
-         4iZg==
-X-Gm-Message-State: AOAM532J7twkQImz59GJ17R6dZ42ymvz5JU96YosUrpOydKTK6k4xO8+
-        eKvZ/Zd0U4BSKdFSFS7eViIhDd2azI4=
-X-Google-Smtp-Source: ABdhPJxXyK/mmNFTgKRYyJWZTihQCUR+hTSWvVLKgkMg/UGB9Ooy3bpEKO2UTya014w9KJ1OuB3uzA==
-X-Received: by 2002:a17:906:7857:: with SMTP id p23mr32006664ejm.61.1602574329498;
-        Tue, 13 Oct 2020 00:32:09 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id p24sm11790530edq.35.2020.10.13.00.32.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 00:32:08 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 13 Oct 2020 09:32:07 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] RCU changes for v5.10
-Message-ID: <20201013073207.GA3173210@gmail.com>
-References: <20201012141451.GA3425471@gmail.com>
- <CAHk-=wiWowWNsrOh+Ye+b_x=7_4MQmvXq0cdmLwqr2=YYj-jgA@mail.gmail.com>
+        Tue, 13 Oct 2020 03:34:44 -0400
+X-UUID: a19d8a28a2ce4e888bb090038b9755cb-20201013
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NhVO6qrUz779jbsjX2Ikk7b4lJypQXusY9/S6kpeNkY=;
+        b=DuMCEZmHGfFooF26geQ0Q1Jiilf0s67Ja/UqIKxCJsj1E6DRBU1/PZNjjDOE1EiEyWXFPWVfYbT7akUMwA0JUGiTW4KP6Cq/9/l6I9xN0NKDrVCnD/3If4AUrE5ZfVE4JUfBw9KZphUKR/wNPd4o1kK/rqiQ5pI1ISp0rMEAu3E=;
+X-UUID: a19d8a28a2ce4e888bb090038b9755cb-20201013
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 731229190; Tue, 13 Oct 2020 15:34:30 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Oct
+ 2020 15:34:28 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 13 Oct 2020 15:34:28 +0800
+Message-ID: <1602574467.29336.64.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 2/4] dt-bindings: usb: add properties for hard wired
+ devices
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Tue, 13 Oct 2020 15:34:27 +0800
+In-Reply-To: <20201012160038.GA1618651@bogus>
+References: <3db52d534065dcf28e9a10b8129bea3eced0193e.1602318869.git.chunfeng.yun@mediatek.com>
+         <bd71ed260efd162d25e0491988d61fcf1e589bc0.1602318869.git.chunfeng.yun@mediatek.com>
+         <20201012160038.GA1618651@bogus>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiWowWNsrOh+Ye+b_x=7_4MQmvXq0cdmLwqr2=YYj-jgA@mail.gmail.com>
+X-TM-SNTS-SMTP: 808F5C65F94737A36C1DDF462A60B7D27527B5E22BB6950CA26F91DCA51009302000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gTW9uLCAyMDIwLTEwLTEyIGF0IDExOjAwIC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gU2F0LCBPY3QgMTAsIDIwMjAgYXQgMDQ6NDM6MTJQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
+b3RlOg0KPiA+IEFkZCBzb21lIG9wdGlvbmFsIHByb3BlcnRpZXMgd2hpY2ggYXJlIG5lZWRlZCBm
+b3IgaGFyZCB3aXJlZCBkZXZpY2VzDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcg
+WXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IHYyIGNoYW5nZXMg
+c3VnZ2VzdGVkIGJ5IFJvYjoNCj4gPiAgICAxLiBtb2RpZnkgcGF0dGVybiB0byBzdXBwb3J0IGFu
+eSBVU0IgY2xhc3MNCj4gPiAgICAyLiByZWZlciB0byB1c2ItZGV2aWNlLnlhbWwgaW5zdGVhZCBv
+ZiB1c2ItZGV2aWNlLnR4dA0KPiA+IC0tLQ0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy91
+c2IvdXNiLWhjZC55YW1sICAgICAgfCAxOSArKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmls
+ZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspDQo+IA0KPiBZb3UgY2FuIGZvbGQgdGhpcyBpbnRv
+IHRoZSBmaXJzdCBwYXRjaC4gV2hpbGUgbm90IGV4cGxpY2l0IGJlZm9yZSwgaXQgDQo+IHdhcyBp
+bXBsaWVkLg0KT2sNCg0KPiANCj4gUm9iDQo+IA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL3VzYi1oY2QueWFtbCBiL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvdXNiLWhjZC55YW1sDQo+ID4gaW5kZXggNzI2
+M2I3ZjJiNTEwLi40MmIyOTVhZmRmMzIgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi91c2ItaGNkLnlhbWwNCj4gPiArKysgYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL3VzYi1oY2QueWFtbA0KPiA+IEBAIC0yMiw5ICsy
+MiwyOCBAQCBwcm9wZXJ0aWVzOg0KPiA+ICAgICAgZGVzY3JpcHRpb246DQo+ID4gICAgICAgIE5h
+bWUgc3BlY2lmaWVyIGZvciB0aGUgVVNCIFBIWQ0KPiA+ICANCj4gPiArICAiI2FkZHJlc3MtY2Vs
+bHMiOg0KPiA+ICsgICAgY29uc3Q6IDENCj4gPiArDQo+ID4gKyAgIiNzaXplLWNlbGxzIjoNCj4g
+PiArICAgIGNvbnN0OiAwDQo+ID4gKw0KPiA+ICtwYXR0ZXJuUHJvcGVydGllczoNCj4gPiArICAi
+XlthLWZdK0BbMC05YS1mXSskIjoNCj4gDQo+IEp1c3QgZGVmaW5lIHRoZSB1bml0LWFkZHJlc3Mg
+aGVyZTogIkBbMC05YS1mXSskIg0KV2hlbiBJIGRlZmluZSBpdCBhcyAiQFswLTlhLWZdKyQiLCB0
+aGVyZSBpcyBlcnJvcjoNCiJ1c2ItaGNkLmV4YW1wbGUuZHQueWFtbDogdXNiOiBodWJAMTogJ2Nv
+bXBhdGlsZScgaXMgYSByZXF1aXJlZA0KcHJvcGVydHkiDQoNCj4gPiArICAgIHR5cGU6IG9iamVj
+dA0KPiA+ICsgICAgJHJlZjogL3VzYi91c2ItZGV2aWNlLnlhbWwNCj4gPiArICAgIGRlc2NyaXB0
+aW9uOiBUaGUgaGFyZCB3aXJlZCBVU0IgZGV2aWNlcw0KPiANCj4gTmVlZCB0byBhbHNvIGRlZmlu
+ZSAncmVnJyBhbmQgJ2NvbXBhdGlibGUnIGhlcmUuDQoncmVnJyBhbmQgJ2NvbXBhdGlibGUnIGFy
+ZSBhbHJlYWR5IGRlZmluZWQgaW4gdXNiLWRldmljZS55YW1sDQoNCj4gDQo+ID4gKw0KPiA+ICBl
+eGFtcGxlczoNCj4gPiAgICAtIHwNCj4gPiAgICAgIHVzYiB7DQo+ID4gICAgICAgICAgcGh5cyA9
+IDwmdXNiMl9waHkxPiwgPCZ1c2IzX3BoeTE+Ow0KPiA+ICAgICAgICAgIHBoeS1uYW1lcyA9ICJ1
+c2IiOw0KPiA+ICsgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAgICNz
+aXplLWNlbGxzID0gPDA+Ow0KPiA+ICsNCj4gPiArICAgICAgICBodWJAMSB7DQo+ID4gKyAgICAg
+ICAgICAgIGNvbXBhdGlibGUgPSAidXNiNWUzLDYxMCI7DQo+ID4gKyAgICAgICAgICAgIHJlZyA9
+IDwxPjsNCj4gPiArICAgICAgICB9Ow0KPiA+ICAgICAgfTsNCj4gPiAtLSANCj4gPiAyLjE4LjAN
+Cg0K
 
-* Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Mon, Oct 12, 2020 at 7:14 AM Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> > Please pull the latest core/rcu git tree from:
-> >
-> > RCU changes for v5.10:
-> >
-> >  - Debugging for smp_call_function()
-> >  - RT raw/non-raw lock ordering fixes
-> >  - Strict grace periods for KASAN
-> >  - New smp_call_function() torture test
-> >  - Torture-test updates
-> >  - Documentation updates
-> >  - Miscellaneous fixes
-> 
-> I am *very* unhappy with this pull request.
-> 
-> It doesn't even mention the big removal of CONFIR_PREEMPT, that I felt 
-> was still under discussion.
-
-Not mentioning the unconditional PREEMPT_COUNT enabling aspect was 100% my 
-fault in summarizing the changes insufficiently, as I (mistakenly) thought 
-them to be uncontroversial. My apologies for that!
-
-Here's a second attempt to properly justify these changes:
-
-Regarding the performance aspect of the change, I was relying on these 
-performance measurements:
-
-  "Freshly conducted benchmarks did not reveal any measurable impact from 
-   enabling preempt count unconditionally. On kernels with 
-   CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY the preempt count is only 
-   incremented and decremented but the result of the decrement is not 
-   tested. Contrary to that enabling CONFIG_PREEMPT which tests the result 
-   has a small but measurable impact due to the conditional branch/call."
-
-FWIW, to inject some hard numbers into this discussion, here's also the 
-code generation impact of an unconditional PREEMPT_COUNT, on x86-defconfig:
-
-      text       data        bss    filename
-  19675937    5591036    1433672    vmlinux.ubuntu.vanilla          # 856deb866d16: ("Linux 5.9-rc5")
-  19682382    5590964    1425480    vmlinux.ubuntu.PREEMPT_COUNT=y  # 7681205ba49d: ("preempt: Make preempt count unconditional")
-
-So this is a pretty small, +0.03% increase (+6k) in generated code in the 
-core kernel, and it doesn't add widespread new control dependencies either.
-
-I also measured the core kernel code generation impact on the kernel config 
-from a major Linux distribution that uses PREEMPT_VOLUNTARY=y (Ubuntu):
-
-  kepler:~/tip> grep PREEMPT .config
-  # CONFIG_PREEMPT_NONE is not set
-  CONFIG_PREEMPT_VOLUNTARY=y
-  # CONFIG_PREEMPT is not set
-  CONFIG_PREEMPT_COUNT=y
-  CONFIG_PREEMPT_NOTIFIERS=y
-
-     text       data        bss      filename
-  15754341    13790786    5242880    vmlinux.ubuntu.vanilla          # 856deb866d16: ("Linux 5.9-rc5")
-  15754790    13791018    5242880    vmlinux.ubuntu.PREEMPT_COUNT=y  # 7681205ba49d: ("preempt: Make preempt count unconditional")
-  15754771    13791018    5242880    vmlinux.ubuntu.full_cleanups    # 849b9c5446cc: ("kvfree_rcu(): Fix ifnullfree.cocci warnings")
-
-In this test the changes result in very little generated code increase in 
-the core kernel, just +449 bytes, or +0.003%.
-
-In fact the impact was so low on this config that I initially disbelieved 
-it and double-checked the result and re-ran the build with all =m's turned 
-into =y's, to get a whole-kernel measurement of the generated code impact:
-
-      text       data        bss      filename
-  84594448    61819613    42000384    vmlinux.ubuntu.vanilla          # 856deb866d16: ("Linux 5.9-rc5")
-  84594129    61819777    42000384    vmlinux.ubuntu.PREEMPT_COUNT=y  # 7681205ba49d: ("preempt: Make preempt count unconditional")
-
-Note how the full ~84 MB image actually *shrunk*, possibly due to random 
-function & section alignment noise.
-
-So to get a truly sensitive measurement of the impact of the PREEMPT_COUNT 
-change I built with CONFIG_CC_OPTIMIZE_FOR_SIZE=y, to get tight instruction 
-packing and no alignment padding artifacts:
-
-      text        data         bss    filename
-  69460329    60932573    40411136    vmlinux.ubuntu.vanilla          # 856deb866d16: ("Linux 5.9-rc5")
-  69460739    60936853    40411136    vmlinux.ubuntu.PREEMPT_COUNT=y  # 7681205ba49d: ("preempt: Make preempt count unconditional")
-
-This shows a 410 bytes (+0.0005%) increase.
-
-  ( Side note: it's rather impressive that -Os saves 21% of text size - if 
-    only GCC wasn't so stupid with the final 2-3% size optimizations... )
-
-So there's even less relative impact on the whole 84 MB kernel image - 
-modules don't do much direct preempt_count manipulation.
-
-Just for completeness' sake I re-ran the original defconfig build as well, 
-this time with -Os:
-
-     text       data        bss     filename
-  16091696    5565988    2928696    vmlinux.defconfig.Os.vanilla          # 856deb866d16: ("Linux 5.9-rc5")
-  16095525    5570156    2928696    vmlinux.defconfig.Os.PREEMPT_COUNT=y  # 7681205ba49d: ("preempt: Make preempt count unconditional")
-
-3.8k, or +0.025% - similar to the initial +0.03% result.
-
-So even though I'm normally fiercely anti-bloat, if we combine the 
-performance and code generation measurements with these maintainability 
-arguments:
-
-   "It's about time to make essential functionality of the kernel consistent 
-    across the various preemption models.
-
-    Enable CONFIG_PREEMPT_COUNT unconditionally. Follow up changes will 
-    remove the #ifdeffery and remove the config option at the end."
-
-I think the PREEMPT_COUNT=y change to reduce the schizm between the various 
-preemption models is IMHO justified - and reducing the code base distance 
-to -rt is the icing on the cake.
-
-Thanks,
-
-	Ingo
