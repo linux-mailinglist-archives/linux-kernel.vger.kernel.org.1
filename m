@@ -2,305 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FB528CB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A1228CB34
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbgJMJtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgJMJts (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:49:48 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47897C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:49:48 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f21so19733992ljh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=l2oIQjpDqijiabdlCeMYK7fn/FtkvSpkgziUWrkQZ7s=;
-        b=FYSMlCWrzpfFUYnio9nNn8f40L9FpnPWGpP0HfHcqYHetYWn+N31ne1lqKPybKzzXx
-         fXwmnN90qaLkBMA9ZEgqpoqa1nVHE/C4fvPTVsOifPOFgEESiy4HF/smorQf2DOZVkAk
-         v3GaKLs0F7oodczidVuKxeYWhD3NbBW85R1S4RwFXnVUeklVHN4bC/9FUJxBF1yKBYN8
-         u688zSwnET8OENio/F4F3HyNmT8cKJW85Mk8Hj2bG7/776xq0VvtbvCleSAOta/GgIeI
-         bQxw0DqrcAXM6PxFjddXYin0UV+T5ho9kpJ6nJyGpnN19K5M8SshL3H8iyfubYYfNaDj
-         HFSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=l2oIQjpDqijiabdlCeMYK7fn/FtkvSpkgziUWrkQZ7s=;
-        b=rFdoD4Tft0Y4DDTTmai4QHvuuoqIbAkfIcYuvaxwkixGIZ0hEdh7SzFq9nqZc6JEps
-         9HNSRQtCoxDPWIqeICzYD/6F8h7o6+1kdKu6T7ZehCNdcaYhmfIrP1YG7pSj65M72L5A
-         RT7RWvVKLppXHfP4uF1ChdCy/aqtNlD+qLRKdbofSUIV7PaX7oUXZB/zmGYkaqJIIOSa
-         tg9G0pV3fDp0YvtA+0AEoLIRH+mNv/Q0uqNk/P5DhLGfD44tSVSyHjYg3Sa8B909USnl
-         14Gr/dR3nvCBvOkfll2Gu1dsP1rKtSMZmkToUttRamuBTo8oqLTuhm7BpBcymqkdYGhV
-         8ATw==
-X-Gm-Message-State: AOAM533QuHvnb6hE6HPd47F9BcpbBaYE1J06vYpKVGrw0LYberKkx2Mb
-        W7cSMI/KFd60Ofcafiqsd6JXv0fjAWvYKW92Dx2PWw==
-X-Google-Smtp-Source: ABdhPJx7AvdDQnT4GBA/MxMdWC3aZYWDpuleorkBjY0LotOBfFlySsoz5CKloC/gtXAYBt17jR2LggFsbHoveHg5DAY=
-X-Received: by 2002:a2e:9b0c:: with SMTP id u12mr11110446lji.338.1602582586505;
- Tue, 13 Oct 2020 02:49:46 -0700 (PDT)
+        id S1727320AbgJMJwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726719AbgJMJwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:52:06 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C079C2072D;
+        Tue, 13 Oct 2020 09:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602582725;
+        bh=4hV24SHAfY5SL8uf1EAQ98qqN7m/73Ea0qvYhOy9PeI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=skhGfj6+mycCZkwf132QtLbELnW6d4XD0DzS5JwCqH4wgfgKXkoopvCenSBeFSCmq
+         IWgprmIjqkFI9j0X9V90argHAyGfLG8BR2wsWv/+pOg69Xh79sgXjKjG74i+4KsCpj
+         qyUzo8VPMMait2EoV7umfNIqOfNVDnTHav+goakc=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kSGyR-000n74-Ns; Tue, 13 Oct 2020 10:52:03 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] drm/tegra: sor: Ensure regulators are disabled on teardown
+Date:   Tue, 13 Oct 2020 10:51:58 +0100
+Message-Id: <20201013095158.311137-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 13 Oct 2020 11:49:35 +0200
-Message-ID: <CACRpkdbQU7xBcJ5GMhmovhvdpyDXmmr49wGUcuppHcKEc_Kacw@mail.gmail.com>
-Subject: [GIT PULL] GPIO bulk changes for the v5.10 kernel series
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The Tegra SOR driver uses the devm infrastructure to request regulators,
+but enables them without registering them with the infrastructure.
 
-here is the bulk of GPIO changes for the v5.10 kernel.
+This results in the following splat if probing fails for any odd resaon
+(such as dependencies not being available):
 
-This time very little driver changes but lots of core changes.
-Details in the signed tag. We have some interesting cooperative
-work for ARM and Intel alike, making the GPIO subsystem
-more and more suitable for industrial systems and the like,
-in addition to the in-kernel users.
+[    8.974187] tegra-sor 15580000.sor: cannot get HDMI supply: -517
+[    9.414403] tegra-sor 15580000.sor: failed to probe HDMI: -517
+[    9.421240] ------------[ cut here ]------------
+[    9.425879] WARNING: CPU: 1 PID: 164 at drivers/regulator/core.c:2089 _regulator_put.part.0+0x16c/0x174
+[    9.435259] Modules linked in: tegra_drm(E+) cec(E) ahci_tegra(E) drm_kms_helper(E) drm(E) libahci_platform(E) libahci(E) max77620_regulator(E) xhci_tegra(E+) sdhci_tegra(E) xhci_hcd(E) libata(E) sdhci_pltfm(E) cqhci(E) fixed(E) usbcore(E) scsi_mod(E) sdhci(E) host1x(E)
+[    9.459211] CPU: 1 PID: 164 Comm: systemd-udevd Tainted: G S    D W   E     5.9.0-rc7-00298-gf6337624c4fe #1980
+[    9.469285] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
+[    9.475202] pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=--)
+[    9.480784] pc : _regulator_put.part.0+0x16c/0x174
+[    9.485581] lr : regulator_put+0x44/0x60
+[    9.489501] sp : ffffffc011d837b0
+[    9.492814] x29: ffffffc011d837b0 x28: ffffff81dd085900
+[    9.498141] x27: ffffff81de1c8ec0 x26: ffffff81de1c8c10
+[    9.503464] x25: ffffff81dd085800 x24: ffffffc008f2c6b0
+[    9.508790] x23: ffffffc0117373f0 x22: 0000000000000005
+[    9.514101] x21: ffffff81dd085900 x20: ffffffc01172b098
+[    9.515822] ata1: SATA link down (SStatus 0 SControl 300)
+[    9.519426] x19: ffffff81dd085100 x18: 0000000000000030
+[    9.530122] x17: 0000000000000000 x16: 0000000000000000
+[    9.535453] x15: 0000000000000000 x14: 000000000000038f
+[    9.540777] x13: 0000000000000003 x12: 0000000000000040
+[    9.546105] x11: ffffff81eb800000 x10: 0000000000000ae0
+[    9.551417] x9 : ffffffc0106fea24 x8 : ffffff81de83e6c0
+[    9.556728] x7 : 0000000000000018 x6 : 00000000000003c3
+[    9.562064] x5 : 0000000000005660 x4 : 0000000000000000
+[    9.567392] x3 : ffffffc01172b388 x2 : ffffff81de83db80
+[    9.572702] x1 : 0000000000000000 x0 : 0000000000000001
+[    9.578034] Call trace:
+[    9.580494]  _regulator_put.part.0+0x16c/0x174
+[    9.584940]  regulator_put+0x44/0x60
+[    9.588522]  devm_regulator_release+0x20/0x2c
+[    9.592885]  release_nodes+0x1c8/0x2c0
+[    9.596636]  devres_release_all+0x44/0x6c
+[    9.600649]  really_probe+0x1ec/0x504
+[    9.604316]  driver_probe_device+0x100/0x170
+[    9.608589]  device_driver_attach+0xcc/0xd4
+[    9.612774]  __driver_attach+0xb0/0x17c
+[    9.616614]  bus_for_each_dev+0x7c/0xd4
+[    9.620450]  driver_attach+0x30/0x3c
+[    9.624027]  bus_add_driver+0x154/0x250
+[    9.627867]  driver_register+0x84/0x140
+[    9.631719]  __platform_register_drivers+0xa0/0x180
+[    9.636660]  host1x_drm_init+0x60/0x1000 [tegra_drm]
+[    9.641629]  do_one_initcall+0x54/0x2d0
+[    9.645490]  do_init_module+0x68/0x29c
+[    9.649244]  load_module+0x2178/0x26c0
+[    9.652997]  __do_sys_finit_module+0xb0/0x120
+[    9.657356]  __arm64_sys_finit_module+0x2c/0x40
+[    9.661902]  el0_svc_common.constprop.0+0x80/0x240
+[    9.666701]  do_el0_svc+0x30/0xa0
+[    9.670022]  el0_svc+0x18/0x50
+[    9.673081]  el0_sync_handler+0x90/0x318
+[    9.677006]  el0_sync+0x158/0x180
+[    9.680324] ---[ end trace 90f6c89d62d85ff6 ]---
 
-We touch driver core (device properties) and lib/* by adding one
-simple string array free function, these are authored by Andy
-Shevchenko who is a well known and recognized core
-helpers maintainers so this should be fine.
+Instead, let's register a callback that will disable the regulators
+on teardown. This allows for the removal of the .remove callbacks,
+which are not needed anymore.
 
-We also see some Android GKI-related modularization in the
-MXC drivers.
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/gpu/drm/tegra/sor.c | 59 +++++++++++++++----------------------
+ 1 file changed, 24 insertions(+), 35 deletions(-)
 
-I foresee a merge conflict in drivers/gpio/gpio-mockup.c
-due to things merged into the release candidate. The merge
-should be trivial and pertains to using pr_fmt and
-numerical return values: what's on my branch goes and that
-is also the resolution you find in linux-next.
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index 45b5258c77a2..39e6b32f6c10 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -397,7 +397,6 @@ struct tegra_sor;
+ struct tegra_sor_ops {
+ 	const char *name;
+ 	int (*probe)(struct tegra_sor *sor);
+-	int (*remove)(struct tegra_sor *sor);
+ 	void (*audio_enable)(struct tegra_sor *sor);
+ 	void (*audio_disable)(struct tegra_sor *sor);
+ };
+@@ -2942,6 +2941,24 @@ static const struct drm_encoder_helper_funcs tegra_sor_dp_helpers = {
+ 	.atomic_check = tegra_sor_encoder_atomic_check,
+ };
+ 
++static void tegra_sor_disable_regulator(void *data)
++{
++	struct regulator *reg = data;
++
++	regulator_disable(reg);
++}
++
++static int tegra_sor_enable_regulator(struct tegra_sor *sor, struct regulator *reg)
++{
++	int err;
++
++	err = regulator_enable(reg);
++	if (err)
++		return err;
++
++	return devm_add_action_or_reset(sor->dev, tegra_sor_disable_regulator, reg);
++}
++
+ static int tegra_sor_hdmi_probe(struct tegra_sor *sor)
+ {
+ 	int err;
+@@ -2953,7 +2970,7 @@ static int tegra_sor_hdmi_probe(struct tegra_sor *sor)
+ 		return PTR_ERR(sor->avdd_io_supply);
+ 	}
+ 
+-	err = regulator_enable(sor->avdd_io_supply);
++	err = tegra_sor_enable_regulator(sor, sor->avdd_io_supply);
+ 	if (err < 0) {
+ 		dev_err(sor->dev, "failed to enable AVDD I/O supply: %d\n",
+ 			err);
+@@ -2967,7 +2984,7 @@ static int tegra_sor_hdmi_probe(struct tegra_sor *sor)
+ 		return PTR_ERR(sor->vdd_pll_supply);
+ 	}
+ 
+-	err = regulator_enable(sor->vdd_pll_supply);
++	err = tegra_sor_enable_regulator(sor, sor->vdd_pll_supply);
+ 	if (err < 0) {
+ 		dev_err(sor->dev, "failed to enable VDD PLL supply: %d\n",
+ 			err);
+@@ -2981,7 +2998,7 @@ static int tegra_sor_hdmi_probe(struct tegra_sor *sor)
+ 		return PTR_ERR(sor->hdmi_supply);
+ 	}
+ 
+-	err = regulator_enable(sor->hdmi_supply);
++	err = tegra_sor_enable_regulator(sor, sor->hdmi_supply);
+ 	if (err < 0) {
+ 		dev_err(sor->dev, "failed to enable HDMI supply: %d\n", err);
+ 		return err;
+@@ -2992,19 +3009,9 @@ static int tegra_sor_hdmi_probe(struct tegra_sor *sor)
+ 	return 0;
+ }
+ 
+-static int tegra_sor_hdmi_remove(struct tegra_sor *sor)
+-{
+-	regulator_disable(sor->hdmi_supply);
+-	regulator_disable(sor->vdd_pll_supply);
+-	regulator_disable(sor->avdd_io_supply);
+-
+-	return 0;
+-}
+-
+ static const struct tegra_sor_ops tegra_sor_hdmi_ops = {
+ 	.name = "HDMI",
+ 	.probe = tegra_sor_hdmi_probe,
+-	.remove = tegra_sor_hdmi_remove,
+ 	.audio_enable = tegra_sor_hdmi_audio_enable,
+ 	.audio_disable = tegra_sor_hdmi_audio_disable,
+ };
+@@ -3017,7 +3024,7 @@ static int tegra_sor_dp_probe(struct tegra_sor *sor)
+ 	if (IS_ERR(sor->avdd_io_supply))
+ 		return PTR_ERR(sor->avdd_io_supply);
+ 
+-	err = regulator_enable(sor->avdd_io_supply);
++	err = tegra_sor_enable_regulator(sor, sor->avdd_io_supply);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -3025,25 +3032,16 @@ static int tegra_sor_dp_probe(struct tegra_sor *sor)
+ 	if (IS_ERR(sor->vdd_pll_supply))
+ 		return PTR_ERR(sor->vdd_pll_supply);
+ 
+-	err = regulator_enable(sor->vdd_pll_supply);
++	err = tegra_sor_enable_regulator(sor, sor->vdd_pll_supply);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	return 0;
+ }
+ 
+-static int tegra_sor_dp_remove(struct tegra_sor *sor)
+-{
+-	regulator_disable(sor->vdd_pll_supply);
+-	regulator_disable(sor->avdd_io_supply);
+-
+-	return 0;
+-}
+-
+ static const struct tegra_sor_ops tegra_sor_dp_ops = {
+ 	.name = "DP",
+ 	.probe = tegra_sor_dp_probe,
+-	.remove = tegra_sor_dp_remove,
+ };
+ 
+ static int tegra_sor_init(struct host1x_client *client)
+@@ -3769,7 +3767,7 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ 		if (err < 0) {
+ 			dev_err(&pdev->dev, "failed to probe %s: %d\n",
+ 				sor->ops->name, err);
+-			goto output;
++			goto remove;
+ 		}
+ 	}
+ 
+@@ -3950,9 +3948,6 @@ static int tegra_sor_probe(struct platform_device *pdev)
+ rpm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ remove:
+-	if (sor->ops && sor->ops->remove)
+-		sor->ops->remove(sor);
+-output:
+ 	tegra_output_remove(&sor->output);
+ 	return err;
+ }
+@@ -3971,12 +3966,6 @@ static int tegra_sor_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-	if (sor->ops && sor->ops->remove) {
+-		err = sor->ops->remove(sor);
+-		if (err < 0)
+-			dev_err(&pdev->dev, "failed to remove SOR: %d\n", err);
+-	}
+-
+ 	tegra_output_remove(&sor->output);
+ 
+ 	return 0;
+-- 
+2.28.0
 
-Please pull it in!
-
-Yours,
-Linus Walleij
-
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
-tags/gpio-v5.10-1
-
-for you to fetch changes up to fc709df553a34fd18010f52e6b47652268d83e7d:
-
-  gpiolib: Update header block in gpiolib-cdev.h (2020-10-08 22:57:16 +0200)
-
-----------------------------------------------------------------
-GPIO bulk changes for the v5.10 kernel cycle:
-
-Core changes:
-
-- The big core change is the updated (v2) userspace character
-  device API. This corrects badly designed 64-bit alignment around
-  the line events. We also add the debounce request feature.
-  This echoes the often quotes passage from Frederick Brooks
-  "The mythical man-month" to always throw one away, which we
-  have seen before in things such as V4L2. So we put in a new
-  one and deprecate and obsolete the old one.
-
-- All example tools in tools/gpio/* are migrated to the new API
-  to set a good example. The libgpiod userspace library has been
-  augmented to use this new API pretty much from day 1.
-
-- Some misc API hardening by using strn* function calls has been
-  added as well.
-
-- Use the simpler IDA interface for GPIO chip instance enumeration.
-
-- Add device core function for counting string arrays in
-  device properties.
-
-- Provide a generic library function kfree_strarray() that can
-  be used throughout the kernel.
-
-Driver enhancements:
-
-- The DesignWare dwapb-gpio driver has been enhanced and now
-  uses the IRQ handling in the gpiolib core.
-
-- The mockup and aggregator drivers have seen some substantial
-  code clean-up and now use more of the core kernel
-  inftrastructure.
-
-- Misc cleanups using dev_err_probe().
-
-- The MXC drivers (Freescale/NXP) can now be built modularized,
-  which makes modularized GKI Android kernels happy.
-
-----------------------------------------------------------------
-Aleksander Jan Bajkowski (1):
-      gpio: stp-xway: automatically drive GPHY leds on ar10 and grx390
-
-Andy Shevchenko (3):
-      gpio: aggregator: Refactor ->{get, set}_multiple() to make Sparse happy
-      gpiolib: convert to use DEFINE_SEQ_ATTRIBUTE macro
-      gpiolib: Update header block in gpiolib-cdev.h
-
-Anson Huang (1):
-      gpio: mxc: Support module build
-
-Bartosz Golaszewski (16):
-      gpiolib: switch to simpler IDA interface
-      device: property: add helpers to count items in string arrays
-      gpiolib: generalize devprop_gpiochip_set_names() for device properties
-      gpiolib: unexport devprop_gpiochip_set_names()
-      gpiolib: check for parent device in devprop_gpiochip_set_names()
-      gpio: mockup: fix resource leak in error path
-      lib: string_helpers: provide kfree_strarray()
-      Documentation: gpio: add documentation for gpio-mockup
-      gpio: mockup: drop unneeded includes
-      gpio: mockup: use KBUILD_MODNAME
-      gpio: mockup: use pr_fmt()
-      gpio: mockup: remove unneeded return statement
-      gpio: mockup: increase the number of supported device properties
-      gpio: mockup: pass the chip label as device property
-      gpio: mockup: use the generic 'gpio-line-names' property
-      gpio: mockup: refactor the module init function
-
-Kent Gibson (21):
-      gpiolib: cdev: gpio_desc_to_lineinfo() should set info offset
-      gpiolib: cdev: replace strncpy() with strscpy()
-      gpio: uapi: define GPIO_MAX_NAME_SIZE for array sizes
-      gpio: uapi: define uAPI v2
-      gpiolib: make cdev a build option
-      gpiolib: add build option for CDEV v1 ABI
-      gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and
-GPIO_V2_LINE_GET_VALUES_IOCTL
-      gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
-GPIO_V2_GET_LINEINFO_WATCH_IOCTL
-      gpiolib: cdev: support edge detection for uAPI v2
-      gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
-      gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
-      gpiolib: cdev: support setting debounce
-      gpio: uapi: document uAPI v1 as deprecated
-      tools: gpio: port lsgpio to v2 uAPI
-      tools: gpio: port gpio-watch to v2 uAPI
-      tools: gpio: rename nlines to num_lines
-      tools: gpio: port gpio-hammer to v2 uAPI
-      tools: gpio: port gpio-event-mon to v2 uAPI
-      tools: gpio: add multi-line monitoring to gpio-event-mon
-      tools: gpio: add debounce support to gpio-event-mon
-      gpiolib: cdev: switch from kstrdup() to kstrndup()
-
-Krzysztof Kozlowski (15):
-      gpio: bcm-kona: Simplify with dev_err_probe()
-      gpio: davinci: Simplify with dev_err_probe()
-      gpio: omap: Simplify with dev_err_probe()
-      gpio: pca953x: Simplify with dev_err_probe()
-      gpio: pisosr: Simplify with dev_err_probe()
-      gpio: zynq: Simplify with dev_err_probe()
-      dt-bindings: gpio: fsl-imx-gpio: Add i.MX 8 compatibles
-      dt-bindings: gpio: fsl-imx-gpio: Add gpio-ranges property
-      dt-bindings: gpio: fsl-imx-gpio: Add parsing of hogs
-      dt-bindings: gpio: fsl-imx-gpio: Add power-domains
-      dt-bindings: gpio: pl061: add gpio-line-names
-      dt-bindings: gpio: fsl-imx-gpio: add i.MX ARMv6 and ARMv7 compatibles
-      dt-bindings: gpio: fsl-imx-gpio: add gpio-line-names
-      dt-bindings: gpio: convert bindings for NXP PCA953x family to dtschema
-      dt-bindings: gpio: convert bindings for Maxim MAX732x family to dtschema
-
-Lad Prabhakar (1):
-      dt-bindings: gpio: renesas, rcar-gpio: Add r8a774e1 support
-
-Linus Walleij (3):
-      Merge tag 'imx-gpio-5.10' of
-https://git.kernel.org/.../krzk/linux into devel
-      Merge tag 'gpio-updates-for-v5.10-part1' of
-git://git.kernel.org/.../brgl/linux into devel
-      Merge tag 'gpio-updates-for-v5.10-part2' of
-git://git.kernel.org/.../brgl/linux into devel
-
-Mauro Carvalho Chehab (1):
-      docs: gpio: add a new document to its index.rst
-
-Michael Walle (1):
-      gpio: mpc8xxx: simplify ls1028a/ls1088a support
-
-Mike Looijmans (1):
-      gpio: pca953x: Add support for the NXP PCAL9554B/C
-
-Necip Fazil Yildiran (1):
-      pinctrl: bcm: fix kconfig dependency warning when !GPIOLIB
-
-Serge Semin (10):
-      dt-bindings: gpio: dwapb: Add ngpios property support
-      gpio: dwapb: Add ngpios DT-property support
-      gpio: dwapb: Move MFD-specific IRQ handler
-      gpio: dwapb: Add max GPIOs macro
-      gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip
-      gpio: dwapb: Discard GPIO-to-IRQ mapping function
-      gpio: dwapb: Discard ACPI GPIO-chip IRQs request
-      gpio: dwapb: Get reset control by means of resource managed interface
-      gpio: dwapb: Get clocks by means of resource managed interface
-      gpio: dwapb: Use resource managed GPIO-chip add data method
-
-dillon min (1):
-      gpio: tc35894: Disable Direct KBD interrupts to enable gpio irq
-
- Documentation/admin-guide/gpio/gpio-mockup.rst     |   50 +
- Documentation/admin-guide/gpio/index.rst           |    1 +
- .../devicetree/bindings/gpio/fsl-imx-gpio.yaml     |   55 +-
- .../devicetree/bindings/gpio/gpio-max732x.txt      |   58 -
- .../devicetree/bindings/gpio/gpio-pca953x.txt      |   90 --
- .../devicetree/bindings/gpio/gpio-pca95xx.yaml     |  232 +++
- .../devicetree/bindings/gpio/pl061-gpio.yaml       |    3 +
- .../bindings/gpio/renesas,rcar-gpio.yaml           |    1 +
- .../devicetree/bindings/gpio/snps,dw-apb-gpio.yaml |    6 +
- .../devicetree/bindings/trivial-devices.yaml       |    4 -
- drivers/gpio/Kconfig                               |   33 +-
- drivers/gpio/Makefile                              |    3 +-
- drivers/gpio/gpio-aggregator.c                     |   70 +-
- drivers/gpio/gpio-bcm-kona.c                       |    5 +-
- drivers/gpio/gpio-davinci.c                        |    8 +-
- drivers/gpio/gpio-dwapb.c                          |  352 ++---
- drivers/gpio/gpio-mockup.c                         |  160 +-
- drivers/gpio/gpio-mpc8xxx.c                        |   45 +-
- drivers/gpio/gpio-mxc.c                            |    6 +
- drivers/gpio/gpio-omap.c                           |    5 +-
- drivers/gpio/gpio-pca953x.c                        |   11 +-
- drivers/gpio/gpio-pisosr.c                         |    9 +-
- drivers/gpio/gpio-stp-xway.c                       |   54 +-
- drivers/gpio/gpio-tc3589x.c                        |   18 +-
- drivers/gpio/gpio-zynq.c                           |    8 +-
- drivers/gpio/gpiolib-acpi.c                        |    3 -
- drivers/gpio/gpiolib-cdev.c                        | 1542 +++++++++++++++++---
- drivers/gpio/gpiolib-cdev.h                        |   19 +-
- drivers/gpio/gpiolib-devprop.c                     |   63 -
- drivers/gpio/gpiolib-of.c                          |    5 -
- drivers/gpio/gpiolib.c                             |   89 +-
- drivers/gpio/gpiolib.h                             |    6 +
- drivers/pinctrl/bcm/Kconfig                        |    1 +
- include/linux/gpio/driver.h                        |    3 -
- include/linux/mfd/tc3589x.h                        |    6 +
- include/linux/platform_data/gpio-dwapb.h           |    4 +-
- include/linux/property.h                           |   13 +
- include/linux/string_helpers.h                     |    2 +
- include/uapi/linux/gpio.h                          |  334 ++++-
- lib/string_helpers.c                               |   23 +
- tools/gpio/gpio-event-mon.c                        |  146 +-
- tools/gpio/gpio-hammer.c                           |   56 +-
- tools/gpio/gpio-utils.c                            |  176 ++-
- tools/gpio/gpio-utils.h                            |   48 +-
- tools/gpio/gpio-watch.c                            |   16 +-
- tools/gpio/lsgpio.c                                |   60 +-
- 46 files changed, 2964 insertions(+), 938 deletions(-)
- create mode 100644 Documentation/admin-guide/gpio/gpio-mockup.rst
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-max732x.txt
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
- delete mode 100644 drivers/gpio/gpiolib-devprop.c
