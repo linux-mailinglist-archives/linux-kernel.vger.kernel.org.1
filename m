@@ -2,286 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3082628C5B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D4928C63D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgJMA2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 20:28:45 -0400
-Received: from mga05.intel.com ([192.55.52.43]:48095 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727028AbgJMA2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 20:28:43 -0400
-IronPort-SDR: lqM/y9FL8MOod9/w0OIjhRHzpH0X8y3klyySfXP2+dTRZ0RahvNiaKbDNnr8CFdLdtvftmOFNs
- XQvJ/pdM9Rlw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="250518563"
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="250518563"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 17:28:42 -0700
-IronPort-SDR: 9wB8uvUl5YmPBYIIbizvh8JTxqZU+2JjQGkMcialqhA8ji0C9LIdoJ/2eNjYpJdJ8Tc/pDD6GL
- P89jA2732Lgw==
-X-IronPort-AV: E=Sophos;i="5.77,368,1596524400"; 
-   d="scan'208";a="299438099"
-Received: from lusin-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.53.81])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 17:28:38 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        kernel test robot <lkp@intel.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        linux-kernel@vger.kernel.org (open list),
-        keyrings@vger.kernel.org (open list:KEYS-TRUSTED),
-        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM)
-Subject: [PATCH v3 3/3] KEYS: trusted: Reserve TPM for seal and unseal operations
-Date:   Tue, 13 Oct 2020 03:28:15 +0300
-Message-Id: <20201013002815.40256-4-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201013002815.40256-1-jarkko.sakkinen@linux.intel.com>
-References: <20201013002815.40256-1-jarkko.sakkinen@linux.intel.com>
+        id S1727714AbgJMAde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 20:33:34 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32940 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726564AbgJMAb3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 20:31:29 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09D0TphY006207;
+        Mon, 12 Oct 2020 17:31:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : in-reply-to : mime-version :
+ content-type : content-transfer-encoding; s=facebook;
+ bh=HlLwr13CySWBSIs+P+W/dByqhlWChoUVV/NMqKtk9pk=;
+ b=NGjqnfJNyCdWDyMp6RUDRMmEYaS/uPXPCuAA4TP2qk1H8GOn6Xxh42EurfAKVZXy0P1X
+ RfZ1oY+PIYJ3FfUPL2a+k8hPLIjTLYxexMe+vnvGTtB1eBd221++tbLXc2C82Z6D/qpQ
+ uHQo21eMxGy+6pE9qVM2nZWkU5es1mawlCY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 3438f0382c-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 12 Oct 2020 17:31:17 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 12 Oct 2020 17:31:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K8HJJEYA4uerOvhkr91cNRgZTq/cToHvOzev4Q5cJJXT3eCS9ZvWE5nDOmmOymQ0HZnRUwiLivxfUDYW5m9e+V9PM+jgHwO6NW6Q62la2Q7pSKNdwvCeQ8t3MgtlLEqGR1mo8oI/wVTwD0EbKZM/mE14+jiw1mG+uBHOh2cf9ezHAfJB+UWJcxYVwz+BxBdwCj2uSlkL0DexTjyJtmh26BgNK6dzjMAywQqaoLUbZojnF5CCxEyfPgYqFHr05q5ZlBzeMsG6oyRCNimp1mIw3vUl7KlX1294FuJApn2aW0vRuVfcjuCSpLWxrw8Cg1sHK2NRT2V4sYs2PJQlIuAmKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HlLwr13CySWBSIs+P+W/dByqhlWChoUVV/NMqKtk9pk=;
+ b=cbnqDwWrA0ovePHI3iIChQgU2bO1MCIx+EsAx44ibEsIj5dbl2DAvxvnDdwpFasojYYWorwbAe+zVJhf5br4ytbU9t3+is9KTSvTnlTvZDwI8JAgd3G3AUqNUV/Z31icCktqINMupbt33YFN5xHI3NHek85r/FFr7tDficDwIMHoU8eky9Wk9If1QSj9i8Yj6dXlkRVLmlQlja1CCoxD3SusWjQgaSvciipnuwByV/kC9lo5ArmxE7aHXcNdr4NXVFi2k1Ks6jJBIfN6Vl5S8/qd0uNImXA6pmTKmsUK4YJJROUL0Kjf9pwpHSvN6b05ueupC0yk/lkBBh0ddCvGGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HlLwr13CySWBSIs+P+W/dByqhlWChoUVV/NMqKtk9pk=;
+ b=IasfqhCPcrV9bG2z1qwQ7DOwYPeepNOYBJ6D5/LV4HGQwoRFbY5B9a36DevzI75+2PtsGwBVUbXZoCxenDpYZQ3cw5JFbUFNRvm3J0+s7DE9v23WLUS8xaHST53ZqxRzuHi4xvIUDfaksc67YYDo2As15o34J0NLYjnXfMOKu0o=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SA0PR15MB3839.namprd15.prod.outlook.com
+ (2603:10b6:806:83::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Tue, 13 Oct
+ 2020 00:31:14 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a%7]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
+ 00:31:14 +0000
+Date:   Mon, 12 Oct 2020 17:31:08 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Philip Li <philip.li@intel.com>
+CC:     kernel test robot <lkp@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        <kbuild-all@lists.01.org>, LKML <linux-kernel@vger.kernel.org>,
+        Bastian Bittorf <bb@npl.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>
+Subject: Re: [kbuild-all] Re: [PATCH] mm: memcg/slab: fix slab statistics in
+ !SMP configuration
+Message-ID: <20201013003108.GA3687509@carbon.dhcp.thefacebook.com>
+References: <20201001203931.GD2706729@carbon.DHCP.thefacebook.com>
+ <202010020814.M5nb692Y-lkp@intel.com>
+ <20201002005559.GF2706729@carbon.DHCP.thefacebook.com>
+ <20201002053405.GA30771@intel.com>
+ <20201002175506.GB2954069@carbon.dhcp.thefacebook.com>
+ <20201012230550.GB19671@intel.com>
+In-Reply-To: <20201012230550.GB19671@intel.com>
+X-Originating-IP: [2620:10d:c090:400::5:2319]
+X-ClientProxiedBy: MWHPR21CA0056.namprd21.prod.outlook.com
+ (2603:10b6:300:db::18) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:2319) by MWHPR21CA0056.namprd21.prod.outlook.com (2603:10b6:300:db::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.10 via Frontend Transport; Tue, 13 Oct 2020 00:31:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3b002727-0704-43e0-d852-08d86f0f4aab
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3839:
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3839EE57B3DC2F8B193EB96BBE040@SA0PR15MB3839.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:820;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VTMEENbqyqm3RPJRLCkMmxW51wFKmXdOL5rffZq7XXM+jVxlp+wAy76z9gMySNh2mBsR0c4QmxerPSVCQaAXwNHW3WxJi//g/NHy3NLHeC9Yexbo5oiAolvGDWpiBWgI+hQCbL03TxTwvdAWKYRWP8oL8mLr3b5hBoCp1VFk01KndMir2+MYxBINWPwhxv3OTPT+bGTTy6kE+Q3v1ERWvgSxfoCGa49Pln267v/mhqff8eoQKImV1wGyLsD1cprz8Cvl7p4l9HLhUjaIZKGlon9+tDKVa0EYIkisTmTij6shUo3RgK0Kp2OqLJj8haE4DRXu36WVZxeCmjEYOOHE3A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(136003)(366004)(39860400002)(6666004)(316002)(55016002)(2906002)(7416002)(478600001)(1076003)(5660300002)(54906003)(6916009)(16526019)(4326008)(6506007)(33656002)(83380400001)(86362001)(66556008)(52116002)(7696005)(66476007)(9686003)(66946007)(186003)(8936002)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: exz42gdHeTSBJERVoKDNXxrOvIeRm3zpZmtThi3wqGlcNqLbZ/LSka7vBw55E7ElB7/vACcL/bK3XOReGqiDNrd+vpDc9X2RtUVwCSSu4KVDRKKkaJ9z3hmbOOoqvorOQO8yt6yAcRgYvgKNuKeUuB9hJSkNiHraVvWGASUmt7iiYyZPQf791hY2X85eqfeCbCWU6Q5xI15U+HxDeDQsyNxfbFDXv1DvzHW/oA+77vUAy9rtGf9ZS5lauFVGPoHaXU+m7t2/lD012nsx9CGBm86FEt/TPjOcG8qROC/hUbHsx+Qf4e/QSxj3DErXmgZ44d4C3TaMA07LHw66jvkc91+vYnAmLfr4k1USc242TNDLLuFD541iFKhC+8+hFxEInIC5jtW3MsDXvQ9xHkbqUKUX1k+KIvvGqN2joXL/l5jSZFJHh7l1KfPKr5M5a7UWHagPwO0hlEpHPJo0xEyvB6GvDfIavd9H+Cy0hKjcETFxdxdwHA/fP2DOc+rCk/I7hxaHnoaEDT2Kp7sJiaG2/ASDZIiXRwUyotpPhpuwtQBZ2QQF66cPaNodYOmSoyHkEZ6l36+lMqy44Cmct3jdwMPDB2/PBEZ4x2fcRMXx6zSk6V97Y1x83P8+nyKWSVvLzozdRvi7jPX2QmjZSigcHKX6m23M98mL/GSAzBUde2o=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b002727-0704-43e0-d852-08d86f0f4aab
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 00:31:14.2912
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wIalc38XYXZyNiv07nPFMO/dDPF9Q5JACzYaOnl+jByaMvZwPI6wcHYsUS6BEyQF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3839
+X-OriginatorOrg: fb.com
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-12_18:2020-10-12,2020-10-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 spamscore=0 suspectscore=1
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010130003
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When TPM 2.0 trusted keys code was moved to the trusted keys subsystem,
-the operations were unwrapped from tpm_try_get_ops() and tpm_put_ops(),
-which are used to take temporarily the ownership of the TPM chip. The
-ownership is only taken inside tpm_send(), but this is not sufficient,
-as in the key load TPM2_CC_LOAD, TPM2_CC_UNSEAL and TPM2_FLUSH_CONTEXT
-need to be done as a one single atom.
+On Tue, Oct 13, 2020 at 07:05:50AM +0800, Philip Li wrote:
+> On Fri, Oct 02, 2020 at 10:55:06AM -0700, Roman Gushchin wrote:
+> > On Fri, Oct 02, 2020 at 01:34:06PM +0800, Philip Li wrote:
+> > > On Thu, Oct 01, 2020 at 05:55:59PM -0700, Roman Gushchin wrote:
+> > > > On Fri, Oct 02, 2020 at 08:08:40AM +0800, kbuild test robot wrote:
+> > > > > Hi Roman,
+> > > > > 
+> > > > > Thank you for the patch! Yet something to improve:
+> > > > > 
+> > > > > [auto build test ERROR on mmotm/master]
+> > > > 
+> > > > It's a bogus error, the patch was applied onto mmotm/master, which doesn't
+> > > > contain necessary slab controller patches.
+> > > sorry for the wrong report, and thanks for the input, we will check
+> > > this to see whether we can find an appropriate base for this case.
+> > 
+> > I wonder if you can look at the "Fixes" tag if the patch contains one?
+> Thanks for the advice. Yes, we have Fixes tag as part of hint for us
+> to analzye the possible base. For this case, "Fixes: ea426c2", the commit sha
+> is a little short than we expected, thus ignored. We have updated matching
+> rule now to handle such situation.
 
-Fix this issue by introducting trusted_tpm_load() and trusted_tpm_new(),
-which wrap these operations, and take the TPM chip ownership before
-sending anything. Use tpm_transmit_cmd() to send TPM commands instead
-of tpm_send(), reverting back to the old behaviour.
+Hm, but the patch contains the full 12 chars long sha?
 
-Fixes: 2e19e10131a0 ("KEYS: trusted: Move TPM2 trusted keys code")
-Reported-by: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: stable@vger.kernel.org
-Cc: David Howells <dhowells@redhat.com>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/char/tpm/tpm.h                    |  4 --
- include/linux/tpm.h                       | 17 ++++-
- security/keys/trusted-keys/trusted_tpm1.c | 78 +++++++++++++++--------
- security/keys/trusted-keys/trusted_tpm2.c |  6 +-
- 4 files changed, 72 insertions(+), 33 deletions(-)
+Anyway, thank you for looking into it! It's really great to have
+the kernel test robot working.
 
-diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-index 947d1db0a5cc..283f78211c3a 100644
---- a/drivers/char/tpm/tpm.h
-+++ b/drivers/char/tpm/tpm.h
-@@ -164,8 +164,6 @@ extern const struct file_operations tpmrm_fops;
- extern struct idr dev_nums_idr;
- 
- ssize_t tpm_transmit(struct tpm_chip *chip, u8 *buf, size_t bufsiz);
--ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct tpm_buf *buf,
--			 size_t min_rsp_body_length, const char *desc);
- int tpm_get_timeouts(struct tpm_chip *);
- int tpm_auto_startup(struct tpm_chip *chip);
- 
-@@ -194,8 +192,6 @@ static inline void tpm_msleep(unsigned int delay_msec)
- int tpm_chip_start(struct tpm_chip *chip);
- void tpm_chip_stop(struct tpm_chip *chip);
- struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
--__must_check int tpm_try_get_ops(struct tpm_chip *chip);
--void tpm_put_ops(struct tpm_chip *chip);
- 
- struct tpm_chip *tpm_chip_alloc(struct device *dev,
- 				const struct tpm_class_ops *ops);
-diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-index 8f4ff39f51e7..f0ebce14d2f8 100644
---- a/include/linux/tpm.h
-+++ b/include/linux/tpm.h
-@@ -397,6 +397,10 @@ static inline u32 tpm2_rc_value(u32 rc)
- #if defined(CONFIG_TCG_TPM) || defined(CONFIG_TCG_TPM_MODULE)
- 
- extern int tpm_is_tpm2(struct tpm_chip *chip);
-+extern __must_check int tpm_try_get_ops(struct tpm_chip *chip);
-+extern void tpm_put_ops(struct tpm_chip *chip);
-+extern ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct tpm_buf *buf,
-+				size_t min_rsp_body_length, const char *desc);
- extern int tpm_pcr_read(struct tpm_chip *chip, u32 pcr_idx,
- 			struct tpm_digest *digest);
- extern int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
-@@ -410,7 +414,18 @@ static inline int tpm_is_tpm2(struct tpm_chip *chip)
- {
- 	return -ENODEV;
- }
--
-+static inline int tpm_try_get_ops(struct tpm_chip *chip)
-+{
-+	return -ENODEV;
-+}
-+static inline void tpm_put_ops(struct tpm_chip *chip)
-+{
-+}
-+static inline ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct tpm_buf *buf,
-+				       size_t min_rsp_body_length, const char *desc)
-+{
-+	return -ENODEV;
-+}
- static inline int tpm_pcr_read(struct tpm_chip *chip, int pcr_idx,
- 			       struct tpm_digest *digest)
- {
-diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
-index 7a937c3c5283..20ca18e17437 100644
---- a/security/keys/trusted-keys/trusted_tpm1.c
-+++ b/security/keys/trusted-keys/trusted_tpm1.c
-@@ -950,6 +950,51 @@ static struct trusted_key_payload *trusted_payload_alloc(struct key *key)
- 	return p;
- }
- 
-+static int trusted_tpm_load(struct tpm_chip *chip,
-+			    struct trusted_key_payload *payload,
-+			    struct trusted_key_options *options)
-+{
-+	int ret;
-+
-+	if (tpm_is_tpm2(chip)) {
-+		ret = tpm_try_get_ops(chip);
-+		if (!ret) {
-+			ret = tpm2_unseal_trusted(chip, payload, options);
-+			tpm_put_ops(chip);
-+		}
-+	} else {
-+		ret = key_unseal(payload, options);
-+	}
-+
-+	return ret;
-+}
-+
-+static int trusted_tpm_new(struct tpm_chip *chip,
-+			   struct trusted_key_payload *payload,
-+			   struct trusted_key_options *options)
-+{
-+	int ret;
-+
-+	ret = tpm_get_random(chip, payload->key, payload->key_len);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret != payload->key_len)
-+		return -EIO;
-+
-+	if (tpm_is_tpm2(chip)) {
-+		ret = tpm_try_get_ops(chip);
-+		if (!ret) {
-+			ret = tpm2_seal_trusted(chip, payload, options);
-+			tpm_put_ops(chip);
-+		}
-+	} else {
-+		ret = key_seal(payload, options);
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * trusted_instantiate - create a new trusted key
-  *
-@@ -968,12 +1013,6 @@ static int trusted_instantiate(struct key *key,
- 	char *datablob;
- 	int ret = 0;
- 	int key_cmd;
--	size_t key_len;
--	int tpm2;
--
--	tpm2 = tpm_is_tpm2(chip);
--	if (tpm2 < 0)
--		return tpm2;
- 
- 	if (datalen <= 0 || datalen > 32767 || !prep->data)
- 		return -EINVAL;
-@@ -1011,32 +1050,21 @@ static int trusted_instantiate(struct key *key,
- 
- 	switch (key_cmd) {
- 	case Opt_load:
--		if (tpm2)
--			ret = tpm2_unseal_trusted(chip, payload, options);
--		else
--			ret = key_unseal(payload, options);
-+		ret = trusted_tpm_load(chip, payload, options);
-+
- 		dump_payload(payload);
- 		dump_options(options);
-+
- 		if (ret < 0)
--			pr_info("trusted_key: key_unseal failed (%d)\n", ret);
-+			pr_info("%s: load failed (%d)\n", __func__, ret);
-+
- 		break;
- 	case Opt_new:
--		key_len = payload->key_len;
--		ret = tpm_get_random(chip, payload->key, key_len);
--		if (ret < 0)
--			goto out;
-+		ret = trusted_tpm_new(chip, payload, options);
- 
--		if (ret != key_len) {
--			pr_info("trusted_key: key_create failed (%d)\n", ret);
--			ret = -EIO;
--			goto out;
--		}
--		if (tpm2)
--			ret = tpm2_seal_trusted(chip, payload, options);
--		else
--			ret = key_seal(payload, options);
- 		if (ret < 0)
--			pr_info("trusted_key: key_seal failed (%d)\n", ret);
-+			pr_info("%s: new failed (%d)\n", __func__, ret);
-+
- 		break;
- 	default:
- 		ret = -EINVAL;
-diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-index 08ec7f48f01d..effdb67fac6d 100644
---- a/security/keys/trusted-keys/trusted_tpm2.c
-+++ b/security/keys/trusted-keys/trusted_tpm2.c
-@@ -130,7 +130,7 @@ int tpm2_seal_trusted(struct tpm_chip *chip,
- 		goto out;
- 	}
- 
--	rc = tpm_send(chip, buf.data, tpm_buf_length(&buf));
-+	rc = tpm_transmit_cmd(chip, &buf, 4, "sealing data");
- 	if (rc)
- 		goto out;
- 
-@@ -211,7 +211,7 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
- 		goto out;
- 	}
- 
--	rc = tpm_send(chip, buf.data, tpm_buf_length(&buf));
-+	rc = tpm_transmit_cmd(chip, &buf, 4, "loading blob");
- 	if (!rc)
- 		*blob_handle = be32_to_cpup(
- 			(__be32 *) &buf.data[TPM_HEADER_SIZE]);
-@@ -260,7 +260,7 @@ static int tpm2_unseal_cmd(struct tpm_chip *chip,
- 			     options->blobauth /* hmac */,
- 			     TPM_DIGEST_SIZE);
- 
--	rc = tpm_send(chip, buf.data, tpm_buf_length(&buf));
-+	rc = tpm_transmit_cmd(chip, &buf, 6, "unsealing");
- 	if (rc > 0)
- 		rc = -EPERM;
- 
--- 
-2.25.1
-
+Thanks!
