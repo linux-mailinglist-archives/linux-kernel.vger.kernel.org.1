@@ -2,176 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAA528CEEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFE428CEED
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgJMNIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:08:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:59690 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727151AbgJMNIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:08:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61FA61FB;
-        Tue, 13 Oct 2020 06:08:43 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 402A33F719;
-        Tue, 13 Oct 2020 06:08:41 -0700 (PDT)
-Subject: Re: [PATCH v4 0/4] Add system mmu support for Armada-806
-To:     Denis Odintsov <d.odintsov@traviangames.com>,
-        Tomasz Nowicki <tn@semihalf.com>
-Cc:     "will@kernel.org" <will@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "hannah@marvell.com" <hannah@marvell.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        id S1728407AbgJMNJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:09:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60800 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728382AbgJMNJf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:09:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602594573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pYoLERdYqiwrge/RFON654uxOf57ox4XJoSTutIfBEg=;
+        b=U6gaj6dAq28b62jh4h3RoLCfewOqgIFR526ZQK/5FICMyRK5B13LsZlRWQE0XnL4e3pzg6
+        0o6U9h9arxmXNE/Ezze1S+S+ks6XzzAhFdiMp+acatFyF/NnbtNDs+0oYAuTtj7VvveB9u
+        k9C03NMs25ZohANByzxSrL/BxXNV8dM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-485-ebTww4dAMH2PnoZPd6dlRg-1; Tue, 13 Oct 2020 09:09:31 -0400
+X-MC-Unique: ebTww4dAMH2PnoZPd6dlRg-1
+Received: by mail-ed1-f69.google.com with SMTP id n19so8000179eds.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:09:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pYoLERdYqiwrge/RFON654uxOf57ox4XJoSTutIfBEg=;
+        b=X296FJIUcc3dQ7nDJDd1PGFuIxew92XCilo7hvKVwXPmo1xIsgDSBnj/OuQELzTIKT
+         TY+LapGXoqVwaKtA7LGGolADZTbU8w5P4Qmp45MfO6GW0Des/4NWN2iIj5itGOc+VZUl
+         sb6MboxHBX8vQMvKyilxgCvUiudcyXGVpnYNjOvuCq0y8RSYohW2WVIR0cH/KGsM+K8+
+         YTgmgSRgvupDWYRXALbKyT/5YzbIHu0fxNG7omh5mu+zXjOK/7TmESy3Wk2UbP765x71
+         Yucohi+A87j7gAHHhAB1YBiBTRRjq8QJmB2L/h0vYOOF9slJ6d4zTVV3SieKKoLCBoOF
+         gEyA==
+X-Gm-Message-State: AOAM533bhRYKp6j+8OqJF7FeOm3AbQ55ooGTHgX/i9ZLoAGb8vtxSiZC
+        VQ9nr2fTwRtTarb89FGaTJkGZ9t5R9Gv6j446IX8NOS2uPbnpb9TqJFSMjESrpY/Bgt9E3CC816
+        sI/XAiLQz4PHbfW9hDekR6jzn
+X-Received: by 2002:a17:906:118f:: with SMTP id n15mr34324101eja.394.1602594568843;
+        Tue, 13 Oct 2020 06:09:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFofbCot5FjJJsFvPWfb0b6xBdK/KZ7WESdzyrT4ROUQd91ZTi1Jm0bhyA7VHl9b2jiU1qjQ==
+X-Received: by 2002:a17:906:118f:: with SMTP id n15mr34324068eja.394.1602594568470;
+        Tue, 13 Oct 2020 06:09:28 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id sd18sm12116119ejb.24.2020.10.13.06.09.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 06:09:27 -0700 (PDT)
+Subject: Re: [RFC] Documentation: Add documentation for new
+ performance_profile sysfs class
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mark Pearson <mpearson@lenovo.com>,
+        Elia Devito <eliadevito@gmail.com>,
+        Benjamin Berg <bberg@redhat.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nadavh@marvell.com" <nadavh@marvell.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200715070649.18733-1-tn@semihalf.com>
- <517BB937-1F18-4CCF-81BF-11777BB99779@traviangames.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <08ed4dd7-9c2f-813d-9aea-ff8da07e5641@arm.com>
-Date:   Tue, 13 Oct 2020 14:08:38 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Mark Pearson <markpearson@lenovo.com>
+References: <20201003131938.9426-1-hdegoede@redhat.com>
+ <20201003131938.9426-2-hdegoede@redhat.com>
+ <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <85a36eb58cb9774f1907582dfc75295ed847200c.camel@hadess.net>
+ <DM6PR19MB26364E6AA2F51981F592CE58FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <c73ffad8fd6bff8ff20d91930b097bff82be1c8f.camel@hadess.net>
+ <DM6PR19MB2636B067186B08B744EA2163FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <CAJZ5v0jBJBTTb3qBGH0UWOAfvY24gWqJQA=MahnhaTdMu-w0Bw@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <394f897a-4dac-7016-ea17-c37b67589e07@redhat.com>
+Date:   Tue, 13 Oct 2020 15:09:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <517BB937-1F18-4CCF-81BF-11777BB99779@traviangames.com>
+In-Reply-To: <CAJZ5v0jBJBTTb3qBGH0UWOAfvY24gWqJQA=MahnhaTdMu-w0Bw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-06 16:16, Denis Odintsov wrote:
-> Hi,
-> 
->> Am 15.07.2020 um 09:06 schrieb Tomasz Nowicki <tn@semihalf.com>:
->>
->> The series is meant to support SMMU for AP806 and a workaround
->> for accessing ARM SMMU 64bit registers is the gist of it.
->>
->> For the record, AP-806 can't access SMMU registers with 64bit width.
->> This patches split the readq/writeq into two 32bit accesses instead
->> and update DT bindings.
->>
->> The series was successfully tested on a vanilla v5.8-rc3 kernel and
->> Intel e1000e PCIe NIC. The same for platform devices like SATA and USB.
->>
->> For reference, previous versions are listed below:
->> V1: https://lkml.org/lkml/2018/10/15/373
->> V2: https://lkml.org/lkml/2019/7/11/426
->> V3: https://lkml.org/lkml/2020/7/2/1114
->>
-> 
-> 1) After enabling SMMU on Armada 8040, and ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=y by default in kernel since 954a03be033c7cef80ddc232e7cbdb17df735663,
-> internal eMMC is prevented from being initialised (as there is no iommus property for ap_sdhci0)
-> Disabling "Disable bypass by default" make it work, but the patch highly suggest doing it properly.
-> I wasn't able to find correct path for ap_sdhci for iommus in any publicly available documentation,
-> would be highly appreciated addressed properly, thank you!
+Hi,
 
-FWIW the SMMU tells you the offending unmatched Stream ID, so if faults 
-can reasonably be correlated with a particular device making accesses, 
-you can effectively discover the Stream ID assignment by trial and 
-error. Often that can be easier than trying to find formal documentation 
-anyway ;)
-
-> 2) Second issue I got (btw I have ClearFog GT 8k armada-8040 based board) is mpci ath10k card.
-> It is found, it is enumerated, it is visible in lspci, but it fails to be initialised. Here is the log:
+On 10/12/20 6:42 PM, Rafael J. Wysocki wrote:
+> On Wed, Oct 7, 2020 at 8:41 PM Limonciello, Mario
+> <Mario.Limonciello@dell.com> wrote:
+>>
+>>> On Wed, 2020-10-07 at 15:58 +0000, Limonciello, Mario wrote:
+>>>>
+>>>>> On Mon, 2020-10-05 at 12:58 +0000, Limonciello, Mario wrote:
+>>>>>>> On modern systems CPU/GPU/... performance is often dynamically
+>>>>>>> configurable
+>>>>>>> in the form of e.g. variable clock-speeds and TPD. The
+>>>>>>> performance
+>>>>>>> is often
+>>>>>>> automatically adjusted to the load by some automatic-mechanism
+>>>>>>> (which may
+>>>>>>> very well live outside the kernel).
+>>>>>>>
+>>>>>>> These auto performance-adjustment mechanisms often can be
+>>>>>>> configured with
+>>>>>>> one of several performance-profiles, with either a bias towards
+>>>>>>> low-power
+>>>>>>> consumption (and cool and quiet) or towards performance (and
+>>>>>>> higher
+>>>>>>> power
+>>>>>>> consumption and thermals).
+>>>>>>>
+>>>>>>> Introduce a new performance_profile class/sysfs API which
+>>>>>>> offers a
+>>>>>>> generic
+>>>>>>> API for selecting the performance-profile of these automatic-
+>>>>>>> mechanisms.
+>>>>>>>
+>>>>>>
+>>>>>> If introducing an API for this - let me ask the question, why
+>>>>>> even let each
+>>>>>> driver offer a class interface and userspace need to change
+>>>>>> "each" driver's
+>>>>>> performance setting?
+>>>>>>
+>>>>>> I would think that you could just offer something kernel-wide
+>>>>>> like
+>>>>>> /sys/power/performance-profile
+>>>>>>
+>>>>>> Userspace can read and write to a single file.  All drivers can
+>>>>>> get notified
+>>>>>> on this sysfs file changing.
+>>>>>>
+>>>>>> The systems that react in firmware (such as the two that prompted
+>>>>>> this discussion) can change at that time.  It leaves the
+>>>>>> possibility for a
+>>>>>> more open kernel implementation that can do the same thing though
+>>>>>> too by
+>>>>>> directly modifying device registers instead of ACPI devices.
+>>>>>
+>>>>> The problem, as I've mentioned in previous discussions we had about
+>>>>> this, is that, as you've seen in replies to this mail, this would
+>>>>> suddenly be making the kernel apply policy.
+>>>>>
+>>>>> There's going to be pushback as soon as policy is enacted in the
+>>>>> kernel, and you take away the different knobs for individual
+>>>>> components
+>>>>> (or you can control them centrally as well as individually). As
+>>>>> much as
+>>>>> I hate the quantity of knobs[1], I don't think that trying to
+>>>>> reduce
+>>>>> the number of knobs in the kernel is a good use of our time, and
+>>>>> easier
+>>>>> to enact, coordinated with design targets, in user-space.
+>>>>>
+>>>>> Unless you can think of a way to implement this kernel wide setting
+>>>>> without adding one more exponent on the number of possibilities for
+>>>>> the
+>>>>> testing matrix, I'll +1 Hans' original API.
+>>>>>
+>>>> Actually I offered two proposals in my reply.  So are you NAKing
+>>>> both?
+>>>
+>>> No, this is only about the first portion of the email, which I quoted.
+>>> And I'm not NAK'ing it, but I don't see how it can work without being
+>>> antithetical to what kernel "users" expect, or what the folks consuming
+>>> those interfaces (presumably us both) would expect to be able to test
+>>> and maintain.
+>>>
+>>
+>> (Just so others are aware, Bastien and I had a previous discussion on this topic
+>> that he alluded to here: https://gitlab.freedesktop.org/hadess/power-profiles-daemon/-/issues/1)
+>>
+>> In general I agree that we shouldn't be offering 100's of knobs to change
+>> things and protect users from themselves where possible.
+>>
+>> Whether the decisions are made in the kernel or in userspace you still have a matrix once
+>> you're letting someone change 2 different kernel devices that offer policy.  I'd argue it's
+>> actually worse if you let userspace change it though.
+>>
+>> Let's go back to the my GPU and platform example and lets say both offer the new knob here
+>> for both.  Userspace software such as your PPD picks performance.  Both the platform device
+>> and GPU device get changed, hopefully no conflicts.
+>> Then user decides no, I don't want my GPU in performance mode, I only want my platform.
+>> So they change the knob for the GPU manually, and now you have a new config in your matrix.
+>>
+>> However if you left it to a single kernel knob, both GPU and platform get moved together and
+>> you don't have these extra configs in your matrix anymore.
+>>
+>> The other point I mentioned, that platform might also do something to GPU via a sideband and
+>> you race, you can solve it with kernel too by modifying the ordering the kernel handles it.
+>>
+>> Userspace however, you give two knobs and now you have to worry about them getting it right
+>> and supporting them doing them in the wrong order.
+>>
+>>>> The other one suggested to use the same firmware attributes class
+>>>> being
+>>>> introduced by the new Dell driver (
+>>>> https://patchwork.kernel.org/patch/11818343/)
+>>>> since this is actually a knob to a specific firmware setting.
+>>>
+>>> This seemed to me like an implementation detail (eg. the same metadata
+>>> is being exported, but in a different way), and I don't feel strongly
+>>> about it either way.
+>>
+>> OK thanks.
 > 
-> [    1.743754] armada8k-pcie f2600000.pcie: host bridge /cp0/pcie@f2600000 ranges:
-> [    1.751116] armada8k-pcie f2600000.pcie:      MEM 0x00f6000000..0x00f6efffff -> 0x00f6000000
-> [    1.964690] armada8k-pcie f2600000.pcie: Link up
-> [    1.969379] armada8k-pcie f2600000.pcie: PCI host bridge to bus 0000:00
-> [    1.976026] pci_bus 0000:00: root bus resource [bus 00-ff]
-> [    1.981537] pci_bus 0000:00: root bus resource [mem 0xf6000000-0xf6efffff]
-> [    1.988462] pci 0000:00:00.0: [11ab:0110] type 01 class 0x060400
-> [    1.994504] pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x000fffff]
-> [    2.000843] pci 0000:00:00.0: supports D1 D2
-> [    2.005132] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
-> [    2.011853] pci 0000:01:00.0: [168c:003c] type 00 class 0x028000
-> [    2.018001] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x001fffff 64bit]
-> [    2.025002] pci 0000:01:00.0: reg 0x30: [mem 0x00000000-0x0000ffff pref]
-> [    2.032111] pci 0000:01:00.0: supports D1 D2
-> [    2.049409] pci 0000:00:00.0: BAR 14: assigned [mem 0xf6000000-0xf61fffff]
-> [    2.056322] pci 0000:00:00.0: BAR 0: assigned [mem 0xf6200000-0xf62fffff]
-> [    2.063142] pci 0000:00:00.0: BAR 15: assigned [mem 0xf6300000-0xf63fffff pref]
-> [    2.070484] pci 0000:01:00.0: BAR 0: assigned [mem 0xf6000000-0xf61fffff 64bit]
-> [    2.077880] pci 0000:01:00.0: BAR 6: assigned [mem 0xf6300000-0xf630ffff pref]
-> [    2.085135] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-> [    2.090384] pci 0000:00:00.0:   bridge window [mem 0xf6000000-0xf61fffff]
-> [    2.097202] pci 0000:00:00.0:   bridge window [mem 0xf6300000-0xf63fffff pref]
-> [    2.104539] pcieport 0000:00:00.0: Adding to iommu group 4
-> [    2.110232] pcieport 0000:00:00.0: PME: Signaling with IRQ 38
-> [    2.116141] pcieport 0000:00:00.0: AER: enabled with IRQ 38
-> [    8.131135] ath10k_pci 0000:01:00.0: Adding to iommu group 4
-> [    8.131874] ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)
-> [    8.132203] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 irq_mode 0 reset_mode 0
+> IMV there are two choices here:  One is between exposing the low-level
+> interfaces verbatim to user space and wrapping them up into a certain
+> "translation" layer allowing user space to use a unified interface (I
+> think that is what everybody wants) and the other  boils down to how
+> the unified interface between the kernel and user space will look
+> like.
 > 
-> up to that point the log is the same as without SMMU enabled, except "Adding to iommu group N" lines, and IRQ being 37
+> Personally, I think that something line /sys/power/profile allowing
+> drivers (and other kernel entities) to register callbacks might work
+> (as stated in my last reply to Hans).
 
-Does forcing ath10k to use legacy interrupts rather than MSIs make a 
-difference?
+Note to others reading along I pointed to this thread in this thread:
+https://lore.kernel.org/linux-pm/20201006122024.14539-1-daniel.lezcano@linaro.org/T/#t
+and Rafael's "last reply" above refers to his reply in that thread.
 
-Judging by the DT it looks like MSIs ought to be targeting the GICv2M 
-widget, but if things somehow end up trying to use the PCIe controller's 
-internal MSI doorbell (upstream of SMMU translation) instead, then that 
-might account for general interrupt-related weirdness.
+For the sake of people reading along I'm reproducing my reply
+there below.
 
-Robin.
+Rafael, it seems more appropriate to continue this discussion
+in this thread, so lets discuss this further here ?
 
-> [    8.221328] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.313362] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.409373] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.553433] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.641370] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.737979] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
-> [    8.807356] ath10k_pci 0000:01:00.0: Failed to get pcie state addr: -16
-> [    8.814032] ath10k_pci 0000:01:00.0: failed to setup init config: -16
-> [    8.820605] ath10k_pci 0000:01:00.0: could not power on hif bus (-16)
-> [    8.827111] ath10k_pci 0000:01:00.0: could not probe fw (-16)
-> 
-> Thank you!
-> 
->> v3 -> v4
->> - call cfg_probe() impl hook a bit earlier which simplifies errata handling
->> - use hi_lo_readq_relaxed() and hi_lo_writeq_relaxed() for register accessors
->> - keep SMMU status disabled by default and enable where possible (DTS changes)
->> - commit logs improvements and other minor fixes
->>
->> Hanna Hawa (1):
->>   iommu/arm-smmu: Workaround for Marvell Armada-AP806 SoC erratum
->>     #582743
->>
->> Marcin Wojtas (1):
->>   arm64: dts: marvell: add SMMU support
->>
->> Tomasz Nowicki (2):
->>   iommu/arm-smmu: Call configuration impl hook before consuming features
->>   dt-bindings: arm-smmu: add compatible string for Marvell Armada-AP806
->>     SMMU-500
->>
->> Documentation/arm64/silicon-errata.rst        |  3 ++
->> .../devicetree/bindings/iommu/arm,smmu.yaml   |  4 ++
->> arch/arm64/boot/dts/marvell/armada-7040.dtsi  | 28 ++++++++++++
->> arch/arm64/boot/dts/marvell/armada-8040.dtsi  | 40 +++++++++++++++++
->> arch/arm64/boot/dts/marvell/armada-ap80x.dtsi | 18 ++++++++
->> drivers/iommu/arm-smmu-impl.c                 | 45 +++++++++++++++++++
->> drivers/iommu/arm-smmu.c                      | 11 +++--
->> 7 files changed, 145 insertions(+), 4 deletions(-)
->>
->> -- 
->> 2.17.1
->>
->> _______________________________________________
->> iommu mailing list
->> iommu@lists.linux-foundation.org
->> https://lists.linuxfoundation.org/mailman/listinfo/iommu
->>
-> 
+My reply to Rafael from the other thread:
+
+First of all thank you for your input, with your expertise in this
+area your input is very much appreciated, after all we only get
+one chance to get the userspace API for this right.
+
+Your proposal to have a single sysfs file for userspace to talk
+to and then use an in kernel subscription mechanism for drivers
+to get notified of writes to this file is interesting.
+
+But I see 2 issues with it:
+
+1. How will userspace know which profiles are actually available ?
+
+An obvious solution is to pick a set of standard names and let
+subscribers map those as close to their own settings as possible,
+the most often mentioned set of profile names in this case seems to be:
+
+low_power
+balanced_power
+balanced
+balanced_performance
+performance
+
+Which works fine for the thinkpad_acpi case, but not so much for
+the hp-wmi case. In the HP case what happens is that a WMI call
+is made which sets a bunch of ACPI variables which influence
+the DPTF code (this assumes we have some sort of DPTF support
+such as mjg59's reverse engineered support) but the profile-names
+under Windows are: "Performance", "HP recommended", "Cool" and
+"Quiet".  If you read the discussion from the
+"[RFC] Documentation: Add documentation for new performance_profile sysfs class"
+thread you will see this was brought up as an issue there.
+
+The problem here is that both "cool" and "quiet" could be
+interpreted as low-power. But it seems that they actually mean
+what they say, cool focuses on keeping temps low, which can
+also be done by making the fan-profile more aggressive. And quiet
+is mostly about keeping fan speeds down, at the cost of possible
+higher temperatures.
+
+<edit in this version of the reply:>
+I wonder if the HP profiles are actually just fan speed profiles ?
+Elia do you know ?
+</edit>
+
+IOW we don't really have a 1 dimensional axis.
+My class proposal fixes this by having a notion of both
+standardized names (because anything else would suck) combined
+with a way for drivers to advertise which standardized names
+the support. So in my proposal I simply add quiet and cool
+to the list of standard profile names, and then the HP-wmi
+driver can list those as supported, while not listing
+low_power as a supported profile.  This way we export the
+hardware interface to userspace as is (as much as possible)
+while still offering a standardized interface for userspace
+to consume.  Granted if userspace now actually want to set
+a low_power profile, we have just punted the problem to userspace
+but I really do not see a better solution.
+
+
+2. This only works assuming that all performance-profiles
+are system wide. But given a big desktop case there might
+be very well be separate cooling zones for e.g. the CPU
+and the GPU and I can imagine both having separate
+performance-profile settings and some users will doubtlessly
+want to be able to control these separately ...
+
+Regards,
+
+Hans
+
