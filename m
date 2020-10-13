@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A529728D4EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C815B28D4F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732746AbgJMTtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728114AbgJMTtE (ORCPT
+        id S1732749AbgJMTtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:49:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44544 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726819AbgJMTtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:49:04 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5F5C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:49:03 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id p21so14144pju.0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:49:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=azTn4fYcsb9QgmJPQAawTDMXTsFjwMYD7ZRewOEzXFg=;
-        b=Kg8ID8/atBL055e7IqeqHlAqWENd7rNwLnXooxfy359cXJDa8cbp0TpbYDmad/tgp/
-         PpyR548BF95scSSOUHfrtd7AkbrYUM5/k55hu6OU7fNJuhu37A8AZs5xXO3jX+v6oWzo
-         DZwyacrlj6RnKy0nnURgicNZqLXEMa1h+LDTe/EipksZmPR2tvhwqrZ+iuRNhFMIurLf
-         4O/ScMT/gMl7PA5GZIXV6VAsl6bqxaz+BGzVDyfgNojF7XMu7Qt0d309H9lgElZY+jRx
-         b3inkZuY+9ARcKcTeTcogzR++R/eUpWt5vKGr5LCUDo2gN3AvLvK39/OVtE8TRBgb14H
-         HqWA==
+        Tue, 13 Oct 2020 15:49:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602618556;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f0ux1xTKPBxfq9RjQgexlsC3i9yhXD4P12rrGU6ncZQ=;
+        b=C+9RmjIYXHXqlouXKyhljoxHCMcI/ebP0pB6WBBD1k5AWGp6Zw0Ph/cYB5MPGIHrA+9O1Z
+        wNRTCYQ2YOb1pWQNJ/ynrFTLllzO+6Tu3xdCwGr43lPr5n8kI4S2FmJ7YRFmU58ttXhyTb
+        hserdyfqjbg7/rk8zUw0+3reJ+tGlkM=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-175-X4ADV8_oOkGX32sjlkKVPg-1; Tue, 13 Oct 2020 15:49:14 -0400
+X-MC-Unique: X4ADV8_oOkGX32sjlkKVPg-1
+Received: by mail-il1-f199.google.com with SMTP id 9so693434ile.22
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:49:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
          :content-transfer-encoding;
-        bh=azTn4fYcsb9QgmJPQAawTDMXTsFjwMYD7ZRewOEzXFg=;
-        b=PCmBpVdBMPzb0aKaJ9dH+agmWn/RX7D2qDb7q0O3ywtuqWq6yDZgH4PeJirkeRkfN0
-         8s2cGTdXLneLQaZmnX2yw5bDa86WIUhEikfzdu6DN+6XXWr6NcyDK517eLfCygJR8wFp
-         Sbq9Zi3O6f1ZXeLc4uC+CEEUSdRJl7fhmEe0CTD54QAh7iD/9b+8pEyCyMLoOv44At4G
-         4nOV04ABLgOPx5unOVmCvEMJnB3L8B/wEWrtB5GIwCt1w++PamDUfj9GNBgg1iC7zTzJ
-         3RHWaQHtG2Qaf2EJwxFCf/hVblmbyjMDPhrMlDAptv8hyWK3kC92ADnzcBICWq/mtbea
-         UeJA==
-X-Gm-Message-State: AOAM531B/8iW/rFaZ7ZmajLpco3LqnW+CCTtYixZnJLw2ip86keu0IGt
-        s7iyM+w2tG0hGRlIlb5ztA08BGdGMBXXrxCe
-X-Google-Smtp-Source: ABdhPJwWBBu+87lu3bYq2RrE/Sqnlc9DlQUMB4hrqNrFGaapPK8QPus4qi0ckowjzqSVvPlQt0zloA==
-X-Received: by 2002:a17:902:7c14:b029:d4:d894:7eed with SMTP id x20-20020a1709027c14b02900d4d8947eedmr1042992pll.81.1602618542661;
-        Tue, 13 Oct 2020 12:49:02 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id u27sm462035pgm.60.2020.10.13.12.49.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 12:49:02 -0700 (PDT)
-Subject: Re: [GIT PULL] io_uring updates for 5.10-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <36a6706d-73e1-64e7-f1f8-8f5ef246d3ea@kernel.dk>
- <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a81737e4-44da-cffc-cba0-8aec984df240@kernel.dk>
-Date:   Tue, 13 Oct 2020 13:49:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=f0ux1xTKPBxfq9RjQgexlsC3i9yhXD4P12rrGU6ncZQ=;
+        b=KepeodheGUJJtABOIQ+4OyBmnXlpcU3F4VhbwhfQeoAELWDi+zBTXatfPO5eQI3I8A
+         CWTVf3hCXqN6MwJ29WySept/y/pFaTaqv+/D29sIqflv6jHtvh4LUcMW0igqf60Iksw1
+         tzwKEqFLSSs0Q1OfUDLlGChUjc+9wTG1WyMEuKYjmI9UQ5K1f42gB/Nao/eHfdmPu7HQ
+         x7/cHcErJOiT61NTmXMpOIP0d1MNDLKD8BGoqI67Mg+h1e2SjVz9JXiBAei6UwcfsZS9
+         RxB9QgwMxifZNEOdx7WZYV/LNyGTJQSxVf2f6sOi6X1oVuPLMdzJ7iSR/aRpOzX2a2F9
+         3lvg==
+X-Gm-Message-State: AOAM533b9N6m9HVFcSNC8K36re3hApUyAylJkOELyq43KFF+QkJyNHyp
+        bKS8OUw3iZoAfu2M3v3v1HY/BdfoZhTWaj74bt6mtnh3D/7zmlRxm+XARjatQLPNKm+rXJuerKV
+        dJZHIItPFWmoVknen/ukmOFbX
+X-Received: by 2002:a5d:904d:: with SMTP id v13mr367274ioq.116.1602618554061;
+        Tue, 13 Oct 2020 12:49:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzDqfEEfyJyMyCoWRznA9va/mq9ExgxhqBZ33Zi9msVGip30Bel4moaxsKIohV04qcw3BC6lA==
+X-Received: by 2002:a5d:904d:: with SMTP id v13mr367264ioq.116.1602618553871;
+        Tue, 13 Oct 2020 12:49:13 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id p12sm873496ili.14.2020.10.13.12.49.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 12:49:13 -0700 (PDT)
+Message-ID: <b7c9b5ddc2bdd5d1a0bb5a000d88681ad0b6fabe.camel@redhat.com>
+Subject: Re: [PATCH v2 12/24] drm/dp: fix a kernel-doc issue at drm_edid.c
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Tue, 13 Oct 2020 15:49:11 -0400
+In-Reply-To: <96d648f86024535e5f7d5b0caf8ebf93c7f8eaab.1602590106.git.mchehab+huawei@kernel.org>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+         <96d648f86024535e5f7d5b0caf8ebf93c7f8eaab.1602590106.git.mchehab+huawei@kernel.org>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 1:46 PM, Linus Torvalds wrote:
-> On Mon, Oct 12, 2020 at 6:46 AM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> Here are the io_uring updates for 5.10.
-> 
-> Very strange. My clang build gives a warning I've never seen before:
-> 
->    /tmp/io_uring-dd40c4.s:26476: Warning: ignoring changed section
-> attributes for .data..read_mostly
-> 
-> and looking at what clang generates for the *.s file, it seems to be
-> the "section" line in:
-> 
->         .type   io_op_defs,@object      # @io_op_defs
->         .section        .data..read_mostly,"a",@progbits
->         .p2align        4
-> 
-> I think it's the combination of "const" and "__read_mostly".
-> 
-> I think the warning is sensible: how can a piece of data be both
-> "const" and "__read_mostly"? If it's "const", then it's not "mostly"
-> read - it had better be _always_ read.
-> 
-> I'm letting it go, and I've pulled this (gcc doesn't complain), but
-> please have a look.
+wait, I think there's some confusion here. these patches have already been
+pushed
 
-Huh weird, I'll take a look. FWIW, the construct isn't unique across
-the kernel.
 
-What clang are you using?
-
+On Tue, 2020-10-13 at 14:14 +0200, Mauro Carvalho Chehab wrote:
+> The name of the argument is different, causing those warnings:
+> 
+> 	./drivers/gpu/drm/drm_edid.c:3754: warning: Function parameter or member
+> 'video_code' not described in 'drm_display_mode_from_cea_vic'
+> 	./drivers/gpu/drm/drm_edid.c:3754: warning: Excess function parameter
+> 'vic' description in 'drm_display_mode_from_cea_vic'
+> 
+> Fixes: 7af655bce275 ("drm/dp: Add drm_dp_downstream_mode()")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/gpu/drm/drm_edid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index a82f37d44258..631125b46e04 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -3741,7 +3741,7 @@ drm_add_cmdb_modes(struct drm_connector *connector, u8
+> svd)
+>  /**
+>   * drm_display_mode_from_cea_vic() - return a mode for CEA VIC
+>   * @dev: DRM device
+> - * @vic: CEA VIC of the mode
+> + * @video_code: CEA VIC of the mode
+>   *
+>   * Creates a new mode matching the specified CEA VIC.
+>   *
 -- 
-Jens Axboe
+Sincerely,
+      Lyude Paul (she/her)
+      Software Engineer at Red Hat
+
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
 
