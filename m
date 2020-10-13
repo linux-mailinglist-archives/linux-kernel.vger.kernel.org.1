@@ -2,205 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0404928C684
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 02:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432FB28C693
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727982AbgJMA5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 20:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727950AbgJMA5m (ORCPT
+        id S1728018AbgJMBDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 21:03:42 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:43932 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727950AbgJMBDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 20:57:42 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9FCC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:57:42 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id e20so17093066otj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IpSz3HxdqBPCuQgrwDIdFKu49ndcXOrnJ/LSogHFcdo=;
-        b=YaZxFjgx8OxLAvGkEa/K8lOYgoWppNLXoHMQLq/M/T8xc0lOztQHwL6GZPWSJ7p4DZ
-         T1qV5HWZabpqYPjHqCrSTAbj34tLChVDVjzdWlWTSPgwxfcWusNj1+Kdn3SdsR2UOXx5
-         BFhADJ9a2Wv/8twux/lP3MHmwDSZjQSPJB5Do=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IpSz3HxdqBPCuQgrwDIdFKu49ndcXOrnJ/LSogHFcdo=;
-        b=m4nolNi03lCHBn9ccxXUdsZMTONUAslZ/7H5ojkfdVP6y6BB8IHuIeuQWc3eaMIqxh
-         0me/6eOVxnQf/kvZ+Bfzvs4FdYm/DnT0Vx6Zw03Jzgtp9tiifE1gz9xfBKQ6O56n1oCu
-         mmOFc860XSbM2FWkefSwzn1YEijp3SNg8kAFmPi6F+kCVfgcR+7LZAuc3JPjYi8wugRg
-         tnsKlGrPNTOq9gvc56DX4LsdYOL2MIReEpazZ/lNJYOP8/u5WUUppJVQVpo0P38EVhnE
-         oD7uxZkVU208fpZgZlSiiTdBmh4BY1ek1vqITRHHGPWTajAeARZRLgdu/0J6yqFN4LDT
-         pO+Q==
-X-Gm-Message-State: AOAM530EwLeE4p9nkv9qER1WCpfKSuUqmi0FT/vdCMh5dtFipMNwsWsW
-        W5SAd7GpEYHFm0cfhVtTHPs4GDtyv96txjL7
-X-Google-Smtp-Source: ABdhPJwLYpxdZslxxOB9FOlDRy+E/PhEiOOcq/dG2G+E1QyfCDzk/4DZ5R5t9iz4o4R8bHwlvK+2og==
-X-Received: by 2002:a9d:75d6:: with SMTP id c22mr19085008otl.213.1602550661283;
-        Mon, 12 Oct 2020 17:57:41 -0700 (PDT)
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com. [209.85.210.42])
-        by smtp.gmail.com with ESMTPSA id 8sm10558894oii.45.2020.10.12.17.57.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Oct 2020 17:57:40 -0700 (PDT)
-Received: by mail-ot1-f42.google.com with SMTP id s66so17553528otb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 17:57:40 -0700 (PDT)
-X-Received: by 2002:a9d:242:: with SMTP id 60mr8187117otb.141.1602550659528;
- Mon, 12 Oct 2020 17:57:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201012053557.4102148-1-acourbot@chromium.org>
- <20201012053557.4102148-3-acourbot@chromium.org> <b9afc70f-9787-6513-29e7-41ffd6972da0@infradead.org>
-In-Reply-To: <b9afc70f-9787-6513-29e7-41ffd6972da0@infradead.org>
-From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Tue, 13 Oct 2020 09:57:25 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MW8KvoxO8KNXM5azgijMT9aSis8ZZ=mumA0_JyQTbKyVQ@mail.gmail.com>
-Message-ID: <CAPBb6MW8KvoxO8KNXM5azgijMT9aSis8ZZ=mumA0_JyQTbKyVQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] media: mtk-vcodec: fix build breakage when one of
- VPU or SCP is enabled
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Alexandre Courbot <gnurou@gmail.com>
+        Mon, 12 Oct 2020 21:03:42 -0400
+X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Oct 2020 21:03:41 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 71CD71280606;
+        Mon, 12 Oct 2020 17:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1602550686;
+        bh=nbQ1CDoSn294pE1sw8CK2+ECGhZdnj5Vl/PP6DgpkMA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=TBcwAfss8IXbR6MoAvkjSpxA9lUvtg0gX7/IYm0MwF9BTgrP3r5l/owiN7qssYN5q
+         0q9yK4BAod5msY69rQAjkKeGClagHI0FGuLXWKVYWYdzgZ8HbRN/HyzuV/rNAPk4TU
+         odtrTwXJr6gNHw7Sgt6VXRc5goYeFKQct/92VSWw=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id aYc40rcVWBG3; Mon, 12 Oct 2020 17:58:06 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 3F3A812805AB;
+        Mon, 12 Oct 2020 17:58:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1602550686;
+        bh=nbQ1CDoSn294pE1sw8CK2+ECGhZdnj5Vl/PP6DgpkMA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=TBcwAfss8IXbR6MoAvkjSpxA9lUvtg0gX7/IYm0MwF9BTgrP3r5l/owiN7qssYN5q
+         0q9yK4BAod5msY69rQAjkKeGClagHI0FGuLXWKVYWYdzgZ8HbRN/HyzuV/rNAPk4TU
+         odtrTwXJr6gNHw7Sgt6VXRc5goYeFKQct/92VSWw=
+Message-ID: <b56dd2e9f3934e24f08005b9c5588c54b4837ff6.camel@HansenPartnership.com>
+Subject: Re: [PATCH v3 3/3] KEYS: trusted: Reserve TPM for seal and unseal
+ operations
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-integrity@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>, stable@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KEYS-TRUSTED" <keyrings@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Date:   Mon, 12 Oct 2020 17:58:04 -0700
+In-Reply-To: <20201013002815.40256-4-jarkko.sakkinen@linux.intel.com>
+References: <20201013002815.40256-1-jarkko.sakkinen@linux.intel.com>
+         <20201013002815.40256-4-jarkko.sakkinen@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:00 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 10/11/20 10:35 PM, Alexandre Courbot wrote:
-> > The addition of MT8183 support added a dependency on the SCP remoteproc
-> > module. However the initial patch used the "select" Kconfig directive,
-> > which may result in the SCP module to not be compiled if remoteproc was
-> > disabled. In such a case, mtk-vcodec would try to link against
-> > non-existent SCP symbols. "select" was clearly misused here as explained
-> > in kconfig-language.txt.
-> >
-> > Replace this by a "depends" directive on at least one of the VPU and
-> > SCP modules, to allow the driver to be compiled as long as one of these
-> > is enabled, and adapt the code to support this new scenario.
-> >
-> > Also adapt the Kconfig text to explain the extra requirements for MT8173
-> > and MT8183.
-> >
-> > Reported-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
->
-> That Ack applied to v2. I have not tested nor acked this version of the patch.
+On Tue, 2020-10-13 at 03:28 +0300, Jarkko Sakkinen wrote:
+[...]
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index 8f4ff39f51e7..f0ebce14d2f8 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -397,6 +397,10 @@ static inline u32 tpm2_rc_value(u32 rc)
+>  #if defined(CONFIG_TCG_TPM) || defined(CONFIG_TCG_TPM_MODULE)
+>  
+>  extern int tpm_is_tpm2(struct tpm_chip *chip);
+> +extern __must_check int tpm_try_get_ops(struct tpm_chip *chip);
+> +extern void tpm_put_ops(struct tpm_chip *chip);
+> +extern ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct
+> tpm_buf *buf,
+> +				size_t min_rsp_body_length, const char
+> *desc);
+>  extern int tpm_pcr_read(struct tpm_chip *chip, u32 pcr_idx,
+>  			struct tpm_digest *digest);
+>  extern int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
+> @@ -410,7 +414,18 @@ static inline int tpm_is_tpm2(struct tpm_chip
+> *chip)
+>  {
+>  	return -ENODEV;
+>  }
+> -
+> +static inline int tpm_try_get_ops(struct tpm_chip *chip)
+> +{
+> +	return -ENODEV;
+> +}
+> +static inline void tpm_put_ops(struct tpm_chip *chip)
+> +{
+> +}
+> +static inline ssize_t tpm_transmit_cmd(struct tpm_chip *chip, struct
+> tpm_buf *buf,
+> +				       size_t min_rsp_body_length,
+> const char *desc)
+> +{
+> +	return -ENODEV;
+> +}
+>  static inline int tpm_pcr_read(struct tpm_chip *chip, int pcr_idx,
 
-Sorry about that - I was careless and left it in the log.
+I don't think we want this, do we?  That's only for API access which
+should be available when the TPM isn't selected.  Given that get/put
+are TPM critical operations, they should only appear when inside code
+where the TPM has already been selected.  If they appear outside TPM
+selected code, I think we want the compile to fail, which is why we
+don't want these backup definitions.
 
->
-> > Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > ---
-> >  drivers/media/platform/Kconfig                | 22 +++++++++++++++----
-> >  drivers/media/platform/mtk-vcodec/Makefile    | 10 +++++++--
-> >  .../platform/mtk-vcodec/mtk_vcodec_fw_priv.h  | 18 +++++++++++++++
-> >  3 files changed, 44 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> > index a3cb104956d5..457b6c39ddc0 100644
-> > --- a/drivers/media/platform/Kconfig
-> > +++ b/drivers/media/platform/Kconfig
-> > @@ -253,18 +253,32 @@ config VIDEO_MEDIATEK_VCODEC
-> >       depends on MTK_IOMMU || COMPILE_TEST
-> >       depends on VIDEO_DEV && VIDEO_V4L2
-> >       depends on ARCH_MEDIATEK || COMPILE_TEST
-> > +     depends on VIDEO_MEDIATEK_VPU || MTK_SCP
-> > +     # The two following lines ensure we have the same state ("m" or "y") as
-> > +     # our dependencies, to avoid missing symbols during link.
-> > +     depends on VIDEO_MEDIATEK_VPU || !VIDEO_MEDIATEK_VPU
-> > +     depends on MTK_SCP || !MTK_SCP
-> >       select VIDEOBUF2_DMA_CONTIG
-> >       select V4L2_MEM2MEM_DEV
-> > -     select VIDEO_MEDIATEK_VPU
-> > -     select MTK_SCP
-> > +     select VIDEO_MEDIATEK_VCODEC_VPU if VIDEO_MEDIATEK_VPU
-> > +     select VIDEO_MEDIATEK_VCODEC_SCP if MTK_SCP
-> >       help
-> >           Mediatek video codec driver provides HW capability to
-> > -         encode and decode in a range of video formats
-> > -         This driver rely on VPU driver to communicate with VPU.
-> > +         encode and decode in a range of video formats on MT8173
-> > +         and MT8183.
-> > +
-> > +         Note that support for MT8173 requires VIDEO_MEDIATEK_VPU to
-> > +         also be selected. Support for MT8183 depends on MTK_SCP.
-> >
-> >           To compile this driver as modules, choose M here: the
-> >           modules will be called mtk-vcodec-dec and mtk-vcodec-enc.
-> >
-> > +config VIDEO_MEDIATEK_VCODEC_VPU
-> > +     bool
-> > +
-> > +config VIDEO_MEDIATEK_VCODEC_SCP
-> > +     bool
-> > +
-> >  config VIDEO_MEM2MEM_DEINTERLACE
-> >       tristate "Deinterlace support"
-> >       depends on VIDEO_DEV && VIDEO_V4L2
-> > diff --git a/drivers/media/platform/mtk-vcodec/Makefile b/drivers/media/platform/mtk-vcodec/Makefile
-> > index 6e1ea3a9f052..4618d43dbbc8 100644
-> > --- a/drivers/media/platform/mtk-vcodec/Makefile
-> > +++ b/drivers/media/platform/mtk-vcodec/Makefile
-> > @@ -25,5 +25,11 @@ mtk-vcodec-enc-y := venc/venc_vp8_if.o \
-> >  mtk-vcodec-common-y := mtk_vcodec_intr.o \
-> >               mtk_vcodec_util.o \
-> >               mtk_vcodec_fw.o \
-> > -             mtk_vcodec_fw_vpu.o \
-> > -             mtk_vcodec_fw_scp.o
-> > +
-> > +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU),)
-> > +mtk-vcodec-common-y += mtk_vcodec_fw_vpu.o
-> > +endif
-> > +
-> > +ifneq ($(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP),)
-> > +mtk-vcodec-common-y += mtk_vcodec_fw_scp.o
-> > +endif
-> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
-> > index 51f1694a7c7d..b41e66185cec 100644
-> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
-> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
-> > @@ -27,8 +27,26 @@ struct mtk_vcodec_fw_ops {
-> >       void (*release)(struct mtk_vcodec_fw *fw);
-> >  };
-> >
-> > +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_VPU)
-> >  struct mtk_vcodec_fw *mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
-> >                                            enum mtk_vcodec_fw_use fw_use);
-> > +#else
-> > +static inline struct mtk_vcodec_fw *
-> > +mtk_vcodec_fw_vpu_init(struct mtk_vcodec_dev *dev,
-> > +                    enum mtk_vcodec_fw_use fw_use)
-> > +{
-> > +     return ERR_PTR(-ENODEV);
-> > +}
-> > +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_VPU */
-> > +
-> > +#if IS_ENABLED(CONFIG_VIDEO_MEDIATEK_VCODEC_SCP)
-> >  struct mtk_vcodec_fw *mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev);
-> > +#else
-> > +static inline struct mtk_vcodec_fw *
-> > +mtk_vcodec_fw_scp_init(struct mtk_vcodec_dev *dev)
-> > +{
-> > +     return ERR_PTR(-ENODEV);
-> > +}
-> > +#endif /* CONFIG_VIDEO_MEDIATEK_VCODEC_SCP */
-> >
-> >  #endif /* _MTK_VCODEC_FW_PRIV_H_ */
-> >
->
->
-> --
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+James
+
+
