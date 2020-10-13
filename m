@@ -2,90 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1109028CBA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2D428CBC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730293AbgJMKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:30:39 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:62266 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729241AbgJMKai (ORCPT
+        id S1730869AbgJMKeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:34:24 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:40444 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726531AbgJMKeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:30:38 -0400
-X-IronPort-AV: E=Sophos;i="5.77,370,1596492000"; 
-   d="scan'208";a="472338857"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 12:30:36 +0200
-Date:   Tue, 13 Oct 2020 12:30:36 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-cc:     cocci@systeme.lip6.fr, michal.lkml@markovi.net,
-        nicolas.palix@imag.fr, linux-kernel@vger.kernel.org,
-        Gilles.Muller@lip6.fr
-Subject: Re: [Cocci] [PATCH V2] coccinelle: iterators: Add for_each_child.cocci
- script
-In-Reply-To: <20201012171909.ihbx73evyj5dosxl@adolin>
-Message-ID: <alpine.DEB.2.22.394.2010131226130.2674@hadrien>
-References: <20201012171909.ihbx73evyj5dosxl@adolin>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Tue, 13 Oct 2020 06:34:24 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 09DAUff7010591;
+        Tue, 13 Oct 2020 18:30:41 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Oct
+ 2020 18:32:57 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <jic23@kernel.org>, <knaack.h@gmx.de>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <robh+dt@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
+        <billy_tsai@aspeedtech.com>, <alexandru.ardelean@analog.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [PATCH 0/3] Make driver compatible with ast2600
+Date:   Tue, 13 Oct 2020 18:32:42 +0800
+Message-ID: <20201013103245.16723-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-Originating-IP: [192.168.10.9]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 09DAUff7010591
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have one more change to suggest.  This one only affects the patch case,
-as the other cases just point to a problem but don't ompletely specify
-what to do about it.
+The ast2600 is a new generation of SoC from ASPEED.
+The adc device in this generation adds some changes and features.
+This patch series handles the changes below:
+1. Define the new register fields.
+2. Split into two individual IPs and each contains 8 voltage channels.
+3. Remove the pre-scaler and extend the field length of the scaler.
+4. Ref_voltage becomes configurable.
 
-> +@ruleone depends on patch && !context && !org && !report@
-> +
-> +local idexpression r.n;
-> +iterator r.i,i1;
-> +expression e;
-> +expression list [r.n1] es;
-> +statement S;
-> +@@
-> +
-> + i(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   return n;
-> +|
-> +   i1(...,n,...) S
-> +|
-> ++  of_node_put(n);
-> +?  return ...;
-> +)
-> +   ... when any
-> + }
+Billy Tsai (3):
+  iio: adc: aspeed: Orgnaize and add the define of adc
+  iio: adc: aspeed: Make driver compatible with ast2600
+  iio: adc: aspeed: Setting ref_voltage in probe
 
-There is one occurrence of the following code:
+ .../bindings/iio/adc/aspeed_adc.txt           |  16 +-
+ drivers/iio/adc/aspeed_adc.c                  | 168 ++++++++++++++----
+ 2 files changed, 148 insertions(+), 36 deletions(-)
 
-        for_each_available_child_of_node(search, child) {
-                name = of_get_property(child, "regulator-compatible", NULL);
-                if (!name)
-                        name = child->name;
+-- 
+2.17.1
 
-                if (!strcmp(desc->of_match, name)) {
-                        of_node_put(search);
-                        return of_node_get(child);
-                }
-        }
-
-In this case, the for_each_available_child_of_node has incremented the
-reference count of child by 1, and then the return increments it again.
-It would be ok to put an of_not_put before the return, which is done by
-the above rule, but the code would be even simpler if it would just leave
-the reference count as is.  So before the current return case, you can put
-another return case that does the following:
-
--  return of_node_get(n);
-+  return n;
-
-julia
