@@ -2,186 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FBD28CB49
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A9A28CB4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbgJMJ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgJMJ6X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:58:23 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FBAC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:58:21 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id t25so27329954ejd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:58:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KGj66PymmEXKJDO8ZEQ4dV/3pOkqQJIBTnNRKT6VgnY=;
-        b=bkz9pVt/0z+6dp1a45Sgz7q83y4GHjYjVZhpv2WKPWEYPmb24hIdDf16oLqAnAwJbn
-         vAnF5NqAZTuRH7eZrjJWn1T6wFZMZZRYKpmVvxjuvTPexuVaeGcWuuQA4/YA9vSoIPLd
-         SR9hYd10h2SpjvcW8Mer/uBGf/WK04xHYQsuLqUOYem8IvVQkDJN73he9Nv/jC9ugPGF
-         caT3S8AJxGaKSagF8gkGlG6YxDql7TfEVtePtOlQdEvhc5zUYya870b9o2R6J3eQFwKk
-         eP2xZDm70a7T8MtAjHOaCq2XuN1doxHK0q5NG++LQSsYP8C9eBEfXUyVTR/NIp8iMFkD
-         1MiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KGj66PymmEXKJDO8ZEQ4dV/3pOkqQJIBTnNRKT6VgnY=;
-        b=sKBrk02HgTlSg5VnPRGu0hY0Myum5aM1AQ5305u07ygiCvrHmX24akES+UE9JNcyPN
-         +NNHWG8pPOuVQ4fK7p44XZNF0ESBqtIgBkFE1wo0cmjGLbG/WxXK/X3nutKocRA38afL
-         Bt03/1H57OTeQ8bIKVqBuNJ0LftrnXUUqdDd2asJ6jxclTbp+TGepNDSbwMvDkU3E910
-         pFHDxZMw97vCak6ad0nTQyA7HIIuwErHvzlgeuG6xn9E9kRMMLLGqh2rwrsI3D0V0gkx
-         r8Rz38islkqxYJyS12HQkfPEUzNt7py395qwwjCKxa1tqv12ChlG7Skp7IJFVPpeTag3
-         VLXQ==
-X-Gm-Message-State: AOAM533pJ84Hc6zH09Q28KgjD+dKjuJKuQTytM5frUtNhUICJGvbVwBK
-        LbujZWrRDKMF+DzIr0hc2f5fNvPk19IcZNW3Dt/b+g==
-X-Google-Smtp-Source: ABdhPJxuiSelGlMC1dIpiF3M2m+tfmeJ5+JbgRsdpEfYjmi0ot9nyY+X9aWYIn8k7xbPH1VguxnO6JbNQFUpiAG0jiE=
-X-Received: by 2002:a17:906:494:: with SMTP id f20mr31928896eja.285.1602583100513;
- Tue, 13 Oct 2020 02:58:20 -0700 (PDT)
+        id S1731085AbgJMJ6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727281AbgJMJ6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:58:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF5C9205CA;
+        Tue, 13 Oct 2020 09:58:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602583109;
+        bh=hX0Ik/pQmVEqIpyRsixfiY5DPV6usUEXcLiEmjaEV0E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EOYgTpoobI7vNMX3YkjHlRCVmn3d2DnU3lXGjgNyOYNohuOgaH/atPgNtOcoY/Oym
+         bhUNaywNSX5G1NBCY507cMDuKxUihIJpxrKL5DjA8aTI1nonQr9EfPmBI/Dg4AH7xu
+         pSWSYokfSki6eIn+wGTCkGbqt+cja9q8H5vIOuRk=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kSH4c-000nB5-TG; Tue, 13 Oct 2020 10:58:27 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     JC Kuo <jckuo@nvidia.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] phy: tegra: xusb: Fix dangling pointer on probe failure
+Date:   Tue, 13 Oct 2020 10:58:20 +0100
+Message-Id: <20201013095820.311376-1-maz@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201008143722.21888-2-etienne.carriere@linaro.org> <20201012141746.32575-1-sudeep.holla@arm.com>
-In-Reply-To: <20201012141746.32575-1-sudeep.holla@arm.com>
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-Date:   Tue, 13 Oct 2020 11:58:09 +0200
-Message-ID: <CAN5uoS_GHXv-RHJACJMJqN_xRSSWuv=mTPW_aHZv5U6PjK16xg@mail.gmail.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Add missing Rx size re-initialisation
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, jckuo@nvidia.com, kishon@ti.com, vkoul@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 16:17, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> Few commands provide the list of description partially and require
-> to be called consecutively until all the descriptors are fetched
-> completely. In such cases, we don't release the buffers and reuse
-> them for consecutive transmits.
->
-> However, currently we don't reset the Rx size which will be set as
-> per the response for the last transmit. This may result in incorrect
-> response size being interpretted as the firmware may repond with size
-> greater than the one set but we read only upto the size set by previous
-> response.
->
-> Let us reset the receive buffer size to max possible in such cases as
-> we don't know the exact size of the response.
->
-> Fixes: b6f20ff8bd94 ("firmware: arm_scmi: add common infrastructure and support for base protocol")
-> Reported-by: Etienne Carriere <etienne.carriere@linaro.org>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/firmware/arm_scmi/base.c    | 2 ++
->  drivers/firmware/arm_scmi/clock.c   | 2 ++
->  drivers/firmware/arm_scmi/common.h  | 8 ++++++++
->  drivers/firmware/arm_scmi/perf.c    | 2 ++
->  drivers/firmware/arm_scmi/sensors.c | 2 ++
->  5 files changed, 16 insertions(+)
->
-> Hi Etienne,
->
-> I reworked this in a different way and hence dropped your authorship and added
-> reported by. If you prefer I can attribute you as author. I want to push
-> 2,4,5/5 as fixes and hence the rush.
+If, for some reason, the xusb PHY fails to probe, it leaves
+a dangling pointer attached to the platform device structure.
 
-Hi Sudeep,
+This would normally be harmless, but the Tegra XHCI driver then
+goes and extract that pointer from the PHY device. Things go
+downhill from there:
 
-Tags are fine like that.
-As for the content, it looks good to me.
-When trying to apply this, I failed, but I guess I'm not testing over
-the same kernel tree/branch as you.
-All in one, I am really fine with this change, I think it does the job
+    8.752082] [004d554e5145533c] address between user and kernel address ranges
+[    8.752085] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[    8.752088] Modules linked in: max77620_regulator(E+) xhci_tegra(E+) sdhci_tegra(E+) xhci_hcd(E) sdhci_pltfm(E) cqhci(E) fixed(E) usbcore(E) scsi_mod(E) sdhci(E) host1x(E+)
+[    8.752103] CPU: 4 PID: 158 Comm: systemd-udevd Tainted: G S      W   E     5.9.0-rc7-00298-gf6337624c4fe #1980
+[    8.752105] Hardware name: NVIDIA Jetson TX2 Developer Kit (DT)
+[    8.752108] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+[    8.752115] pc : kobject_put+0x1c/0x21c
+[    8.752120] lr : put_device+0x20/0x30
+[    8.752121] sp : ffffffc012eb3840
+[    8.752122] x29: ffffffc012eb3840 x28: ffffffc010e82638
+[    8.752125] x27: ffffffc008d56440 x26: 0000000000000000
+[    8.752128] x25: ffffff81eb508200 x24: 0000000000000000
+[    8.752130] x23: ffffff81eb538800 x22: 0000000000000000
+[    8.752132] x21: 00000000fffffdfb x20: ffffff81eb538810
+[    8.752134] x19: 3d4d554e51455300 x18: 0000000000000020
+[    8.752136] x17: ffffffc008d00270 x16: ffffffc008d00c94
+[    8.752138] x15: 0000000000000004 x14: ffffff81ebd4ae90
+[    8.752140] x13: 0000000000000000 x12: ffffff81eb86a4e8
+[    8.752142] x11: ffffff81eb86a480 x10: ffffff81eb862fea
+[    8.752144] x9 : ffffffc01055fb28 x8 : ffffff81eb86a4a8
+[    8.752146] x7 : 0000000000000001 x6 : 0000000000000001
+[    8.752148] x5 : ffffff81dff8bc38 x4 : 0000000000000000
+[    8.752150] x3 : 0000000000000001 x2 : 0000000000000001
+[    8.752152] x1 : 0000000000000002 x0 : 3d4d554e51455300
+[    8.752155] Call trace:
+[    8.752157]  kobject_put+0x1c/0x21c
+[    8.752160]  put_device+0x20/0x30
+[    8.752164]  tegra_xusb_padctl_put+0x24/0x3c
+[    8.752170]  tegra_xusb_probe+0x8b0/0xd10 [xhci_tegra]
+[    8.752174]  platform_drv_probe+0x60/0xb4
+[    8.752176]  really_probe+0xf0/0x504
+[    8.752179]  driver_probe_device+0x100/0x170
+[    8.752181]  device_driver_attach+0xcc/0xd4
+[    8.752183]  __driver_attach+0xb0/0x17c
+[    8.752185]  bus_for_each_dev+0x7c/0xd4
+[    8.752187]  driver_attach+0x30/0x3c
+[    8.752189]  bus_add_driver+0x154/0x250
+[    8.752191]  driver_register+0x84/0x140
+[    8.752193]  __platform_driver_register+0x54/0x60
+[    8.752197]  tegra_xusb_init+0x40/0x1000 [xhci_tegra]
+[    8.752201]  do_one_initcall+0x54/0x2d0
+[    8.752205]  do_init_module+0x68/0x29c
+[    8.752207]  load_module+0x2178/0x26c0
+[    8.752209]  __do_sys_finit_module+0xb0/0x120
+[    8.752211]  __arm64_sys_finit_module+0x2c/0x40
+[    8.752215]  el0_svc_common.constprop.0+0x80/0x240
+[    8.752218]  do_el0_svc+0x30/0xa0
+[    8.752220]  el0_svc+0x18/0x50
+[    8.752223]  el0_sync_handler+0x90/0x318
+[    8.752225]  el0_sync+0x158/0x180
+[    8.752230] Code: a9bd7bfd 910003fd a90153f3 aa0003f3 (3940f000)
+[    8.752232] ---[ end trace 90f6c89d62d85ff5 ]---
 
-Regards,
-Etienne
+Reset the pointer on probe failure fixes the issue.
 
->
-> Regards,
-> Sudeep
->
-> diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-> index 9853bd3c4d45..017e5d8bd869 100644
-> --- a/drivers/firmware/arm_scmi/base.c
-> +++ b/drivers/firmware/arm_scmi/base.c
-> @@ -197,6 +197,8 @@ static int scmi_base_implementation_list_get(const struct scmi_handle *handle,
->                         protocols_imp[tot_num_ret + loop] = *(list + loop);
->
->                 tot_num_ret += loop_num_ret;
-> +
-> +               scmi_reset_rx_to_maxsz(handle, t);
->         } while (loop_num_ret);
->
->         scmi_xfer_put(handle, t);
-> diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-> index c1cfe3ee3d55..4645677d86f1 100644
-> --- a/drivers/firmware/arm_scmi/clock.c
-> +++ b/drivers/firmware/arm_scmi/clock.c
-> @@ -192,6 +192,8 @@ scmi_clock_describe_rates_get(const struct scmi_handle *handle, u32 clk_id,
->                 }
->
->                 tot_rate_cnt += num_returned;
-> +
-> +               scmi_reset_rx_to_maxsz(handle, t);
->                 /*
->                  * check for both returned and remaining to avoid infinite
->                  * loop due to buggy firmware
-> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> index 37fb583f1bf5..a3f1bc44b1de 100644
-> --- a/drivers/firmware/arm_scmi/common.h
-> +++ b/drivers/firmware/arm_scmi/common.h
-> @@ -245,6 +245,14 @@ extern const struct scmi_desc scmi_mailbox_desc;
->  extern const struct scmi_desc scmi_smc_desc;
->  #endif
->
-> +static inline void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
-> +                                         struct scmi_xfer *xfer)
-> +{
-> +       struct scmi_info *info = handle_to_scmi_info(handle);
-> +
-> +       xfer->rx.len = info->desc->max_msg_size;
-> +}
-> +
->  void scmi_rx_callback(struct scmi_chan_info *cinfo, u32 msg_hdr);
->  void scmi_free_channel(struct scmi_chan_info *cinfo, struct idr *idr, int id);
->
-> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
-> index ed475b40bd08..82fb3babff72 100644
-> --- a/drivers/firmware/arm_scmi/perf.c
-> +++ b/drivers/firmware/arm_scmi/perf.c
-> @@ -304,6 +304,8 @@ scmi_perf_describe_levels_get(const struct scmi_handle *handle, u32 domain,
->                 }
->
->                 tot_opp_cnt += num_returned;
-> +
-> +               scmi_reset_rx_to_maxsz(handle, t);
->                 /*
->                  * check for both returned and remaining to avoid infinite
->                  * loop due to buggy firmware
-> diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
-> index 9703cf6356a0..b4232d611033 100644
-> --- a/drivers/firmware/arm_scmi/sensors.c
-> +++ b/drivers/firmware/arm_scmi/sensors.c
-> @@ -166,6 +166,8 @@ static int scmi_sensor_description_get(const struct scmi_handle *handle,
->                 }
->
->                 desc_index += num_returned;
-> +
-> +               scmi_reset_rx_to_maxsz(handle, t);
->                 /*
->                  * check for both returned and remaining to avoid infinite
->                  * loop due to buggy firmware
-> --
-> 2.17.1
->
+Fixes: 53d2a715c2403 ("phy: Add Tegra XUSB pad controller support")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/phy/tegra/xusb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/phy/tegra/xusb.c b/drivers/phy/tegra/xusb.c
+index de4a46fe1763..ad88d74c1884 100644
+--- a/drivers/phy/tegra/xusb.c
++++ b/drivers/phy/tegra/xusb.c
+@@ -1242,6 +1242,7 @@ static int tegra_xusb_padctl_probe(struct platform_device *pdev)
+ reset:
+ 	reset_control_assert(padctl->rst);
+ remove:
++	platform_set_drvdata(pdev, NULL);
+ 	soc->ops->remove(padctl);
+ 	return err;
+ }
+-- 
+2.28.0
+
