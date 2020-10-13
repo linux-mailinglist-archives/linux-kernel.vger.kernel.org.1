@@ -2,173 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DCE28CE60
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BC328CE63
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727392AbgJMMdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:33:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46746 "EHLO mail.kernel.org"
+        id S1727554AbgJMMdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:33:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35496 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727300AbgJMMdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:33:12 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BB0222403;
-        Tue, 13 Oct 2020 12:33:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602592391;
-        bh=UCUzY+Ys5Pt+/NKytGcUzFLeRnSFwAojAIi4bxE3eYM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bioFOw0G4QiKXgoYfqyESTpPz+HNbD2EAFGKzdk5IQIFLg0cGuemyLIdrPRDbCDYN
-         ss6Ab5rhbTwU0gFDLX+je+IeEbt1Qihu7E/I8XXFK3OT7R4Ae2jrI5NbQo1RE/PAew
-         MrsZW8/vHnSg7nJG4WdSfcOaFwCFtKgu6eGy8Yn8=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CC019403AC; Tue, 13 Oct 2020 09:33:08 -0300 (-03)
-Date:   Tue, 13 Oct 2020 09:33:08 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] perf: sched: Show start of latency as well
-Message-ID: <20201013123308.GB1063281@kernel.org>
-References: <20200925235634.4089867-1-joel@joelfernandes.org>
- <CAM9d7ciK4w-BYLPLK7ADpB5dz83YV5Un4zG66PxPzBS=QzS9mA@mail.gmail.com>
+        id S1727401AbgJMMdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:33:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 75F25ACB8;
+        Tue, 13 Oct 2020 12:33:22 +0000 (UTC)
+Message-ID: <f891916e193707eb55faa9ea93f294ac44925710.camel@suse.de>
+Subject: Re: [PATCH 1/3] dt-bindings: pwm: Add binding for RPi firmware PWM
+ bus
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     f.fainelli@gmail.com, linux@roeck-us.net, jdelvare@suse.com,
+        wahrenst@gmx.net, Eric Anholt <eric@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        linux-hwmon@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 13 Oct 2020 14:33:20 +0200
+In-Reply-To: <20201013120823.hhy7wyqsb3f3ufnx@pengutronix.de>
+References: <20201009153031.986-1-nsaenzjulienne@suse.de>
+         <20201009153031.986-2-nsaenzjulienne@suse.de>
+         <20201012070132.it23vl6f3ytavqgj@pengutronix.de>
+         <cc7842ed7f8a4db863024a0ff5d8b7d86de52f50.camel@suse.de>
+         <20201013120823.hhy7wyqsb3f3ufnx@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-PNkehS3QHaMWL1P5zC+2"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ciK4w-BYLPLK7ADpB5dz83YV5Un4zG66PxPzBS=QzS9mA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Sep 26, 2020 at 11:10:46PM +0900, Namhyung Kim escreveu:
-> Hi Joel,
-> 
-> On Sat, Sep 26, 2020 at 8:56 AM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > perf sched latency is really useful at showing worst-case latencies that task
-> > encountered since wakeup. However it shows only the end of the latency. Often
-> > times the start of a latency is interesting as it can show what else was going
-> > on at the time to cause the latency. I certainly myself spending a lot of time
-> > backtracking to the start of the latency in "perf sched script" which wastes a
-> > lot of time.
-> >
-> > This patch therefore adds a new column "Max delay start". Considering this,
-> > also rename "Maximum delay at" to "Max delay end" as its easier to understand.
-> 
-> Oh, I thought we print start time not the end time.  I think it's better
-> to print start time but others may think differently.
-> 
-> Actually we can calculate the start time from the end time and the
-> latency but it'd be convenient if the tool does that for us (as they are
-> printed in different units).  Then the remaining concern is the screen
-> width (of 114 or 115?) but I think it should be fine for most of us.
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Thanks, applied.
+--=-PNkehS3QHaMWL1P5zC+2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-- Arnaldo
+On Tue, 2020-10-13 at 14:08 +0200, Uwe Kleine-K=C3=B6nig wrote:
+> On Tue, Oct 13, 2020 at 12:35:38PM +0200, Nicolas Saenz Julienne wrote:
+> > Hi Uwe, thanks for having a look at this.
+> >=20
+> > On Mon, 2020-10-12 at 09:01 +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > On Fri, Oct 09, 2020 at 05:30:28PM +0200, Nicolas Saenz Julienne wrot=
+e:
+> > > > The PWM bus controlling the fan in RPi's official PoE hat can only =
+be
+> > > > controlled by the board's co-processor.
+> > > >=20
+> > > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > > > ---
+> > > >  .../arm/bcm/raspberrypi,bcm2835-firmware.yaml | 21 +++++++++++++++=
+++++
+> > > >  .../pwm/raspberrypi,firmware-pwm.h            | 13 ++++++++++++
+> > > >  2 files changed, 34 insertions(+)
+> > > >  create mode 100644 include/dt-bindings/pwm/raspberrypi,firmware-pw=
+m.h
+> > > >=20
+> > > > diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,=
+bcm2835-firmware.yaml b/Documentation/devicetree/bindings/arm/bcm/raspberry=
+pi,bcm2835-firmware.yaml
+> > > > index a2c63c8b1d10..dcaf00e8602e 100644
+> > > > --- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835=
+-firmware.yaml
+> > > > +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835=
+-firmware.yaml
+> > > > @@ -64,6 +64,22 @@ properties:
+> > > >        - compatible
+> > > >        - "#reset-cells"
+> > > > =20
+> > > > +  pwm:
+> > > > +    type: object
+> > > > +
+> > > > +    properties:
+> > > > +      compatible:
+> > > > +        const: raspberrypi,firmware-pwm
+> > > > +
+> > > > +      "#pwm-cells":
+> > > > +        const: 1
+> > > > +        description: >
+> > > > +          The argument is the PWM bus number.
+> > >=20
+> > > This is wrong. #pwm-cells specifies the number of "arguments" for
+> > > phandles pointing to this node. And I would prefer this being 2 to ma=
+tch
+> > > the stuff described in the generic pwm binding.
+> >=20
+> > I saw buses out there with the same limitation as this one (unable to c=
+hange
+> > frequency) that used a single cell, so I whent with it. That said I'll =
+be happy
+> > to change it and drop the custom *_xlate() function in benefit of the d=
+efault
+> > one.
+>=20
+> As the first cell after the phandle is for the period and only the
+> second if for flags, this is a poor argument.
 
-> 
-> Thanks
-> Namhyung
-> 
-> >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >
-> >
-> > ---
-> > A sample output can be seen after applying patch:
-> > https://hastebin.com/raw/ivinimaler
-> >
-> >  tools/perf/builtin-sched.c | 24 ++++++++++++++----------
-> >  1 file changed, 14 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-> > index 459e4229945e..2791da1fe5f7 100644
-> > --- a/tools/perf/builtin-sched.c
-> > +++ b/tools/perf/builtin-sched.c
-> > @@ -130,7 +130,8 @@ struct work_atoms {
-> >         struct thread           *thread;
-> >         struct rb_node          node;
-> >         u64                     max_lat;
-> > -       u64                     max_lat_at;
-> > +       u64                     max_lat_start;
-> > +       u64                     max_lat_end;
-> >         u64                     total_lat;
-> >         u64                     nb_atoms;
-> >         u64                     total_runtime;
-> > @@ -1096,7 +1097,8 @@ add_sched_in_event(struct work_atoms *atoms, u64 timestamp)
-> >         atoms->total_lat += delta;
-> >         if (delta > atoms->max_lat) {
-> >                 atoms->max_lat = delta;
-> > -               atoms->max_lat_at = timestamp;
-> > +               atoms->max_lat_start = atom->wake_up_time;
-> > +               atoms->max_lat_end = timestamp;
-> >         }
-> >         atoms->nb_atoms++;
-> >  }
-> > @@ -1322,7 +1324,7 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
-> >         int i;
-> >         int ret;
-> >         u64 avg;
-> > -       char max_lat_at[32];
-> > +       char max_lat_start[32], max_lat_end[32];
-> >
-> >         if (!work_list->nb_atoms)
-> >                 return;
-> > @@ -1344,13 +1346,14 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
-> >                 printf(" ");
-> >
-> >         avg = work_list->total_lat / work_list->nb_atoms;
-> > -       timestamp__scnprintf_usec(work_list->max_lat_at, max_lat_at, sizeof(max_lat_at));
-> > +       timestamp__scnprintf_usec(work_list->max_lat_start, max_lat_start, sizeof(max_lat_start));
-> > +       timestamp__scnprintf_usec(work_list->max_lat_end, max_lat_end, sizeof(max_lat_end));
-> >
-> > -       printf("|%11.3f ms |%9" PRIu64 " | avg:%9.3f ms | max:%9.3f ms | max at: %13s s\n",
-> > +       printf("|%11.3f ms |%9" PRIu64 " | avg:%8.3f ms | max:%8.3f ms | max start: %12s s | max end: %12s s\n",
-> >               (double)work_list->total_runtime / NSEC_PER_MSEC,
-> >                  work_list->nb_atoms, (double)avg / NSEC_PER_MSEC,
-> >                  (double)work_list->max_lat / NSEC_PER_MSEC,
-> > -                max_lat_at);
-> > +                max_lat_start, max_lat_end);
-> >  }
-> >
-> >  static int pid_cmp(struct work_atoms *l, struct work_atoms *r)
-> > @@ -3118,7 +3121,8 @@ static void __merge_work_atoms(struct rb_root_cached *root, struct work_atoms *d
-> >                         list_splice(&data->work_list, &this->work_list);
-> >                         if (this->max_lat < data->max_lat) {
-> >                                 this->max_lat = data->max_lat;
-> > -                               this->max_lat_at = data->max_lat_at;
-> > +                               this->max_lat_start = data->max_lat_start;
-> > +                               this->max_lat_end = data->max_lat_end;
-> >                         }
-> >                         zfree(&data);
-> >                         return;
-> > @@ -3157,9 +3161,9 @@ static int perf_sched__lat(struct perf_sched *sched)
-> >         perf_sched__merge_lat(sched);
-> >         perf_sched__sort_lat(sched);
-> >
-> > -       printf("\n -----------------------------------------------------------------------------------------------------------------\n");
-> > -       printf("  Task                  |   Runtime ms  | Switches | Average delay ms | Maximum delay ms | Maximum delay at       |\n");
-> > -       printf(" -----------------------------------------------------------------------------------------------------------------\n");
-> > +       printf("\n -------------------------------------------------------------------------------------------------------------------------------------------\n");
-> > +       printf("  Task                  |   Runtime ms  | Switches | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |\n");
-> > +       printf(" -------------------------------------------------------------------------------------------------------------------------------------------\n");
-> >
-> >         next = rb_first_cached(&sched->sorted_atom_root);
-> >
-> > --
-> > 2.28.0.709.gb0816b6eb0-goog
+In that case aren't these bindings wrong (and associated xlate() functions)=
+?
 
--- 
+google,cros-ec-pwm.yaml:
+[...]
+	properties:
+	  compatible:
+	    const: google,cros-ec-pwm
+	  "#pwm-cells":
+	    description: The cell specifies the PWM index.
+	    const: 1
+[...]
 
-- Arnaldo
+cirrus,clps711x-pwm.txt:
+[...]
+	- #pwm-cells: Should be 1. The cell specifies the index of the channel.
+[...]
+
+Note that pxa-pwm.txt behaves as you comment.
+
+Ultimately note that in of_pwm_simple_xlate() the second argument is used t=
+o
+assign the pwm period, the first one is passed as an index to
+pwm_request_from_chip().
+
+> So yes, use #pwm-cells =3D <2> and drop the custom xlate() function pleas=
+e.
+
+I'll still go this way nontheless. Just want to make sure I understand thin=
+gs
+correctly.
+
+Regards,
+Nicolas
+
+
+--=-PNkehS3QHaMWL1P5zC+2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+FnpAACgkQlfZmHno8
+x/7sdgf/cwMDnViTJv9j3SHpLL9SP1RdL5nmf9W8jZx73EaH4Vu2ymNB/SxLgB85
+mStnDoW4rCZdAeC7JWA/gEApJ2qY92bqTewsvnQsMheOHrt82g1UbIl1vLlSUfWa
+gCyhWQqKnSdeYkABc8Wqp1RzFSbxi9v9cut4i/xSWUPmvtYkFxCYcHxgFmaTKWLt
+WsyZC7YVt/rXLdznRDwqZR3/FMq9twd99ugNdaokW+vqfG1jac+QYrNj85jvnr1Y
+p8EAtipopOQFnnJPdTzT4kj/xSC+EZoDWhaCyMe7oEjBDlVRpUqPuifM8ChJGjEU
+C+6I9NCizNkeOw9wwR+p2OZDuLrZJQ==
+=ryHl
+-----END PGP SIGNATURE-----
+
+--=-PNkehS3QHaMWL1P5zC+2--
+
