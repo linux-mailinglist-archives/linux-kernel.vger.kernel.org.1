@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDCE28CA82
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C9D28CA84
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404002AbgJMItz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:49:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403825AbgJMIty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:49:54 -0400
-Received: from coco.lan (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03BD5208D5;
-        Tue, 13 Oct 2020 08:49:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602578994;
-        bh=a443CT+7ELJK1HsOHYrEa+FiSjJIehUJ6pQRBBixPnA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xcDaVd70OlpIsITMu6jWrAbXyyZ1bdIxtBoBjzw9zt6ckGGZYLOEYIn0fr54ChD6I
-         OhN/eFb0B5T8IxDBimwZvBr7Mj9X5qpfRX7Dh7v5yItbG5GphiXtziW8ivW+3J40gK
-         yMe6iO/YZ2w4pu9TDPS7OBNrWB7+mTg8YIe8Cs04=
-Date:   Tue, 13 Oct 2020 10:49:50 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [GIT PULL] Documentation for 5.10
-Message-ID: <20201013104950.25764be1@coco.lan>
-In-Reply-To: <20201012133042.688ee6a6@lwn.net>
-References: <20201012133042.688ee6a6@lwn.net>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2404016AbgJMIvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390190AbgJMIvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 04:51:40 -0400
+Received: from smtp-42af.mail.infomaniak.ch (smtp-42af.mail.infomaniak.ch [IPv6:2001:1600:3:17::42af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5FFC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:51:40 -0700 (PDT)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4C9Tml6Zp0zlkxyN;
+        Tue, 13 Oct 2020 10:51:35 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4C9Tmk5Vd6zlh8WW;
+        Tue, 13 Oct 2020 10:51:34 +0200 (CEST)
+Subject: Re: [PATCH v1] dm verity: Add support for signature verification with
+ 2nd keyring
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
+        Milan Broz <gmazyland@gmail.com>, dm-devel@redhat.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20201002071802.535023-1-mic@digikod.net>
+ <bda2ffd7-3b7c-33a4-667f-a3435e112fc1@digikod.net>
+ <20201012235502.GA36149@linux.intel.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <1b344a3c-2671-3b1a-3c6b-f3b28e819bc5@digikod.net>
+Date:   Tue, 13 Oct 2020 10:51:34 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201012235502.GA36149@linux.intel.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Em Mon, 12 Oct 2020 13:30:42 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
-
-> As hoped, things calmed down for docs this cycle; fewer changes and almost
-> no conflicts at all.  This pull includes:
+On 13/10/2020 01:55, Jarkko Sakkinen wrote:
+> On Fri, Oct 09, 2020 at 11:50:03AM +0200, Mickaël Salaün wrote:
+>> Hi,
+>>
+>> What do you think about this patch?
+>>
+>> Regards,
+>>  Mickaël
+>>
+>> On 02/10/2020 09:18, Mickaël Salaün wrote:
+>>> From: Mickaël Salaün <mic@linux.microsoft.com>
+>>>
+>>> Add a new DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING configuration
+>>> to enable dm-verity signatures to be verified against the secondary
+>>> trusted keyring.  This allows certificate updates without kernel update
+>>> and reboot, aligning with module and kernel (kexec) signature
+>>> verifications.
 > 
->  - A reworked and expanded user-mode Linux document
->  - Some simplifications and improvements for submitting-patches.rst
->  - An emergency fix for (some) problems with Sphinx 3.x
->  - Some welcome automarkup improvements to automatically generate
->    cross-references to struct definitions and other documents
->  - The usual collection of translation updates, typo fixes, etc.
+> I'd prefer a bit more verbose phrasing, not least because I have never
+> really even peeked at dm-verity, but it is also a good practice.
 > 
-> NOTE that there will be a largish  late-window pull request coming,
-> probably directly from Mauro.  Sphinx 3.x has broken a bunch of things,
-> which is obnoxious, though the end result is better; fixing the problems
-> requires a number of cross-tree documentation tweaks.  These are best done
-> toward the end to avoid creating unnecessary conflicts with other trees.
+> You have the middle part of the story missing - explaining the semantics
+> of how the feature leads to the aimed solution.
 
-I double-checked: after having both docs and media tree pulled upstream, 
-80% of the patches should apply cleanly.
+OK, what about:
 
-So, I just merged the ones that apply cleanly at my -next tree:
-
-	https://git.linuxtv.org/mchehab/media-next.git/ (master branch)
-
-If everything goes well on tomorrow's next, I'll send you a pull request
-with those.
-
-The other ones depend on merges from DRM, hwmon and other
-trees. So, I'll keep rebasing them and should be sending you a late
-PR by the end of the merge window, fixing the remaining doc issues.
-
-We're aiming to have zero documentation warnings by
-the end of the merge window, when built with Sphinx 2.x,
-and just a handful set of warnings with Sphinx 3.1+[1].
-
-[1] One of the limitations of Sphinx C cross-reference code,
-    up to its latest version, is that it doesn't allow to have
-    both a function called "foo" and a struct or enum also called
-    "foo".
-
-    With Sphinx < 3, this doesn't generate warnings, but it still
-    cause troubles with cross-references. Sphinx 3.x warns
-    about name clashes, but the bug was not solved yet upstream.
-    They're working on Sphinx to fix that in the future:
-
-	https://github.com/sphinx-doc/sphinx/issues/8241
-	https://github.com/sphinx-doc/sphinx/issues/7819
-
-Thanks,
-Mauro
+Add a new configuration DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
+to enable dm-verity signatures to be verified against the secondary
+trusted keyring. Instead of relying on the builtin trusted keyring (with
+hard-coded certificates), the second trusted keyring can include
+certificate authorities from the builtin trusted keyring and child
+certificates loaded at run time. Using the secondary trusted keyring
+enables to use dm-verity disks (e.g. loop devices) signed by keys which
+did not exist at kernel build time, leveraging the certificate chain of
+trust model. In practice, this allows to update certificates without
+kernel update and reboot, aligning with module and kernel (kexec)
+signature verification which already use the secondary trusted keyring.
