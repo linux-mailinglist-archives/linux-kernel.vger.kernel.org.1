@@ -2,190 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524EA28DD81
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB22828D62D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgJNJYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730651AbgJNJUB (ORCPT
+        id S1728044AbgJMVWY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Oct 2020 17:22:24 -0400
+Received: from mailoutvs18.siol.net ([185.57.226.209]:40435 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726652AbgJMVWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:01 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B830C0613DF
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:26:27 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id w11so582400pll.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:26:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hTZ0TY6V/O5G/81ybrQ47uBho41Y6v3NILTItnTrKis=;
-        b=T3Cnn4d1Ny8T3yEUuaeG/1+IH1vROXxkaEaD4oCx3/SUz2fANe41fdb43L3Sz5SUEW
-         gdCLROFz1PhQAIbYAKSolN7hxHW6M8WDHDyKuaBqV4m1dZMJXX9XaUPn20YEkdRwd2Sp
-         PBSasWiplYjvEMc2K/r04sCKdsaBmpDkTtWnM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hTZ0TY6V/O5G/81ybrQ47uBho41Y6v3NILTItnTrKis=;
-        b=sldHUMfE/DizuT3HyVRLERXUcyVt8HVS7nkpGfVIwX5dRtyXP3Wt4PtH3LrgGQM0BK
-         W6lh3JnilM4cPGpgwe6K88IGZJB3ZuXXPQvEQFVKdkXMX8KXdQvFCTLBxSV0i1W4cO8u
-         7gSRIcRueNjjYnb4xiZ47yup1ybGZPiOnyOjihhje8XqcowYdrveefmBPwFLgz/ErVlA
-         O6ab3Scak2cNVgteR3w0yMEVzo71LNINQtdoDgJ2yN4brB+KovSErfDy8jGlUweD/wOe
-         VppzZjgtNzczlT+JUY90+yA+vA+tglbQWmgjJ2gS2Lw2VzcyEpJzobYD37cGG9cHpIit
-         LpAw==
-X-Gm-Message-State: AOAM532BpFg9tSm0+BoLcFuhiQqyI0hf9kDTF7MSDD/Xfl+zayS1rC7M
-        u80gstqZzOIO4BGe0LRNRDEREA==
-X-Google-Smtp-Source: ABdhPJw5ERljxRf+ppIaCppwP2hYl/Q2fTvmgZmRjyD1gtAuM5lCQGnkocPD2bHIa1j0bXRARwbObw==
-X-Received: by 2002:a17:90b:19c9:: with SMTP id nm9mr319550pjb.6.1602624386670;
-        Tue, 13 Oct 2020 14:26:26 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id b15sm167713pju.16.2020.10.13.14.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 14:26:26 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>
-Cc:     linux-i2c@vger.kernel.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] soc: qcom: geni: Optimize/comment select fifo/dma mode
-Date:   Tue, 13 Oct 2020 14:25:30 -0700
-Message-Id: <20201013142448.v2.3.I646736d3969dc47de8daceb379c6ba85993de9f4@changeid>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-In-Reply-To: <20201013212531.428538-1-dianders@chromium.org>
-References: <20201013212531.428538-1-dianders@chromium.org>
+        Tue, 13 Oct 2020 17:22:23 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id CF05C526150;
+        Tue, 13 Oct 2020 23:22:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id prebWZDhw8fy; Tue, 13 Oct 2020 23:22:18 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id EABF2526102;
+        Tue, 13 Oct 2020 23:22:17 +0200 (CEST)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id 2179552615A;
+        Tue, 13 Oct 2020 23:22:16 +0200 (CEST)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     =?ISO-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Subject: Re: Re: [PATCH v2] arm64: dts: allwinner: h6: add eMMC voltage property for Beelink GS1
+Date:   Tue, 13 Oct 2020 23:27:33 +0200
+Message-ID: <2745255.UFgyrzHpml@kista>
+In-Reply-To: <20201009073651.izvvjpqiqiivhknl@gilmour.lan>
+References: <20201003092001.405238-1-peron.clem@gmail.com> <CAJiuCcf8rk4t2GrS3+ANEuCtRmXoCMyzP+-x_rKrAfR-FaMaWA@mail.gmail.com> <20201009073651.izvvjpqiqiivhknl@gilmour.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The functions geni_se_select_fifo_mode() and
-geni_se_select_fifo_mode() are a little funny.  They read/write a
-bunch of memory mapped registers even if they don't change or aren't
-relevant for the current protocol.  Let's make them a little more
-sane.  We'll also add a comment explaining why we don't do some of the
-operations for UART.
+Dne petek, 09. oktober 2020 ob 09:36:51 CEST je Maxime Ripard napisal(a):
+> On Thu, Oct 08, 2020 at 10:00:06PM +0200, Clément Péron wrote:
+> > Hi Maxime,
+> > 
+> > Adding linux-sunxi and Jernej Skrabec to this discussion.
+> > 
+> > On Thu, 8 Oct 2020 at 17:10, Maxime Ripard <maxime@cerno.tech> wrote:
+> > >
+> > > Hi Clément,
+> > >
+> > > On Mon, Oct 05, 2020 at 08:47:19PM +0200, Clément Péron wrote:
+> > > > On Mon, 5 Oct 2020 at 11:21, Maxime Ripard <maxime@cerno.tech> wrote:
+> > > > >
+> > > > > Hi Clément,
+> > > > >
+> > > > > On Sat, Oct 03, 2020 at 11:20:01AM +0200, Clément Péron wrote:
+> > > > > > Sunxi MMC driver can't distinguish at runtime what's the I/O 
+voltage
+> > > > > > for HS200 mode.
+> > > > >
+> > > > > Unfortunately, that's not true (or at least, that's not related to 
+your patch).
+> > > > >
+> > > > > > Add a property in the device-tree to notify MMC core about this
+> > > > > > configuration.
+> > > > > >
+> > > > > > Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink 
+GS1 board")
+> > > > > > Signed-off-by: Clément Péron <peron.clem@gmail.com>
+> > > > > > ---
+> > > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
+> > > > > >  1 file changed, 1 insertion(+)
+> > > > > >
+> > > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-
+gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > > > > > index 049c21718846..3f20d2c9bbbb 100644
+> > > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
+> > > > > > @@ -145,6 +145,7 @@ &mmc2 {
+> > > > > >       vqmmc-supply = <&reg_bldo2>;
+> > > > > >       non-removable;
+> > > > > >       cap-mmc-hw-reset;
+> > > > > > +     mmc-hs200-1_8v;
+> > > > > >       bus-width = <8>;
+> > > > > >       status = "okay";
+> > > > > >  };
+> > > > >
+> > > > > I'm not really sure what you're trying to fix here, but as far as MMC
+> > > > > goes, eMMC's can support io voltage of 3.3, 1.8 and 1.2V. Modes up 
+until
+> > > > > HS DDR (50MHz in DDR) will use an IO voltage of 3.3V, higher speed 
+modes
+> > > > > (HS200 and HS400) supporting 1.8V and 1.2V.
+> > > >
+> > > > Some users report that the eMMC is not working properly on their
+> > > > Beelink GS1 boards.
+> > > >
+> > > > > The mmc-hs200-1_8v property states that the MMC controller supports 
+the
+> > > > > HS200 mode at 1.8V. Now, I can only assume that since BLDO2 is set 
+up at
+> > > > > 1.8V then otherwise, the MMC core will rightfully decide to use the
+> > > > > highest supported mode. In this case, since the driver sets it, it 
+would
+> > > > > be HS-DDR at 3.3V, which won't work with that fixed regulator.
+> > > > >
+> > > > > I can only assume that enabling HS200 at 1.8V only fixes the issue 
+you
+> > > > > have because otherwise it would use HS-DDR at 3.3V, ie not actually
+> > > > > fixing the issue but sweeping it under the rug.
+> > > > >
+> > > > > Trying to add mmc-ddr-1_8v would be a good idea
+> > > >
+> > > > Thanks for the explanation, this is indeed the correct one.
+> > > > So It looks like the SDIO controller has an issue on some boards when
+> > > > using HS-DDR mode.
+> > > >
+> > > > Is this patch acceptable with the proper commit log?
+> > >
+> > > If HS-DDR works, yes, but I assume it doesn't?
+> > 
+> > After discussing with Jernej about this issue, I understood that:
+> > - Automatic delay calibration is not implemented
+> > - We also miss some handling of DDR related bits in control register
+> > 
+> > So none of H5/H6 boards should actually work.
+> > (Some 'lucky' boards seem to work enough to switch to HS200 mode...)
+> > 
+> > To "fix" this the H5 disable the HS-DDR mode in sunxi mmc driver :
+> > https://github.com/torvalds/linux/blob/master/drivers/mmc/host/sunxi-mmc.c#L1409
+> 
+> I find it suspicious that some boards would have traces not good enough
+> for HS-DDR (50MHz in DDR) but would work fine in HS200 (200MHz in SDR).
+> If there's some mismatch on the traces, it will only be worse in HS200.
 
-NOTE: there is no evidence at all that this makes any performance
-difference and it fixes no bugs.  However, it seems (to me) like it
-makes the functions a little easier to understand.  Decreasing the
-amount of times we read/write memory mapped registers is also nice,
-even if we are using "relaxed" variants.
+FYI, similar situation is also with Tanix TX6 board. Mine works well in HS-DDR 
+mode, but some people reported that it doesn't work for them. The only 
+possible difference could be different eMMC IC. I'll try to confirm that.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-Note that I didn't add Dmitry Baryshkov's Tested-by tag to the 3rd
-patch since it changed subtly.  Also note that when adding comments
-about why the UART is special it seems clear to me that we really
-shouldn't be managing these interrupt enables in the common code.  It
-seems like drivers should manage / enable the interrupts that they
-care about.  That seems like a bigger change, though, and I didn't
-want to muddy the waters and potentially delay the important fix from
-patch #1 and #2.  Hopefully someone from Qualcomm can take on cleaning
-this stuff up after these fixes land.
+Anyway, I did some tests on OrangePi 3 board which also have eMMC. Both modes 
+(HS-DDR and HS200) are supported and work well. Interesting observation is 
+that speed test (hdparm -t) reported 80.58 MB/sec for HS-DDR mode and 43.40 
+MB/sec for HS200. As it can be seen here, HS-DDR is quicker by a factor of 2, 
+but it should be the other way around. Reason for this is that both modes use 
+same base clock and thus HS-DDR produces higher speed.
+If I change f_max to 150 MHz (max. per datasheet for SDR @ 1.8 V) then 
+naturally HS200 mode is faster (124.63 MB/sec) as HS-DDR as it should be. This 
+would be actually correct test for problematic boards but unfortunately I 
+don't have it. I also hacked in support for HS400 (~143 MB/s) and this mode is 
+the only one which really needs calibration on my board. 
 
-Changes in v2:
-- Consistently use "val_old" to keep track of old value.
-- Add comments about why UART is special.
+Two observations from BSP driver:
+1. Module clock is disabled before adjusting DDR bit and afterwards it's re-
+enabled . That could fix some kind of glitches.
+2. SDMMC peripheral runs on higher clock than on mainline.
 
- drivers/soc/qcom/qcom-geni-se.c | 50 +++++++++++++++++++++------------
- 1 file changed, 32 insertions(+), 18 deletions(-)
+> 
+> And for the delay calibration, iirc, that's only necessary for HS400
+> that we don't support?
 
-diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
-index 751a49f6534f..7649b2057b9a 100644
---- a/drivers/soc/qcom/qcom-geni-se.c
-+++ b/drivers/soc/qcom/qcom-geni-se.c
-@@ -266,49 +266,63 @@ EXPORT_SYMBOL(geni_se_init);
- static void geni_se_select_fifo_mode(struct geni_se *se)
- {
- 	u32 proto = geni_se_read_proto(se);
--	u32 val;
-+	u32 val, val_old;
- 
- 	geni_se_irq_clear(se);
- 
--	val = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
-+	/*
-+	 * The RX path for the UART is asynchronous and so needs more
-+	 * complex logic for enabling / disabling its interrupts.
-+	 *
-+	 * Specific notes:
-+	 * - The done and TX-related interrupts are managed manually.
-+	 * - We don't RX from the main sequencer (we use the secondary) so
-+	 *   we don't need the RX-related interrupts enabled in the main
-+	 *   sequencer for UART.
-+	 */
- 	if (proto != GENI_SE_UART) {
-+		val_old = val = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
- 		val |= M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN;
- 		val |= M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN;
--	}
--	writel_relaxed(val, se->base + SE_GENI_M_IRQ_EN);
-+		if (val != val_old)
-+			writel_relaxed(val, se->base + SE_GENI_M_IRQ_EN);
- 
--	val = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
--	if (proto != GENI_SE_UART)
-+		val_old = val = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
- 		val |= S_CMD_DONE_EN;
--	writel_relaxed(val, se->base + SE_GENI_S_IRQ_EN);
-+		if (val != val_old)
-+			writel_relaxed(val, se->base + SE_GENI_S_IRQ_EN);
-+	}
- 
--	val = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
-+	val_old = val = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
- 	val &= ~GENI_DMA_MODE_EN;
--	writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
-+	if (val != val_old)
-+		writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
- }
- 
- static void geni_se_select_dma_mode(struct geni_se *se)
- {
- 	u32 proto = geni_se_read_proto(se);
--	u32 val;
-+	u32 val, val_old;
- 
- 	geni_se_irq_clear(se);
- 
--	val = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
- 	if (proto != GENI_SE_UART) {
-+		val_old = val = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
- 		val &= ~(M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN);
- 		val &= ~(M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN);
--	}
--	writel_relaxed(val, se->base + SE_GENI_M_IRQ_EN);
-+		if (val != val_old)
-+			writel_relaxed(val, se->base + SE_GENI_M_IRQ_EN);
- 
--	val = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
--	if (proto != GENI_SE_UART)
-+		val_old = val = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
- 		val &= ~S_CMD_DONE_EN;
--	writel_relaxed(val, se->base + SE_GENI_S_IRQ_EN);
-+		if (val != val_old)
-+			writel_relaxed(val, se->base + SE_GENI_S_IRQ_EN);
-+	}
- 
--	val = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
-+	val_old = val = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
- 	val |= GENI_DMA_MODE_EN;
--	writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
-+	if (val != val_old)
-+		writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
- }
- 
- /**
--- 
-2.28.0.1011.ga647a8990f-goog
+According to BSP driver and its DT, HS200 also needs calibration. However, it 
+seems that using it on lower speed it isn't needed.
+
+Best regards,
+Jernej
+
+> 
+> > I'm not sure about A64 but it looks like the property "mmc-hs200-1_8v"
+> > for the PineBook shows the same issue.
+> > 
+> > The proper way would of course be to implement the missing feature
+> > mentioned above.
+> > But this could take some time and as the eMMC driver is actually
+> > broken wouldn't it be better to disable the HS-DDR for H6 in the mmc
+> > driver like it's done for H5 ?
+> 
+> Have you tested with only the mmc-ddr-1_8v property?
+> 
+> Maxime
+> 
+
 
