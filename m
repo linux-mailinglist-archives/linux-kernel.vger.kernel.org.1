@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F1928C6B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F7528C6C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728087AbgJMBSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 21:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727950AbgJMBSQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 21:18:16 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536DFC0613D0;
-        Mon, 12 Oct 2020 18:18:16 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x13so12868546pfa.9;
-        Mon, 12 Oct 2020 18:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/9A0K1IzOHna1C0DxmV3XpbQqnDKqQQDF6op5A/lIOE=;
-        b=Yo4t8KHitl7IijBwyBzbt+gmWaEcnfLB3k5bFe3RMkLOZGpv7uckNpQTdsfI1voSeo
-         j/+15lQPSXGjI3uFic49xOYnjSCdFWRGO/fT1AtPB0eI6zk92pqx5ehhY4xJnk3rVALk
-         ddkysd6k7Q3qCTPL299gXm2zoy8Kak3S5Qo60VN7TKbhWfirdSGdLmOYgPgv4y+qkCvd
-         50S6QKUxR8Ey/wFnaMDDtatK4M6BZ24Yq9Xg1iPO5LbguUw3ygoT9MF454psQy7MW2gC
-         urQ1gJaKpQ8XbW/mk+PZh0gmOZTST/vFP1P7F3zPSmNF1ceNYj1OHrCi+hoMbfMfWtC9
-         GRzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/9A0K1IzOHna1C0DxmV3XpbQqnDKqQQDF6op5A/lIOE=;
-        b=YzmcsiHJtCDnyqYQzSDudV5aCY0Vf7UZ18i7+as5ZSpBqjIgd3b70o9u5Lume6oqCh
-         CPyJCjxNruTT1CygCkCHkt4RqknMzEV3U1LyFKgoQXaBzFE07fyiYCBI1wcXP+wlHgWO
-         +GN8v9n9RTpFrVrfktd9t0lD/OAyU0/JaskqYngo/U3olcN84uaA4zEd28H9oik6KKsA
-         VD/7OsO+kVpVQKbSAzGeX7Wk9bvGDSDzyq9Plf6U+31D5eQuyQRK6jHKr5JCy6GtHNQg
-         /z5mr2Z53a3uFvw32ZHkZWfN2uCfO9oaF4XQaF9qUd/lLP9n3BuaDDiaGTnD7fBy6MUt
-         kLjw==
-X-Gm-Message-State: AOAM5300XwAyQPLR5c4xV89Jfw08RAUCvZZnshNLl21G4cgxYKXV7R3s
-        RtW/B/ZNMCrZEjQRAGwm9QOllhEgShJ/uw==
-X-Google-Smtp-Source: ABdhPJwm1/3VSrSwzuGk4/Zydbtvz11dFFE2Xj3zygfVfOXds4aeHb7HYdhqd+iRm1poALRR9DjznQ==
-X-Received: by 2002:a17:90b:17c4:: with SMTP id me4mr21967291pjb.91.1602551895798;
-        Mon, 12 Oct 2020 18:18:15 -0700 (PDT)
-Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
-        by smtp.gmail.com with ESMTPSA id b6sm24476508pjq.42.2020.10.12.18.18.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 18:18:14 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 10:18:10 +0900
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 2/6] staging: qlge: coredump via devlink health
- reporter
-Message-ID: <20201013011810.GB41031@f3>
-References: <20201008115808.91850-1-coiby.xu@gmail.com>
- <20201008115808.91850-3-coiby.xu@gmail.com>
- <20201010074809.GB14495@f3>
- <20201010100258.px2go6nugsfbwoq7@Rk>
- <20201010132230.GA17351@f3>
- <20201012115114.lyh33rvmm4rt7mej@Rk>
+        id S1728168AbgJMBdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 21:33:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:14882 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728093AbgJMBdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 21:33:36 -0400
+IronPort-SDR: uzhI/4IuOCbPpiqwJz2M8xiAmbjPusjAM9Gjz+oL5i/7AOe4TzHd3ZDcVEpqjuYJL2WDsiSW3m
+ KaV8z0ydXcmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="230008612"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="230008612"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:33:34 -0700
+IronPort-SDR: Y6yiBB3WfuSZvQ7Y0hQ4ROweobdg0z9sw5yFkMPE7W3vzIAe7DMevaTuqdKlB0DWfjuiUiaZsZ
+ /m5zaXYPGGgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="345095782"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 12 Oct 2020 18:33:31 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH next] iommu: intel: make DMAR_TABLE select IOMMU_API
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20201012123105.32652-1-brgl@bgdev.pl>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <0071e295-51c7-3496-df59-c5712cef93a2@linux.intel.com>
+Date:   Tue, 13 Oct 2020 09:27:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012115114.lyh33rvmm4rt7mej@Rk>
+In-Reply-To: <20201012123105.32652-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-12 19:51 +0800, Coiby Xu wrote:
-> On Sat, Oct 10, 2020 at 10:22:30PM +0900, Benjamin Poirier wrote:
-> > On 2020-10-10 18:02 +0800, Coiby Xu wrote:
-> > [...]
-> > > > > +	do {                                                           \
-> > > > > +		err = fill_seg_(fmsg, &dump->seg_hdr, dump->seg_regs); \
-> > > > > +		if (err) {					       \
-> > > > > +			kvfree(dump);                                  \
-> > > > > +			return err;				       \
-> > > > > +		}                                                      \
-> > > > > +	} while (0)
-> > > > > +
-> > > > > +static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
-> > > > > +				  struct devlink_fmsg *fmsg, void *priv_ctx,
-> > > > > +				  struct netlink_ext_ack *extack)
-> > > > > +{
-> > > > > +	int err = 0;
-> > > > > +
-> > > > > +	struct qlge_devlink *dev = devlink_health_reporter_priv(reporter);
-> > > >
-> > > > Please name this variable ql_devlink, like in qlge_probe().
-> > > 
-> > > I happened to find the following text in drivers/staging/qlge/TODO
-> > > > * in terms of namespace, the driver uses either qlge_, ql_ (used by
-> > > >  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
-> > > >  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
-> > > >  prefix.
-> > 
-> > This comment applies to global identifiers, not local variables.
+Hi,
+
+On 10/12/20 8:31 PM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Thank you for the explanation! Are you suggesting we should choose
-> different naming styles so we better tell global identifiers from local
-> variables?
-
-That's not the main purpose IMO. Using a consistent prefix for global
-identifiers (ex. "qlge_") is to avoid clashes (two drivers using the
-same name, as in the examples above). Strictly speaking, it is not a
-problem for symbols with internal linkage (ex. static functions) or type
-definitions in local header files but it makes the code clearer because
-it shows immediately that this identifier was defined in the driver.
-
-For local variables, the name is more a matter of personal taste I think
-but it should be consistent within the driver and with other users of
-the same api, where applicable. A prefix is not needed but the name is
-sometimes a simpler version of a type name which includes a prefix.
-
-> > > So I will adopt qlge_ instead. Besides I prefer qlge_dl to ql_devlink.
-> > 
-> > Up to you but personally, I think ql_devlink is better. In any case,
-> > "dev" is too general and often used for struct net_device pointers
-> > instead.
+> Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
+> with no supported address widths") dmar.c needs struct iommu_device to
+> be defined. We need to unconditionally select IOMMU_API when DMAR_TABLE
+> is selected. This fixes the following build error when IOMMU_API is not
+> selected:
 > 
-> Thank you for the suggestion. Another reason to use qlge_dl is many
-> other network drivers supporting devlink interface also adopt this kind
-> of style.
+> drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
+> drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
+>   1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
 
-Sounds good. On second thought I regretted suggesting ql_devlink. While
-local variable don't need any prefix; if they do have one, better not
-mix qlge_ and ql_.
+Thanks!
+
+How about making it symmetric with the registration code?
+
+	if (intel_iommu_enabled && !iommu->drhd->ignored)
+
+Best regards,
+baolu
+
+>                                                  ^
+> 
+> Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>   drivers/iommu/intel/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel/Kconfig b/drivers/iommu/intel/Kconfig
+> index 5337ee1584b0..f814b7585ba8 100644
+> --- a/drivers/iommu/intel/Kconfig
+> +++ b/drivers/iommu/intel/Kconfig
+> @@ -1,13 +1,13 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   # Intel IOMMU support
+>   config DMAR_TABLE
+> +	select IOMMU_API
+>   	bool
+>   
+>   config INTEL_IOMMU
+>   	bool "Support for Intel IOMMU using DMA Remapping Devices"
+>   	depends on PCI_MSI && ACPI && (X86 || IA64)
+>   	select DMA_OPS
+> -	select IOMMU_API
+>   	select IOMMU_IOVA
+>   	select NEED_DMA_MAP_STATE
+>   	select DMAR_TABLE
+> 
