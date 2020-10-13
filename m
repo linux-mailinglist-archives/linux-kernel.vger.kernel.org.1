@@ -2,129 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5090A28CE74
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88AC28CE77
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbgJMMhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:37:11 -0400
-Received: from mail-m1272.qiye.163.com ([115.236.127.2]:47775 "EHLO
-        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgJMMhK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:37:10 -0400
-Received: from ubuntu.localdomain (unknown [58.250.176.229])
-        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 20363B021A7;
-        Tue, 13 Oct 2020 20:37:03 +0800 (CST)
-From:   Bailu Lin <bailu.lin@vivo.com>
-To:     alex.shi@linux.alibaba.com, catalin.marinas@arm.com,
-        corbet@lwn.net, harryxiyou@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, will@kernel.org
-Cc:     bailu.lin@vivo.com, kernel@vivo.com
-Subject: [PATCH v2] Documentation: Chinese translation of Documentation/arm64/hugetlbpage.rst
-Date:   Tue, 13 Oct 2020 05:36:55 -0700
-Message-Id: <20201013123655.40631-1-bailu.lin@vivo.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200926101902.3460-1-bailu.lin@vivo.com>
-References: <20200926101902.3460-1-bailu.lin@vivo.com>
+        id S1727759AbgJMMhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:37:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726492AbgJMMhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:37:53 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBE31223BE;
+        Tue, 13 Oct 2020 12:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602592672;
+        bh=mPyc3FZzyfNNgR0Hx0NpRLMwr3Vc1dhRpM/n4pWj7gY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bVBpOOgNIGwk/b0mgpwcPuUZpBOissW12ADHkk8cI4tQh1529H9SDPYaSumMcqOvK
+         erKsPCZUeDuULIqW4ZtR4K+FCQxWyYo4zYvnVErO3CsL5BIPt8q3BTWVfu05JFNCBa
+         VGh8QEvbYwLxDGe/epb9Lbb7FrkcLnf2rCTfUUo8=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 00DE4403AC; Tue, 13 Oct 2020 09:37:48 -0300 (-03)
+Date:   Tue, 13 Oct 2020 09:37:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] perf: sched: Show start of latency as well
+Message-ID: <20201013123748.GC1063281@kernel.org>
+References: <20200925235634.4089867-1-joel@joelfernandes.org>
+ <CAM9d7ciK4w-BYLPLK7ADpB5dz83YV5Un4zG66PxPzBS=QzS9mA@mail.gmail.com>
+ <CAEXW_YQEozS_O6VQcBRzFS_t9sihV12HLZ6q=v+YFjJi8+Yprg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSE5MHUJIHU9MSkJKVkpNS0lOQklNSUhDTkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PTo6ECo*Lz8jKzg*Qz0DKSou
-        SyMwCj1VSlVKTUtJTkJJTUlPTE1IVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
-        VUlOS1VKTE1VSUlCWVdZCAFZQU9JSEM3Bg++
-X-HM-Tid: 0a7521f6cc6098b7kuuu20363b021a7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEXW_YQEozS_O6VQcBRzFS_t9sihV12HLZ6q=v+YFjJi8+Yprg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a Chinese translated version of
- Documentation/arm64/hugetlbpage.rst
+Em Sat, Sep 26, 2020 at 11:45:39AM -0400, Joel Fernandes escreveu:
+> On Sat, Sep 26, 2020 at 10:10 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> [...]
+> > On Sat, Sep 26, 2020 at 8:56 AM Joel Fernandes (Google)
+> > <joel@joelfernandes.org> wrote:
+> > >
+> > > perf sched latency is really useful at showing worst-case latencies that task
+> > > encountered since wakeup. However it shows only the end of the latency. Often
+> > > times the start of a latency is interesting as it can show what else was going
+> > > on at the time to cause the latency. I certainly myself spending a lot of time
+> > > backtracking to the start of the latency in "perf sched script" which wastes a
+> > > lot of time.
+> > >
+> > > This patch therefore adds a new column "Max delay start". Considering this,
+> > > also rename "Maximum delay at" to "Max delay end" as its easier to understand.
+> >
+> > Oh, I thought we print start time not the end time.  I think it's better
+> > to print start time but others may think differently.
+> 
+> Right, glad you think so too.
+> 
+> > Actually we can calculate the start time from the end time and the
+> > latency but it'd be convenient if the tool does that for us (as they are
+> > printed in different units).
+> 
+> Correct, but as you mention it is more burdensome to calculate each time.
+> 
+> > Then the remaining concern is the screen
+> > width (of 114 or 115?) but I think it should be fine for most of us.
+> 
+> It is 114 without the patch and 140 with it. I tried my best to trim
+> it a little. It fits fine on my screen with the patch. So I think we
+> should be good!
 
-Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
----
-Changes in v2:
- - Fix Sphinx 2.4.4's waring by increasing underline' size.
----
- Documentation/arm64/hugetlbpage.rst           |  2 +
- .../translations/zh_CN/arm64/hugetlbpage.rst  | 45 +++++++++++++++++++
- .../translations/zh_CN/arm64/index.rst        |  1 +
- 3 files changed, 48 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/arm64/hugetlbpage.rst
+So, what do you think of removing all the redundant info so that we can
+get it in a more compact way, i.e.:
 
-diff --git a/Documentation/arm64/hugetlbpage.rst b/Documentation/arm64/hugetlbpage.rst
-index b44f939e5210..a110124c11e3 100644
---- a/Documentation/arm64/hugetlbpage.rst
-+++ b/Documentation/arm64/hugetlbpage.rst
-@@ -1,3 +1,5 @@
-+.. _hugetlbpage_index:
-+
- ====================
- HugeTLBpage on ARM64
- ====================
-diff --git a/Documentation/translations/zh_CN/arm64/hugetlbpage.rst b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
-new file mode 100644
-index 000000000000..dfc88195deb2
---- /dev/null
-+++ b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
-@@ -0,0 +1,45 @@
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/arm64/hugetlbpage.rst <hugetlbpage_index>`
-+
-+Translator: Bailu Lin <bailu.lin@vivo.com>
-+
-+=====================
-+ARM64中的 HugeTLBpage
-+=====================
-+
-+大页依靠有效利用 TLBs 来提高地址翻译的性能。这取决于以下
-+两点 -
-+
-+  - 大页的大小
-+  - TLBs 支持的条目大小
-+
-+ARM64 接口支持2种大页方式。
-+
-+1) pud/pmd 级别的块映射
-+-----------------------
-+
-+这是常规大页，他们的 pmd 或 pud 页面表条目指向一个内存块。
-+不管 TLB 中支持的条目大小如何，块映射可以减少翻译大页地址
-+所需遍历的页表深度。
-+
-+2) 使用连续位
-+-------------
-+
-+架构中转换页表条目(D4.5.3, ARM DDI 0487C.a)中提供一个连续
-+位告诉 MMU 这个条目是一个连续条目集的一员，它可以被缓存在单
-+个 TLB 条目中。
-+
-+在 Linux 中连续位用来增加 pmd 和 pte(最后一级)级别映射的大
-+小。受支持的连续页表条目数量因页面大小和页表级别而异。
-+
-+
-+支持以下大页大小配置 -
-+
-+  ====== ========   ====    ========    ===
-+  -      CONT PTE    PMD    CONT PMD    PUD
-+  ====== ========   ====    ========    ===
-+  4K:         64K     2M         32M     1G
-+  16K:         2M    32M          1G
-+  64K:         2M   512M         16G
-+  ====== ========   ====    ========    ===
-diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
-index 646ed1f7aea3..e31a6090384d 100644
---- a/Documentation/translations/zh_CN/arm64/index.rst
-+++ b/Documentation/translations/zh_CN/arm64/index.rst
-@@ -14,3 +14,4 @@ ARM64 架构
-     :maxdepth: 2
+                                                 | Delays
+ -----------------------------------------------------------------------------------------------------
+  Task                  |  Runtime    | Switches |    Avg    | Max       | Max start    | Max end    |
+ -----------------------------------------------------------------------------------------------------
+  MediaScannerSer:11936 |  651.296 ms |    67978 |  0.113 ms | 77.250 ms | 477.691360 s | 477.768610 s
+  audio@2.0-servi:(3)   |    0.000 ms |     3440 |  0.034 ms | 72.267 ms | 477.697051 s | 477.769318 s
+  AudioOut_1D:8112      |    0.000 ms |     2588 |  0.083 ms | 64.020 ms | 477.710740 s | 477.774760 s
+  Time-limited te:14973 | 7966.090 ms |    24807 |  0.073 ms | 15.563 ms | 477.162746 s | 477.178309 s
+  surfaceflinger:8049   |    9.680 ms |      603 |  0.063 ms | 13.275 ms | 476.931791 s | 476.945067 s
+  HeapTaskDaemon:(3)    | 1588.830 ms |     7040 |  0.065 ms |  6.880 ms | 473.666043 s | 473.672922 s
+  mount-passthrou:(3)   | 1370.809 ms |    68904 |  0.011 ms |  6.524 ms | 478.090630 s | 478.097154 s
+  ReferenceQueueD:(3)   |   11.794 ms |     1725 |  0.014 ms |  6.521 ms | 476.119782 s | 476.126303 s
+  writer:14077          |   18.410 ms |     1427 |  0.036 ms |  6.131 ms | 474.169675 s | 474.175805 s
  
-     amu
-+    hugetlbpage
--- 
-2.20.1
+> > Acked-by: Namhyung Kim <namhyung@kernel.org>
+> 
+> Thanks, Namyhung!
+> 
+>  - Joel
+> 
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > >
+> > >
+> > > ---
+> > > A sample output can be seen after applying patch:
+> > > https://hastebin.com/raw/ivinimaler
+> > >
+> > >  tools/perf/builtin-sched.c | 24 ++++++++++++++----------
+> > >  1 file changed, 14 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> > > index 459e4229945e..2791da1fe5f7 100644
+> > > --- a/tools/perf/builtin-sched.c
+> > > +++ b/tools/perf/builtin-sched.c
+> > > @@ -130,7 +130,8 @@ struct work_atoms {
+> > >         struct thread           *thread;
+> > >         struct rb_node          node;
+> > >         u64                     max_lat;
+> > > -       u64                     max_lat_at;
+> > > +       u64                     max_lat_start;
+> > > +       u64                     max_lat_end;
+> > >         u64                     total_lat;
+> > >         u64                     nb_atoms;
+> > >         u64                     total_runtime;
+> > > @@ -1096,7 +1097,8 @@ add_sched_in_event(struct work_atoms *atoms, u64 timestamp)
+> > >         atoms->total_lat += delta;
+> > >         if (delta > atoms->max_lat) {
+> > >                 atoms->max_lat = delta;
+> > > -               atoms->max_lat_at = timestamp;
+> > > +               atoms->max_lat_start = atom->wake_up_time;
+> > > +               atoms->max_lat_end = timestamp;
+> > >         }
+> > >         atoms->nb_atoms++;
+> > >  }
+> > > @@ -1322,7 +1324,7 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
+> > >         int i;
+> > >         int ret;
+> > >         u64 avg;
+> > > -       char max_lat_at[32];
+> > > +       char max_lat_start[32], max_lat_end[32];
+> > >
+> > >         if (!work_list->nb_atoms)
+> > >                 return;
+> > > @@ -1344,13 +1346,14 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
+> > >                 printf(" ");
+> > >
+> > >         avg = work_list->total_lat / work_list->nb_atoms;
+> > > -       timestamp__scnprintf_usec(work_list->max_lat_at, max_lat_at, sizeof(max_lat_at));
+> > > +       timestamp__scnprintf_usec(work_list->max_lat_start, max_lat_start, sizeof(max_lat_start));
+> > > +       timestamp__scnprintf_usec(work_list->max_lat_end, max_lat_end, sizeof(max_lat_end));
+> > >
+> > > -       printf("|%11.3f ms |%9" PRIu64 " | avg:%9.3f ms | max:%9.3f ms | max at: %13s s\n",
+> > > +       printf("|%11.3f ms |%9" PRIu64 " | avg:%8.3f ms | max:%8.3f ms | max start: %12s s | max end: %12s s\n",
+> > >               (double)work_list->total_runtime / NSEC_PER_MSEC,
+> > >                  work_list->nb_atoms, (double)avg / NSEC_PER_MSEC,
+> > >                  (double)work_list->max_lat / NSEC_PER_MSEC,
+> > > -                max_lat_at);
+> > > +                max_lat_start, max_lat_end);
+> > >  }
+> > >
+> > >  static int pid_cmp(struct work_atoms *l, struct work_atoms *r)
+> > > @@ -3118,7 +3121,8 @@ static void __merge_work_atoms(struct rb_root_cached *root, struct work_atoms *d
+> > >                         list_splice(&data->work_list, &this->work_list);
+> > >                         if (this->max_lat < data->max_lat) {
+> > >                                 this->max_lat = data->max_lat;
+> > > -                               this->max_lat_at = data->max_lat_at;
+> > > +                               this->max_lat_start = data->max_lat_start;
+> > > +                               this->max_lat_end = data->max_lat_end;
+> > >                         }
+> > >                         zfree(&data);
+> > >                         return;
+> > > @@ -3157,9 +3161,9 @@ static int perf_sched__lat(struct perf_sched *sched)
+> > >         perf_sched__merge_lat(sched);
+> > >         perf_sched__sort_lat(sched);
+> > >
+> > > -       printf("\n -----------------------------------------------------------------------------------------------------------------\n");
+> > > -       printf("  Task                  |   Runtime ms  | Switches | Average delay ms | Maximum delay ms | Maximum delay at       |\n");
+> > > -       printf(" -----------------------------------------------------------------------------------------------------------------\n");
+> > > +       printf("\n -------------------------------------------------------------------------------------------------------------------------------------------\n");
+> > > +       printf("  Task                  |   Runtime ms  | Switches | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |\n");
+> > > +       printf(" -------------------------------------------------------------------------------------------------------------------------------------------\n");
+> > >
+> > >         next = rb_first_cached(&sched->sorted_atom_root);
+> > >
+> > > --
+> > > 2.28.0.709.gb0816b6eb0-goog
 
+-- 
+
+- Arnaldo
