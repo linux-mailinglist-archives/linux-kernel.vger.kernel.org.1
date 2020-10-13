@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A8128D18B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A2228D18D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731324AbgJMPxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbgJMPxp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:53:45 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5C0C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:53:44 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id d24so18003510ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pfWK18NtBDXacS+2pipGCwnD8aetIwryhOD9nHjnVHU=;
-        b=TipCg4sWfwgXfVOd4QpSAltaFjXpF6ejlUins3SGwO0NqaeJyM9Z3vm7kIssqFq7Bg
-         aLvy5cCON076ou3CmJyszaKgPdOJH57ZyUekH1LdbbCNmOTZ7scqMrPtPB8Hvaq562nT
-         Bbz1U/Jxr7CcjdRs42Asy7oHfQqdbeUoy6eRw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pfWK18NtBDXacS+2pipGCwnD8aetIwryhOD9nHjnVHU=;
-        b=WuTX/eqgKd2KWGpTKE/7LPB5Sitv7YqvUv6IYTEL06KxP6/d051v4N6PzS0YqEVMTF
-         uvl9spYMtj+hXWoK4vlY6sgZQHRxRjrL7fRmNKzvDHtc6T9G/GCRVLGmYLwVaeNlQCrr
-         MFJ98V8lNqbHS9R9VivWILjKnogvZyf55S5Vg3Z3/bXJTYCzXcnL/VTsfNRTQKfY5WgG
-         uavwX6zAriKn7HreYtuMmEZ2gTK1hQ7EBjnbXSyriWX6bVfJAACeTT1RZ8QgeYRiYx/H
-         XSZo0hVvh+dIzAqZN5AgTDGeyDTI1zJzz4SM7EIsRRM0JbEwp48vJmoIHTdAeOIIeYmi
-         7ILg==
-X-Gm-Message-State: AOAM5301/PTaSuN/EzfFt6JBQWpZuf0cFlP4YZv72BcmybEpHtL7O/wZ
-        bCRPl7kE/IV6P6PRlEKayEU5tZIOPElPGw==
-X-Google-Smtp-Source: ABdhPJwkVS7x1YnMApmu+zXnvb2In/83SGS+addy4mRQh8erb1gLhyozKiSfpHVWYkycWuuFYHaFUQ==
-X-Received: by 2002:a2e:9f13:: with SMTP id u19mr74136ljk.160.1602604422846;
-        Tue, 13 Oct 2020 08:53:42 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id c4sm23748lfm.294.2020.10.13.08.53.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 08:53:41 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id v6so218833lfa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:53:41 -0700 (PDT)
-X-Received: by 2002:a19:4186:: with SMTP id o128mr28334lfa.148.1602604420750;
- Tue, 13 Oct 2020 08:53:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201012172415.GA2962950@gmail.com> <CAHk-=wgf8ko=b-F74+Qc+EX6M36kHx5wEBCS8nJK1WSod9UO0w@mail.gmail.com>
- <20201013080557.GF3302@suse.de>
-In-Reply-To: <20201013080557.GF3302@suse.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 13 Oct 2020 08:53:24 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi8txKwKjZ-2ZOVEoEePaiSXfEAsj5druEZqH1asmpPXQ@mail.gmail.com>
-Message-ID: <CAHk-=wi8txKwKjZ-2ZOVEoEePaiSXfEAsj5druEZqH1asmpPXQ@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/mm changes for v5.10
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S1731358AbgJMPyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:54:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727016AbgJMPyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:54:09 -0400
+Received: from localhost (dyndsl-091-249-035-207.ewe-ip-backbone.de [91.249.35.207])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CA1E25215;
+        Tue, 13 Oct 2020 15:54:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602604448;
+        bh=trQOVCfY7quismV6EFJLZYCRoqbFMFBZuwroBsLlQXk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0kx25ZycPbfKI57m16/MizCeX6undrJikhtC1/6PMcHbuvDoojeIJt33jcVj7dyqY
+         8Tds4rJ9V8md2TQ6uyj2LwgSqtm+ub8CrArNHHGEQhfG0RDMMnYv82rPhVu46gxqJV
+         AbY0Ni7oe6OYo3jTrGI3Mz18cc03qwzcAtL+W4Ag=
+Date:   Tue, 13 Oct 2020 17:53:58 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Balbir Singh <sblbir@amazon.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 13/24] docs: i2c: index.rst: add
+ slave-testunit-backend.rst
+Message-ID: <20201013155358.GA1465@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Balbir Singh <sblbir@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+ <8b46f6d001962e7b562c3542eb4449bd905f448a.1602590106.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
+Content-Disposition: inline
+In-Reply-To: <8b46f6d001962e7b562c3542eb4449bd905f448a.1602590106.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 1:06 AM Joerg Roedel <jroedel@suse.de> wrote:
->
-> So pre-allocating has its implications. If we decide to pre-allocate on
-> x86-32 too, then we should be prepared for that fall-out of the higher
-> memory usage.
 
-Ok, fair enough. Probably not worth worrying about then, particularly
-since 32-bit x86 is becoming  more and more just legacy.
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-           Linus
+
+> Fixes: a8335c64c5f0 ("i2c: add slave testunit driver")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+As discussed with v1, I already fixed it (correctly). Patch is in
+linux-next:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/commit/?h=i2c/for-next&id=40daf09a30a0c86a038bcce606604333f32e03f8
+
+Thanks!
+
+
+--jRHKVT23PllUwdXP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+FzY0ACgkQFA3kzBSg
+KbaaXw/9GVxvuUSDOgJD2XFZbvdWzUHyr58OcfG6bnfRZrlD8RJPLSmGUTA8xsLr
+5AbQG5y18J84KIiUqQpfFXR8Tie0NmTb7cCzCz5S/uTTzuCNNt/WU04OCDdTrbFV
+ZkfxZV3chY+oo7yDRCsGzSNDj3Wn0MQlp5MKnSXjRoQAihxId0ePRSQ9F+r/vWlt
+wqpCN6kDFZrjKZESDlY6CReVpvt4VHzQfW8O2NzlSUgkP3c08xBa0ILRNZGC2wUs
+Cw4mngubxrXvFCt5i/p+a797GbB5rsamwu0inmnoDYD92+BDJpJicf5GsxeO1Z/B
+RpETW9U6lQZZ1AqolS0hLwt4BULgU5QQSUx9to7O6mcvI/0jLApRi60X5baf5rny
+w3W/spX6FzPBzrrwucQxg5/RpJIirTa8RANtXChGwcVFxucvX0nXEWS/URiejy8t
+nVL9wnCinWtBAR3/sYeOSy0jpUuNJ0EusOKdwiPZbZxz50zs4Da5l+ER3ZuTjtlB
+AXU1fzYl4OH041qioAyJOuXf6GV5YZJm+P3xPbc55gnTqLTC3tqmm5Uk8lq0X1aT
+VPvR1Xq3c55uUG8rBfR2HMh07jETerLuTd71plQz6yV0IpiwzSSd6fBVrI1K6fRX
+c2a4HsBmTaZ9fkQMxQ9Lby+ktflUXf0GX/E7k0TErp2gC08yg4Q=
+=0/8Q
+-----END PGP SIGNATURE-----
+
+--jRHKVT23PllUwdXP--
