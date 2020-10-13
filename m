@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF6228D21B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF5D28D21D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389653AbgJMQVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:21:49 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:45063 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389406AbgJMQVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:21:49 -0400
-Received: by mail-ot1-f68.google.com with SMTP id f37so514803otf.12;
-        Tue, 13 Oct 2020 09:21:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IdoZU5IhKB0GQX00X4PaGMQTcXMx5pZQBHr3ZUv7LVE=;
-        b=Kc6XMNaq9jOD5jx2UbVs5PcAToBf3LG2yEpNoWIj+YibOkB7VLFoSxUoI7XmqC9lhH
-         ncFURB1FAe8c6nVLoI79L9DikkeWvp5ng1mVuHys5FwZ1Y+CBuScm6BgimNJhBOsnk+H
-         hHVvuO8k++e/9VmRsjy6OGuMBwkaFUdFZP38Ok6uN8Zn/qlkzbTlv9QGONXeMlT5HWXh
-         6n4/Sep05/jsYHTzFBFVO9po3tRxxlN/IMAbUR5rN4ZC+7TqkbQk8vFyLoBMbcDQ6iKj
-         v8fN1exukuej2qkHUzGUYalq0THuUNOX4pECq56GUHO+WUeULbpcqmGwxs8cp5ODvn7Z
-         2RzA==
-X-Gm-Message-State: AOAM533tuaiNe1YWqYJ19Gx9+8cLB9PXkH9Gg68fGBHMjKlhJT2FW84T
-        PO5v8WoCjTmafOko7ZRO6A==
-X-Google-Smtp-Source: ABdhPJzmgDK5IcCO0sk/bmk6TyP+WJDVO2wUjLt2zHWTkRQiazEcZTPXdTwPapL4qUzSUtjf91w4bA==
-X-Received: by 2002:a05:6830:1d9a:: with SMTP id y26mr315140oti.168.1602606106985;
-        Tue, 13 Oct 2020 09:21:46 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m7sm55879otk.74.2020.10.13.09.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 09:21:46 -0700 (PDT)
-Received: (nullmailer pid 3632249 invoked by uid 1000);
-        Tue, 13 Oct 2020 16:21:45 -0000
-Date:   Tue, 13 Oct 2020 11:21:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Md Sadre Alam <mdalam@codeaurora.org>
-Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, vigneshr@ti.com,
-        sricharan@codeaurora.org, linux-mtd@lists.infradead.org,
-        miquel.raynal@bootlin.com, richard@nod.at,
-        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: qcom_nandc: IPQ5018 QPIC NAND
- documentation
-Message-ID: <20201013162145.GA3632190@bogus>
-References: <1602307902-16761-1-git-send-email-mdalam@codeaurora.org>
- <1602307902-16761-2-git-send-email-mdalam@codeaurora.org>
+        id S2389670AbgJMQWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:22:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389406AbgJMQWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:22:23 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 757E125271;
+        Tue, 13 Oct 2020 16:22:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602606142;
+        bh=WdHLl7lvBHFeej18gwouWeuZ//ygU1XtG9PhW9+5VTs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k0I7jHwVtd46K7kY+jW6NyImvbi0Kgl4Dilkr7xrKPXLmAHEhaSy8jtUTGipEll0E
+         Uist+XzE9Q4vO1E4bvzbOXdrLvZ8AijxAVa+otbPNTbgdmbMFFlVx1/yjIUJbXDz4P
+         0xRdl9vFtpZT3qQ/JvOrikCI6LSKPvte7bL8/o24=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 853B74047F; Tue, 13 Oct 2020 13:22:20 -0300 (-03)
+Date:   Tue, 13 Oct 2020 13:22:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 03/15] perf data: open data directory in read access
+ mode
+Message-ID: <20201013162220.GK1063281@kernel.org>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <9ac7f12e-f5a4-dd91-a19a-bb7e5be27636@linux.intel.com>
+ <20201012160339.GB466880@tassilo.jf.intel.com>
+ <49bfe810-f1cc-b1c6-67d3-b0a746552fd6@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602307902-16761-2-git-send-email-mdalam@codeaurora.org>
+In-Reply-To: <49bfe810-f1cc-b1c6-67d3-b0a746552fd6@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020 11:01:38 +0530, Md Sadre Alam wrote:
-> Qualcom IPQ5018 SoC uses QPIC NAND controller version 2.1.1
-> which uses BAM DMA Engine and QSPI serial nand interface.
+Em Mon, Oct 12, 2020 at 07:52:33PM +0300, Alexey Budankov escreveu:
 > 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 3 +++
->  1 file changed, 3 insertions(+)
+> On 12.10.2020 19:03, Andi Kleen wrote:
+> > On Mon, Oct 12, 2020 at 11:55:07AM +0300, Alexey Budankov wrote:
+> >>
+> >> Open files located at data directory in case of read access mode.
+> > 
+> > Need some rationale. Is this a bug fix? Did the case not matter
+> > before?
+> 
+> This is not a bug fix. The case didn't matter before.
+
+In such cases can you please write a paragraph explaining why it didn't
+matter before and now it is required?
+
+- Arnaldo
+ 
+ > 
+> >>
+> >> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> >> ---
+> >>  tools/perf/util/data.c | 4 ++++
+> >>  1 file changed, 4 insertions(+)
+> >>
+> >> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> >> index c47aa34fdc0a..6ad61ac6ba67 100644
+> >> --- a/tools/perf/util/data.c
+> >> +++ b/tools/perf/util/data.c
+> >> @@ -321,6 +321,10 @@ static int open_dir(struct perf_data *data)
+> >>  		return -1;
+> >>  
+> >>  	ret = open_file(data);
+> >> +	if (!ret && perf_data__is_dir(data)) {
+> >> +		if (perf_data__is_read(data))
+> >> +			ret = perf_data__open_dir(data);
+> >> +	}
+> >>  
+> >>  	/* Cleanup whatever we managed to create so far. */
+> >>  	if (ret && perf_data__is_write(data))
+> >> -- 
+> >> 2.24.1
+> 
+> Alexei
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+-- 
+
+- Arnaldo
