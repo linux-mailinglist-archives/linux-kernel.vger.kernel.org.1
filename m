@@ -2,218 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8728A28C789
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A92928C78D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 05:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgJMD0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 23:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
+        id S1728993AbgJMDaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 23:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbgJMD0L (ORCPT
+        with ESMTP id S1727831AbgJMDaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 23:26:11 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C67C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:26:11 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b26so15792974pff.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:26:11 -0700 (PDT)
+        Mon, 12 Oct 2020 23:30:21 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3EFC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:30:20 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k8so15798984pfk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 20:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hbtKnEJhUFXSLqEQaTLTu991fw6+yx1srZoUsdDGH+w=;
-        b=M9aQAyTHDmHBF+liYd1g9/BLjw5FkInD91ZlKgWDqvAhWgLFX0IH4V5cGTgkLIlbq6
-         Gp38II+7HP23HrJ9WzCzy0QDKpNmkyxwojeUa8a4KJmOzcrJt6T7shUL2tt7xymhGGSn
-         mmUb19hTDHIv8gKU0ZFZtkaujCsZX2+ictkDmCvi4A8clEJ1MAoQglWodN8kKX290BMT
-         FWPWUu+P3VWqUYXUWGNU77UeRRQjm/sfznPGIF/rGDAf8QMYSQ//+SRvS8i5YmMh/o/5
-         wo2+9ElHMp5w3POXa4G7VJybm1B64acLErI0i7ZQHlVMonUF3SFEAxpHvSTC+GjgRiCL
-         Eq7A==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=veclwl1rWnO1PyZHw8dPBjATssIz1mruYYxnvO/JFq8=;
+        b=sWqJ/y9JSkmPh1tUBls/oFgZXBBJAbrSQFTt+uSGq/Iu5Cll4SUFao4LHB8uZML9Nf
+         suEOfzzkUGhoWi1X8PeH7GScXYHrF5xPgJwx1WDg8hdRc8vhZuVkpui0eXEtiy3SgcYi
+         R8EIf7ncK1EhX/rdKQOmKglxFInKA3tnaF4Wbo4C5B1WXahadXjBgxv3YEPnUBjvo1yc
+         K8QTIYwTPjSHxidx02iPEuML0hdy8P6WJiVz+ogJMp3NSuWMBYhN0PE6qUt/bP4AVwjj
+         QhMuB7hqQXpc3ZNOYun05eTJ40dodrPHEW+oE0s1QGwBm8v+icuYsiWBseFF5z4khe6e
+         RXtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hbtKnEJhUFXSLqEQaTLTu991fw6+yx1srZoUsdDGH+w=;
-        b=hI4lL44+kvakCoEUPZW99KZKNqFGAkINysvz+OTK2vUWVSnX/liF0fXGfYmNsucEgr
-         LhWi04OhM+hWvaJfW3BORrM621jttKtLGhFp6DrqKpB87QwH2QOqJomsjUsrgV8MAV5+
-         4XFFmO1mMAZikVZsb8zy9IvKq/MViQtdtcCRQykeD8DbGjwtgXxP7SqZ4aBGzedyuK5P
-         UM4ScrF+Qqu0Y4la63+S/myLbo43+FUe++vAhPymFWnJXTHY8a7Sy6xOb9fMuC0KoiIb
-         IYAMjja6A7qZdIWOBDYCc+qru/921ly4AK/sKZK6GNMyUE+TUJgG66c/c+SalPMDtQj2
-         gv3Q==
-X-Gm-Message-State: AOAM533r4bxbtHbxGYv0e6HrOLWXNxWYnSeLeBLG9EHTPRQJSFeQ0Q4I
-        qAB7NBsU0tba1RdlE7us90w=
-X-Google-Smtp-Source: ABdhPJw4HEgOYJeLxH6SPSZIfMYhKJR+4KK7W4NbKz65FCXfj+Ue2WCt0LbPvvp1rmoiJtGWwAUY9w==
-X-Received: by 2002:a63:1f03:: with SMTP id f3mr14932167pgf.381.1602559570801;
-        Mon, 12 Oct 2020 20:26:10 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45e1:2200::1])
-        by smtp.gmail.com with ESMTPSA id s4sm20242196pfu.107.2020.10.12.20.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 20:26:09 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 20:26:07 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] arm/build: Always handle .ARM.exidx and .ARM.extab
- sections
-Message-ID: <20201013032607.GA2091780@ubuntu-m3-large-x86>
-References: <20200928224854.3224862-1-natechancellor@gmail.com>
- <CAKwvOd=+98r6F4JjrPEoWX88WQ=B-KMRP2eWojabLk6it3i5KA@mail.gmail.com>
- <CAFP8O3J_Yn8SVD8RR=P5qv=NjdLT0s6JQQM8gWFU-2n0=b1uZg@mail.gmail.com>
- <202010121426.A5FA5E59@keescook>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=veclwl1rWnO1PyZHw8dPBjATssIz1mruYYxnvO/JFq8=;
+        b=hKhSm0Y2B2zzfmsbWPQNKqShfEFFr6E2UA4fV5J07wj/RoGG7scVvaEp41ZNqgaXj/
+         wblJ0pFbLaNivoPKXMtV1hayjAjIG34D1hoi51xGxmNInIlmWriO5gU4rIcWECBbRoqX
+         bG1mEtNcgdHtMDYbXRj6BtHI0a5Vwa9dlvjWceYfB1MC6SNlCG4oYTzFQ0W1pFAzNfDK
+         995j4vat2najBZwmf4jSPHjqe/AObbutV2Pe5GvNbMOwUd9T75eY4vWMMuyeQaWtbW8u
+         Tsj7R+4d/66pYDzHLSxfJuPqLIZCzn8wDoYrMFnJp3+Ib1id1ZvHHwPnlyzLJGefvcbc
+         Csqg==
+X-Gm-Message-State: AOAM532qc8G/bSNPGjtw9om0kNE2GmfZIo35KsvVMFpDSB4b+cDgkT8v
+        gfsVS3mvE3eTS9ztehI03lkgB72veRv9lIYyMmO20w==
+X-Google-Smtp-Source: ABdhPJwv7AqyroJZItMRGC4vj7W3CzjTFTwAXQqOupPBrXsMxczQqLtTe8ycRtlelanR0nD4qp9ozIIPCE46a16q6f4=
+X-Received: by 2002:a17:90a:b78b:: with SMTP id m11mr23945507pjr.13.1602559820309;
+ Mon, 12 Oct 2020 20:30:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202010121426.A5FA5E59@keescook>
+References: <20201010103854.66746-1-songmuchun@bytedance.com>
+ <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
+ <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com> <CAM_iQpXLX1xXN02idk-yU1T=AGb9JmGiLkfRGCJOxjCw-OWpfQ@mail.gmail.com>
+In-Reply-To: <CAM_iQpXLX1xXN02idk-yU1T=AGb9JmGiLkfRGCJOxjCw-OWpfQ@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 13 Oct 2020 11:29:44 +0800
+Message-ID: <CAMZfGtWhnr9_m1HSnMt9QxcT_q8XCMvbsxv9ZgzXP9D8B0qLsQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Shakeel Butt <shakeelb@google.com>,
+        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
+        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 02:26:52PM -0700, Kees Cook wrote:
-> On Mon, Oct 12, 2020 at 02:22:03PM -0700, Fāng-ruì Sòng wrote:
-> > On Mon, Oct 12, 2020 at 2:11 PM 'Nick Desaulniers' via Clang Built
-> > Linux <clang-built-linux@googlegroups.com> wrote:
+On Tue, Oct 13, 2020 at 5:47 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Sun, Oct 11, 2020 at 9:22 PM Muchun Song <songmuchun@bytedance.com> wr=
+ote:
+> >
+> > On Mon, Oct 12, 2020 at 2:39 AM Cong Wang <xiyou.wangcong@gmail.com> wr=
+ote:
 > > >
-> > > On Mon, Sep 28, 2020 at 3:49 PM Nathan Chancellor
-> > > <natechancellor@gmail.com> wrote:
+> > > On Sat, Oct 10, 2020 at 3:39 AM Muchun Song <songmuchun@bytedance.com=
+> wrote:
 > > > >
-> > > > After turning on warnings for orphan section placement, enabling
-> > > > CONFIG_UNWINDER_FRAME_POINTER instead of CONFIG_UNWINDER_ARM causes
-> > > > thousands of warnings when clang + ld.lld are used:
-> > > >
-> > > > $ scripts/config --file arch/arm/configs/multi_v7_defconfig \
-> > > >                  -d CONFIG_UNWINDER_ARM \
-> > > >                  -e CONFIG_UNWINDER_FRAME_POINTER
-> > > > $ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 defconfig zImage
-> > > > ld.lld: warning: init/built-in.a(main.o):(.ARM.extab) is being placed in '.ARM.extab'
-> > > > ld.lld: warning: init/built-in.a(main.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> > > > ld.lld: warning: init/built-in.a(main.o):(.ARM.extab.ref.text) is being placed in '.ARM.extab.ref.text'
-> > > > ld.lld: warning: init/built-in.a(do_mounts.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> > > > ld.lld: warning: init/built-in.a(do_mounts.o):(.ARM.extab) is being placed in '.ARM.extab'
-> > > > ld.lld: warning: init/built-in.a(do_mounts_rd.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> > > > ld.lld: warning: init/built-in.a(do_mounts_rd.o):(.ARM.extab) is being placed in '.ARM.extab'
-> > > > ld.lld: warning: init/built-in.a(do_mounts_initrd.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> > > > ld.lld: warning: init/built-in.a(initramfs.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> > > > ld.lld: warning: init/built-in.a(initramfs.o):(.ARM.extab) is being placed in '.ARM.extab'
-> > > > ld.lld: warning: init/built-in.a(calibrate.o):(.ARM.extab.init.text) is being placed in '.ARM.extab.init.text'
-> > > > ld.lld: warning: init/built-in.a(calibrate.o):(.ARM.extab) is being placed in '.ARM.extab'
-> > > >
-> > > > These sections are handled by the ARM_UNWIND_SECTIONS define, which is
-> > > > only added to the list of sections when CONFIG_ARM_UNWIND is set.
-> > > > CONFIG_ARM_UNWIND is a hidden symbol that is only selected when
-> > > > CONFIG_UNWINDER_ARM is set so CONFIG_UNWINDER_FRAME_POINTER never
-> > > > handles these sections. According to the help text of
-> > > > CONFIG_UNWINDER_ARM, these sections should be discarded so that the
-> > > > kernel image size is not affected.
+> > > > The amount of memory allocated to sockets buffer can become signifi=
+cant.
+> > > > However, we do not display the amount of memory consumed by sockets
+> > > > buffer. In this case, knowing where the memory is consumed by the k=
+ernel
 > > >
-> > > My apologies for taking so long to review this.
-> > >
-> > > I have a suspicion that these come from forcing on configs that
-> > > Kconfig/menuconfig would block, and aren't clang or lld specific, yet
-> > > are exposed by the new linker warnings for orphan section placement
-> > > (good).  That said, we definitely have OEMs in Android land that still
-> > > prefer the older unwinder.
-> > >
-> > > From https://developer.arm.com/documentation/ihi0038/b/ (click
-> > > download in top left), section 4.4.1 "Sections" has a note:
-> > >
-> > > ```
-> > > Tables are not required for ABI compliance at the C/Assembler level
-> > > but are required for C++.
-> > > ```
-> > >
-> > > Review-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > >
-> > > Please submit to:
-> > > https://www.arm.linux.org.uk/developer/patches/add.php
+> > > We do it via `ss -m`. Is it not sufficient? And if not, why not addin=
+g it there
+> > > rather than /proc/meminfo?
+> >
+> > If the system has little free memory, we can know where the memory is v=
+ia
+> > /proc/meminfo. If a lot of memory is consumed by socket buffer, we cann=
+ot
+> > know it when the Sock is not shown in the /proc/meminfo. If the unaware=
+ user
+> > can't think of the socket buffer, naturally they will not `ss -m`. The
+> > end result
+>
+> Interesting, we already have a few counters related to socket buffers,
+> are you saying these are not accounted in /proc/meminfo either?
 
-This should go through the tip tree (hence sending it straight to Ingo)
-since the patch that this fixes was there. I guess it does not
-necessarily matter now that the breakage is in mainline but basing a
-set of patches on a non -rc tag is a little taboo I thought so not sure
-it is appropriate to go through Russell for now. It is up to the
-maintainers though, I will submit it wherever it needs to go.
+Yeah, these are not accounted for in /proc/meminfo.
 
-> > > >
-> > > > Fixes: 5a17850e251a ("arm/build: Warn on orphan section placement")
-> > > > Link: https://github.com/ClangBuiltLinux/linux/issues/1152
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > > > ---
-> > > >  arch/arm/kernel/vmlinux.lds.S | 4 ++++
-> > > >  1 file changed, 4 insertions(+)
-> > > >
-> > > > diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-> > > > index 5f4922e858d0..a2c0d96b0580 100644
-> > > > --- a/arch/arm/kernel/vmlinux.lds.S
-> > > > +++ b/arch/arm/kernel/vmlinux.lds.S
-> > > > @@ -40,6 +40,10 @@ SECTIONS
-> > > >                 ARM_DISCARD
-> > > >  #ifndef CONFIG_SMP_ON_UP
-> > > >                 *(.alt.smp.init)
-> > > > +#endif
-> > > > +#ifndef CONFIG_ARM_UNWIND
-> > > > +               *(.ARM.exidx*)
-> > >
-> > > I don't think we need the wildcard, as without this line, I see:
-> > >
-> > > ld.lld: warning: <internal>:(.ARM.exidx) is being placed in '.ARM.exidx'
-> > 
-> > We may need the wildcard if there are -ffunction-sections builds.
-> > In clang, .ARM.exidx* cannot be removed even with -fno-unwind-tables
-> > -fno-exceptions.
-> 
-> Does it need to be:
-> 
-> 	*(.ARM.exidx) *(.ARM.exidx.*)
-> 	*(.ARM.extab) *(.ARM.extab.*)
-> 
-> ?
+> If yes, why are page frags so special here? If not, they are more
+> important than page frags, so you probably want to deal with them
+> first.
+>
+>
+> > is that we still don=E2=80=99t know where the memory is consumed. And w=
+e add the
+> > Sock to the /proc/meminfo just like the memcg does('sock' item in the c=
+group
+> > v2 memory.stat). So I think that adding to /proc/meminfo is sufficient.
+>
+> It looks like actually the socket page frag is already accounted,
+> for example, the tcp_sendmsg_locked():
+>
+>                         copy =3D min_t(int, copy, pfrag->size - pfrag->of=
+fset);
+>
+>                         if (!sk_wmem_schedule(sk, copy))
+>                                 goto wait_for_memory;
+>
 
-I tested the patch and saw no warnings with what I sent. I can change it
-to that if it is more proper though!
+Yeah, it is already accounted for. But it does not represent real memory
+usage. This is just the total amount of charged memory.
 
-> > 
-> > > though I do see binutils linker scripts use precisely what you have.
-> > > So I guess that's fine.
-> > >
-> > > I guess we can't reuse `ARM_UNWIND_SECTIONS` since the ALIGN and
-> > > linker-script-defined-symbols would be weird in a DISCARD clause?
-> > >
-> > >
-> > > > +               *(.ARM.extab*)
-> > > >  #endif
-> > > >         }
-> > > >
-> > > >
-> > > > base-commit: 6e0bf0e0e55000742a53c5f3b58f8669e0091a11
-> > > > --
-> > >
-> > >
-> > > --
-> > > Thanks,
-> > > ~Nick Desaulniers
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOd%3D%2B98r6F4JjrPEoWX88WQ%3DB-KMRP2eWojabLk6it3i5KA%40mail.gmail.com.
-> > 
-> > 
-> > 
-> > -- 
-> > 宋方睿
-> 
-> -- 
-> Kees Cook
+For example, if a task sends a 10-byte message, it only charges one
+page to memcg. But the system may allocate 8 pages. Therefore, it
+does not truly reflect the memory allocated by the page frag memory
+allocation path.
 
-Cheers,
-Nathan
+>
+> >
+> > >
+> > > >  static inline void __skb_frag_unref(skb_frag_t *frag)
+> > > >  {
+> > > > -       put_page(skb_frag_page(frag));
+> > > > +       struct page *page =3D skb_frag_page(frag);
+> > > > +
+> > > > +       if (put_page_testzero(page)) {
+> > > > +               dec_sock_node_page_state(page);
+> > > > +               __put_page(page);
+> > > > +       }
+> > > >  }
+> > >
+> > > You mix socket page frag with skb frag at least, not sure this is exa=
+ctly
+> > > what you want, because clearly skb page frags are frequently used
+> > > by network drivers rather than sockets.
+> > >
+> > > Also, which one matches this dec_sock_node_page_state()? Clearly
+> > > not skb_fill_page_desc() or __skb_frag_ref().
+> >
+> > Yeah, we call inc_sock_node_page_state() in the skb_page_frag_refill().
+>
+> How is skb_page_frag_refill() possibly paired with __skb_frag_unref()?
+>
+> > So if someone gets the page returned by skb_page_frag_refill(), it must
+> > put the page via __skb_frag_unref()/skb_frag_unref(). We use PG_private
+> > to indicate that we need to dec the node page state when the refcount o=
+f
+> > page reaches zero.
+>
+> skb_page_frag_refill() is called on frags not within an skb, for instance=
+,
+> sk_page_frag_refill() uses it for a per-socket or per-process page frag.
+> But, __skb_frag_unref() is specifically used for skb frags, which are
+> supposed to be filled by skb_fill_page_desc() (page is allocated by drive=
+r).
+>
+> They are different things you are mixing them up, which looks clearly
+> wrong or at least misleading.
+
+Yeah, it looks a little strange. I just want to account for page frag
+allocations. So I have to use PG_private to distinguish the page
+from page frag or others in the __skb_frag_unref(). If the page is
+allocated from skb_page_frag_refill, we should decrease the
+statistics.
+
+Thanks.
+
+>
+> Thanks.
+
+
+
+--=20
+Yours,
+Muchun
