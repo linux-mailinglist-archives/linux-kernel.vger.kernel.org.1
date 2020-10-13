@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D1528CFF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0312D28CFFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388503AbgJMONp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388485AbgJMONp (ORCPT
+        id S2388536AbgJMOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:14:25 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33820 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388488AbgJMOOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:13:45 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5D0C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:13:44 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by albert.telenet-ops.be with bizsmtp
-        id fSDi2300E4C55Sk06SDiYz; Tue, 13 Oct 2020 16:13:43 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kSL3e-0006RP-HN; Tue, 13 Oct 2020 16:13:42 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kSL3e-0007QD-FW; Tue, 13 Oct 2020 16:13:42 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] can: Explain PDU in CAN_ISOTP help text
-Date:   Tue, 13 Oct 2020 16:13:41 +0200
-Message-Id: <20201013141341.28487-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        Tue, 13 Oct 2020 10:14:23 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id EE30A1C0B77; Tue, 13 Oct 2020 16:14:21 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 16:14:21 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Yu Kuai <yukuai3@huawei.com>, Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 27/38] iommu/exynos: add missing put_device() call
+ in exynos_iommu_of_xlate()
+Message-ID: <20201013141421.GA22886@duo.ucw.cz>
+References: <20201005142108.650363140@linuxfoundation.org>
+ <20201005142109.977461657@linuxfoundation.org>
+ <CGME20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff@eucas1p1.samsung.com>
+ <20201007094737.GA12593@duo.ucw.cz>
+ <5b869c86-8d35-e834-4fec-6b63a942e484@samsung.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+Content-Disposition: inline
+In-Reply-To: <5b869c86-8d35-e834-4fec-6b63a942e484@samsung.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The help text for the CAN_ISOTP config symbol uses the acronym "PDU".
-However, this acronym is not explained here, nor in
-Documentation/networking/can.rst.
-Expand the acronym to make it easier for users to decide if they need to
-enable the CAN_ISOTP option or not.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- net/can/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/net/can/Kconfig b/net/can/Kconfig
-index 224e5e0283a986d9..7c9958df91d353c8 100644
---- a/net/can/Kconfig
-+++ b/net/can/Kconfig
-@@ -62,8 +62,9 @@ config CAN_ISOTP
- 	  communication between CAN nodes via two defined CAN Identifiers.
- 	  As CAN frames can only transport a small amount of data bytes
- 	  (max. 8 bytes for 'classic' CAN and max. 64 bytes for CAN FD) this
--	  segmentation is needed to transport longer PDUs as needed e.g. for
--	  vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN traffic.
-+	  segmentation is needed to transport longer Protocol Data Units (PDU)
-+	  as needed e.g. for vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN
-+	  traffic.
- 	  This protocol driver implements data transfers according to
- 	  ISO 15765-2:2016 for 'classic' CAN and CAN FD frame types.
- 	  If you want to perform automotive vehicle diagnostic services (UDS),
--- 
-2.17.1
+Hi!
+> >> From: Yu Kuai <yukuai3@huawei.com>
+> >>
+> >> [ Upstream commit 1a26044954a6d1f4d375d5e62392446af663be7a ]
+> >>
+> >> if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't h=
+ave
+> >> a corresponding put_device(). Thus add put_device() to fix the excepti=
+on
+> >> handling for this function implementation.
+> > Okay, this looks reasonable, but...
+> >
+> > Do we miss put_device() in normal path, too? I'd expect another
+> > put_device at end of exynos_iommu_of_xlate() or perhaps in release
+> > path somewhere...
+>=20
+> Frankly, there is no release path, so there is no need for put_device.=20
+> Once initialized, Exynos IOMMU stays in the system forever. There is no=
+=20
+> point to remove IOMMU nor the API for that. Keeping increased refcount=20
+> for its device just matches this behavior.
+>=20
+> If the missing put_device() is really a problem, then we can move it=20
+> from the error path just after data =3D platform_get_drvdata(sysmmu)=20
+> assignment. Feel free to send a patch if you think this is a more=20
+> appropriate approach.
 
+exynos_iommu_detach_device() looks like a place where resources could
+be freed? But if there's no release path, we don't really need to do anythi=
+ng.=20
+
+Sorry about the noise.
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--9jxsPFA5p3P2qPhR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX4W2PQAKCRAw5/Bqldv6
+8m7vAJ4iXq02bm6+RavPQxrGMERfz/4fsQCfQdFAYbgb57aGCx7w0yA3EfNXz4Y=
+=CDgo
+-----END PGP SIGNATURE-----
+
+--9jxsPFA5p3P2qPhR--
