@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585B828C8B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC53928C8C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389602AbgJMGiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 02:38:15 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:23530 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389433AbgJMGiO (ORCPT
+        id S2389789AbgJMGsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 02:48:04 -0400
+Received: from regular1.263xmail.com ([211.150.70.200]:48102 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389346AbgJMGsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 02:38:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1602571094; x=1634107094;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=aHrNIi6Spaa8PTVDo9sFuO7JRmGUmYOw/fAbYNNAQdY=;
-  b=RQfbt1qjlcVA+yuLRiiMBYMLENj2h/NK+eCtbXquvUBEsly8wpKyod1O
-   qh/B6Pao7Y/HP1ToBels6fD5DQFhWi9yahTRVVCL8rcpLAtSqwGnl4nfi
-   gJTmOxzxTHSbx1QYIB1KMMUw9gCBBWgq8g2ESer5uiM6O+97bX0XczAUp
-   E=;
-X-IronPort-AV: E=Sophos;i="5.77,369,1596499200"; 
-   d="scan'208";a="83990110"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 13 Oct 2020 06:38:08 +0000
-Received: from EX13D31EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 212CCA1ECF;
-        Tue, 13 Oct 2020 06:38:04 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.27) by
- EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 13 Oct 2020 06:38:00 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <brendanhiggins@google.com>
-CC:     SeongJae Park <sjpark@amazon.de>, <corbet@lwn.net>,
-        <skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>,
-        <kunit-dev@googlegroups.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] Documentation: kunit: Update Kconfig parts for KUNIT's module support
-Date:   Tue, 13 Oct 2020 08:37:43 +0200
-Message-ID: <20201013063743.32179-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.27]
-X-ClientProxiedBy: EX13D50UWA004.ant.amazon.com (10.43.163.5) To
- EX13D31EUB001.ant.amazon.com (10.43.166.210)
+        Tue, 13 Oct 2020 02:48:03 -0400
+X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 02:48:02 EDT
+Received: from localhost (unknown [192.168.167.16])
+        by regular1.263xmail.com (Postfix) with ESMTP id 9CA4B11C6;
+        Tue, 13 Oct 2020 14:40:48 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from jianqun-pc (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P30217T139798165583616S1602571248138252_;
+        Tue, 13 Oct 2020 14:40:48 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <5ba8c1c7360008fb64b95412a085cae9>
+X-RL-SENDER: jay.xu@rock-chips.com
+X-SENDER: xjq@rock-chips.com
+X-LOGIN-NAME: jay.xu@rock-chips.com
+X-FST-TO: linus.walleij@linaro.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+Date:   Tue, 13 Oct 2020 14:40:47 +0800
+From:   "jay.xu@rock-chips.com" <jay.xu@rock-chips.com>
+To:     "Linus Walleij" <linus.walleij@linaro.org>,
+        =?UTF-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Subject: Re: Re: [PATCH 2/2] pinctrl: rockchip: make driver be tristate module
+References: <20200907025927.9713-3-jay.xu@rock-chips.com>, 
+        <20200914003847.10341-1-jay.xu@rock-chips.com>, 
+        <5373086.oXRXx9yCqB@diego>, 
+        <7244527.mGzxE9Z0Hj@diego>, 
+        <CACRpkdYAxpyB+y88eC4iuvHRqttPSFdaMHAZdr6y8jfTr0Qong@mail.gmail.com>
+X-Priority: 3
+X-Has-Attach: no
+X-Mailer: Foxmail 7.2.18.95[cn]
+Mime-Version: 1.0
+Message-ID: <202010131440473168632@rock-chips.com>
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+RGVhciBXYWxsZWlqIGFuZCBIZWlrbwoKVGhlIHBhdGNoICJbUEFUQ0hdIHBpbmN0cmw6IHJvY2tj
+aGlwOiBwb3B1bGF0ZSBwbGF0Zm9ybSBkZXZpY2UgZm9yIHJvY2tjaGlwIGdwaW8iIGhhcyBiZWVu
+IHJlbW92ZSBvdXRvZgp0aGUgcGF0Y2hlcywgc2luY2Ugd2UgaGF2ZSBhIG5ldyBwYXRjaCB0byBt
+b3ZlIGdwaW8gcmVsYXRlZCBjb2RlcyB0byBhIHNlcGFyYXRlZCBkcml2ZXIuCgpTbyBwbGVhc2Ug
+aWdub3JlIGl0IGZvciBub3cuIHRoYW5rcyB2ZXJ5IG11Y2guCgotLS0tLS0tLS0tLS0tLQpqYXku
+eHVAcm9jay1jaGlwcy5jb20KPk9uIE1vbiwgU2VwIDIxLCAyMDIwIGF0IDEyOjE4IEFNIEhlaWtv
+IFN0w7xibmVyIDxoZWlrb0BzbnRlY2guZGU+IHdyb3RlOgo+Cj4+IEl0IHNlZW1zIEkndmUgcmV2
+aWV3ZWQgYWxsIHBhdGNoZXMgb2YgdGhpcyBzZXJpZXMgbm93LCBidXQgSSB0aGluawo+PiB5b3Ug
+bWlnaHQgd2FudCB0byByZXNlbmQgdGhlIHNlcmllcyBhIGZpbmFsIHRpbWUgYXMgdjMgaW4gYSBj
+bGVhbmVkIHVwCj4+IHN0YXRlIChkcm9wIHBhdGNoMSBhbmQganVzdCBwb3N0IHBhdGNoZXMgMi01
+IGluIGEgZnVsbCBzZXJpZXMpIHNvIHRoYXQKPj4gd2UgZG9uJ3QgY29uZnVzZSBMaW51cyB0b28g
+bXVjaCB3aXRoIHRoZSByZXBvc3RlZCBwYXRjaGVzIHdlIGN1cnJlbnRseQo+PiBoYXZlLgo+Cj5Z
+ZXMgcGxlYXNlIHNlbmQgYSB2MyBsaWtlIHRoYXQgc28gSSBjYW4gYXBwbHkgaXQhCj4KPllvdXJz
+LAo+TGludXMgV2FsbGVpago+Cj4KPg==
 
-If 'CONFIG_KUNIT=m', letting kunit tests that do not support loadable
-module build depends on 'KUNIT' instead of 'KUNIT=y' result in compile
-errors.  This commit updates the document for this.
 
-Fixes: 9fe124bf1b77 ("kunit: allow kunit to be loaded as a module")
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
-
-Changes from v1
-(https://lore.kernel.org/linux-kselftest/20201012105420.5945-1-sjpark@amazon.com/):
-- Fix a typo (Marco Elver)
-
----
- Documentation/dev-tools/kunit/start.rst | 2 +-
- Documentation/dev-tools/kunit/usage.rst | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
-index d23385e3e159..454f307813ea 100644
---- a/Documentation/dev-tools/kunit/start.rst
-+++ b/Documentation/dev-tools/kunit/start.rst
-@@ -197,7 +197,7 @@ Now add the following to ``drivers/misc/Kconfig``:
- 
- 	config MISC_EXAMPLE_TEST
- 		bool "Test for my example"
--		depends on MISC_EXAMPLE && KUNIT
-+		depends on MISC_EXAMPLE && KUNIT=y
- 
- and the following to ``drivers/misc/Makefile``:
- 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index 3c3fe8b5fecc..b331f5a5b0b9 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -556,6 +556,11 @@ Once the kernel is built and installed, a simple
- 
- ...will run the tests.
- 
-+.. note::
-+   Note that you should make your test depends on ``KUNIT=y`` in Kconfig if the
-+   test does not support module build.  Otherwise, it will trigger compile
-+   errors if ``CONFIG_KUNIT`` is ``m``.
-+
- Writing new tests for other architectures
- -----------------------------------------
- 
--- 
-2.17.1
 
