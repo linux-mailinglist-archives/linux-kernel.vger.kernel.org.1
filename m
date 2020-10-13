@@ -2,75 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF37D28D1EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE6328D216
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731649AbgJMQNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:13:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42294 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgJMQNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:13:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D2F42AC6D;
-        Tue, 13 Oct 2020 16:13:37 +0000 (UTC)
-Subject: Re: [PATCH v2 1/3] mm/slub: Clarify verification reporting
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Marco Elver <elver@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org
-References: <20201009195411.4018141-1-keescook@chromium.org>
- <20201009195411.4018141-2-keescook@chromium.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <cfdb11d7-fb8e-e578-c939-f7f5fb69a6bd@suse.cz>
-Date:   Tue, 13 Oct 2020 18:13:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2389572AbgJMQV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731703AbgJMQV0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:21:26 -0400
+X-Greylist: delayed 460 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 13 Oct 2020 09:21:26 PDT
+Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E45FC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 09:21:26 -0700 (PDT)
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id 710F1A53273; Tue, 13 Oct 2020 18:13:42 +0200 (CEST)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Heiko Stuebner <heiko@sntech.de>, Aditya Prayoga <aditya@kobol.io>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v3 0/2] arm64: Add basic support for Kobol's Helios64
+Date:   Tue, 13 Oct 2020 18:13:38 +0200
+Message-Id: <20201013161340.720403-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201009195411.4018141-2-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/20 9:54 PM, Kees Cook wrote:
-> Instead of repeating "Redzone" and "Poison", clarify which sides of
-> those zones got tripped. Additionally fix column alignment in the
-> trailer.
-> 
-> Before:
-> 
-> BUG test (Tainted: G    B            ): Redzone overwritten
-> ...
-> Redzone (____ptrval____): bb bb bb bb bb bb bb bb      ........
-> Object (____ptrval____): f6 f4 a5 40 1d e8            ...@..
-> Redzone (____ptrval____): 1a aa                        ..
-> Padding (____ptrval____): 00 00 00 00 00 00 00 00      ........
-> 
-> After:
-> 
-> BUG test (Tainted: G    B            ): Right Redzone overwritten
-> ...
-> Redzone  (____ptrval____): bb bb bb bb bb bb bb bb      ........
-> Object   (____ptrval____): f6 f4 a5 40 1d e8            ...@..
-> Redzone  (____ptrval____): 1a aa                        ..
-> Padding  (____ptrval____): 00 00 00 00 00 00 00 00      ........
-> 
-> Fixes: d86bd1bece6f ("mm/slub: support left redzone")
-> Fixes: ffc79d288000 ("slub: use print_hex_dump")
-> Fixes: 2492268472e7 ("SLUB: change error reporting format to follow lockdep loosely")
+Hello,
 
-Not sure about those Fixes: tag as this is mainly an enhancement. I'd only use 
-those for real bug fixes.
+compared to v2 of this series (starting with Message-Id:
+20201012204317.1581752-1-uwe@kleine-koenig.org) I sorted various things
+as pointed out by Johan Jonker, dropped and improved a few things. I
+hope I got the sorting right now.
 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+This time I also Cc:d lkml (even though I don't think to attract someone
+interested in this patch series there).
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Uwe Kleine-König (2):
+  dt-bindings: vendor-prefixes: Add kobol prefix
+  arm64: dts: rockchip: Add basic support for Kobol's Helios64
+
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../dts/rockchip/rk3399-kobol-helios64.dts    | 378 ++++++++++++++++++
+ 3 files changed, 381 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+
+-- 
+2.28.0
+
