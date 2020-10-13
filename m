@@ -2,50 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB9B28D627
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF5E28D62A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgJMVJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgJMVJ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:09:28 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4BBC061755;
-        Tue, 13 Oct 2020 14:09:28 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSRXx-00HB9t-Ag; Tue, 13 Oct 2020 21:09:25 +0000
-Date:   Tue, 13 Oct 2020 22:09:25 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        christian.brauner@ubuntu.com, containers@lists.linux-foundation.org
-Subject: Re: [PATCH 1/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
-Message-ID: <20201013210925.GJ3576660@ZenIV.linux.org.uk>
-References: <20201013140609.2269319-1-gscrivan@redhat.com>
- <20201013140609.2269319-2-gscrivan@redhat.com>
+        id S1728016AbgJMVQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 17:16:37 -0400
+Received: from elvis.franken.de ([193.175.24.41]:60772 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbgJMVQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 17:16:37 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kSRer-0001Go-00; Tue, 13 Oct 2020 23:16:33 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C9F13C0296; Tue, 13 Oct 2020 23:16:10 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 23:16:10 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jinyang He <hejinyang@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Add set_memory_node()
+Message-ID: <20201013211610.GA27034@alpha.franken.de>
+References: <1602559183-12225-1-git-send-email-hejinyang@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201013140609.2269319-2-gscrivan@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <1602559183-12225-1-git-send-email-hejinyang@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 04:06:08PM +0200, Giuseppe Scrivano wrote:
-> +		spin_lock(&cur_fds->file_lock);
-> +		fdt = files_fdtable(cur_fds);
-> +		cur_max = fdt->max_fds - 1;
-> +		max_fd = min(max_fd, cur_max);
-> +		while (fd <= max_fd)
-> +			__set_close_on_exec(fd++, fdt);
-> +		spin_unlock(&cur_fds->file_lock);
+On Tue, Oct 13, 2020 at 11:19:43AM +0800, Jinyang He wrote:
+> Commit e7ae8d174eec ("MIPS: replace add_memory_region with memblock")
 
-	First of all, this is an atrocious way to set all bits
-in a range.  What's more, you don't want to set it for *all*
-bits - only for the ones present in open bitmap.  It's probably
-harmless at the moment, but let's not create interesting surprises
-for the future.
+this commit just changed code and doesn't change the problem you want to
+solve.
+
+> replaced add_memory_region(, , BOOT_MEM_RAM) with memblock_add(). But
+> it doesn't work well on some platforms which have NUMA like Loongson64.
+> Because memblock_add() calls memblock_add_range() and sets memory at
+> MAX_NUMNODES. As mm/memblock.c says, assign the region to a NUMA node
+> later by using memblock_set_node(). This patch provides a NUMA port
+
+so it says later, which doesn't have to be right after the memblock_add.
+I don't know why you need the whole mem=/memmap= game, but please do a
+
+for_each_memblock(...) 
+	memblock_set_node(...);
+
+somewhere in arch/mips/loongson64 to fix up the memory blocks as needed.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
