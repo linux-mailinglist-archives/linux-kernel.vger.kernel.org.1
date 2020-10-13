@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3918928CCDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5811128CDBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727762AbgJMLzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:55:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
+        id S1728884AbgJMMCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727375AbgJMLyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:54:41 -0400
+        id S1727300AbgJMLyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:54:40 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98BA5221EB;
+        by mail.kernel.org (Postfix) with ESMTPSA id 829FD214DB;
         Tue, 13 Oct 2020 11:54:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602590079;
-        bh=s6S4taexIdWOJS8hIpJ2NenG8qH1N1Tyj7alNwEfNng=;
+        bh=9VEsYhA+IZ9Xtatn4juI3lEEjzxTE03ZUU+Ozq91eE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pfdLjGw9BoFK8SdZWCbSFe27997PTPYWahhGZcp5xm//+z5Aov8eSc83vxWgGehPH
-         wkkyqXk4N30KTe+vkZqomSe+1P42+wvcZGfFfRwRXG9K9vbnIV4Qq5rdkvDMEmAZzG
-         oojCTQShVkIznybmm2VnWKS0/pRfHuICleVPGwRE=
+        b=EREVZu5TRHokVnVgaYWA/610tL8E7P2izsD3bDaM6CRjrrK8YtDJuK+Rk230MSEbH
+         b3oQ7OJjcHqg5PvNZuYnC4zSVgf/e+TT7fTP98VLwCz2iIGSYNCja9JW/lQMz4XMyR
+         HkIoT2Zfe0rxsEeYVWNDSmTfBmM7GRVhavO0v65o=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSIt3-006CTN-98; Tue, 13 Oct 2020 13:54:37 +0200
+        id 1kSIt3-006CTQ-A2; Tue, 13 Oct 2020 13:54:37 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 07/80] scripts: kernel-doc: don't mangle with parameter list
-Date:   Tue, 13 Oct 2020 13:53:22 +0200
-Message-Id: <7512abaf3706b4044e11ec2cd590b5cfb42bb40d.1602589096.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 08/80] scripts: kernel-doc: allow passing desired Sphinx C domain dialect
+Date:   Tue, 13 Oct 2020 13:53:23 +0200
+Message-Id: <75d55d04379c5754edbe5d76abd82d91d57861a4.1602589096.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602589096.git.mchehab+huawei@kernel.org>
 References: <cover.1602589096.git.mchehab+huawei@kernel.org>
@@ -43,130 +45,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While kernel-doc needs to parse parameters in order to
-identify its name, it shouldn't be touching the type,
-as parsing it is very difficult, and errors happen.
+When kernel-doc is called via kerneldoc.py, there's no need to
+auto-detect the Sphinx version, as the Sphinx module already
+knows it. So, add an optional parameter to allow changing the
+Sphinx dialect.
 
-One current error is when parsing this parameter:
+As kernel-doc can also be manually called, keep the auto-detection
+logic if the parameter was not specified. On such case, emit
+a warning if sphinx-build can't be found at PATH.
 
-	const u32 (*tab)[256]
+I ended using a suggestion from Joe for using a more readable
+regex, instead of using a complex one with a hidden group like:
 
-Found at ./lib/crc32.c, on this function:
+	m/^(\d+)\.(\d+)(?:\.?(\d+)?)/
 
-	u32 __pure crc32_be_generic (u32 crc, unsigned char const *p, size_t len, const u32 (*tab)[256], u32 polynomial);
+in order to get the optional <patch> argument.
 
-The current logic mangles it, producing this output:
-
-	const u32 ( *tab
-
-That's something that it is not recognizeable.
-
-So, instead, let's push the argument as-is, and use it
-when printing the function prototype and when describing
-each argument.
-
+Thanks-to: Joe Perches <joe@perches.com>
+Suggested-by: Jonathan Corbet <corbet@lwn.net>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/kernel-doc | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ Documentation/sphinx/kerneldoc.py |  5 +++
+ scripts/kernel-doc                | 51 ++++++++++++++++++++++++++-----
+ 2 files changed, 48 insertions(+), 8 deletions(-)
 
+diff --git a/Documentation/sphinx/kerneldoc.py b/Documentation/sphinx/kerneldoc.py
+index 4bcbd6ae01cd..1a1b12242a45 100644
+--- a/Documentation/sphinx/kerneldoc.py
++++ b/Documentation/sphinx/kerneldoc.py
+@@ -70,6 +70,11 @@ class KernelDocDirective(Directive):
+         env = self.state.document.settings.env
+         cmd = [env.config.kerneldoc_bin, '-rst', '-enable-lineno']
+ 
++	# Pass the version string to kernel-doc, as it needs to use a different
++	# dialect, depending what the C domain supports for each specific
++	# Sphinx versions
++        cmd += ['-sphinx-version', sphinx.__version__]
++
+         filename = env.config.kerneldoc_srctree + '/' + self.arguments[0]
+         export_file_patterns = []
+ 
 diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 33ad3ce66f73..09e3e78b9723 100755
+index 09e3e78b9723..ed32883c3221 100755
 --- a/scripts/kernel-doc
 +++ b/scripts/kernel-doc
-@@ -655,10 +655,10 @@ sub output_function_man(%) {
- 	$type = $args{'parametertypes'}{$parameter};
- 	if ($type =~ m/([^\(]*\(\*)\s*\)\s*\(([^\)]*)\)/) {
- 	    # pointer-to-function
--	    print ".BI \"" . $parenth . $1 . "\" " . $parameter . " \") (" . $2 . ")" . $post . "\"\n";
-+	    print ".BI \"" . $parenth . $1 . "\" " . " \") (" . $2 . ")" . $post . "\"\n";
- 	} else {
- 	    $type =~ s/([^\*])$/$1 /;
--	    print ".BI \"" . $parenth . $type . "\" " . $parameter . " \"" . $post . "\"\n";
-+	    print ".BI \"" . $parenth . $type . "\" " . " \"" . $post . "\"\n";
- 	}
- 	$count++;
- 	$parenth = "";
-@@ -929,7 +929,7 @@ sub output_function_rst(%) {
- 	    # pointer-to-function
- 	    print $1 . $parameter . ") (" . $2 . ")";
- 	} else {
--	    print $type . " " . $parameter;
-+	    print $type;
- 	}
-     }
-     if ($args{'typedef'}) {
-@@ -954,7 +954,7 @@ sub output_function_rst(%) {
- 	$type = $args{'parametertypes'}{$parameter};
+@@ -56,6 +56,13 @@ Output format selection (mutually exclusive):
+   -rst			Output reStructuredText format.
+   -none			Do not output documentation, only warnings.
  
- 	if ($type ne "") {
--	    print "``$type $parameter``\n";
-+	    print "``$type``\n";
- 	} else {
- 	    print "``$parameter``\n";
- 	}
-@@ -1479,7 +1479,7 @@ sub create_parameterlist($$$$) {
- 	    # Treat preprocessor directive as a typeless variable just to fill
- 	    # corresponding data structures "correctly". Catch it later in
- 	    # output_* subs.
--	    push_parameter($arg, "", $file);
-+	    push_parameter($arg, "", "", $file);
- 	} elsif ($arg =~ m/\(.+\)\s*\(/) {
- 	    # pointer-to-function
- 	    $arg =~ tr/#/,/;
-@@ -1488,7 +1488,7 @@ sub create_parameterlist($$$$) {
- 	    $type = $arg;
- 	    $type =~ s/([^\(]+\(\*?)\s*$param/$1/;
- 	    save_struct_actual($param);
--	    push_parameter($param, $type, $file, $declaration_name);
-+	    push_parameter($param, $type, $arg, $file, $declaration_name);
- 	} elsif ($arg) {
- 	    $arg =~ s/\s*:\s*/:/g;
- 	    $arg =~ s/\s*\[/\[/g;
-@@ -1513,26 +1513,28 @@ sub create_parameterlist($$$$) {
- 	    foreach $param (@args) {
- 		if ($param =~ m/^(\*+)\s*(.*)/) {
- 		    save_struct_actual($2);
--		    push_parameter($2, "$type $1", $file, $declaration_name);
++Output format selection modifier (affects only ReST output):
 +
-+		    push_parameter($2, "$type $1", $arg, $file, $declaration_name);
- 		}
- 		elsif ($param =~ m/(.*?):(\d+)/) {
- 		    if ($type ne "") { # skip unnamed bit-fields
- 			save_struct_actual($1);
--			push_parameter($1, "$type:$2", $file, $declaration_name)
-+			push_parameter($1, "$type:$2", $arg, $file, $declaration_name)
- 		    }
- 		}
- 		else {
- 		    save_struct_actual($param);
--		    push_parameter($param, $type, $file, $declaration_name);
-+		    push_parameter($param, $type, $arg, $file, $declaration_name);
- 		}
- 	    }
++  -sphinx-version	Use the ReST C domain dialect compatible with an
++			specific Sphinx Version.
++			If not specified, kernel-doc will auto-detect using
++			the sphinx-build version found on PATH.
++
+ Output selection (mutually exclusive):
+   -export		Only output documentation for symbols that have been
+ 			exported using EXPORT_SYMBOL() or EXPORT_SYMBOL_GPL()
+@@ -270,7 +277,7 @@ if ($#ARGV == -1) {
+ }
+ 
+ my $kernelversion;
+-my $sphinx_major;
++my ($sphinx_major, $sphinx_minor, $sphinx_patch);
+ 
+ my $dohighlight = "";
+ 
+@@ -457,6 +464,23 @@ while ($ARGV[0] =~ m/^--?(.*)/) {
+ 	    $enable_lineno = 1;
+     } elsif ($cmd eq 'show-not-found') {
+ 	$show_not_found = 1;  # A no-op but don't fail
++    } elsif ($cmd eq "sphinx-version") {
++	my $ver_string = shift @ARGV;
++	if ($ver_string =~ m/^(\d+)(\.\d+)?(\.\d+)?/) {
++	    $sphinx_major = $1;
++	    if (defined($2)) {
++		$sphinx_minor = substr($2,1);
++	    } else {
++		$sphinx_minor = 0;
++	    }
++	    if (defined($3)) {
++		$sphinx_patch = substr($3,1)
++	    } else {
++		$sphinx_patch = 0;
++	    }
++	} else {
++	    die "Sphinx version should either major.minor or major.minor.patch format\n";
++	}
+     } else {
+ 	# Unknown argument
+         usage();
+@@ -477,29 +501,37 @@ sub findprog($)
+ sub get_sphinx_version()
+ {
+ 	my $ver;
+-	my $major = 1;
+ 
+ 	my $cmd = "sphinx-build";
+ 	if (!findprog($cmd)) {
+ 		my $cmd = "sphinx-build3";
+-		return $major if (!findprog($cmd));
++		if (!findprog($cmd)) {
++			$sphinx_major = 1;
++			$sphinx_minor = 2;
++			$sphinx_patch = 0;
++			printf STDERR "Warning: Sphinx version not found. Using default (Sphinx version %d.%d.%d)\n",
++			       $sphinx_major, $sphinx_minor, $sphinx_patch;
++			return;
++		}
  	}
-     }
+ 
+ 	open IN, "$cmd --version 2>&1 |";
+ 	while (<IN>) {
+ 		if (m/^\s*sphinx-build\s+([\d]+)\.([\d\.]+)(\+\/[\da-f]+)?$/) {
+-			$major=$1;
++			$sphinx_major = $1;
++			$sphinx_minor = $2;
++			$sphinx_patch = $3;
+ 			last;
+ 		}
+ 		# Sphinx 1.2.x uses a different format
+ 		if (m/^\s*Sphinx.*\s+([\d]+)\.([\d\.]+)$/) {
+-			$major=$1;
++			$sphinx_major = $1;
++			$sphinx_minor = $2;
++			$sphinx_patch = $3;
+ 			last;
+ 		}
+ 	}
+ 	close IN;
+-
+-	return $major;
  }
  
--sub push_parameter($$$$) {
-+sub push_parameter($$$$$) {
- 	my $param = shift;
- 	my $type = shift;
-+	my $org_arg = shift;
- 	my $file = shift;
- 	my $declaration_name = shift;
- 
-@@ -1596,8 +1598,8 @@ sub push_parameter($$$$) {
- 	# "[blah" in a parameter string;
- 	###$param =~ s/\s*//g;
- 	push @parameterlist, $param;
--	$type =~ s/\s\s+/ /g;
--	$parametertypes{$param} = $type;
-+	$org_arg =~ s/\s\s+/ /g;
-+	$parametertypes{$param} = $org_arg;
+ # get kernel version from env
+@@ -2333,7 +2365,10 @@ sub process_file($) {
  }
  
- sub check_sections($$$$$) {
+ 
+-$sphinx_major = get_sphinx_version();
++if ($output_mode eq "rst") {
++	get_sphinx_version() if (!$sphinx_major);
++}
++
+ $kernelversion = get_kernel_version();
+ 
+ # generate a sequence of code that will splice in highlighting information
 -- 
 2.26.2
 
