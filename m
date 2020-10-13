@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9FF28C970
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF35B28C975
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390340AbgJMHeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:34:44 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:57140 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390018AbgJMHeo (ORCPT
+        id S2390397AbgJMHex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390362AbgJMHeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:34:44 -0400
-X-UUID: a19d8a28a2ce4e888bb090038b9755cb-20201013
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NhVO6qrUz779jbsjX2Ikk7b4lJypQXusY9/S6kpeNkY=;
-        b=DuMCEZmHGfFooF26geQ0Q1Jiilf0s67Ja/UqIKxCJsj1E6DRBU1/PZNjjDOE1EiEyWXFPWVfYbT7akUMwA0JUGiTW4KP6Cq/9/l6I9xN0NKDrVCnD/3If4AUrE5ZfVE4JUfBw9KZphUKR/wNPd4o1kK/rqiQ5pI1ISp0rMEAu3E=;
-X-UUID: a19d8a28a2ce4e888bb090038b9755cb-20201013
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 731229190; Tue, 13 Oct 2020 15:34:30 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Oct
- 2020 15:34:28 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 13 Oct 2020 15:34:28 +0800
-Message-ID: <1602574467.29336.64.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 2/4] dt-bindings: usb: add properties for hard wired
- devices
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Tue, 13 Oct 2020 15:34:27 +0800
-In-Reply-To: <20201012160038.GA1618651@bogus>
-References: <3db52d534065dcf28e9a10b8129bea3eced0193e.1602318869.git.chunfeng.yun@mediatek.com>
-         <bd71ed260efd162d25e0491988d61fcf1e589bc0.1602318869.git.chunfeng.yun@mediatek.com>
-         <20201012160038.GA1618651@bogus>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 13 Oct 2020 03:34:50 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C08BC0613D0;
+        Tue, 13 Oct 2020 00:34:50 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9S472H0Zz9sVL;
+        Tue, 13 Oct 2020 18:34:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602574487;
+        bh=xtWjdMs/3CDfLYum2CFyA2pchAXKUKoEOiejJZzr094=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=U1NFe6Ybo8PG/jQifUjkL56z10yrGhkMsuNfqXNifArcEohVJWOnwq28oqmsFcP8i
+         72EblQgU3GCiEnkT+UEbckXPoOCRNS2heZuDE/Kjtg1V1t1MmMXhhwl9Oq2SsSByTS
+         8zOWkiE3EBq/Ltzm9cg9JvaeeeFrWkV9kwF5jyv5Dn0BGsdhaXRU9Kt1x7++sOYurK
+         ef8TXV8/7kracBia6zebxIesY3X/SH8+yZ/DGMiU4tIvuKe+FC5NJeWl+yV9hwYTMo
+         FsQ/G5SRfqHxO33Pczk3yCPRGPhbJzmQPe4jo+TYOPw8TV40on9R6qwVY9sJ1RQ7Gh
+         3ZoR+wyIcHfKw==
+Date:   Tue, 13 Oct 2020 18:34:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ arm64 tree
+Message-ID: <20201013183446.654826bd@canb.auug.org.au>
+In-Reply-To: <20200921180353.421484e8@canb.auug.org.au>
+References: <20200921180353.421484e8@canb.auug.org.au>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 808F5C65F94737A36C1DDF462A60B7D27527B5E22BB6950CA26F91DCA51009302000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/wUROmdlMdSgGnPMMDIarwSo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTEwLTEyIGF0IDExOjAwIC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gU2F0LCBPY3QgMTAsIDIwMjAgYXQgMDQ6NDM6MTJQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
-b3RlOg0KPiA+IEFkZCBzb21lIG9wdGlvbmFsIHByb3BlcnRpZXMgd2hpY2ggYXJlIG5lZWRlZCBm
-b3IgaGFyZCB3aXJlZCBkZXZpY2VzDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcg
-WXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IHYyIGNoYW5nZXMg
-c3VnZ2VzdGVkIGJ5IFJvYjoNCj4gPiAgICAxLiBtb2RpZnkgcGF0dGVybiB0byBzdXBwb3J0IGFu
-eSBVU0IgY2xhc3MNCj4gPiAgICAyLiByZWZlciB0byB1c2ItZGV2aWNlLnlhbWwgaW5zdGVhZCBv
-ZiB1c2ItZGV2aWNlLnR4dA0KPiA+IC0tLQ0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy91
-c2IvdXNiLWhjZC55YW1sICAgICAgfCAxOSArKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspDQo+IA0KPiBZb3UgY2FuIGZvbGQgdGhpcyBpbnRv
-IHRoZSBmaXJzdCBwYXRjaC4gV2hpbGUgbm90IGV4cGxpY2l0IGJlZm9yZSwgaXQgDQo+IHdhcyBp
-bXBsaWVkLg0KT2sNCg0KPiANCj4gUm9iDQo+IA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL3VzYi1oY2QueWFtbCBiL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy91c2IvdXNiLWhjZC55YW1sDQo+ID4gaW5kZXggNzI2
-M2I3ZjJiNTEwLi40MmIyOTVhZmRmMzIgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi91c2ItaGNkLnlhbWwNCj4gPiArKysgYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvdXNiL3VzYi1oY2QueWFtbA0KPiA+IEBAIC0yMiw5ICsy
-MiwyOCBAQCBwcm9wZXJ0aWVzOg0KPiA+ICAgICAgZGVzY3JpcHRpb246DQo+ID4gICAgICAgIE5h
-bWUgc3BlY2lmaWVyIGZvciB0aGUgVVNCIFBIWQ0KPiA+ICANCj4gPiArICAiI2FkZHJlc3MtY2Vs
-bHMiOg0KPiA+ICsgICAgY29uc3Q6IDENCj4gPiArDQo+ID4gKyAgIiNzaXplLWNlbGxzIjoNCj4g
-PiArICAgIGNvbnN0OiAwDQo+ID4gKw0KPiA+ICtwYXR0ZXJuUHJvcGVydGllczoNCj4gPiArICAi
-XlthLWZdK0BbMC05YS1mXSskIjoNCj4gDQo+IEp1c3QgZGVmaW5lIHRoZSB1bml0LWFkZHJlc3Mg
-aGVyZTogIkBbMC05YS1mXSskIg0KV2hlbiBJIGRlZmluZSBpdCBhcyAiQFswLTlhLWZdKyQiLCB0
-aGVyZSBpcyBlcnJvcjoNCiJ1c2ItaGNkLmV4YW1wbGUuZHQueWFtbDogdXNiOiBodWJAMTogJ2Nv
-bXBhdGlsZScgaXMgYSByZXF1aXJlZA0KcHJvcGVydHkiDQoNCj4gPiArICAgIHR5cGU6IG9iamVj
-dA0KPiA+ICsgICAgJHJlZjogL3VzYi91c2ItZGV2aWNlLnlhbWwNCj4gPiArICAgIGRlc2NyaXB0
-aW9uOiBUaGUgaGFyZCB3aXJlZCBVU0IgZGV2aWNlcw0KPiANCj4gTmVlZCB0byBhbHNvIGRlZmlu
-ZSAncmVnJyBhbmQgJ2NvbXBhdGlibGUnIGhlcmUuDQoncmVnJyBhbmQgJ2NvbXBhdGlibGUnIGFy
-ZSBhbHJlYWR5IGRlZmluZWQgaW4gdXNiLWRldmljZS55YW1sDQoNCj4gDQo+ID4gKw0KPiA+ICBl
-eGFtcGxlczoNCj4gPiAgICAtIHwNCj4gPiAgICAgIHVzYiB7DQo+ID4gICAgICAgICAgcGh5cyA9
-IDwmdXNiMl9waHkxPiwgPCZ1c2IzX3BoeTE+Ow0KPiA+ICAgICAgICAgIHBoeS1uYW1lcyA9ICJ1
-c2IiOw0KPiA+ICsgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAgICNz
-aXplLWNlbGxzID0gPDA+Ow0KPiA+ICsNCj4gPiArICAgICAgICBodWJAMSB7DQo+ID4gKyAgICAg
-ICAgICAgIGNvbXBhdGlibGUgPSAidXNiNWUzLDYxMCI7DQo+ID4gKyAgICAgICAgICAgIHJlZyA9
-IDwxPjsNCj4gPiArICAgICAgICB9Ow0KPiA+ICAgICAgfTsNCj4gPiAtLSANCj4gPiAyLjE4LjAN
-Cg0K
+--Sig_/wUROmdlMdSgGnPMMDIarwSo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+On Mon, 21 Sep 2020 18:03:53 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+>=20
+>   arch/arm64/mm/mmu.c
+>=20
+> between commit:
+>=20
+>   0178dc761368 ("arm64: mte: Use Normal Tagged attributes for the linear =
+map")
+>=20
+> from the arm64 tree and commit:
+>=20
+>   8e19cbb9528f ("arch, drivers: replace for_each_membock() with for_each_=
+mem_range()")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc arch/arm64/mm/mmu.c
+> index 087a844b4d26,64211436629d..000000000000
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@@ -493,21 -483,10 +494,15 @@@ static void __init map_mem(pgd_t *pgdp
+>   #endif
+>  =20
+>   	/* map all the memory banks */
+> - 	for_each_memblock(memory, reg) {
+> - 		phys_addr_t start =3D reg->base;
+> - 		phys_addr_t end =3D start + reg->size;
+> -=20
+> + 	for_each_mem_range(i, &start, &end) {
+>   		if (start >=3D end)
+>   			break;
+> - 		if (memblock_is_nomap(reg))
+> - 			continue;
+> -=20
+>  -		__map_memblock(pgdp, start, end, PAGE_KERNEL, flags);
+>  +		/*
+>  +		 * The linear map must allow allocation tags reading/writing
+>  +		 * if MTE is present. Otherwise, it has the same attributes as
+>  +		 * PAGE_KERNEL.
+>  +		 */
+>  +		__map_memblock(pgdp, start, end, PAGE_KERNEL_TAGGED, flags);
+>   	}
+>  =20
+>   	/*
+
+This is now a conflict between the akpm-current tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/wUROmdlMdSgGnPMMDIarwSo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FWJYACgkQAVBC80lX
+0GzP0gf/Sc5EMLCooF1Yy9HypdIBIAA2BNBwPMPQolo7juOPVrUI+betJQikWnHN
+Sc/oEc5PyBDXFRU3t5nLbdxFkOrZEYsVSRZqcarEHeMwkcgfen8+fnc0eGmNuIa4
+VBg90C7/Bd+XYTwLLrchgU3YdJNLdGnhs6dbJNwqex+PcwWawlXDSocn5eucDreU
+CkbS+4LTtGeHb/bU9kNufsnx67uCgzZiaWICuPAUYmZ7S/HQm3V2XFMRvdk0HEAX
+WvpkW/FoHm8GWwNAjyirBlgDc7+meeTiYd6zyZb2jfansyWPuv44klXIgVZgNSD2
+gGKG9L46SN93CgavXVTaKNL5lP5kAA==
+=FHGx
+-----END PGP SIGNATURE-----
+
+--Sig_/wUROmdlMdSgGnPMMDIarwSo--
