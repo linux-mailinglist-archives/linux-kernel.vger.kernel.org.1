@@ -2,241 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D0D28C7FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 06:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCDB28C802
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 06:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731684AbgJMEZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 00:25:17 -0400
-Received: from mga09.intel.com ([134.134.136.24]:4973 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728336AbgJMEZR (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 00:25:17 -0400
-IronPort-SDR: sBUxtOczoOjLmKwyCk6SeAZBX6wB9QaAGx95NpbNE4wqLgXxqZX9fT+ak+M/+QyBgLfB6x/NFo
- RkU+81LBBu7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165957743"
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="165957743"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 21:25:15 -0700
-IronPort-SDR: HFuXtPBYWM4vxnA+vU9OJhmxa+2UFOrZytghh+2W79bbkffwW+YIrkb6p0GCoGYWhAIk3oFSaD
- WwbDbmwWyDIw==
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="530236523"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.254.215.179]) ([10.254.215.179])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 21:25:12 -0700
-Subject: Re: [PATCH v8 0/7] perf: Stream comparison
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20201009022845.13141-1-yao.jin@linux.intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <0bb78298-1f27-c535-2468-2c8abd5b31aa@linux.intel.com>
-Date:   Tue, 13 Oct 2020 12:25:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1731725AbgJMEcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 00:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728336AbgJMEcV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 00:32:21 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21812C0613D1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 21:32:21 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id w21so7218127plq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 21:32:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lhphS5GOaPGnFP8QvPZSIKQT0BYlr1dVmtm05huYnNQ=;
+        b=y/5WwxKblutys2+zJh79w3AyY8m52TYJAXKJ7D/blOByFAnjm104KDv3r2THoamtJ4
+         w3hEJyVMU1nENDzur9zUCPyDYeCDAIRO16hQzx6m7foRlzQ1f5tl1Olf4TWj4nSdYcIH
+         sdmw7p7y34NHwZEDK9/C/uheQJRsVT0aZXc+yDj3c8ydSgsSwXdfBdV/Ho/v8ww1S7E2
+         kqSlySp++vj+dFu2LzMvBiEfRgFkvHG8tnpkC4ARxE/Z1vF+nopSwxlMw/1Y4tWOLrTA
+         yM90j8KO0x+czNF4sxVo3Sv3Ayo5HL7DgSUpXaHwv98uxLZ/rN0py0Ws5Hn6Qd7YtY/g
+         pJxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lhphS5GOaPGnFP8QvPZSIKQT0BYlr1dVmtm05huYnNQ=;
+        b=gLw0XYBicp2eBMOtClXOWzGLzVcZ2sKQER+WvGwv3UbPfi6vmDH5nyJXCuv2/35Czc
+         yMWpPJvNp2P9WeolHtSK+7vaM2ITISMQ+JouKxxQPy/FcW433iuco/EMt288uvB6gV1E
+         B9PURB8D3yoiz8nv9aG8GEin3GDbcsUKaAVq9M2gHnpajznc/I+XDaamObdE8lcb+mIn
+         fK6eCycLpu777soURhZAax5Oy/Tx5qaTKWsaWoQnRKZEsmhW2cFg8Fcu/eH6CZydGFgY
+         OwJQQh+IIItg8O5njgzje7AOOlqFVIbdHAKR0QoiP7s+7sE84wfHa8bnn3y8kPVSQtcb
+         Vl1g==
+X-Gm-Message-State: AOAM533ZLitc7BSSYnlBlrCX7UITZTZfwxhdFqB51nSFvgsGN99ZUNyF
+        w2Pgro1tNryHef7Lk+pmgq0VHA==
+X-Google-Smtp-Source: ABdhPJwDu27biUnqueCXzS+Hq8pf9P2p1ebT2+cViqHDXrPkHuaGOydQNJlBOU1QJXXFRHiPR/6RFg==
+X-Received: by 2002:a17:902:8b89:b029:d2:4345:5dd with SMTP id ay9-20020a1709028b89b02900d2434505ddmr27549392plb.57.1602563540428;
+        Mon, 12 Oct 2020 21:32:20 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id z10sm22183601pff.218.2020.10.12.21.32.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Oct 2020 21:32:19 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>, morten_bp@live.dk,
+        Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        devicetree@vger.kernel.org, Sudeep.Holla@arm.com,
+        Frank Rowand <frowand.list@gmail.com>,
+        Tushar Khandelwal <tushar.khandelwal@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V4] dt-bindings: mailbox : arm,mhuv2: Add bindings
+Date:   Tue, 13 Oct 2020 10:02:06 +0530
+Message-Id: <61ca14fc441f92c1e7994e5bebae5c49811a3050.1602563406.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <20201012191648.GA1908871@bogus>
+References: <20201012191648.GA1908871@bogus>
 MIME-Version: 1.0
-In-Reply-To: <20201009022845.13141-1-yao.jin@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri, Hi Arnaldo,
+This patch adds device tree binding for ARM Message Handling Unit (MHU)
+controller version 2.
 
-How about v8 series? V6 got ACK from Jiri and I updated the series to v8 according to Arnaldo's 
-comments. Please let me know if there are still some issues for this version then I can continue 
-improving the patchset.
+Based on earlier work by Morten Borup Petersen.
 
-Thanks
-Jin Yao
+Co-developed-by: Tushar Khandelwal <tushar.khandelwal@arm.com>
+Signed-off-by: Tushar Khandelwal <tushar.khandelwal@arm.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-On 10/9/2020 10:28 AM, Jin Yao wrote:
-> Sometimes, a small change in a hot function reducing the cycles of
-> this function, but the overall workload doesn't get faster. It is
-> interesting where the cycles are moved to.
-> 
-> What it would like is to diff before/after streams. The stream is the
-> branch history which is aggregated by the branch records from perf
-> samples. For example, the callchains aggregated from the branch records.
-> By browsing the hot stream, we can understand the hot code path.
-> 
-> By browsing the hot streams, we can understand the hot code path.
-> By comparing the cycles variation of same streams between old perf
-> data and new perf data, we can understand if the cycles are moved
-> to other codes.
-> 
-> The before stream is the stream in perf.data.old. The after stream
-> is the stream in perf.data.
-> 
-> Diffing before/after streams compares top N hottest streams between
-> two perf data files.
-> 
-> If all entries of one stream in perf.data.old are fully matched with
-> all entries of another stream in perf.data, we think two streams
-> are matched, otherwise the streams are not matched.
-> 
-> For example,
-> 
->     cycles: 1, hits: 26.80%                 cycles: 1, hits: 27.30%
-> --------------------------              --------------------------
->               main div.c:39                           main div.c:39
->               main div.c:44                           main div.c:44
-> 
-> The above streams are matched and we can see for the same streams the
-> cycles (1) are equal and the callchain hit percents are slightly changed
-> (26.80% vs. 27.30%). That's expected.
-> 
-> Now let's see example.
-> 
-> perf record -b ...      Generate perf.data.old with branch data
-> perf record -b ...      Generate perf.data with branch data
-> perf diff --stream
-> 
-> [ Matched hot streams ]
-> 
-> hot chain pair 1:
->              cycles: 1, hits: 27.77%                  cycles: 1, hits: 9.24%
->          ---------------------------              --------------------------
->                        main div.c:39                           main div.c:39
->                        main div.c:44                           main div.c:44
-> 
-> hot chain pair 2:
->             cycles: 34, hits: 20.06%                cycles: 27, hits: 16.98%
->          ---------------------------              --------------------------
->            __random_r random_r.c:360               __random_r random_r.c:360
->            __random_r random_r.c:388               __random_r random_r.c:388
->            __random_r random_r.c:388               __random_r random_r.c:388
->            __random_r random_r.c:380               __random_r random_r.c:380
->            __random_r random_r.c:357               __random_r random_r.c:357
->                __random random.c:293                   __random random.c:293
->                __random random.c:293                   __random random.c:293
->                __random random.c:291                   __random random.c:291
->                __random random.c:291                   __random random.c:291
->                __random random.c:291                   __random random.c:291
->                __random random.c:288                   __random random.c:288
->                       rand rand.c:27                          rand rand.c:27
->                       rand rand.c:26                          rand rand.c:26
->                             rand@plt                                rand@plt
->                             rand@plt                                rand@plt
->                compute_flag div.c:25                   compute_flag div.c:25
->                compute_flag div.c:22                   compute_flag div.c:22
->                        main div.c:40                           main div.c:40
->                        main div.c:40                           main div.c:40
->                        main div.c:39                           main div.c:39
-> 
-> hot chain pair 3:
->               cycles: 9, hits: 4.48%                  cycles: 6, hits: 4.51%
->          ---------------------------              --------------------------
->            __random_r random_r.c:360               __random_r random_r.c:360
->            __random_r random_r.c:388               __random_r random_r.c:388
->            __random_r random_r.c:388               __random_r random_r.c:388
->            __random_r random_r.c:380               __random_r random_r.c:380
-> 
-> [ Hot streams in old perf data only ]
-> 
-> hot chain 1:
->              cycles: 18, hits: 6.75%
->           --------------------------
->            __random_r random_r.c:360
->            __random_r random_r.c:388
->            __random_r random_r.c:388
->            __random_r random_r.c:380
->            __random_r random_r.c:357
->                __random random.c:293
->                __random random.c:293
->                __random random.c:291
->                __random random.c:291
->                __random random.c:291
->                __random random.c:288
->                       rand rand.c:27
->                       rand rand.c:26
->                             rand@plt
->                             rand@plt
->                compute_flag div.c:25
->                compute_flag div.c:22
->                        main div.c:40
-> 
-> hot chain 2:
->              cycles: 29, hits: 2.78%
->           --------------------------
->                compute_flag div.c:22
->                        main div.c:40
->                        main div.c:40
->                        main div.c:39
-> 
-> [ Hot streams in new perf data only ]
-> 
-> hot chain 1:
->                                                       cycles: 4, hits: 4.54%
->                                                   --------------------------
->                                                                main div.c:42
->                                                        compute_flag div.c:28
-> 
-> hot chain 2:
->                                                       cycles: 5, hits: 3.51%
->                                                   --------------------------
->                                                                main div.c:39
->                                                                main div.c:44
->                                                                main div.c:42
->                                                        compute_flag div.c:28
->   
->   v8:
->   ---
->   Rebase to perf/core
-> 
->   v7:
->   ---
->   Create a new struct evlist_streams which contains ev_streams and
->   nr_evsel, so we don't need to pass nr_evsel in stream related functions.
-> 
->   Rename functions for better coding style.
-> 
->   v6:
->   ---
->   Rebase to perf/core
-> 
->   v5:
->   ---
->   1. Remove enum stream_type
->   2. Rebase to perf/core
-> 
->   v4:
->   ---
->   The previous version is too big and very hard for review.
-> 
->   1. v4 removes the code which supports the source line mapping
->      table and remove the source line based comparison. Now we
->      only supports the basic functionality of stream comparison.
-> 
->   2. Refactor the code in a generic way.
-> 
->   v3:
->   ---
->   v2 has 14 patches, it's hard to review.
->   v3 is only 7 patches for basic stream comparison.
-> 
-> Jin Yao (7):
->    perf util: Create streams
->    perf util: Get the evsel_streams by evsel_idx
->    perf util: Compare two streams
->    perf util: Link stream pair
->    perf util: Calculate the sum of total streams hits
->    perf util: Report hot streams
->    perf diff: Support hot streams comparison
-> 
->   tools/perf/Documentation/perf-diff.txt |   4 +
->   tools/perf/builtin-diff.c              | 119 ++++++++-
->   tools/perf/util/Build                  |   1 +
->   tools/perf/util/callchain.c            |  99 +++++++
->   tools/perf/util/callchain.h            |   9 +
->   tools/perf/util/stream.c               | 342 +++++++++++++++++++++++++
->   tools/perf/util/stream.h               |  41 +++
->   7 files changed, 602 insertions(+), 13 deletions(-)
->   create mode 100644 tools/perf/util/stream.c
->   create mode 100644 tools/perf/util/stream.h
-> 
+---
+V3->V4:
+- Made interrupts property compulsory for receiver
+- Added interrupts for both nodes in example
+- Fixed min/max items for protocols property
+- Don't add -tx/rx to node's name.
+
+V2->V3:
+- compatible is changed to arm-mhuv2-tx/rx. Later version of MHUv2
+  have an interrupt in the sender mode as well and we can't find if a
+  mailbox is sender or receiver just based on an interrupt anymore. We
+  needed a better way.
+
+- arm-mhuv2-mode is renamed to arm,mhuv2-protocols to fit the purpose
+  better.
+
+- Minor formatting otherwise.
+
+Morten: Please let me know if you want me to add your signoff here from
+some other email id as you no longer work with ARM.
+---
+ .../bindings/mailbox/arm,mhuv2.yaml           | 215 ++++++++++++++++++
+ 1 file changed, 215 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
+
+diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
+new file mode 100644
+index 000000000000..013b7aeda713
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/arm,mhuv2.yaml
+@@ -0,0 +1,215 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mailbox/arm,mhuv2.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ARM MHUv2 Mailbox Controller
++
++maintainers:
++  - Tushar Khandelwal <tushar.khandelwal@arm.com>
++  - Viresh Kumar <viresh.kumar@linaro.org>
++
++description: |
++  The Arm Message Handling Unit (MHU) Version 2 is a mailbox controller that has
++  between 1 and 124 channel windows (each 32-bit wide) to provide unidirectional
++  communication with remote processor(s), where the number of channel windows
++  are implementation dependent.
++
++  Given the unidirectional nature of the controller, an MHUv2 mailbox may only
++  be written to or read from. If a pair of MHU controllers is implemented
++  between two processing elements to provide bidirectional communication, these
++  must be specified as two separate mailboxes.
++
++  If the interrupts property is present in device tree node, then its treated as
++  a "receiver" mailbox, otherwise a "sender".
++
++  An MHU controller must be specified along with the supported transport
++  protocols. The transport protocols determine the method of data transmission
++  as well as the number of provided mailbox channels.
++
++  Following are the possible transport protocols.
++
++  - Doorbell: Each transfer is made up of single bit flag, using any one of the
++    bits in a channel window. A channel window can support up to 32 doorbells
++    and the entire window shall be used in doorbell protocol.  Optionally, data
++    may be transmitted through a shared memory region, wherein the MHU is used
++    strictly as an interrupt generation mechanism but that is out of the scope
++    of these bindings.
++
++  - Single-word: Each transfer is single word, using a single Channel window.
++
++  - Multi-word: Each transfer is made of two or more words, using two or more
++    channel windows.
++
++# We need a select here so we don't match all nodes with 'arm,primecell'
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - arm,mhuv2-tx
++          - arm,mhuv2-rx
++  required:
++    - compatible
++
++properties:
++  compatible:
++    oneOf:
++      - description: Sender mode
++        items:
++          - const: arm,mhuv2-tx
++          - const: arm,primecell
++
++      - description: Receiver-mode
++        items:
++          - const: arm,mhuv2-rx
++          - const: arm,primecell
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: |
++      The MHUv2 controller always implements an interrupt in the "receiver"
++      mode, while the interrupt in the "sender" mode was not available in the
++      version MHUv2.0, but the later versions do have it.
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    maxItems: 1
++
++  arm,mhuv2-protocols:
++    $ref: /schemas/types.yaml#/definitions/uint32-matrix
++    description: |
++      The MHUv2 controller may contain up to 124 channel windows (each 32-bit
++      wide). The hardware and the DT bindings allows any combination of those to
++      be used for various transport protocols.
++
++      This property allows a platform to describe how these channel windows are
++      used in various transport protocols. The entries in this property shall be
++      present as an array of tuples, where each tuple describes details about
++      one of the transport protocol being implemented over some channel
++      window(s).
++
++      The first field of a tuple signifies the transfer protocol, 0 is reserved
++      for doorbell protocol, 1 is reserved for single-word protocol and 2 is
++      reserved for multi-word protocol. Using any other value in the first field
++      of a tuple makes it invalid.
++
++      The second field of a tuple signifies the number of channel windows where
++      the protocol would be used. For doorbell protocol this field signifies the
++      number of 32-bit channel windows that implement the doorbell protocol. For
++      single-word protocol this field signifies the number of 32-bit channel
++      windows that implement separate single-word protocol mailbox channels. For
++      multi-word protocol this field signifies the number of channel windows
++      used for a multi-word protocol, it should be 2 or more.
++
++      The total number of channel windows specified here shouldn't be more than
++      the ones implemented by the platform, though one can specify lesser number
++      of windows here than what the platform implements.
++
++      mhu: mailbox@2b1f0000 {
++          ...
++
++          arm,mhuv2-protocols = <0 2>, <1 3>, <2 5>, <2 7>;
++      }
++
++      The above example defines the protocols of an ARM MHUv2 mailbox
++      controller, where a total of 17 channel windows are used. The first two
++      windows are used in doorbell protocol (64 doorbells), the next 3 windows
++      are (separately) used in single-word protocol, and the last two mailbox
++      channels are used in multi-word protocol of length 5 and 7 channel
++      windows.
++
++    minItems: 1
++    maxItems: 124
++    items:
++      items:
++        - enum: [ 0, 1, 2 ]
++        - minimum: 0
++          maximum: 124
++
++
++  '#mbox-cells':
++    description: |
++      It contains two fields, the first field represents the channel number,
++      which may be used in doorbell, single-word, or multi-word protocol, and
++      the second field (only relevant in doorbell protocol, should be 0
++      otherwise) represents the doorbell number within the 32 bit wide channel
++      window.
++
++      From the example given above for the arm,mhuv2-protocols, here is how a
++      client node can reference them.
++
++      mboxes = <&mhu 0 5>; // Mailbox channel 0, doorbell 5.
++      mboxes = <&mhu 1 7>; // Mailbox channel 1, doorbell 7.
++      mboxes = <&mhu 2 0>; // Mailbox channel 2, single-word protocol.
++      mboxes = <&mhu 4 0>; // Mailbox channel 4, single-word protocol.
++      mboxes = <&mhu 6 0>; // Mailbox channel 6, multi-word protocol with 7 windows.
++
++    const: 2
++
++if:
++  # Interrupt is compulsory for receiver
++  properties:
++    compatible:
++      contains:
++        const: arm,mhuv2-rx
++then:
++  required:
++    - interrupts
++
++required:
++  - compatible
++  - reg
++  - '#mbox-cells'
++  - arm,mhuv2-protocols
++
++additionalProperties: false
++
++examples:
++  # Multiple transport protocols implemented by the mailbox controllers
++  - |
++    soc {
++        #address-cells = <2>;
++        #size-cells = <2>;
++
++        mhu_tx: mailbox@2b1f0000 {
++            #mbox-cells = <2>;
++            compatible = "arm,mhuv2-tx", "arm,primecell";
++            reg = <0 0x2b1f0000 0 0x1000>;
++            clocks = <&clock 0>;
++            clock-names = "apb_pclk";
++            interrupts = <0 45 4>;
++            arm,mhuv2-protocols = <1 5>, <2 2>, <2 5>, <2 7>, <0 2>;
++        };
++
++        mhu_rx: mailbox@2b1f1000 {
++            #mbox-cells = <2>;
++            compatible = "arm,mhuv2-rx", "arm,primecell";
++            reg = <0 0x2b1f1000 0 0x1000>;
++            clocks = <&clock 0>;
++            clock-names = "apb_pclk";
++            interrupts = <0 46 4>;
++            arm,mhuv2-protocols = <1 5>, <2 7>, <0 2>;
++        };
++
++        mhu_client: scb@2e000000 {
++            compatible = "fujitsu,mb86s70-scb-1.0";
++            reg = <0 0x2e000000 0 0x4000>;
++
++            mboxes =
++                     //single-word protocol channel 0, mhu-rx
++                     <&mhu_rx 0 0>,
++                     //single-word protocol channel 4, mhu-tx
++                     <&mhu_tx 4 0>,
++                     //multi-word protocol channel 6 with 5 windows, mhu-tx
++                     <&mhu_tx 6 0>,
++                     //doorbell protocol channel 9, doorbell 27, mhu-tx
++                     <&mhu_tx 9 27>;
++        };
++    };
+-- 
+2.25.0.rc1.19.g042ed3e048af
+
