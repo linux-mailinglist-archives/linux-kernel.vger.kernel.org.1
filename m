@@ -2,80 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283C928C825
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0942E28C82C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732314AbgJMFNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34600 "EHLO
+        id S1732317AbgJMFOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729939AbgJMFNi (ORCPT
+        with ESMTP id S1728980AbgJMFOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:13:38 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A86C0613D1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:13:37 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f19so15960489pfj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=efg9FTe3uvnwtjsVgWH7nQgd64ldTBqAhLypV6QVYl0=;
-        b=DAKUM39v1Y9ihvNReu6Z5fR987aM7WTeEu0h2bOul3ucAfdXF0TmTia5TSmGBtqkzm
-         g1geRovBMMw4JaDFppUaSpYEwE19jFnOzHvorQgWg6fpJ0Y5dGEEDvnY3ZiLV0zztHgp
-         CAtj+N8d+GKrFhKGHy2hJ+PHd3lxDe6Si5RrxeEBk27hVw68FtdjVARCyYQmPVl+H1Vz
-         eNr5ZDjTl5nHLTVpObPYbtiVYvae+3VDc5Hk5V6LqtaVdrBYxEq5P4V/S2PHJl7eKobN
-         whcQQGIaPtV1RQYseHd3Lw5tT1aFX4OmgmkY8XOsOY7VwbUnRmeCCI+X6jE4L8bCSvdX
-         APFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=efg9FTe3uvnwtjsVgWH7nQgd64ldTBqAhLypV6QVYl0=;
-        b=ouCmMSx5N8HSu3nkSWy3/t3HQQBKU2kjcWwki79rdtBM5cNz8CstdNMz2+VURcePuS
-         8EyzBPhXh7eTPOs1z/0Ad6KjVyfnU5iSaTYckDj4r+SJgVg/s6OZXW3bl2w6xKPSslX0
-         zS0QFM5/WpH7vq2MdCxnP5g6ca/Ibs3utD5jjddHDe4ACb8tJletwj3K2T1Pr9N88s8s
-         ebpWOpy5MuqZtpazV8NDFHJ2/2bJq29DElI4Us2mP69dNOm012AGXRgpJA983/5G9uVe
-         HLGxdNbzdeKI3djLukVc3rULu8DqNuMRGKEf9ySLL0vWAa7awAvkDucMBlcdgkckxVrr
-         vMfg==
-X-Gm-Message-State: AOAM533rtW8GWqj1c0GI+oaYVy8SmOH1HFtYKGH5PeN3cSZXizWgrkRH
-        MhVemUCAgy9869JM3M5jN1LTHQ==
-X-Google-Smtp-Source: ABdhPJxTpZWNGjguj6B7PCtCebgMA5wXT+BYZbYeOEWdL+11jRFlkSEaxJGCu6EEuDHXELY8VFRzig==
-X-Received: by 2002:a63:3247:: with SMTP id y68mr15571023pgy.224.1602566017546;
-        Mon, 12 Oct 2020 22:13:37 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id n67sm20400497pgn.14.2020.10.12.22.13.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Oct 2020 22:13:36 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 10:43:34 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rjw@rjwysocki.net, sudeep.holla@arm.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ksitaraman@nvidia.com,
-        bbasu@nvidia.com
-Subject: Re: [PATCH v2 2/2] cpufreq: tegra194: Fix unlisted boot freq warning
-Message-ID: <20201013051334.ij3iucjmctg7d2xt@vireshk-i7>
-References: <1602162066-26442-1-git-send-email-sumitg@nvidia.com>
- <1602162066-26442-3-git-send-email-sumitg@nvidia.com>
- <20201012061335.nht4hnn7kdjupakn@vireshk-i7>
- <4fb38a3b-ed26-6c02-e9de-59ce99ce563e@nvidia.com>
+        Tue, 13 Oct 2020 01:14:51 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F324C0613D0;
+        Mon, 12 Oct 2020 22:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=51FiGdGfPVW5r5jYwLCCPTeFRyNe5ccgJtyw7jmaElc=; b=LtAVfdiI0sZgCUR3ee5ggJxaE2
+        VdnfQcr8WeEL3ZKC/dUmMLDUMzGS1y/MJleFUoJysf5pg7z1qh7fvDykfP3j8pD3kN4+/ox3gxx2d
+        oDNOCmAYaG9aPzrLtAErzudMdKQw3tCiJDTLgmy54vNwGxmrubR5Gjt3ILOiCNxreSb4pA3jYAj4F
+        wTNnLObl3Jl+SB8Yo9aXUDfBL/OLLgVlaibqzRAN3nXXIHBQlz1Hgi3bByhnvY7KZl9GBmu6nSV4B
+        jWiivsMU8FSardwevE/+wKXUSYF5m7gvv5EM6T/HHisZ6pr6YrDLTkksrxTQbly7CXUNhJKBCYSaN
+        IrZ9aBNw==;
+Received: from [2601:1c0:6280:3f0::5d1b] (helo=dragon.site)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSCe5-0001gf-Ck; Tue, 13 Oct 2020 05:14:45 +0000
+Subject: Re: [RFC] openprom: Fix 'opiocnextprop'; ensure integer conversions;
+ use string size
+To:     Michael Witten <mfwitten@gmail.com>, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8d8eba94-8d6d-fbad-f24a-e65282403833@infradead.org>
+Date:   Mon, 12 Oct 2020 22:14:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fb38a3b-ed26-6c02-e9de-59ce99ce563e@nvidia.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-10-20, 22:36, Sumit Gupta wrote:
-> Yes, this will also work. Then we don't need the current patch.
-> You want me to send a patch with change from pr_warn to pr_info?
+Hi--
 
-I have sent one.
+Here are a few corrections for the source code.
 
--- 
-viresh
+On 9/4/20 12:40 PM, Michael Witten wrote:
+> The following patch improves the quality and correctness of the openprom code.
+> 
+> I have neither a machine to test the result nor a toolchain to compile it, and
+> that is why it is listed currently as an "RFC". Nonetheless, I believe those
+
+what is your host build system?
+
+https://mirrors.edge.kernel.org/pub/tools/crosstool/
+
+> who do have these tools will find the proposed changes useful; I hope you will
+> help me iterate this patch into something worthy of merging (or use it as the
+> basis for your own changes).
+> 
+> Sincerely,
+> Michael Witten
+> 
+> --8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+> 
+...
+
+> 
+> Signed-off-by: Michael Witten <mfwitten@gmail.com>
+> ---
+>   arch/sparc/include/asm/prom.h   |   2 +-
+>   arch/sparc/kernel/prom_common.c |  14 +--
+>   drivers/sbus/char/openprom.c    | 263 ++++++++++++++++++++++++++++------------
+>   3 files changed, 194 insertions(+), 85 deletions(-)
+> 
+
+
+> diff --git a/drivers/sbus/char/openprom.c b/drivers/sbus/char/openprom.c
+> index 30b9751aad30..9bc2877aa09a 100644
+> --- a/drivers/sbus/char/openprom.c
+> +++ b/drivers/sbus/char/openprom.c
+
+
+> @@ -120,69 +154,109 @@ static int getstrings(struct openpromio __user *info, struct openpromio **opp_p)
+
+> -static int opromgetprop(void __user *argp, struct device_node *dp, struct openpromio *op, int bufsize)
+> +static int opromgetprop(void __user *argp, struct device_node *dp, struct openpromio *op, const size_t bufsize)
+>   {
+>   	const void *pval;
+> -	int len;
+> +	int pval_size;
+>   
+>   	if (!dp ||
+> -	    !(pval = of_get_property(dp, op->oprom_array, &len)) ||
+> -	    len <= 0 || len > bufsize)
+> +	    !(pval = of_get_property(dp, op->oprom_array, &pval_size)) ||
+> +	    pval_size <= 0 || pval_size > bufsize) {
+> +		#ifdef CONFIG_DEBUG_KERNEL
+> +			if (WARN_ON(op->oprom_size))
+> +				op->oprom_size = 0;
+> +		#endif
+>   		return copyout(argp, op, sizeof(int));
+> +	}
+> +
+> +	op->oprom_size = pval_size;
+> +	memcpy(op->oprom_array, pval, pval_size);
+>   
+> -	memcpy(op->oprom_array, pval, len);
+> -	op->oprom_array[len] = '\0';
+> -	op->oprom_size = len;
+> +	#ifdef CONFIG_DEBUG_KERNEL
+> +		// If the buffer is larger than needed, then
+> +		// the contents should be nul-terminated in
+> +		// case the PROM erroneously produces a string
+> +		// that is not nul-terminated.
+> +		if (pval_size < bufsize)
+> +			char *const end = op->oprom_array + pval_size;
+> +			if (WARN_ON(*end))
+> +				*end = 0;
+
+Missing braces above?
+
+> +	#endif
+>   
+>   	return copyout(argp, op, sizeof(int) + bufsize);
+>   }
+>   
+> -static int opromnxtprop(void __user *argp, struct device_node *dp, struct openpromio *op, int bufsize)
+> +static int opromnxtprop(void __user *argp, struct device_node *dp, struct openpromio *op, const size_t bufsize)
+>   {
+>   	struct property *prop;
+> -	int len;
+> +	size_t name_size;
+> +	unsigned int uint_name_size;
+>   
+>   	if (!dp)
+> -		return copyout(argp, op, sizeof(int));
+> +		goto nothing;
+> +
+>   	if (op->oprom_array[0] == '\0') {
+>   		prop = dp->properties;
+> -		if (!prop)
+> -			return copyout(argp, op, sizeof(int));
+> -		len = strlen(prop->name);
+>   	} else {
+>   		prop = of_find_property(dp, op->oprom_array, NULL);
+> +		if (prop)
+> +			prop = prop->next;
+> +	}
+>   
+> -		if (!prop ||
+> -		    !prop->next ||
+> -		    (len = strlen(prop->next->name)) + 1 > bufsize)
+> -			return copyout(argp, op, sizeof(int));
+> +	if (!prop)
+> +		goto nothing;
+>   
+> -		prop = prop->next;
+> -	}
+> +	name_size = 1 + strlen(prop->name);
+> +
+> +	uint_name_size = name_size;
+> +	if (unlikely(uint_name_size != name_size))
+> +		goto nothing; // overflow
+> +
+> +	if (name_size > bufsize)
+> +		goto nothing;
+>   
+> -	memcpy(op->oprom_array, prop->name, len);
+> -	op->oprom_array[len] = '\0';
+> -	op->oprom_size = ++len;
+> +	memcpy(op->oprom_array, prop->name, name_size);
+> +	op->oprom_size = uint_name_size;
+>   
+>   	return copyout(argp, op, sizeof(int) + bufsize);
+> +
+> +nothing:
+> +	#ifdef CONFIG_DEBUG_KERNEL
+> +		if (WARN_ON(op->oprom_size))
+> +			op-oprom_size = 0;
+
+			op->oprom_size = 0;
+
+
+> +	#endif
+> +	return copyout(argp, op, sizeof(int));
+>   }
+>   
+
+
+
+
+> @@ -301,6 +384,12 @@ static long openprom_sunos_ioctl(struct file * file,
+>   	else
+>   		bufsize = copyin(argp, &opp);
+>   
+> +	#ifdef CONFIG_DEBUG_KERNEL
+> +		if (WARN_ON(bufsize == 0))
+> +			bufsize = -EFAULT;
+> +	#enif
+
+	#endif
+
+> +
+> +	static_assert(LONG_MIN <= -(SIZE_MAX/2)-1);
+>   	if (bufsize < 0)
+>   		return bufsize;
+>   
+
+
+
+HTH.
+--
+~Randy
+
