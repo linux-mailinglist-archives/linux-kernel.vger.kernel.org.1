@@ -2,179 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C0228CF84
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A6C28CF89
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387898AbgJMNx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727936AbgJMNx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:53:29 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA13C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:53:28 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e18so24141293wrw.9
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:53:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CTB6OvgweI2R52tC86/g7f29zSqU9vcDSQYaOzrbBJA=;
-        b=CI7ZJcJmxE1tclSVzoOBMvHls7/4sOCvpghd5DRUHZMd2ZgZEXJraPWape9OEffDN7
-         WVeoV21hMblnQ9cz80CdMTf9KYNTjlS31/B9pPZTR26T2O6m2H5i7qnfxb5X0nTkGpUV
-         4vjmq0GkYY56WcIobZMsQSlzf6SbShK8E7NIZrHwXKCj2KzdzT4dfVeo4v8xoGGxlSFj
-         UcoH8U2znqqzjdw9JVmy74zYb4MX8g8ZGjtfQoa0T8MIqd/rmOsw076TocVyvTPO90Yc
-         RlKNgEg+YA6Titr11GpTA4C0rQNJpCX+mnt0dfSEJ9TqZF2OKfmkoJ1+IJQKv+zh9/Sk
-         jJaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CTB6OvgweI2R52tC86/g7f29zSqU9vcDSQYaOzrbBJA=;
-        b=A16Sv/cOZ+FbP+i9CZpTjTPwqhqRxYV/jk5gRckRxuOmpBjLfetjGHfSldUuv1bTdE
-         C1lBMDLyQskqG4UhSuJrL0chOS6nGDmEumC1G3YWG/YlH4liCYOGZfq1UmLjjn3E1yha
-         Ho78DwXUNshwNw6GzfDB2462Ky9JWzpLrNvmfUt1Ogsji7W8aySgJwwDWyBws2Dy0qwA
-         mvAASPFUOzuKM++BEv2ZH/WmLc+WVqyXt6gxJbnH7qom3dHEBd1HzB8SceaoqsctYrDl
-         n6W/k9mtl4C0/gxlvkJQTqI2nAmgcnm6YNBugT/hG6tEdBxuHAQpU30QrgJcHzK0oxOU
-         xQZQ==
-X-Gm-Message-State: AOAM530kW/Bykh+9pv4FGzd1L7NHjf8c1C7TtkmxVY/Vjs3z1zD60cIi
-        5/9O864CBNpqOH/Gc9W/n2TnWw==
-X-Google-Smtp-Source: ABdhPJw6Av1bSuxg1w5gOpe9G92yJ9ckRU8zFQzc8zsNahLtNfD86ENG0QiT+7kn4I62lUe3qU3blg==
-X-Received: by 2002:adf:979c:: with SMTP id s28mr36022446wrb.62.1602597207387;
-        Tue, 13 Oct 2020 06:53:27 -0700 (PDT)
-Received: from [192.168.1.8] (hst-221-88.medicom.bg. [84.238.221.88])
-        by smtp.googlemail.com with ESMTPSA id g14sm28510332wrx.22.2020.10.13.06.53.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 06:53:26 -0700 (PDT)
-Subject: Re: [PATCH] v4l: Add source change event for colorimetry
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
-References: <20200702100017.24700-1-stanimir.varbanov@linaro.org>
- <8dafbb4b-4626-5191-c57a-f3ef19c14618@linaro.org>
- <d11da037-92e5-2ee7-8723-10162d16eba9@linaro.org>
- <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <7db412a2-8fd3-6657-4fcd-1fbfde4b2c0e@linaro.org>
-Date:   Tue, 13 Oct 2020 16:53:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387961AbgJMNxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:53:42 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:58482 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727936AbgJMNxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:53:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602597221; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gsLBNF08kIQUPHwWgPJ8tOTx9xUsVo2JFkq3bKSuruw=; b=eMADqfiLmYOTLcrXE3xv+cMvuBKJIrnHVEB85+JUoVrZCy8JNMKhfXvA4NuxbZ8WRm76XGsU
+ trpOHaJ8GQYR4wcdLGQUEh4uY/AaRPT7hl3AmQEI5Rx6Jd9H+LJyOPVj5F+OCF0sEsOGVV1x
+ y+gl/H75HBu3UDkKxoka3OLb2BA=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f85b16452f4fccef0950558 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 13:53:40
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 12D1EC433CB; Tue, 13 Oct 2020 13:53:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.9] (unknown [117.210.177.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5BD99C433F1;
+        Tue, 13 Oct 2020 13:53:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5BD99C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [2/2] drm/msm: Add support for GPU cooling
+To:     mka@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@freedesktop.org, freedreno@lists.freedesktop.org
+References: <1602176947-17385-2-git-send-email-akhilpo@codeaurora.org>
+ <20201009183640.GB1292413@google.com>
+ <cab2105e-7a8c-988f-dcc1-056692a94e8b@codeaurora.org>
+ <20201012174035.GA44627@google.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <80ded484-a058-70fc-be9d-045be2933563@codeaurora.org>
+Date:   Tue, 13 Oct 2020 19:23:34 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <CAAFQd5AYvMrZQtZ2UBOEG6Nar06bZrRZdE57Y6N7+6dZxJ0m_A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201012174035.GA44627@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/13/20 4:40 PM, Tomasz Figa wrote:
-> On Tue, Oct 13, 2020 at 11:03 AM Stanimir Varbanov
-> <stanimir.varbanov@linaro.org> wrote:
->>
->> Hi,
->>
->> On 7/2/20 2:52 PM, Stanimir Varbanov wrote:
->>> Hi,
+On 10/12/2020 11:10 PM, mka@chromium.org wrote:
+> On Mon, Oct 12, 2020 at 07:03:51PM +0530, Akhil P Oommen wrote:
+>> On 10/10/2020 12:06 AM, mka@chromium.org wrote:
+>>> Hi Akhil,
 >>>
->>> Once we have this event there is still open question how the client will
->>> know the data buffer on which the new colorspace is valid/applied.
->>>
->>> The options could be:
->>>  * a new buffer flag and
->>>  * some information in the v4l2_event structure.
->>>
->>> Thoughts?
->>
->> Kindly ping.
->>
-> 
-> The event itself sounds good to me, but how do we know which buffer is
-> the first to have the new colorimetry?
-
-I think Hans have a very good idea to have width/height and colorspace
-specifiers in v4l2_ext_buffer [1].
-
-[1] https://lkml.org/lkml/2020/9/9/531
-
-> 
-> Best regards,
-> Tomasz
-> 
->>>
->>> On 7/2/20 1:00 PM, Stanimir Varbanov wrote:
->>>> This event indicate that the source colorspace is changed
->>>> during run-time. The client has to retrieve the new colorspace
->>>> identifiers by getting the format (G_FMT).
+>>> On Thu, Oct 08, 2020 at 10:39:07PM +0530, Akhil P Oommen wrote:
+>>>> Register GPU as a devfreq cooling device so that it can be passively
+>>>> cooled by the thermal framework.
 >>>>
->>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
 >>>> ---
->>>>  .../userspace-api/media/v4l/vidioc-dqevent.rst        | 11 ++++++++++-
->>>>  .../userspace-api/media/videodev2.h.rst.exceptions    |  1 +
->>>>  include/uapi/linux/videodev2.h                        |  1 +
->>>>  3 files changed, 12 insertions(+), 1 deletion(-)
+>>>>    drivers/gpu/drm/msm/msm_gpu.c | 13 ++++++++++++-
+>>>>    drivers/gpu/drm/msm/msm_gpu.h |  2 ++
+>>>>    2 files changed, 14 insertions(+), 1 deletion(-)
 >>>>
->>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
->>>> index a9a176d5256d..3f69c753db58 100644
->>>> --- a/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
->>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-dqevent.rst
->>>> @@ -381,7 +381,16 @@ call.
->>>>      that many Video Capture devices are not able to recover from a temporary
->>>>      loss of signal and so restarting streaming I/O is required in order for
->>>>      the hardware to synchronize to the video signal.
+>>>> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+>>>> index 55d1648..93ffd66 100644
+>>>> --- a/drivers/gpu/drm/msm/msm_gpu.c
+>>>> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+>>>> @@ -14,6 +14,7 @@
+>>>>    #include <generated/utsrelease.h>
+>>>>    #include <linux/string_helpers.h>
+>>>>    #include <linux/devfreq.h>
+>>>> +#include <linux/devfreq_cooling.h>
+>>>>    #include <linux/devcoredump.h>
+>>>>    #include <linux/sched/task.h>
+>>>> @@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
+>>>>    	if (IS_ERR(gpu->devfreq.devfreq)) {
+>>>>    		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
+>>>>    		gpu->devfreq.devfreq = NULL;
+>>>> +		return;
+>>>>    	}
+>>>>    	devfreq_suspend_device(gpu->devfreq.devfreq);
+>>>> +
+>>>> +	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
+>>>> +			gpu->devfreq.devfreq);
+>>>> +	if (IS_ERR(gpu->cooling)) {
+>>>> +		DRM_DEV_ERROR(&gpu->pdev->dev,
+>>>> +				"Couldn't register GPU cooling device\n");
+>>>> +		gpu->cooling = NULL;
+>>>> +	}
+>>>>    }
+>>>>    static int enable_pwrrail(struct msm_gpu *gpu)
+>>>> @@ -926,7 +936,6 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>    	msm_devfreq_init(gpu);
 >>>> -
->>>> +    * - ``V4L2_EVENT_SRC_CH_COLORIMETRY``
->>>> +      - 0x0002
->>>> +      - This event gets triggered when a colorspace change is detected at
->>>> +    an input. By colorspace change here we include also changes in the
->>>> +    colorspace specifiers (transfer function, Y'CbCr encoding and
->>>> +    quantization). This event can come from an input or from video decoder.
->>>> +    Once the event has been send to the client the driver has to update
->>>> +    the colorspace specifiers internally so that they could be retrieved by
->>>> +    client. In that case queue re-negotiation is not needed as this change
->>>> +    only reflects on the interpretation of the data.
->>>>
->>>>  Return Value
->>>>  ============
->>>> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>>> index ca05e4e126b2..54fc21af852d 100644
->>>> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>>> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>>> @@ -492,6 +492,7 @@ replace define V4L2_EVENT_CTRL_CH_FLAGS ctrl-changes-flags
->>>>  replace define V4L2_EVENT_CTRL_CH_RANGE ctrl-changes-flags
->>>>
->>>>  replace define V4L2_EVENT_SRC_CH_RESOLUTION src-changes-flags
->>>> +replace define V4L2_EVENT_SRC_CH_COLORIMETRY src-changes-flags
->>>>
->>>>  replace define V4L2_EVENT_MD_FL_HAVE_FRAME_SEQ :c:type:`v4l2_event_motion_det`
->>>>
->>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->>>> index 303805438814..b5838bc4e3a3 100644
->>>> --- a/include/uapi/linux/videodev2.h
->>>> +++ b/include/uapi/linux/videodev2.h
->>>> @@ -2351,6 +2351,7 @@ struct v4l2_event_frame_sync {
->>>>  };
->>>>
->>>>  #define V4L2_EVENT_SRC_CH_RESOLUTION                (1 << 0)
->>>> +#define V4L2_EVENT_SRC_CH_COLORIMETRY               (1 << 1)
->>>>
->>>>  struct v4l2_event_src_change {
->>>>      __u32 changes;
->>>>
+Will remove this unintended change.
+>>>>    	gpu->aspace = gpu->funcs->create_address_space(gpu, pdev);
+>>>>    	if (gpu->aspace == NULL)
+>>>> @@ -1005,4 +1014,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
+>>>>    		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
+>>>>    		msm_gem_address_space_put(gpu->aspace);
+>>>>    	}
+>>>> +
+>>>> +	devfreq_cooling_unregister(gpu->cooling);
 >>>
->>
->> --
->> regards,
->> Stan
+>>> Resources should be released in reverse order, otherwise the cooling device
+>>> could use resources that have already been freed.
+>>> Why do you think this is not the correct order? If you are thinking
+>> about devfreq struct, it is managed device resource.
+> 
+> I did not check specifically if changing the frequency really uses any of the
+> resources that are released previously, In any case it's not a good idea to
+> allow other parts of the kernel to use a half initialized/torn down device.
+> Even if it isn't a problem today someone could change the driver to use any
+> of these resources (or add a new one) in a frequency change, without even
+> thinking about the cooling device, just (rightfully) asuming that things are
+> set up and torn down in a sane order.
+'sane order' relative to what specifically here? Should we worry about 
+freq change at this point because we have already disabled gpu runtime 
+pm and devfreq?
 
--- 
-regards,
-Stan
+-Akhil.
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+
+
+-Akhil.
