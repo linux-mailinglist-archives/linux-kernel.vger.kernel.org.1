@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF1428D648
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F46A28DCE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgJMVqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:46:14 -0400
-Received: from mail1.nippynetworks.com ([91.220.24.129]:50328 "EHLO
-        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728499AbgJMVqN (ORCPT
+        id S2387898AbgJNJUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731026AbgJNJUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:46:13 -0400
-Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
-        (No client certificate requested)
-        (Authenticated sender: ed@wildgooses.com)
-        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4C9pyV0SSxzTh4v;
-        Tue, 13 Oct 2020 22:46:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
-        s=dkim; t=1602625571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZcwqzV2Rk08YLHn29RX80Ba01R4KbmU++jWb/FUn32Q=;
-        b=nuhXHW7LRx79yweJHYOw6VoO/SOJ3VSOkpIvR3NrzwJRa/sK028pL8YnDTbIoGnhDoYvZE
-        rg+5uCR8W4SN+2jaLWGcXwWS4rLkYoKYDcutKHQc5epg37pj1am+Xu5oPYZNr39iJiziGV
-        fzVwqaLxwZ8+Npz3h2fohfamDlAmJek=
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     Hans de Goede <hdegoede@redhat.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
- <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
- <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
- <9fb836bc-7d8a-b6e2-8d73-8e74a8f2e38b@redhat.com>
-From:   Ed W <lists@wildgooses.com>
-Message-ID: <2ecbe677-8f80-17a1-dbf9-dfffa867805c@wildgooses.com>
-Date:   Tue, 13 Oct 2020 22:46:09 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.2
+        Wed, 14 Oct 2020 05:20:43 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECDBC0613AF
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:49:38 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dt13so1848264ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:49:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EzSWvplMqO4cdN++0Ux5XsKlBbV7BOhF67AtXcUOeMs=;
+        b=GO89q5/UKsCuaRfA42EpuS4jIEk4259OJUr1KkM2uwbGGwvTjVKxPHUcolF8kks7Mo
+         +mkXL7oq058MeNpC93YGjZUHhm/CIWona3mza47SaubqG9vncZ7ku8lG6JauvRTbIX6P
+         OI+ObqhVYJlbnv5zPa9PqfvmwErfKwr0+UzoQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EzSWvplMqO4cdN++0Ux5XsKlBbV7BOhF67AtXcUOeMs=;
+        b=n5cuZKqqwLASjf6fb8c3X7FpXmJRxoIXJZBtiYPlEzE7hU7+q/2XNmHW2eJN7S9Sqj
+         05MXU6QGVwxKC4JTK+KyCE8ZPVRDdWwsv1oVPv0o86KrnLbG3K6vT3Ry8VO7KJ176SHd
+         2TM6shWHy44HYGm4aXIjbGU7wrhDW3p2ZwVqX80HodDnddsU5i+OgOjkWy2e3yXHQbZx
+         +8FKv8tk9WlvwLFrthI9e1LmRYFIlK1UXIU8n3m7HJBoO61H/E0M+BE53/dKgGy6FzLr
+         4Ha3UcJ4BsijKxo9IwY/IE/U2d2OGrsp45XRgq7XHC2EX6jXxIvIH4NDxitI1wkHwmRB
+         xhQg==
+X-Gm-Message-State: AOAM533KqXygU6PomG7hUkj9+zogoKv+Y+mlnncKFpE5qybl6uVlLcIt
+        Ue/OWhgDzS5XjvBMUDC8u0+EjQ==
+X-Google-Smtp-Source: ABdhPJwABvCvhJd+JSDbSPUX836u6gpnht+hLXQCQn+gFf/NH+wdWUzERRS4w7diiDWA4EN5G3lHTA==
+X-Received: by 2002:a17:906:3852:: with SMTP id w18mr1824808ejc.551.1602625777024;
+        Tue, 13 Oct 2020 14:49:37 -0700 (PDT)
+Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
+        by smtp.gmail.com with ESMTPSA id a12sm454869edy.87.2020.10.13.14.49.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 14:49:36 -0700 (PDT)
+Subject: Re: [PATCH 1/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        christian.brauner@ubuntu.com, containers@lists.linux-foundation.org
+References: <20201013140609.2269319-1-gscrivan@redhat.com>
+ <20201013140609.2269319-2-gscrivan@redhat.com>
+ <20201013210925.GJ3576660@ZenIV.linux.org.uk>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <70fa4f70-38cc-7e18-8156-65a3e50c641e@rasmusvillemoes.dk>
+Date:   Tue, 13 Oct 2020 23:49:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <9fb836bc-7d8a-b6e2-8d73-8e74a8f2e38b@redhat.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201013210925.GJ3576660@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2020 09:48, Hans de Goede wrote:
+On 13/10/2020 23.09, Al Viro wrote:
+> On Tue, Oct 13, 2020 at 04:06:08PM +0200, Giuseppe Scrivano wrote:
+>> +		spin_lock(&cur_fds->file_lock);
+>> +		fdt = files_fdtable(cur_fds);
+>> +		cur_max = fdt->max_fds - 1;
+>> +		max_fd = min(max_fd, cur_max);
+>> +		while (fd <= max_fd)
+>> +			__set_close_on_exec(fd++, fdt);
+>> +		spin_unlock(&cur_fds->file_lock);
+> 
+> 	First of all, this is an atrocious way to set all bits
+> in a range.  What's more, you don't want to set it for *all*
+> bits - only for the ones present in open bitmap.  It's probably
+> harmless at the moment, but let's not create interesting surprises
+> for the future.
 
-> On 10/12/20 9:39 PM, Enrico Weigelt, metux IT consult wrote:
->> On 22.09.20 00:17, Ed W wrote:
->>> Hi, I've been adding support for the PC Engines APU5 board, which is a variant of the APU 2-4
->>> boards
->>> with some nice features. The current platform driver for pcengines boards has some redundant
->>> features with regards to recent bios/firmware packages for the board as they now set the ACPI
->>> tables
->>> to indicate GPIOs for keys and leds.
->>
->> NAK. Breaks existing userlands in the field (literally field), forcing
->> users to fw upgrade is not an option (field roll would be realy expensive).
->
-> Thank you Enrico, I was wondering the same (what about userspace breakage)
-> when I was looking at this patch. It is good to have confirmation that
-> userspace breakage is a real issue here.
+Eh, why not? They can already be set for unallocated slots:
 
+commit 5297908270549b734c7c2556745e2385b6d4941d
+Author: Mateusz Guzik <mguzik@redhat.com>
+Date:   Tue Oct 3 12:58:14 2017 +0200
 
-This isn't the whole story.
+    vfs: stop clearing close on exec when closing a fd
 
-The original naming was board specific. Then Enrico (not unreasonably - I actually prefer his
-naming) changed the naming to be non board specific. Then within 2 months PC Engines introduced ACPI
-based config using the old names.
+    Codepaths allocating a fd always make sure the bit is set/unset
+    depending on flags, thus clearing on close is redundant.
 
-So if we are holding "userspace breakage" as the gold standard, then the original (also the current)
-names have actually been around longest and likely cause the least userspace breakage.
+And while we're on that subject, yours truly suggested exactly that two
+years prior [1], with a follow-up [2] in 2018 to do what wasn't done in
+5297908, but (still) seems like obvious micro-optimizations, given that
+the close_on_exec bitmap is not maintained as a subset of the open
+bitmap. Mind taking a look at [2]?
 
-Also, some other pieces of this module have already been removed (SIM Swap), so there is an existing
-precedent for "userspace breakage" and trimming down this platform driver.
+[1]
+https://lore.kernel.org/lkml/1446543679-28849-1-git-send-email-linux@rasmusvillemoes.dk/t/#u
+[2]
+https://lore.kernel.org/lkml/20181024160159.25884-1-linux@rasmusvillemoes.dk/
 
-
-In big picture terms, changing the name of the LED device doesn't seem a huge concern to me... A
-udev rule can setup compatibility forwards/backwards quite trivially I think?
-
-Kind regards
-
-Ed W
-
+Rasmus
