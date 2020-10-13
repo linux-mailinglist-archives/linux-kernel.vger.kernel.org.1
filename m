@@ -2,193 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A4F28C725
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B7428C728
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728750AbgJMCaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 22:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728130AbgJMCaT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 22:30:19 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AA6C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 19:30:19 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id s81so8494606oie.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 19:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=bnow7E0NdAgjP24uVGPtsFmB33v0oAbeU6I6hhEmdgc=;
-        b=KrUvpd/NgSTDTdOcGQLuHHaZU0xD55DjswJ8khTx2pSoboXy93Jxf2qHywUyjFDyrL
-         eJQUerC2H2GL4jTguLveYvjUixN4gsg3qBA/m+K5Dfe6h4qUtsz7Vzxttb55XV+X07yB
-         kfJsUhqTIm7vY9XRgP0As0lJu4QCGjFfWbyvTvKwuQN9Ol1pXyvIXfZ0yCe+cDXpIBz0
-         NktjqctuKy/KaU5U0Jzy7+/tIpw0pkGlOhP2aiJ/dnkqcmgDetRZb/OomuI7G4yUVnsK
-         bQwYA/vsGGaELvLzBIJMzUE0z3E9wAmmRH21fVOl6c2nyipuA/AhCfzP0wGJoCU0LAAQ
-         PArg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=bnow7E0NdAgjP24uVGPtsFmB33v0oAbeU6I6hhEmdgc=;
-        b=rV6pAti1r9h9UqzHNKyLo1K0wDIs6q0k1LWm2P+5+1OaeKe32XP4vgwrgQaomqL2XR
-         0B2iD18KOs4Sc9WTHy4CLTvvY5ngpGr1L0BcEMG2Asb6RaVzfu/xaFf+akl+Ue8fBW0l
-         O3NZ47unWL4RUZdna3V3sXqLTEN57URXcd/aCbfJk4LPhK3Q9rKefXBT+v9GA5h88acK
-         /3e/dghCOg6tMsCiqiOCV4ivGptz0w8S1qpAOzGmP42pKXpnjHJFTH53k2DVtRsp6DGC
-         37Dblw6rhDubFa81RFcC1NmxAeLfj2JoIgojg9NCnwyxdS3m8Vsg+TNNwliDweDWLsH8
-         qNfg==
-X-Gm-Message-State: AOAM5305c2iLTI0Q1rQqcQ82fBTb8I960YgeU7KIl7FSbAQIhAssyqec
-        eLi3QPP3JCl6xcIwUdTNeEDnVg==
-X-Google-Smtp-Source: ABdhPJyONDiO5yevIWMqwITzHHdmzf1rJ12V6IDE32XCQJ68uNg6ZptgDpu7d8FRdFcD63qBuGDB4w==
-X-Received: by 2002:aca:c490:: with SMTP id u138mr12541282oif.54.1602556218373;
-        Mon, 12 Oct 2020 19:30:18 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id x15sm11158198oor.33.2020.10.12.19.30.15
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 12 Oct 2020 19:30:17 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 19:30:03 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Yu Zhao <yuzhao@google.com>, Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] mm: clean up some lru related pieces
-In-Reply-To: <alpine.LSU.2.11.2009181406410.11531@eggly.anvils>
-Message-ID: <alpine.LSU.2.11.2010121910200.11039@eggly.anvils>
-References: <20200918030051.650890-1-yuzhao@google.com> <alpine.LSU.2.11.2009181317350.11298@eggly.anvils> <20200918210126.GA1118730@google.com> <alpine.LSU.2.11.2009181406410.11531@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1728767AbgJMCak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 22:30:40 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33344 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728130AbgJMCaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 22:30:39 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id CE49759926B025F0CED3;
+        Tue, 13 Oct 2020 10:30:36 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 13 Oct
+ 2020 10:30:36 +0800
+Subject: Re: [f2fs-dev] [f2fs bug] infinite loop in
+ f2fs_get_meta_page_nofail()
+To:     <jaegeuk@kernel.org>
+CC:     Eric Biggers <ebiggers@kernel.org>,
+        <syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <000000000000432c5405b1113296@google.com>
+ <20201007213253.GD1530638@gmail.com> <20201007215305.GA714500@google.com>
+ <c7baef0d-d459-114f-7146-627f0c4159ad@huawei.com>
+ <20201009015015.GA1931838@google.com>
+ <8fa4f9fe-5ca5-f3a3-c8f4-e800373c1e46@huawei.com>
+ <20201009043237.GB1973455@google.com>
+ <a842eec8-2dbb-aa01-cc64-c513d59cad24@huawei.com>
+ <20201009145626.GA2186792@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <70faa161-bcd7-64a3-4a6c-04963c0784b6@huawei.com>
+Date:   Tue, 13 Oct 2020 10:30:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20201009145626.GA2186792@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020, Hugh Dickins wrote:
-> On Fri, 18 Sep 2020, Yu Zhao wrote:
-> > On Fri, Sep 18, 2020 at 01:46:59PM -0700, Hugh Dickins wrote:
-> > > On Thu, 17 Sep 2020, Yu Zhao wrote:
-> > > 
-> > > > Hi Andrew,
-> > > > 
-> > > > I see you have taken this:
-> > > >   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-> > > > Do you mind dropping it?
-> > > > 
-> > > > Michal asked to do a bit of additional work. So I thought I probably
-> > > > should create a series to do more cleanups I've been meaning to.
-> > > > 
-> > > > This series contains the change in the patch above and goes a few
-> > > > more steps farther. It's intended to improve readability and should
-> > > > not have any performance impacts. There are minor behavior changes in
-> > > > terms of debugging and error reporting, which I have all highlighted
-> > > > in the individual patches. All patches were properly tested on 5.8
-> > > > running Chrome OS, with various debug options turned on.
-> > > > 
-> > > > Michal,
-> > > > 
-> > > > Do you mind taking a looking at the entire series?
-> > > > 
-> > > > Thank you.
-> > > > 
-> > > > Yu Zhao (13):
-> > > >   mm: use add_page_to_lru_list()
-> > > >   mm: use page_off_lru()
-> > > >   mm: move __ClearPageLRU() into page_off_lru()
-> > > >   mm: shuffle lru list addition and deletion functions
-> > > >   mm: don't pass enum lru_list to lru list addition functions
-> > > >   mm: don't pass enum lru_list to trace_mm_lru_insertion()
-> > > >   mm: don't pass enum lru_list to del_page_from_lru_list()
-> > > >   mm: rename page_off_lru() to __clear_page_lru_flags()
-> > > >   mm: inline page_lru_base_type()
-> > > >   mm: VM_BUG_ON lru page flags
-> > > >   mm: inline __update_lru_size()
-> > > >   mm: make lruvec_lru_size() static
-> > > >   mm: enlarge the int parameter of update_lru_size()
-> > > > 
-> > > >  include/linux/memcontrol.h     |  14 ++--
-> > > >  include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
-> > > >  include/linux/mmzone.h         |   2 -
-> > > >  include/linux/vmstat.h         |   2 +-
-> > > >  include/trace/events/pagemap.h |  11 ++--
-> > > >  mm/compaction.c                |   2 +-
-> > > >  mm/memcontrol.c                |  10 +--
-> > > >  mm/mlock.c                     |   2 +-
-> > > >  mm/swap.c                      |  53 ++++++---------
-> > > >  mm/vmscan.c                    |  28 +++-----
-> > > >  10 files changed, 95 insertions(+), 144 deletions(-)
-> > > > 
-> > > > -- 
-> > > > 2.28.0.681.g6f77f65b4e-goog
-> > > 
-> > > Sorry, Yu, I may be out-of-line in sending this: but as you know,
-> > > Alex Shi has a long per-memcg lru_lock series playing in much the
-> > > same area (particularly conflicting in mm/swap.c and mm/vmscan.c):
-> > > a patchset that makes useful changes, that I'm very keen to help
-> > > into mmotm a.s.a.p (but not before I've completed diligence).
-> > > 
-> > > We've put a lot of effort into its testing, I'm currently reviewing
-> > > it patch by patch (my general silence indicating that I'm busy on that,
-> > > but slow as ever): so I'm a bit discouraged to have its stability
-> > > potentially undermined by conflicting cleanups at this stage.
-> > > 
-> > > If there's general agreement that your cleanups are safe and welcome
-> > > (Michal's initial reaction sheds some doubt on that), great: I hope
-> > > that Andrew can fast-track them into mmotm, then Alex rebase on top
-> > > of them, and I then re-test and re-review.
-> > > 
-> > > But if that quick agreement is not forthcoming, may I ask you please
-> > > to hold back, and resend based on top of Alex's next posting?
-> > 
-> > The per-memcg lru lock series seems a high priority, and I have
-> > absolutely no problem accommodate your request.
-> 
-> Many thanks!
-> 
-> > 
-> > In return, may I ask you or Alex to review this series after you
-> > have finished with per-memcg lru lock (to make sure that I resolve
-> > all the conflicts correctly at least)?
-> 
-> Fair enough: I promise to do so.
-> 
-> And your rebasing will necessarily lead you to review some parts
-> of Alex's patchset, which will help us all too.
-> 
-> Andrew, Yu asked at the start:
-> > > > I see you have taken this:
-> > > >   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-> > > > Do you mind dropping it?
-> Dropping that for now will help too.
+Jaegeuk,
 
-Andrew, please drop Yu Zhao's
-mm-use-add_page_to_lru_list-page_lru-page_off_lru.patch
-from the mmotm tree.
-
-Yu wants to replace it by this cleanup series, and he has graciously
-agreed to rebase his series on top of Alex Shi's per-memcg lru_lock
-series; but mm-use-add_page_to_lru_list-page_lru-page_off_lru.patch
-is getting in the way of adding them to mmotm.  The three of us are
-all hoping that Alex's v19 series can go into mmotm when the merge
-window closes, then I'll review Yu's series rebased on top of it.
+I guess you missed sending last applied patch to mailing list?
 
 Thanks,
-Hugh
+
+On 2020/10/9 22:56, jaegeuk@kernel.org wrote:
+> On 10/09, Chao Yu wrote:
+>> On 2020/10/9 12:32, jaegeuk@kernel.org wrote:
+>>> On 10/09, Chao Yu wrote:
+>>>> On 2020/10/9 9:50, jaegeuk@kernel.org wrote:
+>>>>> On 10/09, Chao Yu wrote:
+>>>>>> On 2020/10/8 5:53, jaegeuk@kernel.org wrote:
+>>>>>>> On 10/07, Eric Biggers wrote:
+>>>>>>>> [moved linux-fsdevel to Bcc]
+>>>>>>>>
+>>>>>>>> On Wed, Oct 07, 2020 at 02:18:19AM -0700, syzbot wrote:
+>>>>>>>>> Hello,
+>>>>>>>>>
+>>>>>>>>> syzbot found the following issue on:
+>>>>>>>>>
+>>>>>>>>> HEAD commit:    a804ab08 Add linux-next specific files for 20201006
+>>>>>>>>> git tree:       linux-next
+>>>>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=17fe30bf900000
+>>>>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=26c1b4cc4a62ccb
+>>>>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=ee250ac8137be41d7b13
+>>>>>>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>>>>>>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1336413b900000
+>>>>>>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f7392b900000
+>>>>>>>>>
+>>>>>>>>> The issue was bisected to:
+>>>>>>>>>
+>>>>>>>>> commit eede846af512572b1f30b34f9889d7df64c017d4
+>>>>>>>>> Author: Jaegeuk Kim <jaegeuk@kernel.org>
+>>>>>>>>> Date:   Fri Oct 2 21:17:35 2020 +0000
+>>>>>>>>>
+>>>>>>>>>         f2fs: f2fs_get_meta_page_nofail should not be failed
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> Jaegeuk, it looks like the loop you added in the above commit doesn't terminate
+>>>>>>>> if the requested page is beyond the end of the device.
+>>>>>>>
+>>>>>>> Yes, that will go infinite loop. Otherwise, it will trigger a panic during
+>>>>>>> the device reboot. Let me think how to avoid that before trying to get the
+>>>>>>> wrong lba access.
+>>>>>>
+>>>>>> Delivering f2fs_get_sum_page()'s return value needs a lot of codes change, I think
+>>>>>> we can just zeroing sum_page in error case, as we have already shutdown f2fs via
+>>>>>> calling f2fs_stop_checkpoint(), then f2fs_cp_error() will stop all updates to
+>>>>>> filesystem data including summary pages.
+>>>>>
+>>>>> That sounds like one solution tho, I'm afraid of getting another panic by
+>>>>> wrong zero'ed summary page.
+>>>>
+>>>> What case do you mean? maybe I missed some corner cases?
+>>>
+>>> I sent v2 to fix syzbot issue, which fixes wrong use of
+>>> f2fs_get_meta_page_nofail.
+>>
+>> I agreed to fix that case, however we may encounter deadloop in other
+>> places where we call f2fs_get_meta_page_nofail()? like the case that
+>> filesystem will always see EIO after we shutdown device via dmflakey?
+> 
+> We may need another option to deal with this. At least, however, it's literally
+> _nofail function which should guarantee no error, instead of hiding the error
+> with zero'ed page.
+> 
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Thoughts?
+>>>>>>
+>>>>>> Thanks,
+>>>>>>
+>>>>>>>
+>>>>>>>>
+>>>>>>>> - Eric
+>>>>>>>
+>>>>>>>
+>>>>>>> _______________________________________________
+>>>>>>> Linux-f2fs-devel mailing list
+>>>>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>>>>> .
+>>>>>>>
+>>>>> .
+>>>>>
+>>> .
+>>>
+> .
+> 
