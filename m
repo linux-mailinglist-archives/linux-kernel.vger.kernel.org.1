@@ -2,128 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A240428CC37
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BB728CC3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730385AbgJMLHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729530AbgJMLHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:07:52 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DC2C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:07:51 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id q21so6099533pgi.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 04:07:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DsdLLXEDu5r/rHvGHkVF/s17QLEI/N8JfwaZzVE4yB4=;
-        b=muAXyrqMq62Izrg81/t4ptqj8Swn6SKvqTxUpJ+Zymn2DlKWCBAP1GI8ZXFU8m/vF+
-         8ENY23F4hgI+I0T+JSo9L0FAsL8oIyp1oDKU/keoZNuykXCwiuzJlH6Y/2PaGbtimepH
-         63f+EH740kSXvrWZR9Nd/2m+UT1zZiNl33bPg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DsdLLXEDu5r/rHvGHkVF/s17QLEI/N8JfwaZzVE4yB4=;
-        b=mLU2tnGqHqd5ncPYrVf2PBIg438FmMtw91p1u+2H9fVwjVBC2VI35Mj7/Sfy7AQj11
-         d57JWQZocI/Z4Bu2bkg3Dw3ahXd1xukLF73CKmgtFgUKB9RtXlkDYNtm6kg5CHpL1hnp
-         zmbXjz40EVMwexd6OHaO/U0pmEWC871KHdOEN1sXsf/PQQ3yrqMA+rUQJu5x7L1BwcbV
-         0yeXh2VaBnFQFaKghoAZGSfhzqykuP8iAJxrVlo3IvsqBdlENBCnxcrkOZglYgbPa56x
-         GgxDwO5YSSVwRd5dJj+F4V/31DjAvAJ/kTHrr39qnTu6ip8cCyYLpmHEoP2y3C4bia71
-         iyNg==
-X-Gm-Message-State: AOAM533HlHIHfFNIIIo8x4fqAlCthZEhNsaHID4QIuVif3zACfVWj1hE
-        e7FWbpcWL0TfAo2Z/ruRjOD1Xg==
-X-Google-Smtp-Source: ABdhPJzqgEV+lAzcTt/anrFL0qbSxvROzpd/Bgfp7nsuzar5JhMOWGYQzIRZJvmrVNrusgjQNu/0lg==
-X-Received: by 2002:a65:4987:: with SMTP id r7mr16649379pgs.228.1602587270915;
-        Tue, 13 Oct 2020 04:07:50 -0700 (PDT)
-Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id f5sm20809195pgi.86.2020.10.13.04.07.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 04:07:50 -0700 (PDT)
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Cc:     Sargun Dhillon <sargun@sargun.me>, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] nfs: Use cred from fscontext during fsmount
-Date:   Tue, 13 Oct 2020 04:07:39 -0700
-Message-Id: <20201013110739.21922-1-sargun@sargun.me>
-X-Mailer: git-send-email 2.25.1
+        id S1730591AbgJMLIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:08:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47054 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729530AbgJMLIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:08:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1A93EAD57;
+        Tue, 13 Oct 2020 11:08:30 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 13:08:19 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     =?utf-8?B?SsO2cmcgUsO2ZGVs?= <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/seves for v5.10
+Message-ID: <20201013110819.GC32151@zn.tnic>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a subtle change that is important for usage of NFS within
-user namespaces. With the new mount APIs, the fscontext has an associated
-struct cred. This struct cred is created at the time "fsopen" is called.
-This cred object contains user namespaces, network namespaces, etc...
+Hi Linus,
 
-Right now, rather than using the cred / network namespace / user namespaces
-that are all acquired at the time fsopen is called, we use some bits at the
-time FSCONFIG_CMD_CREATE is called, and other bits at the time fsopen is
-called. Specifically, the RPC client itself lives in the network namespace
-that fsopen was called within. On the other hand, the credentials the RPC
-client uses are the ones retrieved at the time of FSCONFIG_CMD_CREATE.
+please pull the pile which enables Linux to run as an SEV-ES guest on an
+AMD hypervisor.
 
-When FSCONFIG_CMD_CREATE is called, the vfs layer checks is the user has
-CAP_SYS_ADMIN in the init user ns, as NFS does not have the FS_USERNS_MOUNT
-flag enabled. Due to this, there is no way of configuring an NFS mount to
-use id mappings from a user namespace.
+Thx.
 
-It may make sense to switch from using clp->cl_rpcclient->cl_cred->user_ns
-as the user namespace for the idmapper to clp->cl_net->user_ns, to make
-sure that everything is aligned based on the net ns, and matches what has
-been previously discussed [1].
-
-Although this is a change that would effect userspace, it is very unlikely
-that anyone is initializing the NFS FS FD in an unprivileged namespace,
-and then calling FSCONFIG_CMD_CREATE to only get the network namespace's
-effects, and not all of the effects. The fscontext API has provisions
-for being able to configure specific namespaces.
-
-[1]: https://lore.kernel.org/linux-nfs/CAMp4zn-mw1U3PoS9k_JePieU2+owg6hdXdrQ2Lt3p173J_sRbg@mail.gmail.com/
-
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
 ---
- fs/nfs/client.c     | 2 +-
- fs/nfs/nfs4client.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
 
-diff --git a/fs/nfs/client.c b/fs/nfs/client.c
-index 4b8cc93913f7..bd26ec6a2984 100644
---- a/fs/nfs/client.c
-+++ b/fs/nfs/client.c
-@@ -985,7 +985,7 @@ struct nfs_server *nfs_create_server(struct fs_context *fc)
- 	if (!server)
- 		return ERR_PTR(-ENOMEM);
- 
--	server->cred = get_cred(current_cred());
-+	server->cred = get_cred(fc->cred);
- 
- 	error = -ENOMEM;
- 	fattr = nfs_alloc_fattr();
-diff --git a/fs/nfs/nfs4client.c b/fs/nfs/nfs4client.c
-index daacc78a3d48..818638cb10c4 100644
---- a/fs/nfs/nfs4client.c
-+++ b/fs/nfs/nfs4client.c
-@@ -1151,7 +1151,7 @@ struct nfs_server *nfs4_create_server(struct fs_context *fc)
- 	if (!server)
- 		return ERR_PTR(-ENOMEM);
- 
--	server->cred = get_cred(current_cred());
-+	server->cred = get_cred(fc->cred);
- 
- 	auth_probe = ctx->auth_info.flavor_len < 1;
- 
+  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_seves_for_v5.10
+
+for you to fetch changes up to 0ddfb1cf3b6b07c97cff16ea69931d986f9622ee:
+
+  x86/sev-es: Use GHCB accessor for setting the MMIO scratch buffer (2020-09-25 17:12:41 +0200)
+
+----------------------------------------------------------------
+This feature enhances the current guest memory encryption support
+called SEV by also encrypting the guest register state, making the
+registers inaccessible to the hypervisor by en-/decrypting them on world
+switches. Thus, it adds additional protection to Linux guests against
+exfiltration, control flow and rollback attacks.
+
+With SEV-ES, the guest is in full control of what registers the
+hypervisor can access. This is provided by a guest-host exchange
+mechanism based on a new exception vector called VMM Communication
+Exception (#VC), a new instruction called VMGEXIT and a shared
+Guest-Host Communication Block which is a decrypted page shared between
+the guest and the hypervisor.
+
+Intercepts to the hypervisor become #VC exceptions in an SEV-ES guest so
+in order for that exception mechanism to work, the early x86 init code
+needed to be made able to handle exceptions, which, in itself, brings
+a bunch of very nice cleanups and improvements to the early boot code
+like an early page fault handler, allowing for on-demand building of the
+identity mapping. With that, !KASLR configurations do not use the EFI
+page table anymore but switch to a kernel-controlled one.
+
+The main part of this series adds the support for that new exchange
+mechanism. The goal has been to keep this as much as possibly
+separate from the core x86 code by concentrating the machinery in two
+SEV-ES-specific files:
+
+ arch/x86/kernel/sev-es-shared.c
+ arch/x86/kernel/sev-es.c
+
+Other interaction with core x86 code has been kept at minimum and behind
+static keys to minimize the performance impact on !SEV-ES setups.
+
+Work by Joerg Roedel and Thomas Lendacky and others.
+
+----------------------------------------------------------------
+Borislav Petkov (3):
+      Merge 'x86/kaslr' to pick up dependent bits
+      Merge 'x86/cpu' to pick up dependent bits
+      KVM: SVM: Use __packed shorthand
+
+Doug Covelli (1):
+      x86/vmware: Add VMware-specific handling for VMMCALL under SEV-ES
+
+Joerg Roedel (50):
+      KVM: SVM: nested: Don't allocate VMCB structures on stack
+      KVM: SVM: Add GHCB Accessor functions
+      x86/traps: Move pf error codes to <asm/trap_pf.h>
+      x86/insn: Make inat-tables.c suitable for pre-decompression code
+      x86/umip: Factor out instruction fetch
+      x86/umip: Factor out instruction decoding
+      x86/insn: Add insn_get_modrm_reg_off()
+      x86/insn: Add insn_has_rep_prefix() helper
+      x86/boot/compressed/64: Disable red-zone usage
+      x86/boot/compressed/64: Add IDT Infrastructure
+      x86/boot/compressed/64: Rename kaslr_64.c to ident_map_64.c
+      x86/boot/compressed/64: Add page-fault handler
+      x86/boot/compressed/64: Always switch to own page table
+      x86/boot/compressed/64: Don't pre-map memory in KASLR code
+      x86/boot/compressed/64: Change add_identity_map() to take start and end
+      x86/boot/compressed/64: Add stage1 #VC handler
+      x86/boot/compressed/64: Call set_sev_encryption_mask() earlier
+      x86/boot/compressed/64: Check return value of kernel_ident_mapping_init()
+      x86/boot/compressed/64: Add set_page_en/decrypted() helpers
+      x86/boot/compressed/64: Setup a GHCB-based VC Exception handler
+      x86/boot/compressed/64: Unmap GHCB page before booting the kernel
+      x86/fpu: Move xgetbv()/xsetbv() into a separate header
+      x86/idt: Split idt_data setup out of set_intr_gate()
+      x86/head/64: Install startup GDT
+      x86/head/64: Load GDT after switch to virtual addresses
+      x86/head/64: Load segment registers earlier
+      x86/head/64: Switch to initial stack earlier
+      x86/head/64: Install a CPU bringup IDT
+      x86/idt: Make IDT init functions static inlines
+      x86/head/64: Move early exception dispatch to C code
+      x86/sev-es: Add SEV-ES Feature Detection
+      x86/sev-es: Print SEV-ES info into the kernel log
+      x86/sev-es: Compile early handler code into kernel image
+      x86/sev-es: Setup an early #VC handler
+      x86/sev-es: Setup GHCB-based boot #VC handler
+      x86/sev-es: Allocate and map an IST stack for #VC handler
+      x86/sev-es: Adjust #VC IST Stack on entering NMI handler
+      x86/dumpstack/64: Add noinstr version of get_stack_info()
+      x86/entry/64: Add entry code for #VC handler
+      x86/sev-es: Wire up existing #VC exit-code handlers
+      x86/sev-es: Handle instruction fetches from user-space
+      x86/sev-es: Handle MMIO String Instructions
+      x86/sev-es: Handle #AC Events
+      x86/sev-es: Handle #DB Events
+      x86/paravirt: Allow hypervisor-specific VMMCALL handling under SEV-ES
+      x86/realmode: Add SEV-ES specific trampoline entry point
+      x86/smpboot: Load TSS and getcpu GDT entry before loading IDT
+      x86/head/64: Don't call verify_cpu() on starting APs
+      x86/sev-es: Support CPU offline/online
+      x86/sev-es: Handle NMI State
+
+Martin Radev (1):
+      x86/sev-es: Check required CPU features for SEV-ES
+
+Tom Lendacky (20):
+      KVM: SVM: Add GHCB definitions
+      x86/cpufeatures: Add SEV-ES CPU feature
+      x86/sev-es: Add support for handling IOIO exceptions
+      x86/sev-es: Add CPUID handling to #VC handler
+      x86/sev-es: Setup per-CPU GHCBs for the runtime handler
+      x86/sev-es: Add a Runtime #VC Exception Handler
+      x86/sev-es: Handle MMIO events
+      x86/sev-es: Handle MSR events
+      x86/sev-es: Handle DR7 read/write events
+      x86/sev-es: Handle WBINVD Events
+      x86/sev-es: Handle RDTSC(P) Events
+      x86/sev-es: Handle RDPMC Events
+      x86/sev-es: Handle INVD Events
+      x86/sev-es: Handle MONITOR/MONITORX Events
+      x86/sev-es: Handle MWAIT/MWAITX Events
+      x86/sev-es: Handle VMMCALL Events
+      x86/kvm: Add KVM-specific VMMCALL handling under SEV-ES
+      x86/realmode: Setup AP jump table
+      x86/efi: Add GHCB mappings when SEV-ES is active
+      x86/sev-es: Use GHCB accessor for setting the MMIO scratch buffer
+
+ arch/x86/Kconfig                           |    1 +
+ arch/x86/boot/compressed/Makefile          |   11 +-
+ arch/x86/boot/compressed/cpuflags.c        |    4 -
+ arch/x86/boot/compressed/head_64.S         |   33 +-
+ arch/x86/boot/compressed/ident_map_64.c    |  349 +++++++
+ arch/x86/boot/compressed/idt_64.c          |   54 ++
+ arch/x86/boot/compressed/idt_handlers_64.S |   77 ++
+ arch/x86/boot/compressed/kaslr.c           |  266 ++----
+ arch/x86/boot/compressed/kaslr_64.c        |  153 ---
+ arch/x86/boot/compressed/misc.c            |    7 +
+ arch/x86/boot/compressed/misc.h            |   54 +-
+ arch/x86/boot/compressed/sev-es.c          |  214 +++++
+ arch/x86/entry/entry_64.S                  |   80 ++
+ arch/x86/include/asm/cpu_entry_area.h      |   33 +-
+ arch/x86/include/asm/cpufeatures.h         |    2 +
+ arch/x86/include/asm/desc.h                |   27 +
+ arch/x86/include/asm/desc_defs.h           |   10 +
+ arch/x86/include/asm/fpu/internal.h        |   33 +-
+ arch/x86/include/asm/fpu/xcr.h             |   34 +
+ arch/x86/include/asm/idtentry.h            |   50 +
+ arch/x86/include/asm/insn-eval.h           |    6 +
+ arch/x86/include/asm/mem_encrypt.h         |    5 +
+ arch/x86/include/asm/msr-index.h           |    3 +
+ arch/x86/include/asm/page_64_types.h       |    1 +
+ arch/x86/include/asm/pgtable.h             |    2 +-
+ arch/x86/include/asm/processor.h           |    1 +
+ arch/x86/include/asm/proto.h               |    1 +
+ arch/x86/include/asm/realmode.h            |    7 +
+ arch/x86/include/asm/segment.h             |    2 +-
+ arch/x86/include/asm/setup.h               |    6 +-
+ arch/x86/include/asm/sev-es.h              |  114 +++
+ arch/x86/include/asm/special_insns.h       |    6 +
+ arch/x86/include/asm/stacktrace.h          |    2 +
+ arch/x86/include/asm/svm.h                 |  106 ++-
+ arch/x86/include/asm/sync_core.h           |   34 +-
+ arch/x86/include/asm/trap_pf.h             |   24 +
+ arch/x86/include/asm/trapnr.h              |    1 +
+ arch/x86/include/asm/traps.h               |   20 +-
+ arch/x86/include/asm/x86_init.h            |   16 +-
+ arch/x86/include/uapi/asm/svm.h            |   11 +
+ arch/x86/kernel/Makefile                   |    3 +
+ arch/x86/kernel/cpu/amd.c                  |    3 +-
+ arch/x86/kernel/cpu/common.c               |   25 +
+ arch/x86/kernel/cpu/scattered.c            |    1 +
+ arch/x86/kernel/cpu/vmware.c               |   50 +-
+ arch/x86/kernel/dumpstack.c                |    7 +-
+ arch/x86/kernel/dumpstack_64.c             |   46 +-
+ arch/x86/kernel/head64.c                   |  122 ++-
+ arch/x86/kernel/head_64.S                  |  165 +++-
+ arch/x86/kernel/idt.c                      |   41 +-
+ arch/x86/kernel/kvm.c                      |   35 +-
+ arch/x86/kernel/nmi.c                      |   15 +
+ arch/x86/kernel/sev-es-shared.c            |  507 ++++++++++
+ arch/x86/kernel/sev-es.c                   | 1404 ++++++++++++++++++++++++++++
+ arch/x86/kernel/smpboot.c                  |    2 +-
+ arch/x86/kernel/traps.c                    |   48 +
+ arch/x86/kernel/umip.c                     |   89 +-
+ arch/x86/kvm/cpuid.c                       |    2 +-
+ arch/x86/kvm/svm/nested.c                  |   47 +-
+ arch/x86/kvm/svm/svm.c                     |    2 +
+ arch/x86/lib/insn-eval.c                   |  130 +++
+ arch/x86/mm/cpu_entry_area.c               |    3 +-
+ arch/x86/mm/extable.c                      |    1 +
+ arch/x86/mm/mem_encrypt.c                  |   38 +-
+ arch/x86/mm/mem_encrypt_identity.c         |    3 +
+ arch/x86/platform/efi/efi_64.c             |   10 +
+ arch/x86/realmode/init.c                   |   24 +-
+ arch/x86/realmode/rm/header.S              |    3 +
+ arch/x86/realmode/rm/trampoline_64.S       |   20 +
+ arch/x86/tools/gen-insn-attr-x86.awk       |   50 +-
+ tools/arch/x86/tools/gen-insn-attr-x86.awk |   50 +-
+ 71 files changed, 4195 insertions(+), 611 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/ident_map_64.c
+ create mode 100644 arch/x86/boot/compressed/idt_64.c
+ create mode 100644 arch/x86/boot/compressed/idt_handlers_64.S
+ delete mode 100644 arch/x86/boot/compressed/kaslr_64.c
+ create mode 100644 arch/x86/boot/compressed/sev-es.c
+ create mode 100644 arch/x86/include/asm/fpu/xcr.h
+ create mode 100644 arch/x86/include/asm/sev-es.h
+ create mode 100644 arch/x86/include/asm/trap_pf.h
+ create mode 100644 arch/x86/kernel/sev-es-shared.c
+ create mode 100644 arch/x86/kernel/sev-es.c
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
