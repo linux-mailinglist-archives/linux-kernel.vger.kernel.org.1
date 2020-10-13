@@ -2,161 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C9B28D198
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE6028D19A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731396AbgJMP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49620 "EHLO
+        id S1731407AbgJMP4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731387AbgJMP4j (ORCPT
+        with ESMTP id S1731302AbgJMP4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:56:39 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B372C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:56:39 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t9so24669201wrq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:56:39 -0700 (PDT)
+        Tue, 13 Oct 2020 11:56:54 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56694C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:56:53 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 32so479182otm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1QiOXawpEW/baUUCnHfNnDJvAVS6kigOm0sC2Uhuv+Y=;
-        b=W88yhCzzRjNPmZJ6htj7Wuq+3b0t3MZhyBeswQHhr5fQXjDodedcSLiS3kjebSSidq
-         Bn7NofYW7e1NFcb2sTAxC6l4q0vhySMEV0ZbtQeVqPoeAVIexaHWunkMFSjiG6AEfeZg
-         V0gVQicR9eCsxK7U1I+7kPvlMsRxTaU+52f2Ul3smqU5blNcscLUKIrkPZa8q56nDR4h
-         8xXjvulaNRv55P46qTW/nh2XW6ky/MTvNpHdExK3bDt1ySSWM+2O3wkwqzI7rT5y+NIB
-         6EEy8x7e8xHnoTaBVU1MHmI0hq+I/rZI0MNaAUAjFDXYW6mrfBzB3gH75P7ySEBpr9hU
-         tzqw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:mime-version
+         :content-disposition;
+        bh=390uKJTlgBk/uFtYKzYc+ATuZvhQmzATp0Bpd2mu/RI=;
+        b=JQuVsRVzWvimcRbeOgJaTLVAHUS3bps/06MhqtIadV7epIIbyJ8WRk/P3cuoV8Dngn
+         k+vXKGtxea4wA/iMd9JSBNr8UuBA04nFRow4gjzvpCRIofdgdW+Q494yxjso8FqQuHGB
+         jNZNDCHwqIaAw9wPsFaQTKUJjlmbsNwv2/xU0+B1Cv2yHm0uc/H3Ipfwa2BpPNRNlD21
+         BhIB6Lw9q1jctmHQgc45fOKP5AAPwIeaBJYcuVwVglJYLYU/ezvRQwQTv6zBt82L/2PO
+         4cfIT4i3OwiyfbzFFxPcfjfeRn5g57A0PqyCxUMjUt8ZO88jz9rMHnRUDXfF0ZL1UnuS
+         sa1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1QiOXawpEW/baUUCnHfNnDJvAVS6kigOm0sC2Uhuv+Y=;
-        b=ElYzNiwYvw5SzutFGHlxAge8aqv/sg+ThgGzrcnwWDbqLLY4klzotjZ5RUfwd20bwf
-         r1G3VDaWfvOAdfKglm5U3WU24SJHKeLwfgEbV7ae9aD4tixeIlB5dv1O+3gccuMruizS
-         giI0e294cclZaDiRFFRjcsOU1A0eigGDSL679JD1VAzQSiJ6dst9Uga0pnPv/gIIFJkC
-         eMTb4PjmVZObpKCIYKVSJLvgxa+Qr3AHm6gd9V0NQyVR4Tgju5hyTwcFP9DpLIHphOs1
-         gTRvfQSrMAacfj6K+hGlfDhWc2K20qpx3euo2m4xOQmfCJdYGfnhbDEhwRtNSBJiLEb1
-         vxLg==
-X-Gm-Message-State: AOAM533HBVspOuSwG++WIZpJ+IGKZ/61st2aabr0bPvmGViINn+1m9PW
-        J5w79U4BPkb8ydmt6l0ycdbHJscOKLgrOw==
-X-Google-Smtp-Source: ABdhPJx72aO+b4x1mizhzQqJ121ueQuCK3wusa+iNuG93K6OvAocgvXEqxvYZG+ZDUTxyyMS4UjfbA==
-X-Received: by 2002:adf:92a1:: with SMTP id 30mr313839wrn.269.1602604597798;
-        Tue, 13 Oct 2020 08:56:37 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f? ([2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f])
-        by smtp.googlemail.com with ESMTPSA id e13sm34618wre.60.2020.10.13.08.56.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 08:56:37 -0700 (PDT)
-Subject: Re: [PATCH 1/2] thermal: power allocator: change the 'k_i'
- coefficient estimation
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com
-References: <20201002122416.13659-1-lukasz.luba@arm.com>
- <20201002122416.13659-2-lukasz.luba@arm.com>
- <cc0e6d85-28ad-3cfc-e5b8-75820552b716@linaro.org>
- <5f682bbb-b250-49e6-dbb7-aea522a58595@arm.com>
- <326a84b4-1782-9e6b-2b95-9627767dd2f8@linaro.org>
- <42360f0f-5d53-085b-536f-33df93b787ca@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <4eab17d6-4232-3b8b-b096-835b13e889c1@linaro.org>
-Date:   Tue, 13 Oct 2020 17:56:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:mime-version:content-disposition;
+        bh=390uKJTlgBk/uFtYKzYc+ATuZvhQmzATp0Bpd2mu/RI=;
+        b=ks2DDAFRgkif61z7orMe4lxct6qeIdIK3dm6CHVoLEFG+ItdLVfoOCxGnYiSsAh9vg
+         WTlylj7AS1PG2Hr9Ba7oDu3To5hUwQG7twuji/PJzpMghLzMgTMIrTtNpg731TAWJEQq
+         PHaXJkHbY1aExZa4nagtPh9sWBcfJAzeuTITVtIBTuqGHgB3WqaGVRz+VsEThkxba6rU
+         h/pnFYRvGTb1j8CdSz/MCIoQR2Paa5K5XFZw5nU10ozqyJSvWOdABimNT2vg9Dd+Poyz
+         vQCZWqatPYKHGDhYJ2yMw6gne3vN7W4J+PpSdW/L9rY1cscKxrPdWIrnWFicCdMVHCnW
+         2lQQ==
+X-Gm-Message-State: AOAM530dZSBTcqbIzu9EBgG2H43PKPVpb7Jhi13E70C+pTe+rh9f/RVU
+        h2r72416QO5tZ5QggLP4EZeV4Ot6kTy9
+X-Google-Smtp-Source: ABdhPJwNgBjLO28OG8TWGz6hEl4ncKoFMYPr6twvnYksFD9Sib05QvB0GJo/DIpr86LXh5seRpo1Wg==
+X-Received: by 2002:a9d:6:: with SMTP id 6mr192462ota.235.1602604612530;
+        Tue, 13 Oct 2020 08:56:52 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id f70sm41963otf.32.2020.10.13.08.56.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 08:56:51 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b::80])
+        by serve.minyard.net (Postfix) with ESMTPSA id 2BA8B18000C;
+        Tue, 13 Oct 2020 15:56:50 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 10:56:49 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     OpenIPMI Developers <openipmi-developer@lists.sourceforge.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] IPMI bug fixes for 5.10
+Message-ID: <20201013155649.GD66562@minyard.net>
+Reply-To: minyard@acm.org
 MIME-Version: 1.0
-In-Reply-To: <42360f0f-5d53-085b-536f-33df93b787ca@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/10/2020 14:04, Lukasz Luba wrote:
-> 
-> 
-> On 10/13/20 12:22 PM, Daniel Lezcano wrote:
->> On 13/10/2020 12:59, Lukasz Luba wrote:
->>> Hi Daniel,
->>>
->>> On 10/13/20 11:21 AM, Daniel Lezcano wrote:
->>>>
->>>> Hi Lukasz,
->>>>
->>>> On 02/10/2020 14:24, Lukasz Luba wrote:
->>>>> Intelligent Power Allocation (IPA) is built around the PID controller
->>>>> concept. The initialization code tries to setup the environment
->>>>> based on
->>>>> the information available in DT or estimate the value based on minimum
->>>>> power reported by each of the cooling device. The estimation will
->>>>> have an
->>>>> impact on the PID controller behaviour via the related 'k_po', 'k_pu',
->>>>> 'k_i' coefficients and also on the power budget calculation.
->>>>>
->>>>> This change prevents the situation when 'k_i' is relatively big
->>>>> compared
->>>>> to 'k_po' and 'k_pu' values. This might happen when the estimation for
->>>>> 'sustainable_power' returned small value, thus 'k_po' and 'k_pu' are
->>>>> small.
->>>>>
->>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>>> ---
+The following changes since commit fc80c51fd4b23ec007e88d4c688f2cac1b8648e7:
 
-[ ... ]
+  Merge tag 'kbuild-v5.9' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild (2020-08-09 14:10:26 -0700)
 
->>> Yes, I strongly believe that vendor engineers will make experiments with
->>> these values and not go with default. Then they will store the k_pu,
->>> k_po, k_i via sysfs interface, with also sustainable_power.
->>
->> IMHO it is the opposite. For what I've seen, the IPA is not used or the
->> k_* are misunderstood, thus not changed. The PID regulation loop
->> technique is not quite used and known by everyone.
-> 
-> There is quite a few DT entries of 'sustainable-power' so I assumed
-> it is known, but you might be right.
+are available in the Git repository at:
 
-Yes, and if you do not count the Linaro contributions, there are even
-less entries.
+  https://github.com/cminyard/linux-ipmi.git tags/for-linus-5.10-1
 
-That may imply the sustainable power is estimated in most of the case if
-the vendors are specifying the ipa governor. This series may change the
-default behavior, but I guess this is not a problem without the right
-k_* in any case.
+for you to fetch changes up to 8fe7990ceda8597e407d06bffc4bdbe835a93ece:
 
->>> But I have to also fix the hard-coded k_i in the estimation. As
->>> described above, when we have small power values from abstract scale,
->>> the k_i stays too big.
->>
->> May be it is preferable to adjust the k_* dynamically given the
->> undershot and overshot results? And then add a set of less opaque
->> parameters for the user, like the time or watts, no?
->>
-> 
-> Hmmmm, this is interesting, I haven't thought about it. Thank you
-> for this idea.
-> That would require a re-design of current IPA. IPA trying to figure
-> out better k_* values... I will discuss it internally.
+  ipmi_si: Fix wrong return value in try_smi_init() (2020-10-05 13:30:51 -0500)
 
-[ ... ]
+----------------------------------------------------------------
+Bug fix pull for IPMI for 5.10
 
-> It would take time, definitely more than the proposed small fix
-> addressing abstract scale and hard-coded 'k_i'.
-> Do you think that this fix can be applied and then I can experiment
-> on what you suggested?
+Some minor bug fixes, return values, cleanups of prints, conversion of
+tasklets to the new API.
 
-Yes, sure. Let me review the patch 2/2.
+The biggest change is retrying the initial information fetch from the
+management controller.  If that fails, the iterface is not operational,
+and one group was having trouble with the management controller not
+being ready when the OS started up.  So a retry was added.
 
-Thanks
+----------------------------------------------------------------
+Allen Pais (1):
+      char: ipmi: convert tasklets to use new tasklet_setup() API
 
-  -- Daniel
+Corey Minyard (1):
+      ipmi: Clean up some printks
 
+Dan Carpenter (1):
+      ipmi: msghandler: Fix a signedness bug
 
+Markus Boehme (1):
+      ipmi: Reset response handler when failing to send the command
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Tianjia Zhang (1):
+      ipmi_si: Fix wrong return value in try_smi_init()
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Xianting Tian (3):
+      ipmi:sm: Print current state when the state is invalid
+      ipmi:msghandler: retry to get device id on an error
+      ipmi: add retry in try_get_dev_id()
+
+Xiongfeng Wang (1):
+      ipmi: add a newline when printing parameter 'panic_op' by sysfs
+
+ drivers/char/ipmi/ipmi_bt_sm.c      |  4 ++-
+ drivers/char/ipmi/ipmi_kcs_sm.c     | 15 +++++++----
+ drivers/char/ipmi/ipmi_msghandler.c | 52 +++++++++++++++++++++++++------------
+ drivers/char/ipmi/ipmi_si_intf.c    | 19 +++++++++++++-
+ drivers/char/ipmi/ipmi_smic_sm.c    | 35 +++++++++++++++----------
+ include/linux/ipmi.h                |  2 ++
+ include/uapi/linux/ipmi_msgdefs.h   |  2 ++
+ 7 files changed, 93 insertions(+), 36 deletions(-)
+
