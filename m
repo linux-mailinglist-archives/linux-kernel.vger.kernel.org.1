@@ -2,119 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEF728C8E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4063428C8E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389808AbgJMHAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:00:07 -0400
-Received: from ozlabs.org ([203.11.71.1]:54127 "EHLO ozlabs.org"
+        id S2389829AbgJMHBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:01:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727353AbgJMHAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:00:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2389813AbgJMHBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 03:01:23 -0400
+Received: from localhost (unknown [122.171.192.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9RHw4RCtz9sSs;
-        Tue, 13 Oct 2020 17:59:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602572400;
-        bh=x1KWFCxITrWKOyi5Mv/0ObqK/R6h8Do789neFaZAftg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RNv04j0Gn68mDN9Vgz52ZLJ/kY32JuKqR0hhpozs+9JwS0F3231vW19sQ6+hgynAs
-         qOto7UY456E6BN2UCg31wH3TXpddcsNZXkA0kCMX7pxwe2RvSNZOUlCbWkm1uA6c5V
-         nRFVvSasa/5Uxng3Q4vuTqXy2XTxdbtzZbqkMGSNACHZELUpfe1XxKK5GMo3GfY7r/
-         p641mcKNGMgliuHRAJSo7I/RGFZj07Q/o5JIUPMUJ/uDEZN2P8RVI5/R2jFErplk7q
-         Ibu7ZGKtCk1UyUPZypoqhaoYEXBYY2gdKwrNz+qyAdGzOivL7ZgqHVTWdnhm812TK3
-         a9p5+v6XCBGkw==
-Date:   Tue, 13 Oct 2020 17:59:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: linux-next: manual merge of the akpm-current tree with the tip tree
-Message-ID: <20201013175953.4cc33c06@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 6252C20797;
+        Tue, 13 Oct 2020 07:01:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602572483;
+        bh=PWUXZUmAro4Vo+Y/6BQugd23hce3ESPaoJVUv8Ka70Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XI7pwgxKzcz0QP/Y0FCCTMsRUx1Ku6JJRmeooDXal2SSvQgqSooRBYACoOE6Jaxto
+         3VXFsmZAPvHbvRG4nS4RrR/qrJi8C0i3gBVod095u1g6TZw4/CPAmqFnssoq6jcKy8
+         jzPXVVCPjDNXDrGeCXIHghFBRtSq+CV7GiGuKiJc=
+Date:   Tue, 13 Oct 2020 12:31:18 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     "Sia, Jee Heng" <jee.heng.sia@intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Eugeniy.Paltsev@synopsys.com" <Eugeniy.Paltsev@synopsys.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/15] dmaengine: dw-axi-dmac: support Intel KeemBay
+ AxiDMA
+Message-ID: <20201013070118.GN2968@vkoul-mobl>
+References: <20201012042200.29787-1-jee.heng.sia@intel.com>
+ <20201012135905.GX4077@smile.fi.intel.com>
+ <BL0PR11MB3362A202A1D3BDC8C1CA41DBDA040@BL0PR11MB3362.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S5OI6YLhuOrH2lenvc3BufR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL0PR11MB3362A202A1D3BDC8C1CA41DBDA040@BL0PR11MB3362.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S5OI6YLhuOrH2lenvc3BufR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 13-10-20, 05:49, Sia, Jee Heng wrote:
+> > >
+> > > This patch set is to replace the patch series submitted at:
+> > > https://lore.kernel.org/dmaengine/1599213094-30144-1-git-send-email-je
+> > > e.heng.sia@intel.com/
+> > 
+> > And it means effectively the bumped version, besides the fact that you double
+> > sent this one...
+> > 
+> > 
+> > Please fix and resend. Note, now is merge window is open. Depends on
+> > maintainer's flow it may be good or bad time to resend with properly formed
+> > changelog and version of the series.
 
-Hi all,
+yeah sorry I wont look at it till merge window closes
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+> [>>] Thanks. Will resend the patch set with v1 in the header.
 
-  include/linux/sched.h
+Should this be v1, v1 was the first post, this would be v2!
 
-between commit:
+Please use git format-patch -v2 to autogenerate version headers in
+patches..
 
-  d741bf41d7c7 ("kprobes: Remove kretprobe hash")
+I thought Intel folks had internal review list to take care of these
+things, is it no longer used..?
 
-from the tip tree and commit:
-
-  faf4ffbfd1c5 ("fs/buffer.c: add debug print for __getblk_gfp() stall prob=
-lem")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/sched.h
-index 1695d45c2d7a,a360da173c32..000000000000
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@@ -1322,10 -1320,13 +1327,17 @@@ struct task_struct=20
-  	struct callback_head		mce_kill_me;
-  #endif
- =20
- +#ifdef CONFIG_KRETPROBES
- +	struct llist_head               kretprobe_instances;
- +#endif
- +
-+ #ifdef CONFIG_DEBUG_AID_FOR_SYZBOT
-+ 	unsigned long			getblk_stamp;
-+ 	unsigned int			getblk_executed;
-+ 	unsigned int			getblk_bh_count;
-+ 	unsigned long			getblk_bh_state;
-+ #endif
-+=20
-  	/*
-  	 * New fields for task_struct should be added above here, so that
-  	 * they are included in the randomized portion of task_struct.
-
---Sig_/S5OI6YLhuOrH2lenvc3BufR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FUGkACgkQAVBC80lX
-0GzufQf+Ll91i6oCweRhM0PU25xD/psSPnXp11dDTujWUyWUxHuIynTdcbUuiSGi
-duGBzmAzh7gYUSn743m44bCQdDtQG8e2x0SVzb/bqSaYlww63GbF/DcT/fSoZpNr
-IZxUJDgXa/2w43uXu0ntgBbjqIMLPS+f8FB6BW02FI2PUnf9Ju1HlsfahmLzpKmD
-m4tCjr2LRE7j/6RIOHOoKAVgEw7PeFACBKwni6ib5feNqgn+K9BuleyoMMce39jB
-IhC9LDAxPoLrnljJCzlWaXXsMoTlJJLgBAHE4NlDkbv9vu31bezL1Mdukt36/4iT
-NT8/IqIzWzLymO7GKbL+FafXuJkOlQ==
-=ehVY
------END PGP SIGNATURE-----
-
---Sig_/S5OI6YLhuOrH2lenvc3BufR--
+-- 
+~Vinod
