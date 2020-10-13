@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF1828CFE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D1528CFF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388442AbgJMOLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:11:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388308AbgJMOLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:11:30 -0400
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E050247D6;
-        Tue, 13 Oct 2020 14:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602598289;
-        bh=ZEm4qyv0rsNaiXITpPHDZWzgAu0znXbk6n4+ypGmOLA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MfLofHiCE1CcxBehDwhDaCUB8io9lEWPSt+vXHP+HEfwyRNNUXbecG3eRfqdVh9ws
-         g8b2ZY0eoFr3bR52uVJTtPE+6nA3w/7CN3C8sb2nF8oZ8NOjd4rSdIwIlcBM8sfzT+
-         oK32818AOC6kX748rZe3U7dg3stjNt8UJHGlKqVY=
-Received: by mail-ot1-f45.google.com with SMTP id 32so108351otm.3;
-        Tue, 13 Oct 2020 07:11:29 -0700 (PDT)
-X-Gm-Message-State: AOAM532JHqK0mp5tCmTcLi707cqyJUHyjmf7JfikydzgQUFmDrCPTWAA
-        0U5sha6u4egTaOwq1HE9ueeWEwLQONyCUl8cdw==
-X-Google-Smtp-Source: ABdhPJxBUmRbPMpwpE7ZGcLIsKkXQrHRXmZqq9KlY9ofRDlt+UbBHiSqD1X5MKFiKGZhA3PyOK+YrVzyCmJoZsNFR+A=
-X-Received: by 2002:a9d:1c90:: with SMTP id l16mr22887593ota.192.1602598288568;
- Tue, 13 Oct 2020 07:11:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201008061556.1402293-1-badhri@google.com> <20201008074600.GA247486@kroah.com>
-In-Reply-To: <20201008074600.GA247486@kroah.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 13 Oct 2020 09:11:17 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLMEzOT2_FomwDUhyYe7EV-jEL=A8CwDxngbwJJyJ_eCA@mail.gmail.com>
-Message-ID: <CAL_JsqLMEzOT2_FomwDUhyYe7EV-jEL=A8CwDxngbwJJyJ_eCA@mail.gmail.com>
-Subject: Re: [PATCH v10 00/15] TCPM support for FRS and AutoDischarge Disconnect
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Badhri Jagan Sridharan <badhri@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Amelie Delaunay <amelie.delaunay@st.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2388503AbgJMONp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388485AbgJMONp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 10:13:45 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC5D0C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:13:44 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by albert.telenet-ops.be with bizsmtp
+        id fSDi2300E4C55Sk06SDiYz; Tue, 13 Oct 2020 16:13:43 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kSL3e-0006RP-HN; Tue, 13 Oct 2020 16:13:42 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kSL3e-0007QD-FW; Tue, 13 Oct 2020 16:13:42 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] can: Explain PDU in CAN_ISOTP help text
+Date:   Tue, 13 Oct 2020 16:13:41 +0200
+Message-Id: <20201013141341.28487-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 2:45 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Oct 07, 2020 at 11:15:41PM -0700, Badhri Jagan Sridharan wrote:
-> > Hi,
-> >
-> > Made two changes:
-> >
-> > 1. Added "additionalProperties: false" as suggested by Rob Herring in
-> > https://lore.kernel.org/linux-usb/20201005144618.GA154206@bogus/
-> >
-> > 2. Removed FRS dts binding constants to address Rob Herring's comment in
-> > https://lore.kernel.org/linux-usb/20201006182940.GA2574941@bogus/
+The help text for the CAN_ISOTP config symbol uses the acronym "PDU".
+However, this acronym is not explained here, nor in
+Documentation/networking/can.rst.
+Expand the acronym to make it easier for users to decide if they need to
+enable the CAN_ISOTP option or not.
 
-And didn't address my other comments...
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ net/can/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> That worked better.  I've applied the patches that Heikki had reviewed
-> to my usb-testing branch now.
+diff --git a/net/can/Kconfig b/net/can/Kconfig
+index 224e5e0283a986d9..7c9958df91d353c8 100644
+--- a/net/can/Kconfig
++++ b/net/can/Kconfig
+@@ -62,8 +62,9 @@ config CAN_ISOTP
+ 	  communication between CAN nodes via two defined CAN Identifiers.
+ 	  As CAN frames can only transport a small amount of data bytes
+ 	  (max. 8 bytes for 'classic' CAN and max. 64 bytes for CAN FD) this
+-	  segmentation is needed to transport longer PDUs as needed e.g. for
+-	  vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN traffic.
++	  segmentation is needed to transport longer Protocol Data Units (PDU)
++	  as needed e.g. for vehicle diagnosis (UDS, ISO 14229) or IP-over-CAN
++	  traffic.
+ 	  This protocol driver implements data transfers according to
+ 	  ISO 15765-2:2016 for 'classic' CAN and CAN FD frame types.
+ 	  If you want to perform automotive vehicle diagnostic services (UDS),
+-- 
+2.17.1
 
-Why is the driver being applied without the binding? Bindings come
-first. The binding and driver don't even agree on the compatible
-string (maxim,tcpci vs. maxim,tcpc), neither of which are right.
-
-The FRS bindings need to be sorted out too as we have multiple folks
-proposing bindings for it. I wish someone would review all these TypeC
-related bindings because I'm getting a continual stream of piecemeal
-additions with no coordination and I don't have knowledge on TypeC nor
-bandwidth to review it all.
-
-Rob
