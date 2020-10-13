@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2428C28CE8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E307928CE9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgJMMmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:42:06 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:40234 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgJMMmG (ORCPT
+        id S1728075AbgJMMoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727959AbgJMMoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:42:06 -0400
-Received: by mail-oi1-f196.google.com with SMTP id m128so22292429oig.7;
-        Tue, 13 Oct 2020 05:42:05 -0700 (PDT)
+        Tue, 13 Oct 2020 08:44:39 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A44C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:44:39 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id gv6so672066pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:44:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kROrNp0/vnBVDqgh6bMB0Lv2qonHQWx62hPvR0JVLiY=;
+        b=JBmDR5ZcqT+4GTHKuB+FFmQCvAlkmIgjMAlqirZ8kwu91L7bvvvrfNwZPKo13RgEzC
+         IOEmqZPnyu5dNhNMFgjhQlwOnOZlxzt9Fl4tO+jc/+6p7XZM96jpwtFpCEIM667Z+lDT
+         7gyjHo0935+9qEBN0Gi/B74PjwgZrFmkjbjs8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9a9S8jqFI1z/da5IKYstSGsQ5P0heyKtA+nDpAbWxis=;
-        b=ae0JiDRUGc6UhmD2+npHtsX8/Co/tEckAlfJgyZ2ekhWEdLLjluqcdHHgkocSNuVL0
-         dpQ3ZwXEsYaNblb8oN+VnCPcCaLoUsgYTCTXkEoYLkMQnAzToeV5tksKtoUQB68lKoBV
-         l86jnp4pVyjGR6gWzI3sPdngFR0X3+Gex5dU3O1gNTw+5VakzOJFWQgQfaWRWEvzdikY
-         R9aJ8b4cLVFsUqaZ1LGkzT1vAXyRc13IGkJE08OXLWPWPfaE1sS2wNZ/HftbjBKZ3psv
-         1wyGuoxnzdqo/VmsZkI+/zmKdZXRosytEUaC6rAeMmSZW8FN38PT6+Ytplsy70yHJhvI
-         muBA==
-X-Gm-Message-State: AOAM5333Z8cyzkIFNQ+kHlKMsbSoNPgIWvgI6R/k1gmwi6DYmzLVEX29
-        zgYhdMRnc90Y6NIrZR7i6Q==
-X-Google-Smtp-Source: ABdhPJzik5HzirfRUO8Rt3aNEPIrxservslx8BbKUyJWQUJ9c+zphQ1dJb0v+CV4goeTVMBvVtFbNg==
-X-Received: by 2002:aca:fc85:: with SMTP id a127mr14056058oii.125.1602592925132;
-        Tue, 13 Oct 2020 05:42:05 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o15sm10002746otj.3.2020.10.13.05.42.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kROrNp0/vnBVDqgh6bMB0Lv2qonHQWx62hPvR0JVLiY=;
+        b=gJW+c7uhu3mnOelnLAfRYfn+UyadT39QhJ5lO/Lyd2XmOoj+g2/GlsmYKKBDrsDxrJ
+         VHCacxgYll2NLgR6SdDatOqsJlYMoL8e7Y8W5MSrwaqeqdui2jGCtLAemhHHmQzoqkFq
+         WbO6CwFY/Da+mTi9sPC4LmGRHCFXLLmPWI97zygYWgv6AtXAXXFOyMyxfKcnsfwWZA4P
+         DiTQMyjKmD+bq57Lk23bohvIzzR3DM9QqYoMuZ++pomPwNtBBk1qAoOeLNrEqhp5cGly
+         3vTobkvbOQhmRIMvqnNer1gByUbzdf97zP81/X2fqvJ9h19KRrrxc5VQGt3/aZWMwhdv
+         KDSg==
+X-Gm-Message-State: AOAM533fMlfvE9lNkUgzdYilHIhkbrV1KiOJxG7jnZu2rh9TzBhPjywO
+        kwJeoS2pf4wsM0hhqT8PU443Ag==
+X-Google-Smtp-Source: ABdhPJzoAbnC6phIDBdMm/XQSDq3CThGjLMNwHM+FB8/E3vUaoqNolC/D6w3MUMgFcIZGCXg98d4ow==
+X-Received: by 2002:a17:90a:ff92:: with SMTP id hf18mr26653376pjb.171.1602593079032;
+        Tue, 13 Oct 2020 05:44:39 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
+        by smtp.gmail.com with ESMTPSA id b20sm18914536pjo.37.2020.10.13.05.44.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 05:42:04 -0700 (PDT)
-Received: (nullmailer pid 3312154 invoked by uid 1000);
-        Tue, 13 Oct 2020 12:42:03 -0000
-Date:   Tue, 13 Oct 2020 07:42:03 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 16/18] dt-bindings: usb: meson-g12a-usb: Validate
- DWC2/DWC3 sub-nodes
-Message-ID: <20201013124203.GE3269269@bogus>
-References: <20201010224121.12672-1-Sergey.Semin@baikalelectronics.ru>
- <20201010224121.12672-17-Sergey.Semin@baikalelectronics.ru>
+        Tue, 13 Oct 2020 05:44:38 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH v4 0/2] media: mtk-vcodec: fix builds when remoteproc is disabled
+Date:   Tue, 13 Oct 2020 21:44:26 +0900
+Message-Id: <20201013124428.783025-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201010224121.12672-17-Sergey.Semin@baikalelectronics.ru>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 01:41:19AM +0300, Serge Semin wrote:
-> Amlogic G12A USB DT sub-nodes are supposed to be compatible with the
-> generic DWC USB2 and USB3 devices. Since now we've got DT schemas for
-> both of the later IP cores let's make sure that the Amlogic G12A USB
-> DT nodes are fully evaluated including the DWC sub-nodes.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> ---
->  .../bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> index 88184d7e26cc..3e8ac0ff90de 100644
-> --- a/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> +++ b/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml
-> @@ -78,7 +78,20 @@ properties:
->  
->  patternProperties:
->    "^usb@[0-9a-f]+$":
-> -    type: object
-> +    allOf:
-> +      - if:
-> +          properties:
-> +            compatible:
-> +              contains:
-> +                const: snps,dwc2
-> +        then:
-> +          $ref: dwc2.yaml#
-> +      - if:
-> +          properties:
-> +            compatible:
-> +              const: snps,dwc3
-> +        then:
-> +          $ref: snps,dwc3.yaml#
+No functional changes since v3, but it does the job at fixing the build
+breakage. :) Please kindly take a look.
 
-It should be enough to do just:
+Changes since v3:
+* Removed obsolete Acked-bys
+* Fixed indentation in Kconfig file
 
-oneOf:
-  - $ref: dwc2.yaml#
-  - $ref: snps,dwc3.yaml#
+Changes since v2:
+* Use the FOO || !FOO magic suggested by Hans to ensure a built-in
+  module does not try to link against symbols in a module,
+* Added a patch to split the VPU and SCP ops into their own source files
+  and make the optional build cleaner,
+* Control the build of firmware implementations using two new transparent
+  Kconfig symbols.
+
+Changes since v1:
+* Added Acked-by from Randy.
+* Fixed typo in Kconfig description.
+
+Alexandre Courbot (2):
+  media: mtk-vcodec: move firmware implementations into their own files
+  media: mtk-vcodec: fix build breakage when one of VPU or SCP is
+    enabled
+
+ drivers/media/platform/Kconfig                |  28 ++-
+ drivers/media/platform/mtk-vcodec/Makefile    |  10 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |   2 +-
+ .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |   2 +-
+ .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 174 +-----------------
+ .../media/platform/mtk-vcodec/mtk_vcodec_fw.h |   7 +-
+ .../platform/mtk-vcodec/mtk_vcodec_fw_priv.h  |  52 ++++++
+ .../platform/mtk-vcodec/mtk_vcodec_fw_scp.c   |  73 ++++++++
+ .../platform/mtk-vcodec/mtk_vcodec_fw_vpu.c   | 109 +++++++++++
+ 9 files changed, 277 insertions(+), 180 deletions(-)
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_priv.h
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_scp.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_fw_vpu.c
+
+--
+2.29.0.rc1.297.gfa9743e501-goog
+
