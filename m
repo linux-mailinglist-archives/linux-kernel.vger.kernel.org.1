@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94C728D43E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C176928D442
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732370AbgJMTJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729603AbgJMTJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:09:27 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730073AbgJMTMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:12:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39177 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725970AbgJMTMg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 15:12:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602616354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+Geoviw+gNgwSk9MTAZob0fo0cDmAP4quy2bMV3V7xg=;
+        b=gH+pocIJ0078VmUV7UA2pqY4LdnU0LYFcxgsFyweEnPm1ksWrWgnTh/xU6Isp3uY6Ar0uP
+        P9hQKkiHFbpMFUkpC0X/si7wvUSfbrJb80OJ6U0zYWJavm351qtibI1OFustkVLWLXGAj0
+        k2rt4dF7hitQtfccHOGSy4DovRZUgmE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-ejcES3vtPsmfzayTtJ1XYA-1; Tue, 13 Oct 2020 15:12:30 -0400
+X-MC-Unique: ejcES3vtPsmfzayTtJ1XYA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3340D20E65;
-        Tue, 13 Oct 2020 19:09:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602616166;
-        bh=kNQlVTeHNAfONSQgXkp3RK1JocNH8x9dldRu804OQHE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=txJOU0N7+OPVuzvB9htxvbuAi/4kPjv0O/wPEPx981bTqxJ4eAQAg/7Z48gnwY1Bo
-         pyuUeZYt0zt5ak5/EDwEJpwCJjE8XHDgzX3WrqY/TpwW9c2TKMUxrGHHLPg0K8uiTd
-         TUEaIrYqVu7+js8b/zro2yVWX8bHjscURA4ZcG3k=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3339F4047F; Tue, 13 Oct 2020 16:09:24 -0300 (-03)
-Date:   Tue, 13 Oct 2020 16:09:24 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH RESEND 1/1] perf build: Allow nested externs to enable
- BUILD_BUG() usage
-Message-ID: <20201013190924.GB3100363@kernel.org>
-References: <20201009112327.GC656950@krava>
- <cover.thread-251403.your-ad-here.call-01602244460-ext-7088@work.hours>
- <patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours>
- <20201009124111.GD656950@krava>
- <20201012085936.241cc62d@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012085936.241cc62d@canb.auug.org.au>
-X-Url:  http://acmel.wordpress.com
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4A281868410;
+        Tue, 13 Oct 2020 19:12:29 +0000 (UTC)
+Received: from ovpn-118-16.rdu2.redhat.com (ovpn-118-16.rdu2.redhat.com [10.10.118.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0946960C07;
+        Tue, 13 Oct 2020 19:12:22 +0000 (UTC)
+Message-ID: <c38fe9ee57c142e1cb720520b4f9b68666bcb2b8.camel@redhat.com>
+Subject: Re: Unbreakable loop in fuse_fill_write_pages()
+From:   Qian Cai <cai@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Date:   Tue, 13 Oct 2020 15:12:22 -0400
+In-Reply-To: <20201013185808.GA164772@redhat.com>
+References: <7d350903c2aa8f318f8441eaffafe10b7796d17b.camel@redhat.com>
+         <20201013184026.GC142988@redhat.com> <20201013185808.GA164772@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Oct 12, 2020 at 08:59:36AM +1100, Stephen Rothwell escreveu:
-> Hi all,
+On Tue, 2020-10-13 at 14:58 -0400, Vivek Goyal wrote:
+> I am wondering if virtiofsd still alive and responding to requests? I
+> see another task which is blocked on getdents() for more than 120s.
 > 
-> On Fri, 9 Oct 2020 14:41:11 +0200 Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Fri, Oct 09, 2020 at 02:25:23PM +0200, Vasily Gorbik wrote:
-> > > Currently BUILD_BUG() macro is expanded to smth like the following:
-> > >    do {
-> > >            extern void __compiletime_assert_0(void)
-> > >                    __attribute__((error("BUILD_BUG failed")));
-> > >            if (!(!(1)))
-> > >                    __compiletime_assert_0();
-> > >    } while (0);
-> > > 
-> > > If used in a function body this obviously would produce build errors
-> > > with -Wnested-externs and -Werror.
-> > > 
-> > > To enable BUILD_BUG() usage in tools/arch/x86/lib/insn.c which perf
-> > > includes in intel-pt-decoder, build perf without -Wnested-externs.
-> > > 
-> > > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>  
-> > 
-> > that one applied nicely ;-) thanks
-> > 
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> [10580.142571][  T348] INFO: task trinity-c36:254165 blocked for more than 123
+> +seconds.
+> [10580.143924][  T348]       Tainted: G           O	 5.9.0-next-20201013+ #2
+> [10580.145158][  T348] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> +disables this message.
+> [10580.146636][  T348] task:trinity-c36     state:D stack:26704 pid:254165
+> ppid:
+> +87180 flags:0x00000004
+> [10580.148260][  T348] Call Trace:
+> [10580.148789][  T348]  __schedule+0x71d/0x1b50
+> [10580.149532][  T348]  ? __sched_text_start+0x8/0x8
+> [10580.150343][  T348]  schedule+0xbf/0x270
+> [10580.151044][  T348]  schedule_preempt_disabled+0xc/0x20
+> [10580.152006][  T348]  __mutex_lock+0x9f1/0x1360
+> [10580.152777][  T348]  ? __fdget_pos+0x9c/0xb0
+> [10580.153484][  T348]  ? mutex_lock_io_nested+0x1240/0x1240
+> [10580.154432][  T348]  ? find_held_lock+0x33/0x1c0
+> [10580.155220][  T348]  ? __fdget_pos+0x9c/0xb0
+> [10580.155934][  T348]  __fdget_pos+0x9c/0xb0
+> [10580.156660][  T348]  __x64_sys_getdents+0xff/0x230
 > 
-> I will apply that patch to the merge of the tip tree today (instead of
-> reverting the series I reverted in Friday) (unless I get an update of
-> the tip tree containing it, of course).
+> May be virtiofsd crashed and hence no requests are completing leading
+> to a hard lockup?
+No, it was not crashed. After I had to forcibly close the guest, the virtiofsd
+daemon will exit normally. However, I can't tell exactly if the virtiofsd daemon
+was still functioning normally. I'll enable the debug and retry to see if there
+is anything interesting.
 
-Applied to perf/core that will go to Linus this week, maybe even today.
-
-- Arnaldo
