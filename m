@@ -2,145 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241A928D438
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624F428D424
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 20:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgJMTIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:08:05 -0400
-Received: from mail1.systemli.org ([192.68.11.209]:34344 "EHLO
-        mail1.systemli.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgJMTIE (ORCPT
+        id S1728598AbgJMS64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 14:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728497AbgJMS64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:08:04 -0400
-X-Greylist: delayed 558 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 15:08:02 EDT
-Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
-        s=default; t=1602615523;
-        bh=PHt1+Y+M9O7RcuFbfb1lsOWaqXA0PJHKNi0LYmRfAEk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=veaxFPxMCSHBFnG+4P7/Wl8dPZNMcwsB8JgF4VP2mgcfzHyLkdHq/alL8N4s2z/NS
-         mPJJvCzZtsljZefrPAtIyGYpyFSmiJ7/wfut5wnjMhGg3qFdQEOFdO5dXzLTYmLR7F
-         0UAYcoGsk9IAMYBilLzOeeINGlsGen9RH/W0nzZieyxcR4/p6DzCMxXnIx2AlOikhM
-         ouoYD1lK3gLR0NefMjXuAIMhl8ccv4dFIv07RnO23r/S0hedHHILh3SXaQgRVomSA9
-         WGTSiMrKv9zs0BzOVEtT1gGeQIdxvxceJADF4Heaqc0Vlyv+BB9kEM8uCG7KO/Rf3g
-         GF2JFb8M+AdYQ==
-To:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
-        netdev@vger.kernel.org
-Cc:     Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-2-kleber.souza@canonical.com>
-From:   Richard Sailer <richard_siegfried@systemli.org>
-Autocrypt: addr=richard_siegfried@systemli.org; prefer-encrypt=mutual;
- keydata=
- mQENBE3hr2UBCACos1E12camcYIlpe25jaqwu+ATrfuFcCIPsLmff7whzxClsaC78lsxQ3jD
- 4MIlOpkIBWJvc4sziai1P/CrafvM0DTuUasCv+mQpup6cFMWy1JmDtJ8X0Ccy/PH83e9Yjnv
- xJu0NhoQAqMZrVmXx4Q7DKcgpvkk9Oyd5u6ocfdb2GhF0Bxa7GySZyYOc4rQvduRLOdNMbnS
- 6SM+cTAhMOHtoqKWCP4EogXKALg6LDFcx8yUoMzLRy/YXsnWa1/WayG8Zr6kX84VKhTGUrdG
- Pw4Zg1cQ6vqwMZ4RwaR/9RWK2WnYr7XyOTDBgmCix5c5lu+GeLqUYUIPTvdQ7Xgwx0UhABEB
- AAG0OVJpY2hhcmQgU2llZ2ZyaWVkIFNhaWxlciA8cmljaGFyZF9zaWVnZnJpZWRAc3lzdGVt
- bGkub3JnPokBVwQTAQgAQQIbIwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAIZARYhBAYAIbmK
- zp5fVAuyN/ZBOcwFm+HhBQJanueLBQkSYNKmAAoJEPZBOcwFm+Hh+ugH/2P0yClrZkkMK5y2
- L389qNPlF8i1H77S4NE9zxiHI38jnIFLqjD4F+KzGAXNmOXCw+QYqLL+TmsuGY+5LOLtp/M4
- lG6ajVC1JCcF2+bQrDc11g7AG7A+rySX5JpqSFO7ARfLTs3iW1DoyLN7lBUtL9dV+yx9mRUv
- fx/TcB9ItPhK4rtJuWy3yg6SNBZzkgc0zsCyIkJ4dEtdEW6IgW6Qk242kMVya8fytM02EwEM
- vBTdca/duCO2tEComPeF+8WExM+BfQ+6o3kpqRsOR6Ek6wDsnalFHy8NHaicbEy7qjybGOKZ
- IdvzAyAhsmpu+5ltOfQWViNBseqRk1H9ikuTKTq5AQ0ETeGvZQEIANRmPSJX9qVU+Hi74uvD
- /LYC3wPm5kCAS0Q5jT3AC5cisu8z92b/Bt8DRKwwpu4esZisQu3RSFvnmkrllkuokSAVKxXo
- bZG2yTq+qecrvKtVH99lA0leiy5TdcJdmhJvkcQv7kvIgKYdXSW1BAhUbtX827IGAW1LCvJL
- gKqox3Ftxpi5pf/gVh7NFXU/7n6Nr3NGi5havoReeIy8iVKGFjyCFN67vlyzaTV6yTUIdrko
- StTJJ8c7ECjJSkCW34lj8mR0y9qCRK5gIZURf3jjMQBDuDvHO0XQ4mog6/oOov4vJRyNMhWT
- 2b0LG5CFJeOQTQVgfaT1MckluRBvYMZAOmkAEQEAAYkBPAQYAQIAJgIbDBYhBAYAIbmKzp5f
- VAuyN/ZBOcwFm+HhBQJanueQBQkSYNKrAAoJEPZBOcwFm+HhrCAH/2doMkTKWrIzKmBidxOR
- +hvqJfBB4GvoHBsQoqWj85DtgvE5jKc11FYzSDzQjmMKIIBwaOjjrQ8QyXm2CYJlx7/GiEJc
- F3QNa5q3GBgiyZ0h78b2Lbu/sBhaCFSXHfnriRGvIXqsxyPMllqb+LBRy56ed97OQBQX8nFI
- umdUMtt8EFK2SM0KYY1V0COcYqGHMRUiVosTV1aVwoLm2SXsB9jicPUaQbRgsPfglTn00wnl
- fhJ8bAO800MtG+LW6pzP+6EZPvnHhKBS7Xbl6bn6r2OW32T7TeFg0RJbpE/MW1gY0NjgmtWj
- vdhuvK9nHCRL2O/xLofm9aoELUaXGHoxMn4=
-Message-ID: <0de6cc66-8825-6631-843e-68fc9e2c1517@systemli.org>
-Date:   Tue, 13 Oct 2020 20:58:34 +0200
+        Tue, 13 Oct 2020 14:58:56 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598D2C0613D0;
+        Tue, 13 Oct 2020 11:58:56 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id x20so767424qkn.1;
+        Tue, 13 Oct 2020 11:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iyujXSr66H0LW5PmWT8T15/LcpIBTSbnFu/C1AlCOfc=;
+        b=lvVK1TFwKfNxF9xc4iZvsVlMWxR8Ae1ozwz1kQ5q+CJA6Xovr0KfDAeWJlRkLtUc3t
+         BsdUdShrBeXn71nnu70CBOV5V1GsNEwmipJIvP/J07pHPyEOYxev9xLCfOf1rXxZKltb
+         SlLI2EMczm1fB2Z1pXoK1I/ey2VEL76TjNwCjUYuLmWJWV9ER/RSqp5Ph+S/FBvqjxrG
+         gpdQtYGcFFLqiChAEPCkaBbOl/fUeo9lSSFVK2K7uCfNECJZjUP+cNAixm/UklURrORN
+         XQ5nn7ULklwfzPxE3AiMdlR9iorZCwxXXvq1ai5Aw/Z83DXd376JDnNwddF2B2xDjcrx
+         CgxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iyujXSr66H0LW5PmWT8T15/LcpIBTSbnFu/C1AlCOfc=;
+        b=P1xqquFaDbVOqxVLWblK3XUBiAaYLMSvF68UMjCwAfdckEBd8zyp24apVS0WR/mX0Z
+         WKo1zrnc1T0DI99DqI85qsZYY5w/6gDjvxX4yoF15B8QpAy1gxBwCCXUE5md8AuYbMnh
+         yUmFV7cdASsfa2A2q/mJMXONXf4kh7hU2UPTnCz9lrY1rZ2V6Nh/mf33MMwmh0zAOu7K
+         bCtMrdmxqCXJ/ZNe4sp9vmNL65flVz8ZVZIJMvAOM9Ov/cx2b88uSvRsuc6V2/u6gNLu
+         Nztps4xbCa5a8M502DvwEL3pGaY1w1pTDg2VqxbF8WE46PkvYiTcFDuv5HWmUNq40/xr
+         VueQ==
+X-Gm-Message-State: AOAM531akBIIM7RoKOdHKKggj9Sw9fSq3kkjLXrwCrhs1LP9a6mj2oPy
+        PEWg/HpxtEYzvKMr4PwWwAw=
+X-Google-Smtp-Source: ABdhPJy21mJYiy7EaIls91cnRuzM/Lzc2HQ3ui5v5MtOMTOQcn9pm1msGFmuwGrb8IVsLmZedddmjA==
+X-Received: by 2002:a37:8d82:: with SMTP id p124mr1436426qkd.371.1602615535426;
+        Tue, 13 Oct 2020 11:58:55 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id k15sm336858qtk.64.2020.10.13.11.58.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 11:58:54 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 14:58:51 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, jic23@kernel.org,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Subject: Re: [PATCH v5 4/5] docs: counter: Document character device interface
+Message-ID: <20201013185851.GB32722@shinobu>
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <54190f9875b81b6aa5483a7710b084053a44abb8.1601170670.git.vilhelm.gray@gmail.com>
+ <20201008080909.GA31561@amd>
+ <20201008122845.GA3314@shinobu>
+ <d06d5e47-5776-85ee-0dc5-8b624e36d83d@lechnology.com>
 MIME-Version: 1.0
-In-Reply-To: <20201013171849.236025-2-kleber.souza@canonical.com>
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="KHVaNnR0CtdkaZCgAsBVhWbXcrEqCZBOz"
+        protocol="application/pgp-signature"; boundary="5/uDoXvLw7AC5HRs"
+Content-Disposition: inline
+In-Reply-To: <d06d5e47-5776-85ee-0dc5-8b624e36d83d@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KHVaNnR0CtdkaZCgAsBVhWbXcrEqCZBOz
-Content-Type: multipart/mixed; boundary="dfjn9C3XkBZ9ZjEm6mKvr0DLGL7w3liEv";
- protected-headers="v1"
-From: Richard Sailer <richard_siegfried@systemli.org>
-To: Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
- netdev@vger.kernel.org
-Cc: Gerrit Renker <gerrit@erg.abdn.ac.uk>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "Alexander A. Klimov" <grandmaster@al2klimov.de>,
- Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>,
- Alexey Kodanev <alexey.kodanev@oracle.com>, dccp@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Message-ID: <0de6cc66-8825-6631-843e-68fc9e2c1517@systemli.org>
-Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-2-kleber.souza@canonical.com>
-In-Reply-To: <20201013171849.236025-2-kleber.souza@canonical.com>
 
---dfjn9C3XkBZ9ZjEm6mKvr0DLGL7w3liEv
+--5/uDoXvLw7AC5HRs
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On 13/10/2020 19:18, Kleber Sacilotto de Souza wrote:
-> From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+On Mon, Oct 12, 2020 at 12:04:10PM -0500, David Lechner wrote:
+> On 10/8/20 7:28 AM, William Breathitt Gray wrote:
+> > On Thu, Oct 08, 2020 at 10:09:09AM +0200, Pavel Machek wrote:
+> >> Hi!
+> >>
+> >>> +        int main(void)
+> >>> +        {
+> >>> +                struct pollfd pfd =3D { .events =3D POLLIN };
+> >>> +                struct counter_event event_data[2];
+> >>> +
+> >>> +                pfd.fd =3D open("/dev/counter0", O_RDWR);
+> >>> +
+> >>> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches);
+> >>> +                ioctl(pfd.fd, COUNTER_SET_WATCH_IOCTL, watches + 1);
+> >>> +                ioctl(pfd.fd, COUNTER_LOAD_WATCHES_IOCTL);
+> >>> +
+> >>> +                for (;;) {
+> >>> +                        poll(&pfd, 1, -1);
+> >>
+> >> Why do poll, when you are doing blocking read?
+> >>
+> >>> +                        read(pfd.fd, event_data,  sizeof(event_data)=
+);
+> >>
+> >> Does your new chrdev always guarantee returning complete buffer?
+> >>
+> >> If so, should it behave like that?
+> >>
+> >> Best regards,
+> >> 									Pavel
+> >> --=20
+> >> (english) http://www.livejournal.com/~pavelmachek
+> >> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horse=
+s/blog.html
+> >=20
+> > I suppose you're right: a poll() should be redundant now with this
+> > version of the character device implementation because buffers will
+> > always return complete; so a blocking read() should achieve the same
+> > behavior that a poll() with read() would.
+> >=20
+> > I'll give some more time for additional feedback to come in for this
+> > version of the patchset, and then likely remove support for poll() in
+> > the v6 submission.
+> >=20
+> > William Breathitt Gray
+> >=20
 >=20
-> When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reas=
-on
-> del_timer_sync can't be used is because this relies on keeping a refere=
-nce
-> to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free t=
-hat
-> during disconnect, the timer should really belong to struct dccp_sock.
->=20
-> This addresses CVE-2020-16119.
->=20
-> Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
+> I hope that you mean that you will just remove it from the example
+> and not from the chardev. Otherwise it won't be possible to
+> integrate this with an event loop.
 
-Acked-bd: Richard Sailer <richard_siegfried@systemli.org>
+Would you elaborate a bit further on this? My thought process is that
+because users must set the Counter Events they want to watch, and only
+those Counter Events show up in the character device node, a blocking
+read() would effectively behave the same as poll() with read(); if none
+of the Counter Events occur, the read() just blocks until one does, thus
+making the use of a poll() call redundant.
 
-Implementation and concept looks fine to me
+William Breathitt Gray
 
-
---dfjn9C3XkBZ9ZjEm6mKvr0DLGL7w3liEv--
-
---KHVaNnR0CtdkaZCgAsBVhWbXcrEqCZBOz
+--5/uDoXvLw7AC5HRs
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEBgAhuYrOnl9UC7I39kE5zAWb4eEFAl+F+N8ACgkQ9kE5zAWb
-4eH0WQf/UWTTCBzTGhg11Zme2bEngbGDoD/xYPUZ8TvPD7cXCoq0WGSVG9yqaTc1
-vXwH1+jvNoJHQ7NvXOoUEe1fGmgNVdFNIw5RzEy/9Oi8rukTpvjloFCproonNeNs
-mVAS95hbRHKho+NG+MmtR3yuH52SLtgtCdn64lJjAaNeX1oWGbUNwSK7TNY9Wrjj
-ubteuQz3mFOFyca/V4xJZU58jz5Ikp420w/UdQGGtmUf133L3rZxDrT0ilKkZEiS
-eeDfKRDQlkBbCvOlkuG6dER/nPUF0in8n1Ci6Jycwk2gsMIKSt3La178e3di6NHB
-zdVms9QK+dASFjYym7NaXmjTjXS+cQ==
-=WF3A
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+F+OsACgkQhvpINdm7
+VJJ1lg//TGZtaRf3xh7whlm0NHwwiJSzE2fLZr/QnuqTM2TtBfQz/Y0yV9tC4HW4
+7OVcoyo3UwgjT93XmEaEJ13iTxYl0szn5s+5mBShLwlOB/4jHyXOLY+9EKdxhmWl
+O801nR0pZuaIXM8BkiVMRWIMF7N2LHioVn4b0iRCeUidF5hVX9aSV1tvLuib+eW7
+X9i6o16OUQcaaiSJlWKJhFfW1MnVTuEa4+h3IqfQQFN4Aq4gr34s5sJWOYiqEuSJ
+NKSpA5Dl/MnTWEEVoTlvfdrBKKidHNGjNmagKfn9RRoh14b4s6PFTgR9/Pn1Xjjj
+6e+odPB2i8AYiST6VCRdSYbDN0ExgS79aEDjW+jAdr7IzyYn9Ht7gkUnpBNO6WP4
+QulAaXpuJbF9qUZx+iUK4ZRT5RJO9/d4HJLi96K5E38RAqdOX9OYXF0jikXFXTbG
+ZrQFtlpKZQXNqNEMKkKf0/OqLJcSEUSNIRW+132Dhfe08Z72kpf9du2ez7bxK1w9
+W8EYp27aq9LVbd1SZ4Bdv5WaEy5sJ2dhT6EVFjtFpZHvQXZusKscorXvDegY1fq1
+4nqmg54U/w3TEKiL+J9TJGHsFd1OnB5yfQt8jWEff/HU5866byKuyT8+PtaB+hUA
+VOHCJRXVah2sDh/js/6jgxQ8ZLW236o4SqHJDPlTeN0FfkDAAVg=
+=bg3S
 -----END PGP SIGNATURE-----
 
---KHVaNnR0CtdkaZCgAsBVhWbXcrEqCZBOz--
+--5/uDoXvLw7AC5HRs--
