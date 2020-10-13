@@ -2,119 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B3728CEF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49C028CEFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgJMNMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:12:21 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38574 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728558AbgJMNMV (ORCPT
+        id S2387694AbgJMNND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387620AbgJMNNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:12:21 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n18so23997333wrs.5;
-        Tue, 13 Oct 2020 06:12:18 -0700 (PDT)
+        Tue, 13 Oct 2020 09:13:02 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C98C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:13:02 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a3so28145662ejy.11
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zUTR1na3Qa05gyhmhDFmvq03v/zx4fi0gFtqH+OKyWU=;
+        b=YMkUEMOXtUWNimXqzoY70gOvJhuH3owo6E/8URbjAoCRURFQLe1HRvPGm9LzkClgNh
+         hqKd4OCtyy1fzhGhpa5ca7+hduaG64OKkvaOPuB2adHMgN+8xX7nbVN9iy1rnlH1GE3u
+         w/Xw1YYWYPXiIDPI3gmpRA/ituQIIUSJ3IapM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding:user-agent;
-        bh=xwiQxdIni+OoOgjyTcFMAfcFR0s4rkAhFvFMhOPoExM=;
-        b=TJtWLbJaZHAlQxWnuW4+9aJ85pCm3CBl2GKP3NmDKRLgX/pYwrDn2Q/iI7gW8PDs4D
-         900HsmYKN6VDi5YGEnPBbDW4I8dlEU6SpEP8F7T1r7EN0PixlJVTf1Ct6P5L3Hy7vJSy
-         uQOQcrZgEO5OvsQE3o/TCqR4hPbiFd1H+gZGwRJtl3RJ+20mNHQEl+kjdJ3dRZq02hxb
-         R4Jfjasgd9cGe4ZVz6Ud+ohpnvtCqX277cLzMjmFT4EfXod49S1+/Eo+LcqOgTL6rnkF
-         dtixV0YKwvycfx5GeZ/w2Du6v17rpwMTo5NvtrRIV9dpVbri/TWQmAwZTz13BHRes5RQ
-         y4Ew==
-X-Gm-Message-State: AOAM532j9wHffOB0+hOMffHHSmDrJLz3j6X+EhzVutaG6WJMfuHhSrtI
-        A6gOMoAfOGy/Hl0THQy+TU8DxgIqGxU=
-X-Google-Smtp-Source: ABdhPJydF+OkFkTjToGwDY4RqfrKdQfRwK+5w+ay+jROLpCMHJd9hwvt4Qa7bE5tYh2vy/3am/3HSw==
-X-Received: by 2002:adf:a415:: with SMTP id d21mr26256079wra.408.1602594737034;
-        Tue, 13 Oct 2020 06:12:17 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id u195sm4860219wmu.18.2020.10.13.06.12.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 06:12:15 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 13:12:14 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Hyper-V commits for 5.10
-Message-ID: <20201013131214.ej4ek5expi5dywer@liuwe-devbox-debian-v2>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zUTR1na3Qa05gyhmhDFmvq03v/zx4fi0gFtqH+OKyWU=;
+        b=K4keVOdf3GAxmtI3Hxcl5Emdrj2BWRP7Rjs3CXoeRxdE1QrLaql+N8FUqWS83i7k5C
+         euJu9R5poqGpZHAUyD42g6nVTEjB8DMAyhi7fdysFHfDgU/NmRXH16rJ8M2fQFp30FvG
+         aokSMn7OnoRx7+PBCP/dhsXsOZ3cY4VsdGq0sUP77e3GORWJqxSmAb23GmeM26k7NoGE
+         x5qvc2YkGWY+Xa24kPWs3UQi/E9DNM9d7h7grN8yAilHJvtDXnH6vV6LTq5pIkSXMHdq
+         K7jmoPpaPVm/QEsZcEYeaTdvNeULsvbqgJ2mzD5MqBl19yXHDoUq4BM5leRJzQZZLmOg
+         T6kA==
+X-Gm-Message-State: AOAM530BjBDLCPIoTo6k5TnQMStMiKFDBrTjfAzjGnk11F52vzk9o9Nv
+        eclQ6vnTdsrh9a2AhWCxXQhDtMRv0NEjjmmQ
+X-Google-Smtp-Source: ABdhPJxOT1QYLlNpFm3dmQOmsNPaOG3xrgF3DVGH2O51agAG6WnuNExnEyCSCNy/SbzFbbeS8cIUqQ==
+X-Received: by 2002:a17:906:935a:: with SMTP id p26mr8626707ejw.30.1602594779904;
+        Tue, 13 Oct 2020 06:12:59 -0700 (PDT)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
+        by smtp.gmail.com with ESMTPSA id r24sm12199691edm.95.2020.10.13.06.12.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 06:12:58 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id y12so18618101wrp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:12:57 -0700 (PDT)
+X-Received: by 2002:adf:ab05:: with SMTP id q5mr9380716wrc.32.1602594777300;
+ Tue, 13 Oct 2020 06:12:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: NeoMutt/20180716
+References: <20200526085446.30956-1-stanimir.varbanov@linaro.org>
+ <65ac9697-a43f-7025-e6fe-69c4a44c6d9a@xs4all.nl> <ce28a840-a763-6700-16dd-d708e570d55c@linaro.org>
+ <d02c6cd0-a502-dc52-519e-54b6328d5373@linaro.org> <544b19dd-4883-bae0-b488-46c856eb207d@xs4all.nl>
+ <6f71931a-9060-a399-835c-a1cf1f05dc79@linaro.org> <1bc10e88-8cbe-3da9-daeb-d015f42d7acc@xs4all.nl>
+ <CAAFQd5Aorm-O7OMcHsnRUEGQq2qoPDRtAuukiLHgC9g54oAW9Q@mail.gmail.com> <de40cdf1-0b84-a252-0137-a550f078d28b@linaro.org>
+In-Reply-To: <de40cdf1-0b84-a252-0137-a550f078d28b@linaro.org>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 13 Oct 2020 15:12:46 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5A7MdFXsYWVx+3DY-dt=HZTg_Kt1uhntoEzzjp+e02R=Q@mail.gmail.com>
+Message-ID: <CAAFQd5A7MdFXsYWVx+3DY-dt=HZTg_Kt1uhntoEzzjp+e02R=Q@mail.gmail.com>
+Subject: Re: [PATCH] v4l2-ctrl: add control for thumnails
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Oct 13, 2020 at 2:52 PM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> Hi,
+>
+> On 6/4/20 3:57 PM, Tomasz Figa wrote:
+> > On Thu, Jun 4, 2020 at 2:56 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+> >>
+> >> On 04/06/2020 14:34, Stanimir Varbanov wrote:
+> >>> Hi Hans,
+> >>>
+> >>> On 6/4/20 12:08 PM, Hans Verkuil wrote:
+> >>>> On 04/06/2020 11:02, Stanimir Varbanov wrote:
+> >>>>> Hi Hans,
+> >>>>>
+> >>>>> On 5/27/20 12:53 AM, Stanimir Varbanov wrote:
+> >>>>>> Hi Hans,
+> >>>>>>
+> >>>>>> On 5/26/20 3:04 PM, Hans Verkuil wrote:
+> >>>>>>> On 26/05/2020 10:54, Stanimir Varbanov wrote:
+> >>>>>>>> Add v4l2 control for decoder thumbnail.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> >>>>>>>> ---
+> >>>>>>>>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 7 +++++++
+> >>>>>>>>  drivers/media/v4l2-core/v4l2-ctrls.c                      | 2 ++
+> >>>>>>>>  include/uapi/linux/v4l2-controls.h                        | 2 ++
+> >>>>>>>>  3 files changed, 11 insertions(+)
+> >>>>>>>>
+> >>>>>>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> >>>>>>>> index d0d506a444b1..e838e410651b 100644
+> >>>>>>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> >>>>>>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> >>>>>>>> @@ -3726,6 +3726,13 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+> >>>>>>>>      disables generating SPS and PPS at every IDR. Setting it to one enables
+> >>>>>>>>      generating SPS and PPS at every IDR.
+> >>>>>>>>
+> >>>>>>>> +``V4L2_CID_MPEG_VIDEO_DECODER_THUMBNAIL (button)``
+> >>>>>>>> +    Instructs the decoder to produce immediate output. The decoder should
+> >>>>>>>> +    consume first input buffer for progressive stream (or first two buffers
+> >>>>>>>> +    for interlace). Decoder should not allocate more output buffers that it
+> >>>>>>>> +    is required to consume one input frame. Usually the decoder input
+> >>>>>>>> +    buffers will contain only I/IDR frames but it is not mandatory.
+> >>>>>>>
+> >>>>>>> This is very vague. It doesn't explain why the control is called 'THUMBNAIL',
+> >>>>>>> but more importantly it doesn't explain how this relates to normal decoding.
+> >>>>>>
+> >>>>>> If in the normal decode the capture queue buffers are 5, in the
+> >>>>>> thumbnail mode the number of buffers will be only 1 (if the bitstream is
+> >>>>>> progressive) and this will guarantee low memory usage. The other
+> >>>>>> difference is that the decoder will produce decoded frames (without
+> >>>>>> errors) only for I/IDR (sync frames).
+> >>>>
+> >>>> Isn't this really a "DECODE_SYNC_FRAMES_ONLY" control? That's what it does,
+> >>>> right? Skip any B/P frames and only decode sync frames.
+> >>>
+> >>> Yes, it is.
+> >>> To me V4L2_CID_MPEG_VIDEO_DECODE_SYNC_FRAMES sounds better. If you are
+> >>> fine I can send a new patch.
+> >>>
+> >>> The definition of "sync frames" is a bit difficult for codec-agnostic
+> >>> controls. Is it sound better "INTRA", DECODE_INTRA_FRAMES (ONLY)?
+> >>
+> >> INTRA is better. DECODE_INTRA_FRAMES_ONLY is a good name, I think.
+> >>
+> >> Thumbnail creation can be given as an example in the description of the
+> >> control, but that's just a use-case.
+> >
+> > How about the other aspect of the behavior?
+> >
+> > "Decoder should not allocate more output buffers that it
+> > is required to consume one input frame."
+> >
+>
+> In fact I have to refine this; It looks like that picture type decode vs
+> thumbnail are two different modes.
+>
+> Thumbnail mode - first frame decode without additional memory (one input
+> buffer and one output buffer). The first frame can be even non-intra
+> frame as well.
 
-Please pull the following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+How comes it can be decoded without additional memory to store the
+reference frames then?
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+> Also no matter frame parser is sending, the decoder will
+> try to produce output for thumbnail generation.
 
-are available in the Git repository at:
+Well, thinking of it now, actually DECODE_INTRA_FRAMES_ONLY makes
+sense here - if it is set, only 1 CAPTURE buffer could be allowed
+indeed, because no reference frames are needed for decoding.
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
+If inter frames are needed, I believe full DPB needs to be allocated,
+because it all depends on the stream how the references are set, so
+this is equivalent to normal decoding.
 
-for you to fetch changes up to 1f3aed01473c41c9f896fbf4c30d330655e8aa7c:
+best regards,
+Tomasz
 
-  hv: clocksource: Add notrace attribute to read_hv_sched_clock_*() functions (2020-09-28 09:04:48 +0000)
-
-----------------------------------------------------------------
-hyperv-next for 5.10
-
- - A patch series from Boqun Feng to support page size larger than 4K
- - A few miscellaneous clean-up patches
-
-----------------------------------------------------------------
-Boqun Feng (11):
-      Drivers: hv: vmbus: Always use HV_HYP_PAGE_SIZE for gpadl
-      Drivers: hv: vmbus: Move __vmbus_open()
-      Drivers: hv: vmbus: Introduce types of GPADL
-      Drivers: hv: Use HV_HYP_PAGE in hv_synic_enable_regs()
-      Drivers: hv: vmbus: Move virt_to_hvpfn() to hyperv header
-      hv: hyperv.h: Introduce some hvpfn helper functions
-      hv_netvsc: Use HV_HYP_PAGE_SIZE for Hyper-V communication
-      Input: hyperv-keyboard: Use VMBUS_RING_SIZE() for ringbuffer sizes
-      HID: hyperv: Use VMBUS_RING_SIZE() for ringbuffer sizes
-      Driver: hv: util: Use VMBUS_RING_SIZE() for ringbuffer sizes
-      scsi: storvsc: Support PAGE_SIZE larger than 4K
-
-Joseph Salisbury (1):
-      x86/hyperv: Remove aliases with X64 in their name
-
-Krzysztof Wilczyński (1):
-      PCI: hv: Document missing hv_pci_protocol_negotiation() parameter
-
-Mohammed Gamal (1):
-      hv: clocksource: Add notrace attribute to read_hv_sched_clock_*() functions
-
-Olaf Hering (1):
-      drivers: hv: remove cast from hyperv_die_event
-
- arch/x86/hyperv/hv_init.c             |   8 +-
- arch/x86/hyperv/hv_spinlock.c         |   2 +-
- arch/x86/include/asm/hyperv-tlfs.h    |  33 ---
- arch/x86/kernel/cpu/mshyperv.c        |   8 +-
- arch/x86/kvm/hyperv.c                 |  20 +-
- drivers/clocksource/hyperv_timer.c    |   4 +-
- drivers/hid/hid-hyperv.c              |   4 +-
- drivers/hv/channel.c                  | 461 +++++++++++++++++++++-------------
- drivers/hv/hv.c                       |   4 +-
- drivers/hv/hv_util.c                  |  11 +-
- drivers/hv/vmbus_drv.c                |   2 +-
- drivers/input/serio/hyperv-keyboard.c |   4 +-
- drivers/net/hyperv/netvsc.c           |   2 +-
- drivers/net/hyperv/netvsc_drv.c       |  46 ++--
- drivers/net/hyperv/rndis_filter.c     |  13 +-
- drivers/pci/controller/pci-hyperv.c   |   5 +-
- drivers/scsi/storvsc_drv.c            |  56 ++++-
- include/linux/hyperv.h                |  68 ++++-
- 18 files changed, 468 insertions(+), 283 deletions(-)
+>
+> > Best regards,
+> > Tomasz
+> >
+> >>
+> >> Regards,
+> >>
+> >>         Hans
+> >>
+> >>>
+> >>>>
+> >>>> That this is useful for creating thumbnails is just a specific use-case.
+> >>>>
+> >>>> Regards,
+> >>>>
+> >>>>      Hans
+> >>>>
+> >>>>>>
+> >>>>>>>
+> >>>>>>> I.e. if you are decoding and 'press' this control, what happens then?
+> >>>>>>
+> >>>>>> Might be the button type wasn't great idea. In fact the control should
+> >>>>>> be set before streamon so that the driver returns min_capture_bufs 1.
+> >>>>>>
+> >>>>>>>
+> >>>>>>> What exactly is the use-case?
+> >>>>>>
+> >>>>>> It could be used to generate thumbnails of all video clips in a folder
+> >>>>>> or when you open a Gallery application on your phone.
+> >>>>>>
+> >>>>>
+> >>>>> What is your opinion on that control? I could consider to make it Venus
+> >>>>> custom control but from the use-case it looks other drivers also can
+> >>>>> benefit of it.
+> >>>>>
+> >>>>> I tried to make more generic one [1] but it looks it will be too difficult.
+> >>>>>
+> >>>>
+> >>>
+> >>
+>
+> --
+> regards,
+> Stan
