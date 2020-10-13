@@ -2,201 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7656628CB2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FB528CB30
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404243AbgJMJri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:47:38 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:45914 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727320AbgJMJri (ORCPT
+        id S1727165AbgJMJtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgJMJts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:47:38 -0400
-Received: by mail-oi1-f195.google.com with SMTP id j7so4276541oie.12;
-        Tue, 13 Oct 2020 02:47:37 -0700 (PDT)
+        Tue, 13 Oct 2020 05:49:48 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47897C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:49:48 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id f21so19733992ljh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=l2oIQjpDqijiabdlCeMYK7fn/FtkvSpkgziUWrkQZ7s=;
+        b=FYSMlCWrzpfFUYnio9nNn8f40L9FpnPWGpP0HfHcqYHetYWn+N31ne1lqKPybKzzXx
+         fXwmnN90qaLkBMA9ZEgqpoqa1nVHE/C4fvPTVsOifPOFgEESiy4HF/smorQf2DOZVkAk
+         v3GaKLs0F7oodczidVuKxeYWhD3NbBW85R1S4RwFXnVUeklVHN4bC/9FUJxBF1yKBYN8
+         u688zSwnET8OENio/F4F3HyNmT8cKJW85Mk8Hj2bG7/776xq0VvtbvCleSAOta/GgIeI
+         bQxw0DqrcAXM6PxFjddXYin0UV+T5ho9kpJ6nJyGpnN19K5M8SshL3H8iyfubYYfNaDj
+         HFSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=66uxKBaPY4Ovk1ktUOH3jIWixK/5hRqlez704bXhJTo=;
-        b=gWGapRkLGR6bqyc2vCXxbhYwE209Hs8DI6fgs4gIhU9S5KM+522qE2cCd+PrzMybvO
-         f3mmyBzakj6HKspZMwLMLQJPPwr978Q/2enYlZp4fkqEMao+P29wxILUld732Qgocc8B
-         GHKhZwee8JwnZW7jZuzvZ9Osv+f1Z5ErMlfzfIHarxYdkbpMXVhJiNZkyPxVAs5vZsty
-         /1UCjWMAUTaqmXbI+tzuAVqZjjxuWenlpjqlomJUZzWLiYdaQriqhTgxj7QBVvx8bxGX
-         YmtbKp9BZsPTLhxMyWX7321VFPkthaP97/Qfsewvx09F63AWGHFIM/hllW3IsOHygIbB
-         4UDA==
-X-Gm-Message-State: AOAM530OvqcZ0R5HNUANCpTX/aYeiOQR6YWm/4oI38XRfdovVnp7mwah
-        AtumV+D6cCIphkQGqex510tPDF3gBJ81jNURL1g=
-X-Google-Smtp-Source: ABdhPJwLN64T/gaMyS/i1LmR6BIkbfw+eTtQ5cF87nW2VWME3lCQ/eIpJO7UTvEJTaK46HDjetiRlRzz1vnmwuQ0rpY=
-X-Received: by 2002:aca:4441:: with SMTP id r62mr12567647oia.153.1602582456648;
- Tue, 13 Oct 2020 02:47:36 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=l2oIQjpDqijiabdlCeMYK7fn/FtkvSpkgziUWrkQZ7s=;
+        b=rFdoD4Tft0Y4DDTTmai4QHvuuoqIbAkfIcYuvaxwkixGIZ0hEdh7SzFq9nqZc6JEps
+         9HNSRQtCoxDPWIqeICzYD/6F8h7o6+1kdKu6T7ZehCNdcaYhmfIrP1YG7pSj65M72L5A
+         RT7RWvVKLppXHfP4uF1ChdCy/aqtNlD+qLRKdbofSUIV7PaX7oUXZB/zmGYkaqJIIOSa
+         tg9G0pV3fDp0YvtA+0AEoLIRH+mNv/Q0uqNk/P5DhLGfD44tSVSyHjYg3Sa8B909USnl
+         14Gr/dR3nvCBvOkfll2Gu1dsP1rKtSMZmkToUttRamuBTo8oqLTuhm7BpBcymqkdYGhV
+         8ATw==
+X-Gm-Message-State: AOAM533QuHvnb6hE6HPd47F9BcpbBaYE1J06vYpKVGrw0LYberKkx2Mb
+        W7cSMI/KFd60Ofcafiqsd6JXv0fjAWvYKW92Dx2PWw==
+X-Google-Smtp-Source: ABdhPJx7AvdDQnT4GBA/MxMdWC3aZYWDpuleorkBjY0LotOBfFlySsoz5CKloC/gtXAYBt17jR2LggFsbHoveHg5DAY=
+X-Received: by 2002:a2e:9b0c:: with SMTP id u12mr11110446lji.338.1602582586505;
+ Tue, 13 Oct 2020 02:49:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
- <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
-In-Reply-To: <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 13 Oct 2020 11:47:25 +0200
-Message-ID: <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
- probe deferral properly
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 13 Oct 2020 11:49:35 +0200
+Message-ID: <CACRpkdbQU7xBcJ5GMhmovhvdpyDXmmr49wGUcuppHcKEc_Kacw@mail.gmail.com>
+Subject: [GIT PULL] GPIO bulk changes for the v5.10 kernel series
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh, Stephan,
+Hi Linus,
 
-On Mon, Aug 24, 2020 at 11:12 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> From: Stephan Gerhold <stephan@gerhold.net>
->
-> cpufreq-dt is currently unable to handle -EPROBE_DEFER properly
-> because the error code is not propagated for the cpufreq_driver->init()
-> callback. Instead, it attempts to avoid the situation by temporarily
-> requesting all resources within resources_available() and releasing them
-> again immediately after. This has several disadvantages:
->
->   - Whenever we add something like interconnect handling to the OPP core
->     we need to patch cpufreq-dt to request these resources early.
->
->   - resources_available() is only run for CPU0, but other clusters may
->     eventually depend on other resources that are not available yet.
->     (See FIXME comment removed by this commit...)
->
->   - All resources need to be looked up several times.
->
-> Now that the OPP core can propagate -EPROBE_DEFER during initialization,
-> it would be nice to avoid all that trouble and just propagate its error
-> code when necessary.
->
-> This commit refactors the cpufreq-dt driver to initialize private_data
-> before registering the cpufreq driver. We do this by iterating over
-> all possible CPUs and ensure that all resources are initialized:
->
->   1. dev_pm_opp_get_opp_table() ensures the OPP table is allocated
->      and initialized with clock and interconnects.
->
->   2. dev_pm_opp_set_regulators() requests the regulators and assigns
->      them to the OPP table.
->
->   3. We call dev_pm_opp_of_get_sharing_cpus() early so that we only
->      initialize the OPP table once for each shared policy.
->
-> With these changes, we actually end up saving a few lines of code,
-> the resources are no longer looked up multiple times and everything
-> should be much more robust.
->
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> [ Viresh: Use list_head structure for maintaining the list and minor
->           changes ]
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+here is the bulk of GPIO changes for the v5.10 kernel.
 
-Thanks for your patch, which is now commit dc279ac6e5b4e06e ("cpufreq:
-dt: Refactor initialization to handle probe deferral properly") in
-pm/linux-next, and to which I bisected a regression.
-Reverting this commit fixes the issue.
+This time very little driver changes but lots of core changes.
+Details in the signed tag. We have some interesting cooperative
+work for ARM and Intel alike, making the GPIO subsystem
+more and more suitable for industrial systems and the like,
+in addition to the in-kernel users.
 
-On r8a7791/koelsch, during resume from s2ram:
+We touch driver core (device properties) and lib/* by adding one
+simple string array free function, these are authored by Andy
+Shevchenko who is a well known and recognized core
+helpers maintainers so this should be fine.
 
-     PM: suspend entry (deep)
-     Filesystems sync: 0.000 seconds
-     Freezing user space processes ... (elapsed 0.003 seconds) done.
-     OOM killer disabled.
-     Freezing remaining freezable tasks ... (elapsed 0.009 seconds) done.
-     Disabling non-boot CPUs ...
-     Enabling non-boot CPUs ...
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +i2c-sh_mobile e60b0000.i2c: Transfer request timed out
-    +cpu cpu0: OPP table can't be empty
-     CPU1 is up
-     rcar-pcie fe000000.pcie: PCIe x1: link up
+We also see some Android GKI-related modularization in the
+MXC drivers.
 
-The cpufreq code tries to talk to the PMIC, while the I2C controller
-that hosts the PMIC is suspended, and thus any communication attempt
-times out.  __i2c_check_suspended() fails to notice that, as the
-i2c_shmobile_i2c driver doesn't have a suspend callback calling
-i2c_mark_adapter_suspended() yet.  After fixing that (will send a patch
-soon), the I2C core rightfully complains with:
+I foresee a merge conflict in drivers/gpio/gpio-mockup.c
+due to things merged into the release candidate. The merge
+should be trivial and pertains to using pr_fmt and
+numerical return values: what's on my branch goes and that
+is also the resolution you find in linux-next.
 
-    WARNING: CPU: 1 PID: 13 at drivers/i2c/i2c-core.h:54
-__i2c_transfer+0x4a4/0x4e4
-    i2c i2c-6: Transfer while suspended
-    CPU: 1 PID: 13 Comm: cpuhp/1 Not tainted
-5.9.0-shmobile-09581-g05a3e5886c7615b1-dirty #718
-    Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
-    [<c010dcec>] (unwind_backtrace) from [<c0109b18>] (show_stack+0x10/0x14)
-    [<c0109b18>] (show_stack) from [<c075e928>] (dump_stack+0x8c/0xac)
-    [<c075e928>] (dump_stack) from [<c011c23c>] (__warn+0xd0/0xe8)
-    [<c011c23c>] (__warn) from [<c011c2c4>] (warn_slowpath_fmt+0x70/0x9c)
-    [<c011c2c4>] (warn_slowpath_fmt) from [<c0548be8>]
-(__i2c_transfer+0x4a4/0x4e4)
-    [<c0548be8>] (__i2c_transfer) from [<c0548cd8>] (i2c_transfer+0xb0/0xf8)
-    [<c0548cd8>] (i2c_transfer) from [<c046f884>] (regmap_i2c_read+0x54/0x88)
-    [<c046f884>] (regmap_i2c_read) from [<c046b69c>]
-(_regmap_raw_read+0x118/0x1f0)
-    [<c046b69c>] (_regmap_raw_read) from [<c046b7b8>]
-(_regmap_bus_read+0x44/0x68)
-    [<c046b7b8>] (_regmap_bus_read) from [<c04698a0>] (_regmap_read+0x84/0x110)
-    [<c04698a0>] (_regmap_read) from [<c046c10c>] (regmap_read+0x40/0x58)
-    [<c046c10c>] (regmap_read) from [<c03cf0a8>]
-(regulator_get_voltage_sel_regmap+0x28/0x74)
-    [<c03cf0a8>] (regulator_get_voltage_sel_regmap) from [<c03cb29c>]
-(regulator_get_voltage_rdev+0xa4/0x14c)
-    [<c03cb29c>] (regulator_get_voltage_rdev) from [<c03cc658>]
-(regulator_get_voltage+0x2c/0x60)
-    [<c03cc658>] (regulator_get_voltage) from [<c03cd994>]
-(regulator_is_supported_voltage+0x30/0xd8)
-    [<c03cd994>] (regulator_is_supported_voltage) from [<c05a32b4>]
-(_opp_add+0x164/0x1b8)
-    [<c05a32b4>] (_opp_add) from [<c05a3388>] (_opp_add_v1+0x80/0xb8)
-    [<c05a3388>] (_opp_add_v1) from [<c05a5220>]
-(dev_pm_opp_of_add_table+0x130/0x168)
-    [<c05a5220>] (dev_pm_opp_of_add_table) from [<c05a5330>]
-(dev_pm_opp_of_cpumask_add_table+0x60/0xac)
-    [<c05a5330>] (dev_pm_opp_of_cpumask_add_table) from [<c05ab88c>]
-(cpufreq_init+0x94/0x1c4)
-    [<c05ab88c>] (cpufreq_init) from [<c05a8190>] (cpufreq_online+0x148/0x7ac)
-    [<c05a8190>] (cpufreq_online) from [<c05a87fc>]
-(cpuhp_cpufreq_online+0x8/0x10)
-    [<c05a87fc>] (cpuhp_cpufreq_online) from [<c011d088>]
-(cpuhp_invoke_callback+0xf8/0x2e4)
-    [<c011d088>] (cpuhp_invoke_callback) from [<c011d418>]
-(cpuhp_thread_fun+0xac/0x244)
-    [<c011d418>] (cpuhp_thread_fun) from [<c013c090>]
-(smpboot_thread_fn+0x19c/0x1a8)
-    [<c013c090>] (smpboot_thread_fn) from [<c0138408>] (kthread+0x104/0x110)
-    [<c0138408>] (kthread) from [<c0100148>] (ret_from_fork+0x14/0x2c)
+Please pull it in!
 
-Gr{oetje,eeting}s,
+Yours,
+Linus Walleij
 
-                        Geert
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
+tags/gpio-v5.10-1
+
+for you to fetch changes up to fc709df553a34fd18010f52e6b47652268d83e7d:
+
+  gpiolib: Update header block in gpiolib-cdev.h (2020-10-08 22:57:16 +0200)
+
+----------------------------------------------------------------
+GPIO bulk changes for the v5.10 kernel cycle:
+
+Core changes:
+
+- The big core change is the updated (v2) userspace character
+  device API. This corrects badly designed 64-bit alignment around
+  the line events. We also add the debounce request feature.
+  This echoes the often quotes passage from Frederick Brooks
+  "The mythical man-month" to always throw one away, which we
+  have seen before in things such as V4L2. So we put in a new
+  one and deprecate and obsolete the old one.
+
+- All example tools in tools/gpio/* are migrated to the new API
+  to set a good example. The libgpiod userspace library has been
+  augmented to use this new API pretty much from day 1.
+
+- Some misc API hardening by using strn* function calls has been
+  added as well.
+
+- Use the simpler IDA interface for GPIO chip instance enumeration.
+
+- Add device core function for counting string arrays in
+  device properties.
+
+- Provide a generic library function kfree_strarray() that can
+  be used throughout the kernel.
+
+Driver enhancements:
+
+- The DesignWare dwapb-gpio driver has been enhanced and now
+  uses the IRQ handling in the gpiolib core.
+
+- The mockup and aggregator drivers have seen some substantial
+  code clean-up and now use more of the core kernel
+  inftrastructure.
+
+- Misc cleanups using dev_err_probe().
+
+- The MXC drivers (Freescale/NXP) can now be built modularized,
+  which makes modularized GKI Android kernels happy.
+
+----------------------------------------------------------------
+Aleksander Jan Bajkowski (1):
+      gpio: stp-xway: automatically drive GPHY leds on ar10 and grx390
+
+Andy Shevchenko (3):
+      gpio: aggregator: Refactor ->{get, set}_multiple() to make Sparse happy
+      gpiolib: convert to use DEFINE_SEQ_ATTRIBUTE macro
+      gpiolib: Update header block in gpiolib-cdev.h
+
+Anson Huang (1):
+      gpio: mxc: Support module build
+
+Bartosz Golaszewski (16):
+      gpiolib: switch to simpler IDA interface
+      device: property: add helpers to count items in string arrays
+      gpiolib: generalize devprop_gpiochip_set_names() for device properties
+      gpiolib: unexport devprop_gpiochip_set_names()
+      gpiolib: check for parent device in devprop_gpiochip_set_names()
+      gpio: mockup: fix resource leak in error path
+      lib: string_helpers: provide kfree_strarray()
+      Documentation: gpio: add documentation for gpio-mockup
+      gpio: mockup: drop unneeded includes
+      gpio: mockup: use KBUILD_MODNAME
+      gpio: mockup: use pr_fmt()
+      gpio: mockup: remove unneeded return statement
+      gpio: mockup: increase the number of supported device properties
+      gpio: mockup: pass the chip label as device property
+      gpio: mockup: use the generic 'gpio-line-names' property
+      gpio: mockup: refactor the module init function
+
+Kent Gibson (21):
+      gpiolib: cdev: gpio_desc_to_lineinfo() should set info offset
+      gpiolib: cdev: replace strncpy() with strscpy()
+      gpio: uapi: define GPIO_MAX_NAME_SIZE for array sizes
+      gpio: uapi: define uAPI v2
+      gpiolib: make cdev a build option
+      gpiolib: add build option for CDEV v1 ABI
+      gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and
+GPIO_V2_LINE_GET_VALUES_IOCTL
+      gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
+GPIO_V2_GET_LINEINFO_WATCH_IOCTL
+      gpiolib: cdev: support edge detection for uAPI v2
+      gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
+      gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
+      gpiolib: cdev: support setting debounce
+      gpio: uapi: document uAPI v1 as deprecated
+      tools: gpio: port lsgpio to v2 uAPI
+      tools: gpio: port gpio-watch to v2 uAPI
+      tools: gpio: rename nlines to num_lines
+      tools: gpio: port gpio-hammer to v2 uAPI
+      tools: gpio: port gpio-event-mon to v2 uAPI
+      tools: gpio: add multi-line monitoring to gpio-event-mon
+      tools: gpio: add debounce support to gpio-event-mon
+      gpiolib: cdev: switch from kstrdup() to kstrndup()
+
+Krzysztof Kozlowski (15):
+      gpio: bcm-kona: Simplify with dev_err_probe()
+      gpio: davinci: Simplify with dev_err_probe()
+      gpio: omap: Simplify with dev_err_probe()
+      gpio: pca953x: Simplify with dev_err_probe()
+      gpio: pisosr: Simplify with dev_err_probe()
+      gpio: zynq: Simplify with dev_err_probe()
+      dt-bindings: gpio: fsl-imx-gpio: Add i.MX 8 compatibles
+      dt-bindings: gpio: fsl-imx-gpio: Add gpio-ranges property
+      dt-bindings: gpio: fsl-imx-gpio: Add parsing of hogs
+      dt-bindings: gpio: fsl-imx-gpio: Add power-domains
+      dt-bindings: gpio: pl061: add gpio-line-names
+      dt-bindings: gpio: fsl-imx-gpio: add i.MX ARMv6 and ARMv7 compatibles
+      dt-bindings: gpio: fsl-imx-gpio: add gpio-line-names
+      dt-bindings: gpio: convert bindings for NXP PCA953x family to dtschema
+      dt-bindings: gpio: convert bindings for Maxim MAX732x family to dtschema
+
+Lad Prabhakar (1):
+      dt-bindings: gpio: renesas, rcar-gpio: Add r8a774e1 support
+
+Linus Walleij (3):
+      Merge tag 'imx-gpio-5.10' of
+https://git.kernel.org/.../krzk/linux into devel
+      Merge tag 'gpio-updates-for-v5.10-part1' of
+git://git.kernel.org/.../brgl/linux into devel
+      Merge tag 'gpio-updates-for-v5.10-part2' of
+git://git.kernel.org/.../brgl/linux into devel
+
+Mauro Carvalho Chehab (1):
+      docs: gpio: add a new document to its index.rst
+
+Michael Walle (1):
+      gpio: mpc8xxx: simplify ls1028a/ls1088a support
+
+Mike Looijmans (1):
+      gpio: pca953x: Add support for the NXP PCAL9554B/C
+
+Necip Fazil Yildiran (1):
+      pinctrl: bcm: fix kconfig dependency warning when !GPIOLIB
+
+Serge Semin (10):
+      dt-bindings: gpio: dwapb: Add ngpios property support
+      gpio: dwapb: Add ngpios DT-property support
+      gpio: dwapb: Move MFD-specific IRQ handler
+      gpio: dwapb: Add max GPIOs macro
+      gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip
+      gpio: dwapb: Discard GPIO-to-IRQ mapping function
+      gpio: dwapb: Discard ACPI GPIO-chip IRQs request
+      gpio: dwapb: Get reset control by means of resource managed interface
+      gpio: dwapb: Get clocks by means of resource managed interface
+      gpio: dwapb: Use resource managed GPIO-chip add data method
+
+dillon min (1):
+      gpio: tc35894: Disable Direct KBD interrupts to enable gpio irq
+
+ Documentation/admin-guide/gpio/gpio-mockup.rst     |   50 +
+ Documentation/admin-guide/gpio/index.rst           |    1 +
+ .../devicetree/bindings/gpio/fsl-imx-gpio.yaml     |   55 +-
+ .../devicetree/bindings/gpio/gpio-max732x.txt      |   58 -
+ .../devicetree/bindings/gpio/gpio-pca953x.txt      |   90 --
+ .../devicetree/bindings/gpio/gpio-pca95xx.yaml     |  232 +++
+ .../devicetree/bindings/gpio/pl061-gpio.yaml       |    3 +
+ .../bindings/gpio/renesas,rcar-gpio.yaml           |    1 +
+ .../devicetree/bindings/gpio/snps,dw-apb-gpio.yaml |    6 +
+ .../devicetree/bindings/trivial-devices.yaml       |    4 -
+ drivers/gpio/Kconfig                               |   33 +-
+ drivers/gpio/Makefile                              |    3 +-
+ drivers/gpio/gpio-aggregator.c                     |   70 +-
+ drivers/gpio/gpio-bcm-kona.c                       |    5 +-
+ drivers/gpio/gpio-davinci.c                        |    8 +-
+ drivers/gpio/gpio-dwapb.c                          |  352 ++---
+ drivers/gpio/gpio-mockup.c                         |  160 +-
+ drivers/gpio/gpio-mpc8xxx.c                        |   45 +-
+ drivers/gpio/gpio-mxc.c                            |    6 +
+ drivers/gpio/gpio-omap.c                           |    5 +-
+ drivers/gpio/gpio-pca953x.c                        |   11 +-
+ drivers/gpio/gpio-pisosr.c                         |    9 +-
+ drivers/gpio/gpio-stp-xway.c                       |   54 +-
+ drivers/gpio/gpio-tc3589x.c                        |   18 +-
+ drivers/gpio/gpio-zynq.c                           |    8 +-
+ drivers/gpio/gpiolib-acpi.c                        |    3 -
+ drivers/gpio/gpiolib-cdev.c                        | 1542 +++++++++++++++++---
+ drivers/gpio/gpiolib-cdev.h                        |   19 +-
+ drivers/gpio/gpiolib-devprop.c                     |   63 -
+ drivers/gpio/gpiolib-of.c                          |    5 -
+ drivers/gpio/gpiolib.c                             |   89 +-
+ drivers/gpio/gpiolib.h                             |    6 +
+ drivers/pinctrl/bcm/Kconfig                        |    1 +
+ include/linux/gpio/driver.h                        |    3 -
+ include/linux/mfd/tc3589x.h                        |    6 +
+ include/linux/platform_data/gpio-dwapb.h           |    4 +-
+ include/linux/property.h                           |   13 +
+ include/linux/string_helpers.h                     |    2 +
+ include/uapi/linux/gpio.h                          |  334 ++++-
+ lib/string_helpers.c                               |   23 +
+ tools/gpio/gpio-event-mon.c                        |  146 +-
+ tools/gpio/gpio-hammer.c                           |   56 +-
+ tools/gpio/gpio-utils.c                            |  176 ++-
+ tools/gpio/gpio-utils.h                            |   48 +-
+ tools/gpio/gpio-watch.c                            |   16 +-
+ tools/gpio/lsgpio.c                                |   60 +-
+ 46 files changed, 2964 insertions(+), 938 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-mockup.rst
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-max732x.txt
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+ delete mode 100644 drivers/gpio/gpiolib-devprop.c
