@@ -2,51 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE7628D702
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE9D28D706
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388680AbgJMXcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 19:32:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726773AbgJMXct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 19:32:49 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C50921D7B;
-        Tue, 13 Oct 2020 23:32:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602631969;
-        bh=JogoeWLSFzX4Avzq+rf0/Td6HukMkPftyoJlK2bZk8k=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=TDpwI4pJRV8RYF/Ek3MQOf8UhsyZ8Iy0wFXhauf6nx02Du9bhLDpLrtOXhPp13oD4
-         WiktTviOLyoBNMdLl3KuCeyIkZxfEq4AweEuj1K8AJ6LQDBu2QtUJX4lxPDLOo++2x
-         EMuaNZLcfyTK1PZp6DKxf1UeeiXDj3OYcQieWdd0=
-Content-Type: text/plain; charset="utf-8"
+        id S2389006AbgJMXee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:34:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54772 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbgJMXee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 19:34:34 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602632072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/YLDuvh8o8enL8QqTbIk9MoXqIrK4T+TFGRNdqoINP4=;
+        b=WEnlE1kQ4MLaQs7L6tDWLxFdd7SIYrswalGTOed+lzfsXldS3U4lSykGTGimGLkP2iiCuo
+        puXEkPCfudp1G2SM248dqYscfOQvZIIBx63AGDCpFQvHLT5HtQ3bFu6WunztNBfX7MQjhI
+        eDHfMSiGdjMRV2keeFt5yDidfAp5W+FwaMoID3k/FDpFgyrL7MrQQsRNNAoOdlCPd0f2QN
+        xzx+ncer5bo74ojU81ihp3Pz8+nGQZbRW7HoJP2l2wUwiSw6on0UgRNwcV8WE9UQsl9Y3y
+        qtrMLSl2bvKQRxaNQSUwKDNoy38z9BCgd6cupvxSWF4VaoDPeLKX1Fpg5LPFvQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602632072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/YLDuvh8o8enL8QqTbIk9MoXqIrK4T+TFGRNdqoINP4=;
+        b=TYk5+iUil0CvGC5kQHsuhcAtBxU8suSFLGWDAAF/I6nM/37J4Oq5FuRFcYIFIGKQduNFzt
+        ut6jgJNZDgbDmsDA==
+To:     Jens Axboe <axboe@kernel.dk>, Miroslav Benes <mbenes@suse.cz>
+Cc:     Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, peterz@infradead.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCHSET RFC v3 0/6] Add support for TIF_NOTIFY_SIGNAL
+In-Reply-To: <3c3616f2-8801-1d42-6d7d-3dfbf977edb2@kernel.dk>
+References: <20201005150438.6628-1-axboe@kernel.dk> <20201008145610.GK9995@redhat.com> <alpine.LSU.2.21.2010090959260.23400@pobox.suse.cz> <e33ec671-3143-d720-176b-a8815996fd1c@kernel.dk> <9a01ab10-3140-3fa6-0fcf-07d3179973f2@kernel.dk> <alpine.LSU.2.21.2010121921420.10435@pobox.suse.cz> <3c3616f2-8801-1d42-6d7d-3dfbf977edb2@kernel.dk>
+Date:   Wed, 14 Oct 2020 01:34:32 +0200
+Message-ID: <87lfg9og3b.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1600930506-394-1-git-send-email-wangqing@vivo.com>
-References: <1600930506-394-1-git-send-email-wangqing@vivo.com>
-Subject: Re: [PATCH] clk/qcom: fix spelling typo
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Wang Qing <wangqing@vivo.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Wang Qing <wangqing@vivo.com>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 13 Oct 2020 16:32:47 -0700
-Message-ID: <160263196771.310579.16132118267794520801@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Wang Qing (2020-09-23 23:55:04)
-> Modify the comment typo: "compliment" -> "complement".
->=20
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> ---
+Jens,
 
-Applied to clk-next
+On Tue, Oct 13 2020 at 13:39, Jens Axboe wrote:
+> On 10/12/20 11:27 AM, Miroslav Benes wrote:
+> I'm continuing to hone the series, what's really missing so far is arch
+> review. Most conversions are straight forward, some I need folks to
+> definitely take a look at (arm, s390). powerpc is also a bit hair right
+> now, but I'm told that 5.10 will kill a TIF flag there, so that'll make
+> it trivial once I rebase on that.
+
+can you pretty please not add that to anything which is not going
+through kernel/entry/ ?
+
+The amount of duplicated and differently buggy, inconsistent and
+incomplete code in syscall and exception handling is just annoying.
+
+It's perfectly fine if we keep that #ifdeffery around for a while and
+encourage arch folks to move over to the generic infrastructure instead
+of proliferating the status quo by adding this to their existing pile.
+
+The #ifdef guarding this in set_notify_signal() and other core code
+places wants to be:
+
+    #if defined(CONFIG_GENERIC_ENTRY) && defined(TIF_NOTIFY_SIGNAL)
+
+Thanks,
+
+        tglx
