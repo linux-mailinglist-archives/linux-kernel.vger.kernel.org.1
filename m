@@ -2,60 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCDC28CBEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C6128CBF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387864AbgJMKps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:45:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:54476 "EHLO foss.arm.com"
+        id S1730076AbgJMKre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:47:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbgJMKpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:45:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4266F31B;
-        Tue, 13 Oct 2020 03:45:47 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 39CDC3F73C;
-        Tue, 13 Oct 2020 03:45:46 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org,
-        Etienne Carriere <etienne.carriere@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Souvik Chakravarty <Souvik.Chakravarty@arm.com>
-Subject: Re: [PATCH 1/5] firmware: arm_scmi: always initialize protocols
-Date:   Tue, 13 Oct 2020 11:45:36 +0100
-Message-Id: <160258579513.51857.17355432234754504187.b4-ty@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201008143722.21888-1-etienne.carriere@linaro.org>
-References: <20201008143722.21888-1-etienne.carriere@linaro.org>
+        id S1726950AbgJMKrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 06:47:31 -0400
+Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64DF420789;
+        Tue, 13 Oct 2020 10:47:30 +0000 (UTC)
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-sgx@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH] MAINTAINERS: jarkko.sakkinen@linux.intel.com -> jarkko@kernel.org
+Date:   Tue, 13 Oct 2020 13:46:33 +0300
+Message-Id: <20201013104705.140127-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Oct 2020 16:37:18 +0200, Etienne Carriere wrote:
-> Remove the IDR replacement that prevent initializing an SCMI protocol
-> when it has already been initialized. This is needed when there are
-> several SCMI agents that do implement a given SCMI protocol unless
-> what only the related SCMI protocol communication is initialized only
-> for first probed agent.
+Use korg address as the main communications end point. Update the
+corresponding M-entries.
 
-I am picking up 4-5.
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ MAINTAINERS | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Applied to sudeep.holla/linux (for-next/scmi), thanks!
-
-[4/5] firmware: arm_scmi: Expand SMC/HVC message pool to more than one
-      https://git.kernel.org/sudeep.holla/c/7adb2c8aaa
-[5/5] firmware: arm_scmi: Fix ARCH_COLD_RESET
-      https://git.kernel.org/sudeep.holla/c/45b9e04d5b
-
---
-
-Regards,
-Sudeep
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6594f0966716..afe2a20fb85a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9668,7 +9668,7 @@ F:	security/keys/encrypted-keys/
+ 
+ KEYS-TRUSTED
+ M:	James Bottomley <jejb@linux.ibm.com>
+-M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
++M:	Jarkko Sakkinen <jarkko@kernel.org>
+ M:	Mimi Zohar <zohar@linux.ibm.com>
+ L:	linux-integrity@vger.kernel.org
+ L:	keyrings@vger.kernel.org
+@@ -9680,7 +9680,7 @@ F:	security/keys/trusted-keys/
+ 
+ KEYS/KEYRINGS
+ M:	David Howells <dhowells@redhat.com>
+-M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
++M:	Jarkko Sakkinen <jarkko@kernel.org>
+ L:	keyrings@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/security/keys/core.rst
+@@ -17616,7 +17616,7 @@ F:	drivers/platform/x86/toshiba-wmi.c
+ 
+ TPM DEVICE DRIVER
+ M:	Peter Huewe <peterhuewe@gmx.de>
+-M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
++M:	Jarkko Sakkinen <jarkko@kernel.org>
+ R:	Jason Gunthorpe <jgg@ziepe.ca>
+ L:	linux-integrity@vger.kernel.org
+ S:	Maintained
+-- 
+2.25.1
 
