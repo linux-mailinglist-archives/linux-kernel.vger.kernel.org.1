@@ -2,52 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3071C28D56B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0357328D584
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgJMUdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 16:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbgJMUdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 16:33:08 -0400
-Subject: Re: [GIT PULL] libata updates for 5.10-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602621187;
-        bh=hnx7FIvvdB6yf4j34gYOIXG5pjBEj4DxUn+1UxgBVtc=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=WJ9RyjQFPqrVt1+3T9ByEyyagUrEOIpnJRWkITj2Y4XunN4sFHBcTtIp4YFSTnD5N
-         GNvOzPjn2ffeGgz7cN3v6iqT5N/OfgfvAD2PikClyW0XvzuW3p5JwQTQ4OgF5nOFvY
-         NlqAU134lfKZlGKfxrp4jmT0kge/o2AhAJCj2F34=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <d4e07ddd-092a-256a-5b25-841e95fa3fcc@kernel.dk>
-References: <d4e07ddd-092a-256a-5b25-841e95fa3fcc@kernel.dk>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <d4e07ddd-092a-256a-5b25-841e95fa3fcc@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/libata-5.10-2020-10-12
-X-PR-Tracked-Commit-Id: 45aefe3d2251e4e229d7662052739f96ad1d08d9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 79ec6d9cac46d59db9b006bc9cde2811ef365292
-Message-Id: <160262118790.22802.10133242985400694711.pr-tracker-bot@kernel.org>
-Date:   Tue, 13 Oct 2020 20:33:07 +0000
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        IDE/ATA development list <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        id S1727554AbgJMUnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:43:13 -0400
+Received: from mxout04.lancloud.ru ([89.108.124.63]:47504 "EHLO
+        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727215AbgJMUnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 16:43:12 -0400
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru ADCE320275ED
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: [PATCH 1/2] module: merge repetitive strings in module_sig_check()
+From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
+To:     Jessica Yu <jeyu@kernel.org>, <linux-kernel@vger.kernel.org>
+References: <789a4e5c-8efd-bb1c-86e2-eed8b2b7b0af@omprussia.ru>
+Organization: Open Mobile Platform, LLC
+Message-ID: <4c4a3fa0-3eee-6cca-947c-9d01e3eb2a8a@omprussia.ru>
+Date:   Tue, 13 Oct 2020 23:34:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <789a4e5c-8efd-bb1c-86e2-eed8b2b7b0af@omprussia.ru>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [213.87.131.195]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1908.lancloud.ru (fd00:f066::208)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 07:48:15 -0600:
+The 'reason' variable in module_sig_check() points to 3 strings across
+the *switch* statement, all needlessly starting with the same text.  Let's
+put as much of the starting text as we can into the pr_notice() call (this
+includes some rewording of the 1st message) -- it saves 37 bytes of object
+code (x86 gcc 10.2.1).
 
-> git://git.kernel.dk/linux-block.git tags/libata-5.10-2020-10-12
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/79ec6d9cac46d59db9b006bc9cde2811ef365292
+---
+ kernel/module.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Index: linux/kernel/module.c
+===================================================================
+--- linux.orig/kernel/module.c
++++ linux/kernel/module.c
+@@ -2906,16 +2906,17 @@ static int module_sig_check(struct load_
+ 		 * enforcing, certain errors are non-fatal.
+ 		 */
+ 	case -ENODATA:
+-		reason = "Loading of unsigned module";
++		reason = "no signature";
+ 		goto decide;
+ 	case -ENOPKG:
+-		reason = "Loading of module with unsupported crypto";
++		reason = "unsupported crypto";
+ 		goto decide;
+ 	case -ENOKEY:
+-		reason = "Loading of module with unavailable key";
++		reason = "unavailable key";
+ 	decide:
+ 		if (is_module_sig_enforced()) {
+-			pr_notice("%s: %s is rejected\n", info->name, reason);
++			pr_notice("%s: loading of module with %s is rejected\n",
++				  info->name, reason);
+ 			return -EKEYREJECTED;
+ 		}
+ 
