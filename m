@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0913A28CDAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E574628CD91
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730092AbgJMMBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57390 "EHLO mail.kernel.org"
+        id S1728730AbgJMMAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:00:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727401AbgJMLyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:54:41 -0400
+        id S1727451AbgJMLym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:54:42 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4692722265;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B0E4222C8;
         Tue, 13 Oct 2020 11:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602590080;
-        bh=0pyzte4nOruiOG+lT9yn7ghxCXfyNWzJBTAY2OTjNYk=;
+        bh=uyw81/CIQor1pw1d+F+O72/KMytUqBcsX5jPSTgoByE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mtdGYCM6lYDW4R01e5Y/uCVkYXUPSsN9UAMNIhqoAZOLC09XRPUs3kdhIXE8+4dKx
-         4fTvynonB6VYLvw4hRew20LErue0nj12awrFfHflVIQ+naxlNO4mFzDxOrCp99Lvax
-         hsbZRI9s0Ph7UDFGiyWzkRDUkl6VbebE1UxrronY=
+        b=UG2vO65eqVkBKAnAhL+JdEyNxErQmO0597qfesKYR05pbPxvdd2m74Cwc0AhcDITB
+         wAJlIQfkpOidDJElNIDpMd1Engk93aH39qFnmuElMbdMMkQewD5F3YMTojsRKFoQCD
+         7GB2CvTycFN6ZVJG3V1J7/mA1Lz7/lkd10kJtVig=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSIt4-006CUJ-Ay; Tue, 13 Oct 2020 13:54:38 +0200
+        id 1kSIt4-006CUM-Bo; Tue, 13 Oct 2020 13:54:38 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 25/80] docs: it_IT: fix namespace collisions at locking.rst
-Date:   Tue, 13 Oct 2020 13:53:40 +0200
-Message-Id: <0c2498def8932b0d75df2bdde7811d62b499ef10.1602589096.git.mchehab+huawei@kernel.org>
+        Alexander Aring <alex.aring@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v6 26/80] docs: net: ieee802154.rst: fix C expressions
+Date:   Tue, 13 Oct 2020 13:53:41 +0200
+Message-Id: <e9a94add62e184ce5a3b2fd49b2c217b4dc77e7b.1602589096.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602589096.git.mchehab+huawei@kernel.org>
 References: <cover.1602589096.git.mchehab+huawei@kernel.org>
@@ -45,39 +49,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The C domain functions there collide with the English ones,
-due to namespace collision, generating lots of warnings with
-Sphinx 3.x:
+There are some warnings produced with Sphinx 3.x:
 
-	./include/linux/mutex.h:121: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
-	Declaration is 'mutex_init'.
-	./include/linux/mutex.h:152: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
-	Declaration is 'mutex_is_locked'.
-	./include/linux/mutex.h:226: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
-	Declaration is 'mutex_trylock_recursive'.
-	./kernel/locking/mutex.c:281: WARNING: Duplicate C declaration, also defined in 'translations/it_IT/kernel-hacking/locking'.
-	Declaration is 'mutex_lock'.
-	...
+	Documentation/networking/ieee802154.rst:29: WARNING: Error in declarator or parameters
+	Invalid C declaration: Expecting "(" in parameters. [error at 7]
+	  int sd = socket(PF_IEEE802154, SOCK_DGRAM, 0);
+	  -------^
+	Documentation/networking/ieee802154.rst:134: WARNING: Invalid C declaration: Expected end of definition. [error at 81]
+	  void ieee802154_rx_irqsafe(struct ieee802154_hw *hw, struct sk_buff *skb, u8 lqi):
+	  ---------------------------------------------------------------------------------^
+	Documentation/networking/ieee802154.rst:139: WARNING: Invalid C declaration: Expected end of definition. [error at 95]
+	  void ieee802154_xmit_complete(struct ieee802154_hw *hw, struct sk_buff *skb, bool ifs_handling):
+	  -----------------------------------------------------------------------------------------------^
+	Documentation/networking/ieee802154.rst:158: WARNING: Invalid C declaration: Expected end of definition. [error at 35]
+	  int start(struct ieee802154_hw *hw):
+	  -----------------------------------^
+	Documentation/networking/ieee802154.rst:162: WARNING: Invalid C declaration: Expected end of definition. [error at 35]
+	  void stop(struct ieee802154_hw *hw):
+	  -----------------------------------^
+	Documentation/networking/ieee802154.rst:166: WARNING: Invalid C declaration: Expected end of definition. [error at 61]
+	  int xmit_async(struct ieee802154_hw *hw, struct sk_buff *skb):
+	  -------------------------------------------------------------^
+	Documentation/networking/ieee802154.rst:171: WARNING: Invalid C declaration: Expected end of definition. [error at 43]
+	  int ed(struct ieee802154_hw *hw, u8 *level):
+	  -------------------------------------------^
+	Documentation/networking/ieee802154.rst:176: WARNING: Invalid C declaration: Expected end of definition. [error at 62]
+	  int set_channel(struct ieee802154_hw *hw, u8 page, u8 channel):
+	  --------------------------------------------------------------^
 
-Add a namespace tag there, in order to prevent that.
+Caused by some bad c:function: prototypes. Fix them.
 
-Acked-by: Federico Vaga <federico.vaga@vaga.pv.it>
+Acked-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/translations/it_IT/kernel-hacking/locking.rst | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/networking/ieee802154.rst | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/translations/it_IT/kernel-hacking/locking.rst b/Documentation/translations/it_IT/kernel-hacking/locking.rst
-index 4615df5723fb..bf1acd6204ef 100644
---- a/Documentation/translations/it_IT/kernel-hacking/locking.rst
-+++ b/Documentation/translations/it_IT/kernel-hacking/locking.rst
-@@ -1,5 +1,7 @@
- .. include:: ../disclaimer-ita.rst
+diff --git a/Documentation/networking/ieee802154.rst b/Documentation/networking/ieee802154.rst
+index 6f4bf8447a21..f27856d77c8b 100644
+--- a/Documentation/networking/ieee802154.rst
++++ b/Documentation/networking/ieee802154.rst
+@@ -26,7 +26,9 @@ The stack is composed of three main parts:
+ Socket API
+ ==========
  
-+.. c:namespace:: it_IT
+-.. c:function:: int sd = socket(PF_IEEE802154, SOCK_DGRAM, 0);
++::
 +
- :Original: :ref:`Documentation/kernel-hacking/locking.rst <kernel_hacking_lock>`
- :Translator: Federico Vaga <federico.vaga@vaga.pv.it>
++    int sd = socket(PF_IEEE802154, SOCK_DGRAM, 0);
+ 
+ The address family, socket addresses etc. are defined in the
+ include/net/af_ieee802154.h header or in the special header
+@@ -131,12 +133,12 @@ Register PHY in the system.
+ 
+ Freeing registered PHY.
+ 
+-.. c:function:: void ieee802154_rx_irqsafe(struct ieee802154_hw *hw, struct sk_buff *skb, u8 lqi):
++.. c:function:: void ieee802154_rx_irqsafe(struct ieee802154_hw *hw, struct sk_buff *skb, u8 lqi)
+ 
+ Telling 802.15.4 module there is a new received frame in the skb with
+ the RF Link Quality Indicator (LQI) from the hardware device.
+ 
+-.. c:function:: void ieee802154_xmit_complete(struct ieee802154_hw *hw, struct sk_buff *skb, bool ifs_handling):
++.. c:function:: void ieee802154_xmit_complete(struct ieee802154_hw *hw, struct sk_buff *skb, bool ifs_handling)
+ 
+ Telling 802.15.4 module the frame in the skb is or going to be
+ transmitted through the hardware device
+@@ -155,25 +157,25 @@ operations structure at least::
+         ...
+    };
+ 
+-.. c:function:: int start(struct ieee802154_hw *hw):
++.. c:function:: int start(struct ieee802154_hw *hw)
+ 
+ Handler that 802.15.4 module calls for the hardware device initialization.
+ 
+-.. c:function:: void stop(struct ieee802154_hw *hw):
++.. c:function:: void stop(struct ieee802154_hw *hw)
+ 
+ Handler that 802.15.4 module calls for the hardware device cleanup.
+ 
+-.. c:function:: int xmit_async(struct ieee802154_hw *hw, struct sk_buff *skb):
++.. c:function:: int xmit_async(struct ieee802154_hw *hw, struct sk_buff *skb)
+ 
+ Handler that 802.15.4 module calls for each frame in the skb going to be
+ transmitted through the hardware device.
+ 
+-.. c:function:: int ed(struct ieee802154_hw *hw, u8 *level):
++.. c:function:: int ed(struct ieee802154_hw *hw, u8 *level)
+ 
+ Handler that 802.15.4 module calls for Energy Detection from the hardware
+ device.
+ 
+-.. c:function:: int set_channel(struct ieee802154_hw *hw, u8 page, u8 channel):
++.. c:function:: int set_channel(struct ieee802154_hw *hw, u8 page, u8 channel)
+ 
+ Set radio for listening on specific channel of the hardware device.
  
 -- 
 2.26.2
