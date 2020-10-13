@@ -2,148 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716D828CAD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D896428CAD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404237AbgJMJPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:15:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:49810 "EHLO foss.arm.com"
+        id S2390739AbgJMJQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:16:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403986AbgJMJPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:15:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2E5DB31B;
-        Tue, 13 Oct 2020 02:15:33 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 489213F66B;
-        Tue, 13 Oct 2020 02:15:32 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 10:15:26 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        robh@kernel.org, bhelgaas@google.com, gustavo.pimentel@synopsys.com
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Message-ID: <20201013091526.GA13945@e121166-lin.cambridge.arm.com>
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
+        id S2390578AbgJMJQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 05:16:46 -0400
+Received: from gaia (unknown [95.149.105.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3ADA208D5;
+        Tue, 13 Oct 2020 09:16:42 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 10:16:40 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     Jann Horn <jannh@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
+ and with length
+Message-ID: <20201013091638.GA10778@gaia>
+References: <20201007073932.865218-1-jannh@google.com>
+ <d5332a7b-c300-6d28-18b9-4b7d4110ef86@oracle.com>
+ <20201010110949.GA32545@gaia>
+ <af207cf8-3049-85eb-349d-5fed6b9be49c@oracle.com>
+ <20201012172218.GE6493@gaia>
+ <20c85633-b559-c299-3e57-ae136b201526@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20c85633-b559-c299-3e57-ae136b201526@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:41:30PM +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On Mon, Oct 12, 2020 at 01:14:50PM -0600, Khalid Aziz wrote:
+> On 10/12/20 11:22 AM, Catalin Marinas wrote:
+> > On Mon, Oct 12, 2020 at 11:03:33AM -0600, Khalid Aziz wrote:
+> >> On 10/10/20 5:09 AM, Catalin Marinas wrote:
+> >>> On Wed, Oct 07, 2020 at 02:14:09PM -0600, Khalid Aziz wrote:
+> >>>> On 10/7/20 1:39 AM, Jann Horn wrote:
+> >>>>> arch_validate_prot() is a hook that can validate whether a given set of
+> >>>>> protection flags is valid in an mprotect() operation. It is given the set
+> >>>>> of protection flags and the address being modified.
+> >>>>>
+> >>>>> However, the address being modified can currently not actually be used in
+> >>>>> a meaningful way because:
+> >>>>>
+> >>>>> 1. Only the address is given, but not the length, and the operation can
+> >>>>>    span multiple VMAs. Therefore, the callee can't actually tell which
+> >>>>>    virtual address range, or which VMAs, are being targeted.
+> >>>>> 2. The mmap_lock is not held, meaning that if the callee were to check
+> >>>>>    the VMA at @addr, that VMA would be unrelated to the one the
+> >>>>>    operation is performed on.
+> >>>>>
+> >>>>> Currently, custom arch_validate_prot() handlers are defined by
+> >>>>> arm64, powerpc and sparc.
+> >>>>> arm64 and powerpc don't care about the address range, they just check the
+> >>>>> flags against CPU support masks.
+> >>>>> sparc's arch_validate_prot() attempts to look at the VMA, but doesn't take
+> >>>>> the mmap_lock.
+> >>>>>
+> >>>>> Change the function signature to also take a length, and move the
+> >>>>> arch_validate_prot() call in mm/mprotect.c down into the locked region.
+> >>> [...]
+> >>>> As Chris pointed out, the call to arch_validate_prot() from do_mmap2()
+> >>>> is made without holding mmap_lock. Lock is not acquired until
+> >>>> vm_mmap_pgoff(). This variance is uncomfortable but I am more
+> >>>> uncomfortable forcing all implementations of validate_prot to require
+> >>>> mmap_lock be held when non-sparc implementations do not have such need
+> >>>> yet. Since do_mmap2() is in powerpc specific code, for now this patch
+> >>>> solves a current problem.
+> >>>
+> >>> I still think sparc should avoid walking the vmas in
+> >>> arch_validate_prot(). The core code already has the vmas, though not
+> >>> when calling arch_validate_prot(). That's one of the reasons I added
+> >>> arch_validate_flags() with the MTE patches. For sparc, this could be
+> >>> (untested, just copied the arch_validate_prot() code):
+> >>
+> >> I am little uncomfortable with the idea of validating protection bits
+> >> inside the VMA walk loop in do_mprotect_pkey(). When ADI is being
+> >> enabled across multiple VMAs and arch_validate_flags() fails on a VMA
+> >> later, do_mprotect_pkey() will bail out with error leaving ADI enabled
+> >> on earlier VMAs. This will apply to protection bits other than ADI as
+> >> well of course. This becomes a partial failure of mprotect() call. I
+> >> think it should be all or nothing with mprotect() - when one calls
+> >> mprotect() from userspace, either the entire address range passed in
+> >> gets its protection bits updated or none of it does. That requires
+> >> validating protection bits upfront or undoing what earlier iterations of
+> >> VMA walk loop might have done.
+> > 
+> > I thought the same initially but mprotect() already does this with the
+> > VM_MAY* flag checking. If you ask it for an mprotect() that crosses
+> > multiple vmas and one of them fails, it doesn't roll back the changes to
+> > the prior ones. I considered that a similar approach is fine for MTE
+> > (it's most likely a user error).
 > 
-> On NXP Layerscape platforms, it results in SError in the
-> enumeration of the PCIe controller, which is not connecting
-> with an Endpoint device. And it doesn't make sense to
-> enumerate the Endpoints when the PCIe link is down. So this
-> patch added the link up check to avoid to fire configuration
-> transactions on link down bus.
-> 
-> [    0.807773] SError Interrupt on CPU2, code 0xbf000002 -- SError
-> [    0.807775] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807776] Hardware name: LS1046A RDB Board (DT)
-> [    0.807777] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> [    0.807778] pc : pci_generic_config_read+0x3c/0xe0
-> [    0.807778] lr : pci_generic_config_read+0x24/0xe0
-> [    0.807779] sp : ffff80001003b7b0
-> [    0.807780] x29: ffff80001003b7b0 x28: ffff80001003ba74
-> [    0.807782] x27: ffff000971d96800 x26: ffff00096e77e0a8
-> [    0.807784] x25: ffff80001003b874 x24: ffff80001003b924
-> [    0.807786] x23: 0000000000000004 x22: 0000000000000000
-> [    0.807788] x21: 0000000000000000 x20: ffff80001003b874
-> [    0.807790] x19: 0000000000000004 x18: ffffffffffffffff
-> [    0.807791] x17: 00000000000000c0 x16: fffffe0025981840
-> [    0.807793] x15: ffffb94c75b69948 x14: 62203a383634203a
-> [    0.807795] x13: 666e6f635f726568 x12: 202c31203d207265
-> [    0.807797] x11: 626d756e3e2d7375 x10: 656877202c307830
-> [    0.807799] x9 : 203d206e66766564 x8 : 0000000000000908
-> [    0.807801] x7 : 0000000000000908 x6 : ffff800010900000
-> [    0.807802] x5 : ffff00096e77e080 x4 : 0000000000000000
-> [    0.807804] x3 : 0000000000000003 x2 : 84fa3440ff7e7000
-> [    0.807806] x1 : 0000000000000000 x0 : ffff800010034000
-> [    0.807808] Kernel panic - not syncing: Asynchronous SError Interrupt
-> [    0.807809] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807810] Hardware name: LS1046A RDB Board (DT)
-> [    0.807811] Call trace:
-> [    0.807812]  dump_backtrace+0x0/0x1c0
-> [    0.807813]  show_stack+0x18/0x28
-> [    0.807814]  dump_stack+0xd8/0x134
-> [    0.807814]  panic+0x180/0x398
-> [    0.807815]  add_taint+0x0/0xb0
-> [    0.807816]  arm64_serror_panic+0x78/0x88
-> [    0.807817]  do_serror+0x68/0x180
-> [    0.807818]  el1_error+0x84/0x100
-> [    0.807818]  pci_generic_config_read+0x3c/0xe0
-> [    0.807819]  dw_pcie_rd_other_conf+0x78/0x110
-> [    0.807820]  pci_bus_read_config_dword+0x88/0xe8
-> [    0.807821]  pci_bus_generic_read_dev_vendor_id+0x30/0x1b0
-> [    0.807822]  pci_bus_read_dev_vendor_id+0x4c/0x78
-> [    0.807823]  pci_scan_single_device+0x80/0x100
-> [    0.807824]  pci_scan_slot+0x38/0x130
-> [    0.807825]  pci_scan_child_bus_extend+0x54/0x2a0
-> [    0.807826]  pci_scan_child_bus+0x14/0x20
-> [    0.807827]  pci_scan_bridge_extend+0x230/0x570
-> [    0.807828]  pci_scan_child_bus_extend+0x134/0x2a0
-> [    0.807829]  pci_scan_root_bus_bridge+0x64/0xf0
-> [    0.807829]  pci_host_probe+0x18/0xc8
-> [    0.807830]  dw_pcie_host_init+0x220/0x378
-> [    0.807831]  ls_pcie_probe+0x104/0x140
-> [    0.807832]  platform_drv_probe+0x54/0xa8
-> [    0.807833]  really_probe+0x118/0x3e0
-> [    0.807834]  driver_probe_device+0x5c/0xc0
-> [    0.807835]  device_driver_attach+0x74/0x80
-> [    0.807835]  __driver_attach+0x8c/0xd8
-> [    0.807836]  bus_for_each_dev+0x7c/0xd8
-> [    0.807837]  driver_attach+0x24/0x30
-> [    0.807838]  bus_add_driver+0x154/0x200
-> [    0.807839]  driver_register+0x64/0x120
-> [    0.807839]  __platform_driver_probe+0x7c/0x148
-> [    0.807840]  ls_pcie_driver_init+0x24/0x30
-> [    0.807841]  do_one_initcall+0x60/0x1d8
-> [    0.807842]  kernel_init_freeable+0x1f4/0x24c
-> [    0.807843]  kernel_init+0x14/0x118
-> [    0.807843]  ret_from_fork+0x10/0x34
-> [    0.807854] SMP: stopping secondary CPUs
-> [    0.807855] Kernel Offset: 0x394c64080000 from 0xffff800010000000
-> [    0.807856] PHYS_OFFSET: 0xffff8bfd40000000
-> [    0.807856] CPU features: 0x0240022,21806000
-> [    0.807857] Memory Limit: none
-> 
-> Fixes: c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> You are right about the current behavior with VM_MAY* flags, but that is
+> not the right behavior. Adding more cases to this just perpetuates
+> incorrect behavior. It is not easy to roll back changes after VMAs have
+> potentially been split/merged which is probably why the current code
+> simply throws in the towel and returns with partially modified address
+> space. It is lot easier to do all the checks upfront and then proceed or
+> not proceed with modifying VMAs. One approach might be to call
+> arch_validate_flags() in a loop before modifying VMAs and walk all VMAs
+> with a read lock held. Current code also bails out with ENOMEM if it
+> finds a hole in the address range and leaves any modifications already
+> made in place. This is another case where a hole could have been
+> detected earlier.
 
-Rob,
+This should be ideal indeed though with the risk of breaking the current
+ABI (FWIW, FreeBSD seems to do a first pass to check for violations:
+https://github.com/freebsd/freebsd/blob/master/sys/vm/vm_map.c#L2630).
 
-do you mind if I squash this in with the commit it is fixing ?
+However, I'm not sure it's worth the hassle. Do we expect the user to
+call mprotect() across multiple mixed type mappings while relying on no
+change if an error is returned? We should probably at least document the
+current behaviour in the mprotect man page.
 
-Please let me know.
-
-Thanks,
-Lorenzo
-
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index c01c9d2fb3f9..e82b518430c5 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -442,6 +442,9 @@ static void __iomem *dw_pcie_other_conf_map_bus(struct pci_bus *bus,
->  	struct pcie_port *pp = bus->sysdata;
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->  
-> +	if (!dw_pcie_link_up(pci))
-> +		return NULL;
-> +
->  	busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
->  		 PCIE_ATU_FUNC(PCI_FUNC(devfn));
->  
-> -- 
-> 2.17.1
-> 
+-- 
+Catalin
