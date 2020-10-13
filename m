@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B422528D4B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817D828D4CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgJMTlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
+        id S1731960AbgJMTmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgJMTlt (ORCPT
+        with ESMTP id S1729221AbgJMTl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:41:49 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A87C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:41:49 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id t25so1392741ejd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:41:49 -0700 (PDT)
+        Tue, 13 Oct 2020 15:41:57 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1CBC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:41:57 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l18so351721pgg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jlOzF1QhqikCoQxsvfJV6M6Hjgbrow9dB9uNs1AoGLE=;
-        b=kTjS5KS3nYcf/wrvTsuRt1BvzGw557kJOoPvyzYoBgiqb4b8bKtbI2/mMLiZYyRjFR
-         J9ydTuu0x47x+MEvbUBFhFH3/2QgRWgMVRtg9k6OLuYDe131Mp/cuPa30fJMGhSFjepr
-         cqBBXWNROTwzHkSN49lY/psarWhxU27El5EYWXEJaiWvhTqo66L6QK98x3Y0Yvi2nF9y
-         UTW/CUag9LBP+VfPW+1mn8JfLpPCSXoAzeg5FBjWoJMu0+7UEW9Ka5T8iigFwOd+JDvR
-         rrctnvxFOZW164mxjZq4IMmZGZxG4l2jAUbsCf6skOMzcKIRAwJ8OakZ/jL0rfexuXSd
-         7ngQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=gmYq+uYWoMDaYz8nXexSWVs/u/6+4ydcWzNjxfPB2d4=;
+        b=FICocnetZtgJIJcbLZYrFAFtO3AInGRhMhGutVFbukqmYQJIIf/bmOcS+xuDoU7aZM
+         AJ3Hc9agk86uaCQCl0eafZrCn9k7CRQzXefVEnVRMkhJIPx50uAdSQICjrHhzKeDSl+m
+         v0oUPJeHdPQ0G+PqRey6IZLqZNi0F4ZV1czac22bTGeER5YPvOJZCv2PRje7OSTHJPpn
+         37NKrB7emcbfV2vwyEFcvNm23cQ5cRiIvJRonZqy3yBChJMiibtSympcS0GYU5S8EbuO
+         MpVtIa6h0VyeFN6vt8MSQDmZuruTZJnxdTjYjMQwfhyXabcENJNNIt2I7DokRM6jySoX
+         DS8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jlOzF1QhqikCoQxsvfJV6M6Hjgbrow9dB9uNs1AoGLE=;
-        b=h2S3dDBJd0bhDENoSaA6TGUtK43LRA5bzkj67t6wCOsfoGh0Gbi/eLS2D1Ebuqb/AQ
-         y3vMZA+AQsxVyg/QMw3/CXiPxlEqU5VaP5CBbPHATYZfr/0OtA/8x/nOxCfvF5W4liru
-         s+6Qv8c7YGwSqmQ7bNdGstzx1+/rW+NGLjCkUrbzEhP5YhRIyaX1UCIJV8n+jvTeBWpy
-         C+L/UzZUcoBFU8zjs7E8bIB8/ji0SlY7ldEBJOpg/FPskFBwRWRstIX7LrkXq6A29APJ
-         mU2xq64o0AF8/PQDVz3ZnjZ4uMzivRXO95vZAx8VBov7ciSFnx/IdXlAbr78gY4XQ/O6
-         Ea+A==
-X-Gm-Message-State: AOAM532T4nRyIgN1iGKmAhv+41xkXBAZkzFgAApL1kUk2ge48l0O+5gJ
-        P10jRjcAlPrN1hFSiSf10TuqYH/y55wmdNawjZWDmQ==
-X-Google-Smtp-Source: ABdhPJxGxhMZ7o2BYtIDXOupUr3pSHVXck0tIwC9HMZ0nIbp0pU6AQKRljKqMwVkoxmX0BYp74elTVEnpYvo3LWFH24=
-X-Received: by 2002:a17:906:7e47:: with SMTP id z7mr1390518ejr.418.1602618108255;
- Tue, 13 Oct 2020 12:41:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-34-ira.weiny@intel.com>
- <CAPcyv4gL3jfw4d+SJGPqAD3Dp4F_K=X3domuN4ndAA1FQDGcPg@mail.gmail.com> <20201013193643.GK20115@casper.infradead.org>
-In-Reply-To: <20201013193643.GK20115@casper.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 13 Oct 2020 12:41:36 -0700
-Message-ID: <CAPcyv4gL70FcLe8az7ezmpcZV=bG0Cka7daKWcCdmV4GoenSZw@mail.gmail.com>
-Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=gmYq+uYWoMDaYz8nXexSWVs/u/6+4ydcWzNjxfPB2d4=;
+        b=jDDwFVMhu+wXdwx86gR09ukHhYcDL0B2k0ZslDCksEhWKKKzgXjWC9UNvvVRicwC9J
+         Ols1V4bxBDTqXkkSJzed3sYyQIG7vg3PWBvTcIOHmrtsoKtNul6NOPPHB+zg2XKJm3QH
+         V5NQGkwiOPF2/ZoZgV0WJXX3Z2p0v679mh96ChNIoI14CcvDja62MODWXkPEkSk1LQn5
+         kg4axrIG3c3EWiCGFtzIi8GrxDcG2yiVvWm7SqVafQVhdzlXSBiVIOYcsz/WmVbRUP6x
+         ZryRBxsN1KrjHie7ylj9BSOMITuh2YzwjtQ2MtawXEqAHiZlRzmVFRlSCrc0TrQO/IEB
+         NHdw==
+X-Gm-Message-State: AOAM530/upTCC9j9zJYLfrg1//iwoV9YJNrgmU3TikfD0pWXGim3U1Mi
+        P4uo93KtKtZJIEZp5eQrWObGow==
+X-Google-Smtp-Source: ABdhPJw7IX/0EU1/lRDVU4SMAE1BbP4RHZmBX3ss69w7WvrR6CEEi/ON6NBFiE3no9Crf8Pxj2nZYQ==
+X-Received: by 2002:a62:830c:0:b029:152:3490:c8e6 with SMTP id h12-20020a62830c0000b02901523490c8e6mr1114061pfe.6.1602618116420;
+        Tue, 13 Oct 2020 12:41:56 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id g17sm451245pfu.130.2020.10.13.12.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 12:41:55 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 12:41:54 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Axel Rasmussen <axelrasmussen@google.com>
+cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Pitre <nico@fluxnic.net>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Kexec Mailing List <kexec@lists.infradead.org>,
-        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-efi <linux-efi@vger.kernel.org>,
-        linux-mmc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
-        target-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-        reiserfs-devel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
-        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-afs@lists.infradead.org,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, intel-gfx@lists.freedesktop.org,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        linux-cachefs@redhat.com, samba-technical@lists.samba.org,
-        intel-wired-lan@lists.osuosl.org
-Content-Type: text/plain; charset="UTF-8"
+        Michel Lespinasse <walken@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 1/2] tracing: support "bool" type in synthetic trace
+ events
+In-Reply-To: <20201009220524.485102-2-axelrasmussen@google.com>
+Message-ID: <alpine.DEB.2.23.453.2010131241400.2883230@chino.kir.corp.google.com>
+References: <20201009220524.485102-1-axelrasmussen@google.com> <20201009220524.485102-2-axelrasmussen@google.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:37 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Oct 13, 2020 at 11:44:29AM -0700, Dan Williams wrote:
-> > On Fri, Oct 9, 2020 at 12:52 PM <ira.weiny@intel.com> wrote:
-> > >
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > >
-> > > The kmap() calls in this FS are localized to a single thread.  To avoid
-> > > the over head of global PKRS updates use the new kmap_thread() call.
-> > >
-> > > Cc: Nicolas Pitre <nico@fluxnic.net>
-> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > ---
-> > >  fs/cramfs/inode.c | 10 +++++-----
-> > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> > > index 912308600d39..003c014a42ed 100644
-> > > --- a/fs/cramfs/inode.c
-> > > +++ b/fs/cramfs/inode.c
-> > > @@ -247,8 +247,8 @@ static void *cramfs_blkdev_read(struct super_block *sb, unsigned int offset,
-> > >                 struct page *page = pages[i];
-> > >
-> > >                 if (page) {
-> > > -                       memcpy(data, kmap(page), PAGE_SIZE);
-> > > -                       kunmap(page);
-> > > +                       memcpy(data, kmap_thread(page), PAGE_SIZE);
-> > > +                       kunmap_thread(page);
-> >
-> > Why does this need a sleepable kmap? This looks like a textbook
-> > kmap_atomic() use case.
->
-> There's a lot of code of this form.  Could we perhaps have:
->
-> static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
-> {
->         char *vto = kmap_atomic(to);
->
->         memcpy(vto, vfrom, size);
->         kunmap_atomic(vto);
-> }
->
-> in linux/highmem.h ?
+On Fri, 9 Oct 2020, Axel Rasmussen wrote:
 
-Nice, yes, that could also replace the local ones in lib/iov_iter.c
-(memcpy_{to,from}_page())
+> It's common [1] to define tracepoint fields as "bool" when they contain
+> a true / false value. Currently, defining a synthetic event with a
+> "bool" field yields EINVAL. It's possible to work around this by using
+> e.g. u8 (assuming sizeof(bool) is 1, and bool is unsigned; if either of
+> these properties don't match, you get EINVAL [2]).
+> 
+> Supporting "bool" explicitly makes hooking this up easier and more
+> portable for userspace.
+> 
+> [1]: grep -r "bool" include/trace/events/
+> [2]: check_synth_field() in kernel/trace/trace_events_hist.c
+> 
+> Acked-by: Michel Lespinasse <walken@google.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+
+Acked-by: David Rientjes <rientjes@google.com>
