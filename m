@@ -2,60 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6594228D53E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A0628D544
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732546AbgJMUNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 16:13:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727436AbgJMUNJ (ORCPT
+        id S1732381AbgJMUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727436AbgJMUQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 16:13:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602619989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1IJmGWX98yWRkjCLBh0udfqamxZ1s7DNR34V91jc9yw=;
-        b=Kt2FpMbQEEMewvw8Rp66Ovss/6GyQHxGbT+vgMD0aOV4czx/Iyr6qe8lhJVW58AOpVqFLb
-        6v8UDYg9JF+J1ozyjXVSifw7cds6h3jVZHpiK+zCnL44aeoJpZnmodj0TGWasz/Jqunq0D
-        Q2I9HLVgSQjzXV1sxsH4ZEu8t2HiUtc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-NA3vqfUgPtWBVQ0EdU7XtA-1; Tue, 13 Oct 2020 16:13:01 -0400
-X-MC-Unique: NA3vqfUgPtWBVQ0EdU7XtA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C40A01009639;
-        Tue, 13 Oct 2020 20:12:58 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DAE3C27CCC;
-        Tue, 13 Oct 2020 20:12:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <000000000000e32a8b05b01f808a@google.com>
-References: <000000000000e32a8b05b01f808a@google.com>
-To:     syzbot <syzbot+2d0585e5efcd43d113c2@syzkaller.appspotmail.com>
-Cc:     dhowells@redhat.com, linux-cachefs@redhat.com,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in fscache_alloc_cookie
+        Tue, 13 Oct 2020 16:16:14 -0400
+Received: from orcam.me.uk (unknown [IPv6:2001:4190:8020::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E8E8C061755;
+        Tue, 13 Oct 2020 13:16:14 -0700 (PDT)
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id 9FAE72BE086;
+        Tue, 13 Oct 2020 21:16:10 +0100 (BST)
+Date:   Tue, 13 Oct 2020 21:16:10 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Jinyang He <hejinyang@loongson.cn>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Add set_memory_node()
+In-Reply-To: <1602559183-12225-1-git-send-email-hejinyang@loongson.cn>
+Message-ID: <alpine.LFD.2.21.2010132110060.866917@eddie.linux-mips.org>
+References: <1602559183-12225-1-git-send-email-hejinyang@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <157940.1602619974.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 13 Oct 2020 21:12:54 +0100
-Message-ID: <157941.1602619974@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs=
-.git f8eb8d1c6a853f617ca9ee233bb2d230401c5bdc
+On Tue, 13 Oct 2020, Jinyang He wrote:
 
+> Commit e7ae8d174eec ("MIPS: replace add_memory_region with memblock")
+> replaced add_memory_region(, , BOOT_MEM_RAM) with memblock_add(). But
+> it doesn't work well on some platforms which have NUMA like Loongson64.
+
+ Please note this is not a full review, I haven't investigated the fitness 
+for purpose of this change and instead just addressed one aspect of coding 
+style.
+
+> diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
+> index aa03b12..29e2d9c 100644
+> --- a/arch/mips/include/asm/bootinfo.h
+> +++ b/arch/mips/include/asm/bootinfo.h
+> @@ -92,6 +92,10 @@ extern unsigned long mips_machtype;
+>  
+>  extern void detect_memory_region(phys_addr_t start, phys_addr_t sz_min,  phys_addr_t sz_max);
+>  
+> +#ifdef CONFIG_NUMA
+> +extern void set_memory_node(phys_addr_t start, phys_addr_t size);
+> +#endif
+> +
+
+ If anything this needs to be:
+
+#ifdef CONFIG_NUMA
+extern void set_memory_node(phys_addr_t start, phys_addr_t size);
+#else
+static inline void set_memory_node(phys_addr_t start, phys_addr_t size) {}
+#endif
+
+so as to avoid #ifdef clutter across call places.
+
+  Maciej
