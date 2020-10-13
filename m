@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A7228D6F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8ED28D6D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388743AbgJMXTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 19:19:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18494 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727344AbgJMXTm (ORCPT
+        id S1729661AbgJMXLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:11:23 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:59480 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726894AbgJMXLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 19:19:42 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09DN3oTZ004355;
-        Tue, 13 Oct 2020 19:19:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=8A66wKI0TMK6r17n7LypUtMRYlFtZVsjNmDXnfqCUyA=;
- b=ZDYxu1RrxMW3eafWqtf2Gk/tJ3VokPlaA/f5PRkeIc/T4U8jBc6lB6YajrZOoeQ6+Eum
- AJ3eh0cbmY3yzpqredBoE966//QH3xf4vvRsrxKPjjXN4ENy8WHHRdf9+ISRZE3rkwIN
- 3FCbc+ASlauzJmCcKMwMvxdh7Sy3BMtAP/dH7qxfYULdbmMsa9if/7ZL1tNYQKjoJkjx
- fQYJsnmGO7UmNJBNvfTNXqCsY7phCeZlvoaws5L71F8L5HKADx3lUZV4NFF8iN75JfBI
- OpmGjvzPUjg7lWEjn1vosgxwNAI7ua0lhbB1ccYGmpLKEgR5edKk61wukssLvEO2D03A QQ== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 345nbmrnd5-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Oct 2020 19:19:32 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09DN7qJb008779;
-        Tue, 13 Oct 2020 23:08:13 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02dal.us.ibm.com with ESMTP id 3434k9j95m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Oct 2020 23:08:13 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09DN8Cpm46924058
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Oct 2020 23:08:12 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B9E27805F;
-        Tue, 13 Oct 2020 23:08:12 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EFACC7805E;
-        Tue, 13 Oct 2020 23:08:10 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.148.2])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Oct 2020 23:08:10 +0000 (GMT)
-Message-ID: <95f493a39c2a6cc2f45da2f7fe73d7febee927df.camel@linux.ibm.com>
-Subject: Re: general protection fault in scsi_queue_rq
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     syzbot <syzbot+0796b72dc61f223d8cc5@syzkaller.appspotmail.com>,
-        hare@suse.de, hch@lst.de, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
-        syzkaller-bugs@googlegroups.com
-Date:   Tue, 13 Oct 2020 16:08:09 -0700
-In-Reply-To: <00000000000047627e05b17a6ec9@google.com>
-References: <00000000000047627e05b17a6ec9@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Tue, 13 Oct 2020 19:11:23 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09DNAnXd123793;
+        Tue, 13 Oct 2020 23:11:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=ocyR4HOoQb93ftTFzkO/TrEL+TOkJdPALBqHk8lypSA=;
+ b=RKqzoRIWLDkKvU1mxwKxaBBRRZOduCTKNzpTNqdBTuqn1FEDbvcO+PiS6H2rAX4p2ytn
+ xV7lVnrphIHwKvO3gMFJ0nK0cfSiz1zJZ1NI7QHm+YiMlwQivYwojRlm+i9t/uPHcGwT
+ Yfb115/p1J44podgcaIXnveWpiUNIhDJ5w+6234V8oRrnUOIdSKbvD89ilorQwzFyNb6
+ ks6x9HLOvHTmmuNmOWzNiAig0YACvu5KtfxldKdbI+5N6ZUqqXdvcD0FwGhjROWyOqQG
+ ybq7che782AqPXrcJFkU+Pr5iUaS/NjLubNfCnZiJFygXVUxox/3CQfoxb+HxZ0elUm5 Kg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 343vaeb4sn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 13 Oct 2020 23:11:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09DN5F3Q023581;
+        Tue, 13 Oct 2020 23:11:08 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 343puykkq1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Oct 2020 23:11:08 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09DNB5fp028202;
+        Tue, 13 Oct 2020 23:11:05 GMT
+Received: from monkey.oracle.com (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 13 Oct 2020 16:11:05 -0700
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Prakash Sangappa <prakash.sangappa@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [RFC PATCH 0/3] hugetlbfs: introduce hinode_rwsem for pmd sharing synchronization
+Date:   Tue, 13 Oct 2020 16:10:57 -0700
+Message-Id: <20201013231100.71013-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-13_16:2020-10-13,2020-10-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501 clxscore=1011
- lowpriorityscore=0 mlxlogscore=999 impostorscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010130160
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9773 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ adultscore=0 suspectscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010130161
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9773 signatures=668681
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010130161
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-12 at 07:51 -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e4fb79c7 Add linux-next specific files for 20201008
-> git tree:       linux-next
-> console output: 
-> https://syzkaller.appspot.com/x/log.txt?x=125c9a9f900000
-> kernel config:  
-> https://syzkaller.appspot.com/x/.config?x=568d41fe4341ed0f
-> dashboard link: 
-> https://syzkaller.appspot.com/bug?extid=0796b72dc61f223d8cc5
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      
-> https://syzkaller.appspot.com/x/repro.syz?x=12582fe7900000
-> C reproducer:   
-> https://syzkaller.appspot.com/x/repro.c?x=124ac7d0500000
-> 
-> The issue was bisected to:
-> 
-> commit 2ceda20f0a99a74a82b78870f3b3e5fa93087a7f
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Mon Oct 5 08:41:23 2020 +0000
-> 
->     scsi: core: Move command size detection out of the fast path
+In commit c0d0381ade79, changes were made to use i_mmap_rwsem for pmd
+sharing synchronization.  This required changes to mm locking order that
+are hugetlb specific.  Specifically, i_mmap_rwsem must be taken before
+the page lock.  This is not not a huge issue in hugetlb specific code,
+but becomes more problematic in the areas of page migration and memory
+failure where generic mm code had to deal with this change to lock
+ordering.  An ugly routine 'hugetlb_page_mapping_lock_write' was added
+to help with these issues.
 
-#syz: test git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+Recently, Hugh Dickins diagnosed a migration BUG as caused by code
+introduced with hugetlb i_mmap_rwsem synchronization [1].  Subsequent
+discussion in that thread pointed out additional problems in the code.
 
+Adding a rw_semaphore to the hugetlbfs inode for this type of synchronization
+was mentioned.  Such an approach is actually 'cleaner' as it can be
+inserted in the lock hierarchy where needed.  And, there is no issue
+with other parts of the mm using this rw_semaphore.
+
+This series adds a rw_semaphore (hinode_rwsem) to the hugetlbfs inode.
+
+The first patch reverts all commits having to deal with the current use
+of i_mmap_rwsem for pmd sharing and fault/truncate synchronization.  The
+revert of 5 commits was combined into a single patch.  I am looking for
+feedback on this approach.  I considered:
+- 5 Patches to revert the 5 commits
+- Reverting patches depending on c0d0381ade79, then having a patch to
+  change from i_mmap_rwsem to hinode_rwsem.
+To me, a 'clean slate' approach seemed best but I am open to whatever
+would be easiest to review.
+
+[1] https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2010071833100.2214@eggly.anvils/
+
+Mike Kravetz (3):
+  hugetlbfs: revert use of i_mmap_rwsem for pmd sharing and more sync
+  hugetlbfs: introduce hinode_rwsem for pmd sharing synchronization
+  huegtlbfs: handle page fault/truncate races
+
+ fs/hugetlbfs/inode.c    |  72 ++++++------
+ include/linux/fs.h      |  15 ---
+ include/linux/hugetlb.h |  72 ++++++++++--
+ mm/hugetlb.c            | 243 +++++++++++++++-------------------------
+ mm/memory-failure.c     |  34 ++----
+ mm/migrate.c            |  34 +++---
+ mm/rmap.c               |  17 +--
+ mm/userfaultfd.c        |  14 +--
+ 8 files changed, 220 insertions(+), 281 deletions(-)
+
+-- 
+2.25.4
 
