@@ -2,126 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E5228CB6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0827C28CB6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729142AbgJMKLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52550 "EHLO
+        id S1729346AbgJMKMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727894AbgJMKLB (ORCPT
+        with ESMTP id S1727894AbgJMKMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:11:01 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E36CC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:11:00 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id l24so20286563edj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 03:11:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=haoOXCnUClmCMszLSKymJ6r/6Isw0jOjGMpIS4DuvU8=;
-        b=dzbJs+d76xcRDH6LEhc6rRMbD/eR5c6TeapOLjHOn3pVvAmQDWRTs8TYLie2gWLUgZ
-         S5t99qg/KWe2jUCP/3vKPMdlMtZ/y0zbhD2eLyuFutxWAoKsbdLXA+p4kungNJErYCSN
-         eojaHdpNt8k9WEMxfv5+yXV9Xt2w2qMtbZCTj7myDufp9lEplmpUF2si929WyUUKuyHL
-         301z9GUPjtLC5HQ9AZNDSvtKvCJ2/m6S/yBOkY8JMTsU8Ly0deG56W+4jW8UCDrZQp6I
-         m55xbNiR/t1XAyL4iPyA21pkBCuv2Uu+RDN+ltxoEB5v4+E7zQOREcOgX3gSZCWnYBSw
-         9A5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=haoOXCnUClmCMszLSKymJ6r/6Isw0jOjGMpIS4DuvU8=;
-        b=tQjd1m6VoPqUWWdwM5IIo2Gp2rkDWQaH81lHn/9hfhL8LIyeo2RdwzvwS2sHXcAazZ
-         Ssf/1NfU9BZtmCeClKIYgw0G1wS5DDqKuXwfK3k0+SKmNbGveHu3hXO+Amx/engOVBHp
-         iqe1iGIZ49NzjP6FvewtCmZHN7pNgrYDLdqW87p5z+sms6Hx6Bw2FO9hRfFjSmEhYY52
-         KfDuhS/KJQATfOcmO7Fw8JEGQndIx1yFSstwNLY9jp5bRphU7LKBIxxzh43m0dPpWqSB
-         fXQw8MPCvqzRLuOuaX1fNEDovguufft4t0oQ1CfwMJThkCfinjCgjByEgaP2RgBDg5Rb
-         bqNQ==
-X-Gm-Message-State: AOAM532KWN7QAHU1AHCYQFWwWuU4MP7/r9yLZ0aBl0Dp0Eiz1OHFZza1
-        8u7zTskuCiPmUsD54xiIUeI=
-X-Google-Smtp-Source: ABdhPJwGW1eiE6R3L0LnLEfwHbziRSUQKbt4ydqwio8lGOddJapSkscEJ+gB2Beg0p2w2ZiKwD3ltw==
-X-Received: by 2002:aa7:dcd6:: with SMTP id w22mr19150554edu.378.1602583858870;
-        Tue, 13 Oct 2020 03:10:58 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id k21sm11991408edv.31.2020.10.13.03.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 03:10:57 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 13 Oct 2020 12:10:56 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [GIT PULL] objtool changes for v5.10
-Message-ID: <20201013101056.GA3933713@gmail.com>
-References: <20201013082625.GA775379@gmail.com>
- <20201013204312.6052157d@canb.auug.org.au>
+        Tue, 13 Oct 2020 06:12:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9C7C0613D0;
+        Tue, 13 Oct 2020 03:12:49 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 10:12:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602583967;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2fmxELie1ZMn/BFrNt1wnQqSU07/ecPS/BFguewf7go=;
+        b=AgasP2MSBg6v7lhZcEXR2ZHJ7+Gspd459EP/bzK77khO5GyjE6l/BuGsT8lmOgKzrXT4rX
+        TcpDxdEG740hPcmp2xqIoCKihA/6W9VCNK4+My8pO3NjoFzeYfaty88oyeo9dC7/PrGnJr
+        t+pOy+dEsMJReeiaY3jQz2vu+SrYmTlc7bGXfywfd9Sk9lJw+iht14Gi7RdKrPIXIKwPV8
+        gdqRqK5gcYBQJkoc82a6gyEkSqk51ER/sJ9c94FTL/QBDU7XqzfvK61Zf4yw7O7a2OM3Os
+        dtD9C3Iazo9gRCbOW9OVuM8oV/iQWPbHSafmMnuSzllv23YzetvuE98E27uayg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602583967;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2fmxELie1ZMn/BFrNt1wnQqSU07/ecPS/BFguewf7go=;
+        b=Nq+TpjdnerllWGRgL/X72UNiLqKZHDSroXJJ7Xf/o/YF0IjyHr+2J3B9KExveRINrjynL2
+        C4OnS57x5IXtS1BQ==
+From:   "tip-bot2 for Vasily Gorbik" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] perf build: Allow nested externs to enable
+ BUILD_BUG() usage
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: =?utf-8?q?=3Cpatch-1=2Ethread-251403=2Egit-2514037e9477=2Eyou?=
+ =?utf-8?q?r-ad-here=2Ecall-01602244460-ext-7088=40work=2Ehours=3E?=
+References: =?utf-8?q?=3Cpatch-1=2Ethread-251403=2Egit-2514037e9477=2Eyour?=
+ =?utf-8?q?-ad-here=2Ecall-01602244460-ext-7088=40work=2Ehours=3E?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013204312.6052157d@canb.auug.org.au>
+Message-ID: <160258396627.7002.9774762955549564502.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the objtool/core branch of tip:
 
-* Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Commit-ID:     ab0a40ea88204e1291b56da8128e2845fec8ee88
+Gitweb:        https://git.kernel.org/tip/ab0a40ea88204e1291b56da8128e2845fec8ee88
+Author:        Vasily Gorbik <gor@linux.ibm.com>
+AuthorDate:    Fri, 09 Oct 2020 14:25:23 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 13 Oct 2020 12:08:32 +02:00
 
-> Hi Ingo,
-> 
-> On Tue, 13 Oct 2020 10:26:25 +0200 Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> > Ilie Halip (1):
-> >       objtool: Ignore unreachable trap after call to noreturn functions
-> > 
-> > Jann Horn (1):
-> >       objtool: Permit __kasan_check_{read,write} under UACCESS
-> > 
-> > Julien Thierry (16):
-> >       objtool: Move object file loading out of check()
-> >       objtool: Move ORC logic out of check()
-> >       objtool: Skip ORC entry creation for non-text sections
-> >       objtool: Define 'struct orc_entry' only when needed
-> >       objtool: Group headers to check in a single list
-> >       objtool: Make sync-check consider the target architecture
-> >       objtool: Move macros describing structures to arch-dependent code
-> >       objtool: Abstract alternative special case handling
-> >       objtool: Make relocation in alternative handling arch dependent
-> >       objtool: Rename frame.h -> objtool.h
-> >       objtool: Only include valid definitions depending on source file type
-> >       objtool: Make unwind hint definitions available to other architectures
-> >       objtool: Decode unwind hint register depending on architecture
-> >       objtool: Remove useless tests before save_reg()
-> >       objtool: Ignore unreachable fake jumps
-> >       objtool: Handle calling non-function symbols in other sections
-> > 
-> > Raphael Gault (1):
-> >       objtool: Refactor jump table code to support other architectures
-> > 
-> > Vasily Gorbik (1):
-> >       objtool: Allow nested externs to enable BUILD_BUG()
-> 
-> This seems to be missing
-> 
-> https://lore.kernel.org/lkml/patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours/
-> 
-> or did that get sent in a previous pull request?
+perf build: Allow nested externs to enable BUILD_BUG() usage
 
-No, that fix is still missing, thanks for the reminder. I overlooked it 
-thinking that it's a tooling patch - but this needs to be paired with:
+Currently the BUILD_BUG() macro is expanded to the following:
 
-  2486baae2cf6: ("objtool: Allow nested externs to enable BUILD_BUG()")
+   do {
+           extern void __compiletime_assert_0(void)
+                   __attribute__((error("BUILD_BUG failed")));
+           if (!(!(1)))
+                   __compiletime_assert_0();
+   } while (0);
 
-I'll send a v2 pull request in an hour or two.
+If used in a function body this would obviously produce build errors
+with -Wnested-externs and -Werror.
 
-Thanks,
+To enable BUILD_BUG() usage in tools/arch/x86/lib/insn.c which perf
+includes in intel-pt-decoder, build perf without -Wnested-externs.
 
-	Ingo
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # build tested
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/patch-1.thread-251403.git-2514037e9477.your-ad-here.call-01602244460-ext-7088@work.hours
+---
+ tools/perf/Makefile.config | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 190be4f..8137a60 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -16,7 +16,7 @@ $(shell printf "" > $(OUTPUT).config-detected)
+ detected     = $(shell echo "$(1)=y"       >> $(OUTPUT).config-detected)
+ detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
+ 
+-CFLAGS := $(EXTRA_CFLAGS) $(EXTRA_WARNINGS)
++CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
+ 
+ include $(srctree)/tools/scripts/Makefile.arch
+ 
