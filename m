@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 969F228D0BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED3328D0C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389037AbgJMO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:57:46 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46886 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388986AbgJMO5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:57:46 -0400
-IronPort-SDR: jdD7tUMi5mj/7+7Y+X/Gsqr5EapinvbwHp+GiGwI5NMPAUKOvlmiUUIBLAwuJEeiTSQEXrP5mB
- HrtPRphjtGLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162457984"
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="162457984"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 07:57:45 -0700
-IronPort-SDR: E2ZndqU/Eh2zCZTPskutF2k1BHjy8PtSBHGjoLoEJijrtWmrN0n1AQVSXvf3GEERde9qmeIaCg
- +iWJEny8D88w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="356176863"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Oct 2020 07:57:44 -0700
-Received: from [10.252.134.17] (kliang2-MOBL.ccr.corp.intel.com [10.252.134.17])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 52391580814;
-        Tue, 13 Oct 2020 07:57:43 -0700 (PDT)
-Subject: Re: [PATCH V9 1/4] perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE
-To:     Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, eranian@google.com, ak@linux.intel.com,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        benh@kernel.crashing.org, paulus@samba.org,
-        David Miller <davem@davemloft.net>
-References: <20201001135749.2804-1-kan.liang@linux.intel.com>
- <20201001135749.2804-2-kan.liang@linux.intel.com>
- <20201009090927.GQ2611@hirez.programming.kicks-ass.net>
- <877drz1qbc.fsf@mpe.ellerman.id.au> <20201012084829.GA1151@willie-the-truck>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <de47984b-9a69-733c-3bd1-7b24ceb9b7f0@linux.intel.com>
-Date:   Tue, 13 Oct 2020 10:57:41 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1730740AbgJMPAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:00:52 -0400
+Received: from mail-db8eur05on2137.outbound.protection.outlook.com ([40.107.20.137]:29537
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726097AbgJMPAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:00:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G9u++kaFq6s3TtqXz7br4zEHdydmKsJZo7jn3KY49hJhQHScVy2M5zXDC5V1260FR+m9JH+kyT0jrZmYyB3xp9G357WYTiwCXIEPnPCeDPnuliVi0Fxdys1uVmZfXqXCzo8bMML38EAAaYxe9PrWBnHzLBIuG+lp4zV1tumW6wnjZvHzlXgEfPzMxR5piuv8L84rV+oe9Jjyu9KPY2d03BJ3M0t3hNZPwhTOJ+K1BWquvM8V5xHMNHfG/HQpdvzePaOZcv7n/Nqk9huQ283Qe6ERQkf5i9ooC6Iaq7rjwEctKo/l5T9c9V+q/j8nuGBQX7sYz3ptQW/CqLs/AdK+Cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AbjJGr/SiuQiMnRZymR5UrW5v4ekiPqfT/sKeccbV4I=;
+ b=k1Zr77/mr49X5KN7XPQIXJD8AD6400XLB+xh9Vrc8HVuiKI9Ae+Otw1WlXtwwMeIqnTrYG9zHy6fO1rUVptdAdvxpXOA7N7GKeDMX66+NdWp6dwUqbbC27gDfIaEJ1vV4tK8glO60+RNh16StB0k9V0myc3aCWgTYor6jmqsFlx3LVOKlI4Xk+fY3thyfOXr2u5bEo76vX+46FXSMBfSuHX/dW4qAtqE+i2a11dG1LOWBbxRtIYh4Ui+Is3RZoQrpLEllTr9llM69pGN43KYmcYbZTFueEXkZ6g9UayGpbbKoSkjK2ouyqgwUp3ZIpMhsC6Wzi+Y9tPOZ9NjBHAU/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AbjJGr/SiuQiMnRZymR5UrW5v4ekiPqfT/sKeccbV4I=;
+ b=V+SwD6ez0eL2Ud525UoF1mtQe3ey239iLFGgHg5Bey7RXEZ0YtAZvQy1qqGNq4K0yeumogSE7YlpKfEyI32vlV6HJIyPTHwMlZi4/xbbPJF+/okZaHCA5MZ0ztnua5xGW6ZI37UE5qGbWbbalid3VxKgW2/bTRY085jsxOLaPQc=
+Authentication-Results: szeredi.hu; dkim=none (message not signed)
+ header.d=none;szeredi.hu; dmarc=none action=none header.from=virtuozzo.com;
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
+ by AS8PR08MB6184.eurprd08.prod.outlook.com (2603:10a6:20b:29c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.29; Tue, 13 Oct
+ 2020 15:00:48 +0000
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::dcd8:72a6:60fc:1fa4]) by AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::dcd8:72a6:60fc:1fa4%5]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
+ 15:00:48 +0000
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/2] ovl introduce "uuid=off"
+Date:   Tue, 13 Oct 2020 17:59:52 +0300
+Message-Id: <20201013145954.4274-1-ptikhomirov@virtuozzo.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [46.39.230.109]
+X-ClientProxiedBy: AM0PR04CA0132.eurprd04.prod.outlook.com
+ (2603:10a6:208:55::37) To AM6PR08MB4756.eurprd08.prod.outlook.com
+ (2603:10a6:20b:cd::17)
 MIME-Version: 1.0
-In-Reply-To: <20201012084829.GA1151@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (46.39.230.109) by AM0PR04CA0132.eurprd04.prod.outlook.com (2603:10a6:208:55::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24 via Frontend Transport; Tue, 13 Oct 2020 15:00:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f2db57e7-67c9-4dcf-14bc-08d86f88c480
+X-MS-TrafficTypeDiagnostic: AS8PR08MB6184:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AS8PR08MB61840D9B1A567A35B56780B0B7040@AS8PR08MB6184.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: X14tJLIiqRE4fnysrQtMl5BNgik7FlnTbhEe3UEhKdeUgEzz04PWEDZEx+KUzUhmhNN5Hj3cQhUfYAt2vOCEnL/Gh5JSxdhqUY+RiXb0Judr/EBATPkc4Du5876WtNKaZpTv2h2x3ZLTFdVG3NVOwY2LoyEMVPYmDPUVMCYr0cCi8TqNqrPulRmI1MgugNATAO1dX2g4hBd4ZygPNyy4ultpfdUNY1QYOKm0nW1g+Gmnm9EwZo3jAaqEH0f3FPfqKF7e1OAiGFutBnvR1rUEkI2PTWHE7haOQ/8zTPqvOtNnrlVIBQvazMVsLSUQKPhmvSwP+m6bXGht/KojEtIStZSdda/sacTBZO2sNTT7/2XCF3nIEwUA5C2maMhK8bJT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(376002)(366004)(396003)(136003)(346002)(186003)(52116002)(26005)(1076003)(316002)(2906002)(6916009)(54906003)(6512007)(66476007)(66946007)(16526019)(6666004)(66556008)(69590400008)(4326008)(36756003)(83380400001)(2616005)(956004)(478600001)(8936002)(8676002)(86362001)(6506007)(6486002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: bebeF986c/f+FQERfXT0mXlZ2V6QqTsvkhp2LRr1K/9dhmiyrzCnAs8wJlI8oTlDwvmIdAqiache1ZuH+KlXbL3MkavkUV31xeNI/I2I4ju/bvQQYdFSrSzW7tEyEl9lrQWg4hK78tpUHGqm2pYrXyPssFsb+KW1/VPv8pIKO73Dk5JHjl3UourZEyVJa4qxm5QOJwVYvdATeUDQC3HQETnL0xdmvmL5J1+1NGUzAXYklfvyiEv/x+tgv1UHobY/CgwQM9PBmka4sy4muJVC5+PPLhQDDj8j/FKBuApo6ESszajYwM0dL4tQKyB4XgJJYq4YXRHP7As59fBRCsDXK4GAJvpEQCv6w4w8TXGSYoxprJklMDNMIoBgijOTQ4xlsJn4qrIKoKh9wbdtfs8afG3f4k4nB6DkeuWp2qe+RzQJ9C8Z2LT0UZSp6lzH+dRodKx0qV+8HbGMUedKMlQqDRkx1cPkconeU2UG0D76EY9YPo7MJyPDvyg0pGl3lrqiSB1LiObaQiR0kE/wBaAnIN5RiBYNTNGNoLE2YfkXmTQx2CrONcifHcaw0RkU1VgUA7DmlZVo7NqWAi82acQRuI1GdOiV3S9/Lb6mrRQ44Qf+wxKSfIYdghvrvSXbgcuMXV1zhicsIELbPiRDKvutgg==
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2db57e7-67c9-4dcf-14bc-08d86f88c480
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 15:00:48.0246
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ijs6fghQAY+2JtOq9U2dCg1E31Ohz7tbsj5CVDvOjblGSOE9UPpfn27GILVDrVLLz8JLDdvt1fQwBBlPbgk0eNQeF/Ar6VjNWsyza2hN4/c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB6184
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a v5 of:
+ovl: introduce new "index=nouuid" option for inodes index feature
 
+Changes in v3: rebase to overlayfs-next, replace uuid with null in file
+handles, propagate ovl_fs to needed functions in a separate patch, add
+separate bool "uuid=on/off" option, fix numfs check fallback, add a note
+to docs.
 
-On 10/12/2020 4:48 AM, Will Deacon wrote:
-> On Sat, Oct 10, 2020 at 12:28:39AM +1100, Michael Ellerman wrote:
->> Peter Zijlstra <peterz@infradead.org> writes:
->>> Patch 4 makes it all far worse by exposing it to pretty much everybody.
->>>
->>> Now, I think we can fix at least the user mappings with the below delta,
->>> but if archs are using non-page-table MMU sizes we'll need arch helpers.
->>>
->>> ARM64 is in that last boat.
->>
->> I think we probably need it to be weak so we can provide our own
->> version.
-> 
-> I guess the same thing applies to us, but I can't really tell how accurate
-> this stuff needs to be for userspace. If it's trying to use the page-table
-> configuration to infer properties of the TLB, that's never going to be
-> reliable because the TLB can choose both to split and coalesce entries
-> as long as software can't tell.
-> 
+Changes in v4: get rid of double negatives, remove nouuid leftower
+comment, fix missprint in kernel config name.
 
-Hi Peter,
+Changes in v5: fix typos; remove config option and module param.
 
-It looks like everybody wants a __weak function. If so, I guess we 
-should drop the generic code in this patch. For X86, we have existing 
-functions to retrieve the page level and the page size. I think we don't 
-need the generic code either.
-https://lkml.kernel.org/r/1549648509-12704-2-git-send-email-kan.liang@linux.intel.com/
+Amir, as second patch had changed quiet a bit, I don't add you
+reviewed-by to it.
 
-Should I send a V10 patch to drop the generic code and implement an X86 
-specific perf_get_page_size()? Will, Michael, and others can implement 
-their version later separately.
+CC: Amir Goldstein <amir73il@gmail.com>
+CC: Vivek Goyal <vgoyal@redhat.com>
+CC: Miklos Szeredi <miklos@szeredi.hu>
+CC: linux-unionfs@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 
-Thanks,
-Kan
+Pavel Tikhomirov (2):
+  ovl: propagate ovl_fs to ovl_decode_real_fh and ovl_encode_real_fh
+  ovl: introduce new "uuid=off" option for inodes index feature
+
+ Documentation/filesystems/overlayfs.rst |  5 +++++
+ fs/overlayfs/copy_up.c                  | 25 ++++++++++++++-----------
+ fs/overlayfs/export.c                   | 10 ++++++----
+ fs/overlayfs/namei.c                    | 23 +++++++++++++----------
+ fs/overlayfs/overlayfs.h                | 14 ++++++++------
+ fs/overlayfs/ovl_entry.h                |  1 +
+ fs/overlayfs/super.c                    | 20 ++++++++++++++++++++
+ fs/overlayfs/util.c                     |  3 ++-
+ 8 files changed, 69 insertions(+), 32 deletions(-)
+
+-- 
+2.26.2
+
