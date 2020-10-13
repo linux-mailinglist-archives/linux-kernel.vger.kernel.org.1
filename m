@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64ECF28D2B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A0828D2C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387764AbgJMQ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:57:21 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:33017 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728624AbgJMQ5V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:57:21 -0400
-Received: by mail-oi1-f196.google.com with SMTP id s21so138470oij.0;
-        Tue, 13 Oct 2020 09:57:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ta4GdvuvHmi0S7nFmW+Yiy1nhXEJzHrWRU11UeLVa/g=;
-        b=Nu5bf4D8vcb6b0t9tNnp+LYsl+xa1baA6f7K6glAvR4/BwEyycsfcYilXmlWd1j26P
-         FBKM8jsVM5rKlz7atlvc8vT3rdHfN36lygJtpdfFiO4TD3a7kwv9lRBnfbSjtZQlnH5f
-         Qar5hsazI/E+UhwQP/3c7NzRhYQTf4yS8FU7tb/N6/Vt3CTjO2yXHDVwJniACPIWkwXM
-         2UoQgaKVQq0o8TBTNVy/120skGksA/mpets5J4qq56hiF/Avc3/rd2oQIH37xEQAE8m/
-         kWD89xxF5t/zrHwpBZxTpYhy+eaXFn31oHHuIttd3V7BZsZfEzRLn3QPOkC09/+MgttS
-         DhKg==
-X-Gm-Message-State: AOAM531DMIwH1voWhZedY0MOAHtQoydqW94XaEJFQrA9t2p9YSUrhyFJ
-        okhtjeBBgRuHP3ss5eU43g==
-X-Google-Smtp-Source: ABdhPJyc1iqysH0fM7XE3YiQYs9B9724pxdYSxpfEhRtBijv2YxICdy4kOOGJVrhiD+itYChMQXtwg==
-X-Received: by 2002:aca:3145:: with SMTP id x66mr379807oix.41.1602608240433;
-        Tue, 13 Oct 2020 09:57:20 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h15sm112140ots.31.2020.10.13.09.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 09:57:19 -0700 (PDT)
-Received: (nullmailer pid 3686793 invoked by uid 1000);
-        Tue, 13 Oct 2020 16:57:18 -0000
-Date:   Tue, 13 Oct 2020 11:57:18 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     srv_heupstream@mediatek.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mediatek@lists.infradead.org,
-        Chaotian Jing <chaotian.jing@mediatek.com>
-Subject: Re: [PATCH v6 2/4] mmc: dt-bindings: add support for MT8192 SoC
-Message-ID: <20201013165718.GA3686690@bogus>
-References: <20201012124547.16649-1-wenbin.mei@mediatek.com>
- <20201012124547.16649-3-wenbin.mei@mediatek.com>
+        id S1727620AbgJMRBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:01:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726772AbgJMRBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 13:01:41 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB02725308;
+        Tue, 13 Oct 2020 17:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602608501;
+        bh=PKihPMmQ1m8LaEsGQL+qYDCaZl4PBUFRA/mO5rSV4OQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xdc3amrycsVM5bhtncOyHPJOjI6lsmZJUUDqdmpJGqZT2o+GIT2WyJ/wVIBDF03WO
+         ++/S2frRuN/eBt0V2Zo/TJXoW0bIV0iRypuBp2hB0MORAMXzD2TGS+juNB+NKHUEod
+         v+sTTJPldySAh65tPQaopqSyvUwximF6kyhNwvYI=
+Date:   Tue, 13 Oct 2020 10:01:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Reji Thomas <rejithomas@juniper.net>
+Cc:     david.lebrun@uclouvain.be, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rejithomas.d@gmail.com
+Subject: Re: [PATCH] IPv6: sr: Fix End.X nexthop to use oif.
+Message-ID: <20201013100138.18af2d5f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201013120151.9777-1-rejithomas@juniper.net>
+References: <20201013120151.9777-1-rejithomas@juniper.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012124547.16649-3-wenbin.mei@mediatek.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 20:45:45 +0800, Wenbin Mei wrote:
-> MT8192 mmc host ip is compatible with MT8183.
-> Add support for this.
+On Tue, 13 Oct 2020 17:31:51 +0530 Reji Thomas wrote:
+> Currently End.X action doesn't consider the outgoing interface
+> while looking up the nexthop.This breaks packet path functionality
+> specifically while using link local address as the End.X nexthop.
+> The patch fixes this by enforcing End.X action to have both nh6 and
+> oif and using oif in lookup.It seems this is a day one issue.
 > 
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
+> Fixes: 140f04c33bbc ("implement several seg6local actions")
 > 
+> Signed-off-by: Reji Thomas <rejithomas@juniper.net>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+You need to respin to add the missing 'static' kbuild bot pointed out.
+
+When you do please also edit the fixes tag to include the full subject,
+it should look like this:
+
+Fixes: 140f04c33bbc ("ipv6: sr: implement several seg6local actions")
+
+and remove the empty line between the fixes tag and your signoff. 
+
+> @@ -239,6 +249,8 @@ static int input_action_end(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+>  static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+>  {
+>  	struct ipv6_sr_hdr *srh;
+> +	struct net *net = dev_net(skb->dev);
+> +	struct net_device *odev;
+
+Please sort the variable declarations longest to shortest.
