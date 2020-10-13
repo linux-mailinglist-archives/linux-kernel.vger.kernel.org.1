@@ -2,105 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922D628D630
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C034028D631
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgJMVXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:23:14 -0400
-Received: from mga11.intel.com ([192.55.52.93]:20432 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728102AbgJMVXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:23:13 -0400
-IronPort-SDR: g4dwexpgf/L3gRoBfGyReQ/wnCUXSCJ7XOVi8b/hQA7n6y+/4c0vSHZkUoDw5SwyCw3nvEki9y
- 54e0hHjstngQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="162523978"
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="162523978"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 14:23:12 -0700
-IronPort-SDR: iWPnDm+fFzds12QJNey0u/3YL/GyTt67TjS3rsaEulip8CrFM3n1Wick9b+jgyL7/advnr5f3x
- ZitcLEOzWA9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="299731631"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Oct 2020 14:23:12 -0700
-Received: from [10.249.229.194] (abudanko-mobl.ccr.corp.intel.com [10.249.229.194])
-        by linux.intel.com (Postfix) with ESMTP id AA91358084F;
-        Tue, 13 Oct 2020 14:23:06 -0700 (PDT)
-Subject: Re: [PATCH v1 02/15] perf report: output trace file name in raw trace
- dump
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
- <87e2050b-37e6-8ed8-e1e0-cfa074b030fa@linux.intel.com>
- <20201013195454.GA1305928@krava>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <b49c86a5-c114-efa7-97b1-c172215b6f5d@linux.intel.com>
-Date:   Wed, 14 Oct 2020 00:23:02 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S1728102AbgJMVZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 17:25:22 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:49276 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbgJMVZW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 17:25:22 -0400
+Received: by mail-il1-f198.google.com with SMTP id h13so896563ils.16
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:25:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=60+Mxk64iVZf267Dg3ol8mIlWkb77pqGXvVvfjK/8nw=;
+        b=En0WfIhFviOpLV0G1Ayfz4qw/eWYvmvjj1LPqBxyEQZy3eQIm3vmhCqChDvZuaqEs7
+         KDr2JLolfqx3u5mRM46r6OCXYprlMa/QCnOhGSyzjtO3ZC919hFjQLo3+TyBy0uAwmN+
+         6fCRInmAF5HuliXzTG/LW6VJ8Vy62y0EhMK64kEH7jyl5n5PKYMM0+Hv6gOg7QLPx7LL
+         6cXHUw7+v8MTAEtUW2n9w4zOyoAJLYwKtCFCTuue3v1li2Huo0nh7mPPWbuLFffhG1Ph
+         JOEn75DfJdZi9gM062L6KwdMO6hWVrXjGPzbz2qAOEy73urrWizRGl2UPGTDHXU8dPDL
+         z1nQ==
+X-Gm-Message-State: AOAM531+IZHUPU1ffKXrhlKxYcklB0yaKZOTswi0uEn3RjgMXteK+dNJ
+        9FwyQPrrpY4QK87q5NnM/3UiZ2ICaDaiRGsno4Q89G6BUvFs
+X-Google-Smtp-Source: ABdhPJwVhtVDseEa8IeraqGregoatXB0F17k95IZ5AfbScIuet/lSzLcYkP/8yRPqJa5oVjbN8dBctmR1jNS5xjocfQvr1FCD3R/
 MIME-Version: 1.0
-In-Reply-To: <20201013195454.GA1305928@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:ca3:: with SMTP id 3mr1517139ilg.95.1602624321356;
+ Tue, 13 Oct 2020 14:25:21 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 14:25:21 -0700
+In-Reply-To: <000000000000a03f8d05ae7c9371@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000620d5805b1940d15@google.com>
+Subject: Re: WARNING: can't access registers at asm_sysvec_reschedule_ipi
+From:   syzbot <syzbot+853f7009c5c271473926@syzkaller.appspotmail.com>
+To:     alexandre.chartre@oracle.com, bp@alien8.de, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+syzbot has found a reproducer for the following issue on:
 
-On 13.10.2020 22:54, Jiri Olsa wrote:
-> On Mon, Oct 12, 2020 at 11:54:24AM +0300, Alexey Budankov wrote:
->>
->> Output path of a trace file into raw dump (-D) <file_offset>@<path/file>.
->> Print offset of PERF_RECORD_COMPRESSED record instead of zero for
->> decompressed records:
->>   0x2226a@perf.data [0x30]: event: 9
->> or
->>   0x15cc36@perf.data/data.7 [0x30]: event: 9
->>
->> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> 
-> hi,
-> I'm getting:
-> 
->   CC       builtin-inject.o
-> builtin-inject.c: In function ‘cmd_inject’:
-> builtin-inject.c:850:18: error: initialization of ‘int (*)(struct perf_session *, union perf_event *, u64,  const char *)’ {aka ‘int (*)(struct perf_session *, union perf_event *, long unsigned int,  const char *)’} from incompatible pointer type ‘int (*)(struct perf_session *, union perf_event *, u64)’ {aka ‘int (*)(struct perf_session *, union perf_event *, long unsigned int)’} [-Werror=incompatible-pointer-types]
->   850 |    .compressed = perf_event__repipe_op4_synth,
->       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> builtin-inject.c:850:18: note: (near initialization for ‘inject.tool.compressed’)
-> 
-> it's probably recent build id changes 
+HEAD commit:    64a632da net: fec: Fix phy_device lookup for phy_reset_aft..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=11580c80500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
+dashboard link: https://syzkaller.appspot.com/bug?extid=853f7009c5c271473926
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12c1bc6f900000
 
-Looks like that's it. Fix is in v2 and follows:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+853f7009c5c271473926@syzkaller.appspotmail.com
 
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index f3f965157d69..35c005b8da7f 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -106,7 +106,8 @@ static int perf_event__repipe_op2_synth(struct perf_session *session,
- 
- static int perf_event__repipe_op4_synth(struct perf_session *session,
- 					union perf_event *event,
--					u64 data __maybe_unused)
-+					u64 data __maybe_unused,
-+					const char *str __maybe_unused)
- {
- 	return perf_event__repipe_synth(session->tool, event);
- }
+WARNING: can't access registers at asm_sysvec_reschedule_ipi+0x12/0x20 arch/x86/include/asm/idtentry.h:586
 
-Thanks!
-Alexei
