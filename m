@@ -2,173 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C9328C85E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BF628C866
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388373AbgJMFwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S2388815AbgJMFz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732540AbgJMFwV (ORCPT
+        with ESMTP id S2388748AbgJMFz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:52:21 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B863C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:52:19 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t12so19139610ilh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:52:19 -0700 (PDT)
+        Tue, 13 Oct 2020 01:55:27 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F63C0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:55:26 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w21so16047205pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:55:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mHEtvI5RIFtftLxVkq35OIot0k+miq1zQnR4jmf9CRQ=;
-        b=oXe553UciqDQd+T1PYtE1V6HctjSwpjdAxah0jNcrpmmgmsv5Zk4hRPLQ54lGFuatn
-         OCvfFPcM19l8Inj5BtdoDOCM0/oJWGxU+W3Sh7TJI13i9GhD897MvCplOP1xSq4fOaGW
-         ZWN3uznttZ7PCXAsSoTHBGPMFlGy+uDV+rOFjZDnHHsCl//+9Qe5jrgAPEmWLvxd1qf/
-         VG2XjVQK+kBj4fgXbDmsr3SHMDdmm00MXGVRWdXjSgjBM9yHCIrSwEC3x7LXXA0uj5AR
-         5Cq/mFeLZ2ILnhtjLL+0X/UvgxaXN3hpBBt1innyH3hNwglauPDW1WvYgqs7b0O/fpsA
-         V0PA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=uZWssBn5eUTFawt61tuJrHSMXVH7Qnpybc1ygwQBFuU=;
+        b=D1QZBEhqvkYbJkKhH3J6t7wQkI/3Sti9IEUnIgRByPBe/P8SQEXML26pwrKz6ZacNv
+         4mTzRfxGdmYSuReHpAT/j3u51Mr5s/8pAI/E2buJlfKVRtXfTx6lUCK53zOb5dzALboZ
+         8JoknF0fRFTA+WZsTl84E2rdYi+0EGegQ5ni4eAEVvRlpsupbcNRcgGigQc8D6+raRjZ
+         nP1zPLjQAbk8wYYV9mtT/5wTjLFtKcXl5pVa/+o2cniyTNnNbT8g5YPuF7diOoOHpaQ6
+         Vk8+V14d179fHi5V+iiWLzqR9TFUtnWt234znKFQZyuIYIxGraIHGyq8R38NvVheSzwX
+         Et0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mHEtvI5RIFtftLxVkq35OIot0k+miq1zQnR4jmf9CRQ=;
-        b=SFfw0xE+lgsidNV1FYQDuWXn0ZxkCsz6k/I3xiz0C8u/3TiMAb1+Bt9n9InQP/5icZ
-         zG1kyC8VHaMwjbssD82blJ4gSefsk7/onkQ9AXf2GCcnwTLjytjQlQqY0IdG1Exy30xj
-         i93ihrfs+WMfTWw+vuFsOEtYHh4TveE1eswq+Oj3QhEWSDtOrYsRvz34OvunGvIYMbei
-         FDq9ESPBJI03Tbxw4X6kQf9VYEiM87g26EslYWICjZThfnB8tIADL+db/NQ5aaOUP8oY
-         uWwBEjXgGczPceWmoKqWEbLjkKN3JL/s2m18hKMGK9CAqmvkSQ37PgTXU7RHJMfdLEbL
-         ZhGg==
-X-Gm-Message-State: AOAM530fwyZzUO9VmcpX3HOdWha0hDYcMmvDRYcSCJOaEyOUz0wMGAFK
-        D5/NHyVDhVAZFkiO69SqSY3lRSugHPw0DGpwHqKgHQ==
-X-Google-Smtp-Source: ABdhPJyb9EYAx6Yvqfm+EMIdLYr96YMeeaUEXkwWe0qU3jxoSFRDpFeOCTdrQWwur1PZHRhjHzJMk1FIf4CKFY4yPNM=
-X-Received: by 2002:a05:6e02:1208:: with SMTP id a8mr1809371ilq.252.1602568338756;
- Mon, 12 Oct 2020 22:52:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201012132632.846779148@linuxfoundation.org>
-In-Reply-To: <20201012132632.846779148@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 13 Oct 2020 11:22:07 +0530
-Message-ID: <CA+G9fYsUfoU6Gthf1Q5HQSprx_igMBKvJsZ5CD1_f9==9Tt9Gg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/85] 5.4.71-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uZWssBn5eUTFawt61tuJrHSMXVH7Qnpybc1ygwQBFuU=;
+        b=ABZRsnPX4QW8EUYRXi3m3regrmAbBLrPPW6SeV12pSDxtsXqa/6XmKPKU5erD1nGd/
+         lvLXuVu1sTiZslzgA7aBcZltH0ChXBWDtqIo8t65y21ZfWGZYztaTnW0Vi27EXHm9Q+h
+         Pr77iDY6TFFPkd+uC/9Tu14cQ+48/HG7B5Ldp2uGgIBvA9OzfJO9toAwXL0LzASVvCsQ
+         FB9W05YkYMSs07DADtwcOKGXLYurW9etki6GSTRoxW3A3ANDN7/kUWKUqAQyjUHTexMD
+         aH+rFXGKToXDeow1or2XQrc5mNKoIJuMhoqlBs9S9/J/eP4Y07At6Tgl4vzmpWl0QHq6
+         ZtNw==
+X-Gm-Message-State: AOAM531T42zA5Ofpklmm5Igi7I0ktY8nOejq0hWVM7xaVPIN5v7k/lKE
+        /rqy35Wxn3wjMIxAbtFvT3xlyNilktItpQ==
+X-Google-Smtp-Source: ABdhPJz65GwSnVPF95Zgkq/u1tY9AzSu/NXMKwOBKFnuOb/xXOwgeYLRNt5ENkFVajAiuOivLTf4ZA==
+X-Received: by 2002:a62:92c5:0:b029:156:6a7f:ccff with SMTP id o188-20020a6292c50000b02901566a7fccffmr2410518pfd.39.1602568526425;
+        Mon, 12 Oct 2020 22:55:26 -0700 (PDT)
+Received: from localhost.localdomain ([203.100.54.194])
+        by smtp.gmail.com with ESMTPSA id c15sm7585458pgg.77.2020.10.12.22.55.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Oct 2020 22:55:25 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH] tracing: add tgid into common field
+Date:   Tue, 13 Oct 2020 13:54:54 +0800
+Message-Id: <20201013055454.52634-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 at 19:11, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.71 release.
-> There are 85 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.71-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Sometimes we want to trace a specific mutil-threaded process, which may
+create threads dynamically. Currently it is not easy to trace all its
+threads, because we can only filter these threads out by using
+common_pid.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+This patch adds the tgid into the common field as well, with which we
+can easily filter this mutil-threaded process out. E.g.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+$ cd /sys/kernel/debug/tracing
+$ echo 'common_tgid == 4054' > events/sched/sched_wakeup/filter
+$ cat trace_pipe
+          python-4057    [005] d... 48003.898560: sched_wakeup: comm=python pid=4054 prio=120 target_cpu=002
+          python-4054    [002] dNs. 48003.932906: sched_wakeup: comm=kworker/2:2 pid=130 prio=120 target_cpu=002
+          python-4054    [002] dNH. 48003.932907: sched_wakeup: comm=cat pid=4084 prio=120 target_cpu=004
+          python-4055    [003] d... 48004.816596: sched_wakeup: comm=python pid=4054 prio=120 target_cpu=002
 
-Summary
-------------------------------------------------------------------------
+With record-tgid set into trace_options, we can show the tgid,
 
-kernel: 5.4.71-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 228d88e992eb144f13037001b6b6d0289b9b2f00
-git describe: v5.4.70-86-g228d88e992eb
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.70-86-g228d88e992eb
+$ echo record-tgid > trace_options
+$ cat trace_pipe
+          python-4054    (   4054) [002] d... 48166.611771: sched_wakeup: comm=python pid=4055 prio=120 target_cpu=004
+          python-4057    (   4054) [005] d... 48166.611776: sched_wakeup: comm=python pid=4054 prio=120 target_cpu=002
+          python-4055    (   4054) [004] d... 48166.611848: sched_wakeup: comm=python pid=4054 prio=120 target_cpu=002
 
-No regressions (compared to build v5.4.69-58-g7b199c4db17f)
+After that change, tgid_map is only used by saved_tgid, which may be
+used by some user tools, so I just keep it as-is.
 
-No fixes (compared to build v5.4.69-58-g7b199c4db17f)
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ include/linux/trace_events.h | 1 +
+ kernel/trace/trace.c         | 1 +
+ kernel/trace/trace_events.c  | 1 +
+ kernel/trace/trace_output.c  | 2 +-
+ 4 files changed, 4 insertions(+), 1 deletion(-)
 
-Ran 35909 total tests in the following environments and test suites.
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 5c6943354049..3725c05f0b01 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -67,6 +67,7 @@ struct trace_entry {
+ 	unsigned char		flags;
+ 	unsigned char		preempt_count;
+ 	int			pid;
++	int			tgid;
+ };
+ 
+ #define TRACE_EVENT_TYPE_MAX						\
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index d3e5de717df2..c2423efaac2c 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2445,6 +2445,7 @@ tracing_generic_entry_update(struct trace_entry *entry, unsigned short type,
+ 
+ 	entry->preempt_count		= pc & 0xff;
+ 	entry->pid			= (tsk) ? tsk->pid : 0;
++	entry->tgid			= (tsk) ? tsk->tgid : 0;
+ 	entry->type			= type;
+ 	entry->flags =
+ #ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index a85effb2373b..9a5adcecf245 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -182,6 +182,7 @@ static int trace_define_common_fields(void)
+ 	__common_field(unsigned char, flags);
+ 	__common_field(unsigned char, preempt_count);
+ 	__common_field(int, pid);
++	__common_field(int, tgid);
+ 
+ 	return ret;
+ }
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 000e9dc224c6..e04dd45267c7 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -591,7 +591,7 @@ int trace_print_context(struct trace_iterator *iter)
+ 	trace_seq_printf(s, "%16s-%-7d ", comm, entry->pid);
+ 
+ 	if (tr->trace_flags & TRACE_ITER_RECORD_TGID) {
+-		unsigned int tgid = trace_find_tgid(entry->pid);
++		unsigned int tgid = entry->tgid;
+ 
+ 		if (!tgid)
+ 			trace_seq_printf(s, "(-------) ");
+-- 
+2.17.1
 
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* libhugetlbfs
-* ltp-commands-tests
-* ltp-hugetlb-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
