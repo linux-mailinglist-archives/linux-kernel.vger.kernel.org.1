@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E08728D1B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9007A28D1BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388913AbgJMQGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:06:55 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:45733 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgJMQGy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:06:54 -0400
-Received: by mail-oo1-f67.google.com with SMTP id x1so1237600ooo.12;
-        Tue, 13 Oct 2020 09:06:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lJvrwL/FuYX27TcA8XBAMttZyQaUzn/E6l7mrrmjFrA=;
-        b=ew9Alr9/fM/m8wmxu8f8c2aRG9dYolwaPzGWFBBVu2qL88k6RCOn5M3tjYRROsCeQx
-         ko4G9OJxhY2FmU9JlRvyIMQBMVymoVzapmW1fqPYp1dwdZxXVrMDSDAzSqJ2ofA8J0OJ
-         MgRGfsfIjyj1pSDdkIrbezTG1zkmwUuM5FQDxfhSK/sRaCQYnTrhtnz/QyplSVd9Dm8U
-         iecui3pa9NJgcPS8bggYoMPlRbYSunCzMhzjo0Ky/7lbS5g3ZuEPGKI/nsPmAwlrebyx
-         K1iRw7n3+nBvYN9h6g1fACAzcA5ulBWPaet0LW+4cj8fT282TcxuIyAeTwZgbyuCqwqg
-         OGzQ==
-X-Gm-Message-State: AOAM530YCC3J30aNMsiNdq8w5LSLL9Pa+4CUP0zuXqLFz61lcr++6qN7
-        KpG+U5rUQGLloRSlQlPZvg==
-X-Google-Smtp-Source: ABdhPJxqdYOtrD/HpqNx8Jl2GuLgmmSCJn2kjs3ih3MXm5tW7/fk6d/rOnxhKD9k0szvgWN4vx9rbw==
-X-Received: by 2002:a4a:d8c1:: with SMTP id c1mr65697oov.31.1602605213606;
-        Tue, 13 Oct 2020 09:06:53 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 42sm52847otv.35.2020.10.13.09.06.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 09:06:52 -0700 (PDT)
-Received: (nullmailer pid 3610298 invoked by uid 1000);
-        Tue, 13 Oct 2020 16:06:51 -0000
-Date:   Tue, 13 Oct 2020 11:06:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Olivier Moysan <olivier.moysan@st.com>
-Cc:     linux-arm-kernel@lists.infradead.org, tiwai@suse.com,
-        broonie@kernel.org, lgirdwood@gmail.com,
-        devicetree@vger.kernel.org, arnaud.pouliquen@st.com,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        alsa-devel@alsa-project.org, alexandre.torgue@st.com,
-        linux-stm32@st-md-mailman.stormreply.com, perex@perex.cz
-Subject: Re: [PATCH v4] ASoC: dt-bindings: stm32: convert sai to json-schema
-Message-ID: <20201013160651.GA3610242@bogus>
-References: <20201009141051.27365-1-olivier.moysan@st.com>
+        id S2389111AbgJMQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:09:15 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:55502 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731478AbgJMQJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:09:14 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id CAE464F4C12807697711;
+        Wed, 14 Oct 2020 00:09:06 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.134) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 14 Oct 2020 00:08:58 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 0/6] fix all errors except one reported by dt_binding_check
+Date:   Wed, 14 Oct 2020 00:08:39 +0800
+Message-ID: <20201013160845.1772-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009141051.27365-1-olivier.moysan@st.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 09 Oct 2020 16:10:51 +0200, Olivier Moysan wrote:
-> Convert the STM32 SAI bindings to DT schema format using json-schema.
-> 
-> Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-> ---
-> Changes in v2:
-> - use pattern for compatible of child nodes
-> - rework dmas and clocks properties
-> - add "additionalProperties"
-> 
-> Changes in v3:
-> - move clocks properties for st,stm32h7-sai compatible, to 'else' clause
-> 
-> Changes in v4:
-> - fix dtbs_check errors
-> ---
->  .../bindings/sound/st,stm32-sai.txt           | 107 ----------
->  .../bindings/sound/st,stm32-sai.yaml          | 200 ++++++++++++++++++
->  2 files changed, 200 insertions(+), 107 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> 
+When people add multiple or common YAML files, they usually perform a full
+dt_binding_check. Unfortunately, some YAML files cannot pass the self-check.
+The errors or warning are listed below. It is necessary to eliminate them,
+so that people's time and energy are not wasted every time when execute
+comprehensive dt_binding_check.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This error is fixed by Patch 1:
+/root/leizhen/linux-next/Documentation/devicetree/bindings/leds/leds-lp55xx.example.dt.yaml: led-controller@33: multi-led@2:color:0:0: 9 is greater than the maximum of 8
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml
+
+These errors are fixed by Patch 2:
+/root/leizhen/linux-next/Documentation/devicetree/bindings/chrome/google,cros-ec-typec.example.dt.yaml: ec@0: 'typec' does not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+/root/leizhen/linux-next/Documentation/devicetree/bindings/extcon/extcon-usbc-cros-ec.example.dt.yaml: cros-ec@0: 'extcon0', 'extcon1' do not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+/root/leizhen/linux-next/Documentation/devicetree/bindings/pwm/google,cros-ec-pwm.example.dt.yaml: cros-ec@0: 'ec-pwm' does not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+/root/leizhen/linux-next/Documentation/devicetree/bindings/regulator/google,cros-ec-regulator.example.dt.yaml: ec@0: '#address-cells', '#size-cells', 'regulator@0' do not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+/root/leizhen/linux-next/Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dt.yaml: cros-ec@0: '#address-cells', '#size-cells', 'ec-codec@10500000' do not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+
+These errors are fixed by Patch 3 and 4:
+Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.example.dts:21.13-30.11: Warning (spi_bus_bridge): /example-0/spi: incorrect #address-cells for SPI bus
+Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.example.dts:21.13-30.11: Warning (spi_bus_bridge): /example-0/spi: incorrect #size-cells for SPI bus
+Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'spi_bus_bridge'
+
+Patch 5 and 6 fix the dtbs_check errors detected by Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): /soc/apb@d4000000/spi@d4037000: incorrect #address-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): /soc/apb@d4000000/spi@d4037000: incorrect #size-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2-olpc-xo-1-75.dtb: Warning (spi_bus_reg): Failed prerequisite 'spi_bus_bridge'
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): /soc/apb@d4000000/spi@d4037000: incorrect #address-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2.dtsi:472.23-480.6: Warning (spi_bus_bridge): /soc/apb@d4000000/spi@d4037000: incorrect #size-cells for SPI bus
+  also defined at arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:225.7-237.3
+arch/arm/boot/dts/mmp2-olpc-xo-1-75.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'spi_bus_bridge'
+/root/leizhen/linux-next/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dt.yaml: slave: 'cmd-gpios' is a required property
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+/root/leizhen/linux-next/arch/arm/boot/dts/mmp2-olpc-xo-1-75.dt.yaml: slave: 'cmd-gpio' does not match any of the regexes: 'pinctrl-[0-9]+'
+        From schema: /root/leizhen/linux-next/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+
+I have no good idea for this one, so leave it.
+Documentation/devicetree/bindings/pci/xilinx-versal-cpm.example.dts:43.62-47.30: Warning (pci_device_reg): /example-0/versal/pcie@fca10000/interrupt-controller: missing PCI reg property
+
+
+Zhen Lei (6):
+  dt-bindings: leds: choose correct color value of multi-led
+  dt-bindings: mfd: google,cros-ec: explicitly allow additional
+    properties
+  spi: dt-bindings: spi-controller: explicitly require
+    #address-cells=<0> for slave mode
+  dt-bindings: misc: explicitly add #address-cells for slave mode
+  ARM: dts: mmp2-olpc-xo-1-75: explicitly add #address-cells=<0> for
+    slave mode
+  dt-bindings: misc: correct the property name cmd-gpios to cmd-gpio
+
+ .../devicetree/bindings/leds/leds-lp55xx.yaml        |  2 +-
+ .../devicetree/bindings/mfd/google,cros-ec.yaml      |  2 +-
+ .../devicetree/bindings/misc/olpc,xo1.75-ec.yaml     |  8 +++++---
+ .../devicetree/bindings/spi/spi-controller.yaml      | 20 ++++++++++++++------
+ arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts              |  2 +-
+ 5 files changed, 22 insertions(+), 12 deletions(-)
+
+-- 
+1.8.3
+
+
