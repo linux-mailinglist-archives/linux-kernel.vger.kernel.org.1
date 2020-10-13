@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE1C28CF2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A5228CF3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbgJMNcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:32:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:59998 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727448AbgJMNcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:32:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 203771FB;
-        Tue, 13 Oct 2020 06:32:50 -0700 (PDT)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 55BB03F719;
-        Tue, 13 Oct 2020 06:32:49 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 14:32:46 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Patrick Bellasi <patrick.bellasi@matbug.net>
-Cc:     Yun Hsiang <hsiang023167@gmail.com>, dietmar.eggemann@arm.com,
-        peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201013133246.cjomufo5q7qsocrn@e107158-lin>
-References: <20201012163140.371688-1-hsiang023167@gmail.com>
- <87blh6iljc.derkling@matbug.net>
- <20201013102951.orcr6m4q2cb7y6zx@e107158-lin>
- <875z7eic14.derkling@matbug.net>
+        id S1728487AbgJMNgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727245AbgJMNgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:36:43 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE77C0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:36:42 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id m16so20478978ljo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b/c3jOqm5GCWbl7ngdOAvWeLYoFEl8oppVa37BrtTx0=;
+        b=tJis7yuaN1JSHsLBZLaRMxnuI3b1R3TPtaiy5wihu/GdcUvEXrgzbpveMQDkzE5tlj
+         cbUwn/PXVvgt46YQEHILU5xNbbAhvatw8Ffn0m317aofqzuylkUQ0MlQ1hYQ1ennXije
+         U9YeIYcSUcjRbpr0clUWhuA/RGEXkWwvBWaCZxXx/ZpKv4MKx4CWJo8Y0Qialmv9jI2i
+         6og/C+zO9w74Fi9vW0fgzzzf8y1XrkR8U3kVMisYcUo4S19yJmlzBps7EykhqsY2u8SQ
+         XZDko51TwNb8aVNexQeiHg1qyJjlu8r0hsXvbyb7K+ywzcuMjaEa0yh5+bzQK4yIwf3C
+         Rvvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b/c3jOqm5GCWbl7ngdOAvWeLYoFEl8oppVa37BrtTx0=;
+        b=Y0Re9eCyjIQ6QCBD1kv2NsnvOOjEY4GknQ+z9hGyvzrronPNJpFqRSm95RoAzmxHAu
+         4x/RH15hBn+fO5Nvd/gc6eAVs++1ix7/lJpqk78XhzQ/nGCHNv9cevVDfCMnH+RuOUJq
+         Htqf/lBv9Lz7cyFPYcRz0OdYz/i0hSTT5hN8emPEewGqOAs5UtRNXwg9Zghj+H3NuV0X
+         eNkwHWXXnWhysvpww54yx83d6/4gnfofA76PWP8nfaq/IdDRrdgbbv96NtesAauhUBKK
+         1s3ShlvxiyHhOIsb+akx4t+brOjtlXfHXD4pY0S0ILYdAMYyBma5SyjKylhJUj+tIyqJ
+         WWYw==
+X-Gm-Message-State: AOAM5307q7h+v0ntSYmYkD4/KDYRlh4Dlak1gGNv4Fr6SXJFFJNVvEXq
+        sYtuaV/bTUB8ri0ODyvZE5Y3KPNNVlLcqIr5saikaw==
+X-Google-Smtp-Source: ABdhPJzzi7AZkl/99MrQJTTOaF4YrzzcdjBPIcLPj5P9/5/vIF1r09/4ln6Ey+By3eLCbHq+rqCmQeho4Uw/iJ4MT8o=
+X-Received: by 2002:a2e:86d4:: with SMTP id n20mr1183020ljj.293.1602596201115;
+ Tue, 13 Oct 2020 06:36:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <875z7eic14.derkling@matbug.net>
+References: <20201008130515.2385825-1-lars.povlsen@microchip.com>
+ <20201008130515.2385825-2-lars.povlsen@microchip.com> <CACRpkdaFYoXFUuWow5s9TitrRDhMW=wiaxgfMcY6sQkYYgC-Lw@mail.gmail.com>
+ <87d01ryb04.fsf@soft-dev15.microsemi.net>
+In-Reply-To: <87d01ryb04.fsf@soft-dev15.microsemi.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 13 Oct 2020 15:36:30 +0200
+Message-ID: <CACRpkdZbxohoxg3bN-XpLXwBUgTDByoP9sNEocUt10R6t9FgXQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] dt-bindings: pinctrl: Add bindings for
+ pinctrl-microchip-sgpio driver
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 13:46, Patrick Bellasi wrote:
-> > So IMO you just need a single SCHED_FLAG_UTIL_CLAMP_RESET that if set in the
-> > attr, you just execute that loop in __setscheduler_uclamp() + reset
-> > uc_se->user_defined.
-> >
-> > It should be invalid to pass the SCHED_FLAG_UTIL_CLAMP_RESET with
-> > SCHED_FLAG_UTIL_CLAMP_MIN/MAX. Both have contradictory meaning IMO.
-> > If user passes both we should return an EINVAL error.
-> 
-> Passing in  _CLAMP_RESET|_CLAMP_MIN will mean reset the min value while
-> keeping the max at whatever it is. I think there could be cases where
-> this support could be on hand.
+On Fri, Oct 9, 2020 at 12:00 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
-I am not convinced personally. I'm anxious about what this fine grained control
-means and how it should be used. I think less is more in this case and we can
-always relax the restriction (appropriately) later if it's *really* required.
+> > So here reg = 0 and the out port has reg 1. Isn't that what you also put
+> > in the second cell of the GPIO phandle? Then why? The driver
+> > can very well just parse its own reg property and fill that in.
+>
+> NO! The second cell is the second dimension - NOT the direction. As I
+> wrote previously, the direction is now inherent from the handle, ie. the
+> "reg" value of the handle.
 
-Particularly the fact that this user_defined is per uclamp_se and that it
-affects the cgroup behavior is implementation details this API shouldn't rely
-on. A generic RESET my uclamp settings makes more sense for me as a long term
-API to maintain.
+OK I get it ... I think :)
 
-Actually maybe we should even go for a more explicit
-SCHED_FLAG_UTIL_CLAMP_INHERIT_CGROUP flag instead. If we decide to abandon the
-support for this feature in the future, at least we can make it return an error
-without affecting other functionality because of the implicit nature of
-SCHED_FLAG_UTIL_CLAMP_RESET means inherit cgroup value too.
+> The hardware describe a "port" and a "bit index" addressing, where the
+> second cell in
+>
+>   gpios = <&sgpio_in2 11 0 GPIO_OUT_LOW>;
+>
+> is the "bit index" - not the "reg" from the phandle.
 
-That being said, I am not strongly against the fine grained approach if that's
-what Yun wants now or what you both prefer. I just think the name of the flag
-needs to change to be more explicit too then.
+As long as the bindings specify exactly what is meant by bit index
+and the tupe (port, bit_index) is what uniquely addresses a certain
+GPIO line then it is fine I suppose.
 
-It'd be good to hear what others think.
+> In the example above, note
+>
+>   ngpios = <96>;
+>
+> As the "port" is [0; 31], this defines "bit index" to be [0; 2], so the
+> (input) GPIO cells will be:
+>
+> p0b0, p0b1, p0b2
+> ...
+> p31b0, p31b1, p31b2
+>
+> being identical to
+>
+> <&sgpio_inX 0 0 GPIO_OUT_LOW>
+> <&sgpio_inX 0 1 GPIO_OUT_LOW>
+> <&sgpio_inX 0 2 GPIO_OUT_LOW>
+> ...
+> <&sgpio_inX 31 0 GPIO_OUT_LOW>
+> <&sgpio_inX 31 1 GPIO_OUT_LOW>
+> <&sgpio_inX 31 2 GPIO_OUT_LOW>
+>
+> ('X' being the SGPIO controller instance).
 
-Cheers
+So 32 possible ports with 3 possible bit indexes on each?
+This constraint should go into the bindings as well so it becomes
+impossible to put in illegal port numbers or bit indices.
 
---
-Qais Yousef
+(Use the YAML min/max constraints, I suppose?)
+
+> So no, there *really* is a need for a 3-cell GPIO specifier (or whatever
+> its called).
+
+If that is the natural way to address the hardware lines
+and what is used in the documentation then it's fine, it's just so
+unorthodox that I have to push back on it a bit you know.
+
+Yours,
+Linus Walleij
