@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858A128D012
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A3428D01A
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 16:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgJMOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 10:18:49 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:45896 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729687AbgJMOSt (ORCPT
+        id S1729790AbgJMOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 10:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbgJMOV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 10:18:49 -0400
-Received: by mail-ot1-f65.google.com with SMTP id f37so79977otf.12;
-        Tue, 13 Oct 2020 07:18:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=dae2xYnzqBO+3frL/y8m9i4y1WOTJI4I0MuoranCsFU=;
-        b=Ue+6bOfZ81iTES1RkFK/D3KeyHzgN2v3NuSlvw7vCVL9WwkD33j20n2CAhEwcRbGTr
-         k3pclP3pvAOUrXNdwEzZTNuCyRdCkmw5GRNldnpfzSl5/dlYLsQyg0FU+xxdia3NsoTq
-         nzgQlVpvLvocWeXc4j/OK6nNCrDnAWUHKxwJ07VRhT1rV4eghtQrq8RpXWfcM3yhgmC+
-         weQjLvCN9Oske0wVmvjlWczqit0zlC3uzfc2cG69VUfKd0nAQ31q/UlG8ghMeR6vI5dF
-         kG8mxmEMQO9SSUePHLmU0RO2b0uAeXdOSzuVVf7iqd6c0Kne9ODFhdSaOhCy3wEEumlT
-         ao2g==
-X-Gm-Message-State: AOAM531CZhVcJV1S1evyT7gfpa2nOZu8F9SB9rXD/TCHQXOtHXNhTBEh
-        CjssG8Z6Ksblvmv294mNZA==
-X-Google-Smtp-Source: ABdhPJzmVaBtOCdcFZgA7hLf66RAw3u2RWauczwjU/bLQy3rQlP7ZpJrlRrfkqB5Z0xebOYPEzjSGg==
-X-Received: by 2002:a9d:84e:: with SMTP id 72mr7830016oty.237.1602598728068;
-        Tue, 13 Oct 2020 07:18:48 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m29sm789865otj.38.2020.10.13.07.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 07:18:47 -0700 (PDT)
-Received: (nullmailer pid 3443354 invoked by uid 1000);
-        Tue, 13 Oct 2020 14:18:47 -0000
-Date:   Tue, 13 Oct 2020 09:18:47 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: dmaengine: Add X2000 bindings.
-Message-ID: <20201013141847.GA3443325@bogus>
-References: <20201008093100.88405-1-zhouyanjie@wanyeetech.com>
- <20201008093100.88405-3-zhouyanjie@wanyeetech.com>
+        Tue, 13 Oct 2020 10:21:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F3CC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 07:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5X9x6sA1HPZKGi4HmuNe3XasDgdbZwe5ZtBJ6ONT/aY=; b=dXm97LGy0aiO1z3LlggPQV3BNo
+        oesBHINUG7IKZoM5+rLhr9BwyI5vaNgdxmT8cuy87cBX+MGAc8/epryk0xFZc2rPKrxOC+WPSDfZU
+        gyN0mFB97gzcQAnI5de907+pwCb1UgaGMSbcgs+qhcxgK6YcAV6cwzz9LUJzycLr7OPNn2VJ/ydlI
+        8+kc/8Gk3PIGWnChn1vIkXpHr1fvFYbNqM6jpj+PBovNcgeb/Z+n41MvAtTHBCB1LRoOOUybMo7ez
+        w7pmWpqpHNdsAtacEobt09l5aptbEwY5d4CLWzMsCaZg3TdO6NLUUVYrvjKjWblQFucI601MjNL+o
+        4iNhD/hQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSLAr-0004fO-0Z; Tue, 13 Oct 2020 14:21:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3CCDD301959;
+        Tue, 13 Oct 2020 16:21:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1DCAE2BFFEAE4; Tue, 13 Oct 2020 16:21:08 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 16:21:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        qais.yousef@arm.com, swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org
+Subject: Re: [PATCH 1/2] sched: Deny self-issued __set_cpus_allowed_ptr()
+ when migrate_disable()
+Message-ID: <20201013142108.GD2594@hirez.programming.kicks-ass.net>
+References: <20201005145717.346020688@infradead.org>
+ <20201013140116.26651-1-valentin.schneider@arm.com>
+ <20201013141508.u7saiudjyuvihvcx@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201008093100.88405-3-zhouyanjie@wanyeetech.com>
+In-Reply-To: <20201013141508.u7saiudjyuvihvcx@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 08 Oct 2020 17:31:00 +0800, 周琰杰 (Zhou Yanjie) wrote:
-> Add the dmaengine bindings for the X2000 SoC from Ingenic.
+On Tue, Oct 13, 2020 at 04:15:08PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-10-13 15:01:15 [+0100], Valentin Schneider wrote:
+> >   migrate_disable();
+> >   set_cpus_allowed_ptr(current, {something excluding task_cpu(current)});
+> >   affine_move_task(); <-- never returns
+> > 
+> > Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> > ---
+> >  kernel/sched/core.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 4ccd1099adaa..7f4e38819de1 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -2189,6 +2189,11 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+> >  	if (!(flags & SCA_MIGRATE_ENABLE) && cpumask_equal(&p->cpus_mask, new_mask))
+> >  		goto out;
+> >  
+> > +	if (p == current &&
+> > +	    is_migration_disabled(p) &&
+> > +	    !cpumask_test_cpu(task_cpu(p), new_mask))
+> > +		ret = -EBUSY;
+> > +
 > 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  include/dt-bindings/dma/x2000-dma.h | 54 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 include/dt-bindings/dma/x2000-dma.h
-> 
+> This shouldn't happen, right? The function may sleep so it shouldn't be
+> entered with disabled migration. A WARN_ON might spot the bad caller.
 
-Acked-by: Rob Herring <robh@kernel.org>
+So yeah, I like detecting the case but agree with bigeasy that an
+additional WARN would make sense, lemme go add that.
