@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C034028D631
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927E928DD93
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728102AbgJMVZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:25:22 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:49276 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgJMVZW (ORCPT
+        id S1731050AbgJNJZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730328AbgJNJTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:25:22 -0400
-Received: by mail-il1-f198.google.com with SMTP id h13so896563ils.16
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:25:21 -0700 (PDT)
+        Wed, 14 Oct 2020 05:19:39 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F15C0613D8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:26:22 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id l18so540674pgg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 14:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OoAVR9AHVrF5AmfQOiW6xvU4LK/5cY35UObNq6NT9XE=;
+        b=EQTxzxUuIKTcB+XY70IZK53ZA9IwEFA63ysUwVxyS6E2XHi8jvNKV1KDaWxPQOMZwa
+         DpWi781oIYquJ8RoAVv9BkQ8pmtZdjPU+u2OYk/cOqkvKpFXOplZdLqRCARtqWwa6WM8
+         M7r+0Nwo0XKiYriJXGI2rMUfGAmFqR3fW0Wl0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=60+Mxk64iVZf267Dg3ol8mIlWkb77pqGXvVvfjK/8nw=;
-        b=En0WfIhFviOpLV0G1Ayfz4qw/eWYvmvjj1LPqBxyEQZy3eQIm3vmhCqChDvZuaqEs7
-         KDr2JLolfqx3u5mRM46r6OCXYprlMa/QCnOhGSyzjtO3ZC919hFjQLo3+TyBy0uAwmN+
-         6fCRInmAF5HuliXzTG/LW6VJ8Vy62y0EhMK64kEH7jyl5n5PKYMM0+Hv6gOg7QLPx7LL
-         6cXHUw7+v8MTAEtUW2n9w4zOyoAJLYwKtCFCTuue3v1li2Huo0nh7mPPWbuLFffhG1Ph
-         JOEn75DfJdZi9gM062L6KwdMO6hWVrXjGPzbz2qAOEy73urrWizRGl2UPGTDHXU8dPDL
-         z1nQ==
-X-Gm-Message-State: AOAM531+IZHUPU1ffKXrhlKxYcklB0yaKZOTswi0uEn3RjgMXteK+dNJ
-        9FwyQPrrpY4QK87q5NnM/3UiZ2ICaDaiRGsno4Q89G6BUvFs
-X-Google-Smtp-Source: ABdhPJwVhtVDseEa8IeraqGregoatXB0F17k95IZ5AfbScIuet/lSzLcYkP/8yRPqJa5oVjbN8dBctmR1jNS5xjocfQvr1FCD3R/
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OoAVR9AHVrF5AmfQOiW6xvU4LK/5cY35UObNq6NT9XE=;
+        b=TJB5jkIZ5YXpVHl+e4mVtjqoQO8cELIVMQYl1sSABw6+27eEYQP6l27zcqOrruVsjC
+         bJQ15B2B7TdFtNJk4sNbeDvKq2mWs1j7kntPKxCeUSN4VXjOBFyhekuRen9DQFUa4ZyO
+         ujdhk5PFzOTfknNKse8548qSrj5M0JUbv4svm7DHRwhlWw4SyoaxZWVIQHNSvrNjFP2h
+         Atm/GmaaPdKJsMdLLmu2lSuJ3X54LwlnsVu45qXWK+YPAKKsqDr8KUGnyCRICPvJkcXQ
+         O8GJRn5vCpaQlQ7/a+/w52rDkgac7JFjBAbv7vTRSCk18kmtDT6lc+l+X3uu/KmdPlsA
+         o8fQ==
+X-Gm-Message-State: AOAM532tQAeSfWTEl57yFzkFRmGJs3Y3vSAdaB97cEuBFVknqEcVpbAC
+        rqi1K903nitD0riq9DewpBNlwg==
+X-Google-Smtp-Source: ABdhPJxjpE+t6tSF6IoGOjD0t+fTHO4qbXOhNCwIJqg8rHVYSn4dWpiqWHiGitjlRTuGvKhaxa/vBA==
+X-Received: by 2002:a63:fe49:: with SMTP id x9mr1177056pgj.192.1602624381982;
+        Tue, 13 Oct 2020 14:26:21 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id b15sm167713pju.16.2020.10.13.14.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 14:26:21 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>
+Cc:     linux-i2c@vger.kernel.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Girish Mahadevan <girishm@codeaurora.org>,
+        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
+        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
+        Sagar Dharia <sdharia@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] i2c: i2c-qcom-geni: More properly fix the DMA race
+Date:   Tue, 13 Oct 2020 14:25:27 -0700
+Message-Id: <20201013212531.428538-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:ca3:: with SMTP id 3mr1517139ilg.95.1602624321356;
- Tue, 13 Oct 2020 14:25:21 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 14:25:21 -0700
-In-Reply-To: <000000000000a03f8d05ae7c9371@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000620d5805b1940d15@google.com>
-Subject: Re: WARNING: can't access registers at asm_sysvec_reschedule_ipi
-From:   syzbot <syzbot+853f7009c5c271473926@syzkaller.appspotmail.com>
-To:     alexandre.chartre@oracle.com, bp@alien8.de, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Previously I landed commit 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA
+transfer race") to fix a race we were seeing.  While that most
+definitely fixed the race we were seeing, it looks like it causes
+problems in the TX path, which we didn't stress test until we started
+trying to update firmware on devices.
 
-HEAD commit:    64a632da net: fec: Fix phy_device lookup for phy_reset_aft..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=11580c80500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c06bcf3cc963d91c
-dashboard link: https://syzkaller.appspot.com/bug?extid=853f7009c5c271473926
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12c1bc6f900000
+Let's revert that patch and try another way: fix the original problem
+by disabling the interrupts that aren't relevant to DMA transfers.
+Now we can stress both TX and RX cases and see no problems.  I also
+can't find any place to put an msleep() that causes problems anymore.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+853f7009c5c271473926@syzkaller.appspotmail.com
+Since this problem only affects i2c, I'm hoping for an Ack from Bjorn
+and then all these patches can go through the i2c tree.  However, if
+maintainers want to work a different way out to land that's OK too.
 
-WARNING: can't access registers at asm_sysvec_reschedule_ipi+0x12/0x20 arch/x86/include/asm/idtentry.h:586
+NOTE: the 3rd patch in the series could certianly be squashed with
+patch #1 or I could re-order / rejigger.  To me it seemed like a good
+idea to first fix the probelm (and make the two functions as much of
+an inverse as possible) and later try to clean things up.  Yell if you
+want something different.
+
+Changes in v2:
+- Consistently use "val_old" to keep track of old value.
+- Add comments about why UART is special.
+
+Douglas Anderson (3):
+  soc: qcom: geni: More properly switch to DMA mode
+  Revert "i2c: i2c-qcom-geni: Fix DMA transfer race"
+  soc: qcom: geni: Optimize/comment select fifo/dma mode
+
+ drivers/i2c/busses/i2c-qcom-geni.c |  6 ++--
+ drivers/soc/qcom/qcom-geni-se.c    | 55 ++++++++++++++++++++++--------
+ 2 files changed, 43 insertions(+), 18 deletions(-)
+
+-- 
+2.28.0.1011.ga647a8990f-goog
 
