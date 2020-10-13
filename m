@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F2628C74D
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2929D28C753
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 04:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgJMCvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 22:51:52 -0400
-Received: from mail-mw2nam12on2139.outbound.protection.outlook.com ([40.107.244.139]:62561
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726873AbgJMCvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 22:51:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=daeeRnwDjLAmu0pcOMP9GlwbT2f+XtLpP8GzpHr9LoTHtuPIYEGbD7eXqXvs8p6duB25PFkhVZi8AzT706LCdcWg+LRnBbcrupPqjKNJS35uNUkmUXacz7z3GMAAOQzOQdTQ6RH/ofADiz35M2lBMapEinPVXJIZ92Fz8wg2ZarqXsjYXzHimeaM2zo9UcgUwDEoUw0EyAWhcXZhNBR3CJhCjqTakrFSkNA6igmpMpVTVUwigZC56GwpQ8U3iAOdV0loTGGBOvgn1IBJQldN8+t87vuiZjb/tIP0UADzGsfa3zRN43i0/+7pt/AzziAPjLGWK3F4fyMGTzO/erCyhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gnyUw0+kZp2F5/rBvE1awpW0hcBGcQqpycFu5IfY48Q=;
- b=Xz7cs6unRQNLPO3rPv4OuFmsSE43UkgJbamAV2MltGIcYbBe5dZvfNwe8ap+4LVLUjjpj1qyvwhogl5Y6FU6kzARn7lhRqySHMRz1/OsMLV89WcpPo+3CX37Bs9uMj35KiTeSKAHtC5b7/tt7fl2sAsis1MW6Qt32wqgCIgnjSaawFaFHjp0k/1+swEtrRxBJv/TwWTOfRzWzOjJu65pH/7wmJGLKhkPbe9Z911EQQXYS9i4HhPfr6gZw7W6+p7PwibRh5UG3zzgucgo1Ux2Tqhw+i5fdLexaYV9jQPwK8UDWwrb5sUZy+LBpCMqRo+TYiUe8powU8U0CopPjuK1Kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gnyUw0+kZp2F5/rBvE1awpW0hcBGcQqpycFu5IfY48Q=;
- b=jxgr+1hyaEx2Qk9+IO0nRZOTM6oW8/JEW9fhaU3fC14oay+5efR9O/kld73cvVLaerClVDdr2pRz3wY5zmZPROEy4QqvU4nP3QLQm34iM1rZ4ZPqUAZBQngOwnQNl9k+ajyzvNQfP3rxUzNaffHJ5mcoZ4QDgDKzBEvbtgqlSBk=
-Authentication-Results: analogixsemi.com; dkim=none (message not signed)
- header.d=none;analogixsemi.com; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BY5PR04MB6802.namprd04.prod.outlook.com (2603:10b6:a03:22d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.25; Tue, 13 Oct
- 2020 02:51:48 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5585:3adc:f199:7d5a]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5585:3adc:f199:7d5a%8]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
- 02:51:48 +0000
-Date:   Tue, 13 Oct 2020 10:49:31 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-Subject: Re: [PATCH v17 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
- DP
-Message-ID: <20201013024931.GA2299@pc-user>
-References: <cover.1600423931.git.xji@analogixsemi.com>
- <528b76c1a4f7b6ea85371bfae4bde389aec4bb24.1600423932.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <528b76c1a4f7b6ea85371bfae4bde389aec4bb24.1600423932.git.xji@analogixsemi.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [114.247.245.146]
-X-ClientProxiedBy: HKAPR03CA0016.apcprd03.prod.outlook.com
- (2603:1096:203:c8::21) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S1728019AbgJMCwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 22:52:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727023AbgJMCwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 22:52:17 -0400
+Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9451020735;
+        Tue, 13 Oct 2020 02:52:16 +0000 (UTC)
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        stable@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Kent Yoder <key@linux.vnet.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        David Safford <safford@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org (open list:KEYS-TRUSTED),
+        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4 1/3] KEYS: trusted: Fix incorrect handling of tpm_get_random()
+Date:   Tue, 13 Oct 2020 05:51:54 +0300
+Message-Id: <20201013025156.111305-2-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201013025156.111305-1-jarkko.sakkinen@linux.intel.com>
+References: <20201013025156.111305-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-user (114.247.245.146) by HKAPR03CA0016.apcprd03.prod.outlook.com (2603:1096:203:c8::21) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3477.11 via Frontend Transport; Tue, 13 Oct 2020 02:51:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd72c370-1034-4695-49cc-08d86f22edae
-X-MS-TrafficTypeDiagnostic: BY5PR04MB6802:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR04MB680280A6E00506FC9EFCB749C7040@BY5PR04MB6802.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EqfH3hc77wLoBOGWyy1VQUzVY1TOdmxzMltY/MKPLh5dd+XJ9kp4KkhlyjFdMGCZ/Ls+ibDFQ3UcrqVLfwvYGzhLlK2MMcOIu/sqivEoMZZKu8pTSqJoPDCYnpuJX2+OvGtoUPIwLdDX7UU3uM+EnhhrE3/1QxuEGNvKEgpb2wkCHgkpbcy0L4ueYem9YRo4QuIpQiW20wty/P4OHmJjlzrpbmb3c+zw6LLCRH2f477tPRZcW4MzDPnwbKriWgXmw3LS82UeVc2orZdsvmHMNwRVaJE0KIVXGtsgrjWhyN+eaUEV1y9uKgZbzj/c7BXFsKIks29oBfBF4ZnV55PF+A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(366004)(39840400004)(346002)(136003)(5660300002)(110136005)(6666004)(8936002)(956004)(16526019)(54906003)(7416002)(9686003)(52116002)(316002)(33716001)(55016002)(6496006)(186003)(33656002)(558084003)(26005)(86362001)(4326008)(8676002)(1076003)(66476007)(66946007)(107886003)(66556008)(2906002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: xhXLLDpZE/XYYt2CJnDxLtOPAI1+4rk7VnJmvyOVY7e1mBu1bWl1uE6xFFN4vjksDIIu5nZ7A6JZJAQta+Z0L7443RZEcLmp4QW2x1ZvmVWgdrRUUQR+Q3VXyFFhPte3HhBp9xF0647YNZ0qRfwWOtWkaVGZdpWuRJ5l6EVplxqRZ6udJ2MfeEvaxpXwjaExb9rbP8fysuxo+JgoJ+0ZhWi7qi7prsSXi6DbdTGJHNHbhZKfbkiip2/JIxNYpnR/528xchFaB0SFGITHV/MIX16QJVXbiLbvI+viVXdW3UH4qXH1UOga5m9p4Vxr3IPeeBw/mM0fIcADKrYQ4+aiMQv3AbEbJBDyEwTXtytDqDhlgDoSm4HEDsLLIfc8oC547iNBrd0CvV+qQmR59IbkKnVaq4bOs/z+xRnbFPDhmls9rJ0RkaahGS7yiclNLdyvebCa6QbyQLhtlKjpn9YClQqxWAXTAgtTVZPsODQe/f87Z33btgz/rAdb9gg1qsIKMfM+DQyLIY4Xp79Kepm3rH6dEXf0TFwZQ2QYa3mxGYsP4O6FfK6Ncfc9psuVB+8zHS3iEV6Fj9z996gtmD9qY4pBNkLAAmddrlLOCxcF/feOPvHZGz2uINVRNwJ/eUOdFXluH+RhWTEcPxveknaXRQ==
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd72c370-1034-4695-49cc-08d86f22edae
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 02:51:48.5116
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g8ovZVo8cscZHzIncuMruPYbYp4IAk82bPnjbX2gHMONunkEdjkLvKO337nl0hSzs5naVENpnxdMM+tZJOgb2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6802
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all, would you please help to review my latest patch v17, thanks very much!
+When tpm_get_random() was introduced, it defined the following API for the
+return value:
 
-Best Regards,
-Xin
+1. A positive value tells how many bytes of random data was generated.
+2. A negative value on error.
+
+However, in the call sites the API was used incorrectly, i.e. as it would
+only return negative values and otherwise zero. Returning he positive read
+counts to the user space does not make any possible sense.
+
+Fix this by returning -EIO when tpm_get_random() returns a positive value.
+
+Fixes: 41ab999c80f1 ("tpm: Move tpm_get_random api into the TPM device driver")
+Cc: stable@vger.kernel.org
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Kent Yoder <key@linux.vnet.ibm.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ security/keys/trusted-keys/trusted_tpm1.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
+index b9fe02e5f84f..c7b1701cdac5 100644
+--- a/security/keys/trusted-keys/trusted_tpm1.c
++++ b/security/keys/trusted-keys/trusted_tpm1.c
+@@ -403,9 +403,12 @@ static int osap(struct tpm_buf *tb, struct osapsess *s,
+ 	int ret;
+ 
+ 	ret = tpm_get_random(chip, ononce, TPM_NONCE_SIZE);
+-	if (ret != TPM_NONCE_SIZE)
++	if (ret < 0)
+ 		return ret;
+ 
++	if (ret != TPM_NONCE_SIZE)
++		return -EIO;
++
+ 	tpm_buf_reset(tb, TPM_TAG_RQU_COMMAND, TPM_ORD_OSAP);
+ 	tpm_buf_append_u16(tb, type);
+ 	tpm_buf_append_u32(tb, handle);
+@@ -496,8 +499,12 @@ static int tpm_seal(struct tpm_buf *tb, uint16_t keytype,
+ 		goto out;
+ 
+ 	ret = tpm_get_random(chip, td->nonceodd, TPM_NONCE_SIZE);
++	if (ret < 0)
++		return ret;
++
+ 	if (ret != TPM_NONCE_SIZE)
+-		goto out;
++		return -EIO;
++
+ 	ordinal = htonl(TPM_ORD_SEAL);
+ 	datsize = htonl(datalen);
+ 	pcrsize = htonl(pcrinfosize);
+@@ -601,9 +608,12 @@ static int tpm_unseal(struct tpm_buf *tb,
+ 
+ 	ordinal = htonl(TPM_ORD_UNSEAL);
+ 	ret = tpm_get_random(chip, nonceodd, TPM_NONCE_SIZE);
++	if (ret < 0)
++		return ret;
++
+ 	if (ret != TPM_NONCE_SIZE) {
+ 		pr_info("trusted_key: tpm_get_random failed (%d)\n", ret);
+-		return ret;
++		return -EIO;
+ 	}
+ 	ret = TSS_authhmac(authdata1, keyauth, TPM_NONCE_SIZE,
+ 			   enonce1, nonceodd, cont, sizeof(uint32_t),
+@@ -1013,8 +1023,12 @@ static int trusted_instantiate(struct key *key,
+ 	case Opt_new:
+ 		key_len = payload->key_len;
+ 		ret = tpm_get_random(chip, payload->key, key_len);
++		if (ret < 0)
++			goto out;
++
+ 		if (ret != key_len) {
+ 			pr_info("trusted_key: key_create failed (%d)\n", ret);
++			ret = -EIO;
+ 			goto out;
+ 		}
+ 		if (tpm2)
+-- 
+2.25.1
+
