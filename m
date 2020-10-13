@@ -2,171 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1426128CDD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D0F28CDD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgJMML6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:11:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726449AbgJMML5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:11:57 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D01A22227;
-        Tue, 13 Oct 2020 12:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602591116;
-        bh=hqi4TDcMww2xkK2y7+nf4KOu3bRAfoi8PMh8F33W22U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RB9/urR5DElHDQrIZ0H+wvi/EjE3jE5osihe4mNoCx1CEGUNPJ0/rgF/fEUhr7Jvu
-         Hyz+mSBHBVcYvd1MZLSaiqTWyvqqKu8lxTiYj6gUs+ebWnr7uBX+8jxDxWVLNv2vTO
-         BXTAkpEVeatdjHxt5R1t9ZpIk6yWeSlxV5w8L+tM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1B0DF403AC; Tue, 13 Oct 2020 09:11:54 -0300 (-03)
-Date:   Tue, 13 Oct 2020 09:11:54 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHSET v4 0/6] perf inject: Speed build-id injection
-Message-ID: <20201013121154.GA560293@kernel.org>
-References: <20201012070214.2074921-1-namhyung@kernel.org>
+        id S1726779AbgJMMMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:12:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57263 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726388AbgJMMMn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 08:12:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602591161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=udtC/1hm8WYvL6m+geYpRdEZb4H/tQKYED5kun2ydIM=;
+        b=JFF5wJ+QMda/sTKawYjI40oGSfXUpd2SCe7LQssH6lh27qHfEURwuqLLztyzuH5UfSYhYf
+        sup3ec01GwT6KHxablUwzQsaF5Y64VtPuCzP3iU9oZ4BBVUxtDyvQ+wGv1H+b/1yfeS7OR
+        fR8nsNRxdFosybRB18mquJHrj0+9zzw=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-QvmBQqXjNjeQg_BgihHWRg-1; Tue, 13 Oct 2020 08:12:40 -0400
+X-MC-Unique: QvmBQqXjNjeQg_BgihHWRg-1
+Received: by mail-wm1-f70.google.com with SMTP id r19so6678489wmh.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:12:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=udtC/1hm8WYvL6m+geYpRdEZb4H/tQKYED5kun2ydIM=;
+        b=YtNAAk6/f2QY9PAs25zN+tXcmF9V8tiW0I03Gw4jGQfO+UKDAUht1Te5CIBafeiUjB
+         6qw/fQuNkYFOMTdGaIpwQi8VMjLQlcFRT4Z0DOlHcvG2uQkO9vBRU3UpbfPxA4V+gR2Z
+         cHp23CH1UuKI27mOOs2qm2bhwG73WK6D7lN7dYBpEJG1sgtboiaf2kBCxg83ZLTZt86P
+         GWb11TF2/EF48rjGgiGKdV9PKvWfsZVu4pJsb0GYJ8Pl791VY4wt8EXJSI0twIAVA0nc
+         KH3OCkqJ+xiIXDlPERtegiP6eUgPPdauPJLZu2zzV7B1LQbAklXYKEv5//6eJf0Y051m
+         /Fkw==
+X-Gm-Message-State: AOAM530ZJQe73Z3VgsowcMU7ajx4V1BVtOgOFZPxDzZw5/pZUvzNcDrW
+        tyDZLneQQq7O47ZMkChClu/7v4hg7uY/QyxY805DPGlrjsnBeq2Qmt/xpufON53iCnWwTSgDvf5
+        2+V3bREtn1mGP6N4BAh85ica/
+X-Received: by 2002:a7b:cb81:: with SMTP id m1mr16189167wmi.140.1602591158755;
+        Tue, 13 Oct 2020 05:12:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz1sd4CMQs2UivsepzGRMRZvro+UKn6OLqIpqicwemf8TWCoo8eTGWMmFc7KvVZSXEgIoXUhg==
+X-Received: by 2002:a7b:cb81:: with SMTP id m1mr16189137wmi.140.1602591158517;
+        Tue, 13 Oct 2020 05:12:38 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:499:3d00:cd47:f651:9d80:157a? ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id c130sm32689471wma.1.2020.10.13.05.12.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 05:12:37 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] objtool: check: Fully validate the stack frame
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org
+References: <20200928093631.210610-1-jthierry@redhat.com>
+ <20200928093631.210610-2-jthierry@redhat.com>
+ <20200929191834.7daofidv6b5aef3y@treble>
+ <5540c2a9-db13-e05e-713c-22ec00f21aa6@redhat.com>
+ <20201012153500.owcyvgjv4m3t3nh3@treble>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <1283e5a8-67e3-090c-0904-3d03ae10a178@redhat.com>
+Date:   Tue, 13 Oct 2020 13:12:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201012070214.2074921-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201012153500.owcyvgjv4m3t3nh3@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Oct 12, 2020 at 04:02:08PM +0900, Namhyung Kim escreveu:
-> Hello,
-> 
-> This is the new version of speed up build-id injection.  As this is
-> to improve performance, I've added a benchmark for it.  Please look at
-> the usage in the first commit.
-> 
-> By default, it measures average processing time of 100 MMAP2 events
-> and 10000 SAMPLE events.  Below is the current result on my laptop.
-> 
->   $ perf bench internals inject-build-id
->   # Running 'internals/inject-build-id' benchmark:
->     Average build-id injection took: 25.789 msec (+- 0.202 msec)
->     Average time per event: 2.528 usec (+- 0.020 usec)
->     Average memory usage: 8411 KB (+- 7 KB)
-> 
-> With this patchset applied, it got this:
-> 
->   $ perf bench internals inject-build-id
->   # Running 'internals/inject-build-id' benchmark:
->     Average build-id injection took: 20.838 msec (+- 0.093 msec)
->     Average time per event: 2.043 usec (+- 0.009 usec)
->     Average memory usage: 8261 KB (+- 0 KB)
->     Average build-id-all injection took: 19.361 msec (+- 0.118 msec)
->     Average time per event: 1.898 usec (+- 0.012 usec)
->     Average memory usage: 7440 KB (+- 0 KB)
-> 
-> 
-> Real usecases might be different as it depends on the number of
-> mmap/sample events as well as how many DSOs are actually hit.
-> 
-> The benchmark result now includes memory footprint in terms of maximum
-> RSS.  Also I've update the benchmark code to use timestamp so that it
-> can be queued to the ordered_events (and flushed at the end).  It's
-> also important how well it sorts the input events in the queue so I
-> randomly chose a timestamp at the beginning of each MMAP event
-> injection to resemble actual behavior.
-> 
-> As I said in other thread, perf inject currently doesn't flush the
-> input events and processes all at the end.  This gives a good speedup
-> but spends more memory (in proprotion to the input size).  While the
-> build-id-all injection bypasses the queue so it uses less memory as
-> well as faster processing.  The downside is that it'll mark all DSOs
-> as hit so later processing steps (like perf report) likely handle them
-> unnecessarily.
 
-Thanks, tested and applied, first patchkit I process using that b4 tool,
-cool!
 
-- Arnaldo
- 
+On 10/12/20 4:35 PM, Josh Poimboeuf wrote:
+> On Mon, Oct 12, 2020 at 11:21:49AM +0100, Julien Thierry wrote:
+>> On 9/29/20 8:18 PM, Josh Poimboeuf wrote:
+>>> "Stack frame" has more than one meaning now, I suppose.  i.e. it could
+>>> also include the callee-saved registers and any other stack space
+>>> allocated by the function.
+>>>
+>>> Would "call frame" be clearer?
+>>>
+>>>     CALL_FRAME_BP_OFFSET
+>>>     CALL_FRAME_RA_OFFSET
+>>>
+>>> ?
+>>
+>> I would've thought that the call-frame could include the stackframe + other
+>> callee saved regs.
 > 
-> This code is available at 'perf/inject-speedup-v4' branch on
+> Hm, probably so.
 > 
->   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+>> Whereas stackframe tends to used for the caller's frame pointer +
+>> return address (i.e. what allows unwinding). Unless I'm getting lost
+>> with things.
 > 
+> I've always seen "stack frame" used to indicate the function's entire
+> stack.
 > 
-> Changes from v3:
->  - add timestamp to the synthesized events in the benchmark
->  - add a separate thread to read pipe in the benchmark
+>> And if call frame is associated with the region starting from the stack
+>> pointer at the parent call point (since this is what CFA is), then it
+>> shouldn't be associated with the framepointer + return address structure
+>> since this could be anywhere on the call frame (not at a fixed offset) as
+>> long as the new frame pointer points to the structure.
 > 
-> Changes from v2:
->  - fix benchmark to read required data
->  - add Acked-by from Jiri and Ian
->  - pass map flag to check huge pages  (Jiri)
->  - add comments on some functions  (Ian)
->  - show memory (max-RSS) usage in the benchmark  (Ian)
->  - drop build-id marking patch at the last  (Adrian)
+> I suppose "call frame" and "stack frame" probably mean the same thing,
+> in which case neither is appropriate here...
 > 
+> In fact, maybe we could forget the concept of a frame (or even a struct)
+> here.
 > 
-> Namhyung Kim (6):
->   perf bench: Add build-id injection benchmark
->   perf inject: Add missing callbacks in perf_tool
->   perf inject: Enter namespace when reading build-id
->   perf inject: Do not load map/dso when injecting build-id
->   perf inject: Add --buildid-all option
->   perf bench: Run inject-build-id with --buildid-all option too
+> If cfa.base is CFI_BP, then is regs[CFI_BP].offset always the same as
+> -cfa.offset?  i.e. could the BP checks could it just be a simple
 > 
->  tools/perf/Documentation/perf-inject.txt |   6 +-
->  tools/perf/bench/Build                   |   1 +
->  tools/perf/bench/bench.h                 |   1 +
->  tools/perf/bench/inject-buildid.c        | 457 +++++++++++++++++++++++
->  tools/perf/builtin-bench.c               |   1 +
->  tools/perf/builtin-inject.c              | 199 ++++++++--
->  tools/perf/util/build-id.h               |   4 +
->  tools/perf/util/map.c                    |  17 +-
->  tools/perf/util/map.h                    |  14 +
->  9 files changed, 645 insertions(+), 55 deletions(-)
->  create mode 100644 tools/perf/bench/inject-buildid.c
+>    regs[CFI_BP].offset == -cfa.offset
 > 
-> -- 
-> 2.28.0.681.g6f77f65b4e-goog
+> check?
 > 
+
+I guess that makes sense. If the above was no true it would mean that BP 
+is not pointing to the unwind information.
+
+> And then is RA at regs[CFI_BP].offset + 8?
 > 
-> *** BLURB HERE ***
-> 
-> Namhyung Kim (6):
->   perf bench: Add build-id injection benchmark
->   perf inject: Add missing callbacks in perf_tool
->   perf inject: Enter namespace when reading build-id
->   perf inject: Do not load map/dso when injecting build-id
->   perf inject: Add --buildid-all option
->   perf bench: Run inject-build-id with --buildid-all option too
-> 
->  tools/perf/Documentation/perf-inject.txt |   6 +-
->  tools/perf/bench/Build                   |   1 +
->  tools/perf/bench/bench.h                 |   1 +
->  tools/perf/bench/inject-buildid.c        | 476 +++++++++++++++++++++++
->  tools/perf/builtin-bench.c               |   1 +
->  tools/perf/builtin-inject.c              | 199 ++++++++--
->  tools/perf/util/build-id.h               |   4 +
->  tools/perf/util/map.c                    |  17 +-
->  tools/perf/util/map.h                    |  14 +
->  9 files changed, 664 insertions(+), 55 deletions(-)
->  create mode 100644 tools/perf/bench/inject-buildid.c
-> 
-> -- 
-> 2.28.0.1011.ga647a8990f-goog
-> 
+
+In the case of aarch64, the saved frame pointer and return address 
+appear in the same order as on x86_64. So that would work. If that can 
+make things simpler for now I can go with that.
+
+Thanks for the suggestion.
 
 -- 
+Julien Thierry
 
-- Arnaldo
