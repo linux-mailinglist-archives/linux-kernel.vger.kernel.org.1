@@ -2,51 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D303128D732
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA2D28D72E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387804AbgJMXx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 19:53:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32870 "EHLO mail.kernel.org"
+        id S2389230AbgJMXtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729950AbgJMXtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729955AbgJMXtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 13 Oct 2020 19:49:14 -0400
-Subject: Re: [GIT PULL] Smack patches for v5.10
+Subject: Re: [GIT PULL] seccomp updates for v5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602632954;
-        bh=robIOznjhws5yrbwysRtTJAc7dN5cL986q3XIlHzI5c=;
+        bh=vlWXqGJ+h24m/Gebj464zTB0nBLTN8Dzg2EkzX+6Dzg=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=tV/fEOm9U/MbiLJ9XHTRGUZXGp6wNg9WHxbVDbBcm9JvA/Ce+s5Gd2TSY4I1xf0x5
-         ziMgwJ6P4x4fqvd4UqR9b0PwozfKIu+MdIEwfojwTtkwHjFnZBIkWPJD+E6hhTv+bo
-         k7HgXIvi1JOc82o0ZrOzG4Rtj2A8EroKWQdMNPns=
+        b=AvinOrQ7aFUc6KnUZWoS+sSZ2khNrvt66Xpu8IKl7tyX2F6v7Ixx/Sm6/QuE5Jn73
+         QtiuwmKxNgSE/xVvgbNiBnCqT1hdhIZ6EXseT1n/GBWg1XSELpzDzXibRdBS+3hcdL
+         z86oLuwjD4fDXZhW7wHZoQIQNVoRspDTDxhjB5ug=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <efb97951-c946-8511-a6c3-b8aa340ebf8f@schaufler-ca.com>
-References: <efb97951-c946-8511-a6c3-b8aa340ebf8f.ref@schaufler-ca.com> <efb97951-c946-8511-a6c3-b8aa340ebf8f@schaufler-ca.com>
+In-Reply-To: <202010121512.015F57CC@keescook>
+References: <202010121512.015F57CC@keescook>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <efb97951-c946-8511-a6c3-b8aa340ebf8f@schaufler-ca.com>
-X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next tags/Smack-for-5.10
-X-PR-Tracked-Commit-Id: edd615371b668404d06699c04f5f90c4f438814a
+X-PR-Tracked-Message-Id: <202010121512.015F57CC@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.10-rc1
+X-PR-Tracked-Commit-Id: dfe719fef03d752f1682fa8aeddf30ba501c8555
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 99a6740f88e9438cd220096d3d96eb6ba8d5c6f0
-Message-Id: <160263295401.20088.2867586814685847355.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 8b05418b252166be6df3766dafdb25341488ab95
+Message-Id: <160263295425.20088.15988053252761725003.pr-tracker-bot@kernel.org>
 Date:   Tue, 13 Oct 2020 23:49:14 +0000
-To:     Casey Schaufler <casey@schaufler-ca.com>
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Denis Efremov <efremov@linux.com>,
+        Hulk Robot <hulkci@huawei.com>, Jann Horn <jannh@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Rich Felker <dalias@libc.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        YiFei Zhu <yifeifz2@illinois.edu>, Zou Wei <zou_wei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Oct 2020 11:13:01 -0700:
+The pull request you sent on Mon, 12 Oct 2020 15:15:32 -0700:
 
-> https://github.com/cschaufler/smack-next tags/Smack-for-5.10
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.10-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/99a6740f88e9438cd220096d3d96eb6ba8d5c6f0
+https://git.kernel.org/torvalds/c/8b05418b252166be6df3766dafdb25341488ab95
 
 Thank you!
 
