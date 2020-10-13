@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C475E28C9A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D6028C9A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732597AbgJMIA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
+        id S2390578AbgJMIB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727744AbgJMIA5 (ORCPT
+        with ESMTP id S2390549AbgJMIB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:00:57 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934B0C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:00:57 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id h19so5354862qtq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:00:57 -0700 (PDT)
+        Tue, 13 Oct 2020 04:01:27 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE0FC0613D2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:27 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id n9so17020653pgf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 01:01:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aOSW/1jV9ZZDliFDchN5ythzau0PJIohS37hifeg2cA=;
-        b=QwEpEUhoL3acpkNjITABK3w5YblrZUfGwaJfaubolbYOWYMaqZkEwfqh7LWJmJsj5G
-         duqTu7n/zGF0AQgeKWOvAfQWPEx765pNarDuFIUIUHRaOQt0hHhrOf1IQpTzZ7Wj/tgR
-         9M/kJ6NWvQwAckqUWugo9tEEgTJb81p3YYUv4gkv4u77FnXvcTSVJ6dOxVnyYruFCZI7
-         dpudqTg6WIL9oDYDpbX/Xn0pkLL88E9ot/XBxAiHEdGoNlcgZfCzRXgLgxYTkeFCB9jr
-         9TRfw2joYIewqQgWNaZzqRWOC4jzlMlShPaNZjdI0yV2Nkn3L41L2Go/vEqGJbBAucQU
-         GpYA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kobb2e1tlICZgkQS/oGVtY54aK5l9kHJ2QZVBKXSGxE=;
+        b=HvRYgaNc6roOxiu+jeMNUaEvL5jd+9FuF8oUyy0Qut6ZicDzpSKH3rWKcSKeygEjEn
+         yb0slmgyi3zc3tFthbRId+EYOgfZZFgKsSyDAhoLqFIbgcMmoSRBIMdI4D74fUepQXuR
+         VahaQpxlXCfl8FLlEz1J7risjgxjMtLieTEX0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aOSW/1jV9ZZDliFDchN5ythzau0PJIohS37hifeg2cA=;
-        b=Fih2yykt0lkqELkbmqGLv7VPsczsd4YzDWnO8DuEhtSTj+f/76dTZ03jIKXx8juOA4
-         Z3QleCI89vj7s26jWr/lDhAC0gClANZAyzb9bV2TWuRaHKH304Doghj3PUhSGCt80REP
-         RsZxGe97A6O9fjCv53cpyXDUX7MWNa1TY/sw4yT2vuF0Mo3ok10d02i8RDzobj26TGzi
-         gGMO8RLs/hznrcGZ2P3LOHQza1Figr/ETNMh9uBYBrC5QUEe1l7tanjDlnBiKcBQ48hh
-         ZKJXcYwseq8mzFaknL2GmdC120I1nV/W1TgNs+5fj6QbbB+jOPlox0MvuCbTnYiNJoQE
-         d+og==
-X-Gm-Message-State: AOAM531BlIVnj8TiV/9T4P6cFcxUCZamQtAQ+x3vp/W7wtUwn0RFyg7U
-        L8yTyW9FK2R+PEkzZ4tG1pGEynrGsVEcWoYfgrE=
-X-Google-Smtp-Source: ABdhPJzRP6bSj3kFy5Xoesv9MmSSP7edjHByw13zwwdgvEZllKBgoj2wjPqRszuzT9v6Q9wmTTKH53Q95cjTPGyPGBU=
-X-Received: by 2002:ac8:7a87:: with SMTP id x7mr13678287qtr.51.1602576056782;
- Tue, 13 Oct 2020 01:00:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kobb2e1tlICZgkQS/oGVtY54aK5l9kHJ2QZVBKXSGxE=;
+        b=ZRK75ppQDi31q6GsKCTjd1h8S4oCc+o68kMhDZCdWdGb5veQ0IfgG//AL6k4GUg1Lf
+         FKOj4xKnUveV1W1+QlolW9khYbXMHEHXIj2g/zDufcoxg5mwYOt4Rf1rsSxebHe0tXns
+         5PTRV8NM2VyXVM5RMctU0i64EtCgaABG7kmciGuJ5TXQu60NsqtIGRcagETeRIwl798F
+         UNBNrGm6ocS2OzV9iTAss+UmI4UzG3s8j4cS5x7WnMx55TnYuVrpTWyoEKKDKEZnTd14
+         kTlU1Oc18eB/1KLo1feFAmBVXWHNrgjSTMXH09RxC2TVLXMmTO+7fnThNkLPa2JC2N1J
+         UpAg==
+X-Gm-Message-State: AOAM532OvRtaewAZ/wWvqFSB+n50uLZDmLHay3H1+jcYoXzsL5KEoTY3
+        mCyIBZwambxEYWRXk4dehUStdw==
+X-Google-Smtp-Source: ABdhPJxP6pxFhLR56ZtuQO0U0FlPcp8Gjo0ZGCypcR6tvA2syik1UwDJOMcOKfmi863CHLyQwReK/Q==
+X-Received: by 2002:a62:2a94:0:b029:155:3225:6fd0 with SMTP id q142-20020a622a940000b029015532256fd0mr25008896pfq.64.1602576086840;
+        Tue, 13 Oct 2020 01:01:26 -0700 (PDT)
+Received: from alex-desktop.lan (c-73-63-253-164.hsd1.ca.comcast.net. [73.63.253.164])
+        by smtp.gmail.com with ESMTPSA id y124sm14956924pfy.28.2020.10.13.01.01.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 01:01:26 -0700 (PDT)
+From:   Alexandru Stan <amstan@chromium.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Alexandru Stan <amstan@chromium.org>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH v2 0/3] PWM backlight interpolation adjustments
+Date:   Tue, 13 Oct 2020 01:01:00 -0700
+Message-Id: <20201013080103.410133-1-amstan@chromium.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201012110557.GK25311@zn.tnic> <CAHk-=wiVoLoZS1v9SCQzH4mkpz6akE3pPrHPxM2hamOXPcaW9w@mail.gmail.com>
- <CAFULd4Z1_UKN6haGbNJMi0_tGddPZcawRDfoYnLdn-Qe6UR3-Q@mail.gmail.com>
- <CAHk-=whbEhjSHR7D=8Q_xARd=UKHGcz750LoT1BeRdgTR+6uSw@mail.gmail.com>
- <CAHk-=wgBHgmAoLG9A0b-2_2ZiL_OaXLyO2pbKOHm=u93NttSBQ@mail.gmail.com>
- <CAFULd4bHpJQau5kw8J93B2Xu1J_tYhShG6eWP88vRvhwxRZmdQ@mail.gmail.com>
- <CAHk-=wg2hkPc049k01fxZ0p0K3QSABi0O0uN-NHoqLa0yz-DJw@mail.gmail.com>
- <CAFULd4YQ5dNPU5mFuT9GHNH8-UVdcHLz7NYnvPi=kmhaUk1mcw@mail.gmail.com> <CAHk-=whnq+JmKsRwCbUnpZm4ZJLgaiX-KSFMkp7OeeE-RXwRGg@mail.gmail.com>
-In-Reply-To: <CAHk-=whnq+JmKsRwCbUnpZm4ZJLgaiX-KSFMkp7OeeE-RXwRGg@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Tue, 13 Oct 2020 10:00:45 +0200
-Message-ID: <CAFULd4axRbk4rT_+xuwjWv2J0+TP-qKjNK+QaivOGFdJ3aL+vg@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/asm updates for v5.10
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Borislav Petkov <bp@suse.de>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 10:57 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Oct 12, 2020 at 1:22 PM Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > No, this fact is not documented, although there are close to zero
-> > chances it will ever change. High registers are independent from their
-> > 8bit lowparts, but they still clobber corresponding 16bit, 32bit and
-> > 64bit representations. I guess this limitation is so severe that the
-> > compiler writers will be more than happy to document that %ah and %al
-> > can't be independent.
->
-> Ok, if we can get that agreed upon (and the clang people too), then I
-> have no concerns about the patch.
+I was trying to adjust the brightness-levels for the trogdor boards:
+https://chromium-review.googlesource.com/c/chromiumos/third_party/kernel/+/2291209
+Like on a lot of panels, trogdor's low end needs to be cropped,
+and now that we have the interpolation stuff I wanted to make use of it
+and bake in even the curve that's customary to have on chromebooks.
 
-The GCC's development documentation says:
+I found the current behavior of the pwm_bl driver a little unintuitive
+and non-linear. See patch 1 for a suggested fix for this.
 
---cut here--
-         When storing to a normal 'subreg' that is smaller than a
-         block, the other bits of the referenced block are usually left
-         in an undefined state.  This laxity makes it easier to
-         generate efficient code for such instructions.  To represent
-         an instruction that preserves all the bits outside of those in
-         the 'subreg', use 'strict_low_part' or 'zero_extract' around
-         the 'subreg'.
---cut here--
+A few veyron dts files were relying on this (perhaps weird) behavior.
+Those devices also want a minimum brightness like trogdor, so changed
+them to use the new way.
 
-REG is divided into individually-addressable blocks in which each block has:
+Finally, given that trogdor's dts is part of linux-next now, add the
+brightness-levels to it, since that's the original reason I was looking at
+this.
 
-              REGMODE_NATURAL_SIZE (M2)
+Changes in v2:
+- Fixed type promotion in the driver
+- Removed "backlight: pwm_bl: Artificially add 0% during interpolation",
+userspace works just fine without it because it already knows how to use
+bl_power for turning off the display.
+- Added brightness-levels to trogdor as well, now the dts is upstream.
 
-bytes.  Usually the value is 'UNITS_PER_WORD'; that is, most targets
-usually treat each word of a register as being independently
-addressable.
 
-The 'block' is 32bits for i386 or 64bits for x86_64. When asm is
-writing to %al, this effectively means that other bits of a register
-are left in an undefined state. Please note that 'strict_low_part' and
-'zero_extract' are internal representations, not available in asm
-statements.
+Alexandru Stan (3):
+  backlight: pwm_bl: Fix interpolation
+  ARM: dts: rockchip: veyron: Remove 0 point from brightness-levels
+  arm64: dts: qcom: trogdor: Add brightness-levels
 
-> Just so that we don't have any nasty surprises in the future where
-> some clever compiler change ends up breaking this (very rare)
-> exception case.
+ arch/arm/boot/dts/rk3288-veyron-jaq.dts      |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-minnie.dts   |  2 +-
+ arch/arm/boot/dts/rk3288-veyron-tiger.dts    |  2 +-
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |  9 +++
+ drivers/video/backlight/pwm_bl.c             | 70 +++++++++-----------
+ 5 files changed, 43 insertions(+), 42 deletions(-)
 
-IMO the above documents that write to a partial register clobbers the
-entire register.
+-- 
+2.28.0
 
-Uros.
