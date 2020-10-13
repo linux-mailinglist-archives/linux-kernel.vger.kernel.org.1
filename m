@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C74C28C965
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7A428C96B
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390349AbgJMHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:31:13 -0400
-Received: from ozlabs.org ([203.11.71.1]:38221 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390018AbgJMHbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:31:13 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9Rzw1m0qz9sVH;
-        Tue, 13 Oct 2020 18:31:07 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602574270;
-        bh=V/UtxiMXVJw0j5PGw9Bq2WshrzH3dzmQXoAanhACYH4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r5eQRHa41qZJNZpYlkT9DluxxtXHn78TAkOlG2qSVyYG8S2/IBq84BsJtfDfs8UqA
-         XnCcvS2ou9DnpN5v97kWUEKUQjPeDvvn8GRAh2afBvVVP/M97lrmTAK/+esigT2eH+
-         jbPIhyTlY8mKbZUc0WKOMJ7Njncncp6jqh7zKjKX0W5x+uQ54CsvKzrgoXYL5hpKuI
-         kVkuDLCrjVHm7mT2uLbdMxh5UMytyNTqxAEOPH8SXLWha30dxeq4Hq82cZkxyJUPnf
-         ZzObjuLyt3BaGDu+UUKW8ziB7kgKT746W1AnJ9ysquiDkaKtCtgjyiwKjjPRAxr3dS
-         OMy3A7DnMN0Yg==
-Date:   Tue, 13 Oct 2020 18:31:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>, Dave Airlie <airlied@linux.ie>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Tom Murphy <murphyt7@tcd.ie>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the iommu tree
-Message-ID: <20201013183107.65c15fd5@canb.auug.org.au>
-In-Reply-To: <20200921140901.16adf8c2@canb.auug.org.au>
-References: <20200921140901.16adf8c2@canb.auug.org.au>
+        id S2390183AbgJMHbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 03:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390018AbgJMHbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 03:31:50 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A65FC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:31:49 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id u19so21230192ion.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 00:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8elHjBbADG4GvNsj3EdxmL1/azNofpsxhsXHwpi5wJA=;
+        b=HE5Fni69H1Ts6Mzf1OQbVCJMsO8eQBZnLWNM0ziUwR+JlnIg2a3QorWVs2mrz+c3h8
+         h3W+NZjEAyEYYukEbjm8NWQ1xMk07TaiTfNxkw5EmxNel2XO1zyjomJNwCl9u8IaDLQe
+         h/s5YsBQNbfwkgR64Kyw8bIw7lasOtsxLYtNKqgkkzrscYBLDqWq88++1W3XF09SY0YQ
+         /FWo72n2fPbON4xhTo8eKMLs7my40Z210SuIrOGw1iHQjP6egEQ/qVccsTWn1JbLr9IQ
+         /cH15YIIxG17YX+JktQTeVqoLmPZeO4G/jLc0gGSCvxN4PxEKJj52CAXuW1DFrEvPQCy
+         15Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8elHjBbADG4GvNsj3EdxmL1/azNofpsxhsXHwpi5wJA=;
+        b=L7gB0EoWSb8YYKe1yF+PN0pSFUgXLHcPfq39SWhkNB1bfjlIoEfpXpHiBA0hgCD3Sn
+         86clEydVyAMsiSU0FhFITfxcyO3rn+L672iNmrr21S01EKDfxn2ru2Rt0M4jvRSnmuWk
+         zrL4K1liWJXYA7kX+CcBdMRITyxRYDB90FEGoTBjzYoFZw3fZzhvo0TGhOUZhBN4A9Id
+         c3YioDYKSD6+ETJAzIKyNjjzhnhBETU0Cmlii+d0M9CE9SEWd74gS4kMaA5zneIOxMIf
+         4Pi6BLOHjL+aLzjrOigwWWwoQj6FwExyo4R+HFfx78ihANaYT/38sS0wNnM71y183I20
+         ITnQ==
+X-Gm-Message-State: AOAM5320gM8ue0sEpsLdPMwi5NNmJv1OKf5hiSdIOharA4BtLt0o5XKi
+        5BY78G437ey0Kv1U3E49VnCzJ/OBUjOyRG0YolBaC1tL3kU=
+X-Google-Smtp-Source: ABdhPJxFDGTT23DHZldxhxBqbTDCnu+xE4jDOIuZxypsqEVuC9tkxUB1XkFuAIA+s2uKw9aoiLtEszSPYQy+WIgizfk=
+X-Received: by 2002:a6b:ef0e:: with SMTP id k14mr19321354ioh.131.1602574308924;
+ Tue, 13 Oct 2020 00:31:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gObwaAEGm=S6y1zPfwPtW1.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201012123105.32652-1-brgl@bgdev.pl> <0071e295-51c7-3496-df59-c5712cef93a2@linux.intel.com>
+In-Reply-To: <0071e295-51c7-3496-df59-c5712cef93a2@linux.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 13 Oct 2020 09:31:38 +0200
+Message-ID: <CAMRc=MfNQGfW-jS4SNLxhmU6D8aN5f31N7qJkPjJ6izvXxXORg@mail.gmail.com>
+Subject: Re: [PATCH next] iommu: intel: make DMAR_TABLE select IOMMU_API
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gObwaAEGm=S6y1zPfwPtW1.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 21 Sep 2020 14:09:01 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Tue, Oct 13, 2020 at 3:33 AM Lu Baolu <baolu.lu@linux.intel.com> wrote:
 >
-> After merging the iommu tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
->=20
-> drivers/gpu/drm/msm/msm_iommu.c: In function 'msm_iommu_pagetable_unmap':
-> drivers/gpu/drm/msm/msm_iommu.c:46:2: error: implicit declaration of func=
-tion 'iommu_flush_tlb_all'; did you mean 'iommu_flush_iotlb_all'? [-Werror=
-=3Dimplicit-function-declaration]
->    46 |  iommu_flush_tlb_all(to_msm_iommu(pagetable->parent)->domain);
->       |  ^~~~~~~~~~~~~~~~~~~
->       |  iommu_flush_iotlb_all
->=20
-> Caused by commit
->=20
->   aae4c8e27bd7 ("iommu: Rename iommu_tlb_* functions to iommu_iotlb_*")
->=20
-> interacting with commit
->=20
->   b145c6e65eb0 ("drm/msm: Add support to create a local pagetable")
->=20
-> from the drm-msm tree.
->=20
-> I have applied the following merge fix patch.  Someone will need to tell
-> Linus about this fix up when the trees get merged.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 21 Sep 2020 14:04:14 +1000
-> Subject: [PATCH] merge fix upt for iommu_flush_iotlb_all() rename
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/gpu/drm/msm/msm_iommu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_io=
-mmu.c
-> index 3a83ffdb3b90..22ac7c692a81 100644
-> --- a/drivers/gpu/drm/msm/msm_iommu.c
-> +++ b/drivers/gpu/drm/msm/msm_iommu.c
-> @@ -43,7 +43,7 @@ static int msm_iommu_pagetable_unmap(struct msm_mmu *mm=
-u, u64 iova,
->  		size -=3D 4096;
->  	}
-> =20
-> -	iommu_flush_tlb_all(to_msm_iommu(pagetable->parent)->domain);
-> +	iommu_flush_iotlb_all(to_msm_iommu(pagetable->parent)->domain);
-> =20
->  	return (unmapped =3D=3D size) ? 0 : -EINVAL;
->  }
-> @@ -199,7 +199,7 @@ struct msm_mmu *msm_iommu_pagetable_create(struct msm=
-_mmu *parent)
-> =20
->  	/*
->  	 * TODO we would like each set of page tables to have a unique ASID
-> -	 * to optimize TLB invalidation.  But iommu_flush_tlb_all() will
-> +	 * to optimize TLB invalidation.  But iommu_flush_iotlb_all() will
->  	 * end up flushing the ASID used for TTBR1 pagetables, which is not
->  	 * what we want.  So for now just use the same ASID as TTBR1.
->  	 */
-> --=20
-> 2.28.0
+> Hi,
+>
+> On 10/12/20 8:31 PM, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
+> > with no supported address widths") dmar.c needs struct iommu_device to
+> > be defined. We need to unconditionally select IOMMU_API when DMAR_TABLE
+> > is selected. This fixes the following build error when IOMMU_API is not
+> > selected:
+> >
+> > drivers/iommu/intel/dmar.c: In function =E2=80=98free_iommu=E2=80=99:
+> > drivers/iommu/intel/dmar.c:1139:41: error: =E2=80=98struct iommu_device=
+=E2=80=99 has no member named =E2=80=98ops=E2=80=99
+> >   1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
+>
+> Thanks!
+>
+> How about making it symmetric with the registration code?
+>
+>         if (intel_iommu_enabled && !iommu->drhd->ignored)
+>
+> Best regards,
+> baolu
+>
 
-This merge fix up is now needed when the iommu tree and the drm tree are me=
-rged.
---=20
-Cheers,
-Stephen Rothwell
+Sounds good, just sent out a patch.
 
---Sig_/gObwaAEGm=S6y1zPfwPtW1.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FV7sACgkQAVBC80lX
-0GyRqgf/Rh1Gn5zJlXloxhJDs1NZzBo3XiaNUkZRZ2M4MEuSGUB8ReqD9UBmkQkN
-QiA5dfRteGKS71hLS8IzUk3sW7cRm5z3lMKeLpju5vJpcdd+MlZ2shYFNpB34wOj
-7N+80Z5khRT+Yficya98rRcHKGQ+OL7jxIKxKjjnlbB2XqS1PZ6eSN2PIntqYnbD
-8vKjbLAczSbMNDJNpGPk/QC+qVKKvmpNA6QWDinwNa0dFI3Y1KKZmkg5OSvhviww
-5s9IG1hQuCzksnK56umNwXOQSr07pmpk+6+TucgsEhCXKDPYTWeehLkxYlrBXP58
-uD/sWTUhI4euQO45Tt9XwoL5ZcRhZQ==
-=pFEv
------END PGP SIGNATURE-----
-
---Sig_/gObwaAEGm=S6y1zPfwPtW1.--
+Bartosz
