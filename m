@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963EA28CAFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB1528CB00
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 11:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403910AbgJMJ1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 05:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391443AbgJMJ1S (ORCPT
+        id S2404160AbgJMJ3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 05:29:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50742 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404002AbgJMJ3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 05:27:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3711C0613D5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:27:16 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x7so14524386wrl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 02:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Z8a9970NyoL8j/WouYPI3QrVUX98ELJ53wzM6Z8s7NI=;
-        b=XHfjcF0ZziDDiY5hGxeJXZG6wHx+Mq3O7G0F92FKfFobe2YcU9Phyc5G0rUD1jDbGk
-         w0yxK2uXGTFkfgajQvrtp7y46i/m/OD/KTnxf63f6ZEuCTWkzZbfk970AUST0c0le71N
-         KpegIlZ3ee5uccsOOK2TBrIfT2n8JmAOS5wYyLwN/Von53kMhx8OaVjSPIpBD3ElrlWQ
-         tMIjAzJTVBxjOZ+7+xJBG1XLMThQKZBdskghBck7fhMnD2XuIDQsDFlOqBOda7agxQ0q
-         tYmpBahs9mj53RdVlX4Jx1+t1/6NQN1N/3sBLPr6uxvcGrJS2AarVnv8FlF2vm8ZyaxV
-         um/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Z8a9970NyoL8j/WouYPI3QrVUX98ELJ53wzM6Z8s7NI=;
-        b=Bbw+M+YWKVj4vQ88SfsC4xb9vsyCOx4nCABqFTtgZScFWb6R+0PV9SQUIq3TiI2rLB
-         smiQjTXPxz6KtopglnEg3al4CwHHOS+n9sEBlqTEIOSUQ5vf8YMlej1Ro8/CAB0yDY23
-         v75Cs/sKmSF4w1OnvicfecZr2SOh5NfbAHRz19AgLcYSvFVCiaHLj87thpbZvsksb9de
-         7aepXrC/sxDRe5eiPn3AGzhZR013L07jTx4b2vAvX9wa8Sz+VTSoh5hAO+4UaS9lDPvi
-         5LrMvAWSAHxEz38D/AiiYy8RboRG2x75coAI4YTTaQB8Nh+mw0U6vcoxvYTQJlWUdrdb
-         D4IA==
-X-Gm-Message-State: AOAM5328JAnzQJ/9mBwvhIM1h3jAYJg5tPMMRyZaVQQ4Rb9wF4Yvk0MH
-        Mih52o0XraKkEFlExAaZyD9NFQ==
-X-Google-Smtp-Source: ABdhPJysxJ0YjqYhgvuz7yO6DNijyqhaPhUZZeVNIIdsnRzkGQZ9wKFCrAovRtTSeI2LSqBeku+mIw==
-X-Received: by 2002:a5d:448b:: with SMTP id j11mr19794943wrq.129.1602581235480;
-        Tue, 13 Oct 2020 02:27:15 -0700 (PDT)
-Received: from localhost.localdomain (147.169.185.81.rev.sfr.net. [81.185.169.147])
-        by smtp.gmail.com with ESMTPSA id f6sm14484830wru.50.2020.10.13.02.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 02:27:14 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, viresh.kumar@linaro.org, rjw@rjwysocki.net,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH 2/2] cpufreq: blacklist mt8516 in cpufreq-dt-platdev
-Date:   Tue, 13 Oct 2020 11:27:09 +0200
-Message-Id: <20201013092709.3336709-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201013092709.3336709-1-fparent@baylibre.com>
-References: <20201013092709.3336709-1-fparent@baylibre.com>
+        Tue, 13 Oct 2020 05:29:00 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602581338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i1O8s2NVMzbyTSIoC4o/Bwar79MyscBpN/wzySOZcMw=;
+        b=uW10zmnCzpx8UpyrI4zhoFNOFIHWmSBmaIKQ1uNCVYOuvlE6I3feCA/I+xTDsa8G+BjPVX
+        jloVQ462c1Fz+bO9mauuDLjZeaz2foRoWuuwKFIn2y5N8iMVDxc9HZLfHDoeS9xTJe48Et
+        VjMgzM0okp4b33094pb3/81t14Rqb4rWrwwLXtZXMLD8G/IQISUbl3xsNA5w6/RS4/hnfB
+        9xS857zBSaJLvqOPjjqVLm/7PVx8+n0ND0DxdIy3I1Tfk0MQWRRgRGnplyaudWsAzY9FsH
+        cQIDl7eF8JJdE2kVGMnFP/I0s6VYa/xehQvK5hI44hlxA+xL5xRHGq4iHEFEpw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602581338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i1O8s2NVMzbyTSIoC4o/Bwar79MyscBpN/wzySOZcMw=;
+        b=RmYf0hPn7lHf2YQ43+wjz+Den8N3u/H2ix92RASeMAwPOXCiE+bCDz5igYTzwmrHv79p30
+        KC35nfQ7sEgB+hAg==
+To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org,
+        Marc Zyngier <maz@kernel.org>
+Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/5] x86/kvm: Add KVM_FEATURE_MSI_EXT_DEST_ID
+In-Reply-To: <0de733f6384874d68afba2606119d0d9b1e8b34e.camel@infradead.org>
+References: <803bb6b2212e65c568c84ff6882c2aa8a0ee03d5.camel@infradead.org>
+ <20201007122046.1113577-1-dwmw2@infradead.org>
+ <20201007122046.1113577-5-dwmw2@infradead.org>
+ <87blhcx6qz.fsf@nanos.tec.linutronix.de>
+ <f27b17cf4ab64fdb4f14a056bd8c6a93795d9a85.camel@infradead.org>
+ <95625dfce360756b99641c31212634c1bf80a69a.camel@infradead.org>
+ <87362owhcb.fsf@nanos.tec.linutronix.de>
+ <c6f21628733cac23fd28679842c20423df2dd423.camel@infradead.org>
+ <87tuv4uwmt.fsf@nanos.tec.linutronix.de>
+ <958f0d5c9844f94f2ce47a762c5453329b9e737e.camel@infradead.org>
+ <874kn2s3ud.fsf@nanos.tec.linutronix.de>
+ <0E51DAB1-5973-4226-B127-65D77DC46CB5@infradead.org>
+ <87pn5or8k7.fsf@nanos.tec.linutronix.de>
+ <F0F0A646-8DBA-4448-933F-993A3335BD59@infradead.org>
+ <87ft6jrdpk.fsf@nanos.tec.linutronix.de>
+ <25c54f8e5da1fd5cf3b01ad2fdc1640c5d86baa1.camel@infradead.org>
+ <87362jqoh3.fsf@nanos.tec.linutronix.de>
+ <1abc2a34c894c32eb474a868671577f6991579df.camel@infradead.org>
+ <87eem3ozxd.fsf@nanos.tec.linutronix.de>
+ <0de733f6384874d68afba2606119d0d9b1e8b34e.camel@infradead.org>
+Date:   Tue, 13 Oct 2020 11:28:58 +0200
+Message-ID: <87zh4qo4o5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8516 to cpufreq-dt-platdev blacklist since the actual scaling is
-handled by the 'mediatek-cpufreq' driver.
+On Tue, Oct 13 2020 at 08:52, David Woodhouse wrote:
+> On Tue, 2020-10-13 at 00:13 +0200, Thomas Gleixner wrote:
+> +       dom = irq_find_matching_fwspec(fwspec, DOMAIN_BUS_IR);
+> +       if (dom)
+> +               return IS_ERR(dom) ? NULL : dom;
+> +
+> +       return x86_vector_domain;
+> +}
+>
+> Ick. There's no need for that.
+>
+> Eliminating that awful "if not found then slip the x86_vector_domain in
+> as a special case" was the whole *point* of using
+> irq_find_matching_fwspec() in the first place.
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
- drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
- 1 file changed, 1 insertion(+)
+The point was to get rid of irq_remapping_get_irq_domain().
 
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index b8d48ed37156..73cb8f2ad9d4 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -124,6 +124,7 @@ static const struct of_device_id blacklist[] __initconst = {
- 	{ .compatible = "mediatek,mt8173", },
- 	{ .compatible = "mediatek,mt8176", },
- 	{ .compatible = "mediatek,mt8183", },
-+	{ .compatible = "mediatek,mt8516", },
- 
- 	{ .compatible = "nvidia,tegra20", },
- 	{ .compatible = "nvidia,tegra30", },
--- 
-2.28.0
+And TBH,
 
+        if (apicid_valid(32768))
+
+is just another way to slip the vector domain in. It's just differently
+awful.
+
+Having an explicit answer from the search for IR:
+
+    - Here is the domain
+    - Your device is not registered properly
+    - IR not enabled or not supported
+
+is way more obvious than the above disguised is_remapping_enabled()
+check.
+
+Thanks,
+
+        tglx
