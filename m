@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81C628D62E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922D628D630
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgJMVWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:22:32 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37603 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbgJMVWc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:22:32 -0400
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kSRka-0007PO-QI; Tue, 13 Oct 2020 21:22:28 +0000
-Date:   Tue, 13 Oct 2020 23:22:28 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org,
-        containers@lists.linux-foundation.org
-Subject: Re: [PATCH 1/2] fs, close_range: add flag CLOSE_RANGE_CLOEXEC
-Message-ID: <20201013212228.gan6rcayveanujwd@wittgenstein>
-References: <20201013140609.2269319-1-gscrivan@redhat.com>
- <20201013140609.2269319-2-gscrivan@redhat.com>
- <20201013205427.clvqno24ctwxbuyv@wittgenstein>
- <22ff41f8-c009-84f4-849b-a807b7382253@rasmusvillemoes.dk>
+        id S1728145AbgJMVXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 17:23:14 -0400
+Received: from mga11.intel.com ([192.55.52.93]:20432 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728102AbgJMVXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 17:23:13 -0400
+IronPort-SDR: g4dwexpgf/L3gRoBfGyReQ/wnCUXSCJ7XOVi8b/hQA7n6y+/4c0vSHZkUoDw5SwyCw3nvEki9y
+ 54e0hHjstngQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="162523978"
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="162523978"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 14:23:12 -0700
+IronPort-SDR: iWPnDm+fFzds12QJNey0u/3YL/GyTt67TjS3rsaEulip8CrFM3n1Wick9b+jgyL7/advnr5f3x
+ ZitcLEOzWA9g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="299731631"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Oct 2020 14:23:12 -0700
+Received: from [10.249.229.194] (abudanko-mobl.ccr.corp.intel.com [10.249.229.194])
+        by linux.intel.com (Postfix) with ESMTP id AA91358084F;
+        Tue, 13 Oct 2020 14:23:06 -0700 (PDT)
+Subject: Re: [PATCH v1 02/15] perf report: output trace file name in raw trace
+ dump
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <87e2050b-37e6-8ed8-e1e0-cfa074b030fa@linux.intel.com>
+ <20201013195454.GA1305928@krava>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <b49c86a5-c114-efa7-97b1-c172215b6f5d@linux.intel.com>
+Date:   Wed, 14 Oct 2020 00:23:02 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <20201013195454.GA1305928@krava>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <22ff41f8-c009-84f4-849b-a807b7382253@rasmusvillemoes.dk>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 11:04:21PM +0200, Rasmus Villemoes wrote:
-> On 13/10/2020 22.54, Christian Brauner wrote:
-> > On Tue, Oct 13, 2020 at 04:06:08PM +0200, Giuseppe Scrivano wrote:
-> > 
-> > Hey Guiseppe,
-> > 
-> > Thanks for the patch!
-> > 
-> >> When the flag CLOSE_RANGE_CLOEXEC is set, close_range doesn't
-> >> immediately close the files but it sets the close-on-exec bit.
-> > 
-> > Hm, please expand on the use-cases a little here so people know where
-> > and how this is useful. Keeping the rationale for a change in the commit
-> > log is really important.
-> > 
+Hi,
+
+On 13.10.2020 22:54, Jiri Olsa wrote:
+> On Mon, Oct 12, 2020 at 11:54:24AM +0300, Alexey Budankov wrote:
+>>
+>> Output path of a trace file into raw dump (-D) <file_offset>@<path/file>.
+>> Print offset of PERF_RECORD_COMPRESSED record instead of zero for
+>> decompressed records:
+>>   0x2226a@perf.data [0x30]: event: 9
+>> or
+>>   0x15cc36@perf.data/data.7 [0x30]: event: 9
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 > 
-> > I think I don't have quarrels with this patch in principle but I wonder
-> > if something like the following wouldn't be easier to follow:
-> > 
-> > diff --git a/fs/file.c b/fs/file.c
-> > index 21c0893f2f1d..872a4098c3be 100644
-> > --- a/fs/file.c
-> > +++ b/fs/file.c
-> > @@ -672,6 +672,32 @@ int __close_fd(struct files_struct *files, unsigned fd)
-> >  }
-> >  EXPORT_SYMBOL(__close_fd); /* for ksys_close() */
-> >  
-> > +static inline void __range_cloexec(struct files_struct *cur_fds,
-> > +				   unsigned int fd, unsigned max_fd)
-> > +{
-> > +	struct fdtable *fdt;
-> > +	spin_lock(&cur_fds->file_lock);
-> > +	fdt = files_fdtable(cur_fds);
-> > +	while (fd <= max_fd)
-> > +		__set_close_on_exec(fd++, fdt);
+> hi,
+> I'm getting:
 > 
-
-(I should've warned that I just proposed this as a completely untested
-brainstorm.)
-
-> Doesn't that want to be
+>   CC       builtin-inject.o
+> builtin-inject.c: In function ‘cmd_inject’:
+> builtin-inject.c:850:18: error: initialization of ‘int (*)(struct perf_session *, union perf_event *, u64,  const char *)’ {aka ‘int (*)(struct perf_session *, union perf_event *, long unsigned int,  const char *)’} from incompatible pointer type ‘int (*)(struct perf_session *, union perf_event *, u64)’ {aka ‘int (*)(struct perf_session *, union perf_event *, long unsigned int)’} [-Werror=incompatible-pointer-types]
+>   850 |    .compressed = perf_event__repipe_op4_synth,
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> builtin-inject.c:850:18: note: (near initialization for ‘inject.tool.compressed’)
 > 
->   bitmap_set(fdt->close_on_exec, fd, max_fd - fd + 1)
-> 
-> to do word-at-a-time? I assume this would mostly be called with (3, ~0U)
-> as arguments or something like that.
+> it's probably recent build id changes 
 
-Yes, that is the common case.
+Looks like that's it. Fix is in v2 and follows:
 
-Thanks Rasmus, I was unaware we had that function.
+diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
+index f3f965157d69..35c005b8da7f 100644
+--- a/tools/perf/builtin-inject.c
++++ b/tools/perf/builtin-inject.c
+@@ -106,7 +106,8 @@ static int perf_event__repipe_op2_synth(struct perf_session *session,
+ 
+ static int perf_event__repipe_op4_synth(struct perf_session *session,
+ 					union perf_event *event,
+-					u64 data __maybe_unused)
++					u64 data __maybe_unused,
++					const char *str __maybe_unused)
+ {
+ 	return perf_event__repipe_synth(session->tool, event);
+ }
 
-In that case I think we'd actually need sm like:
-spin_lock(&cur_fds->file_lock);
-fdt = files_fdtable(cur_fds);
-cur_max = files_fdtable(cur_fds)->max_fds - 1;
-max_fd = min(max_fd, cur_max);
-bitmap_set(fdt->close_on_exec, fd, max_fd - fd + 1)
-
-so we retrieve max_fd with the spinlock held, I think.
-
-Christian
+Thanks!
+Alexei
