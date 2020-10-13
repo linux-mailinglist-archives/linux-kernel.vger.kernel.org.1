@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F306A28D1E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF37D28D1EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731608AbgJMQMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:12:48 -0400
-Received: from mga18.intel.com ([134.134.136.126]:24134 "EHLO mga18.intel.com"
+        id S1731649AbgJMQNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:13:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42294 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgJMQMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:12:47 -0400
-IronPort-SDR: hnYRiGojH8f/NCzb4791suF+7pCiytAeKyrD0u5PB+waqEfEvuNJ6we+vqLe4FheVPgEocFXsI
- 8tRwwZK9mBwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="153768918"
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="153768918"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 09:12:46 -0700
-IronPort-SDR: 3GPpZsVUK4yaLqbcSuY5s+ZiMBjEdoEuWfsjVvmiUCexumqv01Jb7SxDV3Pe/bef6DE0qr2zbH
- YFpOJio6hV6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
-   d="scan'208";a="313854600"
-Received: from lkp-server02.sh.intel.com (HELO c57e4c60a28b) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 13 Oct 2020 09:12:44 -0700
-Received: from kbuild by c57e4c60a28b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kSMup-000019-Sc; Tue, 13 Oct 2020 16:12:43 +0000
-Date:   Wed, 14 Oct 2020 00:11:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Reji Thomas <rejithomas@juniper.net>, kuba@kernel.org
-Cc:     kbuild-all@lists.01.org, david.lebrun@uclouvain.be,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rejithomas@juniper.net,
-        rejithomas.d@gmail.com
-Subject: [RFC PATCH] IPv6: sr: seg6_strict_lookup_nexthop() can be static
-Message-ID: <20201013161153.GA54884@b456307fa776>
-References: <20201013120151.9777-1-rejithomas@juniper.net>
+        id S1726482AbgJMQNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:13:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D2F42AC6D;
+        Tue, 13 Oct 2020 16:13:37 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] mm/slub: Clarify verification reporting
+To:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Marco Elver <elver@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org
+References: <20201009195411.4018141-1-keescook@chromium.org>
+ <20201009195411.4018141-2-keescook@chromium.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <cfdb11d7-fb8e-e578-c939-f7f5fb69a6bd@suse.cz>
+Date:   Tue, 13 Oct 2020 18:13:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013120151.9777-1-rejithomas@juniper.net>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201009195411.4018141-2-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/9/20 9:54 PM, Kees Cook wrote:
+> Instead of repeating "Redzone" and "Poison", clarify which sides of
+> those zones got tripped. Additionally fix column alignment in the
+> trailer.
+> 
+> Before:
+> 
+> BUG test (Tainted: G    B            ): Redzone overwritten
+> ...
+> Redzone (____ptrval____): bb bb bb bb bb bb bb bb      ........
+> Object (____ptrval____): f6 f4 a5 40 1d e8            ...@..
+> Redzone (____ptrval____): 1a aa                        ..
+> Padding (____ptrval____): 00 00 00 00 00 00 00 00      ........
+> 
+> After:
+> 
+> BUG test (Tainted: G    B            ): Right Redzone overwritten
+> ...
+> Redzone  (____ptrval____): bb bb bb bb bb bb bb bb      ........
+> Object   (____ptrval____): f6 f4 a5 40 1d e8            ...@..
+> Redzone  (____ptrval____): 1a aa                        ..
+> Padding  (____ptrval____): 00 00 00 00 00 00 00 00      ........
+> 
+> Fixes: d86bd1bece6f ("mm/slub: support left redzone")
+> Fixes: ffc79d288000 ("slub: use print_hex_dump")
+> Fixes: 2492268472e7 ("SLUB: change error reporting format to follow lockdep loosely")
 
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- seg6_local.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Not sure about those Fixes: tag as this is mainly an enhancement. I'd only use 
+those for real bug fixes.
 
-diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-index 1a669f12d56c9d..e949d24036c2cd 100644
---- a/net/ipv6/seg6_local.c
-+++ b/net/ipv6/seg6_local.c
-@@ -219,8 +219,8 @@ int seg6_lookup_nexthop(struct sk_buff *skb,
- 	return seg6_lookup_any_nexthop(skb, nhaddr, 0, tbl_id, false);
- }
- 
--int seg6_strict_lookup_nexthop(struct sk_buff *skb,
--			       struct in6_addr *nhaddr, int oif, u32 tbl_id)
-+static int seg6_strict_lookup_nexthop(struct sk_buff *skb,
-+				      struct in6_addr *nhaddr, int oif, u32 tbl_id)
- {
- 	return seg6_lookup_any_nexthop(skb, nhaddr, oif, tbl_id, false);
- }
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
