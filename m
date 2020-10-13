@@ -2,156 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E0328D459
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546A928D45D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 21:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732482AbgJMTWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 15:22:15 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:51332 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbgJMTWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:22:14 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602616933; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=BLvUKsHh2gcPJXFOm+KsCsgg7j5b0BHxJ3Yy/jJ5lq4=; b=Cnb0HubZtqsaAK9XlbgDR6/FAOzk1YfeJJSJJXDULRDChU3Bgi5XlJLlFFHohIaJQuKLyNiG
- Jp4x/WdubJt/qFmtahZvrFWZf6+4u4n8AMmH0h0Z2znAjNvUxdfO2dmEx9itY+vQ5WXOCRfz
- l35trP0TeBPe4OP97Aq+c9Z/qtg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f85fe5a4f8cc67c31708b14 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 13 Oct 2020 19:22:02
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C5105C433C9; Tue, 13 Oct 2020 19:22:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.9] (unknown [117.210.180.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ACF5CC433F1;
-        Tue, 13 Oct 2020 19:21:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ACF5CC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [2/2] drm/msm: Add support for GPU cooling
-To:     mka@chromium.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@freedesktop.org
-References: <1602176947-17385-2-git-send-email-akhilpo@codeaurora.org>
- <20201009183640.GB1292413@google.com>
- <cab2105e-7a8c-988f-dcc1-056692a94e8b@codeaurora.org>
- <20201012174035.GA44627@google.com>
- <80ded484-a058-70fc-be9d-045be2933563@codeaurora.org>
- <20201013174038.GA424420@google.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <ae3ca3c7-fb80-e9fc-a76b-2add8969a178@codeaurora.org>
-Date:   Wed, 14 Oct 2020 00:51:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1732489AbgJMTYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 15:24:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48400 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726944AbgJMTYf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 15:24:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602617073;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mROpDD81dZMvuz/AL/wFzK+yDGJlDRaA6Hxnsxnh1II=;
+        b=eLQum2g/TbZtDVTME2Y/gRQ5SG2whRmaur4jyeJg1PzWyl9aX/zqvIdXE9YlD189tZLWlz
+        R4zMVF9QNng331UG+Qx/dCbBSlTQMFxgee+4L26R0TnWn+0j+tzTfs9Fxr+Z30Wo132e9g
+        KL0PUozbOJJcSlvzuJ0kK14lKeyrP10=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-7tSZxPP5MjK4PyH0ZVaxpA-1; Tue, 13 Oct 2020 15:24:31 -0400
+X-MC-Unique: 7tSZxPP5MjK4PyH0ZVaxpA-1
+Received: by mail-il1-f199.google.com with SMTP id l5so667158ilf.8
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 12:24:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=mROpDD81dZMvuz/AL/wFzK+yDGJlDRaA6Hxnsxnh1II=;
+        b=JxVqhN26U7g2FItaENjoZRrqWJNs43ZCN15DN8Bki43F27OhxYIkx1+EhmqlYoy95F
+         h9v4jgSY7dfdX3jTbH1GidGbghkp79jWCqS9Ny9bCtPadJPj/K1NXob7wYDlLlgVz7Aq
+         OCdABvfW3kYE14FrrStwKmy9WlPoyXt7VaDGV96K+g5Ux4q+COmC1Dpec2rM1TsfYD4q
+         KmlxrFsEVgcfrsjhZIYGExNZlws3GMahn+NVJU9LjaoSeU+wNCXSTkQ71b7eecf2NvE7
+         tilIU4XJc0tWE50hjN2f19GyNnVNQ+IivBzlx7G1dr5Zo7q76s8M3dh9lxuNOs31+nL+
+         Tv8g==
+X-Gm-Message-State: AOAM531jqyKlV1V+RsIhgKSrP+8vZqWgPsnxhVB201eth+UFIj8GSBrT
+        /jbDhhvM3lToN0AWoYWtEFpq1AxCBmbkBfQKbNwv/8iUk6l+jWox+DImlkJV+e0fKtEVSN/E5Z8
+        5rEPtYkxJoH/Rh6Dagz2tqu6N
+X-Received: by 2002:a5d:9693:: with SMTP id m19mr278061ion.161.1602617070906;
+        Tue, 13 Oct 2020 12:24:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxexpvv1trKHY3fOYkDVpjsNWt+h1IcDl+tBkAzFj7h6q2G5dun5m8lXLcBt9JKl3VfJCYqTA==
+X-Received: by 2002:a5d:9693:: with SMTP id m19mr278043ion.161.1602617070662;
+        Tue, 13 Oct 2020 12:24:30 -0700 (PDT)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id h14sm651139ilc.38.2020.10.13.12.24.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 12:24:30 -0700 (PDT)
+Message-ID: <195e21dc50fbcccf4f7a17d089d5dbdc6603d645.camel@redhat.com>
+Subject: Re: [PATCH v2 12/24] drm/dp: fix a kernel-doc issue at drm_edid.c
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
+        <ville.syrjala@linux.intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Tue, 13 Oct 2020 15:24:28 -0400
+In-Reply-To: <96d648f86024535e5f7d5b0caf8ebf93c7f8eaab.1602590106.git.mchehab+huawei@kernel.org>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+         <96d648f86024535e5f7d5b0caf8ebf93c7f8eaab.1602590106.git.mchehab+huawei@kernel.org>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20201013174038.GA424420@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/2020 11:10 PM, mka@chromium.org wrote:
-> On Tue, Oct 13, 2020 at 07:23:34PM +0530, Akhil P Oommen wrote:
->> On 10/12/2020 11:10 PM, mka@chromium.org wrote:
->>> On Mon, Oct 12, 2020 at 07:03:51PM +0530, Akhil P Oommen wrote:
->>>> On 10/10/2020 12:06 AM, mka@chromium.org wrote:
->>>>> Hi Akhil,
->>>>>
->>>>> On Thu, Oct 08, 2020 at 10:39:07PM +0530, Akhil P Oommen wrote:
->>>>>> Register GPU as a devfreq cooling device so that it can be passively
->>>>>> cooled by the thermal framework.
->>>>>>
->>>>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->>>>>> ---
->>>>>>     drivers/gpu/drm/msm/msm_gpu.c | 13 ++++++++++++-
->>>>>>     drivers/gpu/drm/msm/msm_gpu.h |  2 ++
->>>>>>     2 files changed, 14 insertions(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
->>>>>> index 55d1648..93ffd66 100644
->>>>>> --- a/drivers/gpu/drm/msm/msm_gpu.c
->>>>>> +++ b/drivers/gpu/drm/msm/msm_gpu.c
->>>>>> @@ -14,6 +14,7 @@
->>>>>>     #include <generated/utsrelease.h>
->>>>>>     #include <linux/string_helpers.h>
->>>>>>     #include <linux/devfreq.h>
->>>>>> +#include <linux/devfreq_cooling.h>
->>>>>>     #include <linux/devcoredump.h>
->>>>>>     #include <linux/sched/task.h>
->>>>>> @@ -107,9 +108,18 @@ static void msm_devfreq_init(struct msm_gpu *gpu)
->>>>>>     	if (IS_ERR(gpu->devfreq.devfreq)) {
->>>>>>     		DRM_DEV_ERROR(&gpu->pdev->dev, "Couldn't initialize GPU devfreq\n");
->>>>>>     		gpu->devfreq.devfreq = NULL;
->>>>>> +		return;
->>>>>>     	}
->>>>>>     	devfreq_suspend_device(gpu->devfreq.devfreq);
->>>>>> +
->>>>>> +	gpu->cooling = of_devfreq_cooling_register(gpu->pdev->dev.of_node,
->>>>>> +			gpu->devfreq.devfreq);
->>>>>> +	if (IS_ERR(gpu->cooling)) {
->>>>>> +		DRM_DEV_ERROR(&gpu->pdev->dev,
->>>>>> +				"Couldn't register GPU cooling device\n");
->>>>>> +		gpu->cooling = NULL;
->>>>>> +	}
->>>>>>     }
->>>>>>     static int enable_pwrrail(struct msm_gpu *gpu)
->>>>>> @@ -926,7 +936,6 @@ int msm_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->>>>>>     	msm_devfreq_init(gpu);
->>>>>> -
->> Will remove this unintended change.
->>>>>>     	gpu->aspace = gpu->funcs->create_address_space(gpu, pdev);
->>>>>>     	if (gpu->aspace == NULL)
->>>>>> @@ -1005,4 +1014,6 @@ void msm_gpu_cleanup(struct msm_gpu *gpu)
->>>>>>     		gpu->aspace->mmu->funcs->detach(gpu->aspace->mmu);
->>>>>>     		msm_gem_address_space_put(gpu->aspace);
->>>>>>     	}
->>>>>> +
->>>>>> +	devfreq_cooling_unregister(gpu->cooling);
->>>>>
->>>>> Resources should be released in reverse order, otherwise the cooling device
->>>>> could use resources that have already been freed.
->>>>> Why do you think this is not the correct order? If you are thinking
->>>> about devfreq struct, it is managed device resource.
->>>
->>> I did not check specifically if changing the frequency really uses any of the
->>> resources that are released previously, In any case it's not a good idea to
->>> allow other parts of the kernel to use a half initialized/torn down device.
->>> Even if it isn't a problem today someone could change the driver to use any
->>> of these resources (or add a new one) in a frequency change, without even
->>> thinking about the cooling device, just (rightfully) asuming that things are
->>> set up and torn down in a sane order.
->> 'sane order' relative to what specifically here? Should we worry about freq
->> change at this point because we have already disabled gpu runtime pm and
->> devfreq?
-> 
-> GPU runtime PM and the devfreq being disabled is not evident from the context
-> of the function. You are probably right that it's not a problem in practice,
-> but why give reason for doubts in the first place if this could be avoided
-> by following a common practice?
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
-Other option I see is to create a managed device resource (devm) version 
-of the devfreq_cooling_register API and use that. Is that what you are 
-trying to suggest?
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
--Akhil.
+Thanks for the fixes! I will go ahead and push 11 and 12 to drm-misc-next.
+
+On Tue, 2020-10-13 at 14:14 +0200, Mauro Carvalho Chehab wrote:
+> The name of the argument is different, causing those warnings:
+> 
+> 	./drivers/gpu/drm/drm_edid.c:3754: warning: Function parameter or member
+> 'video_code' not described in 'drm_display_mode_from_cea_vic'
+> 	./drivers/gpu/drm/drm_edid.c:3754: warning: Excess function parameter
+> 'vic' description in 'drm_display_mode_from_cea_vic'
+> 
+> Fixes: 7af655bce275 ("drm/dp: Add drm_dp_downstream_mode()")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/gpu/drm/drm_edid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index a82f37d44258..631125b46e04 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -3741,7 +3741,7 @@ drm_add_cmdb_modes(struct drm_connector *connector, u8
+> svd)
+>  /**
+>   * drm_display_mode_from_cea_vic() - return a mode for CEA VIC
+>   * @dev: DRM device
+> - * @vic: CEA VIC of the mode
+> + * @video_code: CEA VIC of the mode
+>   *
+>   * Creates a new mode matching the specified CEA VIC.
+>   *
+-- 
+Sincerely,
+      Lyude Paul (she/her)
+      Software Engineer at Red Hat
+
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
+
