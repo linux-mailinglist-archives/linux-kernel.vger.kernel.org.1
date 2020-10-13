@@ -2,138 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA9928CEDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF4128CEDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387447AbgJMNEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:04:54 -0400
-Received: from mail-eopbgr80075.outbound.protection.outlook.com ([40.107.8.75]:40833
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727151AbgJMNEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:04:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iDM8uPqjwE+do0bsQxq/eByJj+eBR1UFjp+AGHednPtpv1mC1Ej7Lui89ecZgsgdXKqA5/kABHQF8CP6xL9t9J4XvACbVbqW83jl67K+G7N0AHhXaZM4e2jH+jQFLfiRrnqmw8M+DqQYX6lnO4BK3dqXWN1V1XNdiGfAnKNg5BLKHy6xXXcLdrwUWuvKUvSt6pLemzQSXZNG8OqbHDksx2H4ImwLMFvP9XwuIz4sDrcpmKg/YtrlbGgbSJcIsCMOpor/cRKdddqvcoqGxne9MIG790+LJsOHSygd7ChTEjjqCpo0YJtTVbHn+/66SOKqqkS0kFagLJ0THHAE4YcgPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oyt/ZLLf/v7pWrDUKSqxSd6Pd/hCJ9wtnG0YMUCyx+Q=;
- b=LaKy1oAvr9D6FDeBM/HDThJ2mK2PRcfoOEH+Xf+JOkzAg5FzPMw6aFGiJNZuvA7pWdC+mt82tU7PkOXcESglPhNkzwvgq+8nSNFjSFe+MpXly5GGoQl9VqzpoD0kpchqCWtpoAILBvDTzvyNNvzG3We5c1ePfHOuAsrpznRgsqYKNiT8nuq9NAWj1UCigS6e8/RCY3K2obK2V5BK1reLxxuVKEsHjLQ3gbe8MnItlqQLSMSpOS7JIOHIl/jmeicTMTyi4mzaQRO28qflN/y0x4A9Zia5N0NpRqIPjSQttvvMAXqGDmPC3CkE+x1iE7AHQpgL8kSt1wvNed/xOohDjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oyt/ZLLf/v7pWrDUKSqxSd6Pd/hCJ9wtnG0YMUCyx+Q=;
- b=A5VAa6+Fbs6buCWWrjK+ns4XQBgffapkiTFObkGds84maKpKDzMd4Qgk9tvM/f/EYeHDpeFrJ3MmTpohASMQetlPX1HagSF03tOeTdGI8+CeGdAKeQcrN/mW3GLrMJOa3W6asHLYInraDGkCHKCzLUN1yn7W2yMKyJUJh+pOMcA=
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM6PR04MB3975.eurprd04.prod.outlook.com (2603:10a6:209:40::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Tue, 13 Oct
- 2020 13:04:49 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::546f:92f0:f3c5:a148]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::546f:92f0:f3c5:a148%7]) with mapi id 15.20.3455.029; Tue, 13 Oct 2020
- 13:04:49 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Anson Huang <anson.huang@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>
-CC:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "prabhakar.mahadev-lad.rj@bp.renesas.com" 
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Lubomir Rintel <lkundrak@v3.sk>, Joel Stanley <joel@jms.id.au>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH V3 1/4] gpio: mxc: Support module build
-Thread-Topic: [PATCH V3 1/4] gpio: mxc: Support module build
-Thread-Index: AQHWjLUcSolWzL5GLkyvsHmD9a65ial/qOwAgBRVT4CAAarGsA==
-Date:   Tue, 13 Oct 2020 13:04:49 +0000
-Message-ID: <AM6PR04MB49664C2695E5C428F04CE92180040@AM6PR04MB4966.eurprd04.prod.outlook.com>
-References: <1600320829-1453-1-git-send-email-Anson.Huang@nxp.com>
- <CACRpkdY-A6i+2SRVn9TJC8C3+rYa1qMcSHSwOaR_jKfxjOK2VQ@mail.gmail.com>
- <DB3PR0402MB3916B06402B0C4D07325F61FF5070@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916B06402B0C4D07325F61FF5070@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f5c73cac-e61e-4e00-b08c-08d86f78915c
-x-ms-traffictypediagnostic: AM6PR04MB3975:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB39759DC5508C37DAA116AED480040@AM6PR04MB3975.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p/DAliPY31UEwJMNtD2oD9uA6ZQeqihReJZEEe64SnOOmS7tqjdRM/sJd6AecD8NIZ/ZATlSPxgBh6RSQJvPV6sO7Y9muiG6MJwQiHqY+YuLusO6aD2q+GEzBVoE5EoSFZLymGHhqQyfhfuHWhHVl9NNXfSb/BJ7A079I6UbiPZ51wxK3jr+wnX77xhpFrn7oXdY1cL9Rrv1J9whbfgJNG8KZGIrVsAguxvRg8FAEV6NuzaVUWlK0mujBmk//mgBs9MEw0pR0t2xjP/5yqakjo+AJSWH14JtkWqFBJY8n9puTj22qhmBHg14fROmRWXMfcj6vkgeBcEskOTOQu06sw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(39850400004)(396003)(5660300002)(186003)(6506007)(53546011)(478600001)(76116006)(2906002)(7416002)(66446008)(64756008)(66556008)(66946007)(66476007)(26005)(4326008)(55016002)(7696005)(8936002)(8676002)(316002)(71200400001)(86362001)(83380400001)(110136005)(54906003)(9686003)(44832011)(52536014)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: voA9L6i6PjDtHLGA+7NwK1iYxllxHFi7Po8cOi8jVPY3ZoJ4aBSeDLWN1ngDGdj7bm4DZA1hGiyroEusLgzaCBP7X9hvvyfDsQxg2SdjfrXu9ek2u0euBRhRC75eHPeIpmoIYIywwTpJT83k7NVLlJ9U+22Z4IFdKy6O+Fx/OrmWamDm0A4iE2oT32uYw49tMrx1XGKcxuUixUTbVHlAKdoUlKnGyEf52MziO6jJ/Fj1v033RWd73dEvRsFbI9VYzz72G9PSnjqIvblTWJYZwSgYpPv3qIq6x5e5Y3f3NIYz/hMhmrqdB2ajD+MTNPHBCNhE29smOqFR1lfaIR/38Z1B36CVtL9QBl5hojWFJ4PrG3iRe+NkOpzeZo0J/yoL5CCxkpz1gF3+MsG8wtWVUcgD4cjyuQ8fW5mm7pZEx1jbTRhe43E1h5JGrjMpVoiL4OsWIQPWsUwxw7/mSnd1csqOd1kAef1QDWQvP/sfAb+6Ypf0gmrhGguJiXHnkI6hMmnf0kAjqi36amzq490QEMMQJ1M8LyCpVbpBKJJSoSiussc3nNKWVFzLQMC2OSCRT46exGfNDiIsHL02WgX5zX71J8CeitLjtYvDnDGnnwAUkjzj+PoARSb9rgdWq1cycswM/NX/fpcK6IL+8XWPaA==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2387538AbgJMNFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:05:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29697 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387472AbgJMNE5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:04:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602594294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Dh7ilDc5530PnisUfZBLPyxGmpAbSs0er4CH5lzyPo=;
+        b=Hvy1mzBgE79qVMmz4jpC5H0fgtFSxuDtqFRSSxr3lf1nLnqzQ1KdfN4Oqf9lOP0W/iIt6p
+        xN4U0EKthBmXbuL1AYTIDGtAyxx+Lw74TKK/6mMzqIkapgNxbGPToAcvzVFlZHl0n+FETE
+        87h4TteaCWT/c5q9gdGLY8t6NWkafKY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-7o41PxEZOOqmJz4ovsryUA-1; Tue, 13 Oct 2020 09:04:53 -0400
+X-MC-Unique: 7o41PxEZOOqmJz4ovsryUA-1
+Received: by mail-ed1-f70.google.com with SMTP id 28so2331418edv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:04:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8Dh7ilDc5530PnisUfZBLPyxGmpAbSs0er4CH5lzyPo=;
+        b=oHgTDxUfJ2hhvgDmWJUq7rWObo27h/rVnCVs6qQZQVAt4kK+t2czq6fJWC+jejbfYC
+         Qng1thNBp2eyaNZbwbDq+R7sBM4kCXNe/hOoIm6LlyTmUbRqNqfQOotPlReTFuHDUoO1
+         INQTijqVgdQBrsJ8iGuZ4oEUg4BzNuU3MNxt2rLwGtP9bgsv0NPfYIfgqTINdUJTRx8r
+         MvAYvr+uu9wPC9DJbI/igiQvNCililioFmfDp5u+REPqhXPICV+FcQ4MJFat6yf+fIVO
+         /VTWdTH9tap4zNN6lXYPGfX0dkU2iKXjztKmwr0EfXEAtCsxmvL+mJncFPZZxTOqwWNW
+         wqew==
+X-Gm-Message-State: AOAM533sNHWlui6Ly+g5RrhGsa40RByN/OPJI6+lWQTY3xWFx8HNN/R1
+        bRcNnoB074Nho+ITdAnnbilsGzGNPcw3aGFZ0b6uXbsiPjCWj2LzCCakVsIKLtKah+8KCgF9yet
+        11tmEwf5bvGvZijmuURs5iiNn
+X-Received: by 2002:a17:907:2677:: with SMTP id ci23mr32309266ejc.270.1602594291918;
+        Tue, 13 Oct 2020 06:04:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhpGqHtkNyN6pZYp22r7KkylKEMwBqudtBrJR99gARWQgoKnR0V/BLXSKguqa7eQwHNPsyhQ==
+X-Received: by 2002:a17:907:2677:: with SMTP id ci23mr32309249ejc.270.1602594291609;
+        Tue, 13 Oct 2020 06:04:51 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id g4sm9496986ejf.78.2020.10.13.06.04.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 06:04:51 -0700 (PDT)
+Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Mark Pearson <mpearson@lenovo.com>
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
+ <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
+ <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
+ <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com>
+Date:   Tue, 13 Oct 2020 15:04:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5c73cac-e61e-4e00-b08c-08d86f78915c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2020 13:04:49.5806
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ewfpoKeRVJSiqk3icVVYq8LcT0r6HX9CPW0dOPA+WOEFu09jYviHf5D0Z+PelTbWVKKkClOy4b3KKeFkqUjs0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB3975
+In-Reply-To: <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2hhd24sDQoNCj4gRnJvbTogQW5zb24gSHVhbmcgPGFuc29uLmh1YW5nQG54cC5jb20+DQo+
-IFNlbnQ6IE1vbmRheSwgT2N0b2JlciAxMiwgMjAyMCA3OjM2IFBNDQo+IA0KPiBIaSwgU2hhd24N
-Cj4gDQo+ID4gU3ViamVjdDogUmU6IFtQQVRDSCBWMyAxLzRdIGdwaW86IG14YzogU3VwcG9ydCBt
-b2R1bGUgYnVpbGQNCj4gPg0KPiA+IE9uIFRodSwgU2VwIDE3LCAyMDIwIGF0IDc6NDAgQU0gQW5z
-b24gSHVhbmcgPEFuc29uLkh1YW5nQG54cC5jb20+DQo+ID4gd3JvdGU6DQo+ID4NCj4gPiA+IENo
-YW5nZSBjb25maWcgdG8gdHJpc3RhdGUsIGFkZCBtb2R1bGUgZGV2aWNlIHRhYmxlLCBtb2R1bGUg
-YXV0aG9yLA0KPiA+ID4gZGVzY3JpcHRpb24gYW5kIGxpY2Vuc2UgdG8gc3VwcG9ydCBtb2R1bGUg
-YnVpbGQgZm9yIGkuTVggR1BJTyBkcml2ZXIuDQo+ID4gPg0KPiA+ID4gQXMgdGhpcyBpcyBhIFNv
-QyBHUElPIG1vZHVsZSwgaXQgcHJvdmlkZXMgY29tbW9uIGZ1bmN0aW9ucyBmb3IgbW9zdA0KPiA+
-ID4gb2YgdGhlIHBlcmlwaGVyYWwgZGV2aWNlcywgc3VjaCBhcyBHUElPIHBpbnMgY29udHJvbCwg
-c2Vjb25kYXJ5DQo+ID4gPiBpbnRlcnJ1cHQgY29udHJvbGxlciBmb3IgR1BJTyBwaW5zIElSUSBl
-dGMuLCB3aXRob3V0IEdQSU8gZHJpdmVyLA0KPiA+ID4gbW9zdCBvZiB0aGUgcGVyaXBoZXJhbCBk
-ZXZpY2VzIHdpbGwgTk9UIHdvcmsgcHJvcGVybHksIHNvIEdQSU8NCj4gPiA+IG1vZHVsZSBpcyBz
-aW1pbGFyIHdpdGggY2xvY2ssIHBpbmN0cmwgZHJpdmVyIHRoYXQgc2hvdWxkIGJlIGxvYWRlZA0K
-PiA+ID4gT05DRSBhbmQgbmV2ZXIgdW5sb2FkZWQuDQo+ID4gPg0KPiA+ID4gU2luY2UgTVhDIEdQ
-SU8gZHJpdmVyIG5lZWRzIHRvIGhhdmUgaW5pdCBmdW5jdGlvbiB0byByZWdpc3Rlcg0KPiA+ID4g
-c3lzY29yZSBvcHMgb25jZSwgaGVyZSBzdGlsbCB1c2Ugc3Vic3lzX2luaXRjYWxsKCksIE5PVA0K
-PiBtb2R1bGVfcGxhdGZvcm1fZHJpdmVyKCkuDQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTog
-QW5zb24gSHVhbmcgPEFuc29uLkh1YW5nQG54cC5jb20+DQo+ID4NCj4gPiBUaGlzIHBhdGNoICgx
-KSBhcHBsaWVkIHRvIHRoZSBHUElPIHRyZWUuDQo+ID4gUGxlYXNlIGFwcGx5IHRoZSByZXN0IHRo
-cm91Z2ggdGhlIEFSTSBTb0MgdHJlZSENCj4gPg0KPiANCj4gQ291bGQgeW91IHBsZWFzZSBoZWxw
-IHBpY2sgdGhlIHJlc3QgcGF0Y2ggb2YgdGhpcyBzZXJpZXM/IE90aGVyd2lzZSwgdGhlIGkuTVgN
-Cj4gR1BJTyBkcml2ZXIgd2lsbCBOT1QgYmUgZW5hYmxlZCBieSBkZWZhdWx0IGFuZCBpdCB3aWxs
-IGJsb2NrIGtlcm5lbCBib290Lg0KDQpUaGlzIGJsb2NrZWQgYSBodWdlIG51bWJlciBvZiBpLk1Y
-IGJvYXJkcyBib290aW5nIHdpdGggbGF0ZXN0IGxpbnV4LW5leHQga2VybmVsLg0KV291bGQgeW91
-IGhlbHAgcGljayBpdCBBU0FQPw0KDQpSZWdhcmRzDQpBaXNoZW5nDQoNCj4gDQo+IFRoYW5rcywN
-Cj4gQW5zb24NCg0K
+Hi Rafael,
+
+On 10/12/20 6:37 PM, Rafael J. Wysocki wrote:
+> On Mon, Oct 12, 2020 at 1:46 PM Hans de Goede <hdegoede@redhat.com> wrote:
+
+<snip>
+
+>>> A side note, related to your proposal, not this patch. IMO it suits
+>>> better to have /sys/power/profile.
+>>>
+>>> cat /sys/power/profile
+>>>
+>>> power
+>>> balanced_power *
+>>> balanced
+>>> balanced_performance
+>>> performance
+>>>
+>>> The (*) being the active profile.
+>>
+>> Interesting the same thing was brought up in the discussion surrounding
+>> RFC which I posted.
+>>
+>> The downside against this approach is that it assumes that there
+>> only is a single system-wide settings. AFAIK that is not always
+>> the case, e.g. (AFAIK):
+>>
+>> 1. The intel pstate driver has something like this
+>>      (might this be the rapl setting you mean? )
+>>
+>> 2. The X1C8 has such a setting for the embedded-controller, controlled
+>>      through the ACPI interfaces which thinkpad-acpi used
+>>
+>> 3. The hp-wmi interface allows selecting a profile which in turn
+>>      (through AML code) sets a bunch of variables which influence how
+>>      the (dynamic, through mjg59's patches) DPTF code controls various
+>>      things
+>>
+>> At least the pstate setting and the vendor specific settings can
+>> co-exist. Also the powercap API has a notion of zones, I can see the
+>> same thing here, with a desktop e.g. having separate performance-profile
+>> selection for the CPU and a discrete GPU.
+>>
+>> So limiting the API to a single /sys/power/profile setting seems a
+>> bit limited and I have the feeling we will regret making this
+>> choice in the future.
+>>
+>> With that said your proposal would work well for the current
+>> thinkpad_acpi / hp-wmi cases, so I'm not 100% against it.
+>>
+>> This would require adding some internal API to the code which
+>> owns the /sys/power root-dir to allow registering a profile
+>> provider I guess. But that would also immediately bring the
+>> question, what if multiple drivers try to register themselves
+>> as /sys/power/profile provider ?
+> 
+> It doesn't need to work this way IMV.
+> 
+> It may also work by allowing drivers (or whatever kernel entities are
+> interested in that) to subscribe to it, so that they get notified
+> whenever a new value is written to it by user space (eg. each driver
+> may be able to register a callback to be invoked when that happens).
+> The information coming from user space will just be passed to the
+> subscribers of that interface and they will do about it what they want
+> (eg. it may be translated into a value to be written to a
+> performance-vs-power interface provided by the platform or similar).
+> 
+> This really is similar to having a class interface with one file per
+> "subscribed" device except that the aggregation is done in the kernel
+> and not in user space and the subscribers need not be related to
+> specific devices.  It still allows to avoid exposing the low-level
+> interfaces to user space verbatim and it just passes the "policy"
+> choice from user space down to the entities that can take it into
+> account.
+
+First of all thank you for your input, with your expertise in this
+area your input is very much appreciated, after all we only get
+one chance to get the userspace API for this right.
+
+Your proposal to have a single sysfs file for userspace to talk
+to and then use an in kernel subscription mechanism for drivers
+to get notified of writes to this file is interesting.
+
+But I see 2 issues with it:
+
+1. How will userspace know which profiles are actually available ?
+
+An obvious solution is to pick a set of standard names and let
+subscribers map those as close to their own settings as possible,
+the most often mentioned set of profile names in this case seems to be:
+
+low_power
+balanced_power
+balanced
+balanced_performance
+performance
+
+Which works fine for the thinkpad_acpi case, but not so much for
+the hp-wmi case. In the HP case what happens is that a WMI call
+is made which sets a bunch of ACPI variables which influence
+the DPTF code (this assumes we have some sort of DPTF support
+such as mjg59's reverse engineered support) but the profile-names
+under Windows are: "Performance", "HP recommended", "Cool" and
+"Quiet".  If you read the discussion from the
+"[RFC] Documentation: Add documentation for new performance_profile sysfs class"
+thread you will see this was brought up as an issue there.
+
+The problem here is that both "cool" and "quiet" could be
+interpreted as low-power. But it seems that they actually mean
+what they say, cool focuses on keeping temps low, which can
+also be done by making the fan-profile more aggressive. And quiet
+is mostly about keeping fan speeds down, at the cost of possible
+higher temperatures.  IOW we don't really have a 1 dimensional
+axis. My class proposal fixes this by having a notion of both
+standardized names (because anything else would suck) combined
+with a way for drivers to advertise which standardized names
+the support. So in my proposal I simply add quiet and cool
+to the list of standard profile names, and then the HP-wmi
+driver can list those as supported, while not listing
+low_power as a supported profile.  This way we export the
+hardware interface to userspace as is (as much as possible)
+while still offering a standardized interface for userspace
+to consume.  Granted if userspace now actually want to set
+a low_power profile, we have just punted the problem to userspace
+but I really do not see a better solution.
+
+
+2. This only works assuming that all performance-profiles
+are system wide. But given a big desktop case there might
+be very well be separate cooling zones for e.g. the CPU
+and the GPU and I can imagine both having separate
+performance-profile settings and some users will doubtlessly
+want to be able to control these separately ...
+
+Regards,
+
+Hans
+
