@@ -2,154 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E40928C847
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBEA28C84C
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 07:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732434AbgJMFb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 01:31:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41170 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726963AbgJMFb0 (ORCPT
+        id S1732446AbgJMFhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 01:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726963AbgJMFhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 01:31:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602567085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3gXkblNuA+4TXam8vUvjMhTpzKuZHtBWbPpGrDicnwQ=;
-        b=JYZyWJyT90qURyem3Oham9UCckyZFxBT0mFZ1cyrSy6nm4cIao9hBvaMO2MCy0eSrz1o0N
-        7mHwRpiw41JnUTO0KYq8kKGCJpNB/fyhUscTUXowL6Zh/+Gs9EbzJ1xnTy9U4h8xG1GWwO
-        NA61VxLNyYEwWUb0Vjp1HbmHh264SHs=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-55-KqxLZwF-PWCmARyYfd7NKg-1; Tue, 13 Oct 2020 01:31:22 -0400
-X-MC-Unique: KqxLZwF-PWCmARyYfd7NKg-1
-Received: by mail-wr1-f71.google.com with SMTP id l15so10363517wro.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 22:31:22 -0700 (PDT)
+        Tue, 13 Oct 2020 01:37:39 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87919C0613D0;
+        Mon, 12 Oct 2020 22:37:37 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id e22so26496831ejr.4;
+        Mon, 12 Oct 2020 22:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=gYLREbCBt05MLq9RuSN82ybwnKTixZybY8CU73x+FQs=;
+        b=Qj5hb2nQfetMWun2C/7FkWH/es32ZatL0Cnqp2RbrfMMx2+/EUqr7C0gkirXAeggO3
+         hoDYYnE+Sm2z6HT+A9GSfYXnxlvwrdUCsDLYHuUlc/l9kxKmQ7x30fINVAgDDG3S+553
+         CWPp4Wnv7RY9HcOUwxZeY78/pXcHTV48C8SuTMLM4ZYvw27y0HHf6ubgET/Qq7epT5Yj
+         HOe18eTQG/UUu1gTJUJR0wKnpdpivHucUjDUjRnF2G427S28lH17hMoDnFOsIKsQO5GW
+         +SR35piZ/dGrNDeSAhFglF9tzDGGJlmj0G1C3M6TG1q/dMtWtyBjMhX5zdTv9EBIooLf
+         Jl0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3gXkblNuA+4TXam8vUvjMhTpzKuZHtBWbPpGrDicnwQ=;
-        b=jT5G+Bi0kLXEDm4PHgQm/3rgbYqitlfw+PqeomPEzV9s9JjNTLYNfxPJIIqfL9xegZ
-         O9+1aDmsvdqDoJ8M4o3R0pHB1qOeigNLaBT4JmONk7M0EgQZgiBUGaVF22ARBUn2ZkVS
-         BrJteb9Z7YohDIdI6SxRFRZHpwGcW95P8jfGvuJ4kK265GKnR59+DzO7uGruA74T8HYU
-         dG6WhSs4neUxA2a96trg0vsPR4aOgBfotAKZSwgzQmzswPIA8XH7A3JTFJhljZoJR3rV
-         6q3fF70bb5JBJDRi53bwAwZ7FBTgjxij3i2GDUpJsG2zrIpDf4GVYCneIfLtqSsbEfix
-         FGVA==
-X-Gm-Message-State: AOAM533rYcCCr5NNttpbn1Ye2QERtXbtOJJQMuU+yHBurmd9lswNNp50
-        d5/v2mYtyL7jY4ubpKM7zw2NR2xGnVxReqSaTcYs6py4jaQwHXvUhzt6lZMje6K1muOE2ATS9+3
-        IgwG5K5wLIvcpC2Op+Vium9Qc
-X-Received: by 2002:adf:82f7:: with SMTP id 110mr32741527wrc.261.1602567081609;
-        Mon, 12 Oct 2020 22:31:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzeE2vHBq/iU1A90nw7EPZtODx/5lIqzmcv3Epwyo9guHoDfrxmnbpxBVn4AsfTJS3PD7IYew==
-X-Received: by 2002:adf:82f7:: with SMTP id 110mr32741510wrc.261.1602567081388;
-        Mon, 12 Oct 2020 22:31:21 -0700 (PDT)
-Received: from localhost.localdomain.com ([151.29.23.182])
-        by smtp.gmail.com with ESMTPSA id o194sm24796959wme.24.2020.10.12.22.31.20
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=gYLREbCBt05MLq9RuSN82ybwnKTixZybY8CU73x+FQs=;
+        b=fIO0GC/tvsQ44jSmXG6HVrrYdJ4L8D37a4DDRt7i+12aJ9i3E+kT91kidPATA1a0R2
+         vCRflVlPdeg9rZiXwiZ2UD0I/tZtQtprDq3D3DFjXRbW4RiL1sG1DFh2LDR1ZRb8nR+/
+         Vqh1IUIQuiE7HfsHMCfzp0BNAcFUazOEW2C8Jg141R/XvWboD/ussMg5Zd/Ymz/T1HzV
+         KYnZzhWioWzVz1tUj6XyQtBzt2fT8GkIbLBWybc+KeJoyw0Fg84EIa8S6B8kCHnixoyq
+         K0zIVOxKPbcaMvRmQdZ62cBzfxW5eKYAOSYFMjFNhyL83Mr1U9zdHnJC0z3PCNYEnBc9
+         FqiQ==
+X-Gm-Message-State: AOAM532stO12GLxdTPbbtQXj4NvWmq26tQ4CQxoypFGReXCHgQ7ZOuTD
+        J3xyree1R7eT70yFexlq7CM=
+X-Google-Smtp-Source: ABdhPJw2++YSQXSV41iMkqWKkxe5lVcRBwcMikf48LjMGn6E+J5mnrnZBd3TBovbyjrhv3ZLRImhqQ==
+X-Received: by 2002:a17:907:33d2:: with SMTP id zk18mr32207994ejb.145.1602567456047;
+        Mon, 12 Oct 2020 22:37:36 -0700 (PDT)
+Received: from felia ([2001:16b8:2d05:8100:95ae:bd1a:3e4e:4242])
+        by smtp.gmail.com with ESMTPSA id k1sm11772846edl.0.2020.10.12.22.37.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 22:31:20 -0700 (PDT)
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     peterz@infradead.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, bristot@redhat.com,
-        patrick.bellasi@matbug.net, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, chris.redpath@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        valentin.schneider@arm.com, Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH v2] sched/features: Fix !CONFIG_JUMP_LABEL case
-Date:   Tue, 13 Oct 2020 07:31:14 +0200
-Message-Id: <20201013053114.160628-1-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 12 Oct 2020 22:37:35 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Tue, 13 Oct 2020 07:37:34 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+In-Reply-To: <20201013052317.GB330398@kroah.com>
+Message-ID: <alpine.DEB.2.21.2010130725370.14590@felia>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu> <alpine.DEB.2.21.2010121659040.6487@felia> <20201012151816.GA1559916@kroah.com> <alpine.DEB.2.21.2010122022250.17866@felia>
+ <20201013052317.GB330398@kroah.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 765cc3a4b224e ("sched/core: Optimize sched_feat() for
-!CONFIG_SCHED_DEBUG builds") made sched features static for
-!CONFIG_SCHED_DEBUG configurations, but overlooked the CONFIG_
-SCHED_DEBUG enabled and !CONFIG_JUMP_LABEL cases. For the latter echoing
-changes to /sys/kernel/debug/sched_features has the nasty effect of
-effectively changing what sched_features reports, but without actually
-changing the scheduler behaviour (since different translation units get
-different sysctl_sched_features).
 
-Fix CONFIG_SCHED_DEBUG and !CONFIG_JUMP_LABEL configurations by properly
-restructuring ifdefs.
 
-Fixes: 765cc3a4b224e ("sched/core: Optimize sched_feat() for !CONFIG_SCHED_DEBUG builds")
-Co-developed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
 
----
-v1->v2
- - use CONFIG_JUMP_LABEL (and not the old HAVE_JUMP_LABEL) [Valentin]
----
- kernel/sched/core.c  |  2 +-
- kernel/sched/sched.h | 13 ++++++++++---
- 2 files changed, 11 insertions(+), 4 deletions(-)
+> On Mon, Oct 12, 2020 at 08:25:30PM +0200, Lukas Bulwahn wrote:
+> > 
+> > 
+> > On Mon, 12 Oct 2020, Greg Kroah-Hartman wrote:
+> > 
+> > > On Mon, Oct 12, 2020 at 05:10:21PM +0200, Lukas Bulwahn wrote:
+> > > > And for the static analysis finding, we need to find a way to ignore this 
+> > > > finding without simply ignoring all findings or new findings that just 
+> > > > look very similar to the original finding, but which are valid.
+> > > 
+> > > Then I suggest you fix the tool that "flagged" this, surely this is not
+> > > the only thing it detected with a test like this, right?
+> > > 
+> > > What tool reported this?
+> > >
+> > 
+> > Sudip and I are following on clang analyzer findings.
+> > 
+> > On linux-next, there is new build target 'make clang-analyzer' that 
+> > outputs a bunch of warnings, just as you would expect from such static 
+> > analysis tools.
+> 
+> Why not fix the things that it finds that are actually issues?  If there
+> are no actual issues found, then perhaps you should use a better tool?  :)
+>
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3dc415f58bd7..a7949e3ed7e7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -44,7 +44,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
- 
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
--#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_JUMP_LABEL)
-+#ifdef CONFIG_SCHED_DEBUG
- /*
-  * Debugging: various feature bits
-  *
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 28709f6b0975..8d1ca65db3b0 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1629,7 +1629,7 @@ enum {
- 
- #undef SCHED_FEAT
- 
--#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_JUMP_LABEL)
-+#ifdef CONFIG_SCHED_DEBUG
- 
- /*
-  * To support run-time toggling of sched features, all the translation units
-@@ -1637,6 +1637,7 @@ enum {
-  */
- extern const_debug unsigned int sysctl_sched_features;
- 
-+#ifdef CONFIG_JUMP_LABEL
- #define SCHED_FEAT(name, enabled)					\
- static __always_inline bool static_branch_##name(struct static_key *key) \
- {									\
-@@ -1649,7 +1650,13 @@ static __always_inline bool static_branch_##name(struct static_key *key) \
- extern struct static_key sched_feat_keys[__SCHED_FEAT_NR];
- #define sched_feat(x) (static_branch_##x(&sched_feat_keys[__SCHED_FEAT_##x]))
- 
--#else /* !(SCHED_DEBUG && CONFIG_JUMP_LABEL) */
-+#else /* !CONFIG_JUMP_LABEL */
-+
-+#define sched_feat(x) (sysctl_sched_features & (1UL << __SCHED_FEAT_##x))
-+
-+#endif /* CONFIG_JUMP_LABEL */
-+
-+#else /* !SCHED_DEBUG */
- 
- /*
-  * Each translation unit has its own copy of sysctl_sched_features to allow
-@@ -1665,7 +1672,7 @@ static const_debug __maybe_unused unsigned int sysctl_sched_features =
- 
- #define sched_feat(x) !!(sysctl_sched_features & (1UL << __SCHED_FEAT_##x))
- 
--#endif /* SCHED_DEBUG && CONFIG_JUMP_LABEL */
-+#endif /* SCHED_DEBUG */
- 
- extern struct static_key_false sched_numa_balancing;
- extern struct static_key_false sched_schedstats;
--- 
-2.26.2
+Completely agree. That is why I was against adding comments here and 
+elsewhere just to have the "good feeling of doing something" after the 
+tool reported a warning and we spend some time understanding the code to 
+conclude that we now understand the code better than the tool.
 
+If you know a better tool, we will use it :) unfortunately, there is no 
+easy way of finding out that a tool just reports false positives and not a 
+single true positive among 1000 reports...
+
+
+Lukas
