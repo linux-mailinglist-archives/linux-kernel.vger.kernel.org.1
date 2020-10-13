@@ -2,86 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D126528CEBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1A628CEBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgJMMwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
+        id S1728335AbgJMMwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 08:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727260AbgJMMwO (ORCPT
+        with ESMTP id S1727260AbgJMMwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 08:52:14 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71939C0613D0;
-        Tue, 13 Oct 2020 05:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+NnF8mXNakRlzoqAgkjq1DF0tdaTbndVS0Kzp4/RQv8=; b=A19mXaDMPQsr3FhPWF2UXpJ7XG
-        YeIVyZgXhf5umYX/r2JsYFErELnBSXQGZruOQCU+UQ2s5xN5+gdRpqSieWngDw9irvE+kRzsflk+U
-        BvcdMCER/qjonBmM3Gq/HSHRlPuVyo4LAc7Wu7UrehXDob6mVeABVncf53KlG/28ej+tccGIu6ZIt
-        bMBwSSXcofP3dCvy08oosGaaMACgLjQVrcZzFW9h7HgjEcQCBK/iHZbnZyYuVBVetISjIaMuz3zWO
-        x1QHz+peNsj/dG1enb92qMLJwuSS3AcoN/yTPSTplv9lhS6jmOKw6+30JcYmAJ78sKPukF4snTfYP
-        6BjBOppA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSJmj-0008Mk-0D; Tue, 13 Oct 2020 12:52:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1E458301959;
-        Tue, 13 Oct 2020 14:52:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 03A442B4F909A; Tue, 13 Oct 2020 14:52:06 +0200 (CEST)
-Date:   Tue, 13 Oct 2020 14:52:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/24] docs: lockdep-design: fix some warning issues
-Message-ID: <20201013125206.GU2611@hirez.programming.kicks-ass.net>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <c76318f859a78adb80a6eef63c5c777d05501198.1602590106.git.mchehab+huawei@kernel.org>
+        Tue, 13 Oct 2020 08:52:16 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F183DC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:52:15 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e18so23880998wrw.9
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 05:52:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LS+HMgito630Z8wdvbTvwB3oR4AOb/+K/YWZe6JSBwQ=;
+        b=SSGZcyzIr776WTsuIhH9HiaHbRPNmlM4yqL9xNAmigJQj2MC+C/DVDBuqNrtCwarPA
+         Fvcm9O1myYeCph+0gQ8AOw+q4fAqwbyvnbQ42wwLic3SpfEzjiWpWx9JN46/GB8KEG09
+         Ap30EREazTEBq/XvkpsiSjAolG23UyS+tCxSq1UjjQh8fLby//jHq+yaBqm+S21VAtrk
+         v2QXL3r2mTGVdxuBRXfSGWpN7DNdoq0qmKjI0yOR0oY6DUhsVKVBWvR7C0cR1JBs/aiI
+         /KAVnG2+EjPDMuC1u7LFeHzucVnu/G2T4pqjCBejvMHx+R8hzI0Kq1GJe6P7T1cbzqfW
+         uPaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LS+HMgito630Z8wdvbTvwB3oR4AOb/+K/YWZe6JSBwQ=;
+        b=II8pyxACee442MKlImBMdZ86rgUWHTy8W/DJCrXNR7UF3yhR3HAAX7YuHQCgdBnSqO
+         H7JAqnD38RmtzwGkXqk1QyFbVbH46CzwzVYSSSefW0taWBueNGWrTwAKDxr1AEOW08Qn
+         jYtPT9DTu/YTAU6Go0NGL0MmzSqoy+Oa39Ha4vsdGFwjYKGNBnWZxNA9HXtyKQgD7aRQ
+         ngmRvIrUYFQ2sUjU+wKQm1FeKYzT/PXVVXQmiwLnNWDFAI61/+1WDlH32tc6UQbIBecE
+         Yyb7Xi49VFa3mnZZHgn3Zz4laCfdPx0q/J3FrFL8OoJ0NtZXEwkhsyNPvIwCcw9TBEmt
+         hZrg==
+X-Gm-Message-State: AOAM5339dFK17GZmFiXky1lhoA/jXz65mI8Kd0WYMXUbxW6rPGFl9m7o
+        yZ3wnomfQ8mEQvU6eyOPeUcAuQ==
+X-Google-Smtp-Source: ABdhPJzG1B24xEhxPwzT1OZRd9Dhno3qLc+usyxzYOsTo4fUHqZY+f0jJxTPMSfwonsmm0p/RYjCww==
+X-Received: by 2002:adf:814f:: with SMTP id 73mr15669899wrm.174.1602593533669;
+        Tue, 13 Oct 2020 05:52:13 -0700 (PDT)
+Received: from [192.168.1.8] (hst-221-122.medicom.bg. [84.238.221.122])
+        by smtp.googlemail.com with ESMTPSA id t6sm32248867wre.30.2020.10.13.05.52.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 05:52:13 -0700 (PDT)
+Subject: Re: [PATCH] v4l2-ctrl: add control for thumnails
+To:     Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>
+References: <20200526085446.30956-1-stanimir.varbanov@linaro.org>
+ <65ac9697-a43f-7025-e6fe-69c4a44c6d9a@xs4all.nl>
+ <ce28a840-a763-6700-16dd-d708e570d55c@linaro.org>
+ <d02c6cd0-a502-dc52-519e-54b6328d5373@linaro.org>
+ <544b19dd-4883-bae0-b488-46c856eb207d@xs4all.nl>
+ <6f71931a-9060-a399-835c-a1cf1f05dc79@linaro.org>
+ <1bc10e88-8cbe-3da9-daeb-d015f42d7acc@xs4all.nl>
+ <CAAFQd5Aorm-O7OMcHsnRUEGQq2qoPDRtAuukiLHgC9g54oAW9Q@mail.gmail.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <de40cdf1-0b84-a252-0137-a550f078d28b@linaro.org>
+Date:   Tue, 13 Oct 2020 15:52:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c76318f859a78adb80a6eef63c5c777d05501198.1602590106.git.mchehab+huawei@kernel.org>
+In-Reply-To: <CAAFQd5Aorm-O7OMcHsnRUEGQq2qoPDRtAuukiLHgC9g54oAW9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 02:14:31PM +0200, Mauro Carvalho Chehab wrote:
-> +   =====  ===================================================
-> +   ``.``  acquired while irqs disabled and not in irq context
-> +   ``-``  acquired in irq context
-> +   ``+``  acquired with irqs enabled
-> +   ``?``  acquired in irq context with irqs enabled.
-> +   =====  ===================================================
->  
->  The bits are illustrated with an example::
->  
-> @@ -96,14 +99,14 @@ exact case is for the lock as of the reporting time.
->    +--------------+-------------+--------------+
->    |              | irq enabled | irq disabled |
->    +--------------+-------------+--------------+
-> -  | ever in irq  |      ?      |       -      |
-> +  | ever in irq  |    ``?``    |     ``-``    |
->    +--------------+-------------+--------------+
-> -  | never in irq |      +      |       .      |
-> +  | never in irq |    ``+``    |     ``.``    |
->    +--------------+-------------+--------------+
->  
-> -The character '-' suggests irq is disabled because if otherwise the
-> -charactor '?' would have been shown instead. Similar deduction can be
-> -applied for '+' too.
-> +The character ``-`` suggests irq is disabled because if otherwise the
-> +charactor ``?`` would have been shown instead. Similar deduction can be
-> +applied for ``+`` too.
->  
+Hi,
 
-NAK!
+On 6/4/20 3:57 PM, Tomasz Figa wrote:
+> On Thu, Jun 4, 2020 at 2:56 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+>>
+>> On 04/06/2020 14:34, Stanimir Varbanov wrote:
+>>> Hi Hans,
+>>>
+>>> On 6/4/20 12:08 PM, Hans Verkuil wrote:
+>>>> On 04/06/2020 11:02, Stanimir Varbanov wrote:
+>>>>> Hi Hans,
+>>>>>
+>>>>> On 5/27/20 12:53 AM, Stanimir Varbanov wrote:
+>>>>>> Hi Hans,
+>>>>>>
+>>>>>> On 5/26/20 3:04 PM, Hans Verkuil wrote:
+>>>>>>> On 26/05/2020 10:54, Stanimir Varbanov wrote:
+>>>>>>>> Add v4l2 control for decoder thumbnail.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>>>>>>> ---
+>>>>>>>>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 7 +++++++
+>>>>>>>>  drivers/media/v4l2-core/v4l2-ctrls.c                      | 2 ++
+>>>>>>>>  include/uapi/linux/v4l2-controls.h                        | 2 ++
+>>>>>>>>  3 files changed, 11 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>>>>>>> index d0d506a444b1..e838e410651b 100644
+>>>>>>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>>>>>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>>>>>>> @@ -3726,6 +3726,13 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>>>>>>>>      disables generating SPS and PPS at every IDR. Setting it to one enables
+>>>>>>>>      generating SPS and PPS at every IDR.
+>>>>>>>>
+>>>>>>>> +``V4L2_CID_MPEG_VIDEO_DECODER_THUMBNAIL (button)``
+>>>>>>>> +    Instructs the decoder to produce immediate output. The decoder should
+>>>>>>>> +    consume first input buffer for progressive stream (or first two buffers
+>>>>>>>> +    for interlace). Decoder should not allocate more output buffers that it
+>>>>>>>> +    is required to consume one input frame. Usually the decoder input
+>>>>>>>> +    buffers will contain only I/IDR frames but it is not mandatory.
+>>>>>>>
+>>>>>>> This is very vague. It doesn't explain why the control is called 'THUMBNAIL',
+>>>>>>> but more importantly it doesn't explain how this relates to normal decoding.
+>>>>>>
+>>>>>> If in the normal decode the capture queue buffers are 5, in the
+>>>>>> thumbnail mode the number of buffers will be only 1 (if the bitstream is
+>>>>>> progressive) and this will guarantee low memory usage. The other
+>>>>>> difference is that the decoder will produce decoded frames (without
+>>>>>> errors) only for I/IDR (sync frames).
+>>>>
+>>>> Isn't this really a "DECODE_SYNC_FRAMES_ONLY" control? That's what it does,
+>>>> right? Skip any B/P frames and only decode sync frames.
+>>>
+>>> Yes, it is.
+>>> To me V4L2_CID_MPEG_VIDEO_DECODE_SYNC_FRAMES sounds better. If you are
+>>> fine I can send a new patch.
+>>>
+>>> The definition of "sync frames" is a bit difficult for codec-agnostic
+>>> controls. Is it sound better "INTRA", DECODE_INTRA_FRAMES (ONLY)?
+>>
+>> INTRA is better. DECODE_INTRA_FRAMES_ONLY is a good name, I think.
+>>
+>> Thumbnail creation can be given as an example in the description of the
+>> control, but that's just a use-case.
+> 
+> How about the other aspect of the behavior?
+> 
+> "Decoder should not allocate more output buffers that it
+> is required to consume one input frame."
+> 
+
+In fact I have to refine this; It looks like that picture type decode vs
+thumbnail are two different modes.
+
+Thumbnail mode - first frame decode without additional memory (one input
+buffer and one output buffer). The first frame can be even non-intra
+frame as well. Also no matter frame parser is sending, the decoder will
+try to produce output for thumbnail generation.
+
+> Best regards,
+> Tomasz
+> 
+>>
+>> Regards,
+>>
+>>         Hans
+>>
+>>>
+>>>>
+>>>> That this is useful for creating thumbnails is just a specific use-case.
+>>>>
+>>>> Regards,
+>>>>
+>>>>      Hans
+>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> I.e. if you are decoding and 'press' this control, what happens then?
+>>>>>>
+>>>>>> Might be the button type wasn't great idea. In fact the control should
+>>>>>> be set before streamon so that the driver returns min_capture_bufs 1.
+>>>>>>
+>>>>>>>
+>>>>>>> What exactly is the use-case?
+>>>>>>
+>>>>>> It could be used to generate thumbnails of all video clips in a folder
+>>>>>> or when you open a Gallery application on your phone.
+>>>>>>
+>>>>>
+>>>>> What is your opinion on that control? I could consider to make it Venus
+>>>>> custom control but from the use-case it looks other drivers also can
+>>>>> benefit of it.
+>>>>>
+>>>>> I tried to make more generic one [1] but it looks it will be too difficult.
+>>>>>
+>>>>
+>>>
+>>
+
+-- 
+regards,
+Stan
