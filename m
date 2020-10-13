@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDCD28D121
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E2628D123
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731102AbgJMPT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43956 "EHLO
+        id S1731120AbgJMPUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgJMPT6 (ORCPT
+        with ESMTP id S1726657AbgJMPUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:19:58 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB129C0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:19:57 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b6so105023pju.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:19:57 -0700 (PDT)
+        Tue, 13 Oct 2020 11:20:48 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAFEC0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:20:48 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z22so199690wmi.0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:20:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qhi/vR1Y4s1cr/nOmC2PdNe3HKi5OUUwuI1+17/oAmY=;
-        b=WP6ia4C7vw5UVIa5tUnJSdZkLtL4tMAE/Rv/tg/3iHGHy8eN27fa4OsyVk89F9NHfX
-         jzAziGK486c9yltyz0iHtCFkTa9664/5Sy9VN5dt5SUOffikYjqelNNf6SYDIV53F7Od
-         ZDruK/DWYTBsRNpbsMrYKnhgxW8/4dJl6DSHpREq+566tV1uwP7uBkp6pKSYjQ99tGuf
-         gQNjFHBeUvcHSlFLUPYhUId5W0NVi/5j8y3hMIAXPPYGqJkP/CUt8kB9XqGMwOZt/fwA
-         6gJDcseMH4fkkNhc8bz4R4DBmNBVZayagLtUyjy3vj9/o7jH9TCnnqGSDPhsov3xOIg5
-         Jf8A==
+         :content-disposition:in-reply-to;
+        bh=9em53n7IKEDSCEYZtHmPvDvhhD75e1+tqMf+AhUYcN4=;
+        b=ZDCLkG1BSn4yzX28Cam+G3NZDw5dwK3VT+N15YmgrZRxnTZz5mmxDJB3t6EfNUCMl/
+         yNGO9IODIqe/eLuAnfoWNqKtwCZl8rNrECPyV2pTlupb/h85FtJXxbw3xfM94sx3KhG1
+         qEPQMjSJtYQdBoDUTK2FzVJcB0wCk8AwMuBHCcsjj7eK8k9D4JSgVc4dhwMze67FeZQR
+         h7JQC6aDdElSxxKMQ9L3mfMHw+o91FAERtM3VHKddlOz7ZMtb/KwWHtboYrpUbzVwVUj
+         LN6h8JXHnArz0bMnef6KX1XdLKOmnh7o+rEJN3W2QJTQgEEi/UKPZvtlT6YCuR7MFdJb
+         FP9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qhi/vR1Y4s1cr/nOmC2PdNe3HKi5OUUwuI1+17/oAmY=;
-        b=RZZDWw4qLW+aHCIrKP9akuLAYQhxF9MgitA2ck9wzs0EYb1qY/72wWKDWTKtDDyRXc
-         xloVxzsoGRX5t+Qj58vjPwgs0dhH3+R5Cuzq8e4Tvi34rE1qzsCJbHms6fqbls+48dNV
-         hw+YWag2WnHjVti3q3E11Y9JjVT+7cP5A91ZXik6G6ONbChdrRcj5Lei13mFk4IDBnRz
-         t2RG1jlb38vEAdCvA+lOqJdjrAie45Dy6A/mTdmHGYbiGWkP4VPrKzMqQqU37a/a0hpZ
-         xho5Uj5hYmtlUYaUJuj5suvTdnzelBpGhrsvPpwWp1NW8bvJx7v72yqECCD31+NmT84N
-         nSFA==
-X-Gm-Message-State: AOAM532xaR/83V5gSdZqElb/sSx2GckuXzfKlvWEXjxcIL41bNLRu1tk
-        ev7AOafdOWGey3JUTq5FLhDqf4i18SVgAHWR
-X-Google-Smtp-Source: ABdhPJw1FCrK7FeRpkeuwkS9RM66H/PSSVQQA9mcntsSXNpMCVazKJlY47d6dvB1rheORojTh6gxpQ==
-X-Received: by 2002:a17:90a:dc06:: with SMTP id i6mr250032pjv.162.1602602397412;
-        Tue, 13 Oct 2020 08:19:57 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id b10sm22149894pgm.64.2020.10.13.08.19.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 13 Oct 2020 08:19:56 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 23:19:51 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-Subject: Re: [PATCH v2 00/14] perf arm-spe: Refactor decoding & dumping flow
-Message-ID: <20201013151951.GB24974@leoy-ThinkPad-X240s>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20201013145332.GG1063281@kernel.org>
+         :mime-version:content-disposition:in-reply-to;
+        bh=9em53n7IKEDSCEYZtHmPvDvhhD75e1+tqMf+AhUYcN4=;
+        b=SoahAG+dTWYzmK2RNnRWcxXxlX/QPq31w4gTwQa6iX08Vblf76dWdxigf6ib2otVY0
+         nsCvGTrSKx2uVKRsR0uB/oMLTGz/H9+QcJ3RxQwJoV8gtRWC2UtCvSKRzRlqW7l2gjaA
+         CKDcFeGQJbmS1O8sU/cQonx3GLQ+6VYLhkQn9XkwjFV3Hyap8Aqs38Rif+XZ5HJiyDlc
+         O+INFSQzhs3XbEKyJ9tjlxx9TFvEmHiDDDid2cqM4tG6l4VeBrvnWgJScgb6CsK7n8/N
+         R7H/kTcreVNAOLfI2h2w9/mAIMygd0mEXtEyahgDCjBMmM4sQI6fjwCbqHuCqrHGJ1Al
+         XcZA==
+X-Gm-Message-State: AOAM532CosPlgCmJLKlAx0xjwfAT8PItF3suimHFkWtFNuD3Ciex5L0Z
+        RcziCZQGXFSx/69TnOHbpcbwtA==
+X-Google-Smtp-Source: ABdhPJyFnJ/cKfn28zIhHhYwEBDs6pJv0b6Na5kylov1gHy9GGl7+H6NbRMIp3c0Rb4SEoNUMB8oAw==
+X-Received: by 2002:a1c:495:: with SMTP id 143mr337585wme.63.1602602446108;
+        Tue, 13 Oct 2020 08:20:46 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id i10sm11441211wrq.27.2020.10.13.08.20.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 08:20:45 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 16:20:42 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     "zhuguangqing83" <zhuguangqing83@gmail.com>
+Cc:     <lukasz.luba@arm.com>, <rjw@rjwysocki.net>, <pavel@ucw.cz>,
+        <len.brown@intel.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "'zhuguangqing'" <zhuguangqing@xiaomi.com>
+Subject: Re: [PATCH] PM / EM: consult something about cpumask in
+ em_dev_register_perf_domain
+Message-ID: <20201013152042.GA183119@google.com>
+References: <098a01d6a112$9cd7f410$d687dc30$@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201013145332.GG1063281@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <098a01d6a112$9cd7f410$d687dc30$@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On Tuesday 13 Oct 2020 at 11:40:31 (+0800), zhuguangqing83 wrote:
+> I did not observe anything wrong for my use-case. But I think it's possible
+> in
+> theory that cpu_dev maybe NULL. I observe that in the function
+> scmi_cpufreq_init(), before calling em_dev_register_perf_domain(),
+> 'policy->cpus' can be ensure that all the cpu_dev in CPU mask are not NULL.
+> But maybe we can not ensure all the clients do the check.  This could happen
+> if the arch did not set up cpu_dev since this CPU is not in cpu_present mask
+> and the driver did not send a correct CPU mask during registration.
 
-On Tue, Oct 13, 2020 at 11:53:32AM -0300, Arnaldo Carvalho de Melo wrote:
+Admittedly this has only been tested on Arm64 where I think we can
+safely assume that all possible CPUs have been registered at once -- see
+topology_init().
 
-[...]
-
-> > Changes from v1:
-> > - Heavily rewrote the patch 05 for refactoring printing strings; this
-> >   is fundamental change, so adjusted the sequence for patches and moved
-> >   the printing string patch ahead from patch 10 (v1) to patch 05;
-> > - Changed to use GENMASK_ULL() for bits mask;
-> > - Added Andre's patch 13 for dumping memory tagging;
-> > - Refined patch 12 for adding sub classes for Operation packet, merged
-> >   some commit log from Andre's patch, which allows commit log and code
-> >   to be more clear; Added "Co-developed-by: Andre Przywara" tag to
-> >   reflect this.
-> 
-> Ok, so I'll wait for v3, as Leo indicated he'll respin.
-
-Yes, please hold on and I will send out patch set v3 according to
-Andre's reviewing.
+And for allowing to register CPUs late in a perf domain, I'm not opposed
+to it in principle but that has deep implications as the existing EM
+users (e.g. EAS) currently hard rely on it being static after
+registration. If you have a real need for it and a patch that adds the
+feature and fixes all the users I'll be happy to look at it :)
 
 Thanks,
-Leo
+Quentin
