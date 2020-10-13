@@ -2,137 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7927628CAAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8E628CAAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403925AbgJMIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:54:35 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:51974 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgJMIye (ORCPT
+        id S2404082AbgJMIzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:55:23 -0400
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:1448 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727744AbgJMIzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:54:34 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201013085422euoutp02d890f598a249ee4b965768a20ff1fdd4~9gVkqGM7j0420704207euoutp02h
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:54:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201013085422euoutp02d890f598a249ee4b965768a20ff1fdd4~9gVkqGM7j0420704207euoutp02h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602579262;
-        bh=Kk0LqZlSEGTzsjG1lnDEAIBRN4U5DPNxnZeDzusow58=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Afkty+Tamg+eMzLPBS3PAyHV1zbtgSVMVR2ZlzO9g7UPlN0gfzwQiYDrg38+Nraib
-         CxIM35ry4ooQ7jlJP06hS2IETzxpWNqpxEudC2lmsnG4T7D8PA0HCjvGqteyp//Wxq
-         54xzUJKzGetexMspvDS4O3TFNIdkYzRleMW6v/eU=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20201013085417eucas1p134178f01e846fc128e68ea19cac6672e~9gVfxaQcD1905519055eucas1p1A;
-        Tue, 13 Oct 2020 08:54:17 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id B8.EA.06456.93B658F5; Tue, 13
-        Oct 2020 09:54:17 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201013085416eucas1p285c57b63894f54a42fb1052cfadd7cb5~9gVfHsxSP0380703807eucas1p2Q;
-        Tue, 13 Oct 2020 08:54:16 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201013085416eusmtrp216d6e764296b285499e05b3bb43105c4~9gVfHE31j0147001470eusmtrp21;
-        Tue, 13 Oct 2020 08:54:16 +0000 (GMT)
-X-AuditID: cbfec7f2-809ff70000001938-14-5f856b39f888
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id C6.AC.06017.83B658F5; Tue, 13
-        Oct 2020 09:54:16 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201013085415eusmtip19b93c7a3b94706c32deb68cc56bd62e1~9gVesx8sY2707227072eusmtip1O;
-        Tue, 13 Oct 2020 08:54:15 +0000 (GMT)
-Subject: Re: [PATCH 4.19 27/38] iommu/exynos: add missing put_device() call
- in exynos_iommu_of_xlate()
-To:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yu Kuai <yukuai3@huawei.com>, Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <5b869c86-8d35-e834-4fec-6b63a942e484@samsung.com>
-Date:   Tue, 13 Oct 2020 10:54:15 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.3.2
+        Tue, 13 Oct 2020 04:55:22 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 4D4B948295F;
+        Tue, 13 Oct 2020 16:55:19 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] drm/mediatek: Optimize functions which do not need to return
+Date:   Tue, 13 Oct 2020 01:55:12 -0700
+Message-Id: <20201013085512.12857-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201007094737.GA12593@duo.ucw.cz>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLKsWRmVeSWpSXmKPExsWy7djPc7qW2a3xBm19rBbNi9ezWUw+NZfJ
-        4vKuOWwWRze4WGxac43NYsHGR4wWcxayObB7zJt1gsWj5chbVo9NqzrZPPbPXcPusfl0tcfn
-        TXIBbFFcNimpOZllqUX6dglcGct2zGAu+MVRceDnY9YGxiXsXYycHBICJhIrllwHs4UEVjBK
-        rF1l1MXIBWR/YZTY8v8dM4TzmVHi6c9FbDAdX/40MEEkljNKHPpxlRWi/T2jxJQuexBbWCBD
-        4lPnWRYQW0QgWOLeyQVsIA3MArMZJc6+2wzWwCZgKNH1tgtsKq+AncTdKf1gDSwCqhLT+peD
-        2aICSRLnF/5hhqgRlDg58wlYnFPAQOLZgldgdzMLyEtsfzuHGcIWl7j1ZD7YdRIC29glps1d
-        wgpxtotE//3XTBC2sMSr41ugASAj8X8nTEMzo8TDc2vZIZweRonLTTMYIaqsJe6c+wV0KgfQ
-        Ck2J9bv0IcKOEgfW3mUGCUsI8EnceCsIcQSfxKRt06HCvBIdbUIQ1WoSs46vg1t78MIl5gmM
-        SrOQvDYLyTuzkLwzC2HvAkaWVYziqaXFuempxYZ5qeV6xYm5xaV56XrJ+bmbGIGJ6PS/4592
-        MH69lHSIUYCDUYmHd4FfS7wQa2JZcWXuIUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KLDzFK
-        c7AoifMaL3oZKySQnliSmp2aWpBaBJNl4uCUamDcOqV17Zl3Zc9mvtm95Jv9EuXzFg4dgjHF
-        i8wlW65fn3XsLoP6/Tcpp72rjWacKPpaFMNrsFBG4/m6JK71kjOU7xUb7mRTXs796KKxfP9m
-        Zg/3NdU3Fxht+Va2VL/3ocqS55eztVcFFPEeczQR6HdL4z1rm+C+dlLgxgVClRO2iU0u63n1
-        wHafEktxRqKhFnNRcSIADjmf40ADAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAIsWRmVeSWpSXmKPExsVy+t/xu7oW2a3xBsuei1s0L17PZjH51Fwm
-        i8u75rBZHN3gYrFpzTU2iwUbHzFazFnI5sDuMW/WCRaPliNvWT02repk89g/dw27x+bT1R6f
-        N8kFsEXp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvHWhmZKunb2aSk5mSWpRbp2yXo
-        ZSzbMYO54BdHxYGfj1kbGJewdzFyckgImEh8+dPABGILCSxllOic4gQRl5E4Oa2BFcIWlvhz
-        rYuti5ELqOYto8Suw7fBEsICGRJ31t4Hs0UEgiXuXd3NBFLELDCbUWLys/2MEB1PGSUOXrvP
-        BlLFJmAo0fW2C8zmFbCTuDulnwXEZhFQlZjWvxzMFhVIkvh+tYsRokZQ4uTMJ2BxTgEDiWcL
-        XoGdzSxgJjFv80NmCFteYvvbOVC2uMStJ/OZJjAKzULSPgtJyywkLbOQtCxgZFnFKJJaWpyb
-        nltspFecmFtcmpeul5yfu4kRGHvbjv3csoOx613wIUYBDkYlHt4Ffi3xQqyJZcWVuYcYJTiY
-        lUR4nc6ejhPiTUmsrEotyo8vKs1JLT7EaAr03ERmKdHkfGBayCuJNzQ1NLewNDQ3Njc2s1AS
-        5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwFi2q+rx2sYJLc9rXZ4EbFl2SqwkYcH9oLdhG5Wk
-        JCOvfl88c4fTIsOQ9euW7noXu7EyY3vkzg8JK9ZfUiywvsMhGnthsZnRyewrM2xeyerJb0kO
-        FuA/sUn2P58s09KSUo3VhscmnUwMj39oepft4Vw24TXV3keeV/PxXrwk9aZiS+vulr418sZK
-        LMUZiYZazEXFiQDP6Daw0wIAAA==
-X-CMS-MailID: 20201013085416eucas1p285c57b63894f54a42fb1052cfadd7cb5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff
-References: <20201005142108.650363140@linuxfoundation.org>
-        <20201005142109.977461657@linuxfoundation.org>
-        <CGME20201007095256eucas1p150311eeced01b2cc66f6a9ef7061e6ff@eucas1p1.samsung.com>
-        <20201007094737.GA12593@duo.ucw.cz>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTEwYTB9PS0tDGkxJVkpNS0lOTEJISkJOTE5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NRQ6PBw5Lj8sSjhMGjMXEUIh
+        LjkaChNVSlVKTUtJTkxCSElLS0lJVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU9ZV1kIAVlBT09LSjcG
+X-HM-Tid: 0a75212bcacc93bakuws4d4b948295f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Function mtk_hdmi_aud_set_input always return 0, no need to
+keep the return value. Functions mtk_hdmi_aud_enable_packet &
+mtk_hdmi_aud_on_off_hw_ncts are the same, these two functions
+just call next functions. Maybe it`s a bit better to just call
+the inner function.
 
-On 07.10.2020 11:47, Pavel Machek wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> [ Upstream commit 1a26044954a6d1f4d375d5e62392446af663be7a ]
->>
->> if of_find_device_by_node() succeed, exynos_iommu_of_xlate() doesn't have
->> a corresponding put_device(). Thus add put_device() to fix the exception
->> handling for this function implementation.
-> Okay, this looks reasonable, but...
->
-> Do we miss put_device() in normal path, too? I'd expect another
-> put_device at end of exynos_iommu_of_xlate() or perhaps in release
-> path somewhere...
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
+---
+ drivers/gpu/drm/mediatek/mtk_hdmi.c | 27 +++++++--------------------
+ 1 file changed, 7 insertions(+), 20 deletions(-)
 
-Frankly, there is no release path, so there is no need for put_device. 
-Once initialized, Exynos IOMMU stays in the system forever. There is no 
-point to remove IOMMU nor the API for that. Keeping increased refcount 
-for its device just matches this behavior.
-
-If the missing put_device() is really a problem, then we can move it 
-from the error path just after data = platform_get_drvdata(sysmmu) 
-assignment. Feel free to send a patch if you think this is a more 
-appropriate approach.
-
-Best regards
-
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+index a97725680d4e..f1d987df0550 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+@@ -870,19 +870,8 @@ static void mtk_hdmi_video_set_display_mode(struct mtk_hdmi *hdmi,
+ 	mtk_hdmi_hw_msic_setting(hdmi, mode);
+ }
+ 
+-static int mtk_hdmi_aud_enable_packet(struct mtk_hdmi *hdmi, bool enable)
+-{
+-	mtk_hdmi_hw_send_aud_packet(hdmi, enable);
+-	return 0;
+-}
+ 
+-static int mtk_hdmi_aud_on_off_hw_ncts(struct mtk_hdmi *hdmi, bool on)
+-{
+-	mtk_hdmi_hw_ncts_enable(hdmi, on);
+-	return 0;
+-}
+-
+-static int mtk_hdmi_aud_set_input(struct mtk_hdmi *hdmi)
++static void mtk_hdmi_aud_set_input(struct mtk_hdmi *hdmi)
+ {
+ 	enum hdmi_aud_channel_type chan_type;
+ 	u8 chan_count;
+@@ -912,8 +901,6 @@ static int mtk_hdmi_aud_set_input(struct mtk_hdmi *hdmi)
+ 	chan_count = mtk_hdmi_aud_get_chnl_count(chan_type);
+ 	mtk_hdmi_hw_aud_set_i2s_chan_num(hdmi, chan_type, chan_count);
+ 	mtk_hdmi_hw_aud_set_input_type(hdmi, hdmi->aud_param.aud_input_type);
+-
+-	return 0;
+ }
+ 
+ static int mtk_hdmi_aud_set_src(struct mtk_hdmi *hdmi,
+@@ -921,7 +908,7 @@ static int mtk_hdmi_aud_set_src(struct mtk_hdmi *hdmi,
+ {
+ 	unsigned int sample_rate = hdmi->aud_param.codec_params.sample_rate;
+ 
+-	mtk_hdmi_aud_on_off_hw_ncts(hdmi, false);
++	mtk_hdmi_hw_ncts_enable(hdmi, false);
+ 	mtk_hdmi_hw_aud_src_disable(hdmi);
+ 	mtk_hdmi_clear_bits(hdmi, GRL_CFG2, CFG2_ACLK_INV);
+ 
+@@ -959,7 +946,7 @@ static int mtk_hdmi_aud_output_config(struct mtk_hdmi *hdmi,
+ 				      struct drm_display_mode *display_mode)
+ {
+ 	mtk_hdmi_hw_aud_mute(hdmi);
+-	mtk_hdmi_aud_enable_packet(hdmi, false);
++	mtk_hdmi_hw_send_aud_packet(hdmi, false);
+ 
+ 	mtk_hdmi_aud_set_input(hdmi);
+ 	mtk_hdmi_aud_set_src(hdmi, display_mode);
+@@ -968,8 +955,8 @@ static int mtk_hdmi_aud_output_config(struct mtk_hdmi *hdmi,
+ 
+ 	usleep_range(50, 100);
+ 
+-	mtk_hdmi_aud_on_off_hw_ncts(hdmi, true);
+-	mtk_hdmi_aud_enable_packet(hdmi, true);
++	mtk_hdmi_hw_ncts_enable(hdmi, true);
++	mtk_hdmi_hw_send_aud_packet(hdmi, true);
+ 	mtk_hdmi_hw_aud_unmute(hdmi);
+ 	return 0;
+ }
+@@ -1097,13 +1084,13 @@ static int mtk_hdmi_output_init(struct mtk_hdmi *hdmi)
+ 
+ static void mtk_hdmi_audio_enable(struct mtk_hdmi *hdmi)
+ {
+-	mtk_hdmi_aud_enable_packet(hdmi, true);
++	mtk_hdmi_hw_send_aud_packet(hdmi, true);
+ 	hdmi->audio_enable = true;
+ }
+ 
+ static void mtk_hdmi_audio_disable(struct mtk_hdmi *hdmi)
+ {
+-	mtk_hdmi_aud_enable_packet(hdmi, false);
++	mtk_hdmi_hw_send_aud_packet(hdmi, false);
+ 	hdmi->audio_enable = false;
+ }
+ 
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.28.0
 
