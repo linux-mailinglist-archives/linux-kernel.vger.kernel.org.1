@@ -2,92 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D607628D640
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1604728D642
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 23:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728427AbgJMVkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 17:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbgJMVkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 17:40:13 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728494AbgJMVkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 17:40:42 -0400
+Received: from mail1.nippynetworks.com ([91.220.24.129]:48172 "EHLO
+        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728438AbgJMVkm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 17:40:42 -0400
+Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC58A21582;
-        Tue, 13 Oct 2020 21:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602625213;
-        bh=mHiysqJkcsaVHBb3pBlRG17I+HxL8BTZ42A6v8iuD/Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RwfQ/KkhOQBTWfMQuvnvf1aUYSygb3PDm+bbzE3nPXUNlBm8mHKVzzpYL3xF5u1c9
-         lvWVH2+higZrwdskAgYH1O3Jtop5lvdIQPhhSUkBzNucgVwpHdpbnjOT/cEPrNOB1y
-         37xxab+5k7bLkIqPLISASLrVTCq7Dgb6Fo3sAfbU=
-Received: by earth.universe (Postfix, from userid 1000)
-        id D282F3C0C87; Tue, 13 Oct 2020 23:40:10 +0200 (CEST)
-Date:   Tue, 13 Oct 2020 23:40:10 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] power: supply: bq25980: Fix uninitialized wd_reg_val and
- overrun
-Message-ID: <20201013214010.2qulyhqo2x6lebwl@earth.universe>
-References: <20201009121205.28178-1-dmurphy@ti.com>
- <f75856b4-88b5-38af-8d31-a7c19c978f26@ti.com>
+        (Authenticated sender: ed@wildgooses.com)
+        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4C9pr70CNtzTh4v;
+        Tue, 13 Oct 2020 22:40:38 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
+        s=dkim; t=1602625240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FSpYESXi/pIEBc7J9tBus1E4Xbha+rUuF8RFle6D0x0=;
+        b=QRNMnEpWYsYbgmgWCPQz9rztR6RtgXRiKm7PlUqGhkb1inULSpEMVB5KMUHa+u729JUlbJ
+        AzzOjz1ku9RdN/SllVveBU0Zt3PmrNo0tyBLI2BmbDYBt0d3BOLHMqzGF+b5DILPZ5GrLH
+        fR5hAQhHHROjszUUD6Y8uW9UC8biELs=
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+ <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+ <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+From:   Ed W <lists@wildgooses.com>
+Message-ID: <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
+Date:   Tue, 13 Oct 2020 22:40:38 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kitil4vbe2z42uf6"
-Content-Disposition: inline
-In-Reply-To: <f75856b4-88b5-38af-8d31-a7c19c978f26@ti.com>
+In-Reply-To: <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/10/2020 20:39, Enrico Weigelt, metux IT consult wrote:
+> On 22.09.20 00:17, Ed W wrote:
+>> Hi, I've been adding support for the PC Engines APU5 board, which is a variant of the APU 2-4 boards
+>> with some nice features. The current platform driver for pcengines boards has some redundant
+>> features with regards to recent bios/firmware packages for the board as they now set the ACPI tables
+>> to indicate GPIOs for keys and leds. 
+> NAK. Breaks existing userlands in the field (literally field), forcing
+> users to fw upgrade is not an option (field roll would be realy expensive).
 
---kitil4vbe2z42uf6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Dan,
+But why are users "in the field" updating a kernel willy nilly without also updating the userland
+software that talks to it? Why is the kernel upgrade trivial, but the fw upgrade is not an option?
+Why not also update the app or setup a udev rule?
 
-On Tue, Oct 13, 2020 at 01:03:13PM -0500, Dan Murphy wrote:
-> On 10/9/20 7:12 AM, Dan Murphy wrote:
-> > Fix the issue when 'i' is equal to array size then array index over
-> > runs the array when checking for the watch dog value.
-> >=20
-> > This also fixes the uninitialized wd_reg_val if the for..loop was not
-> > successful in finding an appropriate match.
->=20
-> Might want to pull this into next as well this is a 0-day bug fix
+I would understand if we were talking something fairly major, but it's the case of matching a
+filename that YOU changed from an old name to the current name and it's now changing back to the
+original name?
 
-Yes, merged now. I did not take it directly, since I had to rebase
-it first. Please always send power-supply patches based on the
-for-next branch, which already contained a fix for the uninitialized
-wd_reg_val.
 
-(also no need to Cc DT people for this patch :))
+>> So I've submitted a patch to eliminate this. It could be argued
+>> that it's useful to support older firmware versions, but there is also a 'leds-apu' driver which a)
+>> probably ought to be marked deprecated with a view to removing it and b) implements the leds even on
+>> antique firmware versions.
+> leds-apu is only for *OLD* apu1 - it does *not* work with v2/3/4,
+> completely different chipset.
 
--- Sebastian
 
---kitil4vbe2z42uf6
-Content-Type: application/pgp-signature; name="signature.asc"
+That's extremely disingenuous!!
 
------BEGIN PGP SIGNATURE-----
+It USED to work for the APU2-4 except that YOU removed support for APU2-4 from that module!!
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl+GHroACgkQ2O7X88g7
-+poGPg/9FmY39emByDrWFBKDPkT2LQISCw8Uw0buqcEFvi6KWjzFwVGE/EdlaIeu
-0eDp1/B34sYIAVfSdaDK8J7a57UpHC8c3ReuEz2TcJxbNSjyWy9V1O9OzVfYCfvA
-e31m7t2VdB7sjArMBkxgGdvjIkWsaDZKhIhImb5Zw9OOcSmuVBPO6w6x5SkY+hKb
-PPTZfbZspPdYYshVjQQGDRttU+FjPsoNqrxBq+2sT1Q1r+orKM6Hf+0iB5mgNleE
-28P1bFcdSaYgsSSskaVxSJvG15uGHHvkbi634WOdfnH6QcTvOEcqgPu7l5FhxAd8
-365QdowHxbII7p3ViknriVAMbm+hHkVSlqR/R4HffND8o6fhUCdgsp9gQb7epcsQ
-7rN7z5vwH/URsF6hu3Aej/6FQ6kSVTIFTmoIv/C92v9xtt2DOtgOv/68rZeVNUpC
-tZMJjjGJOFT5JmLeYvtsG9YxCsAdCbBTuOmTaufMhL1DVA+3Uj/ft/2li0FKRgfX
-JfyRD/d+pQDzfjf2CEJnPtKfMQffOnW3xf0Ki87Zh+ouBWiirTC1S4Bf6dyFoGld
-sl8dKHXOXmVYDNJMRBye4c2RDcXE1GcuCctOVbQEm7+7qNE/nKWWT0F/QaiMvYKM
-RimhDvoMPA0mLCfWW5cTH3/4fAD7hp983e2mFkdZyD1O0SWrzc4=
-=MQmv
------END PGP SIGNATURE-----
 
---kitil4vbe2z42uf6--
+>> In implementing the APU5 I changed some of the exported gpio names to make them more closely match
+>> functionality across all the boards. > For example APU2 vs APU4 both support 2x LTE options, but in
+>> different mpcie slots and this affects the numbering of options, but not the sense of them (so I
+>> renamed them based on the intention of the option). This is particularly true on APU5 which supports
+>> 3x LTE cards
+> Dont break existing userlands.
+
+
+But YOU already did that!!
+
+Look, the original situation was that:
+
+- up to July 2019 there was a kernel module that named the LEDs in the form apu2:green:1, etc.
+
+- In July 2019 you removed that and "broke all of userland by renaming the LEDs" (never break
+userland right?)
+
+- Then in Sept 2019, PCEngines released a new bios/firmware line which setup ACPI correctly to
+register these GPIOs with some default names along the lines of apu2:green:1 or similar. So now we
+are back to the original naming convention
+
+- This meant that from Sept 2019 your module created duplicate LEDs with a different set of names
+
+
+So the situationt boils down to:
+
+- LEDs have been named like "apu2:green:1" continuously, with a brief outage in Aug-Sep 2019.
+
+- You have introduced a new module which unnecessarily duplicates those LEDs for users of this board
+with a bios/firmware post Sep 2019.
+
+- Your new naming convention isn't the same as this historic naming convention
+
+
+Now don't get me wrong, I prefer your module naming, but you are very disingenuous to claim that I'm
+trying to break userspace when you already did it!
+
+Plus I see no future for the LED piece of your module given that it's done by ACPI in all modern
+bios? Do you really want a duplicate set of LEDs to exist forever in userspace? This doesn't seem to
+be workable?
+
+
+Lets be clear, the current situation is:
+
+- LED names change from "apu:green:1" to "apu2:green:1".
+
+- This can be trivially worked around with some symlinks and/or a udev rule
+
+- The historic name has been "apu2:green:1" in the original LED module and now in ACPI. I'm not wild
+about this naming convention, but it's been around longest. If one has to pick which userspace to
+break, then this seems to have precedence.
+
+- Your LED based SIM toggle HAS already gone. So you have another example of userspace being broken
+right there. (Seems that this rule isn't so concrete?). So you already need to (significantly?)
+adjust your userspace code - I'm not seeing how/why the LED change is such a blocker?
+
+
+>> Can I get some advice: It would be helpful if the kernel would export the GPIOs to user-space
+>> automatically since toggling SIM slots is fairly useful task in userspace. 
+> This is planned to be moved to either an own subsystem or into rfkill
+> (which would have to be extended for such things).
+
+
+Can you send me a pointer to this planning? Is this something concrete or aspirational?
+
+I need something I can use right now for SIM swap. exporting GPIOs with known names seems no more
+evil than exporting LEDs with known names? Do you have any concrete suggestion for the here and now?
+
+Given that the LED based sim swap is already removed from the kernel, how are you planning to toggle
+SIM swap in userspace?
+
+
+Hans, can I ask you to look again at the history of this please. Bearing in mind the speed kernel
+stuff takes to get to end users, we are talking about a very small window of userland changes here.
+I would vote for simplifying this module and trying to reduce some baggage. However, my main goal is
+to get support in for APU5. Second goal is to reduce the duplicate LED devices. Beyond that I'm not
+so fussed?
+
+Thanks all
+
+Ed W
+
+
