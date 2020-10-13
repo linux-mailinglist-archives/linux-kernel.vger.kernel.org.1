@@ -2,129 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B081428D28C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBDF28D28F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgJMQr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:47:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:34274 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727696AbgJMQr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:47:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87E2331B;
-        Tue, 13 Oct 2020 09:47:58 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0E823F719;
-        Tue, 13 Oct 2020 09:47:56 -0700 (PDT)
-Subject: Re: [PATCH v3 6/8] iommu/arm-smmu: Add impl hook for inherit boot
- mappings
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
- <20200904155513.282067-7-bjorn.andersson@linaro.org>
- <0bfcc8f7-d054-616b-834b-319461b1ecb9@arm.com> <20200913032559.GT3715@yoga>
- <20200921210814.GE3811@willie-the-truck> <20201012073152.GA2998@yoga>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <40b24ccc-8dc4-8bbe-3a85-68a6b62b448d@arm.com>
-Date:   Tue, 13 Oct 2020 17:47:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1728381AbgJMQsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728328AbgJMQsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:48:12 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B3BC0613D0;
+        Tue, 13 Oct 2020 09:48:12 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id e20so605152otj.11;
+        Tue, 13 Oct 2020 09:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zwnERbtjK98BZDP38JfMSXq7lY/lqD1s9bTHt/VKNxQ=;
+        b=fnalsexwDtPHpXytFFMOxK18SuNkOWOo02GQmlvY01PwtDLnTbA3h9ze1J7gEWwB3s
+         nw2/A0BN+SXD4CYfqPFASW4qQ4keOuWRd630K+1CRSqH2NvPp23epNXnBOPLbyDwdFMK
+         0cFt9yNU6D6shDJS4odwIy2FThFKTFmCQh9hW6CoGIufme+rr7bZe0qwi+RipUDwX4TV
+         jokEF9o79sLfmtlEiUS3jMe9vRi+yJvy8hNpczEx4t3G2SqJ16SMo8vOVc7OhmKNfHFF
+         nIqAzqbJ/ieJGe+PateKL3v5kNCPAR2dIVuPcVlmZrQWJFurjuahvUu5xgvw/XWlc0LH
+         e1qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zwnERbtjK98BZDP38JfMSXq7lY/lqD1s9bTHt/VKNxQ=;
+        b=FZNLCtIyuXbjuyXQWMg3hPitLU26hU5IuRfe2e4e7C/x5qSCy4vRxk0q/0PNW7mtES
+         wfD+bd7Ya3WkD2v1wUIGjuTI3j2N3j7tZrtSBosWIVcZEvt6XOLlKcmQg82UHZclxGU/
+         GDPdK/g/UL6P4KCwzd2ex6dgQdXgSh+6bObc1M0X/ePm265AwfQAAsQx71I8zTzzGCCX
+         yEgF3tMQQzXIOTSvxXLAcnzKFRzwNdeBlUZUIFIKU+helxE+TsctoXECil23JXPZabWX
+         Jy6zFv86VFrU4lzGl8Azx+usYYGgJ75qlhTZyDzRh1lUVOWC+KtbKgbU8KPXgF51DLLf
+         +m2w==
+X-Gm-Message-State: AOAM5302MJKTgjeUZVDHTWtDCu6/8FPWkakEMfRVNnYRgh/SsTbKfEez
+        sLr0bvDEo9Tiin/5B2iHoa0jqGocCxI=
+X-Google-Smtp-Source: ABdhPJwVNPqv0PLgz8GYgWA3Yh2rTf52Fn1fi8rKTfwQzDltDeMJYbF2sP3DH4wXdgSErY/UEIPutg==
+X-Received: by 2002:a05:6830:199:: with SMTP id q25mr356425ota.263.1602607691597;
+        Tue, 13 Oct 2020 09:48:11 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o2sm96645oia.42.2020.10.13.09.48.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 13 Oct 2020 09:48:11 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 13 Oct 2020 09:48:09 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/24] docs: hwmon: adm1266.rst: fix a broken reference
+Message-ID: <20201013164809.GH251780@roeck-us.net>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+ <240216628f613d85fd1191b56debda611e8f659e.1602590106.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201012073152.GA2998@yoga>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <240216628f613d85fd1191b56debda611e8f659e.1602590106.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-12 08:31, Bjorn Andersson wrote:
-> On Mon 21 Sep 23:08 CEST 2020, Will Deacon wrote:
+On Tue, Oct 13, 2020 at 02:14:28PM +0200, Mauro Carvalho Chehab wrote:
+> The reference was missing the extension, causing the
+> check script to complain.
 > 
->> On Sat, Sep 12, 2020 at 10:25:59PM -0500, Bjorn Andersson wrote:
->>> On Fri 11 Sep 12:13 CDT 2020, Robin Murphy wrote:
->>>> On 2020-09-04 16:55, Bjorn Andersson wrote:
->>>>> Add a new operation to allow platform implementations to inherit any
->>>>> stream mappings from the boot loader.
->>>>
->>>> Is there a reason we need an explicit step for this? The aim of the
->>>> cfg_probe hook is that the SMMU software state should all be set up by then,
->>>> and you can mess about with it however you like before arm_smmu_reset()
->>>> actually commits anything to hardware. I would have thought you could
->>>> permanently steal a context bank, configure it as your bypass hole, read out
->>>> the previous SME configuration and tweak smmu->smrs and smmu->s2crs
->>>> appropriately all together "invisibly" at that point.
->>>
->>> I did this because as of 6a79a5a3842b ("iommu/arm-smmu: Call
->>> configuration impl hook before consuming features") we no longer have
->>> setup pgsize_bitmap as we hit cfg_probe, which means that I need to
->>> replicate this logic to set up the iommu_domain.
->>>
->>> If I avoid setting up an iommu_domain for the identity context, as you
->>> request in patch 8, this shouldn't be needed anymore.
->>>
->>>> If that can't work, I'm very curious as to what I've overlooked.
->>>>
->>>
->>> I believe that will work, I will rework the patches and try it out.
->>
->> Did you get a chance to rework this?
->>
-> 
-> Finally got a chance to dig through this properly.
-> 
-> Initial results where positive and with an implementation of cfg_probe
-> in qcom_smmu_impl I'm able to probe the arm-smmu driver just fine - and
-> display (e.g. efifb) stays alive.
-> 
-> Unfortunately as the display driver (drivers/gpu/drm/msm) is about to
-> probe a new iommu domain is created, which due to its match against
-> qcom_smmu_client_of_match[] becomes of type IOMMU_DOMAIN_IDENTITY.
-> This results in a S2CR of BYPASS type, which the firmware intercepts and
-> turns the stream into a type FAULT.
-> 
-> So while the cfg_probe looks very reasonable we're still in need of a
-> mechanism to use the fake identity context for the iommu domain
-> associated with the display controller.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Yes, we'll still need some kind of hook somewhere to make identity 
-domains work at all - my point about cfg_probe was to keep the 
-reservation and configuration of the special identity context, plus the 
-handling of the initial SME state, simple and entirely internal to the 
-impl. In terms of where said hook should be, TBH it might actually work 
-out pretty clean to simply hook GR0 register accesses so you can rewrite 
-between S2CR bypass entries and translation entries targeting your 
-reserved context on-the-fly. Failing that, something to massage "type" 
-and "cbndx" in arm_smmu_domain_add_master() would be the next best 
-option, I think.
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-Robin.
-
-> The workings of the display driver is that it gets the iommu domain
-> setup for byass and then after that creates a translation context for
-> this same stream where it maps the framebuffer.
+> ---
+>  Documentation/hwmon/adm1266.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> For testing purposes I made def_domain_type always return 0 in the qcom
-> impl and the result is that we get a few page faults while probing the
-> display driver, but these are handled somewhat gracefully and the
-> initialization did proceed and the system comes up nicely (but in the
-> case that the display driver would probe defer this leads to an storm of
-> faults as the screen continues to be refreshed).
-> 
-> TL;DR I think we still need to have a way to get the arm-smmu driver to
-> allow the qcom implementation to configure identity domains to use
-> translation - but we can make the setup of the identity context a detail
-> of the qcom driver.
-> 
-> Regards,
-> Bjorn
+> diff --git a/Documentation/hwmon/adm1266.rst b/Documentation/hwmon/adm1266.rst
+> index 9257f8a48650..2b877011cfdf 100644
+> --- a/Documentation/hwmon/adm1266.rst
+> +++ b/Documentation/hwmon/adm1266.rst
+> @@ -20,7 +20,7 @@ ADM1266 is a sequencer that features voltage readback from 17 channels via an
+>  integrated 12 bit SAR ADC, accessed using a PMBus interface.
+>  
+>  The driver is a client driver to the core PMBus driver. Please see
+> -Documentation/hwmon/pmbus for details on PMBus client drivers.
+> +Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
+>  
+>  
+>  Sysfs entries
+> -- 
+> 2.26.2
 > 
