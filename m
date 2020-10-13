@@ -2,261 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA98528C6AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F1928C6B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgJMBPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 21:15:36 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51969 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727950AbgJMBPf (ORCPT
+        id S1728087AbgJMBSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 21:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727950AbgJMBSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 21:15:35 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1E8F058034E;
-        Mon, 12 Oct 2020 21:15:34 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 12 Oct 2020 21:15:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=/
-        EI01dJNkjAjzVrpLDHdoBNLG11c1Wr2zSgmdsOeUQk=; b=jCD0vosBiM2Fi73lK
-        qq7aEC7Hb+KiedGsgfnXGak+S2OdSPM+00OpPo4aKVqHuKGsYz0d/4VAwNuq99ut
-        Us3X0KrIVparkDtgMhxFwQG4sjdLlENjS+gZVSQDMDduzFx6u3lfZkjnuBR/yC5+
-        jkmKZnNQWhPktwEBHoyn9IwmIMCvRMwHUqfo+GZBQ3091EwroTB/Bd9k9hXfj0Kf
-        kOMMXSNu0uRl2oRKccfZK2gYZMSs8n70ZxNa+4yM3X/uwhEZcImbDBCLGz8U8k4o
-        +BklZbIkN6gEa0u9V0EXLiS0uOCNVe+DCfj3JTKHnHCsUwqOlbhxnj9w4InMzi3/
-        N1paQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=/EI01dJNkjAjzVrpLDHdoBNLG11c1Wr2zSgmdsOeU
-        Qk=; b=olq7BEih38ZaP7P0P6a0o82OUMIVpyveU4fH9PnYNYW2NC6P1Qm9LmPpf
-        4w3aOxuLOTDTYqlaJG6FnsXnACSHL/s0n78f5owEm/nGMgdPbLJ4lGNZD2B05L7c
-        uanGpd3Dsw52BPMqdPcTKwenO0n8OqrFQooCXsTE4+TUJMb1XXXtS4cAUF9A22g4
-        3zAJCvfKB0Kkt/FZS5ZWMQhI2J5DPdG0ljF39p05odHga0K4w6F4AEmMtfKyrkDs
-        ZfKxGMYlDOqyLSMFMs+TpvEvfFxwZlyWRwg05mQDzGHspmvf1mb/108FfJB4zriv
-        o4Jmv2lOhDKFaG4JONdYVjEVuMMIA==
-X-ME-Sender: <xms:s_-EX2aSUVucs8dKSBOIJE9HTakoGdY9lJT1Dh5iiC0VmAm1SVIyeA>
-    <xme:s_-EX5YVQd3u_sD1M2Abn_po_VjA-IWneVB5HfI-5cT0R5dwLakV1dvdCGTnWmpFq
-    IgE1WVkKbT0sAUdyg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrheekgdeghecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeehnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpefhueeuueetteeiuddvveetieekiedvkeejjeetkeejfeejuddvvedu
-    geejteelueenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:s_-EXw9Nw5-wYf-qj6Y7pGN3XAJBzYEx7SB5rD97ZYtB_sOffetE2g>
-    <xmx:s_-EX4q1Gs7lAT4E8jmgziFQMOAk05GygzlaH1Hy2tGqM6A1FvcHQA>
-    <xmx:s_-EXxoM9QP2INQwNxjttCVYHApk-s3eFEvUGHF3lhm8s-XCN_K3MA>
-    <xmx:tv-EX_jBRqnolCGxnwI-BE1DUTb6yUbtwigVyPjDmK3LPguzJgNQag>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E0A99328005E;
-        Mon, 12 Oct 2020 21:15:30 -0400 (EDT)
-Subject: Re: [PATCH v6 02/14] ASoC: sun4i-i2s: Change set_chan_cfg() params
-To:     Maxime Ripard <maxime@cerno.tech>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-References: <20201003141950.455829-1-peron.clem@gmail.com>
- <20201003141950.455829-3-peron.clem@gmail.com>
- <20201005121307.v6jpyeyfi4kxc2cl@gilmour.lan>
- <CAJiuCcdd6_kzsxEERZbj2Budjmuyv6gV_sPG8LjLY=fk+MO8zQ@mail.gmail.com>
- <20201012121536.z5d7kecdxaabw35n@gilmour.lan>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <0d6f0693-5ca9-9b48-4d33-a969bd5b1b1b@sholland.org>
-Date:   Mon, 12 Oct 2020 20:15:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Mon, 12 Oct 2020 21:18:16 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536DFC0613D0;
+        Mon, 12 Oct 2020 18:18:16 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x13so12868546pfa.9;
+        Mon, 12 Oct 2020 18:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/9A0K1IzOHna1C0DxmV3XpbQqnDKqQQDF6op5A/lIOE=;
+        b=Yo4t8KHitl7IijBwyBzbt+gmWaEcnfLB3k5bFe3RMkLOZGpv7uckNpQTdsfI1voSeo
+         j/+15lQPSXGjI3uFic49xOYnjSCdFWRGO/fT1AtPB0eI6zk92pqx5ehhY4xJnk3rVALk
+         ddkysd6k7Q3qCTPL299gXm2zoy8Kak3S5Qo60VN7TKbhWfirdSGdLmOYgPgv4y+qkCvd
+         50S6QKUxR8Ey/wFnaMDDtatK4M6BZ24Yq9Xg1iPO5LbguUw3ygoT9MF454psQy7MW2gC
+         urQ1gJaKpQ8XbW/mk+PZh0gmOZTST/vFP1P7F3zPSmNF1ceNYj1OHrCi+hoMbfMfWtC9
+         GRzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/9A0K1IzOHna1C0DxmV3XpbQqnDKqQQDF6op5A/lIOE=;
+        b=YzmcsiHJtCDnyqYQzSDudV5aCY0Vf7UZ18i7+as5ZSpBqjIgd3b70o9u5Lume6oqCh
+         CPyJCjxNruTT1CygCkCHkt4RqknMzEV3U1LyFKgoQXaBzFE07fyiYCBI1wcXP+wlHgWO
+         +GN8v9n9RTpFrVrfktd9t0lD/OAyU0/JaskqYngo/U3olcN84uaA4zEd28H9oik6KKsA
+         VD/7OsO+kVpVQKbSAzGeX7Wk9bvGDSDzyq9Plf6U+31D5eQuyQRK6jHKr5JCy6GtHNQg
+         /z5mr2Z53a3uFvw32ZHkZWfN2uCfO9oaF4XQaF9qUd/lLP9n3BuaDDiaGTnD7fBy6MUt
+         kLjw==
+X-Gm-Message-State: AOAM5300XwAyQPLR5c4xV89Jfw08RAUCvZZnshNLl21G4cgxYKXV7R3s
+        RtW/B/ZNMCrZEjQRAGwm9QOllhEgShJ/uw==
+X-Google-Smtp-Source: ABdhPJwm1/3VSrSwzuGk4/Zydbtvz11dFFE2Xj3zygfVfOXds4aeHb7HYdhqd+iRm1poALRR9DjznQ==
+X-Received: by 2002:a17:90b:17c4:: with SMTP id me4mr21967291pjb.91.1602551895798;
+        Mon, 12 Oct 2020 18:18:15 -0700 (PDT)
+Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
+        by smtp.gmail.com with ESMTPSA id b6sm24476508pjq.42.2020.10.12.18.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 18:18:14 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 10:18:10 +0900
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/6] staging: qlge: coredump via devlink health
+ reporter
+Message-ID: <20201013011810.GB41031@f3>
+References: <20201008115808.91850-1-coiby.xu@gmail.com>
+ <20201008115808.91850-3-coiby.xu@gmail.com>
+ <20201010074809.GB14495@f3>
+ <20201010100258.px2go6nugsfbwoq7@Rk>
+ <20201010132230.GA17351@f3>
+ <20201012115114.lyh33rvmm4rt7mej@Rk>
 MIME-Version: 1.0
-In-Reply-To: <20201012121536.z5d7kecdxaabw35n@gilmour.lan>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012115114.lyh33rvmm4rt7mej@Rk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 7:15 AM, Maxime Ripard wrote:
-> Hi,
+On 2020-10-12 19:51 +0800, Coiby Xu wrote:
+> On Sat, Oct 10, 2020 at 10:22:30PM +0900, Benjamin Poirier wrote:
+> > On 2020-10-10 18:02 +0800, Coiby Xu wrote:
+> > [...]
+> > > > > +	do {                                                           \
+> > > > > +		err = fill_seg_(fmsg, &dump->seg_hdr, dump->seg_regs); \
+> > > > > +		if (err) {					       \
+> > > > > +			kvfree(dump);                                  \
+> > > > > +			return err;				       \
+> > > > > +		}                                                      \
+> > > > > +	} while (0)
+> > > > > +
+> > > > > +static int qlge_reporter_coredump(struct devlink_health_reporter *reporter,
+> > > > > +				  struct devlink_fmsg *fmsg, void *priv_ctx,
+> > > > > +				  struct netlink_ext_ack *extack)
+> > > > > +{
+> > > > > +	int err = 0;
+> > > > > +
+> > > > > +	struct qlge_devlink *dev = devlink_health_reporter_priv(reporter);
+> > > >
+> > > > Please name this variable ql_devlink, like in qlge_probe().
+> > > 
+> > > I happened to find the following text in drivers/staging/qlge/TODO
+> > > > * in terms of namespace, the driver uses either qlge_, ql_ (used by
+> > > >  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
+> > > >  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
+> > > >  prefix.
+> > 
+> > This comment applies to global identifiers, not local variables.
 > 
-> On Mon, Oct 05, 2020 at 03:23:12PM +0200, Clément Péron wrote:
->> On Mon, 5 Oct 2020 at 14:13, Maxime Ripard <maxime@cerno.tech> wrote:
->>>
->>> On Sat, Oct 03, 2020 at 04:19:38PM +0200, Clément Péron wrote:
->>>> As slots and slot_width can be set manually using set_tdm().
->>>> These values are then kept in sun4i_i2s struct.
->>>> So we need to check if these values are setted or not
->>>> in the struct.
->>>>
->>>> Avoid to check for this logic in set_chan_cfg(). This will
->>>> duplicate the same check instead pass the required values
->>>> as params to set_chan_cfg().
->>>>
->>>> This will also avoid a bug when we will enable 20/24bits support,
->>>> i2s->slot_width is not actually used in the lrck_period computation.
->>>>
->>>> Suggested-by: Samuel Holland <samuel@sholland.org>
->>>> Signed-off-by: Clément Péron <peron.clem@gmail.com>
->>>> ---
->>>>  sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++----------------------
->>>>  1 file changed, 14 insertions(+), 22 deletions(-)
->>>>
->>>> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
->>>> index c5ccd423e6d3..1f577dbc20a6 100644
->>>> --- a/sound/soc/sunxi/sun4i-i2s.c
->>>> +++ b/sound/soc/sunxi/sun4i-i2s.c
->>>> @@ -177,8 +177,9 @@ struct sun4i_i2s_quirks {
->>>>       unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
->>>>       s8      (*get_sr)(const struct sun4i_i2s *, int);
->>>>       s8      (*get_wss)(const struct sun4i_i2s *, int);
->>>> -     int     (*set_chan_cfg)(const struct sun4i_i2s *,
->>>> -                             const struct snd_pcm_hw_params *);
->>>> +     int     (*set_chan_cfg)(const struct sun4i_i2s *i2s,
->>>> +                             unsigned int channels,  unsigned int slots,
->>>> +                             unsigned int slot_width);
->>>>       int     (*set_fmt)(const struct sun4i_i2s *, unsigned int);
->>>>  };
->>>>
->>>> @@ -414,10 +415,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
->>>>  }
->>>>
->>>>  static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->>>> -                               const struct snd_pcm_hw_params *params)
->>>> +                               unsigned int channels, unsigned int slots,
->>>> +                               unsigned int slot_width)
->>>>  {
->>>> -     unsigned int channels = params_channels(params);
->>>> -
->>>>       /* Map the channels for playback and capture */
->>>>       regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210);
->>>>       regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210);
->>>> @@ -434,15 +434,11 @@ static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->>>>  }
->>>>
->>>>  static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->>>> -                               const struct snd_pcm_hw_params *params)
->>>> +                               unsigned int channels, unsigned int slots,
->>>> +                               unsigned int slot_width)
->>>>  {
->>>> -     unsigned int channels = params_channels(params);
->>>> -     unsigned int slots = channels;
->>>>       unsigned int lrck_period;
->>>>
->>>> -     if (i2s->slots)
->>>> -             slots = i2s->slots;
->>>> -
->>>>       /* Map the channels for playback and capture */
->>>>       regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
->>>>       regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210);
->>>> @@ -467,11 +463,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->>>>       case SND_SOC_DAIFMT_DSP_B:
->>>>       case SND_SOC_DAIFMT_LEFT_J:
->>>>       case SND_SOC_DAIFMT_RIGHT_J:
->>>> -             lrck_period = params_physical_width(params) * slots;
->>>> +             lrck_period = slot_width * slots;
->>>>               break;
->>>>
->>>>       case SND_SOC_DAIFMT_I2S:
->>>> -             lrck_period = params_physical_width(params);
->>>> +             lrck_period = slot_width;
->>>>               break;
->>>>
->>>>       default:
->>>> @@ -490,15 +486,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->>>>  }
->>>>
->>>>  static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->>>> -                                   const struct snd_pcm_hw_params *params)
->>>> +                                   unsigned int channels, unsigned int slots,
->>>> +                                   unsigned int slot_width)
->>>>  {
->>>> -     unsigned int channels = params_channels(params);
->>>> -     unsigned int slots = channels;
->>>>       unsigned int lrck_period;
->>>>
->>>> -     if (i2s->slots)
->>>> -             slots = i2s->slots;
->>>> -
->>>>       /* Map the channels for playback and capture */
->>>>       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0xFEDCBA98);
->>>>       regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
->>>> @@ -525,11 +517,11 @@ static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->>>>       case SND_SOC_DAIFMT_DSP_B:
->>>>       case SND_SOC_DAIFMT_LEFT_J:
->>>>       case SND_SOC_DAIFMT_RIGHT_J:
->>>> -             lrck_period = params_physical_width(params) * slots;
->>>> +             lrck_period = slot_width * slots;
->>>>               break;
->>>>
->>>>       case SND_SOC_DAIFMT_I2S:
->>>> -             lrck_period = params_physical_width(params);
->>>> +             lrck_period = slot_width;
->>>>               break;
->>>>
->>>>       default:
->>>> @@ -565,7 +557,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->>>>       if (i2s->slot_width)
->>>>               slot_width = i2s->slot_width;
->>>>
->>>> -     ret = i2s->variant->set_chan_cfg(i2s, params);
->>>> +     ret = i2s->variant->set_chan_cfg(i2s, channels, slots, slot_width);
->>>
->>> Isn't slots and slot_width set to 0 here ?
->>
->> No, there is still a check before calling the set_cfg function.
->>
->>   unsigned int slot_width = params_physical_width(params);
->>   unsigned int channels = params_channels(params);
->>   unsigned int slots = channels;
->>
->>   if (i2s->slots)
->>   slots = i2s->slots;
->>
->>   if (i2s->slot_width)
->>   slot_width = i2s->slot_width;
->>
->> ret = i2s->variant->set_chan_cfg(i2s, channels, slots, slot_width);
->>
->> So slot_width will be equal to params_physical_width(params);
->> like before
+> Thank you for the explanation! Are you suggesting we should choose
+> different naming styles so we better tell global identifiers from local
+> variables?
+
+That's not the main purpose IMO. Using a consistent prefix for global
+identifiers (ex. "qlge_") is to avoid clashes (two drivers using the
+same name, as in the examples above). Strictly speaking, it is not a
+problem for symbols with internal linkage (ex. static functions) or type
+definitions in local header files but it makes the code clearer because
+it shows immediately that this identifier was defined in the driver.
+
+For local variables, the name is more a matter of personal taste I think
+but it should be consistent within the driver and with other users of
+the same api, where applicable. A prefix is not needed but the name is
+sometimes a simpler version of a type name which includes a prefix.
+
+> > > So I will adopt qlge_ instead. Besides I prefer qlge_dl to ql_devlink.
+> > 
+> > Up to you but personally, I think ql_devlink is better. In any case,
+> > "dev" is too general and often used for struct net_device pointers
+> > instead.
 > 
-> Still, it's not obvious what slots and slot_width are going to be set to
-> in a non-TDM setup where that doesn't really make much sense.
+> Thank you for the suggestion. Another reason to use qlge_dl is many
+> other network drivers supporting devlink interface also adopt this kind
+> of style.
 
-My understanding is:
-
-"slots" is channels per frame + padding slots, regardless of format.
-"slot_width" is bits per sample + padding bits, regardless of format.
-
-Some formats may require or prohibit certain padding, but that has no
-effect on the definitions.
-
-That seems clear to me? At least that's what I implemented (and you
-acked) in sun8i-codec.
-
-> I assume you want to reduce the boilerplate, then we can make an helper
-> to get the frame size and the number of channels / slots if needed
-
-What would you name the return values, if not "slots" and "slot_width"?
-"channels" and "word_size" would be inaccurate, because those terms
-refer to the values without padding.
-
-> Maxime
-
-Cheers,
-Samuel
+Sounds good. On second thought I regretted suggesting ql_devlink. While
+local variable don't need any prefix; if they do have one, better not
+mix qlge_ and ql_.
