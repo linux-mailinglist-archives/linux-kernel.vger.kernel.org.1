@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0295C28CBCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B5228CBB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387969AbgJMKec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:34:32 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:40446 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726531AbgJMKe1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:34:27 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 09DAUg2f010593;
-        Tue, 13 Oct 2020 18:30:42 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Oct
- 2020 18:32:57 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <knaack.h@gmx.de>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <robh+dt@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <billy_tsai@aspeedtech.com>, <alexandru.ardelean@analog.com>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH 3/3] iio: adc: aspeed: Setting ref_voltage in probe
-Date:   Tue, 13 Oct 2020 18:32:45 +0800
-Message-ID: <20201013103245.16723-4-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201013103245.16723-1-billy_tsai@aspeedtech.com>
-References: <20201013103245.16723-1-billy_tsai@aspeedtech.com>
+        id S1730850AbgJMKcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:32:54 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:45920 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729468AbgJMKcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 06:32:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id A88C9FB06;
+        Tue, 13 Oct 2020 12:32:50 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id l9H17qvFqi9u; Tue, 13 Oct 2020 12:32:49 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 86125402F3; Tue, 13 Oct 2020 12:32:48 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] drm/panel: mantix panel reset fixes
+Date:   Tue, 13 Oct 2020 12:32:45 +0200
+Message-Id: <cover.1602584953.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.10.9]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 09DAUg2f010593
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At ast2600 ref_voltage becomes configurable and this property is board
-dependency.
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- .../devicetree/bindings/iio/adc/aspeed_adc.txt   | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+The first patch in this series fixes dereferencing a NULL mode in the error
+path. The second one extends the resets to not only reset RESX but also TP_RSTN
+since otherwise the display will stay completely blank. I didn't spot that
+before initial submission since the reset line was bound to the touch
+controller and although that failed to probe it came far enough to deassert the
+reset line (at an arbitrary point in time during boot) and hence we got a
+picture. Since touch and panel are on the same IC they're not completely
+independent and i might have to turn the whole thing into an MFD at some point
+but this series gets the panel to a reliably working state on boot and on fb
+blank/unblank.
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt b/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
-index 034fc2ba100e..0ba1980c4e06 100644
---- a/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
-+++ b/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
-@@ -3,8 +3,11 @@ Aspeed ADC
- This device is a 10-bit converter for 16 voltage channels.  All inputs are
- single ended.
- 
-+At ast2600, this device split into two individual IPs and each contains 8 voltage channels.
-+
-+Chip level dtsi:
- Required properties:
--- compatible: Should be "aspeed,ast2400-adc" or "aspeed,ast2500-adc"
-+- compatible: Should be "aspeed,ast2400-adc" or "aspeed,ast2500-adc" or "aspeed,ast2600-adc"
- - reg: memory window mapping address and length
- - clocks: Input clock used to derive the sample clock. Expected to be the
-           SoC's APB clock.
-@@ -20,3 +23,14 @@ Example:
- 		resets = <&syscon ASPEED_RESET_ADC>;
- 		#io-channel-cells = <1>;
- 	};
-+
-+Board level dts:
-+Required properties:
-+- ref_voltage: (ast2600 only)
-+	- Reference voltage in millivolts for the conversions.
-+	- The range of value is 900 to 2700 mv.
-+
-+Example:
-+&adc0 {
-+	ref_voltage = <2500>;
-+};
-\ No newline at end of file
+Since the reset-gpios are active low we can deassert in prepare and assert in
+unprepare simplifying the code making sure lines are kept low when the
+panel is off.
+
+The binding were not part of a stable kernel so I hope it's okay to not worry
+about backward compatibility.
+
+Changes from v1:
+ - As per review comments by Fabio Estevam
+   https://lore.kernel.org/dri-devel/CAOMZO5B5ECcConvKej=RcaF8wvOxgq7nUzKJ-ad0aSAOzUqtbQ@mail.gmail.com/
+   - Fix typo in commit messages
+ - As per review comments by Rob Herring
+   https://lore.kernel.org/dri-devel/20200929174624.GA832332@bogus/
+   - Don't use an array of reset lines
+
+Guido Günther (3):
+  drm/panel: mantix: Don't dereference NULL mode
+  drm/panel: mantix: Fix panel reset
+  dt-binding: display: Require two resets on mantix panel
+
+ .../display/panel/mantix,mlaf057we51-x.yaml   |  4 +++
+ .../gpu/drm/panel/panel-mantix-mlaf057we51.c  | 25 +++++++++++++------
+ 2 files changed, 21 insertions(+), 8 deletions(-)
+
 -- 
-2.17.1
+2.28.0
 
