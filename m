@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B421B28DD75
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1949328D735
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgJNJYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730796AbgJNJUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4603C08EC3E;
-        Tue, 13 Oct 2020 16:50:26 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602633025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nCUoUR6+uxjkAbOY3zTEcQ6IAUO/zrzgTWOr/0AWWRs=;
-        b=4PY7LNBoRXqxj/FvQ2UuL4sn4aIV+c3iuZJqB4xkKktMBpwAnMOCIsjezj03IbYj49ZA87
-        YBapabkSVlWCImVTcoKY6dFTNmXN4qaCitNodjmsL3bymobul0l0nyk52Sn/POPJLGwnGS
-        j9EatuVJHhxRPGiSibJAuq/5/lR6paH+KleQ4Rpz7XPqCjsyk9T18v3Z55fWwFUHN7lnpy
-        8rTIki7XjVuCTR4cl9KO98lWE039/ctMMv/Xk0j4FZsWZJiPujg/8U5EOEqA14mjMQkWbA
-        PSGc0iP1QlMKOqxR9rmdbSglCdQOakIQNyKeKhD7pdiktx1Kf+jKlrLy4iCwZg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602633025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nCUoUR6+uxjkAbOY3zTEcQ6IAUO/zrzgTWOr/0AWWRs=;
-        b=irnr61MlGns1BMSW3/RQ4H0MBJXOfrzsYMZRxGkM5Nj1ruoXIAg/oSfWWBC5GsZ8tEOsM8
-        Y9RWNGK19xda56CA==
-To:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com,
-        Jens Axboe <axboe@kernel.dk>,
-        Roman Gershman <romger@amazon.com>
-Subject: Re: [PATCH 4/4] task_work: use TIF_NOTIFY_SIGNAL if available
-In-Reply-To: <20201008152752.218889-5-axboe@kernel.dk>
-References: <20201008152752.218889-1-axboe@kernel.dk> <20201008152752.218889-5-axboe@kernel.dk>
-Date:   Wed, 14 Oct 2020 01:50:25 +0200
-Message-ID: <87362hd6ta.fsf@nanos.tec.linutronix.de>
+        id S1730283AbgJMXyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 19:54:20 -0400
+Received: from winds.org ([68.75.195.9]:45042 "EHLO winds.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726953AbgJMXyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 19:54:19 -0400
+Received: by winds.org (Postfix, from userid 100)
+        id 9B0A113F97CD; Tue, 13 Oct 2020 19:54:18 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by winds.org (Postfix) with ESMTP id 97C9913F9795;
+        Tue, 13 Oct 2020 19:54:18 -0400 (EDT)
+Date:   Tue, 13 Oct 2020 19:54:18 -0400 (EDT)
+From:   Byron Stanoszek <gandalf@winds.org>
+To:     Ben Skeggs <bskeggs@redhat.com>
+cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org
+Subject: Re: Nouveau DRM failure on 5120x1440 screen with 5.8/5.9 kernel
+In-Reply-To: <alpine.LNX.2.23.451.2010130939140.14680@winds.org>
+Message-ID: <alpine.LNX.2.23.451.2010131951560.14680@winds.org>
+References: <alpine.LNX.2.23.451.2010130939140.14680@winds.org>
+User-Agent: Alpine 2.23 (LNX 451 2020-06-18)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08 2020 at 09:27, Jens Axboe wrote:
-> +/*
-> + * TWA_SIGNAL signaling - use TIF_NOTIFY_SIGNAL, if available, as it's faster
-> + * than TIF_SIGPENDING as there's no dependency on ->sighand. The latter is
-> + * shared for threads, and can cause contention on sighand->lock. Even for
-> + * the non-threaded case TIF_NOTIFY_SIGNAL is more efficient, as no locking
-> + * or IRQ disabling is involved for notification (or running) purposes.
-> + */
-> +static void task_work_notify_signal(struct task_struct *task)
-> +{
-> +#ifdef TIF_NOTIFY_SIGNAL
-> +	set_notify_signal(task);
-> +#else
-> +	unsigned long flags;
-> +
-> +	/*
-> +	 * Only grab the sighand lock if we don't already have some
-> +	 * task_work pending. This pairs with the smp_store_mb()
-> +	 * in get_signal(), see comment there.
-> +	 */
-> +	if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
-> +	    lock_task_sighand(task, &flags)) {
-> +		task->jobctl |= JOBCTL_TASK_WORK;
-> +		signal_wake_up(task, 0);
-> +		unlock_task_sighand(task, &flags);
-> +	}
-> +#endif
+On Tue, 13 Oct 2020, Byron Stanoszek wrote:
 
-Same #ifdeffery comment as before.
+> I'm having a problem with both the 5.8 and 5.9 kernels using the nouveau DRM
+> driver. I have a laptop with a VGA card (specs below) connected to a
+> 5120x1440 screen. At boot time, the card correctly detects the screen, tries
+> to allocate fbdev fb0, then the video hangs completely for 15-30 seconds
+> until it goes blank.
+
+This message eventually displays after a while:
+
+Workqueue: nvkm-disp nv50_disp_super
+RIP: 0010:nv50_disp_super_2_2+0x1b0/0x470
+Code: 69 00 00 48 69 c0 d3 4d 62 10 48 c1 e8 26 49 89 c5 0f b7 43 40 44 89 e9 8d 44 02 f9 0f b7 53 46 29 d0 31 d2 48 98 49 0f af c4 <48> f7 f1 48 89 c6 0f b7 43 4e 0f b7 53 4c 83 e8 19 29 d0 31 d2 48
+RSP: 0018:ffffc900005e3e08 EFLAGS: 00010206
+RAX: 0000000000000000 RBX: ffff88841b08ed20 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffc90003614200 RDI: ffffffff820c1140
+RBP: ffff88841b202060 R08: 0000000000000000 R09: 00000000000061ce
+R10: 0000000000000018 R11: 0000000000000018 R12: 0000000000000000
+R13: 0000000000000000 R14: ffff88841b96b800 R15: ffff88841b975000
+FS:  0000000000000000(0000) GS:ffff88841dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f922e61e000 CR3: 000000000240a004 CR4: 00000000001706b0
+Call Trace:
+  ? nvkm_dp_disable+0x5d/0x70
+  ? nv50_disp_super+0x137/0x220
+  ? process_one_work+0x19c/0x2c0
+  ? worker_thread+0x48/0x350
+  ? process_one_work+0x2c0/0x2c0
+  ? kthread+0x129/0x150
+  ? __kthread_create_worker+0x100/0x100
+  ? ret_from_fork+0x22/0x30
+---[ end trace dbb0d14fd1ddb445 ]---
+nouveau 0000:01:00.0: DRM: core notifier timeout
 
 Thanks,
-
-        tglx
+  -Byron
 
