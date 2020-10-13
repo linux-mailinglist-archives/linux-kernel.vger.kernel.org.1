@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028C828C8AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B543D28C8AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389519AbgJMGgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 02:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389353AbgJMGgQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 02:36:16 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E41C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 23:36:16 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id c21so19156619ljn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 23:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=f/vgJ5tZy59f3G2+ZFDN7Jz5qqqhrRIyIT59xyu6f5c=;
-        b=VurKTq4rgp5xS31EfSVEMi3VVWnmwKjdM3DFbV9rSsz8Yz/49ZmvOwMzsk3v7qa+s/
-         MvmDZ2boQ6Qdck58C8ms2jUgqb5FbJcvLeObhEFKEvjyt2KLeuJmYiXrazIVNX/bj19g
-         UahdaXUEJKOlbfiSsZGw6zZvk8OQlDkvEFIWdsLgGcoG7EoTdZKKU4KOfoiMBqjHttWO
-         j2DalfK305bac6/RFBAtRvh+n7rU0gmKXythGYThz1xDoD8qOg1E4Od2FERDxJhZwAR7
-         HfFfN7NK15s4e/6Z6rN7BelvDhnRAA4ivcNiWZDqJxURR+52/I4bQW61fZEJII4lR30F
-         mHjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=f/vgJ5tZy59f3G2+ZFDN7Jz5qqqhrRIyIT59xyu6f5c=;
-        b=G8rpfvhObDqjCNqTuIgg42hEuJ3jCX3hhfy9PsWfebil2h8Q973UutNIN4uDCWXVyl
-         lmxMVzhEYfR4PDsnrhSysw3CM+OgUTogBNnxUIRcsJfa8jID7PVg0dnsgC4osQ+IeQ0I
-         Va+yP9eb/mPh2D5+wViP1kyAbh3OuTToeamoCuzlq9SCHT0W0iNiEdPCNiyyQ8jGGRth
-         eKJzb1HeOeySV7P0wMYi8LHNgf6BVcVQcA8XGgzy56Zffi6lDY/i5UHuvFlVQaZjQTu3
-         DDC2oeQUB2Pd0AdxRi0WrStl2oj5xNXwlYZMvs2tnSJBf1L3oNOsaahOf5HjTUClYGvn
-         T7JA==
-X-Gm-Message-State: AOAM533dpsL0IvB7INT6YFBBxTzf19TDh8ajQIhmjSvu8KB/DoFVwBYp
-        M2DxolmQOCEUWsChmDsM7Lac13FQOAGueA==
-X-Google-Smtp-Source: ABdhPJxm/XsKE6p9Hy7y4sJgvTLXvYTu5iUNX+bmtQILZWmZ+vyUZEovSYmy3b2YUrfUQFn0vDEhWw==
-X-Received: by 2002:a2e:80c2:: with SMTP id r2mr6871608ljg.402.1602570974954;
-        Mon, 12 Oct 2020 23:36:14 -0700 (PDT)
-Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id p8sm4048802lfe.11.2020.10.12.23.36.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 23:36:14 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 08:36:12 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [GIT PULL] OP-TEE use UUID API for v5.10
-Message-ID: <20201013063612.GA3325842@jade>
+        id S2389493AbgJMGgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 02:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389353AbgJMGf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 02:35:59 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E52B208D5;
+        Tue, 13 Oct 2020 06:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602570958;
+        bh=OzYDo5bge4BHECOk5mX0aFz05bzK8pdkGElBQ1KpmNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L7xRjYu9OMo8UhZ4EV4S6Y5fTrGlKZl3lraCMK5dVN1BJVxsLW8qiwPwuCx9aPkeU
+         Yc6OcdLtenHmToCHgEaVlh5KNxIOObFt7ac5Mq+yilUxfh3VPUNupmMWXN1bNk2ZtR
+         FmET11Lu7NScF3xybyZcem/crqgcZ3ZpRDiNlFbo=
+Date:   Tue, 13 Oct 2020 08:36:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+Message-ID: <20201013063636.GA1663576@kroah.com>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com>
+ <alpine.DEB.2.21.2010121550300.6487@felia>
+ <20201012145710.GA631710@rowland.harvard.edu>
+ <alpine.DEB.2.21.2010121659040.6487@felia>
+ <20201012151816.GA1559916@kroah.com>
+ <alpine.DEB.2.21.2010122022250.17866@felia>
+ <20201013052317.GB330398@kroah.com>
+ <alpine.DEB.2.21.2010130725370.14590@felia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2010130725370.14590@felia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+On Tue, Oct 13, 2020 at 07:37:34AM +0200, Lukas Bulwahn wrote:
+> 
+> 
+> On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
+> 
+> > On Mon, Oct 12, 2020 at 08:25:30PM +0200, Lukas Bulwahn wrote:
+> > > 
+> > > 
+> > > On Mon, 12 Oct 2020, Greg Kroah-Hartman wrote:
+> > > 
+> > > > On Mon, Oct 12, 2020 at 05:10:21PM +0200, Lukas Bulwahn wrote:
+> > > > > And for the static analysis finding, we need to find a way to ignore this 
+> > > > > finding without simply ignoring all findings or new findings that just 
+> > > > > look very similar to the original finding, but which are valid.
+> > > > 
+> > > > Then I suggest you fix the tool that "flagged" this, surely this is not
+> > > > the only thing it detected with a test like this, right?
+> > > > 
+> > > > What tool reported this?
+> > > >
+> > > 
+> > > Sudip and I are following on clang analyzer findings.
+> > > 
+> > > On linux-next, there is new build target 'make clang-analyzer' that 
+> > > outputs a bunch of warnings, just as you would expect from such static 
+> > > analysis tools.
+> > 
+> > Why not fix the things that it finds that are actually issues?  If there
+> > are no actual issues found, then perhaps you should use a better tool?  :)
+> >
+> 
+> Completely agree. That is why I was against adding comments here and 
+> elsewhere just to have the "good feeling of doing something" after the 
+> tool reported a warning and we spend some time understanding the code to 
+> conclude that we now understand the code better than the tool.
+> 
+> If you know a better tool, we will use it :) unfortunately, there is no 
+> easy way of finding out that a tool just reports false positives and not a 
+> single true positive among 1000 reports...
 
-Please pull this small patch which allows to hide uuit_t internals from
-the OP-TEE driver.
+Who is "forcing" you to use any tool?  What is your goal here?
 
-I know it's a bit late for v5.10, if it's too late please queue it for
-v5.11 instead.
-
-Thanks,
-Jens
-
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/optee-use-uuid-api-for-v5.10
-
-for you to fetch changes up to 57222a1be27e06ecb81cc2f945e897814d5f461c:
-
-  tee: optee: Use UUID API for exporting the UUID (2020-10-13 08:03:18 +0200)
-
-----------------------------------------------------------------
-Use UUID API to export the UUID
-
-Uses export_uuid() to export and uuid_t to an u8 array instead of depending
-on the internals of uuid_t.
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      tee: optee: Use UUID API for exporting the UUID
-
- drivers/tee/optee/device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+greg k-h
