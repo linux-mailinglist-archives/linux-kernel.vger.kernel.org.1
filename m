@@ -2,150 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F75D28CD1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DF428CF48
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgJML5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 07:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbgJML4G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:56:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60B8C0613D0;
-        Tue, 13 Oct 2020 04:56:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=i0ogLBIlUVV0CdjypROGeu7AwfcIja0K5SScq0Xwq2M=; b=J2JcvL/9JKUWD4xXGI6c4tpQrz
-        Avqawykjj1JhP+KCdPkiLORxjpowmRlzbufq8PWMMVYwLff/gIHYShdK9xJE2fJkL9Gc72bT+GtvT
-        +KioDU3FFMWcVkP+8ebCNJLszUYEady/KF1g9IE4tw47r7+w/JZe1Sj+ldJ3CS8O7WR7NY85kxcqL
-        LQ6e47n1GPNOUSB26jyBfm+DxJEVoFygYQ7a7MpBtp3wNJVthZHajNc3E3g27I7/kpq6MeKf+VZ0P
-        2zA+Q2Fl5UdIrN9ApaZCu/hSxSM4cW14pGtlAn4uNZmXBwYUANBZm9e9TnUJKMD7rlzhyMiQ3Hl7S
-        Un/J/ihQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSIuP-0003TM-2b; Tue, 13 Oct 2020 11:56:01 +0000
-Date:   Tue, 13 Oct 2020 12:56:00 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     sathyanarayanan.nkuppuswamy@gmail.com
-Cc:     bhelgaas@google.com, okaya@kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH v4 2/2] PCI/ERR: Split the fatal and non-fatal error
- recovery handling
-Message-ID: <20201013115600.GA11976@infradead.org>
-References: <5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <c6e3f1168d5d88b207b59c434792a10a7331bb89.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S1728843AbgJMNjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:39:40 -0400
+Received: from mailout12.rmx.de ([94.199.88.78]:48441 "EHLO mailout12.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728819AbgJMNjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 09:39:40 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout12.rmx.de (Postfix) with ESMTPS id 4C9c932nCCzRw7v;
+        Tue, 13 Oct 2020 15:39:35 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4C9c822gQxz2TTMg;
+        Tue, 13 Oct 2020 15:38:42 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.60) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 13 Oct
+ 2020 13:58:03 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+CC:     Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] spi: imx: Revert "spi: imx: enable runtime pm support"
+Date:   Tue, 13 Oct 2020 13:58:02 +0200
+Message-ID: <1687325.7ZoAM7eIpP@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201012140753.GF12463@pengutronix.de>
+References: <20201009042738.26602-1-ceggers@arri.de> <6367849.hfWVFoRi9M@n95hx1g2> <20201012140753.GF12463@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c6e3f1168d5d88b207b59c434792a10a7331bb89.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.60]
+X-RMX-ID: 20201013-153852-4C9c822gQxz2TTMg-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You might want to split out pcie_do_fatal_recovery and get rid of the
-state argument:
+On Monday, 12 October 2020, 16:07:53 CEST, Sascha Hauer wrote:
+> On Fri, Oct 09, 2020 at 09:48:29AM +0200, Christian Eggers wrote:
+> 
+> 525c9e5a32bd introduced pm_runtime support for the i.MX SPI driver. With
+> this pm_runtime is used to bring up the clocks initially. When CONFIG_PM
+> is disabled the clocks are no longer enabled and the driver doesn't work
+> anymore. Fix this by enabling the clocks in the probe function and
+> telling pm_runtime that the device is active using
+> pm_runtime_set_active().
+> 
+> Fixes: 525c9e5a32bd spi: imx: enable runtime pm support
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/spi/spi-imx.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+> index 38a5f1304cec..c796e937dc6a 100644
+> --- a/drivers/spi/spi-imx.c
+> +++ b/drivers/spi/spi-imx.c
+> @@ -1674,15 +1674,18 @@ static int spi_imx_probe(struct platform_device
+> *pdev) goto out_master_put;
+>  	}
+> 
+> -	pm_runtime_enable(spi_imx->dev);
+> +	ret = clk_prepare_enable(spi_imx->clk_per);
+> +	if (ret)
+> +		goto out_master_put;
+> +
+> +	ret = clk_prepare_enable(spi_imx->clk_ipg);
+> +	if (ret)
+> +		goto out_put_per;
+> +
+>  	pm_runtime_set_autosuspend_delay(spi_imx->dev, MXC_RPM_TIMEOUT);
+>  	pm_runtime_use_autosuspend(spi_imx->dev);
+> -
+> -	ret = pm_runtime_get_sync(spi_imx->dev);
+> -	if (ret < 0) {
+> -		dev_err(spi_imx->dev, "failed to enable clock\n");
+> -		goto out_runtime_pm_put;
+> -	}
+> +	pm_runtime_set_active(spi_imx->dev);
+> +	pm_runtime_enable(spi_imx->dev);
+> 
+>  	spi_imx->spi_clk = clk_get_rate(spi_imx->clk_per);
+>  	/*
+> @@ -1719,8 +1722,12 @@ static int spi_imx_probe(struct platform_device
+> *pdev)
+> 
+>  out_runtime_pm_put:
+>  	pm_runtime_dont_use_autosuspend(spi_imx->dev);
+> -	pm_runtime_put_sync(spi_imx->dev);
+> +	pm_runtime_set_suspended(&pdev->dev);
+>  	pm_runtime_disable(spi_imx->dev);
+> +
+> +	clk_disable_unprepare(spi_imx->clk_ipg);
+> +out_put_per:
+> +	clk_disable_unprepare(spi_imx->clk_per);
+>  out_master_put:
+>  	spi_master_put(master);
 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index fa12f7cbc1a095..eec0d3fe9fd967 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -556,7 +556,8 @@ static inline int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
- 
- /* PCI error reporting and recovery */
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
--			pci_channel_state_t state,
-+			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
-+pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
- 			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
- 
- bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 65dff5f3457ac0..4bf7ebb34cf854 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -947,9 +947,9 @@ static void handle_error_source(struct pci_dev *dev, struct aer_err_info *info)
- 		if (pcie_aer_is_native(dev))
- 			pcie_clear_device_status(dev);
- 	} else if (info->severity == AER_NONFATAL)
--		pcie_do_recovery(dev, pci_channel_io_normal, aer_root_reset);
-+		pcie_do_recovery(dev, aer_root_reset);
- 	else if (info->severity == AER_FATAL)
--		pcie_do_recovery(dev, pci_channel_io_frozen, aer_root_reset);
-+		pcie_do_fatal_recovery(dev, aer_root_reset);
- 	pci_dev_put(dev);
- }
- 
-@@ -985,11 +985,9 @@ static void aer_recover_work_func(struct work_struct *work)
- 		}
- 		cper_print_aer(pdev, entry.severity, entry.regs);
- 		if (entry.severity == AER_NONFATAL)
--			pcie_do_recovery(pdev, pci_channel_io_normal,
--					 aer_root_reset);
-+			pcie_do_recovery(pdev, aer_root_reset);
- 		else if (entry.severity == AER_FATAL)
--			pcie_do_recovery(pdev, pci_channel_io_frozen,
--					 aer_root_reset);
-+			pcie_do_fatal_recovery(pdev, aer_root_reset);
- 		pci_dev_put(pdev);
- 	}
- }
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index daa9a4153776ce..74e7d1da3cf054 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -233,7 +233,7 @@ static irqreturn_t dpc_handler(int irq, void *context)
- 	dpc_process_error(pdev);
- 
- 	/* We configure DPC so it only triggers on ERR_FATAL */
--	pcie_do_recovery(pdev, pci_channel_io_frozen, dpc_reset_link);
-+	pcie_do_fatal_recovery(pdev, dpc_reset_link);
- 
- 	return IRQ_HANDLED;
- }
-diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
-index a6b9b479b97ad0..87379bc566f691 100644
---- a/drivers/pci/pcie/edr.c
-+++ b/drivers/pci/pcie/edr.c
-@@ -183,7 +183,7 @@ static void edr_handle_event(acpi_handle handle, u32 event, void *data)
- 	 * or ERR_NONFATAL, since the link is already down, use the FATAL
- 	 * error recovery path for both cases.
- 	 */
--	estate = pcie_do_recovery(edev, pci_channel_io_frozen, dpc_reset_link);
-+	estate = pcie_do_fatal_recovery(edev, dpc_reset_link);
- 
- send_ost:
- 
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index c2ae4d08801a4d..11fcff16b17303 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -141,7 +141,7 @@ static int report_resume(struct pci_dev *dev, void *data)
- 	return 0;
- }
- 
--static pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
-+pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
- 			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
- {
- 	struct pci_dev *udev;
-@@ -194,15 +194,11 @@ static pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
- }
- 
- pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
--			pci_channel_state_t state,
- 			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
- {
- 	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
- 	struct pci_bus *bus;
- 
--	if (state == pci_channel_io_frozen)
--		return pcie_do_fatal_recovery(dev, reset_link);
--
- 	/*
- 	 * Error recovery runs on all subordinates of the first downstream port.
- 	 * If the downstream port detected the error, it is cleared at the end.
+With this patch applied, my system (!CONFIG_PM) doesn't freeze anymore when 
+the spi-imx driver is loaded.
+
+Thank you very much!
+
+Tested-by: Christian Eggers <ceggers@arri.de>
+[tested for !CONFIG_PM only]
+Cc: stable@vger.kernel.org  # 5.9.x only
+
+
+
