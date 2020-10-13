@@ -2,441 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8948528C6BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D384628C6BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgJMB2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 21:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728093AbgJMB2W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 21:28:22 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFDAC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 18:28:21 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id u19so20168485ion.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 18:28:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=m8BmTaPrMVF3cwRTsnBaguUVliVO1u3VB9YLTaDi18c=;
-        b=bAuXoI5QahCUSPAxEH6E1Cn7pnjRUxCDyuZc6BWm5nawDf5aSdCGLM6118HFQfHIMr
-         6ziGgA4a8rGgZqWpzi9AeLZDoKj8J/4LaJdtyUIo3Ny+qHBVxALnyGcuce5mohtPft4A
-         a0buoXsCFi06H+AJyGpOhAZHAlCDKkzBZYLwk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m8BmTaPrMVF3cwRTsnBaguUVliVO1u3VB9YLTaDi18c=;
-        b=rvQOFqNKSLYQE/ZxwcPqV7AT4PBDswvvZEmy4OyPi7m4WiyEVHGJBpOZacaDxhZkec
-         UayQaIhnFj73W/lSzISyepdbSTmXBE6jnM5zH/lDSYWzku+shgkzZ0/lZZiCOsqIPcgj
-         wCdO8joLXWsn6P7e1ZCJRcAfq1rH8pyJHCdLpk1x3QAUPih6iT4AFxZUeIcN8l/qu1Pv
-         p21q7hYL9AY77o91BN7oKUQLI/H/sO8+FQHf4F02dPPvkKmRCik+ooFcMpBN8E3zBgH8
-         Y9pIUfVClRpSNFTinTPWa5ZkVwy6gJj1r3GXVuvufCZmz0eOgn9pul3zxWmj41gKgpxh
-         i/rg==
-X-Gm-Message-State: AOAM533bq7n1fV8UULLDlc71Nm3drcgBBrVwksUOJuhtOigmVHlkr4L+
-        HrK2fWueVhk85//Fl6dJmPdLhmgFLj06ISsE0kvq
-X-Google-Smtp-Source: ABdhPJw02w8mOijirU01V+VLk8QbUDXknHcV+rxy9VPG10Lhwm49ZJuEa1IQQjpVosnQXGuT6bA36mi5C52dIlADjlY=
-X-Received: by 2002:a05:6602:18a:: with SMTP id m10mr17985796ioo.174.1602552500884;
- Mon, 12 Oct 2020 18:28:20 -0700 (PDT)
+        id S1728124AbgJMB3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 21:29:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:56905 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728093AbgJMB3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 21:29:40 -0400
+IronPort-SDR: JtsYpXbwLMfQ+JvGj54YzXEz8bhqDeSoKlMKQEiIVzCP9L+PNQKSdxsBgdR0pHn6HK6yu9tG/X
+ ELAfGeCF9btQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165940576"
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="165940576"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:29:38 -0700
+IronPort-SDR: yZvtb1Pk85zflXWxZ0jIgBKFOv1+Bv1jAnj+/xc76PN7o4MmmO29r1FI7ilHQxgFVPZCIUxw2A
+ zQYZmjRZkLWQ==
+X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
+   d="scan'208";a="313633677"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:29:38 -0700
+Date:   Mon, 12 Oct 2020 18:29:37 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Cathy Avery <cavery@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, wei.huang2@amd.com,
+        mlevitsk@redhat.com
+Subject: Re: [PATCH v2 1/2] KVM: SVM: Move asid to vcpu_svm
+Message-ID: <20201013012937.GA10366@linux.intel.com>
+References: <20201011184818.3609-1-cavery@redhat.com>
+ <20201011184818.3609-2-cavery@redhat.com>
 MIME-Version: 1.0
-References: <20201009211344.2358688-1-atish.patra@wdc.com> <20201009211344.2358688-5-atish.patra@wdc.com>
- <CAHCEehJvMv=CYD1+QXb0uB36Hv4pvO36BAKSLOcxTXvmADZFbA@mail.gmail.com> <CAOnJCUKPjkm_=5eHn6=GjVGr67okZkVzqP7-ciphn986BQoc9w@mail.gmail.com>
-In-Reply-To: <CAOnJCUKPjkm_=5eHn6=GjVGr67okZkVzqP7-ciphn986BQoc9w@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 12 Oct 2020 18:28:10 -0700
-Message-ID: <CAOnJCULZMRu+sHmnjoBwtvaB3BjmCiZLzYxNOeWZmoYLKG+wTw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] RISC-V: Protect .init.text & .init.data
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Anup Patel <anup@brainfault.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Michel Lespinasse <walken@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201011184818.3609-2-cavery@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 4:26 PM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Mon, Oct 12, 2020 at 6:15 AM Greentime Hu <greentime.hu@sifive.com> wr=
-ote:
-> >
-> > Atish Patra <atish.patra@wdc.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8810=
-=E6=97=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=885:13=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> > >
-> > > Currently, .init.text & .init.data are intermixed which makes it impo=
-ssible
-> > > apply different permissions to them. .init.data shouldn't need exec
-> > > permissions while .init.text shouldn't have write permission.
-> > >
-> > > Keep them in separate sections so that different permissions are appl=
-ied to
-> > > each section. This improves the kernel protection under
-> > > CONFIG_STRICT_KERNEL_RWX. We also need to restore the permissions for=
- the
-> > > entire _init section after it is freed so that those pages can be use=
-d for
-> > > other purpose.
-> > >
-> > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > > ---
-> > >  arch/riscv/include/asm/sections.h   |  2 ++
-> > >  arch/riscv/include/asm/set_memory.h |  2 ++
-> > >  arch/riscv/kernel/setup.c           |  4 ++++
-> > >  arch/riscv/kernel/vmlinux.lds.S     | 10 +++++++++-
-> > >  arch/riscv/mm/init.c                |  6 ++++++
-> > >  arch/riscv/mm/pageattr.c            |  6 ++++++
-> > >  6 files changed, 29 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/a=
-sm/sections.h
-> > > index d60802bfafbc..730d2c4a844d 100644
-> > > --- a/arch/riscv/include/asm/sections.h
-> > > +++ b/arch/riscv/include/asm/sections.h
-> > > @@ -10,6 +10,8 @@
-> > >  #include <asm-generic/sections.h>
-> > >  extern char _start[];
-> > >  extern char _start_kernel[];
-> > > +extern char __init_data_begin[], __init_data_end[];
-> > > +extern char __init_text_begin[], __init_text_end[];
-> > >
-> > >  extern bool init_mem_is_free;
-> > >
-> > > diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include=
-/asm/set_memory.h
-> > > index 4cc3a4e2afd3..913429c9c1ae 100644
-> > > --- a/arch/riscv/include/asm/set_memory.h
-> > > +++ b/arch/riscv/include/asm/set_memory.h
-> > > @@ -15,6 +15,7 @@ int set_memory_ro(unsigned long addr, int numpages)=
-;
-> > >  int set_memory_rw(unsigned long addr, int numpages);
-> > >  int set_memory_x(unsigned long addr, int numpages);
-> > >  int set_memory_nx(unsigned long addr, int numpages);
-> > > +int set_memory_default(unsigned long addr, int numpages);
-> > >  void protect_kernel_text_data(void);
-> > >  #else
-> > >  static inline int set_memory_ro(unsigned long addr, int numpages) { =
-return 0; }
-> > > @@ -22,6 +23,7 @@ static inline int set_memory_rw(unsigned long addr,=
- int numpages) { return 0; }
-> > >  static inline int set_memory_x(unsigned long addr, int numpages) { r=
-eturn 0; }
-> > >  static inline int set_memory_nx(unsigned long addr, int numpages) { =
-return 0; }
-> > >  static inline void protect_kernel_text_data(void) {};
-> > > +static inline int set_memory_default(unsigned long addr, int numpage=
-s) { return 0; }
-> > >  #endif
-> > >
-> > >  int set_direct_map_invalid_noflush(struct page *page);
-> > > diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> > > index 4176a2affd1d..b8a35ef0eab0 100644
-> > > --- a/arch/riscv/kernel/setup.c
-> > > +++ b/arch/riscv/kernel/setup.c
-> > > @@ -129,6 +129,10 @@ bool init_mem_is_free =3D false;
-> > >
-> > >  void free_initmem(void)
-> > >  {
-> > > +       unsigned long init_begin =3D (unsigned long)__init_begin;
-> > > +       unsigned long init_end =3D (unsigned long)__init_end;
-> > > +
-> > > +       set_memory_default(init_begin, (init_end - init_begin) >> PAG=
-E_SHIFT);
-> > >         free_initmem_default(POISON_FREE_INITMEM);
-> > >         init_mem_is_free =3D true;
-> > >  }
-> > > diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmli=
-nux.lds.S
-> > > index 0807633f0dc8..15b9882588ae 100644
-> > > --- a/arch/riscv/kernel/vmlinux.lds.S
-> > > +++ b/arch/riscv/kernel/vmlinux.lds.S
-> > > @@ -30,8 +30,8 @@ SECTIONS
-> > >         . =3D ALIGN(PAGE_SIZE);
-> > >
-> > >         __init_begin =3D .;
-> > > +       __init_text_begin =3D .;
-> > >         INIT_TEXT_SECTION(PAGE_SIZE)
-> > > -       INIT_DATA_SECTION(16)
-> > >         . =3D ALIGN(8);
-> > >         __soc_early_init_table : {
-> > >                 __soc_early_init_table_start =3D .;
-> > > @@ -48,11 +48,19 @@ SECTIONS
-> > >         {
-> > >                 EXIT_TEXT
-> > >         }
-> > > +
-> > > +       __init_text_end =3D .;
-> > > +       . =3D ALIGN(SECTION_ALIGN);
-> > > +       /* Start of init data section */
-> > > +       __init_data_begin =3D .;
-> > > +       INIT_DATA_SECTION(16)
-> > >         .exit.data :
-> > >         {
-> > >                 EXIT_DATA
-> > >         }
-> > >         PERCPU_SECTION(L1_CACHE_BYTES)
-> > > +
-> > > +       __init_data_end =3D .;
-> > >         __init_end =3D .;
-> > >
-> > >         . =3D ALIGN(SECTION_ALIGN);
-> > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > > index 7859a1d1b34d..3ef0eafcc7c7 100644
-> > > --- a/arch/riscv/mm/init.c
-> > > +++ b/arch/riscv/mm/init.c
-> > > @@ -627,11 +627,17 @@ void protect_kernel_text_data(void)
-> > >  {
-> > >         unsigned long text_start =3D (unsigned long)_text;
-> > >         unsigned long text_end =3D (unsigned long)_etext;
-> > > +       unsigned long init_text_start =3D (unsigned long)__init_text_=
-begin;
-> > > +       unsigned long init_text_end =3D (unsigned long)__init_text_en=
-d;
-> > > +       unsigned long init_data_start =3D (unsigned long)__init_data_=
-begin;
-> > > +       unsigned long init_data_end =3D (unsigned long)__init_data_en=
-d;
-> > >         unsigned long rodata_start =3D (unsigned long)__start_rodata;
-> > >         unsigned long data_start =3D (unsigned long)_data;
-> > >         unsigned long max_low =3D (unsigned long)(__va(PFN_PHYS(max_l=
-ow_pfn)));
-> > >
-> > > +       set_memory_ro(init_text_start, (init_text_end - init_text_sta=
-rt) >> PAGE_SHIFT);
-> > >         set_memory_ro(text_start, (text_end - text_start) >> PAGE_SHI=
-FT);
-> > > +       set_memory_nx(init_data_start, (init_data_end - init_data_sta=
-rt) >> PAGE_SHIFT);
-> > >         set_memory_nx(rodata_start, (data_start - rodata_start) >> PA=
-GE_SHIFT);
-> > >         set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIF=
-T);
-> > >  }
-> > > diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-> > > index 19fecb362d81..aecedaf086ab 100644
-> > > --- a/arch/riscv/mm/pageattr.c
-> > > +++ b/arch/riscv/mm/pageattr.c
-> > > @@ -128,6 +128,12 @@ static int __set_memory(unsigned long addr, int =
-numpages, pgprot_t set_mask,
-> > >         return ret;
-> > >  }
-> > >
-> > > +int set_memory_default(unsigned long addr, int numpages)
-> > > +{
-> > > +       return __set_memory(addr, numpages, __pgprot(_PAGE_KERNEL | _=
-PAGE_EXEC),
-> > > +                           __pgprot(0));
-> > > +}
-> > > +
-> > >  int set_memory_ro(unsigned long addr, int numpages)
-> > >  {
-> > >         return __set_memory(addr, numpages, __pgprot(_PAGE_READ),
-> >
-> >
-> > Hi Atish,
-> >
-> > I tested this patchset and CONFIG_DEBUG_WX=3Dy
-> >
->
-> Thanks for testing the patch.
->
-> > [    2.664012] Freeing unused kernel memory: 114420K
-> > [    2.666081] ------------[ cut here ]------------
-> > [    2.666779] riscv/mm: Found insecure W+X mapping at address
-> > (____ptrval____)/0xffffffe000000000
-> > [    2.668004] WARNING: CPU: 0 PID: 1 at arch/riscv/mm/ptdump.c:200
-> > note_page+0xc2/0x238
-> > [    2.669147] Modules linked in:
-> > [    2.669735] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-> > 5.9.0-rc8-00033-gfacf070a80ea #153
-> > [    2.670466] epc: ffffffe00700697c ra : ffffffe00700697c sp : ffffffe=
-0fba9bc10
-> > [    2.671054]  gp : ffffffe007e73078 tp : ffffffe0fba90000 t0 :
-> > ffffffe007e861d0
-> > [    2.671683]  t1 : 0000000000000064 t2 : ffffffe007801664 s0 :
-> > ffffffe0fba9bc60
-> > [    2.672499]  s1 : ffffffe0fba9bde8 a0 : 0000000000000053 a1 :
-> > 0000000000000020
-> > [    2.673119]  a2 : 0000000000000000 a3 : 00000000000000f4 a4 :
-> > d4328dc070ccb100
-> > [    2.673729]  a5 : d4328dc070ccb100 a6 : 0000000000000000 a7 :
-> > ffffffe007851e98
-> > [    2.674333]  s2 : ffffffe007000000 s3 : ffffffe0fba9bde8 s4 :
-> > 0000000087200000
-> > [    2.674963]  s5 : 00000000000000cb s6 : 0000000000000003 s7 :
-> > ffffffe007e7ac00
-> > [    2.675564]  s8 : ffffffe000000000 s9 : ffffffe007000000 s10:
-> > ffffffe000000000
-> > [    2.676392]  s11: ffffffe040000000 t3 : 000000000001da48 t4 :
-> > 000000000001da48
-> > [    2.676992]  t5 : ffffffe007e74490 t6 : ffffffe007e81432
-> > [    2.677449] status: 0000000000000120 badaddr: 0000000000000000
-> > cause: 0000000000000003
-> > [    2.678128] ---[ end trace 5f0a86dbe986db9b ]---
-> > [    2.678952] Checked W+X mappings: failed, 28672 W+X pages found
-> > [    2.679737] Run /init as init process
-> >
->
-> This would be triggered for the current kernel as well as we don't
-> protect the permission for __init section at all. As you correctly
-> pointed out, __init & .head sections are mapped with same permissions
-> because of 2MB mappings.
->
-> Currently, the entire head.text & init section have RWX permission.
-> This patch is trying remove the write permission from .init.text &
-> .head.text and execute permission from .init.data until kernel is
-> booted.
-> It doesn't provide full protection but better than the current scheme.
->
-> To remove the write permission of .head.txt only, we have to keep
-> .head.txt & .init.text section in separate sections. The linear
-> mapping would look like this in that case.
-> There are no issues as such but kernel size would increase by another 2M.
->
-> ---[ Linear mapping ]---
-> 0xffffffe000000000-0xffffffe000200000    0x0000000080200000         2M
-> PMD     D A . . X . R V
-> 0xffffffe000200000-0xffffffe000600000    0x0000000080400000         4M
-> PMD     D A . . . W R V
-> 0xffffffe000600000-0xffffffe000e00000    0x0000000080800000         8M
-> PMD     D A . . X . R V
-> 0xffffffe000e00000-0xffffffe001400000    0x0000000081000000         6M
-> PMD     D A . . . . R V
-> 0xffffffe001400000-0xffffffe03fe00000    0x0000000081600000      1002M
-> PMD     D A . . . W R V
->
-> The other solution would be move init section below text. Keep text &
-> head in one section.
-> The .init.text & .init.data will be in separate sections after that.
-> Here is the mapping in that case.
->
-> ---[ Linear mapping ]---
-> 0xffffffe000000000-0xffffffe000800000    0x0000000080200000         8M
-> PMD     D A . . X . R V
-> 0xffffffe000800000-0xffffffe000c00000    0x0000000080a00000         4M
-> PMD     D A . . . W R V
-> 0xffffffe000c00000-0xffffffe001200000    0x0000000080e00000         6M
-> PMD     D A . . . . R V
-> 0xffffffe001200000-0xffffffe03fe00000    0x0000000081400000      1004M
-> PMD     D A . . . W R V
->
-> I prefer the 2nd approach compared to the first one as it saves memory
-> and we can fix lockdep issue without adding arch_is_kernel_data
-> to sections.h (Guo's patch).
->
-> However, the 2nd approach throws this problem if
-> CONFIG_HARDENED_USERCOPY is enabled.
->
-> net/ipv4/ipconfig.o: in function `ic_setup_routes':
-> /home/atish/workspace/linux/net/ipv4/ipconfig.c:400:(.init.text+0x1c4):
-> relocation truncated to fit: R_RISCV_JAL against symbol `ip_rt_ioctl'
-> defined in .text section in net/ipv4/fib_frontend.o
-> make: *** [Makefile:1162: vmlinux] Error 1
->
-> I am currently looking into this to understand why R_RISCV_JAL is
-> generated a generic function invocation
-> where auipc + jalr should have been used.
->
+On Sun, Oct 11, 2020 at 02:48:17PM -0400, Cathy Avery wrote:
+> Move asid to svm->asid to allow for vmcb assignment
 
-I checked the relocation is is correct 00000000000001d0 R_RISCV_CALL
-   ip_rt_ioctl
-The assembly from objdump also shows a pair of auipc + jalr.
+This is misleading.  The asid isn't being moved, it's being copied/tracked.
+The "to allow" wording also confused me; I though this was just a prep patch
+and the actual assignment was in a follow-up patch.
 
-1d0:       00000097                auipc   ra,0x0
-1d4:       000080e7                jalr    ra # 1d0 <.LBE348+0x4>
+> during svm_vcpu_run without regard to which level
+> guest is running.
+> Signed-off-by: Cathy Avery <cavery@redhat.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 4 +++-
+>  arch/x86/kvm/svm/svm.h | 1 +
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index d4e18bda19c7..619980a5d540 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1101,6 +1101,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+>  		save->cr4 = 0;
+>  	}
+>  	svm->asid_generation = 0;
+> +	svm->asid = 0;
+>  
+>  	svm->nested.vmcb = 0;
+>  	svm->vcpu.arch.hflags = 0;
+> @@ -1663,7 +1664,7 @@ static void new_asid(struct vcpu_svm *svm, struct svm_cpu_data *sd)
+>  	}
+>  
+>  	svm->asid_generation = sd->asid_generation;
+> -	svm->vmcb->control.asid = sd->next_asid++;
+> +	svm->asid = sd->next_asid++;
+>  	vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
 
-I don't understand why the toolchain is complaining about relocation
-error only when
-CONFIG_HARDENED_USERCOPY is enabled.
+I know very little (ok, nothing) about SVM VMCB caching rules, but I strongly
+suspect this is broken.  The existing code explicitly marks VMCB_ASID dirty,
+but there is no equivalent code for the case where there are multiple VMCBs,
+e.g. if new_asid() is called while vmcb01 is active, then vmcb02 will pick up
+the new ASID but will not mark it dirty.
 
-Are we seeing some subtle toolchain bug ?
+>  }
+> @@ -3446,6 +3447,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>  
+>  	sync_lapic_to_cr8(vcpu);
+>  
+> +	svm->vmcb->control.asid = svm->asid;
 
-> > After debugging, I found it is because
-> > set_memory_ro()/set_memory_nx()/... can't handle the 4KB-aligned
-> > address if it is a 2MB mapping address.
-> > For example, if we gave 0xffffffe000001000 and this address is in a
-> > PMD mapping which is 2MB mapping, it will set the page attributes from
-> > 0xffffffe000000000.
-> > And this caused the CPU hotplug failed because it is in head.text secti=
-on.
-> >
-> > #0  pageattr_pmd_entry (pmd=3D0xffffffe0ffdff000,
-> > addr=3D18446743936270602240, next=3D18446743936270766080,
-> >     walk=3D0xffffffe007e03e98) at arch/riscv/mm/pageattr.c:70
-> > 70              pmd_t val =3D READ_ONCE(*pmd);
-> > =3D> 0xffffffe007005e96 <pageattr_pmd_entry+0>:   41 11   addi    sp,sp=
-,-16
-> >    0xffffffe007005e98 <pageattr_pmd_entry+2>:   22 e4   sd      s0,8(sp=
-)
-> >    0xffffffe007005e9a <pageattr_pmd_entry+4>:   00 08   addi    s0,sp,1=
-6
-> >    0xffffffe007005e9c <pageattr_pmd_entry+6>:   1c 61   ld      a5,0(a0=
-)
-> > (gdb) p/x addr
-> > $21 =3D 0xffffffe000001000
-> >
-> > # cat /sys/kernel/debug/kernel_page_tables
-> > ---[ Fixmap start ]---
-> > 0xffffffcefef00000-0xffffffceff000000    0x0000000082200000         1M
-> > PTE     D A . . . W R V
-> > ---[ Fixmap end ]---
-> > ---[ PCI I/O start ]---
-> > ---[ PCI I/O end ]---
-> > ---[ vmalloc() area ]---
-> > 0xffffffd000090000-0xffffffd000093000    0x00000001741bb000        12K
-> > PTE     D A . . . W R V
-> > 0xffffffdffffbb000-0xffffffdffffbe000    0x0000000175f97000        12K
-> > PTE     D A . . . W R V
-> > 0xffffffdffffcc000-0xffffffdffffcf000    0x0000000175f9a000        12K
-> > PTE     D A . . . W R V
-> > 0xffffffdffffdd000-0xffffffdffffe0000    0x0000000175f9d000        12K
-> > PTE     D A . . . W R V
-> > 0xffffffdffffee000-0xffffffdfffff1000    0x0000000175fa0000        12K
-> > PTE     D A . . . W R V
-> > ---[ vmalloc() end ]---
-> > ---[ Linear mapping ]---
-> > 0xffffffe000000000-0xffffffe007000000    0x0000000080200000       112M
-> > PMD     D A . . X W R V
-> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-^^^^^^^^^^^^^^^^^^^^^
-> > 0xffffffe007000000-0xffffffe007800000    0x0000000087200000         8M
-> > PMD     D A . . X . R V
-> > 0xffffffe007800000-0xffffffe007e00000    0x0000000087a00000         6M
-> > PMD     D A . . . . R V
-> > 0xffffffe007e00000-0xffffffe0ffe00000    0x0000000088000000      3968M
-> > PMD     D A . . . W R V
-> > #
-> >
-> > Any idea?
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
->
->
->
-> --
-> Regards,
-> Atish
+Related to the above, handling this in vcpu_run() feels wrong.  There really
+shouldn't be a need to track the ASID.  vmcb01 will always exist if vmcb02
+exits, e.g. the ASID can be copied and marked dirty when loading vmcb02.
+For new_asid(), it can unconditionally update vmcb01 and conditionally update
+vmcb02.
 
-
-
---=20
-Regards,
-Atish
+>  	svm->vmcb->save.cr2 = vcpu->arch.cr2;
+>  
+>  	/*
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index a798e1731709..862f0d2405e8 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -104,6 +104,7 @@ struct vcpu_svm {
+>  	struct vmcb *vmcb;
+>  	unsigned long vmcb_pa;
+>  	struct svm_cpu_data *svm_data;
+> +	u32 asid;
+>  	uint64_t asid_generation;
+>  	uint64_t sysenter_esp;
+>  	uint64_t sysenter_eip;
+> -- 
+> 2.20.1
+> 
