@@ -2,180 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBDF28C9B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2B928C9B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390781AbgJMIDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 04:03:02 -0400
-Received: from mga11.intel.com ([192.55.52.93]:8196 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390718AbgJMICz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 04:02:55 -0400
-IronPort-SDR: widGY6HnllUU8YE9NOMpnHEoDfRfOq4TEcNOcb/3EomO1jpX5TIPu/J19RLhr78brlFHK33OJF
- id3poWlNsIPQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="162406069"
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="162406069"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 01:02:53 -0700
-IronPort-SDR: q6YXQhjLdocZBRjJV11X2KMYWY8bKyHpHzhYWvYNJlidELNEYQWOZC1FO2VV/4LBkpLq0NyigQ
- ikVQs2IQ4ZKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="299531283"
-Received: from lkp-server02.sh.intel.com (HELO b65d7201e80c) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Oct 2020 01:02:52 -0700
-Received: from kbuild by b65d7201e80c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kSFGl-00003P-Cc; Tue, 13 Oct 2020 08:02:51 +0000
-Date:   Tue, 13 Oct 2020 16:02:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/kprobes] BUILD SUCCESS
- 6e426e0fcd20ce144bb93e00b70df51e9f2e08c3
-Message-ID: <5f855f22.XrwxZVM8quhmzYRm%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2390717AbgJMICy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390591AbgJMICr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 04:02:47 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E78C0613D0;
+        Tue, 13 Oct 2020 01:02:47 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id t25so26879474ejd.13;
+        Tue, 13 Oct 2020 01:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Nlo+ICeKz+qCTf+x4IerNhRGMWRTbpLUIF6/RSAckKo=;
+        b=fFXcbyA5ROqDDWnjwA2mdrpNGdVVXDmgbZtslUt9b1Er8Lgmb6GdDKv4m2RuLU9U8d
+         MKUl8XffdlKiyGBaxVMMHBRQFZaLzi0t2XYcjrvencmZAXJ4RkZflp4wOXt/2A65KT2v
+         sIlQH9TPwnkXo8u/UBJHiSAp0Y/UQAppjf+CaglLysf9PnM3dcVYRtpMI28BJ5d4EAoB
+         72YZG+jVqgMvuF2gbtsk2TpgPR1A9u9vxbVpSaqznar9xMVMxufDPx6wmWvw9twn1PCH
+         SL66tYIoLxWgFr9OxtoRvfR/L8fwPl2AC8eyGijNNq+f/CZ06qYbFZHzkkx7WAUI/nNK
+         O2PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Nlo+ICeKz+qCTf+x4IerNhRGMWRTbpLUIF6/RSAckKo=;
+        b=cSXRHpbjblPt9IDVDdOH1hIezpaG42bhsXofG0kwesplgVvH+oS6Ag1WGRPY1uiXvX
+         Dyze/ShUQFMMliFtGrj3Fh/ko7923snE0nHRAg3eqVsc3ewOzl8wEggy3LRQYvmjLrRQ
+         jz8o1pDqWwJcLrVtIrct5rj/AHqH3x7oOOEGaMdPhh4H7yxw2BG5XhDvvC+z7hfXPsD8
+         IbVHD8AUylxqtZ4IPM4VJzWQS4eju6ADn/TJLOebJpn7zelE6uhrzp1H3ail18prtBFd
+         6PHmDVyX03XtmOew5gaGT50RXWMqhlYJ/xHQ8Gh4q4lAKFyEq5PeMB4giNj4oz+O4kUL
+         QDpQ==
+X-Gm-Message-State: AOAM5311OJUgUE+QZfUY9lF73MHkvr2oYccMIgKB2Bndj5ZrcP+KZchr
+        vfEDej5+108L5imIfvgS7X8=
+X-Google-Smtp-Source: ABdhPJyLFkBZSBBn/rB2G6MUdeWoKMj+AJ4gkZlhm7FuDYga4WD8VPHx68gUCzdFaDVqLWTGbDRsCA==
+X-Received: by 2002:a17:906:453:: with SMTP id e19mr33287437eja.391.1602576166191;
+        Tue, 13 Oct 2020 01:02:46 -0700 (PDT)
+Received: from felia ([2001:16b8:2d05:8100:95ae:bd1a:3e4e:4242])
+        by smtp.gmail.com with ESMTPSA id r11sm11970080edi.91.2020.10.13.01.02.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 01:02:45 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Tue, 13 Oct 2020 10:02:43 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
+        linux-usb@vger.kernel.org
+Subject: Re: [linux-safety] [PATCH] usb: host: ehci-sched: add comment about
+ find_tt() not returning error
+In-Reply-To: <20201013073524.GA1674118@kroah.com>
+Message-ID: <alpine.DEB.2.21.2010130957110.14590@felia>
+References: <20201011205008.24369-1-sudipm.mukherjee@gmail.com> <alpine.DEB.2.21.2010121550300.6487@felia> <20201012145710.GA631710@rowland.harvard.edu> <alpine.DEB.2.21.2010121659040.6487@felia> <20201012151816.GA1559916@kroah.com> <alpine.DEB.2.21.2010122022250.17866@felia>
+ <20201013052317.GB330398@kroah.com> <alpine.DEB.2.21.2010130725370.14590@felia> <20201013063636.GA1663576@kroah.com> <alpine.DEB.2.21.2010130850410.14590@felia> <20201013073524.GA1674118@kroah.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  perf/kprobes
-branch HEAD: 6e426e0fcd20ce144bb93e00b70df51e9f2e08c3  kprobes: Replace rp->free_instance with freelist
 
-elapsed time: 723m
 
-configs tested: 116
-configs skipped: 2
+On Tue, 13 Oct 2020, Greg Kroah-Hartman wrote:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> On Tue, Oct 13, 2020 at 09:16:27AM +0200, Lukas Bulwahn wrote:
+> > Some others actually believe that the use of static analysis tools 
+> > increase software quality and ONLY IF a static analysis tool is used, a 
+> > specific level of software quality is achieved and they want to prove 
+> > that the software reaches a certain level that way. (I do not 
+> > understand that argument but some have been repeating it quite often 
+> > around me. This argument seems to come from a specific interpretation of 
+> > safety standards that claim to have methods to predict the absense of 
+> > bugs up to a certain confidence.)
+> 
+> So do those others also audit the static analysis tools to ensure that
+> they actually work as they "think" they do?  If not, then their
+> requirement is pretty pointless :)
+>
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                    sam440ep_defconfig
-sh                          rsk7264_defconfig
-powerpc                       ebony_defconfig
-arm                            mmp2_defconfig
-arm                           spitz_defconfig
-powerpc                  iss476-smp_defconfig
-s390                          debug_defconfig
-powerpc                      cm5200_defconfig
-sh                          rsk7201_defconfig
-arm                       mainstone_defconfig
-csky                                defconfig
-openrisc                 simple_smp_defconfig
-h8300                            allyesconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                   sh7770_generic_defconfig
-arm                         palmz72_defconfig
-arm                      integrator_defconfig
-arm                        multi_v7_defconfig
-arm                              alldefconfig
-arm                      tct_hammer_defconfig
-mips                         db1xxx_defconfig
-arm                        realview_defconfig
-mips                           ip32_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                            qcom_defconfig
-sh                        sh7785lcr_defconfig
-m68k                        stmark2_defconfig
-xtensa                  cadence_csp_defconfig
-arm                             pxa_defconfig
-sh                          rsk7203_defconfig
-mips                            ar7_defconfig
-powerpc                   motionpro_defconfig
-mips                        workpad_defconfig
-parisc                              defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                  mpc866_ads_defconfig
-arm                         at91_dt_defconfig
-m68k                         amcore_defconfig
-sh                          lboxre2_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201012
-i386                 randconfig-a006-20201012
-i386                 randconfig-a001-20201012
-i386                 randconfig-a003-20201012
-i386                 randconfig-a004-20201012
-i386                 randconfig-a002-20201012
-x86_64               randconfig-a016-20201012
-x86_64               randconfig-a015-20201012
-x86_64               randconfig-a012-20201012
-x86_64               randconfig-a013-20201012
-x86_64               randconfig-a014-20201012
-x86_64               randconfig-a011-20201012
-i386                 randconfig-a016-20201012
-i386                 randconfig-a015-20201012
-i386                 randconfig-a013-20201012
-i386                 randconfig-a012-20201012
-i386                 randconfig-a011-20201012
-i386                 randconfig-a014-20201012
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Yes, they do audit the tools, but those audits and why that proves the 
+absense of a bug class is yet a completely different story...
 
-clang tested configs:
-x86_64               randconfig-a004-20201012
-x86_64               randconfig-a002-20201012
-x86_64               randconfig-a006-20201012
-x86_64               randconfig-a001-20201012
-x86_64               randconfig-a003-20201012
-x86_64               randconfig-a005-20201012
-x86_64               randconfig-a016-20201013
-x86_64               randconfig-a015-20201013
-x86_64               randconfig-a012-20201013
-x86_64               randconfig-a013-20201013
-x86_64               randconfig-a014-20201013
-x86_64               randconfig-a011-20201013
+> > I am doing it for the fun and learning about tools, and I am not such a 
+> > believer but those others would be forced by their beliefs until they 
+> > understand what static analysis tools and their janitors really already 
+> > contribute to the kernel development and where the real gaps might be.
+> > 
+> > I hope that helps to get a bit of the motivation. Consider us 
+> > kernel newbies :)
+> 
+> Watch out, sending patches to subsystems to "fix" issues that really
+> are not real problems is a sure way to get your patches rejected and
+> make maintainers grumpy.
+> 
+> I recommend starting out with code that we all "know" needs help, in
+> drivers/staging/ for stuff like this, so you can learn the process
+> better, as well as start to understand the limitations of your tools
+> better.
+> 
+> good luck!
+>
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks for the advice. We will need to learn about the limitations and 
+what is worth a patch and what is not and we will need luck on the way 
+learning that.
+
+Lukas
