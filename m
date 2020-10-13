@@ -2,153 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B07F28D157
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885BE28D15D
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730513AbgJMPgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgJMPgc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:36:32 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1539FC0613D0
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:36:32 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id az3so51571pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 08:36:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ox95qvJhDnil9bz6yooXTHbNTLkLwItEwWWK2Vi73M=;
-        b=VkeuT8BUzhjPjsJacswMkrJ0NijklYP+nB3jOT+GvqiI3jx9FYGbjzyvaOrykMOTF2
-         nSwhF1EkJx4O34zdFgah/jIOv21/bjPnc+z3Khu3mqLcLmHy7NPih0fmH00mB3syuP9D
-         Kt9lm9OYx6UjIAyofJRA/M9Shp6L24sqIM1P9YbzIEW3opjnQZ3aIxUCL0Z3dTuphIjz
-         OsS5rI3XCbb+Dwx4D5qkxAfyNEO/8ZN5z+1fmfy2vB8UYG8+zCOsN7u9N65nDZfk4JBQ
-         MupQAZg3r9b28VEDDcm7XOnGPmt9tz8zLckQGUGSUVNoWyMcs1BL+0x5u2YJTOG0zo60
-         OLXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ox95qvJhDnil9bz6yooXTHbNTLkLwItEwWWK2Vi73M=;
-        b=jSQu9/kQO5QzX6OL+gz8qpA+poxOoype+f8Habnu2P1hrMx+G5C+r97vRuO6CHfoMg
-         N7mv9apbKXIRCHfT0qPk6W3lrsp1Fz1WpToszRcMoEzOesjvJoDu0o4hniEzLhjetqRm
-         j3oPfY7otylIDcSwfITMziqxTOMUClu2ZYi5M1rczsmTVcFfQWhG3GzvTEpYQxIRukLF
-         kZeQDYoj6NoDckJgcVIOvjJ7F5Y1LgtxB3LTFyvVaKi5/NJnZ3D/pRKO6dAi1YBCt6FS
-         tt5pO0YyjHzEtzLr/aftddoN+7Gqoo7ZyaKRKdIcIirM+grm0XPGcpPNM+h//9jTl1P/
-         rGtQ==
-X-Gm-Message-State: AOAM531tPL0lj4yzjdbPfnzF07jobgnKhr8TwGkV7L9hOzM9BAcBsCHx
-        I6a3tkCh8zOXCjD9Z5XM3ZNq2Q==
-X-Google-Smtp-Source: ABdhPJx8AJmn2NrpVgs33N+C6pPbGr20NVTb5i0f0/DACBLUktB2tjoItgXyeq3rsE7kjeb0EXkS2w==
-X-Received: by 2002:a17:90a:f617:: with SMTP id bw23mr278783pjb.95.1602603391282;
-        Tue, 13 Oct 2020 08:36:31 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.221.66])
-        by smtp.gmail.com with ESMTPSA id y124sm14083pfy.28.2020.10.13.08.36.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Oct 2020 08:36:30 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, shakeelb@google.com,
-        guro@fb.com, vbabka@suse.cz, laoar.shao@gmail.com,
-        songmuchun@bytedance.com, chris@chrisdown.name
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] mm: memcontrol: Remove unused mod_memcg_obj_state()
-Date:   Tue, 13 Oct 2020 23:35:04 +0800
-Message-Id: <20201013153504.92602-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1730945AbgJMPhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730637AbgJMPhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:37:11 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEEFB251DD;
+        Tue, 13 Oct 2020 15:37:10 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 11:37:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/7] tracing: Add synthetic event error logging
+Message-ID: <20201013113709.09531d7c@gandalf.local.home>
+In-Reply-To: <ed099c66df13b40cfc633aaeb17f66c37a923066.1602598160.git.zanussi@kernel.org>
+References: <cover.1602598160.git.zanussi@kernel.org>
+        <ed099c66df13b40cfc633aaeb17f66c37a923066.1602598160.git.zanussi@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit:
+On Tue, 13 Oct 2020 09:17:55 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-  991e7673859e ("mm: memcontrol: account kernel stack per node")
+> +static int save_cmdstr(int argc, const char *name, const char **argv)
+> +{
+> +        struct seq_buf s;
+> +	char *buf;
+> +	int i;
+> +
+> +        buf = kzalloc(MAX_DYNEVENT_CMD_LEN, GFP_KERNEL);
+> +        if (!buf)
+> +                return -ENOMEM;
+> +
+> +        seq_buf_init(&s, buf, MAX_DYNEVENT_CMD_LEN);
+> +
+> +        seq_buf_puts(&s, name);
+> +
+> +        for (i = 0; i < argc; i++) {
+> +                seq_buf_putc(&s, ' ');
+> +                seq_buf_puts(&s, argv[i]);
+> +        }
+> +
+> +        if (!seq_buf_buffer_left(&s)) {
+> +                synth_err(SYNTH_ERR_CMD_TOO_LONG, 0);
+> +                kfree(buf);
+> +                return -EINVAL;
+> +        }
+> +        buf[s.len] = 0;
+> +        last_cmd_set(buf);
+> +
+> +        kfree(buf);
+> +        return 0;
+> +}
 
-There is no user of the mod_memcg_obj_state(). This patch just remove
-it. Also rework type of the idx parameter of the mod_objcg_state()
-from int to enum node_stat_item.
+I see you cut and pasted this ;-)
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h |  6 ------
- mm/memcontrol.c            | 11 -----------
- mm/slab.h                  |  4 ++--
- 3 files changed, 2 insertions(+), 19 deletions(-)
+I fixed up the whitespace.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index a1395b584947..d7e339bf72dc 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -795,8 +795,6 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			int val);
- void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val);
- 
--void mod_memcg_obj_state(void *p, int idx, int val);
--
- static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
- 					 int val)
- {
-@@ -1245,10 +1243,6 @@ static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
- 	mod_node_page_state(page_pgdat(page), idx, val);
- }
- 
--static inline void mod_memcg_obj_state(void *p, int idx, int val)
--{
--}
--
- static inline
- unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- 					    gfp_t gfp_mask,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2124ded698b2..1337775b04f3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -885,17 +885,6 @@ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
- 	rcu_read_unlock();
- }
- 
--void mod_memcg_obj_state(void *p, int idx, int val)
--{
--	struct mem_cgroup *memcg;
--
--	rcu_read_lock();
--	memcg = mem_cgroup_from_obj(p);
--	if (memcg)
--		mod_memcg_state(memcg, idx, val);
--	rcu_read_unlock();
--}
--
- /**
-  * __count_memcg_events - account VM events in a cgroup
-  * @memcg: the memory cgroup
-diff --git a/mm/slab.h b/mm/slab.h
-index 4a24e1702923..725a0bb8b317 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -204,7 +204,7 @@ ssize_t slabinfo_write(struct file *file, const char __user *buffer,
- void __kmem_cache_free_bulk(struct kmem_cache *, size_t, void **);
- int __kmem_cache_alloc_bulk(struct kmem_cache *, gfp_t, size_t, void **);
- 
--static inline int cache_vmstat_idx(struct kmem_cache *s)
-+static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
- {
- 	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
- 		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
-@@ -294,7 +294,7 @@ static inline struct obj_cgroup *memcg_slab_pre_alloc_hook(struct kmem_cache *s,
- 
- static inline void mod_objcg_state(struct obj_cgroup *objcg,
- 				   struct pglist_data *pgdat,
--				   int idx, int nr)
-+				   enum node_stat_item idx, int nr)
- {
- 	struct mem_cgroup *memcg;
- 	struct lruvec *lruvec;
--- 
-2.20.1
-
+-- Steve
