@@ -2,312 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE68728C8C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C1B28C8C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 08:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389762AbgJMGqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 02:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
+        id S2389774AbgJMGrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 02:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389346AbgJMGqb (ORCPT
+        with ESMTP id S2389346AbgJMGrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 02:46:31 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ABFC0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 23:46:31 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id q26so15308349qtb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 23:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5irtA2jkHQbU2ITZvu6wNBUQHWFzNw08dNtFmsE76sw=;
-        b=LpseO/xAWOX3mkoIoTuks/bdbwz15CH0CJwR5ZPVKnvIIMBfVmEe8SBzWiCZasDfM/
-         i4BU/k5y6wiR74vd1HKdDUBzUJwzu7UIL6Hkjd3t2QJfq589kgnd0TeJ4o66Z/jlT17T
-         7Mhk53lWSbrjQTqkFFUpt2zRHm8xJ+iGpzkG3pRy+ZjUW4Ilp2Ab5GRMqvwfZkoGp2Og
-         Ri4ZcNKhfSrasJnH09HxlUlMKum7aEFZW0XgklPRK157gDzgnLFZBCoaW4llQIb02Uw6
-         veTWsgbTHw8q4TKr0yyix7hgsgxSWDXeAbrpwEKC1qAbXKidlgqIGR1rWMnNts8BxfJp
-         cI4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5irtA2jkHQbU2ITZvu6wNBUQHWFzNw08dNtFmsE76sw=;
-        b=uZtZm9Hu1dr7jIL+sbMjaUTMj0dSuFfyudIw0IDWmSFMkOzC8dpAAzBTxVQUHvN875
-         HAsoQnnbh8+LRP8JrUu/WrspW0CP+iyR4H47DdGybmN8e+Jjh1PhJBNe3htVwgWPaZbY
-         ynbiU9oVkh4uegxxm73vk+uOXFPdEauZFGMtdb4PH9tqP8EV8eyoeDCOZdSE/zWg016e
-         IKuDHWyIbOzyjrBgP0llX1ZNd10JNB4jDRcnyVMElaa62gC8YDBTVfQ41pj1x+hBVmdH
-         EU5Lq796uRH8msGrOZMfpoALlV9zPFPMIZQ5YRbmP4Pn1uAvwc+/ID3m91fx5Ok/QZHE
-         6pDw==
-X-Gm-Message-State: AOAM533RocYILUqJnhm0oJLyiPqEx+93h1GLsaAHJvLIFmwD5oSyjReo
-        zFvtRhMNoTPv/3lQic2Si5V6xHb/kR1HoentNQJHZw==
-X-Google-Smtp-Source: ABdhPJzg+or6BTg4jL1yNKAdtTwKyhUmU6Bm2SpDJ1ay+mcuzBiAWglV+PzjVliadqdz3jRq11YdjhvOtXTJdqzNp84=
-X-Received: by 2002:ac8:22a8:: with SMTP id f37mr8642814qta.57.1602571590305;
- Mon, 12 Oct 2020 23:46:30 -0700 (PDT)
+        Tue, 13 Oct 2020 02:47:32 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D8AC0613D0;
+        Mon, 12 Oct 2020 23:47:32 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 7652F1F44489
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
+        kuhanh.murugasen.krishnan@intel.com,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/18] Add Hantro regmap and VC8000 h264 decode support
+In-Reply-To: <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
+References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
+ <97e84bb5-972a-091d-a159-6ab1151f17ab@kwiboo.se>
+Date:   Tue, 13 Oct 2020 09:48:29 +0300
+Message-ID: <87r1q28vuq.fsf@iwork.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-References: <c229372e5526b84ed0542028437111c2eb83d55f.1602522784.git.andreyknvl@google.com>
-In-Reply-To: <c229372e5526b84ed0542028437111c2eb83d55f.1602522784.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 13 Oct 2020 08:46:18 +0200
-Message-ID: <CACT4Y+aX-LN=tz2Xu3509K1tfrGiLWWKZQwMtRCg059whv-Gvg@mail.gmail.com>
-Subject: Re: [PATCH v4] kcov, usb: specify contexts for remote coverage sections
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 7:17 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Currently there's a KCOV remote coverage collection section in
-> __usb_hcd_giveback_urb(). Initially that section was added based on the
-> assumption that usb_hcd_giveback_urb() can only be called in interrupt
-> context as indicated by a comment before it. This is what happens when
-> syzkaller is fuzzing the USB stack via the dummy_hcd driver.
->
-> As it turns out, it's actually valid to call usb_hcd_giveback_urb() in task
-> context, provided that the caller turned off the interrupts; USB/IP does
-> exactly that. This can lead to a nested KCOV remote coverage collection
-> sections both trying to collect coverage in task context. This isn't
-> supported by KCOV, and leads to a WARNING.
+Hi Jonas,
 
-How does this recursion happen? There is literal recursion in the task
-context? A function starts a remote coverage section and calls another
-function that also starts a remote coverage section?
+On Mon, 12 Oct 2020, Jonas Karlman <jonas@kwiboo.se> wrote:
+> Hi, 
+> 
+> On 2020-10-12 22:59, Adrian Ratiu wrote: 
+>> Dear all,  This series introduces a regmap infrastructure for 
+>> the Hantro driver which is used to compensate for different 
+>> HW-revision register layouts.  To justify it h264 decoding 
+>> capability is added for newer VC8000 chips.   This is a gradual 
+>> conversion to the new infra - a complete conversion would have 
+>> been very big and I do not have all the HW yet to test (I'm 
+>> expecting a RK3399 shipment next week though ;). I think 
+>> converting the h264 decoder provides a nice blueprint for how 
+>> the other codecs can be converted and enabled for different HW 
+>> revisions.   The end goal of this is to make the driver more 
+>> generic and eliminate entirely custom boilerplate like `struct 
+>> hantro_reg` or headers with core-specific bit manipulations 
+>> like `hantro_g1_regs.h` and instead rely on the well-tested 
+>> albeit more verbose regmap subsytem.   To give just two 
+>> examples of bugs which are easily discovered by using more 
+>> verbose regmap fields (very easy to compare with the 
+>> datasheets) instead of relying on bit-magic tricks: 
+>> G1_REG_DEC_CTRL3_INIT_QP(x) was off-by-1 and the wrong 
+>> .clk_gate bit was set in hantro_postproc.c.   Anyway, this 
+>> series also extends the MMIO regmap API to allow relaxed writes 
+>> for the theoretical reason that avoiding unnecessary 
+>> membarriers leads to less CPU usage and small improvements to 
+>> battery life. However, in practice I could not measure 
+>> differences between relaxed/non-relaxed IO, so I'm on the fence 
+>> whether to keep or remove the relaxed calls.   What I could 
+>> masure is the performance impact of adding more sub-reg field 
+>> acesses: a constant ~ 20 microsecond bump per G1 h264 
+>> frame. This is acceptable considering the total time to decode 
+>> a frame takes three orders of magnitude longer, 
+>> i.e. miliseconds ranges, depending on the frame size and 
+>> bitstream params, so it is an acceptable trade-off to have a 
+>> more generic driver. 
+> 
+> In the RK3399 variant all fields use completely different 
+> positions so in order to make the driver fully generic all 
+> around 145 sub-reg fields used for h264 needs to be converted, 
+> see [1] for a quick generation of field mappings used for h264 
+> decoding. 
+> 
+> Any indication on how the performance will be impacted with 145 
+> fields compared to around 20 fields used in this series? 
 
-Or is there recursion between task context and softirq context? But
-this should not happen if softirq's disabled around
-usb_hcd_giveback_urb call in task context...
+I'm aware of the RK3399 bigger layout divergence and have some 
+commits converting more of the reg fields, but not all that is 
+required for h264 on rk3399. I haven't seen a huge perf 
+degradation but more measurements are needed, basically it depends 
+on how often we go from writing a reg once to multiple times due 
+to splitting.
 
-We do want to collect coverage from usb_hcd_giveback_urb in the task
-context eventually, right?
-Is this API supposed to be final? Or it only puts down fire re the warning?
+I tried some benchmarks using regmap caching (both the default 
+backends provided by the regmap subsystem, and a custom one I 
+wrote) but they were not helping, perhaps if we had more fields 
+then that would have more of an impact.
 
-I don't understand how this API can be used in other contexts.
-Let's say there is recursion in task context and we want to collect
-coverage in task context (the function is only called in task
-context). This API won't help.
-Let's say a function is called from both task and softirq context and
-these can recurse (softirq arrive while in remote task section). This
-API won't help. It will force to choose either task or softirq, but
-let's say you can't make that choice because they are equally
-important.
-The API helps to work around the unimplemented recursion in KCOV, but
-it's also specific to this particular case. It's not necessary that
-recursion is specific to one context only and it's not necessary that
-a user can choose to sacrifice one of the contexts.
-Also, if we support recursion in one way or another, we will never
-want to use this API, right?
+(btw some good news is I'm having a RK3399 SoC in the mail for an 
+unrelated project and expect to receive it soon :D)
 
+IMO there will always be a trade-off between optimizing the driver 
+to squeeze the most perf out of the HW, eg optimize reg writes at 
+low microsec level (which I think here is unnecessary) and making 
+it more generic to support more HW.
 
+In this case a fundamental question we need to ask ourselves is if 
+the RK3399 "looks like another/different-enough HW" due to its 
+bigger reg shuffling to warrant a separate driver or 
+driver-within-a-driver architecture instead trying to bring it 
+into the fold with the others, possibly degrading perf for 
+everyone. I guess we'll have to see some benchmark numbers and an 
+actual h264 implementation before deciding how to proceed with 
+RK3399.
 
-> The approach this patch takes is to add another set of kcov_remote_*()
-> callbacks that specify the context they are supposed to be executed in.
-> If the current context doesn't match the mask provided to a callback,
-> that callback is ignored. KCOV currently only supports collecting remote
-> coverage in two contexts: task and softirq. This patch constraints KCOV to
-> only collect coverage from __usb_hcd_giveback_urb() when it's executed in
-> softirq context.
+> 
+> Another issue with RK3399 variant is that some fields use 
+> different position depending on the codec used, e.g. two 
+> dec_ref_frames in [2].  Should we use codec specific field maps? 
+> or any other suggestion on how we can handle such case?
+
+Yes, codec specific fields would be one idea, but I'd try to avoid 
+it if possible to avoid unnecessary field definitions.
+
+The regmap field API and config we currently use are just a flat 
+structs (see hantro_regmap.[h|c]) but it doesn't have to be like 
+that. Maybe we could organize it a bit better and in the future 
+have some codec-level configs going on due to the regmap subsystem 
+allowing de-coupling of the API (struct regmap_field) from the reg 
+defs/configs (struct reg_field).
+
+That is just an idea of the top of my head :) Will have to think a 
+bit more about how to handle that specific use case in the 
+future. Thanks!
+
 >
-> As the result, the coverage from USB/IP related usb_hcd_giveback_urb()
-> calls won't be collected, but the WARNING is fixed.
+> [1] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/8b88d94d2ed966c7d88d9a735c0c97368eb6c92d
+> [2] https://github.com/Kwiboo/rockchip-vpu-regtool/blob/master/rk3399_dec_regs.c#L1065
+> [3] https://github.com/Kwiboo/rockchip-vpu-regtool/commit/9498326296445a9ce153b585cc48e0cea05d3c93
 >
-> A potential future improvement would be to support nested remote coverage
-> collection sections, but this patch doesn't address that.
+> Best regards,
+> Jonas
 >
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Acked-by: Marco Elver <elver@google.com>
-> ---
->
-> Changes v3->v4:
-> - Drop unnecessary returns from kcov callbacks.
->
-> ---
->  Documentation/dev-tools/kcov.rst |  6 ++++++
->  drivers/usb/core/hcd.c           |  4 ++--
->  include/linux/kcov.h             | 31 +++++++++++++++++++++++++++++--
->  kernel/kcov.c                    | 26 +++++++++++++++++++-------
->  4 files changed, 56 insertions(+), 11 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kcov.rst b/Documentation/dev-tools/kcov.rst
-> index 8548b0b04e43..2c0f58988512 100644
-> --- a/Documentation/dev-tools/kcov.rst
-> +++ b/Documentation/dev-tools/kcov.rst
-> @@ -235,6 +235,12 @@ saved to the kcov_handle field in the current task_struct and needs to be
->  passed to the newly spawned threads via custom annotations. Those threads
->  should in turn be annotated with kcov_remote_start()/kcov_remote_stop().
->
-> +Besides the annotations that only accept a handle, there are also
-> +kcov_remote_start_context()/kcov_remote_stop_context() that accept a
-> +context mask. This mask describes the contexts in which these annotations
-> +should be applied. E.g. specifying KCOV_CONTEXT_SOFTIRQ will result in the
-> +corresponding annotations being ignored in any context other than softirq.
-> +
->  Internally kcov stores handles as u64 integers. The top byte of a handle
->  is used to denote the id of a subsystem that this handle belongs to, and
->  the lower 4 bytes are used to denote the id of a thread instance within
-> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> index a33b849e8beb..ea93d9ebcb2e 100644
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
-> @@ -1646,9 +1646,9 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
->
->         /* pass ownership to the completion handler */
->         urb->status = status;
-> -       kcov_remote_start_usb((u64)urb->dev->bus->busnum);
-> +       kcov_remote_start_usb_softirq((u64)urb->dev->bus->busnum);
->         urb->complete(urb);
-> -       kcov_remote_stop();
-> +       kcov_remote_stop_softirq();
->
->         usb_anchor_resume_wakeups(anchor);
->         atomic_dec(&urb->use_count);
-> diff --git a/include/linux/kcov.h b/include/linux/kcov.h
-> index a10e84707d82..a9c025c3e1df 100644
-> --- a/include/linux/kcov.h
-> +++ b/include/linux/kcov.h
-> @@ -22,6 +22,10 @@ enum kcov_mode {
->         KCOV_MODE_TRACE_CMP = 3,
->  };
->
-> +#define KCOV_CONTEXT_TASK      (1u << 0)
-> +#define KCOV_CONTEXT_SOFTIRQ   (1u << 1)
-> +#define KCOV_CONTEXT_MASK      (KCOV_CONTEXT_TASK | KCOV_CONTEXT_SOFTIRQ)
-> +
->  #define KCOV_IN_CTXSW  (1 << 30)
->
->  void kcov_task_init(struct task_struct *t);
-> @@ -38,10 +42,21 @@ do {                                                \
->  } while (0)
->
->  /* See Documentation/dev-tools/kcov.rst for usage details. */
-> -void kcov_remote_start(u64 handle);
-> -void kcov_remote_stop(void);
-> +
-> +void kcov_remote_start_context(u64 handle, unsigned int context);
-> +void kcov_remote_stop_context(unsigned int context);
->  u64 kcov_common_handle(void);
->
-> +static inline void kcov_remote_start(u64 handle)
-> +{
-> +       kcov_remote_start_context(handle, KCOV_CONTEXT_MASK);
-> +}
-> +
-> +static inline void kcov_remote_stop(void)
-> +{
-> +       kcov_remote_stop_context(KCOV_CONTEXT_MASK);
-> +}
-> +
->  static inline void kcov_remote_start_common(u64 id)
->  {
->         kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_COMMON, id));
-> @@ -52,6 +67,16 @@ static inline void kcov_remote_start_usb(u64 id)
->         kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id));
->  }
->
-> +static inline void kcov_remote_start_usb_softirq(u64 id)
-> +{
-> +       kcov_remote_start_context(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id), KCOV_CONTEXT_SOFTIRQ);
-> +}
-> +
-> +static inline void kcov_remote_stop_softirq(void)
-> +{
-> +       kcov_remote_stop_context(KCOV_CONTEXT_SOFTIRQ);
-> +}
-> +
->  #else
->
->  static inline void kcov_task_init(struct task_struct *t) {}
-> @@ -66,6 +91,8 @@ static inline u64 kcov_common_handle(void)
->  }
->  static inline void kcov_remote_start_common(u64 id) {}
->  static inline void kcov_remote_start_usb(u64 id) {}
-> +static inline void kcov_remote_start_usb_softirq(u64 id) {}
-> +static inline void kcov_remote_stop_softirq(void) {}
->
->  #endif /* CONFIG_KCOV */
->  #endif /* _LINUX_KCOV_H */
-> diff --git a/kernel/kcov.c b/kernel/kcov.c
-> index 6b8368be89c8..3ccdbe060f47 100644
-> --- a/kernel/kcov.c
-> +++ b/kernel/kcov.c
-> @@ -808,7 +808,8 @@ static void kcov_remote_softirq_stop(struct task_struct *t)
->         }
->  }
->
-> -void kcov_remote_start(u64 handle)
-> +/* Also see kcov_remote_start() defined in include/linux/kcov.h. */
-> +void kcov_remote_start_context(u64 handle, unsigned int context)
->  {
->         struct task_struct *t = current;
->         struct kcov_remote *remote;
-> @@ -821,7 +822,11 @@ void kcov_remote_start(u64 handle)
->
->         if (WARN_ON(!kcov_check_handle(handle, true, true, true)))
->                 return;
-> -       if (!in_task() && !in_serving_softirq())
-> +       if (WARN_ON((context & ~KCOV_CONTEXT_MASK) || !context))
-> +               return;
-> +       if (in_task() && !(context & KCOV_CONTEXT_TASK))
-> +               return;
-> +       if (in_serving_softirq() && !(context & KCOV_CONTEXT_SOFTIRQ))
->                 return;
->
->         local_irq_save(flags);
-> @@ -894,7 +899,7 @@ void kcov_remote_start(u64 handle)
->         local_irq_restore(flags);
->
->  }
-> -EXPORT_SYMBOL(kcov_remote_start);
-> +EXPORT_SYMBOL(kcov_remote_start_context);
->
->  static void kcov_move_area(enum kcov_mode mode, void *dst_area,
->                                 unsigned int dst_area_size, void *src_area)
-> @@ -951,8 +956,11 @@ static void kcov_move_area(enum kcov_mode mode, void *dst_area,
->         }
->  }
->
-> -/* See the comment before kcov_remote_start() for usage details. */
-> -void kcov_remote_stop(void)
-> +/*
-> + * Also see kcov_remote_stop() defined in include/linux/kcov.h.
-> + * See the comment before kcov_remote_start_context() for usage details.
-> + */
-> +void kcov_remote_stop_context(unsigned int context)
->  {
->         struct task_struct *t = current;
->         struct kcov *kcov;
-> @@ -962,7 +970,11 @@ void kcov_remote_stop(void)
->         int sequence;
->         unsigned long flags;
->
-> -       if (!in_task() && !in_serving_softirq())
-> +       if (WARN_ON((context & ~KCOV_CONTEXT_MASK) || !context))
-> +               return;
-> +       if (in_task() && !(context & KCOV_CONTEXT_TASK))
-> +               return;
-> +       if (in_serving_softirq() && !(context & KCOV_CONTEXT_SOFTIRQ))
->                 return;
->
->         local_irq_save(flags);
-> @@ -1018,7 +1030,7 @@ void kcov_remote_stop(void)
->         /* Get in kcov_remote_start(). */
->         kcov_put(kcov);
->  }
-> -EXPORT_SYMBOL(kcov_remote_stop);
-> +EXPORT_SYMBOL(kcov_remote_stop_context);
->
->  /* See the comment before kcov_remote_start() for usage details. */
->  u64 kcov_common_handle(void)
-> --
-> 2.28.0.1011.ga647a8990f-goog
->
+>> 
+>> This has been tested on next-20201009 with imx8mq for G1 and an SoC with
+>> VC8000 which has not yet been added (hopefuly support lands soon).
+>> 
+>> Kind regards,
+>> Adrian
+>> 
+>> Adrian Ratiu (18):
+>>   media: hantro: document all int reg bits up to vc8000
+>>   media: hantro: make consistent use of decimal register notation
+>>   media: hantro: make G1_REG_SOFT_RESET Rockchip specific
+>>   media: hantro: add reset controller support
+>>   media: hantro: prepare clocks before variant inits are run
+>>   media: hantro: imx8mq: simplify ctrlblk reset logic
+>>   regmap: mmio: add config option to allow relaxed MMIO accesses
+>>   media: hantro: add initial MMIO regmap infrastructure
+>>   media: hantro: default regmap to relaxed MMIO
+>>   media: hantro: convert G1 h264 decoder to regmap fields
+>>   media: hantro: convert G1 postproc to regmap
+>>   media: hantro: add VC8000D h264 decoding
+>>   media: hantro: add VC8000D postproc support
+>>   media: hantro: make PP enablement logic a bit smarter
+>>   media: hantro: add user-selectable, platform-selectable H264 High10
+>>   media: hantro: rename h264_dec as it's not G1 specific anymore
+>>   media: hantro: add dump registers debug option before decode start
+>>   media: hantro: document encoder reg fields
+>> 
+>>  drivers/base/regmap/regmap-mmio.c             |   34 +-
+>>  drivers/staging/media/hantro/Makefile         |    3 +-
+>>  drivers/staging/media/hantro/hantro.h         |   79 +-
+>>  drivers/staging/media/hantro/hantro_drv.c     |   41 +-
+>>  drivers/staging/media/hantro/hantro_g1_regs.h |   92 +-
+>>  ...hantro_g1_h264_dec.c => hantro_h264_dec.c} |  237 +++-
+>>  drivers/staging/media/hantro/hantro_hw.h      |   23 +-
+>>  .../staging/media/hantro/hantro_postproc.c    |  144 ++-
+>>  drivers/staging/media/hantro/hantro_regmap.c  | 1015 +++++++++++++++++
+>>  drivers/staging/media/hantro/hantro_regmap.h  |  295 +++++
+>>  drivers/staging/media/hantro/hantro_v4l2.c    |    3 +-
+>>  drivers/staging/media/hantro/imx8m_vpu_hw.c   |   75 +-
+>>  drivers/staging/media/hantro/rk3288_vpu_hw.c  |    5 +-
+>>  include/linux/regmap.h                        |    5 +
+>>  14 files changed, 1795 insertions(+), 256 deletions(-)
+>>  rename drivers/staging/media/hantro/{hantro_g1_h264_dec.c => hantro_h264_dec.c} (58%)
+>>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.c
+>>  create mode 100644 drivers/staging/media/hantro/hantro_regmap.h
+>> 
