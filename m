@@ -2,129 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E6A28D26E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08D228D277
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 18:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgJMQld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 12:41:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727351AbgJMQld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 12:41:33 -0400
-Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43F3C252B7;
-        Tue, 13 Oct 2020 16:41:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602607292;
-        bh=0msVrQvAOZphZx72FStCi9QydHchqZLVK6UljUe25gk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=N04fmgQIl+uJB1yw3//AgVPz27tiQSFbKU+cvYQ1G7u59nN0r4o/dgdi9+E0JarXY
-         UKUBQovqWKo6mWHfJ8st0YMg4v5ad1UvNz9bPWG0XMy2Ih8Ze9IfuaMMwNmaVXDDNv
-         veeb9sAOVzJj367gxjWUmRwm5huCHwL0Unozu3Ho=
-Date:   Tue, 13 Oct 2020 09:41:31 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com,
-        rgoldwyn@suse.de, agruenba@redhat.com, linux-btrfs@vger.kernel.org
-Subject: [GIT PULL] iomap: new code for 5.10-rc1
-Message-ID: <20201013164131.GB9832@magnolia>
+        id S1728242AbgJMQmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 12:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727986AbgJMQmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 12:42:01 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3A4C0613D0
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 09:42:01 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id p15so271101wmi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 09:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HxknSNlLxQ0Cf80NE6o+Ttu+GCbA3nVGJK2vG3/NUKo=;
+        b=a3j0tAokZ9mEnR7d5NcNPAeHTZdxsywUAv+GDtF/6D2VQNPmwgGO+y/OvBjKJyW5nC
+         UvMTKLO9BdyyZRQc+Borz/6O+2xK2uQOWqwaHnudha/dDDrtypB2vC0+nz98URFHXIo5
+         M4eeE5/tFeBn6DFmxOmuJP7YCCCHjSUGOAXfWgLYiQbc56FbpfWK/7Etegj2bAeZDX/r
+         9/DssQkkw05nYdub/lIIU4bSNwQstlPdTobDwAbugl3KqmvdICZA0LuFXIShBeVBrH+g
+         L3/fJY6GnPVmkDJeWnhPDkw4l58M2mwvwPplu1U3+/49LN8gsWoXjkbzHZ8aI6xV4l1p
+         G2rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HxknSNlLxQ0Cf80NE6o+Ttu+GCbA3nVGJK2vG3/NUKo=;
+        b=sWOxbFoMODX8qbAcbwt7T3O5ns6+oU9q6ecPb17IOiK07jBcNsW2wIwzWCJsKpp5Ms
+         wowDcPMZRD4QMnfX/D+tFD3QvmYN4ExyKRHiYHU5CVbuqOa1/vDrmGaKBK43FIi5yZ3H
+         3/rgOfj8a/vzPys3D6IaEvUgbcfCgYwnPzaCpKbvBIwhNfYE0qaEsLEXHRUmIWx7QpyB
+         coxx5Bxd6BqzvZ9Dmq6MCbhUVh3Ab4NWphqMKiMvF9mBHexYv2q/sGrZ3z2OT8jSDuFY
+         Sv+Sl7n6nGM2v1V5DRGyKLiuQW6E4qWYXlN+530hclff/24/UlazZwUPXd/dddlagQav
+         MWsA==
+X-Gm-Message-State: AOAM532ZMeK75ESqps7S2rEZanXtE/ljjpxmx+8B9TzqV2a+DAebKnJQ
+        bM46R1/xwubjMN3eP2MJH68oxA==
+X-Google-Smtp-Source: ABdhPJz1AJdUEHwlqCKQu2VFzETBR0RcF0aJeL7zzmLl2h/a1dNVOx9E1CfgefURzLm8NFfys9mIrQ==
+X-Received: by 2002:a1c:3d46:: with SMTP id k67mr737320wma.150.1602607320088;
+        Tue, 13 Oct 2020 09:42:00 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f? ([2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f])
+        by smtp.googlemail.com with ESMTPSA id o3sm199694wru.15.2020.10.13.09.41.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 09:41:59 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] thermal: power allocator: change how estimation
+ code is called
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com, ionela.voinescu@arm.com
+References: <20201009135850.14727-1-lukasz.luba@arm.com>
+ <20201009135850.14727-3-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <371617d1-fb1c-8e7b-0a50-e3ea07a1f825@linaro.org>
+Date:   Tue, 13 Oct 2020 18:41:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20201009135850.14727-3-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 09/10/2020 15:58, Lukasz Luba wrote:
+> The sustainable power value might come from the Device Tree or can be
+> estimated in run time. There is no need to estimate every time when the
+> governor is called and temperature is high. Instead, store the estimated
+> value and make it available via standard sysfs interface so it can be
+> checked from the user-space. Re-invoke the estimation only in case the
+> sustainable power was set to 0. Apart from that the PID coefficients
+> are not going to be force updated thus can better handle sysfs settings.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
 
-Please pull these new changes to the iomap code for 5.10.  There's not a
-lot of new stuff going on here -- a little bit of code refactoring to
-make iomap workable with btrfs' fsync locking model, cleanups in
-preparation for adding THP support for filesystems, and fixing a data
-corruption issue for blocksize < pagesize filesystems.
+[ ... ]
 
-The branch merges cleanly with your HEAD branch as of a few minutes ago.
-Please let me know if there are any strange problems.  It's been a
-pretty quiet cycle, so I don't anticipate any more iomap pulls other
-than whatever new bug fixes show up.
+> -static void estimate_pid_constants(struct thermal_zone_device *tz,
+> -				   u32 sustainable_power, int trip_switch_on,
+> -				   int control_temp, bool force)
+> +static void estimate_tzp_constants(struct thermal_zone_device *tz,
+> +				   int trip_switch_on, int control_temp)
+>  {
+> -	int ret;
+> -	int switch_on_temp;
+>  	u32 temperature_threshold;
+> +	int switch_on_temp;
+> +	bool force = false;
+> +	int ret;
+>  	s32 k_i;
+>  
+> +	if (!tz->tzp->sustainable_power) {
+> +		tz->tzp->sustainable_power = estimate_sustainable_power(tz);
+> +		force = true;
+> +		dev_info(&tz->device, "power_allocator: estimating sust. power and PID constants\n");
+> +	}
+> +
+>  	ret = tz->ops->get_trip_temp(tz, trip_switch_on, &switch_on_temp);
+>  	if (ret)
+>  		switch_on_temp = 0;
+>  
+>  	temperature_threshold = control_temp - switch_on_temp;
+>  	/*
+> -	 * estimate_pid_constants() tries to find appropriate default
+> +	 * estimate_tzp_constants() tries to find appropriate default
+>  	 * values for thermal zones that don't provide them. If a
+>  	 * system integrator has configured a thermal zone with two
+>  	 * passive trip points at the same temperature, that person
+> @@ -151,11 +151,11 @@ static void estimate_pid_constants(struct thermal_zone_device *tz,
+>  		return;
+>  
+>  	if (!tz->tzp->k_po || force)
+> -		tz->tzp->k_po = int_to_frac(sustainable_power) /
+> +		tz->tzp->k_po = int_to_frac(tz->tzp->sustainable_power) /
+>  			temperature_threshold;
+>  
+>  	if (!tz->tzp->k_pu || force)
+> -		tz->tzp->k_pu = int_to_frac(2 * sustainable_power) /
+> +		tz->tzp->k_pu = int_to_frac(2 * tz->tzp->sustainable_power) /
+>  			temperature_threshold;
+>  
+>  	if (!tz->tzp->k_i || force) {
+> @@ -193,19 +193,13 @@ static u32 pid_controller(struct thermal_zone_device *tz,
+>  {
+>  	s64 p, i, d, power_range;
+>  	s32 err, max_power_frac;
+> -	u32 sustainable_power;
+>  	struct power_allocator_params *params = tz->governor_data;
+>  
+>  	max_power_frac = int_to_frac(max_allocatable_power);
+>  
+> -	if (tz->tzp->sustainable_power) {
+> -		sustainable_power = tz->tzp->sustainable_power;
+> -	} else {
+> -		sustainable_power = estimate_sustainable_power(tz);
+> -		estimate_pid_constants(tz, sustainable_power,
+> -				       params->trip_switch_on, control_temp,
+> -				       true);
+> -	}
+> +	if (!tz->tzp->sustainable_power)
+> +		estimate_tzp_constants(tz, params->trip_switch_on,
+> +				       control_temp);
 
---D
+The changes in this patch are appropriate and make sense but they are
+not done at the right place.
 
-The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
+estimate_tzp_constants() must be called when sustainable_power is
+updated via DT/init or sysfs.
 
-  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
+Keeping a function to estimate the sustainable power and another one to
+estimate the k_* separated would be more clear.
 
-are available in the Git repository at:
+Actually the confusion is coming from when the pid constants are
+computed, I suggest moving the initialization of k_* out of this
+function and killing the 'force' test.
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.10-merge-4
 
-for you to fetch changes up to 1a31182edd0083bb9f26e582ed39f92f898c4d0a:
+[ ... ]
 
-  iomap: Call inode_dio_end() before generic_write_sync() (2020-09-28 08:51:08 -0700)
 
-----------------------------------------------------------------
-New code for 5.10:
-- Don't WARN_ON weird states that unprivileged users can create.
-- Don't invalidate page cache when direct writes want to fall back to
-  buffered.
-- Fix some problems when readahead ios fail.
-- Fix a problem where inline data pages weren't getting flushed during
-  an unshare operation.
-- Rework iomap to support arbitrarily many blocks per page in
-  preparation to support THP for the page cache.
-- Fix a bug in the blocksize < pagesize buffered io path where we could
-  fail to initialize the many-blocks-per-page uptodate bitmap correctly
-  when the backing page is actually up to date.  This could cause us to
-  forget to write out dirty pages.
-- Split out the generic_write_sync at the end of the directio write path
-  so that btrfs can drop the inode lock before sync'ing the file.
-- Call inode_dio_end before trying to sync the file after a O_DSYNC
-  direct write (instead of afterwards) to match the behavior of the
-  old directio code.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-----------------------------------------------------------------
-Andreas Gruenbacher (1):
-      iomap: Fix direct I/O write consistency check
-
-Christoph Hellwig (1):
-      iomap: Allow filesystem to call iomap_dio_complete without i_rwsem
-
-Goldwyn Rodrigues (1):
-      iomap: Call inode_dio_end() before generic_write_sync()
-
-Matthew Wilcox (Oracle) (12):
-      iomap: Clear page error before beginning a write
-      iomap: Mark read blocks uptodate in write_begin
-      iomap: Fix misplaced page flushing
-      fs: Introduce i_blocks_per_page
-      iomap: Use kzalloc to allocate iomap_page
-      iomap: Use bitmap ops to set uptodate bits
-      iomap: Support arbitrarily many blocks per page
-      iomap: Convert read_count to read_bytes_pending
-      iomap: Convert write_count to write_bytes_pending
-      iomap: Convert iomap_write_end types
-      iomap: Change calling convention for zeroing
-      iomap: Set all uptodate bits for an Uptodate page
-
-Nikolay Borisov (1):
-      iomap: Use round_down/round_up macros in __iomap_write_begin
-
-Qian Cai (1):
-      iomap: fix WARN_ON_ONCE() from unprivileged users
-
- fs/dax.c                |  13 ++--
- fs/iomap/buffered-io.c  | 194 ++++++++++++++++++++----------------------------
- fs/iomap/direct-io.c    |  49 +++++++++---
- fs/jfs/jfs_metapage.c   |   2 +-
- fs/xfs/xfs_aops.c       |   2 +-
- include/linux/dax.h     |   3 +-
- include/linux/iomap.h   |   5 ++
- include/linux/pagemap.h |  16 ++++
- 8 files changed, 150 insertions(+), 134 deletions(-)
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
