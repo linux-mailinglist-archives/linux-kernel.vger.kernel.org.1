@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D384628C6BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDB528C6C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 03:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgJMB3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Oct 2020 21:29:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:56905 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728093AbgJMB3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Oct 2020 21:29:40 -0400
-IronPort-SDR: JtsYpXbwLMfQ+JvGj54YzXEz8bhqDeSoKlMKQEiIVzCP9L+PNQKSdxsBgdR0pHn6HK6yu9tG/X
- ELAfGeCF9btQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9772"; a="165940576"
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="165940576"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:29:38 -0700
-IronPort-SDR: yZvtb1Pk85zflXWxZ0jIgBKFOv1+Bv1jAnj+/xc76PN7o4MmmO29r1FI7ilHQxgFVPZCIUxw2A
- zQYZmjRZkLWQ==
-X-IronPort-AV: E=Sophos;i="5.77,369,1596524400"; 
-   d="scan'208";a="313633677"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2020 18:29:38 -0700
-Date:   Mon, 12 Oct 2020 18:29:37 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Cathy Avery <cavery@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, wei.huang2@amd.com,
-        mlevitsk@redhat.com
-Subject: Re: [PATCH v2 1/2] KVM: SVM: Move asid to vcpu_svm
-Message-ID: <20201013012937.GA10366@linux.intel.com>
-References: <20201011184818.3609-1-cavery@redhat.com>
- <20201011184818.3609-2-cavery@redhat.com>
+        id S1728156AbgJMBb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Oct 2020 21:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728093AbgJMBb4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Oct 2020 21:31:56 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF78DC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 18:31:54 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id d16so1364902iln.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Oct 2020 18:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0+6Ztw7jbOmA581hZd3dtxpZftTR2fcd6tnRuJa6WYo=;
+        b=pZEbmEr9bQcIZ2o9YE29d8a/NvK5F3YeHSshot4Y7g5dNDbfoCqvMnHBRCi9UJRqeN
+         Thb0/GdQ193YqnvZLBd8jn1YlAo2iKikyVMjFSVsX1wvo3IJYiFCal27S3QjDa2hgnT6
+         nrLwZmhigVmhALy8FJnOcQzyRsNYOXPA+QPtM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0+6Ztw7jbOmA581hZd3dtxpZftTR2fcd6tnRuJa6WYo=;
+        b=C34fAzUidwCXDMz4aUa4nHgEBwklVj1FyaL7cXkMWW1PFlNC52pceGaGBKMt/VqdIE
+         W5KGng+5vUENxZY/Lq1I7D9folvGb9JXZHARyL3gIlci+cOYSXV9QcNOMygDJsX2ABp6
+         OPavxLqI0jjdY+bywSE9BzQj8wyWy2bREu8WDbtQ5gA3dIAydQSkEazcsKoWrmJFacPq
+         shDDET4a8G2X4Idw19WUSiJQ6IWVyWJ/u2pNI/YGxRFNVXkszO4qfJjI+GbIdLC2nj8l
+         OBRkxwLZsMSUFb1WHG9Hi2PWBGMAfVlZj6MjdtrK2NtmgEz2XuQwXFJJd7H6SPfHuKhj
+         iI4A==
+X-Gm-Message-State: AOAM532poXiSm3kxqiBzLNLxvho2zhnTIh8Q8j2TOPZYSHyQJCySv6yA
+        gc7u2n66c/o/zKua/VXfT/cZlrGJpXqCXu+NXT27
+X-Google-Smtp-Source: ABdhPJyrzsYD5zMnBZ/1QiHJ4BOApq7CZqI4Dso1cg5+duue25ZASsBHhP1llxgj03dQFqrMSTwYL8hP5liEYyS/wtc=
+X-Received: by 2002:a92:91db:: with SMTP id e88mr1178834ill.126.1602552713836;
+ Mon, 12 Oct 2020 18:31:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201011184818.3609-2-cavery@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201012135724.110579-1-greentime.hu@sifive.com>
+In-Reply-To: <20201012135724.110579-1-greentime.hu@sifive.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 12 Oct 2020 18:31:43 -0700
+Message-ID: <CAOnJCULYeoBGOBwbBo3izZsQpkgFvPotaH+FJ+5M2SWG=m=ypA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] irqchip/sifive-plic: Enable or disable interrupt
+ based on its previous setting
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 02:48:17PM -0400, Cathy Avery wrote:
-> Move asid to svm->asid to allow for vmcb assignment
-
-This is misleading.  The asid isn't being moved, it's being copied/tracked.
-The "to allow" wording also confused me; I though this was just a prep patch
-and the actual assignment was in a follow-up patch.
-
-> during svm_vcpu_run without regard to which level
-> guest is running.
-> Signed-off-by: Cathy Avery <cavery@redhat.com>
+On Mon, Oct 12, 2020 at 6:57 AM Greentime Hu <greentime.hu@sifive.com> wrote:
+>
+> It will always enable the interrupt after calling plic_set_affinity()
+> however it should set to its previous setting. Staying disabled or enabled.
+>
+> This patch can also fix this pwm hang issue in Unleashed board.
+>
+> [  919.015783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> [  919.020922] rcu:     0-...0: (0 ticks this GP)
+> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=105807
+> [  919.030295]  (detected by 1, t=225825 jiffies, g=1561, q=3496)
+> [  919.036109] Task dump for CPU 0:
+> [  919.039321] kworker/0:1     R  running task        0    30      2 0x00000008
+> [  919.046359] Workqueue: events set_brightness_delayed
+> [  919.051302] Call Trace:
+> [  919.053738] [<ffffffe000930d92>] __schedule+0x194/0x4de
+> [  982.035783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> [  982.040923] rcu:     0-...0: (0 ticks this GP)
+> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=113325
+> [  982.050294]  (detected by 1, t=241580 jiffies, g=1561, q=3509)
+> [  982.056108] Task dump for CPU 0:
+> [  982.059321] kworker/0:1     R  running task        0    30      2 0x00000008
+> [  982.066359] Workqueue: events set_brightness_delayed
+> [  982.071302] Call Trace:
+> [  982.073739] [<ffffffe000930d92>] __schedule+0x194/0x4de
+> [..]
+>
+> Fixes: bb0fed1c60cc ("irqchip/sifive-plic: Switch to fasteoi flow")
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 > ---
->  arch/x86/kvm/svm/svm.c | 4 +++-
->  arch/x86/kvm/svm/svm.h | 1 +
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index d4e18bda19c7..619980a5d540 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1101,6 +1101,7 @@ static void init_vmcb(struct vcpu_svm *svm)
->  		save->cr4 = 0;
->  	}
->  	svm->asid_generation = 0;
-> +	svm->asid = 0;
->  
->  	svm->nested.vmcb = 0;
->  	svm->vcpu.arch.hflags = 0;
-> @@ -1663,7 +1664,7 @@ static void new_asid(struct vcpu_svm *svm, struct svm_cpu_data *sd)
->  	}
->  
->  	svm->asid_generation = sd->asid_generation;
-> -	svm->vmcb->control.asid = sd->next_asid++;
-> +	svm->asid = sd->next_asid++;
->  	vmcb_mark_dirty(svm->vmcb, VMCB_ASID);
+>  drivers/irqchip/irq-sifive-plic.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> index eaa3e9fe54e9..4cc8a2657a6d 100644
+> --- a/drivers/irqchip/irq-sifive-plic.c
+> +++ b/drivers/irqchip/irq-sifive-plic.c
+> @@ -137,6 +137,7 @@ static int plic_set_affinity(struct irq_data *d,
+>                              const struct cpumask *mask_val, bool force)
+>  {
+>         unsigned int cpu;
+> +       bool enable;
+>         struct cpumask amask;
+>         struct plic_priv *priv = irq_get_chip_data(d->irq);
+>
+> @@ -150,8 +151,10 @@ static int plic_set_affinity(struct irq_data *d,
+>         if (cpu >= nr_cpu_ids)
+>                 return -EINVAL;
+>
+> +       enable = !irqd_irq_disabled(d);
+>         plic_irq_toggle(&priv->lmask, d, 0);
+> -       plic_irq_toggle(cpumask_of(cpu), d, 1);
+> +       /* Keep its original setting. */
+> +       plic_irq_toggle(cpumask_of(cpu), d, enable);
+>
+>         irq_data_update_effective_affinity(d, cpumask_of(cpu));
+>
+> --
+> 2.28.0
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-I know very little (ok, nothing) about SVM VMCB caching rules, but I strongly
-suspect this is broken.  The existing code explicitly marks VMCB_ASID dirty,
-but there is no equivalent code for the case where there are multiple VMCBs,
-e.g. if new_asid() is called while vmcb01 is active, then vmcb02 will pick up
-the new ASID but will not mark it dirty.
+LGTM.
 
->  }
-> @@ -3446,6 +3447,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->  
->  	sync_lapic_to_cr8(vcpu);
->  
-> +	svm->vmcb->control.asid = svm->asid;
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
 
-Related to the above, handling this in vcpu_run() feels wrong.  There really
-shouldn't be a need to track the ASID.  vmcb01 will always exist if vmcb02
-exits, e.g. the ASID can be copied and marked dirty when loading vmcb02.
-For new_asid(), it can unconditionally update vmcb01 and conditionally update
-vmcb02.
-
->  	svm->vmcb->save.cr2 = vcpu->arch.cr2;
->  
->  	/*
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index a798e1731709..862f0d2405e8 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -104,6 +104,7 @@ struct vcpu_svm {
->  	struct vmcb *vmcb;
->  	unsigned long vmcb_pa;
->  	struct svm_cpu_data *svm_data;
-> +	u32 asid;
->  	uint64_t asid_generation;
->  	uint64_t sysenter_esp;
->  	uint64_t sysenter_eip;
-> -- 
-> 2.20.1
-> 
+-- 
+Regards,
+Atish
