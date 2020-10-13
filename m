@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16C228D574
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E66F28D579
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 22:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgJMUjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 16:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbgJMUjW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 16:39:22 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7C6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 13:39:21 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f29so828429ljo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 13:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TxhREohTRt7aIMi/HOv94Pe9LYwqVQIqE0xbuTR1CP4=;
-        b=N4c+g5mIW5lhhea3XCFO5IQXqJEdpwJWh8PsfFZU8/WjOws17hry3IDWGV+GGW2kFk
-         tFqJz48m0K0U+HcdhfeWDqmOukdJyeZB2kcN+D1zmWM3HF0cw2fwCR0OxB+QDEiim9O9
-         /VAQyrVizVMyHng44nXC432wNGVduhM3qcC0g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TxhREohTRt7aIMi/HOv94Pe9LYwqVQIqE0xbuTR1CP4=;
-        b=PKFSCN9kmodvymhQ/ieXGmoGUI9Rbh0+ygr3EvgMvkVnWBwunUTpDku6R6K1z5uM9M
-         B8YBqAhoY9/N5mFJWAlG4rJtYASQUOGriLxyIZG+vLuiZ7EKwZqinFZP1ZFR5gqTNAic
-         CMHosWYOYVRcOD23Bo6jnLuK6Fk6G8Sp+mHKYUg/ns/LsHNCLpNadJVvSdzEOcm9beIv
-         HX/NXmNVmqkyOmPsMmr7AkizYivKBS5pez2BJo4M5Gcz5VVzCNizTb1TLbel4MDHa67u
-         E0rZe0068kwh84WDPNcb4kTGafMWVu5dDb7rzd3YrargZeF4mUkYA+N3IA02+vRO/1PN
-         IlZg==
-X-Gm-Message-State: AOAM532Vh1Pde29TncuxvanQd4STnN5iFrXTi3M/i+acPn5iXoyN1paZ
-        4yMU0O04//8hVdehut67d5B/FSQo/4+H4A==
-X-Google-Smtp-Source: ABdhPJyFN4G7Ag3jyU5Da7oCXUJ9d8OVhWyLGuWDCMEDm4oTjFSUMLb7uh28FrDRTnlieCoeRTau2A==
-X-Received: by 2002:a2e:9a4c:: with SMTP id k12mr460603ljj.388.1602621559938;
-        Tue, 13 Oct 2020 13:39:19 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id t17sm278690lft.104.2020.10.13.13.39.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 13:39:18 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id m16so807261ljo.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 13:39:18 -0700 (PDT)
-X-Received: by 2002:a2e:9152:: with SMTP id q18mr431948ljg.421.1602621557990;
- Tue, 13 Oct 2020 13:39:17 -0700 (PDT)
+        id S1727268AbgJMUlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 16:41:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726137AbgJMUlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 16:41:09 -0400
+Received: from coco.lan (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1320520878;
+        Tue, 13 Oct 2020 20:41:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602621669;
+        bh=KF0q+uupmDV1pOAyg9WYj6hVV6CX1TMrjKTkOPB24yw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kVCJ0MMa7YrUSlZvqdvOd3h65STWdVIDu5uRnJoFnXPFMclK3wtnTid6cB4Z1W4zh
+         +Oee99PbVb8n0oEoUFufTP4cDkZTWTjgtwMYuc4ohHmh6jvZ0M12V2QyAZth0wPtqJ
+         1I1IIfucq+4aqSqcUM+qA3I9UjRxwKjX53fTKH7U=
+Date:   Tue, 13 Oct 2020 22:41:03 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Pedersen <thomas@adapt-ip.com>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v6 68/80] nl80211: docs: add a description for s1g_cap
+ parameter
+Message-ID: <20201013224103.7f958544@coco.lan>
+In-Reply-To: <5ad3c2c6cd096b6fb5c9bedd340b927adb899213.camel@sipsolutions.net>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+        <9633ea7d9b0cb2f997d784df86ba92e67659f29b.1602589096.git.mchehab+huawei@kernel.org>
+        <5ad3c2c6cd096b6fb5c9bedd340b927adb899213.camel@sipsolutions.net>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20201012110557.GK25311@zn.tnic> <20201013094149.GA32151@zn.tnic>
-In-Reply-To: <20201013094149.GA32151@zn.tnic>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 13 Oct 2020 13:39:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjAQd22+EWBL6TzmOJom_H2TjU5AAOT+ZkxjW3kbYymcQ@mail.gmail.com>
-Message-ID: <CAHk-=wjAQd22+EWBL6TzmOJom_H2TjU5AAOT+ZkxjW3kbYymcQ@mail.gmail.com>
-Subject: Re: [GIT PULL -v2] x86/asm updates for v5.10
-To:     Borislav Petkov <bp@suse.de>, Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 2:42 AM Borislav Petkov <bp@suse.de> wrote:
->
-> here's v2 of the x86/asm pull with only the __force_order patch so that
-> it can go in now. The other one will be sorted out when the matter has
-> been settled properly.
+Em Tue, 13 Oct 2020 20:47:47 +0200
+Johannes Berg <johannes@sipsolutions.net> escreveu:
 
-Actually, I think you forgot to push out the updated thing, I still
-see the same contents of the pull.
+> Thanks Mauro.
+> 
+> 
+> On Tue, 2020-10-13 at 13:54 +0200, Mauro Carvalho Chehab wrote:
+> > Changeset df78a0c0b67d ("nl80211: S1G band and channel definitions")
+> > added a new parameter, but didn't add the corresponding kernel-doc
+> > markup, as repoted when doing "make htmldocs":
+> > 
+> > 	./include/net/cfg80211.h:471: warning: Function parameter or member 's1g_cap' not described in 'ieee80211_supported_band'
+> > 
+> > Add a documentation for it.  
+> 
+> Should I take this through my tree, or is that part of a larger set
+> that'll go somewhere else?
 
-Which I guess is ok, since Uros has convinced me that the xorl
-conversion is safe even for the byte cases.
+Whatever works best for you ;-)
 
-So I've pulled that unmodified branch.
+If you don't pick it via your tree, I'm planning to send it
+together with the other patches likely on Thursday.
 
-                 Linus
+
+Thanks,
+Mauro
