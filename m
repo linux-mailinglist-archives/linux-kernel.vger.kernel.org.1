@@ -2,292 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E3F28C99A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 09:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1146128C9A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 10:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390526AbgJMH4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 03:56:32 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:57326 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390460AbgJMH4b (ORCPT
+        id S2390536AbgJMIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 04:01:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35912 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730344AbgJMIA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 03:56:31 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09D7kgmG012100;
-        Tue, 13 Oct 2020 09:56:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : subject :
- date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=l6oP45WcVRM0/1Zade6UO1YMZaUQsobbk+zH4sNyXtA=;
- b=uO4Xm1s/pECB4P4nQyB7uda6nWxGqbAlr74HWupWcRelRv9xk9aI2EtTvJ/MMhvdX5CR
- hKkr3uRQ0zYdhWPgoxQHKdgUd3JtKL/n0ZAbFvB2ILZSKdBPt8xv0IIcTStqfNNeBUbc
- OaQO77jon/lBKvsfN+djUJcuUsxoExMQUtMsxM4vwuYAgOSTsdn74p9wxMtlFIpcT9H/
- PQ8RYJq1YG5eYowp2Lqv7+FZgxdvfNI+tgizrM7ZZBCFKbXa7TOaoZ0PlF4UmxnDUIDj
- qIxmPp5FKBDN7cSAfCPOGi6aJqvhliv/nHJJqEHf1liUcT0sjJuy2sVcK4kE9obPxWOo KQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3455c88yra-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Oct 2020 09:56:19 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 16F4A100034;
-        Tue, 13 Oct 2020 09:56:18 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node1.st.com [10.75.127.4])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 025F42A84BC;
-        Tue, 13 Oct 2020 09:56:18 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG2NODE1.st.com (10.75.127.4)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 13 Oct 2020 09:56:17
- +0200
-From:   Yannick Fertre <yannick.fertre@st.com>
-To:     Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Antonio Borneo <antonio.borneo@st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/stm: dsi: Use dev_ based logging
-Date:   Tue, 13 Oct 2020 09:56:05 +0200
-Message-ID: <20201013075605.5103-1-yannick.fertre@st.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 13 Oct 2020 04:00:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602576056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XX+2jM3RBMDFVnq+P3ujbLXIB6bjiYY3xDsMh5SMjUE=;
+        b=Yb4uv1ZXEHQ5zq2LmM9zXY4VvOQzV/22/KzDxzdjVpm/q3pJ6u5tTyEpmjNnRbJLgIOFDt
+        w7GysnnuMMBAdcLJ7KoIL955lhjQBRkVQhLh6jwi7VV5a/CGSCH3hNtTBQ5X37VmbUYxPN
+        PKOkx166f7NnyUScgrBevaNM1HS2PZw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-UrkiDKutO5uicmsmJQomUA-1; Tue, 13 Oct 2020 04:00:52 -0400
+X-MC-Unique: UrkiDKutO5uicmsmJQomUA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 530031015ED6;
+        Tue, 13 Oct 2020 08:00:50 +0000 (UTC)
+Received: from [10.72.13.59] (ovpn-13-59.pek2.redhat.com [10.72.13.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C7D986EF7C;
+        Tue, 13 Oct 2020 08:00:33 +0000 (UTC)
+Subject: Re: [PATCH v3] i2c: virtio: add a virtio i2c frontend driver
+To:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>
+References: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
+ <958b69c3-0321-d5cb-4c12-702795925583@redhat.com>
+ <2dc4bd12-9f23-7caa-b1ec-f3403d36e065@intel.com>
+ <83529dac-7b87-aec9-55f0-85face47e7b6@redhat.com>
+ <b1cad8f9-67c4-dbb7-6edc-66be2f6ba08f@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <9be8c60c-a111-5de7-3551-93f03ecda445@redhat.com>
+Date:   Tue, 13 Oct 2020 16:00:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE1.st.com
- (10.75.127.4)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-13_02:2020-10-13,2020-10-13 signatures=0
+In-Reply-To: <b1cad8f9-67c4-dbb7-6edc-66be2f6ba08f@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Standardize on the dev_ based logging.
 
-Signed-off-by: Yannick Fertre <yannick.fertre@st.com>
----
-Changes in v2:
-	- restore function dsi_color_from_mipi.
-	- reword commit.
+On 2020/10/13 下午3:16, Jie Deng wrote:
+>
+> On 2020/10/12 11:43, Jason Wang wrote:
+>>
+>> On 2020/10/12 上午10:45, Jie Deng wrote:
+>>>
+>>>
+>>> On 2020/10/10 11:14, Jason Wang wrote:
+>>>>
+>>>>> +
+>>>>> +        virtqueue_kick(vq);
+>>>>> +
+>>>>> +        time_left = wait_for_completion_timeout(&vi->completion, 
+>>>>> adap->timeout);
+>>>>> +        if (!time_left) {
+>>>>> +            dev_err(&adap->dev, "msg[%d]: addr=0x%x timeout.\n", 
+>>>>> i, msgs[i].addr);
+>>>>> +            break;
+>>>>> +        }
+>>>>
+>>>>
+>>>> You don't set error number here. Is this intended?
+>>>>
+>>>> And using a timeout here is not good, and if the request is 
+>>>> finished just after the timeout, in the next xfer you may hit the 
+>>>> following check.
+>>>>
+>>>> It's better to use either interrupt here.
+>>>>
+>>> Could you check the I2C drivers in the kernel ? The 
+>>> "wait_for_completion_timeout" mechanism
+>>> is commonly used by I2C bus drivers in their i2c_algorithm.master_xfer.
+>>
+>>
+>> There's a major difference between virtio-i2c and other drivers. In 
+>> the case of virtio, the device could be a software device emulated by 
+>> a remote process. This means the timeout might not be rare.
+>>
+>> I don't see how timeout is properly handled in this patch (e.g did 
+>> you notice that you don't set any error when timeout? or is this 
+>> intended?)
+>>
+> The backend software may operate the physical device. The timeout 
+> depends on how the backend is designed.
+> Here if the timeout happens, it will return the actual number of 
+> messages successfully processed to the I2C core.
+> Let the I2C core decides how to do next.
 
- drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 55 ++++++++++++++-------------
- 1 file changed, 29 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-index 164f79ef6269..a5a87c89aa07 100644
---- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-+++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
-@@ -76,6 +76,7 @@ enum dsi_color {
- 
- struct dw_mipi_dsi_stm {
- 	void __iomem *base;
-+	struct device *dev;
- 	struct clk *pllref_clk;
- 	struct dw_mipi_dsi *dsi;
- 	u32 hw_version;
-@@ -110,7 +111,8 @@ static inline void dsi_update_bits(struct dw_mipi_dsi_stm *dsi, u32 reg,
- 	dsi_write(dsi, reg, (dsi_read(dsi, reg) & ~mask) | val);
- }
- 
--static enum dsi_color dsi_color_from_mipi(enum mipi_dsi_pixel_format fmt)
-+static enum dsi_color dsi_color_from_mipi(struct dw_mipi_dsi_stm *dsi,
-+					  enum mipi_dsi_pixel_format fmt)
- {
- 	switch (fmt) {
- 	case MIPI_DSI_FMT_RGB888:
-@@ -122,7 +124,7 @@ static enum dsi_color dsi_color_from_mipi(enum mipi_dsi_pixel_format fmt)
- 	case MIPI_DSI_FMT_RGB565:
- 		return DSI_RGB565_CONF1;
- 	default:
--		DRM_DEBUG_DRIVER("MIPI color invalid, so we use rgb888\n");
-+		dev_dbg(dsi->dev, "MIPI color invalid, so we use rgb888\n");
- 	}
- 	return DSI_RGB888;
- }
-@@ -205,14 +207,14 @@ static int dw_mipi_dsi_phy_init(void *priv_data)
- 	ret = readl_poll_timeout(dsi->base + DSI_WISR, val, val & WISR_RRS,
- 				 SLEEP_US, TIMEOUT_US);
- 	if (ret)
--		DRM_DEBUG_DRIVER("!TIMEOUT! waiting REGU, let's continue\n");
-+		dev_dbg(dsi->dev, "!TIMEOUT! waiting REGU, let's continue\n");
- 
- 	/* Enable the DSI PLL & wait for its lock */
- 	dsi_set(dsi, DSI_WRPCR, WRPCR_PLLEN);
- 	ret = readl_poll_timeout(dsi->base + DSI_WISR, val, val & WISR_PLLLS,
- 				 SLEEP_US, TIMEOUT_US);
- 	if (ret)
--		DRM_DEBUG_DRIVER("!TIMEOUT! waiting PLL, let's continue\n");
-+		dev_dbg(dsi->dev, "!TIMEOUT! waiting PLL, let's continue\n");
- 
- 	return 0;
- }
-@@ -221,7 +223,7 @@ static void dw_mipi_dsi_phy_power_on(void *priv_data)
- {
- 	struct dw_mipi_dsi_stm *dsi = priv_data;
- 
--	DRM_DEBUG_DRIVER("\n");
-+	dev_dbg(dsi->dev, "\n");
- 
- 	/* Enable the DSI wrapper */
- 	dsi_set(dsi, DSI_WCR, WCR_DSIEN);
-@@ -231,7 +233,7 @@ static void dw_mipi_dsi_phy_power_off(void *priv_data)
- {
- 	struct dw_mipi_dsi_stm *dsi = priv_data;
- 
--	DRM_DEBUG_DRIVER("\n");
-+	dev_dbg(dsi->dev, "\n");
- 
- 	/* Disable the DSI wrapper */
- 	dsi_clear(dsi, DSI_WCR, WCR_DSIEN);
-@@ -267,11 +269,11 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
- 
- 	if (pll_out_khz > dsi->lane_max_kbps) {
- 		pll_out_khz = dsi->lane_max_kbps;
--		DRM_WARN("Warning max phy mbps is used\n");
-+		dev_warn(dsi->dev, "Warning max phy mbps is used\n");
- 	}
- 	if (pll_out_khz < dsi->lane_min_kbps) {
- 		pll_out_khz = dsi->lane_min_kbps;
--		DRM_WARN("Warning min phy mbps is used\n");
-+		dev_warn(dsi->dev, "Warning min phy mbps is used\n");
- 	}
- 
- 	/* Compute best pll parameters */
-@@ -281,7 +283,7 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
- 	ret = dsi_pll_get_params(dsi, pll_in_khz, pll_out_khz,
- 				 &idf, &ndiv, &odf);
- 	if (ret)
--		DRM_WARN("Warning dsi_pll_get_params(): bad params\n");
-+		dev_warn(dsi->dev, "Warning dsi_pll_get_params(): bad params\n");
- 
- 	/* Get the adjusted pll out value */
- 	pll_out_khz = dsi_pll_get_clkout_khz(pll_in_khz, idf, ndiv, odf);
-@@ -299,12 +301,12 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
- 
- 	/* Select the color coding */
- 	dsi_update_bits(dsi, DSI_WCFGR, WCFGR_COLMUX,
--			dsi_color_from_mipi(format) << 1);
-+			dsi_color_from_mipi(dsi, format) << 1);
- 
- 	*lane_mbps = pll_out_khz / 1000;
- 
--	DRM_DEBUG_DRIVER("pll_in %ukHz pll_out %ukHz lane_mbps %uMHz\n",
--			 pll_in_khz, pll_out_khz, *lane_mbps);
-+	dev_dbg(dsi->dev, "pll_in %ukHz pll_out %ukHz lane_mbps %uMHz\n", pll_in_khz, pll_out_khz,
-+		*lane_mbps);
- 
- 	return 0;
- }
-@@ -352,11 +354,13 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
- 	if (!dsi)
- 		return -ENOMEM;
- 
-+	dsi->dev = dev;
-+
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	dsi->base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(dsi->base)) {
- 		ret = PTR_ERR(dsi->base);
--		DRM_ERROR("Unable to get dsi registers %d\n", ret);
-+		dev_err(dev, "Unable to get dsi registers %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -364,13 +368,13 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
- 	if (IS_ERR(dsi->vdd_supply)) {
- 		ret = PTR_ERR(dsi->vdd_supply);
- 		if (ret != -EPROBE_DEFER)
--			DRM_ERROR("Failed to request regulator: %d\n", ret);
-+			dev_err(dev, "Failed to request regulator: %d\n", ret);
- 		return ret;
- 	}
- 
- 	ret = regulator_enable(dsi->vdd_supply);
- 	if (ret) {
--		DRM_ERROR("Failed to enable regulator: %d\n", ret);
-+		dev_err(dev, "Failed to enable regulator: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -378,27 +382,26 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
- 	if (IS_ERR(dsi->pllref_clk)) {
- 		ret = PTR_ERR(dsi->pllref_clk);
- 		if (ret != -EPROBE_DEFER)
--			DRM_ERROR("Unable to get pll reference clock: %d\n",
--				  ret);
-+			dev_err(dev, "Unable to get pll reference clock: %d\n", ret);
- 		goto err_clk_get;
- 	}
- 
- 	ret = clk_prepare_enable(dsi->pllref_clk);
- 	if (ret) {
--		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
-+		dev_err(dev, "Failed to enable pllref_clk: %d\n", ret);
- 		goto err_clk_get;
- 	}
- 
- 	pclk = devm_clk_get(dev, "pclk");
- 	if (IS_ERR(pclk)) {
- 		ret = PTR_ERR(pclk);
--		DRM_ERROR("Unable to get peripheral clock: %d\n", ret);
-+		dev_err(dev, "Unable to get peripheral clock: %d\n", ret);
- 		goto err_dsi_probe;
- 	}
- 
- 	ret = clk_prepare_enable(pclk);
- 	if (ret) {
--		DRM_ERROR("%s: Failed to enable peripheral clk\n", __func__);
-+		dev_err(dev, "%s: Failed to enable peripheral clk\n", __func__);
- 		goto err_dsi_probe;
- 	}
- 
-@@ -407,7 +410,7 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
- 
- 	if (dsi->hw_version != HWVER_130 && dsi->hw_version != HWVER_131) {
- 		ret = -ENODEV;
--		DRM_ERROR("bad dsi hardware version\n");
-+		dev_err(dev, "bad dsi hardware version\n");
- 		goto err_dsi_probe;
- 	}
- 
-@@ -420,7 +423,7 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
- 	if (IS_ERR(dsi->dsi)) {
- 		ret = PTR_ERR(dsi->dsi);
- 		if (ret != -EPROBE_DEFER)
--			DRM_ERROR("Failed to initialize mipi dsi host: %d\n", ret);
-+			dev_err(dev, "Failed to initialize mipi dsi host: %d\n", ret);
- 		goto err_dsi_probe;
- 	}
- 
-@@ -449,7 +452,7 @@ static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
- {
- 	struct dw_mipi_dsi_stm *dsi = dw_mipi_dsi_stm_plat_data.priv_data;
- 
--	DRM_DEBUG_DRIVER("\n");
-+	dev_dbg(dsi->dev, "\n");
- 
- 	clk_disable_unprepare(dsi->pllref_clk);
- 	regulator_disable(dsi->vdd_supply);
-@@ -462,18 +465,18 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
- 	struct dw_mipi_dsi_stm *dsi = dw_mipi_dsi_stm_plat_data.priv_data;
- 	int ret;
- 
--	DRM_DEBUG_DRIVER("\n");
-+	dev_dbg(dsi->dev, "\n");
- 
- 	ret = regulator_enable(dsi->vdd_supply);
- 	if (ret) {
--		DRM_ERROR("Failed to enable regulator: %d\n", ret);
-+		dev_err(dev, "Failed to enable regulator: %d\n", ret);
- 		return ret;
- 	}
- 
- 	ret = clk_prepare_enable(dsi->pllref_clk);
- 	if (ret) {
- 		regulator_disable(dsi->vdd_supply);
--		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
-+		dev_err(dev, "Failed to enable pllref_clk: %d\n", ret);
- 		return ret;
- 	}
- 
--- 
-2.17.1
+So let's consider the following case:
+
+1) driver:virtio_i2c_add_msg(msgA)
+2) driver:timeout, and return to I2C core
+3) driver:virtio_i2c_add_msg(msgB)
+4) device: complete msgA
+5) driver: virtqueue_get_buf() returns msgA, since the token is always 
+vi->vmsg, the driver may think msgB has been completed.
+
+
+>
+> Thanks.
+>
+>>
+>>>
+>>>>
+>>>>> +
+>>>>> +        vmsg = (struct virtio_i2c_msg *)virtqueue_get_buf(vq, &len);
+>>>>> +        /* vmsg should point to the same address with &vi->vmsg */
+>>>>> +        if ((!vmsg) || (vmsg != &vi->vmsg)) {
+>>>>> +            dev_err(&adap->dev, "msg[%d]: addr=0x%x virtqueue 
+>>>>> error.\n",
+>>>>> +                i, msgs[i].addr);
+>>>>> +            break;
+>>>>> +        }
+>>>>
+>>>>
+>>>> So I think we can remove this check. Consider only one descriptor 
+>>>> will be used at most, unless there's a bug in the device (and no 
+>>>> other driver to the similar check), we should not hit this.
+>>>>
+>>>> Btw, as I replied in the previous version, the device should be 
+>>>> cacpable of dealing of a batch of requests through the virtqueue, 
+>>>> otherwise it's meaningless to use a queue here.
+>>>>
+>>> We should not assume there is no bug in the device. I don't think we 
+>>> can remove this check if we want our code to be robust.
+>>
+>>
+>> Can you tell when at which case you may hit !vmsg or vmsg != vi->vmsg?
+>>
+> Normally, it won't hit here. But the API "virtqueue_get_buf" tells me
+> "It *may *return NULL or the "data" token handed to virtqueue_add_*()."
+
+
+Note that we had the following check already in virtqueue_get_buf_ctx(), 
+so the the virtio core had already have the ability to figure out the 
+wrong head.
+
+     if (unlikely(id >= vq->packed.vring.num)) {
+         BAD_RING(vq, "id %u out of range\n", id);
+         return NULL;
+     }
+     if (unlikely(!vq->packed.desc_state[id].data)) {
+         BAD_RING(vq, "id %u is not a head!\n", id);
+         return NULL;
+     }
+
+And when it returns a NULL, it's not necessarily an error of the device, 
+it might just require more time to finish the processing.
+
+
+>
+> From the perspective of a caller, I just don't care when it happens.
+> To make the code robust, what I care about is what I should do if this 
+> is not our case
+> since the doc says it*may *happen.
+>
+> If you insist on removing this check, I will remove "vmsg != vi->vmsg" 
+> and keep the check for !vmsg.
+> As Dan reported in v2, we should at least check here for NULL.
+>
+> Thanks.
+>
+>>
+>>
+>>> As I said, currently, we are using the virtqueue to send the msg one 
+>>> by one to the backend. The mechanism is described in the spec. 
+>>
+>>
+>> Which part of the spec describes such "one by one" mechanism? If 
+>> there is one, I'd happily give a NACK since it doesn't require a 
+>> queue to work which is conflict with the concept of the virtqueue.
+>>
+>>
+> What's the concept of the virtqueue ?  Why do you want to restrict how 
+> users use virtqueue ?
+
+
+So I think there's some misunderstanding here. The point is not to 
+restrict how to use virtqueue.
+
+What I meant is:
+
+- we should not invent a device with a virtqueue that can only accept 
+one buffer at a time
+- I don't see any mechanism like "one by one" described in the spec, so 
+it's ok but if it'd happen to have, I will NACK
+
+
+>
+> It's like you provide a water glass to user. The user can fill a full 
+> glass of water and drinks once or
+> fill half a glass of water and drink twice. It is a user behavior and 
+> should not be restricted by
+> the glass provider.
+
+
+That's my point as well, we should not describe the "once" behavior in 
+the spec.
+
+
+>
+> Thanks.
+>
+>
+>>> Thanks.
+>>>
+>>>
+>>>>
+>>>>> +
+>>>>>
+>>>>> +
+>>>>> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+>>>>> +#define _UAPI_LINUX_VIRTIO_I2C_H
+>>>>> +
+>>>>> +#include <linux/types.h>
+>>>>> +#include <linux/virtio_ids.h>
+>>>>> +#include <linux/virtio_config.h>
+>>>>> +
+>>>>> +/**
+>>>>> + * struct virtio_i2c_hdr - the virtio I2C message header structure
+>>>>> + * @addr: i2c_msg addr, the slave address
+>>>>> + * @flags: i2c_msg flags
+>>>>> + * @len: i2c_msg len
+>>>>> + */
+>>>>> +struct virtio_i2c_hdr {
+>>>>> +    __le16 addr;
+>>>>> +    __le16 flags;
+>>>>> +    __le16 len;
+>>>>> +};
+>>>>
+>>>>
+>>>> I'm afraid this is not complete. E.g the status is missed.
+>>>>
+>>>> I suspect what virtio-scsi use is better. Which split the in from 
+>>>> the out instead of reusing the same buffer. And it can ease the 
+>>>> uAPI header export.
+>>>>
+>>>> Thanks
+>>>>
+>>>>
+>>>
+>>> I think following definition in uAPI for the status is enough.
+>>> There is no need to provide a "u8" status in the structure.
+>>>
+>>> /* The final status written by the device */
+>>> #define VIRTIO_I2C_MSG_OK    0
+>>> #define VIRTIO_I2C_MSG_ERR    1
+>>>
+>>> You can see an example in virtio_blk.
+>>>
+>>> In the spec:
+>>>
+>>> struct virtio_blk_req {
+>>> le32 type;
+>>> le32 reserved;
+>>> le64 sector;
+>>> u8 data[];
+>>> u8 status;
+>>> };
+>>>
+>>> In virtio_blk.h, there is only following definitions.
+>>>
+>>> #define VIRTIO_BLK_S_OK        0
+>>> #define VIRTIO_BLK_S_IOERR    1
+>>> #define VIRTIO_BLK_S_UNSUPP    2
+>>>
+>>
+>> virtio-blk is a bad example, it's just too late to fix. For any new 
+>> introduced uAPI it should be a complete one.
+>>
+>> Thanks
+>>
+> I checked a relatively new device "virtio_fs".
+> I found following definition in spec but not in uAPI also.
+>
+> struct virtio_fs_req {
+> // Device -readable part
+> struct fuse_in_header in;
+> u8 datain[];
+> // Device -writable part
+> struct fuse_out_header out;
+> u8 dataout[];
+> };
+>
+> So is this also a bad example which has not been fixed yet.
+
+
+Cc Stefan for the answer.
+
+
+> Or what's your mean about "complete" here ? Is there any definition 
+> about "complete uAPI" ?
+
+
+My understanding it should contain all the fields defined in the virtio 
+spec.
+
+Thanks
+
+
+>
+> Thanks.
+>
+>
+>>
+>>> Thanks.
+>>>
+>>>
+>>>
+>>
+>
 
