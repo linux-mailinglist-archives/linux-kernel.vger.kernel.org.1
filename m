@@ -2,109 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6CD28D0F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8F428D0F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 17:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730951AbgJMPDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 11:03:19 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46580 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgJMPDT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 11:03:19 -0400
-Received: by mail-ot1-f68.google.com with SMTP id m11so230810otk.13;
-        Tue, 13 Oct 2020 08:03:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o5w7AiSSvOScWVEvBemOGxs8ySO+ClTEubv5ALBOy58=;
-        b=OtQE990ujb3vudiDxsW7BS/tA7RnobaliJrzU5wnSXww60xuJdKfRtEHNfkClBk7qU
-         uu9yUFtnHFQrKL8He4/HYO3SxoZ9BPFUOPdgUNP5Fyu9YfopcGZzUV2bDvzugpuEkuZ9
-         dD/Z2tZ4f3H7F4leakKLPpvGObCueI69pBXVfoPycSfW7/86bW9mmbxxXw09eksFV2XD
-         +9cOdPiMTOBr4r+McieTvTNySes8qsuNokRw63MG7hsH9Fj28u4yR24C5CY98Fd/YNCS
-         ZI9XPUaaGCSp5GywqTOLmK5LRFEAykeCMZQvG5jweJbkasTCz7A9jiwFFjqn5tRhqJ9T
-         m5Dw==
-X-Gm-Message-State: AOAM531OjZWexCjDHqIjs1tswW3PgncsxrzzIqcoh4o/vjF7YncyljQO
-        dyOBIVDLHzzGru6E083ZOA==
-X-Google-Smtp-Source: ABdhPJwPcGuIXfIA54rr5+iTWAXBSTcMGC1Q5kdQ2TXck21QX7ObO/HcKjz5tTQsFK0eEc3/kSij2g==
-X-Received: by 2002:a9d:7f15:: with SMTP id j21mr63221otq.76.1602601398326;
-        Tue, 13 Oct 2020 08:03:18 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i5sm31758ooo.32.2020.10.13.08.03.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 08:03:17 -0700 (PDT)
-Received: (nullmailer pid 3511465 invoked by uid 1000);
-        Tue, 13 Oct 2020 15:03:16 -0000
-Date:   Tue, 13 Oct 2020 10:03:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
-        agross@kernel.org, gregkh@linuxfoundation.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jackp@codeaurora.org,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v10 4/4] arm64: boot: dts: qcom: pm8150b: Add DTS node
- for PMIC VBUS booster
-Message-ID: <20201013150316.GB3497815@bogus>
-References: <20201008235934.8931-1-wcheng@codeaurora.org>
- <20201008235934.8931-5-wcheng@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008235934.8931-5-wcheng@codeaurora.org>
+        id S1730985AbgJMPGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 11:06:55 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:46872 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726157AbgJMPGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 11:06:55 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6B7761A01DD;
+        Tue, 13 Oct 2020 17:06:53 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 5EA911A01CC;
+        Tue, 13 Oct 2020 17:06:53 +0200 (CEST)
+Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 17F772032C;
+        Tue, 13 Oct 2020 17:06:53 +0200 (CEST)
+From:   Diana Craciun <diana.craciun@oss.nxp.com>
+To:     alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
+        Diana Craciun <diana.craciun@oss.nxp.com>
+Subject: [PATCH v2] vfio/fsl-mc: Fixed vfio-fsl-mc driver compilation on 32 bit
+Date:   Tue, 13 Oct 2020 18:06:51 +0300
+Message-Id: <20201013150651.12808-1-diana.craciun@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 04:59:34PM -0700, Wesley Cheng wrote:
-> Add the required DTS node for the USB VBUS output regulator, which is
-> available on PM8150B.  This will provide the VBUS source to connected
-> peripherals.
-> 
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/pm8150b.dtsi   | 6 ++++++
->  arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 4 ++++
->  2 files changed, 10 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-> index 2bf385f5a55a..49ea597cc0c5 100644
-> --- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-> @@ -53,6 +53,12 @@ power-on@800 {
->  			status = "disabled";
->  		};
->  
-> +		pm8150b_vbus: regulator@1100 {
-> +			compatible = "qcom,pm8150b-vbus-reg";
-> +			status = "disabled";
-> +			reg = <0x1100>;
-> +		};
-> +
->  		pm8150b_typec: usb-typec@1500 {
->  			compatible = "qcom,pm8150b-usb-typec";
->  			status = "disabled";
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-> index 6c6325c3af59..ba3b5b802954 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-> @@ -409,6 +409,10 @@ &ufs_mem_phy {
->  	vdda-pll-max-microamp = <19000>;
->  };
->  
-> +&pm8150b_vbus {
-> +	status = "okay";
-> +};
+The FSL_MC_BUS on which the VFIO-FSL-MC driver is dependent on
+can be compiled on other architectures as well (not only ARM64)
+including 32 bit architectures.
+Include linux/io-64-nonatomic-hi-lo.h to make writeq/readq used
+in the driver available on 32bit platforms.
 
-Why aren't you enabling the TypeC node and providing a complete example?
+Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+---
+v1 --> v2
+ - Added prefix to patch description
 
-> +
->  &usb_1_hsphy {
->  	status = "okay";
->  	vdda-pll-supply = <&vdd_usb_hs_core>;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+ drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+index d009f873578c..80fc7f4ed343 100644
+--- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
++++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+@@ -13,6 +13,7 @@
+ #include <linux/vfio.h>
+ #include <linux/fsl/mc.h>
+ #include <linux/delay.h>
++#include <linux/io-64-nonatomic-hi-lo.h>
+ 
+ #include "vfio_fsl_mc_private.h"
+ 
+-- 
+2.17.1
+
