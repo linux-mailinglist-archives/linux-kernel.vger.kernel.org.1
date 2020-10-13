@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9BD28D33A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3300628D343
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgJMRlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 13:41:22 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:53386 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgJMRlW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:41:22 -0400
-Date:   Tue, 13 Oct 2020 17:41:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602610880;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SMpEN2mv7qdA1jR5W9jZ0sYICRq/vzVTpwFzTeEn8MA=;
-        b=IkLi6Vx18NVu9WcjO6EOcpZJiH1Ac7aGntJXdK4znnubglcPyzFbUPI604G231lPEJDLqM
-        c44J+E1Lb11qRkW+BcfNLcrf47x687YT87VUT8Wo4gon8/G9dU4xVQZSFyniBuc7n6M3Oh
-        u/k3sMNY1+9xeDgpT03+NMhbQuDAFEWWur7IpPbWvyPFUkuUoidzyJ3eUBkC+PI28yyDAq
-        LivFGUXKvjOH/dYfaO1/B4+G/Gr0xCg1d/wuSJ4eh0TA9Offesoiv8urljwA8hWDZjWecp
-        xcUqownXHsGBEqtCnn6gAMMDV/ZGYzj0jOCTn0XVKaKmzfIOXiQpc1yLaa/JBQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602610880;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SMpEN2mv7qdA1jR5W9jZ0sYICRq/vzVTpwFzTeEn8MA=;
-        b=G4QcCB4l3LYdfGGhhCOqAnnNMB1L893kkVEaZrc0/x19EbarlRliR0Tz9QwGEiEEUAZgYH
-        yM5xQ9NiJ2LCSVAw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/traps: Fix #DE Oops message regression
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <CACT4Y+bTZFkuZd7+bPArowOv-7Die+WZpfOWnEO_Wgs3U59+oA@mail.gmail.com>
-References: <CACT4Y+bTZFkuZd7+bPArowOv-7Die+WZpfOWnEO_Wgs3U59+oA@mail.gmail.com>
+        id S1726312AbgJMRqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:46:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:33930 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbgJMRqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 13:46:19 -0400
+IronPort-SDR: vAaDb2GeOGaRBXP3BbJAEwIqjx20P40kDC8HelaKrFk+h1wwagV2vjEnynUBerFI/x265Mi3yO
+ 6P/BUDSYA6Ug==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="183442281"
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="183442281"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 10:46:17 -0700
+IronPort-SDR: UbtoTtFSPYVfOnxZbvSkvgnWaB78ds0E2ciP4lzikIfoSU1heNRegrjE7nU/3mlcEH99Tfll+P
+ m4LK8wv1e+6A==
+X-IronPort-AV: E=Sophos;i="5.77,371,1596524400"; 
+   d="scan'208";a="346268085"
+Received: from murawskx-mobl.amr.corp.intel.com (HELO [10.209.9.29]) ([10.209.9.29])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 10:46:17 -0700
+Subject: Re: [PATCH RFC V3 1/9] x86/pkeys: Create pkeys_common.h
+To:     ira.weiny@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-2-ira.weiny@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0305912d-891f-839a-e861-49f5fada62b1@intel.com>
+Date:   Tue, 13 Oct 2020 10:46:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <160261087970.7002.5363547782831704972.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20201009194258.3207172-2-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
+> Protection Keys User (PKU) and Protection Keys Supervisor (PKS) work
+> in similar fashions and can share common defines.
 
-Commit-ID:     5f1ec1fd32252af5130dac23b5542e8e66fe0bcb
-Gitweb:        https://git.kernel.org/tip/5f1ec1fd32252af5130dac23b5542e8e66fe0bcb
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 12 Oct 2020 15:11:47 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 13 Oct 2020 19:17:33 +02:00
+Could we be a bit less abstract?  PKS and PKU each have:
+1. A single control register
+2. The same number of keys
+3. The same number of bits in the register per key
+4. Access and Write disable in the same bit locations
 
-x86/traps: Fix #DE Oops message regression
+That means that we can share all the macros that synthesize and
+manipulate register values between the two features.
 
-The conversion of #DE to the idtentry mechanism introduced a change in the
-Ooops message which confuses tools which parse crash information in dmesg.
+> +++ b/arch/x86/include/asm/pkeys_common.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_X86_PKEYS_INTERNAL_H
+> +#define _ASM_X86_PKEYS_INTERNAL_H
+> +
+> +#define PKR_AD_BIT 0x1
+> +#define PKR_WD_BIT 0x2
+> +#define PKR_BITS_PER_PKEY 2
+> +
+> +#define PKR_AD_KEY(pkey)	(PKR_AD_BIT << ((pkey) * PKR_BITS_PER_PKEY))
 
-Remove the underscore from 'divide_error' to restore previous behaviour.
+Now that this has moved away from its use-site, it's a bit less
+self-documenting.  Let's add a comment:
 
-Fixes: 9d06c4027f21 ("x86/entry: Convert Divide Error to IDTENTRY")
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/CACT4Y+bTZFkuZd7+bPArowOv-7Die+WZpfOWnEO_Wgs3U59+oA@mail.gmail.com
----
- arch/x86/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+/*
+ * Generate an Access-Disable mask for the given pkey.  Several of these
+ * can be OR'd together to generate pkey register values.
+ */
 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 81a2fb7..316ce1c 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -195,7 +195,7 @@ static __always_inline void __user *error_get_trap_addr(struct pt_regs *regs)
- 
- DEFINE_IDTENTRY(exc_divide_error)
- {
--	do_error_trap(regs, 0, "divide_error", X86_TRAP_DE, SIGFPE,
-+	do_error_trap(regs, 0, "divide error", X86_TRAP_DE, SIGFPE,
- 		      FPE_INTDIV, error_get_trap_addr(regs));
- }
- 
+Once that's in place, along with the updated changelog:
+
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
