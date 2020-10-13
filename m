@@ -2,218 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B49C028CEFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C6328CF00
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 15:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387694AbgJMNND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 09:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        id S1728444AbgJMNQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 09:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387620AbgJMNNC (ORCPT
+        with ESMTP id S1726648AbgJMNQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 09:13:02 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C98C0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:13:02 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a3so28145662ejy.11
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:13:01 -0700 (PDT)
+        Tue, 13 Oct 2020 09:16:19 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF3BC0613D0;
+        Tue, 13 Oct 2020 06:16:17 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a72so10287978wme.5;
+        Tue, 13 Oct 2020 06:16:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zUTR1na3Qa05gyhmhDFmvq03v/zx4fi0gFtqH+OKyWU=;
-        b=YMkUEMOXtUWNimXqzoY70gOvJhuH3owo6E/8URbjAoCRURFQLe1HRvPGm9LzkClgNh
-         hqKd4OCtyy1fzhGhpa5ca7+hduaG64OKkvaOPuB2adHMgN+8xX7nbVN9iy1rnlH1GE3u
-         w/Xw1YYWYPXiIDPI3gmpRA/ituQIIUSJ3IapM=
+        bh=9lW4dFaX7zENb53L/tQnCRjjQKB77rHKz+r8ZW7p+KU=;
+        b=jRefv6wAPkcjLEUrg0lsNRz9xZOtlpZDjYV+z3w6hlJEqA1Q7SlQci9S23IZDlN4g9
+         YYKyAYrbFJeNahTRsWVlqLuzAg/ijzeiNIzS48rkdpij1Mr2HQ6Eml0/tVlzAgT75FJm
+         yl535TpmDxaFlxWTsZ43ezYar43gYHtTS6n4d7Eya86vLdRMJQqsD8+pHEaWqmeZjOvH
+         gG3OaRmNLazhAIcYmuOkCdyrSSjDTvdpa7+yYxZ7I/r/pFZDTOI9DeA1B6GP7qCEH7Ou
+         AAFTpHdHdB4waig/dVUS5GU1XaNl+Z3jb+Y3jSwEp0V3XB+SMQt2QwfsjpD4a+WmQ0fJ
+         1lQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zUTR1na3Qa05gyhmhDFmvq03v/zx4fi0gFtqH+OKyWU=;
-        b=K4keVOdf3GAxmtI3Hxcl5Emdrj2BWRP7Rjs3CXoeRxdE1QrLaql+N8FUqWS83i7k5C
-         euJu9R5poqGpZHAUyD42g6nVTEjB8DMAyhi7fdysFHfDgU/NmRXH16rJ8M2fQFp30FvG
-         aokSMn7OnoRx7+PBCP/dhsXsOZ3cY4VsdGq0sUP77e3GORWJqxSmAb23GmeM26k7NoGE
-         x5qvc2YkGWY+Xa24kPWs3UQi/E9DNM9d7h7grN8yAilHJvtDXnH6vV6LTq5pIkSXMHdq
-         K7jmoPpaPVm/QEsZcEYeaTdvNeULsvbqgJ2mzD5MqBl19yXHDoUq4BM5leRJzQZZLmOg
-         T6kA==
-X-Gm-Message-State: AOAM530BjBDLCPIoTo6k5TnQMStMiKFDBrTjfAzjGnk11F52vzk9o9Nv
-        eclQ6vnTdsrh9a2AhWCxXQhDtMRv0NEjjmmQ
-X-Google-Smtp-Source: ABdhPJxOT1QYLlNpFm3dmQOmsNPaOG3xrgF3DVGH2O51agAG6WnuNExnEyCSCNy/SbzFbbeS8cIUqQ==
-X-Received: by 2002:a17:906:935a:: with SMTP id p26mr8626707ejw.30.1602594779904;
-        Tue, 13 Oct 2020 06:12:59 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id r24sm12199691edm.95.2020.10.13.06.12.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 06:12:58 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id y12so18618101wrp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 06:12:57 -0700 (PDT)
-X-Received: by 2002:adf:ab05:: with SMTP id q5mr9380716wrc.32.1602594777300;
- Tue, 13 Oct 2020 06:12:57 -0700 (PDT)
+        bh=9lW4dFaX7zENb53L/tQnCRjjQKB77rHKz+r8ZW7p+KU=;
+        b=XMWoIbSaJrrhbw5eHcYOYqA5xtuk/6AZjrwTVckTKHaibEpzCl7O9cyd3HzbiCRe4Q
+         oEYarXijp+xZScqnY5iS/F8PUzW2sX9AEAw4lbS0RG/ogVbOtMZ8yTff3lWTxHJcupYr
+         kO8NyXhdLd4gElXAXtwzmuKkEl4fjUWVPGJ/b00IW1l2qRkIc7dyYF2s5mh6fRq3F745
+         6oEukfBq2GsTpvgz0JyIvStq3d7s3RGO9qF8UvYRxfQbTCakp3FKAF54MwXevvsjUtJP
+         h0mBBLQeDKcIfskGDUKikm3V53z0RbKLeBFBUxPspyg1Zy5ZAVhKKFQo7GJeO5xLiiZt
+         clow==
+X-Gm-Message-State: AOAM532eGvtbXB07IoCSUCjtfYUxar4yWxyqGUwPLwA7MrsWAPi49CyJ
+        jh7voeOtSC5qeGSODEDU8SxmC5GOlrWa1ket6z4=
+X-Google-Smtp-Source: ABdhPJyF/ftciBqzh4ch1CG+SWuyn6xuAXkHcUCbsiHDWmq1tOGg12CynfIElRQkbmq/7l1KZq6D6ByKciowJMl1XDo=
+X-Received: by 2002:a1c:1d15:: with SMTP id d21mr8363338wmd.79.1602594975661;
+ Tue, 13 Oct 2020 06:16:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200526085446.30956-1-stanimir.varbanov@linaro.org>
- <65ac9697-a43f-7025-e6fe-69c4a44c6d9a@xs4all.nl> <ce28a840-a763-6700-16dd-d708e570d55c@linaro.org>
- <d02c6cd0-a502-dc52-519e-54b6328d5373@linaro.org> <544b19dd-4883-bae0-b488-46c856eb207d@xs4all.nl>
- <6f71931a-9060-a399-835c-a1cf1f05dc79@linaro.org> <1bc10e88-8cbe-3da9-daeb-d015f42d7acc@xs4all.nl>
- <CAAFQd5Aorm-O7OMcHsnRUEGQq2qoPDRtAuukiLHgC9g54oAW9Q@mail.gmail.com> <de40cdf1-0b84-a252-0137-a550f078d28b@linaro.org>
-In-Reply-To: <de40cdf1-0b84-a252-0137-a550f078d28b@linaro.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 13 Oct 2020 15:12:46 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5A7MdFXsYWVx+3DY-dt=HZTg_Kt1uhntoEzzjp+e02R=Q@mail.gmail.com>
-Message-ID: <CAAFQd5A7MdFXsYWVx+3DY-dt=HZTg_Kt1uhntoEzzjp+e02R=Q@mail.gmail.com>
-Subject: Re: [PATCH] v4l2-ctrl: add control for thumnails
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org> <5698741522f375b5687860b597ecb786e14dfc82.1602589096.git.mchehab+huawei@kernel.org>
+In-Reply-To: <5698741522f375b5687860b597ecb786e14dfc82.1602589096.git.mchehab+huawei@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 13 Oct 2020 09:16:03 -0400
+Message-ID: <CADnq5_NCgoqbBc5LG2QANh9n14h7RO1A5eZ8Dn95EkHCiRfWsA@mail.gmail.com>
+Subject: Re: [PATCH v6 72/80] drm/amd/display: kernel-doc: document force_timing_sync
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Victor Lu <victorchengchi.lu@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 2:52 PM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
+Applied.  Thanks!
+
+Alex
+
+On Tue, Oct 13, 2020 at 7:54 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 >
-> Hi,
+> As warned when running "make htmldocs":
 >
-> On 6/4/20 3:57 PM, Tomasz Figa wrote:
-> > On Thu, Jun 4, 2020 at 2:56 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
-> >>
-> >> On 04/06/2020 14:34, Stanimir Varbanov wrote:
-> >>> Hi Hans,
-> >>>
-> >>> On 6/4/20 12:08 PM, Hans Verkuil wrote:
-> >>>> On 04/06/2020 11:02, Stanimir Varbanov wrote:
-> >>>>> Hi Hans,
-> >>>>>
-> >>>>> On 5/27/20 12:53 AM, Stanimir Varbanov wrote:
-> >>>>>> Hi Hans,
-> >>>>>>
-> >>>>>> On 5/26/20 3:04 PM, Hans Verkuil wrote:
-> >>>>>>> On 26/05/2020 10:54, Stanimir Varbanov wrote:
-> >>>>>>>> Add v4l2 control for decoder thumbnail.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> >>>>>>>> ---
-> >>>>>>>>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 7 +++++++
-> >>>>>>>>  drivers/media/v4l2-core/v4l2-ctrls.c                      | 2 ++
-> >>>>>>>>  include/uapi/linux/v4l2-controls.h                        | 2 ++
-> >>>>>>>>  3 files changed, 11 insertions(+)
-> >>>>>>>>
-> >>>>>>>> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> >>>>>>>> index d0d506a444b1..e838e410651b 100644
-> >>>>>>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> >>>>>>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> >>>>>>>> @@ -3726,6 +3726,13 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-> >>>>>>>>      disables generating SPS and PPS at every IDR. Setting it to one enables
-> >>>>>>>>      generating SPS and PPS at every IDR.
-> >>>>>>>>
-> >>>>>>>> +``V4L2_CID_MPEG_VIDEO_DECODER_THUMBNAIL (button)``
-> >>>>>>>> +    Instructs the decoder to produce immediate output. The decoder should
-> >>>>>>>> +    consume first input buffer for progressive stream (or first two buffers
-> >>>>>>>> +    for interlace). Decoder should not allocate more output buffers that it
-> >>>>>>>> +    is required to consume one input frame. Usually the decoder input
-> >>>>>>>> +    buffers will contain only I/IDR frames but it is not mandatory.
-> >>>>>>>
-> >>>>>>> This is very vague. It doesn't explain why the control is called 'THUMBNAIL',
-> >>>>>>> but more importantly it doesn't explain how this relates to normal decoding.
-> >>>>>>
-> >>>>>> If in the normal decode the capture queue buffers are 5, in the
-> >>>>>> thumbnail mode the number of buffers will be only 1 (if the bitstream is
-> >>>>>> progressive) and this will guarantee low memory usage. The other
-> >>>>>> difference is that the decoder will produce decoded frames (without
-> >>>>>> errors) only for I/IDR (sync frames).
-> >>>>
-> >>>> Isn't this really a "DECODE_SYNC_FRAMES_ONLY" control? That's what it does,
-> >>>> right? Skip any B/P frames and only decode sync frames.
-> >>>
-> >>> Yes, it is.
-> >>> To me V4L2_CID_MPEG_VIDEO_DECODE_SYNC_FRAMES sounds better. If you are
-> >>> fine I can send a new patch.
-> >>>
-> >>> The definition of "sync frames" is a bit difficult for codec-agnostic
-> >>> controls. Is it sound better "INTRA", DECODE_INTRA_FRAMES (ONLY)?
-> >>
-> >> INTRA is better. DECODE_INTRA_FRAMES_ONLY is a good name, I think.
-> >>
-> >> Thumbnail creation can be given as an example in the description of the
-> >> control, but that's just a use-case.
-> >
-> > How about the other aspect of the behavior?
-> >
-> > "Decoder should not allocate more output buffers that it
-> > is required to consume one input frame."
-> >
+>         ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:345: warning: Function parameter or member 'force_timing_sync' not described in 'amdgpu_display_manager'
 >
-> In fact I have to refine this; It looks like that picture type decode vs
-> thumbnail are two different modes.
+> This new struct member was not documented at kernel-doc markup.
 >
-> Thumbnail mode - first frame decode without additional memory (one input
-> buffer and one output buffer). The first frame can be even non-intra
-> frame as well.
-
-How comes it can be decoded without additional memory to store the
-reference frames then?
-
-> Also no matter frame parser is sending, the decoder will
-> try to produce output for thumbnail generation.
-
-Well, thinking of it now, actually DECODE_INTRA_FRAMES_ONLY makes
-sense here - if it is set, only 1 CAPTURE buffer could be allowed
-indeed, because no reference frames are needed for decoding.
-
-If inter frames are needed, I believe full DPB needs to be allocated,
-because it all depends on the stream how the references are set, so
-this is equivalent to normal decoding.
-
-best regards,
-Tomasz
-
+> Fixes: 3d4e52d0cf24 ("drm/amd/display: Add debugfs for forcing stream timing sync")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> > Best regards,
-> > Tomasz
-> >
-> >>
-> >> Regards,
-> >>
-> >>         Hans
-> >>
-> >>>
-> >>>>
-> >>>> That this is useful for creating thumbnails is just a specific use-case.
-> >>>>
-> >>>> Regards,
-> >>>>
-> >>>>      Hans
-> >>>>
-> >>>>>>
-> >>>>>>>
-> >>>>>>> I.e. if you are decoding and 'press' this control, what happens then?
-> >>>>>>
-> >>>>>> Might be the button type wasn't great idea. In fact the control should
-> >>>>>> be set before streamon so that the driver returns min_capture_bufs 1.
-> >>>>>>
-> >>>>>>>
-> >>>>>>> What exactly is the use-case?
-> >>>>>>
-> >>>>>> It could be used to generate thumbnails of all video clips in a folder
-> >>>>>> or when you open a Gallery application on your phone.
-> >>>>>>
-> >>>>>
-> >>>>> What is your opinion on that control? I could consider to make it Venus
-> >>>>> custom control but from the use-case it looks other drivers also can
-> >>>>> benefit of it.
-> >>>>>
-> >>>>> I tried to make more generic one [1] but it looks it will be too difficult.
-> >>>>>
-> >>>>
-> >>>
-> >>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> index dd1559c743c2..fc7e3e9fd719 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> @@ -149,6 +149,8 @@ struct amdgpu_dm_backlight_caps {
+>   * @cached_state: Caches device atomic state for suspend/resume
+>   * @cached_dc_state: Cached state of content streams
+>   * @compressor: Frame buffer compression buffer. See &struct dm_comressor_info
+> + * @force_timing_sync: set via debugfs. When set, indicates that all connected
+> + *                    displays will be forced to synchronize.
+>   */
+>  struct amdgpu_display_manager {
 >
 > --
-> regards,
-> Stan
+> 2.26.2
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
