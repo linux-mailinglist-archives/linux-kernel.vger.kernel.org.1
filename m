@@ -2,124 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6DD28D2EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF51728D2F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 19:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728905AbgJMRPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 13:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgJMRPW (ORCPT
+        id S1728980AbgJMRQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 13:16:00 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42185 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgJMRQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 13:15:22 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECBEC0613D2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:15:22 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id n6so47896ioc.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 10:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language;
-        bh=PKr7Vq/qqPUHxm1qGwB++7US2ok17L2SyFB+bd51t5M=;
-        b=GBiVfTW9sPA9hnr1lVocuHkd2ol9Y1iG6UqtZTiC3GgTH+UI4hmZelRbhcVPNovwLX
-         MpjQEETf901lRykbRjt0oCWLAWQF2DMk4pj3BFEp7NVT5bYZcAdhoiQXJdmWjDzMA7DT
-         Eh8zdZLHu3iAdSB/M9Uiy22T161MJ8j1jKQY4=
+        Tue, 13 Oct 2020 13:16:00 -0400
+Received: by mail-ot1-f65.google.com with SMTP id m13so707834otl.9;
+        Tue, 13 Oct 2020 10:15:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language;
-        bh=PKr7Vq/qqPUHxm1qGwB++7US2ok17L2SyFB+bd51t5M=;
-        b=sscFztNlb/6kYfTKqpH3v7Ygcc7Y877D14eT3mz/2VWf76EzCmaVSJNLMdkqh9ci2P
-         ilTzvzpjwr6qRI0EtXvVFlxJLlsBlMLbMyOK4CrENdpH/QxzhWN2LPU79qGTqz/9bnd6
-         bgZ6GRqf50qsRzOti/URMb0578u8sVqjhr5q7qTd1U4GnXKbzMapRq6NR60DLz+IIP5l
-         HZ8YlKx3gLGCFCpdjF91dJbvGNIYN/ZyBZnqGL4UCsmeBL8xnkPFBRU2uBc4fbHITIOx
-         U4DMksohez/zKLjAYxq9NoZH4B4ue5M4BCxvdTo7Et5/K5OTWD8dBJpl6mBWlEUf/rq/
-         Xd9w==
-X-Gm-Message-State: AOAM532ZBUWv90JDhs8SV6bvhXUOArFhMfTU6ffY4W1KbNwU/o9hlXL6
-        fEX9h9xfaipaWZpu5PGTGlmZZA==
-X-Google-Smtp-Source: ABdhPJzqdvyL97vez1+NJ4KUJFse17yXWg7WveVX5D/7FXNoe1+SckoKGXUNeXTndO4widcJcM8Pwg==
-X-Received: by 2002:a6b:8bd7:: with SMTP id n206mr300274iod.13.1602609322123;
-        Tue, 13 Oct 2020 10:15:22 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s77sm485077ilk.8.2020.10.13.10.15.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 10:15:21 -0700 (PDT)
-Subject: Re: [GIT PULL] cpupower update for Linux 5.10-rc1
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thomas Renninger <trenn@suse.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <396f8b57-50f5-cd20-7a32-40785e669048@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <8acb2352-579f-5a5a-840c-d9330807b3f7@linuxfoundation.org>
-Date:   Tue, 13 Oct 2020 11:15:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HAKUo4scbg7V2YEalYpDN/o8gpn5BSBKY+2DCt+wy38=;
+        b=GCs36NlxMR574+2odTCz20p6hv7GIvRGux5SJ9YckMBJV2w2I9bfm9BfVv+17seFM4
+         /kZOsmbYuZO+5mFwSIDccM7YEEruwNRiYxy7sArLeic7kIElZwSpJei1t1W9scfG8uml
+         JuQ0QV4Jstl81TTi/QqTK8b5VUQt5kx8PMI0+Wl6sK1iaMqSS+hvOkLdlXki94ZIu06C
+         zhkyql0xf4UzTnRqTsYG5/i/dwHZVQ3G6GM0xEKpPNgZzXStKKveqIzC0XAXcNa7oMty
+         jy8Aji8i5yPf+4hWhi53gjSjqWa0H0enDaSGqBB7xRNYZ3ufZCq/hlc8b+RZ92AtHpHI
+         2Eqw==
+X-Gm-Message-State: AOAM531a+rAH1iqVn6sGXBlELCmq3W+t3WEWmR4T+KlamwsObBmJvXVd
+        HQQ6UdGFDwKmXVCGB2BPQg==
+X-Google-Smtp-Source: ABdhPJxYJqfSxHjkx1gdVXV4uFnQziYVvfV2finalHIGMvRrtKZTkJjC9BIVivEWTvGnkNd9GfBHbw==
+X-Received: by 2002:a05:6830:1183:: with SMTP id u3mr457720otq.167.1602609359331;
+        Tue, 13 Oct 2020 10:15:59 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o14sm129104ota.63.2020.10.13.10.15.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 10:15:58 -0700 (PDT)
+Received: (nullmailer pid 3716207 invoked by uid 1000);
+        Tue, 13 Oct 2020 17:15:57 -0000
+Date:   Tue, 13 Oct 2020 12:15:57 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Michael Auchter <michael.auchter@ni.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>, devicetree@vger.kernel.org,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: extcon: add binding for TUSB320
+Message-ID: <20201013171557.GA3716151@bogus>
+References: <20201012144754.738830-1-michael.auchter@ni.com>
+ <20201012144754.738830-2-michael.auchter@ni.com>
 MIME-Version: 1.0
-In-Reply-To: <396f8b57-50f5-cd20-7a32-40785e669048@linuxfoundation.org>
-Content-Type: multipart/mixed;
- boundary="------------15D84663CDBC2E5F294D18E8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012144754.738830-2-michael.auchter@ni.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------15D84663CDBC2E5F294D18E8
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 10/13/20 11:13 AM, Shuah Khan wrote:
-> Hi Rafael,
+On Mon, 12 Oct 2020 09:47:53 -0500, Michael Auchter wrote:
+> Add a device tree binding for the TI TUSB320.
 > 
-> Please pull the following cpupower update for Linux 5.10-rc1 or for
-> a later rc.
+> Signed-off-by: Michael Auchter <michael.auchter@ni.com>
+> ---
+> Changes since v1:
+> - use tusb320 instead of extcon in the unit name
 > 
-> This cpupower update for Linux 5.10-rc1 consists of minor fixes for
-> spelling and speeding up generating git version string which will
-> in turn speedup compiles.
-> 
-> diff is attached.
+>  .../bindings/extcon/extcon-usbc-tusb320.yaml  | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/extcon/extcon-usbc-tusb320.yaml
 > 
 
-Sorry. Here is the diff.
-
-thanks,
--- Shuah
-
---------------15D84663CDBC2E5F294D18E8
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-cpupower-5.10-rc1.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-cpupower-5.10-rc1.diff"
-
-diff --git a/tools/power/cpupower/Makefile b/tools/power/cpupower/Makefile
-index c8622497ef23..c7bcddbd486d 100644
---- a/tools/power/cpupower/Makefile
-+++ b/tools/power/cpupower/Makefile
-@@ -51,7 +51,7 @@ DESTDIR ?=
- # Package-related definitions. Distributions can modify the version
- # and _should_ modify the PACKAGE_BUGREPORT definition
- 
--VERSION=			$(shell ./utils/version-gen.sh)
-+VERSION:=			$(shell ./utils/version-gen.sh)
- LIB_MAJ=			0.0.1
- LIB_MIN=			0
- 
-diff --git a/tools/power/cpupower/debug/i386/intel_gsic.c b/tools/power/cpupower/debug/i386/intel_gsic.c
-index e5e926f46d6b..befd837f07f8 100644
---- a/tools/power/cpupower/debug/i386/intel_gsic.c
-+++ b/tools/power/cpupower/debug/i386/intel_gsic.c
-@@ -71,7 +71,7 @@ int main (void)
- 		printf("\tsmi_cmd=0x?? smi_port=0x?? smi_sig=1\n");
- 		printf("\nUnfortunately, you have to know what exactly are "
- 		       "smi_cmd and smi_port, and this\nis system "
--		       "dependant.\n");
-+		       "dependent.\n");
- 	}
- 	return 1;
- }
-
---------------15D84663CDBC2E5F294D18E8--
+Reviewed-by: Rob Herring <robh@kernel.org>
