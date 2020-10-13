@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3589728CBE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A57D28CBEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 12:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387492AbgJMKoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 06:44:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbgJMKoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:44:01 -0400
-Received: from localhost (unknown [176.164.225.223])
+        id S2387969AbgJMKpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 06:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387472AbgJMKpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 06:45:02 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE7BC0613D0;
+        Tue, 13 Oct 2020 03:45:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gHLQIF1wPIEPcvs1yDSFLGHbHVikcssT7QT9S0QYPZ0=; b=J9TsIgknk14qtvOmh0mihWXo8U
+        fNH1jLPZFLXBS+46hVfgA+oRTeOWQNkztS6FCuM/vAxeTEZf7pzxNqpwgmk2vuyWM0/ikEjKd0UMd
+        1l9j49qBYknzxMElg15hmabowJi0fGHtF6ZHzDhAkt7wdlSvpkgyU9TaqdWLfbkXSsquh2ltBfiLP
+        dEkJHBoTiQjD7aAl4PzzYhcQMjN0vlZT2ZRalQiBYr93r0OkU3g5ki6NTVcwqBn54rgwAd9zlleMI
+        OQJAcBJOwC71dk5CShuxatVtHaqy5TPMJc2SdGFhQ2224qSUhATuC7AgcuB1zucWO5e8ODG7Ri3u7
+        SjVhq9Lg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSHnZ-0006IX-8b; Tue, 13 Oct 2020 10:44:53 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47ADB20878;
-        Tue, 13 Oct 2020 10:44:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602585840;
-        bh=psDBvJi8oWnrGcNCqLJaeTbezh9cUHTezlmtlMpt3p0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qzuLxz3qfVnVnsgKQl6TXsce16FGYp+PYBChsGQgYZ9lLGphoF6hucl8TOj//WbBS
-         XqyP1Y1nibMRL23mH13Dt/pXruUAEkGGSPXvN2DNdMxZIccNPBMeOBkDO9bp+GQHky
-         Toj8lCjTvZWmG0OxoNk924byettbDTFNm7dn8Ruc=
-Date:   Tue, 13 Oct 2020 12:43:57 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     jun qian <qianjun.kernel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>, peterz@infradead.org,
-        will@kernel.org, luto@kernel.org, linux-kernel@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing
- loop
-Message-ID: <20201013104357.GB47577@lothringen>
-References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
- <20200915115609.85106-5-qianjun.kernel@gmail.com>
- <878scz89tl.fsf@nanos.tec.linutronix.de>
- <20200925004207.GE19346@lenoir>
- <CAKc596Km6kjQcp2MJmH9BZLY_7i7yFmHDmRnaJGsm4WzUNjwaA@mail.gmail.com>
- <20200929114428.GA56480@lothringen>
- <20201009150139.vatmppe2e3cwtoof@e107158-lin.cambridge.arm.com>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7E459304E03;
+        Tue, 13 Oct 2020 12:44:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EE4F020AEA646; Tue, 13 Oct 2020 12:44:50 +0200 (CEST)
+Date:   Tue, 13 Oct 2020 12:44:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Qian Cai <cai@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+Message-ID: <20201013104450.GQ2651@hirez.programming.kicks-ass.net>
+References: <160223032121.7002.1269740091547117869.tip-bot2@tip-bot2>
+ <e438b231c5e1478527af6c3e69bf0b37df650110.camel@redhat.com>
+ <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+ <20201012212812.GH3249@paulmck-ThinkPad-P72>
+ <20201013103406.GY2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009150139.vatmppe2e3cwtoof@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20201013103406.GY2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 04:01:39PM +0100, Qais Yousef wrote:
-> On 09/29/20 13:44, Frederic Weisbecker wrote:
-> > > that will delay the net_rx/tx softirq to process, Peter's branch
-> > > maybe can slove
-> > > the problem
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git core/softirq
-> > 
-> > It's probably also the right time for me to resume on this patchset:
-> > 
-> > https://lwn.net/Articles/779564/
-> > 
-> > In the long term this will allow us to have per vector threads that can be
-> > individually triggered upon high loads, and even soft interruptible by
-> > other vectors from irq_exit(). Also if several vectors are on high loads
-> > at the same time, this leaves the balance decisions to the scheduler instead
-> > of all these workarounds we scratch our heads on for several years now.
-> > 
-> > Besides, I'm convinced that splitting the softirqs is something we want in
-> > the long run anyway.
+On Tue, Oct 13, 2020 at 12:34:06PM +0200, Peter Zijlstra wrote:
+> On Mon, Oct 12, 2020 at 02:28:12PM -0700, Paul E. McKenney wrote:
+> > It is certainly an accident waiting to happen.  Would something like
+> > the following make sense?
 > 
-> So if I understood correctly we'll end up with a kthread for each softirq type
-> that can be scheduled individually on any CPU following the 'normal' scheduler
-> rules, correct?
+> Sadly no.
 > 
-> If I got it right, I like that. I certainly think having these softirqs as RT
-> threads (like irq threads) makes a lot more sense. At least one would be able
-> to use priorities to reason about when it's okay to preempt them or not.
+> > ------------------------------------------------------------------------
+> > 
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index bfd38f2..52a63bc 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -4067,6 +4067,7 @@ void rcu_cpu_starting(unsigned int cpu)
+> >  
+> >  	rnp = rdp->mynode;
+> >  	mask = rdp->grpmask;
+> > +	lockdep_off();
+> >  	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+> >  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext | mask);
+> >  	newcpu = !(rnp->expmaskinitnext & mask);
+> > @@ -4086,6 +4087,7 @@ void rcu_cpu_starting(unsigned int cpu)
+> >  	} else {
+> >  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+> >  	}
+> > +	lockdep_on();
+> >  	smp_mb(); /* Ensure RCU read-side usage follows above initialization. */
+> >  }
 > 
-> If I got it wrong, why we can't do that?
+> This will just shut it up, but will not fix the actual problem of that
+> spin-lock ending up in trace_lock_acquire() which relies on RCU which
+> isn't looking.
+> 
+> What we need here is to supress tracing not lockdep. Let me consider.
 
-We can't do that right away because some softirq vectors may rely on the
-fact that they can't be interrupted by other softirq vectors. If they use
-per cpu data, they can perfectly assume that it's locally softirq-safe
-and not use any lock to protect it, provided the data is stricly per-cpu
-of course.
+We appear to have a similar problem with rcu_report_dead(), it's
+raw_spin_unlock()s can end up in trace_lock_release() while we just
+killed RCU.
 
-So we'll need to check all the softirq handlers and make sure they don't
-do such assumption, or fix the site. I can imagine it as an iterative
-pushdown just like we did with the big kernel lock.
 
-Thanks.
