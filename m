@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B8E28CD97
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 14:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BFA28CD67
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Oct 2020 13:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgJMMAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 08:00:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57968 "EHLO mail.kernel.org"
+        id S1728570AbgJML7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 07:59:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727476AbgJMLym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 07:54:42 -0400
+        id S1727513AbgJMLyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:54:43 -0400
 Received: from mail.kernel.org (ip5f5ad5b2.dynamic.kabel-deutschland.de [95.90.213.178])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD033223BE;
+        by mail.kernel.org (Postfix) with ESMTPSA id DEBB122404;
         Tue, 13 Oct 2020 11:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602590081;
-        bh=t45gM+mcpDbpIhRjbW9Zpxht62jX3d9x8Bi3cqTwnL4=;
+        bh=78BG9Iu2yAlND/COH/HKK6//gm3h8RbYRE58LCuOyj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCgZmZBxgLCu3fdDZnpzDgBmy6nqCFTaMTZPRgNnjJM3vy66WHen1L7nn5bygSQ1e
-         WIgNm/3YUj56EXbbRylRa0pxYBbD5YkyNLF0M7zEKf38QZChHkMsFM4Mqsah8srY0S
-         a1Bl//yaEc2nIjNTLUbqdNJLz7MZsRYh/5b8EPAM=
+        b=AsK7hZKtJHTp+v/vQK7XgM0QCL3nZxAgSJGWungnQzL/zeI6v/B32acVF1enJu+A9
+         IRprqu9BkcwN4dzKVUpjjIYEAtgjJJPbBEVgieSPRbCuk+VUU8v322xh1wkbfjKvrM
+         cwkig0bWKbK+uTEmlbTrA2y5DEC6r1TBITVQkz5U=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kSIt4-006CUv-OV; Tue, 13 Oct 2020 13:54:38 +0200
+        id 1kSIt4-006CUx-PS; Tue, 13 Oct 2020 13:54:38 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>,
-        "Jonathan Corbet" <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 38/80] docs: block: blk-mq.rst: get rid of :c:type
-Date:   Tue, 13 Oct 2020 13:53:53 +0200
-Message-Id: <85f98f7db048f519941cc13ebf023bd698418041.1602589096.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v6 39/80] docs: writing-an-alsa-driver.rst: fix some bad c:func: markups
+Date:   Tue, 13 Oct 2020 13:53:54 +0200
+Message-Id: <d01b867cb61f9bcbd810ed31be080705fd31f0aa.1602589096.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1602589096.git.mchehab+huawei@kernel.org>
 References: <cover.1602589096.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The :c:type macros are not used properly there, as reported
-by Sphinx 3:
+Some such markups are invalid, as reported by Sphinx:
 
-	./Documentation/block/blk-mq.rst:112: WARNING: Unparseable C cross-reference: 'hctx->dispatch'
-	Invalid C declaration: Expected end of definition. [error at 4]
-	  hctx->dispatch
-	  ----^
+	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3317: WARNING: Unparseable C cross-reference: 'snd_rawmidi_transmit*'
+	Invalid C declaration: Expected end of definition. [error at 20]
+	  snd_rawmidi_transmit*
+	  --------------------^
+	./Documentation/sound/kernel-api/writing-an-alsa-driver.rst:3917: WARNING: Unparseable C cross-reference: 'copy_from/to_user'
+	Invalid C declaration: Expected end of definition. [error at 9]
+	  copy_from/to_user
+	  ---------^
 
-Also, they won't be generating any cross references.
+The first case seems to be better replaced by a literal.
 
-So, replace them by a literal markup.
+For the second one, let's generate cross-references, by
+spliting it in two.
 
-Reviewed-by: André Almeida <andrealmeid@collabora.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/block/blk-mq.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/sound/kernel-api/writing-an-alsa-driver.rst | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
-index 86a632af02b0..a980d23af48c 100644
---- a/Documentation/block/blk-mq.rst
-+++ b/Documentation/block/blk-mq.rst
-@@ -110,9 +110,9 @@ block layer removes requests from the associated software queues and tries to
- dispatch to the hardware.
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 85d6e9c643ef..73bbd59afc33 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -3315,8 +3315,7 @@ data and removes them from the buffer at once:
+   }
  
- If it's not possible to send the requests directly to hardware, they will be
--added to a linked list (:c:type:`hctx->dispatch`) of requests. Then,
-+added to a linked list (``hctx->dispatch``) of requests. Then,
- next time the block layer runs a queue, it will send the requests laying at the
--:c:type:`dispatch` list first, to ensure a fairness dispatch with those
-+``dispatch`` list first, to ensure a fairness dispatch with those
- requests that were ready to be sent first. The number of hardware queues
- depends on the number of hardware contexts supported by the hardware and its
- device driver, but it will not be more than the number of cores of the system.
+ If you know beforehand how many bytes you can accept, you can use a
+-buffer size greater than one with the
+-:c:func:`snd_rawmidi_transmit\*()` functions.
++buffer size greater than one with the ``snd_rawmidi_transmit*()`` functions.
+ 
+ The ``trigger`` callback must not sleep. If the hardware FIFO is full
+ before the substream buffer has been emptied, you have to continue
+@@ -3916,7 +3915,7 @@ the maximum size of the proc file access.
+ 
+ The read/write callbacks of raw mode are more direct than the text mode.
+ You need to use a low-level I/O functions such as
+-:c:func:`copy_from/to_user()` to transfer the data.
++:c:func:`copy_from_user()` and :c:func:`copy_to_user()` to transfer the data.
+ 
+ ::
+ 
 -- 
 2.26.2
 
