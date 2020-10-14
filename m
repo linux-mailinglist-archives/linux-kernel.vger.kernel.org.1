@@ -2,258 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC3E28E32D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D054B28E330
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbgJNPWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:22:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41746 "EHLO mail.kernel.org"
+        id S1730599AbgJNPXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:23:36 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:30177 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725935AbgJNPWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:22:16 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727056AbgJNPXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 11:23:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602689014; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+IIsA+57Axc0TGbzx3J0PJirmqcxQY6ipMrJ2tY6ekA=; b=joF87AegwdywSDViP0P8y0s4VTYYlERW675q1D+QAEpwVj81VN83x8EBszIYMv2dPjuTzxHL
+ n9eXlQ1/Nl7u23jMGUH/s7pnCsAvk/0MaZX/NsAbrfm9FL984V9jkcIuG7Rm3I4Aely8V73S
+ n8Gkx3hkBnf2ZuOLfp608GMXPRk=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f8717b30764f13b00136652 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 15:22:27
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E7DEEC433CB; Wed, 14 Oct 2020 15:22:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.102] (unknown [49.206.34.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A851221582;
-        Wed, 14 Oct 2020 15:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602688935;
-        bh=0CQoVzLVG8TWvLAgp5VYz2n9MqBBEV38H3lJ7gPA4Ss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E7//f+Cp3741Hy5nqd/ek211jTTtxAh5DdT7M1N3f6VxY4HAYwUaDs/gN2lIYCQaG
-         xX7XfFgibtnuWfdCvWtwn4PJbkW4Fez2tQ/g9WECjYCq7SzOG8GgiCQpAqy7iEeaWI
-         r5KmH4OdHB5hQwHLJvJqb1h0gK2xgIGHmrBpM0TA=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9E63E4047F; Wed, 14 Oct 2020 12:22:12 -0300 (-03)
-Date:   Wed, 14 Oct 2020 12:22:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andi Kleen <andi@firstfloor.org>
-Cc:     jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v2] perf: Add support for exclusive groups/events
-Message-ID: <20201014152212.GJ3100363@kernel.org>
-References: <20201014144255.22699-1-andi@firstfloor.org>
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7DAF6C433C9;
+        Wed, 14 Oct 2020 15:22:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7DAF6C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH v6 3/4] rcu/trace: Add tracing for how segcb list changes
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+References: <20200923152211.2403352-1-joel@joelfernandes.org>
+ <20200923152211.2403352-4-joel@joelfernandes.org>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <be9eb8bc-b776-e122-2182-ca2aac2d1e20@codeaurora.org>
+Date:   Wed, 14 Oct 2020 20:52:17 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014144255.22699-1-andi@firstfloor.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200923152211.2403352-4-joel@joelfernandes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 14, 2020 at 07:42:55AM -0700, Andi Kleen escreveu:
-> Peter suggested that using the exclusive mode in perf could
-> avoid some problems with bad scheduling of groups. Exclusive
-> is implemented in the kernel, but wasn't exposed by the perf tool,
-> so hard to use without custom low level API users.
-> 
-> Add support for marking groups or events with :e for exclusive
-> in the perf tool.  The implementation is basically the same as the
-> existing pinned attribute.
-> 
-> Cc: peterz@infradead.org
-> Signed-off-by: Andi Kleen <ak@linux.intel.com>
 
-Jiri, I'm taking you "I'm ok" with this as an Acked-by, thanks
 
-- Arnaldo
-
- 
-> --
+On 9/23/2020 8:52 PM, Joel Fernandes (Google) wrote:
+> Track how the segcb list changes before/after acceleration, during
+> queuing and during dequeuing.
 > 
-> v2: Update check_modifier too (Jiri)
+> This has proved useful to discover an optimization to avoid unwanted GP
+> requests when there are no callbacks accelerated. The overhead is minimal as
+> each segment's length is now stored in the respective segment.
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  tools/perf/Documentation/perf-list.txt |  1 +
->  tools/perf/tests/parse-events.c        | 58 +++++++++++++++++++++++++-
->  tools/perf/util/parse-events.c         | 11 ++++-
->  tools/perf/util/parse-events.l         |  2 +-
->  4 files changed, 68 insertions(+), 4 deletions(-)
+>   include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
+>   kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
+>   kernel/rcu/rcu_segcblist.h |  5 +++++
+>   kernel/rcu/tree.c          |  9 +++++++++
+>   4 files changed, 73 insertions(+)
 > 
-> diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
-> index 10ed539a8859..4c7db1da8fcc 100644
-> --- a/tools/perf/Documentation/perf-list.txt
-> +++ b/tools/perf/Documentation/perf-list.txt
-> @@ -58,6 +58,7 @@ counted. The following modifiers exist:
->   S - read sample value (PERF_SAMPLE_READ)
->   D - pin the event to the PMU
->   W - group is weak and will fallback to non-group if not schedulable,
-> + e - group or event are exclusive and do not share the PMU
->  
->  The 'p' modifier can be used for specifying how precise the instruction
->  address should be. The 'p' modifier can be specified multiple times:
-> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-> index 7f9f87a470c3..7411dd4d76cf 100644
-> --- a/tools/perf/tests/parse-events.c
-> +++ b/tools/perf/tests/parse-events.c
-> @@ -557,6 +557,7 @@ static int test__checkevent_pmu_events(struct evlist *evlist)
->  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
->  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
->  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
-> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
->  
->  	return 0;
->  }
-> @@ -575,6 +576,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
->  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
->  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
->  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
-> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
->  
->  	/* cpu/pmu-event/u*/
->  	evsel = evsel__next(evsel);
-> @@ -587,6 +589,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
->  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
->  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
->  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
-> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.pinned);
->  
->  	return 0;
->  }
-> @@ -1277,6 +1280,49 @@ static int test__pinned_group(struct evlist *evlist)
->  	return 0;
->  }
->  
-> +static int test__checkevent_exclusive_modifier(struct evlist *evlist)
+> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> index 155b5cb43cfd..7b84df3c95df 100644
+> --- a/include/trace/events/rcu.h
+> +++ b/include/trace/events/rcu.h
+> @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
+>   		  __entry->qlen)
+>   );
+>   
+> +TRACE_EVENT_RCU(rcu_segcb,
+> +
+> +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
+> +
+> +		TP_ARGS(ctx, cb_count, gp_seq),
+> +
+> +		TP_STRUCT__entry(
+> +			__field(const char *, ctx)
+> +			__array(int, cb_count, 4)
+> +			__array(unsigned long, gp_seq, 4)
+
+Use RCU_CBLIST_NSEGS in place of 4 ?
+> +		),
+> +
+> +		TP_fast_assign(
+> +			__entry->ctx = ctx;
+> +			memcpy(__entry->cb_count, cb_count, 4 * sizeof(int));
+> +			memcpy(__entry->gp_seq, gp_seq, 4 * sizeof(unsigned long));
+> +		),
+> +
+> +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
+> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
+> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+> +
+> +);
+> +
+>   /*
+>    * Tracepoint for the registration of a single RCU callback of the special
+>    * kvfree() form.  The first argument is the RCU type, the second argument
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 0e6d19bd3de9..df0f31e30947 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -13,6 +13,7 @@
+>   #include <linux/rcupdate.h>
+>   
+>   #include "rcu_segcblist.h"
+> +#include "rcu.h"
+>   
+>   /* Initialize simple callback list. */
+>   void rcu_cblist_init(struct rcu_cblist *rclp)
+> @@ -343,6 +344,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+>   	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+>   }
+>   
+> +/*
+> + * Return how many CBs each segment along with their gp_seq values.
+> + *
+> + * This function is O(N) where N is the number of callbacks. Only used from
+
+N is number of segments?
+
+> + * tracing code which is usually disabled in production.
+> + */
+> +#ifdef CONFIG_RCU_TRACE
+> +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> +			 int cbcount[RCU_CBLIST_NSEGS],
+> +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
 > +{
-> +	struct evsel *evsel = evlist__first(evlist);
+> +	int i;
 > +
-> +	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
-> +	TEST_ASSERT_VAL("wrong exclude_kernel", evsel->core.attr.exclude_kernel);
-> +	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
-> +	TEST_ASSERT_VAL("wrong precise_ip", evsel->core.attr.precise_ip);
-> +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
+> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
+> +		cbcount[i] = 0;
 > +
-> +	return test__checkevent_symbolic_name(evlist);
+
+What is the reason for initializing to 0?
+
+> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+> +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
+> +		gpseq[i] = rsclp->gp_seq[i];
+> +	}
 > +}
 > +
-> +static int test__exclusive_group(struct evlist *evlist)
+> +void trace_rcu_segcb_list(struct rcu_segcblist *rsclp, char *context)
 > +{
-> +	struct evsel *evsel, *leader;
+> +	int cbs[RCU_CBLIST_NSEGS];
+> +	unsigned long gps[RCU_CBLIST_NSEGS];
 > +
-> +	TEST_ASSERT_VAL("wrong number of entries", 3 == evlist->core.nr_entries);
+> +	rcu_segcblist_countseq(rsclp, cbs, gps);
 > +
-> +	/* cycles - group leader */
-> +	evsel = leader = evlist__first(evlist);
-> +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
-> +	TEST_ASSERT_VAL("wrong config",
-> +			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
-> +	TEST_ASSERT_VAL("wrong group name", !evsel->group_name);
-> +	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-> +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
-> +
-> +	/* cache-misses - can not be pinned, but will go on with the leader */
-> +	evsel = evsel__next(evsel);
-> +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
-> +	TEST_ASSERT_VAL("wrong config",
-> +			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
-> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
-> +
-> +	/* branch-misses - ditto */
-> +	evsel = evsel__next(evsel);
-> +	TEST_ASSERT_VAL("wrong config",
-> +			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
-> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
-> +
-> +	return 0;
+> +	trace_rcu_segcb(context, cbs, gps);
 > +}
->  static int test__checkevent_breakpoint_len(struct evlist *evlist)
->  {
->  	struct evsel *evsel = evlist__first(evlist);
-> @@ -1765,7 +1811,17 @@ static struct evlist_test test__events[] = {
->  		.name  = "cycles:k",
->  		.check = test__sym_event_dc,
->  		.id    = 55,
-> -	}
-> +	},
-> +	{
-> +		.name  = "instructions:uep",
-> +		.check = test__checkevent_exclusive_modifier,
-> +		.id    = 56,
-> +	},
-> +	{
-> +		.name  = "{cycles,cache-misses,branch-misses}:e",
-> +		.check = test__exclusive_group,
-> +		.id    = 57,
-> +	},
->  };
->  
->  static struct evlist_test test__events_pmu[] = {
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 9f7260e69113..c4da6bf6ff6a 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1768,6 +1768,7 @@ struct event_modifier {
->  	int sample_read;
->  	int pinned;
->  	int weak;
-> +	int exclusive;
->  };
->  
->  static int get_event_modifier(struct event_modifier *mod, char *str,
-> @@ -1783,6 +1784,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
->  	int precise_max = 0;
->  	int sample_read = 0;
->  	int pinned = evsel ? evsel->core.attr.pinned : 0;
-> +	int exclusive = evsel ? evsel->core.attr.exclusive : 0;
->  
->  	int exclude = eu | ek | eh;
->  	int exclude_GH = evsel ? evsel->exclude_GH : 0;
-> @@ -1824,6 +1826,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
->  			sample_read = 1;
->  		} else if (*str == 'D') {
->  			pinned = 1;
-> +		} else if (*str == 'e') {
-> +			exclusive = 1;
->  		} else if (*str == 'W') {
->  			weak = 1;
->  		} else
-> @@ -1857,6 +1861,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
->  	mod->sample_read = sample_read;
->  	mod->pinned = pinned;
->  	mod->weak = weak;
-> +	mod->exclusive = exclusive;
->  
->  	return 0;
->  }
-> @@ -1870,7 +1875,7 @@ static int check_modifier(char *str)
->  	char *p = str;
->  
->  	/* The sizeof includes 0 byte as well. */
-> -	if (strlen(str) > (sizeof("ukhGHpppPSDIW") - 1))
-> +	if (strlen(str) > (sizeof("ukhGHpppPSDIWe") - 1))
->  		return -1;
->  
->  	while (*p) {
-> @@ -1912,8 +1917,10 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
->  		evsel->precise_max         = mod.precise_max;
->  		evsel->weak_group	   = mod.weak;
->  
-> -		if (evsel__is_group_leader(evsel))
-> +		if (evsel__is_group_leader(evsel)) {
->  			evsel->core.attr.pinned = mod.pinned;
-> +			evsel->core.attr.exclusive = mod.exclusive;
-> +		}
->  	}
->  
->  	return 0;
-> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-> index 3ca5fd2829ca..9db5097317f4 100644
-> --- a/tools/perf/util/parse-events.l
-> +++ b/tools/perf/util/parse-events.l
-> @@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
->  name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
->  drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
->  /* If you add a modifier you need to update check_modifier() */
-> -modifier_event	[ukhpPGHSDIW]+
-> +modifier_event	[ukhpPGHSDIWe]+
->  modifier_bp	[rwx]{1,3}
->  
->  %%
-> -- 
-> 2.28.0
+> +#endif
+> +
+>   /*
+>    * Extract only those callbacks still pending (not yet ready to be
+>    * invoked) from the specified rcu_segcblist structure and place them in
+> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> index 3e0eb1056ae9..15c10d30f88c 100644
+> --- a/kernel/rcu/rcu_segcblist.h
+> +++ b/kernel/rcu/rcu_segcblist.h
+> @@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
+>   bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
+>   void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+>   			 struct rcu_segcblist *src_rsclp);
+> +#ifdef CONFIG_RCU_TRACE
+> +void trace_rcu_segcb_list(struct rcu_segcblist *rsclp, char *context);
+> +#else
+> +#define trace_rcu_segcb_list(...)
+> +#endif
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 50af465729f4..e3381ff67fc6 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1492,6 +1492,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>   	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+>   		return false;
+>   
+> +	trace_rcu_segcb_list(&rdp->cblist, "SegCbPreAcc");
+
+Use TPS("SegCbPreAcc") ?
+
+
+Thanks
+Neeraj
+
+> +
+>   	/*
+>   	 * Callbacks are often registered with incomplete grace-period
+>   	 * information.  Something about the fact that getting exact
+> @@ -1512,6 +1514,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+>   	else
+>   		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+>   
+> +	trace_rcu_segcb_list(&rdp->cblist, "SegCbPostAcc");
+> +
+>   	return ret;
+>   }
+>   
+> @@ -2469,6 +2473,9 @@ static void rcu_do_batch(struct rcu_data *rdp)
+>   	/* Invoke callbacks. */
+>   	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+>   	rhp = rcu_cblist_dequeue(&rcl);
+> +
+> +	trace_rcu_segcb_list(&rdp->cblist, "SegCbDequeued");
+> +
+>   	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+>   		rcu_callback_t f;
+>   
+> @@ -2982,6 +2989,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+>   		trace_rcu_callback(rcu_state.name, head,
+>   				   rcu_segcblist_n_cbs(&rdp->cblist));
+>   
+> +	trace_rcu_segcb_list(&rdp->cblist, "SegCBQueued");
+> +
+>   	/* Go handle any RCU core processing required. */
+>   	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+>   	    unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
 > 
 
 -- 
-
-- Arnaldo
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
