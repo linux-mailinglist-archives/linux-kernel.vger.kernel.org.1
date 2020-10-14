@@ -2,149 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B5828E8D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BE328EB0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729582AbgJNWhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 18:37:07 -0400
-Received: from outbound-smtp36.blacknight.com ([46.22.139.219]:53173 "EHLO
-        outbound-smtp36.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729356AbgJNWhH (ORCPT
+        id S1729585AbgJOCTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728427AbgJOCTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 18:37:07 -0400
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp36.blacknight.com (Postfix) with ESMTPS id C2855179E
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:37:04 +0100 (IST)
-Received: (qmail 31767 invoked from network); 14 Oct 2020 22:37:04 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 14 Oct 2020 22:37:04 -0000
-Date:   Wed, 14 Oct 2020 23:37:03 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
-        Len Brown <lenb@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        rafael@kernel.org, Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-Message-ID: <20201014223703.GT3227@techsingularity.net>
-References: <20201006083639.GJ3227@techsingularity.net>
- <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
- <20201006190322.GL3227@techsingularity.net>
- <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
- <20201006211820.GN3227@techsingularity.net>
- <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
- <20201008090909.GP3227@techsingularity.net>
- <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
- <20201008173436.GQ3227@techsingularity.net>
- <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
+        Wed, 14 Oct 2020 22:19:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3346C05BD1F;
+        Wed, 14 Oct 2020 15:40:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wpi1ELZaaFaYJLsGXjb01Rpxc7NFR8QcNczNaEl+OBw=; b=QCJSyr+nBW9tyGZHxgNMEfq6vK
+        9CDTb9Q60ev+vS1XEgNUMXIeqsFAqUz+/J81ylBL3v0dlFfQ77bikk0DMeiuBE3p+kmTkx3Je72Ph
+        mWwM0Zr+3thQS63WIPiCwj8r1C6Zk+EhHgMhZvIohuzMB488dgKj7t58emUizRT8efX2x7CELFrPC
+        pP6MKa13D2jEiTxHiIh67/ieFrJprLORwtcpUna2lLdMY1O4SBVFzBHiFq38bsaICfM7H8zSDd2wd
+        pDgduvKgbco71epQW2teHyNF37eYEqnpJcFhfit+JKzvnNGdTKkXojmLyLNty3FaDkRK0HzPgEncP
+        UxNnz1Uw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSpR5-0003mj-56; Wed, 14 Oct 2020 22:39:55 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AAA2304B90;
+        Thu, 15 Oct 2020 00:39:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2D0FD20325ECC; Thu, 15 Oct 2020 00:39:54 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 00:39:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Qian Cai <cai@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+Message-ID: <20201014223954.GH2594@hirez.programming.kicks-ass.net>
+References: <20201012031110.GA39540@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+ <20201012212812.GH3249@paulmck-ThinkPad-P72>
+ <20201013103406.GY2628@hirez.programming.kicks-ass.net>
+ <20201013104450.GQ2651@hirez.programming.kicks-ass.net>
+ <20201013112544.GZ2628@hirez.programming.kicks-ass.net>
+ <20201013162650.GN3249@paulmck-ThinkPad-P72>
+ <20201013193025.GA2424@paulmck-ThinkPad-P72>
+ <20201014183405.GA27666@paulmck-ThinkPad-P72>
+ <20201014215319.GF2974@worktop.programming.kicks-ass.net>
+ <20201014221152.GS3249@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201014221152.GS3249@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 08:55:26PM +0200, Rafael J. Wysocki wrote:
-> > > With C6 enabled, that state is used at
-> > > least sometimes (so C1E is used less often), but PC6 doesn't seem to be
-> > > really used - it looks like core C6 only is entered and which may be why C6
-> > > adds less latency than C1E (and analogously for C3).
+On Wed, Oct 14, 2020 at 03:11:52PM -0700, Paul E. McKenney wrote:
+> On Wed, Oct 14, 2020 at 11:53:19PM +0200, Peter Zijlstra wrote:
+> > On Wed, Oct 14, 2020 at 11:34:05AM -0700, Paul E. McKenney wrote:
+> > > commit 7deaa04b02298001426730ed0e6214ac20d1a1c1
+> > > Author: Paul E. McKenney <paulmck@kernel.org>
+> > > Date:   Tue Oct 13 12:39:23 2020 -0700
 > > > 
-> > At the moment, I'm happy with either solution but mostly because I can't
-> > tell what other trade-offs should be considered :/
+> > >     rcu: Prevent lockdep-RCU splats on lock acquisition/release
+> > >     
+> > >     The rcu_cpu_starting() and rcu_report_dead() functions transition the
+> > >     current CPU between online and offline state from an RCU perspective.
+> > >     Unfortunately, this means that the rcu_cpu_starting() function's lock
+> > >     acquisition and the rcu_report_dead() function's lock releases happen
+> > >     while the CPU is offline from an RCU perspective, which can result in
+> > >     lockdep-RCU splats about using RCU from an offline CPU.  In reality,
+> > >     aside from the splats, both transitions are safe because a new grace
+> > >     period cannot start until these functions release their locks.
 > > 
->
-> I talked to Len and Srinivas about this and my theory above didn't survive.
+> > But we call the trace_* crud before we acquire the lock. Are you sure
+> > that's a false-positive? 
 > 
-> The most likely reason why you see a performance drop after enabling the
-> ACPI support (which effectively causes C3 and C6 to be disabled by default
-> on the affected machines) is because the benchmarks in question require
-> sufficiently high one-CPU performance and the CPUs cannot reach high enough
-> one-core turbo P-states without the other CPUs going into C6.
+> You lost me on this one.
 > 
-
-That makes sense. It also can explain anomalies like server/clients being
-split across NUMA nodes with no other activity can sometimes be better
-because of turbo states being more important than memory locality for
-some benchmarks.
-
-> Inspection of the ACPI tables you sent me indicates that there is a BIOS
-> switch in that system allowing C6 to be enabled.  Would it be possible to
-> check whether or not there is a BIOS setup option to change that setting?
+> I am assuming that you are talking about rcu_cpu_starting(), because
+> that is the one where RCU is not initially watching, that is, the
+> case where tracing before the lock acquisition would be a problem.
+> You cannot be talking about rcu_cpu_starting() itself, because it does
+> not do any tracing before acquiring the lock.  But if you are talking
+> about the caller of rcu_cpu_starting(), then that caller should put the
+> rcu_cpu_starting() before the tracing.  But that would be the other
+> patch earlier in this thread that was proposing moving the call to
+> rcu_cpu_starting() much earlier in CPU bringup.
 > 
+> So what am I missing here?
 
-Yes, it's well hidden but it's there. If the profile is made custom, then
-the p-states can be selected and "custom" default enables C6 but not C3
-(there is a note saying that it's not recommended for that CPU). If I
-then switch it back to the normal profile, the c-states are not restored
-so this is a one-way trip even if you disable the c-state in custom,
-reboot, switch back, reboot. Same if the machine is reset to "optimal
-default settings". Yey for BIOS developers.
-
-This means I have a limited number of attempts to do something about
-this. 2 machines can no longer reproduce the problem reliably.
-
-However, that also says a "solution" is to enable the state on each of
-these machines, discard the historical results and carry on. In practice,
-if reports are received either upstream or in distros about strange
-behaviour on old machines when upgrading then first check the c-states
-and the CPU generation. Given long enough, the machines with that specific
-CPU and a crappy BIOS will phase out :/
-
-> Also, I need to know what happens if that system is started with intel_idle
-> disabled.  That is, what idle states are visible in sysfs in that
-> configuration (what their names and descriptions are in particular) and
-> whether or not the issue is still present then.
-> 
-
-Kernel name		c-state	  exit latency	 disabled?  default?
------------             ------    ------------   ---------  --------
-5.9-vanilla              POLL     latency:0      disabled:0 default:enabled
-5.9-vanilla              C1       latency:2      disabled:0 default:enabled
-5.9-vanilla              C1E      latency:10     disabled:0 default:enabled
-5.9-vanilla              C3       latency:33     disabled:1 default:disabled
-5.9-vanilla              C6       latency:133    disabled:0 default:enabled
-5.9-intel_idle-disabled  POLL     latency:0      disabled:0 default:enabled
-5.9-intel_idle-disabled  C1       latency:1      disabled:0 default:enabled
-5.9-intel_idle-disabled  C2       latency:41     disabled:0 default:enabled
-5.9-acpi-disable         POLL     latency:0      disabled:0 default:enabled
-5.9-acpi-disable         C1       latency:2      disabled:0 default:enabled
-5.9-acpi-disable         C1E      latency:10     disabled:0 default:enabled
-5.9-acpi-disable         C3       latency:33     disabled:0 default:enabled
-5.9-acpi-disable         C6       latency:133    disabled:0 default:enabled
-5.9-custom-powerprofile  POLL     latency:0      disabled:0 default:enabled
-5.9-custom-powerprofile  C1       latency:2      disabled:0 default:enabled
-5.9-custom-powerprofile  C1E      latency:10     disabled:0 default:enabled
-5.9-custom-powerprofile  C3       latency:33     disabled:1 default:disabled
-5.9-custom-powerprofile  C6       latency:133    disabled:0 default:enabled
-
-In this case, the test results are similar. I vaguely recall the bios
-was reconfigured on the second machine for unrelated reasons and it's no
-longer able to reproduce the problem properly. As the results show little
-difference in this case, I didn't include the turbostat figures. The
-summary from mmtests showed this
-
-                      5.9         5.9         5.9         5.9
-                  vanillaintel_idle-disabledacpi-disablecustom-powerprofile
-Hmean Avg_MHz        8.31        8.29        8.35        8.26
-Hmean Busy%          0.58        0.56        0.58        0.57
-Hmean CPU%c1         3.19       40.81        3.14        3.18
-Hmean CPU%c3         0.00        0.00        0.00        0.00
-Hmean CPU%c6        92.24        0.00       92.21       92.20
-Hmean CPU%c7         0.00        0.00        0.00        0.00
-Hmean PkgWatt       47.98        0.00       47.95       47.68
-
-i.e. The average time on c6 was high on the vanilla kernel where as it
-would not have been when the problem was originally reproduced (I
-clearly broke this test machine in a way I can't "fix"). Disabling
-intel_idle kept it mostly in C1 state.
-
-I'll try a third machine tomorrow but even if I reproduce the problem,
-I won't be able to do it again because ... yey bios developers.
-
--- 
-Mel Gorman
-SUSE Labs
+rcu_cpu_starting();
+  raw_spin_lock_irqsave();
+    local_irq_save();
+    preempt_disable();
+    spin_acquire()
+      lock_acquire()
+        trace_lock_acquire() <--- *whoopsie-doodle*
+	  /* uses RCU for tracing */
+    arch_spin_lock_flags() <--- the actual spinlock
