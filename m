@@ -2,249 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1641028E020
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5513B28E024
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730840AbgJNL6h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Oct 2020 07:58:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37802 "EHLO mx2.suse.de"
+        id S2388563AbgJNL7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:59:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726157AbgJNL6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:58:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0BB14AC6D;
-        Wed, 14 Oct 2020 11:58:35 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 13:58:33 +0200
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     <airlied@linux.ie>, <daniel@ffwll.ch>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH drm/hisilicon 1/2] drm/hisilicon: Use the same style of
- variable type in hibmc_drm_de
-Message-ID: <20201014135833.285ee0e2@linux-uq9g>
-In-Reply-To: <1601449988-41463-2-git-send-email-tiantao6@hisilicon.com>
-References: <1601449988-41463-1-git-send-email-tiantao6@hisilicon.com>
-        <1601449988-41463-2-git-send-email-tiantao6@hisilicon.com>
-Organization: SUSE Software Solutions Germany GmbH
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S2388538AbgJNL7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 07:59:11 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56BEE20848;
+        Wed, 14 Oct 2020 11:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602676750;
+        bh=i/RjhwcClAbrOb3UfGZRHExzd394qZjz3qR/uBO9XAE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WUDysWA2CtcQ9ORfpqI9PCOl/3oXz9y0AJh5q5EG8JFw4eOKDxa8nq5uukDrJIYQ5
+         63X6cpei7blc0r2XOInIVLuplSfyOmcKabbDOa7m5WN0dYiB8RdIGDT8oVkoCHpy6H
+         YKioWdS/18kAfoSFJSjPiCUaw2hQMmbfmY0O8ttM=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 218984047F; Wed, 14 Oct 2020 08:59:08 -0300 (-03)
+Date:   Wed, 14 Oct 2020 08:59:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 7/9] perf tools: Add size to struct
+ perf_record_header_build_id
+Message-ID: <20201014115908.GE3100363@kernel.org>
+References: <20201013192441.1299447-1-jolsa@kernel.org>
+ <20201013192441.1299447-8-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013192441.1299447-8-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-reviews take a while as I'm very busy ATM.
-
-On Wed, 30 Sep 2020 15:13:07 +0800 Tian Tao <tiantao6@hisilicon.com> wrote:
-
-> Consistently Use the same style of variable type in hibmc_drm_de.c.
+Em Tue, Oct 13, 2020 at 09:24:39PM +0200, Jiri Olsa escreveu:
+> We do not store size with build ids in perf data,
+> but there's enough space to do it. Adding misc bit
+> PERF_RECORD_MISC_BUILD_ID_SIZE to mark build id event
+> with size.
 > 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> With this fix the dso with md5 build id will have correct
+> build id data and will be usable for debuginfod processing
+> if needed (coming in following patches).
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c | 59
-> +++++++++++++------------- 1 file changed, 29 insertions(+), 30 deletions(-)
+>  tools/lib/perf/include/perf/event.h | 12 +++++++++++-
+>  tools/perf/util/build-id.c          |  8 +++++---
+>  tools/perf/util/header.c            | 10 +++++++---
+>  3 files changed, 23 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c index a3a9e0a..c54f93d
-> 100644 --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> @@ -23,15 +23,15 @@
->  #include "hibmc_drm_regs.h"
->  
->  struct hibmc_display_panel_pll {
-> -	unsigned long M;
-> -	unsigned long N;
-> -	unsigned long OD;
-> -	unsigned long POD;
-> +	u64 M;
-> +	u64 N;
-> +	u64 OD;
-> +	u64 POD;
+> diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+> index a6dbba6b9073..988c539bedb6 100644
+> --- a/tools/lib/perf/include/perf/event.h
+> +++ b/tools/lib/perf/include/perf/event.h
+> @@ -201,10 +201,20 @@ struct perf_record_header_tracing_data {
+>  	__u32			 size;
 >  };
 >  
->  struct hibmc_dislay_pll_config {
-> -	unsigned long hdisplay;
-> -	unsigned long vdisplay;
-> +	u64 hdisplay;
-> +	u64 vdisplay;
->  	u32 pll1_config_value;
->  	u32 pll2_config_value;
+> +#define PERF_RECORD_MISC_BUILD_ID_SIZE (1 << 15)
+> +
+>  struct perf_record_header_build_id {
+>  	struct perf_event_header header;
+>  	pid_t			 pid;
+> -	__u8			 build_id[24];
+> +	union {
+> +		__u8		 build_id[24];
+> +		struct {
+> +			__u8	 data[20];
+> +			__u8	 size;
+> +			__u8	 reserved1__;
+> +			__u16	 reserved2__;
+> +		};
+> +	};
+>  	char			 filename[];
 >  };
-> @@ -102,7 +102,7 @@ static void hibmc_plane_atomic_update(struct drm_plane
-> *plane, struct drm_plane_state	*state	= plane->state;
->  	u32 reg;
->  	s64 gpu_addr = 0;
-> -	unsigned int line_l;
-> +	u32 line_l;
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(plane->dev);
->  	struct drm_gem_vram_object *gbo;
+
+Hey, shouldn't we just append the extra info at the end, i.e. keep it
+like:
+
+ struct perf_record_header_build_id {
+ 	struct perf_event_header header;
+ 	pid_t			 pid;
+	__u8			 build_id[24];
+ 	char			 filename[];
+	__u8			 size;
+ };
+
+
+No need for PERF_RECORD_MISC_BUILD_ID_SIZE, older tools will continue
+working with new perf data files.
+
+OTOH BUILD_ID_SIZE is 20 and the space on this header is 24, so the last
+4 bytes were not being used, so older tools don't look into it, they
+should continue working, have you tested this case? I.e. getting the
+perf binary in, say, fedora and check that it works with this new
+perf_record_header_build_id layout?
+
+- Arnaldo
+  
+> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> index b5648735f01f..8763772f1095 100644
+> --- a/tools/perf/util/build-id.c
+> +++ b/tools/perf/util/build-id.c
+> @@ -296,7 +296,7 @@ char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
+>  			continue;		\
+>  		else
 >  
-> @@ -155,10 +155,10 @@ static const struct drm_plane_helper_funcs
-> hibmc_plane_helper_funcs = { .atomic_update = hibmc_plane_atomic_update,
->  };
->  
-> -static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
-> +static void hibmc_crtc_dpms(struct drm_crtc *crtc, u32 dpms)
+> -static int write_buildid(const char *name, size_t name_len, u8 *build_id,
+> +static int write_buildid(const char *name, size_t name_len, struct build_id *bid,
+>  			 pid_t pid, u16 misc, struct feat_fd *fd)
 >  {
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
-> -	unsigned int reg;
-> +	u32 reg;
+>  	int err;
+> @@ -307,7 +307,9 @@ static int write_buildid(const char *name, size_t name_len, u8 *build_id,
+>  	len = PERF_ALIGN(len, NAME_ALIGN);
 >  
->  	reg = readl(priv->mmio + HIBMC_CRT_DISP_CTL);
->  	reg &= ~HIBMC_CRT_DISP_CTL_DPMS_MASK;
-> @@ -172,7 +172,7 @@ static void hibmc_crtc_dpms(struct drm_crtc *crtc, int
-> dpms) static void hibmc_crtc_atomic_enable(struct drm_crtc *crtc,
->  				     struct drm_crtc_state *old_state)
->  {
-> -	unsigned int reg;
-> +	u32 reg;
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+>  	memset(&b, 0, sizeof(b));
+> -	memcpy(&b.build_id, build_id, BUILD_ID_SIZE);
+> +	memcpy(&b.data, bid->data, bid->size);
+> +	b.size = (u8) bid->size;
+> +	misc |= PERF_RECORD_MISC_BUILD_ID_SIZE;
+>  	b.pid = pid;
+>  	b.header.misc = misc;
+>  	b.header.size = sizeof(b) + len;
+> @@ -354,7 +356,7 @@ static int machine__write_buildid_table(struct machine *machine,
+>  		in_kernel = pos->kernel ||
+>  				is_kernel_module(name,
+>  					PERF_RECORD_MISC_CPUMODE_UNKNOWN);
+> -		err = write_buildid(name, name_len, pos->bid.data, machine->pid,
+> +		err = write_buildid(name, name_len, &pos->bid, machine->pid,
+>  				    in_kernel ? kmisc : umisc, fd);
+>  		if (err)
+>  			break;
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index 21243adbb9fd..8da3886f10a8 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -2083,8 +2083,12 @@ static int __event_process_build_id(struct perf_record_header_build_id *bev,
+>  	if (dso != NULL) {
+>  		char sbuild_id[SBUILD_ID_SIZE];
+>  		struct build_id bid;
+> +		size_t size = BUILD_ID_SIZE;
 >  
->  	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
-> @@ -191,7 +191,7 @@ static void hibmc_crtc_atomic_enable(struct drm_crtc
-> *crtc, static void hibmc_crtc_atomic_disable(struct drm_crtc *crtc,
->  				      struct drm_crtc_state *old_state)
->  {
-> -	unsigned int reg;
-> +	u32 reg;
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+> -		build_id__init(&bid, bev->build_id, BUILD_ID_SIZE);
+> +		if (bev->header.misc & PERF_RECORD_MISC_BUILD_ID_SIZE)
+> +			size = bev->size;
+> +
+> +		build_id__init(&bid, bev->data, size);
+>  		dso__set_build_id(dso, &bid);
 >  
->  	hibmc_crtc_dpms(crtc, HIBMC_CRT_DPMS_OFF);
-> @@ -212,7 +212,7 @@ static enum drm_mode_status
->  hibmc_crtc_mode_valid(struct drm_crtc *crtc,
->  		      const struct drm_display_mode *mode)
->  {
-> -	int i = 0;
-> +	u32 i = 0;
-
-This is a counter against ARRAY_SIZE. i should be of type 'size_t'.
-
->  	int vrefresh = drm_mode_vrefresh(mode);
+>  		if (dso_space != DSO_SPACE__USER) {
+> @@ -2098,8 +2102,8 @@ static int __event_process_build_id(struct perf_record_header_build_id *bev,
+>  		}
 >  
->  	if (vrefresh < 59 || vrefresh > 61)
-> @@ -227,9 +227,9 @@ hibmc_crtc_mode_valid(struct drm_crtc *crtc,
->  	return MODE_BAD;
->  }
+>  		build_id__sprintf(&dso->bid, sbuild_id);
+> -		pr_debug("build id event received for %s: %s\n",
+> -			 dso->long_name, sbuild_id);
+> +		pr_debug("build id event received for %s: %s [%lu]\n",
+> +			 dso->long_name, sbuild_id, size);
+>  		dso__put(dso);
+>  	}
 >  
-> -static unsigned int format_pll_reg(void)
-> +static u32 format_pll_reg(void)
->  {
-> -	unsigned int pllreg = 0;
-> +	u32 pllreg = 0;
->  	struct hibmc_display_panel_pll pll = {0};
->  
->  	/*
-> @@ -249,7 +249,7 @@ static unsigned int format_pll_reg(void)
->  	return pllreg;
->  }
->  
-> -static void set_vclock_hisilicon(struct drm_device *dev, unsigned long pll)
-> +static void set_vclock_hisilicon(struct drm_device *dev, u64 pll)
->  {
->  	u32 val;
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
-> @@ -279,11 +279,10 @@ static void set_vclock_hisilicon(struct drm_device
-> *dev, unsigned long pll) writel(val, priv->mmio + CRT_PLL1_HS);
->  }
->  
-> -static void get_pll_config(unsigned long x, unsigned long y,
-> -			   u32 *pll1, u32 *pll2)
-> +static void get_pll_config(u64 x, u64 y, u32 *pll1, u32 *pll2)
->  {
-> -	int i;
-> -	int count = ARRAY_SIZE(hibmc_pll_table);
-> +	u32 i;
-> +	u32 count = ARRAY_SIZE(hibmc_pll_table);
-
-These variables should also be size_t.
-
->  
->  	for (i = 0; i < count; i++) {
->  		if (hibmc_pll_table[i].hdisplay == x &&
-> @@ -306,11 +305,11 @@ static void get_pll_config(unsigned long x, unsigned
-> long y,
->   * FPGA only supports 7 predefined pixel clocks, and clock select is
->   * in bit 4:0 of new register 0x802a8.
->   */
-> -static unsigned int display_ctrl_adjust(struct drm_device *dev,
-> -					struct drm_display_mode *mode,
-> -					unsigned int ctrl)
-> +static u32 display_ctrl_adjust(struct drm_device *dev,
-> +			       struct drm_display_mode *mode,
-> +			       u32 ctrl)
->  {
-> -	unsigned long x, y;
-> +	u64 x, y;
->  	u32 pll1; /* bit[31:0] of PLL */
->  	u32 pll2; /* bit[63:32] of PLL */
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
-> @@ -358,12 +357,12 @@ static unsigned int display_ctrl_adjust(struct
-> drm_device *dev, 
->  static void hibmc_crtc_mode_set_nofb(struct drm_crtc *crtc)
->  {
-> -	unsigned int val;
-> +	u32 val;
->  	struct drm_display_mode *mode = &crtc->state->mode;
->  	struct drm_device *dev = crtc->dev;
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
-> -	int width = mode->hsync_end - mode->hsync_start;
-> -	int height = mode->vsync_end - mode->vsync_start;
-> +	u32 width = mode->hsync_end - mode->hsync_start;
-> +	u32 height = mode->vsync_end - mode->vsync_start;
->  
->  	writel(format_pll_reg(), priv->mmio + HIBMC_CRT_PLL_CTRL);
->  	writel(HIBMC_FIELD(HIBMC_CRT_HORZ_TOTAL_TOTAL, mode->htotal - 1) |
-> @@ -393,7 +392,7 @@ static void hibmc_crtc_mode_set_nofb(struct drm_crtc
-> *crtc) static void hibmc_crtc_atomic_begin(struct drm_crtc *crtc,
->  				    struct drm_crtc_state *old_state)
->  {
-> -	unsigned int reg;
-> +	u32 reg;
->  	struct drm_device *dev = crtc->dev;
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
->  
-> @@ -446,15 +445,15 @@ static void hibmc_crtc_load_lut(struct drm_crtc *crtc)
->  	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
->  	void __iomem   *mmio = priv->mmio;
->  	u16 *r, *g, *b;
-> -	unsigned int reg;
-> -	int i;
-> +	u32 reg;
-> +	u32 i;
-
-This one's correct because crtc->gamma_size is uint32_t.
-
-With my comments addressed:
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-Best regards
-Thomas
-
->  
->  	r = crtc->gamma_store;
->  	g = r + crtc->gamma_size;
->  	b = g + crtc->gamma_size;
->  
->  	for (i = 0; i < crtc->gamma_size; i++) {
-> -		unsigned int offset = i << 2;
-> +		u32 offset = i << 2;
->  		u8 red = *r++ >> 8;
->  		u8 green = *g++ >> 8;
->  		u8 blue = *b++ >> 8;
-
-
+> -- 
+> 2.26.2
+> 
 
 -- 
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
+
+- Arnaldo
