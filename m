@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ABF28E6C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B070B28E6C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389690AbgJNSxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:53:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44110 "EHLO mail.kernel.org"
+        id S2389654AbgJNSxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389559AbgJNSxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389365AbgJNSxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 14:53:14 -0400
-Subject: Re: [GIT PULL] platform-drivers-x86 for 5.10-1
+Subject: Re: [GIT PULL] PNP updates for v5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602701593;
-        bh=hgsAuFnV+XyYdrwUzhHQvyfgDZYdViBQxZqKIoEqCx0=;
+        s=default; t=1602701594;
+        bh=EODUHICOutUrZvholT7x0WG1JmGe7K6gXyyW3zkRlUY=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=pvKYByJSf01ZYUKnvjjiH0jgsacj4B/TKsYFxaucmSOt0Z5gQkGJDNv588JksPiEd
-         5lfquNQh2eMC8Vz7Zntpo42iDurRDt6Hj6vtLU3++XXuJWmQLRkNeOTWopWXk16LJ9
-         d3miZfT5MGvOS4hH1fHDw9ZAXFQLofO8/MDdhKFg=
+        b=gDNIRaAWXG6dog/BxHXlMcouPq03An2Z+D5D4Qxtuxmml5/pgvh+a5yht07zpb8T9
+         QHeMhS2qtXbztkobsIqr3HXjTeOFzrtfpWd2THt07WEL0OV8EAz4QU/DfKvAas5K2W
+         CakW9WW4T33CbDQUItOd1DEummG1pUK/brkeCtQs=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <9335fbd5-81a2-59cb-d6ee-52e3b4de641f@redhat.com>
-References: <9335fbd5-81a2-59cb-d6ee-52e3b4de641f@redhat.com>
+In-Reply-To: <CAJZ5v0gj1X7kO2uVX=zMzR6+y1BWAERT+HDT+0zY0ieXs+Lx3g@mail.gmail.com>
+References: <CAJZ5v0gj1X7kO2uVX=zMzR6+y1BWAERT+HDT+0zY0ieXs+Lx3g@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <9335fbd5-81a2-59cb-d6ee-52e3b4de641f@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.10-1
-X-PR-Tracked-Commit-Id: 1a3f7813f38e400b0b63492b626b425f0a043d0b
+X-PR-Tracked-Message-Id: <CAJZ5v0gj1X7kO2uVX=zMzR6+y1BWAERT+HDT+0zY0ieXs+Lx3g@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pnp-5.10-rc1
+X-PR-Tracked-Commit-Id: 2ef0342530b0f487a65b5f6c94c85dce5f9b53b5
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 15cb5469fc5fff06969832028b743cb658d1a5b5
-Message-Id: <160270159358.3085.9367896025733701108.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: defb53a7c790f9e37a765de8a5d830ed15e2055b
+Message-Id: <160270159396.3085.6835413321253755227.pr-tracker-bot@kernel.org>
 Date:   Wed, 14 Oct 2020 18:53:13 +0000
-To:     Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mark.gross@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 13 Oct 2020 14:26:18 +0200:
+The pull request you sent on Tue, 13 Oct 2020 19:35:12 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.10-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pnp-5.10-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/15cb5469fc5fff06969832028b743cb658d1a5b5
+https://git.kernel.org/torvalds/c/defb53a7c790f9e37a765de8a5d830ed15e2055b
 
 Thank you!
 
