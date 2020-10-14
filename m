@@ -2,124 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E6E28E146
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AD928E14E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731181AbgJNN2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:28:00 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:38931 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgJNN2A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:28:00 -0400
-Received: by mail-ot1-f66.google.com with SMTP id f10so3401313otb.6;
-        Wed, 14 Oct 2020 06:27:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZL5zSCW4abwqO0FHpIH/hdReN6zUDlAhI8F0pVQ1+U0=;
-        b=kXO9eeC5akv8dBqT/XWAq4daeyycPlWK0Nie/VEMjubl7kcRTOKkOM4aXLpF/4U8ke
-         CpRDw/jk1yPBz3U1hA3RWVBhjeU7LWh8bmIOeQ7qtda5VQXXMfEvLborNwXl0yLE3SLq
-         mPLMRFICFXvXS1PqXhT9q19K1LvV5lwI4cgAgBB082qpTbumQvoKZ3likx0WbmjdkEnu
-         UkXL9C/A61NJ9t0QLxBBANL0Z2W/qwxVwW+Ty711bwsvChgynaSO6eTdVCOG/YyjELS6
-         SvwLhylljwxwvbZvFNMCGzaxrvgFUHnXAZCFXiNBWiFvRErWvQAcvozyyqNMwf+DXt/l
-         OL9w==
-X-Gm-Message-State: AOAM531Hnru0L6S2TeFbJEUMPxtaJj1j38wjXcvYITNyUFBH2vFTIMgc
-        bhuDPiFKdytU/G0+7D2OCg==
-X-Google-Smtp-Source: ABdhPJx7vWvJU+mgKZyS7+CbeUNCduplAaoDS6csoJj2fWAGBxKcFikhthRG5g2vB1JTOE0K/Kpwlg==
-X-Received: by 2002:a9d:bd1:: with SMTP id 75mr1500221oth.1.1602682078846;
-        Wed, 14 Oct 2020 06:27:58 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h25sm1165503otj.41.2020.10.14.06.27.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 06:27:58 -0700 (PDT)
-Received: (nullmailer pid 1539238 invoked by uid 1000);
-        Wed, 14 Oct 2020 13:27:56 -0000
-Date:   Wed, 14 Oct 2020 08:27:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        devicetree@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-usb@vger.kernel.org,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH 04/20] dt-bindings: usb: usb-hcd: Add "tpl-support"
- property
-Message-ID: <20201014132756.GA1538723@bogus>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-5-Sergey.Semin@baikalelectronics.ru>
+        id S1731211AbgJNNaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:30:06 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:29336 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728394AbgJNNaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:30:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602682204; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=rIC1SuV56SFchiZDRV34vNBmeGLmpoLkREQhbX7ZtSU=; b=vNrwOx0TmDY6gzig+JtlkhIVaO3k/fX63FPmIOTADShxnE+jY4lyrkf4SFTZqH1bMxQ8yy3S
+ GX34inHGDq1GyP7ig59Xn0/dz3lPehAyGjPeVm0SnsCQHpRT2miKX/tNGCI5IKJvm+CPd9NU
+ 85/P5fN87m12OLAf2h2Awj1oYC0=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f86fd3d0764f13b00a65ffd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 13:29:33
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 46285C433F1; Wed, 14 Oct 2020 13:29:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.9] (unknown [117.210.180.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1AA7C433C9;
+        Wed, 14 Oct 2020 13:29:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F1AA7C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: sc7180: Add gpu cooling support
+To:     Matthias Kaehlcke <mka@chromium.org>,
+        Doug Anderson <dianders@chromium.org>, manafm@codeaurora.org
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, dri-devel@freedesktop.org,
+        freedreno <freedreno@lists.freedesktop.org>
+References: <1602176947-17385-1-git-send-email-akhilpo@codeaurora.org>
+ <CAD=FV=WjWv040TyBaqU8ZAuxGi-YpJ2tsVcUbOV4Htv=_-n8fA@mail.gmail.com>
+ <20201009165705.GA1292413@google.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <fc490021-b046-68c5-7ceb-9c63d3ff5650@codeaurora.org>
+Date:   Wed, 14 Oct 2020 18:59:26 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014101402.18271-5-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201009165705.GA1292413@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 13:13:46 +0300, Serge Semin wrote:
-> The host controller device might be designed to work for the particular
-> products or applications. In that case its DT node is supposed to be
-> equipped with the tpl-support property.
+On 10/9/2020 10:27 PM, Matthias Kaehlcke wrote:
+> On Fri, Oct 09, 2020 at 08:05:10AM -0700, Doug Anderson wrote:
+>> Hi,
+>>
+>> On Thu, Oct 8, 2020 at 10:10 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>>>
+>>> Add cooling-cells property and the cooling maps for the gpu tzones
+>>> to support GPU cooling.
+>>>
+>>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 29 ++++++++++++++++++++++-------
+>>>   1 file changed, 22 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>>> index d46b383..40d6a28 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>>> @@ -2,7 +2,7 @@
+>>>   /*
+>>>    * SC7180 SoC device tree source
+>>>    *
+>>> - * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+>>> + * Copyright (c) 2019-20, The Linux Foundation. All rights reserved.
+>>>    */
+>>>
+>>>   #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
+>>> @@ -1885,6 +1885,7 @@
+>>>                          iommus = <&adreno_smmu 0>;
+>>>                          operating-points-v2 = <&gpu_opp_table>;
+>>>                          qcom,gmu = <&gmu>;
+>>> +                       #cooling-cells = <2>;
+>>
+>> Presumably we should add this to the devicetree bindings, too?
+Yes, thanks for catching this. Will update in the next patch.
+
+>>
+>>
+>>>                          interconnects = <&gem_noc MASTER_GFX3D &mc_virt SLAVE_EBI1>;
+>>>                          interconnect-names = "gfx-mem";
+>>> @@ -3825,16 +3826,16 @@
+>>>                  };
+>>>
+>>>                  gpuss0-thermal {
+>>> -                       polling-delay-passive = <0>;
+>>> +                       polling-delay-passive = <100>;
+>>
+>> Why did you make this change?  I'm pretty sure that we _don't_ want
+>> this since we're using interrupts for the thermal sensor.  See commit
+>> 22337b91022d ("arm64: dts: qcom: sc7180: Changed polling mode in
+>> Thermal-zones node").
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> I was going to ask the same, this shouldn't be needed.
 > 
-> ---
+>>>                          polling-delay = <0>;
+>>>
+>>>                          thermal-sensors = <&tsens0 13>;
+>>>
+>>>                          trips {
+>>>                                  gpuss0_alert0: trip-point0 {
+>>> -                                       temperature = <90000>;
+>>> +                                       temperature = <95000>;
+>>>                                          hysteresis = <2000>;
+>>> -                                       type = "hot";
+>>> +                                       type = "passive";
+>>
+>> Matthias probably knows better, but I wonder if we should be making
+>> two passive trip levels like we do with CPU.  IIRC this is important
+>> if someone wants to be able to use this with IPA.
 > 
-> Changelog v2:
-> - Grammar fix: "s/it'/its"
-> - Discard '|' from the property description, since we don't need to preserve
->   the text formatting.
-> ---
->  Documentation/devicetree/bindings/usb/usb-hcd.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Yes, please introduce a second trip point and make both of them
+> 'passive'.
 > 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+Adding Manaf here.
 
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: mapping values are not allowed in this context
-  in "<unicode string>", line 27, column 14
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/usb/usb-hcd.example.dts] Error 1
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/usb-hcd.example.dts'
-make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/usb/usb-hcd.yaml:27:14: [error] syntax error: mapping values are not allowed here (syntax)
-make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
-make: *** [Makefile:1366: dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1382001
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+-Akhil.
 
