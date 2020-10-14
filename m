@@ -2,152 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D6328DFEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A9328DFF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388209AbgJNLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:41:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20236 "EHLO
+        id S2388261AbgJNLpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:45:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58289 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387867AbgJNLlb (ORCPT
+        by vger.kernel.org with ESMTP id S1726017AbgJNLpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:41:31 -0400
+        Wed, 14 Oct 2020 07:45:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602675689;
+        s=mimecast20190719; t=1602675908;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=v3IxCdR5UIFXc9Mc6E/qqs0EKX5r/+I61Pl8lD+E/EQ=;
-        b=FLfHS38KZvFEJ+m9hbkplD7eecv1dRxwqQwlStPesRMYtcV4XkkAk+tSfCQhYoDiyKuGYo
-        37QzNPbP9ZGfie/WZ1cn6Fti8IXWM/Uk72Ghed7V7KB9iJpWWcVZYunVFo2+gCeVvQncj4
-        g6WExa7xE5MkZRiAjecr89ut/U2Bqj0=
+        bh=FzQmap78sNVuipaEMgyjy6HFr6oEhHytPOHW5SRLOQ8=;
+        b=aWpbHTIoOChK3d4JryghYs4ZUDwpXm60y9cq0g8QSef5cqHoYOaMfOvTb+QuY2PsQNsvI6
+        vGnbZbeknkoDpwZGvU2pmoSULCY2e3ra76zgE1A5gio2rde+A7rlbudGdicNuaSDFcg+zH
+        OcICz4r/SZugrEIxKVujbJvIi4jlZn0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-CRMkafWXMgybo9GQOB-Dgg-1; Wed, 14 Oct 2020 07:41:27 -0400
-X-MC-Unique: CRMkafWXMgybo9GQOB-Dgg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-412-RQo0crmVPZeWZM2Kzs65Ow-1; Wed, 14 Oct 2020 07:45:06 -0400
+X-MC-Unique: RQo0crmVPZeWZM2Kzs65Ow-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F9A510866A9;
-        Wed, 14 Oct 2020 11:41:26 +0000 (UTC)
-Received: from [10.72.13.215] (ovpn-13-215.pek2.redhat.com [10.72.13.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BF01A5D9CD;
-        Wed, 14 Oct 2020 11:41:18 +0000 (UTC)
-Subject: Re: [PATCH v3 2/2] vhost-vdpa: fix page pinning leakage in error path
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        si-wei liu <si-wei.liu@oracle.com>
-Cc:     lingshan.zhu@intel.com, joao.m.martins@oracle.com,
-        boris.ostrovsky@oracle.com, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <1601701330-16837-1-git-send-email-si-wei.liu@oracle.com>
- <1601701330-16837-3-git-send-email-si-wei.liu@oracle.com>
- <574a64e3-8873-0639-fe32-248cb99204bc@redhat.com>
- <5F863B83.6030204@oracle.com> <20201014025025-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <06322c3a-24b1-1fc7-6914-57a920271738@redhat.com>
-Date:   Wed, 14 Oct 2020 19:41:17 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 780501015CB2;
+        Wed, 14 Oct 2020 11:45:04 +0000 (UTC)
+Received: from krava (unknown [10.40.195.92])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A1E3055789;
+        Wed, 14 Oct 2020 11:45:01 +0000 (UTC)
+Date:   Wed, 14 Oct 2020 13:45:00 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Peng Fan <fanpeng@loongson.cn>, linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2] perf bench: Use condition variables in numa.
+Message-ID: <20201014114500.GB1375972@krava>
+References: <20201012161611.366482-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201014025025-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012161611.366482-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 12, 2020 at 09:16:11AM -0700, Ian Rogers wrote:
 
-On 2020/10/14 下午2:52, Michael S. Tsirkin wrote:
-> On Tue, Oct 13, 2020 at 04:42:59PM -0700, si-wei liu wrote:
->> On 10/9/2020 7:27 PM, Jason Wang wrote:
->>> On 2020/10/3 下午1:02, Si-Wei Liu wrote:
->>>> Pinned pages are not properly accounted particularly when
->>>> mapping error occurs on IOTLB update. Clean up dangling
->>>> pinned pages for the error path. As the inflight pinned
->>>> pages, specifically for memory region that strides across
->>>> multiple chunks, would need more than one free page for
->>>> book keeping and accounting. For simplicity, pin pages
->>>> for all memory in the IOVA range in one go rather than
->>>> have multiple pin_user_pages calls to make up the entire
->>>> region. This way it's easier to track and account the
->>>> pages already mapped, particularly for clean-up in the
->>>> error path.
->>>>
->>>> Fixes: 4c8cf31885f6 ("vhost: introduce vDPA-based backend")
->>>> Signed-off-by: Si-Wei Liu<si-wei.liu@oracle.com>
->>>> ---
->>>> Changes in v3:
->>>> - Factor out vhost_vdpa_map() change to a separate patch
->>>>
->>>> Changes in v2:
->>>> - Fix incorrect target SHA1 referenced
->>>>
->>>>    drivers/vhost/vdpa.c | 119
->>>> ++++++++++++++++++++++++++++++---------------------
->>>>    1 file changed, 71 insertions(+), 48 deletions(-)
->>>>
->>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->>>> index 0f27919..dad41dae 100644
->>>> --- a/drivers/vhost/vdpa.c
->>>> +++ b/drivers/vhost/vdpa.c
->>>> @@ -595,21 +595,19 @@ static int
->>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>        struct vhost_dev *dev = &v->vdev;
->>>>        struct vhost_iotlb *iotlb = dev->iotlb;
->>>>        struct page **page_list;
->>>> -    unsigned long list_size = PAGE_SIZE / sizeof(struct page *);
->>>> +    struct vm_area_struct **vmas;
->>>>        unsigned int gup_flags = FOLL_LONGTERM;
->>>> -    unsigned long npages, cur_base, map_pfn, last_pfn = 0;
->>>> -    unsigned long locked, lock_limit, pinned, i;
->>>> +    unsigned long map_pfn, last_pfn = 0;
->>>> +    unsigned long npages, lock_limit;
->>>> +    unsigned long i, nmap = 0;
->>>>        u64 iova = msg->iova;
->>>> +    long pinned;
->>>>        int ret = 0;
->>>>          if (vhost_iotlb_itree_first(iotlb, msg->iova,
->>>>                        msg->iova + msg->size - 1))
->>>>            return -EEXIST;
->>>>    -    page_list = (struct page **) __get_free_page(GFP_KERNEL);
->>>> -    if (!page_list)
->>>> -        return -ENOMEM;
->>>> -
->>>>        if (msg->perm & VHOST_ACCESS_WO)
->>>>            gup_flags |= FOLL_WRITE;
->>>>    @@ -617,61 +615,86 @@ static int
->>>> vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
->>>>        if (!npages)
->>>>            return -EINVAL;
->>>>    +    page_list = kvmalloc_array(npages, sizeof(struct page *),
->>>> GFP_KERNEL);
->>>> +    vmas = kvmalloc_array(npages, sizeof(struct vm_area_struct *),
->>>> +                  GFP_KERNEL);
->>> This will result high order memory allocation which was what the code
->>> tried to avoid originally.
->>>
->>> Using an unlimited size will cause a lot of side effects consider VM or
->>> userspace may try to pin several TB of memory.
->> Hmmm, that's a good point. Indeed, if the guest memory demand is huge or the
->> host system is running short of free pages, kvmalloc will be problematic and
->> less efficient than the __get_free_page implementation.
-> OK so ... Jason, what's the plan?
->
-> How about you send a patchset with
-> 1. revert this change
-> 2. fix error handling leak
+SNIP
 
+> @@ -483,6 +484,18 @@ static void init_global_mutex(pthread_mutex_t *mutex)
+>  	pthread_mutex_init(mutex, &attr);
+>  }
+>  
+> +/*
+> + * Return a process-shared (global) condition variable:
+> + */
+> +static void init_global_cond(pthread_cond_t *cond)
+> +{
+> +	pthread_condattr_t attr;
+> +
+> +	pthread_condattr_init(&attr);
+> +	pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+> +	pthread_cond_init(cond, &attr);
+> +}
+> +
+>  static int parse_cpu_list(const char *arg)
+>  {
+>  	p0.cpu_list_str = strdup(arg);
+> @@ -1136,15 +1149,18 @@ static void *worker_thread(void *__tdata)
+>  	if (g->p.serialize_startup) {
+>  		pthread_mutex_lock(&g->startup_mutex);
+>  		g->nr_tasks_started++;
+> +		/* The last thread wakes the main process. */
+> +		if (g->nr_tasks_started == g->p.nr_tasks)
+> +			pthread_cond_signal(&g->startup_cond);
 
-Work for me, but it looks like siwei want to do this.
+should you remove the condition? it's not necessary
+and making this racy, no?
 
-So it's better for to send the patchset.
+just single pthread_cond_signal should be enough,
+because the wait code is checking the number of tasks
 
-Thanks
-
-
->
->
+jirka
 
