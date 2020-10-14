@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E5628DA14
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7DA28DA15
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgJNGy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727717AbgJNGy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 14 Oct 2020 02:54:57 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15285 "EHLO huawei.com"
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15286 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727622AbgJNGy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 02:54:57 -0400
+        id S1727536AbgJNGy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 02:54:56 -0400
 Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C64E4B931C5AF29CDE4B;
+        by Forcepoint Email with ESMTP id CCA45DC261363107584A;
         Wed, 14 Oct 2020 14:54:51 +0800 (CST)
 Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
  DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
@@ -22,10 +22,12 @@ To:     <dwmw2@infradead.org>, <richard@nod.at>
 CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
         <wangfangpeng1@huawei.com>, <zhongjubin@huawei.com>,
         <chenjie6@huawei.com>, <qiuxi1@huawei.com>, <lizhe67@huawei.com>
-Subject: [PATCH 1/2] jffs2: fix ignoring mounting options problem during remounting
-Date:   Wed, 14 Oct 2020 14:54:42 +0800
-Message-ID: <20201014065443.18512-1-lizhe67@huawei.com>
+Subject: [PATCH 2/2] jffs2: fix can't set rp_size to zero during remounting
+Date:   Wed, 14 Oct 2020 14:54:43 +0800
+Message-ID: <20201014065443.18512-2-lizhe67@huawei.com>
 X-Mailer: git-send-email 2.21.0.windows.1
+In-Reply-To: <20201014065443.18512-1-lizhe67@huawei.com>
+References: <20201014065443.18512-1-lizhe67@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -37,57 +39,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: lizhe <lizhe67@huawei.com>
 
-The jffs2 mount options will be ignored when remounting jffs2.
-It can be easily reproduced with the steps listed below.
-1. mount -t jffs2 -o compr=none /dev/mtdblockx /mnt
-2. mount -o remount compr=zlib /mnt
+Set rp_size to zero will be ignore during remounting.
 
-Since ec10a24f10c8, the option parsing happens before fill_super and
-then pass fc, which contains the options parsing results, to function
-jffs2_reconfigure during remounting. But function jffs2_reconfigure do
-not update c->mount_opts.
+The method to identify whether we input a remounting option of
+rp_size is to check if the rp_size input is zero. It can not work
+well if we pass "rp_size=0".
 
-This patch add a function jffs2_update_mount_opts to fix this problem.
+This patch add a bool variable "set_rp_size" to fix this problem.
 
-By the way, I notice that tmpfs use the same way to update remounting
-options. If it is necessary to unify them?
+By the way, the problem of NULL pointer dereference in rp_size
+fs option parsing showed at
+https://lore.kernel.org/linux-mtd/20201012131204.59102-1-jamie@nuviainc.com/T/#u
+should be applyed before this patch to make sure it works well.
 
+Reported-by: Jubin Zhong <zhongjubin@huawei.com>
 Signed-off-by: lizhe <lizhe67@huawei.com>
 ---
- fs/jffs2/super.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ fs/jffs2/jffs2_fs_sb.h | 1 +
+ fs/jffs2/super.c       | 7 +++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 778275f48a87..5a7091746f68 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -38,6 +38,7 @@ struct jffs2_mount_opts {
+ 	 * users. This is implemented simply by means of not allowing the
+ 	 * latter users to write to the file system if the amount if the
+ 	 * available space is less then 'rp_size'. */
++	bool set_rp_size;
+ 	unsigned int rp_size;
+ };
+ 
 diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 05d7878dfad1..4fd297bdf0f3 100644
+index 4fd297bdf0f3..c523adaca79f 100644
 --- a/fs/jffs2/super.c
 +++ b/fs/jffs2/super.c
-@@ -215,11 +215,28 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+@@ -88,7 +88,7 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
+ 
+ 	if (opts->override_compr)
+ 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
+-	if (opts->rp_size)
++	if (opts->set_rp_size)
+ 		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
+ 
  	return 0;
- }
- 
-+static inline void jffs2_update_mount_opts(struct fs_context *fc)
-+{
-+	struct jffs2_sb_info *new_c = fc->s_fs_info;
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(fc->root->d_sb);
-+
-+	mutex_lock(&c->alloc_sem);
-+	if (new_c->mount_opts.override_compr) {
-+		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
-+		c->mount_opts.compr = new_c->mount_opts.compr;
+@@ -206,6 +206,7 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 		if (opt > c->mtd->size)
+ 			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
+ 				      c->mtd->size / 1024);
++		c->mount_opts.set_rp_size = true;
+ 		c->mount_opts.rp_size = opt;
+ 		break;
+ 	default:
+@@ -225,8 +226,10 @@ static inline void jffs2_update_mount_opts(struct fs_context *fc)
+ 		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
+ 		c->mount_opts.compr = new_c->mount_opts.compr;
+ 	}
+-	if (new_c->mount_opts.rp_size)
++	if (new_c->mount_opts.set_rp_size) {
++		c->mount_opts.set_rp_size = new_c->mount_opts.set_rp_size;
+ 		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
 +	}
-+	if (new_c->mount_opts.rp_size)
-+		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
-+	mutex_unlock(&c->alloc_sem);
-+}
-+
- static int jffs2_reconfigure(struct fs_context *fc)
- {
- 	struct super_block *sb = fc->root->d_sb;
- 
- 	sync_filesystem(sb);
-+	jffs2_update_mount_opts(fc);
-+
- 	return jffs2_do_remount_fs(sb, fc);
+ 	mutex_unlock(&c->alloc_sem);
  }
  
 -- 
