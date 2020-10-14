@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D892228D819
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E163A28D80E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgJNBpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 21:45:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJNBpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 21:45:14 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABAC221D7B;
-        Wed, 14 Oct 2020 01:45:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602639913;
-        bh=xoVbLNzovx3K0pfFbOL/HHB0smvkQSozYRwebCNyDk0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=hNVvia6qcLr2415w4e6BKVE/PIASPCi8OKwP7bSruYotdneHNHr40qlIvEVqo8MKQ
-         5gpVCPxvcC3dnHVWFh6g2QV5n4xj8nS1sjGlDfcCswQwlFnhIBP3ImvO0+i2zEphpZ
-         Lh70GCB/6InazIBger0K3g6/bxvyxhzqQEeRpmMg=
-Content-Type: text/plain; charset="utf-8"
+        id S2388341AbgJNBkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 21:40:03 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35364 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731036AbgJNBkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 21:40:02 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D5738FD5C3064CE3E903;
+        Wed, 14 Oct 2020 09:39:55 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 14 Oct 2020 09:39:49 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <andreas.noever@gmail.com>, <michael.jamet@intel.com>,
+        <mika.westerberg@linux.intel.com>, <YehezkelShB@gmail.com>,
+        <andriy.shevchenko@linux.intel.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jingxiangfeng@huawei.com>
+Subject: [PATCH v2] thunderbolt: Add the missed ida_simple_remove() in ring_request_msix()
+Date:   Wed, 14 Oct 2020 09:46:04 +0800
+Message-ID: <20201014014604.167968-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
-References: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 0/4] clk: qcom : add sm8250 LPASS GFM drivers
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org
-Date:   Tue, 13 Oct 2020 18:45:12 -0700
-Message-ID: <160263991247.310579.116180302037536226@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivas Kandagatla (2020-09-25 03:31:11)
-> This patchset adds support for GFM Muxes found in LPASS
-> (Low Power Audio SubSystem) IP in Audio Clock Controller
-> and Always ON clock controller.
->=20
-> Clocks derived from these muxes are consumed by LPASS Digital Codec.
-> Currently the driver for Audio and Always ON clock controller only
-> supports GFM Muxes, however it should be easy to add more clock
-> support when required
->=20
-> Changes since v1:
->  -removed unnecessary Kconfig dependencies
->  - cleaned up header includes.
->  - moved to using pm_clk
->  - Moved to right place in Makefile
->  - moved to use module_platform_driver instead of builtin_platform_driver
->  - add null check for of_device_get_match_data=20
->=20
-> verified dt_binding_check to pass on linux next https://paste.ubuntu.com/=
-p/6nVzjRwvsW/
+ring_request_msix() misses to call ida_simple_remove() in an error path.
+Add a label 'err_ida_remove' and jump to it.
 
-Rob's bot complained again. Can you run with
+Fixes: 046bee1f9ab8 ("thunderbolt: Add MSI-X support")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/thunderbolt/nhi.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-  make DT_SCHEMA_FILES=3D<path to schema file.yaml> dt_binding_check
+diff --git a/drivers/thunderbolt/nhi.c b/drivers/thunderbolt/nhi.c
+index 5f7489fa1327..e066888c4b41 100644
+--- a/drivers/thunderbolt/nhi.c
++++ b/drivers/thunderbolt/nhi.c
+@@ -406,11 +406,22 @@ static int ring_request_msix(struct tb_ring *ring, bool no_suspend)
+ 	ring->vector = ret;
+ 
+ 	ring->irq = pci_irq_vector(ring->nhi->pdev, ring->vector);
+-	if (ring->irq < 0)
+-		return ring->irq;
++	if (ring->irq < 0) {
++		ret = ring->irq;
++		goto err_ida_remove;
++	}
+ 
+ 	irqflags = no_suspend ? IRQF_NO_SUSPEND : 0;
+-	return request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
++	ret = request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
++	if (ret)
++		goto err_ida_remove;
++
++	return 0;
++
++err_ida_remove:
++	ida_simple_remove(&nhi->msix_ida, ring->vector);
++
++	return ret;
+ }
+ 
+ static void ring_release_msix(struct tb_ring *ring)
+-- 
+2.17.1
 
-and make sure the schema is up to date?
