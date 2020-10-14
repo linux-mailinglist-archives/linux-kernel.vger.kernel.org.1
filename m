@@ -2,447 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E101228E7A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A5628E7A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729628AbgJNUAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
+        id S1729033AbgJNUE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJNUAr (ORCPT
+        with ESMTP id S1726111AbgJNUE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:00:47 -0400
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99671C061755;
-        Wed, 14 Oct 2020 13:00:46 -0700 (PDT)
-Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
-        id 148D2A54A42; Wed, 14 Oct 2020 22:00:44 +0200 (CEST)
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To:     Heiko Stuebner <heiko@sntech.de>, Aditya Prayoga <aditya@kobol.io>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v4 2/2] arm64: dts: rockchip: Add basic support for Kobol's Helios64
-Date:   Wed, 14 Oct 2020 22:00:30 +0200
-Message-Id: <20201014200030.845759-3-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201014200030.845759-1-uwe@kleine-koenig.org>
-References: <20201014200030.845759-1-uwe@kleine-koenig.org>
+        Wed, 14 Oct 2020 16:04:29 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E29C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 13:04:29 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id n142so303759ybf.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 13:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zGovuSkrqe3VpGrjEQXbflGvhILsF7fMmDOvOv0HZ20=;
+        b=DmMNN2qmYsS4IUMJxDlpsTT/dyttCIlI2O/iRpGPsOoMVgY2VUB3FsKzLAdAllhOw6
+         4WpXo9010agGLYSz5jufxNIum4wr/kq84c5wHHPZrFisDReUBtp/cNN7QU66pCr7twnU
+         9qnOBQ966moAM6YTleIjUmrgQIKq+R9JM6DsNuqVDnKlPYpxYV/GLN9xC3Usg9hkTWKY
+         H3aCOH+sgNsWBj+4p2m2RpM4iMEkCHBoAvLAf+yDq0Q+UHO6trWQ5RWvtf/Aw+0Mk5vK
+         KCe3y8+0Bv23QOqUlh+X27SX0Uq2vvPEQ4nplyk9EwzpkLyA1Nq4ff6WPPlHSb+BZkZy
+         pnaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zGovuSkrqe3VpGrjEQXbflGvhILsF7fMmDOvOv0HZ20=;
+        b=VGypH2pwjq7EEmFBcbFV8WnnRPXPKZXdH5qm+p6WNr7EDWoZxHB95+AtRp0Fr6vvCK
+         GTluH4CHsMmnN0nErU1x5L7iMqH16RFyaLGvYSH3/+IQf7iqpMw4mOAXv4sVspVEGqj6
+         21yTQxgj+tj3lNfWwZRGrF6Rzx8E6Tn9YWp38oJJwrYMQUWkIdvX0/KY7M20Bk3zNY6C
+         Xis6aZnDmx0Xa+uXWWFOPDtAEKD+Ym6SG4k3R7NJCo8fbgsROXf0msgwSgHfBbx75w8T
+         G4W8/bqyDYV8zCrX5b+I1qETcNFaSzyVj0iMiMQUCPDha5rSwKvzMUa4fUdg8YuImqLT
+         gGPA==
+X-Gm-Message-State: AOAM531r23F8NSJy/kO9eWOyQ+KSOtCDJMooJb6rdGl4DvT+4E7dK1+E
+        NRTCFwDU54yeejuMUsjQmdJJpm+ycwCj9gr7UBvh5g==
+X-Google-Smtp-Source: ABdhPJyEzfM9Ywu3QG2apMCdipxoXOO58m8ggHr0w0quLiQI/TLNpmE4HyYz3y8+OuT7tRmbBNkVGKUJhwp1vvzO8ds=
+X-Received: by 2002:a25:d6c7:: with SMTP id n190mr584642ybg.75.1602705868286;
+ Wed, 14 Oct 2020 13:04:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200729201146.537433-1-vitor@massaru.org> <20200729203908.GD2655@hirez.programming.kicks-ass.net>
+ <CADQ6JjW-=SNjV-abGpGA9NfHD4yGG_bD5FmvW99W-Vo06twkbw@mail.gmail.com>
+ <20200804132517.GK2657@hirez.programming.kicks-ass.net> <CADQ6JjWzze-VAmg_b9EkS4iVySt5pw8V4FSxYpDFAj8jvBxuGA@mail.gmail.com>
+ <20200804142344.GM2674@hirez.programming.kicks-ass.net> <CADQ6JjWbCsyWxZKQ5=kkxx8hkaW=mbCjDodPXDAv5vH-=tVvEQ@mail.gmail.com>
+ <CAFd5g46DzWRzp9yXkpHbtyJuv236E=z7OaWeqXnfuiy6CTBL4A@mail.gmail.com>
+ <CAP-5=fXhFG9sTMcfd1qJmMDNJWqOGky=jFtWNWg8U8-dkRp=dQ@mail.gmail.com> <20201014195948.GE2974@worktop.programming.kicks-ass.net>
+In-Reply-To: <20201014195948.GE2974@worktop.programming.kicks-ass.net>
+From:   Vitor Massaru Iha <vitor@massaru.org>
+Date:   Wed, 14 Oct 2020 17:03:52 -0300
+Message-ID: <CADQ6JjX+Hqw7Lm61BfMHrELya81boaYRrYmGH-o8xTBAgD_KSA@mail.gmail.com>
+Subject: Re: [PATCH] lib: kunit: add test_min_heap test conversion to KUnit
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hardware is described in detail on Kobol's wiki at
-https://wiki.kobol.io/helios64/intro/.
+On Wed, Oct 14, 2020 at 5:00 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Oct 14, 2020 at 11:16:10AM -0700, Ian Rogers wrote:
+>
+> > There were some issues in the original patch, they should be easy to
+> > fix. I'm more concerned that Peter's issues are addressed about the
+> > general direction of the patch, verbosity and testing frameworks. I
+> > see Vitor followed up with Peter but I'm not sure that means the
+> > approach has been accepted.
+>
+> I kinda lost track, as long as it doesn't get more verbose I suppose I'm
+> fine.
 
-Up to now the following peripherals are working:
 
- - UART
- - Micro-SD card
- - eMMC
- - ethernet port 1
- - status LED
- - temperature sensor on i2c bus 2
-
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
----
- arch/arm64/boot/dts/rockchip/Makefile         |   1 +
- .../dts/rockchip/rk3399-kobol-helios64.dts    | 371 ++++++++++++++++++
- 2 files changed, 372 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
-
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index b87b1f773083..ddf07c5e5f7c 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -24,6 +24,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-hugsun-x99.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-captain.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-khadas-edge-v.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-kobol-helios64.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-leez-p710.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopc-t4.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-nanopi-m4.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
-new file mode 100644
-index 000000000000..9d970b590f9b
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
-@@ -0,0 +1,371 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 Aditya Prayoga <aditya@kobol.io>
-+ */
-+
-+/*
-+ * The Kobol Helios64 is a board designed to operate as a NAS and optionally
-+ * ships with an enclosing that can host five 2.5" hard disks.
-+ *
-+ * See https://wiki.kobol.io/helios64/intro/ for further details.
-+ */
-+
-+/dts-v1/;
-+#include "rk3399.dtsi"
-+#include "rk3399-opp.dtsi"
-+
-+/ {
-+	model = "Kobol Helios64";
-+	compatible = "kobol,helios64", "rockchip,rk3399";
-+
-+	avdd_1v8_s0: avdd-1v8-s0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "avdd_1v8_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc3v3_sys_s3>;
-+	};
-+
-+	clkin_gmac: external-gmac-clock {
-+		compatible = "fixed-clock";
-+		clock-frequency = <125000000>;
-+		clock-output-names = "clkin_gmac";
-+		#clock-cells = <0>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sys_grn_led_on &sys_red_led_on>;
-+
-+		led-0 {
-+			label = "helios64:green:status";
-+			gpios = <&gpio0 RK_PB4 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+
-+		led-1 {
-+			label = "helios64:red:fault";
-+			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
-+			default-state = "keep";
-+		};
-+	};
-+
-+	vcc1v8_sys_s0: vcc1v8-sys-s0 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc1v8_sys_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc1v8_sys_s3>;
-+	};
-+
-+	vcc3v0_sd: vcc3v0-sd {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio0 RK_PA1 GPIO_ACTIVE_HIGH>;
-+		regulator-name = "vcc3v0_sd";
-+		regulator-boot-on;
-+		regulator-min-microvolt = <3000000>;
-+		regulator-max-microvolt = <3000000>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&sdmmc0_pwr_h>;
-+		vin-supply = <&vcc3v3_sys_s3>;
-+	};
-+
-+	vcc3v3_sys_s3: vcc_lan: vcc3v3-sys-s3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc3v3_sys_s3";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc5v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-on-in-suspend;
-+		};
-+	};
-+
-+	vcc5v0_sys: vcc5v0-sys {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc5v0_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&vcc12v_dcin_bkup>;
-+
-+		regulator-state-mem {
-+			regulator-on-in-suspend;
-+		};
-+	};
-+
-+	vcc12v_dcin: vcc12v-dcin {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc12v_dcin";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
-+	};
-+
-+	vcc12v_dcin_bkup: vcc12v-dcin-bkup {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc12v_dcin_bkup";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <12000000>;
-+		regulator-max-microvolt = <12000000>;
-+		vin-supply = <&vcc12v_dcin>;
-+	};
-+};
-+
-+/*
-+ * The system doesn't run stable with cpu freq enabled, so disallow the lower
-+ * frequencies until this problem is properly understood and resolved.
-+ */
-+&cluster0_opp {
-+        /delete-node/ opp00;
-+        /delete-node/ opp01;
-+        /delete-node/ opp02;
-+        /delete-node/ opp03;
-+        /delete-node/ opp04;
-+};
-+&cluster1_opp {
-+        /delete-node/ opp00;
-+        /delete-node/ opp01;
-+        /delete-node/ opp02;
-+        /delete-node/ opp03;
-+        /delete-node/ opp04;
-+        /delete-node/ opp05;
-+        /delete-node/ opp06;
-+};
-+
-+&cpu_b0 {
-+	cpu-supply = <&vdd_cpu_b>;
-+};
-+
-+&cpu_b1 {
-+	cpu-supply = <&vdd_cpu_b>;
-+};
-+
-+&cpu_l0 {
-+	cpu-supply = <&vdd_cpu_l>;
-+};
-+
-+&cpu_l1 {
-+	cpu-supply = <&vdd_cpu_l>;
-+};
-+
-+&cpu_l2 {
-+	cpu-supply = <&vdd_cpu_l>;
-+};
-+
-+&cpu_l3 {
-+	cpu-supply = <&vdd_cpu_l>;
-+};
-+
-+&emmc_phy {
-+	status = "okay";
-+};
-+
-+&gmac {
-+	assigned-clock-parents = <&clkin_gmac>;
-+	assigned-clocks = <&cru SCLK_RMII_SRC>;
-+	clock_in_out = "input";
-+	phy-mode = "rgmii";
-+	phy-supply = <&vcc_lan>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&rgmii_pins &gphy_reset>;
-+	rx_delay = <0x20>;
-+	tx_delay = <0x28>;
-+	snps,reset-active-low;
-+	snps,reset-delays-us = <0 10000 50000>;
-+	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	clock-frequency = <400000>;
-+	i2c-scl-rising-time-ns = <168>;
-+	i2c-scl-falling-time-ns = <4>;
-+	status = "okay";
-+
-+	rk808: pmic@1b {
-+		compatible = "rockchip,rk808";
-+		reg = <0x1b>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
-+		clock-output-names = "xin32k", "rk808-clkout2";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pmic_int_l>;
-+		vcc1-supply = <&vcc5v0_sys>;
-+		vcc2-supply = <&vcc5v0_sys>;
-+		vcc3-supply = <&vcc5v0_sys>;
-+		vcc4-supply = <&vcc5v0_sys>;
-+		vcc6-supply = <&vcc5v0_sys>;
-+		vcc7-supply = <&vcc5v0_sys>;
-+		vcc8-supply = <&vcc3v3_sys_s3>;
-+		vcc9-supply = <&vcc5v0_sys>;
-+		vcc10-supply = <&vcc5v0_sys>;
-+		vcc11-supply = <&vcc5v0_sys>;
-+		vcc12-supply = <&vcc3v3_sys_s3>;
-+		vddio-supply = <&vcc3v0_s3>;
-+		wakeup-source;
-+		#clock-cells = <1>;
-+
-+		regulators {
-+			vdd_cpu_l: DCDC_REG2 {
-+				regulator-name = "vdd_cpu_l";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <750000>;
-+				regulator-max-microvolt = <1350000>;
-+				regulator-ramp-delay = <6001>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc1v8_sys_s3: DCDC_REG4 {
-+				regulator-name = "vcc1v8_sys_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			vcc_sdio_s0: LDO_REG4 {
-+				regulator-name = "vcc_sdio_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3000000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <3000000>;
-+				};
-+			};
-+
-+			vcc3v0_s3: LDO_REG8 {
-+				regulator-name = "vcc3v0_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3000000>;
-+				regulator-max-microvolt = <3000000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <3000000>;
-+				};
-+			};
-+		};
-+	};
-+
-+	vdd_cpu_b: regulator@40 {
-+		compatible = "silergy,syr827";
-+		reg = <0x40>;
-+		fcs,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_cpu_b";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <712500>;
-+		regulator-max-microvolt = <1500000>;
-+		regulator-ramp-delay = <1000>;
-+		vin-supply = <&vcc5v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	i2c-scl-rising-time-ns = <160>;
-+	i2c-scl-falling-time-ns = <30>;
-+	status = "okay";
-+
-+	temp@4c {
-+		compatible = "national,lm75";
-+		reg = <0x4c>;
-+	};
-+};
-+
-+&io_domains {
-+	audio-supply = <&vcc1v8_sys_s0>;
-+	bt656-supply = <&vcc1v8_sys_s0>;
-+	gpio1830-supply = <&vcc3v0_s3>;
-+	sdmmc-supply = <&vcc_sdio_s0>;
-+	status = "okay";
-+};
-+
-+&pinctrl {
-+	gmac {
-+		gphy_reset: gphy-reset {
-+			rockchip,pins = <3 RK_PB7 RK_FUNC_GPIO &pcfg_output_low>;
-+		};
-+	};
-+
-+	leds {
-+		sys_grn_led_on: sys-grn-led-on {
-+			rockchip,pins = <0 RK_PB4 RK_FUNC_GPIO &pcfg_pull_down>;
-+		};
-+
-+		sys_red_led_on: sys-red-led-on {
-+			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_down>;
-+		};
-+	};
-+
-+	pmic {
-+		pmic_int_l: pmic-int-l {
-+			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
-+	vcc3v0-sd {
-+		sdmmc0_pwr_h: sdmmc0-pwr-h {
-+			rockchip,pins = <0 RK_PA1 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+};
-+
-+&pmu_io_domains {
-+	pmu1830-supply = <&vcc3v0_s3>;
-+	status = "okay";
-+};
-+
-+&sdhci {
-+	bus-width = <8>;
-+	mmc-hs200-1_8v;
-+	non-removable;
-+	vqmmc-supply = <&vcc1v8_sys_s0>;
-+	status = "okay";
-+};
-+
-+&sdmmc {
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	cd-gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_LOW>;
-+	disable-wp;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_cd &sdmmc_bus4>;
-+	vmmc-supply = <&vcc3v0_sd>;
-+	vqmmc-supply = <&vcc_sdio_s0>;
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	status = "okay";
-+};
--- 
-2.28.0
-
+Ok. I'll send the v2 later with Ian's suggestions.
