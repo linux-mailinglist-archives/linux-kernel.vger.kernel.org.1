@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F9428E171
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF9828E174
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731302AbgJNNiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:38:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727302AbgJNNiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:38:16 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 041E42173E;
-        Wed, 14 Oct 2020 13:38:15 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 09:38:13 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC PATCH 1/1] tracepoints: tree-wide: Replace %p with %px
-Message-ID: <20201014093813.74490c26@gandalf.local.home>
-In-Reply-To: <160266595921.74973.16021029265750003477.stgit@devnote2>
-References: <160266594977.74973.9883936722540767319.stgit@devnote2>
-        <160266595921.74973.16021029265750003477.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2388352AbgJNNis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:38:48 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:38316 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727302AbgJNNir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:38:47 -0400
+Received: by mail-oi1-f193.google.com with SMTP id h10so3247484oie.5;
+        Wed, 14 Oct 2020 06:38:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=89Wbh7NOqrYtjG7EOrNe0efzcrAmJCrw/e2mH3XntUg=;
+        b=hMe5rSJazmkuwm3NWH7CGBvO1kYYbxz8UUkSgp3PVmF2y9P7qY/ysIYMTSuwYyo61u
+         LgCEsNDwZ1LnbrCPS792EmS1QLszMkKVNGlGBDWubD32iBOGHidPiVPSJzAQKaLLPkGB
+         xCzxKRy65leUHGKXbvELi482sCqfDmGmKNVXfPp01I3QMEnEbA9BM66nbyusbgIM/9Ej
+         /ZcqyPzE4ZZIUPGPxjGscIVJ/OmTPC2qvpVY5pMQVSi3OuVJzzIWhncgdmrMkDo82/r9
+         AaJodW8wmujQRQ3q4sx4LagPjwpcQIGz0eAkg3btHu733arDMPa26MvfNC+94W4aHkAl
+         uBZg==
+X-Gm-Message-State: AOAM530Vjmo7Ysk7fkBGZpRhR92PYDE7PoVZZrs81SLq0spQRAIQnhRs
+        UmPin7j9nbnT/Ac4qszjBxA2BN2aA831
+X-Google-Smtp-Source: ABdhPJwM16aZLEuVpLwTy67299TPRq0He33w5X8lg2wGrqQWvmK9C3WinV47QYgAH+Hb3K9GE7XiEQ==
+X-Received: by 2002:aca:4fd5:: with SMTP id d204mr2337320oib.86.1602682726745;
+        Wed, 14 Oct 2020 06:38:46 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m29sm1182427otj.38.2020.10.14.06.38.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 06:38:46 -0700 (PDT)
+Received: (nullmailer pid 1557348 invoked by uid 1000);
+        Wed, 14 Oct 2020 13:38:44 -0000
+Date:   Wed, 14 Oct 2020 08:38:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/6] dt-bindings: mfd: google,cros-ec: explicitly allow
+ additional properties
+Message-ID: <20201014133844.GA1555058@bogus>
+References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
+ <20201013160845.1772-3-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013160845.1772-3-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 17:59:19 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Wed, Oct 14, 2020 at 12:08:41AM +0800, Zhen Lei wrote:
+> There are so many properties have not been described in this yaml file,
+> and a lot of errors will be reported. Especially, some yaml files such as
+> google,cros-ec-typec.yaml, extcon-usbc-cros-ec.yaml can not pass the
+> self-check, because of the examples. So temporarily allow additional
+> properties to keep the comprehensive dt_binding_check result clean.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-> To help debugging kernel, use %px to show real addresses on
-> tracefs/trace file.
-> 
-> Since ftrace human-readable format uses vsprintf(), all %p are
-> translated to hash values instead of pointer address.
-> 
-> However, when debugging the kernel, raw address value gives a
-> hint when comparing with the memory mapping in the kernel.
-> (Those are sometimes used with crash log, which is not hashed too)
-> 
-> Moreover, this is not improving the security because the tracefs
-> can be used only by root user and the raw address values are readable
-> from tracefs/percpu/cpu*/trace_pipe_raw file.
-> 
-> Note that this has been done by the following script.
-> 
->  #!/bin/sh
->  tmp=`mktemp`
->  for h in include/trace/events/*.h ; do
->    sed -e 's/\(%p\)\([^a-zA-Z]\)/\1x\2/g' $h > $tmp
->    cp $tmp $h
->  done
->  rm $tmp
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+There's proper fixes for these under review.
 
-Hi Masami,
-
-I think a better approach is to inject on the output side a conversion of
-"%p" to "%px" before printing. That is, in the trace_raw_output_##call()
-function, instead of calling trace_seq_printf(s, print), we call a new
-function trace_event_printf(s, print), that will take the fmt parameter,
-and copies it to something that does your 's/\(%p\)\([^a-zA-Z]\)/\1x\2/g'
-inline before passing it off to trace_seq_printf().
-
--- Steve
+Rob
