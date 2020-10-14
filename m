@@ -2,150 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0A728DF5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72B228DF64
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgJNKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:50:42 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4125 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgJNKul (ORCPT
+        id S1729152AbgJNKvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:51:31 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:38029 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725922AbgJNKv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:50:41 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f86d7d50000>; Wed, 14 Oct 2020 03:49:58 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 10:50:40 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 14 Oct 2020 10:50:40 +0000
+        Wed, 14 Oct 2020 06:51:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1602672685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ugQwd3vj8om8WZi9XuvKU62bPSdJzUn+86/IOgt+JOI=;
+        b=MgQo44CPrkO3MVTVMBDqHgREyIJr0MVn01IZnCxs57QGwVxp0kMwES9IZFM2WJwBhWpPpb
+        wNPDbtLU25p+jk6XcI4B/mGzKxvneQwzGxojKg4DnaqpR7bvXfaP6IL48xxF8Q0fxyJ/+Z
+        U0rMEI8nNMtWK3RvepQX7rBSjHzp/wU=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2050.outbound.protection.outlook.com [104.47.12.50]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-10-QbA4s-nlO5GdPTK_HWC2-A-1; Wed, 14 Oct 2020 12:51:23 +0200
+X-MC-Unique: QbA4s-nlO5GdPTK_HWC2-A-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kuQnmFmf9KTCHRfl6vQh7HPGDYR3cJC94o47ywkRQ8RSqhGz1QoZvU2BRGW/NtsJv4dCD/OAbqvgvCZU5Nd6PRBKL7wZaRxo88TRaH/d68nk2cRZIdrOTDw9TKe5EBeLWHa3GSoswpsGa4mbHwEbgfztAaoPI5jte24THuHZxh6qtxPNseB65Sg/VfYj3h4uWd9Ejo3QR7OGQlsNGkxzfIA30E3GdVF9TUQnR2kUqfNDoA6cKouayafiid3ucwwU26WJNsHDme1s3Kgl6819aTF1YP20judhLr3i/V24OoT4EjqlF0OylHy1H/OuS4Hy3vd1oRzWBywg7ALiSBydfQ==
+ b=M0UiLFoKmn67jtrBM8NeKW8rohW6RI3Q5R9D981zPpfdkiJdGK+wZFbxy4w6P+TugGFCfsGU9tTtqxo96eAoa4THlBMgkAii5HVTkRrU8FzG8cpiiyAHuaixL6Dcp4lZFbd2WHBLB9KhYb6ZY0wh/Ap1CVx7DW8blAYWRC4Fy4eyG1wHx+Z9Hq1K6grpfIedFn4LtZ6xuIsfOkCITuF3ItMLn76PjtCmhx+l3XXSSrT7j2P9eUhHc9aUH0IewbbdVv6gw7/OxpDpDjhOfgO66CgvZ4RWQcmYVdOybalDLRjcAnnj6SHrWdv1fVNtXq1cX3k6BevwTW3Z8TyCX9xvfg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x2F0/9+JMJi2vJGCxiqHYsecFSaVZTKkAHAZW5Ygc24=;
- b=jUwJDtV1WnPT8DnS6pFb5G08ENjO8H12j3oemb3FtIHsfr9ztxDCBPE7lTddNbyJmXEieJSFa6UGMPHfiHVsALGPrtfr+q2oDYeaFg+Fe/XaysTFkGWNQUMJBzk+BK/Uwre4uhrGch0cGr1JdBKEGCp+WPIflznExMhL7fU7bm5q/WQ0ypr0NlWqAdit0PpkdqXP+0MVfV9W5o1EakALk4VXRFFuQf4xfaQN9WbT1vCMqUKj/JwdDqdUS1EqDRhYh1HCPkh2OnYclQpM6/lzPZ1kzDtAulW+gcSkaQsheBR91pMtuUlDAR3NYv4sVZtyeIs96qTmsIL4BiVTmQwPRw==
+ bh=ugQwd3vj8om8WZi9XuvKU62bPSdJzUn+86/IOgt+JOI=;
+ b=UOC0cIlOy5amVT5gDtZ30LuEtEG6BtHUwZpu+DeGjyTZzyjTMMVrn7vmco5wC/eN+FO5v2d/OXbfDA3NNUadQyP5ApReLET3e2fd7bupAw2q8fz4BJ+O/gApVpTw+2eLDv2/J2cjrOV3YXKWfa7hnLEtNtv+JOt9LksVWfHV6ldX0pXY46Je0JAOtV3CrAY1Oy8+JdWNl7NGYaOqW+eFGtYuYF25TK7VDUlxRpwgIsxnhxmFmnysDa59WvRo2IaObHvY2wIzSLbKpd51SKjeGEeEoFv+xM+AsPVMKpwIcpD98QqcdL1GBelIj67AFJP1i8/dJ9DFFQ8XVJWmFaUwQA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM5PR12MB1244.namprd12.prod.outlook.com (2603:10b6:3:73::15) by
- DM5PR1201MB2490.namprd12.prod.outlook.com (2603:10b6:3:e3::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3455.28; Wed, 14 Oct 2020 10:50:38 +0000
-Received: from DM5PR12MB1244.namprd12.prod.outlook.com
- ([fe80::c4a9:7b71:b9:b77a]) by DM5PR12MB1244.namprd12.prod.outlook.com
- ([fe80::c4a9:7b71:b9:b77a%3]) with mapi id 15.20.3477.021; Wed, 14 Oct 2020
- 10:50:38 +0000
-From:   Nikolay Aleksandrov <nikolay@nvidia.com>
-To:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
-CC:     "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH net-next v5 01/10] net: bridge: extend the process of
- special frames
-Thread-Topic: [PATCH net-next v5 01/10] net: bridge: extend the process of
- special frames
-Thread-Index: AQHWoKDx/0OIHbWIM0GIWObQ1mrX9amW7m8A
-Date:   Wed, 14 Oct 2020 10:50:38 +0000
-Message-ID: <8804be4ea95ea61eabd030eff51ca5116512d184.camel@nvidia.com>
-References: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
-         <20201012140428.2549163-2-henrik.bjoernlund@microchip.com>
-In-Reply-To: <20201012140428.2549163-2-henrik.bjoernlund@microchip.com>
-Reply-To: Nikolay Aleksandrov <nikolay@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
- header.from=nvidia.com;
-x-originating-ip: [84.238.136.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7ca2dfb9-3d68-4548-59b0-08d8702efcc0
-x-ms-traffictypediagnostic: DM5PR1201MB2490:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1201MB2490A4C9408DD71503DB46AADF050@DM5PR1201MB2490.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BdEyiaoT9XGQj9F0p2rx5ow4CU4YqWf07NU95iCEmpQrqZRXPXVwdgLy9NOsQKdAtOHu2bpM2v4Ve1OiXaZ0Q1Z4dKiZDqP55rMA7DYJ3JkArMeWL9KA5LUPIdz39nvzCekz1kaREtWq5FEWYadlaVBaKNFlcvv/Z0Sx8DJvZMXawNlXjfRcRH40tTUCqqpzH8AVGlENmYyYzzMHeYbp5Hr3MDJnbwa5mPqWV4vZa4Jy/JRoH9REoW35wOoDSdJjXaADDgz5BgsbCbZbXA1acjCN3+a5ohsZBqk8jmhS0lrXocD8N3vumDp1cjP+of9PyH7GODUi6zUS+6L1RLBYhszqYP6b7UJwH74F+PQ9R1eX0CG+GexfP3nEhkCVyqaY
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1244.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(366004)(39860400002)(6512007)(6506007)(186003)(36756003)(2616005)(2906002)(3450700001)(26005)(4326008)(86362001)(8936002)(5660300002)(4001150100001)(6486002)(478600001)(66446008)(91956017)(76116006)(110136005)(66946007)(71200400001)(66476007)(316002)(64756008)(66556008)(83380400001)(8676002)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 7OVEs3jSeo8XE1E01Z4Xn0ff5LIcXv4wZ/dJ62R9EhS7qYJKlmNEh5dpD+VNl30l/LdrS59FCcUiyNXs5ghZxBqsecuQojprGivVVt/zqj0WSf7+TnFOfrC+vT/8Fiw3Y5O1LEqu7uSLqkr0P1LhWyTd5ttIAKCjtMG5s5fdGEqN/mSkGyNxXGCLc5Ovrp2nvQg7t6hvqFb4EqJElWQ72KrIetumTSKP8EZtd6PrtuXYlBiURZu1l5S5TLIboNna6eIacIvjJhEWUxpuAmvENKfyDAn9LTHVpGwUfjr54FYvY6Ebc23tBcpsCD/iXOdzf9gbgf5A5x81vA+frM/O3VpG1bjKw6goX223kIMSm30wmQ9a3kntGE+Pikd42/oNdoU6tj/XB+PVASCNcqy/E3Pr/BDPWVNtJxKj3MzTfwsK3LJj+VhdRt91KVrEGKTFSvggpD3p0gEz6sUTl40KWf/OjKn9PzQ0ORmBK+UblBIT0DVlOmn1QB1ksW+UH66Zw8EKgOK9ud5j8wEODLHBBRFQZdHMFDfKmecBC+5xH2tn16A1eKGb2GC0QgM5UJxfhUlwDiJalfhJb83kK5O5t79FBlSM+RX2+arGaTvP6S1Ot0Z/HjktXKqii8oLTsS1aJ2ld+TUicHiuWnwflHwPA==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B07A3D8BE4C5B045A829AD4B030DAFA0@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB4928.eurprd04.prod.outlook.com (2603:10a6:803:57::13)
+ by VI1PR0402MB3823.eurprd04.prod.outlook.com (2603:10a6:803:19::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Wed, 14 Oct
+ 2020 10:51:21 +0000
+Received: from VI1PR04MB4928.eurprd04.prod.outlook.com
+ ([fe80::e922:583c:a9bf:66e0]) by VI1PR04MB4928.eurprd04.prod.outlook.com
+ ([fe80::e922:583c:a9bf:66e0%6]) with mapi id 15.20.3477.020; Wed, 14 Oct 2020
+ 10:51:21 +0000
+Date:   Wed, 14 Oct 2020 18:51:02 +0800
+From:   Chester Lin <clin@suse.com>
+To:     zohar@linux.ibm.com, ardb@kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, samitolvanen@google.com, masahiroy@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-integrity@vger.kernel.org,
+        linux-efi@vger.kernel.org, jlee@suse.com, clin@suse.com
+Subject: Re: [PATCH v2 1/2] efi: add secure boot get helper
+Message-ID: <20201014105102.GA9912@linux-8mug>
+References: <20201014104032.9776-1-clin@suse.com>
+ <20201014104032.9776-2-clin@suse.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014104032.9776-2-clin@suse.com>
+X-Originating-IP: [118.166.52.150]
+X-ClientProxiedBy: AM3PR07CA0128.eurprd07.prod.outlook.com
+ (2603:10a6:207:8::14) To VI1PR04MB4928.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::13)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-8mug (118.166.52.150) by AM3PR07CA0128.eurprd07.prod.outlook.com (2603:10a6:207:8::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.13 via Frontend Transport; Wed, 14 Oct 2020 10:51:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bf258fe1-7dee-4180-3de7-08d8702f1662
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3823:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB38231ADDFE5A97991AF424FDAD050@VI1PR0402MB3823.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:608;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wIbT1X/BRoCxvKjsI9U8b4E6kkTH+yWDXkubuhW3GD5943e0/aO8QRzQSEEtSeqHv9AWonIQkVYFvMyl58rAjCyB0+OgE+1kxi8GHHvdRK/puLi9UReiMDpNxVaLDc1txgpYIKuHKle3zQ4DQ5KPFmZi51BVim8zk9e7RL2URbOwkkDD807dNvneTPbbVh3C/1l3RtkM8gMqgL0r9cPoPDZsmrrZAwZJI4ELfEZgXgrSZ4Vi/2lAcsG00yz1rYbTGkAQtSZ1k1M+5Tqj9jdart5eKuy2g5tyVduk2pJrYtyAxw3BcPkbFkTGtM0NuscrSDPa7+qYUU5YuVaxJaP08nL6XhsBuRLljQlgG89mrFDo5lfNpEgLfm1bV2OjZ0Il
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4928.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(366004)(39860400002)(376002)(478600001)(55236004)(2906002)(66476007)(26005)(16526019)(66946007)(4326008)(66556008)(956004)(33716001)(86362001)(5660300002)(52116002)(316002)(33656002)(8676002)(9686003)(8936002)(186003)(7416002)(83380400001)(107886003)(6666004)(1076003)(55016002)(6496006)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: JGiWn0MGrX/lAnCOERR1A1oHJiyFe89aPq0CdGHEtTs3j5qkIv3rG6IaXnQ0cJhngw6m+aXGl9Fgst+gHX8Zy8vR2a4c/T6M7bSsn5CGpmpYTwD+zKGlIqF4bb71UzpiSJ3pcRjw7fBblfsq30nTvahaN7hkyTivtCCP7oMmr/eVQYECuRrHM9UNIzaamL/pY45njMeUIZnx6TbQIZF8X9rzBpGae9ZX+xytg239Dj5MM+RsWSq7C1TiaOm2CdDfsknHnfkATLMSH7ANXumOrAvxNkBxbFo8zTe5ZHqrenQsnAu0OMgb9DBxCCwApewDJRnSY9P/Rf1Bm6ljAQakrqHKT9F83R8YFGRE9EUXG4cRY6jX5ykdlc2hVq04zjplAJApowvWNTerCDxF4ZJXTNhCISxALsXWopgILpHUHGPJd5pKfCr7dJJ1wBZYTDOObAc0xCGZ9gBDLE6X9HxI7J7fNdrjT8ZLAM8CT4eX8+jcbfsTZh4N4EE3NI9sZj5l2rWdoke54csJD2veZoWeliea3bZEI7DGMTPWPidYEkKD1vHDSz+xJunSwbIZunKEsESdoql36/pSYq6IKfKZmUP63lWuq4p7QNxbZoz00eQ1YS22Ys8ISxQ7MwAZHbEDWd8/D96n1ZqYo+1zqruOoQ==
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf258fe1-7dee-4180-3de7-08d8702f1662
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4928.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1244.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ca2dfb9-3d68-4548-59b0-08d8702efcc0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 10:50:38.2326
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 10:51:21.8043
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DaskMrFW+joGu4PYPVdOx8kTFncsMfpSz8eESU+Qe+MSADOj114/Oi5dOSMP7rvPljd6N2wzM2Li5AXXVl3+uA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2490
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602672598; bh=x2F0/9+JMJi2vJGCxiqHYsecFSaVZTKkAHAZW5Ygc24=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Reply-To:Accept-Language:Content-Language:
-         X-MS-Has-Attach:X-MS-TNEF-Correlator:user-agent:
-         authentication-results:x-originating-ip:x-ms-publictraffictype:
-         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=baJO6lryBoVUXdIURSUox162ScQz0ltOLKqC0koB2+vvXybJ/VLcGqlbnHneqpbEi
-         sPr5i13WNgNC8otZZAZEpp9gQSgBAWPJje2wqIxW5HYr9MGUlG1G7MNE/XUDOdOOOz
-         IxqVp6xl7aG3K6GjH2asGShnqBzdblw3CsYOX5x3L98R8IP+jHmpLHrjXgf12zb8MZ
-         GBdJP1bFUBTH3oGiX6H0akyGuxpcDB6eDUiKBo1bogG4BUJO86cBnevLl2aWnIKZ6x
-         W8oTZkJcLjcKfacpv/sddHEA+0/6q4jBP/wLCYwHUKxzkHw6FcLwWwSHHOwrO6nUun
-         5N/4kkGTnbmGA==
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PoQzZ3nHUIlPO6LKt/0CKwLKVkzrmxfwvn1nNc2tbna1Qte8PPqFTBWXO3Y3BI3j
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3823
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTEwLTEyIGF0IDE0OjA0ICswMDAwLCBIZW5yaWsgQmpvZXJubHVuZCB3cm90
-ZToNCj4gVGhpcyBwYXRjaCBleHRlbmRzIHRoZSBwcm9jZXNzaW5nIG9mIGZyYW1lcyBpbiB0aGUg
-YnJpZGdlLiBDdXJyZW50bHkgTVJQDQo+IGZyYW1lcyBuZWVkcyBzcGVjaWFsIHByb2Nlc3Npbmcg
-YW5kIHRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uIGRvZXNuJ3QNCj4gYWxsb3cgYSBuaWNlIHdh
-eSB0byBwcm9jZXNzIGRpZmZlcmVudCBmcmFtZSB0eXBlcy4gVGhlcmVmb3JlIHRyeSB0bw0KPiBp
-bXByb3ZlIHRoaXMgYnkgYWRkaW5nIGEgbGlzdCB0aGF0IGNvbnRhaW5zIGZyYW1lIHR5cGVzIHRo
-YXQgbmVlZA0KPiBzcGVjaWFsIHByb2Nlc3NpbmcuIFRoaXMgbGlzdCBpcyBpdGVyYXRlZCBmb3Ig
-ZWFjaCBpbnB1dCBmcmFtZSBhbmQgaWYNCj4gdGhlcmUgaXMgYSBtYXRjaCBiYXNlZCBvbiBmcmFt
-ZSB0eXBlIHRoZW4gdGhlc2UgZnVuY3Rpb25zIHdpbGwgYmUgY2FsbGVkDQo+IGFuZCBkZWNpZGUg
-d2hhdCB0byBkbyB3aXRoIHRoZSBmcmFtZS4gSXQgY2FuIHByb2Nlc3MgdGhlIGZyYW1lIHRoZW4g
-dGhlDQo+IGJyaWRnZSBkb2Vzbid0IG5lZWQgdG8gZG8gYW55dGhpbmcgb3IgZG9uJ3QgcHJvY2Vz
-cyBzbyB0aGVuIHRoZSBicmlkZ2UNCj4gd2lsbCBkbyBub3JtYWwgZm9yd2FyZGluZy4NCj4gDQo+
-IFNpZ25lZC1vZmYtYnk6IEhlbnJpayBCam9lcm5sdW5kICA8aGVucmlrLmJqb2Vybmx1bmRAbWlj
-cm9jaGlwLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEhvcmF0aXUgVnVsdHVyICA8aG9yYXRpdS52dWx0
-dXJAbWljcm9jaGlwLmNvbT4NCj4gLS0tDQo+ICBuZXQvYnJpZGdlL2JyX2RldmljZS5jICB8ICAx
-ICsNCj4gIG5ldC9icmlkZ2UvYnJfaW5wdXQuYyAgIHwgMzMgKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKystDQo+ICBuZXQvYnJpZGdlL2JyX21ycC5jICAgICB8IDE5ICsrKysrKysrKysr
-KysrKy0tLS0NCj4gIG5ldC9icmlkZ2UvYnJfcHJpdmF0ZS5oIHwgMTkgKysrKysrKysrKysrLS0t
-LS0tLQ0KPiAgNCBmaWxlcyBjaGFuZ2VkLCA2MCBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMo
-LSkNCj4gDQoNCkxvb2tzIGdvb2QuDQpBY2tlZC1ieTogTmlrb2xheSBBbGVrc2FuZHJvdiA8bmlr
-b2xheUBudmlkaWEuY29tPg0KDQo=
+Hi Ard and Mimi,
+
+On Wed, Oct 14, 2020 at 06:40:31PM +0800, Chester Lin wrote:
+> Separate the get_sb_mode() from arch/x86 and treat it as a common function
+> [rename to efi_get_secureboot_mode] so all EFI-based architectures can
+> reuse the same logic.
+> 
+> Signed-off-by: Chester Lin <clin@suse.com>
+> ---
+>  arch/x86/kernel/ima_arch.c | 47 ++------------------------------------
+>  drivers/firmware/efi/efi.c | 43 ++++++++++++++++++++++++++++++++++
+>  include/linux/efi.h        |  5 ++++
+>  3 files changed, 50 insertions(+), 45 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/ima_arch.c b/arch/x86/kernel/ima_arch.c
+> index 7dfb1e808928..ed4623ecda6e 100644
+> --- a/arch/x86/kernel/ima_arch.c
+> +++ b/arch/x86/kernel/ima_arch.c
+> @@ -8,49 +8,6 @@
+>  
+>  extern struct boot_params boot_params;
+>  
+> -static enum efi_secureboot_mode get_sb_mode(void)
+> -{
+> -	efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
+> -	efi_status_t status;
+> -	unsigned long size;
+> -	u8 secboot, setupmode;
+> -
+> -	size = sizeof(secboot);
+> -
+> -	if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) {
+> -		pr_info("ima: secureboot mode unknown, no efi\n");
+> -		return efi_secureboot_mode_unknown;
+> -	}
+> -
+> -	/* Get variable contents into buffer */
+> -	status = efi.get_variable(L"SecureBoot", &efi_variable_guid,
+> -				  NULL, &size, &secboot);
+> -	if (status == EFI_NOT_FOUND) {
+> -		pr_info("ima: secureboot mode disabled\n");
+> -		return efi_secureboot_mode_disabled;
+> -	}
+> -
+> -	if (status != EFI_SUCCESS) {
+> -		pr_info("ima: secureboot mode unknown\n");
+> -		return efi_secureboot_mode_unknown;
+> -	}
+> -
+> -	size = sizeof(setupmode);
+> -	status = efi.get_variable(L"SetupMode", &efi_variable_guid,
+> -				  NULL, &size, &setupmode);
+> -
+> -	if (status != EFI_SUCCESS)	/* ignore unknown SetupMode */
+> -		setupmode = 0;
+> -
+> -	if (secboot == 0 || setupmode == 1) {
+> -		pr_info("ima: secureboot mode disabled\n");
+> -		return efi_secureboot_mode_disabled;
+> -	}
+> -
+> -	pr_info("ima: secureboot mode enabled\n");
+> -	return efi_secureboot_mode_enabled;
+> -}
+> -
+>  bool arch_ima_get_secureboot(void)
+>  {
+>  	static enum efi_secureboot_mode sb_mode;
+> @@ -60,7 +17,7 @@ bool arch_ima_get_secureboot(void)
+>  		sb_mode = boot_params.secure_boot;
+>  
+>  		if (sb_mode == efi_secureboot_mode_unset)
+> -			sb_mode = get_sb_mode();
+> +			sb_mode = efi_get_secureboot_mode();
+>  		initialized = true;
+>  	}
+>  
+> @@ -70,7 +27,7 @@ bool arch_ima_get_secureboot(void)
+>  		return false;
+>  }
+>  
+> -/* secureboot arch rules */
+> +/* secure and trusted boot arch rules */
+>  static const char * const sb_arch_rules[] = {
+>  #if !IS_ENABLED(CONFIG_KEXEC_SIG)
+>  	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig",
+> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> index 5e5480a0a32d..68ffa6a069c0 100644
+> --- a/drivers/firmware/efi/efi.c
+> +++ b/drivers/firmware/efi/efi.c
+
+I hope you don't mind that I temporarily move the get_sb_mode() to efi
+since I'm not sure which place is better. Please let me know if any
+suggestions.
+
+Thanks,
+Chester
+
+> @@ -1022,3 +1022,46 @@ static int __init register_update_efi_random_seed(void)
+>  }
+>  late_initcall(register_update_efi_random_seed);
+>  #endif
+> +
+> +enum efi_secureboot_mode efi_get_secureboot_mode(void)
+> +{
+> +	efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
+> +	efi_status_t status;
+> +	unsigned long size;
+> +	u8 secboot, setupmode;
+> +
+> +	size = sizeof(secboot);
+> +
+> +	if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) {
+> +		pr_info("ima: secureboot mode unknown, no efi\n");
+> +		return efi_secureboot_mode_unknown;
+> +	}
+> +
+> +	/* Get variable contents into buffer */
+> +	status = efi.get_variable(L"SecureBoot", &efi_variable_guid,
+> +				  NULL, &size, &secboot);
+> +	if (status == EFI_NOT_FOUND) {
+> +		pr_info("ima: secureboot mode disabled\n");
+> +		return efi_secureboot_mode_disabled;
+> +	}
+> +
+> +	if (status != EFI_SUCCESS) {
+> +		pr_info("ima: secureboot mode unknown\n");
+> +		return efi_secureboot_mode_unknown;
+> +	}
+> +
+> +	size = sizeof(setupmode);
+> +	status = efi.get_variable(L"SetupMode", &efi_variable_guid,
+> +				  NULL, &size, &setupmode);
+> +
+> +	if (status != EFI_SUCCESS)	/* ignore unknown SetupMode */
+> +		setupmode = 0;
+> +
+> +	if (secboot == 0 || setupmode == 1) {
+> +		pr_info("ima: secureboot mode disabled\n");
+> +		return efi_secureboot_mode_disabled;
+> +	}
+> +
+> +	pr_info("ima: secureboot mode enabled\n");
+> +	return efi_secureboot_mode_enabled;
+> +}
+> diff --git a/include/linux/efi.h b/include/linux/efi.h
+> index d7c0e73af2b9..a73e5ae04672 100644
+> --- a/include/linux/efi.h
+> +++ b/include/linux/efi.h
+> @@ -1076,8 +1076,13 @@ static inline int efi_runtime_map_copy(void *buf, size_t bufsz)
+>  
+>  #ifdef CONFIG_EFI
+>  extern bool efi_runtime_disabled(void);
+> +extern enum efi_secureboot_mode efi_get_secureboot_mode(void);
+>  #else
+>  static inline bool efi_runtime_disabled(void) { return true; }
+> +static inline enum efi_secureboot_mode efi_get_secureboot_mode(void)
+> +{
+> +	return efi_secureboot_mode_disabled;
+> +}
+>  #endif
+>  
+>  extern void efi_call_virt_check_flags(unsigned long flags, const char *call);
+> -- 
+> 2.26.1
+> 
+
