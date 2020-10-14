@@ -2,205 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E6128E4F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0F128E4F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731061AbgJNQ5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729564AbgJNQ5e (ORCPT
+        id S1729995AbgJNRAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:00:31 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:54631 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgJNRAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:57:34 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05810C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:57:33 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id n18so4731416wrs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hSHCbaEyUdgYr4W73XWrJpL61ND8ROtoqZ3ozneFNQk=;
-        b=a7znJ4ElJwDe6D0yt/SYlVbVmioRwWwFAAcj3Aq+7ExGefuKmI+ud/ShJefgEpu22o
-         BNAQa5XEEUAgXcTooqoDSDyAQZXsiml8g86hIGxcU5GYpP4r10JOBkbEJf1MTFPOz35Q
-         4WCN6uzCFTCCDnfeesQrJrHEFtNuhIw6U85A1LM8l7UqSZxEsgDFQo1yH8SyNvFyh6KU
-         CXRRJlUaOMXSeKO/+ZLfDSnfbdAM3YLZxhdCYUNJ1mCTbpg1uXu/CTdMorveW5quMLWS
-         zFa36GsqTkFzzyXoMJVTINPez+uLCAtLC10CPGNKzKQWnc5WCYfJhb9NRMdUSQE6PZmM
-         sAMg==
+        Wed, 14 Oct 2020 13:00:31 -0400
+Received: by mail-io1-f69.google.com with SMTP id f6so51705ion.21
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:00:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hSHCbaEyUdgYr4W73XWrJpL61ND8ROtoqZ3ozneFNQk=;
-        b=oHkv8ZYebiu7Ztj4zT2UxYM9u778bTXJdqzwN5X+r3Zf9WbpvQHXlILvFhFQQIdfzA
-         sGpbMiza9/V61DvNRsiYHXOYiCE+wby0G92PMs154RxCuG/t+jQNcjIMoiKC6hKSbLuJ
-         LAkYLem1WyNCFSeUVGH4GF+n4nOkfuqKUg4n+8zgm8gMlX+ZS26PnC7pigvpJvu1au0B
-         b8UcFlBxYoVpiP8KtHL+RzIUHBMSFPxnGEdtDVxTEYcvx2MfTf+cCgnrg+Y9j1L6A4qs
-         oj3RyKvMZaLixdjLmMuj24xFer3l2wyhbYKWy3KrTMV5xAWGYeBv2GIhwbV1GESVartK
-         9Y1g==
-X-Gm-Message-State: AOAM532Yxyd2PCdEcGgwIdHFgJWW3hZUN2PSLLU46W4VJoh1zxSEe/qQ
-        G7ENPUGZSKwtTHeS7kimkpd468l+sSziVYkBB/9oIw==
-X-Google-Smtp-Source: ABdhPJwbICUQNXFGsATSc7E1U/mbUyCalp1qtZtBrh+R0ftarCYCf2vgd5UhlzmGF2Zt9bJh6Xeh9TlmWHYgUi0yJ6U=
-X-Received: by 2002:adf:8484:: with SMTP id 4mr6913222wrg.334.1602694651494;
- Wed, 14 Oct 2020 09:57:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=RnJBl0Hmt3VbdPCKojapfwyMp88sA/Fx2rpPy2khylI=;
+        b=RVZTl3WhdwaE/upmo3IzngUtyo05PaBIU6ib4E6fkhYDNgeN1b9ZBII341YwVPmPa2
+         EutYvMcD3hH4JraJJq1waGrs/K/uDadeG0iCWoRKoxctR5vV2yCQHfmTJEWRryT++5VT
+         BVGCQKitohO0K3EytmYEXdAc4xeV8Z8e0EYkEF1n3V02scSrrzpoQQf+cR3915sRb1ZJ
+         CTIscZF7jwnPZ8E/8KDy5nbKu+z4VNG0PwjTwYJOIpIIaXMfNaonF1VB6oyUnU93Fc3j
+         xHoX81l//keIsXKi/rh1btY60n3+q6kKEXwGBzsDX2vLBPhs/7Uml5+TV/Fxiza6cnFf
+         wMEg==
+X-Gm-Message-State: AOAM530Q1sZAMgE8eswGTgYo4MUD7Z7Q8QMuyiCzcbDRCZtCVtAFiSDP
+        35QPmLhFqgZ9ycvbAfXhcUQyqU9MSj5dlJB0812tTB346584
+X-Google-Smtp-Source: ABdhPJyu0KgRC/6EhCBxf9s4T2rjtKgw4fFsPDJPRmFQstZjg5fujQkhnex6YxX/y1We5/Rg9m8e/DuHsEOloFtvvabVNJhHtwU0
 MIME-Version: 1.0
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
- <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com> <20201014120937.GC4440@dhcp22.suse.cz>
-In-Reply-To: <20201014120937.GC4440@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 14 Oct 2020 09:57:20 -0700
-Message-ID: <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
-Subject: Re: [RFC]: userspace memory reaping
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
+X-Received: by 2002:a05:6602:148:: with SMTP id v8mr239346iot.33.1602694830372;
+ Wed, 14 Oct 2020 10:00:30 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 10:00:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000c3be205b1a4782f@google.com>
+Subject: general protection fault in __se_sys_io_uring_register
+From:   syzbot <syzbot+4520eff3d84059553f13@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 5:09 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> [Sorry for a late reply]
->
-> On Mon 14-09-20 17:45:44, Suren Baghdasaryan wrote:
-> > + linux-kernel@vger.kernel.org
-> >
-> > On Mon, Sep 14, 2020 at 5:43 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > >
-> > > Last year I sent an RFC about using oom-reaper while killing a
-> > > process: https://patchwork.kernel.org/cover/10894999. During LSFMM2019
-> > > discussion https://lwn.net/Articles/787217 a couple of alternative
-> > > options were discussed with the most promising one (outlined in the
-> > > last paragraph of https://lwn.net/Articles/787217) suggesting to use a
-> > > remote version of madvise(MADV_DONTNEED) operation to force memory
-> > > reclaim of a killed process. With process_madvise() making its way
-> > > through reviews (https://patchwork.kernel.org/patch/11747133/), I
-> > > would like to revive this discussion and get feedback on several
-> > > possible options, their pros and cons.
->
-> Thanks for reviving this!
+Hello,
 
-Thanks for your feedback!
+syzbot found the following issue on:
 
->
-> > > The need is similar to why oom-reaper was introduced - when a process
-> > > is being killed to free memory we want to make sure memory is freed
-> > > even if the victim is in uninterruptible sleep or is busy and reaction
-> > > to SIGKILL is delayed by an unpredictable amount of time. I
-> > > experimented with enabling process_madvise(MADV_DONTNEED) operation
-> > > and using it to force memory reclaim of the target process after
-> > > sending SIGKILL. Unfortunately this approach requires the caller to
-> > > read proc/pid/maps to extract the list of VMAs to pass as an input to
-> > > process_madvise().
->
-> Well I would argue that this is not really necessary. You can simply
-> call process_madvise with the full address range and let the kernel
-> operated only on ranges which are safe to tear down asynchronously.
-> Sure that would require some changes to the existing code to not fail
-> on those ranges if they contain incompatible vmas but that should be
-> possible. If we are worried about backward compatibility then a
-> dedicated flag could override.
->
+HEAD commit:    029f56db Merge tag 'x86_asm_for_v5.10' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1421c89b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c5327fbeef7650a
+dashboard link: https://syzkaller.appspot.com/bug?extid=4520eff3d84059553f13
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-IIUC this is very similar to the last option I proposed. I think this
-is doable if we treat it as a special case. process_madvise() return
-value not being able to handle a large range would still be a problem.
-Maybe we can return MAX_INT in those cases?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> [...]
->
-> > > While the objective is to guarantee forward progress even when the
-> > > victim cannot terminate, we still want this mechanism to be efficient
-> > > because we perform these operations to relieve memory pressure before
-> > > it affects user experience.
-> > >
-> > > Alternative options I would like your feedback are:
-> > > 1. Introduce a dedicated process_madvise(MADV_DONTNEED_MM)
-> > > specifically for this case to indicate that the whole mm can be freed.
->
-> This shouldn't be any different from madvise on the full address range,
-> right?
->
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4520eff3d84059553f13@syzkaller.appspotmail.com
 
-Yep, just a matter of choosing the most appropriate API.
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 8347 Comm: syz-executor.3 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_file_from_index fs/io_uring.c:5963 [inline]
+RIP: 0010:io_sqe_files_register fs/io_uring.c:7369 [inline]
+RIP: 0010:__io_uring_register fs/io_uring.c:9463 [inline]
+RIP: 0010:__do_sys_io_uring_register fs/io_uring.c:9553 [inline]
+RIP: 0010:__se_sys_io_uring_register+0x3343/0x3ea0 fs/io_uring.c:9535
+Code: ff df 48 8b 5c 24 18 42 80 3c 23 00 48 8b 6c 24 60 74 08 48 89 ef e8 bc 36 e0 ff 41 8d 5e ff 4c 8b 7d 00 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 9e 36 e0 ff 89 d8 c1 f8 09 48 63
+RSP: 0018:ffffc9001633fdc0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 1ffff11011eb5638
+RDX: ffff888051844080 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffff88808f5ab1b8 R08: ffffffff81d56c63 R09: ffffed1012046ab8
+R10: ffffed1012046ab8 R11: 0000000000000000 R12: dffffc0000000000
+R13: 00000000fffffff7 R14: 0000000000000001 R15: 0000000000000000
+FS:  00007f5b96b14700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000768000 CR3: 000000009ed9c000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45de59
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f5b96b13c78 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
+RAX: ffffffffffffffda RBX: 00000000000083c0 RCX: 000000000045de59
+RDX: 0000000020000040 RSI: 0000000000000002 RDI: 0000000000000003
+RBP: 000000000118bf68 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffcf7ec75bf R14: 00007f5b96b149c0 R15: 000000000118bf2c
+Modules linked in:
+---[ end trace ae2cc3c0d259d867 ]---
+RIP: 0010:io_file_from_index fs/io_uring.c:5963 [inline]
+RIP: 0010:io_sqe_files_register fs/io_uring.c:7369 [inline]
+RIP: 0010:__io_uring_register fs/io_uring.c:9463 [inline]
+RIP: 0010:__do_sys_io_uring_register fs/io_uring.c:9553 [inline]
+RIP: 0010:__se_sys_io_uring_register+0x3343/0x3ea0 fs/io_uring.c:9535
+Code: ff df 48 8b 5c 24 18 42 80 3c 23 00 48 8b 6c 24 60 74 08 48 89 ef e8 bc 36 e0 ff 41 8d 5e ff 4c 8b 7d 00 4c 89 f8 48 c1 e8 03 <42> 80 3c 20 00 74 08 4c 89 ff e8 9e 36 e0 ff 89 d8 c1 f8 09 48 63
+RSP: 0018:ffffc9001633fdc0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 1ffff11011eb5638
+RDX: ffff888051844080 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffff88808f5ab1b8 R08: ffffffff81d56c63 R09: ffffed1012046ab8
+R10: ffffed1012046ab8 R11: 0000000000000000 R12: dffffc0000000000
+R13: 00000000fffffff7 R14: 0000000000000001 R15: 0000000000000000
+FS:  00007f5b96b14700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000768000 CR3: 000000009ed9c000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-> > > 2. A new syscall to efficiently obtain a vector of VMAs (start,
-> > > length, flags) of the process instead of reading /proc/pid/maps. The
-> > > size of the vector is still limited by UIO_MAXIOV (1024), so several
-> > > calls might be needed to query larger number of VMAs, however it will
-> > > still be an order of magnitude more efficient than reading
-> > > /proc/pid/maps file in 4K or smaller chunks.
->
-> While this might be interesting for other usecases - userspace memory
-> management in general - I do not think it is directly related to this
-> particular feature.
->
 
-True but such a syscall would be useful for other use cases, like
-MADV_COLD/MADV_PAGEOUT that Minchan was working on. Maybe we can kill
-more than one bird here? Minchan, any thought?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> > > 3. Use process_madvise() flags parameter to indicate a bulk operation
-> > > which ignores input vectors. Sample usage: process_madvise(pidfd,
-> > > MADV_DONTNEED, vector=NULL, vlen=0, flags=PMADV_FLAG_FILE |
-> > > PMADV_FLAG_ANON);
->
-> Similar to above.
->
-
-Similar to option 1 I suppose. If so, I agree, just a matter of choosing API.
-
-> > > 4. madvise()/process_madvise() handle gaps between VMAs, so we could
-> > > provide one vector element spanning the entire address space. There
-> > > are technical issues with this approach (process_madvise return value
-> > > can't handle such a large number of bytes and there is MAX_RW_COUNT
-> > > limit on max number of bytes one process_madvise call can handle) but
-> > > I would still like to hear opinions about it. If this option is
-> > > preferable maybe we can deal with these limitations.
->
-> To be really honest, the more I am thinking about remove MADV_DONTNEED
-> the less I like it. Sure we can limit this functionality to killed tasks
-> but there is still a need to MMF_UNSTABLE that the current oom reaper
-> sets to prevent from memory corruption while the kernel is still in
-> kernel. Userspace memory reaper would need something similar.
->
-> I do have a vague recollection that we have discussed a kill(2) based
-> approach as well in the past. Essentially SIG_KILL_SYNC which would
-> not only send the signal but it would start a teardown of resources
-> owned by the task - at least those we can remove safely. The interface
-> would be much more simple and less tricky to use. You just make your
-> userspace oom killer or potentially other users call SIG_KILL_SYNC which
-> will be more expensive but you would at least know that as many
-> resources have been freed as the kernel can afford at the moment.
-
-Correct, my early RFC here
-https://patchwork.kernel.org/project/linux-mm/patch/20190411014353.113252-3-surenb@google.com
-was using a new flag for pidfd_send_signal() to request mm reaping by
-oom-reaper kthread. IIUC you propose to have a new SIG_KILL_SYNC
-signal instead of a new pidfd_send_signal() flag and otherwise a very
-similar solution. Is my understanding correct?
-
-I remember Mel Gorman (who I forgot to CC in my original email and
-added now) and Matthew Wilcox were actively participating in that
-discussion during LSFMM. Would love to hear their opinions before
-jumping into development.
-
-Thanks,
-Suren.
-
-> --
-> Michal Hocko
-> SUSE Labs
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
