@@ -2,169 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DE128E2EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3B628E2EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbgJNPQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38690 "EHLO
+        id S1731708AbgJNPQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgJNPQJ (ORCPT
+        with ESMTP id S1731285AbgJNPQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:16:09 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B442C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:16:09 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id a9so4117615lfc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:16:09 -0700 (PDT)
+        Wed, 14 Oct 2020 11:16:25 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F818C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:16:25 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j7so2184251pgk.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=A7qeE0xxnpiHLWpKKf8QKG7pIbitiCpMmVRMPiNJEvg=;
-        b=jaKzuw9U24cGoWFshi7QjL1pX/No9vxWKw/p9l7BKt6IZBi2TE61Zaz87kULACr63K
-         ciWrH8LB4V3BpJCDruLP32cBLohI9dhPPE32KnX42FL/pm9CYKaULkCZq1sWXGtmJqQd
-         z4aXKrFnSiuvRA+10GQEmAt9mlckLfmuyrmiJ8r3CEygXw7gMKElEg7FXjzSYHIvLZEC
-         AfrmStpojx2A+mx1Ctyoqnh0PougGKNgdPIC9sBNuQaXtQadEaXz55Mda/buMkkPfjWP
-         6V6IBj22WEsi68mO2Q8705BE6AS4heBLjJoMg5ho3jdaemN9a7FQ2d8S51xqxZ4JnlRH
-         vmow==
+        h=from:to:cc:subject:date:message-id;
+        bh=3UjFE7VixEeZAJh7GxqCLEhaM8omnp6TMdVW0d7yYmU=;
+        b=tUorpDDNX/i1ngSiAoB01oeylwF9BK3zrNnpc+Kr+HxJPhLgU0Olt1FHb+JyxAuEtV
+         ttcPP3meYY3wOnqfoZb4cDAsx2j95M3M93y7eyaqsFOgsp35UqlZDR41pS2jASSHPM8b
+         DgPL8f76g92aKCVQoDhG3pcz0GIVlm9maxADqUbEOpa5JAfHYtwjgVcYdlysv4PoZf2i
+         b7uoH6GPj6qC2RQh+XU9CLYeICGbphNaOuE5Uk82d/dHJcviDIkHWDyyTRVLIE71N8mt
+         7e8izHAUglAj9E9Ob+l99BpQZWv68iJG951u6vaO8SaXVGhqvrAEkL5gQ20zKibQRlXT
+         10Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=A7qeE0xxnpiHLWpKKf8QKG7pIbitiCpMmVRMPiNJEvg=;
-        b=HH6khRlSwpa1uDZJbup+QIerMsnHcPXKVmSvugzQeoapEB9GufN+nhlNryz6ftc8JQ
-         ezrqo6t2cSSzvsJbuH2MQZ/6YCKo+/NIMpmQWpyzGW+kTddIlYQlxtIrUg0pcv/GjwNY
-         I4ORHHK1q0/qr/ov6e2a9wdNpgS0mScQ6Rq7eJvCuuKthGZlgJkLRDX0wGSGOgeCkhQ3
-         Sp/ffahDA4jkpHa6atyobkbZrUHRma13ev8PzBYiQuxJcWODEXEc4oUibc48amO+LnJP
-         zLRzbKEe3ctrMfNurx000lgNGefxnQR+10Vc3tZefBcbSaXV/yVIvAVBY7LNdF8ETsDk
-         AIzQ==
-X-Gm-Message-State: AOAM5336S+9NvdSRKKoquPOYs2BISdw7Cx38UPzjNHlwXpogbMlPLaKr
-        mER2INEgB4wYcWbGwtq+PLgfaqQ0rVlD6S8eW4Mn+RzWSGw=
-X-Google-Smtp-Source: ABdhPJzaLdN+oqtNX+c0wup488Kb9hx6M7ZG7oLWR1eqEkXOQKARrb113qRN7kjHUBGaGyUDe7MFyW7a2RIbCfBL1Ms=
-X-Received: by 2002:ac2:4149:: with SMTP id c9mr1483019lfi.412.1602688567488;
- Wed, 14 Oct 2020 08:16:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <njB1czX0ZgWPR9h61euHIBb5bEyePw9D4D2m3i5lc9Cl96P8Q1308dTcmsEZW7Vtz3Ifz4do-rOtSfuFTyGoEDYokkK2aUqBePVptzZEWfU=@protonmail.com>
- <6bOOjFIyEwIPNLoY3wMdLuKENpcumphiNztVz7xDofD2Pkyv61mvDghklDSA3xNNCm7pC6XvqNeTCJ7vt1MsjrJZN5i0mbPK7YkE8Jgi1uw=@protonmail.com>
-In-Reply-To: <6bOOjFIyEwIPNLoY3wMdLuKENpcumphiNztVz7xDofD2Pkyv61mvDghklDSA3xNNCm7pC6XvqNeTCJ7vt1MsjrJZN5i0mbPK7YkE8Jgi1uw=@protonmail.com>
-From:   Akinobu Mita <akinobu.mita@gmail.com>
-Date:   Thu, 15 Oct 2020 00:15:55 +0900
-Message-ID: <CAC5umyhd5pikGHEtZmjR3+10w1z3J9G6skXC7xSgC4zE=h36XA@mail.gmail.com>
-Subject: Re: [PATCH] fault-injection: handle EI_ETYPE_TRUE
-To:     =?UTF-8?B?QmFybmFiw6FzIFDFkWN6ZQ==?= <pobrn@protonmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3UjFE7VixEeZAJh7GxqCLEhaM8omnp6TMdVW0d7yYmU=;
+        b=RQziFTQIYN99djemsdesQGSZHmF6Cu1docxACfUq/z6ewJq0MUtsrqX5ZR0bNFAdMi
+         leL1m7qFyt2m6e3bFJbVEC0/U8iUUFLwt4gfyMrIDvNMnwTCYCpuUBR6c3bXfqkcio4M
+         TlRyGcZiukLLz0bhcafuGt+l0pMt2Co08g9BwPzRAHDAnerv7Hl/4FqO7Ystdx4RJTew
+         94wGumnMHc5jupih3TeuGseLPtWlTGw9RlVCyjlkZeVBh2+TnmCA6+0dF/kbbnqlK3PP
+         ylN1P4gNqXiRmhqlqmfSb5/3CNkeR2LV2kIQrtocUZ9uXqULC3dDnd92Zuf4e19qfw61
+         i36A==
+X-Gm-Message-State: AOAM530+7eo3et5meGP6/c8TVUE1cch3j/zgLX5oxVgiOhVL4KBMzJBL
+        iTW8cGpSb6LI717GE/pW1GaUawfgNMTWnQ==
+X-Google-Smtp-Source: ABdhPJxfRXKiYu6c6zxeB43klwL5jPHO6NbX1CB8fPZFwhI8E1vBlGlJX+l9NmIzwezGEEDA3Eh50g==
+X-Received: by 2002:a63:24c2:: with SMTP id k185mr4370279pgk.421.1602688584552;
+        Wed, 14 Oct 2020 08:16:24 -0700 (PDT)
+Received: from localhost ([13.94.42.177])
+        by smtp.gmail.com with ESMTPSA id q66sm3740161pfc.109.2020.10.14.08.16.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 14 Oct 2020 08:16:23 -0700 (PDT)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH] ring-buffer: Add rb_check_bpage in __rb_allocate_pages
+Date:   Wed, 14 Oct 2020 23:16:14 +0800
+Message-Id: <20201014151614.29804-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+It may be better to check each page is aligned by 4 bytes. The 2
+least significant bits of the address will be used as flags.
 
-Please consider taking this patch in the -mm tree.
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+ kernel/trace/ring_buffer.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-This patch looks good to me.
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 93ef0ab6ea20..9dec7d58b177 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -1420,7 +1420,8 @@ static int rb_check_pages(struct ring_buffer_per_cpu *cpu_buffer)
+ 	return 0;
+ }
+ 
+-static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
++static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
++		long nr_pages, struct list_head *pages, int cpu)
+ {
+ 	struct buffer_page *bpage, *tmp;
+ 	bool user_thread = current->mm != NULL;
+@@ -1464,6 +1465,8 @@ static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
+ 		if (!bpage)
+ 			goto free_pages;
+ 
++		rb_check_bpage(cpu_buffer, bpage);
++
+ 		list_add(&bpage->list, pages);
+ 
+ 		page = alloc_pages_node(cpu_to_node(cpu), mflags, 0);
+@@ -1498,7 +1501,7 @@ static int rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
+ 
+ 	WARN_ON(!nr_pages);
+ 
+-	if (__rb_allocate_pages(nr_pages, &pages, cpu_buffer->cpu))
++	if (__rb_allocate_pages(cpu_buffer, nr_pages, &pages, cpu_buffer->cpu))
+ 		return -ENOMEM;
+ 
+ 	/*
+@@ -2007,7 +2010,7 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
+ 			 * allocated without receiving ENOMEM
+ 			 */
+ 			INIT_LIST_HEAD(&cpu_buffer->new_pages);
+-			if (__rb_allocate_pages(cpu_buffer->nr_pages_to_update,
++			if (__rb_allocate_pages(cpu_buffer, cpu_buffer->nr_pages_to_update,
+ 						&cpu_buffer->new_pages, cpu)) {
+ 				/* not enough memory for new pages */
+ 				err = -ENOMEM;
+@@ -2073,7 +2076,7 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
+ 
+ 		INIT_LIST_HEAD(&cpu_buffer->new_pages);
+ 		if (cpu_buffer->nr_pages_to_update > 0 &&
+-			__rb_allocate_pages(cpu_buffer->nr_pages_to_update,
++			__rb_allocate_pages(cpu_buffer, cpu_buffer->nr_pages_to_update,
+ 					    &cpu_buffer->new_pages, cpu_id)) {
+ 			err = -ENOMEM;
+ 			goto out_err;
+-- 
+2.17.1
 
-Reviewed-by: Akinobu Mita <akinobu.mita@gmail.com>
-
-2020=E5=B9=B410=E6=9C=8813=E6=97=A5(=E7=81=AB) 18:31 Barnab=C3=A1s P=C5=91c=
-ze <pobrn@protonmail.com>:
->
-> Hi,
->
-> I had some difficulty finding who should receive this patch, and I am not
-> sure I got it right. Could someone please confirm that any of you
-> can take this patch, or should I resend it? (In that case, to whom?)
->
->
-> Thank you,
-> Barnab=C3=A1s P=C5=91cze
->
->
-> > Commit af3b854492f351d1ff3b4744a83bf5ff7eed4920
-> > ("mm/page_alloc.c: allow error injection")
-> > introduced EI_ETYPE_TRUE, but did not extend
-> >
-> > -   lib/error-inject.c:error_type_string(), and
-> > -   kernel/fail_function.c:adjust_error_retval()
-> >     to accommodate for this change.
-> >
-> >     Handle EI_ETYPE_TRUE in both functions appropriately by
-> >
-> > -   returning "TRUE" in error_type_string(),
-> > -   adjusting the return value to true (1) in adjust_error_retval().
-> >
-> >     Furthermore, simplify the logic of handling EI_ETYPE_NULL
-> >     in adjust_error_retval().
-> >
-> >     Signed-off-by: Barnab=C3=A1s P=C5=91cze pobrn@protonmail.com
-> >
-> >
-> > kernel/fail_function.c | 6 +++---
-> > lib/error-inject.c | 2 ++
-> > 2 files changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/fail_function.c b/kernel/fail_function.c
-> > index 63b349168da7..4fdea01c0561 100644
-> > --- a/kernel/fail_function.c
-> > +++ b/kernel/fail_function.c
-> > @@ -37,9 +37,7 @@ static unsigned long adjust_error_retval(unsigned lon=
-g addr, unsigned long retv)
-> > {
-> > switch (get_injectable_error_type(addr)) {
-> > case EI_ETYPE_NULL:
-> >
-> > -         if (retv !=3D 0)
-> >
-> >
-> > -             return 0;
-> >
-> >
-> > -         break;
-> >
-> >
-> >
-> > -         return 0;
-> >
-> >
-> >     case EI_ETYPE_ERRNO:
-> >     if (retv < (unsigned long)-MAX_ERRNO)
-> >     return (unsigned long)-EINVAL;
-> >     @@ -48,6 +46,8 @@ static unsigned long adjust_error_retval(unsigned=
- long addr, unsigned long retv)
-> >     if (retv !=3D 0 && retv < (unsigned long)-MAX_ERRNO)
-> >     return (unsigned long)-EINVAL;
-> >     break;
-> >
-> > -   case EI_ETYPE_TRUE:
-> > -         return 1;
-> >
-> >
-> >     }
-> >
-> >     return retv;
-> >     diff --git a/lib/error-inject.c b/lib/error-inject.c
-> >     index aa63751c916f..c73651b15b76 100644
-> >     --- a/lib/error-inject.c
-> >     +++ b/lib/error-inject.c
-> >     @@ -180,6 +180,8 @@ static const char *error_type_string(int etype)
-> >     return "ERRNO";
-> >     case EI_ETYPE_ERRNO_NULL:
-> >     return "ERRNO_NULL";
-> >
-> > -   case EI_ETYPE_TRUE:
-> > -         return "TRUE";
-> >
-> >
-> >     default:
-> >     return "(unknown)";
-> >     }
-> >     --
-> >     2.28.0
-> >
