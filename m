@@ -2,118 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A4128E824
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E62C28EA68
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389383AbgJNU43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:56:29 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60652 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387573AbgJNU43 (ORCPT
+        id S1729756AbgJOBoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729403AbgJOBoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:56:29 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09EKsKUh005403;
-        Wed, 14 Oct 2020 20:56:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=2dHm09Cd/t0EY1pFGezYnD8/lE5PJwJ2i8unZaqVKkw=;
- b=MuanJBZWoZVWBkFAYPnavkgtao047Y/tIwxSOlrITqcuNtNrilkva0w4zlao5qpjJxNO
- wxhqPOE1jzBdzhShh9zLyGBBtqTHbnCT6j8JEFApLFDXncxLcJr/JF9lwarXdDgi4WT4
- CrA8m4JNPMQnfZd/llCDS/Wm7IP4E2UtiFsvk7yiy3zEVC0GVoZ2CZYhoHMCZ8zTbNNc
- zIabnreO8UggVCicu2PntN4YAr8y1LANyZSJdbGSzXq4/8MKWCoxn83upAPz7UmoKeT7
- wTszyg2WFygjXZa1/Gh4LK6cm6cygPABXQmvDly0lFM2gQRDRnaCecc7ZUtsq6t9nn4h ng== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 3434wksru3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 14 Oct 2020 20:56:11 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09EKnZiO079912;
-        Wed, 14 Oct 2020 20:54:10 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 344by46q0x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Oct 2020 20:54:10 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09EKs2fJ006933;
-        Wed, 14 Oct 2020 20:54:02 GMT
-Received: from [10.159.149.68] (/10.159.149.68)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Oct 2020 13:54:02 -0700
-Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-References: <20201014083300.19077-1-ankur.a.arora@oracle.com>
- <20201014083300.19077-6-ankur.a.arora@oracle.com>
- <CALCETrVKLv5DPByFcj7E5SBbv4mFt7mGQ9j-HU7G5u_aPGCYsQ@mail.gmail.com>
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-Message-ID: <047e8a34-65cb-ce46-bfe2-014a43b61560@oracle.com>
-Date:   Wed, 14 Oct 2020 13:54:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 14 Oct 2020 21:44:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CAEC0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 13:55:32 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602708931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pjGI6H9agriY8l5DUZ66fy7If4bjx92jpFy4Tji1P+Q=;
+        b=lUIm7QuZ8vsupAyZT7jr3RthxXVf/R/A651aPEYTr4ijryfyHCNyb4+4+rIB957Tgny3bT
+        waB6BPwqhvHkFP3rJuj8OqGsYrt4coa6Gkutq76fTPTJyQnlVpu1HkkUt5PdxB8pwelxar
+        9mz7P7YY+dA7EBi/FmqA/NHnfgpyrIoOi4QrqJsSQpTZm6iyKAUGW65zqA1kuIUZ+jUmZu
+        9frbOdAshP7nLAv1IXXs3jEPw4KmBMZCWzs9ezHZ9rURkqenmXxYnjL1FuqZYXq5ccAjgd
+        7AN+34YKCOhGd6tOEBwU+neaygffAYF8YJt+jZ1u4bgYDapoOqEwqM7xlLzawg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602708931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pjGI6H9agriY8l5DUZ66fy7If4bjx92jpFy4Tji1P+Q=;
+        b=IvH1opAJBTH7APHNqHnZVuXCHqZqLBQUcoUpxy+8vK5QJQUZ5R9Jb0nl+TA5psm9M/LQuO
+        5q1BGHK0SOwiVDBg==
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Subject: Re: [GIT PULL] printk for 5.10 (includes lockless ringbuffer)
+In-Reply-To: <CAMuHMdXHFFUrjRMEHnXXU8QQkgD9x_S6R3N0Q7Q4H2RSfy2GGw@mail.gmail.com>
+References: <20201012144916.GB10602@alley> <CAMuHMdXHFFUrjRMEHnXXU8QQkgD9x_S6R3N0Q7Q4H2RSfy2GGw@mail.gmail.com>
+Date:   Wed, 14 Oct 2020 23:01:30 +0206
+Message-ID: <87lfg85xz1.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CALCETrVKLv5DPByFcj7E5SBbv4mFt7mGQ9j-HU7G5u_aPGCYsQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=928 spamscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010140146
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 clxscore=1011
- spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=949
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010140147
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 8:45 a.m., Andy Lutomirski wrote:
-> On Wed, Oct 14, 2020 at 1:33 AM Ankur Arora <ankur.a.arora@oracle.com> wrote:
->>
->> Define clear_page_uncached() as an alternative_call() to clear_page_nt()
->> if the CPU sets X86_FEATURE_NT_GOOD and fallback to clear_page() if it
->> doesn't.
->>
->> Similarly define clear_page_uncached_flush() which provides an SFENCE
->> if the CPU sets X86_FEATURE_NT_GOOD.
-> 
-> As long as you keep "NT" or "MOVNTI" in the names and keep functions
-> in arch/x86, I think it's reasonable to expect that callers understand
-> that MOVNTI has bizarre memory ordering rules.  But once you give
-> something a generic name like "clear_page_uncached" and stick it in
-> generic code, I think the semantics should be more obvious.
-> 
-> How about:
-> 
-> clear_page_uncached_unordered() or clear_page_uncached_incoherent()
-> 
-> and
-> 
-> flush_after_clear_page_uncached()
-> 
-> After all, a naive reader might expect "uncached" to imply "caches are
-> off and this is coherent with everything".  And the results of getting
-> this wrong will be subtle and possibly hard-to-reproduce corruption.
-Yeah, these are a lot more obvious. Thanks. Will fix.
-
-Ankur
-
+On 2020-10-14, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> - Fully lockless ringbuffer implementation, including the support for
+>>   continuous lines. It will allow to store and read messages in any
+>>   situation wihtout the risk of deadlocks and without the need
+>>   of temporary per-CPU buffers.
 >
-> --Andy
-> 
+>     linux-m68k-atari_defconfig$ bloat-o-meter vmlinux.old vmlinux.lockless_ringbuffer
+>     add/remove: 39/16 grow/shrink: 9/15 up/down: 214075/-4362 (209713)
+>     Function                                     old     new   delta
+>     _printk_rb_static_infos                        -  180224 +180224
+>     _printk_rb_static_descs                        -   24576  +24576
+
+131072 of _printk_rb_static_infos is reserved for dictionary usage. The
+rest (49152) is for the record meta data. Previously any dictionary
+usage and record meta data was embedded in the message buffer (log_buf,
+65536).
+
+Since the meta data is now separate, setting CONFIG_LOG_BUF_SHIFT=15
+would provide roughly the same amount of record storage as
+CONFIG_LOG_BUF_SHIFT=16 did with vmlinux.old. Then there would be:
+
+32768: message buffer
+24576: meta data
+65536: dictionary data
+12288: descriptor data
+
+Excluding the dictionary data, the total is 65536.
+
+(With vmlinux.old there is 65536 total with CONFIG_LOG_BUF_SHIFT=16.)
+
+It is the reserved dictionary data that is hurting us here.
+
+Should we provide a config option to kill the dictionary data?
+
+Should CONFIG_LOG_BUF_SHIFT do an implicit -1 so that the sizes (without
+dictionary data) are about the same as before?
+
+Maybe dictionaries should only exist in the dynamically allocated
+ringbuffer?
+
+John Ogness
