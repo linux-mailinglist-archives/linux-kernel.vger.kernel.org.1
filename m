@@ -2,190 +2,491 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B955B28E518
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6741E28E51A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgJNRKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbgJNRKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:10:11 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F94C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:10:10 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id k18so312926wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:10:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I0pEDuKxGGGuBmYvVm4TwEpZ23vGsYXeXFdnlUxUTUw=;
-        b=XG+flZeApLSKjELCtEfUK5RLhkkl2AezZuRLW/3HGQqXHI9rfLH//X/riYc2iWGlS4
-         ZdEoupzAN6IKfvxxPOu3fME+Bb/hxrbRCSQLBoT71y4lPQZhB0wdr0jzp3DH3A8ncCon
-         L4higHI9JkFDrd4L6JlUKMafZ25w9RA1pf3zbRRzC4T5Q8Wf/sEmwWskuaQ964q8O7Y4
-         cJ0ulkn3/MbKESdSMRzJOw1wWcXUlx+Ej4lIhFm2t+PoY5Q98gBSh3XKWyUp0w45jUAt
-         I633QBbypN3bg584AFQzgCRRdTTajq3IpO3iQpvF2ZXJceq3VSlnuLaULqEyv6PBd3Vy
-         P0KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I0pEDuKxGGGuBmYvVm4TwEpZ23vGsYXeXFdnlUxUTUw=;
-        b=TQX+CyeLsXQd5Td2iJxaVMUnVWAcbpHMS/AH6I+DnvVSZhvpHqM7xGYCxSlQ/Dr2k+
-         pjN9P/aJ75FxfwCjUoxiWgk9e0UKQC89v7mPbNs+TF3wDSdvV1FxIESZSomscKBoLw0m
-         5xSo5ovR7w2wuzhjjIb79f6AvYnAbCGPErEfAaAK/Fzu+K2f7fu/oLzKPmSp/wP6o3Mr
-         OEeCDVA3E9uL+v2hRsM1vwsNxQG0pWKyl4B4FrSN7nVB9unPiMrLm+nF7yMHHQfj4Hgv
-         3onrFw/nlLf2sHWOsnpg6MKrgoVAe6VJNjJ5JwDRgP7bP2duylAH6C78znv7TgYjePk3
-         XD9w==
-X-Gm-Message-State: AOAM531F63oRuumB100cbwrIf/9LB0EZX+GJH3o+9u7tegtgKwa1cbjb
-        i5A/eDEL1pI+5S7ELXe6yakumw==
-X-Google-Smtp-Source: ABdhPJyXOPxJ4gMTARh7uvf1rLbQDsa7rciyJvewLeZvZZGKN3pSdr3HLVGC63ubPZYm4uVL/CS7AQ==
-X-Received: by 2002:a05:600c:1149:: with SMTP id z9mr438655wmz.180.1602695409214;
-        Wed, 14 Oct 2020 10:10:09 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5400:5b12:4f4c:844b? ([2a01:e34:ed2f:f020:5400:5b12:4f4c:844b])
-        by smtp.googlemail.com with ESMTPSA id q2sm5772845wrw.40.2020.10.14.10.10.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 10:10:08 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, amitk@kernel.org,
-        corbet@lwn.net, Dietmar.Eggemann@arm.com, qperret@google.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
- <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
- <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
- <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
- <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d04019bd-9e85-5f3e-2a1b-66780b8df3dc@linaro.org>
-Date:   Wed, 14 Oct 2020 19:10:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387960AbgJNRLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:11:16 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:58926 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726202AbgJNRLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:11:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602695474; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=QZJT98bSS0CNUibsQD6bEPyQItvZSmjw3Aa7k8V/78A=; b=RlmNFGdNTfNKOzYgkRJ8XyXRobsVFrqXY71jIFFw9JuLE8gUg6w+KvoP3tyR6o9jsZ3yViPV
+ En5cAMwGMM2CvtuEFiEjf3m85U6BH/PYV7kAA/yLof2yonVeIQofW244VWLdtntFChGsVtiL
+ apt+MS0hVj6mwtCv/ZWze7II3RI=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f873131bfed2afaa6be635b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 17:11:13
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D1C04C433C9; Wed, 14 Oct 2020 17:11:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6FABBC433C9;
+        Wed, 14 Oct 2020 17:11:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6FABBC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5] drm/msm/dp: return correct connection status after suspend
+Date:   Wed, 14 Oct 2020 10:11:03 -0700
+Message-Id: <20201014171103.30098-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2020 17:24, Lukasz Luba wrote:
+During suspend, dp host controller and hpd block are disabled due to
+both ahb and aux clock are disabled. Therefore hpd plug/unplug interrupts
+will not be generated. At dp_pm_resume(), reinitialize both dp host
+controller and hpd block so that hpd plug/unplug interrupts will be
+generated and handled by driver so that hpd connection state is updated
+correctly. This patch will fix link training flaky issues.
 
-[ ... ]
+Changes in v2:
+-- use container_of to cast correct dp_display_private pointer
+   at both dp_pm_suspend() and dp_pm_resume().
 
-> We have to update the EM doc about allowed abstract scale, which
-> implies EAS, IPA doc update with some information to the community that
-> these components can handle it.
-> 
-> The script will just make developers life easier, but the current
-> documentation does not say anything about abstract scale.
+Changes in v3:
+-- replace hpd_state atomic_t  with u32
 
-... yes, because there is no consistency across the source of power
-numbers and no tools to ensure DT power numbers consistency, yet.
+Changes in v4
+-- call dp_display_host_deinit() at dp_pm_suspend()
+-- call dp_display_host_init() at msm_dp_display_enable()
+-- fix phy->init_count unbalance which causes link training failed
 
->> In any case, if the DT is specifying real numbers, and SCMI abstract
->> numbers or the opposite, obviously there is a conflict if we are using
->> both.
-> 
-> True, DT only allows real numbers (I have Rob's opinion regarding
-> patch 3/3).
-> 
-> It's not that there is only SCMI which might use abstract scale. Qcom
-> already has it and other vendors will follow (not exposing real
-> numbers). They would register bogoWatts to EM because they know that EAS
-> can deal with both.
+Changes in v4
+--  add Fixes tag
 
-So vendors are using bogoWatts, despite the documentation.
+Fixes:  8ede2ecc3e5e (drm/msm/dp: Add DP compliance tests on Snapdragon Chipsets)
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_catalog.c |  13 +++
+ drivers/gpu/drm/msm/dp/dp_catalog.h |   1 +
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    |   5 +
+ drivers/gpu/drm/msm/dp/dp_display.c | 144 +++++++++++++++-------------
+ drivers/gpu/drm/msm/dp/dp_reg.h     |   2 +
+ 5 files changed, 97 insertions(+), 68 deletions(-)
 
-By updating the documentation saying it supports the abstract values,
-that means every new framework, device with power values, will have to
-comply with that. How is it possible to add a device with power numbers
-if the existing ones are obfuscated ?
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index b15b4ce4ba35..4963bfe6a472 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -572,6 +572,19 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
+ 	dp_write_aux(catalog, REG_DP_DP_HPD_CTRL, DP_DP_HPD_CTRL_HPD_EN);
+ }
+ 
++u32 dp_catalog_hpd_get_state_status(struct dp_catalog *dp_catalog)
++{
++	struct dp_catalog_private *catalog = container_of(dp_catalog,
++				struct dp_catalog_private, dp_catalog);
++	u32 status;
++
++	status = dp_read_aux(catalog, REG_DP_DP_HPD_INT_STATUS);
++	status >>= DP_DP_HPD_STATE_STATUS_BITS_SHIFT;
++	status &= DP_DP_HPD_STATE_STATUS_BITS_MASK;
++
++	return status;
++}
++
+ u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog)
+ {
+ 	struct dp_catalog_private *catalog = container_of(dp_catalog,
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
+index 4b7666f1fe6f..6d257dbebf29 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.h
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
+@@ -97,6 +97,7 @@ void dp_catalog_ctrl_enable_irq(struct dp_catalog *dp_catalog, bool enable);
+ void dp_catalog_hpd_config_intr(struct dp_catalog *dp_catalog,
+ 			u32 intr_mask, bool en);
+ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog);
++u32 dp_catalog_hpd_get_state_status(struct dp_catalog *dp_catalog);
+ u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog);
+ void dp_catalog_ctrl_phy_reset(struct dp_catalog *dp_catalog);
+ int dp_catalog_ctrl_update_vx_px(struct dp_catalog *dp_catalog, u8 v_level,
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 2e3e1917351f..6bdaec778c4c 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1400,6 +1400,8 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip)
+ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
++	struct dp_io *dp_io;
++	struct phy *phy;
+ 
+ 	if (!dp_ctrl) {
+ 		DRM_ERROR("Invalid input data\n");
+@@ -1407,8 +1409,11 @@ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl)
+ 	}
+ 
+ 	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
+ 
+ 	dp_catalog_ctrl_enable_irq(ctrl->catalog, false);
++	phy_exit(phy);
+ 
+ 	DRM_DEBUG_DP("Host deinitialized successfully\n");
+ }
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e175aa3fd3a9..cb92d0c61a2f 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -108,14 +108,12 @@ struct dp_display_private {
+ 	/* event related only access by event thread */
+ 	struct mutex event_mutex;
+ 	wait_queue_head_t event_q;
+-	atomic_t hpd_state;
++	u32 hpd_state;
+ 	u32 event_pndx;
+ 	u32 event_gndx;
+ 	struct dp_event event_list[DP_EVENT_Q_MAX];
+ 	spinlock_t event_lock;
+ 
+-	struct completion resume_comp;
+-
+ 	struct dp_audio *audio;
+ };
+ 
+@@ -366,6 +364,20 @@ static void dp_display_host_init(struct dp_display_private *dp)
+ 	dp->core_initialized = true;
+ }
+ 
++static void dp_display_host_deinit(struct dp_display_private *dp)
++{
++	if (!dp->core_initialized) {
++		DRM_DEBUG_DP("DP core not initialized\n");
++		return;
++	}
++
++	dp_ctrl_host_deinit(dp->ctrl);
++	dp_aux_deinit(dp->aux);
++	dp_power_deinit(dp->power);
++
++	dp->core_initialized = false;
++}
++
+ static int dp_display_usbpd_configure_cb(struct device *dev)
+ {
+ 	int rc = 0;
+@@ -490,7 +502,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
+-	state =  atomic_read(&dp->hpd_state);
++	state =  dp->hpd_state;
+ 	if (state == ST_SUSPEND_PENDING) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+@@ -508,17 +520,14 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
+-	if (state == ST_SUSPENDED)
+-		tout = DP_TIMEOUT_NONE;
+-
+-	atomic_set(&dp->hpd_state, ST_CONNECT_PENDING);
++	dp->hpd_state = ST_CONNECT_PENDING;
+ 
+ 	hpd->hpd_high = 1;
+ 
+ 	ret = dp_display_usbpd_configure_cb(&dp->pdev->dev);
+ 	if (ret) {	/* failed */
+ 		hpd->hpd_high = 0;
+-		atomic_set(&dp->hpd_state, ST_DISCONNECTED);
++		dp->hpd_state = ST_DISCONNECTED;
+ 	}
+ 
+ 	/* start sanity checking */
+@@ -539,10 +548,10 @@ static int dp_connect_pending_timeout(struct dp_display_private *dp, u32 data)
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
+-	state =  atomic_read(&dp->hpd_state);
++	state = dp->hpd_state;
+ 	if (state == ST_CONNECT_PENDING) {
+ 		dp_display_enable(dp, 0);
+-		atomic_set(&dp->hpd_state, ST_CONNECTED);
++		dp->hpd_state = ST_CONNECTED;
+ 	}
+ 
+ 	mutex_unlock(&dp->event_mutex);
+@@ -567,7 +576,7 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
+-	state = atomic_read(&dp->hpd_state);
++	state = dp->hpd_state;
+ 	if (state == ST_SUSPEND_PENDING) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+@@ -585,7 +594,7 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
+-	atomic_set(&dp->hpd_state, ST_DISCONNECT_PENDING);
++	dp->hpd_state = ST_DISCONNECT_PENDING;
+ 
+ 	/* disable HPD plug interrupt until disconnect is done */
+ 	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK
+@@ -620,10 +629,10 @@ static int dp_disconnect_pending_timeout(struct dp_display_private *dp, u32 data
+ 
+ 	mutex_lock(&dp->event_mutex);
+ 
+-	state =  atomic_read(&dp->hpd_state);
++	state =  dp->hpd_state;
+ 	if (state == ST_DISCONNECT_PENDING) {
+ 		dp_display_disable(dp, 0);
+-		atomic_set(&dp->hpd_state, ST_DISCONNECTED);
++		dp->hpd_state = ST_DISCONNECTED;
+ 	}
+ 
+ 	mutex_unlock(&dp->event_mutex);
+@@ -638,7 +647,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	/* irq_hpd can happen at either connected or disconnected state */
+-	state =  atomic_read(&dp->hpd_state);
++	state =  dp->hpd_state;
+ 	if (state == ST_SUSPEND_PENDING) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+@@ -789,17 +798,10 @@ static int dp_display_enable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display = g_dp_display;
+ 
+-	if (dp_display->power_on) {
+-		DRM_DEBUG_DP("Link already setup, return\n");
+-		return 0;
+-	}
+-
+ 	rc = dp_ctrl_on_stream(dp->ctrl);
+ 	if (!rc)
+ 		dp_display->power_on = true;
+ 
+-	/* complete resume_comp regardless it is armed or not */
+-	complete(&dp->resume_comp);
+ 	return rc;
+ }
+ 
+@@ -828,9 +830,6 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display = g_dp_display;
+ 
+-	if (!dp_display->power_on)
+-		return -EINVAL;
+-
+ 	/* wait only if audio was enabled */
+ 	if (dp_display->audio_enabled) {
+ 		if (!wait_for_completion_timeout(&dp->audio_comp,
+@@ -1151,9 +1150,6 @@ static int dp_display_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	mutex_init(&dp->event_mutex);
+-
+-	init_completion(&dp->resume_comp);
+-
+ 	g_dp_display = &dp->dp_display;
+ 
+ 	/* Store DP audio handle inside DP display */
+@@ -1189,20 +1185,54 @@ static int dp_display_remove(struct platform_device *pdev)
+ 
+ static int dp_pm_resume(struct device *dev)
+ {
++	struct platform_device *pdev = to_platform_device(dev);
++	struct msm_dp *dp_display = platform_get_drvdata(pdev);
++	struct dp_display_private *dp;
++	u32 status;
++
++	dp = container_of(dp_display, struct dp_display_private, dp_display);
++
++	mutex_lock(&dp->event_mutex);
++
++	/* start from disconnected state */
++	dp->hpd_state = ST_DISCONNECTED;
++
++	/* turn on dp ctrl/phy */
++	dp_display_host_init(dp);
++
++	dp_catalog_ctrl_hpd_config(dp->catalog);
++
++	status = dp_catalog_hpd_get_state_status(dp->catalog);
++
++	if (status) {
++		dp->dp_display.is_connected = true;
++	} else {
++		dp->dp_display.is_connected = false;
++		/* make sure next resume host_init be called */
++		dp->core_initialized = false;
++	}
++
++	mutex_unlock(&dp->event_mutex);
++
+ 	return 0;
+ }
+ 
+ static int dp_pm_suspend(struct device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	struct dp_display_private *dp = platform_get_drvdata(pdev);
++	struct msm_dp *dp_display = platform_get_drvdata(pdev);
++	struct dp_display_private *dp;
+ 
+-	if (!dp) {
+-		DRM_ERROR("DP driver bind failed. Invalid driver data\n");
+-		return -EINVAL;
+-	}
++	dp = container_of(dp_display, struct dp_display_private, dp_display);
+ 
+-	atomic_set(&dp->hpd_state, ST_SUSPENDED);
++	mutex_lock(&dp->event_mutex);
++
++	if (dp->core_initialized == true)
++		dp_display_host_deinit(dp);
++
++	dp->hpd_state = ST_SUSPENDED;
++
++	mutex_unlock(&dp->event_mutex);
+ 
+ 	return 0;
+ }
+@@ -1317,19 +1347,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+ 	return 0;
+ }
+ 
+-static int dp_display_wait4resume_done(struct dp_display_private *dp)
+-{
+-	int ret = 0;
+-
+-	reinit_completion(&dp->resume_comp);
+-	if (!wait_for_completion_timeout(&dp->resume_comp,
+-				WAIT_FOR_RESUME_TIMEOUT_JIFFIES)) {
+-		DRM_ERROR("wait4resume_done timedout\n");
+-		ret = -ETIMEDOUT;
+-	}
+-	return ret;
+-}
+-
+ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ {
+ 	int rc = 0;
+@@ -1344,6 +1361,8 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 
+ 	mutex_lock(&dp_display->event_mutex);
+ 
++	dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
++
+ 	rc = dp_display_set_mode(dp, &dp_display->dp_mode);
+ 	if (rc) {
+ 		DRM_ERROR("Failed to perform a mode set, rc=%d\n", rc);
+@@ -1358,15 +1377,10 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 		return rc;
+ 	}
+ 
+-	state =  atomic_read(&dp_display->hpd_state);
+-	if (state == ST_SUSPENDED) {
+-		/* start link training */
+-		dp_add_event(dp_display, EV_HPD_PLUG_INT, 0, 0);
+-		mutex_unlock(&dp_display->event_mutex);
++	state =  dp_display->hpd_state;
+ 
+-		/* wait until dp interface is up */
+-		goto resume_done;
+-	}
++	if (state == ST_SUSPEND_PENDING)
++		dp_display_host_init(dp_display);
+ 
+ 	dp_display_enable(dp_display, 0);
+ 
+@@ -1377,21 +1391,15 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 		dp_display_unprepare(dp);
+ 	}
+ 
+-	dp_del_event(dp_display, EV_CONNECT_PENDING_TIMEOUT);
+-
+ 	if (state == ST_SUSPEND_PENDING)
+ 		dp_add_event(dp_display, EV_IRQ_HPD_INT, 0, 0);
+ 
+ 	/* completed connection */
+-	atomic_set(&dp_display->hpd_state, ST_CONNECTED);
++	dp_display->hpd_state = ST_CONNECTED;
+ 
+ 	mutex_unlock(&dp_display->event_mutex);
+ 
+ 	return rc;
+-
+-resume_done:
+-	dp_display_wait4resume_done(dp_display);
+-	return rc;
+ }
+ 
+ int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+@@ -1415,20 +1423,20 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 
+ 	mutex_lock(&dp_display->event_mutex);
+ 
++	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
++
+ 	dp_display_disable(dp_display, 0);
+ 
+ 	rc = dp_display_unprepare(dp);
+ 	if (rc)
+ 		DRM_ERROR("DP display unprepare failed, rc=%d\n", rc);
+ 
+-	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+-
+-	state =  atomic_read(&dp_display->hpd_state);
++	state =  dp_display->hpd_state;
+ 	if (state == ST_DISCONNECT_PENDING) {
+ 		/* completed disconnection */
+-		atomic_set(&dp_display->hpd_state, ST_DISCONNECTED);
++		dp_display->hpd_state = ST_DISCONNECTED;
+ 	} else {
+-		atomic_set(&dp_display->hpd_state, ST_SUSPEND_PENDING);
++		dp_display->hpd_state = ST_SUSPEND_PENDING;
+ 	}
+ 
+ 	mutex_unlock(&dp_display->event_mutex);
+diff --git a/drivers/gpu/drm/msm/dp/dp_reg.h b/drivers/gpu/drm/msm/dp/dp_reg.h
+index 43042ff90a19..268602803d9a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_reg.h
++++ b/drivers/gpu/drm/msm/dp/dp_reg.h
+@@ -32,6 +32,8 @@
+ #define DP_DP_IRQ_HPD_INT_ACK			(0x00000002)
+ #define DP_DP_HPD_REPLUG_INT_ACK		(0x00000004)
+ #define DP_DP_HPD_UNPLUG_INT_ACK		(0x00000008)
++#define DP_DP_HPD_STATE_STATUS_BITS_MASK	(0x0000000F)
++#define DP_DP_HPD_STATE_STATUS_BITS_SHIFT	(0x1C)
+ 
+ #define REG_DP_DP_HPD_INT_MASK			(0x0000000C)
+ #define DP_DP_HPD_PLUG_INT_MASK			(0x00000001)
 
-With two subsystems using the energy model, evolving independently we
-can see there are conflicts. With more subsystems, that may become a
-source of confusion, especially with different contributors.
-
-I think the energy model should stick to milliwatts and keep the
-documentation unchanged regarding this. And vendors should take the
-responsibility of not sticking to the documentation.
-
->> I suggest to fix the conflict first and provide the features to make the
->> numbers more easy to share (like the script described above and/or the
->> firmware file).
->>
->> Then with the right tools, everything can be documented.
->>
-> 
-> We cannot block one way of registration to EM when the other was used.
-> They might have correct and consistent numbers.
-
-What is the rational of using two firmware power information ?
-
-> It's up to the platform developers to choose the path:
-> - go with bogoWatts - if they are not allowed to expose sensitive
->   information, use em_dev_register_perf_domain() in drivers, not DT;
->   make sure everything that is needed works; check the doc, which
->   sub-systems can handle it or needs some tuning (patches 1/3 and 2/3
->   try to help here);
-> - use milliWatts - easier; DT is allowed; help from the community in
->   reviews, possible results comparisons; both EM registration ways
->   might be used;
-> 
-> We cannot force vendors/OEM engineers to store milliWatts in the
-> Energy Model if these values are protected by some NDA. 
-
-If I am able to measure one real power value, (and I'm pretty sure it is
-quite possible), whatever which one, it is possible to deduce all the
-numbers with the linear scale. IMO that is a false debate. Anyway ...
-
-> Your proposed
-> way of providing data into EM from user-space firmware.bin IMHO also
-> falls into the same bucket. That information would be accessible in EM
-> debugfs and they would avoid it.
-
-I think you misunderstood my point.
-
-There is the SCMI and the DT. Because there are two sources where it is
-impossible to know if they are using the same units, we are stuck to
-ensure a consistency for the kernel.
-
-The platform should use:
- - the SCMI only (scaled or real)
- - the DT only (real)
- [ - the firmware file only (scaled or real) ]
-
-
-As it is not possible to know if they are scaled or real, there is no
-choice except making them mutually exclusive.
-
-From my POV, it is not adequate to let SCMI power information co-exists
-with the DT power information if we know they can be with different units.
-
-I've just expressed my opinions:
-
- - vendors take responsibility of putting different units for the EM
-
- - Power numbers should come from the same source
-
-
-Up to Rafael to decide what to do with this documentation update.
-
-Thanks
-  -- Daniel
-
-
+base-commit: d1ea914925856d397b0b3241428f20b945e31434
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
