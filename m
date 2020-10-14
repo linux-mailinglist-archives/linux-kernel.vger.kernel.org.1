@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6A328DE53
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA03D28DE55
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgJNKJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
+        id S1729320AbgJNKL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbgJNKJ1 (ORCPT
+        with ESMTP id S1726682AbgJNKLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:09:27 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F127AC061755;
-        Wed, 14 Oct 2020 03:09:25 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id f140so781409ybg.3;
-        Wed, 14 Oct 2020 03:09:25 -0700 (PDT)
+        Wed, 14 Oct 2020 06:11:55 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9E9C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:11:55 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id c141so3058586lfg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eX2L8AGuVZLL8p032i0z56kyEgMszaBhE7duOrFCdUk=;
-        b=uy+2LvwrTG+RJWS4SWBdJb28YaFnaiQT76biXVW3X/AaQqCUy2IvVClj6CL4LgXi7x
-         KUPzAuJewkx3hxKBJh656nVDGAmsdDXrK0U4ZRVhyb/Fc9UWUpkSpqD1PlorBlPTaqtm
-         jt691Wg/BJ8TV82ZTtu1po//ViDws5EzYweOmL4QJLw+qv2+1OFu984oiGcYULSIga/x
-         Q6Bfk73qEBl8Xl21sIFgZG80lJDEf4ndTxTngGVG+cyW213pX8IvE83vylJEYkvckITi
-         QbrL8SWG+CVpIrNjC5//bhuRuzqPipZRysyYxnGB7INXVLzMv1sIKgpBh5RsMsNdoiZM
-         dPcQ==
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=D9gEsuKCqY5ac7Bsj84oLcUjfey4ei4xQdjhdzjkOSE=;
+        b=nvcLzqFy+/hxA1Pw1QucXdkoo5krViAR74k1syfntvZjJrKSOzyInK5lkbaIHqJoyR
+         LJeJ4M9TW4P5OQ+EYDyhRbMFooUQhx4toDUOdTGAftO9o2SM1y0f2CwGpxGmmN1agbLJ
+         U2G8kd5llQ0jUV5IyKjbW2KWm2Tmaz0VtT6Qw+6vp619RZSdxhTxxYHjKLyHfk+DJS1q
+         z/1sIh1HUPtbjHZGu44tO6hzbe2R+A0eT0DLN4g8UBTs5y9KJBProQcDiv/ArNUyMlxK
+         kh+QvJRK+SQkzPdLAlhpFl98vhGzSO1xvDPURjPnk+frxgSHClhUTxzU6TJZV1YHn2zN
+         vjVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eX2L8AGuVZLL8p032i0z56kyEgMszaBhE7duOrFCdUk=;
-        b=VTS+CRdARoEAamr2ObIwGJsjrFSmRJgSZx20Hp8TlPuwAXMWzvkiTMUEKhfwAbeVUs
-         gUTq4X/PnZwdN1S0HnHWDPkMhJVyA0lEGYfIPoLILAADsLB7S4y4/GCxbGesg67AOlLy
-         OGWxvEYGOBUH3bH9qDU/j7bjY4P77sXu8jNQ3+LHAHebzO6UXceplaM23cgiHFbjo3I5
-         Ck4QhAtn6kiipevZiq6MF7+Mr/aL5YGywm/8jf0ke7G6ec/KTOwfMr3cbOxk1yVBkNal
-         v64HaVRmtk4VQzRlhWIBiM3QCvdrMbQQAepjRpnOTFCclwlChGcRJXewynoOBNSatwsZ
-         mgBw==
-X-Gm-Message-State: AOAM532/5UZJ/Aq1zZRPdo3xnlFlNAyjFrfy7WQo+dm/9gvO7rYSfZkt
-        2jnTGehJV17Z1sQTj3pghJgYyYqc8mQrZCWFcw4=
-X-Google-Smtp-Source: ABdhPJwfnAHnLdGIb0oL/dRxOVNPRn1XqUb56BGyMVes6Nm1zO7vwRho3l2g2H39hrCGs012mRt/JdHxMG+7MugsrHo=
-X-Received: by 2002:a25:2fc3:: with SMTP id v186mr5731532ybv.448.1602670164672;
- Wed, 14 Oct 2020 03:09:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=D9gEsuKCqY5ac7Bsj84oLcUjfey4ei4xQdjhdzjkOSE=;
+        b=r0nB35nHUefB7QeACxr3lTSRGKh6T4TFoeXtC8l6fUt31UDRq5grR0F3bPS1oiqJr4
+         iRH8D5vOQF5EQytULavZH+lUOtK9U1AqTy/UHdDK6gmPKYl6pZX57rVqjAaVrK64fLKx
+         itM/OH9ZL+tRJhS5fgtGB+5md9uH2sP84IKgzj2/VgWOUsB1FUZMA0Lqp5Qpyt/08Acl
+         y9/+ggQvY4bddqxT9E2qqznbaES7m4guoKDkWHEunbEIB9jw/ssdCDFer/27eLuVsfWL
+         yn2qwi63VAOFN4chxAcerQ0S5k+jjdBnBrIY5UnxBQ4OApc7wXsvUWyDDwnkqHuFbEZy
+         R8rw==
+X-Gm-Message-State: AOAM5324NjCjkwMl8YtpTpFsC/n6PwrkUf5U3jl5JuMBk8V/T6cdC9CL
+        KyXDzYHNz7JgwMfIqilBlr1wyA==
+X-Google-Smtp-Source: ABdhPJzyMrzpeDZ4LfCDAueIHnsskeqRxsVCSXw9df6G4ICj30Qq1EywTW97Y/fPEEnApfVlfu1XnA==
+X-Received: by 2002:a05:6512:1dd:: with SMTP id f29mr1256228lfp.379.1602670313884;
+        Wed, 14 Oct 2020 03:11:53 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id f9sm956972lfc.164.2020.10.14.03.11.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 03:11:52 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 12:11:52 +0200
+From:   Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     linux-renesas-soc@vger.kernel.org, geert+renesas@glider.be,
+        laurent.pinchart@ideasonboard.com, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] dt-bindings: media: renesas,vin: Add V3U support
+Message-ID: <20201014101152.mqmv2klq2mwsjlpf@oden.dyn.berto.se>
+References: <20201014094443.11070-1-jacopo+renesas@jmondi.org>
+ <20201014094443.11070-6-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-References: <20201007130750.49349844@gandalf.local.home> <20201012101208.GF1099489@krava>
- <20201012111950.55a73588@gandalf.local.home> <20201012184120.GN13697@suse.de>
- <20201012151732.6e439886@gandalf.local.home> <CAHnb8o61XwvgkMnryaOv-=qCDf-o5OpezQAAk-44R+KgCc8Vcw@mail.gmail.com>
- <20201013090228.78256290@gandalf.local.home>
-In-Reply-To: <20201013090228.78256290@gandalf.local.home>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Wed, 14 Oct 2020 11:08:48 +0100
-Message-ID: <CADVatmM2hsbZ64Zr=5KES-iPyoxicmm+zkvxTZMq49eWQ390yw@mail.gmail.com>
-Subject: Re: [ANNOUNCE] libtraceevent.git
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Zamir SUN <sztsian@gmail.com>, Tony Jones <tonyj@suse.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201014094443.11070-6-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+Hi Jacopo,
 
-On Tue, Oct 13, 2020 at 2:02 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Tue, 13 Oct 2020 11:06:16 +0800
-> Zamir SUN <sztsian@gmail.com> wrote:
->
-> > On Tue, Oct 13, 2020 at 3:17 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >
-<snip>
-> > So, for me, there is no more issue for Fedora packaging.
-> >
->
-> So should I just add that one patch and tag it?
+Thanks for your patch.
 
-Just a thought, if you see
-https://repology.org/project/linux-tools/versions then you will notice
-that libtracevent has been packaged by the distros with a version of
-v5.x+, and I will have the same problem for Debian also. Do you think
-it makes sense to start  with a version of v6.x when you tag it? If
-that is not possible then we will have to use epoch like we did for
-libbpf.
+On 2020-10-14 11:44:42 +0200, Jacopo Mondi wrote:
+> Add compatible string definition for R-Car V3U.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  Documentation/devicetree/bindings/media/renesas,vin.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/renesas,vin.yaml b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> index ad2fe660364b..7b629a6ea035 100644
+> --- a/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> +++ b/Documentation/devicetree/bindings/media/renesas,vin.yaml
+> @@ -51,6 +51,7 @@ properties:
+>                - renesas,vin-r8a77980 # R-Car V3H
+>                - renesas,vin-r8a77990 # R-Car E3
+>                - renesas,vin-r8a77995 # R-Car D3
+> +              - renesas,vin-r8a779a0 # R-Car V3U
 
+Documenting the compat string here might give the wrong impression the 
+IP is supported. Which it's not as the V3U is quiet different then the 
+it's siblings. Whit a new pipeline and small but important changes in in 
+the register set. I'm primarily thinking about that the IFMD register is 
+gone and dealing with that will be quiet significant work in the driver.
+
+I'm not yet 100% sure the best idea is to support V3U with this driver, 
+maybe it's finally time to make it more modular, with more distinct 
+support for Gen2, Gen3 and a new module for V3U?
+
+> 
+>    reg:
+>      maxItems: 1
+> --
+> 2.28.0
+> 
 
 -- 
-Regards
-Sudip
+Regards,
+Niklas Söderlund
