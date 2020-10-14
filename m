@@ -2,139 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F4F28E9EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BEA28E8F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388418AbgJOBYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387662AbgJOBYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:24:37 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9C1C051116
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:58:14 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id w11so487187pll.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WUVth3Yi/0Gf6s7eybXLKtt4uMjJ4xi70yGGSwDkLw0=;
-        b=R63EBTH6+0dTkzS267+O24BYdxnurWecDwGpDuhGH5wyKY0Pg8ynHUH/iEecP4Gnho
-         RfNGPWH3YDit4Wmb0luYZWOyRplddz6hFIgmHH4CLhIZt4IyCFh8a/BvWIZDZQnBcGoK
-         FZBeYg7LPlk+kUu4N8sYcxncY/8J8OqwbusLI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WUVth3Yi/0Gf6s7eybXLKtt4uMjJ4xi70yGGSwDkLw0=;
-        b=rQlPo0Ig2XQs4JUE3hnj2cksXH0NmSz2/DTGI5enjHYBODDuCzyWxyzhixqGGxs2i+
-         XAsCcp82E7Wi3YKVqpU3wXoEaB1imm7zjokHzyf7c94tMFxqB/VMEpoXpZPdPVN9OQTd
-         YPqzJPmUn84b0ghy8YYcrlk3EEkRs8PYchm6sVO8Q02t/YJgoHm6cCQexJnufFefeWzw
-         9AUd7y6jyfxF/Ab0SeS4jzhJ117HzS8hidyV3n6UhWvuEFgAYoAcKqcGWeg7G4kgTX52
-         3c1MTaiNgCStWoAXhQupEZyhc2igvN/qIF2f9a94oy99VvsGSiyMssiR9lYEAgZq8DDs
-         PwGA==
-X-Gm-Message-State: AOAM5323V6YRfN+1MoWpP4JapS340eQxj5f6v0rYvIWJzojFjSipCr4m
-        1MChYCZU5wmgtsfQa1IqOjA5Rg==
-X-Google-Smtp-Source: ABdhPJzHdqdE46WrFZlw8R7S7F1x+3bND/WLRTw47I4euXQao8J+1ZC4KoSJiwuZcz/FXnt7OEBn6A==
-X-Received: by 2002:a17:902:59da:b029:d4:c71a:357a with SMTP id d26-20020a17090259dab02900d4c71a357amr1496188plj.38.1602716293981;
-        Wed, 14 Oct 2020 15:58:13 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g14sm715510pfo.17.2020.10.14.15.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 15:58:13 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 15:58:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 17/25] PCI: Fix PREL32 relocations for LTO
-Message-ID: <202010141556.DC58D913@keescook>
-References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-18-samitolvanen@google.com>
+        id S1730692AbgJNW6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 18:58:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726513AbgJNW6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 18:58:49 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAE0520776;
+        Wed, 14 Oct 2020 22:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602716329;
+        bh=kMpSZ3gkc8inIapGbTJlpkhoLPPmZniPgrwUXxmM2FU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=B6VbtQ3tyTewZBxnTOsymsv3qs0RJqXSESXnExKF2QgXdsa3371f/s9Md09zdoZP1
+         skefn7C8UTTMAPuZRpo/nshzGKnBY5p0ivy6KSTvO6wDn9Gr3o+aF20KMEVPRie70p
+         DZDFnxFz2cyVZiugZWwkbMt7LnmBB4Udpy+4kdyU=
+Date:   Wed, 14 Oct 2020 15:58:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+Cc:     <davem@davemloft.net>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
+        <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>,
+        <UNGLinuxDriver@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH net-next v5 00/10] net: bridge: cfm: Add support for
+ Connectivity Fault Management(CFM)
+Message-ID: <20201014155847.2eb150f5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
+References: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013003203.4168817-18-samitolvanen@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:31:55PM -0700, Sami Tolvanen wrote:
-> With Clang's Link Time Optimization (LTO), the compiler can rename
-> static functions to avoid global naming collisions. As PCI fixup
-> functions are typically static, renaming can break references
-> to them in inline assembly. This change adds a global stub to
-> DECLARE_PCI_FIXUP_SECTION to fix the issue when PREL32 relocations
-> are used.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+On Mon, 12 Oct 2020 14:04:18 +0000 Henrik Bjoernlund wrote:
+> Connectivity Fault Management (CFM) is defined in 802.1Q section 12.14.
+>=20
+> Connectivity Fault Management (CFM) comprises capabilities for detecting,=
+ verifying,
+> and isolating connectivity failures in Virtual Bridged Networks.
+> These capabilities can be used in networks operated by multiple independe=
+nt organizations,
+> each with restricted management access to each other=E2=80=99s equipment.
 
-Another independent patch! :) Bjorn, since you've already Acked this
-patch, would be be willing to pick it up for your tree?
+Please wrap the cover letter and commit messages to 70 chars.
 
--Kees
+> Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
+> Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
 
-> ---
->  include/linux/pci.h | 19 ++++++++++++++-----
->  1 file changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 835530605c0d..4e64421981c7 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -1909,19 +1909,28 @@ enum pci_fixup_pass {
->  };
->  
->  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
-> -#define __DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
-> -				    class_shift, hook)			\
-> -	__ADDRESSABLE(hook)						\
-> +#define ___DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
-> +				    class_shift, hook, stub)		\
-> +	void stub(struct pci_dev *dev);					\
-> +	void stub(struct pci_dev *dev)					\
-> +	{ 								\
-> +		hook(dev); 						\
-> +	}								\
->  	asm(".section "	#sec ", \"a\"				\n"	\
->  	    ".balign	16					\n"	\
->  	    ".short "	#vendor ", " #device "			\n"	\
->  	    ".long "	#class ", " #class_shift "		\n"	\
-> -	    ".long "	#hook " - .				\n"	\
-> +	    ".long "	#stub " - .				\n"	\
->  	    ".previous						\n");
-> +
-> +#define __DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
-> +				  class_shift, hook, stub)		\
-> +	___DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
-> +				  class_shift, hook, stub)
->  #define DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
->  				  class_shift, hook)			\
->  	__DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
-> -				  class_shift, hook)
-> +				  class_shift, hook, __UNIQUE_ID(hook))
->  #else
->  /* Anonymous variables would be nice... */
->  #define DECLARE_PCI_FIXUP_SECTION(section, name, vendor, device, class,	\
-> -- 
-> 2.28.0.1011.ga647a8990f-goog
-> 
-
--- 
-Kees Cook
+You have two spaces after the name in many tags.
