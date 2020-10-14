@@ -2,158 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AA928DD00
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D78428D7B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730207AbgJNJVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730973AbgJNJUk (ORCPT
+        id S1730667AbgJNA5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 20:57:07 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:53370 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726974AbgJNA5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:40 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCE1C0251BE
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 17:54:51 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id u16so1018311qkm.22
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 17:54:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:cc;
-        bh=+sRzkUE+scrQPOvt1hpaJRFlbY+mLiTASxfxA+AvDzY=;
-        b=jw3IYuqhYk3bNCks48afsywsfyXpRda22JQ0j0vZleZASO4yZwS1bbAuklB3w73SDu
-         nVAc5RTpyaQR83VAqaD5XtkkdxVMh+0WBUMs27BJbmYfuDR1MW5kWP4aQfuVJrwkj8hh
-         ZUBpB5ib1AH/FLfmvSzZMAn6wB7H0IpN8t+GBiHXJ7r60tAz2aTiCECnYOE5ke/1OYb5
-         WloVpKbiCNwWXyA4+oAnzoKO4VvGLId6i4oBNn44HJh83Bd1hMW1gtw8oN04wN5EK01s
-         gowS/qx8dBNy3W+Q/r388jANZjwOF21UjBdBC73CjCeTbc9Ads94fCnBq1FmwxpHOw7G
-         axtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=+sRzkUE+scrQPOvt1hpaJRFlbY+mLiTASxfxA+AvDzY=;
-        b=AXoFXBGRur/XRkZ2x03ZZ8+VrQw++CprCZG6RUsOYZMS0dOTzuTfnw0b85LvY+bcMQ
-         E/ZBob0vA9dDadHwZyO12FmNdhE0kqmKOOpCfUYfPwkI9H/VFR/r6tXX+EKvjgR0AbTL
-         mn3fuW5jX7W3MbOwXvIWV1DnalE6u907EELWcSNywhUhgLq+udCqeNIjmCg2bCACx0zZ
-         gy4wwXVIIOypRQ5E/2p+DFWyX6QHi6kcsVIfgUZExf/HoOLKk0Xnravd+9OA6zcCqni4
-         7255++7FNONBvfgw7Uh0ZQol++uUaTMsAkMqK2LpPbM61VcTiX9KLMbfUjz0ryYYCWoX
-         NQCQ==
-X-Gm-Message-State: AOAM530A4ifMw9y21GK9Bkg+qSZePds+3/bDCsOtXBdLVTw14ZdrBgxq
-        XNUYjQ0ZDGYSwatjr+JzvR+QSQcgEORZyH5r9A==
-X-Google-Smtp-Source: ABdhPJyfDvKvdmHyyap2eUwDhm0Me8oBd98Fxe3Nu61XFgLJneYAMnVgTd1Giuoe//Q/MlLcMZyeZ5E1JL9dS9zouw==
-Sender: "kaleshsingh via sendgmr" <kaleshsingh@kaleshsingh.c.googlers.com>
-X-Received: from kaleshsingh.c.googlers.com ([fda3:e722:ac3:10:14:4d90:c0a8:2145])
- (user=kaleshsingh job=sendgmr) by 2002:ad4:4150:: with SMTP id
- z16mr2651885qvp.50.1602636890894; Tue, 13 Oct 2020 17:54:50 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 00:53:10 +0000
-In-Reply-To: <20201014005320.2233162-1-kaleshsingh@google.com>
-Message-Id: <20201014005320.2233162-6-kaleshsingh@google.com>
-Mime-Version: 1.0
-References: <20201014005320.2233162-1-kaleshsingh@google.com>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH v4 5/5] x86: mremap speedup - Enable HAVE_MOVE_PUD
-From:   Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, minchan@google.com, joelaf@google.com,
-        lokeshgidra@google.com, kaleshsingh@google.com,
-        kernel-team@android.com,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        Shuah Khan <shuah@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Gavin Shan <gshan@redhat.com>, Mike Rapoport <rppt@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Jia He <justin.he@arm.com>, John Hubbard <jhubbard@nvidia.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>, Zi Yan <ziy@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 13 Oct 2020 20:57:07 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 84BB023D26;
+        Tue, 13 Oct 2020 20:57:04 -0400 (EDT)
+Date:   Wed, 14 Oct 2020 11:57:04 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Daniel Wagner <dwagner@suse.de>
+cc:     Nilesh Javali <njavali@marvell.com>, Arun Easi <aeasi@marvell.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] qla2xxx: Return EBUSY on fcport deletion
+In-Reply-To: <20201013065232.hdyjdkurkmowkf2f@beryllium.lan>
+Message-ID: <alpine.LNX.2.23.453.2010141103150.6@nippy.intranet>
+References: <20201012173524.46544-1-dwagner@suse.de> <alpine.LNX.2.23.453.2010131058220.10@nippy.intranet> <20201013065232.hdyjdkurkmowkf2f@beryllium.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HAVE_MOVE_PUD enables remapping pages at the PUD level if both the
-source and destination addresses are PUD-aligned.
 
-With HAVE_MOVE_PUD enabled it can be inferred that there is approximately
-a 13x improvement in performance on x86. (See data below).
+On Tue, 13 Oct 2020, Daniel Wagner wrote:
 
-------- Test Results ---------
+> On Tue, Oct 13, 2020 at 10:59:18AM +1100, Finn Thain wrote:
+> > 
+> > On Mon, 12 Oct 2020, Daniel Wagner wrote:
+> > 
+> > > When the fcport is about to be deleted we should return EBUSY 
+> > > instead of ENODEV. Only for EBUSY the request will be requeued in a 
+> > > multipath setup.
+> > > 
+> > > Also in case we have a valid qpair but the firmware has not yet 
+> > > started return EBUSY to avoid dropping the request.
+> > > 
+> > > Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> > > ---
+> > > 
+> > > v3: simplify test logic as suggested by Arun.
+> > 
+> > Not exactly a "simplification": there was a change of behaviour 
+> > between v2 and v3. It seems the commit log no longer reflects the 
+> > code.
+> 
+> How so? I am struggling to see how it could be a change in behavior. But 
+> then I sometimes fail at simple logic ;)
+> 
 
-The following results were obtained using a 5.4 kernel, by remapping
-a PUD-aligned, 1GB sized region to a PUD-aligned destination.
-The results from 10 iterations of the test are given below:
+Me too, so I confirmed the result by executing the code snippets.
 
-Total mremap times for 1GB data on x86. All times are in nanoseconds.
+> v2 and v3 will return ENODEV if qpair or fcport are invalid and for 
+> EBUSY one of the other condition needs be true. The difference between 
+> v2 and v3 should only be the order how tests are executed. The outcome 
+> should be the same.
+> 
 
-Control        HAVE_MOVE_PUD
+Here's a truth table for v2:
 
-180394         15089
-235728         14056
-238931         25741
-187330         13838
-241742         14187
-177925         14778
-182758         14728
-160872         14418
-205813         15107
-245722         13998
+qpair fw_started fcport deleted result
+---------------------------------------
+F       X       F       X       -ENODEV
+F       F       T       F       -ENODEV
+F       F       T       T       -EBUSY  *
+F       T       T       F       -ENODEV
+F       T       T       T       -EBUSY  *
+T       F       F       X       -EBUSY  *
+T       F       T       X       -EBUSY
+T       T       F       X       -ENODEV
+T       T       T       F       neither
+T       T       T       T       -EBUSY
 
-205721.5       15594    <-- Mean time in nanoseconds
+Here's a truth table for v3:
 
-A 1GB mremap completion time drops from ~205 microseconds
-to ~15 microseconds on x86. (~13x speed up).
+qpair fw_started fcport deleted result
+---------------------------------------
+F       X       F       X       -ENODEV
+F       F       T       F       -ENODEV
+F       F       T       T       -ENODEV *
+F       T       T       F       -ENODEV
+F       T       T       T       -ENODEV *
+T       F       F       X       -ENODEV *
+T       F       T       X       -EBUSY
+T       T       F       X       -ENODEV
+T       T       T       F       neither
+T       T       T       T       -EBUSY
 
-Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: H. Peter Anvin <hpa@zytor.com>
----
-Changes in v4:
-  - Add Kirill's Acked-by.
+The asterisks mark the changed rows.
 
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 835d93006bd6..e199760d54fc 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -198,6 +198,7 @@ config X86
- 	select HAVE_MIXED_BREAKPOINTS_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_MOVE_PMD
-+	select HAVE_MOVE_PUD
- 	select HAVE_NMI
- 	select HAVE_OPROFILE
- 	select HAVE_OPTPROBES
--- 
-2.28.0.1011.ga647a8990f-goog
-
+I don't know whether the changes in v3 are desirable or not, I was just 
+pointing out that the commit log ("valid qpair but the firmware has not 
+yet started return EBUSY") now seems to disagree with the code.
