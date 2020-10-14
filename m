@@ -2,175 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10EA28E68E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0465A28E692
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388213AbgJNSjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
+        id S2388550AbgJNSlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730272AbgJNSjs (ORCPT
+        with ESMTP id S1726269AbgJNSlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:39:48 -0400
+        Wed, 14 Oct 2020 14:41:21 -0400
 Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A85C061755;
-        Wed, 14 Oct 2020 11:39:47 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ds1so213651pjb.5;
-        Wed, 14 Oct 2020 11:39:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A97C061755;
+        Wed, 14 Oct 2020 11:41:21 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id p3so208544pjd.0;
+        Wed, 14 Oct 2020 11:41:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NH5urOcy6c6c7U4nE2ctki4Ov521XyxV+9elVLTe53k=;
-        b=ljjUBHvD9onxp1gRCJrEBhb0tdHVp8S71mYcEA5XYCz4Rhycv80d2h0TNWdFnZIIoL
-         fTq+20VgUsTeou8V8x/eRwjfy1Z4ZgUEti0xXp+hqBDKTuIwfJvXf1ilf6gpPrTX+/5z
-         bxnNYkQEr3EmDy7DbGRsK2+h/bf2blPJSsaIRE6CXM83dqKfkEftHUtyb63cZ5gd+BiB
-         TMGaeDgrKgSNkVtzuh06CPpV2IdsQy3mZWKFj+vQPQ0EVkbi2htUZ2cpRfbQAVKgr7pA
-         cjyLOY2ie7XcjfJFC+baHNO/TCCXnrCpLeDGRvcFW9ty4iOO1AfLotqQDHRnupTYTOtU
-         QJ8A==
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eRyn9Yj27AcsHUnjJ30/qeiisUDoeIZgcYxat6DyTzw=;
+        b=nACWQ9ClVetGcv+ghixt/nzUZY3uo36oaSA9ErNk0q9kJje7+p3V5And/csO2bu2tI
+         4uizM+QM3jCZGWgk6vTKZMjnRlbR1poFpXpuhRkgciTxUm36K93VOyxRwcWUEji5p/eN
+         nWfKMF5IZF7wUJmJgsUQtCnxDL/bK8rTgXcKGwNVSc0c2NwtpINo5DXf/16tsgvb2qGP
+         Ll26T01Notd7jkMEEX053TvpNmVDDA9fZjsreoivclJlnh8HkYzlcnOtSOVV36w1zEPi
+         uKaA5DKJg8jxmD/sxHoFB272jWVGAtIzuFKsrjiIZi1Q76syO7O2eMMvLEl3lxPVpF+i
+         nDnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=NH5urOcy6c6c7U4nE2ctki4Ov521XyxV+9elVLTe53k=;
-        b=a9U+mAgHctAzsF78XeO+qLb2gpToGQkxyJZM+Yp+zH0hz/iwRm9QaK+NySvndaiFd1
-         LuXiJrUOQb+RkipJsN9NBDBybFmm8Gzlx/OZEMcKLsDI4l423BwTAjVhzHOgnJIVWsfS
-         SKSy1YkazE8eesb3qWRVchxl+cMmeoeZk2JnGkD0SzamsXy7Eh5uyAR4Q0ooEwAnEbs9
-         keLfW5b/WBKPJrzLeF6dQ7gPYaTDdJbUa+z+G5yLBoYikD4QqJI0atkKQTUhdyvd62ih
-         kVHh4NUtaWNWzNUXPP/fqNJjps/ruIKkapUrk9JOTCgCHwVhl2TrnBcbJSji9e/iKwpe
-         OEgQ==
-X-Gm-Message-State: AOAM530932dIEw3V5eXxRPqOME8z/XTCk1i8Fb63758Ore/s3nt2jzpg
-        BSqF/D1z8oVu5/RTqIB+cn8=
-X-Google-Smtp-Source: ABdhPJwJRebcnF/K6rXv4Pvhn7mjLRUX1W19rCgciAw9z+AVgh4JoWoSHdM40MH8mmAfl3iv8UEsPA==
-X-Received: by 2002:a17:90a:474c:: with SMTP id y12mr502073pjg.150.1602700787366;
-        Wed, 14 Oct 2020 11:39:47 -0700 (PDT)
-Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id q24sm371251pfn.72.2020.10.14.11.39.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 11:39:46 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 14 Oct 2020 11:39:43 -0700
-From:   minchan@kernel.org
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC]: userspace memory reaping
-Message-ID: <20201014183943.GA1489464@google.com>
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
- <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
- <20201014120937.GC4440@dhcp22.suse.cz>
- <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=eRyn9Yj27AcsHUnjJ30/qeiisUDoeIZgcYxat6DyTzw=;
+        b=RZFvzsdo2Jf1eE1mnh8Td7r8ivh4MSD+/HptN+syptpM3P+hdh2+Ql4uCru787PPGP
+         QShOH2UlphPgbE0auh9YWT8f9SZl41Y67YEEHtyeixBQ76ZMVudCl2jU2GFxVCJ3C7EO
+         M2YGNYrSY4OH1Bd4hdRzsElAYbFWcYe94keYbz6ImuGaPzRkMI/Ft5FfDIjTvBcG2bXN
+         6QLPPl0gHgz7uVPx+5jXSPIfJcB8mR9Jr1NvZSMGgOGUqQE6NDmMDUCkqpy3ZNffCDHa
+         MhO1d7pYOF1PgKmoExhIAeA7u6JusbwKuYUbGF7/5e6ObPJH3GoYN82JlIAMl5M4oBR7
+         9O/Q==
+X-Gm-Message-State: AOAM531MIysRKBB4o+uOylxdpvz1DZ5hjaplEonyzVWU3RJ1OPFMmylG
+        MjpqaLD3g8wLlW6LDoi3VHU=
+X-Google-Smtp-Source: ABdhPJw7qqzerNuzRgg8C/+fry135cEdnFTj+f1gTZn26p2GWEK0GkxGDigh0wNxBPu58wDjnco0iw==
+X-Received: by 2002:a17:90b:3798:: with SMTP id mz24mr546054pjb.46.1602700881224;
+        Wed, 14 Oct 2020 11:41:21 -0700 (PDT)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id gg24sm212051pjb.44.2020.10.14.11.41.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 11:41:20 -0700 (PDT)
+Subject: Re: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>
+ <ed0221ee-c586-b8f8-a7d1-4a2a190dc41b@gmail.com>
+ <20201014181136.5hwsu77rv3wbxw7w@mobilestation>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <932c52de-c2f1-ceea-e436-1471830700e9@gmail.com>
+Date:   Wed, 14 Oct 2020 11:41:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
+In-Reply-To: <20201014181136.5hwsu77rv3wbxw7w@mobilestation>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 09:57:20AM -0700, Suren Baghdasaryan wrote:
-> On Wed, Oct 14, 2020 at 5:09 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > [Sorry for a late reply]
-> >
-> > On Mon 14-09-20 17:45:44, Suren Baghdasaryan wrote:
-> > > + linux-kernel@vger.kernel.org
-> > >
-> > > On Mon, Sep 14, 2020 at 5:43 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > > >
-> > > > Last year I sent an RFC about using oom-reaper while killing a
-> > > > process: https://patchwork.kernel.org/cover/10894999. During LSFMM2019
-> > > > discussion https://lwn.net/Articles/787217 a couple of alternative
-> > > > options were discussed with the most promising one (outlined in the
-> > > > last paragraph of https://lwn.net/Articles/787217) suggesting to use a
-> > > > remote version of madvise(MADV_DONTNEED) operation to force memory
-> > > > reclaim of a killed process. With process_madvise() making its way
-> > > > through reviews (https://patchwork.kernel.org/patch/11747133/), I
-> > > > would like to revive this discussion and get feedback on several
-> > > > possible options, their pros and cons.
-> >
-> > Thanks for reviving this!
+On 10/14/20 11:11 AM, Serge Semin wrote:
+> On Wed, Oct 14, 2020 at 11:00:45AM -0700, Florian Fainelli wrote:
+>> On 10/14/20 3:14 AM, Serge Semin wrote:
+>>> In accordance with the Generic EHCI/OHCI bindings the corresponding node
+>>> name is suppose to comply with the Generic USB HCD DT schema, which
+>>> requires the USB nodes to have the name acceptable by the regexp:
+>>> "^usb(@.*)?" . Let's fix the DTS files, which have the nodes defined with
+>>> incompatible names.
+>>>
+>>> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+>>>
+>>> ---
+>>>
+>>> Please, test the patch out to make sure it doesn't brake the dependent DTS
+>>> files. I did only a manual grepping of the possible nodes dependencies.
+>>
 > 
-> Thanks for your feedback!
+>> Not sure how you envisioned these change to be picked up, but you may
+>> need to split these changes between ARM/ARM64, MIPS and PowerPC at
+>> least. And within ARM/ARM64 you will most likely have to split according
+>> to the various SoC maintainers.
 > 
-> >
-> > > > The need is similar to why oom-reaper was introduced - when a process
-> > > > is being killed to free memory we want to make sure memory is freed
-> > > > even if the victim is in uninterruptible sleep or is busy and reaction
-> > > > to SIGKILL is delayed by an unpredictable amount of time. I
-> > > > experimented with enabling process_madvise(MADV_DONTNEED) operation
-> > > > and using it to force memory reclaim of the target process after
-> > > > sending SIGKILL. Unfortunately this approach requires the caller to
-> > > > read proc/pid/maps to extract the list of VMAs to pass as an input to
-> > > > process_madvise().
-> >
-> > Well I would argue that this is not really necessary. You can simply
-> > call process_madvise with the full address range and let the kernel
-> > operated only on ranges which are safe to tear down asynchronously.
-> > Sure that would require some changes to the existing code to not fail
-> > on those ranges if they contain incompatible vmas but that should be
-> > possible. If we are worried about backward compatibility then a
-> > dedicated flag could override.
-> >
-> 
-> IIUC this is very similar to the last option I proposed. I think this
-> is doable if we treat it as a special case. process_madvise() return
-> value not being able to handle a large range would still be a problem.
-> Maybe we can return MAX_INT in those cases?
+> Hmm, I don't really know how it's going to be done in this case, but there must
+> be a way to get the cross-platform patches picked up in general. For
+> instance, see the patches like:
+> 714acdbd1c94 arch: rename copy_thread_tls() back to copy_thread()
+> 140c8180eb7c arch: remove HAVE_COPY_THREAD_TLS
+> They touched the files from different files, but still have been merged in.
 
-Or, maybe we could just return 0 if the operation succeeds without any
-error.
+That situation is different, when a new facility is added and someone
+has gone through the work of adding support for all architectures (or
+nearly all of them), you want them to be merged in a way that limits
+merge conflicts with other architecture changes.
 
-> 
-> > [...]
-> >
-> > > > While the objective is to guarantee forward progress even when the
-> > > > victim cannot terminate, we still want this mechanism to be efficient
-> > > > because we perform these operations to relieve memory pressure before
-> > > > it affects user experience.
-> > > >
-> > > > Alternative options I would like your feedback are:
-> > > > 1. Introduce a dedicated process_madvise(MADV_DONTNEED_MM)
-> > > > specifically for this case to indicate that the whole mm can be freed.
-> >
-> > This shouldn't be any different from madvise on the full address range,
-> > right?
-> >
-> 
-> Yep, just a matter of choosing the most appropriate API.
+Here you are fixing warnings, and each file you touch can clearly be
+independently change from other files in the series without causing
+merge conflicts. You are however creating the potential for merge
+conflicts with other changes that the various SoC maintainers have
+queued up.
 
+> Maybe I should have copied these three patches to the "linux-arch@vger.kernel.org"
+> list or some other mailing list...
 
-I agree full range or just NULL passing to indicate entire address
-space would be better than introducing a new advise in that we could
-avoid MADV_PAGEOUT_MM, MADV_COLD_MM.
-
-> 
-> > > > 2. A new syscall to efficiently obtain a vector of VMAs (start,
-> > > > length, flags) of the process instead of reading /proc/pid/maps. The
-> > > > size of the vector is still limited by UIO_MAXIOV (1024), so several
-> > > > calls might be needed to query larger number of VMAs, however it will
-> > > > still be an order of magnitude more efficient than reading
-> > > > /proc/pid/maps file in 4K or smaller chunks.
-> >
-> > While this might be interesting for other usecases - userspace memory
-> > management in general - I do not think it is directly related to this
-> > particular feature.
-> >
-> 
-> True but such a syscall would be useful for other use cases, like
-> MADV_COLD/MADV_PAGEOUT that Minchan was working on. Maybe we can kill
-> more than one bird here? Minchan, any thought?
-
-Generally, it could be helpful but I don't see it as desperate at this
-moment.
+Maybe Rob can queue them through his device tree repository, with the
+ack of the various SoC maintainers...
+-- 
+Florian
