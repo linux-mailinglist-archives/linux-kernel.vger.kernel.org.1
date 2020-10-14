@@ -2,54 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE9428D757
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB2D28D75B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728750AbgJNAPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 20:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727470AbgJNAPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 20:15:07 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8157220776;
-        Wed, 14 Oct 2020 00:15:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602634507;
-        bh=R5PKJvozLLXMD2g3JUBdfEV6OMzBc8v0tDUBd3YQOcw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tzQ6yKqJpJ2sO2/FjWY7Gxkf3XyMyP/GmNKbAYBBWW+Mj3emvldpLZHkykQOOhXqA
-         OTfBrfl18qK2ZZ3qFDWtD12FjROt2jnAwwiFh3yjixg6r5SBrj5JU9mZv6wJqbV7Mu
-         8t1lGcntxgtCKwyNwYPC8Y0ktP1eZbwXGrY5PXKc=
-Date:   Tue, 13 Oct 2020 17:15:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     linux-security-module@vger.kernel.org,
-        Valdis =?UTF-8?B?S2zEk3RuaWVr?= =?UTF-8?B?cw==?= 
-        <valdis.kletnieks@vt.edu>, Joe Perches <joe@perches.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH 0/5] net: use semicolons rather than commas to separate
- statements
-Message-ID: <20201013171504.5089fe3b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1602412498-32025-1-git-send-email-Julia.Lawall@inria.fr>
-References: <1602412498-32025-1-git-send-email-Julia.Lawall@inria.fr>
+        id S2389432AbgJNAPQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Oct 2020 20:15:16 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3636 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728867AbgJNAPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 20:15:16 -0400
+Received: from dggeme709-chm.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id E1AC73D4A3C36CA6911C;
+        Wed, 14 Oct 2020 08:15:13 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggeme709-chm.china.huawei.com (10.1.199.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 14 Oct 2020 08:15:13 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Wed, 14 Oct 2020 08:15:13 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+CC:     "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH] vfio/platform: Replace spin_lock_irqsave by spin_lock in
+ hard IRQ
+Thread-Topic: [PATCH] vfio/platform: Replace spin_lock_irqsave by spin_lock in
+ hard IRQ
+Thread-Index: AQHWoQSZTGOwJR7vqkiLltZ8f3MgN6mViI6AgACwRXA=
+Date:   Wed, 14 Oct 2020 00:15:13 +0000
+Message-ID: <aa726bd8cab443bdbbab8646a3988ffd@hisilicon.com>
+References: <1602554458-26927-1-git-send-email-tiantao6@hisilicon.com>
+ <20201013153229.7fe74e65@w520.home>
+In-Reply-To: <20201013153229.7fe74e65@w520.home>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.181]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 12:34:53 +0200 Julia Lawall wrote:
-> These patches replace commas by semicolons.  Commas introduce
-> unnecessary variability in the code structure and are hard to see.
-> This was done using the Coccinelle semantic patch
-> (http://coccinelle.lip6.fr/) shown below.
 
-Applied 3-5 to net-next, thanks!
+
+> -----Original Message-----
+> From: Alex Williamson [mailto:alex.williamson@redhat.com]
+> Sent: Wednesday, October 14, 2020 10:32 AM
+> To: tiantao (H) <tiantao6@hisilicon.com>
+> Cc: eric.auger@redhat.com; cohuck@redhat.com; kvm@vger.kernel.org;
+> linux-kernel@vger.kernel.org; Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com>; Linuxarm <linuxarm@huawei.com>
+> Subject: Re: [PATCH] vfio/platform: Replace spin_lock_irqsave by spin_lock in
+> hard IRQ
+> 
+> On Tue, 13 Oct 2020 10:00:58 +0800
+> Tian Tao <tiantao6@hisilicon.com> wrote:
+> 
+> > It is redundant to do irqsave and irqrestore in hardIRQ context.
+> 
+> But this function is also called from non-IRQ context.  Thanks,
+
+It seems you mean
+vfio_platform_set_irqs_ioctl() ->
+vfio_platform_set_irq_trigger ->
+handler() ?
+
+so, will it be better to move the irqsave out of the vfio_automasked_irq_handler()
+and put it to where the function is called in non-IRQ context?
+
+I mean:
+
+irqhandler()
+{
+	spin_lock()  //without irqsave
+	spin_unlock()
+}
+
+Non-irq context which is calling this handler:
+irqsave();
+irqhandler();
+irqrestore();
+
+Anyway, if it is called in IRQ context, it is redundant to do irqsave.
+
+> 
+> Alex
+> 
+> > Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> > ---
+> >  drivers/vfio/platform/vfio_platform_irq.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/vfio/platform/vfio_platform_irq.c
+> b/drivers/vfio/platform/vfio_platform_irq.c
+> > index c5b09ec..24fd6c5 100644
+> > --- a/drivers/vfio/platform/vfio_platform_irq.c
+> > +++ b/drivers/vfio/platform/vfio_platform_irq.c
+> > @@ -139,10 +139,9 @@ static int vfio_platform_set_irq_unmask(struct
+> vfio_platform_device *vdev,
+> >  static irqreturn_t vfio_automasked_irq_handler(int irq, void *dev_id)
+> >  {
+> >  	struct vfio_platform_irq *irq_ctx = dev_id;
+> > -	unsigned long flags;
+> >  	int ret = IRQ_NONE;
+> >
+> > -	spin_lock_irqsave(&irq_ctx->lock, flags);
+> > +	spin_lock(&irq_ctx->lock);
+> >
+> >  	if (!irq_ctx->masked) {
+> >  		ret = IRQ_HANDLED;
+> > @@ -152,7 +151,7 @@ static irqreturn_t vfio_automasked_irq_handler(int
+> irq, void *dev_id)
+> >  		irq_ctx->masked = true;
+> >  	}
+> >
+> > -	spin_unlock_irqrestore(&irq_ctx->lock, flags);
+> > +	spin_unlock(&irq_ctx->lock);
+> >
+> >  	if (ret == IRQ_HANDLED)
+> >  		eventfd_signal(irq_ctx->trigger, 1);
+
+Thanks
+Barry
+
