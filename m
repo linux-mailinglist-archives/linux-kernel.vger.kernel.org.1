@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C67E28E442
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39BE28E447
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731878AbgJNQSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:18:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:52786 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729651AbgJNQSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:18:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A541D6E;
-        Wed, 14 Oct 2020 09:18:36 -0700 (PDT)
-Received: from bogus (unknown [10.57.12.254])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC1AD3F71F;
-        Wed, 14 Oct 2020 09:18:34 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 17:18:29 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Fix duplicate workqueue name
-Message-ID: <20201014160120.4x2l7hozf376gk3l@bogus>
-References: <20201014021737.287340-1-f.fainelli@gmail.com>
- <20201014091806.GB20315@bogus>
- <20201014130524.cj42wknvzdpgsbsr@bogus>
- <20201014134819.GA24061@e120937-lin>
+        id S1731881AbgJNQUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:20:37 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:35281 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727071AbgJNQUg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:20:36 -0400
+Received: (qmail 719097 invoked by uid 1000); 14 Oct 2020 12:20:36 -0400
+Date:   Wed, 14 Oct 2020 12:20:36 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-omap@vger.kernel.org,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Johan Hovold <johan@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>
+Subject: Re: [patch 08/12] usb: hosts: Remove in_interrupt() from comments
+Message-ID: <20201014162036.GC712494@rowland.harvard.edu>
+References: <20201014145215.518912759@linutronix.de>
+ <20201014145727.957664398@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014134819.GA24061@e120937-lin>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20201014145727.957664398@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 02:48:19PM +0100, Cristian Marussi wrote:
+On Wed, Oct 14, 2020 at 04:52:23PM +0200, Thomas Gleixner wrote:
+> From: Ahmed S. Darwish <a.darwish@linutronix.de>
+> 
+> The usage of in_interrupt() in drivers is phased out for various reasons.
+> 
+> Various comments use !in_interrupt() to describe calling context for probe()
+> and remove() functions. That's wrong because the calling context has to be
+> preemptible task context, which is not what !in_interrupt() describes.
+> 
+> Cleanup the comments. While at it add the missing kernel doc argument
+> descriptors and make usb_hcd_msp_remove() static.
+> 
+> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-usb@vger.kernel.org
+> Cc: linux-omap@vger.kernel.org
+> Cc: Kukjin Kim <kgene@kernel.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> 
+> ---
 
-[...]
+> --- a/drivers/usb/host/ehci-pmcmsp.c
+> +++ b/drivers/usb/host/ehci-pmcmsp.c
 
-> >
-> > I have pushed a version with above change [1], please check if you are
-> > happy with that ?
-> >
-> > [1] https://git.kernel.org/sudeep.holla/linux/c/b2cd15549b
->
-> I agree with the need to retain _notify name, but I'm not so sure about
-> the above patch...which is:
->
+> @@ -233,7 +236,7 @@ int usb_hcd_msp_probe(const struct hc_dr
+>   * may be called without controller electrically present
+>   * may be called with controller, bus, and devices active
+>   */
+> -void usb_hcd_msp_remove(struct usb_hcd *hcd, struct platform_device *dev)
+> +static void usb_hcd_msp_remove(struct usb_hcd *hcd)
 
-I agree, I thought about it and just cooked up this as a quick solution.
-I will move to that, even I wasn't happy with this TBH.
+Please don't intermix changes to comments with other more substantive 
+changes.
 
-> diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-> index c24e427dce0d7..f60fa630dd98f 100644
-> --- a/drivers/firmware/arm_scmi/notify.c
-> +++ b/drivers/firmware/arm_scmi/notify.c
-> @@ -1461,6 +1461,7 @@ static const struct scmi_notify_ops notify_ops = {
->  int scmi_notification_init(struct scmi_handle *handle)
->  {
->  	void *gid;
-> +	char scmi_wq_name[32];
->  	struct scmi_notify_instance *ni;
->
->  	gid = devres_open_group(handle->dev, NULL, GFP_KERNEL);
-> @@ -1474,7 +1475,8 @@ int scmi_notification_init(struct scmi_handle *handle)
->  	ni->gid = gid;
->  	ni->handle = handle;
->
-> -	ni->notify_wq = alloc_workqueue("scmi_notify",
-> +	sprintf(scmi_wq_name, "%s_notify", dev_name(handle->dev));
-> +	ni->notify_wq = alloc_workqueue(scmi_wq_name,
->  					WQ_UNBOUND | WQ_FREEZABLE | WQ_SYSFS,
->  					0);
->  	if (!ni->notify_wq)
->
-> ...does not expose a potential buffer overflow given that the dev_name now comes
-> from the DT chosen name for this SCMI server instance ?
->
-> I'd use snprintf and enlarge a bit the static scmi_wq_name[] to fit a max
-> device bane plus "_notify".
->
-> Regards
-> Cristian
+> --- a/drivers/usb/host/ohci-omap.c
+> +++ b/drivers/usb/host/ohci-omap.c
 
---
-Regards,
-Sudeep
+> @@ -399,8 +401,7 @@ static int ohci_hcd_omap_probe(struct pl
+>  
+>  /**
+>   * ohci_hcd_omap_remove - shutdown processing for OMAP-based HCDs
+> - * @dev: USB Host Controller being removed
+> - * Context: !in_interrupt()
+> + * @pdev: USB Host Controller being removed
+>   *
+>   * Reverses the effect of ohci_hcd_omap_probe(), first invoking
+>   * the HCD's stop() method.  It is always called from a thread
+
+You forgot to add the Context comment.
+
+Alan Stern
