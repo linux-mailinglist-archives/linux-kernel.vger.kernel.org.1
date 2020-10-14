@@ -2,169 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA8B28DBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F8628D976
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 07:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729865AbgJNIoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727369AbgJNIog (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:44:36 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802C8C041E7C
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:06:35 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id p15so1768265ljj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a/Z5uBz1DpZTFhc75fGuuiaoswUlc0+pdF1qtatUqts=;
-        b=GHPv+yjhdSZ8/ZHd+8mjDk2rnbggNqf3NuYe4n2TNyCw5yWmeDzOycaHI3O5h1rCfN
-         d6RoxfZweefrAsnec1X2O1V6ZLesFRr4UYaW9w8p7XxlRfr32TL2GqapdrD0Cu7Q07rJ
-         OTytH4XLz+fOiI2yis722+O9uWWgEBhf853GPb5RNhUvGly37yG4pN0YpOnpb23YpQXj
-         nz2JsPh5AOxtaO8ywoBQeXitujBkmx1En+7y81TSB7mEmSCVARP7UjUsKuglCeST9E4u
-         HuCy5T34GcWsK/31yTPx/hDWFWULhY9ZjoswHLREYk6i+MMFbyZk+qUDd3JvY2utG9MP
-         ZZzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a/Z5uBz1DpZTFhc75fGuuiaoswUlc0+pdF1qtatUqts=;
-        b=dQfnFuPji48plsYYnf/a27wtrP1TJPuGETHNWT1GRSqR78g9fLe/EGFw4vRASR3zLK
-         23VLGBFPzV6okKzDrGXAGSshaWKLx1WaTWhIs027afRB6aTF0c7EZr70RtD6HvvX8l5J
-         mnaVQrtSl/LjJMZlfSCcVZ1iznNUqUvgcUUOBi3HeN4dX7kOgk9/9wJ4nMwgsfkIseZ4
-         8dv6gmYzOuYltyDFJngvGQ/vGEmpBH7hzOIRVD8zbn6oaJwFGXX3eJQBRF7PtoKwZD5F
-         n3RW5SOVOZPuX0H7KEglAXDNTdbB0i2y4LtXu3n1jBS6D8AlVoNtKXDgFe/EgvNW8BY0
-         XO2Q==
-X-Gm-Message-State: AOAM533pEr/Dm9KD0SuwcKHHxCdGaa0ZVcaJflH6SxCHIBMVqEltVm/o
-        VHTVpAQ16E+GgDKAEXdV+qRtV3JsMtrV1NaEMJQv/Q==
-X-Google-Smtp-Source: ABdhPJxpzomwQ/mAxnTCtpWCIYf8XDKOOWEFXfHJY5lnuYu0+MMHD0Q9w0B4zJ84z5v+btni8Pb+tzMjimNbMVifir4=
-X-Received: by 2002:a2e:808a:: with SMTP id i10mr978406ljg.427.1602651993883;
- Tue, 13 Oct 2020 22:06:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
- <1602065268-26017-5-git-send-email-sumit.garg@linaro.org> <20201013022157.GA47751@linux.intel.com>
- <CAFA6WYO6zNKtxhpNpTpqAjZnMPrEygs1k7Gwg3hwJV8Ynrr=qQ@mail.gmail.com> <20201013134048.GA147135@kernel.org>
-In-Reply-To: <20201013134048.GA147135@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 14 Oct 2020 10:36:21 +0530
-Message-ID: <CAFA6WYOqknmYcoxPQKOk2rW+gJZ_8fQXZBMcicT9f562C0o-GA@mail.gmail.com>
-Subject: Re: [PATCH v7 4/4] MAINTAINERS: Add entry for TEE based Trusted Keys
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Janne Karhunen <janne.karhunen@gmail.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Markus Wamser <Markus.Wamser@mixed-mode.de>,
-        Luke Hinds <lhinds@redhat.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        id S1727849AbgJNFHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 01:07:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:37610 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726037AbgJNFHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 01:07:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C5A430E;
+        Tue, 13 Oct 2020 22:07:05 -0700 (PDT)
+Received: from [10.163.76.91] (unknown [10.163.76.91])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CDB633F66B;
+        Tue, 13 Oct 2020 22:07:01 -0700 (PDT)
+Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
+ mapping
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
+        Steven Price <steven.price@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
+ <20200928203539.GA12218@willie-the-truck>
+ <09266aed-7eef-5b16-5d52-0dcb7dcb7246@arm.com>
+ <20200929152221.GA13995@willie-the-truck>
+ <f44d34df-8a21-712c-138d-f7f633b0eb6c@arm.com>
+ <262f2fd8-2e0c-4eaf-d4ff-f72728049f52@arm.com>
+ <CAMj1kXFszo8SO7eAn0FEO+AQUHV9HZyukUi7=-udKyK+mCNVRw@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <1ee71de5-9e16-b9de-6ea0-f17dc9a494ac@arm.com>
+Date:   Wed, 14 Oct 2020 10:36:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <CAMj1kXFszo8SO7eAn0FEO+AQUHV9HZyukUi7=-udKyK+mCNVRw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 at 19:10, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> On Tue, Oct 13, 2020 at 04:58:47PM +0530, Sumit Garg wrote:
-> > On Tue, 13 Oct 2020 at 07:52, Jarkko Sakkinen
-> > <jarkko.sakkinen@linux.intel.com> wrote:
-> > >
-> > > On Wed, Oct 07, 2020 at 03:37:48PM +0530, Sumit Garg wrote:
-> > > > Add MAINTAINERS entry for TEE based Trusted Keys framework.
-> > > >
-> > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > > > ---
-> > > >  MAINTAINERS | 8 ++++++++
-> > > >  1 file changed, 8 insertions(+)
-> > > >
-> > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > index 48aff80..eb3d889 100644
-> > > > --- a/MAINTAINERS
-> > > > +++ b/MAINTAINERS
-> > > > @@ -9663,6 +9663,14 @@ F:     include/keys/trusted-type.h
-> > > >  F:   include/keys/trusted_tpm.h
-> > > >  F:   security/keys/trusted-keys/
-> > > >
-> > > > +KEYS-TRUSTED-TEE
-> > > > +M:   Sumit Garg <sumit.garg@linaro.org>
-> > > > +L:   linux-integrity@vger.kernel.org
-> > > > +L:   keyrings@vger.kernel.org
-> > > > +S:   Supported
-> > > > +F:   include/keys/trusted_tee.h
-> > > > +F:   security/keys/trusted-keys/trusted_tee.c
-> > > > +
-> > > >  KEYS/KEYRINGS
-> > > >  M:   David Howells <dhowells@redhat.com>
-> > > >  M:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > > > --
-> > > > 2.7.4
-> > >
-> > > I'm sorry but I think I have changed my mind on this. This has been
-> > > spinning for a while and sometimes conclusions change over the time.
-> > >
-> > > I don't think that we really need a separate subsystem tag.
-> >
-> > I don't see it as a separate subsystem but rather a kind of underlying
-> > trust source (TEE) driver plugged into existing trusted keys
-> > subsystem. We could relate it to the RNG subsystem as well where there
-> > is a subsystem maintainer and specific driver maintainers.
-> >
-> > IMO, having a dedicated entry like this brings clarity in maintenance
-> > and in future we may have more trust sources like this added where
-> > everyone may not have access to all the trust sources to test.
->
-> More entries pointing to the exact same stuff does not necessarily mean
-> clarity in my books.
->
-> > > I'd be for a
-> > > new M-entry or R-entry to the existing subsystem tag. It's essential to
-> > > have ack from someone with ARM and TEE knowledge but this way too heavy
-> > > for the purpose.
-> >
-> > If you still think otherwise then I am fine with a new M-entry for
-> > existing trusted keys subsystem as well.
->
-> Adding a M-entry does makes sense because trusted keys backends can be
-> based on various technologies and standard. It's a different in that
-> sense than lets say a TPM hardware driver.
->
-> > > I also see it the most manageable if the trusted keys PR's come from a
-> > > single source.
-> >
-> > I echo here with you to have a single source for trusted keys PR's
-> > irrespective of whether we go with a separate trust source entry or
-> > update existing subsystem entry.
-> >
-> > -Sumit
->
-> And I echo that oviously if there is someone to say the final ack about
-> TEE, I will require that as the minimum to ever pick any of those
-> changes :-)
->
-> I would resolve this with just the M-entry, and we can *later on*
-> restructure, if there is a need for that. These things are not sealed
-> to stone.
 
-Okay, will add a M-entry for existing trusted keys subsystem.
 
--Sumit
+On 10/12/2020 12:59 PM, Ard Biesheuvel wrote:
+> On Tue, 6 Oct 2020 at 08:36, Anshuman Khandual
+> <anshuman.khandual@arm.com> wrote:
+>>
+>>
+>>
+>> On 09/30/2020 01:32 PM, Anshuman Khandual wrote:
+>>> But if __is_lm_address() checks against the effective linear range instead
+>>> i.e [_PAGE_OFFSET(vabits_actual)..(PAGE_END - 1)], it can be used for hot
+>>> plug physical range check there after. Perhaps something like this, though
+>>> not tested properly.
+>>>
+>>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+>>> index afa722504bfd..6da046b479d4 100644
+>>> --- a/arch/arm64/include/asm/memory.h
+>>> +++ b/arch/arm64/include/asm/memory.h
+>>> @@ -238,7 +238,10 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+>>>   * space. Testing the top bit for the start of the region is a
+>>>   * sufficient check and avoids having to worry about the tag.
+>>>   */
+>>> -#define __is_lm_address(addr)  (!(((u64)addr) & BIT(vabits_actual - 1)))
+>>> +static inline bool __is_lm_address(unsigned long addr)
+>>> +{
+>>> +       return ((addr >= _PAGE_OFFSET(vabits_actual)) && (addr <= (PAGE_END - 1)));
+>>> +}
+>>>
+>>>  #define __lm_to_phys(addr)     (((addr) + physvirt_offset))
+>>>  #define __kimg_to_phys(addr)   ((addr) - kimage_voffset)
+>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>>> index d59ffabb9c84..5750370a7e8c 100644
+>>> --- a/arch/arm64/mm/mmu.c
+>>> +++ b/arch/arm64/mm/mmu.c
+>>> @@ -1451,8 +1451,7 @@ static bool inside_linear_region(u64 start, u64 size)
+>>>          * address range mapped by the linear map, the start address should
+>>>          * be calculated using vabits_actual.
+>>>          */
+>>> -       return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
+>>> -                       && ((start + size) <= __pa(PAGE_END - 1)));
+>>> +       return __is_lm_address(__va(start)) && __is_lm_address(__va(start + size));
+>>>  }
+>>>
+>>>  int arch_add_memory(int nid, u64 start, u64 size,
+>>
+>> Will/Ard,
+>>
+>> Any thoughts about this ? __is_lm_address() now checks for a range instead
+>> of a bit. This will be compatible later on, even if linear mapping range
+>> changes from current lower half scheme.
+>>
+> 
+> As I'm sure you have noticed, I sent out some patches that get rid of
+> physvirt_offset, and which simplify __is_lm_address() to only take
+> compile time constants into account (unless KASAN is enabled). This
+> means that in the 52-bit VA case, __is_lm_address() does not
+> distinguish between virtual addresses that can be mapped by the
+> hardware and ones that cannot.
 
->
-> /Jarkko
+Yeah, though was bit late in getting to the series. So with that change
+there might be areas in the linear mapping which cannot be addressed by
+the hardware and hence should also need be checked apart from proposed
+linear mapping coverage test, during memory hotplug ?
+
+> 
+> In the memory hotplug case, we need to decide whether the added memory
+> will appear in the addressable area, which is a different question. So
+> it makes sense to duplicate some of the logic that exists in
+> arm64_memblock_init() (or factor it out) to decide whether this newly
+> added memory will appear in the addressable window or not.
+
+It seems unlikely that any hotplug agent (e.g. firmware) will ever push
+through a memory range which is not accessible in the hardware but then
+it is not impossible either. In summary, arch_add_memory() should check
+
+1. Range can be covered inside linear mapping
+2. Range is accessible by the hardware
+
+Before the VA space organization series, (2) was not necessary as it was
+contained inside (1) ?
+
+> 
+> So I think your original approach makes more sense here, although I
+> think you want '(start + size - 1) <= __pa(PAGE_END - 1)' in the
+> comparison above (and please drop the redundant parens)
+> 
+
+Sure, will accommodate these changes.
