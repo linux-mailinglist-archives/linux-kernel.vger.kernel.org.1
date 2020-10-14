@@ -2,87 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD1928E93E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FC228E93F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732007AbgJNXjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 19:39:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50640 "EHLO mail.kernel.org"
+        id S1732037AbgJNXk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 19:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730418AbgJNXjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 19:39:39 -0400
-Received: from kernel.org (unknown [104.132.1.79])
+        id S1730418AbgJNXk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 19:40:56 -0400
+Received: from localhost (unknown [176.167.119.22])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25A35208D5;
-        Wed, 14 Oct 2020 23:39:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BCD6208D5;
+        Wed, 14 Oct 2020 23:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602718778;
-        bh=dNeE6gr+JoZQrofZcAVNVCcDQBotemPsa+eCPdyJAmE=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=AT5mE3m1lrhwKTXaUuPUZRpS7L96ieP3eGzcta6oAE+chSCVK4mQFPkYZESueJEjj
-         Kf0Aa/QALIQeqdqFh6ioiASc3VQ9LnXrL0XH0Fda6HArbva138TlTDB3J5ifDe5pH5
-         arbRL5LOov6KYZg1L0YOnbdutHQHdN/3YB0+CdNQ=
-Content-Type: text/plain; charset="utf-8"
+        s=default; t=1602718855;
+        bh=hGMXOP6gyJ3ATfZP4dASK21yvBlRFVKikz9hv7cwjL4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BkrTS3UVL3nP/Tk6tFF/qu3NynCLslI5YSvIIrlfnJsQHRkO+y/DwDtSOmADGGD3S
+         1F/MwHaQoriU7VtZtNWDfjQZNceFyPCiEtsG9nQqdMZIQMABrp/U3Qn0TZhFFRrVA4
+         BaA7b1I3Ti6VgGgy2a+k+hnen4vAUNshO/qtGHb0=
+Date:   Thu, 15 Oct 2020 01:40:53 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
+ task
+Message-ID: <20201014234053.GA86158@lothringen>
+References: <20201007180151.623061463@redhat.com>
+ <20201007180229.724302019@redhat.com>
+ <20201008122256.GW2628@hirez.programming.kicks-ass.net>
+ <20201008175409.GB14207@fuller.cnet>
+ <20201008195444.GB86389@lothringen>
+ <20201013171328.GA19284@fuller.cnet>
+ <20201014083321.GA2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201014140507.v3.3.Id0cc5d859e2422082a29a7909658932c857f5a81@changeid>
-References: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid> <20201014140507.v3.3.Id0cc5d859e2422082a29a7909658932c857f5a81@changeid>
-Subject: Re: [PATCH v3 3/3] clk: qcom: lpasscc-sc7180: Re-configure the PLL in case lost
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Taniya Das <tdas@codeaurora.org>, linux-soc@vger.kernel.org,
-        David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>
-Date:   Wed, 14 Oct 2020 16:39:36 -0700
-Message-ID: <160271877655.884498.7099344361539095621@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014083321.GA2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-10-14 14:05:23)
-> diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpa=
-sscorecc-sc7180.c
-> index 48d370e2108e..e12d4c2b1b70 100644
-> --- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-> +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-> @@ -388,6 +388,25 @@ static int lpass_create_pm_clks(struct platform_devi=
-ce *pdev)
->         return ret;
->  }
-> =20
-> +static int lpass_core_cc_pm_clk_resume(struct device *dev)
-> +{
-> +       struct regmap *regmap =3D dev_get_regmap(dev, "lpass_core_cc");
+On Wed, Oct 14, 2020 at 10:33:21AM +0200, Peter Zijlstra wrote:
+> On Tue, Oct 13, 2020 at 02:13:28PM -0300, Marcelo Tosatti wrote:
+> 
+> > > Yes but if the task isn't running, run_posix_cpu_timers() doesn't have
+> > > anything to elapse. So indeed we can spare the IPI if the task is not
+> > > running. Provided ordering makes sure that the task sees the new dependency
+> > > when it schedules in of course.
+> > 
+> > True.
+> > 
+> >  * p->on_cpu <- { 0, 1 }:
+> >  *
+> >  *   is set by prepare_task() and cleared by finish_task() such that it will be
+> >  *   set before p is scheduled-in and cleared after p is scheduled-out, both
+> >  *   under rq->lock. Non-zero indicates the task is running on its CPU.
+> > 
+> > 
+> > CPU-0 (tick_set_dep)            CPU-1 (task switch)
+> > 
+> > STORE p->tick_dep_mask
+> > smp_mb() (atomic_fetch_or())
+> > LOAD p->on_cpu
+> > 
+> > 
+> >                                 context_switch(prev, next)
+> >                                 STORE next->on_cpu = 1
+> >                                 ...                             [*]
+> > 
+> >                                 LOAD current->tick_dep_mask
+> > 
+> 
+> That load is in tick_nohz_task_switch() right? (which BTW is placed
+> completely wrong) You could easily do something like the below I
+> suppose.
+> 
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index 81632cd5e3b7..2a5fafe66bb0 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -410,6 +410,14 @@ void __tick_nohz_task_switch(void)
+>  	ts = this_cpu_ptr(&tick_cpu_sched);
+>  
+>  	if (ts->tick_stopped) {
+> +		/*
+> +		 * tick_set_dep()		(this)
+> +		 *
+> +		 * STORE p->tick_dep_mask	STORE p->on_cpu
+> +		 * smp_mb()			smp_mb()
+> +		 * LOAD p->on_cpu		LOAD p->tick_dep_mask
+> +		 */
+> +		smp_mb();
+>  		if (atomic_read(&current->tick_dep_mask) ||
+>  		    atomic_read(&current->signal->tick_dep_mask))
+>  			tick_nohz_full_kick();
 
-Please make "lpass_core_cc" a static const pointer in this driver so
-that it can be used here and when the regmap is made so that we're
-certain they match.
+It would then need to be unconditional (whatever value of ts->tick_stopped).
+Assuming the tick isn't stopped, we may well have an interrupt firing right
+after schedule() which doesn't see the new value of tick_dep_map.
 
-> +       unsigned int l_val;
-> +       int ret;
-> +
-> +       ret =3D pm_clk_resume(dev);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /* If PLL_L_VAL was cleared then we should re-init the whole PLL =
-*/
-> +       regmap_read(regmap, 0x1004, &l_val);
-> +       if (!l_val)
-> +               clk_fabia_pll_configure(&lpass_lpaaudio_dig_pll, regmap,
-> +                               &lpass_lpaaudio_dig_pll_config);
-> +
-> +       return 0;
-> +}
-> +
->  static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
->  {
->         const struct qcom_cc_desc *desc;
+Alternatively, we could rely on p->on_rq which is set to TASK_ON_RQ_QUEUED
+at wake up time, prior to the schedule() full barrier. Of course that doesn't
+mean that the task is actually the one running on the CPU but it's a good sign,
+considering that we are running in nohz_full mode and it's usually optimized
+for single task mode.
+
+Also setting a remote task's tick dependency is only used by posix cpu timer
+in case the user has the bad taste to enqueue on a task running in nohz_full
+mode. It shouldn't deserve an unconditional full barrier in the schedule path.
+
+If the target is current, as is used by RCU, I guess we can keep a special
+treatment.
+
+> re tick_nohz_task_switch() being placed wrong, it should probably be
+> placed before finish_lock_switch(). Something like so.
+> 
+> 
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index cf044580683c..5c92c959824f 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -4084,6 +4084,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+>  	vtime_task_switch(prev);
+>  	perf_event_task_sched_in(prev, current);
+>  	finish_task(prev);
+> +	tick_nohz_task_switch();
+>  	finish_lock_switch(rq);
+>  	finish_arch_post_lock_switch();
+>  	kcov_finish_switch(current);
+> @@ -4121,7 +4122,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+>  		put_task_struct_rcu_user(prev);
+>  	}
+>  
+> -	tick_nohz_task_switch();
+
+IIRC, we wanted to keep it outside rq lock because it shouldn't it...
