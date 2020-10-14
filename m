@@ -2,407 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EF028DEE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D0728DEF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgJNKZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:25:56 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:46879 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgJNKZz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:25:55 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 154E5E000A;
-        Wed, 14 Oct 2020 10:25:51 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 12:29:53 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        linux-renesas-soc@vger.kernel.org, geert+renesas@glider.be,
-        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] arm64: dts: r8a779a0: Add VIN nodes
-Message-ID: <20201014102953.htcub73fxzyti6gn@uno.localdomain>
-References: <20201014094443.11070-1-jacopo+renesas@jmondi.org>
- <20201014094443.11070-7-jacopo+renesas@jmondi.org>
- <20201014101950.6imj3hql3cjb6fsv@oden.dyn.berto.se>
+        id S1729550AbgJNKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727381AbgJNKdl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 06:33:41 -0400
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9666120878;
+        Wed, 14 Oct 2020 10:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602671619;
+        bh=YTNSXcW0k5VpGDP+ALIpIyuW3iLRTmD54rqCQ1oyiyA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sBHnz1yyxbvpzxpccOns8mp5Of03gj29/RNRo3g82Ev+clfKBrk3KB5XrR8yt+GLl
+         pmdEOB8h3WOAsY4KGNHM6cEFI07KwBf89dw+Gj6iqzCXZZziXMohhgdikBTZ5zGwnn
+         ltFgloehCf+cN94VB8NVLy20CDewVMaT7n7srMMg=
+Received: by mail-ej1-f45.google.com with SMTP id p5so1298911ejj.2;
+        Wed, 14 Oct 2020 03:33:39 -0700 (PDT)
+X-Gm-Message-State: AOAM532KgEJ3XGCmU0xda99mxHtSh9lVBBIHW/Ul6I67ftqQ/f3WdKhW
+        YIcsf1kxnY5J9Tuqh6EyMMIdczSlsoucu0rJis0=
+X-Google-Smtp-Source: ABdhPJxZBjfPkS/DAl69mvwOwG4fxUYT0dQEW6rrgGKRXDR2yPgf5o4BRFNdNiVveb84vPHaKXSGoZA2E31iHMoZKKE=
+X-Received: by 2002:a17:906:1a11:: with SMTP id i17mr4430823ejf.381.1602671617348;
+ Wed, 14 Oct 2020 03:33:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201014101950.6imj3hql3cjb6fsv@oden.dyn.berto.se>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru> <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Wed, 14 Oct 2020 12:33:25 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeErocR5-3xCDqBR3-k3w_2EQ_768d71n229cbzeo4TtQ@mail.gmail.com>
+Message-ID: <CAJKOXPeErocR5-3xCDqBR3-k3w_2EQ_768d71n229cbzeo4TtQ@mail.gmail.com>
+Subject: Re: [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, linux-omap@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Niklas,
-
-On Wed, Oct 14, 2020 at 12:19:50PM +0200, Niklas Söderlund wrote:
-> Hi Jacopo,
+On Wed, 14 Oct 2020 at 12:23, Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
 >
-> Thanks for your work.
+> In accordance with the DWC USB3 bindings the corresponding node name is
+> suppose to comply with Generic USB HCD DT schema, which requires the USB
+> nodes to have the name acceptable by the regexp: "^usb(@.*)?" . But a lot
+> of the DWC USB3-compatible nodes defined in the ARM/ARM64 DTS files have
+> name as "^dwc3@.*" or "^usb[1-3]@.*" or even "^dwusb@.*", which will cause
+> the dtbs_check procedure failure. Let's fix the nodes naming to be
+> compatible with the DWC USB3 DT schema to make dtbs_check happy.
 >
-> On 2020-10-14 11:44:43 +0200, Jacopo Mondi wrote:
-> > Add VIN nodes to R8A779A0 R-Car V3U SoC.
-> >
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > ---
-> >  arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 320 ++++++++++++++++++++++
-> >  1 file changed, 320 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> > index 83962ad30a1d..bc81e6a761d3 100644
-> > --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> > +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> > @@ -105,6 +105,326 @@ scif0: serial@e6e60000 {
-> >  			status = "disabled";
-> >  		};
-> >
-> > +		vin0: video@e6ef0000 {
-> > +			compatible = "renesas,vin-r8a779a0";
+> Note we don't change the DWC USB3-compatible nodes names of
+> arch/arm64/boot/dts/apm/{apm-storm.dtsi,apm-shadowcat.dtsi} since the
+> in-source comment says that the nodes name need to be preserved as
+> "^dwusb@.*" for some backward compatibility.
 >
-> How is this tested? There is no driver support and the schema you added
-
-Compile tested as specified in the cover letter
-
-> the compat string to mandates the 'renesas,id' property for the vin
-
-I was sure 'renesas,id' was BSP stuff 0_0
-
-> nodes. As far as I can tell the reason for this id is gone with the new
-> pipeline of the V3U. So I guess as long as we don't break dtschema
-> validation all is good, just wanted to make sure ;-)
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 >
-
-Do you think we should limit adding CPG clock entries only ?
-
-> > +			reg = <0 0xe6ef0000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 730>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 730>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin1: video@e6ef1000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef1000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 731>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 731>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin2: video@e6ef2000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef2000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 800>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 800>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin3: video@e6ef3000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef3000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 801>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 801>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin4: video@e6ef4000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef4000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 802>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 802>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin5: video@e6ef5000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef5000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 165 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 803>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 803>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin6: video@e6ef6000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef6000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 804>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 804>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin7: video@e6ef7000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef7000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 805>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 805>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin8: video@e6ef8000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef8000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 806>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 806>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin9: video@e6ef9000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ef9000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 807>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 807>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin10: video@e6efa000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6efa000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 808>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 808>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin11: video@e6efb000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6efb000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 809>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 809>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin12: video@e6efc000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6efc000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 172 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 810>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 810>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin13: video@e6efd000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6efd000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 811>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 811>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin14: video@e6efe000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6efe000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 812>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 812>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin15: video@e6eff000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6eff000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 813>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 813>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin16: video@e6ed0000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed0000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 814>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 814>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin17: video@e6ed1000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed1000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 815>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 815>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin18: video@e6ed2000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed2000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 816>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 816>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin19: video@e6ed3000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed3000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 179 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 817>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 817>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin20: video@e6ed4000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed4000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 818>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 818>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin21: video@e6ed5000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed5000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 819>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 819>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin22: video@e6ed6000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed6000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 820>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 820>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin23: video@e6ed7000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed7000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 821>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 821>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin24: video@e6ed8000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed8000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 822>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 822>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin25: video@e6ed9000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ed9000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 185 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 823>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 823>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin26: video@e6eda000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6eda000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 824>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 824>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin27: video@e6edb000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6edb000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 825>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 825>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin28: video@e6edc000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6edc000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 826>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 826>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin29: video@e6edd000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6edd000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 827>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 827>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin30: video@e6ede000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6ede000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 828>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 828>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> > +		vin31: video@e6edf000 {
-> > +			compatible = "renesas,vin-r8a779a0";
-> > +			reg = <0 0xe6edf000 0 0x1000>;
-> > +			interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>;
-> > +			clocks = <&cpg CPG_MOD 829>;
-> > +			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> > +			resets = <&cpg 829>;
-> > +			status = "disabled";
-> > +		};
-> > +
-> >  		csi40: csi2@feaa0000 {
-> >  			compatible = "renesas,r8a779a0-csi2";
-> >  			reg = <0 0xfeaa0000 0 0x10000>;
-> > --
-> > 2.28.0
-> >
+> ---
 >
-> --
-> Regards,
-> Niklas Söderlund
+> Please, test the patch out to make sure it doesn't brake the dependent DTS
+> files. I did only a manual grepping of the possible nodes dependencies.
+
+1. It is you who should compare the decompiled DTS, not us. For example:
+$ for i in dts-old/*/*dtb dts-old/*/*/*dtb; do echo $i; crosc64
+scripts/dtc/dtx_diff ${i} dts-new/${i#dts-old/} ; done
+
+$ for i in dts-old/*/*dtb dts-old/*/*/*dtb; do echo $i; crosc64
+fdtdump ${i} > ${i}.fdt ; crosc64 fdtdump dts-new/${i#dts-old/} >
+dts-new/${i#dts-old/}.fdt ; diff -ubB ${i}.fdt
+dts-new/${i#dts-old/}.fdt ; done
+
+2. Split it per arm architectures (and proper subject prefix - not
+"arch") and subarchitectures so maintainers can pick it up.
+
+3. The subject title could be more accurate - there is no fix here
+because there was no errors in the first place. Requirement of DWC
+node names comes recently, so it is more alignment with dtschema.
+Otherwise automatic-pickup-stable-bot might want to pick up... and it
+should not go to stable.
+
+Best regards,
+Krzysztof
+
+>  arch/arm/boot/dts/armada-375.dtsi              | 2 +-
+>  arch/arm/boot/dts/exynos5250.dtsi              | 2 +-
+>  arch/arm/boot/dts/exynos54xx.dtsi              | 4 ++--
+>  arch/arm/boot/dts/keystone-k2e.dtsi            | 4 ++--
+>  arch/arm/boot/dts/keystone.dtsi                | 2 +-
+>  arch/arm/boot/dts/ls1021a.dtsi                 | 2 +-
+>  arch/arm/boot/dts/omap5-l4.dtsi                | 2 +-
+>  arch/arm/boot/dts/stih407-family.dtsi          | 2 +-
+>  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi   | 2 +-
+>  arch/arm64/boot/dts/exynos/exynos5433.dtsi     | 4 ++--
+>  arch/arm64/boot/dts/exynos/exynos7.dtsi        | 2 +-
+>  arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi | 4 ++--
+>  arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi | 6 +++---
+>  arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 4 ++--
+>  arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 4 ++--
+>  arch/arm64/boot/dts/hisilicon/hi3660.dtsi      | 2 +-
+>  arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi   | 4 ++--
+>  arch/arm64/boot/dts/qcom/ipq8074.dtsi          | 4 ++--
+>  arch/arm64/boot/dts/qcom/msm8996.dtsi          | 4 ++--
+>  arch/arm64/boot/dts/qcom/msm8998.dtsi          | 2 +-
+>  arch/arm64/boot/dts/qcom/qcs404-evb.dtsi       | 2 +-
+>  arch/arm64/boot/dts/qcom/qcs404.dtsi           | 4 ++--
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi           | 2 +-
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi           | 4 ++--
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi           | 2 +-
+>  25 files changed, 38 insertions(+), 38 deletions(-)
+>
