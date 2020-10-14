@@ -2,204 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F131528DE3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CCE28DE40
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgJNKFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgJNKFJ (ORCPT
+        id S1728862AbgJNKF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:05:28 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:59969 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgJNKF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:05:09 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9573C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:05:08 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1kSdeZ-0000dn-0O; Wed, 14 Oct 2020 12:05:03 +0200
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1kSdeX-0003j6-Tf; Wed, 14 Oct 2020 12:05:01 +0200
-Date:   Wed, 14 Oct 2020 12:05:01 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 3/3] ARM: dts: add Van der Laan LANMCU board
-Message-ID: <20201014100501.djbfqzdeodowm4ov@pengutronix.de>
-References: <20201014085316.11916-1-o.rempel@pengutronix.de>
- <20201014085316.11916-3-o.rempel@pengutronix.de>
+        Wed, 14 Oct 2020 06:05:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1602669927; x=1634205927;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/I29CF5iiGyCnWFjnsZ+qI0s1CCYcoxLMpCKAkfIwK8=;
+  b=17tTkvGKmsENgAYQ6dqi06EuoaGuJYYHa0DaSm4wUJrNZBqCreeO9Pbx
+   Jv8N408Zh/uXKL5nFytCAoRwPuYFXi6EglEXKDwGUNiz4PgY7lF6tD4Tr
+   VWL3hs1bclUi6aU1LgAt68T3w2pfuwc8f24yDO1+7CnurdjnuMwUMvpt6
+   XzlzGkw93YwBZtCweYD3TK+UpJ8MzL4lxBHAwtAZaNWo8J6LcVDBFo0Xf
+   9gD54S0B3BbgeTgVlcF8z/kfAU0ElpM/Aefhfu6NRt2cAHkZWhrUdZJO0
+   BZvtCI3c0cBT4gPbKkp/OshQj7tPmLkUkKNhK35zjQLNNMtzfCHZghzM4
+   w==;
+IronPort-SDR: tnF6QV0/DD3E5rXwl2uEU0fwMGFFDTFSAeYdGzoEPLeC1dzPweoDYKNhJ5d/WB2qPIanffDNGR
+ aWOSO4jZIG5Hob7rjrEyv0AegexhaXgdSNZONGQ9EpNPaMTY6T7/S2th39NOKuuEHDmKpwxiTp
+ JPDkjF8oS12mUQfN6MH8lsl2I79QQAVw9F3vDMcFJhVU7/Jr9ovDQLuuAYweT+obHD/8ZdCel2
+ LwXTzVFkqvuVLdCpHiVmWN2dPQPwjM1Xef8Dos+0D/rHPY7LE6L31JhCU4PmXPQ7SgNZmVpj++
+ 08E=
+X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
+   d="scan'208";a="29850498"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Oct 2020 03:05:26 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 14 Oct 2020 03:05:26 -0700
+Received: from soft-dev10.microsemi.net (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 14 Oct 2020 03:05:24 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v6 0/3] Adding support for Microchip/Microsemi serial GPIO controller
+Date:   Wed, 14 Oct 2020 12:05:12 +0200
+Message-ID: <20201014100515.2728584-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014085316.11916-3-o.rempel@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 11:54:21 up 334 days,  1:12, 373 users,  load average: 0.07, 0.16,
- 0.12
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij,
+The series add support for the serial GPIO controller used by
+Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
 
-pls can you send a patch adding this board to:
-Documentation/devicetree/bindings/arm/fsl.yaml
+v6 changes:
 
-infront of this patch?
+- Use "bus-frequency" instead of "microchip,sgpio-frequency". Drop
+  '$ref'. (Robh)
+- Added "ngpios" description, bumped minimum to 32. (Linus)
+- Added "#size-cells" description. (Linus)
+- Changed "bus-frequency" validation in driver to reflect the YAML
+  description.
 
-On 20-10-14 10:53, Oleksij Rempel wrote:
-> Van der Laan LANMCU is a module for the food storage rooms to control
-> proper gas composition.
-> 
-> Co-Developed-by: Robin van der Gracht <robin@protonic.nl>
-> Signed-off-by: Robin van der Gracht <robin@protonic.nl>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  arch/arm/boot/dts/Makefile          |   1 +
->  arch/arm/boot/dts/imx6dl-lanmcu.dts | 468 ++++++++++++++++++++++++++++
->  2 files changed, 469 insertions(+)
->  create mode 100644 arch/arm/boot/dts/imx6dl-lanmcu.dts
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 2289a28c0ff6..dc2543a7b7e9 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -447,6 +447,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
->  	imx6dl-icore.dtb \
->  	imx6dl-icore-mipi.dtb \
->  	imx6dl-icore-rqs.dtb \
-> +	imx6dl-lanmcu.dtb \
->  	imx6dl-mamoj.dtb \
->  	imx6dl-nit6xlite.dtb \
->  	imx6dl-nitrogen6x.dtb \
-> diff --git a/arch/arm/boot/dts/imx6dl-lanmcu.dts b/arch/arm/boot/dts/imx6dl-lanmcu.dts
-> new file mode 100644
-> index 000000000000..60336c972286
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx6dl-lanmcu.dts
-> @@ -0,0 +1,468 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (c) 2019 Protonic Holland
-> + * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-> + */
-> +
-> +/dts-v1/;
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/leds/common.h>
-> +#include "imx6dl.dtsi"
-> +
-> +/ {
+v5 changes (driver comments from Linus):
+- Collect bank data in sgpio_bank struct
+- Add is_input boolean to sgpio_bank struct
+- Use single-bit bitmasks in sgpio_output_set() and sgpio_output_get()
+- Eliminate superfluous struct pinctrl_dev *pctl_dev in bank data
+- Fix wrong ngpio consistency check
 
-...
+v4 changes (binding comments from Rob):
+- microchip,sgpio-port-ranges changed to uint32-matrix so tuples can
+  be represented properly.
+- gpio controller node name changed to "gpio@[0-1]"
+- whitespace fixes
+- DT files updated as per schema changes
 
-> +&fec {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_enet>;
-> +	phy-mode = "rmii";
-> +	clocks = <&clks IMX6QDL_CLK_ENET>,
-> +		 <&clks IMX6QDL_CLK_ENET>,
-> +		 <&clock_ksz8081>;
-> +	clock-names = "ipg", "ahb", "ptp";
-> +	status = "okay";
-> +
-> +	mdio {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		/* Microchip KSZ8081RNA PHY */
-> +		rgmii_phy: ethernet-phy@0 {
+v3 changes:
+- Renamed all usage of "mchp" abbrevation with "microchip".
+- Split the in/output directions into (two) separate banks.
+- Eliminated the bindings include file (from above)
+- Changed SPDX license to "GPL-2.0-or-later"
+- Change -ENOTSUPP to -EOPNOTSUPP
+- Minor type/symbol naming changes
 
-Do you need this phandle here?
+v2 changes:
+- Adds both in and output modes.
+- Use direct adressing of the individual banks (#gpio-cells = <4>),
+  also osoleting need for addressing macros in bindings include file.
+- Property 'microchip,sgpio-ports' (uint32, bitmask) replaced by
+  proper range set (array of [start,end]) 'microchip,sgpio-port-ranges'.
+- Fixes whitespace issues in Kconfig file
 
-> +			reg = <0>;
-> +			interrupts-extended = <&gpio5 23 IRQ_TYPE_LEVEL_LOW>;
-> +			reset-gpios = <&gpio5 22 GPIO_ACTIVE_LOW>;
-> +			reset-assert-us = <10000>;
-> +			reset-deassert-us = <300>;
-> +		};
-> +	};
-> +};
+Lars Povlsen (3):
+  dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
+  pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi
+    Serial GPIO
+  arm64: dts: sparx5: Add SGPIO devices
 
-...
+Lars Povlsen (3):
+  dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
+  pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi
+    Serial GPIO
+  arm64: dts: sparx5: Add SGPIO devices
 
-> +&i2c3 {
-> +	clock-frequency = <100000>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2c3>;
-> +	status = "okay";
-> +
-> +	edt-ft5406@38 {
+ .../pinctrl/microchip,sparx5-sgpio.yaml       | 145 ++++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  91 +++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |   5 +
+ .../dts/microchip/sparx5_pcb134_board.dtsi    | 258 +++++++
+ .../dts/microchip/sparx5_pcb135_board.dtsi    |  55 ++
+ drivers/pinctrl/Kconfig                       |  18 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-microchip-sgpio.c     | 667 ++++++++++++++++++
+ 9 files changed, 1241 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-microchip-sgpio.c
 
-Please use generic names like: touchscreen@38 or touchcontroller@38.
-
-> +		compatible = "edt,edt-ft5406";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_ts_edt>;
-> +		reg = <0x38>;
-
-reg should be 2nd entry.
-
-> +		interrupts-extended = <&gpio3 20 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		touchscreen-size-x = <1792>;
-> +		touchscreen-size-y = <1024>;
-> +
-> +		touchscreen-fuzz-x = <0>;
-> +		touchscreen-fuzz-y = <0>;
-> +
-> +		/* Touch screen calibration */
-> +		threshold = <50>;
-> +		gain = <5>;
-> +		offset = <10>;
-> +	};
-> +
-> +	rtc@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +	};
-> +};
-
-...
-
-> +&usdhc2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc2>;
-> +	no-1-8-v;
-> +	non-removable;
-> +	mmc-pwrseq = <&usdhc2_wifi_pwrseq>;
-> +	status = "okay";
-
-status is always the last property of this list.
-
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	brcmf: bcrmf@1 {
-> +		reg = <1>;
-> +		compatible = "brcm,bcm4329-fmac";
-> +	};
-> +};
-
-Regards,
-  Marco
+--
+2.25.1
