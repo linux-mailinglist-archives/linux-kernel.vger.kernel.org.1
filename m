@@ -2,594 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903D928DBE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90CA28DBB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729977AbgJNIpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:45:12 -0400
-Received: from aclms1.advantech.com.tw ([61.58.41.199]:27863 "EHLO
-        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728821AbgJNIpI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:45:08 -0400
-X-Greylist: delayed 611 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Oct 2020 04:44:41 EDT
-Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te234608d54ac14014b1418@ACLMS1.advantech.com.tw>;
- Wed, 14 Oct 2020 16:35:51 +0800
-Received: from localhost (172.16.12.104) by taipei09.ADVANTECH.CORP
- (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 14 Oct
- 2020 16:35:51 +0800
-From:   Shihlun Lin <shihlun.lin@advantech.com.tw>
-To:     Lee Jones <lee.jones@linaro.org>, <linux-kernel@vger.kernel.org>,
-        Campion Kang <campion.kang@advantech.com.tw>,
-        Shihlun Lin <shihlun.lin@advantech.com.tw>,
-        AceLan Kao <chia-lin.kao@canonical.com>
-Subject: [PATCH 3/3] mfd: ahc1ec0-wdt: Add sub-device watchdog for Advantech embedded controller
-Date:   Wed, 14 Oct 2020 16:35:49 +0800
-Message-ID: <20201014083549.25465-3-shihlun.lin@advantech.com.tw>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201014083549.25465-1-shihlun.lin@advantech.com.tw>
-References: <20201014083549.25465-1-shihlun.lin@advantech.com.tw>
+        id S1729401AbgJNIhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:37:10 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49652 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727014AbgJNIhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:37:09 -0400
+IronPort-SDR: 7S5NZgcP+wfUtwT973OLy528SJvFRdCi8KzeM/o1PZOKUp4+iT4APwtpRtnj+lhTl71fU7zPv7
+ oq/foxQB6SCg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="230236294"
+X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
+   d="scan'208";a="230236294"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 01:37:08 -0700
+IronPort-SDR: zd5s9PkDLaxUNWLaceK5JHt1x7VRcFUGfG3MILkDTqVf6bt8/0UA0LtPrccgFgys5IbY5Zr3ny
+ S3a3iqzhT2Tg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
+   d="scan'208";a="318589996"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.47]) ([10.239.154.47])
+  by orsmga006.jf.intel.com with ESMTP; 14 Oct 2020 01:37:04 -0700
+Subject: Re: [PATCH v3] i2c: virtio: add a virtio i2c frontend driver
+To:     Jason Wang <jasowang@redhat.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>
+References: <1350309657ab0c7b9f97e7a5c71d084f88caa549.1600743079.git.jie.deng@intel.com>
+ <958b69c3-0321-d5cb-4c12-702795925583@redhat.com>
+ <2dc4bd12-9f23-7caa-b1ec-f3403d36e065@intel.com>
+ <83529dac-7b87-aec9-55f0-85face47e7b6@redhat.com>
+ <b1cad8f9-67c4-dbb7-6edc-66be2f6ba08f@intel.com>
+ <9be8c60c-a111-5de7-3551-93f03ecda445@redhat.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <3c648e84-3c29-2cfe-65e2-eb377feb67b2@intel.com>
+Date:   Wed, 14 Oct 2020 16:37:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.12.104]
-X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
- taipei09.ADVANTECH.CORP (172.20.0.236)
-X-StopIT: No
+In-Reply-To: <9be8c60c-a111-5de7-3551-93f03ecda445@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is one of sub-device driver for Advantech embedded controller
-AHC1EC0. This driver provide watchdog functionality for Advantech
-related applications to restart the system.
 
-Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
----
- drivers/mfd/Kconfig       |   4 +
- drivers/mfd/Makefile      |   3 +-
- drivers/mfd/ahc1ec0-wdt.c | 506 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 512 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mfd/ahc1ec0-wdt.c
+On 2020/10/13 16:00, Jason Wang wrote:
+>
+>>>>>> +
+>>>>>> +        virtqueue_kick(vq);
+>>>>>> +
+>>>>>> +        time_left = wait_for_completion_timeout(&vi->completion, 
+>>>>>> adap->timeout);
+>>>>>> +        if (!time_left) {
+>>>>>> +            dev_err(&adap->dev, "msg[%d]: addr=0x%x timeout.\n", 
+>>>>>> i, msgs[i].addr);
+>>>>>> +            break;
+>>>>>> +        }
+>>>>>
+>>>>>
+>>>>> You don't set error number here. Is this intended?
+>>>>>
+>>>>> And using a timeout here is not good, and if the request is 
+>>>>> finished just after the timeout, in the next xfer you may hit the 
+>>>>> following check.
+>>>>>
+>>>>> It's better to use either interrupt here.
+>>>>>
+>>>> Could you check the I2C drivers in the kernel ? The 
+>>>> "wait_for_completion_timeout" mechanism
+>>>> is commonly used by I2C bus drivers in their 
+>>>> i2c_algorithm.master_xfer.
+>>>
+>>>
+>>> There's a major difference between virtio-i2c and other drivers. In 
+>>> the case of virtio, the device could be a software device emulated 
+>>> by a remote process. This means the timeout might not be rare.
+>>>
+>>> I don't see how timeout is properly handled in this patch (e.g did 
+>>> you notice that you don't set any error when timeout? or is this 
+>>> intended?)
+>>>
+>> The backend software may operate the physical device. The timeout 
+>> depends on how the backend is designed.
+>> Here if the timeout happens, it will return the actual number of 
+>> messages successfully processed to the I2C core.
+>> Let the I2C core decides how to do next.
+>
+>
+> So let's consider the following case:
+>
+> 1) driver:virtio_i2c_add_msg(msgA)
+> 2) driver:timeout, and return to I2C core
+> 3) driver:virtio_i2c_add_msg(msgB)
+> 4) device: complete msgA
+> 5) driver: virtqueue_get_buf() returns msgA, since the token is always 
+> vi->vmsg, the driver may think msgB has been completed.
+>
+>
+If this case does happen, it is exactly a case that the condition 
+"((!vmsg) || (vmsg != &vi->vmsg))" are met.
+Currently, the timeout value is hard-coded in the driver. Generally 
+speaking, timeout rarely happens.
+It can also be designed as a device configuration if needed.
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 4945638ca6cb..662285afb42f 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -2135,5 +2135,9 @@ config MFD_AHC1EC0_HWMON
- 	  driver provides the sysfs attribues for applications to monitor
- 	  the system status.
- 
-+config MFD_AHC1EC0_WDT
-+	tristate "Advantech EC Watchdog Function"
-+	depends on MFD_AHC1EC0
-+
- endmenu
- endif
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 46168ac64903..d5ce7e7eaf21 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -265,5 +265,6 @@ obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
- 
- obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
- 
--obj-$(CONFIG_MFD_AHC1EC0) 	+= ahc1ec0.o
-+obj-$(CONFIG_MFD_AHC1EC0)	+= ahc1ec0.o
- obj-$(CONFIG_MFD_AHC1EC0_HWMON)	+= ahc1ec0-hwmon.o
-+obj-$(CONFIG_MFD_AHC1EC0_WDT)	+= ahc1ec0-wdt.o
-diff --git a/drivers/mfd/ahc1ec0-wdt.c b/drivers/mfd/ahc1ec0-wdt.c
-new file mode 100644
-index 000000000000..d4554520c7ca
---- /dev/null
-+++ b/drivers/mfd/ahc1ec0-wdt.c
-@@ -0,0 +1,506 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*****************************************************************************
-+ *                 Copyright (c) 2018, Advantech Automation Corp.
-+ *     THIS IS AN UNPUBLISHED WORK CONTAINING CONFIDENTIAL AND PROPRIETARY
-+ *              INFORMATION WHICH IS THE PROPERTY OF ADVANTECH AUTOMATION CORP.
-+ *
-+ *   ANY DISCLOSURE, USE, OR REPRODUCTION, WITHOUT WRITTEN AUTHORIZATION FROM
-+ *              ADVANTECH AUTOMATION CORP., IS STRICTLY PROHIBITED.
-+ *****************************************************************************
-+ *
-+ * File:        ahc1ec0-wdt.c
-+ * Version:     1.00  <10/10/2014>
-+ * Author:      Sun.Lang
-+ *
-+ * Description: The ahc1ec0-wdt is driver for controlling EC watchdog.
-+ *
-+ *
-+ * Status:      working
-+ *
-+ * Change Log:
-+ *              Version 1.00 <10/10/2014> Sun.Lang
-+ *              - Initial version
-+ *              Version 1.01 <12/30/2015> Jiangwei.Zhu
-+ *              - Modify adv_watchdog_init function to install the driver to
-+ *              - the support devices.
-+ *              Version 1.02 <03/04/2016> Jiangwei.Zhu
-+ *              - Support UNO-1372G-E3AE, TPC-1782H-433AE, APAX-5580-433AE
-+ *              Version 1.03 <05/09/2016> Ji.Xu
-+ *              - Support EC watchdog mini-board on UNO-3083G/3085G-D44E/D64E
-+ *              - APAX-5580-473AE/4C3AE.
-+ *              - Modify the timeout unit to 1 second.
-+ *              - Modify the device name check method to fuzzy matching.
-+ *              Version 1.04 <06/28/2017> Ji.Xu
-+ *              - Support EC UNO-2271G-E2xAE.
-+ *              - Support EC UNO-2271G-E02xAE.
-+ *              - Support EC UNO-2473G-JxAE.
-+ *              - Support proc filesystem.
-+ *              Version 1.05 <09/20/2017> Ji.Xu
-+ *              - Support EC UNO-2484G-633xAE.
-+ *              - Support EC UNO-2484G-653xAE.
-+ *              - Support EC UNO-2484G-673xAE.
-+ *              - Support EC UNO-2484G-733xAE.
-+ *              - Support EC UNO-2484G-753xAE.
-+ *              - Support EC UNO-2484G-773xAE.
-+ *              Version 1.06 <10/26/2017> Ji.Xu
-+ *              - Support EC UNO-3283G-674AE
-+ *              - Support EC UNO-3285G-674AE
-+ *              Version 1.07 <11/16/2017> Zhang.Yang
-+ *              - Support EC UNO-1372G-J021AE/J031AE
-+ *              - Support EC UNO-2372G
-+ *              Version 1.08 <02/02/2018> Ji.Xu
-+ *              - Support EC TPC-B500-6??AE
-+ *              - Support EC TPC-5???T-6??AE
-+ *              - Support EC TPC-5???W-6??AE
-+ *              Version 1.09 <03/20/2018> Ji.Xu
-+ *              - Support for compiling in kernel-4.10 and below.
-+ *              Version 1.10 <02/20/2019> Ji.Xu
-+ *              - Support EC UNO-420
-+ *              - Support EC TPC-B200-???AE
-+ *              - Support EC TPC-2???T-???AE
-+ *              - Support EC TPC-2???W-???AE
-+ *              Version 1.11 <08/30/2019> Yao.Kang
-+ *				- Support 32-bit programs on 64-bit kernel
-+ *              Version 1.12 <12/03/2019> Jianfeng.dai
-+ *				- Support support UNO-2372G watchdog
-+ *              Version 1.13 <04/24/2020> Yao.Kang
-+ *				- Support support UNO-2473G
-+ ******************************************************************************/
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/errno.h>
-+#include <linux/kernel.h>
-+#include <linux/miscdevice.h>
-+#include <linux/watchdog.h>
-+#include <linux/ioport.h>
-+#include <linux/fcntl.h>
-+#include <linux/version.h>
-+#include <linux/ioctl.h>
-+#include <linux/io.h>
-+#include <linux/uaccess.h>
-+#include <linux/uaccess.h>
-+#include <asm/switch_to.h>
-+#include <linux/platform_device.h>
-+#include <linux/notifier.h>
-+#include <linux/reboot.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/mfd/ahc1ec0.h>
-+#include <linux/seq_file.h>
-+#include <linux/proc_fs.h>
-+
-+#define ADVANTECH_EC_WDT_VER        "1.12"
-+#define ADVANTECH_EC_WDT_DATE       "04/24/2020"
-+
-+#define PROCFS_MAX_SIZE     128
-+
-+static char adv_expect_close;
-+static unsigned long advwdt_is_open;
-+static unsigned short timeout = 450;
-+static unsigned int major;
-+struct mutex lock_ioctl;
-+
-+struct adv_wdt_info {
-+	unsigned char chip_name[32];
-+	unsigned char is_enable[8];
-+	unsigned long current_timeout;
-+};
-+
-+static struct adv_wdt_info wdt_data = {
-+	.chip_name = "Advantech Embedded Controller",
-+	.is_enable = "No",
-+	.current_timeout = 45,
-+};
-+
-+static int wdt_proc_read(struct seq_file *m, void *p);
-+
-+static void *c_start(struct seq_file *m, loff_t *pos)
-+{
-+	return *pos < 1 ? (void *)1 : NULL;
-+}
-+
-+static void *c_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	++*pos;
-+	return NULL;
-+}
-+
-+static void c_stop(struct seq_file *m, void *v)
-+{
-+	/*nothing to do*/
-+}
-+
-+static int c_show(struct seq_file *m, void *p)
-+{
-+	wdt_proc_read(m, p);
-+	return 0;
-+}
-+
-+static const struct seq_operations proc_seq_ops = {
-+	.show  = c_show,
-+	.start = c_start,
-+	.next  = c_next,
-+	.stop  = c_stop
-+};
-+
-+static int wdt_proc_open(struct inode *inode, struct file *file)
-+{
-+	int ret;
-+	struct seq_file *m;
-+
-+	ret = seq_open(file, &proc_seq_ops);
-+	m = file->private_data;
-+	m->private = file->f_path.dentry->d_iname;
-+
-+	return ret;
-+}
-+
-+static int wdt_proc_read(struct seq_file *m, void *p)
-+{
-+	unsigned char *name, *chip_name, *is_enable;
-+	unsigned long current_timeout = 0;
-+
-+	name = m->private;
-+
-+	chip_name = wdt_data.chip_name;
-+	current_timeout = wdt_data.current_timeout;
-+	is_enable = wdt_data.is_enable;
-+
-+	seq_printf(m, "name       : %s\n", chip_name);
-+	seq_printf(m, "timeout    : %ld\n", current_timeout);
-+	seq_printf(m, "is_enable  : %s\n", is_enable);
-+
-+	return 0;
-+}
-+
-+static const struct proc_ops fops = {
-+	.proc_open  = wdt_proc_open,
-+	.proc_read  = seq_read,
-+};
-+
-+static int wdt_create_proc(char *name)
-+{
-+	struct proc_dir_entry *wdt_proc_entries;
-+	unsigned char proc_name[64] = {0};
-+
-+	sprintf(proc_name, "%s", name);
-+
-+	wdt_proc_entries = proc_create(proc_name, 0644, NULL, &fops);
-+	if (wdt_proc_entries == NULL) {
-+		remove_proc_entry(proc_name, NULL);
-+		pr_err("Error: Could not initialize /proc/%s", proc_name);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+static void wdt_remove_proc(char *name)
-+{
-+	unsigned char proc_name[64] = {0};
-+
-+	sprintf(proc_name, "%s", name);
-+	remove_proc_entry(proc_name, NULL);
-+}
-+
-+static int set_delay(unsigned short delay_timeout)
-+{
-+	if (write_hw_ram(EC_RESET_DELAY_TIME_L, delay_timeout & 0x00FF)) {
-+		pr_err("Failed to set Watchdog Retset Time Low byte.");
-+		return -EINVAL;
-+	}
-+
-+	if (write_hw_ram(EC_RESET_DELAY_TIME_H, (delay_timeout & 0xFF00) >> 8)) {
-+		pr_err("Failed to set Watchdog Retset Time Hight byte.");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int advwdt_set_heartbeat(unsigned long t)
-+{
-+	if (t < 1 || t > 6553)
-+		return -EINVAL;
-+
-+	timeout = (t * 10);
-+
-+	return 0;
-+}
-+
-+static long advwdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	unsigned long new_timeout;
-+	void __user *argp = (void __user *)arg;
-+	int __user *p = argp;
-+	int options;
-+	static struct watchdog_info ident = {
-+		.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT | WDIOF_MAGICCLOSE,
-+		.firmware_version = 0,
-+		.identity = "Advantech WDT"
-+	};
-+
-+	mutex_lock(&lock_ioctl);
-+	if (advwdt_is_open < 1) {
-+		pr_err("watchdog does not open.");
-+		mutex_unlock(&lock_ioctl);
-+		return -1;
-+	}
-+
-+	switch (cmd) {
-+	case WDIOC_GETSUPPORT:
-+		if (copy_to_user(argp, &ident, sizeof(ident))) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+		break;
-+
-+	case WDIOC_GETSTATUS:
-+	case WDIOC_GETBOOTSTATUS:
-+		mutex_unlock(&lock_ioctl);
-+		return put_user(0, p);
-+
-+	case WDIOC_KEEPALIVE:
-+		if (write_hwram_command(EC_WDT_RESET)) {
-+			pr_err("Failed to set Watchdog reset.");
-+			return -EINVAL;
-+		}
-+		break;
-+
-+	case WDIOC_SETTIMEOUT:
-+		if (get_user(new_timeout, (unsigned long *)arg)) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+
-+		if (advwdt_set_heartbeat(new_timeout)) {
-+			pr_err("Advantch WDT: the input timeout is out of range.");
-+			pr_err("Please choose valid data between 1 ~ 6553.");
-+			mutex_unlock(&lock_ioctl);
-+			return -EINVAL;
-+		}
-+
-+		if (set_delay((unsigned short)(timeout - 1))) {
-+			pr_err("Failed to set Watchdog delay.");
-+			return -EINVAL;
-+		}
-+
-+		if (write_hwram_command(EC_WDT_START)) {
-+			pr_err("Failed to set Watchdog start.");
-+			return -EINVAL;
-+		}
-+
-+		wdt_data.is_enable[0] = 'Y';
-+		wdt_data.is_enable[1] = 'e';
-+		wdt_data.is_enable[2] = 's';
-+		wdt_data.current_timeout = timeout / 10;
-+		break;
-+
-+	case WDIOC_GETTIMEOUT:
-+		if (timeout == 0) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+		mutex_unlock(&lock_ioctl);
-+
-+		return put_user(timeout / 10, (unsigned long *)arg);
-+
-+	case WDIOC_SETOPTIONS:
-+		if (get_user(options, p)) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+
-+		if (options & WDIOS_DISABLECARD) {
-+			if (write_hwram_command(EC_WDT_STOP)) {
-+				pr_err("Failed to set Watchdog stop.");
-+				return -EINVAL;
-+			}
-+
-+			wdt_data.is_enable[0] = 'N';
-+			wdt_data.is_enable[1] = 'o';
-+			wdt_data.is_enable[2] = '\0';
-+		}
-+
-+		if (options & WDIOS_ENABLECARD) {
-+			if (write_hwram_command(EC_WDT_STOP)) {
-+				pr_err("Failed to set Watchdog stop");
-+				return -EINVAL;
-+			}
-+
-+			if (set_delay((unsigned short)(timeout-1))) {
-+				pr_err("Failed to set Watchdog delay.");
-+				return -EINVAL;
-+			}
-+
-+			if (write_hwram_command(EC_WDT_START)) {
-+				pr_err("Failed to set Watchdog start.");
-+				return -EINVAL;
-+			}
-+
-+			wdt_data.is_enable[0] = 'Y';
-+			wdt_data.is_enable[1] = 'e';
-+			wdt_data.is_enable[2] = 's';
-+		}
-+		mutex_unlock(&lock_ioctl);
-+
-+		return 0;
-+
-+	default:
-+		mutex_unlock(&lock_ioctl);
-+		return -ENOTTY;
-+	}
-+
-+	mutex_unlock(&lock_ioctl);
-+	return 0;
-+}
-+
-+static int advwdt_open(struct inode *inode, struct file *file)
-+{
-+	if (test_and_set_bit(0, &advwdt_is_open))
-+		return -EBUSY;
-+
-+	if (write_hwram_command(EC_WDT_STOP)) {
-+		pr_err("Failed to set Watchdog stop.");
-+		return -EINVAL;
-+	}
-+	wdt_data.is_enable[0] = 'N';
-+	wdt_data.is_enable[1] = 'o';
-+	wdt_data.is_enable[2] = '\0';
-+	return 0;
-+}
-+
-+static int advwdt_close(struct inode *inode, struct file *file)
-+{
-+	clear_bit(0, &advwdt_is_open);
-+	adv_expect_close = 0;
-+
-+	return 0;
-+}
-+
-+/* Notifier for system down */
-+static int advwdt_notify_sys(struct notifier_block *this, unsigned long code, void *unused)
-+{
-+	if (code == SYS_DOWN || code == SYS_HALT) {
-+		/* Turn the WDT off */
-+		if (write_hwram_command(EC_WDT_STOP)) {
-+			pr_err("Failed to set Watchdog stop.");
-+			return -EINVAL;
-+		}
-+		wdt_data.is_enable[0] = 'N';
-+		wdt_data.is_enable[1] = 'o';
-+		wdt_data.is_enable[2] = '\0';
-+		pr_info("%s: notify sys shutdown", __func__);
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
-+/* Kernel Interfaces */
-+static const struct file_operations advwdt_fops = {
-+	.owner = THIS_MODULE,
-+	.unlocked_ioctl = advwdt_ioctl,
-+	.compat_ioctl = advwdt_ioctl,
-+	.open = advwdt_open,
-+	.release = advwdt_close,
-+};
-+
-+/*
-+ *	The WDT needs to learn about soft shutdowns in order to
-+ *	turn the timebomb registers off.
-+ */
-+static struct notifier_block advwdt_notifier = {
-+	advwdt_notify_sys,
-+	NULL,
-+	0
-+};
-+
-+static struct class *adv_ec_class;
-+static dev_t devno;
-+
-+static int adv_ec_wdt_probe(struct platform_device *pdev)
-+{
-+	struct device *dev;
-+	struct adv_ec_platform_data *adv_ec_data;
-+
-+	mutex_init(&lock_ioctl);
-+	adv_ec_data = (struct adv_ec_platform_data *)dev_get_drvdata(pdev->dev.parent);
-+
-+	major = register_chrdev(0, "adv_watchdog", &advwdt_fops);
-+	if (major < 0) {
-+		pr_err("Advwdt register chrdev failed!");
-+		return major;
-+	}
-+	devno = MKDEV(major, 0);
-+	register_reboot_notifier(&advwdt_notifier);
-+
-+	/* Create /dev/watchdog for userspace access */
-+	adv_ec_class = class_create(THIS_MODULE, "adv_watchdog");
-+	if (IS_ERR(adv_ec_class)) {
-+		pr_err("%s: can't create class", __func__);
-+		unregister_chrdev_region(devno, 1);
-+		return -1;
-+	}
-+
-+	dev = device_create(adv_ec_class, NULL, devno, NULL, "watchdog");
-+	if (IS_ERR(dev)) {
-+		pr_err("%s: can't create device watchdog", __func__);
-+		unregister_chrdev_region(devno, 1);
-+		class_destroy(adv_ec_class);
-+		return -1;
-+	}
-+
-+	wdt_create_proc("advwdtinfo");
-+	wdt_data.current_timeout = timeout / 10;
-+	wdt_data.is_enable[0] = 'N';
-+	wdt_data.is_enable[1] = 'o';
-+	wdt_data.is_enable[2] = '\0';
-+
-+	dev_info(&pdev->dev, "Ver:%s, Data:%s, probe done",
-+			ADVANTECH_EC_WDT_VER, ADVANTECH_EC_WDT_DATE);
-+
-+	return 0;
-+}
-+
-+static int adv_ec_wdt_remove(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ret = write_hwram_command(EC_WDT_STOP);
-+	if (ret) {
-+		pr_err("Failed to set Watchdog stop.");
-+		return ret;
-+	}
-+
-+	wdt_data.is_enable[0] = 'N';
-+	wdt_data.is_enable[1] = 'o';
-+	wdt_data.is_enable[2] = '\0';
-+	clear_bit(0, &advwdt_is_open);
-+	adv_expect_close = 0;
-+	pr_info("Driver uninstall, set Watchdog stop.");
-+
-+	device_destroy(adv_ec_class, devno);
-+	unregister_chrdev_region(devno, 1);
-+	class_destroy(adv_ec_class);
-+
-+	unregister_reboot_notifier(&advwdt_notifier);
-+	unregister_chrdev(major, "adv_watchdog");
-+
-+	wdt_remove_proc("advwdtinfo");
-+
-+	return 0;
-+}
-+
-+static struct platform_driver adv_wdt_drv = {
-+	.driver = {
-+		.name = "adv-ec-wdt",
-+	},
-+	.probe = adv_ec_wdt_probe,
-+	.remove = adv_ec_wdt_remove,
-+};
-+module_platform_driver(adv_wdt_drv);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Advantech EC Watchdog Driver.");
--- 
-2.17.1
+Thanks.
+
+>>
+>> Thanks.
+>>
+>>>
+>>>>
+>>>>>
+>>>>>> +
+>>>>>> +        vmsg = (struct virtio_i2c_msg *)virtqueue_get_buf(vq, 
+>>>>>> &len);
+>>>>>> +        /* vmsg should point to the same address with &vi->vmsg */
+>>>>>> +        if ((!vmsg) || (vmsg != &vi->vmsg)) {
+>>>>>> +            dev_err(&adap->dev, "msg[%d]: addr=0x%x virtqueue 
+>>>>>> error.\n",
+>>>>>> +                i, msgs[i].addr);
+>>>>>> +            break;
+>>>>>> +        }
+>>>>>
+>>>>>
+>>>>> So I think we can remove this check. Consider only one descriptor 
+>>>>> will be used at most, unless there's a bug in the device (and no 
+>>>>> other driver to the similar check), we should not hit this.
+>>>>>
+>>>>> Btw, as I replied in the previous version, the device should be 
+>>>>> cacpable of dealing of a batch of requests through the virtqueue, 
+>>>>> otherwise it's meaningless to use a queue here.
+>>>>>
+>>>> We should not assume there is no bug in the device. I don't think 
+>>>> we can remove this check if we want our code to be robust.
+>>>
+>>>
+>>> Can you tell when at which case you may hit !vmsg or vmsg != vi->vmsg?
+>>>
+>> Normally, it won't hit here. But the API "virtqueue_get_buf" tells me
+>> "It *may *return NULL or the "data" token handed to virtqueue_add_*()."
+>
+>
+> Note that we had the following check already in 
+> virtqueue_get_buf_ctx(), so the the virtio core had already have the 
+> ability to figure out the wrong head.
+>
+>     if (unlikely(id >= vq->packed.vring.num)) {
+>         BAD_RING(vq, "id %u out of range\n", id);
+>         return NULL;
+>     }
+>     if (unlikely(!vq->packed.desc_state[id].data)) {
+>         BAD_RING(vq, "id %u is not a head!\n", id);
+>         return NULL;
+>     }
+>
+> And when it returns a NULL, it's not necessarily an error of the 
+> device, it might just require more time to finish the processing.
+>
+
+That's why we just returned the actual number of messages successfully 
+processed in this case,
+and let the I2C core to try one more time.
+
+Actually we have no idea if this is a device error or not. Try one more 
+time can also fail if it is a backend error.
+Of course, there is another option. We can return error for timeout, no 
+matter what reason.
+
+Thanks.
+
+
+>
+>>
+>> From the perspective of a caller, I just don't care when it happens.
+>> To make the code robust, what I care about is what I should do if 
+>> this is not our case
+>> since the doc says it*may *happen.
+>>
+>> If you insist on removing this check, I will remove "vmsg != 
+>> vi->vmsg" and keep the check for !vmsg.
+>> As Dan reported in v2, we should at least check here for NULL.
+>>
+>> Thanks.
+>>
+>>>
+>>>
+>>>> As I said, currently, we are using the virtqueue to send the msg 
+>>>> one by one to the backend. The mechanism is described in the spec. 
+>>>
+>>>
+>>> Which part of the spec describes such "one by one" mechanism? If 
+>>> there is one, I'd happily give a NACK since it doesn't require a 
+>>> queue to work which is conflict with the concept of the virtqueue.
+>>>
+>>>
+>> What's the concept of the virtqueue ?  Why do you want to restrict 
+>> how users use virtqueue ?
+>
+>
+> So I think there's some misunderstanding here. The point is not to 
+> restrict how to use virtqueue.
+>
+> What I meant is:
+>
+> - we should not invent a device with a virtqueue that can only accept 
+> one buffer at a time
+> - I don't see any mechanism like "one by one" described in the spec, 
+> so it's ok but if it'd happen to have, I will NACK
+>
+>
+Thanks for your clarification. I didn't restrict how to use the 
+virtqueue in the spec.
+The code is just one implementation. I'd like to have this simple driver 
+been merged first.
+It may have optimization in the future according to the needs.
+
+Thanks.
+
+
+>>
+>> It's like you provide a water glass to user. The user can fill a full 
+>> glass of water and drinks once or
+>> fill half a glass of water and drink twice. It is a user behavior and 
+>> should not be restricted by
+>> the glass provider.
+>
+>
+> That's my point as well, we should not describe the "once" behavior in 
+> the spec.
+>
+>
+>>
+>> Thanks.
+>>
+>>
+>>>> Thanks.
+>>>>
+>>>>
+>>>>>
+>>>>>> +
+>>>>>>
+>>>>>> +
+>>>>>> +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+>>>>>> +#define _UAPI_LINUX_VIRTIO_I2C_H
+>>>>>> +
+>>>>>> +#include <linux/types.h>
+>>>>>> +#include <linux/virtio_ids.h>
+>>>>>> +#include <linux/virtio_config.h>
+>>>>>> +
+>>>>>> +/**
+>>>>>> + * struct virtio_i2c_hdr - the virtio I2C message header structure
+>>>>>> + * @addr: i2c_msg addr, the slave address
+>>>>>> + * @flags: i2c_msg flags
+>>>>>> + * @len: i2c_msg len
+>>>>>> + */
+>>>>>> +struct virtio_i2c_hdr {
+>>>>>> +    __le16 addr;
+>>>>>> +    __le16 flags;
+>>>>>> +    __le16 len;
+>>>>>> +};
+>>>>>
+>>>>>
+>>>>> I'm afraid this is not complete. E.g the status is missed.
+>>>>>
+>>>>> I suspect what virtio-scsi use is better. Which split the in from 
+>>>>> the out instead of reusing the same buffer. And it can ease the 
+>>>>> uAPI header export.
+>>>>>
+>>>>> Thanks
+>>>>>
+>>>>>
+>>>>
+>>>> I think following definition in uAPI for the status is enough.
+>>>> There is no need to provide a "u8" status in the structure.
+>>>>
+>>>> /* The final status written by the device */
+>>>> #define VIRTIO_I2C_MSG_OK    0
+>>>> #define VIRTIO_I2C_MSG_ERR    1
+>>>>
+>>>> You can see an example in virtio_blk.
+>>>>
+>>>> In the spec:
+>>>>
+>>>> struct virtio_blk_req {
+>>>> le32 type;
+>>>> le32 reserved;
+>>>> le64 sector;
+>>>> u8 data[];
+>>>> u8 status;
+>>>> };
+>>>>
+>>>> In virtio_blk.h, there is only following definitions.
+>>>>
+>>>> #define VIRTIO_BLK_S_OK        0
+>>>> #define VIRTIO_BLK_S_IOERR    1
+>>>> #define VIRTIO_BLK_S_UNSUPP    2
+>>>>
+>>>
+>>> virtio-blk is a bad example, it's just too late to fix. For any new 
+>>> introduced uAPI it should be a complete one.
+>>>
+>>> Thanks
+>>>
+>> I checked a relatively new device "virtio_fs".
+>> I found following definition in spec but not in uAPI also.
+>>
+>> struct virtio_fs_req {
+>> // Device -readable part
+>> struct fuse_in_header in;
+>> u8 datain[];
+>> // Device -writable part
+>> struct fuse_out_header out;
+>> u8 dataout[];
+>> };
+>>
+>> So is this also a bad example which has not been fixed yet.
+>
+>
+> Cc Stefan for the answer.
+>
+>
+>> Or what's your mean about "complete" here ? Is there any definition 
+>> about "complete uAPI" ?
+>
+>
+> My understanding it should contain all the fields defined in the 
+> virtio spec.
+>
+> Thanks
+>
+OK. I noticed this isn't strictly implemented in the current virtio codes.
+I'm not sure if this is already a consensus. I will follow it if this is 
+the opinion of the majority.
+
+Thanks.
+
 
