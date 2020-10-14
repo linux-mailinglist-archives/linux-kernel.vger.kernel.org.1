@@ -2,331 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF7328E1BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA1028E1C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388774AbgJNNzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:55:47 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:35919 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgJNNzq (ORCPT
+        id S1731447AbgJNN5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730583AbgJNN5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:55:46 -0400
-Received: by mail-oi1-f195.google.com with SMTP id u17so3323833oie.3;
-        Wed, 14 Oct 2020 06:55:45 -0700 (PDT)
+        Wed, 14 Oct 2020 09:57:08 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB3EC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:57:07 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id az3so1619242pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IzJhHTSFV4aE1sSC7KkXjqi2ufY0RfaV89jrFKTw/jI=;
+        b=mG3N043341+5bBtnNcnr9MpI8mZhDJ7O7vwn1aWOUOCDmVIzvL/RvyY+Mdse/Aq5l4
+         4FTNBIpY1+cr9nJpLS65/3s+myXHhJTOqmQVTf5Co4ksEfZr1bF3rtDAGq0DnSxGtHX9
+         YqupM7tAm4Hg76dHvFxoIX8fRQqR/zacae1kp23eovKg9tVGd4sDokQBbkwq0in9pnZM
+         s/YT/QYjKaU2ETfSN9QkPp0QzNZjefzGYmyrwjZ51k4JrerQtqYl6gTU60/FI+tYpzAf
+         /Ywz9a1PO9vPoqJ+Kd+1Rf8m57lYaLb75qEq8FgqjjTzO8GwhTKqYHgTKMl+DGixMyME
+         XQqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wemAUe8l+uVkv3PEUFO1Jzpi+fMpOf3nWcYVW8KGtC8=;
-        b=K0b+9dYa7tJPy1p8wr8eI3Ay9zH3ep/vGfdz1LdhjJ7qa5HxKczYt5ClGuOES3+UxD
-         qGNm2oj/L3sFy2V8Ly1BOQ8kx3pft8YxMCPMLph/QKmrYtTqJN2uwW7n4xKOe0ltZi7l
-         XaguGBRYb1TB1rEf7ijmPUGYqBZ9xFSOWqkUfs/NEWsHwg03suwQXkhWOP8SwbSh3nZG
-         YrY9u4w9FcaIKMmivrUoqhlG9rFQyd9pm2lAx80wA4IMnOleVIAr4F2/fGKbA0ddsdS5
-         NdkTxLKQVInNL3bpszLRUVLzf244BaFJ2HaL4zhfDA/C40BCNusIyLzWur8fXojdtbJ2
-         q+zw==
-X-Gm-Message-State: AOAM533fmqebgo0eaMD+EDAEM4Fjo539GErz7NcAGnZI1HButlHobi4D
-        CUec80ENAdnlBsSz65i2AvTWmIoS7X/W8Ia/KEs=
-X-Google-Smtp-Source: ABdhPJwtIZ31hmmDVxcwsaWl8oT0IzvEVKNuU/vlpHBHeaBXJ2nYyO5y2mRnZqmSCi1ZYlWliq5armXmpzzi/R8GYlQ=
-X-Received: by 2002:aca:5256:: with SMTP id g83mr2351964oib.71.1602683744832;
- Wed, 14 Oct 2020 06:55:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IzJhHTSFV4aE1sSC7KkXjqi2ufY0RfaV89jrFKTw/jI=;
+        b=NRdAVnEZLtVfPpmLhVz+ahKFYd+X2h//GzYyFGTplnRmGAvObXgbRN82RGxvsUKUMt
+         A/SxXhb+md4Oh+FpyZCj1/Wn9lKwnnw6hwOmwGpQki1EFM+aiuoQx/0Gp/Rb9WQX0ZhW
+         F2qVNChf2GeFHovDmIAlNF1WSeqL0m9leAKIzrQreuRCAu0aIKeZPC/BV8gIpqMBqTIS
+         PTbrzoaEIIgU9fp64T8BQCVNE9px0WI/BY12w7Q7DvUS8OJS7IFBpWQNzI2K1IosRekb
+         JK8dk7sfbZxt0J3N1wjwhP1V8eLWfFTAZ3Uo8DJ3+qPkw1Yh2vgA2qR11TZ6q2xzvxwV
+         2COA==
+X-Gm-Message-State: AOAM533OThDr37x2dahnfvBf6yaPvsqvor/0Mc0TKXPz2/Eji6NaAfrX
+        Iw9YY+Lg7RR3smBbqSUG1UI=
+X-Google-Smtp-Source: ABdhPJyLKgvVi4cNhtcF1kmM5+5IYdJex9SfZsjFsZoLMQOErJnj4IR4XhMvD7AsyykNItj+W6IFcA==
+X-Received: by 2002:a17:902:d394:b029:d3:f13b:5ef0 with SMTP id e20-20020a170902d394b02900d3f13b5ef0mr4497407pld.64.1602683827303;
+        Wed, 14 Oct 2020 06:57:07 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:686c:a3bc:1846:e23f:17d])
+        by smtp.gmail.com with ESMTPSA id fa12sm3275824pjb.25.2020.10.14.06.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 06:57:06 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH] checkpatch: add new exception to repeated word check
+Date:   Wed, 14 Oct 2020 19:26:37 +0530
+Message-Id: <20201014135637.92319-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201003131938.9426-1-hdegoede@redhat.com> <20201003131938.9426-2-hdegoede@redhat.com>
- <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <85a36eb58cb9774f1907582dfc75295ed847200c.camel@hadess.net>
- <DM6PR19MB26364E6AA2F51981F592CE58FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <c73ffad8fd6bff8ff20d91930b097bff82be1c8f.camel@hadess.net>
- <DM6PR19MB2636B067186B08B744EA2163FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <CAJZ5v0jBJBTTb3qBGH0UWOAfvY24gWqJQA=MahnhaTdMu-w0Bw@mail.gmail.com> <394f897a-4dac-7016-ea17-c37b67589e07@redhat.com>
-In-Reply-To: <394f897a-4dac-7016-ea17-c37b67589e07@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 14 Oct 2020 15:55:33 +0200
-Message-ID: <CAJZ5v0is93pUzy8L0s0F+i6j9ecGutRv54ji0Nx3wr-15Y8uBA@mail.gmail.com>
-Subject: Re: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mark Pearson <mpearson@lenovo.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Pearson <markpearson@lenovo.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 3:09 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 10/12/20 6:42 PM, Rafael J. Wysocki wrote:
-> > On Wed, Oct 7, 2020 at 8:41 PM Limonciello, Mario
-> > <Mario.Limonciello@dell.com> wrote:
-> >>
-> >>> On Wed, 2020-10-07 at 15:58 +0000, Limonciello, Mario wrote:
-> >>>>
-> >>>>> On Mon, 2020-10-05 at 12:58 +0000, Limonciello, Mario wrote:
-> >>>>>>> On modern systems CPU/GPU/... performance is often dynamically
-> >>>>>>> configurable
-> >>>>>>> in the form of e.g. variable clock-speeds and TPD. The
-> >>>>>>> performance
-> >>>>>>> is often
-> >>>>>>> automatically adjusted to the load by some automatic-mechanism
-> >>>>>>> (which may
-> >>>>>>> very well live outside the kernel).
-> >>>>>>>
-> >>>>>>> These auto performance-adjustment mechanisms often can be
-> >>>>>>> configured with
-> >>>>>>> one of several performance-profiles, with either a bias towards
-> >>>>>>> low-power
-> >>>>>>> consumption (and cool and quiet) or towards performance (and
-> >>>>>>> higher
-> >>>>>>> power
-> >>>>>>> consumption and thermals).
-> >>>>>>>
-> >>>>>>> Introduce a new performance_profile class/sysfs API which
-> >>>>>>> offers a
-> >>>>>>> generic
-> >>>>>>> API for selecting the performance-profile of these automatic-
-> >>>>>>> mechanisms.
-> >>>>>>>
-> >>>>>>
-> >>>>>> If introducing an API for this - let me ask the question, why
-> >>>>>> even let each
-> >>>>>> driver offer a class interface and userspace need to change
-> >>>>>> "each" driver's
-> >>>>>> performance setting?
-> >>>>>>
-> >>>>>> I would think that you could just offer something kernel-wide
-> >>>>>> like
-> >>>>>> /sys/power/performance-profile
-> >>>>>>
-> >>>>>> Userspace can read and write to a single file.  All drivers can
-> >>>>>> get notified
-> >>>>>> on this sysfs file changing.
-> >>>>>>
-> >>>>>> The systems that react in firmware (such as the two that prompted
-> >>>>>> this discussion) can change at that time.  It leaves the
-> >>>>>> possibility for a
-> >>>>>> more open kernel implementation that can do the same thing though
-> >>>>>> too by
-> >>>>>> directly modifying device registers instead of ACPI devices.
-> >>>>>
-> >>>>> The problem, as I've mentioned in previous discussions we had about
-> >>>>> this, is that, as you've seen in replies to this mail, this would
-> >>>>> suddenly be making the kernel apply policy.
-> >>>>>
-> >>>>> There's going to be pushback as soon as policy is enacted in the
-> >>>>> kernel, and you take away the different knobs for individual
-> >>>>> components
-> >>>>> (or you can control them centrally as well as individually). As
-> >>>>> much as
-> >>>>> I hate the quantity of knobs[1], I don't think that trying to
-> >>>>> reduce
-> >>>>> the number of knobs in the kernel is a good use of our time, and
-> >>>>> easier
-> >>>>> to enact, coordinated with design targets, in user-space.
-> >>>>>
-> >>>>> Unless you can think of a way to implement this kernel wide setting
-> >>>>> without adding one more exponent on the number of possibilities for
-> >>>>> the
-> >>>>> testing matrix, I'll +1 Hans' original API.
-> >>>>>
-> >>>> Actually I offered two proposals in my reply.  So are you NAKing
-> >>>> both?
-> >>>
-> >>> No, this is only about the first portion of the email, which I quoted.
-> >>> And I'm not NAK'ing it, but I don't see how it can work without being
-> >>> antithetical to what kernel "users" expect, or what the folks consuming
-> >>> those interfaces (presumably us both) would expect to be able to test
-> >>> and maintain.
-> >>>
-> >>
-> >> (Just so others are aware, Bastien and I had a previous discussion on this topic
-> >> that he alluded to here: https://gitlab.freedesktop.org/hadess/power-profiles-daemon/-/issues/1)
-> >>
-> >> In general I agree that we shouldn't be offering 100's of knobs to change
-> >> things and protect users from themselves where possible.
-> >>
-> >> Whether the decisions are made in the kernel or in userspace you still have a matrix once
-> >> you're letting someone change 2 different kernel devices that offer policy.  I'd argue it's
-> >> actually worse if you let userspace change it though.
-> >>
-> >> Let's go back to the my GPU and platform example and lets say both offer the new knob here
-> >> for both.  Userspace software such as your PPD picks performance.  Both the platform device
-> >> and GPU device get changed, hopefully no conflicts.
-> >> Then user decides no, I don't want my GPU in performance mode, I only want my platform.
-> >> So they change the knob for the GPU manually, and now you have a new config in your matrix.
-> >>
-> >> However if you left it to a single kernel knob, both GPU and platform get moved together and
-> >> you don't have these extra configs in your matrix anymore.
-> >>
-> >> The other point I mentioned, that platform might also do something to GPU via a sideband and
-> >> you race, you can solve it with kernel too by modifying the ordering the kernel handles it.
-> >>
-> >> Userspace however, you give two knobs and now you have to worry about them getting it right
-> >> and supporting them doing them in the wrong order.
-> >>
-> >>>> The other one suggested to use the same firmware attributes class
-> >>>> being
-> >>>> introduced by the new Dell driver (
-> >>>> https://patchwork.kernel.org/patch/11818343/)
-> >>>> since this is actually a knob to a specific firmware setting.
-> >>>
-> >>> This seemed to me like an implementation detail (eg. the same metadata
-> >>> is being exported, but in a different way), and I don't feel strongly
-> >>> about it either way.
-> >>
-> >> OK thanks.
-> >
-> > IMV there are two choices here:  One is between exposing the low-level
-> > interfaces verbatim to user space and wrapping them up into a certain
-> > "translation" layer allowing user space to use a unified interface (I
-> > think that is what everybody wants) and the other  boils down to how
-> > the unified interface between the kernel and user space will look
-> > like.
-> >
-> > Personally, I think that something line /sys/power/profile allowing
-> > drivers (and other kernel entities) to register callbacks might work
-> > (as stated in my last reply to Hans).
->
-> Note to others reading along I pointed to this thread in this thread:
-> https://lore.kernel.org/linux-pm/20201006122024.14539-1-daniel.lezcano@linaro.org/T/#t
-> and Rafael's "last reply" above refers to his reply in that thread.
->
-> For the sake of people reading along I'm reproducing my reply
-> there below.
+Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+moved the repeated word test to check for more file types. But after
+this, if checkpatch.pl is run on MAINTAINERS, it generates several
+new warnings of the type:
 
-For completeness, my response in the other thread is here:
+WARNING: Possible repeated word: 'git'
 
-https://lore.kernel.org/linux-pm/CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com/T/#t
+For example:
+WARNING: Possible repeated word: 'git'
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
 
-> Rafael, it seems more appropriate to continue this discussion
-> in this thread, so lets discuss this further here ?
+So, the pattern "git git://..." is a false positive in this case.
 
-And because I sent it before reading this message, let me reproduce it
-below (with some additions).
+Add 'git' to the exception list for repeated word check. This effectively
+fixes all the newly generated false positives.
 
-> My reply to Rafael from the other thread:
->
-> First of all thank you for your input, with your expertise in this
-> area your input is very much appreciated, after all we only get
-> one chance to get the userspace API for this right.
->
-> Your proposal to have a single sysfs file for userspace to talk
-> to and then use an in kernel subscription mechanism for drivers
-> to get notified of writes to this file is interesting.
->
-> But I see 2 issues with it:
->
-> 1. How will userspace know which profiles are actually available ?
->
-> An obvious solution is to pick a set of standard names and let
-> subscribers map those as close to their own settings as possible,
-> the most often mentioned set of profile names in this case seems to be:
->
-> low_power
-> balanced_power
-> balanced
-> balanced_performance
-> performance
->
-> Which works fine for the thinkpad_acpi case, but not so much for
-> the hp-wmi case. In the HP case what happens is that a WMI call
-> is made which sets a bunch of ACPI variables which influence
-> the DPTF code (this assumes we have some sort of DPTF support
-> such as mjg59's reverse engineered support) but the profile-names
-> under Windows are: "Performance", "HP recommended", "Cool" and
-> "Quiet".  If you read the discussion from the
-> "[RFC] Documentation: Add documentation for new performance_profile sysfs class"
-> thread you will see this was brought up as an issue there.
+Fixes: 4f6ad8aa1eac ("checkpatch: move repeated word test")
+Link: https://lore.kernel.org/linux-kernel-mentees/b6cd81b936671a8868fe98536d7c80771bdfd61c.camel@perches.com/
 
-Two different things seem to be conflated here.  One is how to pass a
-possible performance-vs-power preference coming from user space down
-to device drivers or generally pieces of kernel code that can adjust
-the behavior and/or hardware settings depending on what that
-preference is and the other is how to expose OEM-provided DPTF system
-profile interfaces to user space.
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The former assumes that there is a common set of values that can be
-understood and acted on in a consistent way by all of the interested
-entities within the kernel and the latter is about passing information
-from user space down to a side-band power control mechanism working in
-its own way behind the kernel's back (and possibly poking at multiple
-hardware components in the platform in its own way).
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index f1a4e61917eb..b55d83360366 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3063,7 +3063,7 @@ sub process {
+ 				}
+ 
+ 				next if ($first ne $second);
+-				next if ($first eq 'long');
++				next if ($first =~ /(?:long|git)$/);
+ 
+ 				if (WARN("REPEATED_WORD",
+ 					 "Possible repeated word: '$first'\n" . $herecurr) &&
+-- 
+2.27.0
 
-IMO there is no way to provide a common interface covering these two
-cases at the same time.
-
-> The problem here is that both "cool" and "quiet" could be
-> interpreted as low-power. But it seems that they actually mean
-> what they say, cool focuses on keeping temps low, which can
-> also be done by making the fan-profile more aggressive. And quiet
-> is mostly about keeping fan speeds down, at the cost of possible
-> higher temperatures.
->
-> <edit in this version of the reply:>
-> I wonder if the HP profiles are actually just fan speed profiles ?
-> Elia do you know ?
-> </edit>
-
-I don't think so.
-
-AFAICS, in both the Thinkpad and HP cases the profile covers the
-entire platform, which in particular means that they cannot co-exist.
-
-> IOW we don't really have a 1 dimensional axis.
-
-Well, AFAICS, DPTF system profile interfaces coming from different
-OEMs will be different, but they are about side-band power control and
-there can be only one thing like that in a platform at the same time.
-
-> My class proposal fixes this by having a notion of both
-> standardized names (because anything else would suck) combined
-> with a way for drivers to advertise which standardized names
-> the support. So in my proposal I simply add quiet and cool
-> to the list of standard profile names, and then the HP-wmi
-> driver can list those as supported, while not listing
-> low_power as a supported profile.  This way we export the
-> hardware interface to userspace as is (as much as possible)
-> while still offering a standardized interface for userspace
-> to consume.  Granted if userspace now actually want to set
-> a low_power profile, we have just punted the problem to userspace
-> but I really do not see a better solution.
-
-First, a common place to register a DPTF system profile seems to be
-needed and, as I said above, I wouldn't expect more than one such
-thing to be present in the system at any given time, so it may be
-registered along with the list of supported profiles and user space
-will have to understand what they mean.
-
-Second, irrespective of the above, it may be useful to have a
-consistent way to pass performance-vs-power preference information
-from user space to different parts of the kernel so as to allow them
-to adjust their operation and this could be done with a system-wide
-power profile attribute IMO.
-
-> 2. This only works assuming that all performance-profiles
-> are system wide. But given a big desktop case there might
-> be very well be separate cooling zones for e.g. the CPU
-> and the GPU and I can imagine both having separate
-> performance-profile settings and some users will doubtlessly
-> want to be able to control these separately ...
-
-Let's say that I'm not convinced. :-)
-
-They cannot be totally separate, because they will affect each other
-and making possibly conflicting adjustments needs to be avoided.
-
-Cheers!
