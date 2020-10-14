@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3776728E90B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999D028E910
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387516AbgJNXC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 19:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46304 "EHLO mail.kernel.org"
+        id S1731114AbgJNXCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 19:02:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730982AbgJNXCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730969AbgJNXCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 19:02:13 -0400
-Subject: Re: [GIT PULL] pin control changes for the v5.10 kernel series
+Subject: Re: [GIT PULL] first round of SCSI updates for the 5.8+ merge window
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602716533;
-        bh=c9e1mYetEIzaOWGwmlHpf7KSTKzNUWiXM4CjgbbjsFI=;
+        bh=qw5LOB62yAoiTpmkPlyzV3T+DtR6nRxzuVlUJjeSPgo=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=NHSyOwPaHsLbhseJ0n7AD/X4IE6kgxPENpsmxrEaXF7/rnZ604iN8UgkZ5j+XQO4S
-         OUycrf2UMDARtSh4lMYec8bgcpq9xyG/jkXi5zKf2gFjYJa4q6mWOTY+wVqLngkTYS
-         BEqzH/7F+7WsJYs+HBtqLZuEipOEoKGlyFqJHsQo=
+        b=rv7sa+RUSMXlgqZw0HHtUN2L0AjRj1u6T9lMPKX8UAMsVIvDokT7BIDBJjqRTEb8I
+         qx1QzEvl/9HMoVdwRfZovkqigOxOEeMK9WDBol28w3vISRlb7f2If0nfMTOLeVtWYK
+         nq0YT9b0avCmrRbVabBCq8WlkmYbSEota4n4DOLw=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdbNUUAiF4Hbb=utPr1Wstwx9U0wJsJLLhSzcsJcD8gprw@mail.gmail.com>
-References: <CACRpkdbNUUAiF4Hbb=utPr1Wstwx9U0wJsJLLhSzcsJcD8gprw@mail.gmail.com>
+In-Reply-To: <fdee2336d2a7eada3749e07c3cc6ea682f8200b3.camel@HansenPartnership.com>
+References: <fdee2336d2a7eada3749e07c3cc6ea682f8200b3.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdbNUUAiF4Hbb=utPr1Wstwx9U0wJsJLLhSzcsJcD8gprw@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.10-1
-X-PR-Tracked-Commit-Id: 55596c5445566cf43b83238198fd038d21172d99
+X-PR-Tracked-Message-Id: <fdee2336d2a7eada3749e07c3cc6ea682f8200b3.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+X-PR-Tracked-Commit-Id: 69f4ec1edb136d2d2511d1ef96f94ef0aeecefdf
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b4e1bce85fd8f43dc814049e2641cc6beaa8146b
-Message-Id: <160271653324.18101.4897213579100275081.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 55e0500eb5c0440a3d43074edbd8db3e95851b66
+Message-Id: <160271653300.18101.17267488925167217207.pr-tracker-bot@kernel.org>
 Date:   Wed, 14 Oct 2020 23:02:13 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 14 Oct 2020 14:58:20 +0200:
+The pull request you sent on Tue, 13 Oct 2020 15:53:46 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.10-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b4e1bce85fd8f43dc814049e2641cc6beaa8146b
+https://git.kernel.org/torvalds/c/55e0500eb5c0440a3d43074edbd8db3e95851b66
 
 Thank you!
 
