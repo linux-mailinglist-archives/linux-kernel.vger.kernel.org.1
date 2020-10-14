@@ -2,52 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC01828E574
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A8B28E576
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389428AbgJNRhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:37:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57092 "EHLO mail.kernel.org"
+        id S2389454AbgJNRhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:37:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389383AbgJNRhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:37:12 -0400
-Subject: Re: [GIT PULL] Hyper-V commits for 5.10
+        id S2389389AbgJNRhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:37:13 -0400
+Subject: Re: [GIT PULL] xen: branch for v5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602697032;
-        bh=xJtjbH6oINNo0b2u6RmHIaV3sup612mAzHad1Y/RHhA=;
+        bh=RBvyCIyAboxCfBbfrdgU7EznUEpAYdunpTXFg4FrMQs=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=0bKTNlcaC2j7AQZ0ovw0CFeqaBqls+78Col5slvXK+swHNgvfqpcnclJuOMRIHkRV
-         L2qWw2auq+/tKVaEvOExxthyTs3ojiZUMqAzqPdDoB2zGX02QQL3gSSfPoMiaf8/+c
-         F72LXYLyUIez9c+5yceTRFjATRK0D+rzf7o8uCkY=
+        b=lLWGVM2ZT+yC10c9FJmlitO3uH2CPiX9rsMfq2mXJ8JPU7MNmOxBtUFWX0NfSI56C
+         YQg9P6PoZjlE3bYvS1li5cFIUVSbHdAvqDm5EzYoOj/fpnV8WfmEJgmuTpqNrqQPGY
+         OjrcL/roJUSgiFALGhrwkF4D4qDl1y032ZOVPSU4=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201013131214.ej4ek5expi5dywer@liuwe-devbox-debian-v2>
-References: <20201013131214.ej4ek5expi5dywer@liuwe-devbox-debian-v2>
+In-Reply-To: <20201014053917.19251-1-jgross@suse.com>
+References: <20201014053917.19251-1-jgross@suse.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201013131214.ej4ek5expi5dywer@liuwe-devbox-debian-v2>
-X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
-X-PR-Tracked-Commit-Id: 1f3aed01473c41c9f896fbf4c30d330655e8aa7c
+X-PR-Tracked-Message-Id: <20201014053917.19251-1-jgross@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.10b-rc1-tag
+X-PR-Tracked-Commit-Id: 32118f97f41d26a2447118fa956715cb4bd1bdac
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4907a43da83184d4e88009654c9b31f5e091f709
-Message-Id: <160269703226.25844.1399151386874205907.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: a09b1d78505eb9fe27597a5174c61a7c66253fe8
+Message-Id: <160269703278.25844.16425875472592967815.pr-tracker-bot@kernel.org>
 Date:   Wed, 14 Oct 2020 17:37:12 +0000
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 13 Oct 2020 13:12:14 +0000:
+The pull request you sent on Wed, 14 Oct 2020 07:39:17 +0200:
 
-> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
+> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.10b-rc1-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4907a43da83184d4e88009654c9b31f5e091f709
+https://git.kernel.org/torvalds/c/a09b1d78505eb9fe27597a5174c61a7c66253fe8
 
 Thank you!
 
