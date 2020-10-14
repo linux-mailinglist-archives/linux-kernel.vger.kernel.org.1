@@ -2,69 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC69A28E53A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB5B28E53D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgJNRTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:19:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726942AbgJNRTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:19:16 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AE9322227;
-        Wed, 14 Oct 2020 17:19:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602695956;
-        bh=6xDpg+nTdGn65/kpiroNepw4O/rdqN2/qIYYdLLfPZU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=UD6d2j2jcWpv1JLrbqtvXTMvKBwcbfW/dva7TbdK0Led/jJNxS0NaIx7+6ZEZhWyu
-         OUionDa3/+7AMnHBAZiyzyQcPk6Kt+RT/IgM/GUsIt7H5XWEvA/88WOg+H9pqsW3Rt
-         V3Qi1Z/6bIsRwp7EWBa//TzR88kLL0pZmW1BLCIA=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200728061846.68281-1-jingxiangfeng@huawei.com>
-References: <20200728061846.68281-1-jingxiangfeng@huawei.com>
-Subject: Re: [PATCH v2] clk: ti: clkctrl: fix the missed kfree() for _ti_omap4_clkctrl_setup()
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-omap@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jingxiangfeng@huawei.com
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, mturquette@baylibre.com,
-        robh@kernel.org, t-kristo@ti.com, tony@atomide.com
-Date:   Wed, 14 Oct 2020 10:19:14 -0700
-Message-ID: <160269595458.884498.14663108408006981397@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S2388200AbgJNRTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:19:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34966 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726942AbgJNRTj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:19:39 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EHGtvC081400;
+        Wed, 14 Oct 2020 13:19:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=a64pXVUhT/TgbYZWTiVZCYeTe9kTEZ7WJQiYDLNnV1w=;
+ b=OL0Vo1BgKxG0aCG4dOx+CI7O4D1YQIV4HndT4XPlH09wpNgTHQx8jbacHcCtNzer+bic
+ tquW5qy5THwVqRANzgl4jUQWtZ2Fe9yHzujAeyUhXRtWQ6+mBDPytPuVpWgKTSTjn6H+
+ PVk2S2lQk0QumfApyN1LtVN84RqerByfhZi8NKn8CBLww4KyaUKpOkqChImoqIohFAGy
+ AFAWF2SwujG3mAaNeVVoTcPRloEF5sMad+F/jZxHE89t6gj7Y2wFkMtlVVFX3OUMzOMW
+ VeNEPAv0e/5IvG2FQzwIyazTj8riYqWJcWc1oBnvvj11Sgf/rv8pSsmBOQdtft6r4yBJ 6g== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3465kh01a0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 13:19:37 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09EHISau013289;
+        Wed, 14 Oct 2020 17:19:35 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3434k84d1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 17:19:35 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09EHJXIq28508598
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Oct 2020 17:19:33 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 541ABA404D;
+        Wed, 14 Oct 2020 17:19:33 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4CE8FA4040;
+        Wed, 14 Oct 2020 17:19:32 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.12.97])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 14 Oct 2020 17:19:31 +0000 (GMT)
+Message-ID: <1bd027b4212db6f3630b8344efde4678fcd90088.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity subsystem updates for v5.10
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Wed, 14 Oct 2020 13:19:31 -0400
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-14_09:2020-10-14,2020-10-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 suspectscore=0 phishscore=0
+ adultscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 clxscore=1011
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010140122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jing Xiangfeng (2020-07-27 23:18:46)
-> _ti_omap4_clkctrl_setup() misses to call kfree() in an error path. Jump
-> to cleanup to fix it.
->=20
-> Fixes: 6c3090520554 ("clk: ti: clkctrl: Fix hidden dependency to node nam=
-e")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> ---
->  drivers/clk/ti/clkctrl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/ti/clkctrl.c b/drivers/clk/ti/clkctrl.c
-> index 864c484bde1b..a562261eb061 100644
-> --- a/drivers/clk/ti/clkctrl.c
-> +++ b/drivers/clk/ti/clkctrl.c
-> @@ -656,7 +656,7 @@ static void __init _ti_omap4_clkctrl_setup(struct dev=
-ice_node *node)
-> =20
->                 hw =3D kzalloc(sizeof(*hw), GFP_KERNEL);
->                 if (!hw)
-> -                       return;
-> +                       goto cleanup;
+Hi Linus,
+  
+The changes include continuation of the IMA policy rule cleanup and
+validation in particular for measuring keys, adding/removing/updating
+informational and error messages (e.g. "ima_appraise" boot command line
+option), and other bug fixes (e.g. minimal data size validation before
+use, return code and NULL pointer checking).
 
-Nobody reviewed this so I didn't apply it. I looked closer and it seems
-that this may fix one leak but this is inside a while loop so presumably
-we need to goto cleanup and unwind the loop of allocations? Put another
-way, there is more work to do here.
+thanks,
+
+Mimi
+
+The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+
+  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.10
+
+for you to fetch changes up to aa662fc04f5b290b3979332588bf8d812b189962:
+
+  ima: Fix NULL pointer dereference in ima_file_hash (2020-09-16 17:43:02 -0400)
+
+----------------------------------------------------------------
+integrity-v5.10
+
+----------------------------------------------------------------
+Alex Dewar (1):
+      ima: Use kmemdup rather than kmalloc+memcpy
+
+Bruno Meneguele (4):
+      ima: add check for enforced appraise option
+      integrity: invalid kernel parameters feedback
+      ima: limit secure boot feedback scope for appraise
+      integrity: include keyring name for unknown key request
+
+Denis Efremov (1):
+      integrity: Use current_uid() in integrity_audit_message()
+
+KP Singh (1):
+      ima: Fix NULL pointer dereference in ima_file_hash
+
+Roberto Sassu (3):
+      ima: Don't ignore errors from crypto_shash_update()
+      ima: Remove semicolon at the end of ima_get_binary_runtime_size()
+      evm: Check size of security.evm before using it
+
+Tyler Hicks (2):
+      ima: Pre-parse the list of keyrings in a KEY_CHECK rule
+      ima: Fail rule parsing when asymmetric key measurement isn't supportable
+
+ security/integrity/digsig_asymmetric.c |  10 ++-
+ security/integrity/evm/evm_main.c      |   9 ++
+ security/integrity/ima/ima_appraise.c  |  27 ++++--
+ security/integrity/ima/ima_crypto.c    |   2 +
+ security/integrity/ima/ima_main.c      |  23 ++++-
+ security/integrity/ima/ima_policy.c    | 153 ++++++++++++++++++++++-----------
+ security/integrity/ima/ima_queue.c     |   2 +-
+ security/integrity/integrity_audit.c   |   2 +-
+ 8 files changed, 161 insertions(+), 67 deletions(-)
+
