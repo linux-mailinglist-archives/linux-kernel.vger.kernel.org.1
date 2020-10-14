@@ -2,117 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C81428DA4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C9D28DA52
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbgJNHHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:07:46 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:61231 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726141AbgJNHHq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:07:46 -0400
-X-UUID: 597ff07714d449a18eed34164f43ca0d-20201014
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=liqqNPZ7bhnTmHQkiIXmgSnZuggaH0is3HAOFrjhmfI=;
-        b=rJ47ziMLdbDOQz4WrNOmGUq+hrZ/ysAxMX2mxZGu1FikYksj9EtRVM+/pNzT6Lsn0OYVrvm+jySBPKJPYnhlVIQ5fv0TCz0g7DD6k29OSMWQVDSfWz4SdfVJmtqJjJsc6wpwm8QWZZe2spDEwvIo7C8tv4P7MEje4TzBUwDAU5o=;
-X-UUID: 597ff07714d449a18eed34164f43ca0d-20201014
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1753992200; Wed, 14 Oct 2020 15:07:36 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Oct
- 2020 15:07:33 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 14 Oct 2020 15:07:32 +0800
-Message-ID: <1602659253.29336.79.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 4/8] dt-bindings: phy: convert HDMI PHY binding to
- YAML schema
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        "Kishon Vijay Abraham I" <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>
-Date:   Wed, 14 Oct 2020 15:07:33 +0800
-In-Reply-To: <1602650671.27998.2.camel@mtksdaap41>
-References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
-         <20201013085207.17749-4-chunfeng.yun@mediatek.com>
-         <1602650671.27998.2.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1728033AbgJNHMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:12:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727099AbgJNHMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 03:12:47 -0400
+Received: from coco.lan (ip5f5ad5dc.dynamic.kabel-deutschland.de [95.90.213.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 435A62076D;
+        Wed, 14 Oct 2020 07:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602659566;
+        bh=M3YwoIBXEQPDsVpyNH3dqIUzl/U0avmiCdaQgNjKTho=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uJTbrB7T4Bi2wZ+4cyoQoHRMy+Ui2+rdB/sg2OlxNLuE4yQF3S+fk92IyI+o9j20G
+         krTMHzFCv3J+0as4qow32bvWzQSWQxx4paHWgdq2JnNSCN3IUBfwSxCyQ2ZsuiFrv7
+         v4wBRv7kxmX6lMHcIcgowb2ITKIfKkKPTriu/OHk=
+Date:   Wed, 14 Oct 2020 09:12:40 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 35/52] docs: fs: fscrypt.rst: get rid of :c:type:
+ tags
+Message-ID: <20201014091240.78ba3425@coco.lan>
+In-Reply-To: <20201006191953.GA3598358@gmail.com>
+References: <cover.1601992016.git.mchehab+huawei@kernel.org>
+        <81cd5da550e06de8e85dcadef4909ff5f1d23319.1601992016.git.mchehab+huawei@kernel.org>
+        <20201006191953.GA3598358@gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 7D3A8E0BF2FC977AE7986068420E20580FCD3FFE574376E72318CF014D5E6D432000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTEwLTE0IGF0IDEyOjQ0ICswODAwLCBDSyBIdSB3cm90ZToNCj4gSGksIENo
-dW5mZW5nOg0KPiANCj4gT24gVHVlLCAyMDIwLTEwLTEzIGF0IDE2OjUyICswODAwLCBDaHVuZmVu
-ZyBZdW4gd3JvdGU6DQo+ID4gQ29udmVydCBIRE1JIFBIWSBiaW5kaW5nIHRvIFlBTUwgc2NoZW1h
-IG1lZGlhdGVrLHVmcy1waHkueWFtbA0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5n
-IFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiB2MjogZml4IGJp
-bmRpbmcgY2hlY2sgd2FybmluZyBvZiByZWcgaW4gZXhhbXBsZQ0KPiA+IC0tLQ0KPiA+ICAuLi4v
-ZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxoZG1pLnR4dCAgICAgICAgfCAxNyArLS0tDQo+ID4g
-IC4uLi9iaW5kaW5ncy9waHkvbWVkaWF0ZWssaGRtaS1waHkueWFtbCAgICAgICB8IDkwICsrKysr
-KysrKysrKysrKysrKysNCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA5MSBpbnNlcnRpb25zKCspLCAx
-NiBkZWxldGlvbnMoLSkNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWssaGRtaS1waHkueWFtbA0KPiA+IA0KPiA+IGRp
-ZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRp
-YXRlay9tZWRpYXRlayxoZG1pLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGhkbWkudHh0DQo+ID4gaW5kZXggN2IxMjQyNDJi
-MGM1Li5lZGFjMTg5NTFhNzUgMTAwNjQ0DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssaGRtaS50eHQNCj4gPiArKysg
-Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRp
-YXRlayxoZG1pLnR4dA0KPiA+IEBAIC01MCwyMiArNTAsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVz
-Og0KPiA+ICANCj4gPiAgSERNSSBQSFkNCj4gPiAgPT09PT09PT0NCj4gPiAtDQo+ID4gLVRoZSBI
-RE1JIFBIWSBzZXJpYWxpemVzIHRoZSBIRE1JIGVuY29kZXIncyB0aHJlZSBjaGFubmVsIDEwLWJp
-dCBwYXJhbGxlbA0KPiA+IC1vdXRwdXQgYW5kIGRyaXZlcyB0aGUgSERNSSBwYWRzLg0KPiA+IC0N
-Cj4gPiAtUmVxdWlyZWQgcHJvcGVydGllczoNCj4gPiAtLSBjb21wYXRpYmxlOiAibWVkaWF0ZWss
-PGNoaXA+LWhkbWktcGh5Ig0KPiA+IC0tIHJlZzogUGh5c2ljYWwgYmFzZSBhZGRyZXNzIGFuZCBs
-ZW5ndGggb2YgdGhlIG1vZHVsZSdzIHJlZ2lzdGVycw0KPiA+IC0tIGNsb2NrczogUExMIHJlZmVy
-ZW5jZSBjbG9jaw0KPiA+IC0tIGNsb2NrLW5hbWVzOiBtdXN0IGNvbnRhaW4gInBsbF9yZWYiDQo+
-ID4gLS0gY2xvY2stb3V0cHV0LW5hbWVzOiBtdXN0IGJlICJoZG1pdHhfZGlnX2N0cyIgb24gbXQ4
-MTczDQo+ID4gLS0gI3BoeS1jZWxsczogbXVzdCBiZSA8MD4NCj4gPiAtLSAjY2xvY2stY2VsbHM6
-IG11c3QgYmUgPDA+DQo+ID4gLQ0KPiA+IC1PcHRpb25hbCBwcm9wZXJ0aWVzOg0KPiA+IC0tIG1l
-ZGlhdGVrLGliaWFzOiBUWCBEUlYgYmlhcyBjdXJyZW50IGZvciA8MS42NUdicHMsIGRlZmF1bHRz
-IHRvIDB4YQ0KPiA+IC0tIG1lZGlhdGVrLGliaWFzX3VwOiBUWCBEUlYgYmlhcyBjdXJyZW50IGZv
-ciA+MS42NUdicHMsIGRlZmF1bHRzIHRvIDB4MWMNCj4gPiArU2VlIHBoeS9tZWRpYXRlayxoZG1p
-LXBoeS55YW1sDQo+ID4gIA0KPiA+ICBFeGFtcGxlOg0KPiA+ICANCj4gPiBkaWZmIC0tZ2l0IGEv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxoZG1pLXBoeS55
-YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxoZG1p
-LXBoeS55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAw
-MDAuLjc3ZGY1MDIwNDYwNg0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21lZGlhdGVrLGhkbWktcGh5LnlhbWwNCj4gPiBA
-QCAtMCwwICsxLDkwIEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4w
-LW9ubHkgT1IgQlNELTItQ2xhdXNlKQ0KPiA+ICsjIENvcHlyaWdodCAoYykgMjAyMCBNZWRpYVRl
-aw0KPiA+ICslWUFNTCAxLjINCj4gPiArLS0tDQo+ID4gKyRpZDogaHR0cDovL2RldmljZXRyZWUu
-b3JnL3NjaGVtYXMvcGh5L21lZGlhdGVrLGhkbWktcGh5LnlhbWwjDQo+ID4gKyRzY2hlbWE6IGh0
-dHA6Ly9kZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPiA+ICsNCj4gPiAr
-dGl0bGU6IE1lZGlhVGVrIEhpZ2ggRGVmaW5pdGlvbiBNdWx0aW1lZGlhIEludGVyZmFjZSAoSERN
-SSkgUEhZIGJpbmRpbmcNCj4gPiArDQo+ID4gK21haW50YWluZXJzOg0KPiA+ICsgIC0gQ0sgSHUg
-PGNrLmh1QG1lZGlhdGVrLmNvbT4NCj4gDQo+IEkgdGhpbmsgeW91IHNob3VsZCByZW1vdmUgIkNL
-IEh1IDxjay5odUBtZWRpYXRlay5jb20+IiBhbmQgYWRkIGxhdGVzdA0KPiBtZWRpYXRlayBkcm0g
-bWFpbnRhaW5lcjoNCk9rLCB3aWxsIGRvIGl0LCB0aGFua3MNCg0KPiANCj4gRFJNIERSSVZFUlMg
-Rk9SIE1FRElBVEVLDQo+IE06CUNodW4tS3VhbmcgSHUgPGNodW5rdWFuZy5odUBrZXJuZWwub3Jn
-Pg0KPiBNOglQaGlsaXBwIFphYmVsIDxwLnphYmVsQHBlbmd1dHJvbml4LmRlPg0KPiBMOglkcmkt
-ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQo+IFM6CVN1cHBvcnRlZA0KPiBGOglEb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay8NCj4gRjoJZHJpdmVy
-cy9ncHUvZHJtL21lZGlhdGVrLw0KPiANCj4gUmVnYXJkcywNCj4gQ0sNCg0K
+Em Tue, 6 Oct 2020 12:19:53 -0700
+Eric Biggers <ebiggers@kernel.org> escreveu:
 
+> On Tue, Oct 06, 2020 at 04:03:32PM +0200, Mauro Carvalho Chehab wrote:
+> > The :c:type: tag has problems with Sphinx 3.x, as structs
+> > there should be declared with c:struct.
+> >=20
+> > So, remove them, relying at automarkup.py extension to
+> > convert them into cross-references. =20
+>=20
+> I tried 'make htmldocs' before and after your patchset ("sphinx3-fixes-v5=
+").
+> Before, all the struct fscrypt_* are rendered in code font.  After, they =
+are
+> rendered in the regular text font.  Is that really working as intended?
+
+It is up to automarkup.py to change from "struct foo" into:
+	:c:type:`struct foo` (Sphinx 2.x)
+or:
+	:c:struct:`foo` (Sphinx 3.x)
+
+At v5, the automarkup.py extension was disabled, as it was broken
+with Sphinx > 2.x. At v6, I added a patch from N=C3=ADcolas addressing
+it.
+
+It should be said that, currently, if there's no documentation for=20
+"foo", automarkup will just keep using the regular text font,
+keeping the text untouched.
+
+>=20
+> >=20
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/filesystems/fscrypt.rst | 51 ++++++++++++---------------
+> >  1 file changed, 23 insertions(+), 28 deletions(-)
+> >  =20
+>=20
+> Why are the changes to fscrypt.rst split between two patches,
+>=20
+> 	docs: get rid of :c:type explicit declarations for structs
+>=20
+> and
+>=20
+> 	docs: fs: fscrypt.rst: get rid of :c:type: tags
+>=20
+> ?  They're the same type of changes.  The first just removes half the :c:=
+type:
+> tags, and the second removes the rest.  Shouldn't it be one patch?
+>=20
+
+The reason is just because it was easier this way.=20
+
+On the first patch, I used sed to replace structs on a=20
+semi-automated way, checking the results.
+
+at the second one, I addressed the remaining symbols manually.
+
+Anyway, at the new version, I just placed everything related
+to fscript.rst at the same patch, to make easier to review.
+
+> > diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/file=
+systems/fscrypt.rst
+> > index 4f858b38a412..46a9d1bd2ab5 100644
+> > --- a/Documentation/filesystems/fscrypt.rst
+> > +++ b/Documentation/filesystems/fscrypt.rst
+> > @@ -437,8 +437,7 @@ FS_IOC_SET_ENCRYPTION_POLICY
+> >  The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
+> >  empty directory or verifies that a directory or regular file already
+> >  has the specified encryption policy.  It takes in a pointer to a
+> > -struct fscrypt_policy_v1 or a :c:type:`struct
+> > -fscrypt_policy_v2`, defined as follows::
+> > +struct fscrypt_policy_v1 or a struct fscrypt_policy_v2, defined as fol=
+lows:: =20
+> [...]
+> >  If the file is not yet encrypted, then FS_IOC_SET_ENCRYPTION_POLICY
+> >  verifies that the file is an empty directory.  If so, the specified
+> > @@ -637,9 +634,8 @@ The FS_IOC_GET_ENCRYPTION_POLICY ioctl can also ret=
+rieve the
+> >  encryption policy, if any, for a directory or regular file.  However,
+> >  unlike `FS_IOC_GET_ENCRYPTION_POLICY_EX`_,
+> >  FS_IOC_GET_ENCRYPTION_POLICY only supports the original policy
+> > -version.  It takes in a pointer directly to a :c:type:`struct
+> > -fscrypt_policy_v1` rather than a :c:type:`struct
+> > -fscrypt_get_policy_ex_arg`.
+> > +version.  It takes in a pointer directly to struct fscrypt_policy_v1
+> > +rather than struct fscrypt_get_policy_ex_arg. =20
+>=20
+> In some cases you deleted the "a" in "a struct" but in other cases you di=
+dn't.
+> Intentional?  It seems the file should consistently use one style or the =
+other.
+
+Yes, it was intentional. On almost all other docs documents I reviewed or
+converted, they say "struct" instead of "a struct".
+
+At the second version, I did the replacement on a consistent way.
+
+>=20
+> Also please use textwidth=3D70 for consistency with the rest of the file.
+
+Done. At the new patch I posted, none of the lines touched by the
+patch uses more than 70 columns.
+
+You may notice that I opted to keep "struct foo" at the same line.
+This is not a mandatory requirement for automarkup.py to work, but
+I would recommend keeping them at the same line, as, if someone tries to
+do something like:
+
+	$ git grep "struct foo" Documentation/
+
+It would be able to find them.
+
+
+Thanks,
+Mauro
