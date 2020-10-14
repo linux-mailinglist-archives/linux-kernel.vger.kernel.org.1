@@ -2,142 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C665E28E258
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB2628E25B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728750AbgJNOhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:37:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51020 "EHLO mx2.suse.de"
+        id S1728330AbgJNOj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726942AbgJNOhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:37:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602686264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fk9g6Vlx0EIA8z+4UQpdX+wgceUcn3bulrSmu9lCrew=;
-        b=SBAsSRY5fVHRhruUOZ0YlMZsVltORmGFHIXwOZsXDDadTXfXE14+i/nQNTUMsDNtyRYdsd
-        ROeLMNKE+TZADKplklgyUjvYfilfwpJzBKovLGQs9zyrtLzkDnXoucltw+6kHj99P+y5A6
-        neAOUHbwiq+uA0Iz+aJr4b/AgoQ9QwY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A5C0AD18;
-        Wed, 14 Oct 2020 14:37:44 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 16:37:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v5 3/4] mm: introduce page memcg flags
-Message-ID: <20201014143743.GF4440@dhcp22.suse.cz>
-References: <20201002172559.4000748-1-guro@fb.com>
- <20201002172559.4000748-4-guro@fb.com>
+        id S1726719AbgJNOj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 10:39:27 -0400
+Received: from coco.lan (ip5f5ad5dc.dynamic.kabel-deutschland.de [95.90.213.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 708DC212CC;
+        Wed, 14 Oct 2020 14:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602686366;
+        bh=X8ubeEjZ99j+8NJhXZjoq8ZW3JexJrjS0NMZOekuGws=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DO+ZnhE0EH9wSQFptWtkdzX8isDiIl02JoBSOtVXa6vghPsjxC8tenehEDhFzvute
+         WhOByyD4o9W1Uh198gOJdYDDTXO4J+PQxd2/YycG4wQiPTxv+EL52VaaZYvu32/6tz
+         DpXXlqSghyX5RQOGpAXdot945EkDB6AJ4QcspG6I=
+Date:   Wed, 14 Oct 2020 16:39:19 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
+ some files
+Message-ID: <20201014163919.4bb6f8c2@coco.lan>
+In-Reply-To: <aaeeba66-48be-0354-8f1c-261b361ae17f@gmail.com>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+        <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
+        <20201013163354.GO3249@paulmck-ThinkPad-P72>
+        <20201013163836.GC670875@rowland.harvard.edu>
+        <20201014015840.GR3249@paulmck-ThinkPad-P72>
+        <20201014095603.0d899da7@coco.lan>
+        <aaeeba66-48be-0354-8f1c-261b361ae17f@gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002172559.4000748-4-guro@fb.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02-10-20 10:25:58, Roman Gushchin wrote:
-> The lowest bit in page->memcg_data is used to distinguish between
-> struct memory_cgroup pointer and a pointer to a objcgs array.
-> All checks and modifications of this bit are open-coded.
-> 
-> Let's formalize it using page memcg flags, defined in enum
-> page_memcg_data_flags.
-> 
-> Additional flags might be added later.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Em Wed, 14 Oct 2020 23:14:00 +0900
+Akira Yokosawa <akiyks@gmail.com> escreveu:
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+> On Wed, 14 Oct 2020 09:56:03 +0200, Mauro Carvalho Chehab wrote:
+> > Em Tue, 13 Oct 2020 18:58:40 -0700
+> > "Paul E. McKenney" <paulmck@kernel.org> escreveu:
+> >  =20
+> >> On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote: =20
+> >>> On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:   =
+=20
+> >>>> On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrot=
+e:   =20
+> >>>>> - The sysfs.txt file was converted to ReST and renamed;
+> >>>>> - The control-dependencies.txt is not at
+> >>>>>   Documentation/control-dependencies.txt. As it is at the
+> >>>>>   same dir as the README file, which mentions it, just
+> >>>>>   remove Documentation/.
+> >>>>>
+> >>>>> With that, ./scripts/documentation-file-ref-check script
+> >>>>> is now happy again for files under tools/.
+> >>>>>
+> >>>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>   =
+=20
+> >>>>
+> >>>> Queued for review and testing, likely target v5.11.   =20
+> >>>
+> >>> Instead of changing the path in the README reference, shouldn't=20
+> >>> tools/memory-model/control-dependencies.txt be moved to its proper=20
+> >>> position in .../Documentation?   =20
+> >>
+> >> You are of course quite right.  My thought is to let Mauro go ahead,
+> >> given his short deadline.  We can then make this "git mv" change once
+> >> v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
+> >> added a reminder to my calendar. =20
+> >=20
+> > Sounds like a plan to me.
+> >=20
+> >=20
+> > If it helps on 5.11 plans, converting this file to ReST format is quite
+> > trivial: it just needs to use "::" for C/asm code literal blocks, and=20
+> > to replace "(*) " by something that matches ReST syntax for lists,
+> > like "(#) " or just "* ":
+> >=20
+> > 	https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bul=
+let-lists
+> >=20
+> > See enclosed. =20
+>=20
+> I'm afraid conversion of LKMM documents to ReST is unlikely to happen
+> any time soon.
+> It should wait until such time comes when the auto markup tools become
+> clever enough and .rst files looks exactly the same as plain .txt files.
+>=20
+> Am I asking too much? :-)
+>=20
+>         Thanks, Akira
 
-> ---
->  include/linux/memcontrol.h | 32 ++++++++++++++++++++------------
->  1 file changed, 20 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index c7ac0a5b8989..99a4841d658b 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -343,6 +343,15 @@ struct mem_cgroup {
->  
->  extern struct mem_cgroup *root_mem_cgroup;
->  
-> +enum page_memcg_data_flags {
-> +	/* page->memcg_data is a pointer to an objcgs vector */
-> +	MEMCG_DATA_OBJCGS = (1UL << 0),
-> +	/* the next bit after the last actual flag */
-> +	__NR_MEMCG_DATA_FLAGS  = (1UL << 1),
-> +};
-> +
-> +#define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
-> +
->  /*
->   * page_memcg - get the memory cgroup associated with a page
->   * @page: a pointer to the page struct
-> @@ -404,13 +413,7 @@ static inline struct mem_cgroup *page_memcg_check(struct page *page)
->  	 */
->  	unsigned long memcg_data = READ_ONCE(page->memcg_data);
->  
-> -	/*
-> -	 * The lowest bit set means that memcg isn't a valid
-> -	 * memcg pointer, but a obj_cgroups pointer.
-> -	 * In this case the page is shared and doesn't belong
-> -	 * to any specific memory cgroup.
-> -	 */
-> -	if (memcg_data & 0x1UL)
-> +	if (memcg_data & MEMCG_DATA_OBJCGS)
->  		return NULL;
->  
->  	return (struct mem_cgroup *)memcg_data;
-> @@ -429,7 +432,11 @@ static inline struct mem_cgroup *page_memcg_check(struct page *page)
->   */
->  static inline struct obj_cgroup **page_objcgs(struct page *page)
->  {
-> -	return (struct obj_cgroup **)(READ_ONCE(page->memcg_data) & ~0x1UL);
-> +	unsigned long memcg_data = READ_ONCE(page->memcg_data);
-> +
-> +	VM_BUG_ON_PAGE(memcg_data && !(memcg_data & MEMCG_DATA_OBJCGS), page);
-> +
-> +	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->  }
->  
->  /*
-> @@ -444,10 +451,10 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
->  {
->  	unsigned long memcg_data = READ_ONCE(page->memcg_data);
->  
-> -	if (memcg_data && (memcg_data & 0x1UL))
-> -		return (struct obj_cgroup **)(memcg_data & ~0x1UL);
-> +	if (!memcg_data || !(memcg_data & MEMCG_DATA_OBJCGS))
-> +		return NULL;
->  
-> -	return NULL;
-> +	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->  }
->  
->  /*
-> @@ -460,7 +467,8 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
->  static inline bool set_page_objcgs(struct page *page,
->  					struct obj_cgroup **objcgs)
->  {
-> -	return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs | 0x1UL);
-> +	return !cmpxchg(&page->memcg_data, 0, (unsigned long)objcgs |
-> +			MEMCG_DATA_OBJCGS);
->  }
->  #else
->  static inline struct obj_cgroup **page_objcgs(struct page *page)
-> -- 
-> 2.26.2
+Yes :-)
 
--- 
-Michal Hocko
-SUSE Labs
+	$ git log --author akiyks@gmail.com Documentation/sphinx
+	$
+
+The auto markup tools don't write themselves alone. Someone needs=20
+to write them and test if no regressions will happen with the existing
+documents.
+
+-
+
+That's said, I suspect that one of the hardest things for something
+like that to be possible is to be able to distinguish something
+like:
+
+	(some text)
+
+=46rom something like:
+
+	/* some C code snippet or bash script, or other literal block */
+
+So, at least "::" (or some other markup replacing it) is needed.
+
+If you have some bright idea about how to implement it, feel free
+to contribute with patches.
+
+Thanks,
+Mauro
