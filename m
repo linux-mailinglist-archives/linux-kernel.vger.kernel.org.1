@@ -2,129 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4204628E629
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F6528E62B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387948AbgJNSRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:17:14 -0400
-Received: from mail-co1nam11on2104.outbound.protection.outlook.com ([40.107.220.104]:48793
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727114AbgJNSRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:17:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mJeZR1HxidMhgpNRdxG0LVsqh/+HY5uwutt4QFbyTry7zaKLc4pam+0a6IKjIz5Yn+XQtnbThXTRwD92yKA0VmhhDliaNVbCnl9carAfShJCbRkJ9lt47yWvRh7voRbvLMPKQ3t9bmKH7Pt7PJ5oj0DDlzdIyziCbSrWEGGoZQKzkDW3G2e6amL1KS2KQtyE8QgpWmpC3N2j4dcuuBL24kx7PQwcUDL62UwwLyrfELKP+TYEaR24TeJLBx+EEob6kgi8UhZEMvaf010R6VnNUzruJ7o9CISofLkVr0Z8ct1A3w5rTd4hrmfBYPhXqRFgjDeX4SloIFF+Jx2CvZazcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vuwuZ7Ow/70Tk/xZiDO3Y9Yb6RbPkbqSK2pMVmeaWJA=;
- b=efXCbujDDcDhKBZXd5ts9cTjJ/L54trMS748bvpxIde8jUHSGwWzEdMU7N+vm86PuOXUcCb6tTnPVmUFTIHzbZhwcxd/pqJM8oKX267qkcke8MNlIWj+Y8HvBR52xH4vrtXrb8xv6OGGIjYQ0v/rnF9GqJ9p9+OBUXmCqiXryEEnrkJMnZTgvDXSlZGw9VPemJnp+P+8Pw9msU2hKENMF9dZ9d/naOxWAUi+TwNoYilWo1T0AG61zeeeUJ7mZnsx4QkvJ0qCiuxl4o6yIH+zZaVsH9ZZqV/EPaXtpmb5Lo1TsXElzcdJwRRYp22O29wguYwCDM+Wz3/FMut+N6nMwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vuwuZ7Ow/70Tk/xZiDO3Y9Yb6RbPkbqSK2pMVmeaWJA=;
- b=VO+gIhrpWOVj3dpcUxTTWZHZ9WyhgSgCYsqaZM5F5F+yM+P77g6ICWJnwJINmK/WUKtJC7AqNwqrzX5MGccUN9p5D4g86suPjy3vweq5paUlW9fX3Huu5PYr/hX9EuUwDmpU3IpXy0dFsaRyb1x8S0K9ifCjfXmTMsrmnjfV600=
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
- by MN2PR13MB3664.namprd13.prod.outlook.com (2603:10b6:208:19f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.11; Wed, 14 Oct
- 2020 18:17:10 +0000
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e8a1:6acc:70f0:ef39]) by MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e8a1:6acc:70f0:ef39%7]) with mapi id 15.20.3477.019; Wed, 14 Oct 2020
- 18:17:10 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "ashishsangwan2@gmail.com" <ashishsangwan2@gmail.com>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] NFS: Fix mode bits and nlink count for v4 referral dirs
-Thread-Topic: [PATCH] NFS: Fix mode bits and nlink count for v4 referral dirs
-Thread-Index: AQHWm/OGeyO0BuEaoUK9JXx6hV8a+KmXdI6A
-Date:   Wed, 14 Oct 2020 18:17:10 +0000
-Message-ID: <2d1ff3421a88ece2f1b7708cdbc9d34b00ad3e81.camel@hammerspace.com>
-References: <20201006151456.20875-1-ashishsangwan2@gmail.com>
-In-Reply-To: <20201006151456.20875-1-ashishsangwan2@gmail.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=hammerspace.com;
-x-originating-ip: [68.36.133.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 933ea864-fc25-4606-4177-08d8706d5e26
-x-ms-traffictypediagnostic: MN2PR13MB3664:
-x-microsoft-antispam-prvs: <MN2PR13MB366440BB1935CD5734548D8CB8050@MN2PR13MB3664.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xENKoglYRxSlqiZQNYThvFgmovMqelpij45DZg2UVWVTt9ejAzwDqqFvnSvLiw9TBAwPaJ5fVm+UIeCHtNoN5WnN+klk9MdzmQvdeZ0vALCWfVfcC8dq7+9DGwE2qryf0G2py0vA7ys96TfAhTOmY4zTbvaRelpOCk4nn3wGbiRwJVt6CNztIsWJR+kOO1HPtqFJuZJbWibR1ACCLJx+664rU1uo4ExmrZhy1TAPLkDK7xnmP651Befk/cx4eK1Q33E2nv8/0zOxofFFPJlbPbdYIFKDQOIEq1DBPwiE1KHkUYI2VKCiHtCqGu6S2Ypbdw9uhJQ2WgLZmW/OTczW4w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(346002)(396003)(39840400004)(6512007)(478600001)(36756003)(26005)(76116006)(66446008)(66946007)(66556008)(6506007)(71200400001)(66476007)(186003)(91956017)(64756008)(6486002)(2906002)(5660300002)(86362001)(4326008)(8936002)(54906003)(2616005)(6916009)(8676002)(316002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: DGCEdl/E6g+mz54uuOY96gdSvzx1qvLj/R1X2K9jQ6j2WxwYWwaJPf3wIBUpuiuwP5257fZwxRJsmojsEFaN5fPEZ/rc1buc5x3F2C74ead6Yorq3n8WY4P53cZQBa/JAbMdGpvdWqq+241FBChSTU3lbhTiA92ehEEzy2l2C72rBeedBD/Ap3vMpjm7NcgvMw07i4o/xQaQInmsweU41R7sbSU9wv9EyO5aNn90DTynA36PWLaHSkI6oTVLqFPp/glV93vPwQrC7/5PkVMtOAIr/JrMMJ48i7AcyWI1XDNowUMvdU//8c3PM4FyxwS3nCKc6/cFWH5opUSFmCQvQl4tjw8UrxJJ6ZGb6+QvyAy2KRDxRd/dHFzH8HjCEZc9fv/TtahDtjW66MKGmWWQciXxvEobxnP+5FoY65VYUa3H7utdT8OZc/gZzYMqgq0CitrtrxfUzebzrTPfJvSX/pTSHfHSIJQaS9k9aeKLM+UFJVXAmg9BPPux3yUYRJ8AnYprdllZT4BgaKQoIcjqdcEFKC3gpKAKyZpaDGixE8AstWP90mJFPLqRRaRPf1Mkwpi82KQRS+XjSz8SBHGgnEqOqPrEQVmChQ2zLsjzhYjAx0NrO5xLqmYSWHvn88RRAGvFujo/wzOgVmiJ2QhtjA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3ED7695FE3950145B1706F4287A85DA5@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729669AbgJNSSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:18:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35549 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726830AbgJNSSb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 14:18:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602699508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Fd0jLczzZpD/twPqZpvhdE1dJPu+DoDD8dI+OaROd/A=;
+        b=I1UTqY7G1aD3Oc+SvvxC51zDAfsX6JVdSBEuV8Z5Hsq1DXVpFcLmgOFbCymZnZP46qiWan
+        M2fejGOs753Ck2G+56VSc7B4S8qgD1Tvb1FvRsQdyKTTTwc0zjAoUVoMR/3zcogqTa/RkW
+        0wKK4l9aNiXRN6wgBjj64StRXR4SVIk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-B18VZnbeMfizXPVnU-bmJQ-1; Wed, 14 Oct 2020 14:18:20 -0400
+X-MC-Unique: B18VZnbeMfizXPVnU-bmJQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76A2310E2181;
+        Wed, 14 Oct 2020 18:18:19 +0000 (UTC)
+Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 066EC27C2A;
+        Wed, 14 Oct 2020 18:18:13 +0000 (UTC)
+Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
+ mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Michal Privoznik <mprivozn@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>
+References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
+ <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
+ <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
+Date:   Wed, 14 Oct 2020 20:18:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 933ea864-fc25-4606-4177-08d8706d5e26
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 18:17:10.5878
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GLcssNSdHlNX/8+irl7sd17Bm9YsLKR3Ha94WUDElKCXawiumR6meFD5FAxPQvWty5IUgJwD3yc/MRki3IkTGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3664
+In-Reply-To: <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEwLTA2IGF0IDA4OjE0IC0wNzAwLCBBc2hpc2ggU2FuZ3dhbiB3cm90ZToN
-Cj4gUmVxdWVzdCBmb3IgbW9kZSBiaXRzIGFuZCBubGluayBjb3VudCBpbiB0aGUgbmZzNF9nZXRf
-cmVmZXJyYWwgY2FsbA0KPiBhbmQgaWYgc2VydmVyIHJldHVybnMgdGhlbSB1c2UgdGhlbSBpbnN0
-ZWFkIG9mIGhhcmQgY29kZWQgdmFsdWVzLg0KPiANCj4gQ0M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5v
-cmcNCj4gU2lnbmVkLW9mZi1ieTogQXNoaXNoIFNhbmd3YW4gPGFzaGlzaHNhbmd3YW4yQGdtYWls
-LmNvbT4NCj4gLS0tDQo+ICBmcy9uZnMvbmZzNHByb2MuYyB8IDIwICsrKysrKysrKysrKysrKysr
-LS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9mcy9uZnMvbmZzNHByb2MuYyBiL2ZzL25mcy9uZnM0cHJvYy5j
-DQo+IGluZGV4IDZlOTVjODVmZTM5NS4uZWZlYzA1YzVmNTM1IDEwMDY0NA0KPiAtLS0gYS9mcy9u
-ZnMvbmZzNHByb2MuYw0KPiArKysgYi9mcy9uZnMvbmZzNHByb2MuYw0KPiBAQCAtMjY2LDcgKzI2
-Niw5IEBAIGNvbnN0IHUzMiBuZnM0X2ZzX2xvY2F0aW9uc19iaXRtYXBbM10gPSB7DQo+ICAJfCBG
-QVRUUjRfV09SRDBfRlNJRA0KPiAgCXwgRkFUVFI0X1dPUkQwX0ZJTEVJRA0KPiAgCXwgRkFUVFI0
-X1dPUkQwX0ZTX0xPQ0FUSU9OUywNCj4gLQlGQVRUUjRfV09SRDFfT1dORVINCj4gKwlGQVRUUjRf
-V09SRDFfTU9ERQ0KPiArCXwgRkFUVFI0X1dPUkQxX05VTUxJTktTDQo+ICsJfCBGQVRUUjRfV09S
-RDFfT1dORVINCj4gIAl8IEZBVFRSNF9XT1JEMV9PV05FUl9HUk9VUA0KPiAgCXwgRkFUVFI0X1dP
-UkQxX1JBV0RFVg0KPiAgCXwgRkFUVFI0X1dPUkQxX1NQQUNFX1VTRUQNCj4gQEAgLTc1OTQsMTYg
-Kzc1OTYsMjggQEAgbmZzNF9saXN0eGF0dHJfbmZzNF91c2VyKHN0cnVjdCBpbm9kZSAqaW5vZGUs
-DQo+IGNoYXIgKmxpc3QsIHNpemVfdCBsaXN0X2xlbikNCj4gICAqLw0KPiAgc3RhdGljIHZvaWQg
-bmZzX2ZpeHVwX3JlZmVycmFsX2F0dHJpYnV0ZXMoc3RydWN0IG5mc19mYXR0ciAqZmF0dHIpDQo+
-ICB7DQo+ICsJYm9vbCBmaXhfbW9kZSA9IHRydWUsIGZpeF9ubGluayA9IHRydWU7DQo+ICsNCj4g
-IAlpZiAoISgoKGZhdHRyLT52YWxpZCAmIE5GU19BVFRSX0ZBVFRSX01PVU5URURfT05fRklMRUlE
-KSB8fA0KPiAgCSAgICAgICAoZmF0dHItPnZhbGlkICYgTkZTX0FUVFJfRkFUVFJfRklMRUlEKSkg
-JiYNCj4gIAkgICAgICAoZmF0dHItPnZhbGlkICYgTkZTX0FUVFJfRkFUVFJfRlNJRCkgJiYNCj4g
-IAkgICAgICAoZmF0dHItPnZhbGlkICYgTkZTX0FUVFJfRkFUVFJfVjRfTE9DQVRJT05TKSkpDQo+
-ICAJCXJldHVybjsNCj4gIA0KPiArCWlmIChmYXR0ci0+dmFsaWQgJiBORlNfQVRUUl9GQVRUUl9N
-T0RFKQ0KPiArCQlmaXhfbW9kZSA9IGZhbHNlOw0KPiArCWlmIChmYXR0ci0+dmFsaWQgJiBORlNf
-QVRUUl9GQVRUUl9OTElOSykNCj4gKwkJZml4X25saW5rID0gZmFsc2U7DQo+ICAJZmF0dHItPnZh
-bGlkIHw9IE5GU19BVFRSX0ZBVFRSX1RZUEUgfCBORlNfQVRUUl9GQVRUUl9NT0RFIHwNCj4gIAkJ
-TkZTX0FUVFJfRkFUVFJfTkxJTksgfCBORlNfQVRUUl9GQVRUUl9WNF9SRUZFUlJBTDsNCj4gLQlm
-YXR0ci0+bW9kZSA9IFNfSUZESVIgfCBTX0lSVUdPIHwgU19JWFVHTzsNCj4gLQlmYXR0ci0+bmxp
-bmsgPSAyOw0KPiArDQo+ICsJaWYgKGZpeF9tb2RlKQ0KPiArCQlmYXR0ci0+bW9kZSA9IFNfSUZE
-SVIgfCBTX0lSVUdPIHwgU19JWFVHTzsNCj4gKwllbHNlDQo+ICsJCWZhdHRyLT5tb2RlIHw9IFNf
-SUZESVI7DQo+ICsNCj4gKwlpZiAoZml4X25saW5rKQ0KPiArCQlmYXR0ci0+bmxpbmsgPSAyOw0K
-PiAgfQ0KPiAgDQo+ICBzdGF0aWMgaW50IF9uZnM0X3Byb2NfZnNfbG9jYXRpb25zKHN0cnVjdCBy
-cGNfY2xudCAqY2xpZW50LCBzdHJ1Y3QNCj4gaW5vZGUgKmRpciwNCg0KTkFDSyB0byB0aGlzIHBh
-dGNoLiBUaGUgd2hvbGUgcG9pbnQgaXMgdGhhdCBpZiB0aGUgc2VydmVyIGhhcyBhDQpyZWZlcnJh
-bCwgdGhlbiBpdCBpcyBub3QgZ29pbmcgdG8gZ2l2ZSB1cyBhbnkgYXR0cmlidXRlcyBvdGhlciB0
-aGFuIHRoZQ0Kb25lcyB3ZSdyZSBhbHJlYWR5IGFza2luZyBmb3IgYmVjYXVzZSBpdCBtYXkgbm90
-IGV2ZW4gaGF2ZSBhIHJlYWwNCmRpcmVjdG9yeS4gVGhlIGNsaWVudCBpcyByZXF1aXJlZCB0byBm
-YWtlIHVwIGFuIGlub2RlLCBoZW5jZSB0aGUNCmV4aXN0aW5nIGNvZGUuDQoNCi0tIA0KVHJvbmQg
-TXlrbGVidXN0DQpMaW51eCBORlMgY2xpZW50IG1haW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9u
-ZC5teWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoNCg0K
+On 14.10.20 19:56, Mina Almasry wrote:
+> On Wed, Oct 14, 2020 at 9:15 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 14.10.20 17:22, David Hildenbrand wrote:
+>>> Hi everybody,
+>>>
+>>> Michal Privoznik played with "free page reporting" in QEMU/virtio-balloon
+>>> with hugetlbfs and reported that this results in [1]
+>>>
+>>> 1. WARNING: CPU: 13 PID: 2438 at mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+>>>
+>>> 2. Any hugetlbfs allocations failing. (I assume because some accounting is wrong)
+>>>
+>>>
+>>> QEMU with free page hinting uses fallocate(FALLOC_FL_PUNCH_HOLE)
+>>> to discard pages that are reported as free by a VM. The reporting
+>>> granularity is in pageblock granularity. So when the guest reports
+>>> 2M chunks, we fallocate(FALLOC_FL_PUNCH_HOLE) one huge page in QEMU.
+>>>
+>>> I was also able to reproduce (also with virtio-mem, which similarly
+>>> uses fallocate(FALLOC_FL_PUNCH_HOLE)) on latest v5.9
+>>> (and on v5.7.X from F32).
+>>>
+>>> Looks like something with fallocate(FALLOC_FL_PUNCH_HOLE) accounting
+>>> is broken with cgroups. I did *not* try without cgroups yet.
+>>>
+>>> Any ideas?
+> 
+> Hi David,
+> 
+> I may be able to dig in and take a look. How do I reproduce this
+> though? I just fallocate(FALLOC_FL_PUNCH_HOLE) one 2MB page in a
+> hugetlb region?
+> 
+
+Hi Mina,
+
+thanks for having a look. I started poking around myself but,
+being new to cgroup code, I even failed to understand why that code gets
+triggered though the hugetlb controller isn't even enabled.
+
+I assume you at least have to make sure that there is
+a page populated (MMAP_POPULATE, or read/write it). But I am not
+sure yet if a single fallocate(FALLOC_FL_PUNCH_HOLE) is
+sufficient, or if it will require a sequence of
+populate+discard(punch) (or multi-threading).
+
+What definitely makes it trigger is via QEMU
+
+qemu-system-x86_64 \
+-machine pc-i440fx-4.0,accel=kvm,usb=off,dump-guest-core=off,memory-backend=pc.ram \
+-cpu host,migratable=on \
+-m 4096 \
+-object memory-backend-memfd,id=pc.ram,hugetlb=yes,hugetlbsize=2097152,size=4294967296 \
+-overcommit mem-lock=off \
+-smp 4,sockets=1,dies=1,cores=2,threads=2 \
+-nodefaults \
+-nographic \
+-device virtio-scsi-pci,id=scsi0,bus=pci.0,addr=0x4 \
+-device virtio-serial-pci,id=virtio-serial0,bus=pci.0,addr=0x5 \
+-blockdev '{"driver":"file","filename":"../Fedora-Cloud-Base-32-1.6.x86_64.qcow2","node-name":"libvirt-1-storage","auto-read-only":true,"discard":"unmap"}' \
+-blockdev '{"node-name":"libvirt-1-format","read-only":false,"discard":"unmap","driver":"qcow2","file":"libvirt-1-storage","backing":null}' \
+-device scsi-hd,bus=scsi0.0,channel=0,scsi-id=0,lun=0,device_id=drive-scsi0-0-0-0,drive=libvirt-1-format,id=scsi0-0-0-0,bootindex=1 \
+-chardev stdio,nosignal,id=serial \
+-device isa-serial,chardev=serial \
+-device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x7,free-page-reporting=on
+
+
+However, you need a recent QEMU (>= v5.1 IIRC) and a recent kernel
+(>= v5.7) inside your guest image.
+
+Fedora rawhide qcow2 should do: https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide/Cloud/x86_64/images/Fedora-Cloud-Base-Rawhide-20201004.n.1.x86_64.qcow2
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
