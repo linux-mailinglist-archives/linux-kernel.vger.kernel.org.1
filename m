@@ -2,314 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8764628E019
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7E628E022
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388327AbgJNL5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:57:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33114 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726814AbgJNL5H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:57:07 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EBXE5p176539;
-        Wed, 14 Oct 2020 07:56:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=BTlOnbpUAUcDb4UPCTOiAatpqX4R9DTQ5GOjIxbyyZ8=;
- b=CVssf4o4/g3EPsUEIGqqW1+77zTEyQi33ds5TyILl2SEJCJ8C6VIT9QPB1cdbkwzkEFI
- RdsQXFYt1Momhx2ki6b6qTnma8cMsY9Rr7XBY4uowJLsGr5XjxgOehnAMUZm50SiWgK1
- valx2TmKOfJMNVJ1DXuzF96/KO73Sya8BSWFocBLGPfWMgHc4+I+C2s0Gqu0qJOtC+nT
- Z5LJ/+i41Oc4lU2PnNaaJGvHyiKipCcMV0YO4HfZyuzDwVE1OPMZSHNwmH0O5xmeL7Pf
- C6NfAeWSydbrdT6LDxQ4PD2a8oi5dWSIXUsf6B1YuuYKYkI2DZCTV9gU2BMIxa2QOq/A zQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3460349mkt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 07:56:28 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09EBXLrs177077;
-        Wed, 14 Oct 2020 07:56:28 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3460349mgb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 07:56:28 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09EBpmNZ003728;
-        Wed, 14 Oct 2020 11:56:23 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3434k7v3j1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 11:56:23 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09EBuL2T26345738
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Oct 2020 11:56:21 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8082511C054;
-        Wed, 14 Oct 2020 11:56:21 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 01E3611C04A;
-        Wed, 14 Oct 2020 11:56:18 +0000 (GMT)
-Received: from sig-9-65-216-73.ibm.com (unknown [9.65.216.73])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 14 Oct 2020 11:56:17 +0000 (GMT)
-Message-ID: <e436ab32ba30549591753cb3ec43749a6776f43e.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 1/2] efi: add secure boot get helper
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>, Chester Lin <clin@suse.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Date:   Wed, 14 Oct 2020 07:56:17 -0400
-In-Reply-To: <CAMj1kXGacnj=uh9WFh1+YBVXxzZbxeN==Y_f-rhJZ=3385B68g@mail.gmail.com>
-References: <20201014104032.9776-1-clin@suse.com>
-         <20201014104032.9776-2-clin@suse.com>
-         <CAMj1kXGacnj=uh9WFh1+YBVXxzZbxeN==Y_f-rhJZ=3385B68g@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_07:2020-10-14,2020-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 priorityscore=1501 clxscore=1011
- malwarescore=0 suspectscore=3 mlxlogscore=999 spamscore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010140085
+        id S2388537AbgJNL6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:58:46 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:56329 "EHLO mailout08.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726157AbgJNL6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 07:58:46 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4CB9tB12XQzMpJl;
+        Wed, 14 Oct 2020 13:58:42 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CB9sg2QcMz2TSBr;
+        Wed, 14 Oct 2020 13:58:15 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.83) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 14 Oct
+ 2020 13:58:14 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Richard Cochran <richardcochran@gmail.com>
+CC:     Vishal Kulkarni <vishal@chelsio.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Christian Eggers <ceggers@arri.de>
+Subject: [PATCH net-next] net: ptp: get rid of IPV4_HLEN() and OFF_IHL macros
+Date:   Wed, 14 Oct 2020 13:58:05 +0200
+Message-ID: <20201014115805.23905-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.83]
+X-RMX-ID: 20201014-135815-4CB9sg2QcMz2TSBr-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-14 at 13:00 +0200, Ard Biesheuvel wrote:
-> Hello Chester,
-> 
-> Thanks for looking into this.
-> 
-> Some comments below.
-> 
-> On Wed, 14 Oct 2020 at 12:41, Chester Lin <clin@suse.com> wrote:
-> >
-> > Separate the get_sb_mode() from arch/x86 and treat it as a common function
-> > [rename to efi_get_secureboot_mode] so all EFI-based architectures can
-> > reuse the same logic.
-> >
-> > Signed-off-by: Chester Lin <clin@suse.com>
-> > ---
-> >  arch/x86/kernel/ima_arch.c | 47 ++------------------------------------
-> >  drivers/firmware/efi/efi.c | 43 ++++++++++++++++++++++++++++++++++
-> >  include/linux/efi.h        |  5 ++++
-> >  3 files changed, 50 insertions(+), 45 deletions(-)
-> >
-> > diff --git a/arch/x86/kernel/ima_arch.c b/arch/x86/kernel/ima_arch.c
-> > index 7dfb1e808928..ed4623ecda6e 100644
-> > --- a/arch/x86/kernel/ima_arch.c
-> > +++ b/arch/x86/kernel/ima_arch.c
-> > @@ -8,49 +8,6 @@
-> >
-> >  extern struct boot_params boot_params;
-> >
-> > -static enum efi_secureboot_mode get_sb_mode(void)
-> > -{
-> > -       efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
-> > -       efi_status_t status;
-> > -       unsigned long size;
-> > -       u8 secboot, setupmode;
-> > -
-> > -       size = sizeof(secboot);
-> > -
-> > -       if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) {
-> > -               pr_info("ima: secureboot mode unknown, no efi\n");
-> > -               return efi_secureboot_mode_unknown;
-> > -       }
-> > -
-> > -       /* Get variable contents into buffer */
-> > -       status = efi.get_variable(L"SecureBoot", &efi_variable_guid,
-> > -                                 NULL, &size, &secboot);
-> > -       if (status == EFI_NOT_FOUND) {
-> > -               pr_info("ima: secureboot mode disabled\n");
-> > -               return efi_secureboot_mode_disabled;
-> > -       }
-> > -
-> > -       if (status != EFI_SUCCESS) {
-> > -               pr_info("ima: secureboot mode unknown\n");
-> > -               return efi_secureboot_mode_unknown;
-> > -       }
-> > -
-> > -       size = sizeof(setupmode);
-> > -       status = efi.get_variable(L"SetupMode", &efi_variable_guid,
-> > -                                 NULL, &size, &setupmode);
-> > -
-> > -       if (status != EFI_SUCCESS)      /* ignore unknown SetupMode */
-> > -               setupmode = 0;
-> > -
-> > -       if (secboot == 0 || setupmode == 1) {
-> > -               pr_info("ima: secureboot mode disabled\n");
-> > -               return efi_secureboot_mode_disabled;
-> > -       }
-> > -
-> > -       pr_info("ima: secureboot mode enabled\n");
-> > -       return efi_secureboot_mode_enabled;
-> > -}
-> > -
-> >  bool arch_ima_get_secureboot(void)
-> >  {
-> >         static enum efi_secureboot_mode sb_mode;
-> > @@ -60,7 +17,7 @@ bool arch_ima_get_secureboot(void)
-> >                 sb_mode = boot_params.secure_boot;
-> >
-> >                 if (sb_mode == efi_secureboot_mode_unset)
-> > -                       sb_mode = get_sb_mode();
-> > +                       sb_mode = efi_get_secureboot_mode();
-> >                 initialized = true;
-> >         }
-> >
-> > @@ -70,7 +27,7 @@ bool arch_ima_get_secureboot(void)
-> >                 return false;
-> >  }
-> >
-> > -/* secureboot arch rules */
-> > +/* secure and trusted boot arch rules */
-> >  static const char * const sb_arch_rules[] = {
-> >  #if !IS_ENABLED(CONFIG_KEXEC_SIG)
-> >         "appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig",
-> > diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> > index 5e5480a0a32d..68ffa6a069c0 100644
-> > --- a/drivers/firmware/efi/efi.c
-> > +++ b/drivers/firmware/efi/efi.c
-> > @@ -1022,3 +1022,46 @@ static int __init register_update_efi_random_seed(void)
-> >  }
-> >  late_initcall(register_update_efi_random_seed);
-> >  #endif
-> > +
-> > +enum efi_secureboot_mode efi_get_secureboot_mode(void)
-> > +{
-> > +       efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
-> > +       efi_status_t status;
-> > +       unsigned long size;
-> > +       u8 secboot, setupmode;
-> > +
-> > +       size = sizeof(secboot);
-> > +
-> > +       if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) {
-> > +               pr_info("ima: secureboot mode unknown, no efi\n");
-> 
-> These prints don't belong here anymore.
-> 
-> Also, it would be useful if we could reuse this logic in the EFI stub
-> as well, which is built as a separate executable, and does not provide
-> efi.get_variable().
-> 
-> So, you could you please break this up into
-> 
-> static inline
-> enum efi_secureboot_mode efi_get_secureboot_mode(efi_get_variable_t *get_var)
-> {
-> }
-> 
-> placed into include/linux/efi.h, which encapsulates the core logic,
-> but using get_var(), and without the prints.
-> 
-> Then, we could put something like
-> 
-> bool efi_ima_get_secureboot(void)
-> {
-> }
-> 
-> in drivers/firmware/efi/efi.c (guarded by #ifdef CONFIG_IMA_xxx),
-> which performs the
-> efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) check, calls
-> efi_get_secureboot_mode(efi.get_variable), and implements the logic.
-> 
-> And actually, if the logic is identical between x86 and arm64, I
-> wonder if it wouldn't be better to put the whole thing into
-> 
-> drivers/firmware/efi/efi-ima.c
-> 
-> or
-> 
-> security/integrity/ima/ima-efi.c
-> 
-> with the only difference being the boot_params->secure_boot access for
-> x86, which we can factor out to a static inline helper.
-> 
-> Mimi, any thoughts here?
+Both macros are already marked for removal. IPV4_HLEN(data) is
+misleading as it expects an Ethernet header instead of an IPv4 header as
+argument. Because it is defined (and only used) within PTP, it should be
+named PTP_IPV4_HLEN or similar.
 
-Sounds good.  Keeping as much IMA code in the IMA directory makes
-sense.   The IMA Makefile would then include ima-efi.c based on an EFI
-Kconfig option.
+As the whole rest of the IPv4 stack has no problems using iphdr->ihl
+directly, also PTP should be able to do so.
 
-thanks,
+OFF_IHL has only been used by IPV4_HLEN. Additionally it is superfluous
+as ETH_HLEN already exists for the same.
 
-Mimi
-> 
-> 
-> 
-> > +               return efi_secureboot_mode_unknown;
-> > +       }
-> > +
-> > +       /* Get variable contents into buffer */
-> > +       status = efi.get_variable(L"SecureBoot", &efi_variable_guid,
-> > +                                 NULL, &size, &secboot);
-> > +       if (status == EFI_NOT_FOUND) {
-> > +               pr_info("ima: secureboot mode disabled\n");
-> > +               return efi_secureboot_mode_disabled;
-> > +       }
-> > +
-> > +       if (status != EFI_SUCCESS) {
-> > +               pr_info("ima: secureboot mode unknown\n");
-> > +               return efi_secureboot_mode_unknown;
-> > +       }
-> > +
-> > +       size = sizeof(setupmode);
-> > +       status = efi.get_variable(L"SetupMode", &efi_variable_guid,
-> > +                                 NULL, &size, &setupmode);
-> > +
-> > +       if (status != EFI_SUCCESS)      /* ignore unknown SetupMode */
-> > +               setupmode = 0;
-> > +
-> > +       if (secboot == 0 || setupmode == 1) {
-> > +               pr_info("ima: secureboot mode disabled\n");
-> > +               return efi_secureboot_mode_disabled;
-> > +       }
-> > +
-> > +       pr_info("ima: secureboot mode enabled\n");
-> > +       return efi_secureboot_mode_enabled;
-> > +}
-> > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > index d7c0e73af2b9..a73e5ae04672 100644
-> > --- a/include/linux/efi.h
-> > +++ b/include/linux/efi.h
-> > @@ -1076,8 +1076,13 @@ static inline int efi_runtime_map_copy(void *buf, size_t bufsz)
-> >
-> >  #ifdef CONFIG_EFI
-> >  extern bool efi_runtime_disabled(void);
-> > +extern enum efi_secureboot_mode efi_get_secureboot_mode(void);
-> >  #else
-> >  static inline bool efi_runtime_disabled(void) { return true; }
-> > +static inline enum efi_secureboot_mode efi_get_secureboot_mode(void)
-> > +{
-> > +       return efi_secureboot_mode_disabled;
-> > +}
-> >  #endif
-> >
-> >  extern void efi_call_virt_check_flags(unsigned long flags, const char *call);
-> > --
-> > 2.26.1
-> >
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+---
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c       | 4 ++--
+ drivers/net/ethernet/chelsio/cxgb4/sge.c             | 5 ++++-
+ drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c | 4 +++-
+ drivers/net/ethernet/xscale/ixp4xx_eth.c             | 4 +++-
+ include/linux/ptp_classify.h                         | 2 --
+ net/core/ptp_classifier.c                            | 6 +++---
+ 6 files changed, 15 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+index 70dbee89118e..b32a9006b222 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+@@ -83,8 +83,8 @@ bool is_ptp_enabled(struct sk_buff *skb, struct net_device *dev)
+  */
+ bool cxgb4_ptp_is_ptp_rx(struct sk_buff *skb)
+ {
+-	struct udphdr *uh = (struct udphdr *)(skb->data + ETH_HLEN +
+-					      IPV4_HLEN(skb->data));
++	struct iphdr *ih = (struct iphdr *)(skb->data + ETH_HLEN);
++	struct udphdr *uh = (struct udphdr *)((char *)ih + (ih->ihl << 2));
+ 
+ 	return  uh->dest == htons(PTP_EVENT_PORT) &&
+ 		uh->source == htons(PTP_EVENT_PORT);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index a9e9c7ae565d..c8bec874bc66 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -40,6 +40,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/jiffies.h>
+ #include <linux/prefetch.h>
++#include <linux/ptp_classify.h>
+ #include <linux/export.h>
+ #include <net/xfrm.h>
+ #include <net/ipv6.h>
+@@ -3386,7 +3387,9 @@ static noinline int t4_systim_to_hwstamp(struct adapter *adapter,
+ 
+ 	data = skb->data + sizeof(*cpl);
+ 	skb_pull(skb, 2 * sizeof(u64) + sizeof(struct cpl_rx_mps_pkt));
+-	offset = ETH_HLEN + IPV4_HLEN(skb->data) + UDP_HLEN;
++	offset = ETH_HLEN;
++	offset += ((struct iphdr *)(skb->data + offset))->ihl << 2;
++	offset += UDP_HLEN;
+ 	if (skb->len < offset + OFF_PTP_SEQUENCE_ID + sizeof(short))
+ 		return RX_PTP_PKT_ERR;
+ 
+diff --git a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+index ade8c44c01cd..4e95621997d1 100644
+--- a/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
++++ b/drivers/net/ethernet/oki-semi/pch_gbe/pch_gbe_main.c
+@@ -113,7 +113,9 @@ static int pch_ptp_match(struct sk_buff *skb, u16 uid_hi, u32 uid_lo, u16 seqid)
+ 	if (ptp_classify_raw(skb) == PTP_CLASS_NONE)
+ 		return 0;
+ 
+-	offset = ETH_HLEN + IPV4_HLEN(data) + UDP_HLEN;
++	offset = ETH_HLEN;
++	offset += ((struct iphdr *)(data + offset))->ihl << 2;
++	offset += UDP_HLEN;
+ 
+ 	if (skb->len < offset + OFF_PTP_SEQUENCE_ID + sizeof(seqid))
+ 		return 0;
+diff --git a/drivers/net/ethernet/xscale/ixp4xx_eth.c b/drivers/net/ethernet/xscale/ixp4xx_eth.c
+index 2e5202923510..7443bc1f9bec 100644
+--- a/drivers/net/ethernet/xscale/ixp4xx_eth.c
++++ b/drivers/net/ethernet/xscale/ixp4xx_eth.c
+@@ -264,7 +264,9 @@ static int ixp_ptp_match(struct sk_buff *skb, u16 uid_hi, u32 uid_lo, u16 seqid)
+ 	if (ptp_classify_raw(skb) != PTP_CLASS_V1_IPV4)
+ 		return 0;
+ 
+-	offset = ETH_HLEN + IPV4_HLEN(data) + UDP_HLEN;
++	offset = ETH_HLEN;
++	offset += ((struct iphdr *)(data + offset))->ihl << 2;
++	offset += UDP_HLEN;
+ 
+ 	if (skb->len < offset + OFF_PTP_SEQUENCE_ID + sizeof(seqid))
+ 		return 0;
+diff --git a/include/linux/ptp_classify.h b/include/linux/ptp_classify.h
+index c6487b7ab026..56b2d7d66177 100644
+--- a/include/linux/ptp_classify.h
++++ b/include/linux/ptp_classify.h
+@@ -40,8 +40,6 @@
+ /* Below defines should actually be removed at some point in time. */
+ #define IP6_HLEN	40
+ #define UDP_HLEN	8
+-#define OFF_IHL		14
+-#define IPV4_HLEN(data) (((struct iphdr *)(data + OFF_IHL))->ihl << 2)
+ 
+ struct clock_identity {
+ 	u8 id[8];
+diff --git a/net/core/ptp_classifier.c b/net/core/ptp_classifier.c
+index e33fde06d528..6a964639b704 100644
+--- a/net/core/ptp_classifier.c
++++ b/net/core/ptp_classifier.c
+@@ -114,9 +114,11 @@ struct ptp_header *ptp_parse_header(struct sk_buff *skb, unsigned int type)
+ 	if (type & PTP_CLASS_VLAN)
+ 		ptr += VLAN_HLEN;
+ 
++	ptr += ETH_HLEN;
++
+ 	switch (type & PTP_CLASS_PMASK) {
+ 	case PTP_CLASS_IPV4:
+-		ptr += IPV4_HLEN(ptr) + UDP_HLEN;
++		ptr += (((struct iphdr *)ptr)->ihl << 2) + UDP_HLEN;
+ 		break;
+ 	case PTP_CLASS_IPV6:
+ 		ptr += IP6_HLEN + UDP_HLEN;
+@@ -127,8 +129,6 @@ struct ptp_header *ptp_parse_header(struct sk_buff *skb, unsigned int type)
+ 		return NULL;
+ 	}
+ 
+-	ptr += ETH_HLEN;
+-
+ 	/* Ensure that the entire header is present in this packet. */
+ 	if (ptr + sizeof(struct ptp_header) > skb->data + skb->len)
+ 		return NULL;
+-- 
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
 
