@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15ECB28E90F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA5828E905
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388133AbgJNXCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 19:02:33 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:42481 "EHLO mail.zx2c4.com"
+        id S1730479AbgJNXCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 19:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731265AbgJNXCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 19:02:18 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 075e12dc;
-        Wed, 14 Oct 2020 22:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
-        :subject:date:message-id:in-reply-to:references:mime-version
-        :content-transfer-encoding; s=mail; bh=EPozuoj+BDm/fNTp6nmCgRrnb
-        EI=; b=gYz9PJ4B7EuU6vk6qPqdAddg4bDnwzOOhB6j96pC1QC6JhgGVLnYQz//V
-        MCUGHyzXTkEynX7iFMjllnvi0ui1qLCCbWWq0E6/JfxIbFUmwx85fYInWLGTU2x8
-        uGMPSFB6nnmKrmWU585OZjOG9jA9TOlN56cqtPJG6LWOlxlD0RJsWYdrar/f8hVM
-        1zTcSfx+0yvy532DRFJMpXnnpv6TJp4EZ5C+x36/7kFXFanjjCpD+5ol4Sh/8jd6
-        aj0bz65xTT3as0O4g2fOyDLcEbpkGSKn1Fh7X1lw7JrRZdsIiBt2eJ0C13DqlPUO
-        kF+2z+5Ug6eHBHfoQXEPlMCqc9wZA==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 992bda79 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 14 Oct 2020 22:28:40 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH] powerpc32: don't adjust unmoved stack pointer in csum_partial_copy_generic() epilogue
-Date:   Thu, 15 Oct 2020 01:02:09 +0200
-Message-Id: <20201014230209.427011-1-Jason@zx2c4.com>
-In-Reply-To: <20201014222650.GA390346@zx2c4.com>
-References: <20201014222650.GA390346@zx2c4.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728925AbgJNXCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 19:02:10 -0400
+Subject: Re: [GIT PULL] LEDs changes for v5.10-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602716530;
+        bh=YDA/hYSrZFxzUDn7A/PLKOI14rok/C5bkmVCZAd4izU=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=QVfxyUoOC1oRyudIZWTVQr+aCUvSpF/ArzJkIb1MbMc1LMjiSVX55Esgi88BX/BUV
+         UCQY7umEXMtP7z7SzqEBvbmmKHs/CGxjH4/oXsx8uynyr+20KSHYWsPxWjpCTR0AsD
+         wv+u9wJbA6ikNds/GNBvdj/BmohRURHO9g2nE/0E=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201014110556.GA19009@duo.ucw.cz>
+References: <20201014110556.GA19009@duo.ucw.cz>
+X-PR-Tracked-List-Id: <linux-leds.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201014110556.GA19009@duo.ucw.cz>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.10-rc1
+X-PR-Tracked-Commit-Id: 19d2e0cef0b14f8c7210162f58327485f5fa7c51
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7fafb54c7d390e9b273a1d7d377e38d9c408046e
+Message-Id: <160271653023.18101.10646997334372470012.pr-tracker-bot@kernel.org>
+Date:   Wed, 14 Oct 2020 23:02:10 +0000
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent change to the checksum code removed usage of some extra
-arguments, alongside with storage on the stack for those, and the stack
-pointer no longer needed to be adjusted in the function prologue. But, a
-left over subtraction wasn't removed in the function epilogue, causing
-the function to return with the stack pointer moved 16 bytes away from
-where it should have. This corrupted local state and lead to weird
-crashes. This commit simply removes the leftover instruction from the
-epilogue.
+The pull request you sent on Wed, 14 Oct 2020 13:05:56 +0200:
 
-Fixes: 70d65cd555c5 ("ppc: propagate the calling conventions change down to csum_partial_copy_generic()")
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/powerpc/lib/checksum_32.S | 1 -
- 1 file changed, 1 deletion(-)
+> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/leds-5.10-rc1
 
-diff --git a/arch/powerpc/lib/checksum_32.S b/arch/powerpc/lib/checksum_32.S
-index ec5cd2dede35..27d9070617df 100644
---- a/arch/powerpc/lib/checksum_32.S
-+++ b/arch/powerpc/lib/checksum_32.S
-@@ -236,7 +236,6 @@ _GLOBAL(csum_partial_copy_generic)
- 	slwi	r0,r0,8
- 	adde	r12,r12,r0
- 66:	addze	r3,r12
--	addi	r1,r1,16
- 	beqlr+	cr7
- 	rlwinm	r3,r3,8,0,31	/* odd destination address: rotate one byte */
- 	blr
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7fafb54c7d390e9b273a1d7d377e38d9c408046e
+
+Thank you!
+
 -- 
-2.28.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
