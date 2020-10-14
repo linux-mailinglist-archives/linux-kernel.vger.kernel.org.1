@@ -2,267 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DD028DFCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6962928DFD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgJNL0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729919AbgJNL0u (ORCPT
+        id S2387862AbgJNL3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:29:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25945 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729919AbgJNL3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:26:50 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599A2C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:26:48 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y12so3371353wrp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W1Xb3EWi6oK1/DaQpKgXiT3NvJEd5yovI30IklakN70=;
-        b=GL3cQIAWf+VkmTeQG0gsRX2Df5rOkHjVJgrZqtAvyztHNcswl+uQuyzfuCGZ28KJkL
-         YAVgHVyzwVNQnjrp/DnSi4KG5rjbY8W869ipmyC/6FFxwG69MB3cvEUntMDLrJfv61Hw
-         IpruzSz+SkXcFjCOe6Xm/pUOha4tQ5ZpAuWK2gC43lYOrlBc4GC9zhTwC5ZV3nWapFoi
-         Ieizbagbsy8em+AlXNhlaurWUvIxETXGz7dpGQxQtNVNgUoWpJIgAdli2zVdRjF80fir
-         F/XuWKaYccCX4k+QWfqdZatva20JKp+pUz2zjHWuwyq2HrWYNg9h6DhmNy8Le/89diCc
-         QHzQ==
+        Wed, 14 Oct 2020 07:29:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602674986;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QaTsnB/NmKVi1NdOeJ8x36SBfiUo2Aw3Dr5NQTlitH8=;
+        b=L9ozmRE373JG0pB5f+UUvYq0nZYncriZZ8Q/nymKstcAx9a08htrAHUqRXlwE9geho2toX
+        CKE6Lir9Gk8n3Mr/AZ0omdFbwwf7+uZo3eg9P0kMF7tpw2q0TrHcC1Fm5mnP2wNgkvaDdp
+        GVTOW6ocHEPp6nzAXEXXtzxjvcffsBA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-0wI13JxvNSWg2docutOBvQ-1; Wed, 14 Oct 2020 07:29:42 -0400
+X-MC-Unique: 0wI13JxvNSWg2docutOBvQ-1
+Received: by mail-ed1-f72.google.com with SMTP id 28so1067833edv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:29:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W1Xb3EWi6oK1/DaQpKgXiT3NvJEd5yovI30IklakN70=;
-        b=F+6ey2KH2jGs+qdJFFTfvvMmHR6GIf4OqIAPI2yUZM42XXDqdoAVUM85HNKHLDL8TD
-         uzN4p4TT6e1RD6r2Yif4rKlQmK4Q4EUbS9OC0+XlN2MWkomdmXiAP78QH1E1f+dbN/3t
-         5j04QC0Sl6jsy+X3iA4xli5MKSHn55pUEF3EUtlcl6bA4Xs8NodfdgytfqDBWRKcCQSk
-         epe3Fdh8k5Ho2/NN5IskSA2xXSkTp2UAlD03Lahm+j8N0GNN0GdnbOr1135DMHqRpfDs
-         FAaHj+fKjPFx4w4DGpkBwXVqw9GygZ0NN7eweblt3+VXgotIt0ch4r+s10MXFZGlrRvO
-         NDMg==
-X-Gm-Message-State: AOAM533tEWEExIJ5dm6Hqjm6j6KboJd1fHJXwa7a6B9Wz/pmICvv7Seo
-        tXteUdV188i4rwHWBS9gCgUF9A==
-X-Google-Smtp-Source: ABdhPJxgbrMq6ekWxBaMVjFkqS5MobV4c/7LwKcL+o1Ew8C+9mI/Vc0Clz/IN3aydIhGSZtLH/UCfA==
-X-Received: by 2002:adf:ed07:: with SMTP id a7mr5235113wro.326.1602674806848;
-        Wed, 14 Oct 2020 04:26:46 -0700 (PDT)
-Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id f7sm4690901wrx.64.2020.10.14.04.26.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 04:26:45 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 12:26:43 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Alexandru Stan <amstan@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] backlight: pwm_bl: Fix interpolation
-Message-ID: <20201014112643.grd2x5jj33turihb@holly.lan>
-References: <20201013080103.410133-1-amstan@chromium.org>
- <20201013010056.v2.1.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QaTsnB/NmKVi1NdOeJ8x36SBfiUo2Aw3Dr5NQTlitH8=;
+        b=le31+pv5HQ4Yrh9QzV008UphOl55TQ/cMbU9BcsNBoNDnGSDXpkiUoeSTbkqTiIudU
+         Is0yGukw/zegV3UtdV2qvwnon82z7B1R5go/ST0in/51idBUXD4RJz4DcRavio8UjGo8
+         cjVa1ZPnDWM9dvxdoZG1J9Be62gcK+pf0ld3a6RN+Vk/0WEhvmPR+37rH7IVpKtjC+R5
+         ZkkZ0huC3Gj3rsrf4apyZveh2Gyzt7wgXctqcy9S9s6e2huWDOKsWG0fPgalXX6ycsiP
+         p4eV4XCLu9OQeWI3jMWvHXIVY3w05qjEzk0RkfkflKyBBL0vM9UBafHuF2fKJaVJtYhH
+         XP8g==
+X-Gm-Message-State: AOAM531YYg9wYUK+Mfnpu3A+Oaf4yiel2Tym2wj1CNCDZP8j/Y1lXeU1
+        DJvPj0n4v7igPd2AKcui6r35gPEKqZfq5VyF5kMO1zqGFzCguv980IyMB9N4W8LjzuWUKNBewjQ
+        363K4P2yML2/orGE6gBMlr3XE
+X-Received: by 2002:a17:906:647:: with SMTP id t7mr4893227ejb.428.1602674981326;
+        Wed, 14 Oct 2020 04:29:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGwyGFjVIKKl7Lf54hI7fTvEm7ElH89Mrc1DoIC7JOvVhmBSc+i8q8DLy1qpxgvj3X6UtjYA==
+X-Received: by 2002:a17:906:647:: with SMTP id t7mr4893207ejb.428.1602674981114;
+        Wed, 14 Oct 2020 04:29:41 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id m16sm1398566edj.37.2020.10.14.04.29.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 04:29:40 -0700 (PDT)
+Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
+ driver
+To:     Ed W <lists@wildgooses.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <20200921215919.3072-1-lists@wildgooses.com>
+ <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
+ <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
+ <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
+ <0de126c4-f2aa-a817-0a38-32bf3ede84d1@redhat.com>
+ <e953f3ee-2db1-1523-cd84-6acb26751a15@wildgooses.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d0d91191-cad2-94a1-6373-0f3ff4e38376@redhat.com>
+Date:   Wed, 14 Oct 2020 13:29:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013010056.v2.1.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
+In-Reply-To: <e953f3ee-2db1-1523-cd84-6acb26751a15@wildgooses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 01:01:01AM -0700, Alexandru Stan wrote:
-> Whenever num-interpolated-steps was larger than the distance
-> between 2 consecutive brightness levels the table would get really
-> discontinuous. The slope of the interpolation would stick with
-> integers only and if it was 0 the whole line segment would get skipped.
+Hi,
+
+On 10/14/20 1:21 PM, Ed W wrote:
+> On 14/10/2020 09:41, Hans de Goede wrote:
+>>
+>> So I have a suggested compromise:
+>>
+>> Keep the current LED/gpio setup code, but make executing it conditional
+>> on the BIOS version and skip the LED/gpio setup when the new BIOS is
+>> present to avoid having duplicate LED entries, etc. in that case.
+>>
+>> I guess this would still break userspace because if I understand things
+>> correctly the new ACPI based setup uses different LED names ? That
+>> seems unfortunate, but I guess that from the kernel pov we can just
+>> blame the BIOS for this, and since we definitely do not want duplicate
+>> LED entries for the same LED, this seems the least bad choice.
+>>
+>> Enrico, would that work for you ?
 > 
-> Example settings:
-> 	brightness-levels = <0 1 2 4 8 16 32 64 128 256>;
-> 	num-interpolated-steps = <16>;
 > 
-> The distances between 1 2 4 and 8 would be 1, and only starting with 16
-> it would start to interpolate properly.
-
-Both comments a perilously close to nitpicking but enough that I wanted
-to reply...
-
-I'd suggest that the current behaviour as having two properties.
-
-1. It was designed to generate strictly increasing tables (no repeated
-   values).
-
-2. It's implementation contains quantization errors when calculating the
-   step size. This results in both the discards of some interpolated
-   steps you mentioned (it is possible to insert extra steps between 4
-   and 8 whilst retaining a strictly increasing table). It also
-   results in a potentially large undershoot when multiplying a step
-   size (64 interpolated steps and a gap of 127 is likely to get a visual
-   jump as we hop through 63 physical steps in one go).
-
-#1 can is a policy that can be changed. #2 is a bug that could be fixed.
-
-To be clear I don't object to generating a monotonically increasing
-table but I'd prefer the policy change to be explicitly described in
-the description.
-
-
-> Let's change it so there's always interpolation happening, even if
-> there's no enough points available (read: values in the table would
-> appear more than once). This should match the expected behavior much
-> more closely.
+> I'm cool with this. Enrico?
 > 
-> Signed-off-by: Alexandru Stan <amstan@chromium.org>
-> ---
-> 
->  drivers/video/backlight/pwm_bl.c | 70 ++++++++++++++------------------
->  1 file changed, 31 insertions(+), 39 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
-> index dfc760830eb9..3e77f6b73fd9 100644
-> --- a/drivers/video/backlight/pwm_bl.c
-> +++ b/drivers/video/backlight/pwm_bl.c
-> @@ -230,8 +230,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  				  struct platform_pwm_backlight_data *data)
->  {
->  	struct device_node *node = dev->of_node;
-> -	unsigned int num_levels = 0;
-> -	unsigned int levels_count;
-> +	unsigned int num_levels;
->  	unsigned int num_steps = 0;
->  	struct property *prop;
->  	unsigned int *table;
-> @@ -260,12 +259,11 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  	if (!prop)
->  		return 0;
->  
-> -	data->max_brightness = length / sizeof(u32);
-> +	num_levels = length / sizeof(u32);
->  
->  	/* read brightness levels from DT property */
-> -	if (data->max_brightness > 0) {
-> -		size_t size = sizeof(*data->levels) * data->max_brightness;
-> -		unsigned int i, j, n = 0;
-> +	if (num_levels > 0) {
-> +		size_t size = sizeof(*data->levels) * num_levels;
->  
->  		data->levels = devm_kzalloc(dev, size, GFP_KERNEL);
->  		if (!data->levels)
-> @@ -273,7 +271,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  
->  		ret = of_property_read_u32_array(node, "brightness-levels",
->  						 data->levels,
-> -						 data->max_brightness);
-> +						 num_levels);
->  		if (ret < 0)
->  			return ret;
->  
-> @@ -298,7 +296,13 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  		 * between two points.
->  		 */
->  		if (num_steps) {
-> -			if (data->max_brightness < 2) {
-> +			unsigned int num_input_levels = num_levels;
-> +			unsigned int i;
-> +			u32 x1, x2, x, dx;
-> +			u32 y1, y2;
-> +			s64 dy;
-> +
-> +			if (num_input_levels < 2) {
->  				dev_err(dev, "can't interpolate\n");
->  				return -EINVAL;
->  			}
-> @@ -308,14 +312,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  			 * taking in consideration the number of interpolated
->  			 * steps between two levels.
->  			 */
-> -			for (i = 0; i < data->max_brightness - 1; i++) {
-> -				if ((data->levels[i + 1] - data->levels[i]) /
-> -				   num_steps)
-> -					num_levels += num_steps;
-> -				else
-> -					num_levels++;
-> -			}
-> -			num_levels++;
-> +			num_levels = (num_input_levels - 1) * num_steps + 1;
->  			dev_dbg(dev, "new number of brightness levels: %d\n",
->  				num_levels);
->  
-> @@ -327,24 +324,25 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  			table = devm_kzalloc(dev, size, GFP_KERNEL);
->  			if (!table)
->  				return -ENOMEM;
-> -
-> -			/* Fill the interpolated table. */
-> -			levels_count = 0;
-> -			for (i = 0; i < data->max_brightness - 1; i++) {
-> -				value = data->levels[i];
-> -				n = (data->levels[i + 1] - value) / num_steps;
-> -				if (n > 0) {
-> -					for (j = 0; j < num_steps; j++) {
-> -						table[levels_count] = value;
-> -						value += n;
-> -						levels_count++;
-> -					}
-> -				} else {
-> -					table[levels_count] = data->levels[i];
-> -					levels_count++;
-> +			/*
-> +			 * Fill the interpolated table[x] = y
-> +			 * by draw lines between each (x1, y1) to (x2, y2).
-> +			 */
-> +			dx = num_steps;
-> +			for (i = 0; i < num_input_levels - 1; i++) {
-> +				x1 = i * dx;
-> +				x2 = x1 + dx;
-> +				y1 = data->levels[i];
-> +				y2 = data->levels[i + 1];
-> +				dy = (s64)y2 - y1;
-> +
-> +				for (x = x1; x < x2; x++) {
-> +					table[x] = y1 +
-> +						div_s64(dy * ((s64)x - x1), dx);
+> I may have some time imminently to have a stab at a new patch. Obviously any help structuring this
+> would be appreciated - it feels clumsy using the existing detection mechanism, I think whatever I
+> come up with you should kick back and recommend a new board detection structure, but perhaps we can
+> shortcut that step with a few comments up front?
 
-I don't think it is possible for x - x1 to be negative (e.g. what is the
-s64 for). Obviously it makes little functional difference whether the
-cast is there or not but I don't like fixed point code that has been
-written with "just in case" casts.
+I'm afraid I do not have any wisdom to share here. I would use the DMI bios-version
+or bios-date strings for the detection, but I guess that is obvious.
 
+Other then I guess I would do a preparation patch restructuring the code so that
+the whole conditional part becomes a single if, e.g.:
 
-Daniel.
+	if (old_bios()) {
+		ret = register_leds_and_gpio_for_old_bios()
+		if (ret)
+			goto error_cleanup;
+	}
 
+So in a separate preparation commit put all the code which you tried to
+remove earlier in a single helper function (feel free to pick a different name).
 
->  				}
->  			}
-> -			table[levels_count] = data->levels[i];
-> +			/* Fill in the last point, since no line starts here. */
-> +			table[x2] = y2;
->  
->  			/*
->  			 * As we use interpolation lets remove current
-> @@ -353,15 +351,9 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  			 */
->  			devm_kfree(dev, data->levels);
->  			data->levels = table;
-> -
-> -			/*
-> -			 * Reassign max_brightness value to the new total number
-> -			 * of brightness levels.
-> -			 */
-> -			data->max_brightness = num_levels;
->  		}
->  
-> -		data->max_brightness--;
-> +		data->max_brightness = num_levels - 1;
->  	}
->  
->  	return 0;
-> -- 
-> 2.28.0
-> 
+And then in that prep patch the above would look like this:
+
+	ret = register_leds_and_gpio_for_old_bios()
+	if (ret)
+		goto error_cleanup;
+
+And a follow-up commit adding the new/old bios detection would
+introduce the if.
+
+And do the same for the cleanup parts for module unloading.
+
+I hope this helps...
+
+Regards,
+
+Hans
+
