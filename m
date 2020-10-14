@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F7C28DCEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D892228D819
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388121AbgJNJVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731080AbgJNJUn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:43 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB71C002153
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 18:43:41 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id d28so2008189ote.1
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 18:43:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tL82F+6RfgjrUZlRR/8HglK3DMbaX5GLDo9+n11tNvc=;
-        b=UpqvWPrKLoCqNJQtED0BcS6u2rHPPKE955incSRgD5BIQL0KM4X+HTGFkTp/dEDB2J
-         njVm0RZU39UazrYaakrzLdtGUsVhf59aO8MYtTRcKlTbKOE4it7jVtrrY1Aqjr0uDqCv
-         bNs0usT0QJo5U6m3w02j9LDzElgtvu4pjN2UU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tL82F+6RfgjrUZlRR/8HglK3DMbaX5GLDo9+n11tNvc=;
-        b=S6yWKBiqQiVqSnZGuVGjpHG2P3b7ieGGzCOlNdgERLv+bF7N9cZeZGrJ5B1ohMOmzH
-         4JUE68RPB3sJ9C3KrcPghPwHvHRkstgV12etKNM5FWGiYuxqw/1TXpwaOfpb9uhNmEpX
-         E6HdFSYyMpRoICdyliwEz/c+QshTvj8yeZxtFd4JmguOUy2HQw7KeDWcKtkBmW+AlGcH
-         Dy7jl6ANhoNE8tEAMD+FmhB/Ay36RaD6TZq/9RDSloaaljdlCaULUmUlHr6AUAuk15QC
-         MmarWU/XotGpByoRgtM+bs3Uyx3+Lxi7+FVXp6t5hPQJGC3fp/sWwFS2isHx34OH46R2
-         +Vsw==
-X-Gm-Message-State: AOAM533COj+V27S5mwX8sou3v+l4oux9l0eyd4YrEWXNmqGQZDW0Q09y
-        m+HahdD1MDtgSbvHVREb1NymPw==
-X-Google-Smtp-Source: ABdhPJxt++xCoWN7NJ/Xr8Kh8FEiLJINytfvdn17wmfuC/fj6AwxV6jRVd8ZPALMQWPtAgi0T0ZAiA==
-X-Received: by 2002:a05:6830:30a8:: with SMTP id g8mr1800961ots.370.1602639820546;
-        Tue, 13 Oct 2020 18:43:40 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 105sm402780otf.52.2020.10.13.18.43.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 18:43:40 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/39] 4.4.239-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201012132628.130632267@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f400c1b8-bcf9-421b-60ad-b2c7024685d6@linuxfoundation.org>
-Date:   Tue, 13 Oct 2020 19:43:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726065AbgJNBpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 21:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgJNBpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 21:45:14 -0400
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABAC221D7B;
+        Wed, 14 Oct 2020 01:45:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602639913;
+        bh=xoVbLNzovx3K0pfFbOL/HHB0smvkQSozYRwebCNyDk0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=hNVvia6qcLr2415w4e6BKVE/PIASPCi8OKwP7bSruYotdneHNHr40qlIvEVqo8MKQ
+         5gpVCPxvcC3dnHVWFh6g2QV5n4xj8nS1sjGlDfcCswQwlFnhIBP3ImvO0+i2zEphpZ
+         Lh70GCB/6InazIBger0K3g6/bxvyxhzqQEeRpmMg=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201012132628.130632267@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
+References: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 0/4] clk: qcom : add sm8250 LPASS GFM drivers
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org
+Date:   Tue, 13 Oct 2020 18:45:12 -0700
+Message-ID: <160263991247.310579.116180302037536226@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 7:26 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.239 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.239-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Quoting Srinivas Kandagatla (2020-09-25 03:31:11)
+> This patchset adds support for GFM Muxes found in LPASS
+> (Low Power Audio SubSystem) IP in Audio Clock Controller
+> and Always ON clock controller.
+>=20
+> Clocks derived from these muxes are consumed by LPASS Digital Codec.
+> Currently the driver for Audio and Always ON clock controller only
+> supports GFM Muxes, however it should be easy to add more clock
+> support when required
+>=20
+> Changes since v1:
+>  -removed unnecessary Kconfig dependencies
+>  - cleaned up header includes.
+>  - moved to using pm_clk
+>  - Moved to right place in Makefile
+>  - moved to use module_platform_driver instead of builtin_platform_driver
+>  - add null check for of_device_get_match_data=20
+>=20
+> verified dt_binding_check to pass on linux next https://paste.ubuntu.com/=
+p/6nVzjRwvsW/
 
-Compiled and booted on my test system. No dmesg regressions.
+Rob's bot complained again. Can you run with
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+  make DT_SCHEMA_FILES=3D<path to schema file.yaml> dt_binding_check
 
-thanks,
--- Shuah
-
-
+and make sure the schema is up to date?
