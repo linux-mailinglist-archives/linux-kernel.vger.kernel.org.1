@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A3329375E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Oct 2020 11:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2DE28E887
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392265AbgJTJBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 05:01:22 -0400
-Received: from mail.plutonline.ru ([62.112.114.134]:57289 "EHLO
-        mail.plutonline.ru" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390157AbgJTJBW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:01:22 -0400
-Received: from Shop01 (localhost [127.0.0.1])
-        by mail.plutonline.ru (8.14.7/8.14.7) with SMTP id 09EJJDRO017576;
-        Wed, 14 Oct 2020 22:19:14 +0300 (FET)
-        (envelope-from Osmaisa@hptmail.com)
-Received: from [126.71.152.176] by Shop01 with ESMTP id 35712632F32; Wed, 14 Oct 2020 21:45:06 -0100
-Message-ID: <0d-u67$sko6egn@p98jq.hu>
-From:   "OSMAN" <Osmaisa@hptmail.com>
-Reply-To: "OSMAN" <Osmaisa@hptmail.com>
-To:     pshilov@microsoft.com
-Subject: Reply
-Date:   Wed, 14 Oct 20 21:45:06 GMT
-X-Mailer: eGroups Message Poster
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="A..__1.F61.815.BB_"
-X-Priority: 1
-X-MSMail-Priority: High
+        id S1728688AbgJNVpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 17:45:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726948AbgJNVpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 17:45:09 -0400
+Subject: Re: [GIT PULL] Kselftest fixes update for Linux 5.10-rc1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602711908;
+        bh=l4y6kwexTQFPTMb10JAgiGeecC2eLWrufXIZID15zpk=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=UD2III9ZgEG4WQlI+j1d4fN8QejuJN43GevWYRQyjlB6GR7SWAmfDr9m/l7oCBUrr
+         QNhQdRv5FpQ3B054xaWaiEhn9xCHOT4pZ75B0iIeY+3yjWNnnazYCHaEMsAZ2kNiBA
+         Jffr3BONETphwIgiiD9XoSuMfKsXxS/fiaKKxrDM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <5d868b5d-f3b9-7419-7049-bb2a620493fe@linuxfoundation.org>
+References: <5d868b5d-f3b9-7419-7049-bb2a620493fe@linuxfoundation.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <5d868b5d-f3b9-7419-7049-bb2a620493fe@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.10-rc1
+X-PR-Tracked-Commit-Id: aa803771a80aa2aa2d5cdd38434b369066fbb8fc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9e51183e9462852ad8d1f3b6c687500b770605f4
+Message-Id: <160271190837.18491.1977807483968993644.pr-tracker-bot@kernel.org>
+Date:   Wed, 14 Oct 2020 21:45:08 +0000
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Joe Perches <joe@perches.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Tue, 13 Oct 2020 14:09:37 -0600:
 
---A..__1.F61.815.BB_
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-fixes-5.10-rc1
 
-Hello,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9e51183e9462852ad8d1f3b6c687500b770605f4
 
-I hope this email meets you in good health, My names are Osman Jalloh and =
-I am from Sierra Leone, I
-have some kilos of gold which I inherited from my late parents and I will =
-like to
-ship it out to overseas for investment, I need a partner
-who can receive the gold and make
-arrangement for me to leave my country and meet you after you receive the =
-gold.
-Please note that, the gold is not a stolen gold but my family treasure
-left behind by my late parents who were
-local miners. If you are sincere and can handle this, provide your particu=
-lars as stated below:
+Thank you!
 
-FULL NAME:
-ADDRESS:
-TELEPHONE:
-DATE OF BIRTH:
-COUNTRY:
-SEX:
-OCCUPATION:
-IDENTIFICATION: 
-
-Please write me back on my secure email addresses: (osmasj1990@gmail.com) =
-and (osmasj1990@yahoo.com). 
-
-Thanks,
-Osman Jalloh.
-
---A..__1.F61.815.BB_--
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
