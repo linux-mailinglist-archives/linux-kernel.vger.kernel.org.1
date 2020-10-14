@@ -2,116 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247AF28E372
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E614A28E377
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731457AbgJNPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:43:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59464 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbgJNPnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:43:24 -0400
-Date:   Wed, 14 Oct 2020 15:43:20 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602690201;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0mpOy9K1flk/vxzl9xD64ffVDuS3YqxEYQAqDaJFd0w=;
-        b=y9rh7IhkMPM3D0pTsaGI3NxMYJrcuKyk26QrEMkQgkc6N9mBTDvcpofPynp4tAP44NN2y1
-        wjibpw/+nCMv+0gPGqav49MTNqrwmqR4M9vlEeQbyr8CBwn6zmnA/VaMaz5ozU5Q6WNHNU
-        ZrEy8FhAe2rDmyO8lH2M2o3JKpEckGw3megwtbzM2zSgk2OKO8/NQkTRcb8W2hSaCoSXLY
-        gbQf5tjl+kGgSLjRrzOSuH7wFKPQtYT75ROEL7UcRutk6Lyc3Gvftt5pRTM9rX2imMaNcw
-        Re8k4+KSnmprkwlTw8h8YQu8zF+a1Q3CkdawaZhXxpjCS7fvcroYvDgQ0yq83w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602690201;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0mpOy9K1flk/vxzl9xD64ffVDuS3YqxEYQAqDaJFd0w=;
-        b=C0XFs60Mo7tpRBeiP4xPaDDd0p76Fo4lCciHhzq704h7ktyMKgPPeFF5M8LCZfsQDzYtRT
-        F8jMk5ZBQZ16HYCw==
-From:   "tip-bot2 for Kairui Song" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] hyperv_fb: Update screen_info after removing old
- framebuffer
-Cc:     Kairui Song <kasong@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jake Oshins <jakeo@microsoft.com>, Wei Hu <weh@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201014092429.1415040-3-kasong@redhat.com>
-References: <20201014092429.1415040-3-kasong@redhat.com>
+        id S1731573AbgJNPoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:44:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:51940 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726954AbgJNPoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 11:44:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2AF31D6E;
+        Wed, 14 Oct 2020 08:44:01 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D4633F71F;
+        Wed, 14 Oct 2020 08:43:59 -0700 (PDT)
+Subject: Re: [PATCH 2/8] iommu/arm-smmu-qcom: Add QC SMMUv2 VA Size quirk for
+ SDM660
+To:     kholk11@gmail.com, will@kernel.org
+Cc:     joro@8bytes.org, bjorn.andersson@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200926130004.13528-1-kholk11@gmail.com>
+ <20200926130004.13528-3-kholk11@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <466419ba-99e5-8ad6-ed0a-76e5afd44e7b@arm.com>
+Date:   Wed, 14 Oct 2020 16:43:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Message-ID: <160269020010.7002.11896111566490290262.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200926130004.13528-3-kholk11@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On 2020-09-26 13:59, kholk11@gmail.com wrote:
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> 
+> Some IOMMUs are getting set-up for Shared Virtual Address, but:
+> 1. They are secured by the Hypervisor, so any configuration
+>     change will generate a hyp-fault and crash the system
+> 2. This 39-bits Virtual Address size deviates from the ARM
+>     System MMU Architecture specification for SMMUv2, hence
 
-Commit-ID:     3cb73bc3fa2a3cb80b88aa63b48409939e0d996b
-Gitweb:        https://git.kernel.org/tip/3cb73bc3fa2a3cb80b88aa63b48409939e0d996b
-Author:        Kairui Song <kasong@redhat.com>
-AuthorDate:    Wed, 14 Oct 2020 17:24:29 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 14 Oct 2020 17:05:26 +02:00
+This is a little confusing, since it reads like the 39-bit VA 
+configuration is itself non-architectural, which it obviously isn't.
 
-hyperv_fb: Update screen_info after removing old framebuffer
+>     it is non-standard. In this case, the only way to keep the
+>     IOMMU as the firmware did configure it, is to hardcode a
+>     maximum VA size of 39 bits (because of point 1).
 
-On gen2 HyperV VM, hyperv_fb will remove the old framebuffer, and the
-new allocated framebuffer address could be at a differnt location,
-and it might be no longer a VGA framebuffer.
+The *only* way to preserve an existing configuration is to make a 
+hard-coded assumption about what it probably is? Really? Not, say, 
+actually reading back the currently-configured value? :/
 
-Update screen_info so that after kexec the kernel won't try to reuse
-the old invalid/stale framebuffer address as VGA, corrupting memory.
+> This gives the need to add implementation details bits for
+> at least some of the SoCs having this kind of configuration,
+> which are at least SDM630, SDM636 and SDM660.
+> 
+> These implementation details will be enabled on finding the
+> qcom,sdm660-smmu-v2 compatible.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu-impl.c |  3 ++-
+>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 31 +++++++++++++++++++++-
+>   2 files changed, 32 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> index f4ff124a1967..9d753f8af2cc 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> @@ -216,7 +216,8 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+>   	if (of_device_is_compatible(np, "nvidia,tegra194-smmu"))
+>   		return nvidia_smmu_impl_init(smmu);
+>   
+> -	if (of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
+> +	if (of_device_is_compatible(np, "qcom,sdm660-smmu-v2") ||
+> +	    of_device_is_compatible(np, "qcom,sdm845-smmu-500") ||
+>   	    of_device_is_compatible(np, "qcom,sc7180-smmu-500") ||
+>   	    of_device_is_compatible(np, "qcom,sm8150-smmu-500") ||
+>   	    of_device_is_compatible(np, "qcom,sm8250-smmu-500"))
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 7859fd0db22a..f5bbfe86ef30 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -65,8 +65,33 @@ static const struct arm_smmu_impl qcom_smmu500_impl = {
+>   	.reset = qcom_smmu500_reset,
+>   };
+>   
+> +static int qcom_smmuv2_cfg_probe(struct arm_smmu_device *smmu)
+> +{
+> +	/*
+> +	 * Some IOMMUs are getting set-up for Shared Virtual Address, but:
+> +	 * 1. They are secured by the Hypervisor, so any configuration
+> +	 *    change will generate a hyp-fault and crash the system
+> +	 * 2. This 39-bits Virtual Address size deviates from the ARM
+> +	 *    System MMU Architecture specification for SMMUv2, hence
+> +	 *    it is non-standard. In this case, the only way to keep the
+> +	 *    IOMMU as the firmware did configure it, is to hardcode a
+> +	 *    maximum VA size of 39 bits (because of point 1).
+> +	 */
 
-[ mingo: Tidied up the changelog. ]
+What's the actual UBS value reported? If it's 40 then arguably the main 
+driver could be cleverer and use 39 bits for stage 1 domains anyway to 
+save a level of pagetable. However...
 
-Signed-off-by: Kairui Song <kasong@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Dexuan Cui <decui@microsoft.com>
-Cc: Jake Oshins <jakeo@microsoft.com>
-Cc: Wei Hu <weh@microsoft.com>
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Stephen Hemminger <sthemmin@microsoft.com>
-Link: https://lore.kernel.org/r/20201014092429.1415040-3-kasong@redhat.com
----
- drivers/video/fbdev/hyperv_fb.c |  9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+I'm concerned that "any configuration change" and "maximum" don't appear 
+to add up. What if we decided we want to use short-descriptor format (or 
+just pick a 32-bit VA size for other reasons)? That's happily less than 
+39 bits, but would still represent a change *from* 39 bits, so would it 
+also kill the system? IIRC Jordan's split pagetable support will end up 
+configuring contexts with TxSZ based on va_bits / 2, so now 38 bits - is 
+that going to work?
 
-diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
-index 02411d8..e36fb1a 100644
---- a/drivers/video/fbdev/hyperv_fb.c
-+++ b/drivers/video/fbdev/hyperv_fb.c
-@@ -1114,8 +1114,15 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
- getmem_done:
- 	remove_conflicting_framebuffers(info->apertures,
- 					KBUILD_MODNAME, false);
--	if (!gen2vm)
-+
-+	if (gen2vm) {
-+		/* framebuffer is reallocated, clear screen_info to avoid misuse from kexec */
-+		screen_info.lfb_size = 0;
-+		screen_info.lfb_base = 0;
-+		screen_info.orig_video_isVGA = 0;
-+	} else {
- 		pci_dev_put(pdev);
-+	}
- 	kfree(info->apertures);
- 
- 	return 0;
+If you need to impose specific restrictions on context bank format, just 
+bodging va_bits isn't going to cut it. You'd need to adjust the domain 
+and pagetable configuration directly in ->init_context() in very much 
+the same way as the split pagetable support itself does.
+
+That said, I still hold the opinion that if you can't reprogram the 
+context banks then this is qcom-iommu territory, not arm-smmu.
+
+Robin.
+
+> +	if (smmu->va_size > 39UL)
+> +		dev_notice(smmu->dev,
+> +			   "\tenabling workaround for QCOM SMMUv2 VA size\n");
+> +	smmu->va_size = min(smmu->va_size, 39UL);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct arm_smmu_impl qcom_smmuv2_impl = {
+> +	.cfg_probe = qcom_smmuv2_cfg_probe,
+> +};
+> +
+>   struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+>   {
+> +	const struct device_node *np = smmu->dev->of_node;
+>   	struct qcom_smmu *qsmmu;
+>   
+>   	qsmmu = devm_kzalloc(smmu->dev, sizeof(*qsmmu), GFP_KERNEL);
+> @@ -75,7 +100,11 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+>   
+>   	qsmmu->smmu = *smmu;
+>   
+> -	qsmmu->smmu.impl = &qcom_smmu500_impl;
+> +	if (of_device_is_compatible(np, "qcom,sdm660-smmu-v2")) {
+> +		qsmmu->smmu.impl = &qcom_smmuv2_impl;
+> +	} else {
+> +		qsmmu->smmu.impl = &qcom_smmu500_impl;
+> +	}
+>   	devm_kfree(smmu->dev, smmu);
+>   
+>   	return &qsmmu->smmu;
+> 
