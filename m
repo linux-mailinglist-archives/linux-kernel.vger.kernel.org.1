@@ -2,90 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6E228D9CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A588E28D9C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730375AbgJNGHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 02:07:17 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:40146 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgJNGHP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 02:07:15 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 09E64Qjt047726;
-        Wed, 14 Oct 2020 14:04:26 +0800 (GMT-8)
-        (envelope-from dylan_hung@aspeedtech.com)
-Received: from localhost.localdomain (192.168.10.9) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Oct
- 2020 14:06:44 +0800
-From:   Dylan Hung <dylan_hung@aspeedtech.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ratbert@faraday-tech.com>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH 1/1] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
-Date:   Wed, 14 Oct 2020 14:06:32 +0800
-Message-ID: <20201014060632.16085-2-dylan_hung@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201014060632.16085-1-dylan_hung@aspeedtech.com>
-References: <20201014060632.16085-1-dylan_hung@aspeedtech.com>
+        id S1728788AbgJNGHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 02:07:00 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50528 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725983AbgJNGG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 02:06:59 -0400
+IronPort-SDR: W0FIwhBlDjf5eNxGTv/W9YVOL/SCOTW6YM1AAz0RKiEPfRMmoH4UEGO+6u0p0aY+1m2iKAGII+
+ QQm5Z6zNiJaA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="152981859"
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="152981859"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 23:06:58 -0700
+IronPort-SDR: dhKIjmM6K/QQ2ak8IMR0LLDcWd0N8sbF61GZO86ut2ruBbM0k7dQsxBs6rSEJE6kXi1bLKVaOK
+ XHFCcN+D2G6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="420745954"
+Received: from lkp-server01.sh.intel.com (HELO 77f7a688d8fd) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Oct 2020 23:06:57 -0700
+Received: from kbuild by 77f7a688d8fd with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kSZw8-00003A-JF; Wed, 14 Oct 2020 06:06:56 +0000
+Date:   Wed, 14 Oct 2020 14:06:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 081dd68c89061077930ec7776d98837cb64b0405
+Message-ID: <5f869570.i7zMq8YaqPGXZJWc%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.10.9]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 09E64Qjt047726
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new HW arbitration feature on Aspeed ast2600 will cause MAC TX to
-hang when handling scatter-gather DMA.  Disable the problematic feature
-by setting MAC register 0x58 bit28 and bit27.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: 081dd68c89061077930ec7776d98837cb64b0405  x86/platform/uv: Remove unused variable in UV5 NMI handler
 
-Signed-off-by: Dylan Hung <dylan_hung@aspeedtech.com>
+elapsed time: 724m
+
+configs tested: 83
+configs skipped: 62
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                    vt8500_v6_v7_defconfig
+mips                         rt305x_defconfig
+arc                     haps_hs_smp_defconfig
+arm                        keystone_defconfig
+m68k                           sun3_defconfig
+powerpc                     stx_gp3_defconfig
+powerpc                 mpc834x_itx_defconfig
+arm                             rpc_defconfig
+m68k                          sun3x_defconfig
+ia64                             alldefconfig
+arc                          axs103_defconfig
+arm                     davinci_all_defconfig
+arm                          pxa3xx_defconfig
+arm                            dove_defconfig
+sh                             shx3_defconfig
+arm                          lpd270_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201013
+x86_64               randconfig-a002-20201013
+x86_64               randconfig-a006-20201013
+x86_64               randconfig-a001-20201013
+x86_64               randconfig-a003-20201013
+x86_64               randconfig-a005-20201013
+i386                 randconfig-a005-20201013
+i386                 randconfig-a006-20201013
+i386                 randconfig-a001-20201013
+i386                 randconfig-a003-20201013
+i386                 randconfig-a004-20201013
+i386                 randconfig-a002-20201013
+i386                 randconfig-a016-20201013
+i386                 randconfig-a015-20201013
+i386                 randconfig-a013-20201013
+i386                 randconfig-a012-20201013
+i386                 randconfig-a011-20201013
+i386                 randconfig-a014-20201013
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a016-20201013
+x86_64               randconfig-a015-20201013
+x86_64               randconfig-a012-20201013
+x86_64               randconfig-a013-20201013
+x86_64               randconfig-a014-20201013
+x86_64               randconfig-a011-20201013
+
 ---
- drivers/net/ethernet/faraday/ftgmac100.c | 5 +++++
- drivers/net/ethernet/faraday/ftgmac100.h | 8 ++++++++
- 2 files changed, 13 insertions(+)
-
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 87236206366f..00024dd41147 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1817,6 +1817,11 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 		priv->rxdes0_edorr_mask = BIT(30);
- 		priv->txdes0_edotr_mask = BIT(30);
- 		priv->is_aspeed = true;
-+		/* Disable ast2600 problematic HW arbitration */
-+		if (of_device_is_compatible(np, "aspeed,ast2600-mac")) {
-+			iowrite32(FTGMAC100_TM_DEFAULT,
-+				  priv->base + FTGMAC100_OFFSET_TM);
-+		}
- 	} else {
- 		priv->rxdes0_edorr_mask = BIT(15);
- 		priv->txdes0_edotr_mask = BIT(15);
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.h b/drivers/net/ethernet/faraday/ftgmac100.h
-index e5876a3fda91..63b3e02fab16 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.h
-+++ b/drivers/net/ethernet/faraday/ftgmac100.h
-@@ -169,6 +169,14 @@
- #define FTGMAC100_MACCR_FAST_MODE	(1 << 19)
- #define FTGMAC100_MACCR_SW_RST		(1 << 31)
- 
-+/*
-+ * test mode control register
-+ */
-+#define FTGMAC100_TM_RQ_TX_VALID_DIS (1 << 28)
-+#define FTGMAC100_TM_RQ_RR_IDLE_PREV (1 << 27)
-+#define FTGMAC100_TM_DEFAULT                                                   \
-+	(FTGMAC100_TM_RQ_TX_VALID_DIS | FTGMAC100_TM_RQ_RR_IDLE_PREV)
-+
- /*
-  * PHY control register
-  */
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
