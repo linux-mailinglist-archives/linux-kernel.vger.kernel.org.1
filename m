@@ -2,216 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D2C28DF58
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0A728DF5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgJNKtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgJNKtb (ORCPT
+        id S1729146AbgJNKum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:50:42 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:4125 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgJNKul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:49:31 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E831DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:49:30 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id g7so4299461iov.13
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=HgHUYfl/RqdxqpyW+AYcy5yFjZFOcQH7eO1Foilj7+M=;
-        b=haUlUbdFu1nX6ivBcGnXd/sIrfe2L1qsMdVWShpufVqQ7p0owplfL1Z4v0KQPG/Xjj
-         diCS/zQrPg/IYK8pftdkIKiG5kxSati1CEPX0Kw62Dsjh5pQKfz2xZjzGNteU6vLXX0T
-         IWL1Ro/r26qkZxVYM0fCAy2LIzBgPQqNJ1siPtdSUkiwLUVcRVfuRn5tQDa4mr+FHYaT
-         GBWXd/qOx2OkpyjdaqnRTTmS6DnQlcmzIen8DllsRNOO6d/okNB9NncyQP9PQ/N1H7cy
-         7ZqgoXmhVmF1MWKZvpbMX+S/imATcAifojuGbYmTGjsEGn8Vmv+6JVe5wCD+KKmBdurU
-         heqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=HgHUYfl/RqdxqpyW+AYcy5yFjZFOcQH7eO1Foilj7+M=;
-        b=XywuEmzMI96x5+K5PPhD+rM/pnXOjOIQ1c/4T259Xc8x5zseV8xw69GEnRKORVfrn9
-         sgQJsnn090Li/ZMU+58lEcs/vrUsUtXEj8LF28b5Qh1lt0LexEYb5V1KhUsKi5dexJsu
-         8NKhv7b65z1TRpK3SUnLnv7eUNDc40b6k7X4b4Bh/Lh4QKcFhbLYrgfXzt0UShHC0d0s
-         GD9jrD7XPSfcXpipuBhCO161VZQ24jSlUw2ZphYRlpTX3UrDKQJYePtms+epARQrEYpC
-         d74BYEE9Huq/jVPqptcqbJyH6N9MYgTHcIfqN3FOCszeg2nB5d4lupv5Vc77KQMqeOAK
-         dctQ==
-X-Gm-Message-State: AOAM533huaq1XkGc2vb04fOf5i288bHnjfFKDUCOxWVj4jHjZnHfqw+2
-        pGaSw4zC89g1zZNbeNqbiGFE48IVE06hJuFEh4mac5tbikFYvF0R
-X-Google-Smtp-Source: ABdhPJxrp5zVb72tEMqowWicQw1OH+2Aa2RXOawH6E7+WcmWA+b7TR1yip3sSjUy6V20MblnkIzEHslZQ53oqAm9cys=
-X-Received: by 2002:a02:c785:: with SMTP id n5mr2574048jao.128.1602672570049;
- Wed, 14 Oct 2020 03:49:30 -0700 (PDT)
+        Wed, 14 Oct 2020 06:50:41 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f86d7d50000>; Wed, 14 Oct 2020 03:49:58 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
+ 2020 10:50:40 +0000
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 14 Oct 2020 10:50:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kuQnmFmf9KTCHRfl6vQh7HPGDYR3cJC94o47ywkRQ8RSqhGz1QoZvU2BRGW/NtsJv4dCD/OAbqvgvCZU5Nd6PRBKL7wZaRxo88TRaH/d68nk2cRZIdrOTDw9TKe5EBeLWHa3GSoswpsGa4mbHwEbgfztAaoPI5jte24THuHZxh6qtxPNseB65Sg/VfYj3h4uWd9Ejo3QR7OGQlsNGkxzfIA30E3GdVF9TUQnR2kUqfNDoA6cKouayafiid3ucwwU26WJNsHDme1s3Kgl6819aTF1YP20judhLr3i/V24OoT4EjqlF0OylHy1H/OuS4Hy3vd1oRzWBywg7ALiSBydfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x2F0/9+JMJi2vJGCxiqHYsecFSaVZTKkAHAZW5Ygc24=;
+ b=jUwJDtV1WnPT8DnS6pFb5G08ENjO8H12j3oemb3FtIHsfr9ztxDCBPE7lTddNbyJmXEieJSFa6UGMPHfiHVsALGPrtfr+q2oDYeaFg+Fe/XaysTFkGWNQUMJBzk+BK/Uwre4uhrGch0cGr1JdBKEGCp+WPIflznExMhL7fU7bm5q/WQ0ypr0NlWqAdit0PpkdqXP+0MVfV9W5o1EakALk4VXRFFuQf4xfaQN9WbT1vCMqUKj/JwdDqdUS1EqDRhYh1HCPkh2OnYclQpM6/lzPZ1kzDtAulW+gcSkaQsheBR91pMtuUlDAR3NYv4sVZtyeIs96qTmsIL4BiVTmQwPRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM5PR12MB1244.namprd12.prod.outlook.com (2603:10b6:3:73::15) by
+ DM5PR1201MB2490.namprd12.prod.outlook.com (2603:10b6:3:e3::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3455.28; Wed, 14 Oct 2020 10:50:38 +0000
+Received: from DM5PR12MB1244.namprd12.prod.outlook.com
+ ([fe80::c4a9:7b71:b9:b77a]) by DM5PR12MB1244.namprd12.prod.outlook.com
+ ([fe80::c4a9:7b71:b9:b77a%3]) with mapi id 15.20.3477.021; Wed, 14 Oct 2020
+ 10:50:38 +0000
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+To:     "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
+CC:     "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH net-next v5 01/10] net: bridge: extend the process of
+ special frames
+Thread-Topic: [PATCH net-next v5 01/10] net: bridge: extend the process of
+ special frames
+Thread-Index: AQHWoKDx/0OIHbWIM0GIWObQ1mrX9amW7m8A
+Date:   Wed, 14 Oct 2020 10:50:38 +0000
+Message-ID: <8804be4ea95ea61eabd030eff51ca5116512d184.camel@nvidia.com>
+References: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
+         <20201012140428.2549163-2-henrik.bjoernlund@microchip.com>
+In-Reply-To: <20201012140428.2549163-2-henrik.bjoernlund@microchip.com>
+Reply-To: Nikolay Aleksandrov <nikolay@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=nvidia.com;
+x-originating-ip: [84.238.136.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7ca2dfb9-3d68-4548-59b0-08d8702efcc0
+x-ms-traffictypediagnostic: DM5PR1201MB2490:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR1201MB2490A4C9408DD71503DB46AADF050@DM5PR1201MB2490.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BdEyiaoT9XGQj9F0p2rx5ow4CU4YqWf07NU95iCEmpQrqZRXPXVwdgLy9NOsQKdAtOHu2bpM2v4Ve1OiXaZ0Q1Z4dKiZDqP55rMA7DYJ3JkArMeWL9KA5LUPIdz39nvzCekz1kaREtWq5FEWYadlaVBaKNFlcvv/Z0Sx8DJvZMXawNlXjfRcRH40tTUCqqpzH8AVGlENmYyYzzMHeYbp5Hr3MDJnbwa5mPqWV4vZa4Jy/JRoH9REoW35wOoDSdJjXaADDgz5BgsbCbZbXA1acjCN3+a5ohsZBqk8jmhS0lrXocD8N3vumDp1cjP+of9PyH7GODUi6zUS+6L1RLBYhszqYP6b7UJwH74F+PQ9R1eX0CG+GexfP3nEhkCVyqaY
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1244.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(366004)(39860400002)(6512007)(6506007)(186003)(36756003)(2616005)(2906002)(3450700001)(26005)(4326008)(86362001)(8936002)(5660300002)(4001150100001)(6486002)(478600001)(66446008)(91956017)(76116006)(110136005)(66946007)(71200400001)(66476007)(316002)(64756008)(66556008)(83380400001)(8676002)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 7OVEs3jSeo8XE1E01Z4Xn0ff5LIcXv4wZ/dJ62R9EhS7qYJKlmNEh5dpD+VNl30l/LdrS59FCcUiyNXs5ghZxBqsecuQojprGivVVt/zqj0WSf7+TnFOfrC+vT/8Fiw3Y5O1LEqu7uSLqkr0P1LhWyTd5ttIAKCjtMG5s5fdGEqN/mSkGyNxXGCLc5Ovrp2nvQg7t6hvqFb4EqJElWQ72KrIetumTSKP8EZtd6PrtuXYlBiURZu1l5S5TLIboNna6eIacIvjJhEWUxpuAmvENKfyDAn9LTHVpGwUfjr54FYvY6Ebc23tBcpsCD/iXOdzf9gbgf5A5x81vA+frM/O3VpG1bjKw6goX223kIMSm30wmQ9a3kntGE+Pikd42/oNdoU6tj/XB+PVASCNcqy/E3Pr/BDPWVNtJxKj3MzTfwsK3LJj+VhdRt91KVrEGKTFSvggpD3p0gEz6sUTl40KWf/OjKn9PzQ0ORmBK+UblBIT0DVlOmn1QB1ksW+UH66Zw8EKgOK9ud5j8wEODLHBBRFQZdHMFDfKmecBC+5xH2tn16A1eKGb2GC0QgM5UJxfhUlwDiJalfhJb83kK5O5t79FBlSM+RX2+arGaTvP6S1Ot0Z/HjktXKqii8oLTsS1aJ2ld+TUicHiuWnwflHwPA==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B07A3D8BE4C5B045A829AD4B030DAFA0@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 14 Oct 2020 16:19:18 +0530
-Message-ID: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com>
-Subject: BUG: KASAN: global-out-of-bounds in vprintk_store on x86_64
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        John Ogness <john.ogness@linutronix.de>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1244.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ca2dfb9-3d68-4548-59b0-08d8702efcc0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 10:50:38.2326
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: DaskMrFW+joGu4PYPVdOx8kTFncsMfpSz8eESU+Qe+MSADOj114/Oi5dOSMP7rvPljd6N2wzM2Li5AXXVl3+uA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2490
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602672598; bh=x2F0/9+JMJi2vJGCxiqHYsecFSaVZTKkAHAZW5Ygc24=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Reply-To:Accept-Language:Content-Language:
+         X-MS-Has-Attach:X-MS-TNEF-Correlator:user-agent:
+         authentication-results:x-originating-ip:x-ms-publictraffictype:
+         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
+         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
+         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
+         x-microsoft-antispam:x-microsoft-antispam-message-info:
+         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
+         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=baJO6lryBoVUXdIURSUox162ScQz0ltOLKqC0koB2+vvXybJ/VLcGqlbnHneqpbEi
+         sPr5i13WNgNC8otZZAZEpp9gQSgBAWPJje2wqIxW5HYr9MGUlG1G7MNE/XUDOdOOOz
+         IxqVp6xl7aG3K6GjH2asGShnqBzdblw3CsYOX5x3L98R8IP+jHmpLHrjXgf12zb8MZ
+         GBdJP1bFUBTH3oGiX6H0akyGuxpcDB6eDUiKBo1bogG4BUJO86cBnevLl2aWnIKZ6x
+         W8oTZkJcLjcKfacpv/sddHEA+0/6q4jBP/wLCYwHUKxzkHw6FcLwWwSHHOwrO6nUun
+         5N/4kkGTnbmGA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While testing LTP controllers testing on x86_64 KASAN enabled linux
-next 20201013 tag
-kernel this kernel BUG noticed. The oom-killer log also noticed while
-running tests.
-
-metadata:
-  git branch: master
-  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-  git commit: f2fb1afc57304f9dd68c20a08270e287470af2eb
-  git describe: next-20201013
-  make_kernelversion: 5.9.0
-  kernel-config:
-https://builds.tuxbuild.com/TXP6cqokP8BCYJrv7zf6kw/kernel.config
-
-
-steps to reproduce:
--------------------------
-# cd /opt/ltp
-# ./runltp  -f controllers
-
-Crash log:
---------------
-[  221.921944] oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=c,mems_allowed=0,oom_memcg=/0,task_memcg=in
-[  221.922108] ==================================================================
-[  221.922111] BUG: KASAN: global-out-of-bounds in vprintk_store+0x362/0x3d0
-[  221.922112] Write of size 2 at addr ffffffffba51dbcd by task
-memcg_test_1/11282
-[  221.922113]
-[  221.922114] CPU: 1 PID: 11282 Comm: memcg_test_1 Not tainted
-5.9.0-next-20201013 #1
-[  221.922116] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.0b 07/27/2017
-[  221.922116] Call Trace:
-[  221.922117]  dump_stack+0xa4/0xd9
-[  221.922118]  print_address_description.constprop.0+0x21/0x210
-[  221.922119]  ? _raw_write_lock_bh+0xe0/0xe0
-[  221.922120]  ? vprintk_store+0x362/0x3d0
-[  221.922121]  kasan_report.cold+0x37/0x7c
-[  221.922122]  ? vprintk_store+0x362/0x3d0
-[  221.922123]  check_memory_region+0x18c/0x1f0
-[  221.922124]  memcpy+0x3c/0x60
-[  221.922125]  vprintk_store+0x362/0x3d0
-[  221.922125]  ? __ia32_sys_syslog+0x50/0x50
-[  221.922126]  ? _raw_spin_lock_irqsave+0x9b/0x100
-[  221.922127]  ? _raw_spin_lock_irq+0xf0/0xf0
-[  221.922128]  ? __kasan_check_write+0x14/0x20
-[  221.922129]  vprintk_emit+0x8d/0x1f0
-[  221.922130]  vprintk_default+0x1d/0x20
-[  221.922131]  vprintk_func+0x5a/0x100
-[  221.922132]  printk+0xb2/0xe3
-[  221.922133]  ? swsusp_write.cold+0x189/0x189
-[  221.922134]  ? kernfs_vfs_xattr_set+0x60/0x60
-[  221.922134]  ? _raw_write_lock_bh+0xe0/0xe0
-[  221.922135]  ? trace_hardirqs_on+0x38/0x100
-[  221.922136]  pr_cont_kernfs_path.cold+0x49/0x4b
-[  221.922137]  mem_cgroup_print_oom_context.cold+0x74/0xc3
-[  221.922138]  dump_header+0x340/0x3bf
-[  221.922139]  oom_kill_process.cold+0xb/0x10
-[  221.922140]  out_of_memory+0x1e9/0x860
-[  221.922141]  ? oom_killer_disable+0x210/0x210
-[  221.922142]  mem_cgroup_out_of_memory+0x198/0x1c0
-[  221.922143]  ? mem_cgroup_count_precharge_pte_range+0x250/0x250
-[  221.922144]  try_charge+0xa9b/0xc50
-[  221.922145]  ? arch_stack_walk+0x9e/0xf0
-[  221.922146]  ? memory_high_write+0x230/0x230
-[  221.922146]  ? avc_has_extended_perms+0x830/0x830
-[  221.922147]  ? stack_trace_save+0x94/0xc0
-[  221.922148]  ? stack_trace_consume_entry+0x90/0x90
-[  221.922149]  __memcg_kmem_charge+0x73/0x120
-[  221.922150]  ? cred_has_capability+0x10f/0x200
-[  221.922151]  ? mem_cgroup_can_attach+0x260/0x260
-[  221.922152]  ? selinux_sb_eat_lsm_opts+0x2f0/0x2f0
-[  221.922153]  ? obj_cgroup_charge+0x16b/0x220
-[  221.922154]  ? kmem_cache_alloc+0x78/0x4c0
-[  221.922155]  obj_cgroup_charge+0x122/0x220
-[  221.922156]  ? vm_area_alloc+0x20/0x90
-[  221.922156]  kmem_cache_alloc+0x78/0x4c0
-[  221.922157]  vm_area_alloc+0x20/0x90
-[  221.922158]  mmap_region+0x3ed/0x9a0
-[  221.922159]  ? cap_mmap_addr+0x1d/0x80
-[  221.922160]  do_mmap+0x3ee/0x720
-[  221.922161]  vm_mmap_pgoff+0x16a/0x1c0
-[  221.922162]  ? randomize_stack_top+0x90/0x90
-[  221.922163]  ? copy_page_range+0x1980/0x1980
-[  221.922163]  ksys_mmap_pgoff+0xab/0x350
-[  221.922164]  ? find_mergeable_anon_vma+0x110/0x110
-[  221.922165]  ? __audit_syscall_entry+0x1a6/0x1e0
-[  221.922166]  __x64_sys_mmap+0x8d/0xb0
-[  221.922167]  do_syscall_64+0x38/0x50
-[  221.922168]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  221.922169] RIP: 0033:0x7fe8f5e75103
-[  221.922172] Code: 54 41 89 d4 55 48 89 fd 53 4c 89 cb 48 85 ff 74
-56 49 89 d9 45 89 f8 45 89 f2 44 89 e2 4c 89 ee 48 89 ef b8 09 00 00
-00 0f 05 <48> 3d 00 f0 ff ff 77 7d 5b 5d 41 5c 41 5d 41 5e 41 5f c3 66
-2e 0f
-[  221.922173] RSP: 002b:00007ffd38c90198 EFLAGS: 00000246 ORIG_RAX:
-0000000000000009
-[  221.922175] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe8f5e75103
-[  221.922176] RDX: 0000000000000003 RSI: 0000000000001000 RDI: 0000000000000000
-[  221.922178] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-[  221.922179] R10: 0000000000002022 R11: 0000000000000246 R12: 0000000000000003
-[  221.922180] R13: 0000000000001000 R14: 0000000000002022 R15: 0000000000000000
-[  221.922181]
-[  213O[  221.922182] The buggy address belongs to the variable:
-[  221.922183]  clear_seq+0x2d/0x40
-[  221.922183]
-[  221.922184] Memory state around the buggy address:
-[  221.922185]  ffffffffba51da80: 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00
-[  221.922187]  ffffffffba51db00: 00 00 00 00 00 00 00 00 00 00 00 00
-00 00 00 00
-[  221.922188] >ffffffffba51db80: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
-00 f9 f9 f9
-[  221.922189]                                               ^
-[  221.922190]  ffffffffba51dc00: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
-00 f9 f9 f9
-[  221.922191]  ffffffffba51dc80: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9
-00 f9 f9 f9
-[  221.922193] ==================================================================
-[  221.922194] Disabling lock debugging due to kernel taint
-[  221.922196] ,task=memcg_test_1,pid=11280,uid=0
-[  221.922205] Memory cgroup out of memory: Killed process 11280
-(memcg_test_1) total-vm:4124kB, anon-rss:72kB, file-rss:0kB,
-shmem-rss:0kB, UID:0 pgtables:48kB oom_score_adj:0
-[  221.922509] memcg_test_1 invoked oom-killer:
-gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
-[  222.885676] CPU: 2 PID: 11283 Comm: memcg_test_1 Tainted: G    B
-         5.9.0-next-20201013 #1
-[  222.885678] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-2.0b 07/27/2017
-[  222.885679] Call Trace:
-[  222.885683]  dump_stack+0xa4/0xd9
-[  222.885686]  dump_header+0x8f/0x3bf
-[  222.885689]  oom_kill_process.cold+0xb/0x10
-[  222.885692]  out_of_memory+0x1e9/0x860
-[  222.885697]  ? oom_killer_disable+0x210/0x210
-[  222.923728]  mem_cgroup_out_of_memory+0x198/0x1c0
-[  222.923731]  ? mem_cgroup_count_precharge_pte_range+0x250/0x250
-
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-full test details and log link,
-https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201013/testrun/3302398/suite/linux-log-parser/tests/
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+T24gTW9uLCAyMDIwLTEwLTEyIGF0IDE0OjA0ICswMDAwLCBIZW5yaWsgQmpvZXJubHVuZCB3cm90
+ZToNCj4gVGhpcyBwYXRjaCBleHRlbmRzIHRoZSBwcm9jZXNzaW5nIG9mIGZyYW1lcyBpbiB0aGUg
+YnJpZGdlLiBDdXJyZW50bHkgTVJQDQo+IGZyYW1lcyBuZWVkcyBzcGVjaWFsIHByb2Nlc3Npbmcg
+YW5kIHRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uIGRvZXNuJ3QNCj4gYWxsb3cgYSBuaWNlIHdh
+eSB0byBwcm9jZXNzIGRpZmZlcmVudCBmcmFtZSB0eXBlcy4gVGhlcmVmb3JlIHRyeSB0bw0KPiBp
+bXByb3ZlIHRoaXMgYnkgYWRkaW5nIGEgbGlzdCB0aGF0IGNvbnRhaW5zIGZyYW1lIHR5cGVzIHRo
+YXQgbmVlZA0KPiBzcGVjaWFsIHByb2Nlc3NpbmcuIFRoaXMgbGlzdCBpcyBpdGVyYXRlZCBmb3Ig
+ZWFjaCBpbnB1dCBmcmFtZSBhbmQgaWYNCj4gdGhlcmUgaXMgYSBtYXRjaCBiYXNlZCBvbiBmcmFt
+ZSB0eXBlIHRoZW4gdGhlc2UgZnVuY3Rpb25zIHdpbGwgYmUgY2FsbGVkDQo+IGFuZCBkZWNpZGUg
+d2hhdCB0byBkbyB3aXRoIHRoZSBmcmFtZS4gSXQgY2FuIHByb2Nlc3MgdGhlIGZyYW1lIHRoZW4g
+dGhlDQo+IGJyaWRnZSBkb2Vzbid0IG5lZWQgdG8gZG8gYW55dGhpbmcgb3IgZG9uJ3QgcHJvY2Vz
+cyBzbyB0aGVuIHRoZSBicmlkZ2UNCj4gd2lsbCBkbyBub3JtYWwgZm9yd2FyZGluZy4NCj4gDQo+
+IFNpZ25lZC1vZmYtYnk6IEhlbnJpayBCam9lcm5sdW5kICA8aGVucmlrLmJqb2Vybmx1bmRAbWlj
+cm9jaGlwLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEhvcmF0aXUgVnVsdHVyICA8aG9yYXRpdS52dWx0
+dXJAbWljcm9jaGlwLmNvbT4NCj4gLS0tDQo+ICBuZXQvYnJpZGdlL2JyX2RldmljZS5jICB8ICAx
+ICsNCj4gIG5ldC9icmlkZ2UvYnJfaW5wdXQuYyAgIHwgMzMgKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKystDQo+ICBuZXQvYnJpZGdlL2JyX21ycC5jICAgICB8IDE5ICsrKysrKysrKysr
+KysrKy0tLS0NCj4gIG5ldC9icmlkZ2UvYnJfcHJpdmF0ZS5oIHwgMTkgKysrKysrKysrKysrLS0t
+LS0tLQ0KPiAgNCBmaWxlcyBjaGFuZ2VkLCA2MCBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMo
+LSkNCj4gDQoNCkxvb2tzIGdvb2QuDQpBY2tlZC1ieTogTmlrb2xheSBBbGVrc2FuZHJvdiA8bmlr
+b2xheUBudmlkaWEuY29tPg0KDQo=
