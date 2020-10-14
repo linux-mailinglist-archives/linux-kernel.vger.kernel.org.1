@@ -2,165 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6589C28E426
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AA328E42C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388170AbgJNQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387838AbgJNQPa (ORCPT
+        id S2388196AbgJNQRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:17:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726105AbgJNQRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:15:30 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A0FC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:15:30 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id hk7so106464pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:15:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=64O+fR/GllKYCX62Sf5RVZIAk7qknLRTmC65T58b/EE=;
-        b=ruI8d9dUhqJ3AqbFASjWfQWYfB0OdQU1zUY5jbpKvA0Raz7Fu/xlInj2J973Fz31sf
-         SYoljLdfHknCl1jyKaIaqDGF+LF3TobqleD2BXbbdjWxtOSs4v7lC76WRqEa2uhpA2FB
-         t3cRQOCT50R57IscF3K+as6QAtf4EFRKDs5AOfOgVNc//In1UNBVUfkAggD8hE2VZ/x6
-         z7cFU5qROZgS+8ZcZuPPfm/co+q4C1jbr2wklTjFmMWpzadMB3nUSRh+6lUI8VsHISi+
-         K3cIUH5HFBzGDVPoJWkf2NUwsbiUihVwawlRlx/905Bqvr42s6r1gk+1LCvLWh9TezHj
-         ++hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=64O+fR/GllKYCX62Sf5RVZIAk7qknLRTmC65T58b/EE=;
-        b=Lcd8x3vWGqyDOxMBjRRi0WtWlbT84DYaWsoAUmOr54mx16ngSJlOwo/ZEF8WjhInoW
-         nZf7Ig7TZSyyng4ACkouxhwLn2d0ipcvaIpuygqyYK1L1jSa8QdIGhhjxZc6HH6nXSQ3
-         IJ6Rg0ORKtDjYJgTGoqVkQSPCs9dQW6FhAKbweJayukrvC3D+gjwjSAu6rAimAl09nwN
-         jEnbxiRWk6zatOlrC321j7CS+se/KVt6y8YqT4MpuGSxyjLKzGLzMOW5NW/9//y9RuYA
-         IktXKqJ9fNqOOKzl36y1wCoqPS8AejyWwvqxDow/7HjO3l2yY5a62oOm9JzvFRbsG3qb
-         wiXA==
-X-Gm-Message-State: AOAM532Xo1d3yo7uVgVFSQ8rI7wjESYcHlrPepsT5mbCc5SKaxwrWhAz
-        YB22k6evVAv6RLYOd6w6niM=
-X-Google-Smtp-Source: ABdhPJxJEJ2UZAwbLWSxWCDnD8RH7ghYywPArppt9TBOruVqR1ZfroPlzIgrh6W4Gxqyl5Q+lJVzFA==
-X-Received: by 2002:a17:902:d88a:b029:d2:1ebe:b4e4 with SMTP id b10-20020a170902d88ab02900d21ebeb4e4mr207419plz.12.1602692129432;
-        Wed, 14 Oct 2020 09:15:29 -0700 (PDT)
-Received: from ubuntu (1-171-246-157.dynamic-ip.hinet.net. [1.171.246.157])
-        by smtp.gmail.com with ESMTPSA id g3sm111061pjl.6.2020.10.14.09.15.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 09:15:28 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 00:15:25 +0800
-From:   Yun Hsiang <hsiang023167@gmail.com>
-To:     Patrick Bellasi <patrick.bellasi@matbug.net>
-Cc:     Qais Yousef <qais.yousef@arm.com>, dietmar.eggemann@arm.com,
-        peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
- flag to reset uclamp
-Message-ID: <20201014161525.GB502296@ubuntu>
-References: <20201012163140.371688-1-hsiang023167@gmail.com>
- <87blh6iljc.derkling@matbug.net>
- <20201013102951.orcr6m4q2cb7y6zx@e107158-lin>
- <875z7eic14.derkling@matbug.net>
- <20201013133246.cjomufo5q7qsocrn@e107158-lin>
- <87362ihxvw.derkling@matbug.net>
+        Wed, 14 Oct 2020 12:17:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602692224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4RDajsjrqvAACfKHo0P6K+Nj/A3/MGqReh0W4mni04=;
+        b=Qy9cxs3NLUQoyODFOzppMWAwnvOqjc7mb/w7VG3q1VHoHrAEN2T9szVOTcwHBHEIrZNQKv
+        Tuta5WC5pEUdJ+eWiOjxqCo5hYpGmDm7vvbU/Mxoh8J0+nyLbodCtNf6BSA5MJiFA0QJRZ
+        gtoIWz9wRXgUEyMBk2Xdz2XZT3zL3Xg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-ZP1IG6CMNqaoo_FtEfwjSA-1; Wed, 14 Oct 2020 12:17:01 -0400
+X-MC-Unique: ZP1IG6CMNqaoo_FtEfwjSA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0067756BE8;
+        Wed, 14 Oct 2020 16:17:00 +0000 (UTC)
+Received: from krava (unknown [10.40.195.92])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 89EBE10021AA;
+        Wed, 14 Oct 2020 16:16:58 +0000 (UTC)
+Date:   Wed, 14 Oct 2020 18:16:57 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andi Kleen <andi@firstfloor.org>, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH v2] perf: Add support for exclusive groups/events
+Message-ID: <20201014161657.GF1395746@krava>
+References: <20201014144255.22699-1-andi@firstfloor.org>
+ <20201014152212.GJ3100363@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87362ihxvw.derkling@matbug.net>
+In-Reply-To: <20201014152212.GJ3100363@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 06:52:03PM +0200, Patrick Bellasi wrote:
+On Wed, Oct 14, 2020 at 12:22:12PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Oct 14, 2020 at 07:42:55AM -0700, Andi Kleen escreveu:
+> > Peter suggested that using the exclusive mode in perf could
+> > avoid some problems with bad scheduling of groups. Exclusive
+> > is implemented in the kernel, but wasn't exposed by the perf tool,
+> > so hard to use without custom low level API users.
+> > 
+> > Add support for marking groups or events with :e for exclusive
+> > in the perf tool.  The implementation is basically the same as the
+> > existing pinned attribute.
+> > 
+> > Cc: peterz@infradead.org
+> > Signed-off-by: Andi Kleen <ak@linux.intel.com>
+> 
+> Jiri, I'm taking you "I'm ok" with this as an Acked-by, thanks
 
-Hi Patrick,
+yes
 
-> 
-> On Tue, Oct 13, 2020 at 15:32:46 +0200, Qais Yousef <qais.yousef@arm.com> wrote...
-> 
-> > On 10/13/20 13:46, Patrick Bellasi wrote:
-> >> > So IMO you just need a single SCHED_FLAG_UTIL_CLAMP_RESET that if set in the
-> >> > attr, you just execute that loop in __setscheduler_uclamp() + reset
-> >> > uc_se->user_defined.
-> >> >
-> >> > It should be invalid to pass the SCHED_FLAG_UTIL_CLAMP_RESET with
-> >> > SCHED_FLAG_UTIL_CLAMP_MIN/MAX. Both have contradictory meaning IMO.
-> >> > If user passes both we should return an EINVAL error.
-> >> 
-> >> Passing in  _CLAMP_RESET|_CLAMP_MIN will mean reset the min value while
-> >> keeping the max at whatever it is. I think there could be cases where
-> >> this support could be on hand.
-> >
-> > I am not convinced personally. I'm anxious about what this fine grained control
-> > means and how it should be used. I think less is more in this case and we can
-> > always relax the restriction (appropriately) later if it's *really* required.
-> >
-> > Particularly the fact that this user_defined is per uclamp_se and that it
-> > affects the cgroup behavior is implementation details this API shouldn't rely
-> > on.
-> 
-> The user_defined flag is an implementation details: true, but since the
-> beginning uclamp _always_ allowed a task to set only one of its clamp
-> values.
-> 
-> That's why we have UTIL_CLAMP_{MIN,MAX} as separate flags and all the
-> logic in place to set only one of the two.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-I agree that UTIL_CLAMP_{MIN,MAX} should be able to set separately.
-So the flag usage might be
-_CLAMP_RESET => ?
-_CLAMP_RESET | _CLAMP_MIN => reset min value
-_CLAMP_RESET | _CLAMP_MAX => reset max value
-_CLAMP_RESET | _CLAMP_MIN | _CLAMP_MAX => reset both min and max
-If user pass _CLAMP_RESET without _CLAMP_MIN or _CLAMP MAX,
-Should we reset both min & max value or return EINVAL error?
+thanks,
+jirka
 
 > 
+> - Arnaldo
 > 
-> > A generic RESET my uclamp settings makes more sense for me as a long term
-> > API to maintain.
-> >
-> > Actually maybe we should even go for a more explicit
-> > SCHED_FLAG_UTIL_CLAMP_INHERIT_CGROUP flag instead. If we decide to abandon the
-> > support for this feature in the future, at least we can make it return an error
-> > without affecting other functionality because of the implicit nature of
-> > SCHED_FLAG_UTIL_CLAMP_RESET means inherit cgroup value too.
+>  
+> > --
+> > 
+> > v2: Update check_modifier too (Jiri)
+> > ---
+> >  tools/perf/Documentation/perf-list.txt |  1 +
+> >  tools/perf/tests/parse-events.c        | 58 +++++++++++++++++++++++++-
+> >  tools/perf/util/parse-events.c         | 11 ++++-
+> >  tools/perf/util/parse-events.l         |  2 +-
+> >  4 files changed, 68 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
+> > index 10ed539a8859..4c7db1da8fcc 100644
+> > --- a/tools/perf/Documentation/perf-list.txt
+> > +++ b/tools/perf/Documentation/perf-list.txt
+> > @@ -58,6 +58,7 @@ counted. The following modifiers exist:
+> >   S - read sample value (PERF_SAMPLE_READ)
+> >   D - pin the event to the PMU
+> >   W - group is weak and will fallback to non-group if not schedulable,
+> > + e - group or event are exclusive and do not share the PMU
+> >  
+> >  The 'p' modifier can be used for specifying how precise the instruction
+> >  address should be. The 'p' modifier can be specified multiple times:
+> > diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+> > index 7f9f87a470c3..7411dd4d76cf 100644
+> > --- a/tools/perf/tests/parse-events.c
+> > +++ b/tools/perf/tests/parse-events.c
+> > @@ -557,6 +557,7 @@ static int test__checkevent_pmu_events(struct evlist *evlist)
+> >  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+> >  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+> >  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+> >  
+> >  	return 0;
+> >  }
+> > @@ -575,6 +576,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
+> >  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+> >  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+> >  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+> >  
+> >  	/* cpu/pmu-event/u*/
+> >  	evsel = evsel__next(evsel);
+> > @@ -587,6 +589,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
+> >  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+> >  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+> >  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.pinned);
+> >  
+> >  	return 0;
+> >  }
+> > @@ -1277,6 +1280,49 @@ static int test__pinned_group(struct evlist *evlist)
+> >  	return 0;
+> >  }
+> >  
+> > +static int test__checkevent_exclusive_modifier(struct evlist *evlist)
+> > +{
+> > +	struct evsel *evsel = evlist__first(evlist);
+> > +
+> > +	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
+> > +	TEST_ASSERT_VAL("wrong exclude_kernel", evsel->core.attr.exclude_kernel);
+> > +	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+> > +	TEST_ASSERT_VAL("wrong precise_ip", evsel->core.attr.precise_ip);
+> > +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
+> > +
+> > +	return test__checkevent_symbolic_name(evlist);
+> > +}
+> > +
+> > +static int test__exclusive_group(struct evlist *evlist)
+> > +{
+> > +	struct evsel *evsel, *leader;
+> > +
+> > +	TEST_ASSERT_VAL("wrong number of entries", 3 == evlist->core.nr_entries);
+> > +
+> > +	/* cycles - group leader */
+> > +	evsel = leader = evlist__first(evlist);
+> > +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+> > +	TEST_ASSERT_VAL("wrong config",
+> > +			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+> > +	TEST_ASSERT_VAL("wrong group name", !evsel->group_name);
+> > +	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
+> > +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
+> > +
+> > +	/* cache-misses - can not be pinned, but will go on with the leader */
+> > +	evsel = evsel__next(evsel);
+> > +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+> > +	TEST_ASSERT_VAL("wrong config",
+> > +			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+> > +
+> > +	/* branch-misses - ditto */
+> > +	evsel = evsel__next(evsel);
+> > +	TEST_ASSERT_VAL("wrong config",
+> > +			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
+> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+> > +
+> > +	return 0;
+> > +}
+> >  static int test__checkevent_breakpoint_len(struct evlist *evlist)
+> >  {
+> >  	struct evsel *evsel = evlist__first(evlist);
+> > @@ -1765,7 +1811,17 @@ static struct evlist_test test__events[] = {
+> >  		.name  = "cycles:k",
+> >  		.check = test__sym_event_dc,
+> >  		.id    = 55,
+> > -	}
+> > +	},
+> > +	{
+> > +		.name  = "instructions:uep",
+> > +		.check = test__checkevent_exclusive_modifier,
+> > +		.id    = 56,
+> > +	},
+> > +	{
+> > +		.name  = "{cycles,cache-misses,branch-misses}:e",
+> > +		.check = test__exclusive_group,
+> > +		.id    = 57,
+> > +	},
+> >  };
+> >  
+> >  static struct evlist_test test__events_pmu[] = {
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > index 9f7260e69113..c4da6bf6ff6a 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -1768,6 +1768,7 @@ struct event_modifier {
+> >  	int sample_read;
+> >  	int pinned;
+> >  	int weak;
+> > +	int exclusive;
+> >  };
+> >  
+> >  static int get_event_modifier(struct event_modifier *mod, char *str,
+> > @@ -1783,6 +1784,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+> >  	int precise_max = 0;
+> >  	int sample_read = 0;
+> >  	int pinned = evsel ? evsel->core.attr.pinned : 0;
+> > +	int exclusive = evsel ? evsel->core.attr.exclusive : 0;
+> >  
+> >  	int exclude = eu | ek | eh;
+> >  	int exclude_GH = evsel ? evsel->exclude_GH : 0;
+> > @@ -1824,6 +1826,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+> >  			sample_read = 1;
+> >  		} else if (*str == 'D') {
+> >  			pinned = 1;
+> > +		} else if (*str == 'e') {
+> > +			exclusive = 1;
+> >  		} else if (*str == 'W') {
+> >  			weak = 1;
+> >  		} else
+> > @@ -1857,6 +1861,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+> >  	mod->sample_read = sample_read;
+> >  	mod->pinned = pinned;
+> >  	mod->weak = weak;
+> > +	mod->exclusive = exclusive;
+> >  
+> >  	return 0;
+> >  }
+> > @@ -1870,7 +1875,7 @@ static int check_modifier(char *str)
+> >  	char *p = str;
+> >  
+> >  	/* The sizeof includes 0 byte as well. */
+> > -	if (strlen(str) > (sizeof("ukhGHpppPSDIW") - 1))
+> > +	if (strlen(str) > (sizeof("ukhGHpppPSDIWe") - 1))
+> >  		return -1;
+> >  
+> >  	while (*p) {
+> > @@ -1912,8 +1917,10 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
+> >  		evsel->precise_max         = mod.precise_max;
+> >  		evsel->weak_group	   = mod.weak;
+> >  
+> > -		if (evsel__is_group_leader(evsel))
+> > +		if (evsel__is_group_leader(evsel)) {
+> >  			evsel->core.attr.pinned = mod.pinned;
+> > +			evsel->core.attr.exclusive = mod.exclusive;
+> > +		}
+> >  	}
+> >  
+> >  	return 0;
+> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+> > index 3ca5fd2829ca..9db5097317f4 100644
+> > --- a/tools/perf/util/parse-events.l
+> > +++ b/tools/perf/util/parse-events.l
+> > @@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
+> >  name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+> >  drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
+> >  /* If you add a modifier you need to update check_modifier() */
+> > -modifier_event	[ukhpPGHSDIW]+
+> > +modifier_event	[ukhpPGHSDIWe]+
+> >  modifier_bp	[rwx]{1,3}
+> >  
+> >  %%
+> > -- 
+> > 2.28.0
+> > 
 > 
-> That's not true and it's an even worst implementation detail what you
-> want to expose.
+> -- 
 > 
-> A task without a task specific clamp _always_ inherits the system
-> defaults. Resetting a task specific clamp already makes sense also
-> _without_ cgroups. It means: just do whatever the system allows you to
-> do.
+> - Arnaldo
 > 
-> Only if you are running with CGRoups enabled and the task happens to be
-> _not_ in the root group, the "CGroups inheritance" happens.
-> But that's exactly an internal detail a task should not care about.
 
-I prefer to use SCHED_FLAG_UTIL_CLAMP_RESET because cgroup inheritance
-is default behavior when task doesn't set it's uclamp.
-
-> 
-> > That being said, I am not strongly against the fine grained approach if that's
-> > what Yun wants now or what you both prefer.
-> 
-> It's not a fine grained approach, it's just adding a reset mechanism for
-> what uclamp already allows to do: setting min and max clamps
-> independently.
-> 
-> Regarding use cases, I also believe we have many more use cases of tasks
-> interested in setting/resetting just one clamp than tasks interested in
-> "fine grain" controlling both clamps at the same time.
-> 
-> 
-> > I just think the name of the flag needs to change to be more explicit
-> > too then.
-> 
-> I don't agree on that and, again, I see much more fine grained details and
-> internals exposure in what you propose compared to a single generic
-> _RESET flag.
-> 
-> > It'd be good to hear what others think.
-> 
-> I agree on that ;)
-> 
