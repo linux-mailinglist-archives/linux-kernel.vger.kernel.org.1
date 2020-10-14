@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB7228EB0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEE128EB1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgJOCTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 22:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S1730511AbgJOCYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgJOCTh (ORCPT
+        with ESMTP id S1728982AbgJOCYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:19:37 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08156C05BD24
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:43:26 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w21so700494pfc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:43:25 -0700 (PDT)
+        Wed, 14 Oct 2020 22:24:37 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6B5C05BD29
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:47:01 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gv6so625762pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=HXE7zd358OihnnXdqbHtVXM+0rFJH6HtXX7mG7HS7rs=;
-        b=P+m7XeYyZ2d5m2JBT4Wg90TEWdILqbaLccqKq7i1SamEiRkb82fahXnlpg2f1W1wbg
-         hYpm7jOYPcOHuFgqqHnuX4V3PF9C/c9wSPHpPybZudVDCal6bW+V4V423MNW5wH9Pi3v
-         EAtrVXrDgHaNrDFivAYIB/ro+72Y46zcpNM1E=
+        bh=1ZkeuWYx0x8NcK97W3bc1qXSyhy0ywO9Zu1gztVJSpU=;
+        b=WE3ire40GLinUOppIi7ZcbOVETm0WyX7RLx7xCaymADCWSNOR8y2/RwcPtSnft1aFu
+         0ChZJ7ygTGlmsX8EVM6bGmei1Zx5q2bj0yebVv+SOHsAiV0uEn+oar9jyVds8dZOPeFt
+         NDilDA6BdcrnvpJnue+wzGel9tWEzsFUzutQ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HXE7zd358OihnnXdqbHtVXM+0rFJH6HtXX7mG7HS7rs=;
-        b=Bpwr8m41ANBgPknilAHMcPlGwEZBE+r5YtjcquvEnjXSdLgBvFbR2TklBVJDbs+ZIT
-         UOwqmD0Nr6bXLSzaNclpDr3VyI4PHWspHfm5slwv4Cha0zPJNPRm6DeyDOZfHHnI6NZh
-         bnqxPvXvpltNcWDOqm2Mrr+rgb129KTv9wTZs2UCkqzl/j+Heuj24w6p86QUpf4vgwtN
-         XUOncUM7zbAoLGNpVRpPH1yqNjNe022ylzCBfIb01BYMiwg8jW+krWIpzMXuj7ESfJ3Z
-         d2Epmhn5k7GlB6ZGQ6EKmBICopeYEdwUZ2Ay0PEAbtxoCsA/llMwlmt4/AQPurJyInxW
-         R5gw==
-X-Gm-Message-State: AOAM532xrEp8oZ50Y9H3GYinqxaxa+NcP88IkCl1SUxc1KDOYgZ2GYcp
-        MdzzKNXWy1k10aIBTztmEuScBw==
-X-Google-Smtp-Source: ABdhPJwfaPNC+AVzyD2mbtxihYKliPRj3PBojQshk4IbHIXu4wlCtL4Vs5DVZZ2Xhz60ywvob16sAw==
-X-Received: by 2002:a63:77c4:: with SMTP id s187mr881793pgc.303.1602715405507;
-        Wed, 14 Oct 2020 15:43:25 -0700 (PDT)
+        bh=1ZkeuWYx0x8NcK97W3bc1qXSyhy0ywO9Zu1gztVJSpU=;
+        b=QAHwiY84pNTWQbF2K+Egs5E4EmOrSn/w5kZNiYs/MnA5fwWDlJSEncKo3ZRnpH4jO9
+         FjAS8HtDyEVVtQOOdzO/fauQbfpw0PCL/+x3bxuAyfQmvJRdrawsmx3ehYBe/78rINDv
+         LxbiJjtkxdQ762N4n5dFRAb0v2GXRl3RWlOzGZPqjcTI2GTUp9qtbrmtAyCgKFim3ucV
+         1dHcWxFgWqPOOfjMf0a6XK7eVJ8xtvJdwssskbzlNAfP47sF6z5lCVxwG9z0riDUWoeE
+         mzkHIcB8k+cwu2fUgJHG+GitsBoYB2xk+4Y1D4Sq1KXsO4MUgmtYpnZq9YdtdBY8DMhv
+         5/xg==
+X-Gm-Message-State: AOAM533Rzoy7DimsRYI5iCKhVPrr3xB9Q+ptLdwTIKirxY/lqXIA5u2g
+        WmG4DtZeiSGxMziknJQIHDsm9Q==
+X-Google-Smtp-Source: ABdhPJw7BSKlM7cAv8r7/0jhJx32xhaKYpzsb2RiBeH0xy7bNtYmDuLkURklLKzHhQnxbTes9rTU2A==
+X-Received: by 2002:a17:90a:f0ca:: with SMTP id fa10mr1313834pjb.130.1602715621497;
+        Wed, 14 Oct 2020 15:47:01 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l14sm630167pfc.170.2020.10.14.15.43.24
+        by smtp.gmail.com with ESMTPSA id d9sm591245pjx.47.2020.10.14.15.47.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 15:43:24 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 15:43:23 -0700
+        Wed, 14 Oct 2020 15:47:00 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 15:46:59 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -60,34 +62,35 @@ Cc:     Sami Tolvanen <samitolvanen@google.com>,
         linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
         x86@kernel.org
-Subject: Re: [PATCH v6 07/25] treewide: remove DISABLE_LTO
-Message-ID: <202010141541.E689442E@keescook>
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+Message-ID: <202010141545.1E2A393C62@keescook>
 References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-8-samitolvanen@google.com>
+ <20201013003203.4168817-23-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201013003203.4168817-8-samitolvanen@google.com>
+In-Reply-To: <20201013003203.4168817-23-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:31:45PM -0700, Sami Tolvanen wrote:
-> This change removes all instances of DISABLE_LTO from
-> Makefiles, as they are currently unused, and the preferred
-> method of disabling LTO is to filter out the flags instead.
+On Mon, Oct 12, 2020 at 05:32:00PM -0700, Sami Tolvanen wrote:
+> Running objtool --vmlinux --duplicate on vmlinux.o produces a few
+> warnings about indirect jumps with retpoline:
 > 
-> Suggested-by: Kees Cook <keescook@chromium.org>
+>   vmlinux.o: warning: objtool: wakeup_long64()+0x61: indirect jump
+>   found in RETPOLINE build
+>   ...
+> 
+> This change adds ANNOTATE_RETPOLINE_SAFE annotations to the jumps
+> in assembly code to stop the warnings.
+> 
 > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Hi Masahiro,
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Since this is independent of anything else and could be seen as a
-general cleanup, can this patch be taken into your tree, just to
-separate it from the list of dependencies for this series?
-
--Kees
+This looks like it's an independent fix -- can an x86 maintainer pick
+up this patch directly?
 
 -- 
 Kees Cook
