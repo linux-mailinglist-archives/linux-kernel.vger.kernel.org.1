@@ -2,149 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B45C28EA90
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9165628E83E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732518AbgJOB7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732482AbgJOB7h (ORCPT
+        id S1730166AbgJNVNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 17:13:34 -0400
+Received: from smtprelay0199.hostedemail.com ([216.40.44.199]:42902 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726575AbgJNVNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:59:37 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E481DC0613DB
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:12:42 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id l8so1094360ioh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MgIottc27IodWM5GJleHD1Awup/i7CxkOaAMBh4aorw=;
-        b=YLQHxRGPkKKEwYIn7zXFjRkwau5MpUA3xsoAmrm3OQF+XG752hMs7pBjKkQzJn+2Pp
-         3P00TsbbCoFglnQnmkjzjCB656mVVmrDKgI27zCGxzYwlKwieK+qVNpqBejYqlojIYMG
-         nHn6pNk4KeiZIV6ALq7AKsFP8QR64VaENWzDCTNyENHWN3nZHVMUkDZFI45e5uGX8YN6
-         rHjvbA62IW5qX60O9wlVg8jgaWML3HrfZvoHtoq73brfIm5aa/+xC9inpSXJC4xpNtIw
-         PU+kh3AjMHoDID1WJ6QKytelGGfP+jvqOXbwRO7MO93GBZEl1cDe5t6IGvGd/KxLvB1N
-         BhZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MgIottc27IodWM5GJleHD1Awup/i7CxkOaAMBh4aorw=;
-        b=innJR2tJ1zdDbLxtm1hHJLYFsEaa+qRXJmgciuIHNBp8b7/S1+wHx40+qvsUvbUJs0
-         1I5h9BCmaRx8kSXmNv33N7xc4cMw6fPgVdIrrlXV55y4UJC6RVCKYZpSAGhOR+d7sLLJ
-         jMa9BHXUAJfA0lO0YxQHwEIBiAQ0dLrN0YICx++yy2sfg6mcjEiktX58Bo1uOanGKRwO
-         FsttR6w0TquE9gLx3MQ3taHL5KfROOpwHr/OnhYuqi4TTQ//PhiQ+fpcmEe0pLzIYSWn
-         o/E+2G+fjoj43DsRC7/KcnGucY+S23B1UGbcZlm9klQzatizxZAAqBmFOwb02aW59KN8
-         T0aw==
-X-Gm-Message-State: AOAM5318mw36L88O9QC1wXLnFXUwukXl/nJg24WxWkdJD3SYCGKZKOyP
-        HCj/icL3JkD+0iolLER/G+xGkz8V4YbhqA==
-X-Google-Smtp-Source: ABdhPJxr4WUUzaYmP4Vs1JF/4aMvZKSsxbb8JYZKoxGERT/cvzeTUI6bpnTw+ao4F/fitjAY4a4CyQ==
-X-Received: by 2002:a05:6602:2b90:: with SMTP id r16mr1029944iov.31.1602709961964;
-        Wed, 14 Oct 2020 14:12:41 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11d1::1116? ([2620:10d:c091:480::1:6b7a])
-        by smtp.gmail.com with ESMTPSA id h14sm496298ilc.38.2020.10.14.14.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 14:12:41 -0700 (PDT)
-Subject: Re: [PATCH] fs: fix NULL dereference due to data race in
- prepend_path()
-To:     Andrii Nakryiko <andrii@kernel.org>, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-References: <20201014204529.934574-1-andrii@kernel.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <0f91e494-1f81-d4ee-7b96-ce231bddbdb3@toxicpanda.com>
-Date:   Wed, 14 Oct 2020 17:12:39 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.2
+        Wed, 14 Oct 2020 17:13:33 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id AF21E182CED28;
+        Wed, 14 Oct 2020 21:13:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3871:3872:3874:4321:5007:7875:10004:10400:10848:11232:11658:11914:12043:12048:12297:12663:12740:12760:12895:13019:13069:13311:13357:13439:14659:14721:21080:21451:21627:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: toy72_1009c2b2720f
+X-Filterd-Recvd-Size: 2001
+Received: from XPS-9350 (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 14 Oct 2020 21:13:30 +0000 (UTC)
+Message-ID: <567bd8f4f6080c6c3b414d1a9c18aff4c224946e.camel@perches.com>
+Subject: Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
+From:   Joe Perches <joe@perches.com>
+To:     "Moore, Robert" <robert.moore@intel.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 14 Oct 2020 14:13:29 -0700
+In-Reply-To: <BYAPR11MB325695B550880788DBED54DB87050@BYAPR11MB3256.namprd11.prod.outlook.com>
+References: <20200707200716.GA4920@embeddedor>
+         <CAJZ5v0iDz_EsrpdMQQDfaVC2orMQkEcubmR6-J6mvtrXmKXbRg@mail.gmail.com>
+         <BYAPR11MB325602EDA2D2ACC2B28EAF4687670@BYAPR11MB3256.namprd11.prod.outlook.com>
+         <b851b2c8-2d7c-939d-507d-b322dd4a0dbf@embeddedor.com>
+         <ae54364041b99b89f818812d957d4a4bb4efdc25.camel@perches.com>
+         <BYAPR11MB325695B550880788DBED54DB87050@BYAPR11MB3256.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20201014204529.934574-1-andrii@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/20 4:45 PM, Andrii Nakryiko wrote:
-> Fix data race in prepend_path() with re-reading mnt->mnt_ns twice without
-> holding the lock. is_mounted() does check for NULL, but is_anon_ns(mnt->mnt_ns)
-> might re-read the pointer again which could be NULL already, if in between
-> reads one of kern_unmount()/kern_unmount_array()/umount_tree() sets mnt->mnt_ns
-> to NULL.
+On Wed, 2020-10-14 at 20:48 +0000, Moore, Robert wrote:
+> I'm afraid that the macro does not compile under MSVC:
 > 
-> This is seen in production with the following stack trace:
+> warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file ..\..\source\tools\acpiexec\aetests.c)
 > 
-> [22942.418012] BUG: kernel NULL pointer dereference, address: 0000000000000048
-> ...
-> [22942.976884] RIP: 0010:prepend_path.isra.4+0x1ce/0x2e0
-> [22943.037706] Code: 89 c6 e9 0d ff ff ff 49 8b 85 c0 00 00 00 48 85 c0 0f 84 9d 00 00 00 48 3d 00 f0 ff ff 0f 87 91 00 00 00 49 8b 86 e0 00 00 00 <48> 83 78 48 00 0f 94 c0 0f b6 c0 83 c0 01 e9 3b ff ff ff 39 0d 29
-> [22943.264141] RSP: 0018:ffffc90020d6fd98 EFLAGS: 00010283
-> [22943.327058] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000007e5ee
-> [22943.413041] RDX: ffff889fb56ac0c0 RSI: ffffffd05dc8147e RDI: ffff88b1f845ab7b
-> [22943.499015] RBP: ffff889fbf8100c0 R08: ffffc90020d6fe30 R09: ffffc90020d6fe2c
-> [22943.584992] R10: ffffc90020d6fe2c R11: ffffea00095836c0 R12: ffffc90020d6fe30
-> [22943.670968] R13: ffff88b7d336bea0 R14: ffff88b7d336be80 R15: ffff88aeb78db980
-> [22943.756944] FS:  00007f228447e980(0000) GS:ffff889fc00c0000(0000) knlGS:0000000000000000
-> [22943.854448] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [22943.923653] CR2: 0000000000000048 CR3: 0000001ed235e001 CR4: 00000000007606e0
-> [22944.009630] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [22944.095604] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [22944.181581] PKRU: 55555554
-> [22944.214100] Call Trace:
-> [22944.243485]  d_path+0xe6/0x150
-> [22944.280202]  proc_pid_readlink+0x8f/0x100
-> [22944.328449]  vfs_readlink+0xf8/0x110
-> [22944.371456]  ? touch_atime+0x33/0xd0
-> [22944.414466]  do_readlinkat+0xfd/0x120
-> [22944.458522]  __x64_sys_readlinkat+0x1a/0x20
-> [22944.508868]  do_syscall_64+0x42/0x110
-> [22944.552928]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Fixes: f2683bd8d5bd ("[PATCH] fix d_absolute_path() interplay with fsmount()")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->   fs/d_path.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/d_path.c b/fs/d_path.c
-> index 0f1fc1743302..a69e2cd36e6e 100644
-> --- a/fs/d_path.c
-> +++ b/fs/d_path.c
-> @@ -102,6 +102,8 @@ static int prepend_path(const struct path *path,
->   
->   		if (dentry == vfsmnt->mnt_root || IS_ROOT(dentry)) {
->   			struct mount *parent = READ_ONCE(mnt->mnt_parent);
-> +			struct mnt_namespace *mnt_ns;
-> +
->   			/* Escaped? */
->   			if (dentry != vfsmnt->mnt_root) {
->   				bptr = *buffer;
-> @@ -116,7 +118,9 @@ static int prepend_path(const struct path *path,
->   				vfsmnt = &mnt->mnt;
->   				continue;
->   			}
-> -			if (is_mounted(vfsmnt) && !is_anon_ns(mnt->mnt_ns))
-> +			mnt_ns = READ_ONCE(mnt->mnt_ns);
-> +			/* open-coded is_mounted() to use local mnt_ns */
-> +			if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
->   				error = 1;	// absolute root
->   			else
+>  It looks like "__has_attribute" is not supported.
 
-I had to go look at this code carefully to make sure that mnt == 
-real_mount(vfsmnt), which it does.  I was also afraid that if we could have 
-mnt->mnt_ns change in between checks that we were just trading a possible NULL 
-deref with a UAF, but we're under RCU here so we're good there as well.  You can add
+It looks more like compiler.h/compiler_types.h/compiler_attributes.h
+doesn't support msvc.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Thanks,
 
-Josef
