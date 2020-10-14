@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE40528E88B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A516A28EA22
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgJNVrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 17:47:10 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:38571 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726662AbgJNVrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 17:47:09 -0400
-Received: from [192.168.0.3] (ip5f5af44e.dynamic.kabel-deutschland.de [95.90.244.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 750442064621D;
-        Wed, 14 Oct 2020 23:47:06 +0200 (CEST)
-To:     Don Brace <don.brace@microsemi.com>
-Cc:     "James E. J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, it+linux-scsi@molgen.mpg.de
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: Linux 5.9: smartpqi: controller is offline: status code 0x6100c
-Message-ID: <bc10fad1-2353-7326-c782-7a45882fd791@molgen.mpg.de>
-Date:   Wed, 14 Oct 2020 23:47:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2388909AbgJOBak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732253AbgJOB3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:29:38 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CC2C0613B5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:49:37 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c141so1158048lfg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HeA545JHkumJvp2vsCHk2yunYiCvO0ipKJnKrSnCtIA=;
+        b=g+63cfS60C2BkSY+gwVeR7vMl97bsv1IQGRh6EJKNoeFEa6XKQGTfjY4KphKtzenwi
+         fgv3PqPlIj0FA/ulDIEm+3G2Gferh1d68pORa8D1ERInDuhw+ymz7MsyEvN54yg39J26
+         rG2Fwdtv8ESAe/MsPrELWQV6dHYKUvg88BNRg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HeA545JHkumJvp2vsCHk2yunYiCvO0ipKJnKrSnCtIA=;
+        b=O20p0S/kvv+JtIHyb04O3yzKNzI/3OFeJxfrYkQ/ryzZrIlC4GQ2qO/mY4d+u8aFQ/
+         DxwrLNX+c4cKHZjnCGaR3Vb5Uh2HdrXoQdseZNKOhpfOV3+dLYLZK9XBKrp01A67Tsge
+         VELb2oRnQNF50D1Dp21IYCtNboDkIEmVd0xl4Eh/YBppJ0qCBh10f5xvLtR1DsjUnNx0
+         XkZBe/zmEKEKIobLM+2LfLnToEeyXtWDQqqdD5ogXKpDv3Ne3g+WdOWk3mTlY6N7vipd
+         F38PocFcgC44Veh+Y2YOa6WrZTEffEyCFLjP/GWsq5RSseZYqFdvCFS4k91dGS4Cob6l
+         sIbQ==
+X-Gm-Message-State: AOAM533rCwnp6wWyPtrsu9AsQ/q4mRWtaUIHIPafZTVHUf87GgR5IgI+
+        kboMcPxLtb8N1GL2boVe3d6/7zTy6IPQ4Q==
+X-Google-Smtp-Source: ABdhPJzB/kWo83gPdGqA4PziAfX1HtDe1vN7cX2Wg2FIZDwLVQrbCL352Bp942/HhGFOJhhX0+TL7Q==
+X-Received: by 2002:a19:589:: with SMTP id 131mr29631lff.229.1602712175432;
+        Wed, 14 Oct 2020 14:49:35 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id i11sm363348ljn.119.2020.10.14.14.49.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 14:49:34 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 184so1141065lfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:49:34 -0700 (PDT)
+X-Received: by 2002:a19:9142:: with SMTP id y2mr31716lfj.352.1602712173956;
+ Wed, 14 Oct 2020 14:49:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201014204529.934574-1-andrii@kernel.org>
+In-Reply-To: <20201014204529.934574-1-andrii@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 14 Oct 2020 14:49:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiE04vsfJmZ-AyWJHfNdGa=WmBYt4bP3aN+sTP05=QXXA@mail.gmail.com>
+Message-ID: <CAHk-=wiE04vsfJmZ-AyWJHfNdGa=WmBYt4bP3aN+sTP05=QXXA@mail.gmail.com>
+Subject: Re: [PATCH] fs: fix NULL dereference due to data race in prepend_path()
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel-team@fb.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux folks,
+On Wed, Oct 14, 2020 at 2:40 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> Fix data race in prepend_path() with re-reading mnt->mnt_ns twice without
+> holding the lock. is_mounted() does check for NULL, but is_anon_ns(mnt->mnt_ns)
+> might re-read the pointer again which could be NULL already, if in between
+> reads one of kern_unmount()/kern_unmount_array()/umount_tree() sets mnt->mnt_ns
+> to NULL.
 
+This seems like the obviously correct fix, so I think I'll just apply
+it directly.
 
-With Linux 5.9 and
+Al? Holler if you have any issues with this..
 
-
-     $ lspci -nn -s 89:
-     89:00.0 Serial Attached SCSI controller [0107]: Adaptec Smart 
-Storage PQI 12G SAS/PCIe 3 [9005:028f] (rev 01)
-     $ more 
-/sys/devices/pci0000:88/0000:88:00.0/0000:89:00.0/host15/scsi_host/host15/driver_version
-     1.2.8-026
-     $ more 
-/sys/devices/pci0000:88/0000:88:00.0/0000:89:00.0/host15/scsi_host/host15/firmware_version
-     2.62-0
-
-the controller went offline with status code 0x6100c.
-
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: smartpqi 0000:89:00.0: controller is offline: status code 0x6100c
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: smartpqi 0000:89:00.0: controller offline
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:2:0: [sdu] tag#709 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:15:0: [sdah] tag#274 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:4:0: [sdw] tag#516 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:4:0: [sdw] tag#516 CDB: Write(10) 2a 00 0d e6 9e 88 00 00 01 00
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: blk_update_request: I/O error, dev sdw, sector 1865741376 op 0x1:(WRITE) flags 0x0 phys_seg 1 prio class 0
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#529 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#529 CDB: Write(10) 2a 00 29 4e e8 ff 00 00 01 00
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: blk_update_request: I/O error, dev sds, sector 5544298488 op 0x1:(WRITE) flags 0x0 phys_seg 1 prio class 0
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#627 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#627 CDB: Read(10) 28 00 5d df 2c 04 00 00 04 00
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: blk_update_request: I/O error, dev sds, sector 12599255072 op 0x0:(READ) flags 0x1000 phys_seg 1 prio class
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:5:0: [sdx] tag#567 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
-> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:5:0: [sdx] tag#567 CDB: Write(10) 2a 00 21 4e ce 04 00 00 04 00
-
-How can the status code 0x6100c be deciphered?
-
-
-Kind regards,
-
-Paul
+             Linus
