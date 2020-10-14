@@ -2,51 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D5C28E914
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CDF28EA2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388567AbgJNXCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 19:02:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731030AbgJNXCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 19:02:15 -0400
-Subject: Re: [GIT PULL] Backlight for v5.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602716534;
-        bh=/NQG61T71rzsKGDiVlGGgxCukWPXNS4UEQ61WrUshnE=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=OO3BrfVTv8kmx5NnWxGZLeksi6gF4sdU2ytLT84ChiRYiEPdbTz4eUANhw8qjUts9
-         E2PCQFccgDnCqCXvHdxYfIdTVG8eMl+l3uWEivaN5Sf2R1/v+tr++Jwa2Ady7ShhUU
-         dNGMuIMwgc/9qZHfAuxbzACR7IDh6mNB0m8w8BN0=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201014161040.GB4545@dell>
-References: <20201014161040.GB4545@dell>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201014161040.GB4545@dell>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git tags/backlight-next-5.10
-X-PR-Tracked-Commit-Id: 97ecfda1a8ffc5ffc9681d0dfa65fd5b39839dfe
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6448cbf662c7858c0d9eb0b135962bedd6d0b9a0
-Message-Id: <160271653401.18101.13588565543424592527.pr-tracker-bot@kernel.org>
-Date:   Wed, 14 Oct 2020 23:02:14 +0000
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S2388773AbgJOBek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388187AbgJOBei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:34:38 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0578EC051124
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:04:44 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id y14so711085pfp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HqPJcxWf/UHRmEBTt7/8+9fERJsy5yZfgCD3aK5edac=;
+        b=A4NM72S6XOBlLt7ydRqFfSTY+OzBlWVuGGGaRlZDZkxqnf9MjeK3Cltt2aQwpxz7zl
+         YPaTWKV0+tLK3Kb7pbXz2pJr1jB6+H/v5iYuk2OxW0AuK4tTcH+40f5MEDMJrkrAI+J2
+         LoHF7HCUrNhZW1eGKcy8zqurDJKuGMnRlW63c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HqPJcxWf/UHRmEBTt7/8+9fERJsy5yZfgCD3aK5edac=;
+        b=jnT0aELG9iZQEmPjyFk7rT2zE0mBYDex9M1IanHo8kR25FREqny44dORMOyWyY0npp
+         Lx4qCoVxnWvOsiFyNfmPnGjLNmGVNqBIzhGSR5Rlt5X+mbBIFkMCDvnNtWxHfRY54fiq
+         5KFZESa+ol2tptQ3gcyNK+wNQh8KtbWYCevKS209yLj6igtNuAhrrYEEQArAjcQ66ukj
+         /OrTfsqI6OWghEnMAJ23MEbjV/CcNaQeedwuKExYiO0WrbDqyB6jgKGUr77sfLkoeLio
+         WKC6Vat6jDiahDRP3CufG+Gs5nJMcL1jEjAkorecMIyxzpRTgIqF6SIQDgDFmnfnaiS/
+         EN1A==
+X-Gm-Message-State: AOAM532LBgDqpIbSA6abvdzeUZNPVS5Az3P9ENSJCvnXazcwBw9u9n5Q
+        ZA0KHh2tTeUP+uiKwPpJNEXceg==
+X-Google-Smtp-Source: ABdhPJxQO4z1ZaWn5pAJCV5CIuDC8XILyE1EUBiq6fM/ieZ9iTkPZPD2HOND28lI1h9ZOyny5zW2rg==
+X-Received: by 2002:a63:845:: with SMTP id 66mr938293pgi.318.1602716684465;
+        Wed, 14 Oct 2020 16:04:44 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d128sm743917pfc.8.2020.10.14.16.04.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 16:04:43 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 16:04:42 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2] vmlinux.lds.h: Keep .ctors.* with .ctors
+Message-ID: <202010141603.49EA0CE@keescook>
+References: <20201005025720.2599682-1-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201005025720.2599682-1-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 14 Oct 2020 17:10:40 +0100:
+On Sun, Oct 04, 2020 at 07:57:20PM -0700, Kees Cook wrote:
+> Under some circumstances, the compiler generates .ctors.* sections. This
+> is seen doing a cross compile of x86_64 from a powerpc64el host:
+> 
+> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/trace_clock.o' being
+> placed in section `.ctors.65435'
+> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ftrace.o' being
+> placed in section `.ctors.65435'
+> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ring_buffer.o' being
+> placed in section `.ctors.65435'
+> 
+> Include these orphans along with the regular .ctors section.
+> 
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Fixes: 83109d5d5fba ("x86/build: Warn on orphan section placement")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git tags/backlight-next-5.10
+Ping -- please take this for tip/urgent, otherwise we're drowning sfr in
+warnings. :)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6448cbf662c7858c0d9eb0b135962bedd6d0b9a0
+-Kees
 
-Thank you!
+> ---
+> v2: brown paper bag version: fix whitespace for proper backslash alignment
+> ---
+>  include/asm-generic/vmlinux.lds.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index 5430febd34be..b83c00c63997 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -684,6 +684,7 @@
+>  #ifdef CONFIG_CONSTRUCTORS
+>  #define KERNEL_CTORS()	. = ALIGN(8);			   \
+>  			__ctors_start = .;		   \
+> +			KEEP(*(SORT(.ctors.*)))		   \
+>  			KEEP(*(.ctors))			   \
+>  			KEEP(*(SORT(.init_array.*)))	   \
+>  			KEEP(*(.init_array))		   \
+> -- 
+> 2.25.1
+> 
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Kees Cook
