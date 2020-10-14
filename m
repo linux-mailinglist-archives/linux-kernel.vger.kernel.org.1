@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A280928E113
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DDA28E114
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731143AbgJNNQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:16:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:48182 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728420AbgJNNQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:16:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F944D6E;
-        Wed, 14 Oct 2020 06:16:40 -0700 (PDT)
-Received: from [10.57.50.28] (unknown [10.57.50.28])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B95B23F719;
-        Wed, 14 Oct 2020 06:16:37 -0700 (PDT)
-Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-To:     saiprakash.ranjan@codeaurora.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, denik@google.com,
-        leo.yan@linaro.org, peterz@infradead.org
-References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
- <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
-Date:   Wed, 14 Oct 2020 14:16:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1731157AbgJNNQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728420AbgJNNQv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:16:51 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8F8C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:16:50 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id h4so1702857pjk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:16:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=in-reply-to:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=HqH4OmL3x4PWuuqS8amqaRkrNrG5XBbpBXi9XXp9YB8=;
+        b=RKYyEgPEqh398kzJaSXACYYscMG+s5g9Aa1oaYxEld2p+2orKVVgS8Rs1e+Bs0GfCz
+         cmeSvbizGg6svbwUDV/TOUYbQ/PIThl8cTNLrlInKgRIIRfNQq/GNf7H3Ao6/nDjas/2
+         sbyueOWeDYdxfuoCsQZ/R8hLXXt2RKXyzxCVFq8kUGx9T559sHwlX7qzDgjcOixo0BQ0
+         nnWL0HkAuZDBgHoKZU4bPPZLBYUDsKlTw/R8eefWEt91Aby+enW8dPSd6xC/KL4wB1hC
+         JnXAmJ4bAAbkwMWbA+nMW5KoNlEj784zqt6orgnhRsSvIh/4lyzUXio/mMUFpG/EfCCL
+         mwaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:in-reply-to:to:cc:from:subject:message-id:date
+         :user-agent:mime-version:content-language:content-transfer-encoding;
+        bh=HqH4OmL3x4PWuuqS8amqaRkrNrG5XBbpBXi9XXp9YB8=;
+        b=VvbF48uSfyEf3bVwRdLZYrQCm/W5o7w0CNjnEXYuwGE2Exd/PtmtlsPEVtY31rk2iw
+         ETQFp+z7ciIFbAxzbpLsXmW3HxFhySUi+ejNXUXZER0Vn676ggxqdjntDfvst0pBMTvz
+         M487AXCHM/q3ZyBzuOnOAGqp5Sga+RCfDZWkySRdGKDt9QD+RehVhw55oOWBtM9WMOYG
+         nhWOU4M/4ETWEY8+cLPJbmqUbmuJ0cdJUM/OoPhLyuWmN87anTwUIdUdtoweedXKKx9t
+         T0MNehg8cg9f5/7Fae79b7NaPEQk3Hkt6rYKRH4rTVop5vm/bb3djQvAzXUX0FgXZB2n
+         cGkg==
+X-Gm-Message-State: AOAM5325w7qDaXQsn6EkE+ua0/bxsGrGqtkDbgbkSE9EKO8DlUDvAOaE
+        rShxdTlqYxaGoECJ/6ZZyH4=
+X-Google-Smtp-Source: ABdhPJxVPkd66L2M/Ql2A6T5aFDRl/Iv0Am48+p6pt60Y4FcmJMkgwQQ4fzvbHSHbY9eB+3RptqXzg==
+X-Received: by 2002:a17:902:525:b029:d1:920c:c200 with SMTP id 34-20020a1709020525b02900d1920cc200mr4236168plf.25.1602681409576;
+        Wed, 14 Oct 2020 06:16:49 -0700 (PDT)
+Received: from fox-laptop.local ([162.216.240.138])
+        by smtp.gmail.com with ESMTPSA id y4sm3754573pgs.0.2020.10.14.06.16.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 06:16:48 -0700 (PDT)
+In-Reply-To: <ceed2e5f-c03e-721f-ba2f-a581d6214e5c@gmail.com>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     syzbot <syzbot+af90d47a37376844e731@syzkaller.appspotmail.com>,
+        agruenba@redhat.com, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+From:   Fox Chen <foxhlchen@gmail.com>
+Subject: Re: [Cluster-devel] KASAN: slab-out-of-bounds Write
+ in,gfs2_fill_super
+Message-ID: <e92ee11f-f00e-3624-acff-d37d725384cb@gmail.com>
+Date:   Wed, 14 Oct 2020 21:16:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
-> On 2020-10-13 22:05, Suzuki K Poulose wrote:
->> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
->>> There was a report of NULL pointer dereference in ETF enable
->>> path for perf CS mode with PID monitoring. It is almost 100%
->>> reproducible when the process to monitor is something very
->>> active such as chrome and with ETF as the sink and not ETR.
->>> Currently in a bid to find the pid, the owner is dereferenced
->>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
->>> owner being NULL, we get a NULL pointer dereference.
->>>
->>> Looking at the ETR and other places in the kernel, ETF and the
->>> ETB are the only places trying to dereference the task(owner)
->>> in tmc_enable_etf_sink_perf() which is also called from the
->>> sched_in path as in the call trace. Owner(task) is NULL even
->>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
->>> cache the PID in alloc_buffer() callback and it is done as part
->>> of etm_setup_aux() when allocating buffer for ETR sink, we never
->>> dereference this NULL pointer and we are safe. So lets do the
->>
->> The patch is necessary to fix some of the issues. But I feel it is
->> not complete. Why is it safe earlier and not later ? I believe we are
->> simply reducing the chances of hitting the issue, by doing this earlier than
->> later. I would say we better fix all instances to make sure that the
->> event->owner is valid. (e.g, I can see that the for kernel events
->> event->owner == -1 ?)
->>
->> struct task_struct *tsk = READ_ONCE(event->owner);
->>
->> if (!tsk || is_kernel_event(event))
->>    /* skip ? */
->>
-> 
-> Looking at it some more, is_kernel_event() is not exposed
-> outside events core and probably for good reason. Why do
-> we need to check for this and not just tsk?
+Yes, it's the same bug,
 
-Because the event->owner could be :
-
-  = NULL
-  = -1UL  // kernel event
-  = valid.
+https://lkml.org/lkml/2020/10/5/538 this may help
 
 
-Kind regards
-Suzuki
+thanks,
