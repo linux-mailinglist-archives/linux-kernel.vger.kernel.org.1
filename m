@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5ACD28E794
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3D428E79C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbgJNT62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 15:58:28 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:57504 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgJNT61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 15:58:27 -0400
-Received: from zn.tnic (p200300ec2f0c4400a8a63b86eef17592.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:4400:a8a6:3b86:eef1:7592])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7DFFB1EC0493;
-        Wed, 14 Oct 2020 21:58:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1602705506;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uVK0IVgQlEoTLJbQHod8IqvQSLETuGNRNz6XABf3VLk=;
-        b=dZ4P2/ENBkzVR3E/jykivRdYFeSM0709RXOdeXsygIC/ruApxwjwwpAWUzsPzZSJZhIjNS
-        GP7PCo1zI76n/GfLb4/0Hxtw/LYFXH/rk2j/4DIQDCf2Whxo1qupCW5EGY9cuPx/lHxkVw
-        VO9yU79WqRRJVimHtXFamo/IqyNJbn4=
-Date:   Wed, 14 Oct 2020 21:58:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
-Message-ID: <20201014195823.GC18196@zn.tnic>
-References: <20201014083300.19077-1-ankur.a.arora@oracle.com>
- <20201014083300.19077-6-ankur.a.arora@oracle.com>
- <CALCETrVKLv5DPByFcj7E5SBbv4mFt7mGQ9j-HU7G5u_aPGCYsQ@mail.gmail.com>
+        id S1728797AbgJNUAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgJNUAD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 16:00:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84265C061755;
+        Wed, 14 Oct 2020 13:00:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dBOYMLQQlx6kYOwTChDpfwiT4F6gbGW7SjYy3hlDmqI=; b=GgyKcWz5leHygg4kK7woUaWtj1
+        fOgwoaMk9of07DvgpbLTw5a9s7c6HlXJXaKsm+VoT+L9yG1ZDum6iwHXCX4dRtM36x1EteAVeJGYS
+        wbTMPw4GfHYc+T8kxVvk5KXO+AN6qLM9Q5gcSkT9k3FiWgMUz7O4usJqTkaTtQ+82R6KKoV/C+NQP
+        Q0IznlIbhkht1EtekWFMVzJbx+q+NtuWoMpwpAXihsvpSRF6BHn3bAQZKZLvH2lfYc/jgY49EChTc
+        N76u96GbNxWc+J6DKthDv3KaUGz4sH3Q7PjhKns2jC3URthZKv2RSm3/5weo+0VWhGElRb1zR1ipf
+        88j7zmjw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSmw9-0002gi-CM; Wed, 14 Oct 2020 19:59:49 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0682E980F54; Wed, 14 Oct 2020 21:59:49 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 21:59:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] lib: kunit: add test_min_heap test conversion to KUnit
+Message-ID: <20201014195948.GE2974@worktop.programming.kicks-ass.net>
+References: <20200729201146.537433-1-vitor@massaru.org>
+ <20200729203908.GD2655@hirez.programming.kicks-ass.net>
+ <CADQ6JjW-=SNjV-abGpGA9NfHD4yGG_bD5FmvW99W-Vo06twkbw@mail.gmail.com>
+ <20200804132517.GK2657@hirez.programming.kicks-ass.net>
+ <CADQ6JjWzze-VAmg_b9EkS4iVySt5pw8V4FSxYpDFAj8jvBxuGA@mail.gmail.com>
+ <20200804142344.GM2674@hirez.programming.kicks-ass.net>
+ <CADQ6JjWbCsyWxZKQ5=kkxx8hkaW=mbCjDodPXDAv5vH-=tVvEQ@mail.gmail.com>
+ <CAFd5g46DzWRzp9yXkpHbtyJuv236E=z7OaWeqXnfuiy6CTBL4A@mail.gmail.com>
+ <CAP-5=fXhFG9sTMcfd1qJmMDNJWqOGky=jFtWNWg8U8-dkRp=dQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrVKLv5DPByFcj7E5SBbv4mFt7mGQ9j-HU7G5u_aPGCYsQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fXhFG9sTMcfd1qJmMDNJWqOGky=jFtWNWg8U8-dkRp=dQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 08:45:37AM -0700, Andy Lutomirski wrote:
-> On Wed, Oct 14, 2020 at 1:33 AM Ankur Arora <ankur.a.arora@oracle.com> wrote:
-> >
-> > Define clear_page_uncached() as an alternative_call() to clear_page_nt()
-> > if the CPU sets X86_FEATURE_NT_GOOD and fallback to clear_page() if it
-> > doesn't.
-> >
-> > Similarly define clear_page_uncached_flush() which provides an SFENCE
-> > if the CPU sets X86_FEATURE_NT_GOOD.
-> 
-> As long as you keep "NT" or "MOVNTI" in the names and keep functions
-> in arch/x86, I think it's reasonable to expect that callers understand
-> that MOVNTI has bizarre memory ordering rules.  But once you give
-> something a generic name like "clear_page_uncached" and stick it in
-> generic code, I think the semantics should be more obvious.
+On Wed, Oct 14, 2020 at 11:16:10AM -0700, Ian Rogers wrote:
 
-Why does it have to be a separate call? Why isn't it behind the
-clear_page() alternative machinery so that the proper function is
-selected at boot? IOW, why does a user of clear_page functionality need
-to know at all about an "uncached" variant?
+> There were some issues in the original patch, they should be easy to
+> fix. I'm more concerned that Peter's issues are addressed about the
+> general direction of the patch, verbosity and testing frameworks. I
+> see Vitor followed up with Peter but I'm not sure that means the
+> approach has been accepted.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+I kinda lost track, as long as it doesn't get more verbose I suppose I'm
+fine.
