@@ -2,121 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07AB28E158
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C5928E15E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731224AbgJNNcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:32:23 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:41310 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727250AbgJNNcW (ORCPT
+        id S1731265AbgJNNcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:32:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44310 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727250AbgJNNcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:32:22 -0400
-Received: by mail-oi1-f195.google.com with SMTP id q136so3207636oic.8;
-        Wed, 14 Oct 2020 06:32:22 -0700 (PDT)
+        Wed, 14 Oct 2020 09:32:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602682373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m47UYKFk/3zOESWP+ny/G5ToVtPRTEjIE+FkJ8vLBUs=;
+        b=X/PV25uwlRl9CrOGTE5Kyfvjf4SZAy37OSWC2QBV0BX4ODkxQrcOwO+xRMbedgIrBMJsuI
+        2hZ+J69PQuuBux7XH3tqxEd6LzP36AnbWhRnUPsooZBNCkxueDISiQjst7UiXjrz8vHAux
+        cWPCqZGMYQcxKkDSvLMma9VTAwD+XaA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-BbAa4pkAO6GrPgvHKsuOzw-1; Wed, 14 Oct 2020 09:32:51 -0400
+X-MC-Unique: BbAa4pkAO6GrPgvHKsuOzw-1
+Received: by mail-wr1-f72.google.com with SMTP id i6so1278425wrx.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:32:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=RfUVv3fCiTl2E9POO6Buswiqzr2whvPDBuKBRK/9qXo=;
-        b=Br2rDl/wy/hG61xdFs1wMZ/sr69Q+sP0b/xcZpwc2PDXB71uy7D+XpvGpwb26tJdHo
-         d2GssCjK4eFZCXwl03Gkfkb3xOVDKEck7USPf8wwRrC6XBCCjewR4OJsG/RPcpvExITA
-         WqOcxQNQo1vl/GaZy4w97ZHsW44qcglKfjKQEX883xERjL2esP7bUTQlGKDjIyeNzaWu
-         JMApsr6wpBAuiNgeyTXbJYVkyQvGJMq0uy0+09L6UnWlUK7aAmhU+hZoZ6J7qN9o92Zi
-         iwoE4tEJS5jRhf9WPLYteKE9kctJrFvHUBolOtwUgoExiqdr+D5UH5cPeEBlQhC4BviO
-         GaMw==
-X-Gm-Message-State: AOAM530lNJfDpF9cCUG6TLwCQuDMYcBUHmuKbwnWoribjHbRe5A7VNq5
-        GjQTAHQQyb5zTPVmLpFkug==
-X-Google-Smtp-Source: ABdhPJxd/P4qzAtPsd2916G42APosJoO+yYmHIG+zpWj3QmjNHSypnWafNQcsvqbK5VxDOltQFbAXQ==
-X-Received: by 2002:aca:ea84:: with SMTP id i126mr1059134oih.98.1602682341597;
-        Wed, 14 Oct 2020 06:32:21 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 92sm1204900otl.1.2020.10.14.06.32.20
+        bh=m47UYKFk/3zOESWP+ny/G5ToVtPRTEjIE+FkJ8vLBUs=;
+        b=IYZ1jqlNMFftndSAdNmYFTgc/yLW+yI+TXVYl2uVItTUdgerkp0tAesd6ZAJOORwMI
+         UpHCRjNpJ21kxQ0J0dLMaDm/uF6BnbKPJ2/PFyL1sPYF9kvwdBdBErfV+weyA2ImxyfR
+         WBu+XYW5Vrg+LeNtw5k+5w68OFkQz6KJ4qGAOmsN2mJLONHh/2FekxR2IjxPruBB+8Y0
+         kZS7gju8+MxRDTXbUUqOeb53sFQ/ZEyhr8fTmJdClK5PVl/iL5qXDzcMRiCEiZgtdE25
+         XFD5B0qJ8JBh9d3DCjult9hRdTTx4C7E66KAYVpaqnMi3QA1R1uJm6XAakWojsA3woil
+         NoxA==
+X-Gm-Message-State: AOAM530D4U3rJnFKpYBfQcqUo0NJIYZvgf/iFEtSHNS/HY1PaE+qpEFz
+        Yz9oW8jXdShCBk99GeHQLOBJ0Dbo2IMBu6FtBNyGPQxoLTmrXRlOqhmkASBqH1JNX/mReTCysBa
+        60uhwxR2Qtk3O03fxV9RiHYdO
+X-Received: by 2002:adf:f7d1:: with SMTP id a17mr5636508wrq.396.1602682370267;
+        Wed, 14 Oct 2020 06:32:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyARr/IsRyrYkqNIYDO+gojSI1wXxUc/3MCyB8YBQ2a+/0bZYgzY9MJhrodtqcW7YAJRFuGRA==
+X-Received: by 2002:adf:f7d1:: with SMTP id a17mr5636475wrq.396.1602682369976;
+        Wed, 14 Oct 2020 06:32:49 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.181.254])
+        by smtp.gmail.com with ESMTPSA id k190sm3347217wme.33.2020.10.14.06.32.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 06:32:20 -0700 (PDT)
-Received: (nullmailer pid 1546268 invoked by uid 1000);
-        Wed, 14 Oct 2020 13:32:19 -0000
-Date:   Wed, 14 Oct 2020 08:32:19 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>, Roger Quadros <rogerq@ti.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-snps-arc@lists.infradead.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 09/20] dt-bindings: usb: Convert DWC USB3 bindings to DT
- schema
-Message-ID: <20201014133219.GA1545403@bogus>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-10-Sergey.Semin@baikalelectronics.ru>
+        Wed, 14 Oct 2020 06:32:49 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 15:32:47 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Peng Liu <iwtbavbm@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, valentin.schneider@arm.com,
+        raistlin@linux.it
+Subject: Re: [PATCH v6 0/2] sched/deadline: Fix and optimize
+ sched_dl_global_validate()
+Message-ID: <20201014133247.GC219214@localhost.localdomain>
+References: <cover.1602171061.git.iwtbavbm@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014101402.18271-10-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <cover.1602171061.git.iwtbavbm@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 13:13:51 +0300, Serge Semin wrote:
-> DWC USB3 DT node is supposed to be compliant with the Generic xHCI
-> Controller schema, but with additional vendor-specific properties, the
-> controller-specific reference clocks and PHYs. So let's convert the
-> currently available legacy text-based DWC USB3 bindings to the DT schema
-> and make sure the DWC USB3 nodes are also validated against the
-> usb-xhci.yaml schema.
+Hi,
+
+On 08/10/20 23:47, Peng Liu wrote:
+> When change global rt bandwidth, we check to make sure that new
+> settings could accommodate the allocated dl bandwidth.
 > 
-> Note we have to discard the nodename restriction of being prefixed with
-> "dwc3@" string, since in accordance with the usb-hcd.yaml schema USB nodes
-> are supposed to be named as "^usb(@.*)".
+> Under SMP, the dl_bw is on a per root domain basis, currently we check
+> and update the new settings one cpu by one cpu, but not in the unit of
+> root domain, which is either overdoing or error.
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> patch 1 removed the superfluous checking and updating
+> patch 2 fixed the error validation
 > 
-> ---
+> For details, please see the corresponding patch.
 > 
-> Changelog v2:
-> - Discard '|' from the descriptions, since we don't need to preserve
->   the text formatting in any of them.
-> - Drop quotes from around the string constants.
-> - Fix the "clock-names" prop description to be referring the enumerated
->   clock-names instead of the ones from the Databook.
-> ---
->  .../devicetree/bindings/usb/dwc3.txt          | 125 --------
->  .../devicetree/bindings/usb/snps,dwc3.yaml    | 295 ++++++++++++++++++
->  2 files changed, 295 insertions(+), 125 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/usb/dwc3.txt
->  create mode 100644 Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> ----------------
+> v6 <-- v5:
+>  - no functional changes, just revert visit_gen back to u64;
 > 
+> v5 <-- v4:
+>  - no functional changes, just split the v4 single patch to two to
+>    obey the "one patch do only one thing" rule;
+>  - turn root_domain::visit_gen from u64 to u32;
+>    both suggested by Juri.
+>  - refine changelog;
+> 
+> v4 <-- v3:
+>  - refine changelog;
+>  - eliminate the ugly #ifdef guys with Peter's method;
+> 
+> v3 <-- v2:
+>  - fix build error for !CONFIG_SMP, reported by kernel test robot;
+> 
+> v2 <-- v1:
+>  - replace cpumask_weight(cpu_rq(cpu)->rd->span) with dl_bw_cpus(cpu),
+>    suggested by Juri;
+> 
+> Peng Liu (2):
+>   sched/deadline: Optimize sched_dl_global_validate()
+>   sched/deadline: Fix sched_dl_global_validate()
+> 
+>  kernel/sched/deadline.c | 44 +++++++++++++++++++++++++++--------
+>  kernel/sched/sched.h    | 51 ++++++++++++++++++++++-------------------
+>  kernel/sched/topology.c |  1 +
+>  3 files changed, 63 insertions(+), 33 deletions(-)
 
+These look now good to me. Thanks a lot!
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
 
-./Documentation/devicetree/bindings/usb/snps,dwc3.yaml:44:4: [warning] wrong indentation: expected 4 but found 3 (indentation)
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/qcom,dwc3.example.dt.yaml: dwc3@a600000: $nodename:0: 'dwc3@a600000' does not match '^usb(@.*)?'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/amlogic,meson-g12a-usb-ctrl.example.dt.yaml: usb@ff500000: snps,quirk-frame-length-adjustment: True is not of type 'array'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-
-
-See https://patchwork.ozlabs.org/patch/1382003
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+Best,
+Juri
 
