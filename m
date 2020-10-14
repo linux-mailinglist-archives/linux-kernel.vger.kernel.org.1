@@ -2,46 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F8628D976
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 07:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9740D28DBE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgJNFHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 01:07:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:37610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgJNFHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 01:07:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C5A430E;
-        Tue, 13 Oct 2020 22:07:05 -0700 (PDT)
-Received: from [10.163.76.91] (unknown [10.163.76.91])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CDB633F66B;
-        Tue, 13 Oct 2020 22:07:01 -0700 (PDT)
-Subject: Re: [PATCH] arm64/mm: Validate hotplug range before creating linear
- mapping
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <1600332402-30123-1-git-send-email-anshuman.khandual@arm.com>
- <20200928203539.GA12218@willie-the-truck>
- <09266aed-7eef-5b16-5d52-0dcb7dcb7246@arm.com>
- <20200929152221.GA13995@willie-the-truck>
- <f44d34df-8a21-712c-138d-f7f633b0eb6c@arm.com>
- <262f2fd8-2e0c-4eaf-d4ff-f72728049f52@arm.com>
- <CAMj1kXFszo8SO7eAn0FEO+AQUHV9HZyukUi7=-udKyK+mCNVRw@mail.gmail.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <1ee71de5-9e16-b9de-6ea0-f17dc9a494ac@arm.com>
-Date:   Wed, 14 Oct 2020 10:36:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729971AbgJNIoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729894AbgJNIoj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:44:39 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A671CC04584A;
+        Tue, 13 Oct 2020 22:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=L5wcSRZYm3YJ3O3wMUyj3Nk4lgiS3rr7hUykrk/I+Xw=; b=tE4ATn14phABLTG2J45w1RLwVl
+        j8WeY2aehX9bM4/4AZNMEuNtnDJJNZGGhRXmvH6/oGi4oMIpsImRDym2yGEDjTxehYLUAWPV1bIGd
+        SnaYZMlKHpY2G8ZPR6HgApegTPRvnobT6ZItq8fnpiCFSKwFQtpDQEVQRFZrUi3HQ5kXPmitCpN+O
+        V+JeUYDprWkaF6Tv6MfoxPlLdqfX6j5ZMW5rRekoWjq8kr5iKfNqTE+TtLdXR6rVa4TPh4clr9mvy
+        gEJo/iVfiql1X5hybdy0wY78/c7EtQV6dm/87cyXre/eGPlB0NZ9gDtlwX6B4+SJe0REV6leBz9r7
+        VOiWrfAQ==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSZ0v-0006rb-5K; Wed, 14 Oct 2020 05:07:49 +0000
+Subject: Re: disabling CONFIG_LED_CLASS
+To:     Udo van den Heuvel <udovdh@xs4all.nl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Pavel Machek <pavel@ucw.cz>
+References: <2835d02a-380b-6a3a-0e4d-abf07aee18bc@xs4all.nl>
+ <53e698c1-86e4-8b1f-afb0-b8471349e701@xs4all.nl>
+ <43b79598-1592-683f-46df-9e5489110780@infradead.org>
+ <6fd1e91e-19d0-6682-dfc6-49f1cd60408b@infradead.org>
+ <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
+ <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
+ <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
+ <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
+ <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
+Date:   Tue, 13 Oct 2020 22:07:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAMj1kXFszo8SO7eAn0FEO+AQUHV9HZyukUi7=-udKyK+mCNVRw@mail.gmail.com>
+In-Reply-To: <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -49,91 +56,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/12/2020 12:59 PM, Ard Biesheuvel wrote:
-> On Tue, 6 Oct 2020 at 08:36, Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->>
->>
->>
->> On 09/30/2020 01:32 PM, Anshuman Khandual wrote:
->>> But if __is_lm_address() checks against the effective linear range instead
->>> i.e [_PAGE_OFFSET(vabits_actual)..(PAGE_END - 1)], it can be used for hot
->>> plug physical range check there after. Perhaps something like this, though
->>> not tested properly.
->>>
->>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
->>> index afa722504bfd..6da046b479d4 100644
->>> --- a/arch/arm64/include/asm/memory.h
->>> +++ b/arch/arm64/include/asm/memory.h
->>> @@ -238,7 +238,10 @@ static inline const void *__tag_set(const void *addr, u8 tag)
->>>   * space. Testing the top bit for the start of the region is a
->>>   * sufficient check and avoids having to worry about the tag.
->>>   */
->>> -#define __is_lm_address(addr)  (!(((u64)addr) & BIT(vabits_actual - 1)))
->>> +static inline bool __is_lm_address(unsigned long addr)
->>> +{
->>> +       return ((addr >= _PAGE_OFFSET(vabits_actual)) && (addr <= (PAGE_END - 1)));
->>> +}
->>>
->>>  #define __lm_to_phys(addr)     (((addr) + physvirt_offset))
->>>  #define __kimg_to_phys(addr)   ((addr) - kimage_voffset)
->>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->>> index d59ffabb9c84..5750370a7e8c 100644
->>> --- a/arch/arm64/mm/mmu.c
->>> +++ b/arch/arm64/mm/mmu.c
->>> @@ -1451,8 +1451,7 @@ static bool inside_linear_region(u64 start, u64 size)
->>>          * address range mapped by the linear map, the start address should
->>>          * be calculated using vabits_actual.
->>>          */
->>> -       return ((start >= __pa(_PAGE_OFFSET(vabits_actual)))
->>> -                       && ((start + size) <= __pa(PAGE_END - 1)));
->>> +       return __is_lm_address(__va(start)) && __is_lm_address(__va(start + size));
->>>  }
->>>
->>>  int arch_add_memory(int nid, u64 start, u64 size,
->>
->> Will/Ard,
->>
->> Any thoughts about this ? __is_lm_address() now checks for a range instead
->> of a bit. This will be compatible later on, even if linear mapping range
->> changes from current lower half scheme.
->>
+On 10/13/20 9:56 PM, Udo van den Heuvel wrote:
+> On 14-10-2020 06:49, Randy Dunlap wrote:
+>> If you disable SND_HDA_CODEC_REALTEK, then the rest of the
+>> LED kconfig symbols can be disabled.
 > 
-> As I'm sure you have noticed, I sent out some patches that get rid of
-> physvirt_offset, and which simplify __is_lm_address() to only take
-> compile time constants into account (unless KASAN is enabled). This
-> means that in the 52-bit VA case, __is_lm_address() does not
-> distinguish between virtual addresses that can be mapped by the
-> hardware and ones that cannot.
-
-Yeah, though was bit late in getting to the series. So with that change
-there might be areas in the linear mapping which cannot be addressed by
-the hardware and hence should also need be checked apart from proposed
-linear mapping coverage test, during memory hotplug ?
-
+> Sure,
 > 
-> In the memory hotplug case, we need to decide whether the added memory
-> will appear in the addressable area, which is a different question. So
-> it makes sense to duplicate some of the logic that exists in
-> arm64_memblock_init() (or factor it out) to decide whether this newly
-> added memory will appear in the addressable window or not.
-
-It seems unlikely that any hotplug agent (e.g. firmware) will ever push
-through a memory range which is not accessible in the hardware but then
-it is not impossible either. In summary, arch_add_memory() should check
-
-1. Range can be covered inside linear mapping
-2. Range is accessible by the hardware
-
-Before the VA space organization series, (2) was not necessary as it was
-contained inside (1) ?
-
+> but:
 > 
-> So I think your original approach makes more sense here, although I
-> think you want '(start + size - 1) <= __pa(PAGE_END - 1)' in the
-> comparison above (and please drop the redundant parens)
+> # dmesg|grep audi
+> (...)
 > 
+> [   19.971537] snd_hda_codec_generic hdaudioC0D0: ignore pin 0x7, too
+> many assigned pins
+> [   19.973547] snd_hda_codec_generic hdaudioC0D0: autoconfig for
+> Generic: line_outs=0 (0x0/0x0/0x0/0x0/0x0) type:line
+> [   19.975642] snd_hda_codec_generic hdaudioC0D0:    speaker_outs=0
+> (0x0/0x0/0x0/0x0/0x0)
+> [   19.977774] snd_hda_codec_generic hdaudioC0D0:    hp_outs=0
+> (0x0/0x0/0x0/0x0/0x0)
+> [   19.980176] snd_hda_codec_generic hdaudioC0D0:    mono: mono_out=0x0
+> [   19.982257] snd_hda_codec_generic hdaudioC0D0:    dig-out=0x3/0x5
+> [   19.984412] snd_hda_codec_generic hdaudioC0D0:    inputs:
+> [   20.035088] snd_hda_codec_realtek hdaudioC1D0: autoconfig for
+> ALC1220: line_outs=3 (0x14/0x15/0x16/0x0/0x0) type:line
+> [   20.036940] snd_hda_codec_realtek hdaudioC1D0:    speaker_outs=0
+> (0x0/0x0/0x0/0x0/0x0)
+> [   20.039579] snd_hda_codec_realtek hdaudioC1D0:    hp_outs=1
+> (0x1b/0x0/0x0/0x0/0x0)
+> [   20.041690] snd_hda_codec_realtek hdaudioC1D0:    mono: mono_out=0x0
+> [   20.044076] snd_hda_codec_realtek hdaudioC1D0:    dig-out=0x1e/0x0
+> [   20.046173] snd_hda_codec_realtek hdaudioC1D0:    inputs:
+> [   20.049252] snd_hda_codec_realtek hdaudioC1D0:      Front Mic=0x19
+> [   20.051287] snd_hda_codec_realtek hdaudioC1D0:      Rear Mic=0x18
+> [   20.053084] snd_hda_codec_realtek hdaudioC1D0:      Line=0x1a
+> [   20.427487] usbcore: registered new interface driver snd-usb-audio
+> 
+> I.e.: it looks like I will lose some funcionality when I disable
+> SND_HDA_CODEC_REALTEK.
 
-Sure, will accommodate these changes.
+OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_REALTEK
+with no LEDS. That driver apparently wants LEDS.
+
+According to this commit:
+
+commit 7cdf8c49b1df0a385db06c4f9a5ba1b16510fdcc
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Jun 18 13:08:31 2020 +0200
+    ALSA: hda: generic: Add a helper for mic-mute LED with LED classdev
+
+the Realtek and other drivers need LED support:
+
+"""
+    Also, introduce a new kconfig CONFIG_SND_HDA_GENERIC_LEDS, to indicate
+    the usage of mute / mic-mute LED helpers.  It's selected by the codec
+    drivers (Realtek, Conexant and Sigmatel), while it selects the
+    necessary LED class dependencies.
+"""
+
+
+-- 
+~Randy
+
