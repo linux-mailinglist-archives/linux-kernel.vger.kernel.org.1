@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A657828DAEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A83B28DB01
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728797AbgJNIOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
+        id S1729001AbgJNITf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728566AbgJNIOh (ORCPT
+        with ESMTP id S1727767AbgJNITd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:14:37 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42931C045866;
-        Tue, 13 Oct 2020 22:48:09 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id w21so1200428plq.3;
-        Tue, 13 Oct 2020 22:48:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nb/uFi8WsRrgWvvp/XblLt9Qx7O6wCy9IPkPTSrHgcI=;
-        b=g0gCWVd+fyGFCrVvBgYbENgYj5fUVrbXA40j99tr5L2MugnblgsNG+kes3VDWrcP/Q
-         uKq13a8AISOxVFU9VxDFxbemN/bg6GYNNMBibYfAL1LqoTfopeZxkSg+2OA8i5yehnGe
-         +QY59p75FAOh0MMk8gP9Qp5CXOP/EDXEidemoToVZuFhDZY0fVPGABPgkIlHwiZ1/fuQ
-         kCUkqCX3mFxv+kpG+a4b/dXOJ60C6ctE/UMOmnnGa4syhaplQ83FwfAtNK0buvWdDzgD
-         RFUqBrqfVtfBFbJVgBir4qAERRBIGUzVJ4qPiGpQMhjGwixc0z0id6hgFe6clGNpd8Zg
-         UXaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nb/uFi8WsRrgWvvp/XblLt9Qx7O6wCy9IPkPTSrHgcI=;
-        b=JSBzc6ZuqjDnzdcsNbGqRkhITgewticlmw3RwdqnZ1luYgBfXqLagv4dzA+fLjnNoY
-         kX80BBdovE0cFtPksRhv4zZQxOaMAQ03/15Jh5NcXcRgRume3G0ZwVmIAHfrYY90f0mr
-         G9KI7q8L9gU6BKPWLL4dfoHnjBl6mz4brz9MZ8siSN9rzV+o6fGxUZQq1iFUpJFpTPr8
-         BR6HAOqkFJYFrMsEeC4Jei2ouyZccGCKBdAlAegXAQMSvVNShnO74J9I+YFOx8Cv5u4W
-         u8bIhdPYZlzJxz6KiKhhdS3weqyfhyaYKnvqnI0RpTuLu41/DLVDORgkw443e4wjf0BC
-         cNrA==
-X-Gm-Message-State: AOAM530R8s0Y5UxMdk2B9WIdXieyxd/4u3RHHGAzV3UWf8fVPrgyGiTK
-        5msznuvSl3BkZqtJ05EctEU=
-X-Google-Smtp-Source: ABdhPJxqSdHcsk7zkgs+qDZm+MKDiGAF60n6PRoSWI8mO6Akv8dFFD+YpQ3Rbz080cRf+Ui/lVYoBA==
-X-Received: by 2002:a17:90a:8c8a:: with SMTP id b10mr1923235pjo.127.1602654488830;
-        Tue, 13 Oct 2020 22:48:08 -0700 (PDT)
-Received: from HVD6JC2.Broadcom.net ([103.113.142.251])
-        by smtp.gmail.com with ESMTPSA id m13sm1306785pjl.45.2020.10.13.22.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 22:48:08 -0700 (PDT)
-From:   Amitesh Chandra <amitesh.chandra@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     amitesh.chandra@broadcom.com, ravi.nagarajan@broadcom.com,
-        cheneyni@google.com, Manoj Babulal <manoj.babulal@broadcom.com>
-Subject: [PATCH 3/3] Bluetooth: hci_bcm: Ignore deprecated command fail case
-Date:   Wed, 14 Oct 2020 11:17:46 +0530
-Message-Id: <20201014054746.2507-1-amitesh.chandra@gmail.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        Wed, 14 Oct 2020 04:19:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88B9C04586A;
+        Tue, 13 Oct 2020 22:51:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zj/mSELh0gkQiJzxNFapB7VTFgX/SPaMVeSie4q6aLI=; b=OMo7hmfNufPo6rVhRGuQHzLQ0b
+        1VAPwm7au3dwZhP2U8KCBzhdLGuGCJg4Y6BujKWfQq2J1qHSQizXWY3eydQmN9Z/I4vBdS6zYKs5j
+        8G4vo2y4z0B+BuZzAKnFd/zlkgAkwf4/KGUd29HlOFzuWZb9K09Z7harllEIKARBJ+lNl3gcIyJwx
+        IgDSWugwC2Wi8bsLi3iEMqOtFQSkJCi/2zicQQg/+6U0CE8rkkSKMimmb2xrSDPfAVVBj7aqg8wnj
+        QMZqWCmfY9u5oHJiUeflNjGtB6dSKh1s54zSdXMn8V4HVtnycq0plQXp5B1021lCYA4/A3ZxNhsFb
+        Ml0gOVXw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSZgx-0005RW-Py; Wed, 14 Oct 2020 05:51:15 +0000
+Date:   Wed, 14 Oct 2020 06:51:15 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alexander Viro <aviro@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 05/14] fs: don't allow kernel reads and writes without
+ iter ops
+Message-ID: <20201014055115.GA19844@infradead.org>
+References: <20200903142242.925828-1-hch@lst.de>
+ <20200903142242.925828-6-hch@lst.de>
+ <20201001223852.GA855@sol.localdomain>
+ <20201001224051.GI3421308@ZenIV.linux.org.uk>
+ <CAHk-=wgj=mKeN-EfV5tKwJNeHPLG0dybq+R5ZyGuc4WeUnqcmA@mail.gmail.com>
+ <20201009220633.GA1122@sol.localdomain>
+ <CAHk-=whcEzYjkqdpZciHh+iAdUttvfWZYoiHiF67XuTXB1YJLw@mail.gmail.com>
+ <20201010011919.GC1122@sol.localdomain>
+ <CAHk-=wigvcmp-jcgoNCbx45W7j3=0jA320CfpskwuoEjefM7nQ@mail.gmail.com>
+ <20201010015524.GB101464@shell-el7.hosts.prod.upshift.rdu2.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201010015524.GB101464@shell-el7.hosts.prod.upshift.rdu2.redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manoj Babulal <manoj.babulal@broadcom.com>
+On Sat, Oct 10, 2020 at 01:55:24AM +0000, Alexander Viro wrote:
+> FWIW, I hadn't pushed that branch out (or merged it into #for-next yet);
+> for one thing, uml part (mconsole) is simply broken, for another...
+> IMO ##5--8 are asking for kernel_pread() and if you look at binfmt_elf.c,
+> you'll see elf_read() being pretty much that.  acct.c, keys and usermode
+> parts are asking for kernel_pwrite() as well.
+> 
+> I've got stuck looking through the drivers/target stuff - it would've
+> been another kernel_pwrite() candidate, but it smells like its use of
+> filp_open() is really asking for trouble, starting with symlink attacks.
+> Not sure - I'm not familiar with the area, but...
 
-Broadcom VSC uart_clock_setting is deprecated in
-newer controllers. Ignore error if the controller
-returns invalid or bad request error code.
-
-Signed-off-by: Amitesh Chandra <amitesh.chandra@broadcom.com>
-Signed-off-by: Manoj Babulal <manoj.babulal@broadcom.com>
----
- drivers/bluetooth/hci_bcm.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
-index 680478f..d316788 100644
---- a/drivers/bluetooth/hci_bcm.c
-+++ b/drivers/bluetooth/hci_bcm.c
-@@ -158,15 +158,18 @@ static int bcm_set_baudrate(struct hci_uart *hu, unsigned int speed)
- 		skb = __hci_cmd_sync(hdev, 0xfc45, 1, &clock, HCI_INIT_TIMEOUT);
- 		if (IS_ERR(skb)) {
- 			int err = PTR_ERR(skb);
--			bt_dev_err(hdev, "BCM: failed to write clock (%d)",
--				   err);
--			return err;
-+			/* Ignore err if command is deprecated in controller */
-+			if (err != -EBADRQC) {
-+				bt_dev_err(hdev, "BCM: failed to write "
-+						"clock (%d)", err);
-+				return err;
-+			}
-+		} else {
-+			kfree_skb(skb);
- 		}
--
--		kfree_skb(skb);
- 	}
- 
--	bt_dev_dbg(hdev, "Set Controller UART speed to %d bit/s", speed);
-+	bt_dev_info(hdev, "Set Controller UART speed to %d bit/s", speed);
- 
- 	param.zero = cpu_to_le16(0);
- 	param.baud_rate = cpu_to_le32(speed);
--- 
-2.7.4
-
+Can you just pull in the minimal fix so that the branch gets fixed
+for this merge window?  All the cleanups can come later.
