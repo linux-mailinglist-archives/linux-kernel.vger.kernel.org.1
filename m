@@ -2,56 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56E828E63E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8E928E645
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388048AbgJNS1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S2388200AbgJNS1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728969AbgJNS1E (ORCPT
+        with ESMTP id S2388067AbgJNS1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:27:04 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEF7C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:27:04 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id r4so93837pgl.20
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:27:04 -0700 (PDT)
+        Wed, 14 Oct 2020 14:27:06 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B85C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:27:06 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id k6so50359pls.22
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:27:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=3OwPD9JNIkkg/66kUX7JOx+qvCAxBgpPWoZ4pxvez7k=;
-        b=lItDRVd5cQ5IIEtTz6X1ie5+pL9ESgJLgeZyxVtNXHGYlK7jQeI+WmWLEJiItBVt9N
-         mOQC3YlpDvNZHCAheoHcba6Kj7h8mRdkiUiJ5rNgUZyc41UW5Utx9JrRWD5nyrKNEJec
-         FDXTijiSEuxPs1dpq2ousd0PkiGkEv0bHpdFtGA8djfZf+P33qiCVg+opBpIWsZuFCe3
-         pudFBc1uJgz0sMppEWU/MxRLBbGS85adq9t7IhvNqRfmF2GRO1yLMHvdo7O3TO9T11HI
-         Hr6NeNuBQAkEQPoJjqEB0E6XOWviYqGEJ3+qF+aWs7QQzDUGy/eM5luXM/yvekuAZds7
-         NSOw==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=4bjkl7LU/ijpP4j3wkVH8RGMkGEhF98fqB9pEclfJrk=;
+        b=MogfLG0Ygib8pC0aC4AVyfrCXTiWPZ+I8kFw8RCzn3NdcLonBPkaOwCYFHij0wrUAI
+         FC7DasDbwNlLO+rUZlGNaSlybrvy7GnhjbIu+ybG2F207pU+7yDQ3pZwjyA7mz7Se71Y
+         IbGhUgcX8ZusRoGk1n+nJVPB5ijxIuMYWUe8jNExK5+bFn/SX2CZz8r0nexXNXueUQ/E
+         9x+skWzS9XR/eIuI+oPRvPlaI8ytWfXAyfH7Ve1uqyOucO9S6Nw9Blw5xvSWhcB1PUKI
+         sb9+2pWbAnF5Bl7Co9B2gAVjAn4JQKg1Y1w9zfsCP97MMQdo8gsk6cNChxbaeq/oLx/Q
+         lfaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=3OwPD9JNIkkg/66kUX7JOx+qvCAxBgpPWoZ4pxvez7k=;
-        b=oYyLU6O9uHsahnURClfXrYpaBHAEMuZ0MS9+ZNCu5MjaQ1qJCtR7/HDTZGEeNshU4y
-         NM5FD/MIWRYnfL5EnhnQ+JdNPYTWqCyX3f9m0hx80bpAQYin5KYez8FfaZjqw0Lz/Ehq
-         BjDoXJl7TgpNsFAfHHSSWVzc4LNT6ZzC5PoD8Z0kWSn3266FcTw8R9kGFo+nTLAKoa6F
-         x3jtrxjo4POGPoIU3qxjwx6Yo6mZDUaXF/grh0oGgd5omoPL+TSiDVefny6+y0I9F990
-         2JeEAuav2PgS030vFz5eGVR8wd9wC/a1wmqO67779RsEkrWUiyFvTrPxCLro5Bm5R91/
-         vBMA==
-X-Gm-Message-State: AOAM531utAcTk8DIQ4lxYFsRMQM7qKWZ90oh0+nGIMGT2SbMwgxklxf8
-        LSVp5E5JR9FqIv/CGMk4zHOsNugOmU4z82PFqREjJ0bsdgOPbA5Awsp54BWQMbpGvMFlsp/7Vzl
-        tiptb6Mg2qFfZHLONHMJapP0pK5y6737aJoTXTP5fw1VIL7265HinPbM7sms96xEoX5iuCPCj
-X-Google-Smtp-Source: ABdhPJzmbjkLfxHv5DXV8PVqejr9VdMMeI+pdHIWv34F78h8VYGL0lGuDne+ScNCejcY+JQlskkT9jQRTEM2
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=4bjkl7LU/ijpP4j3wkVH8RGMkGEhF98fqB9pEclfJrk=;
+        b=kZUsB6bULpotEW9qlAeChF7PBhsAiVEUxCEVSAuP0gTmJRHb6hrcoeGVuwR26MBNUb
+         fgRRTmv/XvXrjfkjLuHd/w37IHPxumergMvq9ADcj2CfrjlzZSALERccqxVXuAYlYHG2
+         PWJa9f+JtmOFR9MqF9PkVvO1Udp6M0HqHMRjeEv9MKRnOEZzQqx/r+r3O/450YxJXDQj
+         rnkoSLYut1kkdaY5VsnnjJDVSmtKJYm4/CkwvntzDr/KywrxODliF3mzeu04B25X47Gp
+         cSBNjrxI62V/N5ZodMNZR1g9Ql0bd1JbEd2CoreUD/FSWiNRCN1czrty7a1JtUb54gNj
+         2luw==
+X-Gm-Message-State: AOAM531B8N9JU/hUZAnqkaK8WqBYx0Vvr6r4jA65MR15ZMgQ5pLfB2uQ
+        0p4Q8Lmm2DSPncG2E1ikp3ndkXixHVUSBJGv1q4P6z8YX9wcnxUkWLyPNWHT5jl/wlzGlsH1KbK
+        84ovmWAYBAEg5vgbp0USNOmNJFwmYBEBh2zYPiVyI7zBLbYZjUlc0wbGYyexpJ+snWGD+AyJK
+X-Google-Smtp-Source: ABdhPJy35YA8qiNQX7ZBjgjicHgSqdVWg6euqKaGUEbJi3LTSM58YPkjX30wFc214EhwPbtHDhSobtXpgdka
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:aa7:8421:0:b029:155:3229:69cc with SMTP id
- q1-20020aa784210000b0290155322969ccmr567588pfn.36.1602700024177; Wed, 14 Oct
- 2020 11:27:04 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 11:26:40 -0700
-Message-Id: <20201014182700.2888246-1-bgardon@google.com>
+ (user=bgardon job=sendgmr) by 2002:a62:884d:0:b029:152:1a5f:1123 with SMTP id
+ l74-20020a62884d0000b02901521a5f1123mr580761pfd.28.1602700025984; Wed, 14 Oct
+ 2020 11:27:05 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 11:26:41 -0700
+In-Reply-To: <20201014182700.2888246-1-bgardon@google.com>
+Message-Id: <20201014182700.2888246-2-bgardon@google.com>
 Mime-Version: 1.0
+References: <20201014182700.2888246-1-bgardon@google.com>
 X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH v2 00/20] Introduce the TDP MMU
+Subject: [PATCH v2 01/20] kvm: x86/mmu: Separate making SPTEs from set_spte
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Cannon Matthews <cannonmatthews@google.com>,
@@ -72,134 +75,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Over the years, the needs for KVM's x86 MMU have grown from running small
-guests to live migrating multi-terabyte VMs with hundreds of vCPUs. Where
-we previously depended on shadow paging to run all guests, we now have
-two dimensional paging (TDP). This patch set introduces a new
-implementation of much of the KVM MMU, optimized for running guests with
-TDP. We have re-implemented many of the MMU functions to take advantage of
-the relative simplicity of TDP and eliminate the need for an rmap.
-Building on this simplified implementation, a future patch set will change
-the synchronization model for this "TDP MMU" to enable more parallelism
-than the monolithic MMU lock. A TDP MMU is currently in use at Google
-and has given us the performance necessary to live migrate our 416 vCPU,
-12TiB m2-ultramem-416 VMs.
+Separate the functions for generating leaf page table entries from the
+function that inserts them into the paging structure. This refactoring
+will facilitate changes to the MMU sychronization model to use atomic
+compare / exchanges (which are not guaranteed to succeed) instead of a
+monolithic MMU lock.
 
-This work was motivated by the need to handle page faults in parallel for
-very large VMs. When VMs have hundreds of vCPUs and terabytes of memory,
-KVM's MMU lock suffers extreme contention, resulting in soft-lockups and
-long latency on guest page faults. This contention can be easily seen
-running the KVM selftests demand_paging_test with a couple hundred vCPUs.
-Over a 1 second profile of the demand_paging_test, with 416 vCPUs and 4G
-per vCPU, 98% of the time was spent waiting for the MMU lock. At Google,
-the TDP MMU reduced the test duration by 89% and the execution was
-dominated by get_user_pages and the user fault FD ioctl instead of the
-MMU lock.
+No functional change expected.
 
-This series is the first of two. In this series we add a basic
-implementation of the TDP MMU. In the next series we will improve the
-performance of the TDP MMU and allow it to execute MMU operations
-in parallel.
+Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
+machine. This commit introduced no new failures.
 
-The overall purpose of the KVM MMU is to program paging structures
-(CR3/EPT/NPT) to encode the mapping of guest addresses to host physical
-addresses (HPA), and to provide utilities for other KVM features, for
-example dirty logging. The definition of the L1 guest physical address
-(GPA) to HPA mapping comes in two parts: KVM's memslots map GPA to HVA,
-and the kernel MM/x86 host page tables map HVA -> HPA. Without TDP, the
-MMU must program the x86 page tables to encode the full translation of
-guest virtual addresses (GVA) to HPA. This requires "shadowing" the
-guest's page tables to create a composite x86 paging structure. This
-solution is complicated, requires separate paging structures for each
-guest CR3, and requires emulating guest page table changes. The TDP case
-is much simpler. In this case, KVM lets the guest control CR3 and programs
-the EPT/NPT paging structures with the GPA -> HPA mapping. The guest has
-no way to change this mapping and only one version of the paging structure
-is needed per L1 paging mode. In this case the paging mode is some
-combination of the number of levels in the paging structure, the address
-space (normal execution or system management mode, on x86), and other
-attributes. Most VMs only ever use 1 paging mode and so only ever need one
-TDP structure.
+This series can be viewed in Gerrit at:
+	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
 
-This series implements a "TDP MMU" through alternative implementations of
-MMU functions for running L1 guests with TDP. The TDP MMU falls back to
-the existing shadow paging implementation when TDP is not available, and
-interoperates with the existing shadow paging implementation for nesting.
-The use of the TDP MMU can be controlled by a module parameter which is
-snapshot on VM creation and follows the life of the VM. This snapshot
-is used in many functions to decide whether or not to use TDP MMU handlers
-for a given operation.
+Signed-off-by: Ben Gardon <bgardon@google.com>
+Reviewed-by: Peter Shier <pshier@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 49 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 33 insertions(+), 16 deletions(-)
 
-This series can also be viewed in Gerrit here:
-https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
-(Thanks to Dmitry Vyukov <dvyukov@google.com> for setting up the
-Gerrit instance)
-
-Changes v1 -> v2:
-  Big thanks to Paolo and Sean for your thorough reviews!
-  - Moved some function definitions to mmu_internal.h instead of just
-    declaring them there.
-  - Dropped the commit to add an as_id field to memslots in favor of
-    Peter Xu's which is part of the dirty ring patch set. I've included a
-    copy of that patch from v13 of the patch set in this series.
-  - Fixed comment style on SPDX license headers
-  - Added a min_level to the tdp_iter and removed the tdp_iter_no_step_down
-    function
-  - Removed the tdp_mmu module parameter and defaulted the global to false
-  - Unified more NX reclaim code
-  - Added helper functions for setting SPTEs in the TDP MMU
-  - Renamed tdp_iter macros to for clarity
-  - Renamed kvm_tdp_mmu_page_fault to kvm_tdp_mmu_map and gave it the same
-    signature as __direct_map
-  - Converted some WARN_ONs to BUG_ONs or removed them
-  - Changed dlog to dirty_log to match convention
-  - Switched make_spte to return a return code and use a return parameter
-    for the new SPTE
-  - Refactored TDP MMU root allocation
-  - Other misc cleanups and bug fixes
-
-Ben Gardon (19):
-  kvm: x86/mmu: Separate making SPTEs from set_spte
-  kvm: x86/mmu: Introduce tdp_iter
-  kvm: x86/mmu: Init / Uninit the TDP MMU
-  kvm: x86/mmu: Allocate and free TDP MMU roots
-  kvm: x86/mmu: Add functions to handle changed TDP SPTEs
-  kvm: x86/mmu: Support zapping SPTEs in the TDP MMU
-  kvm: x86/mmu: Separate making non-leaf sptes from link_shadow_page
-  kvm: x86/mmu: Remove disallowed_hugepage_adjust shadow_walk_iterator
-    arg
-  kvm: x86/mmu: Add TDP MMU PF handler
-  kvm: x86/mmu: Allocate struct kvm_mmu_pages for all pages in TDP MMU
-  kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU
-  kvm: x86/mmu: Add access tracking for tdp_mmu
-  kvm: x86/mmu: Support changed pte notifier in tdp MMU
-  kvm: x86/mmu: Support dirty logging for the TDP MMU
-  kvm: x86/mmu: Support disabling dirty logging for the tdp MMU
-  kvm: x86/mmu: Support write protection for nesting in tdp MMU
-  kvm: x86/mmu: Support MMIO in the TDP MMU
-  kvm: x86/mmu: Don't clear write flooding count for direct roots
-  kvm: x86/mmu: NX largepage recovery for TDP MMU
-
-Peter Xu (1):
-  KVM: Cache as_id in kvm_memory_slot
-
- arch/x86/include/asm/kvm_host.h |   14 +
- arch/x86/kvm/Makefile           |    3 +-
- arch/x86/kvm/mmu/mmu.c          |  487 +++++++------
- arch/x86/kvm/mmu/mmu_internal.h |  242 +++++++
- arch/x86/kvm/mmu/paging_tmpl.h  |    3 +-
- arch/x86/kvm/mmu/tdp_iter.c     |  181 +++++
- arch/x86/kvm/mmu/tdp_iter.h     |   60 ++
- arch/x86/kvm/mmu/tdp_mmu.c      | 1154 +++++++++++++++++++++++++++++++
- arch/x86/kvm/mmu/tdp_mmu.h      |   48 ++
- include/linux/kvm_host.h        |    2 +
- virt/kvm/kvm_main.c             |   12 +-
- 11 files changed, 1944 insertions(+), 262 deletions(-)
- create mode 100644 arch/x86/kvm/mmu/tdp_iter.c
- create mode 100644 arch/x86/kvm/mmu/tdp_iter.h
- create mode 100644 arch/x86/kvm/mmu/tdp_mmu.c
- create mode 100644 arch/x86/kvm/mmu/tdp_mmu.h
-
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 32e0e5c0524e5..6c9db349600c8 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2987,20 +2987,15 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
+ #define SET_SPTE_NEED_REMOTE_TLB_FLUSH	BIT(1)
+ #define SET_SPTE_SPURIOUS		BIT(2)
+ 
+-static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+-		    unsigned int pte_access, int level,
+-		    gfn_t gfn, kvm_pfn_t pfn, bool speculative,
+-		    bool can_unsync, bool host_writable)
++static int make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
++		     gfn_t gfn, kvm_pfn_t pfn, u64 old_spte, bool speculative,
++		     bool can_unsync, bool host_writable, bool ad_disabled,
++		     u64 *new_spte)
+ {
+ 	u64 spte = 0;
+ 	int ret = 0;
+-	struct kvm_mmu_page *sp;
+ 
+-	if (set_mmio_spte(vcpu, sptep, gfn, pfn, pte_access))
+-		return 0;
+-
+-	sp = sptep_to_sp(sptep);
+-	if (sp_ad_disabled(sp))
++	if (ad_disabled)
+ 		spte |= SPTE_AD_DISABLED_MASK;
+ 	else if (kvm_vcpu_ad_need_write_protect(vcpu))
+ 		spte |= SPTE_AD_WRPROT_ONLY_MASK;
+@@ -3053,8 +3048,8 @@ static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+ 		 * is responsibility of mmu_get_page / kvm_sync_page.
+ 		 * Same reasoning can be applied to dirty page accounting.
+ 		 */
+-		if (!can_unsync && is_writable_pte(*sptep))
+-			goto set_pte;
++		if (!can_unsync && is_writable_pte(old_spte))
++			goto out;
+ 
+ 		if (mmu_need_write_protect(vcpu, gfn, can_unsync)) {
+ 			pgprintk("%s: found shadow page for %llx, marking ro\n",
+@@ -3065,15 +3060,37 @@ static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+ 		}
+ 	}
+ 
+-	if (pte_access & ACC_WRITE_MASK) {
+-		kvm_vcpu_mark_page_dirty(vcpu, gfn);
++	if (pte_access & ACC_WRITE_MASK)
+ 		spte |= spte_shadow_dirty_mask(spte);
+-	}
+ 
+ 	if (speculative)
+ 		spte = mark_spte_for_access_track(spte);
+ 
+-set_pte:
++out:
++	*new_spte = spte;
++	return ret;
++}
++
++static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
++		    unsigned int pte_access, int level,
++		    gfn_t gfn, kvm_pfn_t pfn, bool speculative,
++		    bool can_unsync, bool host_writable)
++{
++	u64 spte;
++	struct kvm_mmu_page *sp;
++	int ret;
++
++	if (set_mmio_spte(vcpu, sptep, gfn, pfn, pte_access))
++		return 0;
++
++	sp = sptep_to_sp(sptep);
++
++	ret = make_spte(vcpu, pte_access, level, gfn, pfn, *sptep, speculative,
++			can_unsync, host_writable, sp_ad_disabled(sp), &spte);
++
++	if (spte & PT_WRITABLE_MASK)
++		kvm_vcpu_mark_page_dirty(vcpu, gfn);
++
+ 	if (*sptep == spte)
+ 		ret |= SET_SPTE_SPURIOUS;
+ 	else if (mmu_spte_update(sptep, spte))
 -- 
 2.28.0.1011.ga647a8990f-goog
 
