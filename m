@@ -2,57 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9610E28D9FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2612D28DC1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgJNG1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 02:27:35 -0400
-Received: from smtprelay0225.hostedemail.com ([216.40.44.225]:33026 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725944AbgJNG1f (ORCPT
+        id S1730361AbgJNIyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:54:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730266AbgJNIyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 02:27:35 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 26464182CF669;
-        Wed, 14 Oct 2020 06:27:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3868:3870:3871:3872:4321:5007:6120:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: scent70_1f0048627209
-X-Filterd-Recvd-Size: 1388
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 14 Oct 2020 06:27:33 +0000 (UTC)
-Message-ID: <be7deeec0937327e0ddaadf8468d934ed363a533.camel@perches.com>
-Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
- EXECUTE_PERMISSIONS
-From:   Joe Perches <joe@perches.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Tue, 13 Oct 2020 23:27:32 -0700
-In-Reply-To: <alpine.DEB.2.21.2010140812370.6186@felia>
-References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com>
-         <alpine.DEB.2.21.2010140734270.6186@felia>
-         <316d5a53351d10cd1a26ce0c54883da05642c898.camel@perches.com>
-         <alpine.DEB.2.21.2010140812370.6186@felia>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 14 Oct 2020 04:54:37 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6A8C045879;
+        Tue, 13 Oct 2020 23:28:05 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id h4so1040565pjk.0;
+        Tue, 13 Oct 2020 23:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xobD5fu2x27uFyHjSB9lqJa5omeksdS0WQuaqlpXbvA=;
+        b=hmHrOXRvWxXgySFk436y4vl7vJ5Zqpu2b/XkFm5T6S1jKsWTtFkibM/TOubzU5xoI5
+         4PtAUXZMAi43Fvl3F1rFF9VelYElpnXxwKU+fcFuDcxidNb72Mu4VmRV6LmTF1Lr30F0
+         ZDEZWxoZMttpHRa8KMFc0ytDPF19ikn++2tV7Rq3srfOG8AOr2EVu0LYWN9giLwqTwZf
+         jdq9WAH7ERNgmdzfuM4oh76SeMIgqifp2h4CtMXKZ9k79jQMtKTWb5OOODC0r013Maq8
+         tNGuR9Q/jiwmEYDT6ytUK7V6jpfTJIJmNdsEnAvN6q41mVItRuiaDgVHaAXTxzmmfuQf
+         390g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xobD5fu2x27uFyHjSB9lqJa5omeksdS0WQuaqlpXbvA=;
+        b=RvrcbtjIOtX1XxlJC3uYOAwXV2c47Q/Mj6Rv6Djvu4WdRLd/KhhgKSvQTiI/NEcIX7
+         DFL0TQm6rx4fG4L3D9qh2fhKQevPMJ9hPDubMfUR0ywJBzUXvA8HR/ip1P+qi5STLow4
+         uozsL0jGRUFIAasSywg7JGcjFxEWrcUrK3dI0vc4VOBsUO0yTPtKhMZItC5G9WkIhlpj
+         Eu9xDd3mich+9MKj0pefx/yiUjGrzJ0XowwmLF7bJCROXWAHV+hEBLQLbfA4tGPR70UI
+         jYeXiZgy5/V//RtUX/KJbM8F+OXkJxxPRBrxmB7w6r6WVOkOepDREjnWGCG/Fyv8BiVN
+         YfAQ==
+X-Gm-Message-State: AOAM532dsLL5JlHayy9VhWn6G/C2SOYqfmsBztLWGhxd7LXrIv1UNjJ1
+        JilEmy9TPeOF/xfOsFoczPdRdlFgNnxObg==
+X-Google-Smtp-Source: ABdhPJyJJmSI+VnnkDxSdhl1Ul6CDvySeFfFExb8phWHiHDXOg3OSDYfro77lwlyCp88IrA/pqPf6Q==
+X-Received: by 2002:a17:90a:e997:: with SMTP id v23mr1929324pjy.195.1602656884953;
+        Tue, 13 Oct 2020 23:28:04 -0700 (PDT)
+Received: from sol.lan (106-69-182-59.dyn.iinet.net.au. [106.69.182.59])
+        by smtp.gmail.com with ESMTPSA id q24sm1803266pgb.12.2020.10.13.23.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 23:28:04 -0700 (PDT)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH 0/3] gpiolib: cdev: allow edge event timestamps to be configured as REALTIME
+Date:   Wed, 14 Oct 2020 14:27:37 +0800
+Message-Id: <20201014062740.78977-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-14 at 08:21 +0200, Lukas Bulwahn wrote:
-> What does checkpatch.pl warn about and what does clang-format still warn 
-> about, which is generally accepted okay as style in the kernel?
+This patch set adds the option to select CLOCK_REALTIME as the source
+clock for line events.
 
-clang-format doesn't warn at all, it just reformats.
+The first patch is the core of the change, while the remaining two update
+the GPIO tools to make use of the new option.
 
-checkpatch using the --in-place can reformat a
-patch or file with an explanation of each change
-it makes.
+Kent Gibson (3):
+  gpiolib: cdev: allow edge event timestamps to be configured as
+    REALTIME
+  tools: gpio: add support for reporting realtime event clock to lsgpio
+  tools: gpio: add option to report wall-clock time to gpio-event-mon
 
+ drivers/gpio/gpiolib-cdev.c | 21 ++++++++++++++++++---
+ drivers/gpio/gpiolib.h      |  1 +
+ include/uapi/linux/gpio.h   | 12 +++++++++---
+ tools/gpio/gpio-event-mon.c |  6 +++++-
+ tools/gpio/lsgpio.c         |  4 ++++
+ 5 files changed, 37 insertions(+), 7 deletions(-)
+
+-- 
+2.28.0
 
