@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB4828E4FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BD328E4FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731423AbgJNRCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731220AbgJNRCN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:02:13 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31DAC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:02:11 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id y20so6153844iod.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=1FmEIkrqfL0T3fOHDc6OHU2lmhTkM3AhohF3xQ/xB7E=;
-        b=nCDOAyyXhiRZZz7rZ9wEUHslojMwI/MOxw3Lqtua2iKHYhXaotVSr69c6pqSs3JDno
-         rbr5GpWiK0EIzhRtNZ9JiywfQClnnP2K4YumKU0T1RM048fq9rOlrkCw/hKjK9omGufF
-         b7/VGcG7jMw8dHgKIeFxZnexkgwDEQyf2fBRXWWPqLse5diN0XaK8n4ux1Jsp4OImgbF
-         BUHvFyPwqLDJRpSHpQXTEi9YJw6YGFmJR3mtFhPKyQXo2ZC5l6zhLLWW7tMIWGg2kz9C
-         p/q/mXzv/8HGDQfX7cD8HoderJFuPXQJXMGxpKj8yxJX58xe1QGCWilXPbbc03Dx6GRr
-         VJIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1FmEIkrqfL0T3fOHDc6OHU2lmhTkM3AhohF3xQ/xB7E=;
-        b=XsYzNB7oJw7u4eKa3h+VE51LpxEZ+mg+Afp27guq+MdYQNBppn4r8eK6JQbsMu1P8I
-         DM7sSqsB2ld8FmZXReafTLU8DO0Rvd4chze0gPmJkJK5K+4+iJovlb2or3Y5QQsCjIZs
-         2Tjg27+suhgTX8CxG8uJLNmRTu/T7Kiv9eK5PFfJSrYuk8VPR2z6xXJuGJDpqfqS70WG
-         a78jjS1d1MWpEZ7aiI9KjX6yXkhpV/v89C28gxwxjbF/Jc1sohr6jmGf1/MqoJnYIpNb
-         WFeXlUkwz/Vwgeu+H+8tDSSzk/YEh0Cs3CiMmyqc0SHd88sghSAVEwLmZMr6NT6oRwVv
-         ZqSQ==
-X-Gm-Message-State: AOAM530XEj9lvyNf8OtnSJZi/MuMYnjTMFSOkTBC4m7o5SBODvLtfNkb
-        zWbsFia0XEPblA1dXnhhjCubcw==
-X-Google-Smtp-Source: ABdhPJzhd+/16ZvJiUYYfs9WNkd1c88ZyLGztYQfhm8605zQRwoONNTABR+sxO8FM05H4pLYKZakxg==
-X-Received: by 2002:a05:6638:dcc:: with SMTP id m12mr395388jaj.30.1602694930981;
-        Wed, 14 Oct 2020 10:02:10 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id n9sm2447180ilj.74.2020.10.14.10.02.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 10:02:10 -0700 (PDT)
-Subject: Re: general protection fault in __se_sys_io_uring_register
-To:     syzbot <syzbot+4520eff3d84059553f13@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-References: <0000000000000c3be205b1a4782f@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7fccdc0f-bcd8-505d-f0dd-672471be30f6@kernel.dk>
-Date:   Wed, 14 Oct 2020 11:02:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731451AbgJNRDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:03:06 -0400
+Received: from mailout06.rmx.de ([94.199.90.92]:34745 "EHLO mailout06.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726517AbgJNRDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:03:06 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout06.rmx.de (Postfix) with ESMTPS id 4CBJdL0RVlz9xXn;
+        Wed, 14 Oct 2020 19:03:02 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CBJd31FtYz2TTMH;
+        Wed, 14 Oct 2020 19:02:47 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.12) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 14 Oct
+ 2020 19:02:14 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>
+Subject: Re: [PATCH net] net: dsa: ksz: fix padding size of skb
+Date:   Wed, 14 Oct 2020 19:02:13 +0200
+Message-ID: <3253541.RgjG7ZtOS4@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201014165410.fzvzdk3odsdjljpq@skbuf>
+References: <20201014161719.30289-1-ceggers@arri.de> <20201014164750.qelb6vssiubadslj@skbuf> <20201014165410.fzvzdk3odsdjljpq@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <0000000000000c3be205b1a4782f@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.12]
+X-RMX-ID: 20201014-190253-4CBJd31FtYz2TTMH-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz dup: general protection fault in __do_sys_io_uring_register
+Hi Vladimir,
 
--- 
-Jens Axboe
+On Wednesday, 14 October 2020, 18:54:10 CEST, Vladimir Oltean wrote:
+> On Wed, Oct 14, 2020 at 07:47:50PM +0300, Vladimir Oltean wrote:
+> > On Wed, Oct 14, 2020 at 06:17:19PM +0200, Christian Eggers wrote:
+> > > __skb_put_padto() is called in order to ensure a minimal size of the
+> > > sk_buff. The required minimal size is ETH_ZLEN + the size required for
+> > > the tail tag.
+> > > 
+> > > The current argument misses the size for the tail tag. The expression
+> > > "skb->len + padlen" can be simplified to ETH_ZLEN.
+> > > 
+> > > Too small sk_buffs typically result from cloning in
+> > > dsa_skb_tx_timestamp(). The cloned sk_buff may not meet the minimum size
+> > > requirements.
+> > > 
+> > > Fixes: e71cb9e00922 ("net: dsa: ksz: fix skb freeing")
+> > > Signed-off-by: Christian Eggers <ceggers@arri.de>
+> > > ---
+> > 
+> > Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+> 
+> Actually no, I take that back.
+> 
+> This statement:
+> > The expression "skb->len + padlen" can be simplified to ETH_ZLEN.
+> 
+> is false.
+> skb->len + padlen == ETH_ZLEN only if skb->len is less than ETH_ZLEN.
+ok, my comment is false.
+
+> Otherwise, skb->len + padlen == skb->len.
+> 
+> Otherwise said, the frame must be padded to
+> max(skb->len, ETH_ZLEN) + tail tag length.
+At first I thought the same when working on this. But IMHO the padding must 
+only ensure the minimum required size, there is no need to pad to the "real" 
+size of the skb. The check for the tailroom above ensures that enough memory 
+for the "real" size is available.
+
+> So please keep the "skb->len + padlen + len".
+> 
+> Thanks,
+> -Vladimir
+Best regards
+Christian
+
+
 
