@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273B528E37C
+	by mail.lfdr.de (Postfix) with ESMTP id 94BC628E37D
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731602AbgJNPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731710AbgJNPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727566AbgJNPpw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 11:45:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727566AbgJNPpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:45:52 -0400
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38A2E22244
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:45:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602690351;
-        bh=9lOn7d49hdMJPBAKNJlKjJFXwOCSJN+nr4aroBt0z8Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nTgLQYcNgiV4xvOcNFfqLSyoduB9LQwUmo1XmTF09eY04eNM9AZqsq/rx1nPTEgXD
-         0iuygi538DbVwzDItQUCEkVx9WpDUcIaZ4JnnDqp3LPu5Moe5o9SgIRXCOdoE+kwVc
-         NbH+N+n9MrrXEuLLWikuOiwUuZjfMiIt+mAlH0BI=
-Received: by mail-wr1-f51.google.com with SMTP id h5so4436003wrv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:45:51 -0700 (PDT)
-X-Gm-Message-State: AOAM5321sordXzRYdMMFm2KTO609cIC+gyzCeReSrtbijQHHA/BJXaEt
-        nqpCVO6n0oXU9aE4X2jCeVLM0V3SsUTyKOQPnzjpJg==
-X-Google-Smtp-Source: ABdhPJzQOydMjXK4UiJ3SXU5rT4smyYe2CcWv5kxCt2+PoOm7xJWs7FQA9thboa3WyHRS1tM8wCbwVh1dzX3hQW3mXI=
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr6472625wrw.18.1602690349612;
- Wed, 14 Oct 2020 08:45:49 -0700 (PDT)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EDFC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:45:52 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id g7so5630608iov.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GVsFzR74egr+o93/X35XS2maZ1vLsmxHPBrJlJDsuhI=;
+        b=X4aAHpmKSHgU3/84qpUaV903w1xkwCtvsv7XMV8dUuc9QnpjmB/jKfLFcdpqh7UmY4
+         IG9lWFz+HRgkE8tRa/pOXAXobj0l94fXgiNfyoap+V7yrzg1LQqQgDVrbGZk1Qt7MpXw
+         IsWNMw7UDTAPcoV7udFaMBNkFCpbRweWEvQFc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GVsFzR74egr+o93/X35XS2maZ1vLsmxHPBrJlJDsuhI=;
+        b=b3EH3nXvmqX/C5cxDs6fKEbg1vMRuRryluU1ycfLpe4AbhqQ6OvdRU0Aq7vUBjCbq5
+         5kb/22HRiXMl9HrwTNE0Sn/KlE5JyPavXU54YjuP3Hkzka1UKtL0Zen4NOg2Okt3qMVp
+         qoo3HcUFHORTvj8MbbwlZyG2baScX0TgYPeREA9GVwisg0lmkkLLJ6otFqTfeXWgVm9A
+         DSRl1Slf1btxemM1N+KhVPVlh/qPLfUpQsSvcPGQoiwBkBQ5eMIYQkyPsoEPKEJNfJau
+         CUDMFxhpGLcdy1IWstN3lquXadKoWIPRUxo0oR2kzK9Lwq4Xnu9xwiDy5/PRN/ED5mRx
+         rK/g==
+X-Gm-Message-State: AOAM530tJNlQ6T7DDuFPfq8XLVYWQ2GRhIfpWQ+4n8ZGs9FWxFzg4s3n
+        Vx6K0162kgx/g5uXMtqSjj02mg==
+X-Google-Smtp-Source: ABdhPJxFL0dEO8+kC0xlhiweNLkyf1APFnjIPT9B9l6CjUgbzU9W6XQstgVJjfauCC4EZCo/jPEspg==
+X-Received: by 2002:a02:a510:: with SMTP id e16mr43790jam.51.1602690351653;
+        Wed, 14 Oct 2020 08:45:51 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t22sm3922965ili.9.2020.10.14.08.45.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 08:45:50 -0700 (PDT)
+Subject: Re: [patch 07/12] usbip: Remove in_interrupt() check
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Johan Hovold <johan@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-omap@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201014145215.518912759@linutronix.de>
+ <20201014145727.828083323@linutronix.de>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <fa656cc7-a323-7013-8435-915a1f8b5866@linuxfoundation.org>
+Date:   Wed, 14 Oct 2020 09:45:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201014083300.19077-1-ankur.a.arora@oracle.com> <20201014083300.19077-6-ankur.a.arora@oracle.com>
-In-Reply-To: <20201014083300.19077-6-ankur.a.arora@oracle.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 14 Oct 2020 08:45:37 -0700
-X-Gmail-Original-Message-ID: <CALCETrVKLv5DPByFcj7E5SBbv4mFt7mGQ9j-HU7G5u_aPGCYsQ@mail.gmail.com>
-Message-ID: <CALCETrVKLv5DPByFcj7E5SBbv4mFt7mGQ9j-HU7G5u_aPGCYsQ@mail.gmail.com>
-Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201014145727.828083323@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 1:33 AM Ankur Arora <ankur.a.arora@oracle.com> wrote:
->
-> Define clear_page_uncached() as an alternative_call() to clear_page_nt()
-> if the CPU sets X86_FEATURE_NT_GOOD and fallback to clear_page() if it
-> doesn't.
->
-> Similarly define clear_page_uncached_flush() which provides an SFENCE
-> if the CPU sets X86_FEATURE_NT_GOOD.
+On 10/14/20 8:52 AM, Thomas Gleixner wrote:
+> From: Ahmed S. Darwish <a.darwish@linutronix.de>
+> 
+> The usage of in_interrupt() in drivers is phased out and Linus clearly
+> requested that code which changes behaviour depending on context should
+> either be separated or the context be conveyed in an argument passed by the
+> caller, which usually knows the context.
+> 
+> usbip_recv() uses in_interrupt() to conditionally print context information
+> for debugging messages. The value is zero as the function is only called
+> from various *_rx_loop() kthread functions. Remove it.
+> 
+> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Valentina Manea <valentina.manea.m@gmail.com>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-usb@vger.kernel.org
+> 
+> ---
+>   drivers/usb/usbip/usbip_common.c |    5 -----
+>   1 file changed, 5 deletions(-)
+> 
+> --- a/drivers/usb/usbip/usbip_common.c
+> +++ b/drivers/usb/usbip/usbip_common.c
+> @@ -324,11 +324,6 @@ int usbip_recv(struct socket *sock, void
+>   	} while (msg_data_left(&msg));
+>   
+>   	if (usbip_dbg_flag_xmit) {
+> -		if (!in_interrupt())
+> -			pr_debug("%-10s:", current->comm);
+> -		else
+> -			pr_debug("interrupt  :");
+> -
+>   		pr_debug("receiving....\n");
+>   		usbip_dump_buffer(buf, size);
+>   		pr_debug("received, osize %d ret %d size %zd total %d\n",
+> 
+> 
 
-As long as you keep "NT" or "MOVNTI" in the names and keep functions
-in arch/x86, I think it's reasonable to expect that callers understand
-that MOVNTI has bizarre memory ordering rules.  But once you give
-something a generic name like "clear_page_uncached" and stick it in
-generic code, I think the semantics should be more obvious.
+Looks good to me.
 
-How about:
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
-clear_page_uncached_unordered() or clear_page_uncached_incoherent()
+thanks,
+-- Shuah
 
-and
-
-flush_after_clear_page_uncached()
-
-After all, a naive reader might expect "uncached" to imply "caches are
-off and this is coherent with everything".  And the results of getting
-this wrong will be subtle and possibly hard-to-reproduce corruption.
-
---Andy
