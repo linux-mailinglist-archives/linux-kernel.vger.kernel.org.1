@@ -2,142 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29B728E593
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319A428E597
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbgJNRmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:42:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:54806 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgJNRmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:42:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52C11D6E;
-        Wed, 14 Oct 2020 10:42:39 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E31D33F71F;
-        Wed, 14 Oct 2020 10:42:37 -0700 (PDT)
-Subject: Re: [PATCH v7 3/3] iommu/tegra-smmu: Add PCI support
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, digetx@gmail.com
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
-References: <20201009161936.23122-1-nicoleotsuka@gmail.com>
- <20201009161936.23122-4-nicoleotsuka@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <cbc6e3bf-eedc-195c-c4d6-52d3cd24c257@arm.com>
-Date:   Wed, 14 Oct 2020 18:42:36 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <20201009161936.23122-4-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1727365AbgJNRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJNRnH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:43:07 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7247AC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:43:07 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id i10so282765qkh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=f0pB5/6uDIV5mRb154M8ZVIAD20wSOQVeYXIO9SVDew=;
+        b=muD/lbk0Vi2OKCQINdAD0dBZKl/O4MC+SGXL1v/iFdXsYvFHgNGI2r5WgbrVMbcctt
+         Tx/6BW1FEWInPo6YfTbwpTkWv1aQ/VkiAbIMtmc6stXt4VLF/z6fUbbcwl7yn9U1yKpg
+         l98Qwl2GVtKfLMZJP6yBrBEDuR7scTQoaJaif2QW/46o069dkIakORHFJ7TfKGbN4sWx
+         hmrJ4SGB+OblEHnBSSU8vCCkNa9T5q8b4MG/MIl18HYeTkQNnAGK75Wb2xIzIG4JvSfI
+         +sLnl7Q6z9ajGR5mvrgyHlVh41AT2X3ubCDDvLvZBpM8jNr4KWjt/PNJ9Ta1C/GOpEir
+         Rw/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=f0pB5/6uDIV5mRb154M8ZVIAD20wSOQVeYXIO9SVDew=;
+        b=aZNjI34NDEGu6lJ2PQ5SV7R1VP/MnrUHGdCyCO8PNAwD5xAOZ+duOcIc4krLq2zgnx
+         Ge8WBsGDieIoY8QxNUAysPq9rvih0nbzNBvF67JU8CJAOisRtbON4vr4IQ82oXBV9Apa
+         SO0LvCb0uwfMVu1ziqwfytvNczJ3qH5nFrCrWXuXqncKNNDVubeZPngSPJDQSgBOEHgR
+         E865bJy8Cy2K/izG7qd1lM1PAI3L+Qs/ZMKiE6gvMuncZWuvEy7qoE8qODFH1Fv1oXgr
+         LNpa7BRpO777H3BPOKvpmZ8W5WFCk5RVb3haFYB5wBpZNZA/g+qDvNnxiJC4w5si0Htz
+         MF9w==
+X-Gm-Message-State: AOAM530oW0AYIIMVoEK2vKzQvt00+z3nQACJaE3cTMKjAJWs2N8waX8/
+        fe+cXPyqVUr+wZdenLsnija6ViPmJOARKuP52qE=
+X-Google-Smtp-Source: ABdhPJwbUQC4GE9QEd4CALxjProAdSsd0yvJVFSrYJOGRCGJXxb5pnQvJqp/Nva52BLlvmTpzwVm3R9fZhVylqz5jdc=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:b78c:: with SMTP id
+ l12mr651830qve.38.1602697386340; Wed, 14 Oct 2020 10:43:06 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 10:43:04 -0700
+In-Reply-To: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
+Message-Id: <20201014174304.1393937-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: Re: [GIT PULL] io_uring updates for 5.10-rc1
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     torvalds@linux-foundation.org
+Cc:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-tooling@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-09 17:19, Nicolin Chen wrote:
-> This patch simply adds support for PCI devices.
-> 
-> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
-> 
-> Changelog
-> v6->v7
->   * Renamed goto labels, suggested by Thierry.
-> v5->v6
->   * Added Dmitry's Reviewed-by and Tested-by.
-> v4->v5
->   * Added Dmitry's Reviewed-by
-> v3->v4
->   * Dropped !iommu_present() check
->   * Added CONFIG_PCI check in the exit path
-> v2->v3
->   * Replaced ternary conditional operator with if-else in .device_group()
->   * Dropped change in tegra_smmu_remove()
-> v1->v2
->   * Added error-out labels in tegra_smmu_probe()
->   * Dropped pci_request_acs() since IOMMU core would call it.
-> 
->   drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
->   1 file changed, 25 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index be29f5977145..2941d6459076 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -10,6 +10,7 @@
->   #include <linux/kernel.h>
->   #include <linux/of.h>
->   #include <linux/of_device.h>
-> +#include <linux/pci.h>
->   #include <linux/platform_device.h>
->   #include <linux/slab.h>
->   #include <linux/spinlock.h>
-> @@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
->   	group->smmu = smmu;
->   	group->soc = soc;
->   
-> -	group->group = iommu_group_alloc();
-> +	if (dev_is_pci(dev))
-> +		group->group = pci_device_group(dev);
+Sorry for not reporting it sooner.  It looks to me like a GNU `as` bug:
+https://github.com/ClangBuiltLinux/linux/issues/1153#issuecomment-692265433
+When I'm done with the three build breakages that popped up overnight I'll try
+to report it to GNU binutils folks.
 
-Just to check, is it OK to have two or more swgroups "owning" the same 
-iommu_group if an existing one gets returned here? It looks like that 
-might not play nice with the use of iommu_group_set_iommudata().
-
-Robin.
-
-> +	else
-> +		group->group = generic_device_group(dev);
-> +
->   	if (IS_ERR(group->group)) {
->   		devm_kfree(smmu->dev, group);
->   		mutex_unlock(&smmu->lock);
-> @@ -1075,22 +1080,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
->   	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
->   
->   	err = iommu_device_register(&smmu->iommu);
-> -	if (err) {
-> -		iommu_device_sysfs_remove(&smmu->iommu);
-> -		return ERR_PTR(err);
-> -	}
-> +	if (err)
-> +		goto remove_sysfs;
->   
->   	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
-> -	if (err < 0) {
-> -		iommu_device_unregister(&smmu->iommu);
-> -		iommu_device_sysfs_remove(&smmu->iommu);
-> -		return ERR_PTR(err);
-> -	}
-> +	if (err < 0)
-> +		goto unregister;
-> +
-> +#ifdef CONFIG_PCI
-> +	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-> +	if (err < 0)
-> +		goto unset_platform_bus;
-> +#endif
->   
->   	if (IS_ENABLED(CONFIG_DEBUG_FS))
->   		tegra_smmu_debugfs_init(smmu);
->   
->   	return smmu;
-> +
-> +unset_platform_bus: __maybe_unused;
-> +	bus_set_iommu(&platform_bus_type, NULL);
-> +unregister:
-> +	iommu_device_unregister(&smmu->iommu);
-> +remove_sysfs:
-> +	iommu_device_sysfs_remove(&smmu->iommu);
-> +
-> +	return ERR_PTR(err);
->   }
->   
->   void tegra_smmu_remove(struct tegra_smmu *smmu)
-> 
+(We run an issue tracker out of
+https://github.com/ClangBuiltLinux/linux/issues, if your interested to see what
+the outstanding known issues are, or recently solved ones.  We try to
+aggressively track when and where patches land for the inevitable backports.
+We have 118 people in our github group!)
