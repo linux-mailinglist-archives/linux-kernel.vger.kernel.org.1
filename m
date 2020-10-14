@@ -2,131 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386A228DB10
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C7C28D95C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 06:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729212AbgJNITn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728922AbgJNITd (ORCPT
+        id S1730072AbgJNEoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 00:44:38 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:49647 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726037AbgJNEoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:19:33 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C90C041E73;
-        Tue, 13 Oct 2020 21:43:15 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id j136so1162742wmj.2;
-        Tue, 13 Oct 2020 21:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=yAoSXHRwpGz7nBgURGl4h1iZHKvaWjYO9+dk8dtTzEM=;
-        b=Y91XoDmgSV0T8y7s38jad1TN0OqdQ/W7/i8P2ncbuMKEZD2rOkSZiUQTJlsuYKHtPU
-         EAZV7qv1rUsvdBWUoA886/Y95M9vZa/oxqlJFhM8q/1rrvT6J84jeJlhZi8NQCojqDrj
-         Tes5NzvdJSB+DVYiNzB7Z+JvVuOHpaiNru8rAGagKUdC0j9MPOurw7mLoHNDCbFsPoZS
-         n583hEDRzu2p7Kqe01AlohE9ec6ZDpWlycrOa7cs+BNDFjntEoiVKIrhkwJA/95FI/mV
-         FSdQmGYWryAjzzPk7+g9a6lDfDynMecp9R4n0hxGRZiNmkM4V9grSiY5O0gZsORtJ/5Y
-         3abg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=yAoSXHRwpGz7nBgURGl4h1iZHKvaWjYO9+dk8dtTzEM=;
-        b=JOHhwdfZKe4yD68bJyQjxY1BrYQE1wRftfXe8xqtgIenqTaOY8P4GQhtxNJ2213hOx
-         fD+oN3qVtAq71HlsTo/SSr3bVLtG6EKsROmhtrRgm10x9+rHzWBwCEtARl/T2SJKzjTb
-         TVDO6uIxoT9bHFvUOjeYa2623nfyFopsNSrlV4OFe2FTmlQnB1GpDzM8mcYZSEDMOFsG
-         FJMdqGXeClm45nrcn8OcDxzyEX37aohLgT35SsGCdXRpHcPbsm8Ht9sAYGWcIax2jW5v
-         P/NFtkz7TrMExm8Gq7gQMHL2t4CPkr2S/Agaku02sj/eBOxi15KmsGN/DhBtqSE74ZKZ
-         +EFw==
-X-Gm-Message-State: AOAM532UQZiR34uXFHvqv+IdJYqNTrWuPGrD9kwZqhm8vBZwb0i5xfaJ
-        UbiOnJKPRe5pVwy73pOOnz0=
-X-Google-Smtp-Source: ABdhPJxLj7cfYT+/1rNY1VWyuk/FeNLUT9YgTom+iIidb6iYPJvpU8+DuMBSQu3AZwhlP+GOUgdJYw==
-X-Received: by 2002:a7b:c081:: with SMTP id r1mr1410127wmh.158.1602650594160;
-        Tue, 13 Oct 2020 21:43:14 -0700 (PDT)
-Received: from felia ([2001:16b8:2da8:8200:4c70:9c82:f3bf:bebb])
-        by smtp.gmail.com with ESMTPSA id h206sm1713989wmf.47.2020.10.13.21.43.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 21:43:13 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Wed, 14 Oct 2020 06:43:06 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Masahiro Yamada <masahiroy@kernel.org>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] kbuild: doc: describe proper script invocation
-In-Reply-To: <CAK7LNAR+W9h95sUZFwRHiyiDbUxn9b7KN5P1zKOAdR2emxp7=g@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2010140636020.6186@felia>
-References: <20201001075723.24246-1-lukas.bulwahn@gmail.com> <CAK7LNARXirw-DZg1-Dwq0NhWtqyS9PCpFhzjL7bfZjQt5-dL6A@mail.gmail.com> <CAK7LNAR+W9h95sUZFwRHiyiDbUxn9b7KN5P1zKOAdR2emxp7=g@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Wed, 14 Oct 2020 00:44:38 -0400
+X-UUID: 18ebda2e8bf74f3095a7a10152753375-20201014
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=x91QPLRNfibON85F9Jml+ohJ1lXenPHGO335BQtB9sE=;
+        b=TkmPB3Asx3A3tAuOhtUvOJ/an4GLImdom4xnu2GyuqJibgVxpjk67Gz4xUfdNZ4XWl/1k7Mtql8Xg4u4jnB30Oc8gwKwpl9Q4BoIHYAFCClDVEmxupIAgAF2zYh1HYiTGr5AuSs9VpDFP+b9GrTplju/Apckqqvix0gNfnrVi4U=;
+X-UUID: 18ebda2e8bf74f3095a7a10152753375-20201014
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 262329850; Wed, 14 Oct 2020 12:44:32 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 14 Oct 2020 12:44:30 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Oct 2020 12:44:30 +0800
+Message-ID: <1602650671.27998.2.camel@mtksdaap41>
+Subject: Re: [PATCH v2 4/8] dt-bindings: phy: convert HDMI PHY binding to
+ YAML schema
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Kishon Vijay Abraham I" <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>
+Date:   Wed, 14 Oct 2020 12:44:31 +0800
+In-Reply-To: <20201013085207.17749-4-chunfeng.yun@mediatek.com>
+References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
+         <20201013085207.17749-4-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SGksIENodW5mZW5nOg0KDQpPbiBUdWUsIDIwMjAtMTAtMTMgYXQgMTY6NTIgKzA4MDAsIENodW5m
+ZW5nIFl1biB3cm90ZToNCj4gQ29udmVydCBIRE1JIFBIWSBiaW5kaW5nIHRvIFlBTUwgc2NoZW1h
+IG1lZGlhdGVrLHVmcy1waHkueWFtbA0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVu
+IDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gdjI6IGZpeCBiaW5kaW5nIGNo
+ZWNrIHdhcm5pbmcgb2YgcmVnIGluIGV4YW1wbGUNCj4gLS0tDQo+ICAuLi4vZGlzcGxheS9tZWRp
+YXRlay9tZWRpYXRlayxoZG1pLnR4dCAgICAgICAgfCAxNyArLS0tDQo+ICAuLi4vYmluZGluZ3Mv
+cGh5L21lZGlhdGVrLGhkbWktcGh5LnlhbWwgICAgICAgfCA5MCArKysrKysrKysrKysrKysrKysr
+DQo+ICAyIGZpbGVzIGNoYW5nZWQsIDkxIGluc2VydGlvbnMoKyksIDE2IGRlbGV0aW9ucygtKQ0K
+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9w
+aHkvbWVkaWF0ZWssaGRtaS1waHkueWFtbA0KPiANCj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGhkbWkudHh0
+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVk
+aWF0ZWssaGRtaS50eHQNCj4gaW5kZXggN2IxMjQyNDJiMGM1Li5lZGFjMTg5NTFhNzUgMTAwNjQ0
+DQo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlh
+dGVrL21lZGlhdGVrLGhkbWkudHh0DQo+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGhkbWkudHh0DQo+IEBAIC01MCwyMiAr
+NTAsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiAgDQo+ICBIRE1JIFBIWQ0KPiAgPT09PT09
+PT0NCj4gLQ0KPiAtVGhlIEhETUkgUEhZIHNlcmlhbGl6ZXMgdGhlIEhETUkgZW5jb2RlcidzIHRo
+cmVlIGNoYW5uZWwgMTAtYml0IHBhcmFsbGVsDQo+IC1vdXRwdXQgYW5kIGRyaXZlcyB0aGUgSERN
+SSBwYWRzLg0KPiAtDQo+IC1SZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiAtLSBjb21wYXRpYmxlOiAi
+bWVkaWF0ZWssPGNoaXA+LWhkbWktcGh5Ig0KPiAtLSByZWc6IFBoeXNpY2FsIGJhc2UgYWRkcmVz
+cyBhbmQgbGVuZ3RoIG9mIHRoZSBtb2R1bGUncyByZWdpc3RlcnMNCj4gLS0gY2xvY2tzOiBQTEwg
+cmVmZXJlbmNlIGNsb2NrDQo+IC0tIGNsb2NrLW5hbWVzOiBtdXN0IGNvbnRhaW4gInBsbF9yZWYi
+DQo+IC0tIGNsb2NrLW91dHB1dC1uYW1lczogbXVzdCBiZSAiaGRtaXR4X2RpZ19jdHMiIG9uIG10
+ODE3Mw0KPiAtLSAjcGh5LWNlbGxzOiBtdXN0IGJlIDwwPg0KPiAtLSAjY2xvY2stY2VsbHM6IG11
+c3QgYmUgPDA+DQo+IC0NCj4gLU9wdGlvbmFsIHByb3BlcnRpZXM6DQo+IC0tIG1lZGlhdGVrLGli
+aWFzOiBUWCBEUlYgYmlhcyBjdXJyZW50IGZvciA8MS42NUdicHMsIGRlZmF1bHRzIHRvIDB4YQ0K
+PiAtLSBtZWRpYXRlayxpYmlhc191cDogVFggRFJWIGJpYXMgY3VycmVudCBmb3IgPjEuNjVHYnBz
+LCBkZWZhdWx0cyB0byAweDFjDQo+ICtTZWUgcGh5L21lZGlhdGVrLGhkbWktcGh5LnlhbWwNCj4g
+IA0KPiAgRXhhbXBsZToNCj4gIA0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxoZG1pLXBoeS55YW1sIGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxoZG1pLXBoeS55YW1sDQo+IG5ldyBmaWxl
+IG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAwMDAwMC4uNzdkZjUwMjA0NjA2DQo+IC0tLSAv
+ZGV2L251bGwNCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9t
+ZWRpYXRlayxoZG1pLXBoeS55YW1sDQo+IEBAIC0wLDAgKzEsOTAgQEANCj4gKyMgU1BEWC1MaWNl
+bnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlKQ0KPiArIyBDb3B5
+cmlnaHQgKGMpIDIwMjAgTWVkaWFUZWsNCj4gKyVZQU1MIDEuMg0KPiArLS0tDQo+ICskaWQ6IGh0
+dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL3BoeS9tZWRpYXRlayxoZG1pLXBoeS55YW1sIw0K
+PiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwj
+DQo+ICsNCj4gK3RpdGxlOiBNZWRpYVRlayBIaWdoIERlZmluaXRpb24gTXVsdGltZWRpYSBJbnRl
+cmZhY2UgKEhETUkpIFBIWSBiaW5kaW5nDQo+ICsNCj4gK21haW50YWluZXJzOg0KPiArICAtIENL
+IEh1IDxjay5odUBtZWRpYXRlay5jb20+DQoNCkkgdGhpbmsgeW91IHNob3VsZCByZW1vdmUgIkNL
+IEh1IDxjay5odUBtZWRpYXRlay5jb20+IiBhbmQgYWRkIGxhdGVzdA0KbWVkaWF0ZWsgZHJtIG1h
+aW50YWluZXI6DQoNCkRSTSBEUklWRVJTIEZPUiBNRURJQVRFSw0KTToJQ2h1bi1LdWFuZyBIdSA8
+Y2h1bmt1YW5nLmh1QGtlcm5lbC5vcmc+DQpNOglQaGlsaXBwIFphYmVsIDxwLnphYmVsQHBlbmd1
+dHJvbml4LmRlPg0KTDoJZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZw0KUzoJU3VwcG9y
+dGVkDQpGOglEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRl
+ay8NCkY6CWRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay8NCg0KUmVnYXJkcywNCkNLDQoNCj4gKyAg
+LSBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+ICsNCj4gK2Rlc2Ny
+aXB0aW9uOiB8DQo+ICsgIFRoZSBIRE1JIFBIWSBzZXJpYWxpemVzIHRoZSBIRE1JIGVuY29kZXIn
+cyB0aHJlZSBjaGFubmVsIDEwLWJpdCBwYXJhbGxlbA0KPiArICBvdXRwdXQgYW5kIGRyaXZlcyB0
+aGUgSERNSSBwYWRzLg0KPiArDQo+ICtwcm9wZXJ0aWVzOg0KPiArICAkbm9kZW5hbWU6DQo+ICsg
+ICAgcGF0dGVybjogIl5oZG1pLXBoeUBbMC05YS1mXSskIg0KPiArDQo+ICsgIGNvbXBhdGlibGU6
+DQo+ICsgICAgZW51bToNCj4gKyAgICAgIC0gbWVkaWF0ZWssbXQyNzAxLWhkbWktcGh5DQo+ICsg
+ICAgICAtIG1lZGlhdGVrLG10ODE3My1oZG1pLXBoeQ0KPiArDQo+ICsgIHJlZzoNCj4gKyAgICBt
+YXhJdGVtczogMQ0KPiArDQo+ICsgIGNsb2NrczoNCj4gKyAgICBpdGVtczoNCj4gKyAgICAgIC0g
+ZGVzY3JpcHRpb246IFBMTCByZWZlcmVuY2UgY2xvY2sNCj4gKw0KPiArICBjbG9jay1uYW1lczoN
+Cj4gKyAgICBpdGVtczoNCj4gKyAgICAgIC0gY29uc3Q6IHBsbF9yZWYNCj4gKw0KPiArICBjbG9j
+ay1vdXRwdXQtbmFtZXM6DQo+ICsgICAgaXRlbXM6DQo+ICsgICAgICAtIGNvbnN0OiBoZG1pdHhf
+ZGlnX2N0cw0KPiArDQo+ICsgICIjcGh5LWNlbGxzIjoNCj4gKyAgICBjb25zdDogMA0KPiArDQo+
+ICsgICIjY2xvY2stY2VsbHMiOg0KPiArICAgIGNvbnN0OiAwDQo+ICsNCj4gKyAgbWVkaWF0ZWss
+aWJpYXM6DQo+ICsgICAgZGVzY3JpcHRpb246DQo+ICsgICAgICBUWCBEUlYgYmlhcyBjdXJyZW50
+IGZvciA8IDEuNjVHYnBzDQo+ICsgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5p
+dGlvbnMvdWludDMyDQo+ICsgICAgbWluaW11bTogMA0KPiArICAgIG1heGltdW06IDYzDQo+ICsg
+ICAgZGVmYXVsdDogMHhhDQo+ICsNCj4gKyAgbWVkaWF0ZWssaWJpYXNfdXA6DQo+ICsgICAgZGVz
+Y3JpcHRpb246DQo+ICsgICAgICBUWCBEUlYgYmlhcyBjdXJyZW50IGZvciA+PSAxLjY1R2Jwcw0K
+PiArICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3VpbnQzMg0KPiAr
+ICAgIG1pbmltdW06IDANCj4gKyAgICBtYXhpbXVtOiA2Mw0KPiArICAgIGRlZmF1bHQ6IDB4MWMN
+Cj4gKw0KPiArcmVxdWlyZWQ6DQo+ICsgIC0gY29tcGF0aWJsZQ0KPiArICAtIHJlZw0KPiArICAt
+IGNsb2Nrcw0KPiArICAtIGNsb2NrLW5hbWVzDQo+ICsgIC0gY2xvY2stb3V0cHV0LW5hbWVzDQo+
+ICsgIC0gIiNwaHktY2VsbHMiDQo+ICsgIC0gIiNjbG9jay1jZWxscyINCj4gKw0KPiArYWRkaXRp
+b25hbFByb3BlcnRpZXM6IGZhbHNlDQo+ICsNCj4gK2V4YW1wbGVzOg0KPiArICAtIHwNCj4gKyAg
+ICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvY2xvY2svbXQ4MTczLWNsay5oPg0KPiArICAgIGhkbWlf
+cGh5OiBoZG1pLXBoeUAxMDIwOTEwMCB7DQo+ICsgICAgICAgIGNvbXBhdGlibGUgPSAibWVkaWF0
+ZWssbXQ4MTczLWhkbWktcGh5IjsNCj4gKyAgICAgICAgcmVnID0gPDB4MTAyMDkxMDAgMHgyND47
+DQo+ICsgICAgICAgIGNsb2NrcyA9IDwmYXBtaXhlZHN5cyBDTEtfQVBNSVhFRF9IRE1JX1JFRj47
+DQo+ICsgICAgICAgIGNsb2NrLW5hbWVzID0gInBsbF9yZWYiOw0KPiArICAgICAgICBjbG9jay1v
+dXRwdXQtbmFtZXMgPSAiaGRtaXR4X2RpZ19jdHMiOw0KPiArICAgICAgICBtZWRpYXRlayxpYmlh
+cyA9IDwweGE+Ow0KPiArICAgICAgICBtZWRpYXRlayxpYmlhc191cCA9IDwweDFjPjsNCj4gKyAg
+ICAgICAgI2Nsb2NrLWNlbGxzID0gPDA+Ow0KPiArICAgICAgICAjcGh5LWNlbGxzID0gPDA+Ow0K
+PiArICAgIH07DQo+ICsNCj4gKy4uLg0KDQo=
 
-
-On Wed, 14 Oct 2020, Masahiro Yamada wrote:
-
-> On Tue, Oct 13, 2020 at 11:31 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Thu, Oct 1, 2020 at 4:57 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> > >
-> > > During an investigation to fix up the execute bits of scripts in the kernel
-> > > repository, Andrew Morton and Kees Cook pointed out that the execute bit
-> > > should not matter, and that build scripts cannot rely on that. Kees could
-> > > not point to any documentation, though.
-> > >
-> > > Masahiro Yamada explained the convention of setting execute bits to make it
-> > > easier for manual script invocation.
-> > >
-> > > Provide some basic documentation how the build shall invoke scripts, such
-> > > that the execute bits do not matter, and acknowledge that execute bits
-> > > are useful nonetheless.
-> > >
-> > > This serves as reference for further clean-up patches in the future.
-> > >
-> > > Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
-> > > Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
-> > > Link: https://lore.kernel.org/linux-kbuild/CAK7LNAQdrvMkDA6ApDJCGr+5db8SiPo=G+p8EiOvnnGvEN80gA@mail.gmail.com/
-> > >
-> > > Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-> > > Suggested-by: Kees Cook <keescook@chromium.org>
-> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> >
-> >
-> > Applied to linux-kbuild.
-> > Thanks.
-> >
-> 
-> No, not really.
-> 
-> I will re-think if this is the right thing to do.
-> 
->
-
-Masahiro-san, Andrew Morton has already picked this patch in his branch; 
-so, if we do not shout loudly, it will be merged. And we can follow up 
-with a solid improvement for rc2.
-
-I am happy to rework the documentation and help guide and review the 
-follow-up patches that have been sent by Ujjwal.
-
-Please provide some specific feedback what is wrong and why; I think the 
-basic request not to rely on the execute bit from Andrew and Kees is still 
-valid. Maybe we just need to be more specific on the rules to follow in 
-Makefiles and have multiple examples for the different cases to consider.
-
-Thanks,
-
-Lukas
