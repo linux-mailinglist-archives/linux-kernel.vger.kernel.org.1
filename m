@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F70628E9FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15ECB28E90F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732263AbgJOB3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732228AbgJOB3i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:29:38 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B83C05111E;
-        Wed, 14 Oct 2020 16:01:01 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id u19so1752544ion.3;
-        Wed, 14 Oct 2020 16:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ikC4LAwwb2/OL3dDYceqRFTwnIoFZSQn/I33psN0qjs=;
-        b=TCnK8mL9NI6hpr3zEveS0JTuNaHtXCx/qfHBGzgIQgrYKIyFfbL469h0Y911PX4qYA
-         HA3PFnu9h7bUViHMzKVqrdtDhIfan/01bAJrm+iH8HVsCMbrGoUBCi+EwDuHU09Bq9xD
-         0zniDvdoMkczvwrfTymICG2b2JPXMk43+A7TFV6EwFWXjhcXv0Zr0g7isA+HBzM1ygDz
-         HielqMai2yM1V5M7vYrESoEcbxMQbPPGpBkxbresU1sEHhWVlG/vNZSnpIukEp2FJExo
-         3VAds5Vc5Pir8QMG6owXKfyujHcVGoAHhUjdCq3iSTks6Ul93abkR08dX/ws2fLr75Qd
-         P1CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ikC4LAwwb2/OL3dDYceqRFTwnIoFZSQn/I33psN0qjs=;
-        b=PWAa163szEnrFqyh0zDo4arnEmQpbqY+QsdGs0p1NJMeH3u2iuN+3afnbQRi63A/dP
-         WAN9uQ4564srgQFMUS/7J/bFnQiUF2MAQFQjeSXleGCnD3Pae2YmOkkIeTjlUrAFpvuP
-         X17Whcr2F9NtfzFBpw7JsMHDih+S4DgQB7Azc7qRTzs87svwpBuvCjOS6AZUHHziFEJv
-         ibb3fJ8kg0HR3DPzmNCCJz1yUcvl3HR8uPHEdyP0RI1HtWzPFAX1I8lVK7Ah60rY2lwa
-         6/jFHy86bMXAh7wkXqW72HyIZpswGD7TDKkF2Llj/BXLOsa4VIETaAvm+XAno0l1AVM6
-         8a7A==
-X-Gm-Message-State: AOAM533UMpgP5/GU9jSsp9bC7vYvLteCFjYSJMftPaWeP/KcFOT16rXB
-        E8lhlCZSwTSXu9Zkc6TiDMMC7NJLne3tDJNa5sxRYRiR197H6A==
-X-Google-Smtp-Source: ABdhPJzGna7kT8ytBKEMRmafA605hdoj/96Adf60Do8VLRmdj9ntw6bzrJXYjfcdcZHwC8be0AHpI8yUwC0EME90ntk=
-X-Received: by 2002:a5d:80cc:: with SMTP id h12mr1218936ior.73.1602716460855;
- Wed, 14 Oct 2020 16:01:00 -0700 (PDT)
+        id S2388133AbgJNXCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 19:02:33 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:42481 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731265AbgJNXCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 19:02:18 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 075e12dc;
+        Wed, 14 Oct 2020 22:28:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=from:to:cc
+        :subject:date:message-id:in-reply-to:references:mime-version
+        :content-transfer-encoding; s=mail; bh=EPozuoj+BDm/fNTp6nmCgRrnb
+        EI=; b=gYz9PJ4B7EuU6vk6qPqdAddg4bDnwzOOhB6j96pC1QC6JhgGVLnYQz//V
+        MCUGHyzXTkEynX7iFMjllnvi0ui1qLCCbWWq0E6/JfxIbFUmwx85fYInWLGTU2x8
+        uGMPSFB6nnmKrmWU585OZjOG9jA9TOlN56cqtPJG6LWOlxlD0RJsWYdrar/f8hVM
+        1zTcSfx+0yvy532DRFJMpXnnpv6TJp4EZ5C+x36/7kFXFanjjCpD+5ol4Sh/8jd6
+        aj0bz65xTT3as0O4g2fOyDLcEbpkGSKn1Fh7X1lw7JrRZdsIiBt2eJ0C13DqlPUO
+        kF+2z+5Ug6eHBHfoQXEPlMCqc9wZA==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 992bda79 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 14 Oct 2020 22:28:40 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] powerpc32: don't adjust unmoved stack pointer in csum_partial_copy_generic() epilogue
+Date:   Thu, 15 Oct 2020 01:02:09 +0200
+Message-Id: <20201014230209.427011-1-Jason@zx2c4.com>
+In-Reply-To: <20201014222650.GA390346@zx2c4.com>
+References: <20201014222650.GA390346@zx2c4.com>
 MIME-Version: 1.0
-References: <20201014182811.12027-1-cai@lca.pw>
-In-Reply-To: <20201014182811.12027-1-cai@lca.pw>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Thu, 15 Oct 2020 10:00:49 +1100
-Message-ID: <CAOSf1CFT_Y67Q8caH2uFOYtwpRgFozh30ZWWZzzR-x18LBsG8g@mail.gmail.com>
-Subject: Re: [PATCH -next] Revert "powerpc/pci: unmap legacy INTx interrupts
- when a PHB is removed"
-To:     Qian Cai <cai@lca.pw>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 5:28 AM Qian Cai <cai@lca.pw> wrote:
->
-> This reverts commit 3a3181e16fbde752007759f8759d25e0ff1fc425 which
-> causes memory corruptions on POWER9 NV.
+A recent change to the checksum code removed usage of some extra
+arguments, alongside with storage on the stack for those, and the stack
+pointer no longer needed to be adjusted in the function prologue. But, a
+left over subtraction wasn't removed in the function epilogue, causing
+the function to return with the stack pointer moved 16 bytes away from
+where it should have. This corrupted local state and lead to weird
+crashes. This commit simply removes the leftover instruction from the
+epilogue.
 
-I was going to post this along with a fix for Cedric's original bug,
-but I can do that separately so:
+Fixes: 70d65cd555c5 ("ppc: propagate the calling conventions change down to csum_partial_copy_generic()")
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ arch/powerpc/lib/checksum_32.S | 1 -
+ 1 file changed, 1 deletion(-)
 
-Acked-by: Oliver O'Halloran <oohall@gmail.com>
+diff --git a/arch/powerpc/lib/checksum_32.S b/arch/powerpc/lib/checksum_32.S
+index ec5cd2dede35..27d9070617df 100644
+--- a/arch/powerpc/lib/checksum_32.S
++++ b/arch/powerpc/lib/checksum_32.S
+@@ -236,7 +236,6 @@ _GLOBAL(csum_partial_copy_generic)
+ 	slwi	r0,r0,8
+ 	adde	r12,r12,r0
+ 66:	addze	r3,r12
+-	addi	r1,r1,16
+ 	beqlr+	cr7
+ 	rlwinm	r3,r3,8,0,31	/* odd destination address: rotate one byte */
+ 	blr
+-- 
+2.28.0
+
