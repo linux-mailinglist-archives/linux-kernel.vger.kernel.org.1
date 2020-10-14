@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27CD28DEC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BE128DECB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbgJNKSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:18:35 -0400
-Received: from mga09.intel.com ([134.134.136.24]:36427 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727197AbgJNKSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:18:34 -0400
-IronPort-SDR: vAaXm0Km17k+48DzlVitgPaoiKprteD+QabqE2IYbfU3nywukBPBbHvPd3YyEJ3GVSX1XaG33G
- yrEyngRdV4fw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="166199072"
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="166199072"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 03:18:34 -0700
-IronPort-SDR: viBr6PdzSDiLwxANqIGwkFKGrJYFhkvfS59lNtTyyDSNE81HGYJncwj8GkDcqspz5Dp/4iqOt7
- BqZJFRL2dHbA==
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="530768349"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.36.119])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 03:18:32 -0700
-Date:   Wed, 14 Oct 2020 12:18:23 +0200
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/9] rpmsg: Make RPMSG name service modular
-Message-ID: <20201014101822.GA4847@ubuntu>
-References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
+        id S1728959AbgJNKSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:18:40 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45266 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727197AbgJNKSj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 06:18:39 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C8E801C0B8B; Wed, 14 Oct 2020 12:18:37 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 12:18:36 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/39] 4.4.239-rc1 review
+Message-ID: <20201014101835.GA1999@amd>
+References: <20201012132628.130632267@linuxfoundation.org>
+ <20201013181155.GB23594@amd>
+ <20201014074704.GA3002862@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
 Content-Disposition: inline
-In-Reply-To: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201014074704.GA3002862@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 05:25:10PM -0600, Mathieu Poirier wrote:
-> Good afternoon,
-> 
-> This set starts by making the RPMSG protocol transport agnostic by
-> moving the headers it uses to generic types and using those in the
-> current implementation.  From there it re-uses the work that Arnaud
-> published[1] to make the name service modular. 
-> 
-> Tested on stm32mp157 with the RPMSG client sample application.  Applies
-> cleanly on v5.9.
 
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
-Guennadi
+On Wed 2020-10-14 09:47:04, Greg Kroah-Hartman wrote:
+> On Tue, Oct 13, 2020 at 08:11:55PM +0200, Pavel Machek wrote:
+> > On Mon 2020-10-12 15:26:30, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 4.4.239 release.
+> > > There are 39 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> > >=20
+> > > Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
+> > > Anything received after that time might be too late.
+> >=20
+> > Tested-by: Pavel Machek  (CIP) <pavel@denx.de>
+>=20
+> Why the '  '?
 
-> 
-> Thanks,
-> Mathieu
-> 
-> [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
-> 
-> ------
-> New for V2:
-> - Created new RPMSG types (Guennadi).
-> - Re-worked byte conversion functions(Guennadi).
-> - Added a single ->is_little_endian() operation (Arnaud).
-> - Fixed byte conversion before making name service modular.
-> 
-> Arnaud Pouliquen (4):
->   rpmsg: virtio: Rename rpmsg_create_channel
->   rpmsg: core: Add channel creation internal API
->   rpmsg: virtio: Add rpmsg channel device ops
->   rpmsg: Turn name service into a stand alone driver
-> 
-> Mathieu Poirier (5):
->   rpmsg: Move rpmsg_endpoint_ops to rpmsg.h
->   rpmsg: Introduce __rpmsg{16|32|64} types
->   rpmsg: virtio: Move from virtio to rpmsg byte conversion
->   rpmsg: Move rpmsg_hr and rpmsg_ns_msg to header file
->   rpmsg: Make rpmsg_{register|unregister}_device() public
-> 
->  drivers/rpmsg/Kconfig            |   8 ++
->  drivers/rpmsg/Makefile           |   1 +
->  drivers/rpmsg/rpmsg_core.c       |  44 +++++++
->  drivers/rpmsg/rpmsg_internal.h   |  27 +---
->  drivers/rpmsg/rpmsg_ns.c         | 110 +++++++++++++++++
->  drivers/rpmsg/virtio_rpmsg_bus.c | 206 ++++++++++---------------------
->  include/linux/rpmsg.h            |  93 ++++++++++++--
->  include/linux/rpmsg_byteorder.h  |  67 ++++++++++
->  include/linux/rpmsg_ns.h         |  79 ++++++++++++
->  include/uapi/linux/rpmsg.h       |   3 +
->  include/uapi/linux/rpmsg_types.h |  11 ++
->  11 files changed, 481 insertions(+), 168 deletions(-)
->  create mode 100644 drivers/rpmsg/rpmsg_ns.c
->  create mode 100644 include/linux/rpmsg_byteorder.h
->  create mode 100644 include/linux/rpmsg_ns.h
->  create mode 100644 include/uapi/linux/rpmsg_types.h
-> 
-> -- 
-> 2.25.1
-> 
+Typo, sorry. (Plus i wonder if there's better way to credit CIP
+project than this? Keeping From: and Signed-off-by: consistent is not
+something I always get right.)
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--VbJkn9YxBvnuCH5J
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+G0HsACgkQMOfwapXb+vKBnQCghuyl/qwckKKPPJnCLBeAwfrg
+ew8Anjh4FE7pmqvxQmeUK4qlaXAXKJYI
+=6oZi
+-----END PGP SIGNATURE-----
+
+--VbJkn9YxBvnuCH5J--
