@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D2D28E10F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A280928E113
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731136AbgJNNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731124AbgJNNOT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:14:19 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA6DC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:14:18 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by laurent.telenet-ops.be with bizsmtp
-        id fpEG2300i4C55Sk01pEGWb; Wed, 14 Oct 2020 15:14:16 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kSgbg-0007vE-I1; Wed, 14 Oct 2020 15:14:16 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kSgbg-0003jg-Fx; Wed, 14 Oct 2020 15:14:16 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] power: reset: POWER_RESET_OCELOT_RESET should depend on Ocelot or Sparx5
-Date:   Wed, 14 Oct 2020 15:14:15 +0200
-Message-Id: <20201014131415.14034-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.17.1
+        id S1731143AbgJNNQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:16:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:48182 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728420AbgJNNQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:16:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F944D6E;
+        Wed, 14 Oct 2020 06:16:40 -0700 (PDT)
+Received: from [10.57.50.28] (unknown [10.57.50.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B95B23F719;
+        Wed, 14 Oct 2020 06:16:37 -0700 (PDT)
+Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+To:     saiprakash.ranjan@codeaurora.org
+Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, denik@google.com,
+        leo.yan@linaro.org, peterz@infradead.org
+References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
+ <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
+Date:   Wed, 14 Oct 2020 14:16:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
+MIME-Version: 1.0
+In-Reply-To: <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To add support for Sparx5, the dependency on MSCC_OCELOT was removed.
-However, this increases exposure of the driver question not only to
-Sparx5 platforms, but to everyone.  Hence re-add the dependency on
-MSCC_OCELOT, and extend it with ARCH_SPARX5, to prevent asking the user
-about this driver when configuring a kernel without Ocelot and Sparx5
-support.
+On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
+> On 2020-10-13 22:05, Suzuki K Poulose wrote:
+>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
+>>> There was a report of NULL pointer dereference in ETF enable
+>>> path for perf CS mode with PID monitoring. It is almost 100%
+>>> reproducible when the process to monitor is something very
+>>> active such as chrome and with ETF as the sink and not ETR.
+>>> Currently in a bid to find the pid, the owner is dereferenced
+>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
+>>> owner being NULL, we get a NULL pointer dereference.
+>>>
+>>> Looking at the ETR and other places in the kernel, ETF and the
+>>> ETB are the only places trying to dereference the task(owner)
+>>> in tmc_enable_etf_sink_perf() which is also called from the
+>>> sched_in path as in the call trace. Owner(task) is NULL even
+>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
+>>> cache the PID in alloc_buffer() callback and it is done as part
+>>> of etm_setup_aux() when allocating buffer for ETR sink, we never
+>>> dereference this NULL pointer and we are safe. So lets do the
+>>
+>> The patch is necessary to fix some of the issues. But I feel it is
+>> not complete. Why is it safe earlier and not later ? I believe we are
+>> simply reducing the chances of hitting the issue, by doing this earlier than
+>> later. I would say we better fix all instances to make sure that the
+>> event->owner is valid. (e.g, I can see that the for kernel events
+>> event->owner == -1 ?)
+>>
+>> struct task_struct *tsk = READ_ONCE(event->owner);
+>>
+>> if (!tsk || is_kernel_event(event))
+>>    /* skip ? */
+>>
+> 
+> Looking at it some more, is_kernel_event() is not exposed
+> outside events core and probably for good reason. Why do
+> we need to check for this and not just tsk?
 
-Fixes: ec871696b7776767 ("power: reset: ocelot: Add support for Sparx5")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/power/reset/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Because the event->owner could be :
 
-diff --git a/drivers/power/reset/Kconfig b/drivers/power/reset/Kconfig
-index 6361569aacb7eedf..d55b3727e00eb768 100644
---- a/drivers/power/reset/Kconfig
-+++ b/drivers/power/reset/Kconfig
-@@ -129,6 +129,7 @@ config POWER_RESET_QCOM_PON
- 
- config POWER_RESET_OCELOT_RESET
- 	bool "Microsemi Ocelot reset driver"
-+	depends on MSCC_OCELOT || ARCH_SPARX5 || COMPILE_TEST
- 	select MFD_SYSCON
- 	help
- 	  This driver supports restart for Microsemi Ocelot SoC and similar.
--- 
-2.17.1
+  = NULL
+  = -1UL  // kernel event
+  = valid.
 
+
+Kind regards
+Suzuki
