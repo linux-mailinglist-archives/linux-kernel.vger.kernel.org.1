@@ -2,141 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA8428E196
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6C228E19C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731372AbgJNNqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:46:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54241 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726459AbgJNNqQ (ORCPT
+        id S1731383AbgJNNsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:48:08 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:44147 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729537AbgJNNsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:46:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602683174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wz5wOwKo0yVq73Er/y/1PB95j1y0IW2kymLlsiYsZYA=;
-        b=GSt/Demyp72pe5LbLe/aj18I3SQJr8ziqxc9FOjmXuie95XlHuzBtVeSWRtJ4sZfXpIap5
-        zpQGRTKNRC5o12pHevmAz6RDuS1pbAidAyxWmCB0VFnkC09zgDFRkt83yLQbWS5eh59jdh
-        qkeSH2Yx3oOvjZKZJYAvgzwDzZZ5zCM=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-gV3xz4A2NYOJ8YKBBTSFGA-1; Wed, 14 Oct 2020 09:46:11 -0400
-X-MC-Unique: gV3xz4A2NYOJ8YKBBTSFGA-1
-Received: by mail-ej1-f70.google.com with SMTP id f11so1185407eja.23
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:46:11 -0700 (PDT)
+        Wed, 14 Oct 2020 09:48:07 -0400
+Received: by mail-ot1-f66.google.com with SMTP id e20so3426611otj.11;
+        Wed, 14 Oct 2020 06:48:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Wz5wOwKo0yVq73Er/y/1PB95j1y0IW2kymLlsiYsZYA=;
-        b=euDN79WOwVI6eN998nD9aG14VjYd6wP5DsuqkoZ5NR5UBQOuSzpILLxNVeYZnb5cds
-         I9vXMf8cblJjpMvl/JshZpkSmXTO6xahCDGDSSnSW7nOct4tFcEqfJoUDT+UZQHk+wIi
-         gpsa+sjGwGPopStuGDfOszDPG6jZLqgGlQeiA5XSBlkVEh1flqLsVF15bRGbRX5TDmol
-         xcnrcxatEh8Iiovqi4McajPV4RKZ1PyY1dXSsJKkoMTPDcuXDDQvPmNxLajWTRojP0mS
-         ZRPKRm/2LziFeoAB2CWvcmBjdf1RooY89/qT2Uc9F/yzMnttp2k7a6imrT5AZYRlNdz3
-         pUbw==
-X-Gm-Message-State: AOAM533TM9cuPWCpstzIKdtirRidN3Dc6mDqq/c+07qWjfnMc7q2G63S
-        FZWI6bRH2tXUushfZ1BkNFIVVqyLtArCniISyqfriZJyoPn3SeHpCFqx3ZFq3lSG0Amc9vhKd+L
-        k95OQHY47I8kp2ukrWz92Vw7V
-X-Received: by 2002:a17:906:a0cb:: with SMTP id bh11mr5532305ejb.314.1602683170479;
-        Wed, 14 Oct 2020 06:46:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwb1nM/ZqfaRSOoR+zmuMc2x55E7Mkc/9Q5kPU90Nyx6UJvLiTtXmO9Wmhqbb2jybKDvwDJ7Q==
-X-Received: by 2002:a17:906:a0cb:: with SMTP id bh11mr5532280ejb.314.1602683170246;
-        Wed, 14 Oct 2020 06:46:10 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id k26sm1766239eji.22.2020.10.14.06.46.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 06:46:09 -0700 (PDT)
-Subject: Re: [PATCH AUTOSEL 5.8 17/20] i2c: core: Call
- i2c_acpi_install_space_handler() before i2c_acpi_register_devices()
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     kieran.bingham@ideasonboard.com, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
-References: <20200921144027.2135390-1-sashal@kernel.org>
- <20200921144027.2135390-17-sashal@kernel.org>
- <1977b57b-fae6-d9d4-e6bf-3d4013619537@ideasonboard.com>
- <bbeb7cae-d856-bb25-4602-8dd3bae62773@redhat.com>
-Message-ID: <d1318f56-e610-b095-6d8c-37f94444882e@redhat.com>
-Date:   Wed, 14 Oct 2020 15:46:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vCcrvv05spG628FR3qi+rwMkg+PNDU/9M4ZzaARaVPY=;
+        b=GC4kXpG8MlHedG+TBspFLsg2i6kzpWO9CWbBRYpcvW66T/O8KBHNasQ45zLJr1B2c6
+         OpW9aeHrqyAVspXce8mP79ZuZSTmcWFLknXoJ5a9AeKyiNbPMQBU1i/6QiVpC6jy9t7m
+         K3wPi97MlRQfV2oM0Ws9T1+hxBm1O9e31WcguJTft35CypioPIg/z/DTc4vh/gtq8Hxp
+         0vTgL4/+QiBpUgkdMl50CLTye6eRkJYE/2yR3RTc8G9uA9v53ASocYGzm0GkqDnu6b9V
+         7hZsaW98iEye+QHTN/KdhDh774C1sS29EpzpBJxqgpDv1PI/eYOTsnfT06CfuUAW6xaH
+         cRHA==
+X-Gm-Message-State: AOAM530GpQPM71jk8zTkBmbS3gdInPvbTNz45uYULTSKkUVxjzhMvhcg
+        D78V+EKv34YC/IqFKmzcLLyrgTK2DiIw/lZkRGY=
+X-Google-Smtp-Source: ABdhPJxyDuijTzpz93NI8FemP/mZsCuRf9XLrpU9nvOrHX45RVFiRFl5Th5e2l7IUuU7aUhmksTOGfnKFdCIdx+6mKU=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr3500011otc.145.1602683286818;
+ Wed, 14 Oct 2020 06:48:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bbeb7cae-d856-bb25-4602-8dd3bae62773@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201014032419.1268-1-shipujin.t@gmail.com>
+In-Reply-To: <20201014032419.1268-1-shipujin.t@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 14 Oct 2020 15:47:55 +0200
+Message-ID: <CAMuHMdWEg=xBgi+gMNtPb9Ct1POVLO1nU=WsGuLA=C3exqpXXQ@mail.gmail.com>
+Subject: Re: [PATCH] fs: btrfs: Fix incorrect printf qualifier
+To:     Pujin Shi <shipujin.t@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Wed, Oct 14, 2020 at 11:24 AM Pujin Shi <shipujin.t@gmail.com> wrote:
+> This patch addresses a compile warning:
+> fs/btrfs/extent-tree.c: In function '__btrfs_free_extent':
+> fs/btrfs/extent-tree.c:3187:4: warning: format '%lu' expects argument of type 'long unsigned int', but argument 8 has type 'unsigned int' [-Wformat=]
+>
+> Fixes: 3b7b6ffa4f8f ("btrfs: extent-tree: kill BUG_ON() in __btrfs_free_extent()")
+> Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
 
-On 10/14/20 1:23 PM, Hans de Goede wrote:
-> Hi,
-> 
-> On 10/14/20 1:09 PM, Kieran Bingham wrote:
->> Hi Hans, Sasha,
->>
->> As mentioned on https://github.com/linux-surface/kernel/issues/63, I'm
->> afraid I've bisected a boot time issue on the Microsoft Surface Go 2 to
->> this commit on the stable 5.8 tree.
->>
->> The effect as reported there is that the boot process stalls just after
->> loading the usbhid module.
->>
->> Typing, or interacting with the Keyboard (Type Cover) at that point
->> appears to cause usb bus resets, but I don't know if that's a related
->> symptom or just an effect of some underlying root cause.
->>
->> I have been running a linux-media kernel on this device without issue.
->>
->> Is this commit in 5.9? I'll build a vanilla v5.9 kernel and see if it
->> occurs there too.
-> 
-> Yes the commit is in 5.9 too. Still would be interesting to see if 5.9 hits
-> this issue too. I guess it will, but as I mentioned in:
-> 
-> https://github.com/linux-surface/kernel/issues/63
-> 
-> I do not understand why this commit is causing this issue.
-> 
-> So I just checked and the whole acpidump is not using I2C
-> opregion stuff at all:
-> 
-> [hans@x1 microsoft-surface-go2]$ ack GenericSerialBus *.dsl
-> [hans@x1 microsoft-surface-go2]$
-> 
-> And there is only 1 _REG handler which is for the
-> embedded-controller.
-> 
-> So this patch should not make a difference at all on the GO2,
-> other then maybe a subtle timing difference somewhere ... ?
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks to Maximilian Luz sharp eyes this is explained now,
-despite the name of the i2c_acpi_install_space_handler()
-it also had a acpi_walk_dep_device_list() call hidden in
-there, so the "i2c: core: Call i2c_acpi_install_space_handler()
-before i2c_acpi_register_devices()" also moved that
-acpi_walk_dep_device_list() earlier.
+Gr{oetje,eeting}s,
 
-I've given Kieran a patch to test which in essence reverts
-the part where the acpi_walk_dep_device_list() call is also
-moved earlier and that fixes the Surface Go 2 not booting.
+                        Geert
 
-I will submit this fix upstream right away and I'll also
-send a separate mail to Greg / stable@vger to see if Greg
-is willing to make an exception and at this to the stable
-series before it hits Linus' tree.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Regards,
-
-Hans
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
