@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4AF28E889
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE40528E88B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388057AbgJNVqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 17:46:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52206 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbgJNVqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 17:46:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2AB2AF49;
-        Wed, 14 Oct 2020 21:46:11 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Jan Kara <jack@suse.cz>, kernel test robot <rong.a.chen@intel.com>
-Date:   Thu, 15 Oct 2020 08:46:01 +1100
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
-        zhengjun.xing@intel.com
-Subject: Re: [mm/writeback] 8d92890bd6: will-it-scale.per_process_ops -15.3%
- regression
-In-Reply-To: <20201014101904.GA11144@quack2.suse.cz>
-References: <20201014084706.GB11647@shao2-debian>
- <20201014101904.GA11144@quack2.suse.cz>
-Message-ID: <87pn5kfply.fsf@notabene.neil.brown.name>
+        id S1728710AbgJNVrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 17:47:10 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:38571 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726662AbgJNVrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 17:47:09 -0400
+Received: from [192.168.0.3] (ip5f5af44e.dynamic.kabel-deutschland.de [95.90.244.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 750442064621D;
+        Wed, 14 Oct 2020 23:47:06 +0200 (CEST)
+To:     Don Brace <don.brace@microsemi.com>
+Cc:     "James E. J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, it+linux-scsi@molgen.mpg.de
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Linux 5.9: smartpqi: controller is offline: status code 0x6100c
+Message-ID: <bc10fad1-2353-7326-c782-7a45882fd791@molgen.mpg.de>
+Date:   Wed, 14 Oct 2020 23:47:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Dear Linux folks,
 
-On Wed, Oct 14 2020, Jan Kara wrote:
 
-> On Wed 14-10-20 16:47:06, kernel test robot wrote:
->> Greeting,
->>=20
->> FYI, we noticed a -15.3% regression of will-it-scale.per_process_ops due
->> to commit:
->>=20
->> commit: 8d92890bd6b8502d6aee4b37430ae6444ade7a8c ("mm/writeback: discard
->> NR_UNSTABLE_NFS, use NR_WRITEBACK instead")
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
->
-> Thanks for report but it doesn't quite make sense to me. If we omit
-> reporting & NFS changes in that commit (which is code not excercised by
-> this benchmark), what remains are changes like:
->
->         nr_pages +=3D node_page_state(pgdat, NR_FILE_DIRTY);
-> -       nr_pages +=3D node_page_state(pgdat, NR_UNSTABLE_NFS);
->         nr_pages +=3D node_page_state(pgdat, NR_WRITEBACK);
-> ...
-> -               nr_reclaimable =3D global_node_page_state(NR_FILE_DIRTY) +
-> -                                       global_node_page_state(NR_UNSTABL=
-E_NFS);
-> +               nr_reclaimable =3D global_node_page_state(NR_FILE_DIRTY);
-> ...
-> -       gdtc->dirty =3D global_node_page_state(NR_FILE_DIRTY) +
-> -                     global_node_page_state(NR_UNSTABLE_NFS);
-> +       gdtc->dirty =3D global_node_page_state(NR_FILE_DIRTY);
->
-> So if there's any negative performance impact of these changes, they're
-> likely due to code alignment changes or something like that... So I don't
-> think there's much to do here since optimal code alignment is highly spec=
-ific
-> to a particular CPU etc.
+With Linux 5.9 and
 
-I agree, it seems odd.
 
-Removing NR_UNSTABLE_NFS from enum node_stat_item would renumber all the
-following value and would, I think, change NR_DIRTIED from 32 to 31.
-Might that move something to a different cache line and change some
-contention?
+     $ lspci -nn -s 89:
+     89:00.0 Serial Attached SCSI controller [0107]: Adaptec Smart 
+Storage PQI 12G SAS/PCIe 3 [9005:028f] (rev 01)
+     $ more 
+/sys/devices/pci0000:88/0000:88:00.0/0000:89:00.0/host15/scsi_host/host15/driver_version
+     1.2.8-026
+     $ more 
+/sys/devices/pci0000:88/0000:88:00.0/0000:89:00.0/host15/scsi_host/host15/firmware_version
+     2.62-0
 
-That would be easy enough to test: just re-add NR_UNSTABLE_NFS.
+the controller went offline with status code 0x6100c.
 
-I have no experience reading will-it-scale results, but 15% does seem
-like a lot.
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: smartpqi 0000:89:00.0: controller is offline: status code 0x6100c
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: smartpqi 0000:89:00.0: controller offline
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:2:0: [sdu] tag#709 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:15:0: [sdah] tag#274 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:4:0: [sdw] tag#516 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:4:0: [sdw] tag#516 CDB: Write(10) 2a 00 0d e6 9e 88 00 00 01 00
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: blk_update_request: I/O error, dev sdw, sector 1865741376 op 0x1:(WRITE) flags 0x0 phys_seg 1 prio class 0
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#529 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#529 CDB: Write(10) 2a 00 29 4e e8 ff 00 00 01 00
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: blk_update_request: I/O error, dev sds, sector 5544298488 op 0x1:(WRITE) flags 0x0 phys_seg 1 prio class 0
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#627 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:0:0: [sds] tag#627 CDB: Read(10) 28 00 5d df 2c 04 00 00 04 00
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: blk_update_request: I/O error, dev sds, sector 12599255072 op 0x0:(READ) flags 0x1000 phys_seg 1 prio class
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:5:0: [sdx] tag#567 FAILED Result: hostbyte=DID_NO_CONNECT driverbyte=DRIVER_OK cmd_age=6s
+> Oct 14 14:54:01 done.molgen.mpg.de kernel: sd 15:0:5:0: [sdx] tag#567 CDB: Write(10) 2a 00 21 4e ce 04 00 00 04 00
 
-NeilBrown
+How can the status code 0x6100c be deciphered?
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Kind regards,
 
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl+HcZoOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbktnQ//Wz7j0MLuDVxAX0s3N1XVhdNL1RjAH1dvVmsa
-c4OeECJNbY9O4OubfR7krntaLWPj8rzOGaQy/13/WR1FxvJWlsmv/NYcPoUxZLAx
-pe+Srawhz0KsZ2peL0kGdYXtg/Es7UV/2IrKIOv75WxGZvpj9q58e0H4wBpRIVwK
-avg6W0OX4Lb+0M98llSL38f0oXrZCDhA55VEBeRTgclEKZp9O49eUg5LPGxLhZfe
-PMFyUDYaL7Rq+jP4kMNvpikbJabi/jyMbYA/AnuL8mf6Hxiu9+SN4OX9CKUXH7pt
-CbqDnXhQNWIk+Wl31YP2Qm8qlLbIynY3RDh/Se7S2m/o4ZrT2dbpAG67G5LMhv2h
-tM9dBr1JBjOpuB0IW97prQ7zeR39RS3o7nbrqQLz/NyGmKfZJuIoXj/3gUj0Ilc8
-0q1U0/MwpANNMjwqw6z58c/Ds9Z1qTrPvKfIF7fmFNw03prRHHUDu9BA2eT8SGBY
-WxfPN/8SoxOLg6hcADt1GSm6l8g/vuFaFx5ac/Y6CA1Fp+kanUXTES08pTM71FeW
-FxSsLPqtTUhWPsY3nKV0kDx9FACaDnW38J96FKwYB1h/5nLXa7LCwYsaDjjF+ax7
-lmF8hWr39BD4dLs0GbSoQ/B+KP5+9lMSPK0LFSmf7B/nWhkmGnvEHgpan7m/j4tE
-HQLQrcU=
-=Pelj
------END PGP SIGNATURE-----
---=-=-=--
+Paul
