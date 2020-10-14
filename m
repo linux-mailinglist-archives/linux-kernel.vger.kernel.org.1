@@ -2,70 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D3628E5E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A7E28E5EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729062AbgJNSEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:04:50 -0400
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:23940 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727071AbgJNSEu (ORCPT
+        id S1729064AbgJNSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:05:31 -0400
+Received: from smtprelay0094.hostedemail.com ([216.40.44.94]:46422 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727071AbgJNSFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:04:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1602698691;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=QP9dZ/kf6WxmC+XFLjXj3iwd2bvWj8WJ3e4EPYelksU=;
-  b=XYM/rqaF0FOUMix2FVuHFpG2TNZLge9C2lwZsIMvq0LSD3flDf0ASZ5U
-   RuLPJ5Yk9JIDyxwxRZGoMwZwJTBlC1J3Nnn0QXcIXElTLbuZJD0Ohqg5J
-   bMPjp9BhMUVpQm7UcHVYGwsCJvFRhc35o1/aqcbYz8ityVV4hX7I0a/ro
-   M=;
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: RkRU6LoFb+K0uroA17V3eGSGvjuUUGMUujSWCqKRxmtq2qsv7vOw8BkkHt9zfs7MM0a9cL4/Ft
- 2dUiIVTILpDeiiulU9gHbgx2gjg8+21xfs5GSiPybMgsipLEe8gUsLsaJNrwhMSLLMQsemLMrK
- wdiahS+UH2PIC8/GMR79mm8Bs/hMc8XQYiz5aXGXmdH8ykSz0VWu7I/DAiuKR6KfhXRT9DtM9v
- zbRh/CILhefBnCwff+hwhCnTEGRqgmAYgX+34s8k22jyocg6vnUZJwOQKaxQIPzmtyJ671KRly
- GoE=
-X-SBRS: 2.5
-X-MesageID: 28991967
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,375,1596513600"; 
-   d="scan'208";a="28991967"
-Subject: Re: [SUSPECTED SPAM][PATCH 0/2] Remove Xen PVH dependency on PCI
-To:     Jason Andryuk <jandryuk@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        <xen-devel@lists.xenproject.org>
-CC:     "H. Peter Anvin" <hpa@zytor.com>, <linux-kernel@vger.kernel.org>
-References: <20201014175342.152712-1-jandryuk@gmail.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <4973553f-fad2-83b9-fa19-26370ced2c2d@citrix.com>
-Date:   Wed, 14 Oct 2020 19:04:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 14 Oct 2020 14:05:31 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id F23C5180A885F;
+        Wed, 14 Oct 2020 18:05:29 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3870:3871:3872:3874:4321:5007:6120:7875:10004:10400:10848:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: fowl96_060b2a12720d
+X-Filterd-Recvd-Size: 1440
+Received: from XPS-9350 (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 14 Oct 2020 18:05:28 +0000 (UTC)
+Message-ID: <fc0c8503257ab6593ea8a1250ee3ac083a4ab5ee.camel@perches.com>
+Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
+ EXECUTE_PERMISSIONS
+From:   Joe Perches <joe@perches.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Date:   Wed, 14 Oct 2020 11:05:27 -0700
+In-Reply-To: <CANiq72kogiVbBURCrb74_vCPCLb09LGTudxE-QG8US7pX8LqQw@mail.gmail.com>
+References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com>
+         <alpine.DEB.2.21.2010140734270.6186@felia>
+         <316d5a53351d10cd1a26ce0c54883da05642c898.camel@perches.com>
+         <CANiq72kogiVbBURCrb74_vCPCLb09LGTudxE-QG8US7pX8LqQw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20201014175342.152712-1-jandryuk@gmail.com>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL05.citrite.net (10.13.108.178)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2020 18:53, Jason Andryuk wrote:
-> A Xen PVH domain doesn't have a PCI bus or devices,
+On Wed, 2020-10-14 at 19:45 +0200, Miguel Ojeda wrote:
+>   - Code that should be specially-formatted should be in a
+> clang-format-off section to begin with, so it doesn't count.
 
-[*] Yet.
+clang-format is not the end-all tool.
+Any 'formatting off/on' marker should be tool agnostic.
 
-> so it doesn't need PCI support built in.
 
-Untangling the dependences is a good thing, but eventually we plan to
-put an optional PCI bus back in, e.g. for SRIOV usecases.
-
-~Andrew
