@@ -2,162 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5846D28DDC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DCE28DDC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727481AbgJNJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:36:23 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6440 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbgJNJgX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:36:23 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f86c6890003>; Wed, 14 Oct 2020 02:36:09 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 09:36:18 +0000
-Received: from sumitg-l4t.nvidia.com (172.20.13.39) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Wed, 14 Oct 2020 09:36:15 +0000
-From:   Sumit Gupta <sumitg@nvidia.com>
-To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
-        <sudeep.holla@arm.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <linux-pm@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <sumitg@nvidia.com>, <bbasu@nvidia.com>, <ksitaraman@nvidia.com>
-Subject: [PATCH v3] cpufreq: tegra194: get consistent cpuinfo_cur_freq
-Date:   Wed, 14 Oct 2020 15:06:11 +0530
-Message-ID: <1602668171-30104-1-git-send-email-sumitg@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-X-NVConfidentiality: public
+        id S1727743AbgJNJgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:36:48 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:62370 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726361AbgJNJgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:36:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602668207; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FTOEQCtqGMGUz2rk9/7VbauWsNvXRMhYgIKm7qBcvx8=;
+ b=rAgvuHcXGKJYkhynlr3vH2LDSM/xbu024Tq+sgkqa+aAzMjhs7sZs60tIZ18+GEBQLi+TdTD
+ kuQCBaljluG20lZ4O4e04GU2EFtHnhse6JcARyaVer1xgW8RbIEs62rBf4rHFQnQ2CJ830fr
+ n2jH7f5Ab/dp2c/UjiYNziaVkd8=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f86c69e3711fec7b15360b2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 09:36:30
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CBEC4C4339C; Wed, 14 Oct 2020 09:36:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03487C433F1;
+        Wed, 14 Oct 2020 09:36:28 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602668169; bh=nJXHQmA8SJehW7u27ymHyIMfAp9QzF0a30R0l0W0ccY=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
-         MIME-Version:Content-Type;
-        b=I9hRcMpXYVEMOYPv3b65uisktBZmMlkA1NAwI6Rsi5F8yQWTLcqGa8HZXFw2jfwcN
-         KRZvsk+toi82mkENMo6imd3A+E9HskH2np3Dr/+/YVZlNuJf/fHRz9Vnaszsh+KbQx
-         1LKATsBjfGJLRwtqbmE3Xx2OnhWyys2oX8bJ/6jJNhMcOkLPmlPzdgJvoZlbzwgZFj
-         k8CaJgRBDjI8r190U6IpBeYt4MotlQ401n2sU5OBf6LyHOTglRlWXc7jnJ23Xen5CN
-         xpLKly1Yu2YBEMwN7EK3+CyFK5/f4vPmsetjqafSjlJWJWEEwE9p52Q0I0LBKC7W1c
-         d+vuEO0A2r+Ig==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 14 Oct 2020 15:06:28 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        coresight@lists.linaro.org, swboyd@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, denik@google.com,
+        leo.yan@linaro.org, peterz@infradead.org
+Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+In-Reply-To: <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
+References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
+Message-ID: <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Frequency returned by 'cpuinfo_cur_freq' using counters is not fixed
-and keeps changing slightly. This change returns a consistent value
-from freq_table. If the reconstructed frequency has acceptable delta
-from the last written value, then return the frequency corresponding
-to the last written ndiv value from freq_table. Otherwise, print a
-warning and return the reconstructed freq.
+On 2020-10-13 22:05, Suzuki K Poulose wrote:
+> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
+>> There was a report of NULL pointer dereference in ETF enable
+>> path for perf CS mode with PID monitoring. It is almost 100%
+>> reproducible when the process to monitor is something very
+>> active such as chrome and with ETF as the sink and not ETR.
+>> Currently in a bid to find the pid, the owner is dereferenced
+>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
+>> owner being NULL, we get a NULL pointer dereference.
+>> 
+>> Looking at the ETR and other places in the kernel, ETF and the
+>> ETB are the only places trying to dereference the task(owner)
+>> in tmc_enable_etf_sink_perf() which is also called from the
+>> sched_in path as in the call trace. Owner(task) is NULL even
+>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
+>> cache the PID in alloc_buffer() callback and it is done as part
+>> of etm_setup_aux() when allocating buffer for ETR sink, we never
+>> dereference this NULL pointer and we are safe. So lets do the
+> 
+> The patch is necessary to fix some of the issues. But I feel it is
+> not complete. Why is it safe earlier and not later ? I believe we are
+> simply reducing the chances of hitting the issue, by doing this earlier 
+> than
+> later. I would say we better fix all instances to make sure that the
+> event->owner is valid. (e.g, I can see that the for kernel events
+> event->owner == -1 ?)
+> 
+> struct task_struct *tsk = READ_ONCE(event->owner);
+> 
+> if (!tsk || is_kernel_event(event))
+>    /* skip ? */
+> 
 
-Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
----
+Looking at it some more, is_kernel_event() is not exposed
+outside events core and probably for good reason. Why do
+we need to check for this and not just tsk?
 
-Sending only this patch as other patch not required after the change
-to convert 'pr_warn' to 'pr_info' in cpufreq core for unlisted freq.
-Changelog
-v1[2] -> v3:
-- Removed unwanted checks for cpu_online and max cluster number
-- Used WARN_ON_ONCE to avoid print flooding.
+Thanks,
+Sai
 
-v1[1] -> v2:
-- Minor changes to improve comments and reduce debug prints.
-- Get freq table from cluster specific data instead of policy.
-
-[2] https://marc.info/?l=linux-tegra&m=160216218511280&w=2
-[1] https://marc.info/?l=linux-arm-kernel&m=160028821117535&w=2
-
- drivers/cpufreq/tegra194-cpufreq.c | 62 ++++++++++++++++++++++++++++++++------
- 1 file changed, 53 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
-index e1d931c..7901587 100644
---- a/drivers/cpufreq/tegra194-cpufreq.c
-+++ b/drivers/cpufreq/tegra194-cpufreq.c
-@@ -180,9 +180,61 @@ static unsigned int tegra194_get_speed_common(u32 cpu, u32 delay)
- 	return (rate_mhz * KHZ); /* in KHz */
- }
- 
-+static void get_cpu_ndiv(void *ndiv)
-+{
-+	u64 ndiv_val;
-+
-+	asm volatile("mrs %0, s3_0_c15_c0_4" : "=r" (ndiv_val) : );
-+
-+	*(u64 *)ndiv = ndiv_val;
-+}
-+
-+static void set_cpu_ndiv(void *data)
-+{
-+	struct cpufreq_frequency_table *tbl = data;
-+	u64 ndiv_val = (u64)tbl->driver_data;
-+
-+	asm volatile("msr s3_0_c15_c0_4, %0" : : "r" (ndiv_val));
-+}
-+
- static unsigned int tegra194_get_speed(u32 cpu)
- {
--	return tegra194_get_speed_common(cpu, US_DELAY);
-+	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
-+	struct cpufreq_frequency_table *pos;
-+	unsigned int rate;
-+	u64 ndiv;
-+	int ret;
-+	u32 cl;
-+
-+	smp_call_function_single(cpu, get_cpu_cluster, &cl, true);
-+
-+	/* reconstruct actual cpu freq using counters */
-+	rate = tegra194_get_speed_common(cpu, US_DELAY);
-+
-+	/* get last written ndiv value */
-+	ret = smp_call_function_single(cpu, get_cpu_ndiv, &ndiv, true);
-+	if (WARN_ON_ONCE(ret))
-+		return rate;
-+
-+	/*
-+	 * If the reconstructed frequency has acceptable delta from
-+	 * the last written value, then return freq corresponding
-+	 * to the last written ndiv value from freq_table. This is
-+	 * done to return consistent value.
-+	 */
-+	cpufreq_for_each_valid_entry(pos, data->tables[cl]) {
-+		if (pos->driver_data != ndiv)
-+			continue;
-+
-+		if (abs(pos->frequency - rate) > 115200) {
-+			pr_warn("cpufreq: cpu%d,cur:%u,set:%u,set ndiv:%llu\n",
-+				cpu, rate, pos->frequency, ndiv);
-+		} else {
-+			rate = pos->frequency;
-+		}
-+		break;
-+	}
-+	return rate;
- }
- 
- static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
-@@ -209,14 +261,6 @@ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
- 	return 0;
- }
- 
--static void set_cpu_ndiv(void *data)
--{
--	struct cpufreq_frequency_table *tbl = data;
--	u64 ndiv_val = (u64)tbl->driver_data;
--
--	asm volatile("msr s3_0_c15_c0_4, %0" : : "r" (ndiv_val));
--}
--
- static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
- 				       unsigned int index)
- {
 -- 
-2.7.4
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
