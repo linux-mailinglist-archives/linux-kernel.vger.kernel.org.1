@@ -2,553 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067D428DC12
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF7F28DC4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730252AbgJNIxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727452AbgJNIxl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:53:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FA6C051112
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 01:53:40 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kScX8-0000bu-DG; Wed, 14 Oct 2020 10:53:18 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kScX7-0003ZE-KG; Wed, 14 Oct 2020 10:53:17 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        id S1727975AbgJNJCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:02:15 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:37084 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726111AbgJNJCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:02:15 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DFCBA20034F;
+        Wed, 14 Oct 2020 11:02:12 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D1C74200271;
+        Wed, 14 Oct 2020 11:02:08 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8873240249;
+        Wed, 14 Oct 2020 11:02:03 +0200 (CEST)
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: [PATCH v1 3/3] ARM: dts: add Van der Laan LANMCU board
-Date:   Wed, 14 Oct 2020 10:53:16 +0200
-Message-Id: <20201014085316.11916-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201014085316.11916-1-o.rempel@pengutronix.de>
-References: <20201014085316.11916-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Liu Ying <victor.liu@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH] firmware: imx: always export scu symbols
+Date:   Wed, 14 Oct 2020 16:57:14 +0800
+Message-Id: <1602665834-29902-1-git-send-email-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Van der Laan LANMCU is a module for the food storage rooms to control
-proper gas composition.
+From: Liu Ying <victor.liu@nxp.com>
 
-Co-Developed-by: Robin van der Gracht <robin@protonic.nl>
-Signed-off-by: Robin van der Gracht <robin@protonic.nl>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Always export scu symbols for both SCU SoCs and non-SCU SoCs to avoid
+build error.
+
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
 ---
- arch/arm/boot/dts/Makefile          |   1 +
- arch/arm/boot/dts/imx6dl-lanmcu.dts | 468 ++++++++++++++++++++++++++++
- 2 files changed, 469 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6dl-lanmcu.dts
+ include/linux/firmware/imx/ipc.h      | 15 +++++++++++++++
+ include/linux/firmware/imx/svc/misc.h | 23 +++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 2289a28c0ff6..dc2543a7b7e9 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -447,6 +447,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6dl-icore.dtb \
- 	imx6dl-icore-mipi.dtb \
- 	imx6dl-icore-rqs.dtb \
-+	imx6dl-lanmcu.dtb \
- 	imx6dl-mamoj.dtb \
- 	imx6dl-nit6xlite.dtb \
- 	imx6dl-nitrogen6x.dtb \
-diff --git a/arch/arm/boot/dts/imx6dl-lanmcu.dts b/arch/arm/boot/dts/imx6dl-lanmcu.dts
-new file mode 100644
-index 000000000000..60336c972286
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-lanmcu.dts
-@@ -0,0 +1,468 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (c) 2019 Protonic Holland
-+ * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-+ */
+diff --git a/include/linux/firmware/imx/ipc.h b/include/linux/firmware/imx/ipc.h
+index 891057434858..300fa253fc30 100644
+--- a/include/linux/firmware/imx/ipc.h
++++ b/include/linux/firmware/imx/ipc.h
+@@ -34,6 +34,7 @@ struct imx_sc_rpc_msg {
+ 	uint8_t func;
+ };
+ 
++#if IS_ENABLED(CONFIG_IMX_SCU)
+ /*
+  * This is an function to send an RPC message over an IPC channel.
+  * It is called by client-side SCFW API function shims.
+@@ -55,4 +56,18 @@ int imx_scu_call_rpc(struct imx_sc_ipc *ipc, void *msg, bool have_resp);
+  * @return Returns an error code (0 = success, failed if < 0)
+  */
+ int imx_scu_get_handle(struct imx_sc_ipc **ipc);
 +
-+/dts-v1/;
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+#include "imx6dl.dtsi"
++#else
++static inline int
++imx_scu_call_rpc(struct imx_sc_ipc *ipc, void *msg, bool have_resp)
++{
++	return -EIO;
++}
 +
-+/ {
-+	model = "Van der Laan LANMCU";
-+	compatible = "vdl,lanmcu", "fsl,imx6dl";
++static inline int imx_scu_get_handle(struct imx_sc_ipc **ipc)
++{
++	return -EIO;
++}
++#endif
 +
-+	chosen {
-+		stdout-path = &uart4;
-+	};
+ #endif /* _SC_IPC_H */
+diff --git a/include/linux/firmware/imx/svc/misc.h b/include/linux/firmware/imx/svc/misc.h
+index 031dd4d3c766..d255048f17de 100644
+--- a/include/linux/firmware/imx/svc/misc.h
++++ b/include/linux/firmware/imx/svc/misc.h
+@@ -46,6 +46,7 @@ enum imx_misc_func {
+  * Control Functions
+  */
+ 
++#if IS_ENABLED(CONFIG_IMX_SCU)
+ int imx_sc_misc_set_control(struct imx_sc_ipc *ipc, u32 resource,
+ 			    u8 ctrl, u32 val);
+ 
+@@ -55,4 +56,26 @@ int imx_sc_misc_get_control(struct imx_sc_ipc *ipc, u32 resource,
+ int imx_sc_pm_cpu_start(struct imx_sc_ipc *ipc, u32 resource,
+ 			bool enable, u64 phys_addr);
+ 
++#else
++static inline int
++imx_sc_misc_set_control(struct imx_sc_ipc *ipc, u32 resource,
++			u8 ctrl, u32 val)
++{
++	return -EIO;
++}
 +
-+	clock_ksz8081: clock-ksz8081 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
++static inline int
++imx_sc_misc_get_control(struct imx_sc_ipc *ipc, u32 resource,
++			u8 ctrl, u32 *val)
++{
++	return -EIO;
++}
 +
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm1 0 5000000 0>;
-+		brightness-levels = <0 1000>;
-+		num-interpolated-steps = <20>;
-+		default-brightness-level = <19>;
-+	};
++static inline int imx_sc_pm_cpu_start(struct imx_sc_ipc *ipc, u32 resource,
++				      bool enable, u64 phys_addr)
++{
++	return -EIO;
++}
++#endif
 +
-+	display {
-+		compatible = "fsl,imx-parallel-display";
-+		pinctrl-0 = <&pinctrl_ipu1_disp>;
-+		pinctrl-names = "default";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+
-+			display_in: endpoint {
-+				remote-endpoint = <&ipu1_di0_disp0>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+
-+			display_out: endpoint {
-+				remote-endpoint = <&panel_in>;
-+			};
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_leds>;
-+
-+		led-debug {
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+	panel {
-+		compatible = "edt,etm0700g0bdh6";
-+		backlight = <&backlight>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&display_out>;
-+			};
-+		};
-+	};
-+
-+	reg_otg_vbus: regulator-otg-vbus {
-+		compatible = "regulator-fixed";
-+		regulator-name = "otg-vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio3 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	usdhc2_wifi_pwrseq: usdhc2-wifi-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wifi_npd>;
-+		reset-gpios = <&gpio6 10 GPIO_ACTIVE_LOW>;
-+	};
-+
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1>;
-+	status = "okay";
-+};
-+
-+&can2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can2>;
-+	status = "okay";
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet>;
-+	phy-mode = "rmii";
-+	clocks = <&clks IMX6QDL_CLK_ENET>,
-+		 <&clks IMX6QDL_CLK_ENET>,
-+		 <&clock_ksz8081>;
-+	clock-names = "ipg", "ahb", "ptp";
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* Microchip KSZ8081RNA PHY */
-+		rgmii_phy: ethernet-phy@0 {
-+			reg = <0>;
-+			interrupts-extended = <&gpio5 23 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio5 22 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <300>;
-+		};
-+	};
-+};
-+
-+&gpio1 {
-+	gpio-line-names =
-+		"", "SD1_CD", "", "", "", "", "", "",
-+		"DEBUG_0", "BL_PWM", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "ENET_LED_GREEN",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "TS_INT", "USB_OTG1_OC", "USB_OTG1_PWR", "",
-+		"", "", "", "", "UART2_CTS", "", "UART3_CTS", "";
-+};
-+
-+&gpio5 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "ENET_RST", "ENET_INT",
-+		"", "", "I2C1_SDA", "I2C1_SCL", "", "", "", "";
-+};
-+
-+&gpio6 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "WLAN_REG_ON", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&gpio7 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"EMMC_RST", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	/* additional i2c devices are added automatically by the boot loader */
-+};
-+
-+&i2c3 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	status = "okay";
-+
-+	edt-ft5406@38 {
-+		compatible = "edt,edt-ft5406";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_ts_edt>;
-+		reg = <0x38>;
-+		interrupts-extended = <&gpio3 20 IRQ_TYPE_EDGE_FALLING>;
-+
-+		touchscreen-size-x = <1792>;
-+		touchscreen-size-y = <1024>;
-+
-+		touchscreen-fuzz-x = <0>;
-+		touchscreen-fuzz-y = <0>;
-+
-+		/* Touch screen calibration */
-+		threshold = <50>;
-+		gain = <5>;
-+		offset = <10>;
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&ipu1_di0_disp0 {
-+	remote-endpoint = <&display_in>;
-+};
-+
-+&pwm1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm1>;
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart2>;
-+	linux,rs485-enabled-at-boot-time;
-+	uart-has-rtscts;
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3>;
-+	linux,rs485-enabled-at-boot-time;
-+	uart-has-rtscts;
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4>;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	vbus-supply = <&reg_otg_vbus>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg>;
-+	phy_type = "utmi";
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	cd-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-+	no-1-8-v;
-+	disable-wp;
-+	cap-sd-highspeed;
-+	no-mmc;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	no-1-8-v;
-+	non-removable;
-+	mmc-pwrseq = <&usdhc2_wifi_pwrseq>;
-+	status = "okay";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	bus-width = <8>;
-+	no-1-8-v;
-+	non-removable;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_can1: can1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW2__FLEXCAN1_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL2__FLEXCAN1_TX		0x3008
-+		>;
-+	};
-+
-+	pinctrl_can2: can2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW4__FLEXCAN2_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL4__FLEXCAN2_TX		0x3008
-+		>;
-+	};
-+
-+	pinctrl_enet: enetgrp {
-+		fsl,pins = <
-+			/* MX6QDL_ENET_PINGRP4 */
-+			MX6QDL_PAD_ENET_MDC__ENET_MDC			0x1b0b0
-+			MX6QDL_PAD_ENET_MDIO__ENET_MDIO			0x1b0b0
-+			MX6QDL_PAD_ENET_RXD0__ENET_RX_DATA0		0x1b0b0
-+			MX6QDL_PAD_ENET_RXD1__ENET_RX_DATA1		0x1b0b0
-+			MX6QDL_PAD_ENET_RX_ER__ENET_RX_ER		0x1b0b0
-+			MX6QDL_PAD_ENET_TX_EN__ENET_TX_EN		0x1b0b0
-+			MX6QDL_PAD_ENET_TXD0__ENET_TX_DATA0		0x1b0b0
-+			MX6QDL_PAD_ENET_TXD1__ENET_TX_DATA1		0x1b0b0
-+			MX6QDL_PAD_ENET_CRS_DV__ENET_RX_EN		0x1b0b0
-+
-+			MX6QDL_PAD_GPIO_16__ENET_REF_CLK		0x1b0b0
-+			/* Phy reset */
-+			MX6QDL_PAD_CSI0_DAT4__GPIO5_IO22		0x1b0b0
-+			/* nINTRP */
-+			MX6QDL_PAD_CSI0_DAT5__GPIO5_IO23		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT8__I2C1_SDA			0x4001f8b1
-+			MX6QDL_PAD_CSI0_DAT9__I2C1_SCL			0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_i2c3: i2c3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_5__I2C3_SCL			0x4001b8b1
-+			MX6QDL_PAD_GPIO_6__I2C3_SDA			0x4001b8b1
-+		>;
-+	};
-+
-+	pinctrl_ipu1_disp: ipudisp1grp {
-+		fsl,pins = <
-+			/* DSE 0x30 => 25 Ohm, 0x20 => 37 Ohm, 0x10 => 75 Ohm */
-+			MX6QDL_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK	0x30
-+			MX6QDL_PAD_DI0_PIN2__IPU1_DI0_PIN02		0x30
-+			MX6QDL_PAD_DI0_PIN3__IPU1_DI0_PIN03		0x30
-+			MX6QDL_PAD_DI0_PIN15__IPU1_DI0_PIN15		0x30
-+			MX6QDL_PAD_DISP0_DAT0__IPU1_DISP0_DATA00	0x30
-+			MX6QDL_PAD_DISP0_DAT1__IPU1_DISP0_DATA01	0x30
-+			MX6QDL_PAD_DISP0_DAT2__IPU1_DISP0_DATA02	0x30
-+			MX6QDL_PAD_DISP0_DAT3__IPU1_DISP0_DATA03	0x30
-+			MX6QDL_PAD_DISP0_DAT4__IPU1_DISP0_DATA04	0x30
-+			MX6QDL_PAD_DISP0_DAT5__IPU1_DISP0_DATA05	0x30
-+			MX6QDL_PAD_DISP0_DAT6__IPU1_DISP0_DATA06	0x30
-+			MX6QDL_PAD_DISP0_DAT7__IPU1_DISP0_DATA07	0x30
-+			MX6QDL_PAD_DISP0_DAT8__IPU1_DISP0_DATA08	0x30
-+			MX6QDL_PAD_DISP0_DAT9__IPU1_DISP0_DATA09	0x30
-+			MX6QDL_PAD_DISP0_DAT10__IPU1_DISP0_DATA10	0x30
-+			MX6QDL_PAD_DISP0_DAT11__IPU1_DISP0_DATA11	0x30
-+			MX6QDL_PAD_DISP0_DAT12__IPU1_DISP0_DATA12	0x30
-+			MX6QDL_PAD_DISP0_DAT13__IPU1_DISP0_DATA13	0x30
-+			MX6QDL_PAD_DISP0_DAT14__IPU1_DISP0_DATA14	0x30
-+			MX6QDL_PAD_DISP0_DAT15__IPU1_DISP0_DATA15	0x30
-+			MX6QDL_PAD_DISP0_DAT16__IPU1_DISP0_DATA16	0x30
-+			MX6QDL_PAD_DISP0_DAT17__IPU1_DISP0_DATA17	0x30
-+		>;
-+	};
-+
-+	pinctrl_leds: ledsgrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_8__GPIO1_IO08			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_pwm1: pwm1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_9__PWM1_OUT			0x8
-+		>;
-+	};
-+
-+	pinctrl_ts_edt: ts1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D20__GPIO3_IO20			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_uart2: uart2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D26__UART2_RX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D27__UART2_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D28__UART2_CTS_B			0x130b1
-+		>;
-+	};
-+
-+	pinctrl_uart3: uart3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D24__UART3_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D25__UART3_RX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D30__UART3_CTS_B			0x130b1
-+		>;
-+	};
-+
-+	pinctrl_uart4: uart4grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_COL0__UART4_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_usbotg: usbotggrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D21__USB_OTG_OC			0x1b0b0
-+			/* power enable, high active */
-+			MX6QDL_PAD_EIM_D22__GPIO3_IO22			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD1_CMD__SD1_CMD			0x170f9
-+			MX6QDL_PAD_SD1_CLK__SD1_CLK			0x100f9
-+			MX6QDL_PAD_SD1_DAT0__SD1_DATA0			0x170f9
-+			MX6QDL_PAD_SD1_DAT1__SD1_DATA1			0x170f9
-+			MX6QDL_PAD_SD1_DAT2__SD1_DATA2			0x170f9
-+			MX6QDL_PAD_SD1_DAT3__SD1_DATA3			0x170f9
-+			MX6QDL_PAD_GPIO_1__SD1_CD_B			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD2_CMD__SD2_CMD			0x170b9
-+			MX6QDL_PAD_SD2_CLK__SD2_CLK			0x100b9
-+			MX6QDL_PAD_SD2_DAT0__SD2_DATA0			0x170b9
-+			MX6QDL_PAD_SD2_DAT1__SD2_DATA1			0x170b9
-+			MX6QDL_PAD_SD2_DAT2__SD2_DATA2			0x170b9
-+			MX6QDL_PAD_SD2_DAT3__SD2_DATA3			0x170b9
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17099
-+			MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10099
-+			MX6QDL_PAD_SD3_DAT0__SD3_DATA0			0x17099
-+			MX6QDL_PAD_SD3_DAT1__SD3_DATA1			0x17099
-+			MX6QDL_PAD_SD3_DAT2__SD3_DATA2			0x17099
-+			MX6QDL_PAD_SD3_DAT3__SD3_DATA3			0x17099
-+			MX6QDL_PAD_SD3_DAT4__SD3_DATA4			0x17099
-+			MX6QDL_PAD_SD3_DAT5__SD3_DATA5			0x17099
-+			MX6QDL_PAD_SD3_DAT6__SD3_DATA6			0x17099
-+			MX6QDL_PAD_SD3_DAT7__SD3_DATA7			0x17099
-+			MX6QDL_PAD_SD3_RST__SD3_RESET			0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_wifi_npd: wifinpd {
-+		fsl,pins = <
-+			/* WL_REG_ON */
-+			MX6QDL_PAD_NANDF_RB0__GPIO6_IO10		0x13069
-+		>;
-+	};
-+};
+ #endif /* _SC_MISC_API_H */
 -- 
-2.28.0
+2.17.1
 
