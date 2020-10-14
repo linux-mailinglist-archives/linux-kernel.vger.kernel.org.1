@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D02B28EA82
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7537128E839
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732453AbgJOByj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732444AbgJOByi (ORCPT
+        id S1729162AbgJNVLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 17:11:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38356 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgJNVLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:54:38 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECA9C0613D8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:07:35 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b19so383386pld.0
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=dR7lB2w8aCjI+7SL+gCWVnyWE0EcJqrEtve/Fbe7wCs=;
-        b=B/MjJBqabR3kHP8fuBSvbUC1hpjUg/luJg1VJj+JARvr6cqZGaBRBHiO64T1qx5Rz7
-         jUR16cnHImawwz9obH9+PQiNMrBTw11th2E5mmAmePsS/Jq8oWK/UrnHLPf2dMOUMrJz
-         Rj5PceZQsnxljXjERM8WV5U0foTw7fXr2J0EApon+KYJiAPlqBouCxvl3tSndHbB9IB2
-         RZ92Jp5l+sW62Ablfb58utH8lz8FqYU4TTVIAZbSvWJlJMdH7B7+6Weotzz0eekyB5cu
-         el6K4FFvc3oekO0Y8Xt5arM6WYR4BGQYcfpUpoknPGHQAEUtj3vY7RqRXNf4x7iqDJrA
-         3LgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=dR7lB2w8aCjI+7SL+gCWVnyWE0EcJqrEtve/Fbe7wCs=;
-        b=N0SyIFoJ6rR0nhqtSuHLpDR/0qjjg2wwm3o21SJ+ZEdG9zvlvDxJCi3j+fdBGqvX/F
-         GlejEBO6UQllRKZMq4lCyN7AIPjXqEmI9sm2HbY+H9A6plT4slicB0Yrdukd9skNyfv2
-         EES8adrCNdKYRsh7Yv29cQd4Afx8CH56/JbxKvjkfckhnbufult0pN65zPoxqXmY4v53
-         4y4Xya9K4ze/nnUYWHX9gNFjtxtJ1vpbeFlBbsi7ApQAcYKVeBSrb8dLvp5YtFl2dy+9
-         HuUOx4rcajP2KwOkLbFRfVG1XPGS3JB0pRnSQZuRHzNXKS6hDjPmspGiAYvW9w7T23N8
-         bspg==
-X-Gm-Message-State: AOAM533/XClP3/SZTznjQsr/v5CZQfWExF2bmzRexXXS7d8RlHBac9u3
-        nzztlfvXH5gZM/7gjb0bvDKszQ==
-X-Google-Smtp-Source: ABdhPJykDDF86fwzs6jHsxI1qVDwzTE5CSv91OmX/qxVA0fgG8du089mMPQ6hbvROZzrmDNYuE/fNw==
-X-Received: by 2002:a17:90a:4e47:: with SMTP id t7mr1017421pjl.26.1602709655153;
-        Wed, 14 Oct 2020 14:07:35 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:21fb:4af8:8865:6308? ([2601:646:c200:1ef2:21fb:4af8:8865:6308])
-        by smtp.gmail.com with ESMTPSA id jy19sm501565pjb.9.2020.10.14.14.07.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 14:07:34 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
-Date:   Wed, 14 Oct 2020 14:07:30 -0700
-Message-Id: <22E29783-F1F5-43DA-B35F-D75FB247475D@amacapital.net>
-References: <20201014195823.GC18196@zn.tnic>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-In-Reply-To: <20201014195823.GC18196@zn.tnic>
+        Wed, 14 Oct 2020 17:11:41 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09EKruSF050068;
+        Wed, 14 Oct 2020 21:11:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=3ciIFl7IEMSSFZDXPUxOkqELug/KZW0g2FveLtZMUyQ=;
+ b=tKf2a0wz8h19V94PM5PPs2DBzcak6v1iDdSMBTG7wJ7GkmU+o16OyLEtCGw4OrNvzMyy
+ wLA0fAFFdQZqZ6aBFa1O1kvKruvYrCf7ib2AR6YEok3llzVaLlVOzdeuKLj+w7/uDnrw
+ +xRZ7+o/b4CGeWJCznmvgNIJYHtty4D+XPQ7nP9NyZCuSnND3uxxz1u77aV3GbOSQSPu
+ sYACPRdDmMKIreGJVQxm51qYIgu+6L6u7Q5yUccpFVYtZQ9QjHkyc7YYv8dEpzyZtIxa
+ pPnqi61tlPJcptmT07pRS9xK2+UibW1/6fRYX1NMdX1z7kc9LkRGqs0+2xOnH4rjok4u yw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 343vaeg553-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 14 Oct 2020 21:11:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09EKsadi034896;
+        Wed, 14 Oct 2020 21:11:24 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 343pvyd6h6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Oct 2020 21:11:24 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09ELBMQR015380;
+        Wed, 14 Oct 2020 21:11:22 GMT
+Received: from [10.159.149.68] (/10.159.149.68)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Oct 2020 14:11:21 -0700
+Subject: Re: [PATCH 4/8] x86/asm: add clear_page_nt()
 To:     Borislav Petkov <bp@alien8.de>
-X-Mailer: iPhone Mail (18A393)
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kirill@shutemov.name, mhocko@kernel.org,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Slaby <jslaby@suse.cz>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+References: <20201014083300.19077-1-ankur.a.arora@oracle.com>
+ <20201014083300.19077-5-ankur.a.arora@oracle.com>
+ <20201014195614.GB18196@zn.tnic>
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+Message-ID: <15b8e9b1-cc72-cbc3-5cc0-64b02b617a5b@oracle.com>
+Date:   Wed, 14 Oct 2020 14:11:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20201014195614.GB18196@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010140147
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010140147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-14 12:56 p.m., Borislav Petkov wrote:
+> On Wed, Oct 14, 2020 at 01:32:55AM -0700, Ankur Arora wrote:
+>> This can potentially improve page-clearing bandwidth (see below for
+>> performance numbers for two microarchitectures where it helps and one
+>> where it doesn't) and can help indirectly by consuming less cache
+>> resources.
+>>
+>> Any performance benefits are expected for extents larger than LLC-sized
+>> or more -- when we are DRAM-BW constrained rather than cache-BW
+>> constrained.
+> 
+> "potentially", "expected", I don't like those formulations.
+That's fair. The reason for those weasel words is mostly because it
+is microarchitecture specific.
+For example on Intel where I did compare across generations: I see good
+performance on Broadwellx, not good on Skylakex and then good again on
+some pre-production CPUs.
 
+> Do you have
+> some actual benchmark data where this shows any improvement and not
+> microbenchmarks only, to warrant the additional complexity?
+Yes, guest creation under QEMU (pinned guests) shows similar improvements.
+I've posted performance numbers in patches 7, 8 with a simple page-fault
+test derived from that.
 
+I can add numbers from QEMU as well.
 
-> On Oct 14, 2020, at 12:58 PM, Borislav Petkov <bp@alien8.de> wrote:
->=20
-> =EF=BB=BFOn Wed, Oct 14, 2020 at 08:45:37AM -0700, Andy Lutomirski wrote:
->>> On Wed, Oct 14, 2020 at 1:33 AM Ankur Arora <ankur.a.arora@oracle.com> w=
-rote:
->>>=20
->>> Define clear_page_uncached() as an alternative_call() to clear_page_nt()=
+Thanks,
+Ankur
 
->>> if the CPU sets X86_FEATURE_NT_GOOD and fallback to clear_page() if it
->>> doesn't.
->>>=20
->>> Similarly define clear_page_uncached_flush() which provides an SFENCE
->>> if the CPU sets X86_FEATURE_NT_GOOD.
->>=20
->> As long as you keep "NT" or "MOVNTI" in the names and keep functions
->> in arch/x86, I think it's reasonable to expect that callers understand
->> that MOVNTI has bizarre memory ordering rules.  But once you give
->> something a generic name like "clear_page_uncached" and stick it in
->> generic code, I think the semantics should be more obvious.
->=20
-> Why does it have to be a separate call? Why isn't it behind the
-> clear_page() alternative machinery so that the proper function is
-> selected at boot? IOW, why does a user of clear_page functionality need
-> to know at all about an "uncached" variant?
->=20
->=20
-
-I assume it=E2=80=99s for a little optimization of clearing more than one pa=
-ge per SFENCE.
-
-In any event, based on the benchmark data upthread, we only want to do NT cl=
-ears when they=E2=80=99re rather large, so this shouldn=E2=80=99t be just an=
- alternative. I assume this is because a page or two will fit in cache and, f=
-or most uses that allocate zeroed pages, we prefer cache-hot pages.  When cl=
-earing 1G, on the other hand, cache-hot is impossible and we prefer the impr=
-oved bandwidth and less cache trashing of NT clears.
-
-Perhaps SFENCE is so fast that this is a silly optimization, though, and we d=
-on=E2=80=99t lose anything measurable by SFENCEing once per page.=
+> 
