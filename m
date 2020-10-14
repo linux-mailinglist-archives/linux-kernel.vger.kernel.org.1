@@ -2,146 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AD628E1FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D2328E202
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731285AbgJNOOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727023AbgJNOOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:14:08 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08DEAC061755;
-        Wed, 14 Oct 2020 07:14:08 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id j8so1820254pjy.5;
-        Wed, 14 Oct 2020 07:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=69069AnehaVf3UnSZwNG1/x2dVHK2fJGYXosNGLirqA=;
-        b=tPQ9t0LVAjdXlrRg8FlQwBDOUkZpALEmpbMxXBjfr5wAr9LYMa9Uam1636/b8zhDXL
-         8b1l5zaeo7D5wrgmZUQBpBJFiV1zb/c6F02lPDDFml5Dedkp0chOBTDBRFBoRJQLGsFN
-         1/1lnzG40gcoB8upIsgAl65cpOEo2zUTMrqIoZnu4rSiQAOnn6KRbXRHJgWHERRNEoGQ
-         TqGFhtyUUiA4/2wqM8E14cI6UNIXLO1W1dbP23Zekc5G2QpwU7nG3Ii/Y/ZFiZIH+NW3
-         wVQgVoLyawsOsEKwYjIzXsXzFkE8m/3KdobzUvlWHCcobHVrOIygQhoLX/AUWn6vy1mN
-         co8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=69069AnehaVf3UnSZwNG1/x2dVHK2fJGYXosNGLirqA=;
-        b=r1Oqi8vM7kwb9vGd5ZEfyQZGw3cFw1KtNi8lzjoICKezEEMXXIvKlDaXBQinzEq+YU
-         O9GQvJ+zTeJsywq1s/b5KP/s1i1PcrZaCN4psACaL+X8L4JtmG3AgD+7pAasWe7oZTVW
-         WUeHQJiJ+THc6zxIbJQu0sj5ashOoDssxe1qIBfgld2nZEor9UQAKA6DZAfMmoyzakH0
-         Bq0/yTr7nWsZczZJOihEUTex7bSZKqH5YTn1yo7jiE7Ea/K+agTP0krHEf7A5UFV3m99
-         YJSlBeeojOdh4Ac7GeYrLUDX8RzRecwOBhIhhDo5urEucE8/8Y2ipHH00Uuq4sntxxVk
-         /Gig==
-X-Gm-Message-State: AOAM531fxD90Vp+h7o2In9Wj/kfS9HomnDUMJIbr9scGg8pWeb3V2LZg
-        x1DBuJAMTYpzlmbEYoOfG7w=
-X-Google-Smtp-Source: ABdhPJwlSk9NJC9q/BbL/TeawLocBTV2wGEM3Q5doa1fGqW4pcUFHwvWxzrPHTj759w63AA03MH2Qw==
-X-Received: by 2002:a17:90a:ca95:: with SMTP id y21mr3724437pjt.68.1602684847425;
-        Wed, 14 Oct 2020 07:14:07 -0700 (PDT)
-Received: from [192.168.11.3] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id m13sm3695976pfd.65.2020.10.14.07.14.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 07:14:06 -0700 (PDT)
-Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
- some files
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
+        id S2388911AbgJNOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:15:24 -0400
+Received: from relay.sw.ru ([185.231.240.75]:42450 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727023AbgJNOPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 10:15:23 -0400
+Received: from [172.16.25.93] (helo=amikhalitsyn-pc0.sw.ru)
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <alexander.mikhalitsyn@virtuozzo.com>)
+        id 1kShXi-004ONi-FS; Wed, 14 Oct 2020 17:14:14 +0300
+From:   Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+To:     miklos@szeredi.hu
+Cc:     Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
         David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
- <20201013163354.GO3249@paulmck-ThinkPad-P72>
- <20201013163836.GC670875@rowland.harvard.edu>
- <20201014015840.GR3249@paulmck-ThinkPad-P72>
- <20201014095603.0d899da7@coco.lan>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <aaeeba66-48be-0354-8f1c-261b361ae17f@gmail.com>
-Date:   Wed, 14 Oct 2020 23:14:00 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201014095603.0d899da7@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Amir Goldstein <amir73il@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] overlayfs: add fsinfo(FSINFO_ATTR_OVL_SOURCES) support
+Date:   Wed, 14 Oct 2020 17:14:16 +0300
+Message-Id: <20201014141416.25272-1-alexander.mikhalitsyn@virtuozzo.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
+References: <20201004192401.9738-1-alexander.mikhalitsyn@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 09:56:03 +0200, Mauro Carvalho Chehab wrote:
-> Em Tue, 13 Oct 2020 18:58:40 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> escreveu:
-> 
->> On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote:
->>> On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:  
->>>> On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrote:  
->>>>> - The sysfs.txt file was converted to ReST and renamed;
->>>>> - The control-dependencies.txt is not at
->>>>>   Documentation/control-dependencies.txt. As it is at the
->>>>>   same dir as the README file, which mentions it, just
->>>>>   remove Documentation/.
->>>>>
->>>>> With that, ./scripts/documentation-file-ref-check script
->>>>> is now happy again for files under tools/.
->>>>>
->>>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
->>>>
->>>> Queued for review and testing, likely target v5.11.  
->>>
->>> Instead of changing the path in the README reference, shouldn't 
->>> tools/memory-model/control-dependencies.txt be moved to its proper 
->>> position in .../Documentation?  
->>
->> You are of course quite right.  My thought is to let Mauro go ahead,
->> given his short deadline.  We can then make this "git mv" change once
->> v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
->> added a reminder to my calendar.
-> 
-> Sounds like a plan to me.
-> 
-> 
-> If it helps on 5.11 plans, converting this file to ReST format is quite
-> trivial: it just needs to use "::" for C/asm code literal blocks, and 
-> to replace "(*) " by something that matches ReST syntax for lists,
-> like "(#) " or just "* ":
-> 
-> 	https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists
-> 
-> See enclosed.
+FSINFO_ATTR_OVL_SOURCES fsinfo attribute allows us
+to export fhandles for overlayfs source directories
+such as upperdir, workdir, lowerdirs.
 
-I'm afraid conversion of LKMM documents to ReST is unlikely to happen
-any time soon.
-It should wait until such time comes when the auto markup tools become
-clever enough and .rst files looks exactly the same as plain .txt files.
+This patchs adds initial support of fsinfo into overlayfs.
+If community decide to take this way of C/R support
+in overlayfs then I have plan to implement FSINFO_ATTR_SUPPORTS
+and FSINFO_ATTR_FEATURES standard attributes handlers too.
 
-Am I asking too much? :-)
+Cc: David Howells <dhowells@redhat.com>
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: Andrei Vagin <avagin@gmail.com>
+Cc: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: linux-unionfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>
+---
+ fs/overlayfs/Makefile       |   1 +
+ fs/overlayfs/fsinfo.c       | 133 ++++++++++++++++++++++++++++++++++++
+ fs/overlayfs/overlayfs.h    |   6 ++
+ fs/overlayfs/super.c        |   3 +
+ include/uapi/linux/fsinfo.h |  31 +++++++++
+ 5 files changed, 174 insertions(+)
+ create mode 100644 fs/overlayfs/fsinfo.c
 
-        Thanks, Akira
+diff --git a/fs/overlayfs/Makefile b/fs/overlayfs/Makefile
+index 9164c585eb2f..db555c0e4508 100644
+--- a/fs/overlayfs/Makefile
++++ b/fs/overlayfs/Makefile
+@@ -7,3 +7,4 @@ obj-$(CONFIG_OVERLAY_FS) += overlay.o
+ 
+ overlay-objs := super.o namei.o util.o inode.o file.o dir.o readdir.o \
+ 		copy_up.o export.o
++overlay-$(CONFIG_FSINFO)	+= fsinfo.o
+diff --git a/fs/overlayfs/fsinfo.c b/fs/overlayfs/fsinfo.c
+new file mode 100644
+index 000000000000..9857949dcce5
+--- /dev/null
++++ b/fs/overlayfs/fsinfo.c
+@@ -0,0 +1,133 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Filesystem information for overlayfs
++ *
++ * Copyright (C) 2020 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ */
++
++#include <linux/mount.h>
++#include <linux/fsinfo.h>
++#include "overlayfs.h"
++
++static int __ovl_encode_mnt_opt_fh(struct fsinfo_ovl_source *p,
++				   struct dentry *dentry)
++{
++	int fh_type, dwords;
++	int buflen = MAX_HANDLE_SZ;
++	int err;
++
++	/* we ask for a non connected handle */
++	dwords = buflen >> 2;
++	fh_type = exportfs_encode_fh(dentry, (void *)p->fh.f_handle, &dwords, 0);
++	buflen = (dwords << 2);
++
++	err = -EIO;
++	if (WARN_ON(fh_type < 0) ||
++	    WARN_ON(buflen > MAX_HANDLE_SZ) ||
++	    WARN_ON(fh_type == FILEID_INVALID))
++		goto out_err;
++
++	p->fh.handle_type = fh_type;
++	p->fh.handle_bytes = buflen;
++
++	/*
++	 * Ideally, we want to have mnt_id+fhandle, but overlayfs not
++	 * keep refcnts on layers mounts and we couldn't determine
++	 * mnt_ids for layers. So, let's give s_dev to CRIU.
++	 * It's better than nothing.
++	 */
++	p->s_dev = dentry->d_sb->s_dev;
++
++	return 0;
++
++out_err:
++	return err;
++}
++
++static int ovl_fsinfo_store_source(struct fsinfo_ovl_source *p,
++				   enum fsinfo_ovl_source_type type,
++				   struct dentry *dentry)
++{
++	__ovl_encode_mnt_opt_fh(p, dentry);
++	p->type = type;
++	return 0;
++}
++
++static long ovl_ioctl_stor_lower_fhandle(struct fsinfo_ovl_source *p,
++					 struct super_block *sb,
++					 unsigned long arg)
++{
++	struct ovl_entry *oe = sb->s_root->d_fsdata;
++	struct dentry *origin;
++
++	if (arg >= oe->numlower)
++		return -EINVAL;
++
++	origin = oe->lowerstack[arg].dentry;
++
++	return ovl_fsinfo_store_source(p, FSINFO_OVL_LWR, origin);
++}
++
++static long ovl_ioctl_stor_upper_fhandle(struct fsinfo_ovl_source *p,
++					 struct super_block *sb)
++{
++	struct ovl_fs *ofs = sb->s_fs_info;
++	struct dentry *origin;
++
++	if (!ofs->config.upperdir)
++		return -EINVAL;
++
++	origin = OVL_I(d_inode(sb->s_root))->__upperdentry;
++
++	return ovl_fsinfo_store_source(p, FSINFO_OVL_UPPR, origin);
++}
++
++static long ovl_ioctl_stor_work_fhandle(struct fsinfo_ovl_source *p,
++					struct super_block *sb)
++{
++	struct ovl_fs *ofs = sb->s_fs_info;
++
++	if (!ofs->config.upperdir)
++		return -EINVAL;
++
++	return ovl_fsinfo_store_source(p, FSINFO_OVL_WRK, ofs->workbasedir);
++}
++
++static int ovl_fsinfo_sources(struct path *path, struct fsinfo_context *ctx)
++{
++	struct fsinfo_ovl_source *p = ctx->buffer;
++	struct super_block *sb = path->dentry->d_sb;
++	struct ovl_fs *ofs = sb->s_fs_info;
++	struct ovl_entry *oe = sb->s_root->d_fsdata;
++	size_t nr_sources = (oe->numlower + 2 * !!ofs->config.upperdir);
++	unsigned int i = 0, j;
++	int ret = -ENODATA;
++
++	ret = nr_sources * sizeof(*p);
++	if (ret <= ctx->buf_size) {
++		if (ofs->config.upperdir) {
++			ovl_ioctl_stor_upper_fhandle(&p[i++], sb);
++			ovl_ioctl_stor_work_fhandle(&p[i++], sb);
++		}
++
++		for (j = 0; j < oe->numlower; j++)
++			ovl_ioctl_stor_lower_fhandle(&p[i++], sb, j);
++	}
++
++	return ret;
++}
++
++static const struct fsinfo_attribute ovl_fsinfo_attributes[] = {
++	/* TODO: implement FSINFO_ATTR_SUPPORTS and FSINFO_ATTR_FEATURES */
++	/*
++	FSINFO_VSTRUCT	(FSINFO_ATTR_SUPPORTS,		ovl_fsinfo_supports),
++	FSINFO_VSTRUCT	(FSINFO_ATTR_FEATURES,		ovl_fsinfo_features),
++	*/
++	FSINFO_LIST	(FSINFO_ATTR_OVL_SOURCES,	ovl_fsinfo_sources),
++	{}
++};
++
++int ovl_fsinfo(struct path *path, struct fsinfo_context *ctx)
++{
++	return fsinfo_get_attribute(path, ctx, ovl_fsinfo_attributes);
++}
+diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+index 29bc1ec699e7..1c0ac23ecf8f 100644
+--- a/fs/overlayfs/overlayfs.h
++++ b/fs/overlayfs/overlayfs.h
+@@ -7,6 +7,7 @@
+ #include <linux/kernel.h>
+ #include <linux/uuid.h>
+ #include <linux/fs.h>
++#include <linux/xattr.h>
+ #include "ovl_entry.h"
+ 
+ #undef pr_fmt
+@@ -492,3 +493,8 @@ int ovl_set_origin(struct dentry *dentry, struct dentry *lower,
+ 
+ /* export.c */
+ extern const struct export_operations ovl_export_operations;
++
++/* fsinfo.c */
++#ifdef CONFIG_FSINFO
++extern int ovl_fsinfo(struct path *path, struct fsinfo_context *ctx);
++#endif
+diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+index 4b38141c2985..1a4cdbbd766f 100644
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
+@@ -392,6 +392,9 @@ static const struct super_operations ovl_super_operations = {
+ 	.put_super	= ovl_put_super,
+ 	.sync_fs	= ovl_sync_fs,
+ 	.statfs		= ovl_statfs,
++#ifdef CONFIG_FSINFO
++	.fsinfo		= ovl_fsinfo,
++#endif
+ 	.show_options	= ovl_show_options,
+ 	.remount_fs	= ovl_remount,
+ };
+diff --git a/include/uapi/linux/fsinfo.h b/include/uapi/linux/fsinfo.h
+index dcd764771a7d..83c2511691e4 100644
+--- a/include/uapi/linux/fsinfo.h
++++ b/include/uapi/linux/fsinfo.h
+@@ -10,6 +10,8 @@
+ #include <linux/types.h>
+ #include <linux/socket.h>
+ #include <linux/openat2.h>
++#include <linux/fs.h>
++#include <linux/exportfs.h>
+ 
+ /*
+  * The filesystem attributes that can be requested.  Note that some attributes
+@@ -44,6 +46,8 @@
+ #define FSINFO_ATTR_AFS_SERVER_NAME	0x301	/* Name of the Nth server (string) */
+ #define FSINFO_ATTR_AFS_SERVER_ADDRESSES 0x302	/* List of addresses of the Nth server */
+ 
++#define FSINFO_ATTR_OVL_SOURCES		0x400	/* List of overlayfs source dirs fhandles+sdev */
++
+ /*
+  * Optional fsinfo() parameter structure.
+  *
+@@ -341,4 +345,31 @@ struct fsinfo_error_state {
+ 
+ #define FSINFO_ATTR_ERROR_STATE__STRUCT struct fsinfo_error_state
+ 
++/*
++ * Information struct for fsinfo(FSINFO_ATTR_FSINFO_ATTRIBUTE_INFO).
++ *
++ * This gives information about the overlayfs upperdir, workdir, lowerdir
++ * superblock options (exported as fhandles).
++ */
++enum fsinfo_ovl_source_type {
++	FSINFO_OVL_UPPR	= 0,	/* upperdir */
++	FSINFO_OVL_WRK	= 1,	/* workdir */
++	FSINFO_OVL_LWR	= 2,	/* lowerdir list item */
++};
++
++/* DISCUSS: we can also export mnt_unique_id here which introduced by fsinfo patchset
++ * and then use him to detect if source was unmounted in the time gap between the moment when
++ * overlayfs was mounted and C/R process was started.
++ * We can get mnt_unique_id also by using fsinfo(FSINFO_ATTR_MOUNT_ALL)
++ */
++struct fsinfo_ovl_source {
++	enum fsinfo_ovl_source_type type;
++	__u32 s_dev;
++	struct file_handle fh;
++	/* use f_handle field from struct file_handle */
++	__u8 __fhdata[MAX_HANDLE_SZ];
++};
++
++#define FSINFO_ATTR_OVL_SOURCES__STRUCT struct fsinfo_ovl_source
++
+ #endif /* _UAPI_LINUX_FSINFO_H */
+-- 
+2.25.1
 
-> 
-> Thanks,
-> Mauro
-> 
-> [PATCH] convert control-dependencies.rst to ReST
-> 
-
-[snip]
