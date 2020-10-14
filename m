@@ -2,155 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D041228E8D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB7228EB0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729818AbgJNWkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 18:40:49 -0400
-Received: from vern.gendns.com ([98.142.107.122]:46422 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727387AbgJNWkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 18:40:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dID71IWmSuJrKqwrxHNZaTKnyffa+NbYhcw7le2zj3k=; b=k3ui0MR7qAGP6ZgXBSIje/KtYf
-        Zf0cM1bxI9UsYCKky2OBNQq+FVj6SWOj7hUQ1+MLgry20PefqhYwPVrQL9t3cgdhlU7xgdFc6WASW
-        Y2UHc8cenJUS3n065aCJTQ1sZ5ZyVz06O0ubRbhRpvCVbRC1DASoeVVBXBBOIwLkcdlNfgA60bGYr
-        r+y7ppFGb4Fa3C7omuxtp754zYs+rQUtm9UbJ2aimE0R3Y3QroSHXyksaJ5X56Ehn6LBEEKKuEbYc
-        z/5QAnFC/rutDO1KU5cCrsvbcZpOKKsC8z/uHF2AQtmpWkOOYl7ogHaGgvvnQHpZyRKIxSSKkmjzj
-        l7kypjnA==;
-Received: from [2600:1700:4830:165f::19e] (port=50656)
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kSpRt-0001fv-W9; Wed, 14 Oct 2020 18:40:46 -0400
-Subject: Re: [PATCH v5 3/5] counter: Add character device interface
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1601170670.git.vilhelm.gray@gmail.com>
- <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <cc1f7e4d-18d1-bc28-8ce3-e3edcd91bcab@lechnology.com>
-Date:   Wed, 14 Oct 2020 17:40:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728900AbgJOCTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgJOCTh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 22:19:37 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08156C05BD24
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:43:26 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w21so700494pfc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HXE7zd358OihnnXdqbHtVXM+0rFJH6HtXX7mG7HS7rs=;
+        b=P+m7XeYyZ2d5m2JBT4Wg90TEWdILqbaLccqKq7i1SamEiRkb82fahXnlpg2f1W1wbg
+         hYpm7jOYPcOHuFgqqHnuX4V3PF9C/c9wSPHpPybZudVDCal6bW+V4V423MNW5wH9Pi3v
+         EAtrVXrDgHaNrDFivAYIB/ro+72Y46zcpNM1E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HXE7zd358OihnnXdqbHtVXM+0rFJH6HtXX7mG7HS7rs=;
+        b=Bpwr8m41ANBgPknilAHMcPlGwEZBE+r5YtjcquvEnjXSdLgBvFbR2TklBVJDbs+ZIT
+         UOwqmD0Nr6bXLSzaNclpDr3VyI4PHWspHfm5slwv4Cha0zPJNPRm6DeyDOZfHHnI6NZh
+         bnqxPvXvpltNcWDOqm2Mrr+rgb129KTv9wTZs2UCkqzl/j+Heuj24w6p86QUpf4vgwtN
+         XUOncUM7zbAoLGNpVRpPH1yqNjNe022ylzCBfIb01BYMiwg8jW+krWIpzMXuj7ESfJ3Z
+         d2Epmhn5k7GlB6ZGQ6EKmBICopeYEdwUZ2Ay0PEAbtxoCsA/llMwlmt4/AQPurJyInxW
+         R5gw==
+X-Gm-Message-State: AOAM532xrEp8oZ50Y9H3GYinqxaxa+NcP88IkCl1SUxc1KDOYgZ2GYcp
+        MdzzKNXWy1k10aIBTztmEuScBw==
+X-Google-Smtp-Source: ABdhPJwfaPNC+AVzyD2mbtxihYKliPRj3PBojQshk4IbHIXu4wlCtL4Vs5DVZZ2Xhz60ywvob16sAw==
+X-Received: by 2002:a63:77c4:: with SMTP id s187mr881793pgc.303.1602715405507;
+        Wed, 14 Oct 2020 15:43:25 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id l14sm630167pfc.170.2020.10.14.15.43.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 15:43:24 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 15:43:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 07/25] treewide: remove DISABLE_LTO
+Message-ID: <202010141541.E689442E@keescook>
+References: <20201013003203.4168817-1-samitolvanen@google.com>
+ <20201013003203.4168817-8-samitolvanen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013003203.4168817-8-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/20 9:18 PM, William Breathitt Gray wrote:
-> +static ssize_t counter_chrdev_read(struct file *filp, char __user *buf,
-> +				   size_t len, loff_t *f_ps)
-> +{
-> +	struct counter_device *const counter = filp->private_data;
-> +	int err;
-> +	unsigned long flags;
-> +	unsigned int copied;
-> +
-> +	if (len < sizeof(struct counter_event))
-> +		return -EINVAL;
-> +
-> +	do {
-> +		if (kfifo_is_empty(&counter->events)) {
-> +			if (filp->f_flags & O_NONBLOCK)
-> +				return -EAGAIN;
-> +
-> +			err = wait_event_interruptible(counter->events_wait,
-> +					!kfifo_is_empty(&counter->events));
-> +			if (err)
-> +				return err;
-> +		}
-> +
-> +		raw_spin_lock_irqsave(&counter->events_lock, flags);
-> +		err = kfifo_to_user(&counter->events, buf, len, &copied);
-> +		raw_spin_unlock_irqrestore(&counter->events_lock, flags);
-> +		if (err)
-> +			return err;
-> +	} while (!copied);
-> +
-> +	return copied;
-> +}
+On Mon, Oct 12, 2020 at 05:31:45PM -0700, Sami Tolvanen wrote:
+> This change removes all instances of DISABLE_LTO from
+> Makefiles, as they are currently unused, and the preferred
+> method of disabling LTO is to filter out the flags instead.
+> 
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-All other uses of kfifo_to_user() I saw use a mutex instead of spin
-lock. I don't see a reason for disabling interrupts here.
+Hi Masahiro,
 
-Example:
+Since this is independent of anything else and could be seen as a
+general cleanup, can this patch be taken into your tree, just to
+separate it from the list of dependencies for this series?
 
+-Kees
 
-static ssize_t iio_event_chrdev_read(struct file *filep,
-				     char __user *buf,
-				     size_t count,
-				     loff_t *f_ps)
-{
-	struct iio_dev *indio_dev = filep->private_data;
-	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
-	struct iio_event_interface *ev_int = iio_dev_opaque->event_interface;
-	unsigned int copied;
-	int ret;
-
-	if (!indio_dev->info)
-		return -ENODEV;
-
-	if (count < sizeof(struct iio_event_data))
-		return -EINVAL;
-
-	do {
-		if (kfifo_is_empty(&ev_int->det_events)) {
-			if (filep->f_flags & O_NONBLOCK)
-				return -EAGAIN;
-
-			ret = wait_event_interruptible(ev_int->wait,
-					!kfifo_is_empty(&ev_int->det_events) ||
-					indio_dev->info == NULL);
-			if (ret)
-				return ret;
-			if (indio_dev->info == NULL)
-				return -ENODEV;
-		}
-
-		if (mutex_lock_interruptible(&ev_int->read_lock))
-			return -ERESTARTSYS;
-		ret = kfifo_to_user(&ev_int->det_events, buf, count, &copied);
-		mutex_unlock(&ev_int->read_lock);
-
-		if (ret)
-			return ret;
-
-		/*
-		 * If we couldn't read anything from the fifo (a different
-		 * thread might have been faster) we either return -EAGAIN if
-		 * the file descriptor is non-blocking, otherwise we go back to
-		 * sleep and wait for more data to arrive.
-		 */
-		if (copied == 0 && (filep->f_flags & O_NONBLOCK))
-			return -EAGAIN;
-
-	} while (copied == 0);
-
-	return copied;
-}
+-- 
+Kees Cook
