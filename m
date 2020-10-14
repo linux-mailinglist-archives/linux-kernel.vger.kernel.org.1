@@ -2,94 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8B928DD90
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A7728DD9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgJNJ0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:26:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26524 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726435AbgJNJZt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:25:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602667548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mcu5CBTxuJW65VmqyywXr6V7SM+/ZXJMA86sRFN+g+0=;
-        b=FBZ6vBZ/SvUnaF63zpp+VXFMWTL5rwh/atrj/VlMkWpVbzprjpfPJXCtDuDebuPI81qc0Z
-        0J8JBenEb8VOVYQ0+WDQbhdw4nvGt1xbEIpc5lptg2GJQzC9ZfVT8jnbeNTCngVssFvC3P
-        gzfUqvS9JwEucedzy3VT/hz1jT/oyLU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-v_wiZVNiPGSVoT7LqaaoeA-1; Wed, 14 Oct 2020 05:25:46 -0400
-X-MC-Unique: v_wiZVNiPGSVoT7LqaaoeA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0624A81C464;
-        Wed, 14 Oct 2020 09:25:45 +0000 (UTC)
-Received: from kasong-rh-laptop.redhat.com (ovpn-12-25.pek2.redhat.com [10.72.12.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 868935C1BD;
-        Wed, 14 Oct 2020 09:25:40 +0000 (UTC)
-From:   Kairui Song <kasong@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Dave Young <dyoung@redhat.com>, x86@kernel.org,
-        linux-hyperv@vger.kernel.org, kexec@lists.infradead.org,
-        Kairui Song <kasong@redhat.com>
-Subject: [PATCH 2/2] hyperv_fb: Update screen_info after removing old framebuffer
-Date:   Wed, 14 Oct 2020 17:24:29 +0800
-Message-Id: <20201014092429.1415040-3-kasong@redhat.com>
-In-Reply-To: <20201014092429.1415040-1-kasong@redhat.com>
-References: <20201014092429.1415040-1-kasong@redhat.com>
+        id S1726953AbgJNJaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:30:20 -0400
+Received: from mail-eopbgr70078.outbound.protection.outlook.com ([40.107.7.78]:8830
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726481AbgJNJaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:30:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dPOFGxCwjuxYNOjU635InoOHVQ0xtZSkbBMPm6hGQSLnTPFhDRAA+v6KzKF6R1zTWTYR6VpzlDz3sHMs9KkNVRlRDxTRbzAZaLczqUQ2OcgInOUiWegpBtPMuGzqa+MHCHxSRKE2+ZRMEXmwkwAAVrxayr6kNfsy0GhA7x7V8HyX2zD27spWS8W3dIPtbsHe9FKjoqxM8B0m9rwMXI0+2PNWy8orNQmlDFZx4KUygPBVpLkzpAaVlqLJfdzhKoKK6KAaJZC2GdRlcBeuH1icA4o9r7D0XFtqpDhdL2qAeWEE/Cx8+LAPM5IdtjOrbc8bWu5RT6bkmpIngtF2NawEiA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tTpSfN6V3AyRZohl+Ttmk+ZVpMmOiFmP2hkSk4+UayI=;
+ b=Ybx9SiRmyoya7okwO9OSL5GlgEuNzqDceU6a9uV9QPQW8SERKo3V4LKsbiGS8Es99iz+jOA5SmfFk0ZYjt2vLHTAPyAVqy6gORWYf6QBWNYiDpd2u2+wdcxDCvkUsjM+1Hzwp7GEYVSigKxYM+R7SKToz3txKV0nXdWq5YkazW5InvI6FYa75h2i08AUJXBofPo6sWucjSrVvYLxn0PxIdQw6Q1wwFvCG2OyCpaUAvJ2PWeg4vn7GEzt4OojMETLvMz3mSTl3iHZ4kKwWzkzGMMKangkTPoCDEnxFYpsRuuNnzxRe1nAgatBD6GcBSJraYBLKfILia5K8HaGr+00kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tTpSfN6V3AyRZohl+Ttmk+ZVpMmOiFmP2hkSk4+UayI=;
+ b=oIhZFr+QE6gy8A5jx7wdadqmXMxUaICKFOThKSG5rCIbaoZY2bbSgqcFondljQZnyhpOzBcekMnH2nirADh3CugG88JVG2qkja7gNFU2G8QcJKOIzC3jC3kVY69NZxmsR6YRgSE9qJKcq+l4N4CNOHfYqzHVgL+Y7Gxi/CtpQXI=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com (2603:10a6:803:3::26)
+ by VI1PR04MB5039.eurprd04.prod.outlook.com (2603:10a6:803:59::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Wed, 14 Oct
+ 2020 09:29:58 +0000
+Received: from VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f557:4dcb:4d4d:57f3]) by VI1PR0402MB3405.eurprd04.prod.outlook.com
+ ([fe80::f557:4dcb:4d4d:57f3%2]) with mapi id 15.20.3477.021; Wed, 14 Oct 2020
+ 09:29:58 +0000
+Subject: Re: [PATCH] soc: fsl: dpio: Change 'cpumask_t mask' to global
+ variable
+To:     Yi Wang <wang.yi59@zte.com.cn>, Roy.Pledge@nxp.com,
+        Youri Querry <youri.querry_1@nxp.com>
+Cc:     jiang.xuexin@zte.com.cn, Hao Si <si.hao@zte.com.cn>,
+        linux-kernel@vger.kernel.org, leoyang.li@nxp.com,
+        xue.zhihong@zte.com.cn, Lin Chen <chen.lin5@zte.com.cn>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+References: <20201014072733.15175-1-wang.yi59@zte.com.cn>
+From:   Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Message-ID: <b16efc3a-120d-aab4-668d-4ef43bbb8b47@nxp.com>
+Date:   Wed, 14 Oct 2020 12:29:54 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+In-Reply-To: <20201014072733.15175-1-wang.yi59@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [188.25.98.186]
+X-ClientProxiedBy: AM4PR0302CA0001.eurprd03.prod.outlook.com
+ (2603:10a6:205:2::14) To VI1PR0402MB3405.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::26)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.106] (188.25.98.186) by AM4PR0302CA0001.eurprd03.prod.outlook.com (2603:10a6:205:2::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Wed, 14 Oct 2020 09:29:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 89995292-b079-4d92-18cd-08d87023b76f
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5039:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB5039897347E7C76F62A1D5DFEC050@VI1PR04MB5039.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d2AsguwvohW2CN4OqVzzqPfcPOFh+qZPEbOHhfHtdkM49NV5v7cGtEu6hbkUfezmrQbZUGgjeoC2wsAg3XCcKE8WwptbBcFovHKiTosGfBPjjrlKl4PBdM84g8Y6/jxM+/fkiSG5vyF5qnFoeYiVZa0dt1YPJHkyG6yWr/ar1xfd/odo6Lplv+r+Lkgh3sKonSjGg8zq24CAnRGXC+wY/f097vJAe3Qp6S4EbTjK7VALfTsD4izYZwKS2VccTIlXmu/Nt/YA+vqJIH4PbgVgkvOMA5lFhbsTteFqDiz2H5yE7xn7LRaGSTptmBq1E+m1j2914o1aR5KxjswNiHWrMvdB4Ghtv4v8bmaZbAj4UCTPsU2HTNqD/v/IDjLWGqx+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3405.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(366004)(136003)(54906003)(6636002)(86362001)(45080400002)(31696002)(478600001)(6486002)(4326008)(2906002)(44832011)(53546011)(8676002)(83380400001)(36756003)(956004)(2616005)(52116002)(31686004)(26005)(316002)(186003)(110136005)(16526019)(66946007)(16576012)(66476007)(8936002)(5660300002)(66556008)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: J1+YZ44tlDY0xx+kc22SpqPg8MZTJACC4SC7wdf3Mbl5ETiBLJQQpHKRGCaOsPa2pEPxyhyvouIeQ/LvQp+MDGVoBKSe/vCSbfIbfbBmqE/XL2ECW41G2r7Pi2h4vLbXH+A4yCJ5L80oSGlQWiLafW7RpQ5m1k3YVfI/8UvBlzuw/9hwZ/Bdii5+jasinud7jHXx+bP8x6c7KrkhFsLLMPRTyrUlTPda1g84EA+WSVRjtmCAd9RPFrgJQrYYJ+JzSt6ow9QmmN/j7a60s1ujdvw80hrcAz9VQBYWZlX+J/jYkcgWTgVhMoC+2r0HH+bWua3Cb3EVWSjnDThzht6lLWF/Gitjl9YqEg6BBJ9hqSpdnsFa/sDj9913DnDHEphG8H8Atdog5Lwnuchb3rsVs3i0dxINDtFr1GMRVEy7v1pBRxl6PLM6TxsYd49WiEuTP5ZOAUddSznapYQYQtHhxwt4ar7bPgyxCO8za2gRR0df25yy9HNBzjVIfDcp8eQJFVvq337RwYQZUul9S0NE2l8/x+6FiRSFUExRnFuqa4TD61/gOwXixCLJYTcOupJKT3w3IfHOGXIwSNUA9NVxMhYi8fbIlfSoB1nzz8WzCYgj9/m7JP8FX4RhUBzjUITWBSowXOHxnoXdQzJGeU1QBQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89995292-b079-4d92-18cd-08d87023b76f
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3405.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 09:29:58.0340
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: utcKuAq0LszQpRZAq7DSvZ5nG2FbfwcaBargJG8vkak0GHJb4IJ6OH5a7Y322DvoaAFW1NDzCdnKgXY99ZQfJA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5039
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On gen2 HyperV VM, hyperv_fb will remove the old framebuffer, the
-new allocated framebuffer address could be at a differnt location,
-and it's no longer VGA framebuffer. Update screen_info
-so that after kexec, kernel won't try to reuse the old invalid
-framebuffer address as VGA.
+Hi,
 
-Signed-off-by: Kairui Song <kasong@redhat.com>
+Thanks for finding this. Comment inline.
+
+On 10/14/2020 10:27 AM, Yi Wang wrote:
+> From: Hao Si <si.hao@zte.com.cn>
+> 
+> The local variable 'cpumask_t mask' is in the stack memory, and its address
+> is assigned to 'desc->affinity' in 'irq_set_affinity_hint()'.
+> But the memory area where this variable is located is at risk of being
+> modified.
+> 
+> During LTP testing, the following error was generated:
+> 
+> Unable to handle kernel paging request at virtual address ffff000012e9b790
+> Mem abort info:
+>   ESR = 0x96000007
+>   Exception class = DABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+> Data abort info:
+>   ISV = 0, ISS = 0x00000007
+>   CM = 0, WnR = 0
+> swapper pgtable: 4k pages, 48-bit VAs, pgdp = 0000000075ac5e07
+> [ffff000012e9b790] pgd=00000027dbffe003, pud=00000027dbffd003,
+> pmd=00000027b6d61003, pte=0000000000000000
+> Internal error: Oops: 96000007 [#1] PREEMPT SMP
+> Modules linked in: xt_conntrack
+> Process read_all (pid: 20171, stack limit = 0x0000000044ea4095)
+> CPU: 14 PID: 20171 Comm: read_all Tainted: G    B   W
+> Hardware name: NXP Layerscape LX2160ARDB (DT)
+> pstate: 80000085 (Nzcv daIf -PAN -UAO)
+> pc : irq_affinity_hint_proc_show+0x54/0xb0
+> lr : irq_affinity_hint_proc_show+0x4c/0xb0
+> sp : ffff00001138bc10
+> x29: ffff00001138bc10 x28: 0000ffffd131d1e0
+> x27: 00000000007000c0 x26: ffff8025b9480dc0
+> x25: ffff8025b9480da8 x24: 00000000000003ff
+> x23: ffff8027334f8300 x22: ffff80272e97d000
+> x21: ffff80272e97d0b0 x20: ffff8025b9480d80
+> x19: ffff000009a49000 x18: 0000000000000000
+> x17: 0000000000000000 x16: 0000000000000000
+> x15: 0000000000000000 x14: 0000000000000000
+> x13: 0000000000000000 x12: 0000000000000040
+> x11: 0000000000000000 x10: ffff802735b79b88
+> x9 : 0000000000000000 x8 : 0000000000000000
+> x7 : ffff000009a49848 x6 : 0000000000000003
+> x5 : 0000000000000000 x4 : ffff000008157d6c
+> x3 : ffff00001138bc10 x2 : ffff000012e9b790
+> x1 : 0000000000000000 x0 : 0000000000000000
+> Call trace:
+>  irq_affinity_hint_proc_show+0x54/0xb0
+>  seq_read+0x1b0/0x440
+>  proc_reg_read+0x80/0xd8
+>  __vfs_read+0x60/0x178
+>  vfs_read+0x94/0x150
+>  ksys_read+0x74/0xf0
+>  __arm64_sys_read+0x24/0x30
+>  el0_svc_common.constprop.0+0xd8/0x1a0
+>  el0_svc_handler+0x34/0x88
+>  el0_svc+0x10/0x14
+> Code: f9001bbf 943e0732 f94066c2 b4000062 (f9400041)
+> ---[ end trace b495bdcb0b3b732b ]---
+> Kernel panic - not syncing: Fatal exception
+> SMP: stopping secondary CPUs
+> SMP: failed to stop secondary CPUs 0,2-4,6,8,11,13-15
+> Kernel Offset: disabled
+> CPU features: 0x0,21006008
+> Memory Limit: none
+> ---[ end Kernel panic - not syncing: Fatal exception ]---
+> 
+> Fix it by changing 'cpumask_t mask' to global variable.
+> 
+> Signed-off-by: Hao Si <si.hao@zte.com.cn>
+> Signed-off-by: Lin Chen <chen.lin5@zte.com.cn>
+> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+> ---
+>  drivers/soc/fsl/dpio/dpio-driver.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/fsl/dpio/dpio-driver.c b/drivers/soc/fsl/dpio/dpio-driver.c
+> index 7b642c3..b31ec53 100644
+> --- a/drivers/soc/fsl/dpio/dpio-driver.c
+> +++ b/drivers/soc/fsl/dpio/dpio-driver.c
+> @@ -31,6 +31,7 @@ struct dpio_priv {
+>  	struct dpaa2_io *io;
+>  };
+>  
+> +static cpumask_t mask;
+
+There can be multiple dpio devices with their associated driver
+instances so it's not ok to make the variable global. Please place it in
+the driver's private data and while at it, please rename it to cpu_mask.
+
 ---
- drivers/video/fbdev/hyperv_fb.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
-index 02411d89cb46..e36fb1a0ecdb 100644
---- a/drivers/video/fbdev/hyperv_fb.c
-+++ b/drivers/video/fbdev/hyperv_fb.c
-@@ -1114,8 +1114,15 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
- getmem_done:
- 	remove_conflicting_framebuffers(info->apertures,
- 					KBUILD_MODNAME, false);
--	if (!gen2vm)
-+
-+	if (gen2vm) {
-+		/* framebuffer is reallocated, clear screen_info to avoid misuse from kexec */
-+		screen_info.lfb_size = 0;
-+		screen_info.lfb_base = 0;
-+		screen_info.orig_video_isVGA = 0;
-+	} else {
- 		pci_dev_put(pdev);
-+	}
- 	kfree(info->apertures);
- 
- 	return 0;
--- 
-2.28.0
-
+Thanks & Best Regards, Laurentiu
