@@ -2,102 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D8C28E5E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D44C28E5CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729017AbgJNSEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:04:34 -0400
-Received: from services.gouders.net ([141.101.32.176]:58217 "EHLO
-        services.gouders.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727071AbgJNSEe (ORCPT
+        id S1728636AbgJNR7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727071AbgJNR7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:04:34 -0400
-Received: from localhost (ltea-047-066-024-155.pools.arcor-ip.net [47.66.24.155])
-        (authenticated bits=0)
-        by services.gouders.net (8.14.8/8.14.8) with ESMTP id 09EHw0mN016575
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Oct 2020 19:58:00 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gouders.net; s=gnet;
-        t=1602698281; bh=gPsnsrn9YDnCmifoFEdCiXxsmRo+UCWyR79aiM4dlA4=;
-        h=From:To:Cc:Subject:Date;
-        b=M4DquBsFTE0UzzpiYuCbtSqbEM3hGFgS76Omdi9sFRrLMvRRXkySmdkXNzzKNTKSX
-         62qTwjvETpwXSK7OEDJFyhzpnS6vI46ry3fFBxNTo9mO8IOaKpXs3Fm/xHhypwIZKV
-         wdYpa5vijUGYfrWwNOaOthx6wAjEkvgDtq843Ygs=
-From:   Dirk Gouders <dirk@gouders.net>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: WARN_ONCE triggered: tpm_tis: Add a check for invalid status
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Wed, 14 Oct 2020 19:57:43 +0200
-Message-ID: <ghsgagsnag.fsf@gouders.net>
+        Wed, 14 Oct 2020 13:59:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16DFC0613D2;
+        Wed, 14 Oct 2020 10:59:10 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 17:58:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602698348;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jD1PXWndAygUyGL6CO/NQRWv6PLhWTxqnGXffaEI/3g=;
+        b=zhvm8FxYy9ZKDlFdLZnGvRJ3DxpNFTw/VeWQNZ8SdcPAIkE3oj+vxKjX62pccDvBv+A7Ey
+        C/HuI3XLuTw79I7LAwtrR/mgrMrt5i4FdgmjsWnBZqu4p2oXVniFS+aGYcGrsXtFZpgXuI
+        D5gZ1aGheQn2839T4zJAYLgTpcR7ni7bU9ZCBXcmY2GarnPBlYzNil4yK0IvSt9GEVfY+2
+        1TtGWzKftXNgqLkcs9PIWLPvfLI0Giz4umX8gJXHr0A6gjxP3IbxJajWsWdGAePSmoGdXg
+        +GYwp92xWxhg1AV1jhjQoqDkxxsUQjgOVy+E8x7qL/bHrURVmj6iRoCxfi86qg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602698348;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jD1PXWndAygUyGL6CO/NQRWv6PLhWTxqnGXffaEI/3g=;
+        b=vZsO9QjUkgUKxI7iw92BG9prxgG70u3HGa4rdTQdD4X3d6EBx6+t+eU5z+UHAliUxQs5Ad
+        s/zmsvI3Hg7QMBDQ==
+From:   "tip-bot2 for Juri Lelli" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/features: Fix !CONFIG_JUMP_LABEL case
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201013053114.160628-1-juri.lelli@redhat.com>
+References: <20201013053114.160628-1-juri.lelli@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <160269833126.7002.6845610795437305128.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On my laptop the check introduced with 55707d531af62b (tpm_tis: Add a
-check for invalid status) triggered the warning (output below).
+The following commit has been merged into the sched/urgent branch of tip:
 
-So, my laptop seems to be a candidate for testing.
+Commit-ID:     a73f863af4ce9730795eab7097fb2102e6854365
+Gitweb:        https://git.kernel.org/tip/a73f863af4ce9730795eab7097fb2102e6854365
+Author:        Juri Lelli <juri.lelli@redhat.com>
+AuthorDate:    Tue, 13 Oct 2020 07:31:14 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 14 Oct 2020 19:55:46 +02:00
 
-Dirk
+sched/features: Fix !CONFIG_JUMP_LABEL case
 
-[    7.255467] ------------[ cut here ]------------
-[    7.255468] TPM returned invalid status
-[    7.255481] WARNING: CPU: 4 PID: 816 at drivers/char/tpm/tpm_tis_core.c:249 tpm_tis_status+0x5e/0x7f [tpm_tis_core]
-[    7.255481] Modules linked in: nvram tpm_tis(+) tpm_tis_core tpm wmi pinctrl_amd
-[    7.255485] CPU: 4 PID: 816 Comm: udevd Not tainted 5.9.0-x86_64+ #148
-[    7.255486] Hardware name: LENOVO 20U50008GE/20U50008GE, BIOS R19ET26W (1.10 ) 06/22/2020
-[    7.255488] RIP: 0010:tpm_tis_status+0x5e/0x7f [tpm_tis_core]
-[    7.255489] Code: 44 8a 64 24 07 41 f6 c4 23 74 21 45 31 e4 80 3d 86 26 00 00 00 75 15 48 c7 c7 2a 71 01 a0 c6 05 76 26 00 00 01 e8 e1 17 0e e1 <0f> 0b 48 8b 44 24 08 65 48 33 04 25 28 00 00 00 74 05 e8 cd cd a2
-[    7.255489] RSP: 0018:ffffc90000f7f8b8 EFLAGS: 00010286
-[    7.255490] RAX: 0000000000000000 RBX: ffff8883f9117198 RCX: 000000000000038a
-[    7.255490] RDX: 0000000000000001 RSI: 0000000000000002 RDI: ffffffff82dbd34c
-[    7.255491] RBP: ffff8883f8aae000 R08: 0000000000000001 R09: 0000000000012d00
-[    7.255491] R10: 0000000000000000 R11: 000000000000003c R12: 0000000000000000
-[    7.255492] R13: 0000000000000000 R14: ffff8883f7c8a000 R15: 0000000000000016
-[    7.255493] FS:  00007f350c98d780(0000) GS:ffff88840ed00000(0000) knlGS:0000000000000000
-[    7.255493] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    7.255494] CR2: 00007f350c572ca8 CR3: 00000003f7000000 CR4: 0000000000350ee0
-[    7.255494] Call Trace:
-[    7.255497]  tpm_tis_send_data+0x28/0x187 [tpm_tis_core]
-[    7.255498]  tpm_tis_send_main+0x14/0x84 [tpm_tis_core]
-[    7.255500]  tpm_transmit+0xc5/0x2d7 [tpm]
-[    7.255503]  tpm_transmit_cmd+0x23/0x8b [tpm]
-[    7.255504]  tpm2_get_tpm_pt+0x71/0xb2 [tpm]
-[    7.255505]  tpm_tis_probe_irq_single+0x134/0xbe2 [tpm_tis_core]
-[    7.255506]  tpm_tis_core_init+0x3b3/0x47b [tpm_tis_core]
-[    7.255508]  tpm_tis_plat_probe+0xa7/0xc5 [tpm_tis]
-[    7.255512]  platform_drv_probe+0x2a/0x6b
-[    7.255514]  really_probe+0x157/0x32a
-[    7.255516]  driver_probe_device+0x63/0x97
-[    7.255517]  device_driver_attach+0x37/0x50
-[    7.255518]  __driver_attach+0x92/0x9a
-[    7.255519]  ? device_driver_attach+0x50/0x50
-[    7.255520]  bus_for_each_dev+0x70/0xa6
-[    7.255521]  bus_add_driver+0x103/0x1b4
-[    7.255522]  driver_register+0x99/0xd2
-[    7.255523]  ? 0xffffffffa0023000
-[    7.255524]  init_tis+0x88/0x1000 [tpm_tis]
-[    7.255526]  ? consume_skb+0x9/0x20
-[    7.255529]  ? ___cache_free+0x5c/0x153
-[    7.255531]  ? _cond_resched+0x1b/0x1e
-[    7.255532]  do_one_initcall+0x8a/0x195
-[    7.255534]  ? kmem_cache_alloc_trace+0x80/0x8f
-[    7.255536]  do_init_module+0x56/0x1e8
-[    7.255537]  load_module+0x1c2c/0x2139
-[    7.255538]  ? __do_sys_finit_module+0x8f/0xb6
-[    7.255539]  __do_sys_finit_module+0x8f/0xb6
-[    7.255541]  do_syscall_64+0x5d/0x6a
-[    7.255543]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[    7.255544] RIP: 0033:0x7f350cae8919
-[    7.255545] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 47 05 0c 00 f7 d8 64 89 01 48
-[    7.255545] RSP: 002b:00007ffe0e5ed928 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-[    7.255546] RAX: ffffffffffffffda RBX: 000055a400c373e0 RCX: 00007f350cae8919
-[    7.255546] RDX: 0000000000000000 RSI: 00007f350cbc1a7d RDI: 000000000000000b
-[    7.255547] RBP: 0000000000020000 R08: 0000000000000000 R09: 00007ffe0e5edaa0
-[    7.255547] R10: 000000000000000b R11: 0000000000000246 R12: 00007f350cbc1a7d
-[    7.255548] R13: 0000000000000000 R14: 000055a400c30e10 R15: 000055a400c373e0
-[    7.255548] ---[ end trace 883dd41f557db5d3 ]---
+Commit:
+
+  765cc3a4b224e ("sched/core: Optimize sched_feat() for !CONFIG_SCHED_DEBUG builds")
+
+made sched features static for !CONFIG_SCHED_DEBUG configurations, but
+overlooked the CONFIG_SCHED_DEBUG=y and !CONFIG_JUMP_LABEL cases.
+
+For the latter echoing changes to /sys/kernel/debug/sched_features has
+the nasty effect of effectively changing what sched_features reports,
+but without actually changing the scheduler behaviour (since different
+translation units get different sysctl_sched_features).
+
+Fix CONFIG_SCHED_DEBUG=y and !CONFIG_JUMP_LABEL configurations by properly
+restructuring ifdefs.
+
+Fixes: 765cc3a4b224e ("sched/core: Optimize sched_feat() for !CONFIG_SCHED_DEBUG builds")
+Co-developed-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
+Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Patrick Bellasi <patrick.bellasi@matbug.net>
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lore.kernel.org/r/20201013053114.160628-1-juri.lelli@redhat.com
+---
+ kernel/sched/core.c  |  2 +-
+ kernel/sched/sched.h | 13 ++++++++++---
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 8160ab5..d2003a7 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -44,7 +44,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
+ 
+ DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ 
+-#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_JUMP_LABEL)
++#ifdef CONFIG_SCHED_DEBUG
+ /*
+  * Debugging: various feature bits
+  *
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 648f023..df80bfc 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1629,7 +1629,7 @@ enum {
+ 
+ #undef SCHED_FEAT
+ 
+-#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_JUMP_LABEL)
++#ifdef CONFIG_SCHED_DEBUG
+ 
+ /*
+  * To support run-time toggling of sched features, all the translation units
+@@ -1637,6 +1637,7 @@ enum {
+  */
+ extern const_debug unsigned int sysctl_sched_features;
+ 
++#ifdef CONFIG_JUMP_LABEL
+ #define SCHED_FEAT(name, enabled)					\
+ static __always_inline bool static_branch_##name(struct static_key *key) \
+ {									\
+@@ -1649,7 +1650,13 @@ static __always_inline bool static_branch_##name(struct static_key *key) \
+ extern struct static_key sched_feat_keys[__SCHED_FEAT_NR];
+ #define sched_feat(x) (static_branch_##x(&sched_feat_keys[__SCHED_FEAT_##x]))
+ 
+-#else /* !(SCHED_DEBUG && CONFIG_JUMP_LABEL) */
++#else /* !CONFIG_JUMP_LABEL */
++
++#define sched_feat(x) (sysctl_sched_features & (1UL << __SCHED_FEAT_##x))
++
++#endif /* CONFIG_JUMP_LABEL */
++
++#else /* !SCHED_DEBUG */
+ 
+ /*
+  * Each translation unit has its own copy of sysctl_sched_features to allow
+@@ -1665,7 +1672,7 @@ static const_debug __maybe_unused unsigned int sysctl_sched_features =
+ 
+ #define sched_feat(x) !!(sysctl_sched_features & (1UL << __SCHED_FEAT_##x))
+ 
+-#endif /* SCHED_DEBUG && CONFIG_JUMP_LABEL */
++#endif /* SCHED_DEBUG */
+ 
+ extern struct static_key_false sched_numa_balancing;
+ extern struct static_key_false sched_schedstats;
