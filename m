@@ -2,43 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD6028E037
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D28D28E033
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbgJNMBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:01:41 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:49703 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727682AbgJNMBZ (ORCPT
+        id S2388662AbgJNMBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:01:33 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:33525 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730861AbgJNMBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 08:01:25 -0400
-Received: by mail-il1-f197.google.com with SMTP id h13so2164442ils.16
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:01:24 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id m10so2232115ioq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:01:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XzIJ5uKUEljoZuh4aWSdQb8JjpeAstk+mgfzq2A+Xs0=;
-        b=fRmBLk4pU29WQa0ZnkIft9SbG933fV8dH7oWQ+hyVQ89WUqV+WpsbsTTk7FDa455tm
-         hC2X0rQB446IHHOcgeZkXgsxlS7MrU2XutVVnmxGei0vbUqth0RGRaScNp4ZJ62ZOk1B
-         W6Fke9C8TkxXmVim+dfPad9SOW42vbIgOzHU//979f3ecrApnu4rCSqWHpq12rA6OkwF
-         t1rSdSHCh+UjRJ2va8Atw7ihHEGfRP1K4EgdYNO+dMkVTev9rRM0uK3cmiypf9pKpbZy
-         SrfPHK2ykk6mKXwIgRE1NvvzbiRw4JmB2RCqwEe6dhIVmmijq3k6HP3tO1DYz7HLaiFV
-         8fKw==
-X-Gm-Message-State: AOAM532D0WLOl5P5R0YOo8V+Uh08CmwKWwZjRhigsNAoFO5QaHUR2wj5
-        R/bmdhYgJ6LaJlI17pGRsfKul+YKz3YKUKEDKjO7d6VDTtgX
-X-Google-Smtp-Source: ABdhPJxeIZ39kr+kkCtq4j2rrCHoB/O6r+uHAL/pZCSwh8qfjY66vIHgJ4K+7ZhXmsrx/8Ag6HqDgWLhniVhTJe5RWUhBXU+y13h
+        bh=lmIzmeZ6JEWQDgHZewUQdQ9dPptB1ZZcDqf5FZlF1bk=;
+        b=MJAxkdmoFf7spQ2TtZyUySG71ejDnio0NZrqhJQ8jFKDw8Z0VXS3MqnNagbDzq/3n9
+         mJBFYw5BZU7hGabYQWNaMGvRvDAqLtQst2QB+Rcd92B6+GiWCWbSGCz01q/30W4K1+w7
+         M+GVgTMa2isKGFcyB5mcUx1lcsIoTk2SYtX0W62Bl0O+aWFz35o5pyq2amx1mgto5MlI
+         CuqQDH2mysB1R0m3m8mKz889xJVqRHUworud9yvcSBd7KWJBf1viwOBuJQjy5UknCadW
+         1gMsALiZRnMStQ7hLBidMsj0aijpD657Z8drAovhy57Hq9ZqlWNCudf+iTK/hzdf9VIS
+         2crw==
+X-Gm-Message-State: AOAM533xhPQjT31OWSY9rIcV4rC5OGjF7dXX5L4nYZ+OPTHxeeTEbXMb
+        29QVnJ886rdmpCo+FugIgiNQUx3/Os1RXHhii1c89J2jyIsN
+X-Google-Smtp-Source: ABdhPJwxwXpsyf+M34H12D2yHMek4dY1NS12qdkhRRVdenzAcTt5OFh2KYuHi+95LbnQEReIraQpf/x7N1z+T+WSv8Fs+3mNy73h
 MIME-Version: 1.0
-X-Received: by 2002:a92:b503:: with SMTP id f3mr3617266ile.23.1602676884343;
+X-Received: by 2002:a05:6638:606:: with SMTP id g6mr2893807jar.0.1602676884566;
  Wed, 14 Oct 2020 05:01:24 -0700 (PDT)
 Date:   Wed, 14 Oct 2020 05:01:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000061911f05b1a04adb@google.com>
-Subject: INFO: trying to register non-static key in calculate_sigpending (2)
-From:   syzbot <syzbot+8197be5a9c103a92a095@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, christian@brauner.io, ebiederm@xmission.com,
-        linux-kernel@vger.kernel.org, liuzhiqiang26@huawei.com,
-        oleg@redhat.com, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000064f6cd05b1a04a2c@google.com>
+Subject: WARNING in __rate_control_send_low
+From:   syzbot <syzbot+fdc5123366fb9c3fdc6d@syzkaller.appspotmail.com>
+To:     clang-built-linux@googlegroups.com, davem@davemloft.net,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,91 +50,59 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    da690031 Merge branch 'i2c/for-current' of git://git.kerne..
+HEAD commit:    bbf5c979 Linux 5.9
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10924af0500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=8197be5a9c103a92a095
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+console output: https://syzkaller.appspot.com/x/log.txt?x=12dc474f900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3d8333c88fe898d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=fdc5123366fb9c3fdc6d
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8197be5a9c103a92a095@syzkaller.appspotmail.com
+Reported-by: syzbot+fdc5123366fb9c3fdc6d@syzkaller.appspotmail.com
 
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 0 PID: 28294 Comm: systemd-udevd Not tainted 5.9.0-rc8-syzkaller #0
+------------[ cut here ]------------
+no supported rates for sta (null) (0xffffffff, band 0) in rate_mask 0xfff with flags 0x20
+WARNING: CPU: 1 PID: 169 at net/mac80211/rate.c:349 __rate_control_send_low+0x4eb/0x5e0 net/mac80211/rate.c:349
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 169 Comm: kworker/u4:5 Not tainted 5.9.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy9 ieee80211_scan_work
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- register_lock_class+0xf06/0x1520 kernel/locking/lockdep.c:893
- __lock_acquire+0xfd/0x2ae0 kernel/locking/lockdep.c:4320
- lock_acquire+0x148/0x720 kernel/locking/lockdep.c:5029
- __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
- _raw_spin_lock_irq+0xa6/0xc0 kernel/locking/spinlock.c:167
- spin_lock_irq include/linux/spinlock.h:379 [inline]
- calculate_sigpending+0x4b/0x80 kernel/signal.c:196
- ret_from_fork+0x8/0x30 arch/x86/entry/entry_64.S:279
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 0 PID: 28294 Comm: systemd-udevd Not tainted 5.9.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__list_add_valid+0x27/0xc0 lib/list_debug.c:23
-Code: cc cc cc 41 57 41 56 41 55 41 54 53 49 89 d6 49 89 f4 49 89 ff 49 bd 00 00 00 00 00 fc ff df 48 8d 5a 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 da 45 f2 fd 48 8b 13 4c 39 e2 75
-RSP: 0018:ffffc90002637c60 EFLAGS: 00010002
-RAX: 0000000000000001 RBX: 0000000000000008 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: ffff888000135508 RDI: ffff888093d37030
-RBP: ffff8880001354c8 R08: dffffc0000000000 R09: fffff520004c6f86
-R10: fffff520004c6f86 R11: 0000000000000000 R12: ffff888000135508
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff888093d37030
-FS:  00007fd162f298c0(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd161da9f60 CR3: 00000000a0a66000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __list_add include/linux/list.h:67 [inline]
- list_add include/linux/list.h:86 [inline]
- __add_wait_queue include/linux/wait.h:171 [inline]
- add_wait_queue+0x77/0x130 kernel/sched/wait.c:24
- ep_ptable_queue_proc+0x1a0/0x380 fs/eventpoll.c:1322
- poll_wait include/linux/poll.h:51 [inline]
- signalfd_poll+0xb5/0x190 fs/signalfd.c:66
- vfs_poll include/linux/poll.h:90 [inline]
- ep_item_poll fs/eventpoll.c:885 [inline]
- ep_insert fs/eventpoll.c:1551 [inline]
- do_epoll_ctl+0x1a2f/0x3680 fs/eventpoll.c:2228
- __do_sys_epoll_ctl fs/eventpoll.c:2281 [inline]
- __se_sys_epoll_ctl fs/eventpoll.c:2272 [inline]
- __x64_sys_epoll_ctl+0xfe/0x130 fs/eventpoll.c:2272
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7fd161daa2aa
-Code: 48 8b 0d f1 fb 2a 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 e9 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d be fb 2a 00 f7 d8 64 89 01 48
-RSP: 002b:00007fff5f0a8608 EFLAGS: 00000202 ORIG_RAX: 00000000000000e9
-RAX: ffffffffffffffda RBX: 00007fff5f0a8700 RCX: 00007fd161daa2aa
-RDX: 0000000000000003 RSI: 0000000000000001 RDI: 0000000000000004
-RBP: 000055723c6ff028 R08: 0000000000000020 R09: 0000000000000018
-R10: 00007fff5f0a86a8 R11: 0000000000000202 R12: 000055723c6ff010
-R13: 000055723c713b00 R14: 0000000000000003 R15: 000000000000000e
-Modules linked in:
----[ end trace 292889b8b04a67ad ]---
-RIP: 0010:__list_add_valid+0x27/0xc0 lib/list_debug.c:23
-Code: cc cc cc 41 57 41 56 41 55 41 54 53 49 89 d6 49 89 f4 49 89 ff 49 bd 00 00 00 00 00 fc ff df 48 8d 5a 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 da 45 f2 fd 48 8b 13 4c 39 e2 75
-RSP: 0018:ffffc90002637c60 EFLAGS: 00010002
-RAX: 0000000000000001 RBX: 0000000000000008 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: ffff888000135508 RDI: ffff888093d37030
-RBP: ffff8880001354c8 R08: dffffc0000000000 R09: fffff520004c6f86
-R10: fffff520004c6f86 R11: 0000000000000000 R12: ffff888000135508
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff888093d37030
-FS:  00007fd162f298c0(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fd161da9f60 CR3: 00000000a0a66000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:__rate_control_send_low+0x4eb/0x5e0 net/mac80211/rate.c:349
+Code: 14 48 89 44 24 08 e8 d4 8d b0 f9 44 8b 44 24 24 45 89 e9 44 89 e1 48 8b 74 24 08 44 89 f2 48 c7 c7 40 24 5f 89 e8 b7 ca 80 f9 <0f> 0b e9 e0 fd ff ff e8 a9 8d b0 f9 41 83 cd 10 e9 02 fc ff ff e8
+RSP: 0018:ffffc900013f7688 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff88801e243468 RCX: 0000000000000000
+RDX: ffff8880a884e100 RSI: ffffffff815f5a55 RDI: fffff5200027eec3
+RBP: ffff88805f373148 R08: 0000000000000001 R09: ffff8880ae5318e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000020 R14: 00000000ffffffff R15: 0000000000000090
+ rate_control_send_low+0x261/0x610 net/mac80211/rate.c:374
+ rate_control_get_rate+0x1b9/0x5a0 net/mac80211/rate.c:887
+ ieee80211_tx_h_rate_ctrl+0xa0f/0x1660 net/mac80211/tx.c:749
+ invoke_tx_handlers_early+0xaf3/0x25e0 net/mac80211/tx.c:1784
+ ieee80211_tx+0x250/0x430 net/mac80211/tx.c:1926
+ ieee80211_xmit+0x2dd/0x3b0 net/mac80211/tx.c:2015
+ __ieee80211_tx_skb_tid_band+0x20a/0x290 net/mac80211/tx.c:5351
+ ieee80211_tx_skb_tid_band net/mac80211/ieee80211_i.h:1986 [inline]
+ ieee80211_send_scan_probe_req net/mac80211/scan.c:610 [inline]
+ ieee80211_scan_state_send_probe+0x39f/0x910 net/mac80211/scan.c:638
+ ieee80211_scan_work+0x6df/0x19e0 net/mac80211/scan.c:1071
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
