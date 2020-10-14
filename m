@@ -2,52 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B070B28E6C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E4828E6C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389654AbgJNSxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:53:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389365AbgJNSxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:53:14 -0400
-Subject: Re: [GIT PULL] PNP updates for v5.10-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602701594;
-        bh=EODUHICOutUrZvholT7x0WG1JmGe7K6gXyyW3zkRlUY=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gDNIRaAWXG6dog/BxHXlMcouPq03An2Z+D5D4Qxtuxmml5/pgvh+a5yht07zpb8T9
-         QHeMhS2qtXbztkobsIqr3HXjTeOFzrtfpWd2THt07WEL0OV8EAz4QU/DfKvAas5K2W
-         CakW9WW4T33CbDQUItOd1DEummG1pUK/brkeCtQs=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0gj1X7kO2uVX=zMzR6+y1BWAERT+HDT+0zY0ieXs+Lx3g@mail.gmail.com>
-References: <CAJZ5v0gj1X7kO2uVX=zMzR6+y1BWAERT+HDT+0zY0ieXs+Lx3g@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0gj1X7kO2uVX=zMzR6+y1BWAERT+HDT+0zY0ieXs+Lx3g@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pnp-5.10-rc1
-X-PR-Tracked-Commit-Id: 2ef0342530b0f487a65b5f6c94c85dce5f9b53b5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: defb53a7c790f9e37a765de8a5d830ed15e2055b
-Message-Id: <160270159396.3085.6835413321253755227.pr-tracker-bot@kernel.org>
-Date:   Wed, 14 Oct 2020 18:53:13 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S2389478AbgJNSzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388981AbgJNSzh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 14:55:37 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C0BC061755;
+        Wed, 14 Oct 2020 11:55:35 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h20so525781lji.9;
+        Wed, 14 Oct 2020 11:55:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CsMM025rZ5H4lHFTQvlYy0ro5IwEHeoO/Ocqrwim8u4=;
+        b=Pvsdl2pmTTCgraNfRxfBYXl4ltxppndqYUDpymgtYdMPU9035NdZnb6pWelgOQ51NC
+         U+TYyoSHEdyquI9AtKfAvqDqmMN0tBtN6t4vELce0MsLHba4lCN4EPhsWCiWAA3f57zz
+         XWapUia/pfEhxkZLfWRsyIcibxSSoYhKAgOSs4Lip++yUxYRSVHHcjECwlvU/76CivkQ
+         qZTisRVGq7DUz83OhVcJCKvbKbsPyyWn1CcEBFsU+Of/0njb58us7eVyMhRS/RzJyaLV
+         qA0W0s5F/IeL4iu9nQrpuVJpPzN50UQmF9FJMwyhnbSREREkn5S+qYHL8IwnUl37BdwW
+         yvgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CsMM025rZ5H4lHFTQvlYy0ro5IwEHeoO/Ocqrwim8u4=;
+        b=iBvZ1pKi7aheDir9ArV9spW8OK1X6tfnRAdjRijbwCu9UyTOOon+UhVRi4bJ1mP6hU
+         ON3X775c/Ta1hQToooT3R0KgLP196Lh4vFMLr2AV0AzNGPdsDDj4hUdJ9Gx6QbOlqyO9
+         pQGyRigUESyrxs1cz0+U6jck6XRZK7AwcGTGxk2D0uejoiwiqmi+WQSX/vr7U7MTaGOo
+         ln5YSF4beXE3BmiaGAackLqJX4cjnh9L7oezOVNlikmedc8Zn1kvugdxNwDyESR9FZBR
+         g/2acwuh275ovIFLkn5A//pDDemkPZGy02eN45ddR6On9N/rBf0y7wPurFIQDbfxN/pj
+         7jGg==
+X-Gm-Message-State: AOAM532HwuXr2dm3aem63KFLjeZRuYbcTgzcs1m5fxtCnC7HRS/boAzv
+        D9jxsExVYofUVOIF9XN5Uj54UTB/gaA=
+X-Google-Smtp-Source: ABdhPJx5SKqdv6Lt7yRPn0e2vsLHoG9iHxgbpWa5J+p8UAg+5o+Jm9iquwOBnaCm0V7elY3f61iH3A==
+X-Received: by 2002:a2e:8853:: with SMTP id z19mr41930ljj.142.1602701733961;
+        Wed, 14 Oct 2020 11:55:33 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:49f:fda0:bd71:a4fb:5f8:593d? ([2a00:1fa0:49f:fda0:bd71:a4fb:5f8:593d])
+        by smtp.gmail.com with ESMTPSA id v20sm196203ljj.50.2020.10.14.11.55.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 11:55:33 -0700 (PDT)
+Subject: Re: [PATCH 4/6] clk: renesas: r8a779a0: Add VIN[00-31] clocks
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-renesas-soc@vger.kernel.org, geert+renesas@glider.be,
+        laurent.pinchart@ideasonboard.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20201014094443.11070-1-jacopo+renesas@jmondi.org>
+ <20201014094443.11070-5-jacopo+renesas@jmondi.org>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <0de062e4-0385-444b-1abc-881c313a6479@gmail.com>
+Date:   Wed, 14 Oct 2020 21:55:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <20201014094443.11070-5-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 13 Oct 2020 19:35:12 +0200:
+On 10/14/20 12:44 PM, Jacopo Mondi wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pnp-5.10-rc1
+> Add clock definitions of the VIN instances for R-Car V3U.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> 
+> ---
+> Clocks at indexes 730 and 731 are named 'vin0' and 'vin1'.
+> I assumed it's a typographic error and renamed them 'vin00' and 'vin01'
+> ---
+>  drivers/clk/renesas/r8a779a0-cpg-mssr.c | 32 +++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+> index bd54a28c50ee..2a00eb82013f 100644
+> --- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+> +++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+> @@ -149,6 +149,38 @@ static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
+>  	DEF_MOD("scif1",	703,	R8A779A0_CLK_S1D8),
+>  	DEF_MOD("scif3",	704,	R8A779A0_CLK_S1D8),
+>  	DEF_MOD("scif4",	705,	R8A779A0_CLK_S1D8),
+> +	DEF_MOD("vin00",	730,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin01",	731,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin02",	800,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin03",	801,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin04",	802,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin05",	803,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin06",	804,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin07",	805,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin10",	806,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin11",	807,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin12",	808,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin13",	809,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin14",	810,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin15",	811,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin16",	812,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin17",	813,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin20",	814,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin21",	815,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin22",	816,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin23",	817,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin24",	818,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin25",	819,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin26",	820,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin27",	821,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin30",	822,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin31",	823,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin32",	824,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin33",	825,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin34",	826,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin35",	827,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin36",	828,	R8A779A0_CLK_S1D1),
+> +	DEF_MOD("vin37",	829,	R8A779A0_CLK_S1D1),
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/defb53a7c790f9e37a765de8a5d830ed15e2055b
+   The subject says VIN[0-31]?
 
-Thank you!
+[...]
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+MBR, Sergei
