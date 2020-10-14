@@ -2,162 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C9D28DA52
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AF328DA54
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbgJNHMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:12:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727099AbgJNHMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:12:47 -0400
-Received: from coco.lan (ip5f5ad5dc.dynamic.kabel-deutschland.de [95.90.213.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 435A62076D;
-        Wed, 14 Oct 2020 07:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602659566;
-        bh=M3YwoIBXEQPDsVpyNH3dqIUzl/U0avmiCdaQgNjKTho=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uJTbrB7T4Bi2wZ+4cyoQoHRMy+Ui2+rdB/sg2OlxNLuE4yQF3S+fk92IyI+o9j20G
-         krTMHzFCv3J+0as4qow32bvWzQSWQxx4paHWgdq2JnNSCN3IUBfwSxCyQ2ZsuiFrv7
-         v4wBRv7kxmX6lMHcIcgowb2ITKIfKkKPTriu/OHk=
-Date:   Wed, 14 Oct 2020 09:12:40 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 35/52] docs: fs: fscrypt.rst: get rid of :c:type:
- tags
-Message-ID: <20201014091240.78ba3425@coco.lan>
-In-Reply-To: <20201006191953.GA3598358@gmail.com>
-References: <cover.1601992016.git.mchehab+huawei@kernel.org>
-        <81cd5da550e06de8e85dcadef4909ff5f1d23319.1601992016.git.mchehab+huawei@kernel.org>
-        <20201006191953.GA3598358@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1728069AbgJNHO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:14:57 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:55726 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727099AbgJNHO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 03:14:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1602659693; x=1605251693;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rqxdSHcFf8lHYa3InJJDqQ9oyq71E3A/0dQIVgjykVQ=;
+        b=Fu9GgYPE8g3fMLW8RSsTmisu9uHKmOwfQCKOg2EqOdcNkdfVT/cFH8r7eQpYbh72
+        4YbFjfg2Zaf1PU0GfQ2v+wnzh8BqovPJTkDOxFEnSZFZJ3MV1b+23KcmVYLJvcv3
+        EQ2kqkyoaLHiRxldYM65semGxEtFHZhsFS+WJKVUgMM=;
+X-AuditID: c39127d2-269ff70000001c25-a5-5f86a56d9b0a
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 0B.7D.07205.D65A68F5; Wed, 14 Oct 2020 09:14:53 +0200 (CEST)
+Received: from [172.16.23.108] ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020101409145357-603813 ;
+          Wed, 14 Oct 2020 09:14:53 +0200 
+Subject: Re: [PATCH v2 5/5] media: mt9p031: Fix corrupted frame after
+ restarting stream
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dirk Bender <d.bender@phytec.de>
+References: <20200930105133.139981-1-s.riedmueller@phytec.de>
+ <20200930105133.139981-5-s.riedmueller@phytec.de>
+ <20201002000549.GK3722@pendragon.ideasonboard.com>
+ <3c8853a6-de34-014d-d10a-d6a55083c4bf@phytec.de>
+ <20201005130831.GR3931@pendragon.ideasonboard.com>
+From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
+Message-ID: <b479cfef-6342-107a-1dcf-1b7b32872de0@phytec.de>
+Date:   Wed, 14 Oct 2020 09:14:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20201005130831.GR3931@pendragon.ideasonboard.com>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 14.10.2020 09:14:53,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 14.10.2020 09:14:53
+X-TNEFEvaluated: 1
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHLMWRmVeSWpSXmKPExsWyRoCBSzd3aVu8wfq52hadE5ewW1zeNYfN
+        omfDVlaLZZv+MFl82vKNyYHVY3bHTFaPTas62TzmnQz0+LxJLoAlissmJTUnsyy1SN8ugSuj
+        7eAe1oInahU7JsxjaWBcIt/FyMkhIWAi8fbeSaYuRi4OIYFtjBLnj95mhnDOMErc//WRsYuR
+        g0NYIFLizSMXkAYRAQuJ3kXTGUFqmAV2MEpsWHMLqqGPSWLKkv9MIFVsAk4Si893sIHYvAI2
+        EjeXgRRxcrAIqEpMnbKVCWSoKNDQnTssIUoEJU7OfMICEuYUsJc4ciIa4rgrjBL3FodB2EIS
+        pxefBZvCLGAmMW/zQyhbXOLWk/lMELa2xLKFr5knMArNQjJ1FpKWWUhaZiFpWcDIsopRKDcz
+        OTu1KDNbryCjsiQ1WS8ldRMjMA4OT1S/tIOxb47HIUYmDsZDjBIczEoivK+k2+KFeFMSK6tS
+        i/Lji0pzUosPMUpzsCiJ827gLQkTEkhPLEnNTk0tSC2CyTJxcEo1MNammvK9bWpb9FY5k/39
+        o1nX+yRMmJSF/ZW/MLCVsYtMOdZlHlk/4bn+zZ+5c/98uq6TuviHcN+urKYTHTPNo/sb0i/1
+        5RwVONq8olr8isuze2UtX1lXRCuG7bhsJsL4X13b/9bVoNeX4w9v4j+Ue+E5a9tt2Q0rD/Gd
+        P1ZcmGj1jVXzp1fvBCWW4oxEQy3mouJEALW8jwhxAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 6 Oct 2020 12:19:53 -0700
-Eric Biggers <ebiggers@kernel.org> escreveu:
+Hi Laurent,
 
-> On Tue, Oct 06, 2020 at 04:03:32PM +0200, Mauro Carvalho Chehab wrote:
-> > The :c:type: tag has problems with Sphinx 3.x, as structs
-> > there should be declared with c:struct.
-> >=20
-> > So, remove them, relying at automarkup.py extension to
-> > convert them into cross-references. =20
+On 05.10.20 15:08, Laurent Pinchart wrote:
+> Hi Stefan,
 >=20
-> I tried 'make htmldocs' before and after your patchset ("sphinx3-fixes-v5=
-").
-> Before, all the struct fscrypt_* are rendered in code font.  After, they =
-are
-> rendered in the regular text font.  Is that really working as intended?
+> On Mon, Oct 05, 2020 at 11:28:21AM +0200, Stefan Riedm=C3=BCller wrote:
+>> On 02.10.20 02:05, Laurent Pinchart wrote:
+>>> On Wed, Sep 30, 2020 at 12:51:33PM +0200, Stefan Riedmueller wrote:
+>>>> From: Dirk Bender <d.bender@phytec.de>
+>>>>
+>>>> To prevent corrupted frames after starting and stopping the sensor it's
+>>>
+>>> s/it's/its/
+>>
+>> thanks, I'll fix that.
+>>
+>>>> datasheet specifies a specific pause sequence to follow:
+>>>>
+>>>> Stopping:
+>>>> 	Set Pause=5FRestart Bit -> Set Restart Bit -> Set Chip=5FEnable Off
+>>>>
+>>>> Restarting:
+>>>> 	Set Chip=5FEnable On -> Clear Pause=5FRestart Bit
+>>>>
+>>>> The Restart Bit is cleared automatically and must not be cleared
+>>>> manually as this would cause undefined behavior.
+>>>>
+>>>> Signed-off-by: Dirk Bender <d.bender@phytec.de>
+>>>> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+>>>> ---
+>>>> No changes in v2
+>>>> ---
+>>>>    drivers/media/i2c/mt9p031.c | 25 +++++++++++++++++++++++++
+>>>>    1 file changed, 25 insertions(+)
+>>>>
+>>>> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+>>>> index d10457361e6c..d59f66e3dcf3 100644
+>>>> --- a/drivers/media/i2c/mt9p031.c
+>>>> +++ b/drivers/media/i2c/mt9p031.c
+>>>> @@ -80,6 +80,8 @@
+>>>>    #define		MT9P031=5FPIXEL=5FCLOCK=5FSHIFT(n)		((n) << 8)
+>>>>    #define		MT9P031=5FPIXEL=5FCLOCK=5FDIVIDE(n)		((n) << 0)
+>>>>    #define MT9P031=5FFRAME=5FRESTART				0x0b
+>>>> +#define		MT9P031=5FFRAME=5FRESTART=5FSET		(1 << 0)
+>>>> +#define		MT9P031=5FFRAME=5FPAUSE=5FRESTART=5FSET		(1 << 1)
+>>>
+>>> The fields are named Restart and Pause=5FRestart, I would drop =5FSET. =
+Could
+>>> you also sort them from MSB to LSB as for the other registers ? Using
+>>> BIT() would be good too, although this could be done as an additional
+>>> patch to convert all the existing macros.
+>>
+>> I'll do that. Also I will rename the register to MT9P031=5FRESTART and t=
+he
+>> bits to MT9P031=5FFRAME=5FRESTART and MT9P031=5FFRAME=5FPAUSE=5FRESTART.
+>>
+>>>>    #define MT9P031=5FSHUTTER=5FDELAY				0x0c
+>>>>    #define MT9P031=5FRST					0x0d
+>>>>    #define		MT9P031=5FRST=5FENABLE			1
+>>>> @@ -483,9 +485,25 @@ static int mt9p031=5Fset=5Fparams(struct mt9p031 =
+*mt9p031)
+>>>>    static int mt9p031=5Fs=5Fstream(struct v4l2=5Fsubdev *subdev, int e=
+nable)
+>>>>    {
+>>>>    	struct mt9p031 *mt9p031 =3D to=5Fmt9p031(subdev);
+>>>> +	struct i2c=5Fclient *client =3D v4l2=5Fget=5Fsubdevdata(subdev);
+>>>> +	int val;
+>>>>    	int ret;
+>>>>   =20
+>>>>    	if (!enable) {
+>>>> +		val =3D mt9p031=5Fread(client, MT9P031=5FFRAME=5FRESTART);
+>>>
+>>> Do you need to read the register ? Can't you write
+>>> MT9P031=5FFRAME=5FPAUSE=5FRESTART=5FSET and then MT9P031=5FFRAME=5FPAUS=
+E=5FRESTART=5FSET
+>>> | MT9P031=5FFRAME=5FRESTART=5FSET ? And actually, can't we just write b=
+oth
+>>> bits in one go, do we need two writes ?
+>>
+>> I think you're right we don't necessarily need to read the registers. The
+>> only other bit is not used by the driver.
+>>
+>> But I think we do need two separate writes, at least that is what the
+>> datasheet states.
+>>
+>> So I would drop the read but keep both write, ok?
+>=20
+> That's fine with me if required, although I don't see where this is
+> indicated in the datasheet, but I may have missed it.
 
-It is up to automarkup.py to change from "struct foo" into:
-	:c:type:`struct foo` (Sphinx 2.x)
-or:
-	:c:struct:`foo` (Sphinx 3.x)
+It's in "Standby and Chip Enable". There is a Sequence for entering soft=20
+standby with two separate writes:
 
-At v5, the automarkup.py extension was disabled, as it was broken
-with Sphinx > 2.x. At v6, I added a patch from N=C3=ADcolas addressing
-it.
+REG =3D 0x0B, 0x0002
+REG =3D 0x0B, 0x0003
 
-It should be said that, currently, if there's no documentation for=20
-"foo", automarkup will just keep using the regular text font,
-keeping the text untouched.
+Regards,
+Stefan
 
 >=20
-> >=20
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  Documentation/filesystems/fscrypt.rst | 51 ++++++++++++---------------
-> >  1 file changed, 23 insertions(+), 28 deletions(-)
-> >  =20
+>>>> +
+>>>> +		/* enable pause restart */
+>>>> +		val |=3D MT9P031=5FFRAME=5FPAUSE=5FRESTART=5FSET;
+>>>> +		ret =3D mt9p031=5Fwrite(client, MT9P031=5FFRAME=5FRESTART, val);
+>>>> +		if (ret < 0)
+>>>> +			return ret;
+>>>> +
+>>>> +		/* enable restart + keep pause restart set */
+>>>> +		val |=3D MT9P031=5FFRAME=5FRESTART=5FSET;
+>>>> +		ret =3D mt9p031=5Fwrite(client, MT9P031=5FFRAME=5FRESTART, val);
+>>>> +		if (ret < 0)
+>>>> +			return ret;
+>>>> +
+>>>>    		/* Stop sensor readout */
+>>>>    		ret =3D mt9p031=5Fset=5Foutput=5Fcontrol(mt9p031,
+>>>>    						 MT9P031=5FOUTPUT=5FCONTROL=5FCEN, 0);
+>>>> @@ -505,6 +523,13 @@ static int mt9p031=5Fs=5Fstream(struct v4l2=5Fsub=
+dev *subdev, int enable)
+>>>>    	if (ret < 0)
+>>>>    		return ret;
+>>>>   =20
+>>>> +	val =3D mt9p031=5Fread(client, MT9P031=5FFRAME=5FRESTART);
+>>>> +	/* disable reset + pause restart */
+>>>> +	val &=3D ~MT9P031=5FFRAME=5FPAUSE=5FRESTART=5FSET;
+>>>
+>>> Same here, I think you can simply write MT9P031=5FFRAME=5FPAUSE=5FRESTA=
+RT=5FSET.
+>>
+>> I'll drop the read here as well. But I need to make sure, that the Resta=
+rt
+>> Bit is not cleared manually here.
+>>
+>>>> +	ret =3D mt9p031=5Fwrite(client, MT9P031=5FFRAME=5FRESTART, val);
+>>>> +	if (ret < 0)
+>>>> +		return ret;
+>>>> +
+>>>>    	return mt9p031=5Fpll=5Fenable(mt9p031);
+>>>>    }
+>>>>   =20
 >=20
-> Why are the changes to fscrypt.rst split between two patches,
->=20
-> 	docs: get rid of :c:type explicit declarations for structs
->=20
-> and
->=20
-> 	docs: fs: fscrypt.rst: get rid of :c:type: tags
->=20
-> ?  They're the same type of changes.  The first just removes half the :c:=
-type:
-> tags, and the second removes the rest.  Shouldn't it be one patch?
->=20
-
-The reason is just because it was easier this way.=20
-
-On the first patch, I used sed to replace structs on a=20
-semi-automated way, checking the results.
-
-at the second one, I addressed the remaining symbols manually.
-
-Anyway, at the new version, I just placed everything related
-to fscript.rst at the same patch, to make easier to review.
-
-> > diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/file=
-systems/fscrypt.rst
-> > index 4f858b38a412..46a9d1bd2ab5 100644
-> > --- a/Documentation/filesystems/fscrypt.rst
-> > +++ b/Documentation/filesystems/fscrypt.rst
-> > @@ -437,8 +437,7 @@ FS_IOC_SET_ENCRYPTION_POLICY
-> >  The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
-> >  empty directory or verifies that a directory or regular file already
-> >  has the specified encryption policy.  It takes in a pointer to a
-> > -struct fscrypt_policy_v1 or a :c:type:`struct
-> > -fscrypt_policy_v2`, defined as follows::
-> > +struct fscrypt_policy_v1 or a struct fscrypt_policy_v2, defined as fol=
-lows:: =20
-> [...]
-> >  If the file is not yet encrypted, then FS_IOC_SET_ENCRYPTION_POLICY
-> >  verifies that the file is an empty directory.  If so, the specified
-> > @@ -637,9 +634,8 @@ The FS_IOC_GET_ENCRYPTION_POLICY ioctl can also ret=
-rieve the
-> >  encryption policy, if any, for a directory or regular file.  However,
-> >  unlike `FS_IOC_GET_ENCRYPTION_POLICY_EX`_,
-> >  FS_IOC_GET_ENCRYPTION_POLICY only supports the original policy
-> > -version.  It takes in a pointer directly to a :c:type:`struct
-> > -fscrypt_policy_v1` rather than a :c:type:`struct
-> > -fscrypt_get_policy_ex_arg`.
-> > +version.  It takes in a pointer directly to struct fscrypt_policy_v1
-> > +rather than struct fscrypt_get_policy_ex_arg. =20
->=20
-> In some cases you deleted the "a" in "a struct" but in other cases you di=
-dn't.
-> Intentional?  It seems the file should consistently use one style or the =
-other.
-
-Yes, it was intentional. On almost all other docs documents I reviewed or
-converted, they say "struct" instead of "a struct".
-
-At the second version, I did the replacement on a consistent way.
-
->=20
-> Also please use textwidth=3D70 for consistency with the rest of the file.
-
-Done. At the new patch I posted, none of the lines touched by the
-patch uses more than 70 columns.
-
-You may notice that I opted to keep "struct foo" at the same line.
-This is not a mandatory requirement for automarkup.py to work, but
-I would recommend keeping them at the same line, as, if someone tries to
-do something like:
-
-	$ git grep "struct foo" Documentation/
-
-It would be able to find them.
-
-
-Thanks,
-Mauro
