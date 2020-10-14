@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F5528E0E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1AE28E0F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388201AbgJNM7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:59:38 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46556 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727187AbgJNM7i (ORCPT
+        id S1731046AbgJNNCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727141AbgJNNCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:59:38 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id CC77C1F41295
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
-        kuhanh.murugasen.krishnan@intel.com,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/18] regmap: mmio: add config option to allow relaxed
- MMIO accesses
-In-Reply-To: <20201014121249.GA4580@sirena.org.uk>
-References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
- <20201012205957.889185-8-adrian.ratiu@collabora.com>
- <20201013102656.GA5425@sirena.org.uk> <87o8l581ql.fsf@collabora.com>
- <20201014121249.GA4580@sirena.org.uk>
-Date:   Wed, 14 Oct 2020 16:00:38 +0300
-Message-ID: <87lfg97yix.fsf@collabora.com>
+        Wed, 14 Oct 2020 09:02:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA9C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bm7PA40r+RqY1oWurw9dIUPe3pvqYwdNmKOFhvH6eko=; b=Gy7+1c9rLsZzNb3OHdE81B6L8M
+        9OaRoEUdlKCQdpdzkxJFT3d3RqMXIhQFsCP9SqgCTGXad3kJmzh3xOXSPDvRURL0zIsiZiMDVy9/c
+        H07W2windvDYxxDp8TFz6IS3dWq1D1VHfFa0T1T2arUbecekKqkpDsz1Mp1nKp1YHnmLYs/quBBLi
+        g/jjHQIgLvuvJ7mzCRM/v8H6xwCW5OYqgBdsn6gcrnyXp1xh9IVgQ8MpqVjZDgDVS61kAEXVAnXPR
+        v6/+9PU51PQ/U+vKPNHAxMZ1SK18sYFv29QsMqbozVdQzbrN8paTW2AghyQxvC6JMRv2pYA2isdvk
+        pATlAwqA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSgQD-0005rF-0G; Wed, 14 Oct 2020 13:02:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 876D530015A;
+        Wed, 14 Oct 2020 15:02:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4C9C624BFBA83; Wed, 14 Oct 2020 15:02:23 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 15:02:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+Subject: Re: [PATCH] sched/cputime: correct account of irqtime
+Message-ID: <20201014130223.GF2628@hirez.programming.kicks-ass.net>
+References: <1602510644-24536-1-git-send-email-kernelfans@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602510644-24536-1-git-send-email-kernelfans@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Oct 14, 2020 at 02:51:14PM +0300, Adrian Ratiu wrote: 
->> On Tue, 13 Oct 2020, Mark Brown <broonie@kernel.org> wrote: 
->> > On Mon, Oct 12, 2020 at 11:59:46PM +0300, Adrian Ratiu wrote: 
+On Mon, Oct 12, 2020 at 09:50:44PM +0800, Pingfan Liu wrote:
+> __do_softirq() may be interrupted by hardware interrupts. In this case,
+> irqtime_account_irq() will account the time slice as CPUTIME_SOFTIRQ by
+> mistake.
 > 
->> > > -	writeb(val, ctx->regs + reg); +	if 
->> > > (ctx->relaxed_mmio) + writeb_relaxed(val, ctx->regs + reg); 
->> > > +	else + writeb(val, ctx->regs + reg); 
-> 
->> > There is no point in doing a conditional operation on every 
->> > I/O, it'd be better to register a different set of ops when 
->> > doing relaxed I/O. 
-> 
->> Indeed I have considered adding new functions but went with 
->> this solution because it's easier for the users to only have to 
->> define a "relaxed" config then test the regmap ctx as above. 
-> 
-> It seems like you've taken this in a direction other than what 
-> I was thinking of here - defining separate ops doesn't mean we 
-> have to do anything which has any impact on the interface seen 
-> by users.  The regmap config is supplied at registration time, 
-> it's just as available then as it is when doing I/O.
+> By passing irqtime_account_irq() an extra param about either hardirq or
+> softirq, irqtime_account_irq() can handle the above case.
 
-Right. I got confused by the meaning of ops :) Sorry about that.
- 
-> 
->> Thinking a bit more about it, yes, it makes more sense to have 
->> dedicated ops: this way users don't have to be explicit about 
->> adding membarriers and can combine relaxed and non-relaxed more 
->> easily, so it's also a better API trade-off in addition to 
->> avoiding the conditional. Thanks! 
-> 
-> I'm not sure what you're proposing here - it does seem useful to 
-> be able to combine relaxed and non-relaxed I/O but that seems 
-> like it'd break down the abstraction for regmap since tht's not 
-> really a concept other buses are going to have?  Unless we 
-> provide an operation to switch by setting flags or somethin 
-> possibly and integrate it with the cache perhaps.  Could you be 
-> a bit more specific about what you were thinking of here please?
+I'm not sure I see the scenario in which it goes wrong.
 
-I was thinking about exposing a relaxed API like 
-regmap_write_relaxed but now that I know what you meant by ops and 
-also that it doesn't make sense for other busses / violates the 
-abstraction, I realize that is a bad idea and I will continue 
-improving this to avoid the conditional and send a separete 
-patch. Thanks again!
+irqtime_account_irq() is designed such that we're called with the old
+preempt_count on enter and the new preempt_count on exit. This way we'll
+accumuate the delta to the previous context.
 
->
->> Question: Do you want me to split this patch from the series and send it
->> separately just for the regmap subsystem to be easier to review / apply?
->
-> Sure.
+> @@ -68,7 +68,7 @@ void irqtime_account_irq(struct task_struct *curr)
+>  	 */
+>  	if (hardirq_count())
+>  		irqtime_account_delta(irqtime, delta, CPUTIME_IRQ);
+> -	else if (in_serving_softirq() && curr != this_cpu_ksoftirqd())
+> +	else if (in_serving_softirq() && curr != this_cpu_ksoftirqd() && !hardirq)
+>  		irqtime_account_delta(irqtime, delta, CPUTIME_SOFTIRQ);
+>  }
+
+
