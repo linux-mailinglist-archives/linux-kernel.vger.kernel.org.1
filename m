@@ -2,290 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08C128E344
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5224D28E34A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731792AbgJNPZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
+        id S2389340AbgJNP2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgJNPZ6 (ORCPT
+        with ESMTP id S1727056AbgJNP2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:25:58 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA02C061755;
-        Wed, 14 Oct 2020 08:25:58 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e18so4340130wrw.9;
-        Wed, 14 Oct 2020 08:25:58 -0700 (PDT)
+        Wed, 14 Oct 2020 11:28:00 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7D4C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:28:00 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id u3so564pjr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:28:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YxBEZ2zwOvQ2OmfgqDWhyS8kAvpMsA83AdcbbwSb0EE=;
-        b=ZAbFPWTQcSXPMYVBlmCH8uVilNTpEpqaXnTk/l4eTYe1Awp8Uwl8piKKbLJ1Eyxq5g
-         GWM9HleNnX99p1uU/DahMgxpyJsHW0q2LBpDB9RRBaEiuZgWq6DBb/Wn69wj+v88GnnG
-         Hm4xrXgEs873m2WQGe5LMS1rSRZWlcAL53JArHEZ49L38f5Djsoh0PGeNrykglNxoDeE
-         lca5l7W4CcIaT50qHfCClXbgXBEA4R2ygx6JkIs03VwN/sJsTYYmNOGTk+yi3THqB6OH
-         rXzS9wisOxT0mRtI5yoIJ9rFVbpgUHIDcAK+3QzwsmhQj5/XUnhts6DDN6J3sVKMC7ta
-         1qRQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=qSDcEWWvwHOxnheEAr7MXUYKCuSbeqeTsFhggvLr2+E=;
+        b=E4ekMek7TuSmxYxOO+DHiKQPTTWQQ6cNz1jLogp+WIMmOVK+PWa5pzZhdUmRX5k1oJ
+         PmEGVdzgmzmQn3EmhcdLFU7LjKMNcmYOviDEUDfBcyvMipEdo04Z6b38YmudEPVXD0YQ
+         AwqaD16TWvnnpI6Cq0lfK6zWaXiGGEvvpdw16uknxlB5xe7kPRYMrsncAral46jnBLL8
+         Zbe92vPcy0PyayHrLh765dMe+lSullp2123+E8SnhovMSoXjthMz7nsssRzuF9CXDPoj
+         9/+y2SA0lSZ6pTZkgsS8A3HTZHcibsqi49bE/sDh8nUoqltFSr8KzZ77P2szrSZTanBm
+         sC2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YxBEZ2zwOvQ2OmfgqDWhyS8kAvpMsA83AdcbbwSb0EE=;
-        b=lZheBI5RPGF/JamJ9VR0FENFo99rTdDYWlGtqaDfFaCuyVyNElvcuanC7becGVl2PD
-         nVeXvo8CNq6fqSoA8OfU1ZzuNvqODvcLl/nF19StWWhz7SgXPXeQVxwEvbHTuzti8Lug
-         bbEgGRnpasIIBXSD9TL3DlGOsLP9NJU6t5oDVeecP2JXwit5K4ukgHAbAD5JJ0+OTbpB
-         99UoBfNNpqJcWxM/UuRUNJiBKKMrX1f96m1GrBUAlJq1fRLXmhLiRC2DN0mQftrVkAFV
-         vg73hdWOAP7lESuMdh+LttKNxh1MOrQh5gWBF4JJLpSoqIhJqGyqJNyhJlA2Iw41jjQs
-         GwjQ==
-X-Gm-Message-State: AOAM531H4egS/i7IxKI1JM4wMDZY75fD161GYf/16hQZfeU6vru23nhb
-        OvF5UJ6uLGuTYAVVKak50HtUYeFjc7IxNHyWVt8=
-X-Google-Smtp-Source: ABdhPJxt0hbMDz45mCBTIX0MF07E2kkg25OjgQEakXS6TJkZaNMfzplAhXY+OSjSSksFO8J1W8Fb6qb0EV+aalIxPaY=
-X-Received: by 2002:a05:6000:1633:: with SMTP id v19mr5814473wrb.147.1602689156795;
- Wed, 14 Oct 2020 08:25:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <1602680296-8965-1-git-send-email-mkrishn@codeaurora.org>
-In-Reply-To: <1602680296-8965-1-git-send-email-mkrishn@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 14 Oct 2020 08:25:45 -0700
-Message-ID: <CAF6AEGtQEbGVQdNPSaHy41gqsiLV19X8kxMVCRUy8y1SzjTZGw@mail.gmail.com>
-Subject: Re: [v1] drm/msm: Fix race condition in msm driver with async layer updates
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qSDcEWWvwHOxnheEAr7MXUYKCuSbeqeTsFhggvLr2+E=;
+        b=O0j2VJqtmxI03IUtfIFXN18Qwr5YEyV9HCOmnetnqeaOzTN2CVpLy0WN8+iRkTdJ9g
+         kawyi3B2pzvKL8ji/CYcaeaBX+Uo4rjYyCIoH7DHyFAPTtQZJfuKGPVS+Fei4YbXWKMY
+         i5zvDB98U5eoF68ocTBtzI4o2wolSAryaAlVGZmvx2eEpGqiMAa5lBjofQb7JGSU2B4r
+         pZ/iNB5glFXsld7ElcjXI45XhZJJQTzK8EB9O7h/fNJVmZFPgf4GEyzk4d0jWGiYaoFQ
+         5hDMnl3/AnOHYdOauIHNMBAw4ERIIQORax9zXtukDppeg/Vms0/LWdRf0Pq6AKxtyEjM
+         rqUw==
+X-Gm-Message-State: AOAM533PZOGVdcD7SQ5tofTgsW2cDAu6SS2xTQE58Koy9nmGQ2QGbLHM
+        MKJH9giPc9UU+Hbw1wYvJHU=
+X-Google-Smtp-Source: ABdhPJyJnVrfvWcW6LQ+ON2v4Na2HZ63zsgl0dHhLiTMLzdRsJMh4bATvJ642aixdQVWh8/DE9jYMQ==
+X-Received: by 2002:a17:902:7c83:b029:d3:cc6e:6dae with SMTP id y3-20020a1709027c83b02900d3cc6e6daemr4824851pll.13.1602689280086;
+        Wed, 14 Oct 2020 08:28:00 -0700 (PDT)
+Received: from localhost ([13.94.42.177])
+        by smtp.gmail.com with ESMTPSA id l13sm3832472pgq.33.2020.10.14.08.27.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 14 Oct 2020 08:27:59 -0700 (PDT)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH] ring-buffer: Fix two typos in comments
+Date:   Wed, 14 Oct 2020 23:27:49 +0800
+Message-Id: <20201014152749.29986-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 5:58 AM Krishna Manikandan
-<mkrishn@codeaurora.org> wrote:
->
-> When there are back to back commits with async cursor update,
-> there is a case where second commit can program the DPU hw
-> blocks while first didn't complete flushing config to HW.
->
-> Synchronize the compositions such that second commit waits
-> until first commit flushes the composition.
->
-> This change also introduces per crtc commit lock, such that
-> commits on different crtcs are not blocked by each other.
->
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c |  1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h |  1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  | 26 ++++++++++++++++++++++++
->  drivers/gpu/drm/msm/msm_atomic.c         | 35 ++++++++++++++++++++++----------
->  drivers/gpu/drm/msm/msm_kms.h            |  5 +++++
->  5 files changed, 57 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> index c2729f7..9024719 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> @@ -1383,6 +1383,7 @@ struct drm_crtc *dpu_crtc_init(struct drm_device *dev, struct drm_plane *plane,
->
->         /* initialize event handling */
->         spin_lock_init(&dpu_crtc->event_lock);
-> +       mutex_init(&dpu_crtc->commit_lock);
->
->         DPU_DEBUG("%s: successfully initialized crtc\n", dpu_crtc->name);
->         return crtc;
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
-> index cec3474..1eeb73d 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
-> @@ -169,6 +169,7 @@ struct dpu_crtc {
->
->         /* for handling internal event thread */
->         spinlock_t event_lock;
-> +       struct mutex commit_lock;
->
->         struct dpu_core_perf_params cur_perf;
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index c0a4d4e..f99ae7a 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -445,6 +445,30 @@ static void dpu_kms_wait_flush(struct msm_kms *kms, unsigned crtc_mask)
->                 dpu_kms_wait_for_commit_done(kms, crtc);
->  }
->
-> +static void dpu_kms_commit_lock(struct msm_kms *kms, unsigned int crtc_mask)
-> +{
-> +       struct dpu_kms *dpu_kms = to_dpu_kms(kms);
-> +       struct drm_crtc *crtc;
-> +       struct dpu_crtc *dpu_crtc;
-> +
-> +       for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask) {
-> +               dpu_crtc = to_dpu_crtc(crtc);
-> +               mutex_lock(&dpu_crtc->commit_lock);
-> +       }
-> +}
-> +
-> +static void dpu_kms_commit_unlock(struct msm_kms *kms, unsigned int crtc_mask)
-> +{
-> +       struct dpu_kms *dpu_kms = to_dpu_kms(kms);
-> +       struct drm_crtc *crtc;
-> +       struct dpu_crtc *dpu_crtc;
-> +
-> +       for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask) {
-> +               dpu_crtc = to_dpu_crtc(crtc);
-> +               mutex_unlock(&dpu_crtc->commit_lock);
-> +       }
-> +}
-> +
->  static int _dpu_kms_initialize_dsi(struct drm_device *dev,
->                                     struct msm_drm_private *priv,
->                                     struct dpu_kms *dpu_kms)
-> @@ -738,6 +762,8 @@ static const struct msm_kms_funcs kms_funcs = {
->  #ifdef CONFIG_DEBUG_FS
->         .debugfs_init    = dpu_kms_debugfs_init,
->  #endif
-> +       .commit_lock     = dpu_kms_commit_lock,
-> +       .commit_unlock   = dpu_kms_commit_unlock,
->  };
->
->  static void _dpu_kms_mmu_destroy(struct dpu_kms *dpu_kms)
-> diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
-> index 561bfa4..d33253f 100644
-> --- a/drivers/gpu/drm/msm/msm_atomic.c
-> +++ b/drivers/gpu/drm/msm/msm_atomic.c
-> @@ -55,16 +55,32 @@ static void vblank_put(struct msm_kms *kms, unsigned crtc_mask)
->         }
->  }
->
-> +static void msm_commit_lock(struct msm_kms *kms, unsigned int crtc_mask)
-> +{
-> +       if (kms->funcs->commit_lock)
-> +               kms->funcs->commit_lock(kms, crtc_mask);
-> +       else
-> +               mutex_lock(&kms->commit_lock);
-> +}
-> +
-> +static void msm_commit_unlock(struct msm_kms *kms, unsigned int crtc_mask)
-> +{
-> +       if (kms->funcs->commit_unlock)
-> +               kms->funcs->commit_unlock(kms, crtc_mask);
-> +       else
-> +               mutex_unlock(&kms->commit_lock);
-> +}
+s/inerrupting/interrupting/
+s/beween/between/
 
-Hi, I think the per-crtc commit-lock, and the updated
-locking/unlocking points are the right thing to do, but I don't think
-we need to touch dpu for this.  Just change kms->commit_lock to an
-array of mutexes, and drop the vfunc indirection.  All the same
-locking logic applies to mdp4/mdp5 as well (ie. don't touch the hw
-until it has flushed)
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+ kernel/trace/ring_buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-BR,
--R
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 93ef0ab6ea20..87bfc59679fb 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3225,7 +3225,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 			/* This did not interrupt any time update */
+ 			info->delta = info->ts - info->after;
+ 		else
+-			/* Just use full timestamp for inerrupting event */
++			/* Just use full timestamp for interrupting event */
+ 			info->delta = info->ts;
+ 		barrier();
+ 		if (unlikely(info->ts != save_before)) {
+@@ -3261,7 +3261,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 			info->ts = ts;
+ 		} else {
+ 			/*
+-			 * Interrupted beween C and E:
++			 * Interrupted between C and E:
+ 			 * Lost the previous events time stamp. Just set the
+ 			 * delta to zero, and this will be the same time as
+ 			 * the event this event interrupted. And the events that
+-- 
+2.17.1
 
-> +
->  static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
->  {
->         unsigned crtc_mask = BIT(crtc_idx);
->
->         trace_msm_atomic_async_commit_start(crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
-> +       msm_commit_lock(kms, crtc_mask);
->
->         if (!(kms->pending_crtc_mask & crtc_mask)) {
-> -               mutex_unlock(&kms->commit_lock);
-> +               msm_commit_unlock(kms, crtc_mask);
->                 goto out;
->         }
->
-> @@ -79,7 +95,6 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
->          */
->         trace_msm_atomic_flush_commit(crtc_mask);
->         kms->funcs->flush_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
->
->         /*
->          * Wait for flush to complete:
-> @@ -90,9 +105,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
->
->         vblank_put(kms, crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
->         kms->funcs->complete_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
-> +       msm_commit_unlock(kms, crtc_mask);
->         kms->funcs->disable_commit(kms);
->
->  out:
-> @@ -189,12 +203,11 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->          * Ensure any previous (potentially async) commit has
->          * completed:
->          */
-> +       msm_commit_lock(kms, crtc_mask);
->         trace_msm_atomic_wait_flush_start(crtc_mask);
->         kms->funcs->wait_flush(kms, crtc_mask);
->         trace_msm_atomic_wait_flush_finish(crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
-> -
->         /*
->          * Now that there is no in-progress flush, prepare the
->          * current update:
-> @@ -232,7 +245,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->                 }
->
->                 kms->funcs->disable_commit(kms);
-> -               mutex_unlock(&kms->commit_lock);
-> +               msm_commit_unlock(kms, crtc_mask);
->
->                 /*
->                  * At this point, from drm core's perspective, we
-> @@ -260,7 +273,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->          */
->         trace_msm_atomic_flush_commit(crtc_mask);
->         kms->funcs->flush_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
-> +       msm_commit_unlock(kms, crtc_mask);
->
->         /*
->          * Wait for flush to complete:
-> @@ -271,9 +284,9 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->
->         vblank_put(kms, crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
-> +       msm_commit_lock(kms, crtc_mask);
->         kms->funcs->complete_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
-> +       msm_commit_unlock(kms, crtc_mask);
->         kms->funcs->disable_commit(kms);
->
->         drm_atomic_helper_commit_hw_done(state);
-> diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-> index 1cbef6b..f02e73e 100644
-> --- a/drivers/gpu/drm/msm/msm_kms.h
-> +++ b/drivers/gpu/drm/msm/msm_kms.h
-> @@ -126,6 +126,11 @@ struct msm_kms_funcs {
->         /* debugfs: */
->         int (*debugfs_init)(struct msm_kms *kms, struct drm_minor *minor);
->  #endif
-> +       /* commit lock for crtc */
-> +       void (*commit_lock)(struct msm_kms *kms, unsigned int crtc_mask);
-> +
-> +       /* commit unlock for crtc */
-> +       void (*commit_unlock)(struct msm_kms *kms, unsigned int crtc_mask);
->  };
->
->  struct msm_kms;
-> --
-> 2.7.4
->
