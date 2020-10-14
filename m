@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F25328DD2D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB04528D7F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731270AbgJNJW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731182AbgJNJV4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:21:56 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB386C0076FB
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 18:29:00 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id u19so3095843ion.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 18:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vkn53wIH96OoNwnk8pDVt8nYl9FQdlL2nesW/SzmZeY=;
-        b=JERaY0M090r5CpiYVGdY44ZiZZU2nbwYpT+GVAO21q//R/XNCujqD1iI05tn6dwL0a
-         plfip9qggsJhPP3AyQt7dtmYpCL/xl1wfQ52boEW/KNvMjUSsBrtdMKixz+lSznTq2A4
-         rEMGmWGlTd1mBQCfojXfA72sCJjkPf/M1n5tU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vkn53wIH96OoNwnk8pDVt8nYl9FQdlL2nesW/SzmZeY=;
-        b=C4hMtW0UgQpQsDlEFH5wqCgC2fCE8wlH3Qw09j8ow67QMnWpR6zJGYOAIhACXCGkB+
-         b1T7+fhKtqriPzbWDhE2yWjvZ8Er6uCqTD/QocmKWjxFpNV1rVBOKofZy/IMmOoHoZXi
-         6akf4yLssa1iah6u0M1ExM8sNj7LZ/YLFmeTsR3f+HZSnAeqx7H1tdbp+JaFqEH8/lRi
-         pGnBXIxtJvE2vcxkNyEQpo8tsHVT1+RU/9mtby2L054lEzn0NueOd2GrvDYvNnIdz1Ny
-         p2q1dN0L3s6dVr7gz8BZoUJNdHPFHvtF6DUf38WnRWjElbdDQNiZJqQ6EwKCBIGv6qgc
-         womQ==
-X-Gm-Message-State: AOAM5310Ih/V1TNPYnmEmBCuu0+uZrRq6sGkDaTXq0O3XigZ5iSj/8U6
-        QWR5NyPavunqIFPoDlKnrnpyFQ==
-X-Google-Smtp-Source: ABdhPJzb5hjmtNQOXDfw2txoX4BIqeT//jWJHwRI63cZzTk8L0gicDNJDpFlQtR26f5syPh87ZcQVg==
-X-Received: by 2002:a6b:4e0a:: with SMTP id c10mr1116606iob.120.1602638940083;
-        Tue, 13 Oct 2020 18:29:00 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id a11sm1393329ilk.81.2020.10.13.18.28.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 18:28:59 -0700 (PDT)
-Subject: Re: [PATCH 4.14 00/70] 4.14.201-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201012132630.201442517@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <a7bdc000-d7e1-1bb9-3ae2-0f63460f064d@linuxfoundation.org>
-Date:   Tue, 13 Oct 2020 19:28:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730239AbgJNB3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 21:29:36 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52502 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727526AbgJNB3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 21:29:35 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 89C074C22A09E86D6D3C;
+        Wed, 14 Oct 2020 09:29:31 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 14 Oct 2020
+ 09:29:27 +0800
+Subject: Re: [PATCH 6/6] dt-bindings: misc: correct the property name
+ cmd-gpios to cmd-gpio
+To:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        "Pavel Machek" <pavel@ucw.cz>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
+ <20201013160845.1772-7-thunder.leizhen@huawei.com>
+ <bda5f620-7140-51fb-fadd-6ebd3c0db935@ti.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <4f5f9b55-9fad-9318-82d4-6b258643738b@huawei.com>
+Date:   Wed, 14 Oct 2020 09:29:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20201012132630.201442517@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <bda5f620-7140-51fb-fadd-6ebd3c0db935@ti.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 7:26 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.201 release.
-> There are 70 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.201-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-Compiled and booted on my test system. No dmesg regressions.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+On 2020/10/14 1:32, Dan Murphy wrote:
+> Zhen
+> 
+> On 10/13/20 11:08 AM, Zhen Lei wrote:
+>> The property name used in arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts is
+>> cmd-gpio.
+>>
+>> arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:235:
+>> cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>   Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml | 6 +++---
+>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+>> index b3c45c046ba5e37..c7a06a9650db2ed 100644
+>> --- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+>> +++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+>> @@ -24,7 +24,7 @@ properties:
+>>     compatible:
+>>       const: olpc,xo1.75-ec
+>>   -  cmd-gpios:
+>> +  cmd-gpio:
+> 
+> Preference is gpios not gpio. But Rob H accept or reject
 
-thanks,
--- Shuah
+Look at the search result below. It seems that the driver have not been merged into mainline.
+But the property name is really used as cmd-gpio at mmp2-olpc-xo-1-75.dts:235, I don't think
+the mmp2-olpc-xo-1-75.dts can make a mistake. Otherwise, the driver will not work properly.
+Meanwhile, Both names cmd-gpios and cmd-gpio seem to be in use. But I prefer cmd-gpio, after
+all, only one gpio is assigned now. The motorola,cmd-gpios add "s" because it contains 3 gpio.
+
+Without this patch:
+git grep -wn "cmd-gpios"
+Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml:27:  cmd-gpios:
+Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml:35:  - cmd-gpios
+Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml:52:        cmd-gpios = <&gpio 155 GPIO_ACTIVE_HIGH>;
+Documentation/devicetree/bindings/phy/phy-mapphone-mdm6600.txt:10:- motorola,cmd-gpios      Three GPIOs to control the power state of the MDM6600
+Documentation/devicetree/bindings/phy/phy-mapphone-mdm6600.txt:22:  motorola,cmd-gpios = <&gpio4 7 GPIO_ACTIVE_HIGH>,
+arch/arm/boot/dts/motorola-mapphone-common.dtsi:78:         motorola,cmd-gpios = <&gpio4 7 GPIO_ACTIVE_HIGH>,
+
+git grep -wn "cmd-gpio"
+Documentation/devicetree/bindings/leds/leds-ns2.txt:9:- cmd-gpio: Command LED GPIO. See OF device-tree GPIO specification.
+Documentation/devicetree/bindings/leds/leds-ns2.txt:12:  the corresponding cmd-gpio/slow-gpio values. All the GPIO values combinations
+Documentation/devicetree/bindings/leds/leds-ns2.txt:29:             cmd-gpio = <&gpio0 30 0>;
+arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts:90:                       cmd-gpio = <&pca9554 1 GPIO_ACTIVE_HIGH>;
+arch/arm/boot/dts/armada-370-seagate-nas-4bay.dts:100:                      cmd-gpio = <&pca9554 4 GPIO_ACTIVE_HIGH>;
+arch/arm/boot/dts/kirkwood-d2net.dts:29:                    cmd-gpio = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+arch/arm/boot/dts/kirkwood-is2.dts:31:                      cmd-gpio = <&gpio0 30 0>;
+arch/arm/boot/dts/kirkwood-ns2.dts:31:                      cmd-gpio = <&gpio0 30 0>;
+arch/arm/boot/dts/kirkwood-ns2max.dts:50:                   cmd-gpio = <&gpio0 30 0>;
+arch/arm/boot/dts/kirkwood-ns2mini.dts:51:                  cmd-gpio = <&gpio0 30 0>;
+arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:235:                cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
+
+> 
+> Dan
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> 
 
