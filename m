@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE2628E084
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F0428E089
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbgJNM2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:28:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53865 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730076AbgJNM2a (ORCPT
+        id S2387853AbgJNM3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730530AbgJNM3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:28:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602678508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=dx4dnVRqlhLPEwL70fI78OXInhA3B2eCIw7q7ED+umo=;
-        b=BB1Y1OfZYpeUELUsKVu4pBgH7xQ5wlh91FJuInRLa1LrEqqBnXy/A0bZAEnQYVDh+Ci3NA
-        1btY1DcTgQN8JEwEw3i7Mnd9YHt5iBIbNavYB22p3oMYco+Jzgf0T9mYe0/RvVjtpzwUPO
-        3UR0wq2n9D272tCiBmaAHzGRvNur0YU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-u1PkS1grNlWM1MHM7V3Sxg-1; Wed, 14 Oct 2020 08:28:27 -0400
-X-MC-Unique: u1PkS1grNlWM1MHM7V3Sxg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D57A164148;
-        Wed, 14 Oct 2020 12:28:25 +0000 (UTC)
-Received: from [10.36.115.5] (ovpn-115-5.ams2.redhat.com [10.36.115.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF0CA75138;
-        Wed, 14 Oct 2020 12:28:24 +0000 (UTC)
-Subject: Re: [PATCH] mm/compaction: Remove some useless code in compact_zone()
-To:     yanfei.xu@windriver.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201014072349.34494-1-yanfei.xu@windriver.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <dc40599d-e964-3a53-f3e7-94c03d3a162c@redhat.com>
-Date:   Wed, 14 Oct 2020 14:28:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 14 Oct 2020 08:29:03 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF23C061755;
+        Wed, 14 Oct 2020 05:29:02 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id c21so2935168ljn.13;
+        Wed, 14 Oct 2020 05:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xtG/gwsTp/QhF3XrG67M9zGwKAJ8eN3YqnpNRk6BF4U=;
+        b=uNUZMjRSap8H/u2m/asyiiVUQkHD9zJpWjpIoV35cXL/Dhr49H6Q7ybLUwt4m3yQKP
+         dX4BCe24Zxu332bgNbY7UxDK5N4uP/NxF4mtEYH+ucfkEypyIZ9id0/kkg7j4+W1QzKP
+         xKjhEYktxvhXEilqc0GIOlqxO00OoC7ORtuJgrLD2pVpYco8iSct0nfsM8nJFajXV/mZ
+         dYhkFnXEeOzQaosyd7KwRtaSo8LMDMYhe5IAmiVyHVTOWnMoT9g2jIDrkCnzjAwZmrkf
+         sgs847rPzMIM/wdGeqHC+TtYFoA3OURK/ZUaIqyywiM7YpeAfAwFHvbpfo7RB+GbtMw8
+         zTdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xtG/gwsTp/QhF3XrG67M9zGwKAJ8eN3YqnpNRk6BF4U=;
+        b=uKBRuGnN3e5LS+ztEC5Nux5yjBsU99e69etct9KHvzW9f1wxTmQpDAMOiFBjE8871G
+         mVpCK3BXhYjnrhLKRjkVH8vefDRBoajyFJ3FG9up07aFeI0oKjR9T/g5UXnScyS2lu8Z
+         mypfLMsMUHxSYcq8ATay4NLkZI77XcEqf5QClWe0l4YloNyiYlzEUcOaV32ULz3ZwSH8
+         vdiBU9TltOvKfDvSPz/ZDRwDhAtLY0bZ3Z9PVz3GOE4Td3/wY8KpGtqKukkGaay83OxP
+         9vL1VMMQzG5WbD5tzMstOpWbFIFS7LkRTYTKU4q5HXmhGZ7tmKQ0Fia5qrGp4QnMmZVL
+         +nVw==
+X-Gm-Message-State: AOAM532HqzAHun82/XUkbq6cbX96yWJqt2nBOZLMO1XdRNvKsbgKARXO
+        R8fdacEDrp9kI23aKKP5Q9epth1AO00B0FoQ9sjj76ALPnOvWA==
+X-Google-Smtp-Source: ABdhPJwwcXa0eznaW8aSEwQEZZO7J2RVs3BEWKBFhgzX1yF1g22CuKEtKkJjzK+eCrn3V4OhjPkwYiOG4iypM8jxWGU=
+X-Received: by 2002:a2e:9ed5:: with SMTP id h21mr1585898ljk.178.1602678541301;
+ Wed, 14 Oct 2020 05:29:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201014072349.34494-1-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+ <20200924090349.GF27174@8bytes.org> <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org> <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
+ <20200924095629.GL27174@8bytes.org> <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
+ <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
+ <20201011055258.22337d66@canb.auug.org.au> <CA+-6iNwpFeJaa7CisS-DD2q45uaV8Jz6YU0kPucqpZAAK3ojuQ@mail.gmail.com>
+ <c7e7b9ab-95a8-625f-7988-7f7397a0749f@gmail.com>
+In-Reply-To: <c7e7b9ab-95a8-625f-7988-7f7397a0749f@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Wed, 14 Oct 2020 09:28:49 -0300
+Message-ID: <CAOMZO5DxVQ1va4aviTkgC0O6+KmpkYvYDVPh7v2Ajqggq7aoow@mail.gmail.com>
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        abhimanyu.saini@nxp.com, Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Poonam Aggrwal <poonam.aggrwal@nxp.com>,
+        Rob Herring <robh@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Richard Weinberger <richard@nod.at>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
+        Will Deacon <will@kernel.org>,
+        "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.20 09:23, yanfei.xu@windriver.com wrote:
-> From: Yanfei Xu <yanfei.xu@windriver.com>
-> 
-> start_pfn has been declared at the begin of compact_zone(), it's
-> no need to declare it again. And remove an useless semicolon.
-> 
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
->  mm/compaction.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 176dcded298e..5e69c1f94d96 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2272,7 +2272,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->  
->  	while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
->  		int err;
-> -		unsigned long start_pfn = cc->migrate_pfn;
-> +		start_pfn = cc->migrate_pfn;
+Hi Florian,
 
-There is a user in
+On Sun, Oct 11, 2020 at 6:59 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
 
-trace_mm_compaction_end(start_pfn, cc->migrate_pfn, cc->free_pfn,
-end_pfn, sync, ret);
+> however the NAND warning still remains. Someone else familiar with these
+> NXP development boards should fix the DTS so as to provide the require
+> ECC strength property.
 
-we would now trace a different value, no?
+The ECC NAND warning looks like a regression.
 
->  
->  		/*
->  		 * Avoid multiple rescans which can happen if a page cannot be
-> @@ -2309,7 +2309,6 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->  		case ISOLATE_SUCCESS:
->  			update_cached = false;
->  			last_migrated_pfn = start_pfn;
-> -			;
+I had originally reported it for an imx27 board and now I also pointed
+out that it also affects Layerscape:
+https://lore.kernel.org/linux-mtd/20201013193652.0c535c7c@xps13/T/#m09fad7eacdf86aee0834bbd8863d6d5ee2e69f8c
 
-Huh, how does something like that happen :)
-
--- 
 Thanks,
 
-David / dhildenb
-
+Fabio Estevam
