@@ -2,223 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477DB28E665
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32C428E673
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389386AbgJNS2p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Oct 2020 14:28:45 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:56979 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389441AbgJNS2f (ORCPT
+        id S1729983AbgJNSdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:33:33 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58438 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727830AbgJNSdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:28:35 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-7iWQC8tkOS2JSIKZ2PKgWQ-1; Wed, 14 Oct 2020 14:28:23 -0400
-X-MC-Unique: 7iWQC8tkOS2JSIKZ2PKgWQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A8951007464;
-        Wed, 14 Oct 2020 18:28:21 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-66-216.rdu2.redhat.com [10.10.66.216])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F10E60BF3;
-        Wed, 14 Oct 2020 18:28:19 +0000 (UTC)
-From:   Qian Cai <cai@lca.pw>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH -next] Revert "powerpc/pci: unmap legacy INTx interrupts when a PHB is removed"
-Date:   Wed, 14 Oct 2020 14:28:11 -0400
-Message-Id: <20201014182811.12027-1-cai@lca.pw>
+        Wed, 14 Oct 2020 14:33:33 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09EIORWi109115;
+        Wed, 14 Oct 2020 18:33:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=IqbCE21wDs87840Vln5Uj/djp4WVmzbWEoRiJ9MBP4I=;
+ b=KqYq40VfJEqHJ2kgmimuFkA/on5yEX11P0t5Y+f0szeNbSZXhJB9dREWVaRI6K+eY83H
+ jYMwu6//gqxLFJGmVyW5BIm+IAi1mEUJn1d1g55nwseBhafHGOYDNodfnc0lnLgiNJ/j
+ 5CoXBOkogHiwxojgRmJ7nqeOLB67zGTU1vC+2xEgXbcJOMuhqxth7O98Pzt1LsB4gFre
+ JZhFb9qxv9k20fcfuRAwLRwcHzq70YDOCfOlnmCTFqHqAmQrfqR8dYY7cH6/xAsaZrdo
+ dbtTgs355Sbtdc+CMJ1j5ad69mYL7er0HjULyJiT/VL/7XF2i54Lr0FguLiuBRUx/nJU og== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3434wks586-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 14 Oct 2020 18:33:20 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09EIPack027282;
+        Wed, 14 Oct 2020 18:31:19 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 344by425bw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Oct 2020 18:31:19 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09EIVImp000809;
+        Wed, 14 Oct 2020 18:31:18 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Oct 2020 11:31:17 -0700
+Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
+ mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+To:     David Hildenbrand <david@redhat.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Michal Privoznik <mprivozn@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>
+References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
+ <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
+ <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
+ <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
+Date:   Wed, 14 Oct 2020 11:31:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=cai@lca.pw
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: lca.pw
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+In-Reply-To: <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010140131
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 clxscore=1011
+ spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010140131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 3a3181e16fbde752007759f8759d25e0ff1fc425 which
-causes memory corruptions on POWER9 NV.
+On 10/14/20 11:18 AM, David Hildenbrand wrote:
+> On 14.10.20 19:56, Mina Almasry wrote:
+>> On Wed, Oct 14, 2020 at 9:15 AM David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> On 14.10.20 17:22, David Hildenbrand wrote:
+>>>> Hi everybody,
+>>>>
+>>>> Michal Privoznik played with "free page reporting" in QEMU/virtio-balloon
+>>>> with hugetlbfs and reported that this results in [1]
+>>>>
+>>>> 1. WARNING: CPU: 13 PID: 2438 at mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+>>>>
+>>>> 2. Any hugetlbfs allocations failing. (I assume because some accounting is wrong)
+>>>>
+>>>>
+>>>> QEMU with free page hinting uses fallocate(FALLOC_FL_PUNCH_HOLE)
+>>>> to discard pages that are reported as free by a VM. The reporting
+>>>> granularity is in pageblock granularity. So when the guest reports
+>>>> 2M chunks, we fallocate(FALLOC_FL_PUNCH_HOLE) one huge page in QEMU.
+>>>>
+>>>> I was also able to reproduce (also with virtio-mem, which similarly
+>>>> uses fallocate(FALLOC_FL_PUNCH_HOLE)) on latest v5.9
+>>>> (and on v5.7.X from F32).
+>>>>
+>>>> Looks like something with fallocate(FALLOC_FL_PUNCH_HOLE) accounting
+>>>> is broken with cgroups. I did *not* try without cgroups yet.
+>>>>
+>>>> Any ideas?
+>>
+>> Hi David,
+>>
+>> I may be able to dig in and take a look. How do I reproduce this
+>> though? I just fallocate(FALLOC_FL_PUNCH_HOLE) one 2MB page in a
+>> hugetlb region?
+>>
+> 
+> Hi Mina,
+> 
+> thanks for having a look. I started poking around myself but,
+> being new to cgroup code, I even failed to understand why that code gets
+> triggered though the hugetlb controller isn't even enabled.
+> 
+> I assume you at least have to make sure that there is
+> a page populated (MMAP_POPULATE, or read/write it). But I am not
+> sure yet if a single fallocate(FALLOC_FL_PUNCH_HOLE) is
+> sufficient, or if it will require a sequence of
+> populate+discard(punch) (or multi-threading).
 
-Signed-off-by: Qian Cai <cai@lca.pw>
----
- arch/powerpc/include/asm/pci-bridge.h |   6 --
- arch/powerpc/kernel/pci-common.c      | 114 --------------------------
- 2 files changed, 120 deletions(-)
+FWIW - I ran libhugetlbfs tests which do a bunch of hole punching
+with (and without) hugetlb controller enabled and did not see this issue.
 
-diff --git a/arch/powerpc/include/asm/pci-bridge.h b/arch/powerpc/include/asm/pci-bridge.h
-index d21e070352dc..d2a2a14e56f9 100644
---- a/arch/powerpc/include/asm/pci-bridge.h
-+++ b/arch/powerpc/include/asm/pci-bridge.h
-@@ -48,9 +48,6 @@ struct pci_controller_ops {
- 
- /*
-  * Structure of a PCI controller (host bridge)
-- *
-- * @irq_count: number of interrupt mappings
-- * @irq_map: interrupt mappings
-  */
- struct pci_controller {
- 	struct pci_bus *bus;
-@@ -130,9 +127,6 @@ struct pci_controller {
- 
- 	void *private_data;
- 	struct npu *npu;
--
--	unsigned int irq_count;
--	unsigned int *irq_map;
- };
- 
- /* These are used for config access before all the PCI probing
-diff --git a/arch/powerpc/kernel/pci-common.c b/arch/powerpc/kernel/pci-common.c
-index deb831f0ae13..be108616a721 100644
---- a/arch/powerpc/kernel/pci-common.c
-+++ b/arch/powerpc/kernel/pci-common.c
-@@ -353,115 +353,6 @@ struct pci_controller *pci_find_controller_for_domain(int domain_nr)
- 	return NULL;
- }
- 
--/*
-- * Assumption is made on the interrupt parent. All interrupt-map
-- * entries are considered to have the same parent.
-- */
--static int pcibios_irq_map_count(struct pci_controller *phb)
--{
--	const __be32 *imap;
--	int imaplen;
--	struct device_node *parent;
--	u32 intsize, addrsize, parintsize, paraddrsize;
--
--	if (of_property_read_u32(phb->dn, "#interrupt-cells", &intsize))
--		return 0;
--	if (of_property_read_u32(phb->dn, "#address-cells", &addrsize))
--		return 0;
--
--	imap = of_get_property(phb->dn, "interrupt-map", &imaplen);
--	if (!imap) {
--		pr_debug("%pOF : no interrupt-map\n", phb->dn);
--		return 0;
--	}
--	imaplen /= sizeof(u32);
--	pr_debug("%pOF : imaplen=%d\n", phb->dn, imaplen);
--
--	if (imaplen < (addrsize + intsize + 1))
--		return 0;
--
--	imap += intsize + addrsize;
--	parent = of_find_node_by_phandle(be32_to_cpup(imap));
--	if (!parent) {
--		pr_debug("%pOF : no imap parent found !\n", phb->dn);
--		return 0;
--	}
--
--	if (of_property_read_u32(parent, "#interrupt-cells", &parintsize)) {
--		pr_debug("%pOF : parent lacks #interrupt-cells!\n", phb->dn);
--		return 0;
--	}
--
--	if (of_property_read_u32(parent, "#address-cells", &paraddrsize))
--		paraddrsize = 0;
--
--	return imaplen / (addrsize + intsize + 1 + paraddrsize + parintsize);
--}
--
--static void pcibios_irq_map_init(struct pci_controller *phb)
--{
--	phb->irq_count = pcibios_irq_map_count(phb);
--	if (phb->irq_count < PCI_NUM_INTX)
--		phb->irq_count = PCI_NUM_INTX;
--
--	pr_debug("%pOF : interrupt map #%d\n", phb->dn, phb->irq_count);
--
--	phb->irq_map = kcalloc(phb->irq_count, sizeof(unsigned int),
--			       GFP_KERNEL);
--}
--
--static void pci_irq_map_register(struct pci_dev *pdev, unsigned int virq)
--{
--	struct pci_controller *phb = pci_bus_to_host(pdev->bus);
--	int i;
--
--	if (!phb->irq_map)
--		return;
--
--	for (i = 0; i < phb->irq_count; i++) {
--		/*
--		 * Look for an empty or an equivalent slot, as INTx
--		 * interrupts can be shared between adapters.
--		 */
--		if (phb->irq_map[i] == virq || !phb->irq_map[i]) {
--			phb->irq_map[i] = virq;
--			break;
--		}
--	}
--
--	if (i == phb->irq_count)
--		pr_err("PCI:%s all platform interrupts mapped\n",
--		       pci_name(pdev));
--}
--
--/*
-- * Clearing the mapped interrupts will also clear the underlying
-- * mappings of the ESB pages of the interrupts when under XIVE. It is
-- * a requirement of PowerVM to clear all memory mappings before
-- * removing a PHB.
-- */
--static void pci_irq_map_dispose(struct pci_bus *bus)
--{
--	struct pci_controller *phb = pci_bus_to_host(bus);
--	int i;
--
--	if (!phb->irq_map)
--		return;
--
--	pr_debug("PCI: Clearing interrupt mappings for PHB %04x:%02x...\n",
--		 pci_domain_nr(bus), bus->number);
--	for (i = 0; i < phb->irq_count; i++)
--		irq_dispose_mapping(phb->irq_map[i]);
--
--	kfree(phb->irq_map);
--}
--
--void pcibios_remove_bus(struct pci_bus *bus)
--{
--	pci_irq_map_dispose(bus);
--}
--EXPORT_SYMBOL_GPL(pcibios_remove_bus);
--
- /*
-  * Reads the interrupt pin to determine if interrupt is use by card.
-  * If the interrupt is used, then gets the interrupt line from the
-@@ -510,8 +401,6 @@ static int pci_read_irq_line(struct pci_dev *pci_dev)
- 
- 	pci_dev->irq = virq;
- 
--	/* Record all interrut mappings for later removal of a PHB */
--	pci_irq_map_register(pci_dev, virq);
- 	return 0;
- }
- 
-@@ -1665,9 +1554,6 @@ void pcibios_scan_phb(struct pci_controller *hose)
- 
- 	pr_debug("PCI: Scanning PHB %pOF\n", node);
- 
--	/* Allocate interrupt mappings array */
--	pcibios_irq_map_init(hose);
--
- 	/* Get some IO space for the new PHB */
- 	pcibios_setup_phb_io_space(hose);
- 
+May need to reproduce via QEMU as below.
 -- 
-2.28.0
+Mike Kravetz
 
+> What definitely makes it trigger is via QEMU
+> 
+> qemu-system-x86_64 \
+> -machine pc-i440fx-4.0,accel=kvm,usb=off,dump-guest-core=off,memory-backend=pc.ram \
+> -cpu host,migratable=on \
+> -m 4096 \
+> -object memory-backend-memfd,id=pc.ram,hugetlb=yes,hugetlbsize=2097152,size=4294967296 \
+> -overcommit mem-lock=off \
+> -smp 4,sockets=1,dies=1,cores=2,threads=2 \
+> -nodefaults \
+> -nographic \
+> -device virtio-scsi-pci,id=scsi0,bus=pci.0,addr=0x4 \
+> -device virtio-serial-pci,id=virtio-serial0,bus=pci.0,addr=0x5 \
+> -blockdev '{"driver":"file","filename":"../Fedora-Cloud-Base-32-1.6.x86_64.qcow2","node-name":"libvirt-1-storage","auto-read-only":true,"discard":"unmap"}' \
+> -blockdev '{"node-name":"libvirt-1-format","read-only":false,"discard":"unmap","driver":"qcow2","file":"libvirt-1-storage","backing":null}' \
+> -device scsi-hd,bus=scsi0.0,channel=0,scsi-id=0,lun=0,device_id=drive-scsi0-0-0-0,drive=libvirt-1-format,id=scsi0-0-0-0,bootindex=1 \
+> -chardev stdio,nosignal,id=serial \
+> -device isa-serial,chardev=serial \
+> -device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x7,free-page-reporting=on
+> 
+> 
+> However, you need a recent QEMU (>= v5.1 IIRC) and a recent kernel
+> (>= v5.7) inside your guest image.
+> 
+> Fedora rawhide qcow2 should do: https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide/Cloud/x86_64/images/Fedora-Cloud-Base-Rawhide-20201004.n.1.x86_64.qcow2
+> 
