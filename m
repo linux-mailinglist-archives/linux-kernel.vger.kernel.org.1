@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBDA28E4CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1B228E4D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731974AbgJNQuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        id S2388776AbgJNQuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727440AbgJNQuJ (ORCPT
+        with ESMTP id S2388548AbgJNQuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:50:09 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50142C061755;
-        Wed, 14 Oct 2020 09:50:08 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dt13so5758330ejb.12;
-        Wed, 14 Oct 2020 09:50:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+kKooy8y3/ieceX7ZqDJ+1+nZaa9FZpK4qlfOAJ4xg4=;
-        b=q+bPhxgYA+ZTPkLdf43AbfDU/NVUXp5l+vHvOvwwCnu8EDI0ZTBBe5x7CS7iqFgW6U
-         RPKNLv5TazIRXEB8zpXJfYYNIb0vbS++16n0Vl70eRtBPcT0r/UwvHw/ZjW87DDaUfSx
-         +Xd0/NTf1ApzUVFxGl+8MloHTritdnRiWIjqML6JVm6nZY9VgaoijQM+t1N7K/GhHURP
-         NkTvh6uJwsD2wsYWhoNFsSwxTukwKXmEPyAzgpia3QQ/t+EzYmGkVMjooaxT9iBZyUhX
-         VeofVZViwdeEOym4e9lpV9fWnoiFgWXqxdPZT/fx4VJS8nzxptdXq5xzDzIorjQDqzDq
-         iifQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+kKooy8y3/ieceX7ZqDJ+1+nZaa9FZpK4qlfOAJ4xg4=;
-        b=N6s8FxpV/uBCy0lEPmHWjyvVxw+CgLcqKjBU/ZOG3pFCtW/kAfLHT/t4xJe4eSFxBP
-         G9YJYuhECXMoivy1Sn3e2bxc/0JLeqGjx1eRXRSz6XDwBS4XY1KGcPvixDZDXf8dytEh
-         Hi1kaz3hGumG1SqmK3oi76YZmIPFlEiqKhMFkLyX14CEiYbhxqyBVjcdeKYMFtIRQMwq
-         TiNNc9Lyp1Au6ssmJRZQZiA9BDQJKjhQTtStwjxgxx654GJQQSSdyG3gCi7BsumkQ8Bs
-         ogyPdFsdPnqur9BC7Z1zpwTB3RpqcHaWDmXr951Z0ZQAeIDC/AGX+9AP7+jsgayja1IB
-         YM/w==
-X-Gm-Message-State: AOAM5304db6T0ABBuYRRGW3+wE0HtSo7ieCBc3Fz7lzPIzF1dExqb7PR
-        5+izUCrdy/OroHruAW9dA/w=
-X-Google-Smtp-Source: ABdhPJxnZz/JvSQgt+bP4GraqaDvLe+xrlEutFj8lORQJcvNdI3kXKHdjhRXRnIr61+pk7L2rCm3hg==
-X-Received: by 2002:a17:907:43ed:: with SMTP id ol21mr6121680ejb.279.1602694207048;
-        Wed, 14 Oct 2020 09:50:07 -0700 (PDT)
-Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
-        by smtp.gmail.com with ESMTPSA id c19sm44446edt.48.2020.10.14.09.50.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 09:50:06 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 14 Oct 2020 18:50:04 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v6 02/25] objtool: Add a pass for generating __mcount_loc
-Message-ID: <20201014165004.GA3593121@gmail.com>
-References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-3-samitolvanen@google.com>
+        Wed, 14 Oct 2020 12:50:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171ADC061755;
+        Wed, 14 Oct 2020 09:50:50 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 16:50:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602694248;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ptfk5DkTFy7eOA62ShBszQ8F88jZO0h8cmhLJol/6ps=;
+        b=VqTMHEPaxISZAStkmZxW9JceTl9fRtqbv0WCwJ5/PgvceLq6lZ8qf4biy8rVmA2H4WHIts
+        UNuGFtpQbCFy0BZ+pwTQQpo8VqIHDD4nrwZfR3CMSD5TlKeBfBuFGBMC1v1nyPUztxY9FO
+        LXOJz+NXPCdOI4MSIGsjfQzFISSqtFmEH/bnK+itCvQeC9tBJCWe8gxNN9qgNAgWKbcVSp
+        rKpx5zkgHTW6pdsGbklaZlnqJEa3NY0zemWcdE4mxXmfyhhGiOJP7IQt9e4p8Vss6EmOC9
+        0+i4bdVjarzrYn/Iiu1k1I2nJkLXFPpNXePGR6OV0zphA7whqs0lanMn09szIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602694248;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ptfk5DkTFy7eOA62ShBszQ8F88jZO0h8cmhLJol/6ps=;
+        b=gLdeXXCc8BpeRYiYyyshmtq7/D+BL8xwAn2KoJymG/xth/qkDSwY9SeFmy1FI8Dw7hNdTN
+        hoES3HY3cxxB8xAw==
+From:   "tip-bot2 for Mauro Carvalho Chehab" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] locking/seqlocks: Fix kernel-doc warnings
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: =?utf-8?q?=3Ca59144cdaadf7fdf1fe5d55d0e1575abbf1c0cb3=2E16025?=
+ =?utf-8?q?90106=2Egit=2Emchehab+huawei=40kernel=2Eorg=3E?=
+References: =?utf-8?q?=3Ca59144cdaadf7fdf1fe5d55d0e1575abbf1c0cb3=2E160259?=
+ =?utf-8?q?0106=2Egit=2Emchehab+huawei=40kernel=2Eorg=3E?=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013003203.4168817-3-samitolvanen@google.com>
+Message-ID: <160269424622.7002.46799787422984757.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/urgent branch of tip:
 
-* Sami Tolvanen <samitolvanen@google.com> wrote:
+Commit-ID:     ed3e453798d4f81c99056aa09fcd79d0874a60fd
+Gitweb:        https://git.kernel.org/tip/ed3e453798d4f81c99056aa09fcd79d0874a60fd
+Author:        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+AuthorDate:    Tue, 13 Oct 2020 14:14:43 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 14 Oct 2020 18:07:50 +02:00
 
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> Add the --mcount option for generating __mcount_loc sections
-> needed for dynamic ftrace. Using this pass requires the kernel to
-> be compiled with -mfentry and CC_USING_NOP_MCOUNT to be defined
-> in Makefile.
-> 
-> Link: https://lore.kernel.org/lkml/20200625200235.GQ4781@hirez.programming.kicks-ass.net/
-> Signed-off-by: Peter Zijlstra <peterz@infradead.org>
-> [Sami: rebased, dropped config changes, fixed to actually use --mcount,
->        and wrote a commit message.]
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/objtool/builtin-check.c |  3 +-
->  tools/objtool/builtin.h       |  2 +-
->  tools/objtool/check.c         | 82 +++++++++++++++++++++++++++++++++++
->  tools/objtool/check.h         |  1 +
->  tools/objtool/objtool.c       |  1 +
->  tools/objtool/objtool.h       |  1 +
->  6 files changed, 88 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
-> index c6d199bfd0ae..e92e76f69176 100644
-> --- a/tools/objtool/builtin-check.c
-> +++ b/tools/objtool/builtin-check.c
-> @@ -18,7 +18,7 @@
->  #include "builtin.h"
->  #include "objtool.h"
->  
-> -bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux;
-> +bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux, mcount;
->  
->  static const char * const check_usage[] = {
->  	"objtool check [<options>] file.o",
-> @@ -35,6 +35,7 @@ const struct option check_options[] = {
->  	OPT_BOOLEAN('s', "stats", &stats, "print statistics"),
->  	OPT_BOOLEAN('d', "duplicate", &validate_dup, "duplicate validation for vmlinux.o"),
->  	OPT_BOOLEAN('l', "vmlinux", &vmlinux, "vmlinux.o validation"),
-> +	OPT_BOOLEAN('M', "mcount", &mcount, "generate __mcount_loc"),
->  	OPT_END(),
->  };
+locking/seqlocks: Fix kernel-doc warnings
 
-Meh, adding --mcount as an option to 'objtool check' was a valid hack for a 
-prototype patchset, but please turn this into a proper subcommand, just 
-like 'objtool orc' is.
+Right now, seqlock.h produces kernel-doc warnings:
 
-'objtool check' should ... keep checking. :-)
+	./include/linux/seqlock.h:181: error: Cannot parse typedef!
 
-Thanks,
+Convert it to a plain comment to avoid confusing kernel-doc.
 
-	Ingo
+Fixes: a8772dccb2ec ("seqlock: Fold seqcount_LOCKNAME_t definition")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/a59144cdaadf7fdf1fe5d55d0e1575abbf1c0cb3.1602590106.git.mchehab+huawei@kernel.org
+---
+ include/linux/seqlock.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index ac5b07f..cbfc78b 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -154,7 +154,7 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+ #define __SEQ_LOCK(expr)
+ #endif
+ 
+-/**
++/*
+  * typedef seqcount_LOCKNAME_t - sequence counter with LOCKNAME associated
+  * @seqcount:	The real sequence counter
+  * @lock:	Pointer to the associated lock
