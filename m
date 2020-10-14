@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3963028DAEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEC728DAB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbgJNIOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728552AbgJNIOg (ORCPT
+        id S1728111AbgJNHzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:55:02 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53108 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgJNHzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:14:36 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C23C051127
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:54:39 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id w11so1330216pll.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sslab.ics.keio.ac.jp; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=rKoJ8K1HmS89dQcSd+qek5XQD2mS7GsLcQDZpZn8svY=;
-        b=U4iUTIxdQbehyuFrFc7WiEJXMgU4qgwSykRROhgkVSQ8nJXnnVIu+nERBK+TpjLiRD
-         FMwQW+FwFT1JcwaQtl+Fz/QaBvp8jmMtZ7ylnHbyLTEKHTc9wtkbU3mga6WkYmW8/fYf
-         hhu4vjpu74tK6F54iGiQ/E39YCMjKuZhHV1IA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=rKoJ8K1HmS89dQcSd+qek5XQD2mS7GsLcQDZpZn8svY=;
-        b=UMezcSotk0jSMjeCgaKgQ8Kca8Kg8eiP22GKOIcYzcGqOnYLXCj7oUKN/sguDJ2bfY
-         653cv3Oo1Vq+FhVtB8K9FmVx+yt4EE3K/H2/L+0jjrS+WieLgFp3Kqgp7Ez5C5CG4oer
-         5fomJ+LZ6hqGQQhcjeAKj/yKoVJHfIdmFJNjjsbu93gLeHLVJ+phqmp5Qvu07dRdCWfg
-         bzELEhlOoak92wjovC4XjOmL4VsECSnKhPJbaeL7gPhRT/D1zZf9vt//NMCC3yiwtXs2
-         85CppfXx2wM4sjK1ykLVvrf/0RLu5BcIqSxluyhh4qi2X7XUKyxFDY3UCLPsN3KeFRgI
-         hWSA==
-X-Gm-Message-State: AOAM533EUuPVZP1pz8ggJPHj6Xsrs68ABkpGLUzTi61DJ8bjVnW+bffw
-        q6ROWcJG24fuXtsBCb7ILyS/Nw==
-X-Google-Smtp-Source: ABdhPJyUdVLPpvUpy5QQeSSCwMu0ll7oxBPg1VX62WnU03remZdsdlG7MQNxMpks3DmPoBF6p+L4aw==
-X-Received: by 2002:a17:902:ee83:b029:d4:bdd6:cabe with SMTP id a3-20020a170902ee83b02900d4bdd6cabemr3465976pld.68.1602662078593;
-        Wed, 14 Oct 2020 00:54:38 -0700 (PDT)
-Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
-        by smtp.googlemail.com with ESMTPSA id x1sm2007824pjj.25.2020.10.14.00.54.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 00:54:37 -0700 (PDT)
-From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
-        takafumi@sslab.ics.keio.ac.jp, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFC] drm/nouveau: fix memory leak in nvkm_iccsense_oneinit
-Date:   Wed, 14 Oct 2020 07:54:16 +0000
-Message-Id: <20201014075419.19974-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        Wed, 14 Oct 2020 03:55:02 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B40CA1C0B87; Wed, 14 Oct 2020 09:54:59 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 09:54:59 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Udo van den Heuvel <udovdh@xs4all.nl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>
+Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
+Message-ID: <20201014075458.GA29881@amd>
+References: <43b79598-1592-683f-46df-9e5489110780@infradead.org>
+ <6fd1e91e-19d0-6682-dfc6-49f1cd60408b@infradead.org>
+ <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
+ <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
+ <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
+ <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
+ <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
+ <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
+ <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+ <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
+Content-Disposition: inline
+In-Reply-To: <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct pw_rail_t is allocated as an array in function nvios_iccsense_parse,
-and stored to a struct member of local variable. However, the array is not
-freed when the local variable becomes invalid, and the reference is not
-passed on, leading to a memory leak.
 
-Fix this by freeing struct pw_rail_t when exiting nvkm_iccsense_oneinit.
+--dDRMvlgZJXvWKvBx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Hi!
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c b/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
-index fecfa6afcf54..8ba8d8e3f52a 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
-@@ -280,8 +280,10 @@ nvkm_iccsense_oneinit(struct nvkm_subdev *subdev)
- 			}
- 
- 			rail = kmalloc(sizeof(*rail), GFP_KERNEL);
--			if (!rail)
-+			if (!rail) {
-+				kfree(stbl.rail);
- 				return -ENOMEM;
-+			}
- 
- 			rail->read = read;
- 			rail->sensor = sensor;
-@@ -291,6 +293,7 @@ nvkm_iccsense_oneinit(struct nvkm_subdev *subdev)
- 			list_add_tail(&rail->head, &iccsense->rails);
- 		}
- 	}
-+	kfree(stbl.rail);
- 	return 0;
- }
- 
--- 
-2.17.1
+> >>> I.e.: it looks like I will lose some funcionality when I disable
+> >>> SND_HDA_CODEC_REALTEK.
+> >>
+> >> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_REALTEK
+> >> with no LEDS. That driver apparently wants LEDS.
+> >=20
+> > Thanks but why have I gone for years without LEDS?
+> > I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
+> > visible, usable, etc).
+> >=20
+> > Please make this selectable instead of forcing more bulk into my
+>> kernel.
 
+LED core is not that big, and this avoided some rather "interesting"
+hacks IIRC. If Udo wants more config complexity, lets first make him
+measure the benefits, second submit a patch.
+
+But I'd suggest to just live with it.
+
+And yes, we should probably get rid of "CONFIG_NEW_LEDS" symbol. That
+one is actually useless.
+
+Best regards,
+								Pavel
+							=09
+> and this Kconfig entry:
+>=20
+> config SND_HDA_CODEC_REALTEK
+> 	tristate "Build Realtek HD-audio codec support"
+> 	select SND_HDA_GENERIC
+> 	select SND_HDA_GENERIC_LEDS
+>=20
+> it seems that LED support is not always wanted (please see above).
+> I.e., user(s) would like to build a kernel without LED support at all.
+>=20
+> Can you make it a build option?
+>=20
+> thanks.
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--dDRMvlgZJXvWKvBx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+GrtIACgkQMOfwapXb+vIBRACfToWfcNk9AdXdXG4zZ7i28/s3
+4/wAn0pgJoPXjHt0MDaxgLcMMwqmrHhJ
+=JHTM
+-----END PGP SIGNATURE-----
+
+--dDRMvlgZJXvWKvBx--
