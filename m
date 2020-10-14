@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EF528DB33
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9EB28DB35
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgJNIZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        id S1729010AbgJNIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729007AbgJNITf (ORCPT
+        with ESMTP id S1728993AbgJNITf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 04:19:35 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE97C05112C;
-        Wed, 14 Oct 2020 01:00:17 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id a3so3442690ejy.11;
-        Wed, 14 Oct 2020 01:00:17 -0700 (PDT)
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B83C051130
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 01:01:50 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id v23so1569325vsp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 01:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8cAshw9w9g+tb5Wga6crJkHmZaZvSDhk98YhcxthM3g=;
-        b=Gw1+k6GaIZIOqOScQ2WBuYIWesxGm1IIlTnWn3DPl5FPq/MC5CcCjV9+eik/2N5fO+
-         BP+YHo9PbSxbQ+URpvt4NSPqIxbH2GEHYnJuBNUjhDA6/VnavJxF4z+Gg4zCMH1uW7DA
-         o4n3oziqf2INvMG/1Z35vw4mSUloHw0RgnVHfgm4hMIzP1YQ4Pt+12eGSzZvJA5SZsV/
-         amXvbThF7HCQoiKgAKgbk9gB4Avmldyvx69BEXEMCId6/0QV1r8nvVn7HBXRFapdaPgb
-         12XwQMLJ0BFv2l1iIDqsk9M4Q/koDEZ2XWPO+5mhS0m53TUa5XStubu6UL+YpxOwP/ap
-         IIng==
+         :cc;
+        bh=3SO3tpo8g36O18u0oTsmNryoKX09AzBl8HzOfu6KgoA=;
+        b=DbYbBgZ8S2slO0gKKAwBS1h5tPnC5UOqXpXpJWvJJXORH1syj5Gj4P4kZp4lEtfqvk
+         s3VZU45qRfiV88urjqeoUW6VgzhxZs4IFKz1TjSK0mq5+cKW3yFnXPx+k5bGLWHul2yb
+         KfWLbpznyIO1QloLKpl3nVaEGUsFxYa5JTRY0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8cAshw9w9g+tb5Wga6crJkHmZaZvSDhk98YhcxthM3g=;
-        b=bndgkcDA0iOeTbtaeQ1EAV0GNTQ/Pwn+41EFp8P7O86FXfcQ9wMSzDELWWv6xzoIE5
-         4jBEw5wcXAVxh3UfFenQShWMehi0tpYZQssYo4lXjDWbkVFudqcMPHIcMuSpsT9p1nyS
-         hspDvPExTWwDMvd8bn/+sDhulXgp7qH0SQxY2vPoCdfhwSooueEHX4OCH7CoXGqVhMHF
-         mxnNT4xAmbW+B6IoalxbZMS3eEOv7kgMrNi+awtxdPyxS0zM9bAnkgr5qQ6FMFgzCOyi
-         lXDMWdQwdtHNai02M5lVSZndJfJEqPlONx9MvMfXNVX/8guLIXoJQ4gDeOI9QCjGL3qb
-         YBhQ==
-X-Gm-Message-State: AOAM533pgAJoHMaVzvZv0K03Kx8kRNkd/NGT94UFyQeRYvaMugZoefuq
-        Fzvry9C3gPk5DlPWrJbMLRDJJeBHDM3lwbRlSiI=
-X-Google-Smtp-Source: ABdhPJxkH9r6BW9EGqcYbZTg0uRIMpguiE/ZlQJjnRiOA896kinPXGtVBYwALXHHySAjYv6Ik2073C0XAilbo3RAFJs=
-X-Received: by 2002:a17:906:745:: with SMTP id z5mr4212217ejb.408.1602662415913;
- Wed, 14 Oct 2020 01:00:15 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=3SO3tpo8g36O18u0oTsmNryoKX09AzBl8HzOfu6KgoA=;
+        b=p9JrJqyLLyhm9GlAfQn6FFTUPOQco8v6NNL5pI5fNFK50RQcIAybC4+L50wyvzClcc
+         IRaOGtVlzwxKd4RxT7TOKwUzr9zCGkRN8nxhijpjw9198ol1O9/uH86gFZr9QTzuUfPO
+         DvhNE4KTvPkcq00KhgxupFEyZ7RK8VH2ZxGUMSeI846+HabX//N9PZFI1gPdmImqXd5X
+         wf6QWjo8mUaHL8/Q9PIT6bZx+IyT68R2p2DJYU9pw71mTd8aeKXgitxVgdp06kzL6P7u
+         Ph6XlisKi+HGfGWiLEymwkmlgt3p4iS4Oq8bdpn9zWC0zhV1ASxkOzQFa2MFLPDpfJh6
+         t1qw==
+X-Gm-Message-State: AOAM5313l/zO9BbDHlUb9anGt+OpkvqLXl4iVFuBOcMUHhByOK93ebkD
+        X/Vaj7BLglmJoHzOr3RWrDd0cTLNqPQLwXh+f2+AHg==
+X-Google-Smtp-Source: ABdhPJy4vPRWpqm/Lif01f+pNzCo9hDq0DItgcGHT0TGikh9kiap2X7FLHy31dzvgFI2Ge6IgyErPNRyNZXr1kxDxFs=
+X-Received: by 2002:a67:7d93:: with SMTP id y141mr2580312vsc.21.1602662509278;
+ Wed, 14 Oct 2020 01:01:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <20201012210522.GA86612@otc-nc-03> <9b7db59d-832c-1c21-90b6-1676ea9058ce@linux.intel.com>
-In-Reply-To: <9b7db59d-832c-1c21-90b6-1676ea9058ce@linux.intel.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Wed, 14 Oct 2020 16:00:04 +0800
-Message-ID: <CAKF3qh0tykZV9-wrxqg-n1r-m+J1YL2L-s2j+wSPVRPw9k2sPA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] PCI/ERR: Call pci_bus_reset() before calling
- ->slot_reset() callback
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     "Raj, Ashok" <ashok.raj@intel.com>,
-        sathyanarayanan.nkuppuswamy@gmail.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sinan Kaya <okaya@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201012124547.16649-1-wenbin.mei@mediatek.com>
+ <20201012124547.16649-5-wenbin.mei@mediatek.com> <72ae1d89-fe31-4f50-15c0-29119d662ea1@gmail.com>
+ <1602642530.11864.3.camel@mhfsdcap03> <CANMq1KBe9u25yDxg8UtmOX4vhr8De=5-pJyMRkSBF4O=FpBN9A@mail.gmail.com>
+ <8bcc800b-fa1a-a42c-9fb7-a7546e889694@gmail.com>
+In-Reply-To: <8bcc800b-fa1a-a42c-9fb7-a7546e889694@gmail.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 14 Oct 2020 16:01:38 +0800
+Message-ID: <CANMq1KAnG5Z=GZBqUhz9FdWx9-bSkUs3FgZnURjvzeHTrpTWGw@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] mmc: mediatek: Add subsys clock control for MT8192 msdc
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Wenbin Mei <wenbin.mei@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        linux-mmc@vger.kernel.org,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please fix the building issue.
-
-drivers/pci/pcie/err.c:144:25: error: static declaration of
-=E2=80=98pcie_do_fatal_recovery=E2=80=99 follows non-static declaration
- static pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
-                         ^~~~~~~~~~~~~~~~~~~~~~
-In file included from drivers/pci/pcie/err.c:21:
-drivers/pci/pcie/../pci.h:560:18: note: previous declaration of
-=E2=80=98pcie_do_fatal_recovery=E2=80=99 was here
- pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
-                  ^~~~~~~~~~~~~~~~~~~~~~
-drivers/pci/pcie/err.c:144:25: warning: =E2=80=98pcie_do_fatal_recovery=E2=
-=80=99
-defined but not used [-Wunused-function]
- static pci_ers_result_t pcie_do_fatal_recovery(struct pci_dev *dev,
-
-
-Thanks,
-Ethan
-
-On Tue, Oct 13, 2020 at 10:18 PM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+On Wed, Oct 14, 2020 at 3:44 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
 >
 >
 >
-> On 10/12/20 2:05 PM, Raj, Ashok wrote:
-> > On Sun, Oct 11, 2020 at 10:03:40PM -0700, sathyanarayanan.nkuppuswamy@g=
-mail.com wrote:
-> >> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.int=
-el.com>
+> On 14/10/2020 05:06, Nicolas Boichat wrote:
+> > On Wed, Oct 14, 2020 at 10:29 AM Wenbin Mei <wenbin.mei@mediatek.com> wrote:
 > >>
-> >> Currently if report_error_detected() or report_mmio_enabled()
-> >> functions requests PCI_ERS_RESULT_NEED_RESET, current
-> >> pcie_do_recovery() implementation does not do the requested
-> >> explicit device reset, but instead just calls the
-> >> report_slot_reset() on all affected devices. Notifying about the
-> >> reset via report_slot_reset() without doing the actual device
-> >> reset is incorrect. So call pci_bus_reset() before triggering
-> >> ->slot_reset() callback.
-> >>
-> >> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@=
-linux.intel.com>
-> >> ---
-> >>   drivers/pci/pcie/err.c | 6 +-----
-> >>   1 file changed, 1 insertion(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> >> index c543f419d8f9..067c58728b88 100644
-> >> --- a/drivers/pci/pcie/err.c
-> >> +++ b/drivers/pci/pcie/err.c
-> >> @@ -181,11 +181,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev =
-*dev,
-> >>      }
-> >>
-> >>      if (status =3D=3D PCI_ERS_RESULT_NEED_RESET) {
-> >> -            /*
-> >> -             * TODO: Should call platform-specific
-> >> -             * functions to reset slot before calling
-> >> -             * drivers' slot_reset callbacks?
-> >> -             */
-> >> +            pci_reset_bus(dev);
+> >> On Tue, 2020-10-13 at 17:10 +0200, Matthias Brugger wrote:
+> >>>
+> >>> On 12/10/2020 14:45, Wenbin Mei wrote:
+> >>>> MT8192 msdc is an independent sub system, we need control more bus
+> >>>> clocks for it.
+> >>>> Add support for the additional subsys clocks to allow it to be
+> >>>> configured appropriately.
+> >>>>
+> >>>> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+[...]
+> >>>> +   host->bulk_clks[0].id = "pclk_cg";
+> >>>> +   host->bulk_clks[1].id = "axi_cg";
+> >>>> +   host->bulk_clks[2].id = "ahb_cg";
+> >>>
+> >>> That looks at least suspicious. The pointers of id point to some strings defined
+> >>> in the function. Aren't they out of scope once msdc_of_clock_parse() has returned?
+> >>>
+> >> These constants are not in stack range, so they will not be lost.
+> >> And I have confirmed it after msdc_of_clock_parse() has returned, these
+> >> ids still exist.
 > >
-> > pci_reset_bus() returns an error, do you need to consult that before
-> > unconditionally setting PCI_ERS_RESULT_RECOVERED?
-> Good point. I will fix this in next version.
+> > Yes I guess the constants end up in .rodata (or similar section), but
+> > I'm not sure if this is absolutely guaranteed.
 > >
-> >>              status =3D PCI_ERS_RESULT_RECOVERED;
-> >>              pci_dbg(dev, "broadcast slot_reset message\n");
-> >>              pci_walk_bus(bus, report_slot_reset, &status);
-> >> --
-> >> 2.17.1
-> >>
+> > In any case, this is a commonly used pattern, so I'd hope it's fine
+> > (just a sample, there are more):
+> > https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pcie-qcom.c#L266
+> > https://elixir.bootlin.com/linux/latest/source/sound/soc/codecs/wm8994.c#L4638
+> > https://elixir.bootlin.com/linux/latest/source/drivers/mfd/madera-core.c#L467
+> > https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpio-dwapb.c#L675
+> >
 >
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
+> Alright, then this looks good, sorry for the noise!
+
+To close this in more satisfying way, I asked internally, and +Pi-Hsun
+Shih digged out this answer:
+"""
+C11 standard 6.4.5 String literals says: "The multibyte character
+sequence is then used to initialize an array of >>static storage
+duration<< and length just sufficient to contain the sequence"
+"""
+
+> Matthias
