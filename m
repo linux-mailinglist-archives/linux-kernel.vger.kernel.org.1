@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9873E28DCEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B4A28D80D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731061AbgJNJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731000AbgJNJUn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:43 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7FBC00214F
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 18:39:57 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id f37so1943601otf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 18:39:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=InJlbJBQqXUR1oQj//MwzYufQPHMfh3uXTDyt2f2iPE=;
-        b=QdLyM8Y9kzCzQMAnhirRhrBkGaHPWIuNuB7mMAZjtNIruKFLJv+gHCwX1m0hZQ6chb
-         gdDA9tBvnR6/lKYCKKkfi9+hZ9ZyY8zHPSBJktNp4as9GoMP2XnzfGenRtU7Zf35gcAI
-         HHEo0TVqviF3CsLG+idkZxMV04M+klp0mn718=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=InJlbJBQqXUR1oQj//MwzYufQPHMfh3uXTDyt2f2iPE=;
-        b=DQJndcBNV84sHgsDMyd4DcIq8jqe3XmEK7KGt707B5G3BCrd17F1/dlyQ5EzkOClmD
-         8/1BStdHng3ymASAxOkXH4ANBZcNxu7NXFFif5JgHJg68WNHXmm09LgUEXSSgQg/k824
-         3sLklfDsyXUoQWQ3xQ5WdexGjOCXFGkSqlCWFz9uXZ3f3Bp3fiNMeTDsKzLfEaKd38DP
-         vwCB2Re2wtt50Lkkh/kccgsKYPVyHNSDBORk6EyW0sd6sBNYaQUwNnTNLv+cpLxGP0LL
-         6ARqrlM4zN6sN+ZTawYdnvyxUzW3iMQZWPqAXeB76T6Un498IfuLZwmq0W0NN1BYKcTi
-         gGNA==
-X-Gm-Message-State: AOAM533gccVMI/mUQ/UR3ZRXX8gMQ1Dv0YCmIUTPYZzU89cNpLqrDack
-        P59QCvCEq/kgF7dwAvFUI1jqNA==
-X-Google-Smtp-Source: ABdhPJwvNWhRi5/MWd++5EqpBUb6BJMpOOl4ZZs6SPSlaB2Wrs0JujJHlz5wQnyC7i7we2qIgpMq2g==
-X-Received: by 2002:a05:6830:1303:: with SMTP id p3mr1835907otq.282.1602639596657;
-        Tue, 13 Oct 2020 18:39:56 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l62sm660451oif.18.2020.10.13.18.39.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 18:39:56 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/54] 4.9.239-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201012132629.585664421@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <db4da98b-793b-81d1-f246-4fc0c5d0f9c2@linuxfoundation.org>
-Date:   Tue, 13 Oct 2020 19:39:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388159AbgJNBkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 21:40:00 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:64628 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730193AbgJNBj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 21:39:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602639599; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=VBMK5XSzYvlhE5a/mQchIoVG+PrYT6ANp/NOsNsTu2s=; b=KU7V8/n+1a9VC2sk4ZtD0+uUG3U1QPcP32McuhYJnR6yzfGq9SUROmxtra4u9dTUozhkybjw
+ PYI2cN3Y4jbYoeYnTktRyyY5X4c3i9rOr2VXfXjjyS+jV+yDTJnxxdEqc79PpiGZGbrlZ3Kr
+ X2lce8cPhd/4SISpsydeqIs73YQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f8656edbfed2afaa6f39712 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 01:39:57
+ GMT
+Sender: mdtipton=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 008C0C433FF; Wed, 14 Oct 2020 01:39:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.159] (ip70-179-20-127.sd.sd.cox.net [70.179.20.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdtipton)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6FCFC433FE;
+        Wed, 14 Oct 2020 01:39:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E6FCFC433FE
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mdtipton@codeaurora.org
+Subject: Re: [PATCH] interconnect: qcom: Simplify the vcd compare function
+To:     Georgi Djakov <georgi.djakov@linaro.org>, linux-pm@vger.kernel.org
+Cc:     okukatla@codeaurora.org, sibis@codeaurora.org,
+        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org
+References: <20201013171923.7351-1-georgi.djakov@linaro.org>
+From:   Mike Tipton <mdtipton@codeaurora.org>
+Message-ID: <2e9385a0-56ea-0a2f-6389-7530c34a5364@codeaurora.org>
+Date:   Tue, 13 Oct 2020 18:39:54 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201012132629.585664421@linuxfoundation.org>
+In-Reply-To: <20201013171923.7351-1-georgi.djakov@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,31 +62,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/12/20 7:26 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.239 release.
-> There are 54 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 10/13/2020 10:19 AM, Georgi Djakov wrote:
+> Let's simplify the cmp_vcd() function and replace the conditionals
+> with just a single statement, which also improves readability.
 > 
-> Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> ---
+>   drivers/interconnect/qcom/bcm-voter.c | 15 ++++-----------
+>   1 file changed, 4 insertions(+), 11 deletions(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.239-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
+> index 887d13721e52..1cc565bce2f4 100644
+> --- a/drivers/interconnect/qcom/bcm-voter.c
+> +++ b/drivers/interconnect/qcom/bcm-voter.c
+> @@ -41,17 +41,10 @@ struct bcm_voter {
+>   
+>   static int cmp_vcd(void *priv, struct list_head *a, struct list_head *b)
+>   {
+> -	const struct qcom_icc_bcm *bcm_a =
+> -			list_entry(a, struct qcom_icc_bcm, list);
+> -	const struct qcom_icc_bcm *bcm_b =
+> -			list_entry(b, struct qcom_icc_bcm, list);
+> -
+> -	if (bcm_a->aux_data.vcd < bcm_b->aux_data.vcd)
+> -		return -1;
+> -	else if (bcm_a->aux_data.vcd == bcm_b->aux_data.vcd)
+> -		return 0;
+> -	else
+> -		return 1;
+> +	const struct qcom_icc_bcm *bcm_a = list_entry(a, struct qcom_icc_bcm, list);
+> +	const struct qcom_icc_bcm *bcm_b = list_entry(b, struct qcom_icc_bcm, list);
+> +
+> +	return bcm_a->aux_data.vcd - bcm_b->aux_data.vcd;
+>   }
+>   
+>   static u64 bcm_div(u64 num, u32 base)
 > 
 
-Compiled and booted on my test system. No dmesg regressions.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
-
+Reviewed-by: Mike Tipton <mdtipton@codeaurora.org>
