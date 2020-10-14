@@ -2,180 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21A328E6E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F15828E6E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390256AbgJNTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 15:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgJNTFn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 15:05:43 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3DCC061755;
-        Wed, 14 Oct 2020 12:05:42 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id h140so393790qke.7;
-        Wed, 14 Oct 2020 12:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6wjqxwtbzgIHiDQg99WolaTB10lGIX9ridUr1LerSto=;
-        b=C4cJ+6ikED4y7sddfCSWORNVTWuC5T2E3whaMK6+cusw1l8WOeKtareV0Byt1OQtyk
-         z2Gb2+3ge3KpfVTMHbAiiPsAR2O1n9HsO1EZ9tlgCaQf4HXgwLoDnWK9vNrkBQA5MGlO
-         /4JFHF7Prlrc1a3zs26OMnayCe7V6fG1ZMh3uxT2JZfiwhmeR9sSpP1ZiCRkHkhUF9Ug
-         ldlxUnytAhsdqz5mHhxIRRHa/+lGCRUNX6bOTeRAW+scdQdLyf1nSMDRFwFXjjnkRmLS
-         tANYv3DYEOm07stB54QrMNQ60nzuKDFeeU7evQOo5HlH2c1ietMjAmNmbT4hLpSgTE+1
-         7Aqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6wjqxwtbzgIHiDQg99WolaTB10lGIX9ridUr1LerSto=;
-        b=U+dYnv7KWamyVTCpVP2X4DLtokA7yMJU9NP1zrrIuz+zlP7LNmZuFnkoDIAST2Z65+
-         +xDwjRcK00lN1BnhvUk1FF+zVsYFEoSh6CrtWpSXZkXeQMeoLw5pPYS2leIvHQJt+VAx
-         HYNoS6VgwtDBeuCXIUDi2F26PMEQG8XN1ojAyLXSNzBbLltwxiq21ey2edmOzxThdSba
-         5tddyhvOUr/LZyQEGG1eegLjQaJWDahOGeIqdT/ZqbBq3Bmbx8QBwbxvNOCMGyAzNYuo
-         rgAItYAlvoTEviDiGYlw4UAtwLu2eU+69xnB/nzeTlCt8wohIeo+GkR46Us5vU5plrPV
-         f3cg==
-X-Gm-Message-State: AOAM530keu7q9guQ8iQkPq7rfDnQq6nBuwcSUhNSvAIZgysOy2SFeRVn
-        cHQFChE0kSVk4CfruTyF8e8=
-X-Google-Smtp-Source: ABdhPJxtNMA2dHYbfdwX/cS1+k4VNViVtwLuSPBAgvxVBiNRGxKjZbeYrm37jqFJYa3DXkpMUa+hDw==
-X-Received: by 2002:a05:620a:152:: with SMTP id e18mr465193qkn.365.1602702341697;
-        Wed, 14 Oct 2020 12:05:41 -0700 (PDT)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id u4sm238508qkh.106.2020.10.14.12.05.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 12:05:40 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 15:05:26 -0400
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-Subject: Re: [PATCH v5 3/5] counter: Add character device interface
-Message-ID: <20201014190526.GA13439@shinobu>
-References: <cover.1601170670.git.vilhelm.gray@gmail.com>
- <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
- <67a0290e-731b-822a-5113-30b56bde6c88@lechnology.com>
+        id S1730356AbgJNTJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 15:09:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50674 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726115AbgJNTJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 15:09:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602702550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kaUv1hHMOJEn47W1mJuaE+7wSy+usdcBC2Sn5V1JtKQ=;
+        b=lp6xv6OrtYvW0TtocI/A9EhsBjRz4WApBTeLGRr8u80OwbSpkJOF7QsKdD0u0yp70EokTO
+        gsmxXUOWTMlYcqgjlMNnVSYzsNuPjnVpm7/dfNhQN6wVKlGUiwm8LCU/lGVTCvq6HK9knk
+        dmi2wv522ZDN5ZwduLmpsyN8ZUo9OAM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03288AC3C;
+        Wed, 14 Oct 2020 19:09:10 +0000 (UTC)
+From:   Richard Palethorpe <rpalethorpe@suse.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from charging root
+Date:   Wed, 14 Oct 2020 20:07:49 +0100
+Message-Id: <20201014190749.24607-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
-Content-Disposition: inline
-In-Reply-To: <67a0290e-731b-822a-5113-30b56bde6c88@lechnology.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SLAB objects which outlive their memcg are moved to their parent
+memcg where they may be uncharged. However if they are moved to the
+root memcg, uncharging will result in negative page counter values as
+root has no page counters.
 
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To prevent this, we check whether we are about to uncharge the root
+memcg and skip it if we are. Possibly instead; the obj_cgroups should
+be removed from their slabs and any per cpu stocks instead of
+reparenting them to root?
 
-On Wed, Oct 14, 2020 at 12:43:08PM -0500, David Lechner wrote:
-> On 9/26/20 9:18 PM, William Breathitt Gray wrote:
-> > diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter=
--chrdev.c
-> > new file mode 100644
-> > index 000000000000..2be3846e4105
-> > --- /dev/null
-> > +++ b/drivers/counter/counter-chrdev.c
->=20
->=20
-> > +/**
-> > + * counter_push_event - queue event for userspace reading
-> > + * @counter:	pointer to Counter structure
-> > + * @event:	triggered event
-> > + * @channel:	event channel
-> > + *
-> > + * Note: If no one is watching for the respective event, it is silently
-> > + * discarded.
-> > + *
-> > + * RETURNS:
-> > + * 0 on success, negative error number on failure.
-> > + */
-> > +int counter_push_event(struct counter_device *const counter, const u8 =
-event,
-> > +		       const u8 channel)
-> > +{
-> > +	struct counter_event ev =3D {0};
-> > +	unsigned int copied =3D 0;
-> > +	unsigned long flags;
-> > +	struct counter_event_node *event_node;
-> > +	struct counter_comp_node *comp_node;
-> > +	int err;
-> > +
-> > +	ev.timestamp =3D ktime_get_ns();
-> > +	ev.watch.event =3D event;
-> > +	ev.watch.channel =3D channel;
-> > +
-> > +	raw_spin_lock_irqsave(&counter->events_lock, flags);
-> > +
-> > +	/* Search for event in the list */
-> > +	list_for_each_entry(event_node, &counter->events_list, l)
-> > +		if (event_node->event =3D=3D event &&
-> > +		    event_node->channel =3D=3D channel)
-> > +			break;
-> > +
-> > +	/* If event is not in the list */
-> > +	if (&event_node->l =3D=3D &counter->events_list)
-> > +		goto exit_early;
-> > +
-> > +	/* Read and queue relevant comp for userspace */
-> > +	list_for_each_entry(comp_node, &event_node->comp_list, l) {
-> > +		err =3D counter_get_data(counter, comp_node, &ev.value_u8);
->=20
-> Currently all counter devices are memory mapped devices so calling
-> counter_get_data() here with interrupts disabled is probably OK, but
-> if any counter drivers are added that use I2C/SPI/etc. that will take
-> a long time to read, it would cause problems leaving interrupts
-> disabled here.
->=20
-> Brainstorming: Would it make sense to separate the event from the
-> component value being read? As I mentioned in one of my previous
-> reviews, I think there are some cases where we would just want to
-> know when an event happened and not read any additional data anyway.
-> In the case of a slow communication bus, this would also let us
-> queue the event in the kfifo and notify poll right away and then
-> defer the reads in a workqueue for later.
+The warning can be, unreliably, reproduced with the LTP test
+madvise06 if the entire patch series
+https://lore.kernel.org/linux-mm/20200623174037.3951353-1-guro@fb.com/
+is present. Although the listed commit in 'fixes' appears to introduce
+the bug, I can not reproduce it with just that commit and bisecting
+runs into other bugs.
 
-I don't see any problems with reporting just an event without any
-component value attached (e.g. userspace could handle the component
-reads via sysfs at a later point). We would just need a way to inform
-userspace that the struct counter_component in the struct counter_watch
-returned should be ignored.
+[   12.029417] WARNING: CPU: 2 PID: 21 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+[   12.029539] Modules linked in:
+[   12.029611] CPU: 2 PID: 21 Comm: ksoftirqd/2 Not tainted 5.9.0-rc7-22-default #76
+[   12.029729] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
+[   12.029908] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+[ 12.029991] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 db 47 36 27 48 8b 17 48 39 d6 72 41 41 54 49 89
+[   12.030258] RSP: 0018:ffffa5d8000efd08 EFLAGS: 00010086
+[   12.030344] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: 0000000000000009
+[   12.030455] RDX: 000000000000000b RSI: ffffffffffffffff RDI: ffff8ef8c7d2b248
+[   12.030561] RBP: ffff8ef8c7d2b248 R08: ffff8ef8c78b19c8 R09: 0000000000000001
+[   12.030672] R10: 0000000000000000 R11: ffff8ef8c780e0d0 R12: 0000000000000001
+[   12.030784] R13: ffffffffffffffff R14: ffff8ef9478b19c8 R15: 0000000000000000
+[   12.030895] FS:  0000000000000000(0000) GS:ffff8ef8fbc80000(0000) knlGS:0000000000000000
+[   12.031017] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   12.031104] CR2: 00007f72c0af93ec CR3: 000000005c40a000 CR4: 00000000000006e0
+[   12.031209] Call Trace:
+[   12.031267] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
+[   12.031470] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
+[   12.031594] refill_obj_stock (mm/memcontrol.c:3166)
+[   12.031733] ? rcu_do_batch (kernel/rcu/tree.c:2438)
+[   12.032075] memcg_slab_free_hook (./include/linux/mm.h:1294 ./include/linux/mm.h:1441 mm/slab.h:368 mm/slab.h:348)
+[   12.032339] kmem_cache_free (mm/slub.c:3107 mm/slub.c:3143 mm/slub.c:3158)
+[   12.032464] rcu_do_batch (kernel/rcu/tree.c:2438)
+[   12.032567] rcu_core (kernel/rcu/tree_plugin.h:2122 kernel/rcu/tree_plugin.h:2157 kernel/rcu/tree.c:2661)
+[   12.032664] __do_softirq (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/irq.h:142 kernel/softirq.c:299)
+[   12.032766] run_ksoftirqd (./arch/x86/include/asm/irqflags.h:54 ./arch/x86/include/asm/irqflags.h:94 kernel/softirq.c:653 kernel/softirq.c:644)
+[   12.032852] smpboot_thread_fn (kernel/smpboot.c:165)
+[   12.032940] ? smpboot_register_percpu_thread (kernel/smpboot.c:108)
+[   12.033059] kthread (kernel/kthread.c:292)
+[   12.033148] ? __kthread_bind_mask (kernel/kthread.c:245)
+[   12.033269] ret_from_fork (arch/x86/entry/entry_64.S:300)
+[   12.033357] ---[ end trace 961dbfc01c109d1f ]---
 
-Perhaps we can add an additional member to struct counter_watch
-indicating whether it's an empty watch; or alternatively, add a new
-component scope define to differentiate between an actual component and
-an empty one (e.g. COUNTER_SCOPE_EVENT). What do you think?
+[    9.841552] ------------[ cut here ]------------
+[    9.841788] WARNING: CPU: 0 PID: 12 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+[    9.841982] Modules linked in:
+[    9.842072] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc7-22-default #77
+[    9.842266] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
+[    9.842571] Workqueue: events drain_local_stock
+[    9.842750] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
+[ 9.842894] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 4b f9 88 2a 48 8b 17 48 39 d6 72 41 41 54 49 89
+[    9.843438] RSP: 0018:ffffb1c18006be28 EFLAGS: 00010086
+[    9.843585] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: ffff94803bc2cae0
+[    9.843806] RDX: 0000000000000001 RSI: ffffffffffffffff RDI: ffff948007d2b248
+[    9.844026] RBP: ffff948007d2b248 R08: ffff948007c58eb0 R09: ffff948007da05ac
+[    9.844248] R10: 0000000000000018 R11: 0000000000000018 R12: 0000000000000001
+[    9.844477] R13: ffffffffffffffff R14: 0000000000000000 R15: ffff94803bc2cac0
+[    9.844696] FS:  0000000000000000(0000) GS:ffff94803bc00000(0000) knlGS:0000000000000000
+[    9.844915] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    9.845096] CR2: 00007f0579ee0384 CR3: 000000002cc0a000 CR4: 00000000000006f0
+[    9.845319] Call Trace:
+[    9.845429] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
+[    9.845582] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
+[    9.845684] drain_local_stock (mm/memcontrol.c:2255)
+[    9.845789] process_one_work (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:108 kernel/workqueue.c:2274)
+[    9.845898] worker_thread (./include/linux/list.h:282 kernel/workqueue.c:2416)
+[    9.846034] ? process_one_work (kernel/workqueue.c:2358)
+[    9.846162] kthread (kernel/kthread.c:292)
+[    9.846271] ? __kthread_bind_mask (kernel/kthread.c:245)
+[    9.846420] ret_from_fork (arch/x86/entry/entry_64.S:300)
+[    9.846531] ---[ end trace 8b5647c1eba9d18a ]---
 
-William Breathitt Gray
+Reported-By: ltp@lists.linux.it
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+---
+ mm/memcontrol.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---tKW2IUtsqtDRztdT
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6877c765b8d0..214e1fe4e9a2 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+ 
+ 	spin_lock_irqsave(&css_set_lock, flags);
+ 	memcg = obj_cgroup_memcg(objcg);
+-	if (nr_pages)
++	if (nr_pages && !mem_cgroup_is_root(memcg))
+ 		__memcg_kmem_uncharge(memcg, nr_pages);
+ 	list_del(&objcg->list);
+ 	mem_cgroup_put(memcg);
+@@ -3100,6 +3100,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+ {
+ 	struct obj_cgroup *old = stock->cached_objcg;
++	struct mem_cgroup *memcg;
+ 
+ 	if (!old)
+ 		return;
+@@ -3110,7 +3111,9 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+ 
+ 		if (nr_pages) {
+ 			rcu_read_lock();
+-			__memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
++			memcg = obj_cgroup_memcg(old);
++			if (!mem_cgroup_is_root(memcg))
++				__memcg_kmem_uncharge(memcg, nr_pages);
+ 			rcu_read_unlock();
+ 		}
+ 
+-- 
+2.28.0
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+HS+wACgkQhvpINdm7
-VJLA6w/8C/7Kk5FVs4czCH9uMX3PWTVzLg32XilvtRndujXVCml9iLMADLvFVyIA
-dEX7rmXz/bWYSzG99VkZyHCWCeQX8+roYFDhmqbD8hQyEkqQlhHFWGdAPqGPAYeH
-cesBwsFdkB3yoc28HahJfV6c3HtuO3pLtsu7qKORwbhOupqzz6BBg/imzx04+8hh
-LicqVk0uFKT/v5E9o5AfOV+9cbHgZWm+TusLYTwKZCrvDVmrWkxdppPC581ftd9Q
-mrW/2qfj3ltcO4VoJ6JVZpKjcXJSak8V0l+A7dV2Hbp8dBGEhC+iODBfhhAUxTz5
-NM/cw+L90slS7Yli2mf1aY4lYLNv+Ob17alTK4P1Gc1ekJ9yofNevJlb8xp55KxC
-jY8rUWxEkS1y1h8K7wrPzwhMwk6Ab4psdUB+9+DClArQI5ZnimG1nJlSph9p1C24
-VjR6Vi8qSyUlSKrr5vK1ac1s/EDoAxwJoMr+e3rbRqrz3kktAvSN0S0sPD+xoV87
-iPjdASJa3YvBkS4v2o34XoNQnsVpdzUW3emUQ56qLf2yWVqbP8PkG5xhBRtfHvtI
-3VRYrSJ2dgv1u2xvrFhFhr2g7DRA9XMDOgc/aiqRnD18MHWT57GBLakOIZAYG9g3
-qbtBe6fEcVlUumDSKscRfWe6bsFhldy3v5FCMiY2JGZh689pwPM=
-=EhIu
------END PGP SIGNATURE-----
-
---tKW2IUtsqtDRztdT--
