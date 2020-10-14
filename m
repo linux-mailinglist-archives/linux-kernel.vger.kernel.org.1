@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427F428DBAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CFB28DA6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729609AbgJNIep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729556AbgJNIee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:34:34 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEBEC05111A
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:19:08 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id r10so3965586ilm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:19:08 -0700 (PDT)
+        id S1727559AbgJNHYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:24:07 -0400
+Received: from mail-bn8nam11on2042.outbound.protection.outlook.com ([40.107.236.42]:8545
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727036AbgJNHYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 03:24:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T8fLeHHCrHl7w45l6y2Y58/KJltk+T+LaMNtahPmQjOrR9q/lIO9JQbyh8NJk8fE/lEQGPf4lQRKa2KrOWzx2OShcOoi0tnA51uxxfO/E3U9ejyz0pIftn1euAtNqNyUz9Xyl8fAffRiF2dxM7W+NUP873xL6nGBRjiOLVevs4L8JBJpCzFIVLLSXBnU9Ou9LqsY7r8COzb16kZQmbW6bKobbjZHus4B54sBjLFWLeQq8kYM1vfQu/cIc9ktksHSV6i0rHzZdSurP3C95BuSBdjwO/rMEl2CWDeBTZtMv79WV9K63IxGyKt0R8LVjiAwdKHL2oGNX7SRuzre027bZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rX2VtEEV09k8UoGWYMojp7v8moPBfTzLlhRYqVrZlVE=;
+ b=cBqE2GKNi075SgkuZjbcs6xDA+DM501b9m59CxtMyigmNnyb4kll1h9nn/pcQ9/YjQCI277hvxrii9uYNE5dq3wuYN0KPKxT64b+d14mUzgyGQAfx5tBwzFbWUFOl8+Fzax+BUSfgFjFPKQjfT4rovIytXQGMhMyvny7kwHx+5/DOJ+ft7tvM90oktXjRgqVpM0oGzIrHmsnTYZprZ+kJWW4TKRNKr2G4myqzT5wtKk/2MmoWy7rKTQLxuFEJ4U0AZdXFiDN+g9lG4zed0HIgdQFC028+rMHp63mtDSYz40O81vZPEXN/ejv68RzxAkTJkgbw3F1OK3I6OJmbBqYXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dzOJ/swm9JGAByIHn/wEgfUebM+eNtx9/pR8X+4E4is=;
-        b=0LYJQWdozCaK1EN3ItjEZqoVtwC5Y2vmWWI7cXZLqMIOGaE3Q3jLXN8eefIqw18imc
-         63Np64Sl5g0aPt1Ww6Jl5YY6rmP1CRkWofUimrjqFpp26+KrkUebuTn7xmZcUrNF0awL
-         JeMYF9NkGKH8Va2+YfH8wZEqMW+4JSww+jPMIQcSbU1Im9Dk4sdzY/94eMcBXZ4qC+ME
-         q0+bCKzUu8LUBrmZmBHBKC1RMDNqEQxfDg/H1twem6upQPVY7le1b4e5NwXSfDipxsXY
-         gCPrqO0LQ1fZpDTtYZhHxBV6UGf4bDWxvArR/1uZAFGSA3/jLlEfsNHni7e1ByMlhNMv
-         ocYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dzOJ/swm9JGAByIHn/wEgfUebM+eNtx9/pR8X+4E4is=;
-        b=thN7DsBzf6vfV0ZH6sNFAk++ZEdwWUlHn9eMASPxQQTLEWvQ0qqCjiUfV3NxXF8SJn
-         rlxPF91TTh3QL1y2Y4dHKL+qW6lkH2LcCqSRfWoidZcQZp7PAGIobqHwGWsCY6dttJhQ
-         KucKT7cCwEh6QPaOz3BJqfQO+UyDkmugop6uDqiYZvYXwinby6eIs0pBhhgHWJ5Eh9qu
-         KOU9aBNbryfVCmijXDriNXtIJL9f5qUtkEYLTZn301ceAO9IYDAOnkUOzOMi7G9bHQaq
-         g3+oYEFl8lGgZUGtGqtWfHjETt7/+fuAeACQTo2Uf1qduzUBCtJKfWnVHwLG9oqsq5AQ
-         UB/g==
-X-Gm-Message-State: AOAM53255ERv0OXsHxFZFzDBeL8/+Pk8dPMWKZXpELKuA34nvGTtYCx9
-        TsGGbHM2yTeEyFNUUWahPg7RrTdor5j6ig7XGBamfQ==
-X-Google-Smtp-Source: ABdhPJwuTnKmbtckmY7mH0qDFEjoARiEYUtMovUJ9OGm8LgOhAhHFufHuSKcRL3BGBlZP3QHEXQ0W7kvI1j4bFo1uv4=
-X-Received: by 2002:a92:bb58:: with SMTP id w85mr2963629ili.40.1602659947570;
- Wed, 14 Oct 2020 00:19:07 -0700 (PDT)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rX2VtEEV09k8UoGWYMojp7v8moPBfTzLlhRYqVrZlVE=;
+ b=WS2NHreEuN6P97Co6kJLjPYCCGHv3Bof+a/J/2F9hn5/izsKxj/ztOapgNQZuw3VkZpX9NT0JNFwylok9Pfo5fv5niDerhQmFUEhxTJI3mmZscV/4yRNMEHVyJG5vs/Wom8JJNBcr6R826v08zWypId3PX2/K+I4KmrOEu/32gE=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BY5PR11MB4007.namprd11.prod.outlook.com (2603:10b6:a03:189::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Wed, 14 Oct
+ 2020 07:24:01 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::3581:4d13:b613:eb81]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::3581:4d13:b613:eb81%7]) with mapi id 15.20.3455.030; Wed, 14 Oct 2020
+ 07:24:01 +0000
+From:   yanfei.xu@windriver.com
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/compaction: Remove some useless code in compact_zone()
+Date:   Wed, 14 Oct 2020 15:23:49 +0800
+Message-Id: <20201014072349.34494-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.18.2
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR01CA0053.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::17) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-References: <20201013073055.11262-1-brgl@bgdev.pl> <abd717c9-9eaa-d4bb-3fd8-ff7250d97ab7@linux.intel.com>
-In-Reply-To: <abd717c9-9eaa-d4bb-3fd8-ff7250d97ab7@linux.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 14 Oct 2020 09:18:56 +0200
-Message-ID: <CAMRc=MdLXaPNUwbUPGJS1AY0pq5je9zsGM7eHShLT=f6mT5Dww@mail.gmail.com>
-Subject: Re: [PATCH next] iommu: intel: don't dereference iommu_device if
- IOMMU_API is not built
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpggp1.wrs.com (60.247.85.82) by HK0PR01CA0053.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Wed, 14 Oct 2020 07:23:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a1fb9a74-45c3-428b-b4bd-08d870121f3d
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4007:
+X-Microsoft-Antispam-PRVS: <BY5PR11MB40072BE56AA880D2C8D4CFD4E4050@BY5PR11MB4007.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0YKT8usR6EEmNPUO+uUaTrCK+xO4uLjq3jGs9PB9Lx8gmykIKjF6yfTMtr7elCQ9XJCPs6XSr9qekp+8hHJp+zQkXE+GEMN/AgE2GOlN5KCSjZKaT/bu8tCDiy2DgDzKgaqCjmJ/qGY8GycdB4E2nFE8SfTj0UOrMeUuDI+1+HKJ5diSa3C7sJcMjrY7bBBJ2AChH4kDWEo/NF6zdzo29lHaHjTq62mS19Bg/EbgjsHITxT2WpFCV216cbHncpW7guFtnSW0+S0NpQjfY1oWZf4BwtnxB4EFlrzfqtpv6ZCUe6UjPgJ/oZjAJTsK57OUDgOUOeHmWozM9Euf+bROfQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(366004)(136003)(39850400004)(6916009)(6666004)(8936002)(83380400001)(6512007)(8676002)(9686003)(66556008)(4744005)(1076003)(66946007)(66476007)(52116002)(956004)(36756003)(16526019)(2906002)(4326008)(26005)(478600001)(186003)(6486002)(5660300002)(6506007)(316002)(86362001)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: TX9PlaGjtN+lky8cH4jaNT0zGkTiKMNEAHUu1sHFF1mMiFroP0PLHhpuBoimnMbPFc93/MGFvwpb7WHSdwXq/gCaPxPkRQZLTC0fY1mXLctVz7g3p2YyWQ3FEoT6z+A/okth1JbTou22KTUjl4c8JNdBBAe/C/qtf+IrPU2yHhWRG8EURwaUYIFI7hoZTc8ScvNNmu+B6ng9BEPRNvBvhRs6L1NHuCw/CwfKfLIOFA/6CoxEtbwqTOXU1hAVBCgS+s8RLvX8U22hWs6dGgYql7HaFZK3Mksn+5moRktd6qGBpB63EAJzHceTY5Rs60L2dlso5yz3hovlUyjSlEb57eX+lTCNS1nEZO2/xAUdgeG6cBwm5PfoxyhfP+7Rc3wVP6Y2p/r6pijNIRNasUNdGa8HvjMdKubVjmAyrY7msaJBLRXGFJFKWCNXJZDynwi84ecE0pQDPvOXqb5F6VyJrDRWRLMPIUFd0xzt8/JBq6QaWpl221H7NMVLhLRluqPqcrQ4ZZNDGEIAlFH1mRE6mekRBAV/zdVBg8BrTYwCIgg/UHXlh3FYwhWVDBpzpO5asb826ne4sFW4gwmpgXDvMtyg7izCytZK4yZahZ+V1gzeiE4+VdQGCVwGtw3/KZR5m0A3JUtu4+ns3UH/dAnGTg==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1fb9a74-45c3-428b-b4bd-08d870121f3d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 07:24:01.3552
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pu7pN9v5YGnU2D18tpTqNMySipIVErIxBuq6Ji6C3TzK9fgxbQ8zDD/Tveillm4o6oaFupriJf7pekNFVxO0bw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4007
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 2:49 AM Lu Baolu <baolu.lu@linux.intel.com> wrote:
->
-> On 10/13/20 3:30 PM, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
-> > with no supported address widths") dmar.c needs struct iommu_device to
-> > be selected. We can drop this dependency by not dereferencing struct
-> > iommu_device if IOMMU_API is not selected and by reusing the informatio=
-n
-> > stored in iommu->drhd->ignored instead.
-> >
-> > This fixes the following build error when IOMMU_API is not selected:
-> >
-> > drivers/iommu/intel/dmar.c: In function =E2=80=98free_iommu=E2=80=99:
-> > drivers/iommu/intel/dmar.c:1139:41: error: =E2=80=98struct iommu_device=
-=E2=80=99 has no member named =E2=80=98ops=E2=80=99
-> >   1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
-> >                                                  ^
-> >
-> > Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no =
-supported address widths")
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> With commit title adjusted to "iommu/vt-d: Don't dereference
-> iommu_device if IOMMU_API is not built",
->
-> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
->
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-Do you want me to resend it again with a changed title or can you fix
-it up when applying? Or should someone else pick it up?
+start_pfn has been declared at the begin of compact_zone(), it's
+no need to declare it again. And remove an useless semicolon.
 
-Bartosz
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+---
+ mm/compaction.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 176dcded298e..5e69c1f94d96 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2272,7 +2272,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 
+ 	while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+ 		int err;
+-		unsigned long start_pfn = cc->migrate_pfn;
++		start_pfn = cc->migrate_pfn;
+ 
+ 		/*
+ 		 * Avoid multiple rescans which can happen if a page cannot be
+@@ -2309,7 +2309,6 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 		case ISOLATE_SUCCESS:
+ 			update_cached = false;
+ 			last_migrated_pfn = start_pfn;
+-			;
+ 		}
+ 
+ 		err = migrate_pages(&cc->migratepages, compaction_alloc,
+-- 
+2.18.2
+
