@@ -2,254 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6805C28E504
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A2028E50A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731660AbgJNRF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:05:59 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48578 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726517AbgJNRF7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:05:59 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EH2pNl009807;
-        Wed, 14 Oct 2020 19:04:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=jIwqK10u/i87Vs2CR8ix4l7ud98WeLfnEu49gbS/aII=;
- b=AzuBxe1eITi8/rI7M3oTkxJQ7DRgQqFeSYku/8nByUFve6lbteSkGBykrtfSQFF37erI
- r2//2Ljl22MWpSPlYjpEBjU83Wfi5iBZKp2ka4iPszJsU+vD2mL+G37MhexCcw2wgxwn
- sxSPyCGc7xv76rBajHcq8cuGdPSnqyrsqXu/tvVJ1Bp+VCqIDJnSWmVQc5Y1hZn0GwvA
- rLEOSIWuEaR0MDuxSq/u9T5GC/Xw0JfAFZPGJqCrp/px/vsZLl4kC2t83/fRCWkLgDbf
- QCvsY14vSMeBhTDWVtXAWaU11n3CTQk6aBmKMGrtaNgiuK3R83bYnFfG4YPRu9TFigvY EA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3455c8k9ya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 19:04:51 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CC6F010002A;
-        Wed, 14 Oct 2020 19:04:50 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AD3E92CDCF0;
-        Wed, 14 Oct 2020 19:04:50 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.49) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 19:04:32 +0200
-Subject: Re: [PATCH v2 3/9] rpmsg: virtio: Move from virtio to rpmsg byte
- conversion
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
-CC:     "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
- <20201013232519.1367542-4-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <0264d2f6-22c7-6c6d-0db4-05fd9e0b1121@st.com>
-Date:   Wed, 14 Oct 2020 19:04:32 +0200
+        id S1731980AbgJNRGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:06:50 -0400
+Received: from mga02.intel.com ([134.134.136.20]:51458 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730842AbgJNRGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:06:50 -0400
+IronPort-SDR: 58JBSqOFQDiswojLyNAzuu5cFPqtYXJf5kfg7Cj922GiyGn8ppFtO8Imk6O7U7hH6aVm38HyyN
+ YXIp34xHPdVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="153090536"
+X-IronPort-AV: E=Sophos;i="5.77,375,1596524400"; 
+   d="scan'208";a="153090536"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 10:06:28 -0700
+IronPort-SDR: sVGy5hGJPWa0UJvX2bRUPL7E2QwtY9LXVTF7Unl8qJxsjG/kfAy8csU8BzVVbfTbfU+p5C7peM
+ MrXdOQYTcSnw==
+X-IronPort-AV: E=Sophos;i="5.77,375,1596524400"; 
+   d="scan'208";a="345736029"
+Received: from mmussend-mobl1.amr.corp.intel.com (HELO [10.252.132.111]) ([10.252.132.111])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 10:06:27 -0700
+Subject: Re: [PATCH v6 2/2] PCI/ERR: Split the fatal and non-fatal error
+ recovery handling
+To:     Ethan Zhao <xerces.zhao@gmail.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.nkuppuswamy@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Sinan Kaya <okaya@kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ashok Raj <ashok.raj@intel.com>
+References: <546d346644654915877365b19ea534378db0894d.1602663397.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d97541df3b44822e0d085ffa058e9e7c0ba05214.1602663397.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAKF3qh3nnLaKUAbBdhdXwzknasTWmLFTjB7gz65vjzpHP4Y46Q@mail.gmail.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <17e142b8-b19a-0ec7-833b-7a4ac2e76d0d@linux.intel.com>
+Date:   Wed, 14 Oct 2020 10:06:25 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201013232519.1367542-4-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAKF3qh3nnLaKUAbBdhdXwzknasTWmLFTjB7gz65vjzpHP4Y46Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_09:2020-10-14,2020-10-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/14/20 1:25 AM, Mathieu Poirier wrote:
-> Use rpmsg byte conversion functions in order for the RPMSG
-> headers and generic functions to be used by external entities.
+On 10/14/20 8:07 AM, Ethan Zhao wrote:
+> On Wed, Oct 14, 2020 at 5:00 PM Kuppuswamy Sathyanarayanan
+> <sathyanarayanan.nkuppuswamy@gmail.com> wrote:
+>>
+>> Commit bdb5ac85777d ("PCI/ERR: Handle fatal error recovery")
+>> merged fatal and non-fatal error recovery paths, and also made
+>> recovery code depend on hotplug handler for "remove affected
+>> device + rescan" support. But this change also complicated the
+>> error recovery path and which in turn led to the following
+>> issues.
+>>
+>> 1. We depend on hotplug handler for removing the affected
+>> devices/drivers on DLLSC LINK down event (on DPC event
+>> trigger) and DPC handler for handling the error recovery. Since
+>> both handlers operate on same set of affected devices, it leads
+>> to race condition, which in turn leads to  NULL pointer
+>> exceptions or error recovery failures.You can find more details
+>> about this issue in following link.
+>>
+>> https://lore.kernel.org/linux-pci/20201007113158.48933-1-haifeng.zhao@intel.com/T/#t
+>>
+>> 2. For non-hotplug capable devices fatal (DPC) error recovery
+>> is currently broken. Current fatal error recovery implementation
+>> relies on PCIe hotplug (pciehp) handler for detaching and
+>> re-enumerating the affected devices/drivers. So when dealing with
+>> non-hotplug capable devices, recovery code does not restore the state
+>> of the affected devices correctly. You can find more details about
+>> this issue in the following links.
+>>
+>> https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
+>> https://lore.kernel.org/linux-pci/12115.1588207324@famine/
+>> https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+>>
+>> In order to fix the above two issues, we should stop relying on hotplug
+>    Yes, it doesn't rely on hotplug handler to remove and rescan the device,
+> but it couldn't prevent hotplug drivers from doing another replicated
+> removal/rescanning.
+> it doesn't make sense to leave another useless removal/rescanning there.
+> Maybe that's why these two paths were merged to one and made it rely on
+> hotplug.
+No, as per PCIe spec, hotplug and DPC has no functional dependency. Hence
+depending on it to handle some of its recovery function is in-correct and
+would lead to issues in non-hotplug capable platforms (which is true
+currently).
 > 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 60 +++++++++++++++++++-------------
->  1 file changed, 35 insertions(+), 25 deletions(-)
+
+>> +       else
+>> +               udev = dev->bus->self;
+>> +
+>> +       parent = udev->subordinate;
+>> +       pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
+>> +
+>> +        pci_lock_rescan_remove();
+>     Though here you have lock, but hotplug will do another
+> 'pci_stop_and_remove_bus_device()'
+>     without merging it with the hotplug driver, you have no way to
+> remove the replicated actions in
+>    hotplug handler.
+No, the core operation (remove/add device) is syncronzied and done in
+only one thread. Please check the following flow. Even in hotplug
+handler, before removing the device, it attempts to hold pci_lock_rescan_remove()
+lock. So holding the same lock in DPC handler will syncronize the DPC/hotplug
+handlers. Also if one of the thread (DPC or hotplug) removes/adds the affected devices,
+other thread will not repeat the same action (since the device is already removed/added).
+
+->pciehp_ist()
+   ->pciehp_handle_presence_or_link_change()
+     ->pciehp_disable_slot()
+       ->__pciehp_disable_slot()
+         ->remove_board()
+           ->pciehp_unconfigure_device()
+             ->pci_lock_rescan_remove()
 > 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 9006fc7f73d0..793fe924671f 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -19,11 +19,11 @@
->  #include <linux/mutex.h>
->  #include <linux/of_device.h>
->  #include <linux/rpmsg.h>
-> +#include <linux/rpmsg_byteorder.h>
->  #include <linux/scatterlist.h>
->  #include <linux/slab.h>
->  #include <linux/sched.h>
->  #include <linux/virtio.h>
-> -#include <linux/virtio_byteorder.h>
->  #include <linux/virtio_ids.h>
->  #include <linux/virtio_config.h>
->  #include <linux/wait.h>
-> @@ -85,11 +85,11 @@ struct virtproc_info {
->   * Every message sent(/received) on the rpmsg bus begins with this header.
->   */
->  struct rpmsg_hdr {
-> -	__virtio32 src;
-> -	__virtio32 dst;
-> -	__virtio32 reserved;
-> -	__virtio16 len;
-> -	__virtio16 flags;
-> +	__rpmsg32 src;
-> +	__rpmsg32 dst;
-> +	__rpmsg32 reserved;
-> +	__rpmsg16 len;
-> +	__rpmsg16 flags;
->  	u8 data[];
->  } __packed;
->  
-> @@ -107,8 +107,8 @@ struct rpmsg_hdr {
->   */
->  struct rpmsg_ns_msg {
->  	char name[RPMSG_NAME_SIZE];
-> -	__virtio32 addr;
-> -	__virtio32 flags;
-> +	__rpmsg32 addr;
-> +	__rpmsg32 flags;
->  } __packed;
->  
->  /**
-> @@ -280,6 +280,14 @@ static struct rpmsg_endpoint *__rpmsg_create_ept(struct virtproc_info *vrp,
->  	return NULL;
->  }
->  
-> +static bool virtio_rpmsg_is_little_endian(struct rpmsg_device *rpdev)
-> +{
-> +	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
-> +	struct virtproc_info *vrp = vch->vrp;
-> +
-> +	return virtio_is_little_endian(vrp->vdev);
-> +}
-
-Regarding this i wonder if the endianess could not be a rpmsg_device field that would be set on 
-__rpmsg_create_channel?
-I don't think that the endianess could change, so perhaps no need to call ops for each conversion
-using interface implemented in rpmsg.h...
-But perhaps I missed something?
- 
-> +
->  static struct rpmsg_endpoint *virtio_rpmsg_create_ept(struct rpmsg_device *rpdev,
->  						      rpmsg_rx_cb_t cb,
->  						      void *priv,
-> @@ -336,8 +344,8 @@ static int virtio_rpmsg_announce_create(struct rpmsg_device *rpdev)
->  		struct rpmsg_ns_msg nsm;
->  
->  		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-> -		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
-> -		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_CREATE);
-> +		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
-> +		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_CREATE);
->  
->  		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
->  		if (err)
-> @@ -360,8 +368,8 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
->  		struct rpmsg_ns_msg nsm;
->  
->  		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-> -		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
-> -		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_DESTROY);
-> +		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
-> +		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_DESTROY);
->  
->  		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
->  		if (err)
-> @@ -372,6 +380,7 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
->  }
->  
->  static const struct rpmsg_device_ops virtio_rpmsg_ops = {
-> +	.is_little_endian = virtio_rpmsg_is_little_endian,
->  	.create_ept = virtio_rpmsg_create_ept,
->  	.announce_create = virtio_rpmsg_announce_create,
->  	.announce_destroy = virtio_rpmsg_announce_destroy,
-> @@ -613,10 +622,10 @@ static int rpmsg_send_offchannel_raw(struct rpmsg_device *rpdev,
->  		}
->  	}
->  
-> -	msg->len = cpu_to_virtio16(vrp->vdev, len);
-> +	msg->len = cpu_to_rpmsg16(rpdev, len);
->  	msg->flags = 0;
-> -	msg->src = cpu_to_virtio32(vrp->vdev, src);
-> -	msg->dst = cpu_to_virtio32(vrp->vdev, dst);
-> +	msg->src = cpu_to_rpmsg32(rpdev, src);
-> +	msg->dst = cpu_to_rpmsg32(rpdev, dst);
->  	msg->reserved = 0;
->  	memcpy(msg->data, data, len);
->  
-> @@ -705,14 +714,15 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
->  {
->  	struct rpmsg_endpoint *ept;
->  	struct scatterlist sg;
-> -	unsigned int msg_len = virtio16_to_cpu(vrp->vdev, msg->len);
-> +	bool little_endian = rpmsg_is_little_endian();
-> +	unsigned int msg_len = __rpmsg16_to_cpu(little_endian, msg->len);
->  	int err;
->  
->  	dev_dbg(dev, "From: 0x%x, To: 0x%x, Len: %d, Flags: %d, Reserved: %d\n",
-> -		virtio32_to_cpu(vrp->vdev, msg->src),
-> -		virtio32_to_cpu(vrp->vdev, msg->dst), msg_len,
-> -		virtio16_to_cpu(vrp->vdev, msg->flags),
-> -		virtio32_to_cpu(vrp->vdev, msg->reserved));
-> +		__rpmsg32_to_cpu(little_endian, msg->src),
-> +		__rpmsg32_to_cpu(little_endian, msg->dst), msg_len,
-> +		__rpmsg16_to_cpu(little_endian, msg->flags),
-> +		__rpmsg32_to_cpu(little_endian, msg->reserved));
-
-Nitpicking: sometime rpmsgXX_to_cpu is used, sometime __rpmsgXX_to_cpu, 
-Perhaps only one API should be used... But i don't see any blocking point to use both...:)
-
-Thanks,
-Arnaud
-
->  #if defined(CONFIG_DYNAMIC_DEBUG)
->  	dynamic_hex_dump("rpmsg_virtio RX: ", DUMP_PREFIX_NONE, 16, 1,
->  			 msg, sizeof(*msg) + msg_len, true);
-> @@ -731,7 +741,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
->  	/* use the dst addr to fetch the callback of the appropriate user */
->  	mutex_lock(&vrp->endpoints_lock);
->  
-> -	ept = idr_find(&vrp->endpoints, virtio32_to_cpu(vrp->vdev, msg->dst));
-> +	ept = idr_find(&vrp->endpoints, __rpmsg32_to_cpu(little_endian, msg->dst));
->  
->  	/* let's make sure no one deallocates ept while we use it */
->  	if (ept)
-> @@ -745,7 +755,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
->  
->  		if (ept->cb)
->  			ept->cb(ept->rpdev, msg->data, msg_len, ept->priv,
-> -				virtio32_to_cpu(vrp->vdev, msg->src));
-> +				__rpmsg32_to_cpu(little_endian, msg->src));
->  
->  		mutex_unlock(&ept->cb_lock);
->  
-> @@ -853,13 +863,13 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
->  
->  	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
->  	chinfo.src = RPMSG_ADDR_ANY;
-> -	chinfo.dst = virtio32_to_cpu(vrp->vdev, msg->addr);
-> +	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
->  
->  	dev_info(dev, "%sing channel %s addr 0x%x\n",
-> -		 virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY ?
-> +		 rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
->  		 "destroy" : "creat", msg->name, chinfo.dst);
->  
-> -	if (virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY) {
-> +	if (rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY) {
->  		ret = rpmsg_unregister_device(&vrp->vdev->dev, &chinfo);
->  		if (ret)
->  			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
 > 
+>    Thanks,
+>    Ethan
+>> +        pci_dev_get(dev);
+>> +        list_for_each_entry_safe_reverse(pdev, temp, &parent->devices,
+>> +                                        bus_list) {
+>> +               pci_stop_and_remove_bus_device(pdev);
+>> +       }
+>> +
+>> +       result = reset_link(udev);
+>> +
+>> +       if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
+>> +               /*
+>> +                * If the error is reported by a bridge, we think this error
+>> +                * is related to the downstream link of the bridge, so we
+>> +                * do error recovery on all subordinates of the bridge instead
+>> +                * of the bridge and clear the error status of the bridge.
+>> +                */
+>> +               pci_aer_clear_fatal_status(dev);
+>> +               if (pcie_aer_is_native(dev))
+>> +                       pcie_clear_device_status(dev);
+>> +       }
+>> +
+>> +       if (result == PCI_ERS_RESULT_RECOVERED) {
+>> +               if (pcie_wait_for_link(udev, true))
+>     And another  pci_rescan_bus() like in the hotplug handler.
+As I have mentioned before, holding the same lock should make them synchronized
+and not repeat the underlying functionality of pci_rescan_bus() in both threads
+at the same time.
+>> +                       pci_rescan_bus(udev->bus);
+>> +               pci_info(dev, "Device recovery from fatal error successful\n");
+>> +        } else {
+>> +               pci_uevent_ers(dev, PCI_ERS_RESULT_DISCONNECT);
+>> +               pci_info(dev, "Device recovery from fatal error failed\n");
+
+>> --
+>> 2.17.1
+>>
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
