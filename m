@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F5B28DC55
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56A128DC66
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgJNJEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
+        id S1728325AbgJNJJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727382AbgJNJEg (ORCPT
+        with ESMTP id S1726074AbgJNJJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:04:36 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07B5C04585B;
-        Tue, 13 Oct 2020 22:28:13 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id o21so1544478qtp.2;
-        Tue, 13 Oct 2020 22:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kB//nqoMYrgFKVVbmCReUvvlCp/OH9pTFa1D0WvNeK8=;
-        b=Gl6vpxUKtK+nwjlLO+SvrSUeR2dC+PEV5wmiGiSO4POlCr4RCSIgQ3LSh9oI8d/GvE
-         3SCz5zqjFohPG3bpCgc3pDGJbq7kbxfM78TQRlzSzCwMCDAMEbi7r8gN5Lx7EeR9WFzp
-         ASIh0sC7J1hK0xf8PHJlMZ3xfkynkx3r+Txrk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kB//nqoMYrgFKVVbmCReUvvlCp/OH9pTFa1D0WvNeK8=;
-        b=U5oVH4eVCkdJEGqiktlNj6whxDVekGeblMKmTDVtzwKqiP6PnPYJVOGrncCcPuc0m0
-         W7FU8Cf/cE6L6mVIWhJaM90U7TOroh05mPCgABeR6iKoQ0foPQoSA4W+XRtDKkOkGt8v
-         wEPxx+9c8B8aEywKFgqEDFH0iMD4ckYBntGEQXYzQ3003OQT1sPp6VkdlRPNF97Z2fMI
-         gE1EQCI23EIiXxicJgt+xKDxPXoDY8AXnhXqGhAYLVyOVGuOlZb14i7sYycxYXDWhxUH
-         kJeBvt/vAPpWTcbnSl1n7hm0qmYv6kNzbZ4zLkXKzS4X8si7phpgQE5f8xpWj7vOaCv6
-         4M7Q==
-X-Gm-Message-State: AOAM5326xXarde5RpqrbPuLKPZaLWCoNcjZSTV1T/57HTtJazosN3KuF
-        hVE/YuDWIpMW3BpcPRf+d3BAchzN0n5cXoR1Fug=
-X-Google-Smtp-Source: ABdhPJw24gb5jxVKjUGFnb8ILFTaJiae+ZhEB+sYFIQ/Gi83c+wIbHiQ4g4hFhDiM1oYPQWMGp2dm2s2NPDIVlvVANQ=
-X-Received: by 2002:ac8:3674:: with SMTP id n49mr3177077qtb.385.1602653292820;
- Tue, 13 Oct 2020 22:28:12 -0700 (PDT)
+        Wed, 14 Oct 2020 05:09:37 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BB4C04585C
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=FtIzrrx52I9s/L0F5b/SYKDswu25oWi3u6T3OOCMfcU=; b=iXEr7LGhwI6fgLxPbSd9YPwWRV
+        PgFPp8GK3eB3O312DvRFxYHL4u9cB6TzPL1Ct062Wm4uMndoUggGHPMAs/sOLWtu5MoMGHtFeGmwR
+        s2FAatAW43ZDn3X26lMuL1cT4OTxIOUAO20RpKveFX9rcr/RaVR+k10EIiyosU2TRqFfw0zLB9bER
+        6/F/r7v8T546N4cTE4Q5ukihs/JWRlzLTv90XmuRvcIiPyAyra6F01TM2tNG60JSZzR+JwmVizMWz
+        /RSmeHnkOVVhJPiJwaBHmiCo6seJXxzOlCUmzmGZa6z/ONAaKdpVAwcn1HiltSsdjIRQ0BFkWx9lX
+        9UDGW5iw==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSZM6-0008SQ-R5; Wed, 14 Oct 2020 05:29:43 +0000
+Subject: Re: [PATCH] jfs: delete duplicated words in header files
+To:     linux-kernel@vger.kernel.org
+Cc:     Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net
+References: <20200720001353.26200-1-rdunlap@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0329314c-c139-68a9-38c2-0163ebd304b8@infradead.org>
+Date:   Tue, 13 Oct 2020 22:29:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200928070108.14040-1-ryan_chen@aspeedtech.com>
- <20200928070108.14040-2-ryan_chen@aspeedtech.com> <160264382296.310579.9835482254268204873@swboyd.mtv.corp.google.com>
-In-Reply-To: <160264382296.310579.9835482254268204873@swboyd.mtv.corp.google.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 14 Oct 2020 05:28:00 +0000
-Message-ID: <CACPK8Xe-_hTey7hTJjG2-EcDsTN0qOw3bWBcrZZohEK3QOJuvg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] clk: aspeed: modify some default clks are critical
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        BMC-SW <bmc-sw@aspeedtech.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200720001353.26200-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 at 02:50, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Ryan Chen (2020-09-28 00:01:08)
-> > In ASPEED SoC LCLK is LPC clock for all SuperIO device, UART1/UART2 are
-> > default for Host SuperIO UART device, eSPI clk for Host eSPI bus access
-> > eSPI slave channel, those clks can't be disable should keep default,
-> > otherwise will affect Host side access SuperIO and SPI slave device.
-> >
-> > Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
-> > ---
->
-> Is there resolution on this thread?
+ping.
 
-Not yet.
+On 7/19/20 5:13 PM, Randy Dunlap wrote:
+> Drop the repeated words "allocation" and "if" in comments.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Dave Kleikamp <shaggy@kernel.org>
+> Cc: jfs-discussion@lists.sourceforge.net
+> ---
+>  fs/jfs/jfs_extent.h |    2 +-
+>  fs/jfs/jfs_logmgr.h |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- linux-next-20200717.orig/fs/jfs/jfs_extent.h
+> +++ linux-next-20200717/fs/jfs/jfs_extent.h
+> @@ -5,7 +5,7 @@
+>  #ifndef	_H_JFS_EXTENT
+>  #define _H_JFS_EXTENT
+>  
+> -/*  get block allocation allocation hint as location of disk inode */
+> +/*  get block allocation hint as location of disk inode */
+>  #define	INOHINT(ip)	\
+>  	(addressPXD(&(JFS_IP(ip)->ixpxd)) + lengthPXD(&(JFS_IP(ip)->ixpxd)) - 1)
+>  
+> --- linux-next-20200717.orig/fs/jfs/jfs_logmgr.h
+> +++ linux-next-20200717/fs/jfs/jfs_logmgr.h
+> @@ -132,7 +132,7 @@ struct logpage {
+>   * (this comment should be rewritten !)
+>   * jfs uses only "after" log records (only a single writer is allowed
+>   * in a page, pages are written to temporary paging space if
+> - * if they must be written to disk before commit, and i/o is
+> + * they must be written to disk before commit, and i/o is
+>   * scheduled for modified pages to their home location after
+>   * the log records containing the after values and the commit
+>   * record is written to the log on disk, undo discards the copy
+> 
 
-We have a system where the BMC (management controller) controls some
-clocks, but the peripherals that it's clocking are outside the BMC's
-control. In this case, the host processor us using some UARTs and what
-not independent of any code running on the BMC.
 
-Ryan wants to have them marked as critical so the BMC never powers them down.
+-- 
+~Randy
 
-However, there are systems that don't use this part of the soc, so for
-those implementations they are not critical and Linux on the BMC can
-turn them off.
-
-Do you have any thoughts? Has anyone solved a similar problem already?
-
-Cheers,
-
-Joel
