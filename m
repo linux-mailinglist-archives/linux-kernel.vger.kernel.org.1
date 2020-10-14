@@ -2,65 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9165628E83E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971CB28EAAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730166AbgJNVNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 17:13:34 -0400
-Received: from smtprelay0199.hostedemail.com ([216.40.44.199]:42902 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726575AbgJNVNd (ORCPT
+        id S2389513AbgJOCAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732484AbgJOB7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 17:13:33 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id AF21E182CED28;
-        Wed, 14 Oct 2020 21:13:32 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3871:3872:3874:4321:5007:7875:10004:10400:10848:11232:11658:11914:12043:12048:12297:12663:12740:12760:12895:13019:13069:13311:13357:13439:14659:14721:21080:21451:21627:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: toy72_1009c2b2720f
-X-Filterd-Recvd-Size: 2001
-Received: from XPS-9350 (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 14 Oct 2020 21:13:30 +0000 (UTC)
-Message-ID: <567bd8f4f6080c6c3b414d1a9c18aff4c224946e.camel@perches.com>
-Subject: Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
-From:   Joe Perches <joe@perches.com>
-To:     "Moore, Robert" <robert.moore@intel.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Wed, 14 Oct 2020 14:13:29 -0700
-In-Reply-To: <BYAPR11MB325695B550880788DBED54DB87050@BYAPR11MB3256.namprd11.prod.outlook.com>
-References: <20200707200716.GA4920@embeddedor>
-         <CAJZ5v0iDz_EsrpdMQQDfaVC2orMQkEcubmR6-J6mvtrXmKXbRg@mail.gmail.com>
-         <BYAPR11MB325602EDA2D2ACC2B28EAF4687670@BYAPR11MB3256.namprd11.prod.outlook.com>
-         <b851b2c8-2d7c-939d-507d-b322dd4a0dbf@embeddedor.com>
-         <ae54364041b99b89f818812d957d4a4bb4efdc25.camel@perches.com>
-         <BYAPR11MB325695B550880788DBED54DB87050@BYAPR11MB3256.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 14 Oct 2020 21:59:37 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3740C0613AA
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:14:04 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id s2so101880vks.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RC25HY5NnJ5FNFugLVlYGqgrjVBJgiwdGnqPIb+Pkec=;
+        b=Eudd9Igdl/h4VlLzh+aptHOEYif6JqCGyjeEgznhJwQJ1ttBoPa1uqULYPz9oPlCXy
+         c7SM6xDD18LjK/c5U+87y0gfMTersHROiToiRFTAD/yQO1OsuN7uOr2MLccaOEP05GV5
+         mbjFG5TewOySMnmNVW5yP7KHxfDdQZEsCE11w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RC25HY5NnJ5FNFugLVlYGqgrjVBJgiwdGnqPIb+Pkec=;
+        b=Z0vqw2pOMtv4uIh7z7dQRQqaSdPlo6NhAp7MdskHgeSlRUhAaPWvUsJVmdixSUG7Ki
+         GIUAM4ZXAxZj49Mfu4KewWiAf/pvxYW1HG7dZ0ZgP6mAnS4iecePLlwweNe56YTmWRHv
+         YUdMmL3XKHX12d5xCdO5MR4PQffvqzmZkddisMqcMgeaaUyPXulrYH5MJGdFA/39JrZR
+         mc9yyya8rSXQmv6NYaK3K4KV5A53tNnW6LdZwYQFwXk5HS0yRdNC8TJgliAX5gT03GC4
+         ncpjwuftGMcZKrQ1yG7OzGNG4gbSH0s1x0/Sv4YKSm2V+rNtsq1SNpvhuXeo8W4ewBTB
+         3KjQ==
+X-Gm-Message-State: AOAM532sfAigIH8pHga4yVVWqIqUmuXA2iILalokV7PntLtFoTcVCHc8
+        /Ov+jxM/ueK5viThqlYJxbttocLj2/0ERQ==
+X-Google-Smtp-Source: ABdhPJx8tYLgoFNKbgW6O0SAVgXm9odXeaK52eBsYIej44dXRlWX2wpdBeeQUK7PEG8jwtWJ/twNRw==
+X-Received: by 2002:a1f:988e:: with SMTP id a136mr989700vke.4.1602710043456;
+        Wed, 14 Oct 2020 14:14:03 -0700 (PDT)
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
+        by smtp.gmail.com with ESMTPSA id i3sm124507vkp.6.2020.10.14.14.14.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 14:14:02 -0700 (PDT)
+Received: by mail-vs1-f47.google.com with SMTP id d4so238222vsk.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:14:02 -0700 (PDT)
+X-Received: by 2002:a67:b405:: with SMTP id x5mr993311vsl.4.1602710041706;
+ Wed, 14 Oct 2020 14:14:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201014085758.v2.1.Id0cc5d859e2422082a29a7909658932c857f5a81@changeid>
+ <160269519265.884498.6320532206038624483@swboyd.mtv.corp.google.com>
+In-Reply-To: <160269519265.884498.6320532206038624483@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 14 Oct 2020 14:13:50 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WcH0DKhiKp4X8j0mxUUCm-yZmJp1boXqVOhCWeySydiQ@mail.gmail.com>
+Message-ID: <CAD=FV=WcH0DKhiKp4X8j0mxUUCm-yZmJp1boXqVOhCWeySydiQ@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: qcom: lpasscc: Re-configure the PLL in case lost
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-14 at 20:48 +0000, Moore, Robert wrote:
-> I'm afraid that the macro does not compile under MSVC:
-> 
-> warning C4067: unexpected tokens following preprocessor directive - expected a newline (compiling source file ..\..\source\tools\acpiexec\aetests.c)
-> 
->  It looks like "__has_attribute" is not supported.
+Hi,
 
-It looks more like compiler.h/compiler_types.h/compiler_attributes.h
-doesn't support msvc.
+On Wed, Oct 14, 2020 at 10:06 AM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Douglas Anderson (2020-10-14 08:58:24)
+> > diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
+> > index 228d08f5d26f..ee23eb5b9bf2 100644
+> > --- a/drivers/clk/qcom/lpasscorecc-sc7180.c
+> > +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
+> > @@ -356,6 +356,25 @@ static const struct qcom_cc_desc lpass_audio_hm_sc7180_desc = {
+> >         .num_gdscs = ARRAY_SIZE(lpass_audio_hm_sc7180_gdscs),
+> >  };
+> >
+> > +static int lpass_core_cc_pm_clk_resume(struct device *dev)
+> > +{
+> > +       struct regmap *regmap = dev_get_drvdata(dev);
+>
+> Can we use dev_get_remap(dev, NULL) instead?
+
+Good idea.  ...but as far as I can tell there are two regmaps.  I'll use
+
+dev_get_regmap(dev, "lpass_core_cc");
 
 
+> > +       unsigned int l_val;
+> > +       int ret;
+> > +
+> > +       ret = pm_clk_resume(dev);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       /* Read PLL_L_VAL */
+>
+> Please drop this useless comment. Replace it with something like this
+> (if at all):
+>
+>         /* Reconfigure PLL if PLL was reset across suspend */
 
+We reconfigure more than just the PLL.  I believe that the PLL being
+zero is just a clue that we use to know we should re-init the whole
+thing.  I've tried to convey this in a comment in the next version.
