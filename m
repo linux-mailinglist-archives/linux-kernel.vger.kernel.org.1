@@ -2,183 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A152B28E5BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2DB28E5BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgJNRvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726019AbgJNRvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:51:43 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CBCD21D7F;
-        Wed, 14 Oct 2020 17:51:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602697902;
-        bh=UgjPcgSwO2CMV8epFPjr2u2qsJklKn6QeLFhLfwCVbA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RcVxu6Sida3yO9vy1vtWSmeZsg8Xqgbm8YSADvE3shv3Nxe4Fz2fNCC1hX9eS7zWg
-         mOUyGRF3mXJaiZxkpSUlVNwLqQO9eM0kkEdfQUKq6npkPfjmLVgn7VEBK1LOHB6OOX
-         FMV4o9v/4wy2FSYcW5CDIzKjjazf/K9mbruU/qIA=
-Date:   Wed, 14 Oct 2020 19:52:16 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        linux-spdx@vger.kernel.org
-Subject: [GIT PULL] SPDX patches for 5.10-rc1
-Message-ID: <20201014175216.GA3787023@kroah.com>
+        id S1727986AbgJNRxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgJNRxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:53:53 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FB3C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:53:53 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id q9so33329iow.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9VhKl5FefWluZOToOnttrb98bLhg6tznaGTvKOR1WyM=;
+        b=LG38mpaEoTV3xmy9S+QxjaWHOFTAY40ftlyU0IYGVHB9VtZgunbOT4b7+0t1C5T/EG
+         0K/xX3UGeFbtMaIaaUMcDJPwbrJa44CMtFBH7HQwj32Kb5q7UppzuMTRdu8z+SZYXjFA
+         PJ4Hw8bx+hbBQN68dgzyNRS6WRMAmLQynrOhBd8bvU5I3WtPesoBslSTB3jYYGO6jWAl
+         rCEMC7IdqsHuI0fO8ML8nHdP22EXBUYdmj5R0h6M66pECLDPcPY2EnMSdeQzFb/rXPE5
+         XDkuRe2mxM4/p9Tvg2PunJju+QPcb8PtUcEjYhyJ3bsGJ+af/CgeLPyNFnul+AHDJEYb
+         GDpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9VhKl5FefWluZOToOnttrb98bLhg6tznaGTvKOR1WyM=;
+        b=FhCZAf37PSI0IfxqoiM4DBWRs64qZonrX1jI4qzzKJ2q3VeMFzO9pmxFFl6npDwiG7
+         d4uedxAodPy8ESJ5O1b4ccY4N+4cafAgxmgQcMTjx3/lJ2+F6zP4Gm4EcdFkYl9pDwaf
+         9lln2504rdWai12QGp+ZnAFtyMmthOVCDOpW/nsuGZR9Y0wa4wW6v7q+iR70MQCdVSPc
+         7NY6aaw3iR+GoYrQydwQR8z7cwwh0BhcOU8wu/GXi4FAWAqYeOZE/0gKKs27NhcE/Wuu
+         QWqipq20NDmv7AvaLJxH0p17mkMlBvmXi24BpV//ltGoAMGaIb3O82MhszLeNFDsl1jR
+         rDUg==
+X-Gm-Message-State: AOAM531oqLQRiLlVs7gq4l3wMQLvDtwdzUwIiJULnjCSxi9HzUFL62WX
+        r43CMC8EwsgBWT0N9npnyAI=
+X-Google-Smtp-Source: ABdhPJw39voKKffSwqBpceAiKDbV1Rgd5kVKGzEV/A5CvZiPsXSMIKxOhx3sM5EaQ4yg9t4Akr+CZw==
+X-Received: by 2002:a6b:144e:: with SMTP id 75mr422228iou.39.1602698032271;
+        Wed, 14 Oct 2020 10:53:52 -0700 (PDT)
+Received: from pm2-ws13.praxislan02.com ([2001:470:8:67e:ba27:ebff:fee8:ce27])
+        by smtp.gmail.com with ESMTPSA id v15sm67765ile.37.2020.10.14.10.53.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 10:53:51 -0700 (PDT)
+From:   Jason Andryuk <jandryuk@gmail.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org
+Cc:     Jason Andryuk <jandryuk@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Remove Xen PVH dependency on PCI
+Date:   Wed, 14 Oct 2020 13:53:39 -0400
+Message-Id: <20201014175342.152712-1-jandryuk@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
+A Xen PVH domain doesn't have a PCI bus or devices, so it doesn't need
+PCI support built in.  Currently, XEN_PVH depends on XEN_PVHVM which
+depends on PCI.
 
-  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
+The first patch introduces XEN_PVHVM_GUEST as a toplevel item and
+changes XEN_PVHVM to a hidden variable.  This allows XEN_PVH to depend
+on XEN_PVHVM without PCI while XEN_PVHVM_GUEST depends on PCI.
 
-are available in the Git repository at:
+The second patch moves XEN_512GB to clean up the option nesting.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/spdx.git tags/spdx-5.10-rc1
+Jason Andryuk (2):
+  xen: Remove Xen PVH/PVHVM dependency on PCI
+  xen: Kconfig: nest Xen guest options
 
-for you to fetch changes up to c5c553850899e2662ecf749ac21fff95d17f59a4:
+ arch/x86/xen/Kconfig | 38 ++++++++++++++++++++++----------------
+ drivers/xen/Makefile |  2 +-
+ 2 files changed, 23 insertions(+), 17 deletions(-)
 
-  scripts/spdxcheck.py: handle license identifiers in XML comments (2020-10-02 11:31:26 +0200)
+-- 
+2.26.2
 
-----------------------------------------------------------------
-SPDX patches for 5.10-rc1
-
-Here are some SPDX-specific changes for 5.10-rc1.
-
-They include:
-	- driver fixes to make spdxcheck.pl work properly
-	- add GFDL licenses as "deprecated" but required due to some of
-	  our documentation using them
-	- add Zlib license as "deprecated" but required because we have
-	  code with this license in the tree.
-	- convert some drivers to have SPDX identifiers that previously
-	  didn't have them.
-
-All have been in linux-next for a very long time with no reported
-issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Lukas Bulwahn (2):
-      net/mlx5: IPsec: make spdxcheck.py happy
-      scripts/spdxcheck.py: handle license identifiers in XML comments
-
-Mauro Carvalho Chehab (1):
-      LICENSE: add GFDL deprecated licenses
-
-Mikhail Zaslonko (1):
-      LICENSES/deprecated: add Zlib license text
-
-Thomas Gleixner (5):
-      scsi/qla4xxx: Convert to SPDX license identifiers
-      scsi/qla2xxx: Convert to SPDX license identifiers
-      net/qlcnic: Convert to SPDX license identifiers
-      net/qlge: Convert to SPDX license identifiers
-      net/qla3xxx: Convert to SPDX license identifiers
-
- .../device_drivers/qlogic/LICENSE.qla3xxx          |  46 ---
- .../device_drivers/qlogic/LICENSE.qlcnic           | 288 --------------
- .../networking/device_drivers/qlogic/LICENSE.qlge  | 288 --------------
- Documentation/scsi/LICENSE.qla2xxx                 | 290 --------------
- Documentation/scsi/LICENSE.qla4xxx                 | 289 --------------
- LICENSES/deprecated/GFDL-1.1                       | 377 +++++++++++++++++++
- LICENSES/deprecated/GFDL-1.2                       | 417 +++++++++++++++++++++
- LICENSES/deprecated/Zlib                           |  27 ++
- MAINTAINERS                                        |   3 -
- .../mellanox/mlx5/core/accel/ipsec_offload.c       |   2 +-
- drivers/net/ethernet/qlogic/qla3xxx.c              |   3 +-
- drivers/net/ethernet/qlogic/qla3xxx.h              |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic.h        |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.c    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_hw.h    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c  |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_vnic.c  |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_ctx.c    |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.c    |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_dcb.h    |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_ethtool.c    |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_hdr.h    |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.c     |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_hw.h     |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c   |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c     |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_minidump.c   |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_sriov.h  |   3 +-
- .../ethernet/qlogic/qlcnic/qlcnic_sriov_common.c   |   3 +-
- .../net/ethernet/qlogic/qlcnic/qlcnic_sriov_pf.c   |   3 +-
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_sysfs.c  |   3 +-
- drivers/scsi/qla2xxx/qla_attr.c                    |   3 +-
- drivers/scsi/qla2xxx/qla_bsg.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_bsg.h                     |   3 +-
- drivers/scsi/qla2xxx/qla_dbg.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_dbg.h                     |   3 +-
- drivers/scsi/qla2xxx/qla_def.h                     |   3 +-
- drivers/scsi/qla2xxx/qla_dfs.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_fw.h                      |   3 +-
- drivers/scsi/qla2xxx/qla_gbl.h                     |   3 +-
- drivers/scsi/qla2xxx/qla_gs.c                      |   3 +-
- drivers/scsi/qla2xxx/qla_init.c                    |   3 +-
- drivers/scsi/qla2xxx/qla_inline.h                  |   3 +-
- drivers/scsi/qla2xxx/qla_iocb.c                    |   3 +-
- drivers/scsi/qla2xxx/qla_isr.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_mbx.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_mid.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_mr.c                      |   3 +-
- drivers/scsi/qla2xxx/qla_mr.h                      |   3 +-
- drivers/scsi/qla2xxx/qla_nvme.c                    |   3 +-
- drivers/scsi/qla2xxx/qla_nvme.h                    |   3 +-
- drivers/scsi/qla2xxx/qla_nx.c                      |   3 +-
- drivers/scsi/qla2xxx/qla_nx.h                      |   3 +-
- drivers/scsi/qla2xxx/qla_nx2.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_nx2.h                     |   3 +-
- drivers/scsi/qla2xxx/qla_os.c                      |   3 +-
- drivers/scsi/qla2xxx/qla_settings.h                |   3 +-
- drivers/scsi/qla2xxx/qla_sup.c                     |   3 +-
- drivers/scsi/qla2xxx/qla_tmpl.c                    |   3 +-
- drivers/scsi/qla2xxx/qla_tmpl.h                    |   3 +-
- drivers/scsi/qla2xxx/qla_version.h                 |   3 +-
- drivers/scsi/qla4xxx/ql4_83xx.c                    |   3 +-
- drivers/scsi/qla4xxx/ql4_83xx.h                    |   3 +-
- drivers/scsi/qla4xxx/ql4_attr.c                    |   3 +-
- drivers/scsi/qla4xxx/ql4_bsg.c                     |   3 +-
- drivers/scsi/qla4xxx/ql4_bsg.h                     |   3 +-
- drivers/scsi/qla4xxx/ql4_dbg.c                     |   3 +-
- drivers/scsi/qla4xxx/ql4_dbg.h                     |   3 +-
- drivers/scsi/qla4xxx/ql4_def.h                     |   3 +-
- drivers/scsi/qla4xxx/ql4_fw.h                      |   3 +-
- drivers/scsi/qla4xxx/ql4_glbl.h                    |   3 +-
- drivers/scsi/qla4xxx/ql4_init.c                    |   3 +-
- drivers/scsi/qla4xxx/ql4_inline.h                  |   3 +-
- drivers/scsi/qla4xxx/ql4_iocb.c                    |   3 +-
- drivers/scsi/qla4xxx/ql4_isr.c                     |   3 +-
- drivers/scsi/qla4xxx/ql4_mbx.c                     |   3 +-
- drivers/scsi/qla4xxx/ql4_nvram.c                   |   3 +-
- drivers/scsi/qla4xxx/ql4_nvram.h                   |   3 +-
- drivers/scsi/qla4xxx/ql4_nx.c                      |   3 +-
- drivers/scsi/qla4xxx/ql4_nx.h                      |   3 +-
- drivers/scsi/qla4xxx/ql4_os.c                      |   3 +-
- drivers/scsi/qla4xxx/ql4_version.h                 |   3 +-
- drivers/staging/qlge/qlge.h                        |   3 +-
- drivers/staging/qlge/qlge_main.c                   |   2 +-
- scripts/spdxcheck.py                               |   3 +
- 86 files changed, 900 insertions(+), 1354 deletions(-)
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qla3xxx
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlcnic
- delete mode 100644 Documentation/networking/device_drivers/qlogic/LICENSE.qlge
- delete mode 100644 Documentation/scsi/LICENSE.qla2xxx
- delete mode 100644 Documentation/scsi/LICENSE.qla4xxx
- create mode 100644 LICENSES/deprecated/GFDL-1.1
- create mode 100644 LICENSES/deprecated/GFDL-1.2
- create mode 100644 LICENSES/deprecated/Zlib
