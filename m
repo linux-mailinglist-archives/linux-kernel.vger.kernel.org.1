@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2EF28E184
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B4228E18A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731320AbgJNNme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:42:34 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:41628 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727421AbgJNNme (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:42:34 -0400
-Received: by mail-ot1-f68.google.com with SMTP id n15so2341855otl.8;
-        Wed, 14 Oct 2020 06:42:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EPC8LENkqru9ordHAc2jHtuu2caeD/J3+oqQoXlywEQ=;
-        b=O/XyToavm2XOpZiq+XMLnnUGZuayxN/HkE85jgAU+C7olHSYdTy2pIcFxX7vTlnxeF
-         p2JXETJlOn96GAaYxvPorBWHlCmm/1hVb+jZFwlgMW1/1MdK9Tx9zcDEpBLyrRyx+fBP
-         kG2VJZqrhwPLo4SowBVq+EC+HYexdS3CNG2XAIBZbCNTWmFvXWL0ScFL9MXesC4C9nHP
-         NwgOB7HaDEBoZb8oBlKNeWvCHFDDtb3nwEEhrcyQf95/IUJmnTdlBO6B0lF2qjdrSFAw
-         Y8/JLiHrvc+jjeWYS0uC+Hno8dfd2c9yzUs1OoXAazTReatjZ9lqOdSggfnijYKl0Flg
-         Gf0w==
-X-Gm-Message-State: AOAM5323KNN/I7umIbvyk9fcmK47nRbyUk/YfALLEmfHY0/KzlN/vTFQ
-        1S3Gyo/j7nKxYLhSlLpWmM2eNuRvRm9D
-X-Google-Smtp-Source: ABdhPJwHCh5Q3872UyXP5k/GeTKKX/bi7N1UPHyb5U7AVXgwjiq0oACMMoAmODf5du3pirXwz8CabA==
-X-Received: by 2002:a05:6830:2316:: with SMTP id u22mr3041582ote.245.1602682951509;
-        Wed, 14 Oct 2020 06:42:31 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j83sm1355166oia.19.2020.10.14.06.42.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 06:42:30 -0700 (PDT)
-Received: (nullmailer pid 1563789 invoked by uid 1000);
-        Wed, 14 Oct 2020 13:42:29 -0000
-Date:   Wed, 14 Oct 2020 08:42:29 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Lubomir Rintel <lkundrak@v3.sk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
+        id S1731290AbgJNNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:43:15 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15288 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731190AbgJNNnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:43:13 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B2632521067FF2E8F636;
+        Wed, 14 Oct 2020 21:43:11 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 14 Oct 2020
+ 21:43:08 +0800
+Subject: Re: [PATCH 1/2] arm64: dts: broadcom: remove an unused property
+ dma-ranges
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Florian Fainelli <f.fainelli@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
+        "Scott Branden" <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        linux-leds <linux-leds@vger.kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 4/6] dt-bindings: misc: explicitly add #address-cells for
- slave mode
-Message-ID: <20201014134229.GA1563657@bogus>
-References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
- <20201013160845.1772-5-thunder.leizhen@huawei.com>
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201013060623.1711-1-thunder.leizhen@huawei.com>
+ <20201013060623.1711-2-thunder.leizhen@huawei.com>
+ <fa40441b-6ae1-6018-3da6-424d0252c1ba@gmail.com>
+ <CAK8P3a3MtCDpbCgNEnLf1QcE+1O0oGZtob2KY7G-77oA95bLJQ@mail.gmail.com>
+ <b25dd804-c691-b987-9f6a-de043aa45755@huawei.com>
+Message-ID: <e0c1e997-06fd-6947-fccf-ae0a0f936a49@huawei.com>
+Date:   Wed, 14 Oct 2020 21:43:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013160845.1772-5-thunder.leizhen@huawei.com>
+In-Reply-To: <b25dd804-c691-b987-9f6a-de043aa45755@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 00:08:43 +0800, Zhen Lei wrote:
-> Explicitly add "#address-cells = <0>" and "#size-cells = <0>" to
-> eliminate below warnings.
-> 
-> (spi_bus_bridge): /example-0/spi: incorrect #address-cells for SPI bus
-> (spi_bus_bridge): /example-0/spi: incorrect #size-cells for SPI bus
-> (spi_bus_reg): Failed prerequisite 'spi_bus_bridge'
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
 
-Applied, thanks!
+
+On 2020/10/14 21:36, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2020/10/14 15:38, Arnd Bergmann wrote:
+>> On Wed, Oct 14, 2020 at 5:15 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>> On 10/12/2020 11:06 PM, Zhen Lei wrote:
+>>>> stingray-usb.dtsi is finally included by three dts files:
+>>>> bcm958802a802x.dts, bcm958742k.dts and bcm958742t.dts. I searched all
+>>>> these three entire expanded dts files, and each of them contains only one
+>>>> dma-ranges. No conversion range is specified, so it cannot work properly.
+>>>> I think this property "dma-ranges" is added by mistake, just remove it.
+>>>> Otherwise, the following error will be reported when any YAML detection
+>>>> is performed on arm64.
+>>>>
+>>>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+>>>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+>>>> its #address-cells (1) differs from / (2)
+>>>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
+>>>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
+>>>> its #size-cells (1) differs from / (2)
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>
+>>> This looks fine to me, Scott, Ray do you want to Ack this patch before I
+>>> take it?
+>>
+>> Does it mean that there are no devices on this bus that can do DMA?
+>>
+>> Usually there should be a dma-ranges property to identify that DMA
+>> is possible and what the limits are, though we have failed to enforce
+>> that.
+> 
+> Documentation/devicetree/bindings/iommu/iommu.txt +79
+> When an "iommus" property is specified in a device tree node, the IOMMU will
+> be used for address translation. If a "dma-ranges" property exists in the
+> device's parent node it will be ignored. An exception to this rule is if the
+> referenced IOMMU is disabled, in which case the "dma-ranges" property of the
+> parent shall take effect.
+> 
+> The dma-ranges is only required by IOMMU disabled case. And should exist in
+> the parent node of IOMMU device. But this deleted dma-ranges is under the usb
+> bus node.
+> 
+>>
+>> Also note that the #address-cells=<1> means that any device under
+>> this bus is assumed to only support 32-bit addressing, and DMA will
+>> have to go through a slow swiotlb in the absence of an IOMMU.
+> 
+> The dma_alloc_coherent() will allocate memory with GFP_DMA32 flag and
+> try the 0-4G first. The reserved swiotlb buffer memory is used only
+> when the allocation failed.
+
+----- Sorry, my mistake, please ignore the following.
+
+> 
+>  memory@80000000:
+>     device_type: ["memory"]
+>     reg: [[0x0, 0x80000000, 0x0, 0x80000000], [0x8, 0x80000000, 0x1, 0x80000000]]
+> 
+> If this is the actual physical memory size, the #address-cells should be set to <1>.
+> 
+>>
+>>       Arnd
+>>
+>> .
+>>
+
