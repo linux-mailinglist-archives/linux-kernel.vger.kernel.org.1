@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9766928E60C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D30F28E613
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387558AbgJNSLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:11:45 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:49752 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727369AbgJNSLo (ORCPT
+        id S1729588AbgJNSMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728527AbgJNSMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:11:44 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 263C4803073E;
-        Wed, 14 Oct 2020 18:11:42 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Ntl7Ii8wms8a; Wed, 14 Oct 2020 21:11:40 +0300 (MSK)
-Date:   Wed, 14 Oct 2020 21:11:36 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-Message-ID: <20201014181136.5hwsu77rv3wbxw7w@mobilestation>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>
- <ed0221ee-c586-b8f8-a7d1-4a2a190dc41b@gmail.com>
+        Wed, 14 Oct 2020 14:12:36 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0EFC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:12:36 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id x62so117659oix.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U0lFqbPV6LL+3GwiEtkYs6HjlksJ2EhlSuzlNyHvcVI=;
+        b=qlOuxHbmfnviwPmX1bO8wzlktBayGkF63uafDr9hY8kJpSdj62TG4fVsjjYAqfpLAa
+         eOJ5o1ejC1jLEUerPLiWX0uEMYhoJYuzkgzzkiIqtSSiCWbK/3EEpaf0B/yNVgdY8Nar
+         ztcHd11qcw/11sAAHy4cgnD/FmognMNYCAzSs4Ikk09go9gMAb6YcRUAQqnYiJr8d4sF
+         3AP2w6pqyyMAlpAdB0HfJq0aBbm3oS9EJbvkqQJF+bkW9/4voYbutktNCc8J+JxAbOmT
+         +T4w1o+1mc2hYRibZRAnv2L6cA/JlJd3EMbiMq/aQjHHl8rat5ISgCHmvH9XjPVlMCp4
+         haew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U0lFqbPV6LL+3GwiEtkYs6HjlksJ2EhlSuzlNyHvcVI=;
+        b=E7ZcRLUeYewn0/aFOxgVj/rWREYU073MideKb2lxP1XnH/eUkNr23YxhlTIubF1Xyc
+         uz2JORfHa8UMW/NZa0PZ7DHuIuWj90NhSOmocz6ohnZtn9s8JUiyn4v/zbKwDXJrIzaW
+         dT7LEvFUItpw7enBLeJKU3u9S5yEEGc8FE7MeZwu6pVd65icz3pV7hE/L4UXJblZgqQy
+         MHIoCUm8O1NIGRekRSjzvbrlPQg/mJuaGK1mWNpeWZK/cWE2PwDgI4vD4fxKr6fNtAid
+         7xZIvOwfgOfD22O7lg+FZD5mYb51pYUmwmSnyLUstalYYOnF8z5zEriOief+p7fxwQwg
+         7qSg==
+X-Gm-Message-State: AOAM533A+iTI3TyV+H5m+PXj0LTSoPf3zs2672QphqgVi7DhxRi32iFe
+        oIZWHO9OP7d3DqpBi96x7KDkuoYBj1dn6SjA3FebLbqH29JRDcji
+X-Google-Smtp-Source: ABdhPJyxMwz1sSrHmeyBcEN1SOXdjxpmftjPs/yczF6BkFgXoj8r52TWyGQI+aHhOYgz5zw1DFKyAE/muv0oTgqfIrs=
+X-Received: by 2002:aca:420a:: with SMTP id p10mr355873oia.117.1602699155252;
+ Wed, 14 Oct 2020 11:12:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ed0221ee-c586-b8f8-a7d1-4a2a190dc41b@gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20201014163738.117332-1-dwaipayanray1@gmail.com> <ea011df1e30ce445d51e128287e2c6c38de20949.camel@perches.com>
+In-Reply-To: <ea011df1e30ce445d51e128287e2c6c38de20949.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Wed, 14 Oct 2020 23:42:09 +0530
+Message-ID: <CABJPP5DrSL7GoZUWc7P02CfLHfTBmfpLxrVOVQ08KH3pPontoA@mail.gmail.com>
+Subject: Re: [PATCH v2] checkpatch: add new exception to repeated word check
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 11:00:45AM -0700, Florian Fainelli wrote:
-> On 10/14/20 3:14 AM, Serge Semin wrote:
-> > In accordance with the Generic EHCI/OHCI bindings the corresponding node
-> > name is suppose to comply with the Generic USB HCD DT schema, which
-> > requires the USB nodes to have the name acceptable by the regexp:
-> > "^usb(@.*)?" . Let's fix the DTS files, which have the nodes defined with
-> > incompatible names.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > ---
-> > 
-> > Please, test the patch out to make sure it doesn't brake the dependent DTS
-> > files. I did only a manual grepping of the possible nodes dependencies.
-> 
+On Wed, Oct 14, 2020 at 11:33 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-10-14 at 22:07 +0530, Dwaipayan Ray wrote:
+> > Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+> > moved the repeated word test to check for more file types. But after
+> > this, if checkpatch.pl is run on MAINTAINERS, it generates several
+> > new warnings of the type:
+>
+> Perhaps instead of adding more content checks so that
+> word boundaries are not something like \S but also
+> not punctuation so that content like
+>
+>         git git://
+>         @size size
+>
+> does not match?
+>
+>
+Hi,
+So currently the words are trimmed of non alphabets before the check:
 
-> Not sure how you envisioned these change to be picked up, but you may
-> need to split these changes between ARM/ARM64, MIPS and PowerPC at
-> least. And within ARM/ARM64 you will most likely have to split according
-> to the various SoC maintainers.
+while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
+my $first = $1;
+my $second = $2;
 
-Hmm, I don't really know how it's going to be done in this case, but there must
-be a way to get the cross-platform patches picked up in general. For
-instance, see the patches like:
-714acdbd1c94 arch: rename copy_thread_tls() back to copy_thread()
-140c8180eb7c arch: remove HAVE_COPY_THREAD_TLS
-They touched the files from different files, but still have been merged in.
-Maybe I should have copied these three patches to the "linux-arch@vger.kernel.org"
-list or some other mailing list...
+where, the word_pattern is:
+my $word_pattern = '\b[A-Z]?[a-z]{2,}\b';
 
--Sergey
+So do you perhaps recommend modifying this word pattern to
+include the punctuation as well rather than trimming them off?
 
-> -- 
-> Florian
+Thanks,
+Dwaipayan.
