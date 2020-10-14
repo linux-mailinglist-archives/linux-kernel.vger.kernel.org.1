@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4C328E031
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD6028E037
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388630AbgJNMB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:01:27 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:43909 "EHLO
+        id S1730863AbgJNMBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:01:41 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:49703 "EHLO
         mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728536AbgJNMBY (ORCPT
+        with ESMTP id S1727682AbgJNMBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:01:24 -0400
-Received: by mail-il1-f197.google.com with SMTP id a13so2179001ilb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:01:23 -0700 (PDT)
+        Wed, 14 Oct 2020 08:01:25 -0400
+Received: by mail-il1-f197.google.com with SMTP id h13so2164442ils.16
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:01:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bzSzCfekdOwUuv4utGrUdQNRK4eYPYeSAuNCSn9NuLc=;
-        b=Ogb8gRKrpJOvyh1MQc+6srjzHF+kXSj8IdpWhUqL8+Qp/Vj6yCGm5mlrNU0UWa5Njq
-         LoCdxsoJAK1RWmuES4PbPLKRnvMTWSU96jQp6ipzv4rdnnh9owKlFH3W8Y7pKCCaGP32
-         fCAPXohvEY+ofuKOALtM7B1NSwNhUHvlCvh0fIYDQU1WRA9b9Z5jpl4h/t2BE2KMNm9M
-         1AZXMP9S2Z8Jbq+TaUc2Mg6qw7kI3+7fSUO041rPF1gONIu5H6UvWBIsK2K3Jo4drBs3
-         YtLw4Ul2r/sgSI9fHiumcUI8xMZQEUAEdEjKWXDb/cxzhxcGAKTmZTV1t9y8Ginfzqvn
-         cWHg==
-X-Gm-Message-State: AOAM531PRPOfarAQl+3jmL/k9lqxKBMZvTgyVBJJOqCN1Dy5DiYd1U/X
-        KevmeWyKVJQev+G9V/xY4DH5ZbNHAqRAvSkfM8dGSsncHjsz
-X-Google-Smtp-Source: ABdhPJzdPFow1qrTv+Ebt+flu0Z2C49rj10hjjtJUJ4vZjqfZ7nnC0GKhQ5Tib2/MFWpZPvSm6cHwVpP6iZvZjGLGRsOhHV2p1uE
+        bh=XzIJ5uKUEljoZuh4aWSdQb8JjpeAstk+mgfzq2A+Xs0=;
+        b=fRmBLk4pU29WQa0ZnkIft9SbG933fV8dH7oWQ+hyVQ89WUqV+WpsbsTTk7FDa455tm
+         hC2X0rQB446IHHOcgeZkXgsxlS7MrU2XutVVnmxGei0vbUqth0RGRaScNp4ZJ62ZOk1B
+         W6Fke9C8TkxXmVim+dfPad9SOW42vbIgOzHU//979f3ecrApnu4rCSqWHpq12rA6OkwF
+         t1rSdSHCh+UjRJ2va8Atw7ihHEGfRP1K4EgdYNO+dMkVTev9rRM0uK3cmiypf9pKpbZy
+         SrfPHK2ykk6mKXwIgRE1NvvzbiRw4JmB2RCqwEe6dhIVmmijq3k6HP3tO1DYz7HLaiFV
+         8fKw==
+X-Gm-Message-State: AOAM532D0WLOl5P5R0YOo8V+Uh08CmwKWwZjRhigsNAoFO5QaHUR2wj5
+        R/bmdhYgJ6LaJlI17pGRsfKul+YKz3YKUKEDKjO7d6VDTtgX
+X-Google-Smtp-Source: ABdhPJxeIZ39kr+kkCtq4j2rrCHoB/O6r+uHAL/pZCSwh8qfjY66vIHgJ4K+7ZhXmsrx/8Ag6HqDgWLhniVhTJe5RWUhBXU+y13h
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fa07:: with SMTP id p7mr2534639ioh.124.1602676883190;
- Wed, 14 Oct 2020 05:01:23 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 05:01:23 -0700
+X-Received: by 2002:a92:b503:: with SMTP id f3mr3617266ile.23.1602676884343;
+ Wed, 14 Oct 2020 05:01:24 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 05:01:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004ffb3205b1a04abe@google.com>
-Subject: WARNING in __writeback_inodes_sb_nr
-From:   syzbot <syzbot+b8ff83b095e45f39e27e@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <00000000000061911f05b1a04adb@google.com>
+Subject: INFO: trying to register non-static key in calculate_sigpending (2)
+From:   syzbot <syzbot+8197be5a9c103a92a095@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, christian@brauner.io, ebiederm@xmission.com,
+        linux-kernel@vger.kernel.org, liuzhiqiang26@huawei.com,
+        oleg@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,75 +48,91 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    bbf5c979 Linux 5.9
+HEAD commit:    da690031 Merge branch 'i2c/for-current' of git://git.kerne..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1664b377900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3d8333c88fe898d7
-dashboard link: https://syzkaller.appspot.com/bug?extid=b8ff83b095e45f39e27e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13127ef0500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10924af0500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=8197be5a9c103a92a095
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14878558500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16878558500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12878558500000
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b8ff83b095e45f39e27e@syzkaller.appspotmail.com
+Reported-by: syzbot+8197be5a9c103a92a095@syzkaller.appspotmail.com
 
-BTRFS info (device loop0): disk space caching is enabled
-BTRFS info (device loop0): has skinny extents
-BTRFS info (device loop0): enabling ssd optimizations
-BTRFS info (device loop0): checking UUID tree
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 7118 at fs/fs-writeback.c:2469 __writeback_inodes_sb_nr+0x229/0x280 fs/fs-writeback.c:2469
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 7118 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 0 PID: 28294 Comm: systemd-udevd Not tainted 5.9.0-rc8-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x382/0x7fb kernel/panic.c:231
- __warn.cold+0x20/0x4b kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:__writeback_inodes_sb_nr+0x229/0x280 fs/fs-writeback.c:2469
-Code: 48 8b 84 24 c0 00 00 00 65 48 2b 04 25 28 00 00 00 75 38 48 81 c4 c8 00 00 00 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 f7 75 a7 ff <0f> 0b e9 69 ff ff ff 4c 89 f7 e8 a8 4e e8 ff e9 ea fe ff ff 4c 89
-RSP: 0018:ffffc900064076e0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 1ffff92000c80edd RCX: ffffffff81cec880
-RDX: ffff888099db2200 RSI: ffffffff81cec919 RDI: 0000000000000007
-RBP: ffff8880994ec000 R08: 0000000000000000 R09: ffff8880994ec077
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffc90006407708 R14: 0000000000006400 R15: ffff8880994ec158
- btrfs_start_delalloc_flush fs/btrfs/transaction.c:1970 [inline]
- btrfs_commit_transaction+0x8ea/0x2830 fs/btrfs/transaction.c:2150
- btrfs_sync_file+0x821/0xd80 fs/btrfs/file.c:2279
- vfs_fsync_range+0x13a/0x220 fs/sync.c:200
- generic_write_sync include/linux/fs.h:2747 [inline]
- btrfs_file_write_iter+0x1101/0x14a9 fs/btrfs/file.c:2049
- call_write_iter include/linux/fs.h:1882 [inline]
- do_iter_readv_writev+0x532/0x7b0 fs/read_write.c:721
- do_iter_write+0x188/0x670 fs/read_write.c:1026
- vfs_writev+0x1aa/0x2e0 fs/read_write.c:1099
- do_pwritev fs/read_write.c:1196 [inline]
- __do_sys_pwritev fs/read_write.c:1243 [inline]
- __se_sys_pwritev fs/read_write.c:1238 [inline]
- __x64_sys_pwritev+0x231/0x310 fs/read_write.c:1238
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ register_lock_class+0xf06/0x1520 kernel/locking/lockdep.c:893
+ __lock_acquire+0xfd/0x2ae0 kernel/locking/lockdep.c:4320
+ lock_acquire+0x148/0x720 kernel/locking/lockdep.c:5029
+ __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
+ _raw_spin_lock_irq+0xa6/0xc0 kernel/locking/spinlock.c:167
+ spin_lock_irq include/linux/spinlock.h:379 [inline]
+ calculate_sigpending+0x4b/0x80 kernel/signal.c:196
+ ret_from_fork+0x8/0x30 arch/x86/entry/entry_64.S:279
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 28294 Comm: systemd-udevd Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__list_add_valid+0x27/0xc0 lib/list_debug.c:23
+Code: cc cc cc 41 57 41 56 41 55 41 54 53 49 89 d6 49 89 f4 49 89 ff 49 bd 00 00 00 00 00 fc ff df 48 8d 5a 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 da 45 f2 fd 48 8b 13 4c 39 e2 75
+RSP: 0018:ffffc90002637c60 EFLAGS: 00010002
+RAX: 0000000000000001 RBX: 0000000000000008 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: ffff888000135508 RDI: ffff888093d37030
+RBP: ffff8880001354c8 R08: dffffc0000000000 R09: fffff520004c6f86
+R10: fffff520004c6f86 R11: 0000000000000000 R12: ffff888000135508
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff888093d37030
+FS:  00007fd162f298c0(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd161da9f60 CR3: 00000000a0a66000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __list_add include/linux/list.h:67 [inline]
+ list_add include/linux/list.h:86 [inline]
+ __add_wait_queue include/linux/wait.h:171 [inline]
+ add_wait_queue+0x77/0x130 kernel/sched/wait.c:24
+ ep_ptable_queue_proc+0x1a0/0x380 fs/eventpoll.c:1322
+ poll_wait include/linux/poll.h:51 [inline]
+ signalfd_poll+0xb5/0x190 fs/signalfd.c:66
+ vfs_poll include/linux/poll.h:90 [inline]
+ ep_item_poll fs/eventpoll.c:885 [inline]
+ ep_insert fs/eventpoll.c:1551 [inline]
+ do_epoll_ctl+0x1a2f/0x3680 fs/eventpoll.c:2228
+ __do_sys_epoll_ctl fs/eventpoll.c:2281 [inline]
+ __se_sys_epoll_ctl fs/eventpoll.c:2272 [inline]
+ __x64_sys_epoll_ctl+0xfe/0x130 fs/eventpoll.c:2272
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de59
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f098f185c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000128
-RAX: ffffffffffffffda RBX: 0000000000026400 RCX: 000000000045de59
-RDX: 0000000000000001 RSI: 00000000200014c0 RDI: 0000000000000003
-RBP: 000000000118bf70 R08: 0000000000000020 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 00007ffe7dd36ddf R14: 00007f098f1869c0 R15: 000000000118bf2c
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+RIP: 0033:0x7fd161daa2aa
+Code: 48 8b 0d f1 fb 2a 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 e9 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d be fb 2a 00 f7 d8 64 89 01 48
+RSP: 002b:00007fff5f0a8608 EFLAGS: 00000202 ORIG_RAX: 00000000000000e9
+RAX: ffffffffffffffda RBX: 00007fff5f0a8700 RCX: 00007fd161daa2aa
+RDX: 0000000000000003 RSI: 0000000000000001 RDI: 0000000000000004
+RBP: 000055723c6ff028 R08: 0000000000000020 R09: 0000000000000018
+R10: 00007fff5f0a86a8 R11: 0000000000000202 R12: 000055723c6ff010
+R13: 000055723c713b00 R14: 0000000000000003 R15: 000000000000000e
+Modules linked in:
+---[ end trace 292889b8b04a67ad ]---
+RIP: 0010:__list_add_valid+0x27/0xc0 lib/list_debug.c:23
+Code: cc cc cc 41 57 41 56 41 55 41 54 53 49 89 d6 49 89 f4 49 89 ff 49 bd 00 00 00 00 00 fc ff df 48 8d 5a 08 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 74 08 48 89 df e8 da 45 f2 fd 48 8b 13 4c 39 e2 75
+RSP: 0018:ffffc90002637c60 EFLAGS: 00010002
+RAX: 0000000000000001 RBX: 0000000000000008 RCX: 0000000000000001
+RDX: 0000000000000000 RSI: ffff888000135508 RDI: ffff888093d37030
+RBP: ffff8880001354c8 R08: dffffc0000000000 R09: fffff520004c6f86
+R10: fffff520004c6f86 R11: 0000000000000000 R12: ffff888000135508
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff888093d37030
+FS:  00007fd162f298c0(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd161da9f60 CR3: 00000000a0a66000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -125,6 +142,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
