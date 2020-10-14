@@ -2,93 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D30F28E613
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6215B28E617
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729588AbgJNSMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728527AbgJNSMg (ORCPT
+        id S1729707AbgJNSNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:13:22 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:47901 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727369AbgJNSNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:12:36 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0EFC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:12:36 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id x62so117659oix.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:12:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U0lFqbPV6LL+3GwiEtkYs6HjlksJ2EhlSuzlNyHvcVI=;
-        b=qlOuxHbmfnviwPmX1bO8wzlktBayGkF63uafDr9hY8kJpSdj62TG4fVsjjYAqfpLAa
-         eOJ5o1ejC1jLEUerPLiWX0uEMYhoJYuzkgzzkiIqtSSiCWbK/3EEpaf0B/yNVgdY8Nar
-         ztcHd11qcw/11sAAHy4cgnD/FmognMNYCAzSs4Ikk09go9gMAb6YcRUAQqnYiJr8d4sF
-         3AP2w6pqyyMAlpAdB0HfJq0aBbm3oS9EJbvkqQJF+bkW9/4voYbutktNCc8J+JxAbOmT
-         +T4w1o+1mc2hYRibZRAnv2L6cA/JlJd3EMbiMq/aQjHHl8rat5ISgCHmvH9XjPVlMCp4
-         haew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U0lFqbPV6LL+3GwiEtkYs6HjlksJ2EhlSuzlNyHvcVI=;
-        b=E7ZcRLUeYewn0/aFOxgVj/rWREYU073MideKb2lxP1XnH/eUkNr23YxhlTIubF1Xyc
-         uz2JORfHa8UMW/NZa0PZ7DHuIuWj90NhSOmocz6ohnZtn9s8JUiyn4v/zbKwDXJrIzaW
-         dT7LEvFUItpw7enBLeJKU3u9S5yEEGc8FE7MeZwu6pVd65icz3pV7hE/L4UXJblZgqQy
-         MHIoCUm8O1NIGRekRSjzvbrlPQg/mJuaGK1mWNpeWZK/cWE2PwDgI4vD4fxKr6fNtAid
-         7xZIvOwfgOfD22O7lg+FZD5mYb51pYUmwmSnyLUstalYYOnF8z5zEriOief+p7fxwQwg
-         7qSg==
-X-Gm-Message-State: AOAM533A+iTI3TyV+H5m+PXj0LTSoPf3zs2672QphqgVi7DhxRi32iFe
-        oIZWHO9OP7d3DqpBi96x7KDkuoYBj1dn6SjA3FebLbqH29JRDcji
-X-Google-Smtp-Source: ABdhPJyxMwz1sSrHmeyBcEN1SOXdjxpmftjPs/yczF6BkFgXoj8r52TWyGQI+aHhOYgz5zw1DFKyAE/muv0oTgqfIrs=
-X-Received: by 2002:aca:420a:: with SMTP id p10mr355873oia.117.1602699155252;
- Wed, 14 Oct 2020 11:12:35 -0700 (PDT)
+        Wed, 14 Oct 2020 14:13:22 -0400
+Received: (qmail 724401 invoked by uid 1000); 14 Oct 2020 14:13:20 -0400
+Date:   Wed, 14 Oct 2020 14:13:20 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Johan Hovold <johan@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-omap@vger.kernel.org,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>
+Subject: Re: [patch 11/12] usb: core: Replace in_interrupt() in comments
+Message-ID: <20201014181320.GA723420@rowland.harvard.edu>
+References: <20201014145215.518912759@linutronix.de>
+ <20201014145728.318078828@linutronix.de>
+ <20201014162721.GE712494@rowland.harvard.edu>
+ <20201014164123.hnqqkyrjrjytcxgz@linutronix.de>
 MIME-Version: 1.0
-References: <20201014163738.117332-1-dwaipayanray1@gmail.com> <ea011df1e30ce445d51e128287e2c6c38de20949.camel@perches.com>
-In-Reply-To: <ea011df1e30ce445d51e128287e2c6c38de20949.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Wed, 14 Oct 2020 23:42:09 +0530
-Message-ID: <CABJPP5DrSL7GoZUWc7P02CfLHfTBmfpLxrVOVQ08KH3pPontoA@mail.gmail.com>
-Subject: Re: [PATCH v2] checkpatch: add new exception to repeated word check
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014164123.hnqqkyrjrjytcxgz@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 11:33 PM Joe Perches <joe@perches.com> wrote:
->
-> On Wed, 2020-10-14 at 22:07 +0530, Dwaipayan Ray wrote:
-> > Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
-> > moved the repeated word test to check for more file types. But after
-> > this, if checkpatch.pl is run on MAINTAINERS, it generates several
-> > new warnings of the type:
->
-> Perhaps instead of adding more content checks so that
-> word boundaries are not something like \S but also
-> not punctuation so that content like
->
->         git git://
->         @size size
->
-> does not match?
->
->
-Hi,
-So currently the words are trimmed of non alphabets before the check:
+On Wed, Oct 14, 2020 at 06:41:23PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-10-14 12:27:21 [-0400], Alan Stern wrote:
+> > > --- a/drivers/usb/core/hcd.c
+> > > +++ b/drivers/usb/core/hcd.c
+> > > @@ -746,9 +746,6 @@ static int rh_call_control (struct usb_h
+> > >   * Root Hub interrupt transfers are polled using a timer if the
+> > >   * driver requests it; otherwise the driver is responsible for
+> > >   * calling usb_hcd_poll_rh_status() when an event occurs.
+> > > - *
+> > > - * Completions are called in_interrupt(), but they may or may not
+> > > - * be in_irq().
+> > 
+> > This comment should not be removed; instead it should be changed to say 
+> > that completion handlers are called with interrupts disabled.
+> 
+> The timer callback:
+>   rh_timer_func() -> usb_hcd_poll_rh_status()  
+> 
+> invokes the function with enabled interrupts.
 
-while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
-my $first = $1;
-my $second = $2;
+Well, it doesn't change the interrupt settings.  It might call 
+usb_hcd_poll_rh_status() with interrupts enabled or disabled, depending 
+on how it was called originally.
 
-where, the word_pattern is:
-my $word_pattern = '\b[A-Z]?[a-z]{2,}\b';
+But that wasn't what I meant.  usb_hcd_poll_rh_status() calls 
+usb_hcd_giveback_urb() with interrupts disabled always, and that routine 
+may call __usb_hcd_giveback_urb(), which calls
 
-So do you perhaps recommend modifying this word pattern to
-include the punctuation as well rather than trimming them off?
+	urb->complete(urb);
 
-Thanks,
-Dwaipayan.
+In this case the completion handler would be invoked with interrupts 
+disabled.  Alternatively, __usb_hcd_giveback_urb() may be invoked from a 
+BH handler, in which case the completion handler will run in softirq 
+context with interrupts enabled.
+
+So I guess it would be best to say that completion handlers may be 
+called with interrupts enabled or disabled.  Or you might want to put 
+such a comment in __usb_hcd_giveback_urb().
+
+> > > @@ -1691,7 +1690,6 @@ static void usb_giveback_urb_bh(unsigned
+> > >   * @hcd: host controller returning the URB
+> > >   * @urb: urb being returned to the USB device driver.
+> > >   * @status: completion status code for the URB.
+> > > - * Context: in_interrupt()
+> > 
+> > The comment should be changed to say that the routine runs in a BH 
+> > handler (or however you want to express it).
+> 
+> Do you mean usb_hcd_giveback_urb() runs in BH context or that the
+> completion callback of the URB runs in BH context?
+
+Actually I meant that usb_hcd_giveback_urb_bh() runs in BH context.  
+Sorry, I got confused about the location of this hunk.
+
+To be explicit: The comment for usb_hcd_giveback_urb() should say that 
+the function expects to be called with interrupts disabled (whether the 
+context is task, atomic, BH, interrupt, etc. doesn't matter).
+
+> The completion callback of the URB may run in BH or IRQ context
+> depending on HCD.
+> 
+> > > --- a/drivers/usb/core/message.c
+> > > +++ b/drivers/usb/core/message.c
+> > 
+> > > @@ -934,7 +939,7 @@ int usb_get_device_descriptor(struct usb
+> > >  /*
+> > >   * usb_set_isoch_delay - informs the device of the packet transmit delay
+> > >   * @dev: the device whose delay is to be informed
+> > > - * Context: !in_interrupt()
+> > > + * Context: can sleep
+> > 
+> > Why is this comment different from all the others?
+> 
+> It says !in_interrupt() which is also true for preempt-disabled regions.
+> But the caller must not have preemption disabled. "can sleep" is more
+> obvious as what it needs.
+
+But all the other comments in this patch say:
+
+ * Context: task context, might sleep.
+
+Why doesn't this comment say the same thing?
+
+Alan Stern
