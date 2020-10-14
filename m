@@ -2,252 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFEA28DA19
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA4128DB2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgJNG7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 02:59:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbgJNG7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 02:59:15 -0400
-Received: from coco.lan (ip5f5ad5dc.dynamic.kabel-deutschland.de [95.90.213.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D5CC2222C;
-        Wed, 14 Oct 2020 06:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602658753;
-        bh=a3WONSqVGwbQqUy13HpeIY9S6WrPgW7N27TAJhhPBm0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=svv290rYuQVkbnDl5iTYYDCN80sufZf/El/44Yc7166QR7leDtDBiAmhwlnw73EbC
-         iSrH7BV9kUZEzbUgHRJ3mJrEtQgMgsQVPAN+Fcd7yp10EJx/SquofwYnnVHLZTLoqf
-         Vve+bc6uUyDWFXI7o5cCiCZlgDk8rJ0j/t4jkk9c=
-Date:   Wed, 14 Oct 2020 08:59:07 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 35/80] docs: fs: fscrypt.rst: get rid of :c:type:
- tags
-Message-ID: <20201014085907.7da5bed3@coco.lan>
-In-Reply-To: <20201013172512.GA1306858@gmail.com>
-References: <cover.1602589096.git.mchehab+huawei@kernel.org>
-        <2ca36d4903a6c024c7605cd58eab417c8e5296b5.1602589096.git.mchehab+huawei@kernel.org>
-        <20201013172512.GA1306858@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1729256AbgJNIUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729025AbgJNITg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:19:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA46C051114
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:02:41 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kSanb-0005kZ-FZ; Wed, 14 Oct 2020 09:02:11 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kSanX-0004oR-E9; Wed, 14 Oct 2020 09:02:07 +0200
+Date:   Wed, 14 Oct 2020 09:02:07 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     f.fainelli@gmail.com, linux@roeck-us.net, jdelvare@suse.com,
+        wahrenst@gmx.net, Eric Anholt <eric@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-hwmon@vger.kernel.org,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 3/3] pwm: Add Raspberry Pi Firmware based PWM bus
+Message-ID: <20201014070207.xg35wg5jnhfuqz2y@pengutronix.de>
+References: <20201009153031.986-1-nsaenzjulienne@suse.de>
+ <20201009153031.986-4-nsaenzjulienne@suse.de>
+ <20201012070626.fzjhp3tkmgglqnm4@pengutronix.de>
+ <7899e490543723c97ffad6f42942907f8db6b9b4.camel@suse.de>
+ <20201013121758.gl6ni4b47ei2bhdf@pengutronix.de>
+ <c171c837a31dea34c845478b7c7d4bdef865b5e0.camel@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xgqeuslybdl72l3x"
+Content-Disposition: inline
+In-Reply-To: <c171c837a31dea34c845478b7c7d4bdef865b5e0.camel@suse.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 13 Oct 2020 10:25:12 -0700
-Eric Biggers <ebiggers@kernel.org> escreveu:
 
-> On Tue, Oct 13, 2020 at 01:53:50PM +0200, Mauro Carvalho Chehab wrote:
-> > The :c:type: tag has problems with Sphinx 3.x, as structs
-> > there should be declared with c:struct.
-> > 
-> > So, remove them, relying at automarkup.py extension to
-> > convert them into cross-references.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> 
-> I left some comments on v5 which weren't addressed.
-> 
-> - Eric
+--xgqeuslybdl72l3x
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, I missed your reply. I'm dropping fscrypt.rst changes
-that were on this patch:
+Hello Nicolas,
 
-	[PATCH v6 23/80] docs: get rid of :c:type explicit declarations for structs
+[Cc: +=3D Greg as base driver maintainer]
 
-and replacing with the enclosed one that should be addressing
-your issues.
+On Tue, Oct 13, 2020 at 06:50:47PM +0200, Nicolas Saenz Julienne wrote:
+> On Tue, 2020-10-13 at 14:17 +0200, Uwe Kleine-K=F6nig wrote:
+> > On Tue, Oct 13, 2020 at 01:20:00PM +0200, Nicolas Saenz Julienne wrote:
+> > > On Mon, 2020-10-12 at 09:06 +0200, Uwe Kleine-K=F6nig wrote:
+> > > > I don't see a mechanism that prevents the driver providing the firm=
+ware
+> > > > going away while the PWM is still in use.
+> > >=20
+> > > There isn't an explicit one. But since you depend on a symbol from th=
+e firmware
+> > > driver you won't be able to remove the kernel module before removing =
+the PMW
+> > > one.
+> >=20
+> > this prevents the that the module is unloaded, but not that the driver
+> > is unbound.
+>=20
+> Yes, if you were to unbind the firmware device all devices that depend on=
+ it
+> (there are a bunch of them) would access freed memory. Yet again, there i=
+s no
+> hotplug functionality, so short of being useful for development it'd be v=
+ery
+> rare for someone to unbind it. We've been living with it as such for a lo=
+ng
+> time. Not to say that is something not to fix, but from my perspective it=
+'s
+> just a corner-case.
 
-Thanks,
-Mauro
+I agree, that's a corner case. However in my eyes it is one that should
+be get right. Did you try if this is indeed a problem?
 
-[PATCH v6.1 35/80] docs: fs: fscrypt.rst: get rid of :c:type: tags
+> We are using 'simple-mfd' in order to probe all devices under the
+> firmware interface, so my first intuition would be to add support for
+> automatically unbinding of consumer devices in of/platform.c. See:
+>=20
+> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> index b557a0fcd4ba..d24f2412d518 100644
+> --- a/drivers/of/platform.c
+> +++ b/drivers/of/platform.c
+> @@ -390,7 +390,13 @@ static int of_platform_bus_create(struct device_node=
+ *bus,
+>         }
+> =20
+>         dev =3D of_platform_device_create_pdata(bus, bus_id, platform_dat=
+a, parent);
+> -       if (!dev || !of_match_node(matches, bus))
+> +       if (!dev)
+> +               return 0;
+> +
+> +       if (parent && of_device_is_compatible(parent->of_node, "simple-mf=
+d"))
+> +               device_link_add(&dev->dev, parent, DL_FLAG_AUTOREMOVE_CON=
+SUMER);
+> +
+> +       if (!of_match_node(matches, bus))
+>                 return 0;
+> =20
+>         for_each_child_of_node(bus, child) {
 
-The :c:type: tag has problems with Sphinx 3.x, as structs
-there should be declared with c:struct.
+This looks wrong for generic code. A solution local to simple-mfd (or
+even the firmware device?) should be done (and doable). I think the
+straight forward approach would be to add reference counting and make
+=2Eremove of the firmware device block if there are still users.
+(Returning an error doesn't prevent the device going away IIRC. Last
+time I looked .remove returning something non-0 didn't make any
+difference. Maybe we should change it to return void?)
 
-So, remove them, relying at automarkup.py extension to
-convert them into cross-references.
+> If this is too much for OF maintainers, we could simply create the link u=
+pon
+> calling rpi_firmware_get().
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+I don't know how DL_FLAG_AUTOREMOVE_CONSUMER works, but this sounds
+better.
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 423c5a0daf45..44b67ebd6e40 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -436,9 +436,9 @@ FS_IOC_SET_ENCRYPTION_POLICY
- 
- The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
- empty directory or verifies that a directory or regular file already
--has the specified encryption policy.  It takes in a pointer to a
--:c:type:`struct fscrypt_policy_v1` or a :c:type:`struct
--fscrypt_policy_v2`, defined as follows::
-+has the specified encryption policy.  It takes in a pointer to
-+struct fscrypt_policy_v1 or struct fscrypt_policy_v2, defined as
-+follows::
- 
-     #define FSCRYPT_POLICY_V1               0
-     #define FSCRYPT_KEY_DESCRIPTOR_SIZE     8
-@@ -464,11 +464,11 @@ fscrypt_policy_v2`, defined as follows::
- 
- This structure must be initialized as follows:
- 
--- ``version`` must be FSCRYPT_POLICY_V1 (0) if the struct is
--  :c:type:`fscrypt_policy_v1` or FSCRYPT_POLICY_V2 (2) if the struct
--  is :c:type:`fscrypt_policy_v2`.  (Note: we refer to the original
--  policy version as "v1", though its version code is really 0.)  For
--  new encrypted directories, use v2 policies.
-+- ``version`` must be FSCRYPT_POLICY_V1 (0) if
-+  struct fscrypt_policy_v1 is used or FSCRYPT_POLICY_V2 (2) if
-+  struct fscrypt_policy_v2 is used. (Note: we refer to the original
-+  policy version as "v1", though its version code is really 0.)
-+  For new encrypted directories, use v2 policies.
- 
- - ``contents_encryption_mode`` and ``filenames_encryption_mode`` must
-   be set to constants from ``<linux/fscrypt.h>`` which identify the
-@@ -508,9 +508,9 @@ This structure must be initialized as follows:
-   replaced with ``master_key_identifier``, which is longer and cannot
-   be arbitrarily chosen.  Instead, the key must first be added using
-   `FS_IOC_ADD_ENCRYPTION_KEY`_.  Then, the ``key_spec.u.identifier``
--  the kernel returned in the :c:type:`struct fscrypt_add_key_arg` must
--  be used as the ``master_key_identifier`` in the :c:type:`struct
--  fscrypt_policy_v2`.
-+  the kernel returned in the struct fscrypt_add_key_arg must
-+  be used as the ``master_key_identifier`` in
-+  struct fscrypt_policy_v2.
- 
- If the file is not yet encrypted, then FS_IOC_SET_ENCRYPTION_POLICY
- verifies that the file is an empty directory.  If so, the specified
-@@ -590,7 +590,7 @@ FS_IOC_GET_ENCRYPTION_POLICY_EX
- The FS_IOC_GET_ENCRYPTION_POLICY_EX ioctl retrieves the encryption
- policy, if any, for a directory or regular file.  No additional
- permissions are required beyond the ability to open the file.  It
--takes in a pointer to a :c:type:`struct fscrypt_get_policy_ex_arg`,
-+takes in a pointer to struct fscrypt_get_policy_ex_arg,
- defined as follows::
- 
-     struct fscrypt_get_policy_ex_arg {
-@@ -637,9 +637,8 @@ The FS_IOC_GET_ENCRYPTION_POLICY ioctl can also retrieve the
- encryption policy, if any, for a directory or regular file.  However,
- unlike `FS_IOC_GET_ENCRYPTION_POLICY_EX`_,
- FS_IOC_GET_ENCRYPTION_POLICY only supports the original policy
--version.  It takes in a pointer directly to a :c:type:`struct
--fscrypt_policy_v1` rather than a :c:type:`struct
--fscrypt_get_policy_ex_arg`.
-+version.  It takes in a pointer directly to struct fscrypt_policy_v1
-+rather than struct fscrypt_get_policy_ex_arg.
- 
- The error codes for FS_IOC_GET_ENCRYPTION_POLICY are the same as those
- for FS_IOC_GET_ENCRYPTION_POLICY_EX, except that
-@@ -680,8 +679,7 @@ the filesystem, making all files on the filesystem which were
- encrypted using that key appear "unlocked", i.e. in plaintext form.
- It can be executed on any file or directory on the target filesystem,
- but using the filesystem's root directory is recommended.  It takes in
--a pointer to a :c:type:`struct fscrypt_add_key_arg`, defined as
--follows::
-+a pointer to struct fscrypt_add_key_arg, defined as follows::
- 
-     struct fscrypt_add_key_arg {
-             struct fscrypt_key_specifier key_spec;
-@@ -710,17 +708,16 @@ follows::
-             __u8 raw[];
-     };
- 
--:c:type:`struct fscrypt_add_key_arg` must be zeroed, then initialized
-+struct fscrypt_add_key_arg must be zeroed, then initialized
- as follows:
- 
- - If the key is being added for use by v1 encryption policies, then
-   ``key_spec.type`` must contain FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR, and
-   ``key_spec.u.descriptor`` must contain the descriptor of the key
-   being added, corresponding to the value in the
--  ``master_key_descriptor`` field of :c:type:`struct
--  fscrypt_policy_v1`.  To add this type of key, the calling process
--  must have the CAP_SYS_ADMIN capability in the initial user
--  namespace.
-+  ``master_key_descriptor`` field of struct fscrypt_policy_v1.
-+  To add this type of key, the calling process must have the
-+  CAP_SYS_ADMIN capability in the initial user namespace.
- 
-   Alternatively, if the key is being added for use by v2 encryption
-   policies, then ``key_spec.type`` must contain
-@@ -737,12 +734,13 @@ as follows:
- 
- - ``key_id`` is 0 if the raw key is given directly in the ``raw``
-   field.  Otherwise ``key_id`` is the ID of a Linux keyring key of
--  type "fscrypt-provisioning" whose payload is a :c:type:`struct
--  fscrypt_provisioning_key_payload` whose ``raw`` field contains the
--  raw key and whose ``type`` field matches ``key_spec.type``.  Since
--  ``raw`` is variable-length, the total size of this key's payload
--  must be ``sizeof(struct fscrypt_provisioning_key_payload)`` plus the
--  raw key size.  The process must have Search permission on this key.
-+  type "fscrypt-provisioning" whose payload is
-+  struct fscrypt_provisioning_key_payload whose ``raw`` field contains
-+  the raw key and whose ``type`` field matches ``key_spec.type``.
-+  Since ``raw`` is variable-length, the total size of this key's
-+  payload must be ``sizeof(struct fscrypt_provisioning_key_payload)``
-+  plus the raw key size.  The process must have Search permission on
-+  this key.
- 
-   Most users should leave this 0 and specify the raw key directly.
-   The support for specifying a Linux keyring key is intended mainly to
-@@ -860,8 +858,8 @@ The FS_IOC_REMOVE_ENCRYPTION_KEY ioctl removes a claim to a master
- encryption key from the filesystem, and possibly removes the key
- itself.  It can be executed on any file or directory on the target
- filesystem, but using the filesystem's root directory is recommended.
--It takes in a pointer to a :c:type:`struct fscrypt_remove_key_arg`,
--defined as follows::
-+It takes in a pointer to struct fscrypt_remove_key_arg, defined
-+as follows::
- 
-     struct fscrypt_remove_key_arg {
-             struct fscrypt_key_specifier key_spec;
-@@ -956,8 +954,8 @@ FS_IOC_GET_ENCRYPTION_KEY_STATUS
- The FS_IOC_GET_ENCRYPTION_KEY_STATUS ioctl retrieves the status of a
- master encryption key.  It can be executed on any file or directory on
- the target filesystem, but using the filesystem's root directory is
--recommended.  It takes in a pointer to a :c:type:`struct
--fscrypt_get_key_status_arg`, defined as follows::
-+recommended.  It takes in a pointer to
-+struct fscrypt_get_key_status_arg, defined as follows::
- 
-     struct fscrypt_get_key_status_arg {
-             /* input */
-@@ -1148,10 +1146,10 @@ Implementation details
- Encryption context
- ------------------
- 
--An encryption policy is represented on-disk by a :c:type:`struct
--fscrypt_context_v1` or a :c:type:`struct fscrypt_context_v2`.  It is
--up to individual filesystems to decide where to store it, but normally
--it would be stored in a hidden extended attribute.  It should *not* be
-+An encryption policy is represented on-disk by
-+struct fscrypt_context_v1 or struct fscrypt_context_v2.  It is up to
-+individual filesystems to decide where to store it, but normally it
-+would be stored in a hidden extended attribute.  It should *not* be
- exposed by the xattr-related system calls such as getxattr() and
- setxattr() because of the special semantics of the encryption xattr.
- (In particular, there would be much confusion if an encryption policy
-@@ -1249,8 +1247,8 @@ a strong "hash" of the ciphertext filename, along with the optional
- filesystem-specific hash(es) needed for directory lookups.  This
- allows the filesystem to still, with a high degree of confidence, map
- the filename given in ->lookup() back to a particular directory entry
--that was previously listed by readdir().  See :c:type:`struct
--fscrypt_nokey_name` in the source for more details.
-+that was previously listed by readdir().  See
-+struct fscrypt_nokey_name in the source for more details.
- 
- Note that the precise way that filenames are presented to userspace
- without the key is subject to change in the future.  It is only meant
+> This solves the problem of getting a kernel panic because of the use after
+> free, but you'll still get some warnings after unbinding from the GPIO
+> subsystem, for example, as we just removed a gpiochip that still has cons=
+umers
+> up. I guess device links only go so far.
+
+If this is indeed a real problem, lets take this to the GPIO
+maintainers.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xgqeuslybdl72l3x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+GomwACgkQwfwUeK3K
+7AmfpAf/eJMGdvOaHLFh9CYeu88+4wE2AXSNdxyNnK7AFovUtxsCGbbMCabDiB1g
+vTEACdDG196IyiWtz04gSoTVJfHCs9HOUukM6SQot7TKarIaEHZH+kt1QMSddLpG
+E6vfCA1KsS/C/2z088PDlSEngoIw9ZQjqsAvdNfECicPkt6xb9JjRTqo0nsKlXvA
+gd4JixCJuDzKpT0QX2DMMuUBC1HtderUOOz+bNVfcOcBoZ4ERLvgOKw+Y6z6QpRF
+hvd7oDBaBlaq1GW7A+cWKIGeStw20G1DHpa5eeH6Lmi7ujQSwF34g6F77jqfCzR8
+MozxfsgfT71ShyrCRK5UUTvXlJuWjQ==
+=NE+d
+-----END PGP SIGNATURE-----
+
+--xgqeuslybdl72l3x--
