@@ -2,146 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E2628DAAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB0A28DAAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727703AbgJNHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:50:41 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:32230 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726773AbgJNHul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:50:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602661840; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ZDa3vOpmEZ8eDLlwS42JxZqhi1NArG+4awI4WGrgrN8=;
- b=cc2OJ5xZBdaxBv37XS6SNo+Wx3gdSswmGFOltdB1p8JimlIMJmudd61DJkOQXmjBaEybhd1/
- nZIfR3mYckEfkNqQ5+hLFxGa1L4U+4Upqu/5sdMOwzJpnriCrRpp7p81qmSrSStGXcX1qaIJ
- L82O69t9RTVUVmpKVoLovMAY11k=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f86adaf4f8cc67c31830659 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 07:50:07
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 88BE7C433FF; Wed, 14 Oct 2020 07:50:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E0A6C433C9;
-        Wed, 14 Oct 2020 07:50:05 +0000 (UTC)
+        id S1727775AbgJNHvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:51:08 -0400
+Received: from mail-eopbgr770089.outbound.protection.outlook.com ([40.107.77.89]:39557
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726773AbgJNHvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 03:51:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CEi5AMZRSVXe851DUsdgo+NJ2Zbj+n2ZKJZJwVVgGCoL6iWU61UKpsqqBasaCfOcAb14dmpQZfcp2Lvw/rvefLnO8oWIfD7MVsWrUsl5gia+CYRCT+dhrZ9J6kUd5oyay2/kf2BvyS6xEApvDd7H7G2qoYJqDsZ43erhq27i3HKqX2UvNK4A7EyCXq1tgEa7EVoK8k7vnHVGLjmQfmgv7RuFkDF2zqs1HdzspvLQQrtyf5KGk6g9nT7+RJdsGPV/pU9SYZr8y04potH3yayFAlW2P2pZKxRCco6tSTPGY30OQlhNIF90UA5Xkl9qOhoi7rj95wQ5eZQh3u82o4+fxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V+nq7Bh9SqXpbt9jgFOEP6/KSM2C9loUxuUwC6BW14k=;
+ b=fAeJnGRFGsV7HR9PJMEn3+2Ux8X2B8sGKBWN6Mg+WQ5uneCWcVtxhL3LVPb1QXFWwRDXJzbV2S1Gn1tuNGjU/Z9lz0ifGQzd7JF6s+HdZu6oaxJIaEmSAb9eAUE17Q8fSIUUSIjgBb27E0uaBfLxQADPwQH6+V2D2xSOltxUhh9md/8Qa/GVjH67MvcTYcuQEHl+1y+5vyXa+RpsVyGTtb/E9kQbuju0BoeWPzh0Wm3p9aSx2sHKkvp6+bG57pRFyTgxlyTc+yNhsopET1LmnBLWVaG6HDN/QUqHjug8XTOInbUd5yNdfm+HZxsPTOiI4/KUWjZ84HXxZSt9tGtdMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V+nq7Bh9SqXpbt9jgFOEP6/KSM2C9loUxuUwC6BW14k=;
+ b=UZcao52bxO7dHJrcYb+K7OdYsPQQ1ChQHJM/vKL3IAEKJHfvqyyUj+7XF8k/Z/XAVGRFRpMGULtJvuF1tSBlKfsCHwaCl+QY/UcKCvd7hNK5fij1w7sOPq3PbRFDfOoVQqHsAsj4I4a57Yk3nen60ZV31uWyso10FoF4Xjfz2sU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB3029.namprd11.prod.outlook.com (2603:10b6:a03:8e::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 14 Oct
+ 2020 07:51:04 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::80e9:e002:eeff:4d05]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::80e9:e002:eeff:4d05%3]) with mapi id 15.20.3455.030; Wed, 14 Oct 2020
+ 07:51:03 +0000
+From:   Zqiang <qiang.zhang@windriver.com>
+To:     tj@kernel.org, pmladek@suse.com, hdanton@sina.com
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v4] kthread_worker: Prevent queuing delayed work from timer_fn when it is being canceled
+Date:   Wed, 14 Oct 2020 15:50:48 +0800
+Message-Id: <20201014075048.15473-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR06CA0002.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::14) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 14 Oct 2020 13:20:05 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, denik@google.com,
-        leo.yan@linaro.org, peterz@infradead.org
-Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
-References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
-Message-ID: <7ef182f5ca9ff473c7a643ae3b7a7e75@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qzhang2-d1.wrs.com (60.247.85.82) by HK2PR06CA0002.apcprd06.prod.outlook.com (2603:1096:202:2e::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23 via Frontend Transport; Wed, 14 Oct 2020 07:51:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f8b8eed5-180b-48cf-3402-08d87015e605
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3029:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB30297AF88548C8EED9BFBF50FF050@BYAPR11MB3029.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: P2EUSGS1GJXfUZ5OZKPI8zIUL99D3B/AdQN03WFtgQL2CBaQ9+VXALGOOgtOictrxneNoapJ9lhPVyE+WfkN3qOErvax1QyqB8XcLVut5tthow92HkLf/myvexVdRi92XIvwx0Lb8mRRy6SoJroYSPbLf1vMjI37tGQFKAg3ym7JEHNtBvbjPN1NPD6djodpmdJcVbvvwQhAwjTrjXuGYHQZ+kfH7rwtJQP7yhuuTmj6aLUrZEGdAtNdOVqwm1VbntS/1F4M23dugFckPNGveUY/SGUSmrI4FOMT1lNfzK2WS8qKZpzSoqJwnqhLjbFtvGeF53uiV8nQq1hQSK1/tQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39850400004)(346002)(376002)(396003)(6512007)(6486002)(86362001)(2906002)(36756003)(5660300002)(1076003)(6666004)(4326008)(83380400001)(8676002)(66946007)(66556008)(66476007)(16526019)(2616005)(6506007)(52116002)(186003)(8936002)(26005)(478600001)(956004)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: npYlbIttf2ZNRM2FNDJ2e5X5v3ZDrzmdi62hN2PzgUIXqoz/QUh9ZB5EEpdwKsEKYyXDaTzOl9fqN5fh0vpU/cKfT2Ganb4hkHnlbK34IPV/kDpgQjwY2Is386azbR71+ajPPd6LhAQlIeFdiGWlPzWg46rY/mcsRVReHnoY6NHpd0ZGBV1ND8uZU0r+PhVMmkyk44OmIn5Pz9gtM3NnW0PaktNxuueOMJJDfNqDI277L9IMMvcHtLYLtxkdA4XqhP3vDeTvbXhKTjS84FVY+ilj26l+PFb7i5a1I78EYfGiCEctNm3X4qE2HtOjfh6+vBrmhZsG4pEnpVCq74ghZqGZoc/UA2Ph4Sp4pnJrgvmb6/PDqQm0AoQsxrcmfmr5YRXIPKkxftwa+nBDu3eepPinC/QG2MIop7V7ecCeh6NBMuFJIYkpcE3RBugfU0KQzlgW3RJQ6ie3nOnVW1dba7aWNnQFm0/kVUSz2HwqxvqoJe0Rg1wfGlX3EHsw+x14JW20Ps3D2AjL3tvwDXvPPWfVbwPhsBymvbCLjNSL3h/tNukhIWwp7+qj7FooSghLKyDDZLFLa1tJ/0ONip2xzm5pzvrsoH8jWJnmgV208arxdK9E2gEO/oitXd7M9aUoTYdY12Df9QFVHg8SShYpwA==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8b8eed5-180b-48cf-3402-08d87015e605
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 07:51:03.2777
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: crDl8iQn+3dz2ZsGVYUI8Hlk6o5OQCWP7na89XM1QQhV7VAg6wh6HYCFmRRyBNsUiZq4Z9NkAP/M7ai3y+7RPaW62B8j1ppZ5eotPnBzoE4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+There is a small race window when a delayed work is being canceled and
+the work still might be queued from the timer_fn:
 
-On 2020-10-13 22:05, Suzuki K Poulose wrote:
-> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
->> There was a report of NULL pointer dereference in ETF enable
->> path for perf CS mode with PID monitoring. It is almost 100%
->> reproducible when the process to monitor is something very
->> active such as chrome and with ETF as the sink and not ETR.
->> Currently in a bid to find the pid, the owner is dereferenced
->> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
->> owner being NULL, we get a NULL pointer dereference.
->> 
->> Looking at the ETR and other places in the kernel, ETF and the
->> ETB are the only places trying to dereference the task(owner)
->> in tmc_enable_etf_sink_perf() which is also called from the
->> sched_in path as in the call trace. Owner(task) is NULL even
->> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
->> cache the PID in alloc_buffer() callback and it is done as part
->> of etm_setup_aux() when allocating buffer for ETR sink, we never
->> dereference this NULL pointer and we are safe. So lets do the
-> 
-> The patch is necessary to fix some of the issues. But I feel it is
-> not complete. Why is it safe earlier and not later ? I believe we are
-> simply reducing the chances of hitting the issue, by doing this earlier 
-> than
-> later.
+	CPU0						CPU1
+kthread_cancel_delayed_work_sync()
+   __kthread_cancel_work_sync()
+     __kthread_cancel_work()
+        work->canceling++;
+					      kthread_delayed_work_timer_fn()
+						   kthread_insert_work();
 
-I did stress it for a long time with this patch and did not face
-any issues but I guess it doesn't hurt to have the check as you
-suggested.
+BUG: kthread_insert_work() should not get called when work->canceling
+is set.
 
-> I would say we better fix all instances to make sure that the
-> event->owner is valid. (e.g, I can see that the for kernel events
-> event->owner == -1 ?)
-> 
-> struct task_struct *tsk = READ_ONCE(event->owner);
-> 
-> if (!tsk || is_kernel_event(event))
->    /* skip ? */
-> 
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+--- 
+ v1->v2->v3:
+ Change the description of the problem and add 'Reviewed-by' tags.
+ v3->v4:
+ Add 'stable' and 'Acked-by' tags.
 
-So to confirm my understanding, I will add the above checks on top
-of this patch for ETR, ETB and ETF something like below?
+ kernel/kthread.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c 
-b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index 989d965f3d90..86ff0dda0444 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -392,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct 
-coresight_device *csdev,
-  {
-         int node;
-         struct cs_buffers *buf;
-+       struct task_struct *task = READ_ONCE(event->owner);
-+
-+       if (!task || is_kernel_event(event))
-+               return NULL;
-
-         node = (event->cpu == -1) ? NUMA_NO_NODE : 
-cpu_to_node(event->cpu);
-
-@@ -400,7 +404,7 @@ static void *tmc_alloc_etf_buffer(struct 
-coresight_device *csdev,
-         if (!buf)
-                 return NULL;
-
--       buf->pid = task_pid_nr(event->owner);
-+       buf->pid = task_pid_nr(task);
-         buf->snapshot = overwrite;
-         buf->nr_pages = nr_pages;
-         buf->data_pages = pages;
-
-
-Thanks,
-Sai
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 3edaa380dc7b..85a2c9b32049 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -897,7 +897,8 @@ void kthread_delayed_work_timer_fn(struct timer_list *t)
+ 	/* Move the work from worker->delayed_work_list. */
+ 	WARN_ON_ONCE(list_empty(&work->node));
+ 	list_del_init(&work->node);
+-	kthread_insert_work(worker, work, &worker->work_list);
++	if (!work->canceling)
++		kthread_insert_work(worker, work, &worker->work_list);
+ 
+ 	raw_spin_unlock_irqrestore(&worker->lock, flags);
+ }
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
+
