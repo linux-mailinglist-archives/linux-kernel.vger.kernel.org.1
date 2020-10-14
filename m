@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AE828DDEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD41B28DDFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbgJNJqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgJNJqY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:46:24 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D88C061755;
-        Wed, 14 Oct 2020 02:46:24 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f21so1660141wml.3;
-        Wed, 14 Oct 2020 02:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=CfnUA7lPs13+RkY13s7qGHXOH+QwqeJG5S0NDdqc//A=;
-        b=BdKm5DUb5YHQLwciujai1hznrA0naxCz2ZZ8ifFnrKF+9/dcR2xOhHefVYa0NDsxlj
-         Geb7m42lxK9a7w+lTCbiMBsqIoe2kw6B2wbb4SLNaHKc/0Uq22MhsE25VCrWKwfr46jq
-         5IvvfNLb1yJXcZLA50dDx06UBPdoYCP5mxZrwhQKjH2egtNPw8ePv/yj1KqA0UrtNT0W
-         IlQbz0alr3LrH2/7YkRbgKS29WneQOs/ffVN2UACUmUww8cWmGlMBlIOwjv3Z5AM9LUE
-         f9o0nSA+Ixm8kn12y0WTEa319wLXPKLC6/546m0pyX8shtvj4ozZSoqUY34TzwzhuhH5
-         BogA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=CfnUA7lPs13+RkY13s7qGHXOH+QwqeJG5S0NDdqc//A=;
-        b=qfynyBnOACEWF4Qx2LWKN0d8G4cw0o9HnhqL7br7Y2prxPUY7COk6RUBsWFtn0qBtF
-         WaXAYrFhPUP/zJTcMMjKoliySNdUw/kAYeQKx6INPsDLGeIh14T65+ASi5qE4siDcllM
-         FDxsa0sn8L46fY07SUI8cTzOpqB9gI/A/moP3AGW0XTt92IVi5xe6KuoJuXEP3e6Jq9e
-         X61oyBktpC46gp/H3iHHJlkfPUvSxNSClwsPJBED8HnKMRpLp239nsdLXJzAiHG3DYvt
-         8jzcHijfZ8jQQERoucP0HhFX6VTA7f7ZBZRmavQbwHpxRjEc1a7QLY3U8bOtIkWqXzb5
-         cBPA==
-X-Gm-Message-State: AOAM531NpxJxcruUYJaw6PpnoUuEKuebgEwHBEZHZ/n+ZdWrVVTwPu1M
-        uR2kmGXVhIu8tzwh1AwRtvK+gX8Jce7kHZdO
-X-Google-Smtp-Source: ABdhPJwGaqynFd9Wu1Qx7mnra13c+vM06XaTSAYrsjS3vddBQNkYNdGPSyfh8sMS1grAu24T/vogog==
-X-Received: by 2002:a1c:e903:: with SMTP id q3mr2598216wmc.42.1602668782840;
-        Wed, 14 Oct 2020 02:46:22 -0700 (PDT)
-Received: from [192.168.0.66] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id v17sm4499293wrc.23.2020.10.14.02.46.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 02:46:22 -0700 (PDT)
-Subject: Re: [PATCH] net: sockmap: Don't call bpf_prog_put() on NULL pointer
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201012170952.60750-1-alex.dewar90@gmail.com>
- <877drtqhj6.fsf@cloudflare.com>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <58d4578e-3314-9121-8723-7aaef9d02604@gmail.com>
-Date:   Wed, 14 Oct 2020 10:45:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728185AbgJNJtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:49:13 -0400
+Received: from [157.25.102.26] ([157.25.102.26]:36782 "EHLO orcam.me.uk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726491AbgJNJtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:49:13 -0400
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id 8FE2A2BE086;
+        Wed, 14 Oct 2020 10:49:08 +0100 (BST)
+Date:   Wed, 14 Oct 2020 10:49:05 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Juergen Gross <jgross@suse.com>, linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH 04/12] mips: Reserve memory for the kernel image
+ resources
+In-Reply-To: <20190522135422.q6w7lcvh5fgpf7a5@mobilestation>
+Message-ID: <alpine.LFD.2.21.2010140244560.866917@eddie.linux-mips.org>
+References: <20190423224748.3765-1-fancer.lancer@gmail.com> <20190423224748.3765-5-fancer.lancer@gmail.com> <CAMuHMdWPmL5Z86cgJ4N-U-3XKr4ys8Y7U85okDcXYEu7z4ybaw@mail.gmail.com> <20190521155309.GB24470@rapoport-lnx> <CAMuHMdWK6-ge-j1NbunDu_Jy7JOwbMfTzNQ767MViuTo4DNf+A@mail.gmail.com>
+ <20190522080802.GA31930@rapoport-lnx> <CAMuHMdWS9vMUuWAbgZ9tpNcStXOvP2eRkA7WtPOERA3keLq9Eg@mail.gmail.com> <20190522133402.duhybxf66oubx6ng@mobilestation> <CAMuHMdUR90cabKys=ZAJxyH3okiof-7gu3k8TUer55LA_Nse5A@mail.gmail.com>
+ <20190522135422.q6w7lcvh5fgpf7a5@mobilestation>
 MIME-Version: 1.0
-In-Reply-To: <877drtqhj6.fsf@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2020 10:32, Jakub Sitnicki wrote:
-> On Mon, Oct 12, 2020 at 07:09 PM CEST, Alex Dewar wrote:
->> If bpf_prog_inc_not_zero() fails for skb_parser, then bpf_prog_put() is
->> called unconditionally on skb_verdict, even though it may be NULL. Fix
->> and tidy up error path.
->>
->> Addresses-Coverity-ID: 1497799: Null pointer dereferences (FORWARD_NULL)
->> Fixes: 743df8b7749f ("bpf, sockmap: Check skb_verdict and skb_parser programs explicitly")
->> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
->> ---
-> Note to maintainers: the issue exists only in bpf-next where we have:
->
->    https://lore.kernel.org/bpf/160239294756.8495.5796595770890272219.stgit@john-Precision-5820-Tower/
->
-> The patch also looks like it is supposed to be applied on top of the above.
-Yes, the patch is based on linux-next.
+On Wed, 22 May 2019, Serge Semin wrote:
+
+> > > The problem might be fixed there by the next patch:
+> > > ---
+> > > diff --git a/arch/mips/dec/prom/memory.c b/arch/mips/dec/prom/memory.c
+> > > index 5073d2ed78bb..5a0c734b5d04 100644
+> > > --- a/arch/mips/dec/prom/memory.c
+> > > +++ b/arch/mips/dec/prom/memory.c
+> > > @@ -91,29 +91,14 @@ void __init prom_meminit(u32 magic)
+> > >                 pmax_setup_memory_region();
+> > >         else
+> > >                 rex_setup_memory_region();
+> > > -}
+> > > -
+> > > -void __init prom_free_prom_memory(void)
+> > > -{
+> > > -       unsigned long end;
+> > > -
+> > > -       /*
+> > > -        * Free everything below the kernel itself but leave
+> > > -        * the first page reserved for the exception handlers.
+> > > -        */
+> > >
+> > >  #if IS_ENABLED(CONFIG_DECLANCE)
+> > >         /*
+> > > -        * Leave 128 KB reserved for Lance memory for
+> > > -        * IOASIC DECstations.
+> > > +        * Reserve 128 KB for Lance memory for IOASIC DECstations.
+> > >          *
+> > >          * XXX: save this address for use in dec_lance.c?
+> > >          */
+> > >         if (IOASIC)
+> > > -               end = __pa(&_text) - 0x00020000;
+> > > -       else
+> > > +               memblock_reserve(__pa_symbol(&_text), 0x00020000);
+> > 
+> > Shouldn't that be
+> > 
+> >     memblock_reserve(__pa_symbol(&_text) - 0x00020000, 0x00020000);
+> > 
+> > ?
+> > 
+> 
+> Right. Thanks. The updated version of the patch is attached to this email.
+> 
+> -Sergey
+> 
+> > >  #endif
+> > > -               end = __pa(&_text);
+> > > -
+> > > -       free_init_pages("unused PROM memory", PAGE_SIZE, end);
+> > >  }
+> > > ---
+> > >
+> > > Didn't wanna use prom_FREE_prom_memory to actually reserve a memory
+> > > chunk, so I moved the reservation into the prom_meminit() method.
+> > 
+> > I guess Maciej will test this on real hardware, eventually...
+
+ I finally got to it as I was hit by it the hard way (and I do have kept 
+the thread in my inbox!), however this is the wrong fix.
+
+ With DEC hardware the whole 128KiB region is reserved as firmware working 
+memory area and we call into the firmware throughout bootstrap on several 
+occasions.  Therefore we have to stay away from it until we know we won't 
+need any firmware services any longer, which is at this point.  So this 
+piece has to stay, and the removed reservation has to be reinstated in 
+platform code.  I'll be posting a fix separately.
+
+ NB I suspect CFE platforms may need a similar fix, but I don't have 
+access to my SWARM now, so I'll verify it on another occasion.
+
+ Other platforms may need it too; at least up to a point an assumption was 
+the kernel load address is just at the end of any firmware working area 
+typically allocated right beyond the exception vector area, hence the 
+reservation.  I realise the assumption may have changed at one point and 
+the oldtimers who have known it may have been away or not paying enough 
+attention while the newcomers did not realise that.
+
+  Maciej
