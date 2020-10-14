@@ -2,110 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504B228DC81
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E7628DD28
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387696AbgJNJOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        id S1728505AbgJNJWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729083AbgJNJOg (ORCPT
+        with ESMTP id S1730018AbgJNJWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:14:36 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57555C051108
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 23:47:12 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g12so2332746wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 23:47:12 -0700 (PDT)
+        Wed, 14 Oct 2020 05:22:06 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA805C05110E
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 23:50:14 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id k1so684590ilc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 23:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=aylbH1DfQpUcVy+Ho1mHnrhoBqnWuhaaKBVoBIsMNMs=;
-        b=H+S8dxO/fHqBX1svmL9av09z204iJfBFG2dzmfW7kTLrlZE9K6GhQR4Nz18skneEkr
-         Mib+Q/4QHhq2qxWIvJWXvKIyjkWSr3Qmf1XcG3Rseo4CExqdEJqGVfBuax9+JTG+jF7R
-         NWB/q1BluISDD9mzR7tFLOd6mMgttQbPNOmtISbywT7LicAp0HjpSNrqFP6c2gmBPlZq
-         EoPsAIYyJk+029iX1B7QTIKkU45VI7keIsRf+NT0BWJHaccKkDOx1PUbqK6UX9drWNXr
-         vLo3I/EL5GEUlzrotBQKXLWtox3Vj1WDXGClbhoWWhyk3eY90fjHYCigDL573UDB3ooJ
-         DjPg==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=4ElDEesyg0K0qnDmN25EoqLVZHDvVGnEe9oIGE+GbpY=;
+        b=yGsJGrunBc8kcDsuG6rQsb9Gi1UWyLuGHPMOjfNqcJYM8NYjLqrxTBD9axJuRe18zU
+         HQkqtoT0925++y4wEzZBq13ntiRfp+ztZ0mDXnUdL/DvJhCreJEXfAa182D+qe97LEkO
+         irPKkX4zfBbl1xcfW5PpBAR52e4Oxl4tjn5J3Yh3jn1ITYtzYpjqrPFLqodqCN8XfrUk
+         dLs6vZPItghAdRarI9xQ1Cxs2V5c5nxJNBgLLgZBspfGmq2VhatarOyYFOVd0EAD4080
+         lhCt/ii1JOENmaqe3S7tG0tp2S0XruPJjXdxCV4VttS68y59UWFitMvHdujhyBd/saDj
+         eSRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=aylbH1DfQpUcVy+Ho1mHnrhoBqnWuhaaKBVoBIsMNMs=;
-        b=ao9PCZpjE8WZjsm1aLmHsITu+6Ju9i0fWkSKhkHBThHJPJ/rbTimi9EdbmBfUe8abt
-         IupsEqiP7RF29dTmFB5zzjbv2od9+W8T9Faev346ulqeyuZ6u9/l3cPBRIAjDytjIju7
-         q9XjoQqdi6h5qPx4f50ylnyYFDvn8RR5S6aTAMUfVU2qraN8InZF91c0JB+yi8aeVWEV
-         o+famyKQKOpXj1Y6MPXnsuzABRp7YMM7fE009vbDRmIJRhP888Wlgfv3wuVbu8nRh6JJ
-         ffDASI16R6mzxa6TrtQod9/A3Ecb61I1NVaaNgIiuhN3AaJnlrwSR5vU4HxcCXwIzn2a
-         l8iQ==
-X-Gm-Message-State: AOAM5334zTCrK8EnZa6Uo7UXYICY54JFZH1P7qqa/OI+z5azVMakWsfD
-        GRxLpZII/E+qjDb4pY2pyWk1AG/AAurXWfDi
-X-Google-Smtp-Source: ABdhPJypNMumZjt5eo37t9gtSa1xk32QUb4MQYkoQ6QNnE5TBzrbZrRPzTzszIZ3H7kVarfx7cK60Q==
-X-Received: by 2002:a5d:40cb:: with SMTP id b11mr3903071wrq.254.1602658031098;
-        Tue, 13 Oct 2020 23:47:11 -0700 (PDT)
-Received: from felia ([2001:16b8:2da8:8200:4c70:9c82:f3bf:bebb])
-        by smtp.gmail.com with ESMTPSA id f5sm2132307wmh.16.2020.10.13.23.47.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 23:47:10 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Wed, 14 Oct 2020 08:47:09 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Joe Perches <joe@perches.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
- EXECUTE_PERMISSIONS
-In-Reply-To: <04325089b524f20d3de167051bfb81b05083d8b1.camel@perches.com>
-Message-ID: <alpine.DEB.2.21.2010140842310.6186@felia>
-References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com> <alpine.DEB.2.21.2010140734270.6186@felia> <316d5a53351d10cd1a26ce0c54883da05642c898.camel@perches.com> <alpine.DEB.2.21.2010140812370.6186@felia> <be7deeec0937327e0ddaadf8468d934ed363a533.camel@perches.com>
- <alpine.DEB.2.21.2010140829150.6186@felia> <04325089b524f20d3de167051bfb81b05083d8b1.camel@perches.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=4ElDEesyg0K0qnDmN25EoqLVZHDvVGnEe9oIGE+GbpY=;
+        b=qD5L2lpRuYC8JDRXYtq9iuEf3S9cX+DyD8uY5cWtiL20Q6GxCPF076rn9hopUoR4Ea
+         U3hhxKGGPAC+pkHbW5FVufeBIJhPCh4I9OQeW9Di8xq4QR7IOKJAdtRMEHVrN1JtyFUC
+         zR9ljViTK6ZSXOC4sqWAfahBTM2x7aGXiUwdaMsE4b8pTh4SBqGUSfCZ6tkiYdkoDM5P
+         GgZ40z8AWgdVSr1f0f4ke9AAm8qerJfM9Gdgyuim9mjTUBSje1jTzqK7hIKh7rrzDFc0
+         RL+WxkbkvsBGSzlpZ+ASVhjfVtLFIbCY6E3Chbl6NRza7wOwgMys6Tsd8vf/5Q5DQbp8
+         IpbQ==
+X-Gm-Message-State: AOAM5323K8RgO8JmZzl9YA2R6gHObyGxUp/wd3AF+NTjlMtaxLj4Z4Yu
+        Bt8OqtQaoyuERF4ddmRKoVtiihDZNmGKHWHfQ2m6vw==
+X-Google-Smtp-Source: ABdhPJwp3I8FXlHDe3+yUeiJIWIJmB6SHTRFkbQNvXxGizAU1lL1FALkkQgXS5sL9C/VXtC/MPUiLkp0WUpyy1PrrpA=
+X-Received: by 2002:a05:6e02:5ad:: with SMTP id k13mr1306184ils.71.1602658213139;
+ Tue, 13 Oct 2020 23:50:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 14 Oct 2020 12:20:00 +0530
+Message-ID: <CA+G9fYvFUpODs+NkSYcnwKnXm62tmP=ksLeBPmB+KFrB2rvCtQ@mail.gmail.com>
+Subject: WARNING: at net/netfilter/nf_tables_api.c:622 lockdep_nfnl_nft_mutex_not_held+0x28/0x38
+ [nf_tables]
+To:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        open list <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org
+Cc:     pablo@netfilter.org, Florian Westphal <fw@strlen.de>,
+        fabf@skynet.be, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+While running kselftest netfilter on arm64 hikey device on Linux next
+20201013 the following
+kernel warning noticed.
+
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: f2fb1afc57304f9dd68c20a08270e287470af2eb
+  git describe: next-20201013
+  make_kernelversion: 5.9.0
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/hikey/lkft/linux-next/879/config
+
+steps to reproduce:
+---------------------------
+# cd /opt/kselftests/default-in-kernel/
+# ./run_kselftest.sh -c netfilter
+
+crash log:
+----------------
+# selftests: netfilter: nft_trans_stress.sh
+[ 1913.862919] ------------[ cut here ]------------
+[ 1913.869773] WARNING: CPU: 2 PID: 31416 at
+/usr/src/kernel/net/netfilter/nf_tables_api.c:622
+lockdep_nfnl_nft_mutex_not_held+0x28/0x38 [nf_tables]
+[ 1913.885399] Modules linked in: nf_tables nfnetlink act_mirred
+cls_u32 sch_etf xt_conntrack nf_conntrack nf_defrag_ipv4 libcrc32c
+ip6_tables nf_defrag_ipv6 ip_tables x_tables netdevsim 8021q garp mrp
+bridge stp llc sch_fq sch_ingress veth algif_hash wl18xx wlcore
+mac80211 cfg80211 snd_soc_hdmi_codec hci_uart btqca btbcm crct10dif_ce
+snd_soc_audio_graph_card snd_soc_simple_card_utils adv7511 wlcore_sdio
+cec bluetooth kirin_drm lima rfkill dw_drm_dsi gpu_sched
+drm_kms_helper drm fuse [last unloaded: test_blackhole_dev]
+[ 1913.941924] CPU: 2 PID: 31416 Comm: nft Tainted: G        W
+5.9.0-next-20201013 #1
+[ 1913.954131] Hardware name: HiKey Development Board (DT)
+[ 1913.963342] pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+[ 1913.973483] pc : lockdep_nfnl_nft_mutex_not_held+0x28/0x38 [nf_tables]
+[ 1913.984271] lr : lockdep_nfnl_nft_mutex_not_held+0x18/0x38 [nf_tables]
+[ 1913.995018] sp : ffff800013bc3550
+[ 1914.002559] x29: ffff800013bc3550 x28: ffff800013bc3930
+[ 1914.012197] x27: 0000000000000001 x26: ffff000045dc4e00
+[ 1914.021880] x25: 0000000000000001 x24: ffff000045dc4e00
+[ 1914.031565] x23: ffff800013bc3930 x22: 0000000000000001
+[ 1914.041298] x21: ffff800012750000 x20: ffff800013bc3668
+[ 1914.051068] x19: ffff800012750000 x18: 0000000000000000
+[ 1914.060876] x17: 0000000000000000 x16: 0000000000000000
+[ 1914.070699] x15: 0000000000000000 x14: ffff800009996d48
+[ 1914.080534] x13: ffffffffff000000 x12: 0000000000000028
+[ 1914.090418] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
+[ 1914.100355] x9 : fefefefefefefeff x8 : 7f7f7f7f7f7f7f7f
+[ 1914.110325] x7 : fefeff53544f4d48 x6 : 0000000000007ab8
+[ 1914.120339] x5 : 0000000000000005 x4 : 0000000000000001
+[ 1914.130388] x3 : 0000000000000001 x2 : 0000000000000000
+[ 1914.140454] x1 : 00000000ffffffff x0 : 0000000000000001
+[ 1914.150529] Call trace:
+[ 1914.157789]  lockdep_nfnl_nft_mutex_not_held+0x28/0x38 [nf_tables]
+[ 1914.168967]  nft_chain_parse_hook+0x58/0x320 [nf_tables]
+[ 1914.179342]  nf_tables_addchain.isra.66+0xb8/0x510 [nf_tables]
+[ 1914.190340]  nf_tables_newchain+0x408/0x618 [nf_tables]
+[ 1914.200734]  nfnetlink_rcv_batch+0x4a0/0x610 [nfnetlink]
+[ 1914.211284]  nfnetlink_rcv+0x174/0x1a8 [nfnetlink]
+[ 1914.221351]  netlink_unicast+0x1dc/0x290
+[ 1914.230589]  netlink_sendmsg+0x2b8/0x3f8
+[ 1914.239840]  ____sys_sendmsg+0x288/0x2d0
+[ 1914.249117]  ___sys_sendmsg+0x90/0xd0
+[ 1914.258154]  __sys_sendmsg+0x78/0xd0
+[ 1914.267140]  __arm64_sys_sendmsg+0x2c/0x38
+[ 1914.276705]  el0_svc_common.constprop.3+0x7c/0x198
+[ 1914.287041]  do_el0_svc+0x34/0xa0
+[ 1914.295928]  el0_sync_handler+0x128/0x190
+[ 1914.305567]  el0_sync+0x140/0x180
+[ 1914.314535] CPU: 2 PID: 31416 Comm: nft Tainted: G        W
+5.9.0-next-20201013 #1
+[ 1914.328670] Hardware name: HiKey Development Board (DT)
+[ 1914.339812] Call trace:
+[ 1914.348184]  dump_backtrace+0x0/0x1f0
+[ 1914.357841]  show_stack+0x2c/0x80
+[ 1914.367181]  dump_stack+0xf8/0x160
+[ 1914.376615]  __warn+0xac/0x168
+[ 1914.385732]  report_bug+0xcc/0x180
+[ 1914.395242]  bug_handler+0x24/0x78
+[ 1914.404783]  call_break_hook+0x80/0xa0
+[ 1914.414725]  brk_handler+0x28/0x68
+[ 1914.424358]  do_debug_exception+0xbc/0x128
+[ 1914.434744]  el1_sync_handler+0x7c/0x128
+[ 1914.445017]  el1_sync+0x7c/0x100
+[ 1914.454625]  lockdep_nfnl_nft_mutex_not_held+0x28/0x38 [nf_tables]
+[ 1914.467351]  nft_chain_parse_hook+0x58/0x320 [nf_tables]
+[ 1914.479276]  nf_tables_addchain.isra.66+0xb8/0x510 [nf_tables]
+[ 1914.491818]  nf_tables_newchain+0x408/0x618 [nf_tables]
+[ 1914.503774]  nfnetlink_rcv_batch+0x4a0/0x610 [nfnetlink]
+[ 1914.515899]  nfnetlink_rcv+0x174/0x1a8 [nfnetlink]
+[ 1914.527525]  netlink_unicast+0x1dc/0x290
+[ 1914.538318]  netlink_sendmsg+0x2b8/0x3f8
+[ 1914.549125]  ____sys_sendmsg+0x288/0x2d0
+[ 1914.559959]  ___sys_sendmsg+0x90/0xd0
+[ 1914.570557]  __sys_sendmsg+0x78/0xd0
+[ 1914.581111]  __arm64_sys_sendmsg+0x2c/0x38
+[ 1914.592241]  el0_svc_common.constprop.3+0x7c/0x198
+[ 1914.604152]  do_el0_svc+0x34/0xa0
+[ 1914.614497]  el0_sync_handler+0x128/0x190
+[ 1914.625540]  el0_sync+0x140/0x180
+[ 1914.635652] irq event stamp: 0
+[ 1914.645091] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[ 1914.657471] hardirqs last disabled at (0): [<ffff80001008975c>]
+copy_process+0x68c/0x1910
+[ 1914.671402] softirqs last  enabled at (0): [<ffff80001008975c>]
+copy_process+0x68c/0x1910
+[ 1914.685201] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[ 1914.696977] ---[ end trace 180274a5ab806f4e ]---
+[ 1917.244483] hisi_thermal f7030700.tsensor: sensor <2> THERMAL
+ALARM: 66385 > 65000
+
+Full test log link,
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201013/testrun/3302070/suite/linux-log-parser/test/check-kernel-warning-1839079/log
 
 
-On Tue, 13 Oct 2020, Joe Perches wrote:
-
-> On Wed, 2020-10-14 at 08:36 +0200, Lukas Bulwahn wrote:
-> > 
-> > On Tue, 13 Oct 2020, Joe Perches wrote:
-> > 
-> > > On Wed, 2020-10-14 at 08:21 +0200, Lukas Bulwahn wrote:
-> > > > What does checkpatch.pl warn about and what does clang-format still warn 
-> > > > about, which is generally accepted okay as style in the kernel?
-> > > 
-> > > clang-format doesn't warn at all, it just reformats.
-> > > 
-> > You can run clang-format with --dry-run and then it would just state the 
-> > proposed changes, right?
-> 
-> clang-format through at least version 10 does not have
-> a --dry-run option.
-> 
->
-
-Just a quick check:
-
-version 9 does not have the --dry-run option:
-
-https://releases.llvm.org/9.0.0/tools/clang/docs/ClangFormat.html
-
-version 10 does:
-
-https://releases.llvm.org/10.0.0/tools/clang/docs/ClangFormat.html
-
-and version 12 (under development) does keep it:
-
-https://clang.llvm.org/docs/ClangFormat.html
-
-I have not played around with that, though.
-
-Lukas 
+-- 
+Linaro LKFT
+https://lkft.linaro.org
