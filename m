@@ -2,97 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7CE28E5A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29B728E593
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgJNRob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:44:31 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2979 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726111AbgJNRob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:44:31 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 74B7E1A2FE127C5E1B5C;
-        Wed, 14 Oct 2020 18:44:29 +0100 (IST)
-Received: from [127.0.0.1] (10.210.170.149) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 14 Oct
- 2020 18:44:28 +0100
-Subject: Re: [PATCH RFC v4 00/13] perf pmu-events: Support event aliasing for
- system PMUs
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     kajoljain <kjain@linux.ibm.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "irogers@google.com" <irogers@google.com>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "qiangqing.zhang@nxp.com" <qiangqing.zhang@nxp.com>,
-        Zhangshaokun <zhangshaokun@hisilicon.com>,
-        "james.clark@arm.com" <james.clark@arm.com>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>
-References: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
- <1f1c4537-2224-cd83-a10a-947ef8cd2864@linux.ibm.com>
- <2ca3d31e-478f-5e0a-dd36-37e84e4abf7c@huawei.com>
- <20201014111639.GA1375972@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <6d385075-41a4-5614-6632-3a1449c73338@huawei.com>
-Date:   Wed, 14 Oct 2020 18:41:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1727172AbgJNRmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:42:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:54806 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726037AbgJNRmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:42:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52C11D6E;
+        Wed, 14 Oct 2020 10:42:39 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E31D33F71F;
+        Wed, 14 Oct 2020 10:42:37 -0700 (PDT)
+Subject: Re: [PATCH v7 3/3] iommu/tegra-smmu: Add PCI support
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org, digetx@gmail.com
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
+References: <20201009161936.23122-1-nicoleotsuka@gmail.com>
+ <20201009161936.23122-4-nicoleotsuka@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <cbc6e3bf-eedc-195c-c4d6-52d3cd24c257@arm.com>
+Date:   Wed, 14 Oct 2020 18:42:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201014111639.GA1375972@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201009161936.23122-4-nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.170.149]
-X-ClientProxiedBy: lhreml749-chm.china.huawei.com (10.201.108.199) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2020 12:16, Jiri Olsa wrote:
->> My thought was that since the kernel part needs acceptance first [0], which
->> is based on v5.9-rc7, I would just use the same baseline here.
->>
->> However I suppose I should still use Arnaldo's perf/core from now on as
->> baseline, so I'll look at that now.
-> yes please, I can't already apply 2nd patch..
+On 2020-10-09 17:19, Nicolin Chen wrote:
+> This patch simply adds support for PCI devices.
 > 
-> 	patching file pmu-events/jevents.c
-> 	Hunk #1 succeeded at 82 with fuzz 2 (offset 29 lines).
-> 	Hunk #2 FAILED at 335.
-> 	Hunk #3 FAILED at 354.
-> 	Hunk #4 succeeded at 406 (offset 22 lines).
-> 	Hunk #5 FAILED at 439.
-> 	Hunk #6 FAILED at 531.
-> 	Hunk #7 FAILED at 555.
-> 	Hunk #8 FAILED at 602.
-> 	Hunk #9 FAILED at 698.
-> 	Hunk #10 succeeded at 770 (offset 2 lines).
-> 	Hunk #11 succeeded at 813 (offset 2 lines).
-> 	Hunk #12 succeeded at 1075 (offset 2 lines).
-> 	Hunk #13 succeeded at 1242 (offset 2 lines).
-> 	Hunk #14 succeeded at 1273 (offset 2 lines).
-> 	7 out of 14 hunks FAILED -- saving rejects to file pmu-events/jevents.c.rej
-> 	can't find file to patch at input line 439
+> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+> 
+> Changelog
+> v6->v7
+>   * Renamed goto labels, suggested by Thierry.
+> v5->v6
+>   * Added Dmitry's Reviewed-by and Tested-by.
+> v4->v5
+>   * Added Dmitry's Reviewed-by
+> v3->v4
+>   * Dropped !iommu_present() check
+>   * Added CONFIG_PCI check in the exit path
+> v2->v3
+>   * Replaced ternary conditional operator with if-else in .device_group()
+>   * Dropped change in tegra_smmu_remove()
+> v1->v2
+>   * Added error-out labels in tegra_smmu_probe()
+>   * Dropped pci_request_acs() since IOMMU core would call it.
+> 
+>   drivers/iommu/tegra-smmu.c | 35 +++++++++++++++++++++++++----------
+>   1 file changed, 25 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+> index be29f5977145..2941d6459076 100644
+> --- a/drivers/iommu/tegra-smmu.c
+> +++ b/drivers/iommu/tegra-smmu.c
+> @@ -10,6 +10,7 @@
+>   #include <linux/kernel.h>
+>   #include <linux/of.h>
+>   #include <linux/of_device.h>
+> +#include <linux/pci.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/slab.h>
+>   #include <linux/spinlock.h>
+> @@ -865,7 +866,11 @@ static struct iommu_group *tegra_smmu_device_group(struct device *dev)
+>   	group->smmu = smmu;
+>   	group->soc = soc;
+>   
+> -	group->group = iommu_group_alloc();
+> +	if (dev_is_pci(dev))
+> +		group->group = pci_device_group(dev);
 
-OK, so I already did the rebase and it was quite straightforward - the 
-conflicts came with the recent changes in jevents.
+Just to check, is it OK to have two or more swgroups "owning" the same 
+iommu_group if an existing one gets returned here? It looks like that 
+might not play nice with the use of iommu_group_set_iommudata().
 
-I will send out soon.
+Robin.
 
-Thanks,
-John
+> +	else
+> +		group->group = generic_device_group(dev);
+> +
+>   	if (IS_ERR(group->group)) {
+>   		devm_kfree(smmu->dev, group);
+>   		mutex_unlock(&smmu->lock);
+> @@ -1075,22 +1080,32 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
+>   	iommu_device_set_fwnode(&smmu->iommu, dev->fwnode);
+>   
+>   	err = iommu_device_register(&smmu->iommu);
+> -	if (err) {
+> -		iommu_device_sysfs_remove(&smmu->iommu);
+> -		return ERR_PTR(err);
+> -	}
+> +	if (err)
+> +		goto remove_sysfs;
+>   
+>   	err = bus_set_iommu(&platform_bus_type, &tegra_smmu_ops);
+> -	if (err < 0) {
+> -		iommu_device_unregister(&smmu->iommu);
+> -		iommu_device_sysfs_remove(&smmu->iommu);
+> -		return ERR_PTR(err);
+> -	}
+> +	if (err < 0)
+> +		goto unregister;
+> +
+> +#ifdef CONFIG_PCI
+> +	err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
+> +	if (err < 0)
+> +		goto unset_platform_bus;
+> +#endif
+>   
+>   	if (IS_ENABLED(CONFIG_DEBUG_FS))
+>   		tegra_smmu_debugfs_init(smmu);
+>   
+>   	return smmu;
+> +
+> +unset_platform_bus: __maybe_unused;
+> +	bus_set_iommu(&platform_bus_type, NULL);
+> +unregister:
+> +	iommu_device_unregister(&smmu->iommu);
+> +remove_sysfs:
+> +	iommu_device_sysfs_remove(&smmu->iommu);
+> +
+> +	return ERR_PTR(err);
+>   }
+>   
+>   void tegra_smmu_remove(struct tegra_smmu *smmu)
+> 
