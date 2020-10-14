@@ -2,164 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE89F28DB20
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D41628DB21
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgJNIXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        id S1728579AbgJNIXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727159AbgJNIW5 (ORCPT
+        with ESMTP id S1726320AbgJNIXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:22:57 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72711C051112
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 01:22:55 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k18so1617252wmj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 01:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Swh+dZQyBdaPmN5as6qgR/sRrl/ojxXJRUzze+Qmp7c=;
-        b=Z/VHBbtSTwP8FkfNNETkLr6RUIBBLouAgLw0uY8EmTB4tmRALqpeMFfKVFnLC50Mtt
-         nm44MdEv54nNQXzvc5ciyucLEFG3UmguNDgeJeq3uiJX1ZxoD562aEuwyenz92rgHqO7
-         mduo38uCnAjo9IiBA8jaGhqpJ5BxtELxrMqIwAM3V8MS8QcvYeVdIBQynr+SNMHTfWea
-         S0PQvoeqsJXb87abZvORn5S+I8WY+nOAXwlDuCbyB/K7GjcypPs1IIHP2e1VlD2krtAJ
-         RMJ07Amgc+2uCAPwGZpd5TqNPPOomLj4eCTH09dclssKq/zrMxMKeZ63fwSOw0Y/GT+d
-         RvjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Swh+dZQyBdaPmN5as6qgR/sRrl/ojxXJRUzze+Qmp7c=;
-        b=g522flu3K8eA9sbOgDt6K9kaLGZM82+MX8hK9O9XYGolRxIoZ/c8k9+pYpGXp/p8+R
-         rDQscQWcJWWGhiANvoVzf7OjYGhSXwZeFlYkACyf2/wahvAwdJHOE3cXK65DRtCtudec
-         uWP56r/4BwcUogzcJDe2FdNynTTCk4DsgNf2SDSuhrj/ptQcw1nv2wdx8ea/Q0mqrOIF
-         hRF2Hu82a6/gpxawEmYF2OtrmcCJ4ZEWSm3NLaJXSYKMNIKSXWZ4dpMOrbTcO60LRq0I
-         GQRb2kA41dyA/gmvQxVv8Ozl5zjTzRFFhFKfwx1NT5+FJJRVTZCOfvMjZo44hwtd15Ls
-         7yxw==
-X-Gm-Message-State: AOAM532HczM2oey8jwsPhHDgF7Ds4lNQK+/hLo+LB77lvtNIVCL5au4O
-        jkjLUAiwR0iHWVvKsqx6e63WQg==
-X-Google-Smtp-Source: ABdhPJyhymZXHFLUxhQpIL4t7IHxHSPomNV81iEN402sS5TNy/a5RgPmeKkekvo2TU8sawSC/dDDKg==
-X-Received: by 2002:a1c:ed15:: with SMTP id l21mr2360202wmh.26.1602663773822;
-        Wed, 14 Oct 2020 01:22:53 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f? ([2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f])
-        by smtp.googlemail.com with ESMTPSA id p11sm3798385wrm.44.2020.10.14.01.22.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 01:22:53 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     Lukasz Luba <lukasz.luba@arm.com>, rjw@rjwysocki.net
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
-        Dietmar.Eggemann@arm.com, qperret@google.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
-Date:   Wed, 14 Oct 2020 10:22:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 14 Oct 2020 04:23:49 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A7BC051111;
+        Wed, 14 Oct 2020 01:23:50 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1kSc4T-0000RN-HK; Wed, 14 Oct 2020 10:23:41 +0200
+Date:   Wed, 14 Oct 2020 10:23:41 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+Message-ID: <20201014082341.GA16895@breakpoint.cc>
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
+ <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
+ <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
+ <20201009110323.GC5723@breakpoint.cc>
+ <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
+ <20201009185552.GF5723@breakpoint.cc>
+ <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
+ <20201009200548.GG5723@breakpoint.cc>
+ <20201014000628.GA15290@salvia>
 MIME-Version: 1.0
-In-Reply-To: <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014000628.GA15290@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Lukasz,
-
-On 09/10/2020 11:16, Lukasz Luba wrote:
-> Hi Rafael,
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> > Yes, we iterate table on re-register and modify the existing entries.
 > 
-> On 10/2/20 12:44 PM, Lukasz Luba wrote:
->> Hi all,
->>
->> The Energy Model supports power values expressed in an abstract scale.
->> This has an impact on Intelligent Power Allocation (IPA) and should be
->> documented properly. There is also a need to update the DT binding for
->> the
->> 'sustainable-power' and allow it to have abstract scale as well.
->>
->> Changes:
->> v2:
->> - updated sustainable power section in IPA documentation
->> - updated DT binding for the 'sustainable-power'
->>
->> The v1 of the patch set and related discussion can be found in [1].
->>
->> Regards,
->> Lukasz Luba
->>
->> [1]
->> https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
->>
->>
->> Lukasz Luba (3):
->>    docs: Clarify abstract scale usage for power values in Energy Model
->>    PM / EM: update the comments related to power scale
->>    dt-bindings: thermal: update sustainable-power with abstract scale
->>
->>   .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
->>   .../driver-api/thermal/power_allocator.rst          | 13 ++++++++++++-
->>   Documentation/power/energy-model.rst                | 13 +++++++++++++
->>   Documentation/scheduler/sched-energy.rst            |  5 +++++
->>   include/linux/energy_model.h                        | 11 +++++------
->>   kernel/power/energy_model.c                         |  2 +-
->>   6 files changed, 45 insertions(+), 12 deletions(-)
->>
+> For iptables-nft, it might be possible to avoid this deregister +
+> register ct hooks in the same transaction: Maybe add something like
+> nf_ct_netns_get_all() to bump refcounters by one _iff_ they are > 0
+> before starting the transaction processing, then call
+> nf_ct_netns_put_all() which decrements refcounters and unregister
+> hooks if they reach 0.
+
+No need, its already fine.  Decrement happens from destroy path,
+so new rules are already in place.
+
+> The only problem with this approach is that this pulls in the
+> conntrack module, to solve that, struct nf_ct_hook in
+> net/netfilter/core.c could be used to store the reference to
+> ->netns_get_all and ->net_put_all.
 > 
-> Could you take patch 1/3 and patch 2/3 via your PM tree,
-> please? I will be very grateful.
-> 
-> These patches just update the documentation and comments regarding
-> an issue that we can have: bogoWatts in the Energy Model (and we
-> already have). One of the drawbacks is that we cannot derive real energy
-> from these numbers. Will see how this would evolve.
+> Legacy would still be flawed though.
 
-The purpose of the energy model is to provide these power numbers.
+Its fine too, new rule blob gets handled (and match/target checkentry
+called) before old one is dismantled.
 
-If the SoC vendors do not want to share those numbers, then better to
-not use the energy model at all.
-
-If they want to use the EAS and the IPA at all costs without sharing the
-power numbers, then it is up to them to take responsibility of providing
-consistent numbers, not the community to document how to hack the energy
-model.
-
-And that is even more true as mentioned by Doug: the power numbers are
-not impossible to measure.
-
-Documenting the scale values give the opportunity to the SoC vendor to
-never share the power numbers, and even worst, that implies all the
-existing and future frameworks based on the energy model (and its
-evolution) *must* comply with these dummy values. That is the promise of
-a real pain.
-
-IMO, we must keep a strong constraint on the power values for the energy
-model.
-
-However, nothing prevents to write a recipe on a website explaining how
-to use the energy model without the power numbers with a big warning
-that could not work in the future if the energy model evolves or it
-could be incompatible with the IPA.
-
-I suggest to solve the energy model main issue: the SoC vendor do not
-want to share the power numbers. Why not give the opportunity to load a
-firmware where the power numbers will be ? The firmware could be in a
-vendor partition for example.
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+We only have a 0 refcount + hook unregister when rules get
+flushed/removed explicitly.
