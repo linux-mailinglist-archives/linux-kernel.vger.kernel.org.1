@@ -2,158 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B824428D8F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F9528D8F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729395AbgJNDUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 23:20:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9656 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726049AbgJNDUH (ORCPT
+        id S1729565AbgJNDUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 23:20:40 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:45918 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726049AbgJNDUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 23:20:07 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09E365GO187522;
-        Tue, 13 Oct 2020 23:19:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=59X7e8xrmkS6q0uLUAi91FvJ9mkAGMIqvUFstlD/kzI=;
- b=VrrrsasxM+9qV/MNl0DQU2ozX4r6PHtQ4wF1Dquym4f2pPflsJBF03ZFcwSWFL/my4yb
- I87A2sLej7a1VA0n+li8oOWqnVSkiNtKT+YjXgX/IGFEtJSAW1ZJx7gAKI0NsuQBvRvW
- BIHXare/xbg6sZS57SrWtwBbd7S+qpo/20gm91fctIeSJITr9/QZOAiPyuCBhAENKSBX
- Rqu0wZKNcEkz8Xak5HT0fQ/Kv9+GpHRD3De3TWU2/INv3i9+AnhP/jYvn42QN05OVfpl
- /yfFIznIFwaeaCBqpOcaDJludm1EQLepus+Nqx1AtIE4jQfUa7yxz7tRfRtg7/6dJRWP TA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 345qrateug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 13 Oct 2020 23:19:33 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09E3JRBl016518;
-        Wed, 14 Oct 2020 03:19:31 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 3434k7upa7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 03:19:31 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09E3JSP335521000
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Oct 2020 03:19:29 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DFEDB11C050;
-        Wed, 14 Oct 2020 03:19:28 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B6C311C04C;
-        Wed, 14 Oct 2020 03:19:27 +0000 (GMT)
-Received: from [9.85.69.185] (unknown [9.85.69.185])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 14 Oct 2020 03:19:27 +0000 (GMT)
-Subject: Re: [PATCH] powerpc/features: Remove CPU_FTR_NODSISRALIGN
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <0346768708b69bdbfec82f6e5b0364962b9b6932.1602489812.git.christophe.leroy@csgroup.eu>
- <875z7ea8t7.fsf@linux.ibm.com>
- <cb22e9a8-4a8c-38d9-66f1-24af5ebd7520@csgroup.eu>
- <87wnzuzb1x.fsf@mpe.ellerman.id.au>
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Message-ID: <7b1f7fdd-0256-3370-13ab-d808b9fe9b02@linux.ibm.com>
-Date:   Wed, 14 Oct 2020 08:49:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <87wnzuzb1x.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_02:2020-10-13,2020-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- malwarescore=0 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010140021
+        Tue, 13 Oct 2020 23:20:40 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1046)
+        id 627A720B4905; Tue, 13 Oct 2020 20:20:39 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 627A720B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1602645639;
+        bh=X/lgLtvI5yARcXsG3L0YJTffUHRbyGIv/Y8Hr0+JSIA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ao+6bwGGbRULNWSKAUgXNrKQGd9nAQ/4vvhMvX6HxUKpTxBkC5k7JTpUe+lWKoCa3
+         uwwGqxydii9FaZ210rGklGI0k1FO4CfdVCDR9Xm90sdg2hJ7wkDyuPOwH2h51pcbuj
+         0gkNN7JXrAm3mEPr6HHr1vhg072GE9bbtv+IrgCA=
+From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
+To:     rayagonda.kokatanur@broadcom.com
+Cc:     andriy.shevchenko@linux.intel.com,
+        bcm-kernel-feedback-list@broadcom.com, brendanhiggins@google.com,
+        dphadke@linux.microsoft.com, f.fainelli@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lori.hikichi@broadcom.com,
+        rjui@broadcom.com, sbranden@broadcom.com, wsa@kernel.org
+Subject: [PATCH v1 5/6] i2c: iproc: handle master read request
+Date:   Tue, 13 Oct 2020 20:20:39 -0700
+Message-Id: <1602645639-12854-1-git-send-email-dphadke@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <20201011182254.17776-6-rayagonda.kokatanur@broadcom.com>
+References: <20201011182254.17776-6-rayagonda.kokatanur@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 3:45 PM, Michael Ellerman wrote:
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> Le 13/10/2020 à 09:23, Aneesh Kumar K.V a écrit :
->>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>>
->>>> CPU_FTR_NODSISRALIGN has not been used since
->>>> commit 31bfdb036f12 ("powerpc: Use instruction emulation
->>>> infrastructure to handle alignment faults")
->>>>
->>>> Remove it.
->>>>
->>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>>> ---
->>>>    arch/powerpc/include/asm/cputable.h | 22 ++++++++++------------
->>>>    arch/powerpc/kernel/dt_cpu_ftrs.c   |  8 --------
->>>>    arch/powerpc/kernel/prom.c          |  2 +-
->>>>    3 files changed, 11 insertions(+), 21 deletions(-)
->>>>
->>>> diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt_cpu_ftrs.c
->>>> index 1098863e17ee..c598961d9f15 100644
->>>> --- a/arch/powerpc/kernel/dt_cpu_ftrs.c
->>>> +++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
->>>> @@ -273,13 +273,6 @@ static int __init feat_enable_idle_nap(struct dt_cpu_feature *f)
->>>>    	return 1;
->>>>    }
->>>>    
->>>> -static int __init feat_enable_align_dsisr(struct dt_cpu_feature *f)
->>>> -{
->>>> -	cur_cpu_spec->cpu_features &= ~CPU_FTR_NODSISRALIGN;
->>>> -
->>>> -	return 1;
->>>> -}
->>>> -
->>>>    static int __init feat_enable_idle_stop(struct dt_cpu_feature *f)
->>>>    {
->>>>    	u64 lpcr;
->>>> @@ -641,7 +634,6 @@ static struct dt_cpu_feature_match __initdata
->>>>    	{"tm-suspend-hypervisor-assist", feat_enable, CPU_FTR_P9_TM_HV_ASSIST},
->>>>    	{"tm-suspend-xer-so-bug", feat_enable, CPU_FTR_P9_TM_XER_SO_BUG},
->>>>    	{"idle-nap", feat_enable_idle_nap, 0},
->>>> -	{"alignment-interrupt-dsisr", feat_enable_align_dsisr, 0},
+On Sun, 11 Oct 2020 23:52:53 +0530, Rayagonda Kokatanur wrote:
+> --- a/drivers/i2c/busses/i2c-bcm-iproc.c
+> +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
 > 
-> Rather than removing it entirely, I'd rather we left a comment, so that
-> it's obvious that we are ignoring that feature on purpose, not because
-> we forget about it.
+> -		} else if (status & BIT(IS_S_RD_EVENT_SHIFT)) {
+> -			/* Start of SMBUS for Master Read */
+> +					I2C_SLAVE_WRITE_REQUESTED, &rx_data);
+> +			iproc_i2c->rx_start_rcvd = true;
+> +			iproc_i2c->slave_read_complete = false;
+> +		} else if (rx_status == I2C_SLAVE_RX_DATA &&
+> +			   iproc_i2c->rx_start_rcvd) {
+> +			/* Middle of SMBUS Master write */
+>  			i2c_slave_event(iproc_i2c->slave,
+> -					I2C_SLAVE_READ_REQUESTED, &value);
+> -			iproc_i2c_wr_reg(iproc_i2c, S_TX_OFFSET, value);
+> +					I2C_SLAVE_WRITE_RECEIVED, &rx_data);
+> +		} else if (rx_status == I2C_SLAVE_RX_END &&
+> +			   iproc_i2c->rx_start_rcvd) {
+> +			/* End of SMBUS Master write */
+> +			if (iproc_i2c->slave_rx_only)
+> +				i2c_slave_event(iproc_i2c->slave,
+> +						I2C_SLAVE_WRITE_RECEIVED,
+> +						&rx_data);
+> +
+> +			i2c_slave_event(iproc_i2c->slave, I2C_SLAVE_STOP,
+> +					&rx_data);
+> +		} else if (rx_status == I2C_SLAVE_RX_FIFO_EMPTY) {
+> +			iproc_i2c->rx_start_rcvd = false;
+> +			iproc_i2c->slave_read_complete = true;
+> +			break;
+> +		}
+>  
+> -			val = BIT(S_CMD_START_BUSY_SHIFT);
+> -			iproc_i2c_wr_reg(iproc_i2c, S_CMD_OFFSET, val);
+> +		rx_bytes++;
+
+rx_bytes should be incremented only along with I2C_SLAVE_WRITE_RECEIVED event?
+
 > 
-> eg:
+> +static bool bcm_iproc_i2c_slave_isr(struct bcm_iproc_i2c_dev *iproc_i2c,
+> +				    u32 status)
+> +{
+> +	u32 val;
+> +	u8 value;
+> +
+> +	/*
+> +	 * Slave events in case of master-write, master-write-read and,
+> +	 * master-read
+> +	 *
+> +	 * Master-write     : only IS_S_RX_EVENT_SHIFT event
+> +	 * Master-write-read: both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
+> +	 *                    events
+> +	 * Master-read      : both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
+> +	 *                    events or only IS_S_RD_EVENT_SHIFT
+> +	 */
+> +	if (status & BIT(IS_S_RX_EVENT_SHIFT) ||
+> +	    status & BIT(IS_S_RD_EVENT_SHIFT)) {
+> +		/* disable slave interrupts */
+> +		val = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
+> +		val &= ~iproc_i2c->slave_int_mask;
+> +		iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, val);
+> +
+> +		if (status & BIT(IS_S_RD_EVENT_SHIFT))
+> +			/* Master-write-read request */
+> +			iproc_i2c->slave_rx_only = false;
+> +		else
+> +			/* Master-write request only */
+> +			iproc_i2c->slave_rx_only = true;
+> +
+> +		/* schedule tasklet to read data later */
+> +		tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
+> +
+> +		/* clear only IS_S_RX_EVENT_SHIFT interrupt */
+> +		iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
+> +				 BIT(IS_S_RX_EVENT_SHIFT));
 > 
-> diff --git a/arch/powerpc/kernel/dt_cpu_ftrs.c b/arch/powerpc/kernel/dt_cpu_ftrs.c
-> index f204ad79b6b5..45cb7e59bd13 100644
-> --- a/arch/powerpc/kernel/dt_cpu_ftrs.c
-> +++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
-> @@ -640,7 +640,7 @@ static struct dt_cpu_feature_match __initdata
->   	{"tm-suspend-hypervisor-assist", feat_enable, CPU_FTR_P9_TM_HV_ASSIST},
->   	{"tm-suspend-xer-so-bug", feat_enable, CPU_FTR_P9_TM_XER_SO_BUG},
->   	{"idle-nap", feat_enable_idle_nap, 0},
-> -	{"alignment-interrupt-dsisr", feat_enable_align_dsisr, 0},
-> +	// "alignment-interrupt-dsisr" ignored
->   	{"idle-stop", feat_enable_idle_stop, 0},
->   	{"machine-check-power8", feat_enable_mce_power8, 0},
->   	{"performance-monitor-power8", feat_enable_pmu_power8, 0},
-> 
+
+Both tasklet and isr are writing to status (IS_OFFSET) reg.
+
+The tasklet seems to be batching up rx fifo reads because of time-sensitive
+Master-write-read transaction? Linux I2C framework is byte interface anyway.
+Can the need to batch reads be avoided by setting slave rx threshold for
+interrupt (S_FIFO_RX_THLD) to 1-byte? 
+
+Also, wouldn't tasklets be susceptible to other interrupts? If fifo reads
+have to be batched up, can it be changed to threaded irq?
 
 
-why not do it as
-static int __init feat_enable_align_dsisr(struct dt_cpu_feature *f)
-{
-	/* This feature should not be enabled */
-#ifdef DEBUG
-	WARN(1);
-#endif
-
-	return 1;
-}
-
-
--aneesh
