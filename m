@@ -2,301 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDD628DABA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C76728DABC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbgJNH4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:56:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726897AbgJNH4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:56:12 -0400
-Received: from coco.lan (ip5f5ad5dc.dynamic.kabel-deutschland.de [95.90.213.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F4072222A;
-        Wed, 14 Oct 2020 07:56:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602662170;
-        bh=54xdnNzCIbZVeo8uxGRflH+LIH/mn4SRDcVW6H6rs8E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RkzdEdmgopn/v1H4MjXYaHoxAoI9dBDQZomJlXHjFTeQu7pHlO9LefQG/YjP6bF1P
-         eCJh9nyX8JWvlPoPiKwcvANi7iOuqADIr0WL1q1uFWls/Tkbz1T37A9LbevIX6yt+U
-         66JESt5eoc+a2vi6C05FB0uxFdauKFGaLdgmb3+o=
-Date:   Wed, 14 Oct 2020 09:56:03 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
- some files
-Message-ID: <20201014095603.0d899da7@coco.lan>
-In-Reply-To: <20201014015840.GR3249@paulmck-ThinkPad-P72>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
-        <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
-        <20201013163354.GO3249@paulmck-ThinkPad-P72>
-        <20201013163836.GC670875@rowland.harvard.edu>
-        <20201014015840.GR3249@paulmck-ThinkPad-P72>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1728371AbgJNH6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:58:53 -0400
+Received: from mail-eopbgr1310110.outbound.protection.outlook.com ([40.107.131.110]:31377
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727306AbgJNH6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 03:58:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LgwkV1M32bbZoipJo33026sUIGvOw9uanAhirXuN5T7PWCFq/ZavDijLr07VPmHW86MNzKRSkjzZz03DMc6lo8ye28efkw2vcBRmP/LJhGQQ3FMokElFkaUUpEfIssiWzJg/S4V6aryM0CZLaq3BWroqxrPq0aj1C3IdifMiAEg0HOyPExulJYGyt5btnRbgCXGEhtbQul/O/AQ7ku1zdok9abOGBLWZmnpSajWyrBDxhWHY/daw5HK03aHJ+eZy9krTXvDe9AlSGz94sFTYJLWwBo0TmcO3k90wLxcd3QbouWpFmnzzZvZyvh/NUmZn3RCBWg7XE03QbGDTuUucrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JDEWj+SU6qifVTyhdbqgpqRQXzNHgmVRGLuNFLOfDI0=;
+ b=ZyJkP1n+PodjselF55V2oGuDTD2RT9S9HCCfEWiqxXji6kxJbS1VKq+IHRUx5xWKlMNGVpmSpWdY+sdksw75c1op6WohIC4oHH1QbHBX+P1dv1UVeJiznlRKU9JZEGMn1e5gnzn7O24/exJCuhiH0Yjmqv3vvNMi1941zj6CaNv9LFgVZsanxYb4/xwOlEuFiLoElT15yBl2IiFpseV2HkbUswdJLtbP/HpG9+92am07+inH3DpgrWvcEl/gKHWQVTGIta+AaM2Snz2ZTtMrDDEfTHT33Bbj6oQJp3Vzax7iRB0jhe2pQyzpQHeiPZETfemyuomnzHw8piu8C4cIeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com (2603:1096:803:6::17)
+ by PS1PR06MB2616.apcprd06.prod.outlook.com (2603:1096:803:45::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Wed, 14 Oct
+ 2020 07:58:45 +0000
+Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com
+ ([fe80::31d5:24c7:7ac6:a5cc]) by PS1PR0601MB1849.apcprd06.prod.outlook.com
+ ([fe80::31d5:24c7:7ac6:a5cc%7]) with mapi id 15.20.3455.031; Wed, 14 Oct 2020
+ 07:58:44 +0000
+From:   Dylan Hung <dylan_hung@aspeedtech.com>
+To:     Joel Stanley <joel@jms.id.au>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: RE: [PATCH 1/1] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
+Thread-Topic: [PATCH 1/1] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
+Thread-Index: AQHWofAzDvWchifNuUyQtsmFJfPVT6mWpi2AgAAOHMA=
+Date:   Wed, 14 Oct 2020 07:58:44 +0000
+Message-ID: <PS1PR0601MB1849DAC59EDA6A9DB62B4EE09C050@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+References: <20201014060632.16085-1-dylan_hung@aspeedtech.com>
+ <20201014060632.16085-2-dylan_hung@aspeedtech.com>
+ <CACPK8Xe_O44BUaPCEm2j3ZN+d4q6JbjEttLsiCLbWF6GnaqSPg@mail.gmail.com>
+In-Reply-To: <CACPK8Xe_O44BUaPCEm2j3ZN+d4q6JbjEttLsiCLbWF6GnaqSPg@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: jms.id.au; dkim=none (message not signed)
+ header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d976cc0f-b323-419a-5806-08d87016f975
+x-ms-traffictypediagnostic: PS1PR06MB2616:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PS1PR06MB261690EBF2C77A435318CFFE9C050@PS1PR06MB2616.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SAjARkfB5FNoxVlsdEmOaoXLU/XlcZTiXNHvIpDJIOyLUFhrqlF8xJCZjj/rDKiWznwYXOVNakh0z4RdqpE8ws3ivWCtaCJ+4gruYQO7lrUeDYYXIKgVLXq9zzd6pGe7nagtQMd3bgHxcngcGV7OVQTBgPu7+5jkTNy4MW4C/ahCzOPtpPjPeJAVNFdTWlAhs5pd/eviuVzKsAVnTlj9GFZqc5bw91jMjUtIw5n3PnhYt9y8DrpVGSEALpoyk7W3Iy5Yrrr+D9TzNBJ4G2RNur5cdYpiSTdb3RnEaPkbGcAnpuZ01Uh74KuUxazcQdHYGKZPFP/UMFX0oOaImVPiTg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS1PR0601MB1849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(396003)(376002)(39840400004)(86362001)(6916009)(4326008)(55236004)(83380400001)(8936002)(55016002)(107886003)(6506007)(71200400001)(2906002)(8676002)(26005)(53546011)(66476007)(9686003)(52536014)(64756008)(5660300002)(186003)(478600001)(66446008)(66946007)(54906003)(316002)(76116006)(66556008)(7696005)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: rlXi6klrJNsWzqzvd2bcVIwlUOfWrpIe8YpRNBDfihmsaCYG9nod8a6CPAXbpYdVpOhrKXCrAaMRswZ+d3dqPPqjZhYQ2rHPECuT5kQxw+vA+BfdZ+helIzmpaOSb4sisSuLnZ8a7QJJHstlsa8D/B6RON9mDjZZY+skgr3wijnmVdgvI6FrBpsDZJFfffEQL79LxN1WMA/aqyiRo605zdMe/mwBdlTvYyL76mRfsERQD461Dl9jHlF3jI9v2WrtEKJDNieh0uoU/0OypKCIhAzA3FiDKYuybro1b9n6kMEdR6Q182TwO3fSTrDVgKOQCGogSvm3HhVR35u/TvusrgDQavKzHCQRDP3r9eBPGoWIzLSZMWfkBIqVrdflZk2g2ndGwp3Muu7oCdSrQSYRQ00ieRYt7AZdu41X5i4SVnj9qaerkSdNpwatOl2Kcq7QEqAjF9wh/EPdiYz1ur5X5u8Gjif0bEDjZl0kzvwBuatRYZzAlHCVyba5OLxk5WJuNDrXNCs3EdeKzeuiVUnUt4Od/RK9wEGTUYO2VeLOeY+FhIQiMZoNStNoYk6znmWpvtkYc0Bw6yst4g+450BhFOwi5n6GIg3uWrHCJYltYuENJbRl0GO0dntP0dM+6yEqFRuldIsHSFI6dK7YlxRUBQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PS1PR0601MB1849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d976cc0f-b323-419a-5806-08d87016f975
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 07:58:44.8524
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HDNegYESYgLml6tBe5j5El7t1+w4mFuw9n+XxtnOPs6m0OuvCHbA/+qpF6kqmylOMMZHrwLqsePBS9gUDchBWmgpcab0umzzhAeW7Nd9L9g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PS1PR06MB2616
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 13 Oct 2020 18:58:40 -0700
-"Paul E. McKenney" <paulmck@kernel.org> escreveu:
-
-> On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote:
-> > On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:  
-> > > On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrote:  
-> > > > - The sysfs.txt file was converted to ReST and renamed;
-> > > > - The control-dependencies.txt is not at
-> > > >   Documentation/control-dependencies.txt. As it is at the
-> > > >   same dir as the README file, which mentions it, just
-> > > >   remove Documentation/.
-> > > > 
-> > > > With that, ./scripts/documentation-file-ref-check script
-> > > > is now happy again for files under tools/.
-> > > > 
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > > 
-> > > Queued for review and testing, likely target v5.11.  
-> > 
-> > Instead of changing the path in the README reference, shouldn't 
-> > tools/memory-model/control-dependencies.txt be moved to its proper 
-> > position in .../Documentation?  
-> 
-> You are of course quite right.  My thought is to let Mauro go ahead,
-> given his short deadline.  We can then make this "git mv" change once
-> v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
-> added a reminder to my calendar.
-
-Sounds like a plan to me.
-
-
-If it helps on 5.11 plans, converting this file to ReST format is quite
-trivial: it just needs to use "::" for C/asm code literal blocks, and 
-to replace "(*) " by something that matches ReST syntax for lists,
-like "(#) " or just "* ":
-
-	https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists
-
-See enclosed.
-
-Thanks,
-Mauro
-
-[PATCH] convert control-dependencies.rst to ReST
-
-- Mark literal blocks as such;
-- Use a numbered list at the summary.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-diff --git a/tools/memory-model/Documentation/control-dependencies.rst b/tools/memory-model/Documentation/control-dependencies.rst
-index 366520cac937..52dc6a5bc173 100644
---- a/tools/memory-model/Documentation/control-dependencies.rst
-+++ b/tools/memory-model/Documentation/control-dependencies.rst
-@@ -7,7 +7,7 @@ the compiler's ignorance from breaking your code.
- 
- A load-load control dependency requires a full read memory barrier, not
- simply a data dependency barrier to make it work correctly.  Consider the
--following bit of code:
-+following bit of code::
- 
- 	q = READ_ONCE(a);
- 	if (q) {
-@@ -19,7 +19,7 @@ This will not have the desired effect because there is no actual data
- dependency, but rather a control dependency that the CPU may short-circuit
- by attempting to predict the outcome in advance, so that other CPUs see
- the load from b as having happened before the load from a.  In such a
--case what's actually required is:
-+case what's actually required is::
- 
- 	q = READ_ONCE(a);
- 	if (q) {
-@@ -28,7 +28,7 @@ case what's actually required is:
- 	}
- 
- However, stores are not speculated.  This means that ordering -is- provided
--for load-store control dependencies, as in the following example:
-+for load-store control dependencies, as in the following example::
- 
- 	q = READ_ONCE(a);
- 	if (q) {
-@@ -45,7 +45,7 @@ or, worse yet, convert the store into a check followed by a store.
- Worse yet, if the compiler is able to prove (say) that the value of
- variable "a" is always non-zero, it would be well within its rights
- to optimize the original example by eliminating the "if" statement
--as follows:
-+as follows::
- 
- 	q = a;
- 	b = 1;  /* BUG: Compiler and CPU can both reorder!!! */
-@@ -53,7 +53,7 @@ as follows:
- So don't leave out either the READ_ONCE() or the WRITE_ONCE().
- 
- It is tempting to try to enforce ordering on identical stores on both
--branches of the "if" statement as follows:
-+branches of the "if" statement as follows::
- 
- 	q = READ_ONCE(a);
- 	if (q) {
-@@ -67,7 +67,7 @@ branches of the "if" statement as follows:
- 	}
- 
- Unfortunately, current compilers will transform this as follows at high
--optimization levels:
-+optimization levels::
- 
- 	q = READ_ONCE(a);
- 	barrier();
-@@ -85,7 +85,7 @@ Now there is no conditional between the load from "a" and the store to
- The conditional is absolutely required, and must be present in the
- assembly code even after all compiler optimizations have been applied.
- Therefore, if you need ordering in this example, you need explicit
--memory barriers, for example, smp_store_release():
-+memory barriers, for example, smp_store_release()::
- 
- 	q = READ_ONCE(a);
- 	if (q) {
-@@ -97,7 +97,7 @@ memory barriers, for example, smp_store_release():
- 	}
- 
- In contrast, without explicit memory barriers, two-legged-if control
--ordering is guaranteed only when the stores differ, for example:
-+ordering is guaranteed only when the stores differ, for example::
- 
- 	q = READ_ONCE(a);
- 	if (q) {
-@@ -113,7 +113,7 @@ proving the value of "a".
- 
- In addition, you need to be careful what you do with the local variable "q",
- otherwise the compiler might be able to guess the value and again remove
--the needed conditional.  For example:
-+the needed conditional.  For example::
- 
- 	q = READ_ONCE(a);
- 	if (q % MAX) {
-@@ -126,7 +126,7 @@ the needed conditional.  For example:
- 
- If MAX is defined to be 1, then the compiler knows that (q % MAX) is
- equal to zero, in which case the compiler is within its rights to
--transform the above code into the following:
-+transform the above code into the following::
- 
- 	q = READ_ONCE(a);
- 	WRITE_ONCE(b, 2);
-@@ -137,7 +137,7 @@ between the load from variable "a" and the store to variable "b".  It is
- tempting to add a barrier(), but this does not help.  The conditional
- is gone, and the barrier won't bring it back.  Therefore, if you are
- relying on this ordering, you should make sure that MAX is greater than
--one, perhaps as follows:
-+one, perhaps as follows::
- 
- 	q = READ_ONCE(a);
- 	BUILD_BUG_ON(MAX <= 1); /* Order load from a with store to b. */
-@@ -154,7 +154,7 @@ identical, as noted earlier, the compiler could pull this store outside
- of the 'if' statement.
- 
- You must also be careful not to rely too much on boolean short-circuit
--evaluation.  Consider this example:
-+evaluation.  Consider this example::
- 
- 	q = READ_ONCE(a);
- 	if (q || 1 > 0)
-@@ -162,7 +162,7 @@ evaluation.  Consider this example:
- 
- Because the first condition cannot fault and the second condition is
- always true, the compiler can transform this example as following,
--defeating control dependency:
-+defeating control dependency::
- 
- 	q = READ_ONCE(a);
- 	WRITE_ONCE(b, 1);
-@@ -174,7 +174,7 @@ the compiler to use the results.
- 
- In addition, control dependencies apply only to the then-clause and
- else-clause of the if-statement in question.  In particular, it does
--not necessarily apply to code following the if-statement:
-+not necessarily apply to code following the if-statement::
- 
- 	q = READ_ONCE(a);
- 	if (q) {
-@@ -189,7 +189,7 @@ compiler cannot reorder volatile accesses and also cannot reorder
- the writes to "b" with the condition.  Unfortunately for this line
- of reasoning, the compiler might compile the two writes to "b" as
- conditional-move instructions, as in this fanciful pseudo-assembly
--language:
-+language::
- 
- 	ld r1,a
- 	cmp r1,$0
-@@ -213,14 +213,14 @@ for more information.
- 
- In summary:
- 
--  (*) Control dependencies can order prior loads against later stores.
-+  (#) Control dependencies can order prior loads against later stores.
-       However, they do -not- guarantee any other sort of ordering:
-       Not prior loads against later loads, nor prior stores against
-       later anything.  If you need these other forms of ordering,
-       use smp_rmb(), smp_wmb(), or, in the case of prior stores and
-       later loads, smp_mb().
- 
--  (*) If both legs of the "if" statement begin with identical stores to
-+  (#) If both legs of the "if" statement begin with identical stores to
-       the same variable, then those stores must be ordered, either by
-       preceding both of them with smp_mb() or by using smp_store_release()
-       to carry out the stores.  Please note that it is -not- sufficient
-@@ -229,28 +229,28 @@ In summary:
-       destroy the control dependency while respecting the letter of the
-       barrier() law.
- 
--  (*) Control dependencies require at least one run-time conditional
-+  (#) Control dependencies require at least one run-time conditional
-       between the prior load and the subsequent store, and this
-       conditional must involve the prior load.  If the compiler is able
-       to optimize the conditional away, it will have also optimized
-       away the ordering.  Careful use of READ_ONCE() and WRITE_ONCE()
-       can help to preserve the needed conditional.
- 
--  (*) Control dependencies require that the compiler avoid reordering the
-+  (#) Control dependencies require that the compiler avoid reordering the
-       dependency into nonexistence.  Careful use of READ_ONCE() or
-       atomic{,64}_read() can help to preserve your control dependency.
-       Please see the COMPILER BARRIER section for more information.
- 
--  (*) Control dependencies apply only to the then-clause and else-clause
-+  (#) Control dependencies apply only to the then-clause and else-clause
-       of the if-statement containing the control dependency, including
-       any functions that these two clauses call.  Control dependencies
-       do -not- apply to code following the if-statement containing the
-       control dependency.
- 
--  (*) Control dependencies pair normally with other types of barriers.
-+  (#) Control dependencies pair normally with other types of barriers.
- 
--  (*) Control dependencies do -not- provide multicopy atomicity.  If you
-+  (#) Control dependencies do -not- provide multicopy atomicity.  If you
-       need all the CPUs to see a given store at the same time, use smp_mb().
- 
--  (*) Compilers do not understand control dependencies.  It is therefore
-+  (#) Compilers do not understand control dependencies.  It is therefore
-       your job to ensure that they do not break your code.
-
+SGkgSm9lbCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2VsIFN0
+YW5sZXkgW21haWx0bzpqb2VsQGptcy5pZC5hdV0NCj4gU2VudDogV2VkbmVzZGF5LCBPY3RvYmVy
+IDE0LCAyMDIwIDI6NDEgUE0NCj4gVG86IER5bGFuIEh1bmcgPGR5bGFuX2h1bmdAYXNwZWVkdGVj
+aC5jb20+DQo+IENjOiBEYXZpZCBTIC4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFr
+dWIgS2ljaW5za2kNCj4gPGt1YmFAa2VybmVsLm9yZz47IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7
+IExpbnV4IEtlcm5lbCBNYWlsaW5nIExpc3QNCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc+OyBQby1ZdSBDaHVhbmcgPHJhdGJlcnRAZmFyYWRheS10ZWNoLmNvbT47DQo+IGxpbnV4LWFz
+cGVlZCA8bGludXgtYXNwZWVkQGxpc3RzLm96bGFicy5vcmc+OyBPcGVuQk1DIE1haWxsaXN0DQo+
+IDxvcGVuYm1jQGxpc3RzLm96bGFicy5vcmc+OyBCTUMtU1cgPEJNQy1TV0Bhc3BlZWR0ZWNoLmNv
+bT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzFdIG5ldDogZnRnbWFjMTAwOiBGaXggQXNwZWVk
+IGFzdDI2MDAgVFggaGFuZyBpc3N1ZQ0KPiANCj4gT24gV2VkLCAxNCBPY3QgMjAyMCBhdCAwNjow
+NywgRHlsYW4gSHVuZyA8ZHlsYW5faHVuZ0Bhc3BlZWR0ZWNoLmNvbT4NCj4gd3JvdGU6DQo+ID4N
+Cj4gPiBUaGUgbmV3IEhXIGFyYml0cmF0aW9uIGZlYXR1cmUgb24gQXNwZWVkIGFzdDI2MDAgd2ls
+bCBjYXVzZSBNQUMgVFggdG8NCj4gPiBoYW5nIHdoZW4gaGFuZGxpbmcgc2NhdHRlci1nYXRoZXIg
+RE1BLiAgRGlzYWJsZSB0aGUgcHJvYmxlbWF0aWMNCj4gPiBmZWF0dXJlIGJ5IHNldHRpbmcgTUFD
+IHJlZ2lzdGVyIDB4NTggYml0MjggYW5kIGJpdDI3Lg0KPiANCj4gSGkgRHlsYW4sDQo+IA0KPiBX
+aGF0IGFyZSB0aGUgc3ltcHRvbXMgb2YgdGhpcyBpc3N1ZT8gV2UgYXJlIHNlZWluZyB0aGlzIG9u
+IG91ciBzeXN0ZW1zOg0KPiANCj4gWzI5Mzc2LjA5MDYzN10gV0FSTklORzogQ1BVOiAwIFBJRDog
+OSBhdCBuZXQvc2NoZWQvc2NoX2dlbmVyaWMuYzo0NDINCj4gZGV2X3dhdGNoZG9nKzB4MmYwLzB4
+MmY0DQo+IFsyOTM3Ni4wOTk4OThdIE5FVERFViBXQVRDSERPRzogZXRoMCAoZnRnbWFjMTAwKTog
+dHJhbnNtaXQgcXVldWUgMA0KPiB0aW1lZCBvdXQNCj4gDQoNCk1heSBJIGtub3cgeW91ciBzb2Mg
+dmVyc2lvbj8gVGhpcyBpc3N1ZSBoYXBwZW5zIG9uIGFzdDI2MDAgdmVyc2lvbiBBMS4gIFRoZSBy
+ZWdpc3RlcnMgdG8gZml4IHRoaXMgaXNzdWUgYXJlIG1lYW5pbmdsZXNzL3Jlc2VydmVkIG9uIEEw
+IGNoaXAsIHNvIGl0IGlzIG9rYXkgdG8gc2V0IHRoZW0gb24gZWl0aGVyIEEwIG9yIEExLg0KSSB3
+YXMgZW5jb3VudGVyaW5nIHRoaXMgaXNzdWUgd2hlbiBJIHdhcyBydW5uaW5nIHRoZSBpcGVyZiBU
+WCB0ZXN0LiAgVGhlIHN5bXB0b20gaXMgdGhlIFRYIGRlc2NyaXB0b3JzIGFyZSBjb25zdW1lZCwg
+YnV0IG5vIGNvbXBsZXRlIHBhY2tldCBpcyBzZW50IG91dC4NCg0KPiA+IFNpZ25lZC1vZmYtYnk6
+IER5bGFuIEh1bmcgPGR5bGFuX2h1bmdAYXNwZWVkdGVjaC5jb20+DQo+IA0KPiBUaGlzIGZpeGVz
+IHN1cHBvcnQgZm9yIHRoZSBhc3QyNjAwLCBzbyB3ZSBjYW4gcHV0Og0KPiANCj4gRml4ZXM6IDM5
+YmZhYjg4NDRhMCAoIm5ldDogZnRnbWFjMTAwOiBBZGQgc3VwcG9ydCBmb3IgRFQgcGh5LWhhbmRs
+ZQ0KPiBwcm9wZXJ0eSIpDQo+IA0KPiBSZXZpZXdlZC1ieTogSm9lbCBTdGFubGV5IDxqb2VsQGpt
+cy5pZC5hdT4NCj4gDQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ZhcmFkYXkv
+ZnRnbWFjMTAwLmMgfCA1ICsrKysrDQo+ID4gZHJpdmVycy9uZXQvZXRoZXJuZXQvZmFyYWRheS9m
+dGdtYWMxMDAuaCB8IDggKysrKysrKysNCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxMyBpbnNlcnRp
+b25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvZmFyYWRh
+eS9mdGdtYWMxMDAuYw0KPiA+IGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvZmFyYWRheS9mdGdtYWMx
+MDAuYw0KPiA+IGluZGV4IDg3MjM2MjA2MzY2Zi4uMDAwMjRkZDQxMTQ3IDEwMDY0NA0KPiA+IC0t
+LSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ZhcmFkYXkvZnRnbWFjMTAwLmMNCj4gPiArKysgYi9k
+cml2ZXJzL25ldC9ldGhlcm5ldC9mYXJhZGF5L2Z0Z21hYzEwMC5jDQo+ID4gQEAgLTE4MTcsNiAr
+MTgxNywxMSBAQCBzdGF0aWMgaW50IGZ0Z21hYzEwMF9wcm9iZShzdHJ1Y3QNCj4gcGxhdGZvcm1f
+ZGV2aWNlICpwZGV2KQ0KPiA+ICAgICAgICAgICAgICAgICBwcml2LT5yeGRlczBfZWRvcnJfbWFz
+ayA9IEJJVCgzMCk7DQo+ID4gICAgICAgICAgICAgICAgIHByaXYtPnR4ZGVzMF9lZG90cl9tYXNr
+ID0gQklUKDMwKTsNCj4gPiAgICAgICAgICAgICAgICAgcHJpdi0+aXNfYXNwZWVkID0gdHJ1ZTsN
+Cj4gPiArICAgICAgICAgICAgICAgLyogRGlzYWJsZSBhc3QyNjAwIHByb2JsZW1hdGljIEhXIGFy
+Yml0cmF0aW9uICovDQo+ID4gKyAgICAgICAgICAgICAgIGlmIChvZl9kZXZpY2VfaXNfY29tcGF0
+aWJsZShucCwgImFzcGVlZCxhc3QyNjAwLW1hYyIpKQ0KPiB7DQo+ID4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgaW93cml0ZTMyKEZUR01BQzEwMF9UTV9ERUZBVUxULA0KPiA+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBwcml2LT5iYXNlICsNCj4gRlRHTUFDMTAwX09GRlNFVF9U
+TSk7DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiAgICAgICAgIH0gZWxzZSB7DQo+ID4gICAg
+ICAgICAgICAgICAgIHByaXYtPnJ4ZGVzMF9lZG9ycl9tYXNrID0gQklUKDE1KTsNCj4gPiAgICAg
+ICAgICAgICAgICAgcHJpdi0+dHhkZXMwX2Vkb3RyX21hc2sgPSBCSVQoMTUpOyBkaWZmIC0tZ2l0
+DQo+ID4gYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9mYXJhZGF5L2Z0Z21hYzEwMC5oDQo+ID4gYi9k
+cml2ZXJzL25ldC9ldGhlcm5ldC9mYXJhZGF5L2Z0Z21hYzEwMC5oDQo+ID4gaW5kZXggZTU4NzZh
+M2ZkYTkxLi42M2IzZTAyZmFiMTYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvZmFyYWRheS9mdGdtYWMxMDAuaA0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L2Zh
+cmFkYXkvZnRnbWFjMTAwLmgNCj4gPiBAQCAtMTY5LDYgKzE2OSwxNCBAQA0KPiA+ICAjZGVmaW5l
+IEZUR01BQzEwMF9NQUNDUl9GQVNUX01PREUgICAgICAoMSA8PCAxOSkNCj4gPiAgI2RlZmluZSBG
+VEdNQUMxMDBfTUFDQ1JfU1dfUlNUICAgICAgICAgKDEgPDwgMzEpDQo+ID4NCj4gPiArLyoNCj4g
+PiArICogdGVzdCBtb2RlIGNvbnRyb2wgcmVnaXN0ZXINCj4gPiArICovDQo+ID4gKyNkZWZpbmUg
+RlRHTUFDMTAwX1RNX1JRX1RYX1ZBTElEX0RJUyAoMSA8PCAyOCkgI2RlZmluZQ0KPiA+ICtGVEdN
+QUMxMDBfVE1fUlFfUlJfSURMRV9QUkVWICgxIDw8IDI3KQ0KPiA+ICsjZGVmaW5lIEZUR01BQzEw
+MF9UTV9ERUZBVUxUDQo+IFwNCj4gPiArICAgICAgIChGVEdNQUMxMDBfVE1fUlFfVFhfVkFMSURf
+RElTIHwNCj4gRlRHTUFDMTAwX1RNX1JRX1JSX0lETEVfUFJFVikNCj4gDQo+IFdpbGwgYXNwZWVk
+IGlzc3VlIGFuIHVwZGF0ZWQgZGF0YXNoZWV0IHdpdGggdGhpcyByZWdpc3RlciBkb2N1bWVudGVk
+Pw0KPiANCj4gDQo+ID4gKw0KPiA+ICAvKg0KPiA+ICAgKiBQSFkgY29udHJvbCByZWdpc3Rlcg0K
+PiA+ICAgKi8NCj4gPiAtLQ0KPiA+IDIuMTcuMQ0KPiA+DQo=
