@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6609828DAE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A657828DAEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgJNIOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        id S1728797AbgJNIOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728198AbgJNIOg (ORCPT
+        with ESMTP id S1728566AbgJNIOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:14:36 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26182C045865
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:46:43 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p15so3032737ejm.7
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:46:43 -0700 (PDT)
+        Wed, 14 Oct 2020 04:14:37 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42931C045866;
+        Tue, 13 Oct 2020 22:48:09 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id w21so1200428plq.3;
+        Tue, 13 Oct 2020 22:48:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=STRPyXECWcKIltplEj2C6HgW45CdmUPVhi1h9K50BgA=;
-        b=nwv5JrunBDQOJDnDy8DxJyuBzuA/Y7BaCN/OCMVqP6MuQLli+zyRmEEGAq060tbJI3
-         f6pkpYhrqcFU+WydRQSYKm+iyJTTBYZ7KKMP37t/w821wgr0DJQdqKOKYMi6P7woG+Ry
-         j9rv7cGtnS37rwibw7h+sR8h8NfpugEuSecPwDBT7W5wIokytyYCqBa4HDsDktpxsYNv
-         pQLwRJ2EZ040dWCxujjuI+2cMU9Av40uZhEhLcwYbQm+cY7SBoSuvIA+dyWTNVNkNsBp
-         56CdJUu9El1jynQGDU+icjSF+YSnevfGW6fvjc+YWQBZrRPXY5ZY/aLK9uWs07aSry9K
-         FK9w==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nb/uFi8WsRrgWvvp/XblLt9Qx7O6wCy9IPkPTSrHgcI=;
+        b=g0gCWVd+fyGFCrVvBgYbENgYj5fUVrbXA40j99tr5L2MugnblgsNG+kes3VDWrcP/Q
+         uKq13a8AISOxVFU9VxDFxbemN/bg6GYNNMBibYfAL1LqoTfopeZxkSg+2OA8i5yehnGe
+         +QY59p75FAOh0MMk8gP9Qp5CXOP/EDXEidemoToVZuFhDZY0fVPGABPgkIlHwiZ1/fuQ
+         kCUkqCX3mFxv+kpG+a4b/dXOJ60C6ctE/UMOmnnGa4syhaplQ83FwfAtNK0buvWdDzgD
+         RFUqBrqfVtfBFbJVgBir4qAERRBIGUzVJ4qPiGpQMhjGwixc0z0id6hgFe6clGNpd8Zg
+         UXaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=STRPyXECWcKIltplEj2C6HgW45CdmUPVhi1h9K50BgA=;
-        b=POYuu1bEBFdaTA1XWDoSObmC4YZ7Wf1OCAY50PwjNCAQS7jp+Vye+n+fGGFOhjxg69
-         GLHgy+nPj9f/btg0xWzyywMuZEgibjpIWMlP1oA/8Is0NTWo5SbTUb6JIONgbGu1zFUm
-         ZJFdZE3Lk2E7sFv8IdBB9+WZYotzFU2/i2kgPiKxFLu3g2vjt6WyNmHv0lR2rPS1ClgV
-         cihD+yppMB29fyb5KN+m4cEsuVb6WHYc3Z47BdnYperUk9UevKUAdveArk3AVbNge1r1
-         zzJhrzY9YnUYuMqsnONuc5z5zZLnyFoHzJk0uj3+sBfHqalJ/jED4B9XjgoIiVJdRRna
-         /cag==
-X-Gm-Message-State: AOAM531uDakJspugIhphnqo+qJkDhehjFkgYS64GQho4FWj2Rsq7CNnR
-        p6MlnMpsutmJZNgnLIPgrpQ=
-X-Google-Smtp-Source: ABdhPJxX/pHP+wB0Q0Rx87O0NVMkFbwJSOQsleVvEoA6b2DlvKbLJ28VuGQQ/GkvXeI8kDJVObpMSg==
-X-Received: by 2002:a17:906:a988:: with SMTP id jr8mr3525968ejb.508.1602654401785;
-        Tue, 13 Oct 2020 22:46:41 -0700 (PDT)
-Received: from felia ([2001:16b8:2da8:8200:4c70:9c82:f3bf:bebb])
-        by smtp.gmail.com with ESMTPSA id n4sm988978ejj.19.2020.10.13.22.46.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Nb/uFi8WsRrgWvvp/XblLt9Qx7O6wCy9IPkPTSrHgcI=;
+        b=JSBzc6ZuqjDnzdcsNbGqRkhITgewticlmw3RwdqnZ1luYgBfXqLagv4dzA+fLjnNoY
+         kX80BBdovE0cFtPksRhv4zZQxOaMAQ03/15Jh5NcXcRgRume3G0ZwVmIAHfrYY90f0mr
+         G9KI7q8L9gU6BKPWLL4dfoHnjBl6mz4brz9MZ8siSN9rzV+o6fGxUZQq1iFUpJFpTPr8
+         BR6HAOqkFJYFrMsEeC4Jei2ouyZccGCKBdAlAegXAQMSvVNShnO74J9I+YFOx8Cv5u4W
+         u8bIhdPYZlzJxz6KiKhhdS3weqyfhyaYKnvqnI0RpTuLu41/DLVDORgkw443e4wjf0BC
+         cNrA==
+X-Gm-Message-State: AOAM530R8s0Y5UxMdk2B9WIdXieyxd/4u3RHHGAzV3UWf8fVPrgyGiTK
+        5msznuvSl3BkZqtJ05EctEU=
+X-Google-Smtp-Source: ABdhPJxqSdHcsk7zkgs+qDZm+MKDiGAF60n6PRoSWI8mO6Akv8dFFD+YpQ3Rbz080cRf+Ui/lVYoBA==
+X-Received: by 2002:a17:90a:8c8a:: with SMTP id b10mr1923235pjo.127.1602654488830;
+        Tue, 13 Oct 2020 22:48:08 -0700 (PDT)
+Received: from HVD6JC2.Broadcom.net ([103.113.142.251])
+        by smtp.gmail.com with ESMTPSA id m13sm1306785pjl.45.2020.10.13.22.48.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 22:46:41 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Wed, 14 Oct 2020 07:46:39 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>
-cc:     Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
- EXECUTE_PERMISSIONS
-In-Reply-To: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com>
-Message-ID: <alpine.DEB.2.21.2010140734270.6186@felia>
-References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Tue, 13 Oct 2020 22:48:08 -0700 (PDT)
+From:   Amitesh Chandra <amitesh.chandra@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     amitesh.chandra@broadcom.com, ravi.nagarajan@broadcom.com,
+        cheneyni@google.com, Manoj Babulal <manoj.babulal@broadcom.com>
+Subject: [PATCH 3/3] Bluetooth: hci_bcm: Ignore deprecated command fail case
+Date:   Wed, 14 Oct 2020 11:17:46 +0530
+Message-Id: <20201014054746.2507-1-amitesh.chandra@gmail.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Manoj Babulal <manoj.babulal@broadcom.com>
 
+Broadcom VSC uart_clock_setting is deprecated in
+newer controllers. Ignore error if the controller
+returns invalid or bad request error code.
 
-On Tue, 13 Oct 2020, Ujjwal Kumar wrote:
+Signed-off-by: Amitesh Chandra <amitesh.chandra@broadcom.com>
+Signed-off-by: Manoj Babulal <manoj.babulal@broadcom.com>
+---
+ drivers/bluetooth/hci_bcm.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> checkpatch.pl checks for invalid EXECUTE_PERMISSIONS on source
-> files. The script leverages filename extensions and its path in
-> the repository to decide whether to allow execute permissions on
-> the file or not.
-> 
-> Based on current check conditions, a perl script file having
-> execute permissions, without '.pl' extension in its filename
-> and not belonging to 'scripts/' directory is reported as ERROR
-> which is a false positive.
-> 
-> Adding a shebang check along with current conditions will make
-> the check more generalised and improve checkpatch reports.
-> To do so, without breaking the core design decision of checkpatch,
-> we can fetch the first line from the patch itself and match it for
-> a shebang pattern.
-> 
-> There can be cases where the first line is not part of the patch.
-> For instance: a patch that only changes permissions without
-> changing any of the file content.
-> In that case there may be a false positive report but in the end we
-> will have less false positives as we will be handling some of the
-> unhandled cases.
->
+diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
+index 680478f..d316788 100644
+--- a/drivers/bluetooth/hci_bcm.c
++++ b/drivers/bluetooth/hci_bcm.c
+@@ -158,15 +158,18 @@ static int bcm_set_baudrate(struct hci_uart *hu, unsigned int speed)
+ 		skb = __hci_cmd_sync(hdev, 0xfc45, 1, &clock, HCI_INIT_TIMEOUT);
+ 		if (IS_ERR(skb)) {
+ 			int err = PTR_ERR(skb);
+-			bt_dev_err(hdev, "BCM: failed to write clock (%d)",
+-				   err);
+-			return err;
++			/* Ignore err if command is deprecated in controller */
++			if (err != -EBADRQC) {
++				bt_dev_err(hdev, "BCM: failed to write "
++						"clock (%d)", err);
++				return err;
++			}
++		} else {
++			kfree_skb(skb);
+ 		}
+-
+-		kfree_skb(skb);
+ 	}
+ 
+-	bt_dev_dbg(hdev, "Set Controller UART speed to %d bit/s", speed);
++	bt_dev_info(hdev, "Set Controller UART speed to %d bit/s", speed);
+ 
+ 	param.zero = cpu_to_le16(0);
+ 	param.baud_rate = cpu_to_le32(speed);
+-- 
+2.7.4
 
-I get the intent of your addition. However:
-
-I would bet that you only find one or two in a million commits, that would 
-actually benefit for this special check of a special case of a special 
-rule...
-
-So given the added complexity of yet another 19 lines in checkpatch with 
-little benefit of lowering false positive reports, I would be against 
-inclusion.
-
-You can provide convincing arguments with an evaluation, where you show 
-on how many commits this change would really make a difference...
-
-It is probably better and simpler to just have a script checking for
-execute bits on all files in the repository on linux-next (with a list of 
-known intended executable files) and just report to you and then to the 
-developers when a new file with unintentional execute bit appeared.
-
-Keep up the good work. I just fear this patch is a dead end.
-
-There is still a lot of other issues you can contribute to.
-
-Just one bigger project example: Comparing clang-format suggestions on 
-patches against checkpatch.pl suggestions are fine-tuning both of them to fit to 
-the actual kernel style.
-
-Lukas
