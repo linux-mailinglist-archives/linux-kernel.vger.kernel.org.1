@@ -2,376 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7309D28DDDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D765928DDE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbgJNJlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:41:07 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:60659 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728346AbgJNJk7 (ORCPT
+        id S1728029AbgJNJqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727145AbgJNJqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:40:59 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.lan (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 44A4D1C0006;
-        Wed, 14 Oct 2020 09:40:55 +0000 (UTC)
-From:   Jacopo Mondi <jacopo+renesas@jmondi.org>
-To:     linux-renesas-soc@vger.kernel.org, geert+renesas@glider.be,
-        laurent.pinchart@ideasonboard.com
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] arm64: dts: r8a779a0: Add VIN nodes
-Date:   Wed, 14 Oct 2020 11:44:43 +0200
-Message-Id: <20201014094443.11070-7-jacopo+renesas@jmondi.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201014094443.11070-1-jacopo+renesas@jmondi.org>
-References: <20201014094443.11070-1-jacopo+renesas@jmondi.org>
+        Wed, 14 Oct 2020 05:46:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C78C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:46:04 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id h7so3007353wre.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O64oufbI1HdC5TSRm3/CRUrel2ecCtGIg/wv/WX/Y94=;
+        b=IEuvdFIVnhaCDXlW9sS0sQ5aBGeO4OUOgJSLNCHbXWfA+Vk7m7OUJ8Ido0AUez4Rox
+         jT/SyNTxjbS6xPx6q7OJBMQrcvbkErMzdqEAlA/CEO7/I4FdJCzEHywKtR8cXYPFnbe/
+         NJQ6XAzUN0JrudUFVC3Vlkt/QUp4RwbJ0RFZk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O64oufbI1HdC5TSRm3/CRUrel2ecCtGIg/wv/WX/Y94=;
+        b=f5dTpuI0YtgROX1HMgtEWTSMI4RPzbVcV7G3pKNXfWkWZdGsaCD8DZZcYHnxU4vrUI
+         BLQ6/pNEhvHHT6SOonWtDRaeT8aEQXHErIYyN/ZBtHgs898no9Yt29wDgyjpf/Np2a5Q
+         nkbcXTHy9BWHah3zkYQOhd7pCK6W47G3KXfqpVbeziFazycGP65rcyvTNmS2IgmT3gOM
+         yhE1Ety6UtwTjSjD/kSLUIt7DVnkRVLToWQCTzhN/Wsy9dXCX6V43Wf2mNYYlesIWLmG
+         c9JAueeMecsfiLiPAl/+D1aZfzzs/FhbFenZohpY5Puy2zj5t9R64xnPRmREN0R9AvOR
+         ws7Q==
+X-Gm-Message-State: AOAM530MBpxRjgp+TrxR0E8A2Xt8eeGmBq/3fw0hHt0PGigpDyjn6J+C
+        AM2QDOdwebUgrDiL0utDTyjbdtEnP6dhOYs0z76R0w==
+X-Google-Smtp-Source: ABdhPJycDl8gZ1dz3QYyWHfbKW5ZhLpbrJPquHLktOSpMgRvhIbNukpryKchkU8uMNrbAOFO9RtLvupjWUe6PgNe0SI=
+X-Received: by 2002:adf:fe09:: with SMTP id n9mr4648496wrr.144.1602668763527;
+ Wed, 14 Oct 2020 02:46:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201011024831.3868571-1-daniel@0x0f.com> <20201011024831.3868571-3-daniel@0x0f.com>
+ <20201012161156.GA1635284@bogus>
+In-Reply-To: <20201012161156.GA1635284@bogus>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Wed, 14 Oct 2020 18:45:52 +0900
+Message-ID: <CAFr9PXnK8wsTURRy77jMwsAS9vkjo6ibTVJch0BEUgvT4ALEhw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] dt-bindings: gpio: Add a binding header for the
+ MSC313 GPIO driver
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add VIN nodes to R8A779A0 R-Car V3U SoC.
+Hi Rob,
 
-Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
----
- arch/arm64/boot/dts/renesas/r8a779a0.dtsi | 320 ++++++++++++++++++++++
- 1 file changed, 320 insertions(+)
+On Tue, 13 Oct 2020 at 01:11, Rob Herring <robh@kernel.org> wrote:
+<snip>
+> >  MAINTAINERS                            |  1 +
+> >  include/dt-bindings/gpio/msc313-gpio.h | 95 ++++++++++++++++++++++++++
+> >  2 files changed, 96 insertions(+)
+> >  create mode 100644 include/dt-bindings/gpio/msc313-gpio.h
+>
+> This should be part of the previous patch to avoid the error.
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-index 83962ad30a1d..bc81e6a761d3 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-@@ -105,6 +105,326 @@ scif0: serial@e6e60000 {
- 			status = "disabled";
- 		};
- 
-+		vin0: video@e6ef0000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef0000 0 0x1000>;
-+			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 730>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 730>;
-+			status = "disabled";
-+		};
-+
-+		vin1: video@e6ef1000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef1000 0 0x1000>;
-+			interrupts = <GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 731>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 731>;
-+			status = "disabled";
-+		};
-+
-+		vin2: video@e6ef2000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef2000 0 0x1000>;
-+			interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 800>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 800>;
-+			status = "disabled";
-+		};
-+
-+		vin3: video@e6ef3000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef3000 0 0x1000>;
-+			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 801>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 801>;
-+			status = "disabled";
-+		};
-+
-+		vin4: video@e6ef4000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef4000 0 0x1000>;
-+			interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 802>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 802>;
-+			status = "disabled";
-+		};
-+
-+		vin5: video@e6ef5000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef5000 0 0x1000>;
-+			interrupts = <GIC_SPI 165 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 803>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 803>;
-+			status = "disabled";
-+		};
-+
-+		vin6: video@e6ef6000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef6000 0 0x1000>;
-+			interrupts = <GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 804>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 804>;
-+			status = "disabled";
-+		};
-+
-+		vin7: video@e6ef7000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef7000 0 0x1000>;
-+			interrupts = <GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 805>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 805>;
-+			status = "disabled";
-+		};
-+
-+		vin8: video@e6ef8000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef8000 0 0x1000>;
-+			interrupts = <GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 806>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 806>;
-+			status = "disabled";
-+		};
-+
-+		vin9: video@e6ef9000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ef9000 0 0x1000>;
-+			interrupts = <GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 807>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 807>;
-+			status = "disabled";
-+		};
-+
-+		vin10: video@e6efa000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6efa000 0 0x1000>;
-+			interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 808>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 808>;
-+			status = "disabled";
-+		};
-+
-+		vin11: video@e6efb000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6efb000 0 0x1000>;
-+			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 809>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 809>;
-+			status = "disabled";
-+		};
-+
-+		vin12: video@e6efc000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6efc000 0 0x1000>;
-+			interrupts = <GIC_SPI 172 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 810>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 810>;
-+			status = "disabled";
-+		};
-+
-+		vin13: video@e6efd000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6efd000 0 0x1000>;
-+			interrupts = <GIC_SPI 173 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 811>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 811>;
-+			status = "disabled";
-+		};
-+
-+		vin14: video@e6efe000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6efe000 0 0x1000>;
-+			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 812>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 812>;
-+			status = "disabled";
-+		};
-+
-+		vin15: video@e6eff000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6eff000 0 0x1000>;
-+			interrupts = <GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 813>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 813>;
-+			status = "disabled";
-+		};
-+
-+		vin16: video@e6ed0000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed0000 0 0x1000>;
-+			interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 814>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 814>;
-+			status = "disabled";
-+		};
-+
-+		vin17: video@e6ed1000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed1000 0 0x1000>;
-+			interrupts = <GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 815>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 815>;
-+			status = "disabled";
-+		};
-+
-+		vin18: video@e6ed2000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed2000 0 0x1000>;
-+			interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 816>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 816>;
-+			status = "disabled";
-+		};
-+
-+		vin19: video@e6ed3000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed3000 0 0x1000>;
-+			interrupts = <GIC_SPI 179 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 817>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 817>;
-+			status = "disabled";
-+		};
-+
-+		vin20: video@e6ed4000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed4000 0 0x1000>;
-+			interrupts = <GIC_SPI 180 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 818>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 818>;
-+			status = "disabled";
-+		};
-+
-+		vin21: video@e6ed5000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed5000 0 0x1000>;
-+			interrupts = <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 819>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 819>;
-+			status = "disabled";
-+		};
-+
-+		vin22: video@e6ed6000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed6000 0 0x1000>;
-+			interrupts = <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 820>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 820>;
-+			status = "disabled";
-+		};
-+
-+		vin23: video@e6ed7000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed7000 0 0x1000>;
-+			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 821>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 821>;
-+			status = "disabled";
-+		};
-+
-+		vin24: video@e6ed8000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed8000 0 0x1000>;
-+			interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 822>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 822>;
-+			status = "disabled";
-+		};
-+
-+		vin25: video@e6ed9000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ed9000 0 0x1000>;
-+			interrupts = <GIC_SPI 185 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 823>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 823>;
-+			status = "disabled";
-+		};
-+
-+		vin26: video@e6eda000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6eda000 0 0x1000>;
-+			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 824>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 824>;
-+			status = "disabled";
-+		};
-+
-+		vin27: video@e6edb000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6edb000 0 0x1000>;
-+			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 825>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 825>;
-+			status = "disabled";
-+		};
-+
-+		vin28: video@e6edc000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6edc000 0 0x1000>;
-+			interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 826>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 826>;
-+			status = "disabled";
-+		};
-+
-+		vin29: video@e6edd000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6edd000 0 0x1000>;
-+			interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 827>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 827>;
-+			status = "disabled";
-+		};
-+
-+		vin30: video@e6ede000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6ede000 0 0x1000>;
-+			interrupts = <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 828>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 828>;
-+			status = "disabled";
-+		};
-+
-+		vin31: video@e6edf000 {
-+			compatible = "renesas,vin-r8a779a0";
-+			reg = <0 0xe6edf000 0 0x1000>;
-+			interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 829>;
-+			power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-+			resets = <&cpg 829>;
-+			status = "disabled";
-+		};
-+
- 		csi40: csi2@feaa0000 {
- 			compatible = "renesas,r8a779a0-csi2";
- 			reg = <0 0xfeaa0000 0 0x10000>;
--- 
-2.28.0
+Would reordering the patches to make this header before the yaml file
+be acceptable?
+The commit message might be pretty big with them squashed into one.
 
+<snip>
+> > @@ -0,0 +1,95 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+>
+> Don't use DT on non-GPL systems?
+
+Good point. I didn't really think about the header also being used for
+something like FreeBSD.
+I'll fix that.
+
+Cheers,
+
+Daniel
