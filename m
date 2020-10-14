@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DA828E03E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CF828E04C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbgJNMCu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Oct 2020 08:02:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40256 "EHLO mx2.suse.de"
+        id S1727810AbgJNMJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:09:07 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55510 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728627AbgJNMCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:02:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8F5A3AC6D;
-        Wed, 14 Oct 2020 12:02:48 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 14:02:47 +0200
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     <airlied@linux.ie>, <daniel@ffwll.ch>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH drm/hisilicon 2/2] drm/hisilicon: Use the same style of
- variable type in hibmc_drm_drv
-Message-ID: <20201014140247.154ed8ee@linux-uq9g>
-In-Reply-To: <1601449988-41463-3-git-send-email-tiantao6@hisilicon.com>
-References: <1601449988-41463-1-git-send-email-tiantao6@hisilicon.com>
-        <1601449988-41463-3-git-send-email-tiantao6@hisilicon.com>
-Organization: SUSE Software Solutions Germany GmbH
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S1726462AbgJNMJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 08:09:06 -0400
+IronPort-SDR: jSoXj9Rmk5swizHfTOZdRbCNBcwDQTFH3Q1OqfYTB7wkQMaGVU5cK30OFbmqqZLr7IwT8a0APh
+ gCT2PwKsDR2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145953659"
+X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
+   d="scan'208";a="145953659"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 05:09:05 -0700
+IronPort-SDR: VHiQZi061gOdJ2cguYhr+PhjdOYUHuxbuF8Z+Wd7SboWu1nQa9UMqhWyo0dUwFUfvTlfVLmHpM
+ 0NILskVqq1DQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
+   d="scan'208";a="318634456"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 14 Oct 2020 05:09:05 -0700
+Received: from [10.249.230.73] (abudanko-mobl.ccr.corp.intel.com [10.249.230.73])
+        by linux.intel.com (Postfix) with ESMTP id 828625808A3;
+        Wed, 14 Oct 2020 05:09:02 -0700 (PDT)
+Subject: Re: [PATCH v1 08/15] perf record: write trace data into mmap trace
+ files
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
+ <0652b8dd-e753-7c10-27e9-af9524e7ccc5@linux.intel.com>
+ <CAM9d7cgrXsiPWuAYjg1og0N=03-mfx075-n7KUrvYyAMLZ8_7A@mail.gmail.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <81ffefab-ac4e-c51c-809a-b9ba96d6d867@linux.intel.com>
+Date:   Wed, 14 Oct 2020 15:09:00 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAM9d7cgrXsiPWuAYjg1og0N=03-mfx075-n7KUrvYyAMLZ8_7A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi,
 
-On Wed, 30 Sep 2020 15:13:08 +0800 Tian Tao <tiantao6@hisilicon.com> wrote:
-
-> Consistently Use the same style of variable type in hibmc_drm_de.c and
-> hibmc_drm_de.h.
+On 14.10.2020 13:52, Namhyung Kim wrote:
+> Hi,
 > 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 13 ++++++-------
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  8 ++++----
->  2 files changed, 10 insertions(+), 11 deletions(-)
+> On Mon, Oct 12, 2020 at 6:01 PM Alexey Budankov
+> <alexey.budankov@linux.intel.com> wrote:
+>>
+>>
+>> Write trace data into per mmap trace files located
+>> at data directory. Streaming thread adjusts its affinity
+>> according to mask of the buffer being processed.
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>> ---
+> [SNIP]
+>> @@ -1184,8 +1203,12 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
+>>         /*
+>>          * Mark the round finished in case we wrote
+>>          * at least one event.
+>> +        *
+>> +        * No need for round events in directory mode,
+>> +        * because per-cpu maps and files have data
+>> +        * sorted by kernel.
+>>          */
+>> -       if (bytes_written != rec->bytes_written)
+>> +       if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
+>>                 rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
 > 
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c index 5632bce..0c1b40d
-> 100644 --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -121,12 +121,11 @@ static void hibmc_kms_fini(struct hibmc_drm_private
-> *priv) /*
->   * It can operate in one of three modes: 0, 1 or Sleep.
->   */
-> -void hibmc_set_power_mode(struct hibmc_drm_private *priv,
-> -			  unsigned int power_mode)
-> +void hibmc_set_power_mode(struct hibmc_drm_private *priv, u32 power_mode)
->  {
-> -	unsigned int control_value = 0;
-> +	u32 control_value = 0;
->  	void __iomem   *mmio = priv->mmio;
-> -	unsigned int input = 1;
-> +	u32 input = 1;
->  
->  	if (power_mode > HIBMC_PW_MODE_CTL_MODE_SLEEP)
->  		return;
-> @@ -144,8 +143,8 @@ void hibmc_set_power_mode(struct hibmc_drm_private
-> *priv, 
->  void hibmc_set_current_gate(struct hibmc_drm_private *priv, unsigned int
-> gate) {
-> -	unsigned int gate_reg;
-> -	unsigned int mode;
-> +	u32 gate_reg;
-> +	u32 mode;
->  	void __iomem   *mmio = priv->mmio;
->  
->  	/* Get current power mode. */
-> @@ -170,7 +169,7 @@ void hibmc_set_current_gate(struct hibmc_drm_private
-> *priv, unsigned int gate) 
->  static void hibmc_hw_config(struct hibmc_drm_private *priv)
->  {
-> -	unsigned int reg;
-> +	u32 reg;
->  
->  	/* On hardware reset, power mode 0 is default. */
->  	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h index 6a63502..5c4030d
-> 100644 --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-> @@ -33,8 +33,8 @@ struct hibmc_drm_private {
->  	/* hw */
->  	void __iomem   *mmio;
->  	void __iomem   *fb_map;
-> -	unsigned long  fb_base;
-> -	unsigned long  fb_size;
-> +	u64  fb_base;
-> +	u64  fb_size;
+> This means it needs to keep all events in the ordered events queue
+> when perf report processes the data, right?
 
-resource_size_t would be the correct type here.
+Looks so.
 
-With my comments addressed:
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-Best regards
-Thomas
-
->  
->  	/* drm */
->  	struct drm_device  *dev;
-> @@ -56,9 +56,9 @@ static inline struct hibmc_drm_private
-> *to_hibmc_drm_private(struct drm_device * }
->  
->  void hibmc_set_power_mode(struct hibmc_drm_private *priv,
-> -			  unsigned int power_mode);
-> +			  u32 power_mode);
->  void hibmc_set_current_gate(struct hibmc_drm_private *priv,
-> -			    unsigned int gate);
-> +			    u32 gate);
->  
->  int hibmc_de_init(struct hibmc_drm_private *priv);
->  int hibmc_vdac_init(struct hibmc_drm_private *priv);
-
-
-
--- 
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
+Alexei
