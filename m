@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D41628DB21
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FE928DBAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgJNIXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbgJNIXt (ORCPT
+        id S1729489AbgJNIea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:34:30 -0400
+Received: from aclms1.advantech.com.tw ([61.58.41.199]:27403 "EHLO
+        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbgJNIe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:23:49 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A7BC051111;
-        Wed, 14 Oct 2020 01:23:50 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1kSc4T-0000RN-HK; Wed, 14 Oct 2020 10:23:41 +0200
-Date:   Wed, 14 Oct 2020 10:23:41 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
- re-register
-Message-ID: <20201014082341.GA16895@breakpoint.cc>
-References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
- <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
- <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
- <20201009110323.GC5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
- <20201009185552.GF5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
- <20201009200548.GG5723@breakpoint.cc>
- <20201014000628.GA15290@salvia>
+        Wed, 14 Oct 2020 04:34:27 -0400
+X-Greylist: delayed 604 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Oct 2020 04:34:27 EDT
+Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te234560af1ac14014b1418@ACLMS1.advantech.com.tw>;
+ Wed, 14 Oct 2020 16:24:23 +0800
+Received: from localhost (172.16.12.104) by taipei09.ADVANTECH.CORP
+ (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 14 Oct
+ 2020 16:24:22 +0800
+From:   Shihlun Lin <shihlun.lin@advantech.com.tw>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Campion Kang <campion.kang@advantech.com.tw>,
+        Shihlun Lin <shihlun.lin@advantech.com.tw>,
+        AceLan Kao <chia-lin.kao@canonical.com>
+Subject: [PATCH] MAINTAINERS: Add Advantech embedded controller entry
+Date:   Wed, 14 Oct 2020 16:24:22 +0800
+Message-ID: <20201014082422.25312-1-shihlun.lin@advantech.com.tw>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014000628.GA15290@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [172.16.12.104]
+X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
+ taipei09.ADVANTECH.CORP (172.20.0.236)
+X-StopIT: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > Yes, we iterate table on re-register and modify the existing entries.
-> 
-> For iptables-nft, it might be possible to avoid this deregister +
-> register ct hooks in the same transaction: Maybe add something like
-> nf_ct_netns_get_all() to bump refcounters by one _iff_ they are > 0
-> before starting the transaction processing, then call
-> nf_ct_netns_put_all() which decrements refcounters and unregister
-> hooks if they reach 0.
+Add Advantech embedded controller entry
 
-No need, its already fine.  Decrement happens from destroy path,
-so new rules are already in place.
+Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
+---
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-> The only problem with this approach is that this pulls in the
-> conntrack module, to solve that, struct nf_ct_hook in
-> net/netfilter/core.c could be used to store the reference to
-> ->netns_get_all and ->net_put_all.
-> 
-> Legacy would still be flawed though.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6336f9314ae1..41e94692c4f8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -562,6 +562,17 @@ S:	Maintained
+ F:	Documentation/scsi/advansys.rst
+ F:	drivers/scsi/advansys.c
+ 
++ADVANTECH EMBEDDED CONTROLLER DRIVER
++M:	Shihlun Lin <shihlun.lin@advantech.com.tw>
++M:	Campion Kang <campion.kang@advantech.com.tw>
++L:	linux-kernel@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/mfd/ahc1ec0.yaml
++F:	drivers/mfd/ahc1ec0-hwmon.c
++F:	drivers/mfd/ahc1ec0-wdt.c
++F:	drivers/mfd/ahc1ec0.c
++F:	include/dt-bindings/mfd/ahc1ec0.h
++
+ ADXL34X THREE-AXIS DIGITAL ACCELEROMETER DRIVER (ADXL345/ADXL346)
+ M:	Michael Hennerich <michael.hennerich@analog.com>
+ S:	Supported
+-- 
+2.17.1
 
-Its fine too, new rule blob gets handled (and match/target checkentry
-called) before old one is dismantled.
-
-We only have a 0 refcount + hook unregister when rules get
-flushed/removed explicitly.
