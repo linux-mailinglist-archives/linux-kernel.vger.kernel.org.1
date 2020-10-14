@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313C228DBFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2415E28DBFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726147AbgJNIti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
+        id S1730167AbgJNItn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730100AbgJNItg (ORCPT
+        with ESMTP id S1730136AbgJNItj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:49:36 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F8BC045852
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:09:41 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so1177093wmj.5
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:09:41 -0700 (PDT)
+        Wed, 14 Oct 2020 04:49:39 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C80C045853
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:09:42 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l15so860889wmh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 22:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=CrIwUA/0oJzmeC4gfrsDFOAMUjkQ7RiIZd70vI/O10o=;
-        b=kKPXu1azN6/SinUyxd8R+CvWL/oXlSja6hfJyNjSmED7sMAdzKzsZbOctZOk+jwV75
-         TCtDvs300ctGcgLUXyvFg7RqeZRpMwIPusWDMZIFc1Bj2X5AO6MmjJJoDapb0kKz8Lu9
-         DeoWl2qWTSsIvSBxdTwCmEM4fa34kxYzFm1f0WLOg0UGtzzawXvYV6mPkKweR/hwY0lq
-         uIxsU0ugBWFI2UlGv3bDT+aNtU8LdMlR1RqcpVltIebE0l7OfeKspc9odpbd3yBpn7Y/
-         59tv4Vx/KZs/9eJ7EC1jU6lJHFUeIZ5rE5GicjI19OT7/VlDozgcKbUoLTVW7qDjX4+b
-         x1+Q==
+        bh=lAvrPjeVdcYUOYR+9a7oILiva8fVbi3GxHpIV0XsQuI=;
+        b=hevHi6j4ndCWaXJXWsnDIjpHZ8UAJULaxeKf9wdc6QXUW9nWwBP2WxLKUk7uAMZv57
+         wdDODhquOoEwh84+3Uku6c6QiZAeaIpKZ0bbwhlX1AjUEqqPMVTtM0iHrhz4EwHXJD6b
+         racvLaL9ZYDiMMtc6oep6EI7cBUn7KiHv8Y7QXDvFtywqe68Q9ldroKBBLVwn4rLwlZ0
+         /NSYriCS+tcfnQYoUAB5sGySJPLFPvGpLZTbeJmNtIh1sQsA9AYDaOfcf8oJ9iaaouaQ
+         g+XhquhW/WEvdbTH9RJ8kJCA8LWg6oBFeHbfpQcKYmF1FWape3JzjPM+TmF7rPSQ5x2j
+         XehA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=CrIwUA/0oJzmeC4gfrsDFOAMUjkQ7RiIZd70vI/O10o=;
-        b=hPhrj9ku9qWahKuz7NvudwZT8XbZUcmLxfuzP33N6a5b/Hnsru8U0uJ1O+C/p4LEGx
-         L9scHDqYU9A1XkbljYjVF0/FhnZgdKsGyj2Nv4ptjy7d9dNj2UUScr1ynLlUjiUrJ1/c
-         niCojovYSNiB7MvNIGr90GQAmq5weTl+h4MVfMjSTHGH7G3WxFsu18od3j0VL2sGaHdr
-         4wNKodGb762A2rKcTHcU9M/eVuF2yqj2LxhcWGxIp1OhAO+SfKEariVU3kOUPdJkgD+J
-         S20a5UsQy7DMQTAZKNR0dYwOV2kbvenxVGe+5zcJ5cZZbMXa03ExIP9NPw2G/erMaso4
-         l0zA==
-X-Gm-Message-State: AOAM531xMi2hGcQV3wciYXUcjd6D5AouMQxQ6gFBNqkd5O4uit7FwQAb
-        lx18GMJjRKFwAwmhE64ZL0/3WA==
-X-Google-Smtp-Source: ABdhPJw3ghDaqArZL6kpUCON31pofKkWnD4OipVJ9zoHUU3xewhwC1Kx2413APSfvXh3V7Gtzhl5Kw==
-X-Received: by 2002:a1c:4c03:: with SMTP id z3mr1467609wmf.24.1602652180210;
-        Tue, 13 Oct 2020 22:09:40 -0700 (PDT)
+        bh=lAvrPjeVdcYUOYR+9a7oILiva8fVbi3GxHpIV0XsQuI=;
+        b=YZm8DQMIoUVzPgERqb7zGQqoqwjBtaO8C0P4zrk32qqmE0Kff0aTR0R0g9z0pBnehi
+         xEKS3Bck5khkab/m1A4AelCntzy1sAc86ZS8SI8Bq4xw1b5tMhQCW0kN9Z3UqxlxowwC
+         1vx51wCip+EbH/W4OKIQ/tP8JXw1QNXGAT1j9x3mAAlp/oLOSNLE12MQPqHHLhgmf1yo
+         Pl66KzAVHCxZOFbj/hvk2+90czQGlmuMELX8fgp3r6nFAYeCiCaI4EU8wJXrUhWeFKHm
+         8Sd9qvM9NUVBRYCo9bTBZv3/RBSQirfH3vgkqzrE0WZDf5/AKkFkq1yDdtcKFFYXqvOv
+         f1fQ==
+X-Gm-Message-State: AOAM532URNs3gyLAaCiLRaalfh/YUex5+7Ze0u8SGMa6Qv45PeZVjmuH
+        kqwREUijk6k3uh4igc8QotVqPw==
+X-Google-Smtp-Source: ABdhPJx1GyuhqNmbWAGjHLBT6UCnoyfiprAIbxjLbRDWrdkFNHpnHLz3eqH6vp5jm76gLKWjHCPS0Q==
+X-Received: by 2002:a1c:9949:: with SMTP id b70mr1526328wme.116.1602652181377;
+        Tue, 13 Oct 2020 22:09:41 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id t124sm1823330wmg.31.2020.10.13.22.09.39
+        by smtp.gmail.com with ESMTPSA id t124sm1823330wmg.31.2020.10.13.22.09.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 22:09:39 -0700 (PDT)
+        Tue, 13 Oct 2020 22:09:40 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -61,9 +61,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Al Grant <Al.Grant@arm.com>, James Clark <james.clark@arm.com>,
         linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 7/8] perf c2c: Correct LLC load hit metrics
-Date:   Wed, 14 Oct 2020 06:09:20 +0100
-Message-Id: <20201014050921.5591-8-leo.yan@linaro.org>
+Subject: [PATCH v1 8/8] perf c2c: Add metrics "RMT Load Hit"
+Date:   Wed, 14 Oct 2020 06:09:21 +0100
+Message-Id: <20201014050921.5591-9-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201014050921.5591-1-leo.yan@linaro.org>
 References: <20201014050921.5591-1-leo.yan@linaro.org>
@@ -71,51 +71,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"rmt_hit" is accounted into two metrics: one is accounted into the
-metrics "LLC Ld Miss" (see the function llc_miss() for calculation
-"llcmiss"); and it's accounted into metrics "LLC Load Hit".  Thus,
-for the literal meaning, it is contradictory that "rmt_hit" is
-accounted for both "LLC Ld Miss" (LLC miss) and "LLC Load Hit"
-(LLC hit).
+The metrics "LLC Ld Miss" and "Load Dram" overlap with each other for
+accouting items:
 
-Thus this is easily to introduce confusion: "LLC Load Hit" gives
-impression that all items belong to it are LLC hit; in fact "rmt_hit"
-is LLC miss and remote cache hit.
+  "LLC Ld Miss" = "lcl_dram" + "rmt_dram" + "rmt_hit" + "rmt_hitm"
+  "Load Dram"   = "lcl_dram" + "rmt_dram"
 
-To give out clear semantics for metric "LLC Load Hit", "rmt_hit" is
-moved out from it and changes "LLC Load Hit" to contain two items:
+Furthermore, the metrics "LLC Ld Miss" is not directive to show
+statistics due to it contains summary value and cannot give out
+breakdown details.
 
-  LLC Load Hit = LLC's hit ("ld_llchit") + LLC's hitm ("lcl_hitm")
+For this reason, add a new metrics "RMT Load Hit" which is used to
+present the remote cache hit; it contains two items:
 
-For output alignment, adjusts the header for "LLC Load Hit".
+  "RMT Load Hit" = remote hit ("rmt_hit") + remote hitm ("rmt_hitm")
+
+As result, the metrics "LLC Ld Miss" is perfectly divided into two
+metrics "RMT Load Hit" and "Load Dram".  It's not necessary to keep
+metrics "LLC Ld Miss", so remove it.
+
+Before:
+
+  #        ----------- Cacheline ----------      Tot  ------- Load Hitm -------    Total    Total    Total  ---- Stores ----  ----- Core Load Hit -----  - LLC Load Hit --      LLC  --- Load Dram ----
+  # Index             Address  Node  PA cnt     Hitm    Total  LclHitm  RmtHitm  records    Loads   Stores    L1Hit   L1Miss       FB       L1       L2    LclHit  LclHitm  Ld Miss       Lcl       Rmt
+  # .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  ........  .......  .......  ........  ........
+  #
+        0      0x55f07d580100     0    1499   85.89%      481      481        0     7243     3879     3364     2599      765      548     2615       66       169      481        0         0         0
+        1      0x55f07d580080     0       1   13.93%       78       78        0      664      664        0        0        0      187      361       27        11       78        0         0         0
+        2      0x55f07d5800c0     0       1    0.18%        1        1        0      405      405        0        0        0      131        0       10       263        1        0         0         0
+
+After:
+
+  #        ----------- Cacheline ----------      Tot  ------- Load Hitm -------    Total    Total    Total  ---- Stores ----  ----- Core Load Hit -----  - LLC Load Hit --  - RMT Load Hit --  --- Load Dram ----
+  # Index             Address  Node  PA cnt     Hitm    Total  LclHitm  RmtHitm  records    Loads   Stores    L1Hit   L1Miss       FB       L1       L2    LclHit  LclHitm    RmtHit  RmtHitm       Lcl       Rmt
+  # .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  ........  .......  ........  .......  ........  ........
+  #
+        0      0x55f07d580100     0    1499   85.89%      481      481        0     7243     3879     3364     2599      765      548     2615       66       169      481         0        0         0         0
+        1      0x55f07d580080     0       1   13.93%       78       78        0      664      664        0        0        0      187      361       27        11       78         0        0         0         0
+        2      0x55f07d5800c0     0       1    0.18%        1        1        0      405      405        0        0        0      131        0       10       263        1         0        0         0         0
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/builtin-c2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/builtin-c2c.c | 52 ++--------------------------------------
+ 1 file changed, 2 insertions(+), 50 deletions(-)
 
 diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index 2292261b40a2..61fb939a4e70 100644
+index 61fb939a4e70..9c2183957c50 100644
 --- a/tools/perf/builtin-c2c.c
 +++ b/tools/perf/builtin-c2c.c
-@@ -1432,7 +1432,7 @@ static struct c2c_dimension dim_ld_l2hit = {
+@@ -652,45 +652,6 @@ STAT_FN(ld_l2hit)
+ STAT_FN(ld_llchit)
+ STAT_FN(rmt_hit)
+ 
+-static uint64_t llc_miss(struct c2c_stats *stats)
+-{
+-	uint64_t llcmiss;
+-
+-	llcmiss = stats->lcl_dram +
+-		  stats->rmt_dram +
+-		  stats->rmt_hitm +
+-		  stats->rmt_hit;
+-
+-	return llcmiss;
+-}
+-
+-static int
+-ld_llcmiss_entry(struct perf_hpp_fmt *fmt, struct perf_hpp *hpp,
+-		 struct hist_entry *he)
+-{
+-	struct c2c_hist_entry *c2c_he;
+-	int width = c2c_width(fmt, hpp, he->hists);
+-
+-	c2c_he = container_of(he, struct c2c_hist_entry, he);
+-
+-	return scnprintf(hpp->buf, hpp->size, "%*lu", width,
+-			 llc_miss(&c2c_he->stats));
+-}
+-
+-static int64_t
+-ld_llcmiss_cmp(struct perf_hpp_fmt *fmt __maybe_unused,
+-	       struct hist_entry *left, struct hist_entry *right)
+-{
+-	struct c2c_hist_entry *c2c_left;
+-	struct c2c_hist_entry *c2c_right;
+-
+-	c2c_left  = container_of(left, struct c2c_hist_entry, he);
+-	c2c_right = container_of(right, struct c2c_hist_entry, he);
+-
+-	return (uint64_t) llc_miss(&c2c_left->stats) -
+-	       (uint64_t) llc_miss(&c2c_right->stats);
+-}
+-
+ static uint64_t total_records(struct c2c_stats *stats)
+ {
+ 	uint64_t lclmiss, ldcnt, total;
+@@ -1440,21 +1401,13 @@ static struct c2c_dimension dim_ld_llchit = {
  };
  
- static struct c2c_dimension dim_ld_llchit = {
--	.header		= HEADER_SPAN("-- LLC Load Hit --", "LclHit", 1),
-+	.header		= HEADER_SPAN("- LLC Load Hit --", "LclHit", 1),
- 	.name		= "ld_lclhit",
- 	.cmp		= ld_llchit_cmp,
- 	.entry		= ld_llchit_entry,
-@@ -2853,7 +2853,7 @@ static int perf_c2c__report(int argc, const char **argv)
- 			"tot_stores,"
+ static struct c2c_dimension dim_ld_rmthit = {
+-	.header		= HEADER_SPAN_LOW("Rmt"),
++	.header		= HEADER_SPAN("- RMT Load Hit --", "RmtHit", 1),
+ 	.name		= "ld_rmthit",
+ 	.cmp		= rmt_hit_cmp,
+ 	.entry		= rmt_hit_entry,
+ 	.width		= 8,
+ };
+ 
+-static struct c2c_dimension dim_ld_llcmiss = {
+-	.header		= HEADER_BOTH("LLC", "Ld Miss"),
+-	.name		= "ld_llcmiss",
+-	.cmp		= ld_llcmiss_cmp,
+-	.entry		= ld_llcmiss_entry,
+-	.width		= 7,
+-};
+-
+ static struct c2c_dimension dim_tot_recs = {
+ 	.header		= HEADER_BOTH("Total", "records"),
+ 	.name		= "tot_recs",
+@@ -1658,7 +1611,6 @@ static struct c2c_dimension *dimensions[] = {
+ 	&dim_ld_l2hit,
+ 	&dim_ld_llchit,
+ 	&dim_ld_rmthit,
+-	&dim_ld_llcmiss,
+ 	&dim_tot_recs,
+ 	&dim_tot_loads,
+ 	&dim_percent_hitm,
+@@ -2854,7 +2806,7 @@ static int perf_c2c__report(int argc, const char **argv)
  			"stores_l1hit,stores_l1miss,"
  			"ld_fbhit,ld_l1hit,ld_l2hit,"
--			"ld_lclhit,ld_rmthit,"
-+			"ld_lclhit,lcl_hitm,"
- 			"ld_llcmiss,"
+ 			"ld_lclhit,lcl_hitm,"
+-			"ld_llcmiss,"
++			"ld_rmthit,rmt_hitm,"
  			"dram_lcl,dram_rmt",
  			c2c.display == DISPLAY_TOT ? "tot_hitm" :
+ 			c2c.display == DISPLAY_LCL ? "lcl_hitm" : "rmt_hitm"
 -- 
 2.17.1
 
