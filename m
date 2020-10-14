@@ -2,163 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713D128DCC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F08C28D876
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387797AbgJNJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730636AbgJNJUB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:01 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CA4C0F26DC
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 19:27:43 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id x16so1547192ljh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 19:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qDBAWibsVMpL9uDkJTD6UsuRe4btwTbpHEP5BT5fyh4=;
-        b=SIY5SpAHAN72HhJ/xUnnLQ8qiguN3XROjuCYGqZDhegyDOIuk5n1rAJdptUhOjAczb
-         763QYE6+1ratG+ilSLA4Iqi2vdBJJdWGymz2znSjTU90zJZ9JS5p8dhLobzG7spmLVZT
-         LVX6vJcVBBvEmI2UVnaz1FsbWRpa4JvN3bgOS30EvdXVzpji2alGacgIsS0375TqTn3n
-         V8AREtecq+6+RbPkE8DCjt1JX94okEzrDICGX8gO3RSr8tonlTDvC4WZEG96mc5qI/Bl
-         9G5QyMc3eBzI+h8/1V5wgvlwwkUQV9DQsb3LW8VZlC35s3Z3UiZQL5hyAe3FpVb82rt6
-         EyGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qDBAWibsVMpL9uDkJTD6UsuRe4btwTbpHEP5BT5fyh4=;
-        b=QPUgQDZ0qf5Doyo/T0CP4Wcfg4SMottDL3mh/Nz4b5UPNRmLr9GXkQkYN8B9xaEke/
-         XYlvr88XnIBH3byCf82iT7JKNUX12ydnjxZPHLTB663PbNzCW2rBiVgPOzgcF8Pckqos
-         jZs7gDbzHG0bQAcnH+Ure8n1K6XbRV7E9Iw8WKx0GMNfVExE1R32XEnqtBXdPJbiK9qW
-         pjtdtauPZ40dH5IPSNOnIB2gK6nNBH40DfWQepci1ncmXnArbH39fimhrGTIfw5/8EqL
-         jjFNE7VmomPkUhiqAFnI0MVR5xyzDOWn14asD2hlDqXbiFkiDNRhNjaeIhfJ84sycQ/3
-         CzeA==
-X-Gm-Message-State: AOAM5307dR7urwxMvgVBxe6SboTyfaR0wsF1sf7Zui1pDojHplAGqI4X
-        26e/9xo95CeVBQaneiMtWzHHVxK59V5xnQCk8Lg=
-X-Google-Smtp-Source: ABdhPJyS3IRl6z4QTbEwQtI350xF9azP/uv0HbGKCKHNW9yiGO5w4R6/PDo8gvGZnhDbl+3AruygB/bfgFnqwMCU9TM=
-X-Received: by 2002:a2e:b61a:: with SMTP id r26mr923956ljn.166.1602642461301;
- Tue, 13 Oct 2020 19:27:41 -0700 (PDT)
+        id S1727685AbgJNC2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:28:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726120AbgJNC2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 22:28:04 -0400
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D46721775;
+        Wed, 14 Oct 2020 02:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602642482;
+        bh=1DNgPEOQi50qtjP7yIrzdu1Z005RzZK+lWK5u9mPWMc=;
+        h=In-Reply-To:References:Subject:From:To:Date:From;
+        b=Qegr2NcWTNrkJE35Hd24y+cH+6QoFYiJJf/xTflHjCeEEg2ocnI/0uMAlCyjKHBF7
+         2su1zcpJOOvAGff5pFmuqPbZKTLXBbBHK0LiHf1Ce7sV/tCjE+3T1EywQ3kP6BfHAb
+         0b043EvPISIh5Fs5zy8QO2xnwjH1biDd6/8OhHLA=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20201013022429.454161-1-daeho43@gmail.com> <20201013022429.454161-2-daeho43@gmail.com>
- <20201013061150.GC1062@sol.localdomain>
-In-Reply-To: <20201013061150.GC1062@sol.localdomain>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Wed, 14 Oct 2020 11:27:30 +0900
-Message-ID: <CACOAw_y31yAu=AGAEqvyo2Ankt-ux80E6g6m_sWnz6LyUgBXSg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1601270140-4306-4-git-send-email-varada@codeaurora.org>
+References: <1601270140-4306-1-git-send-email-varada@codeaurora.org> <1601270140-4306-4-git-send-email-varada@codeaurora.org>
+Subject: Re: [PATCH 3/7] clk: qcom: Add Global Clock controller (GCC) driver for IPQ5018
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        catalin.marinas@arm.com, devicetree@vger.kernel.org,
+        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mturquette@baylibre.com, nsekar@codeaurora.org,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        sricharan@codeaurora.org, varada@codeaurora.org, will@kernel.org
+Date:   Tue, 13 Oct 2020 19:28:00 -0700
+Message-ID: <160264248077.310579.3081678774406286664@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> f2fs_readonly() is redundant with mnt_want_write_file().
->
-> Also, shouldn't this require a writable file descriptor?  As-is, this ioc=
-tl can
-> be called on a file owned by another user, as long as the caller has read
-> access.
->
-> Note: if you change this to require a writable file descriptor, then
-> f2fs_readonly(), mnt_want_write_file(), and IS_IMMUTABLE() all would no l=
-onger
-> be needed.
+Quoting Varadarajan Narayanan (2020-09-27 22:15:36)
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 0583273..d1a2504 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -155,6 +155,14 @@ config IPQ_GCC_8074
+>           i2c, USB, SD/eMMC, etc. Select this for the root clock
+>           of ipq8074.
+> =20
+> +config IPQ_GCC_5018
+> +       tristate "IPQ5018 Global Clock Controller"
+> +       help
+> +        Support for global clock controller on ipq5018 devices.
+> +        Say Y if you want to use peripheral devices such as UART, SPI,
+> +        i2c, USB, SD/eMMC, etc. Select this for the root clock
+> +        of ipq5018.
 
-I agree that f2fs_readonly() is redundant.
-But, sorry, I don't get the rest. I thought mnt_want_write_file() is a
-way to check whether the caller has a proper write permission or not.
-I think just using mnt_want_write_file() is enough for this ioctl. Am
-I missing something?
+What is the root clock of ipq5018? Please drop that last sentence.
 
-> What if f2fs_cops[options.algorithm] =3D=3D NULL, e.g. COMPRESS_LZ4 witho=
-ut
-> CONFIG_F2FS_FS_LZ4?  Shouldn't the caller get an error then?
+> +
+>  config MSM_GCC_8660
+>         tristate "MSM8660 Global Clock Controller"
+>         help
+> diff --git a/drivers/clk/qcom/gcc-ipq5018.c b/drivers/clk/qcom/gcc-ipq501=
+8.c
+> new file mode 100644
+> index 00000000..9056386
+> --- /dev/null
+> +++ b/drivers/clk/qcom/gcc-ipq5018.c
+> @@ -0,0 +1,3833 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/err.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <linux/reset-controller.h>
 
-Good point!
+Why is this attached to dt-bindings? Please remove that newline above
+and move this away from dt-bindings below.
 
-> I don't think the check for i_writecount =3D=3D 1 accomplishes anything b=
-ecause it
-> just means there are no *other* writable file descriptors.  It doesn't me=
-an that
-> some other thread isn't concurrently trying to write to this same file
-> descriptor.  So the lock needs to be enough.  Is it?
+> +#include <dt-bindings/clock/qcom,gcc-ipq5018.h>
+> +#include <dt-bindings/reset/qcom,gcc-ipq5018.h>
+> +
+> +#include "common.h"
+> +#include "clk-regmap.h"
+> +#include "clk-pll.h"
+> +#include "clk-rcg.h"
+> +#include "clk-branch.h"
+> +#include "clk-alpha-pll.h"
+> +#include "clk-regmap-divider.h"
+> +#include "clk-regmap-mux.h"
+> +#include "reset.h"
+> +
+> +#define F(f, s, h, m, n) { (f), (s), (2 * (h) - 1), (m), (n) }
 
-This is to detect any possibility of other threads mmap-ing and
-writing the file.
-Using only inode lock is not enough to prevent them from making dirty pages=
-.
+This is in clk-rcg.h already.
 
+> +
+> +static const char * const gcc_usb3phy_0_cc_pipe_clk_xo[] =3D {
+> +       "usb3phy_0_cc_pipe_clk",
+> +       "xo",
+> +};
 
+All these names structures need to change, see next comment.
 
-2020=EB=85=84 10=EC=9B=94 13=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 3:11, =
-Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Tue, Oct 13, 2020 at 11:24:29AM +0900, Daeho Jeong wrote:
-> > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned lo=
-ng arg)
-> > +{
-> > +     struct inode *inode =3D file_inode(filp);
-> > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
-> > +     struct f2fs_comp_option option;
-> > +     int ret;
-> > +     int writecount;
-> > +
-> > +     if (!f2fs_sb_has_compression(sbi))
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     if (!f2fs_compressed_file(inode) || IS_IMMUTABLE(inode))
-> > +             return -EINVAL;
-> > +
-> > +     if (f2fs_readonly(sbi->sb))
-> > +             return -EROFS;
->
+> +
+> +static struct clk_rcg2 apss_ahb_clk_src =3D {
+> +       .cmd_rcgr =3D 0x46000,
+> +       .mnd_width =3D 0,
+> +       .hid_width =3D 5,
+> +       .freq_tbl =3D ftbl_apss_ahb_clk_src,
+> +       .parent_map =3D gcc_xo_gpll0_gpll0_out_main_div2_map,
+> +       .clkr.hw.init =3D &(struct clk_init_data){
+> +               .name =3D "apss_ahb_clk_src",
+> +               .parent_names =3D gcc_xo_gpll0_gpll0_out_main_div2,
+> +               .num_parents =3D 3,
 
->
-> > +
-> > +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg=
-,
-> > +                             sizeof(option)))
-> > +             return -EFAULT;
-> > +
-> > +     if (option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
-> > +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE |=
-|
-> > +                     option.algorithm >=3D COMPRESS_MAX)
-> > +             return -EINVAL;
->
-> What if f2fs_cops[options.algorithm] =3D=3D NULL, e.g. COMPRESS_LZ4 witho=
-ut
-> CONFIG_F2FS_FS_LZ4?  Shouldn't the caller get an error then?
->
-> > +
-> > +     ret =3D mnt_want_write_file(filp);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     inode_lock(inode);
-> > +
-> > +     writecount =3D atomic_read(&inode->i_writecount);
-> > +     if ((filp->f_mode & FMODE_WRITE && writecount !=3D 1) ||
-> > +                     (!(filp->f_mode & FMODE_WRITE) && writecount)) {
-> > +             ret =3D -EBUSY;
-> > +             goto out;
-> > +     }
->
-> I don't think the check for i_writecount =3D=3D 1 accomplishes anything b=
-ecause it
-> just means there are no *other* writable file descriptors.  It doesn't me=
-an that
-> some other thread isn't concurrently trying to write to this same file
-> descriptor.  So the lock needs to be enough.  Is it?
->
-> - Eric
+Please migrate to the new way of specifying clks with clk_init_data::clk_pa=
+rent_data
+
+> +               .ops =3D &clk_rcg2_ops,
+> +               .flags =3D CLK_IS_CRITICAL | CLK_IGNORE_UNUSED,
+
+Why is it critical and ignore unused? Do you need this clk to be here at
+all? Can we just enable it when this driver probes with a register write
+and then ignore it from there on out?
+
+> +       },
+> +};
+> +
+> +static struct clk_regmap_div apss_ahb_postdiv_clk_src =3D {
+> +       .reg =3D 0x46018,
+> +       .shift =3D 4,
+> +       .width =3D 4,
+> +       .clkr =3D {
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "apss_ahb_postdiv_clk_src",
+> +                       .parent_names =3D (const char *[]){
+> +                               "apss_ahb_clk_src"
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .ops =3D &clk_regmap_div_ops,
+> +               },
+> +       },
+> +};
+> +
+[...]
+> +
+> +static struct clk_branch gcc_qdss_dap_clk =3D {
+> +       .halt_reg =3D 0x29084,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x29084,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gcc_qdss_dap_clk",
+> +                       .parent_names =3D (const char *[]){
+> +                               "qdss_tsctr_clk_src"
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_SET_RATE_PARENT | CLK_IS_CRITICAL,
+
+Whenever CLK_IS_CRITICAL is there please document why it is needed. And
+if possible remove the clk structure and hit the clk on in driver probe
+so we don't waste memory modeling something that never matters.
+Typically that can only be done if nothing references this clk as a
+parent or if we're willing to break the clk tree and ignore describing
+parents. In this case it's a branch so probably nothing else is under it
+so we can just turn it on during probe and stop caring.
+
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static struct clk_branch gcc_qdss_cfg_ahb_clk =3D {
+> +       .halt_reg =3D 0x29008,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x29008,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gcc_qdss_cfg_ahb_clk",
+> +                       .parent_names =3D (const char *[]){
+> +                               "pcnoc_clk_src"
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_SET_RATE_PARENT,
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+[...]
+> +
+> +static struct clk_branch gcc_qdss_stm_clk =3D {
+> +       .halt_reg =3D 0x29044,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x29044,
+> +               .enable_mask =3D BIT(0),
+> +               .hw.init =3D &(struct clk_init_data){
+> +                       .name =3D "gcc_qdss_stm_clk",
+> +                       .parent_names =3D (const char *[]){
+> +                               "qdss_stm_clk_src"
+> +                       },
+> +                       .num_parents =3D 1,
+> +                       .flags =3D CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSE=
+D,
+
+Why ignore unused? Probably should just be turned on somewhere else?
+
+> +                       .ops =3D &clk_branch2_ops,
+> +               },
+> +       },
+> +};
+> +
+> +static struct clk_branch gcc_qdss_traceclkin_clk =3D {
+> +       .halt_reg =3D 0x29060,
+> +       .clkr =3D {
+> +               .enable_reg =3D 0x29060,
+[...]
+> +
+> +static int gcc_ipq5018_probe(struct platform_device *pdev)
+> +{
+> +       int i, ret;
+> +       struct regmap *regmap;
+> +       struct clk *clk;
+> +       struct qcom_cc_desc ipq5018_desc =3D gcc_ipq5018_desc;
+> +
+> +       regmap =3D qcom_cc_map(pdev, &ipq5018_desc);
+> +       if (IS_ERR(regmap))
+> +               return PTR_ERR(regmap);
+> +
+> +       for (i =3D 0; i < ARRAY_SIZE(gcc_ipq5018_hws); i++) {
+> +               clk =3D devm_clk_register(&pdev->dev, gcc_ipq5018_hws[i]);
+> +               if (IS_ERR(clk))
+> +                       return PTR_ERR(clk);
+> +       }
+
+We really need to move this into the qcom_cc_desc so it is part of
+qcom_cc_really_probe()
+
+> +       /*Gen2 PHY*/
+> +       clk_register_fixed_rate(&pdev->dev, "pcie20_phy0_pipe_clk", NULL,
+> +                                       CLK_IS_ROOT, 125000000);
+> +       clk_register_fixed_rate(&pdev->dev, "pcie20_phy1_pipe_clk", NULL,
+> +                                       CLK_IS_ROOT, 125000000);
+
+These should be coming from some pcie phy and part of the DT binding as
+a 'clocks' element that this device consumes.
+
+> +
+> +       clk_alpha_pll_configure(&ubi32_pll_main, regmap, &ubi32_pll_confi=
+g);
+> +
+> +       ret =3D qcom_cc_really_probe(pdev, &ipq5018_desc, regmap);
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "Failed to register ipq5018 GCC clock=
+s\n");
+> +               return ret;
+> +       }
+> +
+> +       dev_info(&pdev->dev, "Registered ipq5018 GCC clocks provider");
+
+Please drop this noise.
+
+> +
+> +       return ret;
+> +}
+> +
+> +static int gcc_ipq5018_remove(struct platform_device *pdev)
+> +{
+> +       return 0;
+> +}
+> +
+
+If there isn't anything in the remove function it can be omitted.
+
+> +static struct platform_driver gcc_ipq5018_driver =3D {
+> +       .probe =3D gcc_ipq5018_probe,
+> +       .remove =3D gcc_ipq5018_remove,
+> +       .driver =3D {
+> +               .name   =3D "qcom,gcc-ipq5018",
+> +               .owner  =3D THIS_MODULE,
+> +               .of_match_table =3D gcc_ipq5018_match_table,
+> +       },
+> +};
+> +
+> +static int __init gcc_ipq5018_init(void)
+> +{
+> +       return platform_driver_register(&gcc_ipq5018_driver);
+> +}
+> +core_initcall(gcc_ipq5018_init);
+> +
+> +static void __exit gcc_ipq5018_exit(void)
+> +{
+> +       platform_driver_unregister(&gcc_ipq5018_driver);
+> +}
+> +module_exit(gcc_ipq5018_exit);
+> +
+> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. GCC IPQ5018 Driver");
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("platform:gcc-ipq5018");
+
+I think alias isn't needed anymore.
+
+> diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+> index 03a5de5..31fde45 100644
+> --- a/include/linux/clk-provider.h
+> +++ b/include/linux/clk-provider.h
+> @@ -20,8 +20,8 @@
+>  #define CLK_SET_PARENT_GATE    BIT(1) /* must be gated across re-parent =
+*/
+>  #define CLK_SET_RATE_PARENT    BIT(2) /* propagate rate change up one le=
+vel */
+>  #define CLK_IGNORE_UNUSED      BIT(3) /* do not gate even if unused */
+> -                               /* unused */
+> -                               /* unused */
+> +#define CLK_IS_ROOT            BIT(4) /* root clk, has no parent */
+> +#define CLK_IS_BASIC           BIT(5) /* Basic clk, can't do a to_clk_fo=
+o() */
+
+Please no. Drop this hunk.
+
+>  #define CLK_GET_RATE_NOCACHE   BIT(6) /* do not use the cached clk rate =
+*/
+>  #define CLK_SET_RATE_NO_REPARENT BIT(7) /* don't re-parent on rate chang=
+e */
+>  #define CLK_GET_ACCURACY_NOCACHE BIT(8) /* do not use the cached clk acc=
+uracy */
