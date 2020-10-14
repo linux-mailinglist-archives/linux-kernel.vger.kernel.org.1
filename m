@@ -2,75 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319A428E597
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17DB28E59A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgJNRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgJNRnH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:43:07 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7247AC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:43:07 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id i10so282765qkh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=f0pB5/6uDIV5mRb154M8ZVIAD20wSOQVeYXIO9SVDew=;
-        b=muD/lbk0Vi2OKCQINdAD0dBZKl/O4MC+SGXL1v/iFdXsYvFHgNGI2r5WgbrVMbcctt
-         Tx/6BW1FEWInPo6YfTbwpTkWv1aQ/VkiAbIMtmc6stXt4VLF/z6fUbbcwl7yn9U1yKpg
-         l98Qwl2GVtKfLMZJP6yBrBEDuR7scTQoaJaif2QW/46o069dkIakORHFJ7TfKGbN4sWx
-         hmrJ4SGB+OblEHnBSSU8vCCkNa9T5q8b4MG/MIl18HYeTkQNnAGK75Wb2xIzIG4JvSfI
-         +sLnl7Q6z9ajGR5mvrgyHlVh41AT2X3ubCDDvLvZBpM8jNr4KWjt/PNJ9Ta1C/GOpEir
-         Rw/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=f0pB5/6uDIV5mRb154M8ZVIAD20wSOQVeYXIO9SVDew=;
-        b=aZNjI34NDEGu6lJ2PQ5SV7R1VP/MnrUHGdCyCO8PNAwD5xAOZ+duOcIc4krLq2zgnx
-         Ge8WBsGDieIoY8QxNUAysPq9rvih0nbzNBvF67JU8CJAOisRtbON4vr4IQ82oXBV9Apa
-         SO0LvCb0uwfMVu1ziqwfytvNczJ3qH5nFrCrWXuXqncKNNDVubeZPngSPJDQSgBOEHgR
-         E865bJy8Cy2K/izG7qd1lM1PAI3L+Qs/ZMKiE6gvMuncZWuvEy7qoE8qODFH1Fv1oXgr
-         LNpa7BRpO777H3BPOKvpmZ8W5WFCk5RVb3haFYB5wBpZNZA/g+qDvNnxiJC4w5si0Htz
-         MF9w==
-X-Gm-Message-State: AOAM530oW0AYIIMVoEK2vKzQvt00+z3nQACJaE3cTMKjAJWs2N8waX8/
-        fe+cXPyqVUr+wZdenLsnija6ViPmJOARKuP52qE=
-X-Google-Smtp-Source: ABdhPJwbUQC4GE9QEd4CALxjProAdSsd0yvJVFSrYJOGRCGJXxb5pnQvJqp/Nva52BLlvmTpzwVm3R9fZhVylqz5jdc=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:b78c:: with SMTP id
- l12mr651830qve.38.1602697386340; Wed, 14 Oct 2020 10:43:06 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 10:43:04 -0700
-In-Reply-To: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
-Message-Id: <20201014174304.1393937-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <CAHk-=wgUjjxhe2qREhdDm5VYYmLJWG2e_-+rgChf1aBkBqmtHw@mail.gmail.com>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: Re: [GIT PULL] io_uring updates for 5.10-rc1
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     torvalds@linux-foundation.org
-Cc:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-tooling@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1727753AbgJNRnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:43:15 -0400
+Received: from vern.gendns.com ([98.142.107.122]:50470 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727439AbgJNRnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:43:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UycfqN5oK6kufoVgux//wk8MuMMBk9zPUgTss3ONB0c=; b=wHq2o4Kee8YPcgtZ/kUgnDLx3p
+        aHtlbSGD1QGaWT/zBEPJSlYMfi46Tto3eW5lirxgHEy8pVM0CvxgtpQl2UjWWj7Ocf9Az6CJe5Ow+
+        p0xxFVRoOn8cRpI2oSPZt2Ly9dZibh675vBIVTJVVOYSYlDq147t/RHZxdvdoQBu3m1dvFB22wVXp
+        GGlMTLVv4cL/lVR+tBOCoTaUsYXoimOmfzvafZ4Gnq8rwSgPk9yHKmqYasKFIEoz34aOtsDH5qqSq
+        YAKdBk0/9sbotjTEoSCGUy10jdEKqmHEOlRiyo2sOGWBNKCdVO+lKC8A8huAFHpCXbCkn45oNXU+M
+        klArMLeQ==;
+Received: from [2600:1700:4830:165f::19e] (port=44064)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kSknu-000749-Fy; Wed, 14 Oct 2020 13:43:10 -0400
+Subject: Re: [PATCH v5 3/5] counter: Add character device interface
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <67a0290e-731b-822a-5113-30b56bde6c88@lechnology.com>
+Date:   Wed, 14 Oct 2020 12:43:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for not reporting it sooner.  It looks to me like a GNU `as` bug:
-https://github.com/ClangBuiltLinux/linux/issues/1153#issuecomment-692265433
-When I'm done with the three build breakages that popped up overnight I'll try
-to report it to GNU binutils folks.
+On 9/26/20 9:18 PM, William Breathitt Gray wrote:
+> diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter-chrdev.c
+> new file mode 100644
+> index 000000000000..2be3846e4105
+> --- /dev/null
+> +++ b/drivers/counter/counter-chrdev.c
 
-(We run an issue tracker out of
-https://github.com/ClangBuiltLinux/linux/issues, if your interested to see what
-the outstanding known issues are, or recently solved ones.  We try to
-aggressively track when and where patches land for the inevitable backports.
-We have 118 people in our github group!)
+
+> +/**
+> + * counter_push_event - queue event for userspace reading
+> + * @counter:	pointer to Counter structure
+> + * @event:	triggered event
+> + * @channel:	event channel
+> + *
+> + * Note: If no one is watching for the respective event, it is silently
+> + * discarded.
+> + *
+> + * RETURNS:
+> + * 0 on success, negative error number on failure.
+> + */
+> +int counter_push_event(struct counter_device *const counter, const u8 event,
+> +		       const u8 channel)
+> +{
+> +	struct counter_event ev = {0};
+> +	unsigned int copied = 0;
+> +	unsigned long flags;
+> +	struct counter_event_node *event_node;
+> +	struct counter_comp_node *comp_node;
+> +	int err;
+> +
+> +	ev.timestamp = ktime_get_ns();
+> +	ev.watch.event = event;
+> +	ev.watch.channel = channel;
+> +
+> +	raw_spin_lock_irqsave(&counter->events_lock, flags);
+> +
+> +	/* Search for event in the list */
+> +	list_for_each_entry(event_node, &counter->events_list, l)
+> +		if (event_node->event == event &&
+> +		    event_node->channel == channel)
+> +			break;
+> +
+> +	/* If event is not in the list */
+> +	if (&event_node->l == &counter->events_list)
+> +		goto exit_early;
+> +
+> +	/* Read and queue relevant comp for userspace */
+> +	list_for_each_entry(comp_node, &event_node->comp_list, l) {
+> +		err = counter_get_data(counter, comp_node, &ev.value_u8);
+
+Currently all counter devices are memory mapped devices so calling
+counter_get_data() here with interrupts disabled is probably OK, but
+if any counter drivers are added that use I2C/SPI/etc. that will take
+a long time to read, it would cause problems leaving interrupts
+disabled here.
+
+Brainstorming: Would it make sense to separate the event from the
+component value being read? As I mentioned in one of my previous
+reviews, I think there are some cases where we would just want to
+know when an event happened and not read any additional data anyway.
+In the case of a slow communication bus, this would also let us
+queue the event in the kfifo and notify poll right away and then
+defer the reads in a workqueue for later.
+
+
+
+> +		if (err)
+> +			goto err_counter_get_data;
+> +
+> +		ev.watch.component = comp_node->component;
+> +
+> +		copied += kfifo_put(&counter->events, ev);
+> +	}
+> +
+> +	if (copied)
+> +		wake_up_poll(&counter->events_wait, EPOLLIN);
+> +
+> +exit_early:
+> +	raw_spin_unlock_irqrestore(&counter->events_lock, flags);
+> +
+> +	return 0;
+> +
+> +err_counter_get_data:
+> +	raw_spin_unlock_irqrestore(&counter->events_lock, flags);
+> +	return err;
+> +}
+
