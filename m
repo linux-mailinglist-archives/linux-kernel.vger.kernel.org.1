@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C02728EA95
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D02B28EA82
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389163AbgJOB7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
+        id S1732453AbgJOByj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387957AbgJOB7i (ORCPT
+        with ESMTP id S1732444AbgJOByi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:59:38 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5286C0613E6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:13:33 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gm14so455818pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:13:33 -0700 (PDT)
+        Wed, 14 Oct 2020 21:54:38 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECA9C0613D8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:07:35 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id b19so383386pld.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UCnQG1cBhMq8sAEfp9YHwGGr20fDNSgoS19LMKh/BP8=;
-        b=oVDjvWnuq1U6NeeWwlpTVoVBHcOhNPJwfmQuSij8FuzR03FnSwtAezNIrY+JS2xK5K
-         vIb0Io2w7OqoXINqo7E/25Yms26wCE/zJN/L2M5fDt9uyO2JDS5vEbtJl75H4FMnamKt
-         Asoyph0LcVWoPqpHLQfb/wtylUabh0MDV14NU=
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=dR7lB2w8aCjI+7SL+gCWVnyWE0EcJqrEtve/Fbe7wCs=;
+        b=B/MjJBqabR3kHP8fuBSvbUC1hpjUg/luJg1VJj+JARvr6cqZGaBRBHiO64T1qx5Rz7
+         jUR16cnHImawwz9obH9+PQiNMrBTw11th2E5mmAmePsS/Jq8oWK/UrnHLPf2dMOUMrJz
+         Rj5PceZQsnxljXjERM8WV5U0foTw7fXr2J0EApon+KYJiAPlqBouCxvl3tSndHbB9IB2
+         RZ92Jp5l+sW62Ablfb58utH8lz8FqYU4TTVIAZbSvWJlJMdH7B7+6Weotzz0eekyB5cu
+         el6K4FFvc3oekO0Y8Xt5arM6WYR4BGQYcfpUpoknPGHQAEUtj3vY7RqRXNf4x7iqDJrA
+         3LgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UCnQG1cBhMq8sAEfp9YHwGGr20fDNSgoS19LMKh/BP8=;
-        b=aKFS6VcHYDMZMVduaH5XQIlv8+cOQP9/VKW7enEm44EV7TUBwfd3sH89XFTh9eX+3U
-         zs0KUnhtU1KD+37wGXNcOBqxvjyoO4x+CYc/t8s0b74GRAPW3AdP52j8qAeKzq9mLqzi
-         ZgnMjVz6pICCLX/eoo9fqstz5hZ0gh926okUGr/K9NH0D1AL+LHLc+ECT/PYApIdEq6d
-         /a5xHfht6oBxTuR4FhqjX2dGIyk0TNmS2JZqoPX84e6m6+OvOzwElz0Ymj5KjkDQqrF7
-         EF5YNf20ZCkYRBh+JE2FqaP2KO6Z3X4uMEfmXGHbPGHcbonrgQGXVReEokxXJXS1fcBf
-         IPfw==
-X-Gm-Message-State: AOAM533+WlsjPAAojlvInqtEujumlkf4ZEBZOpIwzbYG3TqATlN83PJx
-        3sSRVb92L7dJjyKVKP7CFBPNEw==
-X-Google-Smtp-Source: ABdhPJzmnhmXwPmAM9QvkGG3hYxCXL8UxTqQTC8Zzu5uRBiRSDcAniSEJ0ogn4kjvYagyoaJx+ixeQ==
-X-Received: by 2002:a17:90b:128f:: with SMTP id fw15mr1013609pjb.107.1602710013501;
-        Wed, 14 Oct 2020 14:13:33 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id p19sm517713pfn.204.2020.10.14.14.13.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 14:13:32 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Taniya Das <tdas@codeaurora.org>, linux-soc@vger.kernel.org,
-        David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] clk: qcom: lpasscc-sc7180: Re-configure the PLL in case lost
-Date:   Wed, 14 Oct 2020 14:05:23 -0700
-Message-Id: <20201014140507.v3.3.Id0cc5d859e2422082a29a7909658932c857f5a81@changeid>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-In-Reply-To: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
-References: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=dR7lB2w8aCjI+7SL+gCWVnyWE0EcJqrEtve/Fbe7wCs=;
+        b=N0SyIFoJ6rR0nhqtSuHLpDR/0qjjg2wwm3o21SJ+ZEdG9zvlvDxJCi3j+fdBGqvX/F
+         GlejEBO6UQllRKZMq4lCyN7AIPjXqEmI9sm2HbY+H9A6plT4slicB0Yrdukd9skNyfv2
+         EES8adrCNdKYRsh7Yv29cQd4Afx8CH56/JbxKvjkfckhnbufult0pN65zPoxqXmY4v53
+         4y4Xya9K4ze/nnUYWHX9gNFjtxtJ1vpbeFlBbsi7ApQAcYKVeBSrb8dLvp5YtFl2dy+9
+         HuUOx4rcajP2KwOkLbFRfVG1XPGS3JB0pRnSQZuRHzNXKS6hDjPmspGiAYvW9w7T23N8
+         bspg==
+X-Gm-Message-State: AOAM533/XClP3/SZTznjQsr/v5CZQfWExF2bmzRexXXS7d8RlHBac9u3
+        nzztlfvXH5gZM/7gjb0bvDKszQ==
+X-Google-Smtp-Source: ABdhPJykDDF86fwzs6jHsxI1qVDwzTE5CSv91OmX/qxVA0fgG8du089mMPQ6hbvROZzrmDNYuE/fNw==
+X-Received: by 2002:a17:90a:4e47:: with SMTP id t7mr1017421pjl.26.1602709655153;
+        Wed, 14 Oct 2020 14:07:35 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:21fb:4af8:8865:6308? ([2601:646:c200:1ef2:21fb:4af8:8865:6308])
+        by smtp.gmail.com with ESMTPSA id jy19sm501565pjb.9.2020.10.14.14.07.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 14:07:34 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
+Date:   Wed, 14 Oct 2020 14:07:30 -0700
+Message-Id: <22E29783-F1F5-43DA-B35F-D75FB247475D@amacapital.net>
+References: <20201014195823.GC18196@zn.tnic>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-arch <linux-arch@vger.kernel.org>
+In-Reply-To: <20201014195823.GC18196@zn.tnic>
+To:     Borislav Petkov <bp@alien8.de>
+X-Mailer: iPhone Mail (18A393)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taniya Das <tdas@codeaurora.org>
 
-In the case where the PLL configuration is lost, then the pm runtime
-resume will reconfigure before usage.
 
-Fixes: edab812d802d ("clk: qcom: lpass: Add support for LPASS clock controller for SC7180")
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
 
-Changes in v3:
-- Now based on a series which disentangles the two clock devices.
-- Use dev_get_regmap().
-- Better comment about reading PLL_L_VAL.
+> On Oct 14, 2020, at 12:58 PM, Borislav Petkov <bp@alien8.de> wrote:
+>=20
+> =EF=BB=BFOn Wed, Oct 14, 2020 at 08:45:37AM -0700, Andy Lutomirski wrote:
+>>> On Wed, Oct 14, 2020 at 1:33 AM Ankur Arora <ankur.a.arora@oracle.com> w=
+rote:
+>>>=20
+>>> Define clear_page_uncached() as an alternative_call() to clear_page_nt()=
 
-Changes in v2:
-- Don't needlessly have a 2nd copy of dev_pm_ops and jam it in.
-- Check the return value of pm_clk_resume()
-- l_val should be unsigned int.
+>>> if the CPU sets X86_FEATURE_NT_GOOD and fallback to clear_page() if it
+>>> doesn't.
+>>>=20
+>>> Similarly define clear_page_uncached_flush() which provides an SFENCE
+>>> if the CPU sets X86_FEATURE_NT_GOOD.
+>>=20
+>> As long as you keep "NT" or "MOVNTI" in the names and keep functions
+>> in arch/x86, I think it's reasonable to expect that callers understand
+>> that MOVNTI has bizarre memory ordering rules.  But once you give
+>> something a generic name like "clear_page_uncached" and stick it in
+>> generic code, I think the semantics should be more obvious.
+>=20
+> Why does it have to be a separate call? Why isn't it behind the
+> clear_page() alternative machinery so that the proper function is
+> selected at boot? IOW, why does a user of clear_page functionality need
+> to know at all about an "uncached" variant?
+>=20
+>=20
 
- drivers/clk/qcom/lpasscorecc-sc7180.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+I assume it=E2=80=99s for a little optimization of clearing more than one pa=
+ge per SFENCE.
 
-diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
-index 48d370e2108e..e12d4c2b1b70 100644
---- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-+++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-@@ -388,6 +388,25 @@ static int lpass_create_pm_clks(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static int lpass_core_cc_pm_clk_resume(struct device *dev)
-+{
-+	struct regmap *regmap = dev_get_regmap(dev, "lpass_core_cc");
-+	unsigned int l_val;
-+	int ret;
-+
-+	ret = pm_clk_resume(dev);
-+	if (ret)
-+		return ret;
-+
-+	/* If PLL_L_VAL was cleared then we should re-init the whole PLL */
-+	regmap_read(regmap, 0x1004, &l_val);
-+	if (!l_val)
-+		clk_fabia_pll_configure(&lpass_lpaaudio_dig_pll, regmap,
-+				&lpass_lpaaudio_dig_pll_config);
-+
-+	return 0;
-+}
-+
- static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
- {
- 	const struct qcom_cc_desc *desc;
-@@ -457,7 +476,7 @@ static const struct of_device_id lpass_core_cc_sc7180_match_table[] = {
- MODULE_DEVICE_TABLE(of, lpass_core_cc_sc7180_match_table);
- 
- static const struct dev_pm_ops lpass_core_cc_pm_ops = {
--	SET_RUNTIME_PM_OPS(pm_clk_suspend, pm_clk_resume, NULL)
-+	SET_RUNTIME_PM_OPS(pm_clk_suspend, lpass_core_cc_pm_clk_resume, NULL)
- };
- 
- static struct platform_driver lpass_core_cc_sc7180_driver = {
--- 
-2.28.0.1011.ga647a8990f-goog
+In any event, based on the benchmark data upthread, we only want to do NT cl=
+ears when they=E2=80=99re rather large, so this shouldn=E2=80=99t be just an=
+ alternative. I assume this is because a page or two will fit in cache and, f=
+or most uses that allocate zeroed pages, we prefer cache-hot pages.  When cl=
+earing 1G, on the other hand, cache-hot is impossible and we prefer the impr=
+oved bandwidth and less cache trashing of NT clears.
 
+Perhaps SFENCE is so fast that this is a silly optimization, though, and we d=
+on=E2=80=99t lose anything measurable by SFENCEing once per page.=
