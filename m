@@ -2,301 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179CA28E5B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7B128E5B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgJNRry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:47:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38624 "EHLO mail.kernel.org"
+        id S1727472AbgJNRsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:48:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgJNRry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:47:54 -0400
+        id S1726119AbgJNRsR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:48:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E56F721D7F;
-        Wed, 14 Oct 2020 17:47:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA49421D7F;
+        Wed, 14 Oct 2020 17:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602697672;
-        bh=3PW7r+uDZ9YzCNIpR7/h7kIHXJrLZPAav/yRL5sEaf0=;
+        s=default; t=1602697697;
+        bh=EW5sWPAlr/20i9MiLaqAZtk2Oe9mv9yP4a2UBCA6LJ0=;
         h=Date:From:To:Cc:Subject:From;
-        b=lJ3CzkHEFJSFDCViHMOwkdXeyRLF5EmewpQ1RQZUuFPtqoMVhYNJxJ36DmO9yFrG/
-         pwwrE7a5qyYN5nBiTTFMOmDTTJEHdtYbA/fYY/uTn85Kjd5z4TUn1++jKWCB4WJxdL
-         usGksBAjyeYGOmU/v6E2q0TO0wUG/efGlVMAr5e4=
-Date:   Wed, 14 Oct 2020 19:48:26 +0200
+        b=wEdW9HasWwGhAoA4rsQHtUOBNj2cWdwmutdfrh98qOqHeHoJu63XN3xIGvmlzsun3
+         Cd40r/O0oWt8Y/OWugereqmyPI+oJ/ROU5eWXLvGoYLbMOHwNCovq+SmuYuKHItqFV
+         2XNWxudkUW0b/UqjMrUfxwRDQ6yJP1zq6AGJw+2U=
+Date:   Wed, 14 Oct 2020 19:48:51 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY/Serial driver patches for 5.10-rc1
-Message-ID: <20201014174826.GA3786470@kroah.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [GIT PULL] Driver core patches for 5.10-rc1
+Message-ID: <20201014174851.GA3786562@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+The following changes since commit 856deb866d16e29bd65952e0289066f6078af773:
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
+  Linux 5.9-rc5 (2020-09-13 16:06:00 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.10-rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.10-rc1
 
-for you to fetch changes up to 4be87603b6dc9e49c2e07151bb51180dc0b6964a:
+for you to fetch changes up to ee4906770ee931394179bcd42cabb196bc952276:
 
-  serial: mcf: add sysrq capability (2020-10-05 13:32:30 +0200)
+  regmap: debugfs: use semicolons rather than commas to separate statements (2020-10-02 15:48:52 +0200)
 
 ----------------------------------------------------------------
-TTY/Serial patches for 5.10-rc1
+Driver Core patches for 5.10-rc1
 
-Here is the big set of tty and serial driver patches for 5.10-rc1.
+Here is the "big" set of driver core patches for 5.10-rc1
 
-Lots of little things in here, including:
-	- tasklet_setup api conversions
-	- sysrq support for capital letters
-	- vt and vc cleanups and unwinding the mess some more
-	- serial driver updates and minor tweaks
-	- new device ids
-	- rs485 support for some drivers
-	- serial binding documentation updates
-	- lots of small serial driver changes for reported issues
+They include a lot of different things, all related to the driver core
+and/or some driver logic:
+	- sysfs common write functions to make it easier to audit sysfs
+	  attributes
+	- device connection cleanups and fixes
+	- devm helpers for a few functions
+	- NOIO allocations for when devices are being removed
+	- minor cleanups and fixes
 
 All have been in linux-next for a while with no reported issues.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Alex Dewar (1):
-      serial: core: don't use snprintf() for formatting sysfs attrs
-
-Allen Pais (4):
-      tty: ipwireless: convert tasklets to use new tasklet_setup() API
-      tty: atmel_serial: convert tasklets to use new tasklet_setup() API
-      tty: ifx6x60: convert tasklets to use new tasklet_setup() API
-      tty: timbuart: convert tasklets to use new tasklet_setup() API
-
-Andrij Abyzov (1):
-      serial: 8250_fsl: Fix TX interrupt handling condition
-
-Andrzej Pietrasiewicz (1):
-      tty/sysrq: Extend the sysrq_key_table to cover capital letters
-
 Andy Shevchenko (1):
-      serial: sa1100: use platform_get_resource()
+      driver core: Annotate dev_err_probe() with __must_check
 
-Angelo Dureghello (2):
-      serial: fsl_lpuart: add sysrq support when using dma
-      serial: mcf: add sysrq capability
+Bartosz Golaszewski (4):
+      devres: provide devm_krealloc()
+      hwmon: pmbus: use more devres helpers
+      iio: adc: xilinx-xadc: use devm_krealloc()
+      platform_device: switch to simpler IDA interface
 
-Artem Savkov (1):
-      pty: do tty_flip_buffer_push without port->lock in pty_write
+Greg Kroah-Hartman (4):
+      Revert "test_firmware: Test platform fw loading on non-EFI systems"
+      Revert "driver core: Annotate dev_err_probe() with __must_check"
+      Merge 5.9-rc5 into driver-core-next
+      platform/x86: intel_pmc_core: do not create a static struct device
 
-Christophe JAILLET (2):
-      tty: serial: icom: switch from 'pci_' to 'dma_' API
-      tty: synclink_gt: switch from 'pci_' to 'dma_' API
+Heikki Krogerus (5):
+      device connection: Remove device_connection_find()
+      device connection: Remove device_connection_add()
+      device connection: Remove struct device_connection
+      device property: Move fwnode_connection_find_match() under drivers/base/property.c
+      Documentation: Remove device connection documentation
 
-Daniel Mack (1):
-      sc16is7xx: Set iobase to device index
+Jim Cromie (1):
+      dyndbg: use keyword, arg varnames for query term pairs
 
-Douglas Anderson (1):
-      tty: serial: qcom_geni_serial: 115.2 is a better console default than 9600
+Joe Perches (8):
+      sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs output
+      drivers core: Use sysfs_emit and sysfs_emit_at for show(device *...) functions
+      drivers core: Remove strcat uses around sysfs_emit and neaten
+      drivers core: Reindent a couple uses around sysfs_emit
+      drivers core: Miscellaneous changes for sysfs_emit
+      mm: and drivers core: Convert hugetlb_report_node_meminfo to sysfs_emit
+      drivers core: Use sysfs_emit for shared_cpu_map_show and shared_cpu_list_show
+      drivers core: node: Use a more typical macro definition style for ACCESS_ATTR
 
-Du Huanpeng (1):
-      serial: 8250_pci: Add WCH384_8S 8 port serial device
-
-Fabio Estevam (1):
-      serial: fsl_lpuart: Fix typo in "transfer"
-
-Greg Kroah-Hartman (3):
-      Merge 5.9-rc3 into tty-next
-      Merge 5.9.0-rc6 into tty-next
-      Merge ba31128384dfd ("Merge tag 'libnvdimm-fixes-5.9-rc7' of git://git.kernel.org/.../nvdimm/nvdimm") into tty-next
-
-Hsin-Yi Wang (2):
-      tty: serial: print earlycon info after match->setup
-      tty: serial: 8250_mtk: set regshift for mmio32
-
-Jan Kara (1):
-      dax: Fix compilation for CONFIG_DAX && !CONFIG_FS_DAX
-
-Jason Yan (1):
-      serial: ucc_uart: make qe_uart_set_mctrl() static
-
-Jiri Slaby (25):
-      vt: make vc_data pointers const in selection.h
-      vt: declare xy for get/putconsxy properly
-      vc: propagate "viewed as bool" from screenpos up
-      vc_screen: document and cleanup vcs_vc
-      vc_screen: rewrite vcs_size to accept vc, not inode
-      vc_screen: sanitize types in vcs_write
-      vc_screen: extract vcs_write_buf_noattr
-      vc_screen: extract vcs_write_buf
-      vc_screen: eliminate ifdefs from vcs_write_buf
-      vc_screen: sanitize types in vcs_read
-      vs_screen: kill tmp_count from vcs_read
-      vc_screen: extract vcs_read_buf_uni
-      vc_screen: extract vcs_read_buf_noattr
-      vc_screen: extract vcs_read_buf
-      vc_screen: extract vcs_read_buf_header
-      vc_screen: prune macros
-      tty: n_gsm, eliminate indirection for gsm->{output,error}()
-      newport_con: fix no return statement in newport_show_logo
-      newport_con: make module's init & exit static using module_driver
-      tty: fix kernel-doc
-      tty: ldiscs, fix kernel-doc
-      tty: vt, fix kernel-doc
-      tty: synclink, fix kernel-doc
-      tty: serial, fix kernel-doc
-      Revert "vc_screen: extract vcs_read_buf_header"
+Jonathan Neuschäfer (1):
+      docs: driver-api: firmware: fallback-mechanisms: Fix rendering of bullet point
 
 Julia Lawall (1):
-      pch_uart: drop double zeroing
+      regmap: debugfs: use semicolons rather than commas to separate statements
 
-Krzysztof Kozlowski (2):
-      serial: 8250: Simplify with dev_err_probe()
-      serial: core: Simplify with dev_err_probe()
+Kees Cook (1):
+      test_firmware: Test platform fw loading on non-EFI systems
 
-Lad Prabhakar (2):
-      dt-bindings: serial: renesas, scif: Document r8a774e1 bindings
-      dt-bindings: serial: renesas, hscif: Document r8a774e1 bindings
+Oliver Neukum (1):
+      driver core: force NOIO allocations during unplug
 
-Linus Torvalds (1):
-      Merge tag 'libnvdimm-fixes-5.9-rc7' of git://git.kernel.org/.../nvdimm/nvdimm
+Randy Dunlap (1):
+      lib: devres: delete duplicated words
 
-Marek Vasut (1):
-      serial: stm32: Add RS485 RTS GPIO control again
+Saravana Kannan (1):
+      scripts/dev-needs: Add script to list device dependencies
 
-Matthias Schiffer (1):
-      tty: serial: imx: disable TXDC IRQ in imx_uart_shutdown() to avoid IRQ storm
+Stephen Boyd (2):
+      syscore: Use pm_pr_dbg() for syscore_{suspend,resume}()
+      driver core: platform: Document return type of more functions
 
-Paras Sharma (1):
-      serial: qcom_geni_serial: To correct QUP Version detection logic
+Zenghui Yu (1):
+      driver core: Use the ktime_us_delta() helper
 
-Peng Fan (2):
-      tty: serial: lpuart: fix lpuart32_write usage
-      tty: serial: fsl_lpuart: fix lpuart32_poll_get_char
-
-Peter Zijlstra (1):
-      serial: pl011: Fix lockdep splat when handling magic-sysrq interrupt
-
-Qinglang Miao (3):
-      serial: pmac_zilog: use for_each_child_of_node() macro
-      serial: mvebu-uart: simplify the return expression of mvebu_uart_probe()
-      serial: mvebu-uart: fix unused variable warning
-
-Seiya Wang (2):
-      dt-bindings: serial: Add compatible for Mediatek MT8192
-      dt-bindings: timer: Add compatible for Mediatek MT8192
-
-Serge Semin (3):
-      serial: 8250: Discard RTS/DTS setting from clock update method
-      serial: 8250: Skip uninitialized TTY port baud rate update
-      serial: 8250_dw: Fix clk-notifier/port suspend deadlock
-
-Tetsuo Handa (4):
-      newport_con: remove no-op newport_set_origin()
-      sticon: remove no-op sticon_set_origin()
-      vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
-      fbcon: remove no-op fbcon_set_origin()
-
-Thomas Petazzoni (1):
-      serial: max310x: rework RX interrupt handling
-
-Tong Zhang (2):
-      tty: serial: earlycon dependency
-      tty: ipwireless: fix error handling
-
-Tyrel Datwyler (1):
-      tty: hvcs: Don't NULL tty->driver_data until hvcs_cleanup()
-
-Viresh Kumar (1):
-      tty: serial: qcom_geni_serial: Unconditionally call dev_pm_opp_of_remove_table()
-
-Yang Yingliang (2):
-      tty: hvc: fix link error with CONFIG_SERIAL_CORE_CONSOLE=n
-      tty: serial: imx: fix link error with CONFIG_SERIAL_CORE_CONSOLE=n
-
-Ye Bin (1):
-      serial: imx: Delete duplicated argument to '|' in imx_uart_probe
-
-YueHaibing (1):
-      serial: 8250_pci: Remove unused function get_pci_irq()
-
-kuldip dwivedi (1):
-      serial: 8250_fsl: Add ACPI support
-
-satya priya (1):
-      tty: serial: qcom_geni_serial: Fix the UART wakeup issue
-
- Documentation/admin-guide/sysrq.rst                |   2 +
- .../devicetree/bindings/serial/mtk-uart.txt        |   1 +
- .../devicetree/bindings/serial/renesas,hscif.yaml  |   1 +
- .../devicetree/bindings/serial/renesas,scif.yaml   |   1 +
- .../bindings/timer/mediatek,mtk-timer.txt          |   1 +
- drivers/accessibility/speakup/main.c               |   4 +-
- drivers/gpu/drm/drm_fb_helper.c                    |   2 +-
- drivers/tty/hvc/Kconfig                            |   1 +
- drivers/tty/hvc/hvcs.c                             |  14 +-
- drivers/tty/ipwireless/hardware.c                  |   6 +-
- drivers/tty/ipwireless/network.c                   |   4 +-
- drivers/tty/ipwireless/tty.c                       |   2 +-
- drivers/tty/n_gsm.c                                |  38 +-
- drivers/tty/n_hdlc.c                               |  72 +--
- drivers/tty/n_tty.c                                |   4 +-
- drivers/tty/pty.c                                  |   4 +-
- drivers/tty/serial/8250/8250_bcm2835aux.c          |  12 +-
- drivers/tty/serial/8250/8250_dw.c                  |  54 +--
- drivers/tty/serial/8250/8250_fsl.c                 | 110 ++++-
- drivers/tty/serial/8250/8250_ingenic.c             |  20 +-
- drivers/tty/serial/8250/8250_mtk.c                 |   1 +
- drivers/tty/serial/8250/8250_pci.c                 |  64 ++-
- drivers/tty/serial/8250/8250_port.c                |   5 +-
- drivers/tty/serial/Kconfig                         |   2 +
- drivers/tty/serial/amba-pl011.c                    |  11 +-
- drivers/tty/serial/atmel_serial.c                  |  20 +-
- drivers/tty/serial/earlycon.c                      |   9 +-
- drivers/tty/serial/fsl_lpuart.c                    |  77 ++-
- drivers/tty/serial/icom.c                          |  32 +-
- drivers/tty/serial/ifx6x60.c                       |  15 +-
- drivers/tty/serial/imx.c                           |  14 +-
- drivers/tty/serial/max310x.c                       |  29 +-
- drivers/tty/serial/mcf.c                           |   1 +
- drivers/tty/serial/men_z135_uart.c                 |   8 +-
- drivers/tty/serial/mvebu-uart.c                    |   7 +-
- drivers/tty/serial/pch_uart.c                      |   2 +-
- drivers/tty/serial/pmac_zilog.c                    |   2 +-
- drivers/tty/serial/qcom_geni_serial.c              |  19 +-
- drivers/tty/serial/sa1100.c                        |  22 +-
- drivers/tty/serial/sc16is7xx.c                     |   1 +
- drivers/tty/serial/serial_core.c                   |  30 +-
- drivers/tty/serial/stm32-usart.c                   |  33 +-
- drivers/tty/serial/timbuart.c                      |   6 +-
- drivers/tty/serial/ucc_uart.c                      |   2 +-
- drivers/tty/synclink.c                             |  82 ++--
- drivers/tty/synclink_gt.c                          |  95 ++--
- drivers/tty/synclinkmp.c                           |  83 ++--
- drivers/tty/sysrq.c                                |  49 +-
- drivers/tty/tty_baudrate.c                         |   6 +-
- drivers/tty/tty_buffer.c                           |  14 +-
- drivers/tty/tty_io.c                               |  26 +-
- drivers/tty/tty_jobctrl.c                          |   4 +-
- drivers/tty/tty_ldisc.c                            |   3 +-
- drivers/tty/vt/consolemap.c                        |   4 +-
- drivers/tty/vt/selection.c                         |   2 +-
- drivers/tty/vt/vc_screen.c                         | 532 ++++++++++++---------
- drivers/tty/vt/vt.c                                |  42 +-
- drivers/tty/vt/vt_ioctl.c                          |  60 +--
- drivers/video/console/newport_con.c                |  22 +-
- drivers/video/console/sticon.c                     |   9 +-
- drivers/video/fbdev/core/fbcon.c                   |  10 +-
- include/linux/console.h                            |   2 +-
- include/linux/consolemap.h                         |   3 +-
- include/linux/dax.h                                |  17 +-
- include/linux/qcom-geni-se.h                       |   3 +
- include/linux/selection.h                          |  18 +-
- 66 files changed, 1056 insertions(+), 795 deletions(-)
+ Documentation/driver-api/device_connection.rst     |  43 ---
+ Documentation/driver-api/driver-model/devres.rst   |   1 +
+ .../driver-api/firmware/fallback-mechanisms.rst    |   1 +
+ Documentation/driver-api/index.rst                 |   1 -
+ Documentation/filesystems/sysfs.rst                |   8 +-
+ MAINTAINERS                                        |   6 +
+ drivers/base/Makefile                              |   2 +-
+ drivers/base/arch_topology.c                       |   2 +-
+ drivers/base/bus.c                                 |   2 +-
+ drivers/base/cacheinfo.c                           |  49 ++--
+ drivers/base/class.c                               |   2 +-
+ drivers/base/core.c                                |  63 +++--
+ drivers/base/cpu.c                                 |  84 +++---
+ drivers/base/dd.c                                  |   8 +-
+ drivers/base/devcon.c                              | 231 ---------------
+ drivers/base/devcoredump.c                         |   2 +-
+ drivers/base/devres.c                              | 105 +++++++
+ drivers/base/firmware_loader/fallback.c            |   4 +-
+ drivers/base/memory.c                              |  62 ++--
+ drivers/base/node.c                                | 306 ++++++++++----------
+ drivers/base/platform.c                            |  37 ++-
+ drivers/base/power/sysfs.c                         | 160 +++++++----
+ drivers/base/power/wakeup_stats.c                  |  17 +-
+ drivers/base/property.c                            |  73 +++++
+ drivers/base/regmap/regmap-debugfs.c               |   2 +-
+ drivers/base/soc.c                                 |  64 ++---
+ drivers/base/syscore.c                             |   8 +-
+ drivers/base/topology.c                            |  10 +-
+ drivers/hwmon/pmbus/pmbus_core.c                   |  28 +-
+ drivers/iio/adc/xilinx-xadc-core.c                 |  16 +-
+ drivers/platform/x86/intel_pmc_core_pltdrv.c       |  26 +-
+ drivers/usb/roles/class.c                          |  12 +-
+ drivers/usb/typec/mux.c                            |  19 +-
+ fs/sysfs/file.c                                    |  55 ++++
+ include/linux/device.h                             |  58 +---
+ include/linux/hugetlb.h                            |   4 +-
+ include/linux/property.h                           |  14 +
+ include/linux/sysfs.h                              |  15 +
+ lib/devres.c                                       |  20 +-
+ lib/dynamic_debug.c                                |  27 +-
+ mm/hugetlb.c                                       |  18 +-
+ scripts/dev-needs.sh                               | 315 +++++++++++++++++++++
+ 42 files changed, 1153 insertions(+), 827 deletions(-)
+ delete mode 100644 Documentation/driver-api/device_connection.rst
+ delete mode 100644 drivers/base/devcon.c
+ create mode 100755 scripts/dev-needs.sh
