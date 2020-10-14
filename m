@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FC228E93F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3AE28EAF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732037AbgJNXk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 19:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730418AbgJNXk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 19:40:56 -0400
-Received: from localhost (unknown [176.167.119.22])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BCD6208D5;
-        Wed, 14 Oct 2020 23:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602718855;
-        bh=hGMXOP6gyJ3ATfZP4dASK21yvBlRFVKikz9hv7cwjL4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BkrTS3UVL3nP/Tk6tFF/qu3NynCLslI5YSvIIrlfnJsQHRkO+y/DwDtSOmADGGD3S
-         1F/MwHaQoriU7VtZtNWDfjQZNceFyPCiEtsG9nQqdMZIQMABrp/U3Qn0TZhFFRrVA4
-         BaA7b1I3Ti6VgGgy2a+k+hnen4vAUNshO/qtGHb0=
-Date:   Thu, 15 Oct 2020 01:40:53 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
- task
-Message-ID: <20201014234053.GA86158@lothringen>
-References: <20201007180151.623061463@redhat.com>
- <20201007180229.724302019@redhat.com>
- <20201008122256.GW2628@hirez.programming.kicks-ass.net>
- <20201008175409.GB14207@fuller.cnet>
- <20201008195444.GB86389@lothringen>
- <20201013171328.GA19284@fuller.cnet>
- <20201014083321.GA2628@hirez.programming.kicks-ass.net>
+        id S1732591AbgJOCJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729851AbgJOCJh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 22:09:37 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D06AC025246
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:42:53 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w21so782236pfc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UFheJw6XVQO5isnDiFQR+xrCu7msKsOYw9OYk1rLMK0=;
+        b=N8IGdTigzihNqkAyPolGmtVpC/VuZ2GtitBdeBYF6g+CQD2Rlv3lnEY6Wl+kbYtcCC
+         PvI3COWqViJ/dNjYhYzhaSvwGVmctTK8TlXDI3oJpspOJZvMMugyesKKKvqFOYL7b66a
+         5zI356jrVZvFtSVXyMLanfGw9/+06KWWqN7vA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UFheJw6XVQO5isnDiFQR+xrCu7msKsOYw9OYk1rLMK0=;
+        b=Fx8kMI38Jcioz4zdUKWgS0sdRkaSFw1UMyfwLkdBMgeEVHxZyFVuC3zG6QvqS9MiDP
+         IOwNMEY+YBqFfzv5qm/iMqvuEMD/d62IBjWRDVZQjG50nnmruqdCvM+i0Fh49WrqBuxa
+         355/9hRMyioLz1UyogJXvAiquHCglodGiz1kJL6v5OEh0CGtevtgEVtKjAh9tXseOmm/
+         tEqZOgToudegRwMmu4nndFbPYc+A0I9Mi/IC8++3+P84JjUvPXTOKLsdOBRnyp9nUuEl
+         nQ+CWy+LfqTE2KDUHCE/3UbHYBfaoQjs6kfapjdfgtg7vJgggWZCNvrzxWrbXEN/6R2q
+         graQ==
+X-Gm-Message-State: AOAM532h28hDHO6w3p2S2Ias5JLNsQz92h1nVV5QUHiGW+8vetacxBPM
+        QHK09EdsCpcQfIYfUFZGoNXFLg==
+X-Google-Smtp-Source: ABdhPJyE77i9Lzw2HZDV09mx6eVpDdKG4unVyuuvO8MZz7RKVFf77G7hx4sJuUbtEGOOT4Hd5lZvLw==
+X-Received: by 2002:a63:4459:: with SMTP id t25mr1115407pgk.104.1602718972789;
+        Wed, 14 Oct 2020 16:42:52 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id d145sm808331pfd.136.2020.10.14.16.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 16:42:52 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     jkosina@suse.cz, benjamin.tissoires@redhat.com,
+        gregkh@linuxfoundation.org
+Cc:     kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
+        hdegoede@redhat.com, andrea@borgia.bo.it, swboyd@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: HID: i2c-hid: Add the ability to control a reset GPIO
+Date:   Wed, 14 Oct 2020 16:42:20 -0700
+Message-Id: <20201014164203.1.I1c2d6236990449717b861539a2234354153b1656@changeid>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014083321.GA2628@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 10:33:21AM +0200, Peter Zijlstra wrote:
-> On Tue, Oct 13, 2020 at 02:13:28PM -0300, Marcelo Tosatti wrote:
-> 
-> > > Yes but if the task isn't running, run_posix_cpu_timers() doesn't have
-> > > anything to elapse. So indeed we can spare the IPI if the task is not
-> > > running. Provided ordering makes sure that the task sees the new dependency
-> > > when it schedules in of course.
-> > 
-> > True.
-> > 
-> >  * p->on_cpu <- { 0, 1 }:
-> >  *
-> >  *   is set by prepare_task() and cleared by finish_task() such that it will be
-> >  *   set before p is scheduled-in and cleared after p is scheduled-out, both
-> >  *   under rq->lock. Non-zero indicates the task is running on its CPU.
-> > 
-> > 
-> > CPU-0 (tick_set_dep)            CPU-1 (task switch)
-> > 
-> > STORE p->tick_dep_mask
-> > smp_mb() (atomic_fetch_or())
-> > LOAD p->on_cpu
-> > 
-> > 
-> >                                 context_switch(prev, next)
-> >                                 STORE next->on_cpu = 1
-> >                                 ...                             [*]
-> > 
-> >                                 LOAD current->tick_dep_mask
-> > 
-> 
-> That load is in tick_nohz_task_switch() right? (which BTW is placed
-> completely wrong) You could easily do something like the below I
-> suppose.
-> 
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index 81632cd5e3b7..2a5fafe66bb0 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -410,6 +410,14 @@ void __tick_nohz_task_switch(void)
->  	ts = this_cpu_ptr(&tick_cpu_sched);
->  
->  	if (ts->tick_stopped) {
-> +		/*
-> +		 * tick_set_dep()		(this)
-> +		 *
-> +		 * STORE p->tick_dep_mask	STORE p->on_cpu
-> +		 * smp_mb()			smp_mb()
-> +		 * LOAD p->on_cpu		LOAD p->tick_dep_mask
-> +		 */
-> +		smp_mb();
->  		if (atomic_read(&current->tick_dep_mask) ||
->  		    atomic_read(&current->signal->tick_dep_mask))
->  			tick_nohz_full_kick();
+Apparently some devices connected via i2c-hid have timing requirements
+around when a reset GPIO should be asserted to them.  The diagram I
+have seen, which I believe is from a Goodix device, looked like this:
 
-It would then need to be unconditional (whatever value of ts->tick_stopped).
-Assuming the tick isn't stopped, we may well have an interrupt firing right
-after schedule() which doesn't see the new value of tick_dep_map.
+         +----------------------------------
+         |
+AVDD ----+
+               +------------------------------
+         | (a) |
+RESET ---------+
+                     +-------------
+               | (b) |
+I2C comm OK ---------+
 
-Alternatively, we could rely on p->on_rq which is set to TASK_ON_RQ_QUEUED
-at wake up time, prior to the schedule() full barrier. Of course that doesn't
-mean that the task is actually the one running on the CPU but it's a good sign,
-considering that we are running in nohz_full mode and it's usually optimized
-for single task mode.
+Where (a) is 10 ms and (b) is 120 ms.
 
-Also setting a remote task's tick dependency is only used by posix cpu timer
-in case the user has the bad taste to enqueue on a task running in nohz_full
-mode. It shouldn't deserve an unconditional full barrier in the schedule path.
+Let's add the ability to specify these timings to the devicetree
+bindings.
 
-If the target is current, as is used by RCU, I guess we can keep a special
-treatment.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+I notice this bindings file is still a ".txt" file.  Some searching on
+The Internets(TM) shows that Rob has maybe started a conversion 5
+years ago [1], but that looks ancient.  I can try to put something
+together if need be, or we can just land this fix.  ;-)
 
-> re tick_nohz_task_switch() being placed wrong, it should probably be
-> placed before finish_lock_switch(). Something like so.
-> 
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index cf044580683c..5c92c959824f 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4084,6 +4084,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
->  	vtime_task_switch(prev);
->  	perf_event_task_sched_in(prev, current);
->  	finish_task(prev);
-> +	tick_nohz_task_switch();
->  	finish_lock_switch(rq);
->  	finish_arch_post_lock_switch();
->  	kcov_finish_switch(current);
-> @@ -4121,7 +4122,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
->  		put_task_struct_rcu_user(prev);
->  	}
->  
-> -	tick_nohz_task_switch();
+Note that the .txt version of the bindings seems to indicate that
+anyone using one of the optional properties is supposed to declare
+their special compatible string.  I'm not sure if that's still
+considered important or not?  Once you manage to get these devices
+powered on and talking i2c they self-describe themselves...
 
-IIRC, we wanted to keep it outside rq lock because it shouldn't it...
+[1] https://kernel.googlesource.com/pub/scm/linux/kernel/git/robh/linux/+/refs/heads/dt-yaml/Documentation/devicetree/bindings/hid/hid-over-i2c.yaml
+
+ Documentation/devicetree/bindings/input/hid-over-i2c.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/input/hid-over-i2c.txt b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+index c76bafaf98d2..6fca39aa8cc6 100644
+--- a/Documentation/devicetree/bindings/input/hid-over-i2c.txt
++++ b/Documentation/devicetree/bindings/input/hid-over-i2c.txt
+@@ -32,6 +32,11 @@ device-specific compatible properties, which should be used in addition to the
+ - vdd-supply: phandle of the regulator that provides the supply voltage.
+ - post-power-on-delay-ms: time required by the device after enabling its regulators
+   or powering it on, before it is ready for communication.
++- reset-gpios: GPIOs to assert to reset the device. This GPIO is asserted when
++  the device is powered off and released post-power-on-delay-ms after
++  enabling the regulators.
++- post-gpio-reset-delay-ms: After deasserting reset we'll delay for this many
++  more milliseconds.
+ 
+ Example:
+ 
+-- 
+2.28.0.1011.ga647a8990f-goog
+
