@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3D428E79C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A3428E7A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728797AbgJNUAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJNUAD (ORCPT
+        id S1728841AbgJNUAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:00:45 -0400
+Received: from antares.kleine-koenig.org ([94.130.110.236]:58694 "EHLO
+        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgJNUAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:00:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84265C061755;
-        Wed, 14 Oct 2020 13:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dBOYMLQQlx6kYOwTChDpfwiT4F6gbGW7SjYy3hlDmqI=; b=GgyKcWz5leHygg4kK7woUaWtj1
-        fOgwoaMk9of07DvgpbLTw5a9s7c6HlXJXaKsm+VoT+L9yG1ZDum6iwHXCX4dRtM36x1EteAVeJGYS
-        wbTMPw4GfHYc+T8kxVvk5KXO+AN6qLM9Q5gcSkT9k3FiWgMUz7O4usJqTkaTtQ+82R6KKoV/C+NQP
-        Q0IznlIbhkht1EtekWFMVzJbx+q+NtuWoMpwpAXihsvpSRF6BHn3bAQZKZLvH2lfYc/jgY49EChTc
-        N76u96GbNxWc+J6DKthDv3KaUGz4sH3Q7PjhKns2jC3URthZKv2RSm3/5weo+0VWhGElRb1zR1ipf
-        88j7zmjw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSmw9-0002gi-CM; Wed, 14 Oct 2020 19:59:49 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0682E980F54; Wed, 14 Oct 2020 21:59:49 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 21:59:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] lib: kunit: add test_min_heap test conversion to KUnit
-Message-ID: <20201014195948.GE2974@worktop.programming.kicks-ass.net>
-References: <20200729201146.537433-1-vitor@massaru.org>
- <20200729203908.GD2655@hirez.programming.kicks-ass.net>
- <CADQ6JjW-=SNjV-abGpGA9NfHD4yGG_bD5FmvW99W-Vo06twkbw@mail.gmail.com>
- <20200804132517.GK2657@hirez.programming.kicks-ass.net>
- <CADQ6JjWzze-VAmg_b9EkS4iVySt5pw8V4FSxYpDFAj8jvBxuGA@mail.gmail.com>
- <20200804142344.GM2674@hirez.programming.kicks-ass.net>
- <CADQ6JjWbCsyWxZKQ5=kkxx8hkaW=mbCjDodPXDAv5vH-=tVvEQ@mail.gmail.com>
- <CAFd5g46DzWRzp9yXkpHbtyJuv236E=z7OaWeqXnfuiy6CTBL4A@mail.gmail.com>
- <CAP-5=fXhFG9sTMcfd1qJmMDNJWqOGky=jFtWNWg8U8-dkRp=dQ@mail.gmail.com>
+        Wed, 14 Oct 2020 16:00:45 -0400
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id 7B79CA54A3E; Wed, 14 Oct 2020 22:00:43 +0200 (CEST)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Heiko Stuebner <heiko@sntech.de>, Aditya Prayoga <aditya@kobol.io>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v4 0/2] arm64: Add basic support for Kobol's Helios64
+Date:   Wed, 14 Oct 2020 22:00:28 +0200
+Message-Id: <20201014200030.845759-1-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXhFG9sTMcfd1qJmMDNJWqOGky=jFtWNWg8U8-dkRp=dQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 11:16:10AM -0700, Ian Rogers wrote:
+Hello,
 
-> There were some issues in the original patch, they should be easy to
-> fix. I'm more concerned that Peter's issues are addressed about the
-> general direction of the patch, verbosity and testing frameworks. I
-> see Vitor followed up with Peter but I'm not sure that means the
-> approach has been accepted.
+in v3 Johan still found some inconsistencies in how I sorted (or didn't
+sort) the device tree properties. The rules I applied now are:
 
-I kinda lost track, as long as it doesn't get more verbose I suppose I'm
-fine.
+	at the beginning of a node: compatible, reg and interrupt stuff
+	status and #* at the end
+	i2c-scl-rising-time-ns before i2c-scl-falling-time-ns
+	regulator-name first among regulator-*
+	regulator-min-microvolt before regulator-max-microvolt
+	pinctrl-names before pinctrl-0
+	tx_delay grouped with (and after) rx_delay
+	vcc12* after vcc5*
+	otherwise alphabetically
+
+other things changed are:
+
+	- drop disable-wp and supports-emmc for emmc
+	- use led-0 and led-1 as node names for the leds
+	- rename pinctrl for the leds according to the line name in the schematic
+	- drop linux,default-trigger = "none";
+	- add an enable gpio for the sd regulator
+	- some whitespace nits
+
+While testing I rebased to 5.9 and for an unknown reason this kernel
+fails to boot (just no output), but the resulting dtb works just fine
+with a Debian 5.8 kernel.
+
+Uwe Kleine-König (2):
+  dt-bindings: vendor-prefixes: Add kobol prefix
+  arm64: dts: rockchip: Add basic support for Kobol's Helios64
+
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../dts/rockchip/rk3399-kobol-helios64.dts    | 371 ++++++++++++++++++
+ 3 files changed, 374 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-kobol-helios64.dts
+
+-- 
+2.28.0
+
