@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B737728E0AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401CB28E0B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388046AbgJNMn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727061AbgJNMnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:43:55 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9C58208B3;
-        Wed, 14 Oct 2020 12:43:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602679435;
-        bh=VSSG6hE1gZVIO+oAQetzoy/KZoYOIOgG7GLGn23AjHw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gmwaZOXNGa7xlauuNbm35LLRVxbMYdQMzQ0fMEa+GFvzSKPiL4vNcKYvaRv/F+ldF
-         u8q1DHVD3Oz5MNjdPlacGcNifOuWZaLgGCIhai/DIWUEMswBjMKhy5VvzkHJn7OhBT
-         OvAiH+nir4Czuo42hp6RoSyTLln1/pWOTq0JB8f0=
-Received: by mail-oi1-f179.google.com with SMTP id l85so3040047oih.10;
-        Wed, 14 Oct 2020 05:43:54 -0700 (PDT)
-X-Gm-Message-State: AOAM533maxKKS203fG25oXVUx9WotTmnylyj8CTKhURx3pZ5Q5lbDbN9
-        eGQaY4h7iw9VQsTXP9mGtCFpVrK3xI9WEPcoWg==
-X-Google-Smtp-Source: ABdhPJzfXfTAUHLSNmyidra28l2x73efWCi8eYxJ+PR4UmijFgQXtyvfPxbegY4CmNzQH5ljoNIZ1Crl1wjVuzUrhQA=
-X-Received: by 2002:a05:6808:10e:: with SMTP id b14mr2136679oie.152.1602679434031;
- Wed, 14 Oct 2020 05:43:54 -0700 (PDT)
+        id S2388124AbgJNMpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388086AbgJNMpO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 08:45:14 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6CDC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:45:14 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s9so3672260wro.8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EMapByy2fAc6++BOyKztEzWls2USsjIizauk4KxzZh4=;
+        b=T8uE5EbGueyPLQ1fvPPfJG2HSY2ZDx5iultP9xHkJ3999QTaoV7bS/xr6h9DutOHXx
+         AcNTt0I9+yCzg3XXRzIvxGkylUfwD6011TQc+GhzgcFrIxgKyINXrtbfpfoU4I+uIVoP
+         /y173JB7Vzwd6E9sncKv5YKuHWQEPd1gg0yuZ73LyzYu/jEqFyMpT8/MaVV4YtdMsKSi
+         oWlFd0Gbxs/abVwH4vxlOaPDsX5n+Tg7iP57mE+olMygmWZ++rMnh4PnmkPLAwwcEJcn
+         0W+0Z9PP6Pf0RApT9IkDGWGHHW2fy7VaZDc0mKUrFGrLBY38L/GQlnsE6KL5RyMh6RSA
+         1YRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EMapByy2fAc6++BOyKztEzWls2USsjIizauk4KxzZh4=;
+        b=DzS2d0b4I36SJtvIVl+rxABtqW/67n0RqqcG30tDDQJQ2o0C5D2iLqOaajSJmTfom2
+         xvNmMvpx9oOs5sYz6qo1u5DQZP6LMPcWyZdPsOuit+Yq5/L/pY11VSPjisPbVG6uOqvk
+         fvFNZTEaEwXavDpyy9DvFwO4QiG4lHPtzpoDheApxFFgBdiqUeqMDJsyV4cSx7HRp3QK
+         DAjZ1rq1Jm8Y30MlwEgJfV61COPZr8Lxd1sOspzjiWV4P20rcacyiHA2IfGC5k50M6Mw
+         akxiepSzfh4ZxJS4ycE0RaN3X6Kbwsaw4Jz8nvnF2GOd/ePyJ/u9vSfg1NtHeycHdyC8
+         cwbw==
+X-Gm-Message-State: AOAM533jbHjWE3uh3PhkLMHpfZC6b7AOJQa40DJWGBJvwtduOmfa7NCD
+        LmP/bVFswN16EalwJRSVWveWLg==
+X-Google-Smtp-Source: ABdhPJxkIspNczPzlCDJuItLgQOW0KRMh8pX697txPu2VTFUvryZR+JGUBdJMBq7s9cVTRGj2Q90ZA==
+X-Received: by 2002:adf:814f:: with SMTP id 73mr5313760wrm.174.1602679511938;
+        Wed, 14 Oct 2020 05:45:11 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f? ([2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f])
+        by smtp.googlemail.com with ESMTPSA id g144sm4023323wmg.30.2020.10.14.05.45.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 05:45:11 -0700 (PDT)
+Subject: Re: [PATCH 0/3] Add upper and lower limits in IPA power budget
+ calculation
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com,
+        michael.kao@mediatek.com, rui.zhang@intel.com
+References: <20201007122256.28080-1-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <b19909fb-7a1c-96b2-9c04-ff8670d9e421@linaro.org>
+Date:   Wed, 14 Oct 2020 14:45:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
- <20201004162908.3216898-3-martin.blumenstingl@googlemail.com>
- <CACRpkdbTw4UBw02RXX2prju45AsDZqPchhz=gdzsuT-QjhYHVw@mail.gmail.com>
- <CAFBinCAFDhWp6mgUqyOjdMVBR5oZQVpmVPjhnZs1Xg16tFa0PQ@mail.gmail.com> <CACRpkdZdwoQCxxqosn2jQPMXLDnTEjuxSWOxG-L1YGE33wbFrg@mail.gmail.com>
-In-Reply-To: <CACRpkdZdwoQCxxqosn2jQPMXLDnTEjuxSWOxG-L1YGE33wbFrg@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 14 Oct 2020 07:43:43 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLF8KHG6qZUJzdMyN5cX-ZvPDbuGSGZLOw=CkY90SUGLw@mail.gmail.com>
-Message-ID: <CAL_JsqLF8KHG6qZUJzdMyN5cX-ZvPDbuGSGZLOw=CkY90SUGLw@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/3] dt-bindings: gpio: Add binding documentation for
- Etron EJ168/EJ188/EJ198
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201007122256.28080-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 8:27 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Wed, Oct 7, 2020 at 9:58 PM Martin Blumenstingl
-> <martin.blumenstingl@googlemail.com> wrote:
-> > On Wed, Oct 7, 2020 at 11:19 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> > > On Sun, Oct 4, 2020 at 8:00 PM Martin Blumenstingl
-> > > <martin.blumenstingl@googlemail.com> wrote:
-> > >
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    enum:
-> > > > +      - pci1b6f,7023
-> > > > +      - pci1b6f,7052
-> > >
-> > > I think it is better to let the PCI driver for the whole hardware in
-> > > drivers/usb/host/xhci-pci.c probe from the PCI configuration space
-> > > numbers, and then add a gpio_chip to xhci-pci.c.
-> >
-> > to have everything consistent I will move the binding to
-> > Documentation/devicetree/bindings/usb
->
-> I do not understand why a PCI device would need a DT binding
-> at all. They just probe from the magic number in the PCI
-> config space, they spawn struct pci_dev PCI devices, not the
-> type of platform devices coming out of the DT parser code.
-> No DT compatible needed.
+On 07/10/2020 14:22, Lukasz Luba wrote:
+> Hi all,
+> 
+> This patch set makes thermal governor Intelligent Power Allocation (IPA)
+> aware of cooling device limits for upper and lower bounds and respects them
+> in the internal power budget calculation.
+> The patch set should be applied on top of some already posted IPA changes [1][2].
+> 
+> Regards,
+> Lukasz
+> 
+> [1] https://lore.kernel.org/linux-pm/20201002122416.13659-1-lukasz.luba@arm.com/
+> [2] https://lore.kernel.org/linux-pm/9ecedd8a-fbc3-895c-d79c-f05af5c90ae5@arm.com/T/#t
+> 
+> Lukasz Luba (3):
+>   thermal: power_allocator: respect upper and lower bounds for cooling
+>     device
+>   thermal: core: remove unused functions in power actor section
+>   thermal: move power_actor_set_power into IPA
+> 
+>  drivers/thermal/gov_power_allocator.c | 38 ++++++++++-
+>  drivers/thermal/thermal_core.c        | 90 ---------------------------
+>  drivers/thermal/thermal_core.h        |  6 --
+>  3 files changed, 36 insertions(+), 98 deletions(-)
 
-Same reason for all the discoverable buses need bindings. There can be
-parts that are not discoverable or connections with non-discoverable
-nodes. There's also cases where the discoverable device has to be
-powered, reset deasserted, clocks enabled, etc. first to be
-discovered.
+Thanks for this series. Except a comment in patch 1/3, it looks good to me.
 
-If the GPIOs here had connections elsewhere in the DT, then we have to
-describe the provider in DT.
 
-Rob
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
