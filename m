@@ -2,105 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD1528E027
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6BA28E02F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388594AbgJNL7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:59:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42254 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388567AbgJNL7l (ORCPT
+        id S1729298AbgJNMBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:01:24 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:44958 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727682AbgJNMBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:59:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602676780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OUXfs8ZFnSKO8DTZ95o///qFwP8Bn+Shck7dmpALbqc=;
-        b=JAd+nUlQ3BeysdfxsYshxpk4ZTpxAnLbhhSu16MsgAHf5XLu/jVcGcfRxJukhrk9DnfEFY
-        wr6vdGVU/+e3iYSzdgUuGo/M2ulduoPUIjG4UFmx9Mo5rK2DcSw4fggRRTvnHETYWEPwSu
-        ovYzHJR+pOb04q46LwPoibX5bJ3zat8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-S_FlfM07Pn-9zz36HQXGKA-1; Wed, 14 Oct 2020 07:59:37 -0400
-X-MC-Unique: S_FlfM07Pn-9zz36HQXGKA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 712051084C82;
-        Wed, 14 Oct 2020 11:59:35 +0000 (UTC)
-Received: from krava (unknown [10.40.195.92])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9100D6EF5A;
-        Wed, 14 Oct 2020 11:59:32 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 13:59:31 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 5/9] perf tools: Pass build_id object to dso__set_build_id
-Message-ID: <20201014115931.GA1382146@krava>
-References: <20201013192441.1299447-1-jolsa@kernel.org>
- <20201013192441.1299447-6-jolsa@kernel.org>
- <20201014115144.GD3100363@kernel.org>
+        Wed, 14 Oct 2020 08:01:24 -0400
+Received: by mail-il1-f197.google.com with SMTP id f184so2172333ilh.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:01:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ZGmoUCQTBwcfTzJTKLBkFcLOoqsmH7knjcMRgLLkdAY=;
+        b=llaldeRe1CDGvOIvNFMXadkAgBtaoDaBBGQAUp+nFKOxDXXa4yKUQVXMBmm6IxxY7X
+         pAOYIuARhS9MVF750ph/0hQvdo8sJJ7oqmO2dr7ly6M7a38/RtPZdOD84knE2EYmUZMb
+         uJDnLtOA4KEh48C6g4Q8YioFQ51/9J/WnbfDexsxegTOAmHtBTvZgZEKMxJuq0RwCa8c
+         ePoNnjlG+lTHCtnUoNgpezl1VnjLg3L5d71pawHEmw0gUB7XSB2es8MHL+cmGKEP0TvZ
+         wxLdOvKMnPPywlmJb8kEnULsExLbzACZ2/EKM0R1ZOhGk4WFkyV7w6SAfmTBTaqFEExy
+         a27w==
+X-Gm-Message-State: AOAM530djccXqXsDgIVPtFtJjg5kpCRc1hekRCFnZQNOJZ46pyW45U9H
+        dk+GMW58zosexlee3YWzmZAyytM7wYHERXfEsmga0NSu14gl
+X-Google-Smtp-Source: ABdhPJwLTnWEMK56bpSTTTT2Y/Z83v27f7qFguMx1gFSH3ledP9Tc2B9T2u86rFS5NIM9Q5rc4t+0aOGOlAtn/Xv4+OO2czBljMW
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014115144.GD3100363@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Received: by 2002:a92:c986:: with SMTP id y6mr3480273iln.10.1602676882967;
+ Wed, 14 Oct 2020 05:01:22 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 05:01:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c915205b1a04ad9@google.com>
+Subject: kernel BUG at fs/ext4/inline.c:LINE!
+From:   syzbot <syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 08:51:44AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Oct 13, 2020 at 09:24:37PM +0200, Jiri Olsa escreveu:
-> > Passing build_id object to dso__set_build_id, so it's easier
-> > to initialize dos's build id object.
-> > 
-> > Acked-by: Ian Rogers <irogers@google.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/perf/util/dso.c            | 4 ++--
-> >  tools/perf/util/dso.h            | 2 +-
-> >  tools/perf/util/header.c         | 4 +++-
-> >  tools/perf/util/symbol-minimal.c | 2 +-
-> >  tools/perf/util/symbol.c         | 2 +-
-> >  5 files changed, 8 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-> > index 2f7f01ead9a1..4415ce83150b 100644
-> > --- a/tools/perf/util/dso.c
-> > +++ b/tools/perf/util/dso.c
-> > @@ -1326,9 +1326,9 @@ void dso__put(struct dso *dso)
-> >  		dso__delete(dso);
-> >  }
-> >  
-> > -void dso__set_build_id(struct dso *dso, void *build_id)
-> > +void dso__set_build_id(struct dso *dso, struct build_id *bid)
-> >  {
-> > -	memcpy(dso->bid.data, build_id, sizeof(dso->bid.data));
-> > +	dso->bid = *bid;
-> 
-> Can't we use bid->size here?
-> 
-> 	dso->bid.size = bid->size;
-> 	memcpy(dso->bid.data, bid->data, bid->size));
-> 
-> ?
-> 
-> Not worth it? Probably :-)
+Hello,
 
-yea, I wonder compiler will do the same thing in both cases,
-but I don't know ;-)
+syzbot found the following issue on:
 
-I wanted to demonstrate that it's the same object
+HEAD commit:    6f2f486d Merge tag 'spi-fix-v5.9-rc8' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a89478500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de7f697da23057c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=4faa160fa96bfba639f8
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113a0a8b900000
 
-jirka
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119be2ab900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=139be2ab900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=159be2ab900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4faa160fa96bfba639f8@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inline.c:751!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 23920 Comm: syz-executor.3 Not tainted 5.9.0-rc8-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ext4_write_inline_data_end+0x847/0x880 fs/ext4/ext4.h:3341
+Code: 38 c1 0f 8c 06 fc ff ff 4c 89 e7 e8 d3 ac b2 ff e9 f9 fb ff ff 48 ff cd 48 89 eb e9 69 fe ff ff e8 4e a5 49 06 e8 e9 c7 72 ff <0f> 0b e8 e2 c7 72 ff 0f 0b e8 db c7 72 ff 0f 0b e8 d4 c7 72 ff 0f
+RSP: 0018:ffffc90005077940 EFLAGS: 00010293
+RAX: ffffffff82023607 RBX: 0000000c00000000 RCX: ffff8880a6718140
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff82022f07 R09: ffffed100ead147b
+R10: ffffed100ead147b R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88807568a5b8 R14: 0000000000000001 R15: dffffc0000000000
+FS:  00007faa624ff700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6db9e8bdb8 CR3: 000000009d643000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ext4_write_end+0x225/0xef0 fs/ext4/inode.c:1274
+ generic_perform_write+0x344/0x4e0 mm/filemap.c:3516
+ ext4_buffered_write_iter+0x44d/0x5d0 fs/ext4/file.c:269
+ ext4_file_write_iter+0x891/0x19b0 include/linux/fs.h:784
+ do_iter_readv_writev+0x4f9/0x6c0 include/linux/fs.h:1876
+ do_iter_write+0x164/0x610 fs/read_write.c:1026
+ vfs_writev fs/read_write.c:1099 [inline]
+ do_pwritev+0x234/0x430 fs/read_write.c:1196
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45de59
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007faa624fec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000128
+RAX: ffffffffffffffda RBX: 0000000000026400 RCX: 000000000045de59
+RDX: 0000000000000001 RSI: 00000000200014c0 RDI: 0000000000000006
+RBP: 000000000118c018 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bfd4
+R13: 00007ffc849922ef R14: 00007faa624ff9c0 R15: 000000000118bfd4
+Modules linked in:
+---[ end trace 636f601b36ee58e9 ]---
+RIP: 0010:ext4_write_inline_data_end+0x847/0x880 fs/ext4/ext4.h:3341
+Code: 38 c1 0f 8c 06 fc ff ff 4c 89 e7 e8 d3 ac b2 ff e9 f9 fb ff ff 48 ff cd 48 89 eb e9 69 fe ff ff e8 4e a5 49 06 e8 e9 c7 72 ff <0f> 0b e8 e2 c7 72 ff 0f 0b e8 db c7 72 ff 0f 0b e8 d4 c7 72 ff 0f
+RSP: 0018:ffffc90005077940 EFLAGS: 00010293
+RAX: ffffffff82023607 RBX: 0000000c00000000 RCX: ffff8880a6718140
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffff82022f07 R09: ffffed100ead147b
+R10: ffffed100ead147b R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88807568a5b8 R14: 0000000000000001 R15: dffffc0000000000
+FS:  00007faa624ff700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000118c000 CR3: 000000009d643000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
