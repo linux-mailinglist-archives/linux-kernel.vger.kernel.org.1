@@ -2,155 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA0B28E017
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8764628E019
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgJNL4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgJNL4X (ORCPT
+        id S2388327AbgJNL5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:57:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33114 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726814AbgJNL5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:56:23 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DE2C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:56:21 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id h6so3387344lfj.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ojnlDIDsOWgUSdYrgvw+i7T7eF4l0q3VHVTzWBNpi0g=;
-        b=Q45bXx63DkzjHNdgIKinvyzV1zgcoG5ePXx4OVtKRv1jxQgvmtRRjLRuHRpGonsCYR
-         9cXXLIewX4iPdF72OO1lidME2aT5yDQEVnKTKhctz6woQySS8zgjFgJUaOMBtAXZdG/Z
-         l2JvoUAwFXLliiMLCIFdxYasTd059FHBT7PFo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ojnlDIDsOWgUSdYrgvw+i7T7eF4l0q3VHVTzWBNpi0g=;
-        b=PVald12up7AvXxpA1LWT113ImhUa9klAiJ8ZqQvzzxzRCWV2+hyyaqqp+Nneg/r+3l
-         yjZ7hKk5HvYm8EfGBgkAciinXeP4to+PAkPA+0EO/h0uKYdpJHMcO1AEdArKs/hW2+Fh
-         5i0+qlhuNHqVgPJ9BTL/nZeNFrjY5qUvW/DxOyeBlVhxuyTzgAqvzo2hgZ/2sz3aUKwg
-         OAUdOvfJo0PsVV2P32HTwwCm42NQxxKLHW8Ovd9dUc1xQ4htv0mhLVwezNfqZWhshMHo
-         1Sijv3PnQQp0Fh/meBmJahtnhpBpuishNFHQ8sxOJZAZ+VLc4FpRuhbwYKU+sZUG46vN
-         9dkg==
-X-Gm-Message-State: AOAM532v+xBl/75++dYDIF4WDYA9faI5YoGrCEE8TrHev+J+jE60LnZx
-        hoqNtwBTl7utX9l8fcKHaXv7MaXO37bJaGid7z0=
-X-Google-Smtp-Source: ABdhPJyurqiaJVZz/jGKXOQ0lmM25Tye5vb7oT1almi3VJ7j9ZxyO7GfWz7WAPntlqvwM4GC94UFyw==
-X-Received: by 2002:a05:6512:3053:: with SMTP id b19mr1351958lfb.338.1602676579551;
-        Wed, 14 Oct 2020 04:56:19 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id o4sm1064388lfg.247.2020.10.14.04.56.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 04:56:18 -0700 (PDT)
-Subject: Re: using one gpio for multiple dht22 sensors
-To:     Peter Rosin <peda@axentia.se>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <91c25030-d5d1-e3e7-2d26-ac631dddc756@rasmusvillemoes.dk>
- <1c0d4c55-1d76-8256-ac45-6e0e150309d9@axentia.se>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <c00049d4-14b2-e250-0d7c-a6b677d4c9c7@rasmusvillemoes.dk>
-Date:   Wed, 14 Oct 2020 13:56:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1c0d4c55-1d76-8256-ac45-6e0e150309d9@axentia.se>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+        Wed, 14 Oct 2020 07:57:07 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EBXE5p176539;
+        Wed, 14 Oct 2020 07:56:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=BTlOnbpUAUcDb4UPCTOiAatpqX4R9DTQ5GOjIxbyyZ8=;
+ b=CVssf4o4/g3EPsUEIGqqW1+77zTEyQi33ds5TyILl2SEJCJ8C6VIT9QPB1cdbkwzkEFI
+ RdsQXFYt1Momhx2ki6b6qTnma8cMsY9Rr7XBY4uowJLsGr5XjxgOehnAMUZm50SiWgK1
+ valx2TmKOfJMNVJ1DXuzF96/KO73Sya8BSWFocBLGPfWMgHc4+I+C2s0Gqu0qJOtC+nT
+ Z5LJ/+i41Oc4lU2PnNaaJGvHyiKipCcMV0YO4HfZyuzDwVE1OPMZSHNwmH0O5xmeL7Pf
+ C6NfAeWSydbrdT6LDxQ4PD2a8oi5dWSIXUsf6B1YuuYKYkI2DZCTV9gU2BMIxa2QOq/A zQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3460349mkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 07:56:28 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09EBXLrs177077;
+        Wed, 14 Oct 2020 07:56:28 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3460349mgb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 07:56:28 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09EBpmNZ003728;
+        Wed, 14 Oct 2020 11:56:23 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 3434k7v3j1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 11:56:23 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09EBuL2T26345738
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 14 Oct 2020 11:56:21 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8082511C054;
+        Wed, 14 Oct 2020 11:56:21 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01E3611C04A;
+        Wed, 14 Oct 2020 11:56:18 +0000 (GMT)
+Received: from sig-9-65-216-73.ibm.com (unknown [9.65.216.73])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 14 Oct 2020 11:56:17 +0000 (GMT)
+Message-ID: <e436ab32ba30549591753cb3ec43749a6776f43e.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 1/2] efi: add secure boot get helper
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>, Chester Lin <clin@suse.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Date:   Wed, 14 Oct 2020 07:56:17 -0400
+In-Reply-To: <CAMj1kXGacnj=uh9WFh1+YBVXxzZbxeN==Y_f-rhJZ=3385B68g@mail.gmail.com>
+References: <20201014104032.9776-1-clin@suse.com>
+         <20201014104032.9776-2-clin@suse.com>
+         <CAMj1kXGacnj=uh9WFh1+YBVXxzZbxeN==Y_f-rhJZ=3385B68g@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-14_07:2020-10-14,2020-10-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 clxscore=1011
+ malwarescore=0 suspectscore=3 mlxlogscore=999 spamscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010140085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2020 11.12, Peter Rosin wrote:
-> Hi Rasnus,
+On Wed, 2020-10-14 at 13:00 +0200, Ard Biesheuvel wrote:
+> Hello Chester,
 > 
-> On 2020-10-13 23:34, Rasmus Villemoes wrote:
->> Hi Peter
->>
->> I'm going to hook up a bunch of dht22 humidity (and temperature) sensors
->> [1] (drivers/iio/humidity/dht11.c), but partly due to limited number of
->> available gpios, I'm also going to use a 74hc4051 multiplexer [2], so
->> that all the dht22's actually sit on the same gpio.
->>
->> It's pretty obvious how the multiplexer is to be described in
->> device-tree (I'm probably going to send a patch to add support for an
->> optional "enable-gpio", as on the 74hc4051, so that MUX_IDLE_DISCONNECT
->> gets supported).
->>
->> It also seems like io-channel-mux should somehow magically apply to all
->> kinds of iio devices, but it can't be that simple. And if it is, I can't
->> figure out how to write the DT. So:
+> Thanks for looking into this.
 > 
-> The io-channel-mux is for the situation where you have only one iio-device,
-> and where you can control its environment with a mux. I.e. it is not about
-> how the device communicates with the host. You then get one new "virtual"
-> iio-device for every (valid) state of the mux, and when you access those
-> iio-devices, the mux is configured to select the correct input/output for
-> the iio-device in question. At least, it should be possible for output
-> devices as well, but I guess you kind of get into trouble with the output
-> signal not persisting when the mux changes state, but that is a problem
-> for the HW people ;-). I originally used it for a single adc device where
-> the mux simply selected what to measure.
-
-I see, so it's not really applicable here.
-
->> - do I need to teach the dht11.c driver to be mux-aware?
->> - currently, a dht11/dht22 shows up in sysfs with just two files,
->> in_humidityrelative_input and in_temp_input. Now, should I end up with
->> one device and, say, 2*8 files (so that it seems like one sensor with
->> eight input channels), or should it show up as eight different devices?
->> If the latter, I guess the device tree would end up with the same "gpios
->> = " spec for all eight - is that even allowed?
+> Some comments below.
 > 
-> It's not 100% clear to me how this is connected, but I'm guessing that you
-> have the "DATA-signal" pin of the dht22s connected to the Y pins of the 4051,
-> and that Z pin of the 4051 is connected to some gpio, so that you are able
-> to communicate with the various dht22s by controlling the mux.
-
-Exactly. And currently, I just have one dht22 in DT, listing the gpio
-the Z-pin is connected to, and have tested that I can talk to all of
-them by manipulating the mux from userspace (well, the driver thinks
-there's only one dht22, so it imposes a 2 second delay before trying to
-talk to "it" again - which is one reason I want to do this right).
-
-> This calls for a mux on the single source of communication from the host
-> to the various real devices that share this single source of communication.
-> In other words, more like an i2c-mux than an io-channel-mux.
+> On Wed, 14 Oct 2020 at 12:41, Chester Lin <clin@suse.com> wrote:
+> >
+> > Separate the get_sb_mode() from arch/x86 and treat it as a common function
+> > [rename to efi_get_secureboot_mode] so all EFI-based architectures can
+> > reuse the same logic.
+> >
+> > Signed-off-by: Chester Lin <clin@suse.com>
+> > ---
+> >  arch/x86/kernel/ima_arch.c | 47 ++------------------------------------
+> >  drivers/firmware/efi/efi.c | 43 ++++++++++++++++++++++++++++++++++
+> >  include/linux/efi.h        |  5 ++++
+> >  3 files changed, 50 insertions(+), 45 deletions(-)
+> >
+> > diff --git a/arch/x86/kernel/ima_arch.c b/arch/x86/kernel/ima_arch.c
+> > index 7dfb1e808928..ed4623ecda6e 100644
+> > --- a/arch/x86/kernel/ima_arch.c
+> > +++ b/arch/x86/kernel/ima_arch.c
+> > @@ -8,49 +8,6 @@
+> >
+> >  extern struct boot_params boot_params;
+> >
+> > -static enum efi_secureboot_mode get_sb_mode(void)
+> > -{
+> > -       efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
+> > -       efi_status_t status;
+> > -       unsigned long size;
+> > -       u8 secboot, setupmode;
+> > -
+> > -       size = sizeof(secboot);
+> > -
+> > -       if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) {
+> > -               pr_info("ima: secureboot mode unknown, no efi\n");
+> > -               return efi_secureboot_mode_unknown;
+> > -       }
+> > -
+> > -       /* Get variable contents into buffer */
+> > -       status = efi.get_variable(L"SecureBoot", &efi_variable_guid,
+> > -                                 NULL, &size, &secboot);
+> > -       if (status == EFI_NOT_FOUND) {
+> > -               pr_info("ima: secureboot mode disabled\n");
+> > -               return efi_secureboot_mode_disabled;
+> > -       }
+> > -
+> > -       if (status != EFI_SUCCESS) {
+> > -               pr_info("ima: secureboot mode unknown\n");
+> > -               return efi_secureboot_mode_unknown;
+> > -       }
+> > -
+> > -       size = sizeof(setupmode);
+> > -       status = efi.get_variable(L"SetupMode", &efi_variable_guid,
+> > -                                 NULL, &size, &setupmode);
+> > -
+> > -       if (status != EFI_SUCCESS)      /* ignore unknown SetupMode */
+> > -               setupmode = 0;
+> > -
+> > -       if (secboot == 0 || setupmode == 1) {
+> > -               pr_info("ima: secureboot mode disabled\n");
+> > -               return efi_secureboot_mode_disabled;
+> > -       }
+> > -
+> > -       pr_info("ima: secureboot mode enabled\n");
+> > -       return efi_secureboot_mode_enabled;
+> > -}
+> > -
+> >  bool arch_ima_get_secureboot(void)
+> >  {
+> >         static enum efi_secureboot_mode sb_mode;
+> > @@ -60,7 +17,7 @@ bool arch_ima_get_secureboot(void)
+> >                 sb_mode = boot_params.secure_boot;
+> >
+> >                 if (sb_mode == efi_secureboot_mode_unset)
+> > -                       sb_mode = get_sb_mode();
+> > +                       sb_mode = efi_get_secureboot_mode();
+> >                 initialized = true;
+> >         }
+> >
+> > @@ -70,7 +27,7 @@ bool arch_ima_get_secureboot(void)
+> >                 return false;
+> >  }
+> >
+> > -/* secureboot arch rules */
+> > +/* secure and trusted boot arch rules */
+> >  static const char * const sb_arch_rules[] = {
+> >  #if !IS_ENABLED(CONFIG_KEXEC_SIG)
+> >         "appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig",
+> > diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> > index 5e5480a0a32d..68ffa6a069c0 100644
+> > --- a/drivers/firmware/efi/efi.c
+> > +++ b/drivers/firmware/efi/efi.c
+> > @@ -1022,3 +1022,46 @@ static int __init register_update_efi_random_seed(void)
+> >  }
+> >  late_initcall(register_update_efi_random_seed);
+> >  #endif
+> > +
+> > +enum efi_secureboot_mode efi_get_secureboot_mode(void)
+> > +{
+> > +       efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
+> > +       efi_status_t status;
+> > +       unsigned long size;
+> > +       u8 secboot, setupmode;
+> > +
+> > +       size = sizeof(secboot);
+> > +
+> > +       if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) {
+> > +               pr_info("ima: secureboot mode unknown, no efi\n");
 > 
-> I.e., what you need is "the other kind" of mux/gpio driver, i.e. a driver
-> that "fans out" a single gpio so that other drivers can treat the pins on
-> the other side of the mux as gpios.
-
-Hm, so I should create a new "gpio-controller" driver that presents each
-of the Y pins as a separate gpio to other DT consumers? But while all
-the devm_gpiod_get() would then succeed, only one of them could be
-usable at a time. The "gpio-controller" driver would have to handle any
-gpiod_xxx call by setting the mux appropriately, then forward the
-gpiod_xxx call to the Z pin - but it can't really know when the consumer
-is actually done with the gpio. And the consumer (dht11.c) has no way to
-know that it should somehow "acquire" and "release" the gpiod when it's
-not in use.
-
-> I guess you'd have to sort out irq-routing through this new mux-gpio driver
-> since the dht22 driver uses irqs to read input,
-
-Well... I've had to monkeypatch the dht11 driver to do
-local_irq_save()/read the gpio tightly in a loop until 80something edges
-have been seen/local_irq_restore() to get stable readings (maybe I'll do
-that as a real patch hanging off a module parameter - the dht22 "1-wire"
-protocol is kinda crappy...), so that's not really a problem.
-
+> These prints don't belong here anymore.
 > 
-> I'm not an expert on the intricacies of the gpio subsystem...
+> Also, it would be useful if we could reuse this logic in the EFI stub
+> as well, which is built as a separate executable, and does not provide
+> efi.get_variable().
 > 
-> Does that help?
+> So, you could you please break this up into
+> 
+> static inline
+> enum efi_secureboot_mode efi_get_secureboot_mode(efi_get_variable_t *get_var)
+> {
+> }
+> 
+> placed into include/linux/efi.h, which encapsulates the core logic,
+> but using get_var(), and without the prints.
+> 
+> Then, we could put something like
+> 
+> bool efi_ima_get_secureboot(void)
+> {
+> }
+> 
+> in drivers/firmware/efi/efi.c (guarded by #ifdef CONFIG_IMA_xxx),
+> which performs the
+> efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE)) check, calls
+> efi_get_secureboot_mode(efi.get_variable), and implements the logic.
+> 
+> And actually, if the logic is identical between x86 and arm64, I
+> wonder if it wouldn't be better to put the whole thing into
+> 
+> drivers/firmware/efi/efi-ima.c
+> 
+> or
+> 
+> security/integrity/ima/ima-efi.c
+> 
+> with the only difference being the boot_params->secure_boot access for
+> x86, which we can factor out to a static inline helper.
+> 
+> Mimi, any thoughts here?
 
-Somewhat. Thanks for the quick reply, I'll have to do some more digging
-and experimentation.
+Sounds good.  Keeping as much IMA code in the IMA directory makes
+sense.   The IMA Makefile would then include ima-efi.c based on an EFI
+Kconfig option.
 
-Rasmus
+thanks,
+
+Mimi
+> 
+> 
+> 
+> > +               return efi_secureboot_mode_unknown;
+> > +       }
+> > +
+> > +       /* Get variable contents into buffer */
+> > +       status = efi.get_variable(L"SecureBoot", &efi_variable_guid,
+> > +                                 NULL, &size, &secboot);
+> > +       if (status == EFI_NOT_FOUND) {
+> > +               pr_info("ima: secureboot mode disabled\n");
+> > +               return efi_secureboot_mode_disabled;
+> > +       }
+> > +
+> > +       if (status != EFI_SUCCESS) {
+> > +               pr_info("ima: secureboot mode unknown\n");
+> > +               return efi_secureboot_mode_unknown;
+> > +       }
+> > +
+> > +       size = sizeof(setupmode);
+> > +       status = efi.get_variable(L"SetupMode", &efi_variable_guid,
+> > +                                 NULL, &size, &setupmode);
+> > +
+> > +       if (status != EFI_SUCCESS)      /* ignore unknown SetupMode */
+> > +               setupmode = 0;
+> > +
+> > +       if (secboot == 0 || setupmode == 1) {
+> > +               pr_info("ima: secureboot mode disabled\n");
+> > +               return efi_secureboot_mode_disabled;
+> > +       }
+> > +
+> > +       pr_info("ima: secureboot mode enabled\n");
+> > +       return efi_secureboot_mode_enabled;
+> > +}
+> > diff --git a/include/linux/efi.h b/include/linux/efi.h
+> > index d7c0e73af2b9..a73e5ae04672 100644
+> > --- a/include/linux/efi.h
+> > +++ b/include/linux/efi.h
+> > @@ -1076,8 +1076,13 @@ static inline int efi_runtime_map_copy(void *buf, size_t bufsz)
+> >
+> >  #ifdef CONFIG_EFI
+> >  extern bool efi_runtime_disabled(void);
+> > +extern enum efi_secureboot_mode efi_get_secureboot_mode(void);
+> >  #else
+> >  static inline bool efi_runtime_disabled(void) { return true; }
+> > +static inline enum efi_secureboot_mode efi_get_secureboot_mode(void)
+> > +{
+> > +       return efi_secureboot_mode_disabled;
+> > +}
+> >  #endif
+> >
+> >  extern void efi_call_virt_check_flags(unsigned long flags, const char *call);
+> > --
+> > 2.26.1
+> >
+
+
