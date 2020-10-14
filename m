@@ -2,163 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA66028E8B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2475528EAAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728709AbgJNW04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 18:26:56 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:51141 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726747AbgJNW0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 18:26:55 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 7c0c6b71;
-        Wed, 14 Oct 2020 21:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=date:from:to
-        :cc:subject:message-id:references:mime-version:content-type
-        :in-reply-to; s=mail; bh=TU737/o0EBlcLX3vdsHaqc4TMtU=; b=KFFQLDq
-        NiCP6gjEHZ77SHhxRlWBn4mmr+6Q+uPRmHyzXb/NsRF4megKkSkz1dLglJo4UYb4
-        zwijaio2GOPrOswIStYlUSHg0W4awanYKL1mEmVIlTbVghEqpdfs2plKwbuuUpxS
-        SjgjRk34BJL9m15bTLxRHueu4WjTztKWEwEgCcWIuePdkdps4sU2K2nQitqMqxj6
-        EHK/Adq1/+QnTNNWSIl5y6ofF6LY5qNO1ZqXbdRI88U4yNX3SYkcDzL8c3EDUV1V
-        jCt+LWD7QdAd+68vDK2/w6z0dPtJliAg0sau6duqa9ItNe9KegR1brJzmJY13g4o
-        2QVonpWDolBSyrg==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 21b9ed86 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 14 Oct 2020 21:53:18 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 00:26:50 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v2 20/20] ppc: propagate the calling conventions change
- down to csum_partial_copy_generic()
-Message-ID: <20201014222650.GA390346@zx2c4.com>
-References: <20200724012512.GK2786714@ZenIV.linux.org.uk>
- <20200724012546.302155-1-viro@ZenIV.linux.org.uk>
- <20200724012546.302155-20-viro@ZenIV.linux.org.uk>
+        id S1727557AbgJOCEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgJOCEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 22:04:37 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497D9C05BD0C
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:29:13 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id p25so365580vsq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FFNmhfthsf5pFmuohFdBe/J1wSqD3GGj/IpnA7g1A30=;
+        b=ElM2+r+wNX9S0QX15/URuzFWDAgrQuroEb/3vWVNqelEtF3zeNVJX5JYXXEHfLzm8b
+         1+VO0qGMtKHyuKoYmWKxcRcr38VNqOCXnxuvQ49A318FaWwdq5hv+zGSlBBIen0PvDjH
+         1UKWTabxwoO4qh6CK3L1+Mxnl9lwc5CuqFAvs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FFNmhfthsf5pFmuohFdBe/J1wSqD3GGj/IpnA7g1A30=;
+        b=hzjihXafwWW3gHgPXa+LioQ7HKL3tsqz1eiKdoAYXOn9U0Dgbqg1jRxeznKK5boNvI
+         /Onwlj2wl68NBRyhwa5UaZkVpmvrJenGKxG/iurDFCVjOpv5P8nLOOxEe8I2pweHnrP4
+         8KBRfDfRiiu4AuS13fM9Ilkq0dJxwfAA9nM21z1/jkbKMfxggfVDiHgtDxlT2g/ykjRr
+         e8Za5Bc/q48hRa66EfoUW4MDn9w39q/s6Cktz7XDgEZl2XRAOJIyAKLd5/cp/nK5mLLx
+         U3D5Sxx8XGthgWUOLRsT4M4ljfuTM650QgT9BVu6R2C76Aj3bINi4BjUBOIZ/vf4mXLk
+         AbHQ==
+X-Gm-Message-State: AOAM5326+fSnRCpoU7lj+RAiE2S7T4ihng1u6pAhaYDbkQBaqbw7i7cx
+        48MifjeCzIywUzfe8l0qNwUl8+PpcxCyEA==
+X-Google-Smtp-Source: ABdhPJxtOJ2qvk3TLMcOmzkZNw5YAhyZRPVjQrclyKjUhv0UdoAcHX0wc6kx990OgPon0e+nDbZdCQ==
+X-Received: by 2002:a67:eb50:: with SMTP id x16mr1064193vso.6.1602714551892;
+        Wed, 14 Oct 2020 15:29:11 -0700 (PDT)
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
+        by smtp.gmail.com with ESMTPSA id v18sm136612uat.5.2020.10.14.15.29.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 15:29:10 -0700 (PDT)
+Received: by mail-ua1-f53.google.com with SMTP id r17so252034uaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:29:10 -0700 (PDT)
+X-Received: by 2002:a9f:31ce:: with SMTP id w14mr725901uad.104.1602714550250;
+ Wed, 14 Oct 2020 15:29:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200724012546.302155-20-viro@ZenIV.linux.org.uk>
+References: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
+ <20201014140507.v3.2.I75c409497d4dea9daefa53ec5f93824081c4ecbe@changeid> <160271345117.884498.6375969749730135625@swboyd.mtv.corp.google.com>
+In-Reply-To: <160271345117.884498.6375969749730135625@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 14 Oct 2020 15:28:58 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UipL42FLRARc4V34bqEukaB=WQzAdr2Si2RUjPaAmE4g@mail.gmail.com>
+Message-ID: <CAD=FV=UipL42FLRARc4V34bqEukaB=WQzAdr2Si2RUjPaAmE4g@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] clk: qcom: lpass-sc7180: Disentangle the two clock devices
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Taniya Das <tdas@codeaurora.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>,
+        David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
+Hi,
 
-On Fri, Jul 24, 2020 at 02:25:46AM +0100, Al Viro wrote:
-> From: Al Viro <viro@zeniv.linux.org.uk>
-> 
-> ... and get rid of the pointless fallback in the wrappers.  On error it used
-> to zero the unwritten area and calculate the csum of the entire thing.  Not
-> wanting to do it in assembler part had been very reasonable; doing that in
-> the first place, OTOH...  In case of an error the caller discards the data
-> we'd copied, along with whatever checksum it might've had.
+On Wed, Oct 14, 2020 at 3:10 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Douglas Anderson (2020-10-14 14:05:22)
+> > diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
+> > index abcf36006926..48d370e2108e 100644
+> > --- a/drivers/clk/qcom/lpasscorecc-sc7180.c
+> > +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
+> > @@ -356,12 +356,48 @@ static const struct qcom_cc_desc lpass_audio_hm_sc7180_desc = {
+> >         .num_gdscs = ARRAY_SIZE(lpass_audio_hm_sc7180_gdscs),
+> >  };
+> >
+> > +static void lpass_pm_runtime_disable(void *data)
+> > +{
+> > +       pm_runtime_disable(data);
+> > +}
+> > +
+> > +static void lapss_pm_clk_destroy(void *data)
+> > +{
+> > +       pm_clk_destroy(data);
+> > +}
+>
+> Why are these helpers added again? And do we even need them? Can't we
+> just pass pm_runtime_disable or pm_clk_destroy to the
+> devm_add_action_or_reset() second parameter?
 
-This patch is causing crashes in WireGuard's CI over at
-https://www.wireguard.com/build-status/ . Apparently sending a simple
-network packet winds up triggering refcount_t's warn-on-saturate code. I
-don't know if the new assembly failed to reset some flag or if something
-else is up. I can start digging into it if you want, but I thought I
-should let you know first about the issue. The splat follows below.
+Unfortunately, we can't due to the C specification.  Take a look at
+all the other users of devm_add_action_or_reset() and they all have
+pretty much the same stupid thing.  This is a pretty great grep, for
+instance:
 
-Thanks,
-Jason
+git grep devm_add_action_or_reset.*clk_disable_unprepare
 
-$ ping -c 10 -f -W 1 192.168.241.1
-PING 192.168.241.1 (192.168.241.1) 56(84) bytes of data.
-[    1.432922] ------------[ cut here ]------------
-[    1.433069] refcount_t: saturated; leaking memory.
-[    1.433344] WARNING: CPU: 3 PID: 90 at refcount_warn_saturate+0x100/0x1bc
-[    1.433646] CPU: 3 PID: 90 Comm: ping Not tainted 5.9.0+ #3
-[    1.433797] NIP:  c01a6fa0 LR: c01a6fa0 CTR: c01ccbec
-[    1.433964] REGS: cfacfb80 TRAP: 0700   Not tainted  (5.9.0+)
-[    1.434102] MSR:  00029000 <CE,EE,ME>  CR: 28022404  XER: 00000000
-[    1.434345]
-[    1.434345] GPR00: c01a6fa0 cfacfc38 cf8eeae0 00000026 3fffefff cfacfa90 cfacfaa0 00021000
-[    1.434345] GPR08: 0f4a1000 00000000 c08b4674 c0918704 42022404 00000000 cfa34180 00000000
-[    1.434345] GPR16: 00000000 cf8ef004 00000000 00000000 00000040 00000000 00000000 cfbac230
-[    1.434345] GPR24: cfacfce8 c02a802c 00000000 cfa34180 cfacfc58 c02aa53c 55c0a4ff 00000000
-[    1.435471] NIP [c01a6fa0] refcount_warn_saturate+0x100/0x1bc
-[    1.435615] LR [c01a6fa0] refcount_warn_saturate+0x100/0x1bc
-[    1.435825] Call Trace:
-[    1.435922] [cfacfc38] [c01a6fa0] refcount_warn_saturate+0x100/0x1bc (unreliable)
-[    1.436149] [cfacfc48] [c02a7f14] __ip_append_data.isra.0+0x8a8/0xde0
-[    1.436302] [cfacfce8] [c02a84e0] ip_append_data.part.0+0x94/0xf0
-[    1.436438] [cfacfd18] [c02dffe0] raw_sendmsg+0x298/0xa84
-[    1.436544] [cfacfe48] [c020b9ec] __sys_sendto+0xdc/0x13c
-[    1.436641] [cfacff38] [c000f1dc] ret_from_syscall+0x0/0x38
-[    1.436824] --- interrupt: c01 at 0xb7e44f00
-[    1.436824]     LR = 0xb7e21ba0
-[    1.437038] Instruction dump:
-[    1.437239] 3d20c092 39291bc1 89490001 2c0a0000 4082ff64 3c60c040 7c0802a6 39400001
-[    1.437439] 38633b74 90010014 99490001 4be9b6e1 <0fe00000> 80010014 7c0803a6 4bffff38
-[    1.437753] ---[ end trace aaa4b4788958d0a6 ]---
-[    1.440214] ------------[ cut here ]------------
-[    1.440301] refcount_t: underflow; use-after-free.
-[    1.440397] WARNING: CPU: 3 PID: 90 at refcount_warn_saturate+0x1ac/0x1bc
-[    1.440587] CPU: 3 PID: 90 Comm: ping Tainted: G        W         5.9.0+ #3
-[    1.440741] NIP:  c01a704c LR: c01a704c CTR: c01ccbec
-[    1.440857] REGS: cfacfaa0 TRAP: 0700   Tainted: G        W          (5.9.0+)
-[    1.441016] MSR:  00029000 <CE,EE,ME>  CR: 48022404  XER: 00000000
-[    1.441176]
-[    1.441176] GPR00: c01a704c cfacfb58 cf8eeae0 00000026 3fffefff cfacf9b0 cfacf9c0 00021000
-[    1.441176] GPR08: 0f4a1000 00000400 c08b4674 c0918704 42022404 00000000 10020464 00000003
-[    1.441176] GPR16: 7ff00000 10020000 00000080 cfb27000 cfb2704c c0930000 cfacfc54 c092d260
-[    1.441176] GPR24: 0000058c cfa82120 cfa8212c cfa8212c 00000000 cfa82000 cfacfd44 cfacfc58
-[    1.441995] NIP [c01a704c] refcount_warn_saturate+0x1ac/0x1bc
-[    1.442125] LR [c01a704c] refcount_warn_saturate+0x1ac/0x1bc
-[    1.442252] Call Trace:
-[    1.442320] [cfacfb58] [c01a704c] refcount_warn_saturate+0x1ac/0x1bc (unreliable)
-[    1.442726] [cfacfb68] [c020e7dc] sock_wfree+0x130/0x134
-[    1.442877] [cfacfb78] [c01f1388] wg_packet_send_staged_packets+0x234/0x6b4
-[    1.443061] [cfacfbb8] [c01eecf8] wg_xmit+0x2a0/0x46c
-[    1.443204] [cfacfbf8] [c0232134] dev_hard_start_xmit+0x190/0x1c0
-[    1.443369] [cfacfc38] [c0232f2c] __dev_queue_xmit+0x4d0/0x844
-[    1.443527] [cfacfc88] [c02a7134] ip_finish_output2+0x180/0x6b8
-[    1.443686] [cfacfcb8] [c02aa3e8] ip_output+0xf0/0x1c0
-[    1.443829] [cfacfd08] [c02ab14c] ip_send_skb+0x24/0xe8
-[    1.443975] [cfacfd18] [c02e04bc] raw_sendmsg+0x774/0xa84
-[    1.444124] [cfacfe48] [c020b9ec] __sys_sendto+0xdc/0x13c
-[    1.444274] [cfacff38] [c000f1dc] ret_from_syscall+0x0/0x38
-[    1.444437] --- interrupt: c01 at 0xb7e44f00
-[    1.444437]     LR = 0xb7e21ba0
-[    1.444644] Instruction dump:
-[    1.444736] 4be9b661 0fe00000 80010014 7c0803a6 4bfffeb8 3c60c040 7c0802a6 39400001
-[    1.444989] 38633bd8 90010014 99490003 4be9b635 <0fe00000> 80010014 7c0803a6 4bfffe8c
-[    1.445252] ---[ end trace aaa4b4788958d0a7 ]---
-[    1.445583] BUG: Unable to handle kernel instruction fetch (NULL pointer?)
-[    1.445767] Faulting instruction address: 0x00000000
-[    1.446051] Oops: Kernel access of bad area, sig: 11 [#1]
-[    1.446210] BE PAGE_SIZE=4K PREEMPT SMP NR_CPUS=4 QEMU e500
-[    1.446379] CPU: 3 PID: 90 Comm: ping Tainted: G        W         5.9.0+ #3
-[    1.446678] NIP:  00000000 LR: c020e758 CTR: 00000000
-[    1.446812] REGS: cfacfab0 TRAP: 0400   Tainted: G        W          (5.9.0+)
-[    1.446989] MSR:  00029000 <CE,EE,ME>  CR: 48022404  XER: 00000000
-[    1.447183]
-[    1.447183] GPR00: c020e7dc cfacfb68 cf8eeae0 cfacfc58 3fffefff cfacf9b0 cfacf9c0 00021000
-[    1.447183] GPR08: 0f4a1000 00000000 c08b4674 c0918704 42022404 00000000 10020464 00000003
-[    1.447183] GPR16: 7ff00000 10020000 00000080 cfb27000 cfb2704c c0930000 cfacfc54 c092d260
-[    1.447183] GPR24: 0000058c cfa82120 cfa8212c cfa8212c 00000000 cfa82000 cfacfd44 cfacfc58
-[    1.448144] NIP [00000000] 0x0
-[    1.448236] LR [c020e758] sock_wfree+0xac/0x134
-[    1.448351] Call Trace:
-[    1.448425] [cfacfb68] [c020e7dc] sock_wfree+0x130/0x134 (unreliable)
-[    1.448603] [cfacfb78] [c01f1388] wg_packet_send_staged_packets+0x234/0x6b4
-[    1.448820] [cfacfbb8] [c01eecf8] wg_xmit+0x2a0/0x46c
-[    1.448964] [cfacfbf8] [c0232134] dev_hard_start_xmit+0x190/0x1c0
-[    1.449139] [cfacfc38] [c0232f2c] __dev_queue_xmit+0x4d0/0x844
-[    1.449304] [cfacfc88] [c02a7134] ip_finish_output2+0x180/0x6b8
-[    1.449475] [cfacfcb8] [c02aa3e8] ip_output+0xf0/0x1c0
-[    1.449628] [cfacfd08] [c02ab14c] ip_send_skb+0x24/0xe8
-[    1.449815] [cfacfd18] [c02e04bc] raw_sendmsg+0x774/0xa84
-[    1.449983] [cfacfe48] [c020b9ec] __sys_sendto+0xdc/0x13c
-[    1.450150] [cfacff38] [c000f1dc] ret_from_syscall+0x0/0x38
-[    1.450320] --- interrupt: c01 at 0xb7e44f00
-[    1.450320]     LR = 0xb7e21ba0
-[    1.450794] Instruction dump:
-[    1.450963] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-[    1.451209] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
-[    1.451637] ---[ end trace aaa4b4788958d0a8 ]---
-[    1.451785]
-[    2.555288] Kernel panic - not syncing: Aiee, killing interrupt handler!
+I did a quick Google search and the top hit was a stack overflow that
+explained it:
+
+https://stackoverflow.com/questions/559581/casting-a-function-pointer-to-another-type
+
+The net-net is that the answer there says:
+
+> Hence, since a void* is not compatible with a struct my_struct*, a
+> function pointer of type void (*)(void*) is not compatible with a
+> function pointer of type void (*)(struct my_struct*), so this
+> casting of function pointers is technically undefined behavior.
+
+I suppose I could try to add devm variants of these functions
+somewhere more general if you think it's a good idea, though there it
+seems like there's not a huge need since these two greps are zero:
+
+git grep devm_add_action_or_reset.*runtime_disable
+git grep devm_add_action_or_reset.*pm_clk_destroy
+
+...actually, do we even need the runtime_disable in the error path?
+When the dev goes away does it matter if you left pm_runtime enabled
+on it?
+
+-Doug
