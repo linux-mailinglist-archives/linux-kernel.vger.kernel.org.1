@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69B628D839
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDEA28D842
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728897AbgJNCI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 22:08:29 -0400
-Received: from mga17.intel.com ([192.55.52.151]:22912 "EHLO mga17.intel.com"
+        id S1729158AbgJNCKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJNCI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 22:08:29 -0400
-IronPort-SDR: yBPi+WL7a4DNdUvyrh1MJhTW+GyOOMVGIX1S38Tc37EzWAxgs4WvuDTApBhoYjxT5xoHjKRQD/
- ifcKXwlt0QhQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145879786"
-X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
-   d="scan'208";a="145879786"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 19:08:27 -0700
-IronPort-SDR: inQ4qbS0lmxsXC1fa/JBY45Zh6JLJm29uxHgtI4QzSetpkgZ6qu/XIxzj094gWeTQWPgLeSmUk
- brKTQAX3Hb1w==
-X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
-   d="scan'208";a="530644675"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 19:08:26 -0700
-Date:   Tue, 13 Oct 2020 19:08:25 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 3/9] x86/pks: Enable Protection Keys Supervisor
- (PKS)
-Message-ID: <20201014020825.GM2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009194258.3207172-1-ira.weiny@intel.com>
- <20201009194258.3207172-4-ira.weiny@intel.com>
- <cfd8e361-9d5b-5b24-08d4-31ad3d392255@intel.com>
+        id S1728973AbgJNCJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 22:09:49 -0400
+Received: from kernel.org (unknown [104.132.1.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FC7621D81;
+        Wed, 14 Oct 2020 02:09:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602641388;
+        bh=32rr6xjv+li58m+dWdCFjqudSTOamJ/mwaSI2fYTyck=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=pfC3Gtub84F7sm3fAWoewKiAxKPaU4COpjAIaEgInnwRxH/7kaKzCMIWbvJt7+H45
+         X3XBszR8RYZfAnyWUtENLEKlCrLW9MIKgDrbVtB7lsgccGInArXWeUN1mGC8zWIHRt
+         rOGf+gH4lebg8z7clnPJK9bvF9l71uy/srnwgWEY=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cfd8e361-9d5b-5b24-08d4-31ad3d392255@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1602609110-11504-3-git-send-email-tdas@codeaurora.org>
+References: <1602609110-11504-1-git-send-email-tdas@codeaurora.org> <1602609110-11504-3-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: clock: Add YAML schemas for the QCOM Camera clock bindings.
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Tue, 13 Oct 2020 19:09:47 -0700
+Message-ID: <160264138707.310579.18410759318207954658@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 11:23:08AM -0700, Dave Hansen wrote:
-> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
-> > +/*
-> > + * PKS is independent of PKU and either or both may be supported on a CPU.
-> > + * Configure PKS if the cpu supports the feature.
-> > + */
-> 
-> Let's at least be consistent about CPU vs. cpu in a single comment. :)
+Quoting Taniya Das (2020-10-13 10:11:49)
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.ya=
+ml b/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.yaml
+> new file mode 100644
+> index 0000000..07bd38e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/qcom,sc7180-camcc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Camera Clock & Reset Controller Binding for SC7180
+> +
+> +maintainers:
+> +  - Taniya Das <tdas@codeaurora.org>
+> +
+> +description: |
+> +  Qualcomm camera clock control module which supports the clocks, resets=
+ and
+> +  power domains on SC7180.
+> +
+> +  See also:
+> +  - dt-bindings/clock/qcom,camcc-sc7180.h.
 
-Sorry, done.
+Maybe just=20
 
-> 
-> > +static void setup_pks(void)
-> > +{
-> > +	if (!IS_ENABLED(CONFIG_ARCH_HAS_SUPERVISOR_PKEYS))
-> > +		return;
-> > +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
-> > +		return;
-> 
-> If you put X86_FEATURE_PKS in disabled-features.h, you can get rid of
-> the explicit CONFIG_ check.
+     - dt-bindings/clock/qcom,camcc-sc7180.h
 
-Done.
+so that us copy/pasters don't have to delete anything.
 
-> 
-> > +	cr4_set_bits(X86_CR4_PKS);
-> > +}
-> > +
-> >  /*
-> >   * This does the hard work of actually picking apart the CPU stuff...
-> >   */
-> > @@ -1544,6 +1558,7 @@ static void identify_cpu(struct cpuinfo_x86 *c)
-> >  
-> >  	x86_init_rdrand(c);
-> >  	setup_pku(c);
-> > +	setup_pks();
-> >  
-> >  	/*
-> >  	 * Clear/Set all flags overridden by options, need do it
-> > diff --git a/mm/Kconfig b/mm/Kconfig
-> > index 6c974888f86f..1b9bc004d9bc 100644
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -822,6 +822,8 @@ config ARCH_USES_HIGH_VMA_FLAGS
-> >  	bool
-> >  config ARCH_HAS_PKEYS
-> >  	bool
-> > +config ARCH_HAS_SUPERVISOR_PKEYS
-> > +	bool
-> >  
-> >  config PERCPU_STATS
-> >  	bool "Collect percpu memory statistics"
-> > 
-> 
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sc7180-camcc
+> +
+> +  clocks:
+> +    items:
+> +      - description: Board XO source
+> +      - description: Camera_ahb clock from GCC
+> +      - description: Camera XO clock from GCC
+> +
