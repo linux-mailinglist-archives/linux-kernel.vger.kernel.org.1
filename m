@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E0B28D9E5
+	by mail.lfdr.de (Postfix) with ESMTP id 9248828D9E6
 	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730929AbgJNGVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 02:21:03 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:43001 "EHLO
+        id S2387447AbgJNGVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 02:21:06 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:42991 "EHLO
         wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730492AbgJNGTu (ORCPT
+        by vger.kernel.org with ESMTP id S1730520AbgJNGTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 02:19:50 -0400
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id A7414D2D;
-        Wed, 14 Oct 2020 02:19:48 -0400 (EDT)
+        by mailnew.west.internal (Postfix) with ESMTP id 246E5D2E;
+        Wed, 14 Oct 2020 02:19:49 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
   by compute5.internal (MEProxy); Wed, 14 Oct 2020 02:19:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=DGLr7bNbfoVCw
-        JHmpati3EYRUVdebC9nlRUoCQRz+DE=; b=Gsq9LiqGIJSnmBLWEr/CN8Ruvpchh
-        C5bpi7Ld05mew8mQqLuEK9kTw54ag1Yw5khQe299PzpWbWTTqD6HtMyZYEL4OrSO
-        dtqYk2rdjeVAXgHkN9Jmp4BPH/pWBELy+ZACCmjjEaWTNTj67vFQhhJW8LoQEBig
-        LYAG4CESwDCHVP/JHdc4RPL7CO0OW4uie+zRa1gT1WdguEcTYXdFhGBQfH7SNvC3
-        jbXzJsAvsCvPCWIltZdTeujzSzlrOMXn0fRC8N9Ompsb1L/GUac3Kz1515zYMvwP
-        M6mkXeH/sU9R3Z5skFb/iF1vdok/Hw4zGmPV7LIB3hkdkAipVQVsjsuFQ==
+        :mime-version:content-transfer-encoding; s=fm3; bh=BTR+ryKE7DtdE
+        KIrngfPXNIZoaFIzP9vUOerOx2ZUdM=; b=T79lwkAiV9zQ4HOMg6cb+b+zYAIzS
+        nYEol/onIrTkWvDwST0Yb1F8EYa+aUlKsSZZ+yEdJLWNVaykDgk9EmDmTYZpigSR
+        hS6mhfV+07QJqnao56+FhwS8bsETq708d+09Hpe7VJx8DhnqvnwwWz0uBShMStFt
+        rNEMn3FMcHJrb2p8DVeOAQwK9Vc1SrC2VW9ao5GitVkNWRUCzQg8IzoegUNZtMpZ
+        HTn+H0J+iuRU1UVK9hoXsuQyLDZNgjSqDOVBOZzuXFppFMw1Xks0OPfldI/XPlah
+        Kw8WIg25jkoaJdnWYNQJB7I4FWK8TyIx2uGdPU6M1zAiRRD6ocOn/75Rg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=DGLr7bNbfoVCwJHmpati3EYRUVdebC9nlRUoCQRz+DE=; b=iK9mCOSZ
-        RpFLNT2RmSNCRWUdjA+R398luSHZ16qqo1gBdjq4KVY7Y0amf6MnSvKnF6jjOCb3
-        rAjr/vLwZiUW0OqWHgs6prX7g+b7hcs/VxBhUdXr20Pmad2JpAIO7ihmlXw13YZe
-        Jc13aEwBK2PEDfK9KkOEgcZk+CpoA8gXrhitAvjtim21pg3Fa5lba625s9YXEshV
-        ZdzEgUy1xxpcGJ/pHasjmnmls9xWOwNnGdomoIV+GhBamshEMeJalkNB0k3LJskJ
-        f3arY/ByCXc8Pa4JYnxVMPRl4WvrFdAezP9GvDOBkIN4en3Z+S3JScoK65knhk+n
-        JRtrDK467RAxow==
-X-ME-Sender: <xms:hJiGX1HoRsY24If-ObsZjWWch7tOmHe3D2gvMljwMcfCSGhev8YbFw>
-    <xme:hJiGX6XMi9H03wn_zspkH40wXf-mi6cFl0iKZbmou6DON9UrL-L5_NG8uzCHiHDOU
-    cLjArjS8yu1qEjmYA>
+        fm1; bh=BTR+ryKE7DtdEKIrngfPXNIZoaFIzP9vUOerOx2ZUdM=; b=iqDB9nTI
+        iCWsoQaZL1C97LcVi6qYJK96qv5jYWu7C7Eh+XEop/YOoKPxY7rcEXOVVnzet8x6
+        1XEonQpdfvBF/aesk9zTlkL34zNaGjX09gtfYCrNQZWWWRAiflJNpDM+mEpCdqU/
+        jBQaik/PVCcnOz10Pvym0YW1oQ7ZxSsu8EiaQUjXKjFR33kYOmAxHg71G0Toz3Bc
+        5uyVWnRC8jxa9F7ZqihUCoEZPvUXKNtsXicKVCnzsko6x9nQmbY+TECoxgCStjJk
+        unrzt0aflg1GjLEZGR94eWBoojFSZQ8HmH3ZkKC2jtSto8EY33ZK1MimleHqufpF
+        9vqn1nt1+k8QjQ==
+X-ME-Sender: <xms:hJiGX-f6KTsyUmoniDJvo9jhUV3nszT8WprUinwC7LCHcxVjORMTyg>
+    <xme:hJiGX4N6Nc_UcazdGoUT75IF-itQumUuWynL8xmoqK-KFS4pTxze9v78BmyYi35-1
+    avnjwS87bqfPZ4BHQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedriedtgddutdekucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -49,12 +49,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedriedtgddutdekucetufdoteggod
     gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
     iivgepjeenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
     ugdrohhrgh
-X-ME-Proxy: <xmx:hJiGX3K43od1ZyLrN2n8luSa9nYPY0Gy6DtY_dxgioyU_RQQJUjnow>
-    <xmx:hJiGX7Fghh2MYvC3YkNaIVrjsE9O0yQcI1immdhLDz0BXZzyhY4X8A>
-    <xmx:hJiGX7X1hSoZdWHYwtL0eQVx88RXyQQdhP6U66YGF6Da_syk4RHp_Q>
-    <xmx:hJiGX3qhVMhkJzenEUA_V-ytXkVMpFWKIr8q0u99Slwr0o-FzsUPoJGEn0s>
+X-ME-Proxy: <xmx:hJiGX_gz-8edLpuUh9IaltdfYSd5h2ZXEFSEBBeEmE09xcerGpQjYA>
+    <xmx:hJiGX79cKRTiEcJuC3WqeIsL_c3mRHp84ZBblM5rf2oUpewBmHbVLQ>
+    <xmx:hJiGX6vbRx3bNUc6k-XByEm25Ycx_bRWk5fABLR6-UiQhOI25aCJ5A>
+    <xmx:hJiGX4AKP4HUps67_o62Ap7DRGXt3KlYvCFWRu4sLrIRWPG8lwEUHqlgacA>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 86EB53280060;
+        by mail.messagingengine.com (Postfix) with ESMTPA id 05995328005A;
         Wed, 14 Oct 2020 02:19:47 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Mark Brown <broonie@kernel.org>,
@@ -65,9 +65,9 @@ To:     Mark Brown <broonie@kernel.org>,
 Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 12/17] ASoC: sun8i-codec: Protect the clock rate while streams are open
-Date:   Wed, 14 Oct 2020 01:19:36 -0500
-Message-Id: <20201014061941.4306-13-samuel@sholland.org>
+Subject: [PATCH v2 13/17] ASoC: sun8i-codec: Require an exact BCLK divisor match
+Date:   Wed, 14 Oct 2020 01:19:37 -0500
+Message-Id: <20201014061941.4306-14-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201014061941.4306-1-samuel@sholland.org>
 References: <20201014061941.4306-1-samuel@sholland.org>
@@ -77,59 +77,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The codec's clock input is shared among all AIFs, and shared with other
-audio-related hardware in the SoC, including I2S and SPDIF controllers.
-To ensure sample rates selected by userspace or by codec2codec DAI links
-are maintained, the clock rate must be protected while it is in use.
+Now that we guarantee that SYSCLK is running at the optimal rate when
+hw_params succeeds, and that it will continue running at that rate,
+SYSCLK will always be an integer multiple of BCLK. So we can always
+pick the exact divider, not just the closest divider.
 
+Acked-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/Kconfig       |  1 +
- sound/soc/sunxi/sun8i-codec.c | 29 +++++++++++++++++++++++++++--
- 2 files changed, 28 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-index 9cd7009cb570..69b9d8515335 100644
---- a/sound/soc/sunxi/Kconfig
-+++ b/sound/soc/sunxi/Kconfig
-@@ -9,16 +9,17 @@ config SND_SUN4I_CODEC
- 	help
- 	  Select Y or M to add support for the Codec embedded in the Allwinner
- 	  A10 and affiliated SoCs.
- 
- config SND_SUN8I_CODEC
- 	tristate "Allwinner SUN8I audio codec"
- 	depends on OF
- 	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
-+	select COMMON_CLK
- 	select REGMAP_MMIO
- 	help
- 	  This option enables the digital part of the internal audio codec for
- 	  Allwinner sun8i SoC (and particularly A33).
- 
- 	  Say Y or M if you want to add sun8i digital audio codec support.
- 
- config SND_SUN8I_CODEC_ANALOG
 diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 0e8b0ac31fed..253857e66f6f 100644
+index 253857e66f6f..a530e58018b7 100644
 --- a/sound/soc/sunxi/sun8i-codec.c
 +++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -416,27 +416,32 @@ static int sun8i_codec_get_lrck_div_order(unsigned int slots,
+@@ -384,35 +384,31 @@ static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
+ 	{ .div = 32,	.val = 8 },
+ 	{ .div = 48,	.val = 9 },
+ 	{ .div = 64,	.val = 10 },
+ 	{ .div = 96,	.val = 11 },
+ 	{ .div = 128,	.val = 12 },
+ 	{ .div = 192,	.val = 13 },
+ };
+ 
+-static u8 sun8i_codec_get_bclk_div(unsigned int sysclk_rate,
+-				   unsigned int lrck_div_order,
+-				   unsigned int sample_rate)
++static int sun8i_codec_get_bclk_div(unsigned int sysclk_rate,
++				    unsigned int lrck_div_order,
++				    unsigned int sample_rate)
+ {
+ 	unsigned int div = sysclk_rate / sample_rate >> lrck_div_order;
+-	unsigned int best_val = 0, best_diff = ~0;
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sun8i_codec_bclk_div); i++) {
+ 		const struct sun8i_codec_clk_div *bdiv = &sun8i_codec_bclk_div[i];
+-		unsigned int diff = abs(bdiv->div - div);
+ 
+-		if (diff < best_diff) {
+-			best_diff = diff;
+-			best_val = bdiv->val;
+-		}
++		if (bdiv->div == div)
++			return bdiv->val;
+ 	}
+ 
+-	return best_val;
++	return -EINVAL;
+ }
+ 
+ static int sun8i_codec_get_lrck_div_order(unsigned int slots,
+ 					  unsigned int slot_width)
+ {
  	unsigned int div = slots * slot_width;
  
  	if (div < 16 || div > 256)
- 		return -EINVAL;
- 
- 	return order_base_2(div);
- }
- 
-+static unsigned int sun8i_codec_get_sysclk_rate(unsigned int sample_rate)
-+{
-+	return sample_rate % 4000 ? 22579200 : 24576000;
-+}
-+
- static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
+@@ -431,18 +427,17 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
  				 struct snd_soc_dai *dai)
  {
  	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
@@ -137,11 +142,10 @@ index 0e8b0ac31fed..253857e66f6f 100644
  	unsigned int sample_rate = params_rate(params);
  	unsigned int slots = aif->slots ?: params_channels(params);
  	unsigned int slot_width = aif->slot_width ?: params_width(params);
--	unsigned int sysclk_rate = clk_get_rate(scodec->clk_module);
--	int lrck_div_order, word_size;
-+	unsigned int sysclk_rate = sun8i_codec_get_sysclk_rate(sample_rate);
-+	int lrck_div_order, ret, word_size;
- 	u8 bclk_div;
+ 	unsigned int sysclk_rate = sun8i_codec_get_sysclk_rate(sample_rate);
+-	int lrck_div_order, ret, word_size;
+-	u8 bclk_div;
++	int bclk_div, lrck_div_order, ret, word_size;
  
  	/* word size */
  	switch (params_width(params)) {
@@ -149,62 +153,27 @@ index 0e8b0ac31fed..253857e66f6f 100644
  		word_size = 0x0;
  		break;
  	case 16:
-@@ -466,35 +471,55 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 		word_size = 0x1;
+@@ -467,16 +462,19 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 		return lrck_div_order;
+ 
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
  			   (lrck_div_order - 4) << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
  
  	/* BCLK divider (SYSCLK/BCLK ratio) */
  	bclk_div = sun8i_codec_get_bclk_div(sysclk_rate, lrck_div_order, sample_rate);
++	if (bclk_div < 0)
++		return bclk_div;
++
  	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
  			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
  			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
  
-+	/*
-+	 * SYSCLK rate
-+	 *
-+	 * Clock rate protection is reference counted; but hw_params may be
-+	 * called many times per substream, without matching calls to hw_free.
-+	 * Protect the clock rate once per AIF, on the first hw_params call
-+	 * for the first substream. clk_set_rate() will allow clock rate
-+	 * changes on subsequent calls if only one AIF has open streams.
-+	 */
-+	ret = (aif->open_streams ? clk_set_rate : clk_set_rate_exclusive)(scodec->clk_module,
-+									  sysclk_rate);
-+	if (ret == -EBUSY)
-+		dev_err(dai->dev,
-+			"%s sample rate (%u Hz) conflicts with other audio streams\n",
-+			dai->name, sample_rate);
-+	if (ret < 0)
-+		return ret;
-+
- 	if (!aif->open_streams)
- 		scodec->sysclk_refcnt++;
- 	scodec->sysclk_rate = sysclk_rate;
- 
- 	aif->sample_rate = sample_rate;
- 	aif->open_streams |= BIT(substream->stream);
- 
- 	return sun8i_codec_update_sample_rate(scodec);
- }
- 
- static int sun8i_codec_hw_free(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
- {
- 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
- 	struct sun8i_codec_aif *aif = &scodec->aifs[dai->id];
- 
-+	/* Drop references when the last substream for the AIF is freed. */
- 	if (aif->open_streams != BIT(substream->stream))
- 		goto done;
- 
-+	clk_rate_exclusive_put(scodec->clk_module);
- 	scodec->sysclk_refcnt--;
- 	aif->sample_rate = 0;
- 
- done:
- 	aif->open_streams &= ~BIT(substream->stream);
- 	return 0;
- }
- 
+ 	/*
+ 	 * SYSCLK rate
+ 	 *
+ 	 * Clock rate protection is reference counted; but hw_params may be
 -- 
 2.26.2
 
