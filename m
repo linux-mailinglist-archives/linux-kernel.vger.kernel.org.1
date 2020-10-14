@@ -2,146 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084FB28EAFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B0728EB01
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730409AbgJOCOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 22:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
+        id S1730361AbgJOCOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728982AbgJOCOi (ORCPT
+        with ESMTP id S1728982AbgJOCOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:14:38 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15341C025250
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:45:10 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x62so1069891oix.11
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:45:10 -0700 (PDT)
+        Wed, 14 Oct 2020 22:14:39 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE5FC025277
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:47:52 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 140so1007119qko.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XPEAUTaHFJBlJ3cHsQHzTIqn4FY8RMR2DPGgZPy4y8c=;
-        b=Ue0dv8jwzT024oyZojc2HQM6bIHxdp4tf22FRTm7f61/b1y6sa3xfE759o8/fRI+nQ
-         rMSZk45Sf28IJBCiJT8078zrjFrwHNCCqTQ2fd4fhb0w1HGBIsmWhlzJZyRDeQ0CEAPB
-         nSJYext+uAqbPerDnRuVJt9AS0O/qljmyEe0WwvOGBZoGij4Z6tLe2cBf6UVfwFD0WQW
-         6qR75YCzh9RamTDh6849k25Hj/JFwmJtnRtMb8WAD/808FDq1AJGT7rPYUOyM64SH6zL
-         D6fJAG/rjpG2b68Xlnh3NqQGjL+W+4cIlaN767qxXtcg1ieYfk+A411erzq47XNmkRKA
-         3XwQ==
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3wrnn6DD0M5Puv0hp8zDhFVfWjeqMqGBFBnj5V/64+8=;
+        b=qEnFg0M6WRHbr0ghrj4kW7FV63er+uXVMUMlGSqITZvQ5UbcP3ssFjukWGpoOMlRPb
+         AZCECvbM+LTJrelT+H7lo+etK1CkVQvdrDhnuTJhiwhKXIcVgCuo83fepS64ijCj5I27
+         19wRwXz/L/4fRVFncSXnZ6xadj7OGe0xA66hC1X4uDvHjyx8EJUbOx3Ug4tfs+yW+ocy
+         V3Q2Zbrf+GzTcW0ve0Mg9zKrwZEL8zTCYbpPPkAWTCTyxIoVvzs61OjPokHNdPFdtA9G
+         Q6uHJosqD3wFRY4wGouwq9SI7myfHxIzp8FzjoH8w5hrmMsbV8rTF5OEqE6C/oC1BEGT
+         Xf8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XPEAUTaHFJBlJ3cHsQHzTIqn4FY8RMR2DPGgZPy4y8c=;
-        b=smrvUMLoTCSFQm1vevCY/ZddjTv/NemWLnb7cfssGZ9vxFMoE1DXHkTSvMdInlcBhL
-         1TepDERhECl3apszHcKG/hh1nCp4naGJqqiUX8NpeUKu+kC8RQlytGy+217nDx/mFhRT
-         cJZaGpxD3F4a1bjSfLvUfyA/viOAsxhprYwqWl+2Va4d+b8FmkI39+qZAF+oq/O2/UwA
-         Kl+p1hm5vgKckPJYP4+i9CKuOLlHSyYimmLQc96h0OKF0RvSKP9SGle5Vcnvd9FEdWtF
-         LleCvQRIshk7OO2rxNT8aLekz7gO3tIZ1a7+DW9UxwUe71PXGcVjzaBUpRq1bT1847W0
-         ysGA==
-X-Gm-Message-State: AOAM531cV92vwoT5KfgoKkLDVI50gXI7/kpvgEHIKdHKe5kUrZujAurV
-        NQj2v31jmbYQ2IAuZrGltqGxlvZuWc4DN9M21SrOwA==
-X-Google-Smtp-Source: ABdhPJy5Y67usdoKq8vmm5eMXo1vsetEcSrMnYAJKT5By38JawcWo0nTE6uIqrbMJvd3qgHc4jUBYZY/lWYwMmarCJ0=
-X-Received: by 2002:aca:f202:: with SMTP id q2mr398037oih.6.1602719109161;
- Wed, 14 Oct 2020 16:45:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3wrnn6DD0M5Puv0hp8zDhFVfWjeqMqGBFBnj5V/64+8=;
+        b=UuoEywl0CB5DX4SjHwsFrV9+pK6oXsRdHUx6x6ZRbHyQMv1E1e4IalgVClUQ7AyH6u
+         3icAk2Dx+0FfaesD2romhH4KNa9uBWQn9sr3XX555bN7llgFd3kmQDTWz80LJzrBTPbe
+         kYlONUbD1kDk/OsanQ6MuSPPZRkof8wTM5PugKhwTj6qn4dtTZitelN5Qia9+4luXYyl
+         vhpwE7fv5XRvF01F+J/o2qBf7YBwP2Pyq7xGzYilbv/hHS9IKZq4Hp4qjPZ9x5q3wwHd
+         hC2b/lfxlTsUOzn7uEkKg+f1ylP6lezXxi3ZxfDZ3+0jOGXYP7SttznAo+ILGprkEC5s
+         NZgw==
+X-Gm-Message-State: AOAM533A4TPJphsNvr3/JRuhQCPDi54QXq9UIXpuNpBQEc/4LAfVIukR
+        /XvbBWYqtSe4p+b8IXRC+WSzSg==
+X-Google-Smtp-Source: ABdhPJyYMusmq4hM6y9MlxGdGlBhIL8YURIXybDIuyDfZEwkjVaG+VBd2wyeSMTiriXa4qUw5u9TPw==
+X-Received: by 2002:a05:620a:6d2:: with SMTP id 18mr1613165qky.280.1602719271253;
+        Wed, 14 Oct 2020 16:47:51 -0700 (PDT)
+Received: from localhost.localdomain ([2804:431:c7cb:5e0b:6f3d:fca0:306c:a15d])
+        by smtp.gmail.com with ESMTPSA id l25sm515286qtf.18.2020.10.14.16.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 16:47:50 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com, irogers@google.com,
+        brendanhiggins@google.com
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        peterz@infradead.org, mingo@kernel.org
+Subject: [PATCH v2] lib: kunit: add test_min_heap test conversion to KUnit
+Date:   Wed, 14 Oct 2020 20:47:46 -0300
+Message-Id: <20201014234746.235634-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
- <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
-In-Reply-To: <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 14 Oct 2020 16:44:57 -0700
-Message-ID: <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
-Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
- violation and misconfig
-To:     Mohammed Gamal <mgamal@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 9:17 AM Jim Mattson <jmattson@google.com> wrote:
->
-> On Fri, Jul 10, 2020 at 8:48 AM Mohammed Gamal <mgamal@redhat.com> wrote:
-> >
-> > Check guest physical address against it's maximum physical memory. If
-> > the guest's physical address exceeds the maximum (i.e. has reserved bits
-> > set), inject a guest page fault with PFERR_RSVD_MASK set.
-> >
-> > This has to be done both in the EPT violation and page fault paths, as
-> > there are complications in both cases with respect to the computation
-> > of the correct error code.
-> >
-> > For EPT violations, unfortunately the only possibility is to emulate,
-> > because the access type in the exit qualification might refer to an
-> > access to a paging structure, rather than to the access performed by
-> > the program.
-> >
-> > Trapping page faults instead is needed in order to correct the error code,
-> > but the access type can be obtained from the original error code and
-> > passed to gva_to_gpa.  The corrections required in the error code are
-> > subtle. For example, imagine that a PTE for a supervisor page has a reserved
-> > bit set.  On a supervisor-mode access, the EPT violation path would trigger.
-> > However, on a user-mode access, the processor will not notice the reserved
-> > bit and not include PFERR_RSVD_MASK in the error code.
-> >
-> > Co-developed-by: Mohammed Gamal <mgamal@redhat.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/x86/kvm/vmx/vmx.c | 24 +++++++++++++++++++++---
-> >  arch/x86/kvm/vmx/vmx.h |  3 ++-
-> >  2 files changed, 23 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 770b090969fb..de3f436b2d32 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -4790,9 +4790,15 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
-> >
-> >         if (is_page_fault(intr_info)) {
-> >                 cr2 = vmx_get_exit_qual(vcpu);
-> > -               /* EPT won't cause page fault directly */
-> > -               WARN_ON_ONCE(!vcpu->arch.apf.host_apf_flags && enable_ept);
-> > -               return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
-> > +               if (enable_ept && !vcpu->arch.apf.host_apf_flags) {
-> > +                       /*
-> > +                        * EPT will cause page fault only if we need to
-> > +                        * detect illegal GPAs.
-> > +                        */
-> > +                       kvm_fixup_and_inject_pf_error(vcpu, cr2, error_code);
-> > +                       return 1;
-> > +               } else
-> > +                       return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
-> >         }
-> >
-> >         ex_no = intr_info & INTR_INFO_VECTOR_MASK;
-> > @@ -5308,6 +5314,18 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
-> >                PFERR_GUEST_FINAL_MASK : PFERR_GUEST_PAGE_MASK;
-> >
-> >         vcpu->arch.exit_qualification = exit_qualification;
-> > +
-> > +       /*
-> > +        * Check that the GPA doesn't exceed physical memory limits, as that is
-> > +        * a guest page fault.  We have to emulate the instruction here, because
-> > +        * if the illegal address is that of a paging structure, then
-> > +        * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
-> > +        * would also use advanced VM-exit information for EPT violations to
-> > +        * reconstruct the page fault error code.
-> > +        */
-> > +       if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
-> > +               return kvm_emulate_instruction(vcpu, 0);
-> > +
->
-> Is kvm's in-kernel emulator up to the task? What if the instruction in
-> question is AVX-512, or one of the myriad instructions that the
-> in-kernel emulator can't handle? Ice Lake must support the advanced
-> VM-exit information for EPT violations, so that would seem like a
-> better choice.
->
-Anyone?
+This adds the conversion of the runtime tests of test_min_heap,
+from `lib/test_min_heap.c` to KUnit tests.
+
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+---
+  v2: 
+    * min_heap test now runs when enabling full test coverage (KUNIT_ALL_TESTS).
+---
+ lib/Kconfig.debug                         |  29 ++++--
+ lib/Makefile                              |   2 +-
+ lib/{test_min_heap.c => min_heap_kunit.c} | 117 ++++++++++++----------
+ 3 files changed, 83 insertions(+), 65 deletions(-)
+ rename lib/{test_min_heap.c => min_heap_kunit.c} (60%)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 4f09c6505a2e..b75f4541e7d2 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1915,16 +1915,6 @@ config TEST_LIST_SORT
+ 
+ 	  If unsure, say N.
+ 
+-config TEST_MIN_HEAP
+-	tristate "Min heap test"
+-	depends on DEBUG_KERNEL || m
+-	help
+-	  Enable this to turn on min heap function tests. This test is
+-	  executed only once during system boot (so affects only boot time),
+-	  or at module load time.
+-
+-	  If unsure, say N.
+-
+ config TEST_SORT
+ 	tristate "Array-based sort test"
+ 	depends on DEBUG_KERNEL || m
+@@ -2256,6 +2246,25 @@ config BITS_TEST
+ 
+ 	  If unsure, say N.
+ 
++config MIN_HEAP_KUNIT
++	tristate "KUnit test for Min heap" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  Enable this to turn on min heap function tests. This test is
++	  executed only once during system boot (so affects only boot time),
++	  or at module load time.
++
++	  KUnit tests run during boot and output the results to the debug log
++	  in TAP format (http://testanything.org/). Only useful for kernel devs
++	  running the KUnit test harness, and not intended for inclusion into a
++	  production build.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
+diff --git a/lib/Makefile b/lib/Makefile
+index d862d41fdc3d..c88ade843502 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -68,7 +68,6 @@ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
+ UBSAN_SANITIZE_test_ubsan.o := y
+ obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
+ obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
+-obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
+ obj-$(CONFIG_TEST_LKM) += test_module.o
+ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+ obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+@@ -343,3 +342,4 @@ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+ obj-$(CONFIG_BITS_TEST) += test_bits.o
++obj-$(CONFIG_MIN_HEAP_KUNIT) += min_heap_kunit.o
+diff --git a/lib/test_min_heap.c b/lib/min_heap_kunit.c
+similarity index 60%
+rename from lib/test_min_heap.c
+rename to lib/min_heap_kunit.c
+index d19c8080fd4d..398db1c63146 100644
+--- a/lib/test_min_heap.c
++++ b/lib/min_heap_kunit.c
+@@ -7,9 +7,8 @@
+ 
+ #include <linux/log2.h>
+ #include <linux/min_heap.h>
+-#include <linux/module.h>
+-#include <linux/printk.h>
+ #include <linux/random.h>
++#include <kunit/test.h>
+ 
+ static __init bool less_than(const void *lhs, const void *rhs)
+ {
+@@ -29,37 +28,34 @@ static __init void swap_ints(void *lhs, void *rhs)
+ 	*(int *)rhs = temp;
+ }
+ 
+-static __init int pop_verify_heap(bool min_heap,
++static __init void pop_verify_heap(struct kunit *context,
++				bool min_heap,
+ 				struct min_heap *heap,
+ 				const struct min_heap_callbacks *funcs)
+ {
+ 	int *values = heap->data;
+-	int err = 0;
+ 	int last;
+ 
+ 	last = values[0];
+ 	min_heap_pop(heap, funcs);
+ 	while (heap->nr > 0) {
+ 		if (min_heap) {
+-			if (last > values[0]) {
+-				pr_err("error: expected %d <= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++			KUNIT_EXPECT_FALSE_MSG(context,
++					       last > values[0],
++					       "expected %d <= %d\n",
++					       last, values[0]);
+ 		} else {
+-			if (last < values[0]) {
+-				pr_err("error: expected %d >= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++			KUNIT_EXPECT_FALSE_MSG(context,
++					       last < values[0],
++					       "expected %d >= %d\n",
++					       last, values[0]);
+ 		}
+ 		last = values[0];
+ 		min_heap_pop(heap, funcs);
+ 	}
+-	return err;
+ }
+ 
+-static __init int test_heapify_all(bool min_heap)
++static __init void test_heapify_all(struct kunit *context, bool min_heap)
+ {
+ 	int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
+ 			 -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
+@@ -73,12 +69,11 @@ static __init int test_heapify_all(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, err;
++	int i;
+ 
+ 	/* Test with known set of values. */
+ 	min_heapify_all(&heap, &funcs);
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
+-
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	/* Test with randomly generated values. */
+ 	heap.nr = ARRAY_SIZE(values);
+@@ -86,12 +81,10 @@ static __init int test_heapify_all(bool min_heap)
+ 		values[i] = get_random_int();
+ 
+ 	min_heapify_all(&heap, &funcs);
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ }
+ 
+-static __init int test_heap_push(bool min_heap)
++static __init void test_heap_push(struct kunit *context, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -106,25 +99,22 @@ static __init int test_heap_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Test with known set of values copied from data. */
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_push(&heap, &data[i], &funcs);
+-
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	/* Test with randomly generated values. */
+ 	while (heap.nr < heap.size) {
+ 		temp = get_random_int();
+ 		min_heap_push(&heap, &temp, &funcs);
+ 	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ }
+ 
+-static __init int test_heap_pop_push(bool min_heap)
++static __init void test_heap_pop_push(struct kunit *context, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -139,7 +129,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Fill values with data to pop and replace. */
+ 	temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
+@@ -149,8 +139,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 	/* Test with known set of values copied from data. */
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_pop_push(&heap, &data[i], &funcs);
+-
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	heap.nr = 0;
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+@@ -161,34 +150,54 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		temp = get_random_int();
+ 		min_heap_pop_push(&heap, &temp, &funcs);
+ 	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
++}
+ 
+-	return err;
++static void __init test_heapify_all_true(struct kunit *context)
++{
++	test_heapify_all(context, true);
+ }
+ 
+-static int __init test_min_heap_init(void)
++static void __init test_heapify_all_false(struct kunit *context)
+ {
+-	int err = 0;
+-
+-	err += test_heapify_all(true);
+-	err += test_heapify_all(false);
+-	err += test_heap_push(true);
+-	err += test_heap_push(false);
+-	err += test_heap_pop_push(true);
+-	err += test_heap_pop_push(false);
+-	if (err) {
+-		pr_err("test failed with %d errors\n", err);
+-		return -EINVAL;
+-	}
+-	pr_info("test passed\n");
+-	return 0;
++	test_heapify_all(context, true);
++}
++
++static void __init test_heap_push_true(struct kunit *context)
++{
++	test_heap_push(context, true);
++}
++
++static void __init test_heap_push_false(struct kunit *context)
++{
++	test_heap_push(context, false);
+ }
+-module_init(test_min_heap_init);
+ 
+-static void __exit test_min_heap_exit(void)
++static void __init test_heap_pop_push_true(struct kunit *context)
+ {
+-	/* do nothing */
++	test_heap_pop_push(context, true);
+ }
+-module_exit(test_min_heap_exit);
++
++static void __init test_heap_pop_push_false(struct kunit *context)
++{
++	test_heap_pop_push(context, false);
++}
++
++static struct kunit_case __refdata min_heap_test_cases[] = {
++	KUNIT_CASE(test_heapify_all_true),
++	KUNIT_CASE(test_heapify_all_false),
++	KUNIT_CASE(test_heap_push_true),
++	KUNIT_CASE(test_heap_push_false),
++	KUNIT_CASE(test_heap_pop_push_true),
++	KUNIT_CASE(test_heap_pop_push_false),
++	{}
++};
++
++static struct kunit_suite min_heap_test_suite = {
++	.name = "min-heap",
++	.test_cases = min_heap_test_cases,
++};
++
++kunit_test_suites(&min_heap_test_suite);
+ 
+ MODULE_LICENSE("GPL");
+
+base-commit: d2585f5164c298aaaed14c2c8d313cbe7bd5b253
+-- 
+2.26.2
+
