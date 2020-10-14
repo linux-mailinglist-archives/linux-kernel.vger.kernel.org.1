@@ -2,139 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42DF28DF37
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D2C28DF58
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388361AbgJNKnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:43:50 -0400
-Received: from mga12.intel.com ([192.55.52.136]:12859 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730147AbgJNKnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:43:43 -0400
-IronPort-SDR: enc/vszMvt6+FN2C7aLOl7XMIubdZpwMuKrDZVq/0nZyXkG9OhrJME51fZpnvP2/xJTylYRR87
- g4IrRXCSWLiw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145391576"
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="145391576"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 03:43:42 -0700
-IronPort-SDR: 8wIME1GlY3GPDFzvauGIUIdcoh5YgtGDiqR8RW3Luq2f7r7X2NhaKLNT2UGDS/gTXPLrfwZvpo
- jYy6j5RFRRHQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="357340046"
-Received: from mylly.fi.intel.com (HELO [10.237.72.56]) ([10.237.72.56])
-  by orsmga007.jf.intel.com with ESMTP; 14 Oct 2020 03:43:40 -0700
-Subject: Re: [PATCH] i2c: designware: fix slave omitted IC_INTR_STOP_DET
-To:     Michael Wu <michael.wu@vatics.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Morgan Chang <morgan.chang@vatics.com>,
-        Dean Hsiao <dean.hsiao@vatics.com>,
-        Paul Chen <paul.chen@vatics.com>
-References: <20201014052532.3298-1-michael.wu@vatics.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <f4ae83cc-b366-71a8-d174-0bb668dc1992@linux.intel.com>
-Date:   Wed, 14 Oct 2020 13:43:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728178AbgJNKtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgJNKtb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 06:49:31 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E831DC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:49:30 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id g7so4299461iov.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=HgHUYfl/RqdxqpyW+AYcy5yFjZFOcQH7eO1Foilj7+M=;
+        b=haUlUbdFu1nX6ivBcGnXd/sIrfe2L1qsMdVWShpufVqQ7p0owplfL1Z4v0KQPG/Xjj
+         diCS/zQrPg/IYK8pftdkIKiG5kxSati1CEPX0Kw62Dsjh5pQKfz2xZjzGNteU6vLXX0T
+         IWL1Ro/r26qkZxVYM0fCAy2LIzBgPQqNJ1siPtdSUkiwLUVcRVfuRn5tQDa4mr+FHYaT
+         GBWXd/qOx2OkpyjdaqnRTTmS6DnQlcmzIen8DllsRNOO6d/okNB9NncyQP9PQ/N1H7cy
+         7ZqgoXmhVmF1MWKZvpbMX+S/imATcAifojuGbYmTGjsEGn8Vmv+6JVe5wCD+KKmBdurU
+         heqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=HgHUYfl/RqdxqpyW+AYcy5yFjZFOcQH7eO1Foilj7+M=;
+        b=XywuEmzMI96x5+K5PPhD+rM/pnXOjOIQ1c/4T259Xc8x5zseV8xw69GEnRKORVfrn9
+         sgQJsnn090Li/ZMU+58lEcs/vrUsUtXEj8LF28b5Qh1lt0LexEYb5V1KhUsKi5dexJsu
+         8NKhv7b65z1TRpK3SUnLnv7eUNDc40b6k7X4b4Bh/Lh4QKcFhbLYrgfXzt0UShHC0d0s
+         GD9jrD7XPSfcXpipuBhCO161VZQ24jSlUw2ZphYRlpTX3UrDKQJYePtms+epARQrEYpC
+         d74BYEE9Huq/jVPqptcqbJyH6N9MYgTHcIfqN3FOCszeg2nB5d4lupv5Vc77KQMqeOAK
+         dctQ==
+X-Gm-Message-State: AOAM533huaq1XkGc2vb04fOf5i288bHnjfFKDUCOxWVj4jHjZnHfqw+2
+        pGaSw4zC89g1zZNbeNqbiGFE48IVE06hJuFEh4mac5tbikFYvF0R
+X-Google-Smtp-Source: ABdhPJxrp5zVb72tEMqowWicQw1OH+2Aa2RXOawH6E7+WcmWA+b7TR1yip3sSjUy6V20MblnkIzEHslZQ53oqAm9cys=
+X-Received: by 2002:a02:c785:: with SMTP id n5mr2574048jao.128.1602672570049;
+ Wed, 14 Oct 2020 03:49:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201014052532.3298-1-michael.wu@vatics.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 14 Oct 2020 16:19:18 +0530
+Message-ID: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com>
+Subject: BUG: KASAN: global-out-of-bounds in vprintk_store on x86_64
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+While testing LTP controllers testing on x86_64 KASAN enabled linux
+next 20201013 tag
+kernel this kernel BUG noticed. The oom-killer log also noticed while
+running tests.
 
-On 10/14/20 8:25 AM, Michael Wu wrote:
-> When an I2C slave works, sometimes both IC_INTR_RX_FULL and
-> IC_INTR_STOP_DET are rising during an IRQ handle, especially when system
-> is busy or too late to handle interrupts.
-> 
-> If IC_INTR_RX_FULL is rising and the system doesn't handle immediately,
-> IC_INTR_STOP_DET may be rising and the system has to handle these two
-> events. For this there may be two problems:
-> e
-> 1. IC_INTR_STOP_DET is rising after i2c_dw_read_clear_intrbits_slave()
->     done: It seems invalidated because WRITE_REQUESTED is done after the
->     1st WRITE_RECEIVED.
-> 
-> $ i2cset -f -y 2 0x42 0x00 0x41; dmesg -c
-> [0][clear_intrbits]0x1 STATUS SLAVE_ACTIVITY=0x1 : RAW_INTR_STAT=0x514 : INTR_STAT=0x4
-> [1][irq_handler   ]0x1 STATUS SLAVE_ACTIVITY=0x1 : RAW_INTR_STAT=0x514 : INTR_STAT=0x4
-> WRITE_RECEIVED
-> [0][clear_intrbits]0x1 STATUS SLAVE_ACTIVITY=0x1 : RAW_INTR_STAT=0x514 : INTR_STAT=0x4
-> [1][irq_handler   ]0x1 STATUS SLAVE_ACTIVITY=0x0 : RAW_INTR_STAT=0x714 : INTR_STAT=0x204
-> WRITE_REQUESTED
-> WRITE_RECEIVED
-> [0][clear_intrbits]0x1 STATUS SLAVE_ACTIVITY=0x0 : RAW_INTR_STAT=0x710 : INTR_STAT=0x200
-> [1][irq_handler   ]0x1 STATUS SLAVE_ACTIVITY=0x0 : RAW_INTR_STAT=0x510 : INTR_STAT=0x0
-> STOP
-> [2][clear_intrbits]0x1 STATUS SLAVE_ACTIVITY=0x0 : RAW_INTR_STAT=0x510 : INTR_STAT=0x0
-> 
->    t1: ISR with the 1st IC_INTR_RX_FULL.
->    t2: Clear listed IC_INTR bits by i2c_dw_read_clear_intrbits_slave().
->    t3: Enter i2c_dw_irq_handler_slave() and then do
->        i2c_slave_event(WRITE_RECEIVED) because
->        if (stat & DW_IC_INTR_RX_FULL).
->    t4: ISR with the 2nd IC_INTR_RX_FULL.
->    t5: Clear listed IC_INTR bits by i2c_dw_read_clear_intrbits_slave(),
->        while IC_INTR_STOP_DET has not risen yet.
->    t6: Enter i2c_dw_irq_handler_slave() and then IC_INTR_STOP_DET is
->        rising. i2c_slave_event(WRITE_REQUESTED) will be done first because
->        if ((stat & DW_IC_INTR_RX_FULL) && (stat & DW_IC_INTR_STOP_DET)) and
->        then doing i2c_slave_event(WRITE_RECEIVED).
->    t7: do i2c_slave_event(STOP) due to IC_INTR_STOP_DET not be cleared yet.
-> 
-> 2. Both IC_INTR_STOP_DET and IC_INTR_RX_FULL are rising before
->     i2c_dw_read_clear_intrbits_slave(): STOP cannot wait because
->     IC_INTR_STOP_DET is cleared by i2c_dw_read_clear_intrbits_slave().
-> 
-> $ i2cset -f -y 2 0x42 0x00 0x41; dmesg -c
-> [0][clear_intrbits]0x1 STATUS SLAVE_ACTIVITY=0x1 : RAW_INTR_STAT=0x514 : INTR_STAT=0x4
-> [1][irq_handler   ]0x1 STATUS SLAVE_ACTIVITY=0x1 : RAW_INTR_STAT=0x514 : INTR_STAT=0x4
-> WRITE_RECEIVED
-> [0][clear_intrbits]0x1 STATUS SLAVE_ACTIVITY=0x0 : RAW_INTR_STAT=0x714 : INTR_STAT=0x204
-> [1][irq_handler   ]0x1 STATUS SLAVE_ACTIVITY=0x0 : RAW_INTR_STAT=0x514 : INTR_STAT=0x4
-> WRITE_RECEIVED
-> 
->    t1: ISR with the 1st IC_INTR_RX_FULL.
->    t2: Clear listed IC_INTR bits by i2c_dw_read_clear_intrbits_slave().
->    t3: Enter i2c_dw_irq_handler_slave() and then do
->        i2c_slave_event(WRITE_RECEIVED) because
->        if (stat & DW_IC_INTR_RX_FULL).
->    t4: ISR with both IC_INTR_STOP_DET and the 2nd IC_INTR_RX_FULL.
->    t5: Clear listed IC_INTR bits by i2c_dw_read_clear_intrbits_slave(). The
->        current IC_INTR_STOP_DET is cleared by this
->        i2c_dw_read_clear_intrbits_slave().
->    t6: Enter i2c_dw_irq_handler_slave() and then do
->        i2c_slave_event(WRITE_RECEIVED) because
->        if (stat & DW_IC_INTR_RX_FULL).
->    t7: i2c_slave_event(STOP) never be done because IC_INTR_STOP_DET was
->        cleared in t5.
-> 
-> In order to resolve these problems, i2c_dw_read_clear_intrbits_slave()
-> should be called only one time in ISR and take the returned stat to handle
-> those occurred events.
-> 
-> Signed-off-by: Michael Wu <michael.wu@vatics.com>
-> ---
->   drivers/i2c/busses/i2c-designware-slave.c | 79 ++++++++++++-----------
->   1 file changed, 40 insertions(+), 39 deletions(-)
-> 
-Thanks for the patch. I was thinking this too after your report but 
-haven't found actually time to look at implementing it.
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git commit: f2fb1afc57304f9dd68c20a08270e287470af2eb
+  git describe: next-20201013
+  make_kernelversion: 5.9.0
+  kernel-config:
+https://builds.tuxbuild.com/TXP6cqokP8BCYJrv7zf6kw/kernel.config
 
-But what I was thinking it is probably good to have two patches. First 
-patch that changes only i2c_dw_read_clear_intrbits_slave() semantics so 
-that it's called only once like here and second patch that does other 
-logic changes. Makes easier to catch possible regressions I think.
 
-Jarkko
+steps to reproduce:
+-------------------------
+# cd /opt/ltp
+# ./runltp  -f controllers
 
+Crash log:
+--------------
+[  221.921944] oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=c,mems_allowed=0,oom_memcg=/0,task_memcg=in
+[  221.922108] ==================================================================
+[  221.922111] BUG: KASAN: global-out-of-bounds in vprintk_store+0x362/0x3d0
+[  221.922112] Write of size 2 at addr ffffffffba51dbcd by task
+memcg_test_1/11282
+[  221.922113]
+[  221.922114] CPU: 1 PID: 11282 Comm: memcg_test_1 Not tainted
+5.9.0-next-20201013 #1
+[  221.922116] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.0b 07/27/2017
+[  221.922116] Call Trace:
+[  221.922117]  dump_stack+0xa4/0xd9
+[  221.922118]  print_address_description.constprop.0+0x21/0x210
+[  221.922119]  ? _raw_write_lock_bh+0xe0/0xe0
+[  221.922120]  ? vprintk_store+0x362/0x3d0
+[  221.922121]  kasan_report.cold+0x37/0x7c
+[  221.922122]  ? vprintk_store+0x362/0x3d0
+[  221.922123]  check_memory_region+0x18c/0x1f0
+[  221.922124]  memcpy+0x3c/0x60
+[  221.922125]  vprintk_store+0x362/0x3d0
+[  221.922125]  ? __ia32_sys_syslog+0x50/0x50
+[  221.922126]  ? _raw_spin_lock_irqsave+0x9b/0x100
+[  221.922127]  ? _raw_spin_lock_irq+0xf0/0xf0
+[  221.922128]  ? __kasan_check_write+0x14/0x20
+[  221.922129]  vprintk_emit+0x8d/0x1f0
+[  221.922130]  vprintk_default+0x1d/0x20
+[  221.922131]  vprintk_func+0x5a/0x100
+[  221.922132]  printk+0xb2/0xe3
+[  221.922133]  ? swsusp_write.cold+0x189/0x189
+[  221.922134]  ? kernfs_vfs_xattr_set+0x60/0x60
+[  221.922134]  ? _raw_write_lock_bh+0xe0/0xe0
+[  221.922135]  ? trace_hardirqs_on+0x38/0x100
+[  221.922136]  pr_cont_kernfs_path.cold+0x49/0x4b
+[  221.922137]  mem_cgroup_print_oom_context.cold+0x74/0xc3
+[  221.922138]  dump_header+0x340/0x3bf
+[  221.922139]  oom_kill_process.cold+0xb/0x10
+[  221.922140]  out_of_memory+0x1e9/0x860
+[  221.922141]  ? oom_killer_disable+0x210/0x210
+[  221.922142]  mem_cgroup_out_of_memory+0x198/0x1c0
+[  221.922143]  ? mem_cgroup_count_precharge_pte_range+0x250/0x250
+[  221.922144]  try_charge+0xa9b/0xc50
+[  221.922145]  ? arch_stack_walk+0x9e/0xf0
+[  221.922146]  ? memory_high_write+0x230/0x230
+[  221.922146]  ? avc_has_extended_perms+0x830/0x830
+[  221.922147]  ? stack_trace_save+0x94/0xc0
+[  221.922148]  ? stack_trace_consume_entry+0x90/0x90
+[  221.922149]  __memcg_kmem_charge+0x73/0x120
+[  221.922150]  ? cred_has_capability+0x10f/0x200
+[  221.922151]  ? mem_cgroup_can_attach+0x260/0x260
+[  221.922152]  ? selinux_sb_eat_lsm_opts+0x2f0/0x2f0
+[  221.922153]  ? obj_cgroup_charge+0x16b/0x220
+[  221.922154]  ? kmem_cache_alloc+0x78/0x4c0
+[  221.922155]  obj_cgroup_charge+0x122/0x220
+[  221.922156]  ? vm_area_alloc+0x20/0x90
+[  221.922156]  kmem_cache_alloc+0x78/0x4c0
+[  221.922157]  vm_area_alloc+0x20/0x90
+[  221.922158]  mmap_region+0x3ed/0x9a0
+[  221.922159]  ? cap_mmap_addr+0x1d/0x80
+[  221.922160]  do_mmap+0x3ee/0x720
+[  221.922161]  vm_mmap_pgoff+0x16a/0x1c0
+[  221.922162]  ? randomize_stack_top+0x90/0x90
+[  221.922163]  ? copy_page_range+0x1980/0x1980
+[  221.922163]  ksys_mmap_pgoff+0xab/0x350
+[  221.922164]  ? find_mergeable_anon_vma+0x110/0x110
+[  221.922165]  ? __audit_syscall_entry+0x1a6/0x1e0
+[  221.922166]  __x64_sys_mmap+0x8d/0xb0
+[  221.922167]  do_syscall_64+0x38/0x50
+[  221.922168]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  221.922169] RIP: 0033:0x7fe8f5e75103
+[  221.922172] Code: 54 41 89 d4 55 48 89 fd 53 4c 89 cb 48 85 ff 74
+56 49 89 d9 45 89 f8 45 89 f2 44 89 e2 4c 89 ee 48 89 ef b8 09 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 7d 5b 5d 41 5c 41 5d 41 5e 41 5f c3 66
+2e 0f
+[  221.922173] RSP: 002b:00007ffd38c90198 EFLAGS: 00000246 ORIG_RAX:
+0000000000000009
+[  221.922175] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe8f5e75103
+[  221.922176] RDX: 0000000000000003 RSI: 0000000000001000 RDI: 0000000000000000
+[  221.922178] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[  221.922179] R10: 0000000000002022 R11: 0000000000000246 R12: 0000000000000003
+[  221.922180] R13: 0000000000001000 R14: 0000000000002022 R15: 0000000000000000
+[  221.922181]
+[  213O[  221.922182] The buggy address belongs to the variable:
+[  221.922183]  clear_seq+0x2d/0x40
+[  221.922183]
+[  221.922184] Memory state around the buggy address:
+[  221.922185]  ffffffffba51da80: 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00
+[  221.922187]  ffffffffba51db00: 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00
+[  221.922188] >ffffffffba51db80: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
+00 f9 f9 f9
+[  221.922189]                                               ^
+[  221.922190]  ffffffffba51dc00: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
+00 f9 f9 f9
+[  221.922191]  ffffffffba51dc80: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9
+00 f9 f9 f9
+[  221.922193] ==================================================================
+[  221.922194] Disabling lock debugging due to kernel taint
+[  221.922196] ,task=memcg_test_1,pid=11280,uid=0
+[  221.922205] Memory cgroup out of memory: Killed process 11280
+(memcg_test_1) total-vm:4124kB, anon-rss:72kB, file-rss:0kB,
+shmem-rss:0kB, UID:0 pgtables:48kB oom_score_adj:0
+[  221.922509] memcg_test_1 invoked oom-killer:
+gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+[  222.885676] CPU: 2 PID: 11283 Comm: memcg_test_1 Tainted: G    B
+         5.9.0-next-20201013 #1
+[  222.885678] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.0b 07/27/2017
+[  222.885679] Call Trace:
+[  222.885683]  dump_stack+0xa4/0xd9
+[  222.885686]  dump_header+0x8f/0x3bf
+[  222.885689]  oom_kill_process.cold+0xb/0x10
+[  222.885692]  out_of_memory+0x1e9/0x860
+[  222.885697]  ? oom_killer_disable+0x210/0x210
+[  222.923728]  mem_cgroup_out_of_memory+0x198/0x1c0
+[  222.923731]  ? mem_cgroup_count_precharge_pte_range+0x250/0x250
+
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+full test details and log link,
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201013/testrun/3302398/suite/linux-log-parser/tests/
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
