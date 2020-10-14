@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210D028E0F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F5528E0E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730928AbgJNNAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727187AbgJNNAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:00:12 -0400
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1D3E2173E
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 13:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602680411;
-        bh=EjQyMXBgmkGopUQIOpSQ0qJ6aFXvAlg6I7g92NkSgMQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fLBWb4iDrpBUKe6rxTTtf70Eda3+Q02E2x6UnykIAPRRGz17bipaL0LMokMsx7Hsn
-         XSss2EcKy7Wg9vQcmOrQPyfZJj6y+jF9GSwl8qWWWzNNfZBONfVakXBt1e7ETe7WZK
-         klZDLKm6mkfNyobaMG16UmAXDuZBsz5C46GdbmMs=
-Received: by mail-ed1-f50.google.com with SMTP id p13so3014712edi.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:00:10 -0700 (PDT)
-X-Gm-Message-State: AOAM532sbmVQyygcsbsE+MIKaLiHoJW7CK3aZR6cCmzCw0lN2vjFfVwL
-        8S9mU0SZ+3wJLiZsBr85oWRIE+W2YnDi33ETjQ==
-X-Google-Smtp-Source: ABdhPJx3leXWo1y/6rJJ+KAWg7Fbkc30MfGqk8ihqIGPrl/962tukEUoCc8WEJHlE62caGzULO47VlzVmHwMP2PHfsk=
-X-Received: by 2002:aa7:c3ca:: with SMTP id l10mr5129675edr.72.1602680409031;
- Wed, 14 Oct 2020 06:00:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201013181924.4143303-1-fparent@baylibre.com> <20201013181924.4143303-2-fparent@baylibre.com>
-In-Reply-To: <20201013181924.4143303-2-fparent@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 14 Oct 2020 20:59:55 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__BrDVBTib1J2GHXw-ppin+_Ody6Kv93ads82ycBG725w@mail.gmail.com>
-Message-ID: <CAAOTY__BrDVBTib1J2GHXw-ppin+_Ody6Kv93ads82ycBG725w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] drm/mediatek: mtk_hdmi: add MT8167 support for HDMI
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
+        id S2388201AbgJNM7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:59:38 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46556 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727187AbgJNM7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 08:59:38 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id CC77C1F41295
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Fruehberger Peter <Peter.Fruehberger@de.bosch.com>,
+        kuhanh.murugasen.krishnan@intel.com,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/18] regmap: mmio: add config option to allow relaxed
+ MMIO accesses
+In-Reply-To: <20201014121249.GA4580@sirena.org.uk>
+References: <20201012205957.889185-1-adrian.ratiu@collabora.com>
+ <20201012205957.889185-8-adrian.ratiu@collabora.com>
+ <20201013102656.GA5425@sirena.org.uk> <87o8l581ql.fsf@collabora.com>
+ <20201014121249.GA4580@sirena.org.uk>
+Date:   Wed, 14 Oct 2020 16:00:38 +0300
+Message-ID: <87lfg97yix.fsf@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Fabien:
+On Wed, 14 Oct 2020, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Oct 14, 2020 at 02:51:14PM +0300, Adrian Ratiu wrote: 
+>> On Tue, 13 Oct 2020, Mark Brown <broonie@kernel.org> wrote: 
+>> > On Mon, Oct 12, 2020 at 11:59:46PM +0300, Adrian Ratiu wrote: 
+> 
+>> > > -	writeb(val, ctx->regs + reg); +	if 
+>> > > (ctx->relaxed_mmio) + writeb_relaxed(val, ctx->regs + reg); 
+>> > > +	else + writeb(val, ctx->regs + reg); 
+> 
+>> > There is no point in doing a conditional operation on every 
+>> > I/O, it'd be better to register a different set of ops when 
+>> > doing relaxed I/O. 
+> 
+>> Indeed I have considered adding new functions but went with 
+>> this solution because it's easier for the users to only have to 
+>> define a "relaxed" config then test the regmap ctx as above. 
+> 
+> It seems like you've taken this in a direction other than what 
+> I was thinking of here - defining separate ops doesn't mean we 
+> have to do anything which has any impact on the interface seen 
+> by users.  The regmap config is supplied at registration time, 
+> it's just as available then as it is when doing I/O.
 
-Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8814=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=882:19=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Add support for HDMI on MT8167. HDMI on MT8167 is similar to
-> MT8173/MT2701 execpt for the two registers: SYS_CFG1C and SYS_CFG20
+Right. I got confused by the meaning of ops :) Sorry about that.
+ 
+> 
+>> Thinking a bit more about it, yes, it makes more sense to have 
+>> dedicated ops: this way users don't have to be explicit about 
+>> adding membarriers and can combine relaxed and non-relaxed more 
+>> easily, so it's also a better API trade-off in addition to 
+>> avoiding the conditional. Thanks! 
+> 
+> I'm not sure what you're proposing here - it does seem useful to 
+> be able to combine relaxed and non-relaxed I/O but that seems 
+> like it'd break down the abstraction for regmap since tht's not 
+> really a concept other buses are going to have?  Unless we 
+> provide an operation to switch by setting flags or somethin 
+> possibly and integrate it with the cache perhaps.  Could you be 
+> a bit more specific about what you were thinking of here please?
 
-I think you should drop this series. According to Mediatek HDMI
-binding document [1], the second parameter of mediatek,syscon-hdmi is
-the register offset. I think you could set register offset to 0x800
-for mt8167.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.txt?h=3Dv=
-5.9
-
-Regards,
-Chun-Kuang.
+I was thinking about exposing a relaxed API like 
+regmap_write_relaxed but now that I know what you meant by ops and 
+also that it doesn't make sense for other busses / violates the 
+abstraction, I realize that is a bad idea and I will continue 
+improving this to avoid the conditional and send a separete 
+patch. Thanks again!
 
 >
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
+>> Question: Do you want me to split this patch from the series and send it
+>> separately just for the regmap subsystem to be easier to review / apply?
 >
-> Changelog:
-> v2: fix name of pdata structure
->
->  drivers/gpu/drm/mediatek/mtk_hdmi.c      | 7 +++++++
->  drivers/gpu/drm/mediatek/mtk_hdmi_regs.h | 2 ++
->  2 files changed, 9 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediat=
-ek/mtk_hdmi.c
-> index 57370c036497..484ea9cd654a 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-> @@ -1835,9 +1835,16 @@ static struct mtk_hdmi_data mt8173_hdmi_driver_dat=
-a =3D {
->         .sys_cfg20 =3D HDMI_SYS_CFG20,
->  };
->
-> +static struct mtk_hdmi_data mt8167_hdmi_driver_data =3D {
-> +       .sys_cfg1c =3D MT8167_HDMI_SYS_CFG1C,
-> +       .sys_cfg20 =3D MT8167_HDMI_SYS_CFG20,
-> +};
-> +
->  static const struct of_device_id mtk_drm_hdmi_of_ids[] =3D {
->         { .compatible =3D "mediatek,mt8173-hdmi",
->           .data =3D &mt8173_hdmi_driver_data },
-> +       { .compatible =3D "mediatek,mt8167-hdmi",
-> +         .data =3D &mt8167_hdmi_driver_data },
->         {}
->  };
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h b/drivers/gpu/drm/m=
-ediatek/mtk_hdmi_regs.h
-> index 2050ba45b23a..a0f9c367d7aa 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
-> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
-> @@ -195,6 +195,7 @@
->  #define GEN_RGB                                (0 << 7)
->
->  #define HDMI_SYS_CFG1C         0x000
-> +#define MT8167_HDMI_SYS_CFG1C  0x800
->  #define HDMI_ON                                BIT(0)
->  #define HDMI_RST                       BIT(1)
->  #define ANLG_ON                                BIT(2)
-> @@ -211,6 +212,7 @@
->  #define HTPLG_PIN_SEL_OFF              BIT(30)
->  #define AES_EFUSE_ENABLE               BIT(31)
->  #define HDMI_SYS_CFG20         0x004
-> +#define MT8167_HDMI_SYS_CFG20  0x804
->  #define DEEP_COLOR_MODE_MASK           (3 << 1)
->  #define COLOR_8BIT_MODE                        (0 << 1)
->  #define COLOR_10BIT_MODE               (1 << 1)
-> --
-> 2.28.0
->
+> Sure.
