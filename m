@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B168428E4C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBDA28E4CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731279AbgJNQtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727440AbgJNQtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:49:08 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13DCC214D8;
-        Wed, 14 Oct 2020 16:49:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602694147;
-        bh=A1Yn3Qg5twHpUa/tSTQXbs9X+Wj34iy7VYyYuzWtF+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BOfnVLnTlPv33ozlwOpjP7OtxYZi1UQo6HVB9kYfdd4GkPv4K6z4sOypEn6mXAUiU
-         aDNHVOSeTHhrjCrE2CRHwURhnILwTFJn2kFileyndw/16Ot+ve1cYv8K5aRMYVvx0h
-         fLl/23cSc9DFSUEyaTqWMhmdDHkAeQPyMytTjdjw=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 16F2C4047F; Wed, 14 Oct 2020 13:49:05 -0300 (-03)
-Date:   Wed, 14 Oct 2020 13:49:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     John Garry <john.garry@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        kjain@linux.ibm.com, irogers@google.com, yao.jin@linux.intel.com,
-        yeyunfeng@huawei.com, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, =linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
- arch events
-Message-ID: <20201014164905.GN3100363@kernel.org>
-References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
- <20201012105430.GH1099489@krava>
- <5b0aefe2-e0d5-b5ff-654c-4e93c427050f@huawei.com>
- <20201012112419.GJ1099489@krava>
+        id S1731974AbgJNQuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727440AbgJNQuJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:50:09 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50142C061755;
+        Wed, 14 Oct 2020 09:50:08 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dt13so5758330ejb.12;
+        Wed, 14 Oct 2020 09:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+kKooy8y3/ieceX7ZqDJ+1+nZaa9FZpK4qlfOAJ4xg4=;
+        b=q+bPhxgYA+ZTPkLdf43AbfDU/NVUXp5l+vHvOvwwCnu8EDI0ZTBBe5x7CS7iqFgW6U
+         RPKNLv5TazIRXEB8zpXJfYYNIb0vbS++16n0Vl70eRtBPcT0r/UwvHw/ZjW87DDaUfSx
+         +Xd0/NTf1ApzUVFxGl+8MloHTritdnRiWIjqML6JVm6nZY9VgaoijQM+t1N7K/GhHURP
+         NkTvh6uJwsD2wsYWhoNFsSwxTukwKXmEPyAzgpia3QQ/t+EzYmGkVMjooaxT9iBZyUhX
+         VeofVZViwdeEOym4e9lpV9fWnoiFgWXqxdPZT/fx4VJS8nzxptdXq5xzDzIorjQDqzDq
+         iifQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=+kKooy8y3/ieceX7ZqDJ+1+nZaa9FZpK4qlfOAJ4xg4=;
+        b=N6s8FxpV/uBCy0lEPmHWjyvVxw+CgLcqKjBU/ZOG3pFCtW/kAfLHT/t4xJe4eSFxBP
+         G9YJYuhECXMoivy1Sn3e2bxc/0JLeqGjx1eRXRSz6XDwBS4XY1KGcPvixDZDXf8dytEh
+         Hi1kaz3hGumG1SqmK3oi76YZmIPFlEiqKhMFkLyX14CEiYbhxqyBVjcdeKYMFtIRQMwq
+         TiNNc9Lyp1Au6ssmJRZQZiA9BDQJKjhQTtStwjxgxx654GJQQSSdyG3gCi7BsumkQ8Bs
+         ogyPdFsdPnqur9BC7Z1zpwTB3RpqcHaWDmXr951Z0ZQAeIDC/AGX+9AP7+jsgayja1IB
+         YM/w==
+X-Gm-Message-State: AOAM5304db6T0ABBuYRRGW3+wE0HtSo7ieCBc3Fz7lzPIzF1dExqb7PR
+        5+izUCrdy/OroHruAW9dA/w=
+X-Google-Smtp-Source: ABdhPJxnZz/JvSQgt+bP4GraqaDvLe+xrlEutFj8lORQJcvNdI3kXKHdjhRXRnIr61+pk7L2rCm3hg==
+X-Received: by 2002:a17:907:43ed:: with SMTP id ol21mr6121680ejb.279.1602694207048;
+        Wed, 14 Oct 2020 09:50:07 -0700 (PDT)
+Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
+        by smtp.gmail.com with ESMTPSA id c19sm44446edt.48.2020.10.14.09.50.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 09:50:06 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 14 Oct 2020 18:50:04 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v6 02/25] objtool: Add a pass for generating __mcount_loc
+Message-ID: <20201014165004.GA3593121@gmail.com>
+References: <20201013003203.4168817-1-samitolvanen@google.com>
+ <20201013003203.4168817-3-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012112419.GJ1099489@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20201013003203.4168817-3-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Oct 12, 2020 at 01:24:19PM +0200, Jiri Olsa escreveu:
-> On Mon, Oct 12, 2020 at 12:15:04PM +0100, John Garry wrote:
-> > On 12/10/2020 11:54, Jiri Olsa wrote:
-> > > > ff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> > > > index 99df41a9543d..e47644cab3fa 100644
-> > > > --- a/tools/perf/pmu-events/jevents.c
-> > > > +++ b/tools/perf/pmu-events/jevents.c
-> > > > @@ -505,20 +505,15 @@ static char *real_event(const char *name, char *event)
-> > > >   }
-> > > >   static int
-> > > > -try_fixup(const char *fn, char *arch_std, unsigned long long eventcode,
-> > > > -	  struct json_event *je)
-> > > > +try_fixup(const char *fn, char *arch_std, struct json_event *je, char **event)
-> > > >   {
-> > > >   	/* try to find matching event from arch standard values */
-> > > >   	struct event_struct *es;
-> > > >   	list_for_each_entry(es, &arch_std_events, list) {
-> > > >   		if (!strcmp(arch_std, es->name)) {
-> > > > -			if (!eventcode && es->event) {
-> > > > -				/* allow EventCode to be overridden */
-> > > > -				free(je->event);
-> > > > -				je->event = NULL;
-> > > > -			}
-> > > >   			FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD);
-> > > > +			*event = je->event;
-> > > I'm bit rusty on this code, but isn't je->event NULL at this point?
-> > 
-> > je->event should be now assigned from es->event because of
-> > FOR_ALL_EVENT_STRUCT_FIELDS(TRY_FIXUP_FIELD):
-> > 
-> > #define TRY_FIXUP_FIELD(field) do { if (es->field && !*field) {\
-> > 	*field = strdup(es->field);				\
-> > 	if (!*field)						\
-> > 		return -ENOMEM;					\
-> > } } while (0)
-> > 
-> > And es->event should be set.
-> 
-> right, thanks
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Ok, applied, please consider adding a Fixes tag next time.
+* Sami Tolvanen <samitolvanen@google.com> wrote:
 
-- Arnaldo
+> From: Peter Zijlstra <peterz@infradead.org>
+> 
+> Add the --mcount option for generating __mcount_loc sections
+> needed for dynamic ftrace. Using this pass requires the kernel to
+> be compiled with -mfentry and CC_USING_NOP_MCOUNT to be defined
+> in Makefile.
+> 
+> Link: https://lore.kernel.org/lkml/20200625200235.GQ4781@hirez.programming.kicks-ass.net/
+> Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> [Sami: rebased, dropped config changes, fixed to actually use --mcount,
+>        and wrote a commit message.]
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  tools/objtool/builtin-check.c |  3 +-
+>  tools/objtool/builtin.h       |  2 +-
+>  tools/objtool/check.c         | 82 +++++++++++++++++++++++++++++++++++
+>  tools/objtool/check.h         |  1 +
+>  tools/objtool/objtool.c       |  1 +
+>  tools/objtool/objtool.h       |  1 +
+>  6 files changed, 88 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/objtool/builtin-check.c b/tools/objtool/builtin-check.c
+> index c6d199bfd0ae..e92e76f69176 100644
+> --- a/tools/objtool/builtin-check.c
+> +++ b/tools/objtool/builtin-check.c
+> @@ -18,7 +18,7 @@
+>  #include "builtin.h"
+>  #include "objtool.h"
+>  
+> -bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux;
+> +bool no_fp, no_unreachable, retpoline, module, backtrace, uaccess, stats, validate_dup, vmlinux, mcount;
+>  
+>  static const char * const check_usage[] = {
+>  	"objtool check [<options>] file.o",
+> @@ -35,6 +35,7 @@ const struct option check_options[] = {
+>  	OPT_BOOLEAN('s', "stats", &stats, "print statistics"),
+>  	OPT_BOOLEAN('d', "duplicate", &validate_dup, "duplicate validation for vmlinux.o"),
+>  	OPT_BOOLEAN('l', "vmlinux", &vmlinux, "vmlinux.o validation"),
+> +	OPT_BOOLEAN('M', "mcount", &mcount, "generate __mcount_loc"),
+>  	OPT_END(),
+>  };
+
+Meh, adding --mcount as an option to 'objtool check' was a valid hack for a 
+prototype patchset, but please turn this into a proper subcommand, just 
+like 'objtool orc' is.
+
+'objtool check' should ... keep checking. :-)
+
+Thanks,
+
+	Ingo
