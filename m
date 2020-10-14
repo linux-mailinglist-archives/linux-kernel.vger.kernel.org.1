@@ -2,281 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D8328E483
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241A028E48A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgJNQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:32:01 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:41606 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727187AbgJNQcB (ORCPT
+        id S2388194AbgJNQck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731028AbgJNQck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:32:01 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EGQqR1008601;
-        Wed, 14 Oct 2020 18:31:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=j/uI8oCcG23p+OeSBnrVk3egEjatKVApEWT9MvtDNpQ=;
- b=qm2D/kywikSCkXmLIQNfjlDPxz8aTe4toidwH7wbQodIdJjyzf2u7sjb8So8XWorjFXR
- hoBWOWBbW7ilP3JELz4RbWW0n1ckIq5n6mzCdUeG51UpBncPxIPnMGP8LJfSZ8kXwdtz
- umod3JYUV/Q1gXl3Sh5z7cYcwho18p/XQajDHOO96qrVMazChfPDU3r+PVlgwPQz1JBk
- ASOqSOXl3MNwRijlL5OHxQm5lARe0RYbZNgYbRtkBqEsSY1OrxaGdrA9HL7e9qfBasF8
- 9PgBPRmFTiWDKG9wXT9Wa564CQncXM6Twv24gqdSXM4+bvC2LXozpw8cYGgerg8swc2b 1Q== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3455c8k4a2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 18:31:52 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6EB1110002A;
-        Wed, 14 Oct 2020 18:31:51 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5CFFF2E4519;
-        Wed, 14 Oct 2020 18:31:51 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 18:31:50 +0200
-Subject: Re: [PATCH v2 2/9] rpmsg: Introduce __rpmsg{16|32|64} types
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
-CC:     "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
- <20201013232519.1367542-3-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <03448851-b959-3f56-5618-d31a7b712392@st.com>
-Date:   Wed, 14 Oct 2020 18:31:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 14 Oct 2020 12:32:40 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A7AC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:32:39 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id n6so5909455ioc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8B1b67LV7GcK3X+6yPNOWg/2xf6f4j15sYSu/rEI0pQ=;
+        b=nCeMhgkuY5i99JMaskXEuSDVWP+iH45vJfGnX9EdydvztWBJ6XGVQeQDA/BQU9cGj6
+         wr5u9ec+UWlbcs1LUumE8haPpoQMpAPaO8+9kXcD8gGzX1rYF2CjMpwMFxskcG9WtoEk
+         l4XeT5NxohuwafKO05cvfbTfGCjpOgz7+hs9jThItgq+by2oOB8Whcqrh6KX52GjtQ5Z
+         MA5BIe/ZljUfWNBLpmpNjN4b+d3BtU+bH+t6WHWqAAu+2NTRj2kRumFjIsiQ9ETTfvEr
+         iiu+XkKnq/ONL5HMajsRRoN0diRgTVQrWRi/ADz94BmpKyg4gJF9hrhrhNLBEPfiOtO2
+         KR/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8B1b67LV7GcK3X+6yPNOWg/2xf6f4j15sYSu/rEI0pQ=;
+        b=iYtCmmDbLp/xlvs0A5e7oUqL1QC4LI3PokLlnPE28rBuMg5gQUFxPj4X6Otme1F18q
+         RaZjdFCjVVGCd5o+W0ZON8sfdvcnP5ALxIcmzIHHHlB48TOnXLy3b5lV5HskuzOG02+B
+         Ix+3X1exYGI01mF4ylSoxWBppVsf+vAKgz8J8jnUV9Es1jfXJvvX67g9wzpz6Z1pe6ru
+         usmQMwfNMloGh8/aJjBoXTPDnC3f33x+F94ANeHyVCawFyHqErnxWurhi5tumHAy5Ybm
+         2Ge/J/LTHEQPg7UBEVP6OGx6+0lADxaZUTEfRl6Ia+xSN4svkl5E9c6OyYjA45l5pPy0
+         M/sA==
+X-Gm-Message-State: AOAM530htL4voubsMOoUn7+Pscviy8a2zGuV5T+rLoTDNDRqXdoVqmQ4
+        9rFfhP3lz04mojvT9af+RSsUM/ickX+nSe8e61N17dGxzVsxNg==
+X-Google-Smtp-Source: ABdhPJzzVmbDuxvQwoFcnGQf8XBzcUnBjTYFYc01UCjxLnn0AgTPCd+NyBvYp2/khPyqOG9Nt1+MEyiI4Iq8u96f7h0=
+X-Received: by 2002:a05:6602:144:: with SMTP id v4mr126076iot.115.1602693159333;
+ Wed, 14 Oct 2020 09:32:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201013232519.1367542-3-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_09:2020-10-14,2020-10-14 signatures=0
+References: <20201014151614.29804-1-hqjagain@gmail.com> <20201014113823.4296521d@gandalf.local.home>
+ <CAJRQjodMzSAJd23F=RRhR=d2H=D3vWMvCbU9JYdGNQ9MTkpmmw@mail.gmail.com> <20201014121136.042a5c37@gandalf.local.home>
+In-Reply-To: <20201014121136.042a5c37@gandalf.local.home>
+From:   Qiujun Huang <hqjagain@gmail.com>
+Date:   Thu, 15 Oct 2020 00:32:28 +0800
+Message-ID: <CAJRQjodpfXmLRotz0XXomQSgi5d3YCKtHmL3h17LRBpDN5vMQw@mail.gmail.com>
+Subject: Re: [PATCH] ring-buffer: Add rb_check_bpage in __rb_allocate_pages
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
-
-On 10/14/20 1:25 AM, Mathieu Poirier wrote:
-> Introduce __rpmsg{16|32|64} types along with byte order conversion
-> functions based on an rpmsg_device operation as a foundation to
-> make RPMSG modular and transport agnostic.
-> 
-> Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  include/linux/rpmsg.h            | 51 ++++++++++++++++++++++++
->  include/linux/rpmsg_byteorder.h  | 67 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/rpmsg_types.h | 11 ++++++
->  3 files changed, 129 insertions(+)
->  create mode 100644 include/linux/rpmsg_byteorder.h
->  create mode 100644 include/uapi/linux/rpmsg_types.h
-> 
-> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-> index 9fe1c54ae995..165e4c6d4cd3 100644
-> --- a/include/linux/rpmsg.h
-> +++ b/include/linux/rpmsg.h
-> @@ -17,6 +17,7 @@
->  #include <linux/kref.h>
->  #include <linux/mutex.h>
->  #include <linux/poll.h>
-> +#include <linux/rpmsg_byteorder.h>
->  
->  #define RPMSG_ADDR_ANY		0xFFFFFFFF
->  
-> @@ -40,6 +41,7 @@ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
->  
->  /**
->   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
-> + * @is_little_endian:	returns true if using little endian byte ordering
->   * @create_ept:		create backend-specific endpoint, required
->   * @announce_create:	announce presence of new channel, optional
->   * @announce_destroy:	announce destruction of channel, optional
-> @@ -49,6 +51,7 @@ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
->   * advertise new channels implicitly by creating the endpoints.
->   */
->  struct rpmsg_device_ops {
-> +	bool (*is_little_endian)(struct rpmsg_device *rpdev);
->  	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
->  					    rpmsg_rx_cb_t cb, void *priv,
->  					    struct rpmsg_channel_info chinfo);
-> @@ -129,6 +132,54 @@ struct rpmsg_driver {
->  	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
->  };
->  
-> +static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
-> +{
-> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
-> +		return __rpmsg16_to_cpu(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __rpmsg16_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
-> +}
-> +
-> +static inline __rpmsg16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
-> +{
-> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
-> +		return __cpu_to_rpmsg16(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __cpu_to_rpmsg16(rpdev->ops->is_little_endian(rpdev), val);
-> +}
-> +
-> +static inline u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, __rpmsg32 val)
-> +{
-> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
-> +		return __rpmsg32_to_cpu(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __rpmsg32_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
-> +}
-> +
-> +static inline __rpmsg32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
-> +{
-> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
-> +		return __cpu_to_rpmsg32(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __cpu_to_rpmsg32(rpdev->ops->is_little_endian(rpdev), val);
-> +}
-> +
-> +static inline u64 rpmsg64_to_cpu(struct rpmsg_device *rpdev, __rpmsg64 val)
-> +{
-> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
-> +		return __rpmsg64_to_cpu(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __rpmsg64_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
-> +}
-> +
-> +static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
-> +{
-> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
-> +		return __cpu_to_rpmsg64(rpmsg_is_little_endian(), val);
-> +	else
-> +		return __cpu_to_rpmsg64(rpdev->ops->is_little_endian(rpdev), val);
-> +}
-> +
->  #if IS_ENABLED(CONFIG_RPMSG)
->  
->  int register_rpmsg_device(struct rpmsg_device *dev);
-> diff --git a/include/linux/rpmsg_byteorder.h b/include/linux/rpmsg_byteorder.h
-> new file mode 100644
-> index 000000000000..c0f565dbad6d
-> --- /dev/null
-> +++ b/include/linux/rpmsg_byteorder.h
-> @@ -0,0 +1,67 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Follows implementation found in linux/virtio_byteorder.h
-> + */
-> +#ifndef _LINUX_RPMSG_BYTEORDER_H
-> +#define _LINUX_RPMSG_BYTEORDER_H
-> +#include <linux/types.h>
-> +#include <uapi/linux/rpmsg_types.h>
-> +
-> +static inline bool rpmsg_is_little_endian(void)
-> +{
-> +#ifdef __LITTLE_ENDIAN
-> +	return true;
-> +#else
-> +	return false;
-> +#endif
-> +}
-
-A suggestion:
-
-static inline bool rpmsg_is_little_endian(void)
-#if defined(__BYTE_ORDER)
-#  if __BYTE_ORDER == __BIG_ENDIAN
-	return true;
-#  elif __BYTE_ORDER == __LITTLE_ENDIAN
-	return false;
-#  else
-#    warning "unknown endianess, set to little by default"
-	return true;
-#  endif
-#endif
-}
-
-Otherwise
-
-Reviewed-by:  Arnaud Pouliquen <arnaud.pouliquen@st.com>
-
-Thanks,
-Arnaud
-
-> +
-> +static inline u16 __rpmsg16_to_cpu(bool little_endian, __rpmsg16 val)
-> +{
-> +	if (little_endian)
-> +		return le16_to_cpu((__force __le16)val);
-> +	else
-> +		return be16_to_cpu((__force __be16)val);
-> +}
-> +
-> +static inline __rpmsg16 __cpu_to_rpmsg16(bool little_endian, u16 val)
-> +{
-> +	if (little_endian)
-> +		return (__force __rpmsg16)cpu_to_le16(val);
-> +	else
-> +		return (__force __rpmsg16)cpu_to_be16(val);
-> +}
-> +
-> +static inline u32 __rpmsg32_to_cpu(bool little_endian, __rpmsg32 val)
-> +{
-> +	if (little_endian)
-> +		return le32_to_cpu((__force __le32)val);
-> +	else
-> +		return be32_to_cpu((__force __be32)val);
-> +}
-> +
-> +static inline __rpmsg32 __cpu_to_rpmsg32(bool little_endian, u32 val)
-> +{
-> +	if (little_endian)
-> +		return (__force __rpmsg32)cpu_to_le32(val);
-> +	else
-> +		return (__force __rpmsg32)cpu_to_be32(val);
-> +}
-> +
-> +static inline u64 __rpmsg64_to_cpu(bool little_endian, __rpmsg64 val)
-> +{
-> +	if (little_endian)
-> +		return le64_to_cpu((__force __le64)val);
-> +	else
-> +		return be64_to_cpu((__force __be64)val);
-> +}
-> +
-> +static inline __rpmsg64 __cpu_to_rpmsg64(bool little_endian, u64 val)
-> +{
-> +	if (little_endian)
-> +		return (__force __rpmsg64)cpu_to_le64(val);
-> +	else
-> +		return (__force __rpmsg64)cpu_to_be64(val);
-> +}
-> +
-> +#endif /* _LINUX_RPMSG_BYTEORDER_H */
-> diff --git a/include/uapi/linux/rpmsg_types.h b/include/uapi/linux/rpmsg_types.h
-> new file mode 100644
-> index 000000000000..36e3b9404391
-> --- /dev/null
-> +++ b/include/uapi/linux/rpmsg_types.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +#ifndef _UAPI_LINUX_RPMSG_TYPES_H
-> +#define _UAPI_LINUX_RPMSG_TYPES_H
-> +
-> +#include <linux/types.h>
-> +
-> +typedef __u16 __bitwise __rpmsg16;
-> +typedef __u32 __bitwise __rpmsg32;
-> +typedef __u64 __bitwise __rpmsg64;
-> +
-> +#endif /* _UAPI_LINUX_RPMSG_TYPES_H */
-> 
+On Thu, Oct 15, 2020 at 12:11 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Wed, 14 Oct 2020 23:48:05 +0800
+> Qiujun Huang <hqjagain@gmail.com> wrote:
+>
+> > On Wed, Oct 14, 2020 at 11:38 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >
+> > > On Wed, 14 Oct 2020 23:16:14 +0800
+> > > Qiujun Huang <hqjagain@gmail.com> wrote:
+> > >
+> > > > It may be better to check each page is aligned by 4 bytes. The 2
+> > > > least significant bits of the address will be used as flags.
+> > > >
+> > > > Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+> > > > ---
+> > > >  kernel/trace/ring_buffer.c | 11 +++++++----
+> > > >  1 file changed, 7 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> > > > index 93ef0ab6ea20..9dec7d58b177 100644
+> > > > --- a/kernel/trace/ring_buffer.c
+> > > > +++ b/kernel/trace/ring_buffer.c
+> > > > @@ -1420,7 +1420,8 @@ static int rb_check_pages(struct ring_buffer_per_cpu *cpu_buffer)
+> > > >       return 0;
+> > > >  }
+> > > >
+> > > > -static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
+> > > > +static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
+> > > > +             long nr_pages, struct list_head *pages, int cpu)
+> > > >  {
+> > > >       struct buffer_page *bpage, *tmp;
+> > > >       bool user_thread = current->mm != NULL;
+> > > > @@ -1464,6 +1465,8 @@ static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
+> > > >               if (!bpage)
+> > > >                       goto free_pages;
+> > > >
+> > > > +             rb_check_bpage(cpu_buffer, bpage);
+> > > > +
+> > > >
+> > >
+> > > Why add it here, and not just add this check to the scan in
+> > > rb_check_pages()?
+> >
+> > rb_head_page_deactivate() in rb_check_pages() will clear the 2 LSB first.
+> >
+>
+> Well, you could just add another scan there, but if you want to do it this
+> way, then remove passing the int cpu to these functions, and use the
+> cpu_buffer->cpu, as keeping the cpu is just redundant.
+Get it.
+>
+> Also, did you see an issue? This check is more of me being paranoid to
+No, I'm a little paranoid too following the code :-)
+> make sure we don't crash later. I've honestly never seen it trigger.
+>
+> -- Steve
