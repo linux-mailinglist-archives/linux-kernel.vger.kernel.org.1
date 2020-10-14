@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499D228DADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BDC28DADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgJNILW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:11:22 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55372 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727023AbgJNILU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:11:20 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B889C1C0B87; Wed, 14 Oct 2020 10:11:17 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 10:11:17 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Udo van den Heuvel <udovdh@xs4all.nl>
-Cc:     Takashi Iwai <tiwai@suse.de>, Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        moderated for non-subscribers <alsa-devel@alsa-project.org>
-Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
-Message-ID: <20201014081116.GC29881@amd>
-References: <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
- <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
- <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
- <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
- <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
- <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
- <s5hblh5mele.wl-tiwai@suse.de>
- <s5ha6wpmei5.wl-tiwai@suse.de>
- <20201014075853.GB29881@amd>
- <056a8933-378f-30f2-c7af-5514d93d3c36@xs4all.nl>
+        id S1728496AbgJNILs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:11:48 -0400
+Received: from correo.us.es ([193.147.175.20]:49512 "EHLO mail.us.es"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727975AbgJNILr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:11:47 -0400
+Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
+        by mail.us.es (Postfix) with ESMTP id EF261120820
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:11:42 +0200 (CEST)
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id DCE88DA72F
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:11:42 +0200 (CEST)
+Received: by antivirus1-rhel7.int (Postfix, from userid 99)
+        id D260DDA78E; Wed, 14 Oct 2020 10:11:42 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
+X-Spam-Level: 
+X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
+        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
+        autolearn=disabled version=3.4.1
+Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
+        by antivirus1-rhel7.int (Postfix) with ESMTP id C37DDDA844;
+        Wed, 14 Oct 2020 10:11:40 +0200 (CEST)
+Received: from 192.168.1.97 (192.168.1.97)
+ by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
+ Wed, 14 Oct 2020 10:11:40 +0200 (CEST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
+Received: from us.es (unknown [90.77.255.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: 1984lsi)
+        by entrada.int (Postfix) with ESMTPSA id 9912442EFB81;
+        Wed, 14 Oct 2020 10:11:40 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 10:11:40 +0200
+X-SMTPAUTHUS: auth mail.us.es
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>
+Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
+ re-register
+Message-ID: <20201014081140.GA16515@salvia>
+References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
+ <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
+ <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
+ <20201009110323.GC5723@breakpoint.cc>
+ <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
+ <20201009185552.GF5723@breakpoint.cc>
+ <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
+ <20201009200548.GG5723@breakpoint.cc>
+ <20201014000628.GA15290@salvia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="qjNfmADvan18RZcF"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <056a8933-378f-30f2-c7af-5514d93d3c36@xs4all.nl>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201014000628.GA15290@salvia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 14, 2020 at 02:06:28AM +0200, Pablo Neira Ayuso wrote:
+> On Fri, Oct 09, 2020 at 10:05:48PM +0200, Florian Westphal wrote:
+> > Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
+> > > > The "delay unregister" remark was wrt. the "all rules were deleted"
+> > > > case, i.e. add a "grace period" rather than acting right away when
+> > > > conntrack use count did hit 0.
+> > > 
+> > > Now I understand it, thanks really. The hooks are removed, so conntrack 
+> > > cannot "see" the packets and the entries become stale. 
+> > 
+> > Yes.
+> > 
+> > > What is the rationale behind "remove the conntrack hooks when there are no 
+> > > rule left referring to conntrack"? Performance optimization? But then the 
+> > > content of the whole conntrack table could be deleted too... ;-)
+> > 
+> > Yes, this isn't the case at the moment -- only hooks are removed,
+> > entries will eventually time out.
+> > 
+> > > > Conntrack entries are not removed, only the base hooks get unregistered. 
+> > > > This is a problem for tcp window tracking.
+> > > > 
+> > > > When re-register occurs, kernel is supposed to switch the existing 
+> > > > entries to "loose" mode so window tracking won't flag packets as 
+> > > > invalid, but apparently this isn't enough to handle keepalive case.
+> > > 
+> > > "loose" (nf_ct_tcp_loose) mode doesn't disable window tracking, it 
+> > > enables/disables picking up already established connections. 
+> > > 
+> > > nf_ct_tcp_be_liberal would disable TCP window checking (but not tracking) 
+> > > for non RST packets.
+> > 
+> > You are right, mixup on my part.
+> > 
+> > > But both seems to be modified only via the proc entries.
+> > 
+> > Yes, we iterate table on re-register and modify the existing entries.
+> 
+> For iptables-nft, it might be possible to avoid this deregister +
+> register ct hooks in the same transaction: Maybe add something like
+> nf_ct_netns_get_all() to bump refcounters by one _iff_ they are > 0
+> before starting the transaction processing, then call
+> nf_ct_netns_put_all() which decrements refcounters and unregister
+> hooks if they reach 0.
 
---qjNfmADvan18RZcF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hm, scratch that, put_all() would create an imbalance with this
+conditional increment.
 
-On Wed 2020-10-14 10:05:42, Udo van den Heuvel wrote:
-> On 14-10-2020 09:58, Pavel Machek wrote:
-> > Contrary to his claims, Udo very probably has LEDs in his systems...
->=20
-> We have a visible power LED.
-> WE have a HDD LED.
-
-> The board has LEDs, yes, but the SilverStone Fortress FT02 hides them
-> fairly well.
-> I did not ask for LEDs nor need them this way.
-> It's a computer, not a disco-light or anything like that.
-
-And you probably have numlock LED.
-
-> Whether the code is big or not does not matter, it is a matter of being
-> able to select what one needs without getting bothered with other code
-> that will do nothing.
-
-No.
-
-Additional config options have costs, too, and we don't want to
-support gazillion config options. LED core should be small enough that
-it does not matter. Sound was inventing its own "tiny LED core"
-before.
-
-> So please consider.
-
-I did. Answer is no. Please accept it.
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---qjNfmADvan18RZcF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl+GsqQACgkQMOfwapXb+vKstQCgxBdpLaykEQKd4ktnkUrUcz10
-NwgAoLEJrV5eMh7YSG6O0cSOLB1wIHop
-=1j4b
------END PGP SIGNATURE-----
-
---qjNfmADvan18RZcF--
+> The only problem with this approach is that this pulls in the
+> conntrack module, to solve that, struct nf_ct_hook in
+> net/netfilter/core.c could be used to store the reference to
+> ->netns_get_all and ->net_put_all.
+> 
+> Legacy would still be flawed though.
