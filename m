@@ -2,64 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E467728E432
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64C028E439
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388192AbgJNQRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:17:50 -0400
-Received: from smtprelay0088.hostedemail.com ([216.40.44.88]:45784 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726105AbgJNQRt (ORCPT
+        id S1731832AbgJNQRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:17:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59646 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJNQRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:17:49 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C16F6181D3028;
-        Wed, 14 Oct 2020 16:17:48 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3871:3872:4321:5007:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:21080:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: dirt57_52091122720d
-X-Filterd-Recvd-Size: 1564
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 14 Oct 2020 16:17:47 +0000 (UTC)
-Message-ID: <eb7e86171263a27e5c761bddf91439a5ec8c83e1.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add new exception to repeated word check
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Wed, 14 Oct 2020 09:17:46 -0700
-In-Reply-To: <20201014135637.92319-1-dwaipayanray1@gmail.com>
-References: <20201014135637.92319-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 14 Oct 2020 12:17:54 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602692271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6vlX2JaF1sElgNB9gtOmRBeCz48vpsOYcg9B7pk8ung=;
+        b=dwZNDaYtqbFlIeLo/Yn5Rqcmh0yEdi1FdWMJaT6EfMEHJmf3g1yR8U5x/0aLFF5XIWgYN0
+        TIXpvxNERp0GLsjcQ/WTXF0VdQm3oPBQydyM1gRuFv1w1SjSetq2hfI5ADYAZpQ9xr0LXt
+        QRkfUcIueIBYmVdqF3nlcpiGTHTWBfn5lZhH87bdi84KzNwWukAVqwmFmC2U9hVpmzk46s
+        3Elon318GI6k+mup9gtdm0zhrQPnfLZXmcEAk0DwWNbaymmyWDTaEnf2fVtDUQf9MXRmTo
+        9ptDFFWbkvf6NshGrgXgaYYA8yBsze9LgYnlKuE/fsckD73VpuLa+esnXHJJfQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602692271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6vlX2JaF1sElgNB9gtOmRBeCz48vpsOYcg9B7pk8ung=;
+        b=Tlkepl20VtdWrbWqyNT+On+gqPKUipSXEXIZPPkpkNLVDnCvtu1PVZPN1Pf215uK2jnBXN
+        lg8+SHLhHkPituAQ==
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-omap@vger.kernel.org,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>
+Subject: Re: [patch 03/12] USB: serial: keyspan_pda: Consolidate room query
+In-Reply-To: <20201014161433.GB712494@rowland.harvard.edu>
+References: <20201014145215.518912759@linutronix.de> <20201014145727.338773481@linutronix.de> <20201014161433.GB712494@rowland.harvard.edu>
+Date:   Wed, 14 Oct 2020 18:17:51 +0200
+Message-ID: <87ft6gbx3k.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-14 at 19:26 +0530, Dwaipayan Ray wrote:
-> Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
-> moved the repeated word test to check for more file types. But after
-> this, if checkpatch.pl is run on MAINTAINERS, it generates several
-> new warnings of the type:
-> 
-> WARNING: Possible repeated word: 'git'
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3063,7 +3063,7 @@ sub process {
->  				}
->  
->  				next if ($first ne $second);
-> -				next if ($first eq 'long');
-> +				next if ($first =~ /(?:long|git)$/);
+On Wed, Oct 14 2020 at 12:14, Alan Stern wrote:
+> On Wed, Oct 14, 2020 at 04:52:18PM +0200, Thomas Gleixner wrote:
+>> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> 
+>> Having two copies of the same code doesn't make the code more readable and
+>> allocating a buffer of 1 byte for a synchronous operation is a pointless
+>> exercise.
+>
+> Not so.  In fact, it is required, because a portion of a structure 
+> cannot be mapped for DMA unless it is aligned at a cache line boundary.
+>
+>> Add a byte buffer to struct keyspan_pda_private which can be used
+>> instead. The buffer is only used in open() and tty->write().
+>
+> This won't work.
 
-Nak.  This needs a leading ^ otherwise words
-like "belong" and "digit" match as well.
+Ok.
 
-				next if ($first =~ /^(?:long|git)$/);
+>> +	res = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
+>> +			      6, /* write_room */
+>> +			      USB_TYPE_VENDOR | USB_RECIP_INTERFACE | USB_DIR_IN,
+>> +			      0, /* value */
+>> +			      0, /* index */
+>> +			      &priv->query_buf,
+>> +			      1,
+>> +			      2000);
+>
+> Instead, consider using the new usb_control_msg_recv() API.  But it 
+> might be better to allocate the buffer once and for all.
 
+Let me have a look.
 
+Thanks,
+
+        tglx
