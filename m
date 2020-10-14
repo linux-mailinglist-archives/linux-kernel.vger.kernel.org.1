@@ -2,147 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DA928DFAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E1928DFB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387754AbgJNLNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:13:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:38898 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730016AbgJNLNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:13:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C67D1FB;
-        Wed, 14 Oct 2020 04:13:19 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46DCE3F66B;
-        Wed, 14 Oct 2020 04:13:18 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 12:13:12 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, robh@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, gustavo.pimentel@synopsys.com
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Message-ID: <20201014111312.GA4110@e121166-lin.cambridge.arm.com>
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
+        id S2387796AbgJNLOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726654AbgJNLOM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 07:14:12 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E53C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:14:12 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b26so1784322pff.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=43x3rKcA2RyvqYiM6kbwL04G0XHRff3aQFwR3Tk95j0=;
+        b=Ofsg01VIqtGta8qTAhXBMpCT5/mtiFiUuxL51MlYGqzMY7QgRpwuE6vWvJGk4/qnQj
+         jiiLioo7k1XTq4qCfR+r8bBT7xQyPTx06lj7s1unv/dNrpIEXK2ZYP30rRSd8PQspUrf
+         Yp7QVkgnz+h1Tn5S0BfVuMZUysIasWo03AUK5uwkjr/JGGK2X3pEkj1AYfUXPOLuctPI
+         SdWykLU989sp+1SqVdEMa7P28TK50WOew1CqL8tJL4uB9gd1EHhq09FhbkmpsSxMp0uc
+         ezKtskKYmnnAONmyIwvn506ixdp7NLl98jRspmGRYD7UwydhpEHC7IsoAwrTABzgowZF
+         ULLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=43x3rKcA2RyvqYiM6kbwL04G0XHRff3aQFwR3Tk95j0=;
+        b=ScGxMJ6nSMrKVwvkIhFAygISRWCGgvAr+7gJC24lTVvivzvOb8SMlw+mq0A8/+FAuB
+         nq83CH3CQAFnZRDmba2SVY/NtuHzbqCwG8mya9KIeuLkJ/ZeldgsuLTw6rH3vaF3E8hD
+         UZi2BhX6iYCJ5o6U3UjDEBex2HIm3XI5if5YEfAG0kHQYaUl7RgJzbz1LLVEfJah6i63
+         bHb9Q6JRBonjrz5JhMbGXP+fw1/191twnY1ny9XiyqgkdDoUV7KCGt3t1wNwHCT7fb8r
+         sJCbebAqUqKSYr3ydtnh2k07V4mem/AFmfL3/XzJ6vCvwAVz175VvWh1SyQpZl/7sKaZ
+         2CNA==
+X-Gm-Message-State: AOAM530Ul0G57GbOYWDg4FPBFmZw6fyngup/rre8nGRJnVZfpP+heQBW
+        BHXUCguVPdVK95pqwq3og9U=
+X-Google-Smtp-Source: ABdhPJyBfeSMBAFaa0Rs/TBYcwJvnYQzn0er8KZob1Tl2FQ88Rmo8DA/RB06vimCYn/tlWPmqby8dA==
+X-Received: by 2002:a62:7f81:0:b029:152:6197:f1f2 with SMTP id a123-20020a627f810000b02901526197f1f2mr3860145pfd.49.1602674051626;
+        Wed, 14 Oct 2020 04:14:11 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:a404:280a:90bd:7a49:dcda:1fb1])
+        by smtp.gmail.com with ESMTPSA id jx17sm2745454pjb.10.2020.10.14.04.14.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 04:14:10 -0700 (PDT)
+Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
+ EXECUTE_PERMISSIONS
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com>
+ <alpine.DEB.2.21.2010140734270.6186@felia>
+From:   Ujjwal Kumar <ujjwalkumar0501@gmail.com>
+Message-ID: <d04f2b9c-e3e7-e68b-55c0-5444dae1746b@gmail.com>
+Date:   Wed, 14 Oct 2020 16:44:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <alpine.DEB.2.21.2010140734270.6186@felia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:41:30PM +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+On 14/10/20 11:16 am, Lukas Bulwahn wrote:
 > 
-> On NXP Layerscape platforms, it results in SError in the
-> enumeration of the PCIe controller, which is not connecting
-> with an Endpoint device. And it doesn't make sense to
-> enumerate the Endpoints when the PCIe link is down. So this
-> patch added the link up check to avoid to fire configuration
-> transactions on link down bus.
 > 
-> [    0.807773] SError Interrupt on CPU2, code 0xbf000002 -- SError
-> [    0.807775] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807776] Hardware name: LS1046A RDB Board (DT)
-> [    0.807777] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> [    0.807778] pc : pci_generic_config_read+0x3c/0xe0
-> [    0.807778] lr : pci_generic_config_read+0x24/0xe0
-> [    0.807779] sp : ffff80001003b7b0
-> [    0.807780] x29: ffff80001003b7b0 x28: ffff80001003ba74
-> [    0.807782] x27: ffff000971d96800 x26: ffff00096e77e0a8
-> [    0.807784] x25: ffff80001003b874 x24: ffff80001003b924
-> [    0.807786] x23: 0000000000000004 x22: 0000000000000000
-> [    0.807788] x21: 0000000000000000 x20: ffff80001003b874
-> [    0.807790] x19: 0000000000000004 x18: ffffffffffffffff
-> [    0.807791] x17: 00000000000000c0 x16: fffffe0025981840
-> [    0.807793] x15: ffffb94c75b69948 x14: 62203a383634203a
-> [    0.807795] x13: 666e6f635f726568 x12: 202c31203d207265
-> [    0.807797] x11: 626d756e3e2d7375 x10: 656877202c307830
-> [    0.807799] x9 : 203d206e66766564 x8 : 0000000000000908
-> [    0.807801] x7 : 0000000000000908 x6 : ffff800010900000
-> [    0.807802] x5 : ffff00096e77e080 x4 : 0000000000000000
-> [    0.807804] x3 : 0000000000000003 x2 : 84fa3440ff7e7000
-> [    0.807806] x1 : 0000000000000000 x0 : ffff800010034000
-> [    0.807808] Kernel panic - not syncing: Asynchronous SError Interrupt
-> [    0.807809] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807810] Hardware name: LS1046A RDB Board (DT)
-> [    0.807811] Call trace:
-> [    0.807812]  dump_backtrace+0x0/0x1c0
-> [    0.807813]  show_stack+0x18/0x28
-> [    0.807814]  dump_stack+0xd8/0x134
-> [    0.807814]  panic+0x180/0x398
-> [    0.807815]  add_taint+0x0/0xb0
-> [    0.807816]  arm64_serror_panic+0x78/0x88
-> [    0.807817]  do_serror+0x68/0x180
-> [    0.807818]  el1_error+0x84/0x100
-> [    0.807818]  pci_generic_config_read+0x3c/0xe0
-> [    0.807819]  dw_pcie_rd_other_conf+0x78/0x110
-> [    0.807820]  pci_bus_read_config_dword+0x88/0xe8
-> [    0.807821]  pci_bus_generic_read_dev_vendor_id+0x30/0x1b0
-> [    0.807822]  pci_bus_read_dev_vendor_id+0x4c/0x78
-> [    0.807823]  pci_scan_single_device+0x80/0x100
-> [    0.807824]  pci_scan_slot+0x38/0x130
-> [    0.807825]  pci_scan_child_bus_extend+0x54/0x2a0
-> [    0.807826]  pci_scan_child_bus+0x14/0x20
-> [    0.807827]  pci_scan_bridge_extend+0x230/0x570
-> [    0.807828]  pci_scan_child_bus_extend+0x134/0x2a0
-> [    0.807829]  pci_scan_root_bus_bridge+0x64/0xf0
-> [    0.807829]  pci_host_probe+0x18/0xc8
-> [    0.807830]  dw_pcie_host_init+0x220/0x378
-> [    0.807831]  ls_pcie_probe+0x104/0x140
-> [    0.807832]  platform_drv_probe+0x54/0xa8
-> [    0.807833]  really_probe+0x118/0x3e0
-> [    0.807834]  driver_probe_device+0x5c/0xc0
-> [    0.807835]  device_driver_attach+0x74/0x80
-> [    0.807835]  __driver_attach+0x8c/0xd8
-> [    0.807836]  bus_for_each_dev+0x7c/0xd8
-> [    0.807837]  driver_attach+0x24/0x30
-> [    0.807838]  bus_add_driver+0x154/0x200
-> [    0.807839]  driver_register+0x64/0x120
-> [    0.807839]  __platform_driver_probe+0x7c/0x148
-> [    0.807840]  ls_pcie_driver_init+0x24/0x30
-> [    0.807841]  do_one_initcall+0x60/0x1d8
-> [    0.807842]  kernel_init_freeable+0x1f4/0x24c
-> [    0.807843]  kernel_init+0x14/0x118
-> [    0.807843]  ret_from_fork+0x10/0x34
-> [    0.807854] SMP: stopping secondary CPUs
-> [    0.807855] Kernel Offset: 0x394c64080000 from 0xffff800010000000
-> [    0.807856] PHYS_OFFSET: 0xffff8bfd40000000
-> [    0.807856] CPU features: 0x0240022,21806000
-> [    0.807857] Memory Limit: none
+> On Tue, 13 Oct 2020, Ujjwal Kumar wrote:
 > 
-> Fixes: c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
+>> checkpatch.pl checks for invalid EXECUTE_PERMISSIONS on source
+>> files. The script leverages filename extensions and its path in
+>> the repository to decide whether to allow execute permissions on
+>> the file or not.
+>>
+>> Based on current check conditions, a perl script file having
+>> execute permissions, without '.pl' extension in its filename
+>> and not belonging to 'scripts/' directory is reported as ERROR
+>> which is a false positive.
+>>
+>> Adding a shebang check along with current conditions will make
+>> the check more generalised and improve checkpatch reports.
+>> To do so, without breaking the core design decision of checkpatch,
+>> we can fetch the first line from the patch itself and match it for
+>> a shebang pattern.
+>>
+>> There can be cases where the first line is not part of the patch.
+>> For instance: a patch that only changes permissions without
+>> changing any of the file content.
+>> In that case there may be a false positive report but in the end we
+>> will have less false positives as we will be handling some of the
+>> unhandled cases.
+>>
+> 
+> I get the intent of your addition. However:
+> 
+> I would bet that you only find one or two in a million commits, that would 
+> actually benefit for this special check of a special case of a special 
+> rule...
+> 
+> So given the added complexity of yet another 19 lines in checkpatch with 
+> little benefit of lowering false positive reports, I would be against 
+> inclusion.
 
-Hi Rob,
+Yes, it is a subtle change.
 
-can I squash this patch into the commit above ?
-
-Thanks,
-Lorenzo
-
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++++++
->  1 file changed, 6 insertions(+)
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index c01c9d2fb3f9..e82b518430c5 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -442,6 +442,9 @@ static void __iomem *dw_pcie_other_conf_map_bus(struct pci_bus *bus,
->  	struct pcie_port *pp = bus->sysdata;
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->  
-> +	if (!dw_pcie_link_up(pci))
-> +		return NULL;
-> +
->  	busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
->  		 PCIE_ATU_FUNC(PCI_FUNC(devfn));
->  
-> -- 
-> 2.17.1
+> You can provide convincing arguments with an evaluation, where you show 
+> on how many commits this change would really make a difference...
+
+Some statistics:
+
+I aggregated commits which involved 'mode change' on script files.
+Totaling to 478 (looked for logs of only executable files in the repo).
+
+At current state,
+checkpatch reports 26 ERRORS (false positives)
+with 'hashbang' test we have 5 false positives.
+
+Without 'scripts/' directory test, 
+checkpatch reports 82 ERRORS (false positives)
+with 'hashbang' test we have 35 false positives.
+
 > 
+> It is probably better and simpler to just have a script checking for
+> execute bits on all files in the repository on linux-next (with a list of 
+> known intended executable files) and just report to you and then to the 
+> developers when a new file with unintentional execute bit appeared.
+> 
+> Keep up the good work. I just fear this patch is a dead end.
+> 
+> There is still a lot of other issues you can contribute to.
+> 
+> Just one bigger project example: Comparing clang-format suggestions on 
+> patches against checkpatch.pl suggestions are fine-tuning both of them to fit to 
+> the actual kernel style.
+> 
+> Lukas
+> 
+
+Thanks
+Ujjwal Kumar
