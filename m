@@ -2,162 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CAB28DFC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1E428DFC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730693AbgJNLYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:24:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28282 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730676AbgJNLYB (ORCPT
+        id S2387838AbgJNLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:24:43 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2682 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730609AbgJNLYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:24:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602674640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3H6mGsRZewK80OZHFyPkl46RKkyXB0PbUSdyfxyv/nQ=;
-        b=HyQv8i/wihW30LtwkNZJtEMWb+T2k30mpmJA/FVZxsGHKDhlwwLMWXBGslf4AdVILGnenF
-        HLRJLe0uPskFpXlWqCCylz7KV5782SRj+fFQbcw5Dr1yqsa6+jm91BEsiySwYN/8+SUC3y
-        ShWM/wQtEnJGiUdyF1FbPCmjaA/vtkw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-158-CtZ0tLdpMjSGkjWqWf90kg-1; Wed, 14 Oct 2020 07:23:57 -0400
-X-MC-Unique: CtZ0tLdpMjSGkjWqWf90kg-1
-Received: by mail-ej1-f72.google.com with SMTP id i21so1061055ejb.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:23:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3H6mGsRZewK80OZHFyPkl46RKkyXB0PbUSdyfxyv/nQ=;
-        b=ewhu586zoRCMLlBCmi6c+/rRhg4Zb5OtuU1i0X4LkZ/bSk7VZ5KufaRkvPyrmp61+m
-         5YAL+tuuifDHgbOLulJtYGeRzAwkrHOVyqJ+lOj1ZwNooIzGw4bMv5NMXRSfmqbMRaG9
-         GLg68xS9IJ7HHXZ0RQUk8DhVfL/9dM5e9ow/xuphyTGgNVqctD1iQbZK/kgGu3S5MvrQ
-         /StoecLAeRAE62gVuGjd3OouTqhCPTT7pa/pHYS5eZ5nLgQNslRZuRPteqO1cCAwpGqh
-         4y4RVtT1yZDSCn2PFmmTKqooVAf0XpTY/yKuoIQPwhy+QiJUihAOYDA4Gz7xZ4gleDbh
-         svVA==
-X-Gm-Message-State: AOAM533vlLBYF9ISAs/Hg3EOJjCMUtjjkx/WFj/8HsQA+Rp7R+T46vL1
-        ClWwweNAXp35xXV8oU6wraInO4GHrddUF8Fq7Q+I71rbFT2X8fb+XxUjnrTUJEgCEakgHKUVBnM
-        USUusSxh8bCjPIxqh9m+ot9u0
-X-Received: by 2002:a17:906:5052:: with SMTP id e18mr4562636ejk.530.1602674635888;
-        Wed, 14 Oct 2020 04:23:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzKr1m32t14FkDc/W8AweDP9IBnI3ylZgpuTkWQR5km+xGPX1lrPGf71ctcfLHQF7DtS46eAg==
-X-Received: by 2002:a17:906:5052:: with SMTP id e18mr4562615ejk.530.1602674635646;
-        Wed, 14 Oct 2020 04:23:55 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id rn10sm1584899ejb.8.2020.10.14.04.23.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 04:23:55 -0700 (PDT)
-Subject: Re: [PATCH AUTOSEL 5.8 17/20] i2c: core: Call
- i2c_acpi_install_space_handler() before i2c_acpi_register_devices()
-To:     kieran.bingham@ideasonboard.com, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
-References: <20200921144027.2135390-1-sashal@kernel.org>
- <20200921144027.2135390-17-sashal@kernel.org>
- <1977b57b-fae6-d9d4-e6bf-3d4013619537@ideasonboard.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <bbeb7cae-d856-bb25-4602-8dd3bae62773@redhat.com>
-Date:   Wed, 14 Oct 2020 13:23:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1977b57b-fae6-d9d4-e6bf-3d4013619537@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Wed, 14 Oct 2020 07:24:41 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f86dfec0000>; Wed, 14 Oct 2020 04:24:28 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
+ 2020 11:24:40 +0000
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.58) by
+ HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Wed, 14 Oct 2020 11:24:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eUwOzNHBgEtzA6WrS7xijOl7rGoIVsGZ3aUqrSNXE80FDUjBzvZPSjWIdGoJgWj4hdv6oDyv0Xy0rhlb1EB51cu69bi7TxnP1H88J6huH0n1NTPdG6NHLggaMcA6bPWZMDd8iqknXTPvFGEiL/wBKm5ZiAUcdUCtsmwRJSClWu1j7YWwiAZXT71ukGFQabOLt1xjnB2uSgneNycka0qpeyXXPBabhfU55f0rNigFDEKXdYLG1AWqOMtZPXyavrKafTW5YSMP3m/iH1G7TuKRhKtoWHWten+i3ortuAKrXHiXZ98j1a06E+biy9I0fAgoCBtkDSSAKr+lg+UmmpZHGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X5tKMqi2l+vuilkp4YffEiTtSjFsKjYXY2lbiqujIH0=;
+ b=ZrmyhTIWZ3K8NTqrJT8KTbAdhWLs0cY932UVGkONLKkOKTTkyAm0eqG5Opc2gMHjdcTUegWKYhNMEY7PLr1NI9SbvKoiMl3mx0OqSZhzroIHyDcg48+rafJPzZG+XoF8pEvjNvrynkoSt0VgeJMZZbpw7yrkBcD6vps1MZ9K1NJR3GPnNV+cr8Nr5Jvn2F0LOgg2A0Ye0j59ThgTHA1Wow6lFuUzyIighe2F0Ph6EHWKIkncQG5k8sN2lXeXGsULjMXv745uosIY5dfHDhyh+pdFfiYW0gluoemKAqqlJw1aWHKqzj+CRnPGW74EKEY/A7OFW8X8Mq+/ghykjDCKLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM5PR12MB1244.namprd12.prod.outlook.com (2603:10b6:3:73::15) by
+ DM6PR12MB4944.namprd12.prod.outlook.com (2603:10b6:5:1ba::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3477.20; Wed, 14 Oct 2020 11:24:39 +0000
+Received: from DM5PR12MB1244.namprd12.prod.outlook.com
+ ([fe80::c4a9:7b71:b9:b77a]) by DM5PR12MB1244.namprd12.prod.outlook.com
+ ([fe80::c4a9:7b71:b9:b77a%3]) with mapi id 15.20.3477.021; Wed, 14 Oct 2020
+ 11:24:39 +0000
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+To:     "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
+CC:     "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH net-next v5 09/10] bridge: cfm: Netlink GET status
+ Interface.
+Thread-Topic: [PATCH net-next v5 09/10] bridge: cfm: Netlink GET status
+ Interface.
+Thread-Index: AQHWoKEPiIAjcZlvQ06tdqdPh/N1yKmW9/CA
+Date:   Wed, 14 Oct 2020 11:24:38 +0000
+Message-ID: <1253ca825551235c5fd45300f401a161f2bdd3f2.camel@nvidia.com>
+References: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
+         <20201012140428.2549163-10-henrik.bjoernlund@microchip.com>
+In-Reply-To: <20201012140428.2549163-10-henrik.bjoernlund@microchip.com>
+Reply-To: Nikolay Aleksandrov <nikolay@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=nvidia.com;
+x-originating-ip: [84.238.136.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6df06283-3c4f-4deb-fb9a-08d87033bd12
+x-ms-traffictypediagnostic: DM6PR12MB4944:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB4944CE5E36BB95F5FFCE810FDF050@DM6PR12MB4944.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WFl0RKg6D9A/KKE2xT8GbMCaHKUqdj6tVOMVd8lkBfgrrvblZZZWMvMTHyarFIIPwOVmtJX6oPfN77ap7Pf5p6rByGdlwvG2A992JKBmfFb7w5SZ7dIov+lhmtgfw//g95PfaY03e79bev3nOlDbhVrcRx4dlCFNvM6ryEZJzVms6QLV6S4nCxLwmUu7gMY2RTGkq4AFNwD6VlS2GMOss/UXmeIisgW73bTp8A3pkDdxvdX/qPnz+JkeeswvFrd88fVWVDUWNewk2t6ei8cHpFWqIAzANYwXy04Z/ks59tJICHm+2x8l59H2WYl+5xEvAmkLf4OXfSOI1urHfQOzxXhj1I3vwc2WPKhK0omQRKOe/DlxaKfcu1ipAWLzRpAa
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1244.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(66476007)(66946007)(6512007)(66446008)(66556008)(71200400001)(26005)(64756008)(6506007)(2616005)(3450700001)(4326008)(76116006)(91956017)(110136005)(186003)(316002)(5660300002)(83380400001)(2906002)(6486002)(36756003)(8676002)(8936002)(4001150100001)(478600001)(86362001)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: m3KLMrgZyrlFIiv1XblSs685RrZZqo9RBNOAjPaUFcc7szNYk0Xkzat16iZZ+Z4poLWBoAxs1VmBVJyyqVNVOwHFgadVhISU69Z/RMn2z9UgIvGXOWU6Pp1ktmQu9xXLDBZH/mh1Q9p69D8ibbvSGrJNqmlY2Hq2cjCeu7YfUd2JplR6UrYZaJqvhrRxISwfgaOjcSJuyszniPDGalVQs65apTuhwuB3qnkZFKG9lEBzW9E58I9YwGXH2QYny2GHbaIZEtZMrHEhqIZA3eVrOkQ1ZYFPxPQ42UndWOKVxmu4XReiu+BLSHJjtg9dKCLiCyJMuRehOFM7tl+B9kkqo34UOwdVsxChY4uTmCX52tcCym1dFQ96H9/73Bi1KtbjQQ7B5XB/ey9x7dXHSRwnpYJKTeER8OvslzalDa8+aAdxkxCHGnACwD81NbE2H548v33oN/rbLjgzd00NO7qbAogL5a324Rn/p6kJr4mxc+qFRTgDFlEVZUuvkO7M6xrCeX3O8AwC4h5XEu/3YdBHvm4UGWAxJ2av/kjmvKOng0F/s8n2Npoy30zfPu4XjFaMjDYKkwbb3E7vaaEUHyPhc+UQ8//nGzAO1rDFAtxFaxk/i6K81m+61ORoPfTW5bOd6S9yjXo/Y7GTu1ULI2/HxA==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5A621E25E5ABDA4F81E20778A180913C@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1244.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6df06283-3c4f-4deb-fb9a-08d87033bd12
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 11:24:38.9466
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4cv0EX6tTyiEHmusTguayIWnk9VclcmmuJXvtWM/Oi0y8rDLP4BKZd99dh6vz4G5dOF6Ofwz9KuTmEwRJd1cGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4944
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602674668; bh=X5tKMqi2l+vuilkp4YffEiTtSjFsKjYXY2lbiqujIH0=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Reply-To:Accept-Language:Content-Language:
+         X-MS-Has-Attach:X-MS-TNEF-Correlator:user-agent:
+         authentication-results:x-originating-ip:x-ms-publictraffictype:
+         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
+         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
+         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
+         x-microsoft-antispam:x-microsoft-antispam-message-info:
+         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
+         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=FbS6ldmVc41TmNdw6TV1hXq9ScEceUTcY3y2V1CHPE9iHIxWwuGQy38JValzvlVo/
+         LE/4l433X7HyYcHnzAmtFHrFfvCszng3JkOTK1qmh7yQNDemGZGKpTTL86isYn30uN
+         LElOJ7HWeDDgup6R4NOQitN+WBSqjgMMtW6wRiA+HqpXPec/vukGDM1VVhynYBcNW1
+         g4Z7PumnHYbYVM/65HhQFR1R2TyYptmjj/DMz6h2daeNdc7mTPEBnjgHDuP33PB/H3
+         Hko1oRQGHz3jXQjsw7LaexfXP+FQiRVMg1qm9gewPD0FtktDm1TrR9fT/e0twyYcpI
+         g41AIWwilyeEw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/14/20 1:09 PM, Kieran Bingham wrote:
-> Hi Hans, Sasha,
-> 
-> As mentioned on https://github.com/linux-surface/kernel/issues/63, I'm
-> afraid I've bisected a boot time issue on the Microsoft Surface Go 2 to
-> this commit on the stable 5.8 tree.
-> 
-> The effect as reported there is that the boot process stalls just after
-> loading the usbhid module.
-> 
-> Typing, or interacting with the Keyboard (Type Cover) at that point
-> appears to cause usb bus resets, but I don't know if that's a related
-> symptom or just an effect of some underlying root cause.
-> 
-> I have been running a linux-media kernel on this device without issue.
-> 
-> Is this commit in 5.9? I'll build a vanilla v5.9 kernel and see if it
-> occurs there too.
-
-Yes the commit is in 5.9 too. Still would be interesting to see if 5.9 hits
-this issue too. I guess it will, but as I mentioned in:
-
-https://github.com/linux-surface/kernel/issues/63
-
-I do not understand why this commit is causing this issue.
-
-So I just checked and the whole acpidump is not using I2C
-opregion stuff at all:
-
-[hans@x1 microsoft-surface-go2]$ ack GenericSerialBus *.dsl
-[hans@x1 microsoft-surface-go2]$
-
-And there is only 1 _REG handler which is for the
-embedded-controller.
-
-So this patch should not make a difference at all on the GO2,
-other then maybe a subtle timing difference somewhere ... ?
-
-Regards,
-
-Hans
-
-
-> On 21/09/2020 15:40, Sasha Levin wrote:
->> From: Hans de Goede <hdegoede@redhat.com>
->>
->> [ Upstream commit 21653a4181ff292480599dad996a2b759ccf050f ]
->>
->> Some ACPI i2c-devices _STA method (which is used to detect if the device
->> is present) use autodetection code which probes which device is present
->> over i2c. This requires the I2C ACPI OpRegion handler to be registered
->> before we enumerate i2c-clients under the i2c-adapter.
->>
->> This fixes the i2c touchpad on the Lenovo ThinkBook 14-IIL and
->> ThinkBook 15 IIL not getting an i2c-client instantiated and thus not
->> working.
->>
->> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1842039
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
->> Signed-off-by: Wolfram Sang <wsa@kernel.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>   drivers/i2c/i2c-core-base.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
->> index 4f09d4c318287..7031393c74806 100644
->> --- a/drivers/i2c/i2c-core-base.c
->> +++ b/drivers/i2c/i2c-core-base.c
->> @@ -1336,8 +1336,8 @@ static int i2c_register_adapter(struct i2c_adapter *adap)
->>   
->>   	/* create pre-declared device nodes */
->>   	of_i2c_register_devices(adap);
->> -	i2c_acpi_register_devices(adap);
->>   	i2c_acpi_install_space_handler(adap);
->> +	i2c_acpi_register_devices(adap);
->>   
->>   	if (adap->nr < __i2c_first_dynamic_bus_num)
->>   		i2c_scan_static_board_info(adap);
->>
-> 
-> 
-
+T24gTW9uLCAyMDIwLTEwLTEyIGF0IDE0OjA0ICswMDAwLCBIZW5yaWsgQmpvZXJubHVuZCB3cm90
+ZToNCj4gVGhpcyBpcyB0aGUgaW1wbGVtZW50YXRpb24gb2YgQ0ZNIG5ldGxpbmsgc3RhdHVzDQo+
+IGdldCBpbmZvcm1hdGlvbiBpbnRlcmZhY2UuDQo+IA0KPiBBZGQgbmV3IG5lc3RlZCBuZXRsaW5r
+IGF0dHJpYnV0ZXMuIFRoZXNlIGF0dHJpYnV0ZXMgYXJlIHVzZWQgYnkgdGhlDQo+IHVzZXIgc3Bh
+Y2UgdG8gZ2V0IHN0YXR1cyBpbmZvcm1hdGlvbi4NCj4gDQo+IEdFVExJTks6DQo+ICAgICBSZXF1
+ZXN0IGZpbHRlciBSVEVYVF9GSUxURVJfQ0ZNX1NUQVRVUzoNCj4gICAgIEluZGljYXRpbmcgdGhh
+dCBDRk0gc3RhdHVzIGluZm9ybWF0aW9uIG11c3QgYmUgZGVsaXZlcmVkLg0KPiANCj4gICAgIElG
+TEFfQlJJREdFX0NGTToNCj4gICAgICAgICBQb2ludHMgdG8gdGhlIENGTSBpbmZvcm1hdGlvbi4N
+Cj4gDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fTUVQX1NUQVRVU19JTkZPOg0KPiAgICAgICAgIFRo
+aXMgaW5kaWNhdGUgdGhhdCB0aGUgTUVQIGluc3RhbmNlIHN0YXR1cyBhcmUgZm9sbG93aW5nLg0K
+PiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX0lORk86DQo+ICAgICAgICAgVGhp
+cyBpbmRpY2F0ZSB0aGF0IHRoZSBwZWVyIE1FUCBzdGF0dXMgYXJlIGZvbGxvd2luZy4NCj4gDQo+
+IENGTSBuZXN0ZWQgYXR0cmlidXRlIGhhcyB0aGUgZm9sbG93aW5nIGF0dHJpYnV0ZXMgaW4gbmV4
+dCBsZXZlbC4NCj4gDQo+IEdFVExJTksgUlRFWFRfRklMVEVSX0NGTV9TVEFUVVM6DQo+ICAgICBJ
+RkxBX0JSSURHRV9DRk1fTUVQX1NUQVRVU19JTlNUQU5DRToNCj4gICAgICAgICBUaGUgTUVQIGlu
+c3RhbmNlIG51bWJlciBvZiB0aGUgZGVsaXZlcmVkIHN0YXR1cy4NCj4gICAgICAgICBUaGUgdHlw
+ZSBpcyB1MzIuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fTUVQX1NUQVRVU19PUENPREVfVU5FWFBf
+U0VFTjoNCj4gICAgICAgICBUaGUgTUVQIGluc3RhbmNlIHJlY2VpdmVkIENGTSBQRFUgd2l0aCB1
+bmV4cGVjdGVkIE9wY29kZS4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJvb2wpLg0KPiAg
+ICAgSUZMQV9CUklER0VfQ0ZNX01FUF9TVEFUVVNfVkVSU0lPTl9VTkVYUF9TRUVOOg0KPiAgICAg
+ICAgIFRoZSBNRVAgaW5zdGFuY2UgcmVjZWl2ZWQgQ0ZNIFBEVSB3aXRoIHVuZXhwZWN0ZWQgdmVy
+c2lvbi4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJvb2wpLg0KPiAgICAgSUZMQV9CUklE
+R0VfQ0ZNX01FUF9TVEFUVVNfUlhfTEVWRUxfTE9XX1NFRU46DQo+ICAgICAgICAgVGhlIE1FUCBp
+bnN0YW5jZSByZWNlaXZlZCBDQ00gUERVIHdpdGggTUQgbGV2ZWwgbG93ZXIgdGhhbg0KPiAgICAg
+ICAgIGNvbmZpZ3VyZWQgbGV2ZWwuIFRoaXMgZnJhbWUgaXMgZGlzY2FyZGVkLg0KPiAgICAgICAg
+IFRoZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+IA0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BF
+RVJfU1RBVFVTX0lOU1RBTkNFOg0KPiAgICAgICAgIFRoZSBNRVAgaW5zdGFuY2UgbnVtYmVyIG9m
+IHRoZSBkZWxpdmVyZWQgc3RhdHVzLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMi4NCj4gICAg
+IElGTEFfQlJJREdFX0NGTV9DQ19QRUVSX1NUQVRVU19QRUVSX01FUElEOg0KPiAgICAgICAgIFRo
+ZSBhZGRlZCBQZWVyIE1FUCBJRCBvZiB0aGUgZGVsaXZlcmVkIHN0YXR1cy4NCj4gICAgICAgICBU
+aGUgdHlwZSBpcyB1MzIuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfQ0NN
+X0RFRkVDVDoNCj4gICAgICAgICBUaGUgQ0NNIGRlZmVjdCBzdGF0dXMuDQo+ICAgICAgICAgVGhl
+IHR5cGUgaXMgdTMyIChib29sKS4NCj4gICAgICAgICBUcnVlIG1lYW5zIG5vIENDTSBmcmFtZSBp
+cyByZWNlaXZlZCBmb3IgMy4yNSBpbnRlcnZhbHMuDQo+ICAgICAgICAgSUZMQV9CUklER0VfQ0ZN
+X0NDX0NPTkZJR19FWFBfSU5URVJWQUwuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9T
+VEFUVVNfUkRJOg0KPiAgICAgICAgIFRoZSBsYXN0IHJlY2VpdmVkIENDTSBQRFUgUkRJLg0KPiAg
+ICAgICAgIFRoZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0Nf
+UEVFUl9TVEFUVVNfUE9SVF9UTFZfVkFMVUU6DQo+ICAgICAgICAgVGhlIGxhc3QgcmVjZWl2ZWQg
+Q0NNIFBEVSBQb3J0IFN0YXR1cyBUTFYgdmFsdWUgZmllbGQuDQo+ICAgICAgICAgVGhlIHR5cGUg
+aXMgdTguDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfSUZfVExWX1ZBTFVF
+Og0KPiAgICAgICAgIFRoZSBsYXN0IHJlY2VpdmVkIENDTSBQRFUgSW50ZXJmYWNlIFN0YXR1cyBU
+TFYgdmFsdWUgZmllbGQuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTguDQo+ICAgICBJRkxBX0JS
+SURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfU0VFTjoNCj4gICAgICAgICBBIENDTSBmcmFtZSBoYXMg
+YmVlbiByZWNlaXZlZCBmcm9tIFBlZXIgTUVQLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMiAo
+Ym9vbCkuDQo+ICAgICAgICAgVGhpcyBpcyBjbGVhcmVkIGFmdGVyIEdFVExJTksgSUZMQV9CUklE
+R0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX0lORk8uDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVF
+Ul9TVEFUVVNfVExWX1NFRU46DQo+ICAgICAgICAgQSBDQ00gZnJhbWUgd2l0aCBUTFYgaGFzIGJl
+ZW4gcmVjZWl2ZWQgZnJvbSBQZWVyIE1FUC4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJv
+b2wpLg0KPiAgICAgICAgIFRoaXMgaXMgY2xlYXJlZCBhZnRlciBHRVRMSU5LIElGTEFfQlJJREdF
+X0NGTV9DQ19QRUVSX1NUQVRVU19JTkZPLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJf
+U1RBVFVTX1NFUV9VTkVYUF9TRUVOOg0KPiAgICAgICAgIEEgQ0NNIGZyYW1lIHdpdGggdW5leHBl
+Y3RlZCBzZXF1ZW5jZSBudW1iZXIgaGFzIGJlZW4gcmVjZWl2ZWQNCj4gICAgICAgICBmcm9tIFBl
+ZXIgTUVQLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+ICAgICAgICAgV2hl
+biBhIHNlcXVlbmNlIG51bWJlciBpcyBub3Qgb25lIGhpZ2hlciB0aGFuIHByZXZpb3VzbHkgcmVj
+ZWl2ZWQNCj4gICAgICAgICB0aGVuIGl0IGlzIHVuZXhwZWN0ZWQuDQo+ICAgICAgICAgVGhpcyBp
+cyBjbGVhcmVkIGFmdGVyIEdFVExJTksgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX0lO
+Rk8uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBIZW5yaWsgQmpvZXJubHVuZCAgPGhlbnJpay5iam9l
+cm5sdW5kQG1pY3JvY2hpcC5jb20+DQo+IFJldmlld2VkLWJ5OiBIb3JhdGl1IFZ1bHR1ciAgPGhv
+cmF0aXUudnVsdHVyQG1pY3JvY2hpcC5jb20+DQo+IC0tLQ0KPiAgaW5jbHVkZS91YXBpL2xpbnV4
+L2lmX2JyaWRnZS5oIHwgIDI5ICsrKysrKysrKw0KPiAgaW5jbHVkZS91YXBpL2xpbnV4L3J0bmV0
+bGluay5oIHwgICAxICsNCj4gIG5ldC9icmlkZ2UvYnJfY2ZtX25ldGxpbmsuYyAgICB8IDEwNSAr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIG5ldC9icmlkZ2UvYnJfbmV0bGlu
+ay5jICAgICAgICB8ICAxNiArKysrLQ0KPiAgbmV0L2JyaWRnZS9icl9wcml2YXRlLmggICAgICAg
+IHwgICA2ICsrDQo+ICA1IGZpbGVzIGNoYW5nZWQsIDE1NCBpbnNlcnRpb25zKCspLCAzIGRlbGV0
+aW9ucygtKQ0KPiANCj4gDQoNCkFja2VkLWJ5OiBOaWtvbGF5IEFsZWtzYW5kcm92IDxuaWtvbGF5
+QG52aWRpYS5jb20+DQoNCg0K
