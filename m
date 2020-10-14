@@ -2,89 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CEA28DD52
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD88D28D9AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 07:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730460AbgJNJXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731209AbgJNJWl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:22:41 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C188C045862;
-        Tue, 13 Oct 2020 22:43:51 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id p21so889885pju.0;
-        Tue, 13 Oct 2020 22:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=umQbA12maAabp0YAAXx4XmA3wLrlwiRnHw8TQdyxX5I=;
-        b=YPkKq/vq/cyOYas+GCNZ+n82XLnWmynO+RbTt96hiDSAaUHA5JOXGOC5DJlzOquj6b
-         V9QjjmpwJChcCc+jP4pp6fB6W0l8lljvQHD/UvJS4VAFkBdqBtN9FErvT72kKftNS3fn
-         ktRf2pWYwExOGZj+jU++gsYGJ4kf3MTcMDMQzp9wFklvu9UOzjToCEBNcBwRAwx0058X
-         MHP8vLnRqivKAZQUYxTmDCjV5LLg24wG4JsqvkPSQAriwp1L4h7hu3u6PtZiaCMvq3is
-         0co0g8b7v8FO94OopjRpmw4JNTECsYW8/sLBp3tPmIXue/WaIcr7Hv9cqn9IoIGhNCqn
-         ITMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=umQbA12maAabp0YAAXx4XmA3wLrlwiRnHw8TQdyxX5I=;
-        b=gTEfjQKFfrdfrllzvrh3ymWcJHUWqBibo9myN+Cak/LtncQtGnS2N3zOyl5TQaXxrM
-         LRDZbJiSx1K4eUt/+tgfleX8xloFhbGp9SKq9wytFUr4tfaCUXlFCPSqptToqhwFNinx
-         /J+5Emfc+KAzXQKZba+sf5SsUXJthbh6qLtzkzZy5ghD7afBllORAQM7mFjbJWBDogBt
-         oq8X/KhwzPoE162I49DjEA5v1MUGTBS4e4aBHla7f6JgqrNz8vFhJSz0eibc/2BrwZkH
-         1I1yGEr3JJFZWnbAPVixpynLg8mMzITScND6TJEBVG8hisECGzZdIt9VRcgVO1nMO3wD
-         graQ==
-X-Gm-Message-State: AOAM5308nlqf+W0PrN4NEah9PN0JbK2eoJMR3AjbFohHOr1UDMBXIP+l
-        dOKErNPKxm7VrGWmKOaOKPcdloZjOVrQQvHmNPI=
-X-Google-Smtp-Source: ABdhPJxMiR0I/OaV/dSzfo6qytQ3489rmDgA3kk/rlB91+OwFjFgU5+PBWFmOfnf4kPNf/wZ73tUSw==
-X-Received: by 2002:a17:902:9a44:b029:d3:f10c:944a with SMTP id x4-20020a1709029a44b02900d3f10c944amr2768047plv.11.1602654230935;
-        Tue, 13 Oct 2020 22:43:50 -0700 (PDT)
-Received: from HVD6JC2.Broadcom.net ([103.113.142.251])
-        by smtp.gmail.com with ESMTPSA id y126sm1768537pgb.40.2020.10.13.22.43.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 22:43:50 -0700 (PDT)
-From:   Amitesh Chandra <amitesh.chandra@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     amitesh.chandra@broadcom.com, ravi.nagarajan@broadcom.com,
-        cheneyni@google.com
-Subject: [PATCH 1/3] Bluetooth: hci_bcm: Add compatible string for BCM4389
-Date:   Wed, 14 Oct 2020 11:13:25 +0530
-Message-Id: <20201014054325.2407-1-amitesh.chandra@gmail.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S1727729AbgJNFok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 01:44:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:48431 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725983AbgJNFok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 01:44:40 -0400
+IronPort-SDR: ZThkdjVlI+AFNKCv485zqfNVY4a4m8jgDtNket2pMC/L9Nf7CO1rs5ZIs9ANUd9FveIM7VVdzY
+ FRs2pu+6SyHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="152978904"
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="152978904"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 22:44:40 -0700
+IronPort-SDR: SATZSb9Vr00WVif2DflTavc06K6zIzvJjM8HVJrzcqcZuJJCndiO5ew5uX6XeBlMLX/F5rCF81
+ fE+g2XhXx+Lg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="356515874"
+Received: from lkp-server01.sh.intel.com (HELO 77f7a688d8fd) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Oct 2020 22:44:38 -0700
+Received: from kbuild by 77f7a688d8fd with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kSZaY-00002i-5m; Wed, 14 Oct 2020 05:44:38 +0000
+Date:   Wed, 14 Oct 2020 13:43:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:auto-latest] BUILD SUCCESS
+ f1fd159ac6fa12cc197caae397b36060f41cacef
+Message-ID: <5f869009.3y10cLSU9/f1r1Wx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amitesh Chandra <amitesh.chandra@broadcom.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  auto-latest
+branch HEAD: f1fd159ac6fa12cc197caae397b36060f41cacef  Merge branch 'core/rcu'
 
-Add compatible string match to the serdev driver for the
-BCM4389 Bluetooth controller
+elapsed time: 1230m
 
-Signed-off-by: Amitesh Chandra <amitesh.chandra@broadcom.com>
+configs tested: 151
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          polaris_defconfig
+powerpc                          allyesconfig
+mips                    maltaup_xpa_defconfig
+powerpc                     mpc83xx_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                     tqm5200_defconfig
+arc                             nps_defconfig
+arm                       versatile_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                        omega2p_defconfig
+arm                           stm32_defconfig
+sh                            migor_defconfig
+arm                         orion5x_defconfig
+arc                     nsimosci_hs_defconfig
+arm                        spear3xx_defconfig
+arm                    vt8500_v6_v7_defconfig
+mips                         rt305x_defconfig
+arm                        keystone_defconfig
+m68k                           sun3_defconfig
+powerpc                     stx_gp3_defconfig
+sh                          rsk7203_defconfig
+powerpc                     powernv_defconfig
+sh                        edosk7760_defconfig
+arm                        mvebu_v7_defconfig
+sh                           se7619_defconfig
+m68k                          atari_defconfig
+arm                       cns3420vb_defconfig
+xtensa                              defconfig
+sh                         ecovec24_defconfig
+m68k                          multi_defconfig
+powerpc                       holly_defconfig
+mips                       capcella_defconfig
+powerpc                      katmai_defconfig
+arm                            hisi_defconfig
+arm                          iop32x_defconfig
+powerpc                      mgcoge_defconfig
+arm                              zx_defconfig
+powerpc                   currituck_defconfig
+xtensa                           alldefconfig
+microblaze                      mmu_defconfig
+sh                      rts7751r2d1_defconfig
+mips                 pnx8335_stb225_defconfig
+sparc                       sparc32_defconfig
+powerpc                        icon_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                         axm55xx_defconfig
+arm                       aspeed_g5_defconfig
+sh                ecovec24-romimage_defconfig
+mips                         mpc30x_defconfig
+arc                     haps_hs_smp_defconfig
+sh                               alldefconfig
+powerpc                          g5_defconfig
+riscv                    nommu_virt_defconfig
+m68k                            mac_defconfig
+microblaze                          defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20201013
+x86_64               randconfig-a002-20201013
+x86_64               randconfig-a006-20201013
+x86_64               randconfig-a001-20201013
+x86_64               randconfig-a003-20201013
+x86_64               randconfig-a005-20201013
+i386                 randconfig-a005-20201014
+i386                 randconfig-a006-20201014
+i386                 randconfig-a001-20201014
+i386                 randconfig-a003-20201014
+i386                 randconfig-a004-20201014
+i386                 randconfig-a002-20201014
+i386                 randconfig-a005-20201013
+i386                 randconfig-a006-20201013
+i386                 randconfig-a001-20201013
+i386                 randconfig-a003-20201013
+i386                 randconfig-a004-20201013
+i386                 randconfig-a002-20201013
+x86_64               randconfig-a016-20201014
+x86_64               randconfig-a012-20201014
+x86_64               randconfig-a015-20201014
+x86_64               randconfig-a013-20201014
+x86_64               randconfig-a014-20201014
+x86_64               randconfig-a011-20201014
+i386                 randconfig-a016-20201014
+i386                 randconfig-a013-20201014
+i386                 randconfig-a015-20201014
+i386                 randconfig-a011-20201014
+i386                 randconfig-a012-20201014
+i386                 randconfig-a014-20201014
+i386                 randconfig-a016-20201013
+i386                 randconfig-a015-20201013
+i386                 randconfig-a013-20201013
+i386                 randconfig-a012-20201013
+i386                 randconfig-a011-20201013
+i386                 randconfig-a014-20201013
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20201014
+x86_64               randconfig-a002-20201014
+x86_64               randconfig-a006-20201014
+x86_64               randconfig-a001-20201014
+x86_64               randconfig-a005-20201014
+x86_64               randconfig-a003-20201014
+x86_64               randconfig-a016-20201013
+x86_64               randconfig-a015-20201013
+x86_64               randconfig-a012-20201013
+x86_64               randconfig-a013-20201013
+x86_64               randconfig-a014-20201013
+x86_64               randconfig-a011-20201013
+
 ---
- drivers/bluetooth/hci_bcm.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
-index 94ed734..680478f 100644
---- a/drivers/bluetooth/hci_bcm.c
-+++ b/drivers/bluetooth/hci_bcm.c
-@@ -1425,6 +1425,7 @@ static const struct of_device_id bcm_bluetooth_of_match[] = {
- 	{ .compatible = "brcm,bcm4345c5" },
- 	{ .compatible = "brcm,bcm4330-bt" },
- 	{ .compatible = "brcm,bcm43438-bt" },
-+	{ .compatible = "brcm,bcm4389-bt" },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, bcm_bluetooth_of_match);
--- 
-2.7.4
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
