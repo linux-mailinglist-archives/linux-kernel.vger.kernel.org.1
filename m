@@ -2,201 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63ADF28DD8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD5428D85C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731042AbgJNJZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730484AbgJNJTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:19:42 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E41C0D942D
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 19:12:23 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t18so3384524ilo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 19:12:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O0EZovHPBRBu6d4nMiG34aB96fSPYJLap8VHOicm/qs=;
-        b=DbWW5TtsBc6Dyb8YsskACaBaCbQEtISHSCVxTRgFAHlHJjmD1dU40N2/h5pZJ6i9bJ
-         +F2NBNfzuZOj7AsXvJYavEYGwGPq4uL8mop/7Jirc9xAaKdAITSdhsoI+JolGBgvo7jC
-         FaHWhFiSslkjQ7vjKYWsBMu2t4YFei5779oSs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O0EZovHPBRBu6d4nMiG34aB96fSPYJLap8VHOicm/qs=;
-        b=YNc+xVxuKagKH7BZoT3FlcDR803Xr0ChqsNnL9LUpoSfqtB1NHteFlpHHmjMmXjHU2
-         KQWkoUvxxyLdRSvvItaA8a9wg2jo0Bo5p6o0bP2Pg+SDa/0d0PLi4NUNZLBldVO0d4eK
-         DN0gCHTlF/FJCJltWCWfpHQb7+1Twa5SrtPiN7sFTObCg4kYVvqBJk3O1kq+cboZdvbW
-         KNfkFD2QXTT2qsuWTgitOR1EqqUpKOiitP0kZL7zu9Jq+CuQUIN+oG5nAYS3cycG+YSO
-         Cx1e7LNahk0HPpVe0gJHf69pFqcQxkdcenudscvGEf8rgksyjK4iaWkNhmEpg9tQGN8I
-         QmfA==
-X-Gm-Message-State: AOAM532gjJYyee2aVEl0plseVb1LyxQ+sLfJuiT2miI3DRKdhaUuhuNA
-        EWTPA8sMivJQxgTbkQ0MZ1urEA==
-X-Google-Smtp-Source: ABdhPJzg8Uk3iABEzJ4woM5C8q7wCnJ5fWvm66m83Hyk77SwQ9t1b/UHHFa4UxnY/E8z7l/WVw75Zg==
-X-Received: by 2002:a92:bb0d:: with SMTP id w13mr2338778ili.168.1602641542819;
-        Tue, 13 Oct 2020 19:12:22 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 15sm1611292ilz.66.2020.10.13.19.12.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Oct 2020 19:12:22 -0700 (PDT)
-Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, shuah@kernel.org,
-        rafael@kernel.org, johannes@sipsolutions.net, lenb@kernel.org,
-        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
-        surenb@google.com, minyard@acm.org, arnd@arndb.de,
-        mchehab@kernel.org, rric@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1602209970.git.skhan@linuxfoundation.org>
- <20201009193746.GA1073957@hirez.programming.kicks-ass.net>
- <202010091255.246395A6@keescook>
- <20201010110920.GQ2628@hirez.programming.kicks-ass.net>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <6e1dd408-653e-817e-b659-23649259a929@linuxfoundation.org>
-Date:   Tue, 13 Oct 2020 20:12:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726830AbgJNCOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:14:17 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:39796 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726120AbgJNCOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 22:14:16 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C4ED4804279DE037329C;
+        Wed, 14 Oct 2020 10:14:14 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 14 Oct 2020
+ 10:14:10 +0800
+Subject: Re: [PATCH 1/1] watchdog: remove unneeded inclusion of
+ <uapi/linux/sched/types.h>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-watchdog <linux-watchdog@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200827062154.1847-1-thunder.leizhen@huawei.com>
+ <55ad40ff-dcc1-5051-65d2-24201c471a8f@roeck-us.net>
+ <f80cc7ea-9d1f-64a4-7c18-faf672bf8cf6@huawei.com>
+ <18762ecb-9b47-18ed-6fbf-7cb4ee561a10@roeck-us.net>
+ <1098f1d5-0c36-d5b4-741a-4f2f6f42b428@huawei.com>
+Message-ID: <fd1d675e-4d7d-6d4f-64bc-feee23161b6d@huawei.com>
+Date:   Wed, 14 Oct 2020 10:14:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20201010110920.GQ2628@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1098f1d5-0c36-d5b4-741a-4f2f6f42b428@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/20 5:09 AM, Peter Zijlstra wrote:
-> On Fri, Oct 09, 2020 at 01:45:43PM -0700, Kees Cook wrote:
->> On Fri, Oct 09, 2020 at 09:37:46PM +0200, Peter Zijlstra wrote:
->>> On Fri, Oct 09, 2020 at 09:55:55AM -0600, Shuah Khan wrote:
->>>> Simple atomic counters api provides interfaces for simple atomic counters
->>>> that just count, and don't guard resource lifetimes. The interfaces are
->>>> built on top of atomic_t api, providing a smaller subset of atomic_t
->>>> interfaces necessary to support simple counters.
+
+
+On 2020/9/8 11:34, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2020/9/8 10:40, Guenter Roeck wrote:
+>> On 9/7/20 12:50 AM, Leizhen (ThunderTown) wrote:
+>>> Hi, Wim Van Sebroeck, Guenter Roeck:
+>>>   What's your opinion? Guenter Roeck given "Reviewed-by" two weeks ago.
 >>>
->>> To what actual purpose?!? AFACIT its pointless wrappery, it gets us
->>> nothing.
 >>
->> It's not pointless. There is value is separating types for behavioral
->> constraint to avoid flaws. atomic_t provides a native operation. We gained
->> refcount_t for the "must not wrap" type, and this gets us the other side
->> of that behavioral type, which is "wrapping is expected". Separating the
->> atomic_t uses allows for a clearer path to being able to reason about
->> code flow, whether it be a human or a static analyzer.
-> 
-> refcount_t got us actual rutime exceptions that atomic_t doesn't. This
-> propsal gets us nothing.
-> 
-> atomic_t is very much expected to wrap.
-> 
->> The counter wrappers add nothing to the image size, and only serve to
->> confine the API to one that cannot be used for lifetime management.
-> 
-> It doesn't add anything period. It doesn't get us new behaviour, it
-> splits a 'can wrap' use-case from a 'can wrap' type. That's sodding
-> pointless.
+>> The patch is in my watchdog-next branch, and Wim usually picks it up
+>> from there.
 > 
 
-They don't add any new behavior, As Kees mentioned they do give us a
-way to clearly differentiate atomic usages that can wrap.
+Hi, Guenter:
+  Have you sent [GIT PULL] updates for 5.10, I don't see this patch in linux-next.
 
-Let's discuss the problem at hand before dismissing it as pointless.
-
-> Worse, it mixes 2 unrelated cases into one type, which just makes a
-> mockery of things (all the inc_return users are not statistics, some
-> might even mis-behave if they wrap).
+> Oh, thanks.
 > 
-
-You are right that all inc_return usages aren't statistics. There are
-3 distinct usages:
-
-1. Stats
-2. Cases where wrapping is fine
-3. Cases where wrapping could be a problem. In which case, this API
-    shouldn't be used.
-
-There is no need to keep inc_return in this API as such. I included it
-so it can be used for above cases 1 and 2, so the users don't have to
-call inc() followed by read(). It can be left out of the API.
-
-The atomic_t usages in the kernel fall into the following categories:
-
-1. Stats (tolerance for accuracy determines whether they need to be
-    atomic or not). RFC version included non-atomic API for cases
-    when lossiness is acceptable. All these cases use/need just init
-    and inc. There are two variations in this case:
-
-    a. No checks for wrapping. Use signed value.
-    b. No checks for wrapping, but return unsigned.
-
-2. Reference counters that release resource and rapping could result
-    in use-after-free type problems. There are two variations in this
-    case:
-
-    a. Increments and decrements aren't bounded.
-    b. Increments and decrements are bounded.
-
-    Currently tools that flag unsafe atomic_t usages that are candidates
-    for refcount_t conversions don't make a distinction between the two.
-
-    The second case, since increments and decrements are bounded, it is
-    safe to continue to use it. At the moment there is no good way to
-    tell them apart other than looking at each of these cases.
-
-3. Reference counters that manage/control states. Wrapping is a problem
-    in this case, as it could lead to undefined behavior. These cases
-    don't use test and free, use inc/dec. At the moment there is no good
-    way to tell them apart other than looking at each of these cases.
-    This is addressed by REFCOUNT_SATURATED case.
-
-This API addresses 1a. Stats. No checks for wrapping. Use signed value
-at the moment with plan to add support for unsigned for cases where
-unsigned is being used.
-
-It is possible to cover 2b in this API, so it becomes easier to make a
-clear distinction the two cases and we can focus on only the atomic_t
-cases that need to converted to refcount_t. This is easy to do by
-allowing max. threshold for the variable and checking against that
-and not letting it go above it.
-
-There are several atomic_t usages that use just:
-
--- init or set and inc
--- init or set and inc/dec (including the ones that manage state)
--- Increments and decrements are bounded
-
-Creating a sub-set of atomic_t api would help us with differentiate
-these cases and make it easy for us identify and fix cases where
-refcount_t should be used.
-
-Would you be open to considering a subset if it addresses 2b and
-unsigned returns for stats?
-
-thanks,
--- Shuah
-
-
-
-
-
-
-
-
-
-
-
+>>
+>> Guenter
+>>
+>>>
+>>> On 2020/8/27 21:40, Guenter Roeck wrote:
+>>>> On 8/26/20 11:21 PM, Zhen Lei wrote:
+>>>>> There has been no reference to "struct sched_param" since
+>>>>> commit 94beddacb53c ("sched,watchdog: Convert to sched_set_fifo()"), so
+>>>>> there's no need to include <uapi/linux/sched/types.h> any more, delete
+>>>>> it.
+>>>>>
+>>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>>
+>>>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>>>>
+>>>>> ---
+>>>>>  drivers/watchdog/watchdog_dev.c | 2 --
+>>>>>  1 file changed, 2 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+>>>>> index 6798addabd5a067..0f18fa2433310b0 100644
+>>>>> --- a/drivers/watchdog/watchdog_dev.c
+>>>>> +++ b/drivers/watchdog/watchdog_dev.c
+>>>>> @@ -43,8 +43,6 @@
+>>>>>  #include <linux/watchdog.h>	/* For watchdog specific items */
+>>>>>  #include <linux/uaccess.h>	/* For copy_to_user/put_user/... */
+>>>>>  
+>>>>> -#include <uapi/linux/sched/types.h>	/* For struct sched_param */
+>>>>> -
+>>>>>  #include "watchdog_core.h"
+>>>>>  #include "watchdog_pretimeout.h"
+>>>>>  
+>>>>>
+>>>>
+>>>>
+>>>>
+>>>
+>>
+>>
+>>
 
