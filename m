@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D198728E5FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5724928E602
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387427AbgJNSGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:06:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:55400 "EHLO foss.arm.com"
+        id S1729251AbgJNSIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:08:14 -0400
+Received: from namei.org ([65.99.196.166]:35594 "EHLO namei.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727371AbgJNSGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:06:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8E8FD6E;
-        Wed, 14 Oct 2020 11:06:49 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CBCB3F719;
-        Wed, 14 Oct 2020 11:06:46 -0700 (PDT)
-Subject: Re: [PATCH RFC v4 06/13] perf vendor events arm64: Add hip09 SMMUv3
- PMCG events
-To:     John Garry <john.garry@huawei.com>, acme@kernel.org,
-        will@kernel.org, mark.rutland@arm.com, jolsa@redhat.com,
-        irogers@google.com, leo.yan@linaro.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, mathieu.poirier@linaro.org
-Cc:     linux-kernel@vger.kernel.org, qiangqing.zhang@nxp.com,
-        linuxarm@huawei.com, zhangshaokun@hisilicon.com,
-        james.clark@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com
-References: <1602152121-240367-1-git-send-email-john.garry@huawei.com>
- <1602152121-240367-7-git-send-email-john.garry@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3929fa83-36e0-b739-ac18-331d96cd25a1@arm.com>
-Date:   Wed, 14 Oct 2020 19:06:43 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1727369AbgJNSIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 14:08:13 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 09EI7CpI027390;
+        Wed, 14 Oct 2020 18:07:13 GMT
+Date:   Thu, 15 Oct 2020 05:07:12 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+cc:     linux-kernel@vger.kernel.org,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Jann Horn <jannh@google.com>, Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v21 07/12] landlock: Support filesystem access-control
+In-Reply-To: <20201008153103.1155388-8-mic@digikod.net>
+Message-ID: <alpine.LRH.2.21.2010150504360.26012@namei.org>
+References: <20201008153103.1155388-1-mic@digikod.net> <20201008153103.1155388-8-mic@digikod.net>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <1602152121-240367-7-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="1665246916-928235661-1602698835=:26012"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-08 11:15, John Garry wrote:
-> Add the SMMUv3 PMCG (Performance Monitor Event Group) events for hip09
-> platform.
-> 
-> This contains a mix of architected and IMP def events
-> 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->   .../hisilicon/hip09/sys/smmu-v3-pmcg.json     | 42 +++++++++++++++++++
->   1 file changed, 42 insertions(+)
->   create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
-> 
-> diff --git a/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
-> new file mode 100644
-> index 000000000000..8abafbb2dcb4
-> --- /dev/null
-> +++ b/tools/perf/pmu-events/arch/arm64/hisilicon/hip09/sys/smmu-v3-pmcg.json
-> @@ -0,0 +1,42 @@
-> +[
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.CYCLES"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.TRANSACTION"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.TLB_MISS"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.CONFIG_CACHE_MISS"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.TRANS_TABLE_WALK_ACCESS"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.CONFIG_STRUCT_ACCESS"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.PCIE_ATS_TRANS_RQ"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "ArchStdEvent": "smmuv3_pmcg.PCIE_ATS_TRANS_PASSED"
-> +	    "Compat": "0x00030736"
-> +   },
-> +   {
-> +	    "EventCode": "0x8a",
-> +	    "EventName": "smmuv3_pmcg.L1_TLB",
-> +	    "BriefDescription": "SMMUv3 PMCG L1 TABLE transation",
-> +	    "PublicDescription": "SMMUv3 PMCG L1 TABLE transation",
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Those typos are either missing "c"s or "l"s, but with SMMU it's never 
-clear which ;)
+--1665246916-928235661-1602698835=:26012
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Robin.
+On Thu, 8 Oct 2020, Mickaël Salaün wrote:
 
-> +	    "Unit": "smmuv3_pmcg",
-> +	    "Compat": "0x00030736"
-> +   },
-> +]
-> 
+> +config ARCH_EPHEMERAL_STATES
+> +	def_bool n
+> +	help
+> +	  An arch should select this symbol if it does not keep an internal kernel
+> +	  state for kernel objects such as inodes, but instead relies on something
+> +	  else (e.g. the host kernel for an UML kernel).
+> +
+
+This is used to disable Landlock for UML, correct? I wonder if it could be 
+more specific: "ephemeral states" is a very broad term.
+
+How about something like ARCH_OWN_INODES ?
+
+
+-- 
+James Morris
+<jmorris@namei.org>
+
+--1665246916-928235661-1602698835=:26012--
