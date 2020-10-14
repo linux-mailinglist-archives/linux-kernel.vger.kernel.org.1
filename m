@@ -2,250 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D054B28E330
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A0628E32E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730599AbgJNPXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:23:36 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:30177 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727056AbgJNPXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:23:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602689014; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+IIsA+57Axc0TGbzx3J0PJirmqcxQY6ipMrJ2tY6ekA=; b=joF87AegwdywSDViP0P8y0s4VTYYlERW675q1D+QAEpwVj81VN83x8EBszIYMv2dPjuTzxHL
- n9eXlQ1/Nl7u23jMGUH/s7pnCsAvk/0MaZX/NsAbrfm9FL984V9jkcIuG7Rm3I4Aely8V73S
- n8Gkx3hkBnf2ZuOLfp608GMXPRk=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f8717b30764f13b00136652 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 15:22:27
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E7DEEC433CB; Wed, 14 Oct 2020 15:22:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.102] (unknown [49.206.34.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728285AbgJNPXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:23:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727056AbgJNPXN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 11:23:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602688990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
+        bh=T25rLIandCGimXZCzxvdMrly1oaMYjEsixnZWUC3zE0=;
+        b=DASYOX8eHhJDWn0CbvxPwoyZBTr7A5ldSu/pEMqruYrAe0wm/xAY4mpwLBbkO3OQqVP9w+
+        urrDRSYhClwnabchb0swct4ZyTt5ZMU2ivHY0axZlGUnAL+gePop4+WKqQPC6zCKonEdPV
+        hvvW7TxPL69Cj0PPpDis1BasH3kDemg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-VTDs3DfFPlmIHBifjVR9Ww-1; Wed, 14 Oct 2020 11:23:08 -0400
+X-MC-Unique: VTDs3DfFPlmIHBifjVR9Ww-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7DAF6C433C9;
-        Wed, 14 Oct 2020 15:22:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7DAF6C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH v6 3/4] rcu/trace: Add tracing for how segcb list changes
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-References: <20200923152211.2403352-1-joel@joelfernandes.org>
- <20200923152211.2403352-4-joel@joelfernandes.org>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <be9eb8bc-b776-e122-2182-ca2aac2d1e20@codeaurora.org>
-Date:   Wed, 14 Oct 2020 20:52:17 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5027100746E;
+        Wed, 14 Oct 2020 15:23:05 +0000 (UTC)
+Received: from [10.36.115.5] (ovpn-115-5.ams2.redhat.com [10.36.115.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2CFB149F7;
+        Wed, 14 Oct 2020 15:22:57 +0000 (UTC)
+Cc:     Michal Privoznik <mprivozn@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>,
+        Mina Almasry <almasrymina@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Subject: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
+ mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Message-ID: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
+Date:   Wed, 14 Oct 2020 17:22:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200923152211.2403352-4-joel@joelfernandes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: base64
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SGkgZXZlcnlib2R5LA0KDQpNaWNoYWwgUHJpdm96bmlrIHBsYXllZCB3aXRoICJmcmVlIHBh
+Z2UgcmVwb3J0aW5nIiBpbiBRRU1VL3ZpcnRpby1iYWxsb29uDQp3aXRoIGh1Z2V0bGJmcyBh
+bmQgcmVwb3J0ZWQgdGhhdCB0aGlzIHJlc3VsdHMgaW4gWzFdDQoNCjEuIFdBUk5JTkc6IENQ
+VTogMTMgUElEOiAyNDM4IGF0IG1tL3BhZ2VfY291bnRlci5jOjU3IHBhZ2VfY291bnRlcl91
+bmNoYXJnZSsweDRiLzB4NQ0KDQoyLiBBbnkgaHVnZXRsYmZzIGFsbG9jYXRpb25zIGZhaWxp
+bmcuIChJIGFzc3VtZSBiZWNhdXNlIHNvbWUgYWNjb3VudGluZyBpcyB3cm9uZykNCg0KDQpR
+RU1VIHdpdGggZnJlZSBwYWdlIGhpbnRpbmcgdXNlcyBmYWxsb2NhdGUoRkFMTE9DX0ZMX1BV
+TkNIX0hPTEUpDQp0byBkaXNjYXJkIHBhZ2VzIHRoYXQgYXJlIHJlcG9ydGVkIGFzIGZyZWUg
+YnkgYSBWTS4gVGhlIHJlcG9ydGluZw0KZ3JhbnVsYXJpdHkgaXMgaW4gcGFnZWJsb2NrIGdy
+YW51bGFyaXR5LiBTbyB3aGVuIHRoZSBndWVzdCByZXBvcnRzDQoyTSBjaHVua3MsIHdlIGZh
+bGxvY2F0ZShGQUxMT0NfRkxfUFVOQ0hfSE9MRSkgb25lIGh1Z2UgcGFnZSBpbiBRRU1VLg0K
+DQpJIHdhcyBhbHNvIGFibGUgdG8gcmVwcm9kdWNlIChhbHNvIHdpdGggdmlydGlvLW1lbSwg
+d2hpY2ggc2ltaWxhcmx5DQp1c2VzIGZhbGxvY2F0ZShGQUxMT0NfRkxfUFVOQ0hfSE9MRSkp
+IG9uIGxhdGVzdCB2NS45DQooYW5kIG9uIHY1LjcuWCBmcm9tIEYzMikuDQoNCkxvb2tzIGxp
+a2Ugc29tZXRoaW5nIHdpdGggZmFsbG9jYXRlKEZBTExPQ19GTF9QVU5DSF9IT0xFKSBhY2Nv
+dW50aW5nDQppcyBicm9rZW4gd2l0aCBjZ3JvdXBzLiBJIGRpZCAqbm90KiB0cnkgd2l0aG91
+dCBjZ3JvdXBzIHlldC4NCg0KQW55IGlkZWFzPw0KDQoNCkhlcmUgaXMgcmVwb3J0ICMxOg0K
+DQpbICAzMTUuMjUxNDE3XSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0N
+ClsgIDMxNS4yNTE0MjRdIFdBUk5JTkc6IENQVTogNyBQSUQ6IDY2MzYgYXQgbW0vcGFnZV9j
+b3VudGVyLmM6NTcgcGFnZV9jb3VudGVyX3VuY2hhcmdlKzB4NGIvMHg1MA0KWyAgMzE1LjI1
+MTQyNV0gTW9kdWxlcyBsaW5rZWQgaW46IHh0X0NIRUNLU1VNIHh0X01BU1FVRVJBREUgeHRf
+Y29ubnRyYWNrIGlwdF9SRUpFQ1QgbmZfbmF0X3RmdHAgbmZfY29ubnRyYWNrX3RmdHAgcmZj
+b21tIHR1biBicmlkZ2Ugc3RwIGxsYyBuZnRfb2JqcmVmIG5mX2Nvbm50cmFja19uZXRiaW9z
+X25zIG5mX2Nvbm50cmFja19icm9hZGNhc3QgbmZ0X2ZpYl9pbmV0IG5mdF9maWJfaXB2NCBu
+ZnRfZmliX2lwdjYgbmZ0X2ZpYiBuZnRfcmVqZWN0X2luZXQgbmZfcmVqZWN0X2lwdjQgbmZf
+cmVqZWN0X2lwdjYgbmZ0X3JlamVjdCBuZnRfY3QgbmZ0X2NoYWluX25hdCBuZl90YWJsZXMg
+ZWJ0YWJsZV9uYXQgZWJ0YWJsZV9icm91dGUgaXA2dGFibGVfbmF0IGlwNnRhYmxlX21hbmds
+ZSBpcDZ0YWJsZV9yYXcgaXA2dGFibGVfc2VjdXJpdHkgaXB0YWJsZV9uYXQgbmZfbmF0IG5m
+X2Nvbm50cmFjayBuZl9kZWZyYWdfaXB2NiBuZl9kZWZyYWdfaXB2NCBpcHRhYmxlX21hbmds
+ZSBpcHRhYmxlX3JhdyBpcHRhYmxlX3NlY3VyaXR5IGlwX3NldCBuZm5ldGxpbmsgZWJ0YWJs
+ZV9maWx0ZXIgZWJ0YWJsZXMgaXA2dGFibGVfZmlsdGVyIGlwNl90YWJsZXMgaXB0YWJsZV9m
+aWx0ZXIgY21hYyBibmVwIGh3bW9uX3ZpZCBzdW5ycGMgc3F1YXNoZnMgdmZhdCBmYXQgbG9v
+cCBzbmRfaGRhX2NvZGVjX3JlYWx0ZWsgc25kX2hkYV9jb2RlY19nZW5lcmljIHNuZF9oZGFf
+Y29kZWNfaGRtaSBsZWR0cmlnX2F1ZGlvIHNuZF9oZGFfaW50ZWwgc25kX2ludGVsX2RzcGNm
+ZyBzbmRfaGRhX2NvZGVjIGVkYWNfbWNlX2FtZCBzbmRfaGRhX2NvcmUgYnR1c2IgYnRydGwg
+YnRiY20gc25kX2h3ZGVwIHNuZF9zZXEgYnRpbnRlbCBrdm1fYW1kIHNuZF9zZXFfZGV2aWNl
+IGJsdWV0b290aCBrdm0gc25kX3BjbSBlY2RoX2dlbmVyaWMgc3A1MTAwX3RjbyBpcnFieXBh
+c3MgcmZraWxsIHNuZF90aW1lciByYXBsIGVjYyBwY3Nwa3Igd21pX2Jtb2Ygam95ZGV2IGky
+Y19waWl4NCBrMTB0ZW1wIHNuZA0KWyAgMzE1LjI1MTQ1NF0gIHNvdW5kY29yZSBhY3BpX2Nw
+dWZyZXEgaXBfdGFibGVzIHhmcyBsaWJjcmMzMmMgZG1fY3J5cHQgaWdiIGhpZF9sb2dpdGVj
+aF9oaWRwcCB2aWRlbyBkY2EgYW1kZ3B1IGlvbW11X3YyIGdwdV9zY2hlZCBpMmNfYWxnb19i
+aXQgdHRtIGRybV9rbXNfaGVscGVyIGNyY3QxMGRpZl9wY2xtdWwgY3JjMzJfcGNsbXVsIGNy
+YzMyY19pbnRlbCBteG1fd21pIGRybSBnaGFzaF9jbG11bG5pX2ludGVsIGNjcCBudm1lIG52
+bWVfY29yZSB3bWkgcGluY3RybF9hbWQgaGlkX2xvZ2l0ZWNoX2RqIGZ1c2UNClsgIDMxNS4y
+NTE0NjZdIENQVTogNyBQSUQ6IDY2MzYgQ29tbTogcWVtdS1zeXN0ZW0teDg2IE5vdCB0YWlu
+dGVkIDUuOS4wICMxMzcNClsgIDMxNS4yNTE0NjddIEhhcmR3YXJlIG5hbWU6IEdpZ2FieXRl
+IFRlY2hub2xvZ3kgQ28uLCBMdGQuIFg1NzAgQU9SVVMgUFJPL1g1NzAgQU9SVVMgUFJPLCBC
+SU9TIEYyMSAwNy8zMS8yMDIwDQpbICAzMTUuMjUxNDY5XSBSSVA6IDAwMTA6cGFnZV9jb3Vu
+dGVyX3VuY2hhcmdlKzB4NGIvMHg1MA0KWyAgMzE1LjI1MTQ3MV0gQ29kZTogMGYgYzEgNDUg
+MDAgNGMgMjkgZTAgNDggODkgZWYgNDggODkgYzMgNDggODkgYzYgZTggMmEgZmUgZmYgZmYg
+NDggODUgZGIgNzggMTAgNDggOGIgNmQgMjggNDggODUgZWQgNzUgZDggNWIgNWQgNDEgNWMg
+NDEgNWQgYzMgPDBmPiAwYiBlYiBlYyA5MCAwZiAxZiA0NCAwMCAwMCA0OCA4YiAxNyA0OCAz
+OSBkNiA3MiA0MSA0MSA1NCA0OSA4OQ0KWyAgMzE1LjI1MTQ3Ml0gUlNQOiAwMDE4OmZmZmZi
+NjBmMDFlZDNiMjAgRUZMQUdTOiAwMDAxMDI4Ng0KWyAgMzE1LjI1MTQ3M10gUkFYOiBmZmZm
+ZmZmZmZmZmQwNjAwIFJCWDogZmZmZmZmZmZmZmZkMDYwMCBSQ1g6IGZmZmY4ZGU4MjcyZTMy
+MDANClsgIDMxNS4yNTE0NzNdIFJEWDogMDAwMDAwMDAwMDAwMDI4ZSBSU0k6IGZmZmZmZmZm
+ZmZmZDA2MDAgUkRJOiBmZmZmOGRlODM4NDUyZTQwDQpbICAzMTUuMjUxNDc0XSBSQlA6IGZm
+ZmY4ZGU4Mzg0NTJlNDAgUjA4OiBmZmZmOGRlODM4NDUyZTQwIFIwOTogZmZmZjhkZTgzN2Y4
+NmM4MA0KWyAgMzE1LjI1MTQ3NV0gUjEwOiBmZmZmYjYwZjAxZWQzYjU4IFIxMTogMDAwMDAw
+MDAwMDAwMDAwMSBSMTI6IDAwMDAwMDAwMDAwNTFjMDANClsgIDMxNS4yNTE0NzVdIFIxMzog
+ZmZmZmZmZmZmZmZhZTQwMCBSMTQ6IGZmZmY4ZGU4MjcyZTMyNDAgUjE1OiAwMDAwMDAwMDAw
+MDAwNTcxDQpbICAzMTUuMjUxNDc2XSBGUzogIDAwMDA3ZjljMmVkZmQ3MDAoMDAwMCkgR1M6
+ZmZmZjhkZTgzZWJjMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpbICAzMTUu
+MjUxNDc3XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUw
+MDMzDQpbICAzMTUuMjUxNDc4XSBDUjI6IDAwMDA3ZjJhNzY3ODdlNzggQ1IzOiAwMDAwMDAw
+ZmNiYjFjMDAwIENSNDogMDAwMDAwMDAwMDM1MGVlMA0KWyAgMzE1LjI1MTQ3OV0gQ2FsbCBU
+cmFjZToNClsgIDMxNS4yNTE0ODVdICBodWdldGxiX2Nncm91cF91bmNoYXJnZV9maWxlX3Jl
+Z2lvbisweDRiLzB4ODANClsgIDMxNS4yNTE0ODddICByZWdpb25fZGVsKzB4MWQzLzB4MzAw
+DQpbICAzMTUuMjUxNDg5XSAgaHVnZXRsYl91bnJlc2VydmVfcGFnZXMrMHgzOS8weGIwDQpb
+ICAzMTUuMjUxNDkyXSAgcmVtb3ZlX2lub2RlX2h1Z2VwYWdlcysweDFhOC8weDNkMA0KWyAg
+MzE1LjI1MTQ5NV0gID8gdGxiX2ZpbmlzaF9tbXUrMHg3YS8weDFkMA0KWyAgMzE1LjI1MTQ5
+N10gIGh1Z2V0bGJmc19mYWxsb2NhdGUrMHgzYzQvMHg1YzANClsgIDMxNS4yNTE1MTldICA/
+IGt2bV9hcmNoX3ZjcHVfaW9jdGxfcnVuKzB4NjE0LzB4MTcwMCBba3ZtXQ0KWyAgMzE1LjI1
+MTUyMl0gID8gZmlsZV9oYXNfcGVybSsweGEyLzB4YjANClsgIDMxNS4yNTE1MjRdICA/IGlu
+b2RlX3NlY3VyaXR5KzB4Yy8weDYwDQpbICAzMTUuMjUxNTI1XSAgPyBzZWxpbnV4X2ZpbGVf
+cGVybWlzc2lvbisweDRlLzB4MTIwDQpbICAzMTUuMjUxNTI3XSAgdmZzX2ZhbGxvY2F0ZSsw
+eDE0Ni8weDI5MA0KWyAgMzE1LjI1MTUyOV0gIF9feDY0X3N5c19mYWxsb2NhdGUrMHgzZS8w
+eDcwDQpbICAzMTUuMjUxNTMxXSAgZG9fc3lzY2FsbF82NCsweDMzLzB4NDANClsgIDMxNS4y
+NTE1MzNdICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5DQpbICAz
+MTUuMjUxNTM1XSBSSVA6IDAwMzM6MHg3ZjlkM2ZiNTY0MWYNClsgIDMxNS4yNTE1MzZdIENv
+ZGU6IDg5IDdjIDI0IDA4IDQ4IDg5IDRjIDI0IDE4IGU4IDVkIGZjIGY4IGZmIDRjIDhiIDU0
+IDI0IDE4IDQ4IDhiIDU0IDI0IDEwIDQxIDg5IGMwIDhiIDc0IDI0IDBjIDhiIDdjIDI0IDA4
+IGI4IDFkIDAxIDAwIDAwIDBmIDA1IDw0OD4gM2QgMDAgZjAgZmYgZmYgNzcgMzEgNDQgODkg
+YzcgODkgNDQgMjQgMDggZTggOGQgZmMgZjggZmYgOGIgNDQNClsgIDMxNS4yNTE1MzddIFJT
+UDogMDAyYjowMDAwN2Y5YzJlZGZjNDcwIEVGTEFHUzogMDAwMDAyOTMgT1JJR19SQVg6IDAw
+MDAwMDAwMDAwMDAxMWQNClsgIDMxNS4yNTE1MzhdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBS
+Qlg6IDAwMDAwMDAwMDAwMDEwMDAgUkNYOiAwMDAwN2Y5ZDNmYjU2NDFmDQpbICAzMTUuMjUx
+NTM5XSBSRFg6IDAwMDAwMDAwYWUyMDAwMDAgUlNJOiAwMDAwMDAwMDAwMDAwMDAzIFJESTog
+MDAwMDAwMDAwMDAwMDAwYw0KWyAgMzE1LjI1MTUzOV0gUkJQOiAwMDAwNTU3Mzg5ZDY3MzZj
+IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IDAwMDAwMDAwMDAwMDAwMGMNClsgIDMxNS4y
+NTE1NDBdIFIxMDogMDAwMDAwMDAwMDIwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyOTMgUjEy
+OiAwMDAwMDAwMDAwMjAwMDAwDQpbICAzMTUuMjUxNTQwXSBSMTM6IDAwMDAwMDAwZmZmZmZm
+ZmYgUjE0OiAwMDAwMDAwMGFlMjAwMDAwIFIxNTogMDAwMDdmOWNkZTAwMDAwMA0KWyAgMzE1
+LjI1MTU0Ml0gLS0tWyBlbmQgdHJhY2UgNGM4OGM2MmNjYjEzNDljOSBdLS0tDQoNCg0KDQpI
+ZXJlIGlzIHJlcG9ydCAjMjoNCg0KWyAgNDAwLjkyMDcwMl0gLS0tLS0tLS0tLS0tWyBjdXQg
+aGVyZSBdLS0tLS0tLS0tLS0tDQpbICA0MDAuOTIwNzExXSBXQVJOSU5HOiBDUFU6IDEzIFBJ
+RDogMjQzOCBhdCBtbS9wYWdlX2NvdW50ZXIuYzo1NyBwYWdlX2NvdW50ZXJfdW5jaGFyZ2Ur
+MHg0Yi8weDUwDQpbICA0MDAuOTIwNzEyXSBNb2R1bGVzIGxpbmtlZCBpbjogdmZpb19wY2kg
+dmZpb192aXJxZmQgdmZpb19pb21tdV90eXBlMSB2ZmlvIHh0X0NIRUNLU1VNIHh0X01BU1FV
+RVJBREUgeHRfY29ubnRyYWNrIGlwdF9SRUpFQ1QgbmZfbmF0X3RmdHAgbmZfY29ubnRyYWNr
+X3RmdHAgcmZjb21tIHR1biBicmlkZ2Ugc3RwIGxsYyBuZnRfb2JqcmVmIG5mX2Nvbm50cmFj
+a19uZXRiaW9zX25zIG5mX2Nvbm50cmFja19icm9hZGNhc3QgbmZ0X2ZpYl9pbmV0IG5mdF9m
+aWJfaXB2NCBuZnRfZmliX2lwdjYgbmZ0X2ZpYiBuZnRfcmVqZWN0X2luZXQgbmZfcmVqZWN0
+X2lwdjQgbmZfcmVqZWN0X2lwdjYgbmZ0X3JlamVjdCBuZnRfY3QgbmZ0X2NoYWluX25hdCBu
+Zl90YWJsZXMgZWJ0YWJsZV9uYXQgZWJ0YWJsZV9icm91dGUgaXA2dGFibGVfbmF0IGlwNnRh
+YmxlX21hbmdsZSBpcDZ0YWJsZV9yYXcgaXA2dGFibGVfc2VjdXJpdHkgaXB0YWJsZV9uYXQg
+bmZfbmF0IG5mX2Nvbm50cmFjayBuZl9kZWZyYWdfaXB2NiBuZl9kZWZyYWdfaXB2NCBpcHRh
+YmxlX21hbmdsZSBpcHRhYmxlX3JhdyBpcHRhYmxlX3NlY3VyaXR5IGlwX3NldCBuZm5ldGxp
+bmsgZWJ0YWJsZV9maWx0ZXIgZWJ0YWJsZXMgaXA2dGFibGVfZmlsdGVyIGlwNl90YWJsZXMg
+aXB0YWJsZV9maWx0ZXIgY21hYyBibmVwIGh3bW9uX3ZpZCBzdW5ycGMgc3F1YXNoZnMgdmZh
+dCBmYXQgbG9vcCBidHVzYiBidHJ0bCBidGJjbSBidGludGVsIGVkYWNfbWNlX2FtZCBibHVl
+dG9vdGggc25kX2hkYV9jb2RlY19yZWFsdGVrIHNuZF9oZGFfY29kZWNfZ2VuZXJpYyBsZWR0
+cmlnX2F1ZGlvIHNuZF9oZGFfY29kZWNfaGRtaSBzbmRfaGRhX2ludGVsIHNuZF9pbnRlbF9k
+c3BjZmcgc25kX2hkYV9jb2RlYyBrdm1fYW1kIHNuZF9oZGFfY29yZSBzbmRfaHdkZXAga3Zt
+IHNuZF9zZXEgZWNkaF9nZW5lcmljIHNuZF9zZXFfZGV2aWNlIHJma2lsbCBpcnFieXBhc3Mg
+c25kX3BjbSBlY2Mgam95ZGV2IHNwNTEwMF90Y28gcmFwbCBwY3Nwa3INClsgIDQwMC45MjA3
+NDNdICB3bWlfYm1vZiBpMmNfcGlpeDQgazEwdGVtcCBzbmRfdGltZXIgc25kIHNvdW5kY29y
+ZSBhY3BpX2NwdWZyZXEgaXBfdGFibGVzIHhmcyBsaWJjcmMzMmMgZG1fY3J5cHQgaWdiIGhp
+ZF9sb2dpdGVjaF9oaWRwcCB2aWRlbyBkY2EgYW1kZ3B1IGlvbW11X3YyIGdwdV9zY2hlZCBp
+MmNfYWxnb19iaXQgdHRtIGRybV9rbXNfaGVscGVyIGNyY3QxMGRpZl9wY2xtdWwgY3JjMzJf
+cGNsbXVsIGNyYzMyY19pbnRlbCBkcm0gbXhtX3dtaSBnaGFzaF9jbG11bG5pX2ludGVsIGNj
+cCBudm1lIG52bWVfY29yZSB3bWkgcGluY3RybF9hbWQgaGlkX2xvZ2l0ZWNoX2RqIGZ1c2UN
+ClsgIDQwMC45MjA3NTldIENQVTogMTMgUElEOiAyNDM4IENvbW06IHFlbXUtc3lzdGVtLXg4
+NiBOb3QgdGFpbnRlZCA1LjkuMCAjMTM3DQpbICA0MDAuOTIwNzYwXSBIYXJkd2FyZSBuYW1l
+OiBHaWdhYnl0ZSBUZWNobm9sb2d5IENvLiwgTHRkLiBYNTcwIEFPUlVTIFBSTy9YNTcwIEFP
+UlVTIFBSTywgQklPUyBGMjEgMDcvMzEvMjAyMA0KWyAgNDAwLjkyMDc2M10gUklQOiAwMDEw
+OnBhZ2VfY291bnRlcl91bmNoYXJnZSsweDRiLzB4NTANClsgIDQwMC45MjA3NjVdIENvZGU6
+IDBmIGMxIDQ1IDAwIDRjIDI5IGUwIDQ4IDg5IGVmIDQ4IDg5IGMzIDQ4IDg5IGM2IGU4IDJh
+IGZlIGZmIGZmIDQ4IDg1IGRiIDc4IDEwIDQ4IDhiIDZkIDI4IDQ4IDg1IGVkIDc1IGQ4IDVi
+IDVkIDQxIDVjIDQxIDVkIGMzIDwwZj4gMGIgZWIgZWMgOTAgMGYgMWYgNDQgMDAgMDAgNDgg
+OGIgMTcgNDggMzkgZDYgNzIgNDEgNDEgNTQgNDkgODkNClsgIDQwMC45MjA3NjZdIFJTUDog
+MDAxODpmZmZmYjg5ZTAxZjVmYTIwIEVGTEFHUzogMDAwMTAyODYNClsgIDQwMC45MjA3Njdd
+IFJBWDogZmZmZmZmZmZmZmYwMTIwMCBSQlg6IGZmZmZmZmZmZmZmMDEyMDAgUkNYOiAwMDAw
+MDAwMDgwNDAwMDAwDQpbICA0MDAuOTIwNzY4XSBSRFg6IDAwMDAwMDAwMDAwMDA4MDAgUlNJ
+OiBmZmZmZmZmZmZmZjAxMjAwIFJESTogZmZmZjkxMGI3ODQ1MmU0MA0KWyAgNDAwLjkyMDc2
+OV0gUkJQOiBmZmZmOTEwYjc4NDUyZTQwIFIwODogZmZmZjkxMGI3ODQ1MmU0MCBSMDk6IGZm
+ZmY5MTBiNzBiMmE3MDANClsgIDQwMC45MjA3NjldIFIxMDogMDAwMDAwMDAwMDAwMDAwMSBS
+MTE6IGZmZmY5MTBiNWUwNzkzMDAgUjEyOiAwMDAwMDAwMDAwMTAwMDAwDQpbICA0MDAuOTIw
+NzcwXSBSMTM6IGZmZmZmZmZmZmZmMDAwMDAgUjE0OiBmZmZmOTEwYjc2MTg1OTA4IFIxNTog
+MDAwMDAwMDAwMDAwMDAwMA0KWyAgNDAwLjkyMDc3MV0gRlM6ICAwMDAwMDAwMDAwMDAwMDAw
+KDAwMDApIEdTOmZmZmY5MTBiN2VkNDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAw
+MA0KWyAgNDAwLjkyMDc3Ml0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAw
+MDAwMDA4MDA1MDAzMw0KWyAgNDAwLjkyMDc3M10gQ1IyOiAwMDAwN2Y5MGIyZDg5OGJjIENS
+MzogMDAwMDAwMDU2Y2EwZTAwMCBDUjQ6IDAwMDAwMDAwMDAzNTBlZTANClsgIDQwMC45MjA3
+NzRdIENhbGwgVHJhY2U6DQpbICA0MDAuOTIwNzgwXSAgaHVnZXRsYl9jZ3JvdXBfdW5jaGFy
+Z2VfZmlsZV9yZWdpb24rMHg0Yi8weDgwDQpbICA0MDAuOTIwNzgzXSAgcmVnaW9uX2RlbCsw
+eDExYi8weDMwMA0KWyAgNDAwLjkyMDc4Nl0gIGh1Z2V0bGJfdW5yZXNlcnZlX3BhZ2VzKzB4
+MzkvMHhiMA0KWyAgNDAwLjkyMDc4OF0gIHJlbW92ZV9pbm9kZV9odWdlcGFnZXMrMHgzYzIv
+MHgzZDANClsgIDQwMC45MjA3OTJdICBodWdldGxiZnNfZXZpY3RfaW5vZGUrMHgxYS8weDQw
+DQpbICA0MDAuOTIwNzk1XSAgZXZpY3QrMHhkMS8weDFhMA0KWyAgNDAwLjkyMDc5N10gIF9f
+ZGVudHJ5X2tpbGwrMHhlNC8weDE4MA0KWyAgNDAwLjkyMDc5OV0gIF9fZnB1dCsweGVjLzB4
+MjQwDQpbICA0MDAuOTIwODAyXSAgdGFza193b3JrX3J1bisweDY1LzB4YTANClsgIDQwMC45
+MjA4MDRdICBkb19leGl0KzB4MzRjLzB4YWQwDQpbICA0MDAuOTIwODA2XSAgZG9fZ3JvdXBf
+ZXhpdCsweDMzLzB4YTANClsgIDQwMC45MjA4MDhdICBnZXRfc2lnbmFsKzB4MTc5LzB4OGQw
+DQpbICA0MDAuOTIwODExXSAgYXJjaF9kb19zaWduYWwrMHgzMC8weDcwMA0KWyAgNDAwLjky
+MDgzMl0gID8ga3ZtX3ZjcHVfaW9jdGwrMHgyOWYvMHg1OTAgW2t2bV0NClsgIDQwMC45MjA4
+MzVdICBleGl0X3RvX3VzZXJfbW9kZV9wcmVwYXJlKzB4ZjcvMHgxNjANClsgIDQwMC45MjA4
+MzhdICBzeXNjYWxsX2V4aXRfdG9fdXNlcl9tb2RlKzB4MzEvMHgxYjANClsgIDQwMC45MjA4
+NDFdICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg0NC8weGE5DQpbICA0MDAu
+OTIwODQzXSBSSVA6IDAwMzM6MHg3ZjkwYjMwMDhlOTINClsgIDQwMC45MjA4NDNdIENvZGU6
+IEJhZCBSSVAgdmFsdWUuDQpbICA0MDAuOTIwODQ0XSBSU1A6IDAwMmI6MDAwMDdmOGQ0NWZm
+YTc3MCBFRkxBR1M6IDAwMDAwMjgyIE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMGNhDQpbICA0
+MDAuOTIwODQ1XSBSQVg6IGZmZmZmZmZmZmZmZmZlMDAgUkJYOiAwMDAwMDAwMDAwMDAwMDE0
+IFJDWDogMDAwMDdmOTBiMzAwOGU5Mg0KWyAgNDAwLjkyMDg0Nl0gUkRYOiAwMDAwMDAwMDAw
+MDAwMDAwIFJTSTogMDAwMDAwMDAwMDAwMDA4MCBSREk6IDAwMDA1NWVmZDI5NTFkYjgNClsg
+IDQwMC45MjA4NDZdIFJCUDogMDAwMDU1ZWZkMjk1MWQ5MCBSMDg6IDAwMDAwMDAwMDAwMDAw
+MDAgUjA5OiAwMDAwNTVlZmQxOGYyOWEwDQpbICA0MDAuOTIwODQ3XSBSMTA6IDAwMDAwMDAw
+MDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMjgyIFIxMjogMDAwMDAwMDAwMDAwMDAwMA0K
+WyAgNDAwLjkyMDg0OF0gUjEzOiAwMDAwNTVlZmQxOTBmZjYwIFIxNDogMDAwMDU1ZWZkMjk1
+MWRiOCBSMTU6IDAwMDA3ZjhkNDVmZmE3YTANClsgIDQwMC45MjA4NTBdIC0tLVsgZW5kIHRy
+YWNlIGJkNGQxYjA5MzBhZmU5OTkgXS0tLQ0KDQoNCg0KWzFdIGh0dHBzOi8vd3d3LnJlZGhh
+dC5jb20vYXJjaGl2ZXMvbGlidmlyLWxpc3QvMjAyMC1PY3RvYmVyL21zZzAwODcyLmh0bWwN
+Cg0KLS0gDQpUaGFua3MsDQoNCkRhdmlkIC8gZGhpbGRlbmINCg==
 
-
-On 9/23/2020 8:52 PM, Joel Fernandes (Google) wrote:
-> Track how the segcb list changes before/after acceleration, during
-> queuing and during dequeuing.
-> 
-> This has proved useful to discover an optimization to avoid unwanted GP
-> requests when there are no callbacks accelerated. The overhead is minimal as
-> each segment's length is now stored in the respective segment.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->   include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
->   kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
->   kernel/rcu/rcu_segcblist.h |  5 +++++
->   kernel/rcu/tree.c          |  9 +++++++++
->   4 files changed, 73 insertions(+)
-> 
-> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> index 155b5cb43cfd..7b84df3c95df 100644
-> --- a/include/trace/events/rcu.h
-> +++ b/include/trace/events/rcu.h
-> @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
->   		  __entry->qlen)
->   );
->   
-> +TRACE_EVENT_RCU(rcu_segcb,
-> +
-> +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
-> +
-> +		TP_ARGS(ctx, cb_count, gp_seq),
-> +
-> +		TP_STRUCT__entry(
-> +			__field(const char *, ctx)
-> +			__array(int, cb_count, 4)
-> +			__array(unsigned long, gp_seq, 4)
-
-Use RCU_CBLIST_NSEGS in place of 4 ?
-> +		),
-> +
-> +		TP_fast_assign(
-> +			__entry->ctx = ctx;
-> +			memcpy(__entry->cb_count, cb_count, 4 * sizeof(int));
-> +			memcpy(__entry->gp_seq, gp_seq, 4 * sizeof(unsigned long));
-> +		),
-> +
-> +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
-> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
-> +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
-> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
-> +
-> +);
-> +
->   /*
->    * Tracepoint for the registration of a single RCU callback of the special
->    * kvfree() form.  The first argument is the RCU type, the second argument
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 0e6d19bd3de9..df0f31e30947 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -13,6 +13,7 @@
->   #include <linux/rcupdate.h>
->   
->   #include "rcu_segcblist.h"
-> +#include "rcu.h"
->   
->   /* Initialize simple callback list. */
->   void rcu_cblist_init(struct rcu_cblist *rclp)
-> @@ -343,6 +344,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->   	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
->   }
->   
-> +/*
-> + * Return how many CBs each segment along with their gp_seq values.
-> + *
-> + * This function is O(N) where N is the number of callbacks. Only used from
-
-N is number of segments?
-
-> + * tracing code which is usually disabled in production.
-> + */
-> +#ifdef CONFIG_RCU_TRACE
-> +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-> +			 int cbcount[RCU_CBLIST_NSEGS],
-> +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
-> +		cbcount[i] = 0;
-> +
-
-What is the reason for initializing to 0?
-
-> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
-> +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
-> +		gpseq[i] = rsclp->gp_seq[i];
-> +	}
-> +}
-> +
-> +void trace_rcu_segcb_list(struct rcu_segcblist *rsclp, char *context)
-> +{
-> +	int cbs[RCU_CBLIST_NSEGS];
-> +	unsigned long gps[RCU_CBLIST_NSEGS];
-> +
-> +	rcu_segcblist_countseq(rsclp, cbs, gps);
-> +
-> +	trace_rcu_segcb(context, cbs, gps);
-> +}
-> +#endif
-> +
->   /*
->    * Extract only those callbacks still pending (not yet ready to be
->    * invoked) from the specified rcu_segcblist structure and place them in
-> diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-> index 3e0eb1056ae9..15c10d30f88c 100644
-> --- a/kernel/rcu/rcu_segcblist.h
-> +++ b/kernel/rcu/rcu_segcblist.h
-> @@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
->   bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
->   void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
->   			 struct rcu_segcblist *src_rsclp);
-> +#ifdef CONFIG_RCU_TRACE
-> +void trace_rcu_segcb_list(struct rcu_segcblist *rsclp, char *context);
-> +#else
-> +#define trace_rcu_segcb_list(...)
-> +#endif
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 50af465729f4..e3381ff67fc6 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1492,6 +1492,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->   	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
->   		return false;
->   
-> +	trace_rcu_segcb_list(&rdp->cblist, "SegCbPreAcc");
-
-Use TPS("SegCbPreAcc") ?
-
-
-Thanks
-Neeraj
-
-> +
->   	/*
->   	 * Callbacks are often registered with incomplete grace-period
->   	 * information.  Something about the fact that getting exact
-> @@ -1512,6 +1514,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
->   	else
->   		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
->   
-> +	trace_rcu_segcb_list(&rdp->cblist, "SegCbPostAcc");
-> +
->   	return ret;
->   }
->   
-> @@ -2469,6 +2473,9 @@ static void rcu_do_batch(struct rcu_data *rdp)
->   	/* Invoke callbacks. */
->   	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
->   	rhp = rcu_cblist_dequeue(&rcl);
-> +
-> +	trace_rcu_segcb_list(&rdp->cblist, "SegCbDequeued");
-> +
->   	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
->   		rcu_callback_t f;
->   
-> @@ -2982,6 +2989,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
->   		trace_rcu_callback(rcu_state.name, head,
->   				   rcu_segcblist_n_cbs(&rdp->cblist));
->   
-> +	trace_rcu_segcb_list(&rdp->cblist, "SegCBQueued");
-> +
->   	/* Go handle any RCU core processing required. */
->   	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
->   	    unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
-> 
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
