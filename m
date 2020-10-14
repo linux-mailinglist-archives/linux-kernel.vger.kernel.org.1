@@ -2,53 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3992928E86D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF66728E874
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730882AbgJNVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 17:34:14 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38647 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726484AbgJNVeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 17:34:14 -0400
-IronPort-SDR: 6gK3BuNwnZiwIetnG8/SVVc+/ykuai45W9kufI16kvlWgJDeyMixQyF7GFl3KcNSLLP7ieBvKP
- U8hIs0xCYcHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="166318477"
-X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
-   d="scan'208";a="166318477"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 14:34:11 -0700
-IronPort-SDR: rOHH2s/plb6wYNVJ8lblp0P0nyOJJnYBb7ixCTLY+e+2L7+qNHQyYNq+XYXAl1NgTytfMdl60x
- Qv6jLZWB5+Pw==
-X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
-   d="scan'208";a="464034099"
-Received: from wydrak-mobl.ger.corp.intel.com (HELO localhost) ([10.249.35.67])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 14:34:08 -0700
-Date:   Thu, 15 Oct 2020 00:34:06 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Backing up the PGP master key
-Message-ID: <20201014213406.GA7622@linux.intel.com>
+        id S1730973AbgJNVgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 17:36:16 -0400
+Received: from [157.25.102.26] ([157.25.102.26]:45186 "EHLO orcam.me.uk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726484AbgJNVgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 17:36:16 -0400
+Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
+        by orcam.me.uk (Postfix) with ESMTPS id 41EE22BE086;
+        Wed, 14 Oct 2020 22:36:14 +0100 (BST)
+Date:   Wed, 14 Oct 2020 22:34:56 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+cc:     Serge Semin <fancer.lancer@gmail.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH v2] MIPS: DEC: Restore bootmem reservation for firmware
+ working memory area
+Message-ID: <alpine.LFD.2.21.2010142230090.866917@eddie.linux-mips.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konstantin, writing to you based on 'git blame' :-)
+Fix a crash on DEC platforms starting with:
 
-The maintainer guide recommends using paperkey for the PGP master key,
-which is a prefectly sane method.
+VFS: Mounted root (nfs filesystem) on device 0:11.
+Freeing unused PROM memory: 124k freed
+BUG: Bad page state in process swapper  pfn:00001
+page:(ptrval) refcount:0 mapcount:-128 mapping:00000000 index:0x1 pfn:0x1
+flags: 0x0()
+raw: 00000000 00000100 00000122 00000000 00000001 00000000 ffffff7f 00000000
+page dumped because: nonzero mapcount
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-00858-g865c50e1d279 #1
+Stack : 8065dc48 0000000b 8065d2b8 9bc27dcc 80645bfc 9bc259a4 806a1b97 80703124
+        80710000 8064a900 00000001 80099574 806b116c 1000ec00 9bc27d88 806a6f30
+        00000000 00000000 80645bfc 00000000 31232039 80706ba4 2e392e35 8039f348
+        2d383538 00000070 0000000a 35363867 00000000 806c2830 80710000 806b0000
+        80710000 8064a900 00000001 81000000 00000000 00000000 8035af2c 80700000
+        ...
+Call Trace:
+[<8004bc5c>] show_stack+0x34/0x104
+[<8015675c>] bad_page+0xfc/0x128
+[<80157714>] free_pcppages_bulk+0x1f4/0x5dc
+[<801591cc>] free_unref_page+0xc0/0x130
+[<8015cb04>] free_reserved_area+0x144/0x1d8
+[<805abd78>] kernel_init+0x20/0x100
+[<80046070>] ret_from_kernel_thread+0x14/0x1c
+Disabling lock debugging due to kernel taint
 
-I was just wondering that isn't a backup to a USB stick a reasonable
-option? E.g. get a few USB sticks (new, unweared), store your master key
-to each of them and put to safe.
+caused by an attempt to free bootmem space that as from commit 
+b93ddc4f9156 ("mips: Reserve memory for the kernel image resources") has 
+not been anymore reserved due to the removal of generic MIPS arch code 
+that used to reserve all the memory from the beginning of RAM up to the 
+kernel load address.
 
-/Jarkko
+This memory does need to be reserved on DEC platforms however as it is 
+used by REX firmware as working area, as per the TURBOchannel firmware 
+specification[1]:
+
+Table 2-2  REX Memory Regions
+-------------------------------------------------------------------------
+        Starting        Ending
+Region  Address         Address         Use
+-------------------------------------------------------------------------
+0       0xa0000000      0xa000ffff      Restart block, exception vectors,
+                                        REX stack and bss
+1       0xa0010000      0xa0017fff      Keyboard or tty drivers
+
+2       0xa0018000      0xa001f3ff 1)   CRT driver
+
+3       0xa0020000      0xa002ffff      boot, cnfg, init and t objects
+
+4       0xa0020000      0xa002ffff      64KB scratch space
+-------------------------------------------------------------------------
+1) Note that the last 3 Kbytes of region 2 are reserved for backward
+compatibility with previous system software.
+-------------------------------------------------------------------------
+
+(this table uses KSEG2 unmapped virtual addresses, which in the MIPS 
+architecture are offset from physical addresses by a fixed value of 
+0xa0000000 and therefore the regions referred do correspond to the 
+beginning of the physical address space) and we call into the firmware 
+on several occasions throughout the bootstrap process.  It is believed 
+that pre-REX firmware used with non-TURBOchannel DEC platforms has the 
+same requirements, as hinted by note #1 cited.
+
+Recreate the discarded reservation then, in DEC platform code, removing 
+the crash.
+
+References:
+
+[1] "TURBOchannel Firmware Specification", On-line version,
+    EK-TCAAD-FS-004, Digital Equipment Corporation, January 1993, 
+    Chapter 2 "System Module Firmware", p. 2-5
+
+Signed-off-by: Maciej W. Rozycki <macro@linux-mips.org>
+Fixes: b93ddc4f9156 ("mips: Reserve memory for the kernel image resources")
+Cc: stable@vger.kernel.org # v5.2+
+---
+Changes from v1:
+
+- Fix 2nd argument of the call to `memblock_reserve' (thanks Serge!).
+---
+ arch/mips/dec/setup.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+linux-dec-prom-memblock-reserve.diff
+Index: linux-3maxp/arch/mips/dec/setup.c
+===================================================================
+--- linux-3maxp.orig/arch/mips/dec/setup.c
++++ linux-3maxp/arch/mips/dec/setup.c
+@@ -6,7 +6,7 @@
+  * for more details.
+  *
+  * Copyright (C) 1998 Harald Koerfgen
+- * Copyright (C) 2000, 2001, 2002, 2003, 2005  Maciej W. Rozycki
++ * Copyright (C) 2000, 2001, 2002, 2003, 2005, 2020  Maciej W. Rozycki
+  */
+ #include <linux/console.h>
+ #include <linux/export.h>
+@@ -15,6 +15,7 @@
+ #include <linux/ioport.h>
+ #include <linux/irq.h>
+ #include <linux/irqnr.h>
++#include <linux/memblock.h>
+ #include <linux/param.h>
+ #include <linux/percpu-defs.h>
+ #include <linux/sched.h>
+@@ -22,6 +23,7 @@
+ #include <linux/types.h>
+ #include <linux/pm.h>
+ 
++#include <asm/addrspace.h>
+ #include <asm/bootinfo.h>
+ #include <asm/cpu.h>
+ #include <asm/cpu-features.h>
+@@ -29,7 +31,9 @@
+ #include <asm/irq.h>
+ #include <asm/irq_cpu.h>
+ #include <asm/mipsregs.h>
++#include <asm/page.h>
+ #include <asm/reboot.h>
++#include <asm/sections.h>
+ #include <asm/time.h>
+ #include <asm/traps.h>
+ #include <asm/wbflush.h>
+@@ -146,6 +150,9 @@ void __init plat_mem_setup(void)
+ 
+ 	ioport_resource.start = ~0UL;
+ 	ioport_resource.end = 0UL;
++
++	/* Stay away from the firmware working memory area for now. */
++	memblock_reserve(PHYS_OFFSET, __pa_symbol(&_text) - PHYS_OFFSET);
+ }
+ 
+ /*
+
