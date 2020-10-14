@@ -2,71 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB6D28DADF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFB928DAE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgJNIMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:12:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727975AbgJNIMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:12:12 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB84E20BED;
-        Wed, 14 Oct 2020 08:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602663131;
-        bh=lH0KrnmsAQwSxyXbijcTJR6ZvATZeoZEXThXqLDOPsQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1ecuOvSpJPmeEYBXS6rG3ByF3A4tWfONx2O8sAeDIKrG7/ZvYxUwNmmYnveHcUz/j
-         I24dSJgVjvFdM9KymDQTzPcY/DYGBnqx15srsMwzjGoBKKYWIpLtYd9cPxY9f9fWv+
-         91OgOIzPA+pvpQNHXa0jVzgETHDb4jBY1TkJxoxw=
-Date:   Wed, 14 Oct 2020 10:12:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zqiang <qiang.zhang@windriver.com>
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: function: printer: Fix usb function
- descriptors leak
-Message-ID: <20201014081246.GB3009479@kroah.com>
-References: <20201014075523.15688-1-qiang.zhang@windriver.com>
+        id S1728564AbgJNINJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:13:09 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55564 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbgJNINI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:13:08 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C8CE41C0B87; Wed, 14 Oct 2020 10:13:05 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 10:13:05 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Udo van den Heuvel <udovdh@xs4all.nl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>
+Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
+Message-ID: <20201014081305.GD29881@amd>
+References: <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
+ <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
+ <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
+ <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
+ <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
+ <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
+ <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+ <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
+ <20201014075458.GA29881@amd>
+ <s5h4kmxmdqc.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Km1U/tdNT/EmXiR1"
 Content-Disposition: inline
-In-Reply-To: <20201014075523.15688-1-qiang.zhang@windriver.com>
+In-Reply-To: <s5h4kmxmdqc.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 03:55:23PM +0800, Zqiang wrote:
-> If an error occurs after call 'usb_assign_descriptors' func, the
-> 'usb_free_all_descriptors' need to be call to release memory space
-> occupied by function descriptors.
-> 
-> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
-Please use your ful name for the From: and signed-off-by lines, as the
-documentation states is required.  If this is your full name, then why
-does it not match the name on your email address from your employer?
+--Km1U/tdNT/EmXiR1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/usb/gadget/function/f_printer.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
-> index 64a4112068fc..2f1eb2e81d30 100644
-> --- a/drivers/usb/gadget/function/f_printer.c
-> +++ b/drivers/usb/gadget/function/f_printer.c
-> @@ -1162,6 +1162,7 @@ static int printer_func_bind(struct usb_configuration *c,
->  		printer_req_free(dev->in_ep, req);
->  	}
->  
-> +	usb_free_all_descriptors(f);
+On Wed 2020-10-14 10:08:27, Takashi Iwai wrote:
+> On Wed, 14 Oct 2020 09:54:59 +0200,
+> Pavel Machek wrote:
+> >=20
+> > Hi!
+> >=20
+> > > >>> I.e.: it looks like I will lose some funcionality when I disable
+> > > >>> SND_HDA_CODEC_REALTEK.
+> > > >>
+> > > >> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_RE=
+ALTEK
+> > > >> with no LEDS. That driver apparently wants LEDS.
+> > > >=20
+> > > > Thanks but why have I gone for years without LEDS?
+> > > > I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
+> > > > visible, usable, etc).
+> > > >=20
+> > > > Please make this selectable instead of forcing more bulk into my
+> > >> kernel.
+> >=20
+> > LED core is not that big, and this avoided some rather "interesting"
+> > hacks IIRC. If Udo wants more config complexity, lets first make him
+> > measure the benefits, second submit a patch.
+> >=20
+> > But I'd suggest to just live with it.
+> >=20
+> > And yes, we should probably get rid of "CONFIG_NEW_LEDS" symbol. That
+> > one is actually useless.
+>=20
+> IIRC, this was needed for the reverse selection of CONFIG_LEDS_CLASS
+> and co.  But if it's really useless, I'll happily delete it.
 
-What commit caused this problem?
+It is needed for now. It is just something we should remove in
+future. CONFIG options are not that cheap...
 
-thanks,
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-greg k-h
+--Km1U/tdNT/EmXiR1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl+GsxEACgkQMOfwapXb+vKj2wCgl8EFtbg190UseqaqnZEYuRJF
+nsYAniWZl08TwB5hCRT99EU4nRv0+Zd+
+=Vqx7
+-----END PGP SIGNATURE-----
+
+--Km1U/tdNT/EmXiR1--
