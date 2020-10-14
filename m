@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D73928E565
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C072128E568
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388814AbgJNRbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJNRbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:31:07 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD59C061755;
-        Wed, 14 Oct 2020 10:31:06 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id dt13so5938538ejb.12;
-        Wed, 14 Oct 2020 10:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eOQX8qrZdJY6yGgpfPJRyusy5hAy1yUGKjIQzStBmgk=;
-        b=ZF+0TZuVsq6Zf4SBlD665r6t80lHJF87yvJwvoiGORx4R4+UEbp0YRSqILp1YdFydt
-         4c2Jt97yytoFw8AkPdRZX9s+lcDAsSy81fg4oGfz3Y5DTDaQ5R21U+JVV28UcAplX8K2
-         CuNSyCYyuEnl3Wr6BoKducYHMS9sDQUV2O3H7IEq+/GDauBoDOXkjlyZv+KF8fhWAFN7
-         ainegRz7TQnQ+3Dm+7ZE8tIsD36yA1xtc5bbNUNGaFTtncebI6qV+oiW1OnaW6crg1ff
-         xwJDGUulcAXTjCSw6Tqq6Kf849ACTBbXd4EGCYdGTWqKZDuWtEsx2wSM751WRr4wjQ93
-         QzEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eOQX8qrZdJY6yGgpfPJRyusy5hAy1yUGKjIQzStBmgk=;
-        b=IckhgKdNAeyyFMQggVDHkvLBeXZ1wxf1muPgrrvzYdsw4JXkDeDLFExJ0HjZHZksvl
-         mTm8CRE1nsTrr+fAK/P0tZZkkqy2I8NC3xWIUrLJtxF3nRCDraOhsFS7iq3yfAW7Qn14
-         +Q+LgkoFGhADb58WEwLVDAwwSnZ6CvWO00uPgy6KxUjUecULicHodAt/ksHU+1gYpAlX
-         V5BtHYLpDn9j5sTmm6J5MBrJb/VRYPiXpryq2P7VwzVvJrR1m4DtjD8ldhyx2m8+x692
-         sAykiCMe1jFiR7Gl00njV/od2BNM5sYg6nO17o6A4OSLnAnk4yPZxirJW6tJrhFhJDlA
-         KHog==
-X-Gm-Message-State: AOAM530IwF6c6d0kjF1bHREWhYYaCvKBfJyLQFEH74MTGrs9V5pml+fP
-        gukGLo9gUc0OuyMHlWyIaIY=
-X-Google-Smtp-Source: ABdhPJyMwpQ1vrLwSfJsRlp9uBIfdl7ZYVRtLGRBQODeEVSdZVhGwy115UDqJO4FlZYw7C+eBgRMrw==
-X-Received: by 2002:a17:906:c0d8:: with SMTP id bn24mr112519ejb.480.1602696664980;
-        Wed, 14 Oct 2020 10:31:04 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id v1sm106400eds.47.2020.10.14.10.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 10:31:04 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 20:31:03 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kurt Kanzenbach <kurt@linutronix.de>
-Subject: Re: [PATCH net] net: dsa: ksz: fix padding size of skb
-Message-ID: <20201014173103.26nvgqtrpewqskg4@skbuf>
-References: <20201014161719.30289-1-ceggers@arri.de>
- <20201014164750.qelb6vssiubadslj@skbuf>
- <20201014165410.fzvzdk3odsdjljpq@skbuf>
- <3253541.RgjG7ZtOS4@n95hx1g2>
+        id S2388902AbgJNRcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388820AbgJNRcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:32:18 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 20DCC2173E;
+        Wed, 14 Oct 2020 17:32:17 +0000 (UTC)
+Date:   Wed, 14 Oct 2020 13:32:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>, axelrasmussen@google.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] selftests/ftrace: Add test case for synthetic
+ event syntax errors
+Message-ID: <20201014133215.21d066e4@gandalf.local.home>
+In-Reply-To: <20201014110636.139df7be275d40a23b523b84@kernel.org>
+References: <cover.1602598160.git.zanussi@kernel.org>
+        <af611928ce79f86eaf0af8654f1d7802d5cc21ff.1602598160.git.zanussi@kernel.org>
+        <20201014110636.139df7be275d40a23b523b84@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3253541.RgjG7ZtOS4@n95hx1g2>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 07:02:13PM +0200, Christian Eggers wrote:
-> > Otherwise said, the frame must be padded to
-> > max(skb->len, ETH_ZLEN) + tail tag length.
-> At first I thought the same when working on this. But IMHO the padding must
-> only ensure the minimum required size, there is no need to pad to the "real"
-> size of the skb. The check for the tailroom above ensures that enough memory
-> for the "real" size is available.
+On Wed, 14 Oct 2020 11:06:36 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Yes, that's right, that's the current logic, but what's the point of
-your patch, then, if the call to __skb_put_padto is only supposed to
-ensure ETH_ZLEN length?
-In fact, __skb_put_padto fundamentally does:
-- an extension of skb->len to the requested argument, via __skb_put
-- a zero-filling of the extra area
-So if you include the length of the tag in the call to __skb_put_padto,
-then what's the other skb_put() from ksz8795_xmit, ksz9477_xmit,
-ksz9893_xmit going to do? Aren't you increasing the frame length twice
-by the length of one tag when you are doing this? What problem are you
-actually trying to solve?
-Can you show a skb_dump(KERN_ERR, skb, true) before and after your change?
+> Hi Tom,
+> 
+> On Tue, 13 Oct 2020 09:17:58 -0500
+> Tom Zanussi <zanussi@kernel.org> wrote:
+> 
+> > Add a selftest that verifies that the syntax error messages and caret
+> > positions are correct for most of the possible synthetic event syntax
+> > error cases.
+> > 
+> > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> > ---
+> >  .../trigger-synthetic_event_syntax_errors.tc  | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> > 
+> > diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> > new file mode 100644
+> > index 000000000000..ada594fe16cb
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> > @@ -0,0 +1,19 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# description: event trigger - test synthetic_events syntax parser errors
+> > +# requires: synthetic_events error_log  
+> 
+> This also requires dynamic strings support. So, its "requires" line should be
+> 
+> # requires: synthetic_events error_log "char name[]' >> synthetic_events":README
+> 
+> > +
+> > +check_error() { # command-with-error-pos-by-^
+> > +    ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
+> > +}
+> > +  
+> 
+> BTW, some errors looks a bit odd.
+> 
+> > +check_error 'myevent ^chr arg'			# INVALID_TYPE
+> > +check_error 'myevent ^char str[];; int v'	# INVALID_TYPE  
+> 
+> I think there is a wrong "void" argument between ";", instead of invalid type.
+> 
+> > +check_error 'myevent char ^str]; int v'		# INVALID_NAME
+> > +check_error 'myevent char ^str;[]'		# INVALID_NAME  
+> 
+> This is also not an invalid name but '[]' is an invalid type. 
+> 
+> > +check_error 'myevent ^char str[; int v'		# INVALID_TYPE
+> > +check_error '^mye;vent char str[]'		# BAD_NAME
+> > +check_error 'myevent char str[]; ^int'		# INVALID_FIELD  
+> 
+> Isn't it an incomplete command?
+> 
+> > +check_error '^myevent'				# INCOMPLETE_CMD
+> > +
+> > +exit 0  
+> 
+
+Hi Masami,
+
+I finished testing this series along with other patches (some from you),
+and I'm ready to push this to next, and hopefully soon to Linus. You have a
+"tested-by" for the entire series. Are you OK with this patch too? Can we
+push this forward and fix up any issues you have later?
+
+-- Steve
