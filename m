@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D107B28D79F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C5E28D7B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387655AbgJNAnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 20:43:16 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:47469 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727837AbgJNAnQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 20:43:16 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UByP5eq_1602636191;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UByP5eq_1602636191)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 14 Oct 2020 08:43:11 +0800
-Subject: Re: [PATCH v2] Documentation: Chinese translation of
- Documentation/arm64/hugetlbpage.rst
-To:     Bailu Lin <bailu.lin@vivo.com>, catalin.marinas@arm.com,
-        corbet@lwn.net, harryxiyou@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, will@kernel.org
-Cc:     kernel@vivo.com
-References: <20200926101902.3460-1-bailu.lin@vivo.com>
- <20201013123655.40631-1-bailu.lin@vivo.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <ab3df28a-cde4-67d1-d0a3-abaa5ada58a1@linux.alibaba.com>
+        id S1730664AbgJNAt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 20:49:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:49779 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726974AbgJNAt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 20:49:27 -0400
+IronPort-SDR: L4L/8TrwuaXO6dUroP6MGz8xzXf6Gey0XuZ+UQkqnlXJPu4Zj6SRJGiQDGkdx9AlldcObc1rfD
+ FzlXkezvMvKg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="163373970"
+X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
+   d="scan'208";a="163373970"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 17:49:27 -0700
+IronPort-SDR: EQyEvoE5xNUocrAPDSycqv7YhanaNerWshx5/SaN1Q2YFJrB6woJaia/Rredc9yE3yjpN2hp1L
+ Xr4uPZ/QyaWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
+   d="scan'208";a="345457248"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Oct 2020 17:49:25 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH next] iommu: intel: don't dereference iommu_device if
+ IOMMU_API is not built
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20201013073055.11262-1-brgl@bgdev.pl>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <abd717c9-9eaa-d4bb-3fd8-ff7250d97ab7@linux.intel.com>
 Date:   Wed, 14 Oct 2020 08:42:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201013123655.40631-1-bailu.lin@vivo.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201013073055.11262-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/10/13 下午8:36, Bailu Lin 写道:
-> This is a Chinese translated version of
->  Documentation/arm64/hugetlbpage.rst
+On 10/13/20 3:30 PM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
-> ---
-> Changes in v2:
->  - Fix Sphinx 2.4.4's waring by increasing underline' size.
-> ---
->  Documentation/arm64/hugetlbpage.rst           |  2 +
->  .../translations/zh_CN/arm64/hugetlbpage.rst  | 45 +++++++++++++++++++
->  .../translations/zh_CN/arm64/index.rst        |  1 +
->  3 files changed, 48 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/arm64/hugetlbpage.rst
+> Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
+> with no supported address widths") dmar.c needs struct iommu_device to
+> be selected. We can drop this dependency by not dereferencing struct
+> iommu_device if IOMMU_API is not selected and by reusing the information
+> stored in iommu->drhd->ignored instead.
 > 
-> diff --git a/Documentation/arm64/hugetlbpage.rst b/Documentation/arm64/hugetlbpage.rst
-> index b44f939e5210..a110124c11e3 100644
-> --- a/Documentation/arm64/hugetlbpage.rst
-> +++ b/Documentation/arm64/hugetlbpage.rst
-> @@ -1,3 +1,5 @@
-> +.. _hugetlbpage_index:
-> +
->  ====================
->  HugeTLBpage on ARM64
->  ====================
-> diff --git a/Documentation/translations/zh_CN/arm64/hugetlbpage.rst b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
-> new file mode 100644
-> index 000000000000..dfc88195deb2
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
-> @@ -0,0 +1,45 @@
-> +.. include:: ../disclaimer-zh_CN.rst
-> +
-> +:Original: :ref:`Documentation/arm64/hugetlbpage.rst <hugetlbpage_index>`
-> +
-> +Translator: Bailu Lin <bailu.lin@vivo.com>
-> +
-> +=====================
-> +ARM64中的 HugeTLBpage
-> +=====================
-> +
-> +大页依靠有效利用 TLBs 来提高地址翻译的性能。这取决于以下
-> +两点 -
-> +
-> +  - 大页的大小
-> +  - TLBs 支持的条目大小
-> +
-> +ARM64 接口支持2种大页方式。
-> +
-> +1) pud/pmd 级别的块映射
-> +-----------------------
-> +
-> +这是常规大页，他们的 pmd 或 pud 页面表条目指向一个内存块。
-> +不管 TLB 中支持的条目大小如何，块映射可以减少翻译大页地址
-> +所需遍历的页表深度。
-> +
-> +2) 使用连续位
-> +-------------
-> +
-> +架构中转换页表条目(D4.5.3, ARM DDI 0487C.a)中提供一个连续
-> +位告诉 MMU 这个条目是一个连续条目集的一员，它可以被缓存在单
-> +个 TLB 条目中。
-> +
-> +在 Linux 中连续位用来增加 pmd 和 pte(最后一级)级别映射的大
-> +小。受支持的连续页表条目数量因页面大小和页表级别而异。
-> +
-> +
-> +支持以下大页大小配置 -
+> This fixes the following build error when IOMMU_API is not selected:
+> 
+> drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
+> drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
+>   1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
+>                                                  ^
+> 
+> Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Is this better to s/大小/尺寸/ ？
+With commit title adjusted to "iommu/vt-d: Don't dereference
+iommu_device if IOMMU_API is not built",
 
-for other part.
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+Best regards,
+baolu
 
-> +
-> +  ====== ========   ====    ========    ===
-> +  -      CONT PTE    PMD    CONT PMD    PUD
-> +  ====== ========   ====    ========    ===
-> +  4K:         64K     2M         32M     1G
-> +  16K:         2M    32M          1G
-> +  64K:         2M   512M         16G
-> +  ====== ========   ====    ========    ===
-> diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
-> index 646ed1f7aea3..e31a6090384d 100644
-> --- a/Documentation/translations/zh_CN/arm64/index.rst
-> +++ b/Documentation/translations/zh_CN/arm64/index.rst
-> @@ -14,3 +14,4 @@ ARM64 架构
->      :maxdepth: 2
->  
->      amu
-> +    hugetlbpage
+> ---
+>   drivers/iommu/intel/dmar.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index 2d70d56d8e0d..404b40af31cb 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -1136,7 +1136,7 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
+>   
+>   static void free_iommu(struct intel_iommu *iommu)
+>   {
+> -	if (intel_iommu_enabled && iommu->iommu.ops) {
+> +	if (intel_iommu_enabled && !iommu->drhd->ignored) {
+>   		iommu_device_unregister(&iommu->iommu);
+>   		iommu_device_sysfs_remove(&iommu->iommu);
+>   	}
 > 
