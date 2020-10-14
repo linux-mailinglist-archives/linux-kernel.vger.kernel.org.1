@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747B628E7CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551A028E7D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730151AbgJNUS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:18:26 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:45651 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJNUSY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:18:24 -0400
-Received: by mail-ej1-f66.google.com with SMTP id dt13so303158ejb.12;
-        Wed, 14 Oct 2020 13:18:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0MyUw0Y3gJD9KhX/3YhqYIS6k+1q8f/JNR3G4Oc+mO0=;
-        b=OskOucAhDFwQ2kcgHj7hRJfshk9+krQ98eV7j8tLUdRWynKfnRfAyVgH6cQuzzldQM
-         IoaXxnYeBZgErj2W6GobcC/hR9saMe44H1xW0NR7n/mFJpJYftYXqrM6Pzl/r8h4UdRL
-         ND9+iSWwaQvBHcKCB+gm3vHduhDaZjQA5NSFEl01f4dXlOflsA/hU2KZPZo98MM2RI8w
-         wdtreyoL5WALjHHTJhj9Et2gaVjhYQrNMRb/KPEekhgQ5Cg3VCtfsRfB6dkKEzxcmz0K
-         lab2atL/5m1jxaSxJYGdjleJlmIKOgmC7QFavtDMIuhnKohrz8ns5UtrrYJ/rhQcTF0e
-         wnVQ==
-X-Gm-Message-State: AOAM531iEakl9PneyfCXMlchOlYHizdaCb39Oz5Da3GBSTuajKeQaRNf
-        GjifmRWwg7zEDN11GXOvbBE=
-X-Google-Smtp-Source: ABdhPJyD9mvSdzTeswKoJSSkNRNYZJV/A491oP4RLt7gITN4T+XTScFWRX+EpK8W5zlRYXEzJ8uEig==
-X-Received: by 2002:a17:906:1e45:: with SMTP id i5mr798232ejj.203.1602706702595;
-        Wed, 14 Oct 2020 13:18:22 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id i18sm222556ejr.59.2020.10.14.13.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 13:18:21 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 22:18:18 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/20] dt-bindings: usb: dwc3: Add synopsys,dwc3
- compatible string
-Message-ID: <20201014201818.GA6926@kozik-lap>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-12-Sergey.Semin@baikalelectronics.ru>
+        id S1730226AbgJNUUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:20:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:58100 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726111AbgJNUUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 16:20:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5E79D6E;
+        Wed, 14 Oct 2020 13:20:09 -0700 (PDT)
+Received: from bogus (unknown [10.57.12.254])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10A703F719;
+        Wed, 14 Oct 2020 13:20:06 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 21:20:00 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lukasz.luba@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, etienne.carriere@linaro.org,
+        Sudeep Holla <sudeep.holla@arm.com>, thara.gopinath@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH 01/11] firmware: arm_scmi: review protocol registration
+ interface
+Message-ID: <20201014202000.3f57rx73d2vele47@bogus>
+References: <20201014150545.44807-1-cristian.marussi@arm.com>
+ <20201014150545.44807-2-cristian.marussi@arm.com>
+ <1b461304-2c25-3206-5799-b561ac6e0bd2@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014101402.18271-12-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <1b461304-2c25-3206-5799-b561ac6e0bd2@gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 01:13:53PM +0300, Serge Semin wrote:
-> The DWC USB3 driver and some DTS files like Exynos 5250, Keystone k2e, etc
-> expects the DWC USB3 DT node to have the compatible string with the
-> "synopsys" vendor prefix. Let's add the corresponding compatible string to
-> the controller DT schema, but mark it as deprecated seeing the Synopsys,
-> Inc. is presented with just "snps" vendor prefix.
+On Wed, Oct 14, 2020 at 12:03:45PM -0700, Florian Fainelli wrote:
+> On 10/14/20 8:05 AM, Cristian Marussi wrote:
+> > Extend common protocol registration routines and provide some new generic
+> > protocols' init/deinit helpers that tracks protocols' users and automatically
+> > perform the proper initialization/de-initialization on demand.
+> > 
+> > Convert all protocols to use new registration schema while modifying only Base
+> > protocol to use also the new initialization helpers.
+> > 
+> > All other standard protocols' initialization is still umodified and bound to
+> > SCMI devices probing.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> 
 
-Instead of adding deprecated schema just correct the DTSes to use snps.
-The "synopsys" is not even in vendor prefixes.
+[...]
 
-Best regards,
-Krzysztof
+> 
+> > +	struct scmi_protocol_instance *protocols[SCMI_MAX_PROTO];
+> 
+> Humm that would be 2048 bytes on a 64-bit platform and 1024 bytes on a
+> 32-bit platform, this is not so bad, but it is a bit wasteful given that
+> 6-7 standard protocols are typically found, and most often no
+> proprietary protocols are registered. Not necessarily to be addressed
+> right now.
+>
+
+Thanks for looking at these patches so quickly, much appreciated.
+
+I haven't looked at this series in detail yet. But this is something that
+caught my attention too when I glanced at these patches. I mentioned the
+same to Cristian. Indeed we can address that separately, we have even this
+for notification, we need to see if we can put all such info in a container
+structure and then use hashtable or idr.
+
+--
+Regards,
+Sudeep
