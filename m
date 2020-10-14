@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9378A28E392
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8238C28E396
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgJNPsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgJNPsT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:48:19 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41236C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:48:19 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id m17so5816233ioo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:48:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oWBbGofnbem7vN+9grXySFR9YOMo5GiSFkt1UyxFN+s=;
-        b=e9g3yz2hjPHV0wHGPrm3cnB3QRN+F8ZbXcutLipifJdmzqdLZisA7PmuFnTj6MIjqA
-         XMSsOdJGpotAi1rwTVYiZpBA3rsOXpS/N1BbIFHMv6zmgVkp3jusgsJm0jzsrzgS8Cpa
-         hSoQuVhKpmWe9FRDfzXtqj7o8L02V4UayPbZ2lY6AmhGP6gt60eMyY5LLMXmmfTxxPdc
-         KiSS8X7Dz/YA1jbcrADe/FH8fl3MC5RPfzg0DO99b8tbvF7avLfEh2e6ODT4vZkTp9+l
-         cwpT2/Vy8qJ2wZ0phOxIb6EpH/yk+GsmVKiIBzTa6m9ucu4MuQrFvhUm4o02dtnlyC79
-         FD7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oWBbGofnbem7vN+9grXySFR9YOMo5GiSFkt1UyxFN+s=;
-        b=O0fiQatomZRA3f8dWSiMchV/E+8B69mF1tJV9eVgADlRgGCXLpE2WU+4nH9nn73O8+
-         +elHS4kdaJ+5clsKZeh8Fa2xRhriPan5kAOvm1vT3vuRV5EUGTNE0MeOgfMTT5jc4h0q
-         5LsqxFYAYVVXRINvCjvNP094jV1JZ4ovQB3A7Udz9136jA8AvBQQ6LuK2/8AN5euKeO3
-         lkkZajfzsE6URCi3YZAEYPfm2fqSEcDQgMA9hQt8V9kYUfA79oHMrfOXgFUbgvdFUYqX
-         eJSTLPYz194MKEyWvpvseQchpDGS3DL+529vd3ekc0nmHJ9+Fw7vJC4S3bivFzwhIqJ4
-         OJMQ==
-X-Gm-Message-State: AOAM5315g8+2/lCXNTaoaCT0mXMAOGLpIvjM919HAvWuguX3H/H3hDR0
-        XsRSAmP//10AHdGF/bk/EOrUXqx0/amh19iBFHQ=
-X-Google-Smtp-Source: ABdhPJyPsNGnHQ5bO09KsmFRSt+C02FbttZcI+y1mlloBhlXYQUMy4UnhY8jw9xB6efFVvRNTOackB+ksEU+u47AZqo=
-X-Received: by 2002:a6b:9243:: with SMTP id u64mr3268208iod.197.1602690498597;
- Wed, 14 Oct 2020 08:48:18 -0700 (PDT)
+        id S1727876AbgJNPxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:53:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:52200 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726439AbgJNPw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 11:52:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 21EBFD6E;
+        Wed, 14 Oct 2020 08:52:59 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F2A23F71F;
+        Wed, 14 Oct 2020 08:52:57 -0700 (PDT)
+Subject: Re: [PATCH 4/8] iommu/arm-smmu: Support test_smr_masks implementation
+ detail deviation
+To:     kholk11@gmail.com, will@kernel.org
+Cc:     joro@8bytes.org, bjorn.andersson@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200926130004.13528-1-kholk11@gmail.com>
+ <20200926130004.13528-5-kholk11@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <00afa417-d897-22ee-25a5-cba1bf96c669@arm.com>
+Date:   Wed, 14 Oct 2020 16:52:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <20201014151614.29804-1-hqjagain@gmail.com> <20201014113823.4296521d@gandalf.local.home>
-In-Reply-To: <20201014113823.4296521d@gandalf.local.home>
-From:   Qiujun Huang <hqjagain@gmail.com>
-Date:   Wed, 14 Oct 2020 23:48:05 +0800
-Message-ID: <CAJRQjodMzSAJd23F=RRhR=d2H=D3vWMvCbU9JYdGNQ9MTkpmmw@mail.gmail.com>
-Subject: Re: [PATCH] ring-buffer: Add rb_check_bpage in __rb_allocate_pages
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mingo@redhat.com, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200926130004.13528-5-kholk11@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 11:38 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 14 Oct 2020 23:16:14 +0800
-> Qiujun Huang <hqjagain@gmail.com> wrote:
->
-> > It may be better to check each page is aligned by 4 bytes. The 2
-> > least significant bits of the address will be used as flags.
-> >
-> > Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-> > ---
-> >  kernel/trace/ring_buffer.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> > index 93ef0ab6ea20..9dec7d58b177 100644
-> > --- a/kernel/trace/ring_buffer.c
-> > +++ b/kernel/trace/ring_buffer.c
-> > @@ -1420,7 +1420,8 @@ static int rb_check_pages(struct ring_buffer_per_cpu *cpu_buffer)
-> >       return 0;
-> >  }
-> >
-> > -static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
-> > +static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
-> > +             long nr_pages, struct list_head *pages, int cpu)
-> >  {
-> >       struct buffer_page *bpage, *tmp;
-> >       bool user_thread = current->mm != NULL;
-> > @@ -1464,6 +1465,8 @@ static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
-> >               if (!bpage)
-> >                       goto free_pages;
-> >
-> > +             rb_check_bpage(cpu_buffer, bpage);
-> > +
-> >
->
-> Why add it here, and not just add this check to the scan in
-> rb_check_pages()?
+On 2020-09-26 14:00, kholk11@gmail.com wrote:
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> 
+> At least some Qualcomm SoCs do need to override the function
+> arm_smmu_test_smr_masks entirely: add a test_smr_masks function
+> to the implementation details structure and call it properly.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 6 ++++++
+>   drivers/iommu/arm/arm-smmu/arm-smmu.h | 1 +
+>   2 files changed, 7 insertions(+)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index 09c42af9f31e..446a78dde9cd 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -977,6 +977,12 @@ static void arm_smmu_test_smr_masks(struct arm_smmu_device *smmu)
+>   
+>   	if (!smmu->smrs)
+>   		return;
+> +
+> +	if (smmu->impl && smmu->impl->test_smr_masks) {
+> +		smmu->impl->test_smr_masks(smmu);
 
-rb_head_page_deactivate() in rb_check_pages() will clear the 2 LSB first.
+Meh, this doesn't need a special hook - just have ->cfg_probe() 
+initialise your masks early and bail out here if smr_mask_mask is 
+already set. You could actually bypass this test as-is by marking all 
+your SMR entries as valid, but that's likely to cause far more problems 
+elsewhere than it solves here ;)
 
->
-> -- Steve
+Robin.
+
+> +		return;
+> +	}
+> +
+>   	/*
+>   	 * If we've had to accommodate firmware memory regions, we may
+>   	 * have live SMRs by now; tread carefully...
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> index d890a4a968e8..2cd3d126f675 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> @@ -387,6 +387,7 @@ struct arm_smmu_impl {
+>   	int (*cfg_probe)(struct arm_smmu_device *smmu);
+>   	int (*reset)(struct arm_smmu_device *smmu);
+>   	int (*init_context)(struct arm_smmu_domain *smmu_domain);
+> +	void (*test_smr_masks)(struct arm_smmu_device *smmu);
+>   	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
+>   			 int status);
+>   	int (*def_domain_type)(struct device *dev);
+> 
