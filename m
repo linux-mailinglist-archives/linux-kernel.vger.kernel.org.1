@@ -2,400 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0DB28EB0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBF728E946
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730361AbgJOCTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 22:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729630AbgJOCTj (ORCPT
+        id S1732081AbgJNXvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 19:51:24 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:51178 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728370AbgJNXvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:19:39 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73805C0251B6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:49:50 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id x20so729295ybs.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NabSdpmMQ1vva+/AZtpuk+T3qndusn3TpLaVrL7qIzE=;
-        b=t4nohFcfw2lR0cmsxuEwUydRlZzt74N80IJb8NFhFxcBHZgq5sOnY32HvpKcQBArZY
-         bVr1Wizx2yn4E4wY7GUt2RgFGJgApp6dPxz72XTCXhy4hHzLpQ6vOQGs/IiDkT8aM/W9
-         9PrBDht/zbyAtENULD9I9oqoQ3yN7gfnl9U6GHATawA355a6TY6R4dbMn/yQLLNo+CYJ
-         hKk2cSbjky5rdJEqbyfg5L5wBajwfV51dlK8teZq4fF77qpDPHfmTrBpXpMezW+R7egl
-         aF7IZY98ONqgPTunjOhw0X7X5alOblJM4pIZr82AYI+Cy3AIoG2AehRCFEMrZKFUmn+T
-         Z87A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NabSdpmMQ1vva+/AZtpuk+T3qndusn3TpLaVrL7qIzE=;
-        b=rjcpMDChEprnQDxKldZPcp0EpX4JII/ERRForZUSAteyhtBFXI96POOVnHKOhoPnIP
-         n5nk6C630fXMO+YZ8UhNN/Gw+LwThSMgyPTQt7ZTGXhOWFyTHdzVTxxIwJKxU6Tfwi6W
-         wxFbxSFyK85ZM3sY/bZHmK7z4x5FsKOKq7Hi4/6+fVzYb83Yzr5TjeYNQmqc95BxF97u
-         nvPROJC99hPLXUbqsqh+SK8xgYKHoXR78y9DEzUWJQTZ1X5kREJp7gzaDqCGiYyNUwkF
-         Qr3rzXy+ApAySXfHxkwYKHdzjOF9FB3uh+Yr7CfOrhZ5qoAjoN1z4hikiYEPvuaVTnIH
-         vrcg==
-X-Gm-Message-State: AOAM533Tx+WVaw3EDgqGLAPCqH+Q9jq+HwmGwwzLgzxmyZ186pa0vVUd
-        q837IDqD3JIVbm4glpATntYqHowaeuiA5xfEBw0pAw==
-X-Google-Smtp-Source: ABdhPJx24zHf3QVmYPbCxs4He15Uxk/SAyG8VIzdxPPq5akLLg3E68lgD0PpO2sDaUq9s33b76AiJdJ6S3VwG+yOcmM=
-X-Received: by 2002:a25:b006:: with SMTP id q6mr1746880ybf.57.1602719389585;
- Wed, 14 Oct 2020 16:49:49 -0700 (PDT)
+        Wed, 14 Oct 2020 19:51:24 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id D142E803073C;
+        Wed, 14 Oct 2020 23:51:16 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id iS3dvPxgJMCS; Thu, 15 Oct 2020 02:51:15 +0300 (MSK)
+Date:   Thu, 15 Oct 2020 02:51:05 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+Message-ID: <20201014235105.kj4rtwiidph7gyen@mobilestation>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
+ <CAJKOXPeErocR5-3xCDqBR3-k3w_2EQ_768d71n229cbzeo4TtQ@mail.gmail.com>
+ <20201014171640.bup52mgaz4jvhtsy@mobilestation>
+ <CAJKOXPcHi_=jea=0YrPNo4dh6k03+63Tc2Uo+sd0u8+XPdQjOw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200729201146.537433-1-vitor@massaru.org> <CAP-5=fWCMPyBYqn4p+_=Ra5_sXqUbr4h_OCuYS4iY-6fsnevvA@mail.gmail.com>
-In-Reply-To: <CAP-5=fWCMPyBYqn4p+_=Ra5_sXqUbr4h_OCuYS4iY-6fsnevvA@mail.gmail.com>
-From:   Vitor Massaru Iha <vitor@massaru.org>
-Date:   Wed, 14 Oct 2020 20:49:13 -0300
-Message-ID: <CADQ6JjWg70GcQJizwcHpL1bXE7rKYDdaEeQszKDVz4kf4+SVOA@mail.gmail.com>
-Subject: Re: [PATCH] lib: kunit: add test_min_heap test conversion to KUnit
-To:     Ian Rogers <irogers@google.com>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPcHi_=jea=0YrPNo4dh6k03+63Tc2Uo+sd0u8+XPdQjOw@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+On Wed, Oct 14, 2020 at 10:04:32PM +0200, Krzysztof Kozlowski wrote:
+> On Wed, 14 Oct 2020 at 19:16, Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > On Wed, Oct 14, 2020 at 12:33:25PM +0200, Krzysztof Kozlowski wrote:
+> > > On Wed, 14 Oct 2020 at 12:23, Serge Semin
+> > > <Sergey.Semin@baikalelectronics.ru> wrote:
+> > > >
+> > > > In accordance with the DWC USB3 bindings the corresponding node name is
+> > > > suppose to comply with Generic USB HCD DT schema, which requires the USB
+> > > > nodes to have the name acceptable by the regexp: "^usb(@.*)?" . But a lot
+> > > > of the DWC USB3-compatible nodes defined in the ARM/ARM64 DTS files have
+> > > > name as "^dwc3@.*" or "^usb[1-3]@.*" or even "^dwusb@.*", which will cause
+> > > > the dtbs_check procedure failure. Let's fix the nodes naming to be
+> > > > compatible with the DWC USB3 DT schema to make dtbs_check happy.
+> > > >
+> > > > Note we don't change the DWC USB3-compatible nodes names of
+> > > > arch/arm64/boot/dts/apm/{apm-storm.dtsi,apm-shadowcat.dtsi} since the
+> > > > in-source comment says that the nodes name need to be preserved as
+> > > > "^dwusb@.*" for some backward compatibility.
+> > > >
+> > > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > >
+> > > > ---
+> > > >
+> > > > Please, test the patch out to make sure it doesn't brake the dependent DTS
+> > > > files. I did only a manual grepping of the possible nodes dependencies.
+> > >
+> >
+> > > 1. It is you who should compare the decompiled DTS, not us. For example:
+> > > $ for i in dts-old/*/*dtb dts-old/*/*/*dtb; do echo $i; crosc64
+> > > scripts/dtc/dtx_diff ${i} dts-new/${i#dts-old/} ; done
+> > >
+> > > $ for i in dts-old/*/*dtb dts-old/*/*/*dtb; do echo $i; crosc64
+> > > fdtdump ${i} > ${i}.fdt ; crosc64 fdtdump dts-new/${i#dts-old/} >
+> > > dts-new/${i#dts-old/}.fdt ; diff -ubB ${i}.fdt
+> > > dts-new/${i#dts-old/}.fdt ; done
+> >
+> > So basically you suggest first to compile the old and new dts files, then to
+> > de-compile them, then diff old and new fdt's, and visually compare the results.
+> > Personally it isn't that much better than what I did, since each old and new
+> > dtbs will for sure differ due to the node names change suggested in this patch.
+> > So it will lead to the visual debugging too, which isn't that effective. But
+> > your approach is still more demonstrative to make sure that I didn't loose any
+> > nodes redefinition, since in the occasion the old and new de-compiled nodes will
+> > differ not only by the node names but with an additional old named node.
+> 
 
+> My suggestion is to compare the entire, effective DTS after all
+> inclusions. Maybe you did it already, I don't know.
 
-On Wed, Jul 29, 2020 at 7:57 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Jul 29, 2020 at 1:11 PM Vitor Massaru Iha <vitor@massaru.org> wrote:
-> >
-> > This adds the conversion of the runtime tests of test_min_heap,
-> > from `lib/test_min_heap.c` to KUnit tests.
-> >
-> > Please apply this commit first (linux-kselftest/kunit-fixes):
-> > 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
->
-> Thanks for this, I'm a fan of testing frameworks :-)
->
-> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> > ---
-> >  lib/Kconfig.debug                         |  29 ++++--
-> >  lib/Makefile                              |   2 +-
-> >  lib/{test_min_heap.c => min_heap_kunit.c} | 117 ++++++++++++----------
-> >  3 files changed, 83 insertions(+), 65 deletions(-)
-> >  rename lib/{test_min_heap.c => min_heap_kunit.c} (60%)
-> >
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 9ad9210d70a1..46674fc4972c 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -1864,16 +1864,6 @@ config TEST_LIST_SORT
-> >
-> >           If unsure, say N.
-> >
-> > -config TEST_MIN_HEAP
-> > -       tristate "Min heap test"
-> > -       depends on DEBUG_KERNEL || m
-> > -       help
-> > -         Enable this to turn on min heap function tests. This test is
-> > -         executed only once during system boot (so affects only boot time),
-> > -         or at module load time.
-> > -
-> > -         If unsure, say N.
-> > -
-> >  config TEST_SORT
-> >         tristate "Array-based sort test"
-> >         depends on DEBUG_KERNEL || m
-> > @@ -2185,6 +2175,25 @@ config LINEAR_RANGES_TEST
-> >
-> >           If unsure, say N.
-> >
-> > +config MIN_HEAP_KUNIT
-> > +        tristate "KUnit test for Min heap"
-> > +        depends on KUNIT
-> > +        depends on DEBUG_KERNEL || m
-> > +        help
-> > +          Enable this to turn on min heap function tests. This test is
-> > +          executed only once during system boot (so affects only boot time),
-> > +          or at module load time.
-> > +
-> > +          KUnit tests run during boot and output the results to the debug log
-> > +          in TAP format (http://testanything.org/). Only useful for kernel devs
-> > +          running the KUnit test harness, and not intended for inclusion into a
-> > +          production build.
-> > +
-> > +          For more information on KUnit and unit tests in general please refer
-> > +          to the KUnit documentation in Documentation/dev-tools/kunit/.
-> > +
-> > +          If unsure, say N.
-> > +
->
-> It's a shame we need a config option for this. Could we have one
-> option to cover all basic library tests?
->
-> >  config TEST_UDELAY
-> >         tristate "udelay test driver"
-> >         help
-> > diff --git a/lib/Makefile b/lib/Makefile
-> > index b1c42c10073b..748f57063160 100644
-> > --- a/lib/Makefile
-> > +++ b/lib/Makefile
-> > @@ -72,7 +72,6 @@ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
-> >  UBSAN_SANITIZE_test_ubsan.o := y
-> >  obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
-> >  obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
-> > -obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
-> >  obj-$(CONFIG_TEST_LKM) += test_module.o
-> >  obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
-> >  obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
-> > @@ -318,3 +317,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
-> >  # KUnit tests
-> >  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
-> >  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
-> > +obj-$(CONFIG_MIN_HEAP_KUNIT) += min_heap_kunit.o
-> > diff --git a/lib/test_min_heap.c b/lib/min_heap_kunit.c
-> > similarity index 60%
-> > rename from lib/test_min_heap.c
-> > rename to lib/min_heap_kunit.c
-> > index d19c8080fd4d..398db1c63146 100644
-> > --- a/lib/test_min_heap.c
-> > +++ b/lib/min_heap_kunit.c
-> > @@ -7,9 +7,8 @@
-> >
-> >  #include <linux/log2.h>
-> >  #include <linux/min_heap.h>
-> > -#include <linux/module.h>
-> > -#include <linux/printk.h>
-> >  #include <linux/random.h>
-> > +#include <kunit/test.h>
-> >
-> >  static __init bool less_than(const void *lhs, const void *rhs)
-> >  {
-> > @@ -29,37 +28,34 @@ static __init void swap_ints(void *lhs, void *rhs)
-> >         *(int *)rhs = temp;
-> >  }
-> >
-> > -static __init int pop_verify_heap(bool min_heap,
-> > +static __init void pop_verify_heap(struct kunit *context,
-> > +                               bool min_heap,
-> >                                 struct min_heap *heap,
-> >                                 const struct min_heap_callbacks *funcs)
-> >  {
-> >         int *values = heap->data;
-> > -       int err = 0;
-> >         int last;
-> >
-> >         last = values[0];
-> >         min_heap_pop(heap, funcs);
-> >         while (heap->nr > 0) {
-> >                 if (min_heap) {
-> > -                       if (last > values[0]) {
-> > -                               pr_err("error: expected %d <= %d\n", last,
-> > -                                       values[0]);
-> > -                               err++;
-> > -                       }
-> > +                       KUNIT_EXPECT_FALSE_MSG(context,
-> > +                                              last > values[0],
-> > +                                              "expected %d <= %d\n",
-> > +                                              last, values[0]);
->
-> I'm not familiar with kunit, is there a reason not to prefer:
-> KUNIT_EXPECT_LT(context, last, values[0]);
->
-> >                 } else {
-> > -                       if (last < values[0]) {
-> > -                               pr_err("error: expected %d >= %d\n", last,
-> > -                                       values[0]);
-> > -                               err++;
-> > -                       }
-> > +                       KUNIT_EXPECT_FALSE_MSG(context,
-> > +                                              last < values[0],
-> > +                                              "expected %d >= %d\n",
-> > +                                              last, values[0]);
->
-> Similarly KUNIT_EXPECT_GT.
+Only by grepping the dts'es, which include the dtsi'es modified in this patch.
+So your suggestion of compiling and de-compiling has been indeed relevant.
 
-In relation to this, instead of KUNIT_EXPECT_LT, we would have to have
-something like KUNIT_EXPECT_LT_FALSE.
-Otherwise the test will always fail.
+> The point is that
+> when you change node names in DTSI but you miss one in DTS, you end up
+> with two nodes.
 
->
-> Thanks,
-> Ian
->
-> >                 }
-> >                 last = values[0];
-> >                 min_heap_pop(heap, funcs);
-> >         }
-> > -       return err;
-> >  }
+Yep, that's exactly what I meant when I said that your approach was more
+demonstrative, etc.
+
+> This is much easier to spot with dtxdiff or with
+> fdtdump (which behaves better for node moves).
+> 
+
+> Indeed it is still a visual comparison - if you have any ideas how to
+> automate it (e.g. ignore phandle changes), please share. It would
+> solve my testings as well.
+
+Alas I don't. That's why to save my time of coming up with an automated solution
+I did a very thorough modification making sure that each affected node isn't
+updated in the corresponding dts'es and asked to test the patches out.
+
+Anyway the approach suggested by you will indeed give us a better understanding
+of my patches correctness. So I'll use it before sending v3. Thanks.
+
+> But asking others to test because you do
+> not want to check it is not the best way to handle such changes.
+> 
 > >
-> > -static __init int test_heapify_all(bool min_heap)
-> > +static __init void test_heapify_all(struct kunit *context, bool min_heap)
-> >  {
-> >         int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
-> >                          -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
-> > @@ -73,12 +69,11 @@ static __init int test_heapify_all(bool min_heap)
-> >                 .less = min_heap ? less_than : greater_than,
-> >                 .swp = swap_ints,
-> >         };
-> > -       int i, err;
-> > +       int i;
+> > So to speak thanks for suggesting it. I'll try it to validate the proposed
+> > changes.
 > >
-> >         /* Test with known set of values. */
-> >         min_heapify_all(&heap, &funcs);
-> > -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> > -
-> > +       pop_verify_heap(context, min_heap, &heap, &funcs);
+> > Two questions:
+> > 1) Any advise of a good inliner/command to compile all dtbs at once? Of course I
+> > can get all the updated dtsi'es, then find out all the dts'es which include
+> > them, then directly use dtc to compile the found dts'es... On the other hand I
+> > can just compile all dts'es, then compare old and new ones. The diff of the
+> > non-modified dtb'es will be just empty...
+> 
+
+> make dtbs
+
+It's not that easy.) "make dtbs" will build dtbs only for enabled boards, which
+first need to be enabled in the kernel config. So I'll need to have a config
+with all the affected dts. The later is the same as if I just found all the
+affected dts and built them one-by-one by directly calling dtc.
+
+> touch your dts or git stash pop
+> make dtbs
+> compare
+> diff for all unchanged will be simply empty, so easy to spot
+> 
+> > 2) What crosc64 is?
+> 
+> Ah, just an alias for cross compiling + ccache + kbuild out. I just
+> copied you my helpers, so you need to tweak them.
+> 
 > >
-> >         /* Test with randomly generated values. */
-> >         heap.nr = ARRAY_SIZE(values);
-> > @@ -86,12 +81,10 @@ static __init int test_heapify_all(bool min_heap)
-> >                 values[i] = get_random_int();
+> > >
+> > > 2. Split it per arm architectures (and proper subject prefix - not
+> > > "arch") and subarchitectures so maintainers can pick it up.
 > >
-> >         min_heapify_all(&heap, &funcs);
-> > -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> > -
-> > -       return err;
-> > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> >  }
+> > Why? The changes are simple and can be formatted as a single patch. I've seen
+> > tons of patches submitted like that, accepted and then merged. What you suggest
+> > is just much more work, which I don't see quite required.
+> 
+
+> DTS changes go separate between arm64 and arm. There is nothing
+> unusual here - all changes are submitted like this.
+> Second topic is to split by subarchitectures which is necessary if you
+> want it to be picked up by maintainers. It also makes it easier to
+> review.
+
+The current patches are easy enough for review. The last three patches of the
+series is a collection of the one-type changes concerning the same type of
+nodes. So reviewing them won't cause any difficulty. But I assume that's not
+the main point in this discussion.
+
+> Sure, without split ber subarchitectures this could be picked
+> up by SoC folks but you did not even CC them. So if you do not want to
+> split it per subarchitectures for maintainers and you do not CC SoC,
+> then how do you believe this should be picked up? Out of the regular
+> patch submission way? That's not how the changes are handled.
+
+AFAIU there are another ways of merging comprehensive patches. If they get to collect
+all the Acked-by tags, they could be merged in, for instance, through Greg' or Rob'
+(for dts) repos, if of course they get to agree with doing that. Am I wrong?
+
+My hope was to ask Rob or Greg to get the patches merged in when they get
+to collect all the ackes, since I thought it was an option in such cases. So if
+they refuse to do so I'll have no choice but to split the series up into a
+smaller patches as you say.
+
+> 
 > >
-> > -static __init int test_heap_push(bool min_heap)
-> > +static __init void test_heap_push(struct kunit *context, bool min_heap)
-> >  {
-> >         const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
-> >                              -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-> > @@ -106,25 +99,22 @@ static __init int test_heap_push(bool min_heap)
-> >                 .less = min_heap ? less_than : greater_than,
-> >                 .swp = swap_ints,
-> >         };
-> > -       int i, temp, err;
-> > +       int i, temp;
+> > >
+> > > 3. The subject title could be more accurate - there is no fix here
+> > > because there was no errors in the first place. Requirement of DWC
+> > > node names comes recently, so it is more alignment with dtschema.
+> > > Otherwise automatic-pickup-stable-bot might want to pick up... and it
+> > > should not go to stable.
 > >
-> >         /* Test with known set of values copied from data. */
-> >         for (i = 0; i < ARRAY_SIZE(data); i++)
-> >                 min_heap_push(&heap, &data[i], &funcs);
-> > -
-> > -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> > +       pop_verify_heap(context, min_heap, &heap, &funcs);
+> > Actually it is a fix, because the USB DT nodes should have been named with "usb"
+> > prefix in the first place. Legacy DWC USB3 bindings didn't define the nodes
+> > naming, but implied to be "usb"-prefixed by the USB HCD schema. The Qualcomm
+> > DWC3 schema should have defined the sub-nodes as "dwc3@"-prefixed, which was
+> > wrong in the first place.
+> 
+
+> Not following the naming convention of DT spec which was loosely
+> enforced is not an error which should be "fixed". Simply wrong title.
+> This is an alignment with dtschema or correcting naming convention.
+> Not fixing errors.
+
+From your perspective it wasn't an error, from mine and most likely Rob' it
+was.) Anyway as I said I don't care that much about preserving the subject
+wording, so what about the next one:
+<arch>: <subarch>: Harmonize DWC USB3 nodes name with DT schema
+?
+
+-Sergey
+
+> 
 > >
-> >         /* Test with randomly generated values. */
-> >         while (heap.nr < heap.size) {
-> >                 temp = get_random_int();
-> >                 min_heap_push(&heap, &temp, &funcs);
-> >         }
-> > -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> > -
-> > -       return err;
-> > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> >  }
-> >
-> > -static __init int test_heap_pop_push(bool min_heap)
-> > +static __init void test_heap_pop_push(struct kunit *context, bool min_heap)
-> >  {
-> >         const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
-> >                              -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-> > @@ -139,7 +129,7 @@ static __init int test_heap_pop_push(bool min_heap)
-> >                 .less = min_heap ? less_than : greater_than,
-> >                 .swp = swap_ints,
-> >         };
-> > -       int i, temp, err;
-> > +       int i, temp;
-> >
-> >         /* Fill values with data to pop and replace. */
-> >         temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
-> > @@ -149,8 +139,7 @@ static __init int test_heap_pop_push(bool min_heap)
-> >         /* Test with known set of values copied from data. */
-> >         for (i = 0; i < ARRAY_SIZE(data); i++)
-> >                 min_heap_pop_push(&heap, &data[i], &funcs);
-> > -
-> > -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> >
-> >         heap.nr = 0;
-> >         for (i = 0; i < ARRAY_SIZE(data); i++)
-> > @@ -161,34 +150,54 @@ static __init int test_heap_pop_push(bool min_heap)
-> >                 temp = get_random_int();
-> >                 min_heap_pop_push(&heap, &temp, &funcs);
-> >         }
-> > -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> > +}
-> >
-> > -       return err;
-> > +static void __init test_heapify_all_true(struct kunit *context)
-> > +{
-> > +       test_heapify_all(context, true);
-> >  }
-> >
-> > -static int __init test_min_heap_init(void)
-> > +static void __init test_heapify_all_false(struct kunit *context)
-> >  {
-> > -       int err = 0;
-> > -
-> > -       err += test_heapify_all(true);
-> > -       err += test_heapify_all(false);
-> > -       err += test_heap_push(true);
-> > -       err += test_heap_push(false);
-> > -       err += test_heap_pop_push(true);
-> > -       err += test_heap_pop_push(false);
-> > -       if (err) {
-> > -               pr_err("test failed with %d errors\n", err);
-> > -               return -EINVAL;
-> > -       }
-> > -       pr_info("test passed\n");
-> > -       return 0;
-> > +       test_heapify_all(context, true);
-> > +}
-> > +
-> > +static void __init test_heap_push_true(struct kunit *context)
-> > +{
-> > +       test_heap_push(context, true);
-> > +}
-> > +
-> > +static void __init test_heap_push_false(struct kunit *context)
-> > +{
-> > +       test_heap_push(context, false);
-> >  }
-> > -module_init(test_min_heap_init);
-> >
-> > -static void __exit test_min_heap_exit(void)
-> > +static void __init test_heap_pop_push_true(struct kunit *context)
-> >  {
-> > -       /* do nothing */
-> > +       test_heap_pop_push(context, true);
-> >  }
-> > -module_exit(test_min_heap_exit);
-> > +
-> > +static void __init test_heap_pop_push_false(struct kunit *context)
-> > +{
-> > +       test_heap_pop_push(context, false);
-> > +}
-> > +
-> > +static struct kunit_case __refdata min_heap_test_cases[] = {
-> > +       KUNIT_CASE(test_heapify_all_true),
-> > +       KUNIT_CASE(test_heapify_all_false),
-> > +       KUNIT_CASE(test_heap_push_true),
-> > +       KUNIT_CASE(test_heap_push_false),
-> > +       KUNIT_CASE(test_heap_pop_push_true),
-> > +       KUNIT_CASE(test_heap_pop_push_false),
-> > +       {}
-> > +};
-> > +
-> > +static struct kunit_suite min_heap_test_suite = {
-> > +       .name = "min-heap",
-> > +       .test_cases = min_heap_test_cases,
-> > +};
-> > +
-> > +kunit_test_suites(&min_heap_test_suite);
-> >
-> >  MODULE_LICENSE("GPL");
-> >
-> > base-commit: d43c7fb05765152d4d4a39a8ef957c4ea14d8847
-> > --
-> > 2.26.2
-> >
+> > Regarding automatic-pickup-stable-bot if it exists I don't think it scans all the
+> > emails, but most likely the stable@vger.kernel.org list only or the emails
+> > having the "Fixes:" tag. If I am wrong please give me a link to the bot sources
+> > or refer to a doc where I can read about the way it works, to take it into
+> > account in future commits. Just to note I submitted patches which did some fixes,
+> > had the word "fix" in the subject but weren't selected to be backported to the
+> > stable kernel.
+> 
+> You mixed up bots. The regular stable bot picks commits with cc-stable
+> or with "Fixes". The auto-pickup bot picks all commits (not emails...
+> why would it look at emails?) looking like a fix. Wording could be one
+> of the hints used in the heuristic. Anyway, this is not a fix,
+> regardless of autosel, so the wording is not correct.
+> 
+> Just Google for AUTOSEL. You can then ask Sasha for sources...
+> 
+> > Anyway I don't really care that much about the subject text using the word "fix"
+> > or some else. So if you suggest some better alternative, I'd be glad to consider
+> > it.
+> 
+> I already did. One example is: alignment with dtschema.
+> 
+> Best regards,
+> Krzysztof
