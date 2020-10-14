@@ -2,118 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F2B28E3EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E18528E3F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729883AbgJNQEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728035AbgJNQEJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:04:09 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDF6C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:04:09 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b26so68324pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=spoyQPu6unWe3hyCBCgrr8waF85sTMvIJTyW48sWfoA=;
-        b=AiIWMH5jq290wNUTegpNANqevFS7bRDeZeFN2D0NiW7KrKlYzsdQgb4I121bVKlWY3
-         VHGwGh//NhkTSSjGm6G2MDrIveUR/92orKfnM8s6Tg3ul+9AHFT4oiKLC+mUC02N1WwP
-         AUJKyOZapBd6EkWya/8OdSxCiMyIkhUrGqeWt5/V2vrq+LmEKPy1avcE4VzqCLja79zk
-         SWTTMRU4RjVwUuSi9BtZCBM9a7D9/Ogr+3/gxMqig/183oQ4kPNFfICULpTTAenvkx2l
-         wrB2bQ9D2NbYQpY9gGgGYPvesHoYrzaDEsRD/mGfwr5JhIzy3hyAYedNyUL9qENzlP0f
-         tuog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=spoyQPu6unWe3hyCBCgrr8waF85sTMvIJTyW48sWfoA=;
-        b=VQITkUtvHSi2B3PdcA5Q5y2lmwYc3HycPYadM4l7pEi1njtkJhM9RGYCL62uC1vtUU
-         EtaBGCuECL5aBQwZ4nIXQQPFbl5N2ss4KzmVzdeYVEatkf5RC+QMwf3Vi9F3Fv8hhq2z
-         0cgYiXpAXuNsms9JsP1fwvyOXR2CsVOFCuxQKdP+xDXxW9UgXxGRMv9weGY7oG23eHPx
-         Btfnn1aq7W3gWed/eXeFkWU9mFj0iBuOey98L8uwgOpqncMd270RmvyaOh05smAhcxsU
-         pHqSwQSSUqNrcaJodJgoT6lVl1zHyZRX/ukyOeF60YBSuiHy3UJls3TxfPmsFkETpfyP
-         D1Ow==
-X-Gm-Message-State: AOAM530UWnn5SyrRCotrnpN+qKc/JGtPmdXMb1cnRg9fSqgOfCc6RKbk
-        tCQd1mCxE4eYgIw9g5kQGr6PirWHHPI/TSmb9riP9Q==
-X-Google-Smtp-Source: ABdhPJxUx1HXe0unvgaYZ0qxNTxPY2Py0eHVcdkb51fZJNRv1i5qRWjjWvsxXeKHUesKKuuBw2dFuZkfqrwjf0gff/U=
-X-Received: by 2002:a62:78d5:0:b029:154:ebc0:c92c with SMTP id
- t204-20020a6278d50000b0290154ebc0c92cmr64329pfc.24.1602691449016; Wed, 14 Oct
- 2020 09:04:09 -0700 (PDT)
+        id S1730481AbgJNQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:05:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728035AbgJNQFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:05:06 -0400
+Received: from coco.lan (ip5f5ad5dc.dynamic.kabel-deutschland.de [95.90.213.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A585F20B1F;
+        Wed, 14 Oct 2020 16:05:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602691505;
+        bh=UyfuipMpBBXN4pHNIZOafb1pP5DePQ6km5QUP57Anc0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WXc15mHus01dI1sEILxIKonKWxojhho/Cahj3LH0cAgE3Qbul94NOtdmKZR5it4lW
+         lTy/wAOiyw+TQw7lO7+3UMaDpf8Lj6ce9zFpL8SZOIuYsjoGF5XIv7ksaLNMhwVC4j
+         krlwkJBt/5d/MblU0+3qMfaDEZt6IZCfwpo7eW+s=
+Date:   Wed, 14 Oct 2020 18:04:59 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 04/24] docs: lockdep-design: fix some warning issues
+Message-ID: <20201014175143.3d594341@coco.lan>
+In-Reply-To: <20201013150250.GJ20115@casper.infradead.org>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+        <c76318f859a78adb80a6eef63c5c777d05501198.1602590106.git.mchehab+huawei@kernel.org>
+        <20201013125206.GU2611@hirez.programming.kicks-ass.net>
+        <20201013131116.GG20115@casper.infradead.org>
+        <20201013140941.GC2594@hirez.programming.kicks-ass.net>
+        <20201013150250.GJ20115@casper.infradead.org>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20201009170202.103512-1-a.nogikh@gmail.com> <20201009170202.103512-2-a.nogikh@gmail.com>
-In-Reply-To: <20201009170202.103512-2-a.nogikh@gmail.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Wed, 14 Oct 2020 18:03:58 +0200
-Message-ID: <CAAeHK+z6NLcwviYdGWZ4seoAr9-5Xa5ryonkU1wHOy0uAVpUKw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] kernel: make kcov_common_handle consider the
- current context
-To:     Aleksandr Nogikh <a.nogikh@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 7:02 PM Aleksandr Nogikh <a.nogikh@gmail.com> wrote:
->
-> From: Aleksandr Nogikh <nogikh@google.com>
->
-> kcov_common_handle is a method that is used to obtain a "default" KCOV
-> remote handle of the current process. The handle can later be passed
-> to kcov_remote_start in order to collect coverage for the processing
-> that is initiated by one process, but done in another. For details see
-> Documentation/dev-tools/kcov.rst and comments in kernel/kcov.c.
->
-> Presently, if kcov_common_handle is called in a hard IRQ context, it
-> will return a handle for the interrupted process. This may lead to
-> unreliable and incorrect coverage collection.
+Em Tue, 13 Oct 2020 16:02:50 +0100
+Matthew Wilcox <willy@infradead.org> escreveu:
 
-FWIW it's the same for soft IRQ context.
+> On Tue, Oct 13, 2020 at 04:09:41PM +0200, Peter Zijlstra wrote:
+> > On Tue, Oct 13, 2020 at 02:11:16PM +0100, Matthew Wilcox wrote:
+> > > On Tue, Oct 13, 2020 at 02:52:06PM +0200, Peter Zijlstra wrote:
+> > > > On Tue, Oct 13, 2020 at 02:14:31PM +0200, Mauro Carvalho Chehab wro=
+te:
+> > > > > +   =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > +   ``.``  acquired while irqs disabled and not in irq context
+> > > > > +   ``-``  acquired in irq context
+> > > > > +   ``+``  acquired with irqs enabled
+> > > > > +   ``?``  acquired in irq context with irqs enabled.
+> > > > > +   =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > >
+> > > > NAK!
+> > >=20
+> > > You're seriously suggesting that:
+> > >=20
+> > > -   =3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+> > > -   '.'  acquired while irqs disabled and not in irq context
+> > > -   '-'  acquired in irq context
+> > > -   '+'  acquired with irqs enabled
+> > > -   '?'  acquired in irq context with irqs enabled.
+> > > -   =3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+> > > +   =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > +   ``.``  acquired while irqs disabled and not in irq context
+> > > +   ``-``  acquired in irq context
+> > > +   ``+``  acquired with irqs enabled
+> > > +   ``?``  acquired in irq context with irqs enabled.
+> > > +   =3D=3D=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > >=20
+> > > this change makes the lockdep docs less readable?
+> >=20
+> > Definitely makes it harder to read for me. My C trained eyes go WTF at
+> > seeing it, which breaks the flow. ',' is a regular single character
+> > constant, '','' a syntax error.
+>=20
+> OK, that's fair.  'a' is definitely a character constant.  Perhaps
+> the automarkup script can take care of this for us?  We'd have to
+> be careful not to catch anything we shouldn't've [1], but I'm sure
+> there's a regex for it.  Something like "\<'.'\>", perhaps?
 
->
-> Adjust the behavior of kcov_common_handle in the following way. If it
-> is called in a task context, return the common handle for the
-> currently running task. Otherwise, return 0. It will make the returned
-> value more reliable and also will make it possible to use
-> kcov_remote_handle in routines that can be called from any context.
->
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> ---
-> v2:
-> * Added this patch to the series.
-> ---
->  kernel/kcov.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/kcov.c b/kernel/kcov.c
-> index 6b8368be89c8..80bfe71bbe13 100644
-> --- a/kernel/kcov.c
-> +++ b/kernel/kcov.c
-> @@ -1023,6 +1023,8 @@ EXPORT_SYMBOL(kcov_remote_stop);
->  /* See the comment before kcov_remote_start() for usage details. */
->  u64 kcov_common_handle(void)
->  {
-> +       if (!in_task())
-> +               return 0;
->         return current->kcov_handle;
->  }
->  EXPORT_SYMBOL(kcov_common_handle);
-> --
-> 2.28.0.1011.ga647a8990f-goog
->
+I guess that this regex could work:
 
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+	/\b\'\S\'\b/=20
+
+would get this very specific case, or maybe even:
+	/\b\'\S+\'\b/
+
+in order to get things like 'foo'.
+
+Adding support for something like this at=20
+Documentation/sphinx/automarkup.py should be trivial. However,
+checking if this won't be doing anything wrong with the other existing
+files can be painful.
+
+Yet, there are 3 issues related to '.' character usage.
+
+See, the first table is:
+
+   =3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+   '.'  acquired while irqs disabled and not in irq context
+   '-'  acquired in irq context
+   '+'  acquired with irqs enabled
+   '?'  acquired in irq context with irqs enabled.
+   =3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+
+There, it uses '.' in order to indicate the dot character and so on.
+
+The second table uses a different notation:
+
+   +--------------+-------------+--------------+
+   |              | irq enabled | irq disabled |
+   +--------------+-------------+--------------+
+   | ever in irq  |      ?      |       -      |
+   +--------------+-------------+--------------+
+   | never in irq |      +      |       .      |
+   +--------------+-------------+--------------+
+
+which uses just a question mark without aphostrophes, instead of
+'?' (and the same for the other symbols).
+
+The text describing them returns back to the notation used at the
+first table:
+
+	"The character '-' suggests irq is disabled because if otherwise the
+	 charactor '?' would have been shown instead. Similar deduction can be
+	 applied for '+' too."
+
+-
+
+The above has actually 3 separate problems:
+
+1) This problem has nothing to do with Sphinx notation. The notation
+   is not coherent: It should use either ., ``.`` or '.' everywhere. =20
+
+2) This is Sphinx-specific: a single minus or a single plus character
+indicates a list. On both cases, this is actually replaced by an UTF-8
+bullet character: '=E2=80=A2'.
+
+3) This is a minor issue:
+
+   using '.' will produce an html table that will display, using
+   a normal font, as '.', while ``.`` would use a monospaced=20
+   font and won't display the apostrophes. IMO, at the html output,=20
+   it would be better to just a dot without apostrophes, as the
+   text of the dmesg output doesn't have apostrophes either:
+
+     "When locking rules are violated, these usage bits are presented in the
+      locking error messages, inside curlies, with a total of 2 * n STATEs =
+bits.
+      A contrived example::
+
+        modprobe/2287 is trying to acquire lock:
+         (&sio_locks[i].lock){-.-.}, at: [<c02867fd>] mutex_lock+0x21/0x24
+
+        but task is already holding lock:
+         (&sio_locks[i].lock){-.-.}, at: [<c02867fd>] mutex_lock+0x21/0x24"
+
+   Yet, we could live without addressing this one.
+
+> [1] I'm quite proud of that one.
+>=20
+> > > It's not the markup that makes the lockdep documentation hard to
+> > > understand.
+> >=20
+> > I'm not sure what you're alluding to, the subject just isn't easy to
+> > begin with.
+>=20
+> Absolutely.  The problem is (similar to most Linux documentation)
+> the document doesn't know who its audience is.  It mixes internal
+> implementation details of lockdep with what people need to know who
+> are just trying to understand what a lockdep splat means.  I don't
+> have time to restructure it right now though.
+
+Yeah, that is one of the the main issues with this. This specific=20
+section of the file describes something that a sysadmin or a Kernel
+newbie may see on his system. He'll likely seek the web for some
+documentation about that, in order to try to understand it.
+
+If someone is willing to do that, it will get this:
+
+	https://www.kernel.org/doc/html/latest/locking/lockdep-design.html#state
+
+Where it presents a plain wrong table that it would look like this:
+
+   +--------------+-------------+--------------+
+   |              | irq enabled | irq disabled |
+   +--------------+-------------+--------------+
+   | ever in irq  |      ?      |       =E2=80=A2      |
+   +--------------+-------------+--------------+
+   | never in irq |      =E2=80=A2      |       .      |
+   +--------------+-------------+--------------+
+
+If you prefer, I can send a new version of this patch using this at
+the second table:
+
+   +--------------+-------------+--------------+
+   |              | irq enabled | irq disabled |
+   +--------------+-------------+--------------+
+   | ever in irq  |     '?'     |      '-'     |
+   +--------------+-------------+--------------+
+   | never in irq |     '+'     |      '.'     |
+   +--------------+-------------+--------------+
+
+and keep using '.' at the other parts of the document.
+
+This should solve the Sphinx issue, although the Sphinx output
+won't be using a monospaced font.
+
+Thanks,
+Mauro
