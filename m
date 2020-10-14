@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C7E28D836
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69B628D839
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgJNCHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 22:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56338 "EHLO mail.kernel.org"
+        id S1728897AbgJNCI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:08:29 -0400
+Received: from mga17.intel.com ([192.55.52.151]:22912 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJNCHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 22:07:36 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD53521775;
-        Wed, 14 Oct 2020 02:07:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602641255;
-        bh=KPvdf+a85L4OCPBIobRJspIbIReT/sQiwTlh0oeAdGY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=gHYN0Dqpkk/2BtPmEkiteW1czHK1Urxz4WDRT2RFU+oxQaICXUgwcoVeg7WQVNWlJ
-         1PMaWP+6TBqT2cJkyHdC8YFJwu1Rtx2Ph9Sr01hEYN668he6PYSH0b6bQWqzf/ONG9
-         dspd7EBdKoN18Mqkd5Y3JOx7+FZRMFzR6/fbhJFU=
-Content-Type: text/plain; charset="utf-8"
+        id S1725874AbgJNCI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 22:08:29 -0400
+IronPort-SDR: yBPi+WL7a4DNdUvyrh1MJhTW+GyOOMVGIX1S38Tc37EzWAxgs4WvuDTApBhoYjxT5xoHjKRQD/
+ ifcKXwlt0QhQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="145879786"
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="145879786"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 19:08:27 -0700
+IronPort-SDR: inQ4qbS0lmxsXC1fa/JBY45Zh6JLJm29uxHgtI4QzSetpkgZ6qu/XIxzj094gWeTQWPgLeSmUk
+ brKTQAX3Hb1w==
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="530644675"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 19:08:26 -0700
+Date:   Tue, 13 Oct 2020 19:08:25 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 3/9] x86/pks: Enable Protection Keys Supervisor
+ (PKS)
+Message-ID: <20201014020825.GM2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-4-ira.weiny@intel.com>
+ <cfd8e361-9d5b-5b24-08d4-31ad3d392255@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1602609110-11504-2-git-send-email-tdas@codeaurora.org>
-References: <1602609110-11504-1-git-send-email-tdas@codeaurora.org> <1602609110-11504-2-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v2 1/3] clk: qcom: clk-alpha-pll: Add support for controlling Agera PLLs
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 13 Oct 2020 19:07:34 -0700
-Message-ID: <160264125446.310579.18150875025884105137@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cfd8e361-9d5b-5b24-08d4-31ad3d392255@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2020-10-13 10:11:48)
-> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alph=
-a-pll.c
-> index 26139ef..17e1fc0 100644
-> --- a/drivers/clk/qcom/clk-alpha-pll.c
-> +++ b/drivers/clk/qcom/clk-alpha-pll.c
-> @@ -1561,3 +1571,73 @@ const struct clk_ops clk_alpha_pll_postdiv_lucid_o=
-ps =3D {
->         .set_rate =3D clk_alpha_pll_postdiv_fabia_set_rate,
->  };
->  EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_lucid_ops);
-> +
-> +void clk_agera_pll_configure(struct clk_alpha_pll *pll, struct regmap *r=
-egmap,
-> +                       const struct alpha_pll_config *config)
-> +{
-> +       if (config->l)
-> +               regmap_write(regmap, PLL_L_VAL(pll), config->l);
+On Tue, Oct 13, 2020 at 11:23:08AM -0700, Dave Hansen wrote:
+> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
+> > +/*
+> > + * PKS is independent of PKU and either or both may be supported on a CPU.
+> > + * Configure PKS if the cpu supports the feature.
+> > + */
+> 
+> Let's at least be consistent about CPU vs. cpu in a single comment. :)
 
-Maybe make a helper function for this too. That way we can't mix up the
-if condition with the value in the write.
+Sorry, done.
 
-	clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
+> 
+> > +static void setup_pks(void)
+> > +{
+> > +	if (!IS_ENABLED(CONFIG_ARCH_HAS_SUPERVISOR_PKEYS))
+> > +		return;
+> > +	if (!cpu_feature_enabled(X86_FEATURE_PKS))
+> > +		return;
+> 
+> If you put X86_FEATURE_PKS in disabled-features.h, you can get rid of
+> the explicit CONFIG_ check.
 
-static void clk_alpha_pll_write_config(struct regmap *regmap,
-				       unsigned int reg,
-				       unsigned int val) {
-	if (val)
-		regmap_write(regmap, reg, val);
-}
+Done.
 
-and how are we so lucky that zero isn't a value that we may need to
-write?
-
-> +
-> +       if (config->alpha)
-> +               regmap_write(regmap, PLL_ALPHA_VAL(pll), config->alpha);
-> +
-> +       if (config->user_ctl_val)
-> +               regmap_write(regmap, PLL_USER_CTL(pll), config->user_ctl_=
-val);
-> +
-> +       if (config->config_ctl_val)
-> +               regmap_write(regmap, PLL_CONFIG_CTL(pll),
-> +                                               config->config_ctl_val);
-> +
-> +       if (config->config_ctl_hi_val)
-> +               regmap_write(regmap, PLL_CONFIG_CTL_U(pll),
-> +                                               config->config_ctl_hi_val=
-);
-> +
-> +       if (config->test_ctl_val)
-> +               regmap_write(regmap, PLL_TEST_CTL(pll),
-> +                                               config->test_ctl_val);
-> +
-> +       if (config->test_ctl_hi_val)
-> +               regmap_write(regmap,  PLL_TEST_CTL_U(pll),
-> +                                               config->test_ctl_hi_val);
-> +}
-> +EXPORT_SYMBOL_GPL(clk_agera_pll_configure);
-> +
-> +static int clk_alpha_pll_agera_set_rate(struct clk_hw *hw, unsigned long=
- rate,
-> +                                                       unsigned long pra=
-te)
-> +{
-> +       struct clk_alpha_pll *pll =3D to_clk_alpha_pll(hw);
-> +       u32 l, alpha_width =3D pll_alpha_width(pll);
-> +       unsigned long rrate, max =3D rate + PLL_RATE_MARGIN;
-> +       u64 a;
-> +
-> +       rrate =3D alpha_pll_round_rate(rate, prate, &l, &a, alpha_width);
-> +
-> +       /*
-> +        * Due to limited number of bits for fractional rate programming,=
- the
-> +        * rounded up rate could be marginally higher than the requested =
-rate.
-> +        */
-> +       if (rrate > (rate + PLL_RATE_MARGIN) || rrate < rate) {
-> +               pr_err("%s: Rounded rate %lu not within range [%lu, %lu)\=
-n",
-> +                      clk_hw_get_name(hw), rrate, rate, max);
-> +               return -EINVAL;
-> +       }
-
-Can this be extracted into a helper function?
-
-> +
-> +       /* change L_VAL without having to go through the power on sequenc=
-e */
-> +       regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
-> +       regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
-> +
-> +       if (clk_hw_is_enabled(hw))
-> +               return wait_for_pll_enable_lock(pll);
-> +
-> +       return 0;
-> +}
-> +
+> 
+> > +	cr4_set_bits(X86_CR4_PKS);
+> > +}
+> > +
+> >  /*
+> >   * This does the hard work of actually picking apart the CPU stuff...
+> >   */
+> > @@ -1544,6 +1558,7 @@ static void identify_cpu(struct cpuinfo_x86 *c)
+> >  
+> >  	x86_init_rdrand(c);
+> >  	setup_pku(c);
+> > +	setup_pks();
+> >  
+> >  	/*
+> >  	 * Clear/Set all flags overridden by options, need do it
+> > diff --git a/mm/Kconfig b/mm/Kconfig
+> > index 6c974888f86f..1b9bc004d9bc 100644
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -822,6 +822,8 @@ config ARCH_USES_HIGH_VMA_FLAGS
+> >  	bool
+> >  config ARCH_HAS_PKEYS
+> >  	bool
+> > +config ARCH_HAS_SUPERVISOR_PKEYS
+> > +	bool
+> >  
+> >  config PERCPU_STATS
+> >  	bool "Collect percpu memory statistics"
+> > 
+> 
