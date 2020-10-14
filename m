@@ -2,274 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A562728E1E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC57D28E1E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388873AbgJNOFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:05:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54482 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726528AbgJNOFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:05:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602684320;
+        id S2388889AbgJNOGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:06:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725977AbgJNOGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 10:06:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602684372;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mY/jXV1h2vn/yDJei6QHbZyP772jxPE6iwtk0iRyK60=;
-        b=WmTxaImszTjWybIZukJ87mgRlpd4VdvnDTBkoR2Z0jFgqH+u2C6sSvsMgjUh9t1olvUM7r
-        XUSZj3/Bx0BEFWKzuuH/A6oN4SInAjhIr8A08+gr0RUQCz3YpyMfMPQ1VoezndrXWQRU7A
-        L5PEIctmmazm1AKVhFIVLk6ZH3GcVlg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AC177AD6B;
-        Wed, 14 Oct 2020 14:05:20 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 16:05:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: BUG: KASAN: global-out-of-bounds in vprintk_store on x86_64
-Message-ID: <20201014140514.GB17231@alley>
-References: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com>
+        bh=qO9YuI5vYU+8HO6/qC2Mebe+6fwnSb3Ibhbg71I+lw0=;
+        b=HdPl8h10PiBMKC93RyFLqpua9Zb1JljNMD/z56RnewiX9yF4kDPGyYhJmVPbw58i9USoP2
+        1WoUnirSvn9KB+dq1xCEMzpN5aSzCb+I80yTsBRwDB4eFYEXo3d3yCEiU2OZmSa2n1gsM9
+        0NESzrKZDTyH926xU176p7MiZRkq2/U=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-GKnbqIjIOKiS9SRBdQv6ig-1; Wed, 14 Oct 2020 10:06:09 -0400
+X-MC-Unique: GKnbqIjIOKiS9SRBdQv6ig-1
+Received: by mail-ed1-f71.google.com with SMTP id s2so1223002edw.21
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 07:06:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qO9YuI5vYU+8HO6/qC2Mebe+6fwnSb3Ibhbg71I+lw0=;
+        b=XAxWUPsAGwZW7PSaOImIJm9jhld9144sJWE63tPgvco1w1XZYDrixCYvC0hNQSEYmw
+         4CTKT7qreLJFCaz9CK1uOJsOg/znDopWfY1MSyCmxfVpkNaKoZJSZlfPvDjUg7SvE1G8
+         lABNFrKJMJspLwFC3VSfUt1J8m27wnsrfMyK7hi2xBt4ovDBJJ8Nnf8/w2Kl5BTtu3jO
+         JJ7fWEU7sUif3z9FpJBAG5li7itOXl10tud4dOEJgKgYskBGVuVTljG1p5TLKFPSyLAd
+         dxQ7pMUaWga4L4W2jqwabQIv4YD5H/kRMnSJbaRTXIkuexHf05eqPQ1QsnL0cC56QcQV
+         3YvA==
+X-Gm-Message-State: AOAM532ymzyut0mA+SXBJ+l5Jd9WSATBxPQ6D9XnneaDebjX40vgeXix
+        MRoe7F1LAYGfV3/9rKXBzivxVGK8/RqsFe2pNUUUEtJcUPcn5hYVYBitOPGu6Q80ydTQ1TDIO7k
+        ijRSJRVz7qMtjUXBfRXgviiIF
+X-Received: by 2002:a17:907:1010:: with SMTP id ox16mr5557105ejb.379.1602684368352;
+        Wed, 14 Oct 2020 07:06:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFYV0HIxJLic22dETA5tEbCOXHOHkadVl08yBGKGSQeKvrzNhub3Ay4NkFWD7/ezKWcCUqQA==
+X-Received: by 2002:a17:907:1010:: with SMTP id ox16mr5557063ejb.379.1602684367860;
+        Wed, 14 Oct 2020 07:06:07 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id o12sm1854210ejb.36.2020.10.14.07.06.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 07:06:07 -0700 (PDT)
+Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Bastien Nocera <hadess@hadess.net>,
+        Mark Pearson <mpearson@lenovo.com>
+References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
+ <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
+ <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
+ <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
+ <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
+ <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com>
+ <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <87d9a808-39d6-4949-c4f9-6a80d14a3768@redhat.com>
+Date:   Wed, 14 Oct 2020 16:06:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-10-14 16:19:18, Naresh Kamboju wrote:
-> While testing LTP controllers testing on x86_64 KASAN enabled linux
-> next 20201013 tag
-> kernel this kernel BUG noticed. The oom-killer log also noticed while
-> running tests.
+Hi,
+
+On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
+> Hi Hans,
 > 
-> metadata:
->   git branch: master
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git commit: f2fb1afc57304f9dd68c20a08270e287470af2eb
->   git describe: next-20201013
->   make_kernelversion: 5.9.0
->   kernel-config:
-> https://builds.tuxbuild.com/TXP6cqokP8BCYJrv7zf6kw/kernel.config
+> On Tue, Oct 13, 2020 at 3:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi Rafael,
+>>
+>> On 10/12/20 6:37 PM, Rafael J. Wysocki wrote:
+>>> On Mon, Oct 12, 2020 at 1:46 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> <snip>
+>>
+>>>>> A side note, related to your proposal, not this patch. IMO it suits
+>>>>> better to have /sys/power/profile.
+>>>>>
+>>>>> cat /sys/power/profile
+>>>>>
+>>>>> power
+>>>>> balanced_power *
+>>>>> balanced
+>>>>> balanced_performance
+>>>>> performance
+>>>>>
+>>>>> The (*) being the active profile.
+>>>>
+>>>> Interesting the same thing was brought up in the discussion surrounding
+>>>> RFC which I posted.
+>>>>
+>>>> The downside against this approach is that it assumes that there
+>>>> only is a single system-wide settings. AFAIK that is not always
+>>>> the case, e.g. (AFAIK):
+>>>>
+>>>> 1. The intel pstate driver has something like this
+>>>>       (might this be the rapl setting you mean? )
+>>>>
+>>>> 2. The X1C8 has such a setting for the embedded-controller, controlled
+>>>>       through the ACPI interfaces which thinkpad-acpi used
+>>>>
+>>>> 3. The hp-wmi interface allows selecting a profile which in turn
+>>>>       (through AML code) sets a bunch of variables which influence how
+>>>>       the (dynamic, through mjg59's patches) DPTF code controls various
+>>>>       things
+>>>>
+>>>> At least the pstate setting and the vendor specific settings can
+>>>> co-exist. Also the powercap API has a notion of zones, I can see the
+>>>> same thing here, with a desktop e.g. having separate performance-profile
+>>>> selection for the CPU and a discrete GPU.
+>>>>
+>>>> So limiting the API to a single /sys/power/profile setting seems a
+>>>> bit limited and I have the feeling we will regret making this
+>>>> choice in the future.
+>>>>
+>>>> With that said your proposal would work well for the current
+>>>> thinkpad_acpi / hp-wmi cases, so I'm not 100% against it.
+>>>>
+>>>> This would require adding some internal API to the code which
+>>>> owns the /sys/power root-dir to allow registering a profile
+>>>> provider I guess. But that would also immediately bring the
+>>>> question, what if multiple drivers try to register themselves
+>>>> as /sys/power/profile provider ?
+>>>
+>>> It doesn't need to work this way IMV.
+>>>
+>>> It may also work by allowing drivers (or whatever kernel entities are
+>>> interested in that) to subscribe to it, so that they get notified
+>>> whenever a new value is written to it by user space (eg. each driver
+>>> may be able to register a callback to be invoked when that happens).
+>>> The information coming from user space will just be passed to the
+>>> subscribers of that interface and they will do about it what they want
+>>> (eg. it may be translated into a value to be written to a
+>>> performance-vs-power interface provided by the platform or similar).
+>>>
+>>> This really is similar to having a class interface with one file per
+>>> "subscribed" device except that the aggregation is done in the kernel
+>>> and not in user space and the subscribers need not be related to
+>>> specific devices.  It still allows to avoid exposing the low-level
+>>> interfaces to user space verbatim and it just passes the "policy"
+>>> choice from user space down to the entities that can take it into
+>>> account.
+>>
+>> First of all thank you for your input, with your expertise in this
+>> area your input is very much appreciated, after all we only get
+>> one chance to get the userspace API for this right.
+>>
+>> Your proposal to have a single sysfs file for userspace to talk
+>> to and then use an in kernel subscription mechanism for drivers
+>> to get notified of writes to this file is interesting.
+>>
+>> But I see 2 issues with it:
+>>
+>> 1. How will userspace know which profiles are actually available ?
+>>
+>> An obvious solution is to pick a set of standard names and let
+>> subscribers map those as close to their own settings as possible,
+>> the most often mentioned set of profile names in this case seems to be:
+>>
+>> low_power
+>> balanced_power
+>> balanced
+>> balanced_performance
+>> performance
+>>
+>> Which works fine for the thinkpad_acpi case, but not so much for
+>> the hp-wmi case. In the HP case what happens is that a WMI call
+>> is made which sets a bunch of ACPI variables which influence
+>> the DPTF code (this assumes we have some sort of DPTF support
+>> such as mjg59's reverse engineered support) but the profile-names
+>> under Windows are: "Performance", "HP recommended", "Cool" and
+>> "Quiet".  If you read the discussion from the
+>> "[RFC] Documentation: Add documentation for new performance_profile sysfs class"
+>> thread you will see this was brought up as an issue there.
 > 
+> Two different things seem to be conflated here.  One is how to pass a
+> possible performance-vs-power preference coming from user space down
+> to device drivers or generally pieces of kernel code that can adjust
+> the behavior and/or hardware settings depending on what that
+> preference is and the other is how to expose OEM-provided DPTF system
+> profile interfaces to user space.
+
+I was hoping / thinking that we could use a single API for both of
+these. But I guess that it makes sense to see them as 2 separate
+things, esp. since DPTF profiles seem to be somewhat free-form
+where as a way to pass a performance-pref to a device could use
+a fixes set of values.
+
+So lets say that we indeed want to treat these 2 separately,
+then I guess that the issue at hand / my reason to start a
+discussion surrounding this is allowing userspace to selecting
+the DPTF system profile.
+
+The thinkpad_acpi case at hand is not using DPTF, but that is
+because Lenovo decided to implement dynamic DPTF like behavior
+inside their embedded controller (for when running Linux) since
+DPTF is atm not really supported all that well under Linux and
+Lenovo was getting a lot of complaints about sub-optimal
+performance because of this.
+
+So the thinkpad_acpi solution is in essence a replacement
+for DPTF and it should thus use the same userspace API as
+other mechanisms to select DPTF system profiles.
+
+And if we limit this new userspace API solely to setting DPTF
+system profiles, then their will indeed be only 1 provider for
+this for the entire system.
+
+> The former assumes that there is a common set of values that can be
+> understood and acted on in a consistent way by all of the interested
+> entities within the kernel and the latter is about passing information
+> from user space down to a side-band power control mechanism working in
+> its own way behind the kernel's back (and possibly poking at multiple
+> hardware components in the platform in its own way).
+
+Ack.
+
+> IMO there is no way to provide a common interface covering these two
+> cases at the same time.
+
+I see your point, esp. the free form vs common set of values
+argument seems to be exactly what we have been going in circles
+about during the discussion about this so far.
+
+>> The problem here is that both "cool" and "quiet" could be
+>> interpreted as low-power. But it seems that they actually mean
+>> what they say, cool focuses on keeping temps low, which can
+>> also be done by making the fan-profile more aggressive. And quiet
+>> is mostly about keeping fan speeds down, at the cost of possible
+>> higher temperatures.  IOW we don't really have a 1 dimensional
+>> axis.
 > 
-> steps to reproduce:
-> -------------------------
-> # cd /opt/ltp
-> # ./runltp  -f controllers
+> Well, AFAICS, DPTF system profile interfaces coming from different
+> OEMs will be different, but they are about side-band power control and
+> there can be only one thing like that in a platform at the same time.
+
+Ack.
+
+>> My class proposal fixes this by having a notion of both
+>> standardized names (because anything else would suck) combined
+>> with a way for drivers to advertise which standardized names
+>> the support. So in my proposal I simply add quiet and cool
+>> to the list of standard profile names, and then the HP-wmi
+>> driver can list those as supported, while not listing
+>> low_power as a supported profile.  This way we export the
+>> hardware interface to userspace as is (as much as possible)
+>> while still offering a standardized interface for userspace
+>> to consume.  Granted if userspace now actually want to set
+>> a low_power profile, we have just punted the problem to userspace
+>> but I really do not see a better solution.
 > 
-> Crash log:
-> --------------
-> [  221.921944] oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=c,mems_allowed=0,oom_memcg=/0,task_memcg=in
+> First, a common place to register a DPTF system profile seems to be
+> needed and, as I said above, I wouldn't expect more than one such
+> thing to be present in the system at any given time, so it may be
+> registered along with the list of supported profiles and user space
+> will have to understand what they mean.
 
-This is the last string stored in the ring buffer before KASAN trigerred.
+Mostly Ack, I would still like to have an enum for DPTF system
+profiles in the kernel and have a single piece of code map that
+enum to profile names. This enum can then be extended as
+necessary, but I want to avoid having one driver use
+"Performance" and the other "performance" or one using
+"performance-balanced" and the other "balanced-performance", etc.
 
-> [  221.922108] ==================================================================
-> [  221.922111] BUG: KASAN: global-out-of-bounds in vprintk_store+0x362/0x3d0
-> [  221.922112] Write of size 2 at addr ffffffffba51dbcd by task
-> memcg_test_1/11282
+With the goal being that new drivers use existing values from
+the enum as much as possible, but we extend it where necessary.
 
-My guess is that the size 2 is related to the string "in" from the
-above line. It is likely done by
+> Second, irrespective of the above, it may be useful to have a
+> consistent way to pass performance-vs-power preference information
+> from user space to different parts of the kernel so as to allow them
+> to adjust their operation and this could be done with a system-wide
+> power profile attribute IMO.
 
-void pr_cont_kernfs_path(struct kernfs_node *kn)
-{
-[...]
-    pr_cont("%s", kernfs_pr_cont_buf);
+I agree, which is why I tried to tackle both things in one go,
+but as you said doing both in 1 API is probably not the best idea.
+So I believe we should park this second issue for now and revisit it
+when we find a need for it.
 
-called from
+Do you have any specific userspace API in mind for the
+DPTF system profile selection?
 
-void mem_cgroup_print_oom_context(struct mem_cgroup *memcg, struct
-task_struct *p)
-{
-[...]
-	if (p) {
-		pr_cont(",task_memcg=");
-		pr_cont_cgroup_path(task_cgroup(p, memory_cgrp_id));
+And to get one thing out of the way, in the other thread we had some
+discussion about using a single attribute where a cat would result in:
 
+low-power [balanced] performance
 
-> [  221.922113]
-> [  221.922114] CPU: 1 PID: 11282 Comm: memcg_test_1 Not tainted
-> 5.9.0-next-20201013 #1
-> [  221.922116] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> 2.0b 07/27/2017
-> [  221.922116] Call Trace:
-> [  221.922117]  dump_stack+0xa4/0xd9
-> [  221.922118]  print_address_description.constprop.0+0x21/0x210
-> [  221.922119]  ? _raw_write_lock_bh+0xe0/0xe0
-> [  221.922120]  ? vprintk_store+0x362/0x3d0
-> [  221.922121]  kasan_report.cold+0x37/0x7c
-> [  221.922122]  ? vprintk_store+0x362/0x3d0
-> [  221.922123]  check_memory_region+0x18c/0x1f0
-> [  221.922124]  memcpy+0x3c/0x60
-> [  221.922125]  vprintk_store+0x362/0x3d0
+Where the [] indicate the active profile, vs having 2 sysfs attributes
+one ro with space-separated available (foo_available) values and one
+wr with the actual/current value. FWIW userspace folks have indicated
+they prefer the solution with 2 separate sysfs-attributes and that is
+also what e.g. cpufreq is currently using for governor selection.
 
-It seems that vprintk() store was able to extend the last string
-by the two characters. So this is likely:
+I don't really have a strong opinion either way.
 
-static size_t log_output(int facility, int level, enum log_flags lflags,
-			 const struct dev_printk_info *dev_info,
-			 char *text, size_t text_len)
-{
-[...]
-		if (prb_reserve_in_last(&e, prb, &r, caller_id, LOG_LINE_MAX)) {
-			memcpy(&r.text_buf[r.info->text_len], text, text_len);
+Regards,
 
-But very likely the two characters were copied to wrong location.
-There are many similar lines in the full log and they always contain
-
-    task_memcg=/0
-
-It means that the size of the path is 2 characters but it should be
-"/0". I guess that "in" was in the log buffer from the previous
-wrap.
-
-So, it seems that prb_reserve_in_last() correctly updated the size
-of the extended record but it returned wrong pointer to the buffer
-or wrong current length.
-
-Anyway, prb_commit(&e) moved the buffer back to consistent state.
-
-> [  221.922125]  ? __ia32_sys_syslog+0x50/0x50
-> [  221.922126]  ? _raw_spin_lock_irqsave+0x9b/0x100
-> [  221.922127]  ? _raw_spin_lock_irq+0xf0/0xf0
-> [  221.922128]  ? __kasan_check_write+0x14/0x20
-> [  221.922129]  vprintk_emit+0x8d/0x1f0
-> [  221.922130]  vprintk_default+0x1d/0x20
-> [  221.922131]  vprintk_func+0x5a/0x100
-> [  221.922132]  printk+0xb2/0xe3
-> [  221.922133]  ? swsusp_write.cold+0x189/0x189
-> [  221.922134]  ? kernfs_vfs_xattr_set+0x60/0x60
-> [  221.922134]  ? _raw_write_lock_bh+0xe0/0xe0
-> [  221.922135]  ? trace_hardirqs_on+0x38/0x100
-> [  221.922136]  pr_cont_kernfs_path.cold+0x49/0x4b
-> [  221.922137]  mem_cgroup_print_oom_context.cold+0x74/0xc3
-> [  221.922138]  dump_header+0x340/0x3bf
-> [  221.922139]  oom_kill_process.cold+0xb/0x10
-> [  221.922140]  out_of_memory+0x1e9/0x860
-> [  221.922141]  ? oom_killer_disable+0x210/0x210
-> [  221.922142]  mem_cgroup_out_of_memory+0x198/0x1c0
-> [  221.922143]  ? mem_cgroup_count_precharge_pte_range+0x250/0x250
-> [  221.922144]  try_charge+0xa9b/0xc50
-> [  221.922145]  ? arch_stack_walk+0x9e/0xf0
-> [  221.922146]  ? memory_high_write+0x230/0x230
-> [  221.922146]  ? avc_has_extended_perms+0x830/0x830
-> [  221.922147]  ? stack_trace_save+0x94/0xc0
-> [  221.922148]  ? stack_trace_consume_entry+0x90/0x90
-> [  221.922149]  __memcg_kmem_charge+0x73/0x120
-> [  221.922150]  ? cred_has_capability+0x10f/0x200
-> [  221.922151]  ? mem_cgroup_can_attach+0x260/0x260
-> [  221.922152]  ? selinux_sb_eat_lsm_opts+0x2f0/0x2f0
-> [  221.922153]  ? obj_cgroup_charge+0x16b/0x220
-> [  221.922154]  ? kmem_cache_alloc+0x78/0x4c0
-> [  221.922155]  obj_cgroup_charge+0x122/0x220
-> [  221.922156]  ? vm_area_alloc+0x20/0x90
-> [  221.922156]  kmem_cache_alloc+0x78/0x4c0
-> [  221.922157]  vm_area_alloc+0x20/0x90
-> [  221.922158]  mmap_region+0x3ed/0x9a0
-> [  221.922159]  ? cap_mmap_addr+0x1d/0x80
-> [  221.922160]  do_mmap+0x3ee/0x720
-> [  221.922161]  vm_mmap_pgoff+0x16a/0x1c0
-> [  221.922162]  ? randomize_stack_top+0x90/0x90
-> [  221.922163]  ? copy_page_range+0x1980/0x1980
-> [  221.922163]  ksys_mmap_pgoff+0xab/0x350
-> [  221.922164]  ? find_mergeable_anon_vma+0x110/0x110
-> [  221.922165]  ? __audit_syscall_entry+0x1a6/0x1e0
-> [  221.922166]  __x64_sys_mmap+0x8d/0xb0
-> [  221.922167]  do_syscall_64+0x38/0x50
-> [  221.922168]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  221.922169] RIP: 0033:0x7fe8f5e75103
-> [  221.922172] Code: 54 41 89 d4 55 48 89 fd 53 4c 89 cb 48 85 ff 74
-> 56 49 89 d9 45 89 f8 45 89 f2 44 89 e2 4c 89 ee 48 89 ef b8 09 00 00
-> 00 0f 05 <48> 3d 00 f0 ff ff 77 7d 5b 5d 41 5c 41 5d 41 5e 41 5f c3 66
-> 2e 0f
-> [  221.922173] RSP: 002b:00007ffd38c90198 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000009
-> [  221.922175] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe8f5e75103
-> [  221.922176] RDX: 0000000000000003 RSI: 0000000000001000 RDI: 0000000000000000
-> [  221.922178] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> [  221.922179] R10: 0000000000002022 R11: 0000000000000246 R12: 0000000000000003
-> [  221.922180] R13: 0000000000001000 R14: 0000000000002022 R15: 0000000000000000
-> [  221.922181]
-> [  213O[  221.922182] The buggy address belongs to the variable:
-> [  221.922183]  clear_seq+0x2d/0x40
-
-I am slightly confused by this.
-
-The address ffffffffba51dbcd seems to be from the range of
-"module mapping space" adresses.
-
-"clear_seq" is static variable from kernel/printk/printk.c.
-I would expect that it is built-in and thus in the range
-"kernel text mapping".
-
-Anyway, the variable is defined as:
-
-       static u64 clear_seq;
-
-The size should be 8B. I wonder where 0x2d/0x40 comes from.
-
-Well, it probaly is not important. I guess that there is a bug
-somewhere in prb_reserve_in_last().
+Hans
 
 
-> [  221.922183]
-> [  221.922184] Memory state around the buggy address:
-> [  221.922185]  ffffffffba51da80: 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00
-> [  221.922187]  ffffffffba51db00: 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00
-> [  221.922188] >ffffffffba51db80: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
-> 00 f9 f9 f9
-> [  221.922189]                                               ^
-> [  221.922190]  ffffffffba51dc00: f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
-> 00 f9 f9 f9
-> [  221.922191]  ffffffffba51dc80: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9
-> 00 f9 f9 f9
-> [  221.922193] ==================================================================
-> [  221.922194] Disabling lock debugging due to kernel taint
-> [  221.922196] ,task=memcg_test_1,pid=11280,uid=0
-
-This is the rest of the line that should have been concatenated. It
-means that the code.
-
-> [  221.922205] Memory cgroup out of memory: Killed process 11280
-> (memcg_test_1) total-vm:4124kB, anon-rss:72kB, file-rss:0kB,
-> shmem-rss:0kB, UID:0 pgtables:48kB oom_score_adj:0
-> [  221.922509] memcg_test_1 invoked oom-killer:
-> gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
-> [  222.885676] CPU: 2 PID: 11283 Comm: memcg_test_1 Tainted: G    B
->          5.9.0-next-20201013 #1
-> [  222.885678] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> 2.0b 07/27/2017
-> [  222.885679] Call Trace:
-> [  222.885683]  dump_stack+0xa4/0xd9
-> [  222.885686]  dump_header+0x8f/0x3bf
-> [  222.885689]  oom_kill_process.cold+0xb/0x10
-> [  222.885692]  out_of_memory+0x1e9/0x860
-> [  222.885697]  ? oom_killer_disable+0x210/0x210
-> [  222.923728]  mem_cgroup_out_of_memory+0x198/0x1c0
-> [  222.923731]  ? mem_cgroup_count_precharge_pte_range+0x250/0x250
-
-The OOM is likely expected. It seems that the test is testing OOM
-situations in memcg code.
-
-I am going to dig more into it.
-
-Best Regards,
-Petr
