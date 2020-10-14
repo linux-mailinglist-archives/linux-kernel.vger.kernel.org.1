@@ -2,70 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D468D28DBA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B4528DBA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgJNIdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:33:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729140AbgJNIdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:33:42 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACDC5221FE;
-        Wed, 14 Oct 2020 08:33:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602664424;
-        bh=rrcS3Go+Or19lj+nA4BiIinDvBjOGlFS21mMUtfa8ZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dgLfHghg2A9FTowHl5Qcwi6OKy1JQlVVVAURIWOxJOAmJPUOD7yf9QRAjK6xNh+L5
-         pEP5khA+hrg4OUIeUgq83WXFPCsixsLSnaJLlBrTVrQjm6mC4j0R7jhcP+uewsEc0O
-         5SOtiGXvAjm/eZRvsnT6p8i6cZ1bhurrPfV3DQZ8=
-Date:   Wed, 14 Oct 2020 10:34:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/49] 4.19.151-rc1 review
-Message-ID: <20201014083419.GB3034607@kroah.com>
-References: <20201012132629.469542486@linuxfoundation.org>
- <20201013164032.GD251780@roeck-us.net>
+        id S1729462AbgJNIeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:34:23 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:44365 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727692AbgJNIeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:34:22 -0400
+Received: from cust-57f2be97 ([IPv6:fc0c:c196:c6c4:fdf1:aa47:ab6:e251:d2a8])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id ScEnkixO3THgxScEokShRz; Wed, 14 Oct 2020 10:34:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1602664463; bh=YnwRLJfOFl25PBiQ+NT70XXV3oo6tK3iz89VGKgdwQ0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=nXyRmC4OhrlF2ue6bQuyVPHDw6WEJPGjeH+5xr23QcZAe6c/VJRVLCBs/+5UzgTGp
+         v8PHD8me/VvPl1DTY+T6BeblZV8GrhbpWVKZJPCOyXs0Mza812BOJZHo9jFy5ZXwCE
+         l1hHj8qAEYfreOaEVyIEl/p8u0YeHeWJXsX+pUGs2u2FWFIayHkDx2fxUNygxszn4+
+         KSCNYxphAWOYyxOOUv5HQUDwOooZU0JCuzLhAl7QQxBa5FjHNho1BKCUMSc8wnrl25
+         rG/t01Ld4yBEc9IulO1qgqoYkUksMYAlc8H7/R2e/6yqLFRHfz5KFqQOdFsheQRe9a
+         seeZt5UAiKjdQ==
+Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Takashi Iwai <tiwai@suse.de>, Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>
+References: <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
+ <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
+ <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+ <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
+ <s5hblh5mele.wl-tiwai@suse.de> <s5ha6wpmei5.wl-tiwai@suse.de>
+ <20201014075853.GB29881@amd> <056a8933-378f-30f2-c7af-5514d93d3c36@xs4all.nl>
+ <20201014081116.GC29881@amd> <2be6e184-97d4-a2b1-a500-6ea3528cff37@xs4all.nl>
+ <20201014082752.GA31728@amd>
+From:   Udo van den Heuvel <udovdh@xs4all.nl>
+Autocrypt: addr=udovdh@xs4all.nl; prefer-encrypt=mutual; keydata=
+ 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
+Organization: hierzo
+Message-ID: <9cf705b9-1fca-2445-43de-916b13b9103f@xs4all.nl>
+Date:   Wed, 14 Oct 2020 10:34:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013164032.GD251780@roeck-us.net>
+In-Reply-To: <20201014082752.GA31728@amd>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfBHX51FODmJhTL+amlVs1/frV0a4wojAI56Nr4U1Lzjs1fwRT3kKVnEcMzGR6cdboZy+BPAKaUApE3q3M1fif4EzRQ384vWWULkJ2IvUTBSPpkGELmOG
+ nW8FO3jMUSNAMaRxN1tWprgUksbAYJ8yHka81sWtaOJ3jJZ5vlQ7hpTBtjXXGg6WS8f3nsDdFLf6pY8n/Ao06XxT86TkZkJhca1b37on9oyBz/dXQM/IQYAU
+ z/54EYNrbD9k8r0tZRlmWNLVk2+psRAsdA0bekqNHej/GGJtaSTEQKuuNqd6Ep/P8SYLJfNp/JSpho6AXEm5N7Y6SJqmZjZ8OydVknRrDOJOICdfjceN4lko
+ pVlEVFMx5gLb4iU2DAn1AU3F/I4UjoqdqbqntLKiukI9UqC1/CZMkpXP+mecroVYJlZnfl2tMHMgU2l0l6IRLhLcwd7LKw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 09:40:32AM -0700, Guenter Roeck wrote:
-> On Mon, Oct 12, 2020 at 03:26:46PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.19.151 release.
-> > There are 49 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 14 Oct 2020 13:26:14 +0000.
-> > Anything received after that time might be too late.
-> > 
+On 14-10-2020 10:27, Pavel Machek wrote:
+>> One should have thought about stuff beforehand.
 > 
-> Build results:
-> 	total: 155 pass: 153 fail: 2
-> Failed builds:
-> 	i386:tools/perf
-> 	x86_64:tools/perf
+> We did. And decided this is best solution.
 
-I tried to fix up the perf build issues, and am just going to give up,
-it's not a trivial backport at all, and it looks like no one seems to
-care :(
+Then the thought process went awry.
 
-So you might want to take these two builds out of your testing
-framework for the moment.
+>> The non-selectability is not my fault.
+> 
+> It also does not affect you in any way.
 
-thanks,
+It does.
+/boot fills up even sooner thanks to this unused code.
+Compiles last longer because of this unused code.
 
-greg k-h
+> Feel free to go to the mic LED discussion to see why we did it like
+> this. Then you can come up with better solution for problem at hand.
+
+I did not think of forcing code onto somebody. Someone else did.
+This is effectively the effect of the LEDs thing.
+
+So why should I `fix` this when a Kconfig thing is considered 'expensive'?
+If reasonable arguments fall to the floor then where do you go?
+
+This is the same as some useless things in Fedora that one cannot simply
+ uninstall.
+
+
+Udo
