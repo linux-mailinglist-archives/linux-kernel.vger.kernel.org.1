@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26DB28E4B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AC828E4B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731949AbgJNQor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:44:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59924 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbgJNQor (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:44:47 -0400
-Date:   Wed, 14 Oct 2020 18:44:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602693885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zAjTF2tvsD0V9R0iboON9J/WHaKQyttRthc3o5MCNUM=;
-        b=NIoUc/R+XCVqOSwu2oDnlmcFuWxwi0qBJR10Ewtfv8G4TtgfP8C39TvFwo51kSOInNdMzP
-        KwSQDMQLFLu4dI8IWdVbGSnhMxqtirL/r7Erh/kj3V3V+ThAPHQBb9ZxlFjLifxlxW+XTv
-        U98DppwGDyHnqtqPnW/d7lxfWuuBqmVLH9pHKUXUd/31AjbdyB3uobhw2EBJGbpTUvw/oO
-        P9Gsq6MixUwHewHE82UCkO16XGixQTABWWxS4Cz8BKGEopVsywJ8Z2dvhptFac8h7p/7bf
-        ZFDNScC8xX4I3O9L1ipViKHMheIsbKTqajZWzO4V+W6daFjTIvFqPaVAFEwsdw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602693885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zAjTF2tvsD0V9R0iboON9J/WHaKQyttRthc3o5MCNUM=;
-        b=gcXKnbuqKZQ4iJNiXtOhVGCmWuPiMl04f5Bgy+IfD5qIYdOK5klQFW+0bC6IE+MdVjmTOf
-        u6e56ZwwSwgVkfBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, linux-omap@vger.kernel.org,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Duncan Sands <duncan.sands@free.fr>
-Subject: Re: [patch 03/12] USB: serial: keyspan_pda: Consolidate room query
-Message-ID: <20201014164443.husmibyqb4ukw5xg@linutronix.de>
-References: <20201014145215.518912759@linutronix.de>
- <20201014145727.338773481@linutronix.de>
- <20201014161433.GB712494@rowland.harvard.edu>
- <20201014162714.ctv5earlhwsp4iqs@linutronix.de>
- <20201014163425.GF712494@rowland.harvard.edu>
+        id S1731962AbgJNQoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:44:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:53456 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387565AbgJNQox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:44:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3882D6E;
+        Wed, 14 Oct 2020 09:44:52 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 425CC3F71F;
+        Wed, 14 Oct 2020 09:44:51 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 17:44:45 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com
+Subject: Re: [PATCH 09/11] [DEBUG] firmware: arm_scmi: add example SCMI
+ driver for custom protocol
+Message-ID: <20201014164445.GA50090@e120937-lin>
+References: <20201014150545.44807-1-cristian.marussi@arm.com>
+ <20201014150545.44807-10-cristian.marussi@arm.com>
+ <8f879e6b-8be2-1186-6620-f54762bd35e0@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014163425.GF712494@rowland.harvard.edu>
+In-Reply-To: <8f879e6b-8be2-1186-6620-f54762bd35e0@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 12:34:25 [-0400], Alan Stern wrote:
-> On Wed, Oct 14, 2020 at 06:27:14PM +0200, Sebastian Andrzej Siewior wrote:
-> > On 2020-10-14 12:14:33 [-0400], Alan Stern wrote:
-> > > Instead, consider using the new usb_control_msg_recv() API.  But it 
-> > > might be better to allocate the buffer once and for all.
+Hi Randy,
+
+On Wed, Oct 14, 2020 at 08:55:08AM -0700, Randy Dunlap wrote:
+> Hi,
+> 
+> On 10/14/20 8:05 AM, Cristian Marussi wrote:
+> > Add an example SCMI driver using custom vendor protocol 0x99 and also
+> > registering for Performance protocol notifications.
 > > 
-> > This will still allocate and free buffer on each invocation. What about
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >  drivers/firmware/Kconfig                      |   7 +
+> >  drivers/firmware/arm_scmi/Makefile            |   2 +
+> >  drivers/firmware/arm_scmi/scmi_custom_dummy.c | 126 ++++++++++++++++++
+> >  3 files changed, 135 insertions(+)
+> >  create mode 100644 drivers/firmware/arm_scmi/scmi_custom_dummy.c
+> > 
+> > diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> > index 75e2668a6490..d209df6fd3ee 100644
+> > --- a/drivers/firmware/Kconfig
+> > +++ b/drivers/firmware/Kconfig
+> > @@ -48,6 +48,13 @@ config ARM_SCMI_POWER_DOMAIN
+> >  	  will be called scmi_pm_domain. Note this may needed early in boot
+> >  	  before rootfs may be available.
+> >  
+> > +config ARM_SCMI_CUSTOM_DUMMY
+> > +	tristate "SCMI Custom Dummy driver"
+> > +	depends on ARM_SCMI_PROTOCOL_CUSTOM || (COMPILE_TEST && OF)
 > 
-> Yes.  That's why I suggesting doing a single buffer allocation at the 
-> start and using it for each I/O transfer.  (But I'm not familiar with 
-> this code, and I don't know if there might be multiple transfers going 
-> on concurrently.)
-
-There are no concurrent transfer. There is a bit used as a lock. The
-first one does the transfer, the other wait.
-
-> > moving the query_buf to the begin of the struct / align it?
+> Just an info note here: <linux/of.h> has lots of stubs for when CONFIG_OF is not
+> set/enabled, so COMPILE_TEST is usually enough of a dependency without adding "OF".
 > 
-> No, thank won't work either.  The key to the issue is that while some 
-> memory is mapped for DMA, the CPU must not touch it or anything else in 
-> the same cache line.  If a field is a member of a data structure, the 
-> CPU might very well access a neighboring member while this one is 
-> mapped, thereby messing up the cache line.
 
-that is unfortunately true. Let me do the single buffer.
+That's good to know, because even though this specific patch is just
+example code not for upstream, I think we mostly use the above kind of
+'depends' in other places... so thanks for the heads up I'll investigate
+those other usages across the SCMI stack if we really need '&& OF'.
 
-> Alan Stern
+Thanks
 
-Sebastian
+Cristian
+
+> > +	default n
+> > +	help
+> > +	  Custom Dummy driver
+> 
+> 
+> -- 
+> ~Randy
+> 
