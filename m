@@ -2,142 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665C528D826
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613D128D829
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgJNBzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 21:55:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
+        id S1728300AbgJNB6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 21:58:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJNBzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 21:55:11 -0400
+        id S1725874AbgJNB6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 21:58:41 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E07E521D7B;
-        Wed, 14 Oct 2020 01:55:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F0C721D7F;
+        Wed, 14 Oct 2020 01:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602640510;
-        bh=x7kJdJ6ZPzEPZDcTC7J3S08SvvvsdXQ3eMCtY//v7aE=;
+        s=default; t=1602640720;
+        bh=gsQXg/Wr/5qYlMS+P7kGnf949bK69OfahNw1f6kbQn0=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hyDGwtUW/gl2GrJoa8dy8CWH6E1P84bY3VJ0woULAgzjwLj+Ieq776J4HWwaqhurr
-         j/sH85gJIULj9kS/9j5tU06ckoYqVJKBUetxeP+H20KBMA7M0cPLzAKrCLKDiNQrMV
-         HRgParBnleoTZRNfPlBj/ksexCEEgB3YamVSDRVw=
+        b=zXiI++IfkMkVnClheHjnLnr8M7OJtmmt3kckkVfr5t+aCUbVnldusWFt7GWUWEhsJ
+         ScIVUlvbp2RY5bmXCpWpBmSabId2HAYMWriDZBOZc81eNi2hsejhRUpUCFdZNFBbRV
+         BASo2ZuLHbPvKnd1Xr9kzNLYcKuzZORI/5gY3qus=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A665C35229EE; Tue, 13 Oct 2020 18:55:10 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 18:55:10 -0700
+        id 5725335229EE; Tue, 13 Oct 2020 18:58:40 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 18:58:40 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [PATCH v6 70/80] rcu/tree: docs: document bkvcache new members
- at struct kfree_rcu_cpu
-Message-ID: <20201014015510.GQ3249@paulmck-ThinkPad-P72>
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
+ some files
+Message-ID: <20201014015840.GR3249@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <cover.1602589096.git.mchehab+huawei@kernel.org>
- <6dd0804d6fd567f11e4c6efb767e91acca659d1f.1602589096.git.mchehab+huawei@kernel.org>
- <20201013163404.GP3249@paulmck-ThinkPad-P72>
- <20201013224608.30dd1bc9@coco.lan>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+ <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
+ <20201013163354.GO3249@paulmck-ThinkPad-P72>
+ <20201013163836.GC670875@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201013224608.30dd1bc9@coco.lan>
+In-Reply-To: <20201013163836.GC670875@rowland.harvard.edu>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 10:46:08PM +0200, Mauro Carvalho Chehab wrote:
-> Em Tue, 13 Oct 2020 09:34:04 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> escreveu:
-> 
-> > On Tue, Oct 13, 2020 at 01:54:25PM +0200, Mauro Carvalho Chehab wrote:
-> > > Changeset 53c72b590b3a ("rcu/tree: cache specified number of objects")
-> > > added new members for struct kfree_rcu_cpu, but didn't add the
-> > > corresponding at the kernel-doc markup, as repoted when doing
-> > > "make htmldocs":
-> > > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'bkvcache' not described in 'kfree_rcu_cpu'
-> > > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'nr_bkv_objs' not described in 'kfree_rcu_cpu'
+On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote:
+> On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:
+> > On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrote:
+> > > - The sysfs.txt file was converted to ReST and renamed;
+> > > - The control-dependencies.txt is not at
+> > >   Documentation/control-dependencies.txt. As it is at the
+> > >   same dir as the README file, which mentions it, just
+> > >   remove Documentation/.
 > > > 
-> > > So, move the description for bkvcache to kernel-doc, and add a
-> > > description for nr_bkv_objs.
+> > > With that, ./scripts/documentation-file-ref-check script
+> > > is now happy again for files under tools/.
 > > > 
-> > > Fixes: 53c72b590b3a ("rcu/tree: cache specified number of objects")
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > > 
 > > Queued for review and testing, likely target v5.11.
 > 
-> Hi Paul,
-> 
-> I would prefer if we could get those on 5.10, if possible.
-> We're aiming to have 5.10 free of docs warnings ;-)
-> 
-> If you prefer, I can send those patches to Linus with your
-> ack.
+> Instead of changing the path in the README reference, shouldn't 
+> tools/memory-model/control-dependencies.txt be moved to its proper 
+> position in .../Documentation?
 
-That sounds easier:
-
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-
-Alan's objection is quite valid, but we will address that issue in a
-follow-on patch that will not be on the fast track.
+You are of course quite right.  My thought is to let Mauro go ahead,
+given his short deadline.  We can then make this "git mv" change once
+v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
+added a reminder to my calendar.
 
 							Thanx, Paul
-
-> Regards,
-> Mauro
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> > > ---
-> > >  kernel/rcu/tree.c | 14 ++++++--------
-> > >  1 file changed, 6 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > index f78ee759af9c..03c54c3478b7 100644
-> > > --- a/kernel/rcu/tree.c
-> > > +++ b/kernel/rcu/tree.c
-> > > @@ -3022,6 +3022,12 @@ struct kfree_rcu_cpu_work {
-> > >   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
-> > >   * @initialized: The @rcu_work fields have been initialized
-> > >   * @count: Number of objects for which GP not started
-> > > + * @bkvcache:
-> > > + *	A simple cache list that contains objects for reuse purpose.
-> > > + *	In order to save some per-cpu space the list is singular.
-> > > + *	Even though it is lockless an access has to be protected by the
-> > > + *	per-cpu lock.
-> > > + * @nr_bkv_objs: number of allocated objects at @bkvcache.
-> > >   *
-> > >   * This is a per-CPU structure.  The reason that it is not included in
-> > >   * the rcu_data structure is to permit this code to be extracted from
-> > > @@ -3037,14 +3043,6 @@ struct kfree_rcu_cpu {
-> > >  	bool monitor_todo;
-> > >  	bool initialized;
-> > >  	int count;
-> > > -
-> > > -	/*
-> > > -	 * A simple cache list that contains objects for
-> > > -	 * reuse purpose. In order to save some per-cpu
-> > > -	 * space the list is singular. Even though it is
-> > > -	 * lockless an access has to be protected by the
-> > > -	 * per-cpu lock.
-> > > -	 */
-> > >  	struct llist_head bkvcache;
-> > >  	int nr_bkv_objs;
-> > >  };
-> > > -- 
-> > > 2.26.2
-> > >   
-> 
-> 
-> 
-> Thanks,
-> Mauro
