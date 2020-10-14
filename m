@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D976828E5C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5287428E5C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgJNRx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S1728368AbgJNRyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728040AbgJNRx5 (ORCPT
+        with ESMTP id S1728040AbgJNRyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:53:57 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE55DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:53:57 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id p9so267156ilr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:53:57 -0700 (PDT)
+        Wed, 14 Oct 2020 13:54:00 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0FBDC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:54:00 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id k1so193487ilc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kNA7XdpIZYXKzRQjpHvs7EGpy//348CMdfmkrip0gJQ=;
-        b=nKZUjGXMEvm82reNTDrwwnVGhfvkR8nBHBIkIGWc/7najPmnztimJ2Y2MPbe1HVnEZ
-         PE4xmTrONc8ehF8itOwCT9lxIwpW7MfMK9kAtK4odWRlyCtm4y/TJzaSFx7ptXtz+jT+
-         mnXIHov8FSkxTJh4b/zJvUAZ40Hb/bqcIl8CYPAxQlRrvNVSkaH+JzjQ455IxqxYa+ug
-         9SOKt27fCZruecRT05ajlf4UytbgJw0kAalMZManyBLVyKhBgrewbeKHFpsZFsb0cNP7
-         2hjUlQAxt79uBrN/WLGHxDnO48hXuKaJFkd1J+peAdp5qzztUtBP5+ybmwKMKdLhHZF0
-         pN0A==
+        bh=72uE8HBho6CRDEfq5zUs9af/VZhtVN+A95L9VpNei3g=;
+        b=WPYcwYQQ8P4JgmLO9WS1jZolr0Vv2PVTia9WT/lQ7MX5gq+HsgEva9AfGW2FlgkgbM
+         HVJwCL5VPEiTqLxbrJJ8A2q6YMODS7ZMAb+ADTjLgyMXIG9zTJC02fhcJE4vdysPzQ+h
+         7wOEuIA4KEZYRd4Miv5wes3HRO3QndjWh+xU/zP7xcvds0rqh59kMY4QvTVA/uvaFEnT
+         VhgDXyS/LFydlvr3Q2eIXePyc1P8MCdMbaxQEA4wPi7vlq72DYhfiuBpF8QOYHsd1Vnm
+         0IQ8wo3SZrNi2vGPELBiHRkH0cJPFOXShMcxHEkloat2A4GQ1WyvAGOOUMdhQUib/HpS
+         8FVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kNA7XdpIZYXKzRQjpHvs7EGpy//348CMdfmkrip0gJQ=;
-        b=hXj/mHSmGIYSaUvKzGol/f43g8JDcFdA7uan13DgZRK4os8VsyqaX97f6MWqI11M6z
-         eEIYLxl3z3LTYpMrszWquAFM6q79M5kIA90n5mJklt4irOV4Tslni24LfsZ8ADBWOIAJ
-         pataQZssAcitTdhstvBmdhoVIVPVf5fzlnmYlsYiJPItH3yHVPHO6k80ivxY/xldDo+H
-         Fa6pNzGCCCEzcKU+lR8EuV4msv13iyb0Ka2bDqi9mGmRDwYNK7USjv2xnfajsCj0lFGP
-         PFen4qUg3xC1Hgi3Zyofnuz0ZYYgWwotasqNQ0neXzJerJ1GcXoQ2gVAVs25DDBWJByg
-         1UfA==
-X-Gm-Message-State: AOAM531GNOao/QbRm8MG6HfY5M9h2WJvhUHLJjuupBghL6cxg+D0NPvj
-        B69BzV49kfBopAbE6M7XXa4=
-X-Google-Smtp-Source: ABdhPJwK36uGgi3FZj3ET63aoMSgUwsTywlp/l6U8zvhBjSeEYqB2o8vtAMqwJulJ8pMwnCSxMQw/g==
-X-Received: by 2002:a92:d5c1:: with SMTP id d1mr269086ilq.212.1602698036971;
-        Wed, 14 Oct 2020 10:53:56 -0700 (PDT)
+        bh=72uE8HBho6CRDEfq5zUs9af/VZhtVN+A95L9VpNei3g=;
+        b=ONKvOleyMDeosutfbCDfMs+b42uGWROfWljYD573l2IFp8b7bLFJq/DyxMtcSlOWXU
+         ehuxcJpuOJhL8AGts4V+7CPwo2SfVYTDiv/wSkxnfWz1CABB6bAfjf4qZG0Vl09HcvTh
+         +FIdSrXNoGadbkdKWwzOHAFy6TGm0QahXqg2ulX69d7PwQ1zcO6pMLGcdv2caEHp8+Wd
+         OmHYUxjui7QucE2qsMAOiDdh+SI7qsHEq2w0okHRVzN9XBPkdXZ2QgjxhemU7N4s/RKB
+         2Rffsisd7Grfo0PlvTO+/b8Meuy2rBChBiDhcljdElQJQb6jzaS69lGCdtBvsIQgdkcE
+         tL2A==
+X-Gm-Message-State: AOAM533kSF9v1XBQIofCF3MEGewfzI6m4iTP3U7aWYK1M7CcbvJF8mqs
+        98BnOcHwFg6xmHEKlZrL0Ylh17W3g/bCFA==
+X-Google-Smtp-Source: ABdhPJwj+vJExjs0I5nCxR1nMrw0GQPeUqeZDyFFqHum+1s5g1WGgg2wXN6N5rYZrkp6aUT3nWYY8w==
+X-Received: by 2002:a92:3650:: with SMTP id d16mr262484ilf.29.1602698040294;
+        Wed, 14 Oct 2020 10:54:00 -0700 (PDT)
 Received: from pm2-ws13.praxislan02.com ([2001:470:8:67e:ba27:ebff:fee8:ce27])
-        by smtp.gmail.com with ESMTPSA id v15sm67765ile.37.2020.10.14.10.53.55
+        by smtp.gmail.com with ESMTPSA id v15sm67765ile.37.2020.10.14.10.53.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 10:53:56 -0700 (PDT)
+        Wed, 14 Oct 2020 10:53:59 -0700 (PDT)
 From:   Jason Andryuk <jandryuk@gmail.com>
 To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
@@ -57,9 +57,9 @@ Cc:     Jason Andryuk <jandryuk@gmail.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] xen: Remove Xen PVH/PVHVM dependency on PCI
-Date:   Wed, 14 Oct 2020 13:53:40 -0400
-Message-Id: <20201014175342.152712-2-jandryuk@gmail.com>
+Subject: [PATCH 2/2] xen: Kconfig: nest Xen guest options
+Date:   Wed, 14 Oct 2020 13:53:41 -0400
+Message-Id: <20201014175342.152712-3-jandryuk@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201014175342.152712-1-jandryuk@gmail.com>
 References: <20201014175342.152712-1-jandryuk@gmail.com>
@@ -69,78 +69,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A Xen PVH domain doesn't have a PCI bus or devices, so it doesn't need
-PCI support built in.  Currently, XEN_PVH depends on XEN_PVHVM which
-depends on PCI.
+Moving XEN_512GB allows it to nest under XEN_PV.  That also allows
+XEN_PVH to nest under XEN as a sibling to XEN_PV and XEN_PVHVM giving:
 
-Introduce XEN_PVHVM_GUEST as a toplevel item and change XEN_PVHVM to a
-hidden variable.  This allows XEN_PVH to depend on XEN_PVHVM without PCI
-while XEN_PVHVM_GUEST depends on PCI.
-
-In drivers/xen, compile platform-pci depending on XEN_PVHVM_GUEST since
-that pulls in the PCI dependency for linking.
+[*]   Xen guest support
+[*]     Xen PV guest support
+[*]       Limit Xen pv-domain memory to 512GB
+[*]       Xen PV Dom0 support
+[*]     Xen PVHVM guest support
+[*]     Xen PVH guest support
 
 Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
 ---
----
- arch/x86/xen/Kconfig | 18 ++++++++++++------
- drivers/xen/Makefile |  2 +-
- 2 files changed, 13 insertions(+), 7 deletions(-)
+ arch/x86/xen/Kconfig | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/arch/x86/xen/Kconfig b/arch/x86/xen/Kconfig
-index 218acbd5c7a0..b75007eb4ec4 100644
+index b75007eb4ec4..2b105888927c 100644
 --- a/arch/x86/xen/Kconfig
 +++ b/arch/x86/xen/Kconfig
-@@ -39,16 +39,20 @@ config XEN_DOM0
- 	  Support running as a Xen PV Dom0 guest.
+@@ -26,6 +26,19 @@ config XEN_PV
+ 	help
+ 	  Support running as a Xen PV guest.
  
- config XEN_PVHVM
--	bool "Xen PVHVM guest support"
--	default y
--	depends on XEN && PCI && X86_LOCAL_APIC
--	help
--	  Support running as a Xen PVHVM guest.
-+	def_bool y
-+	depends on XEN && X86_LOCAL_APIC
- 
- config XEN_PVHVM_SMP
- 	def_bool y
- 	depends on XEN_PVHVM && SMP
- 
-+config XEN_PVHVM_GUEST
-+	bool "Xen PVHVM guest support"
++config XEN_512GB
++	bool "Limit Xen pv-domain memory to 512GB"
++	depends on XEN_PV && X86_64
 +	default y
-+	depends on XEN_PVHVM && PCI
 +	help
-+	  Support running as a Xen PVHVM guest.
++	  Limit paravirtualized user domains to 512GB of RAM.
 +
- config XEN_512GB
- 	bool "Limit Xen pv-domain memory to 512GB"
- 	depends on XEN_PV
-@@ -76,7 +80,9 @@ config XEN_DEBUG_FS
- 	  Enabling this option may incur a significant performance overhead.
++	  The Xen tools and crash dump analysis tools might not support
++	  pv-domains with more than 512 GB of RAM. This option controls the
++	  default setting of the kernel to use only up to 512 GB or more.
++	  It is always possible to change the default via specifying the
++	  boot parameter "xen_512gb_limit".
++
+ config XEN_PV_SMP
+ 	def_bool y
+ 	depends on XEN_PV && SMP
+@@ -53,19 +66,6 @@ config XEN_PVHVM_GUEST
+ 	help
+ 	  Support running as a Xen PVHVM guest.
  
- config XEN_PVH
--	bool "Support for running as a Xen PVH guest"
-+	bool "Xen PVH guest support"
- 	depends on XEN && XEN_PVHVM && ACPI
- 	select PVH
- 	def_bool n
-+	help
-+	  Support for running as a Xen PVH guest.
-diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
-index babdca808861..c3621b9f4012 100644
---- a/drivers/xen/Makefile
-+++ b/drivers/xen/Makefile
-@@ -21,7 +21,7 @@ obj-$(CONFIG_XEN_GNTDEV)		+= xen-gntdev.o
- obj-$(CONFIG_XEN_GRANT_DEV_ALLOC)	+= xen-gntalloc.o
- obj-$(CONFIG_XENFS)			+= xenfs/
- obj-$(CONFIG_XEN_SYS_HYPERVISOR)	+= sys-hypervisor.o
--obj-$(CONFIG_XEN_PVHVM)			+= platform-pci.o
-+obj-$(CONFIG_XEN_PVHVM_GUEST)		+= platform-pci.o
- obj-$(CONFIG_SWIOTLB_XEN)		+= swiotlb-xen.o
- obj-$(CONFIG_XEN_MCE_LOG)		+= mcelog.o
- obj-$(CONFIG_XEN_PCIDEV_BACKEND)	+= xen-pciback/
+-config XEN_512GB
+-	bool "Limit Xen pv-domain memory to 512GB"
+-	depends on XEN_PV
+-	default y
+-	help
+-	  Limit paravirtualized user domains to 512GB of RAM.
+-
+-	  The Xen tools and crash dump analysis tools might not support
+-	  pv-domains with more than 512 GB of RAM. This option controls the
+-	  default setting of the kernel to use only up to 512 GB or more.
+-	  It is always possible to change the default via specifying the
+-	  boot parameter "xen_512gb_limit".
+-
+ config XEN_SAVE_RESTORE
+ 	bool
+ 	depends on XEN
 -- 
 2.26.2
 
