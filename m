@@ -2,93 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF9128DB9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC68E28DB9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728917AbgJNIdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:33:33 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38490 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728435AbgJNIdd (ORCPT
+        id S1728528AbgJNIdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:33:21 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:42032 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbgJNIdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:33:33 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09E8TnWF024154;
-        Wed, 14 Oct 2020 08:32:58 GMT
+        Wed, 14 Oct 2020 04:33:21 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09E8SYqr079281;
+        Wed, 14 Oct 2020 08:33:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=dngeZ8n9mXihWuMdvo9jC04/GenkD+EXiDmLqvyLl9Q=;
- b=byq/npMmocHxiIKS7tZ1RDcOCPrbxh4XlZ9T1W9YBgb91WgtCI6o0b65oQiEgKRJVoMN
- vTG0MRZK+SEqjfg19eulTsIfULFI9Du/CGTgaUwRbDBPUP2IgS6nQLz57jR55saHsDCv
- wY4TFOaes692o+d6rwaOuBTlO3T6OpKh9hqggHrwvdZ24IaQG/vkUDyQoesvo1ycgSLo
- RBi6I4mGjgux8BFtLgZgYHFsbP6qkdBVtZbj9JT0Ak/uJwJVWj8EAos0J96mAKb5whXo
- fa9lsYC+8OdHNuDET7pekY4/D6EwzCL5xfP5z54DyMo7pRZalG1WR/YFXlLBpUuYGBgA TQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 343vaecfn9-1
+ bh=0LOAlCR7+l/nqsBzeW4eiXFvfSz5VzzoawRgTiBvYww=;
+ b=gFTjpD2T7UidHHTZkiAsGpZXozTXlAnbc2lxmuTrdl2nC8Jb5/0qbQ480eCX/sS9VFG8
+ WUlQ9nqWNt1tm/3gt22S3Por9cCW2u+I2jD2ObumrFq1nZY2h8tuBTH7dew2PH6d1WtE
+ bUFSv77uCpNuxBAzbHKZVimgi8GXq8iKdQRGfKnZdFP5sRB+CvSurMShja3SgbD0oXrK
+ QeOF2rCu+q9vj/cKfQJqIPmxRnMTar+A9zjrSKsilNeBrW39cmql3XG8Y+X7+D0FyLT8
+ tV9jpcE8SdhYCibs2BKsjF33+FXEvDFDiOgK2M6YNlwIgRHOGTImRuRbzuFc5f4khSbJ vw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 343pajvt3r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 14 Oct 2020 08:32:58 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09E8TguQ125847;
-        Wed, 14 Oct 2020 08:32:57 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 343php84kt-1
+        Wed, 14 Oct 2020 08:33:04 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09E8UYoR111566;
+        Wed, 14 Oct 2020 08:33:03 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 343pvxfsr8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Oct 2020 08:32:57 +0000
+        Wed, 14 Oct 2020 08:33:03 +0000
 Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09E8Wthn000307;
-        Wed, 14 Oct 2020 08:32:55 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09E8X16S029052;
+        Wed, 14 Oct 2020 08:33:01 GMT
 Received: from monad.ca.oracle.com (/10.156.74.184)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Oct 2020 01:32:55 -0700
+        with ESMTP ; Wed, 14 Oct 2020 01:33:01 -0700
 From:   Ankur Arora <ankur.a.arora@oracle.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     kirill@shutemov.name, mhocko@kernel.org,
         boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
         Ankur Arora <ankur.a.arora@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jiri Slaby <jslaby@suse.cz>, Juergen Gross <jgross@suse.com>
-Subject: [PATCH 2/8] x86/asm: add memset_movnti()
-Date:   Wed, 14 Oct 2020 01:32:53 -0700
-Message-Id: <20201014083300.19077-3-ankur.a.arora@oracle.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 3/8] perf bench: add memset_movnti()
+Date:   Wed, 14 Oct 2020 01:32:54 -0700
+Message-Id: <20201014083300.19077-4-ankur.a.arora@oracle.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201014083300.19077-1-ankur.a.arora@oracle.com>
 References: <20201014083300.19077-1-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9773 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2010140061
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9773 signatures=668681
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1011
- impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010140061
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1011 malwarescore=0
+ adultscore=0 lowpriorityscore=0 spamscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010140061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a MOVNTI based implementation of memset().
+Clone memset_movnti() from arch/x86/lib/memset_64.S.
 
-memset_orig() and memset_movnti() only differ in the opcode used in the
-inner loop, so move the memset_orig() logic into a macro, which gets
-expanded into memset_movq() and memset_movnti().
+perf bench mem memset on -f x86-64-movnt on Intel Broadwellx, Skylakex
+and AMD Rome:
+
+Intel Broadwellx:
+$ for i in 2 8 32 128 512; do
+	perf bench mem memset -f x86-64-movnt -s ${i}MB
+  done
+
+  # Output pruned.
+  # Running 'mem/memset' benchmark:
+  # function 'x86-64-movnt' (movnt-based memset() in arch/x86/lib/memset_64.S)
+  # Copying 2MB bytes ...
+        11.837121 GB/sec
+  # Copying 8MB bytes ...
+        11.783560 GB/sec
+  # Copying 32MB bytes ...
+        11.868591 GB/sec
+  # Copying 128MB bytes ...
+        11.865211 GB/sec
+  # Copying 512MB bytes ...
+        11.864085 GB/sec
+
+Intel Skylakex:
+$ for i in 2 8 32 128 512; do
+	perf bench mem memset -f x86-64-movnt -s ${i}MB
+  done
+  # Running 'mem/memset' benchmark:
+  # function 'x86-64-movnt' (movnt-based memset() in arch/x86/lib/memset_64.S)
+  # Copying 2MB bytes ...
+         6.361971 GB/sec
+  # Copying 8MB bytes ...
+         6.300403 GB/sec
+  # Copying 32MB bytes ...
+         6.288992 GB/sec
+  # Copying 128MB bytes ...
+         6.328793 GB/sec
+  # Copying 512MB bytes ...
+         6.324471 GB/sec
+
+AMD Rome:
+$ for i in 2 8 32 128 512; do
+	perf bench mem memset -f x86-64-movnt -s ${i}MB
+  done
+  # Running 'mem/memset' benchmark:
+  # function 'x86-64-movnt' (movnt-based memset() in arch/x86/lib/memset_64.S)
+  # Copying 2MB bytes ...
+        10.993199 GB/sec
+  # Copying 8MB bytes ...
+        14.221784 GB/sec
+  # Copying 32MB bytes ...
+        14.293337 GB/sec
+  # Copying 128MB bytes ...
+        15.238947 GB/sec
+  # Copying 512MB bytes ...
+        16.476093 GB/sec
 
 Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 ---
- arch/x86/lib/memset_64.S | 68 +++++++++++++++++++++++++++---------------------
- 1 file changed, 38 insertions(+), 30 deletions(-)
+ tools/arch/x86/lib/memset_64.S               | 68 ++++++++++++++++------------
+ tools/perf/bench/mem-memset-x86-64-asm-def.h |  6 ++-
+ 2 files changed, 43 insertions(+), 31 deletions(-)
 
-diff --git a/arch/x86/lib/memset_64.S b/arch/x86/lib/memset_64.S
-index 9ff15ee404a4..79703cc04b6a 100644
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -27,7 +27,7 @@ SYM_FUNC_START(__memset)
+diff --git a/tools/arch/x86/lib/memset_64.S b/tools/arch/x86/lib/memset_64.S
+index fd5d25a474b7..bfbf6d06f81e 100644
+--- a/tools/arch/x86/lib/memset_64.S
++++ b/tools/arch/x86/lib/memset_64.S
+@@ -26,7 +26,7 @@ SYM_FUNC_START(__memset)
  	 *
  	 * Otherwise, use original memset function.
  	 */
@@ -97,17 +153,17 @@ index 9ff15ee404a4..79703cc04b6a 100644
  		      "jmp memset_erms", X86_FEATURE_ERMS
  
  	movq %rdi,%r9
-@@ -68,7 +68,8 @@ SYM_FUNC_START_LOCAL(memset_erms)
+@@ -65,7 +65,8 @@ SYM_FUNC_START(memset_erms)
  	ret
  SYM_FUNC_END(memset_erms)
  
--SYM_FUNC_START_LOCAL(memset_orig)
+-SYM_FUNC_START(memset_orig)
 +.macro MEMSET_MOV OP fence
-+SYM_FUNC_START_LOCAL(memset_\OP)
++SYM_FUNC_START(memset_\OP)
  	movq %rdi,%r10
  
  	/* expand byte value  */
-@@ -79,64 +80,71 @@ SYM_FUNC_START_LOCAL(memset_orig)
+@@ -76,64 +77,71 @@ SYM_FUNC_START(memset_orig)
  	/* align dst */
  	movl  %edi,%r9d
  	andl  $7,%r9d
@@ -207,6 +263,26 @@ index 9ff15ee404a4..79703cc04b6a 100644
 +
 +MEMSET_MOV OP=movq fence=0
 +MEMSET_MOV OP=movnti fence=1
+diff --git a/tools/perf/bench/mem-memset-x86-64-asm-def.h b/tools/perf/bench/mem-memset-x86-64-asm-def.h
+index dac6d2b7c39b..53ead7f91313 100644
+--- a/tools/perf/bench/mem-memset-x86-64-asm-def.h
++++ b/tools/perf/bench/mem-memset-x86-64-asm-def.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ 
+-MEMSET_FN(memset_orig,
++MEMSET_FN(memset_movq,
+ 	"x86-64-unrolled",
+ 	"unrolled memset() in arch/x86/lib/memset_64.S")
+ 
+@@ -11,3 +11,7 @@ MEMSET_FN(__memset,
+ MEMSET_FN(memset_erms,
+ 	"x86-64-stosb",
+ 	"movsb-based memset() in arch/x86/lib/memset_64.S")
++
++MEMSET_FN(memset_movnti,
++	"x86-64-movnt",
++	"movnt-based memset() in arch/x86/lib/memset_64.S")
 -- 
 2.9.3
 
