@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C8828E11A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84F528E11F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729123AbgJNNTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727721AbgJNNTO (ORCPT
+        id S1731190AbgJNNTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:19:49 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:53256 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727721AbgJNNTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:19:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE65C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NsxfGZI5FsrZuIKKJv1Ka5EVh1Pb3wRIxRiJpIsxzEo=; b=S7iaX19h+wMk1uPDvVabBN2KwA
-        KUTsOTrzforg28nN9AWuuGkeCqFuHBFU2gp2lWDFu8Rxq+pcBcrRTl9uJjdUMg+n6qWSQ9+JMOpOJ
-        tnD+9jFeUlSeNMEd6boN/ezDwKtjzTR9HZaUPO9/zGIpV8jyUX4TBdd93S+F8YQ3u2b3Ekk2Yb+MS
-        Y60bx9jEhW5PCHc1u+/xJ8WA/whPz8BJ8otXHqor6/RXTPhQtJsNLb8uVmJquQsi0ZuV2/fgjhaSS
-        skzYX5BAtqkffUdROC+/Y89rnCwlHdhrss8CMJGF4j8eVjyalRmbqd+WEns3mSSEi3mQGGAmBqyuj
-        Ci06AALA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSggQ-0006q8-N0; Wed, 14 Oct 2020 13:19:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 39E8030015A;
-        Wed, 14 Oct 2020 15:19:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 22132201A8545; Wed, 14 Oct 2020 15:19:10 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 15:19:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     qianjun.kernel@gmail.com
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH 1/1] Sched/fair: Improve the accuracy of sched_stat_wait
- statistics
-Message-ID: <20201014131910.GG2628@hirez.programming.kicks-ass.net>
-References: <20201009092530.223-1-qianjun.kernel@gmail.com>
+        Wed, 14 Oct 2020 09:19:46 -0400
+X-UUID: f39527c9ff35424a91fa20feeb0c18f8-20201014
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=VKbmk+q6TZp792M8YotOsz2Eix0rdiCGpnXktYfljzs=;
+        b=KrFUI0fQZnYCJsT9rj2/FfJyHQk9IkMhm7ou2yfCkDe0MhvapxojZ0RgDvyIanOxFS9DVw4x/TZYiaq5drMYWNNOHzNgADWaG35JN/fCKOEQJ9CajopXaDkiKnMsKDxIRz5Yp2ty0pD6pEZvu5ckqNHNX8EMOZt6FFLaJLVhm9I=;
+X-UUID: f39527c9ff35424a91fa20feeb0c18f8-20201014
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1533085728; Wed, 14 Oct 2020 21:19:41 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 14 Oct 2020 21:19:38 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Oct 2020 21:19:37 +0800
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <seiya.wang@mediatek.com>
+Subject: [v6,0/4] watchdog: mt8192: add wdt support
+Date:   Wed, 14 Oct 2020 21:19:32 +0800
+Message-ID: <20201014131936.20584-1-crystal.guo@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009092530.223-1-qianjun.kernel@gmail.com>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: AACF75C595E88535A25ED18B74F5FCCC1B0D61D4691CD1ADFFED2FA5B29200222000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 05:25:30PM +0800, qianjun.kernel@gmail.com wrote:
-> From: jun qian <qianjun.kernel@gmail.com>
-> 
-> When the sched_schedstat changes from 0 to 1, some sched se maybe
-> already in the runqueue, the se->statistics.wait_start will be 0.
-> So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
-> wrong. We need to avoid this scenario.
-> 
-> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+VGhpcyBwYXRjaGVzIGFpbSB0byBhZGQgd2F0Y2hkb2cgc3VwcG9ydCBmb3IgTVQ4MTkyLg0KDQpj
+aGFuZ2UgaW4gdjY6DQoxLiBhZGQgY2hhbmdlIGxvZy4NCjIuIHJlbW92ZSBSZXZpZXdlZC1ieSB0
+YWcgb25bdjUsMi80XQ0KDQoNCmNoYW5nZSBpbiB2NToNCmZpeCB0eXBvcyBvbiBtdDgxOTItcmVz
+ZXQuaCAoaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTY5NzQ5My8pDQoNCg0K
+Y2hhbmdlIGluIHY0Og0KanVzdCByZXZpc2UgdjMgY29tbWl0IG1lc3NhZ2VzLg0KW3Y0LDEvNV0g
+Zml4IHRoZSBkZXNjcmlwdGlvbiBvZiBjb21wYXRpYmxlIGlzIFJldmlld2VkLWJ5OiBNYXR0aGlh
+cyBhbmQgR3VlbnRlci4NClt2NCwyLzVdIHVwZGF0ZSB3YXRjaGRvZyBkZXZpY2Ugbm9kZSBmb3Ig
+bXQ4MTgzIGlzIEFja2VkLWJ5OiBHdWVudGVyLCBhbmQgd2lsbA0KYmUgYXBwbGllZCB0byB2NS45
+LW5leHQvZHRzNjQuDQpbdjQsNC81XSBhZGQgdG9wcmd1IHJlc2V0LWNvbnRyb2xsZXIgaGVhZCBm
+aWxlIGZvciBNVDgxOTIgcGxhdGZvcm0gaXMgUmV2aWV3ZWQtYnk6IE1hdHRoaWFzLA0KYW5kIEFj
+a2VkLWJ5OiBHdWVudGVyLg0KW3Y0LDUvNV0gYWRkIHN1cHBvcnQgZm9yIHdhdGNoZG9nIGRldmlj
+ZSBmb3VuZCBpbiBNVDgxOTIgU29DIGlzIFJldmlld2VkLWJ5OiBNYXR0aGlhcyBhbmQgR3VlbnRl
+ci4NCg0KDQpjaGFuZ2UgaW4gdjM6DQoxLiBzZXBhcmF0ZSBbdjIsMS8zXSB0byBmaXggdGhlIG9y
+aWdpbmFsIG10MjcxMiBhbmQgbXQ4MTgzIGNvbXBhdGlibGVzIGFuZCBhZGQgbmV3IGJvYXJkIGFz
+Og0KW3YzLDEvNV0gZml4IG10MjcxMiBhbmQgbXQ4MTgzIGRlc2NyaXB0aW9uIG9mIGNvbXBhdGli
+bGUsIHNpbmNlIG10MjcxMg0KYW5kIG10ODE4MyBhbHNvIHByb3ZpZGUgc3ViLXN5c3RlbSBzb2Z0
+d2FyZSByZXNldCBmZWF0dXJlcywgYnV0IG10NjU4OSBub3QNCnN1cHBvcnQgdGhpcyBmZWF0dXJl
+LiAoUmV2aWV3ZWQtYnk6IE1hdHRoaWFzKQ0KW3YzLDIvNV0gdXBkYXRlIHdhdGNoZG9nIGRldmlj
+ZSBub2RlIGZvciBtdDgxODMNClt2MywzLzVdIHVwZGF0ZSBtdGstd2R0IGRvY3VtZW50IGZvciBN
+VDgxOTIgcGxhdGZvcm0NCjIuIFt2MywgNC81XSBpcyBzYW1lIGFzIFt2MiwyLzNdIChSZXZpZXdl
+ZC1ieTogTWF0dGhpYXMpDQozLiBtb2RpZnkgdGhlIGNvbW1pdCBtZXNzYWdlIG9mIFt2MiwzLzNd
+DQpbdjMsNS81XSBhZGQgc3VwcG9ydCBmb3Igd2F0Y2hkb2cgZGV2aWNlIGZvdW5kIGluIE1UODE5
+MiBTb0MoUmV2aWV3ZWQtYnk6IE1hdHRoaWFzIGFuZCBHdWVudGVyKQ0KDQoNCnYyIGNoYW5nZXM6
+DQpBYmFuZG9uIFYxIGNoYW5nZXMsYW5kIGFkZCB0aGUgZm9sbG93aW5nIGNoYW5nZXM6DQpbdjIs
+MS8zXSB1cGRhdGUgbXRrLXdkdCBkb2N1bWVudCBmb3IgbXQyNzEyLCBtdDgxODMgYW5kIG10ODE5
+Mi4NClt2MiwyLzNdIGFkZCB0b3ByZ3UgcmVzZXQtY29udHJvbGxlciBoZWFkIGZpbGUgZm9yIE1U
+ODE5MiBwbGF0Zm9ybSAoUmV2aWV3ZWQtYnk6IE1hdHRoaWFzKQ0KW3YyLDMvM10gYWRkIHN1cHBv
+cnQgZm9yIHdhdGNoZG9nIGRldmljZSBmb3VuZCBpbiBNVDgxOTIgU29DKCBSZXZpZXdlZC1ieTog
+TWF0dGhpYXMpDQoNCg0KdjEgY2hhbmdlczoNCkluc3RlYWQgb2Ygc3VibWl0IHRoZSBtdDgxOTIt
+cmVzZXQuaCwgZ2V0IHRoZSBudW1iZXIgb2YNCnJlc2V0IGJpdHMgZnJvbSBkdHNpIGRpcmVjdGx5
+Lg0KDQpDcnlzdGFsIEd1byAoNCk6DQogIGR0LWJpbmRpbmc6IG1lZGlhdGVrOiB3YXRjaGRvZzog
+Zml4IHRoZSBkZXNjcmlwdGlvbiBvZiBjb21wYXRpYmxlDQogIGR0LWJpbmRpbmc6IG1lZGlhdGVr
+OiBtdDgxOTI6IHVwZGF0ZSBtdGstd2R0IGRvY3VtZW50DQogIGR0LWJpbmRpbmc6IG10ODE5Mjog
+YWRkIHRvcHJndSByZXNldC1jb250cm9sbGVyIGhlYWQgZmlsZQ0KICB3YXRjaGRvZzogbXQ4MTky
+OiBhZGQgd2R0IHN1cHBvcnQNCg0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3dhdGNoZG9nL210
+ay13ZHQudHh0ICB8ICA1ICsrLS0NCiBkcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYyAgICAgICAg
+ICAgICAgICAgICAgfCAgNiArKysrDQogLi4uL3Jlc2V0LWNvbnRyb2xsZXIvbXQ4MTkyLXJlc2V0
+cy5oICAgICAgICAgIHwgMzAgKysrKysrKysrKysrKysrKysrKw0KIDMgZmlsZXMgY2hhbmdlZCwg
+MzkgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5j
+bHVkZS9kdC1iaW5kaW5ncy9yZXNldC1jb250cm9sbGVyL210ODE5Mi1yZXNldHMuaA0KDQoNCg==
 
-This SoB chain isn't valid. Did Yafang's tag need to a reviewed-by or
-something?
-
-> ---
->  kernel/sched/fair.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1a68a05..6f8ca0c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -906,6 +906,15 @@ static void update_curr_fair(struct rq *rq)
->  	if (!schedstat_enabled())
->  		return;
->  
-> +	/*
-> +	 * When the sched_schedstat changes from 0 to 1, some sched se
-> +	 * maybe already in the runqueue, the se->statistics.wait_start
-> +	 * will be 0.So it will let the delta wrong. We need to avoid this
-> +	 * scenario.
-> +	 */
-> +	if (unlikely(!schedstat_val(se->statistics.wait_start)))
-> +		return;
-> +
->  	delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
->  
->  	if (entity_is_task(se)) {
-> -- 
-> 1.8.3.1
-> 
