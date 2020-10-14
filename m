@@ -2,173 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A1628DC78
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0438028DC7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgJNJMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:12:16 -0400
-Received: from mail-eopbgr70135.outbound.protection.outlook.com ([40.107.7.135]:63136
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726481AbgJNJMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:12:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TDe7vJERUMHA/NLwxirYiXPT2FgvDYguXYfWSgCWyG9rkN6c7LZwE9fBBVNIhOxa2qTonVOOgcb1hXQ3l0ccr2MASAON8gdQ/1B9bRzFRW7nTUf+eQa7GTgxCCvUPAiwBJ5sWomf/wU35vnd3WUms8HAcofzL8FLiEu6uYS1j/hfL7xsmsvAQFP/ogOPNh0oEVcVJLhMXsIyqHoXI3v3ZR3i6mSQz1VQ6T0EYxfpsxV+ApkhO9+FDCFdr8K5mdNELlN6xmy4sop/6L9lGLZO7zW+icwSFCbDUspqdZIwdk+LQumjdiRaQLIlnhOADRM2+XfMGD9VQTLUW+VEJtZm+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EHDF0STklHl3Av1YdgbRfOCZMak6njEmcgEYZ/f0z4M=;
- b=m+W26WG5G3GQ4N+ncyaJ7JrPpIxoFyydcupSzQFrJJ/5pFuD78ojzd+JUMsF1l7mYIhnEwjGgBVgJv3g7GPYwX+tGFG1NeiTgwQbso3TDCCYzM/jF5rV8OrbVFhBscJX3rKxo6du+vgZ5rEFYGMIh/xE2hk2ZNdu6tND5ClIK/ECbh8GhqbbGCAXGfG+OmOymoQ7ts/HYcH1fZZmLAdyCnSK7eCQZr//U3otI/dvSOucYygm0XzU/k/KYaaigazfTcPiQGROW5N4R4Hwu0R3B0R592YvMTDBcaIb66p+7PvUYXTLqWQ5mBddBrEiKXswU2JNhTyeB8uZJriVlOGIzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EHDF0STklHl3Av1YdgbRfOCZMak6njEmcgEYZ/f0z4M=;
- b=G85+adeuM90uvnkyBfx0yw2D5zeMvPNaPzD8gTebN2xu1QWarbA9ylFjSvuaPjNq/+GBSPQJ2iphxQnCcRUilhblpjv1lLljm9oRBlW/SjtT8gpZslaFFO1OATOWAwObo5HHvIzYNu2LAGSUIRm5qyNcsQkE4kZ0p43kNumwFXY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB7PR02MB4348.eurprd02.prod.outlook.com (2603:10a6:10:43::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Wed, 14 Oct
- 2020 09:12:10 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::9178:a26c:c1e1:636b]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::9178:a26c:c1e1:636b%4]) with mapi id 15.20.3477.020; Wed, 14 Oct 2020
- 09:12:10 +0000
-Subject: Re: using one gpio for multiple dht22 sensors
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <91c25030-d5d1-e3e7-2d26-ac631dddc756@rasmusvillemoes.dk>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <1c0d4c55-1d76-8256-ac45-6e0e150309d9@axentia.se>
-Date:   Wed, 14 Oct 2020 11:12:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-In-Reply-To: <91c25030-d5d1-e3e7-2d26-ac631dddc756@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [85.229.94.207]
-X-ClientProxiedBy: HE1P190CA0004.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:bc::14)
- To DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+        id S1729022AbgJNJMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728641AbgJNJMu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:12:50 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08C8C051101
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:12:49 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id i2so2400911ljg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s9MJzJCPayoe4SLFuyGsJFpJNwxby6uT0h29LebCtqM=;
+        b=K7VqYXnXh15WZMd1oLepicAosNCQsUMRnHBDfnHBO3c/FIxm5pdFtdGR6bLBmqD1j/
+         W614fy+loX4IrOKxf2Ltt4/wDc6DTZj19412liuXW5FdBeoyX7L7L0fZ1HDZSd/iYy19
+         f35oSAllo72O8wc9AnULefBu8yNPXppRY1ys0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s9MJzJCPayoe4SLFuyGsJFpJNwxby6uT0h29LebCtqM=;
+        b=CiQNug84ZPSOaeFSUmtYHxppgQctnn7Jrr/3+C22KklNQk/3sVq39pqMCuisP0JOsl
+         CFur9PcMQbZtRqZsQwzUx0MM/1FTnWXukEqVSAof3m0f1/EKSArCw6C0U4MhRs6HeEDP
+         Cmyel1nIx1IYRZNlLgShDU8Ok0kGZbmrdFFjf5VLttzZ24/8rRN37T9SLUiHLyRVDbcC
+         wbhtI3dAw/tI7l1hCnE7qAshT4oBAHgNy4RLQ2p5q3vHd4BYeFiLsuk5ktzUPqHMjyr2
+         tQz49t++DpSL+WlnVgQ9Z+HGHYFVwrO0fpaXJvPinrQuqNjxLmYOKgr4R7HLkQdc6poX
+         4tnQ==
+X-Gm-Message-State: AOAM5330WyxF5NnOlqw+BLMTsxeHpQBMwW4lY0pL4cdQb3ByHKpAd8ou
+        Rv6qqPkyIXVSJ9GegcizQ+pHZp8IeYl4ghh4OLV9gw==
+X-Google-Smtp-Source: ABdhPJx1F1qNFgs7b1joZhHNOlMhOymvJTpmXjhzGE3qBMVyxVB6byhbpUs8PIGJwTedNYIciu7aD1FJpCaqDQgCj1s=
+X-Received: by 2002:a2e:808a:: with SMTP id i10mr1317726ljg.427.1602666767726;
+ Wed, 14 Oct 2020 02:12:47 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.229.94.207) by HE1P190CA0004.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:bc::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Wed, 14 Oct 2020 09:12:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5695693a-d4ce-40b3-b330-08d870213b0a
-X-MS-TrafficTypeDiagnostic: DB7PR02MB4348:
-X-Microsoft-Antispam-PRVS: <DB7PR02MB43481F33B2A3554B471D8CD1BC050@DB7PR02MB4348.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 14l9JdPVEhjKFbemIOCqVRhL/XiofdOgNQq/noL10X6qXxZTMpiVs8REABNO5JUmMID+uWQhakpyirojfvt+duh4APWGS7WleQks+7Kr/xJAN+pzN0e760BAU/RmTeOXISyzp0X1R8hlBzdfyfseFGH5Fwc21dLx6qdJaoeyuef/2e4PsGYQTJVLJQVPcwtXn4j7j28RpvVifZFDyXs5cCEFvKhmyz70HbveNBGCv90+qBN3y9D5HzsyqXIzHbzjNM6VBsqn0vvcqCDAxnC20lBcrdpNtMBNAWg9hhwQ0PAhsIoSSCWro8aWNTzXKriLB8jswlw3DBWmXZTDZeRlfCpu9fjkEzezC7UKqkqHd2TqMSjxR4rX6tsPG4RJU0SRgmRYJLhPhRaKKjpxsnAds3DKI4+9ONQ0okwwE82sx0iB4sfJZgH2uPY+083vKxvJ7Pm7FlzCq3c9huyKEcDe3r7O4v19WGEdNNexssixorIShDBdzJxFXJ1dS1lmr6ER
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(136003)(366004)(396003)(376002)(346002)(6916009)(83080400001)(966005)(956004)(5660300002)(478600001)(66946007)(8936002)(8676002)(86362001)(2616005)(4326008)(6486002)(4001150100001)(66476007)(52116002)(31696002)(36756003)(31686004)(53546011)(66556008)(316002)(16526019)(26005)(186003)(2906002)(83380400001)(16576012)(36916002)(43740500002)(15398625002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: neWItR1aSNEtv+9HiARkDrtMq6RjeVdEJfUf/5oXP7YhI25Qz/blZagRPgoU2ySytboXI7xHAZjN2UO92ocnE6V0MQiubeM3jXSytuBB2zk+u6flqHOdOr70FDpm9zUmO3OYkW9XxOprLDQpUwv7pQpRlu17QkfuesqxC+8AxO7jPRV2rK8/bt3XUNLcbqw9eZLXb/PitYVXY7jD6cfzH10xWrxiiyhEY7yAa3vywp2dQhPDLEyecuo8H4JEcoAwKEWsdiiL0J5nTnsmvUJh5TolU/VeE0OHI1kWjhLq4xTGvwl9Xm2kJcztyB5gpu73K4c457ZWnIzGS+FZYSB0khDTc49Tv3+0qEohxE5EqI+qn7CxlzCZ4WCHwaEufhr+/BenQBCnTc+cxiMzn1EnYMuUmy8ekiUeJwvEJGDNo/PZVm5Cf+j77pX0ksu71P25Phh7NdM3EDRjXBJh0JvmLfYGtWQWJpkG9tdn4PzgAmC1eOTJWtw/a7Ai7E9dXprYUCaG6jFOqahsWqKLkd+5hUFlgEJc0JfdtqXbxPj8cPFmRYf62ulLtPJeI05MWKm3pTK4uQiVIs5YXI48A5Dsh7jyD0ZVaVqPnMybIjH2DDB7a4kMXNTTY52Srgn2PlryE/626Sxeu/byxSYlW3/8rw==
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5695693a-d4ce-40b3-b330-08d870213b0a
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 09:12:10.2322
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: f6C5qhmtbg+vYNcu7SVAfSebxeRBOmXca3c88os2KAdJ/8x5LQeI63U8y/mLxkQl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB4348
+References: <20201011182254.17776-6-rayagonda.kokatanur@broadcom.com> <1602645639-12854-1-git-send-email-dphadke@linux.microsoft.com>
+In-Reply-To: <1602645639-12854-1-git-send-email-dphadke@linux.microsoft.com>
+From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Date:   Wed, 14 Oct 2020 14:42:36 +0530
+Message-ID: <CAHO=5PFXGvQjvDtMSDuk5bPdOHeNNFPQ6wnmr7ats3k3S-wp_g@mail.gmail.com>
+Subject: Re: [PATCH v1 5/6] i2c: iproc: handle master read request
+To:     Dhananjay Phadke <dphadke@linux.microsoft.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lori Hikichi <lori.hikichi@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Wolfram Sang <wsa@kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000697ae505b19def2d"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rasnus,
+--000000000000697ae505b19def2d
+Content-Type: text/plain; charset="UTF-8"
 
-On 2020-10-13 23:34, Rasmus Villemoes wrote:
-> Hi Peter
-> 
-> Since you're the author of io-channel-mux.txt, gpio-mux.txt and
-> mux-controller.txt, I hope you don't mind me asking some perhaps silly
-> questions.
+On Wed, Oct 14, 2020 at 8:50 AM Dhananjay Phadke
+<dphadke@linux.microsoft.com> wrote:
+>
+> On Sun, 11 Oct 2020 23:52:53 +0530, Rayagonda Kokatanur wrote:
+> > --- a/drivers/i2c/busses/i2c-bcm-iproc.c
+> > +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
+> >
+> > -             } else if (status & BIT(IS_S_RD_EVENT_SHIFT)) {
+> > -                     /* Start of SMBUS for Master Read */
+> > +                                     I2C_SLAVE_WRITE_REQUESTED, &rx_data);
+> > +                     iproc_i2c->rx_start_rcvd = true;
+> > +                     iproc_i2c->slave_read_complete = false;
+> > +             } else if (rx_status == I2C_SLAVE_RX_DATA &&
+> > +                        iproc_i2c->rx_start_rcvd) {
+> > +                     /* Middle of SMBUS Master write */
+> >                       i2c_slave_event(iproc_i2c->slave,
+> > -                                     I2C_SLAVE_READ_REQUESTED, &value);
+> > -                     iproc_i2c_wr_reg(iproc_i2c, S_TX_OFFSET, value);
+> > +                                     I2C_SLAVE_WRITE_RECEIVED, &rx_data);
+> > +             } else if (rx_status == I2C_SLAVE_RX_END &&
+> > +                        iproc_i2c->rx_start_rcvd) {
+> > +                     /* End of SMBUS Master write */
+> > +                     if (iproc_i2c->slave_rx_only)
+> > +                             i2c_slave_event(iproc_i2c->slave,
+> > +                                             I2C_SLAVE_WRITE_RECEIVED,
+> > +                                             &rx_data);
+> > +
+> > +                     i2c_slave_event(iproc_i2c->slave, I2C_SLAVE_STOP,
+> > +                                     &rx_data);
+> > +             } else if (rx_status == I2C_SLAVE_RX_FIFO_EMPTY) {
+> > +                     iproc_i2c->rx_start_rcvd = false;
+> > +                     iproc_i2c->slave_read_complete = true;
+> > +                     break;
+> > +             }
+> >
+> > -                     val = BIT(S_CMD_START_BUSY_SHIFT);
+> > -                     iproc_i2c_wr_reg(iproc_i2c, S_CMD_OFFSET, val);
+> > +             rx_bytes++;
+>
+> rx_bytes should be incremented only along with I2C_SLAVE_WRITE_RECEIVED event?
 
-Right, I ended up being the maintainer for a bunch of code I needed to
-do things "the right way", i.e. without resorting to gpio-manipulation
-and other breaches of abstractions from user-space...
+It should be incremented in both I2C_SLAVE_WRITE_REQUESTED and
+I2C_SLAVE_WRITE_RECEIVED cases because in both cases it is reading
+valid bytes from rx fifo.
 
-> I'm going to hook up a bunch of dht22 humidity (and temperature) sensors
-> [1] (drivers/iio/humidity/dht11.c), but partly due to limited number of
-> available gpios, I'm also going to use a 74hc4051 multiplexer [2], so
-> that all the dht22's actually sit on the same gpio.
-> 
-> It's pretty obvious how the multiplexer is to be described in
-> device-tree (I'm probably going to send a patch to add support for an
-> optional "enable-gpio", as on the 74hc4051, so that MUX_IDLE_DISCONNECT
-> gets supported).
-> 
-> It also seems like io-channel-mux should somehow magically apply to all
-> kinds of iio devices, but it can't be that simple. And if it is, I can't
-> figure out how to write the DT. So:
+>
+> >
+> > +static bool bcm_iproc_i2c_slave_isr(struct bcm_iproc_i2c_dev *iproc_i2c,
+> > +                                 u32 status)
+> > +{
+> > +     u32 val;
+> > +     u8 value;
+> > +
+> > +     /*
+> > +      * Slave events in case of master-write, master-write-read and,
+> > +      * master-read
+> > +      *
+> > +      * Master-write     : only IS_S_RX_EVENT_SHIFT event
+> > +      * Master-write-read: both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
+> > +      *                    events
+> > +      * Master-read      : both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
+> > +      *                    events or only IS_S_RD_EVENT_SHIFT
+> > +      */
+> > +     if (status & BIT(IS_S_RX_EVENT_SHIFT) ||
+> > +         status & BIT(IS_S_RD_EVENT_SHIFT)) {
+> > +             /* disable slave interrupts */
+> > +             val = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
+> > +             val &= ~iproc_i2c->slave_int_mask;
+> > +             iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, val);
+> > +
+> > +             if (status & BIT(IS_S_RD_EVENT_SHIFT))
+> > +                     /* Master-write-read request */
+> > +                     iproc_i2c->slave_rx_only = false;
+> > +             else
+> > +                     /* Master-write request only */
+> > +                     iproc_i2c->slave_rx_only = true;
+> > +
+> > +             /* schedule tasklet to read data later */
+> > +             tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
+> > +
+> > +             /* clear only IS_S_RX_EVENT_SHIFT interrupt */
+> > +             iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
+> > +                              BIT(IS_S_RX_EVENT_SHIFT));
+> >
+>
+> Both tasklet and isr are writing to status (IS_OFFSET) reg.
+>
+> The tasklet seems to be batching up rx fifo reads because of time-sensitive
+> Master-write-read transaction? Linux I2C framework is byte interface anyway.
+> Can the need to batch reads be avoided by setting slave rx threshold for
+> interrupt (S_FIFO_RX_THLD) to 1-byte?
 
-The io-channel-mux is for the situation where you have only one iio-device,
-and where you can control its environment with a mux. I.e. it is not about
-how the device communicates with the host. You then get one new "virtual"
-iio-device for every (valid) state of the mux, and when you access those
-iio-devices, the mux is configured to select the correct input/output for
-the iio-device in question. At least, it should be possible for output
-devices as well, but I guess you kind of get into trouble with the output
-signal not persisting when the mux changes state, but that is a problem
-for the HW people ;-). I originally used it for a single adc device where
-the mux simply selected what to measure.
+To process more data with a single interrupt we are batching up rx fifo reads.
+This will reduce the number of interrupts.
 
-> - do I need to teach the dht11.c driver to be mux-aware?
-> - currently, a dht11/dht22 shows up in sysfs with just two files,
-> in_humidityrelative_input and in_temp_input. Now, should I end up with
-> one device and, say, 2*8 files (so that it seems like one sensor with
-> eight input channels), or should it show up as eight different devices?
-> If the latter, I guess the device tree would end up with the same "gpios
-> = " spec for all eight - is that even allowed?
+Also to avoid tasklet running more time (20us) we have a threshold of
+10 bytes for batching read.
+This is a better/optimised approach than reading single byte data per interrupt.
 
-It's not 100% clear to me how this is connected, but I'm guessing that you
-have the "DATA-signal" pin of the dht22s connected to the Y pins of the 4051,
-and that Z pin of the 4051 is connected to some gpio, so that you are able
-to communicate with the various dht22s by controlling the mux.
+>
+> Also, wouldn't tasklets be susceptible to other interrupts? If fifo reads
+> have to be batched up, can it be changed to threaded irq?
 
-This calls for a mux on the single source of communication from the host
-to the various real devices that share this single source of communication.
-In other words, more like an i2c-mux than an io-channel-mux.
+tasklets have higher priority than threaded irq, since i2c is time
+sensitive so using a tasklet is preferred over threaded irq.
 
-I.e., what you need is "the other kind" of mux/gpio driver, i.e. a driver
-that "fans out" a single gpio so that other drivers can treat the pins on
-the other side of the mux as gpios.
+Best regards,
+Rayagonda
 
-I guess you'd have to sort out irq-routing through this new mux-gpio driver
-since the dht22 driver uses irqs to read input, and there are probably
-various other interesting problems as well. Maybe the dgt22 driver needs
-to be adjusted depending on how these problems are handled? E.g. maybe it
-needs to disable IRQs when it is not expecting communication or something.
+>
+>
 
-I'm not an expert on the intricacies of the gpio subsystem...
+--000000000000697ae505b19def2d
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Does that help?
-
-Cheers,
-Peter
-
-> If you can show how the DT is supposed to describe this situation, I'll
-> try to fill out the missing pieces on the driver side.
-> 
-> [I could also just not describe the multiplexer at all and control
-> everything about it by toggling gpios from userspace, and just have a
-> single dht22 in DT, but I prefer doing this "the right way" if it's
-> feasible.]
-> 
-> Thanks,
-> Rasmus
-> 
-> Just FTR:
-> 
-> [1]
-> https://www.electroschematics.com/wp-content/uploads/2015/02/DHT22-datasheet.pdf
-> [2] https://assets.nexperia.com/documents/data-sheet/74HC_HCT4051.pdf
-> 
+MIIQVwYJKoZIhvcNAQcCoIIQSDCCEEQCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg2sMIIE6DCCA9CgAwIBAgIOSBtqCRO9gCTKXSLwFPMwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UE
+CxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMT
+Ckdsb2JhbFNpZ24wHhcNMTYwNjE1MDAwMDAwWhcNMjQwNjE1MDAwMDAwWjBdMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
+bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+tpZok2X9LAHsYqMNVL+Ly6RDkaKar7GD8rVtb9nw6tzPFnvXGeOEA4X5xh9wjx9sScVpGR5wkTg1
+fgJIXTlrGESmaqXIdPRd9YQ+Yx9xRIIIPu3Jp/bpbiZBKYDJSbr/2Xago7sb9nnfSyjTSnucUcIP
+ZVChn6hKneVGBI2DT9yyyD3PmCEJmEzA8Y96qT83JmVH2GaPSSbCw0C+Zj1s/zqtKUbwE5zh8uuZ
+p4vC019QbaIOb8cGlzgvTqGORwK0gwDYpOO6QQdg5d03WvIHwTunnJdoLrfvqUg2vOlpqJmqR+nH
+9lHS+bEstsVJtZieU1Pa+3LzfA/4cT7XA/pnwwIDAQABo4IBtTCCAbEwDgYDVR0PAQH/BAQDAgEG
+MGoGA1UdJQRjMGEGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwkGCisGAQQBgjcUAgIGCisG
+AQQBgjcKAwQGCSsGAQQBgjcVBgYKKwYBBAGCNwoDDAYIKwYBBQUHAwcGCCsGAQUFBwMRMBIGA1Ud
+EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGlygmIxZ5VEhXeRgMQENkmdewthMB8GA1UdIwQYMBaA
+FI/wS3+oLkUkrk1Q+mOai97i3Ru8MD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDov
+L29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3RyMzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3Js
+Lmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMGcGA1UdIARgMF4wCwYJKwYBBAGgMgEoMAwGCisG
+AQQBoDIBKAowQQYJKwYBBAGgMgFfMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNp
+Z24uY29tL3JlcG9zaXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQConc0yzHxn4gtQ16VccKNm4iXv
+6rS2UzBuhxI3XDPiwihW45O9RZXzWNgVcUzz5IKJFL7+pcxHvesGVII+5r++9eqI9XnEKCILjHr2
+DgvjKq5Jmg6bwifybLYbVUoBthnhaFB0WLwSRRhPrt5eGxMw51UmNICi/hSKBKsHhGFSEaJQALZy
+4HL0EWduE6ILYAjX6BSXRDtHFeUPddb46f5Hf5rzITGLsn9BIpoOVrgS878O4JnfUWQi29yBfn75
+HajifFvPC+uqn+rcVnvrpLgsLOYG/64kWX/FRH8+mhVe+mcSX3xsUpcxK9q9vLTVtroU/yJUmEC4
+OcH5dQsbHBqjMIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4G
+A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNV
+BAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQL
+ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
+R2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aE
+yiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5
+uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bL
+yCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg
+6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkW
+qQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8w
+HQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+
+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5
+RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBov
+Hd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX42
+68NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o
+2HLO02JQZR7rkpeDMdmztcpHWD9fMIIFWTCCBEGgAwIBAgIMPD6uL5K0fOjo8ln8MA0GCSqGSIb3
+DQEBCwUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
+EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMwHhcNMjAwOTIxMTQw
+OTQ5WhcNMjIwOTIyMTQwOTQ5WjCBnDELMAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTES
+MBAGA1UEBxMJQmFuZ2Fsb3JlMRYwFAYDVQQKEw1Ccm9hZGNvbSBJbmMuMRwwGgYDVQQDExNSYXlh
+Z29uZGEgS29rYXRhbnVyMS8wLQYJKoZIhvcNAQkBFiByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
+Y29tLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN9ijdrC8+HqBpo0E+Ls+FXg
+gOtAgdzwYtCbNN0FYITddIelxuEryOGaYFXqdi3WiAeyCbHIy0pRxs5Zqq0SLiAuaHbHc2t3cTGA
+WQ4i1+Z5ElQVIpZeHqb/exklZ7ZCZ8iUygtNsZqKyqgmFmDMkpEl0CT08yp8/xbhge9NVXOqmA0w
+O9iP6hfXOost0TwtIL/JlL94BiyaEOL7a3BwSRXhR2fJO17WpT8X27Dr0gJMx6X0rXkpiiF091Ml
+xVUYGnc0GLrYeHC2X4wJbUsgi+UFM/rVW0RKe5Sg4xmLXWc/rBhXDBVPeFVdN2dYsk5MyDRM/fXj
+cAA+xTX+SQGoND8CAwEAAaOCAdcwggHTMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
+gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
+c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
+c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
+MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
+HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
+b25hbHNpZ24yc2hhMmczLmNybDArBgNVHREEJDAigSByYXlhZ29uZGEua29rYXRhbnVyQGJyb2Fk
+Y29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJ
+nXsLYTAdBgNVHQ4EFgQU1rE7oQJ7FiSTADFOqokePoGwIq4wDQYJKoZIhvcNAQELBQADggEBAD8I
+VcITGu1E61LQLR1zygqFw8ByKPgiiprMuQB74Viskl7pAZigzYJB8H3Mpd2ljve+GRo8yvbBC76r
+Gi5WdS06XI5vuImDJ2g6QUt754rj7xEYftM5Gy9ZMslKNvSiPPh1/ACx5w7ecD1ZK0YLMKGATeBD
+XybduRFIEPZBAjgJ5LOYT2ax3ZesfAkan1XJ97yLA93edgTTO2cbUAADTIMFWm4lI/e14wdGmK0I
+FtqJWw6DATg5ePiAAn+S0JoIL1xqKsZi2ioNqm02QMFb7RbB3yEGb/7ZLAGcPW666o5GSLsUnPPq
+YOfL/3X6tVfGeoi3IgfI+z76/lXk8vOQzQQxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkw
+FwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2ln
+biAyIENBIC0gU0hBMjU2IC0gRzMCDDw+ri+StHzo6PJZ/DANBglghkgBZQMEAgEFAKCB1DAvBgkq
+hkiG9w0BCQQxIgQgX/+edKBORd1M9vSRw5PCMDTz0u5LVYX8YkkqePkfVPAwGAYJKoZIhvcNAQkD
+MQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMDE0MDkxMjQ4WjBpBgkqhkiG9w0BCQ8x
+XDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsG
+CSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBABZL
+m6mn0udQYwN2vnxtirjl78VautpqAZ3LrDHT+Di/QYPdKLHLka8gzDAs2Qftv4zhx/vilM/NtVFj
+czQLlTShyGMFuwhmdjEd6wJZ30HQVqmUOUQMVu31e8RK9w9klQ22Um7A5fSEljya/7WNCiXQ/QTD
+JQVI3gqvcZ5bbQy65DpAt1ReY7NrVOXXt6Pe+kAqHRfK8PA+5rLmTpOV5khnGQBSaNdE8nG699XN
+6pPOgGTgovvF624zIy5a8/LDijcRsqh5Sa84d1qQDs+F3Vjl8heI2gDf98MY2JFXXf/3lOJG+Pap
+vgtM5+tKJREsJphWZwGqnwKapISwO9JW3Xk=
+--000000000000697ae505b19def2d--
