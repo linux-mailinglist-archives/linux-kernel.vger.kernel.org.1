@@ -2,130 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E1B28DB1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE89F28DB20
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgJNIWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:22:13 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:59019 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726032AbgJNIWC (ORCPT
+        id S1727995AbgJNIXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727159AbgJNIW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:22:02 -0400
-Received: from cust-57f2be97 ([IPv6:fc0c:c196:c6c4:fdf1:aa47:ab6:e251:d2a8])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id Sc2rkisxSTHgxSc2tkSfJM; Wed, 14 Oct 2020 10:22:03 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1602663723; bh=qDTqpcsomGCtNbIphNmso0C/Zajj/ZoCcVyXjXMJxQk=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=kYfmwqro1gTnLH89+rRuO1l56vFqd1FRR1eEDUlQospPRV9FpYHFEPdfmv/T2DWu8
-         ySktWbhsljG3qdaHA449AZo15y+vaR4j/IKZQKx0CecNFMfYuLuD5WD/EPKV8BPfDo
-         lJpNkS4GuDxp9RGmqsd1vEARcdFCL6HJfGAcpQ7kdy81MtdkLOpHOVYkMMnkVpA2Di
-         +VsLkUONcWq0GZXQmqh4MVWwkN4WxUg0UT+3fomYGNaZyixdMKEuawXk5NFVqXW8UG
-         kNSB0FXNy0hv1k8wCTogwIbA1SoSjqPyxV0w1Jd4x23P1a2Msp/O6IDlLIk1mvU1uH
-         5j14PSHSqmKxg==
-Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Takashi Iwai <tiwai@suse.de>, Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        moderated for non-subscribers <alsa-devel@alsa-project.org>
-References: <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
- <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
- <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
- <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
- <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
- <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
- <s5hblh5mele.wl-tiwai@suse.de> <s5ha6wpmei5.wl-tiwai@suse.de>
- <20201014075853.GB29881@amd> <056a8933-378f-30f2-c7af-5514d93d3c36@xs4all.nl>
- <20201014081116.GC29881@amd>
-From:   Udo van den Heuvel <udovdh@xs4all.nl>
-Autocrypt: addr=udovdh@xs4all.nl; prefer-encrypt=mutual; keydata=
- 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
-Organization: hierzo
-Message-ID: <2be6e184-97d4-a2b1-a500-6ea3528cff37@xs4all.nl>
-Date:   Wed, 14 Oct 2020 10:22:01 +0200
+        Wed, 14 Oct 2020 04:22:57 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72711C051112
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 01:22:55 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k18so1617252wmj.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 01:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Swh+dZQyBdaPmN5as6qgR/sRrl/ojxXJRUzze+Qmp7c=;
+        b=Z/VHBbtSTwP8FkfNNETkLr6RUIBBLouAgLw0uY8EmTB4tmRALqpeMFfKVFnLC50Mtt
+         nm44MdEv54nNQXzvc5ciyucLEFG3UmguNDgeJeq3uiJX1ZxoD562aEuwyenz92rgHqO7
+         mduo38uCnAjo9IiBA8jaGhqpJ5BxtELxrMqIwAM3V8MS8QcvYeVdIBQynr+SNMHTfWea
+         S0PQvoeqsJXb87abZvORn5S+I8WY+nOAXwlDuCbyB/K7GjcypPs1IIHP2e1VlD2krtAJ
+         RMJ07Amgc+2uCAPwGZpd5TqNPPOomLj4eCTH09dclssKq/zrMxMKeZ63fwSOw0Y/GT+d
+         RvjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Swh+dZQyBdaPmN5as6qgR/sRrl/ojxXJRUzze+Qmp7c=;
+        b=g522flu3K8eA9sbOgDt6K9kaLGZM82+MX8hK9O9XYGolRxIoZ/c8k9+pYpGXp/p8+R
+         rDQscQWcJWWGhiANvoVzf7OjYGhSXwZeFlYkACyf2/wahvAwdJHOE3cXK65DRtCtudec
+         uWP56r/4BwcUogzcJDe2FdNynTTCk4DsgNf2SDSuhrj/ptQcw1nv2wdx8ea/Q0mqrOIF
+         hRF2Hu82a6/gpxawEmYF2OtrmcCJ4ZEWSm3NLaJXSYKMNIKSXWZ4dpMOrbTcO60LRq0I
+         GQRb2kA41dyA/gmvQxVv8Ozl5zjTzRFFhFKfwx1NT5+FJJRVTZCOfvMjZo44hwtd15Ls
+         7yxw==
+X-Gm-Message-State: AOAM532HczM2oey8jwsPhHDgF7Ds4lNQK+/hLo+LB77lvtNIVCL5au4O
+        jkjLUAiwR0iHWVvKsqx6e63WQg==
+X-Google-Smtp-Source: ABdhPJyhymZXHFLUxhQpIL4t7IHxHSPomNV81iEN402sS5TNy/a5RgPmeKkekvo2TU8sawSC/dDDKg==
+X-Received: by 2002:a1c:ed15:: with SMTP id l21mr2360202wmh.26.1602663773822;
+        Wed, 14 Oct 2020 01:22:53 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f? ([2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f])
+        by smtp.googlemail.com with ESMTPSA id p11sm3798385wrm.44.2020.10.14.01.22.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 01:22:53 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     Lukasz Luba <lukasz.luba@arm.com>, rjw@rjwysocki.net
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, amitk@kernel.org, corbet@lwn.net,
+        Dietmar.Eggemann@arm.com, qperret@google.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org
+References: <20201002114426.31277-1-lukasz.luba@arm.com>
+ <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
+Date:   Wed, 14 Oct 2020 10:22:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201014081116.GC29881@amd>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfGOewer10A9D7R4aQ68VqQdfCTW2TejKYJ6aIyncc6W64HiGBqy7e5VATsrqAZ5BSCZkMSO7ljrk7+jOzXE49cphfKjhEDtywVxp0fDyHIHvmG50K5Li
- qe7nEZn823q2G3bc7z2oUZrV2wikhNeMyqhpGJRdBcyq+4SIZykjnWvF/BhFtvuCWRvgXMUoK4Roo7bdmKwioXTx1Ys+NHV6OQ6tvtc7jNoAUXSvfw5OJ9Jh
- Nlw2T2aNRS1e1oInpwV6BItrwgmiT4E0W7/gI6O86Er1t23pM/Zj/GGpWMDNoPZczj/C0j2ivXr8+kv/ncvg3m64S/Cl7CFjL7+xEBMINoFrcUpoYaoNv74t
- AmCiz1jKhAMIsBzobLPAfgoTlWdCR8v0a57ciW+HK6A7aoCxlL5q70DwXvldGznJe68BwQ7dvALDiEaVm4RHfGdG8XmhUA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-10-2020 10:11, Pavel Machek wrote:
->> It's a computer, not a disco-light or anything like that.
+
+Hi Lukasz,
+
+On 09/10/2020 11:16, Lukasz Luba wrote:
+> Hi Rafael,
 > 
-> And you probably have numlock LED.
+> On 10/2/20 12:44 PM, Lukasz Luba wrote:
+>> Hi all,
+>>
+>> The Energy Model supports power values expressed in an abstract scale.
+>> This has an impact on Intelligent Power Allocation (IPA) and should be
+>> documented properly. There is also a need to update the DT binding for
+>> the
+>> 'sustainable-power' and allow it to have abstract scale as well.
+>>
+>> Changes:
+>> v2:
+>> - updated sustainable power section in IPA documentation
+>> - updated DT binding for the 'sustainable-power'
+>>
+>> The v1 of the patch set and related discussion can be found in [1].
+>>
+>> Regards,
+>> Lukasz Luba
+>>
+>> [1]
+>> https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+>>
+>>
+>> Lukasz Luba (3):
+>>    docs: Clarify abstract scale usage for power values in Energy Model
+>>    PM / EM: update the comments related to power scale
+>>    dt-bindings: thermal: update sustainable-power with abstract scale
+>>
+>>   .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+>>   .../driver-api/thermal/power_allocator.rst          | 13 ++++++++++++-
+>>   Documentation/power/energy-model.rst                | 13 +++++++++++++
+>>   Documentation/scheduler/sched-energy.rst            |  5 +++++
+>>   include/linux/energy_model.h                        | 11 +++++------
+>>   kernel/power/energy_model.c                         |  2 +-
+>>   6 files changed, 45 insertions(+), 12 deletions(-)
+>>
+> 
+> Could you take patch 1/3 and patch 2/3 via your PM tree,
+> please? I will be very grateful.
+> 
+> These patches just update the documentation and comments regarding
+> an issue that we can have: bogoWatts in the Energy Model (and we
+> already have). One of the drawbacks is that we cannot derive real energy
+> from these numbers. Will see how this would evolve.
 
-On the case? no way.
-It is on the keyboard, a separate device, and already has a function.
-We also have a caps lock LED and scroll lock LED there, with separate
-functions.
-I do not need 'extra' functionality for those.
+The purpose of the energy model is to provide these power numbers.
 
-> Additional config options have costs, too, and we don't want to
-> support gazillion config options. 
+If the SoC vendors do not want to share those numbers, then better to
+not use the energy model at all.
 
-That is not the issue.
-One should have thought about stuff beforehand.
-One changes an existing situation and one should have understood that
-new stuff should never be forced, no matter what the size or functionality.
-The non-selectability is not my fault.
-The perceived 'complexity' in the patch is not my fault.
-My points of view w.r.t. the situation are fairly reasonable and common.
-The fact that this change made it to the kernel means that people did
-not look into it that well.
+If they want to use the EAS and the IPA at all costs without sharing the
+power numbers, then it is up to them to take responsibility of providing
+consistent numbers, not the community to document how to hack the energy
+model.
 
-Kind regards,
-Udo
+And that is even more true as mentioned by Doug: the power numbers are
+not impossible to measure.
+
+Documenting the scale values give the opportunity to the SoC vendor to
+never share the power numbers, and even worst, that implies all the
+existing and future frameworks based on the energy model (and its
+evolution) *must* comply with these dummy values. That is the promise of
+a real pain.
+
+IMO, we must keep a strong constraint on the power values for the energy
+model.
+
+However, nothing prevents to write a recipe on a website explaining how
+to use the energy model without the power numbers with a big warning
+that could not work in the future if the energy model evolves or it
+could be incompatible with the IPA.
+
+I suggest to solve the energy model main issue: the SoC vendor do not
+want to share the power numbers. Why not give the opportunity to load a
+firmware where the power numbers will be ? The firmware could be in a
+vendor partition for example.
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
