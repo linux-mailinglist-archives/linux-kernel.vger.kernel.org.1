@@ -2,130 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CCE28DE40
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E399828DE48
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728862AbgJNKF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:05:28 -0400
-Received: from esa6.microchip.iphmx.com ([216.71.154.253]:59969 "EHLO
-        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgJNKF2 (ORCPT
+        id S1729064AbgJNKHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:07:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39921 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726147AbgJNKHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:05:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1602669927; x=1634205927;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/I29CF5iiGyCnWFjnsZ+qI0s1CCYcoxLMpCKAkfIwK8=;
-  b=17tTkvGKmsENgAYQ6dqi06EuoaGuJYYHa0DaSm4wUJrNZBqCreeO9Pbx
-   Jv8N408Zh/uXKL5nFytCAoRwPuYFXi6EglEXKDwGUNiz4PgY7lF6tD4Tr
-   VWL3hs1bclUi6aU1LgAt68T3w2pfuwc8f24yDO1+7CnurdjnuMwUMvpt6
-   XzlzGkw93YwBZtCweYD3TK+UpJ8MzL4lxBHAwtAZaNWo8J6LcVDBFo0Xf
-   9gD54S0B3BbgeTgVlcF8z/kfAU0ElpM/Aefhfu6NRt2cAHkZWhrUdZJO0
-   BZvtCI3c0cBT4gPbKkp/OshQj7tPmLkUkKNhK35zjQLNNMtzfCHZghzM4
-   w==;
-IronPort-SDR: tnF6QV0/DD3E5rXwl2uEU0fwMGFFDTFSAeYdGzoEPLeC1dzPweoDYKNhJ5d/WB2qPIanffDNGR
- aWOSO4jZIG5Hob7rjrEyv0AegexhaXgdSNZONGQ9EpNPaMTY6T7/S2th39NOKuuEHDmKpwxiTp
- JPDkjF8oS12mUQfN6MH8lsl2I79QQAVw9F3vDMcFJhVU7/Jr9ovDQLuuAYweT+obHD/8ZdCel2
- LwXTzVFkqvuVLdCpHiVmWN2dPQPwjM1Xef8Dos+0D/rHPY7LE6L31JhCU4PmXPQ7SgNZmVpj++
- 08E=
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="29850498"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Oct 2020 03:05:26 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 14 Oct 2020 03:05:26 -0700
-Received: from soft-dev10.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 14 Oct 2020 03:05:24 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH v6 0/3] Adding support for Microchip/Microsemi serial GPIO controller
-Date:   Wed, 14 Oct 2020 12:05:12 +0200
-Message-ID: <20201014100515.2728584-1-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Oct 2020 06:07:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602670036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=D5KqYEUpfycrQPhzEmIDML2TPVxdekkeeWQmKWvWXAo=;
+        b=QAcxzr2rZnVWcUTRnqaOyXSl/iLF5isQr03/7IozYQKtE2uNlz+2SAnRvI6+kIkYoBq2ei
+        fjKTIyuYQ3NVnwPzzK1u9+KMvr0p1TnKkD5dZfc5djXUAkxwt9gTSblxzMxz58zX97/+uA
+        +orLc8KYmTJvcyeL9YBKNPmhC+fFCkg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-221-wwy8auPNM-WqgPCwHeU1sQ-1; Wed, 14 Oct 2020 06:07:12 -0400
+X-MC-Unique: wwy8auPNM-WqgPCwHeU1sQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 033068BAF69;
+        Wed, 14 Oct 2020 10:07:05 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.194.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA9EF7B7A9;
+        Wed, 14 Oct 2020 10:06:59 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: VMX: eVMCS: make evmcs_sanitize_exec_ctrls() work again
+Date:   Wed, 14 Oct 2020 12:06:58 +0200
+Message-Id: <20201014100658.2346024-1-vkuznets@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-To:     unlisted-recipients:; (no To-header on input)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The series add support for the serial GPIO controller used by
-Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
+It was noticed that evmcs_sanitize_exec_ctrls() is not being executed
+nowadays despite the code checking 'enable_evmcs' static key looking
+correct. Turns out, static key magic doesn't work in '__init' section
+(and it is unclear when things changed) but setup_vmcs_config() is called
+only once per CPU so we don't really need it to. Switch to checking
+'enlightened_vmcs' instead, it is supposed to be in sync with
+'enable_evmcs'.
 
-v6 changes:
+Opportunistically make evmcs_sanitize_exec_ctrls '__init' and drop unneeded
+extra newline from it.
 
-- Use "bus-frequency" instead of "microchip,sgpio-frequency". Drop
-  '$ref'. (Robh)
-- Added "ngpios" description, bumped minimum to 32. (Linus)
-- Added "#size-cells" description. (Linus)
-- Changed "bus-frequency" validation in driver to reflect the YAML
-  description.
+Reported-by: Yang Weijiang <weijiang.yang@intel.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ arch/x86/kvm/vmx/evmcs.c | 3 +--
+ arch/x86/kvm/vmx/evmcs.h | 2 +-
+ arch/x86/kvm/vmx/vmx.c   | 2 +-
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-v5 changes (driver comments from Linus):
-- Collect bank data in sgpio_bank struct
-- Add is_input boolean to sgpio_bank struct
-- Use single-bit bitmasks in sgpio_output_set() and sgpio_output_get()
-- Eliminate superfluous struct pinctrl_dev *pctl_dev in bank data
-- Fix wrong ngpio consistency check
+diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
+index e5325bd0f304..f3199bb02f22 100644
+--- a/arch/x86/kvm/vmx/evmcs.c
++++ b/arch/x86/kvm/vmx/evmcs.c
+@@ -297,14 +297,13 @@ const struct evmcs_field vmcs_field_to_evmcs_1[] = {
+ };
+ const unsigned int nr_evmcs_1_fields = ARRAY_SIZE(vmcs_field_to_evmcs_1);
+ 
+-void evmcs_sanitize_exec_ctrls(struct vmcs_config *vmcs_conf)
++__init void evmcs_sanitize_exec_ctrls(struct vmcs_config *vmcs_conf)
+ {
+ 	vmcs_conf->pin_based_exec_ctrl &= ~EVMCS1_UNSUPPORTED_PINCTRL;
+ 	vmcs_conf->cpu_based_2nd_exec_ctrl &= ~EVMCS1_UNSUPPORTED_2NDEXEC;
+ 
+ 	vmcs_conf->vmexit_ctrl &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
+ 	vmcs_conf->vmentry_ctrl &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
+-
+ }
+ #endif
+ 
+diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
+index e5f7a7ebf27d..3333326b3702 100644
+--- a/arch/x86/kvm/vmx/evmcs.h
++++ b/arch/x86/kvm/vmx/evmcs.h
+@@ -185,7 +185,7 @@ static inline void evmcs_load(u64 phys_addr)
+ 	vp_ap->enlighten_vmentry = 1;
+ }
+ 
+-void evmcs_sanitize_exec_ctrls(struct vmcs_config *vmcs_conf);
++__init void evmcs_sanitize_exec_ctrls(struct vmcs_config *vmcs_conf);
+ #else /* !IS_ENABLED(CONFIG_HYPERV) */
+ static inline void evmcs_write64(unsigned long field, u64 value) {}
+ static inline void evmcs_write32(unsigned long field, u32 value) {}
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 96979c09ebd1..d529349d9b33 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2607,7 +2607,7 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 	vmcs_conf->vmexit_ctrl         = _vmexit_control;
+ 	vmcs_conf->vmentry_ctrl        = _vmentry_control;
+ 
+-	if (static_branch_unlikely(&enable_evmcs))
++	if (enlightened_vmcs)
+ 		evmcs_sanitize_exec_ctrls(vmcs_conf);
+ 
+ 	return 0;
+-- 
+2.25.4
 
-v4 changes (binding comments from Rob):
-- microchip,sgpio-port-ranges changed to uint32-matrix so tuples can
-  be represented properly.
-- gpio controller node name changed to "gpio@[0-1]"
-- whitespace fixes
-- DT files updated as per schema changes
-
-v3 changes:
-- Renamed all usage of "mchp" abbrevation with "microchip".
-- Split the in/output directions into (two) separate banks.
-- Eliminated the bindings include file (from above)
-- Changed SPDX license to "GPL-2.0-or-later"
-- Change -ENOTSUPP to -EOPNOTSUPP
-- Minor type/symbol naming changes
-
-v2 changes:
-- Adds both in and output modes.
-- Use direct adressing of the individual banks (#gpio-cells = <4>),
-  also osoleting need for addressing macros in bindings include file.
-- Property 'microchip,sgpio-ports' (uint32, bitmask) replaced by
-  proper range set (array of [start,end]) 'microchip,sgpio-port-ranges'.
-- Fixes whitespace issues in Kconfig file
-
-Lars Povlsen (3):
-  dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
-  pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi
-    Serial GPIO
-  arm64: dts: sparx5: Add SGPIO devices
-
-Lars Povlsen (3):
-  dt-bindings: pinctrl: Add bindings for pinctrl-microchip-sgpio driver
-  pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi
-    Serial GPIO
-  arm64: dts: sparx5: Add SGPIO devices
-
- .../pinctrl/microchip,sparx5-sgpio.yaml       | 145 ++++
- MAINTAINERS                                   |   1 +
- arch/arm64/boot/dts/microchip/sparx5.dtsi     |  91 +++
- .../boot/dts/microchip/sparx5_pcb125.dts      |   5 +
- .../dts/microchip/sparx5_pcb134_board.dtsi    | 258 +++++++
- .../dts/microchip/sparx5_pcb135_board.dtsi    |  55 ++
- drivers/pinctrl/Kconfig                       |  18 +
- drivers/pinctrl/Makefile                      |   1 +
- drivers/pinctrl/pinctrl-microchip-sgpio.c     | 667 ++++++++++++++++++
- 9 files changed, 1241 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
- create mode 100644 drivers/pinctrl/pinctrl-microchip-sgpio.c
-
---
-2.25.1
