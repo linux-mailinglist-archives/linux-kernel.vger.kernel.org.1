@@ -2,234 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A165628E611
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDE328E609
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387711AbgJNSMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:12:24 -0400
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:44808 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727369AbgJNSMY (ORCPT
+        id S1729320AbgJNSLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727369AbgJNSLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:12:24 -0400
-Received: from pps.filterd (m0170396.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EI8JKP022729;
-        Wed, 14 Oct 2020 14:11:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=Htk0EO368NZziO/oPPGxiyyq0FlnD/L+I2kkNidW3W4=;
- b=Z8kIVvVNHakcDWJpnVC51pXPX+nLYVC9sxzvWDKb/ez+Nd66Zzj5F+GhyeN/CuT7nmLy
- vPngPEY5qDdjwtp2HDeS49MOn0Ewihe7+TD5rR6PbU6Z+geEYttQkCTmq1pLQeS4p/Qr
- gDC7b5ThQ6IFxp76lAaUdkCp9SLG7aYlboZqJ+2Um/4moUfEKwHUYGr07wwfxSUL8loa
- 7ehwcUTXEk+gsexJJaXYN66nUyeZ9qUEwcMfDjVVAO2EoaASnzctQHYgvkUglyGYfjFS
- Io7XADSjxYc4ewMkr5QsiXAWxfca6+9Jw0CAbeTHTdq8sGaGwUVz2ZaVY038IV+/g7qj dg== 
-Received: from mx0a-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
-        by mx0b-00154904.pphosted.com with ESMTP id 3438sxf0np-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 14:11:05 -0400
-Received: from pps.filterd (m0089484.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EIAdb4040940;
-        Wed, 14 Oct 2020 14:11:04 -0400
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2174.outbound.protection.outlook.com [104.47.58.174])
-        by mx0b-00154901.pphosted.com with ESMTP id 3465e8ry18-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Oct 2020 14:11:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FDK4YkhOmYbl2IuokHnHU3getJrRmohr9S1kEcoQrvfO6fPO+I+d93wAzTX0kQ/512adENd2TE1FG1S2Ar8aFymPcokIL/0CmMXBkwaPUmdZZkOPOYi3sFjDy6NKRqy2YMQI817jYGkzorRIVZelgrS2XoZTg0Zs95GR5oFJL1eAjDjmrqP4g/rOEgQOylv+T9Q8J/yXICznl/ozUyKTq39TXHLC4gYMXbrOhtpeqilVibRHAJPa0bUHG5q+5KQAaYKWQG2AWXYEDXdBlNd4ozsyIboiUOzGNOdF82snOvDIpq/vx/NL16bWvK66tVgdxk5npEX4hcRcGvHFGlKSjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Htk0EO368NZziO/oPPGxiyyq0FlnD/L+I2kkNidW3W4=;
- b=gKlAME9wwJRXnDe2J6+dGZhOJGdMmzW8N2W/XHbwL4UquQ8B7UfWSdI9z0j74SmiolfTLiofJKsaJxjUHUTDmXaRx33m+5an+QhexdYN8rOZFaQPx7tEq8f4XFBx1+8NP9Ckqf6t2hpvdkono9OHI9a75ufPlhfPVm/GCd1g/14dCzfn/dB3c/CO2sNRm1sDmNH+DnZNKqD9TbKQnFnRhqNrS9DH3WPYX/bN5xAlf/2hFoOX9brTDQIFEkkYTMG6uhIBs/DADz4ML0LvM/BmFW0WRftoiw+ys1779etmlz+iMzuPKCJkm7uiqPV4GnvRwVpjO1Vk+Ov3C9YUtP4wRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Htk0EO368NZziO/oPPGxiyyq0FlnD/L+I2kkNidW3W4=;
- b=BXq1aNpb6rcAetJShWz3cITrUoecFUl35GyaDrWnDzUo4unjWqW+QYIRArNZjNQ1p1VJ6KcLkVv7MPvT46J39rsM7HwFYmk2v54RvWR/OhUaFhWhhJvyzY95IMqhajOg4jwFNlBSDp8LA6wtY9sNXWY5EYvpHqRDU5+371EatEA=
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
- by DM5PR19MB1097.namprd19.prod.outlook.com (2603:10b6:3:27::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.26; Wed, 14 Oct
- 2020 18:11:03 +0000
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a4b8:d5c9:29da:39b2]) by DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a4b8:d5c9:29da:39b2%4]) with mapi id 15.20.3455.031; Wed, 14 Oct 2020
- 18:11:03 +0000
-From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
-To:     Elia Devito <eliadevito@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mark Pearson <mpearson@lenovo.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Pearson <markpearson@lenovo.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: RE: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class
-Thread-Topic: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class
-Thread-Index: AQHWmYfgDjG0YI7kc0C9HQeldGcjC6mI+DtAgAMVLYCAAEOvcIAAC2yAgAAeRRCAB7+MgIABVsSAgAGfNoCAAAXmAIAAGSmAgAAg74CAAAHycA==
-Date:   Wed, 14 Oct 2020 18:11:03 +0000
-Message-ID: <DM6PR19MB2636A52C92BCD63B2A5A42AAFA050@DM6PR19MB2636.namprd19.prod.outlook.com>
-References: <20201003131938.9426-1-hdegoede@redhat.com>
- <fec6eaeb-cc40-a2d2-87cb-bcae338bbe80@redhat.com>
- <CAJZ5v0gbQ=4bp22p3oM22zY+_1h-asYja1+CBbvtySzAY1p_+Q@mail.gmail.com>
- <1834022.taCxCBeP46@pce>
-In-Reply-To: <1834022.taCxCBeP46@pce>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-10-14T17:54:13.0621922Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=8b50ec2b-d3fd-4515-b844-530e324c8a4b;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [76.251.167.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ecd3bf3f-470b-4cc3-6927-08d8706c8330
-x-ms-traffictypediagnostic: DM5PR19MB1097:
-x-microsoft-antispam-prvs: <DM5PR19MB10973BFC474DC326C4BDE10CFA050@DM5PR19MB1097.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iOV+Qj5D4glV4moGNcfUwZk8xxU/r6MbOMDuEi2rbuYkG5NfBb0/DeWJeZCGxhupsAm/UyVugsW3+SkFSCvv8Pzh+YSXLkcRSkwEEXy/2gPcSxyKpegAIST0vxE0vLxbXBrxDa2eqDf9rxU3zY1LT4lG32nNL8oEx/rmpDZK4Ce2M7sfoxRsOe1UBvnz+rpaVG33Y4a13xunQ5jLbf5LQQRRq6+urF01G/0+NiNSaihlc2/0H1m1ZWaz2jj69sRGnDfL7z+BEJQ/vkkRndn/BeZF/jIR0pbT8vi4i6LAaFKI644cOiXtS056/BxS3fhr1ihpDqraZxgRznlgQjEfL7X5aXVWqRATu5hzuam2Di6qSpHn1c49TccvNUzVqWMIadf4NzI/DzLCq0W95vOAZA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(366004)(39860400002)(7696005)(66556008)(66476007)(6506007)(83380400001)(8936002)(26005)(4326008)(2906002)(83080400001)(8676002)(7416002)(186003)(64756008)(478600001)(9686003)(54906003)(966005)(33656002)(316002)(86362001)(66946007)(66446008)(5660300002)(76116006)(786003)(52536014)(110136005)(71200400001)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: XyEIfL5tJAUPcyZI3YLXAHT/awMBIRMWMRDLcVLtEynX5cab81B/3yU9FGrl1MXW2tb0APXq28egCVPaaEj3tklt1AzYmiK9m+nacKM6/kk90yJehcmETsGJ+AUbOHwsAFIPVVD8yTEhmjdQuwHGBSlj2CKDqjyloD1xBwTAz0wQN9bBAjOlFXZwxbcTCAionWPj3T78/XBnJgjcIvDfrdHU3IS4dpbWiBj3zpb+Yl58iAnljCfI25CynC4OunK2C6eOiX+/v0rjk3A2BbBZMZRgGeLGQV2XUt/sinyOE2YiFRUsbcYUeAp6OHMao+1iWxApxL24mnElWRv7LGsasJtMuJsWVsonpCBOeKLRevo65ztb+lmcc5xQkmjjS9if1I/abbXbLjHiVmgwVvraXjF1vvTSPSCxJhNmWpPYS5bvZ/ce6cVCTtyqLCrH3Dx6773Sfa+BuQclB9OtszK/vSx9sTXTlazb+dgOR4MjagFJZvEFHU+CthQI6w7CrUpteMwmvZ5gWo+aa5AYuIZzYsWEGUXQHJrfuGIgLdBik8PWRMY77dYF7Akx2Cks7XMAEWzlN4celhExj3crM4pBqQ+SoO47QFG8goD5Y40Le2bLCPCH98pPMDptbFKwlZVGBi4wvnq4lRdUYesHwbemLg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 14 Oct 2020 14:11:15 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC1FC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:11:13 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so280502pff.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kfFiUxOZKWzzs2I7A2X5SXoe7asuY8qVgnbF40y4GdU=;
+        b=s9A8QFEEbnanF4A9aEisLXgyhWELaYUqI9KuwNjnoVdJyjONGJK556ktEM05bIOdOE
+         vBdYCIN8BYpyXpEX1rgke3yQcaJsmTtUsXXCqWLgwy8TjKuN2Tmv1r0FsOTwjRHh28iT
+         mLG7NISm6XIjUGmNK4tbxKbdk2igeIL6dLPcwwHDyGrOp/yxaNvd3RoZHfGWPHftE3bc
+         KkjAEvbtfBFBtyRnfPz1MRMa2+6PTS5tvJbu1/sJAK59ASc7g+w+MDP0xHaAy2e4+E2W
+         aGvI4Mr0Uxx9134c9HbYsnqjH1jZOEkIH9bYxGBdzz/ofZy8oCd3SkNMlYmkJ+hgz9Ps
+         5Osw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=kfFiUxOZKWzzs2I7A2X5SXoe7asuY8qVgnbF40y4GdU=;
+        b=f3LKfXPXLNGl1dQZL3rp/B4SCLSbXzrtp9l7LFhf8/YA4yW2OyWhMFwI25ISDHiVyU
+         XsExlRkXufoCaguNCT1TkXsX4z83LHYlacAsgWuSqZr9z73w9Hn9qhgZNQmDROFQrYMi
+         yoz1sN/Pi9sq1htdUgiXGJt2/bGe7yZOHiwh1EoLBpY09KAzkXP3gnqAg06caQIBGW1W
+         6cX039mmaeGXqd0jA/wdhcQ4fdhq4bLWR6iObTa/kYqu+8l6xETEAqePoMGtmiswq7nX
+         sRUhAblL/UufqS+IiMa6Q8IRDIUQUN1eVh72sYxBr7eD6MRY5Du/tysV7d1w5qNSgp9k
+         2dAQ==
+X-Gm-Message-State: AOAM532kekMpmAz42iRsYZPVCKW7iUYa4M7KkxLyxBZaklAWHfDg0x/R
+        a4gwQzuQbko8tj3ze3nTayo=
+X-Google-Smtp-Source: ABdhPJzxLbSnEyEqYGAT1eyxjUbIhXclWrzXrWH0dQfoLaGhuV9rWl0PuSJWe7+Tr41zVZHiHFv7Yg==
+X-Received: by 2002:a62:d10b:0:b029:152:56c0:df72 with SMTP id z11-20020a62d10b0000b029015256c0df72mr554703pfg.10.1602699073063;
+        Wed, 14 Oct 2020 11:11:13 -0700 (PDT)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id g3sm187266pjl.6.2020.10.14.11.11.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 11:11:12 -0700 (PDT)
+Subject: Re: [PATCH] firmware: arm_scmi: Fix duplicate workqueue name
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20201014021737.287340-1-f.fainelli@gmail.com>
+ <20201014091806.GB20315@bogus> <20201014130524.cj42wknvzdpgsbsr@bogus>
+ <20201014134819.GA24061@e120937-lin> <20201014160120.4x2l7hozf376gk3l@bogus>
+ <fdb270ef-bec0-9592-1d33-3339872bbffe@gmail.com>
+ <20201014173906.aytbl4bjbwjwa6wr@bogus>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <25ae326c-eceb-5479-8910-b8ab427ae192@gmail.com>
+Date:   Wed, 14 Oct 2020 11:11:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecd3bf3f-470b-4cc3-6927-08d8706c8330
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 18:11:03.1412
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wTr64FxElI+kBXNCf8hvuN3k3XvSeEoNRlMV6sHQOkX17J0W9b9+4WWVZMqbQe7D/8DQd/gDd9sgQKraLJZ5rqCUusRm5gzkK9PqjPGoDls=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR19MB1097
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_11:2020-10-14,2020-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- impostorscore=0 priorityscore=1501 clxscore=1011 mlxscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010140129
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- adultscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010140130
+In-Reply-To: <20201014173906.aytbl4bjbwjwa6wr@bogus>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> As far as I know, the profiles affect  the thermal behavior like "how lon=
-g to
-> wait before starting the fan and at what temperature" or "how fast to run=
- the
-> fan with the current cpu load and temperature".
->=20
-> The only way that firmware uses to "control" performance should be the od=
-vp0
-> DPTF variable.
->=20
-> On Windows HP expose  both "Cool" and "Quiet" profile respectively as "Id=
-eal
-> for when the computer feels warm to the touch" and "Ideal for quiet
-> environments".
->=20
-> more detail: https://support.hp.com/in-en/document/c06063108
->=20
-> To be precise "Quiet" profile should be available only on platform withou=
-t
-> dedicate GPU (I'm investigating if there is other case), instead the othe=
-r 3
-> profiles ("HP Recommended", "Performance" and "Cool") are available on al=
-l
-> platform that support thermal profile.
->=20
-> reading here seems that Dell offer identical profiles:
-> https://www.dell.com/support/manuals/it/it/itbsdt1/dell-command-power-man=
-ager-
-> v2.2/userguide_dell/thermal-management?guid=3Dguid-c05d2582-fc07-4e3e-918=
-a-
-> 965836d20752&lang=3Den-us
->=20
+On 10/14/20 10:39 AM, Sudeep Holla wrote:
+> On Wed, Oct 14, 2020 at 10:13:04AM -0700, Florian Fainelli wrote:
+>> On 10/14/20 9:18 AM, Sudeep Holla wrote:
+>>> On Wed, Oct 14, 2020 at 02:48:19PM +0100, Cristian Marussi wrote:
+>>>
+>>> [...]
+>>>
+>>>>>
+>>>>> I have pushed a version with above change [1], please check if you are
+>>>>> happy with that ?
+>>>>>
+>>>>> [1] https://git.kernel.org/sudeep.holla/linux/c/b2cd15549b
+>>>>
+>>>> I agree with the need to retain _notify name, but I'm not so sure about
+>>>> the above patch...which is:
+>>>>
+>>>
+>>> I agree, I thought about it and just cooked up this as a quick solution.
+>>> I will move to that, even I wasn't happy with this TBH.
+>>
+>> The reason why I went with just dev_name() was such that the workqueue
+>> name and the device nodes under /sys would strictly match, which helps
+>> as an user, and also it avoided the temporary buffer and its size
+>> limitations.
+> 
+> Agreed. I just showed that as example and was hoping to use some nice
+> kstr* APIs to achieve what I wanted but soon realised there exists none.
+> So as replied earlier, I will take this change as it for now. Let us
+> address this in future if it becomes an issue.
+> 
+> Thanks for quick test, we now know whom to bother if we need more testing
+> 😉 as out internal platforms are not that great to cover all the aspects
+> we add in the spec and even in the kernel.
 
-The Dell profiles here I don't think should be conflated with DTT/DPTF thou=
-gh.
-These won't affect anything in the DTT vault.
-
-Those profiles are already accessible from Linux userland, there is already=
- a
-command line tool in libsmbios that can do it.
-
-$ sudo smbios-thermal-ctl -i
-Libsmbios version : 2.4.3
-smbios-thermal-ctl version : 2.4.3
-
- Print all the Available Thermal Information of your system:
--------------------------------------------------------------------
-
-Supported Thermal Modes:
-         Balanced
-         Cool Bottom
-         Quiet
-         Performance
-
-Supported Active Acoustic Controller (AAC) modes:
-
-Supported AAC Configuration type:
-        Global (AAC enable/disable applies to all supported USTT modes)\
-
-$ sudo smbios-thermal-ctl -g
-Helper function to Get current Thermal Mode settings
-
- Print Current Status of Thermal Information:
--------------------------------------------------------------------
-
-Current Thermal Modes:
-         Balanced
-
-Current Active Acoustic Controller (AAC) Mode:
-         AAC mode Disabled
-
-Current Active Acoustic Controller (AAC) Mode:
-        Global (AAC enable/disable applies to all supported USTT modes)
-
----
-*If* we choose to export them for Dell from the kernel, we should probably =
-also
-filter from kernel side and modify the existing userspace tool to use the k=
-ernel
-API when possible.
-
-I'm not convinced that Dell would want to tie into this proposed knob with =
-those
-settings because I expect that existing software like thermald will not wor=
-k as
-efficiently.
-
+No problem! I still need to find the time to upgrade the ATF equivalent
+implementation to support SCMI 3.0, have not done that just yet.
+-- 
+Florian
