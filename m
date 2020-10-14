@@ -2,166 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A044D28E70E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8916028E710
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390467AbgJNTMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 15:12:52 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:33482 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726115AbgJNTMt (ORCPT
+        id S2390479AbgJNTM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 15:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390412AbgJNTMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 15:12:49 -0400
-Received: from mailhost.synopsys.com (sv2-mailhost2.synopsys.com [10.205.2.134])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 38C0DC0098;
-        Wed, 14 Oct 2020 19:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1602702768; bh=pNp+oRKtpJFt5A5X0gDrLRdOswAHsIIghJhXcuyTBdY=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=iFiKRRnfhrVQteridnYVsijfpu+6Ul6PV1me8BfYiPrAnMNBSQ+sHB34UuSlWskv4
-         6VNYYbnerPuG8C2Z+FEO17Yc3qEbVAY3LI4ENiGVC1HMhpaBKlWu9ZmAPHuARF7EdP
-         TQAFcHSID+Ss/z+hg0UUJAZ1EgrIWcaExJy8zqlAnfK1ZriExfpPANQ5GBk95L9ogx
-         OHqEgvbfj3+Re+zlMK7F+pnmk6SmRVqxshNuIE7vtDyUmCj2gbPLarL7/aBDuzHJPM
-         feRw9foOQcFK6hDU24nM3xVCvqGaaEs2t1YMMC0MoD7DlRoxzOUb/EP176Q1c3vAc/
-         ZaP45iYVPpt0g==
-Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id 75D3CA0096;
-        Wed, 14 Oct 2020 19:12:29 +0000 (UTC)
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
-        by o365relay-in.synopsys.com (Postfix) with ESMTPS id B404D40107;
-        Wed, 14 Oct 2020 19:12:21 +0000 (UTC)
-Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
-Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=abrodkin@synopsys.com
-Authentication-Results: o365relay-in.synopsys.com;
-        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="EouuL4ix";
-        dkim-atps=neutral
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DCxQ+4hkVcTwcDHys9Un1kQxk1pZXP0Ox6tHbrIS6ilS6IReatYyBTsWTrGUqqPjbIDIvAbNa3LIlHi2iG9Wccl9okmguuuQRg8A3pSPGNn0+FK7E3i75VlpY7NhZtJ3KEwPyrKIsUPrBT2mSim1SFhfZIBLZCnMLF8KJhh+xLUaUxnnL09x21eIxaEw871qSJ3Mt9dTCyNiTBmHV59V4OKPSEK61us8JkOiqr72E6lCgD83bSxlED2Mofbf7x5R1CSCESRtN9LG6RDSYPuh6rn5CTs7aXSHa5iQE6XNORK0FeqeKB2UEEscRMJyuCaaCXV21iPXVBp93XKY6XshAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CN3e/ZuCzd92MQejw9kOHfuEy72151UraV3iCDTfNrc=;
- b=WHo44BuvWWJDwqXrwcjnV0toV7OADwjo9iPhdQ/FTiG/dSB8mHKAHpc25koy2dEOfdY8Hz57S3L+NuDnM7USBILN9HE7TjDxKr5rLOXLW94MS7QzUl8ZQJzdIIrILNmdZCDC0HfDRDMjxVeY1Q/I/RT0Lk4oh4cThDKMB8Oc3D3RA+kzUMD7+sWxTc04Bsdvpif+0dLj4AM5cD0WTXarMZiZDRGwSXu5Epd2KoAlAbpZDctACNf7IoseBux2LCprADS3xPyjCOr97Evh43qF4SzA6fkwSAq/o3Nd6XRnKo0wO6ngVH5zMuAwDq1QnDiK0b72zxQvT+FKXY6aHC/Wxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CN3e/ZuCzd92MQejw9kOHfuEy72151UraV3iCDTfNrc=;
- b=EouuL4ixiwcYhYKCoYiw8B/IbkJWAIcmmGlT/FBRHDqSbcUh/A9CMIqMzRfkvG0yBav8cmyV9kcQOUut+21ASLGHcv3U4RuKXo1+wXrSf5lSNlZnbgW9661d0y6/augkufNvXUPHSsS0pKux+3dEt1/5i9oGIZ9XhwIstmyO2Ns=
-Received: from BN8PR12MB3330.namprd12.prod.outlook.com (2603:10b6:408:43::15)
- by BN8PR12MB3027.namprd12.prod.outlook.com (2603:10b6:408:64::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.27; Wed, 14 Oct
- 2020 19:12:19 +0000
-Received: from BN8PR12MB3330.namprd12.prod.outlook.com
- ([fe80::653f:cfaf:d858:a52b]) by BN8PR12MB3330.namprd12.prod.outlook.com
- ([fe80::653f:cfaf:d858:a52b%7]) with mapi id 15.20.3455.030; Wed, 14 Oct 2020
- 19:12:19 +0000
-X-SNPS-Relay: synopsys.com
-From:   Alexey Brodkin <Alexey.Brodkin@synopsys.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vineet Gupta <Vineet.Gupta1@synopsys.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?iso-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-Thread-Topic: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-Thread-Index: AQHWohLONLr1JmaKTE2JNSOSXEmoVqmXcyuAgAADLfw=
-Date:   Wed, 14 Oct 2020 19:12:19 +0000
-Message-ID: <BN8PR12MB33302A8B1549B03CA17A6BDAA1050@BN8PR12MB3330.namprd12.prod.outlook.com>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
-        <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>,<DLG7IQ.15UXZI2H6RYC3@crapouillou.net>
-In-Reply-To: <DLG7IQ.15UXZI2H6RYC3@crapouillou.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: crapouillou.net; dkim=none (message not signed)
- header.d=none;crapouillou.net; dmarc=none action=none
- header.from=synopsys.com;
-x-originating-ip: [188.243.7.154]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 097bda4a-75a3-40a7-7068-08d870751289
-x-ms-traffictypediagnostic: BN8PR12MB3027:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN8PR12MB30272E59E915D6BAB6817B91A1050@BN8PR12MB3027.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ukwa6663jm1N3EoiE1UJar0zVnvMKGx5J68OuAGTqoSnsUJaALS1BctfqNNQPhefsEbHpvCYNH2QJD5Gvdw94tH8oji8hVpUVyVq/85EPiiBAJ/YQdCkN35bQYk+sMcnLPXpwTAxys8JLWH6m1wfSD91UjhvoxMQd7o0l+tjnQO7w96oOizjD+woTWtfS7KJCzIsuKeOgmtO0vhGdhai1sDouzjZpgt8gM5AtVNs+iQxsCRvmvTZbeF5U198PxQQ8qbSXFFQc0TviLs+fmb9IzAG8cPo+3vem0OGbb7YiV/21xKB9NQcmPEfr9kUnO5q
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3330.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(396003)(39860400002)(64756008)(8676002)(7416002)(478600001)(71200400001)(2906002)(76116006)(8936002)(7696005)(6506007)(91956017)(7406005)(26005)(4326008)(9686003)(558084003)(186003)(66446008)(66476007)(66556008)(66946007)(110136005)(54906003)(33656002)(86362001)(55016002)(316002)(5660300002)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: y5OYozHKwhMxtZU9jB9xK1Io3tnB/qL8nVYnvWKcTR7SLSrg6zbLzEx7VGXeb8lVyp/8FZKTQbtgbFlF79T5bFSpRl/cytp7P6G6lN9LiMHZvYjaI/ZmgPKLl3MIge3HVCFEZkqOBxd1TiScYlRayDvIdFcWev7I85EoNWI1nMi8svDIt5h+6RK74NFNltOXzPI5za4S06+wgzbuPL+UFdUmHYWd58u1LvcQb93ouqC1x9DNoxLXMWVOHcDas+Y3+XotJPcEFcMMC9MGTB2VS4+lkYkk+fR3ffy/lAr0/AYOo3qeCr5Nor+3Z/XqP9lb5ooD19zXId47rEd2fUZYkVV8YbmgyIXGjkUNDJmtm5/44KT0wQX5/QyTz8bGma34SOU6kUZnvfwjcyJ9DPm33qvuet8+m4O7PjkVuBrGXT8IOdyc+BrK4JnItgBfGIfxwG9Hd/DPDy8JSEHLRLdMSb/av79agbT01Z21NSKClA3AFqPvCcrFycO7sEpfqxapZgfVrydKe19IL6G34qSMS/fchvfZB6adVp1MzvlI0TcXVqWkWQ7Lii6z3CN0KZqQqgLT3vLIV+zIo4xRE74ayXYD5mFD8O+bzuzDzTB0quXGLqOIxkqeJVMgZ6sUOiGqWKE0JtDE2PcaHdJLfGGLyg==
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 14 Oct 2020 15:12:51 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1610C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 12:12:50 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id h10so346085oie.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 12:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZeIyBZH1DlMazqL3WPQEWDzdrz72p5JAZek4MEGZox0=;
+        b=QoXiKIK/b6kRcW6PeofIscaKrIR52aRKjK4qvKq8aq8FfwkJyBRTC0ZEcPvRccLrhQ
+         u+FpbklPzt4CeRTorbjIFdSCfLOkMOflGkHc8h4q1COYv3UEi+R3nUAjbveX5cXR2V+p
+         wCE7CgcPvaOdVfjawROqxRJ7rqWpmE5mbP3mPrTxWm8PrpDc5KuzQKTsrTsz1O27Csog
+         KFs0ESSPZ2TcgNQ0ZsN3PYi4798fLNTOv9c63rkDZFfqUNSPRyVsOvlzYgs40HlLtSFs
+         kgRH3yS4GXzfnqQaLDPtJF1yLg233FCVeq6yhxM4LWENkAIt6KpBXFiQVKjApYHQqAIV
+         s10A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZeIyBZH1DlMazqL3WPQEWDzdrz72p5JAZek4MEGZox0=;
+        b=YrYqLSV1iJ9vvYbAzfKtD3jzu5Uf5tcTgYm+vO+d8LaBmEFUoA/wCw3obk2GMSWd6n
+         kPYw/XFJ2dLck1lMiCCQK3Hehv1Nmzm2228Dww7nXJirzu2cuBdcSyazFT92PZBJN0Mf
+         4pOvTN1BGJAd0CSWBM+YHMf5fHmFP5Cafr1l3zKQgvHVhQ4kiyPmA9bliL4C6y+WTeB/
+         Bx8dfAfISp4cgGdJoABZ707BGuxlLziZhbeGqRIziq+3h31wC3XazrAe79q6VxGHZJYX
+         tZpHiC1Xij/jPqXOUKD0IciwwsZxtpVrCjql5o82HpnhcJj3EV94/exehlpbjODJvRYA
+         4sXw==
+X-Gm-Message-State: AOAM530bMW13ivmLk184vN3d9Hwp9qADLD7RcItTIfeYje2iDS8UGWEA
+        NT3iYJxMM2NK9jLV5yVhOv8zUh3qMOo9OxBdkm5N7g==
+X-Google-Smtp-Source: ABdhPJxI0rp8pxtj3cUByNFiFU6rolm7IayLQiq14hVoYtiHEk/OXGhVI9evgkFYJ4/Vus6tK95a5TvDzRsE+g22i1M=
+X-Received: by 2002:aca:3d07:: with SMTP id k7mr537643oia.172.1602702769984;
+ Wed, 14 Oct 2020 12:12:49 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: synopsys.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3330.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 097bda4a-75a3-40a7-7068-08d870751289
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 19:12:19.5258
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wMZ+eAPWq5G/hLMTcUL87K0/y4mkdUQBkZw3UOfkrvpHOhGAZIu/7aHHWWdcjMUJrzjMxwBiJ+bHsZf41i4BzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3027
+References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
+ <20200921143059.GO2139@willie-the-truck> <CAG_fn=WXknUnNmyniy_UE7daivSNmy0Da2KzNmX4wcmXC2Z_Mg@mail.gmail.com>
+ <20200929140226.GB53442@C02TD0UTHF1T.local> <CAG_fn=VOR-3LgmLY-T2Fy6K_VYFgCHK0Hv+Y-atrvrVZ4mQE=Q@mail.gmail.com>
+ <20201001175716.GA89689@C02TD0UTHF1T.local> <CANpmjNMFrMZybOebFwJ1GRXpt8v39AN016UDgPZzE8J3zKh9RA@mail.gmail.com>
+ <20201008104501.GB72325@C02TD0UTHF1T.local>
+In-Reply-To: <20201008104501.GB72325@C02TD0UTHF1T.local>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 14 Oct 2020 21:12:37 +0200
+Message-ID: <CANpmjNOg2OeWpXn57_ikqv4KR0xVEooCDECUyRijgr0tt4+Ncw@mail.gmail.com>
+Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey,=0A=
-=0A=
->  arch/arc/boot/dts/axs10x_mb.dtsi               | 4 ++--=0A=
->  arch/arc/boot/dts/hsdk.dts                     | 4 ++--=0A=
->  arch/arc/boot/dts/vdk_axs10x_mb.dtsi           | 2 +-=0A=
-=0A=
-For ARC boards=0A=
-=0A=
-Acked-by: Alexey Brodkin <abrodkin@synopsys.com>=
+On Thu, 8 Oct 2020 at 12:45, Mark Rutland <mark.rutland@arm.com> wrote:
+> On Thu, Oct 08, 2020 at 11:40:52AM +0200, Marco Elver wrote:
+> > On Thu, 1 Oct 2020 at 19:58, Mark Rutland <mark.rutland@arm.com> wrote:
+> > [...]
+> > > > > If you need virt_to_page() to work, the address has to be part of the
+> > > > > linear/direct map.
+> > [...]
+> > >
+> > > What's the underlying requirement here? Is this a performance concern,
+> > > codegen/codesize, or something else?
+> >
+> > It used to be performance, since is_kfence_address() is used in the
+> > fast path. However, with some further tweaks we just did to
+> > is_kfence_address(), our benchmarks show a pointer load can be
+> > tolerated.
+>
+> Great!
+>
+> I reckon that this is something we can optimize in futue if necessary
+> (e.g. with some form of code-patching for immediate values), but it's
+> good to have a starting point that works everywhere!
+>
+> [...]
+>
+> > > I'm not too worried about allocating this dynamically, but:
+> > >
+> > > * The arch code needs to set up the translation tables for this, as we
+> > >   cannot safely change the mapping granularity live.
+> > >
+> > > * As above I'm fairly certain x86 needs to use a carevout from the
+> > >   linear map to function correctly anyhow, so we should follow the same
+> > >   approach for both arm64 and x86. That might be a static carevout that
+> > >   we figure out the aliasing for, or something entirely dynamic.
+> >
+> > We're going with dynamically allocating the pool (for both x86 and
+> > arm64), since any benefits we used to measure from the static pool are
+> > no longer measurable (after removing a branch from
+> > is_kfence_address()). It should hopefully simplify a lot of things,
+> > given all the caveats that you pointed out.
+> >
+> > For arm64, the only thing left then is to fix up the case if the
+> > linear map is not forced to page granularity.
+>
+> The simplest way to do this is to modify arm64's arch_add_memory() to
+> force the entire linear map to be mapped at page granularity when KFENCE
+> is enabled, something like:
+>
+[...]
+>
+> ... and I given that RODATA_FULL_DEFAULT_ENABLED is the default, I
+> suspect it's not worth trying to only for that for the KFENCE region
+> unless someone complains.
+
+We've got most of this sorted now for v5 -- thank you!
+
+The only thing we're wondering now, is if there are any corner cases
+with using memblock_alloc'd memory for the KFENCE pool? (We'd like to
+avoid page alloc's MAX_ORDER limit.) We have a version that passes
+tests on x86 and arm64, but checking just in case. :-)
+
+Thanks,
+-- Marco
