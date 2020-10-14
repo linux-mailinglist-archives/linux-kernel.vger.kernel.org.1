@@ -2,123 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5A928E077
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE2628E084
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729712AbgJNMYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:24:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729548AbgJNMYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:24:05 -0400
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730258AbgJNM2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:28:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53865 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730076AbgJNM2a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 08:28:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602678508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=dx4dnVRqlhLPEwL70fI78OXInhA3B2eCIw7q7ED+umo=;
+        b=BB1Y1OfZYpeUELUsKVu4pBgH7xQ5wlh91FJuInRLa1LrEqqBnXy/A0bZAEnQYVDh+Ci3NA
+        1btY1DcTgQN8JEwEw3i7Mnd9YHt5iBIbNavYB22p3oMYco+Jzgf0T9mYe0/RvVjtpzwUPO
+        3UR0wq2n9D272tCiBmaAHzGRvNur0YU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-u1PkS1grNlWM1MHM7V3Sxg-1; Wed, 14 Oct 2020 08:28:27 -0400
+X-MC-Unique: u1PkS1grNlWM1MHM7V3Sxg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC8E12222A;
-        Wed, 14 Oct 2020 12:24:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602678245;
-        bh=t0IBPBNo+yYO11jhv9fM4cJG+wfMTFGo8MY5tqsXG5U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TMTgWqc23Fp8S68g+EvPHtyVYNZmNP+z9x9jAytDBLk4QMUzqVyPKEIwZja6i1w/V
-         ybqg/7GHRaA/08pwv902eetV+9kH5fhw/n5TFlL5PPESAYu1KwG0J/AEdYl6TPgSYb
-         anMWS3fr1jbXFcPH9vs8yiRtnplOtBuDc621PUqI=
-Received: by mail-ot1-f50.google.com with SMTP id f37so3180771otf.12;
-        Wed, 14 Oct 2020 05:24:04 -0700 (PDT)
-X-Gm-Message-State: AOAM5314dnij2y7ClmZMfBfCnU3H0Ej6J9RI3/5ypa1/jjmDw0X1949U
-        OMK39btaZloBuimwJB08pHZ6CMELi0ORKcuikw==
-X-Google-Smtp-Source: ABdhPJy9xd9p7AIQ89atOIFtAtTvVkcZBoUqHoM2d76WPGxs9lK5Ru8GlYDbiDS8fYIzTNRaOfPecpecUgbDqkGL+7A=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr3002538oti.107.1602678244026;
- Wed, 14 Oct 2020 05:24:04 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D57A164148;
+        Wed, 14 Oct 2020 12:28:25 +0000 (UTC)
+Received: from [10.36.115.5] (ovpn-115-5.ams2.redhat.com [10.36.115.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AF0CA75138;
+        Wed, 14 Oct 2020 12:28:24 +0000 (UTC)
+Subject: Re: [PATCH] mm/compaction: Remove some useless code in compact_zone()
+To:     yanfei.xu@windriver.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20201014072349.34494-1-yanfei.xu@windriver.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <dc40599d-e964-3a53-f3e7-94c03d3a162c@redhat.com>
+Date:   Wed, 14 Oct 2020 14:28:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201010151235.20585-1-nsaenzjulienne@suse.de>
- <20201010151235.20585-3-nsaenzjulienne@suse.de> <CAL_JsqL2cs+cko-UuTd37fnBKO_=3jQeyjB49USvm_VTBwcS8g@mail.gmail.com>
- <6740c49b73b11aaf1d74d216dc6e055e0a0ceac3.camel@suse.de>
-In-Reply-To: <6740c49b73b11aaf1d74d216dc6e055e0a0ceac3.camel@suse.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 14 Oct 2020 07:23:53 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+cPQS7836YqVos=n-TFOvc8kXa8ZXGq5_=rZAzz8RLLQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+cPQS7836YqVos=n-TFOvc8kXa8ZXGq5_=rZAzz8RLLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] of/address: Introduce of_dma_lower_bus_limit()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201014072349.34494-1-yanfei.xu@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 6:52 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> Hi Rob,
->
-> On Mon, 2020-10-12 at 10:25 -0500, Rob Herring wrote:
-> > On Sat, Oct 10, 2020 at 10:12 AM Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
-> > > The function provides the CPU physical address addressable by the most
-> > > constrained bus in the system. It might be useful in order to
-> > > dynamically set up memory zones during boot.
-> > >
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > ---
-> > >  drivers/of/address.c | 34 ++++++++++++++++++++++++++++++++++
-> > >  include/linux/of.h   |  7 +++++++
-> > >  2 files changed, 41 insertions(+)
-> > >
-> > > diff --git a/drivers/of/address.c b/drivers/of/address.c
-> > > index eb9ab4f1e80b..755e97b65096 100644
-> > > --- a/drivers/of/address.c
-> > > +++ b/drivers/of/address.c
-> > > @@ -1024,6 +1024,40 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
-> > >  }
-> > >  #endif /* CONFIG_HAS_DMA */
-> > >
-> > > +/**
-> > > + * of_dma_safe_phys_limit - Get system wide DMA safe address space
-> > > + *
-> > > + * Gets the CPU physical address limit for safe DMA addressing system wide by
-> > > + * searching for the most constraining dma-range. Otherwise it returns ~0ULL.
-> > > + */
-> > > +u64 __init of_dma_safe_phys_limit(void)
-> > > +{
-> > > +       struct device_node *np = NULL;
-> > > +       struct of_range_parser parser;
-> > > +       const __be32 *ranges = NULL;
-> > > +       u64 phys_dma_limit = ~0ULL;
-> > > +       struct of_range range;
-> > > +       int len;
-> > > +
-> > > +       for_each_of_allnodes(np) {
-> > > +               dma_addr_t cpu_end = 0;
-> > > +
-> > > +               ranges = of_get_property(np, "dma-ranges", &len);
-> > > +               if (!ranges || !len)
-> > > +                       continue;
-> > > +
-> > > +               of_dma_range_parser_init(&parser, np);
-> > > +               for_each_of_range(&parser, &range)
-> > > +                       if (range.cpu_addr + range.size > cpu_end)
-> > > +                               cpu_end = range.cpu_addr + range.size;
-> >
-> > This doesn't work if you have more than one level of dma-ranges. The
-> > address has to be translated first. It should be okay to do that on
-> > the start or end address (if not, your DT is broken).
->
-> for_each_of_range() calls of_pci_range_parser_one() which utimately populates
-> range.cpu_addr with of_translate_dma_address() results. Isn't that good enough?
+On 14.10.20 09:23, yanfei.xu@windriver.com wrote:
+> From: Yanfei Xu <yanfei.xu@windriver.com>
+> 
+> start_pfn has been declared at the begin of compact_zone(), it's
+> no need to declare it again. And remove an useless semicolon.
+> 
+> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+> ---
+>  mm/compaction.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 176dcded298e..5e69c1f94d96 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2272,7 +2272,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>  
+>  	while ((ret = compact_finished(cc)) == COMPACT_CONTINUE) {
+>  		int err;
+> -		unsigned long start_pfn = cc->migrate_pfn;
+> +		start_pfn = cc->migrate_pfn;
 
-Indeed. I guess I was remembering the cases not using
-for_each_of_range which forgot to do that...
+There is a user in
 
-Rob
+trace_mm_compaction_end(start_pfn, cc->migrate_pfn, cc->free_pfn,
+end_pfn, sync, ret);
+
+we would now trace a different value, no?
+
+>  
+>  		/*
+>  		 * Avoid multiple rescans which can happen if a page cannot be
+> @@ -2309,7 +2309,6 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>  		case ISOLATE_SUCCESS:
+>  			update_cached = false;
+>  			last_migrated_pfn = start_pfn;
+> -			;
+
+Huh, how does something like that happen :)
+
+-- 
+Thanks,
+
+David / dhildenb
+
