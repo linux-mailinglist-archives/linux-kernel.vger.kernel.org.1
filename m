@@ -2,183 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE1A28EAEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084FB28EAFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730105AbgJOCJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 22:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S1730409AbgJOCOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728094AbgJOCJh (ORCPT
+        with ESMTP id S1728982AbgJOCOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:09:37 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D339CC025248
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:42:54 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id e7so768687pfn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:42:54 -0700 (PDT)
+        Wed, 14 Oct 2020 22:14:38 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15341C025250
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:45:10 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x62so1069891oix.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 16:45:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qFrXWlnqrEytBEII/28nJ9Q+zgUwBGHm9N4QniNz8M8=;
-        b=U+rbf1CVFdodFLBAr7I5yOHqWBay4Pj50DtGKRgiFGDyYn6ruZqAXpohLnxSqGAo0m
-         BWeUcEPZpnne8/7cqIw865l3M8/hK5xc0w0avlTX8pWWsRpfDEVW+BvdaiMxW9q4cmVV
-         9lj4psALl9tthCDoncTyqDi6LmLgVqKguw1ro=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XPEAUTaHFJBlJ3cHsQHzTIqn4FY8RMR2DPGgZPy4y8c=;
+        b=Ue0dv8jwzT024oyZojc2HQM6bIHxdp4tf22FRTm7f61/b1y6sa3xfE759o8/fRI+nQ
+         rMSZk45Sf28IJBCiJT8078zrjFrwHNCCqTQ2fd4fhb0w1HGBIsmWhlzJZyRDeQ0CEAPB
+         nSJYext+uAqbPerDnRuVJt9AS0O/qljmyEe0WwvOGBZoGij4Z6tLe2cBf6UVfwFD0WQW
+         6qR75YCzh9RamTDh6849k25Hj/JFwmJtnRtMb8WAD/808FDq1AJGT7rPYUOyM64SH6zL
+         D6fJAG/rjpG2b68Xlnh3NqQGjL+W+4cIlaN767qxXtcg1ieYfk+A411erzq47XNmkRKA
+         3XwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qFrXWlnqrEytBEII/28nJ9Q+zgUwBGHm9N4QniNz8M8=;
-        b=tXtlABZpHX2TO7UgLw2vNn82Nbu4kpZIJRiSLeDtJs6WJazJCUgGwzEGwxF62yKx2/
-         AUnx2Bt6XMvfpHwq727NXLSKnOkXcI1Ad79cq/3IgK16VTI+PG4yUJ93jAp4E37ul2Oj
-         coinPHnjnDyI/P6ozPqe5euglfLA5X1eFae3qqP+F8x186uXdFTcNejh+wO79/eIt+ab
-         yvrlpGzR2wQTWDOvBMbNCoCEzKUvEOs/mbSwB1Z8FypwCOUdBLB6vRtbMHUihkvIH0uN
-         dV5eTmMbFCd91olRsg5ZC7rojeTEuInjEGY+5i6yi+oIm7G6PuVoicwupCm1MOISqrkQ
-         1VRA==
-X-Gm-Message-State: AOAM530jxCE8QrlO3lkdey3Ei6gfPKkysh1+EQDukj96/HycjB1Ga1ho
-        eEXTA/tTXb6XInxzRQqS8mXITA==
-X-Google-Smtp-Source: ABdhPJzBPnqPmwbpwNOhs/eygYiTbrIspFUYhf+REo4DT5L6bjdjgUEFFvkksBd5nSBGVZTLWWAgag==
-X-Received: by 2002:a63:7843:: with SMTP id t64mr1071451pgc.117.1602718974342;
-        Wed, 14 Oct 2020 16:42:54 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id d145sm808331pfd.136.2020.10.14.16.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 16:42:53 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     jkosina@suse.cz, benjamin.tissoires@redhat.com,
-        gregkh@linuxfoundation.org
-Cc:     kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
-        hdegoede@redhat.com, andrea@borgia.bo.it, swboyd@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Aaron Ma <aaron.ma@canonical.com>,
-        Jiri Kosina <jikos@kernel.org>, Pavel Balan <admin@kryma.net>,
-        You-Sheng Yang <vicamo.yang@canonical.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] HID: i2c-hid: Add the ability to control a reset GPIO
-Date:   Wed, 14 Oct 2020 16:42:21 -0700
-Message-Id: <20201014164203.2.Ied4ce10d229cd7c69abf13a0361ba0b8d82eb9c4@changeid>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-In-Reply-To: <20201014164203.1.I1c2d6236990449717b861539a2234354153b1656@changeid>
-References: <20201014164203.1.I1c2d6236990449717b861539a2234354153b1656@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XPEAUTaHFJBlJ3cHsQHzTIqn4FY8RMR2DPGgZPy4y8c=;
+        b=smrvUMLoTCSFQm1vevCY/ZddjTv/NemWLnb7cfssGZ9vxFMoE1DXHkTSvMdInlcBhL
+         1TepDERhECl3apszHcKG/hh1nCp4naGJqqiUX8NpeUKu+kC8RQlytGy+217nDx/mFhRT
+         cJZaGpxD3F4a1bjSfLvUfyA/viOAsxhprYwqWl+2Va4d+b8FmkI39+qZAF+oq/O2/UwA
+         Kl+p1hm5vgKckPJYP4+i9CKuOLlHSyYimmLQc96h0OKF0RvSKP9SGle5Vcnvd9FEdWtF
+         LleCvQRIshk7OO2rxNT8aLekz7gO3tIZ1a7+DW9UxwUe71PXGcVjzaBUpRq1bT1847W0
+         ysGA==
+X-Gm-Message-State: AOAM531cV92vwoT5KfgoKkLDVI50gXI7/kpvgEHIKdHKe5kUrZujAurV
+        NQj2v31jmbYQ2IAuZrGltqGxlvZuWc4DN9M21SrOwA==
+X-Google-Smtp-Source: ABdhPJy5Y67usdoKq8vmm5eMXo1vsetEcSrMnYAJKT5By38JawcWo0nTE6uIqrbMJvd3qgHc4jUBYZY/lWYwMmarCJ0=
+X-Received: by 2002:aca:f202:: with SMTP id q2mr398037oih.6.1602719109161;
+ Wed, 14 Oct 2020 16:45:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
+ <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+In-Reply-To: <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 14 Oct 2020 16:44:57 -0700
+Message-ID: <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
+ violation and misconfig
+To:     Mohammed Gamal <mgamal@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apparently some devices connected via i2c-hid have timing requirements
-around when a reset GPIO should be asserted to them.  The diagram I
-have seen, which I believe is from a Goodix device, looked like this:
-
-         +----------------------------------
-         |
-AVDD ----+
-               +------------------------------
-         | (a) |
-RESET ---------+
-                     +-------------
-               | (b) |
-I2C comm OK ---------+
-
-Where (a) is 10 ms and (b) is 120 ms.
-
-Let's add the ability to support this into the i2c-hid driver.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/hid/i2c-hid/i2c-hid-core.c    | 18 ++++++++++++++++++
- include/linux/platform_data/i2c-hid.h |  5 +++++
- 2 files changed, 23 insertions(+)
-
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 786e3e9af1c9..807b344b697b 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -1005,6 +1005,9 @@ static void i2c_hid_fwnode_probe(struct i2c_client *client,
- 	if (!device_property_read_u32(&client->dev, "post-power-on-delay-ms",
- 				      &val))
- 		pdata->post_power_delay_ms = val;
-+	if (!device_property_read_u32(&client->dev, "post-gpio-reset-delay-ms",
-+				      &val))
-+		pdata->post_gpio_reset_delay_ms = val;
- }
- 
- static int i2c_hid_probe(struct i2c_client *client,
-@@ -1053,6 +1056,12 @@ static int i2c_hid_probe(struct i2c_client *client,
- 	ihid->pdata.supplies[0].supply = "vdd";
- 	ihid->pdata.supplies[1].supply = "vddl";
- 
-+	/* Start out with reset asserted */
-+	ihid->pdata.reset_gpio =
-+		devm_gpiod_get_optional(&client->dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ihid->pdata.reset_gpio))
-+		return PTR_ERR(ihid->pdata.reset_gpio);
-+
- 	ret = devm_regulator_bulk_get(&client->dev,
- 				      ARRAY_SIZE(ihid->pdata.supplies),
- 				      ihid->pdata.supplies);
-@@ -1067,6 +1076,10 @@ static int i2c_hid_probe(struct i2c_client *client,
- 	if (ihid->pdata.post_power_delay_ms)
- 		msleep(ihid->pdata.post_power_delay_ms);
- 
-+	gpiod_set_value_cansleep(ihid->pdata.reset_gpio, 0);
-+	if (ihid->pdata.post_gpio_reset_delay_ms)
-+		msleep(ihid->pdata.post_gpio_reset_delay_ms);
-+
- 	i2c_set_clientdata(client, ihid);
- 
- 	ihid->client = client;
-@@ -1163,6 +1176,7 @@ static int i2c_hid_remove(struct i2c_client *client)
- 	if (ihid->bufsize)
- 		i2c_hid_free_buffers(ihid);
- 
-+	gpiod_set_value_cansleep(ihid->pdata.reset_gpio, 1);
- 	regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
- 			       ihid->pdata.supplies);
- 
-@@ -1228,6 +1242,10 @@ static int i2c_hid_resume(struct device *dev)
- 
- 		if (ihid->pdata.post_power_delay_ms)
- 			msleep(ihid->pdata.post_power_delay_ms);
-+
-+		gpiod_set_value_cansleep(ihid->pdata.reset_gpio, 0);
-+		if (ihid->pdata.post_gpio_reset_delay_ms)
-+			msleep(ihid->pdata.post_gpio_reset_delay_ms);
- 	} else if (ihid->irq_wake_enabled) {
- 		wake_status = disable_irq_wake(client->irq);
- 		if (!wake_status)
-diff --git a/include/linux/platform_data/i2c-hid.h b/include/linux/platform_data/i2c-hid.h
-index c628bb5e1061..b2150223ffa6 100644
---- a/include/linux/platform_data/i2c-hid.h
-+++ b/include/linux/platform_data/i2c-hid.h
-@@ -12,6 +12,7 @@
- #ifndef __LINUX_I2C_HID_H
- #define __LINUX_I2C_HID_H
- 
-+#include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
- #include <linux/types.h>
- 
-@@ -20,6 +21,8 @@
-  * @hid_descriptor_address: i2c register where the HID descriptor is stored.
-  * @supplies: regulators for powering on the device.
-  * @post_power_delay_ms: delay after powering on before device is usable.
-+ * @post_gpio_reset_delay_ms: delay after reset via GPIO.
-+ * @reset_gpio: optional gpio to de-assert after post_power_delay_ms.
-  *
-  * Note that it is the responsibility of the platform driver (or the acpi 5.0
-  * driver, or the flattened device tree) to setup the irq related to the gpio in
-@@ -36,6 +39,8 @@ struct i2c_hid_platform_data {
- 	u16 hid_descriptor_address;
- 	struct regulator_bulk_data supplies[2];
- 	int post_power_delay_ms;
-+	int post_gpio_reset_delay_ms;
-+	struct gpio_desc *reset_gpio;
- };
- 
- #endif /* __LINUX_I2C_HID_H */
--- 
-2.28.0.1011.ga647a8990f-goog
-
+On Fri, Oct 9, 2020 at 9:17 AM Jim Mattson <jmattson@google.com> wrote:
+>
+> On Fri, Jul 10, 2020 at 8:48 AM Mohammed Gamal <mgamal@redhat.com> wrote:
+> >
+> > Check guest physical address against it's maximum physical memory. If
+> > the guest's physical address exceeds the maximum (i.e. has reserved bits
+> > set), inject a guest page fault with PFERR_RSVD_MASK set.
+> >
+> > This has to be done both in the EPT violation and page fault paths, as
+> > there are complications in both cases with respect to the computation
+> > of the correct error code.
+> >
+> > For EPT violations, unfortunately the only possibility is to emulate,
+> > because the access type in the exit qualification might refer to an
+> > access to a paging structure, rather than to the access performed by
+> > the program.
+> >
+> > Trapping page faults instead is needed in order to correct the error code,
+> > but the access type can be obtained from the original error code and
+> > passed to gva_to_gpa.  The corrections required in the error code are
+> > subtle. For example, imagine that a PTE for a supervisor page has a reserved
+> > bit set.  On a supervisor-mode access, the EPT violation path would trigger.
+> > However, on a user-mode access, the processor will not notice the reserved
+> > bit and not include PFERR_RSVD_MASK in the error code.
+> >
+> > Co-developed-by: Mohammed Gamal <mgamal@redhat.com>
+> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> > ---
+> >  arch/x86/kvm/vmx/vmx.c | 24 +++++++++++++++++++++---
+> >  arch/x86/kvm/vmx/vmx.h |  3 ++-
+> >  2 files changed, 23 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 770b090969fb..de3f436b2d32 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -4790,9 +4790,15 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+> >
+> >         if (is_page_fault(intr_info)) {
+> >                 cr2 = vmx_get_exit_qual(vcpu);
+> > -               /* EPT won't cause page fault directly */
+> > -               WARN_ON_ONCE(!vcpu->arch.apf.host_apf_flags && enable_ept);
+> > -               return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
+> > +               if (enable_ept && !vcpu->arch.apf.host_apf_flags) {
+> > +                       /*
+> > +                        * EPT will cause page fault only if we need to
+> > +                        * detect illegal GPAs.
+> > +                        */
+> > +                       kvm_fixup_and_inject_pf_error(vcpu, cr2, error_code);
+> > +                       return 1;
+> > +               } else
+> > +                       return kvm_handle_page_fault(vcpu, error_code, cr2, NULL, 0);
+> >         }
+> >
+> >         ex_no = intr_info & INTR_INFO_VECTOR_MASK;
+> > @@ -5308,6 +5314,18 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
+> >                PFERR_GUEST_FINAL_MASK : PFERR_GUEST_PAGE_MASK;
+> >
+> >         vcpu->arch.exit_qualification = exit_qualification;
+> > +
+> > +       /*
+> > +        * Check that the GPA doesn't exceed physical memory limits, as that is
+> > +        * a guest page fault.  We have to emulate the instruction here, because
+> > +        * if the illegal address is that of a paging structure, then
+> > +        * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
+> > +        * would also use advanced VM-exit information for EPT violations to
+> > +        * reconstruct the page fault error code.
+> > +        */
+> > +       if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
+> > +               return kvm_emulate_instruction(vcpu, 0);
+> > +
+>
+> Is kvm's in-kernel emulator up to the task? What if the instruction in
+> question is AVX-512, or one of the myriad instructions that the
+> in-kernel emulator can't handle? Ice Lake must support the advanced
+> VM-exit information for EPT violations, so that would seem like a
+> better choice.
+>
+Anyone?
