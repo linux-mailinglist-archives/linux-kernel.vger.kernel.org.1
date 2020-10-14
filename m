@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5FF28D906
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6772928D909
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729718AbgJNDx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 23:53:57 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:45292 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729395AbgJNDx5 (ORCPT
+        id S1729824AbgJND6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 23:58:24 -0400
+Received: from smtprelay0131.hostedemail.com ([216.40.44.131]:53106 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729395AbgJND6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 23:53:57 -0400
-Received: from firstfloor.org (c-71-237-255-61.hsd1.or.comcast.net [71.237.255.61])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by one.firstfloor.org (Postfix) with ESMTPSA id A57DE867AC;
-        Wed, 14 Oct 2020 05:53:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1602647634;
-        bh=IvSJzn3yWoUP/GyBlqGqnpCQnt/EbyNHsOXph78SSr4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Jpw73wFED6y/ifpsEnmi0wX+EQnShcgkwdVoNEnWqybbGBGza21AQ4fV1JnKT0n19
-         sbhca9F0ir0VqEjV07eY24hdKYn4vk8OfY5lGkUOaOUrKUkCwfcUBoM8Xi9k4aJMoC
-         2SMMXfdto+ubwDugkMq9b+Ci2+j2ehiTJ9IWqD9c=
-Received: by firstfloor.org (Postfix, from userid 1000)
-        id D2B1CA8667; Tue, 13 Oct 2020 20:53:52 -0700 (PDT)
-From:   Andi Kleen <andi@firstfloor.org>
-To:     acme@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jolsa@kernel.org,
-        Andi Kleen <andi@firstfloor.org>, adrian.hunter@intel.com,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH] perf: Improve PT documentation slightly
-Date:   Tue, 13 Oct 2020 20:53:46 -0700
-Message-Id: <20201014035346.4772-1-andi@firstfloor.org>
-X-Mailer: git-send-email 2.28.0
+        Tue, 13 Oct 2020 23:58:24 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 61EF91730847;
+        Wed, 14 Oct 2020 03:58:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:2904:3138:3139:3140:3141:3142:3352:3865:3867:3870:4321:4605:5007:10004:10400:10848:11026:11233:11473:11657:11658:11914:12043:12262:12296:12297:12438:12555:12679:12740:12760:12895:13439:14096:14097:14181:14659:14721:21080:21324:21365:21451:21627:21990:30029:30030:30054:30055:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: pail67_620b2a027208
+X-Filterd-Recvd-Size: 3589
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 14 Oct 2020 03:58:20 +0000 (UTC)
+Message-ID: <73e7098a7dacbbc3a3b77065222f488e23e17201.camel@perches.com>
+Subject: iwlwifi: spaces in procfs filenames ?
+From:   Joe Perches <joe@perches.com>
+To:     Sharon Dvir <sharon.dvir@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org
+Date:   Tue, 13 Oct 2020 20:58:18 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the higher level --insn-trace etc. perf script options.
+commit 64fa3aff89785b5a924ce3934f6595c35b4dffee
+Author: Sharon Dvir <sharon.dvir@intel.com>
+Date:   Wed Aug 17 15:35:09 2016 +0300
 
-Include the howto how to build xed into the manpage
+    iwlwifi: pcie: give a meaningful name to interrupt request
 
-Cc: adrian.hunter@intel.com
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/Documentation/perf-intel-pt.txt | 30 ++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+perhaps unintentionally for file:
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index d5a266d7f15b..cc2a8b2be31a 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -112,6 +112,32 @@ The flags are "bcrosyiABEx" which stand for branch, call, return, conditional,
- system, asynchronous, interrupt, transaction abort, trace begin, trace end, and
- in transaction, respectively.
- 
-+perf script also supports higher level ways to dump instruction traces:
-+
-+	perf script --insn-trace --xed
-+
-+Dump all instructions. This requires installing the xed tool (see XED below)
-+Dumping all instructions in a long trace can be fairly slow. It is usually better
-+to start with higher level decoding, like
-+
-+	perf script --call-trace
-+
-+or
-+
-+	perf script --call-ret-trace
-+
-+and then select a time range of interest. The time range can then be examined
-+in detail with
-+
-+	perf script --time starttime,stoptime --insn-trace --xed
-+
-+While examining the trace it's also useful to filter on specific CPUs using
-+the -C option
-+
-+	perf script --time starttime,stoptime --insn-trace --xed -C 1
-+
-+Dump all instructions in time range on CPU 1.
-+
- Another interesting field that is not printed by default is 'ipc' which can be
- displayed as follows:
- 
-@@ -1093,6 +1119,10 @@ To display PEBS events from the Intel PT trace, use the itrace 'o' option e.g.
- 
- 	perf script --itrace=oe
- 
-+XED
-+---
-+
-+include::build-xed.txt[]
- 
- SEE ALSO
- --------
--- 
-2.28.0
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h
+in function static inline const char *queue_name
+
+creates spaces in procfs filenames.
+
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h:static inline const char *queue_name(struct device *dev,
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-                                  struct iwl_trans_pcie *trans_p, int i)
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-{
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-     if (trans_p->shared_vec_mask) {
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-             int vec = trans_p->shared_vec_mask &
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-                       IWL_SHARED_IRQ_FIRST_RSS ? 1 : 0;
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-             if (i == 0)
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-                     return DRV_NAME ": shared IRQ";
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-             return devm_kasprintf(dev, GFP_KERNEL,
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-                                   DRV_NAME ": queue %d", i + vec);
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-     }
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-     if (i == 0)
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-             return DRV_NAME ": default queue";
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-     if (i == trans_p->alloc_vecs - 1)
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-             return DRV_NAME ": exception";
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-     return devm_kasprintf(dev, GFP_KERNEL,
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-                           DRV_NAME  ": queue %d", i);
+drivers/net/wireless/intel/iwlwifi/pcie/internal.h-}
+
+# find /proc/ | grep " "
+/proc/irq/130/iwlwifi: default queue
+/proc/irq/131/iwlwifi: queue 1
+/proc/irq/132/iwlwifi: queue 2
+/proc/irq/133/iwlwifi: queue 3
+/proc/irq/134/iwlwifi: queue 4
+/proc/irq/135/iwlwifi: exception
+
+Can these names be changed back or collapsed
+to avoid the space use in procfs?
+
 
