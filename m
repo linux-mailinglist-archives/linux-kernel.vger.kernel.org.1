@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D97028DAC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5782728DB2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgJNH7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:59:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:53394 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727306AbgJNH7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:59:02 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DC266E15FA1BFE7BA172;
-        Wed, 14 Oct 2020 15:58:55 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.134) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 14 Oct 2020
- 15:58:54 +0800
-Subject: Re: [PATCH] dt-bindings: leds: Update devicetree documents for ID_RGB
-To:     Dan Murphy <dmurphy@ti.com>, <pavel@ucw.cz>, <robh+dt@kernel.org>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20201013175034.25911-1-dmurphy@ti.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <afc6328e-1f34-8288-b0d2-20328eabf967@huawei.com>
-Date:   Wed, 14 Oct 2020 15:58:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729225AbgJNIUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729028AbgJNITh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:19:37 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C79C05112B
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:59:41 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id p5so691408ejj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:59:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BbQ9zezJOZt5q13rquXSx1mp5UXjcu3g5SCKCd2+BGI=;
+        b=zXqVtU5tyznYTGXGamMS7R1Z0U+3OWxDZ5rx7TdXTWrbrG9jQSLWHCtsy1BoaGDwV1
+         2lfYhnqpt7af6sBlRIHuk5g/r5JFMUNK/kQJaFoL4kh5NkQ2VzXceSHfSrh9zrQWwmSn
+         ZtTgFpMRXM6FEBD+yQbkE5B2/vp/Y4WEb5tqWJgcBtiri5bIgcOtziYB2JChbf5mZoMS
+         dNVwZP+vGgddtow1WzjrwzPP134g4vR0++jnyg9aCsrlb40lzYLGA72egHRGcRdHSd/L
+         R2Vi365QPPg7MDo3sepnTYfQHIqYwY12XzSdJrgLpX8IiqUeLHFtf4kd1EW9M7IFz4Vn
+         XYFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BbQ9zezJOZt5q13rquXSx1mp5UXjcu3g5SCKCd2+BGI=;
+        b=liyOG4BkLXNlfpC2VNmeHDM/K4WUh9LrlUgn1lIB2UXID+VZbLTPWcrtlRBe3Fl3aP
+         uRe120xoIPtRdwvqjJd9hFnzjBCIC7XUpxE79JqDXWpweJ/h8oZNl9wiPf/QrTRgnMQ6
+         vpibthehFAwEA17jfx8hSQGWjgQjUr3gSe0UgV6dz6JBaJ4rgEczvQbCAzMYqY5Nie+7
+         6BZobxyS6WCP18RbpzA4ljZ4rs9U8tQjN6dDek+Mc/QAmFw7jBnPKCSXM5JLIeaOCXun
+         v8MBt33qdRWTedZnakStB/OsCZWIqmA2+eaSEgwEfrto4RQ/Nq0K4qVAHUkOG/5UQmMK
+         J6fQ==
+X-Gm-Message-State: AOAM531R8ghcFdbew1P9lRi7wLa4HVRyfkbX2uPOGjIAYF6RdKU2OTrC
+        WTacP4yLojp6NmvnxNoWZiEVXcpY6wAB0nSDNQi23g==
+X-Google-Smtp-Source: ABdhPJzkQzh/qaNuPB64Ddr441/RAk3dMGcpPwYi6lMJJDMCh/gCShOoRmWm5DeXsA8uu/uIW9HngERTGPhVVcNAnfo=
+X-Received: by 2002:a17:906:d159:: with SMTP id br25mr4178974ejb.155.1602662380571;
+ Wed, 14 Oct 2020 00:59:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201013175034.25911-1-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+References: <20201014062740.78977-1-warthog618@gmail.com>
+In-Reply-To: <20201014062740.78977-1-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 14 Oct 2020 09:59:30 +0200
+Message-ID: <CAMpxmJWkUc-ZnDj56Q7_1ba73RXFFHos3MYas2TZSe-Q2AwhPQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] gpiolib: cdev: allow edge event timestamps to be
+ configured as REALTIME
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 14, 2020 at 8:28 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> This patch set adds the option to select CLOCK_REALTIME as the source
+> clock for line events.
+>
+> The first patch is the core of the change, while the remaining two update
+> the GPIO tools to make use of the new option.
+>
+> Kent Gibson (3):
+>   gpiolib: cdev: allow edge event timestamps to be configured as
+>     REALTIME
+>   tools: gpio: add support for reporting realtime event clock to lsgpio
+>   tools: gpio: add option to report wall-clock time to gpio-event-mon
+>
+>  drivers/gpio/gpiolib-cdev.c | 21 ++++++++++++++++++---
+>  drivers/gpio/gpiolib.h      |  1 +
+>  include/uapi/linux/gpio.h   | 12 +++++++++---
+>  tools/gpio/gpio-event-mon.c |  6 +++++-
+>  tools/gpio/lsgpio.c         |  4 ++++
+>  5 files changed, 37 insertions(+), 7 deletions(-)
+>
+> --
+> 2.28.0
+>
 
+The entire series looks good to me.
 
-On 2020/10/14 1:50, Dan Murphy wrote:
-> Update the leds/common.yaml to indicate that the max color ID is 9.
-> Reflect the same change in the leds-class-multicolor.yaml
-> 
-> Reported-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  Documentation/devicetree/bindings/leds/common.yaml       | 2 +-
->  .../devicetree/bindings/leds/leds-class-multicolor.yaml  | 9 +++++----
->  2 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-> index a2a541bca73c..0c9f912dfee6 100644
-> --- a/Documentation/devicetree/bindings/leds/common.yaml
-> +++ b/Documentation/devicetree/bindings/leds/common.yaml
-> @@ -43,7 +43,7 @@ properties:
->        LED_COLOR_ID available, add a new one.
->      $ref: /schemas/types.yaml#definitions/uint32
->      minimum: 0
-> -    maximum: 8
-> +    maximum: 9
->  
->    function-enumerator:
->      description:
-> diff --git a/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
-> index b55e1f1308a4..f8032e863ecb 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
-> +++ b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
-> @@ -16,7 +16,7 @@ description: |
->    modules. This is achieved by adding multi-led nodes layer to the
->    monochrome LED bindings.
->    The nodes and properties defined in this document are unique to the multicolor
-> -  LED class.  Common LED nodes and properties are inherited from the common.txt
-> +  LED class.  Common LED nodes and properties are inherited from the common.yaml
->    within this documentation directory.
->  
->  patternProperties:
-> @@ -25,10 +25,11 @@ patternProperties:
->      description: Represents the LEDs that are to be grouped.
->      properties:
->        color:
-> -        const: 8  # LED_COLOR_ID_MULTI
-> +        const: 9  # LED_COLOR_ID_RGB
-This means only LED_COLOR_ID_RGB is allowed.
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
->          description: |
-> -          For multicolor LED support this property should be defined as
-> -          LED_COLOR_ID_MULTI which can be found in include/linux/leds/common.h.
-> +          For multicolor LED support this property should be defined as either
-> +          LED_COLOR_ID_RGB or LED_COLOR_ID_MULTI which can be found in
+Linus: do you think this can still make it into v5.10 as an
+improvement to the new uAPI or do we have to wait until the next merge
+window? Will you send another PR in this cycle?
 
-If both LED_COLOR_ID_RGB and LED_COLOR_ID_MULTI are allowed, then we should use enum
-list both of them.
-
-> +          include/linux/leds/common.h.
->  
->      $ref: "common.yaml#"
->  
-> 
-
+Bartosz
