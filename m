@@ -2,156 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAF028D82C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A4028D833
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728612AbgJNB7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 21:59:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55400 "EHLO mail.kernel.org"
+        id S1728620AbgJNCGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:06:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJNB7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 21:59:13 -0400
-Received: from kernel.org (unknown [104.132.1.79])
+        id S1725874AbgJNCGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 22:06:41 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BAA8F221FC;
-        Wed, 14 Oct 2020 01:59:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 972ED21775;
+        Wed, 14 Oct 2020 02:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602640752;
-        bh=wCc5SuWifTRvzQyLqk95QDnpolBC2xo+OhEuwe/klj0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=1Y9BzN6quC7xAAKEBeTamqujt4BIsNY97lbcDYxmGt4Ca+LEXvONVPPJ6mh+S3ieb
-         ILpqfzBZVSffvEVuh1mzssunmpcgo4YC3165hY49R9U9q1MJgNP8EVP4MUYllUMyM6
-         sVXPZ8IoccBqY43IXguri5ilGi1NFtR1QwoHpWwo=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1602609110-11504-4-git-send-email-tdas@codeaurora.org>
-References: <1602609110-11504-1-git-send-email-tdas@codeaurora.org> <1602609110-11504-4-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v2 3/3] clk: qcom: camcc: Add camera clock controller driver for SC7180
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 13 Oct 2020 18:59:11 -0700
-Message-ID: <160264075146.310579.8765964662995263828@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        s=default; t=1602641201;
+        bh=jZwx6dNORFolKsYZwx40kGR6v5LVfiUDzJP9RuoekwA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aMlchvmwHSP5HtTjuq11CxORl0dXu2Y/U8u6WQrI5BswRSeQMrBOHIxUpUQszkbd0
+         8u/rCx5914T3U5sJ3JihIDYKKguW5tpIcPOl/KbfHvP2p2Khg8tSakLPEAYMgiScxt
+         hXs6CvAIxxxUpiCZWbMhmoo01XSpma+Hol67bhaY=
+Date:   Wed, 14 Oct 2020 11:06:36 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] selftests/ftrace: Add test case for synthetic
+ event syntax errors
+Message-Id: <20201014110636.139df7be275d40a23b523b84@kernel.org>
+In-Reply-To: <af611928ce79f86eaf0af8654f1d7802d5cc21ff.1602598160.git.zanussi@kernel.org>
+References: <cover.1602598160.git.zanussi@kernel.org>
+        <af611928ce79f86eaf0af8654f1d7802d5cc21ff.1602598160.git.zanussi@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2020-10-13 10:11:50)
-> diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7=
-180.c
+Hi Tom,
+
+On Tue, 13 Oct 2020 09:17:58 -0500
+Tom Zanussi <zanussi@kernel.org> wrote:
+
+> Add a selftest that verifies that the syntax error messages and caret
+> positions are correct for most of the possible synthetic event syntax
+> error cases.
+> 
+> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> ---
+>  .../trigger-synthetic_event_syntax_errors.tc  | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
 > new file mode 100644
-> index 0000000..e954d21
+> index 000000000000..ada594fe16cb
 > --- /dev/null
-> +++ b/drivers/clk/qcom/camcc-sc7180.c
-> @@ -0,0 +1,1737 @@
-[...]
-> +
-> +enum {
-> +       P_BI_TCXO,
-> +       P_CAM_CC_PLL0_OUT_EVEN,
-> +       P_CAM_CC_PLL1_OUT_EVEN,
-> +       P_CAM_CC_PLL2_OUT_AUX,
-> +       P_CAM_CC_PLL2_OUT_EARLY,
-> +       P_CAM_CC_PLL3_OUT_MAIN,
-> +       P_CORE_BI_PLL_TEST_SE,
-> +};
-> +
-> +static struct pll_vco agera_vco[] =3D {
+> +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> @@ -0,0 +1,19 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: event trigger - test synthetic_events syntax parser errors
+> +# requires: synthetic_events error_log
 
-Can this be const?
+This also requires dynamic strings support. So, its "requires" line should be
 
-> +       { 600000000, 3300000000, 0 },
-> +};
-> +
-> +static struct pll_vco fabia_vco[] =3D {
-
-Can this be const?
-
-> +       { 249600000, 2000000000, 0 },
-> +};
-> +
-[...]
-> +
-> +static int cam_cc_sc7180_probe(struct platform_device *pdev)
-> +{
-> +       struct regmap *regmap;
-> +       int ret;
-> +
-> +       pm_runtime_enable(&pdev->dev);
-> +       ret =3D pm_clk_create(&pdev->dev);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret =3D pm_clk_add(&pdev->dev, "xo");
-> +       if (ret < 0) {
-> +               dev_err(&pdev->dev, "Failed to acquire XO clock\n");
-> +               goto disable_pm_runtime;
-> +       }
-> +
-> +       ret =3D pm_clk_add(&pdev->dev, "iface");
-> +       if (ret < 0) {
-> +               dev_err(&pdev->dev, "Failed to acquire iface clock\n");
-> +               goto disable_pm_runtime;
-> +       }
-> +
-> +       ret =3D pm_clk_runtime_resume(&pdev->dev);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "pm runtime resume failed\n");
-> +               goto destroy_pm_clk;
-> +       }
-> +
-> +       regmap =3D qcom_cc_map(pdev, &cam_cc_sc7180_desc);
-> +       if (IS_ERR(regmap)) {
-> +               ret =3D PTR_ERR(regmap);
-> +               goto destroy_pm_clk;
-> +       }
-> +
-> +       clk_fabia_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config=
-);
-> +       clk_fabia_pll_configure(&cam_cc_pll1, regmap, &cam_cc_pll1_config=
-);
-> +       clk_agera_pll_configure(&cam_cc_pll2, regmap, &cam_cc_pll2_config=
-);
-> +       clk_fabia_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config=
-);
-> +
-> +       ret =3D qcom_cc_really_probe(pdev, &cam_cc_sc7180_desc, regmap);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "Failed to register CAM CC clocks\n");
-> +               goto suspend_pm_runtime;
-
-ret is non-zero here
-
-> +       }
-> +
-> +suspend_pm_runtime:
-> +       ret =3D pm_clk_runtime_suspend(&pdev->dev);
-
-But then it is overwritten here.
-
-> +       if (ret)
-> +               dev_err(&pdev->dev, "pm runtime suspend failed\n");
-> +
-> +       return 0;
-
-And we return 0 when there was a failure to probe the clks?
+# requires: synthetic_events error_log "char name[]' >> synthetic_events":README
 
 > +
-> +destroy_pm_clk:
-> +       pm_clk_destroy(&pdev->dev);
-> +
-> +disable_pm_runtime:
-> +       pm_runtime_disable(&pdev->dev);
-> +
-> +       return ret;
+> +check_error() { # command-with-error-pos-by-^
+> +    ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
 > +}
+> +
+
+BTW, some errors looks a bit odd.
+
+> +check_error 'myevent ^chr arg'			# INVALID_TYPE
+> +check_error 'myevent ^char str[];; int v'	# INVALID_TYPE
+
+I think there is a wrong "void" argument between ";", instead of invalid type.
+
+> +check_error 'myevent char ^str]; int v'		# INVALID_NAME
+> +check_error 'myevent char ^str;[]'		# INVALID_NAME
+
+This is also not an invalid name but '[]' is an invalid type. 
+
+> +check_error 'myevent ^char str[; int v'		# INVALID_TYPE
+> +check_error '^mye;vent char str[]'		# BAD_NAME
+> +check_error 'myevent char str[]; ^int'		# INVALID_FIELD
+
+Isn't it an incomplete command?
+
+> +check_error '^myevent'				# INCOMPLETE_CMD
+> +
+> +exit 0
+
+Thank you,
+
+> -- 
+> 2.17.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
