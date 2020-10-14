@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A23A28E0D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A951F28E103
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730904AbgJNMzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:55:25 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:41388 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729886AbgJNMzY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:55:24 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09ECqtv0015297;
-        Wed, 14 Oct 2020 14:55:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=9bTCitwnBAltRZQ7gOYLHIo8QHxlqk1VrxB1btIyl3k=;
- b=KzTLNfTxLA+SdECp61CYy4zvOHuw/EYembLjHrSng9UqSuZRY/IbUv/f5q5k9nhJGcgo
- lMe3N7vYUHM1hC3QjFxmQUFbMxgyYf7dhwJBiEUJpRH/GxmtM7+CH+vcKDnhNsZ/zpHI
- 407uxuP/xWF1a+1n8u+K7E18TnGwv041b6obfQowhUWG6rAFfDFG4F3gIqGGOaJFK9Ge
- Rj4lLT81qC8MndoDsw0VrJzf3exPDLM6ZpDaV9M50VPqP/PPINCOxZUWpzgtY9XO8Gwo
- GjfiFb0p4JJSAuJI4xVixQ2LwwwT0TUZoEZ3B46yQ7veLlXYsRhYTjODZtO8Xw3cP31U Sg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3455c8hqrm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 14:55:14 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6536810002A;
-        Wed, 14 Oct 2020 14:55:14 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 55D6F2DA52D;
-        Wed, 14 Oct 2020 14:55:14 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE1.st.com (10.75.127.7)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct 2020 14:55:13
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
-To:     Rob Herring <robh@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: [PATCH v2 4/4] ARM: dts: stm32: update stm32mp151 for remote proc synchronization support
-Date:   Wed, 14 Oct 2020 14:54:41 +0200
-Message-ID: <20201014125441.2457-5-arnaud.pouliquen@st.com>
+        id S1731102AbgJNNHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:07:05 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:42096 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727141AbgJNNHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:07:05 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTPS id 09ED6ZUb097099
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 14 Oct 2020 21:06:35 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 14 Oct 2020 21:06:38 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] blk-mq: add helper function to test hctx inactive
+Date:   Wed, 14 Oct 2020 20:56:48 +0800
+Message-ID: <20201014125648.13778-1-tian.xianting@h3c.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201014125441.2457-1-arnaud.pouliquen@st.com>
-References: <20201014125441.2457-1-arnaud.pouliquen@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_07:2020-10-14,2020-10-14 signatures=0
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 09ED6ZUb097099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two backup registers are used to store the Cortex-M4 state and the resource
-table address.
-Declare the tamp node and add associated properties in m4_rproc node
-to allow Linux to attach to a firmware loaded by the first boot stages.
+Introduce helper function blk_mq_hctx_inactive() to test
+BLK_MQ_S_INACTIVE as we already done for BLK_MQ_S_STOPPED.
 
-Associated driver implementation is available in commit 9276536f455b3
-("remoteproc: stm32: Parse syscon that will manage M4 synchronisation").
-
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 ---
- arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ block/blk-mq-tag.c | 2 +-
+ block/blk-mq.h     | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-index bfe29023fbd5..842ecffae73a 100644
---- a/arch/arm/boot/dts/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/stm32mp151.dtsi
-@@ -1541,6 +1541,11 @@
- 			status = "disabled";
- 		};
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 32d82e23b..3119572bc 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -153,7 +153,7 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
+ 	 * Give up this allocation if the hctx is inactive.  The caller will
+ 	 * retry on an active hctx.
+ 	 */
+-	if (unlikely(test_bit(BLK_MQ_S_INACTIVE, &data->hctx->state))) {
++	if (unlikely(blk_mq_hctx_inactive(data->hctx))) {
+ 		blk_mq_put_tag(tags, data->ctx, tag + tag_offset);
+ 		return BLK_MQ_NO_TAG;
+ 	}
+diff --git a/block/blk-mq.h b/block/blk-mq.h
+index 863a2f334..9813269c2 100644
+--- a/block/blk-mq.h
++++ b/block/blk-mq.h
+@@ -171,6 +171,11 @@ static inline bool blk_mq_hctx_stopped(struct blk_mq_hw_ctx *hctx)
+ 	return test_bit(BLK_MQ_S_STOPPED, &hctx->state);
+ }
  
-+		tamp: tamp@5c00a000 {
-+			compatible = "st,stm32-tamp", "syscon";
-+			reg = <0x5c00a000 0x400>;
-+		};
++static inline bool blk_mq_hctx_inactive(struct blk_mq_hw_ctx *hctx)
++{
++	return test_bit(BLK_MQ_S_INACTIVE, &hctx->state);
++}
 +
- 		/*
- 		 * Break node order to solve dependency probe issue between
- 		 * pinctrl and exti.
-@@ -1717,6 +1722,8 @@
- 			st,syscfg-holdboot = <&rcc 0x10C 0x1>;
- 			st,syscfg-tz = <&rcc 0x000 0x1>;
- 			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
-+			st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
-+			st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
- 			status = "disabled";
- 		};
- 	};
+ static inline bool blk_mq_hw_queue_mapped(struct blk_mq_hw_ctx *hctx)
+ {
+ 	return hctx->nr_ctx && hctx->tags;
 -- 
 2.17.1
 
