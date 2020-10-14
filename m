@@ -2,110 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBC728EAEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A0C28E8C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732562AbgJOCJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 22:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728094AbgJOCJi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:09:38 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBE2C05BD16;
-        Wed, 14 Oct 2020 15:31:18 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id z33so464648qth.8;
-        Wed, 14 Oct 2020 15:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2bDs98ntDIXfp42fz2irqL/7dwTOhw0qSbVCbyVX2Wo=;
-        b=k23lljwg6UM4znZHShqTNR4m7IIkpr+/yjRNjNiUWczinS73SjZXxrf+nuQ3+N6B19
-         o12umAMU/rJmWgJL4NFvx+fcp5V0LZFb94Sir88vRayBdbfheaDQaCor496q1O/N3cVE
-         1gTvO3jeHyTS3MFZQS44E/WiKh0d/93XHw3Ds=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2bDs98ntDIXfp42fz2irqL/7dwTOhw0qSbVCbyVX2Wo=;
-        b=Md9wgQM3jJlNjtJ+3SiTNzz9NYEraWDcvaTXLNTdh/6RXxAPcEPvlHVdhBFzFEZgBF
-         PB8l5inN/tOdRkfpsrV3V2aoJWcqHuShaKT3oEIgzKWAEeukLgTQR8+r4SpiNI9HvNIz
-         oBUzGIWTTnbduoYnLRgxxGp4sKftUMJ+JBBrac5D2cpSTB4Cgs3MXudJU3N4EzUTV9PU
-         SeD/QEWMY76qMD9A80t0izYm9e/nMZIoM2KgFduz+zLSm94yFbfd3RD89Yatiq4/fM/1
-         7jsv6NqRufBsbi2ZmVx93Rl9Bse6v4UpL3+28psI3A2lbIl0McHhg1mIbmzsVOuVh9IO
-         qUTA==
-X-Gm-Message-State: AOAM532gZwmAYhD+pGpdN4x0A1jixtPl4/vCkmAZitm9ptuBLoEVSvz7
-        TbF7nRxeABwuDTdyUN5DgHjq2Ob6m1N++QX9Is8=
-X-Google-Smtp-Source: ABdhPJzaTBI/jCETqEnDTpHoEVhA7+3xxi1+uoLLTUHoSHbaFmQBZ8EJFNXyYrbE1296c8fATMbvfuJ4Rn+Cshq2a3E=
-X-Received: by 2002:aed:3325:: with SMTP id u34mr1433256qtd.263.1602714677688;
- Wed, 14 Oct 2020 15:31:17 -0700 (PDT)
+        id S1729078AbgJNWdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 18:33:01 -0400
+Received: from vern.gendns.com ([98.142.107.122]:45968 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbgJNWdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 18:33:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=pqfve9QSwJ97lwFe5PUL5oCSivPq5QqIIRkVs7VEbRc=; b=pWvwvcvsEWpMVOnY15/WSPNrFG
+        W+iqT8m+vE1iqkyyTyS3BgpZdObFYIhxIEHh4CigI694dn0aS7MZ1ZSirVibJiY1T4bnl5QUushIV
+        5b8eNWin3KaoD+cPmJMigfUnD/WvOUrIBSVqp1LFK7g8WWxq24pgrVLHTSrQPmVOo3C/eR3Cgj4kM
+        g6xnGZfxORaKzuCA2mnlIGy1/ZAcvroGVdhwMjL1vMLYQcPz/iy+GKRXroyZlpCvbqnP0II7Hw92K
+        5+J3lBTbro39rw64yge3wO6c1JjbbetE6oKGmcBAq0YZ+fJrsf+yI+B3BuuHSV9dcc09Y2/KBzSEB
+        W+ClXZBQ==;
+Received: from [2600:1700:4830:165f::19e] (port=50504)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kSpKL-0000An-70; Wed, 14 Oct 2020 18:32:57 -0400
+Subject: Re: [PATCH v5 3/5] counter: Add character device interface
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
+ <67a0290e-731b-822a-5113-30b56bde6c88@lechnology.com>
+ <20201014190526.GA13439@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <e9fe486c-7f4f-911a-7f40-f713ff0deb17@lechnology.com>
+Date:   Wed, 14 Oct 2020 17:32:55 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201014060632.16085-1-dylan_hung@aspeedtech.com>
- <20201014060632.16085-2-dylan_hung@aspeedtech.com> <CACPK8Xe_O44BUaPCEm2j3ZN+d4q6JbjEttLsiCLbWF6GnaqSPg@mail.gmail.com>
- <PS1PR0601MB1849DAC59EDA6A9DB62B4EE09C050@PS1PR0601MB1849.apcprd06.prod.outlook.com>
-In-Reply-To: <PS1PR0601MB1849DAC59EDA6A9DB62B4EE09C050@PS1PR0601MB1849.apcprd06.prod.outlook.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 14 Oct 2020 22:31:04 +0000
-Message-ID: <CACPK8Xd_DH+VeaPmXK2b5FXbrOpg_NmT_R4ENzY-=uNo=6HcyQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
-To:     Dylan Hung <dylan_hung@aspeedtech.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201014190526.GA13439@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 at 13:32, Dylan Hung <dylan_hung@aspeedtech.com> wrote:
-> > > The new HW arbitration feature on Aspeed ast2600 will cause MAC TX to
-> > > hang when handling scatter-gather DMA.  Disable the problematic
-> > > feature by setting MAC register 0x58 bit28 and bit27.
-> >
-> > Hi Dylan,
-> >
-> > What are the symptoms of this issue? We are seeing this on our systems:
-> >
-> > [29376.090637] WARNING: CPU: 0 PID: 9 at net/sched/sch_generic.c:442
-> > dev_watchdog+0x2f0/0x2f4
-> > [29376.099898] NETDEV WATCHDOG: eth0 (ftgmac100): transmit queue 0
-> > timed out
-> >
->
-> May I know your soc version? This issue happens on ast2600 version A1.  The registers to fix this issue are meaningless/reserved on A0 chip, so it is okay to set them on either A0 or A1.
+On 10/14/20 2:05 PM, William Breathitt Gray wrote:
+> On Wed, Oct 14, 2020 at 12:43:08PM -0500, David Lechner wrote:
+>> On 9/26/20 9:18 PM, William Breathitt Gray wrote:
+>>> diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter-chrdev.c
+>>> new file mode 100644
+>>> index 000000000000..2be3846e4105
+>>> --- /dev/null
+>>> +++ b/drivers/counter/counter-chrdev.c
+>>
+>>
+>>> +/**
+>>> + * counter_push_event - queue event for userspace reading
+>>> + * @counter:	pointer to Counter structure
+>>> + * @event:	triggered event
+>>> + * @channel:	event channel
+>>> + *
+>>> + * Note: If no one is watching for the respective event, it is silently
+>>> + * discarded.
+>>> + *
+>>> + * RETURNS:
+>>> + * 0 on success, negative error number on failure.
+>>> + */
+>>> +int counter_push_event(struct counter_device *const counter, const u8 event,
+>>> +		       const u8 channel)
+>>> +{
+>>> +	struct counter_event ev = {0};
+>>> +	unsigned int copied = 0;
+>>> +	unsigned long flags;
+>>> +	struct counter_event_node *event_node;
+>>> +	struct counter_comp_node *comp_node;
+>>> +	int err;
+>>> +
+>>> +	ev.timestamp = ktime_get_ns();
+>>> +	ev.watch.event = event;
+>>> +	ev.watch.channel = channel;
+>>> +
+>>> +	raw_spin_lock_irqsave(&counter->events_lock, flags);
+>>> +
+>>> +	/* Search for event in the list */
+>>> +	list_for_each_entry(event_node, &counter->events_list, l)
+>>> +		if (event_node->event == event &&
+>>> +		    event_node->channel == channel)
+>>> +			break;
+>>> +
+>>> +	/* If event is not in the list */
+>>> +	if (&event_node->l == &counter->events_list)
+>>> +		goto exit_early;
+>>> +
+>>> +	/* Read and queue relevant comp for userspace */
+>>> +	list_for_each_entry(comp_node, &event_node->comp_list, l) {
+>>> +		err = counter_get_data(counter, comp_node, &ev.value_u8);
+>>
+>> Currently all counter devices are memory mapped devices so calling
+>> counter_get_data() here with interrupts disabled is probably OK, but
+>> if any counter drivers are added that use I2C/SPI/etc. that will take
+>> a long time to read, it would cause problems leaving interrupts
+>> disabled here.
+>>
+>> Brainstorming: Would it make sense to separate the event from the
+>> component value being read? As I mentioned in one of my previous
+>> reviews, I think there are some cases where we would just want to
+>> know when an event happened and not read any additional data anyway.
+>> In the case of a slow communication bus, this would also let us
+>> queue the event in the kfifo and notify poll right away and then
+>> defer the reads in a workqueue for later.
+> 
+> I don't see any problems with reporting just an event without any
+> component value attached (e.g. userspace could handle the component
+> reads via sysfs at a later point). We would just need a way to inform
+> userspace that the struct counter_component in the struct counter_watch
+> returned should be ignored.
+> 
+> Perhaps we can add an additional member to struct counter_watch
+> indicating whether it's an empty watch; or alternatively, add a new
+> component scope define to differentiate between an actual component and
+> an empty one (e.g. COUNTER_SCOPE_EVENT). What do you think?
+> 
+> William Breathitt Gray
+> 
 
-We are running the A1. All of our A0 parts have been replaced with A1.
-
-> I was encountering this issue when I was running the iperf TX test.  The symptom is the TX descriptors are consumed, but no complete packet is sent out.
-
-What parameters are you using for iperf? I did a lot of testing with
-iperf3 (and stress-ng running at the same time) and couldn't reproduce
-the error.
-
-We could only reproduce it when performing other functions, such as
-debugging/booting the host processor.
-
-> > > +/*
-> > > + * test mode control register
-> > > + */
-> > > +#define FTGMAC100_TM_RQ_TX_VALID_DIS (1 << 28) #define
-> > > +FTGMAC100_TM_RQ_RR_IDLE_PREV (1 << 27)
-> > > +#define FTGMAC100_TM_DEFAULT
-> > \
-> > > +       (FTGMAC100_TM_RQ_TX_VALID_DIS |
-> > FTGMAC100_TM_RQ_RR_IDLE_PREV)
-> >
-> > Will aspeed issue an updated datasheet with this register documented?
-
-Did you see this question?
-
-Cheers,
-
-Joel
+I made the same suggestion in one of my other replies - except
+I called it COUNTER_SCOPE_NONE.
