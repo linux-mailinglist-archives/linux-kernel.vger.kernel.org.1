@@ -2,115 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A4128DCEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7B228D922
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 06:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388253AbgJNJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731088AbgJNJUn (ORCPT
+        id S1729930AbgJNEXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 00:23:52 -0400
+Received: from sp2.canonet.ne.jp ([210.134.165.89]:43247 "EHLO
+        sp2.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgJNEXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:20:43 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FCFC041E65
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 21:20:38 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id x16so1173763pgj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 21:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sRC19ocsAAL1mtJ2J1c/RGp/arfOqOhnEUa8vMBSrp4=;
-        b=GW9Pn8lwtiFpiNXWvRKpr1sRlcOS/g/NDsIbw9YjLuG0R2lkqK4AEazOizqZQ4K0NL
-         IlKYMWncUI7oHCT0MNl2QwX0bsC6kBtnmDUPOuvMFx6xS/Q0CaLY3nNAaAQjYtPEl93h
-         YuCkHLk4mhh6kMHwF+EC5RqYI5rQkXluO/qZ4aV/ggF+CcutvMuRjFa7FJxhX0i5Lnlu
-         oVCLTbvksoQmBXRTWFEyXS8S4Gn66GpbzT4zsnqAf7PhwKUk5lmz6KinofDv1rsrHB9B
-         2V0MrjxVWPer+JQqO6qg/TOD6tvExFz2VW4V70gYXFV5NLGwDM88KLc7EPHEgvhCiwQq
-         aLcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sRC19ocsAAL1mtJ2J1c/RGp/arfOqOhnEUa8vMBSrp4=;
-        b=kVi20oGcpa+P9hIkia8/TQykiDCxyT6pUd5eWFaAq8igIQl7/ra5nlnQFJjhRlC8aK
-         Q+LosK1UzAoHmVttCjjyvkvHvDJ7h6iFPqjLTjJ9zNiCn2AXPRUXt3N1xBay/Pp6ZRpO
-         c/EXyGwxsN/v1eR47uDL58dwFsH24mbl25g/SRrcoBVdzu1xDS92lyDPLPRl26ZfKrxU
-         U7TZtPGEfEn+JEIhyCQo3lL4d6PhVU64ewrerTWCby57eCxxvqtVlmeRBMqg+G7i2UFR
-         XZrWVFMHhGHW9vCVLEpKJnU2/W5MEnB+gsRg2BgB0UlazMh7AS5ElknBaPUvbHrOsIr0
-         8ZBw==
-X-Gm-Message-State: AOAM533Q58SJP0wzIR8tJQP96kf5DnKecCp5MPBx3PaZbZWbk+HybQD6
-        HsuDMi0bl8SGhG26dbP9XTa41A==
-X-Google-Smtp-Source: ABdhPJxwwBZkPJwYyNWVBoXOO7FKu6S+l6w0Y4TBNKBUp23Gr0IwwNVWP1f990BT75JWgTy0taYkng==
-X-Received: by 2002:a63:1e21:: with SMTP id e33mr2318898pge.270.1602649236190;
-        Tue, 13 Oct 2020 21:20:36 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id l13sm1383186pgq.33.2020.10.13.21.20.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Oct 2020 21:20:35 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 09:50:33 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        sudeep.holla@arm.com, chris.redpath@arm.com,
-        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201014042033.tmsbanj5xgh2lmul@vireshk-i7>
-References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
- <20200924095347.32148-3-nicola.mazzucato@arm.com>
- <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
- <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
- <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
- <20201008150317.GB20268@arm.com>
- <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
- <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
- <6a739b1b-e345-fa09-d815-6e9601aff5f6@arm.com>
+        Wed, 14 Oct 2020 00:23:52 -0400
+Received: from cmcheck2.canonet.ne.jp (unknown [172.21.160.142])
+        by sp2.canonet.ne.jp (Postfix) with ESMTP id 95A581E02F4;
+        Wed, 14 Oct 2020 13:23:49 +0900 (JST)
+Received: from echeck2.canonet.ne.jp ([172.21.160.32])
+        by cmcheck2 with ESMTP
+        id SYKLkwl0dpmpXSYKLk0rZq; Wed, 14 Oct 2020 13:23:49 +0900
+X-CNT-CMCheck-Reason: "undefined", "v=2.2 cv=OLFX5WSB c=1 sm=1 tr=0
+ cx=t_eml:g_jp p=Qc_-Gc98pncA:10 p=LCeEzJ_fp_Y1XAGGSI_h:22
+ a=FiIqOwRpAfslXfZnN2bOjA==:117 a=xbyLVnzfAZw6kvha8NeemA==:17
+ a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10 a=afefHYAZSVUA:10
+ a=84F5uX77Pw03YGAed5QA:9 a=CjuIK1q_8ugA:10"
+X-CNT-CMCheck-Score: 100.00
+Received: from echeck2.canonet.ne.jp (localhost [127.0.0.1])
+        by esets.canonet.ne.jp (Postfix) with ESMTP id 515621C021E;
+        Wed, 14 Oct 2020 13:23:49 +0900 (JST)
+X-Virus-Scanner: This message was checked by ESET Mail Security
+        for Linux/BSD. For more information on ESET Mail Security,
+        please, visit our website: http://www.eset.com/.
+Received: from smtp2.canonet.ne.jp (smtp2.canonet.ne.jp [172.21.160.22])
+        by echeck2.canonet.ne.jp (Postfix) with ESMTP id 1722E1C0252;
+        Wed, 14 Oct 2020 13:23:49 +0900 (JST)
+Received: from chikousha.co.jp (webmail.canonet.ne.jp [210.134.164.250])
+        by smtp2.canonet.ne.jp (Postfix) with ESMTPA id 9D56C15F967;
+        Wed, 14 Oct 2020 13:23:46 +0900 (JST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6a739b1b-e345-fa09-d815-6e9601aff5f6@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Message-ID: <20201014042346.000029F6.0141@chikousha.co.jp>
+Date:   Wed, 14 Oct 2020 13:23:46 +0900
+From:   "Dawuda Usman" <info@chikousha.co.jp>
+To:     <dawuda.usman1@gmail.com>
+Reply-To: <dawudausm@gmail.com>
+Subject: GREETINGS....
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+ORGANIZATION: Dawuda Usman
+X-MAILER: Active! mail
+X-EsetResult: clean, %VIRUSNAME%
+X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1602649429;VERSION=7863;MC=1068969616;TRN=0;CRV=0;IPC=210.134.164.250;SP=0;SIPS=1;PI=5;F=0
+X-I-ESET-AS: RN=0;RNP=
+X-ESET-Antispam: OK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-10-20, 14:53, Lukasz Luba wrote:
-> I've started wondering based on the OPP code if this is a good solution.
-> We would end up with one (?) instance of opp_table and list of devices
-> pinned to it, in: opp_table->dev_list
-> It can be seen e.g. in function dev_pm_opp_get_sharing_cpus(),
-> where we retrieve the cpumask simply looping through the devices:
-> 
-> list_for_each_entry(opp_dev, &opp_table->dev_list, node)
-> 	cpumask_set_cpu(opp_dev->dev->id, cpumask);
-> 
-> 
-> This means we have a single OPP table for all pinned CPUs.
-> I wonder if this is not too strong assumption for still being compliant
-> with SCMI spec, when in theory performance levels might differ...
-> (please correct me here it that would never happen)
-> 
-> There is also 2nd function dev_pm_opp_of_get_sharing_cpus() which looks
-> more promising. But I still don't know if the framework will allow us
-> to have private OPP tables when we use 'shared' in DT.
-> 
-> Could you clarify if we would get 'private' opp table for each CPU,
-> which could be then populated independently, but still 2nd function will
-> work?
+Dear Beloved Friend,
 
-I think there is some misunderstanding here in your part. The
-opp-table in the code is shared between CPUs only when the
-"opp-shared" property is present in the OPP table. If that property
-isn't available, even if same DT opp-table is pointed at by all the
-CPUs, the code will have separate copies of the OPP table.
+Sorry if this email came to you as a surprise,I am Dr.Dawuda Usman and 
+we are looking for a company or individual from your region to help us 
+receive investment fund .I will send you full details As soon As I hear
+from you thanks.
 
-Though in your case (with performance-levels) it shouldn't matter as
-code will never create an OPP table I suppose.
+Yours Faithfully,
+Dr.Dawuda Usman.
 
--- 
-viresh
+
+
