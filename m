@@ -2,110 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E545328E27B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E23B228E281
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbgJNOuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:50:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:50442 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgJNOuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:50:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED051D6E;
-        Wed, 14 Oct 2020 07:50:02 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4960C3F71F;
-        Wed, 14 Oct 2020 07:50:01 -0700 (PDT)
-Subject: Re: [PATCH v7 2/2] PCI: dwc: Fix MSI page leakage in suspend/resume
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20201009155311.22d3caa5@xhacker.debian>
- <20201009155505.5a580ef5@xhacker.debian>
- <38a00dde-598f-b6de-ecf3-5d012bd7594a@arm.com>
- <CAL_JsqLi09RTyiVLcyp1K4MNBggTvs3wqVqihpV2QhuePa3u9w@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <1f033749-6abe-b006-5e7e-276b02246056@arm.com>
-Date:   Wed, 14 Oct 2020 15:49:59 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1730236AbgJNOvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:51:36 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:45729 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729276AbgJNOvg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 10:51:36 -0400
+Received: by mail-ed1-f67.google.com with SMTP id dg9so3390171edb.12
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 07:51:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=/4+iX2b6i5/F3AxsW9fsmkgw1iUKLfdA8V3n5nlXVTk=;
+        b=D3WmZs+whL2fPoiuDavm3Clx9i+iL/zfLSIwcxEf2ylwJ60PSZdHOWxfMDBYQMl5yV
+         KpqUTLRAzu+VomkV6Exooh/4CUMiqoNswNpTsusefX3Gt35zHcOCUgm2b7co8uzgvBaC
+         YZavES4JxC+dfTImjC94JMbYVC6Baog3NxDCg2zGRIZNERsJE1X+F9rYWloqa/cPSPl4
+         thfYCC58+GuNqM9XHw9dfK/FrB3ubKD1eUyr8XxPz3ZHvpFa9z5aybXiOVOWzsXXbiGK
+         twUeSp/9O6OehFh6zf7qdNQIUO/f0uKD5AFflH0Ywu57f4XK+i7WVli18Pi/uWQmZlnp
+         xM0g==
+X-Gm-Message-State: AOAM533qvva4JNgnfORWrDs595EKbdzS0IFNSNNJguSDjGEtEqj8U1DI
+        /GiqUzG7zA72pnsRW5SBG2wyfl1+2jwSxg==
+X-Google-Smtp-Source: ABdhPJy4boWaAaNdV+SSlYO6UxUd69TfwCJwHlpWeCv1wr4t3WDLTd5NlUtpVdv+b08SxH3/QOMASA==
+X-Received: by 2002:aa7:c38b:: with SMTP id k11mr5694435edq.33.1602687093821;
+        Wed, 14 Oct 2020 07:51:33 -0700 (PDT)
+Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
+        by smtp.gmail.com with ESMTPSA id z20sm1721507edq.90.2020.10.14.07.51.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 07:51:32 -0700 (PDT)
+References: <20201012163140.371688-1-hsiang023167@gmail.com>
+ <ae86aa70-2787-fe35-7ea6-2d1c4f4d9301@arm.com>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Yun Hsiang <hsiang023167@gmail.com>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, qais.yousef@arm.com
+Subject: Re: [PATCH v2 1/1] sched/uclamp: add SCHED_FLAG_UTIL_CLAMP_RESET
+ flag to reset uclamp
+In-reply-to: <ae86aa70-2787-fe35-7ea6-2d1c4f4d9301@arm.com>
+Message-ID: <87zh4ohnf9.derkling@matbug.net>
+Date:   Wed, 14 Oct 2020 16:50:18 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLi09RTyiVLcyp1K4MNBggTvs3wqVqihpV2QhuePa3u9w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 15:15, Rob Herring wrote:
-> On Mon, Oct 12, 2020 at 6:37 AM Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2020-10-09 08:55, Jisheng Zhang wrote:
->>> Currently, dw_pcie_msi_init() allocates and maps page for msi, then
->>> program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
->>> may lose power during suspend-to-RAM, so when we resume, we want to
->>> redo the latter but not the former. If designware based driver (for
->>> example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
->>> msi page will be leaked.
->>>
->>> As pointed out by Rob and Ard, there's no need to allocate a page for
->>> the MSI address, we could use an address in the driver data.
->>>
->>> To avoid map the MSI msg again during resume, we move the map MSI msg
->>> from dw_pcie_msi_init() to dw_pcie_host_init().
->>
->> You should move the unmap there as well. As soon as you know what the
->> relevant address would be if you *were* to do DMA to this location, then
->> the exercise is complete. Leaving it mapped for the lifetime of the
->> device in order to do not-DMA to it seems questionable (and represents
->> technically incorrect API usage without at least a sync_for_cpu call
->> before any other access to the data).
->>
->> Another point of note is that using streaming DMA mappings at all is a
->> bit fragile (regardless of this change). If the host controller itself
->> has a limited DMA mask relative to physical memory (which integrators
->> still seem to keep doing...) then you could end up punching your MSI
->> hole right in the middle of the SWIOTLB bounce buffer, where it's then
->> almost *guaranteed* to interfere with real DMA :(
-> 
-> Couldn't that happen with the current code too? alloc_page() isn't
-> guaranteed to be DMA'able, right?
 
-Indeed that's what I meant by "regardless of this change".
+On Tue, Oct 13, 2020 at 22:25:48 +0200, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote...
 
->> If no DWC users have that problem and the current code is working well
->> enough, then I see little reason not to make this partucular change to
->> tidy up the implementation, just bear in mind that there's always the
->> possibility of having to come back and change it yet again in future to
->> make it more robust. I had it in mind that this trick was done with a
->> coherent DMA allocation, which would be safe from addressing problems
->> but would need to be kept around for the lifetime of the device, but
->> maybe that was a different driver :/
-> 
-> Well, we're wasting 4K or 64K of memory and then leaking it is the
-> main reason to change it.
-> 
-> We just need any address that's not memory which PCI could access. We
-> could possibly just take the end of (outbound) PCI memory space. Note
-> that the DWC driver never sets up inbound translations, so it's all
-> 1:1 mapping (though upstream could have some translation).
+Hi Dietmar,
 
-Right, this patch is undeniably a better implementation of the existing 
-approach, I just felt it worth pointing out that that approach itself 
-has fundamental flaws which may or may not be relevant to some current 
-and/or future users. I know for a fact that there are platforms which 
-cripple their PCIe host bridge to 32-bit physical addressing but support 
-having RAM above that; I don't *think* any of the ones I know of are 
-using the dw_pcie driver, but hey, how much do I know? ;)
+> Hi Yun,
+>
+> On 12/10/2020 18:31, Yun Hsiang wrote:
+>> If the user wants to stop controlling uclamp and let the task inherit
+>> the value from the group, we need a method to reset.
+>> 
+>> Add SCHED_FLAG_UTIL_CLAMP_RESET flag to allow the user to reset uclamp via
+>> sched_setattr syscall.
+>
+> before we decide on how to implement the 'uclamp user_defined reset'
+> feature, could we come back to your use case in
+> https://lkml.kernel.org/r/20201002053812.GA176142@ubuntu ?
+>
+> Lets just consider uclamp min for now. We have:
+>
+> (1) system-wide:
+>
+> # cat /proc/sys/kernel/sched_util_clamp_min
+>
+> 1024
+>
+> (2) tg (hierarchy) with top-app's cpu.uclamp.min to ~200 (20% of 1024):
+>
+> # cat /sys/fs/cgroup/cpu/top-app/cpu.uclamp.min
+> 20
+>
+> (3) and 2 cfs tasks A and B in top-app:
+>
+> # cat /sys/fs/cgroup/cpu/top-app/tasks
+>
+> pid_A
+> pid_B
+>
+> Then you set A and B's uclamp min to 100. A and B are now user_defined.
+> A and B's effective uclamp min value is 100.
+>
+> Since the task uclamp min values (3) are less than (1) and (2), their
+> uclamp min value is not affected by (1) or (2).
+>
+> If A doesn't want to control itself anymore, it can set its uclamp min
+> to e.g. 300. Now A's effective uclamp min value is ~200, i.e. controlled
+> by (2), the one of B stays 100.
+>
+> So the policy is:
+>
+> (a) If the user_defined task wants to control it's uclamp, use task
+>     uclamp value less than the tg (hierarchy) (and the system-wide)
+>     value.
+>
+> (b) If the user_defined task doesn't want to control it's uclamp
+>     anymore, use a uclamp value greater than or equal the tg (hierarchy)
+>     (and the system-wide) value.
+>
+> So where exactly is the use case which would require a 'uclamp
+> user_defined reset' functionality?
 
-Robin.
+Not sure what's the specific use-case Yun is after, but I have at least
+one in my mind.
+
+Let say a task does not need boost at all, independently from
+the cgroup it's configured to run into. We can go on and set its task
+specific value to util_min=0.
+
+In this case, when the task is running alone on a CPU, it will get
+always the minimum OPP, independently from its utilization.
+
+Now, after a while (e.g. some special event happens) we want to relax
+this constraint and allow the task to run:
+  1. at whatever OPP is required by its utilization
+  2. with any additional boost possibly enforced by its cgroup
+
+Right now we have only quite cumbersome or hack solution:
+  a) go check the current cgroup util_min value and set for the task
+  something higher than that
+  b) set task::util_min=1024 thus asking for the maximum possible boost
+
+Solution a) is more code for userspace and it's also racy. Solution b)
+is misleading since the task does not really want to run at 1024.
+It's also potentially over-killing in case the task should be moved to
+the root group, which is normally unbounded and thus the task will get
+executed always at the max OPP without any specific reason why.
+
+A simple _UCLAMP_RESET flag will allow user-space to easily switch a
+tasks to the default behavior (follow utilization or recommended
+boosts) which is what a task usually gets when it does not opt-in to
+uclamp.
+
+Looking forward to see if Yun has an even more specific use-case.
+
