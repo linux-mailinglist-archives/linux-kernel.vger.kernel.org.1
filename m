@@ -2,97 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F3928E6CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D2A28E6D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390260AbgJNS5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:57:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389489AbgJNS5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:57:21 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 974EB20691;
-        Wed, 14 Oct 2020 18:57:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602701840;
-        bh=jFQXOQDUpjT6qesgdMyQFKwEbBCv/SGOxAeads27y1I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uufeQWbi++CzSAbfjFeE8arW5VSfn63QlFfD+6AAVjcPn0ZrEKvm0FDOVWFBP5qKu
-         Qx+Lj9UjyLtzyQE1huslAmaMcCSGQOapisG8gISkjKxFSV8kEaXeXkyLvQ0kksbrTF
-         V2RkmlzvDZLJtvcgVLFJd3kvQDdXTUKvRi4qGC9E=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2EFD13522892; Wed, 14 Oct 2020 11:57:20 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 11:57:20 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
- some files
-Message-ID: <20201014185720.GA28761@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
- <20201013163354.GO3249@paulmck-ThinkPad-P72>
- <20201013163836.GC670875@rowland.harvard.edu>
- <20201014015840.GR3249@paulmck-ThinkPad-P72>
+        id S1728405AbgJNTAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 15:00:39 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:42246 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgJNTAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 15:00:39 -0400
+Received: by mail-pf1-f194.google.com with SMTP id x13so349157pfa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 12:00:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wLaTKq22Xjuu2qg4q0rGmB+fJwf3TTouQqQmSiOXGWs=;
+        b=tjuG6M5RJ6ICdqIwzVOf7Q6wT6z+uJCXJDl6qdk+3k2VMXIcHI6HI+XDo2TpVpeEK9
+         lZHOI5PZbTOo5fNE6nhYjh8quVz0fmAl4LWm98sAVQUyZ3swLs/+Yj/+ccWQCpwkoHK3
+         sPCMEEac6lN/5Ce5tjtkdxSGIeMZT9QogBsj/CzE8q0FQDcG/9oMwMVMkPvaIc15NBY0
+         fINSoMhNgGnVS+WBfa8T10lpOKksAHQ//MDgXJyV4bLjVtO8IMpRyU+A2j+EEh4WDHib
+         yyUFuXOdbDAwON2iYm3rd8OgRhpiwZgxxjdmp8eiAjHLgiPDvgoOsiEHZMF47+FgLHD1
+         x/fg==
+X-Gm-Message-State: AOAM532OtEsGwKyXiH8BUs3qph2CN97oPJyY8m218TbZNC6w0qGj79Oz
+        SPBEcAjwiDe8JjNa8obuUbI=
+X-Google-Smtp-Source: ABdhPJytz7RA9rGz/EMS5FD6O05JsFeMUv6tOrug+4pY+8qLp7HZuxvhl0dfqbzOSvBznRhpzM7tqA==
+X-Received: by 2002:a62:e112:0:b029:152:b36e:b05d with SMTP id q18-20020a62e1120000b0290152b36eb05dmr661467pfh.3.1602702038655;
+        Wed, 14 Oct 2020 12:00:38 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:7f9a:6575:dc66:60d9? ([2601:647:4802:9070:7f9a:6575:dc66:60d9])
+        by smtp.gmail.com with ESMTPSA id 78sm323384pfz.211.2020.10.14.12.00.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 12:00:37 -0700 (PDT)
+Subject: Re: [PATCH v2] nvmet: fix uninitialized work for zero kato
+To:     Keith Busch <kbusch@kernel.org>,
+        zhenwei pi <pizhenwei@bytedance.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        hch@lst.de, chaitanya.kulkarni@wdc.com
+References: <20201014033650.953656-1-pizhenwei@bytedance.com>
+ <20201014161048.GA1267726@dhcp-10-100-145-180.wdl.wdc.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <517a0b11-5bd0-4d8e-da0e-e0e0a4109897@grimberg.me>
+Date:   Wed, 14 Oct 2020 12:00:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014015840.GR3249@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201014161048.GA1267726@dhcp-10-100-145-180.wdl.wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 06:58:40PM -0700, Paul E. McKenney wrote:
-> On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote:
-> > On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrote:
-> > > > - The sysfs.txt file was converted to ReST and renamed;
-> > > > - The control-dependencies.txt is not at
-> > > >   Documentation/control-dependencies.txt. As it is at the
-> > > >   same dir as the README file, which mentions it, just
-> > > >   remove Documentation/.
-> > > > 
-> > > > With that, ./scripts/documentation-file-ref-check script
-> > > > is now happy again for files under tools/.
-> > > > 
-> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > 
-> > > Queued for review and testing, likely target v5.11.
-> > 
-> > Instead of changing the path in the README reference, shouldn't 
-> > tools/memory-model/control-dependencies.txt be moved to its proper 
-> > position in .../Documentation?
+
+>> Fixes:
+>> Don't run keep alive work with zero kato.
 > 
-> You are of course quite right.  My thought is to let Mauro go ahead,
-> given his short deadline.  We can then make this "git mv" change once
-> v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
-> added a reminder to my calendar.
+> "Fixes" tags need to have a git commit id followed by the commit
+> subject. I can't find any commit with that subject, though.
 
-Except that I cannot find a commit where control-dependencies.txt is
-in tools/memory-model.  And this file is not yet in mainline, but
-only in -rcu and -next.  In both places, it is here:
-
-	tools/memory-model/Documentation/control-dependencies.txt
-
-Mauro, to what commit in what tree are you applying this patch?
-
-							Thanx, Paul
+Fixes: 0d3b6a8d213a ("nvmet: Disable keep-alive timer when kato is 
+cleared to 0h")
