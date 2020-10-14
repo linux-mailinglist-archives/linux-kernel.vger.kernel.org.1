@@ -2,199 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39BF28E8CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2318A28EB00
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729335AbgJNWgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 18:36:47 -0400
-Received: from mga17.intel.com ([192.55.52.151]:52318 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727387AbgJNWgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 18:36:47 -0400
-IronPort-SDR: XQUBGxjjEhaOehiPAC+IKopvwyhTpDZrk4/9nCG41sVq0WBVqmp9tMCPbu7A6Z8tmg9lk1s9pD
- a71boW462BCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="146075527"
-X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
-   d="scan'208";a="146075527"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 15:36:44 -0700
-IronPort-SDR: hlP7s+Gr/Rc5V3W88BvFKe6EIiWdd3DK6aubfzWryOw3NIX1vtjOIln2dH/BqVvMF6khwk9JWw
- v4tFUtvP1LbA==
-X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
-   d="scan'208";a="531020083"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 15:36:42 -0700
-Date:   Wed, 14 Oct 2020 15:36:42 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 4/9] x86/pks: Preserve the PKRS MSR on context
- switch
-Message-ID: <20201014223642.GN2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009194258.3207172-1-ira.weiny@intel.com>
- <20201009194258.3207172-5-ira.weiny@intel.com>
- <429789d3-ab5b-49c3-65c3-f0fc30a12516@intel.com>
+        id S1729842AbgJOCOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbgJOCOh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 22:14:37 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813AAC05BD1A;
+        Wed, 14 Oct 2020 15:36:58 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id r127so1212313lff.12;
+        Wed, 14 Oct 2020 15:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BAhqLujKs3qvyU8mzyTrRxpaREp3Hw9vVWDBSKjqLnY=;
+        b=BUGxB1YA65cmz4OJ8kyPkuDCA+/Ycreilwo3cOCS4XMMcq6n+qcAHHm1nkgzJoV8kI
+         yxX6QTeZaUR+Kx7wqY2c30nPWaIV2Kov4qwGa4+p3V+X5ac9NuPgHOxlXHoOJxZDIsBl
+         yXUZpvZMtszcu5IWa4C+OfWnMQ354z9wlZ50kUZRh0H9JPLjATjcIoRTIadynuMj5enM
+         ABX49FKBmhAws+/g+5SphWYG7J69jz8A6BK23XKQhTdAwjpb5C6Bx69fORFnHqzoj0ZQ
+         WM3Gbu/IqKWl8gnX829aiUeSewYwyt3rB+aIZ8jTAIn7KdJLfnwjoVvCxcQLgBnWf3hC
+         /14Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BAhqLujKs3qvyU8mzyTrRxpaREp3Hw9vVWDBSKjqLnY=;
+        b=VpQCEGBzTTPJCknqQygHvnGHQ2QdoeIvAyEaT7GzHRNTu7Jo4/tem1/sNIERtB8UOG
+         l5QhuI0LFIzVhuGMlqBc+naW1t//EHMjmqbCCq4/XH4uNOVPC6Q7LL5PlvgMUQpPh7HO
+         yricARks8mptS7IzaG7mkqbytvqMJBM8v9DFMeuDUBUL0Dl3WJKwKQiQrYmlwtOKa2Ot
+         JHqUtDu8oX1oWw07EVrhJQL9PvUcJF9nJ+l1ZJvM/Vq4vJDyP0d4mXyYLy/rdpsThflQ
+         tDY+xQKhUb+mDOZpeEl2iYsitymc8/CwTtK95SNYeGM2nioQ7xRdSIvsNNCb/RtPs/q4
+         zYdQ==
+X-Gm-Message-State: AOAM5330cdUjkTuUd/Q/deJl91SJ4z5rMPcfmPzKlBu8qBwl5V6QpscP
+        K7qK91HdBw6vDkyjolcD2wRB8GLA5U0=
+X-Google-Smtp-Source: ABdhPJxZisFbSGvURTBfOCD9EDQlBYtk/KEGQrFQGMEtiQdtgCqp/S/vrha8NPgrelxcV8hOJ2zN3g==
+X-Received: by 2002:a19:84d5:: with SMTP id g204mr78148lfd.194.1602715016908;
+        Wed, 14 Oct 2020 15:36:56 -0700 (PDT)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id e73sm245572lfd.199.2020.10.14.15.36.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 15:36:56 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 01:36:54 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: DEC: Restore bootmem reservation for firmware
+ working memory area
+Message-ID: <20201014223654.rntqmnrxldxovf3u@mobilestation>
+References: <alpine.LFD.2.21.2010142230090.866917@eddie.linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <429789d3-ab5b-49c3-65c3-f0fc30a12516@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <alpine.LFD.2.21.2010142230090.866917@eddie.linux-mips.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 11:31:45AM -0700, Dave Hansen wrote:
-> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > The PKRS MSR is defined as a per-logical-processor register.  This
-> > isolates memory access by logical CPU.  Unfortunately, the MSR is not
-> > managed by XSAVE.  Therefore, tasks must save/restore the MSR value on
-> > context switch.
-> > 
-> > Define a saved PKRS value in the task struct, as well as a cached
-> > per-logical-processor MSR value which mirrors the MSR value of the
-> > current CPU.  Initialize all tasks with the default MSR value.  Then, on
-> > schedule in, check the saved task MSR vs the per-cpu value.  If
-> > different proceed to write the MSR.  If not avoid the overhead of the
-> > MSR write and continue.
+Maciej,
+Regardless of a comment below feel free to add:
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+
+On Wed, Oct 14, 2020 at 10:34:56PM +0100, Maciej W. Rozycki wrote:
+> Fix a crash on DEC platforms starting with:
 > 
-> It's probably nice to note how the WRMSR is special here, in addition to
-> the comments below.
-
-Sure,
-
+> VFS: Mounted root (nfs filesystem) on device 0:11.
+> Freeing unused PROM memory: 124k freed
+> BUG: Bad page state in process swapper  pfn:00001
+> page:(ptrval) refcount:0 mapcount:-128 mapping:00000000 index:0x1 pfn:0x1
+> flags: 0x0()
+> raw: 00000000 00000100 00000122 00000000 00000001 00000000 ffffff7f 00000000
+> page dumped because: nonzero mapcount
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper Not tainted 5.9.0-00858-g865c50e1d279 #1
+> Stack : 8065dc48 0000000b 8065d2b8 9bc27dcc 80645bfc 9bc259a4 806a1b97 80703124
+>         80710000 8064a900 00000001 80099574 806b116c 1000ec00 9bc27d88 806a6f30
+>         00000000 00000000 80645bfc 00000000 31232039 80706ba4 2e392e35 8039f348
+>         2d383538 00000070 0000000a 35363867 00000000 806c2830 80710000 806b0000
+>         80710000 8064a900 00000001 81000000 00000000 00000000 8035af2c 80700000
+>         ...
+> Call Trace:
+> [<8004bc5c>] show_stack+0x34/0x104
+> [<8015675c>] bad_page+0xfc/0x128
+> [<80157714>] free_pcppages_bulk+0x1f4/0x5dc
+> [<801591cc>] free_unref_page+0xc0/0x130
+> [<8015cb04>] free_reserved_area+0x144/0x1d8
+> [<805abd78>] kernel_init+0x20/0x100
+> [<80046070>] ret_from_kernel_thread+0x14/0x1c
+> Disabling lock debugging due to kernel taint
 > 
-> >  #endif /*_ASM_X86_PKEYS_INTERNAL_H */
-> > diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> > index 97143d87994c..da2381136b2d 100644
-> > --- a/arch/x86/include/asm/processor.h
-> > +++ b/arch/x86/include/asm/processor.h
-> > @@ -18,6 +18,7 @@ struct vm86;
-> >  #include <asm/cpufeatures.h>
-> >  #include <asm/page.h>
-> >  #include <asm/pgtable_types.h>
-> > +#include <asm/pkeys_common.h>
-> >  #include <asm/percpu.h>
-> >  #include <asm/msr.h>
-> >  #include <asm/desc_defs.h>
-> > @@ -542,6 +543,11 @@ struct thread_struct {
-> >  
-> >  	unsigned int		sig_on_uaccess_err:1;
-> >  
-> > +#ifdef	CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> > +	/* Saved Protection key register for supervisor mappings */
-> > +	u32			saved_pkrs;
-> > +#endif
+> caused by an attempt to free bootmem space that as from commit 
+> b93ddc4f9156 ("mips: Reserve memory for the kernel image resources") has 
+> not been anymore reserved due to the removal of generic MIPS arch code 
+> that used to reserve all the memory from the beginning of RAM up to the 
+> kernel load address.
 > 
-> Could you take a look around thread_struct and see if there are some
-> other MSRs near which you can stash this?  This seems like a bit of a
-> lonely place.
-
-Are you more concerned with aesthetics or the in memory struct layout?
-
-How about I put it after error_code?
-
-	unsigned long           error_code;                                     
-+                                                                               
-+#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS                                        
-+       /* Saved Protection key register for supervisor mappings */             
-+       u32                     saved_pkrs;                                     
-+#endif                                                                         
-+                                                                               
-
-?
-
+> This memory does need to be reserved on DEC platforms however as it is 
+> used by REX firmware as working area, as per the TURBOchannel firmware 
+> specification[1]:
 > 
-> ...
-> >  void flush_thread(void)
-> >  {
-> >  	struct task_struct *tsk = current;
-> > @@ -195,6 +212,8 @@ void flush_thread(void)
-> >  	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
-> >  
-> >  	fpu__clear_all(&tsk->thread.fpu);
-> > +
-> > +	pks_init_task(tsk);
-> >  }
-> >  
-> >  void disable_TSC(void)
-> > @@ -644,6 +663,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
-> >  
-> >  	if ((tifp ^ tifn) & _TIF_SLD)
-> >  		switch_to_sld(tifn);
-> > +
-> > +	pks_sched_in();
-> >  }
-> >  
-> >  /*
-> > diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
-> > index 3cf8f775f36d..30f65dd3d0c5 100644
-> > --- a/arch/x86/mm/pkeys.c
-> > +++ b/arch/x86/mm/pkeys.c
-> > @@ -229,3 +229,31 @@ u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
-> >  
-> >  	return pk_reg;
-> >  }
-> > +
-> > +DEFINE_PER_CPU(u32, pkrs_cache);
-> > +
-> > +/**
-> > + * It should also be noted that the underlying WRMSR(MSR_IA32_PKRS) is not
-> > + * serializing but still maintains ordering properties similar to WRPKRU.
-> > + * The current SDM section on PKRS needs updating but should be the same as
-> > + * that of WRPKRU.  So to quote from the WRPKRU text:
-> > + *
-> > + * 	WRPKRU will never execute transiently. Memory accesses
-> > + * 	affected by PKRU register will not execute (even transiently)
-> > + * 	until all prior executions of WRPKRU have completed execution
-> > + * 	and updated the PKRU register.
-> > + */
-> > +void write_pkrs(u32 new_pkrs)
-> > +{
-> > +	u32 *pkrs;
-> > +
-> > +	if (!static_cpu_has(X86_FEATURE_PKS))
-> > +		return;
-> > +
-> > +	pkrs = get_cpu_ptr(&pkrs_cache);
-> > +	if (*pkrs != new_pkrs) {
-> > +		*pkrs = new_pkrs;
-> > +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
-> > +	}
-> > +	put_cpu_ptr(pkrs);
-> > +}
-> > 
+> Table 2-2  REX Memory Regions
+> -------------------------------------------------------------------------
+>         Starting        Ending
+> Region  Address         Address         Use
+> -------------------------------------------------------------------------
+> 0       0xa0000000      0xa000ffff      Restart block, exception vectors,
+>                                         REX stack and bss
+> 1       0xa0010000      0xa0017fff      Keyboard or tty drivers
 > 
-> It bugs me a *bit* that this is being called in a preempt-disabled
-> region, but we still bother with the get/put_cpu jazz.  Are there other
-> future call-sites for this that aren't in preempt-disabled regions?
+> 2       0xa0018000      0xa001f3ff 1)   CRT driver
+> 
+> 3       0xa0020000      0xa002ffff      boot, cnfg, init and t objects
+> 
+> 4       0xa0020000      0xa002ffff      64KB scratch space
+> -------------------------------------------------------------------------
+> 1) Note that the last 3 Kbytes of region 2 are reserved for backward
+> compatibility with previous system software.
+> -------------------------------------------------------------------------
+> 
 
-I'm not specifically disabling preempt before calling write_pkrs except in the
-next patch (which is buggy because I meant to have it around the modification
-of thread.saved_pkrs as well).  But that was to protect the thread variable not
-the percpu cache vs MSR.
+...
 
-My thought above was it is safer for this call to ensure the per-cpu variable
-is consistent with the register.  The other calls to write_pkrs() may require
-preemption disable but for reasons unrelated to write_pkrs' state.
+> @@ -146,6 +150,9 @@ void __init plat_mem_setup(void)
+>  
+>  	ioport_resource.start = ~0UL;
+>  	ioport_resource.end = 0UL;
 
-After some research I've now fully confused myself if this is needed in patch
-7/9 where write_pkrs() is called from the exception handing code.  But I think
-it is needed there.  Isn't it?
+> +
+> +	/* Stay away from the firmware working memory area for now. */
+> +	memblock_reserve(PHYS_OFFSET, __pa_symbol(&_text) - PHYS_OFFSET);
 
-Since preempt_disable() is nestable I think this is ok correct?
+I am just wondering...
+Here we reserve a region within [PHYS_OFFSET, __pa_symbol(&_text)]. But then in
+the prom_free_prom_memory() method we'll get to free a region as either
+[PAGE_SIZE, __pa_symbol(&_text)] or [PAGE_SIZE, __pa_symbol(&_text) - 0x00020000].
 
-Ira
+First of all the start address of the being freed region is PAGE_SIZE, which doesn't
+take the PHYS_OFFSET into account. I assume it won't cause problems because
+PHYS_OFFSET is set to 0 for DEC. If so then we either shouldn't use PHYS_OFFSET
+here or should take PHYS_OFFSET into account there on freeing or should just forget
+about that since other than confusion it won't cause any problem.)
+(I should have posted this question to v1 of this patch instead of pointing out
+on the confusing size argument of the memblock_reserve() method. Sorry about
+that.)
+
+Secondly why is PAGE_SIZE selected as the start address? It belongs to the
+Region 1 in accordance with "Table 2-2 REX Memory Regions" cited above. Thus we
+get to keep reserved just a part of the Region 1. Most likely it's the restart
+block and the exception vectors. Even assuming that the DEC developers knew what
+they were doing, I am wondering can we be sure that a single page is enough for
+all that data?..
+
+-Sergey
+
+>  }
+>  
+>  /*
