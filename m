@@ -2,162 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBD428E1A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C0628E1AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731432AbgJNNtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:49:23 -0400
-Received: from mail-mw2nam10on2059.outbound.protection.outlook.com ([40.107.94.59]:61024
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726680AbgJNNtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:49:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gy0d8pzoZPA36VqgKxYZ/tkkItq9vvVb4lZb6Iv0jn/EpM90u99z5yv2ZgayVSagMiOpp6CmX/ngXT/yDSzmvzb3VNmzKgOTdvsK1chueUFteJK0AuTz+tkDv6WPL1R9zmP1vTEWI1ar146I5+KSarypjAtGYij1JEO45DKfniU98JINgrnuPF0jn+qbZuVNEdRBvtm/qRAisQ166TIPQs8CIsqLnwW0gchFZHaXr69NvvX5Cu2dTOdlZw3+PAcb5vZq/ZEyXbcZXIViJh6i/PBSbEF8IFOWQpv9/1nxp6rg+pPxvoh4vyO7Ri4RLuJ+fY4kshGSaXAZTJwNJfpv4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hpyv1JvntTb93c+qrvdeuKGsflEK1eadGjK9HigqFcA=;
- b=LBHrXBPw/rdzuzLYjPdNBxBFuVvd89+jsoBrO94iR/RxyPG2io6ZX4Lo6rHYie1lSlR4WpcI90d4vOHnpo8ZkUmiQAeTbteyAgAJzv0kbcMQXAfzNnon/Zgp9z5zPzLGlAxgH9nWCYJKnzxrbDzsrlyeiJfFPQ7JqB6+q+bsEuhujEfdh9jk/0L3pC5vglhOhaFOZLzK+dSw+5fJBHuqemkCjv9wMKkYXr+KAzG6JSW3/jWrv8C5OH/uHqaqx7jLZZElMSqmSqdLc0IHxVNXmTBpuUM2efREbceBRNZISE9HLLw23s7O6Hq45A8XYzyIMwFu9oe8hm7PpSGuIULjDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hpyv1JvntTb93c+qrvdeuKGsflEK1eadGjK9HigqFcA=;
- b=eC6cB5tl7DEdsLdX9Jiju+xZpjKRa6Q2FlWWDU3dYc7gW2PW/r/UIXjYY7baiaFXDi/su31Erk+iyGGa0jxJF4PgIu+Y8xmhlcHeG7U7RRJ6ZBfMLs5mnJ2R66MaGWKXr/pxphzYtHvPf/2YhQF6KLFkyi39wgherAVCP1jlOj4=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=silabs.com;
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
- by SN6PR11MB3357.namprd11.prod.outlook.com (2603:10b6:805:c2::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Wed, 14 Oct
- 2020 13:49:17 +0000
-Received: from SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::4f5:fbe5:44a7:cb8a]) by SN6PR11MB2718.namprd11.prod.outlook.com
- ([fe80::4f5:fbe5:44a7:cb8a%5]) with mapi id 15.20.3455.031; Wed, 14 Oct 2020
- 13:49:17 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 01/23] dt-bindings: introduce silabs,wfx.yaml
-Date:   Wed, 14 Oct 2020 15:49:12 +0200
-Message-ID: <3929101.dIHeVNgAIR@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <20201013164935.GA3646933@bogus>
-References: <20201012104648.985256-1-Jerome.Pouiller@silabs.com> <20201012104648.985256-2-Jerome.Pouiller@silabs.com> <20201013164935.GA3646933@bogus>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Originating-IP: [82.67.86.106]
-X-ClientProxiedBy: DM6PR11CA0034.namprd11.prod.outlook.com
- (2603:10b6:5:190::47) To SN6PR11MB2718.namprd11.prod.outlook.com
- (2603:10b6:805:63::18)
+        id S2388216AbgJNNtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:49:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57861 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726680AbgJNNtz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:49:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602683393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2QEmxJLiT1wHeNPWeuMQam02BQ0ZmlXtwVvgC9s9VEA=;
+        b=QFgNg8RwJkH/wQOxb3TsLjgJXiSAiFncgiC1OAiDKozO62D8LGOdcrub9GniTB57fwxSEB
+        xpILR4lYLAJUwzl/VEMDWY4Rh/Y55O+6vl5P8b+fRoeRhbslWcdhS6eujSbPZidPofpwaS
+        ibut65ZX6CYJLnQnBl79H4ogANXLFnQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-Tvzl8CbCObCq5viflTFpLQ-1; Wed, 14 Oct 2020 09:49:51 -0400
+X-MC-Unique: Tvzl8CbCObCq5viflTFpLQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CCFC78797D3;
+        Wed, 14 Oct 2020 13:49:49 +0000 (UTC)
+Received: from krava (unknown [10.40.195.92])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6D44F60C0F;
+        Wed, 14 Oct 2020 13:49:48 +0000 (UTC)
+Date:   Wed, 14 Oct 2020 15:49:47 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andi Kleen <andi@firstfloor.org>
+Cc:     acme@kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org,
+        peterz@infradead.org, Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH] perf: Add support for exclusive groups/events
+Message-ID: <20201014134947.GA1395746@krava>
+References: <20201014035203.4354-1-andi@firstfloor.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-42.localnet (82.67.86.106) by DM6PR11CA0034.namprd11.prod.outlook.com (2603:10b6:5:190::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Wed, 14 Oct 2020 13:49:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c842df6f-3ce7-461c-a691-08d87047f189
-X-MS-TrafficTypeDiagnostic: SN6PR11MB3357:
-X-Microsoft-Antispam-PRVS: <SN6PR11MB3357B01F04F846FD90383B8893050@SN6PR11MB3357.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NoWHYRlSMV6kNiBHbxmJXASGr9QjStsLpSTgoZd8/inB7u8zQl9Q/G45JTMSptZ1wjlaGIT1LWU8Rmmo7z2I1FIfEyzTYBLPRo7BlujmAmVD9ZONE24iulHVLu4EPQ62Mn6O8lNlAjOrwzto8mwOKZFQu127vLsvMihIkwdaK0hfFNAqqbI50IJ6HUiZhm8hN/GXrdoxpEIHhtMyYAwdj+ucdH3MOwza8l2Nuan1nj9JFz/ey+d7IvLe3mbsSQqv1cHufgvuk7rCwx6vF+PVYDV+2DkB7gRO9v3WzcUAhHs6fdIpJesxDn/rtnqNla4T6uKWS1j8zk15uan2w4Ak8g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(376002)(346002)(39850400004)(66556008)(66946007)(66476007)(33716001)(6916009)(83380400001)(52116002)(86362001)(6486002)(8936002)(8676002)(5660300002)(6506007)(36916002)(4326008)(478600001)(956004)(316002)(26005)(6666004)(54906003)(6512007)(9686003)(16526019)(186003)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: qjPVWzeJAIz4IzX9zP/L/vNRRWvnL0QVtb3olsTy3tXQ0qpgDcfbhq9aiCgDpQmeMEnx5C18+ogdYIoTrOtV2oJsIFjo7oOBT5GRKUF5fPs/4XwPkuA9H1DoXfRo0Ni3yCryBUOs/ZEOERrd6anedXFdDkdlEVXIhOPEO9wah6AGCjUFXYHR8l3VC8u2gHS38WlW21vSMIa8R4Dx6BYUoJsem7OQX+UvtYzE0zlRKRi2WaMSlgF6uF+FOLfPqT4KK9yQ1N0NrDZEUUc1JyN4i1rBCr22YZQkTVyZsoC9ma3NL16fkT2/pwpTMpTvUeGbl4AHu/jDX97KANn1jfKEa+KlLJPZxqD3lCGa1qL8N/LceFwnW7ag8+5D3jgdM0OnrgG5QWst+4g56V9SI1BNK3ugN59ZNMvMZ+BnjCcqwixlD9msEC/+1tC86Gk2i75anBe5aUFra+HqAp7GT3ayfiUQE4hIpuj+Q+fBNWG6GuuiYFkAJ+VmFqOJsGXommnknl56GEFmB6vnX9ba/l9HeAUWChRP3ES2nkPdGBnMznu28ctvRJ/S7mHdzMFDO+XynALrbLZ8Uic/omagGgSRUVRxmqAbe7onzFJ6rza5i/n+iQfV+3XK3YIQbvgzgX54yHpC/Mu10YtO4TTXQ87gRA==
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c842df6f-3ce7-461c-a691-08d87047f189
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 13:49:17.3982
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4vNisfYkgmddN/Oj4dbNb9pijpnb4O6RtZUx4oQkUPpo69T/8DbZZQ7bjz/3gO+d+azLXPSJEDet1OEa1jFPeQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3357
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014035203.4354-1-andi@firstfloor.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 13 October 2020 18:49:35 CEST Rob Herring wrote:
-> On Mon, Oct 12, 2020 at 12:46:26PM +0200, Jerome Pouiller wrote:
-> > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-[...]
-> > +  Note that in add of the properties below, the WFx driver also suppor=
-ts
-> > +  `mac-address` and `local-mac-address` as described in
-> > +  Documentation/devicetree/bindings/net/ethernet.txt
->=20
-> Note what ethernet.txt contains... This should have a $ref to
-> ethernet-controller.yaml to express the above.
->=20
-> You can add 'mac-address: true' if you want to be explicit about what
-> properties are used.
+On Tue, Oct 13, 2020 at 08:52:03PM -0700, Andi Kleen wrote:
+> Peter suggested that using the exclusive mode in perf could
+> avoid some problems with bad scheduling of groups. Exclusive
+> is implemented in the kernel, but wasn't exposed by the perf tool,
+> so hard to use without custom low level API users.
+> 
+> Add support for marking groups or events with :e for exclusive
+> in the perf tool.  The implementation is basically the same as the
+> existing pinned attribute.
+> 
+> Cc: peterz@infradead.org
+> Signed-off-by: Andi Kleen <ak@linux.intel.com>
+> ---
+>  tools/perf/Documentation/perf-list.txt |  1 +
+>  tools/perf/tests/parse-events.c        | 58 +++++++++++++++++++++++++-
+>  tools/perf/util/parse-events.c         |  9 +++-
+>  tools/perf/util/parse-events.l         |  2 +-
+>  4 files changed, 67 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
+> index 10ed539a8859..4c7db1da8fcc 100644
+> --- a/tools/perf/Documentation/perf-list.txt
+> +++ b/tools/perf/Documentation/perf-list.txt
+> @@ -58,6 +58,7 @@ counted. The following modifiers exist:
+>   S - read sample value (PERF_SAMPLE_READ)
+>   D - pin the event to the PMU
+>   W - group is weak and will fallback to non-group if not schedulable,
+> + e - group or event are exclusive and do not share the PMU
+>  
+>  The 'p' modifier can be used for specifying how precise the instruction
+>  address should be. The 'p' modifier can be specified multiple times:
+> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+> index 7f9f87a470c3..7411dd4d76cf 100644
+> --- a/tools/perf/tests/parse-events.c
+> +++ b/tools/perf/tests/parse-events.c
+> @@ -557,6 +557,7 @@ static int test__checkevent_pmu_events(struct evlist *evlist)
+>  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+>  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+>  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+>  
+>  	return 0;
+>  }
+> @@ -575,6 +576,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
+>  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+>  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+>  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+>  
+>  	/* cpu/pmu-event/u*/
+>  	evsel = evsel__next(evsel);
+> @@ -587,6 +589,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
+>  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+>  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+>  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
+> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.pinned);
+>  
+>  	return 0;
+>  }
+> @@ -1277,6 +1280,49 @@ static int test__pinned_group(struct evlist *evlist)
+>  	return 0;
+>  }
+>  
+> +static int test__checkevent_exclusive_modifier(struct evlist *evlist)
+> +{
+> +	struct evsel *evsel = evlist__first(evlist);
+> +
+> +	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
+> +	TEST_ASSERT_VAL("wrong exclude_kernel", evsel->core.attr.exclude_kernel);
+> +	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+> +	TEST_ASSERT_VAL("wrong precise_ip", evsel->core.attr.precise_ip);
+> +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
+> +
+> +	return test__checkevent_symbolic_name(evlist);
+> +}
+> +
+> +static int test__exclusive_group(struct evlist *evlist)
+> +{
+> +	struct evsel *evsel, *leader;
+> +
+> +	TEST_ASSERT_VAL("wrong number of entries", 3 == evlist->core.nr_entries);
+> +
+> +	/* cycles - group leader */
+> +	evsel = leader = evlist__first(evlist);
+> +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+> +	TEST_ASSERT_VAL("wrong config",
+> +			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
+> +	TEST_ASSERT_VAL("wrong group name", !evsel->group_name);
+> +	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
+> +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
+> +
+> +	/* cache-misses - can not be pinned, but will go on with the leader */
+> +	evsel = evsel__next(evsel);
+> +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
+> +	TEST_ASSERT_VAL("wrong config",
+> +			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
+> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+> +
+> +	/* branch-misses - ditto */
+> +	evsel = evsel__next(evsel);
+> +	TEST_ASSERT_VAL("wrong config",
+> +			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
+> +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+> +
+> +	return 0;
+> +}
+>  static int test__checkevent_breakpoint_len(struct evlist *evlist)
+>  {
+>  	struct evsel *evsel = evlist__first(evlist);
+> @@ -1765,7 +1811,17 @@ static struct evlist_test test__events[] = {
+>  		.name  = "cycles:k",
+>  		.check = test__sym_event_dc,
+>  		.id    = 55,
+> -	}
+> +	},
+> +	{
+> +		.name  = "instructions:uep",
+> +		.check = test__checkevent_exclusive_modifier,
+> +		.id    = 56,
+> +	},
+> +	{
+> +		.name  = "{cycles,cache-misses,branch-misses}:e",
+> +		.check = test__exclusive_group,
+> +		.id    = 57,
+> +	},
+>  };
+>  
+>  static struct evlist_test test__events_pmu[] = {
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index 9f7260e69113..760506f7a87a 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -1768,6 +1768,7 @@ struct event_modifier {
+>  	int sample_read;
+>  	int pinned;
+>  	int weak;
+> +	int exclusive;
+>  };
+>  
+>  static int get_event_modifier(struct event_modifier *mod, char *str,
+> @@ -1783,6 +1784,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+>  	int precise_max = 0;
+>  	int sample_read = 0;
+>  	int pinned = evsel ? evsel->core.attr.pinned : 0;
+> +	int exclusive = evsel ? evsel->core.attr.exclusive : 0;
+>  
+>  	int exclude = eu | ek | eh;
+>  	int exclude_GH = evsel ? evsel->exclude_GH : 0;
+> @@ -1824,6 +1826,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+>  			sample_read = 1;
+>  		} else if (*str == 'D') {
+>  			pinned = 1;
+> +		} else if (*str == 'e') {
+> +			exclusive = 1;
+>  		} else if (*str == 'W') {
+>  			weak = 1;
+>  		} else
+> @@ -1857,6 +1861,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+>  	mod->sample_read = sample_read;
+>  	mod->pinned = pinned;
+>  	mod->weak = weak;
+> +	mod->exclusive = exclusive;
+>  
+>  	return 0;
+>  }
+> @@ -1912,8 +1917,10 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
+>  		evsel->precise_max         = mod.precise_max;
+>  		evsel->weak_group	   = mod.weak;
+>  
+> -		if (evsel__is_group_leader(evsel))
+> +		if (evsel__is_group_leader(evsel)) {
+>  			evsel->core.attr.pinned = mod.pinned;
+> +			evsel->core.attr.exclusive = mod.exclusive;
+> +		}
+>  	}
+>  
+>  	return 0;
+> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+> index 3ca5fd2829ca..9db5097317f4 100644
+> --- a/tools/perf/util/parse-events.l
+> +++ b/tools/perf/util/parse-events.l
+> @@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
+>  name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+>  drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
+>  /* If you add a modifier you need to update check_modifier() */
 
-Here, only mac-address and local-mac-address are supported. So, would the
-code below do the job?
+please update also check_modifier function as the comment
+suggests, other than that it looks good to me
 
-  local-mac-address:
-    $ref: ethernet-controller.yaml#/properties/local-mac-address
-
-  mac-address:
-    $ref: ethernet-controller.yaml#/properties/mac-address
+thanks,
+jrka
 
 
-[...]
-> > +  spi-max-frequency:
-> > +    description: (SPI only) Maximum SPI clocking speed of device in Hz=
-.
->=20
-> No need to redefine a common property.
-
-When a property is specific to a bus, I would have like to explicitly
-say it. That's why I redefined the description.
-
-
-[...]
-> > +  config-file:
-> > +    description: Use an alternative file as PDS. Default is `wf200.pds=
-`. Only
-> > +      necessary for development/debug purpose.
->=20
-> 'firmware-name' is typically what we'd use here. Though if just for
-> debug/dev, perhaps do a debugfs interface for this instead. As DT should
-> come from the firmware/bootloader, requiring changing the DT for
-> dev/debug is not the easiest workflow compared to doing something from
-> userspace.
-
-This file is not a firmware. It mainly contains data related to the
-antenna. At the beginning, this property has been added for
-development. With the time, I think it can be used to  have one disk
-image for several devices that differ only in antenna.
-
-I am going to remove the part about development/debug purpose.
-
-
-[...]
-> Will need additionalProperties or unevaluatedProperties depending on
-> whether you list out properties from ethernet-controller.yaml or not.
-
-I think I need to specify "additionalProperties: true" since the user can
-also use properties defined for the SPI devices.
-
-In fact, I would like to write something like:
-
-    allOf:
-        $ref: spi-controller.yaml#/patternProperties/^.*@[0-9a-f]+$/propert=
-ies
-
-
-
---=20
-J=E9r=F4me Pouiller
-
+> -modifier_event	[ukhpPGHSDIW]+
+> +modifier_event	[ukhpPGHSDIWe]+
+>  modifier_bp	[rwx]{1,3}
+>  
+>  %%
+> -- 
+> 2.28.0
+> 
 
