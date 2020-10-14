@@ -2,148 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A0C28E8C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39BF28E8CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgJNWdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 18:33:01 -0400
-Received: from vern.gendns.com ([98.142.107.122]:45968 "EHLO vern.gendns.com"
+        id S1729335AbgJNWgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 18:36:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:52318 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726395AbgJNWdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 18:33:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=pqfve9QSwJ97lwFe5PUL5oCSivPq5QqIIRkVs7VEbRc=; b=pWvwvcvsEWpMVOnY15/WSPNrFG
-        W+iqT8m+vE1iqkyyTyS3BgpZdObFYIhxIEHh4CigI694dn0aS7MZ1ZSirVibJiY1T4bnl5QUushIV
-        5b8eNWin3KaoD+cPmJMigfUnD/WvOUrIBSVqp1LFK7g8WWxq24pgrVLHTSrQPmVOo3C/eR3Cgj4kM
-        g6xnGZfxORaKzuCA2mnlIGy1/ZAcvroGVdhwMjL1vMLYQcPz/iy+GKRXroyZlpCvbqnP0II7Hw92K
-        5+J3lBTbro39rw64yge3wO6c1JjbbetE6oKGmcBAq0YZ+fJrsf+yI+B3BuuHSV9dcc09Y2/KBzSEB
-        W+ClXZBQ==;
-Received: from [2600:1700:4830:165f::19e] (port=50504)
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1kSpKL-0000An-70; Wed, 14 Oct 2020 18:32:57 -0400
-Subject: Re: [PATCH v5 3/5] counter: Add character device interface
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1601170670.git.vilhelm.gray@gmail.com>
- <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
- <67a0290e-731b-822a-5113-30b56bde6c88@lechnology.com>
- <20201014190526.GA13439@shinobu>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <e9fe486c-7f4f-911a-7f40-f713ff0deb17@lechnology.com>
-Date:   Wed, 14 Oct 2020 17:32:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727387AbgJNWgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 18:36:47 -0400
+IronPort-SDR: XQUBGxjjEhaOehiPAC+IKopvwyhTpDZrk4/9nCG41sVq0WBVqmp9tMCPbu7A6Z8tmg9lk1s9pD
+ a71boW462BCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="146075527"
+X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
+   d="scan'208";a="146075527"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 15:36:44 -0700
+IronPort-SDR: hlP7s+Gr/Rc5V3W88BvFKe6EIiWdd3DK6aubfzWryOw3NIX1vtjOIln2dH/BqVvMF6khwk9JWw
+ v4tFUtvP1LbA==
+X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
+   d="scan'208";a="531020083"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 15:36:42 -0700
+Date:   Wed, 14 Oct 2020 15:36:42 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 4/9] x86/pks: Preserve the PKRS MSR on context
+ switch
+Message-ID: <20201014223642.GN2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-5-ira.weiny@intel.com>
+ <429789d3-ab5b-49c3-65c3-f0fc30a12516@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201014190526.GA13439@shinobu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <429789d3-ab5b-49c3-65c3-f0fc30a12516@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/20 2:05 PM, William Breathitt Gray wrote:
-> On Wed, Oct 14, 2020 at 12:43:08PM -0500, David Lechner wrote:
->> On 9/26/20 9:18 PM, William Breathitt Gray wrote:
->>> diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter-chrdev.c
->>> new file mode 100644
->>> index 000000000000..2be3846e4105
->>> --- /dev/null
->>> +++ b/drivers/counter/counter-chrdev.c
->>
->>
->>> +/**
->>> + * counter_push_event - queue event for userspace reading
->>> + * @counter:	pointer to Counter structure
->>> + * @event:	triggered event
->>> + * @channel:	event channel
->>> + *
->>> + * Note: If no one is watching for the respective event, it is silently
->>> + * discarded.
->>> + *
->>> + * RETURNS:
->>> + * 0 on success, negative error number on failure.
->>> + */
->>> +int counter_push_event(struct counter_device *const counter, const u8 event,
->>> +		       const u8 channel)
->>> +{
->>> +	struct counter_event ev = {0};
->>> +	unsigned int copied = 0;
->>> +	unsigned long flags;
->>> +	struct counter_event_node *event_node;
->>> +	struct counter_comp_node *comp_node;
->>> +	int err;
->>> +
->>> +	ev.timestamp = ktime_get_ns();
->>> +	ev.watch.event = event;
->>> +	ev.watch.channel = channel;
->>> +
->>> +	raw_spin_lock_irqsave(&counter->events_lock, flags);
->>> +
->>> +	/* Search for event in the list */
->>> +	list_for_each_entry(event_node, &counter->events_list, l)
->>> +		if (event_node->event == event &&
->>> +		    event_node->channel == channel)
->>> +			break;
->>> +
->>> +	/* If event is not in the list */
->>> +	if (&event_node->l == &counter->events_list)
->>> +		goto exit_early;
->>> +
->>> +	/* Read and queue relevant comp for userspace */
->>> +	list_for_each_entry(comp_node, &event_node->comp_list, l) {
->>> +		err = counter_get_data(counter, comp_node, &ev.value_u8);
->>
->> Currently all counter devices are memory mapped devices so calling
->> counter_get_data() here with interrupts disabled is probably OK, but
->> if any counter drivers are added that use I2C/SPI/etc. that will take
->> a long time to read, it would cause problems leaving interrupts
->> disabled here.
->>
->> Brainstorming: Would it make sense to separate the event from the
->> component value being read? As I mentioned in one of my previous
->> reviews, I think there are some cases where we would just want to
->> know when an event happened and not read any additional data anyway.
->> In the case of a slow communication bus, this would also let us
->> queue the event in the kfifo and notify poll right away and then
->> defer the reads in a workqueue for later.
+On Tue, Oct 13, 2020 at 11:31:45AM -0700, Dave Hansen wrote:
+> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > The PKRS MSR is defined as a per-logical-processor register.  This
+> > isolates memory access by logical CPU.  Unfortunately, the MSR is not
+> > managed by XSAVE.  Therefore, tasks must save/restore the MSR value on
+> > context switch.
+> > 
+> > Define a saved PKRS value in the task struct, as well as a cached
+> > per-logical-processor MSR value which mirrors the MSR value of the
+> > current CPU.  Initialize all tasks with the default MSR value.  Then, on
+> > schedule in, check the saved task MSR vs the per-cpu value.  If
+> > different proceed to write the MSR.  If not avoid the overhead of the
+> > MSR write and continue.
 > 
-> I don't see any problems with reporting just an event without any
-> component value attached (e.g. userspace could handle the component
-> reads via sysfs at a later point). We would just need a way to inform
-> userspace that the struct counter_component in the struct counter_watch
-> returned should be ignored.
-> 
-> Perhaps we can add an additional member to struct counter_watch
-> indicating whether it's an empty watch; or alternatively, add a new
-> component scope define to differentiate between an actual component and
-> an empty one (e.g. COUNTER_SCOPE_EVENT). What do you think?
-> 
-> William Breathitt Gray
-> 
+> It's probably nice to note how the WRMSR is special here, in addition to
+> the comments below.
 
-I made the same suggestion in one of my other replies - except
-I called it COUNTER_SCOPE_NONE.
+Sure,
+
+> 
+> >  #endif /*_ASM_X86_PKEYS_INTERNAL_H */
+> > diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> > index 97143d87994c..da2381136b2d 100644
+> > --- a/arch/x86/include/asm/processor.h
+> > +++ b/arch/x86/include/asm/processor.h
+> > @@ -18,6 +18,7 @@ struct vm86;
+> >  #include <asm/cpufeatures.h>
+> >  #include <asm/page.h>
+> >  #include <asm/pgtable_types.h>
+> > +#include <asm/pkeys_common.h>
+> >  #include <asm/percpu.h>
+> >  #include <asm/msr.h>
+> >  #include <asm/desc_defs.h>
+> > @@ -542,6 +543,11 @@ struct thread_struct {
+> >  
+> >  	unsigned int		sig_on_uaccess_err:1;
+> >  
+> > +#ifdef	CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
+> > +	/* Saved Protection key register for supervisor mappings */
+> > +	u32			saved_pkrs;
+> > +#endif
+> 
+> Could you take a look around thread_struct and see if there are some
+> other MSRs near which you can stash this?  This seems like a bit of a
+> lonely place.
+
+Are you more concerned with aesthetics or the in memory struct layout?
+
+How about I put it after error_code?
+
+	unsigned long           error_code;                                     
++                                                                               
++#ifdef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS                                        
++       /* Saved Protection key register for supervisor mappings */             
++       u32                     saved_pkrs;                                     
++#endif                                                                         
++                                                                               
+
+?
+
+> 
+> ...
+> >  void flush_thread(void)
+> >  {
+> >  	struct task_struct *tsk = current;
+> > @@ -195,6 +212,8 @@ void flush_thread(void)
+> >  	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
+> >  
+> >  	fpu__clear_all(&tsk->thread.fpu);
+> > +
+> > +	pks_init_task(tsk);
+> >  }
+> >  
+> >  void disable_TSC(void)
+> > @@ -644,6 +663,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
+> >  
+> >  	if ((tifp ^ tifn) & _TIF_SLD)
+> >  		switch_to_sld(tifn);
+> > +
+> > +	pks_sched_in();
+> >  }
+> >  
+> >  /*
+> > diff --git a/arch/x86/mm/pkeys.c b/arch/x86/mm/pkeys.c
+> > index 3cf8f775f36d..30f65dd3d0c5 100644
+> > --- a/arch/x86/mm/pkeys.c
+> > +++ b/arch/x86/mm/pkeys.c
+> > @@ -229,3 +229,31 @@ u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
+> >  
+> >  	return pk_reg;
+> >  }
+> > +
+> > +DEFINE_PER_CPU(u32, pkrs_cache);
+> > +
+> > +/**
+> > + * It should also be noted that the underlying WRMSR(MSR_IA32_PKRS) is not
+> > + * serializing but still maintains ordering properties similar to WRPKRU.
+> > + * The current SDM section on PKRS needs updating but should be the same as
+> > + * that of WRPKRU.  So to quote from the WRPKRU text:
+> > + *
+> > + * 	WRPKRU will never execute transiently. Memory accesses
+> > + * 	affected by PKRU register will not execute (even transiently)
+> > + * 	until all prior executions of WRPKRU have completed execution
+> > + * 	and updated the PKRU register.
+> > + */
+> > +void write_pkrs(u32 new_pkrs)
+> > +{
+> > +	u32 *pkrs;
+> > +
+> > +	if (!static_cpu_has(X86_FEATURE_PKS))
+> > +		return;
+> > +
+> > +	pkrs = get_cpu_ptr(&pkrs_cache);
+> > +	if (*pkrs != new_pkrs) {
+> > +		*pkrs = new_pkrs;
+> > +		wrmsrl(MSR_IA32_PKRS, new_pkrs);
+> > +	}
+> > +	put_cpu_ptr(pkrs);
+> > +}
+> > 
+> 
+> It bugs me a *bit* that this is being called in a preempt-disabled
+> region, but we still bother with the get/put_cpu jazz.  Are there other
+> future call-sites for this that aren't in preempt-disabled regions?
+
+I'm not specifically disabling preempt before calling write_pkrs except in the
+next patch (which is buggy because I meant to have it around the modification
+of thread.saved_pkrs as well).  But that was to protect the thread variable not
+the percpu cache vs MSR.
+
+My thought above was it is safer for this call to ensure the per-cpu variable
+is consistent with the register.  The other calls to write_pkrs() may require
+preemption disable but for reasons unrelated to write_pkrs' state.
+
+After some research I've now fully confused myself if this is needed in patch
+7/9 where write_pkrs() is called from the exception handing code.  But I think
+it is needed there.  Isn't it?
+
+Since preempt_disable() is nestable I think this is ok correct?
+
+Ira
