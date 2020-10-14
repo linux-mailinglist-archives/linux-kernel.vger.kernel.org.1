@@ -2,228 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D964828E85C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F2428E853
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 23:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730782AbgJNVZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 17:25:08 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54270 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbgJNVZH (ORCPT
+        id S1730777AbgJNVXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 17:23:10 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:50576 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727403AbgJNVXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 17:25:07 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ELEgF5054525;
-        Wed, 14 Oct 2020 21:24:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=51BNKsiW5qE6NaIm6zaY6u/ayB56rwx6A3kLDW5+QNk=;
- b=IbW8OtvlhkDvE//wE2IUCqFyQxF1DWqKqmVPPwQ8zPpdQcEcU8Jft8onRFZ5vO47EoXB
- 2XSXHKhd/ZvQK5mQXIQACqSSGArm9ML1WsKZCSxltF7nd6eWW5ymsxa3fgF16jXfHXwv
- TZ3EYYaf/5IVkhEAbTPVB5aA/zgZkr6hRDD6iqDyBKBCXFb/aeyDJNGK8uAb/FsuO5QQ
- rW5cRg3ky70yp8sdsVlnyw0wccz64kyxswt8PcgntGC54UHrzeMXvTRz0oMZ//7WZ6Q7
- fC6PCwHPLahDZ81y592NAkGB8A2iOJY5Oa9/wwlkP9SQgv6XuuVyFd/FYHRkGFLm39R6 fQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 3434wksv92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 14 Oct 2020 21:24:12 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ELFaQH174951;
-        Wed, 14 Oct 2020 21:22:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 344by47uag-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 14 Oct 2020 21:22:11 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09ELM1Yu022077;
-        Wed, 14 Oct 2020 21:22:06 GMT
-Received: from [10.65.149.55] (/10.65.149.55)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Oct 2020 14:22:01 -0700
-Subject: Re: [PATCH 1/2] mm/mprotect: Call arch_validate_prot under mmap_lock
- and with length
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Jann Horn <jannh@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20201007073932.865218-1-jannh@google.com>
- <d5332a7b-c300-6d28-18b9-4b7d4110ef86@oracle.com>
- <20201010110949.GA32545@gaia>
- <af207cf8-3049-85eb-349d-5fed6b9be49c@oracle.com>
- <20201012172218.GE6493@gaia>
- <20c85633-b559-c299-3e57-ae136b201526@oracle.com>
- <20201013091638.GA10778@gaia>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-X-Pep-Version: 2.0
-Message-ID: <e4c2c56b-3dbe-73dd-ea72-a5378de7de6a@oracle.com>
-Date:   Wed, 14 Oct 2020 15:21:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 14 Oct 2020 17:23:10 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 12B99803073C;
+        Wed, 14 Oct 2020 21:23:06 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id inYRWRerfTBc; Thu, 15 Oct 2020 00:23:05 +0300 (MSK)
+Date:   Thu, 15 Oct 2020 00:22:59 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh+dt@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+Message-ID: <20201014212259.ltckcgz2yrola7za@mobilestation>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
+ <878sc8lx0e.fsf@kernel.org>
+ <20201014143720.yny3jco5pkb7dr4b@mobilestation>
+ <CAL_JsqKNuYS1ojJMCx1whLgynz+cTZ-Hvxn5pEFJc_PUgA1hsg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201013091638.GA10778@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010140148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 impostorscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010140148
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKNuYS1ojJMCx1whLgynz+cTZ-Hvxn5pEFJc_PUgA1hsg@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 3:16 AM, Catalin Marinas wrote:
-> On Mon, Oct 12, 2020 at 01:14:50PM -0600, Khalid Aziz wrote:
->> On 10/12/20 11:22 AM, Catalin Marinas wrote:
->>> On Mon, Oct 12, 2020 at 11:03:33AM -0600, Khalid Aziz wrote:
->>>> On 10/10/20 5:09 AM, Catalin Marinas wrote:
->>>>> On Wed, Oct 07, 2020 at 02:14:09PM -0600, Khalid Aziz wrote:
->>>>>> On 10/7/20 1:39 AM, Jann Horn wrote:
->>>>>>> arch_validate_prot() is a hook that can validate whether a given =
-set of
->>>>>>> protection flags is valid in an mprotect() operation. It is given=
- the set
->>>>>>> of protection flags and the address being modified.
->>>>>>>
->>>>>>> However, the address being modified can currently not actually be=
- used in
->>>>>>> a meaningful way because:
->>>>>>>
->>>>>>> 1. Only the address is given, but not the length, and the operati=
-on can
->>>>>>>    span multiple VMAs. Therefore, the callee can't actually tell =
-which
->>>>>>>    virtual address range, or which VMAs, are being targeted.
->>>>>>> 2. The mmap_lock is not held, meaning that if the callee were to =
-check
->>>>>>>    the VMA at @addr, that VMA would be unrelated to the one the
->>>>>>>    operation is performed on.
->>>>>>>
->>>>>>> Currently, custom arch_validate_prot() handlers are defined by
->>>>>>> arm64, powerpc and sparc.
->>>>>>> arm64 and powerpc don't care about the address range, they just c=
-heck the
->>>>>>> flags against CPU support masks.
->>>>>>> sparc's arch_validate_prot() attempts to look at the VMA, but doe=
-sn't take
->>>>>>> the mmap_lock.
->>>>>>>
->>>>>>> Change the function signature to also take a length, and move the=
+On Wed, Oct 14, 2020 at 01:35:16PM -0500, Rob Herring wrote:
+> On Wed, Oct 14, 2020 at 9:37 AM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > On Wed, Oct 14, 2020 at 05:09:37PM +0300, Felipe Balbi wrote:
+> > >
+> > > Hi Serge,
+> > >
+> > > Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
+> > > > In accordance with the DWC USB3 bindings the corresponding node name is
+> > > > suppose to comply with Generic USB HCD DT schema, which requires the USB
+> > >
+> >
+> > > DWC3 is not a simple HDC, though.
+> >
+> > Yeah, strictly speaking it is equipped with a lot of vendor-specific stuff,
+> > which are tuned by the DWC USB3 driver in the kernel. But after that the
+> > controller is registered as xhci-hcd device so it's serviced by the xHCI driver,
+> > which then registers the HCD device so the corresponding DT node is supposed
+> > to be compatible with the next bindings: usb/usb-hcd.yaml, usb/usb-xhci.yaml
+> > and usb/snps,dwc3,yaml. I've created the later one so to validate the denoted
+> > compatibility.
+> >
+> > >
+> > > > nodes to have the name acceptable by the regexp: "^usb(@.*)?" . But a lot
+> > > > of the DWC USB3-compatible nodes defined in the ARM/ARM64 DTS files have
+> > > > name as "^dwc3@.*" or "^usb[1-3]@.*" or even "^dwusb@.*", which will cause
+> > > > the dtbs_check procedure failure. Let's fix the nodes naming to be
+> > > > compatible with the DWC USB3 DT schema to make dtbs_check happy.
+> > > >
+> > > > Note we don't change the DWC USB3-compatible nodes names of
+> > > > arch/arm64/boot/dts/apm/{apm-storm.dtsi,apm-shadowcat.dtsi} since the
+> > > > in-source comment says that the nodes name need to be preserved as
+> > > > "^dwusb@.*" for some backward compatibility.
+> > >
+> >
+> > > interesting, compatibility with what? Some debugfs files, perhaps? :-)
+> >
+> > Don't really know.) In my experience the worst type of such compatibility is
+> > connected with some bootloader magic, which may add/remove/modify properties
+> > to nodes with pre-defined names.
+> 
 
->>>>>>> arch_validate_prot() call in mm/mprotect.c down into the locked r=
-egion.
->>>>> [...]
->>>>>> As Chris pointed out, the call to arch_validate_prot() from do_mma=
-p2()
->>>>>> is made without holding mmap_lock. Lock is not acquired until
->>>>>> vm_mmap_pgoff(). This variance is uncomfortable but I am more
->>>>>> uncomfortable forcing all implementations of validate_prot to requ=
-ire
->>>>>> mmap_lock be held when non-sparc implementations do not have such =
-need
->>>>>> yet. Since do_mmap2() is in powerpc specific code, for now this pa=
-tch
->>>>>> solves a current problem.
->>>>>
->>>>> I still think sparc should avoid walking the vmas in
->>>>> arch_validate_prot(). The core code already has the vmas, though no=
-t
->>>>> when calling arch_validate_prot(). That's one of the reasons I adde=
-d
->>>>> arch_validate_flags() with the MTE patches. For sparc, this could b=
-e
->>>>> (untested, just copied the arch_validate_prot() code):
->>>>
->>>> I am little uncomfortable with the idea of validating protection bit=
-s
->>>> inside the VMA walk loop in do_mprotect_pkey(). When ADI is being
->>>> enabled across multiple VMAs and arch_validate_flags() fails on a VM=
-A
->>>> later, do_mprotect_pkey() will bail out with error leaving ADI enabl=
-ed
->>>> on earlier VMAs. This will apply to protection bits other than ADI a=
-s
->>>> well of course. This becomes a partial failure of mprotect() call. I=
+> I seriously doubt anyone is using the APM machines with DT (even ACPI
+> is somewhat doubtful). I say change them. Or remove the dts files and
+> see what happens. Either way it can always be reverted.
 
->>>> think it should be all or nothing with mprotect() - when one calls
->>>> mprotect() from userspace, either the entire address range passed in=
+Ok. I'll change them in v3.
 
->>>> gets its protection bits updated or none of it does. That requires
->>>> validating protection bits upfront or undoing what earlier iteration=
-s of
->>>> VMA walk loop might have done.
->>>
->>> I thought the same initially but mprotect() already does this with th=
-e
->>> VM_MAY* flag checking. If you ask it for an mprotect() that crosses
->>> multiple vmas and one of them fails, it doesn't roll back the changes=
- to
->>> the prior ones. I considered that a similar approach is fine for MTE
->>> (it's most likely a user error).
->>
->> You are right about the current behavior with VM_MAY* flags, but that =
-is
->> not the right behavior. Adding more cases to this just perpetuates
->> incorrect behavior. It is not easy to roll back changes after VMAs hav=
-e
->> potentially been split/merged which is probably why the current code
->> simply throws in the towel and returns with partially modified address=
+-Sergey
 
->> space. It is lot easier to do all the checks upfront and then proceed =
-or
->> not proceed with modifying VMAs. One approach might be to call
->> arch_validate_flags() in a loop before modifying VMAs and walk all VMA=
-s
->> with a read lock held. Current code also bails out with ENOMEM if it
->> finds a hole in the address range and leaves any modifications already=
-
->> made in place. This is another case where a hole could have been
->> detected earlier.
->=20
-> This should be ideal indeed though with the risk of breaking the curren=
-t
-> ABI (FWIW, FreeBSD seems to do a first pass to check for violations:
-> https://github.com/freebsd/freebsd/blob/master/sys/vm/vm_map.c#L2630).
-
-I am not sure I understand where the ABI breakage would be. Are we aware
-of apps that intentionally modify address space partially using the
-current code? What FreeBSD does seems like a reasonable thing to do. Any
-way first thing to do is to update sparc to use arch_validate_flags()
-and update sparc_validate_prot() to not peek into vma without lock. I
-can do that unless Jann wants to rework this 2 patch series with these
-changes.
-
->=20
-> However, I'm not sure it's worth the hassle. Do we expect the user to
-> call mprotect() across multiple mixed type mappings while relying on no=
-
-> change if an error is returned? We should probably at least document th=
-e
-> current behaviour in the mprotect man page.
->=20
-
-Yes, documenting current behavior is definitely a good thing to do.
-
---
-Khalid
-
-
+> 
+> Rob
