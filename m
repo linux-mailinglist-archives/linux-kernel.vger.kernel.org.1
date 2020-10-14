@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4838B28E0BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF43F28E0D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730887AbgJNMu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:50:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43302 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729399AbgJNMu2 (ORCPT
+        id S1731021AbgJNMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:55:39 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:41386 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728157AbgJNMzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:50:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602679827;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=MMxmagzUGQGP4XInFkt7451v8xVF11xKUk5UyjYEMMU=;
-        b=JJVoI9zz4deLypUhW762AihleYHLZ7f4lcEii20kkMbgbBEh+9VZzw8+6UKDzjwulA8lz/
-        3WtYI9rz9sZe8myICylAt8HeuXcGQg41P8/gVk6ioXTwueSy7juVS6YXibroi5XesagPbs
-        MG0YpPnvM/mGQwExmDriq035XmLR/K4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-2Lq70kDlO0Sv7pwogcjvXg-1; Wed, 14 Oct 2020 08:50:25 -0400
-X-MC-Unique: 2Lq70kDlO0Sv7pwogcjvXg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E12571062721;
-        Wed, 14 Oct 2020 12:50:23 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D0C9760BE2;
-        Wed, 14 Oct 2020 12:50:21 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86: Filter out more Intel-specific PMU MSRs in kvm_init_msr_list()
-Date:   Wed, 14 Oct 2020 14:50:20 +0200
-Message-Id: <20201014125020.2406434-1-vkuznets@redhat.com>
+        Wed, 14 Oct 2020 08:55:25 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09ECqvba015323;
+        Wed, 14 Oct 2020 14:55:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=dnkYwDz5SS1iDJhEQKZPv8UZFz9BDhGoeNxvfvCK17U=;
+ b=oJf4wMO7MTpOWr0vouC5My5miUW9zEpWngcncd3sQaAZyzVMK8z9awfWZBEKAM8SoJ0u
+ XsNTEG3cWj6gALuT7/NiGj0c8zJOrdcLk56fIrM04kHGT/5+2S+H8tA173CKnN0eZv95
+ y5j5T4AH8Pz4dMr2WBaAy6TH5oRtIxeCSJRR1NP3zUq1QgjQILBkUQIATA2Vzq76ki5F
+ v4Y0aCIEkpatPNwQiquiBxVllDtZVvl/sMt7WbUC0EINvnZd04W8uZWXEv8C38f8CpRi
+ y1JsHdAP2Q3A3n26/4k/GpYP+RT2ophjJBS0uyAPUueTiye5UTEmelPGAmCeP/IRrjh9 Yw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3455c8hqqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 14:55:07 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 09480100034;
+        Wed, 14 Oct 2020 14:55:07 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E93D32DA529;
+        Wed, 14 Oct 2020 14:55:06 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG3NODE1.st.com (10.75.127.7)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct 2020 14:55:06
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@st.com>
+To:     Rob Herring <robh@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Subject: [PATCH v2 0/4] ARM: stm32: add DT properties for remote proc synchronisation
+Date:   Wed, 14 Oct 2020 14:54:37 +0200
+Message-ID: <20201014125441.2457-1-arnaud.pouliquen@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG6NODE2.st.com (10.75.127.17) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-14_07:2020-10-14,2020-10-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running KVM selftest in a Hyper-V VM they stumble upon
+This series implements the DT part associated to the commit 9276536f455b3
+("remoteproc: stm32: Parse syscon that will manage M4 synchronisation")
 
-  Unexpected result from KVM_GET_MSRS, r: 14 (failed MSR was 0x309)
+Delta vs V1 [1]
+- add Rob acked-by on patch 1/4
+- simplify yaml descriptions and align other syscon descriptions
 
-MSR_ARCH_PERFMON_FIXED_CTR[0..3] along with MSR_CORE_PERF_FIXED_CTR_CTRL,
-MSR_CORE_PERF_GLOBAL_STATUS, MSR_CORE_PERF_GLOBAL_CTRL,
-MSR_CORE_PERF_GLOBAL_OVF_CTRL are only valid for Intel PMU ver > 1 but
-Hyper-V instances have CPUID.0AH.EAX == 0 (so perf code falls back to
-p6_pmu instead of intel_pmu). Surprisingly, unlike on AMD hardware for
-example, our rdmsr_safe() check passes and MSRs are not filtered out.
+[1]https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=339339
 
-MSR_ARCH_PERFMON_FIXED_CTR[0..3] can probably be checked against
-x86_pmu.num_counters_fixed and the rest is only present with
-x86_pmu.version > 1.
+Arnaud Pouliquen (4):
+  dt-bindings: arm: stm32: Add compatible for syscon tamp node
+  dt-bindings: remoteproc: stm32_rproc: update for firmware
+    synchronization
+  dt-bindings: remoteproc: stm32_rproc: update syscon descriptions
+  ARM: dts: stm32: update stm32mp151 for remote proc synchronization
+    support
 
-Unfortunately, full elimination of the disconnection between system-wide
-KVM_GET_MSR_INDEX_LIST/KVM_GET_MSR_FEATURE_INDEX_LIST and per-VCPU
-KVM_GET_MSRS/KVM_SET_MSRS seem to be impossible as per-vCPU PMU setup
-depends on guest CPUIDs which can always be altered.
+ .../bindings/arm/stm32/st,stm32-syscon.yaml   |  1 +
+ .../bindings/remoteproc/st,stm32-rproc.yaml   | 21 +++++++++++++------
+ arch/arm/boot/dts/stm32mp151.dtsi             |  7 +++++++
+ 3 files changed, 23 insertions(+), 6 deletions(-)
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/x86.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ce856e0ece84..85d72b125fba 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5436,6 +5436,15 @@ static void kvm_init_msr_list(void)
- 			    min(INTEL_PMC_MAX_GENERIC, x86_pmu.num_counters_gp))
- 				continue;
- 			break;
-+		case MSR_ARCH_PERFMON_FIXED_CTR0 ... MSR_ARCH_PERFMON_FIXED_CTR0 + 3:
-+			if (msrs_to_save_all[i] - MSR_ARCH_PERFMON_FIXED_CTR0 >=
-+			    min(INTEL_PMC_MAX_FIXED, x86_pmu.num_counters_fixed))
-+				continue;
-+			break;
-+		case MSR_CORE_PERF_FIXED_CTR_CTRL ... MSR_CORE_PERF_GLOBAL_OVF_CTRL:
-+			if (x86_pmu.version <= 1)
-+				continue;
-+			break;
- 		default:
- 			break;
- 		}
 -- 
-2.25.4
+2.17.1
 
