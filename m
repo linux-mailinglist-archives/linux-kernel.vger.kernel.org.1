@@ -2,195 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1E428DFC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DD028DFCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387838AbgJNLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:24:43 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2682 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730609AbgJNLYl (ORCPT
+        id S1730713AbgJNL0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729919AbgJNL0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:24:41 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f86dfec0000>; Wed, 14 Oct 2020 04:24:28 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 11:24:40 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.58) by
- HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 14 Oct 2020 11:24:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eUwOzNHBgEtzA6WrS7xijOl7rGoIVsGZ3aUqrSNXE80FDUjBzvZPSjWIdGoJgWj4hdv6oDyv0Xy0rhlb1EB51cu69bi7TxnP1H88J6huH0n1NTPdG6NHLggaMcA6bPWZMDd8iqknXTPvFGEiL/wBKm5ZiAUcdUCtsmwRJSClWu1j7YWwiAZXT71ukGFQabOLt1xjnB2uSgneNycka0qpeyXXPBabhfU55f0rNigFDEKXdYLG1AWqOMtZPXyavrKafTW5YSMP3m/iH1G7TuKRhKtoWHWten+i3ortuAKrXHiXZ98j1a06E+biy9I0fAgoCBtkDSSAKr+lg+UmmpZHGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X5tKMqi2l+vuilkp4YffEiTtSjFsKjYXY2lbiqujIH0=;
- b=ZrmyhTIWZ3K8NTqrJT8KTbAdhWLs0cY932UVGkONLKkOKTTkyAm0eqG5Opc2gMHjdcTUegWKYhNMEY7PLr1NI9SbvKoiMl3mx0OqSZhzroIHyDcg48+rafJPzZG+XoF8pEvjNvrynkoSt0VgeJMZZbpw7yrkBcD6vps1MZ9K1NJR3GPnNV+cr8Nr5Jvn2F0LOgg2A0Ye0j59ThgTHA1Wow6lFuUzyIighe2F0Ph6EHWKIkncQG5k8sN2lXeXGsULjMXv745uosIY5dfHDhyh+pdFfiYW0gluoemKAqqlJw1aWHKqzj+CRnPGW74EKEY/A7OFW8X8Mq+/ghykjDCKLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM5PR12MB1244.namprd12.prod.outlook.com (2603:10b6:3:73::15) by
- DM6PR12MB4944.namprd12.prod.outlook.com (2603:10b6:5:1ba::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3477.20; Wed, 14 Oct 2020 11:24:39 +0000
-Received: from DM5PR12MB1244.namprd12.prod.outlook.com
- ([fe80::c4a9:7b71:b9:b77a]) by DM5PR12MB1244.namprd12.prod.outlook.com
- ([fe80::c4a9:7b71:b9:b77a%3]) with mapi id 15.20.3477.021; Wed, 14 Oct 2020
- 11:24:39 +0000
-From:   Nikolay Aleksandrov <nikolay@nvidia.com>
-To:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>
-CC:     "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH net-next v5 09/10] bridge: cfm: Netlink GET status
- Interface.
-Thread-Topic: [PATCH net-next v5 09/10] bridge: cfm: Netlink GET status
- Interface.
-Thread-Index: AQHWoKEPiIAjcZlvQ06tdqdPh/N1yKmW9/CA
-Date:   Wed, 14 Oct 2020 11:24:38 +0000
-Message-ID: <1253ca825551235c5fd45300f401a161f2bdd3f2.camel@nvidia.com>
-References: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
-         <20201012140428.2549163-10-henrik.bjoernlund@microchip.com>
-In-Reply-To: <20201012140428.2549163-10-henrik.bjoernlund@microchip.com>
-Reply-To: Nikolay Aleksandrov <nikolay@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
- header.from=nvidia.com;
-x-originating-ip: [84.238.136.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6df06283-3c4f-4deb-fb9a-08d87033bd12
-x-ms-traffictypediagnostic: DM6PR12MB4944:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR12MB4944CE5E36BB95F5FFCE810FDF050@DM6PR12MB4944.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WFl0RKg6D9A/KKE2xT8GbMCaHKUqdj6tVOMVd8lkBfgrrvblZZZWMvMTHyarFIIPwOVmtJX6oPfN77ap7Pf5p6rByGdlwvG2A992JKBmfFb7w5SZ7dIov+lhmtgfw//g95PfaY03e79bev3nOlDbhVrcRx4dlCFNvM6ryEZJzVms6QLV6S4nCxLwmUu7gMY2RTGkq4AFNwD6VlS2GMOss/UXmeIisgW73bTp8A3pkDdxvdX/qPnz+JkeeswvFrd88fVWVDUWNewk2t6ei8cHpFWqIAzANYwXy04Z/ks59tJICHm+2x8l59H2WYl+5xEvAmkLf4OXfSOI1urHfQOzxXhj1I3vwc2WPKhK0omQRKOe/DlxaKfcu1ipAWLzRpAa
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1244.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(66476007)(66946007)(6512007)(66446008)(66556008)(71200400001)(26005)(64756008)(6506007)(2616005)(3450700001)(4326008)(76116006)(91956017)(110136005)(186003)(316002)(5660300002)(83380400001)(2906002)(6486002)(36756003)(8676002)(8936002)(4001150100001)(478600001)(86362001)(921003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: m3KLMrgZyrlFIiv1XblSs685RrZZqo9RBNOAjPaUFcc7szNYk0Xkzat16iZZ+Z4poLWBoAxs1VmBVJyyqVNVOwHFgadVhISU69Z/RMn2z9UgIvGXOWU6Pp1ktmQu9xXLDBZH/mh1Q9p69D8ibbvSGrJNqmlY2Hq2cjCeu7YfUd2JplR6UrYZaJqvhrRxISwfgaOjcSJuyszniPDGalVQs65apTuhwuB3qnkZFKG9lEBzW9E58I9YwGXH2QYny2GHbaIZEtZMrHEhqIZA3eVrOkQ1ZYFPxPQ42UndWOKVxmu4XReiu+BLSHJjtg9dKCLiCyJMuRehOFM7tl+B9kkqo34UOwdVsxChY4uTmCX52tcCym1dFQ96H9/73Bi1KtbjQQ7B5XB/ey9x7dXHSRwnpYJKTeER8OvslzalDa8+aAdxkxCHGnACwD81NbE2H548v33oN/rbLjgzd00NO7qbAogL5a324Rn/p6kJr4mxc+qFRTgDFlEVZUuvkO7M6xrCeX3O8AwC4h5XEu/3YdBHvm4UGWAxJ2av/kjmvKOng0F/s8n2Npoy30zfPu4XjFaMjDYKkwbb3E7vaaEUHyPhc+UQ8//nGzAO1rDFAtxFaxk/i6K81m+61ORoPfTW5bOd6S9yjXo/Y7GTu1ULI2/HxA==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5A621E25E5ABDA4F81E20778A180913C@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 14 Oct 2020 07:26:50 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599A2C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:26:48 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id y12so3371353wrp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W1Xb3EWi6oK1/DaQpKgXiT3NvJEd5yovI30IklakN70=;
+        b=GL3cQIAWf+VkmTeQG0gsRX2Df5rOkHjVJgrZqtAvyztHNcswl+uQuyzfuCGZ28KJkL
+         YAVgHVyzwVNQnjrp/DnSi4KG5rjbY8W869ipmyC/6FFxwG69MB3cvEUntMDLrJfv61Hw
+         IpruzSz+SkXcFjCOe6Xm/pUOha4tQ5ZpAuWK2gC43lYOrlBc4GC9zhTwC5ZV3nWapFoi
+         Ieizbagbsy8em+AlXNhlaurWUvIxETXGz7dpGQxQtNVNgUoWpJIgAdli2zVdRjF80fir
+         F/XuWKaYccCX4k+QWfqdZatva20JKp+pUz2zjHWuwyq2HrWYNg9h6DhmNy8Le/89diCc
+         QHzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W1Xb3EWi6oK1/DaQpKgXiT3NvJEd5yovI30IklakN70=;
+        b=F+6ey2KH2jGs+qdJFFTfvvMmHR6GIf4OqIAPI2yUZM42XXDqdoAVUM85HNKHLDL8TD
+         uzN4p4TT6e1RD6r2Yif4rKlQmK4Q4EUbS9OC0+XlN2MWkomdmXiAP78QH1E1f+dbN/3t
+         5j04QC0Sl6jsy+X3iA4xli5MKSHn55pUEF3EUtlcl6bA4Xs8NodfdgytfqDBWRKcCQSk
+         epe3Fdh8k5Ho2/NN5IskSA2xXSkTp2UAlD03Lahm+j8N0GNN0GdnbOr1135DMHqRpfDs
+         FAaHj+fKjPFx4w4DGpkBwXVqw9GygZ0NN7eweblt3+VXgotIt0ch4r+s10MXFZGlrRvO
+         NDMg==
+X-Gm-Message-State: AOAM533tEWEExIJ5dm6Hqjm6j6KboJd1fHJXwa7a6B9Wz/pmICvv7Seo
+        tXteUdV188i4rwHWBS9gCgUF9A==
+X-Google-Smtp-Source: ABdhPJxgbrMq6ekWxBaMVjFkqS5MobV4c/7LwKcL+o1Ew8C+9mI/Vc0Clz/IN3aydIhGSZtLH/UCfA==
+X-Received: by 2002:adf:ed07:: with SMTP id a7mr5235113wro.326.1602674806848;
+        Wed, 14 Oct 2020 04:26:46 -0700 (PDT)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id f7sm4690901wrx.64.2020.10.14.04.26.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 04:26:45 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 12:26:43 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Alexandru Stan <amstan@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] backlight: pwm_bl: Fix interpolation
+Message-ID: <20201014112643.grd2x5jj33turihb@holly.lan>
+References: <20201013080103.410133-1-amstan@chromium.org>
+ <20201013010056.v2.1.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1244.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6df06283-3c4f-4deb-fb9a-08d87033bd12
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 11:24:38.9466
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4cv0EX6tTyiEHmusTguayIWnk9VclcmmuJXvtWM/Oi0y8rDLP4BKZd99dh6vz4G5dOF6Ofwz9KuTmEwRJd1cGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4944
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602674668; bh=X5tKMqi2l+vuilkp4YffEiTtSjFsKjYXY2lbiqujIH0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Reply-To:Accept-Language:Content-Language:
-         X-MS-Has-Attach:X-MS-TNEF-Correlator:user-agent:
-         authentication-results:x-originating-ip:x-ms-publictraffictype:
-         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=FbS6ldmVc41TmNdw6TV1hXq9ScEceUTcY3y2V1CHPE9iHIxWwuGQy38JValzvlVo/
-         LE/4l433X7HyYcHnzAmtFHrFfvCszng3JkOTK1qmh7yQNDemGZGKpTTL86isYn30uN
-         LElOJ7HWeDDgup6R4NOQitN+WBSqjgMMtW6wRiA+HqpXPec/vukGDM1VVhynYBcNW1
-         g4Z7PumnHYbYVM/65HhQFR1R2TyYptmjj/DMz6h2daeNdc7mTPEBnjgHDuP33PB/H3
-         Hko1oRQGHz3jXQjsw7LaexfXP+FQiRVMg1qm9gewPD0FtktDm1TrR9fT/e0twyYcpI
-         g41AIWwilyeEw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013010056.v2.1.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTEwLTEyIGF0IDE0OjA0ICswMDAwLCBIZW5yaWsgQmpvZXJubHVuZCB3cm90
-ZToNCj4gVGhpcyBpcyB0aGUgaW1wbGVtZW50YXRpb24gb2YgQ0ZNIG5ldGxpbmsgc3RhdHVzDQo+
-IGdldCBpbmZvcm1hdGlvbiBpbnRlcmZhY2UuDQo+IA0KPiBBZGQgbmV3IG5lc3RlZCBuZXRsaW5r
-IGF0dHJpYnV0ZXMuIFRoZXNlIGF0dHJpYnV0ZXMgYXJlIHVzZWQgYnkgdGhlDQo+IHVzZXIgc3Bh
-Y2UgdG8gZ2V0IHN0YXR1cyBpbmZvcm1hdGlvbi4NCj4gDQo+IEdFVExJTks6DQo+ICAgICBSZXF1
-ZXN0IGZpbHRlciBSVEVYVF9GSUxURVJfQ0ZNX1NUQVRVUzoNCj4gICAgIEluZGljYXRpbmcgdGhh
-dCBDRk0gc3RhdHVzIGluZm9ybWF0aW9uIG11c3QgYmUgZGVsaXZlcmVkLg0KPiANCj4gICAgIElG
-TEFfQlJJREdFX0NGTToNCj4gICAgICAgICBQb2ludHMgdG8gdGhlIENGTSBpbmZvcm1hdGlvbi4N
-Cj4gDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fTUVQX1NUQVRVU19JTkZPOg0KPiAgICAgICAgIFRo
-aXMgaW5kaWNhdGUgdGhhdCB0aGUgTUVQIGluc3RhbmNlIHN0YXR1cyBhcmUgZm9sbG93aW5nLg0K
-PiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX0lORk86DQo+ICAgICAgICAgVGhp
-cyBpbmRpY2F0ZSB0aGF0IHRoZSBwZWVyIE1FUCBzdGF0dXMgYXJlIGZvbGxvd2luZy4NCj4gDQo+
-IENGTSBuZXN0ZWQgYXR0cmlidXRlIGhhcyB0aGUgZm9sbG93aW5nIGF0dHJpYnV0ZXMgaW4gbmV4
-dCBsZXZlbC4NCj4gDQo+IEdFVExJTksgUlRFWFRfRklMVEVSX0NGTV9TVEFUVVM6DQo+ICAgICBJ
-RkxBX0JSSURHRV9DRk1fTUVQX1NUQVRVU19JTlNUQU5DRToNCj4gICAgICAgICBUaGUgTUVQIGlu
-c3RhbmNlIG51bWJlciBvZiB0aGUgZGVsaXZlcmVkIHN0YXR1cy4NCj4gICAgICAgICBUaGUgdHlw
-ZSBpcyB1MzIuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fTUVQX1NUQVRVU19PUENPREVfVU5FWFBf
-U0VFTjoNCj4gICAgICAgICBUaGUgTUVQIGluc3RhbmNlIHJlY2VpdmVkIENGTSBQRFUgd2l0aCB1
-bmV4cGVjdGVkIE9wY29kZS4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJvb2wpLg0KPiAg
-ICAgSUZMQV9CUklER0VfQ0ZNX01FUF9TVEFUVVNfVkVSU0lPTl9VTkVYUF9TRUVOOg0KPiAgICAg
-ICAgIFRoZSBNRVAgaW5zdGFuY2UgcmVjZWl2ZWQgQ0ZNIFBEVSB3aXRoIHVuZXhwZWN0ZWQgdmVy
-c2lvbi4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJvb2wpLg0KPiAgICAgSUZMQV9CUklE
-R0VfQ0ZNX01FUF9TVEFUVVNfUlhfTEVWRUxfTE9XX1NFRU46DQo+ICAgICAgICAgVGhlIE1FUCBp
-bnN0YW5jZSByZWNlaXZlZCBDQ00gUERVIHdpdGggTUQgbGV2ZWwgbG93ZXIgdGhhbg0KPiAgICAg
-ICAgIGNvbmZpZ3VyZWQgbGV2ZWwuIFRoaXMgZnJhbWUgaXMgZGlzY2FyZGVkLg0KPiAgICAgICAg
-IFRoZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+IA0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BF
-RVJfU1RBVFVTX0lOU1RBTkNFOg0KPiAgICAgICAgIFRoZSBNRVAgaW5zdGFuY2UgbnVtYmVyIG9m
-IHRoZSBkZWxpdmVyZWQgc3RhdHVzLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMi4NCj4gICAg
-IElGTEFfQlJJREdFX0NGTV9DQ19QRUVSX1NUQVRVU19QRUVSX01FUElEOg0KPiAgICAgICAgIFRo
-ZSBhZGRlZCBQZWVyIE1FUCBJRCBvZiB0aGUgZGVsaXZlcmVkIHN0YXR1cy4NCj4gICAgICAgICBU
-aGUgdHlwZSBpcyB1MzIuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfQ0NN
-X0RFRkVDVDoNCj4gICAgICAgICBUaGUgQ0NNIGRlZmVjdCBzdGF0dXMuDQo+ICAgICAgICAgVGhl
-IHR5cGUgaXMgdTMyIChib29sKS4NCj4gICAgICAgICBUcnVlIG1lYW5zIG5vIENDTSBmcmFtZSBp
-cyByZWNlaXZlZCBmb3IgMy4yNSBpbnRlcnZhbHMuDQo+ICAgICAgICAgSUZMQV9CUklER0VfQ0ZN
-X0NDX0NPTkZJR19FWFBfSU5URVJWQUwuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9T
-VEFUVVNfUkRJOg0KPiAgICAgICAgIFRoZSBsYXN0IHJlY2VpdmVkIENDTSBQRFUgUkRJLg0KPiAg
-ICAgICAgIFRoZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0Nf
-UEVFUl9TVEFUVVNfUE9SVF9UTFZfVkFMVUU6DQo+ICAgICAgICAgVGhlIGxhc3QgcmVjZWl2ZWQg
-Q0NNIFBEVSBQb3J0IFN0YXR1cyBUTFYgdmFsdWUgZmllbGQuDQo+ICAgICAgICAgVGhlIHR5cGUg
-aXMgdTguDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfSUZfVExWX1ZBTFVF
-Og0KPiAgICAgICAgIFRoZSBsYXN0IHJlY2VpdmVkIENDTSBQRFUgSW50ZXJmYWNlIFN0YXR1cyBU
-TFYgdmFsdWUgZmllbGQuDQo+ICAgICAgICAgVGhlIHR5cGUgaXMgdTguDQo+ICAgICBJRkxBX0JS
-SURHRV9DRk1fQ0NfUEVFUl9TVEFUVVNfU0VFTjoNCj4gICAgICAgICBBIENDTSBmcmFtZSBoYXMg
-YmVlbiByZWNlaXZlZCBmcm9tIFBlZXIgTUVQLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMiAo
-Ym9vbCkuDQo+ICAgICAgICAgVGhpcyBpcyBjbGVhcmVkIGFmdGVyIEdFVExJTksgSUZMQV9CUklE
-R0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX0lORk8uDQo+ICAgICBJRkxBX0JSSURHRV9DRk1fQ0NfUEVF
-Ul9TVEFUVVNfVExWX1NFRU46DQo+ICAgICAgICAgQSBDQ00gZnJhbWUgd2l0aCBUTFYgaGFzIGJl
-ZW4gcmVjZWl2ZWQgZnJvbSBQZWVyIE1FUC4NCj4gICAgICAgICBUaGUgdHlwZSBpcyB1MzIgKGJv
-b2wpLg0KPiAgICAgICAgIFRoaXMgaXMgY2xlYXJlZCBhZnRlciBHRVRMSU5LIElGTEFfQlJJREdF
-X0NGTV9DQ19QRUVSX1NUQVRVU19JTkZPLg0KPiAgICAgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJf
-U1RBVFVTX1NFUV9VTkVYUF9TRUVOOg0KPiAgICAgICAgIEEgQ0NNIGZyYW1lIHdpdGggdW5leHBl
-Y3RlZCBzZXF1ZW5jZSBudW1iZXIgaGFzIGJlZW4gcmVjZWl2ZWQNCj4gICAgICAgICBmcm9tIFBl
-ZXIgTUVQLg0KPiAgICAgICAgIFRoZSB0eXBlIGlzIHUzMiAoYm9vbCkuDQo+ICAgICAgICAgV2hl
-biBhIHNlcXVlbmNlIG51bWJlciBpcyBub3Qgb25lIGhpZ2hlciB0aGFuIHByZXZpb3VzbHkgcmVj
-ZWl2ZWQNCj4gICAgICAgICB0aGVuIGl0IGlzIHVuZXhwZWN0ZWQuDQo+ICAgICAgICAgVGhpcyBp
-cyBjbGVhcmVkIGFmdGVyIEdFVExJTksgSUZMQV9CUklER0VfQ0ZNX0NDX1BFRVJfU1RBVFVTX0lO
-Rk8uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBIZW5yaWsgQmpvZXJubHVuZCAgPGhlbnJpay5iam9l
-cm5sdW5kQG1pY3JvY2hpcC5jb20+DQo+IFJldmlld2VkLWJ5OiBIb3JhdGl1IFZ1bHR1ciAgPGhv
-cmF0aXUudnVsdHVyQG1pY3JvY2hpcC5jb20+DQo+IC0tLQ0KPiAgaW5jbHVkZS91YXBpL2xpbnV4
-L2lmX2JyaWRnZS5oIHwgIDI5ICsrKysrKysrKw0KPiAgaW5jbHVkZS91YXBpL2xpbnV4L3J0bmV0
-bGluay5oIHwgICAxICsNCj4gIG5ldC9icmlkZ2UvYnJfY2ZtX25ldGxpbmsuYyAgICB8IDEwNSAr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIG5ldC9icmlkZ2UvYnJfbmV0bGlu
-ay5jICAgICAgICB8ICAxNiArKysrLQ0KPiAgbmV0L2JyaWRnZS9icl9wcml2YXRlLmggICAgICAg
-IHwgICA2ICsrDQo+ICA1IGZpbGVzIGNoYW5nZWQsIDE1NCBpbnNlcnRpb25zKCspLCAzIGRlbGV0
-aW9ucygtKQ0KPiANCj4gDQoNCkFja2VkLWJ5OiBOaWtvbGF5IEFsZWtzYW5kcm92IDxuaWtvbGF5
-QG52aWRpYS5jb20+DQoNCg0K
+On Tue, Oct 13, 2020 at 01:01:01AM -0700, Alexandru Stan wrote:
+> Whenever num-interpolated-steps was larger than the distance
+> between 2 consecutive brightness levels the table would get really
+> discontinuous. The slope of the interpolation would stick with
+> integers only and if it was 0 the whole line segment would get skipped.
+> 
+> Example settings:
+> 	brightness-levels = <0 1 2 4 8 16 32 64 128 256>;
+> 	num-interpolated-steps = <16>;
+> 
+> The distances between 1 2 4 and 8 would be 1, and only starting with 16
+> it would start to interpolate properly.
+
+Both comments a perilously close to nitpicking but enough that I wanted
+to reply...
+
+I'd suggest that the current behaviour as having two properties.
+
+1. It was designed to generate strictly increasing tables (no repeated
+   values).
+
+2. It's implementation contains quantization errors when calculating the
+   step size. This results in both the discards of some interpolated
+   steps you mentioned (it is possible to insert extra steps between 4
+   and 8 whilst retaining a strictly increasing table). It also
+   results in a potentially large undershoot when multiplying a step
+   size (64 interpolated steps and a gap of 127 is likely to get a visual
+   jump as we hop through 63 physical steps in one go).
+
+#1 can is a policy that can be changed. #2 is a bug that could be fixed.
+
+To be clear I don't object to generating a monotonically increasing
+table but I'd prefer the policy change to be explicitly described in
+the description.
+
+
+> Let's change it so there's always interpolation happening, even if
+> there's no enough points available (read: values in the table would
+> appear more than once). This should match the expected behavior much
+> more closely.
+> 
+> Signed-off-by: Alexandru Stan <amstan@chromium.org>
+> ---
+> 
+>  drivers/video/backlight/pwm_bl.c | 70 ++++++++++++++------------------
+>  1 file changed, 31 insertions(+), 39 deletions(-)
+> 
+> diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
+> index dfc760830eb9..3e77f6b73fd9 100644
+> --- a/drivers/video/backlight/pwm_bl.c
+> +++ b/drivers/video/backlight/pwm_bl.c
+> @@ -230,8 +230,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  				  struct platform_pwm_backlight_data *data)
+>  {
+>  	struct device_node *node = dev->of_node;
+> -	unsigned int num_levels = 0;
+> -	unsigned int levels_count;
+> +	unsigned int num_levels;
+>  	unsigned int num_steps = 0;
+>  	struct property *prop;
+>  	unsigned int *table;
+> @@ -260,12 +259,11 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  	if (!prop)
+>  		return 0;
+>  
+> -	data->max_brightness = length / sizeof(u32);
+> +	num_levels = length / sizeof(u32);
+>  
+>  	/* read brightness levels from DT property */
+> -	if (data->max_brightness > 0) {
+> -		size_t size = sizeof(*data->levels) * data->max_brightness;
+> -		unsigned int i, j, n = 0;
+> +	if (num_levels > 0) {
+> +		size_t size = sizeof(*data->levels) * num_levels;
+>  
+>  		data->levels = devm_kzalloc(dev, size, GFP_KERNEL);
+>  		if (!data->levels)
+> @@ -273,7 +271,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  
+>  		ret = of_property_read_u32_array(node, "brightness-levels",
+>  						 data->levels,
+> -						 data->max_brightness);
+> +						 num_levels);
+>  		if (ret < 0)
+>  			return ret;
+>  
+> @@ -298,7 +296,13 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  		 * between two points.
+>  		 */
+>  		if (num_steps) {
+> -			if (data->max_brightness < 2) {
+> +			unsigned int num_input_levels = num_levels;
+> +			unsigned int i;
+> +			u32 x1, x2, x, dx;
+> +			u32 y1, y2;
+> +			s64 dy;
+> +
+> +			if (num_input_levels < 2) {
+>  				dev_err(dev, "can't interpolate\n");
+>  				return -EINVAL;
+>  			}
+> @@ -308,14 +312,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  			 * taking in consideration the number of interpolated
+>  			 * steps between two levels.
+>  			 */
+> -			for (i = 0; i < data->max_brightness - 1; i++) {
+> -				if ((data->levels[i + 1] - data->levels[i]) /
+> -				   num_steps)
+> -					num_levels += num_steps;
+> -				else
+> -					num_levels++;
+> -			}
+> -			num_levels++;
+> +			num_levels = (num_input_levels - 1) * num_steps + 1;
+>  			dev_dbg(dev, "new number of brightness levels: %d\n",
+>  				num_levels);
+>  
+> @@ -327,24 +324,25 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  			table = devm_kzalloc(dev, size, GFP_KERNEL);
+>  			if (!table)
+>  				return -ENOMEM;
+> -
+> -			/* Fill the interpolated table. */
+> -			levels_count = 0;
+> -			for (i = 0; i < data->max_brightness - 1; i++) {
+> -				value = data->levels[i];
+> -				n = (data->levels[i + 1] - value) / num_steps;
+> -				if (n > 0) {
+> -					for (j = 0; j < num_steps; j++) {
+> -						table[levels_count] = value;
+> -						value += n;
+> -						levels_count++;
+> -					}
+> -				} else {
+> -					table[levels_count] = data->levels[i];
+> -					levels_count++;
+> +			/*
+> +			 * Fill the interpolated table[x] = y
+> +			 * by draw lines between each (x1, y1) to (x2, y2).
+> +			 */
+> +			dx = num_steps;
+> +			for (i = 0; i < num_input_levels - 1; i++) {
+> +				x1 = i * dx;
+> +				x2 = x1 + dx;
+> +				y1 = data->levels[i];
+> +				y2 = data->levels[i + 1];
+> +				dy = (s64)y2 - y1;
+> +
+> +				for (x = x1; x < x2; x++) {
+> +					table[x] = y1 +
+> +						div_s64(dy * ((s64)x - x1), dx);
+
+I don't think it is possible for x - x1 to be negative (e.g. what is the
+s64 for). Obviously it makes little functional difference whether the
+cast is there or not but I don't like fixed point code that has been
+written with "just in case" casts.
+
+
+Daniel.
+
+
+>  				}
+>  			}
+> -			table[levels_count] = data->levels[i];
+> +			/* Fill in the last point, since no line starts here. */
+> +			table[x2] = y2;
+>  
+>  			/*
+>  			 * As we use interpolation lets remove current
+> @@ -353,15 +351,9 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  			 */
+>  			devm_kfree(dev, data->levels);
+>  			data->levels = table;
+> -
+> -			/*
+> -			 * Reassign max_brightness value to the new total number
+> -			 * of brightness levels.
+> -			 */
+> -			data->max_brightness = num_levels;
+>  		}
+>  
+> -		data->max_brightness--;
+> +		data->max_brightness = num_levels - 1;
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.28.0
+> 
