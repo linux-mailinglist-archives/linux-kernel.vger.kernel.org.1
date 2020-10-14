@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A6828D8F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C2528DD0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgJNDVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 23:21:14 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10838 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726049AbgJNDVN (ORCPT
+        id S1731127AbgJNJWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:22:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730272AbgJNJVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 23:21:13 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f866e500000>; Tue, 13 Oct 2020 20:19:44 -0700
-Received: from [10.19.100.177] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 03:21:07 +0000
-Subject: Re: [PATCH v3 04/15] phy: tegra: xusb: tegra210: Do not reset UPHY
- PLL
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
-        <jonathanh@nvidia.com>, <kishon@ti.com>,
-        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nkristam@nvidia.com>
-References: <20200909081041.3190157-1-jckuo@nvidia.com>
- <20200909081041.3190157-5-jckuo@nvidia.com> <20200928130618.GE3065790@ulmo>
-X-Nvconfidentiality: public
-From:   JC Kuo <jckuo@nvidia.com>
-Message-ID: <0ec9045c-8722-d7cd-20f0-2c163be75619@nvidia.com>
-Date:   Wed, 14 Oct 2020 11:21:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200928130618.GE3065790@ulmo>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602645584; bh=MpUvsa/wMAY7BzkAhwbdXgZgbZYHy0ZGBz0aDP8EC30=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=NbYay9iIS0u9b13wMqVg/7m1S5/uQvHx3hDHKgGcf/5ALGojoN25hgrvBf5wfO7Tm
-         UP71jMjVDMeE+zWpx5YyjWdxHaEX8H2re8CDEEWVQeTqNCIIikzOYnO4UVnZTNex2v
-         1J6Izi/vusu2n1rzG1eiLDeLn4nxLakh72KqFnuOJNq0pXaduNDJAV+P3geg73VtOk
-         QxoiCAIrGre9Wcqgo3WR+HvDlG0Qsr1Cu1YBLXV/P/6JFsbBHJvADGHGzgeBTgAHpZ
-         6EWk1/jrgDJyGCxyxyX1LwTXU7F/Td7ZuEjqP8WGw8gDDpC8q0CAbiPwJwQn87Wl6c
-         ncdUMJmQJor/Q==
+        Wed, 14 Oct 2020 05:21:55 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73287C041E51;
+        Tue, 13 Oct 2020 20:24:35 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id c6so1032803plr.9;
+        Tue, 13 Oct 2020 20:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=08YgLkicvYu2QMyEN9IpZIKEoaxmhCS9+fHx/OZdpbI=;
+        b=nmAz3VNNb+gIPg8PAbotb3Pu/rfYLtN+H2qZx6dYG5cyVw+irNPJLEqEKQ38VLp4fX
+         2GG2h9CIjevR/WGUEmQt+vjz68i8QtdTp1/NjKZ7Gxberz4Hpm7m6Fvz7RPR/eVvK4nx
+         z8SqAVvfxm/UugnH9mvkT7aFbGT0RfNMRnNyN7Ebj3iAPC40vfPySCR542d8+RuaDB7Y
+         06AqSZN9B+qalkazY17g/fjdSTZIw2oSSyISLr5JqB+7M52eCwohMs8XNbWCBbXpKKUq
+         ZN0DM+KZLRUx3A2SIStIH/pf20InhN10kgzOsejhNw2smfu0kAIDfTYkPsjz+i16fCI+
+         V46Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=08YgLkicvYu2QMyEN9IpZIKEoaxmhCS9+fHx/OZdpbI=;
+        b=d5o2ljyB2Twyjsu86oO5ziecuJqew9cdhK3qAw01gbirpzxr5q+8sDZIdLB1SGYKlu
+         cqKaG9IuvRmqJFjMwYkq9LQngJe8yeap1iZB1uiATfa0avKQmKAzEFkfftQBajKL382I
+         yEN6KN++iExJhCiVgD3qbdYy95Ek2hvPijrjUTInujHDMdY8WQ7r6I1tDaT4c29XYtxv
+         TQcjTEVqoEbF2dU9+ywuiekM7rVfWIup4hXrz5VR76p7auNa5r4IgLAbxKuXyve1k8fY
+         uhPfCWLLd8L7JObFyXWtJb+Bp0PCiHyOJ4aIQ2CnQVQq64LU1OxJ8cW6KXJLek68TvfU
+         ZHfw==
+X-Gm-Message-State: AOAM531o4GUAMXBg3VHtZW7SmV/0Th2n5iZEIVJ2iH5erTEBZ3wLPGLg
+        tLEW9IUv39u6nwbxfOKmtA==
+X-Google-Smtp-Source: ABdhPJyZcI9qwONYOWp4syLDFF+2Hqqtny7mDfa1eHvD9d6Jn84ZEf5LZS+i/LNqIGZvyX+g6kZbeQ==
+X-Received: by 2002:a17:902:7e82:b029:d3:f3b5:d99a with SMTP id z2-20020a1709027e82b02900d3f3b5d99amr2628888pla.7.1602645874989;
+        Tue, 13 Oct 2020 20:24:34 -0700 (PDT)
+Received: from localhost.localdomain ([8.210.181.200])
+        by smtp.gmail.com with ESMTPSA id n15sm463185pgt.75.2020.10.13.20.24.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 13 Oct 2020 20:24:34 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pujin Shi <shipujin.t@gmail.com>
+Subject: [PATCH] fs: btrfs: Fix incorrect printf qualifier
+Date:   Wed, 14 Oct 2020 11:24:19 +0800
+Message-Id: <20201014032419.1268-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asserting reset to a PLL when it's managed by hardware power sequencer would
-break sequencer's state machine. Putting PLL in reset doesn't save some extra power.
+This patch addresses a compile warning:
+fs/btrfs/extent-tree.c: In function '__btrfs_free_extent':
+fs/btrfs/extent-tree.c:3187:4: warning: format '%lu' expects argument of type 'long unsigned int', but argument 8 has type 'unsigned int' [-Wformat=]
 
-Thanks for review.
-JC
+Fixes: 3b7b6ffa4f8f ("btrfs: extent-tree: kill BUG_ON() in __btrfs_free_extent()")
+Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
+---
+ fs/btrfs/extent-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 9/28/20 9:06 PM, Thierry Reding wrote:
-> On Wed, Sep 09, 2020 at 04:10:30PM +0800, JC Kuo wrote:
->> Once UPHY PLL hardware power sequencer is enabled, do not assert
->> reset to PEX/SATA PLLs, otherwise UPHY PLL operation will be broken.
->> This commit removes reset_control_assert(pcie->rst) and
->> reset_control_assert(sata->rst) from PEX/SATA UPHY disable procedure.
->>
->> Signed-off-by: JC Kuo <jckuo@nvidia.com>
->> ---
->> v3:
->>    new, was a part of "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
->>
->>  drivers/phy/tegra/xusb-tegra210.c | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-tegra210.c
->> index f06e7bc7a51b..ef4bbcbed60b 100644
->> --- a/drivers/phy/tegra/xusb-tegra210.c
->> +++ b/drivers/phy/tegra/xusb-tegra210.c
->> @@ -504,7 +504,6 @@ static void tegra210_pex_uphy_disable(struct tegra_xusb_padctl *padctl)
->>  	if (--pcie->enable > 0)
->>  		goto unlock;
->>  
->> -	reset_control_assert(pcie->rst);
->>  	clk_disable_unprepare(pcie->pll);
->>  
->>  unlock:
->> @@ -746,7 +745,6 @@ static void tegra210_sata_uphy_disable(struct tegra_xusb_padctl *padctl)
->>  	if (--sata->enable > 0)
->>  		goto unlock;
->>  
->> -	reset_control_assert(sata->rst);
->>  	clk_disable_unprepare(sata->pll);
->>  
->>  unlock:
-> 
-> Does this mean that we can no longer reset these PLLs anymore? Is that
-> safe? Would we ever need to reset them for recovery or similar? For
-> power saving, is disabling the clock enough, or could we save some extra
-> power by putting the PLLs into reset?
-> 
-> Thierry
-> 
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 3b21fee13e77..5fd60b13f4f8 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -3185,7 +3185,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
+ 		struct btrfs_tree_block_info *bi;
+ 		if (item_size < sizeof(*ei) + sizeof(*bi)) {
+ 			btrfs_crit(info,
+-"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %lu",
++"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %zu",
+ 				   key.objectid, key.type, key.offset,
+ 				   owner_objectid, item_size,
+ 				   sizeof(*ei) + sizeof(*bi));
+-- 
+2.18.1
+
