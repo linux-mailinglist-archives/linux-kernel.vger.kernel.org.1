@@ -2,114 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F0D28EAAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F7D28E8B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 00:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732508AbgJOCEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 22:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726934AbgJOCEj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:04:39 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0749FC0610D1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:25:38 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id x1so1111224eds.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u6oCs/9cz9zpdxxwRUYUm1kSBmkyW+u+MezXxhay8qc=;
-        b=gW7j1C0VbGjDq2pb7kmXH0xuHfgsrcWmVnw7BNVz/Tby5/EWLlBSYuBTYmw17rDAqg
-         lylbJ+o7UaR1mbiUY/egwQXmpuAYlVsKg/KEJAFHM0AKmH7VjwvYUAavAORKxt4CGi8g
-         M7gYE3jmVYpGvmVyGdCJ066k4QR6/4VTZrtzhL0Kf6EH0ce9c1QIYuPlcrPZ7dtjJu8/
-         Gh+8T2NmhdI6B3Pen0YfzFvoYdbu/Dy9QpcRvzpe6AxR+rchzzx5vGlJywIP/1UBe2bk
-         66kkB2VI1PTPWeg7Iqud8PKlE0vqJ5bVtOtFWTOAktts6jlF64c/PpMGGLMcl86iJ4mY
-         vmCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u6oCs/9cz9zpdxxwRUYUm1kSBmkyW+u+MezXxhay8qc=;
-        b=LWE8alOmUp9IirvQ8yobwyH7rLAu38oISxqtrEVihVcyxF+WR2ibotDiEIBm3ug94I
-         8ag5nIpFerBILSNlRRsGBWwo6Mqedvlbf+QZBaRSktTKsqbpkt5vFVxjuWa8nKREspnf
-         ckyW/v74ul+bVoeNASFwvag1zj99qo+tm6nd7CwAgyR3AJsGDPAjUfyklAwquz17V/4J
-         ehEnwivFzdheFDjzJ9EogTdnSGnrFRlNIA45vJUuxTVzJ+DlHCEFFtVPuX6q67Y3udk9
-         r1UVkotHwpFM/RRhU0IR74TB5Iww4oipYLA/kxi0rDk/9zx88cRqYpZil1E0q0/S3x/n
-         Cm7g==
-X-Gm-Message-State: AOAM530Tug3W47cIWKG4qpuNVW5Mi8RPHgnOsENvW8P36iQadqaM9Y8a
-        12InhM7jzxIWIQRsWRrPQVHuielW1bNfPHuT3JCkmA==
-X-Google-Smtp-Source: ABdhPJwHdi4HqJ28TwinJvmyYBdUNtOckKs21QUkcH2wM5UlBfHQVhUGhI4kpBB80wiBW3IH4Rhy4jEkZvU0KukYURg=
-X-Received: by 2002:a50:8e1e:: with SMTP id 30mr1288139edw.354.1602714336584;
- Wed, 14 Oct 2020 15:25:36 -0700 (PDT)
+        id S1728262AbgJNWZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 18:25:35 -0400
+Received: from ozlabs.org ([203.11.71.1]:38811 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726747AbgJNWZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 18:25:34 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBRnM3Qkrz9sRK;
+        Thu, 15 Oct 2020 09:25:27 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602714332;
+        bh=IZfOX4HbTsKNcP13QtnWJrM1gn6I60HV0glE9YkH3yY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YbtxcLBawIz+z7hv+R0UWOPeUNiSkVF3A6HxcRBL49058PD9GcYpUVcwf2eo4JE5P
+         72R0UqwYomLV8rZUypDVcemF/e3DP2g/KCSe7ctT45IQPkSDRN4lU4UEVVcDrI0xor
+         eQiWJ+XaKawwkf7KM4KpXe2XP2UhbRloMiM+91Io5nIjItD98djbzQ2AfA7WEv+lW9
+         SpTZkIXKdDNXAx59TsaDB8rm9en/+BXKieOXFSu5Lzyb5ROLNqXKuBcbCI9EJTeCZV
+         iIFkobVSLFf4JaG6YiBnihjL+w3gJYLCb+c7QCfgzi7GDpb0NhdUqvAVF2v7hOUqDT
+         IlJu11ylMlSYw==
+Date:   Thu, 15 Oct 2020 09:25:26 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <20201015092526.144df583@canb.auug.org.au>
+In-Reply-To: <202010041944.7FEE22407B@keescook>
+References: <20200914132249.40c88461@canb.auug.org.au>
+        <202010031451.ABC49D88@keescook>
+        <20201004102437.12fb0442@canb.auug.org.au>
+        <202010040125.B5AD5B757@keescook>
+        <20201004210018.5bbc6126@canb.auug.org.au>
+        <202010041944.7FEE22407B@keescook>
 MIME-Version: 1.0
-References: <cover.1602093760.git.yuleixzhang@tencent.com> <bdd0250e-4e14-f407-a584-f39af12c4e09@oracle.com>
- <CACZOiM2qKhogXQ_DXzWjGM5UCeCuEqT6wnR=f2Wi_T45_uoYHQ@mail.gmail.com>
- <b963565b-61d8-89d3-1abd-50cd8c8daad5@oracle.com> <CACZOiM26GPtqkGyecG=NGuB3etipV5-KgN+s19_U1WJrFxtYPQ@mail.gmail.com>
- <98be093d-c869-941a-6dd9-fb16356f763b@oracle.com>
-In-Reply-To: <98be093d-c869-941a-6dd9-fb16356f763b@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 14 Oct 2020 15:25:25 -0700
-Message-ID: <CAPcyv4jZ7XTnYd7vLQ18xij7d+80jU0zLs+ykS2frY-LMPS=Nw@mail.gmail.com>
-Subject: Re: [PATCH 00/35] Enhance memory utilization with DMEMFS
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     yulei zhang <yulei.kernel@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jane Y Chu <jane.chu@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Spg77AVGQdzo4pQCslY_V72";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 4:00 AM Joao Martins <joao.m.martins@oracle.com> wrote:
-[..]
-> On 10/10/20 9:15 AM, yulei zhang wrote:
-> > On Fri, Oct 9, 2020 at 7:53 PM Joao Martins <joao.m.martins@oracle.com> wrote:
-> >> On 10/9/20 12:39 PM, yulei zhang wrote:
-> >>> Joao, thanks a lot for the feedback. One more thing needs to mention
-> >>> is that dmemfs also support fine-grained
-> >>> memory management which makes it more flexible for tenants with
-> >>> different requirements.
-> >>>
-> >> So as DAX when it allows to partition a region (starting 5.10). Meaning you have a region
-> >> which you dedicated to userspace. That region can then be partitioning into devices which
-> >> give you access to multiple (possibly discontinuous) extents with at a given page
-> >> granularity (selectable when you create the device), accessed through mmap().
-> >> You can then give that device to a cgroup. Or you can return that memory back to the
-> >> kernel (should you run into OOM situation), or you recreate the same mappings across
-> >> reboot/kexec.
-> >>
-> >> I probably need to read your patches again, but can you extend on the 'dmemfs also support
-> >> fine-grained memory management' to understand what is the gap that you mention?
-> >>
-> > sure, dmemfs uses bitmap to track the memory usage in the reserved
-> > memory region in
-> > a given page size granularity. And for each user the memory can be
-> > discrete as well.
-> >
-> That same functionality of tracking reserved region usage across different users at any
-> page granularity is covered the DAX series I mentioned below. The discrete part -- IIUC
-> what you meant -- is then reduced using DAX ABI/tools to create a device file vs a filesystem.
+--Sig_/Spg77AVGQdzo4pQCslY_V72
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Put another way. Linux already has a fine grained memory management
-system, the page allocator. Now, with recent device-dax extensions, it
-also has a coarse grained memory management system for  physical
-address-space partitioning and a path for struct-page-less backing for
-VMs. What feature gaps remain vs dmemfs, and can those gaps be closed
-with incremental improvements to the 2 existing memory-management
-systems?
+Hi Kees,
+
+On Sun, 4 Oct 2020 19:44:52 -0700 Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sun, Oct 04, 2020 at 09:00:18PM +1100, Stephen Rothwell wrote:
+> > Hi Kees,
+> >=20
+> > On Sun, 4 Oct 2020 01:27:01 -0700 Kees Cook <keescook@chromium.org> wro=
+te: =20
+> > >
+> > > I assume CONFIG_CONSTRUCTORS is enabled for your build (it should be =
+for =20
+> >=20
+> > yes, indeed.
+> >  =20
+> > > allmodconfig). Does this patch fix it? (I'm kind of blindly guessing
+> > > based on my understanding of where this could be coming from...)
+> > >=20
+> > >=20
+> > > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/=
+vmlinux.lds.h
+> > > index e1843976754a..22f14956214a 100644
+> > > --- a/include/asm-generic/vmlinux.lds.h
+> > > +++ b/include/asm-generic/vmlinux.lds.h
+> > > @@ -701,6 +701,7 @@
+> > >  #ifdef CONFIG_CONSTRUCTORS
+> > >  #define KERNEL_CTORS()	. =3D ALIGN(8);			   \
+> > >  			__ctors_start =3D .;		   \
+> > > +			KEEP(*(SORT(.ctors.*)))		   \
+> > >  			KEEP(*(.ctors))			   \
+> > >  			KEEP(*(SORT(.init_array.*)))	   \
+> > >  			KEEP(*(.init_array))		   \ =20
+> >=20
+> > And that makes the messages go away. =20
+>=20
+> Okay then! Thanks for testing. :) I'm not sure why the ppc-hosted
+> compiler generates those. Regardless, I'll send a proper patch...
+
+I get these warnings from Linus' tree now ...
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Spg77AVGQdzo4pQCslY_V72
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+HetYACgkQAVBC80lX
+0GyEDAf8DJDGuTmfXAv2YOEXrG0aiH8Z3ykgnMnsW5xHQvyaoxHpi+QzF8HKbeu/
+r/5q9fNee9mSxz6VooPHx19UjLDkIkCwsCx/ItLsiouOZJcwikPERTciLefES875
+mpTrvB1/aF0sWBoPyKkiHPtCnX8lsqhxRFiyfAoXoqrYSWvYn4djYz2rKEkUJ1Mz
+DYRZlEqsegdRk/3VgiosAjVgAk3XgtxmSeK/ETZfKU4ShtZGP/NwStZJ2zrzZZup
+twslBpOxBEngKQXsD6fsOJwkMTeCVT3pbC3UpPiqJlJmBb2eSH9QI2AzjU0L85po
+ZoWqsWdLjmt522Wsb4s79MBHTedXTQ==
+=E8N0
+-----END PGP SIGNATURE-----
+
+--Sig_/Spg77AVGQdzo4pQCslY_V72--
