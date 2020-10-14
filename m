@@ -2,87 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613D128D829
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAF028D82C
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgJNB6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 21:58:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55284 "EHLO mail.kernel.org"
+        id S1728612AbgJNB7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 21:59:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJNB6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 21:58:41 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        id S1725874AbgJNB7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 21:59:13 -0400
+Received: from kernel.org (unknown [104.132.1.79])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F0C721D7F;
-        Wed, 14 Oct 2020 01:58:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAA8F221FC;
+        Wed, 14 Oct 2020 01:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602640720;
-        bh=gsQXg/Wr/5qYlMS+P7kGnf949bK69OfahNw1f6kbQn0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=zXiI++IfkMkVnClheHjnLnr8M7OJtmmt3kckkVfr5t+aCUbVnldusWFt7GWUWEhsJ
-         ScIVUlvbp2RY5bmXCpWpBmSabId2HAYMWriDZBOZc81eNi2hsejhRUpUCFdZNFBbRV
-         BASo2ZuLHbPvKnd1Xr9kzNLYcKuzZORI/5gY3qus=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5725335229EE; Tue, 13 Oct 2020 18:58:40 -0700 (PDT)
-Date:   Tue, 13 Oct 2020 18:58:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
- some files
-Message-ID: <20201014015840.GR3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
- <20201013163354.GO3249@paulmck-ThinkPad-P72>
- <20201013163836.GC670875@rowland.harvard.edu>
+        s=default; t=1602640752;
+        bh=wCc5SuWifTRvzQyLqk95QDnpolBC2xo+OhEuwe/klj0=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=1Y9BzN6quC7xAAKEBeTamqujt4BIsNY97lbcDYxmGt4Ca+LEXvONVPPJ6mh+S3ieb
+         ILpqfzBZVSffvEVuh1mzssunmpcgo4YC3165hY49R9U9q1MJgNP8EVP4MUYllUMyM6
+         sVXPZ8IoccBqY43IXguri5ilGi1NFtR1QwoHpWwo=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013163836.GC670875@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1602609110-11504-4-git-send-email-tdas@codeaurora.org>
+References: <1602609110-11504-1-git-send-email-tdas@codeaurora.org> <1602609110-11504-4-git-send-email-tdas@codeaurora.org>
+Subject: Re: [PATCH v2 3/3] clk: qcom: camcc: Add camera clock controller driver for SC7180
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Date:   Tue, 13 Oct 2020 18:59:11 -0700
+Message-ID: <160264075146.310579.8765964662995263828@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote:
-> On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:
-> > On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrote:
-> > > - The sysfs.txt file was converted to ReST and renamed;
-> > > - The control-dependencies.txt is not at
-> > >   Documentation/control-dependencies.txt. As it is at the
-> > >   same dir as the README file, which mentions it, just
-> > >   remove Documentation/.
-> > > 
-> > > With that, ./scripts/documentation-file-ref-check script
-> > > is now happy again for files under tools/.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > 
-> > Queued for review and testing, likely target v5.11.
-> 
-> Instead of changing the path in the README reference, shouldn't 
-> tools/memory-model/control-dependencies.txt be moved to its proper 
-> position in .../Documentation?
+Quoting Taniya Das (2020-10-13 10:11:50)
+> diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7=
+180.c
+> new file mode 100644
+> index 0000000..e954d21
+> --- /dev/null
+> +++ b/drivers/clk/qcom/camcc-sc7180.c
+> @@ -0,0 +1,1737 @@
+[...]
+> +
+> +enum {
+> +       P_BI_TCXO,
+> +       P_CAM_CC_PLL0_OUT_EVEN,
+> +       P_CAM_CC_PLL1_OUT_EVEN,
+> +       P_CAM_CC_PLL2_OUT_AUX,
+> +       P_CAM_CC_PLL2_OUT_EARLY,
+> +       P_CAM_CC_PLL3_OUT_MAIN,
+> +       P_CORE_BI_PLL_TEST_SE,
+> +};
+> +
+> +static struct pll_vco agera_vco[] =3D {
 
-You are of course quite right.  My thought is to let Mauro go ahead,
-given his short deadline.  We can then make this "git mv" change once
-v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
-added a reminder to my calendar.
+Can this be const?
 
-							Thanx, Paul
+> +       { 600000000, 3300000000, 0 },
+> +};
+> +
+> +static struct pll_vco fabia_vco[] =3D {
+
+Can this be const?
+
+> +       { 249600000, 2000000000, 0 },
+> +};
+> +
+[...]
+> +
+> +static int cam_cc_sc7180_probe(struct platform_device *pdev)
+> +{
+> +       struct regmap *regmap;
+> +       int ret;
+> +
+> +       pm_runtime_enable(&pdev->dev);
+> +       ret =3D pm_clk_create(&pdev->dev);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret =3D pm_clk_add(&pdev->dev, "xo");
+> +       if (ret < 0) {
+> +               dev_err(&pdev->dev, "Failed to acquire XO clock\n");
+> +               goto disable_pm_runtime;
+> +       }
+> +
+> +       ret =3D pm_clk_add(&pdev->dev, "iface");
+> +       if (ret < 0) {
+> +               dev_err(&pdev->dev, "Failed to acquire iface clock\n");
+> +               goto disable_pm_runtime;
+> +       }
+> +
+> +       ret =3D pm_clk_runtime_resume(&pdev->dev);
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "pm runtime resume failed\n");
+> +               goto destroy_pm_clk;
+> +       }
+> +
+> +       regmap =3D qcom_cc_map(pdev, &cam_cc_sc7180_desc);
+> +       if (IS_ERR(regmap)) {
+> +               ret =3D PTR_ERR(regmap);
+> +               goto destroy_pm_clk;
+> +       }
+> +
+> +       clk_fabia_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config=
+);
+> +       clk_fabia_pll_configure(&cam_cc_pll1, regmap, &cam_cc_pll1_config=
+);
+> +       clk_agera_pll_configure(&cam_cc_pll2, regmap, &cam_cc_pll2_config=
+);
+> +       clk_fabia_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config=
+);
+> +
+> +       ret =3D qcom_cc_really_probe(pdev, &cam_cc_sc7180_desc, regmap);
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "Failed to register CAM CC clocks\n");
+> +               goto suspend_pm_runtime;
+
+ret is non-zero here
+
+> +       }
+> +
+> +suspend_pm_runtime:
+> +       ret =3D pm_clk_runtime_suspend(&pdev->dev);
+
+But then it is overwritten here.
+
+> +       if (ret)
+> +               dev_err(&pdev->dev, "pm runtime suspend failed\n");
+> +
+> +       return 0;
+
+And we return 0 when there was a failure to probe the clks?
+
+> +
+> +destroy_pm_clk:
+> +       pm_clk_destroy(&pdev->dev);
+> +
+> +disable_pm_runtime:
+> +       pm_runtime_disable(&pdev->dev);
+> +
+> +       return ret;
+> +}
