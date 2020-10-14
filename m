@@ -2,127 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E45828E091
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD0528E099
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730830AbgJNMbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727237AbgJNMbW (ORCPT
+        id S1727888AbgJNMgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:36:52 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:52923 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726394AbgJNMgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:31:22 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39999C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:31:20 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l15so1584233wmh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KB+6ySlou+IcHZkYe/oZLqhmhPrZ63cakyZUaPhIhKQ=;
-        b=tqHCgT+MHAIxE1zGDU9Pz2T6plzgk5iUrPvBhSNhN/pKhIF/+aSyLxHKYyGM4CTm3q
-         YBcfQLcNpjxp2s1QCd3mf/o4RbwrSOUF5ISmK85RNICvsSlUAObXtB15cSL0NtKrWxVA
-         OXbY07xU8YCp66Y8DMxLK309KNhDSkeK4q7r6/z2iSJ9fN7Lyr8TvcbeSjjRHiGHHpw+
-         LeQD+v6bm+8/gNtMdXNieDF9F2Ee8fSnr7saEwMKroB4T0f039zjLPNz8zmP1Qo2CzZd
-         A5IZnW4fBTHpXDcvYKxL5msmi9vtg5XeNh+bRdzE2f+ITnY7yFm3hItx2HegUR0oMkZl
-         B13Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KB+6ySlou+IcHZkYe/oZLqhmhPrZ63cakyZUaPhIhKQ=;
-        b=DR4oS76QimLiLAw7MIbTTHErf3ooqAQ7t9viHn47YIM2A5216QRlyuSKw94bQhUoxj
-         hcdVpc//NrXEopF/ahVlqTbwI8A4NBS50zDP+lvDCpaH58URfA0M4yvstOFv+Uw1TA4v
-         MrAOCr1VS6wZK1Y8/arF7vccDF1iFvyTV0jf65z2GiUPRaNVLGtptVziGWj+Fwh209A/
-         yJ2V3e8MyCtx+3B2BUsrOgomNJwqc8jm3IoUsj8c5iF89eM/H/zjwXlYULl1xUg0USn8
-         VIUq0fHB9r0AmvyBsiMeD5FqD5kz4qJVB5wuLEX1qTsh5/mtN8pY271xRxO2ZV/Y9666
-         r5Wg==
-X-Gm-Message-State: AOAM530Q2NNCe8j3WdMJ5/vVodegoL2vHvNry6sQtfu5q8VgTV3hLxmn
-        Z2/jw7EWFCupxukSr8tQjiaFgg==
-X-Google-Smtp-Source: ABdhPJy2mGCEWq3jczFkkMFcp3+jlolWpVrs+69RCmmuZCWegGfFZi4F7SPdxpLjSDS+HPTuMGIdWA==
-X-Received: by 2002:a1c:dd0b:: with SMTP id u11mr3182291wmg.186.1602678678588;
-        Wed, 14 Oct 2020 05:31:18 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f? ([2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f])
-        by smtp.googlemail.com with ESMTPSA id a82sm3823504wmc.44.2020.10.14.05.31.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 05:31:17 -0700 (PDT)
-Subject: Re: [PATCH 1/3] thermal: power_allocator: respect upper and lower
- bounds for cooling device
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     amitk@kernel.org, Dietmar.Eggemann@arm.com,
-        michael.kao@mediatek.com, rui.zhang@intel.com
-References: <20201007122256.28080-1-lukasz.luba@arm.com>
- <20201007122256.28080-2-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <64ac12ca-9d7a-11f1-f935-0eb96dc6355b@linaro.org>
-Date:   Wed, 14 Oct 2020 14:31:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 14 Oct 2020 08:36:51 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09ECRGnc023713;
+        Wed, 14 Oct 2020 14:35:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=a6IV5Cv8z3GpD5NHvsPPGT16JAZW0AbP5VtlTBCZgbY=;
+ b=0gW3dTGUMUCPCrLlHSKbLXNUakOrE1zSS5pc8R4iwImq9dmyN8jYSMPtrnaYSkyrykfV
+ 7+fnKYW3/gxGpk1teSImS2SFtMyGBfTAQ1mSF+IxGduO+IT6i/MQMDTuxp2Q/R8s4O68
+ EyH5zrjGFmkmZd61NQdVcNamD0ru9hXfZ0Jw+iTQxrWWSjYKw/Q+3BXTZ021nSyh6X1y
+ RKcwAtrn9B01U+7SNaQOqIjhUTgEHeGTtwtlixKDnYtBmB+OuVLC7QWa5oN00DGtltbh
+ +ZnktVyB3bRl2RVsa1n0IdnjMmckEGTKcr6PxZRQb516T16Jn8Z7Se3BCVfUq7uI8XB5 0g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3435875rh5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 14:35:56 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 732A010002A;
+        Wed, 14 Oct 2020 14:35:54 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E8B382D0088;
+        Wed, 14 Oct 2020 14:35:53 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct 2020 14:35:53
+ +0200
+From:   Olivier Moysan <olivier.moysan@st.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <alexandre.torgue@st.com>, <robh@kernel.org>,
+        <mark.rutland@arm.com>, <olivier.moysan@st.com>
+CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, <arnaud.pouliquen@st.com>
+Subject: [PATCH 1/1] ASoC: dt-bindings: stm32: convert audio dfsdm to json-schema
+Date:   Wed, 14 Oct 2020 14:35:31 +0200
+Message-ID: <20201014123531.6991-1-olivier.moysan@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20201007122256.28080-2-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-14_07:2020-10-14,2020-10-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2020 14:22, Lukasz Luba wrote:
-> The thermal cooling device specified in DT might be instantiated for
-> a thermal zone trip point with a limited set of OPPs to operate on. This
-> configuration should be supported by Intelligent Power Allocation (IPA),
-> since it is a standard for other governors. Change the code and allow IPA
-> to get power value of lower and upper bound set for a given cooling
-> device.
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  drivers/thermal/gov_power_allocator.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-> index dd59085f38f5..f9ee7787b325 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -96,7 +96,8 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->  		if (instance->trip != params->trip_max_desired_temperature)
->  			continue;
->  
-> -		if (power_actor_get_min_power(cdev, tz, &min_power))
-> +		if (cdev->ops->state2power(cdev, tz, instance->upper,
-> +					   &min_power))
+Convert the STM32 DFSDM audio bindings to DT schema format
+using json-schema.
 
-	if (cdev->ops->state2power && cdev->ops->state2power(cdev, tz,
-							instance->upper,
-							&min_power))
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ .../bindings/sound/st,stm32-adfsdm.txt        | 63 -------------------
+ .../bindings/sound/st,stm32-adfsdm.yaml       | 42 +++++++++++++
+ 2 files changed, 42 insertions(+), 63 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.yaml
 
-?
-
->  			continue;
->  
->  		sustainable_power += min_power;
-> @@ -404,7 +405,8 @@ static int allocate_power(struct thermal_zone_device *tz,
->  
->  		weighted_req_power[i] = frac_to_int(weight * req_power[i]);
->  
-> -		if (power_actor_get_max_power(cdev, tz, &max_power[i]))
-> +		if (cdev->ops->state2power(cdev, tz, instance->lower,
-> +					   &max_power[i]))
->  			continue;
-
-Same here ?
-
->  		total_req_power += req_power[i];
-> 
-
-
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+deleted file mode 100644
+index 864f5b00b031..000000000000
+--- a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
++++ /dev/null
+@@ -1,63 +0,0 @@
+-STMicroelectronics Audio Digital Filter Sigma Delta modulators(DFSDM)
+-
+-The DFSDM allows PDM microphones capture through SPI interface. The Audio
+-interface is seems as a sub block of the DFSDM device.
+-For details on DFSDM bindings refer to ../iio/adc/st,stm32-dfsdm-adc.txt
+-
+-Required properties:
+-  - compatible: "st,stm32h7-dfsdm-dai".
+-
+-  - #sound-dai-cells : Must be equal to 0
+-
+-  - io-channels : phandle to iio dfsdm instance node.
+-
+-Example of a sound card using audio DFSDM node.
+-
+-	sound_card {
+-		compatible = "audio-graph-card";
+-
+-		dais = <&cpu_port>;
+-	};
+-
+-	dfsdm: dfsdm@40017000 {
+-		compatible = "st,stm32h7-dfsdm";
+-		reg = <0x40017000 0x400>;
+-		clocks = <&rcc DFSDM1_CK>;
+-		clock-names = "dfsdm";
+-		#interrupt-cells = <1>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		dfsdm_adc0: filter@0 {
+-			compatible = "st,stm32-dfsdm-dmic";
+-			reg = <0>;
+-			interrupts = <110>;
+-			dmas = <&dmamux1 101 0x400 0x00>;
+-			dma-names = "rx";
+-			st,adc-channels = <1>;
+-			st,adc-channel-names = "dmic0";
+-			st,adc-channel-types = "SPI_R";
+-			st,adc-channel-clk-src = "CLKOUT";
+-			st,filter-order = <5>;
+-
+-			dfsdm_dai0: dfsdm-dai {
+-				compatible = "st,stm32h7-dfsdm-dai";
+-				#sound-dai-cells = <0>;
+-				io-channels = <&dfsdm_adc0 0>;
+-				cpu_port: port {
+-				dfsdm_endpoint: endpoint {
+-					remote-endpoint = <&dmic0_endpoint>;
+-				};
+-			};
+-		};
+-	};
+-
+-	dmic0: dmic@0 {
+-		compatible = "dmic-codec";
+-		#sound-dai-cells = <0>;
+-		port {
+-			dmic0_endpoint: endpoint {
+-				remote-endpoint = <&dfsdm_endpoint>;
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.yaml b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.yaml
+new file mode 100644
+index 000000000000..d953ec524ba2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.yaml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/st,stm32-adfsdm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: STMicroelectronics Audio Digital Filter Sigma Delta modulators(DFSDM)
++
++maintainers:
++  - Olivier Moysan <olivier.moysan@st.com>
++
++description:
++  The DFSDM allows PDM microphones capture through the SPI interface.
++  The Audio interface is seen as a sub block of the DFSDM device.
++  For details on DFSDM bindings refer to ../iio/adc/st,stm32-dfsdm-adc.yaml
++
++properties:
++  compatible:
++    enum:
++      - st,stm32h7-dfsdm-dai
++
++  "#sound-dai-cells":
++    const: 0
++
++  io-channels:
++    description: phandle to iio dfsdm instance node
++    maxItems: 1
++
++required:
++  - compatible
++  - "#sound-dai-cells"
++  - io-channels
++
++examples:
++  - |
++    asoc_pdm0: dfsdm-dai {
++      compatible = "st,stm32h7-dfsdm-dai";
++      #sound-dai-cells = <0>;
++      io-channels = <&dfsdm0 0>;
++    };
++
++...
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.17.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
