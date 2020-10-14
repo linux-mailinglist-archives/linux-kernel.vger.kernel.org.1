@@ -2,104 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B3928DAB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDD628DABA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgJNHzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:55:37 -0400
-Received: from mail-eopbgr770083.outbound.protection.outlook.com ([40.107.77.83]:60576
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726897AbgJNHzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:55:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F2UiFStfoEYrgQbp2/JGFd9OZzb3h76m/j4S/C7F50e04fUjpthg6as50jH9UXgK+PfjV1kzUa2DPo0YbYO2uRG7jy9K8dSLFYrEYx9qu6dpUXVdi5dHdc0eXln1RtU7jGAUU5MuvsRPMloZ61OODo1VblO9jee/rthbPzRqOYBEnfH2cVZsjKEiEcyimYYIFObcZY7FUDJ2vE83pi8Av87DBoVqkBcgp0iHyucnv03g/Zx8XqNBRcmNFlmNwoUMRKQg9Vc+jFly8wg5nStXaq0sI2HdZVCxq5gnTK4hzYEPJIGMGw1DZcIsM16R+ZcRJVXEEH+5LGiPOMCo0xF4Tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IuJwmGaquEy1UX2tFjmN6OtHApjp0wNzSpAhOZy6gps=;
- b=b7D+vHJHVBlqbBhd9KlzlNABK4g/vE22NOB4rrqdKqyCl7Fy9NHxqW0NrYW49hNkJ42YBsaAKFkQjPA9J2B0VBuksi1HaMNXCexI0PClWUM8XdTGLMtWxY4EyQ81ySyMG93UKxPpwzJd86ZsoKUuaUKGZ8oWhiXKjc/7kSMEI0kc53s7BIBoHIqUk4QdXO/qyHr5ujWLdpP+6dJGKzY8ZdKvd5yHwzo9WhfyMQqxj/Ypo+BeArGeWMeLmGA3EXJUthOwBekqNvwMGUYmbaVFItPRWUbRRXbYZ/fCwLBx7ekonKLDBo/BuheMBAEmBj1a1B9td4VrPjRNLgO6nU61TQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IuJwmGaquEy1UX2tFjmN6OtHApjp0wNzSpAhOZy6gps=;
- b=L2WgQZoOa74bl0rBNRov3sgwdmmU+al9cc+sYqr3K27+55Q6RUy5DhbBD4ZOjV7SdBbMpRkp16FXv4E1/skSr/n5C+cHRQgAGLklRm+JII2t2wMAa9HY1SWrG1oCNCHDdDndc2paI5lY18lPxzAGbm1e2fwIB6vlF8sVSH4CdeQ=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BYAPR11MB3029.namprd11.prod.outlook.com (2603:10b6:a03:8e::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 14 Oct
- 2020 07:55:34 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::80e9:e002:eeff:4d05]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::80e9:e002:eeff:4d05%3]) with mapi id 15.20.3455.030; Wed, 14 Oct 2020
- 07:55:34 +0000
-From:   Zqiang <qiang.zhang@windriver.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: gadget: function: printer: Fix usb function descriptors leak
-Date:   Wed, 14 Oct 2020 15:55:23 +0800
-Message-Id: <20201014075523.15688-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: BYAPR05CA0105.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::46) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        id S1728272AbgJNH4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:56:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726897AbgJNH4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 03:56:12 -0400
+Received: from coco.lan (ip5f5ad5dc.dynamic.kabel-deutschland.de [95.90.213.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F4072222A;
+        Wed, 14 Oct 2020 07:56:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602662170;
+        bh=54xdnNzCIbZVeo8uxGRflH+LIH/mn4SRDcVW6H6rs8E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RkzdEdmgopn/v1H4MjXYaHoxAoI9dBDQZomJlXHjFTeQu7pHlO9LefQG/YjP6bF1P
+         eCJh9nyX8JWvlPoPiKwcvANi7iOuqADIr0WL1q1uFWls/Tkbz1T37A9LbevIX6yt+U
+         66JESt5eoc+a2vi6C05FB0uxFdauKFGaLdgmb3+o=
+Date:   Wed, 14 Oct 2020 09:56:03 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
+ some files
+Message-ID: <20201014095603.0d899da7@coco.lan>
+In-Reply-To: <20201014015840.GR3249@paulmck-ThinkPad-P72>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+        <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
+        <20201013163354.GO3249@paulmck-ThinkPad-P72>
+        <20201013163836.GC670875@rowland.harvard.edu>
+        <20201014015840.GR3249@paulmck-ThinkPad-P72>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qzhang2-d1.wrs.com (60.247.85.82) by BYAPR05CA0105.namprd05.prod.outlook.com (2603:10b6:a03:e0::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.13 via Frontend Transport; Wed, 14 Oct 2020 07:55:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aecd6417-69e0-450b-42b0-08d8701687d6
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3029:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB3029A235C386556BE7F81402FF050@BYAPR11MB3029.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TYbBfStjPb5xr99h/10JYPnLpRZE/oGoC4GrYhuLWwoGwtIAir8qvQWosZkA41ubJwFLEaJ8UdjRPAW0E6KMlJavFOVkVNp2HowKm7+B2H3BG6NK2Shv6WZtwVTgFcgep5IsgjSdFteDqSATDfvLqdYhffrHDLc26iJjpCrK5CSmed5+ro0o1078+kp2oF7kXSdRzZLQexNVTFlYViufCwKV1yuc/sq7onmnkoqcc51zcbiddnp+IUND/xVkqz/ZVAHdvZqMMnvMMlCRG6PVi3EV93BJMAugAiCbGXlxCS2+I5PLAafAqpNU2ROiEgiz/9RuXQgX6xWc30PntTxLvA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39850400004)(366004)(16526019)(66476007)(4326008)(66946007)(66556008)(8676002)(316002)(956004)(186003)(2616005)(6506007)(52116002)(8936002)(478600001)(26005)(6512007)(6486002)(2906002)(86362001)(6666004)(5660300002)(1076003)(4744005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: YRelOlBNT7qEGGdkYd1ziH7fW2eyde4oUYAr1rDfxD6F8nbLDWGweUINpQvnrRZ5Rho67Tv3eQGf7hBDlMM4tXZ9IS4BmPWA9UrEuZsk2ItMPWfjLODHY0WjaXNOVzCFnx1uRoK2scbYxm4p3QqnLsQDlpvg9zGmivxHJglJee6kOC/XqAYTZYLAvZdafT4aRQTW1T+ztbZxP5ld3LifouTDTNsjrKDhSr32ytcJNb2c1NUUfPkQcxlCFx3R20T3+hoAD2QuO2oOIGiqO78BekOW6CJxKHarfHSFpPPl8Cxe10rFjXJOPLn/RReRPFkYdGe99wBnGOweUJvI+kQ0QWXZkCJJ+CHfRffbEdqVySAEL4BmvYAXTL4DwUd94/F0cpus0bFYuC33UywgIrx46/uF9RVfIU+mMhhNeThijmKLtf6E0miDeqrQyQmTsN2lisLVOUOqdXAs6a0enw/Y6tFubu2P1pwjPnG17QSSxdqI+yotz9roeE+ls08hazQctgHZzeReflpUPWopUgA681qQbpXmA1hUe2ZBw0fI7lXOTVIDMHummbs2/44LBaV8D+Fkxqlckpufgj77uu87L9XVlZEAKo+lHSqllstyLdvHxjNI5FxzFOD2pJWuc6yk+CMB0JhfCXyaE8M0sIvjZw==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aecd6417-69e0-450b-42b0-08d8701687d6
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 07:55:34.7969
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y4czeABXkf5krJN3BNAspTa4BRX+7LjssKiE5lrZ0KdFeFl1OER3TkJsnFj59CvZ+JNDl6fe3JgtR8TS5TidRxTGHq7hHXoA40u3wVeDdRA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3029
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after call 'usb_assign_descriptors' func, the
-'usb_free_all_descriptors' need to be call to release memory space
-occupied by function descriptors.
+Em Tue, 13 Oct 2020 18:58:40 -0700
+"Paul E. McKenney" <paulmck@kernel.org> escreveu:
 
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- drivers/usb/gadget/function/f_printer.c | 1 +
- 1 file changed, 1 insertion(+)
+> On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote:
+> > On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:  
+> > > On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrote:  
+> > > > - The sysfs.txt file was converted to ReST and renamed;
+> > > > - The control-dependencies.txt is not at
+> > > >   Documentation/control-dependencies.txt. As it is at the
+> > > >   same dir as the README file, which mentions it, just
+> > > >   remove Documentation/.
+> > > > 
+> > > > With that, ./scripts/documentation-file-ref-check script
+> > > > is now happy again for files under tools/.
+> > > > 
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> > > 
+> > > Queued for review and testing, likely target v5.11.  
+> > 
+> > Instead of changing the path in the README reference, shouldn't 
+> > tools/memory-model/control-dependencies.txt be moved to its proper 
+> > position in .../Documentation?  
+> 
+> You are of course quite right.  My thought is to let Mauro go ahead,
+> given his short deadline.  We can then make this "git mv" change once
+> v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
+> added a reminder to my calendar.
 
-diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
-index 64a4112068fc..2f1eb2e81d30 100644
---- a/drivers/usb/gadget/function/f_printer.c
-+++ b/drivers/usb/gadget/function/f_printer.c
-@@ -1162,6 +1162,7 @@ static int printer_func_bind(struct usb_configuration *c,
- 		printer_req_free(dev->in_ep, req);
+Sounds like a plan to me.
+
+
+If it helps on 5.11 plans, converting this file to ReST format is quite
+trivial: it just needs to use "::" for C/asm code literal blocks, and 
+to replace "(*) " by something that matches ReST syntax for lists,
+like "(#) " or just "* ":
+
+	https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists
+
+See enclosed.
+
+Thanks,
+Mauro
+
+[PATCH] convert control-dependencies.rst to ReST
+
+- Mark literal blocks as such;
+- Use a numbered list at the summary.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/tools/memory-model/Documentation/control-dependencies.rst b/tools/memory-model/Documentation/control-dependencies.rst
+index 366520cac937..52dc6a5bc173 100644
+--- a/tools/memory-model/Documentation/control-dependencies.rst
++++ b/tools/memory-model/Documentation/control-dependencies.rst
+@@ -7,7 +7,7 @@ the compiler's ignorance from breaking your code.
+ 
+ A load-load control dependency requires a full read memory barrier, not
+ simply a data dependency barrier to make it work correctly.  Consider the
+-following bit of code:
++following bit of code::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q) {
+@@ -19,7 +19,7 @@ This will not have the desired effect because there is no actual data
+ dependency, but rather a control dependency that the CPU may short-circuit
+ by attempting to predict the outcome in advance, so that other CPUs see
+ the load from b as having happened before the load from a.  In such a
+-case what's actually required is:
++case what's actually required is::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q) {
+@@ -28,7 +28,7 @@ case what's actually required is:
  	}
  
-+	usb_free_all_descriptors(f);
- 	return ret;
+ However, stores are not speculated.  This means that ordering -is- provided
+-for load-store control dependencies, as in the following example:
++for load-store control dependencies, as in the following example::
  
- }
--- 
-2.17.1
+ 	q = READ_ONCE(a);
+ 	if (q) {
+@@ -45,7 +45,7 @@ or, worse yet, convert the store into a check followed by a store.
+ Worse yet, if the compiler is able to prove (say) that the value of
+ variable "a" is always non-zero, it would be well within its rights
+ to optimize the original example by eliminating the "if" statement
+-as follows:
++as follows::
+ 
+ 	q = a;
+ 	b = 1;  /* BUG: Compiler and CPU can both reorder!!! */
+@@ -53,7 +53,7 @@ as follows:
+ So don't leave out either the READ_ONCE() or the WRITE_ONCE().
+ 
+ It is tempting to try to enforce ordering on identical stores on both
+-branches of the "if" statement as follows:
++branches of the "if" statement as follows::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q) {
+@@ -67,7 +67,7 @@ branches of the "if" statement as follows:
+ 	}
+ 
+ Unfortunately, current compilers will transform this as follows at high
+-optimization levels:
++optimization levels::
+ 
+ 	q = READ_ONCE(a);
+ 	barrier();
+@@ -85,7 +85,7 @@ Now there is no conditional between the load from "a" and the store to
+ The conditional is absolutely required, and must be present in the
+ assembly code even after all compiler optimizations have been applied.
+ Therefore, if you need ordering in this example, you need explicit
+-memory barriers, for example, smp_store_release():
++memory barriers, for example, smp_store_release()::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q) {
+@@ -97,7 +97,7 @@ memory barriers, for example, smp_store_release():
+ 	}
+ 
+ In contrast, without explicit memory barriers, two-legged-if control
+-ordering is guaranteed only when the stores differ, for example:
++ordering is guaranteed only when the stores differ, for example::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q) {
+@@ -113,7 +113,7 @@ proving the value of "a".
+ 
+ In addition, you need to be careful what you do with the local variable "q",
+ otherwise the compiler might be able to guess the value and again remove
+-the needed conditional.  For example:
++the needed conditional.  For example::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q % MAX) {
+@@ -126,7 +126,7 @@ the needed conditional.  For example:
+ 
+ If MAX is defined to be 1, then the compiler knows that (q % MAX) is
+ equal to zero, in which case the compiler is within its rights to
+-transform the above code into the following:
++transform the above code into the following::
+ 
+ 	q = READ_ONCE(a);
+ 	WRITE_ONCE(b, 2);
+@@ -137,7 +137,7 @@ between the load from variable "a" and the store to variable "b".  It is
+ tempting to add a barrier(), but this does not help.  The conditional
+ is gone, and the barrier won't bring it back.  Therefore, if you are
+ relying on this ordering, you should make sure that MAX is greater than
+-one, perhaps as follows:
++one, perhaps as follows::
+ 
+ 	q = READ_ONCE(a);
+ 	BUILD_BUG_ON(MAX <= 1); /* Order load from a with store to b. */
+@@ -154,7 +154,7 @@ identical, as noted earlier, the compiler could pull this store outside
+ of the 'if' statement.
+ 
+ You must also be careful not to rely too much on boolean short-circuit
+-evaluation.  Consider this example:
++evaluation.  Consider this example::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q || 1 > 0)
+@@ -162,7 +162,7 @@ evaluation.  Consider this example:
+ 
+ Because the first condition cannot fault and the second condition is
+ always true, the compiler can transform this example as following,
+-defeating control dependency:
++defeating control dependency::
+ 
+ 	q = READ_ONCE(a);
+ 	WRITE_ONCE(b, 1);
+@@ -174,7 +174,7 @@ the compiler to use the results.
+ 
+ In addition, control dependencies apply only to the then-clause and
+ else-clause of the if-statement in question.  In particular, it does
+-not necessarily apply to code following the if-statement:
++not necessarily apply to code following the if-statement::
+ 
+ 	q = READ_ONCE(a);
+ 	if (q) {
+@@ -189,7 +189,7 @@ compiler cannot reorder volatile accesses and also cannot reorder
+ the writes to "b" with the condition.  Unfortunately for this line
+ of reasoning, the compiler might compile the two writes to "b" as
+ conditional-move instructions, as in this fanciful pseudo-assembly
+-language:
++language::
+ 
+ 	ld r1,a
+ 	cmp r1,$0
+@@ -213,14 +213,14 @@ for more information.
+ 
+ In summary:
+ 
+-  (*) Control dependencies can order prior loads against later stores.
++  (#) Control dependencies can order prior loads against later stores.
+       However, they do -not- guarantee any other sort of ordering:
+       Not prior loads against later loads, nor prior stores against
+       later anything.  If you need these other forms of ordering,
+       use smp_rmb(), smp_wmb(), or, in the case of prior stores and
+       later loads, smp_mb().
+ 
+-  (*) If both legs of the "if" statement begin with identical stores to
++  (#) If both legs of the "if" statement begin with identical stores to
+       the same variable, then those stores must be ordered, either by
+       preceding both of them with smp_mb() or by using smp_store_release()
+       to carry out the stores.  Please note that it is -not- sufficient
+@@ -229,28 +229,28 @@ In summary:
+       destroy the control dependency while respecting the letter of the
+       barrier() law.
+ 
+-  (*) Control dependencies require at least one run-time conditional
++  (#) Control dependencies require at least one run-time conditional
+       between the prior load and the subsequent store, and this
+       conditional must involve the prior load.  If the compiler is able
+       to optimize the conditional away, it will have also optimized
+       away the ordering.  Careful use of READ_ONCE() and WRITE_ONCE()
+       can help to preserve the needed conditional.
+ 
+-  (*) Control dependencies require that the compiler avoid reordering the
++  (#) Control dependencies require that the compiler avoid reordering the
+       dependency into nonexistence.  Careful use of READ_ONCE() or
+       atomic{,64}_read() can help to preserve your control dependency.
+       Please see the COMPILER BARRIER section for more information.
+ 
+-  (*) Control dependencies apply only to the then-clause and else-clause
++  (#) Control dependencies apply only to the then-clause and else-clause
+       of the if-statement containing the control dependency, including
+       any functions that these two clauses call.  Control dependencies
+       do -not- apply to code following the if-statement containing the
+       control dependency.
+ 
+-  (*) Control dependencies pair normally with other types of barriers.
++  (#) Control dependencies pair normally with other types of barriers.
+ 
+-  (*) Control dependencies do -not- provide multicopy atomicity.  If you
++  (#) Control dependencies do -not- provide multicopy atomicity.  If you
+       need all the CPUs to see a given store at the same time, use smp_mb().
+ 
+-  (*) Compilers do not understand control dependencies.  It is therefore
++  (#) Compilers do not understand control dependencies.  It is therefore
+       your job to ensure that they do not break your code.
 
