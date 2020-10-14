@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885BC28E41D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C293C28E420
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387622AbgJNQO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:14:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36160 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726832AbgJNQO2 (ORCPT
+        id S2387754AbgJNQOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:14:35 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:54815 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1731832AbgJNQOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:14:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602692067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H2+tO8n9caog/FruyMrtLh2dw8tMRwQ5o/G97PclUnM=;
-        b=TfHxtzoAVPKGsr6D6YVoJamEcD+Z6CJWzltWQ07gJDfQr36xtyQeY+0ZM7KGvQy2wlR7fb
-        RSOevt5IQq013UUOC/RWAJt6l3sZo9c2RnMUTK3hpp/2vnx4jDSdnZRI/m12/uGsEnrOqD
-        YAOI/hlHSb3kVVHPBSshyxGT7IprMPY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-82-LABtxtKLNB-xnV_GPoTiug-1; Wed, 14 Oct 2020 12:14:23 -0400
-X-MC-Unique: LABtxtKLNB-xnV_GPoTiug-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D1EF18C89C5;
-        Wed, 14 Oct 2020 16:14:21 +0000 (UTC)
-Received: from krava (unknown [10.40.195.92])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DC54760C15;
-        Wed, 14 Oct 2020 16:14:18 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 18:14:18 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Peng Fan <fanpeng@loongson.cn>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2] perf bench: Use condition variables in numa.
-Message-ID: <20201014161418.GE1395746@krava>
-References: <20201012161611.366482-1-irogers@google.com>
- <20201014114500.GB1375972@krava>
- <CAP-5=fWTvVU+M9P8wrsXXbhQ+uZNtgxpjnJt7YHfvPdw9==uuA@mail.gmail.com>
+        Wed, 14 Oct 2020 12:14:34 -0400
+Received: (qmail 718746 invoked by uid 1000); 14 Oct 2020 12:14:33 -0400
+Date:   Wed, 14 Oct 2020 12:14:33 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-omap@vger.kernel.org,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>
+Subject: Re: [patch 03/12] USB: serial: keyspan_pda: Consolidate room query
+Message-ID: <20201014161433.GB712494@rowland.harvard.edu>
+References: <20201014145215.518912759@linutronix.de>
+ <20201014145727.338773481@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fWTvVU+M9P8wrsXXbhQ+uZNtgxpjnJt7YHfvPdw9==uuA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20201014145727.338773481@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 08:39:51AM -0700, Ian Rogers wrote:
-> On Wed, Oct 14, 2020 at 4:45 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Mon, Oct 12, 2020 at 09:16:11AM -0700, Ian Rogers wrote:
-> >
-> > SNIP
-> >
-> > > @@ -483,6 +484,18 @@ static void init_global_mutex(pthread_mutex_t *mutex)
-> > >       pthread_mutex_init(mutex, &attr);
-> > >  }
-> > >
-> > > +/*
-> > > + * Return a process-shared (global) condition variable:
-> > > + */
-> > > +static void init_global_cond(pthread_cond_t *cond)
-> > > +{
-> > > +     pthread_condattr_t attr;
-> > > +
-> > > +     pthread_condattr_init(&attr);
-> > > +     pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-> > > +     pthread_cond_init(cond, &attr);
-> > > +}
-> > > +
-> > >  static int parse_cpu_list(const char *arg)
-> > >  {
-> > >       p0.cpu_list_str = strdup(arg);
-> > > @@ -1136,15 +1149,18 @@ static void *worker_thread(void *__tdata)
-> > >       if (g->p.serialize_startup) {
-> > >               pthread_mutex_lock(&g->startup_mutex);
-> > >               g->nr_tasks_started++;
-> > > +             /* The last thread wakes the main process. */
-> > > +             if (g->nr_tasks_started == g->p.nr_tasks)
-> > > +                     pthread_cond_signal(&g->startup_cond);
-> >
-> > should you remove the condition? it's not necessary
-> > and making this racy, no?
-> >
-> > just single pthread_cond_signal should be enough,
-> > because the wait code is checking the number of tasks
+On Wed, Oct 14, 2020 at 04:52:18PM +0200, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > 
-> The pthread_mutex_lock avoids any race on g->nr_tasks_started and
-> g->p.nr_tasks is set up in init() along with all the global state. I
-> don't think there's any race on g->nr_tasks_started and doing a signal
-> for every thread starting will just cause unnecessary wake-ups for the
-> main thread. I think it is better to keep it. I added loops on all the
-> pthread_cond_waits so the code is robust against spurious wake ups.
+> Having two copies of the same code doesn't make the code more readable and
+> allocating a buffer of 1 byte for a synchronous operation is a pointless
+> exercise.
 
-ah, I missed that mutex call
+Not so.  In fact, it is required, because a portion of a structure 
+cannot be mapped for DMA unless it is aligned at a cache line boundary.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+> Add a byte buffer to struct keyspan_pda_private which can be used
+> instead. The buffer is only used in open() and tty->write().
 
-thanks,
-jirka
+This won't work.
 
+>  Console writes
+> are not calling into the query. open() obviously happens before write() and
+> the writes are serialized by bit 0 of port->write_urbs_free which protects
+> also the transaction itself.
+> 
+> Move the actual query into a helper function and cleanup the usage sites in
+> keyspan_pda_write() and keyspan_pda_open().
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Johan Hovold <johan@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-usb@vger.kernel.org
+> ---
+>  drivers/usb/serial/keyspan_pda.c |  102 ++++++++++++++++-----------------------
+>  1 file changed, 43 insertions(+), 59 deletions(-)
+> 
+> --- a/drivers/usb/serial/keyspan_pda.c
+> +++ b/drivers/usb/serial/keyspan_pda.c
+> @@ -47,6 +47,7 @@ struct keyspan_pda_private {
+>  	struct work_struct			unthrottle_work;
+>  	struct usb_serial	*serial;
+>  	struct usb_serial_port	*port;
+> +	u8			query_buf;
+>  };
+>  
+>  
+> @@ -436,6 +437,31 @@ static int keyspan_pda_tiocmset(struct t
+>  	return rc;
+>  }
+>  
+> +/*
+> + * Using priv->query_buf is safe here because this is only called for TTY
+> + * operations open() and write(). write() comes post open() obviously and
+> + * write() itself is serialized via bit 0 of port->write_urbs_free. Console
+> + * writes are never calling into this.
+> + */
+> +static int keyspan_pda_query_room(struct usb_serial *serial,
+> +				  struct keyspan_pda_private *priv)
+> +{
+> +	int res;
+> +
+> +	res = usb_control_msg(serial->dev, usb_rcvctrlpipe(serial->dev, 0),
+> +			      6, /* write_room */
+> +			      USB_TYPE_VENDOR | USB_RECIP_INTERFACE | USB_DIR_IN,
+> +			      0, /* value */
+> +			      0, /* index */
+> +			      &priv->query_buf,
+> +			      1,
+> +			      2000);
+
+Instead, consider using the new usb_control_msg_recv() API.  But it 
+might be better to allocate the buffer once and for all.
+
+Alan Stern
