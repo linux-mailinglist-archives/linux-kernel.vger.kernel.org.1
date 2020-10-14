@@ -2,264 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B8B28E40A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE9D28E40E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbgJNQJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
+        id S2387395AbgJNQKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730757AbgJNQJN (ORCPT
+        with ESMTP id S1728035AbgJNQKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:09:13 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D99C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:09:13 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id n18so4548409wrs.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:09:13 -0700 (PDT)
+        Wed, 14 Oct 2020 12:10:39 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD50C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:10:37 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e23so109104wme.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=H9rybAoRMfJuvrtAl3lNXQUNZlOJBLJM9ZuOt8XzchE=;
-        b=mDnLgOrZhoKGfjuH5K/gCuqV2ir35LH3EhpmxsxKtKykKkjeOJXlBiz1+4thPLgWLt
-         9U+vXym6NWNQKWqwd9e4uAvI5Kp/MMXfs3O9I/7QmYzI43IrhsFs09MVi0+9S0s+/sHk
-         0KWv5Wb5kf3pmkcf8m0lwURHAANGjBofJaUbBO7vKp4IMt9c4Wx+wMyepDmqQ1Wfo5r5
-         2AKowtHlwi3sIuDTGT6fY+dWXI7hdD9JSRWSkcNaMWbOonHcO42hqyLTtWqEFGlZrnzG
-         DrnmrE1cM1nDLh5355ApGjFLbNV3T0kGhP7VQNm7CyNFN2FNB4Eot/KsgnX7Yp/ynhb4
-         0cPg==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7xqRVELzKb5irMYxEbbCQBaCZ0+t2Ow3D9tlphRjrhI=;
+        b=BireJ8H/7RcSNgCNA/FNhml69SXPspizGWl6pVoDfFlq3gkoeK8nbeBessZxcePigR
+         eJ6CRF4QsgrxQzLiDVn8iogshTJ07gGz2qu/I/eSkc8PyaVU9f3Dc0K2X/t5jLCCsgZx
+         Xn9JONq17zf+6EjOhqlklOpoVjka5JXc8mlvLeRpOF+HzdiNNihaCBBlcqrkgR+QP+Wp
+         EE6gh8CX3V2ofG/iukW/wh4c97ImDcRsQbHYS7OctQOZSDYW1uX4zHRMPmTxffDmxMiC
+         s6el30bjUHADZfxcOVHfj3XWkjNafqbgNvtJzdtzV+ZEtLkmGID4tX/eNXz9Scll8sfY
+         p4EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=H9rybAoRMfJuvrtAl3lNXQUNZlOJBLJM9ZuOt8XzchE=;
-        b=WRLavDQsPJcxE+daWY0396QfAM0OBNF/L+D7qm3lM/gXh0RmUaap+1MIvLTpeljG+U
-         bO1iQwTzcrYoOLK1DWR7xnjzAC1xlEEzUVngyn50bx8uJ4qc6xLoIjzB2PEDSG8ul88I
-         wJYO+7N2WHro6jhvZlbAA3+P0a0Bw3JI4FCqwff0OCDK8XwvuFUk5E6sikcr6pz65DlA
-         lFzlYaFFJF66vDd+NuH7JNdgsj5Cg4OFVljCOSfIjCwNPbIVjlfqPGPsL5QKacrQ+G+T
-         cGxJqZw2soH2oPvZlZ0UlT/ytkAsqdnT+Sfp6MeP92W8NAcuCKWyn4W+azHCC7wEZrYG
-         osow==
-X-Gm-Message-State: AOAM5306WsIoVD4u1/j6kzr98lEoD2/zFH3WEJODh1POIV5ZvnC49tIB
-        IXHAYd1eUSkbVox7i4eta89dCQ==
-X-Google-Smtp-Source: ABdhPJz85Lpn23/7UfasyANSqb93KtLbn6PHVGnz2puAAugCcdmSnmxTrBfa9CcHpgfLjHGC+gSBAQ==
-X-Received: by 2002:a5d:5743:: with SMTP id q3mr6287939wrw.167.1602691751994;
-        Wed, 14 Oct 2020 09:09:11 -0700 (PDT)
-Received: from dell ([91.110.221.166])
-        by smtp.gmail.com with ESMTPSA id o186sm156741wmb.12.2020.10.14.09.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 09:09:08 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 17:09:07 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] MFD for v5.10
-Message-ID: <20201014160907.GA4545@dell>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7xqRVELzKb5irMYxEbbCQBaCZ0+t2Ow3D9tlphRjrhI=;
+        b=P3yXhzLgewsce+r0uzxulqLtSJ6O+51bVRF56UuXJRT1eqd33HtIcJociQZWip0tu8
+         RgSOsXs92+3MGOJJicUizpec3JVBMx5dOZ4wCDxTjXc5kwS0SP7GtngVGS2cAA/u/vb+
+         jw9qrEI8x/xMJ6lh7kIDpinyXJ3PGSKn0pN/hb2dZL6f/5CCPzFwBKz8GQMyF2/UFyjC
+         HJu+NgQF2QYCxX2VM4KZLtYAFKQzHS8FDr3V913wgYhM6GgSivb9gM/cSykwLPp7d3sg
+         bsFaUo7IG8zyGjUg6eFBOIJK3I3IvCv9b4h9z5lDfvyr/mlfWjn/Cc+ZwMmsl2vDa8/z
+         +hEw==
+X-Gm-Message-State: AOAM531vnI93hd7EwKKviqz4UGr46twhhFVBsKP2lg5YAusJTLn3SjgT
+        QHVJFws22gM5phWohVY/ZQMJJr3wTyBR42NT7lFQ6w==
+X-Google-Smtp-Source: ABdhPJzy2rOSeLBCouyAVya35YY1u31e5BvfWO1mI2FlWxxCwFawnPz/2m53aMPV3mSX0iRIgdciGyGkJGI7fpdLtNk=
+X-Received: by 2002:a1c:238e:: with SMTP id j136mr169706wmj.176.1602691836398;
+ Wed, 14 Oct 2020 09:10:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <c4669d5f-11b8-3879-562c-78a791b86229@intel.com>
+ <78F221DB-CB61-40DB-9C6F-6C86D0F1BCDF@amacapital.net> <226772b9-7109-c632-2e9a-372df38b81a0@intel.com>
+In-Reply-To: <226772b9-7109-c632-2e9a-372df38b81a0@intel.com>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Wed, 14 Oct 2020 09:10:24 -0700
+Message-ID: <CALCETrW8u5rUsZvoo5t4YtC+4boBVcK__-srtA1+-YX06QYD1w@mail.gmail.com>
+Subject: Re: [RFC PATCH 13/22] x86/fpu/xstate: Expand dynamic user state area
+ on first use
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Brown, Len" <len.brown@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        X86 ML <x86@kernel.org>, "Liu, Jing2" <jing2.liu@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good evening Linus,
+On Tue, Oct 13, 2020 at 11:03 PM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 10/13/20 6:11 PM, Andy Lutomirski wrote:
+> > I have no problem with vmalloc(), but I do have a problem with
+> > vfree() due to the IPIs that result. We need a cache or something.
+>
+> This sounds like the kind of thing we should just build into vmalloc()
+> instead of having a bunch of callers implement their own caches.  It
+> shouldn't be too much of a challenge to have vmalloc() keep a cacheline
+> or two of stats about common vmalloc() sizes and keep some pools around.
+>
+> It's not going to be hard to implement caches to reduce vfree()-induced
+> churn, but I'm having a hard time imaging that it'll have anywhere near
+> the benefits that it did for stacks.  Tasks fundamentally come and go a
+> *lot*, and those paths are hot.
+>
+> Tasks who go to the trouble to populate 8k or 64k of register state
+> fundamentally *can't* come and go frequently.  We also (probably) don't
+> have to worry about AMX tasks doing fork()/exec() pairs and putting
+> pressure on vmalloc().  Before an app can call out to library functions
+> to do the fork, they've got to save the state off themselves and likely
+> get it back to the init state.  The fork() code can tell AMX is in the
+> init state and decline to allocate actual space for the child.
+>
+> > I have to say: this mechanism is awful. Can we get away with skipping
+> > the dynamic XSAVES mess entirely?  What if we instead allocate
+> > however much space we need as an array of pages and have one percpu
+> > contiguous region. To save, we XSAVE(S or C) just the AMX state to
+> > the percpu area and then copy it.  To restore, we do the inverse.  Or
+> > would this kill the modified optimization and thus be horrible?
+>
+> Actually, I think the modified optimization would survive such a scheme:
+>
+>  * copy page array into percpu area
+>  * XRSTORS from percpu area, modified optimization tuple is saved
+>  * run userspace
+>  * XSAVES back to percpu area.  tuple matches, modified optimization
+>    is still in play
+>  * copy percpu area back to page array
+>
+> Since the XRSTORS->XSAVES pair is both done to the percpu area, the
+> XSAVE tracking hardware never knows it isn't working on the "canonical"
+> buffer (the page array).
 
-A small trivial fix-up with IRQChip's Kconfig will be required.
+I was suggesting something a little bit different.  We'd keep XMM,
+YMM, ZMM, etc state stored exactly the way we do now and, for
+AMX-using tasks, we would save the AMX state in an entirely separate
+buffer.  This way the pain of having a variable xstate layout is
+confined just to AMX tasks.
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/mfd-next-5.10
-
-for you to fetch changes up to 6d81dc3c79d46b66b29712eb1ac5ad2cbe4231d2:
-
-  mfd: kempld-core: Fix unused variable 'kempld_acpi_table' when !ACPI (2020-10-05 09:11:40 +0100)
-
-----------------------------------------------------------------
- - New Drivers
-   - Add support for initialising shared (between children) Regmaps
-   - Add support for Kontron SL28CPLD
-   - Add support for ENE KB3930 Embedded Controller
-   - Add support for Intel FPGA PAC MAX 10 BMC
-
- - New Device Support
-   - Add support for Power to Ricoh RN5T618
-   - Add support for UART to Intel Lakefield
-   - Add support for LP87524_Q1 to Texas Instruments LP87565
-
- - New Functionality
-   - Device Tree; ene-kb3930, sl28cpld, syscon, lp87565, lp87524-q1
-   - Use new helper dev_err_probe(); madera-core, stmfx, wcd934x
-   - Use new GPIOD API; dm355evm_msp
-   - Add wake-up capability; sprd-sc27xx-spi
-   - Add ACPI support; kempld-core
-
- - Fix-ups
-   - Trivial (spelling/whitespace); Kconfig, ab8500
-   - Fix for unused variables; khadas-mcu, kempld-core
-   - Remove unused header file(s); mt6360-core
-   - Use correct IRQ flags in docs; act8945a, gateworks-gsc, rohm,bd70528-pmic
-   - Add COMPILE_TEST support; asic3, tmio_core
-   - Add dependency on I2C; SL28CPLD
-
- - Bug Fixes
-   - Fix memory leak(s); sm501
-   - Do not free regmap_config's 'name' until exit; syscon
-
-----------------------------------------------------------------
-Andreas Kemnade (1):
-      mfd: rn5t618: Add a power supply subdevice
-
-Andy Shevchenko (1):
-      mfd: intel-lpss: Add device IDs for UART ports for Lakefield
-
-Baolin Wang (1):
-      mfd: sprd: Add wakeup capability for PMIC IRQ
-
-Dan Carpenter (1):
-      mfd: sm501: Fix leaks in probe()
-
-Jonathan Neuschäfer (1):
-      dt-bindings: mfd: ab8500: Remove weird Unicode characters
-
-Krzysztof Kozlowski (6):
-      mfd: madera: Simplify with dev_err_probe()
-      mfd: stmfx: Simplify with dev_err_probe()
-      mfd: wcd934x: Simplify with dev_err_probe()
-      dt-bindings: mfd: syscon: Merge Samsung Exynos Sysreg bindings
-      dt-bindings: mfd: syscon: Document Exynos3 and Exynos5433 compatibles
-      dt-bindings: mfd: Correct interrupt flags in examples
-
-Lee Jones (3):
-      mfd: khadas-mcu: Fix randconfig 'unused-const-variable' warning
-      mfd: sl28cpld: Depend on I2C
-      mfd: kempld-core: Fix unused variable 'kempld_acpi_table' when !ACPI
-
-Linus Walleij (1):
-      mfd: dm355evm_msp: Convert LEDs to GPIO descriptor table
-
-Lubomir Rintel (2):
-      dt-bindings: mfd: Add ENE KB3930 Embedded Controller binding
-      mfd: ene-kb3930: Add driver for ENE KB3930 Embedded Controller
-
-Luca Ceresoli (3):
-      dt-bindings: mfd: lp87565: Convert to yaml
-      dt-bindings: mfd: Add LP87524-Q1
-      mfd: lp87565: Add LP87524-Q1 variant
-
-Marc Zyngier (1):
-      mfd: syscon: Don't free allocated name for regmap_config
-
-Marek Behún (1):
-      mfd: asic3: Build if COMPILE_TEST=y
-
-Mauro Carvalho Chehab (1):
-      mfd: Kconfig: Fix typo of 'individual'
-
-Michael Brunner (1):
-      mfd: Add ACPI support to Kontron PLD driver
-
-Michael Walle (8):
-      mfd: Add simple regmap based I2C driver
-      dt-bindings: mfd: Add bindings for sl28cpld
-      mfd: simple-mfd-i2c: Add sl28cpld support
-      irqchip: Add sl28cpld interrupt controller support
-      watchdog: add support for sl28cpld watchdog
-      pwm: Add support for sl28cpld PWM controller
-      gpio: Add support for the sl28cpld GPIO controller
-      hwmon: Add support for the sl28cpld hardware monitoring controller
-
-Xu Yilun (1):
-      mfd: intel-m10-bmc: Add Intel MAX 10 BMC chip support for Intel FPGA PAC
-
-YueHaibing (1):
-      mfd: mt6360: Remove unused include <linux/version.h>
-
- .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 ++
- .../devicetree/bindings/arm/samsung/sysreg.yaml    |  45 ----
- .../bindings/gpio/kontron,sl28cpld-gpio.yaml       |  54 +++++
- .../bindings/hwmon/kontron,sl28cpld-hwmon.yaml     |  27 +++
- .../kontron,sl28cpld-intc.yaml                     |  54 +++++
- Documentation/devicetree/bindings/mfd/ab8500.txt   |   4 +-
- Documentation/devicetree/bindings/mfd/act8945a.txt |   2 +-
- .../devicetree/bindings/mfd/ene-kb3930.yaml        |  55 +++++
- .../devicetree/bindings/mfd/gateworks-gsc.yaml     |   3 +-
- .../devicetree/bindings/mfd/kontron,sl28cpld.yaml  | 153 ++++++++++++
- Documentation/devicetree/bindings/mfd/lp87565.txt  |  79 ------
- .../devicetree/bindings/mfd/rohm,bd70528-pmic.txt  |   2 +-
- Documentation/devicetree/bindings/mfd/syscon.yaml  |   4 +
- .../devicetree/bindings/mfd/ti,lp87524-q1.yaml     | 112 +++++++++
- .../devicetree/bindings/mfd/ti,lp87561-q1.yaml     |  83 +++++++
- .../devicetree/bindings/mfd/ti,lp87565-q1.yaml     | 101 ++++++++
- .../bindings/pwm/kontron,sl28cpld-pwm.yaml         |  35 +++
- .../bindings/watchdog/kontron,sl28cpld-wdt.yaml    |  35 +++
- Documentation/hwmon/index.rst                      |   1 +
- Documentation/hwmon/sl28cpld.rst                   |  36 +++
- drivers/gpio/Kconfig                               |  12 +
- drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-sl28cpld.c                       | 161 ++++++++++++
- drivers/hwmon/Kconfig                              |  10 +
- drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/sl28cpld-hwmon.c                     | 142 +++++++++++
- drivers/irqchip/Kconfig                            |   8 +
- drivers/irqchip/Makefile                           |   1 +
- drivers/irqchip/irq-sl28cpld.c                     |  96 ++++++++
- drivers/mfd/Kconfig                                |  52 +++-
- drivers/mfd/Makefile                               |   3 +
- drivers/mfd/dm355evm_msp.c                         |  76 ++++--
- drivers/mfd/ene-kb3930.c                           | 212 ++++++++++++++++
- drivers/mfd/intel-lpss-pci.c                       |   4 +
- drivers/mfd/intel-m10-bmc.c                        | 164 +++++++++++++
- drivers/mfd/kempld-core.c                          | 117 ++++++++-
- drivers/mfd/khadas-mcu.c                           |   2 +
- drivers/mfd/lp87565.c                              |   4 +
- drivers/mfd/madera-core.c                          |  11 +-
- drivers/mfd/mt6360-core.c                          |   1 -
- drivers/mfd/rn5t618.c                              |   1 +
- drivers/mfd/simple-mfd-i2c.c                       |  57 +++++
- drivers/mfd/sm501.c                                |   8 +-
- drivers/mfd/sprd-sc27xx-spi.c                      |  28 ++-
- drivers/mfd/stmfx.c                                |   8 +-
- drivers/mfd/syscon.c                               |   2 +-
- drivers/mfd/wcd934x.c                              |   9 +-
- drivers/pwm/Kconfig                                |  10 +
- drivers/pwm/Makefile                               |   1 +
- drivers/pwm/pwm-sl28cpld.c                         | 270 +++++++++++++++++++++
- drivers/watchdog/Kconfig                           |  11 +
- drivers/watchdog/Makefile                          |   1 +
- drivers/watchdog/sl28cpld_wdt.c                    | 229 +++++++++++++++++
- include/linux/mfd/intel-m10-bmc.h                  |  65 +++++
- include/linux/mfd/lp87565.h                        |   1 +
- 55 files changed, 2493 insertions(+), 186 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
- delete mode 100644 Documentation/devicetree/bindings/arm/samsung/sysreg.yaml
- create mode 100644 Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
- create mode 100644 Documentation/devicetree/bindings/hwmon/kontron,sl28cpld-hwmon.yaml
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/kontron,sl28cpld-intc.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb3930.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/kontron,sl28cpld.yaml
- delete mode 100644 Documentation/devicetree/bindings/mfd/lp87565.txt
- create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87561-q1.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml
- create mode 100644 Documentation/devicetree/bindings/pwm/kontron,sl28cpld-pwm.yaml
- create mode 100644 Documentation/devicetree/bindings/watchdog/kontron,sl28cpld-wdt.yaml
- create mode 100644 Documentation/hwmon/sl28cpld.rst
- create mode 100644 drivers/gpio/gpio-sl28cpld.c
- create mode 100644 drivers/hwmon/sl28cpld-hwmon.c
- create mode 100644 drivers/irqchip/irq-sl28cpld.c
- create mode 100644 drivers/mfd/ene-kb3930.c
- create mode 100644 drivers/mfd/intel-m10-bmc.c
- create mode 100644 drivers/mfd/simple-mfd-i2c.c
- create mode 100644 drivers/pwm/pwm-sl28cpld.c
- create mode 100644 drivers/watchdog/sl28cpld_wdt.c
- create mode 100644 include/linux/mfd/intel-m10-bmc.h
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I'm okay with vmalloc() too, but I do think we need to deal with the
+various corner cases like allocation failing.
