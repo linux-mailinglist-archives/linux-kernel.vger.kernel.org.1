@@ -2,141 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7680928EA87
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F0D28EAAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732470AbgJOBzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
+        id S1732508AbgJOCEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732392AbgJOByh (ORCPT
+        with ESMTP id S1726934AbgJOCEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:54:37 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CD5C0613BC
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:19:24 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 32so1169738otm.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:19:24 -0700 (PDT)
+        Wed, 14 Oct 2020 22:04:39 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0749FC0610D1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:25:38 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id x1so1111224eds.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 15:25:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RRjGeO/tlzjrZ9J3RrPGuGS/1yOeW5L71HWGM1q9PqM=;
-        b=mv4K9pQTVn31rCM+RtELHJJEN9cJcDk1Vd6rueXFN+ur+DaBM9Qq6TK1m1WezBf4hr
-         MQc4sM/fZNpoQKwJNk0jefV/29a2Gbpvzk8lFhkPydaWTLr63a2DTl1r3yhg6YPa/3X7
-         GMmiNAEf3/5wkoQNpNIufrrELvJm1hzUZ4d5PU3Jto2lwEFOoxAzKXsFath4PAacm8Rk
-         ZlO1sQURY4EWIvlOqPlPAW3Y0R6KtQ9uEyAF0kwX1a/HsEDfF9f3sScPa4odkSIEPkkR
-         oQt72Sd4vg9XkFEeqhqZrGx1AchS1N4vkcJYy7b4nnFinyY/IYoOdPvA8MVmt/JKcj4Z
-         llKg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u6oCs/9cz9zpdxxwRUYUm1kSBmkyW+u+MezXxhay8qc=;
+        b=gW7j1C0VbGjDq2pb7kmXH0xuHfgsrcWmVnw7BNVz/Tby5/EWLlBSYuBTYmw17rDAqg
+         lylbJ+o7UaR1mbiUY/egwQXmpuAYlVsKg/KEJAFHM0AKmH7VjwvYUAavAORKxt4CGi8g
+         M7gYE3jmVYpGvmVyGdCJ066k4QR6/4VTZrtzhL0Kf6EH0ce9c1QIYuPlcrPZ7dtjJu8/
+         Gh+8T2NmhdI6B3Pen0YfzFvoYdbu/Dy9QpcRvzpe6AxR+rchzzx5vGlJywIP/1UBe2bk
+         66kkB2VI1PTPWeg7Iqud8PKlE0vqJ5bVtOtFWTOAktts6jlF64c/PpMGGLMcl86iJ4mY
+         vmCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RRjGeO/tlzjrZ9J3RrPGuGS/1yOeW5L71HWGM1q9PqM=;
-        b=iNWf7hr00VsKCrUDNYdLAB8uGI1djuU7QUs/615/NBC7I95yy40nSHeBfoL4qvzi6k
-         r5rJyODfiduuiyq9sQ4Tq6A+T+Mnjp2XAWa2xrZnkhJZzDeN5peEn95RC9M6aajwsh1K
-         MXpEf8ueVCBY/J9/C/B1VEKQulIegCL68M8M6tQKKnuaZ+5uwJRRXApilZKGKU/MUA/X
-         e1fHgGj7V+nReJ80xW64ZP9bENeS6UoqTA/RBTXRnEepo50kVYuYXeOgwkCYt9nOrq/8
-         2Shp/RQ8/j9cCjADEdfp+cgQxT5Ri05a8JKT9m5AJ5imN4YVdpDsuL2rP9Bdv8X4w68S
-         sGKA==
-X-Gm-Message-State: AOAM533h/6gtGeKrt2vff7wyUk3ZCpalf9dKd5tMUx1OJG4yx7JphHBD
-        4Coetsw5C1zDunZ/FAEWlAkwDg==
-X-Google-Smtp-Source: ABdhPJxDI9ig5Teru80krEOu8rMTShtx9klUW2MoC+kc1i2hN5KpLmX7EJYBnDsiZFyWnkmRIXuaHQ==
-X-Received: by 2002:a9d:6a55:: with SMTP id h21mr607071otn.297.1602713963840;
-        Wed, 14 Oct 2020 15:19:23 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q81sm337035oia.46.2020.10.14.15.19.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 15:19:23 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 17:14:40 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     kholk11@gmail.com
-Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/8] iommu/arm-smmu-qcom: Add stream_mapping_reset detail
- to QCOM SMMUv2
-Message-ID: <20201014221440.GA299663@builder.lan>
-References: <20200926130004.13528-1-kholk11@gmail.com>
- <20200926130004.13528-9-kholk11@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u6oCs/9cz9zpdxxwRUYUm1kSBmkyW+u+MezXxhay8qc=;
+        b=LWE8alOmUp9IirvQ8yobwyH7rLAu38oISxqtrEVihVcyxF+WR2ibotDiEIBm3ug94I
+         8ag5nIpFerBILSNlRRsGBWwo6Mqedvlbf+QZBaRSktTKsqbpkt5vFVxjuWa8nKREspnf
+         ckyW/v74ul+bVoeNASFwvag1zj99qo+tm6nd7CwAgyR3AJsGDPAjUfyklAwquz17V/4J
+         ehEnwivFzdheFDjzJ9EogTdnSGnrFRlNIA45vJUuxTVzJ+DlHCEFFtVPuX6q67Y3udk9
+         r1UVkotHwpFM/RRhU0IR74TB5Iww4oipYLA/kxi0rDk/9zx88cRqYpZil1E0q0/S3x/n
+         Cm7g==
+X-Gm-Message-State: AOAM530Tug3W47cIWKG4qpuNVW5Mi8RPHgnOsENvW8P36iQadqaM9Y8a
+        12InhM7jzxIWIQRsWRrPQVHuielW1bNfPHuT3JCkmA==
+X-Google-Smtp-Source: ABdhPJwHdi4HqJ28TwinJvmyYBdUNtOckKs21QUkcH2wM5UlBfHQVhUGhI4kpBB80wiBW3IH4Rhy4jEkZvU0KukYURg=
+X-Received: by 2002:a50:8e1e:: with SMTP id 30mr1288139edw.354.1602714336584;
+ Wed, 14 Oct 2020 15:25:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200926130004.13528-9-kholk11@gmail.com>
+References: <cover.1602093760.git.yuleixzhang@tencent.com> <bdd0250e-4e14-f407-a584-f39af12c4e09@oracle.com>
+ <CACZOiM2qKhogXQ_DXzWjGM5UCeCuEqT6wnR=f2Wi_T45_uoYHQ@mail.gmail.com>
+ <b963565b-61d8-89d3-1abd-50cd8c8daad5@oracle.com> <CACZOiM26GPtqkGyecG=NGuB3etipV5-KgN+s19_U1WJrFxtYPQ@mail.gmail.com>
+ <98be093d-c869-941a-6dd9-fb16356f763b@oracle.com>
+In-Reply-To: <98be093d-c869-941a-6dd9-fb16356f763b@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 14 Oct 2020 15:25:25 -0700
+Message-ID: <CAPcyv4jZ7XTnYd7vLQ18xij7d+80jU0zLs+ykS2frY-LMPS=Nw@mail.gmail.com>
+Subject: Re: [PATCH 00/35] Enhance memory utilization with DMEMFS
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     yulei zhang <yulei.kernel@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Haiwei Li <lihaiwei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jane Y Chu <jane.chu@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 26 Sep 08:00 CDT 2020, kholk11@gmail.com wrote:
+On Mon, Oct 12, 2020 at 4:00 AM Joao Martins <joao.m.martins@oracle.com> wrote:
+[..]
+> On 10/10/20 9:15 AM, yulei zhang wrote:
+> > On Fri, Oct 9, 2020 at 7:53 PM Joao Martins <joao.m.martins@oracle.com> wrote:
+> >> On 10/9/20 12:39 PM, yulei zhang wrote:
+> >>> Joao, thanks a lot for the feedback. One more thing needs to mention
+> >>> is that dmemfs also support fine-grained
+> >>> memory management which makes it more flexible for tenants with
+> >>> different requirements.
+> >>>
+> >> So as DAX when it allows to partition a region (starting 5.10). Meaning you have a region
+> >> which you dedicated to userspace. That region can then be partitioning into devices which
+> >> give you access to multiple (possibly discontinuous) extents with at a given page
+> >> granularity (selectable when you create the device), accessed through mmap().
+> >> You can then give that device to a cgroup. Or you can return that memory back to the
+> >> kernel (should you run into OOM situation), or you recreate the same mappings across
+> >> reboot/kexec.
+> >>
+> >> I probably need to read your patches again, but can you extend on the 'dmemfs also support
+> >> fine-grained memory management' to understand what is the gap that you mention?
+> >>
+> > sure, dmemfs uses bitmap to track the memory usage in the reserved
+> > memory region in
+> > a given page size granularity. And for each user the memory can be
+> > discrete as well.
+> >
+> That same functionality of tracking reserved region usage across different users at any
+> page granularity is covered the DAX series I mentioned below. The discrete part -- IIUC
+> what you meant -- is then reduced using DAX ABI/tools to create a device file vs a filesystem.
 
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> 
-> On some Qualcomm SoCs with certain hypervisor configurations,
-> some context banks are hyp-protected and cannot be disabled,
-> nor the relative S2CRs can be set as bypass, or a hyp-fault
-> will be triggered and the system will hang.
-> 
-> This is seen on at least Qualcomm SDM630, SDM636 and SDM660.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index b18e70bddf29..364908cc2adf 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -85,6 +85,18 @@ static int qcom_smmuv2_cfg_probe(struct arm_smmu_device *smmu)
->  	return 0;
->  }
->  
-> +static void qcom_smmuv2_stream_mapping_reset(struct arm_smmu_device *smmu)
-> +{
-> +	/*
-> +	 * Broken firmware quirk:
-> +	 * On some Qualcomm SoCs with certain hypervisor configurations,
-> +	 * some context banks are hyp-protected and cannot be disabled,
-
-Wouldn't you run into the same problem when init_domain_context() later
-comes along and "accidentally" pick one of these context banks?
-
-Do we have any way of knowing which banks this is, so we can mark them
-as busy?
-
-> +	 * nor the relative S2CRs can be set as bypass, or a hyp-fault
-
-On platforms such as SDM845, SM8150, SM8250 etc, writing S2CR of type
-BYPASS is trapped by the hypervisor and FAULT is actually written to the
-hardware - resulting in a system reset when the associated hardware
-tries to perform a memory access.
-
-
-Is it the actual S2CR write that causes the problem you're seeing or the
-fact that it happens to be that you shoot down the display stream as
-soon as you touch these registers?
-
-Regards,
-Bjorn
-
-> +	 * will be triggered and the system will hang.
-> +	 */
-> +	return;
-> +}
-> +
->  static void qcom_smmuv2_test_smr_masks(struct arm_smmu_device *smmu)
->  {
->  	/*
-> @@ -99,6 +111,7 @@ static void qcom_smmuv2_test_smr_masks(struct arm_smmu_device *smmu)
->  
->  static const struct arm_smmu_impl qcom_smmuv2_impl = {
->  	.cfg_probe = qcom_smmuv2_cfg_probe,
-> +	.stream_mapping_reset = qcom_smmuv2_stream_mapping_reset,
->  	.test_smr_masks = qcom_smmuv2_test_smr_masks,
->  };
->  
-> -- 
-> 2.28.0
-> 
+Put another way. Linux already has a fine grained memory management
+system, the page allocator. Now, with recent device-dax extensions, it
+also has a coarse grained memory management system for  physical
+address-space partitioning and a path for struct-page-less backing for
+VMs. What feature gaps remain vs dmemfs, and can those gaps be closed
+with incremental improvements to the 2 existing memory-management
+systems?
