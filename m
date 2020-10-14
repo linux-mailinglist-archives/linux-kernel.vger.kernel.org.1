@@ -2,92 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E6328D739
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 01:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D04128D743
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389347AbgJMX5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 19:57:02 -0400
-Received: from mga07.intel.com ([134.134.136.100]:3817 "EHLO mga07.intel.com"
+        id S2389386AbgJNADa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 20:03:30 -0400
+Received: from mga07.intel.com ([134.134.136.100]:4327 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387742AbgJMX5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 19:57:02 -0400
-IronPort-SDR: oEilyMO80P99tUtBvHQyfBsYB4QsCq0vGk+hR2alHfoiSdoawQZ4FytKdy52kewP9KCgT6aTHo
- l0/LYbpLM+vQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="230182065"
+        id S1727818AbgJNAD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 20:03:29 -0400
+IronPort-SDR: B19hEfRlx4DWILPVtWpIxa0a+mBOibJxULlkCVVl8hUhHd0rzs7aaS78ei3SdoRdzvphBH9AdM
+ 1PS8eQSmSkzA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="230182649"
 X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
-   d="scan'208";a="230182065"
+   d="scan'208";a="230182649"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 16:57:00 -0700
-IronPort-SDR: lCvdsHw4cNTMWJa/vna7fQPxd5RyrFTF13wYh2AkHf4SXv0mM4ELq6g5e3ZAT7t1A0eXxCnwi8
- qz1MFAWCB0PA==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 17:03:29 -0700
+IronPort-SDR: QQYsMQkp6aGb7Gxor4Si6Ivc0eI7iuHZyFDcA3HB7qdu3AwfAWhGMhUnMD3Fv2GBOGvZIb1hfD
+ VDAvvkTe1jnw==
 X-IronPort-AV: E=Sophos;i="5.77,372,1596524400"; 
-   d="scan'208";a="463687969"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 16:56:59 -0700
-Date:   Tue, 13 Oct 2020 16:56:59 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 2/9] x86/fpu: Refactor arch_set_user_pkey_access()
- for PKS support
-Message-ID: <20201013235658.GL2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009194258.3207172-1-ira.weiny@intel.com>
- <20201009194258.3207172-3-ira.weiny@intel.com>
- <7ed91cb5-93e5-67ad-ad35-8489d16d283f@intel.com>
+   d="scan'208";a="313990880"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 17:03:29 -0700
+Date:   Tue, 13 Oct 2020 17:03:28 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Kuppuswamy Sathyanarayanan <sathyanarayanan.nkuppuswamy@gmail.com>
+Cc:     bhelgaas@google.com, okaya@kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH v5 1/2] PCI/ERR: Call pci_bus_reset() before calling
+ ->slot_reset() callback
+Message-ID: <20201014000327.GA94232@otc-nc-03>
+References: <162495c76c391de6e021919e2b69c5cd2dbbc22a.1602632140.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7ed91cb5-93e5-67ad-ad35-8489d16d283f@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <162495c76c391de6e021919e2b69c5cd2dbbc22a.1602632140.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 10:50:05AM -0700, Dave Hansen wrote:
-> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
-> > +/*
-> > + * Update the pk_reg value and return it.
+On Tue, Oct 13, 2020 at 04:45:01PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Currently if report_error_detected() or report_mmio_enabled()
+> functions requests PCI_ERS_RESULT_NEED_RESET, current
+> pcie_do_recovery() implementation does not do the requested
+> explicit device reset, but instead just calls the
+> report_slot_reset() on all affected devices. Notifying about the
+> reset via report_slot_reset() without doing the actual device
+> reset is incorrect. So call pci_bus_reset() before triggering
+> ->slot_reset() callback.
 > 
-> How about:
-> 
-> 	Replace disable bits for @pkey with values from @flags.
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Sinan Kaya <okaya@kernel.org>
+> ---
+>  Changes since v4:
+>   * Added check for pci_reset_bus() return value.
 
-Done.
+Looks good!
 
-> 
-> > + * Kernel users use the same flags as user space:
-> > + *     PKEY_DISABLE_ACCESS
-> > + *     PKEY_DISABLE_WRITE
-> > + */
-> > +u32 update_pkey_val(u32 pk_reg, int pkey, unsigned int flags)
-> > +{
-> > +	int pkey_shift = pkey * PKR_BITS_PER_PKEY;
-> > +
-> > +	pk_reg &= ~(((1 << PKR_BITS_PER_PKEY) - 1) << pkey_shift);
-> > +
-> > +	if (flags & PKEY_DISABLE_ACCESS)
-> > +		pk_reg |= PKR_AD_BIT << pkey_shift;
-> > +	if (flags & PKEY_DISABLE_WRITE)
-> > +		pk_reg |= PKR_WD_BIT << pkey_shift;
-> 
-> I still think this deserves two lines of comments:
-> 
-> 	/* Mask out old bit values */
-> 
-> 	/* Or in new values */
-
-Sure, done.
-Ira
-
+Reviewed-by: Ashok Raj <ashok.raj@intel.com>
