@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E62C28EA68
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C138728EA92
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729756AbgJOBoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51522 "EHLO
+        id S2388944AbgJOB7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729403AbgJOBoi (ORCPT
+        with ESMTP id S1732522AbgJOB7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:44:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CAEC0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 13:55:32 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602708931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pjGI6H9agriY8l5DUZ66fy7If4bjx92jpFy4Tji1P+Q=;
-        b=lUIm7QuZ8vsupAyZT7jr3RthxXVf/R/A651aPEYTr4ijryfyHCNyb4+4+rIB957Tgny3bT
-        waB6BPwqhvHkFP3rJuj8OqGsYrt4coa6Gkutq76fTPTJyQnlVpu1HkkUt5PdxB8pwelxar
-        9mz7P7YY+dA7EBi/FmqA/NHnfgpyrIoOi4QrqJsSQpTZm6iyKAUGW65zqA1kuIUZ+jUmZu
-        9frbOdAshP7nLAv1IXXs3jEPw4KmBMZCWzs9ezHZ9rURkqenmXxYnjL1FuqZYXq5ccAjgd
-        7AN+34YKCOhGd6tOEBwU+neaygffAYF8YJt+jZ1u4bgYDapoOqEwqM7xlLzawg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602708931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pjGI6H9agriY8l5DUZ66fy7If4bjx92jpFy4Tji1P+Q=;
-        b=IvH1opAJBTH7APHNqHnZVuXCHqZqLBQUcoUpxy+8vK5QJQUZ5R9Jb0nl+TA5psm9M/LQuO
-        5q1BGHK0SOwiVDBg==
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: Re: [GIT PULL] printk for 5.10 (includes lockless ringbuffer)
-In-Reply-To: <CAMuHMdXHFFUrjRMEHnXXU8QQkgD9x_S6R3N0Q7Q4H2RSfy2GGw@mail.gmail.com>
-References: <20201012144916.GB10602@alley> <CAMuHMdXHFFUrjRMEHnXXU8QQkgD9x_S6R3N0Q7Q4H2RSfy2GGw@mail.gmail.com>
-Date:   Wed, 14 Oct 2020 23:01:30 +0206
-Message-ID: <87lfg85xz1.fsf@jogness.linutronix.de>
+        Wed, 14 Oct 2020 21:59:38 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D7BC0613DC
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:13:30 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id u3so494018pjr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 14:13:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XXXVW8LaNsSK90nR0fVqNTLLxxo+uN8rx6WyyMCGIqU=;
+        b=QfFbFDAWvdwuJNtRGDEJ+4jQLfUu4dtYrqt375pRq+u0Dv2ZX2eDJlK45YLFadyX+m
+         hpWDEVApkwfktJTstvyeNq1QJX+M8OGBGETL2KOqGWC1sh2+yk4MBRtbyMSQZoxNFX/i
+         ZGPe0JO6EfJFxshk65T9Mxn+11MAkDIRtJTw0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XXXVW8LaNsSK90nR0fVqNTLLxxo+uN8rx6WyyMCGIqU=;
+        b=m+xE6a7OV3x3iSnU28/nQXOyICCdtPaDDtGNrg582GUn3fe2kwy4cAgAUn+kQksYLR
+         YSRMn/TBcUNx/Vg7zMoESoY763F0yCtVVakMOmJR0ntxa4K8uKC5nsj8esO7h8n5Z+0w
+         kh1ctr+xCkMgbNsipUv7J6qGCaPJryKLYddBnSHN2au8tsmTQ+GVCf3TFqhZCp/tpa/E
+         bLakxvD7kpqEhsHLBdySFqi59/iwoZQ4L7v5n+dA3dcEFKmZ+U632+Pzf3zlya1pVwgs
+         jlCeBOrJcH+c3sNdANxBkwTT8lhxR/iT6lrgL+YKBZKlQ+R230yq4N/yIDfxfOFLLlXd
+         Z1Cw==
+X-Gm-Message-State: AOAM532Dm0teuml4yMbFD0O0swHoVZmkzNpH7CoXsOotYHbboN0Fulsf
+        YUCJhQzfVS65wTz1YF4bFyvHuQ==
+X-Google-Smtp-Source: ABdhPJyWzB7PQNM2L2E7jMBzdy13qHYz2fsBChWv51asF/Dv9wMqyArFHgIaMI2T7Sc9RZwlGiO/5Q==
+X-Received: by 2002:a17:90b:1392:: with SMTP id hr18mr1017220pjb.182.1602710010286;
+        Wed, 14 Oct 2020 14:13:30 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id p19sm517713pfn.204.2020.10.14.14.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 14:13:29 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Taniya Das <tdas@codeaurora.org>, linux-soc@vger.kernel.org,
+        David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/3] clk: qcom: lpasscc-sc7810: Use devm in probe
+Date:   Wed, 14 Oct 2020 14:05:21 -0700
+Message-Id: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> - Fully lockless ringbuffer implementation, including the support for
->>   continuous lines. It will allow to store and read messages in any
->>   situation wihtout the risk of deadlocks and without the need
->>   of temporary per-CPU buffers.
->
->     linux-m68k-atari_defconfig$ bloat-o-meter vmlinux.old vmlinux.lockless_ringbuffer
->     add/remove: 39/16 grow/shrink: 9/15 up/down: 214075/-4362 (209713)
->     Function                                     old     new   delta
->     _printk_rb_static_infos                        -  180224 +180224
->     _printk_rb_static_descs                        -   24576  +24576
+Let's convert the lpass clock control driver to use devm.  This is a
+few more lines of code, but it will be useful in a later patch which
+disentangles the two devices handled by this driver.
 
-131072 of _printk_rb_static_infos is reserved for dictionary usage. The
-rest (49152) is for the record meta data. Previously any dictionary
-usage and record meta data was embedded in the message buffer (log_buf,
-65536).
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Since the meta data is now separate, setting CONFIG_LOG_BUF_SHIFT=15
-would provide roughly the same amount of record storage as
-CONFIG_LOG_BUF_SHIFT=16 did with vmlinux.old. Then there would be:
+Changes in v3:
+- ("clk: qcom: lpasscc-sc7810: Use devm in probe") new for v3.
 
-32768: message buffer
-24576: meta data
-65536: dictionary data
-12288: descriptor data
+ drivers/clk/qcom/lpasscorecc-sc7180.c | 38 +++++++++++++++------------
+ 1 file changed, 21 insertions(+), 17 deletions(-)
 
-Excluding the dictionary data, the total is 65536.
+diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
+index 228d08f5d26f..abcf36006926 100644
+--- a/drivers/clk/qcom/lpasscorecc-sc7180.c
++++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
+@@ -412,40 +412,44 @@ static const struct of_device_id lpass_core_cc_sc7180_match_table[] = {
+ };
+ MODULE_DEVICE_TABLE(of, lpass_core_cc_sc7180_match_table);
+ 
++static void lpass_pm_runtime_disable(void *data)
++{
++	pm_runtime_disable(data);
++}
++
++static void lapss_pm_clk_destroy(void *data)
++{
++	pm_clk_destroy(data);
++}
++
+ static int lpass_core_sc7180_probe(struct platform_device *pdev)
+ {
+ 	int (*clk_probe)(struct platform_device *p);
+ 	int ret;
+ 
+ 	pm_runtime_enable(&pdev->dev);
++	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_runtime_disable, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	ret = pm_clk_create(&pdev->dev);
+ 	if (ret)
+-		goto disable_pm_runtime;
++		return ret;
++	ret = devm_add_action_or_reset(&pdev->dev, lapss_pm_clk_destroy, &pdev->dev);
++	if (ret)
++		return ret;
+ 
+ 	ret = pm_clk_add(&pdev->dev, "iface");
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to acquire iface clock\n");
+-		goto destroy_pm_clk;
++		return ret;
+ 	}
+ 
+-	ret = -EINVAL;
+ 	clk_probe = of_device_get_match_data(&pdev->dev);
+ 	if (!clk_probe)
+-		goto destroy_pm_clk;
+-
+-	ret = clk_probe(pdev);
+-	if (ret)
+-		goto destroy_pm_clk;
+-
+-	return 0;
+-
+-destroy_pm_clk:
+-	pm_clk_destroy(&pdev->dev);
+-
+-disable_pm_runtime:
+-	pm_runtime_disable(&pdev->dev);
++		return -EINVAL;
+ 
+-	return ret;
++	return clk_probe(pdev);
+ }
+ 
+ static const struct dev_pm_ops lpass_core_cc_pm_ops = {
+-- 
+2.28.0.1011.ga647a8990f-goog
 
-(With vmlinux.old there is 65536 total with CONFIG_LOG_BUF_SHIFT=16.)
-
-It is the reserved dictionary data that is hurting us here.
-
-Should we provide a config option to kill the dictionary data?
-
-Should CONFIG_LOG_BUF_SHIFT do an implicit -1 so that the sizes (without
-dictionary data) are about the same as before?
-
-Maybe dictionaries should only exist in the dynamically allocated
-ringbuffer?
-
-John Ogness
