@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C0F28DA7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC51B28DA72
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgJNHbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:31:40 -0400
-Received: from mga09.intel.com ([134.134.136.24]:21635 "EHLO mga09.intel.com"
+        id S1727673AbgJNH3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 03:29:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725934AbgJNHbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:31:40 -0400
-IronPort-SDR: MrZ0Id//lahQKv3GGq2D4KHlKnGmlZwIobQsI+vvxjJBcP1kjSQcUgP7XOrXxIbcu9HBWQye2r
- zFHCriSNg/oQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="166175102"
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="166175102"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 00:31:38 -0700
-IronPort-SDR: Q/+QmmCHxC00fwQEG7cm2Y/Tvul4iJK2EQtiK4wSrB0kAVxZDKyYHdNvbg7IpB95XB4QXdle29
- 27vjgmGxEXZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="345558605"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Oct 2020 00:31:36 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH next] iommu: intel: don't dereference iommu_device if
- IOMMU_API is not built
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-References: <20201013073055.11262-1-brgl@bgdev.pl>
- <abd717c9-9eaa-d4bb-3fd8-ff7250d97ab7@linux.intel.com>
- <CAMRc=MdLXaPNUwbUPGJS1AY0pq5je9zsGM7eHShLT=f6mT5Dww@mail.gmail.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <dc6f3226-c6e5-b361-601b-afa91540144e@linux.intel.com>
-Date:   Wed, 14 Oct 2020 15:25:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAMRc=MdLXaPNUwbUPGJS1AY0pq5je9zsGM7eHShLT=f6mT5Dww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1725935AbgJNH3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 03:29:04 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0C5F20878;
+        Wed, 14 Oct 2020 07:29:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602660543;
+        bh=bVOS5OD7v/UUKm67KkgDxWG0kGL5dI5WiJ8fq6+QhwI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tS3snivaKkQOQH9y+Ut9gommO3l161qxawaGAZFTKB+G9f/KrqhE+gCh2coG3lN0T
+         V4t0xgoPhMK0qDzi1W+tH3JvUlfK+FH6RDqzR4ZBSraQvB7QQu7aOLYEGxxLNePSeB
+         hh8vog0rZuad8TqAvCP/TxqEG8tIzKHS7pUlPbPY=
+Date:   Wed, 14 Oct 2020 16:28:59 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, x86 <x86@kernel.org>
+Subject: Re: [tip: objtool/core] x86/insn: Support big endian cross-compiles
+Message-Id: <20201014162859.987d5f71f5e5456ffb812abc@kernel.org>
+In-Reply-To: <20201012153949.jfwa7rgpzu5b7ld4@treble>
+References: <160208761921.7002.1321765913567405137.tip-bot2@tip-bot2>
+        <20201009203822.GA2974@worktop.programming.kicks-ass.net>
+        <20201009204921.GB21731@zn.tnic>
+        <20201010174415.zwopoy6vpficoqlr@treble>
+        <20201012091236.0f9a64bfedb8825732b65ea5@kernel.org>
+        <20201012153949.jfwa7rgpzu5b7ld4@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
+On Mon, 12 Oct 2020 10:39:49 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-On 10/14/20 3:18 PM, Bartosz Golaszewski wrote:
-> On Wed, Oct 14, 2020 at 2:49 AM Lu Baolu <baolu.lu@linux.intel.com> wrote:
->>
->> On 10/13/20 3:30 PM, Bartosz Golaszewski wrote:
->>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>>
->>> Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
->>> with no supported address widths") dmar.c needs struct iommu_device to
->>> be selected. We can drop this dependency by not dereferencing struct
->>> iommu_device if IOMMU_API is not selected and by reusing the information
->>> stored in iommu->drhd->ignored instead.
->>>
->>> This fixes the following build error when IOMMU_API is not selected:
->>>
->>> drivers/iommu/intel/dmar.c: In function ‘free_iommu’:
->>> drivers/iommu/intel/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
->>>    1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
->>>                                                   ^
->>>
->>> Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
->>> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>
->> With commit title adjusted to "iommu/vt-d: Don't dereference
->> iommu_device if IOMMU_API is not built",
->>
->> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
->>
+> On Mon, Oct 12, 2020 at 09:12:36AM +0900, Masami Hiramatsu wrote:
+> > On Sat, 10 Oct 2020 12:44:15 -0500
+> > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > 
+> > > On Fri, Oct 09, 2020 at 10:49:21PM +0200, Borislav Petkov wrote:
+> > > > On Fri, Oct 09, 2020 at 10:38:22PM +0200, Peter Zijlstra wrote:
+> > > > > On Wed, Oct 07, 2020 at 04:20:19PM -0000, tip-bot2 for Martin Schwidefsky wrote:
+> > > > > > The following commit has been merged into the objtool/core branch of tip:
+> > > > > > 
+> > > > > > Commit-ID:     2a522b53c47051d3bf98748418f4f8e5f20d2c04
+> > > > > > Gitweb:        https://git.kernel.org/tip/2a522b53c47051d3bf98748418f4f8e5f20d2c04
+> > > > > > Author:        Martin Schwidefsky <schwidefsky@de.ibm.com>
+> > > > > > AuthorDate:    Mon, 05 Oct 2020 17:50:31 +02:00
+> > > > > > Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
+> > > > > > CommitterDate: Tue, 06 Oct 2020 09:32:29 -05:00
+> > > > > > 
+> > > > > > x86/insn: Support big endian cross-compiles
+> > > > > > 
+> > > > > > x86 instruction decoder code is shared across the kernel source and the
+> > > > > > tools. Currently objtool seems to be the only tool from build tools needed
+> > > > > > which breaks x86 cross compilation on big endian systems. Make the x86
+> > > > > > instruction decoder build host endianness agnostic to support x86 cross
+> > > > > > compilation and enable objtool to implement endianness awareness for
+> > > > > > big endian architectures support.
+> > > > > > 
+> > > > > > Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
+> > > > > > Co-developed-by: Vasily Gorbik <gor@linux.ibm.com>
+> > > > > > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> > > > > > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > > > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > > > 
+> > > > > This commit breaks the x86 build with CONFIG_X86_DECODER_SELFTEST=y.
+> > > > > 
+> > > > > I've asked Boris to truncate tip/objtool/core.
+> > > > 
+> > > > Yeah, top 4 are gone until this is resolved.
+> > > 
+> > > Masami, I wonder if we even need these selftests anymore?  Objtool
+> > > already decodes the entire kernel.
+> > 
+> > No, they have different roles. The selftest checks if the decoder
+> > works correctly by comparing with the output of objdump.
+> > 
+> > As far as I can see, the objtool relies on the sanity of the decoder
+> > (it trusts the output of the decoder).
 > 
-> Do you want me to resend it again with a changed title or can you fix
-> it up when applying? Or should someone else pick it up?
+> Ok.  I wonder if we should move the decoder selftest to the 'tools'
+> subdirectory.
 
-I suppose Joerg will pick this up. I guess you don't need to resend it
-unless Joerg asks you to do.
+It is in the arch/x86/tools, so it is already in a kind of tools :)
+But yeah, it was considered to be used only on x86. But if someone
+start trying to run it on non-x86, cross compiling, we need to
+reconsider that.
 
-Best regards,
-baolu
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
