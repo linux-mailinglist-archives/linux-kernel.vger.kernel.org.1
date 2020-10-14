@@ -2,89 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0D728E0E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210D028E0F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730779AbgJNM66 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Oct 2020 08:58:58 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:35751 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727187AbgJNM66 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:58:58 -0400
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id B936D200013;
-        Wed, 14 Oct 2020 12:58:47 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 14:58:46 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        abhimanyu.saini@nxp.com, Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Poonam Aggrwal <poonam.aggrwal@nxp.com>,
-        Rob Herring <robh@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Weinberger <richard@nod.at>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, Suram Suram <suram@nxp.com>,
-        masonccyang@mxic.com.tw, Will Deacon <will@kernel.org>,
-        "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>, Christoph Hellwig <hch@lst.de>
-Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
- page tables
-Message-ID: <20201014145846.613977d5@xps13>
-In-Reply-To: <CAOMZO5DxVQ1va4aviTkgC0O6+KmpkYvYDVPh7v2Ajqggq7aoow@mail.gmail.com>
-References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
-        <20200924090349.GF27174@8bytes.org>
-        <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
-        <20200924092546.GJ27174@8bytes.org>
-        <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
-        <20200924095629.GL27174@8bytes.org>
-        <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
-        <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
-        <20201011055258.22337d66@canb.auug.org.au>
-        <CA+-6iNwpFeJaa7CisS-DD2q45uaV8Jz6YU0kPucqpZAAK3ojuQ@mail.gmail.com>
-        <c7e7b9ab-95a8-625f-7988-7f7397a0749f@gmail.com>
-        <CAOMZO5DxVQ1va4aviTkgC0O6+KmpkYvYDVPh7v2Ajqggq7aoow@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730928AbgJNNAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727187AbgJNNAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:00:12 -0400
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1D3E2173E
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 13:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602680411;
+        bh=EjQyMXBgmkGopUQIOpSQ0qJ6aFXvAlg6I7g92NkSgMQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fLBWb4iDrpBUKe6rxTTtf70Eda3+Q02E2x6UnykIAPRRGz17bipaL0LMokMsx7Hsn
+         XSss2EcKy7Wg9vQcmOrQPyfZJj6y+jF9GSwl8qWWWzNNfZBONfVakXBt1e7ETe7WZK
+         klZDLKm6mkfNyobaMG16UmAXDuZBsz5C46GdbmMs=
+Received: by mail-ed1-f50.google.com with SMTP id p13so3014712edi.7
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:00:10 -0700 (PDT)
+X-Gm-Message-State: AOAM532sbmVQyygcsbsE+MIKaLiHoJW7CK3aZR6cCmzCw0lN2vjFfVwL
+        8S9mU0SZ+3wJLiZsBr85oWRIE+W2YnDi33ETjQ==
+X-Google-Smtp-Source: ABdhPJx3leXWo1y/6rJJ+KAWg7Fbkc30MfGqk8ihqIGPrl/962tukEUoCc8WEJHlE62caGzULO47VlzVmHwMP2PHfsk=
+X-Received: by 2002:aa7:c3ca:: with SMTP id l10mr5129675edr.72.1602680409031;
+ Wed, 14 Oct 2020 06:00:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20201013181924.4143303-1-fparent@baylibre.com> <20201013181924.4143303-2-fparent@baylibre.com>
+In-Reply-To: <20201013181924.4143303-2-fparent@baylibre.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 14 Oct 2020 20:59:55 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__BrDVBTib1J2GHXw-ppin+_Ody6Kv93ads82ycBG725w@mail.gmail.com>
+Message-ID: <CAAOTY__BrDVBTib1J2GHXw-ppin+_Ody6Kv93ads82ycBG725w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drm/mediatek: mtk_hdmi: add MT8167 support for HDMI
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi, Fabien:
 
-Fabio Estevam <festevam@gmail.com> wrote on Wed, 14 Oct 2020 09:28:49
--0300:
+Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8814=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=882:19=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Add support for HDMI on MT8167. HDMI on MT8167 is similar to
+> MT8173/MT2701 execpt for the two registers: SYS_CFG1C and SYS_CFG20
 
-> Hi Florian,
-> 
-> On Sun, Oct 11, 2020 at 6:59 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> 
-> > however the NAND warning still remains. Someone else familiar with these
-> > NXP development boards should fix the DTS so as to provide the require
-> > ECC strength property.  
-> 
-> The ECC NAND warning looks like a regression.
-> 
-> I had originally reported it for an imx27 board and now I also pointed
-> out that it also affects Layerscape:
-> https://lore.kernel.org/linux-mtd/20201013193652.0c535c7c@xps13/T/#m09fad7eacdf86aee0834bbd8863d6d5ee2e69f8c
+I think you should drop this series. According to Mediatek HDMI
+binding document [1], the second parameter of mediatek,syscon-hdmi is
+the register offset. I think you could set register offset to 0x800
+for mt8167.
 
-I think this thread initially reported two distinct defects, one has
-been solved, the second one is in my hands but I couldn't find the root
-cause yet. I tried to reproduce, without luck, with another NAND
-controller. If someone has an imx based board and a NAND controller on
-it, I would appreciate some help.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.txt?h=3Dv=
+5.9
 
-Thanks,
-Miquèl
+Regards,
+Chun-Kuang.
+
+>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>
+> Changelog:
+> v2: fix name of pdata structure
+>
+>  drivers/gpu/drm/mediatek/mtk_hdmi.c      | 7 +++++++
+>  drivers/gpu/drm/mediatek/mtk_hdmi_regs.h | 2 ++
+>  2 files changed, 9 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediat=
+ek/mtk_hdmi.c
+> index 57370c036497..484ea9cd654a 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+> @@ -1835,9 +1835,16 @@ static struct mtk_hdmi_data mt8173_hdmi_driver_dat=
+a =3D {
+>         .sys_cfg20 =3D HDMI_SYS_CFG20,
+>  };
+>
+> +static struct mtk_hdmi_data mt8167_hdmi_driver_data =3D {
+> +       .sys_cfg1c =3D MT8167_HDMI_SYS_CFG1C,
+> +       .sys_cfg20 =3D MT8167_HDMI_SYS_CFG20,
+> +};
+> +
+>  static const struct of_device_id mtk_drm_hdmi_of_ids[] =3D {
+>         { .compatible =3D "mediatek,mt8173-hdmi",
+>           .data =3D &mt8173_hdmi_driver_data },
+> +       { .compatible =3D "mediatek,mt8167-hdmi",
+> +         .data =3D &mt8167_hdmi_driver_data },
+>         {}
+>  };
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h b/drivers/gpu/drm/m=
+ediatek/mtk_hdmi_regs.h
+> index 2050ba45b23a..a0f9c367d7aa 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_regs.h
+> @@ -195,6 +195,7 @@
+>  #define GEN_RGB                                (0 << 7)
+>
+>  #define HDMI_SYS_CFG1C         0x000
+> +#define MT8167_HDMI_SYS_CFG1C  0x800
+>  #define HDMI_ON                                BIT(0)
+>  #define HDMI_RST                       BIT(1)
+>  #define ANLG_ON                                BIT(2)
+> @@ -211,6 +212,7 @@
+>  #define HTPLG_PIN_SEL_OFF              BIT(30)
+>  #define AES_EFUSE_ENABLE               BIT(31)
+>  #define HDMI_SYS_CFG20         0x004
+> +#define MT8167_HDMI_SYS_CFG20  0x804
+>  #define DEEP_COLOR_MODE_MASK           (3 << 1)
+>  #define COLOR_8BIT_MODE                        (0 << 1)
+>  #define COLOR_10BIT_MODE               (1 << 1)
+> --
+> 2.28.0
+>
