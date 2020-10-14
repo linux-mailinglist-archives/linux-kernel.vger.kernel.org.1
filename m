@@ -2,119 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE3628E1AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF75F28E1B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388717AbgJNNuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:50:22 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:41202 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726680AbgJNNuV (ORCPT
+        id S2388754AbgJNNug convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Oct 2020 09:50:36 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:39278 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726680AbgJNNuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:50:21 -0400
-Received: by mail-oi1-f195.google.com with SMTP id q136so3267447oic.8;
-        Wed, 14 Oct 2020 06:50:21 -0700 (PDT)
+        Wed, 14 Oct 2020 09:50:35 -0400
+Received: by mail-ot1-f67.google.com with SMTP id f10so3472189otb.6;
+        Wed, 14 Oct 2020 06:50:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=T+lXWYZNK3Q/86DTyObhFOK72+nQRALeWr13HjYTpkA=;
-        b=BUXkctr/cJA0sCd2qSPqBRJOSYhxRU5OKyr8UlMbAgTlXsGZJfEDNBCo6HaJAmVlyC
-         3ssELGWk9iDW8aj2UIFagrn/0NqcVpYIiFR4c68YmZ4Orwl6fgt7YEI8qVcoMs1yAigz
-         kQzuxYW3/B4SjqEdKkgwi5mnWGnkJXkZwThN0pVH+Xjpvn7aK9iGa80SGyjTzEH4g2dw
-         /KHo5UcSzvZnSO98fuh8oDPMep7DBwWzGl0c6Tz/EDyb8fqUB3MLCBVcg6IbrvYpsk3l
-         vApGAc7l0fCb2HsgIJ5qhImJH69DZwKN/xmY6L985bYWyvuZGeKmLu8un8V2j20dtNWf
-         tosg==
-X-Gm-Message-State: AOAM531qYP8Dfm4uejRmO7mSklg17BNV5EUfh7lSUfdoADbg2v9F+qZW
-        BFxe/Yfld6dzi8BU0o2/AA==
-X-Google-Smtp-Source: ABdhPJwBwzjfoCwN+5C7fXVadoxI98n+WgVzrNbDfrKV3BDTP85OLoUwNnnp9bI2euXzw7/77YIU8Q==
-X-Received: by 2002:aca:54c2:: with SMTP id i185mr2099742oib.169.1602683420675;
-        Wed, 14 Oct 2020 06:50:20 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h5sm1211010otb.11.2020.10.14.06.50.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 06:50:19 -0700 (PDT)
-Received: (nullmailer pid 1576100 invoked by uid 1000);
-        Wed, 14 Oct 2020 13:50:19 -0000
-Date:   Wed, 14 Oct 2020 08:50:19 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/6] dt-bindings: misc: correct the property name
- cmd-gpios to cmd-gpio
-Message-ID: <20201014135019.GA1563910@bogus>
-References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
- <20201013160845.1772-7-thunder.leizhen@huawei.com>
- <bda5f620-7140-51fb-fadd-6ebd3c0db935@ti.com>
- <4f5f9b55-9fad-9318-82d4-6b258643738b@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XcEpTkw1Hudp3Em2mlbtxnQrshryRfohDwMtnJSmICA=;
+        b=RcCzYtzQCQXK2MTc413X3w3Xow3sunRMTH2vF72EDZg/c1/62PfIm5ezDFB0ld/OFz
+         zYi7xLLdElhJV/LutHX/i/rGeOeKqwrR7TMMEf4yS4HMW6BOJjIp251YLNOS0JCcHf8q
+         BKSH27+6eg5qAZ/bt6isJ20pcpzKjJRLVreZWngDBgzxVjptG07UrT6PVBXqz/O/mqpz
+         wEIulqp017E+2vnLJwwsyglo1L/Z+DViff2gis3y0g5i4/2wR4Hxf919ihziyPis//de
+         U2ObsAonjKq785laPaCDoFoZyfhHxhMr8S8tEVGQ8m+g54hcGVj+mDrN3rA94yyClO8I
+         hqtA==
+X-Gm-Message-State: AOAM530ASQL2dZRnwA7AMlGFbmI0qdRYccfGH8EuGArN/PJlH8At/atH
+        HapM9eForxJbYG1I9FnGoZH5j7orvJcHDOmh9MI=
+X-Google-Smtp-Source: ABdhPJyYtDpLWVZ6zHhoxuzRGLITytMyVDxGm0R5aYJ+MrdYwspSwCHppKiYps/Ajazqh7BplWzqMvibhBVqrD+4+Kw=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr3660748otb.250.1602683434638;
+ Wed, 14 Oct 2020 06:50:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4f5f9b55-9fad-9318-82d4-6b258643738b@huawei.com>
+References: <20200910080933.40684-1-yuehaibing@huawei.com> <20200911112707.32232-1-yuehaibing@huawei.com>
+In-Reply-To: <20200911112707.32232-1-yuehaibing@huawei.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 14 Oct 2020 15:50:23 +0200
+Message-ID: <CAMuHMdWm8H7BYK+niLu4COGcsrdAd4Egit7T4+Mc5Fz8NhmjYg@mail.gmail.com>
+Subject: Re: [PATCH v2 -next] media: marvell-ccic: Fix -Wunused-function warnings
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 09:29:26AM +0800, Leizhen (ThunderTown) wrote:
-> 
-> 
-> On 2020/10/14 1:32, Dan Murphy wrote:
-> > Zhen
-> > 
-> > On 10/13/20 11:08 AM, Zhen Lei wrote:
-> >> The property name used in arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts is
-> >> cmd-gpio.
-> >>
-> >> arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:235:
-> >> cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
-> >>
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> ---
-> >>   Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml | 6 +++---
-> >>   1 file changed, 3 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
-> >> index b3c45c046ba5e37..c7a06a9650db2ed 100644
-> >> --- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
-> >> +++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
-> >> @@ -24,7 +24,7 @@ properties:
-> >>     compatible:
-> >>       const: olpc,xo1.75-ec
-> >>   -  cmd-gpios:
-> >> +  cmd-gpio:
-> > 
-> > Preference is gpios not gpio. But Rob H accept or reject
-> 
-> Look at the search result below. It seems that the driver have not been merged into mainline.
+On Fri, Sep 11, 2020 at 1:50 PM YueHaibing <yuehaibing@huawei.com> wrote:
+> If CONFIG_PM is n, gcc warns:
+>
+> drivers/media/platform/marvell-ccic/mmp-driver.c:324:12: warning: â€˜mmpcam_runtime_suspendâ€™ defined but not used [-Wunused-function]
+>  static int mmpcam_runtime_suspend(struct device *dev)
+>             ^~~~~~~~~~~~~~~~~~~~~~
+> drivers/media/platform/marvell-ccic/mmp-driver.c:310:12: warning: â€˜mmpcam_runtime_resumeâ€™ defined but not used [-Wunused-function]
+>  static int mmpcam_runtime_resume(struct device *dev)
+>             ^~~~~~~~~~~~~~~~~~~~~
+>
+> Mark them as __maybe_unused to fix this.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Yes, in drivers/platform/olpc/olpc-xo175-ec.c.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Your mistake is the gpiod api takes just 'cmd' as the GPIO core handles 
-both forms.
+Gr{oetje,eeting}s,
 
-> But the property name is really used as cmd-gpio at mmp2-olpc-xo-1-75.dts:235, I don't think
-> the mmp2-olpc-xo-1-75.dts can make a mistake. Otherwise, the driver will not work properly.
-> Meanwhile, Both names cmd-gpios and cmd-gpio seem to be in use. But I prefer cmd-gpio, after
-> all, only one gpio is assigned now. The motorola,cmd-gpios add "s" because it contains 3 gpio.
+                        Geert
 
-The preference is it is always '-gpios' just like it's always 
-'interrupts' or 'clocks'.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-However, whether to change this is really up to the OLPC folks. Given 
-the driver has always supported both forms, it should be okay to change 
-the dts. Though there could be other users besides the kernel.
-
-Rob
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
