@@ -2,136 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7123E28DC5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0668328DC62
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgJNJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:06:41 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:46685 "EHLO m42-4.mailgun.net"
+        id S1727728AbgJNJIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:08:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:56728 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726780AbgJNJGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:06:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602666399; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=MYYoWLeS8eltVgolk99JskKAu43wy+MVbWHV08U+L7w=; b=HAf/lOQD4fPV2l+c+ycJVkzI0nO91uWIujo7T+JJW5T1fClXzYBlxjlywweVkpVZOSJPuuQ7
- 3vlfLxLlCAbtgSKE2v6WrcRUhuMvmUgim0WDFq47c5tmOidN4zBeCkuJ5jEujmXAjlC4ItY/
- zukJtR2Gt3y1iN6ONgHUZJX0Qo4=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f86bf6bad37af35eccc1644 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 09:05:47
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AB5EDC43395; Wed, 14 Oct 2020 09:05:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.66.241] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02532C433C9;
-        Wed, 14 Oct 2020 09:05:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 02532C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v10 4/4] arm64: boot: dts: qcom: pm8150b: Add DTS node for
- PMIC VBUS booster
-To:     Rob Herring <robh@kernel.org>
-Cc:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
-        agross@kernel.org, gregkh@linuxfoundation.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jackp@codeaurora.org,
-        sergei.shtylyov@gmail.com
-References: <20201008235934.8931-1-wcheng@codeaurora.org>
- <20201008235934.8931-5-wcheng@codeaurora.org>
- <20201013150316.GB3497815@bogus>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <77530347-cef9-2b06-dabe-678ae02ea7d5@codeaurora.org>
-Date:   Wed, 14 Oct 2020 02:05:45 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1726074AbgJNJIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:08:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB72A30E;
+        Wed, 14 Oct 2020 02:08:40 -0700 (PDT)
+Received: from [10.57.50.223] (unknown [10.57.50.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CE0D3F73C;
+        Wed, 14 Oct 2020 02:08:37 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
+ Energy Model, EAS and IPA
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, amitk@kernel.org,
+        corbet@lwn.net, Dietmar.Eggemann@arm.com, qperret@google.com,
+        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org
+References: <20201002114426.31277-1-lukasz.luba@arm.com>
+ <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
+ <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
+Date:   Wed, 14 Oct 2020 10:08:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20201013150316.GB3497815@bogus>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
-
-On 10/13/2020 8:03 AM, Rob Herring wrote:
-> On Thu, Oct 08, 2020 at 04:59:34PM -0700, Wesley Cheng wrote:
->> Add the required DTS node for the USB VBUS output regulator, which is
->> available on PM8150B.  This will provide the VBUS source to connected
->> peripherals.
->>
->> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/pm8150b.dtsi   | 6 ++++++
->>  arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 4 ++++
->>  2 files changed, 10 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
->> index 2bf385f5a55a..49ea597cc0c5 100644
->> --- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
->> @@ -53,6 +53,12 @@ power-on@800 {
->>  			status = "disabled";
->>  		};
->>  
->> +		pm8150b_vbus: regulator@1100 {
->> +			compatible = "qcom,pm8150b-vbus-reg";
->> +			status = "disabled";
->> +			reg = <0x1100>;
->> +		};
->> +
->>  		pm8150b_typec: usb-typec@1500 {
->>  			compatible = "qcom,pm8150b-usb-typec";
->>  			status = "disabled";
->> diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
->> index 6c6325c3af59..ba3b5b802954 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
->> +++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
->> @@ -409,6 +409,10 @@ &ufs_mem_phy {
->>  	vdda-pll-max-microamp = <19000>;
->>  };
->>  
->> +&pm8150b_vbus {
->> +	status = "okay";
->> +};
+On 10/14/20 9:22 AM, Daniel Lezcano wrote:
 > 
-> Why aren't you enabling the TypeC node and providing a complete example?
+> Hi Lukasz,
+> 
+> On 09/10/2020 11:16, Lukasz Luba wrote:
+>> Hi Rafael,
+>>
+>> On 10/2/20 12:44 PM, Lukasz Luba wrote:
+>>> Hi all,
+>>>
+>>> The Energy Model supports power values expressed in an abstract scale.
+>>> This has an impact on Intelligent Power Allocation (IPA) and should be
+>>> documented properly. There is also a need to update the DT binding for
+>>> the
+>>> 'sustainable-power' and allow it to have abstract scale as well.
+>>>
+>>> Changes:
+>>> v2:
+>>> - updated sustainable power section in IPA documentation
+>>> - updated DT binding for the 'sustainable-power'
+>>>
+>>> The v1 of the patch set and related discussion can be found in [1].
+>>>
+>>> Regards,
+>>> Lukasz Luba
+>>>
+>>> [1]
+>>> https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
+>>>
+>>>
+>>> Lukasz Luba (3):
+>>>     docs: Clarify abstract scale usage for power values in Energy Model
+>>>     PM / EM: update the comments related to power scale
+>>>     dt-bindings: thermal: update sustainable-power with abstract scale
+>>>
+>>>    .../devicetree/bindings/thermal/thermal-zones.yaml  | 13 +++++++++----
+>>>    .../driver-api/thermal/power_allocator.rst          | 13 ++++++++++++-
+>>>    Documentation/power/energy-model.rst                | 13 +++++++++++++
+>>>    Documentation/scheduler/sched-energy.rst            |  5 +++++
+>>>    include/linux/energy_model.h                        | 11 +++++------
+>>>    kernel/power/energy_model.c                         |  2 +-
+>>>    6 files changed, 45 insertions(+), 12 deletions(-)
+>>>
+>>
+>> Could you take patch 1/3 and patch 2/3 via your PM tree,
+>> please? I will be very grateful.
+>>
+>> These patches just update the documentation and comments regarding
+>> an issue that we can have: bogoWatts in the Energy Model (and we
+>> already have). One of the drawbacks is that we cannot derive real energy
+>> from these numbers. Will see how this would evolve.
+> 
+> The purpose of the energy model is to provide these power numbers.
+> 
+> If the SoC vendors do not want to share those numbers, then better to
+> not use the energy model at all.
+> 
+> If they want to use the EAS and the IPA at all costs without sharing the
+> power numbers, then it is up to them to take responsibility of providing
+> consistent numbers, not the community to document how to hack the energy
+> model.
+> 
+> And that is even more true as mentioned by Doug: the power numbers are
+> not impossible to measure.
+> 
+> Documenting the scale values give the opportunity to the SoC vendor to
+> never share the power numbers, and even worst, that implies all the
+> existing and future frameworks based on the energy model (and its
+> evolution) *must* comply with these dummy values. That is the promise of
+> a real pain.
+> 
+> IMO, we must keep a strong constraint on the power values for the energy
+> model.
+> 
+> However, nothing prevents to write a recipe on a website explaining how
+> to use the energy model without the power numbers with a big warning
+> that could not work in the future if the energy model evolves or it
+> could be incompatible with the IPA.
+> 
+> I suggest to solve the energy model main issue: the SoC vendor do not
+> want to share the power numbers. Why not give the opportunity to load a
+> firmware where the power numbers will be ? The firmware could be in a
+> vendor partition for example.
+> 
 > 
 
-Hi Rob,
+I understand your concerns. Unfortunately, the reality is that the
+bogoWatts are there. I had discussion about it a few days ago with
+Rajendra and Doug [1], where I was also opposed to allow bogoValue
+coming from DT 'dynamic-power-coefficient'. But I have discussed it
+internally and we allow, because developers would do it anyway.
 
-I have another patch series which enables the type C node and adds QMP
-PHY driver changes for setting the SS lane select MUX.
+Regarding your question with firmware where the power numbers can be
+stored. Unfortunately, it is quite opposite, FW might want to hide it.
+We even allow bogoWatts to come from firmware, the SCMI spec:
+(4.5.1 Performance domain management protocol background)
+'The power can be expressed in mW or in an abstract scale. Vendors are
+not obliged to reveal power costs if it is undesirable, but a linear
+scale is required.'
+The callback which does this is not able to check if the value is a
+bogoWatt [2].
 
-https://patchwork.kernel.org/project/linux-arm-msm/list/?series=361971
+EAS can handle EM with bogoWatts, as I described in the patch.
+IPA has some issues: 'sustainable-power' in DT (which shouldn't be used
+when EM devices use abstract scale) but sysfs interface can be used.
 
-Just wanted to work on getting a PMIC based type C driver out there,
-which can be utilized in designs where the QMP PHY lane select mux is
-not going to be used. (ie using a FUSB340 as a lane select mux instead
-of the QMP PHY mux)
+This patch set just align the SCMI spec with EM, EAS, IPA
+documentation and already present platforms which use it.
 
-Thanks
+I hope that the real milliWatts would come to EM via the DT
+'dynamic-power-coefficient' and function dev_pm_opp_of_register_em().
+But no guaranties as you can see in [1].
 
 Regards,
-Wesley Cheng
+Lukasz
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+[1] 
+https://lore.kernel.org/linux-pm/62540312-65a2-b6d9-86ce-b4deaaa913c1@codeaurora.org/
+[2] 
+https://elixir.bootlin.com/linux/v5.9/source/drivers/cpufreq/scmi-cpufreq.c#L118
