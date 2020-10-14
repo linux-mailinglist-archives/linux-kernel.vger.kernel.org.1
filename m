@@ -2,76 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626B028E193
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA8428E196
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731367AbgJNNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726459AbgJNNo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:44:57 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9B842076D;
-        Wed, 14 Oct 2020 13:44:55 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 09:44:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Zamir SUN <sztsian@gmail.com>, Tony Jones <tonyj@suse.de>,
-        Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [ANNOUNCE] libtraceevent.git
-Message-ID: <20201014094453.73f37dd4@gandalf.local.home>
-In-Reply-To: <CADVatmM2hsbZ64Zr=5KES-iPyoxicmm+zkvxTZMq49eWQ390yw@mail.gmail.com>
-References: <20201007130750.49349844@gandalf.local.home>
-        <20201012101208.GF1099489@krava>
-        <20201012111950.55a73588@gandalf.local.home>
-        <20201012184120.GN13697@suse.de>
-        <20201012151732.6e439886@gandalf.local.home>
-        <CAHnb8o61XwvgkMnryaOv-=qCDf-o5OpezQAAk-44R+KgCc8Vcw@mail.gmail.com>
-        <20201013090228.78256290@gandalf.local.home>
-        <CADVatmM2hsbZ64Zr=5KES-iPyoxicmm+zkvxTZMq49eWQ390yw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731372AbgJNNqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:46:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54241 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726459AbgJNNqQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:46:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602683174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wz5wOwKo0yVq73Er/y/1PB95j1y0IW2kymLlsiYsZYA=;
+        b=GSt/Demyp72pe5LbLe/aj18I3SQJr8ziqxc9FOjmXuie95XlHuzBtVeSWRtJ4sZfXpIap5
+        zpQGRTKNRC5o12pHevmAz6RDuS1pbAidAyxWmCB0VFnkC09zgDFRkt83yLQbWS5eh59jdh
+        qkeSH2Yx3oOvjZKZJYAvgzwDzZZ5zCM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-gV3xz4A2NYOJ8YKBBTSFGA-1; Wed, 14 Oct 2020 09:46:11 -0400
+X-MC-Unique: gV3xz4A2NYOJ8YKBBTSFGA-1
+Received: by mail-ej1-f70.google.com with SMTP id f11so1185407eja.23
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 06:46:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Wz5wOwKo0yVq73Er/y/1PB95j1y0IW2kymLlsiYsZYA=;
+        b=euDN79WOwVI6eN998nD9aG14VjYd6wP5DsuqkoZ5NR5UBQOuSzpILLxNVeYZnb5cds
+         I9vXMf8cblJjpMvl/JshZpkSmXTO6xahCDGDSSnSW7nOct4tFcEqfJoUDT+UZQHk+wIi
+         gpsa+sjGwGPopStuGDfOszDPG6jZLqgGlQeiA5XSBlkVEh1flqLsVF15bRGbRX5TDmol
+         xcnrcxatEh8Iiovqi4McajPV4RKZ1PyY1dXSsJKkoMTPDcuXDDQvPmNxLajWTRojP0mS
+         ZRPKRm/2LziFeoAB2CWvcmBjdf1RooY89/qT2Uc9F/yzMnttp2k7a6imrT5AZYRlNdz3
+         pUbw==
+X-Gm-Message-State: AOAM533TM9cuPWCpstzIKdtirRidN3Dc6mDqq/c+07qWjfnMc7q2G63S
+        FZWI6bRH2tXUushfZ1BkNFIVVqyLtArCniISyqfriZJyoPn3SeHpCFqx3ZFq3lSG0Amc9vhKd+L
+        k95OQHY47I8kp2ukrWz92Vw7V
+X-Received: by 2002:a17:906:a0cb:: with SMTP id bh11mr5532305ejb.314.1602683170479;
+        Wed, 14 Oct 2020 06:46:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwb1nM/ZqfaRSOoR+zmuMc2x55E7Mkc/9Q5kPU90Nyx6UJvLiTtXmO9Wmhqbb2jybKDvwDJ7Q==
+X-Received: by 2002:a17:906:a0cb:: with SMTP id bh11mr5532280ejb.314.1602683170246;
+        Wed, 14 Oct 2020 06:46:10 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id k26sm1766239eji.22.2020.10.14.06.46.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 06:46:09 -0700 (PDT)
+Subject: Re: [PATCH AUTOSEL 5.8 17/20] i2c: core: Call
+ i2c_acpi_install_space_handler() before i2c_acpi_register_devices()
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     kieran.bingham@ideasonboard.com, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
+References: <20200921144027.2135390-1-sashal@kernel.org>
+ <20200921144027.2135390-17-sashal@kernel.org>
+ <1977b57b-fae6-d9d4-e6bf-3d4013619537@ideasonboard.com>
+ <bbeb7cae-d856-bb25-4602-8dd3bae62773@redhat.com>
+Message-ID: <d1318f56-e610-b095-6d8c-37f94444882e@redhat.com>
+Date:   Wed, 14 Oct 2020 15:46:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <bbeb7cae-d856-bb25-4602-8dd3bae62773@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 11:08:48 +0100
-Sudip Mukherjee <sudipm.mukherjee@gmail.com> wrote:
+Hi all,
 
-> Just a thought, if you see
-> https://repology.org/project/linux-tools/versions then you will notice
-> that libtracevent has been packaged by the distros with a version of
-> v5.x+, and I will have the same problem for Debian also. Do you think
-> it makes sense to start  with a version of v6.x when you tag it? If
-> that is not possible then we will have to use epoch like we did for
-> libbpf.
+On 10/14/20 1:23 PM, Hans de Goede wrote:
+> Hi,
+> 
+> On 10/14/20 1:09 PM, Kieran Bingham wrote:
+>> Hi Hans, Sasha,
+>>
+>> As mentioned on https://github.com/linux-surface/kernel/issues/63, I'm
+>> afraid I've bisected a boot time issue on the Microsoft Surface Go 2 to
+>> this commit on the stable 5.8 tree.
+>>
+>> The effect as reported there is that the boot process stalls just after
+>> loading the usbhid module.
+>>
+>> Typing, or interacting with the Keyboard (Type Cover) at that point
+>> appears to cause usb bus resets, but I don't know if that's a related
+>> symptom or just an effect of some underlying root cause.
+>>
+>> I have been running a linux-media kernel on this device without issue.
+>>
+>> Is this commit in 5.9? I'll build a vanilla v5.9 kernel and see if it
+>> occurs there too.
+> 
+> Yes the commit is in 5.9 too. Still would be interesting to see if 5.9 hits
+> this issue too. I guess it will, but as I mentioned in:
+> 
+> https://github.com/linux-surface/kernel/issues/63
+> 
+> I do not understand why this commit is causing this issue.
+> 
+> So I just checked and the whole acpidump is not using I2C
+> opregion stuff at all:
+> 
+> [hans@x1 microsoft-surface-go2]$ ack GenericSerialBus *.dsl
+> [hans@x1 microsoft-surface-go2]$
+> 
+> And there is only 1 _REG handler which is for the
+> embedded-controller.
+> 
+> So this patch should not make a difference at all on the GO2,
+> other then maybe a subtle timing difference somewhere ... ?
 
-Grumble. This is another reason I wish this was not part of the kernel. It
-should not have a versioning based on the kernel. Yeah, this may be an
-issue, especially, since library versions have real meaning with respect
-to compatibility, where the Linux kernel version numbers do not.
+Thanks to Maximilian Luz sharp eyes this is explained now,
+despite the name of the i2c_acpi_install_space_handler()
+it also had a acpi_walk_dep_device_list() call hidden in
+there, so the "i2c: core: Call i2c_acpi_install_space_handler()
+before i2c_acpi_register_devices()" also moved that
+acpi_walk_dep_device_list() earlier.
 
-We may need to use the epoch on this, because 5.7 has no meaning compared
-to 5.8 and 5.9. I didn't even realize this was being shipped yet.
+I've given Kieran a patch to test which in essence reverts
+the part where the acpi_walk_dep_device_list() call is also
+moved earlier and that fixes the Surface Go 2 not booting.
 
-Yeah, I want to make this 1.1.0 as I've been tracking changes internally
-with this.
+I will submit this fix upstream right away and I'll also
+send a separate mail to Greg / stable@vger to see if Greg
+is willing to make an exception and at this to the stable
+series before it hits Linus' tree.
 
--- Steve
+Regards,
+
+Hans
+
+
