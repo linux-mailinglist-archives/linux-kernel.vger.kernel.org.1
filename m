@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7968528E578
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDA628E588
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389520AbgJNRhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:37:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57652 "EHLO mail.kernel.org"
+        id S2390003AbgJNRis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:38:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389506AbgJNRha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389508AbgJNRha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 13:37:30 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 814B52222A;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BB6F2222C;
         Wed, 14 Oct 2020 17:37:29 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kSkiO-002yEX-4f; Wed, 14 Oct 2020 13:37:28 -0400
-Message-ID: <20201014173647.955053902@goodmis.org>
+        id 1kSkiO-002yFB-9r; Wed, 14 Oct 2020 13:37:28 -0400
+Message-ID: <20201014173728.173020220@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 14 Oct 2020 13:36:47 -0400
+Date:   Wed, 14 Oct 2020 13:36:48 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 00/12] tracing: Last minute updates before sending to Linus
+Subject: [for-next][PATCH 01/12] tracing: Check return value of __create_val_fields() before using its
+ result
+References: <20201014173647.955053902@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-for-next
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Head SHA1: d3c07fac565261101337b9535df072361297ea2d
+After having a typo for writing a histogram trigger.
+
+Wrote:
+  echo 'hist:key=pid:ts=common_timestamp.usec' > events/sched/sched_waking/trigger
+
+Instead of:
+  echo 'hist:key=pid:ts=common_timestamp.usecs' > events/sched/sched_waking/trigger
+
+and the following crash happened:
+
+ BUG: kernel NULL pointer dereference, address: 0000000000000008
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] PREEMPT SMP PTI
+ CPU: 4 PID: 1641 Comm: sh Not tainted 5.9.0-rc5-test+ #549
+ Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
+ RIP: 0010:event_hist_trigger_func+0x70b/0x1ee0
+ Code: 24 08 89 d5 49 89 cc e9 8c 00 00 00 4c 89 f2 41 b9 00 10 00 00 4c 89 e1 44 89 ee 4c 89 ff e8 dc d3 ff ff 45 89 ea 4b 8b 14 d7 <f6> 42 08 04 74 17 41 8b 8f c0 00 00 00 8d 71 01 41 89 b7 c0 00 00
+ RSP: 0018:ffff959213d53db0 EFLAGS: 00010202
+ RAX: ffffffffffffffea RBX: 0000000000000000 RCX: 0000000000084c04
+ RDX: 0000000000000000 RSI: df7326aefebd174c RDI: 0000000000031080
+ RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000001
+ R10: 0000000000000001 R11: 0000000000000046 R12: ffff959211dcf690
+ R13: 0000000000000001 R14: ffff95925a36e370 R15: ffff959251c89800
+ FS:  00007fb9ea934740(0000) GS:ffff95925ab00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000008 CR3: 00000000c976c005 CR4: 00000000001706e0
+ Call Trace:
+  ? trigger_process_regex+0x78/0x110
+  trigger_process_regex+0xc5/0x110
+  event_trigger_write+0x71/0xd0
+  vfs_write+0xca/0x210
+  ksys_write+0x70/0xf0
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ RIP: 0033:0x7fb9eaa29487
+ Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+
+This was caused by accessing the hlist_data fields after the call to
+__create_val_fields() without checking if the creation succeed.
+
+Link: https://lkml.kernel.org/r/20201013154852.3abd8702@gandalf.local.home
+
+Fixes: 63a1e5de3006 ("tracing: Save normal string variables")
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ kernel/trace/trace_events_hist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index c74a7d157306..96c3f86b81c5 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -3687,7 +3687,7 @@ static int create_var_field(struct hist_trigger_data *hist_data,
+ 
+ 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
+ 
+-	if (hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
++	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
+ 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
+ 
+ 	return ret;
+-- 
+2.28.0
 
 
-Axel Rasmussen (1):
-      tracing: support "bool" type in synthetic trace events
-
-Gaurav Kohli (1):
-      tracing: Fix race in trace_open and buffer resize call
-
-Masami Hiramatsu (1):
-      tracing/boot: Add ftrace.instance.*.alloc_snapshot option
-
-Qiujun Huang (1):
-      tracing: Fix some typos in comments
-
-Steven Rostedt (VMware) (1):
-      tracing: Check return value of __create_val_fields() before using its result
-
-Tom Zanussi (7):
-      tracing: Don't show dynamic string internals in synthetic event description
-      tracing: Move is_good_name() from trace_probe.h to trace.h
-      tracing: Check that the synthetic event and field names are legal
-      tracing: Add synthetic event error logging
-      selftests/ftrace: Change synthetic event name for inter-event-combined test
-      tracing: Handle synthetic event array field type checking correctly
-      selftests/ftrace: Add test case for synthetic event syntax errors
-
-----
- kernel/trace/ring_buffer.c                         |  10 ++
- kernel/trace/trace.c                               |   4 +-
- kernel/trace/trace.h                               |  21 +++-
- kernel/trace/trace_boot.c                          |   6 +
- kernel/trace/trace_events_hist.c                   |   2 +-
- kernel/trace/trace_events_synth.c                  | 127 ++++++++++++++++++++-
- kernel/trace/trace_probe.h                         |  13 ---
- .../trigger-inter-event-combined-hist.tc           |   8 +-
- .../trigger-synthetic_event_syntax_errors.tc       |  19 +++
- 9 files changed, 180 insertions(+), 30 deletions(-)
- create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
