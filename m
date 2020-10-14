@@ -2,80 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F7028D823
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665C528D826
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 03:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727754AbgJNBww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 21:52:52 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15211 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725874AbgJNBww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 21:52:52 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6ED6BDA8A616D0B13FFA;
-        Wed, 14 Oct 2020 09:52:47 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.134) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Wed, 14 Oct 2020
- 09:52:43 +0800
-Subject: Re: [PATCH 2/6] dt-bindings: mfd: google,cros-ec: explicitly allow
- additional properties
-To:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        "Pavel Machek" <pavel@ucw.cz>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Benson Leung <bleung@chromium.org>,
-        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
- <20201013160845.1772-3-thunder.leizhen@huawei.com>
- <d2457f7a-625f-b046-9cfa-8f920de07377@ti.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <0a3e1b00-df93-8c81-6ecb-355bd7693ab6@huawei.com>
-Date:   Wed, 14 Oct 2020 09:52:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1728132AbgJNBzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 21:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbgJNBzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 21:55:11 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E07E521D7B;
+        Wed, 14 Oct 2020 01:55:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602640510;
+        bh=x7kJdJ6ZPzEPZDcTC7J3S08SvvvsdXQ3eMCtY//v7aE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hyDGwtUW/gl2GrJoa8dy8CWH6E1P84bY3VJ0woULAgzjwLj+Ieq776J4HWwaqhurr
+         j/sH85gJIULj9kS/9j5tU06ckoYqVJKBUetxeP+H20KBMA7M0cPLzAKrCLKDiNQrMV
+         HRgParBnleoTZRNfPlBj/ksexCEEgB3YamVSDRVw=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A665C35229EE; Tue, 13 Oct 2020 18:55:10 -0700 (PDT)
+Date:   Tue, 13 Oct 2020 18:55:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v6 70/80] rcu/tree: docs: document bkvcache new members
+ at struct kfree_rcu_cpu
+Message-ID: <20201014015510.GQ3249@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+ <6dd0804d6fd567f11e4c6efb767e91acca659d1f.1602589096.git.mchehab+huawei@kernel.org>
+ <20201013163404.GP3249@paulmck-ThinkPad-P72>
+ <20201013224608.30dd1bc9@coco.lan>
 MIME-Version: 1.0
-In-Reply-To: <d2457f7a-625f-b046-9cfa-8f920de07377@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013224608.30dd1bc9@coco.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/10/14 1:53, Dan Murphy wrote:
-> Zhen
+On Tue, Oct 13, 2020 at 10:46:08PM +0200, Mauro Carvalho Chehab wrote:
+> Em Tue, 13 Oct 2020 09:34:04 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> escreveu:
 > 
-> On 10/13/20 11:08 AM, Zhen Lei wrote:
->> There are so many properties have not been described in this yaml file,
->> and a lot of errors will be reported. Especially, some yaml files such as
->> google,cros-ec-typec.yaml, extcon-usbc-cros-ec.yaml can not pass the
->> self-check, because of the examples. So temporarily allow additional
->> properties to keep the comprehensive dt_binding_check result clean.
+> > On Tue, Oct 13, 2020 at 01:54:25PM +0200, Mauro Carvalho Chehab wrote:
+> > > Changeset 53c72b590b3a ("rcu/tree: cache specified number of objects")
+> > > added new members for struct kfree_rcu_cpu, but didn't add the
+> > > corresponding at the kernel-doc markup, as repoted when doing
+> > > "make htmldocs":
+> > > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'bkvcache' not described in 'kfree_rcu_cpu'
+> > > 	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'nr_bkv_objs' not described in 'kfree_rcu_cpu'
+> > > 
+> > > So, move the description for bkvcache to kernel-doc, and add a
+> > > description for nr_bkv_objs.
+> > > 
+> > > Fixes: 53c72b590b3a ("rcu/tree: cache specified number of objects")
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> > 
+> > Queued for review and testing, likely target v5.11.
 > 
-> My preference is to fix the binding to pass the checks and not just work around the issues. Working around the issues may mean the issues never get fixed.
+> Hi Paul,
+> 
+> I would prefer if we could get those on 5.10, if possible.
+> We're aiming to have 5.10 free of docs warnings ;-)
+> 
+> If you prefer, I can send those patches to Linus with your
+> ack.
 
-I agree with your first sentence：don't just work around the issues. But these
-errors are so annoying. Hope someone can add the description of the missing properties.
-I'm not familiar with this module anyway.
+That sounds easier:
 
-And I don't fully agree with your last sentence. After all, the main properties are listed,
-and the ones that are not listed should be minor ones.
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-> 
-> Dan
-> 
-> 
-> .
-> 
+Alan's objection is quite valid, but we will address that issue in a
+follow-on patch that will not be on the fast track.
 
+							Thanx, Paul
+
+> Regards,
+> Mauro
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > ---
+> > >  kernel/rcu/tree.c | 14 ++++++--------
+> > >  1 file changed, 6 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index f78ee759af9c..03c54c3478b7 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3022,6 +3022,12 @@ struct kfree_rcu_cpu_work {
+> > >   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+> > >   * @initialized: The @rcu_work fields have been initialized
+> > >   * @count: Number of objects for which GP not started
+> > > + * @bkvcache:
+> > > + *	A simple cache list that contains objects for reuse purpose.
+> > > + *	In order to save some per-cpu space the list is singular.
+> > > + *	Even though it is lockless an access has to be protected by the
+> > > + *	per-cpu lock.
+> > > + * @nr_bkv_objs: number of allocated objects at @bkvcache.
+> > >   *
+> > >   * This is a per-CPU structure.  The reason that it is not included in
+> > >   * the rcu_data structure is to permit this code to be extracted from
+> > > @@ -3037,14 +3043,6 @@ struct kfree_rcu_cpu {
+> > >  	bool monitor_todo;
+> > >  	bool initialized;
+> > >  	int count;
+> > > -
+> > > -	/*
+> > > -	 * A simple cache list that contains objects for
+> > > -	 * reuse purpose. In order to save some per-cpu
+> > > -	 * space the list is singular. Even though it is
+> > > -	 * lockless an access has to be protected by the
+> > > -	 * per-cpu lock.
+> > > -	 */
+> > >  	struct llist_head bkvcache;
+> > >  	int nr_bkv_objs;
+> > >  };
+> > > -- 
+> > > 2.26.2
+> > >   
+> 
+> 
+> 
+> Thanks,
+> Mauro
