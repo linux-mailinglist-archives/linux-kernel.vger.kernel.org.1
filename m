@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7252D28E6CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F3928E6CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390247AbgJNS4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:56:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45476 "EHLO mail.kernel.org"
+        id S2390260AbgJNS5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:57:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389489AbgJNS4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:56:39 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        id S2389489AbgJNS5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 14:57:21 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C5BF20691;
-        Wed, 14 Oct 2020 18:56:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 974EB20691;
+        Wed, 14 Oct 2020 18:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602701799;
-        bh=+ltEREMql2yyINqmA9gqQrQYDWKSt6A5cI/39B9w9tw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1IGhGhQGkU4HC1se8IgwwQ9G/D32skpp7hFVvKoxNFcqc9F292xSNWZc5K4/FuBJj
-         iDe5KB8fbE2IiyPlQhyo7NmVyI7FGo1Omh4EavqGS2JsLz/+59wbWDTDQ9rkGWeu98
-         mmeoYq3TBmfA+YVfcSwqRuZI98uhh7oLXuncxpDo=
-Date:   Wed, 14 Oct 2020 19:56:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     robh+dt@kernel.org, nsaenzjulienne@suse.de,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/7] Add dts for Rpi4 + Cirrus Lochnagar and codecs
-Message-ID: <20201014185632.GD4580@sirena.org.uk>
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
+        s=default; t=1602701840;
+        bh=jFQXOQDUpjT6qesgdMyQFKwEbBCv/SGOxAeads27y1I=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uufeQWbi++CzSAbfjFeE8arW5VSfn63QlFfD+6AAVjcPn0ZrEKvm0FDOVWFBP5qKu
+         Qx+Lj9UjyLtzyQE1huslAmaMcCSGQOapisG8gISkjKxFSV8kEaXeXkyLvQ0kksbrTF
+         V2RkmlzvDZLJtvcgVLFJd3kvQDdXTUKvRi4qGC9E=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 2EFD13522892; Wed, 14 Oct 2020 11:57:20 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 11:57:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
+ some files
+Message-ID: <20201014185720.GA28761@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+ <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
+ <20201013163354.GO3249@paulmck-ThinkPad-P72>
+ <20201013163836.GC670875@rowland.harvard.edu>
+ <20201014015840.GR3249@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tNQTSEo8WG/FKZ8E"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014145418.31838-1-rf@opensource.cirrus.com>
-X-Cookie: Take an astronaut to launch.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201014015840.GR3249@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 13, 2020 at 06:58:40PM -0700, Paul E. McKenney wrote:
+> On Tue, Oct 13, 2020 at 12:38:36PM -0400, Alan Stern wrote:
+> > On Tue, Oct 13, 2020 at 09:33:54AM -0700, Paul E. McKenney wrote:
+> > > On Tue, Oct 13, 2020 at 02:14:29PM +0200, Mauro Carvalho Chehab wrote:
+> > > > - The sysfs.txt file was converted to ReST and renamed;
+> > > > - The control-dependencies.txt is not at
+> > > >   Documentation/control-dependencies.txt. As it is at the
+> > > >   same dir as the README file, which mentions it, just
+> > > >   remove Documentation/.
+> > > > 
+> > > > With that, ./scripts/documentation-file-ref-check script
+> > > > is now happy again for files under tools/.
+> > > > 
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > 
+> > > Queued for review and testing, likely target v5.11.
+> > 
+> > Instead of changing the path in the README reference, shouldn't 
+> > tools/memory-model/control-dependencies.txt be moved to its proper 
+> > position in .../Documentation?
+> 
+> You are of course quite right.  My thought is to let Mauro go ahead,
+> given his short deadline.  We can then make this "git mv" change once
+> v5.10-rc1 comes out, given that it should have Mauro's patches.  I have
+> added a reminder to my calendar.
 
---tNQTSEo8WG/FKZ8E
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Except that I cannot find a commit where control-dependencies.txt is
+in tools/memory-model.  And this file is not yet in mainline, but
+only in -rcu and -next.  In both places, it is here:
 
-On Wed, Oct 14, 2020 at 03:54:11PM +0100, Richard Fitzgerald wrote:
-> This set of patches provides support for using the Cirrus Logic
-> Lochnagar audio development platform plus Cirrus Logic Madera/Arizona
-> codecs with the simple-card machine driver and a Raspberry Pi4. The
-> ultimate aim is to provide the dts file but some updates are needed to
-> the simple-card machine driver.
+	tools/memory-model/Documentation/control-dependencies.txt
 
-Why extend simple-card and not the more modern and flexible
-audio-graph-card?
+Mauro, to what commit in what tree are you applying this patch?
 
---tNQTSEo8WG/FKZ8E
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+HSd8ACgkQJNaLcl1U
-h9Dd+gf9H9W9GnnZzIpKoLpRNV0tJouG88erTYHIDCw6oummw/+zMd0A/LMkyf6i
-uocPRbZ0ZILdTnLxbhFAvsXwFg7NsBJf4PsmHkcixBmA1wCw66DE2aQn4lPZnXNE
-2dkwmDVhNYwxq7UBqREr64XgpGGQlnGW19J3F3Vf1bYwS061BuEmGx7aEumoKfL+
-0MyUkBA1Yi3x+/v77XNmg3WD0DWYhP938ljNBXxRmhGB5zH20ieUxKrZV6c4lS+0
-MlFwMfPhV12NQnZYiynma+gILfHmU/JDE4qLsaCKhaVtHUCydSmfoPuFTazNZ2hR
-xvHC2xLmqY3aNKT97MW1sgKRPdO8iA==
-=ej9C
------END PGP SIGNATURE-----
-
---tNQTSEo8WG/FKZ8E--
+							Thanx, Paul
