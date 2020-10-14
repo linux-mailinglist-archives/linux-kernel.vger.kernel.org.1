@@ -2,124 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BDC28DADC
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB6D28DADF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgJNILs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:11:48 -0400
-Received: from correo.us.es ([193.147.175.20]:49512 "EHLO mail.us.es"
+        id S1728545AbgJNIMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:12:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727975AbgJNILr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:11:47 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id EF261120820
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:11:42 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id DCE88DA72F
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 10:11:42 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id D260DDA78E; Wed, 14 Oct 2020 10:11:42 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id C37DDDA844;
-        Wed, 14 Oct 2020 10:11:40 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 14 Oct 2020 10:11:40 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
+        id S1727975AbgJNIMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:12:12 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 9912442EFB81;
-        Wed, 14 Oct 2020 10:11:40 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 10:11:40 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
- re-register
-Message-ID: <20201014081140.GA16515@salvia>
-References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
- <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
- <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
- <20201009110323.GC5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
- <20201009185552.GF5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
- <20201009200548.GG5723@breakpoint.cc>
- <20201014000628.GA15290@salvia>
+        by mail.kernel.org (Postfix) with ESMTPSA id EB84E20BED;
+        Wed, 14 Oct 2020 08:12:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602663131;
+        bh=lH0KrnmsAQwSxyXbijcTJR6ZvATZeoZEXThXqLDOPsQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1ecuOvSpJPmeEYBXS6rG3ByF3A4tWfONx2O8sAeDIKrG7/ZvYxUwNmmYnveHcUz/j
+         I24dSJgVjvFdM9KymDQTzPcY/DYGBnqx15srsMwzjGoBKKYWIpLtYd9cPxY9f9fWv+
+         91OgOIzPA+pvpQNHXa0jVzgETHDb4jBY1TkJxoxw=
+Date:   Wed, 14 Oct 2020 10:12:46 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zqiang <qiang.zhang@windriver.com>
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: function: printer: Fix usb function
+ descriptors leak
+Message-ID: <20201014081246.GB3009479@kroah.com>
+References: <20201014075523.15688-1-qiang.zhang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014000628.GA15290@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20201014075523.15688-1-qiang.zhang@windriver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 02:06:28AM +0200, Pablo Neira Ayuso wrote:
-> On Fri, Oct 09, 2020 at 10:05:48PM +0200, Florian Westphal wrote:
-> > Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
-> > > > The "delay unregister" remark was wrt. the "all rules were deleted"
-> > > > case, i.e. add a "grace period" rather than acting right away when
-> > > > conntrack use count did hit 0.
-> > > 
-> > > Now I understand it, thanks really. The hooks are removed, so conntrack 
-> > > cannot "see" the packets and the entries become stale. 
-> > 
-> > Yes.
-> > 
-> > > What is the rationale behind "remove the conntrack hooks when there are no 
-> > > rule left referring to conntrack"? Performance optimization? But then the 
-> > > content of the whole conntrack table could be deleted too... ;-)
-> > 
-> > Yes, this isn't the case at the moment -- only hooks are removed,
-> > entries will eventually time out.
-> > 
-> > > > Conntrack entries are not removed, only the base hooks get unregistered. 
-> > > > This is a problem for tcp window tracking.
-> > > > 
-> > > > When re-register occurs, kernel is supposed to switch the existing 
-> > > > entries to "loose" mode so window tracking won't flag packets as 
-> > > > invalid, but apparently this isn't enough to handle keepalive case.
-> > > 
-> > > "loose" (nf_ct_tcp_loose) mode doesn't disable window tracking, it 
-> > > enables/disables picking up already established connections. 
-> > > 
-> > > nf_ct_tcp_be_liberal would disable TCP window checking (but not tracking) 
-> > > for non RST packets.
-> > 
-> > You are right, mixup on my part.
-> > 
-> > > But both seems to be modified only via the proc entries.
-> > 
-> > Yes, we iterate table on re-register and modify the existing entries.
+On Wed, Oct 14, 2020 at 03:55:23PM +0800, Zqiang wrote:
+> If an error occurs after call 'usb_assign_descriptors' func, the
+> 'usb_free_all_descriptors' need to be call to release memory space
+> occupied by function descriptors.
 > 
-> For iptables-nft, it might be possible to avoid this deregister +
-> register ct hooks in the same transaction: Maybe add something like
-> nf_ct_netns_get_all() to bump refcounters by one _iff_ they are > 0
-> before starting the transaction processing, then call
-> nf_ct_netns_put_all() which decrements refcounters and unregister
-> hooks if they reach 0.
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
 
-Hm, scratch that, put_all() would create an imbalance with this
-conditional increment.
+Please use your ful name for the From: and signed-off-by lines, as the
+documentation states is required.  If this is your full name, then why
+does it not match the name on your email address from your employer?
 
-> The only problem with this approach is that this pulls in the
-> conntrack module, to solve that, struct nf_ct_hook in
-> net/netfilter/core.c could be used to store the reference to
-> ->netns_get_all and ->net_put_all.
+> ---
+>  drivers/usb/gadget/function/f_printer.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Legacy would still be flawed though.
+> diff --git a/drivers/usb/gadget/function/f_printer.c b/drivers/usb/gadget/function/f_printer.c
+> index 64a4112068fc..2f1eb2e81d30 100644
+> --- a/drivers/usb/gadget/function/f_printer.c
+> +++ b/drivers/usb/gadget/function/f_printer.c
+> @@ -1162,6 +1162,7 @@ static int printer_func_bind(struct usb_configuration *c,
+>  		printer_req_free(dev->in_ep, req);
+>  	}
+>  
+> +	usb_free_all_descriptors(f);
+
+What commit caused this problem?
+
+thanks,
+
+greg k-h
