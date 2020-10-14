@@ -2,297 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD0528E261
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A70E28E26F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgJNOkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:40:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52350 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727905AbgJNOkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:40:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602686409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=21+AmlKAqoD3h285kf5Hfc/y3SBsnMVewZg1V7YqvFA=;
-        b=GKYRpWFNM+NS3l2VmYe1k2QYM7gKBX+1BgnyOfUgIbqejr/En6JncYKm8N6Hf5TQfdK2Ry
-        Wm8Rb2HbO9p3E1vyRM1b4ZEsVRFPgP1TV7bTJvCc9se3v/vNVKsxSridsOgUTUCUwZLwsP
-        TKHMQaHHkbj4XOh8YPkYQqKOgmRZVKs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C872BACE6;
-        Wed, 14 Oct 2020 14:40:09 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 16:40:09 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v5 4/4] mm: convert page kmemcg type to a page memcg flag
-Message-ID: <20201014144009.GG4440@dhcp22.suse.cz>
-References: <20201002172559.4000748-1-guro@fb.com>
- <20201002172559.4000748-5-guro@fb.com>
+        id S1729361AbgJNOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:43:04 -0400
+Received: from one.firstfloor.org ([193.170.194.197]:59496 "EHLO
+        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727915AbgJNOnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 10:43:03 -0400
+Received: from firstfloor.org (c-71-237-255-61.hsd1.or.comcast.net [71.237.255.61])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by one.firstfloor.org (Postfix) with ESMTPSA id CF8408679B;
+        Wed, 14 Oct 2020 16:43:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
+        s=mail; t=1602686581;
+        bh=hUvFkPufW4NDkaV2ZQ8ob0ylA5Ek2sT0FU0ugecStsk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rReT70H4ZT6um0pDTU23nmP36tSK7IMy63FqjKMM9yhud+RH6Qfd7xW8Hm1EF7Bvw
+         LRLjLbFJ/Z7VOIzoeC9HKScC8jjH5/BvEwLV3QQTW3jHBS9ZBODemqLlT9sherg6zE
+         GVuMolqcQE/MQiYMgjjfsD5fCjIprPqil2Dbr9v8=
+Received: by firstfloor.org (Postfix, from userid 1000)
+        id D4346A8668; Wed, 14 Oct 2020 07:42:57 -0700 (PDT)
+From:   Andi Kleen <andi@firstfloor.org>
+To:     acme@kernel.org
+Cc:     jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <andi@firstfloor.org>, peterz@infradead.org,
+        Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH v2] perf: Add support for exclusive groups/events
+Date:   Wed, 14 Oct 2020 07:42:55 -0700
+Message-Id: <20201014144255.22699-1-andi@firstfloor.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002172559.4000748-5-guro@fb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02-10-20 10:25:59, Roman Gushchin wrote:
-> PageKmemcg flag is currently defined as a page type (like buddy,
-> offline, table and guard). Semantically it means that the page
-> was accounted as a kernel memory by the page allocator and has
-> to be uncharged on the release.
-> 
-> As a side effect of defining the flag as a page type, the accounted
-> page can't be mapped to userspace (look at page_has_type() and
-> comments above). In particular, this blocks the accounting of
-> vmalloc-backed memory used by some bpf maps, because these maps
-> do map the memory to userspace.
-> 
-> One option is to fix it by complicating the access to page->mapcount,
-> which provides some free bits for page->page_type.
-> 
-> But it's way better to move this flag into page->memcg_data flags.
-> Indeed, the flag makes no sense without enabled memory cgroups
-> and memory cgroup pointer set in particular.
+Peter suggested that using the exclusive mode in perf could
+avoid some problems with bad scheduling of groups. Exclusive
+is implemented in the kernel, but wasn't exposed by the perf tool,
+so hard to use without custom low level API users.
 
-Completely agreed. Also this concept is already used for anon/ksm
-which set flags on the same pointer as the object. Having that
-outsourced to elsewhere is really harder to follow.
+Add support for marking groups or events with :e for exclusive
+in the perf tool.  The implementation is basically the same as the
+existing pinned attribute.
 
-> This commit replaces PageKmemcg() and __SetPageKmemcg() with
-> PageMemcgKmem() and an open-coded OR operation setting the memcg
-> pointer with the MEMCG_DATA_KMEM bit. __ClearPageKmemcg() can be
-> simple deleted, as the whole memcg_data is zeroed at once.
-> 
-> As a bonus, on !CONFIG_MEMCG build the PageMemcgKmem() check will
-> be compiled out.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: peterz@infradead.org
+Signed-off-by: Andi Kleen <ak@linux.intel.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+--
 
-> ---
->  cover.txt                  |  4 ++--
->  include/linux/memcontrol.h | 37 +++++++++++++++++++++++++++++++++----
->  include/linux/page-flags.h | 11 ++---------
->  mm/memcontrol.c            | 16 +++++-----------
->  mm/page_alloc.c            |  4 ++--
->  5 files changed, 44 insertions(+), 28 deletions(-)
-> 
-> diff --git a/cover.txt b/cover.txt
-> index 32460cd3316e..cf23753cad15 100644
-> --- a/cover.txt
-> +++ b/cover.txt
-> @@ -15,10 +15,10 @@ their memory can't be accounted because of this implementation detail.
->  
->  This patchset removes this limitation by moving the PageKmemcg flag
->  into one of the free bits of the page->mem_cgroup pointer. Also it
-> -formalizes all accesses to the page->mem_cgroup and page->obj_cgroups
-> +formalizes accesses to the page->mem_cgroup and page->obj_cgroups
->  using new helpers, adds several checks and removes a couple of obsolete
->  functions. As the result the code became more robust with fewer
-> -open-coded bits tricks.
-> +open-coded bit tricks.
->  
->  v5:
->    - added ~MEMCG_DATA_FLAGS_MASK to page_memcg_rcu(), by Michal
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 99a4841d658b..7c9d43476166 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -346,8 +346,10 @@ extern struct mem_cgroup *root_mem_cgroup;
->  enum page_memcg_data_flags {
->  	/* page->memcg_data is a pointer to an objcgs vector */
->  	MEMCG_DATA_OBJCGS = (1UL << 0),
-> +	/* page has been accounted as a non-slab kernel page */
-> +	MEMCG_DATA_KMEM = (1UL << 1),
->  	/* the next bit after the last actual flag */
-> -	__NR_MEMCG_DATA_FLAGS  = (1UL << 1),
-> +	__NR_MEMCG_DATA_FLAGS  = (1UL << 2),
->  };
->  
->  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
-> @@ -369,8 +371,12 @@ enum page_memcg_data_flags {
->   */
->  static inline struct mem_cgroup *page_memcg(struct page *page)
->  {
-> +	unsigned long memcg_data = page->memcg_data;
-> +
->  	VM_BUG_ON_PAGE(PageSlab(page), page);
-> -	return (struct mem_cgroup *)page->memcg_data;
-> +	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_OBJCGS, page);
-> +
-> +	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->  }
->  
->  /*
-> @@ -387,7 +393,8 @@ static inline struct mem_cgroup *page_memcg_rcu(struct page *page)
->  	VM_BUG_ON_PAGE(PageSlab(page), page);
->  	WARN_ON_ONCE(!rcu_read_lock_held());
->  
-> -	return (struct mem_cgroup *)READ_ONCE(page->memcg_data);
-> +	return (struct mem_cgroup *)(READ_ONCE(page->memcg_data) &
-> +				     ~MEMCG_DATA_FLAGS_MASK);
->  }
->  
->  /*
-> @@ -416,7 +423,21 @@ static inline struct mem_cgroup *page_memcg_check(struct page *page)
->  	if (memcg_data & MEMCG_DATA_OBJCGS)
->  		return NULL;
->  
-> -	return (struct mem_cgroup *)memcg_data;
-> +	return (struct mem_cgroup *)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
-> +}
-> +
-> +/*
-> + * PageMemcgKmem - check if the page has MemcgKmem flag set
-> + * @page: a pointer to the page struct
-> + *
-> + * Checks if the page has MemcgKmem flag set. The caller must ensure that
-> + * the page has an associated memory cgroup. It's not safe to call this function
-> + * against some types of pages, e.g. slab pages.
-> + */
-> +static inline bool PageMemcgKmem(struct page *page)
-> +{
-> +	VM_BUG_ON_PAGE(page->memcg_data & MEMCG_DATA_OBJCGS, page);
-> +	return page->memcg_data & MEMCG_DATA_KMEM;
->  }
->  
->  #ifdef CONFIG_MEMCG_KMEM
-> @@ -435,6 +456,7 @@ static inline struct obj_cgroup **page_objcgs(struct page *page)
->  	unsigned long memcg_data = READ_ONCE(page->memcg_data);
->  
->  	VM_BUG_ON_PAGE(memcg_data && !(memcg_data & MEMCG_DATA_OBJCGS), page);
-> +	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, page);
->  
->  	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->  }
-> @@ -454,6 +476,8 @@ static inline struct obj_cgroup **page_objcgs_check(struct page *page)
->  	if (!memcg_data || !(memcg_data & MEMCG_DATA_OBJCGS))
->  		return NULL;
->  
-> +	VM_BUG_ON_PAGE(memcg_data & MEMCG_DATA_KMEM, page);
-> +
->  	return (struct obj_cgroup **)(memcg_data & ~MEMCG_DATA_FLAGS_MASK);
->  }
->  
-> @@ -1109,6 +1133,11 @@ static inline struct mem_cgroup *page_memcg_check(struct page *page)
->  	return NULL;
->  }
->  
-> +static inline bool PageMemcgKmem(struct page *page)
-> +{
-> +	return false;
-> +}
-> +
->  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
->  {
->  	return true;
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 4f6ba9379112..fc0e1bd48e73 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -715,9 +715,8 @@ PAGEFLAG_FALSE(DoubleMap)
->  #define PAGE_MAPCOUNT_RESERVE	-128
->  #define PG_buddy	0x00000080
->  #define PG_offline	0x00000100
-> -#define PG_kmemcg	0x00000200
-> -#define PG_table	0x00000400
-> -#define PG_guard	0x00000800
-> +#define PG_table	0x00000200
-> +#define PG_guard	0x00000400
->  
->  #define PageType(page, flag)						\
->  	((page->page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
-> @@ -768,12 +767,6 @@ PAGE_TYPE_OPS(Buddy, buddy)
->   */
->  PAGE_TYPE_OPS(Offline, offline)
->  
-> -/*
-> - * If kmemcg is enabled, the buddy allocator will set PageKmemcg() on
-> - * pages allocated with __GFP_ACCOUNT. It gets cleared on page free.
-> - */
-> -PAGE_TYPE_OPS(Kmemcg, kmemcg)
-> -
->  /*
->   * Marks pages in use as page tables.
->   */
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index a8eb20283dcd..e3fc240101ff 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3090,8 +3090,8 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
->  	if (memcg && !mem_cgroup_is_root(memcg)) {
->  		ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
->  		if (!ret) {
-> -			page->memcg_data = (unsigned long)memcg;
-> -			__SetPageKmemcg(page);
-> +			page->memcg_data = (unsigned long)memcg |
-> +				MEMCG_DATA_KMEM;
->  			return 0;
->  		}
->  		css_put(&memcg->css);
-> @@ -3116,10 +3116,6 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
->  	__memcg_kmem_uncharge(memcg, nr_pages);
->  	page->memcg_data = 0;
->  	css_put(&memcg->css);
-> -
-> -	/* slab pages do not have PageKmemcg flag set */
-> -	if (PageKmemcg(page))
-> -		__ClearPageKmemcg(page);
->  }
->  
->  static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-> @@ -6863,12 +6859,10 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  	nr_pages = compound_nr(page);
->  	ug->nr_pages += nr_pages;
->  
-> -	if (!PageKmemcg(page)) {
-> -		ug->pgpgout++;
-> -	} else {
-> +	if (PageMemcgKmem(page))
->  		ug->nr_kmem += nr_pages;
-> -		__ClearPageKmemcg(page);
-> -	}
-> +	else
-> +		ug->pgpgout++;
->  
->  	ug->dummy_page = page;
->  	page->memcg_data = 0;
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index e9f0fe4a143e..5ebd50183d93 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1179,7 +1179,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
->  		 * Do not let hwpoison pages hit pcplists/buddy
->  		 * Untie memcg state and reset page's owner
->  		 */
-> -		if (memcg_kmem_enabled() && PageKmemcg(page))
-> +		if (memcg_kmem_enabled() && PageMemcgKmem(page))
->  			__memcg_kmem_uncharge_page(page, order);
->  		reset_page_owner(page, order);
->  		return false;
-> @@ -1209,7 +1209,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
->  	}
->  	if (PageMappingFlags(page))
->  		page->mapping = NULL;
-> -	if (memcg_kmem_enabled() && PageKmemcg(page))
-> +	if (memcg_kmem_enabled() && PageMemcgKmem(page))
->  		__memcg_kmem_uncharge_page(page, order);
->  	if (check_free)
->  		bad += check_free_page(page);
-> -- 
-> 2.26.2
+v2: Update check_modifier too (Jiri)
+---
+ tools/perf/Documentation/perf-list.txt |  1 +
+ tools/perf/tests/parse-events.c        | 58 +++++++++++++++++++++++++-
+ tools/perf/util/parse-events.c         | 11 ++++-
+ tools/perf/util/parse-events.l         |  2 +-
+ 4 files changed, 68 insertions(+), 4 deletions(-)
 
+diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
+index 10ed539a8859..4c7db1da8fcc 100644
+--- a/tools/perf/Documentation/perf-list.txt
++++ b/tools/perf/Documentation/perf-list.txt
+@@ -58,6 +58,7 @@ counted. The following modifiers exist:
+  S - read sample value (PERF_SAMPLE_READ)
+  D - pin the event to the PMU
+  W - group is weak and will fallback to non-group if not schedulable,
++ e - group or event are exclusive and do not share the PMU
+ 
+ The 'p' modifier can be used for specifying how precise the instruction
+ address should be. The 'p' modifier can be specified multiple times:
+diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+index 7f9f87a470c3..7411dd4d76cf 100644
+--- a/tools/perf/tests/parse-events.c
++++ b/tools/perf/tests/parse-events.c
+@@ -557,6 +557,7 @@ static int test__checkevent_pmu_events(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+ 	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+ 	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
++	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+ 
+ 	return 0;
+ }
+@@ -575,6 +576,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+ 	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+ 	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
++	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
+ 
+ 	/* cpu/pmu-event/u*/
+ 	evsel = evsel__next(evsel);
+@@ -587,6 +589,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
+ 	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
+ 	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
+ 	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
++	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.pinned);
+ 
+ 	return 0;
+ }
+@@ -1277,6 +1280,49 @@ static int test__pinned_group(struct evlist *evlist)
+ 	return 0;
+ }
+ 
++static int test__checkevent_exclusive_modifier(struct evlist *evlist)
++{
++	struct evsel *evsel = evlist__first(evlist);
++
++	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
++	TEST_ASSERT_VAL("wrong exclude_kernel", evsel->core.attr.exclude_kernel);
++	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
++	TEST_ASSERT_VAL("wrong precise_ip", evsel->core.attr.precise_ip);
++	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
++
++	return test__checkevent_symbolic_name(evlist);
++}
++
++static int test__exclusive_group(struct evlist *evlist)
++{
++	struct evsel *evsel, *leader;
++
++	TEST_ASSERT_VAL("wrong number of entries", 3 == evlist->core.nr_entries);
++
++	/* cycles - group leader */
++	evsel = leader = evlist__first(evlist);
++	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
++	TEST_ASSERT_VAL("wrong config",
++			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
++	TEST_ASSERT_VAL("wrong group name", !evsel->group_name);
++	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
++	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
++
++	/* cache-misses - can not be pinned, but will go on with the leader */
++	evsel = evsel__next(evsel);
++	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
++	TEST_ASSERT_VAL("wrong config",
++			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
++	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
++
++	/* branch-misses - ditto */
++	evsel = evsel__next(evsel);
++	TEST_ASSERT_VAL("wrong config",
++			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
++	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
++
++	return 0;
++}
+ static int test__checkevent_breakpoint_len(struct evlist *evlist)
+ {
+ 	struct evsel *evsel = evlist__first(evlist);
+@@ -1765,7 +1811,17 @@ static struct evlist_test test__events[] = {
+ 		.name  = "cycles:k",
+ 		.check = test__sym_event_dc,
+ 		.id    = 55,
+-	}
++	},
++	{
++		.name  = "instructions:uep",
++		.check = test__checkevent_exclusive_modifier,
++		.id    = 56,
++	},
++	{
++		.name  = "{cycles,cache-misses,branch-misses}:e",
++		.check = test__exclusive_group,
++		.id    = 57,
++	},
+ };
+ 
+ static struct evlist_test test__events_pmu[] = {
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 9f7260e69113..c4da6bf6ff6a 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1768,6 +1768,7 @@ struct event_modifier {
+ 	int sample_read;
+ 	int pinned;
+ 	int weak;
++	int exclusive;
+ };
+ 
+ static int get_event_modifier(struct event_modifier *mod, char *str,
+@@ -1783,6 +1784,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+ 	int precise_max = 0;
+ 	int sample_read = 0;
+ 	int pinned = evsel ? evsel->core.attr.pinned : 0;
++	int exclusive = evsel ? evsel->core.attr.exclusive : 0;
+ 
+ 	int exclude = eu | ek | eh;
+ 	int exclude_GH = evsel ? evsel->exclude_GH : 0;
+@@ -1824,6 +1826,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+ 			sample_read = 1;
+ 		} else if (*str == 'D') {
+ 			pinned = 1;
++		} else if (*str == 'e') {
++			exclusive = 1;
+ 		} else if (*str == 'W') {
+ 			weak = 1;
+ 		} else
+@@ -1857,6 +1861,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
+ 	mod->sample_read = sample_read;
+ 	mod->pinned = pinned;
+ 	mod->weak = weak;
++	mod->exclusive = exclusive;
+ 
+ 	return 0;
+ }
+@@ -1870,7 +1875,7 @@ static int check_modifier(char *str)
+ 	char *p = str;
+ 
+ 	/* The sizeof includes 0 byte as well. */
+-	if (strlen(str) > (sizeof("ukhGHpppPSDIW") - 1))
++	if (strlen(str) > (sizeof("ukhGHpppPSDIWe") - 1))
+ 		return -1;
+ 
+ 	while (*p) {
+@@ -1912,8 +1917,10 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
+ 		evsel->precise_max         = mod.precise_max;
+ 		evsel->weak_group	   = mod.weak;
+ 
+-		if (evsel__is_group_leader(evsel))
++		if (evsel__is_group_leader(evsel)) {
+ 			evsel->core.attr.pinned = mod.pinned;
++			evsel->core.attr.exclusive = mod.exclusive;
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+index 3ca5fd2829ca..9db5097317f4 100644
+--- a/tools/perf/util/parse-events.l
++++ b/tools/perf/util/parse-events.l
+@@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
+ name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+ drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
+ /* If you add a modifier you need to update check_modifier() */
+-modifier_event	[ukhpPGHSDIW]+
++modifier_event	[ukhpPGHSDIWe]+
+ modifier_bp	[rwx]{1,3}
+ 
+ %%
 -- 
-Michal Hocko
-SUSE Labs
+2.28.0
+
