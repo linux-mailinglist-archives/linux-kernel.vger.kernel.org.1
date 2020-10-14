@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C9D28E0A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B737728E0AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387863AbgJNMnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:43:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44574 "EHLO mail.kernel.org"
+        id S2388046AbgJNMn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727061AbgJNMni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:43:38 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727061AbgJNMnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 08:43:55 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8447720848;
-        Wed, 14 Oct 2020 12:43:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9C58208B3;
+        Wed, 14 Oct 2020 12:43:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602679417;
-        bh=jW0i/QQSQbgHdq+AcCmwrK02JHOb8iHkGsSyJ9m/xxE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D56R7MepUimHoXTW8BAKEcxBCdmFAGZZt2vGgj8O0TSMzweDfN+v2d/7pi1G2qKXs
-         EpH1ZWCUEhPzupaupQcWTnSQDXehpQ+tXteOJSA7dNuJNnf0OIJkbNasyMa/7KTgmH
-         b9SjangPukrd+RMj2fT+KfjxZzl9V8ekOr+Fy5gA=
-Received: by pali.im (Postfix)
-        id 190F66EE; Wed, 14 Oct 2020 14:43:35 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 14:43:34 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org
-Subject: Re: [PATCH 07/23] wfx: add bus_sdio.c
-Message-ID: <20201014124334.lgx53qvtgkmfkepc@pali>
-References: <20201012104648.985256-1-Jerome.Pouiller@silabs.com>
- <20201012104648.985256-8-Jerome.Pouiller@silabs.com>
- <20201013201156.g27gynu5bhvaubul@pali>
- <2628294.9EgBEFZmRI@pc-42>
+        s=default; t=1602679435;
+        bh=VSSG6hE1gZVIO+oAQetzoy/KZoYOIOgG7GLGn23AjHw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gmwaZOXNGa7xlauuNbm35LLRVxbMYdQMzQ0fMEa+GFvzSKPiL4vNcKYvaRv/F+ldF
+         u8q1DHVD3Oz5MNjdPlacGcNifOuWZaLgGCIhai/DIWUEMswBjMKhy5VvzkHJn7OhBT
+         OvAiH+nir4Czuo42hp6RoSyTLln1/pWOTq0JB8f0=
+Received: by mail-oi1-f179.google.com with SMTP id l85so3040047oih.10;
+        Wed, 14 Oct 2020 05:43:54 -0700 (PDT)
+X-Gm-Message-State: AOAM533maxKKS203fG25oXVUx9WotTmnylyj8CTKhURx3pZ5Q5lbDbN9
+        eGQaY4h7iw9VQsTXP9mGtCFpVrK3xI9WEPcoWg==
+X-Google-Smtp-Source: ABdhPJzfXfTAUHLSNmyidra28l2x73efWCi8eYxJ+PR4UmijFgQXtyvfPxbegY4CmNzQH5ljoNIZ1Crl1wjVuzUrhQA=
+X-Received: by 2002:a05:6808:10e:: with SMTP id b14mr2136679oie.152.1602679434031;
+ Wed, 14 Oct 2020 05:43:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2628294.9EgBEFZmRI@pc-42>
-User-Agent: NeoMutt/20180716
+References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
+ <20201004162908.3216898-3-martin.blumenstingl@googlemail.com>
+ <CACRpkdbTw4UBw02RXX2prju45AsDZqPchhz=gdzsuT-QjhYHVw@mail.gmail.com>
+ <CAFBinCAFDhWp6mgUqyOjdMVBR5oZQVpmVPjhnZs1Xg16tFa0PQ@mail.gmail.com> <CACRpkdZdwoQCxxqosn2jQPMXLDnTEjuxSWOxG-L1YGE33wbFrg@mail.gmail.com>
+In-Reply-To: <CACRpkdZdwoQCxxqosn2jQPMXLDnTEjuxSWOxG-L1YGE33wbFrg@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 14 Oct 2020 07:43:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLF8KHG6qZUJzdMyN5cX-ZvPDbuGSGZLOw=CkY90SUGLw@mail.gmail.com>
+Message-ID: <CAL_JsqLF8KHG6qZUJzdMyN5cX-ZvPDbuGSGZLOw=CkY90SUGLw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] dt-bindings: gpio: Add binding documentation for
+ Etron EJ168/EJ188/EJ198
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 14 October 2020 13:52:15 Jérôme Pouiller wrote:
-> Hello Pali,
-> 
-> On Tuesday 13 October 2020 22:11:56 CEST Pali Rohár wrote:
-> > Hello!
-> > 
-> > On Monday 12 October 2020 12:46:32 Jerome Pouiller wrote:
-> > > +#define SDIO_VENDOR_ID_SILABS        0x0000
-> > > +#define SDIO_DEVICE_ID_SILABS_WF200  0x1000
-> > > +static const struct sdio_device_id wfx_sdio_ids[] = {
-> > > +     { SDIO_DEVICE(SDIO_VENDOR_ID_SILABS, SDIO_DEVICE_ID_SILABS_WF200) },
-> > 
-> > Please move ids into common include file include/linux/mmc/sdio_ids.h
-> > where are all SDIO ids. Now all drivers have ids defined in that file.
-> > 
-> > > +     // FIXME: ignore VID/PID and only rely on device tree
-> > > +     // { SDIO_DEVICE(SDIO_ANY_ID, SDIO_ANY_ID) },
-> > 
-> > What is the reason for ignoring vendor and device ids?
-> 
-> The device has a particularity, its VID/PID is 0000:1000 (as you can see
-> above). This value is weird. The risk of collision with another device is
-> high.
+On Tue, Oct 13, 2020 at 8:27 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Wed, Oct 7, 2020 at 9:58 PM Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+> > On Wed, Oct 7, 2020 at 11:19 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > > On Sun, Oct 4, 2020 at 8:00 PM Martin Blumenstingl
+> > > <martin.blumenstingl@googlemail.com> wrote:
+> > >
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    enum:
+> > > > +      - pci1b6f,7023
+> > > > +      - pci1b6f,7052
+> > >
+> > > I think it is better to let the PCI driver for the whole hardware in
+> > > drivers/usb/host/xhci-pci.c probe from the PCI configuration space
+> > > numbers, and then add a gpio_chip to xhci-pci.c.
+> >
+> > to have everything consistent I will move the binding to
+> > Documentation/devicetree/bindings/usb
+>
+> I do not understand why a PCI device would need a DT binding
+> at all. They just probe from the magic number in the PCI
+> config space, they spawn struct pci_dev PCI devices, not the
+> type of platform devices coming out of the DT parser code.
+> No DT compatible needed.
 
-Those ids looks strange. You are from Silabs, can you check internally
-in Silabs if ids are really correct? And which sdio vendor id you in
-Silabs got assigned for your products?
+Same reason for all the discoverable buses need bindings. There can be
+parts that are not discoverable or connections with non-discoverable
+nodes. There's also cases where the discoverable device has to be
+powered, reset deasserted, clocks enabled, etc. first to be
+discovered.
 
-I know that sdio devices with multiple functions may have different sdio
-vendor/device id particular function and in common CIS (function 0).
+If the GPIOs here had connections elsewhere in the DT, then we have to
+describe the provider in DT.
 
-Could not be a problem that on one place is vendor/device id correct and
-on other place is that strange value?
-
-I have sent following patch (now part of upstream kernel) which exports
-these ids to userspace:
-https://lore.kernel.org/linux-mmc/20200527110858.17504-2-pali@kernel.org/T/#u
-
-Also for debugging ids and information about sdio cards, I sent another
-patch which export additional data:
-https://lore.kernel.org/linux-mmc/20200727133837.19086-1-pali@kernel.org/T/#u
-
-Could you try them and look at /sys/class/mmc_host/ attribute outputs?
-
-> So, maybe the device should be probed only if it appears in the DT. Since
-> WF200 targets embedded platforms, I don't think it is a problem to rely on
-> DT. You will find another FIXME further in the code about that:
-> 
-> +               dev_warn(&func->dev,
-> +                        "device is not declared in DT, features will be limited\n");
-> +               // FIXME: ignore VID/PID and only rely on device tree
-> +               // return -ENODEV;
-> 
-> However, it wouldn't be usual way to manage SDIO devices (and it is the
-> reason why the code is commented out).
-> 
-> Anyway, if we choose to rely on the DT, should we also check the VID/PID?
-> 
-> Personally, I am in favor to probe the device only if VID/PID match and if
-> a DT node is found, even if it is not the usual way.
-
-Normally all sdio devices are hotplugged in linux kernel based on sdio
-device and vendor ids. And these ids are unique identifiers of sdio
-devices. So should be enough for detection.
-
-Months ago I have checked it and moved all SDIO device and vendor ids
-into common include/linux/mmc/sdio_ids.h file. I would like to not have
-this "mess" again, which was basically fully cleaned.
-
-I'm adding linux-mmc mailing list and Ulf Hansson to loop.
-
-Ulf, can you look at this "problem"? What do you think about those
-"strange" sdio ids?
+Rob
