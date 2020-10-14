@@ -2,75 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A8B28E204
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2287C28E207
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388948AbgJNOPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:15:52 -0400
-Received: from sonic308-17.consmr.mail.ir2.yahoo.com ([77.238.178.145]:33277
-        "EHLO sonic308-17.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727023AbgJNOPw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:15:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602684948; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=AYGEWP8ZEshCoh9Lnm56Q1CQgTNBbWcYGf5KoTUw+JjeUDlSAYMfEBjrW/8VfmT4gLH1xIzlNmZKCATFE2mmgm5N4RvCHuHegbFsjR3/B5N0JhksquoCt8pN6LjUfzv/yTrWx8wJKFJfLIfdBN6KGw3/vYRjtqkgzvAxZPzdwr6kdB3vgafkeBQ9WHNPznahj9VtgsLIMgqMmyBZpWzy4TmPon1XK1yCAevWxoo97oAYJnQVbGq5xvNM962gOJ8psNh3Q5EHzbK2FP+v5sW4yrTGgo/BO07OKvR0W7vCiS1L8QvRZxO0RpVqBPH2/zpvYWerutci0F53vNKuNch83g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602684948; bh=6QVxLyro6iX6MaLpGmLh41/nUXM83lTOX9+TiqqDl7W=; h=Date:From:Subject; b=jda9Np1RwHKjSzaIEpJkLqTJY/xgSaqaoaJ3XYNi8NjWvyrxY10nNzFx00IxbWY4aUnv/NCVRHCCM4qdi4Ukxr6PpHMBkNuSg97dI2fcCiw1z5xkqpZ5HR/fqPFnvUPBXYRBRI0h9D58qt16oGe5CDoO9fQvbbmcMfuy3lkRryDNCw3pf2Q3xvYC0bRhXquBwa9caG6Forn48386EU+zOnUpUw0e1S74l3zXpvOgt1A9TPPOkZGhVqUKLkLJouNSeeXvk9zXhdjNn7sNXygD4wzniq1DLmtYovdXsvk3DzsDI/28LvZP2dAGLD8Gmckl2/68C/JE5qV1twiaimzyig==
-X-YMail-OSG: byaRk6IVM1lqWOvDrdr35ld1s59NEPzR5qldKV0KjIHo_pEP89BsXSNSyWvouJd
- bk2MBO1DTkFIgCGpraG0hsoxk9mXO3.Gm5NQEZhmRGckQyS6g4zcqwIXS8Va_JqI.LryFFtlNvJ2
- LVc0BLCoIdqiOomOdECttHDj_JR3LBgRZ7bwgf95QKDQ902c2oLvJ4aABQuUWMGMXgOnkQ1SGK6l
- y0fx6SrHzMbeDUdqRBRrIuqjJzOf6L.8okCEPbs9kXHobo_pkvzFSTv5lJ2wxND5OYWn_q6JelPh
- NB4rWADh9KCqQPN_vWg.W3E54UDTXJ9t9Gd9RLi2zEAaH.Yi9uqVnt6qM2ZmyeQmD.jDCmMeBqZc
- a3mxdgnoDhjLEkhMG_dDxp38kOzrTY3boir_HnK5qiz5.OVGcT9cRPUSsVclOSg38QeEAU.mSAiY
- es3oQLA8Qv52Xi1BM_qaKdvGozgjPEdA0rK6jjvqmweAPgDkIBwnUIcZnshi5B9ZRJKDI73TWN5X
- 1AS.jleVS4XJIOAR_NuMgFEG696Iijktfy0KjIffrQQQNaD5pLTybIdU9uSOl6mlBfnaq41GsJHP
- .v2FDzftgGmbmx9CU2UUfPcCtowKGoQ5KOU1A4XeIVCbUEM4_qMxs5alsdDSG2p76RBZXezcAoBl
- sibqfvtoJZ_S__7v_SwLjPNA3IiVDrvwONbbKzE6D.Yw0vbZZbHDw5UNGD5J7eHuhmaGkBtgsUn6
- .M2mCYwjZ9jjlrvDLaHmPgFo8kTaLoE7xbzzl2aOxKw5RRi5VSNTx6gZoeMzqUZjaja3uvYw8D9n
- L2ZJ7QkFAxhjbnHgcgGf63DNz7S3pQH4zHfmdZI_diK0fP7D2IYZ6OOw4.dcjPNrsTd4dePHWvv5
- aWCuGZpTdeggN5mBCqRI1.Sjp2QyPG3TrswOOGXC_K8gk1StUVfKGv8vYRRvZupGfNHnziJz5Wtu
- ThOlXU1yfMH4tx1qyDPTsmz6FVDp9NbvUc5zU_em9Wqjx5vXlleIdsQGsErKGBm6jt6Opl0kJSZR
- uhUg.SwqL3wMK5TU8sOVXGcrueeE9TZ_LLxBzC6OR5FaBcYgSsujapfzcqtBLFx1GvXk9PLX.U4y
- EHeytiMamgj4Z2X3zf9Gudju5rrsFjobXOB.jFq1dFnhz0UkgaBIx3snHhwq0DtOt_JUot5aYU6G
- cxsUDqjDrPj6.RdOeQF9f8W38XtGDt_AgmHcE5AGmELnxXU7rQRRf0utBpZXYvRaYEvteimyFZJ0
- E5_RbmjbdYhcno.Bw45bcTfkxt56_2h90Z3vOEHU73qV6gV3j.N00ojxIk5ozqhS96ej8Ueo_.v_
- 5EBzgYspdB3fEv_CeCB0jbXw_arMdM.DUYHDP.PA1YPH_GhbBzMW4IcuhDr4q17zgoiU_mUSpfnB
- UbozjqfiD6UIhMLkRZ59X6lcMXcsQhNxEEyw5CQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ir2.yahoo.com with HTTP; Wed, 14 Oct 2020 14:15:48 +0000
-Date:   Wed, 14 Oct 2020 14:15:48 +0000 (UTC)
-From:   Ms Lisa Hugh <lisa.hugh0000@gmail.com>
-Reply-To: ms.lisahugh000@gmail.com
-Message-ID: <212207276.1086095.1602684948275@mail.yahoo.com>
-Subject: YOUR CO-OPERATION FROM (Ms Lisa Hugh).
+        id S2388972AbgJNOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727023AbgJNOQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 10:16:08 -0400
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF3182222F;
+        Wed, 14 Oct 2020 14:16:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602684968;
+        bh=lEFm+z5lP4vfNiFXYcQOrHTG8mC4vZkn0A7cetMCOGQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sWTZQOHoQ0XQl5JDc3ylIaavsji5I1PCiIK9OTrXfHKnTUPU20xYVPuWKXO6SSL2m
+         FY2LRl4ZHEPcsrxXddtTp9LI2MMA3bSBG3C0MGkaUnzD8nM7rrcM+o4FK9HFf1mGZN
+         2D5GbozDUmg1GJPXlS0eSo8Z5gffV2xNZVgT0M2k=
+Received: by mail-oo1-f43.google.com with SMTP id r7so823585ool.0;
+        Wed, 14 Oct 2020 07:16:07 -0700 (PDT)
+X-Gm-Message-State: AOAM5322ASbeMl5sF5/chtq5/D+wGHXyaWyKZHhqTK3pyQnY9UZQ5xxy
+        soEXvsBv3LSKwMYY2XBLWF/YaAoOhv0EY1C1eg==
+X-Google-Smtp-Source: ABdhPJydzle9WG7IZNaonu88f0kCpd5HkO6JxtLNVBDz9LBs3ccGK3Wafzu0TmNBEbdCCx9b9WqUj+T9kSxKQFfF07w=
+X-Received: by 2002:a4a:dcc8:: with SMTP id h8mr3661817oou.81.1602684966895;
+ Wed, 14 Oct 2020 07:16:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <212207276.1086095.1602684948275.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16845 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201009155311.22d3caa5@xhacker.debian> <20201009155505.5a580ef5@xhacker.debian>
+ <38a00dde-598f-b6de-ecf3-5d012bd7594a@arm.com>
+In-Reply-To: <38a00dde-598f-b6de-ecf3-5d012bd7594a@arm.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 14 Oct 2020 09:15:55 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLi09RTyiVLcyp1K4MNBggTvs3wqVqihpV2QhuePa3u9w@mail.gmail.com>
+Message-ID: <CAL_JsqLi09RTyiVLcyp1K4MNBggTvs3wqVqihpV2QhuePa3u9w@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] PCI: dwc: Fix MSI page leakage in suspend/resume
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 12, 2020 at 6:37 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> On 2020-10-09 08:55, Jisheng Zhang wrote:
+> > Currently, dw_pcie_msi_init() allocates and maps page for msi, then
+> > program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
+> > may lose power during suspend-to-RAM, so when we resume, we want to
+> > redo the latter but not the former. If designware based driver (for
+> > example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
+> > msi page will be leaked.
+> >
+> > As pointed out by Rob and Ard, there's no need to allocate a page for
+> > the MSI address, we could use an address in the driver data.
+> >
+> > To avoid map the MSI msg again during resume, we move the map MSI msg
+> > from dw_pcie_msi_init() to dw_pcie_host_init().
+>
+> You should move the unmap there as well. As soon as you know what the
+> relevant address would be if you *were* to do DMA to this location, then
+> the exercise is complete. Leaving it mapped for the lifetime of the
+> device in order to do not-DMA to it seems questionable (and represents
+> technically incorrect API usage without at least a sync_for_cpu call
+> before any other access to the data).
+>
+> Another point of note is that using streaming DMA mappings at all is a
+> bit fragile (regardless of this change). If the host controller itself
+> has a limited DMA mask relative to physical memory (which integrators
+> still seem to keep doing...) then you could end up punching your MSI
+> hole right in the middle of the SWIOTLB bounce buffer, where it's then
+> almost *guaranteed* to interfere with real DMA :(
 
+Couldn't that happen with the current code too? alloc_page() isn't
+guaranteed to be DMA'able, right?
 
-Dear Friend,
+> If no DWC users have that problem and the current code is working well
+> enough, then I see little reason not to make this partucular change to
+> tidy up the implementation, just bear in mind that there's always the
+> possibility of having to come back and change it yet again in future to
+> make it more robust. I had it in mind that this trick was done with a
+> coherent DMA allocation, which would be safe from addressing problems
+> but would need to be kept around for the lifetime of the device, but
+> maybe that was a different driver :/
 
-I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
+Well, we're wasting 4K or 64K of memory and then leaking it is the
+main reason to change it.
 
-Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
+We just need any address that's not memory which PCI could access. We
+could possibly just take the end of (outbound) PCI memory space. Note
+that the DWC driver never sets up inbound translations, so it's all
+1:1 mapping (though upstream could have some translation).
 
-I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
-
-Note/ 50% for you why 50% for me after success of the transfer to your bank account.
-
-Below information is what i need from you so will can be reaching each other
-
-1)Full name ...
-2)Private telephone number...
-3)Age...
-4)Nationality...
-5)Occupation ...
-
-
-Thanks.
-
-Ms Lisa hugh.
+Rob
