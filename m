@@ -2,73 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B23228E77D
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED04D28E783
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgJNTon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 15:44:43 -0400
-Received: from mxout03.lancloud.ru ([89.108.73.187]:44640 "EHLO
-        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJNTon (ORCPT
+        id S1727753AbgJNTqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 15:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgJNTqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 15:44:43 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru 32665206E42A
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH 0/2] module: some refactoring in module_sig_check()
-To:     Joe Perches <joe@perches.com>, Jessica Yu <jeyu@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <789a4e5c-8efd-bb1c-86e2-eed8b2b7b0af@omprussia.ru>
- <3897a8ce5760affa304952c2d30c1266589407f2.camel@perches.com>
- <e6fd4ba1-b431-afd8-1800-3a8f4b74f30e@omprussia.ru>
- <e8382da95dda4dffa06f81a05e92e5555a074bab.camel@perches.com>
-From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Organization: Open Mobile Platform, LLC
-Message-ID: <d97f1700-f149-0fb5-99cf-3af421e399dc@omprussia.ru>
-Date:   Wed, 14 Oct 2020 22:44:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 14 Oct 2020 15:46:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6353BC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 12:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3xpygiCiurmA1P7ABSbAkyvSiy9WK/xyVg/hrK3R8uI=; b=HLFvR36znUO54i4KhqBChMOQUp
+        gUZOi4Kgy6Uz6Z3RtxqLQhF3k5BEqF7IBd05usOANRBfus7IWwK/mVT37o8nn1zY0v/sGKdp37ix6
+        xxDjbl+dgzE7rXJHdcXmi8O2/mqKohhD0NAldEWk3S5fH9U2E5msRxp7RUoxpH7UuAjorarJPmkyU
+        jYxpgsE3zQyS0cg2eW1bYa6rCVJG8cYetHV+0b54n8MmdAZlBZwtb8GnI+OAPd3kGi+ZhnY1Ou9SQ
+        KBTA4MUuLJX3EW4VkR0R9Sdt2ilQvytfC46VIVNa7WMyM+WJdGCIRpKywoSGpYOLxLkQRGujhSXxB
+        V3uhmdbA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSmjJ-0001wi-LJ; Wed, 14 Oct 2020 19:46:33 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5AC14980F54; Wed, 14 Oct 2020 21:46:30 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 21:46:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] sched/cpupri: Cleanup cpu priority vector handling
+Message-ID: <20201014194630.GB2974@worktop.programming.kicks-ass.net>
+References: <20200922083934.19275-1-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <e8382da95dda4dffa06f81a05e92e5555a074bab.camel@perches.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [213.87.151.133]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1908.lancloud.ru (fd00:f066::208)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922083934.19275-1-dietmar.eggemann@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/20 11:35 AM, Joe Perches wrote:
-
-[...]
->>>> Here are 2 patches against the 'modules-next' branch of Jessica Yu's 'linux.git' repo.
->>>> I'm doing some little refactoring in module_sig_check()...
->>>>
->>>> [1/2] module: merge repetitive strings in module_sig_check()
->>>> [2/2] module: unindent comments in module_sig_check()
->>>
->>> I think this code is rather cryptic and could be made clearer.
->>>
->>> How about:
->>> ---
->>>   kernel/module.c | 51 ++++++++++++++++++++++++++-------------------------
->>>   1 file changed, 26 insertions(+), 25 deletions(-)
->>
->>     Looks good. Do you want to post complete patch(es)? :-)
+On Tue, Sep 22, 2020 at 10:39:32AM +0200, Dietmar Eggemann wrote:
+> Two of the 102 elements of the cpu priority vector, among them the one
+> for MAX_PRIO (140) representing the IDLE task, are never used.
 > 
-> I don't like posting actual patches on top of other people.
-> It's a complete and compilable diff, it's just unsigned.
-
-   It does too many things simultaneously, I'll need to decompose it...
-
-> If you want a Signed-off-by: here's one:
+> Remove them and adapt the cpupri implementation accordingly.
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
+> Dietmar Eggemann (2):
+>   sched/cpupri: Remove pri_to_cpu[CPUPRI_IDLE]
+>   sched/cpupri: Remove pri_to_cpu[1]
 
-   I think I'll rather use Suggested-by: where appropriate...
-
-MBR, Sergei
+Thanks!, I've also got a few more patches on top, I'll post them
+separately.
