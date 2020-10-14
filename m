@@ -2,120 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD0928E1D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A693A28E1D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388795AbgJNOCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:02:42 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:57313 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730583AbgJNOCl (ORCPT
+        id S1731466AbgJNODg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:03:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42702 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728086AbgJNODf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:02:41 -0400
-Received: from mail-qv1-f54.google.com ([209.85.219.54]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1M59am-1kRatn1vPQ-0019re; Wed, 14 Oct 2020 16:02:39 +0200
-Received: by mail-qv1-f54.google.com with SMTP id ev17so1545202qvb.3;
-        Wed, 14 Oct 2020 07:02:39 -0700 (PDT)
-X-Gm-Message-State: AOAM531oX9u0yrRqrvygvSJ07XifikFxAkE2U/s/r3zne/72NcG6/GFf
-        qZbpBFg1ECZYqZ4WL2nFwpI8NaI6lJZaclB+Icg=
-X-Google-Smtp-Source: ABdhPJwgfI56FrNLiz4CpSplDkSHoEZ4Zvt+zTgBjQFaC37WzSoizPQNv2FK+09dOqqroEW1nEyt+Y67obGqrjFMkVY=
-X-Received: by 2002:a0c:9b9e:: with SMTP id o30mr5218986qve.16.1602684158004;
- Wed, 14 Oct 2020 07:02:38 -0700 (PDT)
+        Wed, 14 Oct 2020 10:03:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602684214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yzi3uHEke45p4GzjIigCF2kVHokNJeipSLBKiTDbzzg=;
+        b=ZJvnICN2RziOBunFlVwQBxp1EEAy1AHHpRxHKCyME3dB3PZsWYCXHW/maZMpn/vKBn5Fkg
+        o6smg88DqcU3sC0Vh2zXuAB76q4FDLpB6eDGSYlj9iSOIH7JBZhQGuLdwtRo+lcbHzCqZ3
+        GRtnrK5MdLOpufXius06p0lKy4HJ310=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-A0_j0y88NAuoL3jQez2nzA-1; Wed, 14 Oct 2020 10:03:32 -0400
+X-MC-Unique: A0_j0y88NAuoL3jQez2nzA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C932186DD21;
+        Wed, 14 Oct 2020 14:03:30 +0000 (UTC)
+Received: from krava (unknown [10.40.195.92])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5F8275D9DD;
+        Wed, 14 Oct 2020 14:03:27 +0000 (UTC)
+Date:   Wed, 14 Oct 2020 16:03:26 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Joe Mario <jmario@redhat.com>,
+        Al Grant <Al.Grant@arm.com>, James Clark <james.clark@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/8] perf c2c: Refine the organization of metrics
+Message-ID: <20201014140326.GB1395746@krava>
+References: <20201014050921.5591-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-References: <20201013060623.1711-1-thunder.leizhen@huawei.com>
- <20201013060623.1711-2-thunder.leizhen@huawei.com> <fa40441b-6ae1-6018-3da6-424d0252c1ba@gmail.com>
- <CAK8P3a3MtCDpbCgNEnLf1QcE+1O0oGZtob2KY7G-77oA95bLJQ@mail.gmail.com> <b25dd804-c691-b987-9f6a-de043aa45755@huawei.com>
-In-Reply-To: <b25dd804-c691-b987-9f6a-de043aa45755@huawei.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 14 Oct 2020 16:02:21 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a24XPt55MuCnRPkH0QRVgmAbttghDnLkd5TQ-s6fi=GHg@mail.gmail.com>
-Message-ID: <CAK8P3a24XPt55MuCnRPkH0QRVgmAbttghDnLkd5TQ-s6fi=GHg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: broadcom: remove an unused property dma-ranges
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:yMjNHsWJyLt7APjhALcVLrZhskf/oJ5Oax0jR4w6+N9hCiIMucA
- c4HWvp1aBR8pMI4NEFkU+wiottlK8JdC9ve6uhg01BNoraKDspiQl0y8xZUsIZBAR+qPkXO
- P2JV5L+7ne43So6/PWKfZP9iWWVGDNuWXji0bQfKJ6AQcpR5xyq5ngJfFmAiKr5hcG/M9B7
- 6WyZVwQJH0sJVij76saUw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:J13trCvz2KM=:EzBrB1GiOkqBi6ILWaTVOk
- Z1GvMuwPupXH9REyUQAPwOh7y9vmF/jEZbGGfLqQbQOvinJgzZuXGzYiGSmiZv4JbWeQwpE8T
- 2YZD9leS6PY8tMcMVR2Z0oQjmfV5XKbgMIBTIiQFHdhH8E5xVgdguEjePJYA7LhRhLxNnHtx2
- wt1LV+UYK4QlzEpqhGumQfvneROUw29l084RzEF/W2xsJSJMmbU/EXEGCs1XDAqFhykuy9VSB
- Q+KUte7Ikl1n6Hu5J9I6qqOdruNUvyOP+ALfWzzHO2mJeB0W3Qaa1LAUrPUkyVletbp0tBhdG
- 2F5DR92wy+26ykwF7QasW3pw8BE7fulxlEgeho+YP02fWOpKK50gCL/0I+XEyij0FFELJUB15
- ck9qD2ta4PIJRu4b5bRC0n9D94Pr4ancyoEsfvh4uOg2WcuHBOvyZ2dDVWf0NVyVOH0vr5Vl2
- +Y/Cq1fWYuAIKXANVxcPi8biyE6kydHdxmIxFNA8fQgVPgZxyrft4KVJAbNJO3+8sdJ0oFTc9
- lpIwwvoFnHCoI/iTPjY++XNmGcodac1Y6toaGR0dnktDyRpDMUDbxK55gdihKoqIg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014050921.5591-1-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 3:36 PM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
-> On 2020/10/14 15:38, Arnd Bergmann wrote:
-> > On Wed, Oct 14, 2020 at 5:15 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >> On 10/12/2020 11:06 PM, Zhen Lei wrote:
-> >>> stingray-usb.dtsi is finally included by three dts files:
-> >>> bcm958802a802x.dts, bcm958742k.dts and bcm958742t.dts. I searched all
-> >>> these three entire expanded dts files, and each of them contains only one
-> >>> dma-ranges. No conversion range is specified, so it cannot work properly.
-> >>> I think this property "dma-ranges" is added by mistake, just remove it.
-> >>> Otherwise, the following error will be reported when any YAML detection
-> >>> is performed on arm64.
-> >>>
-> >>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
-> >>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
-> >>> its #address-cells (1) differs from / (2)
-> >>> arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14: Warning \
-> >>> (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges" property but \
-> >>> its #size-cells (1) differs from / (2)
-> >>>
-> >>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >>
-> >> This looks fine to me, Scott, Ray do you want to Ack this patch before I
-> >> take it?
-> >
-> > Does it mean that there are no devices on this bus that can do DMA?
-> >
-> > Usually there should be a dma-ranges property to identify that DMA
-> > is possible and what the limits are, though we have failed to enforce
-> > that.
->
-> Documentation/devicetree/bindings/iommu/iommu.txt +79
-> When an "iommus" property is specified in a device tree node, the IOMMU will
-> be used for address translation. If a "dma-ranges" property exists in the
-> device's parent node it will be ignored. An exception to this rule is if the
-> referenced IOMMU is disabled, in which case the "dma-ranges" property of the
-> parent shall take effect.
->
-> The dma-ranges is only required by IOMMU disabled case. And should exist in
-> the parent node of IOMMU device. But this deleted dma-ranges is under the usb
-> bus node.
+On Wed, Oct 14, 2020 at 06:09:13AM +0100, Leo Yan wrote:
+> This patch set is to refine metrics output organization.
+> 
+> If we reivew the current memory metrics in Perf c2c tool, it doesn't
+> orgnize the metrics with directive approach; thus user needs to take
+> time to dig into every statistics item.  On the other hand, if use the
+> "summary and breakdown" approach, the output result will be easier for
+> reviewing by users, e.g. the output result can firstly give out the
+> summary values, and then the later items will breakdown into more
+> detailed statistics.
+> 
+> For this reason, this patch is to reorgnize the metrics and it only
+> changes for the "Shared Data Cache Line Table": it firstly displays the
+> summary values for total records, total loads, total stores; then it
+> breaks these summary values into small values, with the order from the
+> most near memory node ("CPU Load Hit") to more far nodes
+> ("LLC Load Hit", "RMT Load Hit", "Load Dram").
+> 
+>   "LLC Load Hit" = "LclHit" + "LclHitm"
+> 
+>   "RMT Load Hit" = "RmtHit" + "RmtHitm" \
+>                                          ->  LLC Load Miss
+>   "Load Dram"    = "Lcl" + "Rmt"        /
+> 
+> Another main reason for this patch set is wanting to extend "perf c2c"
+> to support Arm SPE memory event, but Arm SPE doesn't contain 'HTIM' tag
+> in its default trace data, for this case if want to analyze cache false
+> sharing issue, we need to rely on LLC metrics + multi-threading info.
+> So this patch set can be friendly to show LLC related metrics in the
+> "Shared Data Cache Line Table"; for sorting cache lines with LLC metrics
+> which will be sent out with another separate patch set.
+> 
+> Before:
+> 
+> =================================================
+>            Shared Data Cache Line Table          
+> =================================================
+> #
+> #        ----------- Cacheline ----------    Total      Tot  ----- LLC Load Hitm -----  ---- Store Reference ----  --- Load Dram ----      LLC    Total  ----- Core Load Hit -----  -- LLC Load Hit --
+> # Index             Address  Node  PA cnt  records     Hitm    Total      Lcl      Rmt    Total    L1Hit   L1Miss       Lcl       Rmt  Ld Miss    Loads       FB       L1       L2       Llc       Rmt
+> # .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  ........  ........  .......  .......  .......  .......  .......  ........  ........
+> #
+>       0      0x55acdcc92100     0    8197    40716   52.18%     3170     3170        0    24466    24437       29         0         0        0    16250     3349     5909        0      3822         0
+>       1      0x55acdcc920c0     0       1     4621   31.01%     1884     1884        0        0        0        0         0         0        0     4621      739        0        0      1998         0
+>       2      0x55acdcc92080     0       1     4475   16.69%     1014     1014        0        0        0        0         0         0        0     4475     2405        0        0      1056         0
+> 
+> 
+> After:
+> 
+> =================================================
+>            Shared Data Cache Line Table          
+> =================================================
+> #
+> #        ----------- Cacheline ----------      Tot  ------- Load Hitm -------    Total    Total    Total  ---- Stores ----  ----- Core Load Hit -----  - LLC Load Hit --  - RMT Load Hit --  --- Load Dram ----
+> # Index             Address  Node  PA cnt     Hitm    Total  LclHitm  RmtHitm  records    Loads   Stores    L1Hit   L1Miss       FB       L1       L2    LclHit  LclHitm    RmtHit  RmtHitm       Lcl       Rmt
+> # .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  ........  .......  ........  .......  ........  ........
+> #
+>       0      0x55acdcc92100     0    8197   52.18%     3170     3170        0    40716    16250    24466    24437       29     3349     5909        0      3822     3170         0        0         0         0
+>       1      0x55acdcc920c0     0       1   31.01%     1884     1884        0     4621     4621        0        0        0      739        0        0      1998     1884         0        0         0         0
+>       2      0x55acdcc92080     0       1   16.69%     1014     1014        0     4475     4475        0        0        0     2405        0        0      1056     1014         0        0         0         0
 
-The USB hosts here don't use an IOMMU though, right?
+I haven't used the tool for some time, so it's fine with me,
+but there might be some people already used to see certain
+columns in place and I don't want to make them angry unless
+there's really good reason for that ;-)
 
-> > Also note that the #address-cells=<1> means that any device under
-> > this bus is assumed to only support 32-bit addressing, and DMA will
-> > have to go through a slow swiotlb in the absence of an IOMMU.
->
-> The dma_alloc_coherent() will allocate memory with GFP_DMA32 flag and
-> try the 0-4G first. The reserved swiotlb buffer memory is used only
-> when the allocation failed.
+Joe, could you please check on these changes?
 
-The swiotlb is primarily about the streaming mappings with dma_map_*(),
-which has to copy all data sent to the device. dma_alloc_coherent()
-is a rare operation and less impacted by DMA limitations.
+thanks,
+jirka
 
-      Arnd
+> 
+> 
+> Leo Yan (8):
+>   perf c2c: Display the total numbers continuously
+>   perf c2c: Display "Total Stores" as a standalone metrics
+>   perf c2c: Organize metrics based on memory hierarchy
+>   perf c2c: Change header from "LLC Load Hitm" to "Load Hitm"
+>   perf c2c: Use more explicit headers for HITM
+>   perf c2c: Change header for LLC local hit
+>   perf c2c: Correct LLC load hit metrics
+>   perf c2c: Add metrics "RMT Load Hit"
+> 
+>  tools/perf/builtin-c2c.c | 83 +++++++++-------------------------------
+>  1 file changed, 18 insertions(+), 65 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
+
