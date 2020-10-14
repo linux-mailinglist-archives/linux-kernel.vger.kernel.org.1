@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50428D9AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 07:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339BD28DB08
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgJNFv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 01:51:57 -0400
-Received: from mga09.intel.com ([134.134.136.24]:12505 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725983AbgJNFv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 01:51:57 -0400
-IronPort-SDR: XN6jSVruBduUaZ12g5ErPYESO8tYCco70IgSqPq99DhW63Nh04FDXdUs85IQoiPdWaGoUcJUn7
- FBua66Z963rQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="166159740"
-X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
-   d="scan'208";a="166159740"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 22:51:56 -0700
-IronPort-SDR: sVsJXTI7dB54zNeQbmq28Lv8bYlyPQ7lkw+lxcLlGNWwN/HzJc1Sg//7kXCIUc40CxIkzgNlUj
- o8qQDyLD09iQ==
-X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
-   d="scan'208";a="314054422"
-Received: from isgomez-mobl.amr.corp.intel.com (HELO [10.252.133.97]) ([10.252.133.97])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 22:51:56 -0700
-Subject: Re: [PATCH v4 2/2] PCI/ERR: Split the fatal and non-fatal error
- recovery handling
-To:     Ethan Zhao <xerces.zhao@gmail.com>,
-        sathyanarayanan.nkuppuswamy@gmail.com
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Sinan Kaya <okaya@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-References: <5c5bca0bdb958e456176fe6ede10ba8f838fbafc.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <c6e3f1168d5d88b207b59c434792a10a7331bb89.1602263264.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAKF3qh1Y1eADo_Cuf_MqgNanYuwhjWWe23DvPVByt6gmaf5AGQ@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <37c7b066-efff-de0c-f4d2-c497792b3150@linux.intel.com>
-Date:   Tue, 13 Oct 2020 22:51:53 -0700
+        id S1729095AbgJNITk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgJNITe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:19:34 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97601C04586C;
+        Tue, 13 Oct 2020 22:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=VBhfFbcum7XqbvqnX65rC2cJinR64wvSqBnpbpj4otY=; b=bnhC0zvB0LmWbSJHu5QthQHi3+
+        D3vU89kUm7mR9S1RpJwfliTGWEBvzkNupZKuzr1SPTGMHEv1LXTdW42vUw0CYXWUIgv1/fXcvwHyL
+        qE8+/PwM3wArw7HqzNbb8lCSmHzX1SXQC5k20esROfvocGUfqmZ393Ec76b19KhNVxFR1jGjQdxfe
+        +7/N297i0jo8SKe1J1DE1WUKiplPpWRwc6q8eWAjR8g8iRMh4khoX4QmCuLoEbYFXBpHefJpQf8zy
+        xAqfBfMpKL+B04FbzJKTY3qApVK1i34M+C18ISTzWb9spLCoepokBzMNXmcHeBEZgz1EyTA84Ko/N
+        KgHivglg==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSZjv-0001kM-VH; Wed, 14 Oct 2020 05:54:20 +0000
+Subject: Re: disabling CONFIG_LED_CLASS (SND_HDA_CODEC_REALTEK)
+To:     Udo van den Heuvel <udovdh@xs4all.nl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
+        Pavel Machek <pavel@ucw.cz>, Takashi Iwai <tiwai@suse.de>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>
+References: <2835d02a-380b-6a3a-0e4d-abf07aee18bc@xs4all.nl>
+ <53e698c1-86e4-8b1f-afb0-b8471349e701@xs4all.nl>
+ <43b79598-1592-683f-46df-9e5489110780@infradead.org>
+ <6fd1e91e-19d0-6682-dfc6-49f1cd60408b@infradead.org>
+ <3c6d174c-30db-3d03-3d16-42df405f38d9@xs4all.nl>
+ <58e774c5-fc80-2060-2091-9a6398582cc5@infradead.org>
+ <9fc679e9-e9a9-ad80-b24c-f04489b98aa7@xs4all.nl>
+ <27e159be-4376-e87b-5e60-803bc3749ec2@infradead.org>
+ <eadc23e7-b383-e2fc-6e20-ed22745d0bfc@xs4all.nl>
+ <2739e1fd-75c6-4e43-cd79-9028479f91bf@infradead.org>
+ <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d7774b58-caf5-5bd8-845d-a5d45aaef4c6@infradead.org>
+Date:   Tue, 13 Oct 2020 22:54:15 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAKF3qh1Y1eADo_Cuf_MqgNanYuwhjWWe23DvPVByt6gmaf5AGQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1e6b1961-9e9b-5f82-86a1-bf838cb68f55@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/13/20 10:16 PM, Udo van den Heuvel wrote:
+> On 14-10-2020 07:07, Randy Dunlap wrote:
+>> On 10/13/20 9:56 PM, Udo van den Heuvel wrote:
+> 
+>>> I.e.: it looks like I will lose some funcionality when I disable
+>>> SND_HDA_CODEC_REALTEK.
+>>
+>> OK. At present you can't have it both ways, i.e., SND_HDA_CODEC_REALTEK
+>> with no LEDS. That driver apparently wants LEDS.
+> 
+> Thanks but why have I gone for years without LEDS?
+> I do not need LEDS, I do not want LEDS, I do not have LEDS (that are
+> visible, usable, etc).
+> 
+> Please make this selectable instead of forcing more bulk into my kernel.
+> 
+> Kind regards,
+> Udo
 
+Hi Takashi,
 
-On 10/13/20 10:44 PM, Ethan Zhao wrote:
-> This patch only reverts the commit bdb5ac85777d ?
-> or you'd better separate the revert and code you added.
+Regarding
+commit 7cdf8c49b1df0a385db06c4f9a5ba1b16510fdcc
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Jun 18 13:08:31 2020 +0200
+    ALSA: hda: generic: Add a helper for mic-mute LED with LED classdev
 
-We cannot revert the commit as it is. pcie_do_recovery()
-function and Documentation/* folder changed a lot since
-fatal and non-fatal error recovery paths were merged. So I
-modified the revert so that it can be applied to the latest
-kernel version.
+and this Kconfig entry:
 
+config SND_HDA_CODEC_REALTEK
+	tristate "Build Realtek HD-audio codec support"
+	select SND_HDA_GENERIC
+	select SND_HDA_GENERIC_LEDS
+
+it seems that LED support is not always wanted (please see above).
+I.e., user(s) would like to build a kernel without LED support at all.
+
+Can you make it a build option?
+
+thanks.
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+~Randy
+
