@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B3E28D91F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 06:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A4128DCEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729922AbgJNETt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 00:19:49 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:19473 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729846AbgJNETs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 00:19:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602649188; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=HOggyxgAIuw5vh136a7l4IRaEFhhlZ9M1Zj7qRah5nQ=; b=SV3VoQMqUJO0R+v+9kMh/WS5FrAERPOpCHOrykzE1pOh5FRmUSfsBT58U6eCODHslS/2argP
- qKflt4ZmX2JAWitDXL4U2KUEczOHUqDyp/TnBRs1ViRQn4OKy3dqm1hi5QiDEsERg1ReXR0w
- X5HlroxnQuk+hbhD3tawsbLb+AQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f867c62d63768e57b69e9de (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 04:19:46
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9A3E3C43385; Wed, 14 Oct 2020 04:19:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.24] (unknown [49.37.131.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 50618C433CB;
-        Wed, 14 Oct 2020 04:19:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 50618C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH 1/2] Asoc: qcom: lpass-cpu: Fix clock disable failure
-To:     Mark Brown <broonie@kernel.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1602596386-9886-1-git-send-email-srivasam@codeaurora.org>
- <20201013151505.GA7913@sirena.org.uk>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <49ac01c8-d270-5e9b-360b-87909e550360@codeaurora.org>
-Date:   Wed, 14 Oct 2020 09:49:38 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2388253AbgJNJVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731088AbgJNJUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:20:43 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FCFC041E65
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 21:20:38 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id x16so1173763pgj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 21:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sRC19ocsAAL1mtJ2J1c/RGp/arfOqOhnEUa8vMBSrp4=;
+        b=GW9Pn8lwtiFpiNXWvRKpr1sRlcOS/g/NDsIbw9YjLuG0R2lkqK4AEazOizqZQ4K0NL
+         IlKYMWncUI7oHCT0MNl2QwX0bsC6kBtnmDUPOuvMFx6xS/Q0CaLY3nNAaAQjYtPEl93h
+         YuCkHLk4mhh6kMHwF+EC5RqYI5rQkXluO/qZ4aV/ggF+CcutvMuRjFa7FJxhX0i5Lnlu
+         oVCLTbvksoQmBXRTWFEyXS8S4Gn66GpbzT4zsnqAf7PhwKUk5lmz6KinofDv1rsrHB9B
+         2V0MrjxVWPer+JQqO6qg/TOD6tvExFz2VW4V70gYXFV5NLGwDM88KLc7EPHEgvhCiwQq
+         aLcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sRC19ocsAAL1mtJ2J1c/RGp/arfOqOhnEUa8vMBSrp4=;
+        b=kVi20oGcpa+P9hIkia8/TQykiDCxyT6pUd5eWFaAq8igIQl7/ra5nlnQFJjhRlC8aK
+         Q+LosK1UzAoHmVttCjjyvkvHvDJ7h6iFPqjLTjJ9zNiCn2AXPRUXt3N1xBay/Pp6ZRpO
+         c/EXyGwxsN/v1eR47uDL58dwFsH24mbl25g/SRrcoBVdzu1xDS92lyDPLPRl26ZfKrxU
+         U7TZtPGEfEn+JEIhyCQo3lL4d6PhVU64ewrerTWCby57eCxxvqtVlmeRBMqg+G7i2UFR
+         XZrWVFMHhGHW9vCVLEpKJnU2/W5MEnB+gsRg2BgB0UlazMh7AS5ElknBaPUvbHrOsIr0
+         8ZBw==
+X-Gm-Message-State: AOAM533Q58SJP0wzIR8tJQP96kf5DnKecCp5MPBx3PaZbZWbk+HybQD6
+        HsuDMi0bl8SGhG26dbP9XTa41A==
+X-Google-Smtp-Source: ABdhPJxwwBZkPJwYyNWVBoXOO7FKu6S+l6w0Y4TBNKBUp23Gr0IwwNVWP1f990BT75JWgTy0taYkng==
+X-Received: by 2002:a63:1e21:: with SMTP id e33mr2318898pge.270.1602649236190;
+        Tue, 13 Oct 2020 21:20:36 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id l13sm1383186pgq.33.2020.10.13.21.20.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Oct 2020 21:20:35 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 09:50:33 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        vireshk@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        sudeep.holla@arm.com, chris.redpath@arm.com,
+        morten.rasmussen@arm.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
+ cpu-perf-dependencies
+Message-ID: <20201014042033.tmsbanj5xgh2lmul@vireshk-i7>
+References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+ <20200924095347.32148-3-nicola.mazzucato@arm.com>
+ <20201006071909.3cgz7i5v35dgnuzn@vireshk-i7>
+ <2417d7b5-bc58-fa30-192c-e5991ec22ce0@arm.com>
+ <20201008110241.dcyxdtqqj7slwmnc@vireshk-i7>
+ <20201008150317.GB20268@arm.com>
+ <56846759-e3a6-9471-827d-27af0c3d410d@arm.com>
+ <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7>
+ <6a739b1b-e345-fa09-d815-6e9601aff5f6@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201013151505.GA7913@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a739b1b-e345-fa09-d815-6e9601aff5f6@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks  Mark Brown for your time !!!
+On 13-10-20, 14:53, Lukasz Luba wrote:
+> I've started wondering based on the OPP code if this is a good solution.
+> We would end up with one (?) instance of opp_table and list of devices
+> pinned to it, in: opp_table->dev_list
+> It can be seen e.g. in function dev_pm_opp_get_sharing_cpus(),
+> where we retrieve the cpumask simply looping through the devices:
+> 
+> list_for_each_entry(opp_dev, &opp_table->dev_list, node)
+> 	cpumask_set_cpu(opp_dev->dev->id, cpumask);
+> 
+> 
+> This means we have a single OPP table for all pinned CPUs.
+> I wonder if this is not too strong assumption for still being compliant
+> with SCMI spec, when in theory performance levels might differ...
+> (please correct me here it that would never happen)
+> 
+> There is also 2nd function dev_pm_opp_of_get_sharing_cpus() which looks
+> more promising. But I still don't know if the framework will allow us
+> to have private OPP tables when we use 'shared' in DT.
+> 
+> Could you clarify if we would get 'private' opp table for each CPU,
+> which could be then populated independently, but still 2nd function will
+> work?
 
-On 10/13/2020 8:45 PM, Mark Brown wrote:
-> On Tue, Oct 13, 2020 at 07:09:46PM +0530, Srinivasa Rao Mandadapu wrote:
->> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->>
->> Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase
->> instead of shutdown time. Acheive this by invoking
->> clk_disable_unprepare API from cpu daiops shutdown to
->> cpu daiops trigger.
-> I'm missing patch 2 here?
-No.. It's a single patch. By mistake I sent with wrong header.
->
->> This Fix is update to the below patch.
->> https://lore.kernel.org/patchwork/patch/1308101/
-> Fixes should be specified using tags like this:
->
->    Fixes: commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs dependency")
->
-> in the changelog.
-Thanks for your guidance. I will take care of it next time.
->
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
+I think there is some misunderstanding here in your part. The
+opp-table in the code is shared between CPUs only when the
+"opp-shared" property is present in the OPP table. If that property
+isn't available, even if same DT opp-table is pointed at by all the
+CPUs, the code will have separate copies of the OPP table.
+
+Though in your case (with performance-levels) it shouldn't matter as
+code will never create an OPP table I suppose.
 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-
+viresh
