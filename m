@@ -2,93 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A91A28E7D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE9328E7DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgJNUZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:25:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
+        id S1730388AbgJNU1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:27:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:58256 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgJNUZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:25:12 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64CC32222C;
-        Wed, 14 Oct 2020 20:25:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602707112;
-        bh=y60T8MfAN6VUb/ve7bAl/0bz6h3acfP3VAK+B6ENBgM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1b3XRaOpODmwcqPvQPtoc1WOTMFE6JFgWfR3qphGMun7Y89YqRvEvNfwCTTj/8TTl
-         Wsy0nwDtC06JPuZOcIYNFrR3Sqv9LKuz5eD0HAJDJ4KsbHLT6Zypjs9rGCEE3NzJPV
-         sgTDgv9vKGECjKnNhNnwhmjhGKL9zxs9Qp840EwM=
-Date:   Wed, 14 Oct 2020 21:25:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Lukas Wunner <lukas@wunner.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Subject: Re: Use after free in bcm2835_spi_remove()
-Message-ID: <20201014202505.GF4580@sirena.org.uk>
-References: <bd6eaa71-46cc-0aca-65ff-ae716864cbe3@gmail.com>
- <20201014140912.GB24850@wunner.de>
- <20201014194035.ukduovokggu37uba@skbuf>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fwqqG+mf3f7vyBCB"
-Content-Disposition: inline
-In-Reply-To: <20201014194035.ukduovokggu37uba@skbuf>
-X-Cookie: Take an astronaut to launch.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729022AbgJNU1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 16:27:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E817BD6E;
+        Wed, 14 Oct 2020 13:27:17 -0700 (PDT)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 37F523F719;
+        Wed, 14 Oct 2020 13:27:17 -0700 (PDT)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH] firmware: arm_scmi: fix notifications locking
+Date:   Wed, 14 Oct 2020 21:27:10 +0100
+Message-Id: <160270712152.50074.11126104112406459334.b4-ty@arm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201013133109.49821-1-cristian.marussi@arm.com>
+References: <20201013133109.49821-1-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 13 Oct 2020 14:31:09 +0100, Cristian Marussi wrote:
+> When a protocol registers its events the notification core takes care to
+> re-scan the hashtable of pending event handlers and activate all the
+> possibly existent handlers that refer to any of the events just registered
+> by the new protocol; when a pending handler becomes active the core takes
+> also care to ask the SCMI platform to enable the corresponding events'
+> notifications in the SCMI firmware.
+> 
+> [...]
 
---fwqqG+mf3f7vyBCB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Oct 14, 2020 at 10:40:35PM +0300, Vladimir Oltean wrote:
-> On Wed, Oct 14, 2020 at 04:09:12PM +0200, Lukas Wunner wrote:
+Applied to sudeep.holla/linux (for-next/scmi), thanks!
 
-> > Apparently the problem is that spi_unregister_controller() drops the
-> > last ref on the controller, causing it to be freed, and afterwards we
-> > access the controller's private data, which is part of the same
-> > allocation as struct spi_controller:
+[1/1] firmware: arm_scmi: Fix locking in notifications
+      https://git.kernel.org/sudeep.holla/c/c7821c2d9c
 
-> > bcm2835_spi_remove()
-> >   spi_unregister_controller()
-> >     device_unregister()
-> >       put_device()
-> >         spi_controller_release()  #  spi_master_class.dev_release()
-> > 	  kfree(ctlr)
-> >   bcm2835_dma_release(ctlr, bs)
+--
 
-> Also see these threads:
-> https://lore.kernel.org/linux-spi/20200922112241.GO4792@sirena.org.uk/T/#t
-> https://lore.kernel.org/linux-spi/270b94fd1e546d0c17a735c1f55500e58522da04.camel@suse.de/T/#u
+Regards,
+Sudeep
 
-Right, the proposed patch is yet another way to fix the issue - it all
-comes back to the fact that you shouldn't be using the driver data after
-unregistering if it was allocated as part of allocating the controller.
-This framework feature is unfortunately quite error prone.
-
---fwqqG+mf3f7vyBCB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+HXqEACgkQJNaLcl1U
-h9Cemgf+N9ktvf3Pu2FKW2QsiXZWpEOe9n1qxhO3C3TsMVR7uUof7Il0d78U3gQW
-Qub+c1JdauKYEX1f8HsEYw46qw4mTEApvJftks7F6Eyk6VXgWTdOI8dL1D9Z9cK5
-Q1iSG2S09kTtSJinL2XozoF/RtIqdQarNX72ZJxeHlXLnpyYOrjwAazgb+Wk6hLW
-TKugaZxbYoVczPvAuBIHWrNyngnYAWyNazrbBR/oUiSyXLGm/3PUNA6Ta0odClnW
-4zHdD7wcj7eo6oorQC9MBRyvAb8Rak9qmBdKAujl6FWZnyXF2SYMoFhykCI0D3ec
-X4fJEnbKTejyLXbKGlL9Buge3X3kMg==
-=c+5j
------END PGP SIGNATURE-----
-
---fwqqG+mf3f7vyBCB--
