@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9A728E579
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE0628E589
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389654AbgJNRhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57694 "EHLO mail.kernel.org"
+        id S2390128AbgJNRi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389513AbgJNRha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389518AbgJNRha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 13:37:30 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D95822247;
+        by mail.kernel.org (Postfix) with ESMTPSA id C5D9B22246;
         Wed, 14 Oct 2020 17:37:29 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kSkiO-002yFg-Ep; Wed, 14 Oct 2020 13:37:28 -0400
-Message-ID: <20201014173728.325418951@goodmis.org>
+        id 1kSkiO-002yGA-JZ; Wed, 14 Oct 2020 13:37:28 -0400
+Message-ID: <20201014173728.487767298@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 14 Oct 2020 13:36:49 -0400
+Date:   Wed, 14 Oct 2020 13:36:50 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, stable@vger.kernel.org,
-        Gaurav Kohli <gkohli@codeaurora.org>
-Subject: [for-next][PATCH 02/12] tracing: Fix race in trace_open and buffer resize call
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [for-next][PATCH 03/12] tracing/boot: Add ftrace.instance.*.alloc_snapshot option
 References: <20201014173647.955053902@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -36,79 +35,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gaurav Kohli <gkohli@codeaurora.org>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-Below race can come, if trace_open and resize of
-cpu buffer is running parallely on different cpus
-CPUX                                CPUY
-				    ring_buffer_resize
-				    atomic_read(&buffer->resize_disabled)
-tracing_open
-tracing_reset_online_cpus
-ring_buffer_reset_cpu
-rb_reset_cpu
-				    rb_update_pages
-				    remove/insert pages
-resetting pointer
+Add ftrace.instance.*.alloc_snapshot option.
 
-This race can cause data abort or some times infinte loop in
-rb_remove_pages and rb_insert_pages while checking pages
-for sanity.
+This option has been described in Documentation/trace/boottime-trace.rst
+but not implemented yet.
 
-Take buffer lock to fix this.
+ftrace.[instance.INSTANCE.]alloc_snapshot
+   Allocate snapshot buffer.
 
-Link: https://lkml.kernel.org/r/1601976833-24377-1-git-send-email-gkohli@codeaurora.org
+The difference from kernel.alloc_snapshot is that the kernel.alloc_snapshot
+will allocate the buffer only for the main instance, but this can allocate
+buffer for any new instances.
 
-Cc: stable@vger.kernel.org
-Fixes: b23d7a5f4a07a ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
-Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+Link: https://lkml.kernel.org/r/160234368948.400560.15313384470765915015.stgit@devnote2
+
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ kernel/trace/trace_boot.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 93ef0ab6ea20..15bf28b13e50 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -4866,6 +4866,9 @@ void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
- 	if (!cpumask_test_cpu(cpu, buffer->cpumask))
- 		return;
- 
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
-+
- 	atomic_inc(&cpu_buffer->resize_disabled);
- 	atomic_inc(&cpu_buffer->record_disabled);
- 
-@@ -4876,6 +4879,8 @@ void ring_buffer_reset_cpu(struct trace_buffer *buffer, int cpu)
- 
- 	atomic_dec(&cpu_buffer->record_disabled);
- 	atomic_dec(&cpu_buffer->resize_disabled);
-+
-+	mutex_unlock(&buffer->mutex);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
- 
-@@ -4889,6 +4894,9 @@ void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
- 	struct ring_buffer_per_cpu *cpu_buffer;
- 	int cpu;
- 
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
-+
- 	for_each_online_buffer_cpu(buffer, cpu) {
- 		cpu_buffer = buffer->buffers[cpu];
- 
-@@ -4907,6 +4915,8 @@ void ring_buffer_reset_online_cpus(struct trace_buffer *buffer)
- 		atomic_dec(&cpu_buffer->record_disabled);
- 		atomic_dec(&cpu_buffer->resize_disabled);
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 754e3cf2df3a..c22a152ef0b4 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -284,6 +284,12 @@ trace_boot_enable_tracer(struct trace_array *tr, struct xbc_node *node)
+ 		if (tracing_set_tracer(tr, p) < 0)
+ 			pr_err("Failed to set given tracer: %s\n", p);
  	}
 +
-+	mutex_unlock(&buffer->mutex);
++	/* Since tracer can free snapshot buffer, allocate snapshot here.*/
++	if (xbc_node_find_value(node, "alloc_snapshot", NULL)) {
++		if (tracing_alloc_snapshot_instance(tr) < 0)
++			pr_err("Failed to allocate snapshot buffer\n");
++	}
  }
  
- /**
+ static void __init
 -- 
 2.28.0
 
