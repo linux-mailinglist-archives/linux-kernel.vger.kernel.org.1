@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C6828E935
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D2828E937
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731609AbgJNXd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 19:33:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49894 "EHLO mail.kernel.org"
+        id S1731927AbgJNXdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 19:33:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727890AbgJNXd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 19:33:27 -0400
-Received: from kernel.org (unknown [104.132.1.79])
+        id S1727890AbgJNXdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 19:33:51 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF8FC2078A;
-        Wed, 14 Oct 2020 23:33:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 656042078A;
+        Wed, 14 Oct 2020 23:33:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602718405;
-        bh=wBJdGMuCbxB+/x8tgiFHN84xb+woI7yw+Ucn/eFhAvs=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=O85Aa0lVcvK49vkvt0QagZkTvUXcWsSoVlPv13RzrzfAhhAzTZ8V4jaGTlpLivuc+
-         y5r7vCE36G2QrHaxDWMw/BuuiI2FnWpR3zkq17rfJpv9vInQ5B++VozyqPMCTrJA1n
-         wLPI2Le72bQRWmZ0PRhtk3pTNy5+BaJK0lh/UG7U=
-Content-Type: text/plain; charset="utf-8"
+        s=default; t=1602718430;
+        bh=fJuaBZAYZB2ASZnOsQGXjvE2pynwdjPBgfBtVj+H8F4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c/Mwj5CLJFeg5vBNDeMaxa33nHbmDZun8T/4ILG736efYFWqfucNlCWD/mIFyIp0U
+         EbkSPN2poPGBQpgEfedIaBV4grIdHVZ/SciOKy6ZsdQv2lRhMDJIo1dCmFQiNAj1mh
+         NUAIvlAl5JzBpAH2m/B0/JqLfxXctsj8mei7fBTM=
+Date:   Wed, 14 Oct 2020 16:33:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+Cc:     <davem@davemloft.net>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
+        <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>,
+        <UNGLinuxDriver@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH net-next v5 08/10] bridge: cfm: Netlink GET
+ configuration Interface.
+Message-ID: <20201014163348.2f99e349@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201012140428.2549163-9-henrik.bjoernlund@microchip.com>
+References: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
+        <20201012140428.2549163-9-henrik.bjoernlund@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=VTEQMqnmC_OMtADTdrs+2zxCd8ODSRpxtxP6SKBnx2qg@mail.gmail.com>
-References: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid> <20201014140507.v3.2.I75c409497d4dea9daefa53ec5f93824081c4ecbe@changeid> <160271345117.884498.6375969749730135625@swboyd.mtv.corp.google.com> <CAD=FV=UipL42FLRARc4V34bqEukaB=WQzAdr2Si2RUjPaAmE4g@mail.gmail.com> <160271644762.884498.446447786516269652@swboyd.mtv.corp.google.com> <CAD=FV=VTEQMqnmC_OMtADTdrs+2zxCd8ODSRpxtxP6SKBnx2qg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] clk: qcom: lpass-sc7180: Disentangle the two clock devices
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Taniya Das <tdas@codeaurora.org>,
-        ARM/QUALCOMM SUPPORT <linux-soc@vger.kernel.org>,
-        David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Wed, 14 Oct 2020 16:33:24 -0700
-Message-ID: <160271840430.884498.12165227808003957407@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-10-14 16:07:52)
-> Hi,
->=20
-> On Wed, Oct 14, 2020 at 4:00 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> >
-> > Quoting Doug Anderson (2020-10-14 15:28:58)
-> > > Hi,
-> > >
-> > > On Wed, Oct 14, 2020 at 3:10 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> > > >
-> > > > Quoting Douglas Anderson (2020-10-14 14:05:22)
-> > > > > diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/=
-qcom/lpasscorecc-sc7180.c
-> > > > > index abcf36006926..48d370e2108e 100644
-> > > > > --- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-> > > > > +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-> > > > > @@ -356,12 +356,48 @@ static const struct qcom_cc_desc lpass_audi=
-o_hm_sc7180_desc =3D {
-> > > > >         .num_gdscs =3D ARRAY_SIZE(lpass_audio_hm_sc7180_gdscs),
-> > > > >  };
-> > > > >
-> > > > > +static void lpass_pm_runtime_disable(void *data)
-> > > > > +{
-> > > > > +       pm_runtime_disable(data);
-> > > > > +}
-> > > > > +
-> > > > > +static void lapss_pm_clk_destroy(void *data)
-> > > > > +{
-> > > > > +       pm_clk_destroy(data);
-> > > > > +}
-> > > >
-> > > > Why are these helpers added again? And do we even need them? Can't =
-we
-> > > > just pass pm_runtime_disable or pm_clk_destroy to the
-> > > > devm_add_action_or_reset() second parameter?
-> > >
-> > > Unfortunately, we can't due to the C specification.  Take a look at
-> > > all the other users of devm_add_action_or_reset() and they all have
-> > > pretty much the same stupid thing.
-> >
-> > Ok, but we don't need two of the same functions, right?
->=20
-> How would you write it more cleanly?=20
+On Mon, 12 Oct 2020 14:04:26 +0000 Henrik Bjoernlund wrote:
+> +		if (nla_put_u32(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_SEQ_NO_UPDATE,
+> +				mep->cc_ccm_tx_info.seq_no_update))
+> +			goto nla_put_failure;
+> +
+> +		if (nla_put_u32(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_PERIOD,
+> +				mep->cc_ccm_tx_info.period))
+> +			goto nla_put_failure;
+> +
+> +		if (nla_put_u32(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_IF_TLV,
+> +				mep->cc_ccm_tx_info.if_tlv))
+> +			goto nla_put_failure;
+> +
+> +		if (nla_put_u8(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_IF_TLV_VALUE,
+> +			       mep->cc_ccm_tx_info.if_tlv_value))
+> +			goto nla_put_failure;
+> +
+> +		if (nla_put_u32(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_PORT_TLV,
+> +				mep->cc_ccm_tx_info.port_tlv))
+> +			goto nla_put_failure;
+> +
+> +		if (nla_put_u8(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_PORT_TLV_VALUE,
+> +			       mep->cc_ccm_tx_info.port_tlv_value))
+> +			goto nla_put_failure;
 
-Oh I see I'm making it confusing. Patch 1 has two functions for
-pm_runtime_disable() and pm_clk_destroy(), called
-lpass_pm_runtime_disable() and lapss_pm_clk_destroy() respectively
-(please fix the lapss typo regardless).
+Consider collapsing writing related attrs in a nest into a single
+if statement:
 
-Then this patch seems to introduce them again, but really the diff is
-getting confused and it looks like the functions are introduced again.
-Can you move them to this location (or at least near it) in the first
-patch so that this doesn't look like they're being introduced again?
-
-> > > ...actually, do we even need the runtime_disable in the error path?
-> > > When the dev goes away does it matter if you left pm_runtime enabled
-> > > on it?
-> > >
-> >
-> > I don't know. The device isn't destroyed but maybe when the driver is
-> > unbound it resets the runtime PM counters?
->=20
-> Certainly it seems safest just to do it...
->=20
-
-Can you confirm? I'd rather not carry extra code.
+	if (nla_put_u32(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_SEQ_NO_UPDATE,
+			mep->cc_ccm_tx_info.seq_no_update) ||
+	    nla_put_u32(skb, IFLA_BRIDGE_CFM_CC_CCM_TX_PERIOD,
+			mep->cc_ccm_tx_info.period) ||
+		...
