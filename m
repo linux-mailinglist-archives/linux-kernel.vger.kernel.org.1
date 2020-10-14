@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC0F28E3F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B0C28E409
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730558AbgJNQGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:06:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:52532 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729391AbgJNQGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:06:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D254D6E;
-        Wed, 14 Oct 2020 09:06:00 -0700 (PDT)
-Received: from [10.57.50.223] (unknown [10.57.50.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1544B3F71F;
-        Wed, 14 Oct 2020 09:05:57 -0700 (PDT)
-Subject: Re: [PATCH 1/3] thermal: power_allocator: respect upper and lower
- bounds for cooling device
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        amitk@kernel.org, Dietmar.Eggemann@arm.com,
-        michael.kao@mediatek.com, rui.zhang@intel.com
-References: <20201007122256.28080-1-lukasz.luba@arm.com>
- <20201007122256.28080-2-lukasz.luba@arm.com>
- <64ac12ca-9d7a-11f1-f935-0eb96dc6355b@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <b280a851-a4ea-490e-8cee-327bc34ee8b9@arm.com>
-Date:   Wed, 14 Oct 2020 17:05:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1730759AbgJNQJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:09:08 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:30565 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727829AbgJNQJI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:09:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1602691748; x=1634227748;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=nYxnxg2+RQprtzLlI6wg7jfBRlbQ4KTtTqP8g1Qf1KE=;
+  b=e4TzfwWEXT0MjldBfZdNndVNSt2pAIs5/ee52i1IbUX8fdeu69N0/FMD
+   vtJFGDvALtumEileHYJQQrXKh7S1gA4iJdGAAZhtqQrADl7CHtnMvALKQ
+   FPSAVjEpsu27t9xIgkOe+JzBpLVS+SPpc9EsQ+JX14hQIGC3dZDCn+lOy
+   tjE7xXjZliEfnW+bCScemRnQO1wLjqVzHs71KW0qd2DqXkir1I2nI947d
+   +dEewSTFq4yYJme2gBE8Vky7iic+fLnULDR8iMKEZ+II/RI+xEPa5y0nO
+   Kv/WEHvWnlL3Py+iIrAhQDE2ZxWMtHxEEUn7ksvDuuT+7Sab1kpHRXx+K
+   A==;
+IronPort-SDR: /gXAgu2LkaNngK04jDWy1kDKIp56+nZeSl6zQwVRwBp1HE690GUFLX2hIY9A7kImXPZwsq7P2E
+ APBMdLjPosxrrhDbg+HFkm7VgAhfv0oUGnxM0lrfqFzuvIlv36SoD95UTGpeSUv9Iil3vUGgp5
+ YSwuMQMr7+Q+FPuj+SlCIKsDA/BusDtuSVxvMFdGZC8JpM1ZGjTSGloZyEA5tZhzIjOdZOy18+
+ IFGhTtu3hHkXYikFjrTsSxoTThDg2bOFbVV3gOsHQAvsLOWcnQJSr/WcD72VxiSdM+G8aerq28
+ 3i0=
+X-IronPort-AV: E=Sophos;i="5.77,375,1596524400"; 
+   d="scan'208";a="99507189"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Oct 2020 09:09:07 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 14 Oct 2020 09:09:07 -0700
+Received: from [10.171.246.17] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 14 Oct 2020 09:09:04 -0700
+Subject: Re: [PATCH] clk: at91: sam9x60: support only two programmable clocks
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <1602686072-28296-1-git-send-email-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <1b6f29c9-c9b1-fc1e-7f08-ec4da720accc@microchip.com>
+Date:   Wed, 14 Oct 2020 18:09:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <64ac12ca-9d7a-11f1-f935-0eb96dc6355b@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1602686072-28296-1-git-send-email-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/14/20 1:31 PM, Daniel Lezcano wrote:
-> On 07/10/2020 14:22, Lukasz Luba wrote:
->> The thermal cooling device specified in DT might be instantiated for
->> a thermal zone trip point with a limited set of OPPs to operate on. This
->> configuration should be supported by Intelligent Power Allocation (IPA),
->> since it is a standard for other governors. Change the code and allow IPA
->> to get power value of lower and upper bound set for a given cooling
->> device.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/gov_power_allocator.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
->> index dd59085f38f5..f9ee7787b325 100644
->> --- a/drivers/thermal/gov_power_allocator.c
->> +++ b/drivers/thermal/gov_power_allocator.c
->> @@ -96,7 +96,8 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
->>   		if (instance->trip != params->trip_max_desired_temperature)
->>   			continue;
->>   
->> -		if (power_actor_get_min_power(cdev, tz, &min_power))
->> +		if (cdev->ops->state2power(cdev, tz, instance->upper,
->> +					   &min_power))
+On 14/10/2020 at 16:34, Claudiu Beznea wrote:
+> According to datasheet (Chapter 29.16.13, PMC Programmable Clock Register)
+> there are only two programmable clocks on SAM9X60.
 > 
-> 	if (cdev->ops->state2power && cdev->ops->state2power(cdev, tz,
-> 							instance->upper,
-> 							&min_power))
+> Fixes: 01e2113de9a5 ("clk: at91: add sam9x60 pmc driver")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+
+This is a fix:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+
+Cc: <stable@vger.kernel.org> # v5.2+
+
+> ---
+>   drivers/clk/at91/sam9x60.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> ?
-
-
-Yes, worth to check. I had this in [1] and missed it here while playing
-with re-base of these patch series and other test branches.
-
-I will send v2 with the needed cdev_is_power_actor() check.
-
-> 
->>   			continue;
->>   
->>   		sustainable_power += min_power;
->> @@ -404,7 +405,8 @@ static int allocate_power(struct thermal_zone_device *tz,
->>   
->>   		weighted_req_power[i] = frac_to_int(weight * req_power[i]);
->>   
->> -		if (power_actor_get_max_power(cdev, tz, &max_power[i]))
->> +		if (cdev->ops->state2power(cdev, tz, instance->lower,
->> +					   &max_power[i]))
->>   			continue;
-> 
-> Same here ?
-
-Inside that loop we check (just a few lines above):
-
-		if (!cdev_is_power_actor(cdev))
-			continue;
-
-then we call this:
-
-		if (cdev->ops->state2power(cdev, tz, instance->lower,
-					&max_power[i]))
-
-So it should be safe.
-
-> 
->>   		total_req_power += req_power[i];
->>
-> 
+> diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
+> index ab6318c0589e..3c4c95603595 100644
+> --- a/drivers/clk/at91/sam9x60.c
+> +++ b/drivers/clk/at91/sam9x60.c
+> @@ -279,7 +279,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+>   	parent_names[3] = "masterck";
+>   	parent_names[4] = "pllack_divck";
+>   	parent_names[5] = "upllck_divck";
+> -	for (i = 0; i < 8; i++) {
+> +	for (i = 0; i < 2; i++) {
+>   		char name[6];
+>   
+>   		snprintf(name, sizeof(name), "prog%d", i);
 > 
 
-Thank you Daniel for reviewing this.
 
-Regards,
-Lukasz
-
-[1] 
-https://lore.kernel.org/linux-pm/20201008170426.465-3-lukasz.luba@arm.com/
+-- 
+Nicolas Ferre
