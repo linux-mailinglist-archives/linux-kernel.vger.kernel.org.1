@@ -2,628 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1273A28D9E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB5E28DBFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730812AbgJNGUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 02:20:47 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:57013 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730530AbgJNGTx (ORCPT
+        id S1730210AbgJNItu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730103AbgJNIth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 02:19:53 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 29BC1D44;
-        Wed, 14 Oct 2020 02:19:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 14 Oct 2020 02:19:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=ASa87e7AFDvjK
-        GJwbuOqdboHsJdOeLQUAvDDHuoZPI0=; b=FRg0Z3SvbAvv07qsPNb874oY+kvdQ
-        i66zkHYJ3sNrW3T8O3pVt12ni8eW/H/dL/nuKGVeo17tjTjw2BI3I6H9DiTEsHqf
-        RjMREFBvLg55TNKYEyoWEpc5y1kFSsVwF9Wv2DKJw8Xb77EqI+1DXEAktHP7SeZw
-        DM+I2tGDeh7nzCWM5tr09SO2IuzvInjdRwHm5ECmdlDLtXfdIY4VE6LofeCxn0Y6
-        ncxouTFA803XCIwSXPMY994lj80yZOrtL2ABVrPE5zNR0outXv4cMbuktkYCnGqn
-        hA0Is3zO7/z5FNy6MvfLJejNqaJUos2E/BV9VU63cbCSZeVYDnFREpM6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=ASa87e7AFDvjKGJwbuOqdboHsJdOeLQUAvDDHuoZPI0=; b=liz+fElx
-        YlK288kG99N6FviizRPMMToBEwhX4173gQJYsNiLv0Qbe655soy5tgk9Htv1f1R8
-        QAa0imtYjfCVIf7BkLOx31RV8ylpVYVOmQOuGdPZU1Wsy/O63Llxb+PEXBCIOfbo
-        PPE9E2s1UkvODv11rTpGfHfinqVPbsFpnBapEpfk70uNPDnzAbDcFWPPtcnLKI+q
-        IRvFtUCNCu0/EOZvHE30pAi22TIWU1YgFLds+YYx7RrSEtY+3T8XrY3W/uFfPKPK
-        QUC27WqgyrJ4OVvOkLfMrlmd1HcCNSxw4u1QtAlx6HsoaDhq1smZtXcNU5OkVLne
-        4ATIbV+o57dMtA==
-X-ME-Sender: <xms:hpiGXxU2hYvYYC9y7gs92WnVp8aHXWBBgJgcUEfCgFeMgCr6FOjueA>
-    <xme:hpiGXxkBoW_e1kInSitghUSdjPSyDcOILAL0u7cHQuCPzEJAcHt-n-IDK3KGDoZkh
-    gVKtiYmjC8ammYj2A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedriedtgddutdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpeduhfejfedvhffgfeehtefghfeiiefgfeehgfdvvdevfeegjeehjedv
-    gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgepjeenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:hpiGX9ZF9tafKvOSlgSRfs-qhaJA7IE23JGyreZTYZG5BUE1xJrrBA>
-    <xmx:hpiGX0VsxQP10PLjoFJerGCz1buYuyxNWzApRlo94t3oSEFQy-mKHg>
-    <xmx:hpiGX7nbNNzD2miE4xY8I9rDFxSy4we-59gRmOQauCrlHK4vgZz5iw>
-    <xmx:hpiGX95Pup3tvVmxA50f-KVCalwViShsI-Gto6JbVteKaXadR53vAPx1sn8>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E76543280060;
-        Wed, 14 Oct 2020 02:19:49 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 17/17] ASoC: sun8i-codec: Add the AIF3 DAI, widgets, and routes
-Date:   Wed, 14 Oct 2020 01:19:41 -0500
-Message-Id: <20201014061941.4306-18-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201014061941.4306-1-samuel@sholland.org>
-References: <20201014061941.4306-1-samuel@sholland.org>
+        Wed, 14 Oct 2020 04:49:37 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668EDC045876
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 23:20:56 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id d20so3625200iop.10
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 23:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Yh5eV4hOumNRLJMSxFibYpvMiOE+ffsWbgYFUP6fpwc=;
+        b=IZ6ICDPP+6J5OmKUUrFMB9f0+5pPtItLO6SbUgGJ8S06R0nD0AGgc9muHqhdfw6RHP
+         2U9RORutbBUv47MM0JZs123HjWRMfxSCdllPBGAbB/ZYYdT1oBMTIcLKVNRVnkTzE9SY
+         eP26qYuD7+uCKcJBKi15XdHn9jL7eK914J3YPSNxmKXh2YskJ0enUOsoWHtRkL0ZbtZC
+         s0rQh/yLWHxf+mt/npDW0TeWeeCFEUGbBOJewCXBpSc2SV5LGUOd70Q/l/p2bftNOKHF
+         53wOJ8iONmpJJktVtkFdk929PHzdoD8MuvtHi+A78hjSwMzRtO7a7cqxlKxJNucgqN5G
+         VdpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Yh5eV4hOumNRLJMSxFibYpvMiOE+ffsWbgYFUP6fpwc=;
+        b=NT6R/VYzz+dlZYYs27gFTwoETX7bpU9Z4A84S7hD9g9DCWkD1ANfSWPeVGhJdyy7WT
+         vsoJp9GuXxFlsfDR5yYhYmW3909fccNY93cUS0GJZzl+RtpnPp2Uv4r9S+GY45jrPCPC
+         uxdeS0000b2diAYY6j3DwhlHM9ETFQn/+6GtGs9MHzr+s8Va+B9cAiJJ6ixJbG8q7vTx
+         DAkXQuwMJrj7/a82NuyyNq7h91/U4Pdn8UHlpHJ6elJlwXYE0xTz6sjASmP6RDeHGqG0
+         oFpXqXBWLSvNnucKW1NaAWdxHDy1PDFScIksfw0VXrzfsUtILyK0D12+84UK8TEMTDo9
+         dzzw==
+X-Gm-Message-State: AOAM530tPe35CRK/CyL90TFHytjEnWRL6nTGvM6noKWPsaj6VBUXmb7X
+        udy5EVejetoMRp+LwxHryjvgAgbJ8Afcd5AiZmk=
+X-Google-Smtp-Source: ABdhPJyvY7U0YV3+7uIEBcresE6N4V1dn4C5D+dPgLDPrYwXvzx7ITRo1bTGhesS2/DrYXTxbXYsuBqT8kUEcCaLc1E=
+X-Received: by 2002:a02:6952:: with SMTP id e79mr1967775jac.24.1602656455642;
+ Tue, 13 Oct 2020 23:20:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201013143140.237750-1-arch0.zheng@gmail.com> <20201013154800.GV2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201013154800.GV2611@hirez.programming.kicks-ass.net>
+From:   Qi Zheng <arch0.zheng@gmail.com>
+Date:   Wed, 14 Oct 2020 14:20:44 +0800
+Message-ID: <CA+zs-xGTnL-g=poPxeF3yLwyHD_usZw+GAP0CQmOagCdgkgkRQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/deadline: Replace rq_of_dl_rq(dl_rq_of_se(dl_se))
+ with ... ...task_rq(dl_task_of(dl_se))
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        rostedt@goodmis.org, Benjamin Segall <bsegall@google.com>,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AIF3 has some differences from AIF1 and AIF2:
- - It supports one channel only
- - It supports master mode only
- - It is not directly connected to any of the mixers; instead all audio
-   goes through a mux with AIF2.
- - It does not have its own clock dividers; instead it reuses AIF2 BCLK
-   and LRCK. This means that when both AIF2 and AIF3 are active, they
-   must use the same sample rate and total frame width. Since AIF2 and
-   AIF3 are only used for codec2codec DAI links, constraints are not
-   applicable here; the only thing we can do when the rates don't match
-   is report an error.
+On 2020/10/13 =E4=B8=8B=E5=8D=8811:48, Peter Zijlstra wrote:
+> On Tue, Oct 13, 2020 at 10:31:40PM +0800, Qi Zheng wrote:
+>> The rq is already obtained in the dl_rq_of_se() function:
+>> struct task_struct *p =3D dl_task_of(dl_se);
+>> struct rq *rq =3D task_rq(p);
+>> So there is no need to do extra conversion.
+>>
+>> Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
+>> ---
+>> kernel/sched/deadline.c | 4 ++--
+>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+>> index 6d93f4518734..f64e577f6aba 100644
+>> --- a/kernel/sched/deadline.c
+>> +++ b/kernel/sched/deadline.c
+>> @@ -1152,7 +1152,7 @@ void init_dl_task_timer(struct sched_dl_entity *dl=
+_se)
+>> static inline void dl_check_constrained_dl(struct sched_dl_entity *dl_se=
+)
+>> {
+>> struct task_struct *p =3D dl_task_of(dl_se);
+>> - struct rq *rq =3D rq_of_dl_rq(dl_rq_of_se(dl_se));
+>> + struct rq *rq =3D task_rq(p);
+>>
+>> if (dl_time_before(dl_se->deadline, rq_clock(rq)) &&
+>> dl_time_before(rq_clock(rq), dl_next_period(dl_se))) {
+>> @@ -1498,7 +1498,7 @@ enqueue_dl_entity(struct sched_dl_entity *dl_se,
+>> replenish_dl_entity(dl_se, pi_se);
+>> } else if ((flags & ENQUEUE_RESTORE) &&
+>> dl_time_before(dl_se->deadline,
+>> - rq_clock(rq_of_dl_rq(dl_rq_of_se(dl_se))))) {
+>> + rq_clock(task_rq(dl_task_of(dl_se))))) {
+>> setup_new_dl_entity(dl_se);
+>> }
+>
+> Consider where we're going:
+>
+> https://lkml.kernel.org/r/20200807095051.385985-1-juri.lelli@redhat.com
+>
+> then a dl_entity is no longer immediately a task and the above is no
+> longer true.
+>
 
-Make the necessary adjustments to support this AIF.
+Thanks for your reply, I saw in the patch below that the dl_rq_of_se()
+has been changed to the rq_of_dl_se(), so the above is no longer needed.
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- sound/soc/sunxi/sun8i-codec.c | 138 ++++++++++++++++++++++++++++++++--
- 1 file changed, 130 insertions(+), 8 deletions(-)
+    [RFC PATCH v2 4/6] sched/deadline: Introduce deadline servers
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 6a8232e07983..180442c62be1 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -29,21 +29,23 @@
- #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_PLL		(0x2 << 4)
- #define SUN8I_SYSCLK_CTL_SYSCLK_ENA			3
- #define SUN8I_SYSCLK_CTL_SYSCLK_SRC			0
- #define SUN8I_SYSCLK_CTL_SYSCLK_SRC_AIF1CLK		(0x0 << 0)
- #define SUN8I_SYSCLK_CTL_SYSCLK_SRC_AIF2CLK		(0x1 << 0)
- #define SUN8I_MOD_CLK_ENA				0x010
- #define SUN8I_MOD_CLK_ENA_AIF1				15
- #define SUN8I_MOD_CLK_ENA_AIF2				14
-+#define SUN8I_MOD_CLK_ENA_AIF3				13
- #define SUN8I_MOD_CLK_ENA_ADC				3
- #define SUN8I_MOD_CLK_ENA_DAC				2
- #define SUN8I_MOD_RST_CTL				0x014
- #define SUN8I_MOD_RST_CTL_AIF1				15
- #define SUN8I_MOD_RST_CTL_AIF2				14
-+#define SUN8I_MOD_RST_CTL_AIF3				13
- #define SUN8I_MOD_RST_CTL_ADC				3
- #define SUN8I_MOD_RST_CTL_DAC				2
- #define SUN8I_SYS_SR_CTRL				0x018
- #define SUN8I_SYS_SR_CTRL_AIF1_FS			12
- #define SUN8I_SYS_SR_CTRL_AIF2_FS			8
- #define SUN8I_AIF_CLK_CTRL(n)				(0x040 * (1 + (n)))
- #define SUN8I_AIF_CLK_CTRL_MSTR_MOD			15
- #define SUN8I_AIF_CLK_CTRL_CLK_INV			13
-@@ -84,16 +86,19 @@
- #define SUN8I_AIF2_MXR_SRC_ADCL_MXR_SRC_AIF1DA0L	15
- #define SUN8I_AIF2_MXR_SRC_ADCL_MXR_SRC_AIF1DA1L	14
- #define SUN8I_AIF2_MXR_SRC_ADCL_MXR_SRC_AIF2DACR	13
- #define SUN8I_AIF2_MXR_SRC_ADCL_MXR_SRC_ADCL		12
- #define SUN8I_AIF2_MXR_SRC_ADCR_MXR_SRC_AIF1DA0R	11
- #define SUN8I_AIF2_MXR_SRC_ADCR_MXR_SRC_AIF1DA1R	10
- #define SUN8I_AIF2_MXR_SRC_ADCR_MXR_SRC_AIF2DACL	9
- #define SUN8I_AIF2_MXR_SRC_ADCR_MXR_SRC_ADCR		8
-+#define SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF1		(0x0 << 0)
-+#define SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF2		(0x1 << 0)
-+#define SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF1CLK	(0x2 << 0)
- #define SUN8I_AIF3_PATH_CTRL				0x0cc
- #define SUN8I_AIF3_PATH_CTRL_AIF3_ADC_SRC		10
- #define SUN8I_AIF3_PATH_CTRL_AIF2_DAC_SRC		8
- #define SUN8I_AIF3_PATH_CTRL_AIF3_PINS_TRI		7
- #define SUN8I_ADC_DIG_CTRL				0x100
- #define SUN8I_ADC_DIG_CTRL_ENAD				15
- #define SUN8I_ADC_DIG_CTRL_ADOUT_DTS			2
- #define SUN8I_ADC_DIG_CTRL_ADOUT_DLY			1
-@@ -113,16 +118,17 @@
- #define SUN8I_SYSCLK_CTL_AIF2CLK_SRC_MASK	GENMASK(5, 4)
- #define SUN8I_SYS_SR_CTRL_AIF1_FS_MASK		GENMASK(15, 12)
- #define SUN8I_SYS_SR_CTRL_AIF2_FS_MASK		GENMASK(11, 8)
- #define SUN8I_AIF_CLK_CTRL_CLK_INV_MASK		GENMASK(14, 13)
- #define SUN8I_AIF_CLK_CTRL_BCLK_DIV_MASK	GENMASK(12, 9)
- #define SUN8I_AIF_CLK_CTRL_LRCK_DIV_MASK	GENMASK(8, 6)
- #define SUN8I_AIF_CLK_CTRL_WORD_SIZ_MASK	GENMASK(5, 4)
- #define SUN8I_AIF_CLK_CTRL_DATA_FMT_MASK	GENMASK(3, 2)
-+#define SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_MASK	GENMASK(1, 0)
- 
- #define SUN8I_CODEC_PASSTHROUGH_SAMPLE_RATE 48000
- 
- #define SUN8I_CODEC_PCM_FORMATS	(SNDRV_PCM_FMTBIT_S8     |\
- 				 SNDRV_PCM_FMTBIT_S16_LE |\
- 				 SNDRV_PCM_FMTBIT_S20_LE |\
- 				 SNDRV_PCM_FMTBIT_S24_LE |\
- 				 SNDRV_PCM_FMTBIT_S20_3LE|\
-@@ -133,20 +139,22 @@
- 				 SNDRV_PCM_RATE_96000     |\
- 				 SNDRV_PCM_RATE_176400    |\
- 				 SNDRV_PCM_RATE_192000    |\
- 				 SNDRV_PCM_RATE_KNOT)
- 
- enum {
- 	SUN8I_CODEC_AIF1,
- 	SUN8I_CODEC_AIF2,
-+	SUN8I_CODEC_AIF3,
- 	SUN8I_CODEC_NAIFS
- };
- 
- struct sun8i_codec_aif {
-+	unsigned int	lrck_div_order;
- 	unsigned int	sample_rate;
- 	unsigned int	slots;
- 	unsigned int	slot_width;
- 	unsigned int	active_streams	: 2;
- 	unsigned int	open_streams	: 2;
- };
- 
- struct sun8i_codec_quirks {
-@@ -158,16 +166,18 @@ struct sun8i_codec {
- 	struct regmap			*regmap;
- 	struct clk			*clk_module;
- 	const struct sun8i_codec_quirks	*quirks;
- 	struct sun8i_codec_aif		aifs[SUN8I_CODEC_NAIFS];
- 	unsigned int			sysclk_rate;
- 	int				sysclk_refcnt;
- };
- 
-+static struct snd_soc_dai_driver sun8i_codec_dais[];
-+
- static int sun8i_codec_runtime_resume(struct device *dev)
- {
- 	struct sun8i_codec *scodec = dev_get_drvdata(dev);
- 	int ret;
- 
- 	regcache_cache_only(scodec->regmap, false);
- 
- 	ret = regcache_sync(scodec->regmap);
-@@ -263,19 +273,30 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		break;
- 	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
- 		value = 0x0;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
--			   BIT(SUN8I_AIF_CLK_CTRL_MSTR_MOD),
--			   value << SUN8I_AIF_CLK_CTRL_MSTR_MOD);
-+	if (dai->id == SUN8I_CODEC_AIF3) {
-+		/* AIF3 only supports master mode. */
-+		if (value)
-+			return -EINVAL;
-+
-+		/* Use the AIF2 BCLK and LRCK for AIF3. */
-+		regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-+				   SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_MASK,
-+				   SUN8I_AIF3_CLK_CTRL_AIF3_CLK_SRC_AIF2);
-+	} else {
-+		regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-+				   BIT(SUN8I_AIF_CLK_CTRL_MSTR_MOD),
-+				   value << SUN8I_AIF_CLK_CTRL_MSTR_MOD);
-+	}
- 
- 	/* DAI format */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		format = 0x0;
- 		break;
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		format = 0x1;
-@@ -290,19 +311,25 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_DSP_B:
- 		format = 0x3;
- 		dsp_format = 0x1; /* Set LRCK_INV to 1 */
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
--			   SUN8I_AIF_CLK_CTRL_DATA_FMT_MASK,
--			   format << SUN8I_AIF_CLK_CTRL_DATA_FMT);
-+	if (dai->id == SUN8I_CODEC_AIF3) {
-+		/* AIF3 only supports DSP mode. */
-+		if (format != 3)
-+			return -EINVAL;
-+	} else {
-+		regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-+				   SUN8I_AIF_CLK_CTRL_DATA_FMT_MASK,
-+				   format << SUN8I_AIF_CLK_CTRL_DATA_FMT);
-+	}
- 
- 	/* clock inversion */
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_NF: /* Normal */
- 		invert = 0x0;
- 		break;
- 	case SND_SOC_DAIFMT_NB_IF: /* Inverted LRCK */
- 		invert = 0x1;
-@@ -467,16 +494,17 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct sun8i_codec *scodec = snd_soc_dai_get_drvdata(dai);
- 	struct sun8i_codec_aif *aif = &scodec->aifs[dai->id];
- 	unsigned int sample_rate = params_rate(params);
- 	unsigned int slots = aif->slots ?: params_channels(params);
- 	unsigned int slot_width = aif->slot_width ?: params_width(params);
- 	unsigned int sysclk_rate = sun8i_codec_get_sysclk_rate(sample_rate);
- 	int bclk_div, lrck_div_order, ret, word_size;
-+	u32 clk_reg;
- 
- 	/* word size */
- 	switch (params_width(params)) {
- 	case 8:
- 		word_size = 0x0;
- 		break;
- 	case 16:
- 		word_size = 0x1;
-@@ -495,26 +523,46 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 			   SUN8I_AIF_CLK_CTRL_WORD_SIZ_MASK,
- 			   word_size << SUN8I_AIF_CLK_CTRL_WORD_SIZ);
- 
- 	/* LRCK divider (BCLK/LRCK ratio) */
- 	lrck_div_order = sun8i_codec_get_lrck_div_order(slots, slot_width);
- 	if (lrck_div_order < 0)
- 		return lrck_div_order;
- 
--	regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-+	if (dai->id == SUN8I_CODEC_AIF2 || dai->id == SUN8I_CODEC_AIF3) {
-+		/* AIF2 and AIF3 share AIF2's BCLK and LRCK generation circuitry. */
-+		int partner = (SUN8I_CODEC_AIF2 + SUN8I_CODEC_AIF3) - dai->id;
-+		const struct sun8i_codec_aif *partner_aif = &scodec->aifs[partner];
-+		const char *partner_name = sun8i_codec_dais[partner].name;
-+
-+		if (partner_aif->open_streams &&
-+		    (lrck_div_order != partner_aif->lrck_div_order ||
-+		     sample_rate != partner_aif->sample_rate)) {
-+			dev_err(dai->dev,
-+				"%s sample and bit rates must match %s when both are used\n",
-+				dai->name, partner_name);
-+			return -EBUSY;
-+		}
-+
-+		clk_reg = SUN8I_AIF_CLK_CTRL(SUN8I_CODEC_AIF2);
-+	} else {
-+		clk_reg = SUN8I_AIF_CLK_CTRL(dai->id);
-+	}
-+
-+	regmap_update_bits(scodec->regmap, clk_reg,
- 			   SUN8I_AIF_CLK_CTRL_LRCK_DIV_MASK,
- 			   (lrck_div_order - 4) << SUN8I_AIF_CLK_CTRL_LRCK_DIV);
- 
- 	/* BCLK divider (SYSCLK/BCLK ratio) */
- 	bclk_div = sun8i_codec_get_bclk_div(sysclk_rate, lrck_div_order, sample_rate);
- 	if (bclk_div < 0)
- 		return bclk_div;
- 
--	regmap_update_bits(scodec->regmap, SUN8I_AIF_CLK_CTRL(dai->id),
-+	regmap_update_bits(scodec->regmap, clk_reg,
- 			   SUN8I_AIF_CLK_CTRL_BCLK_DIV_MASK,
- 			   bclk_div << SUN8I_AIF_CLK_CTRL_BCLK_DIV);
- 
- 	/*
- 	 * SYSCLK rate
- 	 *
- 	 * Clock rate protection is reference counted; but hw_params may be
- 	 * called many times per substream, without matching calls to hw_free.
-@@ -530,16 +578,17 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
- 			dai->name, sample_rate);
- 	if (ret < 0)
- 		return ret;
- 
- 	if (!aif->open_streams)
- 		scodec->sysclk_refcnt++;
- 	scodec->sysclk_rate = sysclk_rate;
- 
-+	aif->lrck_div_order = lrck_div_order;
- 	aif->sample_rate = sample_rate;
- 	aif->open_streams |= BIT(substream->stream);
- 
- 	return sun8i_codec_update_sample_rate(scodec);
- }
- 
- static int sun8i_codec_hw_free(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
-@@ -548,16 +597,17 @@ static int sun8i_codec_hw_free(struct snd_pcm_substream *substream,
- 	struct sun8i_codec_aif *aif = &scodec->aifs[dai->id];
- 
- 	/* Drop references when the last substream for the AIF is freed. */
- 	if (aif->open_streams != BIT(substream->stream))
- 		goto done;
- 
- 	clk_rate_exclusive_put(scodec->clk_module);
- 	scodec->sysclk_refcnt--;
-+	aif->lrck_div_order = 0;
- 	aif->sample_rate = 0;
- 
- done:
- 	aif->open_streams &= ~BIT(substream->stream);
- 	return 0;
- }
- 
- static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
-@@ -614,16 +664,41 @@ static struct snd_soc_dai_driver sun8i_codec_dais[] = {
- 			.channels_max	= 2,
- 			.rates		= SUN8I_CODEC_PCM_RATES,
- 			.formats	= SUN8I_CODEC_PCM_FORMATS,
- 		},
- 		.symmetric_rates	= true,
- 		.symmetric_channels	= true,
- 		.symmetric_samplebits	= true,
- 	},
-+	{
-+		.name	= "sun8i-codec-aif3",
-+		.id	= SUN8I_CODEC_AIF3,
-+		.ops	= &sun8i_codec_dai_ops,
-+		/* capture capabilities */
-+		.capture = {
-+			.stream_name	= "AIF3 Capture",
-+			.channels_min	= 1,
-+			.channels_max	= 1,
-+			.rates		= SUN8I_CODEC_PCM_RATES,
-+			.formats	= SUN8I_CODEC_PCM_FORMATS,
-+			.sig_bits	= 24,
-+		},
-+		/* playback capabilities */
-+		.playback = {
-+			.stream_name	= "AIF3 Playback",
-+			.channels_min	= 1,
-+			.channels_max	= 1,
-+			.rates		= SUN8I_CODEC_PCM_RATES,
-+			.formats	= SUN8I_CODEC_PCM_FORMATS,
-+		},
-+		.symmetric_rates	= true,
-+		.symmetric_channels	= true,
-+		.symmetric_samplebits	= true,
-+	},
- };
- 
- static int sun8i_codec_aif_event(struct snd_soc_dapm_widget *w,
- 				 struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
- 	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(component);
- 	struct sun8i_codec_aif *aif = &scodec->aifs[w->sname[3] - '1'];
-@@ -656,16 +731,29 @@ static SOC_ENUM_DOUBLE_DECL(sun8i_aif2_adc_stereo_mux_enum,
- 			    SUN8I_AIF2_ADCDAT_CTRL_AIF2_ADCL_SRC,
- 			    SUN8I_AIF2_ADCDAT_CTRL_AIF2_ADCR_SRC,
- 			    sun8i_aif_stereo_mux_enum_values);
- 
- static const struct snd_kcontrol_new sun8i_aif2_adc_stereo_mux_control =
- 	SOC_DAPM_ENUM("AIF2 ADC Stereo Capture Route",
- 		      sun8i_aif2_adc_stereo_mux_enum);
- 
-+static const char *const sun8i_aif3_adc_mux_enum_values[] = {
-+	"None", "AIF2 ADCL", "AIF2 ADCR"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(sun8i_aif3_adc_mux_enum,
-+			    SUN8I_AIF3_PATH_CTRL,
-+			    SUN8I_AIF3_PATH_CTRL_AIF3_ADC_SRC,
-+			    sun8i_aif3_adc_mux_enum_values);
-+
-+static const struct snd_kcontrol_new sun8i_aif3_adc_mux_control =
-+	SOC_DAPM_ENUM("AIF3 ADC Source Capture Route",
-+		      sun8i_aif3_adc_mux_enum);
-+
- static const struct snd_kcontrol_new sun8i_aif1_ad0_mixer_controls[] = {
- 	SOC_DAPM_DOUBLE("AIF1 Slot 0 Digital ADC Capture Switch",
- 			SUN8I_AIF1_MXR_SRC,
- 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF1DA0L,
- 			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R, 1, 0),
- 	SOC_DAPM_DOUBLE("AIF2 Digital ADC Capture Switch",
- 			SUN8I_AIF1_MXR_SRC,
- 			SUN8I_AIF1_MXR_SRC_AD0L_MXR_SRC_AIF2DACL,
-@@ -765,30 +853,36 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 
- 	/* Module Clocks */
- 	SND_SOC_DAPM_SUPPLY("CLK AIF1",
- 			    SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("CLK AIF2",
- 			    SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_AIF2, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CLK AIF3",
-+			    SUN8I_MOD_CLK_ENA,
-+			    SUN8I_MOD_CLK_ENA_AIF3, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("CLK ADC",
- 			    SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_ADC, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("CLK DAC",
- 			    SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_DAC, 0, NULL, 0),
- 
- 	/* Module Resets */
- 	SND_SOC_DAPM_SUPPLY("RST AIF1",
- 			    SUN8I_MOD_RST_CTL,
- 			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("RST AIF2",
- 			    SUN8I_MOD_RST_CTL,
- 			    SUN8I_MOD_RST_CTL_AIF2, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("RST AIF3",
-+			    SUN8I_MOD_RST_CTL,
-+			    SUN8I_MOD_RST_CTL_AIF3, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("RST ADC",
- 			    SUN8I_MOD_RST_CTL,
- 			    SUN8I_MOD_RST_CTL_ADC, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("RST DAC",
- 			    SUN8I_MOD_RST_CTL,
- 			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
- 
- 	/* Module Supplies */
-@@ -813,27 +907,36 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			       SUN8I_AIF2_ADCDAT_CTRL,
- 			       SUN8I_AIF2_ADCDAT_CTRL_AIF2_ADCL_ENA, 0,
- 			       sun8i_codec_aif_event,
- 			       SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_AIF_OUT("AIF2 ADCR", "AIF2 Capture", 1,
- 			     SUN8I_AIF2_ADCDAT_CTRL,
- 			     SUN8I_AIF2_ADCDAT_CTRL_AIF2_ADCR_ENA, 0),
- 
-+	SND_SOC_DAPM_AIF_OUT_E("AIF3 ADC", "AIF3 Capture", 0,
-+			       SND_SOC_NOPM, 0, 0,
-+			       sun8i_codec_aif_event,
-+			       SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+
- 	/* AIF "ADC" Mono/Stereo Muxes */
- 	SND_SOC_DAPM_MUX("AIF1 AD0L Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif1_ad0_stereo_mux_control),
- 	SND_SOC_DAPM_MUX("AIF1 AD0R Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif1_ad0_stereo_mux_control),
- 
- 	SND_SOC_DAPM_MUX("AIF2 ADCL Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif2_adc_stereo_mux_control),
- 	SND_SOC_DAPM_MUX("AIF2 ADCR Stereo Mux", SND_SOC_NOPM, 0, 0,
- 			 &sun8i_aif2_adc_stereo_mux_control),
- 
-+	/* AIF "ADC" Output Muxes */
-+	SND_SOC_DAPM_MUX("AIF3 ADC Source Capture Route", SND_SOC_NOPM, 0, 0,
-+			 &sun8i_aif3_adc_mux_control),
-+
- 	/* AIF "ADC" Mixers */
- 	SOC_MIXER_ARRAY("AIF1 AD0L Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_aif1_ad0_mixer_controls),
- 	SOC_MIXER_ARRAY("AIF1 AD0R Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_aif1_ad0_mixer_controls),
- 
- 	SOC_MIXER_ARRAY("AIF2 ADCL Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_aif2_adc_mixer_controls),
-@@ -871,16 +974,21 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			      SUN8I_AIF2_DACDAT_CTRL,
- 			      SUN8I_AIF2_DACDAT_CTRL_AIF2_DACL_ENA, 0,
- 			      sun8i_codec_aif_event,
- 			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_AIF_IN("AIF2 DACR", "AIF2 Playback", 1,
- 			    SUN8I_AIF2_DACDAT_CTRL,
- 			    SUN8I_AIF2_DACDAT_CTRL_AIF2_DACR_ENA, 0),
- 
-+	SND_SOC_DAPM_AIF_IN_E("AIF3 DAC", "AIF3 Playback", 0,
-+			      SND_SOC_NOPM, 0, 0,
-+			      sun8i_codec_aif_event,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+
- 	/* ADC Inputs (connected to analog codec DAPM context) */
- 	SND_SOC_DAPM_ADC("ADCL", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_ADC("ADCR", NULL, SND_SOC_NOPM, 0, 0),
- 
- 	/* DAC Outputs (connected to analog codec DAPM context) */
- 	SND_SOC_DAPM_DAC("DACL", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_DAC("DACR", NULL, SND_SOC_NOPM, 0, 0),
- 
-@@ -908,16 +1016,22 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	{ "CLK AIF2", NULL, "AIF2CLK" },
- 	{ "CLK AIF2", NULL, "SYSCLK" },
- 	{ "RST AIF2", NULL, "CLK AIF2" },
- 	{ "AIF2 ADCL", NULL, "RST AIF2" },
- 	{ "AIF2 ADCR", NULL, "RST AIF2" },
- 	{ "AIF2 DACL", NULL, "RST AIF2" },
- 	{ "AIF2 DACR", NULL, "RST AIF2" },
- 
-+	{ "CLK AIF3", NULL, "AIF1CLK" },
-+	{ "CLK AIF3", NULL, "SYSCLK" },
-+	{ "RST AIF3", NULL, "CLK AIF3" },
-+	{ "AIF3 ADC", NULL, "RST AIF3" },
-+	{ "AIF3 DAC", NULL, "RST AIF3" },
-+
- 	{ "CLK ADC", NULL, "SYSCLK" },
- 	{ "RST ADC", NULL, "CLK ADC" },
- 	{ "ADC", NULL, "RST ADC" },
- 	{ "ADCL", NULL, "ADC" },
- 	{ "ADCR", NULL, "ADC" },
- 
- 	{ "CLK DAC", NULL, "SYSCLK" },
- 	{ "RST DAC", NULL, "CLK DAC" },
-@@ -927,16 +1041,18 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 
- 	/* AIF "ADC" Output Routes */
- 	{ "AIF1 AD0L", NULL, "AIF1 AD0L Stereo Mux" },
- 	{ "AIF1 AD0R", NULL, "AIF1 AD0R Stereo Mux" },
- 
- 	{ "AIF2 ADCL", NULL, "AIF2 ADCL Stereo Mux" },
- 	{ "AIF2 ADCR", NULL, "AIF2 ADCR Stereo Mux" },
- 
-+	{ "AIF3 ADC", NULL, "AIF3 ADC Source Capture Route" },
-+
- 	/* AIF "ADC" Mono/Stereo Mux Routes */
- 	{ "AIF1 AD0L Stereo Mux", "Stereo", "AIF1 AD0L Mixer" },
- 	{ "AIF1 AD0L Stereo Mux", "Reverse Stereo", "AIF1 AD0R Mixer" },
- 	{ "AIF1 AD0L Stereo Mux", "Sum Mono", "AIF1 AD0L Mixer" },
- 	{ "AIF1 AD0L Stereo Mux", "Sum Mono", "AIF1 AD0R Mixer" },
- 	{ "AIF1 AD0L Stereo Mux", "Mix Mono", "AIF1 AD0L Mixer" },
- 	{ "AIF1 AD0L Stereo Mux", "Mix Mono", "AIF1 AD0R Mixer" },
- 
-@@ -956,16 +1072,20 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 
- 	{ "AIF2 ADCR Stereo Mux", "Stereo", "AIF2 ADCR Mixer" },
- 	{ "AIF2 ADCR Stereo Mux", "Reverse Stereo", "AIF2 ADCL Mixer" },
- 	{ "AIF2 ADCR Stereo Mux", "Sum Mono", "AIF2 ADCL Mixer" },
- 	{ "AIF2 ADCR Stereo Mux", "Sum Mono", "AIF2 ADCR Mixer" },
- 	{ "AIF2 ADCR Stereo Mux", "Mix Mono", "AIF2 ADCL Mixer" },
- 	{ "AIF2 ADCR Stereo Mux", "Mix Mono", "AIF2 ADCR Mixer" },
- 
-+	/* AIF "ADC" Output Mux Routes */
-+	{ "AIF3 ADC Source Capture Route", "AIF2 ADCL", "AIF2 ADCL Mixer" },
-+	{ "AIF3 ADC Source Capture Route", "AIF2 ADCR", "AIF2 ADCR Mixer" },
-+
- 	/* AIF "ADC" Mixer Routes */
- 	{ "AIF1 AD0L Mixer", "AIF1 Slot 0 Digital ADC Capture Switch", "AIF1 DA0L Stereo Mux" },
- 	{ "AIF1 AD0L Mixer", "AIF2 Digital ADC Capture Switch", "AIF2 DACL Source" },
- 	{ "AIF1 AD0L Mixer", "AIF1 Data Digital ADC Capture Switch", "ADCL" },
- 	{ "AIF1 AD0L Mixer", "AIF2 Inv Digital ADC Capture Switch", "AIF2 DACR Source" },
- 
- 	{ "AIF1 AD0R Mixer", "AIF1 Slot 0 Digital ADC Capture Switch", "AIF1 DA0R Stereo Mux" },
- 	{ "AIF1 AD0R Mixer", "AIF2 Digital ADC Capture Switch", "AIF2 DACR Source" },
-@@ -977,20 +1097,22 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	{ "AIF2 ADCL Mixer", "AIF2 ADC Mixer ADC Capture Switch", "ADCL" },
- 
- 	{ "AIF2 ADCR Mixer", "AIF2 ADC Mixer AIF1 DA0 Capture Switch", "AIF1 DA0R Stereo Mux" },
- 	{ "AIF2 ADCR Mixer", "AIF2 ADC Mixer AIF2 DAC Rev Capture Switch", "AIF2 DACL Source" },
- 	{ "AIF2 ADCR Mixer", "AIF2 ADC Mixer ADC Capture Switch", "ADCR" },
- 
- 	/* AIF "DAC" Input Mux Routes */
- 	{ "AIF2 DACL Source", "AIF2", "AIF2 DACL Stereo Mux" },
-+	{ "AIF2 DACL Source", "AIF3+2", "AIF3 DAC" },
- 	{ "AIF2 DACL Source", "AIF2+3", "AIF2 DACL Stereo Mux" },
- 
- 	{ "AIF2 DACR Source", "AIF2", "AIF2 DACR Stereo Mux" },
- 	{ "AIF2 DACR Source", "AIF3+2", "AIF2 DACR Stereo Mux" },
-+	{ "AIF2 DACR Source", "AIF2+3", "AIF3 DAC" },
- 
- 	/* AIF "DAC" Mono/Stereo Mux Routes */
- 	{ "AIF1 DA0L Stereo Mux", "Stereo", "AIF1 DA0L" },
- 	{ "AIF1 DA0L Stereo Mux", "Reverse Stereo", "AIF1 DA0R" },
- 	{ "AIF1 DA0L Stereo Mux", "Sum Mono", "AIF1 DA0L" },
- 	{ "AIF1 DA0L Stereo Mux", "Sum Mono", "AIF1 DA0R" },
- 	{ "AIF1 DA0L Stereo Mux", "Mix Mono", "AIF1 DA0L" },
- 	{ "AIF1 DA0L Stereo Mux", "Mix Mono", "AIF1 DA0R" },
--- 
-2.26.2
+In addition, when will the SCHED_DEADLINE server infrastructure is
+expected to be integrated into the mainline? It looks great!
 
+Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2020=E5=B9=B410=E6=9C=8813=
+=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8811:48=E5=86=99=E9=81=93=EF=BC=
+=9A
+>
+> On Tue, Oct 13, 2020 at 10:31:40PM +0800, Qi Zheng wrote:
+> > The rq is already obtained in the dl_rq_of_se() function:
+> >       struct task_struct *p =3D dl_task_of(dl_se);
+> >         struct rq *rq =3D task_rq(p);
+> > So there is no need to do extra conversion.
+> >
+> > Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
+> > ---
+> >  kernel/sched/deadline.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> > index 6d93f4518734..f64e577f6aba 100644
+> > --- a/kernel/sched/deadline.c
+> > +++ b/kernel/sched/deadline.c
+> > @@ -1152,7 +1152,7 @@ void init_dl_task_timer(struct sched_dl_entity *d=
+l_se)
+> >  static inline void dl_check_constrained_dl(struct sched_dl_entity *dl_=
+se)
+> >  {
+> >       struct task_struct *p =3D dl_task_of(dl_se);
+> > -     struct rq *rq =3D rq_of_dl_rq(dl_rq_of_se(dl_se));
+> > +     struct rq *rq =3D task_rq(p);
+> >
+> >       if (dl_time_before(dl_se->deadline, rq_clock(rq)) &&
+> >           dl_time_before(rq_clock(rq), dl_next_period(dl_se))) {
+> > @@ -1498,7 +1498,7 @@ enqueue_dl_entity(struct sched_dl_entity *dl_se,
+> >               replenish_dl_entity(dl_se, pi_se);
+> >       } else if ((flags & ENQUEUE_RESTORE) &&
+> >                 dl_time_before(dl_se->deadline,
+> > -                              rq_clock(rq_of_dl_rq(dl_rq_of_se(dl_se))=
+))) {
+> > +                              rq_clock(task_rq(dl_task_of(dl_se))))) {
+> >               setup_new_dl_entity(dl_se);
+> >       }
+>
+> Consider where we're going:
+>
+>   https://lkml.kernel.org/r/20200807095051.385985-1-juri.lelli@redhat.com
+>
+> then a dl_entity is no longer immediately a task and the above is no
+> longer true.
