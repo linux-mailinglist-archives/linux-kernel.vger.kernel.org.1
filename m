@@ -2,53 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5608128D8D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DB028DD03
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729016AbgJNDGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 23:06:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728925AbgJNDGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 23:06:47 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D82D21D7F;
-        Wed, 14 Oct 2020 03:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602644807;
-        bh=ql3qZCl3Fj8AB0GtsV48nH2+OfWWqFk1iAkSL1s+g94=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=MMmw+6DpWDygCk6V2qZPbgGKT5r5kQrW5DTBmVsDoCRTW3qYgMvEZcmZDWxdeoN4C
-         oPbxM699NXBQif8Xqp3N7+9XloJkQ6DtMEz3BMN4GvelCY2TzJ7Il6wODS9QQBs6dt
-         gzXgcYHa9uJSgYP6G1LeIzzqWtDL84o9HdYRmS2Y=
-Content-Type: text/plain; charset="utf-8"
+        id S1731125AbgJNJVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730983AbgJNJUj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:20:39 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC544C041E42
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 20:07:09 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id v23so1256823vsp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 20:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/VspsiIK9WGEgWmx3VPfOzr6gUq8707awunHZRI7g+Q=;
+        b=cvLyi1IV3Yd9Ab6BBpPkihXFqFVcxMH10kXKIYL/8WgURQfV6FuTUqvOyVq8LvP2ei
+         NqZq13IkcKyUv3YwI7baIBlVpRlaL4yKy3oFzDF3l0ehrcc6hhotR2w4/BWR8mr4tGnu
+         TZToqAlyMre5CFErC+95FpvEhQJUuG75l9qUY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/VspsiIK9WGEgWmx3VPfOzr6gUq8707awunHZRI7g+Q=;
+        b=UtX0HerPac4pq391WrKK2iEKrzdPQCenVgCziek2UbaK1r4SmRg9gXY/TH3oHp30ZO
+         mS8v9dlRBErH4kZeQNMb6CBWDyyoolawd5XX3RN6XOaoapBuZjX0GyntxQGfmA/DQZ4E
+         WEXMvvARC8tntn5jUhZPAysHEhV28o0q8fsqDpR1qHVYvLLONA7i+XbossYCjBO/qEXM
+         AY3vhvh8G1SZEaUny8uTwKmqsOkgN/ERvqEouJalRxKJ29AxHWoCYBeYuZQ2k4Q9T7F0
+         LLvdqV2xqXTBuTSBTBqcxl1nU2Hih+NKSZEtb/MmmIjrZoFxMMpuWKuPew1cH6tjdTBb
+         Z+Jw==
+X-Gm-Message-State: AOAM531K6zxEosU+PM9ChOEDhdRZPf0di8tSl5dItoD5leokd1DmMpf0
+        wT2r+qCTC9O8zsAZpLKas2SVdkIm4Zgi1/kDSU3MdQ==
+X-Google-Smtp-Source: ABdhPJyeztC0cKlxpxJbcdpKGnjLokQ5Hbk3yut4wnAn+KbU58QE/bDjZToy72mqLJB3xoj//4U1Nx1Wmu2jQvyz1Ho=
+X-Received: by 2002:a67:2f81:: with SMTP id v123mr2278664vsv.16.1602644828982;
+ Tue, 13 Oct 2020 20:07:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200903015048.3091523-5-paul@crapouillou.net>
-References: <20200903015048.3091523-1-paul@crapouillou.net> <20200903015048.3091523-5-paul@crapouillou.net>
-Subject: Re: [PATCH 5/5] clk: ingenic: Respect CLK_SET_RATE_PARENT in .round_rate
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     od@zcrc.me, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Paul Cercueil <paul@crapouillou.net>
-Date:   Tue, 13 Oct 2020 20:06:46 -0700
-Message-ID: <160264480620.310579.9836141922826340588@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20201012124547.16649-1-wenbin.mei@mediatek.com>
+ <20201012124547.16649-5-wenbin.mei@mediatek.com> <72ae1d89-fe31-4f50-15c0-29119d662ea1@gmail.com>
+ <1602642530.11864.3.camel@mhfsdcap03>
+In-Reply-To: <1602642530.11864.3.camel@mhfsdcap03>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 14 Oct 2020 11:06:58 +0800
+Message-ID: <CANMq1KBe9u25yDxg8UtmOX4vhr8De=5-pJyMRkSBF4O=FpBN9A@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] mmc: mediatek: Add subsys clock control for MT8192 msdc
+To:     Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        linux-mmc@vger.kernel.org,
+        Devicetree List <devicetree@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Paul Cercueil (2020-09-02 18:50:48)
-> Clocks that don't have a divider are in our case all marked with the
-> CLK_SET_RATE_PARENT flag. In this case, the .round_rate implementation
-> should modify the value pointed to by parent_rate, in order to propagate
-> the rate change to the parent, as explained in the documentation of
-> clk_set_rate().
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
+On Wed, Oct 14, 2020 at 10:29 AM Wenbin Mei <wenbin.mei@mediatek.com> wrote:
+>
+> On Tue, 2020-10-13 at 17:10 +0200, Matthias Brugger wrote:
+> >
+> > On 12/10/2020 14:45, Wenbin Mei wrote:
+> > > MT8192 msdc is an independent sub system, we need control more bus
+> > > clocks for it.
+> > > Add support for the additional subsys clocks to allow it to be
+> > > configured appropriately.
+> > >
+> > > Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
+> > > ---
+> > >   drivers/mmc/host/mtk-sd.c | 74 +++++++++++++++++++++++++++++----------
+> > >   1 file changed, 56 insertions(+), 18 deletions(-)
+> > >
+> > > diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> > > index a704745e5882..c7df7510f120 100644
+> > > --- a/drivers/mmc/host/mtk-sd.c
+> > > +++ b/drivers/mmc/host/mtk-sd.c
+> > [...]
+> > > +static int msdc_of_clock_parse(struct platform_device *pdev,
+> > > +                          struct msdc_host *host)
+> > > +{
+> > > +   int ret;
+> > > +
+> > > +   host->src_clk = devm_clk_get(&pdev->dev, "source");
+> > > +   if (IS_ERR(host->src_clk))
+> > > +           return PTR_ERR(host->src_clk);
+> > > +
+> > > +   host->h_clk = devm_clk_get(&pdev->dev, "hclk");
+> > > +   if (IS_ERR(host->h_clk))
+> > > +           return PTR_ERR(host->h_clk);
+> > > +
+> > > +   host->bus_clk = devm_clk_get_optional(&pdev->dev, "bus_clk");
+> > > +   if (IS_ERR(host->bus_clk))
+> > > +           host->bus_clk = NULL;
+> > > +
+> > > +   /*source clock control gate is optional clock*/
+> > > +   host->src_clk_cg = devm_clk_get_optional(&pdev->dev, "source_cg");
+> > > +   if (IS_ERR(host->src_clk_cg))
+> > > +           host->src_clk_cg = NULL;
+> > > +
+> > > +   host->sys_clk_cg = devm_clk_get_optional(&pdev->dev, "sys_cg");
+> > > +   if (IS_ERR(host->sys_clk_cg))
+> > > +           host->sys_clk_cg = NULL;
+> > > +
+> > > +   /* If present, always enable for this clock gate */
+> > > +   clk_prepare_enable(host->sys_clk_cg);
+> > > +
+> > > +   host->bulk_clks[0].id = "pclk_cg";
+> > > +   host->bulk_clks[1].id = "axi_cg";
+> > > +   host->bulk_clks[2].id = "ahb_cg";
+> >
+> > That looks at least suspicious. The pointers of id point to some strings defined
+> > in the function. Aren't they out of scope once msdc_of_clock_parse() has returned?
+> >
+> These constants are not in stack range, so they will not be lost.
+> And I have confirmed it after msdc_of_clock_parse() has returned, these
+> ids still exist.
 
-Applied to clk-next
+Yes I guess the constants end up in .rodata (or similar section), but
+I'm not sure if this is absolutely guaranteed.
+
+In any case, this is a commonly used pattern, so I'd hope it's fine
+(just a sample, there are more):
+https://elixir.bootlin.com/linux/latest/source/drivers/pci/controller/dwc/pcie-qcom.c#L266
+https://elixir.bootlin.com/linux/latest/source/sound/soc/codecs/wm8994.c#L4638
+https://elixir.bootlin.com/linux/latest/source/drivers/mfd/madera-core.c#L467
+https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpio-dwapb.c#L675
+
+>
+> > Regards,
+> > Matthias
+>
