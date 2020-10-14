@@ -2,135 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC4328DBAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8632A28DB77
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729561AbgJNIee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:34:34 -0400
-Received: from aclms1.advantech.com.tw ([61.58.41.199]:27403 "EHLO
-        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727289AbgJNIeb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:34:31 -0400
-X-Greylist: delayed 604 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Oct 2020 04:34:27 EDT
-Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te2345aebf9ac14014b1418@ACLMS1.advantech.com.tw>;
- Wed, 14 Oct 2020 16:29:42 +0800
-Received: from localhost (172.16.12.104) by taipei09.ADVANTECH.CORP
- (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 14 Oct
- 2020 16:29:41 +0800
-From:   Shihlun Lin <shihlun.lin@advantech.com.tw>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Campion Kang <campion.kang@advantech.com.tw>,
-        Shihlun Lin <shihlun.lin@advantech.com.tw>,
-        AceLan Kao <chia-lin.kao@canonical.com>
-Subject: [PATCH 2/2] dt-bindings: mfd: ahc1ec0.yaml: Add Advantech Embedded Controll - AHC1EC0
-Date:   Wed, 14 Oct 2020 16:29:41 +0800
-Message-ID: <20201014082941.25385-2-shihlun.lin@advantech.com.tw>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201014082941.25385-1-shihlun.lin@advantech.com.tw>
-References: <20201014082941.25385-1-shihlun.lin@advantech.com.tw>
+        id S1728094AbgJNI3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:29:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726129AbgJNI3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:29:23 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1793E20BED;
+        Wed, 14 Oct 2020 08:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602664164;
+        bh=6NJskJy0W4tI6ZEToYbDkmCMYEBI2GUY0AFKZDiB9+o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=xR1P3BvGV0gGOsc1ZehbRGPzaVWgHky8lcu5heBb64L1wr19vWz2E9SocyMTpLsWB
+         c1BZ/P+wdZxwn9PUQqT/vyZ52LJ7j5j2ysdSUme9goLPt0FcSTBg+yiTF467OSjZc/
+         i/hy9HSrF4uAvdJzB7SipwtdfCZm93wnqR1JjHKY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.239
+Date:   Wed, 14 Oct 2020 10:29:58 +0200
+Message-Id: <1602664198225233@kroah.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.12.104]
-X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
- taipei09.ADVANTECH.CORP (172.20.0.236)
-X-StopIT: No
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT binding schema for Advantech embedded controller AHC1EC0.
+I'm announcing the release of the 4.4.239 kernel.
 
-Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
----
- .../devicetree/bindings/mfd/ahc1ec0.yaml      | 76 +++++++++++++++++++
- 1 file changed, 76 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/ahc1ec0.yaml
+All users of the 4.4 kernel series must upgrade.
 
-diff --git a/Documentation/devicetree/bindings/mfd/ahc1ec0.yaml b/Documentation/devicetree/bindings/mfd/ahc1ec0.yaml
-new file mode 100644
-index 000000000000..2a3581d2ecab
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/ahc1ec0.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+# All the top-level keys are standard json-schema keywords except for
-+# 'maintainers' and 'select'
-+
-+
-+$id: http://devicetree.org/schemas/mfd/ahc1ec0.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Advantech Embedded Controller (AHC1EC0)
-+
-+maintainers:
-+  - Shihlun Lin <shihlun.lin@advantech.com.tw>
-+  - Campion Kang <campion.kang@advantech.com.tw>
-+
-+description: |
-+  AHC1EC0 is one of the embedded controllers used by Advantech to provide several
-+  functions such as watchdog, hwmon, brightness, etc. Advantech related applications
-+  can control the whole system via these functions.
-+
-+  # In this case, a 'false' schema will never match.
-+
-+properties:
-+  compatible:
-+    const: advantech,ahc1ec0
-+
-+  advantech,sub-dev-nb:
-+    description:
-+      The number of sub-devices specified in the platform.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maxItems: 1
-+
-+  advantech,sub-dev:
-+    description:
-+      A list of the sub-devices supported in the platform. Defines for the
-+      appropriate values can found in dt-bindings/mfd/ahc1ec0.h.
-+    $ref: "/schemas/types.yaml#/definitions/uint32-array"
-+    minItems: 1
-+    maxItems: 6
-+
-+  advantech,hwmon-profile:
-+    description:
-+      The number of sub-devices specified in the platform. Defines for the
-+      hwmon profiles can found in dt-bindings/mfd/ahc1ec0.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - advantech,sub-dev-nb
-+  - advantech,sub-dev
-+
-+if:
-+  properties:
-+    advantech,sub-dev:
-+      contains:
-+        const: AHC1EC0_SUBDEV_HWMON
-+then:
-+  required:
-+    - advantech,hwmon-profile
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/mfd/ahc1ec0.h>
-+    ahc1ec0 {
-+        compatible = "advantech,ahc1ec0";
-+
-+        advantech,sub-dev-nb = <2>;
-+        advantech,sub-dev = <AHC1EC0_SUBDEV_HWMON
-+                             AHC1EC0_SUBDEV_WDT>;
-+
-+        advantech,hwmon-profile = <AHC1EC0_HWMON_PRO_UNO2271G>;
-+    };
--- 
-2.17.1
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                             |    2 
+ drivers/base/dd.c                                    |    5 
+ drivers/clk/samsung/clk-exynos4.c                    |    4 
+ drivers/gpio/gpio-tc3589x.c                          |    2 
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c          |    2 
+ drivers/i2c/busses/i2c-cpm.c                         |    3 
+ drivers/input/serio/i8042-x86ia64io.h                |    7 +
+ drivers/iommu/exynos-iommu.c                         |    8 +
+ drivers/mtd/nand/nand_base.c                         |   22 ++-
+ drivers/net/bonding/bond_main.c                      |    1 
+ drivers/net/ethernet/dec/tulip/de2104x.c             |    2 
+ drivers/net/ethernet/renesas/ravb_main.c             |  110 +++++++++----------
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c |   15 --
+ drivers/net/team/team.c                              |    3 
+ drivers/net/usb/rndis_host.c                         |    2 
+ drivers/net/usb/rtl8150.c                            |   16 ++
+ drivers/net/wan/hdlc_cisco.c                         |    1 
+ drivers/net/wan/hdlc_fr.c                            |    3 
+ drivers/net/wan/hdlc_ppp.c                           |    1 
+ drivers/net/wan/lapbether.c                          |    4 
+ drivers/platform/x86/thinkpad_acpi.c                 |    6 -
+ drivers/video/console/fbcon.c                        |   12 ++
+ drivers/video/console/fbcon.h                        |    7 -
+ drivers/video/console/fbcon_rotate.c                 |    1 
+ drivers/video/console/newport_con.c                  |    7 -
+ drivers/video/console/tileblit.c                     |    1 
+ fs/eventpoll.c                                       |   71 +++++-------
+ fs/nfs/dir.c                                         |    3 
+ include/linux/font.h                                 |   13 ++
+ include/linux/mtd/nand.h                             |    6 -
+ include/net/xfrm.h                                   |   16 +-
+ kernel/kmod.c                                        |    9 +
+ lib/fonts/font_10x18.c                               |    9 -
+ lib/fonts/font_6x10.c                                |    9 -
+ lib/fonts/font_6x11.c                                |    9 -
+ lib/fonts/font_7x14.c                                |    9 -
+ lib/fonts/font_8x16.c                                |    9 -
+ lib/fonts/font_8x8.c                                 |    9 -
+ lib/fonts/font_acorn_8x8.c                           |    9 +
+ lib/fonts/font_mini_4x6.c                            |    8 -
+ lib/fonts/font_pearl_8x8.c                           |    9 -
+ lib/fonts/font_sun12x22.c                            |    9 -
+ lib/fonts/font_sun8x16.c                             |    7 -
+ net/netfilter/nf_conntrack_netlink.c                 |    2 
+ net/rxrpc/ar-key.c                                   |   16 ++
+ net/sctp/auth.c                                      |    1 
+ net/wireless/nl80211.c                               |    3 
+ net/xfrm/xfrm_state.c                                |   13 +-
+ tools/perf/builtin-top.c                             |    4 
+ 49 files changed, 283 insertions(+), 217 deletions(-)
+
+Aaron Ma (1):
+      platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
+
+Al Viro (4):
+      epoll: do not insert into poll queues until all sanity checks are done
+      epoll: replace ->visited/visited_list with generation count
+      epoll: EPOLL_CTL_ADD: close the race in decision to take fast path
+      ep_create_wakeup_source(): dentry name can change under you...
+
+Anant Thazhemadam (3):
+      net: wireless: nl80211: fix out-of-bounds access in nl80211_del_key()
+      net: team: fix memory leak in __team_options_register
+      net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
+
+Antony Antony (2):
+      xfrm: clone XFRMA_REPLAY_ESN_VAL in xfrm_do_migrate
+      xfrm: clone whole liftime_cur structure in xfrm_do_migrate
+
+David Howells (2):
+      rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()
+      rxrpc: Fix server keyring leak
+
+Eric Dumazet (3):
+      sctp: fix sctp_auth_init_hmacs() error path
+      team: set dev->needed_headroom in team_setup_by_port()
+      bonding: set dev->needed_headroom in bond_setup_by_slave()
+
+Geert Uytterhoeven (1):
+      Revert "ravb: Fixed to be able to unload modules"
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.239
+
+Herbert Xu (1):
+      xfrm: Use correct address family in xfrm_state_find
+
+Jean Delvare (1):
+      drm/amdgpu: restore proper ref count in amdgpu_display_crtc_set_config
+
+Jeffrey Mitchell (1):
+      nfs: Fix security label length not being reset
+
+Jiri Kosina (1):
+      Input: i8042 - add nopnp quirk for Acer Aspire 5 A515
+
+Linus Torvalds (1):
+      usermodehelper: reset umask to default before executing user process
+
+Lucy Yan (1):
+      net: dec: de2104x: Increase receive ring size for Tulip
+
+Marc Dionne (1):
+      rxrpc: Fix rxkad token xdr encoding
+
+Marek Szyprowski (1):
+      clk: samsung: exynos4: mark 'chipid' clock as CLK_IGNORE_UNUSED
+
+Nicolas VINCENT (1):
+      i2c: cpm: Fix i2c_ram structure
+
+Olympia Giannou (1):
+      rndis_host: increase sleep time in the query-response loop
+
+Peilin Ye (3):
+      fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
+      Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
+      fbcon: Fix global-out-of-bounds read in fbcon_get_font()
+
+Richard Weinberger (1):
+      mtd: nand: Provide nand_cleanup() function to free NAND related resources
+
+Tetsuo Handa (1):
+      driver core: Fix probe_count imbalance in really_probe()
+
+Tom Rix (1):
+      platform/x86: thinkpad_acpi: initialize tp_nvram_state variable
+
+Tommi Rantala (1):
+      perf top: Fix stdio interface input handling with glibc 2.28+
+
+Voon Weifeng (1):
+      net: stmmac: removed enabling eee in EEE set callback
+
+Will McVicker (1):
+      netfilter: ctnetlink: add a range check for l3/l4 protonum
+
+Xie He (2):
+      drivers/net/wan/lapbether: Make skb->protocol consistent with the header
+      drivers/net/wan/hdlc: Set skb->protocol before transmitting
+
+Yu Kuai (1):
+      iommu/exynos: add missing put_device() call in exynos_iommu_of_xlate()
+
+dillon min (1):
+      gpio: tc35894: fix up tc35894 interrupt configuration
 
