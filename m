@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDEA28D842
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368B528D83E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgJNCKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 22:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57416 "EHLO mail.kernel.org"
+        id S1728951AbgJNCJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:09:47 -0400
+Received: from mga06.intel.com ([134.134.136.31]:51139 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728973AbgJNCJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 22:09:49 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FC7621D81;
-        Wed, 14 Oct 2020 02:09:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602641388;
-        bh=32rr6xjv+li58m+dWdCFjqudSTOamJ/mwaSI2fYTyck=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=pfC3Gtub84F7sm3fAWoewKiAxKPaU4COpjAIaEgInnwRxH/7kaKzCMIWbvJt7+H45
-         X3XBszR8RYZfAnyWUtENLEKlCrLW9MIKgDrbVtB7lsgccGInArXWeUN1mGC8zWIHRt
-         rOGf+gH4lebg8z7clnPJK9bvF9l71uy/srnwgWEY=
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1602609110-11504-3-git-send-email-tdas@codeaurora.org>
-References: <1602609110-11504-1-git-send-email-tdas@codeaurora.org> <1602609110-11504-3-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: clock: Add YAML schemas for the QCOM Camera clock bindings.
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 13 Oct 2020 19:09:47 -0700
-Message-ID: <160264138707.310579.18410759318207954658@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        id S1725874AbgJNCJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 22:09:46 -0400
+IronPort-SDR: uvOTCWmGsaZRZSrvd/jgPNy5wbzXN9FFIdG5TEfp2HnIs1OqMxzJutocORXl1QFy0wLfA3WewE
+ 4r9yuOWB3chg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="227659782"
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="227659782"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 19:09:44 -0700
+IronPort-SDR: zNuSmsQyZC58CaJVJlolLCkNbfiDEJ/GctdvvPxHCgsClkX2fjDCVYPdUe+Q+h5m8zRaehjRib
+ 0obiY4OxgG4Q==
+X-IronPort-AV: E=Sophos;i="5.77,373,1596524400"; 
+   d="scan'208";a="530645086"
+Received: from chenyi-pc.sh.intel.com ([10.239.159.72])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Oct 2020 19:09:42 -0700
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC v2 0/7] KVM: PKS Virtualization support
+Date:   Wed, 14 Oct 2020 10:11:49 +0800
+Message-Id: <20201014021157.18022-1-chenyi.qiang@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2020-10-13 10:11:49)
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.ya=
-ml b/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.yaml
-> new file mode 100644
-> index 0000000..07bd38e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/qcom,sc7180-camcc.yaml
-> @@ -0,0 +1,73 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/qcom,sc7180-camcc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Camera Clock & Reset Controller Binding for SC7180
-> +
-> +maintainers:
-> +  - Taniya Das <tdas@codeaurora.org>
-> +
-> +description: |
-> +  Qualcomm camera clock control module which supports the clocks, resets=
- and
-> +  power domains on SC7180.
-> +
-> +  See also:
-> +  - dt-bindings/clock/qcom,camcc-sc7180.h.
+Protection Keys for Supervisor Pages(PKS) is a feature that extends the
+Protection Keys architecture to support thread-specific permission
+restrictions on supervisor pages.
 
-Maybe just=20
+PKS works similar to an existing feature named PKU(protecting user pages).
+They both perform an additional check after all legacy access
+permissions checks are done. If violated, #PF occurs and PFEC.PK bit will
+be set. PKS introduces MSR IA32_PKRS to manage supervisor protection key
+rights. The MSR contains 16 pairs of ADi and WDi bits. Each pair
+advertises on a group of pages with the same key which is set in the
+leaf paging-structure entries(bits[62:59]). Currently, IA32_PKRS is not
+supported by XSAVES architecture.
 
-     - dt-bindings/clock/qcom,camcc-sc7180.h
+This patchset aims to add the virtualization of PKS in KVM. It
+implemented PKS CPUID enumeration, vmentry/vmexit configuration, MSR
+exposure, nested supported etc. Currently, PKS is not yet supported for
+shadow paging. 
 
-so that us copy/pasters don't have to delete anything.
+Detailed information about PKS can be found in the latest Intel 64 and
+IA-32 Architectures Software Developer's Manual.
 
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sc7180-camcc
-> +
-> +  clocks:
-> +    items:
-> +      - description: Board XO source
-> +      - description: Camera_ahb clock from GCC
-> +      - description: Camera XO clock from GCC
-> +
+---
+
+Changelogs:
+
+v1->v2:
+- rebase on the latest PKS kernel support:
+  https://github.com/weiny2/linux-kernel/tree/pks-rfc-v3
+- add a kvm-unit-tests for PKS
+- add the check in kvm_init_msr_list for PKRS
+- place the X86_CR4_PKS in mmu_role_bits in kvm_set_cr4
+- add the support to expose VM_{ENTRY, EXIT}_LOAD_IA32_PKRS in nested
+  VMX MSR
+- RFC v1: https://lore.kernel.org/lkml/20200807084841.7112-1-chenyi.qiang@intel.com/
+
+---
+
+Chenyi Qiang (7):
+  KVM: VMX: Introduce PKS VMCS fields
+  KVM: VMX: Expose IA32_PKRS MSR
+  KVM: MMU: Rename the pkru to pkr
+  KVM: MMU: Refactor pkr_mask to cache condition
+  KVM: MMU: Add support for PKS emulation
+  KVM: X86: Expose PKS to guest and userspace
+  KVM: VMX: Enable PKS for nested VM
+
+ arch/x86/include/asm/kvm_host.h | 13 ++---
+ arch/x86/include/asm/pkeys.h    |  1 +
+ arch/x86/include/asm/vmx.h      |  6 +++
+ arch/x86/kvm/cpuid.c            |  3 +-
+ arch/x86/kvm/mmu.h              | 36 +++++++------
+ arch/x86/kvm/mmu/mmu.c          | 78 +++++++++++++++-------------
+ arch/x86/kvm/vmx/capabilities.h |  6 +++
+ arch/x86/kvm/vmx/nested.c       | 38 +++++++++++++-
+ arch/x86/kvm/vmx/vmcs.h         |  1 +
+ arch/x86/kvm/vmx/vmcs12.c       |  2 +
+ arch/x86/kvm/vmx/vmcs12.h       |  6 ++-
+ arch/x86/kvm/vmx/vmx.c          | 91 +++++++++++++++++++++++++++++++--
+ arch/x86/kvm/vmx/vmx.h          |  1 +
+ arch/x86/kvm/x86.c              |  9 +++-
+ arch/x86/kvm/x86.h              |  6 +++
+ arch/x86/mm/pkeys.c             |  6 +++
+ include/linux/pkeys.h           |  4 ++
+ 17 files changed, 239 insertions(+), 68 deletions(-)
+
+-- 
+2.17.1
+
