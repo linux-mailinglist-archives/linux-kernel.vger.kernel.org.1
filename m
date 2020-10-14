@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AE228E050
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE7628E054
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729162AbgJNMLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:11:19 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:53122 "EHLO
+        id S1729449AbgJNMMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:12:18 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:49220 "EHLO
         mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgJNMLS (ORCPT
+        with ESMTP id S1726462AbgJNMMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:11:18 -0400
-Received: by mail-io1-f72.google.com with SMTP id e10so2224252ioq.19
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:11:16 -0700 (PDT)
+        Wed, 14 Oct 2020 08:12:17 -0400
+Received: by mail-io1-f72.google.com with SMTP id 140so2236993iou.16
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:12:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=BbVySK820kv4hRTVQvHs4ijb0VJ8p3tZyO+wMtqUIM0=;
-        b=cqed3czpb0Ot6CV0ANov200tyyYtSoZ1favi3eZcC7yc12FKQhXbkYSZUjEEvzxEei
-         oHDlneTbOnie2bIw973B4dnYunILAT/1vT7unpjUlmt5UlFP6Vqod3a1myDlerSP9YKK
-         FW2i95eiHFZ1LadTC9cvf9ZHhN5uaXFep8iMB4J1ZIFxfimRjF+UcFpavYAepsndcD4J
-         eBVd4AcQA6Biy6IeNxP/TsClAGRZYfyQhgduD+UWacF3om7ALQnIca9XETlohVBy+JxK
-         eJy/CF1/nh8OLoDpuG2Mv4RMIe7qPRbTIQyc7tiNnSbsdlmDCIvXYe8lpfKxBWIYp6Za
-         8KJg==
-X-Gm-Message-State: AOAM533Ko0v3IrZibR8ZC5tQy5pWiLGZLxP4vaLS7k46MONe5YkqmaXf
-        +ItE8swEVBOK7E6uIYFoV9XHIa1mPnKuJMabPWRUJjgasypD
-X-Google-Smtp-Source: ABdhPJw15WDNyW3HVyWhCIAlcuyf+s8F8ggLdT2ONdHT0Qv/gFxtVmfgS8iRJfDry5Kot2PN9i5gZF5hp2fLJr1VXGYhvtAc5nFG
+        bh=zg+I8d7ndikJ7TpxgGlYT9fzJHpVC4H6Dh85V9obOeM=;
+        b=P/7jgMKgyy/2vkI8f6m8hpqilW7MEHQmrt5m9IbH1MGVS9L6ZQiYlBqbCgqmLBpijW
+         B0pP/uo5Ks8GbD8VUNKhcC6E3byAm1W3Rt2Cv4IYVNz57t5+owFizOfe1SdUQ0UncSZ9
+         FhQJwlCPGRuezcUKc9k68WoU6h1bHUvWNcYiNLagVyed7iNbEp2x7E53WQw2EC69LGoI
+         T1V99jy1ARMjVPRY+DV8FIL/CVtlanc0WB+nvAEh7RHv4uzUQpUwhqCOCfxVqI/wHSfo
+         Oype9HmUof5mU08RTwsvv2zcfj5DM+Ehn1BaJLY0I2pfaKwzDSMk6gej4Hb94MNupIe7
+         27uw==
+X-Gm-Message-State: AOAM531CBOSe6zqZeE3Qk4LSNt0tCtz3hw4eU79LLKIrbYYe2jvyxs6f
+        9F5OmXdDQP5zF1zedhnnUPxzyWORA0gwURzr1aQFq2qvIfX6
+X-Google-Smtp-Source: ABdhPJzRW7x0/xlervt4O2pE68CaIIdEKA1VQFrZob2AbSmj39suHSe9DEIiaQwntmUbHW3aGq5XiLTagbrw77a+fKZ0sJf2cLXK
 MIME-Version: 1.0
-X-Received: by 2002:a92:8e51:: with SMTP id k17mr3471376ilh.270.1602677476505;
- Wed, 14 Oct 2020 05:11:16 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 05:11:16 -0700
+X-Received: by 2002:a92:c88e:: with SMTP id w14mr3290219ilo.185.1602677536914;
+ Wed, 14 Oct 2020 05:12:16 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 05:12:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ad3f7f05b1a06d8a@google.com>
-Subject: KASAN: use-after-free Read in ntfs_are_names_equal
-From:   syzbot <syzbot+ecbcf37464c627253e44@syzkaller.appspotmail.com>
-To:     anton@tuxera.com, linux-kernel@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000004702c605b1a0717e@google.com>
+Subject: WARNING in cleanup_mnt (2)
+From:   syzbot <syzbot+428c51fcb8f9e5a84850@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,77 +49,61 @@ syzbot found the following issue on:
 
 HEAD commit:    bbf5c979 Linux 5.9
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1359031b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f3005fbc9c851d04
-dashboard link: https://syzkaller.appspot.com/bug?extid=ecbcf37464c627253e44
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16698ffb900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141b8558500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15498ffb900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3d8333c88fe898d7
+dashboard link: https://syzkaller.appspot.com/bug?extid=428c51fcb8f9e5a84850
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ecbcf37464c627253e44@syzkaller.appspotmail.com
+Reported-by: syzbot+428c51fcb8f9e5a84850@syzkaller.appspotmail.com
 
-ntfs: (device loop0): ntfs_read_locked_inode(): Failed with error code -5.  Marking corrupt inode 0xa as bad.  Run chkdsk.
-ntfs: (device loop0): load_and_init_upcase(): Failed to load $UpCase from the volume. Using default.
-ntfs: volume version 3.1.
-ntfs: (device loop0): map_mft_record_page(): Mft record 0x2 is corrupt.  Run chkdsk.
-==================================================================
-BUG: KASAN: use-after-free in ntfs_ucsncmp fs/ntfs/unistr.c:142 [inline]
-BUG: KASAN: use-after-free in ntfs_are_names_equal+0x2f8/0x340 fs/ntfs/unistr.c:61
-Read of size 2 at addr ffff888086758ee8 by task syz-executor601/6839
-
-CPU: 0 PID: 6839 Comm: syz-executor601 Not tainted 5.9.0-syzkaller #0
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 30737 at fs/namespace.c:1109 cleanup_mnt+0x409/0x530 fs/namespace.c:1109
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 30737 Comm: syz-executor.3 Not tainted 5.9.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- print_address_description+0x66/0x620 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report+0x132/0x1d0 mm/kasan/report.c:530
- ntfs_ucsncmp fs/ntfs/unistr.c:142 [inline]
- ntfs_are_names_equal+0x2f8/0x340 fs/ntfs/unistr.c:61
- ntfs_attr_find+0x36d/0xac0 fs/ntfs/attrib.c:614
- ntfs_attr_lookup+0x1ec/0x23b0 fs/ntfs/attrib.c:1189
- ntfs_read_locked_attr_inode fs/ntfs/inode.c:1233 [inline]
- ntfs_attr_iget+0x48c/0x21a0 fs/ntfs/inode.c:238
- ntfs_read_locked_inode+0x36fd/0x4e30 fs/ntfs/inode.c:954
- ntfs_iget+0xc2/0x130 fs/ntfs/inode.c:177
- load_system_files fs/ntfs/super.c:1974 [inline]
- ntfs_fill_super+0x5c38/0x8bd0 fs/ntfs/super.c:2894
- mount_bdev+0x24f/0x360 fs/super.c:1417
- legacy_get_tree+0xea/0x180 fs/fs_context.c:592
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x179d/0x29e0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount+0x126/0x180 fs/namespace.c:3390
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45726a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 8d a3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 6a a3 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffcaca0cb18 EFLAGS: 00000287 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffcaca0cb70 RCX: 000000000045726a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffcaca0cb30
-RBP: 0000000000000004 R08: 00007ffcaca0cb70 R09: 0000000000316777
-R10: 0000000000000000 R11: 0000000000000287 R12: 0000000000000003
-R13: 00007ffcaca0cb30 R14: 0000000000000000 R15: 0000000020001218
-
-The buggy address belongs to the page:
-page:000000007012e419 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x86758
-flags: 0xfffe0000000000()
-raw: 00fffe0000000000 ffffea000219d688 ffffea000219d3c8 0000000000000000
-raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888086758d80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888086758e00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff888086758e80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                          ^
- ffff888086758f00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888086758f80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:cleanup_mnt+0x409/0x530 fs/namespace.c:1109
+Code: 8a e8 9b c0 0c 02 49 8d 7c 24 38 48 c7 c6 80 4a ca 81 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f e9 ec 9c 98 ff e8 f7 9f ab ff <0f> 0b e9 0a fd ff ff e8 eb 9f ab ff 4c 89 e7 e8 43 03 06 00 e9 2f
+RSP: 0018:ffffc900163afac0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff81ca9c21
+RDX: ffff88809201a2c0 RSI: ffffffff81ca9f19 RDI: 0000000000000005
+RBP: 0000000000000040 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880889c0540
+R13: 000000000000042b R14: 0000000000000007 R15: 0000000000000002
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+ __do_fast_syscall_32+0x6c/0x90 arch/x86/entry/common.c:138
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f06549
+Code: Bad RIP value.
+RSP: 002b:00000000090bfbfc EFLAGS: 00000212 ORIG_RAX: 0000000000000006
+RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000000000
+RDX: 0000000000000005 RSI: 0000000008bab680 RDI: 0000000008bab680
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
@@ -130,5 +113,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
