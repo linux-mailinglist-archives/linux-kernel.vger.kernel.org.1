@@ -2,176 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F15828E6E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3929328E6EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 21:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbgJNTJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 15:09:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50674 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726115AbgJNTJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 15:09:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602702550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=kaUv1hHMOJEn47W1mJuaE+7wSy+usdcBC2Sn5V1JtKQ=;
-        b=lp6xv6OrtYvW0TtocI/A9EhsBjRz4WApBTeLGRr8u80OwbSpkJOF7QsKdD0u0yp70EokTO
-        gsmxXUOWTMlYcqgjlMNnVSYzsNuPjnVpm7/dfNhQN6wVKlGUiwm8LCU/lGVTCvq6HK9knk
-        dmi2wv522ZDN5ZwduLmpsyN8ZUo9OAM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 03288AC3C;
-        Wed, 14 Oct 2020 19:09:10 +0000 (UTC)
-From:   Richard Palethorpe <rpalethorpe@suse.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from charging root
-Date:   Wed, 14 Oct 2020 20:07:49 +0100
-Message-Id: <20201014190749.24607-1-rpalethorpe@suse.com>
-X-Mailer: git-send-email 2.28.0
+        id S2389483AbgJNTJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 15:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgJNTJn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 15:09:43 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA9EC061755;
+        Wed, 14 Oct 2020 12:09:43 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id w17so543332ilg.8;
+        Wed, 14 Oct 2020 12:09:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vJ1nHXm544IufxzpS6W1OHKpFLa6HHKFKEYPJk1K/jI=;
+        b=ZtI7mQbOFJ1QO8SGwtWjKh1Hlrg/2l/t2Mmr+Mwgq5uUMaqt3a0p5gfmuJsOBDLakD
+         MYJesXxpgX2UbumN1VBpedBsGCG+mSeOigAqr1vgpY1fSmYcxf1lzbsqCvckKEeshyzt
+         SWw6kB4a3QHfnRyywZaP0KaAdFLZpx2m5YIs9FfnRjWd86Rw3CODEpFtxGelDul8LLcS
+         C1yi3OEt7/q1qrpHxjdylK07RRGd6VtenLaaku0Jz8H1pMLokJ5Cn7sAMUAAgqvETiUS
+         0mU6ZHGghPUXRXNHFROqkQlBx/n9CsalDYj5iQis9T/nNZRn+vwSC3xiLdrypzHEqb4M
+         x9Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vJ1nHXm544IufxzpS6W1OHKpFLa6HHKFKEYPJk1K/jI=;
+        b=sB7LJg0hs2dn2gYrD9n6mlMOWImwcdAGYkpgx6KoEzBuY1BUJ5MzGWL8TFeWnAC+At
+         jbjq0ccpXXicqMYZbyyA/I8Lbx6Ch3pHLOWySaB1sYHR57xWrvuDh2Abcc5aTytRSfG1
+         czOTSZlNpKQGj5PezkjHScSJejgP2q/4C27Y5Ht3DSiCVKE7QOvIvH/pK9VYzu6dEM7W
+         wo2wCQDwJB5hKaN4SO/vok0pl1+7d44WQK9u7gnne4IOBRIK1Wwo9QM+nwq4ljvqg8ks
+         6YVcvAt0c1g9vNeFq3uQmqakEOtuBu6IKNjeU0Ik3LRwJQMcDBsXKkvfbijHClj0UrIL
+         VzbA==
+X-Gm-Message-State: AOAM530w3INjS6G9BwuWflfiKU//BCSrWCv1C/vby8uFTE7c4qZW6iVh
+        aNBjao7bPxqxMCIKPZBSQVhBLSXVsDETU35DNLU1usRsuvvyNA==
+X-Google-Smtp-Source: ABdhPJy7WRMfB+1jjmRcweTCJ2aiDFHUwa+aAdI5T6ctQftI4CddTIVgSDtZ59PeWQtt7GXHJrpfC0dlVyGJwmVX/V8=
+X-Received: by 2002:a92:99cb:: with SMTP id t72mr550757ilk.172.1602702582726;
+ Wed, 14 Oct 2020 12:09:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201006151456.20875-1-ashishsangwan2@gmail.com> <2d1ff3421a88ece2f1b7708cdbc9d34b00ad3e81.camel@hammerspace.com>
+In-Reply-To: <2d1ff3421a88ece2f1b7708cdbc9d34b00ad3e81.camel@hammerspace.com>
+From:   Ashish Sangwan <ashishsangwan2@gmail.com>
+Date:   Thu, 15 Oct 2020 00:39:31 +0530
+Message-ID: <CAOiN93mh-ssTDuN1fAptECqc5JpUHtK=1V56jY_0MtWEcT=U2Q@mail.gmail.com>
+Subject: Re: [PATCH] NFS: Fix mode bits and nlink count for v4 referral dirs
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SLAB objects which outlive their memcg are moved to their parent
-memcg where they may be uncharged. However if they are moved to the
-root memcg, uncharging will result in negative page counter values as
-root has no page counters.
+On Wed, Oct 14, 2020 at 11:47 PM Trond Myklebust
+<trondmy@hammerspace.com> wrote:
+>
+> On Tue, 2020-10-06 at 08:14 -0700, Ashish Sangwan wrote:
+> > Request for mode bits and nlink count in the nfs4_get_referral call
+> > and if server returns them use them instead of hard coded values.
+> >
+> > CC: stable@vger.kernel.org
+> > Signed-off-by: Ashish Sangwan <ashishsangwan2@gmail.com>
+> > ---
+> >  fs/nfs/nfs4proc.c | 20 +++++++++++++++++---
+> >  1 file changed, 17 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+> > index 6e95c85fe395..efec05c5f535 100644
+> > --- a/fs/nfs/nfs4proc.c
+> > +++ b/fs/nfs/nfs4proc.c
+> > @@ -266,7 +266,9 @@ const u32 nfs4_fs_locations_bitmap[3] = {
+> >       | FATTR4_WORD0_FSID
+> >       | FATTR4_WORD0_FILEID
+> >       | FATTR4_WORD0_FS_LOCATIONS,
+> > -     FATTR4_WORD1_OWNER
+> > +     FATTR4_WORD1_MODE
+> > +     | FATTR4_WORD1_NUMLINKS
+> > +     | FATTR4_WORD1_OWNER
+> >       | FATTR4_WORD1_OWNER_GROUP
+> >       | FATTR4_WORD1_RAWDEV
+> >       | FATTR4_WORD1_SPACE_USED
+> > @@ -7594,16 +7596,28 @@ nfs4_listxattr_nfs4_user(struct inode *inode,
+> > char *list, size_t list_len)
+> >   */
+> >  static void nfs_fixup_referral_attributes(struct nfs_fattr *fattr)
+> >  {
+> > +     bool fix_mode = true, fix_nlink = true;
+> > +
+> >       if (!(((fattr->valid & NFS_ATTR_FATTR_MOUNTED_ON_FILEID) ||
+> >              (fattr->valid & NFS_ATTR_FATTR_FILEID)) &&
+> >             (fattr->valid & NFS_ATTR_FATTR_FSID) &&
+> >             (fattr->valid & NFS_ATTR_FATTR_V4_LOCATIONS)))
+> >               return;
+> >
+> > +     if (fattr->valid & NFS_ATTR_FATTR_MODE)
+> > +             fix_mode = false;
+> > +     if (fattr->valid & NFS_ATTR_FATTR_NLINK)
+> > +             fix_nlink = false;
+> >       fattr->valid |= NFS_ATTR_FATTR_TYPE | NFS_ATTR_FATTR_MODE |
+> >               NFS_ATTR_FATTR_NLINK | NFS_ATTR_FATTR_V4_REFERRAL;
+> > -     fattr->mode = S_IFDIR | S_IRUGO | S_IXUGO;
+> > -     fattr->nlink = 2;
+> > +
+> > +     if (fix_mode)
+> > +             fattr->mode = S_IFDIR | S_IRUGO | S_IXUGO;
+> > +     else
+> > +             fattr->mode |= S_IFDIR;
+> > +
+> > +     if (fix_nlink)
+> > +             fattr->nlink = 2;
+> >  }
+> >
+> >  static int _nfs4_proc_fs_locations(struct rpc_clnt *client, struct
+> > inode *dir,
+>
+> NACK to this patch. The whole point is that if the server has a
+> referral, then it is not going to give us any attributes other than the
+> ones we're already asking for because it may not even have a real
+> directory. The client is required to fake up an inode, hence the
+> existing code.
 
-To prevent this, we check whether we are about to uncharge the root
-memcg and skip it if we are. Possibly instead; the obj_cgroups should
-be removed from their slabs and any per cpu stocks instead of
-reparenting them to root?
+Hi Trond, thanks for reviewing the patch!
+Sorry but I didn't understand the reason to NACK it. Could you please
+elaborate your concern?
+These are the current attributes we request from the server on a referral:
+FATTR4_WORD0_CHANGE
+| FATTR4_WORD0_SIZE
+| FATTR4_WORD0_FSID
+| FATTR4_WORD0_FILEID
+| FATTR4_WORD0_FS_LOCATIONS,
+FATTR4_WORD1_OWNER
+| FATTR4_WORD1_OWNER_GROUP
+| FATTR4_WORD1_RAWDEV
+| FATTR4_WORD1_SPACE_USED
+| FATTR4_WORD1_TIME_ACCESS
+| FATTR4_WORD1_TIME_METADATA
+| FATTR4_WORD1_TIME_MODIFY
+| FATTR4_WORD1_MOUNTED_ON_FILEID,
 
-The warning can be, unreliably, reproduced with the LTP test
-madvise06 if the entire patch series
-https://lore.kernel.org/linux-mm/20200623174037.3951353-1-guro@fb.com/
-is present. Although the listed commit in 'fixes' appears to introduce
-the bug, I can not reproduce it with just that commit and bisecting
-runs into other bugs.
+So you are suggesting that it's ok to ask for SIZE, OWNER, OWNER
+GROUP, SPACE USED, TIMESTAMPs etc but not ok to ask for mode bits and
+numlinks?
+Also, isn't the whole point of the server returning attribute map is
+to tell the client which attribute is valid? So, in the case where the
+server does not have the required information then it will not return
+those attributes and we will fall back to the old behavior.
+Whether the server has nlink and mode information is entirely up to
+the server implementation. For example, the referral's stat
+information could be maintained in a distributed database which can be
+accessed from any node in the cluster.
 
-[   12.029417] WARNING: CPU: 2 PID: 21 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
-[   12.029539] Modules linked in:
-[   12.029611] CPU: 2 PID: 21 Comm: ksoftirqd/2 Not tainted 5.9.0-rc7-22-default #76
-[   12.029729] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
-[   12.029908] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
-[ 12.029991] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 db 47 36 27 48 8b 17 48 39 d6 72 41 41 54 49 89
-[   12.030258] RSP: 0018:ffffa5d8000efd08 EFLAGS: 00010086
-[   12.030344] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: 0000000000000009
-[   12.030455] RDX: 000000000000000b RSI: ffffffffffffffff RDI: ffff8ef8c7d2b248
-[   12.030561] RBP: ffff8ef8c7d2b248 R08: ffff8ef8c78b19c8 R09: 0000000000000001
-[   12.030672] R10: 0000000000000000 R11: ffff8ef8c780e0d0 R12: 0000000000000001
-[   12.030784] R13: ffffffffffffffff R14: ffff8ef9478b19c8 R15: 0000000000000000
-[   12.030895] FS:  0000000000000000(0000) GS:ffff8ef8fbc80000(0000) knlGS:0000000000000000
-[   12.031017] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   12.031104] CR2: 00007f72c0af93ec CR3: 000000005c40a000 CR4: 00000000000006e0
-[   12.031209] Call Trace:
-[   12.031267] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
-[   12.031470] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
-[   12.031594] refill_obj_stock (mm/memcontrol.c:3166)
-[   12.031733] ? rcu_do_batch (kernel/rcu/tree.c:2438)
-[   12.032075] memcg_slab_free_hook (./include/linux/mm.h:1294 ./include/linux/mm.h:1441 mm/slab.h:368 mm/slab.h:348)
-[   12.032339] kmem_cache_free (mm/slub.c:3107 mm/slub.c:3143 mm/slub.c:3158)
-[   12.032464] rcu_do_batch (kernel/rcu/tree.c:2438)
-[   12.032567] rcu_core (kernel/rcu/tree_plugin.h:2122 kernel/rcu/tree_plugin.h:2157 kernel/rcu/tree.c:2661)
-[   12.032664] __do_softirq (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/irq.h:142 kernel/softirq.c:299)
-[   12.032766] run_ksoftirqd (./arch/x86/include/asm/irqflags.h:54 ./arch/x86/include/asm/irqflags.h:94 kernel/softirq.c:653 kernel/softirq.c:644)
-[   12.032852] smpboot_thread_fn (kernel/smpboot.c:165)
-[   12.032940] ? smpboot_register_percpu_thread (kernel/smpboot.c:108)
-[   12.033059] kthread (kernel/kthread.c:292)
-[   12.033148] ? __kthread_bind_mask (kernel/kthread.c:245)
-[   12.033269] ret_from_fork (arch/x86/entry/entry_64.S:300)
-[   12.033357] ---[ end trace 961dbfc01c109d1f ]---
-
-[    9.841552] ------------[ cut here ]------------
-[    9.841788] WARNING: CPU: 0 PID: 12 at mm/page_counter.c:57 page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
-[    9.841982] Modules linked in:
-[    9.842072] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc7-22-default #77
-[    9.842266] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
-[    9.842571] Workqueue: events drain_local_stock
-[    9.842750] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:156)
-[ 9.842894] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a fe ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0f> 0b eb ec 90 e8 4b f9 88 2a 48 8b 17 48 39 d6 72 41 41 54 49 89
-[    9.843438] RSP: 0018:ffffb1c18006be28 EFLAGS: 00010086
-[    9.843585] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: ffff94803bc2cae0
-[    9.843806] RDX: 0000000000000001 RSI: ffffffffffffffff RDI: ffff948007d2b248
-[    9.844026] RBP: ffff948007d2b248 R08: ffff948007c58eb0 R09: ffff948007da05ac
-[    9.844248] R10: 0000000000000018 R11: 0000000000000018 R12: 0000000000000001
-[    9.844477] R13: ffffffffffffffff R14: 0000000000000000 R15: ffff94803bc2cac0
-[    9.844696] FS:  0000000000000000(0000) GS:ffff94803bc00000(0000) knlGS:0000000000000000
-[    9.844915] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    9.845096] CR2: 00007f0579ee0384 CR3: 000000002cc0a000 CR4: 00000000000006f0
-[    9.845319] Call Trace:
-[    9.845429] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
-[    9.845582] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcontrol.c:3114)
-[    9.845684] drain_local_stock (mm/memcontrol.c:2255)
-[    9.845789] process_one_work (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:108 kernel/workqueue.c:2274)
-[    9.845898] worker_thread (./include/linux/list.h:282 kernel/workqueue.c:2416)
-[    9.846034] ? process_one_work (kernel/workqueue.c:2358)
-[    9.846162] kthread (kernel/kthread.c:292)
-[    9.846271] ? __kthread_bind_mask (kernel/kthread.c:245)
-[    9.846420] ret_from_fork (arch/x86/entry/entry_64.S:300)
-[    9.846531] ---[ end trace 8b5647c1eba9d18a ]---
-
-Reported-By: ltp@lists.linux.it
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
----
- mm/memcontrol.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6877c765b8d0..214e1fe4e9a2 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -291,7 +291,7 @@ static void obj_cgroup_release(struct percpu_ref *ref)
- 
- 	spin_lock_irqsave(&css_set_lock, flags);
- 	memcg = obj_cgroup_memcg(objcg);
--	if (nr_pages)
-+	if (nr_pages && !mem_cgroup_is_root(memcg))
- 		__memcg_kmem_uncharge(memcg, nr_pages);
- 	list_del(&objcg->list);
- 	mem_cgroup_put(memcg);
-@@ -3100,6 +3100,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- static void drain_obj_stock(struct memcg_stock_pcp *stock)
- {
- 	struct obj_cgroup *old = stock->cached_objcg;
-+	struct mem_cgroup *memcg;
- 
- 	if (!old)
- 		return;
-@@ -3110,7 +3111,9 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
- 
- 		if (nr_pages) {
- 			rcu_read_lock();
--			__memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
-+			memcg = obj_cgroup_memcg(old);
-+			if (!mem_cgroup_is_root(memcg))
-+				__memcg_kmem_uncharge(memcg, nr_pages);
- 			rcu_read_unlock();
- 		}
- 
--- 
-2.28.0
-
+Thanks,
+Ashish
+>
+> --
+> Trond Myklebust
+> Linux NFS client maintainer, Hammerspace
+> trond.myklebust@hammerspace.com
+>
+>
