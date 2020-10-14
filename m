@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F2F28E902
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 01:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F70628E9FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730923AbgJNXAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 19:00:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgJNXAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 19:00:50 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4E4020776;
-        Wed, 14 Oct 2020 23:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602716449;
-        bh=Iuq4p7SE+3zmq4h6neqIJS6zra1rULNlT+guIBTPmX8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ZE5CtvlSe5cF/HVaQ/RCnB6oUOGyfYTS1xCgopUkKaXeetIDNmN1NOU7k6SsccZdn
-         epiNkpf53/k4E5AHBZ4taVyE5DEJi+Pu9rWNi9ryw/fLpVRAIKBaCfKTvPHT6LnRe9
-         vMD+Ge1JWU7k/AagoBW7oriERIMEDyym8j+h3b+A=
-Content-Type: text/plain; charset="utf-8"
+        id S1732263AbgJOB3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732228AbgJOB3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:29:38 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B83C05111E;
+        Wed, 14 Oct 2020 16:01:01 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id u19so1752544ion.3;
+        Wed, 14 Oct 2020 16:01:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ikC4LAwwb2/OL3dDYceqRFTwnIoFZSQn/I33psN0qjs=;
+        b=TCnK8mL9NI6hpr3zEveS0JTuNaHtXCx/qfHBGzgIQgrYKIyFfbL469h0Y911PX4qYA
+         HA3PFnu9h7bUViHMzKVqrdtDhIfan/01bAJrm+iH8HVsCMbrGoUBCi+EwDuHU09Bq9xD
+         0zniDvdoMkczvwrfTymICG2b2JPXMk43+A7TFV6EwFWXjhcXv0Zr0g7isA+HBzM1ygDz
+         HielqMai2yM1V5M7vYrESoEcbxMQbPPGpBkxbresU1sEHhWVlG/vNZSnpIukEp2FJExo
+         3VAds5Vc5Pir8QMG6owXKfyujHcVGoAHhUjdCq3iSTks6Ul93abkR08dX/ws2fLr75Qd
+         P1CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ikC4LAwwb2/OL3dDYceqRFTwnIoFZSQn/I33psN0qjs=;
+        b=PWAa163szEnrFqyh0zDo4arnEmQpbqY+QsdGs0p1NJMeH3u2iuN+3afnbQRi63A/dP
+         WAN9uQ4564srgQFMUS/7J/bFnQiUF2MAQFQjeSXleGCnD3Pae2YmOkkIeTjlUrAFpvuP
+         X17Whcr2F9NtfzFBpw7JsMHDih+S4DgQB7Azc7qRTzs87svwpBuvCjOS6AZUHHziFEJv
+         ibb3fJ8kg0HR3DPzmNCCJz1yUcvl3HR8uPHEdyP0RI1HtWzPFAX1I8lVK7Ah60rY2lwa
+         6/jFHy86bMXAh7wkXqW72HyIZpswGD7TDKkF2Llj/BXLOsa4VIETaAvm+XAno0l1AVM6
+         8a7A==
+X-Gm-Message-State: AOAM533UMpgP5/GU9jSsp9bC7vYvLteCFjYSJMftPaWeP/KcFOT16rXB
+        E8lhlCZSwTSXu9Zkc6TiDMMC7NJLne3tDJNa5sxRYRiR197H6A==
+X-Google-Smtp-Source: ABdhPJzGna7kT8ytBKEMRmafA605hdoj/96Adf60Do8VLRmdj9ntw6bzrJXYjfcdcZHwC8be0AHpI8yUwC0EME90ntk=
+X-Received: by 2002:a5d:80cc:: with SMTP id h12mr1218936ior.73.1602716460855;
+ Wed, 14 Oct 2020 16:01:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=UipL42FLRARc4V34bqEukaB=WQzAdr2Si2RUjPaAmE4g@mail.gmail.com>
-References: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid> <20201014140507.v3.2.I75c409497d4dea9daefa53ec5f93824081c4ecbe@changeid> <160271345117.884498.6375969749730135625@swboyd.mtv.corp.google.com> <CAD=FV=UipL42FLRARc4V34bqEukaB=WQzAdr2Si2RUjPaAmE4g@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] clk: qcom: lpass-sc7180: Disentangle the two clock devices
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Taniya Das <tdas@codeaurora.org>, open list:
-        ARM/QUALCOMM SUPPORT <linux-soc@vger.kernel.org>,
-        David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-To:     Doug Anderson <dianders@chromium.org>
-Date:   Wed, 14 Oct 2020 16:00:47 -0700
-Message-ID: <160271644762.884498.446447786516269652@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20201014182811.12027-1-cai@lca.pw>
+In-Reply-To: <20201014182811.12027-1-cai@lca.pw>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Thu, 15 Oct 2020 10:00:49 +1100
+Message-ID: <CAOSf1CFT_Y67Q8caH2uFOYtwpRgFozh30ZWWZzzR-x18LBsG8g@mail.gmail.com>
+Subject: Re: [PATCH -next] Revert "powerpc/pci: unmap legacy INTx interrupts
+ when a PHB is removed"
+To:     Qian Cai <cai@lca.pw>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Doug Anderson (2020-10-14 15:28:58)
-> Hi,
->=20
-> On Wed, Oct 14, 2020 at 3:10 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> >
-> > Quoting Douglas Anderson (2020-10-14 14:05:22)
-> > > diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom=
-/lpasscorecc-sc7180.c
-> > > index abcf36006926..48d370e2108e 100644
-> > > --- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-> > > +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-> > > @@ -356,12 +356,48 @@ static const struct qcom_cc_desc lpass_audio_hm=
-_sc7180_desc =3D {
-> > >         .num_gdscs =3D ARRAY_SIZE(lpass_audio_hm_sc7180_gdscs),
-> > >  };
-> > >
-> > > +static void lpass_pm_runtime_disable(void *data)
-> > > +{
-> > > +       pm_runtime_disable(data);
-> > > +}
-> > > +
-> > > +static void lapss_pm_clk_destroy(void *data)
-> > > +{
-> > > +       pm_clk_destroy(data);
-> > > +}
-> >
-> > Why are these helpers added again? And do we even need them? Can't we
-> > just pass pm_runtime_disable or pm_clk_destroy to the
-> > devm_add_action_or_reset() second parameter?
->=20
-> Unfortunately, we can't due to the C specification.  Take a look at
-> all the other users of devm_add_action_or_reset() and they all have
-> pretty much the same stupid thing.=20
+On Thu, Oct 15, 2020 at 5:28 AM Qian Cai <cai@lca.pw> wrote:
+>
+> This reverts commit 3a3181e16fbde752007759f8759d25e0ff1fc425 which
+> causes memory corruptions on POWER9 NV.
 
-Ok, but we don't need two of the same functions, right?
+I was going to post this along with a fix for Cedric's original bug,
+but I can do that separately so:
 
-> ...actually, do we even need the runtime_disable in the error path?
-> When the dev goes away does it matter if you left pm_runtime enabled
-> on it?
->=20
-
-I don't know. The device isn't destroyed but maybe when the driver is
-unbound it resets the runtime PM counters?
+Acked-by: Oliver O'Halloran <oohall@gmail.com>
