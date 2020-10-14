@@ -2,128 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F09028E3CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE67428E3D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgJNQAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:00:01 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:63882 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727034AbgJNQAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:00:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602691200; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/WzKeTICSrDP4+lS0iIdtalkTU8mPAd7+F46GS5omvY=;
- b=rGBdRuMIivozRN7IG656/q2ISZoVfpSHi7LZ13MLIoTzVnc5IBSx+d6plxX1D3aWXHqA42OK
- qQhNvgzPX84ToNetZ5bjn3OnNZ9qGsGf5TgWriTEeg9UhlyTA6OKdoY6XG+uGbn63ePmhAtm
- 6XpqAHAtpSeFDc6KRhCIcLMNUJE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f872052f9168450eaef0028 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 15:59:14
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3A763C43387; Wed, 14 Oct 2020 15:59:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CAD6C433F1;
-        Wed, 14 Oct 2020 15:59:13 +0000 (UTC)
+        id S1729594AbgJNQB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:01:27 -0400
+Received: from mail-eopbgr1400130.outbound.protection.outlook.com ([40.107.140.130]:36352
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727034AbgJNQB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:01:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UIxIEsaRBMNS8dPYhjcZmrD+mLwkOQNfhw4fEjBoELHPsnoSU496ZNgYXpE3AeLyI5jvOX3Njq6NkIQ3WE3aefAOryExj3e7+62hkVAeekykqLJYrRqh9WZXPzUy1uSFwlXgENmga+X3QNU62JjHtDBSwB6LJ0L3SEaSGLnZXbWkZC8Ku3m5sdQvAOqPnmHMiqdVOw2E1Vm9GGteT+LfTWgpOUzHswDdOpeNPmDjHqkkjEu7u70lkTt5G5cMIQ7S8qV6+lLT6LK7RlDahCgS/JUMfsw8S96SSWX3UppL18v4I1zrmL6TRYyxPOmHqsxcAqgt3/hLPl1eP3x7Oq5tPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f7WpUZtllHCy2ddBKzNQBFdKmfzvSLqOmfXmWX5w8mU=;
+ b=FMXuoiCic6gLVgmiV9gHRFeC8VWkFEj3cRvGVpUuNsC9KqwKMEsEOhEG7pmdbeaxZoqLYYoVzRhqFcFtDZNyuP+Q9fRC+VUwhqsbXKoOhL3Zwij+tTOdJIouq/A8OHckd2kGBLtz6bGOow8WkgERBTLeb935m6v7B+OfDIaK6qH7Z42HocL0kjHK8klM09bvK5UghP93GL9++nVGEiJLqErlVCFYJzEniwYT8r4IQX66CJhK4YnVZNgqPNcKI5HD/GQ+2wzSneZxrA8zksxEy52LwJ1gZJHk97grN9X4T46WG7zzRtwMV709acI2kxFRuK7kAYK+grhOAmwOu2hFEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f7WpUZtllHCy2ddBKzNQBFdKmfzvSLqOmfXmWX5w8mU=;
+ b=WLUPhWEvbnCfqAKbchKpAexCKLKBkQaVdustFMwo9ksaiPskSzooR7ndal9hd6wGRXm9wlNX/tILXZy+U3OkFzmdRA4vmW4jQf7ZD+cAsXFo0/GJl0NXUbFNy1MPnRN5gomzSMrDtaM+KkD1t2+7y/jcGqDV6JzT0yCRFvoK/Hc=
+Received: from OSAPR01MB2740.jpnprd01.prod.outlook.com (2603:1096:603:3a::20)
+ by OSAPR01MB2995.jpnprd01.prod.outlook.com (2603:1096:604:2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Wed, 14 Oct
+ 2020 16:01:22 +0000
+Received: from OSAPR01MB2740.jpnprd01.prod.outlook.com
+ ([fe80::8c77:606f:d812:ecd2]) by OSAPR01MB2740.jpnprd01.prod.outlook.com
+ ([fe80::8c77:606f:d812:ecd2%7]) with mapi id 15.20.3477.021; Wed, 14 Oct 2020
+ 16:01:21 +0000
+From:   Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: RE: [PATCH v3 4/5] media: dt-bindings: media: renesas,drif: Add
+ r8a77965 support
+Thread-Topic: [PATCH v3 4/5] media: dt-bindings: media: renesas,drif: Add
+ r8a77965 support
+Thread-Index: AQHWoXHYI2L0behCIU2BKIZWRSjl+amXG3WAgAAPSWCAAAV3gIAAExNA
+Date:   Wed, 14 Oct 2020 16:01:20 +0000
+Message-ID: <OSAPR01MB274047DC61C63A8B869021CCC2050@OSAPR01MB2740.jpnprd01.prod.outlook.com>
+References: <20201013150150.14801-1-fabrizio.castro.jz@renesas.com>
+ <20201013150150.14801-5-fabrizio.castro.jz@renesas.com>
+ <CAMuHMdUxCiwjsFRYpVND-FLajaceUf+jWK0ZBR5Rp5xJ+MPDgA@mail.gmail.com>
+ <OSAPR01MB274089EA87D5280E83E81C7DC2050@OSAPR01MB2740.jpnprd01.prod.outlook.com>
+ <CAMuHMdUPb=Sy1R1pOXCAbDcCiMgWa27tVMvvTWn2rnotanM8cw@mail.gmail.com>
+In-Reply-To: <CAMuHMdUPb=Sy1R1pOXCAbDcCiMgWa27tVMvvTWn2rnotanM8cw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-m68k.org; dkim=none (message not signed)
+ header.d=none;linux-m68k.org; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [193.141.220.21]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1cb48031-17d2-4317-22bf-08d8705a64e3
+x-ms-traffictypediagnostic: OSAPR01MB2995:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <OSAPR01MB2995591BB3BCE2DFA5B6D4BFC2050@OSAPR01MB2995.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bxh4J2FAFQxxMSVKW2OjkEMb2fDMY8p/GAsU64/z86YyzswbpE7ju32TT+vnRY1QBQVfIvi1Hqkh4BjEKHja/rCBbez0eavjxihaEt+lVI6QEuodzqy7w5XByjgO/zFH1Ewt6pLPp1D5GwPEk37Ovty5zOzRAKtz9q3PZ29YE9qfk8kt0Vi60+Bhow8aDJGdprTr+F/pYikpLfUQW3M+nu8zsLe/R2yk/VuoMntAjDLpBHSwKg2KO7wkL2uaZI+/CrdTBEoomOUE6dITEunoymj3M3nGusXE8/UwW68REY8ghFbhJShtoDJFoKQP9JplDWkqD5xnwDbtuS9IE2S90g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB2740.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39850400004)(366004)(66556008)(66476007)(71200400001)(66446008)(5660300002)(7696005)(64756008)(26005)(52536014)(186003)(76116006)(2906002)(8676002)(8936002)(53546011)(6506007)(4326008)(9686003)(55016002)(33656002)(478600001)(66946007)(86362001)(54906003)(316002)(6916009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: zv/StDpmpGVMo6dyzX/D4mZxX2AR6OX3fdb3rktQvKc6sIDDNZuDRZhsITxWD5vdoA1lfiVaACvNL+y4sd/VmL7dRWHShrIGLA+tzWoWQlZXIMVfm4V/ttnnn8XWPTy/QoROayt2+pCBaPgJsKKCKGqmVvpSjszMkoIN85yGWO0FR93R4m/3eRXZCoDUeJmpIVpMJDM6RUzqVJ+kGq89Aq0XcDAIXcxdSPW/puRk9GLgG4qd83jHbv+xdaDBN0p2pmsjI/zKwuHeAIruPG7TNM9Zo+YCAGfFfkJwWC5f1PCNddd4EI4Nc63uYab/ehH8r+OKEp0WTbYRXb2mKw+bP8MC/f6YgebNr+BXlOcJRyUfY5EF74DrilyDyTIVdZ4h3f6y3XU6dxZHfRY0UFOvfLu4EngkyMmue6Onvtg5mN6MDkhAtdHWnsacr5+v2U6xnHYcz5ImanpmzFuXynNEaOYEug+fKbWxtSFFGf3fag/juHY/3zDQKo//Gu8Eosro3ijTQ9i8val5YOeRjbjoLfnTQ8kBl+34pU5RokIveX/8CN5gPcT+yVkLZRlkU9sRVv7s/l2CK886q2J9oU2g6GBbitBh+g72MKdULTLCfvIvNCtgjb8FD1c2uCcUxGPvweBGWimhTGclbHVMDy4IeQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 14 Oct 2020 21:29:13 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        coresight@lists.linaro.org, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, denik@google.com,
-        leo.yan@linaro.org, peterz@infradead.org
-Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
-References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
- <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
- <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
-Message-ID: <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB2740.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1cb48031-17d2-4317-22bf-08d8705a64e3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2020 16:01:20.9363
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4RRLBI86C2JCMZk/yFRJNC62Mt2WbkCD20NCNnBKsHbrirproJtUm1mxBfjPUTn5yBbc7b3Ab48Dn3qFGkddagmYFFHsdIjDGZuqqoB+YQI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB2995
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 18:46, Suzuki K Poulose wrote:
-> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
->> On 2020-10-13 22:05, Suzuki K Poulose wrote:
->>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
->>>> There was a report of NULL pointer dereference in ETF enable
->>>> path for perf CS mode with PID monitoring. It is almost 100%
->>>> reproducible when the process to monitor is something very
->>>> active such as chrome and with ETF as the sink and not ETR.
->>>> Currently in a bid to find the pid, the owner is dereferenced
->>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
->>>> owner being NULL, we get a NULL pointer dereference.
->>>> 
->>>> Looking at the ETR and other places in the kernel, ETF and the
->>>> ETB are the only places trying to dereference the task(owner)
->>>> in tmc_enable_etf_sink_perf() which is also called from the
->>>> sched_in path as in the call trace. Owner(task) is NULL even
->>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
->>>> cache the PID in alloc_buffer() callback and it is done as part
->>>> of etm_setup_aux() when allocating buffer for ETR sink, we never
->>>> dereference this NULL pointer and we are safe. So lets do the
->>> 
->>> The patch is necessary to fix some of the issues. But I feel it is
->>> not complete. Why is it safe earlier and not later ? I believe we are
->>> simply reducing the chances of hitting the issue, by doing this 
->>> earlier than
->>> later. I would say we better fix all instances to make sure that the
->>> event->owner is valid. (e.g, I can see that the for kernel events
->>> event->owner == -1 ?)
->>> 
->>> struct task_struct *tsk = READ_ONCE(event->owner);
->>> 
->>> if (!tsk || is_kernel_event(event))
->>>    /* skip ? */
->>> 
->> 
->> Looking at it some more, is_kernel_event() is not exposed
->> outside events core and probably for good reason. Why do
->> we need to check for this and not just tsk?
-> 
-> Because the event->owner could be :
-> 
->  = NULL
->  = -1UL  // kernel event
->  = valid.
-> 
-
-Yes I understood that part, but here we were trying to
-fix the NULL pointer dereference right and hence the
-question as to why we need to check for kernel events?
-I am no expert in perf but I don't see anywhere in the
-kernel checking for is_kernel_event(), so I am a bit
-skeptical if exporting that is actually right or not.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+SGkgR2VlcnQsDQoNCj4gRnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhr
+Lm9yZz4NCj4gU2VudDogMTQgT2N0b2JlciAyMDIwIDE1OjUyDQo+IFN1YmplY3Q6IFJlOiBbUEFU
+Q0ggdjMgNC81XSBtZWRpYTogZHQtYmluZGluZ3M6IG1lZGlhOiByZW5lc2FzLGRyaWY6IEFkZA0K
+PiByOGE3Nzk2NSBzdXBwb3J0DQo+DQo+IEhpIEZhYnJpemlvLA0KPg0KPiBPbiBXZWQsIE9jdCAx
+NCwgMjAyMCBhdCA0OjM1IFBNIEZhYnJpemlvIENhc3Rybw0KPiA8ZmFicml6aW8uY2FzdHJvLmp6
+QHJlbmVzYXMuY29tPiB3cm90ZToNCj4gPiA+IEZyb206IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2Vl
+cnRAbGludXgtbTY4ay5vcmc+DQo+ID4gPiBPbiBUdWUsIE9jdCAxMywgMjAyMCBhdCA1OjAyIFBN
+IEZhYnJpemlvIENhc3Rybw0KPiA+ID4gPGZhYnJpemlvLmNhc3Ryby5qekByZW5lc2FzLmNvbT4g
+d3JvdGU6DQo+ID4gPiA+IFRoZSByOGE3Nzk2NSAoYS5rLmEuIFItQ2FyIE0zLU4pIGRldmljZSB0
+cmVlIHNjaGVtYSBpcw0KPiA+ID4gPiBjb21wYXRpYmxlIHdpdGggdGhlIGFscmVhZHkgZG9jdW1l
+bnRlZCBSLUNhciBHZW4zIGRldmljZXMuDQo+ID4gPiA+DQo+ID4gPiA+IERvY3VtZW50IHI4YTc3
+OTY1IHN1cHBvcnQgd2l0aGluIHJlbmVzYXMsZHJpZi55YW1sLg0KPiA+ID4gPg0KPiA+ID4gPiBT
+aWduZWQtb2ZmLWJ5OiBGYWJyaXppbyBDYXN0cm8gPGZhYnJpemlvLmNhc3Ryby5qekByZW5lc2Fz
+LmNvbT4NCj4gPiA+DQo+ID4gPiBUaGFua3MgZm9yIHlvdXIgcGF0Y2ghDQo+ID4gPg0KPiA+ID4g
+UmV2aWV3ZWQtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnQrcmVuZXNhc0BnbGlkZXIuYmU+
+DQo+ID4gPg0KPiA+ID4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+bWVkaWEvcmVuZXNhcyxkcmlmLnlhbWwNCj4gPiA+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL21lZGlhL3JlbmVzYXMsZHJpZi55YW1sDQo+ID4gPiA+IEBAIC01Myw2
+ICs1Myw3IEBAIHByb3BlcnRpZXM6DQo+ID4gPiA+ICAgICAgICAtIGVudW06DQo+ID4gPiA+ICAg
+ICAgICAgIC0gcmVuZXNhcyxyOGE3Nzk1LWRyaWYgICAgICAgICMgUi1DYXIgSDMNCj4gPiA+ID4g
+ICAgICAgICAgLSByZW5lc2FzLHI4YTc3OTYtZHJpZiAgICAgICAgIyBSLUNhciBNMy1XDQo+ID4g
+PiA+ICsgICAgICAgIC0gcmVuZXNhcyxyOGE3Nzk2NS1kcmlmICAgICAgICMgUi1DYXIgTTMtTg0K
+PiA+ID4gPiAgICAgICAgICAtIHJlbmVzYXMscjhhNzc5OTAtZHJpZiAgICAgICAjIFItQ2FyIEUz
+DQo+ID4gPiA+ICAgICAgICAtIGNvbnN0OiByZW5lc2FzLHJjYXItZ2VuMy1kcmlmICMgR2VuZXJp
+YyBSLUNhciBHZW4zIGNvbXBhdGlibGUNCj4gZGV2aWNlDQo+ID4gPg0KPiA+ID4gSSBndWVzcyB5
+b3UncmUgYXdhcmUgTTMtTiAoYW5kIEUzKSBoYXZlIGFuIGV4dHJhIHJlZ2lzdGVyPw0KPiA+ID4g
+UHJvYmFibHkgdGhlIGRyaXZlciBqdXN0IHJlbGllcyBvbiBpdHMgaW5pdGlhbCB2YWx1ZSwgYnV0
+IGl0IG5ldmVyIGh1cnRzIHRvIGJlDQo+ID4gPiBleHBsaWNpdCBhbmQgaW5pdGlhbGl6ZSBpdCBw
+cm9wZXJseS4NCj4gPg0KPiA+IFllcywgSSBhbSBhd2FyZSBvZiB0aGUgZXh0cmEgcmVnaXN0ZXIs
+IGFuZCB0aGF0J3MgcmVmbGVjdGVkIGluIHRoZSBEUklGIG5vZGVzDQo+ID4gZGVmaW5pdGlvbiB3
+aXRoaW4gdGhlIFNvQyBzcGVjaWZpYyBkZXZpY2UgdHJlZXMuDQo+ID4gSSdsbCB0YWNrbGUgaW5p
+dGlhbGl6YXRpb24gYW5kIGNvbmZpZ3VyYXRpb24gb2YgdGhlIGV4dHJhIHJlZ2lzdGVyIGF0IHNv
+bWUgcG9pbnQsDQo+ID4gZG8geW91IHRoaW5rIHdlIGNvdWxkIHVzZSB0aGUgZGVmYXVsdCB2YWx1
+ZSBmb3Igbm93Pw0KPg0KPiBZZXMsIHRoYXQncyBmaW5lIGZvciBtZSwgaWYgaXQgd29ya3Mgd2l0
+aCB0aGUgY3VycmVudCBkcml2ZXIuDQoNClllcywgYW5kIHRoYW5rIHlvdS4NCg0KQ2hlZXJzLA0K
+RmFiDQoNCj4NCj4gR3J7b2V0amUsZWV0aW5nfXMsDQo+DQo+ICAgICAgICAgICAgICAgICAgICAg
+ICAgIEdlZXJ0DQo+DQo+IC0tDQo+IEdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVyZSdzIGxvdHMg
+b2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtDQo+IG02OGsub3JnDQo+DQo+IElu
+IHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwgcGVvcGxlLCBJIGNhbGwgbXlz
+ZWxmIGEgaGFja2VyLiBCdXQNCj4gd2hlbiBJJ20gdGFsa2luZyB0byBqb3VybmFsaXN0cyBJIGp1
+c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0aGF0Lg0KPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRzDQoNCg0KUmVuZXNhcyBFbGVj
+dHJvbmljcyBFdXJvcGUgR21iSCwgR2VzY2hhZWZ0c2Z1ZWhyZXIvUHJlc2lkZW50OiBDYXJzdGVu
+IEphdWNoLCBTaXR6IGRlciBHZXNlbGxzY2hhZnQvUmVnaXN0ZXJlZCBvZmZpY2U6IER1ZXNzZWxk
+b3JmLCBBcmNhZGlhc3RyYXNzZSAxMCwgNDA0NzIgRHVlc3NlbGRvcmYsIEdlcm1hbnksIEhhbmRl
+bHNyZWdpc3Rlci9Db21tZXJjaWFsIFJlZ2lzdGVyOiBEdWVzc2VsZG9yZiwgSFJCIDM3MDggVVN0
+LUlETnIuL1RheCBpZGVudGlmaWNhdGlvbiBuby46IERFIDExOTM1MzQwNiBXRUVFLVJlZy4tTnIu
+L1dFRUUgcmVnLiBuby46IERFIDE0OTc4NjQ3DQo=
