@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780BD28E7B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360F328E7BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729669AbgJNUJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:09:25 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:25872 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729561AbgJNUJY (ORCPT
+        id S1729825AbgJNUM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:12:26 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:53255 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729351AbgJNUMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:09:24 -0400
-X-Greylist: delayed 75370 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Oct 2020 16:09:24 EDT
-Date:   Wed, 14 Oct 2020 20:09:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1602706162;
-        bh=m+9mUGof6WvkvHmvP4DPlTU5NvCNFlaEPlnO4Gog/ow=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=iyKgt6JLgdpOo3FVStXlZD4ds4/kRh4fACosu8AN3wgSxSD9AoQjioaLT1eg6p0Qi
-         aMkIJ8KfjoZpL+rk2/X1vEeJZOKyUxlG37t3ZvlGkgM/0wRIKOKDHne1MOBXralREX
-         5ResfZCHctHT5xV/wapzfRjV/vhp1ci3mpjufM74=
-To:     Jonathan Corbet <corbet@lwn.net>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: Re: [PATCH v2 2/5] docs: automarkup.py: Fix regexes to solve sphinx 3 warnings
-Message-ID: <C6CVK7V449HT.12X5MRPR3R7TK@ArchWay>
+        Wed, 14 Oct 2020 16:12:25 -0400
+Received: by mail-il1-f198.google.com with SMTP id y62so438849ilk.20
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 13:12:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ZLqt1UpRUwK/Bql5Ec5YoZrFqRNYNU4KAg7xCCqmdwQ=;
+        b=p5J6eDzCKtFhGlDf6Wx4+Gpp2z7h6XxuU9cvUiLb3gVZKJ+oD5RholL/9fHOKZ4fYe
+         dw9p2qN3nAX1865zrAm6QI6tdhqatb+NGkkODDvoF2JFNPcYB0KQeqknHJyvSwICoyvg
+         Mek32JSwg3QDd3JaBfy/+4BU01aSU8R8SoEeghQuGNGbi59GHe0qD/ybGDe6rQj7RBzq
+         Mk53qEJlFDsQ+Bi/lI5UPxuMODRb7vCEUPSvgFGing1aVw6AdpkbA0RzElD3io+xEyxD
+         9YLgHNZOQG3Z/TNFI0V8CTQdYG91SLfAxgO2QqzvID3/+dcYmqbDrU0i587upD7eCT8E
+         nanA==
+X-Gm-Message-State: AOAM532S/l7ndUH5ia79oybvVD1m/n2lk+X0X1OQjBj87ANQ1lSTYHdv
+        77M4YbHrIvnX8k4ykYazB1mJOKu0jlkB3Gq87DElvgt87CD9
+X-Google-Smtp-Source: ABdhPJxR+POVgkRU33sfd3o8cAVRuOAMkOC7Q8+fAJGjOWJXjct2adepJ/QSzxTRU9t52+u9H1+irchbsPxPLgOs64WxOBu6520J
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+X-Received: by 2002:a92:2602:: with SMTP id n2mr817035ile.82.1602706344803;
+ Wed, 14 Oct 2020 13:12:24 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 13:12:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005c841705b1a7266a@google.com>
+Subject: kernel panic: Fatal exception (3)
+From:   syzbot <syzbot+ec762a6342ad0d3c0d8f@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Oct 14, 2020 at 4:11 PM -03, Jonathan Corbet wrote:
->
-> On Tue, 13 Oct 2020 23:13:17 +0000
-> N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com> wrote:
->
-> > The warnings were caused by the expressions matching words in the
-> > translated versions of the documentation, since any unicode character
-> > was matched.
-> >
-> > Fix the regular expression by making the C regexes use ASCII
->
-> I don't quite understand this part, can you give an example of the kinds
-> of warnings you were seeing?
+Hello,
 
-Hi Jon,
-sure.
+syzbot found the following issue on:
 
-One I had noted down was:
+HEAD commit:    c77fb07f Merge branch 'netlink-export-policy-on-validation..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1722ff00500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fa2bf4058104211
+dashboard link: https://syzkaller.appspot.com/bug?extid=ec762a6342ad0d3c0d8f
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1281459f900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=175556f0500000
 
-WARNING: Unparseable C cross-reference: '=E8=B0=83=E7=94=A8debugfs_rename'
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-which I believe occurred in the chinese translation.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11932b48500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13932b48500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15932b48500000
 
-I think the problem is that in chinese there normally isn't space between t=
-he
-words, so even if I had made the regexes only match the beginning of the wo=
-rd
-(which I didn't, but I fixed this in this patch with the \b), it would stil=
-l try
-to cross-reference to that symbol containing chinese characters, which is
-unparsable to sphinx.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ec762a6342ad0d3c0d8f@syzkaller.appspotmail.com
 
-So since valid identifiers in C are only in ASCII anyway, I used the ASCII =
-flag
-to make \w, and \d only match ASCII characters, otherwise they match any un=
-icode
-character.
-
-If you want to have a look at other warnings or more complete output let me=
- know
-and I will recompile those versions. That sentence was the only thing I not=
-ed
-down, but I think it gives a good idea of the problem.
-
-Thanks,
-N=C3=ADcolas
-
->
-> Thanks,
->
-> jon
+FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004c9428 CR3: 0000000009e8d000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Kernel panic - not syncing: Fatal exception in interrupt
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
