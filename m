@@ -2,88 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA2328E298
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A140028E2A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731532AbgJNOzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:55:07 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:2160 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729276AbgJNOyv (ORCPT
+        id S1731601AbgJNO4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:56:09 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:22927 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728799AbgJNO4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:54:51 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09EEpi86023902;
-        Wed, 14 Oct 2020 09:54:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=NbuRtoi+iQyrOz1VZGTizLtn/VqJReoSWynFwYIAIsg=;
- b=eoVgEewyMaXaPElcE4qhIUvMuRcZHJuuzgblZ+UkA86T1S/gZhRKUffDAXAeleIf0CF8
- L8L3cU0f/xNQdb0OLghok3s/r5Gz2Qwzn5LrUNNFXks2k0118VgbZNHD1qD3454kg6Rt
- 4q/s8xWICQToAPa3VzF/J1GdeKV8+iqbhuLSAQDlWVolIhX7Ud+3iJKFdTaPWO/giwrP
- sznPTYgpWqSw3hUv9AC9jwrayCAuFjRUQY2wCyIimYTsGTDFIZCeVj362t22otN/h0Lk
- Gdt9WaldBuj7RdNBpDs7PrKIfqFIKOoH6CxDuZLST0EXYDJzNzwL7G+1eAY7zJo8q4jp TQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 343ac1wbwc-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 14 Oct 2020 09:54:38 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 14 Oct
- 2020 15:54:36 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Wed, 14 Oct 2020 15:54:36 +0100
-Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A1FEE2AA;
-        Wed, 14 Oct 2020 14:54:35 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <nsaenzjulienne@suse.de>
-CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 7/7] MAINTAINERS: Add dts for Cirrus Logic Lochnagar on RPi4
-Date:   Wed, 14 Oct 2020 15:54:18 +0100
-Message-ID: <20201014145418.31838-8-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201014145418.31838-1-rf@opensource.cirrus.com>
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010140108
+        Wed, 14 Oct 2020 10:56:08 -0400
+X-IronPort-AV: E=Sophos;i="5.77,375,1596466800"; 
+   d="scan'208";a="59780486"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 14 Oct 2020 23:56:06 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 1418142E69AB;
+        Wed, 14 Oct 2020 23:56:04 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Enable VIN instances
+Date:   Wed, 14 Oct 2020 15:55:58 +0100
+Message-Id: <20201014145558.12854-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the Cirrus Logic driver maintainers to include the device
-tree .dts for using the Lochnagar with a Raspberry Pi 4.
+Enable VIN instances along with OV5640 as endpoints on the adapter board.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+This patch applies on top of [1].
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 87ceaac748a4..09bc583a5b2b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4199,6 +4199,7 @@ M:	Charles Keepax <ckeepax@opensource.cirrus.com>
- M:	Richard Fitzgerald <rf@opensource.cirrus.com>
- L:	patches@opensource.cirrus.com
- S:	Supported
-+F:	arch/arm/boot/dts/bcm2711-rpi4b-cirrus-lochnagar.dts
- F:	Documentation/devicetree/bindings/clock/cirrus,lochnagar.yaml
- F:	Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml
- F:	Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
+    renesas-devel.git/log/?h=renesas-arm-dt-for-v5.11
+---
+ .../boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts    | 222 ++++++++++++++++++
+ 1 file changed, 222 insertions(+)
+
+diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+index 961c0f2eeefb..98c3fbd89fa6 100644
+--- a/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
++++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7-dbcm-ca.dts
+@@ -20,6 +20,30 @@
+ 		serial5 = &hscif0;
+ 		ethernet1 = &ether;
+ 	};
++
++	mclk_cam1: mclk-cam1 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <26000000>;
++	};
++
++	mclk_cam2: mclk-cam2 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <26000000>;
++	};
++
++	mclk_cam3: mclk-cam3 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <26000000>;
++	};
++
++	mclk_cam4: mclk-cam4 {
++		compatible = "fixed-clock";
++		#clock-cells = <0>;
++		clock-frequency = <26000000>;
++	};
+ };
+ 
+ &avb {
+@@ -47,6 +71,19 @@
+ 	};
+ };
+ 
++&gpio0 {
++	/* Disable hogging GP0_18 to output LOW */
++	/delete-node/ qspi_en;
++
++	/* Hog GP0_18 to output HIGH to enable VIN2 */
++	vin2_en {
++		gpio-hog;
++		gpios = <18 GPIO_ACTIVE_HIGH>;
++		output-high;
++		line-name = "VIN2_EN";
++	};
++};
++
+ &hscif0 {
+ 	pinctrl-0 = <&hscif0_pins>;
+ 	pinctrl-names = "default";
+@@ -54,6 +91,94 @@
+ 	status = "okay";
+ };
+ 
++&i2c0 {
++	ov5640@3c {
++		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		clocks = <&mclk_cam1>;
++		clock-names = "xclk";
++
++		port {
++			ov5640_0: endpoint {
++				bus-width = <8>;
++				data-shift = <2>;
++				bus-type = <6>;
++				pclk-sample = <1>;
++				remote-endpoint = <&vin0ep>;
++			};
++		};
++	};
++};
++
++&i2c1 {
++	pinctrl-0 = <&i2c1_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++	clock-frequency = <400000>;
++
++	ov5640@3c {
++		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		clocks = <&mclk_cam2>;
++		clock-names = "xclk";
++
++		port {
++			ov5640_1: endpoint {
++				bus-width = <8>;
++				data-shift = <2>;
++				bus-type = <6>;
++				pclk-sample = <1>;
++				remote-endpoint = <&vin1ep>;
++			};
++		};
++	};
++};
++
++&i2c2 {
++	ov5640@3c {
++		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		clocks = <&mclk_cam3>;
++		clock-names = "xclk";
++
++		port {
++			ov5640_2: endpoint {
++				bus-width = <8>;
++				data-shift = <2>;
++				bus-type = <6>;
++				pclk-sample = <1>;
++				remote-endpoint = <&vin2ep>;
++			};
++		};
++	};
++};
++
++&i2c3 {
++	pinctrl-0 = <&i2c3_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++	clock-frequency = <400000>;
++
++	ov5640@3c {
++		compatible = "ovti,ov5640";
++		reg = <0x3c>;
++		clocks = <&mclk_cam4>;
++		clock-names = "xclk";
++
++		port {
++			ov5640_3: endpoint {
++				bus-width = <8>;
++				data-shift = <2>;
++				bus-type = <6>;
++				pclk-sample = <1>;
++				remote-endpoint = <&vin3ep>;
++			};
++		};
++	};
++};
++
+ &pfc {
+ 	can0_pins: can0 {
+ 		groups = "can0_data_d";
+@@ -70,6 +195,16 @@
+ 		function = "hscif0";
+ 	};
+ 
++	i2c1_pins: i2c1 {
++		groups = "i2c1_c";
++		function = "i2c1";
++	};
++
++	i2c3_pins: i2c3 {
++		groups = "i2c3";
++		function = "i2c3";
++	};
++
+ 	scif0_pins: scif0 {
+ 		groups = "scif0_data";
+ 		function = "scif0";
+@@ -84,6 +219,31 @@
+ 		groups = "scifb1_data";
+ 		function = "scifb1";
+ 	};
++
++	vin0_8bit_pins: vin0 {
++		groups = "vin0_data8", "vin0_clk", "vin0_sync";
++		function = "vin0";
++	};
++
++	vin1_8bit_pins: vin1 {
++		groups = "vin1_data8_b", "vin1_clk_b", "vin1_sync_b";
++		function = "vin1";
++	};
++
++	vin2_pins: vin2 {
++		groups = "vin2_g8", "vin2_clk";
++		function = "vin2";
++	};
++
++	vin3_pins: vin3 {
++		groups = "vin3_data8", "vin3_clk", "vin3_sync";
++		function = "vin3";
++	};
++};
++
++&qspi {
++	/* Pins shared with VIN2, keep status disabled */
++	status = "disabled";
+ };
+ 
+ &scif0 {
+@@ -106,3 +266,65 @@
+ 	rts-gpios = <&gpio4 21 GPIO_ACTIVE_LOW>;
+ 	cts-gpios = <&gpio4 17 GPIO_ACTIVE_LOW>;
+ };
++
++&vin0 {
++	/*
++	 * Set SW2 switch on the SOM to 'ON'
++	 * Set SW1 switch on camera board to 'OFF' as we are using 8bit mode
++	 */
++	status = "okay";
++	pinctrl-0 = <&vin0_8bit_pins>;
++	pinctrl-names = "default";
++
++	port {
++		vin0ep: endpoint {
++			remote-endpoint = <&ov5640_0>;
++			bus-width = <8>;
++			bus-type = <6>;
++		};
++	};
++};
++
++&vin1 {
++	/* Set SW1 switch on the SOM to 'ON' */
++	status = "okay";
++	pinctrl-0 = <&vin1_8bit_pins>;
++	pinctrl-names = "default";
++
++	port {
++		vin1ep: endpoint {
++			remote-endpoint = <&ov5640_1>;
++			bus-width = <8>;
++			bus-type = <6>;
++		};
++	};
++};
++
++&vin2 {
++	status = "okay";
++	pinctrl-0 = <&vin2_pins>;
++	pinctrl-names = "default";
++
++	port {
++		vin2ep: endpoint {
++			remote-endpoint = <&ov5640_2>;
++			bus-width = <8>;
++			data-shift = <8>;
++			bus-type = <6>;
++		};
++	};
++};
++
++&vin3 {
++	status = "okay";
++	pinctrl-0 = <&vin3_pins>;
++	pinctrl-names = "default";
++
++	port {
++		vin3ep: endpoint {
++			remote-endpoint = <&ov5640_3>;
++			bus-width = <8>;
++			bus-type = <6>;
++		};
++	};
++};
 -- 
-2.20.1
+2.17.1
 
