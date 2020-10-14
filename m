@@ -2,268 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD7A28DFBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CAB28DFC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730671AbgJNLXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727865AbgJNLXH (ORCPT
+        id S1730693AbgJNLYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:24:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28282 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730676AbgJNLYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:23:07 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0C5C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:23:05 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id d81so1935491wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oWaGuo9LskuZ4hXwW4a3zf/hlKac3ATy+u6gonh1b2Q=;
-        b=V1B4ZhetUpahJXmCc8Nl/G16fbmvRO9QjhujCBD8MrohGV6HWWErpum53RILt21/xW
-         jgLYOxZXMSKZz7AI38yPWU+kNk8ZDQAnjjhFEnb7mif+oSZjVbQNhDFcYKwLePNqlcVu
-         m9VLQQMV/saSgEDp4nZJE8A2jt6C9V2vgkLHwlSwK730iEF8B+3qxQcl1bZ/qmVcxz2T
-         Dw/Zz8UFdyPv+vkbvYZRoLfr8dKDjJx+7C/AFseaBLWsTBaWb51mGYQafD0aCXtWr+py
-         OohFL+Y24rRJuj//F6EUb4NZ7jO6cr7fSske3WjM+WNFZez9Q+/fdWRdAs4w+SQgtOpv
-         x+5A==
+        Wed, 14 Oct 2020 07:24:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602674640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3H6mGsRZewK80OZHFyPkl46RKkyXB0PbUSdyfxyv/nQ=;
+        b=HyQv8i/wihW30LtwkNZJtEMWb+T2k30mpmJA/FVZxsGHKDhlwwLMWXBGslf4AdVILGnenF
+        HLRJLe0uPskFpXlWqCCylz7KV5782SRj+fFQbcw5Dr1yqsa6+jm91BEsiySwYN/8+SUC3y
+        ShWM/wQtEnJGiUdyF1FbPCmjaA/vtkw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-CtZ0tLdpMjSGkjWqWf90kg-1; Wed, 14 Oct 2020 07:23:57 -0400
+X-MC-Unique: CtZ0tLdpMjSGkjWqWf90kg-1
+Received: by mail-ej1-f72.google.com with SMTP id i21so1061055ejb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 04:23:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=oWaGuo9LskuZ4hXwW4a3zf/hlKac3ATy+u6gonh1b2Q=;
-        b=F/PnsDNiqe1qC9t1MBSZM7mmKmzEhGlY9GM1A4jPL0DI8771wPJpsX+exs8Db+oH4y
-         x+pFF6laethiG3VCvxcGJSXcrXG3CkkMdWHWSfFT7k0jBsgNsFo4Yr5CCRgVCjWRqHCP
-         Gi8z4QcDLw9bfFyZ7DFQTN8Zpz/ouQeDkSAE/ZBZKU0Qy2wPuN1hYmli5ANDtc/cRyDR
-         hGO6f3MmM2Xi9t1brIhlAL1RXGI5P+K4mBDgj8WPDWganz8WZ0bh25XEapfYGZgwhQQE
-         lyVj/RY1n+6tzyMdz0tDiczEgAyw4GgSjX4v0ISBKQ1ZacHNxUaWoPu/D3hoqsxkUUIT
-         tgBQ==
-X-Gm-Message-State: AOAM533dbFf/EMyQuxgY2kfdJyF6d+JqDI8bWZWV8gQYMChqFPERrqDQ
-        QSCymSg5CCHUZWtdm3wErf1XEg==
-X-Google-Smtp-Source: ABdhPJzq2JW0akPdDmOzMbu3G9f8P99qjock5GWOa+k7jyBd/FreW1zPU+oD5RPP9LYdFSjfK6i28g==
-X-Received: by 2002:a7b:c112:: with SMTP id w18mr3087165wmi.66.1602674583733;
-        Wed, 14 Oct 2020 04:23:03 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f? ([2a01:e34:ed2f:f020:8b3:b79b:6fb0:3e8f])
-        by smtp.googlemail.com with ESMTPSA id v3sm4621066wre.17.2020.10.14.04.23.01
+        bh=3H6mGsRZewK80OZHFyPkl46RKkyXB0PbUSdyfxyv/nQ=;
+        b=ewhu586zoRCMLlBCmi6c+/rRhg4Zb5OtuU1i0X4LkZ/bSk7VZ5KufaRkvPyrmp61+m
+         5YAL+tuuifDHgbOLulJtYGeRzAwkrHOVyqJ+lOj1ZwNooIzGw4bMv5NMXRSfmqbMRaG9
+         GLg68xS9IJ7HHXZ0RQUk8DhVfL/9dM5e9ow/xuphyTGgNVqctD1iQbZK/kgGu3S5MvrQ
+         /StoecLAeRAE62gVuGjd3OouTqhCPTT7pa/pHYS5eZ5nLgQNslRZuRPteqO1cCAwpGqh
+         4y4RVtT1yZDSCn2PFmmTKqooVAf0XpTY/yKuoIQPwhy+QiJUihAOYDA4Gz7xZ4gleDbh
+         svVA==
+X-Gm-Message-State: AOAM533vlLBYF9ISAs/Hg3EOJjCMUtjjkx/WFj/8HsQA+Rp7R+T46vL1
+        ClWwweNAXp35xXV8oU6wraInO4GHrddUF8Fq7Q+I71rbFT2X8fb+XxUjnrTUJEgCEakgHKUVBnM
+        USUusSxh8bCjPIxqh9m+ot9u0
+X-Received: by 2002:a17:906:5052:: with SMTP id e18mr4562636ejk.530.1602674635888;
+        Wed, 14 Oct 2020 04:23:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzKr1m32t14FkDc/W8AweDP9IBnI3ylZgpuTkWQR5km+xGPX1lrPGf71ctcfLHQF7DtS46eAg==
+X-Received: by 2002:a17:906:5052:: with SMTP id e18mr4562615ejk.530.1602674635646;
+        Wed, 14 Oct 2020 04:23:55 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id rn10sm1584899ejb.8.2020.10.14.04.23.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 04:23:02 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, amitk@kernel.org,
-        corbet@lwn.net, Dietmar.Eggemann@arm.com, qperret@google.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
- <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
- <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
-Date:   Wed, 14 Oct 2020 13:23:01 +0200
+        Wed, 14 Oct 2020 04:23:55 -0700 (PDT)
+Subject: Re: [PATCH AUTOSEL 5.8 17/20] i2c: core: Call
+ i2c_acpi_install_space_handler() before i2c_acpi_register_devices()
+To:     kieran.bingham@ideasonboard.com, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
+References: <20200921144027.2135390-1-sashal@kernel.org>
+ <20200921144027.2135390-17-sashal@kernel.org>
+ <1977b57b-fae6-d9d4-e6bf-3d4013619537@ideasonboard.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <bbeb7cae-d856-bb25-4602-8dd3bae62773@redhat.com>
+Date:   Wed, 14 Oct 2020 13:23:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1977b57b-fae6-d9d4-e6bf-3d4013619537@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/10/2020 11:08, Lukasz Luba wrote:
-> Hi Daniel,
+Hi,
+
+On 10/14/20 1:09 PM, Kieran Bingham wrote:
+> Hi Hans, Sasha,
 > 
-> On 10/14/20 9:22 AM, Daniel Lezcano wrote:
+> As mentioned on https://github.com/linux-surface/kernel/issues/63, I'm
+> afraid I've bisected a boot time issue on the Microsoft Surface Go 2 to
+> this commit on the stable 5.8 tree.
+> 
+> The effect as reported there is that the boot process stalls just after
+> loading the usbhid module.
+> 
+> Typing, or interacting with the Keyboard (Type Cover) at that point
+> appears to cause usb bus resets, but I don't know if that's a related
+> symptom or just an effect of some underlying root cause.
+> 
+> I have been running a linux-media kernel on this device without issue.
+> 
+> Is this commit in 5.9? I'll build a vanilla v5.9 kernel and see if it
+> occurs there too.
+
+Yes the commit is in 5.9 too. Still would be interesting to see if 5.9 hits
+this issue too. I guess it will, but as I mentioned in:
+
+https://github.com/linux-surface/kernel/issues/63
+
+I do not understand why this commit is causing this issue.
+
+So I just checked and the whole acpidump is not using I2C
+opregion stuff at all:
+
+[hans@x1 microsoft-surface-go2]$ ack GenericSerialBus *.dsl
+[hans@x1 microsoft-surface-go2]$
+
+And there is only 1 _REG handler which is for the
+embedded-controller.
+
+So this patch should not make a difference at all on the GO2,
+other then maybe a subtle timing difference somewhere ... ?
+
+Regards,
+
+Hans
+
+
+> On 21/09/2020 15:40, Sasha Levin wrote:
+>> From: Hans de Goede <hdegoede@redhat.com>
 >>
->> Hi Lukasz,
+>> [ Upstream commit 21653a4181ff292480599dad996a2b759ccf050f ]
 >>
->> On 09/10/2020 11:16, Lukasz Luba wrote:
->>> Hi Rafael,
->>>
->>> On 10/2/20 12:44 PM, Lukasz Luba wrote:
->>>> Hi all,
->>>>
->>>> The Energy Model supports power values expressed in an abstract scale.
->>>> This has an impact on Intelligent Power Allocation (IPA) and should be
->>>> documented properly. There is also a need to update the DT binding for
->>>> the
->>>> 'sustainable-power' and allow it to have abstract scale as well.
->>>>
->>>> Changes:
->>>> v2:
->>>> - updated sustainable power section in IPA documentation
->>>> - updated DT binding for the 'sustainable-power'
->>>>
->>>> The v1 of the patch set and related discussion can be found in [1].
->>>>
->>>> Regards,
->>>> Lukasz Luba
->>>>
->>>> [1]
->>>> https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com/
->>>>
->>>>
->>>>
->>>> Lukasz Luba (3):
->>>>     docs: Clarify abstract scale usage for power values in Energy Model
->>>>     PM / EM: update the comments related to power scale
->>>>     dt-bindings: thermal: update sustainable-power with abstract scale
->>>>
->>>>    .../devicetree/bindings/thermal/thermal-zones.yaml  | 13
->>>> +++++++++----
->>>>    .../driver-api/thermal/power_allocator.rst          | 13
->>>> ++++++++++++-
->>>>    Documentation/power/energy-model.rst                | 13
->>>> +++++++++++++
->>>>    Documentation/scheduler/sched-energy.rst            |  5 +++++
->>>>    include/linux/energy_model.h                        | 11 +++++------
->>>>    kernel/power/energy_model.c                         |  2 +-
->>>>    6 files changed, 45 insertions(+), 12 deletions(-)
->>>>
->>>
->>> Could you take patch 1/3 and patch 2/3 via your PM tree,
->>> please? I will be very grateful.
->>>
->>> These patches just update the documentation and comments regarding
->>> an issue that we can have: bogoWatts in the Energy Model (and we
->>> already have). One of the drawbacks is that we cannot derive real energy
->>> from these numbers. Will see how this would evolve.
+>> Some ACPI i2c-devices _STA method (which is used to detect if the device
+>> is present) use autodetection code which probes which device is present
+>> over i2c. This requires the I2C ACPI OpRegion handler to be registered
+>> before we enumerate i2c-clients under the i2c-adapter.
 >>
->> The purpose of the energy model is to provide these power numbers.
+>> This fixes the i2c touchpad on the Lenovo ThinkBook 14-IIL and
+>> ThinkBook 15 IIL not getting an i2c-client instantiated and thus not
+>> working.
 >>
->> If the SoC vendors do not want to share those numbers, then better to
->> not use the energy model at all.
+>> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1842039
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+>> Signed-off-by: Wolfram Sang <wsa@kernel.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>   drivers/i2c/i2c-core-base.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->> If they want to use the EAS and the IPA at all costs without sharing the
->> power numbers, then it is up to them to take responsibility of providing
->> consistent numbers, not the community to document how to hack the energy
->> model.
->>
->> And that is even more true as mentioned by Doug: the power numbers are
->> not impossible to measure.
->>
->> Documenting the scale values give the opportunity to the SoC vendor to
->> never share the power numbers, and even worst, that implies all the
->> existing and future frameworks based on the energy model (and its
->> evolution) *must* comply with these dummy values. That is the promise of
->> a real pain.
->>
->> IMO, we must keep a strong constraint on the power values for the energy
->> model.
->>
->> However, nothing prevents to write a recipe on a website explaining how
->> to use the energy model without the power numbers with a big warning
->> that could not work in the future if the energy model evolves or it
->> could be incompatible with the IPA.
->>
->> I suggest to solve the energy model main issue: the SoC vendor do not
->> want to share the power numbers. Why not give the opportunity to load a
->> firmware where the power numbers will be ? The firmware could be in a
->> vendor partition for example.
->>
+>> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+>> index 4f09d4c318287..7031393c74806 100644
+>> --- a/drivers/i2c/i2c-core-base.c
+>> +++ b/drivers/i2c/i2c-core-base.c
+>> @@ -1336,8 +1336,8 @@ static int i2c_register_adapter(struct i2c_adapter *adap)
+>>   
+>>   	/* create pre-declared device nodes */
+>>   	of_i2c_register_devices(adap);
+>> -	i2c_acpi_register_devices(adap);
+>>   	i2c_acpi_install_space_handler(adap);
+>> +	i2c_acpi_register_devices(adap);
+>>   
+>>   	if (adap->nr < __i2c_first_dynamic_bus_num)
+>>   		i2c_scan_static_board_info(adap);
 >>
 > 
-> I understand your concerns. Unfortunately, the reality is that the
-> bogoWatts are there. I had discussion about it a few days ago with
-> Rajendra and Doug [1], where I was also opposed to allow bogoValue
-> coming from DT 'dynamic-power-coefficient'. But I have discussed it
-> internally and we allow, because developers would do it anyway.
+> 
 
-With all respects, 'internal discussions' is like out of tree kernels:
-for the community, they don't exist :)
-
-The development process in opensource is, by essence, public.
-
-That said, if the developers want to use abstract values, up to them to
-make sure it is consistent with the existing framework.
-
-Why do you need to document that and involve the community
-responsibility by adding these information in the Documentation even if
-you know different frameworks could be incompatible ?
-
-
-> Regarding your question with firmware where the power numbers can be
-> stored. Unfortunately, it is quite opposite, FW might want to hide it.
-
-No, I meant a firmware file, called by request_firmware(). So instead of
-having the power numbers in the DT, so published with the kernel, they
-are in the SoC vendor's partition in the firmware file, like
-'energy_model.bin'.
-
-Then when the energy model is initialized, it will try to request an
-energy model firmware file.
-
-That gives the opportunity to the SoC vendor to put the power numbers in
-the file and distribute it with the product.
-
-> We even allow bogoWatts to come from firmware, the SCMI spec:
-> (4.5.1 Performance domain management protocol background)
-> 'The power can be expressed in mW or in an abstract scale. Vendors are
-> not obliged to reveal power costs if it is undesirable, but a linear
-> scale is required.'
-> The callback which does this is not able to check if the value is a
-> bogoWatt [2].
-
-So the definition is clear: '... linear scale is required'. So that
-implies *all* power numbers for all devices defined in the SCMI. It is
-up to the SoC vendor to provide the right numbers.
-
-The EM / IPA / EAS do not have to care about the values.
-
-> EAS can handle EM with bogoWatts, as I described in the patch.
-> IPA has some issues: 'sustainable-power' in DT (which shouldn't be used
-> when EM devices use abstract scale) but sysfs interface can be used.
-
-Here the platform is mixing the numbers from different firmwares with
-different units.
-
-Why not make things consistent ? If the power numbers are coming from
-the SCMI, then ignore the ones coming from the DT, no? That should be
-simpler now that we have the energy model used for devfreq and cpufreq.
-
-May be add a flag in the energy model giving the origin of the data?
-
-> This patch set just align the SCMI spec with EM, EAS, IPA
-> documentation and already present platforms which use it.
-
-Actually, it is the opposite, the patch aligns EAS and EM to the SCMI
-spec, but we end up with IPA based on the EM/SCMI & DT and EAS based on
-EM/SCMI, right ?
-
-That is the root cause of the incompatibility.
-
-> I hope that the real milliWatts would come to EM via the DT
-> 'dynamic-power-coefficient' and function dev_pm_opp_of_register_em().
-> But no guaranties as you can see in [1].
-
-It is not a kernel problem if inconsistent values are specified in the DT.
-
-May be make developer life easier by submitting a script which will take
-a device tree, check all power numbers, and consistently abstract them.
-The developer will write the real values in the DT, test everything is
-working fine, then run the script which will make the 'linear scale' of
-all the power numbers and convert them to bogoWatt (with different
-properties name, so watt and bogowatt mix can be detected).
-
-In any case, if the DT is specifying real numbers, and SCMI abstract
-numbers or the opposite, obviously there is a conflict if we are using both.
-
-I suggest to fix the conflict first and provide the features to make the
-numbers more easy to share (like the script described above and/or the
-firmware file).
-
-Then with the right tools, everything can be documented.
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
