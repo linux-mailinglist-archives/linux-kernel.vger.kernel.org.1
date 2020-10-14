@@ -2,261 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979BD28DF94
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6549028DF9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 13:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730416AbgJNLGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 07:06:00 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51244 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgJNLGA (ORCPT
+        id S1730524AbgJNLJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 07:09:16 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:51332 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbgJNLJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 07:06:00 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9498B1C0B87; Wed, 14 Oct 2020 13:05:56 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 13:05:56 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
-Subject: [GIT PULL] LEDs changes for v5.10-rc1
-Message-ID: <20201014110556.GA19009@duo.ucw.cz>
+        Wed, 14 Oct 2020 07:09:15 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 24FFFA42;
+        Wed, 14 Oct 2020 13:09:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1602673752;
+        bh=AuZx8npadIqjiTwUvcVsyYbL4+tHjHtRGWaHTmF45Gk=;
+        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
+        b=qH5l06JFcj2J4GMrfGHQEws4lcrk7TjIkMynzahXv39gELz3jGrIrKcmlSTKFiNDo
+         XIpyTMWWBLpqeonQ5fa7z7fSVetf2w7n+lvxlnQgxOY9oXN0L+UvufSCmJFCG11K1C
+         D7GumDqO7JZDByy51GSJGutwmxVXFDlmLDXwZ46Y=
+Subject: Re: [PATCH AUTOSEL 5.8 17/20] i2c: core: Call
+ i2c_acpi_install_space_handler() before i2c_acpi_register_devices()
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
+References: <20200921144027.2135390-1-sashal@kernel.org>
+ <20200921144027.2135390-17-sashal@kernel.org>
+Reply-To: kieran.bingham@ideasonboard.com
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+Autocrypt: addr=kieran.bingham@ideasonboard.com; keydata=
+ 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
+ WZw01QYHU/GUV/zHJSFk
+Organization: Ideas on Board
+Message-ID: <1977b57b-fae6-d9d4-e6bf-3d4013619537@ideasonboard.com>
+Date:   Wed, 14 Oct 2020 12:09:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200921144027.2135390-17-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hans, Sasha,
 
---zhXaljGHf11kAtnf
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As mentioned on https://github.com/linux-surface/kernel/issues/63, I'm
+afraid I've bisected a boot time issue on the Microsoft Surface Go 2 to
+this commit on the stable 5.8 tree.
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+The effect as reported there is that the boot process stalls just after
+loading the usbhid module.
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+Typing, or interacting with the Keyboard (Type Cover) at that point
+appears to cause usb bus resets, but I don't know if that's a related
+symptom or just an effect of some underlying root cause.
 
-are available in the Git repository at:
+I have been running a linux-media kernel on this device without issue.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/=
-leds-5.10-rc1
+Is this commit in 5.9? I'll build a vanilla v5.9 kernel and see if it
+occurs there too.
 
-for you to fetch changes up to 19d2e0cef0b14f8c7210162f58327485f5fa7c51:
+--
+Regards
 
-  leds: pwm: Remove platform_data support (2020-10-07 12:02:58 +0200)
-
-----------------------------------------------------------------
-Pull request for 5.10-rc1.
-
-Quite a lot of stuff is going on here. Great cleanups/fixes from Marek
-and others are biggest part.
-
-I limited CPU LED trigger to 8 CPUs, because it was willing to
-register 1024 "triggers" on machine with 1024 CPUs. I don't believe it
-will cause any problems, but we can raise the limit if it does.
-
-----------------------------------------------------------------
-Alexander Dahl (2):
-      leds: pwm: Allow automatic labels for DT based devices
-      leds: pwm: Remove platform_data support
-
-Dan Murphy (5):
-      dt: bindings: lp50xx: Introduce the lp50xx family of RGB drivers
-      leds: lp50xx: Add the LP50XX family of the RGB LED driver
-      dt: bindings: lp55xx: Updte yaml examples with new color ID
-      leds: lm3532: Fix warnings for undefined parameters
-      leds: lm36274: Fix warning for undefined parameters
-
-Dmitry Osipenko (1):
-      leds: Add driver for Acer Iconia Tab A500
-
-Eddie James (2):
-      dt-bindings: leds: pca955x: Add IBM implementation compatible string
-      leds: pca955x: Add an IBM software implementation of the PCA9552 chip
-
-Gabriel David (1):
-      leds: lm3697: Fix out-of-bound access
-
-Grant Feng (2):
-      leds: is31fl319x: Add shutdown pin and generate a 5ms low pulse when =
-startup
-      DT: leds: Add an optional property named 'shutdown-gpios'
-
-Krzysztof Kozlowski (5):
-      leds: s3c24xx: Remove unused machine header include
-      leds: lm3692x: Simplify with dev_err_probe()
-      leds: pwm: Simplify with dev_err_probe()
-      leds: sgm3140: Simplify with dev_err_probe()
-      leds: tlc591xx: Simplify with dev_err_probe()
-
-Liu Shixin (1):
-      leds: pca9532 - simplify the return expression of pca9532_remove
-
-Marek Beh=FAn (55):
-      leds: various: compile if COMPILE_TEST=3Dy
-      leds: ip30: compile if COMPILE_TEST=3Dy
-      leds: various: use device_get_match_data
-      leds: various: use dev_of_node(dev) instead of dev->of_node
-      leds: lt3593: do not rewrite .of_node of new LED device to wrong value
-      leds: various: use only available OF children
-      leds: various: fix OF node leaks
-      leds: bcm6328, bcm6358: use devres LED registering function
-      leds: bcm6328, bcm6358: use struct led_init_data when registering
-      leds: lm3697: use struct led_init_data when registering
-      leds: lm3697: cosmetic change: use helper variable, reverse christmas=
- tree
-      leds: max77650: use struct led_init_data when registering
-      leds: mt6323: use struct led_init_data when registering
-      leds: mt6323: cosmetic change: use helper variable
-      leds: pm8058: use struct led_init_data when registering
-      leds: pm8058: cosmetic change: use helper variable
-      leds: pm8058: cosmetic change: no need to return in if guard
-      leds: is31fl32xx: use struct led_init_data when registering
-      leds: ns2: use devres LED registering function
-      leds: ns2: alloc simple array instead of struct ns2_led_priv
-      leds: ns2: support OF probing only, forget platdata
-      leds: ns2: move parsing of one LED into separate function
-      leds: ns2: use devres API for getting GPIO descriptors
-      leds: ns2: cosmetic structure rename
-      leds: ns2: cosmetic variable rename
-      leds: ns2: cosmetic change
-      leds: ns2: cosmetic change: use helper variable
-      leds: ns2: register LED immediately after parsing DT properties
-      leds: ns2: remove unneeded variable
-      leds: ns2: use struct led_init_data when registering
-      leds: lm36274: cosmetic: rename lm36274_data to chip
-      leds: lm36274: don't iterate through children since there is only one
-      leds: lm36274: use struct led_init_data when registering
-      leds: lm36274: do not set chip settings in DT parsing function
-      leds: lm36274: use platform device as parent of LED
-      leds: lm36274: use devres LED registering function
-      leds: lm3532: don't parse label DT property
-      leds: syscon: use struct led_init_data when registering
-      leds: parse linux,default-trigger DT property in LED core
-      leds: tca6507: Absorb platform data
-      leds: tca6507: use fwnode API instead of OF
-      leds: tca6507: fix potential zero passed to ERR_PTR
-      leds: pca963x: cosmetic: use helper variables, better indentation
-      leds: pca963x: use devres LED registering function
-      leds: pca963x: cosmetic: rename variables
-      leds: pca963x: cosmetic: rename variables
-      leds: pca963x: use flexible array
-      dt-bindings: leds: tca6507: convert to YAML
-      leds: tca6507: do not set GPIO names
-      leds: tca6507: cosmetic change: use helper variable
-      leds: tca6507: remove binding comment
-      leds: pca963x: register LEDs immediately after parsing, get rid of pl=
-atdata
-      leds: pca963x: use struct led_init_data when registering
-      leds: ns2: convert to fwnode API
-      leds: ns2: do not guard OF match pointer with of_match_ptr
-
-Markus Moll (2):
-      leds: pca9532: correct shift computation in pca9532_getled
-      leds: pca9532: read pwm settings from device tree
-
-Pavel Machek (5):
-      leds: we don't want people to use LED subsystem for vibrations
-      leds: sgm3140: fix led->LED for consistency
-      leds: tca6507: fix warning triggered by fwnode conversion.
-      leds: TODO: Add documentation about possible subsystem improvements
-      ledtrig-cpu: Limit to 8 CPUs
-
-Randy Dunlap (1):
-      leds: LP55XX_COMMON needs to depend on LEDS_CLASS
-
-Tobias Jordan (1):
-      leds: tlc591xx: fix leak of device node iterator
-
-Tom Rix (1):
-      leds: mt6323: move period calculation
-
- .../devicetree/bindings/leds/leds-is31fl319x.txt   |   2 +
- .../devicetree/bindings/leds/leds-lp50xx.yaml      | 130 +++++
- .../devicetree/bindings/leds/leds-lp55xx.yaml      |   2 +-
- .../devicetree/bindings/leds/leds-pca955x.txt      |   1 +
- Documentation/devicetree/bindings/leds/tca6507.txt |  49 --
- .../devicetree/bindings/leds/ti,tca6507.yaml       | 134 +++++
- Documentation/leds/ledtrig-transient.rst           |   7 -
- drivers/leds/Kconfig                               |  31 +-
- drivers/leds/Makefile                              |   2 +
- drivers/leds/TODO                                  |  75 +++
- drivers/leds/led-class.c                           |   5 +
- drivers/leds/leds-88pm860x.c                       |   6 +-
- drivers/leds/leds-aat1290.c                        |   2 +-
- drivers/leds/leds-acer-a500.c                      | 129 +++++
- drivers/leds/leds-an30259a.c                       |   7 +-
- drivers/leds/leds-aw2013.c                         |  11 +-
- drivers/leds/leds-bcm6328.c                        |  11 +-
- drivers/leds/leds-bcm6358.c                        |  11 +-
- drivers/leds/leds-cpcap.c                          |   7 +-
- drivers/leds/leds-cr0014114.c                      |   3 -
- drivers/leds/leds-el15203000.c                     |   3 -
- drivers/leds/leds-gpio.c                           |   3 -
- drivers/leds/leds-ip30.c                           |   1 +
- drivers/leds/leds-is31fl319x.c                     |  32 +-
- drivers/leds/leds-is31fl32xx.c                     |  33 +-
- drivers/leds/leds-ktd2692.c                        |   4 +-
- drivers/leds/leds-lm3532.c                         |  65 +--
- drivers/leds/leds-lm36274.c                        | 133 ++---
- drivers/leds/leds-lm3692x.c                        |  14 +-
- drivers/leds/leds-lm3697.c                         | 100 ++--
- drivers/leds/leds-lp50xx.c                         | 631 +++++++++++++++++=
-++++
- drivers/leds/leds-lp5521.c                         |   2 +-
- drivers/leds/leds-lp5523.c                         |   2 +-
- drivers/leds/leds-lp5562.c                         |   2 +-
- drivers/leds/leds-lp55xx-common.c                  |  14 +-
- drivers/leds/leds-lp8501.c                         |   2 +-
- drivers/leds/leds-lp8860.c                         |   6 +-
- drivers/leds/leds-lt3593.c                         |   6 +-
- drivers/leds/leds-max77650.c                       |  24 +-
- drivers/leds/leds-max77693.c                       |   2 +-
- drivers/leds/leds-mc13783.c                        |   8 +-
- drivers/leds/leds-mt6323.c                         |  38 +-
- drivers/leds/leds-netxbig.c                        |   6 +-
- drivers/leds/leds-ns2.c                            | 346 ++++-------
- drivers/leds/leds-pca9532.c                        |  24 +-
- drivers/leds/leds-pca955x.c                        |   8 +
- drivers/leds/leds-pca963x.c                        | 399 ++++++-------
- drivers/leds/leds-pm8058.c                         |  33 +-
- drivers/leds/leds-powernv.c                        |   2 +-
- drivers/leds/leds-pwm.c                            |  49 +-
- drivers/leds/leds-s3c24xx.c                        |   2 -
- drivers/leds/leds-sc27xx-bltc.c                    |   6 +-
- drivers/leds/leds-sgm3140.c                        |  29 +-
- drivers/leds/leds-spi-byte.c                       |  11 +-
- drivers/leds/leds-syscon.c                         |  13 +-
- drivers/leds/leds-tca6507.c                        | 116 ++--
- drivers/leds/leds-tlc591xx.c                       |  24 +-
- drivers/leds/leds-turris-omnia.c                   |   8 +-
- drivers/leds/trigger/ledtrig-cpu.c                 |  13 +-
- include/linux/leds-tca6507.h                       |  21 -
- include/linux/platform_data/leds-pca963x.h         |  35 --
- 61 files changed, 1791 insertions(+), 1104 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
- delete mode 100644 Documentation/devicetree/bindings/leds/tca6507.txt
- create mode 100644 Documentation/devicetree/bindings/leds/ti,tca6507.yaml
- create mode 100644 drivers/leds/TODO
- create mode 100644 drivers/leds/leds-acer-a500.c
- create mode 100644 drivers/leds/leds-lp50xx.c
- delete mode 100644 include/linux/leds-tca6507.h
- delete mode 100644 include/linux/platform_data/leds-pca963x.h
+Kieran
 
 
+On 21/09/2020 15:40, Sasha Levin wrote:
+> From: Hans de Goede <hdegoede@redhat.com>
+> 
+> [ Upstream commit 21653a4181ff292480599dad996a2b759ccf050f ]
+> 
+> Some ACPI i2c-devices _STA method (which is used to detect if the device
+> is present) use autodetection code which probes which device is present
+> over i2c. This requires the I2C ACPI OpRegion handler to be registered
+> before we enumerate i2c-clients under the i2c-adapter.
+> 
+> This fixes the i2c touchpad on the Lenovo ThinkBook 14-IIL and
+> ThinkBook 15 IIL not getting an i2c-client instantiated and thus not
+> working.
+> 
+> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1842039
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Signed-off-by: Wolfram Sang <wsa@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/i2c/i2c-core-base.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 4f09d4c318287..7031393c74806 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -1336,8 +1336,8 @@ static int i2c_register_adapter(struct i2c_adapter *adap)
+>  
+>  	/* create pre-declared device nodes */
+>  	of_i2c_register_devices(adap);
+> -	i2c_acpi_register_devices(adap);
+>  	i2c_acpi_install_space_handler(adap);
+> +	i2c_acpi_register_devices(adap);
+>  
+>  	if (adap->nr < __i2c_first_dynamic_bus_num)
+>  		i2c_scan_static_board_info(adap);
+> 
 
---zhXaljGHf11kAtnf
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX4bblAAKCRAw5/Bqldv6
-8lNGAJ9U1JIZjV4ZUf1ItaDTYJZ+nmpNywCfZuN2r8bFIPrWN04l2NoH0veNiaw=
-=3Jkc
------END PGP SIGNATURE-----
-
---zhXaljGHf11kAtnf--
+-- 
+Regards
+--
+Kieran
