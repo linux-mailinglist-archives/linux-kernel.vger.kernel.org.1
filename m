@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C792128E7D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A91A28E7D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729076AbgJNUY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:24:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38236 "EHLO mail.kernel.org"
+        id S1730276AbgJNUZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:25:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgJNUY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:24:29 -0400
-Received: from localhost (unknown [104.132.1.66])
+        id S1729022AbgJNUZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 16:25:12 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE3252222C;
-        Wed, 14 Oct 2020 20:24:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64CC32222C;
+        Wed, 14 Oct 2020 20:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602707068;
-        bh=Os2UxVsxzmhTbMvce37WirEBM9B8sreN6vfIOrjcDQ4=;
+        s=default; t=1602707112;
+        bh=y60T8MfAN6VUb/ve7bAl/0bz6h3acfP3VAK+B6ENBgM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CWa1mq0ILaQeCRNgtiSGecmKBtJ7hXulY9rqblcFRNsRrmnIFqElVJ/EUag6YT8Pp
-         rdIRdW3lox7PtPA6kCe9nZa51LKctvbk48o529ERVXDOY2T3wsTIXY3Aa7OcV6pTEe
-         Kq49jblpG9Cfrsle3VKeZ7EoJTz7kwXiIlrh/WUw=
-Date:   Wed, 14 Oct 2020 13:24:28 -0700
-From:   jaegeuk@kernel.org
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jamie Iles <jamie@nuviainc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the f2fs tree
-Message-ID: <20201014202428.GA1536937@google.com>
-References: <20201015071617.1f5ab26f@canb.auug.org.au>
+        b=1b3XRaOpODmwcqPvQPtoc1WOTMFE6JFgWfR3qphGMun7Y89YqRvEvNfwCTTj/8TTl
+         Wsy0nwDtC06JPuZOcIYNFrR3Sqv9LKuz5eD0HAJDJ4KsbHLT6Zypjs9rGCEE3NzJPV
+         sgTDgv9vKGECjKnNhNnwhmjhGKL9zxs9Qp840EwM=
+Date:   Wed, 14 Oct 2020 21:25:05 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Lukas Wunner <lukas@wunner.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>
+Subject: Re: Use after free in bcm2835_spi_remove()
+Message-ID: <20201014202505.GF4580@sirena.org.uk>
+References: <bd6eaa71-46cc-0aca-65ff-ae716864cbe3@gmail.com>
+ <20201014140912.GB24850@wunner.de>
+ <20201014194035.ukduovokggu37uba@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fwqqG+mf3f7vyBCB"
 Content-Disposition: inline
-In-Reply-To: <20201015071617.1f5ab26f@canb.auug.org.au>
+In-Reply-To: <20201014194035.ukduovokggu37uba@skbuf>
+X-Cookie: Take an astronaut to launch.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
 
-I fixed it in f2fs-next branch.
+--fwqqG+mf3f7vyBCB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
+On Wed, Oct 14, 2020 at 10:40:35PM +0300, Vladimir Oltean wrote:
+> On Wed, Oct 14, 2020 at 04:09:12PM +0200, Lukas Wunner wrote:
 
-On 10/15, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->   e965857201e0 ("f2fs: wait for sysfs kobject removal before freeing f2fs_sb_info")
-> 
-> Fixes tag
-> 
->   Fixes: bf9e697ecd4 ("f2fs: expose features to sysfs entry")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
->     Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
->     or later) just making sure it is not set (or set to "auto").
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+> > Apparently the problem is that spi_unregister_controller() drops the
+> > last ref on the controller, causing it to be freed, and afterwards we
+> > access the controller's private data, which is part of the same
+> > allocation as struct spi_controller:
 
+> > bcm2835_spi_remove()
+> >   spi_unregister_controller()
+> >     device_unregister()
+> >       put_device()
+> >         spi_controller_release()  #  spi_master_class.dev_release()
+> > 	  kfree(ctlr)
+> >   bcm2835_dma_release(ctlr, bs)
 
+> Also see these threads:
+> https://lore.kernel.org/linux-spi/20200922112241.GO4792@sirena.org.uk/T/#t
+> https://lore.kernel.org/linux-spi/270b94fd1e546d0c17a735c1f55500e58522da04.camel@suse.de/T/#u
+
+Right, the proposed patch is yet another way to fix the issue - it all
+comes back to the fact that you shouldn't be using the driver data after
+unregistering if it was allocated as part of allocating the controller.
+This framework feature is unfortunately quite error prone.
+
+--fwqqG+mf3f7vyBCB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+HXqEACgkQJNaLcl1U
+h9Cemgf+N9ktvf3Pu2FKW2QsiXZWpEOe9n1qxhO3C3TsMVR7uUof7Il0d78U3gQW
+Qub+c1JdauKYEX1f8HsEYw46qw4mTEApvJftks7F6Eyk6VXgWTdOI8dL1D9Z9cK5
+Q1iSG2S09kTtSJinL2XozoF/RtIqdQarNX72ZJxeHlXLnpyYOrjwAazgb+Wk6hLW
+TKugaZxbYoVczPvAuBIHWrNyngnYAWyNazrbBR/oUiSyXLGm/3PUNA6Ta0odClnW
+4zHdD7wcj7eo6oorQC9MBRyvAb8Rak9qmBdKAujl6FWZnyXF2SYMoFhykCI0D3ec
+X4fJEnbKTejyLXbKGlL9Buge3X3kMg==
+=c+5j
+-----END PGP SIGNATURE-----
+
+--fwqqG+mf3f7vyBCB--
