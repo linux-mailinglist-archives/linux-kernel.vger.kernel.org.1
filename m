@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C16928E7C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747B628E7CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 22:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbgJNUQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 16:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbgJNUQZ (ORCPT
+        id S1730151AbgJNUS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 16:18:26 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:45651 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgJNUSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 16:16:25 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAE7C061755;
-        Wed, 14 Oct 2020 13:16:24 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBNwM6thNz9sTs;
-        Thu, 15 Oct 2020 07:16:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602706580;
-        bh=eNEEZgIPupcqA5n45g+xly7jZixWVNAD+SX6Tr1tU+A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=miJ5rC30kLdCbAsVmhWx9USOh859mnDroD8PZoRj2yZ0vEyLNNTHfdzCcIes6Tfvp
-         /2aNfeW/8tCw08SgcX/JZ1GClN7A6ixZrZFtRChWWJ9Osv8R+FJcoI2wO6gvygzBST
-         dcmnO4NxMl6w21Vy6Fo11rWiOb92+G7Z8DV/7kmYN5zEfaA/XdPJLEPxDlt39NT91x
-         v4KrG86z+STdahWFvgBgazmndjCx+ARLQHfoWx2oibmWmZwTvJ83YZ1vnHmHVK85NW
-         8gkZGHm9XyoVyW3ijRvDjDufGIQVHq+CErdQrnsvEp1Rd9J4VPPaDNRg2nTYoc7PHQ
-         3sL9+erL6a53A==
-Date:   Thu, 15 Oct 2020 07:16:17 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Jamie Iles <jamie@nuviainc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the f2fs tree
-Message-ID: <20201015071617.1f5ab26f@canb.auug.org.au>
+        Wed, 14 Oct 2020 16:18:24 -0400
+Received: by mail-ej1-f66.google.com with SMTP id dt13so303158ejb.12;
+        Wed, 14 Oct 2020 13:18:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0MyUw0Y3gJD9KhX/3YhqYIS6k+1q8f/JNR3G4Oc+mO0=;
+        b=OskOucAhDFwQ2kcgHj7hRJfshk9+krQ98eV7j8tLUdRWynKfnRfAyVgH6cQuzzldQM
+         IoaXxnYeBZgErj2W6GobcC/hR9saMe44H1xW0NR7n/mFJpJYftYXqrM6Pzl/r8h4UdRL
+         ND9+iSWwaQvBHcKCB+gm3vHduhDaZjQA5NSFEl01f4dXlOflsA/hU2KZPZo98MM2RI8w
+         wdtreyoL5WALjHHTJhj9Et2gaVjhYQrNMRb/KPEekhgQ5Cg3VCtfsRfB6dkKEzxcmz0K
+         lab2atL/5m1jxaSxJYGdjleJlmIKOgmC7QFavtDMIuhnKohrz8ns5UtrrYJ/rhQcTF0e
+         wnVQ==
+X-Gm-Message-State: AOAM531iEakl9PneyfCXMlchOlYHizdaCb39Oz5Da3GBSTuajKeQaRNf
+        GjifmRWwg7zEDN11GXOvbBE=
+X-Google-Smtp-Source: ABdhPJyD9mvSdzTeswKoJSSkNRNYZJV/A491oP4RLt7gITN4T+XTScFWRX+EpK8W5zlRYXEzJ8uEig==
+X-Received: by 2002:a17:906:1e45:: with SMTP id i5mr798232ejj.203.1602706702595;
+        Wed, 14 Oct 2020 13:18:22 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id i18sm222556ejr.59.2020.10.14.13.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 13:18:21 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 22:18:18 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/20] dt-bindings: usb: dwc3: Add synopsys,dwc3
+ compatible string
+Message-ID: <20201014201818.GA6926@kozik-lap>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-12-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mi+Iz0HzWe.c_ez6CV+H.rC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201014101402.18271-12-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mi+Iz0HzWe.c_ez6CV+H.rC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 14, 2020 at 01:13:53PM +0300, Serge Semin wrote:
+> The DWC USB3 driver and some DTS files like Exynos 5250, Keystone k2e, etc
+> expects the DWC USB3 DT node to have the compatible string with the
+> "synopsys" vendor prefix. Let's add the corresponding compatible string to
+> the controller DT schema, but mark it as deprecated seeing the Synopsys,
+> Inc. is presented with just "snps" vendor prefix.
 
-Hi all,
+Instead of adding deprecated schema just correct the DTSes to use snps.
+The "synopsys" is not even in vendor prefixes.
 
-In commit
-
-  e965857201e0 ("f2fs: wait for sysfs kobject removal before freeing f2fs_s=
-b_info")
-
-Fixes tag
-
-  Fixes: bf9e697ecd4 ("f2fs: expose features to sysfs entry")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
-    or later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mi+Iz0HzWe.c_ez6CV+H.rC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+HXJEACgkQAVBC80lX
-0Gy40gf9GPQNdq301i5DwRNTqE4FPb+/9Sxa0HzQzF0FgV++VmHPskC7qaF8j841
-Pu72IA6V801KhjZwQiuQyNVdk9w/rLgeWUtdILwPrni/xY8fFOtMenEInR/B9jj4
-TwjdqwyAM3z7Nt08O9JeDHMzC95sK8dBAVlLZ20Hjb64n7NhwkVbOrrdEEYdwFIe
-Doog5UNS4AmX5RRXPmyk4Vo94iRwMlNit3o9YUkZkJNs/OFfuUhJ3L6HQe+lvhj+
-YA42NpNX9sHe7PXm3mqAOSVaGOIkvHGxM0lHJhw6/frSwREwSJ86Awka0LbAp/gW
-BFDVSYXYDVTzDUMyGv2m/vBckgUJ2g==
-=Y8wK
------END PGP SIGNATURE-----
-
---Sig_/mi+Iz0HzWe.c_ez6CV+H.rC--
+Best regards,
+Krzysztof
