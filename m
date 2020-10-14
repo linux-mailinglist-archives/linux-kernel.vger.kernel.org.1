@@ -2,108 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7DA28DA15
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAA328DA13
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727717AbgJNGy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 02:54:57 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15286 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727536AbgJNGy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 02:54:56 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id CCA45DC261363107584A;
-        Wed, 14 Oct 2020 14:54:51 +0800 (CST)
-Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.50) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 14 Oct 2020 14:54:45 +0800
-From:   Zhe Li <lizhe67@huawei.com>
-To:     <dwmw2@infradead.org>, <richard@nod.at>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <wangfangpeng1@huawei.com>, <zhongjubin@huawei.com>,
-        <chenjie6@huawei.com>, <qiuxi1@huawei.com>, <lizhe67@huawei.com>
-Subject: [PATCH 2/2] jffs2: fix can't set rp_size to zero during remounting
-Date:   Wed, 14 Oct 2020 14:54:43 +0800
-Message-ID: <20201014065443.18512-2-lizhe67@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20201014065443.18512-1-lizhe67@huawei.com>
-References: <20201014065443.18512-1-lizhe67@huawei.com>
+        id S1727455AbgJNGys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 02:54:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726147AbgJNGyr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 02:54:47 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8F7E2222A;
+        Wed, 14 Oct 2020 06:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602658487;
+        bh=CYCTvLft7EuscmHtaKH0AX7Z0ZbTnFcKn6jsV4mDXfs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qxewTeZtO3iCbtRinyhP0odEb8dvDqDTVpoPx7POE//Uj98CZ8rUVzwZ731dYfNw7
+         Ki7GgS1Ds23+J/pYQEoNxfJEwgwcVliXQy2HTmr3KeXR6kjU9rLJ9jWkc3E6L6JrBl
+         /NtehPR59JGYN1/yBWNQRgw8obCpTxPEOdFlRzDs=
+Date:   Wed, 14 Oct 2020 08:55:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Roland Scheidegger <sroland@vmware.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Zack Rusin <zackr@vmware.com>,
+        Martin Krastev <krastevm@vmware.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.8 050/124] drm/vmwgfx: Fix error handling in get_node
+Message-ID: <20201014065522.GA2762376@kroah.com>
+References: <20201012133146.834528783@linuxfoundation.org>
+ <20201012133149.276124624@linuxfoundation.org>
+ <703ec8e7-f036-948d-f155-73f0c946aeba@vmware.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.50]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <703ec8e7-f036-948d-f155-73f0c946aeba@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lizhe <lizhe67@huawei.com>
+On Tue, Oct 13, 2020 at 05:55:31PM +0200, Roland Scheidegger wrote:
+> Hi,
+> 
+> this commit should NOT be applied to 5.8.
+> It fixes a regression introduced by
+> 58e4d686d456c3e356439ae160ff4a0728940b8e (drm/ttm: cleanup
+> ttm_mem_type_manager_func.get_node interface v3) which is part of 5.9
+> but not 5.8.
+> Applying this to 5.8 will very likely break things. I don't know why it
+> ended up as a candidate for 5.8.
 
-Set rp_size to zero will be ignore during remounting.
+Now dropped, thanks.  And it was probably picked up due to the wording
+in the changelog text, along with a lack of a "Fixes:" tag that pointed
+at the exact change it fixed up, which would have shown that this is a
+5.9-only thing.
 
-The method to identify whether we input a remounting option of
-rp_size is to check if the rp_size input is zero. It can not work
-well if we pass "rp_size=0".
+thanks,
 
-This patch add a bool variable "set_rp_size" to fix this problem.
-
-By the way, the problem of NULL pointer dereference in rp_size
-fs option parsing showed at
-https://lore.kernel.org/linux-mtd/20201012131204.59102-1-jamie@nuviainc.com/T/#u
-should be applyed before this patch to make sure it works well.
-
-Reported-by: Jubin Zhong <zhongjubin@huawei.com>
-Signed-off-by: lizhe <lizhe67@huawei.com>
----
- fs/jffs2/jffs2_fs_sb.h | 1 +
- fs/jffs2/super.c       | 7 +++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
-index 778275f48a87..5a7091746f68 100644
---- a/fs/jffs2/jffs2_fs_sb.h
-+++ b/fs/jffs2/jffs2_fs_sb.h
-@@ -38,6 +38,7 @@ struct jffs2_mount_opts {
- 	 * users. This is implemented simply by means of not allowing the
- 	 * latter users to write to the file system if the amount if the
- 	 * available space is less then 'rp_size'. */
-+	bool set_rp_size;
- 	unsigned int rp_size;
- };
- 
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 4fd297bdf0f3..c523adaca79f 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -88,7 +88,7 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
- 
- 	if (opts->override_compr)
- 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
--	if (opts->rp_size)
-+	if (opts->set_rp_size)
- 		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
- 
- 	return 0;
-@@ -206,6 +206,7 @@ static int jffs2_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 		if (opt > c->mtd->size)
- 			return invalf(fc, "jffs2: Too large reserve pool specified, max is %llu KB",
- 				      c->mtd->size / 1024);
-+		c->mount_opts.set_rp_size = true;
- 		c->mount_opts.rp_size = opt;
- 		break;
- 	default:
-@@ -225,8 +226,10 @@ static inline void jffs2_update_mount_opts(struct fs_context *fc)
- 		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
- 		c->mount_opts.compr = new_c->mount_opts.compr;
- 	}
--	if (new_c->mount_opts.rp_size)
-+	if (new_c->mount_opts.set_rp_size) {
-+		c->mount_opts.set_rp_size = new_c->mount_opts.set_rp_size;
- 		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
-+	}
- 	mutex_unlock(&c->alloc_sem);
- }
- 
--- 
-2.12.3
-
+greg k-h
