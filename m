@@ -2,97 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8186A28E431
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E467728E432
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729883AbgJNQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbgJNQRd (ORCPT
+        id S2388192AbgJNQRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:17:50 -0400
+Received: from smtprelay0088.hostedemail.com ([216.40.44.88]:45784 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726105AbgJNQRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:17:33 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5EFC061755;
-        Wed, 14 Oct 2020 09:17:33 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id b19so2052806pld.0;
-        Wed, 14 Oct 2020 09:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vEOij1W5YzKHI9vk48WeDQVrXJh9T0sK+XbA6XZMKSY=;
-        b=V8FEUSywm+8lN/iBx6wzgrSVeDnO22RAo8NMA/LIk9ckj2VqxilRpFWD0ZWZoqW0Q4
-         Fh4+/Npo/GV8ah3JfWrvJhufLS/B4VATgFs+01LtSiY1BXEfWcEOBOR5W5jT+npooZ1Y
-         hOB3VmRYmR+u2C7DEUrFIl/kPSx81C7yKeGlTw3xpU3/cw9VVDsZkYuaxwP5ORGqp0bs
-         DBq4YisUym3L0GsKvExKr67r9fPbWK68QXATAhZRGIRvOe2gOWrFdGBBCE5ZFsHwYtDh
-         mmJTFWMt5Dru016UacBffHAd5C/ZGC2VAK8/Ckfx6Anzb+bmd7OKhJfdCosBfcIjXrx3
-         RXNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vEOij1W5YzKHI9vk48WeDQVrXJh9T0sK+XbA6XZMKSY=;
-        b=fZGUtsovihw6qQmfP4SEyJaYthCmpgyj/tjPoe5dad3vEhpAUAq8qmbaopfG2Aej2G
-         5SDLpW/FDlFg8ZZOlq2CJJZuufLfAVPmgx2STe/brh2G/PD70Tb9MyygnXxiLel1X3b1
-         Z80kvM6F3RImOEGsmj9IUQhttPrHJXYn5fW6htJNwqKqWtT4hthS9wCq464Ho3JKomxn
-         zd6R/Cd9I+S9pK3IWhnjopKabBqLaccCPl8GS8RT8AcyZEr7/RTJnVNYEIoh6jpjp/ak
-         1zuN2D73m6Ort8V+8LqWFXEx7vYICZ+QG4gClVsAXlcfBo8vuhCd51XdvxEM8Fnp79PD
-         Stnw==
-X-Gm-Message-State: AOAM530WpTdnwH8UhWQAp5vGxGY6Pmp+/z78DeuEQyucBLRo7Rbg8Dg3
-        zSxhfLSeyqSP7RgW8J1SuBQN+k4Pm4Qegg==
-X-Google-Smtp-Source: ABdhPJxEXco0p9UWpFVwL3CS/WMdRWMjfNJI/y28E0rZMiRhZQeVlW0/oBaRUpPT9fvndjUlCurDNg==
-X-Received: by 2002:a17:90a:ff12:: with SMTP id ce18mr141996pjb.223.1602692252826;
-        Wed, 14 Oct 2020 09:17:32 -0700 (PDT)
-Received: from sol (106-69-182-59.dyn.iinet.net.au. [106.69.182.59])
-        by smtp.gmail.com with ESMTPSA id f9sm101164pjq.26.2020.10.14.09.17.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 09:17:31 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 00:17:27 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org
-Cc:     Jack Winch <sunt.un.morcov@gmail.com>
-Subject: Re: [PATCH 1/3] gpiolib: cdev: allow edge event timestamps to be
- configured as REALTIME
-Message-ID: <20201014161727.GA663047@sol>
-References: <20201014062740.78977-1-warthog618@gmail.com>
- <20201014062740.78977-2-warthog618@gmail.com>
+        Wed, 14 Oct 2020 12:17:49 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C16F6181D3028;
+        Wed, 14 Oct 2020 16:17:48 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3871:3872:4321:5007:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:21080:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
+X-HE-Tag: dirt57_52091122720d
+X-Filterd-Recvd-Size: 1564
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 14 Oct 2020 16:17:47 +0000 (UTC)
+Message-ID: <eb7e86171263a27e5c761bddf91439a5ec8c83e1.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: add new exception to repeated word check
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Wed, 14 Oct 2020 09:17:46 -0700
+In-Reply-To: <20201014135637.92319-1-dwaipayanray1@gmail.com>
+References: <20201014135637.92319-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014062740.78977-2-warthog618@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 02:27:38PM +0800, Kent Gibson wrote:
-> Using CLOCK_REALTIME as the source for event timestamps is crucial for
-> some specific applications, particularly those requiring timetamps
-> relative to a PTP clock, so provide an option to switch the event
-> timestamp source from the default CLOCK_MONOTONIC to CLOCK_REALTIME.
+On Wed, 2020-10-14 at 19:26 +0530, Dwaipayan Ray wrote:
+> Recently, commit 4f6ad8aa1eac ("checkpatch: move repeated word test")
+> moved the repeated word test to check for more file types. But after
+> this, if checkpatch.pl is run on MAINTAINERS, it generates several
+> new warnings of the type:
 > 
-[snip]
+> WARNING: Possible repeated word: 'git'
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3063,7 +3063,7 @@ sub process {
+>  				}
 >  
->  static void linereq_put_event(struct linereq *lr,
-> @@ -535,6 +536,14 @@ static void linereq_put_event(struct linereq *lr,
->  		pr_debug_ratelimited("event FIFO is full - event dropped\n");
->  }
->  
-> +static unsigned long line_event_timestamp(struct line *line)
-> +{
-> +	if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
-> +		return ktime_get_real_ns();
-> +
-> +	return ktime_get_ns();
-> +
-> +}
+>  				next if ($first ne $second);
+> -				next if ($first eq 'long');
+> +				next if ($first =~ /(?:long|git)$/);
 
-One minor hitch - that should be returning u64, not unsigned long,
-or the time gets reduced to 32bit on 32bit platforms.
+Nak.  This needs a leading ^ otherwise words
+like "belong" and "digit" match as well.
 
-It's getting late though, so I'll send out an update tomorrow.
+				next if ($first =~ /^(?:long|git)$/);
 
-Cheers,
-Kent.
 
