@@ -2,120 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FB428E47C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D8328E483
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730930AbgJNQbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728084AbgJNQbS (ORCPT
+        id S1731021AbgJNQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:32:01 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:41606 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727187AbgJNQcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:31:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838AFC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:31:18 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id n9so2322116pgt.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 09:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yEsILmCKm0hRP0CDuXEGc8J5t+QTwZ1G0jbK/IVGEU=;
-        b=u+lHNhA0jCyKVpHsRJQylUByW/6d565Up3FzoLS2DeENWbTwd6NINIGV5+Xo802SGR
-         3SI4cVLxQchfO1lAfgu7+m7Q/CJPgEXKarVxmxDZlzpCINW/GVsuh4sB1ymgLTRS1WoX
-         8WMUcMNkoMVjTo2oQn8RfwMthBAouoiKsz75r0ybPqEaoeGNtjZl0EaNRvdsStBAo3bG
-         diCANTLBvEhDYIWMiqhjN3iFLugrMRSlfZxVNXutkqp95IjgInL5A39QU3qyvQThDu/y
-         PUd/HlAiDnnqDXH4mj4o8Bxn+zkyNSwVCsSVS9RnkfPhRBXi9LxHsMgVAxYWPng/xpDX
-         m3yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+yEsILmCKm0hRP0CDuXEGc8J5t+QTwZ1G0jbK/IVGEU=;
-        b=E61UVG+HLudF+ZVOTp6pbEze5Xo5Phb7L/7wRFHvbkUCGfTcSIlR/28zWr8tQL9e8i
-         xc8lBjxSnqsBrfHDycYXaxZtiGLpu3U94MfV6Ff+e2Road7OQD3mTWDZoG9sJ1Qd5Vh4
-         J0KTRkwdMlonSrIwm5XNviRTQL6J28zhlMZ6Oa+3IaSGiIIY//Nc2jhUUWKmr1vLzmtc
-         TngALOv5X+DXpFEyWkGBJ8NjMFk12rPDxoanxlngqEMYg8IWeQaiIyHIVEW3Cu1jg2av
-         eUWn01W5LGPwutEaecGoLIuwWW6Eiga9Z/PHzBvBbrlipxVw5Mdr+BfOsjBVDdM12Ga/
-         f8Gw==
-X-Gm-Message-State: AOAM531OojMI/XIOjZTqq+kbMsMmy23Z6iv4FsS5jKTdXkkxvzPADtnm
-        OKapuAwM1xwa/35bz8ygUtBnZlvNmJB0kNkUI10=
-X-Google-Smtp-Source: ABdhPJwyQXihDVRWBXi0WjOtJZqEDftaWw5l/BGfz0TLHIP67jMv4+mMDOtseTATUXKS47KyOWSEgA==
-X-Received: by 2002:a63:d257:: with SMTP id t23mr4664803pgi.212.1602693077702;
-        Wed, 14 Oct 2020 09:31:17 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.205.44])
-        by smtp.gmail.com with ESMTPSA id i9sm10919pgc.71.2020.10.14.09.31.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 09:31:16 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     anprice@redhat.com, agruenba@redhat.com, rpeterso@redhat.com
-Cc:     syzbot+a5e2482a693e6b1e444b@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        cluster-devel@redhat.com, anant.thazhemadam@gmail.com,
-        foxhlchen@gmail.com,
-        syzbot+af90d47a37376844e731@syzkaller.appspotmail.com
-Subject: [PATCH v2] fs: gfs2: add validation checks for size of superblock
-Date:   Wed, 14 Oct 2020 22:01:09 +0530
-Message-Id: <20201014163109.98739-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 14 Oct 2020 12:32:01 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EGQqR1008601;
+        Wed, 14 Oct 2020 18:31:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=j/uI8oCcG23p+OeSBnrVk3egEjatKVApEWT9MvtDNpQ=;
+ b=qm2D/kywikSCkXmLIQNfjlDPxz8aTe4toidwH7wbQodIdJjyzf2u7sjb8So8XWorjFXR
+ hoBWOWBbW7ilP3JELz4RbWW0n1ckIq5n6mzCdUeG51UpBncPxIPnMGP8LJfSZ8kXwdtz
+ umod3JYUV/Q1gXl3Sh5z7cYcwho18p/XQajDHOO96qrVMazChfPDU3r+PVlgwPQz1JBk
+ ASOqSOXl3MNwRijlL5OHxQm5lARe0RYbZNgYbRtkBqEsSY1OrxaGdrA9HL7e9qfBasF8
+ 9PgBPRmFTiWDKG9wXT9Wa564CQncXM6Twv24gqdSXM4+bvC2LXozpw8cYGgerg8swc2b 1Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3455c8k4a2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 14 Oct 2020 18:31:52 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6EB1110002A;
+        Wed, 14 Oct 2020 18:31:51 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5CFFF2E4519;
+        Wed, 14 Oct 2020 18:31:51 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
+ 2020 18:31:50 +0200
+Subject: Re: [PATCH v2 2/9] rpmsg: Introduce __rpmsg{16|32|64} types
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
+CC:     "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
+ <20201013232519.1367542-3-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <03448851-b959-3f56-5618-d31a7b712392@st.com>
+Date:   Wed, 14 Oct 2020 18:31:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201013232519.1367542-3-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-14_09:2020-10-14,2020-10-14 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In gfs2_check_sb(), no validation checks are performed with regards to
-the size of the superblock.
-syzkaller detected a slab-out-of-bounds bug that was primarily caused
-because the block size for a superblock was set to zero.
-A valid size for a superblock is a power of 2 between 512 and PAGE_SIZE.
-Performing validation checks and ensuring that the size of the superblock
-is valid fixes this bug.
+Hi Mathieu,
 
-Reported-by: syzbot+af90d47a37376844e731@syzkaller.appspotmail.com
-Tested-by: syzbot+af90d47a37376844e731@syzkaller.appspotmail.com
-Suggested-by: Andrew Price <anprice@redhat.com>
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
+On 10/14/20 1:25 AM, Mathieu Poirier wrote:
+> Introduce __rpmsg{16|32|64} types along with byte order conversion
+> functions based on an rpmsg_device operation as a foundation to
+> make RPMSG modular and transport agnostic.
+> 
+> Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  include/linux/rpmsg.h            | 51 ++++++++++++++++++++++++
+>  include/linux/rpmsg_byteorder.h  | 67 ++++++++++++++++++++++++++++++++
+>  include/uapi/linux/rpmsg_types.h | 11 ++++++
+>  3 files changed, 129 insertions(+)
+>  create mode 100644 include/linux/rpmsg_byteorder.h
+>  create mode 100644 include/uapi/linux/rpmsg_types.h
+> 
+> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+> index 9fe1c54ae995..165e4c6d4cd3 100644
+> --- a/include/linux/rpmsg.h
+> +++ b/include/linux/rpmsg.h
+> @@ -17,6 +17,7 @@
+>  #include <linux/kref.h>
+>  #include <linux/mutex.h>
+>  #include <linux/poll.h>
+> +#include <linux/rpmsg_byteorder.h>
+>  
+>  #define RPMSG_ADDR_ANY		0xFFFFFFFF
+>  
+> @@ -40,6 +41,7 @@ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
+>  
+>  /**
+>   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
+> + * @is_little_endian:	returns true if using little endian byte ordering
+>   * @create_ept:		create backend-specific endpoint, required
+>   * @announce_create:	announce presence of new channel, optional
+>   * @announce_destroy:	announce destruction of channel, optional
+> @@ -49,6 +51,7 @@ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
+>   * advertise new channels implicitly by creating the endpoints.
+>   */
+>  struct rpmsg_device_ops {
+> +	bool (*is_little_endian)(struct rpmsg_device *rpdev);
+>  	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
+>  					    rpmsg_rx_cb_t cb, void *priv,
+>  					    struct rpmsg_channel_info chinfo);
+> @@ -129,6 +132,54 @@ struct rpmsg_driver {
+>  	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
+>  };
+>  
+> +static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
+> +{
+> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> +		return __rpmsg16_to_cpu(rpmsg_is_little_endian(), val);
+> +	else
+> +		return __rpmsg16_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
+> +}
+> +
+> +static inline __rpmsg16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
+> +{
+> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> +		return __cpu_to_rpmsg16(rpmsg_is_little_endian(), val);
+> +	else
+> +		return __cpu_to_rpmsg16(rpdev->ops->is_little_endian(rpdev), val);
+> +}
+> +
+> +static inline u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, __rpmsg32 val)
+> +{
+> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> +		return __rpmsg32_to_cpu(rpmsg_is_little_endian(), val);
+> +	else
+> +		return __rpmsg32_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
+> +}
+> +
+> +static inline __rpmsg32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
+> +{
+> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> +		return __cpu_to_rpmsg32(rpmsg_is_little_endian(), val);
+> +	else
+> +		return __cpu_to_rpmsg32(rpdev->ops->is_little_endian(rpdev), val);
+> +}
+> +
+> +static inline u64 rpmsg64_to_cpu(struct rpmsg_device *rpdev, __rpmsg64 val)
+> +{
+> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> +		return __rpmsg64_to_cpu(rpmsg_is_little_endian(), val);
+> +	else
+> +		return __rpmsg64_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
+> +}
+> +
+> +static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
+> +{
+> +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> +		return __cpu_to_rpmsg64(rpmsg_is_little_endian(), val);
+> +	else
+> +		return __cpu_to_rpmsg64(rpdev->ops->is_little_endian(rpdev), val);
+> +}
+> +
+>  #if IS_ENABLED(CONFIG_RPMSG)
+>  
+>  int register_rpmsg_device(struct rpmsg_device *dev);
+> diff --git a/include/linux/rpmsg_byteorder.h b/include/linux/rpmsg_byteorder.h
+> new file mode 100644
+> index 000000000000..c0f565dbad6d
+> --- /dev/null
+> +++ b/include/linux/rpmsg_byteorder.h
+> @@ -0,0 +1,67 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Follows implementation found in linux/virtio_byteorder.h
+> + */
+> +#ifndef _LINUX_RPMSG_BYTEORDER_H
+> +#define _LINUX_RPMSG_BYTEORDER_H
+> +#include <linux/types.h>
+> +#include <uapi/linux/rpmsg_types.h>
+> +
+> +static inline bool rpmsg_is_little_endian(void)
+> +{
+> +#ifdef __LITTLE_ENDIAN
+> +	return true;
+> +#else
+> +	return false;
+> +#endif
+> +}
 
-Changes in v2:
+A suggestion:
 
-	* Completely dropped the changes proposed in v1. Instead,
-	  validity checks for superblock size have been introduced. 
-	  (Suggested by Andrew Price<anprice@redhat.com>)
+static inline bool rpmsg_is_little_endian(void)
+#if defined(__BYTE_ORDER)
+#  if __BYTE_ORDER == __BIG_ENDIAN
+	return true;
+#  elif __BYTE_ORDER == __LITTLE_ENDIAN
+	return false;
+#  else
+#    warning "unknown endianess, set to little by default"
+	return true;
+#  endif
+#endif
+}
 
-	* Addded a "Suggested-by" tag accrediting the patch idea to
-	  Andrew. If there's any issue with that, please let me know.
+Otherwise
 
-	* Changed the commit header and commit message appropriately.
+Reviewed-by:  Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
-	* Updated "Reported-by" and "Tested-by" tags to the same instance
-	  of the bug that was detected earlier (non consequential change).
+Thanks,
+Arnaud
 
-
- fs/gfs2/ops_fstype.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index 6d18d2c91add..f0605fae2c4c 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -169,6 +169,13 @@ static int gfs2_check_sb(struct gfs2_sbd *sdp, int silent)
- 		return -EINVAL;
- 	}
- 
-+	/* Check if the size of the block is valid - a power of 2 between 512 and  PAGE_SIZE */
-+	if (sb->sb_bsize < 512 || sb->sb_bsize > PAGE_SIZE || (sb->sb_bsize & (sb->sb_bsize - 1))) {
-+		if (!silent)
-+			pr_warn("Invalid superblock size\n");
-+		return -EINVAL;
-+	}
-+
- 	/*  If format numbers match exactly, we're done.  */
- 
- 	if (sb->sb_fs_format == GFS2_FORMAT_FS &&
--- 
-2.25.1
-
+> +
+> +static inline u16 __rpmsg16_to_cpu(bool little_endian, __rpmsg16 val)
+> +{
+> +	if (little_endian)
+> +		return le16_to_cpu((__force __le16)val);
+> +	else
+> +		return be16_to_cpu((__force __be16)val);
+> +}
+> +
+> +static inline __rpmsg16 __cpu_to_rpmsg16(bool little_endian, u16 val)
+> +{
+> +	if (little_endian)
+> +		return (__force __rpmsg16)cpu_to_le16(val);
+> +	else
+> +		return (__force __rpmsg16)cpu_to_be16(val);
+> +}
+> +
+> +static inline u32 __rpmsg32_to_cpu(bool little_endian, __rpmsg32 val)
+> +{
+> +	if (little_endian)
+> +		return le32_to_cpu((__force __le32)val);
+> +	else
+> +		return be32_to_cpu((__force __be32)val);
+> +}
+> +
+> +static inline __rpmsg32 __cpu_to_rpmsg32(bool little_endian, u32 val)
+> +{
+> +	if (little_endian)
+> +		return (__force __rpmsg32)cpu_to_le32(val);
+> +	else
+> +		return (__force __rpmsg32)cpu_to_be32(val);
+> +}
+> +
+> +static inline u64 __rpmsg64_to_cpu(bool little_endian, __rpmsg64 val)
+> +{
+> +	if (little_endian)
+> +		return le64_to_cpu((__force __le64)val);
+> +	else
+> +		return be64_to_cpu((__force __be64)val);
+> +}
+> +
+> +static inline __rpmsg64 __cpu_to_rpmsg64(bool little_endian, u64 val)
+> +{
+> +	if (little_endian)
+> +		return (__force __rpmsg64)cpu_to_le64(val);
+> +	else
+> +		return (__force __rpmsg64)cpu_to_be64(val);
+> +}
+> +
+> +#endif /* _LINUX_RPMSG_BYTEORDER_H */
+> diff --git a/include/uapi/linux/rpmsg_types.h b/include/uapi/linux/rpmsg_types.h
+> new file mode 100644
+> index 000000000000..36e3b9404391
+> --- /dev/null
+> +++ b/include/uapi/linux/rpmsg_types.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +#ifndef _UAPI_LINUX_RPMSG_TYPES_H
+> +#define _UAPI_LINUX_RPMSG_TYPES_H
+> +
+> +#include <linux/types.h>
+> +
+> +typedef __u16 __bitwise __rpmsg16;
+> +typedef __u32 __bitwise __rpmsg32;
+> +typedef __u64 __bitwise __rpmsg64;
+> +
+> +#endif /* _UAPI_LINUX_RPMSG_TYPES_H */
+> 
