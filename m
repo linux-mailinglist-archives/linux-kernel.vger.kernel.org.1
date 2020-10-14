@@ -2,279 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AA328E42C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2364728E43F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388196AbgJNQRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:17:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22276 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726105AbgJNQRG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:17:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602692224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q4RDajsjrqvAACfKHo0P6K+Nj/A3/MGqReh0W4mni04=;
-        b=Qy9cxs3NLUQoyODFOzppMWAwnvOqjc7mb/w7VG3q1VHoHrAEN2T9szVOTcwHBHEIrZNQKv
-        Tuta5WC5pEUdJ+eWiOjxqCo5hYpGmDm7vvbU/Mxoh8J0+nyLbodCtNf6BSA5MJiFA0QJRZ
-        gtoIWz9wRXgUEyMBk2Xdz2XZT3zL3Xg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-ZP1IG6CMNqaoo_FtEfwjSA-1; Wed, 14 Oct 2020 12:17:01 -0400
-X-MC-Unique: ZP1IG6CMNqaoo_FtEfwjSA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        id S1731864AbgJNQSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:18:14 -0400
+Received: from mailout04.rmx.de ([94.199.90.94]:37669 "EHLO mailout04.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731840AbgJNQSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:18:14 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0067756BE8;
-        Wed, 14 Oct 2020 16:17:00 +0000 (UTC)
-Received: from krava (unknown [10.40.195.92])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 89EBE10021AA;
-        Wed, 14 Oct 2020 16:16:58 +0000 (UTC)
-Date:   Wed, 14 Oct 2020 18:16:57 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andi Kleen <andi@firstfloor.org>, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v2] perf: Add support for exclusive groups/events
-Message-ID: <20201014161657.GF1395746@krava>
-References: <20201014144255.22699-1-andi@firstfloor.org>
- <20201014152212.GJ3100363@kernel.org>
+        by mailout04.rmx.de (Postfix) with ESMTPS id 4CBHdZ2sXGz3qtkv;
+        Wed, 14 Oct 2020 18:18:10 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CBHcn4nwJz2TTL4;
+        Wed, 14 Oct 2020 18:17:29 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.83) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 14 Oct
+ 2020 18:17:29 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
+Subject: [PATCH net] net: dsa: ksz: fix padding size of skb
+Date:   Wed, 14 Oct 2020 18:17:19 +0200
+Message-ID: <20201014161719.30289-1-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014152212.GJ3100363@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.83]
+X-RMX-ID: 20201014-181729-4CBHcn4nwJz2TTL4-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 12:22:12PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Oct 14, 2020 at 07:42:55AM -0700, Andi Kleen escreveu:
-> > Peter suggested that using the exclusive mode in perf could
-> > avoid some problems with bad scheduling of groups. Exclusive
-> > is implemented in the kernel, but wasn't exposed by the perf tool,
-> > so hard to use without custom low level API users.
-> > 
-> > Add support for marking groups or events with :e for exclusive
-> > in the perf tool.  The implementation is basically the same as the
-> > existing pinned attribute.
-> > 
-> > Cc: peterz@infradead.org
-> > Signed-off-by: Andi Kleen <ak@linux.intel.com>
-> 
-> Jiri, I'm taking you "I'm ok" with this as an Acked-by, thanks
+__skb_put_padto() is called in order to ensure a minimal size of the
+sk_buff. The required minimal size is ETH_ZLEN + the size required for
+the tail tag.
 
-yes
+The current argument misses the size for the tail tag. The expression
+"skb->len + padlen" can be simplified to ETH_ZLEN.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Too small sk_buffs typically result from cloning in
+dsa_skb_tx_timestamp(). The cloned sk_buff may not meet the minimum size
+requirements.
 
-thanks,
-jirka
+Fixes: e71cb9e00922 ("net: dsa: ksz: fix skb freeing")
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+---
+ net/dsa/tag_ksz.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> - Arnaldo
-> 
->  
-> > --
-> > 
-> > v2: Update check_modifier too (Jiri)
-> > ---
-> >  tools/perf/Documentation/perf-list.txt |  1 +
-> >  tools/perf/tests/parse-events.c        | 58 +++++++++++++++++++++++++-
-> >  tools/perf/util/parse-events.c         | 11 ++++-
-> >  tools/perf/util/parse-events.l         |  2 +-
-> >  4 files changed, 68 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
-> > index 10ed539a8859..4c7db1da8fcc 100644
-> > --- a/tools/perf/Documentation/perf-list.txt
-> > +++ b/tools/perf/Documentation/perf-list.txt
-> > @@ -58,6 +58,7 @@ counted. The following modifiers exist:
-> >   S - read sample value (PERF_SAMPLE_READ)
-> >   D - pin the event to the PMU
-> >   W - group is weak and will fallback to non-group if not schedulable,
-> > + e - group or event are exclusive and do not share the PMU
-> >  
-> >  The 'p' modifier can be used for specifying how precise the instruction
-> >  address should be. The 'p' modifier can be specified multiple times:
-> > diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-> > index 7f9f87a470c3..7411dd4d76cf 100644
-> > --- a/tools/perf/tests/parse-events.c
-> > +++ b/tools/perf/tests/parse-events.c
-> > @@ -557,6 +557,7 @@ static int test__checkevent_pmu_events(struct evlist *evlist)
-> >  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
-> >  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
-> >  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
-> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -575,6 +576,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
-> >  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
-> >  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
-> >  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
-> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
-> >  
-> >  	/* cpu/pmu-event/u*/
-> >  	evsel = evsel__next(evsel);
-> > @@ -587,6 +589,7 @@ static int test__checkevent_pmu_events_mix(struct evlist *evlist)
-> >  	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
-> >  	TEST_ASSERT_VAL("wrong precise_ip", !evsel->core.attr.precise_ip);
-> >  	TEST_ASSERT_VAL("wrong pinned", !evsel->core.attr.pinned);
-> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.pinned);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -1277,6 +1280,49 @@ static int test__pinned_group(struct evlist *evlist)
-> >  	return 0;
-> >  }
-> >  
-> > +static int test__checkevent_exclusive_modifier(struct evlist *evlist)
-> > +{
-> > +	struct evsel *evsel = evlist__first(evlist);
-> > +
-> > +	TEST_ASSERT_VAL("wrong exclude_user", !evsel->core.attr.exclude_user);
-> > +	TEST_ASSERT_VAL("wrong exclude_kernel", evsel->core.attr.exclude_kernel);
-> > +	TEST_ASSERT_VAL("wrong exclude_hv", evsel->core.attr.exclude_hv);
-> > +	TEST_ASSERT_VAL("wrong precise_ip", evsel->core.attr.precise_ip);
-> > +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
-> > +
-> > +	return test__checkevent_symbolic_name(evlist);
-> > +}
-> > +
-> > +static int test__exclusive_group(struct evlist *evlist)
-> > +{
-> > +	struct evsel *evsel, *leader;
-> > +
-> > +	TEST_ASSERT_VAL("wrong number of entries", 3 == evlist->core.nr_entries);
-> > +
-> > +	/* cycles - group leader */
-> > +	evsel = leader = evlist__first(evlist);
-> > +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
-> > +	TEST_ASSERT_VAL("wrong config",
-> > +			PERF_COUNT_HW_CPU_CYCLES == evsel->core.attr.config);
-> > +	TEST_ASSERT_VAL("wrong group name", !evsel->group_name);
-> > +	TEST_ASSERT_VAL("wrong leader", evsel->leader == leader);
-> > +	TEST_ASSERT_VAL("wrong exclusive", evsel->core.attr.exclusive);
-> > +
-> > +	/* cache-misses - can not be pinned, but will go on with the leader */
-> > +	evsel = evsel__next(evsel);
-> > +	TEST_ASSERT_VAL("wrong type", PERF_TYPE_HARDWARE == evsel->core.attr.type);
-> > +	TEST_ASSERT_VAL("wrong config",
-> > +			PERF_COUNT_HW_CACHE_MISSES == evsel->core.attr.config);
-> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
-> > +
-> > +	/* branch-misses - ditto */
-> > +	evsel = evsel__next(evsel);
-> > +	TEST_ASSERT_VAL("wrong config",
-> > +			PERF_COUNT_HW_BRANCH_MISSES == evsel->core.attr.config);
-> > +	TEST_ASSERT_VAL("wrong exclusive", !evsel->core.attr.exclusive);
-> > +
-> > +	return 0;
-> > +}
-> >  static int test__checkevent_breakpoint_len(struct evlist *evlist)
-> >  {
-> >  	struct evsel *evsel = evlist__first(evlist);
-> > @@ -1765,7 +1811,17 @@ static struct evlist_test test__events[] = {
-> >  		.name  = "cycles:k",
-> >  		.check = test__sym_event_dc,
-> >  		.id    = 55,
-> > -	}
-> > +	},
-> > +	{
-> > +		.name  = "instructions:uep",
-> > +		.check = test__checkevent_exclusive_modifier,
-> > +		.id    = 56,
-> > +	},
-> > +	{
-> > +		.name  = "{cycles,cache-misses,branch-misses}:e",
-> > +		.check = test__exclusive_group,
-> > +		.id    = 57,
-> > +	},
-> >  };
-> >  
-> >  static struct evlist_test test__events_pmu[] = {
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index 9f7260e69113..c4da6bf6ff6a 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -1768,6 +1768,7 @@ struct event_modifier {
-> >  	int sample_read;
-> >  	int pinned;
-> >  	int weak;
-> > +	int exclusive;
-> >  };
-> >  
-> >  static int get_event_modifier(struct event_modifier *mod, char *str,
-> > @@ -1783,6 +1784,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
-> >  	int precise_max = 0;
-> >  	int sample_read = 0;
-> >  	int pinned = evsel ? evsel->core.attr.pinned : 0;
-> > +	int exclusive = evsel ? evsel->core.attr.exclusive : 0;
-> >  
-> >  	int exclude = eu | ek | eh;
-> >  	int exclude_GH = evsel ? evsel->exclude_GH : 0;
-> > @@ -1824,6 +1826,8 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
-> >  			sample_read = 1;
-> >  		} else if (*str == 'D') {
-> >  			pinned = 1;
-> > +		} else if (*str == 'e') {
-> > +			exclusive = 1;
-> >  		} else if (*str == 'W') {
-> >  			weak = 1;
-> >  		} else
-> > @@ -1857,6 +1861,7 @@ static int get_event_modifier(struct event_modifier *mod, char *str,
-> >  	mod->sample_read = sample_read;
-> >  	mod->pinned = pinned;
-> >  	mod->weak = weak;
-> > +	mod->exclusive = exclusive;
-> >  
-> >  	return 0;
-> >  }
-> > @@ -1870,7 +1875,7 @@ static int check_modifier(char *str)
-> >  	char *p = str;
-> >  
-> >  	/* The sizeof includes 0 byte as well. */
-> > -	if (strlen(str) > (sizeof("ukhGHpppPSDIW") - 1))
-> > +	if (strlen(str) > (sizeof("ukhGHpppPSDIWe") - 1))
-> >  		return -1;
-> >  
-> >  	while (*p) {
-> > @@ -1912,8 +1917,10 @@ int parse_events__modifier_event(struct list_head *list, char *str, bool add)
-> >  		evsel->precise_max         = mod.precise_max;
-> >  		evsel->weak_group	   = mod.weak;
-> >  
-> > -		if (evsel__is_group_leader(evsel))
-> > +		if (evsel__is_group_leader(evsel)) {
-> >  			evsel->core.attr.pinned = mod.pinned;
-> > +			evsel->core.attr.exclusive = mod.exclusive;
-> > +		}
-> >  	}
-> >  
-> >  	return 0;
-> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-> > index 3ca5fd2829ca..9db5097317f4 100644
-> > --- a/tools/perf/util/parse-events.l
-> > +++ b/tools/perf/util/parse-events.l
-> > @@ -210,7 +210,7 @@ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
-> >  name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
-> >  drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
-> >  /* If you add a modifier you need to update check_modifier() */
-> > -modifier_event	[ukhpPGHSDIW]+
-> > +modifier_event	[ukhpPGHSDIWe]+
-> >  modifier_bp	[rwx]{1,3}
-> >  
-> >  %%
-> > -- 
-> > 2.28.0
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
-> 
+diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
+index 945a9bd5ba35..8ef2085349e7 100644
+--- a/net/dsa/tag_ksz.c
++++ b/net/dsa/tag_ksz.c
+@@ -24,7 +24,7 @@ static struct sk_buff *ksz_common_xmit(struct sk_buff *skb,
+ 
+ 	if (skb_tailroom(skb) >= padlen + len) {
+ 		/* Let dsa_slave_xmit() free skb */
+-		if (__skb_put_padto(skb, skb->len + padlen, false))
++		if (__skb_put_padto(skb, ETH_ZLEN + len, false))
+ 			return NULL;
+ 
+ 		nskb = skb;
+@@ -45,7 +45,7 @@ static struct sk_buff *ksz_common_xmit(struct sk_buff *skb,
+ 		/* Let skb_put_padto() free nskb, and let dsa_slave_xmit() free
+ 		 * skb
+ 		 */
+-		if (skb_put_padto(nskb, nskb->len + padlen))
++		if (skb_put_padto(nskb, ETH_ZLEN + len))
+ 			return NULL;
+ 
+ 		consume_skb(skb);
+-- 
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
 
