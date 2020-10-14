@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E533F28E283
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604D528E2F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbgJNOwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:52:04 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:39798 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729276AbgJNOwE (ORCPT
+        id S1731729AbgJNPSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726596AbgJNPSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:52:04 -0400
-Received: by mail-ot1-f65.google.com with SMTP id f10so3677954otb.6;
-        Wed, 14 Oct 2020 07:52:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H7EhDwxST9+VQIVrPmCGqIr98KMTxZz8OLqw4mC4ksY=;
-        b=px1eY9ojW3F31Dvh1e4Y/SL64G0QBdg9EQxO8e7bFnJk9KmhEXTK+iG3GF3e3ZBX/x
-         oI2LyNjySCrdW8787dVw8RM3ZsVWYIVzv920knFyUcTQwluXXFvuMxXo2hD1TlTs7Hc/
-         mknYmJU/PatjhfXPD1vk9M+r3+0n9CyVmda9nNLvHNY4jLrxMTHq3dlw+W9WbcIb1y9L
-         MOJrn5Y8D6rmb537Wline/kABnY3X7l5SA7ROKRNRFNyT2oBweBH+FyXnAH61TdsKy+F
-         bDXB1Eo4CEdvmtwFffsYLvjlm5Z8eH6vEwXcXC6RcDNR8JCe6KRXLoWOcW4PYjxpk4R6
-         0IGA==
-X-Gm-Message-State: AOAM532cDiHyS0XY4GyiP2RVePaRVexHp5/NXRBNXTG89/Ad0sAOhXo6
-        WrXFuqDK1P02bZZM1Wl/OQx6vp0GiwA5ukxJWlM=
-X-Google-Smtp-Source: ABdhPJytQ8/100pK0VWl0u3XfP1/UQls0YNqRsQPR+8SOSzC59YaAxwlBA5Fic/E/JzwYaOVzHArsBb9PC3ujKxOG08=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr3728773otc.145.1602687122960;
- Wed, 14 Oct 2020 07:52:02 -0700 (PDT)
+        Wed, 14 Oct 2020 11:18:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8475CC061755;
+        Wed, 14 Oct 2020 08:18:48 -0700 (PDT)
+Message-Id: <20201014145215.518912759@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602688726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Xqc0nGkuw0k9CjZpwvy2mNqALgS9zNAoil65HHXmBWw=;
+        b=Mkhg1oudooc1D7cLXeBlzAj7hV9tOJlOoUSWKfGCxcNRp6Akbl+i/CyTWi32vKAy7lg0HD
+        MpTNLo8j0c6EvQX5dPujKOlzMfsWpRC/IAGFbyB7J30kUlouGRQC6UxMvviMD1Xi9LI5Gc
+        /tUx+/iW5BkmL6l1c9DqG8PEMBYNYtnNrrLEc6+GyalxeR0rNtSyhrbWYjwHcPC/8G1wnD
+        CipGvLyocVhb8dITN9e/hA/hw4WxMuO9L+LWd7F5MTfY497KVJQTe6u+JI+03auxA5jaGZ
+        rWjukNONzdglu4DG3L22C67B3madfApoVOnOStsZF9GnCVFuDKsguAAGIFMFYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602688726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Xqc0nGkuw0k9CjZpwvy2mNqALgS9zNAoil65HHXmBWw=;
+        b=J4cIGbxkYeb16Mx6vnpQGhkkmyjGQDefyDOdSDcFR6lkamlOV2UI4C4rPB+qkrPUWny9bY
+        +XT22bHmagnyoqAQ==
+Date:   Wed, 14 Oct 2020 16:52:15 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-omap@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>
+Subject: [patch 00/12] UBS: Cleanup in_interupt/in_irq/in_atomic() usage
 MIME-Version: 1.0
-References: <20201013150150.14801-1-fabrizio.castro.jz@renesas.com>
- <20201013150150.14801-5-fabrizio.castro.jz@renesas.com> <CAMuHMdUxCiwjsFRYpVND-FLajaceUf+jWK0ZBR5Rp5xJ+MPDgA@mail.gmail.com>
- <OSAPR01MB274089EA87D5280E83E81C7DC2050@OSAPR01MB2740.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSAPR01MB274089EA87D5280E83E81C7DC2050@OSAPR01MB2740.jpnprd01.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 14 Oct 2020 16:51:51 +0200
-Message-ID: <CAMuHMdUPb=Sy1R1pOXCAbDcCiMgWa27tVMvvTWn2rnotanM8cw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] media: dt-bindings: media: renesas,drif: Add
- r8a77965 support
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabrizio,
-
-On Wed, Oct 14, 2020 at 4:35 PM Fabrizio Castro
-<fabrizio.castro.jz@renesas.com> wrote:
-> > From: Geert Uytterhoeven <geert@linux-m68k.org>
-> > On Tue, Oct 13, 2020 at 5:02 PM Fabrizio Castro
-> > <fabrizio.castro.jz@renesas.com> wrote:
-> > > The r8a77965 (a.k.a. R-Car M3-N) device tree schema is
-> > > compatible with the already documented R-Car Gen3 devices.
-> > >
-> > > Document r8a77965 support within renesas,drif.yaml.
-> > >
-> > > Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> >
-> > Thanks for your patch!
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> >
-> > > --- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> > > +++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> > > @@ -53,6 +53,7 @@ properties:
-> > >        - enum:
-> > >          - renesas,r8a7795-drif        # R-Car H3
-> > >          - renesas,r8a7796-drif        # R-Car M3-W
-> > > +        - renesas,r8a77965-drif       # R-Car M3-N
-> > >          - renesas,r8a77990-drif       # R-Car E3
-> > >        - const: renesas,rcar-gen3-drif # Generic R-Car Gen3 compatible device
-> >
-> > I guess you're aware M3-N (and E3) have an extra register?
-> > Probably the driver just relies on its initial value, but it never hurts to be
-> > explicit and initialize it properly.
->
-> Yes, I am aware of the extra register, and that's reflected in the DRIF nodes
-> definition within the SoC specific device trees.
-> I'll tackle initialization and configuration of the extra register at some point,
-> do you think we could use the default value for now?
-
-Yes, that's fine for me, if it works with the current driver.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Rm9sa3MsCgppbiB0aGUgZGlzY3Vzc2lvbiBhYm91dCBwcmVlbXB0IGNvdW50IGNvbnNpc3RlbmN5
+IGFjY3Jvc3Mga2VybmVsIGNvbmZpZ3VyYXRpb25zOgoKICBodHRwczovL2xvcmUua2VybmVsLm9y
+Zy9yLzIwMjAwOTE0MjA0MjA5LjI1NjI2NjA5M0BsaW51dHJvbml4LmRlLwoKTGludXMgY2xlYXJs
+eSByZXF1ZXN0ZWQgdGhhdCBjb2RlIGluIGRyaXZlcnMgYW5kIGxpYnJhcmllcyB3aGljaCBjaGFu
+Z2VzCmJlaGF2aW91ciBiYXNlZCBvbiBleGVjdXRpb24gY29udGV4dCBzaG91bGQgZWl0aGVyIGJl
+IHNwbGl0IHVwIHNvIHRoYXQKZS5nLiB0YXNrIGNvbnRleHQgaW52b2NhdGlvbnMgYW5kIEJIIGlu
+dm9jYXRpb25zIGhhdmUgZGlmZmVyZW50IGludGVyZmFjZXMKb3IgaWYgdGhhdCdzIG5vdCBwb3Nz
+aWJsZSB0aGUgY29udGV4dCBpbmZvcm1hdGlvbiBoYXMgdG8gYmUgcHJvdmlkZWQgYnkgdGhlCmNh
+bGxlciB3aGljaCBrbm93cyBpbiB3aGljaCBjb250ZXh0IGl0IGlzIGV4ZWN1dGluZy4KClRoaXMg
+aW5jbHVkZXMgY29uZGl0aW9uYWwgbG9ja2luZywgYWxsb2NhdGlvbiBtb2RlIChHRlBfKikgZGVj
+aXNpb25zIGFuZAphdm9pZGFuY2Ugb2YgY29kZSBwYXRocyB3aGljaCBtaWdodCBzbGVlcC4KCklu
+IHRoZSBsb25nIHJ1biwgdXNhZ2Ugb2YgJ3ByZWVtcHRpYmxlLCBpbl8qaXJxIGV0Yy4nIHNob3Vs
+ZCBiZSBiYW5uZWQgZnJvbQpkcml2ZXIgY29kZSBjb21wbGV0ZWx5LgoKVGhlIHVzYWdlIG9mIHN1
+Y2ggY29uc3RydWN0cyBpbiBVU0IgaXMgcmF0aGVyIGxpbWl0ZWQuIE1vc3Qgb2YgaXQgaXMgaW4K
+ZGVidWcgY29kZSBhbmQgKG1pc2xlYWRpbmcpIGNvbW1lbnRzLiBCdXQgb2YgY291cnNlIHRoZXJl
+IGFyZSBhbHNvIGEgZmV3CmZldyBidWdzIGluY2x1ZGluZyBvbmUgdW5maXhhYmxlLgoKV2l0aCB0
+aGUgZm9sbG93aW5nIHNlcmllcyBhcHBsaWVkLCBVU0IgaXMgY2xlYW4uCgpUaGFua3MsCgoJdGds
+eAotLS0KIGF0bS91c2JhdG0uYyAgICAgICAgICAgICB8ICAgIDIgCiBjb3JlL2J1ZmZlci5jICAg
+ICAgICAgICAgfCAgICA2ICstCiBjb3JlL2hjZC1wY2kuYyAgICAgICAgICAgfCAgICA2ICstCiBj
+b3JlL2hjZC5jICAgICAgICAgICAgICAgfCAgIDIxICsrKystLS0tCiBjb3JlL2h1Yi5jICAgICAg
+ICAgICAgICAgfCAgICAzIC0KIGNvcmUvbWVzc2FnZS5jICAgICAgICAgICB8ICAgMzUgKysrKysr
+KysrLS0tLS0KIGNvcmUvdXNiLmMgICAgICAgICAgICAgICB8ICAgIDQgLQogZ2FkZ2V0L3VkYy9j
+b3JlLmMgICAgICAgIHwgICAgMiAKIGdhZGdldC91ZGMvZHVtbXlfaGNkLmMgICB8ICAgIDUgKy0K
+IGdhZGdldC91ZGMvcHhhMjd4X3VkYy5jICB8ICAgMTkgKysrKy0tLQogaG9zdC9laGNpLWZzbC5j
+ICAgICAgICAgIHwgICAgOSArLS0KIGhvc3QvZWhjaS1wbWNtc3AuYyAgICAgICB8ICAgMTUgKysr
+LS0tCiBob3N0L2lzcDEzNjIuaCAgICAgICAgICAgfCAgICA1ICstCiBob3N0L29oY2ktYXQ5MS5j
+ICAgICAgICAgfCAgIDExICsrKy0KIGhvc3Qvb2hjaS1vbWFwLmMgICAgICAgICB8ICAgIDcgKy0K
+IGhvc3Qvb2hjaS1weGEyN3guYyAgICAgICB8ICAgMTEgKystLQogaG9zdC9vaGNpLXMzYzI0MTAu
+YyAgICAgIHwgICAxMiArKy0tLQogaG9zdC94aGNpLW1lbS5jICAgICAgICAgIHwgICAgMiAKIGhv
+c3QveGhjaS5jICAgICAgICAgICAgICB8ICAgIDYgLS0KIG1pc2Mvc2lzdXNidmdhL0tjb25maWcg
+ICB8ICAgIDIgCiBzZXJpYWwvZGlnaV9hY2NlbGVwb3J0LmMgfCAgICA3ICstCiBzZXJpYWwva2V5
+c3Bhbl9wZGEuYyAgICAgfCAgMTEyICsrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCiB1c2JpcC91c2JpcF9jb21tb24uYyAgICAgfCAgICA1IC0tCiAyMyBmaWxl
+cyBjaGFuZ2VkLCAxNTYgaW5zZXJ0aW9ucygrKSwgMTUxIGRlbGV0aW9ucygtKQo=
