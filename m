@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF6528DDBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5DD28DDB3
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgJNJf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:35:58 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2978 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725960AbgJNJf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:35:57 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 96EED2E1D1A2E0660CA8;
-        Wed, 14 Oct 2020 10:35:55 +0100 (IST)
-Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.85.245) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Wed, 14 Oct 2020 10:35:55 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     <linux-acpi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <lorenzo.pieralisi@arm.com>,
-        <guohanjun@huawei.com>, <sudeep.holla@arm.com>,
-        <rjw@rjwysocki.net>, <lenb@kernel.org>
-CC:     <linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [PATCH 1/1] ACPI/IORT: Fix doc warnings in iort.c
-Date:   Wed, 14 Oct 2020 10:31:39 +0100
-Message-ID: <20201014093139.1580-1-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S1726655AbgJNJct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgJNJct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:32:49 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B3AC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:32:48 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id t25so3802299ejd.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=2Q2EXfY9q/OGGKRqeKKhw4ADQDGAvZJdTCK/YEvIMm4=;
+        b=OT4R4azZBe83H2jAFxtXzBAZ+lZSdmcLVCr2JZ/C592Oath74URYOWe8A/1jNOG8Kh
+         7Zr/5B9kixpwPUt31hr000uny9DfqH/D52Q4ddESsUWurzzDPOOSrjGerZySJtHeKdRv
+         IbzWx9790xp3fX2rE8MGogzVVRQ88EQaClvuQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=2Q2EXfY9q/OGGKRqeKKhw4ADQDGAvZJdTCK/YEvIMm4=;
+        b=PFJLl4xcBbMZlOYEg+4TmjWfmH1BFPvtIu27G2C5hlINsfUlNXlR/7jMZhfMUZ2Mnz
+         KfO59DKnJNCEDjxL6w2yP6QJEgZxrn+6q41MvOwyf03cCguVhkge8nNZcgbs9TaCQ7+X
+         JWRrpfuyvkxV7SoG87QNu2qt4jqrEG90R+8DCydddPvx4VEX3YLerGVmuuRxiVlWMp68
+         UI2GgNzIElTB6jMlS5WikisUpSoWr9gBRjzDDj2x4jvdsGMPpStyBRcQ18XoA93jiXQR
+         JdWxhZ2ulJkTMy39JbVQC+kYGjYTICAS47IIdUcGynNo0EY1Z5FgFgtotdU/ubhp6LWA
+         yieg==
+X-Gm-Message-State: AOAM5302dEt82YZsCVAiYqy6CwAL7FQLOr/T1MPd6yCcVP6mJadmiL7k
+        se9cD3pp4PhBszISRt1aCjj3pg==
+X-Google-Smtp-Source: ABdhPJxjVAEFb20MNniWGcu/vedUiKayXCpuy0FwmpcpSpxWvQ7TYpYLJ8QYNDaxIR5qKoyrbGtUQQ==
+X-Received: by 2002:a17:906:c08f:: with SMTP id f15mr4220755ejz.97.1602667967489;
+        Wed, 14 Oct 2020 02:32:47 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id a10sm1370276ejs.11.2020.10.14.02.32.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 02:32:46 -0700 (PDT)
+References: <20201012170952.60750-1-alex.dewar90@gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: sockmap: Don't call bpf_prog_put() on NULL pointer
+In-reply-to: <20201012170952.60750-1-alex.dewar90@gmail.com>
+Date:   Wed, 14 Oct 2020 11:32:45 +0200
+Message-ID: <877drtqhj6.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.47.85.245]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml715-chm.china.huawei.com (10.201.108.66)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix following warnings caused by mismatch between
-function parameters and function comments.
+On Mon, Oct 12, 2020 at 07:09 PM CEST, Alex Dewar wrote:
+> If bpf_prog_inc_not_zero() fails for skb_parser, then bpf_prog_put() is
+> called unconditionally on skb_verdict, even though it may be NULL. Fix
+> and tidy up error path.
+>
+> Addresses-Coverity-ID: 1497799: Null pointer dereferences (FORWARD_NULL)
+> Fixes: 743df8b7749f ("bpf, sockmap: Check skb_verdict and skb_parser programs explicitly")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
 
-drivers/acpi/arm64/iort.c:55: warning: Function parameter or member 'iort_node' not described in 'iort_set_fwnode'
-drivers/acpi/arm64/iort.c:55: warning: Excess function parameter 'node' description in 'iort_set_fwnode'
-drivers/acpi/arm64/iort.c:682: warning: Function parameter or member 'id' not described in 'iort_get_device_domain'
-drivers/acpi/arm64/iort.c:682: warning: Function parameter or member 'bus_token' not described in 'iort_get_device_domain'
-drivers/acpi/arm64/iort.c:682: warning: Excess function parameter 'req_id' description in 'iort_get_device_domain'
-drivers/acpi/arm64/iort.c:1142: warning: Function parameter or member 'dma_size' not described in 'iort_dma_setup'
-drivers/acpi/arm64/iort.c:1142: warning: Excess function parameter 'size' description in 'iort_dma_setup'
-drivers/acpi/arm64/iort.c:1534: warning: Function parameter or member 'ops' not described in 'iort_add_platform_device'
+Note to maintainers: the issue exists only in bpf-next where we have:
 
-Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
----
- drivers/acpi/arm64/iort.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+  https://lore.kernel.org/bpf/160239294756.8495.5796595770890272219.stgit@john-Precision-5820-Tower/
 
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 9929ff50c0c0..770d84071a32 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -44,7 +44,7 @@ static DEFINE_SPINLOCK(iort_fwnode_lock);
-  * iort_set_fwnode() - Create iort_fwnode and use it to register
-  *		       iommu data in the iort_fwnode_list
-  *
-- * @node: IORT table node associated with the IOMMU
-+ * @iort_node: IORT table node associated with the IOMMU
-  * @fwnode: fwnode associated with the IORT node
-  *
-  * Returns: 0 on success
-@@ -673,7 +673,8 @@ static int iort_dev_find_its_id(struct device *dev, u32 id,
- /**
-  * iort_get_device_domain() - Find MSI domain related to a device
-  * @dev: The device.
-- * @req_id: Requester ID for the device.
-+ * @id: Requester ID for the device.
-+ * @bus_token: irq domain bus token.
-  *
-  * Returns: the MSI domain for this device, NULL otherwise
-  */
-@@ -1136,7 +1137,7 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
-  *
-  * @dev: device to configure
-  * @dma_addr: device DMA address result pointer
-- * @size: DMA range size result pointer
-+ * @dma_size: DMA range size result pointer
-  */
- void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
- {
-@@ -1526,6 +1527,7 @@ static __init const struct iort_dev_config *iort_get_dev_cfg(
- /**
-  * iort_add_platform_device() - Allocate a platform device for IORT node
-  * @node: Pointer to device ACPI IORT node
-+ * @ops: Pointer to IORT device config struct
-  *
-  * Returns: 0 on success, <0 failure
-  */
--- 
-2.17.1
-
-
+The patch also looks like it is supposed to be applied on top of the above.
