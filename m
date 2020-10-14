@@ -2,129 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F9528D8F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A6828D8F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 05:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgJNDUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 23:20:40 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:45918 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726049AbgJNDUk (ORCPT
+        id S1729611AbgJNDVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 23:21:14 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10838 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726049AbgJNDVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 23:20:40 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1046)
-        id 627A720B4905; Tue, 13 Oct 2020 20:20:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 627A720B4905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1602645639;
-        bh=X/lgLtvI5yARcXsG3L0YJTffUHRbyGIv/Y8Hr0+JSIA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ao+6bwGGbRULNWSKAUgXNrKQGd9nAQ/4vvhMvX6HxUKpTxBkC5k7JTpUe+lWKoCa3
-         uwwGqxydii9FaZ210rGklGI0k1FO4CfdVCDR9Xm90sdg2hJ7wkDyuPOwH2h51pcbuj
-         0gkNN7JXrAm3mEPr6HHr1vhg072GE9bbtv+IrgCA=
-From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
-To:     rayagonda.kokatanur@broadcom.com
-Cc:     andriy.shevchenko@linux.intel.com,
-        bcm-kernel-feedback-list@broadcom.com, brendanhiggins@google.com,
-        dphadke@linux.microsoft.com, f.fainelli@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lori.hikichi@broadcom.com,
-        rjui@broadcom.com, sbranden@broadcom.com, wsa@kernel.org
-Subject: [PATCH v1 5/6] i2c: iproc: handle master read request
-Date:   Tue, 13 Oct 2020 20:20:39 -0700
-Message-Id: <1602645639-12854-1-git-send-email-dphadke@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <20201011182254.17776-6-rayagonda.kokatanur@broadcom.com>
-References: <20201011182254.17776-6-rayagonda.kokatanur@broadcom.com>
+        Tue, 13 Oct 2020 23:21:13 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f866e500000>; Tue, 13 Oct 2020 20:19:44 -0700
+Received: from [10.19.100.177] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
+ 2020 03:21:07 +0000
+Subject: Re: [PATCH v3 04/15] phy: tegra: xusb: tegra210: Do not reset UPHY
+ PLL
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
+        <jonathanh@nvidia.com>, <kishon@ti.com>,
+        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nkristam@nvidia.com>
+References: <20200909081041.3190157-1-jckuo@nvidia.com>
+ <20200909081041.3190157-5-jckuo@nvidia.com> <20200928130618.GE3065790@ulmo>
+X-Nvconfidentiality: public
+From:   JC Kuo <jckuo@nvidia.com>
+Message-ID: <0ec9045c-8722-d7cd-20f0-2c163be75619@nvidia.com>
+Date:   Wed, 14 Oct 2020 11:21:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200928130618.GE3065790@ulmo>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602645584; bh=MpUvsa/wMAY7BzkAhwbdXgZgbZYHy0ZGBz0aDP8EC30=;
+        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=NbYay9iIS0u9b13wMqVg/7m1S5/uQvHx3hDHKgGcf/5ALGojoN25hgrvBf5wfO7Tm
+         UP71jMjVDMeE+zWpx5YyjWdxHaEX8H2re8CDEEWVQeTqNCIIikzOYnO4UVnZTNex2v
+         1J6Izi/vusu2n1rzG1eiLDeLn4nxLakh72KqFnuOJNq0pXaduNDJAV+P3geg73VtOk
+         QxoiCAIrGre9Wcqgo3WR+HvDlG0Qsr1Cu1YBLXV/P/6JFsbBHJvADGHGzgeBTgAHpZ
+         6EWk1/jrgDJyGCxyxyX1LwTXU7F/Td7ZuEjqP8WGw8gDDpC8q0CAbiPwJwQn87Wl6c
+         ncdUMJmQJor/Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Oct 2020 23:52:53 +0530, Rayagonda Kokatanur wrote:
-> --- a/drivers/i2c/busses/i2c-bcm-iproc.c
-> +++ b/drivers/i2c/busses/i2c-bcm-iproc.c
+Asserting reset to a PLL when it's managed by hardware power sequencer would
+break sequencer's state machine. Putting PLL in reset doesn't save some extra power.
+
+Thanks for review.
+JC
+
+On 9/28/20 9:06 PM, Thierry Reding wrote:
+> On Wed, Sep 09, 2020 at 04:10:30PM +0800, JC Kuo wrote:
+>> Once UPHY PLL hardware power sequencer is enabled, do not assert
+>> reset to PEX/SATA PLLs, otherwise UPHY PLL operation will be broken.
+>> This commit removes reset_control_assert(pcie->rst) and
+>> reset_control_assert(sata->rst) from PEX/SATA UPHY disable procedure.
+>>
+>> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+>> ---
+>> v3:
+>>    new, was a part of "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
+>>
+>>  drivers/phy/tegra/xusb-tegra210.c | 2 --
+>>  1 file changed, 2 deletions(-)
+>>
+>> diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-tegra210.c
+>> index f06e7bc7a51b..ef4bbcbed60b 100644
+>> --- a/drivers/phy/tegra/xusb-tegra210.c
+>> +++ b/drivers/phy/tegra/xusb-tegra210.c
+>> @@ -504,7 +504,6 @@ static void tegra210_pex_uphy_disable(struct tegra_xusb_padctl *padctl)
+>>  	if (--pcie->enable > 0)
+>>  		goto unlock;
+>>  
+>> -	reset_control_assert(pcie->rst);
+>>  	clk_disable_unprepare(pcie->pll);
+>>  
+>>  unlock:
+>> @@ -746,7 +745,6 @@ static void tegra210_sata_uphy_disable(struct tegra_xusb_padctl *padctl)
+>>  	if (--sata->enable > 0)
+>>  		goto unlock;
+>>  
+>> -	reset_control_assert(sata->rst);
+>>  	clk_disable_unprepare(sata->pll);
+>>  
+>>  unlock:
 > 
-> -		} else if (status & BIT(IS_S_RD_EVENT_SHIFT)) {
-> -			/* Start of SMBUS for Master Read */
-> +					I2C_SLAVE_WRITE_REQUESTED, &rx_data);
-> +			iproc_i2c->rx_start_rcvd = true;
-> +			iproc_i2c->slave_read_complete = false;
-> +		} else if (rx_status == I2C_SLAVE_RX_DATA &&
-> +			   iproc_i2c->rx_start_rcvd) {
-> +			/* Middle of SMBUS Master write */
->  			i2c_slave_event(iproc_i2c->slave,
-> -					I2C_SLAVE_READ_REQUESTED, &value);
-> -			iproc_i2c_wr_reg(iproc_i2c, S_TX_OFFSET, value);
-> +					I2C_SLAVE_WRITE_RECEIVED, &rx_data);
-> +		} else if (rx_status == I2C_SLAVE_RX_END &&
-> +			   iproc_i2c->rx_start_rcvd) {
-> +			/* End of SMBUS Master write */
-> +			if (iproc_i2c->slave_rx_only)
-> +				i2c_slave_event(iproc_i2c->slave,
-> +						I2C_SLAVE_WRITE_RECEIVED,
-> +						&rx_data);
-> +
-> +			i2c_slave_event(iproc_i2c->slave, I2C_SLAVE_STOP,
-> +					&rx_data);
-> +		} else if (rx_status == I2C_SLAVE_RX_FIFO_EMPTY) {
-> +			iproc_i2c->rx_start_rcvd = false;
-> +			iproc_i2c->slave_read_complete = true;
-> +			break;
-> +		}
->  
-> -			val = BIT(S_CMD_START_BUSY_SHIFT);
-> -			iproc_i2c_wr_reg(iproc_i2c, S_CMD_OFFSET, val);
-> +		rx_bytes++;
-
-rx_bytes should be incremented only along with I2C_SLAVE_WRITE_RECEIVED event?
-
+> Does this mean that we can no longer reset these PLLs anymore? Is that
+> safe? Would we ever need to reset them for recovery or similar? For
+> power saving, is disabling the clock enough, or could we save some extra
+> power by putting the PLLs into reset?
 > 
-> +static bool bcm_iproc_i2c_slave_isr(struct bcm_iproc_i2c_dev *iproc_i2c,
-> +				    u32 status)
-> +{
-> +	u32 val;
-> +	u8 value;
-> +
-> +	/*
-> +	 * Slave events in case of master-write, master-write-read and,
-> +	 * master-read
-> +	 *
-> +	 * Master-write     : only IS_S_RX_EVENT_SHIFT event
-> +	 * Master-write-read: both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
-> +	 *                    events
-> +	 * Master-read      : both IS_S_RX_EVENT_SHIFT and IS_S_RD_EVENT_SHIFT
-> +	 *                    events or only IS_S_RD_EVENT_SHIFT
-> +	 */
-> +	if (status & BIT(IS_S_RX_EVENT_SHIFT) ||
-> +	    status & BIT(IS_S_RD_EVENT_SHIFT)) {
-> +		/* disable slave interrupts */
-> +		val = iproc_i2c_rd_reg(iproc_i2c, IE_OFFSET);
-> +		val &= ~iproc_i2c->slave_int_mask;
-> +		iproc_i2c_wr_reg(iproc_i2c, IE_OFFSET, val);
-> +
-> +		if (status & BIT(IS_S_RD_EVENT_SHIFT))
-> +			/* Master-write-read request */
-> +			iproc_i2c->slave_rx_only = false;
-> +		else
-> +			/* Master-write request only */
-> +			iproc_i2c->slave_rx_only = true;
-> +
-> +		/* schedule tasklet to read data later */
-> +		tasklet_schedule(&iproc_i2c->slave_rx_tasklet);
-> +
-> +		/* clear only IS_S_RX_EVENT_SHIFT interrupt */
-> +		iproc_i2c_wr_reg(iproc_i2c, IS_OFFSET,
-> +				 BIT(IS_S_RX_EVENT_SHIFT));
+> Thierry
 > 
-
-Both tasklet and isr are writing to status (IS_OFFSET) reg.
-
-The tasklet seems to be batching up rx fifo reads because of time-sensitive
-Master-write-read transaction? Linux I2C framework is byte interface anyway.
-Can the need to batch reads be avoided by setting slave rx threshold for
-interrupt (S_FIFO_RX_THLD) to 1-byte? 
-
-Also, wouldn't tasklets be susceptible to other interrupts? If fifo reads
-have to be batched up, can it be changed to threaded irq?
-
-
