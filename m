@@ -2,168 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB4328D992
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 07:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F5B28D994
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 07:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730213AbgJNFay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 01:30:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36078 "EHLO mx2.suse.de"
+        id S1730311AbgJNFev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 01:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728619AbgJNFay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 01:30:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6783AC3C;
-        Wed, 14 Oct 2020 05:30:51 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     bp@alien8.de
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        live-patching@vger.kernel.org
-Subject: [PATCH v2] x86/unwind/orc: fix inactive tasks with stack pointer in %sp
-Date:   Wed, 14 Oct 2020 07:30:51 +0200
-Message-Id: <20201014053051.24199-1-jslaby@suse.cz>
-X-Mailer: git-send-email 2.28.0
+        id S1727849AbgJNFev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 01:34:51 -0400
+Received: from kernel.org (unknown [87.71.73.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A671F2177B;
+        Wed, 14 Oct 2020 05:34:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602653690;
+        bh=d4wYMD9zxWGP4ViJqAYsTUccVHhOPjIdZNDpBMkcIPA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JzTNGhOiNyXtNTueXhjUVMEfQTx5q+4aBDwojw4g95GwoRgomkCxd+hVvWVnaqAjE
+         L8pOvlVoMurMUNwWQqJvFWzplk02ZoX2HEAQlaZc6iqUx8dj9+KMw47anVntrWxplH
+         0gT3KWk7AWi2bc4K2wN8bQTJha+ec7Hqxd8ZD09Y=
+Date:   Wed, 14 Oct 2020 08:34:29 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Shakeel Butt <shakeelb@google.com>,
+        Will Deacon <will@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Neil Brown <neilb@suse.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Florian Westphal <fw@strlen.de>, gustavoars@kernel.org,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>, dave@stgolabs.net,
+        Michel Lespinasse <walken@google.com>,
+        Jann Horn <jannh@google.com>, chenqiwu@xiaomi.com,
+        christophe.leroy@c-s.fr, Minchan Kim <minchan@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: proc: add Sock to /proc/meminfo
+Message-ID: <20201014053429.GI4251@kernel.org>
+References: <CAM_iQpUQXctR8UBNRP6td9dWTA705tP5fWKj4yZe9gOPTn_8oQ@mail.gmail.com>
+ <CAMZfGtUhVx_iYY3bJZRY5s1PG0N1mCsYGS9Oku8cTqPiMDze-g@mail.gmail.com>
+ <CANn89iKprp7WYeZy4RRO5jHykprnSCcVBc7Tk14Ui_MA9OK7Fg@mail.gmail.com>
+ <CAMZfGtXVKER_GM-wwqxrUshDzcEg9FkS3x_BaMTVyeqdYPGSkw@mail.gmail.com>
+ <9262ea44-fc3a-0b30-54dd-526e16df85d1@gmail.com>
+ <CAMZfGtVF6OjNuJFUExRMY1k-EaDS744=nKy6_a2cYdrJRncTgQ@mail.gmail.com>
+ <20201013080906.GD4251@kernel.org>
+ <e059f4b1-e51b-0277-e96b-c178d0cf4fd7@infradead.org>
+ <20201013151215.GG4251@kernel.org>
+ <3aa9ff1a-e04f-517c-5ebb-2c27804c143a@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3aa9ff1a-e04f-517c-5ebb-2c27804c143a@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gcc 10 optimizes the scheduler code differently than its predecessors.
-When DEBUG_SECTION_MISMATCH config is enabled, Makefile forces gcc not
-to inline some functions (-fno-inline-functions-called-once). Before gcc
-10, "no-inlined" __schedule starts with the usual prologue (push %bp; mov
-%sp,%bp). So ORC unwinder simply picks stack pointer from %bp and
-unwinds from __schedule just perfectly:
-$ cat /proc/1/stack
-[<0>] ep_poll+0x3e9/0x450
-[<0>] do_epoll_wait+0xaa/0xc0
-[<0>] __x64_sys_epoll_wait+0x1a/0x20
-[<0>] do_syscall_64+0x33/0x40
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Tue, Oct 13, 2020 at 08:21:13AM -0700, Randy Dunlap wrote:
+> On 10/13/20 8:12 AM, Mike Rapoport wrote:
+> > On Tue, Oct 13, 2020 at 07:43:59AM -0700, Randy Dunlap wrote:
+> >> On 10/13/20 1:09 AM, Mike Rapoport wrote:
+> >>> On Mon, Oct 12, 2020 at 05:53:01PM +0800, Muchun Song wrote:
+> >>>> On Mon, Oct 12, 2020 at 5:24 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> >>>>>
+> >>>>> On 10/12/20 10:39 AM, Muchun Song wrote:
+> >>>>>> On Mon, Oct 12, 2020 at 3:42 PM Eric Dumazet <edumazet@google.com> wrote:
+> >>>>
+> >>>> We are not complaining about TCP using too much memory, but how do
+> >>>> we know that TCP uses a lot of memory. When I firstly face this problem,
+> >>>> I do not know who uses the 25GB memory and it is not shown in the /proc/meminfo.
+> >>>> If we can know the amount memory of the socket buffer via /proc/meminfo, we
+> >>>> may not need to spend a lot of time troubleshooting this problem. Not everyone
+> >>>> knows that a lot of memory may be used here. But I believe many people
+> >>>> should know /proc/meminfo to confirm memory users.
+> >>>
+> >>> If I undestand correctly, the problem you are trying to solve is to
+> >>> simplify troubleshooting of memory usage for people who may not be aware
+> >>> that networking stack can be a large memory consumer.
+> >>>
+> >>> For that a paragraph in 'man 5 proc' maybe a good start:
+> >>>
+> >>> >From ddbcf38576d1a2b0e36fe25a27350d566759b664 Mon Sep 17 00:00:00 2001
+> >>> From: Mike Rapoport <rppt@linux.ibm.com>
+> >>> Date: Tue, 13 Oct 2020 11:07:35 +0300
+> >>> Subject: [PATCH] proc.5: meminfo: add not anout network stack memory
+> >>>  consumption
+> >>>
+> >>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> >>> ---
+> >>>  man5/proc.5 | 8 ++++++++
+> >>>  1 file changed, 8 insertions(+)
+> >>>
+> >>> diff --git a/man5/proc.5 b/man5/proc.5
+> >>> index ed309380b..8414676f1 100644
+> >>> --- a/man5/proc.5
+> >>> +++ b/man5/proc.5
+> >>> @@ -3478,6 +3478,14 @@ Except as noted below,
+> >>>  all of the fields have been present since at least Linux 2.6.0.
+> >>>  Some fields are displayed only if the kernel was configured
+> >>>  with various options; those dependencies are noted in the list.
+> >>> +.IP
+> >>> +Note that significant part of memory allocated by the network stack
+> >>> +is not accounted in the file.
+> >>> +The memory consumption of the network stack can be queried
+> >>> +using
+> >>> +.IR /proc/net/sockstat
+> >>> +or
+> >>> +.BR ss (8)
+> >>>  .RS
+> >>>  .TP
+> >>>  .IR MemTotal " %lu"
+> >>
+> >> Hi Mike,
+> >>
+> >> Could you tell us what units those values are in?
+> >> or is that already explained somewhere else?
+> > 
+> > It is described a few lines above and anyway, "MemTotal" is a part of
+> > the diff context ;-)
+> 
+> with no units AFAICT.
+> 
+> But I was unclear. I wasn't referring to /proc/meminfo, but instead
+> to /proc/net/sockstat and its units:
+> 
+> sockets: used 1224
+> TCP: inuse 11 orphan 1 tw 1 alloc 26 mem 3
+> UDP: inuse 4 mem 2
+> UDPLITE: inuse 0
+> RAW: inuse 0
+> FRAG: inuse 0 memory 0
+> 
+> E.g., for TCP and UDP, are those socket counts or some unit of memory?
+> If units of memory, what unit size?
 
-But now, with gcc 10, there is no %bp prologue in __schedule:
-$ cat /proc/1/stack
-<nothing>
+Ah, these are in 4k pages, AFAIU.
+And, as it seems /proc/net/sockstat lacks a description in proc.5 at
+all...
 
-The orc entry of the point in __schedule is:
-sp:sp+88 bp:last_sp-48 type:call end:0
+> thanks.
+> -- 
+> ~Randy
+> 
+> 
 
-In this case, nobody subtracts sizeof "struct inactive_task_frame" in
-__unwind_start. The struct is put on the stack by __switch_to_asm and
-only then __switch_to_asm stores %sp to task->thread.sp. But we start
-unwinding from a point in __schedule (stored in frame->ret_addr by
-'call') and not in __switch_to_asm.
-
-So for these example values in __unwind_start:
-sp=ffff94b50001fdc8 bp=ffff8e1f41d29340 ip=__schedule+0x1f0
-
-The stack is:
- ffff94b50001fdc8: ffff8e1f41578000 # struct inactive_task_frame
- ffff94b50001fdd0: 0000000000000000
- ffff94b50001fdd8: ffff8e1f41d29340
- ffff94b50001fde0: ffff8e1f41611d40 # ...
- ffff94b50001fde8: ffffffff93c41920 # bx
- ffff94b50001fdf0: ffff8e1f41d29340 # bp
- ffff94b50001fdf8: ffffffff9376cad0 # ret_addr (and end of the struct)
-
-0xffffffff9376cad0 is __schedule+0x1f0 (after the call to
-__switch_to_asm).  Now follow those 88 bytes from the ORC entry (sp+88).
-The entry is correct, __schedule really pushes 48 bytes (8*7) + 32 bytes
-via subq to store some local values (like 4U below). So to unwind, look
-at the offset 88-sizeof(long) = 0x50 from here:
-
- ffff94b50001fe00: ffff8e1f41578618
- ffff94b50001fe08: 00000cc000000255
- ffff94b50001fe10: 0000000500000004
- ffff94b50001fe18: 7793fab6956b2d00 # NOTE (see below)
- ffff94b50001fe20: ffff8e1f41578000
- ffff94b50001fe28: ffff8e1f41578000
- ffff94b50001fe30: ffff8e1f41578000
- ffff94b50001fe38: ffff8e1f41578000
- ffff94b50001fe40: ffff94b50001fed8
- ffff94b50001fe48: ffff8e1f41577ff0
- ffff94b50001fe50: ffffffff9376cf12
-
-Here               ^^^^^^^^^^^^^^^^ is the correct ret addr from
-__schedule. It translates to schedule+0x42 (insn after a call to
-__schedule).
-
-BUT, unwind_next_frame tries to take the address starting from
-0xffff94b50001fdc8. That is exactly from thread.sp+88-sizeof(long) =
-0xffff94b50001fdc8+88-8 = 0xffff94b50001fe18, which is garbage marked as
-NOTE above. So this quits the unwinding as 7793fab6956b2d00 is obviously
-not a kernel address.
-
-There was a fix to skip 'struct inactive_task_frame' in
-unwind_get_return_address_ptr in commit 187b96db5ca7 ("x86/unwind/orc:
-Fix unwind_get_return_address_ptr() for inactive tasks").
-
-But we need to skip the struct already in the unwinder proper. So
-subtract the size (increase the stack pointer) of the structure in
-__unwind_start directly. This allows for removal of the code added by
-commit 187b96db5ca7 completely, as the address is now at
-'(unsigned long *)state->sp - 1', the same as in the generic case.
-
-Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
-Bug: https://bugzilla.suse.com/show_bug.cgi?id=1176907
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Miroslav Benes <mbenes@suse.cz>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: x86@kernel.org
-Cc: live-patching@vger.kernel.org
----
-
-[v2]
-  * Remove comment from __unwind_start.
-  * Cc more parties
-  * Polish the commitlog
-
- arch/x86/kernel/unwind_orc.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 6a339ce328e0..73f800100066 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -321,19 +321,12 @@ EXPORT_SYMBOL_GPL(unwind_get_return_address);
- 
- unsigned long *unwind_get_return_address_ptr(struct unwind_state *state)
- {
--	struct task_struct *task = state->task;
--
- 	if (unwind_done(state))
- 		return NULL;
- 
- 	if (state->regs)
- 		return &state->regs->ip;
- 
--	if (task != current && state->sp == task->thread.sp) {
--		struct inactive_task_frame *frame = (void *)task->thread.sp;
--		return &frame->ret_addr;
--	}
--
- 	if (state->sp)
- 		return (unsigned long *)state->sp - 1;
- 
-@@ -663,7 +656,7 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
- 	} else {
- 		struct inactive_task_frame *frame = (void *)task->thread.sp;
- 
--		state->sp = task->thread.sp;
-+		state->sp = task->thread.sp + sizeof(*frame);
- 		state->bp = READ_ONCE_NOCHECK(frame->bp);
- 		state->ip = READ_ONCE_NOCHECK(frame->ret_addr);
- 		state->signal = (void *)state->ip == ret_from_fork;
 -- 
-2.28.0
-
+Sincerely yours,
+Mike.
