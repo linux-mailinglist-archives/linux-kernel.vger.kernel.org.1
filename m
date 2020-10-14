@@ -2,85 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A94B28D870
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713D128DCC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbgJNC0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 22:26:52 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1698 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgJNC0w (ORCPT
+        id S2387797AbgJNJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730636AbgJNJUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 22:26:52 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8661b00000>; Tue, 13 Oct 2020 19:25:52 -0700
-Received: from [10.19.100.177] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 02:26:46 +0000
-Subject: Re: [PATCH v3 00/15] Tegra XHCI controller ELPG support
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
-        <jonathanh@nvidia.com>, <kishon@ti.com>,
-        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nkristam@nvidia.com>
-References: <20200909081041.3190157-1-jckuo@nvidia.com>
- <20200928125438.GC3065790@ulmo>
-X-Nvconfidentiality: public
-From:   JC Kuo <jckuo@nvidia.com>
-Message-ID: <c38fc162-c4cb-1321-e861-4d92dbfa62ee@nvidia.com>
-Date:   Wed, 14 Oct 2020 10:26:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 14 Oct 2020 05:20:01 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CA4C0F26DC
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 19:27:43 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id x16so1547192ljh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 13 Oct 2020 19:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qDBAWibsVMpL9uDkJTD6UsuRe4btwTbpHEP5BT5fyh4=;
+        b=SIY5SpAHAN72HhJ/xUnnLQ8qiguN3XROjuCYGqZDhegyDOIuk5n1rAJdptUhOjAczb
+         763QYE6+1ratG+ilSLA4Iqi2vdBJJdWGymz2znSjTU90zJZ9JS5p8dhLobzG7spmLVZT
+         LVX6vJcVBBvEmI2UVnaz1FsbWRpa4JvN3bgOS30EvdXVzpji2alGacgIsS0375TqTn3n
+         V8AREtecq+6+RbPkE8DCjt1JX94okEzrDICGX8gO3RSr8tonlTDvC4WZEG96mc5qI/Bl
+         9G5QyMc3eBzI+h8/1V5wgvlwwkUQV9DQsb3LW8VZlC35s3Z3UiZQL5hyAe3FpVb82rt6
+         EyGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qDBAWibsVMpL9uDkJTD6UsuRe4btwTbpHEP5BT5fyh4=;
+        b=QPUgQDZ0qf5Doyo/T0CP4Wcfg4SMottDL3mh/Nz4b5UPNRmLr9GXkQkYN8B9xaEke/
+         XYlvr88XnIBH3byCf82iT7JKNUX12ydnjxZPHLTB663PbNzCW2rBiVgPOzgcF8Pckqos
+         jZs7gDbzHG0bQAcnH+Ure8n1K6XbRV7E9Iw8WKx0GMNfVExE1R32XEnqtBXdPJbiK9qW
+         pjtdtauPZ40dH5IPSNOnIB2gK6nNBH40DfWQepci1ncmXnArbH39fimhrGTIfw5/8EqL
+         jjFNE7VmomPkUhiqAFnI0MVR5xyzDOWn14asD2hlDqXbiFkiDNRhNjaeIhfJ84sycQ/3
+         CzeA==
+X-Gm-Message-State: AOAM5307dR7urwxMvgVBxe6SboTyfaR0wsF1sf7Zui1pDojHplAGqI4X
+        26e/9xo95CeVBQaneiMtWzHHVxK59V5xnQCk8Lg=
+X-Google-Smtp-Source: ABdhPJyS3IRl6z4QTbEwQtI350xF9azP/uv0HbGKCKHNW9yiGO5w4R6/PDo8gvGZnhDbl+3AruygB/bfgFnqwMCU9TM=
+X-Received: by 2002:a2e:b61a:: with SMTP id r26mr923956ljn.166.1602642461301;
+ Tue, 13 Oct 2020 19:27:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200928125438.GC3065790@ulmo>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602642352; bh=ZPJkj9lTy0tmAKdms0g6Ssia336rRRZiQeYms/qcGPk=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=RkDzxZvpllNv9fRWF18Q6EAW8AK/b3WLu3AU9iKxKvmM7kiqD6BABNUjD21mazF+h
-         t6We8y6ct4dqExW56mAO8q10kZmPUHG1kjhS2dIqEVSkOEFyDM/SFcI8FGuwM0rpwY
-         WVDHhQLN1rAEB3RnFtiT6V9A05pee47WQaCDIajpof+mrsLy/2Vq4RVKUqLlIZ9S7X
-         jz/aO9FLktahJF0S3T9o3TI9aifhBL3GBY2t3PZlr5sw7f8W/q1nsYhrFVf/EHI+NX
-         whkbSa0HEzcUP1I1k7hVHdaQc0uQBG0Z0j72IQ2n+F33GJLvlUWviLB8OEcSdyInPs
-         Cy1eJiTB5dLbg==
+References: <20201013022429.454161-1-daeho43@gmail.com> <20201013022429.454161-2-daeho43@gmail.com>
+ <20201013061150.GC1062@sol.localdomain>
+In-Reply-To: <20201013061150.GC1062@sol.localdomain>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Wed, 14 Oct 2020 11:27:30 +0900
+Message-ID: <CACOAw_y31yAu=AGAEqvyo2Ankt-ux80E6g6m_sWnz6LyUgBXSg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION ioctl
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, it's safe to apply "clk: tegra: Don't enable PLLE HW sequencer at init"
-before the others have applied. Disabling PLLE hardware power sequencer will not
-cause any functionality problem to XUSB/PCIE/SATA. The only thing changed is
-PLLE won't be powered off by hardware when all clients are in low power state,
-i.e., software has to explicitly power off PLLE.
+> f2fs_readonly() is redundant with mnt_want_write_file().
+>
+> Also, shouldn't this require a writable file descriptor?  As-is, this ioc=
+tl can
+> be called on a file owned by another user, as long as the caller has read
+> access.
+>
+> Note: if you change this to require a writable file descriptor, then
+> f2fs_readonly(), mnt_want_write_file(), and IS_IMMUTABLE() all would no l=
+onger
+> be needed.
 
-Thanks for review.
-JC
+I agree that f2fs_readonly() is redundant.
+But, sorry, I don't get the rest. I thought mnt_want_write_file() is a
+way to check whether the caller has a proper write permission or not.
+I think just using mnt_want_write_file() is enough for this ioctl. Am
+I missing something?
 
-On 9/28/20 8:54 PM, Thierry Reding wrote:
-> On Wed, Sep 09, 2020 at 04:10:26PM +0800, JC Kuo wrote:
->> Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
->> state for power saving when all of the connected USB devices are in
->> suspended state. This patch series includes clk, phy and pmc changes
->> that are required for properly place controller in ELPG and bring
->> controller out of ELPG.
->>
->> JC Kuo (15):
->>   clk: tegra: Add PLLE HW power sequencer control
->>   clk: tegra: Don't enable PLLE HW sequencer at init
-> 
-> Is it safe to apply this second patch before the others have applied?
-> Since we now need to explicitly enable the HW sequencer, it won't be
-> enabled before the corresponding patch does that. So applying patch 2
-> before the others sounds like it would break existing users of the HW
-> sequencer.
-> 
-> Thierry
-> 
+> What if f2fs_cops[options.algorithm] =3D=3D NULL, e.g. COMPRESS_LZ4 witho=
+ut
+> CONFIG_F2FS_FS_LZ4?  Shouldn't the caller get an error then?
+
+Good point!
+
+> I don't think the check for i_writecount =3D=3D 1 accomplishes anything b=
+ecause it
+> just means there are no *other* writable file descriptors.  It doesn't me=
+an that
+> some other thread isn't concurrently trying to write to this same file
+> descriptor.  So the lock needs to be enough.  Is it?
+
+This is to detect any possibility of other threads mmap-ing and
+writing the file.
+Using only inode lock is not enough to prevent them from making dirty pages=
+.
+
+
+
+2020=EB=85=84 10=EC=9B=94 13=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 3:11, =
+Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Tue, Oct 13, 2020 at 11:24:29AM +0900, Daeho Jeong wrote:
+> > +static int f2fs_ioc_set_compress_option(struct file *filp, unsigned lo=
+ng arg)
+> > +{
+> > +     struct inode *inode =3D file_inode(filp);
+> > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
+> > +     struct f2fs_comp_option option;
+> > +     int ret;
+> > +     int writecount;
+> > +
+> > +     if (!f2fs_sb_has_compression(sbi))
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     if (!f2fs_compressed_file(inode) || IS_IMMUTABLE(inode))
+> > +             return -EINVAL;
+> > +
+> > +     if (f2fs_readonly(sbi->sb))
+> > +             return -EROFS;
+>
+
+>
+> > +
+> > +     if (copy_from_user(&option, (struct f2fs_comp_option __user *)arg=
+,
+> > +                             sizeof(option)))
+> > +             return -EFAULT;
+> > +
+> > +     if (option.log_cluster_size < MIN_COMPRESS_LOG_SIZE ||
+> > +                     option.log_cluster_size > MAX_COMPRESS_LOG_SIZE |=
+|
+> > +                     option.algorithm >=3D COMPRESS_MAX)
+> > +             return -EINVAL;
+>
+> What if f2fs_cops[options.algorithm] =3D=3D NULL, e.g. COMPRESS_LZ4 witho=
+ut
+> CONFIG_F2FS_FS_LZ4?  Shouldn't the caller get an error then?
+>
+> > +
+> > +     ret =3D mnt_want_write_file(filp);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     inode_lock(inode);
+> > +
+> > +     writecount =3D atomic_read(&inode->i_writecount);
+> > +     if ((filp->f_mode & FMODE_WRITE && writecount !=3D 1) ||
+> > +                     (!(filp->f_mode & FMODE_WRITE) && writecount)) {
+> > +             ret =3D -EBUSY;
+> > +             goto out;
+> > +     }
+>
+> I don't think the check for i_writecount =3D=3D 1 accomplishes anything b=
+ecause it
+> just means there are no *other* writable file descriptors.  It doesn't me=
+an that
+> some other thread isn't concurrently trying to write to this same file
+> descriptor.  So the lock needs to be enough.  Is it?
+>
+> - Eric
