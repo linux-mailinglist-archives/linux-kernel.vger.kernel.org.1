@@ -2,424 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721D628E38B
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9378A28E392
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387807AbgJNPrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:47:00 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35321 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729661AbgJNPq5 (ORCPT
+        id S1729403AbgJNPsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728402AbgJNPsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:46:57 -0400
-Received: by mail-ot1-f66.google.com with SMTP id s66so78512otb.2;
-        Wed, 14 Oct 2020 08:46:55 -0700 (PDT)
+        Wed, 14 Oct 2020 11:48:19 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41236C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:48:19 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id m17so5816233ioo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 08:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oWBbGofnbem7vN+9grXySFR9YOMo5GiSFkt1UyxFN+s=;
+        b=e9g3yz2hjPHV0wHGPrm3cnB3QRN+F8ZbXcutLipifJdmzqdLZisA7PmuFnTj6MIjqA
+         XMSsOdJGpotAi1rwTVYiZpBA3rsOXpS/N1BbIFHMv6zmgVkp3jusgsJm0jzsrzgS8Cpa
+         hSoQuVhKpmWe9FRDfzXtqj7o8L02V4UayPbZ2lY6AmhGP6gt60eMyY5LLMXmmfTxxPdc
+         KiSS8X7Dz/YA1jbcrADe/FH8fl3MC5RPfzg0DO99b8tbvF7avLfEh2e6ODT4vZkTp9+l
+         cwpT2/Vy8qJ2wZ0phOxIb6EpH/yk+GsmVKiIBzTa6m9ucu4MuQrFvhUm4o02dtnlyC79
+         FD7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Hccz/54xE1FEGw8PsQrTGLrR1s/fztrlTirtwxtwRFE=;
-        b=ZrLt9OEaS3UIOHq3OydHj1JDQsr+baOFtAsblKovaxpqfjavyU6EIU+xOvR79B0mRR
-         MsE1xKOlz+C9af6M2D2I1qb0kLQKl6n4UYZVXFPQSRY1fdju3t0k2GYT41797CeMj21Y
-         0nwX5Ti7WCeRL5rA0NkH95sMGCuoFGOcFw6neDHbiMW2oiB/9Pq71lJA67MRN+9DbIfM
-         cNcZwpR7hYuk/SOYj4HQsc5YdT1M/CIoBZDzneJPeYJj2g2NP5UXZONXDQ/wyP/V/WLL
-         Phu0ewAoDNiiNzQpMeyYhiY2jbFqEl27NnWTTd5rcplQM5OfRtzEMifHzfCfvmsbKXZJ
-         fNCw==
-X-Gm-Message-State: AOAM5330VtK3bnx6WHTS7P5yS5MZ65luZuhtqz2ogZkCO8kzrq6oStH9
-        aPmP/vvpVoEcwWjvGWoL8Fgy3UiJQUMw8CyBrHo=
-X-Google-Smtp-Source: ABdhPJxsFYy8adXg2MiIOmV5uKHjt4GVKIoD5Lb4x6sj0qcFB3w/1oLAI8JdjGVLVQpIA+WbgtWO/KTUwTvupUyjjeY=
-X-Received: by 2002:a9d:734f:: with SMTP id l15mr4238853otk.260.1602690415117;
- Wed, 14 Oct 2020 08:46:55 -0700 (PDT)
+        bh=oWBbGofnbem7vN+9grXySFR9YOMo5GiSFkt1UyxFN+s=;
+        b=O0fiQatomZRA3f8dWSiMchV/E+8B69mF1tJV9eVgADlRgGCXLpE2WU+4nH9nn73O8+
+         +elHS4kdaJ+5clsKZeh8Fa2xRhriPan5kAOvm1vT3vuRV5EUGTNE0MeOgfMTT5jc4h0q
+         5LsqxFYAYVVXRINvCjvNP094jV1JZ4ovQB3A7Udz9136jA8AvBQQ6LuK2/8AN5euKeO3
+         lkkZajfzsE6URCi3YZAEYPfm2fqSEcDQgMA9hQt8V9kYUfA79oHMrfOXgFUbgvdFUYqX
+         eJSTLPYz194MKEyWvpvseQchpDGS3DL+529vd3ekc0nmHJ9+Fw7vJC4S3bivFzwhIqJ4
+         OJMQ==
+X-Gm-Message-State: AOAM5315g8+2/lCXNTaoaCT0mXMAOGLpIvjM919HAvWuguX3H/H3hDR0
+        XsRSAmP//10AHdGF/bk/EOrUXqx0/amh19iBFHQ=
+X-Google-Smtp-Source: ABdhPJyPsNGnHQ5bO09KsmFRSt+C02FbttZcI+y1mlloBhlXYQUMy4UnhY8jw9xB6efFVvRNTOackB+ksEU+u47AZqo=
+X-Received: by 2002:a6b:9243:: with SMTP id u64mr3268208iod.197.1602690498597;
+ Wed, 14 Oct 2020 08:48:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201003131938.9426-1-hdegoede@redhat.com> <20201003131938.9426-2-hdegoede@redhat.com>
- <DM6PR19MB263669227D122BB7699951E6FA0C0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <85a36eb58cb9774f1907582dfc75295ed847200c.camel@hadess.net>
- <DM6PR19MB26364E6AA2F51981F592CE58FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <c73ffad8fd6bff8ff20d91930b097bff82be1c8f.camel@hadess.net>
- <DM6PR19MB2636B067186B08B744EA2163FA0A0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <CAJZ5v0jBJBTTb3qBGH0UWOAfvY24gWqJQA=MahnhaTdMu-w0Bw@mail.gmail.com>
- <394f897a-4dac-7016-ea17-c37b67589e07@redhat.com> <CAJZ5v0is93pUzy8L0s0F+i6j9ecGutRv54ji0Nx3wr-15Y8uBA@mail.gmail.com>
- <fec6eaeb-cc40-a2d2-87cb-bcae338bbe80@redhat.com>
-In-Reply-To: <fec6eaeb-cc40-a2d2-87cb-bcae338bbe80@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 14 Oct 2020 17:46:43 +0200
-Message-ID: <CAJZ5v0gbQ=4bp22p3oM22zY+_1h-asYja1+CBbvtySzAY1p_+Q@mail.gmail.com>
-Subject: Re: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mark Pearson <mpearson@lenovo.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Pearson <markpearson@lenovo.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <20201014151614.29804-1-hqjagain@gmail.com> <20201014113823.4296521d@gandalf.local.home>
+In-Reply-To: <20201014113823.4296521d@gandalf.local.home>
+From:   Qiujun Huang <hqjagain@gmail.com>
+Date:   Wed, 14 Oct 2020 23:48:05 +0800
+Message-ID: <CAJRQjodMzSAJd23F=RRhR=d2H=D3vWMvCbU9JYdGNQ9MTkpmmw@mail.gmail.com>
+Subject: Re: [PATCH] ring-buffer: Add rb_check_bpage in __rb_allocate_pages
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 4:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
+On Wed, Oct 14, 2020 at 11:38 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Hi,
+> On Wed, 14 Oct 2020 23:16:14 +0800
+> Qiujun Huang <hqjagain@gmail.com> wrote:
 >
-> On 10/14/20 3:55 PM, Rafael J. Wysocki wrote:
-> > On Tue, Oct 13, 2020 at 3:09 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On 10/12/20 6:42 PM, Rafael J. Wysocki wrote:
-> >>> On Wed, Oct 7, 2020 at 8:41 PM Limonciello, Mario
-> >>> <Mario.Limonciello@dell.com> wrote:
-> >>>>
-> >>>>> On Wed, 2020-10-07 at 15:58 +0000, Limonciello, Mario wrote:
-> >>>>>>
-> >>>>>>> On Mon, 2020-10-05 at 12:58 +0000, Limonciello, Mario wrote:
-> >>>>>>>>> On modern systems CPU/GPU/... performance is often dynamically
-> >>>>>>>>> configurable
-> >>>>>>>>> in the form of e.g. variable clock-speeds and TPD. The
-> >>>>>>>>> performance
-> >>>>>>>>> is often
-> >>>>>>>>> automatically adjusted to the load by some automatic-mechanism
-> >>>>>>>>> (which may
-> >>>>>>>>> very well live outside the kernel).
-> >>>>>>>>>
-> >>>>>>>>> These auto performance-adjustment mechanisms often can be
-> >>>>>>>>> configured with
-> >>>>>>>>> one of several performance-profiles, with either a bias towards
-> >>>>>>>>> low-power
-> >>>>>>>>> consumption (and cool and quiet) or towards performance (and
-> >>>>>>>>> higher
-> >>>>>>>>> power
-> >>>>>>>>> consumption and thermals).
-> >>>>>>>>>
-> >>>>>>>>> Introduce a new performance_profile class/sysfs API which
-> >>>>>>>>> offers a
-> >>>>>>>>> generic
-> >>>>>>>>> API for selecting the performance-profile of these automatic-
-> >>>>>>>>> mechanisms.
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> If introducing an API for this - let me ask the question, why
-> >>>>>>>> even let each
-> >>>>>>>> driver offer a class interface and userspace need to change
-> >>>>>>>> "each" driver's
-> >>>>>>>> performance setting?
-> >>>>>>>>
-> >>>>>>>> I would think that you could just offer something kernel-wide
-> >>>>>>>> like
-> >>>>>>>> /sys/power/performance-profile
-> >>>>>>>>
-> >>>>>>>> Userspace can read and write to a single file.  All drivers can
-> >>>>>>>> get notified
-> >>>>>>>> on this sysfs file changing.
-> >>>>>>>>
-> >>>>>>>> The systems that react in firmware (such as the two that prompted
-> >>>>>>>> this discussion) can change at that time.  It leaves the
-> >>>>>>>> possibility for a
-> >>>>>>>> more open kernel implementation that can do the same thing though
-> >>>>>>>> too by
-> >>>>>>>> directly modifying device registers instead of ACPI devices.
-> >>>>>>>
-> >>>>>>> The problem, as I've mentioned in previous discussions we had about
-> >>>>>>> this, is that, as you've seen in replies to this mail, this would
-> >>>>>>> suddenly be making the kernel apply policy.
-> >>>>>>>
-> >>>>>>> There's going to be pushback as soon as policy is enacted in the
-> >>>>>>> kernel, and you take away the different knobs for individual
-> >>>>>>> components
-> >>>>>>> (or you can control them centrally as well as individually). As
-> >>>>>>> much as
-> >>>>>>> I hate the quantity of knobs[1], I don't think that trying to
-> >>>>>>> reduce
-> >>>>>>> the number of knobs in the kernel is a good use of our time, and
-> >>>>>>> easier
-> >>>>>>> to enact, coordinated with design targets, in user-space.
-> >>>>>>>
-> >>>>>>> Unless you can think of a way to implement this kernel wide setting
-> >>>>>>> without adding one more exponent on the number of possibilities for
-> >>>>>>> the
-> >>>>>>> testing matrix, I'll +1 Hans' original API.
-> >>>>>>>
-> >>>>>> Actually I offered two proposals in my reply.  So are you NAKing
-> >>>>>> both?
-> >>>>>
-> >>>>> No, this is only about the first portion of the email, which I quoted.
-> >>>>> And I'm not NAK'ing it, but I don't see how it can work without being
-> >>>>> antithetical to what kernel "users" expect, or what the folks consuming
-> >>>>> those interfaces (presumably us both) would expect to be able to test
-> >>>>> and maintain.
-> >>>>>
-> >>>>
-> >>>> (Just so others are aware, Bastien and I had a previous discussion on this topic
-> >>>> that he alluded to here: https://gitlab.freedesktop.org/hadess/power-profiles-daemon/-/issues/1)
-> >>>>
-> >>>> In general I agree that we shouldn't be offering 100's of knobs to change
-> >>>> things and protect users from themselves where possible.
-> >>>>
-> >>>> Whether the decisions are made in the kernel or in userspace you still have a matrix once
-> >>>> you're letting someone change 2 different kernel devices that offer policy.  I'd argue it's
-> >>>> actually worse if you let userspace change it though.
-> >>>>
-> >>>> Let's go back to the my GPU and platform example and lets say both offer the new knob here
-> >>>> for both.  Userspace software such as your PPD picks performance.  Both the platform device
-> >>>> and GPU device get changed, hopefully no conflicts.
-> >>>> Then user decides no, I don't want my GPU in performance mode, I only want my platform.
-> >>>> So they change the knob for the GPU manually, and now you have a new config in your matrix.
-> >>>>
-> >>>> However if you left it to a single kernel knob, both GPU and platform get moved together and
-> >>>> you don't have these extra configs in your matrix anymore.
-> >>>>
-> >>>> The other point I mentioned, that platform might also do something to GPU via a sideband and
-> >>>> you race, you can solve it with kernel too by modifying the ordering the kernel handles it.
-> >>>>
-> >>>> Userspace however, you give two knobs and now you have to worry about them getting it right
-> >>>> and supporting them doing them in the wrong order.
-> >>>>
-> >>>>>> The other one suggested to use the same firmware attributes class
-> >>>>>> being
-> >>>>>> introduced by the new Dell driver (
-> >>>>>> https://patchwork.kernel.org/patch/11818343/)
-> >>>>>> since this is actually a knob to a specific firmware setting.
-> >>>>>
-> >>>>> This seemed to me like an implementation detail (eg. the same metadata
-> >>>>> is being exported, but in a different way), and I don't feel strongly
-> >>>>> about it either way.
-> >>>>
-> >>>> OK thanks.
-> >>>
-> >>> IMV there are two choices here:  One is between exposing the low-level
-> >>> interfaces verbatim to user space and wrapping them up into a certain
-> >>> "translation" layer allowing user space to use a unified interface (I
-> >>> think that is what everybody wants) and the other  boils down to how
-> >>> the unified interface between the kernel and user space will look
-> >>> like.
-> >>>
-> >>> Personally, I think that something line /sys/power/profile allowing
-> >>> drivers (and other kernel entities) to register callbacks might work
-> >>> (as stated in my last reply to Hans).
-> >>
-> >> Note to others reading along I pointed to this thread in this thread:
-> >> https://lore.kernel.org/linux-pm/20201006122024.14539-1-daniel.lezcano@linaro.org/T/#t
-> >> and Rafael's "last reply" above refers to his reply in that thread.
-> >>
-> >> For the sake of people reading along I'm reproducing my reply
-> >> there below.
+> > It may be better to check each page is aligned by 4 bytes. The 2
+> > least significant bits of the address will be used as flags.
 > >
-> > For completeness, my response in the other thread is here:
+> > Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+> > ---
+> >  kernel/trace/ring_buffer.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
 > >
-> > https://lore.kernel.org/linux-pm/CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com/T/#t
+> > diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> > index 93ef0ab6ea20..9dec7d58b177 100644
+> > --- a/kernel/trace/ring_buffer.c
+> > +++ b/kernel/trace/ring_buffer.c
+> > @@ -1420,7 +1420,8 @@ static int rb_check_pages(struct ring_buffer_per_cpu *cpu_buffer)
+> >       return 0;
+> >  }
 > >
-> >> Rafael, it seems more appropriate to continue this discussion
-> >> in this thread, so lets discuss this further here ?
+> > -static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
+> > +static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
+> > +             long nr_pages, struct list_head *pages, int cpu)
+> >  {
+> >       struct buffer_page *bpage, *tmp;
+> >       bool user_thread = current->mm != NULL;
+> > @@ -1464,6 +1465,8 @@ static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
+> >               if (!bpage)
+> >                       goto free_pages;
 > >
-> > And because I sent it before reading this message, let me reproduce it
-> > below (with some additions).
->
-> And I just did the same thing (replied to your reply in the other thread),
-> I guess I was too quick.
-
-Well, same here.
-
-> So I too will reproduce my reply here.
-
-And so I'm doing below.
-
-> And I still believe it is best to then stick to this thread from now on,
-> because this reproducing thing is not really productive...
->
-> >> My reply to Rafael from the other thread:
-> >>
-> >> First of all thank you for your input, with your expertise in this
-> >> area your input is very much appreciated, after all we only get
-> >> one chance to get the userspace API for this right.
-> >>
-> >> Your proposal to have a single sysfs file for userspace to talk
-> >> to and then use an in kernel subscription mechanism for drivers
-> >> to get notified of writes to this file is interesting.
-> >>
-> >> But I see 2 issues with it:
-> >>
-> >> 1. How will userspace know which profiles are actually available ?
-> >>
-> >> An obvious solution is to pick a set of standard names and let
-> >> subscribers map those as close to their own settings as possible,
-> >> the most often mentioned set of profile names in this case seems to be:
-> >>
-> >> low_power
-> >> balanced_power
-> >> balanced
-> >> balanced_performance
-> >> performance
-> >>
-> >> Which works fine for the thinkpad_acpi case, but not so much for
-> >> the hp-wmi case. In the HP case what happens is that a WMI call
-> >> is made which sets a bunch of ACPI variables which influence
-> >> the DPTF code (this assumes we have some sort of DPTF support
-> >> such as mjg59's reverse engineered support) but the profile-names
-> >> under Windows are: "Performance", "HP recommended", "Cool" and
-> >> "Quiet".  If you read the discussion from the
-> >> "[RFC] Documentation: Add documentation for new performance_profile sysfs class"
-> >> thread you will see this was brought up as an issue there.
+> > +             rb_check_bpage(cpu_buffer, bpage);
+> > +
 > >
-> > Two different things seem to be conflated here.  One is how to pass a
-> > possible performance-vs-power preference coming from user space down
-> > to device drivers or generally pieces of kernel code that can adjust
-> > the behavior and/or hardware settings depending on what that
-> > preference is and the other is how to expose OEM-provided DPTF system
-> > profile interfaces to user space.
 >
-> I was hoping / thinking that we could use a single API for both of
-> these. But I guess that it makes sense to see them as 2 separate
-> things, esp. since DPTF profiles seem to be somewhat free-form
-> where as a way to pass a performance-pref to a device could use
-> a fixes set of values.
->
-> So lets say that we indeed want to treat these 2 separately,
-> then I guess that the issue at hand / my reason to start a
-> discussion surrounding this is allowing userspace to selecting
-> the DPTF system profile.
->
-> The thinkpad_acpi case at hand is not using DPTF, but that is
-> because Lenovo decided to implement dynamic DPTF like behavior
-> inside their embedded controller (for when running Linux) since
-> DPTF is atm not really supported all that well under Linux and
-> Lenovo was getting a lot of complaints about sub-optimal
-> performance because of this.
->
-> So the thinkpad_acpi solution is in essence a replacement
-> for DPTF and it should thus use the same userspace API as
-> other mechanisms to select DPTF system profiles.
->
-> And if we limit this new userspace API solely to setting DPTF
-> system profiles, then their will indeed be only 1 provider for
-> this for the entire system.
->
-> > The former assumes that there is a common set of values that can be
-> > understood and acted on in a consistent way by all of the interested
-> > entities within the kernel and the latter is about passing information
-> > from user space down to a side-band power control mechanism working in
-> > its own way behind the kernel's back (and possibly poking at multiple
-> > hardware components in the platform in its own way).
->
-> Ack.
->
-> > IMO there is no way to provide a common interface covering these two
-> > cases at the same time.
->
-> I see your point, esp. the free form vs common set of values
-> argument seems to be exactly what we have been going in circles
-> about during the discussion about this so far.
->
-> >> The problem here is that both "cool" and "quiet" could be
-> >> interpreted as low-power. But it seems that they actually mean
-> >> what they say, cool focuses on keeping temps low, which can
-> >> also be done by making the fan-profile more aggressive. And quiet
-> >> is mostly about keeping fan speeds down, at the cost of possible
-> >> higher temperatures.
-> >>
-> >> <edit in this version of the reply:>
-> >> I wonder if the HP profiles are actually just fan speed profiles ?
-> >> Elia do you know ?
-> >> </edit>
-> >
-> > I don't think so.
-> >
-> > AFAICS, in both the Thinkpad and HP cases the profile covers the
-> > entire platform, which in particular means that they cannot co-exist.
->
-> Ok.
->
-> >> IOW we don't really have a 1 dimensional axis.
-> >
-> > Well, AFAICS, DPTF system profile interfaces coming from different
-> > OEMs will be different, but they are about side-band power control and
-> > there can be only one thing like that in a platform at the same time.
->
-> Ack.
->
-> >> My class proposal fixes this by having a notion of both
-> >> standardized names (because anything else would suck) combined
-> >> with a way for drivers to advertise which standardized names
-> >> the support. So in my proposal I simply add quiet and cool
-> >> to the list of standard profile names, and then the HP-wmi
-> >> driver can list those as supported, while not listing
-> >> low_power as a supported profile.  This way we export the
-> >> hardware interface to userspace as is (as much as possible)
-> >> while still offering a standardized interface for userspace
-> >> to consume.  Granted if userspace now actually want to set
-> >> a low_power profile, we have just punted the problem to userspace
-> >> but I really do not see a better solution.
-> >
-> > First, a common place to register a DPTF system profile seems to be
-> > needed and, as I said above, I wouldn't expect more than one such
-> > thing to be present in the system at any given time, so it may be
-> > registered along with the list of supported profiles and user space
-> > will have to understand what they mean.
->
-> Mostly Ack, I would still like to have an enum for DPTF system
-> profiles in the kernel and have a single piece of code map that
-> enum to profile names. This enum can then be extended as
-> necessary, but I want to avoid having one driver use
-> "Performance" and the other "performance" or one using
-> "performance-balanced" and the other "balanced-performance", etc.
->
-> With the goal being that new drivers use existing values from
-> the enum as much as possible, but we extend it where necessary.
+> Why add it here, and not just add this check to the scan in
+> rb_check_pages()?
 
-IOW, just a table of known profile names with specific indices assigned to them.
+rb_head_page_deactivate() in rb_check_pages() will clear the 2 LSB first.
 
-This sounds reasonable.
-
-> > Second, irrespective of the above, it may be useful to have a
-> > consistent way to pass performance-vs-power preference information
-> > from user space to different parts of the kernel so as to allow them
-> > to adjust their operation and this could be done with a system-wide
-> > power profile attribute IMO.
 >
-> I agree, which is why I tried to tackle both things in one go,
-> but as you said doing both in 1 API is probably not the best idea.
-> So I believe we should park this second issue for now and revisit it
-> when we find a need for it.
-
-Agreed.
-
-> Do you have any specific userspace API in mind for the
-> DPTF system profile selection?
-
-Not really.
-
-> And to get one thing out of the way, in the other thread we had some
-> discussion about using a single attribute where a cat would result in:
->
-> low-power [balanced] performance
->
-> Where the [] indicate the active profile, vs having 2 sysfs attributes
-> one ro with space-separated available (foo_available) values and one
-> wr with the actual/current value. FWIW userspace folks have indicated
-> they prefer the solution with 2 separate sysfs-attributes and that is
-> also what e.g. cpufreq is currently using for governor selection.
-
-Right.
-
-It also uses that for the EPP "profiles" selection which kind of
-belongs to the same broad category of settings.
-
-> I don't really have a strong opinion either way.
-
-Me neither. :-)
-
-I guess from the perspective of a script accessing the interface it is
-somewhat more straightforward to read what is available as a
-white-space-separated list without the need for extra parsing.
-
-Cheers!
+> -- Steve
