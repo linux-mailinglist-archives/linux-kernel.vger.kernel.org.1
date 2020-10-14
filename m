@@ -2,116 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED0028E355
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FA428E359
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 17:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731499AbgJNPbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 11:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730000AbgJNPbw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 11:31:52 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEBEC061755;
-        Wed, 14 Oct 2020 08:31:51 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id k1so2416086ilc.10;
-        Wed, 14 Oct 2020 08:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=y6L9dnyH9qjChqMXOLeU2OeYrzI2QqyeRonFJkp6Mw0=;
-        b=LEVlwthTSz17/B7pjGComi0D7NiB4aOWa2yhyi0nAKS7Ht+IlrBG4FrqDKEeHbBq2g
-         vyXWaEXglf488LQqoBD7Nceghs8WkzUGz3eVpK3cuvY7rHy9ByK6WnorJGb+u4TlNjGb
-         KgF+xR6gb6WtUtwv/4ZaZvzR5M9s2fEXkXQLVmEGcmI8bqAxqnUvh77qnzJZrbnylxAf
-         QzfG8SgqmjEDhkDcBSsGg69hVcNnEeNhfLlG/e1sdZ7SvaFU+utkUlusw5OIa18bJSzA
-         WPH84UctX0DfFAymtc67Ljxu9b/aKJPaJdxluvfR7ZIxVnzEqqOfHt45W1zB63qUM+n4
-         MT0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=y6L9dnyH9qjChqMXOLeU2OeYrzI2QqyeRonFJkp6Mw0=;
-        b=F5gQF/waBKcB2e4U95PtGUnuGyWvfdThT6aMY+Z/LzM0zstiDxxKJ/yX1lBy2x32Ah
-         7EsxDHUM0CiVhkN0/HqAzJQHwjUjawSBTG0GvVhGXPUjBY1zLuYdzSZcoiaXBEH9f06D
-         R7FMFoLiEA7TUQRn3c54eAeB+n5G1w6WkBzDwFJ3TzPgr+OY3FNf1vfPGv8COIn4ZlZx
-         0qxX1O15AYxmZJEUvzqT2yuTBhPAhqa11p1RBBjXFRRNTzmhjjVp6nOWd+9LoVK2WQEB
-         QgiD45rsVSTDAEaVpfWw3Rzh4tfgizyn4wXNuy81Si2yx/jfe8YcSXpGUrl2cK47Xr31
-         DgPQ==
-X-Gm-Message-State: AOAM5305RcemsAeH1qAzxTwRitIT71qCeSFz0zEkpOqfmeMAvtnitOam
-        OFtmPan5/P8ECGR1rGUMPPk5DF1ESXnm9ANWx3s=
-X-Google-Smtp-Source: ABdhPJzywwnLk2/KInPqkQ+p+k8uxidWq5TG4qXLH4ewxB4lPCqPkD5zL5akFlar1En0dGf3kXolR3yiwoaeS5Cymlo=
-X-Received: by 2002:a92:7f05:: with SMTP id a5mr4614410ild.112.1602689510501;
- Wed, 14 Oct 2020 08:31:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201010215135.GB2666@wildebeest.org> <20201010220712.5352-1-mark@klomp.org>
- <CAP-5=fUT-1-CR-KMMsrpzgw9b3nBooeY05=YU9XKa5enO9SK+A@mail.gmail.com>
- <CAKwvOdnLrgVRmkXLK-OoQsDTcAMZx4RfrTQXEASnJVroAZBdkQ@mail.gmail.com> <f3a1cd68a3f8f83e9e78a6ac1e5b74ceccbdc8be.camel@klomp.org>
-In-Reply-To: <f3a1cd68a3f8f83e9e78a6ac1e5b74ceccbdc8be.camel@klomp.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 14 Oct 2020 17:31:39 +0200
-Message-ID: <CA+icZUUp3LWYc67E_XNRMQkUtVkmUAv2udZ0tJMvpeRCNnP8yA@mail.gmail.com>
-Subject: Re: [PATCH] Only add -fno-var-tracking-assignments workaround for old
- GCC versions.
-To:     Mark Wielaard <mark@klomp.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        linux-toolchains@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Phillips, Kim" <kim.phillips@amd.com>,
+        id S1731797AbgJNPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 11:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730000AbgJNPcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 11:32:54 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21F272222A;
+        Wed, 14 Oct 2020 15:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602689573;
+        bh=WM1Hvr8bDTrmnCVWxoy9L5zQxwvffkXzzjQoeQZmZrM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZSncnFiuHPhHXthkNcNiNIEg+GUfiy8tlVrNkUWH5ooxa2gDIJkIKRz0+ET2nBCKB
+         6Hze9M0Y3pZN28INCDpiyC6QLgr//mp+h5i/0zMdQZCfnv4MIUXeJBmjE6Wt6iU8da
+         VrTDc59uJyBSx5uCLXuFQhSnQl2nPWyRu58sGZ4k=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BAAE24047F; Wed, 14 Oct 2020 12:32:50 -0300 (-03)
+Date:   Wed, 14 Oct 2020 12:32:50 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 7/9] perf tools: Add size to struct
+ perf_record_header_build_id
+Message-ID: <20201014153250.GK3100363@kernel.org>
+References: <20201013192441.1299447-1-jolsa@kernel.org>
+ <20201013192441.1299447-8-jolsa@kernel.org>
+ <20201014115908.GE3100363@kernel.org>
+ <20201014132146.GB1382146@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014132146.GB1382146@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 9:12 PM Mark Wielaard <mark@klomp.org> wrote:
->
-> Hi,
->
-> On Mon, 2020-10-12 at 11:59 -0700, Nick Desaulniers wrote:
-> > On Sat, Oct 10, 2020 at 3:57 PM Ian Rogers <irogers@google.com>
-> > wrote:
-> > > On Sat, Oct 10, 2020 at 3:08 PM Mark Wielaard <mark@klomp.org>
-> > > wrote:
-> > > > -DEBUG_CFLAGS   := $(call cc-option, -fno-var-tracking-
-> > > > assignments)
-> > > > +# Workaround https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801
-> > > > +# for old versions of GCC.
-> > > > +DEBUG_CFLAGS   := $(call cc-ifversion, -lt, 0500, $(call cc-
-> > > > option, -fno-var-tracking-assignments))
-> >
-> > Should this be wrapped in: `ifdef CONFIG_CC_IS_GCC`/`endif`?
->
-> I don't think so. It wasn't before. And call cc-option makes sure to
-> only add the flag if the compiler supports it (clang doesn't and it
-> also has a much higher version).
->
+Em Wed, Oct 14, 2020 at 03:21:46PM +0200, Jiri Olsa escreveu:
+> On Wed, Oct 14, 2020 at 08:59:08AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Oct 13, 2020 at 09:24:39PM +0200, Jiri Olsa escreveu:
+> > > We do not store size with build ids in perf data,
+> > > but there's enough space to do it. Adding misc bit
+> > > PERF_RECORD_MISC_BUILD_ID_SIZE to mark build id event
+> > > with size.
+> > > 
+> > > With this fix the dso with md5 build id will have correct
+> > > build id data and will be usable for debuginfod processing
+> > > if needed (coming in following patches).
+> > > 
+> > > Acked-by: Ian Rogers <irogers@google.com>
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/lib/perf/include/perf/event.h | 12 +++++++++++-
+> > >  tools/perf/util/build-id.c          |  8 +++++---
+> > >  tools/perf/util/header.c            | 10 +++++++---
+> > >  3 files changed, 23 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+> > > index a6dbba6b9073..988c539bedb6 100644
+> > > --- a/tools/lib/perf/include/perf/event.h
+> > > +++ b/tools/lib/perf/include/perf/event.h
+> > > @@ -201,10 +201,20 @@ struct perf_record_header_tracing_data {
+> > >  	__u32			 size;
+> > >  };
+> > >  
+> > > +#define PERF_RECORD_MISC_BUILD_ID_SIZE (1 << 15)
+> > > +
+> > >  struct perf_record_header_build_id {
+> > >  	struct perf_event_header header;
+> > >  	pid_t			 pid;
+> > > -	__u8			 build_id[24];
+> > > +	union {
+> > > +		__u8		 build_id[24];
+> > > +		struct {
+> > > +			__u8	 data[20];
+> > > +			__u8	 size;
+> > > +			__u8	 reserved1__;
+> > > +			__u16	 reserved2__;
+> > > +		};
+> > > +	};
+> > >  	char			 filename[];
+> > >  };
 
-I am also in favour of `ifdef CONFIG_CC_IS_GCC` to clearly say this is
-a GCC bug.
+> > Hey, shouldn't we just append the extra info at the end, i.e. keep it
+> > like:
 
-For the comment something like:
+> >  struct perf_record_header_build_id {
+> >  	struct perf_event_header header;
+> >  	pid_t			 pid;
+> > 	__u8			 build_id[24];
+> >  	char			 filename[];
+> > 	__u8			 size;
+> >  };
 
-# Workaround for GCC version <= 5.0
-# GCC Bug: <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61801>
+> > No need for PERF_RECORD_MISC_BUILD_ID_SIZE, older tools will continue
+> > working with new perf data files.
+ 
+> hum, then how would we tell if the last byte (size) is present or not?
 
-Think of people grepping in the Linux source code for supported or
-broken compiler (versions)...
-As a reference see ClangBuiltLinux issue #427 "audit use of __GNUC__".
-[2] says:
-"There's also a ton of __GNUC_MINOR__ checks against unsupported GCC versions."
+IT would be different than '\0' ;-)
 
-- Sedat -
+- Arnaldo
+ 
+> > 
+> > OTOH BUILD_ID_SIZE is 20 and the space on this header is 24, so the last
+> > 4 bytes were not being used, so older tools don't look into it, they
+> > should continue working, have you tested this case? I.e. getting the
+> > perf binary in, say, fedora and check that it works with this new
+> > perf_record_header_build_id layout?
+> 
+> yes, that still works (tested), because we copied only 20 bytes
+> of the build_id[24] and did not care about the rest
 
-[1] https://github.com/ClangBuiltLinux/linux/issues/427
-[2] https://github.com/ClangBuiltLinux/linux/issues/427#issuecomment-700935241
+Great that you actually tested it.
+
+- Arnaldo
