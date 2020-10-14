@@ -2,92 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E2428E52C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4C428E530
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 19:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732033AbgJNRQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 13:16:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727162AbgJNRQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 13:16:15 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94F332173E;
-        Wed, 14 Oct 2020 17:16:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602695774;
-        bh=GPUXWxygTTFK2yO2zrP4ocnR/PLfIqfLY8RH+LbjyTU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=jI4/ayXD7kygEXy/J2VfN+TNA01XyTmvWho35XqQRwkmDmI0Z0RyH4uJT4RUfPu//
-         Fvmno32y1rerarRfrD+M2Qd8qG7+b1xjPG7q7e7rYIMeQHtFqQI+LgiPvlE6pgFU3B
-         aNnfPaK7GdIarcDiCUctU/0IJU7aWxDbZu5ChYsE=
-Content-Type: text/plain; charset="utf-8"
+        id S1732052AbgJNRQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 13:16:53 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:49434 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbgJNRQx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:16:53 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id BDEBF803073C;
+        Wed, 14 Oct 2020 17:16:46 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Ys7tOGr55fWZ; Wed, 14 Oct 2020 20:16:46 +0300 (MSK)
+Date:   Wed, 14 Oct 2020 20:16:40 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+Message-ID: <20201014171640.bup52mgaz4jvhtsy@mobilestation>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
+ <CAJKOXPeErocR5-3xCDqBR3-k3w_2EQ_768d71n229cbzeo4TtQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CACPK8Xe-_hTey7hTJjG2-EcDsTN0qOw3bWBcrZZohEK3QOJuvg@mail.gmail.com>
-References: <20200928070108.14040-1-ryan_chen@aspeedtech.com> <20200928070108.14040-2-ryan_chen@aspeedtech.com> <160264382296.310579.9835482254268204873@swboyd.mtv.corp.google.com> <CACPK8Xe-_hTey7hTJjG2-EcDsTN0qOw3bWBcrZZohEK3QOJuvg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] clk: aspeed: modify some default clks are critical
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        BMC-SW <bmc-sw@aspeedtech.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To:     Joel Stanley <joel@jms.id.au>
-Date:   Wed, 14 Oct 2020 10:16:13 -0700
-Message-ID: <160269577311.884498.8429245140509326318@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPeErocR5-3xCDqBR3-k3w_2EQ_768d71n229cbzeo4TtQ@mail.gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Joel Stanley (2020-10-13 22:28:00)
-> On Wed, 14 Oct 2020 at 02:50, Stephen Boyd <sboyd@kernel.org> wrote:
+On Wed, Oct 14, 2020 at 12:33:25PM +0200, Krzysztof Kozlowski wrote:
+> On Wed, 14 Oct 2020 at 12:23, Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
 > >
-> > Quoting Ryan Chen (2020-09-28 00:01:08)
-> > > In ASPEED SoC LCLK is LPC clock for all SuperIO device, UART1/UART2 a=
-re
-> > > default for Host SuperIO UART device, eSPI clk for Host eSPI bus acce=
-ss
-> > > eSPI slave channel, those clks can't be disable should keep default,
-> > > otherwise will affect Host side access SuperIO and SPI slave device.
-> > >
-> > > Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
-> > > ---
+> > In accordance with the DWC USB3 bindings the corresponding node name is
+> > suppose to comply with Generic USB HCD DT schema, which requires the USB
+> > nodes to have the name acceptable by the regexp: "^usb(@.*)?" . But a lot
+> > of the DWC USB3-compatible nodes defined in the ARM/ARM64 DTS files have
+> > name as "^dwc3@.*" or "^usb[1-3]@.*" or even "^dwusb@.*", which will cause
+> > the dtbs_check procedure failure. Let's fix the nodes naming to be
+> > compatible with the DWC USB3 DT schema to make dtbs_check happy.
 > >
-> > Is there resolution on this thread?
->=20
-> Not yet.
->=20
-> We have a system where the BMC (management controller) controls some
-> clocks, but the peripherals that it's clocking are outside the BMC's
-> control. In this case, the host processor us using some UARTs and what
-> not independent of any code running on the BMC.
->=20
-> Ryan wants to have them marked as critical so the BMC never powers them d=
-own.
->=20
-> However, there are systems that don't use this part of the soc, so for
-> those implementations they are not critical and Linux on the BMC can
-> turn them off.
->=20
-> Do you have any thoughts? Has anyone solved a similar problem already?
->=20
+> > Note we don't change the DWC USB3-compatible nodes names of
+> > arch/arm64/boot/dts/apm/{apm-storm.dtsi,apm-shadowcat.dtsi} since the
+> > in-source comment says that the nodes name need to be preserved as
+> > "^dwusb@.*" for some backward compatibility.
+> >
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> >
+> > ---
+> >
+> > Please, test the patch out to make sure it doesn't brake the dependent DTS
+> > files. I did only a manual grepping of the possible nodes dependencies.
+> 
 
-Is this critical clocks in DT? Where we want to have different DT for
-different device configurations to indicate that some clks should be
-marked critical so they're never turned off and other times they aren't
-so they're turned off?
+> 1. It is you who should compare the decompiled DTS, not us. For example:
+> $ for i in dts-old/*/*dtb dts-old/*/*/*dtb; do echo $i; crosc64
+> scripts/dtc/dtx_diff ${i} dts-new/${i#dts-old/} ; done
+> 
+> $ for i in dts-old/*/*dtb dts-old/*/*/*dtb; do echo $i; crosc64
+> fdtdump ${i} > ${i}.fdt ; crosc64 fdtdump dts-new/${i#dts-old/} >
+> dts-new/${i#dts-old/}.fdt ; diff -ubB ${i}.fdt
+> dts-new/${i#dts-old/}.fdt ; done
 
-It also sounds sort of like the protected-clocks binding. Where you
-don't want to touch certain clks depending on the usage configuration of
-the SoC. There is a patch to make that generic that I haven't applied
-because it looks wrong at first glance[1]. Maybe not registering those
-clks to the framework on the configuration that Ryan has is good enough?
+So basically you suggest first to compile the old and new dts files, then to
+de-compile them, then diff old and new fdt's, and visually compare the results.
+Personally it isn't that much better than what I did, since each old and new
+dtbs will for sure differ due to the node names change suggested in this patch.
+So it will lead to the visual debugging too, which isn't that effective. But
+your approach is still more demonstrative to make sure that I didn't loose any
+nodes redefinition, since in the occasion the old and new de-compiled nodes will
+differ not only by the node names but with an additional old named node.
 
-[1] https://lore.kernel.org/r/20200903040015.5627-2-samuel@sholland.org
+So to speak thanks for suggesting it. I'll try it to validate the proposed
+changes.
+
+Two questions:
+1) Any advise of a good inliner/command to compile all dtbs at once? Of course I
+can get all the updated dtsi'es, then find out all the dts'es which include
+them, then directly use dtc to compile the found dts'es... On the other hand I
+can just compile all dts'es, then compare old and new ones. The diff of the
+non-modified dtb'es will be just empty...
+2) What crosc64 is?
+
+> 
+> 2. Split it per arm architectures (and proper subject prefix - not
+> "arch") and subarchitectures so maintainers can pick it up.
+
+Why? The changes are simple and can be formatted as a single patch. I've seen
+tons of patches submitted like that, accepted and then merged. What you suggest
+is just much more work, which I don't see quite required.
+
+> 
+> 3. The subject title could be more accurate - there is no fix here
+> because there was no errors in the first place. Requirement of DWC
+> node names comes recently, so it is more alignment with dtschema.
+> Otherwise automatic-pickup-stable-bot might want to pick up... and it
+> should not go to stable.
+
+Actually it is a fix, because the USB DT nodes should have been named with "usb"
+prefix in the first place. Legacy DWC USB3 bindings didn't define the nodes
+naming, but implied to be "usb"-prefixed by the USB HCD schema. The Qualcomm
+DWC3 schema should have defined the sub-nodes as "dwc3@"-prefixed, which was
+wrong in the first place.
+
+Regarding automatic-pickup-stable-bot if it exists I don't think it scans all the
+emails, but most likely the stable@vger.kernel.org list only or the emails
+having the "Fixes:" tag. If I am wrong please give me a link to the bot sources
+or refer to a doc where I can read about the way it works, to take it into
+account in future commits. Just to note I submitted patches which did some fixes,
+had the word "fix" in the subject but weren't selected to be backported to the
+stable kernel.
+
+Anyway I don't really care that much about the subject text using the word "fix"
+or some else. So if you suggest some better alternative, I'd be glad to consider
+it.
+
+-Sergey
+
+> 
+> Best regards,
+> Krzysztof
+> 
+> >  arch/arm/boot/dts/armada-375.dtsi              | 2 +-
+> >  arch/arm/boot/dts/exynos5250.dtsi              | 2 +-
+> >  arch/arm/boot/dts/exynos54xx.dtsi              | 4 ++--
+> >  arch/arm/boot/dts/keystone-k2e.dtsi            | 4 ++--
+> >  arch/arm/boot/dts/keystone.dtsi                | 2 +-
+> >  arch/arm/boot/dts/ls1021a.dtsi                 | 2 +-
+> >  arch/arm/boot/dts/omap5-l4.dtsi                | 2 +-
+> >  arch/arm/boot/dts/stih407-family.dtsi          | 2 +-
+> >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi   | 2 +-
+> >  arch/arm64/boot/dts/exynos/exynos5433.dtsi     | 4 ++--
+> >  arch/arm64/boot/dts/exynos/exynos7.dtsi        | 2 +-
+> >  arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi | 4 ++--
+> >  arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi | 6 +++---
+> >  arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 4 ++--
+> >  arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 4 ++--
+> >  arch/arm64/boot/dts/hisilicon/hi3660.dtsi      | 2 +-
+> >  arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi   | 4 ++--
+> >  arch/arm64/boot/dts/qcom/ipq8074.dtsi          | 4 ++--
+> >  arch/arm64/boot/dts/qcom/msm8996.dtsi          | 4 ++--
+> >  arch/arm64/boot/dts/qcom/msm8998.dtsi          | 2 +-
+> >  arch/arm64/boot/dts/qcom/qcs404-evb.dtsi       | 2 +-
+> >  arch/arm64/boot/dts/qcom/qcs404.dtsi           | 4 ++--
+> >  arch/arm64/boot/dts/qcom/sc7180.dtsi           | 2 +-
+> >  arch/arm64/boot/dts/qcom/sdm845.dtsi           | 4 ++--
+> >  arch/arm64/boot/dts/qcom/sm8150.dtsi           | 2 +-
+> >  25 files changed, 38 insertions(+), 38 deletions(-)
+> >
