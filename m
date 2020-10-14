@@ -2,66 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F3D28DA08
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 08:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C425228DC6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgJNGjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 02:39:40 -0400
-Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:43246 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726147AbgJNGjk (ORCPT
+        id S1729051AbgJNJJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728044AbgJNJJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 02:39:40 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 44E32100E7B48;
-        Wed, 14 Oct 2020 06:39:39 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3868:3870:3871:3872:3873:4321:5007:6120:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13019:13069:13311:13357:13439:14181:14659:14721:21080:21627:30045:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hot32_011615a27209
-X-Filterd-Recvd-Size: 1707
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 14 Oct 2020 06:39:38 +0000 (UTC)
-Message-ID: <04325089b524f20d3de167051bfb81b05083d8b1.camel@perches.com>
-Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
- EXECUTE_PERMISSIONS
-From:   Joe Perches <joe@perches.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Tue, 13 Oct 2020 23:39:36 -0700
-In-Reply-To: <alpine.DEB.2.21.2010140829150.6186@felia>
-References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com>
-         <alpine.DEB.2.21.2010140734270.6186@felia>
-         <316d5a53351d10cd1a26ce0c54883da05642c898.camel@perches.com>
-         <alpine.DEB.2.21.2010140812370.6186@felia>
-         <be7deeec0937327e0ddaadf8468d934ed363a533.camel@perches.com>
-         <alpine.DEB.2.21.2010140829150.6186@felia>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 14 Oct 2020 05:09:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399F7C051105;
+        Tue, 13 Oct 2020 23:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=xUnuNzpryiSejko6+sY87CqK2i6+keSsRxr2GtYeLOk=; b=KS6Legqv6hpLpdcGkeH0ecCl3M
+        QdwmltajTxpqPYEw6TCitQPifvqni9dgV47MAvRTowbErk4RZo6tVWG3R2Bp9R3aDkYYi46PVQyfk
+        l0FSw3Glzhr8C33Z0jbUE209psECR1Qk0wdeKmbGX/iTR5BgIZUTPlqBNt4IFAHc89xHxt4z/qI7+
+        vmtg3zeLzHXXP5kBqQ9lgBXV52nxTMCVYumgP/T3Ii/t4pnReOhkOuWMCIQo9FJvKQmyOyf041TIA
+        BvIaWj/OyWFOlB+uI1AZI2jHTYCi0hk6v2SkN6GUvFRx8+zG6PA8mNNymGR1SKPe2LvxlS3dLEEL5
+        j0ak+NCQ==;
+Received: from [2601:1c0:6280:3f0::9850] (helo=dragon.site)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSaSe-0008EV-BP; Wed, 14 Oct 2020 06:40:32 +0000
+Subject: Re: [RFC] openprom: Fix 'opiocnextprop'; ensure integer conversions;
+ use string size
+To:     Michael Witten <mfwitten@gmail.com>, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c1329005-fa37-e02e-0105-2634ee566f55@infradead.org>
+Date:   Tue, 13 Oct 2020 23:40:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-14 at 08:36 +0200, Lukas Bulwahn wrote:
+Hi,
+
+On 9/4/20 12:40 PM, Michael Witten wrote:
+> The following patch improves the quality and correctness of the openprom code.
 > 
-> On Tue, 13 Oct 2020, Joe Perches wrote:
 > 
-> > On Wed, 2020-10-14 at 08:21 +0200, Lukas Bulwahn wrote:
-> > > What does checkpatch.pl warn about and what does clang-format still warn 
-> > > about, which is generally accepted okay as style in the kernel?
-> > 
-> > clang-format doesn't warn at all, it just reformats.
-> > 
-> You can run clang-format with --dry-run and then it would just state the 
-> proposed changes, right?
+> --8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<----8<--
+> 
+> ---
+>   arch/sparc/include/asm/prom.h   |   2 +-
+>   arch/sparc/kernel/prom_common.c |  14 +--
+>   drivers/sbus/char/openprom.c    | 263 ++++++++++++++++++++++++++++------------
+>   3 files changed, 194 insertions(+), 85 deletions(-)
+> 
+> diff --git a/drivers/sbus/char/openprom.c b/drivers/sbus/char/openprom.c
+> index 30b9751aad30..9bc2877aa09a 100644
+> --- a/drivers/sbus/char/openprom.c
+> +++ b/drivers/sbus/char/openprom.c
+>   	/* If the bufsize is too large, just limit it.
+>   	 * Fix from Jason Rappleye.
+>   	 */
 
-clang-format through at least version 10 does not have
-a --dry-run option.
+The sparc cross-compiler that I am using does not like to see type
+casting in preprocessor lines.
+SIZE_MAX is #defined as (~(size_t)0) and for the #if line below,
 
+> +	#if OPROMMAXPARAM > SIZE_MAX/2
+> +		if (bufsize > SIZE_MAX/2)
+> +			return -EFAULT;
+> +	#endif
 
+gcc (cpp) says:
+
+In file included from ../drivers/sbus/char/openprom.c:19:
+../include/linux/limits.h:9:21: warning: "size_t" is not defined, 
+evaluates to 0 [-Wundef]
+     9 | #define SIZE_MAX (~(size_t)0)
+       |                     ^~~~~~
+../drivers/sbus/char/openprom.c:95:22: note: in expansion of macro 
+'SIZE_MAX'
+    95 |  #if OPROMMAXPARAM > SIZE_MAX/2
+       |                      ^~~~~~~~
+../include/linux/limits.h:9:28: error: missing binary operator before 
+token "0"
+     9 | #define SIZE_MAX (~(size_t)0)
+       |                            ^
+../drivers/sbus/char/openprom.c:95:22: note: in expansion of macro 
+'SIZE_MAX'
+    95 |  #if OPROMMAXPARAM > SIZE_MAX/2
+       |                      ^~~~~~~~
+
+causing a build error.
+
+--
+~Randy
 
