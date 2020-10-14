@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E2028D883
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D605E28D87A
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgJNCfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 22:35:10 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:41766 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbgJNCfK (ORCPT
+        id S1727962AbgJNC3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:29:06 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:61302 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726120AbgJNC3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 22:35:10 -0400
-X-Greylist: delayed 408 seconds by postgrey-1.27 at vger.kernel.org; Tue, 13 Oct 2020 22:35:08 EDT
-Received: from localhost (unknown [192.168.167.69])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 4491EC9973;
-        Wed, 14 Oct 2020 10:28:18 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P18907T140199837284096S1602642493459899_;
-        Wed, 14 Oct 2020 10:28:17 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <dabb32f45699b564059b761a96482639>
-X-RL-SENDER: zhangqing@rock-chips.com
-X-SENDER: zhangqing@rock-chips.com
-X-LOGIN-NAME: zhangqing@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Elaine Zhang <zhangqing@rock-chips.com>
-To:     heiko@sntech.de
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, xxx@rock-chips.com,
-        xf@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
-Subject: [PATCH v4 4/5] clk: rockchip: add pll up and down when change pll freq
-Date:   Wed, 14 Oct 2020 10:28:11 +0800
-Message-Id: <20201014022812.6733-5-zhangqing@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201014022812.6733-1-zhangqing@rock-chips.com>
-References: <20201014022812.6733-1-zhangqing@rock-chips.com>
+        Tue, 13 Oct 2020 22:29:06 -0400
+X-UUID: f8b928caf53c4b9f816c5b72a857c7ee-20201014
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=86OsRMMbYlWcUWN23W9NddA6ngFDdGK9EuPCIrIysn8=;
+        b=XshiTFUN3XBYADa3ihYOxO4edxF77hPRWlu0DNiPapZ+I51vZHI0pkvsVOGXHiCY/dg9DZgZ47pDSBYByDZiFAJ4KCbTRlUvkeK4TEXsukCZroXr78ERNzqmUe7tAYEv+i5lBeOcWvFln6taEKUuJWfGDw2VTla0Rdw7KMLe3bk=;
+X-UUID: f8b928caf53c4b9f816c5b72a857c7ee-20201014
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <wenbin.mei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1418329566; Wed, 14 Oct 2020 10:28:52 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 14 Oct
+ 2020 10:28:50 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 14 Oct 2020 10:28:50 +0800
+Message-ID: <1602642530.11864.3.camel@mhfsdcap03>
+Subject: Re: [PATCH v6 4/4] mmc: mediatek: Add subsys clock control for
+ MT8192 msdc
+From:   Wenbin Mei <wenbin.mei@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Date:   Wed, 14 Oct 2020 10:28:50 +0800
+In-Reply-To: <72ae1d89-fe31-4f50-15c0-29119d662ea1@gmail.com>
+References: <20201012124547.16649-1-wenbin.mei@mediatek.com>
+         <20201012124547.16649-5-wenbin.mei@mediatek.com>
+         <72ae1d89-fe31-4f50-15c0-29119d662ea1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: EA5C87158EF05DF46265A81A6E9FE3CD459D96D9A1D5B523820C9EA2686636C02000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set pll sequence:
-        ->set pll to slow mode or other plls
-        ->set pll down
-        ->set pll params
-        ->set pll up
-        ->wait pll lock status
-        ->set pll to normal mode
-
-To slove the system error:
-wait_pll_lock: timeout waiting for pll to lock
-pll_set_params: pll update unsucessful,
-                trying to restore old params
-
-Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
----
- drivers/clk/rockchip/clk-pll.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/drivers/clk/rockchip/clk-pll.c b/drivers/clk/rockchip/clk-pll.c
-index 4c6c9167ef50..8adc6f54a605 100644
---- a/drivers/clk/rockchip/clk-pll.c
-+++ b/drivers/clk/rockchip/clk-pll.c
-@@ -210,6 +210,11 @@ static int rockchip_rk3036_pll_set_params(struct rockchip_clk_pll *pll,
- 		rate_change_remuxed = 1;
- 	}
- 
-+	/* set pll power down */
-+	writel(HIWORD_UPDATE(RK3036_PLLCON1_PWRDOWN,
-+			     RK3036_PLLCON1_PWRDOWN, 0),
-+	       pll->reg_base + RK3036_PLLCON(1));
-+
- 	/* update pll values */
- 	writel_relaxed(HIWORD_UPDATE(rate->fbdiv, RK3036_PLLCON0_FBDIV_MASK,
- 					  RK3036_PLLCON0_FBDIV_SHIFT) |
-@@ -231,6 +236,11 @@ static int rockchip_rk3036_pll_set_params(struct rockchip_clk_pll *pll,
- 	pllcon |= rate->frac << RK3036_PLLCON2_FRAC_SHIFT;
- 	writel_relaxed(pllcon, pll->reg_base + RK3036_PLLCON(2));
- 
-+	/* set pll power up */
-+	writel(HIWORD_UPDATE(0, RK3036_PLLCON1_PWRDOWN, 0),
-+	       pll->reg_base + RK3036_PLLCON(1));
-+	udelay(1);
-+
- 	/* wait for the pll to lock */
- 	ret = rockchip_rk3036_pll_wait_lock(pll);
- 	if (ret) {
-@@ -692,6 +702,11 @@ static int rockchip_rk3399_pll_set_params(struct rockchip_clk_pll *pll,
- 		rate_change_remuxed = 1;
- 	}
- 
-+	/* set pll power down */
-+	writel(HIWORD_UPDATE(RK3399_PLLCON3_PWRDOWN,
-+			     RK3399_PLLCON3_PWRDOWN, 0),
-+	       pll->reg_base + RK3399_PLLCON(3));
-+
- 	/* update pll values */
- 	writel_relaxed(HIWORD_UPDATE(rate->fbdiv, RK3399_PLLCON0_FBDIV_MASK,
- 						  RK3399_PLLCON0_FBDIV_SHIFT),
-@@ -715,6 +730,12 @@ static int rockchip_rk3399_pll_set_params(struct rockchip_clk_pll *pll,
- 					    RK3399_PLLCON3_DSMPD_SHIFT),
- 		       pll->reg_base + RK3399_PLLCON(3));
- 
-+	/* set pll power up */
-+	writel(HIWORD_UPDATE(0,
-+			     RK3399_PLLCON3_PWRDOWN, 0),
-+	       pll->reg_base + RK3399_PLLCON(3));
-+	udelay(1);
-+
- 	/* wait for the pll to lock */
- 	ret = rockchip_rk3399_pll_wait_lock(pll);
- 	if (ret) {
--- 
-2.17.1
-
-
+T24gVHVlLCAyMDIwLTEwLTEzIGF0IDE3OjEwICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMTIvMTAvMjAyMCAxNDo0NSwgV2VuYmluIE1laSB3cm90ZToNCj4gPiBNVDgx
+OTIgbXNkYyBpcyBhbiBpbmRlcGVuZGVudCBzdWIgc3lzdGVtLCB3ZSBuZWVkIGNvbnRyb2wgbW9y
+ZSBidXMNCj4gPiBjbG9ja3MgZm9yIGl0Lg0KPiA+IEFkZCBzdXBwb3J0IGZvciB0aGUgYWRkaXRp
+b25hbCBzdWJzeXMgY2xvY2tzIHRvIGFsbG93IGl0IHRvIGJlDQo+ID4gY29uZmlndXJlZCBhcHBy
+b3ByaWF0ZWx5Lg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFdlbmJpbiBNZWkgPHdlbmJpbi5t
+ZWlAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9tbWMvaG9zdC9tdGstc2Qu
+YyB8IDc0ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQ0KPiA+ICAgMSBm
+aWxlIGNoYW5nZWQsIDU2IGluc2VydGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21tYy9ob3N0L210ay1zZC5jIGIvZHJpdmVycy9tbWMvaG9z
+dC9tdGstc2QuYw0KPiA+IGluZGV4IGE3MDQ3NDVlNTg4Mi4uYzdkZjc1MTBmMTIwIDEwMDY0NA0K
+PiA+IC0tLSBhL2RyaXZlcnMvbW1jL2hvc3QvbXRrLXNkLmMNCj4gPiArKysgYi9kcml2ZXJzL21t
+Yy9ob3N0L210ay1zZC5jDQo+IFsuLi5dDQo+ID4gK3N0YXRpYyBpbnQgbXNkY19vZl9jbG9ja19w
+YXJzZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2LA0KPiA+ICsJCQkgICAgICAgc3RydWN0
+IG1zZGNfaG9zdCAqaG9zdCkNCj4gPiArew0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4gKwlo
+b3N0LT5zcmNfY2xrID0gZGV2bV9jbGtfZ2V0KCZwZGV2LT5kZXYsICJzb3VyY2UiKTsNCj4gPiAr
+CWlmIChJU19FUlIoaG9zdC0+c3JjX2NsaykpDQo+ID4gKwkJcmV0dXJuIFBUUl9FUlIoaG9zdC0+
+c3JjX2Nsayk7DQo+ID4gKw0KPiA+ICsJaG9zdC0+aF9jbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYt
+PmRldiwgImhjbGsiKTsNCj4gPiArCWlmIChJU19FUlIoaG9zdC0+aF9jbGspKQ0KPiA+ICsJCXJl
+dHVybiBQVFJfRVJSKGhvc3QtPmhfY2xrKTsNCj4gPiArDQo+ID4gKwlob3N0LT5idXNfY2xrID0g
+ZGV2bV9jbGtfZ2V0X29wdGlvbmFsKCZwZGV2LT5kZXYsICJidXNfY2xrIik7DQo+ID4gKwlpZiAo
+SVNfRVJSKGhvc3QtPmJ1c19jbGspKQ0KPiA+ICsJCWhvc3QtPmJ1c19jbGsgPSBOVUxMOw0KPiA+
+ICsNCj4gPiArCS8qc291cmNlIGNsb2NrIGNvbnRyb2wgZ2F0ZSBpcyBvcHRpb25hbCBjbG9jayov
+DQo+ID4gKwlob3N0LT5zcmNfY2xrX2NnID0gZGV2bV9jbGtfZ2V0X29wdGlvbmFsKCZwZGV2LT5k
+ZXYsICJzb3VyY2VfY2ciKTsNCj4gPiArCWlmIChJU19FUlIoaG9zdC0+c3JjX2Nsa19jZykpDQo+
+ID4gKwkJaG9zdC0+c3JjX2Nsa19jZyA9IE5VTEw7DQo+ID4gKw0KPiA+ICsJaG9zdC0+c3lzX2Ns
+a19jZyA9IGRldm1fY2xrX2dldF9vcHRpb25hbCgmcGRldi0+ZGV2LCAic3lzX2NnIik7DQo+ID4g
+KwlpZiAoSVNfRVJSKGhvc3QtPnN5c19jbGtfY2cpKQ0KPiA+ICsJCWhvc3QtPnN5c19jbGtfY2cg
+PSBOVUxMOw0KPiA+ICsNCj4gPiArCS8qIElmIHByZXNlbnQsIGFsd2F5cyBlbmFibGUgZm9yIHRo
+aXMgY2xvY2sgZ2F0ZSAqLw0KPiA+ICsJY2xrX3ByZXBhcmVfZW5hYmxlKGhvc3QtPnN5c19jbGtf
+Y2cpOw0KPiA+ICsNCj4gPiArCWhvc3QtPmJ1bGtfY2xrc1swXS5pZCA9ICJwY2xrX2NnIjsNCj4g
+PiArCWhvc3QtPmJ1bGtfY2xrc1sxXS5pZCA9ICJheGlfY2ciOw0KPiA+ICsJaG9zdC0+YnVsa19j
+bGtzWzJdLmlkID0gImFoYl9jZyI7DQo+IA0KPiBUaGF0IGxvb2tzIGF0IGxlYXN0IHN1c3BpY2lv
+dXMuIFRoZSBwb2ludGVycyBvZiBpZCBwb2ludCB0byBzb21lIHN0cmluZ3MgZGVmaW5lZCANCj4g
+aW4gdGhlIGZ1bmN0aW9uLiBBcmVuJ3QgdGhleSBvdXQgb2Ygc2NvcGUgb25jZSBtc2RjX29mX2Ns
+b2NrX3BhcnNlKCkgaGFzIHJldHVybmVkPw0KPiANClRoZXNlIGNvbnN0YW50cyBhcmUgbm90IGlu
+IHN0YWNrIHJhbmdlLCBzbyB0aGV5IHdpbGwgbm90IGJlIGxvc3QuDQpBbmQgSSBoYXZlIGNvbmZp
+cm1lZCBpdCBhZnRlciBtc2RjX29mX2Nsb2NrX3BhcnNlKCkgaGFzIHJldHVybmVkLCB0aGVzZQ0K
+aWRzIHN0aWxsIGV4aXN0Lg0KDQo+IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQoNCg==
 
