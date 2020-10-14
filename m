@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2364728E43F
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8186A28E431
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 18:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731864AbgJNQSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 12:18:14 -0400
-Received: from mailout04.rmx.de ([94.199.90.94]:37669 "EHLO mailout04.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731840AbgJNQSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 12:18:14 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout04.rmx.de (Postfix) with ESMTPS id 4CBHdZ2sXGz3qtkv;
-        Wed, 14 Oct 2020 18:18:10 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4CBHcn4nwJz2TTL4;
-        Wed, 14 Oct 2020 18:17:29 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.83) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Wed, 14 Oct
- 2020 18:17:29 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Woojung Huh <woojung.huh@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
-Subject: [PATCH net] net: dsa: ksz: fix padding size of skb
-Date:   Wed, 14 Oct 2020 18:17:19 +0200
-Message-ID: <20201014161719.30289-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
+        id S1729883AbgJNQRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 12:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728230AbgJNQRd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 12:17:33 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5EFC061755;
+        Wed, 14 Oct 2020 09:17:33 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id b19so2052806pld.0;
+        Wed, 14 Oct 2020 09:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vEOij1W5YzKHI9vk48WeDQVrXJh9T0sK+XbA6XZMKSY=;
+        b=V8FEUSywm+8lN/iBx6wzgrSVeDnO22RAo8NMA/LIk9ckj2VqxilRpFWD0ZWZoqW0Q4
+         Fh4+/Npo/GV8ah3JfWrvJhufLS/B4VATgFs+01LtSiY1BXEfWcEOBOR5W5jT+npooZ1Y
+         hOB3VmRYmR+u2C7DEUrFIl/kPSx81C7yKeGlTw3xpU3/cw9VVDsZkYuaxwP5ORGqp0bs
+         DBq4YisUym3L0GsKvExKr67r9fPbWK68QXATAhZRGIRvOe2gOWrFdGBBCE5ZFsHwYtDh
+         mmJTFWMt5Dru016UacBffHAd5C/ZGC2VAK8/Ckfx6Anzb+bmd7OKhJfdCosBfcIjXrx3
+         RXNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vEOij1W5YzKHI9vk48WeDQVrXJh9T0sK+XbA6XZMKSY=;
+        b=fZGUtsovihw6qQmfP4SEyJaYthCmpgyj/tjPoe5dad3vEhpAUAq8qmbaopfG2Aej2G
+         5SDLpW/FDlFg8ZZOlq2CJJZuufLfAVPmgx2STe/brh2G/PD70Tb9MyygnXxiLel1X3b1
+         Z80kvM6F3RImOEGsmj9IUQhttPrHJXYn5fW6htJNwqKqWtT4hthS9wCq464Ho3JKomxn
+         zd6R/Cd9I+S9pK3IWhnjopKabBqLaccCPl8GS8RT8AcyZEr7/RTJnVNYEIoh6jpjp/ak
+         1zuN2D73m6Ort8V+8LqWFXEx7vYICZ+QG4gClVsAXlcfBo8vuhCd51XdvxEM8Fnp79PD
+         Stnw==
+X-Gm-Message-State: AOAM530WpTdnwH8UhWQAp5vGxGY6Pmp+/z78DeuEQyucBLRo7Rbg8Dg3
+        zSxhfLSeyqSP7RgW8J1SuBQN+k4Pm4Qegg==
+X-Google-Smtp-Source: ABdhPJxEXco0p9UWpFVwL3CS/WMdRWMjfNJI/y28E0rZMiRhZQeVlW0/oBaRUpPT9fvndjUlCurDNg==
+X-Received: by 2002:a17:90a:ff12:: with SMTP id ce18mr141996pjb.223.1602692252826;
+        Wed, 14 Oct 2020 09:17:32 -0700 (PDT)
+Received: from sol (106-69-182-59.dyn.iinet.net.au. [106.69.182.59])
+        by smtp.gmail.com with ESMTPSA id f9sm101164pjq.26.2020.10.14.09.17.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 09:17:31 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 00:17:27 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Jack Winch <sunt.un.morcov@gmail.com>
+Subject: Re: [PATCH 1/3] gpiolib: cdev: allow edge event timestamps to be
+ configured as REALTIME
+Message-ID: <20201014161727.GA663047@sol>
+References: <20201014062740.78977-1-warthog618@gmail.com>
+ <20201014062740.78977-2-warthog618@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.83]
-X-RMX-ID: 20201014-181729-4CBHcn4nwJz2TTL4-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014062740.78977-2-warthog618@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__skb_put_padto() is called in order to ensure a minimal size of the
-sk_buff. The required minimal size is ETH_ZLEN + the size required for
-the tail tag.
+On Wed, Oct 14, 2020 at 02:27:38PM +0800, Kent Gibson wrote:
+> Using CLOCK_REALTIME as the source for event timestamps is crucial for
+> some specific applications, particularly those requiring timetamps
+> relative to a PTP clock, so provide an option to switch the event
+> timestamp source from the default CLOCK_MONOTONIC to CLOCK_REALTIME.
+> 
+[snip]
+>  
+>  static void linereq_put_event(struct linereq *lr,
+> @@ -535,6 +536,14 @@ static void linereq_put_event(struct linereq *lr,
+>  		pr_debug_ratelimited("event FIFO is full - event dropped\n");
+>  }
+>  
+> +static unsigned long line_event_timestamp(struct line *line)
+> +{
+> +	if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
+> +		return ktime_get_real_ns();
+> +
+> +	return ktime_get_ns();
+> +
+> +}
 
-The current argument misses the size for the tail tag. The expression
-"skb->len + padlen" can be simplified to ETH_ZLEN.
+One minor hitch - that should be returning u64, not unsigned long,
+or the time gets reduced to 32bit on 32bit platforms.
 
-Too small sk_buffs typically result from cloning in
-dsa_skb_tx_timestamp(). The cloned sk_buff may not meet the minimum size
-requirements.
+It's getting late though, so I'll send out an update tomorrow.
 
-Fixes: e71cb9e00922 ("net: dsa: ksz: fix skb freeing")
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
- net/dsa/tag_ksz.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
-index 945a9bd5ba35..8ef2085349e7 100644
---- a/net/dsa/tag_ksz.c
-+++ b/net/dsa/tag_ksz.c
-@@ -24,7 +24,7 @@ static struct sk_buff *ksz_common_xmit(struct sk_buff *skb,
- 
- 	if (skb_tailroom(skb) >= padlen + len) {
- 		/* Let dsa_slave_xmit() free skb */
--		if (__skb_put_padto(skb, skb->len + padlen, false))
-+		if (__skb_put_padto(skb, ETH_ZLEN + len, false))
- 			return NULL;
- 
- 		nskb = skb;
-@@ -45,7 +45,7 @@ static struct sk_buff *ksz_common_xmit(struct sk_buff *skb,
- 		/* Let skb_put_padto() free nskb, and let dsa_slave_xmit() free
- 		 * skb
- 		 */
--		if (skb_put_padto(nskb, nskb->len + padlen))
-+		if (skb_put_padto(nskb, ETH_ZLEN + len))
- 			return NULL;
- 
- 		consume_skb(skb);
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+Cheers,
+Kent.
 
