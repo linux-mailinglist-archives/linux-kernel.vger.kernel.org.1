@@ -2,60 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E9B28E687
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89F828E688
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 20:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730103AbgJNSiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 14:38:03 -0400
-Received: from smtprelay0041.hostedemail.com ([216.40.44.41]:39460 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727897AbgJNSiD (ORCPT
+        id S1730206AbgJNSi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 14:38:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39835 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730119AbgJNSi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 14:38:03 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3AC5418029124;
-        Wed, 14 Oct 2020 18:38:02 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3872:3874:4321:5007:6119:6120:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:30029:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: stamp19_48036d92720e
-X-Filterd-Recvd-Size: 1728
-Received: from XPS-9350 (cpe-72-134-80-165.natsow.res.rr.com [72.134.80.165])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 14 Oct 2020 18:38:01 +0000 (UTC)
-Message-ID: <b1469df9f90d5d4025c4ce7b189a4a3a31c9dbd7.camel@perches.com>
-Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
- EXECUTE_PERMISSIONS
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Wed, 14 Oct 2020 11:37:59 -0700
-In-Reply-To: <CANiq72nNkqu2a0KoDoj7Y0K2Ud37Ode5U9ju7JyPTtv58QJ3cw@mail.gmail.com>
-References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com>
-         <alpine.DEB.2.21.2010140734270.6186@felia>
-         <316d5a53351d10cd1a26ce0c54883da05642c898.camel@perches.com>
-         <CANiq72kogiVbBURCrb74_vCPCLb09LGTudxE-QG8US7pX8LqQw@mail.gmail.com>
-         <fc0c8503257ab6593ea8a1250ee3ac083a4ab5ee.camel@perches.com>
-         <CANiq72nNkqu2a0KoDoj7Y0K2Ud37Ode5U9ju7JyPTtv58QJ3cw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 14 Oct 2020 14:38:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602700704;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IDBsW7KYfWx9uryvjHydSKzIvDYC9SOehlV+TonjhrY=;
+        b=T6QEL6247dkzakQR2ckLv8FYxVi55Aa73ricFU+ixrc+hLCB1j7bw2BqhMslRuUpQI+oh7
+        7VUeUU1yu8ZAJk1crB+bwdSdN9g9t6lsUmArtv9fefwsKhJi5I0NRoT7aZWYgiGqu/gFq6
+        DHd1YieTbLrsuGGqQVOvldiDx0E7EII=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-EuHBfzdyN8aEykj_VlyvZA-1; Wed, 14 Oct 2020 14:38:23 -0400
+X-MC-Unique: EuHBfzdyN8aEykj_VlyvZA-1
+Received: by mail-io1-f70.google.com with SMTP id i1so287036iog.15
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 11:38:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IDBsW7KYfWx9uryvjHydSKzIvDYC9SOehlV+TonjhrY=;
+        b=nvC5el5aSK3S8ZpUyZhuS0A2RX1/744F2BRuGlqvKq5vCJVYNMyByF1fSre9ERfvGG
+         OyXP1Nrq9NizcNVJfpx44RRmj6xZD1JNnhssbMu5IY9m0bg8r3/il6rHGphKTA1MLSNZ
+         RBUTpLaVrxF37VkKxVyV0PvnCILv42J8bH1db2DG3TxLRhCuI8pAHWoHmkmStos6KR8C
+         VjxSrjAKgBeVITWpRp7906SYOMUpETnPhx3skjikg306Ygw4SuJhQNzZmgjEJ6KhTWgo
+         QKIqbReLnbWNqbKXBJFfDo9jR0xTN24VsAGg/FkLbSYunFbW9AnPvlm9JJAtwM8gLtkw
+         U5AA==
+X-Gm-Message-State: AOAM532qIBScPNUSZ6TJYWLYhx5hwSLFBxEeef6gyZ+GDrfyYnPqsdxC
+        RheT/Wk6BeIBOpDjVO0A67t2rXA1rl6t/uWXMNySr4p6b+ZmU9hO8UAQbaihS8uf3/qWUZ0v9Xu
+        nLuP9Nfiww5y7i+M9XjHY7eIP
+X-Received: by 2002:a6b:c94f:: with SMTP id z76mr585924iof.88.1602700701942;
+        Wed, 14 Oct 2020 11:38:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzcMmzD8oiXe3zzuQixP0UGeIEyei9EmrSX7C8xHPwz4v+9KHNKuC+DTVYsSRRjBi140CsupA==
+X-Received: by 2002:a6b:c94f:: with SMTP id z76mr585904iof.88.1602700701675;
+        Wed, 14 Oct 2020 11:38:21 -0700 (PDT)
+Received: from localhost.localdomain (pool-71-174-203-64.bstnma.fios.verizon.net. [71.174.203.64])
+        by smtp.gmail.com with ESMTPSA id d21sm315020ioi.39.2020.10.14.11.38.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 11:38:21 -0700 (PDT)
+Subject: Re: [PATCH v1 0/8] perf c2c: Refine the organization of metrics
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
+        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
+References: <20201014050921.5591-1-leo.yan@linaro.org>
+From:   Joe Mario <jmario@redhat.com>
+Message-ID: <79f2db37-a03f-c01f-0b3b-4e2d3ed429f4@redhat.com>
+Date:   Wed, 14 Oct 2020 14:38:19 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20201014050921.5591-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-14 at 20:32 +0200, Miguel Ojeda wrote:
-> On Wed, Oct 14, 2020 at 8:05 PM Joe Perches <joe@perches.com> wrote:
-> > Any 'formatting off/on' marker should be tool agnostic.
+
+
+On 10/14/20 1:09 AM, Leo Yan wrote:
+> This patch set is to refine metrics output organization.
 > 
-> Agreed, they should have used a compiler-agnostic name for the marker.
+> If we reivew the current memory metrics in Perf c2c tool, it doesn't
+> orgnize the metrics with directive approach; thus user needs to take
+> time to dig into every statistics item.  On the other hand, if use the
+> "summary and breakdown" approach, the output result will be easier for
+> reviewing by users, e.g. the output result can firstly give out the
+> summary values, and then the later items will breakdown into more
+> detailed statistics.
+> 
+> For this reason, this patch is to reorgnize the metrics and it only
+> changes for the "Shared Data Cache Line Table": it firstly displays the
+> summary values for total records, total loads, total stores; then it
+> breaks these summary values into small values, with the order from the
+> most near memory node ("CPU Load Hit") to more far nodes
+> ("LLC Load Hit", "RMT Load Hit", "Load Dram").
+> 
+>   "LLC Load Hit" = "LclHit" + "LclHitm"
+> 
+>   "RMT Load Hit" = "RmtHit" + "RmtHitm" \
+>                                          ->  LLC Load Miss
+>   "Load Dram"    = "Lcl" + "Rmt"        /
+> 
+> Another main reason for this patch set is wanting to extend "perf c2c"
+> to support Arm SPE memory event, but Arm SPE doesn't contain 'HTIM' tag
+> in its default trace data, for this case if want to analyze cache false
+> sharing issue, we need to rely on LLC metrics + multi-threading info.
+> So this patch set can be friendly to show LLC related metrics in the
+> "Shared Data Cache Line Table"; for sorting cache lines with LLC metrics
+> which will be sent out with another separate patch set.
+> 
+> <SNIP>
+> 
+> Leo Yan (8):
+>   perf c2c: Display the total numbers continuously
+>   perf c2c: Display "Total Stores" as a standalone metrics
+>   perf c2c: Organize metrics based on memory hierarchy
+>   perf c2c: Change header from "LLC Load Hitm" to "Load Hitm"
+>   perf c2c: Use more explicit headers for HITM
+>   perf c2c: Change header for LLC local hit
+>   perf c2c: Correct LLC load hit metrics
+>   perf c2c: Add metrics "RMT Load Hit"
+> 
+>  tools/perf/builtin-c2c.c | 83 +++++++++-------------------------------
+>  1 file changed, 18 insertions(+), 65 deletions(-)
 
-It means to me that linux has to invent one and any
-clang-format use has to use an equivalent of the sphinx
-.rst macro conversion scripts pre and post format.
+Hi Leo:
+I ran your patches through some perf c2c tests and it all looks good.  
+I agree the new format of the "Shared Data Cache Line Table" makes more sense now.  And it still holds together nicely when sorted on local HitMs (-d lcl).
 
+Thank you for doing this.
+Joe
+
+Tested-by: Joe Mario <jmario@redhat.com>
 
