@@ -2,97 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8EA28E170
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F9428E171
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 15:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731298AbgJNNhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 09:37:48 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:38867 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727302AbgJNNhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:37:48 -0400
-Received: by mail-ot1-f66.google.com with SMTP id i12so3433165ota.5;
-        Wed, 14 Oct 2020 06:37:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s2wWOInQ8+vzngRWo3XRF2pWOPT3Nx6yp+ifXy9Qs0c=;
-        b=RzKgZVO291rGbSb0EINUiJKH3ea4AXBy7UIWXAmUxxbQcKzeEVu8PoNleEWESyIZFo
-         SqHxsBmq4MIn0PedU1X8FBPDQOsx1dDmaQ3Ygdpxrl1TlUv/0CSVoeACIna6hxoiQAU0
-         r0uwJjXygclMzwOPwcxtVov8ZR8dWL+nH4TdsLuVukdo8H8yIjytcLvdHCaJUeNiYXWb
-         pColmMAoAy5O4PH1NU5+YsSyVAvaicnqF4evkn0RHYwsgbowIUxKKRLptKqU2WHd0rlC
-         iJFE6oIYVtKn4B9YYMC4Hjo9piePJlLHHVhob4Hfp6CAqLSHo3yxgMlkqAo3Pu9V3Ams
-         Djmg==
-X-Gm-Message-State: AOAM531Vl7RJLZ9XIVCmDHhhRLStdj3eEfY2BQsf2znGjH4f83zqe8GQ
-        XZDINo1pABkHzwRvYpJhBjDuxVtOSLZmMgOh3Uo=
-X-Google-Smtp-Source: ABdhPJy9iYGXrU7DqcZa7XGwlKnBaYB+luAsu4+KZd/HG51ramF2oqtYSKdYaI/WbWzc+G1S0t8taE1P2cHpyZnrj2Y=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr3259164oti.107.1602682667066;
- Wed, 14 Oct 2020 06:37:47 -0700 (PDT)
+        id S1731302AbgJNNiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 09:38:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727302AbgJNNiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:38:16 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 041E42173E;
+        Wed, 14 Oct 2020 13:38:15 +0000 (UTC)
+Date:   Wed, 14 Oct 2020 09:38:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC PATCH 1/1] tracepoints: tree-wide: Replace %p with %px
+Message-ID: <20201014093813.74490c26@gandalf.local.home>
+In-Reply-To: <160266595921.74973.16021029265750003477.stgit@devnote2>
+References: <160266594977.74973.9883936722540767319.stgit@devnote2>
+        <160266595921.74973.16021029265750003477.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201013150150.14801-1-fabrizio.castro.jz@renesas.com> <20201013150150.14801-5-fabrizio.castro.jz@renesas.com>
-In-Reply-To: <20201013150150.14801-5-fabrizio.castro.jz@renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 14 Oct 2020 15:37:35 +0200
-Message-ID: <CAMuHMdUxCiwjsFRYpVND-FLajaceUf+jWK0ZBR5Rp5xJ+MPDgA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] media: dt-bindings: media: renesas,drif: Add
- r8a77965 support
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabrizio,
+On Wed, 14 Oct 2020 17:59:19 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-On Tue, Oct 13, 2020 at 5:02 PM Fabrizio Castro
-<fabrizio.castro.jz@renesas.com> wrote:
-> The r8a77965 (a.k.a. R-Car M3-N) device tree schema is
-> compatible with the already documented R-Car Gen3 devices.
->
-> Document r8a77965 support within renesas,drif.yaml.
->
-> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> To help debugging kernel, use %px to show real addresses on
+> tracefs/trace file.
+> 
+> Since ftrace human-readable format uses vsprintf(), all %p are
+> translated to hash values instead of pointer address.
+> 
+> However, when debugging the kernel, raw address value gives a
+> hint when comparing with the memory mapping in the kernel.
+> (Those are sometimes used with crash log, which is not hashed too)
+> 
+> Moreover, this is not improving the security because the tracefs
+> can be used only by root user and the raw address values are readable
+> from tracefs/percpu/cpu*/trace_pipe_raw file.
+> 
+> Note that this has been done by the following script.
+> 
+>  #!/bin/sh
+>  tmp=`mktemp`
+>  for h in include/trace/events/*.h ; do
+>    sed -e 's/\(%p\)\([^a-zA-Z]\)/\1x\2/g' $h > $tmp
+>    cp $tmp $h
+>  done
+>  rm $tmp
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Thanks for your patch!
+Hi Masami,
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+I think a better approach is to inject on the output side a conversion of
+"%p" to "%px" before printing. That is, in the trace_raw_output_##call()
+function, instead of calling trace_seq_printf(s, print), we call a new
+function trace_event_printf(s, print), that will take the fmt parameter,
+and copies it to something that does your 's/\(%p\)\([^a-zA-Z]\)/\1x\2/g'
+inline before passing it off to trace_seq_printf().
 
-> --- a/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> +++ b/Documentation/devicetree/bindings/media/renesas,drif.yaml
-> @@ -53,6 +53,7 @@ properties:
->        - enum:
->          - renesas,r8a7795-drif        # R-Car H3
->          - renesas,r8a7796-drif        # R-Car M3-W
-> +        - renesas,r8a77965-drif       # R-Car M3-N
->          - renesas,r8a77990-drif       # R-Car E3
->        - const: renesas,rcar-gen3-drif # Generic R-Car Gen3 compatible device
-
-I guess you're aware M3-N (and E3) have an extra register?
-Probably the driver just relies on its initial value, but it never hurts to be
-explicit and initialize it properly.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- Steve
