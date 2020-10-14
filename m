@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485EE28D86A
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A94B28D870
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 04:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbgJNCVw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 13 Oct 2020 22:21:52 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:51866 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbgJNCVw (ORCPT
+        id S1727450AbgJNC0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 22:26:52 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1698 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbgJNC0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 22:21:52 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 09E2LJQ50027098, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 09E2LJQ50027098
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 14 Oct 2020 10:21:19 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Wed, 14 Oct 2020 10:21:19 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa]) by
- RTEXMB04.realtek.com.tw ([fe80::89f7:e6c3:b043:15fa%3]) with mapi id
- 15.01.2044.006; Wed, 14 Oct 2020 10:21:19 +0800
-From:   Andy Huang <tehuang@realtek.com>
-To:     "'Nathan Chancellor'" <natechancellor@gmail.com>,
-        "trix@redhat.com" <trix@redhat.com>
-CC:     Tony Chuang <yhchuang@realtek.com>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] rtw88: fix fw_fifo_addr check
-Thread-Topic: [PATCH] rtw88: fix fw_fifo_addr check
-Thread-Index: AQHWn+b1N2QCxO5tOEqVUSS+vGIPsamSt7QAgAOoEfA=
-Date:   Wed, 14 Oct 2020 02:21:18 +0000
-Message-ID: <ca5131599d3940d8a914025821876219@realtek.com>
-References: <20201011155438.15892-1-trix@redhat.com>
- <20201012022428.GA936980@ubuntu-m3-large-x86>
-In-Reply-To: <20201012022428.GA936980@ubuntu-m3-large-x86>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.231]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 13 Oct 2020 22:26:52 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f8661b00000>; Tue, 13 Oct 2020 19:25:52 -0700
+Received: from [10.19.100.177] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
+ 2020 02:26:46 +0000
+Subject: Re: [PATCH v3 00/15] Tegra XHCI controller ELPG support
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
+        <jonathanh@nvidia.com>, <kishon@ti.com>,
+        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nkristam@nvidia.com>
+References: <20200909081041.3190157-1-jckuo@nvidia.com>
+ <20200928125438.GC3065790@ulmo>
+X-Nvconfidentiality: public
+From:   JC Kuo <jckuo@nvidia.com>
+Message-ID: <c38fc162-c4cb-1321-e861-4d92dbfa62ee@nvidia.com>
+Date:   Wed, 14 Oct 2020 10:26:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200928125438.GC3065790@ulmo>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602642352; bh=ZPJkj9lTy0tmAKdms0g6Ssia336rRRZiQeYms/qcGPk=;
+        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=RkDzxZvpllNv9fRWF18Q6EAW8AK/b3WLu3AU9iKxKvmM7kiqD6BABNUjD21mazF+h
+         t6We8y6ct4dqExW56mAO8q10kZmPUHG1kjhS2dIqEVSkOEFyDM/SFcI8FGuwM0rpwY
+         WVDHhQLN1rAEB3RnFtiT6V9A05pee47WQaCDIajpof+mrsLy/2Vq4RVKUqLlIZ9S7X
+         jz/aO9FLktahJF0S3T9o3TI9aifhBL3GBY2t3PZlr5sw7f8W/q1nsYhrFVf/EHI+NX
+         whkbSa0HEzcUP1I1k7hVHdaQc0uQBG0Z0j72IQ2n+F33GJLvlUWviLB8OEcSdyInPs
+         Cy1eJiTB5dLbg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Yes, it's safe to apply "clk: tegra: Don't enable PLLE HW sequencer at init"
+before the others have applied. Disabling PLLE hardware power sequencer will not
+cause any functionality problem to XUSB/PCIE/SATA. The only thing changed is
+PLLE won't be powered off by hardware when all clients are in low power state,
+i.e., software has to explicitly power off PLLE.
 
-> On Sun, Oct 11, 2020 at 08:54:38AM -0700, trix@redhat.com wrote:
-> > From: Tom Rix <trix@redhat.com>
-> >
-> > The clang build reports this warning
-> >
-> > fw.c:1485:21: warning: address of array 'rtwdev->chip->fw_fifo_addr'
-> >   will always evaluate to 'true'
-> >         if (!rtwdev->chip->fw_fifo_addr) {
-> >
-> > fw_fifo_addr is an array in rtw_chip_info so it is always nonzero.  A
-> > better check is if the first element of the array is nonzero.  In the
-> > cases where fw_fifo_addr is initialized by rtw88b and rtw88c, the
-> > first array element is 0x780.
-> >
-> > Signed-off-by: Tom Rix <trix@redhat.com>
+Thanks for review.
+JC
+
+On 9/28/20 8:54 PM, Thierry Reding wrote:
+> On Wed, Sep 09, 2020 at 04:10:26PM +0800, JC Kuo wrote:
+>> Tegra XHCI controler can be placed in ELPG (Engine Level PowerGated)
+>> state for power saving when all of the connected USB devices are in
+>> suspended state. This patch series includes clk, phy and pmc changes
+>> that are required for properly place controller in ELPG and bring
+>> controller out of ELPG.
+>>
+>> JC Kuo (15):
+>>   clk: tegra: Add PLLE HW power sequencer control
+>>   clk: tegra: Don't enable PLLE HW sequencer at init
 > 
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> Is it safe to apply this second patch before the others have applied?
+> Since we now need to explicitly enable the HW sequencer, it won't be
+> enabled before the corresponding patch does that. So applying patch 2
+> before the others sounds like it would break existing users of the HW
+> sequencer.
 > 
-
-Thanks for your fix,
-
-Acked-by: Tzu-En Huang <tehuang@realtek.com>
-
-> > ---
-> >  drivers/net/wireless/realtek/rtw88/fw.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/wireless/realtek/rtw88/fw.c
-> > b/drivers/net/wireless/realtek/rtw88/fw.c
-> > index 042015bc8055..b2fd87834f23 100644
-> > --- a/drivers/net/wireless/realtek/rtw88/fw.c
-> > +++ b/drivers/net/wireless/realtek/rtw88/fw.c
-> > @@ -1482,7 +1482,7 @@ static bool rtw_fw_dump_check_size(struct
-> > rtw_dev *rtwdev,  int rtw_fw_dump_fifo(struct rtw_dev *rtwdev, u8
-> fifo_sel, u32 addr, u32 size,
-> >  		     u32 *buffer)
-> >  {
-> > -	if (!rtwdev->chip->fw_fifo_addr) {
-> > +	if (!rtwdev->chip->fw_fifo_addr[0]) {
-> >  		rtw_dbg(rtwdev, RTW_DBG_FW, "chip not support dump fw fifo\n");
-> >  		return -ENOTSUPP;
-> >  	}
-> > --
-> > 2.18.1
-> >
+> Thierry
 > 
-> ------Please consider the environment before printing this e-mail.
