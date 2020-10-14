@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F0428E089
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8301628E08F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 14:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387853AbgJNM3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 08:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
+        id S1730530AbgJNMab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 08:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730530AbgJNM3D (ORCPT
+        with ESMTP id S1727247AbgJNMab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 08:29:03 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF23C061755;
-        Wed, 14 Oct 2020 05:29:02 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id c21so2935168ljn.13;
-        Wed, 14 Oct 2020 05:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xtG/gwsTp/QhF3XrG67M9zGwKAJ8eN3YqnpNRk6BF4U=;
-        b=uNUZMjRSap8H/u2m/asyiiVUQkHD9zJpWjpIoV35cXL/Dhr49H6Q7ybLUwt4m3yQKP
-         dX4BCe24Zxu332bgNbY7UxDK5N4uP/NxF4mtEYH+ucfkEypyIZ9id0/kkg7j4+W1QzKP
-         xKjhEYktxvhXEilqc0GIOlqxO00OoC7ORtuJgrLD2pVpYco8iSct0nfsM8nJFajXV/mZ
-         dYhkFnXEeOzQaosyd7KwRtaSo8LMDMYhe5IAmiVyHVTOWnMoT9g2jIDrkCnzjAwZmrkf
-         sgs847rPzMIM/wdGeqHC+TtYFoA3OURK/ZUaIqyywiM7YpeAfAwFHvbpfo7RB+GbtMw8
-         zTdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xtG/gwsTp/QhF3XrG67M9zGwKAJ8eN3YqnpNRk6BF4U=;
-        b=uKBRuGnN3e5LS+ztEC5Nux5yjBsU99e69etct9KHvzW9f1wxTmQpDAMOiFBjE8871G
-         mVpCK3BXhYjnrhLKRjkVH8vefDRBoajyFJ3FG9up07aFeI0oKjR9T/g5UXnScyS2lu8Z
-         mypfLMsMUHxSYcq8ATay4NLkZI77XcEqf5QClWe0l4YloNyiYlzEUcOaV32ULz3ZwSH8
-         vdiBU9TltOvKfDvSPz/ZDRwDhAtLY0bZ3Z9PVz3GOE4Td3/wY8KpGtqKukkGaay83OxP
-         9vL1VMMQzG5WbD5tzMstOpWbFIFS7LkRTYTKU4q5HXmhGZ7tmKQ0Fia5qrGp4QnMmZVL
-         +nVw==
-X-Gm-Message-State: AOAM532HqzAHun82/XUkbq6cbX96yWJqt2nBOZLMO1XdRNvKsbgKARXO
-        R8fdacEDrp9kI23aKKP5Q9epth1AO00B0FoQ9sjj76ALPnOvWA==
-X-Google-Smtp-Source: ABdhPJwwcXa0eznaW8aSEwQEZZO7J2RVs3BEWKBFhgzX1yF1g22CuKEtKkJjzK+eCrn3V4OhjPkwYiOG4iypM8jxWGU=
-X-Received: by 2002:a2e:9ed5:: with SMTP id h21mr1585898ljk.178.1602678541301;
- Wed, 14 Oct 2020 05:29:01 -0700 (PDT)
+        Wed, 14 Oct 2020 08:30:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84019C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 05:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BN1NbFTyEUnp5yl42P5UagkxlMNHTr9O8eohuyqeiko=; b=eo/zTaCHHriX4YMAVz4KFHP/2j
+        cPx5lwbJ5TRYN31eGBQgZJnqpN2ka0Tm9WSKz0qoh3ywVW7sCSgC6UIxIpHQiETV6/y/T5zECu8ih
+        IiUt92Tsil/Eb8oeO7rwWgV6bVLcZNIYsS1aY8pgUf6Qgq9sz0ET1P94Bci6lV/kcr1Vp1q1mZzQu
+        wCyaLHY6OLNhxAxWz1hpP3gQ2RiQ+jx0ME5Kt1pqVpNy94DwNVeyeICYKEc6qh1QjZloDBJBP4goW
+        T6GUiBSU082/BMH1f3ZRkWlrjA7bcFNhdJSiSMo4LUM1Y2HlilpDIH9/KvSVnd1jzoO32JiviX3hK
+        bG9fco4w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSfvD-0003l8-5x; Wed, 14 Oct 2020 12:30:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 507CB300DB4;
+        Wed, 14 Oct 2020 14:30:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F3E0029AE5411; Wed, 14 Oct 2020 14:30:19 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 14:30:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org
+Subject: Re: [PATCH v3 0/3] objtool: Extend CFA updating/checking
+Message-ID: <20201014123019.GE2628@hirez.programming.kicks-ass.net>
+References: <20201014073802.436630-1-jthierry@redhat.com>
 MIME-Version: 1.0
-References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
- <20200924090349.GF27174@8bytes.org> <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
- <20200924092546.GJ27174@8bytes.org> <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
- <20200924095629.GL27174@8bytes.org> <CA+G9fYu42j_B+Rg2nq+KKBiKLqxVEqabQ15CujyJ+o6jqRj2uQ@mail.gmail.com>
- <CA+G9fYtG6Ro-NdrP89ipDyUqVVT2=_8pTvjTSeFcWr795bp8AA@mail.gmail.com>
- <20201011055258.22337d66@canb.auug.org.au> <CA+-6iNwpFeJaa7CisS-DD2q45uaV8Jz6YU0kPucqpZAAK3ojuQ@mail.gmail.com>
- <c7e7b9ab-95a8-625f-7988-7f7397a0749f@gmail.com>
-In-Reply-To: <c7e7b9ab-95a8-625f-7988-7f7397a0749f@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 14 Oct 2020 09:28:49 -0300
-Message-ID: <CAOMZO5DxVQ1va4aviTkgC0O6+KmpkYvYDVPh7v2Ajqggq7aoow@mail.gmail.com>
-Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
- page tables
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        abhimanyu.saini@nxp.com, Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Poonam Aggrwal <poonam.aggrwal@nxp.com>,
-        Rob Herring <robh@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Richard Weinberger <richard@nod.at>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
-        Will Deacon <will@kernel.org>,
-        "Z.Q. Hou" <Zhiqiang.Hou@nxp.com>, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014073802.436630-1-jthierry@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On Wed, Oct 14, 2020 at 08:37:59AM +0100, Julien Thierry wrote:
+> Julien Thierry (3):
+>   objtool: check: Fully validate the stack frame
+>   objtool: check: Support addition to set CFA base
+>   objtool: check: Make SP memory operation match PUSH/POP semantics
 
-On Sun, Oct 11, 2020 at 6:59 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-
-> however the NAND warning still remains. Someone else familiar with these
-> NXP development boards should fix the DTS so as to provide the require
-> ECC strength property.
-
-The ECC NAND warning looks like a regression.
-
-I had originally reported it for an imx27 board and now I also pointed
-out that it also affects Layerscape:
-https://lore.kernel.org/linux-mtd/20201013193652.0c535c7c@xps13/T/#m09fad7eacdf86aee0834bbd8863d6d5ee2e69f8c
-
-Thanks,
-
-Fabio Estevam
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
