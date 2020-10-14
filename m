@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1740028DBF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B734428DBFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730088AbgJNIrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 04:47:22 -0400
-Received: from mga04.intel.com ([192.55.52.120]:27894 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729587AbgJNIrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 04:47:21 -0400
-IronPort-SDR: h51LH6Jg7DzPFDo98BbEpkqL6xFmW4ZoeskFGq+Ui8KXLOg0tiGWcTojB5FOcofT8AfK9D5BKI
- 4rvbGBIXH9Mw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9773"; a="163432570"
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="163432570"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 01:47:20 -0700
-IronPort-SDR: JY83hw1KBGRXJnKJDV1va5At2JNYZ0qNhoRorCpwtr3YGKEDKKHW+lGeu7xzCFO9KII6j+2mLK
- zjln8S7O6Pkg==
-X-IronPort-AV: E=Sophos;i="5.77,374,1596524400"; 
-   d="scan'208";a="521345922"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 01:47:19 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kScSL-006UAi-Hj; Wed, 14 Oct 2020 11:48:21 +0300
-Date:   Wed, 14 Oct 2020 11:48:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
-        mika.westerberg@linux.intel.com, YehezkelShB@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] thunderbolt: Add the missed ida_simple_remove() in
- ring_request_msix()
-Message-ID: <20201014084821.GR4077@smile.fi.intel.com>
-References: <20201014014604.167968-1-jingxiangfeng@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014014604.167968-1-jingxiangfeng@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S1730069AbgJNIte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:49:34 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:46790 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726147AbgJNIte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:49:34 -0400
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-05 (Coremail) with SMTP id zQCowACHjo6Su4ZfalFxAg--.31249S2;
+        Wed, 14 Oct 2020 16:49:24 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     b.zolnierkie@samsung.com, pakki001@umn.edu, yuehaibing@huawei.com
+Cc:     linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] omapfb/dss: Remove redundant null check before clk_prepare_enable/clk_disable_unprepare
+Date:   Wed, 14 Oct 2020 08:49:20 +0000
+Message-Id: <20201014084920.25813-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowACHjo6Su4ZfalFxAg--.31249S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFy8CFyfJFWDAr15Kry3Jwb_yoWkXrX_C3
+        WDurZxGFZ0gw4Ik34ktws8ArZ7tFyvvFWrWr92v3yfKFy7Wry3ZrWDArsxA39rWF40yF4j
+        vwnFg3W8Ar1fCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4DGYDUUUU
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAxAJA13qZbuZhgAAsv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 09:46:04AM +0800, Jing Xiangfeng wrote:
-> ring_request_msix() misses to call ida_simple_remove() in an error path.
-> Add a label 'err_ida_remove' and jump to it.
+Because clk_prepare_enable() and clk_disable_unprepare() already checked
+NULL clock parameter, so the additional checks are unnecessary, just
+remove them.
 
-...
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/video/fbdev/omap2/omapfb/dss/venc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> @@ -406,11 +406,22 @@ static int ring_request_msix(struct tb_ring *ring, bool no_suspend)
->  	ring->vector = ret;
-
-^^^
-
->  	ring->irq = pci_irq_vector(ring->nhi->pdev, ring->vector);
-> -	if (ring->irq < 0)
-> -		return ring->irq;
-> +	if (ring->irq < 0) {
-> +		ret = ring->irq;
-> +		goto err_ida_remove;
-> +	}
-
-What about
-	ret = pci_irq_vector(ring->nhi->pdev, ring->vector);
-	if (ret < 0)
-		goto err_ida_remove;
-
-	ring->irq = ret;
-
-?
-
-(See also context above)
-
->  	irqflags = no_suspend ? IRQF_NO_SUSPEND : 0;
-> -	return request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
-> +	ret = request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
-> +	if (ret)
-> +		goto err_ida_remove;
-> +
-> +	return 0;
-> +
-> +err_ida_remove:
-> +	ida_simple_remove(&nhi->msix_ida, ring->vector);
-> +
-> +	return ret;
->  }
->  
->  static void ring_release_msix(struct tb_ring *ring)
-> -- 
-> 2.17.1
-> 
-
+diff --git a/drivers/video/fbdev/omap2/omapfb/dss/venc.c b/drivers/video/fbdev/omap2/omapfb/dss/venc.c
+index 0b0ad20afd63..8895fb8493d8 100644
+--- a/drivers/video/fbdev/omap2/omapfb/dss/venc.c
++++ b/drivers/video/fbdev/omap2/omapfb/dss/venc.c
+@@ -890,8 +890,7 @@ static int venc_remove(struct platform_device *pdev)
+ 
+ static int venc_runtime_suspend(struct device *dev)
+ {
+-	if (venc.tv_dac_clk)
+-		clk_disable_unprepare(venc.tv_dac_clk);
++	clk_disable_unprepare(venc.tv_dac_clk);
+ 
+ 	dispc_runtime_put();
+ 
+@@ -906,8 +905,7 @@ static int venc_runtime_resume(struct device *dev)
+ 	if (r < 0)
+ 		return r;
+ 
+-	if (venc.tv_dac_clk)
+-		clk_prepare_enable(venc.tv_dac_clk);
++	clk_prepare_enable(venc.tv_dac_clk);
+ 
+ 	return 0;
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
