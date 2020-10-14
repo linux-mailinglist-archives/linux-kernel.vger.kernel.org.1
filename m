@@ -2,119 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73A2028D748
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F05328D753
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 02:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgJNAGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 13 Oct 2020 20:06:33 -0400
-Received: from correo.us.es ([193.147.175.20]:36372 "EHLO mail.us.es"
+        id S1727567AbgJNANj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 13 Oct 2020 20:13:39 -0400
+Received: from vern.gendns.com ([98.142.107.122]:52492 "EHLO vern.gendns.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726168AbgJNAGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 13 Oct 2020 20:06:32 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id DDD45E780A
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:06:30 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CB71EDA78D
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 02:06:30 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id C08E8DA73D; Wed, 14 Oct 2020 02:06:30 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,URIBL_BLOCKED,USER_IN_WELCOMELIST,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id CA40CDA72F;
-        Wed, 14 Oct 2020 02:06:28 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 14 Oct 2020 02:06:28 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id A091D42EFB80;
-        Wed, 14 Oct 2020 02:06:28 +0200 (CEST)
-Date:   Wed, 14 Oct 2020 02:06:28 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Francesco Ruggeri <fruggeri@arista.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>
-Subject: Re: [PATCH nf v2] netfilter: conntrack: connection timeout after
- re-register
-Message-ID: <20201014000628.GA15290@salvia>
-References: <20201007193252.7009D95C169C@us180.sjc.aristanetworks.com>
- <CA+HUmGhBxBHU85oFfvoAyP=hG17DG2kgO67eawk1aXmSjehOWQ@mail.gmail.com>
- <alpine.DEB.2.23.453.2010090838430.19307@blackhole.kfki.hu>
- <20201009110323.GC5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092035550.19307@blackhole.kfki.hu>
- <20201009185552.GF5723@breakpoint.cc>
- <alpine.DEB.2.23.453.2010092132220.19307@blackhole.kfki.hu>
- <20201009200548.GG5723@breakpoint.cc>
+        id S1727470AbgJNANj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 13 Oct 2020 20:13:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=YEZVzb5NwZBUhd0JiFn2u7ZSr9noWt1yX5Lw4ZpfGEU=; b=uXxsxtf44QitHmcVBPGb354fjD
+        eSqybcEPKEu43jiVtgDkP/M62nWXj4214aztAstryyFlWiwSPWmqK2g2lUn3WfMf6ih9zd1c3TF14
+        PFn6zEFWijL6/1xYHAOVrLP606XD5kYxkapRJnn1ff6q+fxZwKR43pkbsi3oeJ6A510UrZNWkeXoy
+        pFjPQC4sPNv/Dln4jrMYQ+QOhQixPE2+zHtnhp35wAxpUoy97ngydg3x+bs7cykIZ8p66OkZZQi2V
+        5oXHL7WE5jSm0hxsyV34aGg4wK4gE3Zmv6fzVd53/Y/d90PanD0X6XpUjkWJgJ5ZUo2/JP+Ijxh2f
+        z+1jBtxw==;
+Received: from [2600:1700:4830:165f::19e] (port=53810)
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kSUQB-0000Zk-6m; Tue, 13 Oct 2020 20:13:35 -0400
+Subject: Re: [PATCH v5 5/5] counter: 104-quad-8: Add IRQ support for the ACCES
+ 104-QUAD-8
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <7a829fe8cba3ae222796328f832bd2546769e6ac.1601170670.git.vilhelm.gray@gmail.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <a0e54a35-eed6-a938-dd4e-4f602d3b50c0@lechnology.com>
+Date:   Tue, 13 Oct 2020 19:13:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201009200548.GG5723@breakpoint.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <7a829fe8cba3ae222796328f832bd2546769e6ac.1601170670.git.vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:05:48PM +0200, Florian Westphal wrote:
-> Jozsef Kadlecsik <kadlec@netfilter.org> wrote:
-> > > The "delay unregister" remark was wrt. the "all rules were deleted"
-> > > case, i.e. add a "grace period" rather than acting right away when
-> > > conntrack use count did hit 0.
-> > 
-> > Now I understand it, thanks really. The hooks are removed, so conntrack 
-> > cannot "see" the packets and the entries become stale. 
-> 
-> Yes.
-> 
-> > What is the rationale behind "remove the conntrack hooks when there are no 
-> > rule left referring to conntrack"? Performance optimization? But then the 
-> > content of the whole conntrack table could be deleted too... ;-)
-> 
-> Yes, this isn't the case at the moment -- only hooks are removed,
-> entries will eventually time out.
-> 
-> > > Conntrack entries are not removed, only the base hooks get unregistered. 
-> > > This is a problem for tcp window tracking.
-> > > 
-> > > When re-register occurs, kernel is supposed to switch the existing 
-> > > entries to "loose" mode so window tracking won't flag packets as 
-> > > invalid, but apparently this isn't enough to handle keepalive case.
-> > 
-> > "loose" (nf_ct_tcp_loose) mode doesn't disable window tracking, it 
-> > enables/disables picking up already established connections. 
-> > 
-> > nf_ct_tcp_be_liberal would disable TCP window checking (but not tracking) 
-> > for non RST packets.
-> 
-> You are right, mixup on my part.
-> 
-> > But both seems to be modified only via the proc entries.
-> 
-> Yes, we iterate table on re-register and modify the existing entries.
+On 9/26/20 9:18 PM, William Breathitt Gray wrote:
+> +static irqreturn_t quad8_irq_handler(int irq, void *quad8iio)
+> +{
+> +	struct quad8_iio *const priv = quad8iio;
+> +	const unsigned long base = priv->base;
+> +	unsigned long irq_status;
+> +	unsigned long channel;
+> +	u8 event;
+> +	int err;
+> +
+> +	irq_status = inb(base + QUAD8_REG_INTERRUPT_STATUS);
+> +	if (!irq_status)
+> +		return IRQ_NONE;
+> +
+> +	for_each_set_bit(channel, &irq_status, QUAD8_NUM_COUNTERS) {
+> +		switch (priv->irq_trigger[channel]) {
+> +		case 0:
+> +			event = COUNTER_EVENT_OVERFLOW;
+> +				break;
+> +		case 1:
+> +			event = COUNTER_EVENT_THRESHOLD;
+> +				break;
+> +		case 2:
+> +			event = COUNTER_EVENT_OVERFLOW_UNDERFLOW;
+> +				break;
+> +		case 3:
+> +			event = COUNTER_EVENT_INDEX;
+> +				break;
+> +		default:
+> +			/* We should never reach here */
+> +			return -EINVAL;
 
-For iptables-nft, it might be possible to avoid this deregister +
-register ct hooks in the same transaction: Maybe add something like
-nf_ct_netns_get_all() to bump refcounters by one _iff_ they are > 0
-before starting the transaction processing, then call
-nf_ct_netns_put_all() which decrements refcounters and unregister
-hooks if they reach 0.
+This is not a valid return value for an IRQ handler. Maybe WARN_ONCE instead?
 
-The only problem with this approach is that this pulls in the
-conntrack module, to solve that, struct nf_ct_hook in
-net/netfilter/core.c could be used to store the reference to
-->netns_get_all and ->net_put_all.
+> +		}
+> +		err = counter_push_event(&priv->counter, event, channel);
+> +		if (err)
+> +			return err;
 
-Legacy would still be flawed though.
+Same here. Otherwise, I think we could end up with interrupts in an endless
+loop since the interrupt would never be cleared.
+
+> +	}
+> +
+> +	/* Clear pending interrupts on device */
+> +	outb(QUAD8_CHAN_OP_ENABLE_INTERRUPT_FUNC, base + QUAD8_REG_CHAN_OP);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+
