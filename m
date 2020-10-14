@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D2328D915
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 06:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B3E28D91F
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 06:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729846AbgJNEPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 00:15:25 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:9952 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgJNEPZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 00:15:25 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f867b210001>; Tue, 13 Oct 2020 21:14:25 -0700
-Received: from [10.19.100.177] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 14 Oct
- 2020 04:15:18 +0000
-Subject: Re: [PATCH v3 09/15] arm64: tegra210: XUSB PADCTL add "nvidia,pmc"
- prop
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
-        <jonathanh@nvidia.com>, <kishon@ti.com>,
-        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nkristam@nvidia.com>
-References: <20200909081041.3190157-1-jckuo@nvidia.com>
- <20200909081041.3190157-10-jckuo@nvidia.com> <20200928131859.GJ3065790@ulmo>
-X-Nvconfidentiality: public
-From:   JC Kuo <jckuo@nvidia.com>
-Message-ID: <f4b73f5f-ecb4-a04f-552c-5f70ac34ff8b@nvidia.com>
-Date:   Wed, 14 Oct 2020 12:15:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729922AbgJNETt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 00:19:49 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:19473 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729846AbgJNETs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 00:19:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602649188; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=HOggyxgAIuw5vh136a7l4IRaEFhhlZ9M1Zj7qRah5nQ=; b=SV3VoQMqUJO0R+v+9kMh/WS5FrAERPOpCHOrykzE1pOh5FRmUSfsBT58U6eCODHslS/2argP
+ qKflt4ZmX2JAWitDXL4U2KUEczOHUqDyp/TnBRs1ViRQn4OKy3dqm1hi5QiDEsERg1ReXR0w
+ X5HlroxnQuk+hbhD3tawsbLb+AQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f867c62d63768e57b69e9de (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 04:19:46
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9A3E3C43385; Wed, 14 Oct 2020 04:19:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.24] (unknown [49.37.131.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 50618C433CB;
+        Wed, 14 Oct 2020 04:19:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 50618C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+Subject: Re: [PATCH 1/2] Asoc: qcom: lpass-cpu: Fix clock disable failure
+To:     Mark Brown <broonie@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+References: <1602596386-9886-1-git-send-email-srivasam@codeaurora.org>
+ <20201013151505.GA7913@sirena.org.uk>
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Organization: Qualcomm India Private Limited.
+Message-ID: <49ac01c8-d270-5e9b-360b-87909e550360@codeaurora.org>
+Date:   Wed, 14 Oct 2020 09:49:38 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20200928131859.GJ3065790@ulmo>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201013151505.GA7913@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602648865; bh=gdwix/fqcZp1HpCm+a/EFNedQeQ+/22dDZjpUawqx+U=;
-        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=evb3lUcPjJftqxM6Ngouw3tEc1dr1PICmLC7wy1SRx7G20lBPKH/UQhKPQkyWs4Tr
-         +pvL2wxelJ63MvATjQbMV5CBPQSisZI9onDXymrqi//LvjoUjRgUimhMdqpkYhxMBp
-         yBIW4m+vgHDyL6Um4jEiKs4+xJH5qdTl9zklQzaUq3xYwmsocNxcL/BNPrJE76js1x
-         uR0dXQf1wc3nLIoOl6egwVFHjvR4RKORztyTglsrP0jQ6ROr5OmnFakNC9VZDV3g19
-         RK8VllpZOgDWnNxfzzDnJRiXqm4/MOXSgw/PBfKYeODy8QZSvpLYMJEGB1+QaUAu1x
-         2yO0v9rI8E+ww==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will add a dt-bindings commit for this change.
+Thanks  Mark Brown for your time !!!
 
-Thanks for review.
-JC
+On 10/13/2020 8:45 PM, Mark Brown wrote:
+> On Tue, Oct 13, 2020 at 07:09:46PM +0530, Srinivasa Rao Mandadapu wrote:
+>> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+>>
+>> Disable MI2S bit clock from PAUSE/STOP/SUSPEND usecase
+>> instead of shutdown time. Acheive this by invoking
+>> clk_disable_unprepare API from cpu daiops shutdown to
+>> cpu daiops trigger.
+> I'm missing patch 2 here?
+No.. It's a single patch. By mistake I sent with wrong header.
+>
+>> This Fix is update to the below patch.
+>> https://lore.kernel.org/patchwork/patch/1308101/
+> Fixes should be specified using tags like this:
+>
+>    Fixes: commit 30fb9454ab23 ("selftests/vm: hmm-tests: remove the libhugetlbfs dependency")
+>
+> in the changelog.
+Thanks for your guidance. I will take care of it next time.
+>
+> Please submit patches using subject lines reflecting the style for the
+> subsystem, this makes it easier for people to identify relevant patches.
+> Look at what existing commits in the area you're changing are doing and
+> make sure your subject lines visually resemble what they're doing.
+> There's no need to resubmit to fix this alone.
 
-On 9/28/20 9:18 PM, Thierry Reding wrote:
-> On Wed, Sep 09, 2020 at 04:10:35PM +0800, JC Kuo wrote:
->> PMC driver provides USB sleepwalk registers access to XUSB PADCTL
->> driver. This commit adds a "nvidia,pmc" property which points to
->> PMC node to XUSB PADCTL device node.
->>
->> Signed-off-by: JC Kuo <jckuo@nvidia.com>
->> ---
->> v3:
->>    no change
->>
->>  arch/arm64/boot/dts/nvidia/tegra210.dtsi | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
->> index 829f786af133..67c90a0ea32e 100644
->> --- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
->> +++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
->> @@ -1040,6 +1040,7 @@ padctl: padctl@7009f000 {
->>  		reg = <0x0 0x7009f000 0x0 0x1000>;
->>  		resets = <&tegra_car 142>;
->>  		reset-names = "padctl";
->> +		nvidia,pmc =  <&tegra_pmc>;
-> 
-> I hadn't noticed before but it looks like the DT bindings haven't been
-> updated with this new property.
-> 
-> Thierry
-> 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
