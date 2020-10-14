@@ -2,158 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6350C28DA5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 09:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D2D28DBAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 10:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgJNHPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 03:15:54 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:40358 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728036AbgJNHPy (ORCPT
+        id S1729585AbgJNIel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 04:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729525AbgJNIee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 03:15:54 -0400
-Received: by mail-ej1-f67.google.com with SMTP id p15so3309842ejm.7;
-        Wed, 14 Oct 2020 00:15:52 -0700 (PDT)
+        Wed, 14 Oct 2020 04:34:34 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982D0C051118
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:17:03 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id h7so2470609wre.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 00:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=zWbmKsf7IfupN9FPaXSI1lJLjmRLF2ZdDZQcOkrBeJ4=;
+        b=XjBsGCRCGL7NkLsW0d6QaMBRXBLLsyTMsWFj2+AaNNpryijP4NwC2NHqgGIWW8tan2
+         ENlDexL4OAC491RhF7sljUSuuOWnHZHX9kbiYgsI74OIXGccrmbYu0+5kNkhwqyOKGfg
+         PY9+e7SyTwr7l/s9VwE5Sx3P2RlQUTl7RxIi2vsnR3f5am0GBENuNv1I7k08us05EbXl
+         cXHiqodFJmNiBgdvZg85oiHYOcJFjwKJh0F0p1PA1IaEjgbJo70B3PMqu7fUULmeFplH
+         Z7/IQjSZOrkOihEFvGeBjazQVBRCJharKkLqwY1OkvN60WZtnHN1e62vC2X8I30cqEhJ
+         km0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4MB/WEv7WVbXZ32vpSI6tjTzebAt77Hp+rVbyGH87qE=;
-        b=dvDSGQ0rBl3xy0xVJA73IF0AvHun8UjcSHxYrCJwvysNenGwvvlO5DxOOvmi3A+IwP
-         PUmUcm2AJuLf44TItHxHeaU77UAmeh/GkPwcvtGy/wSKxnyl+l9M6Gvul2Q0bsOpmE4o
-         xxeKDz3qFgu2ix4ojbAnWj4RRY1ErTpViIAkLL3lwMXFDas7XuKp+5VB40qT355PTahe
-         8D1ycfQ30wLNGZl8QVDHst3prXKB2EpZkMvynRa8A6KjOMjlOQXr+uguJLY5OCUIPMXW
-         jTZCH+hvG/sc1T8/iZU5tO+FRVpvzpLDh3NuMZu8YiffEk+wkcBggYPGnLSgjFSaqWL9
-         MXew==
-X-Gm-Message-State: AOAM5330Z1O51wRKJJihDPc/+7gQTT/CQ87cMjO+cwSjrsct5PX0N7uy
-        tMcbr2ZLDvnBs5Dy0Z6TsX0=
-X-Google-Smtp-Source: ABdhPJxuCAYjKRp/eva7cZT3owH1+7r57Z5oPnyVCvomekbZaEZKPotTUv597H2IZrn48haP5D4yzg==
-X-Received: by 2002:a17:906:f151:: with SMTP id gw17mr3759548ejb.119.1602659751468;
-        Wed, 14 Oct 2020 00:15:51 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.240])
-        by smtp.googlemail.com with ESMTPSA id me12sm1104240ejb.108.2020.10.14.00.15.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 14 Oct 2020 00:15:50 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 09:15:47 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=zWbmKsf7IfupN9FPaXSI1lJLjmRLF2ZdDZQcOkrBeJ4=;
+        b=bqgwP+tAU+9mAsQhCeHzN8RvCLbvzEy/VYtjzMG8vEpGBHbACOFWvwgfbcojJg+GB8
+         emjHKUpIpVAw1+TS+jVdq7Cz+bFfZxtUASOtqzI/RCD67pOesJ7hoOEXB6KXluCRGvgc
+         obeD5xBMGU2lZ76Cy5BYUgdz8JBtrzWEE8bGtR4gbRe57xcGRl7GT4RxYuWNCd8989d7
+         n25JENFzk3BvbKxd1KU9+9/p0JikTYUxBBUDeYTS9/Mlgax8ybomVbfOlr/TIYHVtwaJ
+         HoC3itJgkZNh5SuQBMOA7Z5SCx/xCZePlDRtfa90j0z4pbDrNEdeHmNQpTyrXs6/f0Co
+         Ccvg==
+X-Gm-Message-State: AOAM533rbdR3bD3ldnkIECZZuPPNrFsDUeYEf8VL7qGX4Y/Ta2zgtOoY
+        MgIWMe1+9x+ZNvxL3lpQVWY=
+X-Google-Smtp-Source: ABdhPJz1bPXTbhaAmSmG7cwvswYL3JoerujxB5UdsEHiq9Ylw4lTfQybWIKjHn+zZiVOnqjCqFEjtw==
+X-Received: by 2002:adf:ee4c:: with SMTP id w12mr3663436wro.22.1602659822214;
+        Wed, 14 Oct 2020 00:17:02 -0700 (PDT)
+Received: from felia ([2001:16b8:2da8:8200:4c70:9c82:f3bf:bebb])
+        by smtp.gmail.com with ESMTPSA id c185sm2328304wma.44.2020.10.14.00.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 00:17:01 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Wed, 14 Oct 2020 09:17:00 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Joe Perches <joe@perches.com>
+cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
         linux-kernel@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: autofs crash with latest linux-next
-Message-ID: <20201014071547.GA2459@kozik-lap>
-References: <yt9d1ri3nakg.fsf@linux.ibm.com>
- <8a4c7324-4637-7f25-82b6-2fd30aacb73e@de.ibm.com>
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [RFC PATCH v2] checkpatch: add shebang check to
+ EXECUTE_PERMISSIONS
+In-Reply-To: <084a2dabe5463a3528bb052515555f939235c012.camel@perches.com>
+Message-ID: <alpine.DEB.2.21.2010140908240.6186@felia>
+References: <20201013120129.1304101-1-ujjwalkumar0501@gmail.com> <alpine.DEB.2.21.2010140734270.6186@felia> <316d5a53351d10cd1a26ce0c54883da05642c898.camel@perches.com> <alpine.DEB.2.21.2010140812370.6186@felia> <be7deeec0937327e0ddaadf8468d934ed363a533.camel@perches.com>
+ <alpine.DEB.2.21.2010140829150.6186@felia> <04325089b524f20d3de167051bfb81b05083d8b1.camel@perches.com> <alpine.DEB.2.21.2010140842310.6186@felia> <084a2dabe5463a3528bb052515555f939235c012.camel@perches.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8a4c7324-4637-7f25-82b6-2fd30aacb73e@de.ibm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 09:20:12AM +0200, Christian Borntraeger wrote:
-> CC linux-next, Al Viro.
-> 
-> On 12.10.20 09:54, Sven Schnelle wrote:
-> > Hi,
+
+
+On Tue, 13 Oct 2020, Joe Perches wrote:
+
+> On Wed, 2020-10-14 at 08:47 +0200, Lukas Bulwahn wrote:
 > > 
-> > on s390 i see the following crash with linux-next:
+> > On Tue, 13 Oct 2020, Joe Perches wrote:
 > > 
-> > [ 4525.432605] Unable to handle kernel pointer dereference in virtual kernel address space
-> > [ 4525.432612] Failing address: 0000000000000000 TEID: 0000000000000483
-> > [ 4525.432613] Fault in home space mode while using kernel ASCE.
-> > [ 4525.432616] AS:00000000cf048007 R3:00000001fffec007 S:00000001ffff1800 P:000000000000003d 
-> > [ 4525.432640] Oops: 0004 ilc:3 [#1] SMP 
-> > [ 4525.432644] Modules linked in: dm_crypt encrypted_keys lcs ctcm fsm nfsv3 nfs_acl nfs lockd grace quota_v2 quota_tree tun overlay ntfs exfat vfat fat sctp vfio_pci irqbypass vfio_virqfd scsi_debug vhost_vsock vmw_vsock_virtio_transport_common vsock vhost vhost_iotlb vfio_ap kvm loop nft_counter bridge stp llc dm_service_time nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set nf_tables nfnetlink sunrpc dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua s390_trng vfio_ccw vfio_mdev mdev vfio_iommu_type1 vfio zcrypt_cex4 eadm_sch sch_fq_codel ip_tables x_tables ghash_s390 prng aes_s390 des_s390 libdes sha3_512_s390 sha3_256_s390 sha512_s390 sha256_s390 sha1_s390 sha_common pkey zcrypt rng_core autofs4 [last unloaded: dummy_del_mod]
-> > [ 4525.432691] CPU: 9 PID: 1050921 Comm: find Tainted: G           OE     5.9.0-20201011.rc8.git0.d67bc7812221.300.fc32.s390x+next #1
-> > [ 4525.432693] Hardware name: IBM 3906 M04 704 (LPAR)
-> > [ 4525.432694] Krnl PSW : 0704d00180000000 00000000cde29f70 (__kernel_write+0x1a0/0x2a0)
-> > [ 4525.432702]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3 CC:1 PM:0 RI:0 EA:3
-> > [ 4525.432704] Krnl GPRS: 0000000100067343 0000000000000000 0000000000000130 0000000000000001
-> > [ 4525.432705]            0000000000000006 000000005f82be2f 0000000000000130 000000008c6ab568
-> > [ 4525.432728]            0000000084441f00 0000000000000000 0000000000000130 0000000084441f00
-> > [ 4525.432729]            0000000081476000 0000000000000001 00000000cde29ef4 000003e002f5b6f0
-> > [ 4525.432735] Krnl Code: 00000000cde29f62: a7280000		lhi	%r2,0
-> >                           00000000cde29f66: a7f4ff9d		brc	15,00000000cde29ea0
-> >                          #00000000cde29f6a: e310f0f00004	lg	%r1,240(%r15)
-> >                          >00000000cde29f70: e31090000024	stg	%r1,0(%r9)
-> >                           00000000cde29f76: 9104b044		tm	68(%r11),4
-> >                           00000000cde29f7a: a784000f		brc	8,00000000cde29f98
-> >                           00000000cde29f7e: e31003400004	lg	%r1,832
-> >                           00000000cde29f84: b904002a		lgr	%r2,%r10
-> > [ 4525.432748] Call Trace:
-> > [ 4525.432750]  [<00000000cde29f70>] __kernel_write+0x1a0/0x2a0 
-> > [ 4525.432752] ([<00000000cde29ef4>] __kernel_write+0x124/0x2a0)
-> > [ 4525.432756]  [<000003ff80004cfa>] autofs_write+0x5a/0x140 [autofs4] 
-> > [ 4525.432758]  [<000003ff80005262>] autofs_notify_daemon.constprop.0+0x10a/0x1c8 [autofs4] 
-> > [ 4525.432760]  [<000003ff80005872>] autofs_wait+0x552/0x718 [autofs4] 
-> > [ 4525.432762]  [<000003ff800033ca>] autofs_mount_wait+0x5a/0xb0 [autofs4] 
-> > [ 4525.432764]  [<000003ff800048b2>] autofs_d_automount+0x102/0x278 [autofs4] 
-> > [ 4525.432766]  [<00000000cde398fe>] __traverse_mounts+0x9e/0x270 
-> > [ 4525.432768]  [<00000000cde3e7ee>] step_into+0x1de/0x280 
-> > [ 4525.432770]  [<00000000cde3f000>] open_last_lookups+0xb8/0x3f8 
-> > [ 4525.432772]  [<00000000cde3f726>] path_openat+0x86/0x1d0 
-> > [ 4525.432773]  [<00000000cde425b0>] do_filp_open+0x78/0x118 
-> > [ 4525.432776]  [<00000000cde278d0>] do_sys_openat2+0xa8/0x168 
-> > [ 4525.432778]  [<00000000cde27cfa>] __s390x_sys_openat+0x6a/0x98 
-> > [ 4525.432781]  [<00000000ce64f2e8>] system_call+0xdc/0x2a4 
-> > [ 4525.432782] Last Breaking-Event-Address:
-> > [ 4525.432783]  [<00000000cde29efc>] __kernel_write+0x12c/0x2a0
+> > > On Wed, 2020-10-14 at 08:36 +0200, Lukas Bulwahn wrote:
+> > > > On Tue, 13 Oct 2020, Joe Perches wrote:
+> > > > 
+> > > > > On Wed, 2020-10-14 at 08:21 +0200, Lukas Bulwahn wrote:
+> > > > > > What does checkpatch.pl warn about and what does clang-format still warn 
+> > > > > > about, which is generally accepted okay as style in the kernel?
+> > > > > 
+> > > > > clang-format doesn't warn at all, it just reformats.
+> > > > > 
+> > > > You can run clang-format with --dry-run and then it would just state the 
+> > > > proposed changes, right?
+> > > 
+> > > clang-format through at least version 10 does not have
+> > > a --dry-run option.
+> > > 
+> > > 
 > > 
-> > This seems to be caused by the result of merging 0fb702791bf ("autofs:
-> > use __kernel_write() for the autofs pipe writing") and 4d03e3cc5982
+> > Just a quick check:
+> > 
+> > version 9 does not have the --dry-run option:
+> > 
+> > https://releases.llvm.org/9.0.0/tools/clang/docs/ClangFormat.html
+> > 
+> > version 10 does:
+> > 
+> > https://releases.llvm.org/10.0.0/tools/clang/docs/ClangFormat.html
 > 
-> I cannot find the first commit ids. To me it looks like this should be 
+> Perhaps some version 10 variants do, but 10.0.0 does not.
 > 
-> commit 90fb702791bf99b959006972e8ee7bb4609f441b
-> Author:     Linus Torvalds <torvalds@linux-foundation.org>
-> AuthorDate: Tue Sep 29 17:18:34 2020 -0700
-> Commit:     Linus Torvalds <torvalds@linux-foundation.org>
-> CommitDate: Tue Sep 29 17:18:34 2020 -0700
-> 
->     autofs: use __kernel_write() for the autofs pipe writing
-> 
-> instead?
-> 
-> 
-> > ("fs: don't allow kernel reads and writes without iter
-> > ops"). __kernel_write() gets now called with a NULL pointer as pos
-> > argument, but __kernel_write expects a valid pointer as it
-> > fetches/stores the pos value there. Is there a fix pending somewhere?
+> $ which clang-format
+> /usr/local/bin/clang-format
+> $ clang-format --version
+> clang-format version 10.0.0 (git://github.com/llvm/llvm-project.git 305b961f64b75e73110e309341535f6d5a48ed72)
+> $ clang-format --dry-run
+> clang-format: Unknown command line argument '--dry-run'.  Try: 'clang-format --help'
+> clang-format: Did you mean '  --debug'?
+>
 
-Hi All,
+Hmm... either the documentation is wrong; or the clang-format version 
+10.0.0 you are was an early version 10 during development before the 
+release and did not have that feature yet? 
 
-+CC Kees Cook (reviewer),
+$ clang-format-10 --version
+Ubuntu clang-format version 
+10.0.1-++20200928083909+ef32c611aa2-1~exp1~20200928185400.194
 
-I hit this since few days as well. Although the bisect points to the
-merge, the issue looks like a result of mentioned commit 4d03e3cc5982
-("fs: don't allow kernel reads and writes without iter ops").
-
-The __kernel_read() last argument 'pos' can be NULL and it is
-dereferenced here (added by the commit):
-
- 525 ssize_t __kernel_write(struct file *file, const void *buf, size_t count, loff_t *pos)
-...
- 547         kiocb.ki_pos = *pos;
- 548         iov_iter_kvec(&iter, WRITE, &iov, 1, iov.iov_len);
+$ clang-format-10 --help | grep 'dry-run'
+  --dry-run                  - If set, do not actually make the formatting 
+changes
+  --ferror-limit=<uint>      - Set the maximum number of clang-format
+    errors to emit before stopping (0 = no limit). Used only with --dry-run or -n
+  -n                         - Alias for --dry-run
 
 
-The __kernel_read() is called with NULL in fs/autofs/waitq.c:
+You have probably seen that clang/llvm-11 was released; I guess a good 
+motivation for us to update our clang setup? :)
 
- 45 static int autofs_write(struct autofs_sb_info *sbi,
- 46                         struct file *file, const void *addr, int bytes)
-
-...
- 54         mutex_lock(&sbi->pipe_mutex);
- 55         while (bytes) {
- 56                 wr = __kernel_write(file, data, bytes, NULL);
-
-Best regards,
-Krzysztof
-
+Lukas
