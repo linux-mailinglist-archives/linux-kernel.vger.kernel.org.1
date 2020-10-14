@@ -2,322 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC57D28E1E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11D828E1E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 16:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388889AbgJNOGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 10:06:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25578 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725977AbgJNOGP (ORCPT
+        id S1730442AbgJNOJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 10:09:17 -0400
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:59027 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727684AbgJNOJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 10:06:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602684372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qO9YuI5vYU+8HO6/qC2Mebe+6fwnSb3Ibhbg71I+lw0=;
-        b=HdPl8h10PiBMKC93RyFLqpua9Zb1JljNMD/z56RnewiX9yF4kDPGyYhJmVPbw58i9USoP2
-        1WoUnirSvn9KB+dq1xCEMzpN5aSzCb+I80yTsBRwDB4eFYEXo3d3yCEiU2OZmSa2n1gsM9
-        0NESzrKZDTyH926xU176p7MiZRkq2/U=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-GKnbqIjIOKiS9SRBdQv6ig-1; Wed, 14 Oct 2020 10:06:09 -0400
-X-MC-Unique: GKnbqIjIOKiS9SRBdQv6ig-1
-Received: by mail-ed1-f71.google.com with SMTP id s2so1223002edw.21
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 07:06:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qO9YuI5vYU+8HO6/qC2Mebe+6fwnSb3Ibhbg71I+lw0=;
-        b=XAxWUPsAGwZW7PSaOImIJm9jhld9144sJWE63tPgvco1w1XZYDrixCYvC0hNQSEYmw
-         4CTKT7qreLJFCaz9CK1uOJsOg/znDopWfY1MSyCmxfVpkNaKoZJSZlfPvDjUg7SvE1G8
-         lABNFrKJMJspLwFC3VSfUt1J8m27wnsrfMyK7hi2xBt4ovDBJJ8Nnf8/w2Kl5BTtu3jO
-         JJ7fWEU7sUif3z9FpJBAG5li7itOXl10tud4dOEJgKgYskBGVuVTljG1p5TLKFPSyLAd
-         dxQ7pMUaWga4L4W2jqwabQIv4YD5H/kRMnSJbaRTXIkuexHf05eqPQ1QsnL0cC56QcQV
-         3YvA==
-X-Gm-Message-State: AOAM532ymzyut0mA+SXBJ+l5Jd9WSATBxPQ6D9XnneaDebjX40vgeXix
-        MRoe7F1LAYGfV3/9rKXBzivxVGK8/RqsFe2pNUUUEtJcUPcn5hYVYBitOPGu6Q80ydTQ1TDIO7k
-        ijRSJRVz7qMtjUXBfRXgviiIF
-X-Received: by 2002:a17:907:1010:: with SMTP id ox16mr5557105ejb.379.1602684368352;
-        Wed, 14 Oct 2020 07:06:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFYV0HIxJLic22dETA5tEbCOXHOHkadVl08yBGKGSQeKvrzNhub3Ay4NkFWD7/ezKWcCUqQA==
-X-Received: by 2002:a17:907:1010:: with SMTP id ox16mr5557063ejb.379.1602684367860;
-        Wed, 14 Oct 2020 07:06:07 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id o12sm1854210ejb.36.2020.10.14.07.06.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 07:06:07 -0700 (PDT)
-Subject: Re: [PATCH 0/4] powercap/dtpm: Add the DTPM framework
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Mark Pearson <mpearson@lenovo.com>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com>
- <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
- <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com>
- <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
- <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com>
- <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <87d9a808-39d6-4949-c4f9-6a80d14a3768@redhat.com>
-Date:   Wed, 14 Oct 2020 16:06:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 14 Oct 2020 10:09:16 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id BD1232800B483;
+        Wed, 14 Oct 2020 16:09:12 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id A41F418764F; Wed, 14 Oct 2020 16:09:12 +0200 (CEST)
+Date:   Wed, 14 Oct 2020 16:09:12 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: Use after free in bcm2835_spi_remove()
+Message-ID: <20201014140912.GB24850@wunner.de>
+References: <bd6eaa71-46cc-0aca-65ff-ae716864cbe3@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd6eaa71-46cc-0aca-65ff-ae716864cbe3@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Oct 13, 2020 at 04:48:42PM -0700, Florian Fainelli wrote:
+> With KASAN now working on ARM 32-bit, I was able to get the following
+> trace upon reboot which invokes bcm2835_spi_shutdown() calling
+> bcm2835_spi_remove(), the same can be triggered by doing a driver unbind:
 
-On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
-> Hi Hans,
-> 
-> On Tue, Oct 13, 2020 at 3:04 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> Hi Rafael,
->>
->> On 10/12/20 6:37 PM, Rafael J. Wysocki wrote:
->>> On Mon, Oct 12, 2020 at 1:46 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>
->> <snip>
->>
->>>>> A side note, related to your proposal, not this patch. IMO it suits
->>>>> better to have /sys/power/profile.
->>>>>
->>>>> cat /sys/power/profile
->>>>>
->>>>> power
->>>>> balanced_power *
->>>>> balanced
->>>>> balanced_performance
->>>>> performance
->>>>>
->>>>> The (*) being the active profile.
->>>>
->>>> Interesting the same thing was brought up in the discussion surrounding
->>>> RFC which I posted.
->>>>
->>>> The downside against this approach is that it assumes that there
->>>> only is a single system-wide settings. AFAIK that is not always
->>>> the case, e.g. (AFAIK):
->>>>
->>>> 1. The intel pstate driver has something like this
->>>>       (might this be the rapl setting you mean? )
->>>>
->>>> 2. The X1C8 has such a setting for the embedded-controller, controlled
->>>>       through the ACPI interfaces which thinkpad-acpi used
->>>>
->>>> 3. The hp-wmi interface allows selecting a profile which in turn
->>>>       (through AML code) sets a bunch of variables which influence how
->>>>       the (dynamic, through mjg59's patches) DPTF code controls various
->>>>       things
->>>>
->>>> At least the pstate setting and the vendor specific settings can
->>>> co-exist. Also the powercap API has a notion of zones, I can see the
->>>> same thing here, with a desktop e.g. having separate performance-profile
->>>> selection for the CPU and a discrete GPU.
->>>>
->>>> So limiting the API to a single /sys/power/profile setting seems a
->>>> bit limited and I have the feeling we will regret making this
->>>> choice in the future.
->>>>
->>>> With that said your proposal would work well for the current
->>>> thinkpad_acpi / hp-wmi cases, so I'm not 100% against it.
->>>>
->>>> This would require adding some internal API to the code which
->>>> owns the /sys/power root-dir to allow registering a profile
->>>> provider I guess. But that would also immediately bring the
->>>> question, what if multiple drivers try to register themselves
->>>> as /sys/power/profile provider ?
->>>
->>> It doesn't need to work this way IMV.
->>>
->>> It may also work by allowing drivers (or whatever kernel entities are
->>> interested in that) to subscribe to it, so that they get notified
->>> whenever a new value is written to it by user space (eg. each driver
->>> may be able to register a callback to be invoked when that happens).
->>> The information coming from user space will just be passed to the
->>> subscribers of that interface and they will do about it what they want
->>> (eg. it may be translated into a value to be written to a
->>> performance-vs-power interface provided by the platform or similar).
->>>
->>> This really is similar to having a class interface with one file per
->>> "subscribed" device except that the aggregation is done in the kernel
->>> and not in user space and the subscribers need not be related to
->>> specific devices.  It still allows to avoid exposing the low-level
->>> interfaces to user space verbatim and it just passes the "policy"
->>> choice from user space down to the entities that can take it into
->>> account.
->>
->> First of all thank you for your input, with your expertise in this
->> area your input is very much appreciated, after all we only get
->> one chance to get the userspace API for this right.
->>
->> Your proposal to have a single sysfs file for userspace to talk
->> to and then use an in kernel subscription mechanism for drivers
->> to get notified of writes to this file is interesting.
->>
->> But I see 2 issues with it:
->>
->> 1. How will userspace know which profiles are actually available ?
->>
->> An obvious solution is to pick a set of standard names and let
->> subscribers map those as close to their own settings as possible,
->> the most often mentioned set of profile names in this case seems to be:
->>
->> low_power
->> balanced_power
->> balanced
->> balanced_performance
->> performance
->>
->> Which works fine for the thinkpad_acpi case, but not so much for
->> the hp-wmi case. In the HP case what happens is that a WMI call
->> is made which sets a bunch of ACPI variables which influence
->> the DPTF code (this assumes we have some sort of DPTF support
->> such as mjg59's reverse engineered support) but the profile-names
->> under Windows are: "Performance", "HP recommended", "Cool" and
->> "Quiet".  If you read the discussion from the
->> "[RFC] Documentation: Add documentation for new performance_profile sysfs class"
->> thread you will see this was brought up as an issue there.
-> 
-> Two different things seem to be conflated here.  One is how to pass a
-> possible performance-vs-power preference coming from user space down
-> to device drivers or generally pieces of kernel code that can adjust
-> the behavior and/or hardware settings depending on what that
-> preference is and the other is how to expose OEM-provided DPTF system
-> profile interfaces to user space.
+Thank you for the report.  Apparently the problem is that
+spi_unregister_controller() drops the last ref on the controller,
+causing it to be freed, and afterwards we access the controller's
+private data, which is part of the same allocation as
+struct spi_controller:
 
-I was hoping / thinking that we could use a single API for both of
-these. But I guess that it makes sense to see them as 2 separate
-things, esp. since DPTF profiles seem to be somewhat free-form
-where as a way to pass a performance-pref to a device could use
-a fixes set of values.
+bcm2835_spi_remove()
+  spi_unregister_controller()
+    device_unregister()
+      put_device()
+        spi_controller_release()  #  spi_master_class.dev_release()
+	  kfree(ctlr)
+  bcm2835_dma_release(ctlr, bs)
+  ...
 
-So lets say that we indeed want to treat these 2 separately,
-then I guess that the issue at hand / my reason to start a
-discussion surrounding this is allowing userspace to selecting
-the DPTF system profile.
+However, when I submitted commit 9dd277ff92d0, I double-checked that
+the kfree() happens after bcm2835_spi_remove() has finished and I
+even wrote in the commit message:
 
-The thinkpad_acpi case at hand is not using DPTF, but that is
-because Lenovo decided to implement dynamic DPTF like behavior
-inside their embedded controller (for when running Linux) since
-DPTF is atm not really supported all that well under Linux and
-Lenovo was getting a lot of complaints about sub-optimal
-performance because of this.
+   "Note that
+    the struct spi_controller as well as the driver-private data are not
+    freed until after bcm2835_spi_remove() has finished, so accessing them
+    is safe."
 
-So the thinkpad_acpi solution is in essence a replacement
-for DPTF and it should thus use the same userspace API as
-other mechanisms to select DPTF system profiles.
+I'm puzzled now that it doesn't work as intended.  I do not see any
+recent commits which changed the behavior, so I must have made a
+mistake and missed something.
 
-And if we limit this new userspace API solely to setting DPTF
-system profiles, then their will indeed be only 1 provider for
-this for the entire system.
+The below patch should fix the issue.  Could you verify that?
+Unfortunately I do not have access to a RasPi currently.
 
-> The former assumes that there is a common set of values that can be
-> understood and acted on in a consistent way by all of the interested
-> entities within the kernel and the latter is about passing information
-> from user space down to a side-band power control mechanism working in
-> its own way behind the kernel's back (and possibly poking at multiple
-> hardware components in the platform in its own way).
+An alternative to this patch would be a devm function which acquires
+a ref on the spi controller on ->probe() and automatically releases it
+after ->remove() has finished.  This could be used by other SPI drivers
+as well.
 
-Ack.
+Thanks,
 
-> IMO there is no way to provide a common interface covering these two
-> cases at the same time.
+Lukas
 
-I see your point, esp. the free form vs common set of values
-argument seems to be exactly what we have been going in circles
-about during the discussion about this so far.
+-- >8 --
 
->> The problem here is that both "cool" and "quiet" could be
->> interpreted as low-power. But it seems that they actually mean
->> what they say, cool focuses on keeping temps low, which can
->> also be done by making the fan-profile more aggressive. And quiet
->> is mostly about keeping fan speeds down, at the cost of possible
->> higher temperatures.  IOW we don't really have a 1 dimensional
->> axis.
-> 
-> Well, AFAICS, DPTF system profile interfaces coming from different
-> OEMs will be different, but they are about side-band power control and
-> there can be only one thing like that in a platform at the same time.
-
-Ack.
-
->> My class proposal fixes this by having a notion of both
->> standardized names (because anything else would suck) combined
->> with a way for drivers to advertise which standardized names
->> the support. So in my proposal I simply add quiet and cool
->> to the list of standard profile names, and then the HP-wmi
->> driver can list those as supported, while not listing
->> low_power as a supported profile.  This way we export the
->> hardware interface to userspace as is (as much as possible)
->> while still offering a standardized interface for userspace
->> to consume.  Granted if userspace now actually want to set
->> a low_power profile, we have just punted the problem to userspace
->> but I really do not see a better solution.
-> 
-> First, a common place to register a DPTF system profile seems to be
-> needed and, as I said above, I wouldn't expect more than one such
-> thing to be present in the system at any given time, so it may be
-> registered along with the list of supported profiles and user space
-> will have to understand what they mean.
-
-Mostly Ack, I would still like to have an enum for DPTF system
-profiles in the kernel and have a single piece of code map that
-enum to profile names. This enum can then be extended as
-necessary, but I want to avoid having one driver use
-"Performance" and the other "performance" or one using
-"performance-balanced" and the other "balanced-performance", etc.
-
-With the goal being that new drivers use existing values from
-the enum as much as possible, but we extend it where necessary.
-
-> Second, irrespective of the above, it may be useful to have a
-> consistent way to pass performance-vs-power preference information
-> from user space to different parts of the kernel so as to allow them
-> to adjust their operation and this could be done with a system-wide
-> power profile attribute IMO.
-
-I agree, which is why I tried to tackle both things in one go,
-but as you said doing both in 1 API is probably not the best idea.
-So I believe we should park this second issue for now and revisit it
-when we find a need for it.
-
-Do you have any specific userspace API in mind for the
-DPTF system profile selection?
-
-And to get one thing out of the way, in the other thread we had some
-discussion about using a single attribute where a cat would result in:
-
-low-power [balanced] performance
-
-Where the [] indicate the active profile, vs having 2 sysfs attributes
-one ro with space-separated available (foo_available) values and one
-wr with the actual/current value. FWIW userspace folks have indicated
-they prefer the solution with 2 separate sysfs-attributes and that is
-also what e.g. cpufreq is currently using for governor selection.
-
-I don't really have a strong opinion either way.
-
-Regards,
-
-Hans
-
+diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
+index 41986ac..5254fda 100644
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -1377,6 +1377,7 @@ static int bcm2835_spi_remove(struct platform_device *pdev)
+ 
+ 	bcm2835_debugfs_remove(bs);
+ 
++	spi_controller_get(ctlr);
+ 	spi_unregister_controller(ctlr);
+ 
+ 	bcm2835_dma_release(ctlr, bs);
+@@ -1386,6 +1387,7 @@ static int bcm2835_spi_remove(struct platform_device *pdev)
+ 		   BCM2835_SPI_CS_CLEAR_RX | BCM2835_SPI_CS_CLEAR_TX);
+ 
+ 	clk_disable_unprepare(bs->clk);
++	spi_controller_put(ctlr);
+ 
+ 	return 0;
+ }
 
