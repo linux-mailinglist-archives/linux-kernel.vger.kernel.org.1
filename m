@@ -2,111 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA03D28DE55
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99B528DE58
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 12:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729320AbgJNKL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 06:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbgJNKLz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 06:11:55 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9E9C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:11:55 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id c141so3058586lfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 03:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=D9gEsuKCqY5ac7Bsj84oLcUjfey4ei4xQdjhdzjkOSE=;
-        b=nvcLzqFy+/hxA1Pw1QucXdkoo5krViAR74k1syfntvZjJrKSOzyInK5lkbaIHqJoyR
-         LJeJ4M9TW4P5OQ+EYDyhRbMFooUQhx4toDUOdTGAftO9o2SM1y0f2CwGpxGmmN1agbLJ
-         U2G8kd5llQ0jUV5IyKjbW2KWm2Tmaz0VtT6Qw+6vp619RZSdxhTxxYHjKLyHfk+DJS1q
-         z/1sIh1HUPtbjHZGu44tO6hzbe2R+A0eT0DLN4g8UBTs5y9KJBProQcDiv/ArNUyMlxK
-         kh+QvJRK+SQkzPdLAlhpFl98vhGzSO1xvDPURjPnk+frxgSHClhUTxzU6TJZV1YHn2zN
-         vjVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=D9gEsuKCqY5ac7Bsj84oLcUjfey4ei4xQdjhdzjkOSE=;
-        b=r0nB35nHUefB7QeACxr3lTSRGKh6T4TFoeXtC8l6fUt31UDRq5grR0F3bPS1oiqJr4
-         iRH8D5vOQF5EQytULavZH+lUOtK9U1AqTy/UHdDK6gmPKYl6pZX57rVqjAaVrK64fLKx
-         itM/OH9ZL+tRJhS5fgtGB+5md9uH2sP84IKgzj2/VgWOUsB1FUZMA0Lqp5Qpyt/08Acl
-         y9/+ggQvY4bddqxT9E2qqznbaES7m4guoKDkWHEunbEIB9jw/ssdCDFer/27eLuVsfWL
-         yn2qwi63VAOFN4chxAcerQ0S5k+jjdBnBrIY5UnxBQ4OApc7wXsvUWyDDwnkqHuFbEZy
-         R8rw==
-X-Gm-Message-State: AOAM5324NjCjkwMl8YtpTpFsC/n6PwrkUf5U3jl5JuMBk8V/T6cdC9CL
-        KyXDzYHNz7JgwMfIqilBlr1wyA==
-X-Google-Smtp-Source: ABdhPJzyMrzpeDZ4LfCDAueIHnsskeqRxsVCSXw9df6G4ICj30Qq1EywTW97Y/fPEEnApfVlfu1XnA==
-X-Received: by 2002:a05:6512:1dd:: with SMTP id f29mr1256228lfp.379.1602670313884;
-        Wed, 14 Oct 2020 03:11:53 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id f9sm956972lfc.164.2020.10.14.03.11.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 03:11:52 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 12:11:52 +0200
-From:   Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     linux-renesas-soc@vger.kernel.org, geert+renesas@glider.be,
-        laurent.pinchart@ideasonboard.com, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] dt-bindings: media: renesas,vin: Add V3U support
-Message-ID: <20201014101152.mqmv2klq2mwsjlpf@oden.dyn.berto.se>
-References: <20201014094443.11070-1-jacopo+renesas@jmondi.org>
- <20201014094443.11070-6-jacopo+renesas@jmondi.org>
+        id S1729391AbgJNKML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 06:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726682AbgJNKML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 06:12:11 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F3802068E;
+        Wed, 14 Oct 2020 10:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602670328;
+        bh=QLH6xolUMaD7r3TsNcCTarAJjxBxW9jxTS8NZIcoFvI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ghRecAvM6BKoaqKwEF4vLElp1CZohKWqJspY+78hPfKrkV9oMDAF9p8HRgZ0FNOH7
+         yfvAf6/CDGoC6JL8EaBCVTZ2TdIVp1XjvCFvqh3KZ/aK9VfqAHLhUzLdwZoZFsPETJ
+         DM2jmn+KoQNb+NoQKqvaozWFdje/ZBKNy2HIqsJc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.19.151
+Date:   Wed, 14 Oct 2020 12:12:42 +0200
+Message-Id: <16026703628599@kroah.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201014094443.11070-6-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+I'm announcing the release of the 4.19.151 kernel.
 
-Thanks for your patch.
+All users of the 4.19 kernel series must upgrade.
 
-On 2020-10-14 11:44:42 +0200, Jacopo Mondi wrote:
-> Add compatible string definition for R-Car V3U.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  Documentation/devicetree/bindings/media/renesas,vin.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/renesas,vin.yaml b/Documentation/devicetree/bindings/media/renesas,vin.yaml
-> index ad2fe660364b..7b629a6ea035 100644
-> --- a/Documentation/devicetree/bindings/media/renesas,vin.yaml
-> +++ b/Documentation/devicetree/bindings/media/renesas,vin.yaml
-> @@ -51,6 +51,7 @@ properties:
->                - renesas,vin-r8a77980 # R-Car V3H
->                - renesas,vin-r8a77990 # R-Car E3
->                - renesas,vin-r8a77995 # R-Car D3
-> +              - renesas,vin-r8a779a0 # R-Car V3U
+The updated 4.19.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Documenting the compat string here might give the wrong impression the 
-IP is supported. Which it's not as the V3U is quiet different then the 
-it's siblings. Whit a new pipeline and small but important changes in in 
-the register set. I'm primarily thinking about that the IFMD register is 
-gone and dealing with that will be quiet significant work in the driver.
+thanks,
 
-I'm not yet 100% sure the best idea is to support V3U with this driver, 
-maybe it's finally time to make it more modular, with more distinct 
-support for Gen2, Gen3 and a new module for V3U?
+greg k-h
 
-> 
->    reg:
->      maxItems: 1
-> --
-> 2.28.0
-> 
+------------
 
--- 
-Regards,
-Niklas Söderlund
+ Makefile                                               |    2 
+ arch/arm64/boot/dts/altera/socfpga_stratix10_socdk.dts |    1 
+ drivers/base/dd.c                                      |    5 
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c                |    1 
+ drivers/gpu/drm/nouveau/nouveau_mem.c                  |    2 
+ drivers/i2c/busses/i2c-i801.c                          |    1 
+ drivers/i2c/busses/i2c-meson.c                         |   42 ++++--
+ drivers/i2c/busses/i2c-owl.c                           |    6 
+ drivers/mmc/core/queue.c                               |    2 
+ drivers/mtd/nand/raw/sunxi_nand.c                      |    2 
+ drivers/net/bonding/bond_main.c                        |    1 
+ drivers/net/ethernet/mellanox/mlx5/core/en_fs.c        |   14 +-
+ drivers/net/ethernet/renesas/ravb_main.c               |  110 ++++++++---------
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c   |   15 --
+ drivers/net/macsec.c                                   |    4 
+ drivers/net/phy/Kconfig                                |    1 
+ drivers/net/team/team.c                                |    3 
+ drivers/net/usb/ax88179_178a.c                         |    1 
+ drivers/net/usb/rtl8150.c                              |   16 +-
+ drivers/nvme/host/core.c                               |    4 
+ drivers/platform/x86/Kconfig                           |    1 
+ drivers/platform/x86/intel-vbtn.c                      |   64 +++++++--
+ drivers/platform/x86/thinkpad_acpi.c                   |    6 
+ drivers/video/console/newport_con.c                    |    7 -
+ drivers/video/fbdev/core/fbcon.c                       |   12 +
+ drivers/video/fbdev/core/fbcon.h                       |    7 -
+ drivers/video/fbdev/core/fbcon_rotate.c                |    1 
+ drivers/video/fbdev/core/tileblit.c                    |    1 
+ fs/cifs/smb2ops.c                                      |    2 
+ include/linux/font.h                                   |   13 ++
+ include/linux/khugepaged.h                             |    5 
+ include/net/xfrm.h                                     |   16 --
+ kernel/events/core.c                                   |    5 
+ kernel/umh.c                                           |    9 +
+ lib/fonts/font_10x18.c                                 |    9 -
+ lib/fonts/font_6x10.c                                  |    9 -
+ lib/fonts/font_6x11.c                                  |    9 -
+ lib/fonts/font_7x14.c                                  |    9 -
+ lib/fonts/font_8x16.c                                  |    9 -
+ lib/fonts/font_8x8.c                                   |    9 -
+ lib/fonts/font_acorn_8x8.c                             |    9 -
+ lib/fonts/font_mini_4x6.c                              |    8 -
+ lib/fonts/font_pearl_8x8.c                             |    9 -
+ lib/fonts/font_sun12x22.c                              |    9 -
+ lib/fonts/font_sun8x16.c                               |    7 -
+ mm/khugepaged.c                                        |   25 +++
+ mm/page_alloc.c                                        |    3 
+ net/openvswitch/conntrack.c                            |   22 ++-
+ net/rxrpc/conn_event.c                                 |    6 
+ net/rxrpc/key.c                                        |   18 ++
+ net/sctp/auth.c                                        |    1 
+ net/wireless/nl80211.c                                 |    3 
+ net/xfrm/xfrm_interface.c                              |    2 
+ net/xfrm/xfrm_state.c                                  |   42 +++++-
+ tools/perf/builtin-top.c                               |    4 
+ 55 files changed, 394 insertions(+), 210 deletions(-)
+
+Aaron Ma (1):
+      platform/x86: thinkpad_acpi: re-initialize ACPI buffer size when reuse
+
+Anant Thazhemadam (3):
+      net: wireless: nl80211: fix out-of-bounds access in nl80211_del_key()
+      net: team: fix memory leak in __team_options_register
+      net: usb: rtl8150: set random MAC address when set_ethernet_addr() fails
+
+Antony Antony (4):
+      xfrm: clone XFRMA_SET_MARK in xfrm_do_migrate
+      xfrm: clone XFRMA_REPLAY_ESN_VAL in xfrm_do_migrate
+      xfrm: clone XFRMA_SEC_CTX in xfrm_do_migrate
+      xfrm: clone whole liftime_cur structure in xfrm_do_migrate
+
+Aya Levin (2):
+      net/mlx5e: Fix VLAN cleanup flow
+      net/mlx5e: Fix VLAN create flow
+
+Chaitanya Kulkarni (1):
+      nvme-core: put ctrl ref when module ref get fail
+
+Coly Li (1):
+      mmc: core: don't set limits.discard_granularity as 0
+
+Cristian Ciocaltea (1):
+      i2c: owl: Clear NACK and BUS error bits
+
+David Howells (3):
+      rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()
+      rxrpc: Fix some missing _bh annotations on locking conn->state_lock
+      rxrpc: Fix server keyring leak
+
+Dinh Nguyen (1):
+      arm64: dts: stratix10: add status to qspi dts node
+
+Dumitru Ceara (1):
+      openvswitch: handle DNAT tuple collision
+
+Eric Dumazet (4):
+      macsec: avoid use-after-free in macsec_handle_frame()
+      sctp: fix sctp_auth_init_hmacs() error path
+      team: set dev->needed_headroom in team_setup_by_port()
+      bonding: set dev->needed_headroom in bond_setup_by_slave()
+
+Geert Uytterhoeven (1):
+      Revert "ravb: Fixed to be able to unload modules"
+
+Greg Kroah-Hartman (1):
+      Linux 4.19.151
+
+Hans de Goede (2):
+      platform/x86: intel-vbtn: Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360
+      platform/x86: intel-vbtn: Switch to an allow-list for SW_TABLET_MODE reporting
+
+Herbert Xu (1):
+      xfrm: Use correct address family in xfrm_state_find
+
+Hugh Dickins (1):
+      mm/khugepaged: fix filemap page_to_pgoff(page) != offset
+
+Jean Delvare (1):
+      i2c: i801: Exclude device from suspend direct complete optimization
+
+Jerome Brunet (1):
+      i2c: meson: fix clock setting overwrite
+
+Kajol Jain (1):
+      perf: Fix task_function_call() error handling
+
+Karol Herbst (1):
+      drm/nouveau/mem: guard against NULL pointer access in mem_del
+
+Linus Torvalds (1):
+      usermodehelper: reset umask to default before executing user process
+
+Marc Dionne (1):
+      rxrpc: Fix rxkad token xdr encoding
+
+Miquel Raynal (1):
+      mtd: rawnand: sunxi: Fix the probe error path
+
+Necip Fazil Yildiran (1):
+      platform/x86: fix kconfig dependency warning for FUJITSU_LAPTOP
+
+Nicolas Belin (1):
+      i2c: meson: fixup rate calculation with filter delay
+
+Peilin Ye (3):
+      fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
+      Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
+      fbcon: Fix global-out-of-bounds read in fbcon_get_font()
+
+Philip Yang (1):
+      drm/amdgpu: prevent double kfree ttm->sg
+
+Randy Dunlap (1):
+      mdio: fix mdio-thunder.c dependency & build error
+
+Sabrina Dubroca (1):
+      xfrmi: drop ignore_df check before updating pmtu
+
+Tetsuo Handa (1):
+      driver core: Fix probe_count imbalance in really_probe()
+
+Tom Rix (1):
+      platform/x86: thinkpad_acpi: initialize tp_nvram_state variable
+
+Tommi Rantala (1):
+      perf top: Fix stdio interface input handling with glibc 2.28+
+
+Vijay Balakrishna (1):
+      mm: khugepaged: recalculate min_free_kbytes after memory hotplug as expected by khugepaged
+
+Vladimir Zapolskiy (1):
+      cifs: Fix incomplete memory allocation on setxattr path
+
+Voon Weifeng (1):
+      net: stmmac: removed enabling eee in EEE set callback
+
+Wilken Gottwalt (1):
+      net: usb: ax88179_178a: fix missing stop entry in driver_info
+
