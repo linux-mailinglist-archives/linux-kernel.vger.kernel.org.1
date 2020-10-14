@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532BF28DC58
-	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7123E28DC5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 14 Oct 2020 11:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgJNJFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 05:05:35 -0400
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:65507 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgJNJFe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:05:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1602666335; x=1634202335;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=y4uF4ZEBK32Jc4xw6gI6FEIourHHlYCRqz8nki0gYyI=;
-  b=qOkMFX5sufrRtwI98Q7oKihHHXk37ODwvS3A6bG83oyN/IH2ycib0lcC
-   Q2oxQIV+Cy0C5pQbEnXqWfgUwEYH0txiSN45eecLiplhhORP/4moc1i+u
-   /CRwTHoO9JFt68ueghICBuh2Ugl5sx94+Wr3LvJHmflQd9DIDH7LUsGgj
-   I=;
-X-IronPort-AV: E=Sophos;i="5.77,374,1596499200"; 
-   d="scan'208";a="83212214"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 14 Oct 2020 09:05:21 +0000
-Received: from EX13D16EUB003.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 10167A2236;
-        Wed, 14 Oct 2020 09:05:16 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.71) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 14 Oct 2020 09:05:06 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "David Duncan" <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        "David Woodhouse" <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Karen Noel <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v1] nitro_enclaves: Fixup type of the poll result assigned value
-Date:   Wed, 14 Oct 2020 12:05:00 +0300
-Message-ID: <20201014090500.75678-1-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        id S1728623AbgJNJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 05:06:41 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:46685 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726780AbgJNJGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 05:06:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602666399; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=MYYoWLeS8eltVgolk99JskKAu43wy+MVbWHV08U+L7w=; b=HAf/lOQD4fPV2l+c+ycJVkzI0nO91uWIujo7T+JJW5T1fClXzYBlxjlywweVkpVZOSJPuuQ7
+ 3vlfLxLlCAbtgSKE2v6WrcRUhuMvmUgim0WDFq47c5tmOidN4zBeCkuJ5jEujmXAjlC4ItY/
+ zukJtR2Gt3y1iN6ONgHUZJX0Qo4=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f86bf6bad37af35eccc1644 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 14 Oct 2020 09:05:47
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AB5EDC43395; Wed, 14 Oct 2020 09:05:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.66.241] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02532C433C9;
+        Wed, 14 Oct 2020 09:05:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 02532C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v10 4/4] arm64: boot: dts: qcom: pm8150b: Add DTS node for
+ PMIC VBUS booster
+To:     Rob Herring <robh@kernel.org>
+Cc:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
+        agross@kernel.org, gregkh@linuxfoundation.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jackp@codeaurora.org,
+        sergei.shtylyov@gmail.com
+References: <20201008235934.8931-1-wcheng@codeaurora.org>
+ <20201008235934.8931-5-wcheng@codeaurora.org>
+ <20201013150316.GB3497815@bogus>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <77530347-cef9-2b06-dabe-678ae02ea7d5@codeaurora.org>
+Date:   Wed, 14 Oct 2020 02:05:45 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D43UWC001.ant.amazon.com (10.43.162.69) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20201013150316.GB3497815@bogus>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the assigned value of the poll result to be EPOLLHUP instead of
-POLLHUP to match the __poll_t type.
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/virt/nitro_enclaves/ne_misc_dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev.c b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-index f06622b48d69..9148566455e8 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev.c
-@@ -1508,7 +1508,7 @@ static __poll_t ne_enclave_poll(struct file *file, poll_table *wait)
- 	if (!ne_enclave->has_event)
- 		return mask;
- 
--	mask = POLLHUP;
-+	mask = EPOLLHUP;
- 
- 	return mask;
- }
+On 10/13/2020 8:03 AM, Rob Herring wrote:
+> On Thu, Oct 08, 2020 at 04:59:34PM -0700, Wesley Cheng wrote:
+>> Add the required DTS node for the USB VBUS output regulator, which is
+>> available on PM8150B.  This will provide the VBUS source to connected
+>> peripherals.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/pm8150b.dtsi   | 6 ++++++
+>>  arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 4 ++++
+>>  2 files changed, 10 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
+>> index 2bf385f5a55a..49ea597cc0c5 100644
+>> --- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
+>> @@ -53,6 +53,12 @@ power-on@800 {
+>>  			status = "disabled";
+>>  		};
+>>  
+>> +		pm8150b_vbus: regulator@1100 {
+>> +			compatible = "qcom,pm8150b-vbus-reg";
+>> +			status = "disabled";
+>> +			reg = <0x1100>;
+>> +		};
+>> +
+>>  		pm8150b_typec: usb-typec@1500 {
+>>  			compatible = "qcom,pm8150b-usb-typec";
+>>  			status = "disabled";
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
+>> index 6c6325c3af59..ba3b5b802954 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
+>> +++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
+>> @@ -409,6 +409,10 @@ &ufs_mem_phy {
+>>  	vdda-pll-max-microamp = <19000>;
+>>  };
+>>  
+>> +&pm8150b_vbus {
+>> +	status = "okay";
+>> +};
+> 
+> Why aren't you enabling the TypeC node and providing a complete example?
+> 
+
+Hi Rob,
+
+I have another patch series which enables the type C node and adds QMP
+PHY driver changes for setting the SS lane select MUX.
+
+https://patchwork.kernel.org/project/linux-arm-msm/list/?series=361971
+
+Just wanted to work on getting a PMIC based type C driver out there,
+which can be utilized in designs where the QMP PHY lane select mux is
+not going to be used. (ie using a FUSB340 as a lane select mux instead
+of the QMP PHY mux)
+
+Thanks
+
+Regards,
+Wesley Cheng
+
 -- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
