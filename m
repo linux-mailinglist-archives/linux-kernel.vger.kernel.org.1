@@ -2,123 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B2528EF53
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2469728EF55
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730659AbgJOJYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:24:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58687 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgJOJYA (ORCPT
+        id S1730678AbgJOJYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:24:43 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:49307 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726426AbgJOJYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:24:00 -0400
-Received: from mail-ej1-f70.google.com ([209.85.218.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kleber.souza@canonical.com>)
-        id 1kSzUL-0007i5-9c
-        for linux-kernel@vger.kernel.org; Thu, 15 Oct 2020 09:23:57 +0000
-Received: by mail-ej1-f70.google.com with SMTP id c11so821127ejp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 02:23:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=mwtKmR2fNubfkF8A5SPE3kKNfRmuqI9cZpPnRNk3eOA=;
-        b=X8DYmNiVE9UXiCRGtewSajL/IIUclQmUUhDJ1j6E0N0BDlCk+my7qLReuATIYntx+m
-         BisMSgg4JuJYdBGb9s9hDpCx1jHyoCRKoN8OQWQDhw2e9WEAHogbevtrVnPHl3d83X4I
-         15rqHrPhKif5FpgwEyDTuAqzouJFEkxZ4fuQ6JYAogvXliiM0XmNkK/ftKLZ0xAv9lbP
-         VW4o5m8v8UEQGBfMc867mxxrskVelgwX2L7C0mSFMgnDvf4rS7lV1vmBoOwRNX8pw6+7
-         R0VyHargRT8T4rvC6S19p6LX2fLXD6bM5AkxHdzfUnHwHqpMjBTjv4Z7bimKjs30LsOJ
-         MEdw==
-X-Gm-Message-State: AOAM533G33HdeLPzpL68v8liEtgZXFaYfe9dI9wy+TEV/JfXHQ2iJKYO
-        62ais3uEQwdDTlqx2hibPxdtWJxoMZw4TCYi1HsC3i1pjZ7xr7gGSxwkraUG2uoLm43rccvxTNc
-        4sTZDFZw3pO8xbOVFBkDz0vuXOtH4oVm6m+lPks3Mtw==
-X-Received: by 2002:a50:9e87:: with SMTP id a7mr3347413edf.297.1602753836705;
-        Thu, 15 Oct 2020 02:23:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpVpqaaU3paTspFtNc0NW+sAXjF1fruo1f8S2mt6XXDAqYN2weUlu44ZjENjuUWrWzN1C1oA==
-X-Received: by 2002:a50:9e87:: with SMTP id a7mr3347396edf.297.1602753836445;
-        Thu, 15 Oct 2020 02:23:56 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:4640:10c0:6cbe:6d37:31ed:e54b? ([2a02:8108:4640:10c0:6cbe:6d37:31ed:e54b])
-        by smtp.gmail.com with ESMTPSA id r24sm1152157edm.95.2020.10.15.02.23.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 02:23:55 -0700 (PDT)
-Subject: Re: [PATCH 2/2] Revert "dccp: don't free ccid2_hc_tx_sock struct in
- dccp_disconnect()"
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, Gerrit Renker <gerrit@erg.abdn.ac.uk>,
+        Thu, 15 Oct 2020 05:24:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UC5QX1p_1602753881;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UC5QX1p_1602753881)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 15 Oct 2020 17:24:41 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-3-kleber.souza@canonical.com>
- <20201014204230.56cbfb12@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Kleber Souza <kleber.souza@canonical.com>
-Autocrypt: addr=kleber.souza@canonical.com; prefer-encrypt=mutual; keydata=
- mQENBFjjmLgBCADW/wnobGtt4lIvs0nkVbvecpvmvH6j7oFy92KxnAVPr4akWmLwLHH8id1k
- tKJlR1KlINf089anZfIK9uC6lFWjlmrg94U+9zZHUlG+MdLeJrqRWJAxqjz2DT3EYq9vDpxt
- uLaZws5EAWvxswa9oTtbwIWA1sqeps5DWUw95zFGeaxS/hisdlywU5G+I/pKLNkwTMyjwICC
- gHuUvCNuuOt5ZDu3i6Z76XKedu6YyWSVquesMzWAt6XO3QTXLB2b67eqalxxbTSHdkzrt5sR
- Ai4BQhr5d3jziYWRK5tPi+nj72/kWv0C12WQqzSFOZ5rYEZu3Ypyu+t4AoTzJ1GpzZEhABEB
- AAG0NktsZWJlciBTYWNpbG90dG8gZGUgU291emEgPGtsZWJlci5zb3V6YUBjYW5vbmljYWwu
- Y29tPokBVwQTAQgAQQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAIZARYhBPLtrW77uQZf
- 0wPbYUaq8zVw4RYrBQJd0827BQkG0WiDAAoJEEaq8zVw4RYrQ2wIAKsYBtAMQMO5iAL/soSw
- WtHduzSRllxK1E1bLyO6bc7SlUH5T7am3jCQ+1PyLMZXVkVDz7YJwCTmX3lb/IPjSuRXvBgQ
- 05P2IlfIRVd0P2sqQyUGcA5Uahd98z5ZS4jTOLZEOIT6KaQJGXFjQAnJSg5/A6IlCTrRC/2/
- AKCBIyV0rLkuBMlLfVvRmXsjxz/Wi8KNCQ5ZjEUtnE6oIejnFAiyhNOxtDMCfPOh6uSoslp8
- qlqpG5IoJAHYlTCeIak07OoFp8LtkiuGgDnQA2HuhUNt/5YGshPLFRgSFrhLQdW7qCtZRUA7
- +mcJMEuaolhggv4yeDq5WLydwDdDpqUClK+5AQ0EWOOYuAEIAMJqK7zV//x1PaUVVnJiSoEZ
- FBCOoZelEajq4veDVUEUoOvXCVv93aQEnAZtb4wqAlGtZKGn74oaxgVjRLvUIUFWRf+FvcWh
- mzO2geaTmRQ4W5XdFeCymNmuwDVIH90ZjwFFZI5Mc6lFX8k4eBPhxNxXuhM+8rHWpiHVwUap
- /YqYxyvEP88BVrQqZQgwQjGVDE9PNIOwPUsYGdhSd+8lvFP2ygVR3BhlLT9aAJqsGRyQWEuj
- CA5/xyTRi1nfF/cAUQkfFCXHj0Hiddw0zTclBuWdZzqdQZwF64e4OwAy+XtJ6lYeuHM/Ztxg
- ebWFnWILqZLLowCwp2inyZeXC1IuTQcAEQEAAYkBHwQYAQgACQUCWOOYuAIbDAAKCRBGqvM1
- cOEWK2ZQCACByBGwoXsqfSZB+lnkTp5dV1aQ+peC7T+I8GQKVvckFVv3lv73ibm1uBNrnRjO
- A6802JneP1M8Qo8h1olc0iXyXnIpnMz1dZBsj5VJoYRMes6UB96PuafdNKnVo6XYc9xE0QMR
- CIUoZ37nC7gMCgAhM5eY4SjMxjy8aXiNpWt7WGCZoCvRSrWn0CrWGvMriXbqHf5/PHhoOGCR
- rK1PlxFYriuuBtGUP/kAy2rzT4B5NywXrAHg4IrgMxEdYHy6LiutpSRKmFHwO4IAmB8pUrbe
- wJxW6Rkg2c10vzfvPChs8bedvyb8eioU19QS0prjxywrWie6fwT5NqGmE6Nv4+kA
-Message-ID: <686668d9-8d7a-1ad1-a210-0b6abaa8dc36@canonical.com>
-Date:   Thu, 15 Oct 2020 11:23:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH] crypto: sm2 - remove unnecessary reset operations
+Date:   Thu, 15 Oct 2020 17:24:41 +0800
+Message-Id: <20201015092441.12939-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-In-Reply-To: <20201014204230.56cbfb12@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.10.20 05:42, Jakub Kicinski wrote:
-> On Tue, 13 Oct 2020 19:18:49 +0200 Kleber Sacilotto de Souza wrote:
->> From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
->>
->> This reverts commit 2677d20677314101293e6da0094ede7b5526d2b1.
->>
->> This fixes an issue that after disconnect, dccps_hc_tx_ccid will still be
->> kept, allowing the socket to be reused as a listener socket, and the cloned
->> socket will free its dccps_hc_tx_ccid, leading to a later use after free,
->> when the listener socket is closed.
->>
->> This addresses CVE-2020-16119.
->>
->> Fixes: 2677d2067731 (dccp: don't free ccid2_hc_tx_sock struct in dccp_disconnect())
->> Reported-by: Hadar Manor
-> 
-> Does this person has an email address?
+This is an algorithm optimization. The reset operation when
+setting the public key is repeated and redundant, so remove it.
+At the same time, `sm2_ecc_os2ec()` is optimized to make the
+function more simpler and more in line with the Linux code style.
 
-We have received this report via a private Launchpad bug and the submitter
-didn't provide any public email address, so we have only their name.
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+---
+ crypto/sm2.c | 75 ++++++++++++++++++++--------------------------------
+ 1 file changed, 29 insertions(+), 46 deletions(-)
 
-> 
->> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
->> Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
+diff --git a/crypto/sm2.c b/crypto/sm2.c
+index 767e160333f6..b21addc3ac06 100644
+--- a/crypto/sm2.c
++++ b/crypto/sm2.c
+@@ -119,12 +119,6 @@ static void sm2_ec_ctx_deinit(struct mpi_ec_ctx *ec)
+ 	memset(ec, 0, sizeof(*ec));
+ }
+ 
+-static int sm2_ec_ctx_reset(struct mpi_ec_ctx *ec)
+-{
+-	sm2_ec_ctx_deinit(ec);
+-	return sm2_ec_ctx_init(ec);
+-}
+-
+ /* RESULT must have been initialized and is set on success to the
+  * point given by VALUE.
+  */
+@@ -132,55 +126,48 @@ static int sm2_ecc_os2ec(MPI_POINT result, MPI value)
+ {
+ 	int rc;
+ 	size_t n;
+-	const unsigned char *buf;
+-	unsigned char *buf_memory;
++	unsigned char *buf;
+ 	MPI x, y;
+ 
+-	n = (mpi_get_nbits(value)+7)/8;
+-	buf_memory = kmalloc(n, GFP_KERNEL);
+-	rc = mpi_print(GCRYMPI_FMT_USG, buf_memory, n, &n, value);
+-	if (rc) {
+-		kfree(buf_memory);
+-		return rc;
+-	}
+-	buf = buf_memory;
++	n = MPI_NBYTES(value);
++	buf = kmalloc(n, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
+ 
+-	if (n < 1) {
+-		kfree(buf_memory);
+-		return -EINVAL;
+-	}
+-	if (*buf != 4) {
+-		kfree(buf_memory);
+-		return -EINVAL; /* No support for point compression.  */
+-	}
+-	if (((n-1)%2)) {
+-		kfree(buf_memory);
+-		return -EINVAL;
+-	}
+-	n = (n-1)/2;
++	rc = mpi_print(GCRYMPI_FMT_USG, buf, n, &n, value);
++	if (rc)
++		goto err_freebuf;
++
++	rc = -EINVAL;
++	if (n < 1 || ((n - 1) % 2))
++		goto err_freebuf;
++	/* No support for point compression */
++	if (*buf != 0x4)
++		goto err_freebuf;
++
++	rc = -ENOMEM;
++	n = (n - 1) / 2;
+ 	x = mpi_read_raw_data(buf + 1, n);
+-	if (!x) {
+-		kfree(buf_memory);
+-		return -ENOMEM;
+-	}
++	if (!x)
++		goto err_freebuf;
+ 	y = mpi_read_raw_data(buf + 1 + n, n);
+-	kfree(buf_memory);
+-	if (!y) {
+-		mpi_free(x);
+-		return -ENOMEM;
+-	}
++	if (!y)
++		goto err_freex;
+ 
+ 	mpi_normalize(x);
+ 	mpi_normalize(y);
+-
+ 	mpi_set(result->x, x);
+ 	mpi_set(result->y, y);
+ 	mpi_set_ui(result->z, 1);
+ 
+-	mpi_free(x);
+-	mpi_free(y);
++	rc = 0;
+ 
+-	return 0;
++	mpi_free(y);
++err_freex:
++	mpi_free(x);
++err_freebuf:
++	kfree(buf);
++	return rc;
+ }
+ 
+ struct sm2_signature_ctx {
+@@ -399,10 +386,6 @@ static int sm2_set_pub_key(struct crypto_akcipher *tfm,
+ 	MPI a;
+ 	int rc;
+ 
+-	rc = sm2_ec_ctx_reset(ec);
+-	if (rc)
+-		return rc;
+-
+ 	ec->Q = mpi_point_new(0);
+ 	if (!ec->Q)
+ 		return -ENOMEM;
+-- 
+2.19.1.3.ge56e4f7
 
