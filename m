@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3078328EFBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8272B28EFC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730917AbgJOJ7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:59:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36628 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgJOJ7q (ORCPT
+        id S1730934AbgJOKAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:00:22 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:62700 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726157AbgJOKAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:59:46 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602755983;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PlevN6yVm2HnwK034FXsfndh/959DVQqNZzufhIKA04=;
-        b=MUall/o1Ep8FjtYpBzVZioQvmMADRw3NIf1+4jtH439kFEfQO7IzV5DdgPPCuGe2H9dcGg
-        kuu4rqtx+yhEcLgMy77E1udhVGeD1SpMD6+LIqDmauOIw/EzjDa5bySQgnqsejbxLWB3TI
-        zewbm0x4K1tJDEVb0E7B3pReYa+RFBME9ESzd3mAC9KkGi+vLmrdRk2rcJVFoSUvmYyDoG
-        vtDgcaxRqaQ3+XQL9exk1Nfn+io2ZeTAxqvet3P6eKF1KDU75BbTTuenrT6Qjkz4Dh3QFo
-        McKE19QQLuWbQTNXsHTndMUA3JAixGCJVy472NJCg1EkDdciYAR0CS1bGMeMOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602755983;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PlevN6yVm2HnwK034FXsfndh/959DVQqNZzufhIKA04=;
-        b=z7V9dWcnjheORrqANNNbcItCw4NhNMjaxJ1idCJ71t24jY3QPie81gGDA7E7nctNIdESAb
-        3zo7jyQ72+1K7TCQ==
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <mladek.petr@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>,
+        Thu, 15 Oct 2020 06:00:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UC62.Wb_1602756009;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UC62.Wb_1602756009)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 15 Oct 2020 18:00:09 +0800
+Date:   Thu, 15 Oct 2020 18:00:09 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH] printk: ringbuffer: Wrong data pointer when appending small string
-In-Reply-To: <20201015063137.GA3668@jagdpanzerIV.localdomain>
-References: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com> <20201014140514.GB17231@alley> <20201014151311.GB13775@alley> <20201014175051.GC13775@alley> <20201015063137.GA3668@jagdpanzerIV.localdomain>
-Date:   Thu, 15 Oct 2020 12:05:42 +0206
-Message-ID: <875z7bhks1.fsf@jogness.linutronix.de>
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 02/29] virtio-mem: simplify calculation in
+ virtio_mem_mb_state_prepare_next_mb()
+Message-ID: <20201015100009.GH86495@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-3-david@redhat.com>
+ <20201015040204.GB86495@L-31X9LVDL-1304.local>
+ <730d6536-f6a6-72e5-327f-00ce1224b730@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <730d6536-f6a6-72e5-327f-00ce1224b730@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-15, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
->> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
->> index 2493348a1631..24a960a89aa8 100644
->> --- a/kernel/printk/printk_ringbuffer.c
->> +++ b/kernel/printk/printk_ringbuffer.c
->> @@ -1125,7 +1125,10 @@ static char *data_realloc(struct printk_ringbuffer *rb,
->>  
->>  	/* If the data block does not increase, there is nothing to do. */
->>  	if (head_lpos - next_lpos < DATA_SIZE(data_ring)) {
->> -		blk = to_block(data_ring, blk_lpos->begin);
->> +		if (wrapped)
->> +			blk = to_block(data_ring, 0);
->> +		else
->> +			blk = to_block(data_ring, blk_lpos->begin);
->>  		return &blk->data[0];
->>  	}
+On Thu, Oct 15, 2020 at 10:00:15AM +0200, David Hildenbrand wrote:
+>On 15.10.20 06:02, Wei Yang wrote:
+>> On Mon, Oct 12, 2020 at 02:52:56PM +0200, David Hildenbrand wrote:
+>>> We actually need one byte less (next_mb_id is exclusive, first_mb_id is
+>>> inclusive). Simplify.
+>>>
+>>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>>> Cc: Jason Wang <jasowang@redhat.com>
+>>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> ---
+>>> drivers/virtio/virtio_mem.c | 4 ++--
+>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>>> index a1f5bf7a571a..670b3faf412d 100644
+>>> --- a/drivers/virtio/virtio_mem.c
+>>> +++ b/drivers/virtio/virtio_mem.c
+>>> @@ -257,8 +257,8 @@ static enum virtio_mem_mb_state virtio_mem_mb_get_state(struct virtio_mem *vm,
+>>>  */
+>>> static int virtio_mem_mb_state_prepare_next_mb(struct virtio_mem *vm)
+>>> {
+>>> -	unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id + 1;
+>>> -	unsigned long new_bytes = vm->next_mb_id - vm->first_mb_id + 2;
+>>> +	unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id;
+>>> +	unsigned long new_bytes = old_bytes + 1;
+>> 
+>> This is correct.
+>> 
+>> So this looks more like a fix?
 >
-> Great catch.
+>We allocate an additional new page "one memory block too early".
+>
+>So we would allocate the first page for blocks 0..510, and already
+>allocate the second page with block 511, although we could have fit it
+>into the first page. Block 512 will then find that the second page is
+>already there and simply use the second page.
+>
+>So as we do it consistently, nothing will go wrong - that's why I
+>avoided using the "fix" terminology.
+>
 
-Indeed. I don't know how we missed that one. :-/
+Yes, my feeling is this is not a simplification. Instead this is a more
+precise calculation.
 
-Reviewed-by: John Ogness <john.ogness@linutronix.de>
+How about use this subject?
+
+virtio-mem: more precise calculation in virtio_mem_mb_state_prepare_next_mb()
+
+>Thanks!
+>
+>-- 
+>Thanks,
+>
+>David / dhildenb
+
+-- 
+Wei Yang
+Help you, Help me
