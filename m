@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A9028F04D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE1328F051
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731241AbgJOKob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
+        id S1730967AbgJOKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgJOKoa (ORCPT
+        with ESMTP id S1726121AbgJOKq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:44:30 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4F9C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:44:28 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id h6so1847043ybi.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:44:28 -0700 (PDT)
+        Thu, 15 Oct 2020 06:46:57 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDAEC061755;
+        Thu, 15 Oct 2020 03:46:57 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id h7so2865312wre.4;
+        Thu, 15 Oct 2020 03:46:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xmBW7vKSBqJFsplZSHcanCRxnO5k2v4wYTo/MjdHXlA=;
-        b=e/bUJWy7yaJf5qN+JzaRH3AABTJ1Th4jbeKJ3tKZLJkFZ2vtmY+ERE93D+7T1DNh4L
-         6upIyieo4bBg2olNvfK8AfucvDw7dDBfXoL4BojBYIYNsfC7BkoX/UBmCk2usIq1VobJ
-         c1cNXUXJqge0jeuNDDYwc4zPQQmpW0DmoCe9JqKBkydP/X/OWu1ZPF9Lx33+jdnnvnv+
-         w+k7p2JxIG1WPVU+BRr/uRsTDVtyxYVY9l/C7vB5omMNAr1HIEhjDhrHNCFp3pMjkYTx
-         yfPjVtHh+piZvKxKO1bn4IeMM/ctwsNGtWahD0es8z3MaHZ80vxII95UwGkvIBkTklSL
-         seVQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ISmuKJc+PCSw3Nkr+H1YT9y5xRTwpnR8B7X0bYrHLdI=;
+        b=Oid2pL6tJotw2EbU++SIV4NHxRI5lJOUD7R/6hBKALaX4Ihq+eokpCkGKIP46z6M6I
+         P8/ngzeFtjXl/FEqETIQwUS6sVLo1zjiId/9tnTlznhPoFZHzfTOd6RVEiMUX0W6kGWV
+         RIikN2zgpRiJSLB7Fd9eeOcMEdzf1TehcFVI+6ObaVKd/0tMxpWnG2BpIu+7C2bkuGKz
+         lhvL6Dd6sOPp8UNBgWDvH8VCyx7EdjtXFmpVApwVJILgjVx9Fx2lONXQDT2st0HGjKcK
+         smk6DAtZPXMTn9VB1qviCEACEAaGkd6aVpOcnsZQbAxGv9rWZscNX7fCkQ0u2y4bDRtV
+         1u7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xmBW7vKSBqJFsplZSHcanCRxnO5k2v4wYTo/MjdHXlA=;
-        b=p6zUfHop878fiZPXWeQisLMhcHkk7g5w/KmL0C6kAuwC7WtHVz3GCV0AeNT11I5fPH
-         w/+BCFDLlSUH8NyzKe6kj3vXIFsHMneT2/y2fHO+yIUbf+MDa+nMuSwlWyOwesJ2qmR2
-         lswKvZwjqIfq23Jqikc2nEs/piObBV2X8+Fm6WstpnVQuMXllGG8pdn6/B2h2C9cYWVH
-         EKEduGZbzVyRG8regwp5U9IiGYmcRumCnJmZEnJXrD1P002eYgrlsXmZRhwPFX0u5Ael
-         hyRS5jFBDX2CBe+uO4lbv1zpiIVrRiKWmUPZsM0yzvlUQfcG7p92ob+hsrt0boYeG7Df
-         9I9w==
-X-Gm-Message-State: AOAM533gxk9VTUCbVzqR90C1j/Pxe1R5O1HJ793/PS1ihOIOqO16ux6a
-        61EOUmFN5B+M9IgG803N9mAXbeeIEjqTu5Ly2eHdvw==
-X-Google-Smtp-Source: ABdhPJzaorlHpMux1sGJdkpcYchDncmTmIBPUqIgSO4TXEq3L8uG+EJnUpjKDR2t9DqXU+N6makw1sW31hdNaDemBBA=
-X-Received: by 2002:a25:a484:: with SMTP id g4mr4150039ybi.112.1602758667745;
- Thu, 15 Oct 2020 03:44:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ISmuKJc+PCSw3Nkr+H1YT9y5xRTwpnR8B7X0bYrHLdI=;
+        b=OAzW0SI56PrevEpcg28Awe3igiWRSM10lx3iN6UdpNOvg3gZ18U0gyAjAdS7I16HFJ
+         YKaD+JssbrwtXnMnZacic+GncAaOq/WhXAfl2xDWNLeQbYVyTjwYygOObtdIppO4acD+
+         gclM5qEIXXJrA13IHIIWKQLmcTAO0XW+huYn2L61WwKpEnOFvTCKPuQPrRZU2IuXsdxH
+         DU4CeK+qvu7ZPKNIT7PP5lFd2/QVte+9qcGA4z9AHeHTCUekje/C0DtI7jCm1iJ3U3KE
+         VgtOfzV2L0RPksz/SKwDuj4trwPxpvJQOsoD1fDhujwOn6eIcUpHPVy0wAKqL1Z6KFbI
+         Pixg==
+X-Gm-Message-State: AOAM5305awqBfJF6qthlTOC+1zNUL7GmB6gNuo1BYy2o+2Z4M86IvKpu
+        A+L7IMBxYPmqD7KCJdM71Zc=
+X-Google-Smtp-Source: ABdhPJwUsXey/kqCk1hSfBL7+hP1RWq6KFdFzxjEPKmcz4efsns2YSi/pgNMTQ9f00BrcdKtHdsSpw==
+X-Received: by 2002:adf:c3cd:: with SMTP id d13mr3552291wrg.15.1602758816149;
+        Thu, 15 Oct 2020 03:46:56 -0700 (PDT)
+Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id c132sm3671249wmf.25.2020.10.15.03.46.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 03:46:55 -0700 (PDT)
+From:   Aleksandr Nogikh <a.nogikh@gmail.com>
+To:     jmorris@namei.org, serge@hallyn.com, akinobu.mita@gmail.com
+Cc:     andreyknvl@google.com, dvyukov@google.com, elver@google.com,
+        glider@google.com, keescook@google.com,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: [RFC PATCH 0/1] security: add fault injection to LSM hooks
+Date:   Thu, 15 Oct 2020 10:46:48 +0000
+Message-Id: <20201015104649.2104432-1-a.nogikh@gmail.com>
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
 MIME-Version: 1.0
-References: <20201015163056.56fcc835@canb.auug.org.au>
-In-Reply-To: <20201015163056.56fcc835@canb.auug.org.au>
-From:   Vitor Massaru Iha <vitor@massaru.org>
-Date:   Thu, 15 Oct 2020 07:43:51 -0300
-Message-ID: <CADQ6JjX0tg51M0FsD+DmAaDcnWB0wrihj4WCq_z6En=tzL=wcg@mail.gmail.com>
-Subject: Re: linux-next: build warnings after merge of the kunit-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+From: Aleksandr Nogikh <nogikh@google.com>
 
-On Thu, Oct 15, 2020 at 2:31 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the kunit-next tree, today's linux-next build (x86_64
-> allmodconfig) produced this warning:
->
-> lib/bitfield_kunit.c: In function 'test_bitfields_compile':
-> lib/bitfield_kunit.c:136:21: warning: unsigned conversion from 'int' to 'u16' {aka 'short unsigned int'} changes value from '393216' to '0' [-Woverflow]
->   136 |  u16_encode_bits(0, 0x60000);
->       |                     ^~~~~~~
-> At top level:
-> lib/bitfield_kunit.c:129:20: warning: 'test_bitfields_compile' defined but not used [-Wunused-function]
->   129 | static void __init test_bitfields_compile(struct kunit *context)
->       |                    ^~~~~~~~~~~~~~~~~~~~~~
->
-> Introduced by commit
->
->   d2585f5164c2 ("lib: kunit: add bitfield test conversion to KUnit")
+Fault injection capabilities[Documentation/fault-injection/fault-injection.rst]
+facilitate testing of the stability of the Linux kernel by providing
+means to force a number of kernel interfaces to return error
+codes. This RFC proposes adding such fault injection capability into
+LSM hooks.
 
-I saw the problem, I will send the patch.
+The intent is to make it possible to test whether the existing kernel
+code properly handles negative return values of LSM hooks. Syzbot
+[https://github.com/google/syzkaller/blob/master/docs/syzbot.md] will
+automatically do that with the aid of instrumentation tools once these
+changes are merged.
 
-Thanks!
+Is the attached implementation consistent with the ideas behind LSM
+stacking in its current state? In particular, is it reasonable to
+expect the existing LSMs to operate normally when they are active and
+such fault injection happens?
+
+Local fuzzing of a Linux kernel with this patch has almost instantly
+led to two crashes. I'm not sure whether they correspond to actual
+issues as the LSM fault injection implementation (and the concept
+itself) can be wrong. Here they are:
+
+1. "general protection fault in selinux_inode_free_security". This is
+caused by executing security_inode_free() when a fault was injected to
+inode_alloc_security() and therefore selinux_inode_alloc_security()
+was not executed. In this case, the subsequent inode_free_security()
+call executes list_del_init() on an uninitialized list. Theoretically,
+this may happen if some other LSM precedes selinux in the hooks list
+and its inode_alloc_security hook fails.
+
+A fault was injected to this call_int_hook():
+https://elixir.bootlin.com/linux/v5.9/source/security/security.c#L975
+
+Below you can find a call trace for the subsequent crash.
+__list_del_entry include/linux/list.h:132 [inline]
+list_del_init include/linux/list.h:204 [inline]
+inode_free_security security/selinux/hooks.c:337 [inline]
+selinux_inode_free_security+0xf0/0x290 security/selinux/hooks.c:2839
+security_inode_free+0x46/0xc0 security/security.c:1042
+security_inode_alloc+0x161/0x1a0 security/security.c:1027
+inode_init_always+0x5a7/0xd10 fs/inode.c:171
+alloc_inode+0x82/0x230 fs/inode.c:239
+new_inode_pseudo+0x14/0xe0 fs/inode.c:928
+sock_alloc+0x3c/0x260 net/socket.c:573
+__sock_create+0xb9/0x780 net/socket.c:1391
+sock_create net/socket.c:1478 [inline]
+__sys_socket+0xef/0x200 net/socket.c:1520
+__do_sys_socket net/socket.c:1529 [inline]
+__se_sys_socket net/socket.c:1527 [inline]
+__x64_sys_socket+0x6f/0xb0 net/socket.c:1527
+do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+2. BUG_ON inside security_skb_classify_flow(). Why is it needed there?
+https://elixir.bootlin.com/linux/v5.9/source/security/security.c#L2426
+
+Aleksandr Nogikh (1):
+  security: add fault injection capability
+
+ lib/Kconfig.debug   |  6 +++++
+ security/security.c | 53 ++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 56 insertions(+), 3 deletions(-)
+
+
+base-commit: f2fb1afc57304f9dd68c20a08270e287470af2eb
+-- 
+2.28.0.1011.ga647a8990f-goog
+
