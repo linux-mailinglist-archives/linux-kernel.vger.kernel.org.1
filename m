@@ -2,85 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE4428F2F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BFB628F300
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgJONMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:12:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        id S1728216AbgJONRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728885AbgJONMU (ORCPT
+        with ESMTP id S1726924AbgJONRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:12:20 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0D4C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:12:18 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id j17so1132151ilr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:12:18 -0700 (PDT)
+        Thu, 15 Oct 2020 09:17:06 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3706CC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:17:06 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id k6so4299566ior.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:17:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JrQAp+G/w/HRcUvrALtAjr5XUD+f148osx1+XDbx/fQ=;
-        b=TMPDsFEY6QcbJz9eph5zwMwK3REFYpu/Kf99wKKHvUNjeCFeqY6R4mTOZY23moUy26
-         rurYaAvGUoHOtOoW+PHtt5/hXy+/j9VbDMicj8j+TyBnkBB20/J6FDtPRzgBNL49uuyw
-         CWKU3iFSYQLEpKIJCE9vhLrdWLv518JmrDHPkYRnHhJBJYn3KupmFAlwk8OHpWXg1sQB
-         RMd0Ynbr9DG5O4vK98dJCSYrY1ArHTTIYOflX4lx35q3XLYxiaTm27ZFwkr6UDSxjlK8
-         92zMXuTRKuoSztsTjE3N0yJfnq4Jk7d7yGtKXx3fLeZqjL3rnL6PRpSFH9Cnynkba7fP
-         W4eQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gEuPfz0KXA/MgwtC7gp17zj6T5fVm/x6kmNaSJMr43Q=;
+        b=OneD/DqISQLZlkUKTVnoMywsjTnsmuOYCeMgQkiwvuxoUVL1kqucRTybCG7aq5Dk0U
+         oIhoiAdebgUeWIjfx/T7/+BYoEHIUDXpRJ8lhlRv9RohB21XkQxzXv+GUzMdK9X0Tlmf
+         zO9NmAcOcXz2q1wsXzDgT6gtbyd3vMVD5+KK/Ew0ZwmBUUSVD+q9JXU8HUeDuN3iGRCF
+         GrYW9cCXEqzTEQXXeHDzn3zhxUK/+nNL/mR38bPfKfMM9HL3KG5KqacokZjRSzxcem7j
+         PzJfQUeAkbUs18B+NiqEegv6eyVihxUi4LrBrsEn93OiUPMhxrFRneVb2/U7nBsh5NRc
+         ZAqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JrQAp+G/w/HRcUvrALtAjr5XUD+f148osx1+XDbx/fQ=;
-        b=JfZX7qkNxknvdXSd8ckHr9mM9rgbnNTHRIN4D5kzpwahova8xsb9xwS3FoHISH06t5
-         WTrdXyXUztdTUmANKx67t6BhzBuWxXaHkkzBK97C4F8PK4iTBc7PU9k5kVM5PmI6cKKt
-         uLYXO7eAQ4rLA7BJ7ZzXvnQNiPK8OSt1gzoFeNX7ZeRSCBWaZBhb5XbbcdemGn9gpFuA
-         +mepupaChNb5lqfPt/5hFe8tOypD+mTBL0ji/EXElrwhr5PFPRvRJvz51Op2mYMR7FQn
-         VhBwisvCCxqrJunprJYLlLYx3shXhxaIuKPCwHGI4hlHAELaHCPEyWTIMSfxKCjSvnDu
-         U9lw==
-X-Gm-Message-State: AOAM5303Yj4+v0GrxZ4EBM0AOM9lr/ZYjH3H3kuIraW9LljJiGXvjBkD
-        NQo3AfqkQtwsc80a6HA5Jnonc7Mdp0fenQ==
-X-Google-Smtp-Source: ABdhPJzckRjsyjtt2YkhjIXx9g5RUmeO3YBn9nUW/Tceos9xwTtJgiku1z+klmtZupOu/z8YA1c/QQ==
-X-Received: by 2002:a92:7742:: with SMTP id s63mr833462ilc.74.1602767537685;
-        Thu, 15 Oct 2020 06:12:17 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id h125sm793569iof.53.2020.10.15.06.12.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 06:12:17 -0700 (PDT)
-Subject: Re: [PATCH][next] io_uring: fix flags check for the
- REQ_F_WORK_INITIALIZED setting
-To:     Colin King <colin.king@canonical.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201015115550.485235-1-colin.king@canonical.com>
+        bh=gEuPfz0KXA/MgwtC7gp17zj6T5fVm/x6kmNaSJMr43Q=;
+        b=Fdbq/kMSJ1VURUq7SM41xs6B2WPYTHuEFPu+YBq8pl6Za21Dq1Mb4IED32yrq0TGi9
+         TwfADk+sL3zF89MOnSc+3h5baqAhoe0YOJ7d19NYSJiuTX4XAdrbzrCI287Ew6zkUy7g
+         urDZTlr1vQKXvLsnq156prUl9NAHTX8lC7FO01eDklO4dOCCrFdK0/8fXnM7CuD1XkNO
+         /d0o6ViGmQ/fqdcdo6BbD9hAomeJPyLmhfdSQZa/oLpCMJw8HVeLQvMet0kKD8Qqv17e
+         haa1F/sf2BTg7/Q9Jxox3UcBigV7TrzktGMVBu/NIqG2aX/jIsjaHPhQMOd4H4xagI6z
+         2JyA==
+X-Gm-Message-State: AOAM531Pn0jpMhY0zh91j1u7q8AJKI76Rd9nX65R4CuADqf6I8+dp6lr
+        mzu32poPHTAomPtSZBNS+v8bK3jbXNBfhA==
+X-Google-Smtp-Source: ABdhPJxY8t3WaBYb0mnx9DojoFwmc78wXA904V7SoKJjZdv30XRMpzPzuPkf/yhMuP3SVCZbgVk7Dw==
+X-Received: by 2002:a5d:9693:: with SMTP id m19mr3120512ion.161.1602767825278;
+        Thu, 15 Oct 2020 06:17:05 -0700 (PDT)
+Received: from p1.localdomain ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id m13sm2486736ioo.9.2020.10.15.06.17.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 06:17:04 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fc06e668-e358-9009-441e-d70b64285536@kernel.dk>
-Date:   Thu, 15 Oct 2020 07:12:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de
+Subject: [PATCHSET v5] Add support for TIF_NOTIFY_SIGNAL
+Date:   Thu, 15 Oct 2020 07:16:56 -0600
+Message-Id: <20201015131701.511523-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201015115550.485235-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/20 5:55 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the check for REQ_F_WORK_INITIALIZED is always true because
-> the | operator is being used. I believe this check should be checking
-> if the bit is set using the & operator.
+Hi,
 
-It should - I folded in the incremental from Pavel. This just meant that
-we took the slow and safe path, but it obviously should be an AND here.
+The goal is this patch series is to decouple TWA_SIGNAL based task_work
+from real signals and signal delivery. The motivation is speeding up
+TWA_SIGNAL based task_work, particularly for threaded setups where
+->sighand is shared across threads. See the last patch for numbers.
+
+
+ arch/alpha/kernel/signal.c         |  1 -
+ arch/arc/kernel/signal.c           |  2 +-
+ arch/arm/kernel/signal.c           |  1 -
+ arch/arm64/kernel/signal.c         |  1 -
+ arch/c6x/kernel/signal.c           |  4 +--
+ arch/csky/kernel/signal.c          |  1 -
+ arch/h8300/kernel/signal.c         |  4 +--
+ arch/hexagon/kernel/process.c      |  1 -
+ arch/ia64/kernel/process.c         |  2 +-
+ arch/m68k/kernel/signal.c          |  2 +-
+ arch/microblaze/kernel/signal.c    |  2 +-
+ arch/mips/kernel/signal.c          |  1 -
+ arch/nds32/kernel/signal.c         |  4 +--
+ arch/nios2/kernel/signal.c         |  2 +-
+ arch/openrisc/kernel/signal.c      |  1 -
+ arch/parisc/kernel/signal.c        |  4 +--
+ arch/powerpc/kernel/signal.c       |  1 -
+ arch/riscv/kernel/signal.c         |  4 +--
+ arch/s390/kernel/signal.c          |  1 -
+ arch/sh/kernel/signal_32.c         |  4 +--
+ arch/sparc/kernel/signal_32.c      |  4 +--
+ arch/sparc/kernel/signal_64.c      |  4 +--
+ arch/um/kernel/process.c           |  2 +-
+ arch/x86/include/asm/thread_info.h |  2 ++
+ arch/x86/kernel/signal.c           |  7 +++--
+ arch/xtensa/kernel/signal.c        |  2 +-
+ include/linux/entry-common.h       |  9 +++++--
+ include/linux/entry-kvm.h          |  4 +--
+ include/linux/sched/signal.h       | 20 ++++++++++++---
+ include/linux/tracehook.h          | 31 ++++++++++++++++++++--
+ kernel/entry/common.c              |  7 +++--
+ kernel/entry/kvm.c                 |  7 ++---
+ kernel/events/uprobes.c            |  2 +-
+ kernel/signal.c                    |  8 +++---
+ kernel/task_work.c                 | 41 +++++++++++++++++++++---------
+ 35 files changed, 118 insertions(+), 75 deletions(-)
+
+
+Changes since v4:
+- Change ifdef as per Thomas
+- Split x86 change from generic entry code
+- Pass in TIF flags for arch_do_signal() to avoid doing multiple bit
+  tests
 
 -- 
 Jens Axboe
+
 
