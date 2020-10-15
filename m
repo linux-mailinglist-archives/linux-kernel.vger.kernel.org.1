@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE76828F0D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464FE28F15A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbgJOLUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
+        id S1728157AbgJOLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgJOLUz (ORCPT
+        with ESMTP id S1728033AbgJOLYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:20:55 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B461C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:20:55 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id b23so1726852pgb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:20:55 -0700 (PDT)
+        Thu, 15 Oct 2020 07:24:24 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D61C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:24:22 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 10so1849084pfp.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
         h=message-id:subject:from:to:date:mime-version
          :content-transfer-encoding;
-        bh=h3tRYVbrXJtU2QrbFsBU9Spd181m5OYM6XKvEjWUj7o=;
-        b=QIt/mP8DYXc3aZ9StyaAf2nXjupmpSXJxoytuCIbUXNsgENvncCxtqnJ4375DhrhXx
-         EvL/5yz9peW8cIZdmOHclXRu7fLxJsjlN8cGjG1jPde7jP8CFUQk9eovln5n8Nj9VGrr
-         rh2CIZQxIh/ecTcr5BFF5Rrw8+QNZvjClVcYhGHf2cW1JObwlI/XExq6jAlRsCN0B7r9
-         c5X9bQAIwy0lOPAHZ0sMtnVpXr8acL1jKEtLCDmup52Z9pmxAXd3R12PYi/r9QgzcDzm
-         JTQQnPyaTMlDOiBFEPiOTg7G9dzyk3MXoAnvZqqfT274OcFfZPnLX4m/0f97rb1Uyg/r
-         itnw==
+        bh=+SMSmOjqLeOGTKKum05qnKuvd7Q9+0WPozSVKp+7TKk=;
+        b=OEogEsYEm8fIVHz/dIQwcLZvAQlX+f/oQj6IUPviGjL3Vf16AO4AfmB4EBMZ0bQkw8
+         wl3ZAaAUrtpdB2TiFlqflES4lddYyG3opakwYOxWbMNW964Vq7xroj0G7hLBsDrF3y5j
+         1LAOk6YZag+Irs7ycSmB99iyBRjvx/a/wLF/HXSPg4wnLK52oh0jJUr0j7Jv5CYkYAGa
+         SSqd6BVq+7fuaGEi4LColhNlmox4aYgZo8B2t2+W1L3z+R5tzhuOIPNQYNTiq3IgPMsV
+         lCAQl6KQUuYV7SFArFNyedH/E3SY+FtBwsxBceaF6mcETWJyVr5x0M5SUBBW0aKZsTip
+         oTpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:subject:from:to:date:mime-version
          :content-transfer-encoding;
-        bh=h3tRYVbrXJtU2QrbFsBU9Spd181m5OYM6XKvEjWUj7o=;
-        b=fxTkr8rgoEv5jYWgpr6s4KmCfTLFKFMQ/SzBDJSFJWhq1UZ1w0lsWGvand4/t3Riz8
-         Jx6ksx5qkbEo4tIgflMDnkqYiyGmSmaDhLgKuX3GcEl6nOxCDsvaoDQtjgaUeV4blkbp
-         CmUVbq1bXJik2Qx6LKqXA+IVKLDj2i9TpOd3IjHPk0kbXy6C1WI6IZrkEwm4LI8j3dc1
-         +RiNHZgX3HT8nqjGpRgoCgZvEwV3pJrBhhsHuirx4cLvxxjV9rOuyQ2X+X59c0H1La0Y
-         Kewz2FMWvlmoVuQWJ1bP+rhJVr9ABkmLXL5YARU4uETaCmlrBOS2mv2YljSYpUJ+GpTp
-         PAtw==
-X-Gm-Message-State: AOAM5301/3ATwnfKd5YabB/iz3VK6ohi1H3ccL/BRnRplLHYvG1kaNZJ
-        FreLu4BQ7H97RKlYFj8QAf6Bxg==
-X-Google-Smtp-Source: ABdhPJycSiqzIkOBMmcrMer+prhnFXkBkWVnnTG1jX+nH7iysz4LJoobpMqgfGJiu0O57TDIZE4ACQ==
-X-Received: by 2002:a63:1d15:: with SMTP id d21mr2958265pgd.433.1602760854749;
-        Thu, 15 Oct 2020 04:20:54 -0700 (PDT)
+        bh=+SMSmOjqLeOGTKKum05qnKuvd7Q9+0WPozSVKp+7TKk=;
+        b=aa2afKTl+/HQdPzYKZ+X81zfQZE0A5n0fPpbLqNVSWvovbjZdnYmQCVk54t8NTe51S
+         9asaLID+N0u99E2pqtB0QQcpQPiV6pLKa8IZYMnH1r2yoNiXqnOEQU5ZImc50R0XAp+n
+         UT0tvt+I0e4/gobR0Se2msnzVbv0aaejQjKbgjr04gEU1eF9lhEPThLQWiG5UvnnjMK0
+         4BXlODmnsDjkAEdVul/BD+UJGGaol9S2Ow5HlTI7WeZg0Ukd3seUK9Rq2oBVPvzCl7KV
+         j7VWxf8dCETnFCZaDnHcpuL3RhPZxS2Z98IRgqEDBiYDiDqwMOPd2ZsvNz2TtKqbG1nV
+         Nm5A==
+X-Gm-Message-State: AOAM5309BeyFQ10VrYjb0kRY9k59EjxG2922Bb92Q83H7Su6v5r8a5ij
+        ftVlorGWLu0WHaVqRafIWYlYSA==
+X-Google-Smtp-Source: ABdhPJxigQ1GlW/jOOkuZXTwRSWqIHmnzNOrt4zdlnaJ1LEUOgEAbkE1EKElmJQixhw/NHEwu9oxJQ==
+X-Received: by 2002:a62:870a:0:b029:156:641e:c6c7 with SMTP id i10-20020a62870a0000b0290156641ec6c7mr3761187pfe.78.1602761062429;
+        Thu, 15 Oct 2020 04:24:22 -0700 (PDT)
 Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id k127sm2828221pgk.10.2020.10.15.04.20.53
+        by smtp.gmail.com with ESMTPSA id j37sm2955201pgi.20.2020.10.15.04.24.21
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Oct 2020 04:20:54 -0700 (PDT)
-Message-ID: <f746bda4c51d6553f2094b0a3dfbafa3e39d4c28.camel@areca.com.tw>
-Subject: [PATCH 0/1] scsi: arcmsr: configure the default SCSI device command
+        Thu, 15 Oct 2020 04:24:21 -0700 (PDT)
+Message-ID: <06ee8b1a3c14f855c6dc2a2c0dc996d33ca41f50.camel@areca.com.tw>
+Subject: [PATCH 1/1] scsi: arcmsr: Configure the default SCSI device command
  timeout value
 From:   ching Huang <ching2048@areca.com.tw>
 To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
         linux-scsi@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 16 Oct 2020 03:20:54 +0800
+Date:   Fri, 16 Oct 2020 03:24:22 +0800
 Content-Type: text/plain; charset="UTF-8"
 X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
 Mime-Version: 1.0
@@ -64,9 +64,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is against to mkp's 5.10/scsi-queue.
+From: ching Huang <ching2048@areca.com.tw>
 
-1. Configure the default SCSI device command timeout value.
+Configure the default SCSI device command timeout value.
+
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
 ---
 
+diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
+index 5d054d5..0f6abd2 100644
+--- a/drivers/scsi/arcmsr/arcmsr.h
++++ b/drivers/scsi/arcmsr/arcmsr.h
+@@ -83,6 +83,7 @@ struct device_attribute;
+ #define PCI_DEVICE_ID_ARECA_1886	0x188A
+ #define	ARCMSR_HOURS			(1000 * 60 * 60 * 4)
+ #define	ARCMSR_MINUTES			(1000 * 60 * 60)
++#define ARCMSR_DEFAULT_TIMEOUT		90
+ /*
+ **********************************************************************************
+ **
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index 1e358d9..555f55f 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -99,6 +99,10 @@ static int set_date_time = 0;
+ module_param(set_date_time, int, S_IRUGO);
+ MODULE_PARM_DESC(set_date_time, " send date, time to iop(0 ~ 1), set_date_time=1(enable), default(=0) is disable");
+ 
++static int cmd_timeout = ARCMSR_DEFAULT_TIMEOUT;
++module_param(cmd_timeout, int, S_IRUGO);
++MODULE_PARM_DESC(cmd_timeout, " scsi cmd timeout(0 ~ 120 sec.), default is 90");
++
+ #define	ARCMSR_SLEEPTIME	10
+ #define	ARCMSR_RETRYCOUNT	12
+ 
+@@ -140,6 +144,7 @@ static irqreturn_t arcmsr_interrupt(struct AdapterControlBlock *acb);
+ static void arcmsr_free_irq(struct pci_dev *, struct AdapterControlBlock *);
+ static void arcmsr_wait_firmware_ready(struct AdapterControlBlock *acb);
+ static void arcmsr_set_iop_datetime(struct timer_list *);
++static int arcmsr_slave_config(struct scsi_device *sdev);
+ static int arcmsr_adjust_disk_queue_depth(struct scsi_device *sdev, int queue_depth)
+ {
+ 	if (queue_depth > ARCMSR_MAX_CMD_PERLUN)
+@@ -155,6 +160,7 @@ static struct scsi_host_template arcmsr_scsi_host_template = {
+ 	.eh_abort_handler	= arcmsr_abort,
+ 	.eh_bus_reset_handler	= arcmsr_bus_reset,
+ 	.bios_param		= arcmsr_bios_param,
++	.slave_configure	= arcmsr_slave_config,
+ 	.change_queue_depth	= arcmsr_adjust_disk_queue_depth,
+ 	.can_queue		= ARCMSR_DEFAULT_OUTSTANDING_CMD,
+ 	.this_id		= ARCMSR_SCSI_INITIATOR_ID,
+@@ -3156,10 +3162,12 @@ message_out:
+ 
+ static struct CommandControlBlock *arcmsr_get_freeccb(struct AdapterControlBlock *acb)
+ {
+-	struct list_head *head = &acb->ccb_free_list;
++	struct list_head *head;
+ 	struct CommandControlBlock *ccb = NULL;
+ 	unsigned long flags;
++
+ 	spin_lock_irqsave(&acb->ccblist_lock, flags);
++	head = &acb->ccb_free_list;
+ 	if (!list_empty(head)) {
+ 		ccb = list_entry(head->next, struct CommandControlBlock, list);
+ 		list_del_init(&ccb->list);
+@@ -3256,6 +3264,16 @@ static int arcmsr_queue_command_lck(struct scsi_cmnd *cmd,
+ 
+ static DEF_SCSI_QCMD(arcmsr_queue_command)
+ 
++static int arcmsr_slave_config(struct scsi_device *sdev)
++{
++	unsigned int	dev_timeout;
++
++	dev_timeout = sdev->request_queue->rq_timeout;
++	if ((cmd_timeout > 0) && ((cmd_timeout * HZ) > dev_timeout))
++		blk_queue_rq_timeout(sdev->request_queue, cmd_timeout * HZ);
++	return 0;
++}
++
+ static void arcmsr_get_adapter_config(struct AdapterControlBlock *pACB, uint32_t *rwbuffer)
+ {
+ 	int count;
 
