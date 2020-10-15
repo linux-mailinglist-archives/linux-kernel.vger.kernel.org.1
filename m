@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B010328F540
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C5728F548
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389414AbgJOOvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        id S2389259AbgJOOww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389055AbgJOOvJ (ORCPT
+        with ESMTP id S2388348AbgJOOwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:51:09 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD7BC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:09 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id a9so3929096lfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:08 -0700 (PDT)
+        Thu, 15 Oct 2020 10:52:51 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C936C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:52:51 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a4so3422533lji.12
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bV4f1Qg+4Gv35N2wit/f7NjVpNxZdd3YNwQ6SWe/ma0=;
-        b=OYat1tu/tT4xPSTOsQRpW6iStW0f2RAvrVqZM2wKYQ5qUpvTlkK0tW9fFDuKWCuYbx
-         Ncv0Ts6rNHB0uqaIpNXIlQ0S7DkES1kA/yhljcF4/ynUIzo2tM/o87WVzk1bRBbjMP4B
-         cSDdjZaLugIPplKKgZSVVV3mPnKPKuLVd8WksM8JbCG0OUG/fF4UUP3GMaKhdlwT/+zV
-         HsXGKLICg97DrPVSd3rJxLq7PJBzjYNu3PyZJmM3JVfYKMvtP01owdX2hLVjWhsfVufr
-         +rj+v3YZWE2VDHu65ilvtRlhbs8cnQqPZdBP9vlMVxEzgioF/fPt6CY7wLSadZ3WeNds
-         7rrQ==
+         :cc:content-transfer-encoding;
+        bh=bB0aML9iHly6lbfGENfyVAF9mzhMQjNP2v7ZMJRbBXc=;
+        b=NYyuUoopM6Ye/9aTGGSOB131XjOnZjL/iS+3AOgzlbjqNBYntDH3hqF9Sa8z6T7qQO
+         TFbfBig10huD73ZxXtbp6+MdY78PqWl46lNCDHJM4oMUiyPL/JbUuvpvSBlkaqgZ+tnf
+         4zRprFMtakP7gVcQDwkAdzbbj2XVtPuDEL9MU8CfwnT1R/eg7qkNqGvCLhyf384K4Eut
+         b5SOmAz6vqebc7qQRJZYfeOlodwWqVbroH95UIzhduCysDyNOWbP7yByoNfEyMNtzxlG
+         STrJsFujUqu9tnOPCTY18x7xbvka2+B252zj3bRFlJvrvd7gKBrRxazqpkew1qU6YVZY
+         V1hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bV4f1Qg+4Gv35N2wit/f7NjVpNxZdd3YNwQ6SWe/ma0=;
-        b=gnaI1Vt4YTCa+X/QCUZxO4IiE+NgQQ7xSkmefWpD1rpbjWNZS6A914c7t3wAjQiz2V
-         utub7oBWhk/PJd72IhhSq/jKF6NTe0Z+em0Fo18YB6vP7mNXlLs+KqWcNlu8E2vsgCmn
-         LJASmWIjEFK84Ur4tiHj68zNLfTq9MmnJT59VIcjxsPbO4y4uo6XsIXY1aJWkDLLRnsr
-         OBAgyvx/3XNf93sU7H8Z+b2++RuGZe1MVnESI8KX9Ulvy0ebeE4C6kSvB4reKhvldUSL
-         7I/yT4XFGdQ+Q+Mdklj8uAIPUvZM/phpG8yu8fa+/Y3K6vu1KdE2bYXWbBYB3OpkZIBo
-         29Pg==
-X-Gm-Message-State: AOAM530wbvOt5rbzLLlAv6RFv69/DHsIQoFcps0wg5ocYL8RUNwKVFIt
-        OKzb0dKYKrzhaAVpDBABF9dsyYhPfpdQtGjMnz4=
-X-Google-Smtp-Source: ABdhPJz4cz6ryROltTYzKnZPApyMbINiaXN8B0RTQpbg1uR4m85nIpOyOyacfPQKPIETr+/AP5JTkJuMVSaTsmdK8zM=
-X-Received: by 2002:ac2:52b7:: with SMTP id r23mr1126232lfm.30.1602773467610;
- Thu, 15 Oct 2020 07:51:07 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bB0aML9iHly6lbfGENfyVAF9mzhMQjNP2v7ZMJRbBXc=;
+        b=NkqQeZedmhWjCIC0uNHQP/ZlBV+7HkNjm+Inu9mzo8076xN+Z4sIOE3z0BmOz9BLZF
+         KTi+OqNUFSoC6Q28y+bpFkNnJ97eseDoP6klHPZHY8li1TxVyBtjrDXmHjWV0MXHgRdt
+         F6U8zPmrKXt/2LJ/7t01XpVUWFyembYuFNukA0k+0tG4FQv/KVmzT3qRwnP/pyJba8+M
+         cxYpG4p4rUtjBjzAQFFnLTv0YYOhiuRXOimK8cHG8aAGVFuOX/9lzU3iHyHHVXs7jVAN
+         Wqm9uwcBWQnWzmt9Qh5sS2DzB70vZ5wzk+JIBsBenPiOs0IeGu3SCALYSQJM2VE5H0v7
+         n7oA==
+X-Gm-Message-State: AOAM532Do2D86QZAOMg6hKdKHWCnrSea47WlIP7bNgyuHqkSNhqaekst
+        if7E/pN7fRTtAQeOJwVDq5ZBqpbOI2ssd7mTpLU=
+X-Google-Smtp-Source: ABdhPJyx30xOfI/dCOEDwzdW1JN7ZaYBa0FLpSKwq8j154fT2ykNaCexw1AjUCzXXU/XmYTVCAGEXsCBq8BdXAsciwU=
+X-Received: by 2002:a2e:9ccd:: with SMTP id g13mr1537362ljj.127.1602773570017;
+ Thu, 15 Oct 2020 07:52:50 -0700 (PDT)
 MIME-Version: 1.0
 References: <20201014175342.152712-1-jandryuk@gmail.com> <20201014175342.152712-3-jandryuk@gmail.com>
- <6cd9363c-ac0c-ea68-c8e7-9fd3cd30a89b@oracle.com> <4e31301b-0e57-ac89-cd71-6ad5e1a66628@citrix.com>
- <b097aec1-e549-a89a-ce43-e9c0a71179f2@oracle.com>
-In-Reply-To: <b097aec1-e549-a89a-ce43-e9c0a71179f2@oracle.com>
+ <d8a8ed95-ed55-4ccf-1b54-8d97db908742@suse.com>
+In-Reply-To: <d8a8ed95-ed55-4ccf-1b54-8d97db908742@suse.com>
 From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Thu, 15 Oct 2020 10:50:55 -0400
-Message-ID: <CAKf6xpuRZKF56yyOR-Q6oBSJUpRSr0P+XVJD7DvaS6GWnNcMTg@mail.gmail.com>
+Date:   Thu, 15 Oct 2020 10:52:38 -0400
+Message-ID: <CAKf6xpv4Kborx8-0UvadyyzPRGg0TLfD1RWxmkM1PnfPKuXOaA@mail.gmail.com>
 Subject: Re: [PATCH 2/2] xen: Kconfig: nest Xen guest options
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Juergen Gross <jgross@suse.com>,
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -63,28 +61,41 @@ Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
         xen-devel <xen-devel@lists.xenproject.org>,
         open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 9:17 AM <boris.ostrovsky@oracle.com> wrote:
+On Thu, Oct 15, 2020 at 5:42 AM J=C3=BCrgen Gro=C3=9F <jgross@suse.com> wro=
+te:
 >
->
-> On 10/15/20 9:10 AM, Andrew Cooper wrote:
-> > On 15/10/2020 13:37, boris.ostrovsky@oracle.com wrote:
-> >> On 10/14/20 1:53 PM, Jason Andryuk wrote:
-> >>> +config XEN_512GB
-> >>> +   bool "Limit Xen pv-domain memory to 512GB"
-> >>> +   depends on XEN_PV && X86_64
-> >> Why is X86_64 needed here?
-> >> 512G support was implemented using a direct-mapped P2M, and is rather
-> > beyond the virtual address capabilities of 32bit.
+> On 14.10.20 19:53, Jason Andryuk wrote:
+> > Moving XEN_512GB allows it to nest under XEN_PV.  That also allows
+> > XEN_PVH to nest under XEN as a sibling to XEN_PV and XEN_PVHVM giving:
 > >
+> > [*]   Xen guest support
+> > [*]     Xen PV guest support
+> > [*]       Limit Xen pv-domain memory to 512GB
+> > [*]       Xen PV Dom0 support
 >
-> Yes, my point was that XEN_PV already depends on X86_64.
+> This has currently a wrong text/semantics:
+>
+> It should be split to CONFIG_XEN_DOM0 and CONFIG_XEN_PV_DOM0.
+>
+> Otherwise the backends won't be enabled per default for a PVH-only
+> config meant to be Dom0-capable.
+>
+> You don't have to do that in your patches if you don't want to, but
+> I wanted to mention it with you touching this area of Kconfig.
 
-Oh, thanks for catching this.  I re-introduced it by accident when
-rebasing the patches.
+Yes, good point.  I had not considered that.
 
-Regards,
+> > [*]     Xen PVHVM guest support
+> > [*]     Xen PVH guest support
+> >
+> > Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+>
+> Reviewed-by: Juergen Gross <jgross@suse.com>
+
+Thanks,
 Jason
