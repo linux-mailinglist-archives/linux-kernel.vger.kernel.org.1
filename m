@@ -2,121 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D03828EC3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F5628EC46
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728959AbgJOE05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
+        id S1727479AbgJOEbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 00:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOE0x (ORCPT
+        with ESMTP id S1725208AbgJOEbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:26:53 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6D9C061755;
-        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o7so953390pgv.6;
-        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
+        Thu, 15 Oct 2020 00:31:07 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28568C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:31:07 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id hk7so1148284pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iNHVFd5PlmYNkQaZe4PpF7uyhE4h5AcVhJcsViTjG4s=;
-        b=mkrqoz3vvDN/NMvvhVzk3DaTdtwjh8PG2ub0JPFYkF6/Jrxiy+XvCBt9WGb5dW+2UF
-         UAkFTaLyrwC3kuuKbVrM5QzCHn8l/VZ7D9J2EjjtxFshy3RZTEQVKchrCE1s87LB9QBo
-         VdruAwYXBzttt/EvywxQg55de302N6nvGE50UK8+gBub4GiPwmIRTVJ0nVxxwDPrB6tc
-         4Wm/AMoN/hUgaVCtpGNHmVKjooRvSsFlzqvtxJhBQT87xGQCroPDJPwJb8yKK+39AOzZ
-         JSpBlS7+z8aNWmFwTWuNPyVYI/eEoG/8omjZVJG3BWglDc3GTfdSnY2tzz5HN7t4hGXI
-         hY+A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1z00HM1oJWpdTbX+YMPLZimSogxpQwLPHkUejQUce64=;
+        b=RhxJv6V2WOuh02i/6FfdUpPNGHak72ni/501XgVQTKAfCMPuG4Gc6DcST1NvZcx++M
+         QRA1y4xTETTq6iEuOFgJX2d/SNf+89MPLavxyACaGI85QNfoPuhzJU3Sg/HIPJwu2IKZ
+         DNh28elij0nsMs3gNecVl/rQHT4GQsbYVTw5Y9klFgZx76LjOk1jftCyxnvgjpA8dsWE
+         ilD7xp0EKR+p3gWwm2hA1tCFnhhYACBBJ/qJPaQ24qfakQYjcd+9WOwqfsNQPqRAEoQA
+         xgSAKbDdRjDbads6MMNuxpfyHkgqA2P4jTq6uFsaWwdK7g8AI+7gvLL9kRxMadA5fLAi
+         9UlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iNHVFd5PlmYNkQaZe4PpF7uyhE4h5AcVhJcsViTjG4s=;
-        b=AUfQDJyVRSPZGXN4mU8zeNMnhPeMc/8JbRcyetxFzZitSj6RZAzMZcefE9iA6ie94n
-         MAAZ5hlP2/hGb6Fz+YAD8ncfumfP6jhq3PNZOh1Q/fiS3nGfc2m50FbSlkqYbZIPkXHn
-         S8kwPkBkT7i4gxIoVJSuou9EmOSS7U0PA3dZvMfXbWcvTyfTxFV3DTLn4NCZU2lz2n8P
-         19Ml/Pkfrr6LMq6PgiqHNr+zs98HG0PIrWTodCN8IRUsPuZBzlfUXvR9u7EpW08u5bt0
-         usFYfvJNX2hee9PaSWPeoGBcv1t1OSK1UaKeY8zkPhAWkswmGkwLXb/8Q+TZJl3VBr8p
-         vPkQ==
-X-Gm-Message-State: AOAM5323nSS+nSeSHBH6yC3Gw9gvxXxEMpnFq5W7A6PtSuTLTgSgyJ6D
-        HB+ISMeaKLWcIDBsrKAEiGE=
-X-Google-Smtp-Source: ABdhPJx+azL3ac6FwTk5uZqWdTaTc/lgmXZS7FZPyYt5I7pOC7d4UxouNE32nRvJZEVgyR4JlJUelg==
-X-Received: by 2002:aa7:9a4a:0:b029:155:323e:adae with SMTP id x10-20020aa79a4a0000b0290155323eadaemr2407909pfj.70.1602736012489;
-        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id e4sm1230371pgg.37.2020.10.14.21.26.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 15 Oct 2020 12:26:28 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/7] staging: qlge: replace ql_* with qlge_* to avoid
- namespace clashes with other qlogic drivers
-Message-ID: <20201015042628.42evgens2z47x3d6@Rk>
-References: <20201014104306.63756-1-coiby.xu@gmail.com>
- <20201014104306.63756-2-coiby.xu@gmail.com>
- <20201015010136.GB31835@f3>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1z00HM1oJWpdTbX+YMPLZimSogxpQwLPHkUejQUce64=;
+        b=qO19lCjCGrBWAdFNic59fF7ISzomrTeXxIO9YYvK7Ilg4cgVFeOA+AUNZSxQFJ9TAl
+         lAelaguhGnuxXt0toUL7N9Xch8x2s0cTuqcDiGgMu0dRYNRT8QMsNkiyBDwKE/LwxQwC
+         x0Ze7UDFNTQSXU11Uqtyqx/RoW7pVRTAoIrExKrdJHdUECBt9gxeDEXRli3vcZ2eKyGA
+         9v+V2Jgyp4DiZzk0c2IJA5R5V7/qN98dPDbmrGsiQB1kWExt01y2/v1d/QAHVMxxO0Jm
+         Q2kQCuXCZnUUUjJZQsL14cHPvkrxHd8xTTm5P7T3K9oLvRVid1yeWr/yQO7jMhLH//TG
+         59IQ==
+X-Gm-Message-State: AOAM5309CXEvZAPMBD/+iDOKwmy+jfL5810k6pueUkC24HJUeRI8bIo9
+        y8TZ7hML5eopD8KgeYVi+IthbQ==
+X-Google-Smtp-Source: ABdhPJw+iharOgIGCo8f+kM8aplb7DCE9ZqAKiUJiB8uvj0NHfZh9j8Pu1sfz1nYj5vTwDyJ9OTvYQ==
+X-Received: by 2002:a17:90b:4617:: with SMTP id ia23mr2584683pjb.120.1602736266692;
+        Wed, 14 Oct 2020 21:31:06 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id e4sm1244336pgg.37.2020.10.14.21.31.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Oct 2020 21:31:05 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 10:01:03 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Aisheng Dong <aisheng.dong@nxp.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH] opp: Don't always remove static OPPs in
+ _of_add_opp_table_v1()
+Message-ID: <20201015043103.m6ghom52sqssh24z@vireshk-i7>
+References: <2c73ab54717ef358b118ea0cfb727b1427e7730a.1602648719.git.viresh.kumar@linaro.org>
+ <AM6PR04MB496659599D41F6B88036420680020@AM6PR04MB4966.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015010136.GB31835@f3>
+In-Reply-To: <AM6PR04MB496659599D41F6B88036420680020@AM6PR04MB4966.eurprd04.prod.outlook.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 10:01:36AM +0900, Benjamin Poirier wrote:
->On 2020-10-14 18:43 +0800, Coiby Xu wrote:
->> To avoid namespace clashes with other qlogic drivers and also for the
->> sake of naming consistency, use the "qlge_" prefix as suggested in
->> drivers/staging/qlge/TODO.
->>
->> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  drivers/staging/qlge/TODO           |    4 -
->>  drivers/staging/qlge/qlge.h         |  190 ++--
->>  drivers/staging/qlge/qlge_dbg.c     | 1073 ++++++++++++-----------
->>  drivers/staging/qlge/qlge_ethtool.c |  231 ++---
->>  drivers/staging/qlge/qlge_main.c    | 1257 +++++++++++++--------------
->>  drivers/staging/qlge/qlge_mpi.c     |  352 ++++----
->>  6 files changed, 1551 insertions(+), 1556 deletions(-)
->>
->> diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
->> index f93f7428f5d5..5ac55664c3e2 100644
->> --- a/drivers/staging/qlge/TODO
->> +++ b/drivers/staging/qlge/TODO
->> @@ -28,10 +28,6 @@
->>  * the driver has a habit of using runtime checks where compile time checks are
->>    possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
->>  * reorder struct members to avoid holes if it doesn't impact performance
->> -* in terms of namespace, the driver uses either qlge_, ql_ (used by
->> -  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
->> -  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
->> -  prefix.
->
->You only renamed ql -> qlge. The prefix needs to be added where there is
->currently none like the second example of that text.
->
-Thank you for reminding me of the second example!
+On 15-10-20, 02:35, Aisheng Dong wrote:
+> Hi Viresh
+> 
+> Thanks for the quick fix.
+> 
+> > From: Viresh Kumar <viresh.kumar@linaro.org>
+> > Sent: Wednesday, October 14, 2020 12:26 PM
+> > 
+> > The patch missed returning 0 early in case of success and hence the static OPPs
+> > got removed by mistake. Fix it.
+> > 
+> > Fixes: 90d46d71cce2 ("opp: Handle multiple calls for same OPP table in
+> > _of_add_opp_table_v1()")
+> > Reported-by: Aisheng Dong <aisheng.dong@nxp.com>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> 
+> Tested-by: Dong Aisheng <aisheng.dong@nxp.com>
 
->Besides, the next patch reintroduces the name struct ql_adapter.
+Thanks.
 
-Oh, there is still a left-over ql_adapter in qlge.h (I renamed ql->qlge
-after initializing the devlink framework earlier but did a git rebase
-to make the order of the changes more reasonable). Thank you for the
-reminding!
+Rafael: Please apply this one directly for 5.10-rc. Thanks.
 
---
-Best regards,
-Coiby
+-- 
+viresh
