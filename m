@@ -2,149 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE9728EA49
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA4528EA69
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389004AbgJOBjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:39:22 -0400
-Received: from mail-vi1eur05on2067.outbound.protection.outlook.com ([40.107.21.67]:61537
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387776AbgJOBjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:39:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fpyWFs8M7S+cZzSIyGMuW0qlUPWEmfy6v28IDVbq97hyaKFCG2Ed1mX0eAchkdFp0ocQJImZIs3DLtR+l/PmUgA0n2Nb0JTlRMmCB/jO3Ok+YIyyMyILGHhZcFjlVrGzEGhm43qTOCysWe9PbDWda1WdoH0dQFB04QOluZ73r9mYMdqsEw+X6D/cXdBxDjd85xwWK/AfxDMBHQs0jYnobkyK1XpMA2iZ9zL7vtzLBkXcJRUAsi1LJ3sP3aWlaOFlyVdykSDZr0js3ChRlG9fv9h185HiRzXE90b08po/QZv64/Yu6SDJVVcN9NtwMuP6Pb57hULdwK8pvOCutndmwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4AFsYrKo/BhfrHFtFVi6wkLEDgB3kipiHXe5X6FyOYA=;
- b=OLsCXE+jHj6edO/AlEfIuPoeyqrC1PVZ6Zy4WfP53R5foDYMx9N0o5oc9k2dnow5nkVik1xIoyOiQBp/wg5z+V7s4YCY+wR+bwTamuZjvUj89uFEdCbU44pG1Zfg+HKQzWlKmJukGzpvDvmMIbNvJ79z/Fag/l9TDmUxabMQC76zY3OI+RYpxeqtCjxM0wVSitkmRguMmyok5PXa7BDbpu0R4ViMXWRO+LFY5IYz9BcVSTmOoMeEmlCTplp9g1as6hQnkgTIwaijC71TQdKcNR3nAhYrfYWog/MKYD3mJVSiktVb2yoISYDgkNu+G9ev12AyKwJydy05Y5fUSbh6zA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4AFsYrKo/BhfrHFtFVi6wkLEDgB3kipiHXe5X6FyOYA=;
- b=QtcE1qJbd5ovNNZg/HyGYTMxWVho/8G2r7kVHZ5xTfPx7GCXsiRMIa+0rcl0HpF3fnKG7aV2u7TuCZimxg8JD6fHko3qC9Nblxb5hf+iJeJIZIr5PHJfQVPu8o2qh9rRaJmVLFiYFHQ0k6MEcCz2vwCiFPCTeGIBwaDaxvItsZc=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBBPR04MB7657.eurprd04.prod.outlook.com (2603:10a6:10:1f5::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.28; Thu, 15 Oct
- 2020 01:39:18 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::35c5:8c71:91f3:6bc6]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::35c5:8c71:91f3:6bc6%12]) with mapi id 15.20.3455.031; Thu, 15 Oct
- 2020 01:39:18 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>
-CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 06/13] remoteproc: Introduce function __rproc_detach()
-Thread-Topic: [PATCH 06/13] remoteproc: Introduce function __rproc_detach()
-Thread-Index: AQHWe8hghvjg60uXcUW0DuhcpfkAcqmYMFYw
-Date:   Thu, 15 Oct 2020 01:39:18 +0000
-Message-ID: <DB6PR0402MB2760E4ED64A4F674B3207DB788020@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20200826164529.224476-1-mathieu.poirier@linaro.org>
- <20200826164529.224476-7-mathieu.poirier@linaro.org>
-In-Reply-To: <20200826164529.224476-7-mathieu.poirier@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c4ab5c9f-f8f9-442a-ceb9-08d870ab21c7
-x-ms-traffictypediagnostic: DBBPR04MB7657:
-x-microsoft-antispam-prvs: <DBBPR04MB76574B1C3888B6D959D2D58488020@DBBPR04MB7657.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: r2OzhINdKazuRgEDmMMKbC++3ziidAHxPOXTX0j2t167kSps5lsJXUtCKxx3VbU6AceOK4xigtR+5dWj1TbHQRDT/tiZXORs9c4yjbY21Z3zVlynvujCuuOTRTn1dXRXEYho9UcBzJT0g7/zJoclZnC4771T92hJwUV3NA987vXdKoxGCiad5RdI21/lGGHQ/hQPwJl1C//+NF+TTC7E1sqSi54Nph4TMjIyuprTugzX0iZzVBHAV5GiFmC0U/AAc8dXrcIsFC286QuJMnWjq3Yl4G/M8MdwGNxLXGNu7AHHTJHQSgwIFaSh5WKhvyY13YqCcX2iIiiElkZDvLDWBQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(136003)(396003)(66446008)(76116006)(44832011)(110136005)(5660300002)(54906003)(9686003)(316002)(71200400001)(2906002)(4326008)(8936002)(66946007)(64756008)(52536014)(6506007)(55016002)(7696005)(33656002)(26005)(66476007)(66556008)(478600001)(8676002)(186003)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: NpYxfK57tChcsiOFavCuL+6rL7rb7uGLJnQjiy9GRti3GqB9kldqmJQ9p9TSM3dDd+VJc0TdA60mlSfIhm1EbL+1G75pYjBfD32tb1GjUAObK+HMgd2IWwg4igUFm23a1sbL/E7zG5fM6weZ9qUE1i7J5FmAuJAaWxR78/TJ0pRJ556kUaNW9JqnOLg/zHJvV+dlexx9Od7t9/GFIbxjtF2SY1io+lM89sickpbckJVhkhuvaF0yRAiCPE5BUgPl0M5USbSP7R9TfmqiBSoWLoQK9KdjBJo62TtUqALdVfW53zEywA0F7eQUctgcwIDFIZLr4hpDo9FIhfYp5ho02Kys9mYj0MFdVC5eiBc2Pfbj6uB6wh4op/Nhc3uPtnzFKPBqs07bRKJnpP7W1+W0Vasig0TlOqphOgY+spnhcBdY35jLfHQ19vgzXfy7uW+cNmE4I7HY92GJ/rU4UGGIkua3MVb1vraYnBcGXi2SZADNGeTs/V4oW8wQGTm6dUSxThDisCm4czRVjh/SHrqljEk223iKtcPdu65QDrs/s9rlI/17TJ4pihZUmA+Eg5X3IpW9IgfvNwrq28VkwVHu6Y26ruXfhjpAjUl8s64MAyALgYn6Yyslv9jK7iheaYS8MD0K5He74BLMF0lAMhqR4w==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2387534AbgJOBoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732292AbgJOBol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:44:41 -0400
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96945C061755;
+        Wed, 14 Oct 2020 18:44:41 -0700 (PDT)
+To:     mathy.vanhoef@kuleuven.be
+Cc:     johannes@sipsolutions.net,
+        "davem@davemloft.net" <davem@davemloft.net>, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        denkenz@gmail.com
+From:   Thomas Deutschmann <whissi@gentoo.org>
+Organization: Gentoo Foundation, Inc
+Subject: [Regression 5.9][Bisected 1df2bdba528b] Wifi GTK rekeying fails:
+ Sending of EAPol packages broken
+Message-ID: <4a7f92dc-13bb-697f-1730-ac288e74b730@gentoo.org>
+Date:   Thu, 15 Oct 2020 03:44:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4ab5c9f-f8f9-442a-ceb9-08d870ab21c7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 01:39:18.0346
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WHo6A/31CibYo6i5ADXstVUd5sYfVufmBSHLufhw0ycs0jLgERQRfdnfHWQ6XKHJ4tAq1kKDrVkLAXEsWQ+gng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7657
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: [PATCH 06/13] remoteproc: Introduce function __rproc_detach()
->=20
-> Introduce function __rproc_detach() to perform the same kind of operation=
- as
-> rproc_stop(), but instead of switching off the remote processor using
-> rproc->ops->stop(), it uses
-> rproc->ops->detach().  That way it is possible for the core
-> to release the resources associated with a remote processor while the lat=
-ter
-> is kept operating.
->=20
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 31
-> ++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
->=20
-> diff --git a/drivers/remoteproc/remoteproc_core.c
-> b/drivers/remoteproc/remoteproc_core.c
-> index bffaa9ea7c8f..7a1fc7e0620f 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1641,6 +1641,37 @@ static int rproc_stop(struct rproc *rproc, bool
-> crashed)
->  	return 0;
->  }
->=20
-> +/*
-> + * __rproc_detach(): Does the opposite of rproc_attach()  */ static int
-> +__maybe_unused __rproc_detach(struct rproc *rproc) {
-> +	struct device *dev =3D &rproc->dev;
-> +	int ret;
-> +
-> +	/* No need to continue if a detach() operation has not been provided */
-> +	if (!rproc->ops->detach)
-> +		return -EINVAL;
-> +
-> +	/* Stop any subdevices for the remote processor */
-> +	rproc_stop_subdevices(rproc, false);
-> +
-> +	/* Tell the remote processor the core isn't available anymore */
-> +	ret =3D rproc->ops->detach(rproc);
-> +	if (ret) {
-> +		dev_err(dev, "can't detach from rproc: %d\n", ret);
-> +		rproc_start_subdevices(rproc);
-> +		return ret;
-> +	}
-> +
-> +	rproc_unprepare_subdevices(rproc);
-> +
-> +	rproc->state =3D RPROC_DETACHED;
-> +
-> +	dev_info(dev, "detached remote processor %s\n", rproc->name);
-> +
-> +	return 0;
-> +}
->=20
->  /**
->   * rproc_trigger_recovery() - recover a remoteproc
-> --
+Hi,
 
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
+after upgrading to linux-5.9.0 I noticed that my wifi got disassociated 
+every 10 minutes when access point triggered rekeying for GTK.
+
+This happened with iwd but not with wpa_supplicant. iwd was logging
+
+> wlan0: disassociated from aa:bb:cc:dd:ap:01 (Reason: 2=PREV_AUTH_NOT_VALID)
+> wlan0: authenticate with aa:bb:cc:dd:ap:01
+> wlan0: send auth to aa:bb:cc:dd:ap:01 (try 1/3)
+> wlan0: authenticated
+> wlan0: associate with aa:bb:cc:dd:ap:01 (try 1/3)
+> wlan0: RX AssocResp from aa:bb:cc:dd:ap:01 (capab=0x1511 status=0 aid=1)
+> wlan0: associated
+
+With the help of iwd developers (many thanks!) we noticed that EAPoL 
+packets didn't reach access point. As workaround, using the legacy way 
+to send EAPoL packets by setting
+
+> [General]
+> ControlPortOverNL80211=False
+
+in iwd's main.conf, worked. So it became clear that this is a kernel 
+problem.
+
+I now finished bisecting the kernel and 
+1df2bdba528b5a7a30f1b107b6924aa79af5e00e [1] is the first bad commit:
+
+> commit 1df2bdba528b5a7a30f1b107b6924aa79af5e00e
+> Author: Mathy Vanhoef
+> Date:   Thu Jul 23 14:01:48 2020 +0400
+> 
+>     mac80211: never drop injected frames even if normally not allowed
+> 
+>     In ieee80211_tx_dequeue there is a check to see if the dequeued frame
+>     is allowed in the current state. Injected frames that are normally
+>     not allowed are being be dropped here. Fix this by checking if a
+>     frame was injected and if so always allowing it.
+> 
+>     Signed-off-by: Mathy Vanhoef
+>     Link: https://lore.kernel.org/r/20200723100153.31631-1-Mathy.Vanhoef@kuleuven.be
+>     Signed-off-by: Johannes Berg
+> 
+>  net/mac80211/tx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Complete bisect log:
+
+> git bisect start
+> # good: [665c6ff082e214537beef2e39ec366cddf446d52] Linux 5.8.15
+> git bisect good 665c6ff082e214537beef2e39ec366cddf446d52
+> # bad: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
+> git bisect bad bbf5c979011a099af5dc76498918ed7df445635b
+> # good: [bcf876870b95592b52519ed4aafcf9d95999bc9c] Linux 5.8
+> git bisect good bcf876870b95592b52519ed4aafcf9d95999bc9c
+> # bad: [47ec5303d73ea344e84f46660fff693c57641386] Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
+> git bisect bad 47ec5303d73ea344e84f46660fff693c57641386
+> # good: [8f7be6291529011a58856bf178f52ed5751c68ac] Merge tag 'mmc-v5.9' of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc
+> git bisect good 8f7be6291529011a58856bf178f52ed5751c68ac
+> # bad: [76769c38b45d94f5492ff9be363ac7007fd8e58b] Merge tag 'mlx5-updates-2020-08-03' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
+> git bisect bad 76769c38b45d94f5492ff9be363ac7007fd8e58b
+> # good: [94d9f78f4d64b967273a676167bd34ddad2f978c] docs: networking: timestamping: add section for stacked PHC devices
+> git bisect good 94d9f78f4d64b967273a676167bd34ddad2f978c
+> # good: [5ee30564c85c94b7dc78aa6cce09e9712b2ad70d] ice: update reporting of autoneg capabilities
+> git bisect good 5ee30564c85c94b7dc78aa6cce09e9712b2ad70d
+> # good: [bd69058f50d5ffa659423bcfa6fe6280ce9c760a] net: ll_temac: Use devm_platform_ioremap_resource_byname()
+> git bisect good bd69058f50d5ffa659423bcfa6fe6280ce9c760a
+> # skip: [7dbc63f0a5402293e887e89a7974c5e48405565d] ice: Misc minor fixes
+> git bisect skip 7dbc63f0a5402293e887e89a7974c5e48405565d
+> # good: [1303a51c24100b3b1915d6f9072fe5ae5bb4c5f6] cfg80211/mac80211: add connected to auth server to station info
+> git bisect good 1303a51c24100b3b1915d6f9072fe5ae5bb4c5f6
+> # skip: [f34f55557ac9a4dfbfbf36c70585d1648ab5cd90] ice: Allow 2 queue pairs per VF on SR-IOV initialization
+> git bisect skip f34f55557ac9a4dfbfbf36c70585d1648ab5cd90
+> # bad: [cc5d229a122106733a85c279d89d7703f21e4d4f] fsl/fman: check dereferencing null pointer
+> git bisect bad cc5d229a122106733a85c279d89d7703f21e4d4f
+> # good: [6fc8c827dd4fa615965c4eac9bbfd465f6eb8fb4] tcp: syncookies: create mptcp request socket for ACK cookies with MPTCP option
+> git bisect good 6fc8c827dd4fa615965c4eac9bbfd465f6eb8fb4
+> # bad: [b90a1269184a3ff374562d243419ad2fa9d3b1aa] Merge branch 'net-openvswitch-masks-cache-enhancements'
+> git bisect bad b90a1269184a3ff374562d243419ad2fa9d3b1aa
+> # skip: [829eb208e80d6db95c0201cb8fa00c2f9ad87faf] rtnetlink: add support for protodown reason
+> git bisect skip 829eb208e80d6db95c0201cb8fa00c2f9ad87faf
+> # bad: [0e8642cf369a37b718c15effa6ffd52c00fd7d15] tcp: fix build fong CONFIG_MPTCP=n
+> git bisect bad 0e8642cf369a37b718c15effa6ffd52c00fd7d15
+> # skip: [48040793fa6003d211f021c6ad273477bcd90d91] tcp: add earliest departure time to SCM_TIMESTAMPING_OPT_STATS
+> git bisect skip 48040793fa6003d211f021c6ad273477bcd90d91
+> # good: [bc5cbd73eb493944b8665dc517f684c40eb18a4a] iavf: use generic power management
+> git bisect good bc5cbd73eb493944b8665dc517f684c40eb18a4a
+> # skip: [8f3f330da28ede9d106cd9d5c5ccd6a3e7e9b50b] tun: add missing rcu annotation in tun_set_ebpf()
+> git bisect skip 8f3f330da28ede9d106cd9d5c5ccd6a3e7e9b50b
+> # skip: [9466a1ccebbe54ac57fb8a89c2b4b854826546a8] mptcp: enable JOIN requests even if cookies are in use
+> git bisect skip 9466a1ccebbe54ac57fb8a89c2b4b854826546a8
+> # good: [09a071f52bbedddef626e71c0fd210838532f347] Documentation: intel: Replace HTTP links with HTTPS ones
+> git bisect good 09a071f52bbedddef626e71c0fd210838532f347
+> # bad: [75e6b594bbaeeb3f8287a2e6eb8811384b8c7195] cfg80211: invert HE BSS color 'disabled' to 'enabled'
+> git bisect bad 75e6b594bbaeeb3f8287a2e6eb8811384b8c7195
+> # bad: [1df2bdba528b5a7a30f1b107b6924aa79af5e00e] mac80211: never drop injected frames even if normally not allowed
+> git bisect bad 1df2bdba528b5a7a30f1b107b6924aa79af5e00e
+> # good: [180ac48ee62f53c26787350a956c5ac371cbe0b7] mac80211: calculate skb hash early when using itxq
+> git bisect good 180ac48ee62f53c26787350a956c5ac371cbe0b7
+> # good: [322cd27c06450b2db2cb6bdc68f3814149baf767] cfg80211/mac80211: avoid bss color setting in non-HE modes
+> git bisect good 322cd27c06450b2db2cb6bdc68f3814149baf767
+> # good: [fd17dba1c860d39f655a3a08387c21e3ceca8c55] cfg80211: Add support to advertize OCV support
+> git bisect good fd17dba1c860d39f655a3a08387c21e3ceca8c55
+> # first bad commit: [1df2bdba528b5a7a30f1b107b6924aa79af5e00e] mac80211: never drop injected frames even if normally not allowed
+
+
+See also:
+=========
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1df2bdba528b5a7a30f1b107b6924aa79af5e00e
+
+
+-- 
+Regards,
+Thomas Deutschmann / Gentoo Linux Developer
+C4DD 695F A713 8F24 2AA1 5638 5849 7EE5 1D5D 74A5
