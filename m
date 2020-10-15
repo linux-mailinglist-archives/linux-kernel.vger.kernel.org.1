@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3618328ECE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 07:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C5B28ECEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgJOFyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 01:54:11 -0400
-Received: from ozlabs.org ([203.11.71.1]:49477 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727397AbgJOFyL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 01:54:11 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBdl40lL5z9sTK;
-        Thu, 15 Oct 2020 16:54:08 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602741249;
-        bh=U4wxrIqjNmzKVny79ebHzFd0vuBUVARg5NVY/hMxNV0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JNGZHPnIHvyKLLGzzsoHMe8P8qvy+rIe1OwYk4AuYNOUUVVlMpZdx52fxpIplfPaf
-         tHK2wUjG0rLjgFkEHLXz6pKlp/4c13dzXBil7I+phFnOpWkI4PnYYBtWT6Qqo7wrll
-         s2NRlcXulGgOloAhbU3KxTz6G9gY7V5EWUCV2rHPAD9E5OOi/OYKF71jfh375rzvz8
-         0gz1d2RjPOfInIKdKbNB2oXe1pbvvOzwKLfATBoOJrWHKbqbqmJQVTOfAFTy3F4slm
-         ohgE8y6jz2iOwMW/mvejrpJeIV75fvh6qpFp6z4pcDTpY8k52fbz2+wag2EI2GiBrb
-         tFwR0vc98l/9A==
-Date:   Thu, 15 Oct 2020 16:54:07 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Corey Minyard <cminyard@mvista.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: Re: linux-next: manual merge of the counters tree with the ipmi
- tree
-Message-ID: <20201015165407.779e1cb3@canb.auug.org.au>
-In-Reply-To: <20201012191340.78ebbaea@canb.auug.org.au>
-References: <20201012191340.78ebbaea@canb.auug.org.au>
+        id S1726663AbgJOGHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 02:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgJOGHT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 02:07:19 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF144C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:07:18 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id l8so2832436ioh.11
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gbDBjzfoSjYWcdFm7/OVUlPfbPckb1RRkf5R/cahnAo=;
+        b=c/REDy8Wy+AgNbzLGLeWhbXSFuiyp0skQ+WxDIeQLskE83dYzmMTZF2ezUVBE84/4N
+         hG5G4m5OON7XmxIbl6jRGt/9mQ2mJXi7GtO2iCSORVNwUoU3MHWVo+QyBtTJAO7LwXC+
+         Zn8Y5G8C094yR9GgvbjHL5ko12QDw0wuf7iWS9urkhVFapvgovTzwF94OeqoNnUY0iB6
+         4lfUEHSXeC3+ax7YnWWI26/gRXh091UkFetTXcOHHsHo/SFtUF+gRDFFPSrIS1/1Ajfq
+         p1jm3fJDDOXxsyz04zYuDE3h832ATs9jXj7SYHajcKhta0jLIaTKsdQbIyIiTrQ54J8U
+         zBKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gbDBjzfoSjYWcdFm7/OVUlPfbPckb1RRkf5R/cahnAo=;
+        b=AH+cCD3K/X9sSErnhOqzoGpKswbjC9XKiRyDLIbVpKYkUk3jpKpEmqfR9LN8dzMjWq
+         Kg26ythJZazo7NQjeh2Uv6+CmPVFAV21dGaCSNeDyuIUAA42hI6EfTNsav4aOLGcfFqH
+         lC6lHhHcuwYOONrRVqlKqPKZX0IU23xecsM+CyQOEsRoO3cVqwm0FO0mAZuiBrlh/9aP
+         iExeZ6lCafa3w/fTZ1O+CIgmcvL/n47JcyMGTOXhEUY2yfrX4pzOcIfW6bV6Rg9IHrWt
+         P/gUEawSTDmQZUgac9TCw3Eu/+T236b7rGbTcu9kpOC5OVMY/JJ+6PR/1bIYCcWjyihf
+         B2kw==
+X-Gm-Message-State: AOAM532uDaLk3VVPjj+vhMnLmH8k50pB1EGZEV4URIpgX4uuOjZK1UPk
+        thCBK1tzUg/vD+bpxgWoAHtpJmA30dVmEQwPw1E=
+X-Google-Smtp-Source: ABdhPJy9UlAIoHXd2nncLjwY3qAvV3ogTigQvb903Qwy6OPLA+FF/ndRaXdkq46BsqRDnv3F1JQ1Mje4WQcmzHsyexs=
+X-Received: by 2002:a02:ccac:: with SMTP id t12mr2234843jap.109.1602742038156;
+ Wed, 14 Oct 2020 23:07:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/pZKoI1Y/5Bvw/5fMMZpqmjs";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201009092530.223-1-qianjun.kernel@gmail.com> <20201014131910.GG2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201014131910.GG2628@hirez.programming.kicks-ass.net>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 15 Oct 2020 14:06:42 +0800
+Message-ID: <CALOAHbCD+E9doVCZEvuuMdDJBbCkBwPNiUo786k19jb82q_8Lw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] Sched/fair: Improve the accuracy of sched_stat_wait statistics
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     jun qian <qianjun.kernel@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, juri.lelli@redhat.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/pZKoI1Y/5Bvw/5fMMZpqmjs
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 14, 2020 at 9:19 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Oct 09, 2020 at 05:25:30PM +0800, qianjun.kernel@gmail.com wrote:
+> > From: jun qian <qianjun.kernel@gmail.com>
+> >
+> > When the sched_schedstat changes from 0 to 1, some sched se maybe
+> > already in the runqueue, the se->statistics.wait_start will be 0.
+> > So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
+> > wrong. We need to avoid this scenario.
+> >
+> > Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+>
+> This SoB chain isn't valid. Did Yafang's tag need to a reviewed-by or
+> something?
+>
 
-Hi all,
+This patch improves the behavior when sched_schedstat is changed from
+0 to 1, so it looks good to me.
 
-On Mon, 12 Oct 2020 19:13:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Today's linux-next merge of the counters tree got a conflict in:
->=20
->   drivers/char/ipmi/ipmi_msghandler.c
->=20
-> between commit:
->=20
->   f8910ffa81b0 ("ipmi:msghandler: retry to get device id on an error")
->=20
-> from the ipmi tree and commit:
->=20
->   dc87264ac991 ("drivers/char/ipmi: convert stats to use counter_atomic32=
-")
->=20
-> from the counters tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc drivers/char/ipmi/ipmi_msghandler.c
-> index 8774a3b8ff95,36c0b1be22fb..000000000000
-> --- a/drivers/char/ipmi/ipmi_msghandler.c
-> +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> @@@ -34,7 -34,7 +34,8 @@@
->   #include <linux/uuid.h>
->   #include <linux/nospec.h>
->   #include <linux/vmalloc.h>
->  +#include <linux/delay.h>
-> + #include <linux/counters.h>
->  =20
->   #define IPMI_DRIVER_VERSION "39.2"
->  =20
+Reviewed-by: Yafang Shao <laoar.shao@gmail.com>
 
-This is now a conflict between the counters tree and Linus' tree.
+> > ---
+> >  kernel/sched/fair.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 1a68a05..6f8ca0c 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -906,6 +906,15 @@ static void update_curr_fair(struct rq *rq)
+> >       if (!schedstat_enabled())
+> >               return;
+> >
+> > +     /*
+> > +      * When the sched_schedstat changes from 0 to 1, some sched se
+> > +      * maybe already in the runqueue, the se->statistics.wait_start
+> > +      * will be 0.So it will let the delta wrong. We need to avoid this
+> > +      * scenario.
+> > +      */
+> > +     if (unlikely(!schedstat_val(se->statistics.wait_start)))
+> > +             return;
+> > +
+> >       delta = rq_clock(rq_of(cfs_rq)) - schedstat_val(se->statistics.wait_start);
+> >
+> >       if (entity_is_task(se)) {
+> > --
+> > 1.8.3.1
+> >
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/pZKoI1Y/5Bvw/5fMMZpqmjs
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+H4/8ACgkQAVBC80lX
-0Gzj8AgAnA39SunQaxVseGOwe7AoZ01vF/dz87rLB9jJoRLuBHRHIp4A3UpmWUwO
-rojXEjK9U5jS/MvRaXDSRZ0xjJ85EoEaPJCqxqOlyr3XoawcyCZ6W8oUj65CUr1+
-VhFSf47IhS1EYvHxpPXiTKkWrXRisovACClFxegnwzlyNWWuF2WWGM/TxCuTkKoD
-5ptUo6EU89AoRf8CYMWfFU/0JwZgIrLKL372tQMwAifxt9KSsh4PlvqqgoRbw0dc
-BLPRMGW2SqUNhy1YDWsJxHCW1avpgsJFqa935nQ8qRDFNW2s+TLVU0NXqZgPYkKt
-LTHGCjD/0iPum0UjFNejiynRHy40pQ==
-=4UB4
------END PGP SIGNATURE-----
-
---Sig_/pZKoI1Y/5Bvw/5fMMZpqmjs--
+-- 
+Thanks
+Yafang
