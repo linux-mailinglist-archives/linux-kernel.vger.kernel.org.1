@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F234D28F8DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6119228F8E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbgJOSso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S2390078AbgJOSvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgJOSso (ORCPT
+        with ESMTP id S1726196AbgJOSvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:48:44 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE607C061755;
-        Thu, 15 Oct 2020 11:48:43 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id c6so2091900plr.9;
-        Thu, 15 Oct 2020 11:48:43 -0700 (PDT)
+        Thu, 15 Oct 2020 14:51:23 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE55C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:51:23 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l18so2491566pgg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:51:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ggw3I3pAynGZgxB+jlnK76lpD++hJM0MLWyGtUL7d20=;
-        b=oJ4C3bwpBD0qOgcpxlqBF7rs3447We2XBaam2CDdVM7ASljXHA9Y6eyySbcrSHEEop
-         ugQxo65cA0/YnFAUJlHvKsh3OJ+ZkLFwNWcdKwpK7qH2JEy8BRI5jnS5ShpKGRp5z9OG
-         QLUnpiramNrxuxcLR9suBU47BM/kjJiu83lp4XOVm1uOeIu8WI9NfH15ggAyoilw45G6
-         L2R9EAT9fzusxiD2DxCV78GWrl0UcLfzb1bqnH5ijsXyjZ8N+BdNhlh2Uv8yz3qBbfGr
-         nctWvcJHFJRwWBAQ5P9iHi6kUB759tRSHVR/i+H9vsLbHjjA+oQew3seOCTpuKH/A2Sf
-         hiJA==
+        bh=4dzZ3wB+/l9v42S9FN6kIPBfKLyAk8Xfq7l5iS5T6+U=;
+        b=Vagho1/6kZJ5F1IOg3Y4OF0QZJsHQMNh5YIf9Cdbp2aOm1Ore4x2Ka5X0Yq9RsAv9r
+         k8RuBx32AHpVu9Ewd9TmzKeuzJy4LVbFQYuFX9FdbjXgiFoYSpJR1+KxeBPrssNy6s3e
+         HiitC5SXUvhBF8qjcC46vAjm5Bti+Y4cFzGLRy7rG126uqSXV/uLuO0LFTz5RUCI4XSS
+         rvf3rxE+bycYFJqAzAo9RFdPGuoN1XCBE5OyKRBD1Ym0FozcUalL9pYFbSdYoyCoAOcj
+         NptAvBE5mGGxad8L8M+jzGedzDO229fKmpk6J/nAoAADz9tPLT4d3g51/OnX5bok92yM
+         hEaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=ggw3I3pAynGZgxB+jlnK76lpD++hJM0MLWyGtUL7d20=;
-        b=d+jiAE4/6VTE7zNQ6C76Yd3uPkwWEO7fHm12hTzShnRtlV4F0gUXWoRI9Ad+AqC2UA
-         Hg5qtVHJUdePcT5wgEsmOXt+4vZTEnMnunhQzvYdMpdAIc/XNXQ80mwqhzIbUyqk5Dvp
-         NyxiQCb3THEpspk9vJkQqA6Za+7ynYa7zI+7d4ui96umEk6rGCO4olzMTBKNdI1pqCtD
-         Uq3H3wURLBxCQDyXRnVwWOhv4Kl49CpGRRwMFxjT+n7QBlPodQZVO+aHhNqvWFWP13uB
-         77cRS3ac57uRGyWiDr6/G74MeiH3+NsLYpieFfhia43Ie+PSsC0hQvG8xWZSMY+XEZBv
-         u8VA==
-X-Gm-Message-State: AOAM531nyrtDktnwR6tItlVC7Xlm6H6ICMBdByOG1vqielzk44E8cEaR
-        xhPchxKTgMpiiI7xebFo3us=
-X-Google-Smtp-Source: ABdhPJy7lMQDrU/UXhqFoaHHLUjKN6vCPXC2gDHjCG6rUmQ9qUGSVEopO+cluDuMIWo14qlAsrPkpw==
-X-Received: by 2002:a17:902:d909:b029:d3:d52c:b98b with SMTP id c9-20020a170902d909b02900d3d52cb98bmr116513plz.54.1602787723434;
-        Thu, 15 Oct 2020 11:48:43 -0700 (PDT)
+        bh=4dzZ3wB+/l9v42S9FN6kIPBfKLyAk8Xfq7l5iS5T6+U=;
+        b=BqCX+9VtQA6ISuzy7BKe2jopvoWSl3lJ971R0nMlyInEoiWfxCl3KbMrBoUMAstTJ/
+         gTDqDGuTv3u4tDp0DFyh8LVTR6qczpRlp5qfn/Py7ImPrmRifWS2L5BgG547B3/cCj7X
+         KCGADyzhHZRNDkPo6lkVIWCNjLBN+HcRymOF9Hea46qCXCWWOiiWGNQgQM0L/SgTQXWM
+         fbkn0QB4t4eNdVMugrrsRXp67sBFLek84YiF4OBNOYtmdg9eKLFZvA3S1ldppsOHUVK6
+         7VaUAhhN8F9xMECZAhaHIG+eTNJcDYF1pOilKq+ujd8PZcGTQZMaqQhs/t8L8r2jShiP
+         KCNA==
+X-Gm-Message-State: AOAM533012fTHNvcCpDUSUoXbIEYiomTHtfIV4UMExyAihrd//580cfU
+        rboznWuoxHNkQKbDQFQECxKOfv40JLE=
+X-Google-Smtp-Source: ABdhPJyA8p7L530bJJxMOtHScL/lhtNd9K6Vg5quDuN3Jw+RAF2xcqhlHPJTWmdm097qSiJ+fJvxzQ==
+X-Received: by 2002:a62:d0c1:0:b029:155:2e17:ea0 with SMTP id p184-20020a62d0c10000b02901552e170ea0mr6529pfg.55.1602787883143;
+        Thu, 15 Oct 2020 11:51:23 -0700 (PDT)
 Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id x1sm5187pjj.25.2020.10.15.11.48.41
+        by smtp.gmail.com with ESMTPSA id c12sm8083pgd.57.2020.10.15.11.51.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 11:48:41 -0700 (PDT)
+        Thu, 15 Oct 2020 11:51:22 -0700 (PDT)
 Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 15 Oct 2020 11:48:39 -0700
+Date:   Thu, 15 Oct 2020 11:51:20 -0700
 From:   Minchan Kim <minchan@kernel.org>
-To:     Yi Wang <wang.yi59@zte.com.cn>,
+To:     Miaohe Lin <linmiaohe@huawei.com>,
         Andrew Morton <akpm@linux-foundation.org>
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, xue.zhihong@zte.com.cn,
-        jiang.xuexin@zte.com.cn, zhanglin <zhang.lin16@zte.com.cn>
-Subject: Re: [PATCH v4] zram: add restriction on dynamic zram device creation
-Message-ID: <20201015184839.GA181691@google.com>
-References: <1602482640-48978-1-git-send-email-wang.yi59@zte.com.cn>
+Cc:     <akpm@linux-foundation.org>, <ngupta@vflare.org>,
+        <sergey.senozhatsky.work@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] zsmalloc: Rework the list_add code in insert_zspage()
+Message-ID: <20201015185120.GB181691@google.com>
+References: <20201015130107.65195-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602482640-48978-1-git-send-email-wang.yi59@zte.com.cn>
+In-Reply-To: <20201015130107.65195-1-linmiaohe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 02:04:00PM +0800, Yi Wang wrote:
-> From: zhanglin <zhang.lin16@zte.com.cn>
+On Thu, Oct 15, 2020 at 09:01:07AM -0400, Miaohe Lin wrote:
+> Rework the list_add code to make it more readable and simplicity.
 > 
-> Add max_num_devices to limit dynamic zram device creation to prevent
->  potential OOM
-> 
-> Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
-> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Acked-by: Minchan Kim <minchan@kernel.org>
