@@ -2,120 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A891328F5BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1666D28F5C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388946AbgJOPXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388357AbgJOPXG (ORCPT
+        id S2389683AbgJOPYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:24:17 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28555 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388357AbgJOPYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:23:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C90C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:23:05 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g12so3963729wrp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=37I63cZBodA+13wzLqZfOcrBqfvt4ww4Wg+i0WcmZ1o=;
-        b=T+bebg+YD46I6Hulxd9R88hBGXswgNHgXR0A/YJJrQtmpNN2az61LLTpHx08Ky8qfP
-         rg0NBZBPJk2cKDM+H4K3WnVuFEZejqm1XPacEKoLgD1V8exuQRx/JBP47RiMfp0lrNKs
-         qSjJ4WyTF02hebJ0G5b1UxVgqX83E1+oYSL74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=37I63cZBodA+13wzLqZfOcrBqfvt4ww4Wg+i0WcmZ1o=;
-        b=DoI7oKsHwpYxWTsG2pKiYl1PQ+qHoU392134p0e6Qswm4wraoDhYvSSiQ/9PNtoCdU
-         FgwQFrOjrMHY82kpPn8+sGvTo10WR/bUvkPgR1wlPK6C1T+xSOSXw0aw1BBgQ4Pr49kQ
-         rMWitxYwiTZYix1WAxS3IDwkFv4OgF0NoGBGbN0GMdrciwsqhU4OT95/6j47KhCVy36j
-         1P11vfCC8TphydPdSUjLBi668jZCcPvB+FO8fbza8Jddm/ZMZXmbqQQMZJdUvayK8qIb
-         9eUfQOfZTEaRy+giMiabTuEz/b6Gsz3ZlqK2mzvySsPMcYzkLneAAkY0UyGcbzj/uN5Y
-         c5qw==
-X-Gm-Message-State: AOAM533BXowx+rNDchHmJdBgWhzEzQxeOjNRP6vHX7y22XlxpcekGJCc
-        bChCC3ezvBi+HRyWofnHnwZbgQ==
-X-Google-Smtp-Source: ABdhPJz60cxmP1IUgfdwoRtfsr/U5/cjrhpBEp04wKon+qeZgoUhNl224cILQcKvdUU3iiEaIgb54g==
-X-Received: by 2002:a5d:5106:: with SMTP id s6mr4820538wrt.51.1602775384469;
-        Thu, 15 Oct 2020 08:23:04 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id x3sm5050001wmi.45.2020.10.15.08.23.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 08:23:03 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 17:23:01 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Kever Yang <kever.yang@rock-chips.com>
-Cc:     Sandy Huang <hjc@rock-chips.com>, heiko@sntech.de,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, huangtao@rock-chips.com,
-        andy.yan@rock-chips.com, linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/of: Consider the state in which the ep is disabled
-Message-ID: <20201015152301.GE438822@phenom.ffwll.local>
-Mail-Followup-To: Kever Yang <kever.yang@rock-chips.com>,
-        Sandy Huang <hjc@rock-chips.com>, heiko@sntech.de,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>, huangtao@rock-chips.com,
-        andy.yan@rock-chips.com, linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200707112526.18438-1-hjc@rock-chips.com>
- <5c0cdb9d-8e35-fa0c-35b3-adfa7770fb30@rock-chips.com>
+        Thu, 15 Oct 2020 11:24:17 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-193-gJBnQdcfNGGK9k5C1zNBcw-1; Thu, 15 Oct 2020 16:24:10 +0100
+X-MC-Unique: gJBnQdcfNGGK9k5C1zNBcw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 15 Oct 2020 16:24:09 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 15 Oct 2020 16:24:09 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arvind Sankar' <nivedita@alum.mit.edu>
+CC:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] compiler.h: Fix barrier_data() on clang
+Thread-Topic: [PATCH] compiler.h: Fix barrier_data() on clang
+Thread-Index: AQHWonC0tkOz0iWHskSkJuRX+uCeV6mYVxvwgABW1oCAABhpoA==
+Date:   Thu, 15 Oct 2020 15:24:09 +0000
+Message-ID: <4a8c47b5eeb44b789abbb617f0a95993@AcuMS.aculab.com>
+References: <20201014212631.207844-1-nivedita@alum.mit.edu>
+ <1653ace9164c4a3a8be50b3d2c9ff816@AcuMS.aculab.com>
+ <20201015144515.GA572410@rani.riverdale.lan>
+In-Reply-To: <20201015144515.GA572410@rani.riverdale.lan>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5c0cdb9d-8e35-fa0c-35b3-adfa7770fb30@rock-chips.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 09:48:43AM +0800, Kever Yang wrote:
-> Hi Maintainers,
-> 
->     Does this patch ready to merge?
+RnJvbTogQXJ2aW5kIFNhbmthcg0KPiBTZW50OiAxNSBPY3RvYmVyIDIwMjAgMTU6NDUNCj4gDQo+
+IE9uIFRodSwgT2N0IDE1LCAyMDIwIGF0IDA4OjUwOjA1QU0gKzAwMDAsIERhdmlkIExhaWdodCB3
+cm90ZToNCj4gPiBGcm9tOiBBcnZpbmQgU2Fua2FyDQo+ID4gPiBTZW50OiAxNCBPY3RvYmVyIDIw
+MjAgMjI6MjcNCj4gPiAuLi4NCj4gPiA+ICsvKg0KPiA+ID4gKyAqIFRoaXMgdmVyc2lvbiBpcyBp
+LmUuIHRvIHByZXZlbnQgZGVhZCBzdG9yZXMgZWxpbWluYXRpb24gb24gQHB0cg0KPiA+ID4gKyAq
+IHdoZXJlIGdjYyBhbmQgbGx2bSBtYXkgYmVoYXZlIGRpZmZlcmVudGx5IHdoZW4gb3RoZXJ3aXNl
+IHVzaW5nDQo+ID4gPiArICogbm9ybWFsIGJhcnJpZXIoKTogd2hpbGUgZ2NjIGJlaGF2aW9yIGdl
+dHMgYWxvbmcgd2l0aCBhIG5vcm1hbA0KPiA+ID4gKyAqIGJhcnJpZXIoKSwgbGx2bSBuZWVkcyBh
+biBleHBsaWNpdCBpbnB1dCB2YXJpYWJsZSB0byBiZSBhc3N1bWVkDQo+ID4gPiArICogY2xvYmJl
+cmVkLiBUaGUgaXNzdWUgaXMgYXMgZm9sbG93czogd2hpbGUgdGhlIGlubGluZSBhc20gbWlnaHQN
+Cj4gPiA+ICsgKiBhY2Nlc3MgYW55IG1lbW9yeSBpdCB3YW50cywgdGhlIGNvbXBpbGVyIGNvdWxk
+IGhhdmUgZml0IGFsbCBvZg0KPiA+ID4gKyAqIEBwdHIgaW50byBtZW1vcnkgcmVnaXN0ZXJzIGlu
+c3RlYWQsIGFuZCBzaW5jZSBAcHRyIG5ldmVyIGVzY2FwZWQNCj4gPiA+ICsgKiBmcm9tIHRoYXQs
+IGl0IHByb3ZlZCB0aGF0IHRoZSBpbmxpbmUgYXNtIHdhc24ndCB0b3VjaGluZyBhbnkgb2YNCj4g
+PiA+ICsgKiBpdC4gVGhpcyB2ZXJzaW9uIHdvcmtzIHdlbGwgd2l0aCBib3RoIGNvbXBpbGVycywg
+aS5lLiB3ZSdyZSB0ZWxsaW5nDQo+ID4gPiArICogdGhlIGNvbXBpbGVyIHRoYXQgdGhlIGlubGlu
+ZSBhc20gYWJzb2x1dGVseSBtYXkgc2VlIHRoZSBjb250ZW50cw0KPiA+ID4gKyAqIG9mIEBwdHIu
+IFNlZSBhbHNvOiBodHRwczovL2xsdm0ub3JnL2J1Z3Mvc2hvd19idWcuY2dpP2lkPTE1NDk1DQo+
+ID4gPiArICovDQo+ID4gPiArIyBkZWZpbmUgYmFycmllcl9kYXRhKHB0cikgX19hc21fXyBfX3Zv
+bGF0aWxlX18oIiI6IDoiciIocHRyKSA6Im1lbW9yeSIpDQo+ID4NCj4gPiBUaGF0IGNvbW1lbnQg
+ZG9lc24ndCBhY3R1YWxseSBtYXRjaCB0aGUgYXNtIHN0YXRlbWVudC4NCj4gPiBBbHRob3VnaCB0
+aGUgYXNtIHN0YXRlbWVudCBwcm9iYWJseSBoYXMgdGhlIGRlc2lyZWQgZWZmZWN0Lg0KPiA+DQo+
+ID4gVGhlICJyIihwdHIpIGNvbnN0cmFpbnQgb25seSBwYXNzZXMgdGhlIGFkZHJlc3Mgb2YgdGhl
+IGJ1ZmZlcg0KPiA+IGludG8gdGhlIGFzbSAtIGl0IGRvZXNuJ3Qgc2F5IGFueXRoaW5nIGF0IGFs
+bCBhYm91dCB0aGUgYXNzb2NpYXRlZA0KPiA+IG1lbW9yeS4NCj4gPg0KPiA+IFdoYXQgdGhlICJy
+IihwdHIpIGFjdHVhbGx5IGRvZXMgaXMgdG8gZm9yY2UgdGhlIGFkZHJlc3Mgb2YgdGhlDQo+ID4g
+YXNzb2NpYXRlZCBkYXRhIHRvIGJlIHRha2VuLg0KPiA+IFRoaXMgbWVhbnMgdGhhdCBvbi1zdGFj
+ayBzcGFjZSBtdXN0IGFjdHVhbGx5IGJlIGFsbG9jYXRlZC4NCj4gPiBUaGUgIm1lbW9yeSIgY2xv
+YmJlciB3aWxsIHRoZW4gZm9yY2UgdGhlIHJlZ2lzdGVycyBjYWNoaW5nDQo+ID4gdGhlIHZhcmlh
+YmxlIGJlIHdyaXR0ZW4gb3V0IHRvIHN0YWNrLg0KPiA+DQo+IA0KPiBJIHRoaW5rIHRoZSBjb21t
+ZW50IGlzIHVuY2xlYXIgbm93IHRoYXQgeW91IGJyaW5nIGl0IHVwLCBidXQgdGhlIHByb2JsZW0N
+Cj4gaXQgYWN0dWFsbHkgYWRkcmVzc2VzIGlzIG5vdCB0aGF0IHRoZSBkYXRhIGlzIGhlbGQgaW4g
+cmVnaXN0ZXJzOiBpbiB0aGUNCj4gc2hhMjU2X3RyYW5zZm9ybSgpIGNhc2UgbWVudGlvbmVkIGlu
+IHRoZSBjb21taXQgbWVzc2FnZSwgZm9yIGV4YW1wbGUsDQo+IHRoZSBkYXRhIGlzIGluIGZhY3Qg
+aW4gbWVtb3J5IGV2ZW4gYmVmb3JlIHRoaXMgY2hhbmdlIChpdCdzIGEgMjU2LWJ5dGUNCj4gYXJy
+YXkpLCBhbmQgdGhhdCB0b2dldGhlciB3aXRoIHRoZSBtZW1vcnkgY2xvYmJlciBpcyBlbm91Z2gg
+Zm9yIGdjYyB0bw0KPiBhc3N1bWUgdGhhdCB0aGUgYXNtIG1pZ2h0IHVzZSBpdC4gQnV0IHdpdGgg
+Y2xhbmcsIGlmIHRoZSBhZGRyZXNzIG9mIHRoYXQNCj4gZGF0YSBoYXMgbmV2ZXIgZXNjYXBlZCAt
+LSBpbiB0aGlzIGNhc2UgdGhlIGRhdGEgaXMgYSBsb2NhbCB2YXJpYWJsZQ0KPiB3aG9zZSBhZGRy
+ZXNzIHdhcyBuZXZlciBwYXNzZWQgb3V0IG9mIHRoZSBmdW5jdGlvbiAtLSB0aGUgY29tcGlsZXIN
+Cj4gYXNzdW1lcyB0aGF0IHRoZSBhc20gY2Fubm90IHBvc3NpYmx5IGRlcGVuZCBvbiB0aGF0IG1l
+bW9yeSwgYmVjYXVzZSBpdA0KPiBoYXMgbm8gd2F5IG9mIGdldHRpbmcgaXRzIGFkZHJlc3MuDQoN
+Ck9rLCBzbGlnaHRseSBkaWZmZXJlbnQgZnJvbSB3aGF0IGkgdGhvdWdodC4NCkJ1dCB0aGUgY3Vy
+cmVudCBjb21tZW50IGlzIGp1c3Qgd3JvbmcuDQoNCj4gUGFzc2luZyBwdHIgdG8gdGhlIGlubGlu
+ZSBhc20gdGVsbHMgY2xhbmcgdGhhdCB0aGUgYXNtIGtub3dzIHRoZQ0KPiBhZGRyZXNzLCBhbmQg
+c2luY2UgaXQgYWxzbyBoYXMgYSBtZW1vcnkgY2xvYmJlciwgdGhhdCBpdCBtYXkgdXNlIHRoZQ0K
+PiBkYXRhLiBUaGlzIGlzIHNvbWV3aGF0IHN1Ym9wdGltYWwsIHNpbmNlIGlmIHRoZSBkYXRhIHdh
+cyBzb21lIHNtYWxsDQo+IHN0cnVjdHVyZSB0aGF0IHRoZSBjb21waWxlciB3YXMganVzdCBob2xk
+aW5nIGluIHJlZ2lzdGVycyBvcmlnaW5hbGx5LA0KPiBmb3JjaW5nIGl0IG91dCB0byBtZW1vcnkg
+aXMgYSBiYWQgdGhpbmcgdG8gZG8uDQo+IA0KPiA+IElmIHlvdSBvbmx5IHdhbnQgdG8gZm9yY2Ug
+c3RvcmVzIG9uIGEgc2luZ2xlIGRhdGEgc3RydWN0dXJlDQo+ID4geW91IGFjdHVhbGx5IHdhbnQ6
+DQo+ID4gI2RlZmluZSBiYXJyaWVyX2RhdGEocHRyKSBhc20gdm9sYXRpbGUoIiIgOjogIm0iKCpw
+dHIpKQ0KPiA+IGFsdGhvdWdoIGl0IHdvdWxkIGJlIGJlc3QgdGhlbiB0byBhZGQgYW4gZXhwbGlj
+aXQgc2l6ZQ0KPiA+IGFuZCBhc3NvY2lhdGVkIGNhc3QuDQo+ID4NCj4gDQo+IGkuZS4gc29tZXRo
+aW5nIGxpa2U6DQo+IAlzdGF0aWMgaW5saW5lIHZvaWQgYmFycmllcl9kYXRhKHZvaWQgKnB0ciwg
+c2l6ZV90IHNpemUpDQo+IAl7DQo+IAkJYXNtIHZvbGF0aWxlKCIiIDogIittIigqKGNoYXIgKCop
+W3NpemVdKXB0cikpOw0KDQpJIHRoaW5rIGl0IGhhcyB0byBiZSBhIHN0cnVjdCB3aXRoIGFuIGFy
+cmF5IG1lbWJlcj8NCg0KPiAJfQ0KPiBwbHVzIHNvbWUgbWFnaWMgdG8gZGlzYWJsZSB0aGUgVkxB
+IHdhcm5pbmcsIG90aGVyd2lzZSBpdCBjYXVzZXMgYSBidWlsZA0KPiBlcnJvci4NCg0KSXQgc2hv
+dWxkbid0IGlmIHRoZSBzaXplIGlzIGEgY29tcGlsZSB0aW1lIGNvbnN0YW50Lg0KQW5kIGdpdmVu
+IHRoaXMgaXMgYW4gaW5zdHJ1Y3Rpb24gdG8gdGhlIGNvbXBpbGVyIGl0IGJldHRlciBiZS4NCg0K
+PiBCdXQgSSB0aGluayB0aGF0IG1pZ2h0IGxlYWQgdG8gZXZlbiBtb3JlIHN1YnRsZSBpc3N1ZXMg
+YnkgZHJvcHBpbmcgdGhlDQo+IG1lbW9yeSBjbG9iYmVyLiBGb3IgZXhhbXBsZSAoYW5kIHRoaXMg
+aXMgYWN0dWFsbHkgZG9uZSBpbg0KPiBzaGEyNTZfdHJhbnNmb3JtKCkgYXMgd2VsbCwgdGhvdWdo
+IHRoZSB6ZXJvJ2luZyBzaW1wbHkgZG9lc24ndCB3b3JrIHdpdGgNCj4gYW55IGNvbXBpbGVyLCBh
+cyBpdCdzIG1pc3NpbmcgdGhlIGJhcnJpZXJfZGF0YSgpJ3MpOg0KPiANCj4gCXVuc2lnbmVkIGxv
+bmcgeCwgeTsNCj4gCS4uLiBkbyBzb21ldGhpbmcgc2VjcmV0IHdpdGggeC95IC4uLg0KPiAJeCA9
+IHkgPSAwOw0KPiAJYmFycmllcl9kYXRhKCZ4LCBzaXplb2YoeCkpOw0KPiAJYmFycmllcl9kYXRh
+KCZ5LCBzaXplb2YoeSkpOw0KPiAJcmV0dXJuOw0KPiANCj4gU2luY2UgeCBpcyBub3QgdXNlZCBh
+ZnRlciBpdHMgYmFycmllcl9kYXRhKCksIEkgdGhpbmsgdGhlIGNvbXBpbGVyIHdvdWxkDQo+IGJl
+IHdpdGhpbiBpdHMgcmlnaHRzIHRvIHR1cm4gdGhhdCBpbnRvOg0KPiANCj4gCXhvcmwJJWVheCwg
+JWVheA0KPiAJbGVhcQktMTYoJXJicCksICVyZHgJLy8gJnggPT0gLTE2KCVyYnApDQo+IAltb3Zx
+CSVlYXgsICglcmR4KQkvLyB4ID0gMDsNCj4gCS8vIGlubGluZSBhc20gZm9yIGJhcnJpZXJfZGF0
+YSgmeCwgc2l6ZW9mKHgpKTsNCj4gCW1vdnEJJWVheCwgKCVyZHgpCS8vIHkgPSAwOyAoISkNCj4g
+CS8vIGlubGluZSBhc20gZm9yIGJhcnJpZXJfZGF0YSgmeSwgc2l6ZW9mKHkpKTsNCj4gDQo+IHdo
+aWNoIHNhdmVzIG9uZSBpbnN0cnVjdGlvbiBieSBwdXR0aW5nIHkgYXQgdGhlIHNhbWUgbG9jYXRp
+b24gYXMgeCwgb25jZQ0KPiB4IGlzIGRlYWQuDQo+IA0KPiBXaXRoIGEgbWVtb3J5IGNsb2JiZXIs
+IHRoZSBjb21waWxlciBoYXMgdG8ga2VlcCB4IGFuZCB5IGF0IGRpZmZlcmVudA0KPiBhZGRyZXNz
+ZXMsIHNpbmNlIHRoZSBmaXJzdCBiYXJyaWVyX2RhdGEoKSBtaWdodCBoYXZlIHNhdmVkIHRoZSBh
+ZGRyZXNzDQo+IG9mIHguDQoNCk1heWJlICIrbSIoKnB0cikgOiAiciIocHRyKSB3b3VsZCB3b3Jr
+Lg0KT1RPSCBhICJtZW1vcnkiIGNsb2JiZXIgYXQgdGhlIGJvdHRvbSBvZiBhIGZ1bmN0aW9uIGlz
+bid0IGdvaW5nIHRvDQpjYXVzZSBibG9hdC4NCg0KVGhlIGV4cGxpY2l0IHJhbmdlZCBtZW1vcnkg
+YWNjZXNzICh3aXRob3V0ICJtZW1vcnkiKSBwcm9iYWJseSBoYXMgaXRzDQp1c2VzIC0gYnV0IG9u
+bHkgaWYgdGhlIGZ1bGwgIm1lbW9yeSIgY2xvYmJlciBjYXVzZXMgZ3JpZWYuDQoNCglEYXZpZA0K
+DQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFy
+bSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAo
+V2FsZXMpDQo=
 
-Would maybe be good to get some acks from other drivers using this, then
-Sandy can push to drm-misc-next.
--Daniel
-> 
-> On 2020/7/7 下午7:25, Sandy Huang wrote:
-> > don't mask possible_crtcs if remote-point is disabled.
-> > 
-> > Signed-off-by: Sandy Huang <hjc@rock-chips.com>
-> > ---
-> >   drivers/gpu/drm/drm_of.c | 3 +++
-> >   1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_of.c b/drivers/gpu/drm/drm_of.c
-> > index fdb05fbf72a0..565f05f5f11b 100644
-> > --- a/drivers/gpu/drm/drm_of.c
-> > +++ b/drivers/gpu/drm/drm_of.c
-> > @@ -66,6 +66,9 @@ uint32_t drm_of_find_possible_crtcs(struct drm_device *dev,
-> >   	uint32_t possible_crtcs = 0;
-> >   	for_each_endpoint_of_node(port, ep) {
-> > +		if (!of_device_is_available(ep))
-> > +			continue;
-> > +
-> >   		remote_port = of_graph_get_remote_port(ep);
-> >   		if (!remote_port) {
-> >   			of_node_put(ep);
-> 
-> Looks good to me.
-> 
-> 
-> Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
