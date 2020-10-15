@@ -2,206 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C86028F4B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867EF28F4BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388133AbgJOO3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:29:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:45436 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727988AbgJOO3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:29:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 220AD13D5;
-        Thu, 15 Oct 2020 07:29:37 -0700 (PDT)
-Received: from localhost (e108754-lin.cambridge.arm.com [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B7A403F719;
-        Thu, 15 Oct 2020 07:29:36 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 15:29:35 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, Da Xue <da@libre.computer>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mailbox: cancel timer before starting it
-Message-ID: <20201015142935.GA12516@arm.com>
-References: <20200923123916.1115962-1-jbrunet@baylibre.com>
- <20201015134628.GA11989@arm.com>
- <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
+        id S2388461AbgJOOaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388410AbgJOOaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:30:13 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD13FC061755;
+        Thu, 15 Oct 2020 07:30:12 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id m16so3370234ljo.6;
+        Thu, 15 Oct 2020 07:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=YWj6b+v4A4nDHvFR3J/ATINzPrOIqZfn4UXHHwCDC/4=;
+        b=Byds2iHC/6Lvi5c2pk+8NB/fAEqs4wSyTpHl++pGBQXkDgQg6Lb5R7OK1lJkKyghT1
+         5c3LHhGq1aBOofZSoHUoGD2W6ixDV6BlI56WiK5C0eDwi5HTDHRRuYPvOrobsvsnTKiW
+         Q8Q07UsezAgFkzzAi1fYhttcWoW9zXhetBv9+EHULQjUS17MUYDWvi6CKEkLPjxktg3C
+         0D46923PXeWG/s4dlNUajn1CIkqrs13FkF50aiZO4L3dm+oH4kQvMOysvzHa8VM0Wpc1
+         A58UrW4X7XPwGTAP8B6suaG6u3Dcz/uHN09fhWNyPJm2jWgxze+kioVgBC6Be6KkT97q
+         6Wjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=YWj6b+v4A4nDHvFR3J/ATINzPrOIqZfn4UXHHwCDC/4=;
+        b=tyEYIsSjxdjBsonO36QcHmoajuW70iP/ikfwoz9sQsPuc4+x7zIlBliQrCM+CCff+d
+         SkMMjtNtO2K4pSYKrP8MUnjnlURBYDCUU32YgaQDP4E+9n6VEYNc6udVBmfjnmsm3i2F
+         crpjpeKRL3inGlFpFmmqprT2l27lLcub6oaqtFE3jTw2wn/U1Xg2w2iPomi/HaIsF1tT
+         hXcZJfQ+UMjLJbJ+GVUTo/LNjZmErQBUgOLuH8BoVUr/htLcPp6THKwMt3biedQ7U9aS
+         i/b8DWdbhKHvx8LiOlhohalOVegwxzepvEj04Na7NHMXlcuyGiodZslVrZSdPFuKylyQ
+         77PA==
+X-Gm-Message-State: AOAM530cOYmcaJ3V0bRrLQuiSQlEcSy1RiUYBRy/pHnvJA2ETQ/H5GzR
+        88D64zYEhfD1n1NbwffQlTk=
+X-Google-Smtp-Source: ABdhPJyYGmf/5fGb0/i566F0u9IYo1CUHDznvu1JtXqPmwtBaaeroxaW3KuNo+wdl5aREYwHnBx9yQ==
+X-Received: by 2002:a2e:874c:: with SMTP id q12mr1342241ljj.148.1602772211252;
+        Thu, 15 Oct 2020 07:30:11 -0700 (PDT)
+Received: from laptop ([156.146.58.201])
+        by smtp.gmail.com with ESMTPSA id s14sm1350043ljp.92.2020.10.15.07.30.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Oct 2020 07:30:10 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 17:30:04 +0300
+From:   Fedor Tokarev <ftokarev@gmail.com>
+To:     rostedt@goodmis.org, acme@redhat.com
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        ftokarev@gmail.com
+Subject: [PATCH] tools: net: traceevent: Fix 'snprintf' return value check in
+ 'tep_filter_strerror'
+Message-ID: <20201015142959.GA18281@laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jerome,
+'snprintf' returns the number of characters which would have been written
+if enough space had been available, excluding the terminating null byte.
+Thus, the return value of 'buflen' means that the last character
+was dropped.
 
-On Thursday 15 Oct 2020 at 15:58:30 (+0200), Jerome Brunet wrote:
-> 
-> On Thu 15 Oct 2020 at 15:46, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
-> 
-> > Hi guys,
-> >
-> > On Wednesday 23 Sep 2020 at 14:39:16 (+0200), Jerome Brunet wrote:
-> >> If the txdone is done by polling, it is possible for msg_submit() to start
-> >> the timer while txdone_hrtimer() callback is running. If the timer needs
-> >> recheduling, it could already be enqueued by the time hrtimer_forward_now()
-> >> is called, leading hrtimer to loudly complain.
-> >> 
-> >> WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
-> >> CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
-> >> Hardware name: Libre Computer AML-S805X-AC (DT)
-> >> Workqueue: events_freezable_power_ thermal_zone_device_check
-> >> pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> >> pc : hrtimer_forward+0xc4/0x110
-> >> lr : txdone_hrtimer+0xf8/0x118
-> >> [...]
-> >> 
-> >> Canceling the timer before starting it ensure that the timer callback is
-> >> not running when the timer is started, solving this race condition.
-> >> 
-> >> Fixes: 0cc67945ea59 ("mailbox: switch to hrtimer for tx_complete polling")
-> >> Reported-by: Da Xue <da@libre.computer>
-> >> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> >> ---
-> >>  drivers/mailbox/mailbox.c | 8 ++++++--
-> >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >> 
-> >> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-> >> index 0b821a5b2db8..34f9ab01caef 100644
-> >> --- a/drivers/mailbox/mailbox.c
-> >> +++ b/drivers/mailbox/mailbox.c
-> >> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
-> >>  exit:
-> >>  	spin_unlock_irqrestore(&chan->lock, flags);
-> >>  
-> >> -	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
-> >> -		/* kick start the timer immediately to avoid delays */
-> >> +	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
-> >> +		/* Disable the timer if already active ... */
-> >> +		hrtimer_cancel(&chan->mbox->poll_hrt);
-> >> +
-> >> +		/* ... and kick start it immediately to avoid delays */
-> >>  		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
-> >> +	}
-> >>  }
-> >>  
-> >>  static void tx_tick(struct mbox_chan *chan, int r)
-> >
-> > I've tracked a regression back to this commit. Details to reproduce:
-> 
-> Hi Ionela,
-> 
-> I don't have access to your platform and I don't get what is going on
-> from the log below.
-> 
-> Could you please give us a bit more details about what is going on ?
-> 
+Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
+---
+ tools/lib/traceevent/parse-filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm not familiar with the mailbox subsystem, so the best I can do right
-now is to add Sudeep to Cc, in case this conflicts in some way with the
-ARM MHU patches [1].
+diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
+index c271aee..dccdbf2 100644
+--- a/tools/lib/traceevent/parse-filter.c
++++ b/tools/lib/traceevent/parse-filter.c
+@@ -1374,7 +1374,7 @@ int tep_filter_strerror(struct tep_event_filter *filter, enum tep_errno err,
+ 	if (strlen(filter->error_buffer) > 0) {
+ 		size_t len = snprintf(buf, buflen, "%s", filter->error_buffer);
+ 
+-		if (len > buflen)
++		if (len >= buflen)
+ 			return -1;
+ 		return 0;
+ 	}
+-- 
+2.7.4
 
-In the meantime I'll get some traces and get more familiar with the
-code.
-
-[1]
-https://lore.kernel.org/linux-arm-kernel/20201009113129.uqw5zrqztjgw6vga@bogus/
-
-Hope it helps,
-Ionela.
-
-> All this patch does is add hrtimer_cancel().
-> * It is needed if the timer had already been started, which is
->   appropriate AFAIU
-> * It is a NO-OP is the timer is not active.
-> 
-> >
-> >
-> >  - HEAD: (linux-next)
-> >    * 62c04453381e  Jerome Brunet   3 weeks ago mailbox: cancel timer before starting it
-> >
-> >  - Platform: arm64 Juno R0 and Juno R2 [1]
-> >
-> >  - Partial log:
-> > 	[    0.000000] Booting Linux on physical CPU 0x0000000100 [0x410fd030]
-> > 	[    0.000000] Linux version 5.9.0-rc8-01722-g62c04453381e () (aarch64-none-linux-gnu-gcc (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)) 9.2.1 20191025, GNU ld (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)) 2.33.1.20191209) #175 SMP PREEMPT Thu Oct 15 14:17:41 BST 2020
-> > 	[    0.000000] Machine model: ARM Juno development board (r0)
-> > 	[..]
-> > 	[    1.714340] mhu 2b1f0000.mhu: ARM MHU Mailbox registered
-> > 	[    1.722768] NET: Registered protocol family 17
-> > 	[    1.727364] 9pnet: Installing 9P2000 support
-> > 	[    1.731689] Key type dns_resolver registered
-> > 	[    1.735474] usb 1-1: new high-speed USB device number 2 using ehci-platform
-> > 	[    1.736407] registered taskstats version 1
-> > 	[    1.747061] Loading compiled-in X.509 certificates
-> > 	[    1.755885] scpi_protocol scpi: SCP Protocol 1.2 Firmware 1.21.0 version
-> > 	[    1.770484] cpu cpu0: EM: created perf domain
-> > 	[    1.778505] cpu cpu1: EM: created perf domain
-> > 	[    1.807449] scpi_clocks scpi:clocks: failed to register clock 'pxlclk'
-> > 	[    1.897593] hub 1-1:1.0: USB hub found
-> > 	[    1.901656] hub 1-1:1.0: 4 ports detected
-> > 	[    2.559453] atkbd serio0: keyboard reset failed on 1c060000.kmi
-> > 	[   22.787431] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > 	[   22.793536] rcu:     1-...0: (1 ticks this GP) idle=222/1/0x4000000000000002 softirq=63/64 fqs=2626
-> > 	[   22.802421]  (detected by 2, t=5255 jiffies, g=-991, q=9)
-> > 	[   22.807823] Task dump for CPU 1:
-> > 	[   22.811049] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
-> > 	[   22.820980] Call trace:
-> > 	[   22.823429]  __switch_to+0x138/0x198
-> > 	[   23.583444] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 1-... } 5443 jiffies s: 49 root: 0x2/.
-> > 	[   23.593995] rcu: blocking rcu_node structures:
-> > 	[   23.598449] Task dump for CPU 1:
-> > 	[   23.601680] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
-> > 	[   23.611619] Call trace:
-> > 	[   23.614064]  __switch_to+0x138/0x198
-> > 	[   85.807430] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > 	[   85.813534] rcu:     1-...0: (1 ticks this GP) idle=222/1/0x4000000000000002 softirq=63/64 fqs=10502
-> > 	[   85.822506]  (detected by 2, t=21009 jiffies, g=-991, q=9)
-> > 	[   85.827994] Task dump for CPU 1:
-> > 	[   85.831220] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
-> > 	[   85.841150] Call trace:
-> > 	[   85.843596]  __switch_to+0x138/0x198
-> > 	[   87.071446] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 1-... } 21315 jiffies s: 49 root: 0x2/.
-> > 	[   87.082088] rcu: blocking rcu_node structures:
-> > 	[   87.086540] Task dump for CPU 1:
-> > 	[   87.089773] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
-> > 	[   87.099708] Call trace:
-> > 	[   87.102155]  __switch_to+0x138/0x198
-> > 	[  148.827442] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-> > 	[  148.833565] rcu:     1-...0: (1 ticks this GP) idle=222/1/0x4000000000000002 softirq=63/64 fqs=18377
-> > 	[  148.842543]  (detected by 4, t=36762 jiffies, g=-991, q=9)
-> > 	[  148.848037] Task dump for CPU 1:
-> > 	[  148.851268] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
-> > 	[  148.861207] Call trace:
-> > 	[  148.863663]  __switch_to+0x138/0x198
-> > 	[  150.559443] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 1-... } 37187 jiffies s: 49 root: 0x2/.
-> > 	[  150.570082] rcu: blocking rcu_node structures:
-> > 	[  150.574535] Task dump for CPU 1:
-> > 	[  150.577767] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
-> > 	[  150.587705] Call trace:
-> > 	[  150.590151]  __switch_to+0x138/0x198
-> >
-> >  - Commit working as expected:
-> >    * 558e4c36ec9f  Krzysztof Kozlowski     7 weeks ago     maiblox: mediatek: Fix handling of platform_get_irq() error
-> >
-> >
-> > [1] https://developer.arm.com/tools-and-software/development-boards/juno-development-board
-> >
-> > Thank you,
-> > Ionela.
-> >
-> >> -- 
-> >> 2.25.4
-> >> 
-> >> 
-> >> _______________________________________________
-> >> linux-amlogic mailing list
-> >> linux-amlogic@lists.infradead.org
-> >> http://lists.infradead.org/mailman/listinfo/linux-amlogic
-> 
