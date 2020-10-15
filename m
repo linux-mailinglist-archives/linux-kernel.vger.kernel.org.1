@@ -2,137 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E9A28EA05
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75EF28E964
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388716AbgJOB3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732280AbgJOB3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:29:39 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A780C00215B
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:09:42 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b69so1009115qkg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=D7q4upZx4LUmHy2sbcBxGXxr7CK8polpuI+TBJh2iFg=;
-        b=VY1qyIeCcrX28JfPsmo/gMmvUMC4KhNWUx2AWTC7SFuNhKKNC7E5pi4i351EUrbB2J
-         iQEeEBv2iqbPt4yG9cu9z6JKaTTcI0uH0ifbEwEuYd7uQ+JCfqlrCKPwMTRONzTIq1+2
-         r10P6EtGAwdMqLqGZOKON3zvZUuPyniSm0E4b9X4QVYcKPq5x9sxgp/64dd/q9ifg4bh
-         6h21xPcqmh90YO0WNB5wNN8lxy2kzpTs2joeQm0QgPxqx6k5VPT8scnHtsXoGOHGppiW
-         EBkQ8XI+pghayLloQzkOY+ZWhXI0lRPbg5OXZafpWC/LHi0yuGDtirCrwS4LepbltR1w
-         8p9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=D7q4upZx4LUmHy2sbcBxGXxr7CK8polpuI+TBJh2iFg=;
-        b=Wp4r1JomYZ7wx9LuoU0aVVLOWf88mYRejtN/27jwCXuJ3UC68FtKhrFfr0BZjdiNrn
-         ISsNezT2kFjXCSgIf6v1BiBNT1LfsJ71x11UTRIOTVXT1DcbxafO/WrLxtZnG5GQr5HY
-         LB1mwvlLh3yVmUCPYDEUly2s7v9YNwgRRgfSKZBH4RGahDnF49E5j0WRDZBFYcWINCQ8
-         mkI84QfA3cPnz/z1Rmmb7enTHBu4WJ/WvCauuEPspnttkGLNB7OYbwRxnzjgVZLuvppV
-         MRh11ZjRlHuELD5fPNM8b/+kISvkiD/WzeaRE1NDRCgQGsfi3/tOuF3nX3J/TE1Knf7T
-         0V3A==
-X-Gm-Message-State: AOAM530KD8tX6K00Na0qvv8rlkzhS0Jg2/UlbgUzABXAKocLlTjBbZMy
-        rOfQxEKcU6A8RdUWlZ6mvb/f+w==
-X-Google-Smtp-Source: ABdhPJz1YpfemWgv6ITHdO1cDHAUR6b7J4qWqW/ErSGbJ1yD3QFJwI22cUMtAvpN9oIOH7a/n3cIYg==
-X-Received: by 2002:a05:620a:2e3:: with SMTP id a3mr1513988qko.117.1602720581354;
-        Wed, 14 Oct 2020 17:09:41 -0700 (PDT)
-Received: from ziepe.ca ([142.177.128.188])
-        by smtp.gmail.com with ESMTPSA id y44sm525252qtb.50.2020.10.14.17.09.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 14 Oct 2020 17:09:40 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kSqpv-0002GP-8c; Wed, 14 Oct 2020 21:09:39 -0300
-Date:   Wed, 14 Oct 2020 21:09:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH v2 14/17] resource: Move devmem revoke code to resource
- framework
-Message-ID: <20201015000939.GD6763@ziepe.ca>
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-15-daniel.vetter@ffwll.ch>
- <20201009123109.GO5177@ziepe.ca>
- <CAKMK7uFpPP-Q0jC0vM7vYPEcg0m4NzTw+Ld=swdTF3BgMX5Qug@mail.gmail.com>
- <20201009143209.GS5177@ziepe.ca>
- <CAPcyv4j54O8ac6WB3LEeNud2r11V26gA0PRKK9bhyEMF67AXtQ@mail.gmail.com>
+        id S1728556AbgJOAKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 20:10:10 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55033 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726012AbgJOAKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 20:10:09 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBV644WZdz9sT6;
+        Thu, 15 Oct 2020 11:10:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602720607;
+        bh=35OexaiU4JOENMQy5QwfVO+h6F01NhEub1IaSvAnIcs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=V1dTggYHQCWQcNpQBQP4zxJuEuB8SzxWJjQT6QHrs+Gh76UK1osD0gi7G//53O9Ck
+         ZZXJpsvQUfvNwsk3oAm65CpmY8AdRi9OZ+AkLqhLYtoV0WAnDtFQGUFnrjgD3ZNVXd
+         jfX7Uyb3V7lBJsKo5OxWJqM9bP6GZyjn1geUYOpPhJAAZK+8pHjUE0D3c9K7qVM1qj
+         9OyS4ZwWVxVu1FfOQs6q+2Xt1dWI3Q3kNLBfg0dNzv2st1rX8kEwCCLW8NmyclpD4X
+         7sKjYdQkkj+Ee8vvWu4yTLp0dQGSCV6xlGQIhwypNkAbPHCtG9oW+Y+LSKB9ukgSjE
+         jpjhX075Kg4Zw==
+Date:   Thu, 15 Oct 2020 11:10:02 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the risc-v and vfs trees with Linus'
+ tree
+Message-ID: <20201015111002.47bf431b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4j54O8ac6WB3LEeNud2r11V26gA0PRKK9bhyEMF67AXtQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: multipart/signed; boundary="Sig_/Cw9l92TJw2pr8L4Ps/wr/uH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 11:28:54AM -0700, Dan Williams wrote:
-> On Fri, Oct 9, 2020 at 7:32 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Fri, Oct 09, 2020 at 04:24:45PM +0200, Daniel Vetter wrote:
-> > > On Fri, Oct 9, 2020 at 2:31 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > On Fri, Oct 09, 2020 at 09:59:31AM +0200, Daniel Vetter wrote:
-> > > >
-> > > > > +struct address_space *iomem_get_mapping(void)
-> > > > > +{
-> > > > > +     return iomem_inode->i_mapping;
-> > > >
-> > > > This should pair an acquire with the release below
-> > > >
-> > > > > +     /*
-> > > > > +      * Publish /dev/mem initialized.
-> > > > > +      * Pairs with smp_load_acquire() in revoke_iomem().
-> > > > > +      */
-> > > > > +     smp_store_release(&iomem_inode, inode);
-> > > >
-> > > > However, this seems abnormal, initcalls rarely do this kind of stuff
-> > > > with global data..
-> > > >
-> > > > The kernel crashes if this fs_initcall is raced with
-> > > > iomem_get_mapping() due to the unconditional dereference, so I think
-> > > > it can be safely switched to a simple assignment.
-> > >
-> > > Ah yes I checked this all, but forgot to correctly annotate the
-> > > iomem_get_mapping access. For reference, see b34e7e298d7a ("/dev/mem:
-> > > Add missing memory barriers for devmem_inode").
-> >
-> > Oh yikes, so revoke_iomem can run concurrently during early boot,
-> > tricky.
-> 
-> It runs early because request_mem_region() can run before fs_initcall.
-> Rather than add an unnecessary lock just arrange for the revoke to be
-> skipped before the inode is initialized. The expectation is that any
-> early resource reservations will block future userspace mapping
-> attempts.
+--Sig_/Cw9l92TJw2pr8L4Ps/wr/uH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Actually, on this point a simple WRITE_ONCE/READ_ONCE pairing is OK,
-Paul once explained that the pointer chase on the READ_ONCE side is
-required to be like an acquire - this is why rcu_dereference is just
-READ_ONCE
+Hi all,
 
-Jason
+Today's linux-next merge of the risc-v tree got a conflict in:
+
+  arch/x86/lib/getuser.S
+
+between commit:
+
+  ea6f043fc984 ("x86: Make __get_user() generate an out-of-line call")
+
+from Linus' tree and commit:
+
+  47058bb54b57 ("x86: remove address space overrides using set_fs()")
+
+from the risc-v and vfs trees.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/lib/getuser.S
+index 2cd902e06062,2f052bc96866..000000000000
+--- a/arch/x86/lib/getuser.S
++++ b/arch/x86/lib/getuser.S
+@@@ -35,12 -35,19 +35,21 @@@
+  #include <asm/smap.h>
+  #include <asm/export.h>
+ =20
+ +#define ASM_BARRIER_NOSPEC ALTERNATIVE "", "lfence", X86_FEATURE_LFENCE_R=
+DTSC
+ +
++ #ifdef CONFIG_X86_5LEVEL
++ #define LOAD_TASK_SIZE_MINUS_N(n) \
++ 	ALTERNATIVE __stringify(mov $((1 << 47) - 4096 - (n)),%rdx), \
++ 		    __stringify(mov $((1 << 56) - 4096 - (n)),%rdx), X86_FEATURE_LA57
++ #else
++ #define LOAD_TASK_SIZE_MINUS_N(n) \
++ 	mov $(TASK_SIZE_MAX - (n)),%_ASM_DX
++ #endif
++=20
+  	.text
+  SYM_FUNC_START(__get_user_1)
+- 	mov PER_CPU_VAR(current_task), %_ASM_DX
+- 	cmp TASK_addr_limit(%_ASM_DX),%_ASM_AX
++ 	LOAD_TASK_SIZE_MINUS_N(0)
++ 	cmp %_ASM_DX,%_ASM_AX
+  	jae bad_get_user
+  	sbb %_ASM_DX, %_ASM_DX		/* array_index_mask_nospec() */
+  	and %_ASM_DX, %_ASM_AX
+
+--Sig_/Cw9l92TJw2pr8L4Ps/wr/uH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Hk1oACgkQAVBC80lX
+0GwY4Af+KZKpr2aD5oPAfY1Pu9R+pWHDJecqTXUJ0ko3sgp6b3ccB3U/hDFonhWW
+Z6FgTritaKHs2wkEiSu5unIhYzSf+odCfRkau1k8R24LGG4T7Z4ohkReEJut3am3
+ZV/mA1G/4g6rwh1lUZm4jTe1ilj4y0KcnFT6Xf/9vMr/RDJyz9uIyZmzNuaD7/ic
+EcJ0xbGgjmRBNJwCN1rEJOGvJz+HxW6c2Q6JkGu1c7J7uopNxetJy8iKGAFJQuU7
+/a9TcG5MOS8dkDhbz63g/VQqWBWdStChjfWk6AevTba+CsLuDroQUxBRstvpq2uy
+v8uw6c5M/9ulrYSKO4loTKuU+1KdjA==
+=HEfd
+-----END PGP SIGNATURE-----
+
+--Sig_/Cw9l92TJw2pr8L4Ps/wr/uH--
