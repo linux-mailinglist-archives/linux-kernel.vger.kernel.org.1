@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E4C28F2E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3186528F2E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgJONBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:01:32 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54652 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726121AbgJONBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:01:32 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 98E657D511BA10B261F0;
-        Thu, 15 Oct 2020 21:01:29 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 15 Oct 2020
- 21:01:19 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <minchan@kernel.org>,
-        <ngupta@vflare.org>, <sergey.senozhatsky.work@gmail.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] zsmalloc: Rework the list_add code in insert_zspage()
-Date:   Thu, 15 Oct 2020 09:01:07 -0400
-Message-ID: <20201015130107.65195-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1728256AbgJONFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727281AbgJONFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 09:05:53 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D60FC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:05:53 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id gv6so2007320pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yO4STEJZ6Kg5+u47OEW2bdZIDGWsePVOJIcWHRXTcl4=;
+        b=A2AOGsexYnYllNq6L1+36L+sjiMprVWm/cvGiYNlCIXtG6MpUKdGHI/4so4Xubf2DY
+         f7My5IjCnneV1ML3Land7Jii8YJERPf90uelVL7nhWu5S0DjeuR28pGL03Nm8+DgTNcC
+         qQlkVIn7Nt2KGpAUCxaDsp9XiZFlyIKLJbiudd/LpwH2V0aPuOljct/SMzS1Jn/D4ikC
+         nZIWyWl/s0/MfiRk9qfMgTDE2nSUkqwXA4FpUb2fBpT5d08AXqUZVBL6h/MjbtDKGSPw
+         zOYovg2LgTDViwFhLdlcXJAAnpjayg6W2moKl6hpJw0NKB1fpZ0k+KTu6efJXxPJY6b/
+         goEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yO4STEJZ6Kg5+u47OEW2bdZIDGWsePVOJIcWHRXTcl4=;
+        b=Rc8w4QTWbD6D/+W3/hAa1kG37AO84Jm0MXoiy8/4IPWQxTWonBHvFm1iXJZFlu3KJs
+         oL5GlzxCPZBWiDxI2bTH0B3wdb5ukmZIJaUcmGogQN5Ct42tbKAaKDx24xpR5P2oOTvI
+         d9HFd/COpqxWB1FbrzuxOM9sL7v+S6aZGQhqEnE51l8cDglH4bPooVOQKMscD8Vi+miC
+         HICIC5ZEVvf6LSyUoqekm+wkLzsZgEm6PWah262QZw1RAPOSIkyixl2vIfmkeZTpgCOr
+         ET/tIFeoohVUoFyHpVdnusr2PeJ9fzrhoT72I5bVDy/IHchRlMIqMLiZnNxKrPywc7Mq
+         Mb1A==
+X-Gm-Message-State: AOAM531WWjypj2KD4oVVH7zgV0mxAaNkZu2/BvUe8vW+t/nVnlcv0Inf
+        +hToym2esWkEaFM/6Ia8wDY=
+X-Google-Smtp-Source: ABdhPJy0C84oMar88xXL20g6YfnkbuBcOTTt3vmN8cJYvx5OD0kyJfD9tY5okBf4bnNwDjhFu/ycSA==
+X-Received: by 2002:a17:90a:a81:: with SMTP id 1mr4431279pjw.174.1602767152499;
+        Thu, 15 Oct 2020 06:05:52 -0700 (PDT)
+Received: from localhost.localdomain (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id c187sm3400427pfc.153.2020.10.15.06.05.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 06:05:51 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     akpm@linux-foundation.org, colin.king@canonical.com,
+        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
+        joe@perches.com, xndchn@gmail.com, luca@lucaceresoli.net,
+        ebiggers@google.com
+Cc:     linux-kernel@vger.kernel.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] scripts: Spelling:  Fix spelling memry to memory in /tools/nolibc/include/nolibc.h
+Date:   Thu, 15 Oct 2020 18:35:25 +0530
+Message-Id: <20201015130525.381818-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework the list_add code to make it more readable and simplicity.
+s/memry/memory/p
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+In the file /tools/nolibc/include/nolibc.h
+
+One of the comment line.
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- mm/zsmalloc.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ get_maintainer.pl shows me bunch of people for this file and I
+ not sure it is important to all of you, but still included for
+ the sake of protocol.
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 918c7b019b3d..b03bee2e1b5f 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -730,13 +730,10 @@ static void insert_zspage(struct size_class *class,
- 	 * We want to see more ZS_FULL pages and less almost empty/full.
- 	 * Put pages with higher ->inuse first.
- 	 */
--	if (head) {
--		if (get_zspage_inuse(zspage) < get_zspage_inuse(head)) {
--			list_add(&zspage->list, &head->list);
--			return;
--		}
--	}
--	list_add(&zspage->list, &class->fullness_list[fullness]);
-+	if (head && get_zspage_inuse(zspage) < get_zspage_inuse(head))
-+		list_add(&zspage->list, &head->list);
-+	else
-+		list_add(&zspage->list, &class->fullness_list[fullness]);
- }
- 
- /*
--- 
-2.19.1
+ scripts/spelling.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index f253681e7e2a..5d1e49821413 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -885,6 +885,7 @@ meetign||meeting
+ memeory||memory
+ memmber||member
+ memoery||memory
++memry ||memory
+ ment||meant
+ mergable||mergeable
+ mesage||message
+--
+2.28.0
 
