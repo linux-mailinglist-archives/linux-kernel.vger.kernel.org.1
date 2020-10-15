@@ -2,107 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3B428EC9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 07:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5411528ECA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 07:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbgJOF1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 01:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
+        id S1727654AbgJOF2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 01:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgJOF1Z (ORCPT
+        with ESMTP id S1727242AbgJOF2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 01:27:25 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B7FC061755;
-        Wed, 14 Oct 2020 22:27:25 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id h4so1238594pjk.0;
-        Wed, 14 Oct 2020 22:27:25 -0700 (PDT)
+        Thu, 15 Oct 2020 01:28:19 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205A3C061755;
+        Wed, 14 Oct 2020 22:28:19 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id f5so1171160pgb.1;
+        Wed, 14 Oct 2020 22:28:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=suwn4Ybo5octRzfTXo8Gwd9DEMEokqAoqQQ/uRbhrPE=;
-        b=b1kxc0/FM0XcnhSkjp/AVmYqOzjbSXwqbvHG/bwvzY8oysMpUBg7wNKfAN6iCVXeI0
-         i7C+mKZRe9ims1zW0zVeWk9Xbwz3rb62ZaWukL69hBZYNTh1K5fqDm99Q2JxAgy01acb
-         bVfk52/rxTuzzU/6EzY++qJcb5cFULMTGeofEO877/swhvauY9kbsJam2X98QDoIDXMl
-         Z4DRm/FKpnLzp+X+reufd0jpcp5JqHiLAOmuEzExPUS2QHbECsv6GWBsGc78n7Hlux3j
-         rH0itX4xij1zrt826BIwY9lpI2eMs064CCdBBcp2r4HjtvpERnETzeUux1T6J60DfpTb
-         Gq6w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZnGvMLzVP6dq5IKxq/jp1HRHeOdaVbEVOzrBdo7gjh0=;
+        b=RV/5yHlDKCTOkYuGWZum0CcbTUqmbHr8MqIaLdb01vqng5byB5UbUqF2u+JDGp2GCo
+         ZlGGGV896mkLJTjMEFfzfBBazdO+vG9Dpy+4G6ALt/cP3bi1vrBbdAgDpzAXhtx1f0EB
+         hRVjwHBgrXXeXf/8JxG41Q0oTuz9QqFDFdYbTGpKurp48JVgZHKMggiDnMWqhGx4Bo/r
+         IGAErJGOA7kYyZcHsrJUd1BRgosw7FjMnCXK5hJAII1harcd6zP0hsMiWXMlMJThVCgo
+         ls5hRJHmTBeDaZ4QDprcQJjOEMyd/nAiJPR3O7BKh6JLo+GIsIy7QLrpeYDVrRgmSIIC
+         OXwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=suwn4Ybo5octRzfTXo8Gwd9DEMEokqAoqQQ/uRbhrPE=;
-        b=QmQAxRP/okVmuoRQeyyLdf7bSo7s7R+9ksFD3MAN534KM+lwgaBjfMFsALMILpXfxf
-         Pwc+5miboF5mnQlNUti4wRH1bKGtIWtjCkmv4w72r8tVQYYBAga7QorzmJYCxDqKXngM
-         u/1+PMJQ8NG5DUd3psPdSv712uX3U6jeNL9J5LvprSbqdXqbBVLfhic5Ndq2j3p5A+W+
-         TfN4KQgGLQBp5oCrI3Qn3wgfP+0ESPvZiOv1Z3haAT4NN4/Th0tN5TzYnTf1c/TfFNaE
-         ntcFODRVAq7OZCoKKN5NJvaq3ZWOLAbN/3d5wGXSmikMaktkISg+tuuLcX3CEC3VqtEg
-         NkKQ==
-X-Gm-Message-State: AOAM533mHxf/vY7s1iyfqt5ZMK3xEBOzRzAopqB2By17Dmb6w3ir9tEK
-        8O23UZWqRwMhvO31qzAqxdOi+qyOWpQ=
-X-Google-Smtp-Source: ABdhPJwSCuwDC/fbWIILvWoz7DaL6bE0i24zwO3oIW6Lh42RR6qBUaiAKx4Xaosxk8MY2KUx7I1KrA==
-X-Received: by 2002:a17:90a:be0e:: with SMTP id a14mr2683387pjs.57.1602739644440;
-        Wed, 14 Oct 2020 22:27:24 -0700 (PDT)
-Received: from guoguo-omen.lan ([240e:379:940:2525:1069:aebf:b411:6781])
-        by smtp.gmail.com with ESMTPSA id u25sm1481931pgl.31.2020.10.14.22.27.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 22:27:23 -0700 (PDT)
-From:   Chuanhong Guo <gch981213@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Chuanhong Guo <gch981213@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mips: ralink: mt7621: add zboot debug console
-Date:   Thu, 15 Oct 2020 13:26:21 +0800
-Message-Id: <20201015052631.138783-1-gch981213@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        bh=ZnGvMLzVP6dq5IKxq/jp1HRHeOdaVbEVOzrBdo7gjh0=;
+        b=C17BwH1y86u4UAOKrORA5XM3bZo6h+0JwOUTZ6kWAZvklgRrJL9FcECWRBSkzd1m3+
+         mlAWKCKjXCDF24UzFRgeGFPl9ubdhwhbm43nFQuU0gtERLNI44mnlp33lT6aYNp2VJa2
+         IuAuy5xCDw3q5M642ukRqxJW+Wp0lL6rzYjChztAXPorxFnM9uzZsXJMGjdwo9X9ifdv
+         Dt4aoDOaCt68F0c6Sni8Q6JeQWOLAtP0CLTAUNiEd1GY8HA5yjnTX2OdeTlcAEIQh28X
+         UwpR+FYPfpVTSTSk8kJTe0MaiPt6oYKgR/5h0I30SCSASUExAcHZ4o+C14QC3TO7Q9kg
+         w7lw==
+X-Gm-Message-State: AOAM531pJaLYYun3RpDIQJTqj983aRs0a6t5xcQarl/cpfvcxkKawt7U
+        kXoby9Pn/W7TAk2KdKVZSJn4WIjAv8mxaMeD
+X-Google-Smtp-Source: ABdhPJwUreTsc+q7k45CdcRaudEVWnyqfN7HLOiVIi8kthztc/VpUSfQpyCP9JxVnV2g8OukfXNswg==
+X-Received: by 2002:a05:6a00:134c:b029:156:78e8:144d with SMTP id k12-20020a056a00134cb029015678e8144dmr2633552pfu.77.1602739698208;
+        Wed, 14 Oct 2020 22:28:18 -0700 (PDT)
+Received: from [192.168.86.81] ([106.51.240.187])
+        by smtp.gmail.com with ESMTPSA id x5sm1599083pfr.83.2020.10.14.22.28.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 22:28:17 -0700 (PDT)
+Subject: Re: [PATCH 1/2] kunit: Support for Parameterized Testing
+To:     Marco Elver <elver@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, yzaikin@google.com,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <20201010145357.60886-1-98.arpi@gmail.com>
+ <CANpmjNOmbPsx-eEQ+TfC0X5CM-Jgy2NBqpYo=h2L9e33rnajSw@mail.gmail.com>
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+Message-ID: <943d57b5-03b6-f042-1e5a-27dbde4aa25b@gmail.com>
+Date:   Thu, 15 Oct 2020 10:58:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANpmjNOmbPsx-eEQ+TfC0X5CM-Jgy2NBqpYo=h2L9e33rnajSw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uartlite0 at 0x1e000c00 is a 16550 compatible uart controller. It's
-usually used for debug console and is already configured by u-boot.
-Add ZBOOT_UART16550 and related definitions in uart-16550.c for zboot
-debug output.
-
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
- arch/mips/boot/compressed/uart-16550.c | 6 ++++++
- arch/mips/ralink/Kconfig               | 1 +
- 2 files changed, 7 insertions(+)
-
-diff --git a/arch/mips/boot/compressed/uart-16550.c b/arch/mips/boot/compressed/uart-16550.c
-index aee8d7b8f091..7122df28967a 100644
---- a/arch/mips/boot/compressed/uart-16550.c
-+++ b/arch/mips/boot/compressed/uart-16550.c
-@@ -35,6 +35,12 @@
- #define IOTYPE unsigned int
- #endif
+On 12/10/20 4:30 pm, Marco Elver wrote:
+> On Sat, 10 Oct 2020 at 16:54, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>> Implementation of support for parameterized testing in KUnit.
+>>
+>> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+>> ---
+>>  include/kunit/test.h | 29 +++++++++++++++++++++++++++++
+>>  lib/kunit/test.c     | 44 +++++++++++++++++++++++++++++++++++++++++++-
+>>  2 files changed, 72 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/kunit/test.h b/include/kunit/test.h
+>> index 59f3144f009a..4740d66269b4 100644
+>> --- a/include/kunit/test.h
+>> +++ b/include/kunit/test.h
+>> @@ -140,10 +140,14 @@ struct kunit;
+>>  struct kunit_case {
+>>         void (*run_case)(struct kunit *test);
+>>         const char *name;
+>> +       void* (*get_params)(void);
+>> +       int max_parameters_count;
+>> +       int parameter_size;
+>>
+>>         /* private: internal use only. */
+>>         bool success;
+>>         char *log;
+>> +       bool parameterized;
+> 
+> Why do you need this bool? Doesn't get_params being non-NULL tell you
+> if the test case is parameterized?
+>Yeah, this will. 
+>>  };
+>>
+>>  static inline char *kunit_status_to_string(bool status)
+>> @@ -162,6 +166,11 @@ static inline char *kunit_status_to_string(bool status)
+>>   */
+>>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+>>
+>> +#define KUNIT_CASE_PARAM(test_name, getparams, count, size)                            \
+>> +               { .run_case = test_name, .name = #test_name,                            \
+>> +                 .parameterized = true, .get_params = (void* (*)(void))getparams,      \
+>> +                 .max_parameters_count = count, .parameter_size = size }
+>> +
+> 
+> I think this interface is overly complex. For one, if the only purpose
+> of the getparams function is to return a pointer to some array, then
+> there are only few cases where I see getparams being a function could
+> be useful.
+> 
+> Instead, could we make the getparams function behave like a generator?
+> Because then you do not need count, nor size. Its function signature
+> would be:
+> 
+> void* (*generate_params)(void* prev_param);
+> 
+> The protocol would be:
+> 
+> - The first call to generate_params is passed prev_param of NULL, and
+> returns a pointer to the first parameter P[0].
+> 
+> - Every nth successive call to generate_params is passed the previous
+> parameter P[n-1].
+> 
+> - When no more parameters are available, generate_params returns NULL.
+> 
+> - (generate_params should otherwise be stateless, but this is only
+> relevant if concurrent calls are expected.)
+> 
+> 
+>>  /**
+>>   * struct kunit_suite - describes a related collection of &struct kunit_case
+>>   *
+>> @@ -206,6 +215,23 @@ struct kunit {
+>>         /* private: internal use only. */
+>>         const char *name; /* Read only after initialization! */
+>>         char *log; /* Points at case log after initialization */
+>> +       bool parameterized; /* True for parameterized tests */
+>> +       /* param_values stores the test parameters
+>> +        * for parameterized tests.
+>> +        */
+>> +       void *param_values;
+>> +       /* max_parameters_count indicates maximum number of
+>> +        * parameters for parameterized tests.
+>> +        */
+>> +       int max_parameters_count;
+>> +       /* iterator_count is used by the iterator method
+>> +        * for parameterized tests.
+>> +        */
+>> +       int iterator_count;
+>> +       /* parameter_size indicates size of a single test case
+>> +        * for parameterized tests.
+>> +        */
+>> +       int parameter_size;
+> 
+> All of this would become much simpler if you used the generator
+> approach. Likely only 1 field would be required, which is the current
+> param.
+> 
+>>         struct kunit_try_catch try_catch;
+>>         /*
+>>          * success starts as true, and may only be set to false during a
+>> @@ -225,6 +251,7 @@ struct kunit {
+>>  };
+>>
+>>  void kunit_init_test(struct kunit *test, const char *name, char *log);
+>> +void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case);
+>>
+>>  int kunit_run_tests(struct kunit_suite *suite);
+>>
+>> @@ -237,6 +264,8 @@ int __kunit_test_suites_init(struct kunit_suite **suites);
+>>
+>>  void __kunit_test_suites_exit(struct kunit_suite **suites);
+>>
+>> +void *get_test_case_parameters(struct kunit *test);
+>> +
+>>  /**
+>>   * kunit_test_suites() - used to register one or more &struct kunit_suite
+>>   *                      with KUnit.
+>> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+>> index c36037200310..ab9e13c81d4a 100644
+>> --- a/lib/kunit/test.c
+>> +++ b/lib/kunit/test.c
+>> @@ -142,6 +142,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>>  }
+>>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>>
+>> +static void kunit_print_failed_param(struct kunit *test)
+>> +{
+>> +       kunit_err(test, "\n\tTest failed at parameter: %d\n", test->iterator_count);
+>> +}
+>> +
+>>  static void kunit_print_string_stream(struct kunit *test,
+>>                                       struct string_stream *stream)
+>>  {
+>> @@ -182,6 +187,9 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>>
+>>         assert->format(assert, stream);
+>>
+>> +       if (test->parameterized)
+>> +               kunit_print_failed_param(test);
+>> +
+>>         kunit_print_string_stream(test, stream);
+>>
+>>         WARN_ON(string_stream_destroy(stream));
+>> @@ -236,6 +244,18 @@ void kunit_init_test(struct kunit *test, const char *name, char *log)
+>>  }
+>>  EXPORT_SYMBOL_GPL(kunit_init_test);
+>>
+>> +void kunit_init_param_test(struct kunit *test, struct kunit_case *test_case)
+>> +{
+>> +       spin_lock_init(&test->lock);
+>> +       INIT_LIST_HEAD(&test->resources);
+>> +       test->parameterized = true;
+>> +       test->param_values = (void *)(test_case->get_params());
+>> +       test->max_parameters_count = test_case->max_parameters_count;
+>> +       test->parameter_size = test_case->parameter_size;
+>> +       test->iterator_count = 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(kunit_init_param_test);
+>> +
+>>  /*
+>>   * Initializes and runs test case. Does not clean up or do post validations.
+>>   */
+>> @@ -254,7 +274,14 @@ static void kunit_run_case_internal(struct kunit *test,
+>>                 }
+>>         }
+>>
+>> -       test_case->run_case(test);
+>> +       if (!test->parameterized) {
+>> +               test_case->run_case(test);
+>> +       } else {
+>> +               int i;
+>> +
+>> +               for (i = 0; i < test->max_parameters_count; i++)
+>> +                       test_case->run_case(test);
+> 
+> With a generator approach, here you'd call generate_params. Most
+> likely, you'll need to stash its result somewhere, e.g. test->param,
+> so it can be retrieved by the test case.
+> 
+>> +       }
+>>  }
+>>
+>>  static void kunit_case_internal_cleanup(struct kunit *test)
+>> @@ -343,6 +370,8 @@ static void kunit_run_case_catch_errors(struct kunit_suite *suite,
+>>         struct kunit test;
+>>
+>>         kunit_init_test(&test, test_case->name, test_case->log);
+>> +       if (test_case->parameterized)
+>> +               kunit_init_param_test(&test, test_case);
+>>         try_catch = &test.try_catch;
+>>
+>>         kunit_try_catch_init(try_catch,
+>> @@ -407,6 +436,19 @@ void __kunit_test_suites_exit(struct kunit_suite **suites)
+>>  }
+>>  EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
+>>
+>> +/*
+>> + * Iterator method for the parameterized test cases
+>> + */
+>> +void *get_test_case_parameters(struct kunit *test)
+>> +{
+>> +       int index = test->iterator_count * test->parameter_size;
+>> +
+>> +       if (test->iterator_count != test->max_parameters_count)
+>> +               test->iterator_count++;
+> 
+> This is quite confusing, because if get_test_case_parameters is called
+> multiple times within the same test case, we'll iterate through all
+> the test case params in the same test case? I think this function
+> should not have side-effects (like normal getters).
+> 
+> But if you use the generator approach, you'll likely not need this
+> function anyway.
+>
+The generator approach sounds good. I will work on it for the next version.
  
-+#ifdef CONFIG_SOC_MT7621
-+#define UART0_BASE  0x1e000c00
-+#define PORT(offset) (CKSEG1ADDR(UART0_BASE) + (4 * offset))
-+#define IOTYPE unsigned int
-+#endif
-+
- #ifndef IOTYPE
- #define IOTYPE char
- #endif
-diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
-index c10d8b233ab1..4c3c6ef330e3 100644
---- a/arch/mips/ralink/Kconfig
-+++ b/arch/mips/ralink/Kconfig
-@@ -52,6 +52,7 @@ choice
- 		select SYS_SUPPORTS_SMP
- 		select SYS_SUPPORTS_MIPS_CPS
- 		select SYS_SUPPORTS_HIGHMEM
-+		select SYS_SUPPORTS_ZBOOT_UART16550
- 		select MIPS_GIC
- 		select COMMON_CLK
- 		select CLKSRC_MIPS_GIC
--- 
-2.26.2
+>> +       return (test->param_values + index);
+> 
+> Braces not needed.
+> 
+I will fix this.
+>> +}
+>> +EXPORT_SYMBOL_GPL(get_test_case_parameters);
+>> +
+>>  /*
+>>   * Used for static resources and when a kunit_resource * has been created by
+>>   * kunit_alloc_resource().  When an init function is supplied, @data is passed
+>> --
+>> 2.25.1
+>>
 
