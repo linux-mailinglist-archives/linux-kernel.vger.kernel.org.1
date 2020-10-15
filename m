@@ -2,91 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867EF28F4BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A254528F4BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388461AbgJOOaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388410AbgJOOaN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:30:13 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD13FC061755;
-        Thu, 15 Oct 2020 07:30:12 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id m16so3370234ljo.6;
-        Thu, 15 Oct 2020 07:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=YWj6b+v4A4nDHvFR3J/ATINzPrOIqZfn4UXHHwCDC/4=;
-        b=Byds2iHC/6Lvi5c2pk+8NB/fAEqs4wSyTpHl++pGBQXkDgQg6Lb5R7OK1lJkKyghT1
-         5c3LHhGq1aBOofZSoHUoGD2W6ixDV6BlI56WiK5C0eDwi5HTDHRRuYPvOrobsvsnTKiW
-         Q8Q07UsezAgFkzzAi1fYhttcWoW9zXhetBv9+EHULQjUS17MUYDWvi6CKEkLPjxktg3C
-         0D46923PXeWG/s4dlNUajn1CIkqrs13FkF50aiZO4L3dm+oH4kQvMOysvzHa8VM0Wpc1
-         A58UrW4X7XPwGTAP8B6suaG6u3Dcz/uHN09fhWNyPJm2jWgxze+kioVgBC6Be6KkT97q
-         6Wjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=YWj6b+v4A4nDHvFR3J/ATINzPrOIqZfn4UXHHwCDC/4=;
-        b=tyEYIsSjxdjBsonO36QcHmoajuW70iP/ikfwoz9sQsPuc4+x7zIlBliQrCM+CCff+d
-         SkMMjtNtO2K4pSYKrP8MUnjnlURBYDCUU32YgaQDP4E+9n6VEYNc6udVBmfjnmsm3i2F
-         crpjpeKRL3inGlFpFmmqprT2l27lLcub6oaqtFE3jTw2wn/U1Xg2w2iPomi/HaIsF1tT
-         hXcZJfQ+UMjLJbJ+GVUTo/LNjZmErQBUgOLuH8BoVUr/htLcPp6THKwMt3biedQ7U9aS
-         i/b8DWdbhKHvx8LiOlhohalOVegwxzepvEj04Na7NHMXlcuyGiodZslVrZSdPFuKylyQ
-         77PA==
-X-Gm-Message-State: AOAM530cOYmcaJ3V0bRrLQuiSQlEcSy1RiUYBRy/pHnvJA2ETQ/H5GzR
-        88D64zYEhfD1n1NbwffQlTk=
-X-Google-Smtp-Source: ABdhPJyYGmf/5fGb0/i566F0u9IYo1CUHDznvu1JtXqPmwtBaaeroxaW3KuNo+wdl5aREYwHnBx9yQ==
-X-Received: by 2002:a2e:874c:: with SMTP id q12mr1342241ljj.148.1602772211252;
-        Thu, 15 Oct 2020 07:30:11 -0700 (PDT)
-Received: from laptop ([156.146.58.201])
-        by smtp.gmail.com with ESMTPSA id s14sm1350043ljp.92.2020.10.15.07.30.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Oct 2020 07:30:10 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 17:30:04 +0300
-From:   Fedor Tokarev <ftokarev@gmail.com>
-To:     rostedt@goodmis.org, acme@redhat.com
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        ftokarev@gmail.com
-Subject: [PATCH] tools: net: traceevent: Fix 'snprintf' return value check in
- 'tep_filter_strerror'
-Message-ID: <20201015142959.GA18281@laptop>
+        id S2388401AbgJOOaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:30:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38210 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727988AbgJOOaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:30:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602772209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KBFlgAaq0O3il+qQFEc0ZaY+TncdaaVKCCP2EAaai30=;
+        b=RzMr/0HWeuj8biN+UO6Kh2qtwi3d4LazBCd9n3G2hkvhC/lGbGLt0tK2AF+2ydDY7ZQXdL
+        PttM1r+Gx/Ul5tGU2FpVTaYSX8HKee47b3Ofbf6D2Vj/PfHao9RJzAJWSCH2IwwY0hcSzz
+        wdYUIRhmCiI74LYYvGo5zsX9LXk51Mo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8D379AC24;
+        Thu, 15 Oct 2020 14:30:09 +0000 (UTC)
+Subject: Re: [PATCH 1/2] xen/blkback: turn the cache purge LRU interval into a
+ parameter
+To:     Roger Pau Monne <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        "J . Roeleveld" <joost@antarean.org>
+References: <20201015142416.70294-1-roger.pau@citrix.com>
+ <20201015142416.70294-2-roger.pau@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <3441104d-7234-a0c3-8b15-7d5a1126182b@suse.com>
+Date:   Thu, 15 Oct 2020 16:30:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20201015142416.70294-2-roger.pau@citrix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'snprintf' returns the number of characters which would have been written
-if enough space had been available, excluding the terminating null byte.
-Thus, the return value of 'buflen' means that the last character
-was dropped.
+On 15.10.20 16:24, Roger Pau Monne wrote:
+> Assume that reads and writes to the variable will be atomic. The worse
+> that could happen is that one of the LRU intervals is not calculated
+> properly if a partially written value is read, but that would only be
+> a transient issue.
+> 
+> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+> ---
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: SeongJae Park <sjpark@amazon.de>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: linux-block@vger.kernel.org
+> Cc: J. Roeleveld <joost@antarean.org>
+> Cc: Jürgen Groß <jgross@suse.com>
+> ---
+>   Documentation/ABI/testing/sysfs-driver-xen-blkback | 10 ++++++++++
+>   drivers/block/xen-blkback/blkback.c                |  9 ++++++---
+>   2 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> index ecb7942ff146..776f25d335ca 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> @@ -35,3 +35,13 @@ Description:
+>                   controls the duration in milliseconds that blkback will not
+>                   cache any page not backed by a grant mapping.
+>                   The default is 10ms.
+> +
+> +What:           /sys/module/xen_blkback/parameters/lru_internval
 
-Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
----
- tools/lib/traceevent/parse-filter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+s/lru_internval/lru_interval/
 
-diff --git a/tools/lib/traceevent/parse-filter.c b/tools/lib/traceevent/parse-filter.c
-index c271aee..dccdbf2 100644
---- a/tools/lib/traceevent/parse-filter.c
-+++ b/tools/lib/traceevent/parse-filter.c
-@@ -1374,7 +1374,7 @@ int tep_filter_strerror(struct tep_event_filter *filter, enum tep_errno err,
- 	if (strlen(filter->error_buffer) > 0) {
- 		size_t len = snprintf(buf, buflen, "%s", filter->error_buffer);
- 
--		if (len > buflen)
-+		if (len >= buflen)
- 			return -1;
- 		return 0;
- 	}
--- 
-2.7.4
+> +Date:           October 2020
+> +KernelVersion:  5.10
+> +Contact:        Roger Pau Monné <roger.pau@citrix.com>
+> +Description:
+> +                The LRU mechanism to clean the lists of persistent grants needs
+> +                to be executed periodically. This parameter controls the time
+> +                interval between consecutive executions of the purge mechanism
+> +                is set in ms.
+> diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
+> index adfc9352351d..6ad9b76fdb2b 100644
+> --- a/drivers/block/xen-blkback/blkback.c
+> +++ b/drivers/block/xen-blkback/blkback.c
+> @@ -117,7 +117,10 @@ MODULE_PARM_DESC(max_ring_page_order, "Maximum order of pages to be used for the
+>    * be executed periodically. The time interval between consecutive executions
+>    * of the purge mechanism is set in ms.
+>    */
+> -#define LRU_INTERVAL 100
+> +static unsigned int lru_interval = 100;
+> +module_param_named(lru_interval, lru_interval, uint, 0644);
+> +MODULE_PARM_DESC(lru_internval,
 
+s/lru_internval/lru_interval/
+
+> +		 "Time interval between consecutive executions of the cache purge mechanism (in ms)");
+>   
+>   /*
+>    * When the persistent grants list is full we will remove unused grants
+> @@ -620,7 +623,7 @@ int xen_blkif_schedule(void *arg)
+>   		if (unlikely(vbd->size != vbd_sz(vbd)))
+>   			xen_vbd_resize(blkif);
+>   
+> -		timeout = msecs_to_jiffies(LRU_INTERVAL);
+> +		timeout = msecs_to_jiffies(lru_interval);
+>   
+>   		timeout = wait_event_interruptible_timeout(
+>   			ring->wq,
+> @@ -650,7 +653,7 @@ int xen_blkif_schedule(void *arg)
+>   		if (blkif->vbd.feature_gnt_persistent &&
+>   		    time_after(jiffies, ring->next_lru)) {
+>   			purge_persistent_gnt(ring);
+> -			ring->next_lru = jiffies + msecs_to_jiffies(LRU_INTERVAL);
+> +			ring->next_lru = jiffies + msecs_to_jiffies(lru_interval);
+>   		}
+>   
+>   		/* Shrink the free pages pool if it is too large. */
+> 
+
+
+Juergen
