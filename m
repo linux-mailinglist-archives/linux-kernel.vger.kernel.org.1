@@ -2,161 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5F528EC5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A4128EC73
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgJOEqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:46:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:4839 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727479AbgJOEqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:46:33 -0400
-IronPort-SDR: iOGxpW3ZQR4HfO8xHvHsk8Cy1gC6KkMpHACDDNcWlw3m4LygWg5NoX0a+jv1TtIzZpBjSYUl19
- yxUC4bcTFz8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="154088398"
-X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
-   d="scan'208";a="154088398"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 21:46:32 -0700
-IronPort-SDR: okZevJNyFoB0pDRj0graDCFAGBe85RU4H4aY8F5klmxXZx1X/fo3dQRhH8k0J0Lzctn9GCjeCZ
- aeWfHIgGHVcw==
-X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
-   d="scan'208";a="531105799"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 21:46:32 -0700
-Date:   Wed, 14 Oct 2020 21:46:32 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 9/9] x86/pks: Add PKS test code
-Message-ID: <20201015044632.GT2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009194258.3207172-1-ira.weiny@intel.com>
- <20201009194258.3207172-10-ira.weiny@intel.com>
- <3f9ebe3b-5c1c-6a69-3779-6f90d66227bd@intel.com>
+        id S1726535AbgJOExv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 00:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgJOExv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 00:53:51 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B35C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:53:51 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y1so930510plp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WnT7VxOT22lB70S274n8jv3DY8IooahSVVXzJOT5Npo=;
+        b=ErrZa3fPnuCZhR9OKjBG0KwI9Dy24n9g1z/rXD+KQJT6GVNwvzKJ/zcljR37vCMyqU
+         udTVtqjX0T9o8HnDCwYanc81u4uNT5ni0xwqQU4VGEYbfroj6bLhLGL5ONCbioSV9MwN
+         IzEQoyGCYEVxE0XCOgEdc3CYSRrS+uuPeJSLcY2v5oxUUe/+/jukunvhp9/MDwy4gWwv
+         uSeqpZwdbnL67KJIqUBykeqKpL3c9ctQ8IUzN9bKSequgA7hJmBeobS4QeukTr29Ee4o
+         ZiLMZqMQ0pmJSgTL0sMu34/4S7XhdEv6u/W7M1FDkmSs3akxSPuVSNGxNqqvVLYsAN4J
+         DqBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WnT7VxOT22lB70S274n8jv3DY8IooahSVVXzJOT5Npo=;
+        b=A/UCrVazN1nR0/rMF6TayT8Z/Svq5TvpfwNxeWrNqJMLItABe/VpagfxkhggpZ1r9C
+         fIXdozBjf/n99hEyuiMVr6nyFF8TdJh2YrZ4G4Q4s1pTAWpfLNhWEPsWBFRXpIyDpFpJ
+         1Sw2nr7ZKBQrQylV6R1A6bloCjkKqvo9w/zplt3r26CWXMZuViGnmjJGEpvHkYsEk1kB
+         jFjMd+dradVr99QLth2iupvwmk+yanxlECigIMtii4c/3mP7GElV0Qwm3wcLWcft1uz2
+         66WrrDveiSmw+QgVCHe3WiGPJ2HkPvT0XmxQYreg8lz5RAnWRzd93YQuoJuIbKoeodwy
+         NffQ==
+X-Gm-Message-State: AOAM533cY3bpAEaznMmm6eKRtlzMFmlg8YdjDlu2aUI46AlGW6alnOJn
+        IGPJdoB54/WwgBO13C58QUGTYOWf/mwJIMceWM2Awg==
+X-Google-Smtp-Source: ABdhPJyY9a0giGK+FW30vhQv1gy/nWuAfpUG4NgMwHxz1j3magMSXSe1Cvfc7EDaUkMYxwdgCJlw14xz0QZShNEivgk=
+X-Received: by 2002:a17:90a:8002:: with SMTP id b2mr2638763pjn.47.1602737630777;
+ Wed, 14 Oct 2020 21:53:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f9ebe3b-5c1c-6a69-3779-6f90d66227bd@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20201005025720.2599682-1-keescook@chromium.org> <202010141603.49EA0CE@keescook>
+In-Reply-To: <202010141603.49EA0CE@keescook>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Wed, 14 Oct 2020 21:53:39 -0700
+Message-ID: <CAFP8O3LvTkqUK3rp9Q17fmyN+xApZXA8Cs=MNvxrZ3SDCDRX3A@mail.gmail.com>
+Subject: Re: [PATCH v2] vmlinux.lds.h: Keep .ctors.* with .ctors
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 12:02:07PM -0700, Dave Hansen wrote:
-> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
-> >  #ifdef CONFIG_X86_32
-> >  	/*
-> >  	 * We can fault-in kernel-space virtual memory on-demand. The
-> > diff --git a/include/linux/pkeys.h b/include/linux/pkeys.h
-> > index cc3510cde64e..f9552bd9341f 100644
-> > --- a/include/linux/pkeys.h
-> > +++ b/include/linux/pkeys.h
-> > @@ -47,7 +47,6 @@ static inline bool arch_pkeys_enabled(void)
-> >  static inline void copy_init_pkru_to_fpregs(void)
-> >  {
-> >  }
-> > -
-> >  #endif /* ! CONFIG_ARCH_HAS_PKEYS */
-> 
-> ^ Whitespace damage
+On Wed, Oct 14, 2020 at 4:04 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sun, Oct 04, 2020 at 07:57:20PM -0700, Kees Cook wrote:
+> > Under some circumstances, the compiler generates .ctors.* sections. This
+> > is seen doing a cross compile of x86_64 from a powerpc64el host:
+> >
+> > x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/trace_clock.o' being
+> > placed in section `.ctors.65435'
+> > x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ftrace.o' being
+> > placed in section `.ctors.65435'
+> > x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/ring_buffer.o' being
+> > placed in section `.ctors.65435'
+> >
+> > Include these orphans along with the regular .ctors section.
+> >
+> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Fixes: 83109d5d5fba ("x86/build: Warn on orphan section placement")
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+>
+> Ping -- please take this for tip/urgent, otherwise we're drowning sfr in
+> warnings. :)
+>
+> -Kees
+>
+> > ---
+> > v2: brown paper bag version: fix whitespace for proper backslash alignment
+> > ---
+> >  include/asm-generic/vmlinux.lds.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> > index 5430febd34be..b83c00c63997 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -684,6 +684,7 @@
+> >  #ifdef CONFIG_CONSTRUCTORS
+> >  #define KERNEL_CTORS()       . = ALIGN(8);                      \
+> >                       __ctors_start = .;                 \
+> > +                     KEEP(*(SORT(.ctors.*)))            \
+> >                       KEEP(*(.ctors))                    \
+> >                       KEEP(*(SORT(.init_array.*)))       \
+> >                       KEEP(*(.init_array))               \
+> > --
+> > 2.25.1
+> >
+>
+> --
+> Kees Cook
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/202010141603.49EA0CE%40keescook.
 
-Done.
+I think it would be great to figure out why these .ctors.* .dtors.*
+are generated.
+~GCC 4.7 switched to default to .init_array/.fini_array if libc
+supports it. I have some refactoring in this area of Clang as well
+(e.g. https://reviews.llvm.org/D71393)
 
-> 
-> >  #ifndef CONFIG_ARCH_HAS_SUPERVISOR_PKEYS
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 0c781f912f9f..f015c09ba5a1 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -2400,6 +2400,18 @@ config HYPERV_TESTING
-> >  	help
-> >  	  Select this option to enable Hyper-V vmbus testing.
-> >  
-> > +config PKS_TESTING
-> > +	bool "PKey(S)upervisor testing"
-> 
-> Seems like we need a space in there somewhere.
-
-heheh...  yea...
-
-> 
-> > +	pid = fork();
-> > +	if (pid == 0) {
-> > +		fd = open("/sys/kernel/debug/x86/run_pks", O_RDWR);
-> > +		if (fd < 0) {
-> > +			printf("cannot open file\n");
-> > +			return -1;
-> > +		}
-> > +
-> 
-> Will this return code make anybody mad?  Should we have a nicer return
-> code for when this is running on non-PKS hardware?
-
-I'm not sure it will matter much but I think it is better to report the missing
-file.[1]
-
-> 
-> I'm not going to be too picky about this.  I'll just ask one question:
-> Has this found real bugs for you?
-
-Many, especially regressions as things have changed.
-
-> 
-> Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-
-Thanks,
-Ira
-
-[1]
-
-diff --git a/tools/testing/selftests/x86/test_pks.c b/tools/testing/selftests/x86/test_pks.c
-index 8037a2a9ff5f..11be4e212d54 100644
---- a/tools/testing/selftests/x86/test_pks.c
-+++ b/tools/testing/selftests/x86/test_pks.c
-@@ -11,6 +11,8 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- 
-+#define PKS_TEST_FILE "/sys/kernel/debug/x86/run_pks"
-+
- int main(void)
- {
-        cpu_set_t cpuset;
-@@ -25,9 +27,9 @@ int main(void)
- 
-        pid = fork();
-        if (pid == 0) {
--               fd = open("/sys/kernel/debug/x86/run_pks", O_RDWR);
-+               fd = open(PKS_TEST_FILE, O_RDWR);
-                if (fd < 0) {
--                       printf("cannot open file\n");
-+                       printf("cannot open %s\n", PKS_TEST_FILE);
-                        return -1;
-                }
- 
-@@ -45,9 +47,9 @@ int main(void)
-        } else {
-                sleep(2);
- 
--               fd = open("/sys/kernel/debug/x86/run_pks", O_RDWR);
-+               fd = open(PKS_TEST_FILE, O_RDWR);
-                if (fd < 0) {
--                       printf("cannot open file\n");
-+                       printf("cannot open %s\n", PKS_TEST_FILE);
-                        return -1;
-                }
- 
-
+And I am not sure SORT(.init_array.*) or SORT(.ctors.*) will work. The
+correct construct is SORT_BY_INIT_PRIORITY(.init_array.*)
