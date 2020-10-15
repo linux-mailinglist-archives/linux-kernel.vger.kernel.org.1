@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4FD28F80D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A266F28F810
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731202AbgJOSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbgJOSB3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:01:29 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77747C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:01:29 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id m11so3690511otk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FAglLW2wBpEzHjMtiXzBklSvY/GxHkePOLyeT8viwgw=;
-        b=KbCIbV86V0q6MPGXnuSbSDwhEIhEisoJmuPeyaSGapr4dBGdPJ6+8cPNg+2rdYBZB0
-         02QIgyAbj0XaqHKkxv4rm29sXy6PMavbw1XzGi+Qb9k0LHw4X4absBRbJgpy7Iyd66SO
-         gXjpeUE5slOsRsLr5lmFZlo6KiJlY9Sul2N48=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FAglLW2wBpEzHjMtiXzBklSvY/GxHkePOLyeT8viwgw=;
-        b=N59SZMk8s51j5F9D1ghgg9NuuAqBYqFexPKUg94p6WnWYmLX7pb9LdIaVJa9bCwDgm
-         lMtxv8ZI8LWVs+U9cvxTnNFMZqjG0OdMNoNpqHlekT4ayqwQHzy4W/Izpicn4tQQ5Oni
-         7JeLdmXa9W5Lom2+CmfBBJKY2CDgTqAS1bdk5VoDoCgeUqSmdp6VqAQyvFIR9Lb6EQZX
-         wXD+/0oidlAIxfwE8ykKt4mDKpZsf3sjLKD7mI8FKryBjRh5DE2dUp2rXdNa/jDEofrQ
-         EzgHHKlOn+x7ZFUpGTNiHzc/EC3w6bXn/QTWS8FfUdxNFJgtxrlzaQNWLeTAGxGGjnyU
-         txhA==
-X-Gm-Message-State: AOAM531Yt1hab/gII8Wji+OlEviXcMWzTB3c7AzZpxvJHzf8POwSDpP7
-        6tbq/3Smbw1vGoe6zIQYRtLoJg==
-X-Google-Smtp-Source: ABdhPJwb63JYpnFg3xZRGWXuRuNmKUIHcbMrcMMtcv7eDW153uhSV/uUS/yLHSNjMxwF+fN7T8qfxw==
-X-Received: by 2002:a9d:4e86:: with SMTP id v6mr3612743otk.98.1602784888839;
-        Thu, 15 Oct 2020 11:01:28 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e3sm1744843ooq.0.2020.10.15.11.01.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 11:01:28 -0700 (PDT)
-Subject: Re: linux-next: build warnings after merge of the kunit-next tree
-To:     Vitor Massaru Iha <vitor@massaru.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201015163056.56fcc835@canb.auug.org.au>
- <CADQ6JjX0tg51M0FsD+DmAaDcnWB0wrihj4WCq_z6En=tzL=wcg@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2759fa81-630e-6395-b8e1-c743fb533700@linuxfoundation.org>
-Date:   Thu, 15 Oct 2020 12:01:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732821AbgJOSCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391215AbgJOSCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:02:11 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA1E12225F;
+        Thu, 15 Oct 2020 18:02:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602784930;
+        bh=3tTxhRil6vgmNAk0lYZmyvk6Q1MqeQHOeqmjyaWSkx4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q7S1ofRguXefHxJgJnFZzx8Y0R7dqQE5QnukmqxKQow+1473+5XAWx/EGi3J/IzA4
+         HGRrGqO1RrNr62y91ybvb7V6Rqf2V+IkdmUrtEa4fLxqSTYYw29JjJxmiTrx89wZ/Q
+         DIupQLRe27BNXdp+XsuVRtj7hesXZmTOAHFfXEMk=
+Date:   Thu, 15 Oct 2020 11:02:08 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: bpf-next test error: BUG: program execution failed: executor 0:
+ exit status 67
+Message-ID: <20201015110203.7cffc1d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CACT4Y+aTPCPRtJ2wJ5P58DijtG2pxXtZm6w=C838YKLKCEdSfw@mail.gmail.com>
+References: <000000000000376ecf05b1b92848@google.com>
+        <CACT4Y+aTPCPRtJ2wJ5P58DijtG2pxXtZm6w=C838YKLKCEdSfw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CADQ6JjX0tg51M0FsD+DmAaDcnWB0wrihj4WCq_z6En=tzL=wcg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/20 4:43 AM, Vitor Massaru Iha wrote:
-> Hi Stephen,
+On Thu, 15 Oct 2020 19:46:35 +0200 Dmitry Vyukov wrote:
+> On Thu, Oct 15, 2020 at 7:41 PM syzbot
+> <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    e688c3db bpf: Fix register equivalence tracking.
+> > git tree:       bpf-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=13d3c678500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=ea7dc57e899da16d
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=5609d37b3a926aad75b7
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com
+> >
+> > executing program
+> > 2020/10/15 14:32:51 BUG: program execution failed: executor 0: exit status 67
+> > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
+> > loop exited with status 67
+> >
+> > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
+> > loop exited with status 67  
 > 
-> On Thu, Oct 15, 2020 at 2:31 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Hi all,
->>
->> After merging the kunit-next tree, today's linux-next build (x86_64
->> allmodconfig) produced this warning:
->>
->> lib/bitfield_kunit.c: In function 'test_bitfields_compile':
->> lib/bitfield_kunit.c:136:21: warning: unsigned conversion from 'int' to 'u16' {aka 'short unsigned int'} changes value from '393216' to '0' [-Woverflow]
->>    136 |  u16_encode_bits(0, 0x60000);
->>        |                     ^~~~~~~
->> At top level:
->> lib/bitfield_kunit.c:129:20: warning: 'test_bitfields_compile' defined but not used [-Wunused-function]
->>    129 | static void __init test_bitfields_compile(struct kunit *context)
->>        |                    ^~~~~~~~~~~~~~~~~~~~~~
->>
->> Introduced by commit
->>
->>    d2585f5164c2 ("lib: kunit: add bitfield test conversion to KUnit")
+> +netfilter maintainers
 > 
-> I saw the problem, I will send the patch.
-> 
+> It seems one of these recent commits broke netfiler.
+> Since syzkaller uses netfiler for sandboxing, syzbot is currently down
+> on bpf-next and linux-next. Other trees will follow once they merge
+> the breakage.
 
-Please send the fix in as soon as possible. I will go ahead and send the
-pull request and will apply the fix in rc2.
+Do you have this?
 
-thanks,
--- Shuah
-
+d25e2e9388ed ("netfilter: restore NF_INET_NUMHOOKS")
