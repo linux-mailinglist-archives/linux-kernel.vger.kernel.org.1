@@ -2,159 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00A228FAD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0EE28FAD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731607AbgJOVrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
+        id S1731620AbgJOVsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728543AbgJOVrm (ORCPT
+        with ESMTP id S1731609AbgJOVsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:47:42 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CE7C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:47:42 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h7so317783wre.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:47:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D5n2ViAxkOJ8MzqeT90Ga+BE3OTB74Nc8+OlP3bMobw=;
-        b=S3NXkkUSeE+YddJbqE23kY8baPLaCk2a0Pkdm3RQkVFj1ir8kVer0O8dYcGtP7Rp6M
-         4zuJMPbu1P5IYbgL6/YNYe9azzBFpQlgnw6N1cTWHFdcxEMdGWdKWX1Afde7L6txiMUj
-         U3OXp4MQmAQmUPiCISZA3yzlop3fRmgnaTapHNpa194d5WAA6DY4ZPHWKCr5RwteQsV2
-         GdNifYFKzSkcnwxb8mJKefEV6fZItkpejpxGwmZFwtOK6X50mr5EXhdQqeJPAFxwlDQI
-         zR6yL3wRGY2QfZ8NGsLE8UPhmRu3mabXMRqLgrPDLGSnkXoZGAHa49mYPHloTOqT4dkH
-         gQCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D5n2ViAxkOJ8MzqeT90Ga+BE3OTB74Nc8+OlP3bMobw=;
-        b=XtDmP0QGtFb7V4WA4oDgxkEAvrecNbk6p6S0wDoH072XCRwz+/Na3+CLdVBWo3GokR
-         toGMfiCfbjXN4dhM8kLR6oMXnRI96AShY4f77s40jfLi6aZGBPALu0NJm/jGjWmmFx1l
-         hGq3qVWtC7MS6WAhYVEBgQJscQS80CgJsX9lCcZnqyaJTrsIfTN5vfo3S6qhTiKdUCR7
-         AYyQA0Cdj4hbtTlv+ewRoUbWeheFqHHgZ9+0x+Gl/gJneoVjfXhbRBtsXJukkBFmNrWC
-         pT/pZ5c1nQgEJE5wzA4e9R3SdTg57KAxRQ0hqt8RIOUgxCT0gg3ah2Iw9n7wMrfY80vv
-         C6xQ==
-X-Gm-Message-State: AOAM533rFL65jcwwKfwrVb8cMCxXnO2qN6is3F2RbjDko9WJdGdMita/
-        6I1FJBSW5hL/jgOOVi3Z9vF9RWYUtLAQZ6O8UdKulw==
-X-Google-Smtp-Source: ABdhPJydJV5T1VbRwS3Y3meNbngihAvrNPY1i9mXSsuOz4J3uQ+zw4w8pfnA5KRpj7V8s5GNzOmKMV51naXPwaRaFW8=
-X-Received: by 2002:adf:b19c:: with SMTP id q28mr293012wra.119.1602798460653;
- Thu, 15 Oct 2020 14:47:40 -0700 (PDT)
+        Thu, 15 Oct 2020 17:48:06 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AC4C061755;
+        Thu, 15 Oct 2020 14:48:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC2vj1Zjnz9sTq;
+        Fri, 16 Oct 2020 08:48:00 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602798482;
+        bh=y+PyG7Pez8nHYgyOaKmZ+ioJh2g3Z1VEFlszf/9unr4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aP4+ObHWVuKgRIYz9cg8sR6QPkgncQon829e0u2MuC0sIeWZzvLwcPnqKq6uJ+p5t
+         PchzDjgv40KSn4PByMmsdVkOBKVO+oo0qqItTgSlJ/iS44l95PA9QEvJBY42DDMKj8
+         divQqOctPjv1W3yeyNwzZXdvunFUVfZ2FTM92LESOUJ+7vBQFSEFUaj+zElRagwwai
+         U8H6PtU7geOo8b2lVJVBFu/xSrgoEM/lUY7newI7UXcZG/VuRLmNqxLGdPyAL+oHal
+         GtPO7+bnKJpejOfwqL/khw5TH4t8dnf8He4NwzGs1rOBE6IX5Lj/r9BdLiqCovKzni
+         CJeQRaJSO9TNg==
+Date:   Fri, 16 Oct 2020 08:47:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the usb tree with the pci tree
+Message-ID: <20201016084759.7070223e@canb.auug.org.au>
+In-Reply-To: <20200921151807.637905c0@canb.auug.org.au>
+References: <20200921151807.637905c0@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20201015161216.1563600-1-irogers@google.com> <5E711F64-A9BF-48EC-83A3-3C644D80F848@zytor.com>
-In-Reply-To: <5E711F64-A9BF-48EC-83A3-3C644D80F848@zytor.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 15 Oct 2020 14:47:28 -0700
-Message-ID: <CAP-5=fXRBLwui9wdDvqrB0p4TaWVSth4cuH+2TwXTq5TtgL_NQ@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined behavior.
-To:     hpa@zytor.com
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86 <x86@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Numfor Mbiziwo-Tiapo <nums@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/zu7+YcAPt0kAkgR4FprMCIX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 2:35 PM <hpa@zytor.com> wrote:
->
-> On October 15, 2020 9:12:16 AM PDT, Ian Rogers <irogers@google.com> wrote:
-> >From: Numfor Mbiziwo-Tiapo <nums@google.com>
-> >
-> >Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-> >these are forms of undefined behavior.
-> >
-> >These problems were identified using the undefined behavior sanitizer
-> >(ubsan) with the tools version of the code and perf test. Part of this
-> >patch was previously posted here:
-> >https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
-> >
-> >v2. removes the validate_next check and merges the 2 changes into one
-> >as
-> >requested by Masami Hiramatsu <mhiramat@kernel.org>
-> >
-> >Signed-off-by: Ian Rogers <irogers@google.com>
-> >Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
-> >---
-> > arch/x86/lib/insn.c       | 4 ++--
-> > tools/arch/x86/lib/insn.c | 4 ++--
-> > 2 files changed, 4 insertions(+), 4 deletions(-)
-> >
-> >diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-> >index 404279563891..be88ab250146 100644
-> >--- a/arch/x86/lib/insn.c
-> >+++ b/arch/x86/lib/insn.c
-> >@@ -20,10 +20,10 @@
-> >       ((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
-> >
-> > #define __get_next(t, insn)   \
-> >-      ({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
-> >+      ({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte +=
-> >sizeof(t); r; })
-> >
-> > #define __peek_nbyte_next(t, insn, n) \
-> >-      ({ t r = *(t*)((insn)->next_byte + n); r; })
-> >+      ({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
-> >
-> > #define get_next(t, insn)     \
-> >       ({ if (unlikely(!validate_next(t, insn, 0))) goto err_out;
-> >__get_next(t, insn); })
-> >diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-> >index 0151dfc6da61..92358c71a59e 100644
-> >--- a/tools/arch/x86/lib/insn.c
-> >+++ b/tools/arch/x86/lib/insn.c
-> >@@ -20,10 +20,10 @@
-> >       ((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
-> >
-> > #define __get_next(t, insn)   \
-> >-      ({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
-> >+      ({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte +=
-> >sizeof(t); r; })
-> >
-> > #define __peek_nbyte_next(t, insn, n) \
-> >-      ({ t r = *(t*)((insn)->next_byte + n); r; })
-> >+      ({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
-> >
-> > #define get_next(t, insn)     \
-> >       ({ if (unlikely(!validate_next(t, insn, 0))) goto err_out;
-> >__get_next(t, insn); })
->
-> Wait, what?
->
-> You are taking about x86-specific code, and on x86 unaligned memory accesses are supported, well-defined, and ubiquitous.
+--Sig_/zu7+YcAPt0kAkgR4FprMCIX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On why this is undefined behavior:
-https://lore.kernel.org/lkml/CAP-5=fU2XBoOa2=00VCuWYqsLUzMSMzUXY63ZJt9rz-NJ+vYwA@mail.gmail.com/
+Hi all,
 
-> This is B.S. at best, and unless the compiler turns the memcpy() right back into what you started with, deleterious for performance.
+On Mon, 21 Sep 2020 15:18:07 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the usb tree got a conflict in:
+>=20
+>   drivers/pci/controller/pcie-brcmstb.c
+>=20
+> between commit:
+>=20
+>   1cf1b0a6dd95 ("PCI: brcmstb: Add bcm7278 register info")
+>=20
+> from the pci tree and commit:
+>=20
+>   f48cc509c935 ("Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware w=
+hen present"")
+>=20
+> from the usb tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc drivers/pci/controller/pcie-brcmstb.c
+> index 6e7aa82a54a3,bac63d04297f..000000000000
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@@ -1213,8 -929,6 +1211,7 @@@ static int brcm_pcie_probe(struct platf
+>   {
+>   	struct device_node *np =3D pdev->dev.of_node, *msi_np;
+>   	struct pci_host_bridge *bridge;
+> - 	struct device_node *fw_np;
+>  +	const struct pcie_cfg_data *data;
+>   	struct brcm_pcie *pcie;
+>   	int ret;
+>  =20
 
-On performance, the memcpys are fixed size and so lowered to loads on
-x86 by any reasonable compiler. See the thread above.
+This is now a conflict between the pci tree and Linus' tree.
 
-> If you have a *very* good reason for this kind of churn, wrap it in the unaligned access macros, but using memcpy() is insane. All you are doing is making the code worse.
+--=20
+Cheers,
+Stephen Rothwell
 
-The decoder is a shared code and using unaligned macros makes life
-hard for the other users of the code. Memcpy is the "standard"
-workaround for this kind of undefined behavior.
-https://lore.kernel.org/lkml/e4269cb2-d8e6-da26-6afd-a9df72d4be36@intel.com/
+--Sig_/zu7+YcAPt0kAkgR4FprMCIX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-For motivation, beyond just having perf be sanitizer clean, see discussion here:
-https://lore.kernel.org/lkml/CAP-5=fUoSGy3NAzTSbF3YLEPABSs7oPsxLkCx36XkEzzm341yw@mail.gmail.com/
-https://lore.kernel.org/lkml/160208761921.7002.1321765913567405137.tip-bot2@tip-bot2/
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Ian
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Iw48ACgkQAVBC80lX
+0Gx+IAf+NOsAtXjfjq2LeyM57QIkV0e531Cugye4XD97xydxAYnPTUfj89BbXfCg
+JMD7RkTr37ZuNWZ1R2URb25PGMYzCp7QrJf/RPx9idHytWczGR+xu5IayaxESVAD
+FVINkPlrafQSVxw+1YECE/RDJ8z/3qa8C5RbRotTzAXw+6R6fH8x3OJn6+CXVmAx
+MGDMN4gxgMsw99yTfn4fc2i9hX5H+QDCM/FUeWaENJjSHANK37dJnwRnfRr31C/7
+KjvdQ7ESBLq7LsugJvt0203Fmii6jHhtkooFVHKgdRHu2RkDnrGTIkTB+nn8p0bp
+dHdB7s4I8jhNsv1BZhs+1ZRyfVA6oQ==
+=6TLt
+-----END PGP SIGNATURE-----
 
-> --
-> Sent from my Android device with K-9 Mail. Please excuse my brevity.
+--Sig_/zu7+YcAPt0kAkgR4FprMCIX--
