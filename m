@@ -2,150 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ED328F762
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B2F28F765
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390070AbgJORCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:02:09 -0400
-Received: from mail-eopbgr80040.outbound.protection.outlook.com ([40.107.8.40]:30997
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388305AbgJORCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:02:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MwZ7K+yTAxjSMuXjwvZbwNCidiKUFwk97xPkPtRIYdgFHaZJW5vzExADcg3anG3RiWlelDte2/srNKYO0vv4C0T7syuayJtG4YO9KporHxeL1L9B+hUihWnU/IFhF8vJjuZO1+iIeLIOto/Ixo90X4C/fwDzJ7CjTSamV66a+FPLmYHHVy+AIJoTL6OcdYspktZX+TamSxvKFvVwZbhBm1u6QqOiZroI51mN6AkldqhrJvQwiaitCDp79ncJlcW91363L2spNVPVTBHPKWovh/gjA1mM2YtZrTJG4Xt2ngmW6VHzoVVY5oiRBJ1ChXcoBPY75CEYJk6ugXbVynEscQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mFJzGxMftP0tL5sDvVC5Vtse8NmGENc8c5lqWV+BgUI=;
- b=UM8P2/e9vFgii3Uno2a/BdsN3VTHNZvg/rtDHrLjMRhvxOrttZWgpgGKCWvzMwrdqzPpzBhA4Lj0tQYfPzfcV88+rA8xKO24FJS1o26bcd79FneVf4ZeQ65d4LsF1y6YYU4ipsLDDo4TV6MVs6+h4MIfyHkBIfYuUlaP+GCcEkV9xA2YR/wswz/IiCfXAjX7yM2P+ickwdgjpv1XtSCnaqJsGqvIzj5pozDUIrNzgsEq9Be/sUVcCQXePEz8DbQDlxlW2nFb44oNJrQAWD7Ei7VYfNSnsuCwLhjhbhWhNN1K9Bki8hv2z0/61WbuN3dARkS7Ovxh7ii52M7/znYyLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mFJzGxMftP0tL5sDvVC5Vtse8NmGENc8c5lqWV+BgUI=;
- b=lq2kVPOertSTt4N2SYK5vRCGzJCqUqPPSvRn4u8RI1H8SSPheCBgTDncKR6a6fGEJBStI8/HqfrIBZ/OhP4O1tcShKx0EDK41B+rCkAd6evtgHGdmqFM5rTzAMObVFgjoEq9Cmc9RAPgB2rioEvWm4jRkUg+vz5QOFi272l6/Ug=
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- (2603:10a6:803:16::14) by VI1PR0401MB2240.eurprd04.prod.outlook.com
- (2603:10a6:800:29::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Thu, 15 Oct
- 2020 17:02:06 +0000
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324%5]) with mapi id 15.20.3455.030; Thu, 15 Oct 2020
- 17:02:06 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Jose Abreu <Jose.Abreu@synopsys.com>
-CC:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: linux-next: Tree for Oct 15 (drivers/net/pcs/pcs-xpcs.o)
-Thread-Topic: linux-next: Tree for Oct 15 (drivers/net/pcs/pcs-xpcs.o)
-Thread-Index: AQHWowIM9GlE3TKOm0uVxOyhfasoWqmYw5AAgAAgOwA=
-Date:   Thu, 15 Oct 2020 17:02:05 +0000
-Message-ID: <20201015170204.bnnpgogczjiwntyc@skbuf>
-References: <20201015182859.7359c7be@canb.auug.org.au>
- <e507b1ec-a3ae-0eaa-8fed-6c77427325c3@infradead.org>
- <BN6PR12MB17798590707177F08FD60653D3020@BN6PR12MB1779.namprd12.prod.outlook.com>
-In-Reply-To: <BN6PR12MB17798590707177F08FD60653D3020@BN6PR12MB1779.namprd12.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: synopsys.com; dkim=none (message not signed)
- header.d=none;synopsys.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.26.174.215]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1d17b61b-8886-4111-0a57-08d8712c0b9a
-x-ms-traffictypediagnostic: VI1PR0401MB2240:
-x-microsoft-antispam-prvs: <VI1PR0401MB2240CED730460E40463F1141E0020@VI1PR0401MB2240.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XfJfQKgoHL0qj9Loo5ehW+ZDQQEaLDd5MAgI8osUnMFcVMllGHPurUwOxAc3uILk4GKV8q5uFrfkFI4vc0GL6lkRmdb9VkDzDrXorsLyzmFB8Z34WH2CE5Z9ZgzZfwcTQ2Okp0kCrXetzA48V8LjhGTYpaKk4U3tZHdVHf+s63nCEDUOh5yecGh6bDDCXkhXdvx1IbBkzrpdOUtW0d5fMoIZ+1szlfMVlvLkcB+elNP4srjY438/OXWWl79Ju22UDC/fjx/pj6mS2LHyYiF2uQycMR3rEE1Bb+3gQiSmDipCaIMwFWiYw2X7pzU1EMhu
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(39860400002)(136003)(396003)(346002)(376002)(366004)(9686003)(186003)(8936002)(54906003)(71200400001)(8676002)(6512007)(3716004)(6486002)(44832011)(316002)(5660300002)(26005)(91956017)(76116006)(1076003)(86362001)(4326008)(6916009)(2906002)(66446008)(478600001)(66476007)(66946007)(6506007)(64756008)(53546011)(33716001)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: p8uLu7MdwbqsJg22Uyo5hpGpU6chNBtGwnqqs6bYYnVt/vfBLTefkNKJG50DfpQheDyyxAQ/YFn7vMEZ6ZoUsPEv2e91eqi00RuHmVwxwz0UrRL+MufTUykUQLHjxqsvOGRXlNBIE+TXwk3BNpOdJcXCFVLpOFpwlX64KRpba/pW3v8GCQMVmo/SL85Xq3xizU1b7IUMRhk4GCNpTaWsG2uz+WOB1guh+rxC2Sxa130PfnVHawtFNmFiZysxXYp+xPg1YhY3jTNk3DdO9GxIFmJxmIF1JBOjHgWGxEjCwoG+xV019g3v98d6UOQXnbMixx/nw6FPXKayV0ZsdaioUc9ctf2LtXnGi1fO7N44tkFHH/tRqjRxk3vwKOfPL7PK9GzXrYDpFK6pHsfqzT3fFtHkpZ6w4uNg+uF6I2l6F+tu8LUCjKKQqDE3CrMCqZm1u/KypgEPIZicHeu9oN70iP/FfBkCasP5/sMckXP5+vd/dUhTtcSHyncUXCbi2r9Kd54u+G4FpfZF8C9N2mIHZ8yarQNDuxy1yDeMj//VbA+FV+O5vF4rQVbSHtl/sXaZMwoUrBPwsszXZRsFaQnVBff9zk/VmZAYMEBM7XzlVzNRIbgbI8WiyQE6GdmNSyVZs40UcnIFi/L+d7xmhN2Cww==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EA1085BC7DFE7F4A9C2F4A15BD3BFACB@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2390079AbgJORCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 13:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389725AbgJORCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 13:02:25 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B1CC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 10:02:24 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id 13so1441397qvc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 10:02:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CGNCuyYfObxCLEORs2jvlbJg+lOXMvZRwzTO3UsSqJY=;
+        b=00IE5qBtcfNME+y2I4CXFIfZWfZwUusqeDaKzRk/0WI0uPimqPW56cFjf5uALBdqiW
+         EFVTcBdOtA7TZW92G4kjrgs/Jb9Tu9vVO7Zd2v8iHVw3d1VwN/lXmtW/kX0k0PA06kHo
+         9y7N+7FKNp6NbxRVqlXoMD7H8+qQ08XMpnwmZFFArEc2EkFLmXxFImtsNIut2Wki/y+q
+         NzxV6pDxiuF5RW8uuocXHMf8/VGopbI0bG/N+nINZf9vZxhVCq4ipdGlq5r+NtZXkezt
+         zK/Q0XHOUUtn6WHBPtCT3qhHyTYTijqM7buyNIykF64ghX8gYgoONglsDDODJiI8mDAc
+         eyMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CGNCuyYfObxCLEORs2jvlbJg+lOXMvZRwzTO3UsSqJY=;
+        b=bHHPfKiiq0Vq8RBY0Zxw1IFzVW2o3uj93Mizl+Q+2RmSeCQac3vnjQNFFqi2O1jOpn
+         fT1w7kcE4VhhWwsdBp3+BvwIyerPhsQLKU1PGKW6EeB/cHtY/AilH1y61w+YtBnn+x+E
+         i2K4OROHecIupnLZUoBRZYD6BMqvxT04x4widPSucjl5eg0fEcemHlaYjienJpXxul2r
+         2IFX4nLjWXACO7SH+KO6on+QV0uTMrc1G8Vb9QJjH2F06CEW1J2KAnM1F9Nn9Yzs7Obf
+         5S8+79ozY4IoichRi9WguQ37nxhR6LYzgjgvnN+G2XfK3lqG8tMsomz43Y6/zPGDkjb1
+         W8iQ==
+X-Gm-Message-State: AOAM532bpp+7mb5Q2Bi25mbkTi6xTkmFurD9ZT/9pj69uD1V5ndBO0L9
+        BGNfgxdWLQ6omcQv9MM4y5+qnw==
+X-Google-Smtp-Source: ABdhPJxyYw4xw3W4+cMkdf7v0zaeRblSB/rflZnvnjV8fvsQRy4pCOS8XetdqbGujzJIeJM9xLR62A==
+X-Received: by 2002:a0c:a383:: with SMTP id v3mr5835299qvv.20.1602781343778;
+        Thu, 15 Oct 2020 10:02:23 -0700 (PDT)
+Received: from localhost.localdomain ([2804:431:c7cb:5e0b:6f3d:fca0:306c:a15d])
+        by smtp.gmail.com with ESMTPSA id r64sm1348624qkf.119.2020.10.15.10.02.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 10:02:23 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com, irogers@google.com,
+        brendanhiggins@google.com
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        peterz@infradead.org, mingo@kernel.org
+Subject: [PATCH v3] lib: kunit: add test_min_heap test conversion to KUnit
+Date:   Thu, 15 Oct 2020 14:02:17 -0300
+Message-Id: <20201015170217.291916-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d17b61b-8886-4111-0a57-08d8712c0b9a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 17:02:05.7440
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 06V+2cDfoAxqPM1wjrmVOO/YbHBQ/P1B95QTs15MDj4kubmuqSQxwh/IL/HPobOAG3tLswo0f7/tQ6HdUw6fcw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2240
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 03:06:42PM +0000, Jose Abreu wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> Date: Oct/15/2020, 15:45:57 (UTC+00:00)
->=20
-> > On 10/15/20 12:28 AM, Stephen Rothwell wrote:
-> > > Hi all,
-> > >=20
-> > > Since the merge window is open, please do not add any v5.11 material =
-to
-> > > your linux-next included branches until after v5.10-rc1 has been rele=
-ased.
-> > >=20
-> > > News: there will be no linux-next releases next Monday or Tuesday.
-> > >=20
-> > > Changes since 20201013:
-> > >=20
-> >=20
-> > on i386:
-> >=20
-> > ld: drivers/net/pcs/pcs-xpcs.o: in function `xpcs_read':
-> > pcs-xpcs.c:(.text+0x29): undefined reference to `mdiobus_read'
-> > ld: drivers/net/pcs/pcs-xpcs.o: in function `xpcs_soft_reset.constprop.=
-7':
-> > pcs-xpcs.c:(.text+0x80): undefined reference to `mdiobus_write'
-> > ld: drivers/net/pcs/pcs-xpcs.o: in function `xpcs_config_aneg':
-> > pcs-xpcs.c:(.text+0x318): undefined reference to `mdiobus_write'
-> > ld: pcs-xpcs.c:(.text+0x38e): undefined reference to `mdiobus_write'
-> > ld: pcs-xpcs.c:(.text+0x3eb): undefined reference to `mdiobus_write'
-> > ld: pcs-xpcs.c:(.text+0x437): undefined reference to `mdiobus_write'
-> > ld: drivers/net/pcs/pcs-xpcs.o:pcs-xpcs.c:(.text+0xb1e): more undefined=
- references to `mdiobus_write' follow
-> >=20
-> >=20
+This adds the conversion of the runtime tests of test_min_heap,
+from `lib/test_min_heap.c` to KUnit tests.
 
-I think this stems from the fact that PHYLIB is configured as a module
-which leads to MDIO_BUS being a module as well while the XPCS is still
-built-in. What should happen in this configuration is that PCS_XPCS
-should be forced to build as module. However, that select only acts in
-the opposite way so we should turn it into a depends.
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+---
+  v2:
+    * change Kconfig entries to be more adherent to KUnit documentation,
+      min_heap test runs when enabling full test coverage (KUNIT_ALL_TESTS).
+    * make kconfig help more concise;
+    * fix KUNIT_TEST sufix;
+  v3:
+    * change KUNIT_EXPECT_FALSE_MSG for KUNIT_EXPECT_LE and KUNIT_EXPECT_GE
+      where they are applicable;
+---
+ lib/Kconfig.debug                         |  24 +++--
+ lib/Makefile                              |   2 +-
+ lib/{test_min_heap.c => min_heap_kunit.c} | 111 +++++++++++-----------
+ 3 files changed, 72 insertions(+), 65 deletions(-)
+ rename lib/{test_min_heap.c => min_heap_kunit.c} (62%)
 
-Is the below patch acceptable? If it is, I can submit it properly.
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 4f09c6505a2e..0e10ef1176de 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1915,16 +1915,6 @@ config TEST_LIST_SORT
+ 
+ 	  If unsure, say N.
+ 
+-config TEST_MIN_HEAP
+-	tristate "Min heap test"
+-	depends on DEBUG_KERNEL || m
+-	help
+-	  Enable this to turn on min heap function tests. This test is
+-	  executed only once during system boot (so affects only boot time),
+-	  or at module load time.
+-
+-	  If unsure, say N.
+-
+ config TEST_SORT
+ 	tristate "Array-based sort test"
+ 	depends on DEBUG_KERNEL || m
+@@ -2256,6 +2246,20 @@ config BITS_TEST
+ 
+ 	  If unsure, say N.
+ 
++config MIN_HEAP_KUNIT_TEST
++	tristate "KUnit test for Min heap" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  Enable this to turn on min heap function tests. This test is
++	  executed only once during system boot (so affects only boot time),
++	  or at module load time.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
+diff --git a/lib/Makefile b/lib/Makefile
+index d862d41fdc3d..03d12e672cf8 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -68,7 +68,6 @@ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
+ UBSAN_SANITIZE_test_ubsan.o := y
+ obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
+ obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
+-obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
+ obj-$(CONFIG_TEST_LKM) += test_module.o
+ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+ obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+@@ -343,3 +342,4 @@ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+ obj-$(CONFIG_BITS_TEST) += test_bits.o
++obj-$(CONFIG_MIN_HEAP_KUNIT_TEST) += min_heap_kunit.o
+diff --git a/lib/test_min_heap.c b/lib/min_heap_kunit.c
+similarity index 62%
+rename from lib/test_min_heap.c
+rename to lib/min_heap_kunit.c
+index d19c8080fd4d..97c5771f2b5e 100644
+--- a/lib/test_min_heap.c
++++ b/lib/min_heap_kunit.c
+@@ -7,9 +7,8 @@
+ 
+ #include <linux/log2.h>
+ #include <linux/min_heap.h>
+-#include <linux/module.h>
+-#include <linux/printk.h>
+ #include <linux/random.h>
++#include <kunit/test.h>
+ 
+ static __init bool less_than(const void *lhs, const void *rhs)
+ {
+@@ -29,37 +28,28 @@ static __init void swap_ints(void *lhs, void *rhs)
+ 	*(int *)rhs = temp;
+ }
+ 
+-static __init int pop_verify_heap(bool min_heap,
++static __init void pop_verify_heap(struct kunit *context,
++				bool min_heap,
+ 				struct min_heap *heap,
+ 				const struct min_heap_callbacks *funcs)
+ {
+ 	int *values = heap->data;
+-	int err = 0;
+ 	int last;
+ 
+ 	last = values[0];
+ 	min_heap_pop(heap, funcs);
+ 	while (heap->nr > 0) {
+ 		if (min_heap) {
+-			if (last > values[0]) {
+-				pr_err("error: expected %d <= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++            KUNIT_EXPECT_LE(context, last, values[0]);
+ 		} else {
+-			if (last < values[0]) {
+-				pr_err("error: expected %d >= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++            KUNIT_EXPECT_GE(context, last, values[0]);
+ 		}
+ 		last = values[0];
+ 		min_heap_pop(heap, funcs);
+ 	}
+-	return err;
+ }
+ 
+-static __init int test_heapify_all(bool min_heap)
++static __init void test_heapify_all(struct kunit *context, bool min_heap)
+ {
+ 	int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
+ 			 -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
+@@ -73,12 +63,11 @@ static __init int test_heapify_all(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, err;
++	int i;
+ 
+ 	/* Test with known set of values. */
+ 	min_heapify_all(&heap, &funcs);
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
+-
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	/* Test with randomly generated values. */
+ 	heap.nr = ARRAY_SIZE(values);
+@@ -86,12 +75,10 @@ static __init int test_heapify_all(bool min_heap)
+ 		values[i] = get_random_int();
+ 
+ 	min_heapify_all(&heap, &funcs);
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ }
+ 
+-static __init int test_heap_push(bool min_heap)
++static __init void test_heap_push(struct kunit *context, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -106,25 +93,22 @@ static __init int test_heap_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Test with known set of values copied from data. */
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_push(&heap, &data[i], &funcs);
+-
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	/* Test with randomly generated values. */
+ 	while (heap.nr < heap.size) {
+ 		temp = get_random_int();
+ 		min_heap_push(&heap, &temp, &funcs);
+ 	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ }
+ 
+-static __init int test_heap_pop_push(bool min_heap)
++static __init void test_heap_pop_push(struct kunit *context, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -139,7 +123,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Fill values with data to pop and replace. */
+ 	temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
+@@ -149,8 +133,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 	/* Test with known set of values copied from data. */
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_pop_push(&heap, &data[i], &funcs);
+-
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	heap.nr = 0;
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+@@ -161,34 +144,54 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		temp = get_random_int();
+ 		min_heap_pop_push(&heap, &temp, &funcs);
+ 	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
++}
+ 
+-	return err;
++static void __init test_heapify_all_true(struct kunit *context)
++{
++	test_heapify_all(context, true);
+ }
+ 
+-static int __init test_min_heap_init(void)
++static void __init test_heapify_all_false(struct kunit *context)
+ {
+-	int err = 0;
+-
+-	err += test_heapify_all(true);
+-	err += test_heapify_all(false);
+-	err += test_heap_push(true);
+-	err += test_heap_push(false);
+-	err += test_heap_pop_push(true);
+-	err += test_heap_pop_push(false);
+-	if (err) {
+-		pr_err("test failed with %d errors\n", err);
+-		return -EINVAL;
+-	}
+-	pr_info("test passed\n");
+-	return 0;
++	test_heapify_all(context, true);
++}
++
++static void __init test_heap_push_true(struct kunit *context)
++{
++	test_heap_push(context, true);
++}
++
++static void __init test_heap_push_false(struct kunit *context)
++{
++	test_heap_push(context, false);
+ }
+-module_init(test_min_heap_init);
+ 
+-static void __exit test_min_heap_exit(void)
++static void __init test_heap_pop_push_true(struct kunit *context)
+ {
+-	/* do nothing */
++	test_heap_pop_push(context, true);
+ }
+-module_exit(test_min_heap_exit);
++
++static void __init test_heap_pop_push_false(struct kunit *context)
++{
++	test_heap_pop_push(context, false);
++}
++
++static struct kunit_case __refdata min_heap_test_cases[] = {
++	KUNIT_CASE(test_heapify_all_true),
++	KUNIT_CASE(test_heapify_all_false),
++	KUNIT_CASE(test_heap_push_true),
++	KUNIT_CASE(test_heap_push_false),
++	KUNIT_CASE(test_heap_pop_push_true),
++	KUNIT_CASE(test_heap_pop_push_false),
++	{}
++};
++
++static struct kunit_suite min_heap_test_suite = {
++	.name = "min-heap",
++	.test_cases = min_heap_test_cases,
++};
++
++kunit_test_suites(&min_heap_test_suite);
+ 
+ MODULE_LICENSE("GPL");
 
-diff --git a/drivers/net/pcs/Kconfig b/drivers/net/pcs/Kconfig
-index 074fb3f5db18..22ba7b0b476d 100644
---- a/drivers/net/pcs/Kconfig
-+++ b/drivers/net/pcs/Kconfig
-@@ -7,8 +7,7 @@ menu "PCS device drivers"
+base-commit: d2585f5164c298aaaed14c2c8d313cbe7bd5b253
+-- 
+2.26.2
 
- config PCS_XPCS
-        tristate "Synopsys DesignWare XPCS controller"
--       select MDIO_BUS
--       depends on MDIO_DEVICE
-+       depends on MDIO_DEVICE && MDIO_BUS
-        help
-          This module provides helper functions for Synopsys DesignWare XPC=
-S
-          controllers.
-
-Ioana=
