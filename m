@@ -2,129 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F5428F039
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1837728F03B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731190AbgJOKbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:31:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:56618 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731151AbgJOKbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:31:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08B94D6E;
-        Thu, 15 Oct 2020 03:31:14 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF34F3F66B;
-        Thu, 15 Oct 2020 03:31:11 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 11:31:06 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
-        ardb@kernel.org, linux-kernel@vger.kernel.org,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, robin.murphy@arm.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 7/8] arm64: mm: Set ZONE_DMA size based on early IORT
- scan
-Message-ID: <20201015103106.GA24739@e121166-lin.cambridge.arm.com>
-References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
- <20201014191211.27029-8-nsaenzjulienne@suse.de>
+        id S1731203AbgJOKcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgJOKcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:32:06 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD313C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:32:05 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id x185so1205148vsb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/SatyKykuj6+wusU+fkldlSz6zvf7g6aQpEzSmisHQo=;
+        b=EH8oOIvPDHGmcjJEUjI+FbC0PcyeU8y82EV3e6ObXVFcyRPXGjcgvogHfmr2Ok5yrl
+         VAsQv36g7PijaMu3KlNS9XkgUaDprdHdPjXAoNf5zA+hg1FNGsphd4kE1DRnBCDM0+SM
+         WbCmAMjfZPZIVg33dLGDvErXvGinMN8eQj8YPifuuVDJVz/u6tfNcheNyt/XYqZPYB2V
+         vmENhjjHg8NgqUlYVkGLikIKl18GbZ7qBlsjuVX0Vw5js71va2Y2MiTvI95yK+6E07MW
+         F9A0RD1751G/JW3JJHamGi4iCrbHYq3iYxW6o2Vv3uigGMeG+kjt3MxW+jfwwI4Vq3cu
+         W+3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/SatyKykuj6+wusU+fkldlSz6zvf7g6aQpEzSmisHQo=;
+        b=aSVNAWCEj348zDr2wQ4oMqpVEwGB12arMRNLONVeLUBM+CKZzb28KDj8bvIyF0H52y
+         hnJ3VjNgbf0stPT1AjtCWxDNO4r7okgDIkK9TDaH4+ZOFzMDZ/4vPgH+8ztVA3KZ5qXK
+         xNQXyRE4xQz9lZjWSexvdUaT6eTFzUatYpNywXRLgw/AOY/A+WGAlyWKImoweaO8VARb
+         aOrq+Y2VyJr75e7uXUVAi/bV/AkGJeTnwd1GlG7QmVXHtQTHD/u0UQ75ySyHO2y0EE04
+         A7c0vIJF67PVd3wDhI8td1xzXqDiQJ8UD3jCgDfO1Di7VANR1vYtaiPrCsasYwKzv376
+         jjzw==
+X-Gm-Message-State: AOAM532L1075PIPURH9TrhoqHuAKNFrPS0AjMoanvwNBNkZ7J9bnJKe8
+        Kc41/+d0C/qfcIYe58HN7G4/viu3eWjCYVmMWlF4mA==
+X-Google-Smtp-Source: ABdhPJxuM0JbleJ7I2fLfYg5p+bT/r6vgA7Gd3CFnq+uGIUxv5tWvw3VJ52PgtnsBx/zvJdTZtCOVrdTZ0ZsD3tuGVs=
+X-Received: by 2002:a67:f24e:: with SMTP id y14mr1940388vsm.55.1602757925004;
+ Thu, 15 Oct 2020 03:32:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014191211.27029-8-nsaenzjulienne@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201015174115.4cf2c19a@xhacker.debian>
+In-Reply-To: <20201015174115.4cf2c19a@xhacker.debian>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 15 Oct 2020 12:31:29 +0200
+Message-ID: <CAPDyKFrmYO-Y8kxdzz=XLDJPWCv0mwUL374N=RDGvFS-uPTaLA@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci: Use Auto CMD Auto Select only when v4_mode
+ is true
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 09:12:09PM +0200, Nicolas Saenz Julienne wrote:
+On Thu, 15 Oct 2020 at 11:41, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
+>
+> sdhci-of-dwcmshc meets an eMMC read performance regression with below
+> command after commit 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto
+> Select support"):
+>
+> dd if=/dev/mmcblk0 of=/dev/null bs=8192 count=100000
+>
+> Before the commit, the above command gives 120MB/s
+> After the commit, the above command gives 51.3 MB/s
+>
+> So it looks like sdhci-of-dwcmshc expects Version 4 Mode for Auto
+> CMD Auto Select. Fix the performance degradation by ensuring v4_mode
+> is true to use Auto CMD Auto Select.
+>
+> Fixes: 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto Select support")
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-[...]
+Applied for fixes and by adding a stable tag, thanks!
 
-> +unsigned int __init acpi_iort_get_zone_dma_size(void)
-> +{
-> +	struct acpi_table_iort *iort;
-> +	struct acpi_iort_node *node, *end;
-> +	acpi_status status;
-> +	u8 limit = 32;
-> +	int i;
-> +
-> +	if (acpi_disabled)
-> +		return limit;
-> +
-> +	status = acpi_get_table(ACPI_SIG_IORT, 0,
-> +				(struct acpi_table_header **)&iort);
-> +	if (ACPI_FAILURE(status))
-> +		return limit;
-> +
-> +	node = ACPI_ADD_PTR(struct acpi_iort_node, iort, iort->node_offset);
-> +	end = ACPI_ADD_PTR(struct acpi_iort_node, iort, iort->header.length);
-> +
-> +	for (i = 0; i < iort->node_count; i++) {
-> +		if (node >= end)
-> +			break;
-> +
-> +		switch (node->type) {
-> +			struct acpi_iort_named_component *ncomp;
-> +			struct acpi_iort_root_complex *rc;
-> +
-> +		case ACPI_IORT_NODE_NAMED_COMPONENT:
-> +			ncomp = (struct acpi_iort_named_component *)node->node_data;
-> +			if (ncomp->memory_address_limit)
-> +				limit = min(limit, ncomp->memory_address_limit);
-> +			break;
-> +
-> +		case ACPI_IORT_NODE_PCI_ROOT_COMPLEX:
-> +			rc = (struct acpi_iort_root_complex *)node->node_data;
-> +			if (rc->memory_address_limit)
+Kind regards
+Uffe
 
-You need to add a node revision check here, see rc_dma_get_range() in
-drivers/acpi/arm64/iort.c, otherwise we may be reading junk data
-in older IORT tables - acpica structures are always referring to the
-latest specs.
-
-Thanks,
-Lorenzo
-
-> +				limit = min(limit, rc->memory_address_limit);
-> +			break;
-> +		}
-> +		node = ACPI_ADD_PTR(struct acpi_iort_node, node, node->length);
-> +	}
-> +	acpi_put_table(&iort->header);
-> +	return limit;
-> +}
-> +#endif
-> diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
-> index 20a32120bb88..7d2e184f0d4d 100644
-> --- a/include/linux/acpi_iort.h
-> +++ b/include/linux/acpi_iort.h
-> @@ -38,6 +38,7 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *size);
->  const struct iommu_ops *iort_iommu_configure_id(struct device *dev,
->  						const u32 *id_in);
->  int iort_iommu_msi_get_resv_regions(struct device *dev, struct list_head *head);
-> +unsigned int acpi_iort_get_zone_dma_size(void);
->  #else
->  static inline void acpi_iort_init(void) { }
->  static inline u32 iort_msi_map_id(struct device *dev, u32 id)
-> @@ -55,6 +56,9 @@ static inline const struct iommu_ops *iort_iommu_configure_id(
->  static inline
->  int iort_iommu_msi_get_resv_regions(struct device *dev, struct list_head *head)
->  { return 0; }
-> +
-> +static inline unsigned int acpi_iort_get_zone_dma_size(void)
-> +{ return 32; }
->  #endif
->  
->  #endif /* __ACPI_IORT_H__ */
-> -- 
+> ---
+> Since v1:
+>   - add the performance degradation on sdhci-of-dwcmshc explanation in
+>     commit msg
+>   - add a comment in the code explaining we require Version 4 Mode because some
+>     controllers(e.g sdhci-of-dwcmshc) expect it that way.
+>
+>  drivers/mmc/host/sdhci.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 592a55a34b58..3561ae8a481a 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -1384,9 +1384,11 @@ static inline void sdhci_auto_cmd_select(struct sdhci_host *host,
+>         /*
+>          * In case of Version 4.10 or later, use of 'Auto CMD Auto
+>          * Select' is recommended rather than use of 'Auto CMD12
+> -        * Enable' or 'Auto CMD23 Enable'.
+> +        * Enable' or 'Auto CMD23 Enable'. We require Version 4 Mode
+> +        * here because some controllers (e.g sdhci-of-dwmshc) expect it.
+>          */
+> -       if (host->version >= SDHCI_SPEC_410 && (use_cmd12 || use_cmd23)) {
+> +       if (host->version >= SDHCI_SPEC_410 && host->v4_mode &&
+> +           (use_cmd12 || use_cmd23)) {
+>                 *mode |= SDHCI_TRNS_AUTO_SEL;
+>
+>                 ctrl2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> --
 > 2.28.0
-> 
+>
