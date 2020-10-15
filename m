@@ -2,140 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E1D28F486
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E488F28F48A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgJOOPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgJOOPP (ORCPT
+        id S2387589AbgJOOPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:15:40 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:55838 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730737AbgJOOPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:15:15 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEEBC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:15:15 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id q136so3250446oic.8
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=myXCOQxC7yXdiZx9nG9HTWtecWE6QzVgfe61cEeMHyM=;
-        b=ENts0Dm6VGl7JCrVX9DHKihoOjKWkL7zveAIJ88O1VvyEPa+oWNJrNnTUWLffpC6YL
-         TKZfpXNJbyP7fOMAXYpJ0KmJMck477GzDbGvCHaRGkgeHkHFOsBsY/s6bxT9DLFL20Wg
-         Lp9tAvWitbNSqAceLGVBs2lBdVwx4XkdZ63C6gQF6eEnSWbzQiJmzL8b0lQnxlxxHsjn
-         2SbT8k3vEXKhH9Fcm8pjPRq8G6g4Y8Ss/j2S4HlSy1iO2NEchpEGTtl13KO8zAtQPtjj
-         oL0+DzHoIHfHbQeV7XLjRxB12RnVxxOZsxBn8uVVr9NnNtMqM/Aih4wmRUg22V6JXiEA
-         aL/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=myXCOQxC7yXdiZx9nG9HTWtecWE6QzVgfe61cEeMHyM=;
-        b=D4w0qy1Zr1RL7wFgCTwBid95TVMcHf1IcZxtOmrsWrfTky4hPj8jpl8fT8yhq2MfvF
-         W5GcyNNXSINT3z+WN03bzmbg72sz0bcjbMzz43PuRz9YjyPMhd4r+Fnk0+Mp1rwIb04Z
-         yK8tgVV6cmY/6jSmX1mOtnFss6Wq7IbIgRIe9Y1lNalAG8+kZtX7LhDKYZC9lkZDYHOx
-         VOGwF56k6VIBogz6BO8ugrwROO/qGIf8Cq1Ikmv6uy+UVDpt9Ccr77Zja2r1DzAyEEQ/
-         HBHJQy0za6qxm7NEfZ2dVnvmS7vR0mnKmu/sjCqqZtI5MdDGGLNTlVNzYfYS38Zx5gqH
-         TJnw==
-X-Gm-Message-State: AOAM5302mbwTH/ut3LNtOUFBKXD8pmKBFYTABujPCmJ+z6lFad+KpuhT
-        vtZqAHI+HWzuETvnaDlzo/8DkvHAvC62jf7OVCh0jA==
-X-Google-Smtp-Source: ABdhPJyiZVTec8MGhfwjgMdcqomFj34Th7O68O0hMU5cub02dKvyPgALRpq80Lcmzr7NhCURFgEzH/D3O13q6ca6pFI=
-X-Received: by 2002:aca:6206:: with SMTP id w6mr1155830oib.121.1602771314808;
- Thu, 15 Oct 2020 07:15:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
- <20200921143059.GO2139@willie-the-truck> <CAG_fn=WXknUnNmyniy_UE7daivSNmy0Da2KzNmX4wcmXC2Z_Mg@mail.gmail.com>
- <20200929140226.GB53442@C02TD0UTHF1T.local> <CAG_fn=VOR-3LgmLY-T2Fy6K_VYFgCHK0Hv+Y-atrvrVZ4mQE=Q@mail.gmail.com>
- <20201001175716.GA89689@C02TD0UTHF1T.local> <CANpmjNMFrMZybOebFwJ1GRXpt8v39AN016UDgPZzE8J3zKh9RA@mail.gmail.com>
- <20201008104501.GB72325@C02TD0UTHF1T.local> <CANpmjNOg2OeWpXn57_ikqv4KR0xVEooCDECUyRijgr0tt4+Ncw@mail.gmail.com>
- <20201015133948.GB50416@C02TD0UTHF1T.local>
-In-Reply-To: <20201015133948.GB50416@C02TD0UTHF1T.local>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 15 Oct 2020 16:15:03 +0200
-Message-ID: <CANpmjNO9Gw0-U+QynFWPPZYEVgnZA84VHi_XrXfa5aiAq3kPuQ@mail.gmail.com>
-Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
+        Thu, 15 Oct 2020 10:15:40 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 205078030719;
+        Thu, 15 Oct 2020 14:15:35 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HCX0OAgYPjwG; Thu, 15 Oct 2020 17:15:34 +0300 (MSK)
+Date:   Thu, 15 Oct 2020 17:15:31 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        SeongJae Park <sjpark@amazon.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Rob Herring <robh+dt@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+Message-ID: <20201015141531.zxmcgq6k4akm3lmo@mobilestation>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
+ <CAJKOXPeErocR5-3xCDqBR3-k3w_2EQ_768d71n229cbzeo4TtQ@mail.gmail.com>
+ <20201014171640.bup52mgaz4jvhtsy@mobilestation>
+ <CAJKOXPcHi_=jea=0YrPNo4dh6k03+63Tc2Uo+sd0u8+XPdQjOw@mail.gmail.com>
+ <20201014235105.kj4rtwiidph7gyen@mobilestation>
+ <20201015061439.GA2926@kozik-lap>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201015061439.GA2926@kozik-lap>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 at 15:39, Mark Rutland <mark.rutland@arm.com> wrote:
-> On Wed, Oct 14, 2020 at 09:12:37PM +0200, Marco Elver wrote:
-> > On Thu, 8 Oct 2020 at 12:45, Mark Rutland <mark.rutland@arm.com> wrote:
-> > > On Thu, Oct 08, 2020 at 11:40:52AM +0200, Marco Elver wrote:
-> > > > On Thu, 1 Oct 2020 at 19:58, Mark Rutland <mark.rutland@arm.com> wrote:
->
-> > > > > > > If you need virt_to_page() to work, the address has to be part of the
-> > > > > > > linear/direct map.
->
-> > > > We're going with dynamically allocating the pool (for both x86 and
-> > > > arm64),
->
-> [...]
->
-> > We've got most of this sorted now for v5 -- thank you!
-> >
-> > The only thing we're wondering now, is if there are any corner cases
-> > with using memblock_alloc'd memory for the KFENCE pool? (We'd like to
-> > avoid page alloc's MAX_ORDER limit.) We have a version that passes
-> > tests on x86 and arm64, but checking just in case. :-)
->
-> AFAICT otherwise the only noticeable difference might be PageSlab(), if
-> that's clear for KFENCE allocated pages? A few helpers appear to check
-> that to determine how something was allocated (e.g. in the scatterlist
-> and hwpoison code), and I suspect that needs to behave the same.
+On Thu, Oct 15, 2020 at 08:14:39AM +0200, Krzysztof Kozlowski wrote:
+> On Thu, Oct 15, 2020 at 02:51:05AM +0300, Serge Semin wrote:
+>  > >
+> > > > So to speak thanks for suggesting it. I'll try it to validate the proposed
+> > > > changes.
+> > > >
+> > > > Two questions:
+> > > > 1) Any advise of a good inliner/command to compile all dtbs at once? Of course I
+> > > > can get all the updated dtsi'es, then find out all the dts'es which include
+> > > > them, then directly use dtc to compile the found dts'es... On the other hand I
+> > > > can just compile all dts'es, then compare old and new ones. The diff of the
+> > > > non-modified dtb'es will be just empty...
+> > > 
+> > 
+> > > make dtbs
+> > 
+> > It's not that easy.) "make dtbs" will build dtbs only for enabled boards, which
+> > first need to be enabled in the kernel config. So I'll need to have a config
+> > with all the affected dts. The later is the same as if I just found all the
+> > affected dts and built them one-by-one by directly calling dtc.
+> 
+> True. Sometimes allyesconfig for given arch might be helpful but not
+> always (e.g. for ARM it does not select all of ARMv4 and ARMv5 boards).
+> Most likely your approach is actually faster/more reliable.
+> 
+> > 
+> > > touch your dts or git stash pop
+> > > make dtbs
+> > > compare
+> > > diff for all unchanged will be simply empty, so easy to spot
+> > > 
+> > > > 2) What crosc64 is?
+> > > 
+> > > Ah, just an alias for cross compiling + ccache + kbuild out. I just
+> > > copied you my helpers, so you need to tweak them.
+> > > 
+> > > >
+> > > > >
+> > > > > 2. Split it per arm architectures (and proper subject prefix - not
+> > > > > "arch") and subarchitectures so maintainers can pick it up.
+> > > >
+> > > > Why? The changes are simple and can be formatted as a single patch. I've seen
+> > > > tons of patches submitted like that, accepted and then merged. What you suggest
+> > > > is just much more work, which I don't see quite required.
+> > > 
+> > 
+> > > DTS changes go separate between arm64 and arm. There is nothing
+> > > unusual here - all changes are submitted like this.
+> > > Second topic is to split by subarchitectures which is necessary if you
+> > > want it to be picked up by maintainers. It also makes it easier to
+> > > review.
+> > 
+> > The current patches are easy enough for review. The last three patches of the
+> > series is a collection of the one-type changes concerning the same type of
+> > nodes. So reviewing them won't cause any difficulty. But I assume that's not
+> > the main point in this discussion.
+> > 
+> > > Sure, without split ber subarchitectures this could be picked
+> > > up by SoC folks but you did not even CC them. So if you do not want to
+> > > split it per subarchitectures for maintainers and you do not CC SoC,
+> > > then how do you believe this should be picked up? Out of the regular
+> > > patch submission way? That's not how the changes are handled.
+> > 
+> > AFAIU there are another ways of merging comprehensive patches. If they get to collect
+> > all the Acked-by tags, they could be merged in, for instance, through Greg' or Rob'
+> > (for dts) repos, if of course they get to agree with doing that. Am I wrong?
+> > 
+> > My hope was to ask Rob or Greg to get the patches merged in when they get
+> > to collect all the ackes, since I thought it was an option in such cases. So if
+> > they refuse to do so I'll have no choice but to split the series up into a
+> > smaller patches as you say.
+> 
 
-We had to take care of setting PageSlab before, too. We do this during
-kfence_init().
+> This is neither Rob's nor Greg's patch to pick up, but ARM SoC (which was
+> not CCed here). And most likely they won't pick it up because judging by
+> contents it is obvious it should go via ARM SoC.
+> 
+> Sure, if there are dependencies between some patches they can go with
+> acks through unrelated trees, but this not the usual way. This is an
+> exception in the process to solve particular dependency problem.  It has
+> drawbacks - increases the chances of annoying conflicts.
+> 
+> The case here does not fall into this criteria - there is no dependency
+> of this patch on the others  Therefore there is no reason to use the
+> unusual/exceptional way of handling patches.  There is no reason why
+> this shouldn't go via either specific ARM subarchitecture maintainers or
+> via ARM SoC.
 
-> Otherwise, I *think* using memblock_alloc should be fine on arm64; I'm
-> not entirely sure for x86 (but suspect it's similar). On arm64:
->
-> * All memory is given a struct page via memblocks_present() adding all
->   memory memblocks. This includes memory allocated by memblock_alloc().
->
-> * All memory is mapped into the linear map via arm64's map_mem() adding
->   all (non-nomap) memory memblocks. This includes memory allocated by
->   memblock_alloc().
+Ok. I see your point. To sum it up I've studied the git log arch/ commit
+messages and it turns out even Rob has to split the cleanup changes like this
+ones. So thanks for your patience with stating your point. I'll split the last
+three patches up to be merged in via the corresponding archs/subarch'es repos.
 
-Very good, thank you. We'll send v5 with these changes rebased on
-5.10-rc1 (in ~2 weeks).
+-Sergey
 
-Thanks,
--- Marco
+> 
+> > > > > 3. The subject title could be more accurate - there is no fix here
+> > > > > because there was no errors in the first place. Requirement of DWC
+> > > > > node names comes recently, so it is more alignment with dtschema.
+> > > > > Otherwise automatic-pickup-stable-bot might want to pick up... and it
+> > > > > should not go to stable.
+> > > >
+> > > > Actually it is a fix, because the USB DT nodes should have been named with "usb"
+> > > > prefix in the first place. Legacy DWC USB3 bindings didn't define the nodes
+> > > > naming, but implied to be "usb"-prefixed by the USB HCD schema. The Qualcomm
+> > > > DWC3 schema should have defined the sub-nodes as "dwc3@"-prefixed, which was
+> > > > wrong in the first place.
+> > > 
+> > 
+> > > Not following the naming convention of DT spec which was loosely
+> > > enforced is not an error which should be "fixed". Simply wrong title.
+> > > This is an alignment with dtschema or correcting naming convention.
+> > > Not fixing errors.
+> > 
+> > From your perspective it wasn't an error, from mine and most likely Rob' it
+> > was.) Anyway as I said I don't care that much about preserving the subject
+> > wording, so what about the next one:
+> > <arch>: <subarch>: Harmonize DWC USB3 nodes name with DT schema
+> > ?
+> 
+> Looks good.
+> 
+> Best regards,
+> Krzysztof
+> 
