@@ -2,144 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1682128EE14
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E15B28EE15
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730110AbgJOIAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730017AbgJOIAS (ORCPT
+        id S1730142AbgJOIAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:00:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42206 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730119AbgJOIAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:00:18 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616B8C061755;
-        Thu, 15 Oct 2020 01:00:18 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y16so2204709ljk.1;
-        Thu, 15 Oct 2020 01:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GUVIS48kKC77t6jdyKn+dopbQ3M+OKPCuFIPcBhR+JQ=;
-        b=hVkVVKlLJkN++hWJjnX0kB1YjbwdlZ0wrANRJYtos+YK+WY/SjuSXp16Yc9lZXxJGg
-         sCxk2hqv3CKRHdwdhWKR8EuRskRkTZLvpd4HDOPpX3QhGoii4qLQd/urXY8SKbeNE3c+
-         gNlxxtCVz/LI8HfLzF5000foCgYUzXg7V3MZKgXjGoterj/7CC6Fmx/8ZYJEBVVDL5eu
-         0zzNl37ReibfFfKtsWxdhfyDwhjhHMU6QJNkFUYX2RU+5Khbb5TFoKWSYcsb7c8XV6kI
-         0axxs7Vr0Y2rygjGx4GWa5dMMmT/XgRPOZjFaCfB7wn2zTjL33mPUIeoXR8ekyFOS9Pb
-         UdEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GUVIS48kKC77t6jdyKn+dopbQ3M+OKPCuFIPcBhR+JQ=;
-        b=khrq6ufMmzXO6A0bcS/I0Bm2zDkjuGDVLWPhqcmaeRMgntpMIcTmc6q9rC0oI23PKo
-         lbtyzbuzUYPRN+nmHp5slFHDzm0Rx8A6UgpS72xCU2SHiucepKHuV0LL6xao0EqRXZlh
-         k/BaW07YVN0v4PSnZ39qtHfWue4E3x4r3zoq87RI4LBsogAQp5EeUXmbLhW/QxhdkiXO
-         uTPnKv7xHvVfpqW6DsdW7y1EHWUsHHZ4VxR6mdIAVbx8rlAVExRqisYxsnnCQTfKTwcP
-         pMAyChqIRqbfYUyOTdRwcMLP3Jka9oQsQ56noNod5JLQpa4d3k7ORMJxeowuVPdfrSt6
-         aKrw==
-X-Gm-Message-State: AOAM5305E82aeA4hKOlYORdzcPMyQF+DlSOni2/5RhktVnzHUzuJyhhQ
-        oh6Xh7R+T5Wbi4448eCptHUsUt3YQXA=
-X-Google-Smtp-Source: ABdhPJyIzjfsdNejKPFGyjiqpOzC39VHDLtOeAqzzwQA5isFxKvYAwVyNkj4gVtUcc8BN8cMCN06OQ==
-X-Received: by 2002:a05:651c:96:: with SMTP id 22mr818458ljq.76.1602748816698;
-        Thu, 15 Oct 2020 01:00:16 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:46ee:db0d:fce7:c400:51d0:be7a? ([2a00:1fa0:46ee:db0d:fce7:c400:51d0:be7a])
-        by smtp.gmail.com with ESMTPSA id u14sm741288lfr.119.2020.10.15.01.00.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 01:00:16 -0700 (PDT)
-Subject: Re: [PATCH 4/6] clk: renesas: r8a779a0: Add VIN[00-31] clocks
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        linux-renesas-soc@vger.kernel.org, geert+renesas@glider.be,
-        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org
-References: <20201014094443.11070-1-jacopo+renesas@jmondi.org>
- <20201014094443.11070-5-jacopo+renesas@jmondi.org>
- <0de062e4-0385-444b-1abc-881c313a6479@gmail.com>
- <20201015093227.y3n5ohzuydg2fe3t@uno.localdomain>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <f75c5be2-ef40-bd08-dc0b-b025045b15d4@gmail.com>
-Date:   Thu, 15 Oct 2020 11:00:04 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Thu, 15 Oct 2020 04:00:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602748828;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=wM5+EvJasZIkMn4Jgdk0iTuEAojX0HmssSaoWvJAS7c=;
+        b=Z5kXaO0OhQLPKAlaKstCINVK2o6dX+yKeHHDRqURaL/Scb5Sc1AiekhdfsuNUVg5N6nmB2
+        qhOBHdh2LDmxVmVYzhR8JSjfASazv4SLkt/P/DQFzuj7C0FX6QWBfe1P4eQ/tcOxyaE1fw
+        L4Cye1agMggUeFo7pbj2EW6v04lgq6I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-KKGT32_zMRe47tOedwCEpA-1; Thu, 15 Oct 2020 04:00:24 -0400
+X-MC-Unique: KKGT32_zMRe47tOedwCEpA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF73D8030D7;
+        Thu, 15 Oct 2020 08:00:22 +0000 (UTC)
+Received: from [10.36.114.207] (ovpn-114-207.ams2.redhat.com [10.36.114.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C47519C4F;
+        Thu, 15 Oct 2020 08:00:17 +0000 (UTC)
+Subject: Re: [PATCH v1 02/29] virtio-mem: simplify calculation in
+ virtio_mem_mb_state_prepare_next_mb()
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-3-david@redhat.com>
+ <20201015040204.GB86495@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <730d6536-f6a6-72e5-327f-00ce1224b730@redhat.com>
+Date:   Thu, 15 Oct 2020 10:00:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20201015093227.y3n5ohzuydg2fe3t@uno.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201015040204.GB86495@L-31X9LVDL-1304.local>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 15.10.2020 12:32, Jacopo Mondi wrote:
-
-[...]
->>> Add clock definitions of the VIN instances for R-Car V3U.
->>>
->>> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
->>>
->>> ---
->>> Clocks at indexes 730 and 731 are named 'vin0' and 'vin1'.
->>> I assumed it's a typographic error and renamed them 'vin00' and 'vin01'
->>> ---
->>>   drivers/clk/renesas/r8a779a0-cpg-mssr.c | 32 +++++++++++++++++++++++++
->>>   1 file changed, 32 insertions(+)
->>>
->>> diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
->>> index bd54a28c50ee..2a00eb82013f 100644
->>> --- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
->>> +++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
->>> @@ -149,6 +149,38 @@ static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
->>>   	DEF_MOD("scif1",	703,	R8A779A0_CLK_S1D8),
->>>   	DEF_MOD("scif3",	704,	R8A779A0_CLK_S1D8),
->>>   	DEF_MOD("scif4",	705,	R8A779A0_CLK_S1D8),
->>> +	DEF_MOD("vin00",	730,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin01",	731,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin02",	800,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin03",	801,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin04",	802,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin05",	803,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin06",	804,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin07",	805,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin10",	806,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin11",	807,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin12",	808,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin13",	809,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin14",	810,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin15",	811,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin16",	812,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin17",	813,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin20",	814,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin21",	815,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin22",	816,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin23",	817,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin24",	818,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin25",	819,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin26",	820,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin27",	821,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin30",	822,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin31",	823,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin32",	824,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin33",	825,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin34",	826,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin35",	827,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin36",	828,	R8A779A0_CLK_S1D1),
->>> +	DEF_MOD("vin37",	829,	R8A779A0_CLK_S1D1),
-> 
-> There are 32 VIN instances (hence the [0-31] in the subject), grouped
-> in 4 units of 8 channels each.
-> 
-> I can drop the [0-31] in the subject if it's confusing.
-
-    Please do. :-)
-
->>     The subject says VIN[0-31]?
+On 15.10.20 06:02, Wei Yang wrote:
+> On Mon, Oct 12, 2020 at 02:52:56PM +0200, David Hildenbrand wrote:
+>> We actually need one byte less (next_mb_id is exclusive, first_mb_id is
+>> inclusive). Simplify.
 >>
->> [...]
+>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>> drivers/virtio/virtio_mem.c | 4 ++--
+>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>> index a1f5bf7a571a..670b3faf412d 100644
+>> --- a/drivers/virtio/virtio_mem.c
+>> +++ b/drivers/virtio/virtio_mem.c
+>> @@ -257,8 +257,8 @@ static enum virtio_mem_mb_state virtio_mem_mb_get_state(struct virtio_mem *vm,
+>>  */
+>> static int virtio_mem_mb_state_prepare_next_mb(struct virtio_mem *vm)
+>> {
+>> -	unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id + 1;
+>> -	unsigned long new_bytes = vm->next_mb_id - vm->first_mb_id + 2;
+>> +	unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id;
+>> +	unsigned long new_bytes = old_bytes + 1;
+> 
+> This is correct.
+> 
+> So this looks more like a fix?
 
-MBR, Sergei
+We allocate an additional new page "one memory block too early".
+
+So we would allocate the first page for blocks 0..510, and already
+allocate the second page with block 511, although we could have fit it
+into the first page. Block 512 will then find that the second page is
+already there and simply use the second page.
+
+So as we do it consistently, nothing will go wrong - that's why I
+avoided using the "fix" terminology.
+
+Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
