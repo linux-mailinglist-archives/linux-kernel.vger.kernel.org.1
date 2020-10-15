@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D406228F54B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8C828F54D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389194AbgJOOxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388348AbgJOOxl (ORCPT
+        id S2389334AbgJOOyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:54:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53778 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388348AbgJOOyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:53:41 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99BEC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:53:41 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id b127so4018288wmb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M+E7HunszzPZSotVNRgNcC7Nfy+vpMwTQ74FpdWH9JM=;
-        b=sLA+aCJEXSwtHlBJJzmLua1KG22wStLlb7ofOKhxgeNdjBAzu596rx2IbIMwrnB3ps
-         5bGPxHqmQZWqVkdslLY7Cam7xHB/fmD0W6JSSrbBTNpEPYHZfsGW/X9M1+dcxYX9w4au
-         dfGvCiNpJ/DSZMDkeyANmvgoMk4tua9uZw6A5zCOsxzzvxJpXN+EI2DbfQIvgYW83yjZ
-         om2L/YC8lsOWyvRJVJnmAG7EJKdTEJ92WfNEKuo0Ti0rfr+yeelhiKmQ8ZZ3q6Y8EXgs
-         9EU4KjGn/ww708Jz8tBSf9dViHOQtgxS8ieiiuLnU2yqmXKwBwHAxhWxaHWyalymzah+
-         gEtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M+E7HunszzPZSotVNRgNcC7Nfy+vpMwTQ74FpdWH9JM=;
-        b=VFwKSuvlH28KS/d09LM/mpHnEFLVz6GArcwy3IOjpTOF5zWII68JmQLAqcEO9FsVS6
-         eDmISVtKUWk6NFtAuR38UTgFs7RGFwkU6P3k8/eqdQCyXVQeTJ8M1umAGiB6zegk0FPu
-         oHPE+D68bYjytabdphLiPgicZvkHwtnfXXv6CLJOBIghK0/Gr9oClfzN7DIBI/Ah8sFI
-         juCihWWELXCQlEyk6YcLgnPOafCQsTS1Zp62B9R6nHUNCdJQJjuJkZtQnKbpWFI9zIZt
-         pg8qQKahok/Ao/c3eu2Y2NBpYFJX0MMMDmhjz07sYvIftxvjUg8lkNFTyxn/KJxRVn10
-         PONA==
-X-Gm-Message-State: AOAM530aNMxoYwhbUyWMy9/Vgc6RFFMbFnpgi3d9xJtd1VFs9pih78fW
-        P+w7msRY4msD7RAfvyj+L9B0xjAqCe2LvzPWjQ0=
-X-Google-Smtp-Source: ABdhPJxSVlYADlSa2G7Ly6zx6sWDW2MUAiGZDD0DOatN/musxqLz9Ij2aDC59rAdSqszHKz9juBSxDcxeCvNNcJTVcE=
-X-Received: by 2002:a1c:1d15:: with SMTP id d21mr4537548wmd.79.1602773620456;
- Thu, 15 Oct 2020 07:53:40 -0700 (PDT)
+        Thu, 15 Oct 2020 10:54:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602773645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z4+pIlbp7Cy6qMJUZsGdnt36WSG6eee++gYbihv/3Cg=;
+        b=K96VHEcbqkSVkjMeX6SzZr4JBKAC6MDslKaLduSN9dBNaaJiYusDSxCEtd6ldh+27M/C5V
+        9YdeeLaq87wwwgPHwitz/64w25EsKCQx0gvRUFQVV+vKx+KCCqw2bg179HOzcU2mHXT4wJ
+        oJKkA/Dyhg4Xls/qUWCDBLUa3KNc3pU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-RzgRUKdEPCyLDDr0nlz12A-1; Thu, 15 Oct 2020 10:54:03 -0400
+X-MC-Unique: RzgRUKdEPCyLDDr0nlz12A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55FAA18A822A;
+        Thu, 15 Oct 2020 14:54:02 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DAC535C1BD;
+        Thu, 15 Oct 2020 14:54:00 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 15 Oct 2020 16:54:02 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 16:53:59 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+Subject: Re: [PATCH 3/5] kernel: add support for TIF_NOTIFY_SIGNAL
+Message-ID: <20201015145359.GA14671@redhat.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-4-axboe@kernel.dk>
+ <20201015143151.GB24156@redhat.com>
+ <5d231aa1-b8c7-ae4e-90bb-211f82b57547@kernel.dk>
+ <20201015143728.GE24156@redhat.com>
+ <788b31b7-6acc-cc85-5e91-d0c2538341b7@kernel.dk>
+ <20201015144713.GJ24156@redhat.com>
 MIME-Version: 1.0
-References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
- <20201015135932.GA277152@PWN>
-In-Reply-To: <20201015135932.GA277152@PWN>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 15 Oct 2020 10:53:28 -0400
-Message-ID: <CADnq5_PqhJFRDofb0pNsgrp7O8M_D9o3gz5_Nt8KL=0cgMWoKA@mail.gmail.com>
-Subject: Re: [git pull] drm next pull for 5.10-rc1
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015144713.GJ24156@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 9:59 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+On 10/15, Oleg Nesterov wrote:
 >
-> Hi all,
+> On 10/15, Jens Axboe wrote:
+> >
+> > That is indeed a worry. From a functionality point of view, with the
+> > major archs supporting it, I'm not too worried about that side. But it
+> > does mean that we'll be stuck with the ifdeffery forever, which isn't
+> > great.
 >
-> On Thu, Oct 15, 2020 at 11:33:08AM +1000, Dave Airlie wrote:
-> > Peilin Ye (1):
-> >       drm/amdgpu: Prevent kernel-infoleak in amdgpu_info_ioctl()
->
-> This patch is already in mainline:
->
-> commit 543e8669ed9bfb30545fd52bc0e047ca4df7fb31
-> Author: Peilin Ye <yepeilin.cs@gmail.com>
-> Date:   Tue Jul 28 15:29:24 2020 -0400
->
->     drm/amdgpu: Prevent kernel-infoleak in amdgpu_info_ioctl()
->
-> It has been applied to linux-next twice, for unknown reasons. Thank you!
+> plus we can't kill the ugly JOBCTL_TASK_WORK.
 
-The patch was already in drm-next, but since it was a bug fix it was
-applied it to 5.9 as well.
+not to mention we can not change freezer/livepatch to use NOTIFY_SIGNAL,
+or add new users of set_notify_signal().
 
-Alex
+Oleg.
+
