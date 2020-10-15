@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7145A28F2AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B458F28F2B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgJOMth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:49:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55164 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726019AbgJOMth (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:49:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602766176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rCIQX4TO8AhD+oV+mB3K9at6ZGKnl/odKYoHfmps0Cw=;
-        b=IlYs7FRmI2N0H1pUtatM1vly/05EFY375g9bxTkxpX2Fcqm8G3W2RtgUbcI7luUfCRu08T
-        qKRDH/jWoxMXYsO9kdOhWT6Lpt31BTyaBUwuTjoXB5daKlsoS95WuHAnVdFQU9+rKOXhCY
-        LXJgmyAzcMFvyW0GEZaLVLlTuZuJ5zo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-JX-BSF-cNqmw5C493U-tYg-1; Thu, 15 Oct 2020 08:49:32 -0400
-X-MC-Unique: JX-BSF-cNqmw5C493U-tYg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726959AbgJOMxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:53:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726121AbgJOMxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:53:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 487C188EF23;
-        Thu, 15 Oct 2020 12:49:30 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E7E535DA85;
-        Thu, 15 Oct 2020 12:49:27 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 15 Oct 2020 14:49:29 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 14:49:26 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     syzbot <syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, christian@brauner.io,
-        linux-kernel@vger.kernel.org, liuzhiqiang26@huawei.com,
-        syzkaller-bugs@googlegroups.com, Tejun Heo <tj@kernel.org>
-Subject: Re: WARNING in get_signal
-Message-ID: <20201015124926.GA24156@redhat.com>
-References: <000000000000da06e405b0b20f1e@google.com>
- <87zh54bp0n.fsf@x220.int.ebiederm.org>
- <20201005134923.GA9995@redhat.com>
- <20201005163016.GB9995@redhat.com>
- <20201006170523.GC9995@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 13AC322251;
+        Thu, 15 Oct 2020 12:53:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602766422;
+        bh=GDVHgmMpfMPcT+9pmRkS7VbHuJ1m07eLYVcPINmJ95w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mmrSKLUjuN4RzHQGmhLeJ+1Ky6GCFw2PwXv9CNB87qCVqVN8B3nKB/4VHgepINurT
+         DuW7Xa/rHKGC2YPwetSLrrDlhDt+RRk0GMxNYZ7d6ATGkdNfmAUEalm3QWNS50XQOK
+         tqwH05KCnXGgR8VoY0pODWTFIUmjK7YE5BZNrr/g=
+Date:   Thu, 15 Oct 2020 13:53:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: Use after free in bcm2835_spi_remove()
+Message-ID: <20201015125335.GB4390@sirena.org.uk>
+References: <bd6eaa71-46cc-0aca-65ff-ae716864cbe3@gmail.com>
+ <20201014140912.GB24850@wunner.de>
+ <20201014194035.ukduovokggu37uba@skbuf>
+ <20201014202505.GF4580@sirena.org.uk>
+ <20201015053829.GA2461@wunner.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
 Content-Disposition: inline
-In-Reply-To: <20201006170523.GC9995@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20201015053829.GA2461@wunner.de>
+X-Cookie: Neutrinos have bad breadth.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/06, Oleg Nesterov wrote:
->
-> I still do not see a good fix. I am crying ;)
 
-Sorry for delay... Finally I think I have a simple and clean fix.
-We can leave ptrace_init_task() alone and fix task_join_group_stop().
+--Fba/0zbH8Xs+Fj9o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I need to test it a bit and write the changelog, do you see any problem
-in the patch below?
+On Thu, Oct 15, 2020 at 07:38:29AM +0200, Lukas Wunner wrote:
+> On Wed, Oct 14, 2020 at 09:25:05PM +0100, Mark Brown wrote:
 
-(TODO: SIGCONT should clear JOBCTL_STOP_SIGMASK, needs another patch)
+> > Right, the proposed patch is yet another way to fix the issue - it all
+> > comes back to the fact that you shouldn't be using the driver data after
+> > unregistering if it was allocated as part of allocating the controller.
+> > This framework feature is unfortunately quite error prone.
 
-Oleg.
+> How about holding a ref on the controller as long as the SPI driver
+> is bound to the controller's parent device?  See below for a patch,
+> compile-tested only for lack of an SPI-equipped machine.
 
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -391,16 +391,17 @@ static bool task_participate_group_stop(struct task_struct *task)
- 
- void task_join_group_stop(struct task_struct *task)
- {
-+	struct signal_struct *sig = current->signal;
-+	unsigned long mask = current->jobctl & JOBCTL_STOP_SIGMASK;
-+
-+	if (sig->group_stop_count) {
-+		sig->group_stop_count++;
-+		mask |= JOBCTL_STOP_CONSUME;
-+	} else if (!(sig->flags & SIGNAL_STOP_STOPPED))
-+		return;
-+
- 	/* Have the new thread join an on-going signal group stop */
--	unsigned long jobctl = current->jobctl;
--	if (jobctl & JOBCTL_STOP_PENDING) {
--		struct signal_struct *sig = current->signal;
--		unsigned long signr = jobctl & JOBCTL_STOP_SIGMASK;
--		unsigned long gstop = JOBCTL_STOP_PENDING | JOBCTL_STOP_CONSUME;
--		if (task_set_jobctl_pending(task, signr | gstop)) {
--			sig->group_stop_count++;
--		}
--	}
-+	task_set_jobctl_pending(task, mask | JOBCTL_STOP_PENDING);
- }
- 
- /*
+> Makes sense or dumb idea?
 
+> If this approach is deemed to be a case of "midlayer fallacy",
+> we could alternatively do this in a library function which drivers
+> opt-in to.  Or, given that the majority of drivers seems to be affected,
+> make it the default and allow drivers to opt-out.
+
+...
+
+> +	spi_controller_get(ctlr);
+> +	ret = devm_add_action(dev, __spi_controller_put, ctlr);
+> +	if (ret) {
+> +		kfree(ctlr);
+
+This feels a bit icky - we're masking a standard use after free bug that
+affects devm in general, not just this instance, and so while it will
+work it doesn't feel great.  If we did do this it'd need more comments
+and should probably be conditional on using the feature.  TBH I'm just
+thinking it's better to just remove the feature, it's clearly error
+prone and pretty redundant with devm.  I'm not sure any memory savings
+it's delivering are worth the sharp edges.
+
+--Fba/0zbH8Xs+Fj9o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+IRk4ACgkQJNaLcl1U
+h9D8QQf/TpXeQ79oDF5WHvAUgXm2y2SdAHjJgXmtuWpLLFnFmDTpWfOK13TbPVfF
+wGKi0mOMC0TShj9mkt4Aw0HPuBd5x0rWc842Up4Q+lJSZhIvcS5Ocgg+7NhiiwuX
+du/YBUoiVfzN6L3PMRBvREBEtuMgkPHzjOBicBF9KysBHw2UtzMrP7Kq8Gqlqg8R
+TwzAW9KqH9662Cfv5BtXYWfW8drN6VJLBopyxKew7h7JF7AXm/qQI9WsXB+FREnm
+MkKzVskCrclETO6RtBYpBVmttrWEWr8efrKB+JT/TiexGF/yW66zRZAKlFRGCq6p
+BkN5CEc3XmzVnGOOEoasjUeKBP1J+g==
+=vYfE
+-----END PGP SIGNATURE-----
+
+--Fba/0zbH8Xs+Fj9o--
