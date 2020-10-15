@@ -2,100 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E17328EA44
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A4528EA41
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388814AbgJOBiY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 14 Oct 2020 21:38:24 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54434 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388471AbgJOBiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:38:23 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09F1cMPb025126
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:38:23 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3463ask5jc-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:38:23 -0700
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 14 Oct 2020 18:38:01 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 166952EC7F8D; Wed, 14 Oct 2020 18:37:59 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <viro@zeniv.linux.org.uk>, <linux-fsdevel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH] fs: clean up is_mounted() check with extra helper
-Date:   Wed, 14 Oct 2020 18:37:39 -0700
-Message-ID: <20201015013739.1969680-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1732280AbgJOBhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:37:46 -0400
+Received: from mail-vi1eur05on2060.outbound.protection.outlook.com ([40.107.21.60]:18787
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728457AbgJOBhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:37:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aAnPhBQCJ5Ui5T6qgNE9Ag8FjBcoP1yA7O+6XkX0CiMuyT1cPWKCqh9MjJAf2g9a13Gb6QuoFSgguRG1g3FNpN8pEn/zFrzdZrPRQmIJW+u39Q3c9zIdEQB7pN7KF4YassBa6nn0OgSuWgk9V1Uo0FOUCIPh8U+18TAcuWwsQkJTDeQK+aR70UkBruliwiLyCi7ClP5nTbEweWIDCeq2uJ1xHVfZUQe65rkM2Kyhcv2JsBcAv/ICoQyBoc46lmwuMF4rdlfqjVQN6TABK9cljZCGjwFutpobLXNhJXAiDYrz1ulFTb6DdgXGaND/v5nvEiNkvNE42TBGelT3eQviTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kqVTHyc/0H0W//uWbYQ4xZjFXOeOlK8DLJkBfbkxCVk=;
+ b=FEhlhXS21k5WDuTPTX4HM+fj05XQEIr+uTN/k1XPaq0MhDI9UFPIUei1vCasnDrfKweFc5E3z/24EpI5IVufo0gXp7giMadkZ13CpzSbiggN4vpEdkpf6Id8KH7scxlP9aXuI2KNzmHRtlOsy53KIwMp1ot7Ftzj/srGQqxrNVZ5l3iZ/K9/XrT2WcEJTUjHzICGeviN/35y/P7TGEUnmiTV6oX/mtmorxh/t0pDAW9CsLUufUngoFaFHnkErK20/I3RlK5bPV4RNypSt5VTGZiwUu4jdEl/m1qGZie5QSh4mqihQ67hIPTWS+ijmCBF5er0YZLHdxc6CYPKuHFaTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kqVTHyc/0H0W//uWbYQ4xZjFXOeOlK8DLJkBfbkxCVk=;
+ b=pFjrlkTRgXsThReD7ZWtTX2M5GSNuelFSzuYQNpPY6zY3cnNcWJvFDom4mlhkeTRqvLHELnZZq0xiPfxeVu6Vx681o6xswWapIHjzDPzM+Zveb99FZAXW2JLE0JNfMc3wC5g8n8myBq2H5cyckQ0WiBx2x7RtjmDUZyeF9GynU0=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DBBPR04MB7657.eurprd04.prod.outlook.com (2603:10a6:10:1f5::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.28; Thu, 15 Oct
+ 2020 01:37:42 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6%12]) with mapi id 15.20.3455.031; Thu, 15 Oct
+ 2020 01:37:42 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 05/13] remoteproc: Add new detach() remoteproc operation
+Thread-Topic: [PATCH 05/13] remoteproc: Add new detach() remoteproc operation
+Thread-Index: AQHWe8hn9jrIOSftwUG0mjM+wYkdLKmYL06w
+Date:   Thu, 15 Oct 2020 01:37:42 +0000
+Message-ID: <DB6PR0402MB2760E8ECEBDBFF9E02FA74D888020@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20200826164529.224476-1-mathieu.poirier@linaro.org>
+ <20200826164529.224476-6-mathieu.poirier@linaro.org>
+In-Reply-To: <20200826164529.224476-6-mathieu.poirier@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 382b98f6-cc9f-4ad6-7370-08d870aae8ed
+x-ms-traffictypediagnostic: DBBPR04MB7657:
+x-microsoft-antispam-prvs: <DBBPR04MB765736E2696EFC62E8A1465988020@DBBPR04MB7657.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vvV3mq5xh9Y29oce3k70YH+5Tbw8RjuPIucsufMDQ9dS+nUXYLmQlSSZBUPcVXfgI2NFwKl3OSS5zjZYqPRGnF5fE4i8s9/olHRxxF6A8iS7qzZvVAFX9VK7YBrQF62w6V+S4DSHNhdbiS7eN9EkWPL3iDqUlDLQN5jokJFWr37e4bnepbAsCu5rl6fDBQy+9KDcL16TEGNyT7K+/u9OlVXbCA4Cy1vTQg2pn3oI0k1+RMznXUbo1g8+7KbccjY0x7Lo759NYRst3Ier4Dt1U0hPc8rOGjsmt18R1y7QiMaGnjH5P5m5M/BUVdGFuI+ub1yBQzjpyn+jW0oUfao1qw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(136003)(396003)(66446008)(76116006)(44832011)(110136005)(5660300002)(54906003)(9686003)(316002)(71200400001)(2906002)(4326008)(8936002)(66946007)(64756008)(52536014)(6506007)(55016002)(7696005)(33656002)(26005)(66476007)(66556008)(478600001)(8676002)(83380400001)(186003)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: oDJgGJYSxwy31vc1AjK9xLqFtaBmGwS7OKpNx9TB7rPx5nbN1dK14cM/is31m8jHWZSouqPxhOo3ZvkZHSiVH0iaJxk+Y3jcxCbi90Eel9MCvO+wVts5AgHNDHYT/SjeEQQRAybayNXfwvKTSGjSq3fVyHLRnkwu9PbuowbWgy8lYuOc/E99RGpUBkOjfbWJQp1KJJrA12+Oo3eLS2zZYjlPJjy3FgMFB4qxelZceID4EVAoTAtdKZ+58tuhOOtJe9yEL7Zzr8M0pNCiPbr7bv7JmHKGtMjGul9gtaWstxbsuJC/DWsL3jcvg1nRLDHa7Vu1gXGFDLT+/+Pngcn+sac971XbBFoxS6p6XUVYXaUlNfp9ChUfL05X+QPvmjeLLnWpjV/nkPE5v30BkTXpV7PAeCiv3G/1Q4yWTKc2Ac4onKD1L0MkyqpjeS4ek4UUMd7P9IlXSq2IKBJvJhNYFpzsvx3W+ART2J0yYuIgqDy+GKo5yHq1IgXQMcrSl5LcVuTv1KKevVtfOAw5RuGZsAqtnlpQ8uaa+nwDJA+fMbyI9gi7RxFCL4lkqEj8OfkWsZ9Z13kaYMidxrFxJGl7zA+q0R8UDcqv/kk9pqZsUv7HjzyRGJ3FDEj2KxfUTziHUyyxpwHDCcdYDTjItnAujA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_12:2020-10-14,2020-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 spamscore=0 bulkscore=0
- mlxlogscore=708 adultscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- clxscore=1034 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010150009
-X-FB-Internal: deliver
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 382b98f6-cc9f-4ad6-7370-08d870aae8ed
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 01:37:42.6262
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0AcyYF1idX3F67JIOrpx6eOQ6EJPDiaLzzMdNTt32s8+G1Su9zwKAdAbNwapK8ayJn9Rd6OMMvPIfqcpUSg1IA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7657
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add is_real_ns() helper validating that mount namespace is a valid one.
-Use that from is_mounted() and clean up prepare_path() that open-coded similar
-check.
+> Subject: [PATCH 05/13] remoteproc: Add new detach() remoteproc operation
+>=20
+> Add an new detach() operation in order to support scenarios where the
+> remoteproc core is going away but the remote processor is kept operating.
+> This could be the case when the system is rebooted or when the platform
+> driver is removed.
+>=20
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  include/linux/remoteproc.h | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h inde=
+x
+> fe383392a821..1a57e165da2c 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -361,6 +361,7 @@ enum rsc_handling_status {
+>   * @start:	power on the device and boot it
+>   * @stop:	power off the device
+>   * @attach:	attach to a device that his already powered up
+> + * @detach:	tell the remote processor that the core is going away
+>   * @kick:	kick a virtqueue (virtqueue id given as a parameter)
+>   * @da_to_va:	optional platform hook to perform address translations
+>   * @parse_fw:	parse firmware to extract information (e.g. resource table=
+)
+> @@ -382,6 +383,7 @@ struct rproc_ops {
+>  	int (*start)(struct rproc *rproc);
+>  	int (*stop)(struct rproc *rproc);
+>  	int (*attach)(struct rproc *rproc);
+> +	int (*detach)(struct rproc *rproc);
+>  	void (*kick)(struct rproc *rproc, int vqid);
+>  	void * (*da_to_va)(struct rproc *rproc, u64 da, size_t len);
+>  	int (*parse_fw)(struct rproc *rproc, const struct firmware *fw);
+> --
 
-Suggested-by: Alexander Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- fs/d_path.c | 3 +--
- fs/mount.h  | 9 +++++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+This look useful for i.MX8 partitioned case, M4 and A53 could reboot withou=
+t
+impacting the other. When A53 reboot, detach is invoked if I understand cor=
+rect.
 
-diff --git a/fs/d_path.c b/fs/d_path.c
-index a69e2cd36e6e..300bf675f097 100644
---- a/fs/d_path.c
-+++ b/fs/d_path.c
-@@ -119,8 +119,7 @@ static int prepend_path(const struct path *path,
- 				continue;
- 			}
- 			mnt_ns = READ_ONCE(mnt->mnt_ns);
--			/* open-coded is_mounted() to use local mnt_ns */
--			if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
-+			if (is_real_ns(mnt_ns) && !is_anon_ns(mnt_ns))
- 				error = 1;	// absolute root
- 			else
- 				error = 2;	// detached or not attached yet
-diff --git a/fs/mount.h b/fs/mount.h
-index c7abb7b394d8..0b0eb18ba80a 100644
---- a/fs/mount.h
-+++ b/fs/mount.h
-@@ -92,10 +92,15 @@ static inline int mnt_has_parent(struct mount *mnt)
- 	return mnt != mnt->mnt_parent;
- }
- 
--static inline int is_mounted(struct vfsmount *mnt)
-+static inline bool is_real_ns(const struct mnt_namespace *mnt_ns)
- {
- 	/* neither detached nor internal? */
--	return !IS_ERR_OR_NULL(real_mount(mnt)->mnt_ns);
-+	return mnt_ns && mnt_ns != MNT_NS_INTERNAL;
-+}
-+
-+static inline int is_mounted(struct vfsmount *mnt)
-+{
-+	return is_real_ns(real_mount(mnt)->mnt_ns);
- }
- 
- extern struct mount *__lookup_mnt(struct vfsmount *, struct dentry *);
--- 
-2.24.1
-
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
