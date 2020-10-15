@@ -2,144 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740EC28FAF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296E528FAFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730721AbgJOV73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:59:29 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40891 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729372AbgJOV72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:59:28 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC38q3d0Gz9sRk;
-        Fri, 16 Oct 2020 08:59:23 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602799165;
-        bh=+pnzsjShTAYUFByi2kxPHD5vmPagopDyvYTnovjDFKo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r/sYPjtVXyWbfO7RIEbH/rOJ2P6pR810JvjkldvF82NIgXBG9clxZUpitNs9GdPfR
-         IYKieLHQuZYSh1fGuDcKFHpvowkvzdHEH6zwBQDTpvVW+xohEhLbyijK0zuXQAijyj
-         2wGA9gQBmqg3F7Q95D7EKdsLAOgJ4s+stZ0mKMgoBxRyKZVn9AS5fO3NnWjX+T5dKe
-         trJ8DINgEXz3r/CmNwcRZTbwO1sSb1t4eCCRQDTm2uDu6rLsHTbc1rdVXAbBUyfUVc
-         JRtNSFMuVcLeHKR+kEh8Maxmxhvqi/RsNPyfvV+9S1ranwWayZuJc5HXBFbrwxpx8n
-         Rd25nvflLo8sw==
-Date:   Fri, 16 Oct 2020 08:59:22 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        petkan@nucleusys.com, davem@davemloft.net, kuba@kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH v2] net: usb: rtl8150: don't incorrectly assign random
- MAC addresses
-Message-ID: <20201016085922.4a2b90d1@canb.auug.org.au>
-In-Reply-To: <20201012091428.103fc2be@canb.auug.org.au>
-References: <20201010064459.6563-1-anant.thazhemadam@gmail.com>
-        <20201011173030.141582-1-anant.thazhemadam@gmail.com>
-        <20201012091428.103fc2be@canb.auug.org.au>
+        id S1731165AbgJOWBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:01:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44169 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730833AbgJOWBI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 18:01:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602799267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pDWmqUHLp8FIGfU/X7rfOUyiGs+RfGnhGhcKMN8cq6Q=;
+        b=IITYNeQFrsh506dWiAWp2hJfdbSfbaFOISZQ5YjcScgUs189+EifMmMferuHK9m1gHRuw9
+        QrKHAEH4x8zUA9Dpo2R3Sa6VuVEopgITfAFq3SXkUwx37lZqNbZAHQ8QMBs1NZxuDHDjg5
+        Hk+0L0qOqaRrI5shGSPzlB1lPXOYN4Y=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-yL2Wrpx9PYWrszoQ2VvMXw-1; Thu, 15 Oct 2020 18:01:05 -0400
+X-MC-Unique: yL2Wrpx9PYWrszoQ2VvMXw-1
+Received: by mail-ot1-f69.google.com with SMTP id e6so158874otl.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:01:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=pDWmqUHLp8FIGfU/X7rfOUyiGs+RfGnhGhcKMN8cq6Q=;
+        b=CmGaUSfT2jlpIQ3CCboI7CGX9HdK+NjNsUl5F25b2OdH1NydFpeGCKkiVl7W8BL1RL
+         fN33dXM0pJsGbVVMhBA8wbwV0DLv9KFx1DDVlaW2Ulg/RFnuN39YiIsuG2fP54E4ryg9
+         TM8wKhDGOsEvt9iFTCOo8Wi4JTDtV9bsdX6bd5U137SeVlmAyVNB2CjXwzunx1/xu/OF
+         9JmJTPrCtO3Ci1x4UW1bBHIM6m8k39m//TbXCZp4Mi4610C4cf4EpzOHcuqKROrWiYWh
+         LSyLafkWrHQosdxPIJvPKRRNPEcX8uWk1RK+ISl3ZWehhrfcKOVmh42L7mSISugFrWlp
+         qfCw==
+X-Gm-Message-State: AOAM532YUErFEkrJpE6iinzTJqyjdJPxGbR/wgNxjUZz+sfl3qhdbUa5
+        fM2IxNGWvxJbEo+BFWcUp1EIRzcchJzUTVBlnZfF2HqxaZmkSqxqO5Li88AENQuqMTGtnrJnDC9
+        ymHU5IhZ2diwjTvh4lwTOnsFv
+X-Received: by 2002:a9d:6847:: with SMTP id c7mr417950oto.134.1602799264433;
+        Thu, 15 Oct 2020 15:01:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxux9nnpe8794oowHdNnMJ76DKX1MNKqZBhVeSffzj8tYw+EXRmhyjkJwc1tly4S0UqOUKlAQ==
+X-Received: by 2002:a9d:6847:: with SMTP id c7mr417936oto.134.1602799264234;
+        Thu, 15 Oct 2020 15:01:04 -0700 (PDT)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id v123sm178673oif.29.2020.10.15.15.01.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 15:01:03 -0700 (PDT)
+References: <20201015214430.17937-1-jsnitsel@redhat.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     linux-kernel@vger.kernel.org, jarkko@kernel.org,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
+In-reply-to: <20201015214430.17937-1-jsnitsel@redhat.com>
+Date:   Thu, 15 Oct 2020 15:01:02 -0700
+Message-ID: <87imbbtaht.fsf@jsnitsel.users.ipa.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4scCr8VwCta4sNLSHfaz3O8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4scCr8VwCta4sNLSHfaz3O8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Greg,
+James should this get tacked on the end of your patchset?
 
-On Mon, 12 Oct 2020 09:14:28 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Sun, 11 Oct 2020 23:00:30 +0530 Anant Thazhemadam <anant.thazhemadam@g=
-mail.com> wrote:
-> >
-> > In set_ethernet_addr(), if get_registers() succeeds, the ethernet addre=
-ss
-> > that was read must be copied over. Otherwise, a random ethernet address
-> > must be assigned.
-> >=20
-> > get_registers() returns 0 if successful, and negative error number
-> > otherwise. However, in set_ethernet_addr(), this return value is
-> > incorrectly checked.
-> >=20
-> > Since this return value will never be equal to sizeof(node_id), a
-> > random MAC address will always be generated and assigned to the
-> > device; even in cases when get_registers() is successful.
-> >=20
-> > Correctly modifying the condition that checks if get_registers() was
-> > successful or not fixes this problem, and copies the ethernet address
-> > appropriately.
-> >=20
-> > Fixes: f45a4248ea4c ("net: usb: rtl8150: set random MAC address when se=
-t_ethernet_addr() fails")
-> > Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> > ---
-> > Changes in v2:
-> >         * Fixed the format of the Fixes tag
-> >         * Modified the commit message to better describe the issue bein=
-g=20
-> >           fixed
-> >=20
-> > +CCing Stephen and linux-next, since the commit fixed isn't in the netw=
-orking
-> > tree, but is present in linux-next.
-> >=20
-> >  drivers/net/usb/rtl8150.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/net/usb/rtl8150.c b/drivers/net/usb/rtl8150.c
-> > index f020401adf04..bf8a60533f3e 100644
-> > --- a/drivers/net/usb/rtl8150.c
-> > +++ b/drivers/net/usb/rtl8150.c
-> > @@ -261,7 +261,7 @@ static void set_ethernet_addr(rtl8150_t *dev)
-> > =20
-> >  	ret =3D get_registers(dev, IDR, sizeof(node_id), node_id);
-> > =20
-> > -	if (ret =3D=3D sizeof(node_id)) {
-> > +	if (!ret) {
-> >  		ether_addr_copy(dev->netdev->dev_addr, node_id);
-> >  	} else {
-> >  		eth_hw_addr_random(dev->netdev);
-> > --=20
-> > 2.25.1
-> >  =20
->=20
-> I will apply the above patch to the merge of the usb tree today to fix
-> up a semantic conflict between the usb tree and Linus' tree.
+Regards,
+Jerry
 
-It looks like you forgot to mention this one to Linus :-(
-
-It should probably say:
-
-Fixes: b2a0f274e3f7 ("net: rtl8150: Use the new usb control message API.")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/4scCr8VwCta4sNLSHfaz3O8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+IxjoACgkQAVBC80lX
-0Gy7GQgAgTCi7yUieCsVP9nVMN6eZTAGF0DOJf2MRoyZrb7YW1X8IOYZdnl7xJvZ
-Ek5GE39cs4iU/nxNNmBCRykM9csSdCl9oewJ8QU6lBL/kEedWaLYarf6s+S8LO3k
-piYQP7msA7erP9cG0dXFQt3Kql7YhLJi/QwQDXp4RGckZnAj9LOIHEvnETn1buMv
-QsHWAl06LLgYDqMFnQi143UJ6lhd1pbHt97nLALJsCdDwsYXmbKHjDlcpR/Gu3RV
-zyM+dQ20wO3cxWnHNeaFdXZJ+4IuHehBPD3AS5jj2zQFjei76f7YWQ1Kle37/UM6
-hbSNKOAmmt47m4iMGOykq1HOK8f6og==
-=ftXM
------END PGP SIGNATURE-----
-
---Sig_/4scCr8VwCta4sNLSHfaz3O8--
