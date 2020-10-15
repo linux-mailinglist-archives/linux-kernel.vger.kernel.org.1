@@ -2,154 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E15B28EE15
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDB928EE17
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgJOIAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:00:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42206 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730119AbgJOIAa (ORCPT
+        id S1730160AbgJOIBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729789AbgJOIBf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:00:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602748828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=wM5+EvJasZIkMn4Jgdk0iTuEAojX0HmssSaoWvJAS7c=;
-        b=Z5kXaO0OhQLPKAlaKstCINVK2o6dX+yKeHHDRqURaL/Scb5Sc1AiekhdfsuNUVg5N6nmB2
-        qhOBHdh2LDmxVmVYzhR8JSjfASazv4SLkt/P/DQFzuj7C0FX6QWBfe1P4eQ/tcOxyaE1fw
-        L4Cye1agMggUeFo7pbj2EW6v04lgq6I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-KKGT32_zMRe47tOedwCEpA-1; Thu, 15 Oct 2020 04:00:24 -0400
-X-MC-Unique: KKGT32_zMRe47tOedwCEpA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF73D8030D7;
-        Thu, 15 Oct 2020 08:00:22 +0000 (UTC)
-Received: from [10.36.114.207] (ovpn-114-207.ams2.redhat.com [10.36.114.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C47519C4F;
-        Thu, 15 Oct 2020 08:00:17 +0000 (UTC)
-Subject: Re: [PATCH v1 02/29] virtio-mem: simplify calculation in
- virtio_mem_mb_state_prepare_next_mb()
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-3-david@redhat.com>
- <20201015040204.GB86495@L-31X9LVDL-1304.local>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <730d6536-f6a6-72e5-327f-00ce1224b730@redhat.com>
-Date:   Thu, 15 Oct 2020 10:00:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 15 Oct 2020 04:01:35 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7CBC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 01:01:35 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id md26so2230691ejb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 01:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BETpnWxQsiY3uUYF0arnulp2j8hnL6pUYuI01v4wjds=;
+        b=kTGoV64fzSEKXWuEgxEE12/ZS7+MOJGmP8jS+NT8CdqxRXAeTdWMOV2Zcs4ggfwDFE
+         ZXKGgE50ivn1Are8mjKTJrb8CiGaFPhZ4p7656XfaRzN87ua7+H2OljMItKMh9CexGaN
+         Q+l1t/5Q2N4yICbVp6T3w0w2E9lf+4DNTFBm6wtYIBH56qKaIHW40xEWWVBElFmNOKjW
+         kk65Kpkq3x+s6Z8KHP5W0CICNd/uBv0WnR9mTe9oRZmjdlAfAcj2B0hDd1DdpQb6C50f
+         p9Fi8cU7FCEf3i2D1/L9uvG5moiDg8gaoQHOGh9eVoxyi/L3yvEDoJOq3lAhzy8hxA48
+         hFqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BETpnWxQsiY3uUYF0arnulp2j8hnL6pUYuI01v4wjds=;
+        b=g/Mvpj/aMTL9xQ2zykR0Bp47QyTBOuSf/n+71H8h78zQkqEK9J4JlKATmLOH6vCA7R
+         7PK3UWAFvQjxK4Icll34VSWTefILerY6kD7zxlPXW7K9vCoFtqG9F0mOe0RXHKdD3+YL
+         mf+nzPkbLLlL7qfOhSMZXhjbSyqA5NlnZ9LIHCbaIgHc68YwAQ1ObCAadgrwpcmA/09p
+         8oKWbUz3c6+1pM7n6R5hxuv062WGxUET3UX68TAFxuTYXN4ShwNsmiP5+vPNJMqchaSg
+         g8GAp/CCtkLhGZPdNRM+s0x/eLhTVU6Rkvhk3QPi7WRzkyAQYPluc8tctaz0BuKJw+fO
+         g7Pw==
+X-Gm-Message-State: AOAM532GQoSBngxgh/sMFjYnuneIygvWZnvuYf9IGPO7U6UVbzIAYesj
+        d+SSGyeVCWdoRnHDZ3eeGWs=
+X-Google-Smtp-Source: ABdhPJwciWO2r+6CFSAN3LcgOLGfr6DtfxtUiM1Ia5jfb2YYlspBwM31nIIuiiZpjZz3ggBnHh/SkQ==
+X-Received: by 2002:a17:906:c094:: with SMTP id f20mr3255160ejz.550.1602748894330;
+        Thu, 15 Oct 2020 01:01:34 -0700 (PDT)
+Received: from gmail.com (563B81C8.dsl.pool.telekom.hu. [86.59.129.200])
+        by smtp.gmail.com with ESMTPSA id s1sm1037941edi.44.2020.10.15.01.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 01:01:33 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 15 Oct 2020 10:01:31 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Numfor Mbiziwo-Tiapo <nums@google.com>
+Subject: Re: [PATCH 1/2] x86/insn: Fix some potential undefined behavior.
+Message-ID: <20201015080131.GA894367@gmail.com>
+References: <20201015062148.1437894-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201015040204.GB86495@L-31X9LVDL-1304.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015062148.1437894-1-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.10.20 06:02, Wei Yang wrote:
-> On Mon, Oct 12, 2020 at 02:52:56PM +0200, David Hildenbrand wrote:
->> We actually need one byte less (next_mb_id is exclusive, first_mb_id is
->> inclusive). Simplify.
->>
->> Cc: "Michael S. Tsirkin" <mst@redhat.com>
->> Cc: Jason Wang <jasowang@redhat.com>
->> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
->> drivers/virtio/virtio_mem.c | 4 ++--
->> 1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->> index a1f5bf7a571a..670b3faf412d 100644
->> --- a/drivers/virtio/virtio_mem.c
->> +++ b/drivers/virtio/virtio_mem.c
->> @@ -257,8 +257,8 @@ static enum virtio_mem_mb_state virtio_mem_mb_get_state(struct virtio_mem *vm,
->>  */
->> static int virtio_mem_mb_state_prepare_next_mb(struct virtio_mem *vm)
->> {
->> -	unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id + 1;
->> -	unsigned long new_bytes = vm->next_mb_id - vm->first_mb_id + 2;
->> +	unsigned long old_bytes = vm->next_mb_id - vm->first_mb_id;
->> +	unsigned long new_bytes = old_bytes + 1;
+
+* Ian Rogers <irogers@google.com> wrote:
+
+> From: Numfor Mbiziwo-Tiapo <nums@google.com>
 > 
-> This is correct.
+> If insn_init is given a NULL kaddr and 0 buflen then validate_next will
+> perform arithmetic on NULL, add a guard to avoid this.
 > 
-> So this looks more like a fix?
+> Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+> these are forms of undefined behavior.
 
-We allocate an additional new page "one memory block too early".
+So, 'insn' is a kernel structure, usually allocated on the kernel stack. 
+How could these fields ever be unaligned?
 
-So we would allocate the first page for blocks 0..510, and already
-allocate the second page with block 511, although we could have fit it
-into the first page. Block 512 will then find that the second page is
-already there and simply use the second page.
+> 
+> These problems were identified using the undefined behavior sanitizer
+> (ubsan) with the tools version of the code and perf test. Part of this
+> patch was previously posted here:
+> https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+> ---
+>  arch/x86/lib/insn.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index 404279563891..57236940de46 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -17,13 +17,13 @@
+>  
+>  /* Verify next sizeof(t) bytes can be on the same instruction */
+>  #define validate_next(t, insn, n)	\
+> -	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+> +	((insn)->end_kaddr != 0 && (insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+>  
+>  #define __get_next(t, insn)	\
+> -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
+> +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
+>  
+>  #define __peek_nbyte_next(t, insn, n)	\
+> -	({ t r = *(t*)((insn)->next_byte + n); r; })
+> +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+>  
+>  #define get_next(t, insn)	\
+>  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
 
-So as we do it consistently, nothing will go wrong - that's why I
-avoided using the "fix" terminology.
+Is there any code generation side effect of this change to the resulting 
+code?
 
-Thanks!
-
--- 
 Thanks,
 
-David / dhildenb
-
+	Ingo
