@@ -2,292 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8817828F46D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8E528F472
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387786AbgJOOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:08:52 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37078 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727988AbgJOOIt (ORCPT
+        id S2388033AbgJOOKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbgJOOKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:08:49 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FE3rIf164025;
-        Thu, 15 Oct 2020 14:08:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=ZDrP08mgbjZ26yc3pJkM9S7bhn6r7oR6wHAtbo57Izo=;
- b=xzNqydizVSrNkEwWjv1+//yjX5NRhH8hks7UT00T3KkPVgmlMeGWkH3x7Ij3/Lj34wyZ
- fCuYLsI0r7ml2QCe5hCabvFhpCuo9ipt5HXjndrbWK3o3g2ZStsej5r431ck88ORnHmz
- RKIsZt23IKCJ+RMj+5C6S40JJBlYAelXBvPFXvyd7UFKPbbEHEKSq+Ry84Nn0MlPjn2V
- xmHMOYxEWfZ7XpYqmWn881dx7BierHwmbsjmwXH2Nnk6Pz+vkCr3zFNcVl9ZGy4VdpUn
- wUsTJqIZ1DnwPVpXhA1CkL3kqxRgUruy5BJ5lREKUWjQRbuSwmWuSc4W429I9/pFnoQj Xg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 343vaek6nx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Oct 2020 14:08:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FE6dhV013675;
-        Thu, 15 Oct 2020 14:08:43 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 343pw0dy24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Oct 2020 14:08:43 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09FE8feg019867;
-        Thu, 15 Oct 2020 14:08:41 GMT
-Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Oct 2020 07:08:41 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] NFS: Fix mode bits and nlink count for v4 referral dirs
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <a998d760a52f5a86343d608e34802c41977442f7.camel@hammerspace.com>
-Date:   Thu, 15 Oct 2020 10:08:40 -0400
-Cc:     "ashishsangwan2@gmail.com" <ashishsangwan2@gmail.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C0A500CC-E132-4E77-822C-60AE13504289@oracle.com>
-References: <20201006151456.20875-1-ashishsangwan2@gmail.com>
- <2d1ff3421a88ece2f1b7708cdbc9d34b00ad3e81.camel@hammerspace.com>
- <CAOiN93mh-ssTDuN1fAptECqc5JpUHtK=1V56jY_0MtWEcT=U2Q@mail.gmail.com>
- <622f03cd08acd861a5155a181191e9ce399bbb37.camel@hammerspace.com>
- <D4D63EB4-DA04-4AAA-8A39-91987AF90E9C@oracle.com>
- <a998d760a52f5a86343d608e34802c41977442f7.camel@hammerspace.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010150099
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010150099
+        Thu, 15 Oct 2020 10:10:22 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18101C061755;
+        Thu, 15 Oct 2020 07:10:22 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y14so2077539pfp.13;
+        Thu, 15 Oct 2020 07:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aT/El/Gn9neHvZZa/+9NtdmwjsbnakBhZHDByWNqGyw=;
+        b=BNSxMPGkXPupxt3UFTpBo9CCOJOAFIXlAE7ATUBEzeF+Q3f5qZWm3G/Nv3rNGX5D8+
+         ZhH59Q/TWJX8QmM1PClQq4PU5tS9hticmSRCwXGyL7W50NiK1K9X1otuXEIIlVIS1KUP
+         c7V8gmqtIgMMZJugVmA9+PpgAtU3iW9UUaXDx59USDLehgNO1+hyNHtEKXhhdRavDWHB
+         LttvXd8TkTod160mb24X6WoGKqOB1vflsdcROKt5r7sY1/BgfADkLG7KgAcapfgpJc8V
+         ke+SdeS7bPizwOMnfQz16w8LTPHMzpsPOj97IXJD2EWzGygCvDL6INqqysepHGsgOhfD
+         zPGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aT/El/Gn9neHvZZa/+9NtdmwjsbnakBhZHDByWNqGyw=;
+        b=F8k1vRwtIglWDYvnV8/oFq0K2eX8O3uiuMr7cjBlAB9NdEZ+WSr/Kk1ORQUTnF3FkX
+         WuJ7KjqQQj6adfzsoTlywQ6HB3DcJSJXblhZoaqntgX3/vVx0GlYQXQeXgqXRVZFfV6o
+         HE8csgWvU+CjHWk6+EwXLhM5RLHsNH7PDndIw9g5J2duHFh7ye64wm6kM2YGpOLcdLDS
+         Gow2dclA+yJMqfyGtzd76R5SeACUY6u373Ih60h745JzdCTEP78vo5yhSsvxVdoYktB/
+         eNX2b7Dw5KmR+yicR5axvomgWvjzVpSiZp8eE5KsxiX8ztdNnr0QtkIWH+zpYc077rPS
+         7pcg==
+X-Gm-Message-State: AOAM533crdbmdZNCt/KH+qUwVep7cNvXRVG45RG7kbUxgqHyt1xob9fb
+        PD7NlkPgANfVsqQXH+L4zI4XMH/+xr6kh8JLCHg=
+X-Google-Smtp-Source: ABdhPJy1HYUu1kRjItzpQU19OCcT2k9XVykzELUm/mbikwcgFTym+yuiO3y8cnDSDJv9p2t8B+8F8A==
+X-Received: by 2002:a63:1c5f:: with SMTP id c31mr3605225pgm.340.1602771021326;
+        Thu, 15 Oct 2020 07:10:21 -0700 (PDT)
+Received: from Thinkpad ([45.118.167.207])
+        by smtp.gmail.com with ESMTPSA id b185sm3341294pgc.68.2020.10.15.07.10.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 07:10:20 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 19:40:12 +0530
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com,
+        linux-hams@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] net: rose: Fix Null pointer
+ dereference in rose_send_frame()
+Message-ID: <20201015141012.GB77038@Thinkpad>
+References: <20201015001712.72976-1-anmol.karan123@gmail.com>
+ <20201015051225.GA404970@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015051225.GA404970@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 15, 2020 at 07:12:25AM +0200, Greg KH wrote:
+> On Thu, Oct 15, 2020 at 05:47:12AM +0530, Anmol Karn wrote:
+> > In rose_send_frame(), when comparing two ax.25 addresses, it assigns rose_call to 
+> > either global ROSE callsign or default port, but when the former block triggers and 
+> > rose_call is assigned by (ax25_address *)neigh->dev->dev_addr, a NULL pointer is 
+> > dereferenced by 'neigh' when dereferencing 'dev'.
+> > 
+> > - net/rose/rose_link.c
+> > This bug seems to get triggered in this line:
+> > 
+> > rose_call = (ax25_address *)neigh->dev->dev_addr;
+> > 
+> > Prevent it by checking NULL condition for neigh->dev before comparing addressed for 
+> > rose_call initialization.
+> > 
+> > Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com 
+> > Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3 
+> > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> > ---
+> > I am bit sceptical about the error return code, please suggest if anything else is 
+> > appropriate in place of '-ENODEV'.
+> > 
+> >  net/rose/rose_link.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
+> > index f6102e6f5161..92ea6a31d575 100644
+> > --- a/net/rose/rose_link.c
+> > +++ b/net/rose/rose_link.c
+> > @@ -97,6 +97,9 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
+> >  	ax25_address *rose_call;
+> >  	ax25_cb *ax25s;
+> >  
+> > +	if (!neigh->dev)
+> > +		return -ENODEV;
+> 
+> How can ->dev not be set at this point in time?  Shouldn't that be
+> fixed, because it could change right after you check this, right?
+> 
+> thanks,
+> 
+> greg k-h
+
+Hello Sir,
+
+Thanks for the review,
+After following the call trace i thought, if neigh->dev is NULL it should
+be checked, but I will figure out what is going on with the crash reproducer,
+and I think rose_loopback_timer() is the place where problem started. 
+
+Also, I have created a diff for checking neigh->dev before assigning ROSE callsign
+, please give your suggestions on this.
 
 
-> On Oct 15, 2020, at 9:59 AM, Trond Myklebust <trondmy@hammerspace.com> =
-wrote:
->=20
-> On Thu, 2020-10-15 at 09:36 -0400, Chuck Lever wrote:
->>> On Oct 15, 2020, at 8:06 AM, Trond Myklebust <
->>> trondmy@hammerspace.com> wrote:
->>>=20
->>> On Thu, 2020-10-15 at 00:39 +0530, Ashish Sangwan wrote:
->>>> On Wed, Oct 14, 2020 at 11:47 PM Trond Myklebust
->>>> <trondmy@hammerspace.com> wrote:
->>>>> On Tue, 2020-10-06 at 08:14 -0700, Ashish Sangwan wrote:
->>>>>> Request for mode bits and nlink count in the
->>>>>> nfs4_get_referral
->>>>>> call
->>>>>> and if server returns them use them instead of hard coded
->>>>>> values.
->>>>>>=20
->>>>>> CC: stable@vger.kernel.org
->>>>>> Signed-off-by: Ashish Sangwan <ashishsangwan2@gmail.com>
->>>>>> ---
->>>>>> fs/nfs/nfs4proc.c | 20 +++++++++++++++++---
->>>>>> 1 file changed, 17 insertions(+), 3 deletions(-)
->>>>>>=20
->>>>>> diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
->>>>>> index 6e95c85fe395..efec05c5f535 100644
->>>>>> --- a/fs/nfs/nfs4proc.c
->>>>>> +++ b/fs/nfs/nfs4proc.c
->>>>>> @@ -266,7 +266,9 @@ const u32 nfs4_fs_locations_bitmap[3] =3D {
->>>>>>     | FATTR4_WORD0_FSID
->>>>>>     | FATTR4_WORD0_FILEID
->>>>>>     | FATTR4_WORD0_FS_LOCATIONS,
->>>>>> -     FATTR4_WORD1_OWNER
->>>>>> +     FATTR4_WORD1_MODE
->>>>>> +     | FATTR4_WORD1_NUMLINKS
->>>>>> +     | FATTR4_WORD1_OWNER
->>>>>>     | FATTR4_WORD1_OWNER_GROUP
->>>>>>     | FATTR4_WORD1_RAWDEV
->>>>>>     | FATTR4_WORD1_SPACE_USED
->>>>>> @@ -7594,16 +7596,28 @@ nfs4_listxattr_nfs4_user(struct inode
->>>>>> *inode,
->>>>>> char *list, size_t list_len)
->>>>>> */
->>>>>> static void nfs_fixup_referral_attributes(struct nfs_fattr
->>>>>> *fattr)
->>>>>> {
->>>>>> +     bool fix_mode =3D true, fix_nlink =3D true;
->>>>>> +
->>>>>>     if (!(((fattr->valid & NFS_ATTR_FATTR_MOUNTED_ON_FILEID)
->>>>>> ||
->>>>>>            (fattr->valid & NFS_ATTR_FATTR_FILEID)) &&
->>>>>>           (fattr->valid & NFS_ATTR_FATTR_FSID) &&
->>>>>>           (fattr->valid & NFS_ATTR_FATTR_V4_LOCATIONS)))
->>>>>>             return;
->>>>>>=20
->>>>>> +     if (fattr->valid & NFS_ATTR_FATTR_MODE)
->>>>>> +             fix_mode =3D false;
->>>>>> +     if (fattr->valid & NFS_ATTR_FATTR_NLINK)
->>>>>> +             fix_nlink =3D false;
->>>>>>     fattr->valid |=3D NFS_ATTR_FATTR_TYPE |
->>>>>> NFS_ATTR_FATTR_MODE |
->>>>>>             NFS_ATTR_FATTR_NLINK |
->>>>>> NFS_ATTR_FATTR_V4_REFERRAL;
->>>>>> -     fattr->mode =3D S_IFDIR | S_IRUGO | S_IXUGO;
->>>>>> -     fattr->nlink =3D 2;
->>>>>> +
->>>>>> +     if (fix_mode)
->>>>>> +             fattr->mode =3D S_IFDIR | S_IRUGO | S_IXUGO;
->>>>>> +     else
->>>>>> +             fattr->mode |=3D S_IFDIR;
->>>>>> +
->>>>>> +     if (fix_nlink)
->>>>>> +             fattr->nlink =3D 2;
->>>>>> }
->>>>>>=20
->>>>>> static int _nfs4_proc_fs_locations(struct rpc_clnt *client,
->>>>>> struct
->>>>>> inode *dir,
->>>>>=20
->>>>> NACK to this patch. The whole point is that if the server has a
->>>>> referral, then it is not going to give us any attributes other
->>>>> than
->>>>> the
->>>>> ones we're already asking for because it may not even have a
->>>>> real
->>>>> directory. The client is required to fake up an inode, hence
->>>>> the
->>>>> existing code.
->>>>=20
->>>> Hi Trond, thanks for reviewing the patch!
->>>> Sorry but I didn't understand the reason to NACK it. Could you
->>>> please
->>>> elaborate your concern?
->>>> These are the current attributes we request from the server on a
->>>> referral:
->>>> FATTR4_WORD0_CHANGE
->>>>> FATTR4_WORD0_SIZE
->>>>> FATTR4_WORD0_FSID
->>>>> FATTR4_WORD0_FILEID
->>>>> FATTR4_WORD0_FS_LOCATIONS,
->>>> FATTR4_WORD1_OWNER
->>>>> FATTR4_WORD1_OWNER_GROUP
->>>>> FATTR4_WORD1_RAWDEV
->>>>> FATTR4_WORD1_SPACE_USED
->>>>> FATTR4_WORD1_TIME_ACCESS
->>>>> FATTR4_WORD1_TIME_METADATA
->>>>> FATTR4_WORD1_TIME_MODIFY
->>>>> FATTR4_WORD1_MOUNTED_ON_FILEID,
->>>>=20
->>>> So you are suggesting that it's ok to ask for SIZE, OWNER, OWNER
->>>> GROUP, SPACE USED, TIMESTAMPs etc but not ok to ask for mode bits
->>>> and
->>>> numlinks?
->>>=20
->>> No. We shouldn't be asking for any of that information for a
->>> referral
->>> because the server isn't supposed to return any values for it.
->>>=20
->>> Chuck and Anna, what's the deal with commit c05cefcc7241? That
->>> appears
->>> to have changed the original code to speculatively assume that the
->>> server will violate RFC5661 Section 11.3.1 and/or RFC7530 Section
->>> 8.3.1.
->>=20
->> The commit is an attempt to address the many complaints we've had
->> about the ugly appearance of referral anchors. The strange "special"
->> default values made the client appear to be broken, and was confusing
->> to some. I consider this to be a UX issue: the information displayed
->> in this case is not meant to be factual, but rather to prevent the
->> user concluding that something is wrong.
->>=20
->> I'm not attached to this particular solution, though. Does it make
->> sense to perform the referral mount before returning "ls" results
->> so that the target server has a chance to supply reasonable
->> attribute values for the mounted-on directory object? Just spit
->> balling here.
->>=20
->>=20
->>> Specifically, the paragraph that says:
->>>=20
->>> "
->>>  Other attributes SHOULD NOT be made available for absent file
->>>  systems, even when it is possible to provide them.  The server
->>> should
->>>  not assume that more information is always better and should
->>> avoid
->>>  gratuitously providing additional information."
->>>=20
->>> So why is the client asking for them?
->>=20
->> This paragraph (and it's most modern incarnation in RFC 8881 Section
->> 11.4.1) describes server behavior. The current client behavior is
->> spec-compliant because there is no explicit prohibition in the spec
->> language against a client requesting additional attributes in this
->> case.
->>=20
->> Either the server can clear those bitmap flags on the GETATTR reply
->> and not supply those attributes, and clients must be prepared for
->> that.
->>=20
->> Or, it's also possible to read this paragraph to mean that the
->> server can provide those attributes and the values should not
->> reflect attributes for the absent file system, but rather something
->> else (eg, server-manufactured defaults, or the attributes from the
->> object on the source server).
->>=20
->> And since this is a SHOULD NOT rather than a MUST NOT, servers are
->> still free to return information about the absent file system.
->> Clients are not guaranteed this will be the case, however.
->>=20
->> I don't think c05cefcc7241 makes any assumption about whether the
->> server is lying about the extra attributes. Perhaps the server has
->> no better values for these attributes than the client's defaults
->> were.
->>=20
->=20
-> SHOULD / SHOULD NOT indicates actions that the server is required to
-> take in the absence of a very good reason to do otherwise. In other
-> words, the client should expect the majority of servers to behave in a
-> certain manner.
->=20
-> It doesn't matter that the client's behaviour is spec compliant. We're
-> asking for information that is not supposed to be divulged by the
-> majority of servers, Furthermore, that information is, quite frankly,
-> utterly irrelevant to the client and application running on it. Any
-> attempt to access that fake object will result in a submount of
-> something completely different on top of that object.
->=20
-> IOW: the only difference here is you're asking that the server provide
-> us with a faked up object (which it is not supposed to do), whereas
-> previously, we were faking that object up ourselves. What's the big
-> deal here?
-
-Right, that boils it down nicely.
-
-The difference has been that by and large the server-provided values
-don't look broken to users. Perhaps all we need to do is select better
-defaults for these attributes on Linux clients. I haven't followed
-Ashish's requirements, so I can't speak to them.
-
-Here is some history.
-
-=
-https://lore.kernel.org/linux-nfs/CAD8zhTAAvTKhp6k0vYRMnhZW5pxjstpBiDKLgoX=
-ocfpAXNjKTg@mail.gmail.com/
+diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
+index f6102e6f5161..2ddd5e559442 100644
+--- a/net/rose/rose_link.c
++++ b/net/rose/rose_link.c
+@@ -97,10 +97,14 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
+        ax25_address *rose_call;
+        ax25_cb *ax25s;
+ 
+-       if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
+-               rose_call = (ax25_address *)neigh->dev->dev_addr;
+-       else
+-               rose_call = &rose_callsign;
++       if (neigh->dev) {
++               if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
++                       rose_call = (ax25_address *)neigh->dev->dev_addr;
++               else
++                       rose_call = &rose_callsign;
++       } else {
++               return -ENODEV;
++       }
+ 
+        ax25s = neigh->ax25;
+        neigh->ax25 = ax25_send_frame(skb, 260, rose_call, &neigh->callsign, neigh->digipeat, neigh->dev);
+ 
 
 
---
-Chuck Lever
-
-
-
+Thanks,
+Anmol
