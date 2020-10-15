@@ -2,91 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F5B28EF98
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF3C28EF9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388977AbgJOJut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388789AbgJOJus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:50:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2B4C061755;
-        Thu, 15 Oct 2020 02:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=X6WtDwQI9pv5ISxRL8BEr06/otlXfo3aEhfWWy8pCcM=; b=DJYonpNAeLFOXNmxtlrqNH3zT6
-        F4uNLAQwDF5UjG9XdetkJpwCIZT6OdV2+1zHoSSVVk+Hssiw8mhxutCESvtmfcg2jLPFPCwI25lXF
-        u4smw8ezsSa747F0sr96Z8Je/fWcMYAxbdHdkhe0oEyYbllZrdzGf/wWWYm0+pwiGxB+fhLxQKYVR
-        DXOIMpGyxeQTy5mWIo+tEtyVpKhQuFesWlJ2AQ5VI/XQNHjYnh6oQOjQLqTTozffJMMikY/R1zzxl
-        VWLZ8P5JhrnxiYgkgqSdVtdKlCoGqygNG/mBeeVT9WRMEc/146VkhqKGKVeOu7CJC6tQbjjmO78Nx
-        RFAtatlg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSzu6-0006Dh-49; Thu, 15 Oct 2020 09:50:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7B6E530504E;
-        Thu, 15 Oct 2020 11:50:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6D927235F4439; Thu, 15 Oct 2020 11:50:33 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 11:50:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Qian Cai <cai@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
-Message-ID: <20201015095033.GS2651@hirez.programming.kicks-ass.net>
-References: <20201013112544.GZ2628@hirez.programming.kicks-ass.net>
- <20201013162650.GN3249@paulmck-ThinkPad-P72>
- <20201013193025.GA2424@paulmck-ThinkPad-P72>
- <20201014183405.GA27666@paulmck-ThinkPad-P72>
- <20201014215319.GF2974@worktop.programming.kicks-ass.net>
- <20201014221152.GS3249@paulmck-ThinkPad-P72>
- <20201014223954.GH2594@hirez.programming.kicks-ass.net>
- <20201014235553.GU3249@paulmck-ThinkPad-P72>
- <20201015034128.GA10260@paulmck-ThinkPad-P72>
- <20201015094926.GY2611@hirez.programming.kicks-ass.net>
+        id S2389011AbgJOJvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:51:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38744 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388789AbgJOJvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 05:51:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 22A4FB228;
+        Thu, 15 Oct 2020 09:51:30 +0000 (UTC)
+Message-ID: <165ca8621058696f7df8e8f894cf647b3171d6fd.camel@suse.de>
+Subject: Re: [PATCH v3 4/8] of: unittest: Add test for
+ of_dma_get_max_cpu_address()
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        devicetree@vger.kernel.org
+Date:   Thu, 15 Oct 2020 11:51:28 +0200
+In-Reply-To: <CAL_JsqLC5vAnPjCrr4H3ik_Gh_7vW6+uzyrnjd8WnDxtwypgyQ@mail.gmail.com>
+References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
+         <20201014191211.27029-5-nsaenzjulienne@suse.de>
+         <CAL_JsqLC5vAnPjCrr4H3ik_Gh_7vW6+uzyrnjd8WnDxtwypgyQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-X8qOX67+76GtlnxqUBk7"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015094926.GY2611@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 11:49:26AM +0200, Peter Zijlstra wrote:
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1143,13 +1143,15 @@ bool rcu_lockdep_current_cpu_online(void
->  	struct rcu_data *rdp;
->  	struct rcu_node *rnp;
->  	bool ret = false;
-> +	unsigned long seq;
->  
->  	if (in_nmi() || !rcu_scheduler_fully_active)
->  		return true;
->  	preempt_disable_notrace();
->  	rdp = this_cpu_ptr(&rcu_data);
->  	rnp = rdp->mynode;
-> -	if (rdp->grpmask & rcu_rnp_online_cpus(rnp))
-> +	seq = READ_ONCE(rnp->ofl_seq) & ~0x1;
-> +	if (rdp->grpmask & rcu_rnp_online_cpus(rnp) || seq != READ_ONCE(rnp->ofl_seq))
->  		ret = true;
->  	preempt_enable_notrace();
->  	return ret;
 
-Also, here, are the two loads important? Wouldn't:
+--=-X8qOX67+76GtlnxqUBk7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-	|| READ_ONCE(rnp->ofl_seq) & 0x1
+On Wed, 2020-10-14 at 17:04 -0500, Rob Herring wrote:
+> On Wed, Oct 14, 2020 at 2:12 PM Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> > Introduce a test for of_dma_get_max_cup_address(), it uses the same DT
+> > data as the rest of dma-ranges unit tests.
+> >=20
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > ---
+> >  drivers/of/unittest.c | 20 ++++++++++++++++++++
+> >  1 file changed, 20 insertions(+)
+> >=20
+> > diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+> > index 06cc988faf78..2cbf2a585c9f 100644
+> > --- a/drivers/of/unittest.c
+> > +++ b/drivers/of/unittest.c
+> > @@ -869,6 +869,25 @@ static void __init of_unittest_changeset(void)
+> >  #endif
+> >  }
+> >=20
+> > +static void __init of_unittest_dma_get_max_cpu_address(void)
+> > +{
+> > +#ifdef CONFIG_HAS_DMA
+>=20
+> Can't the unittest run without this? I run the unittests under UML.
 
-be sufficient?
+It was cargo culted from its sibling of_unittest_dma_ranges_one(), now that=
+ you
+mention it, I can't seem to find the reason why it's here in the first plac=
+e,
+nor for other similar usages in OF code.
+
+I ran the test in UML with all HAS_DMA conditionals removed from OF code an=
+d
+things went well. I'll prepare a fix for that.
+
+> > +       struct device_node *np;
+> > +       phys_addr_t cpu_addr;
+> > +
+> > +       np =3D of_find_node_by_path("/testcase-data/address-tests");
+> > +       if (!np) {
+> > +               pr_err("missing testcase data\n");
+> > +               return;
+> > +       }
+> > +
+> > +       cpu_addr =3D of_dma_get_max_cpu_address(np);
+> > +       unittest(cpu_addr =3D=3D 0x50000000ULL,
+> > +                "of_dma_get_max_cpu_address: wrong CPU addr %pad (expe=
+cting %llx)\n",
+> > +                &cpu_addr, 0x50000000ULL);
+> > +#endif
+> > +}
+> > +
+> >  static void __init of_unittest_dma_ranges_one(const char *path,
+> >                 u64 expect_dma_addr, u64 expect_paddr)
+> >  {
+> > @@ -3266,6 +3285,7 @@ static int __init of_unittest(void)
+> >         of_unittest_changeset();
+> >         of_unittest_parse_interrupts();
+> >         of_unittest_parse_interrupts_extended();
+> > +       of_unittest_dma_get_max_cpu_address();
+> >         of_unittest_parse_dma_ranges();
+> >         of_unittest_pci_dma_ranges();
+> >         of_unittest_match_node();
+> > --
+> > 2.28.0
+> >=20
+
+
+--=-X8qOX67+76GtlnxqUBk7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+IG6AACgkQlfZmHno8
+x/4LMAf/QcDwrq8xC+sEW6qMg3hpF9bfJCqcr+hehJmADyEcCDmz8TevhzumZXeM
+RtlVB67o7Z2bAeSpOqTlQGQHYLdWu3zZ+Zqu0PRjUdQ6CE1l9qzLj1TSIME93HrV
+kSSiqWLmOlbyISGAb1pFKbzsVqIX4t+Zn6CuH+BBLl4YimWi0Fj2aCNXSobo/K9J
+aOkm5VtaIWCYbrv44+KHzpP+pJZIPl0Ya0NOzH2c2YgmL7nj7meneGEWaiRX7p8d
+A/5dnYZRj/HJ+VOYW36zDfzsp5nHZxJVMXG76QJYFSleD36Skl2IyjfYQS+XwMEb
+rKyrJ54T41B/RpMYjTMKcmO+x/BUMQ==
+=Nev7
+-----END PGP SIGNATURE-----
+
+--=-X8qOX67+76GtlnxqUBk7--
+
