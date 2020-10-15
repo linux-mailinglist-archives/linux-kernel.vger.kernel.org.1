@@ -2,216 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8807C28EF79
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8543928EF83
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388854AbgJOJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388795AbgJOJmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:42:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A349C061755;
-        Thu, 15 Oct 2020 02:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5ZNMyaMGLyh0iAzgchZNWKe2QHg2PouniT97lm2hLjc=; b=UbzTDpbCdU/uUj0rHetupp4L8v
-        PaUluuLxr8LZvOCbK9ck4YLDi3+zPB/hmdH1KgeWEQy8Co2xXtMtUhhVl9GuJYbtbnLeCYd76TNBS
-        HZdz95qNkGmkZVezmYCzg8HJhkMbKqv1Xzk2iHdAGnB93fydw7f720JSiZsLwGL22D4bQXb6udDfh
-        PL01QS5q/vOm7rs0lz6hK4oIgOO7vvQYNc16v1alatMUt6a+VXectLz3GydJeK3X0T3ZVV1HjE6ii
-        B2gLxhncLeJgIGpvtuBsx546BEOgs/6FT1ows1Phr2vQszB8BnyKkzc5Y6LhzlbR7Y0dCe+NH+Dss
-        rHuYJitg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSzlr-0005i9-5C; Thu, 15 Oct 2020 09:42:03 +0000
-Date:   Thu, 15 Oct 2020 10:42:03 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 16/16] iomap: Make readpage synchronous
-Message-ID: <20201015094203.GA21420@infradead.org>
-References: <20201009143104.22673-1-willy@infradead.org>
- <20201009143104.22673-17-willy@infradead.org>
+        id S2388897AbgJOJoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:44:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34558 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388793AbgJOJoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 05:44:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 74692ACF6;
+        Thu, 15 Oct 2020 09:44:19 +0000 (UTC)
+Subject: Re: [PATCH v3 0/3] Actually fix freelist pointer vs redzoning
+To:     Christopher Lameter <cl@linux.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>,
+        Marco Elver <elver@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org
+References: <20201015033712.1491731-1-keescook@chromium.org>
+ <alpine.DEB.2.22.394.2010150822260.184556@www.lameter.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <1e43fd23-e9f1-9c5d-3ee2-17171642877f@suse.cz>
+Date:   Thu, 15 Oct 2020 11:44:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009143104.22673-17-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <alpine.DEB.2.22.394.2010150822260.184556@www.lameter.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void iomap_read_page_end_io(struct bio_vec *bvec,
-> +		struct completion *done, bool error)
+On 10/15/20 10:23 AM, Christopher Lameter wrote:
+> On Wed, 14 Oct 2020, Kees Cook wrote:
+> 
+>> Note on patch 2: Christopher NAKed it, but I actually think this is a
+>> reasonable thing to add -- the "too small" check is only made when built
+>> with CONFIG_DEBUG_VM, so it *is* actually possible for someone to trip
+>> over this directly, even if it would never make it into a released
+>> kernel. I see no reason to just leave this foot-gun in place, though, so
+>> we might as well just fix it too. (Which seems to be what Longman was
+>> similarly supporting, IIUC.)
+> 
+> Well then remove the duplication of checks. The NAK was there because it
+> seems that you were not aware of the existing checks.
+> 
+>> Anyway, if patch 2 stays NAKed, that's fine. It's entirely separable,
+>> and the other 2 can land. :)
+> 
+> Just deal with the old checks too and it will be fine.
 
-I really don't like the parameters here.  Part of the problem is
-that ctx is only assigned to bi_private conditionally, which can
-easily be fixed.  The other part is the strange bool error when
-we can just pass on bi_stats.  See the patch at the end of what
-I'd do intead.
-
-> @@ -318,15 +325,17 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
->  
->  	trace_iomap_readpage(page->mapping->host, 1);
->  
-> +	ctx.status = BLK_STS_OK;
-
-This should move into the initializer for ctx.  Or we could just drop
-it given that BLK_STS_OK is and must always be 0.
-
->  	} else {
->  		WARN_ON_ONCE(ctx.cur_page_in_bio);
-> -		unlock_page(page);
-> +		complete(&ctx.done);
->  	}
->  
-> +	wait_for_completion(&ctx.done);
-
-I don't think we need the complete / wait_for_completion dance in
-this case.
-
-> +	if (ret >= 0)
-> +		ret = blk_status_to_errno(ctx.status);
-> +	if (ret == 0)
-> +		return AOP_UPDATED_PAGE;
-> +	unlock_page(page);
-> +	return ret;
-
-Nipick, but I'd rather have a goto out_unlock for both error case
-and have the AOP_UPDATED_PAGE for the normal path straight in line.
-
-Here is an untested patch with my suggestions:
+Yeah, the existing check is under CONFIG_DEBUG_VM, which means it's not active 
+on some configurations. Creating a cache is not exactly fast path operation, so 
+I would remove this guard.
+As for the minimum size check, I would probably remove it (but watch out if 
+SLAB/SLOB can handle it). It's not effective to use slab cache for 4-byte 
+objects, but why make it an error.
 
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 887bf871ca9bba..81d34725565d7e 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -162,33 +162,34 @@ static void iomap_set_range_uptodate(struct page *page, unsigned off,
- 	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
- }
- 
--static void iomap_read_page_end_io(struct bio_vec *bvec,
--		struct completion *done, bool error)
-+struct iomap_readpage_ctx {
-+	struct page		*cur_page;
-+	bool			cur_page_in_bio;
-+	blk_status_t		status;
-+	struct bio		*bio;
-+	struct readahead_control *rac;
-+	struct completion	done;
-+};
-+
-+static void
-+iomap_read_page_end_io(struct iomap_readpage_ctx *ctx, struct bio_vec *bvec,
-+		blk_status_t status)
- {
- 	struct page *page = bvec->bv_page;
- 	struct iomap_page *iop = to_iomap_page(page);
- 
--	if (!error)
-+	if (status == BLK_STS_OK)
- 		iomap_set_range_uptodate(page, bvec->bv_offset, bvec->bv_len);
- 
- 	if (!iop ||
- 	    atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending)) {
--		if (done)
--			complete(done);
--		else
-+		if (ctx->rac)
- 			unlock_page(page);
-+		else
-+			complete(&ctx->done);
- 	}
- }
- 
--struct iomap_readpage_ctx {
--	struct page		*cur_page;
--	bool			cur_page_in_bio;
--	blk_status_t		status;
--	struct bio		*bio;
--	struct readahead_control *rac;
--	struct completion	done;
--};
--
- static void
- iomap_read_end_io(struct bio *bio)
- {
-@@ -197,12 +198,11 @@ iomap_read_end_io(struct bio *bio)
- 	struct bvec_iter_all iter_all;
- 
- 	/* Capture the first error */
--	if (ctx && ctx->status == BLK_STS_OK)
-+	if (ctx->status == BLK_STS_OK)
- 		ctx->status = bio->bi_status;
- 
- 	bio_for_each_segment_all(bvec, bio, iter_all)
--		iomap_read_page_end_io(bvec, ctx ? &ctx->done : NULL,
--				bio->bi_status != BLK_STS_OK);
-+		iomap_read_page_end_io(ctx, bvec, bio->bi_status);
- 	bio_put(bio);
- }
- 
-@@ -297,8 +297,7 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 		ctx->bio->bi_opf = REQ_OP_READ;
- 		if (ctx->rac)
- 			ctx->bio->bi_opf |= REQ_RAHEAD;
--		else
--			ctx->bio->bi_private = ctx;
-+		ctx->bio->bi_private = ctx;
- 		ctx->bio->bi_iter.bi_sector = sector;
- 		bio_set_dev(ctx->bio, iomap->bdev);
- 		ctx->bio->bi_end_io = iomap_read_end_io;
-@@ -318,14 +317,16 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- int
- iomap_readpage(struct page *page, const struct iomap_ops *ops)
- {
--	struct iomap_readpage_ctx ctx = { .cur_page = page };
-+	struct iomap_readpage_ctx ctx = {
-+		.cur_page	= page,
-+		.status		= BLK_STS_OK,
-+	};
- 	struct inode *inode = page->mapping->host;
- 	unsigned poff;
- 	loff_t ret;
- 
- 	trace_iomap_readpage(page->mapping->host, 1);
- 
--	ctx.status = BLK_STS_OK;
- 	init_completion(&ctx.done);
- 
- 	for (poff = 0; poff < PAGE_SIZE; poff += ret) {
-@@ -340,17 +341,16 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
- 
- 	if (ctx.bio) {
- 		submit_bio(ctx.bio);
--		WARN_ON_ONCE(!ctx.cur_page_in_bio);
--	} else {
--		WARN_ON_ONCE(ctx.cur_page_in_bio);
--		complete(&ctx.done);
-+		wait_for_completion(&ctx.done);
- 	}
- 
--	wait_for_completion(&ctx.done);
--	if (ret >= 0)
--		ret = blk_status_to_errno(ctx.status);
--	if (ret == 0)
--		return AOP_UPDATED_PAGE;
-+	if (ret < 0)
-+		goto out_unlock;
-+	ret = blk_status_to_errno(ctx.status);
-+	if (ret < 0)
-+		goto out_unlock;
-+	return AOP_UPDATED_PAGE;
-+out_unlock:
- 	unlock_page(page);
- 	return ret;
- }
