@@ -2,191 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC83428EA3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777A428EA29
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732355AbgJOBfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:35:20 -0400
-Received: from mail-eopbgr40089.outbound.protection.outlook.com ([40.107.4.89]:23525
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        id S1732235AbgJOBdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:33:31 -0400
+Received: from mail-eopbgr80059.outbound.protection.outlook.com ([40.107.8.59]:35471
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732348AbgJOBfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:35:19 -0400
+        id S1727025AbgJOBdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:33:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lb0fGHZGVi4sdD4nooRyuF+42En0esB1zusdTHZGgfS6sA6Ls1Af+NjIONA/4oMwEPG+YXSxX1HqSfRw65t6oya7EoNBYYWTRvGgCMv5vlZ0pPWM8MdQLU4+PVc5Md+66U8oyYaK8LoBtFIWr0vJ8S/99QAi2GBdq/iepdeSFhKditBwQfPauVn74YFkhNgccm4cb7UFv2dEHxVyAukPXYFynsoXb5TzCpKt8CxbVBZUPWR8hr8aXcpj4W+Q8EMq2pytK0f8iIsaqdF4BguJd884MfKvQwq8gypsRoFy0ZrP2fuogWMbzhROTAn6mW1cMtrIRtaDuGCXQ5IIdqM1SA==
+ b=FkbcRsBs1cVW1nCkVGC7BCQyePaCbMmjMRnFhCGnbyFUob+Texa6LoEBatq4nIIgsK/+w9AYqDxj2ssZMOryUiaZtXu4dEh8DxnIfMHLsZSZuy8F0y6mAUAtW8V/YzYwhMbcALUNLbA7yJIDan+7e9TzqL8+weFuuxDEsDuQxUBKJroLz9YD7G8b/Q6T/OIHFG24SjbDeBNTGSFHcGNmrkGd1cNIh9XJ/LIzkfHj8qqZRNz9Vr3WUFLRSBQmWL+G0JaDMFFptnen50m05Y+gQnjM7YTCrRbdd3mBpNiB/0T561nuNcj1VQ/WuPdeGFonKft1VBkt4afX+syuhEV0+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E7dF4YO7qwxylGzgJqF8dPezxNMMyaYAJJR3Okc/2Qs=;
- b=OXDUfpXQAORiRq+wRY6Qg1q9vBmogxfh8Sq0Xpj7k2cGWO0sZNqa6ny/S9yqFAS1ZUNFZAnV4GCoMA0gxgEnP+THJNeiKHLIx9LfzDWZJixlSsmvTEo/6L/wmzX4CU5lqHb3u7ehDm2x06hsDraTOBJuh5A5I6tyDncfW8Ez45nlcoDl+jYZFJgdVS4tOpibclQwPlDqy8Jp4YWZPAqnNMCIMk2F3uHLwfPyIeM0zXZ60Unlvpugkm/6vqOFEqBqvCdVJjLlXfqVw2+wOsdRnuFEE1NYw8bMLwKTh05T1DVKYKgd6eyDVW3ji9eM//G5BPXJuz4i9Y7bOt1QvNpDDw==
+ bh=uLPAQ4w/LW5/34r5Q5NnAMcoQLUnSL0nSHMusZH7SDI=;
+ b=S+iaxd16R4Wr2W4f8gnWc3Z9lb92PphWEukCgsH4DfNoh7HZD3cG5W44cf8pVmhYEr0UvDc67lL9GZ6IvUiwl4zmodT0OtwAThz+SKzKAaKgPmJsEp/MfRyET12s4SHxk8r7T163DURmGtxJyeIf38O5n2Rxn3lmXZ0bdoRr3ms2wUCr6G6lnrJvRGUcVNGuC0zksqEgl6Z14tdN/Mw+t7FMGdmDFGoNJtrytm/oj9OXUtJ8BfAVexd1aqajUCu5xpJI+D9sKh+I3+Fu3vmWkCDiMRdwPzAxT4VfbOd3jyJuH+hmYhN+fl+rKwlSRM+CYPwxCkMmFcVEeaP8FH7Q7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E7dF4YO7qwxylGzgJqF8dPezxNMMyaYAJJR3Okc/2Qs=;
- b=G2W0ocyxhhWHRQwnRo0vwf6Kc8+Ehb5P9cnzig9zWyBY7XKJT1CWsi7jttHWkCqbBmvbF50F5+gDPXSSdabZ0e6xYF9zHmBLofbSZQXYqTmOhgLiPyL3lPkRKGPOr6P18YbLTc6MeeyPy+QvvoUvivShEWau45Mc0raXI+eKfd4=
-Authentication-Results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB4239.eurprd04.prod.outlook.com (2603:10a6:803:48::18) with
+ bh=uLPAQ4w/LW5/34r5Q5NnAMcoQLUnSL0nSHMusZH7SDI=;
+ b=bgD2o5Q+cnD9hHpZS4Ee6lhY3vJ87bvmvsiSn/xw44s7mEmcpddhAFH1Fj/rWOW+BBPIxBXmyGboCbBMFMeX0LkS+Gzto+Dj8FBcTjPfBM2tZKX3VsfYk3S5FRtoC0qSTsu1XB2lRV3IibH1Wg3c6yrYOb7PfSY0CwwvxVgb974=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4090.eurprd04.prod.outlook.com (2603:10a6:5:28::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Thu, 15 Oct
- 2020 01:35:13 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::e171:19c1:b07f:53db]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::e171:19c1:b07f:53db%7]) with mapi id 15.20.3477.021; Thu, 15 Oct 2020
- 01:35:13 +0000
-Message-ID: <4172025486c3821ec063199041b0a92118e0cf4d.camel@nxp.com>
-Subject: Re: [PATCH] firmware: imx: always export scu symbols
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Date:   Thu, 15 Oct 2020 09:33:10 +0800
-In-Reply-To: <1602665834-29902-1-git-send-email-qiangqing.zhang@nxp.com>
-References: <1602665834-29902-1-git-send-email-qiangqing.zhang@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR04CA0174.apcprd04.prod.outlook.com (2603:1096:4::36)
- To VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Thu, 15 Oct
+ 2020 01:33:21 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6%12]) with mapi id 15.20.3455.031; Thu, 15 Oct
+ 2020 01:33:21 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 04/13] remoteproc: Properly represent the attached state
+Thread-Topic: [PATCH 04/13] remoteproc: Properly represent the attached state
+Thread-Index: AQHWe8jHBhVcjpKGeU6R9CCJtEvMZqmYLoig
+Date:   Thu, 15 Oct 2020 01:33:21 +0000
+Message-ID: <DB6PR0402MB276089D3879EBA0C1AA3F09988020@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20200826164529.224476-1-mathieu.poirier@linaro.org>
+ <20200826164529.224476-5-mathieu.poirier@linaro.org>
+In-Reply-To: <20200826164529.224476-5-mathieu.poirier@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 34ee6980-a612-4b40-c793-08d870aa4d1b
+x-ms-traffictypediagnostic: DB7PR04MB4090:
+x-microsoft-antispam-prvs: <DB7PR04MB40904E2C8BCA16B932BE346F88020@DB7PR04MB4090.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:758;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Xy3paGPHXFhZwtYldiy+INeZt3XIvRWzO2lhmexkA+LEcoHdWw3c9qNLBaw7LQjomu6AqYnGi5950T6AggXPfOIRjo8T9IQCgb5JxrjmybrLGVWI55u77CPmbHVgIs4UfTbev21CdPDMvmGXn/PJ7WJVrrLmr97UJFD+G/MyzNGHGPyg2osDf81EiVygt5MAvanU81EgT3oU1YF+FGLuNMTdxLPdFpdyYhgtkWsN8Xf8F7lB3pOEkbIGFZGgQACHj/C6vkuZhgZq/CPf4t4l98mT4KozQIT9/Lo4rj3uXNHzWVjtlx3bN0zppsyNWlv7HkzRRgKdgyFcz1PlzsrvDQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(366004)(346002)(376002)(55016002)(9686003)(26005)(478600001)(4326008)(8676002)(2906002)(7696005)(186003)(8936002)(52536014)(44832011)(64756008)(83380400001)(33656002)(6506007)(54906003)(316002)(110136005)(66556008)(76116006)(66446008)(66476007)(5660300002)(86362001)(71200400001)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: e3E78AK00hWIG4+bhcvZYbeHE9THLlAm0Npo+rhsVOGAbXij1Tszo4H3/pRjbthErJGsVXi4qGvF4cyyRX0J8ggI+D33K0Ky65QyTdwBuo3vR3+LamRIWUmIs1GXyL0PSl6iglZN9JdGRg3/m+QW1Fi+BOqO7RJh7dyBpD68Ftf0YZV6+pVvXuGKMEhOkTx6NwKHck3IpkvIFsP6LhymCSfGm9m4a3P+tLiDK1Nw+jqHW7rPBPD6KTw0dyBAZB7fkJxFwXOvUQ9MSA3QqDZ8PXFSiEewsE70mJH20pmThId1VAkOl2uc8ugSvS+k7Dh/jjeYmexj9yE2mn8XiaOP4RL/G0me+yiTDtEaA7D/cS5gXYVTG5SuB7/k0B0s7BtOHrrO8LPJo+XKRU7e4SGnRpiWVCgzBThk24dcuq0Cu0TwBE9/qaKF/fHaJ4p3yS66rsD//NUGOvVfVmBRNiGDw5yOnNdjWbMpeX4QyK0HXCXNOGyOvP/7TrH+NSCtQv5Vn3jbjnBSedvbgBtagR+JEck8Y8swHw7p+pz78ys4pRhhOipZWvhfZeEfOgtgHNkW8VCCR9hM6GRgG2e2nZvpzy+V0JS0EP19b5g29PC2URyyRkZj81jqpA/fO5BsTODL5Nq57Llm4eGjKnC26YpSnw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry.ap.freescale.net (119.31.174.66) by SG2PR04CA0174.apcprd04.prod.outlook.com (2603:1096:4::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.23 via Frontend Transport; Thu, 15 Oct 2020 01:35:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 81e7629f-8c5d-4fe7-f5e6-08d870aa8faf
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4239:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4239DC45F5806619E6ABF83698020@VI1PR04MB4239.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w3g907JX5URSHBEPW2hoWw/En2unqWhAQk/kNDCI1F27SVKTkivz0TD1RkySuL1BEHf/4Fuieq3pppu8FR86GopLZyh9FZwxYRRAamm9p0fMLbB7WYI3oZEZ8a7PHbTey+B/xsJIPA07vyZvOXy6SJVcc1fc6Q34RnS9Yiw3AN9ClWRyw4CTqCWAyeAaYsiGVldsFRlOJrR3fmoLnnvfEMnJCBVkQdZQDB7z5sOtvNWOsay1kI1UA1q7KsR48EFc2a83ObFpWN8IXtDIKDa3by0bFMH90dMRUy5khA5aCNrquPD4EEGqgBs0xn7+CTtUll5gZ5qZIU3XkS3QD56I01+/N/AuNDOSR8LCImLeu46VvfWmF9t4EaUNgl1/uQHK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(376002)(346002)(136003)(36756003)(186003)(6486002)(8676002)(66556008)(66476007)(2616005)(956004)(6512007)(66946007)(5660300002)(8936002)(316002)(6506007)(16526019)(26005)(478600001)(86362001)(52116002)(2906002)(83380400001)(4326008)(4001150100001)(34490700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: bXaQInhYTyOO0o3+AkC6EYzL5JCYbwlskFqZ/utQICpvS06dszthcvrZ/IAZQ+dfigsdTyjOvLXHTT67F+FlqLj8pOYSeZtVLGfHoBc9AoEO05lgeM56Sr1TWgE0gu/b/8WWb6qQcY0p3rzJTgYi4wQmuTGaIrWBWeJc3Zxyeomol1OV5I5xvTqQz8r3mv5u/GT0Gghs1puPV7Lt+3pb/Eg/dBr30E7i4Zci2PHIKK7gasvvy/bBfA7GfSN7oAuWl+SNi9Nnf489oUtrgzkIDbs+G+qGGsj9cLqZA8AzV446eCghejn7RkOgU8sBdmhEkADM9bA3zZKo001cgorwG4y8PJ43hSIfLd+bKp4rp0YtIAM+UB8AxHNLNW1iRLdgNicv4EWcMZ7ahns91ds6BiYGgtbVj5zJSQnLz0bxlbKSzUy6DlkQI32fuPHcwReO6BgFJq6p8KUNuqTUYPCXsIdroqo3KjyiEayYRXT6uJ2aG6Iy+GFs5S378YL/oUST3ByC9+v5Qiu/5JLSuhhnwyq491tWkYoeNIrWoUXnUYK0T1aiygpoN/T/grrkJo12pNMg2pjiLrO8nmJ9HAsqMvmS0MTsm53tenGC2MmPA5LOL7JoZ86u3EM1iUEZ+NFVL5YWunbOOnZBbJ0wcx21zA==
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81e7629f-8c5d-4fe7-f5e6-08d870aa8faf
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2020 01:35:13.2748
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34ee6980-a612-4b40-c793-08d870aa4d1b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 01:33:21.1553
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YUPUbfo2aOA7vJ36KHFGoeFGFss8CLAefkC4YgddCwNjY05Ue7lFNX2baDskTqIzK2VbJaCCGO8ohfxQc3zj6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4239
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8PQjaaUtrkuZKBGY1Y/77uNLrxf5EdlgoUJ5b0rFenh7xpkuhj0gwSTrDSqzLumH5AdljFl0/b7NPyGVGBcYDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joakim,
-
-On Wed, 2020-10-14 at 16:57 +0800, Joakim Zhang wrote:
-> From: Liu Ying <victor.liu@nxp.com>
-> 
-> Always export scu symbols for both SCU SoCs and non-SCU SoCs to avoid
-> build error.
-
-s/scu/SCU/
-
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> Subject: [PATCH 04/13] remoteproc: Properly represent the attached state
+>=20
+> There is a need to know when a remote processor has been attached to
+> rather than booted by the remoteproc core.  In order to avoid manipulatin=
+g
+> two variables, i.e rproc::autonomous and rproc::state, get rid of the for=
+mer
+> and simply use the newly introduced RPROC_ATTACHED state.
+>=20
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 > ---
->  include/linux/firmware/imx/ipc.h      | 15 +++++++++++++++
->  include/linux/firmware/imx/svc/misc.h | 23 +++++++++++++++++++++++
->  2 files changed, 38 insertions(+)
-> 
-> diff --git a/include/linux/firmware/imx/ipc.h
-> b/include/linux/firmware/imx/ipc.h
-> index 891057434858..300fa253fc30 100644
-> --- a/include/linux/firmware/imx/ipc.h
-> +++ b/include/linux/firmware/imx/ipc.h
-> @@ -34,6 +34,7 @@ struct imx_sc_rpc_msg {
->  	uint8_t func;
->  };
->  
-> +#if IS_ENABLED(CONFIG_IMX_SCU)
->  /*
->   * This is an function to send an RPC message over an IPC channel.
->   * It is called by client-side SCFW API function shims.
-> @@ -55,4 +56,18 @@ int imx_scu_call_rpc(struct imx_sc_ipc *ipc, void
-> *msg, bool have_resp);
->   * @return Returns an error code (0 = success, failed if < 0)
->   */
->  int imx_scu_get_handle(struct imx_sc_ipc **ipc);
-> +
-> +#else
-> +static inline int
-> +imx_scu_call_rpc(struct imx_sc_ipc *ipc, void *msg, bool have_resp)
-> +{
-> +	return -EIO;
-> +}
-> +
-> +static inline int imx_scu_get_handle(struct imx_sc_ipc **ipc)
-> +{
-> +	return -EIO;
-> +}
-> +#endif
-> +
->  #endif /* _SC_IPC_H */
-> diff --git a/include/linux/firmware/imx/svc/misc.h
-> b/include/linux/firmware/imx/svc/misc.h
-> index 031dd4d3c766..d255048f17de 100644
-> --- a/include/linux/firmware/imx/svc/misc.h
-> +++ b/include/linux/firmware/imx/svc/misc.h
-> @@ -46,6 +46,7 @@ enum imx_misc_func {
->   * Control Functions
->   */
->  
-> +#if IS_ENABLED(CONFIG_IMX_SCU)
->  int imx_sc_misc_set_control(struct imx_sc_ipc *ipc, u32 resource,
->  			    u8 ctrl, u32 val);
->  
-> @@ -55,4 +56,26 @@ int imx_sc_misc_get_control(struct imx_sc_ipc
-> *ipc, u32 resource,
->  int imx_sc_pm_cpu_start(struct imx_sc_ipc *ipc, u32 resource,
->  			bool enable, u64 phys_addr);
->  
-> +#else
-> +static inline int
-> +imx_sc_misc_set_control(struct imx_sc_ipc *ipc, u32 resource,
-> +			u8 ctrl, u32 val)
-> +{
-> +	return -EIO;
-> +}
-> +
-> +static inline int
-> +imx_sc_misc_get_control(struct imx_sc_ipc *ipc, u32 resource,
-> +			u8 ctrl, u32 *val)
-> +{
-> +	return -EIO;
-> +}
-> +
-> +static inline int imx_sc_pm_cpu_start(struct imx_sc_ipc *ipc, u32
-> resource,
-> +				      bool enable, u64 phys_addr)
-> +{
-> +	return -EIO;
-> +}
-> +#endif
-> +
->  #endif /* _SC_MISC_API_H */
+>  drivers/remoteproc/remoteproc_core.c  | 20 +-------------------
+> drivers/remoteproc/remoteproc_sysfs.c |  5 +----
+>  include/linux/remoteproc.h            |  2 --
+>  3 files changed, 2 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/drivers/remoteproc/remoteproc_core.c
+> b/drivers/remoteproc/remoteproc_core.c
+> index 7d78c9a9d88f..bffaa9ea7c8f 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1421,7 +1421,7 @@ static int rproc_attach(struct rproc *rproc)
+>  		goto stop_rproc;
+>  	}
+>=20
+> -	rproc->state =3D RPROC_RUNNING;
+> +	rproc->state =3D RPROC_ATTACHED;
+>=20
+>  	dev_info(dev, "remote processor %s is now attached\n", rproc->name);
+>=20
+> @@ -1636,14 +1636,6 @@ static int rproc_stop(struct rproc *rproc, bool
+> crashed)
+>=20
+>  	rproc->state =3D RPROC_OFFLINE;
+>=20
+> -	/*
+> -	 * The remote processor has been stopped and is now offline, which
+> means
+> -	 * that the next time it is brought back online the remoteproc core wil=
+l
+> -	 * be responsible to load its firmware.  As such it is no longer
+> -	 * autonomous.
+> -	 */
+> -	rproc->autonomous =3D false;
+> -
+>  	dev_info(dev, "stopped remote processor %s\n", rproc->name);
+>=20
+>  	return 0;
+> @@ -1994,16 +1986,6 @@ int rproc_add(struct rproc *rproc)
+>  	if (ret < 0)
+>  		return ret;
+>=20
+> -	/*
+> -	 * Remind ourselves the remote processor has been attached to rather
+> -	 * than booted by the remoteproc core.  This is important because the
+> -	 * RPROC_DETACHED state will be lost as soon as the remote processor
+> -	 * has been attached to.  Used in firmware_show() and reset in
+> -	 * rproc_stop().
+> -	 */
+> -	if (rproc->state =3D=3D RPROC_DETACHED)
+> -		rproc->autonomous =3D true;
+> -
+>  	/* if rproc is marked always-on, request it to boot */
+>  	if (rproc->auto_boot) {
+>  		ret =3D rproc_trigger_auto_boot(rproc); diff --git
+> a/drivers/remoteproc/remoteproc_sysfs.c
+> b/drivers/remoteproc/remoteproc_sysfs.c
+> index 2d575e6c9eb8..c152d11a4d3c 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -21,11 +21,8 @@ static ssize_t firmware_show(struct device *dev, struc=
+t
+> device_attribute *attr,
+>  	 * If the remote processor has been started by an external
+>  	 * entity we have no idea of what image it is running.  As such
+>  	 * simply display a generic string rather then rproc->firmware.
+> -	 *
+> -	 * Here we rely on the autonomous flag because a remote processor
+> -	 * may have been attached to and currently in a running state.
+>  	 */
+> -	if (rproc->autonomous)
+> +	if (rproc->state =3D=3D RPROC_ATTACHED)
+>  		firmware =3D "unknown";
+>=20
+>  	return sprintf(buf, "%s\n", firmware); diff --git
+> a/include/linux/remoteproc.h b/include/linux/remoteproc.h index
+> 4e107615121a..fe383392a821 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -510,7 +510,6 @@ struct rproc_dump_segment {
+>   * @table_sz: size of @cached_table
+>   * @has_iommu: flag to indicate if remote processor is behind an MMU
+>   * @auto_boot: flag to indicate if remote processor should be auto-start=
+ed
+> - * @autonomous: true if an external entity has booted the remote process=
+or
+>   * @dump_segments: list of segments in the firmware
+>   * @nb_vdev: number of vdev currently handled by rproc
+>   * @char_dev: character device of the rproc @@ -547,7 +546,6 @@ struct
+> rproc {
+>  	size_t table_sz;
+>  	bool has_iommu;
+>  	bool auto_boot;
+> -	bool autonomous;
+>  	struct list_head dump_segments;
+>  	int nb_vdev;
+>  	u8 elf_class;
+> --
 
-This is done in our downstream tree. I did this because a downstream
-display driver covers SoCs w/wo SCU. For upstream, I find the drivers
-can be splited so that this is not needed.
+Looks good.
 
-Do you see any existing upstream driver covers SoCs w/wo SCU?
-I think this can be introduced together with the first that kink of
-driver.
-
--- 
- Liu Ying
-
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
