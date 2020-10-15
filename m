@@ -2,74 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B3C28F6CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF7828F6D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389933AbgJOQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 12:31:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389258AbgJOQbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 12:31:44 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BC8722240;
-        Thu, 15 Oct 2020 16:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602779503;
-        bh=lshOq+K0CpFLNxvyVZCkuH7FKLCn2Q7EgpXW3c2Hfg0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pjSDgGOIn18+q2Dh6pnsk0pi1CvvNflP0cinPQSy+wwJJ1HsFfmk0b92g9BpoQHHk
-         /YXSdac6hNV28h7ChJK4/kiNyrEEIJVl1EEKNqgsR0svTFiBXAxskwnsvwWsIet9p/
-         KuJkAshdcm6nGpOACm+Ba9QA1+wzySLHNYIuXSt0=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 42C57403C2; Thu, 15 Oct 2020 13:31:40 -0300 (-03)
-Date:   Thu, 15 Oct 2020 13:31:40 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: perf test 67 dumps core on linux v5.9
-Message-ID: <20201015163140.GB308748@kernel.org>
-References: <a0474694-ab14-3131-0076-a67dba0586f1@linux.ibm.com>
- <20201015125259.GB1461394@krava>
- <7dab863f-6a2b-edf1-5049-9398cb53a68d@linux.ibm.com>
- <20201015145044.GC1461394@krava>
- <20201015150917.GD1461394@krava>
+        id S2389776AbgJOQcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:32:54 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40083 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389147AbgJOQcy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 12:32:54 -0400
+Received: by mail-wm1-f68.google.com with SMTP id k18so4430795wmj.5;
+        Thu, 15 Oct 2020 09:32:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=ZxyFlDAhLqNGLQjK2TRdoeg3UYe4lOP/y4EhwxNytxE=;
+        b=HN0+XPLcW6Lp6yv0UtebRqdviGB+EqMcUn4DZzMyPEVftjEs0TuyhHvhSD6UNVnpVH
+         pd3ErnvOPpLxE9WKOt2SgAA9jkKAX1pAYl/PIYtOLmNNF5thtCvdjODGlH0qS28Tx5y2
+         eDyuiYDPq3YMJd8bD4xFimKu25wQonc3BjWMghmJ8ML9TzbfrsGQRKzBmdgohIZkUZjo
+         xDUoKQHIm52XCMD2coicOjCm4cMWkMtfc7upFDAu+YbLZ1YuXwywKAa5aH1HwpUUSdfK
+         +/DAP97MxtSkRlF2ZLukfYbYn0gQFP1RRakq//+54iGpbQVBu2SPSHHXx1ynZRDBBXhX
+         +/Zw==
+X-Gm-Message-State: AOAM530h2kpEExafNgY533tf388dGaE4sXBfQD/F83jFmn8JW9twzRzJ
+        KLNdcJ0nTWkD4XCG9aeXnk0=
+X-Google-Smtp-Source: ABdhPJw6HiJGqJxS1+Zb3VqlF2TFDHUHFtD0tYhEBtYjob+4ZCuHBwhp2Q8mvVMLA9LRnYQpXEwaxA==
+X-Received: by 2002:a1c:bd0a:: with SMTP id n10mr4844493wmf.177.1602779570750;
+        Thu, 15 Oct 2020 09:32:50 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id a3sm4882848wmb.46.2020.10.15.09.32.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 09:32:50 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 16:32:48 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Hyper-V commits for 5.10, part 2
+Message-ID: <20201015163248.yo3ior67vxtvojra@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015150917.GD1461394@krava>
-X-Url:  http://acmel.wordpress.com
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 15, 2020 at 05:09:17PM +0200, Jiri Olsa escreveu:
-> ah when puting it on top of perf/core I found it's already fixed there:
->   a55b7bb1c146 (tag: perf-tools-tests-v5.10-2020-09-28) perf test: Fix msan uninitialized use.
- 
-> so we should be fine
+Hi Linus,
 
-For 5.10, yes, but probably we need to send this to stable@ since Thomas
-reported it failing on v5.9.
+I accidentally dropped one patch that was supposed to be merged in this
+merge window from my first pull request.
 
-Does a55b7bb1c146 have a Fixes: tag?
+Please pull the following changes since commit 1f3aed01473c41c9f896fbf4c30d330655e8aa7c:
 
-Yes!
+  hv: clocksource: Add notrace attribute to read_hv_sched_clock_*() functions (2020-09-28 09:04:48 +0000)
 
-[acme@five perf]$ git show a55b7bb1c146 | grep Fixes:
-    Fixes: commit f5a56570a3f2 ("perf test: Fix memory leaks in parse-metric test")
-[acme@five perf]$ git tag --contains f5a56570a3f2 | grep ^v | head -1
-v5.9
-[acme@five perf]$
+are available in the Git repository at:
 
-So v5.9.1 will probably get this automagically cherry-picked.
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
 
-Good.
+for you to fetch changes up to 626b901f60446355e35e8c76c6b391a7d7491203:
 
-- Arnaldo
+  Drivers: hv: vmbus: Add parsing of VMbus interrupt in ACPI DSDT (2020-10-14 19:14:51 +0000)
+
+----------------------------------------------------------------
+hyperv-next for 5.10, part 2
+
+  - One patch from Michael to get VMbus interrupt from ACPI DSDT
+
+----------------------------------------------------------------
+Michael Kelley (1):
+      Drivers: hv: vmbus: Add parsing of VMbus interrupt in ACPI DSDT
+
+ arch/x86/include/asm/mshyperv.h |  1 +
+ arch/x86/kernel/cpu/mshyperv.c  |  7 ++++++-
+ drivers/hv/hv.c                 |  2 +-
+ drivers/hv/vmbus_drv.c          | 30 +++++++++++++++++++++++++++---
+ include/asm-generic/mshyperv.h  |  4 +++-
+ 5 files changed, 38 insertions(+), 6 deletions(-)
