@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A02928FA3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A36E28FA42
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732675AbgJOUj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 16:39:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732213AbgJOUj4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 16:39:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602794395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=drNAM9RnP6kYRtro33MBF8DkJ/VVjdpQLGpKNAKGMr0=;
-        b=XQE1vKY169zUJHe8PpMOjjo8nT2H7ZQLtKK61ZasL6GD5Ad29IzcFP73xH9D4gtd49yydv
-        94vWPhfqXFGRh6Nt0cX62L4aW5woTAaQ9BzhOY73j2Q3pkMFHQdYtt+aM/evrdr7PHqj46
-        aY+XdFzFgaECSAI22RFL2znS0Wf4yVg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-RnX1X4qvPkWYUnhEN4Iw2A-1; Thu, 15 Oct 2020 16:39:51 -0400
-X-MC-Unique: RnX1X4qvPkWYUnhEN4Iw2A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2388575AbgJOUkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 16:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732543AbgJOUks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 16:40:48 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07DC2107466A;
-        Thu, 15 Oct 2020 20:39:49 +0000 (UTC)
-Received: from treble (ovpn-115-218.rdu2.redhat.com [10.10.115.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 036CA6EF72;
-        Thu, 15 Oct 2020 20:39:44 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 15:39:42 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jann Horn <jannh@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FA9E2074A;
+        Thu, 15 Oct 2020 20:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602794448;
+        bh=Qm9cC9KFu3xj9C59JMqjeE0ma0wxuVFp57tRrXta47c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TamyK5L6fQP69CxylBIxgKfLSRQt6xSti4Z7Olh056rWLBYYm8IVFBGLpt+WSMRls
+         fRGgoutQepv0FOH232SWDfRWM79EQE1jBRvAd4jx9BwOq7bvPr6HeRuFt0O95mgzbN
+         BA9HxzQlKTYMLFcOE6Ca07sXvBVEkKL4umVYOnEo=
+From:   Will Deacon <will@kernel.org>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
         Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201015203942.f3kwcohcwwa6lagd@treble>
-References: <20201013003203.4168817-1-samitolvanen@google.com>
- <20201013003203.4168817-23-samitolvanen@google.com>
- <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net>
+        Mina Almasry <almasrymina@google.com>, lokeshgidra@google.com,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "H. Peter Anvin" <hpa@zytor.com>, surenb@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Hassan Naveed <hnaveed@wavecomp.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        joelaf@google.com, Masahiro Yamada <masahiroy@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Price <steven.price@arm.com>, x86@kernel.org,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, minchan@google.com,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Gavin Shan <gshan@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Jia He <justin.he@arm.com>, Mike Rapoport <rppt@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-kselftest@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v4 0/5] Speed up mremap on large regions
+Date:   Thu, 15 Oct 2020 21:40:30 +0100
+Message-Id: <160275767389.2776006.15931668564498606994.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201014005320.2233162-1-kaleshsingh@google.com>
+References: <20201014005320.2233162-1-kaleshsingh@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201015102216.GB2611@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 12:22:16PM +0200, Peter Zijlstra wrote:
-> On Thu, Oct 15, 2020 at 01:23:41AM +0200, Jann Horn wrote:
+On Wed, 14 Oct 2020 00:53:05 +0000, Kalesh Singh wrote:
+> This is a repost of the mremap speed up patches, adding Kirill's
+> Acked-by's (from a separate discussion). The previous versions are
+> posted at:
+> v1 - https://lore.kernel.org/r/20200930222130.4175584-1-kaleshsingh@google.com
+> v2 - https://lore.kernel.org/r/20201002162101.665549-1-kaleshsingh@google.com
+> v3 - http://lore.kernel.org/r/20201005154017.474722-1-kaleshsingh@google.com
 > 
-> > It would probably be good to keep LTO and non-LTO builds in sync about
-> > which files are subjected to objtool checks. So either you should be
-> > removing the OBJECT_FILES_NON_STANDARD annotations for anything that
-> > is linked into the main kernel (which would be a nice cleanup, if that
-> > is possible), 
-> 
-> This, I've had to do that for a number of files already for the limited
-> vmlinux.o passes we needed for noinstr validation.
+> [...]
 
-Getting rid of OBJECT_FILES_NON_STANDARD is indeed the end goal, though
-I'm not sure how practical that will be for some of the weirder edge
-case.
+Applied just the arm64 PMD patch to arm64 (for-next/core), thanks!
 
-On a related note, I have some old crypto cleanups which need dusting
-off.
+[1/1] arm64: mremap speedup - Enable HAVE_MOVE_PMD
+      https://git.kernel.org/arm64/c/45544eee9606
 
+Cheers,
 -- 
-Josh
+Will
 
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
