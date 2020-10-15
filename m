@@ -2,127 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A99E28EDC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C7628EDE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgJOHdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 03:33:20 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15293 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726103AbgJOHdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 03:33:20 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A6F4CD129FA1D36E22D9;
-        Thu, 15 Oct 2020 15:33:00 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.134) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 15 Oct 2020
- 15:32:59 +0800
-Subject: Re: [PATCH 6/6] dt-bindings: misc: correct the property name
- cmd-gpios to cmd-gpio
-To:     Lubomir Rintel <lkundrak@v3.sk>
-CC:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, Dan Murphy <dmurphy@ti.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        "Benson Leung" <bleung@chromium.org>,
-        linux-leds <linux-leds@vger.kernel.org>
-References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
- <20201013160845.1772-7-thunder.leizhen@huawei.com>
- <20201015071256.GA1092695@demiurge.local>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <78daaeae-dc13-91ca-a33e-6fcba5f7f3d5@huawei.com>
-Date:   Thu, 15 Oct 2020 15:32:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729605AbgJOHux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 03:50:53 -0400
+Received: from aer-iport-2.cisco.com ([173.38.203.52]:34938 "EHLO
+        aer-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgJOHux (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 03:50:53 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Oct 2020 03:50:52 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=3364; q=dns/txt; s=iport;
+  t=1602748252; x=1603957852;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bENcFV7HShz2/1Erdh4ZaV1FftkaV0pHdsikfNJ7OZM=;
+  b=iTwTBUru2fuZxnJyqfYgyXTATCFR+2+URM5Z0v0JEUWmN/5IZpncORDf
+   YegGFqdvGZ3ohWBCMU8lWtowW9FOK/TePO66iVAUgVEeUYWkpf4opP6o6
+   Mm4SxFmE1d1bhega7fO16ODdDK8h2N/31MD4XVsah+9NIup1Ca0dSb+B1
+   M=;
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0DcBABm/Ydf/xbLJq1ghkcBIBIsjT+?=
+ =?us-ascii?q?kPQsBAQEPLwQBAYRKggkmOBMCAwEBCwEBBQEBAQIBBgRthWiGIAsBRjCBIYM?=
+ =?us-ascii?q?mgn2qfIF1M4pYgTiIN4RhMwaBQT+EX4o0BJApp0iCdJpfDyKDFYoIBJQlLbN?=
+ =?us-ascii?q?PgWsjgVdNIxWDJFAZDY4rFxSOEj8DMAI2AgYKAQEDCY5IAQE?=
+X-IronPort-AV: E=Sophos;i="5.77,378,1596499200"; 
+   d="scan'208";a="30372734"
+Received: from aer-iport-nat.cisco.com (HELO aer-core-1.cisco.com) ([173.38.203.22])
+  by aer-iport-2.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 15 Oct 2020 07:43:40 +0000
+Received: from hce-anki.rd.cisco.com ([10.47.78.239])
+        by aer-core-1.cisco.com (8.15.2/8.15.2) with ESMTP id 09F7he90020030;
+        Thu, 15 Oct 2020 07:43:40 GMT
+From:   Hans-Christian Noren Egtvedt <hegtvedt@cisco.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH v4.4/bluetooth 1/2] Bluetooth: Consolidate encryption handling in hci_encrypt_cfm
+Date:   Thu, 15 Oct 2020 09:43:32 +0200
+Message-Id: <20201015074333.445510-1-hegtvedt@cisco.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201015071256.GA1092695@demiurge.local>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Outbound-SMTP-Client: 10.47.78.239, [10.47.78.239]
+X-Outbound-Node: aer-core-1.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
+This makes hci_encrypt_cfm calls hci_connect_cfm in case the connection
+state is BT_CONFIG so callers don't have to check the state.
 
-On 2020/10/15 15:12, Lubomir Rintel wrote:
-> Hi,
-> 
-> On Wed, Oct 14, 2020 at 12:08:45AM +0800, Zhen Lei wrote:
->> The property name used in arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts is
->> cmd-gpio.
->>
->> arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:235:
->> cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> 
-> Thanks for the patch.
-> 
-> I've sent out an equivalent one some time ago:
-> https://lore.kernel.org/lkml/20200925234805.228251-3-lkundrak@v3.sk/
-> 
-> In any case, either is fine with me.
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+(cherry picked from commit 3ca44c16b0dcc764b641ee4ac226909f5c421aa3)
+(cherry picked from commit 0a60996c7fa7010ea00d9b62fb6996d908a01ead)
+---
+AFAICT, fixing CVE 2020-10135 Bluetooth impersonation attacks have been
+left out for the 4.4 stable kernel. I cherry picked what I assume are
+the appropriate two patches missing from the 4.9 stable kernel. Please
+add them to upcoming 4.4 stable releases.
 
-Geert Uytterhoeven just replied me that the *-gpio form is deprecated. So your
-patch is the correct one.
+ include/net/bluetooth/hci_core.h | 20 ++++++++++++++++++--
+ net/bluetooth/hci_event.c        | 28 +++-------------------------
+ 2 files changed, 21 insertions(+), 27 deletions(-)
 
-> 
-> Acked-by: Lubomir Rintel <lkundrak@v3.sk>
-> 
->> ---
->>  Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
->> index b3c45c046ba5e37..c7a06a9650db2ed 100644
->> --- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
->> +++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
->> @@ -24,7 +24,7 @@ properties:
->>    compatible:
->>      const: olpc,xo1.75-ec
->>  
->> -  cmd-gpios:
->> +  cmd-gpio:
->>      description: GPIO uspecifier of the CMD pin
->>      maxItems: 1
->>  
->> @@ -32,7 +32,7 @@ properties:
->>  
->>  required:
->>    - compatible
->> -  - cmd-gpios
->> +  - cmd-gpio
->>  
->>  additionalProperties: false
->>  
->> @@ -49,7 +49,7 @@ examples:
->>        slave {
->>          compatible = "olpc,xo1.75-ec";
->>          spi-cpha;
->> -        cmd-gpios = <&gpio 155 GPIO_ACTIVE_HIGH>;
->> +        cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
->>        };
->>      };
->>  
->> -- 
->> 1.8.3
->>
->>
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-> .
-> 
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 7c0c83dfe86e..0269a772bfe1 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1235,10 +1235,26 @@ static inline void hci_auth_cfm(struct hci_conn *conn, __u8 status)
+ 		conn->security_cfm_cb(conn, status);
+ }
+ 
+-static inline void hci_encrypt_cfm(struct hci_conn *conn, __u8 status,
+-								__u8 encrypt)
++static inline void hci_encrypt_cfm(struct hci_conn *conn, __u8 status)
+ {
+ 	struct hci_cb *cb;
++	__u8 encrypt;
++
++	if (conn->state == BT_CONFIG) {
++		if (status)
++			conn->state = BT_CONNECTED;
++
++		hci_connect_cfm(conn, status);
++		hci_conn_drop(conn);
++		return;
++	}
++
++	if (!test_bit(HCI_CONN_ENCRYPT, &conn->flags))
++		encrypt = 0x00;
++	else if (test_bit(HCI_CONN_AES_CCM, &conn->flags))
++		encrypt = 0x02;
++	else
++		encrypt = 0x01;
+ 
+ 	if (conn->sec_level == BT_SECURITY_SDP)
+ 		conn->sec_level = BT_SECURITY_LOW;
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 03319ab8a7c6..bb9c13506bca 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2479,7 +2479,7 @@ static void hci_auth_complete_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 				     &cp);
+ 		} else {
+ 			clear_bit(HCI_CONN_ENCRYPT_PEND, &conn->flags);
+-			hci_encrypt_cfm(conn, ev->status, 0x00);
++			hci_encrypt_cfm(conn, ev->status);
+ 		}
+ 	}
+ 
+@@ -2565,22 +2565,7 @@ static void read_enc_key_size_complete(struct hci_dev *hdev, u8 status,
+ 		conn->enc_key_size = rp->key_size;
+ 	}
+ 
+-	if (conn->state == BT_CONFIG) {
+-		conn->state = BT_CONNECTED;
+-		hci_connect_cfm(conn, 0);
+-		hci_conn_drop(conn);
+-	} else {
+-		u8 encrypt;
+-
+-		if (!test_bit(HCI_CONN_ENCRYPT, &conn->flags))
+-			encrypt = 0x00;
+-		else if (test_bit(HCI_CONN_AES_CCM, &conn->flags))
+-			encrypt = 0x02;
+-		else
+-			encrypt = 0x01;
+-
+-		hci_encrypt_cfm(conn, 0, encrypt);
+-	}
++	hci_encrypt_cfm(conn, 0);
+ 
+ unlock:
+ 	hci_dev_unlock(hdev);
+@@ -2674,14 +2659,7 @@ static void hci_encrypt_change_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 	}
+ 
+ notify:
+-	if (conn->state == BT_CONFIG) {
+-		if (!ev->status)
+-			conn->state = BT_CONNECTED;
+-
+-		hci_connect_cfm(conn, ev->status);
+-		hci_conn_drop(conn);
+-	} else
+-		hci_encrypt_cfm(conn, ev->status, ev->encrypt);
++	hci_encrypt_cfm(conn, ev->status);
+ 
+ unlock:
+ 	hci_dev_unlock(hdev);
+-- 
+2.27.0
 
