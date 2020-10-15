@@ -2,454 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CFE28F060
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B02A28F063
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgJOKvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgJOKvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:51:46 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA837C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:51:46 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 10so1800643pfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:51:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=DXtYQwE3N7ZgPdwG23jIICPx5FHKPKD05kuRDHrrzi8=;
-        b=TqCu0caPVGTmGnVO4jOmNXUSLMmZrilg8oXNP9FFc6gcHkazR0o3rndTs7sX9g+OSF
-         7MqWOHwI+C4furdsYKp/2yzyywtIQha7l26lbSLBBrpXuWt5AodREhw+UqkOG+VsGy+Y
-         j+Rw0KgktVyEzQL5mV6Fjvd0ZDGKbV1kO+7ZyVdbB5q+ko+61OEpnFxEHvVqkv1dsB5u
-         s09yI6a+HBSN/6Lu8zNTo6VK+Yrcu1QYWEujt5aoZCWtiZsjNp0D7soWhkbtRX/2p+wv
-         yQlvLII4OGT0hiQ9wEe8FBPlVXMt8xuB/Daw0JDiYSLnNy+SyB6GhIocwQd0cgfMktWg
-         +PMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=DXtYQwE3N7ZgPdwG23jIICPx5FHKPKD05kuRDHrrzi8=;
-        b=PD4o3E+MV7ZmqdjZ8EhuSWxphDHSbjyb+fOoxgwz/ATRC2Yrslnp/ax+AalJQRU4z8
-         ZJa7BPyhKpYfxfqF7cp4RaJgDWeMl61kXLEfK3zUv99atlqY2rUVH8ZveIbYkbK8o3m/
-         sA1sk6uqE3t0hIpuGBukfqRVHiYYVaWl/OdnVq1NlSHEsuSW7qMFl+qub3VShv3dKhtw
-         T3BUkamJDZu9jlK9KXz5ESpZvKl3Bn62jl7BxtJQBB3Y4yWilbCSUwzt00LXTWqa2+EX
-         jxIM6UDamtQWOQpjsJqTLkFK2qnW4tNQrizdwjN0E1Rjt0DNFXHHIjW1df30VVym6R6N
-         fSdA==
-X-Gm-Message-State: AOAM532r4ZbUzxoawfktLrprNDOExp40Dv508kuthUBBxwLXrEO5Erhu
-        js8RcXzC/+pAtkfFzoaJmE4=
-X-Google-Smtp-Source: ABdhPJxAzmNyeQv3b/PDY53+ZPtW6/E/UBvhxt/qHY2RQ4kPBJNsDuJ8VYi4gqmdKkgOWNYYzv5uWA==
-X-Received: by 2002:a62:e706:0:b029:152:5364:f5e4 with SMTP id s6-20020a62e7060000b02901525364f5e4mr3530324pfh.71.1602759106078;
-        Thu, 15 Oct 2020 03:51:46 -0700 (PDT)
-Received: from adolin ([49.207.198.246])
-        by smtp.gmail.com with ESMTPSA id c15sm2843150pgg.77.2020.10.15.03.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 03:51:45 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 16:21:40 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     cocci@systeme.lip6.fr, michal.lkml@markovi.net,
-        nicolas.palix@imag.fr, linux-kernel@vger.kernel.org,
-        Gilles.Muller@lip6.fr
-Subject: [PATCH V3] [Cocci] coccinelle: iterators: Add for_each_child.cocci
- script
-Message-ID: <20201015105140.sj4dfy2eykkts2tn@adolin>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        id S1728330AbgJOKw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:52:27 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:59308 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728009AbgJOKw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:52:26 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CBmM90Gq1zB09ZT;
+        Thu, 15 Oct 2020 12:52:21 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id SbMnJxog58-1; Thu, 15 Oct 2020 12:52:20 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CBmM85vf7zB09ZS;
+        Thu, 15 Oct 2020 12:52:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1251D8B809;
+        Thu, 15 Oct 2020 12:52:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id OFAG28YBprpN; Thu, 15 Oct 2020 12:52:21 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 960618B7FF;
+        Thu, 15 Oct 2020 12:52:21 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BC4976646A; Thu, 15 Oct 2020 10:52:20 +0000 (UTC)
+Message-Id: <a1d31f84ddb0926813b17fcd5cc7f3fa7b4deac2.1602759123.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc: force inlining of csum_partial() to avoid multiple
+ csum_partial() with GCC10
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 15 Oct 2020 10:52:20 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While iterating over child nodes with the for_each functions, if
-control is transferred from the middle of the loop, as in the case
-of a break or return or goto, there is no decrement in the
-reference counter thus ultimately resulting in a memory leak.
+	ppc-linux-objdump -d vmlinux | grep -e "<csum_partial>" -e "<__csum_partial>"
 
-Add this script to detect potential memory leaks caused by
-the absence of of_node_put() before break, goto, or, return
-statements which transfer control outside the loop.
+With gcc9 I get:
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+	c0017ef8 <__csum_partial>:
+	c00182fc:	4b ff fb fd 	bl      c0017ef8 <__csum_partial>
+	c0018478:	4b ff fa 80 	b       c0017ef8 <__csum_partial>
+	c03e8458:	4b c2 fa a0 	b       c0017ef8 <__csum_partial>
+	c03e8518:	4b c2 f9 e1 	bl      c0017ef8 <__csum_partial>
+	c03ef410:	4b c2 8a e9 	bl      c0017ef8 <__csum_partial>
+	c03f0b24:	4b c2 73 d5 	bl      c0017ef8 <__csum_partial>
+	c04279a4:	4b bf 05 55 	bl      c0017ef8 <__csum_partial>
+	c0429820:	4b be e6 d9 	bl      c0017ef8 <__csum_partial>
+	c0429944:	4b be e5 b5 	bl      c0017ef8 <__csum_partial>
+	c042b478:	4b be ca 81 	bl      c0017ef8 <__csum_partial>
+	c042b554:	4b be c9 a5 	bl      c0017ef8 <__csum_partial>
+	c045f15c:	4b bb 8d 9d 	bl      c0017ef8 <__csum_partial>
+	c0492190:	4b b8 5d 69 	bl      c0017ef8 <__csum_partial>
+	c0492310:	4b b8 5b e9 	bl      c0017ef8 <__csum_partial>
+	c0495594:	4b b8 29 65 	bl      c0017ef8 <__csum_partial>
+	c049c420:	4b b7 ba d9 	bl      c0017ef8 <__csum_partial>
+	c049c870:	4b b7 b6 89 	bl      c0017ef8 <__csum_partial>
+	c049c930:	4b b7 b5 c9 	bl      c0017ef8 <__csum_partial>
+	c04a9ca0:	4b b6 e2 59 	bl      c0017ef8 <__csum_partial>
+	c04bdde4:	4b b5 a1 15 	bl      c0017ef8 <__csum_partial>
+	c04be480:	4b b5 9a 79 	bl      c0017ef8 <__csum_partial>
+	c04be710:	4b b5 97 e9 	bl      c0017ef8 <__csum_partial>
+	c04c969c:	4b b4 e8 5d 	bl      c0017ef8 <__csum_partial>
+	c04ca2fc:	4b b4 db fd 	bl      c0017ef8 <__csum_partial>
+	c04cf5bc:	4b b4 89 3d 	bl      c0017ef8 <__csum_partial>
+	c04d0440:	4b b4 7a b9 	bl      c0017ef8 <__csum_partial>
 
-----
-Changes in V2:
-- Add options --include-headers and --no-includes
-- Add 'when forall` to rules for break and goto
+With gcc10 I get:
 
-Changes in V3:
-- Add return case
+	c0018d08 <__csum_partial>:
+	c0019020 <csum_partial>:
+	c0019020:	4b ff fc e8 	b       c0018d08 <__csum_partial>
+	c001914c:	4b ff fe d4 	b       c0019020 <csum_partial>
+	c0019250:	4b ff fd d1 	bl      c0019020 <csum_partial>
+	c03e404c <csum_partial>:
+	c03e404c:	4b c3 4c bc 	b       c0018d08 <__csum_partial>
+	c03e4050:	4b ff ff fc 	b       c03e404c <csum_partial>
+	c03e40fc:	4b ff ff 51 	bl      c03e404c <csum_partial>
+	c03e6680:	4b ff d9 cd 	bl      c03e404c <csum_partial>
+	c03e68c4:	4b ff d7 89 	bl      c03e404c <csum_partial>
+	c03e7934:	4b ff c7 19 	bl      c03e404c <csum_partial>
+	c03e7bf8:	4b ff c4 55 	bl      c03e404c <csum_partial>
+	c03eb148:	4b ff 8f 05 	bl      c03e404c <csum_partial>
+	c03ecf68:	4b c2 bd a1 	bl      c0018d08 <__csum_partial>
+	c04275b8 <csum_partial>:
+	c04275b8:	4b bf 17 50 	b       c0018d08 <__csum_partial>
+	c0427884:	4b ff fd 35 	bl      c04275b8 <csum_partial>
+	c0427b18:	4b ff fa a1 	bl      c04275b8 <csum_partial>
+	c0427bd8:	4b ff f9 e1 	bl      c04275b8 <csum_partial>
+	c0427cd4:	4b ff f8 e5 	bl      c04275b8 <csum_partial>
+	c0427e34:	4b ff f7 85 	bl      c04275b8 <csum_partial>
+	c045a1c0:	4b bb eb 49 	bl      c0018d08 <__csum_partial>
+	c0489464 <csum_partial>:
+	c0489464:	4b b8 f8 a4 	b       c0018d08 <__csum_partial>
+	c04896b0:	4b ff fd b5 	bl      c0489464 <csum_partial>
+	c048982c:	4b ff fc 39 	bl      c0489464 <csum_partial>
+	c0490158:	4b b8 8b b1 	bl      c0018d08 <__csum_partial>
+	c0492f0c <csum_partial>:
+	c0492f0c:	4b b8 5d fc 	b       c0018d08 <__csum_partial>
+	c049326c:	4b ff fc a1 	bl      c0492f0c <csum_partial>
+	c049333c:	4b ff fb d1 	bl      c0492f0c <csum_partial>
+	c0493b18:	4b ff f3 f5 	bl      c0492f0c <csum_partial>
+	c0493f50:	4b ff ef bd 	bl      c0492f0c <csum_partial>
+	c0493ffc:	4b ff ef 11 	bl      c0492f0c <csum_partial>
+	c04a0f78:	4b b7 7d 91 	bl      c0018d08 <__csum_partial>
+	c04b3e3c:	4b b6 4e cd 	bl      c0018d08 <__csum_partial>
+	c04b40d0 <csum_partial>:
+	c04b40d0:	4b b6 4c 38 	b       c0018d08 <__csum_partial>
+	c04b4448:	4b ff fc 89 	bl      c04b40d0 <csum_partial>
+	c04b46f4:	4b ff f9 dd 	bl      c04b40d0 <csum_partial>
+	c04bf448:	4b b5 98 c0 	b       c0018d08 <__csum_partial>
+	c04c5264:	4b b5 3a a5 	bl      c0018d08 <__csum_partial>
+	c04c61e4:	4b b5 2b 25 	bl      c0018d08 <__csum_partial>
+
+gcc10 defines multiple versions of csum_partial() which are just
+an unconditionnal branch to __csum_partial().
+
+To enforce inlining of that branch to __csum_partial(),
+mark csum_partial() as __always_inline.
+
+With this patch with gcc10:
+
+	c0018d08 <__csum_partial>:
+	c0019148:	4b ff fb c0 	b       c0018d08 <__csum_partial>
+	c001924c:	4b ff fa bd 	bl      c0018d08 <__csum_partial>
+	c03e40ec:	4b c3 4c 1d 	bl      c0018d08 <__csum_partial>
+	c03e4120:	4b c3 4b e8 	b       c0018d08 <__csum_partial>
+	c03eb004:	4b c2 dd 05 	bl      c0018d08 <__csum_partial>
+	c03ecef4:	4b c2 be 15 	bl      c0018d08 <__csum_partial>
+	c0427558:	4b bf 17 b1 	bl      c0018d08 <__csum_partial>
+	c04286e4:	4b bf 06 25 	bl      c0018d08 <__csum_partial>
+	c0428cd8:	4b bf 00 31 	bl      c0018d08 <__csum_partial>
+	c0428d84:	4b be ff 85 	bl      c0018d08 <__csum_partial>
+	c045a17c:	4b bb eb 8d 	bl      c0018d08 <__csum_partial>
+	c0489450:	4b b8 f8 b9 	bl      c0018d08 <__csum_partial>
+	c0491860:	4b b8 74 a9 	bl      c0018d08 <__csum_partial>
+	c0492eec:	4b b8 5e 1d 	bl      c0018d08 <__csum_partial>
+	c04a0eac:	4b b7 7e 5d 	bl      c0018d08 <__csum_partial>
+	c04b3e34:	4b b6 4e d5 	bl      c0018d08 <__csum_partial>
+	c04b426c:	4b b6 4a 9d 	bl      c0018d08 <__csum_partial>
+	c04b463c:	4b b6 46 cd 	bl      c0018d08 <__csum_partial>
+	c04c004c:	4b b5 8c bd 	bl      c0018d08 <__csum_partial>
+	c04c0368:	4b b5 89 a1 	bl      c0018d08 <__csum_partial>
+	c04c5254:	4b b5 3a b5 	bl      c0018d08 <__csum_partial>
+	c04c60d4:	4b b5 2c 35 	bl      c0018d08 <__csum_partial>
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- .../coccinelle/iterators/for_each_child.cocci | 358 ++++++++++++++++++
- 1 file changed, 358 insertions(+)
- create mode 100644 scripts/coccinelle/iterators/for_each_child.cocci
+ arch/powerpc/include/asm/checksum.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/coccinelle/iterators/for_each_child.cocci b/scripts/coccinelle/iterators/for_each_child.cocci
-new file mode 100644
-index 000000000000..bc394615948e
---- /dev/null
-+++ b/scripts/coccinelle/iterators/for_each_child.cocci
-@@ -0,0 +1,358 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+// Adds missing of_node_put() before return/break/goto statement within a for_each iterator for child nodes.
-+//# False positives can be due to function calls within the for_each
-+//# loop that may encapsulate an of_node_put.
-+///
-+// Confidence: High
-+// Copyright: (C) 2020 Sumera Priyadarsini
-+// URL: http://coccinelle.lip6.fr
-+// Options: --no-includes --include-headers
-+
-+virtual patch
-+virtual context
-+virtual org
-+virtual report
-+
-+@r@
-+local idexpression n;
-+expression e1,e2;
-+iterator name for_each_node_by_name, for_each_node_by_type,
-+for_each_compatible_node, for_each_matching_node,
-+for_each_matching_node_and_match, for_each_child_of_node,
-+for_each_available_child_of_node, for_each_node_with_property;
-+iterator i;
-+statement S;
-+expression list [n1] es;
-+@@
-+
-+(
-+(
-+for_each_node_by_name(n,e1) S
-+|
-+for_each_node_by_type(n,e1) S
-+|
-+for_each_compatible_node(n,e1,e2) S
-+|
-+for_each_matching_node(n,e1) S
-+|
-+for_each_matching_node_and_match(n,e1,e2) S
-+|
-+for_each_child_of_node(e1,n) S
-+|
-+for_each_available_child_of_node(e1,n) S
-+|
-+for_each_node_with_property(n,e1) S
-+)
-+&
-+i(es,n,...) S
-+)
-+
-+@ruleone depends on patch && !context && !org && !report@
-+
-+local idexpression r.n;
-+iterator r.i,i1;
-+expression e;
-+expression list [r.n1] es;
-+statement S;
-+@@
-+
-+ i(es,n,...) {
-+   ...
-+(
-+   of_node_put(n);
-+|
-+   e = n
-+|
-+   return n;
-+|
-+   i1(...,n,...) S
-+|
-+- return of_node_get(n);
-++ return n;
-+|
-++  of_node_put(n);
-+?  return ...;
-+)
-+   ... when any
-+ }
-+
-+@ruletwo depends on patch && !context && !org && !report@
-+
-+local idexpression r.n;
-+iterator r.i,i1,i2;
-+expression e,e1;
-+expression list [r.n1] es;
-+statement S,S2;
-+@@
-+
-+ i(es,n,...) {
-+   ...
-+(
-+   of_node_put(n);
-+|
-+   e = n
-+|
-+   i1(...,n,...) S
-+|
-++  of_node_put(n);
-+?  break;
-+)
-+   ... when any
-+ }
-+... when != n
-+    when strict
-+    when forall
-+(
-+ n = e1;
-+|
-+?i2(...,n,...) S2
-+)
-+
-+@rulethree depends on patch && !context && !org && !report exists@
-+
-+local idexpression r.n;
-+iterator r.i,i1,i2;
-+expression e,e1;
-+identifier l;
-+expression list [r.n1] es;
-+statement S,S2;
-+@@
-+
-+ i(es,n,...) {
-+   ...
-+(
-+   of_node_put(n);
-+|
-+   e = n
-+|
-+   i1(...,n,...) S
-+|
-++  of_node_put(n);
-+?  goto l;
-+)
-+   ... when any
-+ }
-+... when exists
-+l: ... when != n
-+       when strict
-+       when forall
-+(
-+ n = e1;
-+|
-+?i2(...,n,...) S2
-+)
-+
-+// ----------------------------------------------------------------------------
-+
-+@ruleone_context depends on !patch && (context || org || report) exists@
-+statement S;
-+expression e;
-+expression list[r.n1] es;
-+iterator r.i, i1;
-+local idexpression r.n;
-+position j0, j1;
-+@@
-+
-+ i@j0(es,n,...) {
-+   ...
-+(
-+   of_node_put(n);
-+|
-+   e = n
-+|
-+   return n;
-+|
-+   i1(...,n,...) S
-+|
-+  return @j1 ...;
-+)
-+   ... when any
-+ }
-+
-+@ruleone_disj depends on !patch && (context || org || report)@
-+expression list[r.n1] es;
-+iterator r.i;
-+local idexpression r.n;
-+position ruleone_context.j0, ruleone_context.j1;
-+@@
-+
-+*  i@j0(es,n,...) {
-+   ...
-+*return  @j1...;
-+   ... when any
-+ }
-+
-+@ruletwo_context depends on !patch && (context || org || report) exists@
-+statement S, S2;
-+expression e, e1;
-+expression list[r.n1] es;
-+iterator r.i, i1, i2;
-+local idexpression r.n;
-+position j0, j2;
-+@@
-+
-+ i@j0(es,n,...) {
-+   ...
-+(
-+   of_node_put(n);
-+|
-+   e = n
-+|
-+   i1(...,n,...) S
-+|
-+  break@j2;
-+)
-+   ... when any
-+ }
-+... when != n
-+    when strict
-+    when forall
-+(
-+ n = e1;
-+|
-+?i2(...,n,...) S2
-+)
-+
-+@ruletwo_disj depends on !patch && (context || org || report)@
-+statement S2;
-+expression e1;
-+expression list[r.n1] es;
-+iterator r.i, i2;
-+local idexpression r.n;
-+position ruletwo_context.j0, ruletwo_context.j2;
-+@@
-+
-+*  i@j0(es,n,...) {
-+   ...
-+*break @j2;
-+   ... when any
-+ }
-+... when != n
-+    when strict
-+    when forall
-+(
-+  n = e1;
-+|
-+?i2(...,n,...) S2
-+)
-+
-+@rulethree_context depends on !patch && (context || org || report) exists@
-+identifier l;
-+statement S,S2;
-+expression e, e1;
-+expression list[r.n1] es;
-+iterator r.i, i1, i2;
-+local idexpression r.n;
-+position j0, j3;
-+@@
-+
-+ i@j0(es,n,...) {
-+   ...
-+(
-+   of_node_put(n);
-+|
-+   e = n
-+|
-+   i1(...,n,...) S
-+|
-+  goto l@j3;
-+)
-+  ... when any
-+ }
-+... when exists
-+l:
-+... when != n
-+    when strict
-+    when forall
-+(
-+ n = e1;
-+|
-+?i2(...,n,...) S2
-+)
-+
-+@rulethree_disj depends on !patch && (context || org || report) exists@
-+identifier l;
-+statement S2;
-+expression e1;
-+expression list[r.n1] es;
-+iterator r.i, i2;
-+local idexpression r.n;
-+position rulethree_context.j0, rulethree_context.j3;
-+@@
-+
-+*  i@j0(es,n,...) {
-+   ...
-+*goto l@j3;
-+   ... when any
-+ }
-+... when exists
-+ l:
-+ ... when != n
-+     when strict
-+     when forall
-+(
-+ n = e1;
-+|
-+?i2(...,n,...) S2
-+)
-+
-+// ----------------------------------------------------------------------------
-+
-+@script:python ruleone_org depends on org@
-+i << r.i;
-+j0 << ruleone_context.j0;
-+j1 << ruleone_context. j1;
-+@@
-+
-+msg = "WARNING: Function \"%s\" should have of_node_put() before return " % (i)
-+coccilib.org.print_safe_todo(j0[0], msg)
-+coccilib.org.print_link(j1[0], "")
-+
-+@script:python ruletwo_org depends on org@
-+i << r.i;
-+j0 << ruletwo_context.j0;
-+j2 << ruletwo_context.j2;
-+@@
-+
-+msg = "WARNING: Function \"%s\" should have of_node_put() before break " % (i)
-+coccilib.org.print_safe_todo(j0[0], msg)
-+coccilib.org.print_link(j2[0], "")
-+
-+@script:python rulethree_org depends on org@
-+i << r.i;
-+j0 << rulethree_context.j0;
-+j3 << rulethree_context.j3;
-+@@
-+
-+msg = "WARNING: Function \"%s\" should have of_node_put() before goto " % (i)
-+coccilib.org.print_safe_todo(j0[0], msg)
-+coccilib.org.print_link(j3[0], "")
-+
-+// ----------------------------------------------------------------------------
-+
-+@script:python ruleone_report depends on report@
-+i << r.i;
-+j0 << ruleone_context.j0;
-+j1 << ruleone_context.j1;
-+@@
-+
-+msg = "WARNING: Function \"%s\" should have of_node_put() before return around line %s." % (i, j1[0].line)
-+coccilib.report.print_report(j0[0], msg)
-+
-+@script:python ruletwo_report depends on report@
-+i << r.i;
-+j0 << ruletwo_context.j0;
-+j2 << ruletwo_context.j2;
-+@@
-+
-+msg = "WARNING: Function \"%s\" should have of_node_put() before break around line %s." % (i,j2[0].line)
-+coccilib.report.print_report(j0[0], msg)
-+
-+@script:python rulethree_report depends on report@
-+i << r.i;
-+j0 << rulethree_context.j0;
-+j3 << rulethree_context.j3;
-+@@
-+
-+msg = "WARNING: Function \"%s\" should have of_node_put() before goto around lines %s." % (i,j3[0].line)
-+coccilib.report.print_report(j0[0], msg)
+diff --git a/arch/powerpc/include/asm/checksum.h b/arch/powerpc/include/asm/checksum.h
+index 9cce06194dcc..cab8fec60005 100644
+--- a/arch/powerpc/include/asm/checksum.h
++++ b/arch/powerpc/include/asm/checksum.h
+@@ -164,7 +164,7 @@ static inline __sum16 ip_fast_csum(const void *iph, unsigned int ihl)
+  */
+ __wsum __csum_partial(const void *buff, int len, __wsum sum);
+ 
+-static inline __wsum csum_partial(const void *buff, int len, __wsum sum)
++static __always_inline __wsum csum_partial(const void *buff, int len, __wsum sum)
+ {
+ 	if (__builtin_constant_p(len) && len <= 16 && (len & 1) == 0) {
+ 		if (len == 2)
 -- 
-2.25.1
+2.25.0
 
