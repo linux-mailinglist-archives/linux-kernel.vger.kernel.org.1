@@ -2,204 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB0328EDB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A99E28EDC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgJOH3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 03:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726103AbgJOH3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 03:29:34 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9A7C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 00:29:34 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id g29so1374236pgl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 00:29:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DLVJKgUO/JnOzG/Hk5eOhYbLf7sANpbcqmOxXBZhXEw=;
-        b=N/8v4YfQfHlbitG+ZV10KZfCn2yoo1Ms3TmaZUKZCk1LhnhS4ZPOS2xVmgI75VdM3A
-         v2bm58OUWDA9P5MGF8u8uzHW3DPlsnrx83+oJHkmCeprp6XoJk2nzgnF7I2X52rW8viC
-         9QP10lZUplQ8HJwraMyf4vweDZmSc82xSJJOmdFDIL4GrXFD8cynWA8o/g8yzQM9AcBb
-         vhYAQMz2SNdaDEQJc6eo70awjvKKnpjP8BV1Ki5fRBPL0fcAXkzoLS9a1GfmD7EE9izT
-         Gw0GzZvYpL8v2cPKbdv6FMsQjopuvuwXlfJecrTZTK8H6Kz6Wp7naBNNvKndsayBx52k
-         luAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DLVJKgUO/JnOzG/Hk5eOhYbLf7sANpbcqmOxXBZhXEw=;
-        b=NI/XrvE7MZkgbHkp9UTNVCZ1TRjpycX2Sjh1q6cf6/Vet7+UOE43lz4B96iyk7zym2
-         roigfUaHQLJH+umMLHhayZC8gIG1vxdblDPy+IRs94DCoeJoseiuuTM2tCIDdgu/4oMN
-         XDMCiNp2if0+TFjoxLrrx0tp06zsZie4pk7ywSYX/wGVmli1q8syNgY0Fkk/nNh5/hCz
-         2QPQclBLX+vL6c1R1W+vqb3NtkaF3AsfHeDVnCRyD9X3dnTphj0mdt0OV/4TKg9SoYyV
-         brPmbJE+37J4HhFIWyAFpqYamDBmnJKsoLabCxm+nylPcomX1wnpRLMsl2TMIj9hHt/o
-         GDVA==
-X-Gm-Message-State: AOAM532ZqUMgB9Ua14GZtCakR8l9s6zzxwB6kaUlzVqztrelUczjoE97
-        GLYjMe6QhAwFzy4wZYvhNyg=
-X-Google-Smtp-Source: ABdhPJyy/GSNWe1kw99Dt6khIvNrLrcTGZRbol2TCGR2Lz6HXnVBcRwLZfbTJBOGnpjuTZZNcVdyxg==
-X-Received: by 2002:a62:7609:0:b029:152:b31e:6aed with SMTP id r9-20020a6276090000b0290152b31e6aedmr3074672pfc.10.1602746973623;
-        Thu, 15 Oct 2020 00:29:33 -0700 (PDT)
-Received: from laptop.hsd1.wa.comcast.net ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id u7sm2039426pfn.37.2020.10.15.00.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 00:29:33 -0700 (PDT)
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 2/2] selftests/timens: Add a test for futex()
-Date:   Thu, 15 Oct 2020 00:29:09 -0700
-Message-Id: <20201015072909.271426-2-avagin@gmail.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20201015072909.271426-1-avagin@gmail.com>
-References: <20201015072909.271426-1-avagin@gmail.com>
+        id S1728372AbgJOHdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 03:33:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15293 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726103AbgJOHdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 03:33:20 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A6F4CD129FA1D36E22D9;
+        Thu, 15 Oct 2020 15:33:00 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.134) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 15 Oct 2020
+ 15:32:59 +0800
+Subject: Re: [PATCH 6/6] dt-bindings: misc: correct the property name
+ cmd-gpios to cmd-gpio
+To:     Lubomir Rintel <lkundrak@v3.sk>
+CC:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        "Benson Leung" <bleung@chromium.org>,
+        linux-leds <linux-leds@vger.kernel.org>
+References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
+ <20201013160845.1772-7-thunder.leizhen@huawei.com>
+ <20201015071256.GA1092695@demiurge.local>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <78daaeae-dc13-91ca-a33e-6fcba5f7f3d5@huawei.com>
+Date:   Thu, 15 Oct 2020 15:32:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20201015071256.GA1092695@demiurge.local>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Output on success:
- $ ./futex
- 1..1
- ok 1 futex
- # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
 
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
----
- tools/testing/selftests/timens/Makefile |   2 +-
- tools/testing/selftests/timens/futex.c  | 107 ++++++++++++++++++++++++
- 2 files changed, 108 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/timens/futex.c
 
-diff --git a/tools/testing/selftests/timens/Makefile b/tools/testing/selftests/timens/Makefile
-index b4fd9a934654..3a5936cc10ab 100644
---- a/tools/testing/selftests/timens/Makefile
-+++ b/tools/testing/selftests/timens/Makefile
-@@ -1,4 +1,4 @@
--TEST_GEN_PROGS := timens timerfd timer clock_nanosleep procfs exec
-+TEST_GEN_PROGS := timens timerfd timer clock_nanosleep procfs exec futex
- TEST_GEN_PROGS_EXTENDED := gettime_perf
- 
- CFLAGS := -Wall -Werror -pthread
-diff --git a/tools/testing/selftests/timens/futex.c b/tools/testing/selftests/timens/futex.c
-new file mode 100644
-index 000000000000..173760d3fce6
---- /dev/null
-+++ b/tools/testing/selftests/timens/futex.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <sched.h>
-+
-+#include <linux/unistd.h>
-+#include <linux/futex.h>
-+#include <stdlib.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdint.h>
-+#include <string.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <time.h>
-+#include <unistd.h>
-+
-+#include "log.h"
-+#include "timens.h"
-+
-+#define NSEC_PER_SEC 1000000000ULL
-+
-+static int run_test(void)
-+{
-+	struct timespec timeout, end;
-+	int val = 0;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &timeout);
-+	timeout.tv_nsec += NSEC_PER_SEC / 10; // 100ms
-+	if (timeout.tv_nsec > NSEC_PER_SEC) {
-+		timeout.tv_sec++;
-+		timeout.tv_nsec -= NSEC_PER_SEC;
-+	}
-+
-+	if (syscall(__NR_futex, &val, FUTEX_WAIT_BITSET, 0,
-+		    &timeout, 0, FUTEX_BITSET_MATCH_ANY) >= 0) {
-+		ksft_test_result_fail("futex didn't return ETIMEDOUT");
-+		return 1;
-+	}
-+
-+	if (errno != ETIMEDOUT) {
-+		ksft_test_result_fail("futex didn't return ETIMEDOUT: %s",
-+							strerror(errno));
-+		return 1;
-+	}
-+
-+	clock_gettime(CLOCK_MONOTONIC, &end);
-+
-+	if (end.tv_sec < timeout.tv_sec ||
-+	    (end.tv_sec == timeout.tv_sec && end.tv_nsec < timeout.tv_sec)) {
-+		ksft_test_result_fail("futex slept less than 100ms");
-+		return 1;
-+	}
-+
-+
-+	ksft_test_result_pass("futex\n");
-+
-+	return 0;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int status, len, fd;
-+	char buf[4096];
-+	pid_t pid;
-+	struct timespec mtime_now;
-+
-+	nscheck();
-+
-+	check_supported_timers();
-+
-+	ksft_set_plan(1);
-+
-+	clock_gettime(CLOCK_MONOTONIC, &mtime_now);
-+
-+	if (unshare_timens())
-+		return 1;
-+
-+	len = snprintf(buf, sizeof(buf), "%d %d 0",
-+			CLOCK_MONOTONIC, 70 * 24 * 3600);
-+	fd = open("/proc/self/timens_offsets", O_WRONLY);
-+	if (fd < 0)
-+		return pr_perror("/proc/self/timens_offsets");
-+
-+	if (write(fd, buf, len) != len)
-+		return pr_perror("/proc/self/timens_offsets");
-+
-+	close(fd);
-+
-+	pid = fork();
-+	if (pid < 0)
-+		return pr_perror("Unable to fork");
-+	if (pid == 0) {
-+		if (run_test())
-+			ksft_exit_fail();
-+		ksft_exit_pass();
-+		return 0;
-+	}
-+
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Unable to wait the child process");
-+
-+	if (WIFEXITED(status))
-+		return WEXITSTATUS(status);
-+
-+	return 1;
-+}
--- 
-2.26.2
+On 2020/10/15 15:12, Lubomir Rintel wrote:
+> Hi,
+> 
+> On Wed, Oct 14, 2020 at 12:08:45AM +0800, Zhen Lei wrote:
+>> The property name used in arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts is
+>> cmd-gpio.
+>>
+>> arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:235:
+>> cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> Thanks for the patch.
+> 
+> I've sent out an equivalent one some time ago:
+> https://lore.kernel.org/lkml/20200925234805.228251-3-lkundrak@v3.sk/
+> 
+> In any case, either is fine with me.
+
+Geert Uytterhoeven just replied me that the *-gpio form is deprecated. So your
+patch is the correct one.
+
+> 
+> Acked-by: Lubomir Rintel <lkundrak@v3.sk>
+> 
+>> ---
+>>  Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+>> index b3c45c046ba5e37..c7a06a9650db2ed 100644
+>> --- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+>> +++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+>> @@ -24,7 +24,7 @@ properties:
+>>    compatible:
+>>      const: olpc,xo1.75-ec
+>>  
+>> -  cmd-gpios:
+>> +  cmd-gpio:
+>>      description: GPIO uspecifier of the CMD pin
+>>      maxItems: 1
+>>  
+>> @@ -32,7 +32,7 @@ properties:
+>>  
+>>  required:
+>>    - compatible
+>> -  - cmd-gpios
+>> +  - cmd-gpio
+>>  
+>>  additionalProperties: false
+>>  
+>> @@ -49,7 +49,7 @@ examples:
+>>        slave {
+>>          compatible = "olpc,xo1.75-ec";
+>>          spi-cpha;
+>> -        cmd-gpios = <&gpio 155 GPIO_ACTIVE_HIGH>;
+>> +        cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
+>>        };
+>>      };
+>>  
+>> -- 
+>> 1.8.3
+>>
+>>
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
+> .
+> 
 
