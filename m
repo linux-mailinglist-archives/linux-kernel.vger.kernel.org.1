@@ -2,225 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CFB28F8BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0A628F8C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388705AbgJOSi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:38:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:57454 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733078AbgJOSi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:38:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5776B13D5;
-        Thu, 15 Oct 2020 11:38:26 -0700 (PDT)
-Received: from localhost (e108754-lin.cambridge.arm.com [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBD793F71F;
-        Thu, 15 Oct 2020 11:38:25 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 19:38:24 +0100
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh@kernel.org>,
-        Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Chris Redpath <chris.redpath@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for
- cpu-perf-dependencies
-Message-ID: <20201015183824.GA9440@arm.com>
-References: <20201009140141.GA4048593@bogus>
- <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
- <20201012105945.GA9219@arm.com>
- <500510b9-58f3-90b3-8c95-0ac481d468b5@arm.com>
- <20201012163032.GA30838@arm.com>
- <9fe56600-ba7d-d3b6-eea3-885475d94d7a@arm.com>
- <20201012220132.GA1715@arm.com>
- <CAJZ5v0hMtPARYezJEZqeUZBsyaSggQvtvvfEvONhz6Z=Y32bhQ@mail.gmail.com>
- <20201013123901.GA4945@arm.com>
- <CAJZ5v0gDfzFpJTLYMD=HsWKm5ORpx=398v+3q9DDoBbAh-aEsg@mail.gmail.com>
+        id S2388896AbgJOSjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731154AbgJOSje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:39:34 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5C9C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:39:33 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id z2so4134740ilh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2eYPjnhMkoKRh274ZnfDYxEkN/cASuQVhfeqtpp/wFo=;
+        b=JeKQa4xUyeVsPYFmaCn7c933kxLOMPieHLwq4xeMoEO/okGMXehToHvd+0ig7XaIgP
+         fHneyQ60wBUcEpxPUpTELURgj5bQIelk0vJP0TgRDXW95Vd8u5nZkWrMtNgvymK2D3DB
+         7wfN4oY2FqabCqGYCmGCUeKOhtK4TzCIlswIXurPRrYIKYwZH7CYwdNoMmCoICJcSgsf
+         /meK+N6OQ4aCTmXZRGkygQvKXvUTKx8lVeno6q4vHbW7SAbYuof8VFNhuZloauqDFQWX
+         WhveX7ppMApDxhOhALQer1AszJqIBPle/oM35KL+bH/UNuLDQ1qiwNLLPRkowndfDMnt
+         9vPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2eYPjnhMkoKRh274ZnfDYxEkN/cASuQVhfeqtpp/wFo=;
+        b=pheffrwjxV1B2/t2nIhUdzTY4YNNgLXQ98tymn+6oeiVHhHlRa9MfGoWbJH2QQqEtR
+         UwCsIYXQk5JrCBs723bVs53FvHlKlDNMuKlHDImx42TLhI3n/iceKuC35RmhL8SVo8wv
+         MX492Cd01wgNfh88fq8gwn4sBJ2gBPOb2/kOgSkK6iExkYCNTqdWHUhMSOC9XoBGbsvR
+         GLrhEDueji2etEuS/9eSworNMZYrgP+UzkZ1Bqaj1fjwZd4xTb/fvPzeYl72HBM53oX1
+         DSz4IaIgv2pXV5U5cq4UaDFooQlsS6qPODB3bCw5zenEwTy9Cvc8eeQed8XokXKD1pXR
+         FCDQ==
+X-Gm-Message-State: AOAM532a+m5EzVseXPfDiR3e5HMcOvSWpVJ0kRPkn3M+X+lTIHzP3/pp
+        5l5RP5/IPFjGBqFnEiA2nyUPLw==
+X-Google-Smtp-Source: ABdhPJybMiCJjWUTEv4UBJhuJh14Xu+AxKMOZureDclwvHKWgahxfC7F1dxi9KPo+YQpk2Hu4SMh7A==
+X-Received: by 2002:a92:cd42:: with SMTP id v2mr3868619ilq.65.1602787172427;
+        Thu, 15 Oct 2020 11:39:32 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o17sm3391972ila.47.2020.10.15.11.39.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 11:39:31 -0700 (PDT)
+Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de,
+        Roman Gershman <romger@amazon.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk>
+Date:   Thu, 15 Oct 2020 12:39:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gDfzFpJTLYMD=HsWKm5ORpx=398v+3q9DDoBbAh-aEsg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201015154953.GM24156@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-
-Sorry in advance for the long writing. I hope it makes sense.
-
-On Thursday 15 Oct 2020 at 17:56:56 (+0200), Rafael J. Wysocki wrote:
-> On Tue, Oct 13, 2020 at 2:39 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
-> >
-> > Hi Rafael,
-> >
-> > On Tuesday 13 Oct 2020 at 13:53:37 (+0200), Rafael J. Wysocki wrote:
-> > > On Tue, Oct 13, 2020 at 12:01 AM Ionela Voinescu
-> > > <ionela.voinescu@arm.com> wrote:
-> > > >
-> > > > Hey Lukasz,
-> > > >
-> > > > I think after all this discussion (in our own way of describing things)
-> > > > we agree on how the current cpufreq based FIE implementation is affected
-> > > > in systems that use hardware coordination.
-> > > >
-> > > > What we don't agree on is the location where that implementation (that
-> > > > uses the new mask and aggregation) should be.
-> > > >
-> > > > On Monday 12 Oct 2020 at 19:19:29 (+0100), Lukasz Luba wrote:
-> > > > [..]
-> > > > > The previous FIE implementation where arch_set_freq_scale()
-> > > > > was called from the drivers, was better suited for this issue.
-> > > > > Driver could just use internal dependency cpumask or even
-> > > > > do the aggregation to figure out the max freq for cluster
-> > > > > if there is a need, before calling arch_set_freq_scale().
-> > > > >
-> > > > > It is not perfect solution for software FIE, but one of possible
-> > > > > when there is no hw counters.
-> > > > >
-> > > > [..]
-> > > >
-> > > > > Difference between new FIE and old FIE (from v5.8) is that the new one
-> > > > > purely relies on schedutil max freq value (which will now be missing),
-> > > > > while the old FIE was called by the driver and thus it was an option to
-> > > > > fix only the affected cpufreq driver [1][2].
-> > > > >
-> > > >
-> > > > My final argument is that now you have 2 drivers that would need this
-> > > > support, next you'll have 3 (the new mediatek driver), and in the future
-> > > > there will be more. So why limit and duplicate this functionality in the
-> > > > drivers? Why not make it generic for all drivers to use if the system
-> > > > is using hardware coordination?
-> > > >
-> > > > Additionally, I don't think drivers should not even need to know about
-> > > > these dependency/clock domains. They should act at the level of the
-> > > > policy, which in this case will be at the level of each CPU.
-> > >
-> > > The policies come from the driver, though.
-> > >
-> > > The driver decides how many CPUs will be there in a policy and how to
-> > > handle them at the initialization time.
-> >
-> > Yes, policies are built based on information populated from the drivers
-> > at .init(): what CPUs will belong to a policy, what methods to use for
-> > setting and getting frequency, etc.
-> >
-> > So they do pass this information to the cpufreq core to be stored at the
-> > level of the policy, but later drivers (in the majority of cases) will
-> > not need to store on their own information on what CPUs belong to a
-> > frequency domain, they rely on having passed that information to the
-> > core, and the core mechanisms hold this information on the clock domains
-> > (currently through policy->cpus and policy->related_cpus).
+On 10/15/20 9:49 AM, Oleg Nesterov wrote:
+> On 10/15, Jens Axboe wrote:
+>>
+>> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 > 
-> Strictly speaking, not quite.
+> Yes, but ...
 > 
-> In fact policy->related_cpus is a set of CPUs that share a common perf
-> control HW/FW interface which may or may not match the boundaries of
-> clock domains etc.  That's what the entire cpufreq needs to know and
-> cares about.
+>> +static void task_work_notify_signal(struct task_struct *task)
+>> +{
+>> +#if defined(CONFIG_GENERIC_ENTRY) && defined(TIF_NOTIFY_SIGNAL)
 > 
-
-Yes, generally speaking, you are absolutely correct, and actually this
-is the motivation behind these patches: policy->related_cpus shows cpus
-sharing the same perf controls, but we need "something else" to show us
-the cpus sharing the same clocks.
-
-It was my mistake for describing policy->related_cpus in the way I have
-above, but my "excuse" is that I was referring to arm/arm64 platforms, in
-the context of this cpufreq driver FIE, which is only present on
-arm/arm64 platforms. I'll expand on this below.
-
-Speaking practically, again referring to arm/arm64 platforms, for most*
-of them, policy->related_cpus does also identify CPUs in the same clock
-domain and therefore is used as if that was true. The obvious examples
-are exactly the users that were presented as part of the motivation of
-these patches: EAS, IPA, cpufreq-based FIE. They treat
-policy->related_cpus as dependent cpus (cpus that change they performance
-together or are clocked together).
-
-*one of the exceptions is that old BL_SWITCHER support.
-
-Another example of how the two (perf controls vs clock domains) are not
-quite as separate in practice, is the cppc_cpufreq driver: that driver
-reads the PSD domains and creates the policies based on the domains, not
-based on the CPPC controls. It does mention only support for SW_ANY, but
-that does not change the fact that the PSD (p-state dependency) is used to
-populate policy->related_cpus and not any sharing of controls from _CPC.
-
-Also, generically, policy->cpus (in schedutil or the ondemand governor)
-is used as the basis for software coordination. I suppose software
-coordination only has meaning at the level of a domain, so policy->cpus
-is used as if providing the CPUs in a domain. If that wasn't the case,
-their logic would not stand.
-
-> AFAICS your scale invariance rework patches were based on the
-> assumption that CPUs sharing an interface like that should also belong
-> to the same frequency domain, which is reasonable and that's why I
-> didn't have a problem with it, but if you were really assuming that
-> policy->related_cpus must always reflect a frequency domain, then I'm
-> afraid that you were not going in the right direction (the
-> one-CPU-per-policy with HW coordination example should be sufficient
-> to illustrate that).
+> as long as defined(CONFIG_GENERIC_ENTRY) goes away ;)
 > 
+> Thomas, I strongly, strongly disagree with you. But even if you are right
+> and only CONFIG_GENERIC_ENTRY arches should use TIF_NOTIFY_SIGNAL, why should
+> this series check CONFIG_GENERIC_ENTRY ?
+> 
+> You can simply nack the patch which adds TIF_NOTIFY_SIGNAL to
+> arch/xxx/include/asm/thread_info.h.
 
-In my defence, I was definitely not assuming that, and I was one of the
-first people bringing up HW_ALL in this thread :).
+This seems to be the biggest area of contention right now. Just to
+summarize, we have two options:
 
-To expand on that, I never assumed policy->related_cpus *must always*
-reflect frequency domains. But to that I have to add that FIE, as well
-as EAS and IPA, are acting on policy->related_cpus as the closest to
-accurate information on frequency domains that they can get. That is
-the best information they have got and historically that was good enough.
-That is exactly because on arm/arm64 platforms policy->related_cpus has,
-more often than not, been describing clock domains as well. And again,
-cpufreq-based FIE using policy->related_cpus is only implemented on
-arm/arm64 platforms. For anything more accurate, counters should be
-used.
+1) We leave the CONFIG_GENERIC_ENTRY requirement, which means that the
+   rest of the cleanups otherwise enabled by this series will not be
+   able to move forward until the very last arch is converted to the
+   generic entry code.
 
-Therefore, EAS, FIE, IPA, and even the schedutil and ondmand governors
-for that matter, will always work best if policy->related_cpus reflects
-the full composition of clock domains as well. It might not be always
-true, but that is the best information that they can act on.
+2) We go back to NOT having the CONFIG_GENERIC_ENTRY requirement, and
+   archs can easily opt-in to TIF_NOTIFY_SIGNAL independently of
+   switching to the generic entry code.
 
-But now that new platforms are breaking these historical assumptions,
-through these patches, the intention is to give these users better
-information to act on, that is information about the real composition of
-performance domains.
+I understand Thomas's reasoning in wanting to push archs towards the
+generic entry code, and I fully support that. However, it does seem like
+the road paved by #1 is long and potentially neverending, which would
+leave us with never being able to kill the various bits of code that we
+otherwise would be able to.
 
-> It is correct that drivers generally don't need to know about the HW
-> clock (or voltage for that matter) coordination dependencies, but the
-> rest of cpufreq doesn't need to know about them either.  If that
-> information is needed for something else, I don't see a reason to put
-> it into cpufreq.
+Thomas, I do agree with Oleg on this one, I think we can make quicker
+progress on cleanups with option #2. This isn't really going to hinder
+any arch conversion to the generic entry code, as arch patches would be
+funeled through the arch trees anyway.
 
-Right! If we say that cpufreq is meant for frequency control only, there
-would be no reason. But I believe that is not so easy to separate
-frequency control from frequency dependency. I suppose that was the
-reason behind having policy->shared_type (as another example to
-schedutil and ondemand software coordination). I believe coordination
-only has meaning at the level of a domain and therefore should not
-belong to a framework that would only reflect control.
+Thomas?
 
-Therefore, given precedents, it does seem consistent for information about
-dependency domains to be placed in cpufreq as well, and possibly a good
-place to make a clear separation between sharing of controls and sharing
-of coordination.
+-- 
+Jens Axboe
 
-But it might just be my interpretation. In any case, I appreciate your
-time spent on this.
-
-If cpufreq is not the correct location, are there better options that you
-can recommend?
-
-Thank you,
-Ionela.
