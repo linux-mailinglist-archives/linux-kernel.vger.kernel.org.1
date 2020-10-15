@@ -2,139 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C563128F015
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094C028F019
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389285AbgJOKWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
+        id S2389307AbgJOKWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389271AbgJOKWC (ORCPT
+        with ESMTP id S2389271AbgJOKWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:22:02 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41593C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:22:00 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id n15so2784617wrq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HSLoaI3Bb+OZrae1XegNlhU8itLV0T9QFLmqbbYjrSE=;
-        b=njFZ7+MCpBTWYGR9y3/X+X/ytYtI07rgf4gZK9LzXmwOutQ8kBYZtgQDtP1kssCS44
-         xnvCjf9B8hjm8GsI3tMCgFSTnAzXI/BzTXUHGjw+Kv9m4yYCFV0vQO/nGZkaQHYI4KOY
-         mwjdo8uVWcGjiGJ/qS646+02iibE8IatAJt5W0yIjkNZrqqPQIjQFsaa2rGDMETeHsK/
-         1nLhBl2coETZoab3Dowu9J5fPiaJjk0FarQb46H0+BFPhgUbH4dwurPycn8ldNgs2f+s
-         XP6rXLQskJuqrZ8jBdwuURi1FXhq1Ae2vV5yI7nOHt0BFJREmVdwz6VSlwa0WhWKIuGp
-         /aVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HSLoaI3Bb+OZrae1XegNlhU8itLV0T9QFLmqbbYjrSE=;
-        b=D7bhs5jkBs0JQB1A1eACGTw3ZFeFYshhH6cHRSck8/UtRMM4DpxTrE7ZwSlrd2yGGt
-         RpqUmlaKoln9XfsrCGNOn5VAG+mI86akOyh5nQ/yK4I8EfrITa/2WqDaF3n0adhXo2FQ
-         JWS2bwgz7NNnNnsK9YSgrtkAVOptaImO5xnp6tT1Q8Lmap5yk2Prg4u3Z6xgEJih8Dx6
-         QbwCz6Z5KDC7I0DlyPM70l1JqpLzsOaXA555bQsQDpe7cFyX3lJ5TIBv4DPf8KPlKa+X
-         znvsXbYXuWOwkjkHfS8EEikB7IIFEIyHMK66vxUtpkOkI4GB2mamuWRKtYjJEOJT212D
-         zPsw==
-X-Gm-Message-State: AOAM5310oIpts0sUR/7a04JD3Yk7nwrccjqGk1nAKPPjYLv99CThpj1q
-        fmv5FLgC61MCSBOt/7lAeuIFgA==
-X-Google-Smtp-Source: ABdhPJzJncH5BCQjJ4evPmXyN+1spvZRDp4Rs202jnAZ/jtV+lnqrDDddpV2zfaeIyf0COpuFX86AA==
-X-Received: by 2002:adf:f182:: with SMTP id h2mr3452294wro.199.1602757318825;
-        Thu, 15 Oct 2020 03:21:58 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5400:5b12:4f4c:844b? ([2a01:e34:ed2f:f020:5400:5b12:4f4c:844b])
-        by smtp.googlemail.com with ESMTPSA id u6sm3437856wmj.40.2020.10.15.03.21.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 03:21:58 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, amitk@kernel.org,
-        corbet@lwn.net, Dietmar.Eggemann@arm.com, qperret@google.com,
-        dianders@chromium.org, mka@chromium.org, rnayak@codeaurora.org
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
- <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
- <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
- <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
- <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
- <d04019bd-9e85-5f3e-2a1b-66780b8df3dc@linaro.org>
- <3e3dd42c-48ac-7267-45c5-ca88205611bd@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <00ceec64-3273-bb4a-6f38-22de8d877ab5@linaro.org>
-Date:   Thu, 15 Oct 2020 12:21:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 15 Oct 2020 06:22:44 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA8BC061755;
+        Thu, 15 Oct 2020 03:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rmt+w86dS/ArDl7p6coE3p1FQiRlDnETDOF85EAeo80=; b=H7urFq9tcKjVEHrGlgs6qqhDf4
+        oQMvOJQ0ykGC0OUWm6j6P40c2ClfoS4N1iUdDzI7NszgLIB2YI4qMJ892z90AJsTn11EvwW+MtOVh
+        ddVXM7uYTIl+ahd+gEQFvcaxfyuaPnkbEsTt/vmXLtStZfCQlSfc+oQ9GKbTIbh1QtEndZUFKS8iQ
+        RG2CeCNJ8oLWOZ1j2VOtlC36cNeboOcj3IpHWd0dVqImsYZOp+GtYIoL4M+5SqxrBrt55upHkAlVA
+        rdh+0h6U56l/Lqn5r2zQ2t0WOc1/OVeHC7M8/6/Im8NyIi7W3dDDZL1d8iqegaLUsqXcJBsUpBLPv
+        pDxD+k8g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT0Oo-0006aX-4e; Thu, 15 Oct 2020 10:22:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 835C0300DAE;
+        Thu, 15 Oct 2020 12:22:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6F7A9235F4457; Thu, 15 Oct 2020 12:22:16 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 12:22:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+Message-ID: <20201015102216.GB2611@hirez.programming.kicks-ass.net>
+References: <20201013003203.4168817-1-samitolvanen@google.com>
+ <20201013003203.4168817-23-samitolvanen@google.com>
+ <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <3e3dd42c-48ac-7267-45c5-ca88205611bd@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2020 11:00, Lukasz Luba wrote:
+On Thu, Oct 15, 2020 at 01:23:41AM +0200, Jann Horn wrote:
 
-[ ... ]
+> It would probably be good to keep LTO and non-LTO builds in sync about
+> which files are subjected to objtool checks. So either you should be
+> removing the OBJECT_FILES_NON_STANDARD annotations for anything that
+> is linked into the main kernel (which would be a nice cleanup, if that
+> is possible), 
 
->> There is the SCMI and the DT. Because there are two sources where it is
->> impossible to know if they are using the same units, we are stuck to
->> ensure a consistency for the kernel.
->>
->> The platform should use:
->>   - the SCMI only (scaled or real)
->>   - the DT only (real)
->>   [ - the firmware file only (scaled or real) ]
->>
-> 
-> Do you mean by SCMI - registration using em_dev_register_perf_domain() ?
-
-It was high level description, but yes, I guess it is the case.
-
->> As it is not possible to know if they are scaled or real, there is no
->> choice except making them mutually exclusive.
-> 
-> So you propose a bit more restriction in registration EM, to not get
-> lost in the future. I also have these doubts. Let's consider it and
-> maybe agree.
-> 
-> I've recommended Qcom to use em_dev_register_perf_domain() when they
-> have this obfuscated power values. Then any developer in the future
-> who wants to add EM for a new device on that platform, should use the
-> em_dev_register_perf_domain().
-> 
-> In this case the flag in EM that you have proposed makes sense.
-> We probably need an argument 'bool abstract_scale' in the
-> em_dev_register_perf_domain(..., bool abstract_scale)
-> as a source of information.
-
-I was suggesting to add a flag to the em_perf_domain structure giving
-the source of the power numbers.
-
-So if the IPA is having the 'sustainable-power' set in DT but the
-em_perf_domain is flagged with power number coming from SCMI, then they
-will be incompatible, the thermal zone will fail to register.
-
-
-> We would allow to co-exist em_dev_register_perf_domain(..., false)
-> with dev_pm_opp_of_register_em() EM devices.
-> 
-> Is it make sense?
-
-Well, it does not change my opinion. We should assume the energy model
-is always milliwatts. If the SoC vendors find a way to get around with
-bogoWatts, then good to them and up to them to deal with in the future.
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+This, I've had to do that for a number of files already for the limited
+vmlinux.o passes we needed for noinstr validation.
