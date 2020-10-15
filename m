@@ -2,440 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A82228FA1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D598C28FA20
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732601AbgJOU3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 16:29:36 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:4075 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729482AbgJOU3g (ORCPT
+        id S1732692AbgJOUaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 16:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731040AbgJOUaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 16:29:36 -0400
-X-IronPort-AV: E=Sophos;i="5.77,380,1596492000"; 
-   d="scan'208";a="472841147"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 22:29:32 +0200
-Date:   Thu, 15 Oct 2020 22:29:31 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-cc:     Gilles.Muller@lip6.fr, michal.lkml@markovi.net,
-        nicolas.palix@imag.fr, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Cocci] [PATCH V3] coccinelle: iterators: Add for_each_child.cocci
- script
-In-Reply-To: <20201015105140.sj4dfy2eykkts2tn@adolin>
-Message-ID: <alpine.DEB.2.22.394.2010152229160.2869@hadrien>
-References: <20201015105140.sj4dfy2eykkts2tn@adolin>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 15 Oct 2020 16:30:22 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852B9C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:30:21 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id y16so6260465ila.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/jxSiXUFHPKoVWvB4Kho7bLX6BXoNLesB/In+yGJN0M=;
+        b=m6ii6kwgw2MTT+gIs1qNafQgE+1wC+HcGAAG5DVQ5N3c3MvWoIXwbtkLrgEcdSgU0l
+         cSfpLzmsmliwsAlSTufVFgaFTuvLQUpxLV4emLR/kOzjLAQ5hmhKZOeJsXwwdxtXlOgS
+         0TkZmDN3hxDZfKMgysOzQzhim1wrGGbaPvEhOtFYO4Ty6Orh+Ze0lHxl7/XoSWBSs1HY
+         +2vxlJbtwJUYtT2unuAe5so9kivgiAD0exdzlHNc9wcNnlv8K+3adk5y7C1N0sUz2yM3
+         Fgodn3vHy8t6uW/pyIjWMYNgGM11tmEJ2q4iTfDBaeS7izoo39dvGzZSqBJ4vlOjlLeQ
+         8/ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/jxSiXUFHPKoVWvB4Kho7bLX6BXoNLesB/In+yGJN0M=;
+        b=qbVkzB2Tc6k+9NJQNoq6aGbf8J/y9Oqaa9FN4WJW2MRAtn/t0bFgbkjHXWPPKSzdpI
+         unqkQQP6EwQyd+ZCci10qagAPrLJ5NAJumi3lzlr5/UvLzfSr5JStOaHADyjbR6cbY9P
+         25bYmFODo1PfiS5M66x8KuF9FPFjdoMsv/vFAE4eYWmuuQT/PY+FZsWGF0gZPt/P8cDL
+         LY7c//hUQ404IUX3wdkJy0GbmFqI9TosQtxdYQ8CeQDhU4SPg43LfWHqhB1oFBO887NB
+         e595anj9j5tV/Af7Ys0NTiz6c7kWNlCPkZedruuGjNQb35V8qM1Vpp0kpY6qDIgNY26r
+         EYyA==
+X-Gm-Message-State: AOAM5335bvWrNOAV9d9YKKy1NRCUmYDN4q47P8zlyiTKPbCu4eQl3XHH
+        OgPemeYBJ90IEClgIGPlJLo3RQhswdsEScvRaYs=
+X-Google-Smtp-Source: ABdhPJxrvvur8NSNW89vwNQf2R2zgjfbt7aEEQH/uFDV4MhjdyOqjUYvpc8A3zFlbMc353x3cPkxpQ8F04dofE3zYAQ=
+X-Received: by 2002:a92:874a:: with SMTP id d10mr274971ilm.163.1602793820977;
+ Thu, 15 Oct 2020 13:30:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-7-david@redhat.com>
+In-Reply-To: <20201012125323.17509-7-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Thu, 15 Oct 2020 22:30:09 +0200
+Message-ID: <CAM9Jb+jY-kzPbbqTaYY=i1tjo=fEH0w_8kik17h90gH6ROso_w@mail.gmail.com>
+Subject: Re: [PATCH v1 06/29] virtio-mem: generalize virtio_mem_owned_mb()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Thu, 15 Oct 2020, Sumera Priyadarsini wrote:
-
-> While iterating over child nodes with the for_each functions, if
-> control is transferred from the middle of the loop, as in the case
-> of a break or return or goto, there is no decrement in the
-> reference counter thus ultimately resulting in a memory leak.
+> Avoid using memory block ids. Rename it to virtio_mem_contains_range().
 >
-> Add this script to detect potential memory leaks caused by
-> the absence of of_node_put() before break, goto, or, return
-> statements which transfer control outside the loop.
->
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-
-Applied, thanks.
-
-julia
-
->
-> ----
-> Changes in V2:
-> - Add options --include-headers and --no-includes
-> - Add 'when forall` to rules for break and goto
->
-> Changes in V3:
-> - Add return case
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  .../coccinelle/iterators/for_each_child.cocci | 358 ++++++++++++++++++
->  1 file changed, 358 insertions(+)
->  create mode 100644 scripts/coccinelle/iterators/for_each_child.cocci
+>  drivers/virtio/virtio_mem.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 >
-> diff --git a/scripts/coccinelle/iterators/for_each_child.cocci b/scripts/coccinelle/iterators/for_each_child.cocci
-> new file mode 100644
-> index 000000000000..bc394615948e
-> --- /dev/null
-> +++ b/scripts/coccinelle/iterators/for_each_child.cocci
-> @@ -0,0 +1,358 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// Adds missing of_node_put() before return/break/goto statement within a for_each iterator for child nodes.
-> +//# False positives can be due to function calls within the for_each
-> +//# loop that may encapsulate an of_node_put.
-> +///
-> +// Confidence: High
-> +// Copyright: (C) 2020 Sumera Priyadarsini
-> +// URL: http://coccinelle.lip6.fr
-> +// Options: --no-includes --include-headers
-> +
-> +virtual patch
-> +virtual context
-> +virtual org
-> +virtual report
-> +
-> +@r@
-> +local idexpression n;
-> +expression e1,e2;
-> +iterator name for_each_node_by_name, for_each_node_by_type,
-> +for_each_compatible_node, for_each_matching_node,
-> +for_each_matching_node_and_match, for_each_child_of_node,
-> +for_each_available_child_of_node, for_each_node_with_property;
-> +iterator i;
-> +statement S;
-> +expression list [n1] es;
-> +@@
-> +
-> +(
-> +(
-> +for_each_node_by_name(n,e1) S
-> +|
-> +for_each_node_by_type(n,e1) S
-> +|
-> +for_each_compatible_node(n,e1,e2) S
-> +|
-> +for_each_matching_node(n,e1) S
-> +|
-> +for_each_matching_node_and_match(n,e1,e2) S
-> +|
-> +for_each_child_of_node(e1,n) S
-> +|
-> +for_each_available_child_of_node(e1,n) S
-> +|
-> +for_each_node_with_property(n,e1) S
-> +)
-> +&
-> +i(es,n,...) S
-> +)
-> +
-> +@ruleone depends on patch && !context && !org && !report@
-> +
-> +local idexpression r.n;
-> +iterator r.i,i1;
-> +expression e;
-> +expression list [r.n1] es;
-> +statement S;
-> +@@
-> +
-> + i(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   return n;
-> +|
-> +   i1(...,n,...) S
-> +|
-> +- return of_node_get(n);
-> ++ return n;
-> +|
-> ++  of_node_put(n);
-> +?  return ...;
-> +)
-> +   ... when any
-> + }
-> +
-> +@ruletwo depends on patch && !context && !org && !report@
-> +
-> +local idexpression r.n;
-> +iterator r.i,i1,i2;
-> +expression e,e1;
-> +expression list [r.n1] es;
-> +statement S,S2;
-> +@@
-> +
-> + i(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   i1(...,n,...) S
-> +|
-> ++  of_node_put(n);
-> +?  break;
-> +)
-> +   ... when any
-> + }
-> +... when != n
-> +    when strict
-> +    when forall
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +@rulethree depends on patch && !context && !org && !report exists@
-> +
-> +local idexpression r.n;
-> +iterator r.i,i1,i2;
-> +expression e,e1;
-> +identifier l;
-> +expression list [r.n1] es;
-> +statement S,S2;
-> +@@
-> +
-> + i(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   i1(...,n,...) S
-> +|
-> ++  of_node_put(n);
-> +?  goto l;
-> +)
-> +   ... when any
-> + }
-> +... when exists
-> +l: ... when != n
-> +       when strict
-> +       when forall
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@ruleone_context depends on !patch && (context || org || report) exists@
-> +statement S;
-> +expression e;
-> +expression list[r.n1] es;
-> +iterator r.i, i1;
-> +local idexpression r.n;
-> +position j0, j1;
-> +@@
-> +
-> + i@j0(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   return n;
-> +|
-> +   i1(...,n,...) S
-> +|
-> +  return @j1 ...;
-> +)
-> +   ... when any
-> + }
-> +
-> +@ruleone_disj depends on !patch && (context || org || report)@
-> +expression list[r.n1] es;
-> +iterator r.i;
-> +local idexpression r.n;
-> +position ruleone_context.j0, ruleone_context.j1;
-> +@@
-> +
-> +*  i@j0(es,n,...) {
-> +   ...
-> +*return  @j1...;
-> +   ... when any
-> + }
-> +
-> +@ruletwo_context depends on !patch && (context || org || report) exists@
-> +statement S, S2;
-> +expression e, e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i1, i2;
-> +local idexpression r.n;
-> +position j0, j2;
-> +@@
-> +
-> + i@j0(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   i1(...,n,...) S
-> +|
-> +  break@j2;
-> +)
-> +   ... when any
-> + }
-> +... when != n
-> +    when strict
-> +    when forall
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +@ruletwo_disj depends on !patch && (context || org || report)@
-> +statement S2;
-> +expression e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i2;
-> +local idexpression r.n;
-> +position ruletwo_context.j0, ruletwo_context.j2;
-> +@@
-> +
-> +*  i@j0(es,n,...) {
-> +   ...
-> +*break @j2;
-> +   ... when any
-> + }
-> +... when != n
-> +    when strict
-> +    when forall
-> +(
-> +  n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +@rulethree_context depends on !patch && (context || org || report) exists@
-> +identifier l;
-> +statement S,S2;
-> +expression e, e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i1, i2;
-> +local idexpression r.n;
-> +position j0, j3;
-> +@@
-> +
-> + i@j0(es,n,...) {
-> +   ...
-> +(
-> +   of_node_put(n);
-> +|
-> +   e = n
-> +|
-> +   i1(...,n,...) S
-> +|
-> +  goto l@j3;
-> +)
-> +  ... when any
-> + }
-> +... when exists
-> +l:
-> +... when != n
-> +    when strict
-> +    when forall
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +@rulethree_disj depends on !patch && (context || org || report) exists@
-> +identifier l;
-> +statement S2;
-> +expression e1;
-> +expression list[r.n1] es;
-> +iterator r.i, i2;
-> +local idexpression r.n;
-> +position rulethree_context.j0, rulethree_context.j3;
-> +@@
-> +
-> +*  i@j0(es,n,...) {
-> +   ...
-> +*goto l@j3;
-> +   ... when any
-> + }
-> +... when exists
-> + l:
-> + ... when != n
-> +     when strict
-> +     when forall
-> +(
-> + n = e1;
-> +|
-> +?i2(...,n,...) S2
-> +)
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@script:python ruleone_org depends on org@
-> +i << r.i;
-> +j0 << ruleone_context.j0;
-> +j1 << ruleone_context. j1;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before return " % (i)
-> +coccilib.org.print_safe_todo(j0[0], msg)
-> +coccilib.org.print_link(j1[0], "")
-> +
-> +@script:python ruletwo_org depends on org@
-> +i << r.i;
-> +j0 << ruletwo_context.j0;
-> +j2 << ruletwo_context.j2;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before break " % (i)
-> +coccilib.org.print_safe_todo(j0[0], msg)
-> +coccilib.org.print_link(j2[0], "")
-> +
-> +@script:python rulethree_org depends on org@
-> +i << r.i;
-> +j0 << rulethree_context.j0;
-> +j3 << rulethree_context.j3;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before goto " % (i)
-> +coccilib.org.print_safe_todo(j0[0], msg)
-> +coccilib.org.print_link(j3[0], "")
-> +
-> +// ----------------------------------------------------------------------------
-> +
-> +@script:python ruleone_report depends on report@
-> +i << r.i;
-> +j0 << ruleone_context.j0;
-> +j1 << ruleone_context.j1;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before return around line %s." % (i, j1[0].line)
-> +coccilib.report.print_report(j0[0], msg)
-> +
-> +@script:python ruletwo_report depends on report@
-> +i << r.i;
-> +j0 << ruletwo_context.j0;
-> +j2 << ruletwo_context.j2;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before break around line %s." % (i,j2[0].line)
-> +coccilib.report.print_report(j0[0], msg)
-> +
-> +@script:python rulethree_report depends on report@
-> +i << r.i;
-> +j0 << rulethree_context.j0;
-> +j3 << rulethree_context.j3;
-> +@@
-> +
-> +msg = "WARNING: Function \"%s\" should have of_node_put() before goto around lines %s." % (i,j3[0].line)
-> +coccilib.report.print_report(j0[0], msg)
-> --
-> 2.25.1
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index 6bbd1cfd10d3..821143db14fe 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -500,12 +500,13 @@ static bool virtio_mem_overlaps_range(struct virtio_mem *vm,
+>  }
 >
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
+>  /*
+> - * Test if a virtio-mem device owns a memory block. Can be called from
+> + * Test if a virtio-mem device contains a given range. Can be called from
+>   * (notifier) callbacks lockless.
+>   */
+> -static bool virtio_mem_owned_mb(struct virtio_mem *vm, unsigned long mb_id)
+> +static bool virtio_mem_contains_range(struct virtio_mem *vm, uint64_t start,
+> +                                     uint64_t size)
+>  {
+> -       return mb_id >= vm->first_mb_id && mb_id <= vm->last_mb_id;
+> +       return start >= vm->addr && start + size <= vm->addr + vm->region_size;
+>  }
 >
+>  static int virtio_mem_notify_going_online(struct virtio_mem *vm,
+> @@ -800,7 +801,7 @@ static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
+>          */
+>         rcu_read_lock();
+>         list_for_each_entry_rcu(vm, &virtio_mem_devices, next) {
+> -               if (!virtio_mem_owned_mb(vm, mb_id))
+> +               if (!virtio_mem_contains_range(vm, addr, PFN_PHYS(1 << order)))
+>                         continue;
+>
+>                 sb_id = virtio_mem_phys_to_sb_id(vm, addr);
+
+Looks good.
+Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
