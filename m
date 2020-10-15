@@ -2,266 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2010728F463
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8817828F46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730762AbgJOOIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:08:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:44924 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727988AbgJOOIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:08:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF6CC13D5;
-        Thu, 15 Oct 2020 07:08:36 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A16B63F719;
-        Thu, 15 Oct 2020 07:08:34 -0700 (PDT)
-Subject: Re: fw_devlink on will break all snps,dw-apb-gpio users
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20201014191235.7f71fcb4@xhacker.debian>
- <CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com>
- <20201015120206.41b6a454@xhacker.debian>
- <CAGETcx_jzF_iV5oJQ8BuDBu0b5Z8G=uL0DhA4uS5U9XLuYryjg@mail.gmail.com>
- <20201015161455.744d5041@xhacker.debian>
- <CAGETcx_hORWf2HkcUP=Dj6noCUsbj9KsycZ-Hr80BUOwyZaQBg@mail.gmail.com>
- <20201015175231.1a690c21@xhacker.debian>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d3e59e01-9921-5f8b-ef12-55baef420277@arm.com>
-Date:   Thu, 15 Oct 2020 15:08:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <20201015175231.1a690c21@xhacker.debian>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S2387786AbgJOOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:08:52 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37078 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbgJOOIt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:08:49 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FE3rIf164025;
+        Thu, 15 Oct 2020 14:08:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=ZDrP08mgbjZ26yc3pJkM9S7bhn6r7oR6wHAtbo57Izo=;
+ b=xzNqydizVSrNkEwWjv1+//yjX5NRhH8hks7UT00T3KkPVgmlMeGWkH3x7Ij3/Lj34wyZ
+ fCuYLsI0r7ml2QCe5hCabvFhpCuo9ipt5HXjndrbWK3o3g2ZStsej5r431ck88ORnHmz
+ RKIsZt23IKCJ+RMj+5C6S40JJBlYAelXBvPFXvyd7UFKPbbEHEKSq+Ry84Nn0MlPjn2V
+ xmHMOYxEWfZ7XpYqmWn881dx7BierHwmbsjmwXH2Nnk6Pz+vkCr3zFNcVl9ZGy4VdpUn
+ wUsTJqIZ1DnwPVpXhA1CkL3kqxRgUruy5BJ5lREKUWjQRbuSwmWuSc4W429I9/pFnoQj Xg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 343vaek6nx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Oct 2020 14:08:43 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FE6dhV013675;
+        Thu, 15 Oct 2020 14:08:43 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 343pw0dy24-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Oct 2020 14:08:43 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09FE8feg019867;
+        Thu, 15 Oct 2020 14:08:41 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Oct 2020 07:08:41 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] NFS: Fix mode bits and nlink count for v4 referral dirs
+From:   Chuck Lever <chuck.lever@oracle.com>
+In-Reply-To: <a998d760a52f5a86343d608e34802c41977442f7.camel@hammerspace.com>
+Date:   Thu, 15 Oct 2020 10:08:40 -0400
+Cc:     "ashishsangwan2@gmail.com" <ashishsangwan2@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C0A500CC-E132-4E77-822C-60AE13504289@oracle.com>
+References: <20201006151456.20875-1-ashishsangwan2@gmail.com>
+ <2d1ff3421a88ece2f1b7708cdbc9d34b00ad3e81.camel@hammerspace.com>
+ <CAOiN93mh-ssTDuN1fAptECqc5JpUHtK=1V56jY_0MtWEcT=U2Q@mail.gmail.com>
+ <622f03cd08acd861a5155a181191e9ce399bbb37.camel@hammerspace.com>
+ <D4D63EB4-DA04-4AAA-8A39-91987AF90E9C@oracle.com>
+ <a998d760a52f5a86343d608e34802c41977442f7.camel@hammerspace.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150099
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-15 10:52, Jisheng Zhang wrote:
-> On Thu, 15 Oct 2020 01:48:13 -0700
-> Saravana Kannan <saravanak@google.com> wrote:
-> 
->> On Thu, Oct 15, 2020 at 1:15 AM Jisheng Zhang
->> <Jisheng.Zhang@synaptics.com> wrote:
->>>
->>> On Wed, 14 Oct 2020 22:04:24 -0700 Saravana Kannan wrote:
->>>   
->>>>
->>>>
->>>> On Wed, Oct 14, 2020 at 9:02 PM Jisheng Zhang
->>>> <Jisheng.Zhang@synaptics.com> wrote:
->>>>>
->>>>> On Wed, 14 Oct 2020 10:29:36 -0700
->>>>> Saravana Kannan <saravanak@google.com> wrote:
->>>>>   
->>>>>>
->>>>>>
->>>>>> On Wed, Oct 14, 2020 at 4:12 AM Jisheng Zhang
->>>>>> <Jisheng.Zhang@synaptics.com> wrote:
->>>>>>>
->>>>>>> Hi,
->>>>>>>
->>>>>>> If set fw_devlink as on, any consumers of dw apb gpio won't probe.
->>>>>>>
->>>>>>> The related dts looks like:
->>>>>>>
->>>>>>> gpio0: gpio@2400 {
->>>>>>>         compatible = "snps,dw-apb-gpio";
->>>>>>>         #address-cells = <1>;
->>>>>>>         #size-cells = <0>;
->>>>>>>
->>>>>>>         porta: gpio-port@0 {
->>>>>>>                compatible = "snps,dw-apb-gpio-port";
->>>>>>>                gpio-controller;
->>>>>>>                #gpio-cells = <2>;
->>>>>>>                ngpios = <32>;
->>>>>>>                reg = <0>;
->>>>>>>         };
->>>>>>> };
->>>>>>>
->>>>>>> device_foo {
->>>>>>>          status = "okay"
->>>>>>>          ...;
->>>>>>>          reset-gpio = <&porta, 0, GPIO_ACTIVE_HIGH>;
->>>>>>> };
->>>>>>>
->>>>>>> If I change the reset-gpio property to use another kind of gpio phandle,
->>>>>>> e.g gpio expander, then device_foo can be probed successfully.
->>>>>>>
->>>>>>> The gpio expander dt node looks like:
->>>>>>>
->>>>>>>          expander3: gpio@44 {
->>>>>>>                  compatible = "fcs,fxl6408";
->>>>>>>                  pinctrl-names = "default";
->>>>>>>                  pinctrl-0 = <&expander3_pmux>;
->>>>>>>                  reg = <0x44>;
->>>>>>>                  gpio-controller;
->>>>>>>                  #gpio-cells = <2>;
->>>>>>>                  interrupt-parent = <&portb>;
->>>>>>>                  interrupts = <23 IRQ_TYPE_NONE>;
->>>>>>>                  interrupt-controller;
->>>>>>>                  #interrupt-cells = <2>;
->>>>>>>          };
->>>>>>>
->>>>>>> The common pattern looks like the devlink can't cope with suppliers from
->>>>>>> child dt node.
->>>>>>
->>>>>> fw_devlink doesn't have any problem dealing with child devices being
->>>>>> suppliers. The problem with your case is that the
->>>>>> drivers/gpio/gpio-dwapb.c driver directly parses the child nodes and
->>>>>> never creates struct devices for them. If you have a node with
->>>>>> compatible string, fw_devlink expects you to create and probe a struct
->>>>>> device for it. So change your driver to add the child devices as
->>>>>> devices instead of just parsing the node directly and doing stuff with
->>>>>> it.
->>>>>>
->>>>>> Either that, or stop putting "compatible" string in a node if you
->>>>>> don't plan to actually treat it as a device -- but that's too late for
->>>>>> this driver (it needs to be backward compatible). So change the driver
->>>>>> to add of_platform_populate() and write a driver that probes
->>>>>> "snps,dw-apb-gpio-port".
->>>>>>   
->>>>>
->>>>> Thanks for the information. The "snps,dw-apb-gpio-port" is never used,
->>>>> so I just sent out a series to remove it.
->>>>
->>>> I'd actually prefer that you fix the kernel code to actually use it.
->>>> So that fw_devlink can be backward compatible (Older DT + new kernel).
->>>> The change is pretty trivial (I just have time to do it for you).
->>>>   
->>>
->>> I agree the change is trivial, but it will add some useless LoCs like below.
->>
->> It's not useless if it preserves backward compatibility with DT.
->>
->>> I'm not sure whether this is acceptable.So add GPIO and DT maintainers to comment.
->>>
->>> Hi Linus, Rob,
->>>
->>> Could you please comment? A simple introduction of the problem:
->>>
->>> As pointed out by Saravana, "gpio-dwapb.c driver directly parses the child
->>> nodes and never creates struct devices for them. If you have a node with
->>> compatible string, fw_devlink expects you to create and probe a struct
->>> device for it", so once we set fw_devlink=on, then any users of gpio-dwapb
->>> as below won't be probed.
->>>
->>> device_foo {
->>>           status = "okay"
->>>           ...;
->>>           reset-gpio = <&porta, 0, GPIO_ACTIVE_HIGH>;
->>> };
->>>
->>> The compatible string "snps,dw-apb-gpio-port" is never used, but it's in
->>> the dt-binding since the dw gpio mainlined. I believe the every dw apb
->>> users just copy the compatible string in to soc dtsi. So I submit a series
->>> to remove the unused "snps,dw-apb-gpio-port" https://lkml.org/lkml/2020/10/14/1186
->>> But this will break Older DT + new kernel with fw_devlink on. Which solution
->>> is better?
->>>
->>> If the following patch is acceptable, I can submit it once 5.10-rc1 is out.
->>>
->>> thanks
->>>
->>> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
->>> index 1d8d55bd63aa..b8e012e48b59 100644
->>> --- a/drivers/gpio/gpio-dwapb.c
->>> +++ b/drivers/gpio/gpio-dwapb.c
->>> @@ -19,6 +19,7 @@
->>>   #include <linux/of_address.h>
->>>   #include <linux/of_device.h>
->>>   #include <linux/of_irq.h>
->>> +#include <linux/of_platform.h>
->>>   #include <linux/platform_device.h>
->>>   #include <linux/property.h>
->>>   #include <linux/reset.h>
->>> @@ -694,6 +695,10 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
->>>          }
->>>          platform_set_drvdata(pdev, gpio);
->>>
->>> +       err = devm_of_platform_populate(dev);
->>> +       if (err)
->>> +               goto out_unregister;
->>> +
->>>          return 0;
->>>
->>>   out_unregister:
->>> @@ -820,6 +825,25 @@ static struct platform_driver dwapb_gpio_driver = {
->>>
->>>   module_platform_driver(dwapb_gpio_driver);
->>>
->>> +static const struct of_device_id dwapb_port_of_match[] = {
->>> +       { .compatible = "snps,dw-apb-gpio-port" },
->>> +       { /* Sentinel */ }
->>> +};
->>> +
->>> +static int dwapb_gpio_port_probe(struct platform_device *pdev)
->>> +{
->>> +       return 0;
->>
->> No, I'm not asking to do a stub/dummy probe. Move the stuff you do
->> inside device_for_each_child_node{} and dwapb_gpio_add_port() into
->> this probe function. Those two pieces of code together are effectively
->> "probing" a separate gpio controller for each of the child nodes. So
->> just create a real struct device (like we do for every other
->> "compatible" DT node) and probe each of them properly using the device
->> driver core.
-> 
-> Then I believe the modifications are non-trivial. Maybe Linus and Rob
-> can comment which way is better, fix the dts or modify the gpio-dwapb.c.
-> Personally, I prefer fixing dts, because this doesn't remove or modify
-> any used properties or compatible string, it just removes the unused
-> compatible string.
 
-You appear to be assuming that:
 
-A) There a no consumers of DTBs and DT bindings other than Linux.
-B) No Linux user ever updates their kernel image without also updating 
-their DTB.
+> On Oct 15, 2020, at 9:59 AM, Trond Myklebust <trondmy@hammerspace.com> =
+wrote:
+>=20
+> On Thu, 2020-10-15 at 09:36 -0400, Chuck Lever wrote:
+>>> On Oct 15, 2020, at 8:06 AM, Trond Myklebust <
+>>> trondmy@hammerspace.com> wrote:
+>>>=20
+>>> On Thu, 2020-10-15 at 00:39 +0530, Ashish Sangwan wrote:
+>>>> On Wed, Oct 14, 2020 at 11:47 PM Trond Myklebust
+>>>> <trondmy@hammerspace.com> wrote:
+>>>>> On Tue, 2020-10-06 at 08:14 -0700, Ashish Sangwan wrote:
+>>>>>> Request for mode bits and nlink count in the
+>>>>>> nfs4_get_referral
+>>>>>> call
+>>>>>> and if server returns them use them instead of hard coded
+>>>>>> values.
+>>>>>>=20
+>>>>>> CC: stable@vger.kernel.org
+>>>>>> Signed-off-by: Ashish Sangwan <ashishsangwan2@gmail.com>
+>>>>>> ---
+>>>>>> fs/nfs/nfs4proc.c | 20 +++++++++++++++++---
+>>>>>> 1 file changed, 17 insertions(+), 3 deletions(-)
+>>>>>>=20
+>>>>>> diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+>>>>>> index 6e95c85fe395..efec05c5f535 100644
+>>>>>> --- a/fs/nfs/nfs4proc.c
+>>>>>> +++ b/fs/nfs/nfs4proc.c
+>>>>>> @@ -266,7 +266,9 @@ const u32 nfs4_fs_locations_bitmap[3] =3D {
+>>>>>>     | FATTR4_WORD0_FSID
+>>>>>>     | FATTR4_WORD0_FILEID
+>>>>>>     | FATTR4_WORD0_FS_LOCATIONS,
+>>>>>> -     FATTR4_WORD1_OWNER
+>>>>>> +     FATTR4_WORD1_MODE
+>>>>>> +     | FATTR4_WORD1_NUMLINKS
+>>>>>> +     | FATTR4_WORD1_OWNER
+>>>>>>     | FATTR4_WORD1_OWNER_GROUP
+>>>>>>     | FATTR4_WORD1_RAWDEV
+>>>>>>     | FATTR4_WORD1_SPACE_USED
+>>>>>> @@ -7594,16 +7596,28 @@ nfs4_listxattr_nfs4_user(struct inode
+>>>>>> *inode,
+>>>>>> char *list, size_t list_len)
+>>>>>> */
+>>>>>> static void nfs_fixup_referral_attributes(struct nfs_fattr
+>>>>>> *fattr)
+>>>>>> {
+>>>>>> +     bool fix_mode =3D true, fix_nlink =3D true;
+>>>>>> +
+>>>>>>     if (!(((fattr->valid & NFS_ATTR_FATTR_MOUNTED_ON_FILEID)
+>>>>>> ||
+>>>>>>            (fattr->valid & NFS_ATTR_FATTR_FILEID)) &&
+>>>>>>           (fattr->valid & NFS_ATTR_FATTR_FSID) &&
+>>>>>>           (fattr->valid & NFS_ATTR_FATTR_V4_LOCATIONS)))
+>>>>>>             return;
+>>>>>>=20
+>>>>>> +     if (fattr->valid & NFS_ATTR_FATTR_MODE)
+>>>>>> +             fix_mode =3D false;
+>>>>>> +     if (fattr->valid & NFS_ATTR_FATTR_NLINK)
+>>>>>> +             fix_nlink =3D false;
+>>>>>>     fattr->valid |=3D NFS_ATTR_FATTR_TYPE |
+>>>>>> NFS_ATTR_FATTR_MODE |
+>>>>>>             NFS_ATTR_FATTR_NLINK |
+>>>>>> NFS_ATTR_FATTR_V4_REFERRAL;
+>>>>>> -     fattr->mode =3D S_IFDIR | S_IRUGO | S_IXUGO;
+>>>>>> -     fattr->nlink =3D 2;
+>>>>>> +
+>>>>>> +     if (fix_mode)
+>>>>>> +             fattr->mode =3D S_IFDIR | S_IRUGO | S_IXUGO;
+>>>>>> +     else
+>>>>>> +             fattr->mode |=3D S_IFDIR;
+>>>>>> +
+>>>>>> +     if (fix_nlink)
+>>>>>> +             fattr->nlink =3D 2;
+>>>>>> }
+>>>>>>=20
+>>>>>> static int _nfs4_proc_fs_locations(struct rpc_clnt *client,
+>>>>>> struct
+>>>>>> inode *dir,
+>>>>>=20
+>>>>> NACK to this patch. The whole point is that if the server has a
+>>>>> referral, then it is not going to give us any attributes other
+>>>>> than
+>>>>> the
+>>>>> ones we're already asking for because it may not even have a
+>>>>> real
+>>>>> directory. The client is required to fake up an inode, hence
+>>>>> the
+>>>>> existing code.
+>>>>=20
+>>>> Hi Trond, thanks for reviewing the patch!
+>>>> Sorry but I didn't understand the reason to NACK it. Could you
+>>>> please
+>>>> elaborate your concern?
+>>>> These are the current attributes we request from the server on a
+>>>> referral:
+>>>> FATTR4_WORD0_CHANGE
+>>>>> FATTR4_WORD0_SIZE
+>>>>> FATTR4_WORD0_FSID
+>>>>> FATTR4_WORD0_FILEID
+>>>>> FATTR4_WORD0_FS_LOCATIONS,
+>>>> FATTR4_WORD1_OWNER
+>>>>> FATTR4_WORD1_OWNER_GROUP
+>>>>> FATTR4_WORD1_RAWDEV
+>>>>> FATTR4_WORD1_SPACE_USED
+>>>>> FATTR4_WORD1_TIME_ACCESS
+>>>>> FATTR4_WORD1_TIME_METADATA
+>>>>> FATTR4_WORD1_TIME_MODIFY
+>>>>> FATTR4_WORD1_MOUNTED_ON_FILEID,
+>>>>=20
+>>>> So you are suggesting that it's ok to ask for SIZE, OWNER, OWNER
+>>>> GROUP, SPACE USED, TIMESTAMPs etc but not ok to ask for mode bits
+>>>> and
+>>>> numlinks?
+>>>=20
+>>> No. We shouldn't be asking for any of that information for a
+>>> referral
+>>> because the server isn't supposed to return any values for it.
+>>>=20
+>>> Chuck and Anna, what's the deal with commit c05cefcc7241? That
+>>> appears
+>>> to have changed the original code to speculatively assume that the
+>>> server will violate RFC5661 Section 11.3.1 and/or RFC7530 Section
+>>> 8.3.1.
+>>=20
+>> The commit is an attempt to address the many complaints we've had
+>> about the ugly appearance of referral anchors. The strange "special"
+>> default values made the client appear to be broken, and was confusing
+>> to some. I consider this to be a UX issue: the information displayed
+>> in this case is not meant to be factual, but rather to prevent the
+>> user concluding that something is wrong.
+>>=20
+>> I'm not attached to this particular solution, though. Does it make
+>> sense to perform the referral mount before returning "ls" results
+>> so that the target server has a chance to supply reasonable
+>> attribute values for the mounted-on directory object? Just spit
+>> balling here.
+>>=20
+>>=20
+>>> Specifically, the paragraph that says:
+>>>=20
+>>> "
+>>>  Other attributes SHOULD NOT be made available for absent file
+>>>  systems, even when it is possible to provide them.  The server
+>>> should
+>>>  not assume that more information is always better and should
+>>> avoid
+>>>  gratuitously providing additional information."
+>>>=20
+>>> So why is the client asking for them?
+>>=20
+>> This paragraph (and it's most modern incarnation in RFC 8881 Section
+>> 11.4.1) describes server behavior. The current client behavior is
+>> spec-compliant because there is no explicit prohibition in the spec
+>> language against a client requesting additional attributes in this
+>> case.
+>>=20
+>> Either the server can clear those bitmap flags on the GETATTR reply
+>> and not supply those attributes, and clients must be prepared for
+>> that.
+>>=20
+>> Or, it's also possible to read this paragraph to mean that the
+>> server can provide those attributes and the values should not
+>> reflect attributes for the absent file system, but rather something
+>> else (eg, server-manufactured defaults, or the attributes from the
+>> object on the source server).
+>>=20
+>> And since this is a SHOULD NOT rather than a MUST NOT, servers are
+>> still free to return information about the absent file system.
+>> Clients are not guaranteed this will be the case, however.
+>>=20
+>> I don't think c05cefcc7241 makes any assumption about whether the
+>> server is lying about the extra attributes. Perhaps the server has
+>> no better values for these attributes than the client's defaults
+>> were.
+>>=20
+>=20
+> SHOULD / SHOULD NOT indicates actions that the server is required to
+> take in the absence of a very good reason to do otherwise. In other
+> words, the client should expect the majority of servers to behave in a
+> certain manner.
+>=20
+> It doesn't matter that the client's behaviour is spec compliant. We're
+> asking for information that is not supposed to be divulged by the
+> majority of servers, Furthermore, that information is, quite frankly,
+> utterly irrelevant to the client and application running on it. Any
+> attempt to access that fake object will result in a submount of
+> something completely different on top of that object.
+>=20
+> IOW: the only difference here is you're asking that the server provide
+> us with a faked up object (which it is not supposed to do), whereas
+> previously, we were faking that object up ourselves. What's the big
+> deal here?
 
-I can assure you that, in general, neither of those hold true. Hacking 
-DTs to work around internal implementation details in Linux is rarely if 
-ever a good or even viable idea.
+Right, that boils it down nicely.
 
-Robin.
+The difference has been that by and large the server-provided values
+don't look broken to users. Perhaps all we need to do is select better
+defaults for these attributes on Linux clients. I haven't followed
+Ashish's requirements, so I can't speak to them.
 
-> 
-> Thanks
-> 
-> 
->>
->>> +}
->>> +
->>> +static struct platform_driver dwapb_gpio_port_driver = {
->>> +       .driver         = {
->>> +               .name   = "gpio-dwapb-port",
->>> +               .of_match_table = dwapb_port_of_match,
->>> +       },
->>> +       .probe          = dwapb_gpio_port_probe,
->>> +};
->>> +module_platform_driver(dwapb_gpio_port_driver);
->>> +
->>>   MODULE_LICENSE("GPL");
->>>   MODULE_AUTHOR("Jamie Iles");
->>>   MODULE_DESCRIPTION("Synopsys DesignWare APB GPIO driver");
->>>   
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+Here is some history.
+
+=
+https://lore.kernel.org/linux-nfs/CAD8zhTAAvTKhp6k0vYRMnhZW5pxjstpBiDKLgoX=
+ocfpAXNjKTg@mail.gmail.com/
+
+
+--
+Chuck Lever
+
+
+
