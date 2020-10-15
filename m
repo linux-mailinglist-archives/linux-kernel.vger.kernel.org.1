@@ -2,65 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC62528EBB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F15F28EBB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730202AbgJODn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 23:43:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49534 "EHLO mail.kernel.org"
+        id S1730397AbgJODqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 23:46:46 -0400
+Received: from mga03.intel.com ([134.134.136.65]:19759 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727281AbgJODnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 23:43:25 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5002122241;
-        Thu, 15 Oct 2020 03:43:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602733405;
-        bh=azE8D6Jip/DfgDAtotq0y1JFG3w8UjkW+iU0XO+pqEM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HL9yxG0LA7lztRKCg0XUK3Be9kv6e3tjQu8ZiPTS7dwkZVHhTXJKycsESwIb3cfQA
-         sHAor+N4tCr5gHZzLqfSycvS4W/HQbVyEfIqf8tNLPUNzAlBlz+yVmGdWOnNlpVacn
-         dLWwDfcWmnGcLhiJRUtJxA3GPdJEMbUdYYpSY07c=
-Date:   Wed, 14 Oct 2020 20:43:22 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>
-Cc:     netdev@vger.kernel.org, Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
-Message-ID: <20201014204322.7a51c375@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201013171849.236025-2-kleber.souza@canonical.com>
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
-        <20201013171849.236025-2-kleber.souza@canonical.com>
+        id S1727281AbgJODqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 23:46:46 -0400
+IronPort-SDR: oqXXNKu6P/DWlqnbFJQN/3W5BEe+cUTAQc62mFUJ4eOu11uxTB1rGIl7Nz3Skg62oOoQYh9E4R
+ hSPkgNwu9Mhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="166313689"
+X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
+   d="scan'208";a="166313689"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 20:46:45 -0700
+IronPort-SDR: frVKPMJAzb1m9jivZ/XfXNx7VCqDkNNADy0hOKKQpIfrYnJ8mOjxbWGy/FPBq9IrrLYbuNMuZF
+ XeLLSEBZdFVw==
+X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
+   d="scan'208";a="531094057"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 20:46:45 -0700
+Date:   Wed, 14 Oct 2020 20:46:45 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V3 7/9] x86/entry: Preserve PKRS MSR across exceptions
+Message-ID: <20201015034645.GQ2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-8-ira.weiny@intel.com>
+ <6006a4c8-32bd-04ca-95cc-b2736a5cef72@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6006a4c8-32bd-04ca-95cc-b2736a5cef72@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 19:18:48 +0200 Kleber Sacilotto de Souza wrote:
-> From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+On Tue, Oct 13, 2020 at 11:52:32AM -0700, Dave Hansen wrote:
+> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
+> > @@ -341,6 +341,9 @@ noinstr void irqentry_enter(struct pt_regs *regs, irqentry_state_t *state)
+> >  	/* Use the combo lockdep/tracing function */
+> >  	trace_hardirqs_off();
+> >  	instrumentation_end();
+> > +
+> > +done:
+> > +	irq_save_pkrs(state);
+> >  }
 > 
-> When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reason
-> del_timer_sync can't be used is because this relies on keeping a reference
-> to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free that
-> during disconnect, the timer should really belong to struct dccp_sock.
+> One nit: This saves *and* sets PKRS.  It's not obvious from the call
+> here that PKRS is altered at this site.  Seems like there could be a
+> better name.
 > 
-> This addresses CVE-2020-16119.
+> Even if we did:
 > 
-> Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
+> 	irq_save_set_pkrs(state, INIT_VAL);
+> 
+> It would probably compile down to the same thing, but be *really*
+> obvious what's going on.
 
-Presumably you chose this commit because the fix won't apply beyond it?
-But it really fixes 2677d2067731 (dccp: don't free.. right?
+I suppose that is true.  But I think it is odd having a parameter which is the
+same for every call site.
 
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
+But I'm not going to quibble over something like this.
+
+Changed,
+Ira
+
+> 
+> >  void irqentry_exit_cond_resched(void)
+> > @@ -362,7 +365,12 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t *state)
+> >  	/* Check whether this returns to user mode */
+> >  	if (user_mode(regs)) {
+> >  		irqentry_exit_to_user_mode(regs);
+> > -	} else if (!regs_irqs_disabled(regs)) {
+> > +		return;
+> > +	}
+> > +
+> > +	irq_restore_pkrs(state);
+> > +
+> > +	if (!regs_irqs_disabled(regs)) {
+> >  		/*
+> >  		 * If RCU was not watching on entry this needs to be done
+> >  		 * carefully and needs the same ordering of lockdep/tracing
+> > 
+> 
