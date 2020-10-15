@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD56328F8DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F234D28F8DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389875AbgJOSsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:48:01 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:12452 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726823AbgJOSsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:48:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602787680; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=B8lOXAcm+/ugLwAWCtJF7DzjnDIgFnngZ2Vc5EQ5emA=; b=BAPF6Y4Wzt5QW/fJQQGKA20Wxy+6IaqXLiybax6n/IlCqqw5k1CmZEVbvfdvlKB35uprhFR3
- tcDBzdAIBf++j5Zpwed8HAlhPCtSHXlOyhd7hMypXE7pB401gkGlMKwiC39dyQOrocXOtLRA
- pemZ2yaB9dw+kSx8AOiqFoZzIEA=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f8899603711fec7b105cf67 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Oct 2020 18:48:00
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 531D0C43382; Thu, 15 Oct 2020 18:47:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 62367C433C9;
-        Thu, 15 Oct 2020 18:47:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 62367C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH] bus: mhi: core: Remove double locking from mhi_driver_remove()
-Date:   Thu, 15 Oct 2020 11:47:51 -0700
-Message-Id: <1602787671-9497-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1729401AbgJOSso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:48:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgJOSso (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:48:44 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE607C061755;
+        Thu, 15 Oct 2020 11:48:43 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id c6so2091900plr.9;
+        Thu, 15 Oct 2020 11:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ggw3I3pAynGZgxB+jlnK76lpD++hJM0MLWyGtUL7d20=;
+        b=oJ4C3bwpBD0qOgcpxlqBF7rs3447We2XBaam2CDdVM7ASljXHA9Y6eyySbcrSHEEop
+         ugQxo65cA0/YnFAUJlHvKsh3OJ+ZkLFwNWcdKwpK7qH2JEy8BRI5jnS5ShpKGRp5z9OG
+         QLUnpiramNrxuxcLR9suBU47BM/kjJiu83lp4XOVm1uOeIu8WI9NfH15ggAyoilw45G6
+         L2R9EAT9fzusxiD2DxCV78GWrl0UcLfzb1bqnH5ijsXyjZ8N+BdNhlh2Uv8yz3qBbfGr
+         nctWvcJHFJRwWBAQ5P9iHi6kUB759tRSHVR/i+H9vsLbHjjA+oQew3seOCTpuKH/A2Sf
+         hiJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ggw3I3pAynGZgxB+jlnK76lpD++hJM0MLWyGtUL7d20=;
+        b=d+jiAE4/6VTE7zNQ6C76Yd3uPkwWEO7fHm12hTzShnRtlV4F0gUXWoRI9Ad+AqC2UA
+         Hg5qtVHJUdePcT5wgEsmOXt+4vZTEnMnunhQzvYdMpdAIc/XNXQ80mwqhzIbUyqk5Dvp
+         NyxiQCb3THEpspk9vJkQqA6Za+7ynYa7zI+7d4ui96umEk6rGCO4olzMTBKNdI1pqCtD
+         Uq3H3wURLBxCQDyXRnVwWOhv4Kl49CpGRRwMFxjT+n7QBlPodQZVO+aHhNqvWFWP13uB
+         77cRS3ac57uRGyWiDr6/G74MeiH3+NsLYpieFfhia43Ie+PSsC0hQvG8xWZSMY+XEZBv
+         u8VA==
+X-Gm-Message-State: AOAM531nyrtDktnwR6tItlVC7Xlm6H6ICMBdByOG1vqielzk44E8cEaR
+        xhPchxKTgMpiiI7xebFo3us=
+X-Google-Smtp-Source: ABdhPJy7lMQDrU/UXhqFoaHHLUjKN6vCPXC2gDHjCG6rUmQ9qUGSVEopO+cluDuMIWo14qlAsrPkpw==
+X-Received: by 2002:a17:902:d909:b029:d3:d52c:b98b with SMTP id c9-20020a170902d909b02900d3d52cb98bmr116513plz.54.1602787723434;
+        Thu, 15 Oct 2020 11:48:43 -0700 (PDT)
+Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
+        by smtp.gmail.com with ESMTPSA id x1sm5187pjj.25.2020.10.15.11.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 11:48:41 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 15 Oct 2020 11:48:39 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Yi Wang <wang.yi59@zte.com.cn>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, xue.zhihong@zte.com.cn,
+        jiang.xuexin@zte.com.cn, zhanglin <zhang.lin16@zte.com.cn>
+Subject: Re: [PATCH v4] zram: add restriction on dynamic zram device creation
+Message-ID: <20201015184839.GA181691@google.com>
+References: <1602482640-48978-1-git-send-email-wang.yi59@zte.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1602482640-48978-1-git-send-email-wang.yi59@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is double acquisition of the pm_lock from mhi_driver_remove()
-function. Remove the read_lock_bh/read_unlock_bh calls for pm_lock
-taken during a call to mhi_device_put() as the lock is acquired
-within the function already. This will help avoid a potential
-kernel panic.
-
-Fixes: 189ff97cca53 ("bus: mhi: core: Add support for data transfer")
-Reported-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/init.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 0ffdebd..0a09f82 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -1276,10 +1276,8 @@ static int mhi_driver_remove(struct device *dev)
- 		mutex_unlock(&mhi_chan->mutex);
- 	}
- 
--	read_lock_bh(&mhi_cntrl->pm_lock);
- 	while (mhi_dev->dev_wake)
- 		mhi_device_put(mhi_dev);
--	read_unlock_bh(&mhi_cntrl->pm_lock);
- 
- 	return 0;
- }
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+On Mon, Oct 12, 2020 at 02:04:00PM +0800, Yi Wang wrote:
+> From: zhanglin <zhang.lin16@zte.com.cn>
+> 
+> Add max_num_devices to limit dynamic zram device creation to prevent
+>  potential OOM
+> 
+> Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
+> Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+Acked-by: Minchan Kim <minchan@kernel.org>
