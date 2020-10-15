@@ -2,154 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0115F28F594
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EAD28F57D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389578AbgJOPLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:11:02 -0400
-Received: from mx01-sz.bfs.de ([194.94.69.67]:38338 "EHLO mx02-sz.bfs.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388764AbgJOPLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:11:02 -0400
-X-Greylist: delayed 373 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Oct 2020 11:11:00 EDT
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx02-sz.bfs.de (Postfix) with ESMTPS id A058220403;
-        Thu, 15 Oct 2020 17:04:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1602774286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Xuug+2hVFBm+B5UTc9CM6NcxF57zXPletFCWeaT4gw=;
-        b=cCGN8umA+LSkB9Eby1Bah6kZIRkI2t76DUyaG6XoQp0hAuOROgfwHJfLSCKAH+yBVziGVf
-        95DrTBeCqThRK0lCMby4VqmTF+0qPieg35O7Q3IgNDA1lOUoS7uaFr7NF7+rg3PtHrfU0j
-        S8UWH28pY7QgnMU7qMOAj1xsFj7hJ58ijyswr778PtG80M3uQ5Mo9F+EBAleMKwrx6l+t7
-        s7wwYa0zH92F/xPUc+8iBxmpnCrG3Z2syKYYKcF/BkK/jxq2k9T+wkoGXCrMx72EEm2/Rp
-        MpKfmZ/1+lfenDuJxgsjAMJPKC82GXvzXQSFUTau1yfc0u5tLacUdgPzfQDbaw==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Thu, 15 Oct
- 2020 17:04:46 +0200
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
- 15.01.2106.002; Thu, 15 Oct 2020 17:04:46 +0200
-From:   Walter Harms <wharms@bfs.de>
-To:     Fedor Tokarev <ftokarev@gmail.com>,
-        "bfields@fieldses.org" <bfields@fieldses.org>,
-        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
-        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
-        "trond.myklebust@hammerspace.com" <trond.myklebust@hammerspace.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: AW: [PATCH] net: sunrpc: Fix 'snprintf' return value check in
- 'do_xprt_debugfs'
-Thread-Topic: [PATCH] net: sunrpc: Fix 'snprintf' return value check in
- 'do_xprt_debugfs'
-Thread-Index: AQHWovtnyQ5di/wyF0Kmy+Tq/adLsKmYwM+i
-Date:   Thu, 15 Oct 2020 15:04:46 +0000
-Message-ID: <b97379d3bf59487d8d0ca3bbf14ad0df@bfs.de>
-References: <20201015135341.GA16343@laptop>
-In-Reply-To: <20201015135341.GA16343@laptop>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.40]
-x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25728.000
-x-tm-as-result: No-10--5.425900-5.000000
-x-tmase-matchedrid: 1w4R1hu8EHXed0Ij9t5iQyEyJ8xFEVolPknazlXMVpV+SLLtNOiBhrLs
-        vs6J0rHdg5UXYAmrRiPQVBnHbDgUs6krm8GLHGyo52zh+cq/0Ju62wuq1giw0x3RY4pGTCyHfjc
-        dX7WMS/BFeoHCZIFQtCKkzMT7+4ooN9rojbjxBkwwwOrFPm3RDUpFpc3bJiMeEt/W/Pt5w8clC4
-        sxsYCYIvc4XRSNAau6vsp8E6m7CmMdrB57CzPAJj8Ckw9b/GFeTJDl9FKHbrl2/QXA1+sfBZ4CI
-        KY/Hg3AcmfM3DjaQLHEQdG7H66TyF82MXkEdQ77PZGkYTzNvZGv1nL/XchjCD2cE0BmbxnjEHAr
-        QLGCQG/e9xXzfruQvg==
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--5.425900-5.000000
-x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25728.000
-x-tm-snts-smtp: CF9EB13A45BC0FE4DCB7889F4C01F5288A58F5C7E6C89D543D611277CA13CB362000:9
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2389433AbgJOPFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389051AbgJOPFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 11:05:22 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A923C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:05:22 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id 1so1778400ple.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:05:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8gjumdRh/ocuMSA9Qid4QCLcPTRKn0xY4g+6dquJoPQ=;
+        b=nbFtZ+Ud7NDrMP223mQMGu4RVSAjeQvVQ42Ysok3HILl2rDGo5WZrJIRYFTkHI1YTU
+         EXOWhc7pfwnGXA4Vb/zY0/zqHyORENCIEoz0QPoTeM5XOP4L2SnSFnnrXfAx+AfnR9Q6
+         dU8gUrbGSzKmwU+Vd2FuGBiABvnDmG/M1ba8ZBFH9ebkS09F8fU0w0thg7dr++rwT1VZ
+         EksPM+dRVj8w11571QA5v0Y64z8kGT22fPcqzcf5xGFXK83G93/9vht1ltcdfgMRL0dG
+         GiJOI2QQggSQtwcaoRFe+uyWxxklTeUNZrDfLaVDSGJ12gq2KT+P1eDpGJikfy5Bu6IC
+         o8lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8gjumdRh/ocuMSA9Qid4QCLcPTRKn0xY4g+6dquJoPQ=;
+        b=oRNB+91hZxMuZzRhPSBeGFrjBwAAKleZbwVsrdTY5aDa65/eu4F+R3Gibgz5/Nlvc5
+         rDfpBp5wugEbCXmVpOWh2Img1Qh+rUBOVwKmulU0SHpHfy7ATpi3ys3HQ8HerzHrpopI
+         gtLmV3gYKNC2YVmFmo4MjA2639MXSQiFoS54A9BI5YcNEbpjw4u79OWXDG1IDqdBX1sM
+         8jfTqU+gdjZJi6yyTDr+S9KEyXtOaoRRX/0LRQOwGk+rcFzCyXc1Qdeb7PmAEOp0ToAU
+         C2A2PTJXk6O4uYZY+47UNaG9TUz/MMOecgSEhaIKUnhOiPqfSPBsuk+aGZpON+ha9NgH
+         heOg==
+X-Gm-Message-State: AOAM532GUj2dCGTpp/V2NILKxcFa9FAODdc/ZwnF4ah6kzYzItmM4Tva
+        0faXqxOjPVFWWLcPBjxGWJv7Hg==
+X-Google-Smtp-Source: ABdhPJwj6R6f/mJKRA7obHS7YZqgn2fO+uSNOL3vmjTIWDQGLxfasMzhykghDFQRIIztCOyUcr5fHA==
+X-Received: by 2002:a17:90a:a81:: with SMTP id 1mr4957171pjw.174.1602774300823;
+        Thu, 15 Oct 2020 08:05:00 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([64.120.119.108])
+        by smtp.gmail.com with ESMTPSA id p14sm3639345pjo.46.2020.10.15.08.04.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 15 Oct 2020 08:04:58 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 23:04:48 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Joe Mario <jmario@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
+        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/8] perf c2c: Refine the organization of metrics
+Message-ID: <20201015150448.GB462@leoy-ThinkPad-X240s>
+References: <20201014050921.5591-1-leo.yan@linaro.org>
+ <79f2db37-a03f-c01f-0b3b-4e2d3ed429f4@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-0.05
-Authentication-Results: mx02-sz.bfs.de;
-        none
-X-Spamd-Result: default: False [-0.05 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         NEURAL_HAM(-0.00)[-1.069];
-         FREEMAIL_TO(0.00)[gmail.com,fieldses.org,oracle.com,netapp.com,hammerspace.com,davemloft.net,kernel.org];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         BAYES_HAM(-0.05)[60.08%]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79f2db37-a03f-c01f-0b3b-4e2d3ed429f4@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-if  xprt->debugfs->d_name.name can be what ever long
-it is more clever to use kasprintf()
-the some for link (no idea how many xprt als possible)
+Hi Joe,
 
-jm2c
- wh
+On Wed, Oct 14, 2020 at 02:38:19PM -0400, Joe Mario wrote:
 
-________________________________________
-Von: Fedor Tokarev [ftokarev@gmail.com]
-Gesendet: Donnerstag, 15. Oktober 2020 15:59
-An: bfields@fieldses.org; chuck.lever@oracle.com; anna.schumaker@netapp.com=
-; trond.myklebust@hammerspace.com; davem@davemloft.net; kuba@kernel.org
-Cc: linux-nfs@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.ke=
-rnel.org; kernel-janitors@vger.kernel.org; ftokarev@gmail.com
-Betreff: [PATCH] net: sunrpc: Fix 'snprintf' return value check in 'do_xprt=
-_debugfs'
+[...]
 
-'snprintf' returns the number of characters which would have been written
-if enough space had been available, excluding the terminating null byte.
-Thus, the return value of 'sizeof(buf)' means that the last character
-has been dropped.
+> > This patch set is to refine metrics output organization.
 
-Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
----
- net/sunrpc/debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[...]
 
-diff --git a/net/sunrpc/debugfs.c b/net/sunrpc/debugfs.c
-index fd9bca2..56029e3 100644
---- a/net/sunrpc/debugfs.c
-+++ b/net/sunrpc/debugfs.c
-@@ -128,13 +128,13 @@ static int do_xprt_debugfs(struct rpc_clnt *clnt, str=
-uct rpc_xprt *xprt, void *n
-                return 0;
-        len =3D snprintf(name, sizeof(name), "../../rpc_xprt/%s",
-                       xprt->debugfs->d_name.name);
--       if (len > sizeof(name))
-+       if (len >=3D sizeof(name))
-                return -1;
-        if (*nump =3D=3D 0)
-                strcpy(link, "xprt");
-        else {
-                len =3D snprintf(link, sizeof(link), "xprt%d", *nump);
--               if (len > sizeof(link))
-+               if (len >=3D sizeof(link))
-                        return -1;
-        }
-        debugfs_create_symlink(link, clnt->cl_debugfs, name);
---
-2.7.4
+> Hi Leo:
+> I ran your patches through some perf c2c tests and it all looks good.  
+> I agree the new format of the "Shared Data Cache Line Table" makes more sense now.  And it still holds together nicely when sorted on local HitMs (-d lcl).
+> 
+> Thank you for doing this.
+> Joe
+> 
+> Tested-by: Joe Mario <jmario@redhat.com>
 
+Thank you for quick response and testing.
+
+I share the same thinking with Jiri that we should respect the existed
+usages and habits of the tool, I was also a bit concern that my changes
+might introduce inconvinence for others.  But it's great that receive
+your agreement for the changes!
+
+I have respinned the patch set v2 [1] with adding your test tag and
+updated documentation; furthermore, I sent out another patch set for
+enhancement perf c2c with sorting on LLC load hit, you are welcome to
+reivew and comment on it [2].
+
+Thanks,
+Leo
+
+[1] https://lore.kernel.org/patchwork/cover/1321499/
+[2] https://lore.kernel.org/patchwork/cover/1321514/
