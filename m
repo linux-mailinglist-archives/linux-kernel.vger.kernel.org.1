@@ -2,269 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3420D28F9AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8475728F9B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391872AbgJOTq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 15:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391865AbgJOTq1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 15:46:27 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C08BC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:46:23 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k8so55801pfk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:46:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2B6qPsmlvYOq1VJmS3Fb59bMhTPVla3w+kRhwR0csHI=;
-        b=GHoiDCRMPQe5eEw4lCoxQTi8hMI3fsc7zcLU76wc3KMpShLXGIYNnbE+sloA2kMpB4
-         lluKlnO6fDNshGAwzvXGjDePDzs7DKIhec8ZDH3OPr43KZzZ1aheLqPMIQmjyeGlQmBs
-         PoINOSjy7wUe08WWrqzlW1PVy5zr9Z0imNe/14J4Dc4C42YFo8CWvI79BcZ2zX7FIyiC
-         ZoGRjy0+UY2cy+78Z0RKizXwBi8NFCxgp3U47X3ldjdsemxXBj9MGtUfdNkJNi7JmwcA
-         m5SvoFJ1VWoF0O9AhaxDIOD4WVB4/oTi0vd9XptHVQg6lGnvs+wSY7aNDCmT2hjRPf/g
-         MuBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2B6qPsmlvYOq1VJmS3Fb59bMhTPVla3w+kRhwR0csHI=;
-        b=WUBjqvt7vhAlNT+cuMztd34u/15L23oanto4ROAjhbPcXwYnqfyI9D11fvV9eAGtf6
-         hf3MurcgAxWOmscnbAe03L7YBkJB6BYH2hKSfpu136iK14xvya489ngoygLW7W8g2onJ
-         fE1r6U4gZgdweZsG0sgaqBIZ0Yj8WWzB60eYuZC8Np/Y4f4xGowjjI+gX7LJ0n9E9gP1
-         RM625oVaI9IO2pW4iwHIiduXxDOySPmy7myxZ8nHis1pXxjz45VxySnmPCZTaW2egSiO
-         tgzAL2DW49GP9S5JOGUoJHTDHbJdPx5SJYBUcJj7TANjc0ViRq5va9dXr3Kf4/RwGEwW
-         0vug==
-X-Gm-Message-State: AOAM530pS1HU/x51xbjS1w19Ch/8G/LdYGi/Fwt0kaE0aLGdoyOusQx/
-        ICdlI+2AjI4pgjHu1Lf1ZTf5FQ7KOxRO+g==
-X-Google-Smtp-Source: ABdhPJyQBp3cQsDOk0QxrJlQ5t/uv/1rbAtsI0N1/jx6Ynjk0QCu4h7IympQLLVq2LSrDhRD1x5hWg==
-X-Received: by 2002:a63:db44:: with SMTP id x4mr118776pgi.435.1602791182999;
-        Thu, 15 Oct 2020 12:46:22 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id 14sm50893pfy.192.2020.10.15.12.46.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 12:46:22 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 13:46:20 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/9] rpmsg: virtio: Move from virtio to rpmsg byte
- conversion
-Message-ID: <20201015194620.GE1450102@xps15>
-References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
- <20201013232519.1367542-4-mathieu.poirier@linaro.org>
- <0264d2f6-22c7-6c6d-0db4-05fd9e0b1121@st.com>
+        id S2391887AbgJOTrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 15:47:11 -0400
+Received: from mga03.intel.com ([134.134.136.65]:43987 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391865AbgJOTrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 15:47:10 -0400
+IronPort-SDR: 0o3A548iK5eeqvOPUoBVxDb203bb/UnxMbqbHlAohWYOoMkRDBfKzDLL9hHHjfEb097DEi6zP+
+ k9+xHiqpGhIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="166500299"
+X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
+   d="scan'208";a="166500299"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 12:47:09 -0700
+IronPort-SDR: I95RksRwuPmnhmsPzdmHnGLymyKbVO6Jdiz9Y6Sl2vVBPJXKbV8pbeXH8kIlp3BsUvZnRL3DhW
+ Va137lp51opw==
+X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
+   d="scan'208";a="464417523"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.212.199.190])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 12:47:08 -0700
+Message-ID: <1e820f96242cc847b8465751f074155f8e7b5819.camel@linux.intel.com>
+Subject: Re: [PATCH 1/2] ACPI: DPTF: Fix participant driver names
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@suse.de>
+Date:   Thu, 15 Oct 2020 12:47:07 -0700
+In-Reply-To: <2071902.YaQf1D0BmN@kreacher>
+References: <2206290.MayQypTng0@kreacher> <2071902.YaQf1D0BmN@kreacher>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0264d2f6-22c7-6c6d-0db4-05fd9e0b1121@st.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 07:04:32PM +0200, Arnaud POULIQUEN wrote:
+On Thu, 2020-10-15 at 18:58 +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
+> Change the names of DPTF participant drivers to adhere to the
+> sysfs file naming conventions (no spaces present in the name in
+> particular).
 > 
-> On 10/14/20 1:25 AM, Mathieu Poirier wrote:
-> > Use rpmsg byte conversion functions in order for the RPMSG
-> > headers and generic functions to be used by external entities.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/rpmsg/virtio_rpmsg_bus.c | 60 +++++++++++++++++++-------------
-> >  1 file changed, 35 insertions(+), 25 deletions(-)
-> > 
-> > diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> > index 9006fc7f73d0..793fe924671f 100644
-> > --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> > +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> > @@ -19,11 +19,11 @@
-> >  #include <linux/mutex.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/rpmsg.h>
-> > +#include <linux/rpmsg_byteorder.h>
-> >  #include <linux/scatterlist.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/sched.h>
-> >  #include <linux/virtio.h>
-> > -#include <linux/virtio_byteorder.h>
-> >  #include <linux/virtio_ids.h>
-> >  #include <linux/virtio_config.h>
-> >  #include <linux/wait.h>
-> > @@ -85,11 +85,11 @@ struct virtproc_info {
-> >   * Every message sent(/received) on the rpmsg bus begins with this header.
-> >   */
-> >  struct rpmsg_hdr {
-> > -	__virtio32 src;
-> > -	__virtio32 dst;
-> > -	__virtio32 reserved;
-> > -	__virtio16 len;
-> > -	__virtio16 flags;
-> > +	__rpmsg32 src;
-> > +	__rpmsg32 dst;
-> > +	__rpmsg32 reserved;
-> > +	__rpmsg16 len;
-> > +	__rpmsg16 flags;
-> >  	u8 data[];
-> >  } __packed;
-> >  
-> > @@ -107,8 +107,8 @@ struct rpmsg_hdr {
-> >   */
-> >  struct rpmsg_ns_msg {
-> >  	char name[RPMSG_NAME_SIZE];
-> > -	__virtio32 addr;
-> > -	__virtio32 flags;
-> > +	__rpmsg32 addr;
-> > +	__rpmsg32 flags;
-> >  } __packed;
-> >  
-> >  /**
-> > @@ -280,6 +280,14 @@ static struct rpmsg_endpoint *__rpmsg_create_ept(struct virtproc_info *vrp,
-> >  	return NULL;
-> >  }
-> >  
-> > +static bool virtio_rpmsg_is_little_endian(struct rpmsg_device *rpdev)
-> > +{
-> > +	struct virtio_rpmsg_channel *vch = to_virtio_rpmsg_channel(rpdev);
-> > +	struct virtproc_info *vrp = vch->vrp;
-> > +
-> > +	return virtio_is_little_endian(vrp->vdev);
-> > +}
-> 
-> Regarding this i wonder if the endianess could not be a rpmsg_device field that would be set on 
-> __rpmsg_create_channel?
-> I don't think that the endianess could change, so perhaps no need to call ops for each conversion
-> using interface implemented in rpmsg.h...
+> Fixes: 2ce6324eadb0 ("ACPI: DPTF: Add PCH FIVR participant driver")
+> Fixes: 6256ebd5daf9 ("ACPI / DPTF: Add DPTF power participant
+> driver")
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-That's a valid point - I certainly don't expect the endianness to change
-dynamically.
-
-> But perhaps I missed something?
->  
-> > +
-> >  static struct rpmsg_endpoint *virtio_rpmsg_create_ept(struct rpmsg_device *rpdev,
-> >  						      rpmsg_rx_cb_t cb,
-> >  						      void *priv,
-> > @@ -336,8 +344,8 @@ static int virtio_rpmsg_announce_create(struct rpmsg_device *rpdev)
-> >  		struct rpmsg_ns_msg nsm;
-> >  
-> >  		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-> > -		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
-> > -		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_CREATE);
-> > +		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
-> > +		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_CREATE);
-> >  
-> >  		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
-> >  		if (err)
-> > @@ -360,8 +368,8 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
-> >  		struct rpmsg_ns_msg nsm;
-> >  
-> >  		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-> > -		nsm.addr = cpu_to_virtio32(vrp->vdev, rpdev->ept->addr);
-> > -		nsm.flags = cpu_to_virtio32(vrp->vdev, RPMSG_NS_DESTROY);
-> > +		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
-> > +		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_DESTROY);
-> >  
-> >  		err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
-> >  		if (err)
-> > @@ -372,6 +380,7 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
-> >  }
-> >  
-> >  static const struct rpmsg_device_ops virtio_rpmsg_ops = {
-> > +	.is_little_endian = virtio_rpmsg_is_little_endian,
-> >  	.create_ept = virtio_rpmsg_create_ept,
-> >  	.announce_create = virtio_rpmsg_announce_create,
-> >  	.announce_destroy = virtio_rpmsg_announce_destroy,
-> > @@ -613,10 +622,10 @@ static int rpmsg_send_offchannel_raw(struct rpmsg_device *rpdev,
-> >  		}
-> >  	}
-> >  
-> > -	msg->len = cpu_to_virtio16(vrp->vdev, len);
-> > +	msg->len = cpu_to_rpmsg16(rpdev, len);
-> >  	msg->flags = 0;
-> > -	msg->src = cpu_to_virtio32(vrp->vdev, src);
-> > -	msg->dst = cpu_to_virtio32(vrp->vdev, dst);
-> > +	msg->src = cpu_to_rpmsg32(rpdev, src);
-> > +	msg->dst = cpu_to_rpmsg32(rpdev, dst);
-> >  	msg->reserved = 0;
-> >  	memcpy(msg->data, data, len);
-> >  
-> > @@ -705,14 +714,15 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
-> >  {
-> >  	struct rpmsg_endpoint *ept;
-> >  	struct scatterlist sg;
-> > -	unsigned int msg_len = virtio16_to_cpu(vrp->vdev, msg->len);
-> > +	bool little_endian = rpmsg_is_little_endian();
-> > +	unsigned int msg_len = __rpmsg16_to_cpu(little_endian, msg->len);
-> >  	int err;
-> >  
-> >  	dev_dbg(dev, "From: 0x%x, To: 0x%x, Len: %d, Flags: %d, Reserved: %d\n",
-> > -		virtio32_to_cpu(vrp->vdev, msg->src),
-> > -		virtio32_to_cpu(vrp->vdev, msg->dst), msg_len,
-> > -		virtio16_to_cpu(vrp->vdev, msg->flags),
-> > -		virtio32_to_cpu(vrp->vdev, msg->reserved));
-> > +		__rpmsg32_to_cpu(little_endian, msg->src),
-> > +		__rpmsg32_to_cpu(little_endian, msg->dst), msg_len,
-> > +		__rpmsg16_to_cpu(little_endian, msg->flags),
-> > +		__rpmsg32_to_cpu(little_endian, msg->reserved));
+> ---
+>  drivers/acpi/dptf/dptf_pch_fivr.c |    2 +-
+>  drivers/acpi/dptf/dptf_power.c    |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> Nitpicking: sometime rpmsgXX_to_cpu is used, sometime __rpmsgXX_to_cpu, 
-> Perhaps only one API should be used... But i don't see any blocking point to use both...:)
-
-Here we have to use __rpmsgXX_to_CPU() because the rpmsg_device is not
-available.  It could be fixed but would require a serious amount of refactoring
-for little value.  Moreover since this rpmsg_recv_single() is specific to the
-virtIO implementation the end result is the same.
-
+> Index: linux-pm/drivers/acpi/dptf/dptf_pch_fivr.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/dptf/dptf_pch_fivr.c
+> +++ linux-pm/drivers/acpi/dptf/dptf_pch_fivr.c
+> @@ -114,7 +114,7 @@ static struct platform_driver pch_fivr_d
+>  	.probe = pch_fivr_add,
+>  	.remove = pch_fivr_remove,
+>  	.driver = {
+> -		.name = "DPTF PCH FIVR",
+> +		.name = "dptf_pch_fivr",
+>  		.acpi_match_table = pch_fivr_device_ids,
+>  	},
+>  };
+> Index: linux-pm/drivers/acpi/dptf/dptf_power.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/dptf/dptf_power.c
+> +++ linux-pm/drivers/acpi/dptf/dptf_power.c
+> @@ -237,7 +237,7 @@ static struct platform_driver dptf_power
+>  	.probe = dptf_power_add,
+>  	.remove = dptf_power_remove,
+>  	.driver = {
+> -		.name = "DPTF Platform Power",
+> +		.name = "dptf_power",
+>  		.acpi_match_table = int3407_device_ids,
+>  	},
+>  };
 > 
-> Thanks,
-> Arnaud
 > 
-> >  #if defined(CONFIG_DYNAMIC_DEBUG)
-> >  	dynamic_hex_dump("rpmsg_virtio RX: ", DUMP_PREFIX_NONE, 16, 1,
-> >  			 msg, sizeof(*msg) + msg_len, true);
-> > @@ -731,7 +741,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
-> >  	/* use the dst addr to fetch the callback of the appropriate user */
-> >  	mutex_lock(&vrp->endpoints_lock);
-> >  
-> > -	ept = idr_find(&vrp->endpoints, virtio32_to_cpu(vrp->vdev, msg->dst));
-> > +	ept = idr_find(&vrp->endpoints, __rpmsg32_to_cpu(little_endian, msg->dst));
-> >  
-> >  	/* let's make sure no one deallocates ept while we use it */
-> >  	if (ept)
-> > @@ -745,7 +755,7 @@ static int rpmsg_recv_single(struct virtproc_info *vrp, struct device *dev,
-> >  
-> >  		if (ept->cb)
-> >  			ept->cb(ept->rpdev, msg->data, msg_len, ept->priv,
-> > -				virtio32_to_cpu(vrp->vdev, msg->src));
-> > +				__rpmsg32_to_cpu(little_endian, msg->src));
-> >  
-> >  		mutex_unlock(&ept->cb_lock);
-> >  
-> > @@ -853,13 +863,13 @@ static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
-> >  
-> >  	strncpy(chinfo.name, msg->name, sizeof(chinfo.name));
-> >  	chinfo.src = RPMSG_ADDR_ANY;
-> > -	chinfo.dst = virtio32_to_cpu(vrp->vdev, msg->addr);
-> > +	chinfo.dst = rpmsg32_to_cpu(rpdev, msg->addr);
-> >  
-> >  	dev_info(dev, "%sing channel %s addr 0x%x\n",
-> > -		 virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY ?
-> > +		 rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
-> >  		 "destroy" : "creat", msg->name, chinfo.dst);
-> >  
-> > -	if (virtio32_to_cpu(vrp->vdev, msg->flags) & RPMSG_NS_DESTROY) {
-> > +	if (rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY) {
-> >  		ret = rpmsg_unregister_device(&vrp->vdev->dev, &chinfo);
-> >  		if (ret)
-> >  			dev_err(dev, "rpmsg_destroy_channel failed: %d\n", ret);
-> > 
+> 
+
