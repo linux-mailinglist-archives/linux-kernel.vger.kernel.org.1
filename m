@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1468928F828
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1ECF28F483
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388327AbgJOSJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:09:23 -0400
-Received: from m12-12.163.com ([220.181.12.12]:43031 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727518AbgJOSJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:09:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=fY1SD
-        dSOE9vgbQVlj+o4OQBPE0d3FUxwXztxRh1S/fU=; b=Sb+sw71VU8jWM2CIDKbVy
-        Df8WbcjDLp8U0c3VAUR3+8m1sqgtCrVlq1IdETib6RqadfTrIIASh3M73D714XyK
-        de3rY/1tOJLKxSlbBhMAfI0N4tg4qfbDIL98l4IDa/h6OYMgDQd9p1AAMQdC26Kq
-        XXceS0PDSyRIt2nqVgLJ/4=
-Received: from localhost (unknown [101.228.30.83])
-        by smtp8 (Coremail) with SMTP id DMCowADH32sOWYhfUYW+Rw--.35207S2;
-        Thu, 15 Oct 2020 22:13:34 +0800 (CST)
-Date:   Thu, 15 Oct 2020 22:13:34 +0800
-From:   Hui Su <sh_def@163.com>
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, corbet@lwn.net, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com
-Subject: [PATCH] docs/rcu: update the api of call_rcu()
-Message-ID: <20201015141334.GA20723@rlk>
+        id S1730518AbgJOONp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:13:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38156 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726819AbgJOONp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:13:45 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1602771223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0MblahxxdvFHgwDWUgjvtntdmd40tCKymEtQpaSbYxg=;
+        b=jku5709TczLf/IEI2LWL7lRlM4HazOcKaKE/facN7uxF1Dg6zReTeGFprxqQ0iTsX4cAom
+        3AivoOnyREXNkdWa2sakgTW9dpOR+auuxkVdy+KzccrRRBLzt/cZCVdkINU30H/xsLS1/2
+        81GP0SnvVQKOjXtxrwBHtUvtRpD6dsQj7n/X0INvqs70AOb3fRrizaXRPKtYnP86RjxjZJ
+        6tKiqHGbDW0u2BmxgfKivtF7n8mnQbx9aFVLacR529sBgdGth0OO8ZxpIMA1Ow0IWBEzat
+        VAqITw2dUgye77g9rbEw2vm14cvAipoMVb6h1TjB+aB+e1DTO3eR8dCmc52grw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1602771223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0MblahxxdvFHgwDWUgjvtntdmd40tCKymEtQpaSbYxg=;
+        b=xpRQxwWgOnSeDGPmR/KGoRxc3RSrHOIwZfp8nG7SiLAjvfQQGXlg5ypeFiyZa2A23KMu3d
+        X8OyefJWOlRCb7Aw==
+To:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] futex: adjust a futex timeout with a per-timens offset
+In-Reply-To: <fc50656f-2df8-06c9-653a-8d2910949401@gmail.com>
+References: <20201015072909.271426-1-avagin@gmail.com> <fc50656f-2df8-06c9-653a-8d2910949401@gmail.com>
+Date:   Thu, 15 Oct 2020 16:13:42 +0200
+Message-ID: <87lfg7a86h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DMCowADH32sOWYhfUYW+Rw--.35207S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xr13WF1ruF1fAF1rCw1kGrg_yoWfXrbEvr
-        45XF4Syw4UtFn7JF4UGrnakryrWayrCF18uw4kXa98ta4xKwsxuF1vvr9Fy348u3ya9r9x
-        G3s3Xr9rJwnxtjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbrOzDUUUUU==
-X-Originating-IP: [101.228.30.83]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbByxa+X1PAPRsUFgAAsL
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update the api of call_rcu()
+On Thu, Oct 15 2020 at 14:26, Dmitry Safonov wrote:
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- Documentation/RCU/whatisRCU.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> On 10/15/20 8:29 AM, Andrei Vagin wrote:
+>> For all commands except FUTEX_WAIT, timeout is interpreted as an
+>> absolute value. This absolute value is inside the task's time namespace
+>> and has to be converted to the host's time.
+>> 
+>> Cc: <stable@vger.kernel.org>
+>> Fixes: 5a590f35add9 ("posix-clocks: Wire up clock_gettime() with timens offsets")
+>> Reported-by: Hans van der Laan <j.h.vanderlaan@student.utwente.nl>
+>> Signed-off-by: Andrei Vagin <avagin@gmail.com>[..]
+>> @@ -3797,6 +3798,8 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+>>  		t = timespec64_to_ktime(ts);
+>>  		if (cmd == FUTEX_WAIT)
+>>  			t = ktime_add_safe(ktime_get(), t);
+>> +		else if (!(cmd & FUTEX_CLOCK_REALTIME))
+>> +			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+>
+> Err, it probably should be
+> : else if (!(op & FUTEX_CLOCK_REALTIME))
 
-diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
-index c7f147b8034f..aa7d5ed20da5 100644
---- a/Documentation/RCU/whatisRCU.rst
-+++ b/Documentation/RCU/whatisRCU.rst
-@@ -497,8 +497,7 @@ long -- there might be other high-priority work to be done.
- In such cases, one uses call_rcu() rather than synchronize_rcu().
- The call_rcu() API is as follows::
- 
--	void call_rcu(struct rcu_head * head,
--		      void (*func)(struct rcu_head *head));
-+	void call_rcu(struct rcu_head *head, rcu_callback_t func);
- 
- This function invokes func(head) after a grace period has elapsed.
- This invocation might happen from either softirq or process context,
--- 
-2.25.1
+Duh, you are right. I stared at it for a while and did not spot it.
 
+> And there's also
+> : SYSCALL_DEFINE6(futex_time32, ...)
+> which wants to be patched.
 
+Indeed. I zapped the commits.
+
+Thanks,
+
+        tglx
