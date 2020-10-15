@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2E428EE93
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B68D28EE97
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730226AbgJOIfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:35:10 -0400
-Received: from mga02.intel.com ([134.134.136.20]:64454 "EHLO mga02.intel.com"
+        id S1730331AbgJOIfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:35:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:56228 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727121AbgJOIfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:35:09 -0400
-IronPort-SDR: HRfufgvc6FBmFUt9W1Ssnv8BeICSYlyINes75sKEI8FaqNacu0BPSUqrl1WIVVNNWwhPXxWWeB
- 8Vor23VaDo2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="153228858"
+        id S1727121AbgJOIf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:35:27 -0400
+IronPort-SDR: 54Bvb2z4CFz/1DZmeCIvScceUKT7VgF8wkyKT6Xbv/a+QyMOYHu1YLzbdxBVANYb5RdM0zE/Hh
+ Q+Cih+Y4vkBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="250985387"
 X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
-   d="scan'208";a="153228858"
+   d="scan'208";a="250985387"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 01:35:08 -0700
-IronPort-SDR: NKFiKfb/zu9vhECuFMIRjRgtWC8gjKREWgalkWgsuMzfraBk8H+avxq+6IiHF8f6YuJHLAKv73
- HD0wQPCpHqRw==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 01:35:27 -0700
+IronPort-SDR: pA0PLV+O441DMCqV3JeoVd4XlZoEUa83RxqHlAhWAQK34sDUCMHa9MJYnUnxS9q+++i9XPRrQR
+ fuw44RDnlo8w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
-   d="scan'208";a="318951048"
+   d="scan'208";a="521765734"
 Received: from lkp-server02.sh.intel.com (HELO 7220befbd762) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 15 Oct 2020 01:35:07 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 15 Oct 2020 01:35:26 -0700
 Received: from kbuild by 7220befbd762 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kSyj4-00003V-Sa; Thu, 15 Oct 2020 08:35:06 +0000
-Date:   Thu, 15 Oct 2020 16:34:53 +0800
+        id 1kSyjN-00003k-Jw; Thu, 15 Oct 2020 08:35:25 +0000
+Date:   Thu, 15 Oct 2020 16:34:56 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- c3b484c439b0bab7a698495f33ef16286a1000c4
-Message-ID: <5f8809ad.XE7EVdUpw0Dt5L6b%lkp@intel.com>
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ a73f863af4ce9730795eab7097fb2102e6854365
+Message-ID: <5f8809b0.1sQTJBp8G1uuFlNg%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -45,12 +45,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
-branch HEAD: c3b484c439b0bab7a698495f33ef16286a1000c4  x86/syscalls: Document the fact that syscalls 512-547 are a legacy mistake
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  sched/urgent
+branch HEAD: a73f863af4ce9730795eab7097fb2102e6854365  sched/features: Fix !CONFIG_JUMP_LABEL case
 
 elapsed time: 724m
 
-configs tested: 126
+configs tested: 128
 configs skipped: 2
 
 The following configs have been built successfully.
@@ -62,6 +62,11 @@ arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
 arm                                 defconfig
+arm                           corgi_defconfig
+mips                             allyesconfig
+mips                      pistachio_defconfig
+riscv                               defconfig
+powerpc                 mpc836x_mds_defconfig
 arm                         cm_x300_defconfig
 arm                              zx_defconfig
 mips                        jmr3927_defconfig
@@ -82,7 +87,6 @@ mips                           ip32_defconfig
 arm                          prima2_defconfig
 m68k                             allmodconfig
 arm                           tegra_defconfig
-mips                      pistachio_defconfig
 ia64                      gensparse_defconfig
 powerpc                   motionpro_defconfig
 mips                          malta_defconfig
@@ -103,6 +107,11 @@ powerpc                      ep88xc_defconfig
 sh                               alldefconfig
 powerpc                      cm5200_defconfig
 arm                          collie_defconfig
+arm                         lpc18xx_defconfig
+sh                          kfr2r09_defconfig
+um                           x86_64_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                          rm200_defconfig
 powerpc                     mpc5200_defconfig
 arm                       imx_v4_v5_defconfig
 powerpc                       ebony_defconfig
@@ -113,11 +122,6 @@ m68k                            q40_defconfig
 powerpc                 linkstation_defconfig
 arm                             rpc_defconfig
 arm                        trizeps4_defconfig
-arm                         shannon_defconfig
-powerpc                    sam440ep_defconfig
-m68k                        m5307c3_defconfig
-sh                             sh03_defconfig
-sh                        edosk7705_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
 ia64                             allyesconfig
@@ -138,10 +142,9 @@ s390                             allyesconfig
 parisc                           allyesconfig
 s390                                defconfig
 i386                             allyesconfig
-sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
-mips                             allyesconfig
+sparc                            allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
@@ -168,7 +171,6 @@ riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
-riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 x86_64                                   rhel
