@@ -2,74 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3223628FB69
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB0528FB6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732444AbgJOXGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 19:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732434AbgJOXGY (ORCPT
+        id S1732464AbgJOXGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 19:06:32 -0400
+Received: from smtprelay0050.hostedemail.com ([216.40.44.50]:39932 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732434AbgJOXG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 19:06:24 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B17C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 16:06:24 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id a5so490502ljj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 16:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ySCIwp29O4ociJzzOVOKh5KY68CfkZIAay+F6Ok3yY=;
-        b=e3so42TRsxuJ5mfPkYxoGNiW4GBI/Yl75Lc/i38Ex2+2KqlheN4ZFDlPXUX0UKQnhA
-         JMtYEt1aWnwC1ngp0X+lLfsTMfzivxRw90SqLT+MnFlkj7RWmj4zvVQDRAi2bY9yacEZ
-         UuE9J4R3Xd701mCWp6XRRasGIN1q0IKac4DUQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ySCIwp29O4ociJzzOVOKh5KY68CfkZIAay+F6Ok3yY=;
-        b=GliTIoR7voGqqvuzh2HXSmKlHplSoQ1Qmh4B1i7t6IeJX2ugsqTs1V1y1UFCVrpr5L
-         xC9VkNkufKRb7TW6G+yQXmcTh/q2lyvS9Yzc0LIYgFXgHDf1Vi5IzhnxsffcwqF0kfjQ
-         UxtAEu8MR9AkwC1jaXo/3ScYcOBDs/S2w8TGsgUSffuIv5O9tqh+wdczk7lxJ7GpZ+2X
-         sKjuY87QTS5m1THEJKcEVK5h2PFYSUGm1I1oR4pOeXRlSz7fy/9dIc7FrllnVezttgWB
-         7KdMm4wAEyXFk5UgPl1qvT8UMSn6zZLWhH2ddk0V7+d3nqcpJAyEUHbipCbGydaoChos
-         oUEw==
-X-Gm-Message-State: AOAM533D5ZhEmgo/2owltW/BlY57iHsYXzz2+mFx4y6vrt2i8sz/dyyo
-        jOUInAE8Dp3NCaOI3u1acr30mCIPWSatVA==
-X-Google-Smtp-Source: ABdhPJyWvGrFAmFTQtQvSt7+xDUJKD5ipTvLWMtC+Ys//PiElCOSDG2tbtBkSQGLkXZ6DUIbCk9Pvw==
-X-Received: by 2002:a2e:9d93:: with SMTP id c19mr422781ljj.32.1602803182013;
-        Thu, 15 Oct 2020 16:06:22 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id 134sm157730lfd.101.2020.10.15.16.06.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 16:06:21 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id l2so628948lfk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 16:06:21 -0700 (PDT)
-X-Received: by 2002:a19:4815:: with SMTP id v21mr291703lfa.603.1602803180597;
- Thu, 15 Oct 2020 16:06:20 -0700 (PDT)
+        Thu, 15 Oct 2020 19:06:28 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id CA5B0181D337B;
+        Thu, 15 Oct 2020 23:06:26 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1560:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2692:2828:3138:3139:3140:3141:3142:3622:3873:3876:4321:5007:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21092:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: debt70_1404abc27218
+X-Filterd-Recvd-Size: 1491
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 15 Oct 2020 23:06:25 +0000 (UTC)
+Message-ID: <a03bbb48d2e8b27a2469e91500b264019bbfc33b.camel@perches.com>
+Subject: Re: [PATCH V2] scripts: spelling:  Remove space in the entry memry
+ to memory
+From:   Joe Perches <joe@perches.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
+        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
+        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 15 Oct 2020 16:06:24 -0700
+In-Reply-To: <20201015225558.GB1129531@ArchLinux>
+References: <20201015132336.1770828-1-unixbhaskar@gmail.com>
+         <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
+         <20201015135407.GB1899805@ArchLinux>
+         <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
+         <20201015224919.GA1129531@ArchLinux>
+         <d8237d5151e108f969628302c22e27dda3860bdd.camel@perches.com>
+         <20201015225558.GB1129531@ArchLinux>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-References: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
-In-Reply-To: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 15 Oct 2020 16:06:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com>
-Message-ID: <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com>
-Subject: Re: [GIT PULL] SafeSetID changes for v5.10
-To:     Micah Morton <mortonm@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These were rebased since the merge window started, for no apparent reason.
+On Fri, 2020-10-16 at 04:25 +0530, Bhaskar Chowdhury wrote:
+> You have all flawed understanding...please stay away ..
+> if you don't understand something...
 
-Were they in linux-next?
+<chuckle>  You're funny.
 
-And if so, why was I sent some different version?
+You're wrong, but you're still funny.
 
-             Linus
+
