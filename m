@@ -2,154 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA4528EA69
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A53D28EA70
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387534AbgJOBoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S1732365AbgJOBq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732292AbgJOBol (ORCPT
+        with ESMTP id S1729785AbgJOBqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:44:41 -0400
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96945C061755;
-        Wed, 14 Oct 2020 18:44:41 -0700 (PDT)
-To:     mathy.vanhoef@kuleuven.be
-Cc:     johannes@sipsolutions.net,
-        "davem@davemloft.net" <davem@davemloft.net>, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        denkenz@gmail.com
-From:   Thomas Deutschmann <whissi@gentoo.org>
-Organization: Gentoo Foundation, Inc
-Subject: [Regression 5.9][Bisected 1df2bdba528b] Wifi GTK rekeying fails:
- Sending of EAPol packages broken
-Message-ID: <4a7f92dc-13bb-697f-1730-ac288e74b730@gentoo.org>
-Date:   Thu, 15 Oct 2020 03:44:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Wed, 14 Oct 2020 21:46:25 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A48C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:46:24 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id f5so497117qvx.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M+KMDSMW+VIAL3mDePAVrUXUBl0wejFu1z7ayCtJdWE=;
+        b=cgW9/K3x93TgArMaMN1eVRDH8x6TsGW+2KFrqGZSm9nRochFWHsFWrkqVYLgqCVQzh
+         fGSY0sbngNPxQb9U2RwyZgA9E1PRHFUjDnnQmSVtZU3V9WYsa/sNrOtAs729lTc4+4HI
+         kLKnqg3FI47AtwWnBflb28IAKoRNhimAM/lwME8aq+hP7qnx1egmOvR5kTXpLKEDbXIm
+         OWheODEdG9FcdJxH/Pfv0wNsjpQ7yPxwAx07HCv+EggLm0lk3odFHCYZaiUAwJomClvC
+         rewmN3NMeHetnC+uvegWHUstXV/iIN6Sb1WZQqxR6aN5sRozaB4aiecYQ7bxSHqdkK6w
+         t76w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=M+KMDSMW+VIAL3mDePAVrUXUBl0wejFu1z7ayCtJdWE=;
+        b=Xa8gj79bHwuDjQSiOPOV3QistiS56GornJOvS8NJYyfojWnjZYGuYL37Fg4X79tYIB
+         j/jmNuAfHrq4W/h751iVRfqITnleFpg8pfizTDrXVe6vGLdVA5UTAbk5dauPN4BfmRha
+         +rROCpUBWNgdLL+qCy539LzHJ4yaKT4px3OM/3veXXSA/ZOy7650fx5xa97uUQjY9xWw
+         +ICm49B346Zd4Uo+3TXtp4iuoq1z6R5hxM8yTX5P0seWwjj6nNdZEloQuOdLFgMEuLfh
+         yATmPRgLTJsSUASXRkkZ0ZiUOyTOTRWm9bRxKou1WwH45Zj8MDvlCXyXegeuzcHrfO5O
+         p+9A==
+X-Gm-Message-State: AOAM531lZJN6FhMB1CyHSmuJDClt/aEMCTk1Nq+jXffmyPz+5BO08AiT
+        +N6+rPrj4BdIMAqc5pIccm9Mhw==
+X-Google-Smtp-Source: ABdhPJzYM/lcrs60DNosmH1aZkomG9f401VbNqKieHGPn3ss7ztP5CAqKfbf6uPnoTX8dE58FnKQwA==
+X-Received: by 2002:ad4:4f22:: with SMTP id fc2mr2288567qvb.28.1602726383312;
+        Wed, 14 Oct 2020 18:46:23 -0700 (PDT)
+Received: from localhost.localdomain ([2804:431:c7cb:5e0b:6f3d:fca0:306c:a15d])
+        by smtp.gmail.com with ESMTPSA id h9sm541448qth.78.2020.10.14.18.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 18:46:22 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
+        elver@google.com
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        gregkh@linuxfoundation.org, tglx@linutronix.de,
+        andriy.shevchenko@linux.intel.com, geert@linux-m68k.org,
+        paul.gortmaker@windriver.com, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, arnd@arndb.de,
+        elfring@users.sourceforge.net, mhocko@suse.com
+Subject: [PATCH v2] lib: kunit: add list_sort test conversion to KUnit
+Date:   Wed, 14 Oct 2020 22:46:16 -0300
+Message-Id: <20201015014616.309000-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This adds the conversion of the runtime tests of test_list_sort,
+from `lib/test_list_sort.c` to KUnit tests.
 
-after upgrading to linux-5.9.0 I noticed that my wifi got disassociated 
-every 10 minutes when access point triggered rekeying for GTK.
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+---
+v2:
+  * fix  KUNIT_TEST sufix;
+  * make kconfig help more concise;
+  * remove obsolete commit comments;
+  * change Kconfig entries to be more adherent to KUnit documentation;
+---
+ lib/Kconfig.debug                           | 24 ++++---
+ lib/Makefile                                |  2 +-
+ lib/{test_list_sort.c => list_sort_kunit.c} | 73 +++++++++++----------
+ 3 files changed, 53 insertions(+), 46 deletions(-)
+ rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
 
-This happened with iwd but not with wpa_supplicant. iwd was logging
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 4f09c6505a2e..b4b1338c523a 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1905,16 +1905,6 @@ config LKDTM
+ 	Documentation on how to use the module can be found in
+ 	Documentation/fault-injection/provoke-crashes.rst
+ 
+-config TEST_LIST_SORT
+-	tristate "Linked list sorting test"
+-	depends on DEBUG_KERNEL || m
+-	help
+-	  Enable this to turn on 'list_sort()' function test. This test is
+-	  executed only once during system boot (so affects only boot time),
+-	  or at module load time.
+-
+-	  If unsure, say N.
+-
+ config TEST_MIN_HEAP
+ 	tristate "Min heap test"
+ 	depends on DEBUG_KERNEL || m
+@@ -2233,6 +2223,20 @@ config LIST_KUNIT_TEST
+ 
+ 	  If unsure, say N.
+ 
++config LIST_SORT_KUNIT_TEST
++	tristate "KUnit Linked list sorting test" if !KUNIT_ALL_TESTS 
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  Enable this to turn on 'list_sort()' function test. This test is
++	  executed only once during system boot (so affects only boot time),
++	  or at module load time.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config LINEAR_RANGES_TEST
+ 	tristate "KUnit test for linear_ranges"
+ 	depends on KUNIT
+diff --git a/lib/Makefile b/lib/Makefile
+index d862d41fdc3d..a00e26d34263 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -67,7 +67,6 @@ obj-$(CONFIG_TEST_UBSAN) += test_ubsan.o
+ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
+ UBSAN_SANITIZE_test_ubsan.o := y
+ obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
+-obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
+ obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
+ obj-$(CONFIG_TEST_LKM) += test_module.o
+ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+@@ -341,5 +340,6 @@ obj-$(CONFIG_PLDMFW) += pldmfw/
+ # KUnit tests
+ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
++obj-$(CONFIG_LIST_SORT_KUNIT_TEST) += list_sort_kunit.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+ obj-$(CONFIG_BITS_TEST) += test_bits.o
+diff --git a/lib/test_list_sort.c b/lib/list_sort_kunit.c
+similarity index 62%
+rename from lib/test_list_sort.c
+rename to lib/list_sort_kunit.c
+index 1f017d3b610e..20cbacbb7d6c 100644
+--- a/lib/test_list_sort.c
++++ b/lib/list_sort_kunit.c
+@@ -1,13 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-#define pr_fmt(fmt) "list_sort_test: " fmt
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+-#include <linux/kernel.h>
+ #include <linux/list_sort.h>
+ #include <linux/list.h>
+-#include <linux/module.h>
+-#include <linux/printk.h>
+-#include <linux/slab.h>
+ #include <linux/random.h>
++#include <kunit/test.h>
+ 
+ /*
+  * The pattern of set bits in the list length determines which cases
+@@ -29,28 +26,28 @@ struct debug_el {
+ /* Array, containing pointers to all elements in the test list */
+ static struct debug_el **elts __initdata;
+ 
+-static int __init check(struct debug_el *ela, struct debug_el *elb)
++static int __init check(struct kunit *context, struct debug_el *ela, struct debug_el *elb)
+ {
+ 	if (ela->serial >= TEST_LIST_LEN) {
+-		pr_err("error: incorrect serial %d\n", ela->serial);
++		KUNIT_FAIL(context, "incorrect serial %d", ela->serial);
+ 		return -EINVAL;
+ 	}
+ 	if (elb->serial >= TEST_LIST_LEN) {
+-		pr_err("error: incorrect serial %d\n", elb->serial);
++		KUNIT_FAIL(context, "incorrect serial %d", elb->serial);
+ 		return -EINVAL;
+ 	}
+ 	if (elts[ela->serial] != ela || elts[elb->serial] != elb) {
+-		pr_err("error: phantom element\n");
++		KUNIT_FAIL(context, "phantom element");
+ 		return -EINVAL;
+ 	}
+ 	if (ela->poison1 != TEST_POISON1 || ela->poison2 != TEST_POISON2) {
+-		pr_err("error: bad poison: %#x/%#x\n",
+-			ela->poison1, ela->poison2);
++		KUNIT_FAIL(context, "bad poison: %#x/%#x",
++			   ela->poison1, ela->poison2);
+ 		return -EINVAL;
+ 	}
+ 	if (elb->poison1 != TEST_POISON1 || elb->poison2 != TEST_POISON2) {
+-		pr_err("error: bad poison: %#x/%#x\n",
+-			elb->poison1, elb->poison2);
++		KUNIT_FAIL(context, "bad poison: %#x/%#x",
++			   elb->poison1, elb->poison2);
+ 		return -EINVAL;
+ 	}
+ 	return 0;
+@@ -63,27 +60,26 @@ static int __init cmp(void *priv, struct list_head *a, struct list_head *b)
+ 	ela = container_of(a, struct debug_el, list);
+ 	elb = container_of(b, struct debug_el, list);
+ 
+-	check(ela, elb);
++	check(priv, ela, elb);
+ 	return ela->value - elb->value;
+ }
+ 
+-static int __init list_sort_test(void)
++static void __init test_list_sort(struct kunit *context)
+ {
+-	int i, count = 1, err = -ENOMEM;
++	int i, count = 1;
+ 	struct debug_el *el;
+ 	struct list_head *cur;
+ 	LIST_HEAD(head);
+ 
+-	pr_debug("start testing list_sort()\n");
+-
+ 	elts = kcalloc(TEST_LIST_LEN, sizeof(*elts), GFP_KERNEL);
+-	if (!elts)
+-		return err;
++	KUNIT_ASSERT_FALSE_MSG(context, elts == NULL, "kcalloc failed");
+ 
+ 	for (i = 0; i < TEST_LIST_LEN; i++) {
+ 		el = kmalloc(sizeof(*el), GFP_KERNEL);
+-		if (!el)
++		if (!el) {
++			KUNIT_FAIL(context, "kmalloc failed");
+ 			goto exit;
++		}
+ 
+ 		 /* force some equivalencies */
+ 		el->value = prandom_u32() % (TEST_LIST_LEN / 3);
+@@ -94,55 +90,62 @@ static int __init list_sort_test(void)
+ 		list_add_tail(&el->list, &head);
+ 	}
+ 
+-	list_sort(NULL, &head, cmp);
++	list_sort(context, &head, cmp);
+ 
+-	err = -EINVAL;
+ 	for (cur = head.next; cur->next != &head; cur = cur->next) {
+ 		struct debug_el *el1;
+ 		int cmp_result;
+ 
+ 		if (cur->next->prev != cur) {
+-			pr_err("error: list is corrupted\n");
++			KUNIT_FAIL(context, "list is corrupted");
+ 			goto exit;
+ 		}
+ 
+-		cmp_result = cmp(NULL, cur, cur->next);
++		cmp_result = cmp(context, cur, cur->next);
+ 		if (cmp_result > 0) {
+-			pr_err("error: list is not sorted\n");
++			KUNIT_FAIL(context, "list is not sorted");
+ 			goto exit;
+ 		}
+ 
+ 		el = container_of(cur, struct debug_el, list);
+ 		el1 = container_of(cur->next, struct debug_el, list);
+ 		if (cmp_result == 0 && el->serial >= el1->serial) {
+-			pr_err("error: order of equivalent elements not "
+-				"preserved\n");
++			KUNIT_FAIL(context, "order of equivalent elements not preserved");
+ 			goto exit;
+ 		}
+ 
+-		if (check(el, el1)) {
+-			pr_err("error: element check failed\n");
++		if (check(context, el, el1)) {
+ 			goto exit;
+ 		}
+ 		count++;
+ 	}
+ 	if (head.prev != cur) {
+-		pr_err("error: list is corrupted\n");
++		KUNIT_FAIL(context, "list is corrupted");
+ 		goto exit;
+ 	}
+ 
+ 
+ 	if (count != TEST_LIST_LEN) {
+-		pr_err("error: bad list length %d", count);
++		KUNIT_FAIL(context, "bad list length %d", count);
+ 		goto exit;
+ 	}
+ 
+-	err = 0;
+ exit:
+ 	for (i = 0; i < TEST_LIST_LEN; i++)
+ 		kfree(elts[i]);
+ 	kfree(elts);
+-	return err;
+ }
+-module_init(list_sort_test);
++
++static struct kunit_case __refdata list_sort_test_cases[] = {
++	KUNIT_CASE(test_list_sort),
++	{}
++};
++
++static struct kunit_suite list_sort_test_suite = {
++	.name = "list-sort",
++	.test_cases = list_sort_test_cases,
++};
++
++kunit_test_suites(&list_sort_test_suite);
++
+ MODULE_LICENSE("GPL");
 
-> wlan0: disassociated from aa:bb:cc:dd:ap:01 (Reason: 2=PREV_AUTH_NOT_VALID)
-> wlan0: authenticate with aa:bb:cc:dd:ap:01
-> wlan0: send auth to aa:bb:cc:dd:ap:01 (try 1/3)
-> wlan0: authenticated
-> wlan0: associate with aa:bb:cc:dd:ap:01 (try 1/3)
-> wlan0: RX AssocResp from aa:bb:cc:dd:ap:01 (capab=0x1511 status=0 aid=1)
-> wlan0: associated
-
-With the help of iwd developers (many thanks!) we noticed that EAPoL 
-packets didn't reach access point. As workaround, using the legacy way 
-to send EAPoL packets by setting
-
-> [General]
-> ControlPortOverNL80211=False
-
-in iwd's main.conf, worked. So it became clear that this is a kernel 
-problem.
-
-I now finished bisecting the kernel and 
-1df2bdba528b5a7a30f1b107b6924aa79af5e00e [1] is the first bad commit:
-
-> commit 1df2bdba528b5a7a30f1b107b6924aa79af5e00e
-> Author: Mathy Vanhoef
-> Date:   Thu Jul 23 14:01:48 2020 +0400
-> 
->     mac80211: never drop injected frames even if normally not allowed
-> 
->     In ieee80211_tx_dequeue there is a check to see if the dequeued frame
->     is allowed in the current state. Injected frames that are normally
->     not allowed are being be dropped here. Fix this by checking if a
->     frame was injected and if so always allowing it.
-> 
->     Signed-off-by: Mathy Vanhoef
->     Link: https://lore.kernel.org/r/20200723100153.31631-1-Mathy.Vanhoef@kuleuven.be
->     Signed-off-by: Johannes Berg
-> 
->  net/mac80211/tx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Complete bisect log:
-
-> git bisect start
-> # good: [665c6ff082e214537beef2e39ec366cddf446d52] Linux 5.8.15
-> git bisect good 665c6ff082e214537beef2e39ec366cddf446d52
-> # bad: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
-> git bisect bad bbf5c979011a099af5dc76498918ed7df445635b
-> # good: [bcf876870b95592b52519ed4aafcf9d95999bc9c] Linux 5.8
-> git bisect good bcf876870b95592b52519ed4aafcf9d95999bc9c
-> # bad: [47ec5303d73ea344e84f46660fff693c57641386] Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
-> git bisect bad 47ec5303d73ea344e84f46660fff693c57641386
-> # good: [8f7be6291529011a58856bf178f52ed5751c68ac] Merge tag 'mmc-v5.9' of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc
-> git bisect good 8f7be6291529011a58856bf178f52ed5751c68ac
-> # bad: [76769c38b45d94f5492ff9be363ac7007fd8e58b] Merge tag 'mlx5-updates-2020-08-03' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
-> git bisect bad 76769c38b45d94f5492ff9be363ac7007fd8e58b
-> # good: [94d9f78f4d64b967273a676167bd34ddad2f978c] docs: networking: timestamping: add section for stacked PHC devices
-> git bisect good 94d9f78f4d64b967273a676167bd34ddad2f978c
-> # good: [5ee30564c85c94b7dc78aa6cce09e9712b2ad70d] ice: update reporting of autoneg capabilities
-> git bisect good 5ee30564c85c94b7dc78aa6cce09e9712b2ad70d
-> # good: [bd69058f50d5ffa659423bcfa6fe6280ce9c760a] net: ll_temac: Use devm_platform_ioremap_resource_byname()
-> git bisect good bd69058f50d5ffa659423bcfa6fe6280ce9c760a
-> # skip: [7dbc63f0a5402293e887e89a7974c5e48405565d] ice: Misc minor fixes
-> git bisect skip 7dbc63f0a5402293e887e89a7974c5e48405565d
-> # good: [1303a51c24100b3b1915d6f9072fe5ae5bb4c5f6] cfg80211/mac80211: add connected to auth server to station info
-> git bisect good 1303a51c24100b3b1915d6f9072fe5ae5bb4c5f6
-> # skip: [f34f55557ac9a4dfbfbf36c70585d1648ab5cd90] ice: Allow 2 queue pairs per VF on SR-IOV initialization
-> git bisect skip f34f55557ac9a4dfbfbf36c70585d1648ab5cd90
-> # bad: [cc5d229a122106733a85c279d89d7703f21e4d4f] fsl/fman: check dereferencing null pointer
-> git bisect bad cc5d229a122106733a85c279d89d7703f21e4d4f
-> # good: [6fc8c827dd4fa615965c4eac9bbfd465f6eb8fb4] tcp: syncookies: create mptcp request socket for ACK cookies with MPTCP option
-> git bisect good 6fc8c827dd4fa615965c4eac9bbfd465f6eb8fb4
-> # bad: [b90a1269184a3ff374562d243419ad2fa9d3b1aa] Merge branch 'net-openvswitch-masks-cache-enhancements'
-> git bisect bad b90a1269184a3ff374562d243419ad2fa9d3b1aa
-> # skip: [829eb208e80d6db95c0201cb8fa00c2f9ad87faf] rtnetlink: add support for protodown reason
-> git bisect skip 829eb208e80d6db95c0201cb8fa00c2f9ad87faf
-> # bad: [0e8642cf369a37b718c15effa6ffd52c00fd7d15] tcp: fix build fong CONFIG_MPTCP=n
-> git bisect bad 0e8642cf369a37b718c15effa6ffd52c00fd7d15
-> # skip: [48040793fa6003d211f021c6ad273477bcd90d91] tcp: add earliest departure time to SCM_TIMESTAMPING_OPT_STATS
-> git bisect skip 48040793fa6003d211f021c6ad273477bcd90d91
-> # good: [bc5cbd73eb493944b8665dc517f684c40eb18a4a] iavf: use generic power management
-> git bisect good bc5cbd73eb493944b8665dc517f684c40eb18a4a
-> # skip: [8f3f330da28ede9d106cd9d5c5ccd6a3e7e9b50b] tun: add missing rcu annotation in tun_set_ebpf()
-> git bisect skip 8f3f330da28ede9d106cd9d5c5ccd6a3e7e9b50b
-> # skip: [9466a1ccebbe54ac57fb8a89c2b4b854826546a8] mptcp: enable JOIN requests even if cookies are in use
-> git bisect skip 9466a1ccebbe54ac57fb8a89c2b4b854826546a8
-> # good: [09a071f52bbedddef626e71c0fd210838532f347] Documentation: intel: Replace HTTP links with HTTPS ones
-> git bisect good 09a071f52bbedddef626e71c0fd210838532f347
-> # bad: [75e6b594bbaeeb3f8287a2e6eb8811384b8c7195] cfg80211: invert HE BSS color 'disabled' to 'enabled'
-> git bisect bad 75e6b594bbaeeb3f8287a2e6eb8811384b8c7195
-> # bad: [1df2bdba528b5a7a30f1b107b6924aa79af5e00e] mac80211: never drop injected frames even if normally not allowed
-> git bisect bad 1df2bdba528b5a7a30f1b107b6924aa79af5e00e
-> # good: [180ac48ee62f53c26787350a956c5ac371cbe0b7] mac80211: calculate skb hash early when using itxq
-> git bisect good 180ac48ee62f53c26787350a956c5ac371cbe0b7
-> # good: [322cd27c06450b2db2cb6bdc68f3814149baf767] cfg80211/mac80211: avoid bss color setting in non-HE modes
-> git bisect good 322cd27c06450b2db2cb6bdc68f3814149baf767
-> # good: [fd17dba1c860d39f655a3a08387c21e3ceca8c55] cfg80211: Add support to advertize OCV support
-> git bisect good fd17dba1c860d39f655a3a08387c21e3ceca8c55
-> # first bad commit: [1df2bdba528b5a7a30f1b107b6924aa79af5e00e] mac80211: never drop injected frames even if normally not allowed
-
-
-See also:
-=========
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1df2bdba528b5a7a30f1b107b6924aa79af5e00e
-
-
+base-commit: d2585f5164c298aaaed14c2c8d313cbe7bd5b253
 -- 
-Regards,
-Thomas Deutschmann / Gentoo Linux Developer
-C4DD 695F A713 8F24 2AA1 5638 5849 7EE5 1D5D 74A5
+2.26.2
+
