@@ -2,115 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D7328F30D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEC128F311
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgJONRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727921AbgJONRn (ORCPT
+        id S1729372AbgJONSw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Oct 2020 09:18:52 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:22484 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728418AbgJONSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:17:43 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776D8C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:17:43 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x13so2009653pfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:17:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3834EhLAqmIpiuxCngCMrj/cJx23sQc9SHHcg1zZKh4=;
-        b=DWyMeJjpIQbucvBoJlE0tbsYUaBU2uoMfNSKWDVVvS50JpmcEBRI3VlJOOpf/EgI4T
-         uDAjzSB0Py2IRvsIeamK2qH2ZiuN5L7OZUenUW2H7lhpKlC1WudJNOOYqYHvLD5T7IRR
-         hCd6MLnDSx3XuZK5CwNedJP6kbZ/GfA1TsgfDGt49XorPebb2jBcn3bOGuHi5KAbUB01
-         HgJFBDivNA6yhFBUKIqHajtvYsogzaW3yQ0oj85HWM16nJPwS66BJ3ouh75YDIGEnmfh
-         yVnt+bc80xkPjOlwQYrnTT3wiwocNpljk4+61u89XCBDVKz79CxrlNeyOlmGhVyTQYd8
-         +Fjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=3834EhLAqmIpiuxCngCMrj/cJx23sQc9SHHcg1zZKh4=;
-        b=Xs+9suisAV6Qk6pO1qHGWWTLPSYLnkl8QM9+HBuJWQOuFFgZ265TWGi5EjbSjPVtTo
-         Znhgm4xLupxJHCXEwMw9Rh7dGouX/Z3V1OTGSQ5xAkiKo12yZN1TixWE6waxZlS76orY
-         9hGWqKVwAaqwXZvsgkhcpr7RevLSG8h9lQo8tQYp4kfoJ7QJuhudbMpmGX3B9cQBgsSK
-         rIiJ4Z9ZIFE0LMIHII+9ITHrXhxEbF4aaUmOsNEnn/JzBHV/8cQmuAR0+7dp62L3O8mh
-         jUfEdublOHPQ0xlfqhtcyTZ/i4Xcelw1LpXd43oHENjKeCcvxaIWvhSm9cKC6KUYvam0
-         tGXQ==
-X-Gm-Message-State: AOAM532BovE9pSF5uf46ubwtgrUv8MvX7v4wvkH4qeGGEgBkNYdmqp62
-        pnlhj1Uq+BNxLRqnSIAQ5pOtfUvPlIUPyQ==
-X-Google-Smtp-Source: ABdhPJxVTEa1jPiLUuIV8k6ER2JLbxNo4oSoTzxfd0nRostYP5/RPBqV1BkNPvDDs22jdejNnuTCRg==
-X-Received: by 2002:a05:6a00:15d5:b029:155:cb6f:cfe3 with SMTP id o21-20020a056a0015d5b0290155cb6fcfe3mr4056290pfu.11.1602767863047;
-        Thu, 15 Oct 2020 06:17:43 -0700 (PDT)
-Received: from ArchLinux (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
-        by smtp.gmail.com with ESMTPSA id 17sm3062541pgv.58.2020.10.15.06.17.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 06:17:42 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 18:47:27 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
-        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
-        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scripts: Spelling:  Fix spelling memry to memory in
- /tools/nolibc/include/nolibc.h
-Message-ID: <20201015131727.GA1899805@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Joe Perches <joe@perches.com>, akpm@linux-foundation.org,
-        colin.king@canonical.com, sfr@canb.auug.org.au, wangqing@vivo.com,
-        david@redhat.com, xndchn@gmail.com, luca@lucaceresoli.net,
-        ebiggers@google.com, linux-kernel@vger.kernel.org
-References: <20201015130525.381818-1-unixbhaskar@gmail.com>
- <0efd61190d00eec9c76e0ca949f3488fab1ab7c7.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
-Content-Disposition: inline
-In-Reply-To: <0efd61190d00eec9c76e0ca949f3488fab1ab7c7.camel@perches.com>
+        Thu, 15 Oct 2020 09:18:52 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-tbMKmALHMZan0v96HjDSeQ-1; Thu, 15 Oct 2020 09:18:46 -0400
+X-MC-Unique: tbMKmALHMZan0v96HjDSeQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2123C18A822D;
+        Thu, 15 Oct 2020 13:18:44 +0000 (UTC)
+Received: from ovpn-112-177.rdu2.redhat.com (ovpn-112-177.rdu2.redhat.com [10.10.112.177])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 329766EF52;
+        Thu, 15 Oct 2020 13:18:36 +0000 (UTC)
+Message-ID: <df388727036a6ad85d5ad23f44da5420dda49b4d.camel@lca.pw>
+Subject: Re: Unbreakable loop in fuse_fill_write_pages()
+From:   Qian Cai <cai@lca.pw>
+To:     Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Date:   Thu, 15 Oct 2020 09:18:36 -0400
+In-Reply-To: <20201013184026.GC142988@redhat.com>
+References: <7d350903c2aa8f318f8441eaffafe10b7796d17b.camel@redhat.com>
+         <20201013184026.GC142988@redhat.com>
+Mime-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: lca.pw
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2020-10-13 at 14:40 -0400, Vivek Goyal wrote:
+> > == the thread is stuck in the loop ==
+> > [10813.290694] task:trinity-c33     state:D stack:25888 pid:254219 ppid:
+> > 87180
+> > flags:0x00004004
+> > [10813.292671] Call Trace:
+> > [10813.293379]  __schedule+0x71d/0x1b50
+> > [10813.294182]  ? __sched_text_start+0x8/0x8
+> > [10813.295146]  ? mark_held_locks+0xb0/0x110
+> > [10813.296117]  schedule+0xbf/0x270
+> > [10813.296782]  ? __lock_page_killable+0x276/0x830
+> > [10813.297867]  io_schedule+0x17/0x60
+> > [10813.298772]  __lock_page_killable+0x33b/0x830
+> 
+> This seems to suggest that filemap_fault() is blocked on page lock and
+> is sleeping. For some reason it never wakes up. Not sure why.
+> 
+> And this will be called from.
+> 
+> fuse_fill_write_pages()
+>    iov_iter_fault_in_readable()
+> 
+> So fuse code will take inode_lock() and then looks like same process
+> is sleeping waiting on page lock. And rest of the processes get blocked
+> behind inode lock.
+> 
+> If we are woken up (while waiting on page lock), we should make forward
+> progress. Question is what page it is and why the entity which is
+> holding lock is not releasing lock.
 
---/9DWx/yDrRhgMJTb
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+FYI, it was mentioned that this is likely a deadlock in FUSE:
 
-On 06:12 Thu 15 Oct 2020, Joe Perches wrote:
->On Thu, 2020-10-15 at 18:35 +0530, Bhaskar Chowdhury wrote:
->> s/memry/memory/p
->[]
->> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
->[]
->> @@ -885,6 +885,7 @@ meetign||meeting
->>  memeory||memory
->>  memmber||member
->>  memoery||memory
->> +memry ||memory
->
->Spaces are not used in these entries.
->
->
+https://lore.kernel.org/linux-fsdevel/CAHk-=wh9Eu-gNHzqgfvUAAiO=vJ+pWnzxkv+tX55xhGPFy+cOw@mail.gmail.com/
 
-thanks...sending v2
 
---/9DWx/yDrRhgMJTb
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl+IS+cACgkQsjqdtxFL
-KRW3lwf5ASn0OpXBnzeHp7LETkuWgq3P791Zu5wymto/U0nhLz4mARr9gMmPE7bT
-3heqGRZQo5wk5P57qtgg9liFxk3OFyJ/Fi+zZ/7mQ/PV+xzXQdzC2WchZJ047btD
-0hhfnwSHD6dYeoPuq8c4CBC0z1sUbhNWaN8nq9hd0EPIEWOpSywJdIv6C+TtIpNI
-pr40FKJbDyI3FpcPEyG+j1X82A/kraEB/WWHiIBYQSRCXU54SBzxLy9ujJI5YI54
-fT/epLJLZOp1h61vsj29Gphlu3LXgojWN6R89oLH72hvDu2epKeILSfgHIAq38cS
-L/HSz+RpN1BTFgPl8mOokB9B3cwQmg==
-=fgp9
------END PGP SIGNATURE-----
-
---/9DWx/yDrRhgMJTb--
