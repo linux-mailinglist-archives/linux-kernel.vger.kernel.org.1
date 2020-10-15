@@ -2,78 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD51628EF76
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8807C28EF79
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388814AbgJOJmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:42:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32790 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388795AbgJOJmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:42:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602754920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CGUEZhw5OsOWwTbxcg48LYkVTLy0xSGFFDqEYGHwsdY=;
-        b=pCExSGjFkleCxW8TLXo0dw77TlP1sqwZmF77XE/mK0vyOkMZ4ghYySDaBHg+XIouJLZPml
-        qVnmvJ8YbQRmhTKyWoxir7/tk01pEtSBAtrrTmsA4v7gJq2lLF+fezqqANGs+lSr7jYKuA
-        2nYuV3f51cs55UHSonHP243h9bIZs94=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BAFECAFFB;
-        Thu, 15 Oct 2020 09:42:00 +0000 (UTC)
-Subject: Re: [PATCH 2/2] xen: Kconfig: nest Xen guest options
-To:     Jason Andryuk <jandryuk@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-References: <20201014175342.152712-1-jandryuk@gmail.com>
- <20201014175342.152712-3-jandryuk@gmail.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <d8a8ed95-ed55-4ccf-1b54-8d97db908742@suse.com>
-Date:   Thu, 15 Oct 2020 11:41:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2388854AbgJOJmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388795AbgJOJmF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 05:42:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A349C061755;
+        Thu, 15 Oct 2020 02:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5ZNMyaMGLyh0iAzgchZNWKe2QHg2PouniT97lm2hLjc=; b=UbzTDpbCdU/uUj0rHetupp4L8v
+        PaUluuLxr8LZvOCbK9ck4YLDi3+zPB/hmdH1KgeWEQy8Co2xXtMtUhhVl9GuJYbtbnLeCYd76TNBS
+        HZdz95qNkGmkZVezmYCzg8HJhkMbKqv1Xzk2iHdAGnB93fydw7f720JSiZsLwGL22D4bQXb6udDfh
+        PL01QS5q/vOm7rs0lz6hK4oIgOO7vvQYNc16v1alatMUt6a+VXectLz3GydJeK3X0T3ZVV1HjE6ii
+        B2gLxhncLeJgIGpvtuBsx546BEOgs/6FT1ows1Phr2vQszB8BnyKkzc5Y6LhzlbR7Y0dCe+NH+Dss
+        rHuYJitg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSzlr-0005i9-5C; Thu, 15 Oct 2020 09:42:03 +0000
+Date:   Thu, 15 Oct 2020 10:42:03 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 16/16] iomap: Make readpage synchronous
+Message-ID: <20201015094203.GA21420@infradead.org>
+References: <20201009143104.22673-1-willy@infradead.org>
+ <20201009143104.22673-17-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20201014175342.152712-3-jandryuk@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009143104.22673-17-willy@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.20 19:53, Jason Andryuk wrote:
-> Moving XEN_512GB allows it to nest under XEN_PV.  That also allows
-> XEN_PVH to nest under XEN as a sibling to XEN_PV and XEN_PVHVM giving:
-> 
-> [*]   Xen guest support
-> [*]     Xen PV guest support
-> [*]       Limit Xen pv-domain memory to 512GB
-> [*]       Xen PV Dom0 support
+> +static void iomap_read_page_end_io(struct bio_vec *bvec,
+> +		struct completion *done, bool error)
 
-This has currently a wrong text/semantics:
+I really don't like the parameters here.  Part of the problem is
+that ctx is only assigned to bi_private conditionally, which can
+easily be fixed.  The other part is the strange bool error when
+we can just pass on bi_stats.  See the patch at the end of what
+I'd do intead.
 
-It should be split to CONFIG_XEN_DOM0 and CONFIG_XEN_PV_DOM0.
+> @@ -318,15 +325,17 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
+>  
+>  	trace_iomap_readpage(page->mapping->host, 1);
+>  
+> +	ctx.status = BLK_STS_OK;
 
-Otherwise the backends won't be enabled per default for a PVH-only
-config meant to be Dom0-capable.
+This should move into the initializer for ctx.  Or we could just drop
+it given that BLK_STS_OK is and must always be 0.
 
-You don't have to do that in your patches if you don't want to, but
-I wanted to mention it with you touching this area of Kconfig.
+>  	} else {
+>  		WARN_ON_ONCE(ctx.cur_page_in_bio);
+> -		unlock_page(page);
+> +		complete(&ctx.done);
+>  	}
+>  
+> +	wait_for_completion(&ctx.done);
 
-> [*]     Xen PVHVM guest support
-> [*]     Xen PVH guest support
-> 
-> Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+I don't think we need the complete / wait_for_completion dance in
+this case.
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+> +	if (ret >= 0)
+> +		ret = blk_status_to_errno(ctx.status);
+> +	if (ret == 0)
+> +		return AOP_UPDATED_PAGE;
+> +	unlock_page(page);
+> +	return ret;
+
+Nipick, but I'd rather have a goto out_unlock for both error case
+and have the AOP_UPDATED_PAGE for the normal path straight in line.
+
+Here is an untested patch with my suggestions:
 
 
-Juergen
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 887bf871ca9bba..81d34725565d7e 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -162,33 +162,34 @@ static void iomap_set_range_uptodate(struct page *page, unsigned off,
+ 	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
+ }
+ 
+-static void iomap_read_page_end_io(struct bio_vec *bvec,
+-		struct completion *done, bool error)
++struct iomap_readpage_ctx {
++	struct page		*cur_page;
++	bool			cur_page_in_bio;
++	blk_status_t		status;
++	struct bio		*bio;
++	struct readahead_control *rac;
++	struct completion	done;
++};
++
++static void
++iomap_read_page_end_io(struct iomap_readpage_ctx *ctx, struct bio_vec *bvec,
++		blk_status_t status)
+ {
+ 	struct page *page = bvec->bv_page;
+ 	struct iomap_page *iop = to_iomap_page(page);
+ 
+-	if (!error)
++	if (status == BLK_STS_OK)
+ 		iomap_set_range_uptodate(page, bvec->bv_offset, bvec->bv_len);
+ 
+ 	if (!iop ||
+ 	    atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending)) {
+-		if (done)
+-			complete(done);
+-		else
++		if (ctx->rac)
+ 			unlock_page(page);
++		else
++			complete(&ctx->done);
+ 	}
+ }
+ 
+-struct iomap_readpage_ctx {
+-	struct page		*cur_page;
+-	bool			cur_page_in_bio;
+-	blk_status_t		status;
+-	struct bio		*bio;
+-	struct readahead_control *rac;
+-	struct completion	done;
+-};
+-
+ static void
+ iomap_read_end_io(struct bio *bio)
+ {
+@@ -197,12 +198,11 @@ iomap_read_end_io(struct bio *bio)
+ 	struct bvec_iter_all iter_all;
+ 
+ 	/* Capture the first error */
+-	if (ctx && ctx->status == BLK_STS_OK)
++	if (ctx->status == BLK_STS_OK)
+ 		ctx->status = bio->bi_status;
+ 
+ 	bio_for_each_segment_all(bvec, bio, iter_all)
+-		iomap_read_page_end_io(bvec, ctx ? &ctx->done : NULL,
+-				bio->bi_status != BLK_STS_OK);
++		iomap_read_page_end_io(ctx, bvec, bio->bi_status);
+ 	bio_put(bio);
+ }
+ 
+@@ -297,8 +297,7 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+ 		ctx->bio->bi_opf = REQ_OP_READ;
+ 		if (ctx->rac)
+ 			ctx->bio->bi_opf |= REQ_RAHEAD;
+-		else
+-			ctx->bio->bi_private = ctx;
++		ctx->bio->bi_private = ctx;
+ 		ctx->bio->bi_iter.bi_sector = sector;
+ 		bio_set_dev(ctx->bio, iomap->bdev);
+ 		ctx->bio->bi_end_io = iomap_read_end_io;
+@@ -318,14 +317,16 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+ int
+ iomap_readpage(struct page *page, const struct iomap_ops *ops)
+ {
+-	struct iomap_readpage_ctx ctx = { .cur_page = page };
++	struct iomap_readpage_ctx ctx = {
++		.cur_page	= page,
++		.status		= BLK_STS_OK,
++	};
+ 	struct inode *inode = page->mapping->host;
+ 	unsigned poff;
+ 	loff_t ret;
+ 
+ 	trace_iomap_readpage(page->mapping->host, 1);
+ 
+-	ctx.status = BLK_STS_OK;
+ 	init_completion(&ctx.done);
+ 
+ 	for (poff = 0; poff < PAGE_SIZE; poff += ret) {
+@@ -340,17 +341,16 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
+ 
+ 	if (ctx.bio) {
+ 		submit_bio(ctx.bio);
+-		WARN_ON_ONCE(!ctx.cur_page_in_bio);
+-	} else {
+-		WARN_ON_ONCE(ctx.cur_page_in_bio);
+-		complete(&ctx.done);
++		wait_for_completion(&ctx.done);
+ 	}
+ 
+-	wait_for_completion(&ctx.done);
+-	if (ret >= 0)
+-		ret = blk_status_to_errno(ctx.status);
+-	if (ret == 0)
+-		return AOP_UPDATED_PAGE;
++	if (ret < 0)
++		goto out_unlock;
++	ret = blk_status_to_errno(ctx.status);
++	if (ret < 0)
++		goto out_unlock;
++	return AOP_UPDATED_PAGE;
++out_unlock:
+ 	unlock_page(page);
+ 	return ret;
+ }
