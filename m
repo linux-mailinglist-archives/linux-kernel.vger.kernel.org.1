@@ -2,119 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0EE28FAD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F0B28FAE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731620AbgJOVsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731609AbgJOVsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:48:06 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AC4C061755;
-        Thu, 15 Oct 2020 14:48:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC2vj1Zjnz9sTq;
-        Fri, 16 Oct 2020 08:48:00 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602798482;
-        bh=y+PyG7Pez8nHYgyOaKmZ+ioJh2g3Z1VEFlszf/9unr4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aP4+ObHWVuKgRIYz9cg8sR6QPkgncQon829e0u2MuC0sIeWZzvLwcPnqKq6uJ+p5t
-         PchzDjgv40KSn4PByMmsdVkOBKVO+oo0qqItTgSlJ/iS44l95PA9QEvJBY42DDMKj8
-         divQqOctPjv1W3yeyNwzZXdvunFUVfZ2FTM92LESOUJ+7vBQFSEFUaj+zElRagwwai
-         U8H6PtU7geOo8b2lVJVBFu/xSrgoEM/lUY7newI7UXcZG/VuRLmNqxLGdPyAL+oHal
-         GtPO7+bnKJpejOfwqL/khw5TH4t8dnf8He4NwzGs1rOBE6IX5Lj/r9BdLiqCovKzni
-         CJeQRaJSO9TNg==
-Date:   Fri, 16 Oct 2020 08:47:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the usb tree with the pci tree
-Message-ID: <20201016084759.7070223e@canb.auug.org.au>
-In-Reply-To: <20200921151807.637905c0@canb.auug.org.au>
-References: <20200921151807.637905c0@canb.auug.org.au>
+        id S1729712AbgJOVtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:49:03 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11206 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726147AbgJOVtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 17:49:03 -0400
+IronPort-SDR: GD+bI61nEYg+ZkkrLrd926iYy4XHs3QmXd3rSSZzpUE/lXEuKz2bU0Md5ZuBtlhNOVA0FFXYJn
+ xBIA9s6w5j5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="145771639"
+X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
+   d="scan'208";a="145771639"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 14:49:01 -0700
+IronPort-SDR: hhPsZAC2E2NtMr0LwzCxn3JnzFibJB8Q2XKl0NU/jZ5vTmZ3hClX97bIwVxYokyj0FbhjDam02
+ Zm6XzGy8msiQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
+   d="scan'208";a="357866576"
+Received: from lkp-server01.sh.intel.com (HELO 5003fa193bf3) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 15 Oct 2020 14:48:58 -0700
+Received: from kbuild by 5003fa193bf3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kTB7J-00007f-MQ; Thu, 15 Oct 2020 21:48:57 +0000
+Date:   Fri, 16 Oct 2020 05:48:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 3c095241232f26d9ca68df129cd6fa4e95bbfc31
+Message-ID: <5f88c3aa.THidqarxaUfvFnge%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zu7+YcAPt0kAkgR4FprMCIX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zu7+YcAPt0kAkgR4FprMCIX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 3c095241232f26d9ca68df129cd6fa4e95bbfc31  Merge branch 'linus'
 
-Hi all,
+elapsed time: 724m
 
-On Mon, 21 Sep 2020 15:18:07 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Today's linux-next merge of the usb tree got a conflict in:
->=20
->   drivers/pci/controller/pcie-brcmstb.c
->=20
-> between commit:
->=20
->   1cf1b0a6dd95 ("PCI: brcmstb: Add bcm7278 register info")
->=20
-> from the pci tree and commit:
->=20
->   f48cc509c935 ("Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware w=
-hen present"")
->=20
-> from the usb tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc drivers/pci/controller/pcie-brcmstb.c
-> index 6e7aa82a54a3,bac63d04297f..000000000000
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@@ -1213,8 -929,6 +1211,7 @@@ static int brcm_pcie_probe(struct platf
->   {
->   	struct device_node *np =3D pdev->dev.of_node, *msi_np;
->   	struct pci_host_bridge *bridge;
-> - 	struct device_node *fw_np;
->  +	const struct pcie_cfg_data *data;
->   	struct brcm_pcie *pcie;
->   	int ret;
->  =20
+configs tested: 145
+configs skipped: 2
 
-This is now a conflict between the pci tree and Linus' tree.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
---=20
-Cheers,
-Stephen Rothwell
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                           sama5_defconfig
+sparc                       sparc32_defconfig
+arm                        multi_v5_defconfig
+mips                            gpr_defconfig
+arm                          pxa168_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                         cm_x300_defconfig
+arm                              zx_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                     tqm8555_defconfig
+arm                              alldefconfig
+mips                        jmr3927_defconfig
+arm                  colibri_pxa300_defconfig
+arm                            xcep_defconfig
+alpha                               defconfig
+powerpc                       eiger_defconfig
+mips                           ip32_defconfig
+powerpc                   motionpro_defconfig
+mips                          malta_defconfig
+arm                         lpc32xx_defconfig
+arm                          simpad_defconfig
+arm                         at91_dt_defconfig
+arm                            lart_defconfig
+parisc                generic-64bit_defconfig
+x86_64                           alldefconfig
+riscv                               defconfig
+riscv                    nommu_k210_defconfig
+mips                           ip28_defconfig
+i386                             alldefconfig
+arc                        vdk_hs38_defconfig
+powerpc                      pmac32_defconfig
+powerpc                     sbc8548_defconfig
+sh                              ul2_defconfig
+mips                   sb1250_swarm_defconfig
+arm                            zeus_defconfig
+powerpc                      ep88xc_defconfig
+sh                               alldefconfig
+powerpc                      cm5200_defconfig
+arm                          collie_defconfig
+mips                         tb0287_defconfig
+powerpc                      mgcoge_defconfig
+arm                      tct_hammer_defconfig
+arm                        vexpress_defconfig
+powerpc                     tqm8540_defconfig
+arm                         nhk8815_defconfig
+arm                         lubbock_defconfig
+sparc                       sparc64_defconfig
+arm                      pxa255-idp_defconfig
+s390                       zfcpdump_defconfig
+sh                           se7705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                          ep93xx_defconfig
+arm                        spear3xx_defconfig
+powerpc                  mpc885_ads_defconfig
+sh                          polaris_defconfig
+powerpc                     powernv_defconfig
+sh                ecovec24-romimage_defconfig
+powerpc                      ppc6xx_defconfig
+arm                        magician_defconfig
+sh                            migor_defconfig
+arm                           viper_defconfig
+sh                     sh7710voipgw_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201015
+i386                 randconfig-a006-20201015
+i386                 randconfig-a001-20201015
+i386                 randconfig-a003-20201015
+i386                 randconfig-a004-20201015
+i386                 randconfig-a002-20201015
+i386                 randconfig-a005-20201014
+i386                 randconfig-a006-20201014
+i386                 randconfig-a001-20201014
+i386                 randconfig-a003-20201014
+i386                 randconfig-a004-20201014
+i386                 randconfig-a002-20201014
+x86_64               randconfig-a016-20201014
+x86_64               randconfig-a012-20201014
+x86_64               randconfig-a015-20201014
+x86_64               randconfig-a013-20201014
+x86_64               randconfig-a014-20201014
+x86_64               randconfig-a011-20201014
+i386                 randconfig-a016-20201015
+i386                 randconfig-a013-20201015
+i386                 randconfig-a015-20201015
+i386                 randconfig-a011-20201015
+i386                 randconfig-a012-20201015
+i386                 randconfig-a014-20201015
+i386                 randconfig-a016-20201014
+i386                 randconfig-a013-20201014
+i386                 randconfig-a015-20201014
+i386                 randconfig-a011-20201014
+i386                 randconfig-a012-20201014
+i386                 randconfig-a014-20201014
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
---Sig_/zu7+YcAPt0kAkgR4FprMCIX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+clang tested configs:
+x86_64               randconfig-a004-20201014
+x86_64               randconfig-a002-20201014
+x86_64               randconfig-a006-20201014
+x86_64               randconfig-a001-20201014
+x86_64               randconfig-a005-20201014
+x86_64               randconfig-a003-20201014
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Iw48ACgkQAVBC80lX
-0Gx+IAf+NOsAtXjfjq2LeyM57QIkV0e531Cugye4XD97xydxAYnPTUfj89BbXfCg
-JMD7RkTr37ZuNWZ1R2URb25PGMYzCp7QrJf/RPx9idHytWczGR+xu5IayaxESVAD
-FVINkPlrafQSVxw+1YECE/RDJ8z/3qa8C5RbRotTzAXw+6R6fH8x3OJn6+CXVmAx
-MGDMN4gxgMsw99yTfn4fc2i9hX5H+QDCM/FUeWaENJjSHANK37dJnwRnfRr31C/7
-KjvdQ7ESBLq7LsugJvt0203Fmii6jHhtkooFVHKgdRHu2RkDnrGTIkTB+nn8p0bp
-dHdB7s4I8jhNsv1BZhs+1ZRyfVA6oQ==
-=6TLt
------END PGP SIGNATURE-----
-
---Sig_/zu7+YcAPt0kAkgR4FprMCIX--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
