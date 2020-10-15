@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F5628EC46
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A938728EC4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbgJOEbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOEbH (ORCPT
+        id S1727893AbgJOEcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 00:32:06 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34825 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgJOEcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:31:07 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28568C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:31:07 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id hk7so1148284pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1z00HM1oJWpdTbX+YMPLZimSogxpQwLPHkUejQUce64=;
-        b=RhxJv6V2WOuh02i/6FfdUpPNGHak72ni/501XgVQTKAfCMPuG4Gc6DcST1NvZcx++M
-         QRA1y4xTETTq6iEuOFgJX2d/SNf+89MPLavxyACaGI85QNfoPuhzJU3Sg/HIPJwu2IKZ
-         DNh28elij0nsMs3gNecVl/rQHT4GQsbYVTw5Y9klFgZx76LjOk1jftCyxnvgjpA8dsWE
-         ilD7xp0EKR+p3gWwm2hA1tCFnhhYACBBJ/qJPaQ24qfakQYjcd+9WOwqfsNQPqRAEoQA
-         xgSAKbDdRjDbads6MMNuxpfyHkgqA2P4jTq6uFsaWwdK7g8AI+7gvLL9kRxMadA5fLAi
-         9UlQ==
+        Thu, 15 Oct 2020 00:32:05 -0400
+Received: by mail-pj1-f66.google.com with SMTP id h4so1157352pjk.0;
+        Wed, 14 Oct 2020 21:32:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1z00HM1oJWpdTbX+YMPLZimSogxpQwLPHkUejQUce64=;
-        b=qO19lCjCGrBWAdFNic59fF7ISzomrTeXxIO9YYvK7Ilg4cgVFeOA+AUNZSxQFJ9TAl
-         lAelaguhGnuxXt0toUL7N9Xch8x2s0cTuqcDiGgMu0dRYNRT8QMsNkiyBDwKE/LwxQwC
-         x0Ze7UDFNTQSXU11Uqtyqx/RoW7pVRTAoIrExKrdJHdUECBt9gxeDEXRli3vcZ2eKyGA
-         9v+V2Jgyp4DiZzk0c2IJA5R5V7/qN98dPDbmrGsiQB1kWExt01y2/v1d/QAHVMxxO0Jm
-         Q2kQCuXCZnUUUjJZQsL14cHPvkrxHd8xTTm5P7T3K9oLvRVid1yeWr/yQO7jMhLH//TG
-         59IQ==
-X-Gm-Message-State: AOAM5309CXEvZAPMBD/+iDOKwmy+jfL5810k6pueUkC24HJUeRI8bIo9
-        y8TZ7hML5eopD8KgeYVi+IthbQ==
-X-Google-Smtp-Source: ABdhPJw+iharOgIGCo8f+kM8aplb7DCE9ZqAKiUJiB8uvj0NHfZh9j8Pu1sfz1nYj5vTwDyJ9OTvYQ==
-X-Received: by 2002:a17:90b:4617:: with SMTP id ia23mr2584683pjb.120.1602736266692;
-        Wed, 14 Oct 2020 21:31:06 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id e4sm1244336pgg.37.2020.10.14.21.31.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Oct 2020 21:31:05 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 10:01:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Aisheng Dong <aisheng.dong@nxp.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH] opp: Don't always remove static OPPs in
- _of_add_opp_table_v1()
-Message-ID: <20201015043103.m6ghom52sqssh24z@vireshk-i7>
-References: <2c73ab54717ef358b118ea0cfb727b1427e7730a.1602648719.git.viresh.kumar@linaro.org>
- <AM6PR04MB496659599D41F6B88036420680020@AM6PR04MB4966.eurprd04.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K64GKhtw+rJqkS3SqXm3fRppZopgGb55fc2+FtOF5gQ=;
+        b=tWSfGlYQbcvmrtKPAS+cgouRRfSw4lO47PNj4sOLLtxbYK09dVCNPDclT9NyhMAPFK
+         P+2Ydv+MXh1csm9au1W7n3T+jjjqxIT6Wrm7HuLQD7vwRlQ4bqL9Js8ko+Y5ftdEjZ6i
+         eGr1DMl+ql9jdsue8QpezXqPanTJdHftZ28ATsO53yiGLAl/QWwnopU9+cku6AW6g7gn
+         +0CHixcINBal2/AkdwTO8iwUpUTyyMwutiHooNdRv5oXXcO4+ppVWjPpJFpeYkleaFsG
+         hUMVszCBLgvffnS7JlfFtg3T3J6yPLRxjUvB0pT5W/QtjT2BuhXnYl8WSnP0ZlUoSIuM
+         adpg==
+X-Gm-Message-State: AOAM533Aioho4YZ66eV+sCNOg0PPGUqSLwWeutxBghs/roWu9nqlBJp1
+        RBvxFRMg5EQ9MeVikEiLqksCIPFNOQCBIA==
+X-Google-Smtp-Source: ABdhPJxAHk/YzMqBEB5OL/UCNy2qUEkee/nT3sbO5NNRlDG85RqPqVpO35cLYkqneQeihGANHlLyOw==
+X-Received: by 2002:a17:90a:e107:: with SMTP id c7mr2333525pjz.27.1602736324170;
+        Wed, 14 Oct 2020 21:32:04 -0700 (PDT)
+Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id u14sm1282426pjf.53.2020.10.14.21.32.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Oct 2020 21:32:02 -0700 (PDT)
+Subject: Re: [PATCH v6 69/80] IB/srpt: docs: add a description for cq_size
+ member
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+ <d44a565b1638481c8dd282f01cae1fda3adf9fad.1602589096.git.mchehab+huawei@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <f283f15e-073c-ee42-d022-5b543f041d0b@acm.org>
+Date:   Wed, 14 Oct 2020 21:32:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR04MB496659599D41F6B88036420680020@AM6PR04MB4966.eurprd04.prod.outlook.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <d44a565b1638481c8dd282f01cae1fda3adf9fad.1602589096.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-10-20, 02:35, Aisheng Dong wrote:
-> Hi Viresh
+On 10/13/20 4:54 AM, Mauro Carvalho Chehab wrote:
+> Changeset c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
+> added a new member for struct srpt_rdma_ch, but didn't add the
+> corresponding kernel-doc markup, as repoted when doing
+> "make htmldocs":
+> 	./drivers/infiniband/ulp/srpt/ib_srpt.h:331: warning: Function parameter or member 'cq_size' not described in 'srpt_rdma_ch'
 > 
-> Thanks for the quick fix.
+> Add a description for it.
 > 
-> > From: Viresh Kumar <viresh.kumar@linaro.org>
-> > Sent: Wednesday, October 14, 2020 12:26 PM
-> > 
-> > The patch missed returning 0 early in case of success and hence the static OPPs
-> > got removed by mistake. Fix it.
-> > 
-> > Fixes: 90d46d71cce2 ("opp: Handle multiple calls for same OPP table in
-> > _of_add_opp_table_v1()")
-> > Reported-by: Aisheng Dong <aisheng.dong@nxp.com>
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Fixes: c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/infiniband/ulp/srpt/ib_srpt.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Tested-by: Dong Aisheng <aisheng.dong@nxp.com>
+> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
+> index 41435a699b53..e5d6af14d073 100644
+> --- a/drivers/infiniband/ulp/srpt/ib_srpt.h
+> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
+> @@ -256,6 +256,7 @@ enum rdma_ch_state {
+>   * @rdma_cm:	   See below.
+>   * @rdma_cm.cm_id: RDMA CM ID associated with the channel.
+>   * @cq:            IB completion queue for this channel.
+> + * @cq_size:	   Size of the @cq pool.
+>   * @zw_cqe:	   Zero-length write CQE.
+>   * @rcu:           RCU head.
+>   * @kref:	   kref for this channel.
 
-Thanks.
+That doesn't seem correct to me. My understanding is that cq_size is the
+number of CQEs in @cq. @cq is a completion queue and not a CQ pool.
 
-Rafael: Please apply this one directly for 5.10-rc. Thanks.
+Bart.
 
--- 
-viresh
+
