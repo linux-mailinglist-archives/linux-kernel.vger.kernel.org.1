@@ -2,133 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548A828FAD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A5428FACB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731574AbgJOVq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        id S1731432AbgJOVqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731550AbgJOVqy (ORCPT
+        with ESMTP id S1731424AbgJOVqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:46:54 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488F4C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:46:54 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id m20so357423ljj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:46:54 -0700 (PDT)
+        Thu, 15 Oct 2020 17:46:43 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06581C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:46:39 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id i10so182005qkh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:46:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a9gZ8lYF2EW505x+JyXeny8rTd7MbNGj3JLfR6MUhlo=;
-        b=kuR/AbH7x+hmbwvGfJ5+8q4/+6pF2yz6W0LrrDltCJUDKHZM4Kb1EVMuMgO0AhgfQa
-         uZBJJpPlTf/0SRt4QiehnBvwkPrbC0GAFy3B5Xgk/Ua8utj/kVRiVlF6fbaRf2eSRtUl
-         7Rj/ldq3FRLQKZIirGmFiNaBvaROil0RQll1Yxh8/A+A6xu2zsR+uEJNJTyMK+oUNHjR
-         J6y5b1EHXob+75GNg13CkosgyJ2vA5djfl0VnJZM6I7orPWjr/jqAYs93o0iJg1Oc27D
-         /JbrAMxE1d1c4ZXhRl/YTMtAI+D6AqMMK6LBu/b8wodBPRhZWw6Gf8GFu8eusJheDeqI
-         Gdng==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=uzsgrDVDbNo3+n6dFdimxZArMaCeWbOw2YwQOWztNSM=;
+        b=t1sJFz8ys2DRh9n3Pw3w8furr+PJFykl29nwiVDCtMxBmc1fD9i/ZtkVes8Jd/wDdy
+         7snwI+aF2tRRwi2JzUon9MMib3MFqChFBXaXIxqSax53dOqem+dVDR5zwJ+OvIncIl1w
+         tTqlz/W1yzenL1/Q2BMhsrI6DM6NerIV6D93UPBxlqmDXv4OnORy1ALo0GObtlAHOKB5
+         7VTELnPMllj+bjnBAcCNdxD4q2EkcHi/Btj9FNrcfiSy9YwQglohZJKME41OX3DocI8S
+         5F9TAv4de78oYXmYyunKFt5rOXPYJ16vCycWzhScOpI9CijlO+Ov4qR0/UrQInOIxN8e
+         4Wjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a9gZ8lYF2EW505x+JyXeny8rTd7MbNGj3JLfR6MUhlo=;
-        b=sTFBS/5LlXm39PwfXEiqPI8OEC0COWqp6mT7ouevqQrTD1hhIEULjODPbPKYiTVzWn
-         SMFKVwpjInboUZ0ShrinVHZi+qmVmFnWZKZMiB6EFF15HKRDh4bHs7UQMWgTEZ7k6K1a
-         66TliXathYsE1EvP2OzsLrkL373rcTI6Teyc5GryzmN55rFnoPALM2xm3fwqhECgETx9
-         8J4bjdm6bYvYeT3fZ+uaXKiYUpcxo0evWd39ErzfgD+SiIBh7lefd5RwMu+iFeQZEZcB
-         bUWEUla/dGsoEsdTVpMJhCfArQve0VLkd4790DLCxTNz/goxMDkqhNgNpn9iJCmbliL0
-         14DQ==
-X-Gm-Message-State: AOAM531/uCydFmt3sedgZpNQGeU0rVxrriYnznUTPK8UhX1nT5kWcK95
-        Og8YIbfe7YZ2HrA8TN74JLSGy3e1RQJT6onG2ckoIA==
-X-Google-Smtp-Source: ABdhPJyzFrqu+sIWzpcIUx+uZBYMlQO3PmR/MAulNcxE1w150usYa/yZy5hTFe1IovBsXMrDQikCbAjUEBSsWCj5kog=
-X-Received: by 2002:a2e:9f13:: with SMTP id u19mr269106ljk.160.1602798412476;
- Thu, 15 Oct 2020 14:46:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <202010160523.r8yMbvrW-lkp@intel.com>
-In-Reply-To: <202010160523.r8yMbvrW-lkp@intel.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 15 Oct 2020 23:46:26 +0200
-Message-ID: <CAG48ez3VixjDrMnz6+7JjGW_ZLZCD4+dTYWUD_tNOcfEfpu1Bg@mail.gmail.com>
-Subject: Re: [linux-stable-rc:linux-5.4.y 665/2391] drivers/android/binder.c:3776:
- Error: unrecognized keyword/register name `l.lwz
-To:     Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        openrisc@lists.librecores.org
-Cc:     kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martijn Coenen <maco@android.com>,
-        kernel test robot <lkp@intel.com>,
-        kernel list <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=uzsgrDVDbNo3+n6dFdimxZArMaCeWbOw2YwQOWztNSM=;
+        b=Fl/fPknPAPNQM6ETDSfXFZtP9xGdO2G0Nxymze6NlZE/IQEj1tJhrfvGLxl8Fl3jQ9
+         ffrBM26UXLM5y8yuXQa/OygUUc7/gSv1YN9Zfdc+k/GF8nlLyCp/TijNGh1FnU5dOqJd
+         Q7ByXkgN46Oh/X9IKfwLYqrmLaP5sGDQMg37te2/KEfrK7Dvx9iorEuA9IMloUxHLL6i
+         /uRojKek8W6WBkAQjfTg+mWwEVdF4jN/U8l7miB6gv/tYpOA8pGJPtjPXfT6WW7fkO12
+         xT2FuMIg0WwWRP6tgrZ78JQClJSwnxpDQFcyFHGLh3+K7DYReNSCgL4XxQp9uyKqXjb0
+         vYag==
+X-Gm-Message-State: AOAM533sPtFOFLhUZoLAUpmKx3bRhelXEJJuq+ZGYJi/jWeX4DabjDQJ
+        +sxtPsguBUBOGb2l67fbaZuj/diT068=
+X-Google-Smtp-Source: ABdhPJwLbfh++KCbzPsp2mTaTGcm34JYSxlvF9jqR4gBntK5n7lNk83rZbBSf8MfpDEu8jjFtOqheno9XAw=
+Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
+X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
+ (user=satyat job=sendgmr) by 2002:ad4:46a8:: with SMTP id br8mr852724qvb.24.1602798398042;
+ Thu, 15 Oct 2020 14:46:38 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 21:46:28 +0000
+Message-Id: <20201015214632.41951-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH v2 0/4] add support for inline encryption to device mapper
+From:   Satya Tangirala <satyat@google.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com
+Cc:     Jens Axboe <axboe@kernel.dk>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Satya Tangirala <satyat@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+openrisc folks
+This patch series adds support for inline encryption to the device mapper.
 
-On Thu, Oct 15, 2020 at 11:28 PM kernel test robot <lkp@intel.com> wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> head:   85b0841aab15c12948af951d477183ab3df7de14
-> commit: c5665cafbedd2e2a523fe933e452391a02d3adb3 [665/2391] binder: Prevent context manager from incrementing ref 0
-> config: openrisc-randconfig-r002-20201014 (attached as .config)
-> compiler: or1k-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=c5665cafbedd2e2a523fe933e452391a02d3adb3
->         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->         git fetch --no-tags linux-stable-rc linux-5.4.y
->         git checkout c5665cafbedd2e2a523fe933e452391a02d3adb3
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=openrisc
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    drivers/android/binder.c: Assembler messages:
-> >> drivers/android/binder.c:3776: Error: unrecognized keyword/register name `l.lwz ?ap,4(r25)'
->    drivers/android/binder.c:3781: Error: unrecognized keyword/register name `l.addi ?ap,r0,0'
+Patch 1 introduces the "passthrough" keyslot manager.
 
-binder is basically doing this:
+The regular keyslot manager is designed for inline encryption hardware that
+have only a small fixed number of keyslots. A DM device itself does not
+actually have only a small fixed number of keyslots - it doesn't actually
+have any keyslots in the first place, and programming an encryption context
+into a DM device doesn't make much semantic sense. It is possible for a DM
+device to set up a keyslot manager with some "sufficiently large" number of
+keyslots in its request queue, so that upper layers can use the inline
+encryption capabilities of the DM device's underlying devices, but the
+memory being allocated for the DM device's keyslots is a waste since they
+won't actually be used by the DM device.
 
-u64 data_ptr;
-if (get_user(data_ptr, (u64 __user *)ptr))
-  return -EFAULT;
+The passthrough keyslot manager solves this issue - when the block layer
+sees that a request queue has a passthrough keyslot manager, it doesn't
+attempt to program any encryption context into the keyslot manager. The
+passthrough keyslot manager only allows the device to expose its inline
+encryption capabilities, and a way for upper layers to evict keys if
+necessary.
 
-and GCC complains that that doesn't turn into valid assembly on
-openrisc, where get_user() of size 8 expands into this:
+There also exist inline encryption hardware that can handle encryption
+contexts directly, and allow users to pass them a data request along with
+the encryption context (as opposed to inline encryption hardware that
+require users to first program a keyslot with an encryption context, and
+then require the users to pass the keyslot index with the data request).
+Such devices can also make use of the passthrough keyslot manager.
 
-#define __get_user_asm2(x, addr, err)                   \
-{                                                       \
-        unsigned long long __gu_tmp;                    \
-        __asm__ __volatile__(                           \
-                "1:     l.lwz %1,0(%2)\n"               \
-                "2:     l.lwz %H1,4(%2)\n"              \
-                "3:\n"                                  \
-                ".section .fixup,\"ax\"\n"              \
-                "4:     l.addi %0,r0,%3\n"              \
-                "       l.addi %1,r0,0\n"               \
-                "       l.addi %H1,r0,0\n"              \
-                "       l.j 3b\n"                       \
-                "       l.nop\n"                        \
-                ".previous\n"                           \
-                ".section __ex_table,\"a\"\n"           \
-                "       .align 2\n"                     \
-                "       .long 1b,4b\n"                  \
-                "       .long 2b,4b\n"                  \
-                ".previous"                             \
-                : "=r"(err), "=&r"(__gu_tmp)            \
-                : "r"(addr), "i"(-EFAULT), "0"(err));   \
-        (x) = (__typeof__(*(addr)))(                    \
-                (__typeof__((x)-(x)))__gu_tmp);         \
-}
+Patch 2 introduces a private field to struct blk_keyslot_manager that
+owners of the struct can use for any purpose. The struct
+blk_keyslot_manager has been embedded within other structures directly
+(like in struct ufs_hba in drivers/scsi/ufs/ufshcd.h), but we don't
+want to do that with struct mapped_device. So, the device mapper patches
+later in this series use the private field to hold a pointer to the
+associated struct mapped_device, since we can't use container_of() anymore.
 
-and apparently the "l.lwz %H1,4(%2)" and "l.addi %H1,r0,0" don't turn
-into valid assembly when %H1 expands to "?ap"?
+Patch 3 introduces the changes for inline encryption support for the device
+mapper. A DM device only exposes the intersection of the crypto
+capabilities of its underlying devices. This is so that in case a bio with
+an encryption context is eventually mapped to an underlying device that
+doesn't support that encryption context, the blk-crypto-fallback's cipher
+tfms are allocated ahead of time by the call to blk_crypto_start_using_key.
 
-I don't know anything about OpenRISC, but this seems like it's
-probably an issue in the get_user() implementation.
+Each DM target can now also specify that it "may_passthrough_inline_crypto"
+to opt-in to supporting passing through the underlying inline encryption
+capabilities.  This flag is needed because it doesn't make much semantic
+sense for certain targets like dm-crypt to expose the underlying inline
+encryption capabilities to the upper layers. Again, the DM exposes inline
+encryption capabilities of the underlying devices only if all of them
+opt-in to passing through inline encryption support.
+
+A DM device's keyslot manager is set up whenever a new table is swapped in.
+This patch only allows the keyslot manager's capabilities to *expand*
+because of table changes. Any attempts to load a new table that would cause
+crypto capabilities to be dropped are rejected. The crypto capabilities of
+a new table are also verified when the table is loaded (and the load is
+rejected if crypto capabilities will be dropped because of the new table),
+but the keyslot manager for the DM device is only modified when the table
+is actually swapped in.
+
+This patch also only exposes the intersection of the underlying
+device's capabilities, which has the effect of causing en/decryption of a
+bio to fall back to the kernel crypto API (if the fallback is enabled)
+whenever any of the underlying devices doesn't support the encryption
+context of the bio - it might be possible to make the bio only fall back to
+the kernel crypto API if the bio's target underlying device doesn't support
+the bio's encryption context, but the use case may be uncommon enough in
+the first place not to warrant worrying about it right now.
+
+Patch 4 makes some DM targets opt-in to passing through inline encryption
+support. It does not (yet) try to enable this option with dm-raid, since
+users can "hot add" disks to a raid device, which makes this not completely
+straightforward (we'll need to ensure that any "hot added" disks must have
+a superset of the inline encryption capabilities of the rest of the disks
+in the raid device, due to the way Patch 2 of this series works).
+
+Changes v1 => v2:
+ - Introduce private field to struct blk_keyslot_manager
+ - Allow the DM keyslot manager to expand its crypto capabilities if the
+   table is changed.
+ - Make DM reject table changes that would otherwise cause crypto
+   capabilities to be dropped.
+ - Allocate the DM device's keyslot manager only when at least one crypto
+   capability is supported (since a NULL value for q->ksm represents "no
+   crypto support" anyway).
+ - Remove the struct blk_keyslot_manager field from struct mapped_device.
+   This patch now relies on just directly setting up the keyslot manager
+   in the request queue, since each DM device is tied to only 1 queue.
+
+Satya Tangirala (4):
+  block: keyslot-manager: Introduce passthrough keyslot manager
+  block: add private field to struct keyslot_manager
+  dm: add support for passing through inline crypto support
+  dm: enable may_passthrough_inline_crypto on some targets
+
+ block/blk-crypto.c              |   1 +
+ block/keyslot-manager.c         | 130 +++++++++++++++++++
+ drivers/md/dm-flakey.c          |   1 +
+ drivers/md/dm-ioctl.c           |   8 ++
+ drivers/md/dm-linear.c          |   1 +
+ drivers/md/dm.c                 | 217 +++++++++++++++++++++++++++++++-
+ drivers/md/dm.h                 |  19 +++
+ include/linux/device-mapper.h   |   6 +
+ include/linux/keyslot-manager.h |  22 ++++
+ 9 files changed, 404 insertions(+), 1 deletion(-)
+
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
+
