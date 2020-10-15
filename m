@@ -2,369 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4FF28EAB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2537828EAFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732539AbgJOCFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 22:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732511AbgJOCFA (ORCPT
+        id S1728875AbgJOCNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:13:44 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:43267 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726028AbgJOCNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 22:05:00 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038C0C0613D5
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 19:05:00 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id k9so1194489qki.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 19:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c0cFyvDYJwXB3yd+7/P2nUc5iqvNKygR8nPLmQrIdH4=;
-        b=PfUavVuKFuMrQYnPUE8cAHNGX9Ajpfjl8sqSbP0g5FfOiMufre5o65Yf72vIvGYaqs
-         aq1bwXyAYAg/F5xAbsjNtc3kM6YlodJedu5d2H7TWGgsnNuDPMM+/ho6dVKPBfWRiwge
-         aCwV6T1Uk13Hm7FKvLub2loYlwir1MvNZ+HjGnj0aOG06YzGD2G0TvH8C/jlcA2Ik8vP
-         Pk+GA/+uIFanTYYrepAybORZpIUvnbMU1H0gUTQXABFXM6nRW7M7N8uhfgqbB8NEnuME
-         AmmdziPe6gSPB09ro0G7WZWa0gmhjVACUSlYJKoa0PgFCrS6stALWX2NTTQqIAAjlgy2
-         FG0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c0cFyvDYJwXB3yd+7/P2nUc5iqvNKygR8nPLmQrIdH4=;
-        b=Uag1w/HNNDXXVA9Way9RDSvUm3av0XYG2fYB6+8xkKmN/n3svxap/gQQuk5mTQ533a
-         RJC1ueCXZp0vEyxnK9hPMRXXy2QTKRrEBNfE1JwWHJNfWQJuX6USCUU42RVXkQTnFtzi
-         /CA3Yk3QOdGhFpewW9A1NYty+T2kg4pOhlkJq5V1jvkuDch+hYkUiNv8U1aCJRqtq3fV
-         QMl9058e9E3a6KDF0zDmxa7IljPuGIBidbYy2jnxN8qOPI+EuB0wgvBC321duNPGI+eW
-         Ug+dgGBxyisFWHV+x9PCucSkb/NCItT+7I2zlzwNRX5AdmOO3ETfMZz1P+BvbxQBko+z
-         knYQ==
-X-Gm-Message-State: AOAM5311KKsWzxKN2ToFSrNrGms3gfVpRgbdIG1uuUZOG3bFRyOnDYgO
-        Ynwn96NEXqzM5qi+6aiXABJAXA==
-X-Google-Smtp-Source: ABdhPJwQlM5OerP8i+GB+Itwc1WB76p7g7oRvfyXuDh/Fwjd85kNhXAdmLyw5Mwbcr9WWjoOXdj9EA==
-X-Received: by 2002:a37:9c4f:: with SMTP id f76mr1899894qke.403.1602727499071;
-        Wed, 14 Oct 2020 19:04:59 -0700 (PDT)
-Received: from localhost.localdomain ([2804:431:c7cb:5e0b:6f3d:fca0:306c:a15d])
-        by smtp.gmail.com with ESMTPSA id e4sm665386qkb.4.2020.10.14.19.04.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 19:04:58 -0700 (PDT)
-From:   Vitor Massaru Iha <vitor@massaru.org>
-To:     kunit-dev@googlegroups.com, irogers@google.com,
-        brendanhiggins@google.com
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        peterz@infradead.org, mingo@kernel.org
-Subject: [RESEND PATCH v2] lib: kunit: add test_min_heap test conversion to KUnit
-Date:   Wed, 14 Oct 2020 23:04:54 -0300
-Message-Id: <20201015020454.314186-1-vitor@massaru.org>
-X-Mailer: git-send-email 2.26.2
+        Wed, 14 Oct 2020 22:13:44 -0400
+X-UUID: 8b83bb30da2b46e09444a0fa03bcd9ff-20201015
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=IZyDYUlfeht5gnS9jjLlYuC/tfwrT3+I9bjOaLFcuGg=;
+        b=O40sYf0Uovi/mBipz7ijWA7QZKMwglN5hf3ux+uUDiUFMvkgxwSXrdYhQfbdTv67Dmjai9MQ3KkhYIQvnY3ByIJd5tSRGkwIRqi/eWIfBM1bOKL/B1XlAKTW7ZYNQzgwg3OMcQdsPEzEOfYarmVV/Z4RpX1YroRAG2ZJxkC7CHo=;
+X-UUID: 8b83bb30da2b46e09444a0fa03bcd9ff-20201015
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1224820190; Thu, 15 Oct 2020 10:13:39 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Oct 2020 10:13:37 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 15 Oct 2020 10:13:35 +0800
+Message-ID: <1602728017.11536.5.camel@mtkswgap22>
+Subject: Re: [PATCH v7 2/2] soc: mediatek: add mt6779 devapc driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Date:   Thu, 15 Oct 2020 10:13:37 +0800
+In-Reply-To: <1602124514.28301.17.camel@mtkswgap22>
+References: <1598497593-15781-1-git-send-email-neal.liu@mediatek.com>
+         <1598497593-15781-3-git-send-email-neal.liu@mediatek.com>
+         <c41ec664-73a0-3c63-a31c-48c89028dfac@gmail.com>
+         <1602124514.28301.17.camel@mtkswgap22>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the conversion of the runtime tests of test_min_heap,
-from `lib/test_min_heap.c` to KUnit tests.
-
-Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
----
-  v2: 
-    * change Kconfig entries to be more adherent to KUnit documentation,
-      min_heap test runs when enabling full test coverage (KUNIT_ALL_TESTS).
-    * make kconfig help more concise;
-    * fix KUNIT_TEST sufix;
----
- lib/Kconfig.debug                         |  24 +++--
- lib/Makefile                              |   2 +-
- lib/{test_min_heap.c => min_heap_kunit.c} | 117 ++++++++++++----------
- 3 files changed, 78 insertions(+), 65 deletions(-)
- rename lib/{test_min_heap.c => min_heap_kunit.c} (60%)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 4f09c6505a2e..0e10ef1176de 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1915,16 +1915,6 @@ config TEST_LIST_SORT
- 
- 	  If unsure, say N.
- 
--config TEST_MIN_HEAP
--	tristate "Min heap test"
--	depends on DEBUG_KERNEL || m
--	help
--	  Enable this to turn on min heap function tests. This test is
--	  executed only once during system boot (so affects only boot time),
--	  or at module load time.
--
--	  If unsure, say N.
--
- config TEST_SORT
- 	tristate "Array-based sort test"
- 	depends on DEBUG_KERNEL || m
-@@ -2256,6 +2246,20 @@ config BITS_TEST
- 
- 	  If unsure, say N.
- 
-+config MIN_HEAP_KUNIT_TEST
-+	tristate "KUnit test for Min heap" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Enable this to turn on min heap function tests. This test is
-+	  executed only once during system boot (so affects only boot time),
-+	  or at module load time.
-+
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  If unsure, say N.
-+
- config TEST_UDELAY
- 	tristate "udelay test driver"
- 	help
-diff --git a/lib/Makefile b/lib/Makefile
-index d862d41fdc3d..03d12e672cf8 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -68,7 +68,6 @@ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
- UBSAN_SANITIZE_test_ubsan.o := y
- obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
- obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
--obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
- obj-$(CONFIG_TEST_LKM) += test_module.o
- obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
- obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
-@@ -343,3 +342,4 @@ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
- obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
- obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
- obj-$(CONFIG_BITS_TEST) += test_bits.o
-+obj-$(CONFIG_MIN_HEAP_KUNIT_TEST) += min_heap_kunit.o
-diff --git a/lib/test_min_heap.c b/lib/min_heap_kunit.c
-similarity index 60%
-rename from lib/test_min_heap.c
-rename to lib/min_heap_kunit.c
-index d19c8080fd4d..398db1c63146 100644
---- a/lib/test_min_heap.c
-+++ b/lib/min_heap_kunit.c
-@@ -7,9 +7,8 @@
- 
- #include <linux/log2.h>
- #include <linux/min_heap.h>
--#include <linux/module.h>
--#include <linux/printk.h>
- #include <linux/random.h>
-+#include <kunit/test.h>
- 
- static __init bool less_than(const void *lhs, const void *rhs)
- {
-@@ -29,37 +28,34 @@ static __init void swap_ints(void *lhs, void *rhs)
- 	*(int *)rhs = temp;
- }
- 
--static __init int pop_verify_heap(bool min_heap,
-+static __init void pop_verify_heap(struct kunit *context,
-+				bool min_heap,
- 				struct min_heap *heap,
- 				const struct min_heap_callbacks *funcs)
- {
- 	int *values = heap->data;
--	int err = 0;
- 	int last;
- 
- 	last = values[0];
- 	min_heap_pop(heap, funcs);
- 	while (heap->nr > 0) {
- 		if (min_heap) {
--			if (last > values[0]) {
--				pr_err("error: expected %d <= %d\n", last,
--					values[0]);
--				err++;
--			}
-+			KUNIT_EXPECT_FALSE_MSG(context,
-+					       last > values[0],
-+					       "expected %d <= %d\n",
-+					       last, values[0]);
- 		} else {
--			if (last < values[0]) {
--				pr_err("error: expected %d >= %d\n", last,
--					values[0]);
--				err++;
--			}
-+			KUNIT_EXPECT_FALSE_MSG(context,
-+					       last < values[0],
-+					       "expected %d >= %d\n",
-+					       last, values[0]);
- 		}
- 		last = values[0];
- 		min_heap_pop(heap, funcs);
- 	}
--	return err;
- }
- 
--static __init int test_heapify_all(bool min_heap)
-+static __init void test_heapify_all(struct kunit *context, bool min_heap)
- {
- 	int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
- 			 -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
-@@ -73,12 +69,11 @@ static __init int test_heapify_all(bool min_heap)
- 		.less = min_heap ? less_than : greater_than,
- 		.swp = swap_ints,
- 	};
--	int i, err;
-+	int i;
- 
- 	/* Test with known set of values. */
- 	min_heapify_all(&heap, &funcs);
--	err = pop_verify_heap(min_heap, &heap, &funcs);
--
-+	pop_verify_heap(context, min_heap, &heap, &funcs);
- 
- 	/* Test with randomly generated values. */
- 	heap.nr = ARRAY_SIZE(values);
-@@ -86,12 +81,10 @@ static __init int test_heapify_all(bool min_heap)
- 		values[i] = get_random_int();
- 
- 	min_heapify_all(&heap, &funcs);
--	err += pop_verify_heap(min_heap, &heap, &funcs);
--
--	return err;
-+	pop_verify_heap(context, min_heap, &heap, &funcs);
- }
- 
--static __init int test_heap_push(bool min_heap)
-+static __init void test_heap_push(struct kunit *context, bool min_heap)
- {
- 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
- 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-@@ -106,25 +99,22 @@ static __init int test_heap_push(bool min_heap)
- 		.less = min_heap ? less_than : greater_than,
- 		.swp = swap_ints,
- 	};
--	int i, temp, err;
-+	int i, temp;
- 
- 	/* Test with known set of values copied from data. */
- 	for (i = 0; i < ARRAY_SIZE(data); i++)
- 		min_heap_push(&heap, &data[i], &funcs);
--
--	err = pop_verify_heap(min_heap, &heap, &funcs);
-+	pop_verify_heap(context, min_heap, &heap, &funcs);
- 
- 	/* Test with randomly generated values. */
- 	while (heap.nr < heap.size) {
- 		temp = get_random_int();
- 		min_heap_push(&heap, &temp, &funcs);
- 	}
--	err += pop_verify_heap(min_heap, &heap, &funcs);
--
--	return err;
-+	pop_verify_heap(context, min_heap, &heap, &funcs);
- }
- 
--static __init int test_heap_pop_push(bool min_heap)
-+static __init void test_heap_pop_push(struct kunit *context, bool min_heap)
- {
- 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
- 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-@@ -139,7 +129,7 @@ static __init int test_heap_pop_push(bool min_heap)
- 		.less = min_heap ? less_than : greater_than,
- 		.swp = swap_ints,
- 	};
--	int i, temp, err;
-+	int i, temp;
- 
- 	/* Fill values with data to pop and replace. */
- 	temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
-@@ -149,8 +139,7 @@ static __init int test_heap_pop_push(bool min_heap)
- 	/* Test with known set of values copied from data. */
- 	for (i = 0; i < ARRAY_SIZE(data); i++)
- 		min_heap_pop_push(&heap, &data[i], &funcs);
--
--	err = pop_verify_heap(min_heap, &heap, &funcs);
-+	pop_verify_heap(context, min_heap, &heap, &funcs);
- 
- 	heap.nr = 0;
- 	for (i = 0; i < ARRAY_SIZE(data); i++)
-@@ -161,34 +150,54 @@ static __init int test_heap_pop_push(bool min_heap)
- 		temp = get_random_int();
- 		min_heap_pop_push(&heap, &temp, &funcs);
- 	}
--	err += pop_verify_heap(min_heap, &heap, &funcs);
-+	pop_verify_heap(context, min_heap, &heap, &funcs);
-+}
- 
--	return err;
-+static void __init test_heapify_all_true(struct kunit *context)
-+{
-+	test_heapify_all(context, true);
- }
- 
--static int __init test_min_heap_init(void)
-+static void __init test_heapify_all_false(struct kunit *context)
- {
--	int err = 0;
--
--	err += test_heapify_all(true);
--	err += test_heapify_all(false);
--	err += test_heap_push(true);
--	err += test_heap_push(false);
--	err += test_heap_pop_push(true);
--	err += test_heap_pop_push(false);
--	if (err) {
--		pr_err("test failed with %d errors\n", err);
--		return -EINVAL;
--	}
--	pr_info("test passed\n");
--	return 0;
-+	test_heapify_all(context, true);
-+}
-+
-+static void __init test_heap_push_true(struct kunit *context)
-+{
-+	test_heap_push(context, true);
-+}
-+
-+static void __init test_heap_push_false(struct kunit *context)
-+{
-+	test_heap_push(context, false);
- }
--module_init(test_min_heap_init);
- 
--static void __exit test_min_heap_exit(void)
-+static void __init test_heap_pop_push_true(struct kunit *context)
- {
--	/* do nothing */
-+	test_heap_pop_push(context, true);
- }
--module_exit(test_min_heap_exit);
-+
-+static void __init test_heap_pop_push_false(struct kunit *context)
-+{
-+	test_heap_pop_push(context, false);
-+}
-+
-+static struct kunit_case __refdata min_heap_test_cases[] = {
-+	KUNIT_CASE(test_heapify_all_true),
-+	KUNIT_CASE(test_heapify_all_false),
-+	KUNIT_CASE(test_heap_push_true),
-+	KUNIT_CASE(test_heap_push_false),
-+	KUNIT_CASE(test_heap_pop_push_true),
-+	KUNIT_CASE(test_heap_pop_push_false),
-+	{}
-+};
-+
-+static struct kunit_suite min_heap_test_suite = {
-+	.name = "min-heap",
-+	.test_cases = min_heap_test_cases,
-+};
-+
-+kunit_test_suites(&min_heap_test_suite);
- 
- MODULE_LICENSE("GPL");
-
-base-commit: d2585f5164c298aaaed14c2c8d313cbe7bd5b253
--- 
-2.26.2
+T24gVGh1LCAyMDIwLTEwLTA4IGF0IDEwOjM1ICswODAwLCBOZWFsIExpdSB3cm90ZToNCj4gT24g
+V2VkLCAyMDIwLTEwLTA3IGF0IDEyOjQ0ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3RlOg0K
+PiA+IA0KPiA+IE9uIDI3LzA4LzIwMjAgMDU6MDYsIE5lYWwgTGl1IHdyb3RlOg0KWy4uLl0NCg0K
+PiA+ID4gK3N0YXRpYyBpbnQgZGV2YXBjX3N5bmNfdmlvX2RiZyhzdHJ1Y3QgbXRrX2RldmFwY19j
+b250ZXh0ICpjdHgpDQo+ID4gPiArew0KPiA+ID4gKwl2b2lkIF9faW9tZW0gKnBkX3Zpb19zaGlm
+dF9zdGFfcmVnOw0KPiA+ID4gKwl2b2lkIF9faW9tZW0gKnBkX3Zpb19zaGlmdF9zZWxfcmVnOw0K
+PiA+ID4gKwl2b2lkIF9faW9tZW0gKnBkX3Zpb19zaGlmdF9jb25fcmVnOw0KPiA+ID4gKwlpbnQg
+bWluX3NoaWZ0X2dyb3VwOw0KPiA+ID4gKwlpbnQgcmV0Ow0KPiA+ID4gKwl1MzIgdmFsOw0KPiA+
+ID4gKw0KPiA+ID4gKwlwZF92aW9fc2hpZnRfc3RhX3JlZyA9IGN0eC0+aW5mcmFfYmFzZSArDQo+
+ID4gPiArCQkJICAgICAgIGN0eC0+ZGF0YS0+dmlvX3NoaWZ0X3N0YV9vZmZzZXQ7DQo+ID4gPiAr
+CXBkX3Zpb19zaGlmdF9zZWxfcmVnID0gY3R4LT5pbmZyYV9iYXNlICsNCj4gPiA+ICsJCQkgICAg
+ICAgY3R4LT5kYXRhLT52aW9fc2hpZnRfc2VsX29mZnNldDsNCj4gPiA+ICsJcGRfdmlvX3NoaWZ0
+X2Nvbl9yZWcgPSBjdHgtPmluZnJhX2Jhc2UgKw0KPiA+ID4gKwkJCSAgICAgICBjdHgtPmRhdGEt
+PnZpb19zaGlmdF9jb25fb2Zmc2V0Ow0KPiA+ID4gKw0KPiA+ID4gKwkvKiBGaW5kIHRoZSBtaW5p
+bXVtIHNoaWZ0IGdyb3VwIHdoaWNoIGhhcyB2aW9sYXRpb24gKi8NCj4gPiA+ICsJdmFsID0gcmVh
+ZGwocGRfdmlvX3NoaWZ0X3N0YV9yZWcpOw0KPiA+ID4gKwlpZiAoIXZhbCkNCj4gPiA+ICsJCXJl
+dHVybiBmYWxzZTsNCj4gPiANCj4gPiBTbyBiaXQgMCBvZiBzZWxlY3Rpb24gcmVnaXN0ZXIgKHBk
+X3Zpb19zaGlmdF9zZWxfcmVnKSBkb2VzIG5vdCByZXByZXNlbnQgYSANCj4gPiB2aW9sYXRpb24g
+Z3JvdXA/DQo+ID4gSSBkb24ndCBrbm93IGhvdyB0aGUgSFcgd29ya3MsIGJ1dCBpcyBzZWVtcyBv
+ZGQgdG8gbWUuIEluIGNhc2UgdGhhdCdzIGJpdCAwIA0KPiA+IGFjdHVhbGx5IGRvZXNuJ3QgcmVw
+cmVzZW50IGFueXRoaW5nOiBob3cgY2FuIGFuIGludGVycnVwdCBiZSB0cmlnZ2VyZWQgd2l0aG91
+dCANCj4gPiBhbnkgZGVidWcgaW5mb3JtYXRpb24gcHJlc2VudCAobWVhbnMgdmFsID09IDApPw0K
+PiANCj4gVGhpcyBjaGVjayBpbXBsaWVzIEhXIHN0YXR1cyBoYXMgc29tZXRoaW5nIHdyb25nLiBJ
+dCBjYW5ub3QgZ2V0IGFueQ0KPiBkZWJ1ZyBpbmZvcm1hdGlvbiBmb3IgdGhpcyBjYXNlLg0KPiBJ
+dCB3b24ndCBoYXBwZW4gaW4gbm9ybWFsIHNjZW5hcmlvLiBTaG91bGQgd2UgcmVtb3ZlIHRoaXMg
+Y2hlY2s/DQo+IA0KDQpTb3JyeSwgSSBtaXNzZWQgdGhlIG1vc3QgY29tbW9uIHBhcnQuIElzIGZ1
+bmN0aW9uIGlzIGluIHRoZSB3aGlsZSBsb29wOg0Kd2hpbGUgKGRldmFwY19zeW5jX3Zpb19kYmco
+Y3R4KSkNCi4uLg0KDQpXZSBrZWVwIGZpbmQgdGhlIG1pbmltdW0gYml0IGluIHBkX3Zpb19zaGlm
+dF9zdGFfcmVnIHRvIGdldCB0aGUNCnZpb2xhdGlvbiBpbmZvcm1hdGlvbiwgKHBkX3Zpb19zaGlm
+dF9zdGFfcmVnIG1pZ2h0IHJhaXNlIG11bHRpcGxlIGJpdHMpDQp1bnRpbCBhbGwgcmFpc2VkIGJp
+dCAoc2hpZnQgZ3JvdXApIGhhcyBiZWVuIGhhbmRsZWQuDQpTbyBJIGRvbid0IHRoaW5rIGl0J3Mg
+bmVjZXNzYXJ5IHRvIGFkZCBXQVJOIG1lc3NhZ2UgaW4gdGhpcyBjYXNlLg0KVGhhbmtzDQoNCj4g
+PiANCj4gPiA+ICsNCj4gPiA+ICsJbWluX3NoaWZ0X2dyb3VwID0gX19mZnModmFsKTsNCj4gPiA+
+ICsNCj4gPiA+ICsJLyogQXNzaWduIHRoZSBncm91cCB0byBzeW5jICovDQo+ID4gPiArCXdyaXRl
+bCgweDEgPDwgbWluX3NoaWZ0X2dyb3VwLCBwZF92aW9fc2hpZnRfc2VsX3JlZyk7DQo+ID4gPiAr
+DQo+ID4gPiArCS8qIFN0YXJ0IHN5bmNpbmcgKi8NCj4gPiA+ICsJd3JpdGVsKDB4MSwgcGRfdmlv
+X3NoaWZ0X2Nvbl9yZWcpOw0KPiA+ID4gKw0KPiA+ID4gKwlyZXQgPSByZWFkbF9wb2xsX3RpbWVv
+dXQocGRfdmlvX3NoaWZ0X2Nvbl9yZWcsIHZhbCwgdmFsID09IDB4MywgMCwNCj4gPiA+ICsJCQkJ
+IFBIWV9ERVZBUENfVElNRU9VVCk7DQo+ID4gPiArCWlmIChyZXQpIHsNCj4gPiA+ICsJCWRldl9l
+cnIoY3R4LT5kZXYsICIlczogU2hpZnQgdmlvbGF0aW9uIGluZm8gZmFpbGVkXG4iLCBfX2Z1bmNf
+Xyk7DQo+ID4gDQo+ID4gSW4gd2hpY2ggY2FzZSB0aGlzIGNhbiBoYXBwZW4/IEknbSBhc2tpbmcs
+IGJlY2F1c2Ugd2UgYXJlIGNhbGxpbmcgDQo+ID4gZGV2YXBjX3N5bmNfdmlvX2RiZygpIGluIGEg
+d2hpbGUgbG9vcCB0aGF0IGNvdWxkIG1ha2UgdGhlIGtlcm5lbCBoYW5nIGhlcmUuDQo+ID4gDQo+
+ID4gRG8gSSB1bmRlcnN0YW5kIGNvcnJlY3RseSwgdGhhdCB3ZSBhcmUgdXNpbmcgdGhlIHdoaWxl
+IGxvb3AsIGJlY2F1c2UgdGhlcmUgY2FuIA0KPiA+IGJlIG1vcmUgdGhlbiBvbmUgdmlvbGF0aW9u
+IGdyb3VwIHdoaWNoIGdvdCB0cmlnZ2VyZWQgKHJlYWQsIG1vcmUgdGhlbiBvbmUgYml0IGlzIA0K
+PiA+IHNldCBpbiBwZF92aW9fc2hpZnRfc3RhX3JlZyk/IFdvdWxkIGl0IG1ha2UgbW9yZSBzZW5z
+ZSB0aGVuIHRvIHJlYWQgdGhlIHJlZ2lzdGVyIA0KPiA+IG9uY2UgYW5kIGRvIGFsbCB0aGUgc2hp
+ZnQgb3BlcmF0aW9uIGZvciBhbGwgZ3JvdXBzIHdoaWNoIGJpdCBzZXQgdG8gMSBpbiB0aGUgDQo+
+ID4gc2hpZnQgc3RhdHVzIHJlZ2lzdGVyPw0KPiANCj4gWWVzLCB5b3VyIHVuZGVyc3RhbmRpbmcg
+aXMgY29ycmVjdC4NCj4gVGhpcyBjaGVjayBhbHNvIGltcGxpZXMgSFcgc3RhdHVzIGhhcyBzb21l
+dGhpbmcgd3JvbmcuIFdlIHJldHVybiBmYWxzZQ0KPiB0byBza2lwIGZ1cnRoZXIgdmlvbGF0aW9u
+IGluZm8gZHVtcC4NCj4gSG93IGNvdWxkIHRoaXMgY2FzZSBtYWtlIHRoZSBrZXJuZWwgaGFuZz8N
+Cj4gDQo+ID4gDQo+ID4gPiArCQlyZXR1cm4gZmFsc2U7DQo+ID4gPiArCX0NCj4gPiA+ICsNCj4g
+PiA+ICsJLyogU3RvcCBzeW5jaW5nICovDQo+ID4gPiArCXdyaXRlbCgweDAsIHBkX3Zpb19zaGlm
+dF9jb25fcmVnKTsNCj4gPiA+ICsNCj4gPiA+ICsJLyogV3JpdGUgY2xlYXIgKi8NCj4gPiA+ICsJ
+d3JpdGVsKDB4MSA8PCBtaW5fc2hpZnRfZ3JvdXAsIHBkX3Zpb19zaGlmdF9zdGFfcmVnKTsNCj4g
+PiA+ICsNCj4gPiA+ICsJcmV0dXJuIHRydWU7DQo+ID4gPiArfQ0KPiA+ID4gKw0KPiA+ID4gKy8q
+DQo+ID4gPiArICogZGV2YXBjX2V4dHJhY3RfdmlvX2RiZyAtIGV4dHJhY3QgZnVsbCB2aW9sYXRp
+b24gaW5mb3JtYXRpb24gYWZ0ZXIgZG9pbmcNCj4gPiA+ICsgKiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgc2hpZnQgbWVjaGFuaXNtLg0KPiA+ID4gKyAqLw0KPiA+ID4gK3N0YXRpYyB2b2lkIGRl
+dmFwY19leHRyYWN0X3Zpb19kYmcoc3RydWN0IG10a19kZXZhcGNfY29udGV4dCAqY3R4KQ0KPiA+
+ID4gK3sNCj4gPiA+ICsJc3RydWN0IG10a19kZXZhcGNfdmlvX2RiZ3MgdmlvX2RiZ3M7DQo+ID4g
+PiArCXZvaWQgX19pb21lbSAqdmlvX2RiZzBfcmVnOw0KPiA+ID4gKwl2b2lkIF9faW9tZW0gKnZp
+b19kYmcxX3JlZzsNCj4gPiA+ICsNCj4gPiA+ICsJdmlvX2RiZzBfcmVnID0gY3R4LT5pbmZyYV9i
+YXNlICsgY3R4LT5kYXRhLT52aW9fZGJnMF9vZmZzZXQ7DQo+ID4gPiArCXZpb19kYmcxX3JlZyA9
+IGN0eC0+aW5mcmFfYmFzZSArIGN0eC0+ZGF0YS0+dmlvX2RiZzFfb2Zmc2V0Ow0KPiA+ID4gKw0K
+PiA+ID4gKwl2aW9fZGJncy52aW9fZGJnMCA9IHJlYWRsKHZpb19kYmcwX3JlZyk7DQo+ID4gPiAr
+CXZpb19kYmdzLnZpb19kYmcxID0gcmVhZGwodmlvX2RiZzFfcmVnKTsNCj4gPiA+ICsNCj4gPiA+
+ICsJLyogUHJpbnQgdmlvbGF0aW9uIGluZm9ybWF0aW9uICovDQo+ID4gPiArCWlmICh2aW9fZGJn
+cy5kYmcwX2JpdHMudmlvX3cpDQo+ID4gPiArCQlkZXZfaW5mbyhjdHgtPmRldiwgIldyaXRlIFZp
+b2xhdGlvblxuIik7DQo+ID4gPiArCWVsc2UgaWYgKHZpb19kYmdzLmRiZzBfYml0cy52aW9fcikN
+Cj4gPiA+ICsJCWRldl9pbmZvKGN0eC0+ZGV2LCAiUmVhZCBWaW9sYXRpb25cbiIpOw0KPiA+ID4g
+Kw0KPiA+ID4gKwlkZXZfaW5mbyhjdHgtPmRldiwgIkJ1cyBJRDoweCV4LCBEb20gSUQ6MHgleCwg
+VmlvIEFkZHI6MHgleFxuIiwNCj4gPiA+ICsJCSB2aW9fZGJncy5kYmcwX2JpdHMubXN0aWQsIHZp
+b19kYmdzLmRiZzBfYml0cy5kbW5pZCwNCj4gPiA+ICsJCSB2aW9fZGJncy52aW9fZGJnMSk7DQo+
+ID4gPiArfQ0KPiA+ID4gKw0KPiA+ID4gKy8qDQo+ID4gPiArICogZGV2YXBjX3Zpb2xhdGlvbl9p
+cnEgLSB0aGUgZGV2YXBjIEludGVycnVwdCBTZXJ2aWNlIFJvdXRpbmUgKElTUikgd2lsbCBkdW1w
+DQo+ID4gPiArICogICAgICAgICAgICAgICAgICAgICAgICB2aW9sYXRpb24gaW5mb3JtYXRpb24g
+aW5jbHVkaW5nIHdoaWNoIG1hc3RlciB2aW9sYXRlcw0KPiA+ID4gKyAqICAgICAgICAgICAgICAg
+ICAgICAgICAgYWNjZXNzIHNsYXZlLg0KPiA+ID4gKyAqLw0KPiA+ID4gK3N0YXRpYyBpcnFyZXR1
+cm5fdCBkZXZhcGNfdmlvbGF0aW9uX2lycShpbnQgaXJxX251bWJlciwNCj4gPiA+ICsJCQkJCXN0
+cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmN0eCkNCj4gPiANCj4gPiBzdGF0aWMgaXJxcmV0dXJu
+X3QgZGV2YXBjX3Zpb2xhdGlvbl9pcnEoaW50IGlycV9udW1iZXIsIHZvaWQgKmRhdGEpDQo+ID4g
+ew0KPiA+IAlzdHJ1Y3QgbXRrX2RldmFwY19jb250ZXh0ICpjdHggPSBkYXRhOw0KPiANCj4gT2th
+eSwgSSdsbCBmaXggaXQgb24gbmV4dCBwYXRjaC4NCj4gVGhhbmtzDQo+IA0KPiA+IA0KPiA+ID4g
+K3sNCj4gPiA+ICsJd2hpbGUgKGRldmFwY19zeW5jX3Zpb19kYmcoY3R4KSkNCj4gPiA+ICsJCWRl
+dmFwY19leHRyYWN0X3Zpb19kYmcoY3R4KTsNCj4gPiA+ICsNCj4gPiA+ICsJY2xlYXJfdmlvX3N0
+YXR1cyhjdHgpOw0KPiA+ID4gKw0KPiA+ID4gKwlyZXR1cm4gSVJRX0hBTkRMRUQ7DQo+ID4gPiAr
+fQ0KPiA+ID4gKw0KPiA+ID4gKy8qDQo+ID4gPiArICogc3RhcnRfZGV2YXBjIC0gdW5tYXNrIHNs
+YXZlJ3MgaXJxIHRvIHN0YXJ0IHJlY2VpdmluZyBkZXZhcGMgdmlvbGF0aW9uLg0KPiA+ID4gKyAq
+Lw0KPiA+ID4gK3N0YXRpYyB2b2lkIHN0YXJ0X2RldmFwYyhzdHJ1Y3QgbXRrX2RldmFwY19jb250
+ZXh0ICpjdHgpDQo+ID4gPiArew0KPiA+ID4gKwl3cml0ZWwoQklUKDMxKSwgY3R4LT5pbmZyYV9i
+YXNlICsgY3R4LT5kYXRhLT5hcGNfY29uX29mZnNldCk7DQo+ID4gPiArDQo+ID4gPiArCW1hc2tf
+bW9kdWxlX2lycShjdHgsIGZhbHNlKTsNCj4gPiA+ICt9DQo+ID4gPiArDQo+ID4gPiArLyoNCj4g
+PiA+ICsgKiBzdG9wX2RldmFwYyAtIG1hc2sgc2xhdmUncyBpcnEgdG8gc3RvcCBzZXJ2aWNlLg0K
+PiA+ID4gKyAqLw0KPiA+ID4gK3N0YXRpYyB2b2lkIHN0b3BfZGV2YXBjKHN0cnVjdCBtdGtfZGV2
+YXBjX2NvbnRleHQgKmN0eCkNCj4gPiA+ICt7DQo+ID4gPiArCW1hc2tfbW9kdWxlX2lycShjdHgs
+IHRydWUpOw0KPiA+ID4gKw0KPiA+ID4gKwl3cml0ZWwoQklUKDIpLCBjdHgtPmluZnJhX2Jhc2Ug
+KyBjdHgtPmRhdGEtPmFwY19jb25fb2Zmc2V0KTsNCj4gPiA+ICt9DQo+ID4gPiArDQo+ID4gPiAr
+c3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGV2YXBjX2RhdGEgZGV2YXBjX210Njc3OSA9IHsNCj4g
+PiA+ICsJLnZpb19pZHhfbnVtID0gNTExLA0KPiA+ID4gKwkudmlvX21hc2tfb2Zmc2V0ID0gMHgw
+LA0KPiA+ID4gKwkudmlvX3N0YV9vZmZzZXQgPSAweDQwMCwNCj4gPiA+ICsJLnZpb19kYmcwX29m
+ZnNldCA9IDB4OTAwLA0KPiA+ID4gKwkudmlvX2RiZzFfb2Zmc2V0ID0gMHg5MDQsDQo+ID4gPiAr
+CS5hcGNfY29uX29mZnNldCA9IDB4RjAwLA0KPiA+ID4gKwkudmlvX3NoaWZ0X3N0YV9vZmZzZXQg
+PSAweEYxMCwNCj4gPiA+ICsJLnZpb19zaGlmdF9zZWxfb2Zmc2V0ID0gMHhGMTQsDQo+ID4gPiAr
+CS52aW9fc2hpZnRfY29uX29mZnNldCA9IDB4RjIwLA0KPiA+ID4gK307DQo+ID4gPiArDQo+ID4g
+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2RldmFwY19kdF9tYXRjaFtd
+ID0gew0KPiA+ID4gKwl7DQo+ID4gPiArCQkuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzkt
+ZGV2YXBjIiwNCj4gPiA+ICsJCS5kYXRhID0gJmRldmFwY19tdDY3NzksDQo+ID4gPiArCX0sIHsN
+Cj4gPiA+ICsJfSwNCj4gPiA+ICt9Ow0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyBpbnQgbXRrX2Rl
+dmFwY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ID4gK3sNCj4gPiA+
+ICsJc3RydWN0IGRldmljZV9ub2RlICpub2RlID0gcGRldi0+ZGV2Lm9mX25vZGU7DQo+ID4gPiAr
+CXN0cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmN0eDsNCj4gPiA+ICsJdTMyIGRldmFwY19pcnE7
+DQo+ID4gPiArCWludCByZXQ7DQo+ID4gPiArDQo+ID4gPiArCWlmIChJU19FUlIobm9kZSkpDQo+
+ID4gPiArCQlyZXR1cm4gLUVOT0RFVjsNCj4gPiA+ICsNCj4gPiA+ICsJY3R4ID0gZGV2bV9remFs
+bG9jKCZwZGV2LT5kZXYsIHNpemVvZigqY3R4KSwgR0ZQX0tFUk5FTCk7DQo+ID4gPiArCWlmICgh
+Y3R4KQ0KPiA+ID4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ID4gPiArDQo+ID4gPiArCWN0eC0+ZGF0
+YSA9IG9mX2RldmljZV9nZXRfbWF0Y2hfZGF0YSgmcGRldi0+ZGV2KTsNCj4gPiA+ICsJY3R4LT5k
+ZXYgPSAmcGRldi0+ZGV2Ow0KPiA+ID4gKw0KPiA+ID4gKwljdHgtPmluZnJhX2Jhc2UgPSBvZl9p
+b21hcChub2RlLCAwKTsNCj4gPiANCj4gPiBEb2VzIHRoaXMgbWVhbiB0aGUgZGV2aWNlIGlzIHBh
+cnQgb2YgdGhlIGluZnJhY2ZnIGJsb2NrPw0KPiA+IEkgd2Fzbid0IGFibGUgdG8gZmluZCBhbnkg
+aW5mb3JtYXRpb24gYWJvdXQgaXQuDQo+IA0KPiBJJ20gbm90IHN1cmUgd2h5IHlvdSB3b3VsZCBh
+c2sgaW5mcmFjZmcgYmxvY2suIGRldmFwYyBpcyBwYXJ0cyBvZiBvdXINCj4gU29DIGluZnJhLCBp
+dCdzIGRpZmZlcmVudCB3aXRoIGluZnJhY2ZnLg0KPiANCj4gPiANCj4gPiA+ICsJaWYgKCFjdHgt
+PmluZnJhX2Jhc2UpDQo+ID4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiA+ICsNCj4gPiA+ICsJ
+ZGV2YXBjX2lycSA9IGlycV9vZl9wYXJzZV9hbmRfbWFwKG5vZGUsIDApOw0KPiA+ID4gKwlpZiAo
+IWRldmFwY19pcnEpDQo+ID4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiA+ICsNCj4gPiA+ICsJ
+Y3R4LT5pbmZyYV9jbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgImRldmFwYy1pbmZyYS1j
+bG9jayIpOw0KPiA+ID4gKwlpZiAoSVNfRVJSKGN0eC0+aW5mcmFfY2xrKSkNCj4gPiA+ICsJCXJl
+dHVybiAtRUlOVkFMOw0KPiA+ID4gKw0KPiA+ID4gKwlpZiAoY2xrX3ByZXBhcmVfZW5hYmxlKGN0
+eC0+aW5mcmFfY2xrKSkNCj4gPiA+ICsJCXJldHVybiAtRUlOVkFMOw0KPiA+ID4gKw0KPiA+ID4g
+KwlyZXQgPSBkZXZtX3JlcXVlc3RfaXJxKCZwZGV2LT5kZXYsIGRldmFwY19pcnEsDQo+ID4gPiAr
+CQkJICAgICAgIChpcnFfaGFuZGxlcl90KWRldmFwY192aW9sYXRpb25faXJxLA0KPiA+IA0KPiA+
+IE5vIGNhc3Qgc2hvdWxkIGJlIG5lZWRlZC4NCj4gDQo+IE9rYXksIEknbGwgcmVtb3ZlIGl0IG9u
+IG5leHQgcGF0Y2guDQo+IFRoYW5rcw0KPiANCj4gPiANCj4gPiA+ICsJCQkgICAgICAgSVJRRl9U
+UklHR0VSX05PTkUsICJkZXZhcGMiLCBjdHgpOw0KPiA+ID4gKwlpZiAocmV0KSB7DQo+ID4gPiAr
+CQljbGtfZGlzYWJsZV91bnByZXBhcmUoY3R4LT5pbmZyYV9jbGspOw0KPiA+ID4gKwkJcmV0dXJu
+IHJldDsNCj4gPiA+ICsJfQ0KPiA+ID4gKw0KPiA+ID4gKwlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShw
+ZGV2LCBjdHgpOw0KPiA+ID4gKw0KPiA+ID4gKwlzdGFydF9kZXZhcGMoY3R4KTsNCj4gPiA+ICsN
+Cj4gPiA+ICsJcmV0dXJuIDA7DQo+ID4gPiArfQ0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyBpbnQg
+bXRrX2RldmFwY19yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiA+ICt7
+DQo+ID4gPiArCXN0cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmN0eCA9IHBsYXRmb3JtX2dldF9k
+cnZkYXRhKHBkZXYpOw0KPiA+ID4gKw0KPiA+ID4gKwlzdG9wX2RldmFwYyhjdHgpOw0KPiA+ID4g
+Kw0KPiA+ID4gKwljbGtfZGlzYWJsZV91bnByZXBhcmUoY3R4LT5pbmZyYV9jbGspOw0KPiA+ID4g
+Kw0KPiA+ID4gKwlyZXR1cm4gMDsNCj4gPiA+ICt9DQo+ID4gPiArDQo+ID4gPiArc3RhdGljIHN0
+cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXRrX2RldmFwY19kcml2ZXIgPSB7DQo+ID4gPiArCS5wcm9i
+ZSA9IG10a19kZXZhcGNfcHJvYmUsDQo+ID4gPiArCS5yZW1vdmUgPSBtdGtfZGV2YXBjX3JlbW92
+ZSwNCj4gPiA+ICsJLmRyaXZlciA9IHsNCj4gPiA+ICsJCS5uYW1lID0gS0JVSUxEX01PRE5BTUUs
+DQo+ID4gDQo+ID4gLm5hbWUgPSAibXRrLWRldmFwYyIsDQo+IA0KPiBPa2F5LCBJJ2xsIGFkZCBp
+dCBvbiBuZXh0IHBhdGNoLg0KPiBUaGFua3MNCj4gDQo+ID4gDQo+ID4gUmVnYXJkcywNCj4gPiBN
+YXR0aGlhcw0KPiANCj4gDQoNCg==
 
