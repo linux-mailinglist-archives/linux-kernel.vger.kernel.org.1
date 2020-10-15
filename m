@@ -2,124 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC6628FB7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA2328FB7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730151AbgJOXMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 19:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728776AbgJOXM3 (ORCPT
+        id S1732763AbgJOXOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 19:14:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:36194 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726877AbgJOXO3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 19:12:29 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E74BC061755;
-        Thu, 15 Oct 2020 16:12:29 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC4n427wSz9sTL;
-        Fri, 16 Oct 2020 10:12:24 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602803546;
-        bh=dWKPxzoiUcikJnJnxCFQNswn2OsYq0ytMCnia6M3A6w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ca6d69ZCUPRBQyzcnlnYnFSQsyIpU/BVWTCFltvrw7LogUz4SuSC5Bn/J9rns/1WM
-         gzjxLhd6BtDmMSKmvvIlGQ2W5KHTG45TvPWQbHEBc8Gi0Nl+znT5JMI6QwpZCBXWPj
-         DGKgN3EFC5XK6HfDn5WPmU6FEwj0jMTz2I1AKvU3ApdNoy6sRXH5yCYUXADwEiCCU8
-         6qKm9Lbqs7yK255z8FRtF8M2GdhwaI3NQKnPelF0Hd3wUPqY8v3jQUm0QoCu4SuXy0
-         OlWNJAwjW/nlXQu6owlzsf2QPV0hp0BN+XuY7Pksk5uLaOBD81nCz/Nsnal0Ukd2Gi
-         aYFjz8HDoBFxw==
-Date:   Fri, 16 Oct 2020 10:12:22 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: Re: linux-next: manual merge of the char-misc tree with the powerpc
- tree
-Message-ID: <20201016101222.6fcf12bf@canb.auug.org.au>
-In-Reply-To: <20201006183506.186a3562@canb.auug.org.au>
-References: <20201006183506.186a3562@canb.auug.org.au>
+        Thu, 15 Oct 2020 19:14:29 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FNEGti178107;
+        Thu, 15 Oct 2020 23:14:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=hJx/AgWMGPKkGZaHQF/0+N3HhJZonJmQaRzSZ2ORaOE=;
+ b=qNWBDJ94FU15z5ETkIjDsfCCj1wuoHpqrz/GRK5qZh52Ql39atO5RilXs0jzOpCvVOEf
+ 3YDm3L4WzEsxTxIwf9FX1JeFWXEiOSPPsfe+VXdM24lJ+sXdiPPL68Oo+hdGfN+keA15
+ upipCVmSWjHS9bmvXzjq/DPEgajrm/cW/tMsmRZFiHCLyBLuKWJo2PEtES3dc3UO6T55
+ zhjdzrbAor4sHnSgUu5TbMcsrX51r8bwleaKhUVhR5fO+r38ngrP0qiz58dDoGlqT8yX
+ 57TWmgPegsN6zPLuV+fVmJbnFcSagUmTiBTdyZ1fvECdU3NV0elSjMgl97wpPvVHuNWT ng== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 343vaenp4s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Oct 2020 23:14:16 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FNAe0j112404;
+        Thu, 15 Oct 2020 23:14:16 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 343pw10ey0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Oct 2020 23:14:16 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09FNEEI8014291;
+        Thu, 15 Oct 2020 23:14:14 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Oct 2020 16:14:14 -0700
+Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
+ mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     David Hildenbrand <david@redhat.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Michal Privoznik <mprivozn@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>
+References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
+ <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
+ <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
+ <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
+ <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
+Message-ID: <c78634ee-0d6f-c98c-3c2a-8cb500c0ae47@oracle.com>
+Date:   Thu, 15 Oct 2020 16:14:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Ks+.aphHl8n1UOgOWU7GiJT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=2 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150151
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=2 spamscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Ks+.aphHl8n1UOgOWU7GiJT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/14/20 11:31 AM, Mike Kravetz wrote:
+> On 10/14/20 11:18 AM, David Hildenbrand wrote:
+> 
+> FWIW - I ran libhugetlbfs tests which do a bunch of hole punching
+> with (and without) hugetlb controller enabled and did not see this issue.
+> 
 
-Hi all,
+I took a closer look after running just the fallocate_stress test
+in libhugetlbfs.  Here are the cgroup counter values:
 
-On Tue, 6 Oct 2020 18:35:06 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->=20
-> Today's linux-next merge of the char-misc tree got a conflict in:
->=20
->   drivers/misc/ocxl/Kconfig
->=20
-> between commit:
->=20
->   dde6f18a8779 ("ocxl: Don't return trigger page when allocating an inter=
-rupt")
->=20
-> from the powerpc tree and commit:
->=20
->   4b53a3c72116 ("ocxl: fix kconfig dependency warning for OCXL")
->=20
-> from the char-misc tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc drivers/misc/ocxl/Kconfig
-> index 0d815b2a40b3,947294f6d7f4..000000000000
-> --- a/drivers/misc/ocxl/Kconfig
-> +++ b/drivers/misc/ocxl/Kconfig
-> @@@ -9,9 -9,8 +9,9 @@@ config OCXL_BAS
->  =20
->   config OCXL
->   	tristate "OpenCAPI coherent accelerator support"
->  -	depends on PPC_POWERNV && PCI && EEH && HOTPLUG_PCI_POWERNV
->  +	depends on PPC_POWERNV && PCI && EEH && PPC_XIVE_NATIVE
-> ++	depends on HOTPLUG_PCI_POWERNV
->   	select OCXL_BASE
-> - 	select HOTPLUG_PCI_POWERNV
->   	default m
->   	help
->   	  Select this option to enable the ocxl driver for Open
+hugetlb.2MB.failcnt 0
+hugetlb.2MB.limit_in_bytes 9223372036854771712
+hugetlb.2MB.max_usage_in_bytes 209715200
+hugetlb.2MB.rsvd.failcnt 0
+hugetlb.2MB.rsvd.limit_in_bytes 9223372036854771712
+hugetlb.2MB.rsvd.max_usage_in_bytes 601882624
+hugetlb.2MB.rsvd.usage_in_bytes 392167424
+hugetlb.2MB.usage_in_bytes 0
 
-This is now a conflict between the powerpc tree and Linus' tree.
+We did not hit the WARN_ON_ONCE(), but the 'rsvd.usage_in_bytes' value
+is not correct in that it should be zero.   No huge page reservations
+remain after the test.
 
---=20
-Cheers,
-Stephen Rothwell
+HugePages_Total:    1024
+HugePages_Free:     1024
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:         2097152 kB
 
---Sig_/Ks+.aphHl8n1UOgOWU7GiJT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+To try and better understand the reservation cgroup controller, I addded
+a few printks to the code.  While running fallocate_stress with the
+printks, I can consistently hit the WARN_ON_ONCE() due to the counter
+going negative.  Here are the cgroup counter values after such a run:
 
------BEGIN PGP SIGNATURE-----
+hugetlb.2MB.failcnt 0
+hugetlb.2MB.limit_in_bytes 9223372036854771712
+hugetlb.2MB.max_usage_in_bytes 209715200
+hugetlb.2MB.rsvd.failcnt 3
+hugetlb.2MB.rsvd.limit_in_bytes 9223372036854771712
+hugetlb.2MB.rsvd.max_usage_in_bytes 251658240
+hugetlb.2MB.rsvd.usage_in_bytes 18446744073487253504
+hugetlb.2MB.usage_in_bytes 0
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+I11YACgkQAVBC80lX
-0GxY9AgAosHo7vjQgJxRBniiUvTs53IzHJDCkNNL+1j9vfaVihhtYdUOkuJ0/4BE
-1inYmjVnPepEmMBNqUWx/0iy+G0Xnv4ST2ecxp1DS9fI62UiazeF3k3pDUZ6Uwgw
-o0IcujNgQW902xjB8BWvUhcQowvaNNx6ddYm3glZGtA5DgZyJ0hBG4Zug2yW+H9r
-YqTvYpWLAMf4KIMyt3dwNMFB1dacyWmSPmlV83uvmleLSBkKjmX3B9xt4oepQ3QR
-xG0MO054RF9xONL0Jprsb7jopalcz5H+9pDO/APyU32ovbeKZ20i/81Ypi+G76BQ
-laIosjGVKrhAKUJ4t4BHvLP2qD/mwA==
-=6yvo
------END PGP SIGNATURE-----
+Again, no reserved pages after the test.
 
---Sig_/Ks+.aphHl8n1UOgOWU7GiJT--
+HugePages_Total:    1024
+HugePages_Free:     1024
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:         2097152 kB
+
+I have some basic hugetlb hole punch functionality tests.  Running
+these on the kernel with added printk's does not cause any issues.
+In order to reproduce, I need to run fallocate_stress test which
+will cause hole punch to race with page fault.  Best guess at this
+time is that some of the error/race detection reservation back out
+code is not properly dealing with cgroup accounting.
+
+I'll take a look at this as well.
+-- 
+Mike Kravetz
