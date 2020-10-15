@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F4228EEE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9AE28EEDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388534AbgJOJAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388330AbgJOJAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:00:21 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 333E32222E;
-        Thu, 15 Oct 2020 09:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602752420;
-        bh=8g4rnJL50+RWuyiZ98/LTN/270KBeiyldVTlJZ8PqN8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BY6LeF5Ec7P7gfxWTqa3vTEhQ9Bp8a1SiyQ6ZdJMfUSaMrqGg1ieNvoH3crOjQie3
-         /iH7acH4OQTXL+PIre3vxL707+Futd4+AccwIDnKmpkxrWYmyt9zrexjBLRuaK5Tbs
-         UjzOHZ9NVqKwJsfn2d1+ZSTJh5HZtTiQw+YPz7OI=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [RFC PATCH v2 2/3] tracing: Update the stage 3 of trace event macro comment
-Date:   Thu, 15 Oct 2020 18:00:17 +0900
-Message-Id: <160275241674.115066.16421925783973307130.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160275239876.115066.10891356497426857018.stgit@devnote2>
-References: <160275239876.115066.10891356497426857018.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S2388428AbgJOI7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:59:41 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15295 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388315AbgJOI7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:59:41 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D4D048F5487FF12A17A7;
+        Thu, 15 Oct 2020 16:59:38 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 15 Oct 2020 16:59:30 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH drm/hisilicon v2 2/2] drm/hisilicon: Use the same style of variable type in hibmc_drm_drv
+Date:   Thu, 15 Oct 2020 17:00:17 +0800
+Message-ID: <1602752417-20598-3-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1602752417-20598-1-git-send-email-tiantao6@hisilicon.com>
+References: <1602752417-20598-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the comment of the 3rd stage of trace event macro
-expansion code. Now there are 2 macros makes different
-trace_raw_output_<call>() functions.
+Consistently Use the same style of variable type in hibmc_drm_drv.c and
+hibmc_drm_drv.h.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 ---
- include/trace/trace_events.h |   29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 13 ++++++-------
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  8 ++++----
+ 2 files changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
-index 4ad9abf465b0..a96301317842 100644
---- a/include/trace/trace_events.h
-+++ b/include/trace/trace_events.h
-@@ -231,9 +231,11 @@ TRACE_MAKE_SYSTEM_STR();
-  * {
-  *	struct trace_seq *s = &iter->seq;
-  *	struct trace_event_raw_<call> *field; <-- defined in stage 1
-- *	struct trace_entry *entry;
-  *	struct trace_seq *p = &iter->tmp_seq;
-- *	int ret;
-+ *
-+ * -------(for event)-------
-+ *
-+ *	struct trace_entry *entry;
-  *
-  *	entry = iter->ent;
-  *
-@@ -245,14 +247,23 @@ TRACE_MAKE_SYSTEM_STR();
-  *	field = (typeof(field))entry;
-  *
-  *	trace_seq_init(p);
-- *	ret = trace_seq_printf(s, "%s: ", <call>);
-- *	if (ret)
-- *		ret = trace_seq_printf(s, <TP_printk> "\n");
-- *	if (!ret)
-- *		return TRACE_TYPE_PARTIAL_LINE;
-+ *	return trace_output_call(iter, <call>, <TP_printk> "\n");
-  *
-- *	return TRACE_TYPE_HANDLED;
-- * }
-+ * ------(or, for event class)------
-+ *
-+ *	int ret;
-+ *
-+ *	field = (typeof(field))iter->ent;
-+ *
-+ *	ret = trace_raw_output_prep(iter, trace_event);
-+ *	if (ret != TRACE_TYPE_HANDLED)
-+ *		return ret;
-+ *
-+ *	trace_event_printf(iter, <TP_printk> "\n");
-+ *
-+ *	return trace_handle_return(s);
-+ * -------
-+ *  }
-  *
-  * This is the method used to print the raw event to the trace
-  * output format. Note, this is not needed if the data is read
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index 5632bce..0c1b40d 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -121,12 +121,11 @@ static void hibmc_kms_fini(struct hibmc_drm_private *priv)
+ /*
+  * It can operate in one of three modes: 0, 1 or Sleep.
+  */
+-void hibmc_set_power_mode(struct hibmc_drm_private *priv,
+-			  unsigned int power_mode)
++void hibmc_set_power_mode(struct hibmc_drm_private *priv, u32 power_mode)
+ {
+-	unsigned int control_value = 0;
++	u32 control_value = 0;
+ 	void __iomem   *mmio = priv->mmio;
+-	unsigned int input = 1;
++	u32 input = 1;
+ 
+ 	if (power_mode > HIBMC_PW_MODE_CTL_MODE_SLEEP)
+ 		return;
+@@ -144,8 +143,8 @@ void hibmc_set_power_mode(struct hibmc_drm_private *priv,
+ 
+ void hibmc_set_current_gate(struct hibmc_drm_private *priv, unsigned int gate)
+ {
+-	unsigned int gate_reg;
+-	unsigned int mode;
++	u32 gate_reg;
++	u32 mode;
+ 	void __iomem   *mmio = priv->mmio;
+ 
+ 	/* Get current power mode. */
+@@ -170,7 +169,7 @@ void hibmc_set_current_gate(struct hibmc_drm_private *priv, unsigned int gate)
+ 
+ static void hibmc_hw_config(struct hibmc_drm_private *priv)
+ {
+-	unsigned int reg;
++	u32 reg;
+ 
+ 	/* On hardware reset, power mode 0 is default. */
+ 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+index 6a63502..5c4030d 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+@@ -33,8 +33,8 @@ struct hibmc_drm_private {
+ 	/* hw */
+ 	void __iomem   *mmio;
+ 	void __iomem   *fb_map;
+-	unsigned long  fb_base;
+-	unsigned long  fb_size;
++	u64  fb_base;
++	u64  fb_size;
+ 
+ 	/* drm */
+ 	struct drm_device  *dev;
+@@ -56,9 +56,9 @@ static inline struct hibmc_drm_private *to_hibmc_drm_private(struct drm_device *
+ }
+ 
+ void hibmc_set_power_mode(struct hibmc_drm_private *priv,
+-			  unsigned int power_mode);
++			  u32 power_mode);
+ void hibmc_set_current_gate(struct hibmc_drm_private *priv,
+-			    unsigned int gate);
++			    u32 gate);
+ 
+ int hibmc_de_init(struct hibmc_drm_private *priv);
+ int hibmc_vdac_init(struct hibmc_drm_private *priv);
+-- 
+2.7.4
 
