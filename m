@@ -2,66 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D036228F336
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BD828F329
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgJONau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:30:50 -0400
-Received: from gate.crashing.org ([63.228.1.57]:40932 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726924AbgJONat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:30:49 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 09FDPETm032241;
-        Thu, 15 Oct 2020 08:25:14 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 09FDPDfF032230;
-        Thu, 15 Oct 2020 08:25:13 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 15 Oct 2020 08:25:12 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc: force inlining of csum_partial() to avoid multiple csum_partial() with GCC10
-Message-ID: <20201015132512.GG2672@gate.crashing.org>
-References: <a1d31f84ddb0926813b17fcd5cc7f3fa7b4deac2.1602759123.git.christophe.leroy@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1d31f84ddb0926813b17fcd5cc7f3fa7b4deac2.1602759123.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+        id S1729554AbgJON0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728216AbgJON0V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 09:26:21 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE5CC061755;
+        Thu, 15 Oct 2020 06:26:20 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e18so3456867wrw.9;
+        Thu, 15 Oct 2020 06:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vbVg16QrGKyvlMckDNn7Gc3nciHNv5GDTwM3pbpTXY0=;
+        b=sxyRa8oiLkOGh5khW9uyt4C/N1rfSh5E5GnzgOtuPTlJF9vh+poDXThSHdRMZgmNca
+         M7Momf8eX1CN0ezKJ4p7KIMfevKqKcG5zw/bhPZqHGf62PrAqxDkzIuHBoL3EaUqmLZM
+         3ryp28PiXOe8ApVwwawYhM3pEa/K8s9hYdXjOd5BSIlWPL8gTTL9m8CZQyTjz0j61YbP
+         Ac3oqCo0urF5XfrtJJqdhXLZat8966EmUzPp/oKQeI8C6XxOpeLO27+XDAGpfo751a29
+         cDMWcyzWFFqFV7a9jke1xUN3LT6FA6ZdX1Il8cqKkz1lvhrqSGQ9Nd/ZPQis73qBz5HH
+         tIyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vbVg16QrGKyvlMckDNn7Gc3nciHNv5GDTwM3pbpTXY0=;
+        b=fPw5O3H8JQ/F8WU5aj3JlMBCJpgfKwzy84ibsuoSeVRLySs7/eFfPwCsNV4AOLEOKU
+         JpdJsdZwhmXBMP1vJnM/855nwEFjTWWXj9QxMeatj3dtbbWzQWltv7PdkUIxVXjfhkoc
+         VEeJ2kUP+EDbMC3v+lOkEuwkKsXkZ5/ZvWsiefPiLi6iT6Hx2PksA4FVIZ++qroc0ivL
+         gGzc1dzDUtW01PGYOImRPbKeMGV/K2K5IfsmcOq+NvYSkfaXSWVQHr13y+OIA1zNUoA9
+         tfoA7gve7jNbEsxVyb1HQg0nucSrwUFYZsLydUt+IXhAs2lNCY9CI8pyPfOxP87iU1jh
+         P2jw==
+X-Gm-Message-State: AOAM533X4pNi0O+Y3qWwHQH8j6a4FEAfWEmxuP6IA+T+92fXVj86rxY7
+        tuIl+cOZGlIwV/M85osA8MM=
+X-Google-Smtp-Source: ABdhPJzkVhQlHr4psjqGHvJgXaBFBjQpUe8HpzLEiIam3P0cz3ZzpqDT4ckaobCUecVdBb41Fj4W1w==
+X-Received: by 2002:adf:dd50:: with SMTP id u16mr4575900wrm.419.1602768379590;
+        Thu, 15 Oct 2020 06:26:19 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id e25sm2431731wra.71.2020.10.15.06.26.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 06:26:18 -0700 (PDT)
+Subject: Re: [PATCH 1/2] futex: adjust a futex timeout with a per-timens
+ offset
+To:     Andrei Vagin <avagin@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org
+References: <20201015072909.271426-1-avagin@gmail.com>
+From:   Dmitry Safonov <0x7f454c46@gmail.com>
+Message-ID: <fc50656f-2df8-06c9-653a-8d2910949401@gmail.com>
+Date:   Thu, 15 Oct 2020 14:26:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201015072909.271426-1-avagin@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 10/15/20 8:29 AM, Andrei Vagin wrote:
+> For all commands except FUTEX_WAIT, timeout is interpreted as an
+> absolute value. This absolute value is inside the task's time namespace
+> and has to be converted to the host's time.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 5a590f35add9 ("posix-clocks: Wire up clock_gettime() with timens offsets")
+> Reported-by: Hans van der Laan <j.h.vanderlaan@student.utwente.nl>
+> Signed-off-by: Andrei Vagin <avagin@gmail.com>[..]
+> @@ -3797,6 +3798,8 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+>  		t = timespec64_to_ktime(ts);
+>  		if (cmd == FUTEX_WAIT)
+>  			t = ktime_add_safe(ktime_get(), t);
+> +		else if (!(cmd & FUTEX_CLOCK_REALTIME))
+> +			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
 
-On Thu, Oct 15, 2020 at 10:52:20AM +0000, Christophe Leroy wrote:
-> With gcc9 I get:
+Err, it probably should be
+: else if (!(op & FUTEX_CLOCK_REALTIME))
 
-<snip>
+And there's also
+: SYSCALL_DEFINE6(futex_time32, ...)
+which wants to be patched.
 
-> With gcc10 I get:
-
-<snip>
-
-> gcc10 defines multiple versions of csum_partial() which are just
-> an unconditionnal branch to __csum_partial().
-
-It doesn't inline it, yes.
-
-Could you open a GCC PR for this please?
-
-> To enforce inlining of that branch to __csum_partial(),
-> mark csum_partial() as __always_inline.
-
-That should be fine of course, but it would be good if we could fix this
-in the compiler :-)
-
-Reviewed-by: Segher Boessenkool  <segher@kernel.crashing.org>
-
-
-Segher
+Thanks,
+          Dmitry
