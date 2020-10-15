@@ -2,214 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EE328F8A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7614828F8B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730418AbgJOSbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:31:32 -0400
-Received: from mga01.intel.com ([192.55.52.88]:42034 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728820AbgJOSb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:31:29 -0400
-IronPort-SDR: p0cBwZyLkXtIVbCzscIBek4LtKi1PpcUOFjBj3UKZoFI7nASXdGDX2IwnjM/lG4jPSD0RUPlgJ
- YykJgomYjpMg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="183977312"
-X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
-   d="scan'208";a="183977312"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 11:31:28 -0700
-IronPort-SDR: 7GROFgBE4RCUigGB05d/0MNJRDcpjwBMp4DVTVwplIO3V8PkOlnsbghRcKmOUpz3ruAKKgNhWi
- h436yIC/KcPg==
-X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
-   d="scan'208";a="531365435"
-Received: from rdvivi-losangeles.jf.intel.com (HELO intel.com) ([10.165.21.201])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 11:31:28 -0700
-Date:   Thu, 15 Oct 2020 14:33:13 -0400
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     intel-gfx@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [Intel-gfx] [RFC v2 4/8] drm/i915/dp: Rename eDP VESA backlight
- interface functions
-Message-ID: <20201015183313.GD2616619@intel.com>
-References: <20200916171855.129511-1-lyude@redhat.com>
- <20200916171855.129511-5-lyude@redhat.com>
+        id S2387641AbgJOSeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:34:15 -0400
+Received: from outbound-smtp01.blacknight.com ([81.17.249.7]:58385 "EHLO
+        outbound-smtp01.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731154AbgJOSeO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:34:14 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 6E8EEC4A58
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 19:34:12 +0100 (IST)
+Received: (qmail 19352 invoked from network); 15 Oct 2020 18:34:12 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Oct 2020 18:34:12 -0000
+Date:   Thu, 15 Oct 2020 19:34:10 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org,
+        Len Brown <lenb@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        rafael@kernel.org, Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+Message-ID: <20201015183410.GU3227@techsingularity.net>
+References: <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+ <20201006190322.GL3227@techsingularity.net>
+ <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
+ <20201006211820.GN3227@techsingularity.net>
+ <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
+ <20201008090909.GP3227@techsingularity.net>
+ <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
+ <20201008173436.GQ3227@techsingularity.net>
+ <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
+ <20201014223703.GT3227@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20200916171855.129511-5-lyude@redhat.com>
+In-Reply-To: <20201014223703.GT3227@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:18:51PM -0400, Lyude Paul wrote:
-> Since we're about to add support for a second type of backlight control
-> interface over DP AUX (specifically, Intel's proprietary HDR backlight
-> controls) let's rename all of the current backlight hooks we have for
-> vesa to make it clear that they're specific to the VESA interface and
-> not Intel's.
+> Yes, it's well hidden but it's there. If the profile is made custom, then
+> the p-states can be selected and "custom" default enables C6 but not C3
+> (there is a note saying that it's not recommended for that CPU). If I
+> then switch it back to the normal profile, the c-states are not restored
+> so this is a one-way trip even if you disable the c-state in custom,
+> reboot, switch back, reboot. Same if the machine is reset to "optimal
+> default settings". Yey for BIOS developers.
 > 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Cc: thaytan@noraisin.net
-> Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+> This means I have a limited number of attempts to do something about
+> this. 2 machines can no longer reproduce the problem reliably.
+> 
 
-Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Turns out I didn't even have that. On another machine (same model,
+same cpu, different BIOS that cannot be updated), enabling the C6 state
+still did not enable it on boot and dmesg complained about CST not being
+usable. This is weird because one would expect that if CST was unusable
+that it would be the same as use_acpi == false.
 
-> ---
->  .../drm/i915/display/intel_dp_aux_backlight.c | 51 ++++++++++---------
->  1 file changed, 26 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index acbd7eb66cbe3..f601bcbe8ee46 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -25,7 +25,7 @@
->  #include "intel_display_types.h"
->  #include "intel_dp_aux_backlight.h"
->  
-> -static void set_aux_backlight_enable(struct intel_dp *intel_dp, bool enable)
-> +static void set_vesa_backlight_enable(struct intel_dp *intel_dp, bool enable)
->  {
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  	u8 reg_val = 0;
-> @@ -56,7 +56,7 @@ static void set_aux_backlight_enable(struct intel_dp *intel_dp, bool enable)
->   * Read the current backlight value from DPCD register(s) based
->   * on if 8-bit(MSB) or 16-bit(MSB and LSB) values are supported
->   */
-> -static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
-> +static u32 intel_dp_aux_vesa_get_backlight(struct intel_connector *connector)
->  {
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> @@ -99,7 +99,8 @@ static u32 intel_dp_aux_get_backlight(struct intel_connector *connector)
->   * 8-bit or 16 bit value (MSB and LSB)
->   */
->  static void
-> -intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 level)
-> +intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
-> +				u32 level)
->  {
->  	struct intel_connector *connector = to_intel_connector(conn_state->connector);
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> @@ -129,7 +130,7 @@ intel_dp_aux_set_backlight(const struct drm_connector_state *conn_state, u32 lev
->   * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
->   *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
->   */
-> -static bool intel_dp_aux_set_pwm_freq(struct intel_connector *connector)
-> +static bool intel_dp_aux_vesa_set_pwm_freq(struct intel_connector *connector)
->  {
->  	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> @@ -165,8 +166,8 @@ static bool intel_dp_aux_set_pwm_freq(struct intel_connector *connector)
->  	return true;
->  }
->  
-> -static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_state,
-> -					  const struct drm_connector_state *conn_state)
-> +static void intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
-> +					       const struct drm_connector_state *conn_state)
->  {
->  	struct intel_connector *connector = to_intel_connector(conn_state->connector);
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> @@ -206,7 +207,7 @@ static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_st
->  	}
->  
->  	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
-> -		if (intel_dp_aux_set_pwm_freq(connector))
-> +		if (intel_dp_aux_vesa_set_pwm_freq(connector))
->  			new_dpcd_buf |= DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE;
->  
->  	if (new_dpcd_buf != dpcd_buf) {
-> @@ -217,18 +218,18 @@ static void intel_dp_aux_enable_backlight(const struct intel_crtc_state *crtc_st
->  		}
->  	}
->  
-> -	intel_dp_aux_set_backlight(conn_state,
-> -				   connector->panel.backlight.level);
-> -	set_aux_backlight_enable(intel_dp, true);
-> +	intel_dp_aux_vesa_set_backlight(conn_state,
-> +					connector->panel.backlight.level);
-> +	set_vesa_backlight_enable(intel_dp, true);
->  }
->  
-> -static void intel_dp_aux_disable_backlight(const struct drm_connector_state *old_conn_state)
-> +static void intel_dp_aux_vesa_disable_backlight(const struct drm_connector_state *old_conn_state)
->  {
-> -	set_aux_backlight_enable(enc_to_intel_dp(to_intel_encoder(old_conn_state->best_encoder)),
-> -				 false);
-> +	set_vesa_backlight_enable(enc_to_intel_dp(to_intel_encoder(old_conn_state->best_encoder)),
-> +				  false);
->  }
->  
-> -static u32 intel_dp_aux_calc_max_backlight(struct intel_connector *connector)
-> +static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connector)
->  {
->  	struct drm_i915_private *i915 = to_i915(connector->base.dev);
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> @@ -308,24 +309,24 @@ static u32 intel_dp_aux_calc_max_backlight(struct intel_connector *connector)
->  	return max_backlight;
->  }
->  
-> -static int intel_dp_aux_setup_backlight(struct intel_connector *connector,
-> -					enum pipe pipe)
-> +static int intel_dp_aux_vesa_setup_backlight(struct intel_connector *connector,
-> +					     enum pipe pipe)
->  {
->  	struct intel_panel *panel = &connector->panel;
->  
-> -	panel->backlight.max = intel_dp_aux_calc_max_backlight(connector);
-> +	panel->backlight.max = intel_dp_aux_vesa_calc_max_backlight(connector);
->  	if (!panel->backlight.max)
->  		return -ENODEV;
->  
->  	panel->backlight.min = 0;
-> -	panel->backlight.level = intel_dp_aux_get_backlight(connector);
-> +	panel->backlight.level = intel_dp_aux_vesa_get_backlight(connector);
->  	panel->backlight.enabled = panel->backlight.level != 0;
->  
->  	return 0;
->  }
->  
->  static bool
-> -intel_dp_aux_display_control_capable(struct intel_connector *connector)
-> +intel_dp_aux_supports_vesa_backlight(struct intel_connector *connector)
->  {
->  	struct intel_dp *intel_dp = intel_attached_dp(connector);
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> @@ -349,7 +350,7 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->  
->  	if (i915->params.enable_dpcd_backlight == 0 ||
-> -	    !intel_dp_aux_display_control_capable(intel_connector))
-> +	    !intel_dp_aux_supports_vesa_backlight(intel_connector))
->  		return -ENODEV;
->  
->  	/*
-> @@ -371,11 +372,11 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *intel_connector)
->  		return -ENODEV;
->  	}
->  
-> -	panel->backlight.setup = intel_dp_aux_setup_backlight;
-> -	panel->backlight.enable = intel_dp_aux_enable_backlight;
-> -	panel->backlight.disable = intel_dp_aux_disable_backlight;
-> -	panel->backlight.set = intel_dp_aux_set_backlight;
-> -	panel->backlight.get = intel_dp_aux_get_backlight;
-> +	panel->backlight.setup = intel_dp_aux_vesa_setup_backlight;
-> +	panel->backlight.enable = intel_dp_aux_vesa_enable_backlight;
-> +	panel->backlight.disable = intel_dp_aux_vesa_disable_backlight;
-> +	panel->backlight.set = intel_dp_aux_vesa_set_backlight;
-> +	panel->backlight.get = intel_dp_aux_vesa_get_backlight;
->  
->  	return 0;
->  }
-> -- 
-> 2.26.2
-> 
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+This could potentially be if the ACPI tables are unsuitable due to bad
+bad FFH information for a lower c-state. If _CST is not found or usable,
+should acpi_state_table.count be reset to go back to the old behaviour?
+
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index 13600c403035..3b84f8631b40 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1261,6 +1261,7 @@ static bool intel_idle_acpi_cst_extract(void)
+ 		return true;
+ 	}
+ 
++	acpi_state_table.count = 0;
+ 	pr_debug("ACPI _CST not found or not usable\n");
+ 	return false;
+ }
+
+-- 
+Mel Gorman
+SUSE Labs
