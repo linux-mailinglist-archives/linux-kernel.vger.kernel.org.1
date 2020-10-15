@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F3928F61F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5134328F621
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389839AbgJOPuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:50:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59580 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389813AbgJOPuB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:50:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602777000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+KBQJxnzY9IJB92xwhkX7sURjnYMLbV8YEBAs4xU9Tg=;
-        b=iLvFBA73I2HiyCmNrrNj6LUrdfHAuCV5WtaUOtWUD/+IB4mbQtP2r9G9PTrBS1riMCIvun
-        FpLysMLV+sDnilEaXIci/+vQiGySE1BV3SsxPDB4kkWL3nxy6K+UilZk9kg4FSzOMlAApI
-        zU0sUhaeg1SQCO75HIJN3gGwJnwszvk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-sYJxVKzVPKWhB_A4sNAozQ-1; Thu, 15 Oct 2020 11:49:58 -0400
-X-MC-Unique: sYJxVKzVPKWhB_A4sNAozQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2389854AbgJOPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:50:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389841AbgJOPuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 11:50:04 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 166C8EC50A;
-        Thu, 15 Oct 2020 15:49:57 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4F93376670;
-        Thu, 15 Oct 2020 15:49:55 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 15 Oct 2020 17:49:56 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 17:49:54 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, tglx@linutronix.de,
-        Roman Gershman <romger@amazon.com>
-Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
-Message-ID: <20201015154953.GM24156@redhat.com>
-References: <20201015131701.511523-1-axboe@kernel.dk>
- <20201015131701.511523-6-axboe@kernel.dk>
+        by mail.kernel.org (Postfix) with ESMTPSA id 669F322277;
+        Thu, 15 Oct 2020 15:50:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602777003;
+        bh=XRMI92JnUmhkO7lwEb3LE0rFuRzG8lAhuG70iJ3oFCI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Rufs8Yrs4NpHKxTZRew6A1B4Klf2QtJCjgNIcOOltDU8L5AjkRgK7IxybbenHwFWH
+         8irlHZgbjbo5Q/QEpCmqnUYVenC1J7SGbaSQknuvjlfirRehb6Vsxf4oABpGjsW2GC
+         06KR7kKrgYlo9WBpjvt5oAjwuueQm/q1sXScm8K4=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kT5Vx-001QZ3-DG; Thu, 15 Oct 2020 16:50:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015131701.511523-6-axboe@kernel.dk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 15 Oct 2020 16:50:01 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>, Pavel Machek <pavel@ucw.cz>
+Cc:     kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: 5.10-rc0: build error in ipi.c
+In-Reply-To: <87imbba7qk.fsf@nanos.tec.linutronix.de>
+References: <20201015101222.GA32747@amd>
+ <87imbba7qk.fsf@nanos.tec.linutronix.de>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <3e6b7c98fd8221a7878aaaa6c1bf86f4@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, pavel@ucw.cz, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15, Jens Axboe wrote:
->
-> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+On 2020-10-15 15:23, Thomas Gleixner wrote:
+> On Thu, Oct 15 2020 at 12:12, Pavel Machek wrote:
+> 
+> Cc+ Marc
 
-Yes, but ...
+Thanks Thomas.
 
-> +static void task_work_notify_signal(struct task_struct *task)
-> +{
-> +#if defined(CONFIG_GENERIC_ENTRY) && defined(TIF_NOTIFY_SIGNAL)
+> 
+>> I'm getting build problems in 5.10-rc0 in config for n900. ARM board.
+>> 
+>> CONFIG_SMP=y
+>> CONFIG_SMP_ON_UP=y
 
-as long as defined(CONFIG_GENERIC_ENTRY) goes away ;)
+On its own, this doesn't break anything with multi_v7_defconfig.
 
-Thomas, I strongly, strongly disagree with you. But even if you are right
-and only CONFIG_GENERIC_ENTRY arches should use TIF_NOTIFY_SIGNAL, why should
-this series check CONFIG_GENERIC_ENTRY ?
+>> 
+>> 
+>>   CC      net/devres.o
+>>   kernel/irq/ipi.c: In function ‘irq_reserve_ipi’:
+>>   kernel/irq/ipi.c:84:9: error: implicit declaration of function
+>>   ‘__irq_domain_alloc_irqs’; did you mean ‘irq_domain_alloc_irqs’?
+>>   [-Werror=implicit-function-declaration]
+>>     virq = __irq_domain_alloc_irqs(domain, virq, nr_irqs,
+>>   NUMA_NO_NODE,
+>>            ^~~~~~~~~~~~~~~~~~~~~~~
+>> 	            irq_domain_alloc_irqs
+>> 		    cc1: some warnings being treated as errors
+>> 		    make[2]: *** [scripts/Makefile.build:283:
+>>   kernel/irq/ipi.o] Error 1
+> 
+> That probably comes from the ipi as irq rework for arm/arm64.
 
-You can simply nack the patch which adds TIF_NOTIFY_SIGNAL to
-arch/xxx/include/asm/thread_info.h.
+Most probably.
 
-Oleg.
+Pawel, can you please stash your config somewhere where I can get it?
 
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
