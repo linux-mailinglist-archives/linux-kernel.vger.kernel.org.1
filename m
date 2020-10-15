@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66E828EFE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184C728EFED
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389150AbgJOKMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389117AbgJOKMn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:12:43 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DFFC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J3ji+5AsJZECRfTC9svVX7xsQS+BptdVBIVyCA9ozO4=; b=bwcgStL5W3gVnKRTdg9E+rmYC/
-        3Gfn9otkknopnvUXFfNvN4TT595eXvPU1rdtZ6+XuMVovI7tBV1zxJMF7D4bPY2HPQJmvoXmrsp/+
-        c2Xvon+ug31BN8tBRMJJZ9YXpOEmiBmHtaVv9MS/zLwFRDOCdy8ULqx6tVHpq2WbnQf+joDUPt9Iz
-        LApeiRW76GNnKV3SGlRdN2n5QpddOaGJ8qNu4CqDMpkbnj9UOVSOx7bze6omUrQXKrodTQuov7gu1
-        kTvKj9eVIdiNp2mZKDA+xnSdlFEYyRTFlNrw07IeNe4rap3Gs/aeWznqvSnRmSGlL0NXrWvphEPku
-        vHOc9R1Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT0FS-0005bz-5U; Thu, 15 Oct 2020 10:12:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 08543300DB4;
-        Thu, 15 Oct 2020 12:12:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E7C1120325ECE; Thu, 15 Oct 2020 12:12:35 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 12:12:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
- task
-Message-ID: <20201015101235.GA2611@hirez.programming.kicks-ass.net>
-References: <20201007180151.623061463@redhat.com>
- <20201007180229.724302019@redhat.com>
- <20201008122256.GW2628@hirez.programming.kicks-ass.net>
- <20201008175409.GB14207@fuller.cnet>
- <20201008195444.GB86389@lothringen>
- <20201013171328.GA19284@fuller.cnet>
- <20201014083321.GA2628@hirez.programming.kicks-ass.net>
- <20201014234053.GA86158@lothringen>
+        id S2389172AbgJOKPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:15:04 -0400
+Received: from mga17.intel.com ([192.55.52.151]:43378 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389157AbgJOKPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:15:03 -0400
+IronPort-SDR: 2T8RAQbGZBmXnt/ZW47y4KaqB/ik75X7A8IXkx3p5apbgbfdIsOxua9j0X28k0t+DLACYgycKI
+ vH8SomUgalgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="146171328"
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="146171328"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 03:15:02 -0700
+IronPort-SDR: gIuTaUcZ5rGI0I8YaE4W4zyUUuTOiIJRuZffASIFJo5w36K4Jt3rbEa3FHFT8C1I7HNT7xYBAP
+ SKGtlf91RMWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="330749617"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.94]) ([10.237.72.94])
+  by orsmga002.jf.intel.com with ESMTP; 15 Oct 2020 03:15:01 -0700
+Subject: Re: [PATCH v2] mmc: sdhci: Use Auto CMD Auto Select only when v4_mode
+ is true
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201015174115.4cf2c19a@xhacker.debian>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <6f54fd08-8285-a50f-9e18-e4d854f7d559@intel.com>
+Date:   Thu, 15 Oct 2020 13:14:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014234053.GA86158@lothringen>
+In-Reply-To: <20201015174115.4cf2c19a@xhacker.debian>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 01:40:53AM +0200, Frederic Weisbecker wrote:
-> > re tick_nohz_task_switch() being placed wrong, it should probably be
-> > placed before finish_lock_switch(). Something like so.
-> > 
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index cf044580683c..5c92c959824f 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -4084,6 +4084,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
-> >  	vtime_task_switch(prev);
-> >  	perf_event_task_sched_in(prev, current);
-> >  	finish_task(prev);
-> > +	tick_nohz_task_switch();
-> >  	finish_lock_switch(rq);
-> >  	finish_arch_post_lock_switch();
-> >  	kcov_finish_switch(current);
-> > @@ -4121,7 +4122,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
-> >  		put_task_struct_rcu_user(prev);
-> >  	}
-> >  
-> > -	tick_nohz_task_switch();
+On 15/10/20 12:41 pm, Jisheng Zhang wrote:
+> sdhci-of-dwcmshc meets an eMMC read performance regression with below
+> command after commit 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto
+> Select support"):
 > 
-> IIRC, we wanted to keep it outside rq lock because it shouldn't it...
+> dd if=/dev/mmcblk0 of=/dev/null bs=8192 count=100000
+> 
+> Before the commit, the above command gives 120MB/s
+> After the commit, the above command gives 51.3 MB/s
+> 
+> So it looks like sdhci-of-dwcmshc expects Version 4 Mode for Auto
+> CMD Auto Select. Fix the performance degradation by ensuring v4_mode
+> is true to use Auto CMD Auto Select.
+> 
+> Fixes: 427b6514d095 ("mmc: sdhci: Add Auto CMD Auto Select support")
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-But now you've created a window with IRQs on and cause additional IRQ
-state changes.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-If you're really worried about rq->lock, I suppose we can do:
+> ---
+> Since v1:
+>   - add the performance degradation on sdhci-of-dwcmshc explanation in
+>     commit msg
+>   - add a comment in the code explaining we require Version 4 Mode because some
+>     controllers(e.g sdhci-of-dwcmshc) expect it that way.
+> 
+>  drivers/mmc/host/sdhci.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 592a55a34b58..3561ae8a481a 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -1384,9 +1384,11 @@ static inline void sdhci_auto_cmd_select(struct sdhci_host *host,
+>  	/*
+>  	 * In case of Version 4.10 or later, use of 'Auto CMD Auto
+>  	 * Select' is recommended rather than use of 'Auto CMD12
+> -	 * Enable' or 'Auto CMD23 Enable'.
+> +	 * Enable' or 'Auto CMD23 Enable'. We require Version 4 Mode
+> +	 * here because some controllers (e.g sdhci-of-dwmshc) expect it.
+>  	 */
+> -	if (host->version >= SDHCI_SPEC_410 && (use_cmd12 || use_cmd23)) {
+> +	if (host->version >= SDHCI_SPEC_410 && host->v4_mode &&
+> +	    (use_cmd12 || use_cmd23)) {
+>  		*mode |= SDHCI_TRNS_AUTO_SEL;
+>  
+>  		ctrl2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+> 
 
-	rq_unlock(rq->lock);
-	tick_nohz_task_switch();
-	local_irq_enable();
-
-(much like we do at the beginning of __schedule for RCU)
