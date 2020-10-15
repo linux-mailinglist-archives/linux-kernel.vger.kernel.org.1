@@ -2,203 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE5328EC39
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D03828EC3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728636AbgJOE0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        id S1728959AbgJOE05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 00:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOE0t (ORCPT
+        with ESMTP id S1725208AbgJOE0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:26:49 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60824C061755;
-        Wed, 14 Oct 2020 21:26:49 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k8so1216625pfk.2;
-        Wed, 14 Oct 2020 21:26:49 -0700 (PDT)
+        Thu, 15 Oct 2020 00:26:53 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6D9C061755;
+        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o7so953390pgv.6;
+        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=KmLWiTcOmmjLTrrn22jVJ7/COvI0q5pT3DXtKHVvFIE=;
-        b=ijgJr+7FId4/CSIH0DhfVqvliBZfLgMpxavEJhtmQyKe9XhvGbVbvKBvUQYqiJMn7m
-         qm+7+49Dxk4/H93QEbq8xiavqCI+D69P58TdgaO5nTnymMNpfJLXpADSOtLDHNEyP6yo
-         XW86eNoxcWAyIKXjxAkKXuoElVXnLZw0bHTWLtU8N4el9qiyzZipm5DJH6+HNG8nuYYL
-         Tl/46pz7XAdDDIeyDvVCa5XHrClmKjCuZ2GtrB8wvqiHaOh64Lx+mbVq03v2EJzxLeuG
-         5f2okgLxmC7/FfB4KQyg0jceESNdLFqg2GE8BmsGC5GX97UdYE2ce5iFso207Tl8BU5N
-         zaNw==
+        bh=iNHVFd5PlmYNkQaZe4PpF7uyhE4h5AcVhJcsViTjG4s=;
+        b=mkrqoz3vvDN/NMvvhVzk3DaTdtwjh8PG2ub0JPFYkF6/Jrxiy+XvCBt9WGb5dW+2UF
+         UAkFTaLyrwC3kuuKbVrM5QzCHn8l/VZ7D9J2EjjtxFshy3RZTEQVKchrCE1s87LB9QBo
+         VdruAwYXBzttt/EvywxQg55de302N6nvGE50UK8+gBub4GiPwmIRTVJ0nVxxwDPrB6tc
+         4Wm/AMoN/hUgaVCtpGNHmVKjooRvSsFlzqvtxJhBQT87xGQCroPDJPwJb8yKK+39AOzZ
+         JSpBlS7+z8aNWmFwTWuNPyVYI/eEoG/8omjZVJG3BWglDc3GTfdSnY2tzz5HN7t4hGXI
+         hY+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KmLWiTcOmmjLTrrn22jVJ7/COvI0q5pT3DXtKHVvFIE=;
-        b=F9RZll/Vy1LME86mOWKVuRHWzmzM3kshBmaX1bDpH+7ZtOe/RVhqgeueCT2y4dAywj
-         gIfbtxEXWhI1BTBEd9w4C7OOXuxhcFO04lvjoEidb9MX7ICWyvzuIIcTr/SPsakFjHHF
-         Zh18TkBA8QNBadBe9Spm949V5H0RokvquDw8UPuQ8PMtc+5t54bU9I8gkoPM5FIfyl2T
-         qonhVUxspkLHYx2utrJxWhL34DHfu9bPEMpq7jUfaQauDCSgqcgNu2X/y3ryRDOaq7X+
-         uUEcVDc15dJTuNVYMBZ+d6HEqO6jcVuY2RCEzZeJCtUq0LBYHnP6tcL08RKsnkY3c3ia
-         EiYA==
-X-Gm-Message-State: AOAM531WjU7HQrskBckzWFbrTbOzcdT63JUxjGZWZowm+x5RqUrSnB4N
-        kdOu5TPQyhv9I1q29N0ixfw=
-X-Google-Smtp-Source: ABdhPJzQF0FlImqo4paPN4ynz906WpQe7uA64b1AAfdEzPEr6qnDf5YDXl1m1JHv91i5TplUdvqpLA==
-X-Received: by 2002:a63:df42:: with SMTP id h2mr1927869pgj.239.1602736008980;
-        Wed, 14 Oct 2020 21:26:48 -0700 (PDT)
+        bh=iNHVFd5PlmYNkQaZe4PpF7uyhE4h5AcVhJcsViTjG4s=;
+        b=AUfQDJyVRSPZGXN4mU8zeNMnhPeMc/8JbRcyetxFzZitSj6RZAzMZcefE9iA6ie94n
+         MAAZ5hlP2/hGb6Fz+YAD8ncfumfP6jhq3PNZOh1Q/fiS3nGfc2m50FbSlkqYbZIPkXHn
+         S8kwPkBkT7i4gxIoVJSuou9EmOSS7U0PA3dZvMfXbWcvTyfTxFV3DTLn4NCZU2lz2n8P
+         19Ml/Pkfrr6LMq6PgiqHNr+zs98HG0PIrWTodCN8IRUsPuZBzlfUXvR9u7EpW08u5bt0
+         usFYfvJNX2hee9PaSWPeoGBcv1t1OSK1UaKeY8zkPhAWkswmGkwLXb/8Q+TZJl3VBr8p
+         vPkQ==
+X-Gm-Message-State: AOAM5323nSS+nSeSHBH6yC3Gw9gvxXxEMpnFq5W7A6PtSuTLTgSgyJ6D
+        HB+ISMeaKLWcIDBsrKAEiGE=
+X-Google-Smtp-Source: ABdhPJx+azL3ac6FwTk5uZqWdTaTc/lgmXZS7FZPyYt5I7pOC7d4UxouNE32nRvJZEVgyR4JlJUelg==
+X-Received: by 2002:aa7:9a4a:0:b029:155:323e:adae with SMTP id x10-20020aa79a4a0000b0290155323eadaemr2407909pfj.70.1602736012489;
+        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
 Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id g14sm1346060pfo.17.2020.10.14.21.26.47
+        by smtp.gmail.com with ESMTPSA id e4sm1230371pgg.37.2020.10.14.21.26.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 21:26:48 -0700 (PDT)
+        Wed, 14 Oct 2020 21:26:52 -0700 (PDT)
 From:   Coiby Xu <coiby.xu@gmail.com>
 X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 15 Oct 2020 12:22:08 +0800
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     devel@driverdev.osuosl.org,
+Date:   Thu, 15 Oct 2020 12:26:28 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
         Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Manish Chopra <manishc@marvell.com>,
         "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
         <GR-Linux-NIC-Dev@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 2/7] staging: qlge: Initialize devlink health dump
- framework
-Message-ID: <20201015042208.otne7sizy2bj2on6@Rk>
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/7] staging: qlge: replace ql_* with qlge_* to avoid
+ namespace clashes with other qlogic drivers
+Message-ID: <20201015042628.42evgens2z47x3d6@Rk>
 References: <20201014104306.63756-1-coiby.xu@gmail.com>
- <20201014104306.63756-3-coiby.xu@gmail.com>
- <20201014130846.GU1042@kadam>
+ <20201014104306.63756-2-coiby.xu@gmail.com>
+ <20201015010136.GB31835@f3>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20201014130846.GU1042@kadam>
+In-Reply-To: <20201015010136.GB31835@f3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 04:08:46PM +0300, Dan Carpenter wrote:
->On Wed, Oct 14, 2020 at 06:43:01PM +0800, Coiby Xu wrote:
->>  static int qlge_probe(struct pci_dev *pdev,
->>  		      const struct pci_device_id *pci_entry)
->>  {
->>  	struct net_device *ndev = NULL;
->>  	struct qlge_adapter *qdev = NULL;
->> +	struct devlink *devlink;
->>  	static int cards_found;
->>  	int err = 0;
+On Thu, Oct 15, 2020 at 10:01:36AM +0900, Benjamin Poirier wrote:
+>On 2020-10-14 18:43 +0800, Coiby Xu wrote:
+>> To avoid namespace clashes with other qlogic drivers and also for the
+>> sake of naming consistency, use the "qlge_" prefix as suggested in
+>> drivers/staging/qlge/TODO.
 >>
->> -	ndev = alloc_etherdev_mq(sizeof(struct qlge_adapter),
->> +	devlink = devlink_alloc(&qlge_devlink_ops, sizeof(struct qlge_adapter));
->> +	if (!devlink)
->> +		return -ENOMEM;
->> +
->> +	qdev = devlink_priv(devlink);
->> +
->> +	ndev = alloc_etherdev_mq(sizeof(struct qlge_netdev_priv),
->>  				 min(MAX_CPUS,
->>  				     netif_get_num_default_rss_queues()));
->>  	if (!ndev)
->> -		return -ENOMEM;
->> +		goto devlink_free;
+>> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+>> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+>> ---
+>>  drivers/staging/qlge/TODO           |    4 -
+>>  drivers/staging/qlge/qlge.h         |  190 ++--
+>>  drivers/staging/qlge/qlge_dbg.c     | 1073 ++++++++++++-----------
+>>  drivers/staging/qlge/qlge_ethtool.c |  231 ++---
+>>  drivers/staging/qlge/qlge_main.c    | 1257 +++++++++++++--------------
+>>  drivers/staging/qlge/qlge_mpi.c     |  352 ++++----
+>>  6 files changed, 1551 insertions(+), 1556 deletions(-)
 >>
->> -	err = qlge_init_device(pdev, ndev, cards_found);
->> -	if (err < 0) {
->> -		free_netdev(ndev);
->> -		return err;
+>> diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
+>> index f93f7428f5d5..5ac55664c3e2 100644
+>> --- a/drivers/staging/qlge/TODO
+>> +++ b/drivers/staging/qlge/TODO
+>> @@ -28,10 +28,6 @@
+>>  * the driver has a habit of using runtime checks where compile time checks are
+>>    possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
+>>  * reorder struct members to avoid holes if it doesn't impact performance
+>> -* in terms of namespace, the driver uses either qlge_, ql_ (used by
+>> -  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
+>> -  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
+>> -  prefix.
 >
->In the old code, if qlge_init_device() fails then it frees "ndev".
+>You only renamed ql -> qlge. The prefix needs to be added where there is
+>currently none like the second example of that text.
 >
->> -	}
->> +	qdev->ndev = ndev;
->> +	err = qlge_init_device(pdev, qdev, cards_found);
->> +	if (err < 0)
->> +		goto devlink_free;
->
->But the patch introduces a new resource leak.
+Thank you for reminding me of the second example!
 
-Thank you for spotting this issue!
+>Besides, the next patch reintroduces the name struct ql_adapter.
 
->
->>
->> -	qdev = netdev_priv(ndev);
->>  	SET_NETDEV_DEV(ndev, &pdev->dev);
->>  	ndev->hw_features = NETIF_F_SG |
->>  		NETIF_F_IP_CSUM |
->> @@ -4611,8 +4619,14 @@ static int qlge_probe(struct pci_dev *pdev,
->>  		qlge_release_all(pdev);
->>  		pci_disable_device(pdev);
->>  		free_netdev(ndev);
->> -		return err;
->> +		goto devlink_free;
->>  	}
->> +
->> +	err = devlink_register(devlink, &pdev->dev);
->> +	if (err)
->> +		goto devlink_free;
->> +
->> +	qlge_health_create_reporters(qdev);
->>  	/* Start up the timer to trigger EEH if
->>  	 * the bus goes dead
->>  	 */
->> @@ -4623,6 +4637,10 @@ static int qlge_probe(struct pci_dev *pdev,
->>  	atomic_set(&qdev->lb_count, 0);
->>  	cards_found++;
->>  	return 0;
->> +
->> +devlink_free:
->> +	devlink_free(devlink);
->> +	return err;
->>  }
->
->The best way to write error handling code is keep tracke of the most
->recent allocation which was allocated successfully.
->
->	one = alloc();
->	if (!one)
->		return -ENOMEM;  //  <-- nothing allocated successfully
->
->	two = alloc();
->	if (!two) {
->		ret = -ENOMEM;
->		goto free_one; // <-- one was allocated successfully
->                               // Notice that the label name says what
->			       // the goto does.
->	}
->
->	three = alloc();
->	if (!three) {
->		ret = -ENOMEM;
->		goto free_two; // <-- two allocated, two freed.
->	}
->
->	...
->
->	return 0;
->
->free_two:
->	free(two);
->free_one:
->	free(one);
->
->	return ret;
->
-Thank you for teaching me this pattern!
-
->In the old code qlge_probe() freed things before returning, and that's
->fine if there is only two allocations in the function but when there are
->three or more allocations, then use gotos to unwind.
->
->Ideally there would be a ql_deinit_device() function to mirror the
->ql_init_device() function.  The ql_init_device() is staging quality
->code with leaks and bad label names.  It should be re-written to free
->things one step at a time instead of calling ql_release_all().
->
-I'll see how I can improve ql_init_device. Thank you for the suggestion!
-
->Anyway, let's not introduce new leaks at least.
->
->regards,
->dan carpenter
+Oh, there is still a left-over ql_adapter in qlge.h (I renamed ql->qlge
+after initializing the devlink framework earlier but did a git rebase
+to make the order of the changes more reasonable). Thank you for the
+reminding!
 
 --
 Best regards,
