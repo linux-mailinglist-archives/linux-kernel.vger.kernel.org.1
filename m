@@ -2,179 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1D628F0BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414FB28F0A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731309AbgJOLKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        id S1729554AbgJOLGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728844AbgJOLK0 (ORCPT
+        with ESMTP id S1726144AbgJOLGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:10:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D82C0613DC
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=o4opdKENuLgTNdnE27byzUzkmgr/fIhkR2CPuwh+4/g=; b=lTjCJkNQ2QPX33r//NzwgvS4cn
-        sohv5BohOY5X4HR0pQJAvozkh6e5VrmYGunNUv5+VLPdPRBY4IdxzaBfvG27G62jLKAvTnpYyGzzk
-        a7Smx3XkMl5WSH+d6LKVCbEj1PYB5fTv/uuuV9qAacbTpBJhvzw72FplEzNk5m8d6g2ULfrvCa5l7
-        Xz1TNIVV1M1i7CrJ77kKhsgxAY6JunnMsrN+K/xruqiW5K0ekw42ReUJ2KMsmBv4wdPQDL8S/facJ
-        ySo03jBSao2pljNOnRTDIiZJEMWJ153EOiVKSax70+NN5jlg32v+wqGAcp8bwOUcuAOyqpN6ySYIA
-        93+Q/6Ng==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT18e-0002Oa-N0; Thu, 15 Oct 2020 11:09:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1F764307976;
-        Thu, 15 Oct 2020 13:09:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B9D06235F4456; Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
-Message-ID: <20201015110924.459860506@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 15 Oct 2020 13:05:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
-        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
-        ouwen210@hotmail.com
-Subject: [PATCH v3 19/19] sched: Comment affine_move_task()
-References: <20201015110532.738127234@infradead.org>
+        Thu, 15 Oct 2020 07:06:14 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2EBC061755;
+        Thu, 15 Oct 2020 04:06:12 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ds1so1626715pjb.5;
+        Thu, 15 Oct 2020 04:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3agPMtqAij1qga3Qozc4HBm1uOcDmeRGeVCYjoCjyCc=;
+        b=pLOQ8l/K7RgbgufocZ1NX2e0Ob/lMxvs2pThx5xdcjy7ggXY/fm1e+RWG1WbuqJkOE
+         f8bmhjW7x9DYWEeuLbn0nX1VhyNcPQH9XgIPweNJT2mTBgRqTa7mWwzkQ8tFtfO3OmQr
+         tqavvNlCC+yizHYNa7H4taKHnwHAUHEytGfa9CSr6ZQz9uWmBS4TXLYLQWnPGUWkQSpd
+         XCoLRKJIIBrLbxTaQTX7i9qMT4Gvayv8uQUzbTsyy3G3dFHaWWsV5OkbnfOSsi+B1iaH
+         VFTJd2/RQaYMMI2bAnITzJcZ+20h5A5lDoxxPBtC8S4zuwe1JtEkyXeXoxXmVISsOh6s
+         Tbmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3agPMtqAij1qga3Qozc4HBm1uOcDmeRGeVCYjoCjyCc=;
+        b=NJq4IGjOIVY8QMkEN2x/l7NCjgqCm1HDwAuXQlkGAuSoO6OZah2b/BpDBcq/gk1RXm
+         b7jaEXOWayU0beFLTsAqqg51e9idnwZ2tEiJT9Zd9yv2Eegw/UNMmw++SCERzyGJrFhK
+         zYfB4YMbr2LE2UOsC1A/7QZh/x0062SkwEpIK0sZ/l9gJ4nci29O6fyTK4fETKVhXd3q
+         eEPSG6G6RYCbP29EWRQBxiwviYYza7Z4hlmqtsuWCa6jWV25XdRyCCFgKXuSswpHd6xk
+         0X/9fk2US+V7K77TQrfa8iGcMWdSN2ud28QhchbN427W8KMpSELeZGmA8vHokrxXLdEr
+         uTIg==
+X-Gm-Message-State: AOAM532yFAe0DCnS9NaTt1pqPSkf5MT3widv4m0tNEasPp941ccpL+LG
+        0ggxx/6zEepd52VMZF0Ds8A=
+X-Google-Smtp-Source: ABdhPJzWgXIZMNd4WB1mQHIPBb1vFqXu9LmmgWEvLfa6xvXx7x5G6+/sLIRGlqorcO1F8OGG/+w0LA==
+X-Received: by 2002:a17:90b:ed3:: with SMTP id gz19mr3852073pjb.53.1602759972000;
+        Thu, 15 Oct 2020 04:06:12 -0700 (PDT)
+Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
+        by smtp.gmail.com with ESMTPSA id n203sm3253627pfd.81.2020.10.15.04.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 04:06:10 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 20:06:06 +0900
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v1 1/6] staging: qlge: Initialize devlink health dump
+ framework for the dlge driver
+Message-ID: <20201015110606.GA52981@f3>
+References: <20201008115808.91850-1-coiby.xu@gmail.com>
+ <20201008115808.91850-2-coiby.xu@gmail.com>
+ <20201010073514.GA14495@f3>
+ <20201010102416.hvbgx3mgyadmu6ui@Rk>
+ <20201010134855.GB17351@f3>
+ <20201012112406.6mxta2mapifkbeyw@Rk>
+ <20201013003704.GA41031@f3>
+ <20201015033732.qaihehernm2jzoln@Rk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015033732.qaihehernm2jzoln@Rk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Schneider <valentin.schneider@arm.com>
+On 2020-10-15 11:37 +0800, Coiby Xu wrote:
+> On Tue, Oct 13, 2020 at 09:37:04AM +0900, Benjamin Poirier wrote:
+> > On 2020-10-12 19:24 +0800, Coiby Xu wrote:
+> > [...]
+> > > > I think, but didn't check in depth, that in those drivers, the devlink
+> > > > device is tied to the pci device and can exist independently of the
+> > > > netdev, at least in principle.
+> > > >
+> > > You are right. Take drivers/net/ethernet/mellanox/mlxsw as an example,
+> > > devlink reload would first first unregister_netdev and then
+> > > register_netdev but struct devlink stays put. But I have yet to
+> > > understand when unregister/register_netdev is needed.
+> > 
+> > Maybe it can be useful to manually recover if the hardware or driver
+> > gets in an erroneous state. I've used `modprobe -r qlge && modprobe
+> > qlge` for the same in the past.
+> 
+> Thank you for providing this user case!
+> > 
+> > > Do we need to
+> > > add "devlink reload" for qlge?
+> > 
+> > Not for this patchset. That would be a new feature.
+> 
+> To implement this feature, it seems I need to understand how qlge work
+> under the hood. For example, what's the difference between
+> qlge_soft_reset_mpi_risc and qlge_hard_reset_mpi_risc? Or should we use
+> a brute-force way like do the tasks in qlge_remove and then re-do the
+> tasks in qlge_probe?
 
+I don't know. Like I've said before, I'd recommend testing on actual
+hardware. I don't have access to it anymore.
 
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201013140116.26651-2-valentin.schneider@arm.com
----
- kernel/sched/core.c |   81 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 79 insertions(+), 2 deletions(-)
+> Is a hardware reference manual for qlge device?
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2028,7 +2028,75 @@ struct set_affinity_pending {
- };
- 
- /*
-- * This function is wildly self concurrent, consider at least 3 times.
-+ * This function is wildly self concurrent; here be dragons.
-+ *
-+ *
-+ * When given a valid mask, __set_cpus_allowed_ptr() must block until the
-+ * designated task is enqueued on an allowed CPU. If that task is currently
-+ * running, we have to kick it out using the CPU stopper.
-+ *
-+ * Migrate-Disable comes along and tramples all over our nice sandcastle.
-+ * Consider:
-+ *
-+ *     Initial conditions: P0->cpus_mask = [0, 1]
-+ *
-+ *     P0@CPU0                  P1
-+ *
-+ *     migrate_disable();
-+ *     <preempted>
-+ *                              set_cpus_allowed_ptr(P0, [1]);
-+ *
-+ * P1 *cannot* return from this set_cpus_allowed_ptr() call until P0 executes
-+ * its outermost migrate_enable() (i.e. it exits its Migrate-Disable region).
-+ * This means we need the following scheme:
-+ *
-+ *     P0@CPU0                  P1
-+ *
-+ *     migrate_disable();
-+ *     <preempted>
-+ *                              set_cpus_allowed_ptr(P0, [1]);
-+ *                                <blocks>
-+ *     <resumes>
-+ *     migrate_enable();
-+ *       __set_cpus_allowed_ptr();
-+ *       <wakes local stopper>
-+ *                         `--> <woken on migration completion>
-+ *
-+ * Now the fun stuff: there may be several P1-like tasks, i.e. multiple
-+ * concurrent set_cpus_allowed_ptr(P0, [*]) calls. CPU affinity changes of any
-+ * task p are serialized by p->pi_lock, which we can leverage: the one that
-+ * should come into effect at the end of the Migrate-Disable region is the last
-+ * one. This means we only need to track a single cpumask (i.e. p->cpus_mask),
-+ * but we still need to properly signal those waiting tasks at the appropriate
-+ * moment.
-+ *
-+ * This is implemented using struct set_affinity_pending. The first
-+ * __set_cpus_allowed_ptr() caller within a given Migrate-Disable region will
-+ * setup an instance of that struct and install it on the targeted task_struct.
-+ * Any and all further callers will reuse that instance. Those then wait for
-+ * a completion signaled at the tail of the CPU stopper callback (1), triggered
-+ * on the end of the Migrate-Disable region (i.e. outermost migrate_enable()).
-+ *
-+ *
-+ * (1) In the cases covered above. There is one more where the completion is
-+ * signaled within affine_move_task() itself: when a subsequent affinity request
-+ * cancels the need for an active migration. Consider:
-+ *
-+ *     Initial conditions: P0->cpus_mask = [0, 1]
-+ *
-+ *     P0@CPU0            P1                             P2
-+ *
-+ *     migrate_disable();
-+ *     <preempted>
-+ *                        set_cpus_allowed_ptr(P0, [1]);
-+ *                          <blocks>
-+ *                                                       set_cpus_allowed_ptr(P0, [0, 1]);
-+ *                                                         <signal completion>
-+ *                          <awakes>
-+ *
-+ * Note that the above is safe vs a concurrent migrate_enable(), as any
-+ * pending affinity completion is preceded an uninstallion of
-+ * p->migration_pending done with p->pi_lock held.
-  */
- static int affine_move_task(struct rq *rq, struct rq_flags *rf,
- 			    struct task_struct *p, int dest_cpu, unsigned int flags)
-@@ -2071,6 +2139,7 @@ static int affine_move_task(struct rq *r
- 	if (!(flags & SCA_MIGRATE_ENABLE)) {
- 		/* serialized by p->pi_lock */
- 		if (!p->migration_pending) {
-+			/* Install the request */
- 			refcount_set(&my_pending.refs, 1);
- 			init_completion(&my_pending.done);
- 			p->migration_pending = &my_pending;
-@@ -2109,7 +2178,11 @@ static int affine_move_task(struct rq *r
- 	}
- 
- 	if (task_running(rq, p) || p->state == TASK_WAKING) {
--
-+		/*
-+		 * Lessen races (and headaches) by delegating
-+		 * is_migration_disabled(p) checks to the stopper, which will
-+		 * run on the same CPU as said p.
-+		 */
- 		task_rq_unlock(rq, p, rf);
- 		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
- 
-@@ -2134,6 +2207,10 @@ static int affine_move_task(struct rq *r
- 	if (refcount_dec_and_test(&pending->refs))
- 		wake_up_var(&pending->refs);
- 
-+	/*
-+	 * Block the original owner of &pending until all subsequent callers
-+	 * have seen the completion and decremented the refcount
-+	 */
- 	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
- 
- 	return 0;
+I've never gotten access to one.
 
+The only noteworthy thing from Qlogic that I know of is the firmware
+update:
+http://driverdownloads.qlogic.com/QLogicDriverDownloads_UI/SearchByProduct.aspx?ProductCategory=322&Product=1104&Os=190
 
+It did fix some weird behavior when I applied it so I'd recommend doing
+the same if you get an adapter.
