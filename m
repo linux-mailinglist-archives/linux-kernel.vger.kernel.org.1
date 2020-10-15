@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE8928F815
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EDC28F819
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732724AbgJOSDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:03:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
+        id S1732856AbgJOSES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:04:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728460AbgJOSDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:03:48 -0400
-Received: from gaia (unknown [95.149.105.49])
+        id S1726147AbgJOSER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:04:17 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DCEC820797;
-        Thu, 15 Oct 2020 18:03:43 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 19:03:41 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Hanjun Guo <guohanjun@huawei.com>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        robh+dt@kernel.org, hch@lst.de, ardb@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, robin.murphy@arm.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 7/8] arm64: mm: Set ZONE_DMA size based on early IORT
- scan
-Message-ID: <20201015180340.GB2624@gaia>
-References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
- <20201014191211.27029-8-nsaenzjulienne@suse.de>
- <1a3df60a-4568-cb72-db62-36127d0ffb7e@huawei.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id E175720797;
+        Thu, 15 Oct 2020 18:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602785056;
+        bh=p+alG96VqUHzWl/iQOrip1ok4bKiK0HcnG43T8fhhoA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SJuoRfy0QJPz03+HW9k8/hBgyICGcRUzaf6H5MAk04x8J8qNw347acMyl8IYgQcMl
+         krZ7KvhGBcNBuT/HMQSRakPWnKwJU/OZvnIxpoMVK7J/69RFelISG5U4CCvRsv0NDw
+         4UHUH0lZKmTwVGpYLr3BWkkdhdtTVNACkC/gQQC4=
+Date:   Thu, 15 Oct 2020 11:04:14 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: bpf-next test error: BUG: program execution failed: executor 0:
+ exit status 67
+Message-ID: <20201015110409.66a8a054@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201015110203.7cffc1d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <000000000000376ecf05b1b92848@google.com>
+        <CACT4Y+aTPCPRtJ2wJ5P58DijtG2pxXtZm6w=C838YKLKCEdSfw@mail.gmail.com>
+        <20201015110203.7cffc1d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1a3df60a-4568-cb72-db62-36127d0ffb7e@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 10:26:18PM +0800, Hanjun Guo wrote:
-> On 2020/10/15 3:12, Nicolas Saenz Julienne wrote:
-> > From: Ard Biesheuvel <ardb@kernel.org>
+On Thu, 15 Oct 2020 11:02:08 -0700 Jakub Kicinski wrote:
+> On Thu, 15 Oct 2020 19:46:35 +0200 Dmitry Vyukov wrote:
+> > On Thu, Oct 15, 2020 at 7:41 PM syzbot
+> > <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com> wrote:  
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    e688c3db bpf: Fix register equivalence tracking.
+> > > git tree:       bpf-next
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=13d3c678500000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ea7dc57e899da16d
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=5609d37b3a926aad75b7
+> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com
+> > >
+> > > executing program
+> > > 2020/10/15 14:32:51 BUG: program execution failed: executor 0: exit status 67
+> > > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
+> > > loop exited with status 67
+> > >
+> > > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
+> > > loop exited with status 67    
 > > 
-> > We recently introduced a 1 GB sized ZONE_DMA to cater for platforms
-> > incorporating masters that can address less than 32 bits of DMA, in
-> > particular the Raspberry Pi 4, which has 4 or 8 GB of DRAM, but has
-> > peripherals that can only address up to 1 GB (and its PCIe host
-> > bridge can only access the bottom 3 GB)
+> > +netfilter maintainers
 > > 
-> > Instructing the DMA layer about these limitations is straight-forward,
-> > even though we had to fix some issues regarding memory limits set in
-> > the IORT for named components, and regarding the handling of ACPI _DMA
-> > methods. However, the DMA layer also needs to be able to allocate
-> > memory that is guaranteed to meet those DMA constraints, for bounce
-> > buffering as well as allocating the backing for consistent mappings.
-> > 
-> > This is why the 1 GB ZONE_DMA was introduced recently. Unfortunately,
-> > it turns out the having a 1 GB ZONE_DMA as well as a ZONE_DMA32 causes
-> > problems with kdump, and potentially in other places where allocations
-> > cannot cross zone boundaries. Therefore, we should avoid having two
-> > separate DMA zones when possible.
-> > 
-> > So let's do an early scan of the IORT, and only create the ZONE_DMA
-> > if we encounter any devices that need it. This puts the burden on
-> > the firmware to describe such limitations in the IORT, which may be
-> > redundant (and less precise) if _DMA methods are also being provided.
-> > However, it should be noted that this situation is highly unusual for
-> > arm64 ACPI machines. Also, the DMA subsystem still gives precedence to
-> > the _DMA method if implemented, and so we will not lose the ability to
-> > perform streaming DMA outside the ZONE_DMA if the _DMA method permits
-> > it.
+> > It seems one of these recent commits broke netfiler.
+> > Since syzkaller uses netfiler for sandboxing, syzbot is currently down
+> > on bpf-next and linux-next. Other trees will follow once they merge
+> > the breakage.  
 > 
-> Sorry, I'm still a little bit confused. With this patch, if we have
-> a device which set the right _DMA method (DMA size >= 32), but with the
-> wrong DMA size in IORT, we still have the ZONE_DMA created which
-> is actually not needed?
+> Do you have this?
+> 
+> d25e2e9388ed ("netfilter: restore NF_INET_NUMHOOKS")
 
-With the current kernel, we get a ZONE_DMA already with an arbitrary
-size of 1GB that matches what RPi4 needs. We are trying to eliminate
-such unnecessary ZONE_DMA based on some heuristics (well, something that
-looks "better" than a OEM ID based quirk). Now, if we learn that IORT
-for platforms in the field is that broken as to describe few bits-wide
-DMA masks, we may have to go back to the OEM ID quirk.
+Ah, you're saying it's just linux-next and bpf-next that's down.
+I think the quoted fix will hit bpf-next in a few hours.
 
--- 
-Catalin
+Thanks!
