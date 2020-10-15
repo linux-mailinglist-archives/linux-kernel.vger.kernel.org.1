@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB8728EA3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AED28E971
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732329AbgJOBfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732241AbgJOBeh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:34:37 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C54C0F26D1;
-        Wed, 14 Oct 2020 17:17:58 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gv6so761636pjb.4;
-        Wed, 14 Oct 2020 17:17:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q5OVoE3pJbhdauHqlTDobbIRkF4tseIWuc4U1qOzq+k=;
-        b=A/Z6g0IJ6RJqvoV2/izYHd/zFI83zBsUvMQMKk+wJFD0U7iXs69ZqVHfm1gCLTtw1c
-         jSXGeZxxttxmRx50ZBSCb8D+fru54qFF/caQxWmrmhVbbhq8KegiZLd150mvM7Eb+4wI
-         7zh92ZN0K0zA3zociLwYzzbSzZbzd4P0iCwiUAkdHM/b+QFmSigWQ3A0S/WFaarzgIbl
-         M5UlnQZjT6+dXqdDkSqwb3hW/fAuXH3exOe4A2Plkch6mSH8ZOcM3ewVfyRmy9Rvoyjr
-         9k1K2GRsGyzkE0pQcl4J4Y5BDBGFuIH4Hhnq9aRv3TbZpxT6pQBHHVM2Ru7+8SIZx5UK
-         lm4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q5OVoE3pJbhdauHqlTDobbIRkF4tseIWuc4U1qOzq+k=;
-        b=fZEwW0AsutYKAZNHrPm48o9qSwOhKc7E6cXtTdNvbrEOABJZ5CrbOSCU5IUonvf2MX
-         qOtOcx8bIBBBZF/3hr4E0yOUInYA0JtNPay8entU0gNy3jZQXCmG2f6dNW/vh47zVnU/
-         1N4KoBq0eGdjkpBnqA2MwW90hIZTekM4bJJnfNYIP46eWThrRgaFRGV0qzHU9ZO6ecc7
-         mGP/Y1ApPoV71z5lgn3e9UUg7r7TEcakCxrjoXv4GeKnmedFTK0W4iuxe8GkcLPDa1nV
-         wTZ/KTePARvN7sFhV7wz7zffRReRIawjHnV+jw3lP7WeHqR9isSliC9v3yV0pZM6oncJ
-         0+jw==
-X-Gm-Message-State: AOAM531XcvedT+YCKJvmPBvsZTKwi1KkmiCnWSNltCxpZ2puDiW5MnP2
-        puk40wvNhJ0gLgq8GnkDG9/4m9HixA/6hXNo
-X-Google-Smtp-Source: ABdhPJyXZSnNq/7NhUpZFjrT3ftcuE/CUx4RBJZ4VuG77OQfBJ/DtHJujHyQvVgyCv8CE/jz89HZsA==
-X-Received: by 2002:a17:902:be06:b029:d3:e6c5:52a0 with SMTP id r6-20020a170902be06b02900d3e6c552a0mr1392257pls.77.1602721078145;
-        Wed, 14 Oct 2020 17:17:58 -0700 (PDT)
-Received: from localhost.localdomain ([45.118.167.204])
-        by smtp.googlemail.com with ESMTPSA id j24sm738040pjn.9.2020.10.14.17.17.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 17:17:57 -0700 (PDT)
-From:   Anmol Karn <anmol.karan123@gmail.com>
-To:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hams@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, anmol.karan123@gmail.com,
-        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com
-Subject: [Linux-kernel-mentees] [PATCH] net: rose: Fix Null pointer dereference in rose_send_frame()
-Date:   Thu, 15 Oct 2020 05:47:12 +0530
-Message-Id: <20201015001712.72976-1-anmol.karan123@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1732122AbgJOATD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 20:19:03 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44619 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728617AbgJOATC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 20:19:02 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBVJK6H5dz9sT6;
+        Thu, 15 Oct 2020 11:18:57 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602721141;
+        bh=Mb2bFDMqNicXNfC4Ps43K7SfZoXJq9Lfw7aztaE6atg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ik7VxBvmeMXfqSGhAW8lWf8cRG/yithYAwWRPa6YI/JKJ/f4+z1s4yMujMzFdXWp7
+         nkwGUqiNoJV16swjd+4OYVmKYsADXp7/7HTKFgEfg4suAukZm1imym1Ic+WDNUDhnq
+         YDYrFW+coLLSgoSZeJbfwG7RVmc9839VX/D/ODGhNe0B6eBTTKV0naWAmjmwfpkQy6
+         XcXeOfvlUEY00cKnybz3hRQpNV/TmoMml3gZtVURHnOWaxlqsOJUCqXaagTOA2L8z9
+         9AZ9CIIDZXf2NZjvGDpNrnVFbDKm+ZNdi6vGndbF4sqgxUi79cplQSfUdpAgu5quDj
+         AfsTdaKkHRwSQ==
+Date:   Thu, 15 Oct 2020 11:18:57 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Oliver O'Halloran" <oohall@gmail.com>
+Cc:     Qian Cai <cai@lca.pw>, Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH -next] Revert "powerpc/pci: unmap legacy INTx interrupts
+ when a PHB is removed"
+Message-ID: <20201015111857.3a197732@canb.auug.org.au>
+In-Reply-To: <CAOSf1CFT_Y67Q8caH2uFOYtwpRgFozh30ZWWZzzR-x18LBsG8g@mail.gmail.com>
+References: <20201014182811.12027-1-cai@lca.pw>
+        <CAOSf1CFT_Y67Q8caH2uFOYtwpRgFozh30ZWWZzzR-x18LBsG8g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/F8wNrQpMx3RT1ZliEaacCX9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rose_send_frame(), when comparing two ax.25 addresses, it assigns rose_call to 
-either global ROSE callsign or default port, but when the former block triggers and 
-rose_call is assigned by (ax25_address *)neigh->dev->dev_addr, a NULL pointer is 
-dereferenced by 'neigh' when dereferencing 'dev'.
+--Sig_/F8wNrQpMx3RT1ZliEaacCX9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-- net/rose/rose_link.c
-This bug seems to get triggered in this line:
+Hi Oliver,
 
-rose_call = (ax25_address *)neigh->dev->dev_addr;
+On Thu, 15 Oct 2020 10:00:49 +1100 "Oliver O'Halloran" <oohall@gmail.com> w=
+rote:
+>
+> On Thu, Oct 15, 2020 at 5:28 AM Qian Cai <cai@lca.pw> wrote:
+> >
+> > This reverts commit 3a3181e16fbde752007759f8759d25e0ff1fc425 which
+> > causes memory corruptions on POWER9 NV. =20
+>=20
+> I was going to post this along with a fix for Cedric's original bug,
+> but I can do that separately so:
+>=20
+> Acked-by: Oliver O'Halloran <oohall@gmail.com>
 
-Prevent it by checking NULL condition for neigh->dev before comparing addressed for 
-rose_call initialization.
+I added that to linux-next today.
 
-Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com 
-Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3 
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
----
-I am bit sceptical about the error return code, please suggest if anything else is 
-appropriate in place of '-ENODEV'.
+--=20
+Cheers,
+Stephen Rothwell
 
- net/rose/rose_link.c | 3 +++
- 1 file changed, 3 insertions(+)
+--Sig_/F8wNrQpMx3RT1ZliEaacCX9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
-index f6102e6f5161..92ea6a31d575 100644
---- a/net/rose/rose_link.c
-+++ b/net/rose/rose_link.c
-@@ -97,6 +97,9 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
- 	ax25_address *rose_call;
- 	ax25_cb *ax25s;
- 
-+	if (!neigh->dev)
-+		return -ENODEV;
-+
- 	if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
- 		rose_call = (ax25_address *)neigh->dev->dev_addr;
- 	else
--- 
-2.28.0
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+HlXEACgkQAVBC80lX
+0Gzl4ggAjsFTjV/ekYiFVurllVs8uhLgiJiyX9kc2/avzMyjh4YlPjJaamjMQq0A
+QkosvP4MD+YceuyeCtP813DCfhvfp/QY2uMLWeaUPVTn3V8FvtQ3lxIECpq/m3KY
+F6ruVH65ndcsJu1Z+da5+3/g8JiPBIrED00G/rOT4RmfBLLng41G7OfJGUDqOrtk
+8WR7MCNqk1neiJMPdXMOe5IohTDW33yoxaiFWNZO9IuNzcHRuYHJ1xP1MG7m2SSA
+Kdwn+L4Rrm//cW00kRZOBV3S5Y+GvCFTiR7N2RpsA/b/4+H4oDU6JeOmpZYl3ugO
+uk1Vb2NnlTf9AaPBmccafR4mAe5MFQ==
+=vTaC
+-----END PGP SIGNATURE-----
+
+--Sig_/F8wNrQpMx3RT1ZliEaacCX9--
