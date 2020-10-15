@@ -2,74 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA3628F52D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9BA28F52F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389296AbgJOOrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:47:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55232 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389258AbgJOOqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:46:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17619AC24;
-        Thu, 15 Oct 2020 14:46:44 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 16:46:41 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Leonardo Bras <leonardo@linux.ibm.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Steven Price <steven.price@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Mahesh Salgaonkar <mahesh@linux.vnet.ibm.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Reza Arbab <arbab@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org
-Subject: Re: [PATCH v6 02/11] mm/gup: Use functions to track lockless pgtbl
- walks on gup_pgd_range
-Message-ID: <20201015144641.GE29778@kitsune.suse.cz>
-References: <20200206030900.147032-1-leonardo@linux.ibm.com>
- <20200206030900.147032-3-leonardo@linux.ibm.com>
- <760c238043196e0628c8c0eff48a8e938ef539ba.camel@linux.ibm.com>
+        id S2388583AbgJOOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:47:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34544 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389399AbgJOOrX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:47:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602773242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fzjpDAV5F3Ar6lYBMyYyeWD2zEgRpW1GmqDCDHO9pf0=;
+        b=YkEjvK6yh5TkS0JsefiJLbFkA4WkF/cZnNxQ+82KOXt/dSTbD6uP+EMMhPHYbt6MhYgQz7
+        BjB/+VDCv8NgAayLz9fOFPwx2RncwAaHUx/AjO89utpJalhwCRZHlQHK6opsye69oAluhL
+        /3Pkf3uBZn7JC22ZFgJZyu8DtGBea2s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-4lWrHLouM0WfDg-0bt7_VQ-1; Thu, 15 Oct 2020 10:47:18 -0400
+X-MC-Unique: 4lWrHLouM0WfDg-0bt7_VQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2673086ABDB;
+        Thu, 15 Oct 2020 14:47:17 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 77FB475125;
+        Thu, 15 Oct 2020 14:47:15 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 15 Oct 2020 16:47:16 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 16:47:14 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+Subject: Re: [PATCH 3/5] kernel: add support for TIF_NOTIFY_SIGNAL
+Message-ID: <20201015144713.GJ24156@redhat.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-4-axboe@kernel.dk>
+ <20201015143151.GB24156@redhat.com>
+ <5d231aa1-b8c7-ae4e-90bb-211f82b57547@kernel.dk>
+ <20201015143728.GE24156@redhat.com>
+ <788b31b7-6acc-cc85-5e91-d0c2538341b7@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <760c238043196e0628c8c0eff48a8e938ef539ba.camel@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <788b31b7-6acc-cc85-5e91-d0c2538341b7@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Thu, Feb 06, 2020 at 12:25:18AM -0300, Leonardo Bras wrote:
-> On Thu, 2020-02-06 at 00:08 -0300, Leonardo Bras wrote:
-> >                 gup_pgd_range(addr, end, gup_flags, pages, &nr);
-> > -               local_irq_enable();
-> > +               end_lockless_pgtbl_walk(IRQS_ENABLED);
-> >                 ret = nr;
-> >         }
-> >  
+On 10/15, Jens Axboe wrote:
+>
+> On 10/15/20 8:37 AM, Oleg Nesterov wrote:
+> > On 10/15, Jens Axboe wrote:
+> >>
+> >> On 10/15/20 8:31 AM, Oleg Nesterov wrote:
+> >>> On 10/15, Jens Axboe wrote:
+> >>>>
+> >>>>  static inline int signal_pending(struct task_struct *p)
+> >>>>  {
+> >>>> +#if defined(CONFIG_GENERIC_ENTRY) && defined(TIF_NOTIFY_SIGNAL)
+> >>>> +	/*
+> >>>> +	 * TIF_NOTIFY_SIGNAL isn't really a signal, but it requires the same
+> >>>> +	 * behavior in terms of ensuring that we break out of wait loops
+> >>>> +	 * so that notify signal callbacks can be processed.
+> >>>> +	 */
+> >>>> +	if (unlikely(test_tsk_thread_flag(p, TIF_NOTIFY_SIGNAL)))
+> >>>> +		return 1;
+> >>>> +#endif
+> >>>>  	return task_sigpending(p);
+> >>>>  }
+> >>>
+> >>> I don't understand why does this version requires CONFIG_GENERIC_ENTRY.
+> >>>
+> >>> Afaics, it is very easy to change all the non-x86 arches to support
+> >>> TIF_NOTIFY_SIGNAL, but it is not trivial to change them all to use
+> >>> kernel/entry/common.c ?
+> >>
+> >> I think that Thomas wants to gate TIF_NOTIFY_SIGNAL on conversion to
+> >> the generic entry code?
+> > 
+> > Then I think TIF_NOTIFY_SIGNAL will be never fully supported ;)
 > 
-> Just noticed IRQS_ENABLED is not available on other archs than ppc64.
-> I will fix this for v7.
+> That is indeed a worry. From a functionality point of view, with the
+> major archs supporting it, I'm not too worried about that side. But it
+> does mean that we'll be stuck with the ifdeffery forever, which isn't
+> great.
 
-Has threre been v7?
+plus we can't kill the ugly JOBCTL_TASK_WORK.
 
-I cannot find it.
+Oleg.
 
-Thanks
-
-Michal
