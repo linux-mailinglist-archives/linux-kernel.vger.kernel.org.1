@@ -2,198 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40E328FB03
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01C128FB0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731685AbgJOWFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
+        id S1731528AbgJOWTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:19:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730097AbgJOWFY (ORCPT
+        with ESMTP id S1731189AbgJOWTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 18:05:24 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86248C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:05:24 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a17so224080pju.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:05:24 -0700 (PDT)
+        Thu, 15 Oct 2020 18:19:24 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F1AC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:19:23 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id j8so256292pjy.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:19:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=700dSlreVGZIbwr3AdAuK7QeFJxaPoeuAx3F/ELDRDo=;
-        b=YyI2hHjlGVMdiNNuzARzWWPUiBmNs3oQjJCJGo+DBpaEJkZHTSch2TDv7bhYi0ayd7
-         0Tiug6g9ouWnCvNCvyppOJJMcWJ70krwZeHg307DjM4M4ciwWM168DIguFHICNfGwBTQ
-         0fztJeUGNoHaZGzvewoMRmJZE7w9xAixVlOhJ8kgsfddznBNmg7jA67fAyG1fZqnRzW2
-         H7jW2xnA80M0pgO+LpVdhsflSYVJaXXgjY2LiFONp4lXtOo4wWFoml2ngxy7G+CNmI8f
-         ygiE+osIjuskN1NPsYcVMTu++R4xxzF9U+Uu7hIfFBksBQ7z2UX3TIoPsOA67aVRk4rr
-         pL1w==
+        bh=QjDY/OXe3F1IcKvWQFSP6gxpaDEaOlXYjXWDXlLnfbw=;
+        b=OPa+LpTPSyeUIRS+0srXLfp9xueNLSmd/1DKENmwi8xQI+fnDfQzCSHjZUFahJ3daz
+         CitKC9o18koCiq7fjTNQUdy8Naye3WB42oyiKMNLCKLvZxnKzy4QZrdNLSGA9VYDjAQ+
+         BJjWU3ZyWfnXa5hZ9Af0vI/7vVtQBAz0MrWdk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=700dSlreVGZIbwr3AdAuK7QeFJxaPoeuAx3F/ELDRDo=;
-        b=TmXJYVmaa9ogF+CL3zBDwqdZq5UHGhn11X6lWdb+uPIblOnV+G8jQdYbZ6L0cURynG
-         jWMphb0os2Jl8Wzo3kiVslkj6rJ+rmB+BE6kxGEQOAlXC6URnAtXMxRMHFVGU9um6wzl
-         Z92XFFwk8kxV/htT8hyWGnXPWXJ3nRbKC2BJQOTgdnn0+31LSXSbVDlhxb8bmkNLO07m
-         2TdRRvjnKee4FazEKTmcAPctNHzX9mTkCJET3NxRoz7b74zBMQ1eCInmmxKRO81jbN61
-         2682BKJ7bg24vTNAGZHg+2HG1nyRpkJ0t9zh0E4ESI+fcK/XM0FY8UQPckfvMMjNjvFH
-         RdjQ==
-X-Gm-Message-State: AOAM531FOOajOI5NSo1C6aYcVr+ZmbepktCpA5EzV8ZMuglvdgWxnvYj
-        qtHx2weoex5/agXJvAZdeeycWQ==
-X-Google-Smtp-Source: ABdhPJzUX9wxifuk/NX4KO9hxnbTmPIzCu5nOp+krk3Lv2bCZAZCkS014tzTx/UPz0a1f2BvXPsGKQ==
-X-Received: by 2002:a17:90a:9317:: with SMTP id p23mr762160pjo.160.1602799523789;
-        Thu, 15 Oct 2020 15:05:23 -0700 (PDT)
-Received: from google.com (154.137.233.35.bc.googleusercontent.com. [35.233.137.154])
-        by smtp.gmail.com with ESMTPSA id e8sm295045pgj.8.2020.10.15.15.05.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 15:05:23 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 22:05:19 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20201015220519.GB48329@google.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
- <20200924012103.GE10500@redhat.com>
- <20200924073842.GA1894729@google.com>
- <20200924142353.GC13849@redhat.com>
+        bh=QjDY/OXe3F1IcKvWQFSP6gxpaDEaOlXYjXWDXlLnfbw=;
+        b=ulur9+psUSy9w388UgDEOWXFywl1t2suO3M3wkHjMyg1TQCbQMPYzRl7NbTplMEXGp
+         O2XB/3ChRjYCOZWMLl9h0tfgztmcUqA8RTEjNJZH8bFX6r7qTVVKHCM220CwlMQwBPdv
+         1o32or0bVjiL2QKt9zb/LxCXs+uk7Cp2mYlTSVgAnouBc0ILVlSw0t5TdYPXkdL4f9FI
+         8p6rRBNy58T439qRGjqJrWQCSBUxCt7hM/f0fmTe2HOxFm8DLQ7t0+4cSoDRCv44+xYw
+         4RWryS5nuN4cdZvCBvfqIp5xVIeBnh/dD6+bWDMa68Yne6k8gWYPyNN4ojA7bykvR+aK
+         v7dg==
+X-Gm-Message-State: AOAM532JFPAByONATl2HjDr+Euky8P/A0E8gteqRBx+DcUlbdBJbTWRz
+        L8iDndWkjPpUdOOF91Psi/KG4A==
+X-Google-Smtp-Source: ABdhPJy7zXS3x5G8mjljWvnvBGZKXs2QAfMPK7iOMKzSEJJ8bIR5FC63Ny0pseO77n8Ov//5DHYblA==
+X-Received: by 2002:a17:90a:7787:: with SMTP id v7mr860769pjk.104.1602800363211;
+        Thu, 15 Oct 2020 15:19:23 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id x10sm279283pfc.88.2020.10.15.15.19.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 15:19:22 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 15:19:20 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     manafm@codeaurora.org
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, dri-devel@freedesktop.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Rajeshwari <rkambl@codeaurora.org>,
+        Amit Kucheria <amitk@kernel.org>
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: sc7180: Add gpu cooling support
+Message-ID: <20201015221920.GA1657396@google.com>
+References: <1602176947-17385-1-git-send-email-akhilpo@codeaurora.org>
+ <CAD=FV=WjWv040TyBaqU8ZAuxGi-YpJ2tsVcUbOV4Htv=_-n8fA@mail.gmail.com>
+ <20201009165705.GA1292413@google.com>
+ <fc490021-b046-68c5-7ceb-9c63d3ff5650@codeaurora.org>
+ <a4be2cf9e51e4f40aae3f9a56989a42f@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200924142353.GC13849@redhat.com>
+In-Reply-To: <a4be2cf9e51e4f40aae3f9a56989a42f@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:23:54AM -0400, Mike Snitzer wrote:
-> On Thu, Sep 24 2020 at  3:38am -0400,
-> Satya Tangirala <satyat@google.com> wrote:
-> 
-> > On Wed, Sep 23, 2020 at 09:21:03PM -0400, Mike Snitzer wrote:
-> > > On Wed, Sep 09 2020 at  7:44pm -0400,
-> > > Satya Tangirala <satyat@google.com> wrote:
-> > > 
-> > > > From: Eric Biggers <ebiggers@google.com>
-> > > > 
-> > > > Update the device-mapper core to support exposing the inline crypto
-> > > > support of the underlying device(s) through the device-mapper device.
-> > > > 
-> > > > This works by creating a "passthrough keyslot manager" for the dm
-> > > > device, which declares support for encryption settings which all
-> > > > underlying devices support.  When a supported setting is used, the bio
-> > > > cloning code handles cloning the crypto context to the bios for all the
-> > > > underlying devices.  When an unsupported setting is used, the blk-crypto
-> > > > fallback is used as usual.
-> > > > 
-> > > > Crypto support on each underlying device is ignored unless the
-> > > > corresponding dm target opts into exposing it.  This is needed because
-> > > > for inline crypto to semantically operate on the original bio, the data
-> > > > must not be transformed by the dm target.  Thus, targets like dm-linear
-> > > > can expose crypto support of the underlying device, but targets like
-> > > > dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
-> > > > 
-> > > > When a key is evicted from the dm device, it is evicted from all
-> > > > underlying devices.
-> > > > 
-> > > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > > Co-developed-by: Satya Tangirala <satyat@google.com>
-> > > > Signed-off-by: Satya Tangirala <satyat@google.com>
-> > > > ---
-> > > >  block/blk-crypto.c              |  1 +
-> > > >  block/keyslot-manager.c         | 34 ++++++++++++
-> > > >  drivers/md/dm-core.h            |  4 ++
-> > > >  drivers/md/dm-table.c           | 52 +++++++++++++++++++
-> > > >  drivers/md/dm.c                 | 92 ++++++++++++++++++++++++++++++++-
-> > > >  include/linux/device-mapper.h   |  6 +++
-> > > >  include/linux/keyslot-manager.h |  7 +++
-> > > >  7 files changed, 195 insertions(+), 1 deletion(-)
-> > > > 
-> 
-> > > > diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
-> > > > index c4ef1fceead6..4542050eebfc 100644
-> > > > --- a/drivers/md/dm-core.h
-> > > > +++ b/drivers/md/dm-core.h
-> > > > @@ -12,6 +12,7 @@
-> > > >  #include <linux/kthread.h>
-> > > >  #include <linux/ktime.h>
-> > > >  #include <linux/blk-mq.h>
-> > > > +#include <linux/keyslot-manager.h>
-> > > >  
-> > > >  #include <trace/events/block.h>
-> > > >  
-> > > > @@ -49,6 +50,9 @@ struct mapped_device {
-> > > >  
-> > > >  	int numa_node_id;
-> > > >  	struct request_queue *queue;
-> > > > +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-> > > > +	struct blk_keyslot_manager ksm;
-> > > > +#endif
-> > > >  
-> > > >  	atomic_t holders;
-> > > >  	atomic_t open_count;
-> > > 
-> > > Any reason you placed the ksm member where you did?
-> > > 
-> > > Looking at 'struct blk_keyslot_manager' I'm really hating adding that
-> > > bloat to every DM device for a feature that really won't see much broad
-> > > use (AFAIK).
-> > > 
-> > > Any chance you could allocate 'struct blk_keyslot_manager' as needed so
-> > > that most users of DM would only be carrying 1 extra pointer (set to
-> > > NULL)?
-> >
-> > I don't think there's any technical problem with doing that - the only
-> > other thing that would need addressing is that the patch uses
-> > "container_of" on that blk_keyslot_manager in dm_keyslot_evict() to get
-> > a pointer to the struct mapped_device. I could try adding a "private"
-> > field to struct blk_keyslot_manager and store a pointer to the struct
-> > mapped_device there).
-> 
-> Yes, that'd be ideal.
-> 
-> As for the lifetime of the struct blk_keyslot_manager pointer DM would
-> manage (in your future code revision): you meantioned in one reply that
-> the request_queue takes care of setting up the ksm... but the ksm
-> is tied to the queue at a later phase using blk_ksm_register(). 
-> 
-I probably wasn't clear in that reply :(. So the request_queue isn't
-responsible for setting up the ksm - setting up the ksm in the request
-queue is the responsibility of the DM device.
-> In any case, I think my feature reequest (to have DM allocate the ksm
-> struct only as needed) is a bit challenging because of how DM allocates
-> the request_queue upfront in alloc_dev() and then later completes the
-> request_queue initialization based on DM_TYPE* in dm_setup_md_queue().
-> 
-> It _could_ be that you'll need to add a new DM_TYPE_KSM_BIO_BASED or
-> something.  But you have a catch-22 in that the dm-table.c code to
-> establish the intersection of supported modes assumes ksm is already
-> allocated.  So something needs to give by reasoning through: _what_ is
-> the invariant that will trigger the delayed allocation of the ksm
-> struct?  I don't yet see how you can make that informed decision that
-> the target(s) in the DM table _will_ use the ksm if it exists.
-> 
-What I tried doing in the next version that I just sent out was to get
-the DM device to set up the ksm as appropriate on table swaps (and also
-to verify the "new" ksm on table swaps and loads, so that we reject any
-new table that would require a new ksm that would drop any capabability
-that the current ksm supports)
-> But then once the ksm is allocated, it never gets allocated again
-> because md->queue->ksm is already set, and it inherits the lifetime that
-> is used when destroying the mapped_device (md->queue, etc).
->
-This is what the new version of the series does :). It also just sets up
-the ksm directly in md->queue, and completely drops the md->ksm field
-(because unless I'm misunderstanding things, each DM device is
-associated with exactly one queue).
+Hi,
 
-Btw, the new version is at
-
-https://lore.kernel.org/linux-block/20201015214632.41951-1-satyat@google.com/
-
-> Mike
+On Thu, Oct 15, 2020 at 12:07:01AM +0530, manafm@codeaurora.org wrote:
+> On 2020-10-14 18:59, Akhil P Oommen wrote:
+> > On 10/9/2020 10:27 PM, Matthias Kaehlcke wrote:
+> > > On Fri, Oct 09, 2020 at 08:05:10AM -0700, Doug Anderson wrote:
+> > > > Hi,
+> > > > 
+> > > > On Thu, Oct 8, 2020 at 10:10 AM Akhil P Oommen
+> > > > <akhilpo@codeaurora.org> wrote:
+> > > > > 
+> > > > > Add cooling-cells property and the cooling maps for the gpu tzones
+> > > > > to support GPU cooling.
+> > > > > 
+> > > > > Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> > > > > ---
+> > > > >   arch/arm64/boot/dts/qcom/sc7180.dtsi | 29
+> > > > > ++++++++++++++++++++++-------
+> > > > >   1 file changed, 22 insertions(+), 7 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > > > b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > > > index d46b383..40d6a28 100644
+> > > > > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > > > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> > > > > @@ -2,7 +2,7 @@
+> > > > >   /*
+> > > > >    * SC7180 SoC device tree source
+> > > > >    *
+> > > > > - * Copyright (c) 2019, The Linux Foundation. All rights reserved.
+> > > > > + * Copyright (c) 2019-20, The Linux Foundation. All rights
+> > > > > reserved.
+> > > > >    */
+> > > > > 
+> > > > >   #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
+> > > > > @@ -1885,6 +1885,7 @@
+> > > > >                          iommus = <&adreno_smmu 0>;
+> > > > >                          operating-points-v2 = <&gpu_opp_table>;
+> > > > >                          qcom,gmu = <&gmu>;
+> > > > > +                       #cooling-cells = <2>;
+> > > > 
+> > > > Presumably we should add this to the devicetree bindings, too?
+> > Yes, thanks for catching this. Will update in the next patch.
+> > 
+> > > > 
+> > > > 
+> > > > >                          interconnects = <&gem_noc
+> > > > > MASTER_GFX3D &mc_virt SLAVE_EBI1>;
+> > > > >                          interconnect-names = "gfx-mem";
+> > > > > @@ -3825,16 +3826,16 @@
+> > > > >                  };
+> > > > > 
+> > > > >                  gpuss0-thermal {
+> > > > > -                       polling-delay-passive = <0>;
+> > > > > +                       polling-delay-passive = <100>;
+> > > > 
+> > > > Why did you make this change?  I'm pretty sure that we _don't_ want
+> > > > this since we're using interrupts for the thermal sensor.  See commit
+> > > > 22337b91022d ("arm64: dts: qcom: sc7180: Changed polling mode in
+> > > > Thermal-zones node").
+> > > 
+> > > I was going to ask the same, this shouldn't be needed.
+> As per our understanding unlike "polling-delay",  this delay property is
+> intended to activate polling thread on post trip threshold violation and  it
+> is irrespective of sensor is capable for trip interrupt or not.
+> This polling is more of governor related. Below are the few references from
+> Documentation/code which tells polling-delay-passive is needed for IPA for
+> better IPA performance.
 > 
+> As per Power allocator documentations
+> 
+> 1. https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/Documentation/driver-api/thermal/power_allocator.rst?h=v5.4.71#n264
+> 
+> "The power allocator governor's PID controller works best if there is a
+> periodic tick.  If you have a driver that calls
+> `thermal_zone_device_update()` (or anything that ends up calling the
+> governor's `throttle()` function) repetitively, the governor response
+> won't be very good.  Note that this is not particular to this
+> governor, step-wise will also misbehave if you call its throttle()
+> faster than the normal thermal framework tick (due to interrupts for
+> example) as it will overreact"
+> 
+> 2. In Power allocator code, when  switch_on/control trip temp violation, it
+> is enabling passive counter to activate passive polling @ https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/thermal/power_allocator.c?h=v5.4.71#n634
+> 
+> 3. while calculating derivative term, it is using passive_delay @
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/thermal/power_allocator.c?h=v5.4.71#n243
+> 
+> 4. Sensor interrupt will work if temperature is fluctuating between
+> trip_temp and hysteresis. But say a case where we are not enabling
+> polling-delay-passive. In this case if  current temperature > control_temp
+> trip(2nd passive trip) and
+>  temperature trend is still raising, then sensor high trip will be disabled
+> (OR configured for critical trip threshold). No more trip interrupt from
+> sensor until it reaches critical trip or falls below control_temp
+> hysteresis.
+>  How  the governor re-evaluate its next mitigation without passive polling
+> thread  here ?
+> 
+> I think the same is required for CPU thermal zone as well.
+
+Thanks for the explication and pointers!
+
+I ran some tests to re-confirm. For that I lowered the trip point temperatures
+of CPU6 to 60/70, to make it easier to trigger throttling without necessarily
+affecting the other CPUs. Further I enabled tracing for the events 'thermal_temperature',
+'thermal_zone_trip' and 'thermal_power_allocator'. With that I ran a CPU
+intensive task on CPU6.
+
+Without polling-delay the trace log looks like this:
+
+  irq/40-c263000.-157   [000] ....    48.035986: thermal_temperature: thermal_zone=cpu6-thermal id=6 temp_prev=57800 temp=60000
+  irq/40-c263000.-157   [000] ....    48.036029: thermal_power_allocator_pid: thermal_zone_id=6 err=10000 err_integral=0 p=2402 i=0 d=0 output=1776
+  irq/40-c263000.-157   [000] ....    48.036036: thermal_power_allocator: thermal_zone_id=6 req_power={{0x96}} total_req_power=150 granted_power={{0x6f0}} total_granted_power=1776 power_range=1776 max_allocatable_power=1776 current_temperature=60000 delta_temperature=10000
+  irq/40-c263000.-157   [000] ....    52.480888: thermal_temperature: thermal_zone=cpu6-thermal id=6 temp_prev=60000 temp=70000
+  irq/40-c263000.-157   [000] ....    52.480925: thermal_power_allocator_pid: thermal_zone_id=6 err=0 err_integral=0 p=0 i=0 d=0 output=1202
+  irq/40-c263000.-157   [000] ....    52.480931: thermal_power_allocator: thermal_zone_id=6 req_power={{0x45e}} total_req_power=1118 granted_power={{0x4b2}} total_granted_power=1202 power_range=1202 max_allocatable_power=1776 current_temperature=70000 delta_temperature=0
+
+i.e. power_allocator only acts on the sensor interrupts at the trip points
+
+It looks different with a non-zero value for 'polling-delay-passive':
+
+  irq/40-c263000.-156   [000] ....   104.501777: thermal_power_allocator: thermal_zone_id=6 req_power={{0x331}} total_req_power=817 granted_power={{0x591}} total_granted_power=1425 power_range=1425 max_allocatable_power=1776 current_temperature=67800 delta_temperature=2200
+  irq/40-c263000.-156   [000] ....   104.523073: thermal_temperature: thermal_zone=cpu6-thermal id=6 temp_prev=67800 temp=70000
+  irq/40-c263000.-156   [000] ....   104.523121: thermal_power_allocator_pid: thermal_zone_id=6 err=0 err_integral=-31200 p=0 i=-305 d=0 output=897
+  irq/40-c263000.-156   [000] ....   104.523148: thermal_power_allocator: thermal_zone_id=6 req_power={{0x406}} total_req_power=1030 granted_power={{0x381}} total_granted_power=897 power_range=897 max_allocatable_power=1776 current_temperature=70000 delta_temperature=0
+  irq/40-c263000.-156   [000] ....   104.608566: thermal_temperature: thermal_zone=cpu6-thermal id=6 temp_prev=70000 temp=67800
+  irq/40-c263000.-156   [000] ....   104.608612: thermal_power_allocator_pid: thermal_zone_id=6 err=2200 err_integral=-31200 p=528 i=-305 d=0 output=1425
+  irq/40-c263000.-156   [000] ....   104.608642: thermal_power_allocator: thermal_zone_id=6 req_power={{0x331}} total_req_power=817 granted_power={{0x591}} total_granted_power=1425 power_range=1425 max_allocatable_power=1776 current_temperature=67800 delta_temperature=2200
+  irq/40-c263000.-156   [000] ....   104.630863: thermal_temperature: thermal_zone=cpu6-thermal id=6 temp_prev=67800 temp=70000
+  irq/40-c263000.-156   [000] ....   104.630907: thermal_power_allocator_pid: thermal_zone_id=6 err=0 err_integral=-31200 p=0 i=-305 d=0 output=897
+  irq/40-c263000.-156   [000] ....   104.630932: thermal_power_allocator: thermal_zone_id=6 req_power={{0x3f4}} total_req_power=1012 granted_power={{0x381}} total_granted_power=897 power_range=897 max_allocatable_power=1776 current_temperature=70000 delta_temperature=0
+  irq/40-c263000.-156   [000] ....   104.687495: thermal_temperature: thermal_zone=cpu6-thermal id=6 temp_prev=70000 temp=67800
+  irq/40-c263000.-156   [000] ....   104.687541: thermal_power_allocator_pid: thermal_zone_id=6 err=2200 err_integral=-31200 p=528 i=-305 d=0 output=1425
+  irq/40-c263000.-156   [000] ....   104.687567: thermal_power_allocator: thermal_zone_id=6 req_power={{0x338}} total_req_power=824 granted_power={{0x591}} total_granted_power=1425 power_range=1425 max_allocatable_power=1776 current_temperature=67800 delta_temperature=2200
+  irq/40-c263000.-156   [000] ....   104.711664: thermal_temperature: thermal_zone=cpu6-thermal id=6 temp_prev=67800 temp=70000
+
+So it seems indeed the 'polling-delay-passive' is needed for better reactivity,
+and it should also be re-added to the other thermal zones.
+
+On a different note I first tried something similar on the GPU, the trip points
+triggered, however there was no reaction from power_allocator, the reason is
+that there is no power information for the GPU (num power actors = 0). It seems
+it doesn' make sense to use IPA as long as there is no energy model (even if it
+worked by using the lowest frequency as 'estimated power' throttling would
+likely be overly aggressive). Since the trip point configuration for IPA and
+'step_wise' (and probably others) is somewhat incompatible (IPA aims for a
+temperature around the 2nd trip point, 'step_wise' interprets the first trip
+point as limit) I think it makes sense to continue with a single trip point
+for now.
+
+Thanks
+
+Matthias
