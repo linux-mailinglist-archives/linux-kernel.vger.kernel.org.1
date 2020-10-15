@@ -2,132 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDA728ED51
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0570728ED5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729428AbgJOHBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 03:01:44 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:33902 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOHBn (ORCPT
+        id S1727775AbgJOHGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 03:06:24 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:45879 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726112AbgJOHGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 03:01:43 -0400
-Received: by mail-ot1-f67.google.com with SMTP id d28so2033693ote.1;
-        Thu, 15 Oct 2020 00:01:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iPLUR88amB7KBARO7+kMfSt7cx4viHKBRUai+VtfqT4=;
-        b=psV0umtNbcGawPMDyo3RJpMjXj/nl+VmWnFSstYHKU4a/C2VtSCOfS4QE93NFU6R47
-         h2wayFzj1Llw9J4XGblvKYF0LEBubogeuvnoElXd6+WJ1l8SPWtAnWn20yLxvQZTTD+R
-         VIRaheYYiu40jzssOhoKQCC6DIxBfmQOAoWeTIQ4JGvrcXkaK7N15/VSOmx1sc7e9ZBh
-         XNP00iW+189w3NIY2HozkxM6Z62jeuGGxwHJAsN6oEBMupZzwJN8JVo5qNK+yzmIPyUT
-         m0PCSLfoutixp+BhdygOAQ7v12awtdy9mGF0ftDLQwKgJZLRuoXT7AK1PhPSQEMvVzVW
-         5U0w==
-X-Gm-Message-State: AOAM530TTNpxsC4gY6/IZP8VrRhLaG4GoKOpe9VZot1OPmmPs9XxPVkK
-        0GJCVat9eM3qBCHmUwIYdMP81lCGHKHdwjLCceo=
-X-Google-Smtp-Source: ABdhPJw/Ad6i6yr+PF7fjWW8q0TTSdHShD5ypNJBORc48VBWqXaAcZ89lIVXq4AjQaIajAOjvjZDRUmA7xIhuGKEGVA=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr1743996otb.250.1602745301068;
- Thu, 15 Oct 2020 00:01:41 -0700 (PDT)
+        Thu, 15 Oct 2020 03:06:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UC4r3HZ_1602745579;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UC4r3HZ_1602745579)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 15 Oct 2020 15:06:20 +0800
+Date:   Thu, 15 Oct 2020 15:06:19 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 03/29] virtio-mem: simplify MAX_ORDER - 1 /
+ pageblock_order handling
+Message-ID: <20201015070619.GC86495@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-4-david@redhat.com>
 MIME-Version: 1.0
-References: <20201015044443.1828-1-thunder.leizhen@huawei.com> <20201015044443.1828-2-thunder.leizhen@huawei.com>
-In-Reply-To: <20201015044443.1828-2-thunder.leizhen@huawei.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 15 Oct 2020 09:01:29 +0200
-Message-ID: <CAMuHMdX6qLJbk=ik1CoqbycrLSr+vMwzpY6esnKRpXsTxaiSAw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] dt-bindings: misc: add support for both property
- names cmd-gpios and cmd-gpio
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012125323.17509-4-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhen,
-
-Thanks for your patch!
-
-On Thu, Oct 15, 2020 at 6:52 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> The definition "gpio_suffixes[] = { "gpios", "gpio" }" shows that both
-> property names "cmd-gpios" and "cmd-gpio" are supported. But currently
-> only "cmd-gpios" is allowed in this yaml, and the name used in
-> mmp2-olpc-xo-1-75.dts is cmd-gpio. As a result, the following errors is
-> reported.
+On Mon, Oct 12, 2020 at 02:52:57PM +0200, David Hildenbrand wrote:
+>Let's use pageblock_nr_pages and MAX_ORDER_NR_PAGES instead where
+>possible, so we don't have do deal with allocation orders.
 >
-> slave: 'cmd-gpios' is a required property
-> slave: 'cmd-gpio' does not match any of the regexes: 'pinctrl-[0-9]+'
+>Add a comment why we have that restriction for now.
 >
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
-> index b3c45c046ba5e37..dd549380a085709 100644
-> --- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
-> +++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
-> @@ -24,15 +24,21 @@ properties:
->    compatible:
->      const: olpc,xo1.75-ec
->
-> -  cmd-gpios:
-> +  spi-cpha: true
-> +
-> +patternProperties:
-> +  "^cmd-gpio[s]?$":
->      description: GPIO uspecifier of the CMD pin
->      maxItems: 1
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
 
-In general, the *-gpio form is deprecated.  So why complicate the DT
-bindings by adding support for deprecated properties?
-
-  1. Explicitly allowing deprecated properties means new users may be
-     added,
-  2. Once all in-tree DTS files are converted, the warnings will be gone
-     anyway,
-  3. Out-of-tree DTB will still work, as it's very unlikely support for
-     the "gpio" suffix can/will be dropped anytime soon,
-  4. If anyone runs the validator on out-of-tree DTS files, the most
-     probable intention is to fix any detected issues anyway, and the
-     files can be updated, too,
-  5. If any out-of-tree code or tooling relies on the *-gpio form, it
-     may already be broken.
-
-> -  spi-cpha: true
-> -
->  required:
->    - compatible
-> -  - cmd-gpios
-> +
-> +oneOf:
-> +  - required:
-> +      - cmd-gpio
-> +  - required:
-> +      - cmd-gpios
->
->  additionalProperties: false
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Wei Yang
+Help you, Help me
