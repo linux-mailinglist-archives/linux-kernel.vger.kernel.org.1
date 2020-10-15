@@ -2,76 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E71328ED01
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F5528ED05
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725208AbgJOGQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 02:16:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40673 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725922AbgJOGPs (ORCPT
+        id S1727906AbgJOGV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 02:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgJOGVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 02:15:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602742547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7fm8AP60agWOcduC0GJGvPeW6g0rnJZZasC9gE26Q2w=;
-        b=EWylWwTA+Tq0o7byi2drwAGiXqGDirm+hvm6sIYs2nufUhAiHJTqdEAshiP6iLEOC53xqG
-        usVSkyeWjpyJiaY4mlTDeNfcQCLkPmwFZT8UzGki3nYr/1v7x0yEJ97Dnxe3RJ3XFEfYut
-        1GAD609uEiTCzYn5Nu3rWUQ3mL0DwYw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-sG7un7QEOgKOQMoETVk6Hg-1; Thu, 15 Oct 2020 02:15:42 -0400
-X-MC-Unique: sG7un7QEOgKOQMoETVk6Hg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E816803640;
-        Thu, 15 Oct 2020 06:15:41 +0000 (UTC)
-Received: from [10.72.13.96] (ovpn-13-96.pek2.redhat.com [10.72.13.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18919610F3;
-        Thu, 15 Oct 2020 06:15:33 +0000 (UTC)
-Subject: Re: [PATCH v3 2/2] vhost-vdpa: fix page pinning leakage in error path
-To:     si-wei liu <si-wei.liu@oracle.com>, mst@redhat.com,
-        lingshan.zhu@intel.com
-Cc:     joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        Thu, 15 Oct 2020 02:21:55 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A47FC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:21:54 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id 97so1122313plb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:21:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=UJEGV5xwox/0wW0o0swixifI6DFM0YrOg3bmPbi+30A=;
+        b=lVDggNAvqxpDm7yOO50yAMlKNIhkwQ4o2yfbniiEfQgGPpCiM5JUyIIidUctoSDs+2
+         N7ekybj9qi0s1NJtSJM3NPjIxJxU0/46xXYEtdqrcvvUxpYrQlBl3f9Fr7fqxSWnSNhh
+         ceMbKLhwAQEO4n5lpO5toT3fD6R10ZMi1Xz/p+9Vrndl828FiEqUEq8D3zdtAFMnuixX
+         0mUJZxMu37PfOSDVISnTGSNolO9TDaJCVgzpG+XUJqXHKlfIW7lbMvj/jV6qOcPva9YA
+         8reUENMg0ZHwidkjmGxGBkyfHBEL28kVkuIif4Pw939yTyzRTDaTE4nM74denBiDp/PY
+         OR2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=UJEGV5xwox/0wW0o0swixifI6DFM0YrOg3bmPbi+30A=;
+        b=Ai3oZiP92fKYCpVNXV0sen5n+hGsB6z4/fN/9nmGT0g4tkcJ5GuhIH6EoxRMd4cuhn
+         EhiAeXJp6XfsdDl1U3Snir6y6IUFyDhZLODju8My2xTjNPW6ceJ/JniGxcl6tgQaRf3L
+         LeVhCgZuJHBpF+FC3Fdxjyr3lza6p9iMp6V5TvxMOaHeKz3suEVdJUvWGb7sYBuIxoTo
+         qOSfxvyjrO+5I4Hxu98lK7bAB01xRpfBk3UjnxBNAoZdIrSs6NJOC+SvXyWdarGVqrxd
+         6FcPUh25tGzaxkqRfvm0FHYLsvYhGe4mNymjkflq4nc3Fn10Ji2zmiQOzdClTBQ/WB4k
+         +BCQ==
+X-Gm-Message-State: AOAM530xNRNP8FLiUKqAplkiAoNz7jQAVREdj18ihRu0qtR1w79yiJWt
+        7v1rHGrEarZT4s3ahVHZu+9jUzHGW/+b
+X-Google-Smtp-Source: ABdhPJxMLT3WcNiiXVHBBL4JrCMVpMH8DPRDU/MtAQ0KOk/outo3LIQpYTqEzUu26D2i870li4/XtihJ0bdB
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a05:6a00:2a5:b029:152:5652:7191 with SMTP
+ id q5-20020a056a0002a5b029015256527191mr2676561pfs.7.1602742913479; Wed, 14
+ Oct 2020 23:21:53 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 23:21:47 -0700
+Message-Id: <20201015062148.1437894-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH 1/2] x86/insn: Fix some potential undefined behavior.
+From:   Ian Rogers <irogers@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <1601701330-16837-1-git-send-email-si-wei.liu@oracle.com>
- <1601701330-16837-3-git-send-email-si-wei.liu@oracle.com>
- <574a64e3-8873-0639-fe32-248cb99204bc@redhat.com>
- <5F863B83.6030204@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <835e79de-52d9-1d07-71dd-d9bee6b9f62e@redhat.com>
-Date:   Thu, 15 Oct 2020 14:15:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <5F863B83.6030204@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Numfor Mbiziwo-Tiapo <nums@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Numfor Mbiziwo-Tiapo <nums@google.com>
 
-On 2020/10/14 上午7:42, si-wei liu wrote:
->>
->>
->> So what I suggest is to fix the pinning leakage first and do the 
->> possible optimization on top (which is still questionable to me).
-> OK. Unfortunately, this was picked and got merged in upstream. So I 
-> will post a follow up patch set to 1) revert the commit to the 
-> original __get_free_page() implementation, and 2) fix the accounting 
-> and leakage on top. Will it be fine?
+If insn_init is given a NULL kaddr and 0 buflen then validate_next will
+perform arithmetic on NULL, add a guard to avoid this.
 
+Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+these are forms of undefined behavior.
 
-Fine.
+These problems were identified using the undefined behavior sanitizer
+(ubsan) with the tools version of the code and perf test. Part of this
+patch was previously posted here:
+https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
 
-Thanks
+Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+---
+ arch/x86/lib/insn.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index 404279563891..57236940de46 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -17,13 +17,13 @@
+ 
+ /* Verify next sizeof(t) bytes can be on the same instruction */
+ #define validate_next(t, insn, n)	\
+-	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
++	((insn)->end_kaddr != 0 && (insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
++	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r = *(t*)((insn)->next_byte + n); r; })
++	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+-- 
+2.28.0.1011.ga647a8990f-goog
 
