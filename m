@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8175E28F511
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F1728F513
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389039AbgJOOqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
+        id S2389083AbgJOOqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388305AbgJOOqJ (ORCPT
+        with ESMTP id S2388305AbgJOOqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:46:09 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE23C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:09 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id e23so3461260wme.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:08 -0700 (PDT)
+        Thu, 15 Oct 2020 10:46:11 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381F8C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:10 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g12so3798287wrp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=1sKt0qAbpSX+oBrhrT+egnfhYrLJVpycm37nkl3I/0k=;
-        b=Y/kIwOkkyXsI27pbuxbgvQMYt4S+5jdK5aWJ0o6f4AOzz3Qs4zygLJUHNIatdf3S8m
-         Klct29ul1a4dr2wlmTmV0nCje18POeRAQWUQiadka0Io5UjTEw0bEBrjWolMc8Gicr6H
-         ImjixASfGdl1fo+z7qRxq6AUQnK7edkgZlJ4wRh6um93EYqi/Y5KbQ7gnp9LxyQ2RzLp
-         ovJC/riVYR3VwUGjKQO29MaevATiFZkSPpT83WKgj0vBldqruCA+7VP5ycsPFbDcAKqS
-         rj3+ANnAOLsP+jfEjp419BfUoylnKVm5/Vl4yGwhstt1h6H/toHZ5LuxhhY91GKCVz2L
-         xN/Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=mtQ8uyNtDhsuh9Mh2rIa3Rt4zzP6rPyAQ+1jNbZKvzA=;
+        b=oNfHw1ry9LbPWWKd9A9z6F/anUcWQ4gKMtV/rXCs6JuZdH3DkRQ2MTa1CI5QGpr4Td
+         CiYEfsnK4EstBIAi7iADm6eg5+j+XeuPAQGGX/N3EgiooCJwJV7T0ELWEgQyw+sboOVY
+         SRVlUxb+UD6AHKoE7uP94EtSHO9WP+aAnRl5aEDYUZE/4KsnhRf00CGP0xsyFgCIK4LA
+         x/yQ8LC4bbGlZhdXE55Yw2cUUtbAXrS0RkVOkXqj0LMnM7gb+p2xi5sZfScecp2qDy4u
+         mbwa2/rKixBhLHmTOV9OptQy7+WNuQowMIHrBtR811899+unSj3jUqpnzsMkqEYt0Ys5
+         rmhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1sKt0qAbpSX+oBrhrT+egnfhYrLJVpycm37nkl3I/0k=;
-        b=UIv/oWhFwXzmEn32OaYX4wHu3O05Jg1/XEMACaE8IojyXYfKoBSycLv9S9I1sDJ69B
-         qfQqD4oji/33BTHPuqwYp5RToiIGveKWCCEPaeh8/qEf+bLkSjl04LLg76q7TD3k8OPH
-         ivigJf35zelJ/8zd9X5GiXno7bbvo+11uPq2JzHppo3u+C/tEhaz28KC9rGK+FSyr41x
-         Kk2zHaq4+bTXAHK253l20QAbnM9VWoTsLOtbBtDX6FGwM0Zorp7KBQ5pftyZ9khD6CHS
-         b2QowzYDSvNPR2zyVqqv8CbP1aWlfHPPHwo0wl60M3quwYu9LBdY08yun/vQz6yLZDhe
-         sX2w==
-X-Gm-Message-State: AOAM530GoS4/ol5QEjhf83dQlwFb8DphmBvDh2aotCgjX+Txaw29P5R6
-        Ru7lJq2DuO1ooblhHYWAJU3U0w==
-X-Google-Smtp-Source: ABdhPJzEIC6L7XdN5sFDpP2iR+uyiia6bGWJSrUpRIBQWMJplu9ryN4vryHu5jm5AxFDMZ8uKpH5Ag==
-X-Received: by 2002:a05:600c:2905:: with SMTP id i5mr4409473wmd.9.1602773167625;
-        Thu, 15 Oct 2020 07:46:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=mtQ8uyNtDhsuh9Mh2rIa3Rt4zzP6rPyAQ+1jNbZKvzA=;
+        b=PT36OjkWngj14CwxFc7ltRwztVsUwnUsDYV1lphfkC/PyQIIMtrqdaryPhc91VuGw4
+         XLj5tlZSLko4rnKeK1HWnmRUQn+ksM6zRwgpz5c+NyiEiuW787bvuzCi0DMRXF4DPRVM
+         S1YxHLAOuKkhDZIJgVD7GgKkWH+sH8rlhd3cQmPGq9BfbuQtyWQN3Q2Gaw68qKeOzivV
+         G8C+i+MYPsZ12AoetO4dQX5nOKsnsa1rjw8A1ETDW5ZJQpws1i/KKPI/twZZ8XoNWZgx
+         kG1AGqdvHhDiCP/eC1xsJyEGVYN5d07OKtKNatV6wn4RgTdkrbfTqchXtaFnHSC5BE5S
+         lN1Q==
+X-Gm-Message-State: AOAM532kWkmYsmUJZNiplOuS9/knmfuY6BtG+VcSVD6kG5duksgelYQ8
+        oioaReQDk1QUqQCuDUIHk115Ww==
+X-Google-Smtp-Source: ABdhPJyLOg+uifPc4RAeAoJhsK1Xrrw0Z+1QvA/0i+3K2vL/F9trEq4nYybLoyzWXF8wvo37c4Ky1A==
+X-Received: by 2002:adf:de89:: with SMTP id w9mr4757889wrl.212.1602773168896;
+        Thu, 15 Oct 2020 07:46:08 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id q5sm5413421wrs.54.2020.10.15.07.46.06
+        by smtp.gmail.com with ESMTPSA id q5sm5413421wrs.54.2020.10.15.07.46.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 07:46:06 -0700 (PDT)
+        Thu, 15 Oct 2020 07:46:08 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -61,94 +62,50 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
         James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 0/9] perf c2c: Refine the organization of metrics
-Date:   Thu, 15 Oct 2020 15:45:39 +0100
-Message-Id: <20201015144548.18482-1-leo.yan@linaro.org>
+Subject: [PATCH v2 1/9] perf c2c: Display the total numbers continuously
+Date:   Thu, 15 Oct 2020 15:45:40 +0100
+Message-Id: <20201015144548.18482-2-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201015144548.18482-1-leo.yan@linaro.org>
+References: <20201015144548.18482-1-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set is to refine metrics output organization.
+To view the statistics with "breakdown" mode, it's good to show the
+summary numbers for the total records, all stores and all loads, then
+the sequential conlumns can be used to break into more detailed items.
 
-If we reivew the current memory metrics in Perf c2c tool, it doesn't
-organize the metrics with directive approach; thus user needs to take
-time to dig into every statistics item.  On the other hand, if use the
-"summary and breakdown" approach, the output result will be easier for
-reviewing by users, e.g. the output result can firstly give out the
-summary values, and then the later items will breakdown into more
-detailed statistics.
+To achieve this purpose, this patch displays the summary numbers for
+records/stores/loads continuously and places them before breakdown
+items, this can allow uses to easily read the summarized statistics.
 
-For this reason, this patch is to reorganize the metrics and it only
-changes for the "Shared Data Cache Line Table": it firstly displays the
-summary values for total records, total loads, total stores; then it
-breaks these summary values into small values, with the order from the
-most near memory node ("CPU Load Hit") to more far nodes
-("LLC Load Hit", "RMT Load Hit", "Load Dram").
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Tested-by: Joe Mario <jmario@redhat.com>
+---
+ tools/perf/builtin-c2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  "LLC Load Hit" = "LclHit" + "LclHitm"
-
-  "RMT Load Hit" = "RmtHit" + "RmtHitm" \
-                                         ->  LLC Load Miss
-  "Load Dram"    = "Lcl" + "Rmt"        /
-
-Another main reason for this patch set is wanting to extend "perf c2c"
-to support Arm SPE memory event, but Arm SPE doesn't contain 'HTIM' tag
-in its default trace data, for this case if want to analyze cache false
-sharing issue, we need to rely on LLC metrics + multi-threading info.
-So this patch set can be friendly to show LLC related metrics in the
-"Shared Data Cache Line Table"; for sorting cache lines with LLC metrics
-which will be sent out with another separate patch set.
-
-Before:
-
-=================================================
-           Shared Data Cache Line Table          
-=================================================
-#
-#        ----------- Cacheline ----------    Total      Tot  ----- LLC Load Hitm -----  ---- Store Reference ----  --- Load Dram ----      LLC    Total  ----- Core Load Hit -----  -- LLC Load Hit --
-# Index             Address  Node  PA cnt  records     Hitm    Total      Lcl      Rmt    Total    L1Hit   L1Miss       Lcl       Rmt  Ld Miss    Loads       FB       L1       L2       Llc       Rmt
-# .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  ........  ........  .......  .......  .......  .......  .......  ........  ........
-#
-      0      0x55acdcc92100     0    8197    40716   52.18%     3170     3170        0    24466    24437       29         0         0        0    16250     3349     5909        0      3822         0
-      1      0x55acdcc920c0     0       1     4621   31.01%     1884     1884        0        0        0        0         0         0        0     4621      739        0        0      1998         0
-      2      0x55acdcc92080     0       1     4475   16.69%     1014     1014        0        0        0        0         0         0        0     4475     2405        0        0      1056         0
-
-
-After:
-
-=================================================
-           Shared Data Cache Line Table          
-=================================================
-#
-#        ----------- Cacheline ----------      Tot  ------- Load Hitm -------    Total    Total    Total  ---- Stores ----  ----- Core Load Hit -----  - LLC Load Hit --  - RMT Load Hit --  --- Load Dram ----
-# Index             Address  Node  PA cnt     Hitm    Total  LclHitm  RmtHitm  records    Loads   Stores    L1Hit   L1Miss       FB       L1       L2    LclHit  LclHitm    RmtHit  RmtHitm       Lcl       Rmt
-# .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  ........  .......  ........  .......  ........  ........
-#
-      0      0x55acdcc92100     0    8197   52.18%     3170     3170        0    40716    16250    24466    24437       29     3349     5909        0      3822     3170         0        0         0         0
-      1      0x55acdcc920c0     0       1   31.01%     1884     1884        0     4621     4621        0        0        0      739        0        0      1998     1884         0        0         0         0
-      2      0x55acdcc92080     0       1   16.69%     1014     1014        0     4475     4475        0        0        0     2405        0        0      1056     1014         0        0         0         0
-
-Changes from v1:
-* Added Joe's test tag for patches 01-08;
-* Added a new patch for updating documentation.
-
-
-Leo Yan (9):
-  perf c2c: Display the total numbers continuously
-  perf c2c: Display "Total Stores" as a standalone metrics
-  perf c2c: Organize metrics based on memory hierarchy
-  perf c2c: Change header from "LLC Load Hitm" to "Load Hitm"
-  perf c2c: Use more explicit headers for HITM
-  perf c2c: Change header for LLC local hit
-  perf c2c: Correct LLC load hit metrics
-  perf c2c: Add metrics "RMT Load Hit"
-  perf c2c: Update documentation for metrics reorganization
-
- tools/perf/Documentation/perf-c2c.txt | 34 +++++------
- tools/perf/builtin-c2c.c              | 83 ++++++---------------------
- 2 files changed, 36 insertions(+), 81 deletions(-)
-
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index 5938b100eaf4..e602b7891ce9 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -2846,13 +2846,13 @@ static int perf_c2c__report(int argc, const char **argv)
+ 			"dcacheline,"
+ 			"dcacheline_node,"
+ 			"dcacheline_count,"
+-			"tot_recs,"
+ 			"percent_hitm,"
+ 			"tot_hitm,lcl_hitm,rmt_hitm,"
++			"tot_recs,"
++			"tot_loads,"
+ 			"stores,stores_l1hit,stores_l1miss,"
+ 			"dram_lcl,dram_rmt,"
+ 			"ld_llcmiss,"
+-			"tot_loads,"
+ 			"ld_fbhit,ld_l1hit,ld_l2hit,"
+ 			"ld_lclhit,ld_rmthit",
+ 			c2c.display == DISPLAY_TOT ? "tot_hitm" :
 -- 
 2.17.1
 
