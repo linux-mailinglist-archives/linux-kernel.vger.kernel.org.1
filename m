@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A938728EC4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B1F28EC4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbgJOEcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:32:06 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:34825 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOEcF (ORCPT
+        id S1729103AbgJOEcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 00:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgJOEco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:32:05 -0400
-Received: by mail-pj1-f66.google.com with SMTP id h4so1157352pjk.0;
-        Wed, 14 Oct 2020 21:32:05 -0700 (PDT)
+        Thu, 15 Oct 2020 00:32:44 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D38C061755;
+        Wed, 14 Oct 2020 21:32:44 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t18so918403plo.1;
+        Wed, 14 Oct 2020 21:32:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AXmRyhdS0GmnvBNnxkJbmQYN3zA7PGYdeJKou+GYMoo=;
+        b=mpMjdv6mT4g/VsBLWkdSiBxftUd526VNielRQ0VQfG1pt+L2u5osaPA22YbWSfKXva
+         OdKP7BfLnt3IguqnNSQoeJmM0eMpgns2wNIJLNqfBVDVa5NbrMhmW0UL5xqGCXJVfJmu
+         XahafWswVwfYcpw0D9+3YNvMHlPXSToq/Xm44PMTBve5HNV2/3SRQOOIOjh0pD2AtGja
+         JJogbjyO/6h2vAS+DEtfK7Q9+zduqvUp9BEh9Tq6zNFmo7okMjyHnOOlNZCtD9H1wJXA
+         TdgFc5ClyLzr9OvaCQGnalUcwPjgyKcG5Gws+qMA5JM2G7BNnLbv4fT/E+J7kQ0Exeu3
+         c3GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K64GKhtw+rJqkS3SqXm3fRppZopgGb55fc2+FtOF5gQ=;
-        b=tWSfGlYQbcvmrtKPAS+cgouRRfSw4lO47PNj4sOLLtxbYK09dVCNPDclT9NyhMAPFK
-         P+2Ydv+MXh1csm9au1W7n3T+jjjqxIT6Wrm7HuLQD7vwRlQ4bqL9Js8ko+Y5ftdEjZ6i
-         eGr1DMl+ql9jdsue8QpezXqPanTJdHftZ28ATsO53yiGLAl/QWwnopU9+cku6AW6g7gn
-         +0CHixcINBal2/AkdwTO8iwUpUTyyMwutiHooNdRv5oXXcO4+ppVWjPpJFpeYkleaFsG
-         hUMVszCBLgvffnS7JlfFtg3T3J6yPLRxjUvB0pT5W/QtjT2BuhXnYl8WSnP0ZlUoSIuM
-         adpg==
-X-Gm-Message-State: AOAM533Aioho4YZ66eV+sCNOg0PPGUqSLwWeutxBghs/roWu9nqlBJp1
-        RBvxFRMg5EQ9MeVikEiLqksCIPFNOQCBIA==
-X-Google-Smtp-Source: ABdhPJxAHk/YzMqBEB5OL/UCNy2qUEkee/nT3sbO5NNRlDG85RqPqVpO35cLYkqneQeihGANHlLyOw==
-X-Received: by 2002:a17:90a:e107:: with SMTP id c7mr2333525pjz.27.1602736324170;
-        Wed, 14 Oct 2020 21:32:04 -0700 (PDT)
-Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id u14sm1282426pjf.53.2020.10.14.21.32.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 21:32:02 -0700 (PDT)
-Subject: Re: [PATCH v6 69/80] IB/srpt: docs: add a description for cq_size
- member
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Yamin Friedman <yaminf@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org
-References: <cover.1602589096.git.mchehab+huawei@kernel.org>
- <d44a565b1638481c8dd282f01cae1fda3adf9fad.1602589096.git.mchehab+huawei@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <f283f15e-073c-ee42-d022-5b543f041d0b@acm.org>
-Date:   Wed, 14 Oct 2020 21:32:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AXmRyhdS0GmnvBNnxkJbmQYN3zA7PGYdeJKou+GYMoo=;
+        b=FvCh0fEr6wBtY2ba7n9tpkIPBHDfyuLuWu/PnoWJIGI5KX16IfcC4Gq43T6gJ0DXje
+         izZlG3pVwtmJ8/Gw/t8JAiRsh4ZpIp/M54pCVJ+WCLMTsWac6r3woA/xp/zaeshC7csj
+         NySUnZleP/KuGH30Go+dEVVwm35alK8a95zsN9huEuSHDPjthzMNF2ZkaQEO85xAU/+g
+         Qil6Pv9j9D+YVJ3G+9RFP4pcYiifCH8HENoy34a37e5OL+x5XW8Q3/LRLTea3LYO+VkL
+         OsCuN+Y9KDe8Ka/7lzWs01a8H5sn9GNz5hNIHXeJbnzp7XldfgG1dz6ORv2/Hb8d8QlK
+         lH8w==
+X-Gm-Message-State: AOAM532NknpYQEj99MmhwwwVP6te85AiLmHCg2y6Kusk7xmiX0vTssnH
+        a8Z7f9uiZ6Ejo0lWromzNXU=
+X-Google-Smtp-Source: ABdhPJyyxNTCxrERuQhJUbuIfefATua/xJ5SaZSMGoJ9xBYOsLupMChuptum8AWnVLJ+XujWyr99Fg==
+X-Received: by 2002:a17:902:bf45:b029:d5:b36d:56eb with SMTP id u5-20020a170902bf45b02900d5b36d56ebmr2177589pls.28.1602736364265;
+        Wed, 14 Oct 2020 21:32:44 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id w187sm1309176pfb.93.2020.10.14.21.32.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 21:32:43 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Thu, 15 Oct 2020 12:32:29 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/7] staging: qlge: replace ql_* with qlge_* to avoid
+ namespace clashes with other qlogic drivers
+Message-ID: <20201015043229.yngmk7h32plk5kkn@Rk>
+References: <20201014104306.63756-1-coiby.xu@gmail.com>
+ <20201014104306.63756-2-coiby.xu@gmail.com>
+ <20201015010136.GB31835@f3>
+ <20201015042628.42evgens2z47x3d6@Rk>
 MIME-Version: 1.0
-In-Reply-To: <d44a565b1638481c8dd282f01cae1fda3adf9fad.1602589096.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201015042628.42evgens2z47x3d6@Rk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 4:54 AM, Mauro Carvalho Chehab wrote:
-> Changeset c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
-> added a new member for struct srpt_rdma_ch, but didn't add the
-> corresponding kernel-doc markup, as repoted when doing
-> "make htmldocs":
-> 	./drivers/infiniband/ulp/srpt/ib_srpt.h:331: warning: Function parameter or member 'cq_size' not described in 'srpt_rdma_ch'
-> 
-> Add a description for it.
-> 
-> Fixes: c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/infiniband/ulp/srpt/ib_srpt.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-> index 41435a699b53..e5d6af14d073 100644
-> --- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-> +++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-> @@ -256,6 +256,7 @@ enum rdma_ch_state {
->   * @rdma_cm:	   See below.
->   * @rdma_cm.cm_id: RDMA CM ID associated with the channel.
->   * @cq:            IB completion queue for this channel.
-> + * @cq_size:	   Size of the @cq pool.
->   * @zw_cqe:	   Zero-length write CQE.
->   * @rcu:           RCU head.
->   * @kref:	   kref for this channel.
+On Thu, Oct 15, 2020 at 12:26:28PM +0800, Coiby Xu wrote:
+>On Thu, Oct 15, 2020 at 10:01:36AM +0900, Benjamin Poirier wrote:
+>>On 2020-10-14 18:43 +0800, Coiby Xu wrote:
+>>>To avoid namespace clashes with other qlogic drivers and also for the
+>>>sake of naming consistency, use the "qlge_" prefix as suggested in
+>>>drivers/staging/qlge/TODO.
+>>>
+>>>Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+>>>Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+>>>---
+>>> drivers/staging/qlge/TODO           |    4 -
+>>> drivers/staging/qlge/qlge.h         |  190 ++--
+>>> drivers/staging/qlge/qlge_dbg.c     | 1073 ++++++++++++-----------
+>>> drivers/staging/qlge/qlge_ethtool.c |  231 ++---
+>>> drivers/staging/qlge/qlge_main.c    | 1257 +++++++++++++--------------
+>>> drivers/staging/qlge/qlge_mpi.c     |  352 ++++----
+>>> 6 files changed, 1551 insertions(+), 1556 deletions(-)
+>>>
+>>>diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
+>>>index f93f7428f5d5..5ac55664c3e2 100644
+>>>--- a/drivers/staging/qlge/TODO
+>>>+++ b/drivers/staging/qlge/TODO
+>>>@@ -28,10 +28,6 @@
+>>> * the driver has a habit of using runtime checks where compile time checks are
+>>>   possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
+>>> * reorder struct members to avoid holes if it doesn't impact performance
+>>>-* in terms of namespace, the driver uses either qlge_, ql_ (used by
+>>>-  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
+>>>-  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
+>>>-  prefix.
+>>
+>>You only renamed ql -> qlge. The prefix needs to be added where there is
+>>currently none like the second example of that text.
+>>
+>Thank you for reminding me of the second example!
+>
+>>Besides, the next patch reintroduces the name struct ql_adapter.
+>
+>Oh, there is still a left-over ql_adapter in qlge.h (I renamed ql->qlge
+>after initializing the devlink framework earlier but did a git rebase
+>to make the order of the changes more reasonable). Thank you for the
+>reminding!
 
-That doesn't seem correct to me. My understanding is that cq_size is the
-number of CQEs in @cq. @cq is a completion queue and not a CQ pool.
+Btw, is there a way to configure kernel building to let the compiler
+discover this kind of issue automatically?
 
-Bart.
+>--
+>Best regards,
+>Coiby
 
-
+--
+Best regards,
+Coiby
