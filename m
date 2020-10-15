@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5968728EB93
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED2A28EB98
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgJODcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 23:32:46 -0400
-Received: from ozlabs.org ([203.11.71.1]:40351 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726869AbgJODcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 23:32:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBZbt3XMwz9sT6;
-        Thu, 15 Oct 2020 14:32:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602732763;
-        bh=FZ8tngOg0tdiOroMlewnRrOMkmr7vTeLLkS64+7jYng=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Sn0eCzpXBq8rzjlyh2egyCOEuh1Grq+JIKvSHQuMnhNKuFww1ll992R4eDXQf1LHJ
-         ipewsq13dWRrniscmmydzSLkoFkQzfxHaTk5XBu3Syj0lbefCb/Glro8Gj+PLAd1a0
-         0dEZ07qLJ8JDNN2N8kEFJ5coLEpDqtdh0rLI5RJGam7DKU8117BjBXb3cXN4YumGyv
-         Kx6RXbhzO73yfVBjCIE9wC5+DHwbLpY1l+G1H3w+ep/oRIiRln+Tg7DV72mc+iOi4G
-         5/aQEWlDlyVl8WyHmlkj9JLfleJ4OAGSWCLEDbN4Y41OlAkPNMjYp6Cg0izRBSBBXB
-         MF2DEYGDrpPaQ==
-Date:   Thu, 15 Oct 2020 14:32:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the tip tree with the dma-mapping
- tree
-Message-ID: <20201015143241.13d8eea0@canb.auug.org.au>
-In-Reply-To: <20201006171135.3cabacbf@canb.auug.org.au>
-References: <20201006171135.3cabacbf@canb.auug.org.au>
+        id S1729000AbgJODgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 23:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgJODgw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 23:36:52 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1B3C061755;
+        Wed, 14 Oct 2020 20:36:52 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id hk7so1071586pjb.2;
+        Wed, 14 Oct 2020 20:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dZZ2W2ZXWR/5JghdDs4vC5Scf0IVrUV4frx943KPZ1E=;
+        b=penxqKEAqwt9WKx6d3RwfgllRNuRpxXp0bDCLQPX5YL0EHWqGzOlaY9nmCOhXpRmox
+         k1Z9a8E8F9FNN7PCOHIgATLHdUxZw033r6g5vHPgJDseR7R+YnGvBxCJYmC6Z3Elsbe2
+         mPrXePosQm2k45suj35J6MwI6lUhjIw1PICUb7buRVGixonnSqec9I128hmVMkntCHkw
+         GGc8foHraT4p9/d3JmIPXTg1Jz8XX836qZfV5RdthMDqUf4EG4z1SpanGylIPUuyU8eN
+         pEbS13YNjdVveMwEh23zD9xpK/twItuaPgQeWH6U44TF7RLCGVAdhMgB0I8cAOFsLfaP
+         SvsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dZZ2W2ZXWR/5JghdDs4vC5Scf0IVrUV4frx943KPZ1E=;
+        b=AibL2dJSIgwfNmG/PQUTqUbdmgmkIy1zOsn1vxd73RhDihpLTaTOZfo/tsezaXO4KV
+         QNVV5hT2jInRRrqU712FcNVww3vwS5afOQQ9X8vElEEPFWW1P2TOYh9QT8lGEyJkvi2m
+         vWfNjTNrzOnK7o2LjXSvq/feKeDEvIXEN2ra0rQRY3hL/1fqb4NpdG0iPZse27lplJ0J
+         Gy/tAN3SYY5TfHRJwMaOzM1T+oqzW0V44nlDLUumSU7V2XEqn9n8I5cpk5F60RjEJji4
+         P1TRGtNO3hsFlgBJR6eWp5K8mgCQCtcubkck8o8bKP2eer/eFEGwtXQ5Uy3eBjzjjwVh
+         S1vA==
+X-Gm-Message-State: AOAM530R1gyuN2ygIKh94Cz2FyKDltfGJKyNolAtAN8e5NlPY4aPCXaE
+        fTbIvDwh7HDGQuBXep4wjsM=
+X-Google-Smtp-Source: ABdhPJzjxyRNZ8dsFvfMKwI2RYmKGXTl4u2CHHVFFulzsjTjXc/zhUSL3u+oZZX4cqRZIUdUZ0Bb4g==
+X-Received: by 2002:a17:90a:6b08:: with SMTP id v8mr2326317pjj.126.1602733011710;
+        Wed, 14 Oct 2020 20:36:51 -0700 (PDT)
+Received: from hoboy (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id 198sm1188174pfy.41.2020.10.14.20.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 20:36:50 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 20:36:48 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: ptp: get rid of IPV4_HLEN() and OFF_IHL
+ macros
+Message-ID: <20201015033648.GA24901@hoboy>
+References: <20201014115805.23905-1-ceggers@arri.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WNhlUvoF7PPmRwHPClp=2m0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014115805.23905-1-ceggers@arri.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WNhlUvoF7PPmRwHPClp=2m0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 14, 2020 at 01:58:05PM +0200, Christian Eggers wrote:
+> Both macros are already marked for removal.
 
-Hi all,
+I'm not sure what Daniel Borkmann meant by that comment, but ...
 
-On Tue, 6 Oct 2020 17:11:35 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->=20
-> Today's linux-next merge of the tip tree got a conflict in:
->=20
->   arch/x86/kernel/setup.c
->=20
-> between commit:
->=20
->   f47e22d65d08 ("dma-mapping: split <linux/dma-mapping.h>")
->=20
-> from the dma-mapping tree and commit:
->=20
->   a945c8345ec0 ("static_call: Allow early init")
->=20
-> from the tip tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc arch/x86/kernel/setup.c
-> index 787c5ff1e7c0,fa16b906ea3f..000000000000
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@@ -20,7 -19,7 +20,8 @@@
->   #include <linux/hugetlb.h>
->   #include <linux/tboot.h>
->   #include <linux/usb/xhci-dbgp.h>
-> + #include <linux/static_call.h>
->  +#include <linux/swiotlb.h>
->  =20
->   #include <uapi/linux/mount.h>
->  =20
+>  	switch (type & PTP_CLASS_PMASK) {
+>  	case PTP_CLASS_IPV4:
+> -		ptr += IPV4_HLEN(ptr) + UDP_HLEN;
+> +		ptr += (((struct iphdr *)ptr)->ihl << 2) + UDP_HLEN;
 
-This is now a conflict between the dma-mapping tree and Linus' tree.
+to my eyes
 
---=20
-Cheers,
-Stephen Rothwell
+	IPV4_HLEN(ptr)
 
---Sig_/WNhlUvoF7PPmRwHPClp=2m0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+is way more readable than
 
------BEGIN PGP SIGNATURE-----
+	(((struct iphdr *)ptr)->ihl << 2)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+HwtkACgkQAVBC80lX
-0GyC3wgAgW6+JSuj+6euEekH8DIzk6NrNqVxESENRg4qB35UHvX++XhBT2HtrgNH
-RmD9bjsKVYzuCGy2BA9qAFyqrBul1VeN+J6X6nxAMP0pkiPNTGmYC6D6InqissY8
-9LblZh6hBddOQujFJxHAX3mI0WZJzonVX+uYSwj426jAYFBqrzOQ0LL+6uaoggct
-jzY0Vpcomn77IkTUqN+tda4AWjuX35g6HlRxP0RLvg22Qfo6Hr081pgAf0bURKF0
-hKZa2W28AEI6Rpf6PJCPHFJRrUzT98Gy2QJrvmIxq4ihlKqVNzylnMOq2SPgCu7Y
-iEgNraWRbc/fidXDc5+4ZxMoeyYfNQ==
-=9x9x
------END PGP SIGNATURE-----
+and this
 
---Sig_/WNhlUvoF7PPmRwHPClp=2m0--
+	(struct udphdr *)((char *)ih + (ih->ihl << 2))
+
+is really baroque.
+
+I don't see any improvement here.
+
+Thanks,
+Richard
+
