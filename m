@@ -2,135 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9AE28E9D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EE528E9EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388139AbgJOBTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
+        id S2387939AbgJOBYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387621AbgJOBTh (ORCPT
+        with ESMTP id S2387588AbgJOBYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:19:37 -0400
-Received: from orcam.me.uk (unknown [IPv6:2001:4190:8020::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E64DEC004588;
-        Wed, 14 Oct 2020 17:03:16 -0700 (PDT)
-Received: from bugs.linux-mips.org (eddie.linux-mips.org [IPv6:2a01:4f8:201:92aa::3])
-        by orcam.me.uk (Postfix) with ESMTPS id D116D2BE086;
-        Thu, 15 Oct 2020 01:03:14 +0100 (BST)
-Date:   Thu, 15 Oct 2020 01:03:10 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: DEC: Restore bootmem reservation for firmware
- working memory area
-In-Reply-To: <20201014223654.rntqmnrxldxovf3u@mobilestation>
-Message-ID: <alpine.LFD.2.21.2010150008460.866917@eddie.linux-mips.org>
-References: <alpine.LFD.2.21.2010142230090.866917@eddie.linux-mips.org> <20201014223654.rntqmnrxldxovf3u@mobilestation>
+        Wed, 14 Oct 2020 21:24:37 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E77C00458B
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:05:05 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id k6so2022139ior.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RaJUMBdT2vxBU1j2obI4LFP8P80zs2l0P5aAqZ2WLF0=;
+        b=bJzkxm0K/IzzvatIMWA1ysFrNM6taqwwEYD+cYIhm1P6swAyEUV6ofOSn+al809XUp
+         XkrherYBHYP0//YIcRFWvVVk1p8sAQdQzxcjZ/UxGYzlbfgiZN6eD/QctzEa1AQ9zz6h
+         N0xuTdcJuLzxBtLAs4a6ckvC+WrNdJMRgTVc4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RaJUMBdT2vxBU1j2obI4LFP8P80zs2l0P5aAqZ2WLF0=;
+        b=n6BgwZNmYEo8SXcCcXu46TDzBMnBZVVa3WR2Mkn2V9Fp8sEnWXSyK/1KxTccT4meOL
+         7ulzrkYe0Bag6TpQQO2KppDPEi6jRVu+jvD1AW2CJKkWUGsMch28Q4uxBnmElFNfPxer
+         F0q42KGkQnisXcKytneHeBzbxebkgyCFNtHnhUM061Qfsp5M+KofSAdg+Da+83tJkQ2M
+         hFaRrbFc/Bdiq1TpoLTAjU1FIdvfNZibN18t7sC4OwPHtYLOBzu7Jd6zfMsLVwu3VVvJ
+         bRUKc5Og7LqEJPIzWihinmWdBG3CT2UFFzK8ZIev9edf3NA7EHxSE9YSBjTGN2hEHtnb
+         SlTA==
+X-Gm-Message-State: AOAM533/ZSAklaEtebWtk/PQx0ClRlYFaI7mmK5WjcGQkNECRnJcMAwi
+        xT0rVgrsTc7c34fT9xQRcpxZCw==
+X-Google-Smtp-Source: ABdhPJznhnFyOcbseZmoYi9B7OzTng6gMty30H4KjVxABrz1sNj/Ie0R8K7RiLBDROggp+Qdf+O8Yw==
+X-Received: by 2002:a5d:96ce:: with SMTP id r14mr1360757iol.146.1602720304339;
+        Wed, 14 Oct 2020 17:05:04 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id b17sm974121ilo.86.2020.10.14.17.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 17:05:03 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 20:05:03 -0400
+From:   joel@joelfernandes.org
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neeraj.iitr10@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: Re: [PATCH v6 3/4] rcu/trace: Add tracing for how segcb list changes
+Message-ID: <20201015000503.GB4025103@google.com>
+References: <20200923152211.2403352-1-joel@joelfernandes.org>
+ <20200923152211.2403352-4-joel@joelfernandes.org>
+ <be9eb8bc-b776-e122-2182-ca2aac2d1e20@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be9eb8bc-b776-e122-2182-ca2aac2d1e20@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020, Serge Semin wrote:
+On Wed, Oct 14, 2020 at 08:52:17PM +0530, Neeraj Upadhyay wrote:
+> 
+> 
+> On 9/23/2020 8:52 PM, Joel Fernandes (Google) wrote:
+> > Track how the segcb list changes before/after acceleration, during
+> > queuing and during dequeuing.
+> > 
+> > This has proved useful to discover an optimization to avoid unwanted GP
+> > requests when there are no callbacks accelerated. The overhead is minimal as
+> > each segment's length is now stored in the respective segment.
+> > 
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > ---
+> >   include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
+> >   kernel/rcu/rcu_segcblist.c | 34 ++++++++++++++++++++++++++++++++++
+> >   kernel/rcu/rcu_segcblist.h |  5 +++++
+> >   kernel/rcu/tree.c          |  9 +++++++++
+> >   4 files changed, 73 insertions(+)
+> > 
+> > diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+> > index 155b5cb43cfd..7b84df3c95df 100644
+> > --- a/include/trace/events/rcu.h
+> > +++ b/include/trace/events/rcu.h
+> > @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
+> >   		  __entry->qlen)
+> >   );
+> > +TRACE_EVENT_RCU(rcu_segcb,
+> > +
+> > +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
+> > +
+> > +		TP_ARGS(ctx, cb_count, gp_seq),
+> > +
+> > +		TP_STRUCT__entry(
+> > +			__field(const char *, ctx)
+> > +			__array(int, cb_count, 4)
+> > +			__array(unsigned long, gp_seq, 4)
+> 
+> Use RCU_CBLIST_NSEGS in place of 4 ?
 
-> > Table 2-2  REX Memory Regions
-> > -------------------------------------------------------------------------
-> >         Starting        Ending
-> > Region  Address         Address         Use
-> > -------------------------------------------------------------------------
-> > 0       0xa0000000      0xa000ffff      Restart block, exception vectors,
-> >                                         REX stack and bss
-> > 1       0xa0010000      0xa0017fff      Keyboard or tty drivers
-> > 
-> > 2       0xa0018000      0xa001f3ff 1)   CRT driver
-> > 
-> > 3       0xa0020000      0xa002ffff      boot, cnfg, init and t objects
-> > 
-> > 4       0xa0020000      0xa002ffff      64KB scratch space
-> > -------------------------------------------------------------------------
-> > 1) Note that the last 3 Kbytes of region 2 are reserved for backward
-> > compatibility with previous system software.
-> > -------------------------------------------------------------------------
-> > 
+Done.
+
+> > +		),
+> > +
+> > +		TP_fast_assign(
+> > +			__entry->ctx = ctx;
+> > +			memcpy(__entry->cb_count, cb_count, 4 * sizeof(int));
+> > +			memcpy(__entry->gp_seq, gp_seq, 4 * sizeof(unsigned long));
+> > +		),
+> > +
+> > +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
+> > +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
+> > +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
+> > +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
+> > +
+> > +);
+> > +
+> >   /*
+> >    * Tracepoint for the registration of a single RCU callback of the special
+> >    * kvfree() form.  The first argument is the RCU type, the second argument
+> > diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> > index 0e6d19bd3de9..df0f31e30947 100644
+> > --- a/kernel/rcu/rcu_segcblist.c
+> > +++ b/kernel/rcu/rcu_segcblist.c
+> > @@ -13,6 +13,7 @@
+> >   #include <linux/rcupdate.h>
+> >   #include "rcu_segcblist.h"
+> > +#include "rcu.h"
+> >   /* Initialize simple callback list. */
+> >   void rcu_cblist_init(struct rcu_cblist *rclp)
+> > @@ -343,6 +344,39 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
+> >   	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
+> >   }
+> > +/*
+> > + * Return how many CBs each segment along with their gp_seq values.
+> > + *
+> > + * This function is O(N) where N is the number of callbacks. Only used from
 > 
-> ...
+> N is number of segments?
+
+Yes, will fix.
+
+> > + * tracing code which is usually disabled in production.
+> > + */
+> > +#ifdef CONFIG_RCU_TRACE
+> > +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
+> > +			 int cbcount[RCU_CBLIST_NSEGS],
+> > +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
+> > +{
+> > +	int i;
+> > +
+> > +	for (i = 0; i < RCU_CBLIST_NSEGS; i++)
+> > +		cbcount[i] = 0;
+> > +
 > 
-> > @@ -146,6 +150,9 @@ void __init plat_mem_setup(void)
-> >  
-> >  	ioport_resource.start = ~0UL;
-> >  	ioport_resource.end = 0UL;
+> What is the reason for initializing to 0?
+
+You are right, not needed. I'll remove.
+
+> > +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
+> > +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
+> > +		gpseq[i] = rsclp->gp_seq[i];
+> > +	}
+> > +}
+> > +
+> > +void trace_rcu_segcb_list(struct rcu_segcblist *rsclp, char *context)
+> > +{
+> > +	int cbs[RCU_CBLIST_NSEGS];
+> > +	unsigned long gps[RCU_CBLIST_NSEGS];
+> > +
+> > +	rcu_segcblist_countseq(rsclp, cbs, gps);
+> > +
+> > +	trace_rcu_segcb(context, cbs, gps);
+> > +}
+> > +#endif
+> > +
+> >   /*
+> >    * Extract only those callbacks still pending (not yet ready to be
+> >    * invoked) from the specified rcu_segcblist structure and place them in
+> > diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+> > index 3e0eb1056ae9..15c10d30f88c 100644
+> > --- a/kernel/rcu/rcu_segcblist.h
+> > +++ b/kernel/rcu/rcu_segcblist.h
+> > @@ -103,3 +103,8 @@ void rcu_segcblist_advance(struct rcu_segcblist *rsclp, unsigned long seq);
+> >   bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq);
+> >   void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+> >   			 struct rcu_segcblist *src_rsclp);
+> > +#ifdef CONFIG_RCU_TRACE
+> > +void trace_rcu_segcb_list(struct rcu_segcblist *rsclp, char *context);
+> > +#else
+> > +#define trace_rcu_segcb_list(...)
+> > +#endif
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 50af465729f4..e3381ff67fc6 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -1492,6 +1492,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+> >   	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+> >   		return false;
+> > +	trace_rcu_segcb_list(&rdp->cblist, "SegCbPreAcc");
+> 
+> Use TPS("SegCbPreAcc") ?
+
+Fixed, thanks!
+
+thanks,
+
+ - Joel
+
+> 
+> 
+> Thanks
+> Neeraj
 > 
 > > +
-> > +	/* Stay away from the firmware working memory area for now. */
-> > +	memblock_reserve(PHYS_OFFSET, __pa_symbol(&_text) - PHYS_OFFSET);
+> >   	/*
+> >   	 * Callbacks are often registered with incomplete grace-period
+> >   	 * information.  Something about the fact that getting exact
+> > @@ -1512,6 +1514,8 @@ static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+> >   	else
+> >   		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+> > +	trace_rcu_segcb_list(&rdp->cblist, "SegCbPostAcc");
+> > +
+> >   	return ret;
+> >   }
+> > @@ -2469,6 +2473,9 @@ static void rcu_do_batch(struct rcu_data *rdp)
+> >   	/* Invoke callbacks. */
+> >   	tick_dep_set_task(current, TICK_DEP_BIT_RCU);
+> >   	rhp = rcu_cblist_dequeue(&rcl);
+> > +
+> > +	trace_rcu_segcb_list(&rdp->cblist, "SegCbDequeued");
+> > +
+> >   	for (; rhp; rhp = rcu_cblist_dequeue(&rcl)) {
+> >   		rcu_callback_t f;
+> > @@ -2982,6 +2989,8 @@ __call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >   		trace_rcu_callback(rcu_state.name, head,
+> >   				   rcu_segcblist_n_cbs(&rdp->cblist));
+> > +	trace_rcu_segcb_list(&rdp->cblist, "SegCBQueued");
+> > +
+> >   	/* Go handle any RCU core processing required. */
+> >   	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+> >   	    unlikely(rcu_segcblist_is_offloaded(&rdp->cblist))) {
+> > 
 > 
-> I am just wondering...
-> Here we reserve a region within [PHYS_OFFSET, __pa_symbol(&_text)]. But then in
-> the prom_free_prom_memory() method we'll get to free a region as either
-> [PAGE_SIZE, __pa_symbol(&_text)] or [PAGE_SIZE, __pa_symbol(&_text) - 0x00020000].
-> 
-> First of all the start address of the being freed region is PAGE_SIZE, which doesn't
-> take the PHYS_OFFSET into account. I assume it won't cause problems because
-> PHYS_OFFSET is set to 0 for DEC. If so then we either shouldn't use PHYS_OFFSET
-> here or should take PHYS_OFFSET into account there on freeing or should just forget
-> about that since other than confusion it won't cause any problem.)
-> (I should have posted this question to v1 of this patch instead of pointing out
-> on the confusing size argument of the memblock_reserve() method. Sorry about
-> that.)
-
- Technically, yes, we could use PHYS_OFFSET here, though as a separate 
-change, as it's not related to the regression addressed.
-
- Please mind that this is very old code, which long predates the existence 
-of PHYS_OFFSET, introduced with commit 6f284a2ce7b8 ("[MIPS] FLATMEM: 
-introduce PHYS_OFFSET.") back in 2007 only.  While `prom_free_prom_memory' 
-code dates back to commit b5766e7e6177 ("o bootmem fixes for DECstations") 
-(no proper change heading here; this is from CVS repo days) from 2000, and 
-I fiddled with it myself not so long afterwards with commit e25ac8bd2505 
-("DECstation fixes from Maciej") in 2001 (both in the old LMO GIT repo).  
-So if anytime it should have been updated in the course of a code audit 
-that was surely due across all platforms with the introduction of 
-PHYS_OFFSET.
-
- Of course it doesn't mean it must not or cannot be fixed now, but it has 
-been functionally correct even if semantically broken, so no one saw the 
-urge to change it (let alone notice the problem in the first place -- you 
-are the first one).
-
-> Secondly why is PAGE_SIZE selected as the start address? It belongs to the
-> Region 1 in accordance with "Table 2-2 REX Memory Regions" cited above. Thus we
-> get to keep reserved just a part of the Region 1. Most likely it's the restart
-> block and the exception vectors. Even assuming that the DEC developers knew what
-> they were doing, I am wondering can we be sure that a single page is enough for
-> all that data?..
-
- Again this is so old as to predate the existence of synthesised exception 
-handlers we currently use (which has been a blessing BTW), which I reckon 
-take a little less space than the preassembled handlers we previously had 
-used to, and stay well within even the smallest supported page size of 
-4KiB.  Anything else we can just overwrite as we do not mean to call into 
-the firmware at this point anymore; we couldn't trust it to do the right 
-thing anyway once we have booted (e.g. not to keep interrupts masked for 
-too long, etc.).
-
- I've been occasionally thinking about a better solution in place of the 
-LANCE hack here, needed because the chip has only its low 16 out of 24 
-address lines wired, due to a limitation of the IOASIC DMA controller (it 
-also drives one half of the IOASIC's 16-bit data bus only, communicating 
-with every other byte of system memory only and hence the requirement for 
-a 128KiB allocation, with every other byte wasted, rather than a 64KiB 
-one).
-
- Had all 24 lines been used, we could use dynamic ZONE_DMA buffers as with 
-PC ISA DMA, as the LANCE implements proper DMA rings, but with low 16 only 
-it would not really play.  I have not come up with any solution however 
-that would be significantly better than what we have, and the current one 
-works, so I have left it as it is.
-
- Do these explanations address your concerns?
-
-  Maciej
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> the Code Aurora Forum, hosted by The Linux Foundation
