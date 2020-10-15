@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4158628FB20
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74A728FB12
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731749AbgJOWT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:19:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54950 "EHLO mail.kernel.org"
+        id S1731764AbgJOWT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:19:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731189AbgJOWTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731589AbgJOWTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Oct 2020 18:19:25 -0400
-Subject: Re: [GIT PULL] livepatching for 5.10
+Subject: Re: [GIT PULL] dma-mapping updates for 5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602800364;
-        bh=AmD9eF7iGEc0dwK/aaxxnC31vs9NAjgaesdQHjBBHsE=;
+        s=default; t=1602800365;
+        bh=jUQ66Abb2Cqv517bRYUaJgK1Ar/plmVQdBiGTSpFQnE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=fcWiFlGsQIkIcfqfvbL0eV2qD9NOHaHE6mrLgYHikHYIQFSAlD0Pz8fPlNgD2t3Md
-         yiPP9dpyeQnwk7Iv2PU/fQS32ooXPw+n4ZHxpsqXkbSbjPzAmgXGQiwVSNaYcqSEZJ
-         9USRAYsj8vyLuDRZF5/j2RimskNLChW/+HrHoz3w=
+        b=n12tT5nj2eWdrcYFLRRlWe8O6kDp9f1/pvamhLXqdmyOCRVcw60T50O0jZ+3gANtm
+         iKmiGt+su3LfkI0hZbNTY/kQS2CTE1ZdAScCPaKF8O2GMdA2DSmYU1pVbhMWtlRFJt
+         YNrLAbVhBp5mwxbVaXmpQrReLrP0Q/skbPLzucZA=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <nycvar.YFH.7.76.2010151950140.18859@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2010151950140.18859@cbobk.fhfr.pm>
-X-PR-Tracked-List-Id: <live-patching.vger.kernel.org>
-X-PR-Tracked-Message-Id: <nycvar.YFH.7.76.2010151950140.18859@cbobk.fhfr.pm>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching for-linus
-X-PR-Tracked-Commit-Id: 884ee754f5aedbe54406a4d308a6cc57335747ce
+In-Reply-To: <20201015174743.GA2648490@infradead.org>
+References: <20201015174743.GA2648490@infradead.org>
+X-PR-Tracked-List-Id: Development issues for Linux IOMMU support
+ <iommu.lists.linux-foundation.org>
+X-PR-Tracked-Message-Id: <20201015174743.GA2648490@infradead.org>
+X-PR-Tracked-Remote: git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.10
+X-PR-Tracked-Commit-Id: 2a410d09417b5344ab1f3cf001ac73a1daf8dcce
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0cd7d9795fa82226e7516d38b474bddae8b1ff26
-Message-Id: <160280036480.16623.4178503158509734625.pr-tracker-bot@kernel.org>
-Date:   Thu, 15 Oct 2020 22:19:24 +0000
-To:     Jiri Kosina <jikos@kernel.org>
+X-PR-Merge-Commit-Id: 5a32c3413d3340f90c82c84b375ad4b335a59f28
+Message-Id: <160280036534.16623.3771479441636667328.pr-tracker-bot@kernel.org>
+Date:   Thu, 15 Oct 2020 22:19:25 +0000
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 15 Oct 2020 20:31:55 +0200 (CEST):
+The pull request you sent on Thu, 15 Oct 2020 19:47:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching for-linus
+> git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.10
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0cd7d9795fa82226e7516d38b474bddae8b1ff26
+https://git.kernel.org/torvalds/c/5a32c3413d3340f90c82c84b375ad4b335a59f28
 
 Thank you!
 
