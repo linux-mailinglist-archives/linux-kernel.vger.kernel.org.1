@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F003028F36F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69B928F376
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387867AbgJONjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727845AbgJONjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:39:25 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6846C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:39:24 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id d3so3687031wma.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:39:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=o2Nh6KJm4jPGdm8+1OLljLZrSt0m6NW06Aa+KD07b00=;
-        b=hv2CDDRO2tkNNRofdtyGczxALxVwH4U+r/AF4hjKShlob9En1V/hZpPy+qjwW/Ps4V
-         NQyU3olnRIylVF+P8VLYAFzHZVRHYeTMl484i3qS7sVykQvixx9xvfXS84cTe1VonRMa
-         bQ5samKS9ScnJ9ibQ12oJlA/Ie2dg6pWHF2CK/WrkhBRSVGmjpOjZRdr7Pzwnk1ytNs/
-         67q68LN8YA8frqWhvf72+lpFBu0wmSnnubuZWrTDSQit1l2UIThXrNl4n77Muz7iAyWM
-         x9FE/QxkWrueH12IiZx1nyuO9Tjaiz9WZdZ86Bxqc50Bj3vQY2yBk07lUxwhlNZiS0NB
-         GyMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o2Nh6KJm4jPGdm8+1OLljLZrSt0m6NW06Aa+KD07b00=;
-        b=LYMC43oML1y0wyQTqdfeKRV0prau1W087zCKeK43hJ14gkOP330A5zZUIzcd4B18A+
-         epU4QG2ePlSoCiDrxUFCxlvc+vtzt2D5Wcuwoa6LTSPPUYdCf3/FUJByFSGA56L8vCO6
-         Zd0pzwq6mvEazIK43buAkMeVdToWRX2/ltEhdsmUEekZsu4ccuifhH/gX93wnx7yOwxX
-         KJa1XW4hrW5GyTuqcI3LX6bYVgfkb52Ya5zXGK2GcI+a8TTSyU4GNas+csdIQjglaxgR
-         pWu98OZbz+H7rRp+XcNwPbM4FqmD2RZCKrLfmV0GAeKI0Ng1k1Xcph/XjSzfm7BhaCy4
-         AnQg==
-X-Gm-Message-State: AOAM533BGHCQ0xAEACgeXXkN2hsYUC3vv0T/a0EOQWjixjWJzSBzb1er
-        bEDR4UJJUAABz2lYFmgm+qJPTg==
-X-Google-Smtp-Source: ABdhPJx2lu3FnUf0sJpN8vCYCdGRv5t8JUlS/lE5EZosWOJK9Taj+BresQtefuQQdeBIDXMdGqhbAQ==
-X-Received: by 2002:a1c:449:: with SMTP id 70mr4008121wme.40.1602769163466;
-        Thu, 15 Oct 2020 06:39:23 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5400:5b12:4f4c:844b? ([2a01:e34:ed2f:f020:5400:5b12:4f4c:844b])
-        by smtp.googlemail.com with ESMTPSA id b5sm4539952wrs.97.2020.10.15.06.39.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 06:39:22 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
+        id S1730018AbgJONj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:39:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:43946 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727845AbgJONj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 09:39:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CFC013D5;
+        Thu, 15 Oct 2020 06:39:57 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.51.4])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 58A683F719;
+        Thu, 15 Oct 2020 06:39:51 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 14:39:48 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitriy Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
- <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
- <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
- <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
- <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
- <d04019bd-9e85-5f3e-2a1b-66780b8df3dc@linaro.org>
- <CAJZ5v0jmTYtMyujxxTBezmiO-j3iW_RjRKOkCpqU4gtRe+OJ2Q@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <03baa329-8fce-410c-ba51-385d4041aaa9@linaro.org>
-Date:   Thu, 15 Oct 2020 15:39:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
+Message-ID: <20201015133948.GB50416@C02TD0UTHF1T.local>
+References: <20200921132611.1700350-1-elver@google.com>
+ <20200921132611.1700350-4-elver@google.com>
+ <20200921143059.GO2139@willie-the-truck>
+ <CAG_fn=WXknUnNmyniy_UE7daivSNmy0Da2KzNmX4wcmXC2Z_Mg@mail.gmail.com>
+ <20200929140226.GB53442@C02TD0UTHF1T.local>
+ <CAG_fn=VOR-3LgmLY-T2Fy6K_VYFgCHK0Hv+Y-atrvrVZ4mQE=Q@mail.gmail.com>
+ <20201001175716.GA89689@C02TD0UTHF1T.local>
+ <CANpmjNMFrMZybOebFwJ1GRXpt8v39AN016UDgPZzE8J3zKh9RA@mail.gmail.com>
+ <20201008104501.GB72325@C02TD0UTHF1T.local>
+ <CANpmjNOg2OeWpXn57_ikqv4KR0xVEooCDECUyRijgr0tt4+Ncw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0jmTYtMyujxxTBezmiO-j3iW_RjRKOkCpqU4gtRe+OJ2Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNOg2OeWpXn57_ikqv4KR0xVEooCDECUyRijgr0tt4+Ncw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2020 15:33, Rafael J. Wysocki wrote:
+On Wed, Oct 14, 2020 at 09:12:37PM +0200, Marco Elver wrote:
+> On Thu, 8 Oct 2020 at 12:45, Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Thu, Oct 08, 2020 at 11:40:52AM +0200, Marco Elver wrote:
+> > > On Thu, 1 Oct 2020 at 19:58, Mark Rutland <mark.rutland@arm.com> wrote:
 
-[ ... ]
+> > > > > > If you need virt_to_page() to work, the address has to be part of the
+> > > > > > linear/direct map.
 
->> Up to Rafael to decide what to do with this documentation update.
+> > > We're going with dynamically allocating the pool (for both x86 and
+> > > arm64), 
+
+[...]
+
+> We've got most of this sorted now for v5 -- thank you!
 > 
-> Well, I was hoping that you both would reach some kind of agreement.
-> 
-> I don't feel like the decision is mine here to be honest.
+> The only thing we're wondering now, is if there are any corner cases
+> with using memblock_alloc'd memory for the KFENCE pool? (We'd like to
+> avoid page alloc's MAX_ORDER limit.) We have a version that passes
+> tests on x86 and arm64, but checking just in case. :-)
 
-No problem, probably we have to think about that a bit more before
-reaching the agreement.
+AFAICT otherwise the only noticeable difference might be PageSlab(), if
+that's clear for KFENCE allocated pages? A few helpers appear to check
+that to determine how something was allocated (e.g. in the scatterlist
+and hwpoison code), and I suspect that needs to behave the same.
 
+Otherwise, I *think* using memblock_alloc should be fine on arm64; I'm
+not entirely sure for x86 (but suspect it's similar). On arm64:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+* All memory is given a struct page via memblocks_present() adding all
+  memory memblocks. This includes memory allocated by memblock_alloc().
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+* All memory is mapped into the linear map via arm64's map_mem() adding
+  all (non-nomap) memory memblocks. This includes memory allocated by
+  memblock_alloc().
+
+Thanks,
+Mark.
