@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F15F28EBB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC15F28EBBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730397AbgJODqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 23:46:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:19759 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727281AbgJODqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 23:46:46 -0400
-IronPort-SDR: oqXXNKu6P/DWlqnbFJQN/3W5BEe+cUTAQc62mFUJ4eOu11uxTB1rGIl7Nz3Skg62oOoQYh9E4R
- hSPkgNwu9Mhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="166313689"
-X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
-   d="scan'208";a="166313689"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 20:46:45 -0700
-IronPort-SDR: frVKPMJAzb1m9jivZ/XfXNx7VCqDkNNADy0hOKKQpIfrYnJ8mOjxbWGy/FPBq9IrrLYbuNMuZF
- XeLLSEBZdFVw==
-X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
-   d="scan'208";a="531094057"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 20:46:45 -0700
-Date:   Wed, 14 Oct 2020 20:46:45 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V3 7/9] x86/entry: Preserve PKRS MSR across exceptions
-Message-ID: <20201015034645.GQ2046448@iweiny-DESK2.sc.intel.com>
-References: <20201009194258.3207172-1-ira.weiny@intel.com>
- <20201009194258.3207172-8-ira.weiny@intel.com>
- <6006a4c8-32bd-04ca-95cc-b2736a5cef72@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6006a4c8-32bd-04ca-95cc-b2736a5cef72@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S1730418AbgJODxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 23:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727281AbgJODxR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 23:53:17 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B149BC061755;
+        Wed, 14 Oct 2020 20:53:15 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w21so864661plq.3;
+        Wed, 14 Oct 2020 20:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=PcE1kjCjEs+BJMqgFgiR6+M120Lae8WGd4rCIGF4zKg=;
+        b=V1KeLzGMkjL2L6Sh63zOik1SQDi5CqI88GK3quUCW3fnij1Gkv5D9jSbAgPyxqWrXu
+         Jj1R5hzT7be5QbHKegXGIVgzxb4/Ws5SXw7uXaOC2YCg85+iY6RQRzUfSzM4+Gqgoed4
+         bIb0ZV+5KWsqJOujvl2qn+U5O9BZ7t1Rc7m/9epdfOacfjp2LVpXiEfCtqVNozB4Zmc9
+         ABsLX1GgaN7+VSqjRBF6wI4Oqs5rbGkjc2z0aCNZ+emDKgDIMxei//3Trz+I5mvSAZdQ
+         iz+4YLI+8c9kWbg2XlBvj8020FlgkU/eRSbX46f0hNRnO4k3rEmuGMgdsUI/ndQNKeW3
+         ZKuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=PcE1kjCjEs+BJMqgFgiR6+M120Lae8WGd4rCIGF4zKg=;
+        b=uRpmzGz+TRYPzAPeaTS0bh3Qo43oTBLxE1mWcjIip8K0gWD57ehuthtOQV/Zx3rgWJ
+         yGtkrJfb7kGUXVNptvAbe9QiDLs5gFs6aMnGDevHq6YmZrig4z9fpyMLe2ko3i2jtQw7
+         JdeMsrKRSY0LIaV2Wjf1N8Aim9zds9+779TwxyW0CT9iaF4GmPmogFRmc6Tpcvash4Y1
+         W6Hf4898fGW49aLBcjBJPYhlB4r8q2U/DDAweUwStWS680jVF9UlXMmUBsvvM1i3I61d
+         R3vs/DXqtErEnvw2cIz72IJig7fs0+Z0Xaj0Fy9Mh1pALbFs3UvR/tldK3t2bgCRbL/R
+         rCDw==
+X-Gm-Message-State: AOAM533iWUZD72UVdCZ5KFmaKIIFq2HdP+OPqBz65O01KVNZovnWAfik
+        CBXNvo5wFia9PaKNSBzBQGA=
+X-Google-Smtp-Source: ABdhPJwr29XBysw6kW6RuqKql+4mcUOEIwWI8lUNGoKJKjixGNZkuSRrmx6q6QJAJcvv9CUE+mtvCg==
+X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr2410073pjb.129.1602733995223;
+        Wed, 14 Oct 2020 20:53:15 -0700 (PDT)
+Received: from localhost.localdomain ([154.223.142.197])
+        by smtp.gmail.com with ESMTPSA id p16sm1320212pfq.63.2020.10.14.20.53.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Oct 2020 20:53:14 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] RCU: fix a typo in comments of rcu_blocking_is_gp
+Date:   Thu, 15 Oct 2020 03:53:03 +0000
+Message-Id: <1602733983-9803-1-git-send-email-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 11:52:32AM -0700, Dave Hansen wrote:
-> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
-> > @@ -341,6 +341,9 @@ noinstr void irqentry_enter(struct pt_regs *regs, irqentry_state_t *state)
-> >  	/* Use the combo lockdep/tracing function */
-> >  	trace_hardirqs_off();
-> >  	instrumentation_end();
-> > +
-> > +done:
-> > +	irq_save_pkrs(state);
-> >  }
-> 
-> One nit: This saves *and* sets PKRS.  It's not obvious from the call
-> here that PKRS is altered at this site.  Seems like there could be a
-> better name.
-> 
-> Even if we did:
-> 
-> 	irq_save_set_pkrs(state, INIT_VAL);
-> 
-> It would probably compile down to the same thing, but be *really*
-> obvious what's going on.
+There is a tiny typo in comment of function rcu_blocking_is_gp.
 
-I suppose that is true.  But I think it is odd having a parameter which is the
-same for every call site.
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ kernel/rcu/tree.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-But I'm not going to quibble over something like this.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index f78ee75..4cca03f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3512,7 +3512,7 @@ void __init kfree_rcu_scheduler_running(void)
+  * During early boot, any blocking grace-period wait automatically
+  * implies a grace period.  Later on, this is never the case for PREEMPTION.
+  *
+- * Howevr, because a context switch is a grace period for !PREEMPTION, any
++ * However, because a context switch is a grace period for !PREEMPTION, any
+  * blocking grace-period wait automatically implies a grace period if
+  * there is only one CPU online at any point time during execution of
+  * either synchronize_rcu() or synchronize_rcu_expedited().  It is OK to
+-- 
+1.7.1
 
-Changed,
-Ira
-
-> 
-> >  void irqentry_exit_cond_resched(void)
-> > @@ -362,7 +365,12 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t *state)
-> >  	/* Check whether this returns to user mode */
-> >  	if (user_mode(regs)) {
-> >  		irqentry_exit_to_user_mode(regs);
-> > -	} else if (!regs_irqs_disabled(regs)) {
-> > +		return;
-> > +	}
-> > +
-> > +	irq_restore_pkrs(state);
-> > +
-> > +	if (!regs_irqs_disabled(regs)) {
-> >  		/*
-> >  		 * If RCU was not watching on entry this needs to be done
-> >  		 * carefully and needs the same ordering of lockdep/tracing
-> > 
-> 
