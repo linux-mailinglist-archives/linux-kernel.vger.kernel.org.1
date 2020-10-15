@@ -2,273 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2D728EE8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B847828EE98
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729861AbgJOIdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:33:35 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:16640 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727121AbgJOIde (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:33:34 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09F8WPPL003759;
-        Thu, 15 Oct 2020 10:33:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=Ssz2w8iggOqN04KJMoAoY3TT8F1XmgIcqSfwklU3lG0=;
- b=uddb/mQmRJSSrWx1bv2biDe24fTexdMn72lOX773/1WgWS17lMlg0cTwumlJsa2uOCVE
- S2TyKLh2JEKjKeUnL4HGQ20l++Eyr3DSgSGGxmQLzsok9yAxqugQNlKUNp+WnoWub3Mq
- 1l9GsuttMd/f2ls5/LdBnYrsSp5PN5hBtgBw63zR6lVu1v9d7OpOxbavBBbGQZeWfOTt
- 8uV8XmHjzmHW6C/x6DvZsjhxDtwppjmiwbSo3Zpigupt+6UpQHJdm3TaW9yND4xgg7Vk
- 7K+w+4cfVh9r6V2NjBTy6/IG3WiGDYAO1ifM0eEOZuUiJPTVUy34h3wvGdbN8nmbGSar NA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34353wmrbj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Oct 2020 10:33:28 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BEE6B100034;
-        Thu, 15 Oct 2020 10:33:27 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A6797205D09;
-        Thu, 15 Oct 2020 10:33:27 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.50) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 15 Oct
- 2020 10:33:26 +0200
-Subject: Re: [PATCH v2 4/9] rpmsg: Move rpmsg_hr and rpmsg_ns_msg to header
- file
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
-CC:     "guennadi.liakhovetski@linux.intel.com" 
-        <guennadi.liakhovetski@linux.intel.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
- <20201013232519.1367542-5-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <61c25983-a339-e5de-eaf7-d608a9b9771b@st.com>
-Date:   Thu, 15 Oct 2020 10:33:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730360AbgJOIfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:35:37 -0400
+Received: from mga06.intel.com ([134.134.136.31]:15038 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730236AbgJOIff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:35:35 -0400
+IronPort-SDR: 9TD+WitmBqfJ9o5xVdILOAhrAMv6ZFDCpU/6+g8Q40+z5D4lxWYsDe2ORebu5UGeK0mV+x5+Up
+ U3U1w2dBMeKQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="227942774"
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="227942774"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 01:35:34 -0700
+IronPort-SDR: sT93yWGxrAsW9Cq/N1M38w9rnH8azPjITA7lleUyEBcuLNF8nPOHgxUY0oniiVJsEFtlLgOB/O
+ IrYrYXkBZoVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="464208261"
+Received: from lkp-server02.sh.intel.com (HELO 7220befbd762) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 15 Oct 2020 01:35:31 -0700
+Received: from kbuild by 7220befbd762 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kSyjS-00003n-I0; Thu, 15 Oct 2020 08:35:30 +0000
+Date:   Thu, 15 Oct 2020 16:34:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ ed3e453798d4f81c99056aa09fcd79d0874a60fd
+Message-ID: <5f8809aa.SB3lKh+FA3hhB3ju%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20201013232519.1367542-5-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-15_03:2020-10-14,2020-10-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/urgent
+branch HEAD: ed3e453798d4f81c99056aa09fcd79d0874a60fd  locking/seqlocks: Fix kernel-doc warnings
 
-On 10/14/20 1:25 AM, Mathieu Poirier wrote:
-> Move structures rpmsg_hdr and rpmsg_ns_msg to their own header file
-> so that they can be used by other entities.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 58 ++----------------------------
->  include/linux/rpmsg_ns.h         | 62 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/rpmsg.h       |  3 ++
->  3 files changed, 67 insertions(+), 56 deletions(-)
->  create mode 100644 include/linux/rpmsg_ns.h
-> 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 793fe924671f..85f2acc4ed9f 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -19,7 +19,7 @@
->  #include <linux/mutex.h>
->  #include <linux/of_device.h>
->  #include <linux/rpmsg.h>
-> -#include <linux/rpmsg_byteorder.h>
-> +#include <linux/rpmsg_ns.h>
->  #include <linux/scatterlist.h>
->  #include <linux/slab.h>
->  #include <linux/sched.h>
-> @@ -27,6 +27,7 @@
->  #include <linux/virtio_ids.h>
->  #include <linux/virtio_config.h>
->  #include <linux/wait.h>
-> +#include <uapi/linux/rpmsg.h>
->  
->  #include "rpmsg_internal.h"
->  
-> @@ -70,58 +71,6 @@ struct virtproc_info {
->  	struct rpmsg_endpoint *ns_ept;
->  };
->  
-> -/* The feature bitmap for virtio rpmsg */
-> -#define VIRTIO_RPMSG_F_NS	0 /* RP supports name service notifications */
-> -
-> -/**
-> - * struct rpmsg_hdr - common header for all rpmsg messages
-> - * @src: source address
-> - * @dst: destination address
-> - * @reserved: reserved for future use
-> - * @len: length of payload (in bytes)
-> - * @flags: message flags
-> - * @data: @len bytes of message payload data
-> - *
-> - * Every message sent(/received) on the rpmsg bus begins with this header.
-> - */
-> -struct rpmsg_hdr {
-> -	__rpmsg32 src;
-> -	__rpmsg32 dst;
-> -	__rpmsg32 reserved;
-> -	__rpmsg16 len;
-> -	__rpmsg16 flags;
-> -	u8 data[];
-> -} __packed;
-> -
-> -/**
-> - * struct rpmsg_ns_msg - dynamic name service announcement message
-> - * @name: name of remote service that is published
-> - * @addr: address of remote service that is published
-> - * @flags: indicates whether service is created or destroyed
-> - *
-> - * This message is sent across to publish a new service, or announce
-> - * about its removal. When we receive these messages, an appropriate
-> - * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
-> - * or ->remove() handler of the appropriate rpmsg driver will be invoked
-> - * (if/as-soon-as one is registered).
-> - */
-> -struct rpmsg_ns_msg {
-> -	char name[RPMSG_NAME_SIZE];
-> -	__rpmsg32 addr;
-> -	__rpmsg32 flags;
-> -} __packed;
-> -
-> -/**
-> - * enum rpmsg_ns_flags - dynamic name service announcement flags
-> - *
-> - * @RPMSG_NS_CREATE: a new remote service was just created
-> - * @RPMSG_NS_DESTROY: a known remote service was just destroyed
-> - */
-> -enum rpmsg_ns_flags {
-> -	RPMSG_NS_CREATE		= 0,
-> -	RPMSG_NS_DESTROY	= 1,
-> -};
-> -
->  /**
->   * @vrp: the remote processor this channel belongs to
->   */
-> @@ -162,9 +111,6 @@ struct virtio_rpmsg_channel {
->   */
->  #define RPMSG_RESERVED_ADDRESSES	(1024)
->  
-> -/* Address 53 is reserved for advertising remote services */
-> -#define RPMSG_NS_ADDR			(53)
-> -
->  static void virtio_rpmsg_destroy_ept(struct rpmsg_endpoint *ept);
->  static int virtio_rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
->  static int virtio_rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len,
-> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
-> new file mode 100644
-> index 000000000000..3d836b8580b2
-> --- /dev/null
-> +++ b/include/linux/rpmsg_ns.h
-> @@ -0,0 +1,62 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _LINUX_RPMSG_NS_H
-> +#define _LINUX_RPMSG_NS_H
-> +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/types.h>
-> +#include <linux/rpmsg_byteorder.h>
-> +
-> +/**
-> + * struct rpmsg_hdr - common header for all rpmsg messages
-> + * @src: source address
-> + * @dst: destination address
-> + * @reserved: reserved for future use
-> + * @len: length of payload (in bytes)
-> + * @flags: message flags
-> + * @data: @len bytes of message payload data
-> + *
-> + * Every message sent(/received) on the rpmsg bus begins with this header.
-> + */
-> +struct rpmsg_hdr {
-> +	__rpmsg32 src;
-> +	__rpmsg32 dst;
-> +	__rpmsg32 reserved;
-> +	__rpmsg16 len;
-> +	__rpmsg16 flags;
-> +	u8 data[];
-> +} __packed;
+elapsed time: 724m
 
-This structure is not related to the rpmsg ns service but to the rpmsg bus.
-If this structure has to be exposed to rpmsg client should be in rpmsg.h, but 
-Is there a need to expose it for now?
-I suppose that it is for vhost...As the need will depends on the implementation, 
-I would suggest leaving it internally and expose only if needed, in the
-related series.
+configs tested: 132
+configs skipped: 2
 
-> +
-> +/**
-> + * struct rpmsg_ns_msg - dynamic name service announcement message
-> + * @name: name of remote service that is published
-> + * @addr: address of remote service that is published
-> + * @flags: indicates whether service is created or destroyed
-> + *
-> + * This message is sent across to publish a new service, or announce
-> + * about its removal. When we receive these messages, an appropriate
-> + * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
-> + * or ->remove() handler of the appropriate rpmsg driver will be invoked
-> + * (if/as-soon-as one is registered).
-> + */
-> +struct rpmsg_ns_msg {
-> +	char name[RPMSG_NAME_SIZE];
-> +	__rpmsg32 addr;
-> +	__rpmsg32 flags;
-> +} __packed;
-> +
-> +/**
-> + * enum rpmsg_ns_flags - dynamic name service announcement flags
-> + *
-> + * @RPMSG_NS_CREATE: a new remote service was just created
-> + * @RPMSG_NS_DESTROY: a known remote service was just destroyed
-> + */
-> +enum rpmsg_ns_flags {
-> +	RPMSG_NS_CREATE		= 0,
-> +	RPMSG_NS_DESTROY	= 1,
-> +};
-> +
-> +/* Address 53 is reserved for advertising remote services */
-> +#define RPMSG_NS_ADDR			(53)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-What about my proposal [1] to put this in rpmsg.h, to create a list of
-reserved Address
+gcc tested configs:
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                           corgi_defconfig
+mips                             allyesconfig
+mips                      pistachio_defconfig
+riscv                               defconfig
+powerpc                 mpc836x_mds_defconfig
+nios2                            alldefconfig
+powerpc                      bamboo_defconfig
+powerpc                   currituck_defconfig
+mips                         cobalt_defconfig
+arm                         cm_x300_defconfig
+arm                              zx_defconfig
+mips                        jmr3927_defconfig
+powerpc                     tqm8555_defconfig
+arm                              alldefconfig
+powerpc                 mpc8560_ads_defconfig
+arm                          pxa3xx_defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                 mpc832x_mds_defconfig
+sh                        apsh4ad0a_defconfig
+xtensa                              defconfig
+mips                          ath79_defconfig
+arm                  colibri_pxa300_defconfig
+arm                            xcep_defconfig
+alpha                               defconfig
+powerpc                       eiger_defconfig
+mips                           ip32_defconfig
+arm                          prima2_defconfig
+m68k                             allmodconfig
+arm                           tegra_defconfig
+ia64                      gensparse_defconfig
+powerpc                   motionpro_defconfig
+mips                          malta_defconfig
+arm                         lpc32xx_defconfig
+arm                          simpad_defconfig
+sh                               allmodconfig
+mips                malta_kvm_guest_defconfig
+h8300                     edosk2674_defconfig
+sh                          rsk7203_defconfig
+mips                 pnx8335_stb225_defconfig
+mips                       bmips_be_defconfig
+arc                                 defconfig
+powerpc                     sbc8548_defconfig
+sh                              ul2_defconfig
+mips                   sb1250_swarm_defconfig
+arm                            zeus_defconfig
+powerpc                      ep88xc_defconfig
+sh                               alldefconfig
+powerpc                      cm5200_defconfig
+arm                          collie_defconfig
+arm                         lpc18xx_defconfig
+sh                          kfr2r09_defconfig
+um                           x86_64_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                          rm200_defconfig
+powerpc                     mpc5200_defconfig
+arm                       imx_v4_v5_defconfig
+powerpc                       ebony_defconfig
+arm                            pleb_defconfig
+sh                   sh7770_generic_defconfig
+sh                          lboxre2_defconfig
+m68k                            q40_defconfig
+powerpc                 linkstation_defconfig
+arm                             rpc_defconfig
+arm                        trizeps4_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20201014
+i386                 randconfig-a006-20201014
+i386                 randconfig-a001-20201014
+i386                 randconfig-a003-20201014
+i386                 randconfig-a004-20201014
+i386                 randconfig-a002-20201014
+x86_64               randconfig-a016-20201014
+x86_64               randconfig-a012-20201014
+x86_64               randconfig-a015-20201014
+x86_64               randconfig-a013-20201014
+x86_64               randconfig-a014-20201014
+x86_64               randconfig-a011-20201014
+i386                 randconfig-a016-20201014
+i386                 randconfig-a013-20201014
+i386                 randconfig-a015-20201014
+i386                 randconfig-a011-20201014
+i386                 randconfig-a012-20201014
+i386                 randconfig-a014-20201014
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-[1] https://lkml.org/lkml/2020/7/31/442
+clang tested configs:
+x86_64               randconfig-a004-20201014
+x86_64               randconfig-a002-20201014
+x86_64               randconfig-a006-20201014
+x86_64               randconfig-a001-20201014
+x86_64               randconfig-a005-20201014
+x86_64               randconfig-a003-20201014
 
-> +
-> +#endif
-> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
-> index e14c6dab4223..d669c04ef289 100644
-> --- a/include/uapi/linux/rpmsg.h
-> +++ b/include/uapi/linux/rpmsg.h
-> @@ -24,4 +24,7 @@ struct rpmsg_endpoint_info {
->  #define RPMSG_CREATE_EPT_IOCTL	_IOW(0xb5, 0x1, struct rpmsg_endpoint_info)
->  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
->  
-> +/* The feature bitmap for virtio rpmsg */
-> +#define VIRTIO_RPMSG_F_NS	0 /* RP supports name service notifications */
-> +
-
-Same suggestion here,i would drop this from this series
-
-Thanks,
-Arnaud
-
->  #endif
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
