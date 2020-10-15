@@ -2,89 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90D128FB48
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCC628FB49
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732225AbgJOWjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
+        id S1732245AbgJOWqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731903AbgJOWjM (ORCPT
+        with ESMTP id S1731887AbgJOWqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 18:39:12 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B26C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:39:12 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id p16so372568ilq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:39:12 -0700 (PDT)
+        Thu, 15 Oct 2020 18:46:03 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A51C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:46:03 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y1so177968plp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:46:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PNVrwMcnpoNgjo7pv1tG0HCQUnvlJcJ2814AD4JKcFM=;
-        b=J94LJU5muwRZIsgz8mPHI8YTSPXXMEOOp/j+Q3/Zja0KLC2A+9A2nCasco0twNVWxC
-         M/7fX4khWEJR6X/kPciQbeSFErasTH8dd6YwWcxMR1tnV/V+lVafryieYobdDNI/fYA3
-         cYkIFT3VJki6ao6ktFlEFEplVUWAge4OiuV36CXZ3SFSQV843MY4FdEVCzejz01p8qPQ
-         weXsFIZYRZdRVsJ+Q4+i8gMn737PzPngpV+mNXNFaBWhY1Z8j4sny9lQxmr+4zYGS7AA
-         eiIW+eOt5TLxBP+jSWNduRjARS8c+DkekgjAWJMNYsu3SMr6hNRftE6jJE71eJv7CExu
-         veaw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ko2kzVze2iskg0Vcc5M0juxxnsEhQoWtuPeFx/BNZ2Q=;
+        b=gOpHuZi8RfT+aLDEXzp2x7i3U+7gSJw6r9d8T1JUP0/2G1E/eEb2kCUCqKX/1eSzcL
+         Ev4Ml9eLkVf6J+ZveNKx62cOM0rIOKBu5nYd0KqMEb5uz8hzakc1psqUAJieIO+L75eR
+         1H1b0IwTOxCVlhDYEtl96DWskGwb3lL/Qa7Qo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PNVrwMcnpoNgjo7pv1tG0HCQUnvlJcJ2814AD4JKcFM=;
-        b=ipRFCuPyKacrSXcgekr3UVn/FXJw5IS3KW1hrZDo5qO16anra+/i6ov4sCHhKim3pO
-         R7aLTeVx8AnpSzUhxBYl4t1zmjwQUomDuoxVmCNqTAC8jQ6P3HCfZCcuWOdoHO0zOZOK
-         VLdAv7rE+ki1fPtB5HLpMqIIzqKCs3ja07+SAoFnkctk1izJX0atMG5cPJKDYIFp58CY
-         7BMWSNwo/DaVsGu3ScL8qsJLZItd0dEV9rgO6SInSDLdvoXzyzp8+pJAfhxcz2RCPUnF
-         iP9iAZS0kaGHLs1+DpV0rzh+KqHBnyG2nc7g0m5WiZzXSM5sXKchObQJebUvtuhcMbY4
-         d2fg==
-X-Gm-Message-State: AOAM531EW3UpBCigI6JRSw360ieie2oqck+OCjc+Rcyvr3b7xi3Z06jC
-        VShBolhtR+I3XQgmoBRiD7w7rXpq/EU4e7t6jmTREg==
-X-Google-Smtp-Source: ABdhPJyk8Tjkk9vcLuLb5hD3TuJwuAigYpozkOYwv+5NxEhE7O5qlBn4CuGfGZOnJPBnctys9I/DFnpva394MUKiD24=
-X-Received: by 2002:a92:85cf:: with SMTP id f198mr552326ilh.158.1602801551801;
- Thu, 15 Oct 2020 15:39:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ko2kzVze2iskg0Vcc5M0juxxnsEhQoWtuPeFx/BNZ2Q=;
+        b=H3Lg7zM7eK3bAVjTlxsEhx0aYdJvLfX/hgZ2gnlJQrLRvTcn92HAbtVa756SWCwdDF
+         ScemxLJryx+MC1HqC/4BD16TmAaeBU9kIh/xoqJAiKmQC/hth1yr31xxh325auq/eCGN
+         +E9+0rOPdLULyB9CckXGGRjAEWEkuOg8DHTndiNZzfbCrUtoVjYXqp10xel+2iNxcW3D
+         rjnlONQoXjzR2583w4M3d6kP+P2COBccm4t1jkmAcyarJN5oCWQT1V5P5FaQOA3aFxN0
+         ygHFIEuVZGqqJbU3XzHVp8xTqRfQ3flTbRdvoIKBxoV8CMOTOnZpWOJqinaDvEytca/F
+         FeEw==
+X-Gm-Message-State: AOAM533RaglQZ3Qvj4NbQ8LDQOVgbRBJ4Osz1nqkypM35nr5FdqvBR6p
+        fIaBu8NuMwNquymCLuPqnRRo8w==
+X-Google-Smtp-Source: ABdhPJxTufcSgQBLtXxVU0Ze5T1Zg9mWtwB4kTJzcALyam+WJt2W8aZD1PPDOI9pLp4M/L4QQ9xjTA==
+X-Received: by 2002:a17:90a:f617:: with SMTP id bw23mr866687pjb.95.1602801962895;
+        Thu, 15 Oct 2020 15:46:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c12sm356071pjq.50.2020.10.15.15.46.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 15:46:01 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] docs: lkdtm: Modernize and improve details
+Date:   Thu, 15 Oct 2020 15:45:59 -0700
+Message-Id: <20201015224559.2137489-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201015214430.17937-1-jsnitsel@redhat.com>
-In-Reply-To: <20201015214430.17937-1-jsnitsel@redhat.com>
-From:   Matthew Garrett <mjg59@google.com>
-Date:   Thu, 15 Oct 2020 15:39:00 -0700
-Message-ID: <CACdnJuuAyBYacCiOOZ8-L-0Xnfa3+pCVY_oejOJ8RPzuG2QgrQ@mail.gmail.com>
-Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
-To:     Jerry Snitselaar <jsnitsel@redhat.com>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jarkko@kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 2:44 PM Jerry Snitselaar <jsnitsel@redhat.com> wrote:
->
-> There is a misconfiguration in the bios of the gpio pin used for the
-> interrupt in the T490s. When interrupts are enabled in the tpm_tis
-> driver code this results in an interrupt storm. This was initially
-> reported when we attempted to enable the interrupt code in the tpm_tis
-> driver, which previously wasn't setting a flag to enable it. Due to
-> the reports of the interrupt storm that code was reverted and we went back
-> to polling instead of using interrupts. Now that we know the T490s problem
-> is a firmware issue, add code to check if the system is a T490s and
-> disable interrupts if that is the case. This will allow us to enable
-> interrupts for everyone else. If the user has a fixed bios they can
-> force the enabling of interrupts with tpm_tis.interrupts=1 on the
-> kernel command line.
+The details on using LKDTM were overly obscure. Modernize the details
+and expand examples to better illustrate how to use the interfaces.
+Additionally add missing SPDX header.
 
-I think an implication of this is that systems haven't been
-well-tested with interrupts enabled. In general when we've found a
-firmware issue in one place it ends up happening elsewhere as well, so
-it wouldn't surprise me if there are other machines that will also be
-unhappy with interrupts enabled. Would it be possible to automatically
-detect this case (eg, if we get more than a certain number of
-interrupts in a certain timeframe immediately after enabling the
-interrupt) and automatically fall back to polling in that case? It
-would also mean that users with fixed firmware wouldn't need to pass a
-parameter.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ .../fault-injection/provoke-crashes.rst       | 56 +++++++++++--------
+ 1 file changed, 33 insertions(+), 23 deletions(-)
+
+diff --git a/Documentation/fault-injection/provoke-crashes.rst b/Documentation/fault-injection/provoke-crashes.rst
+index 9279a3e12278..93775bd4e6c8 100644
+--- a/Documentation/fault-injection/provoke-crashes.rst
++++ b/Documentation/fault-injection/provoke-crashes.rst
+@@ -1,16 +1,19 @@
+-===============
+-Provoke crashes
+-===============
++.. SPDX-License-Identifier: GPL-2.0
+ 
+-The lkdtm module provides an interface to crash or injure the kernel at
+-predefined crashpoints to evaluate the reliability of crash dumps obtained
+-using different dumping solutions. The module uses KPROBEs to instrument
+-crashing points, but can also crash the kernel directly without KRPOBE
+-support.
++============================================================
++Provoking crashes with Linux Kernel Dump Test Module (LKDTM)
++============================================================
+ 
++The lkdtm module provides an interface to disrupt (and usually crash)
++the kernel at predefined code locations to evaluate the reliability of
++the kernel's exception handling and to test crash dumps obtained using
++different dumping solutions. The module uses KPROBEs to instrument the
++trigger location, but can also trigger the kernel directly without KPROBE
++support via debugfs.
+ 
+-You can provide the way either through module arguments when inserting
+-the module, or through a debugfs interface.
++You can select the location of the trigger ("crash point name") and the
++type of action ("crash point type") either through module arguments when
++inserting the module, or through the debugfs interface.
+ 
+ Usage::
+ 
+@@ -18,31 +21,38 @@ Usage::
+ 			[cpoint_count={>0}]
+ 
+ recur_count
+-	Recursion level for the stack overflow test. Default is 10.
++	Recursion level for the stack overflow test. By default this is
++	dynamically calculated based on kernel configuration, with the
++	goal of being just large enough to exhaust the kernel stack. The
++	value can be seen at `/sys/module/lkdtm/parameters/recur_count`.
+ 
+ cpoint_name
+-	Crash point where the kernel is to be crashed. It can be
++	Where in the kernel to trigger the action. It can be
+ 	one of INT_HARDWARE_ENTRY, INT_HW_IRQ_EN, INT_TASKLET_ENTRY,
+ 	FS_DEVRW, MEM_SWAPOUT, TIMERADD, SCSI_DISPATCH_CMD,
+-	IDE_CORE_CP, DIRECT
++	IDE_CORE_CP, or DIRECT
+ 
+ cpoint_type
+ 	Indicates the action to be taken on hitting the crash point.
+-	It can be one of PANIC, BUG, EXCEPTION, LOOP, OVERFLOW,
+-	CORRUPT_STACK, UNALIGNED_LOAD_STORE_WRITE, OVERWRITE_ALLOCATION,
+-	WRITE_AFTER_FREE,
++	These are numerous, and best queried directly from debugfs. Some
++	of the common ones are PANIC, BUG, EXCEPTION, LOOP, and OVERFLOW.
++	See the contents of `/sys/kernel/debug/provoke-crash/DIRECT` for
++	a complete list.
+ 
+ cpoint_count
+ 	Indicates the number of times the crash point is to be hit
+-	to trigger an action. The default is 10.
++	before triggering the action. The default is 10 (except for
++	DIRECT, which always fires immediately).
+ 
+ You can also induce failures by mounting debugfs and writing the type to
+-<mountpoint>/provoke-crash/<crashpoint>. E.g.::
++<debugfs>/provoke-crash/<crashpoint>. E.g.::
+ 
+-  mount -t debugfs debugfs /mnt
+-  echo EXCEPTION > /mnt/provoke-crash/INT_HARDWARE_ENTRY
++  mount -t debugfs debugfs /sys/kernel/debug
++  echo EXCEPTION > /sys/kernel/debug/provoke-crash/INT_HARDWARE_ENTRY
+ 
++The special file `DIRECT` will induce the action directly without KPROBE
++instrumentation. This mode is the only one available when the module is
++built for a kernel without KPROBEs support::
+ 
+-A special file is `DIRECT` which will induce the crash directly without
+-KPROBE instrumentation. This mode is the only one available when the module
+-is built on a kernel without KPROBEs support.
++  # Instead of having a BUG kill your shell, have it kill "cat":
++  cat <(echo WRITE_RO) >/sys/kernel/debug/provoke-crash/DIRECT
+-- 
+2.25.1
+
