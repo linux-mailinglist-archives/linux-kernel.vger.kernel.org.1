@@ -2,54 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D48728F7E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9F328F7FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731479AbgJOR4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:56:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725923AbgJOR4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:56:14 -0400
-Subject: Re: [git pull] drm next pull for 5.10-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602784574;
-        bh=zpYP0y+N0AmWkcDFA4cNMNIMCTnvhZfotWi7K9kXgYM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=uVMRmc4kTCYIZtNUbdPq33bcU0no/fB8I1JWfS1PIcLbBnq/iKkVajHTtpjdsIrha
-         fEalTXPGbHYluzDaSoztoDmaCc4oTTqS/TSrNa+uoJvS/GN9OkpFTKl5ObP3Nb+546
-         GJh5ntZDBjXHPby5BmmCj59xxr853c240mKlU/N4=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
-References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-next-2020-10-15
-X-PR-Tracked-Commit-Id: 640eee067d9aae0bb98d8706001976ff1affaf00
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 93b694d096cc10994c817730d4d50288f9ae3d66
-Message-Id: <160278457423.2336.16076988857270497801.pr-tracker-bot@kernel.org>
-Date:   Thu, 15 Oct 2020 17:56:14 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        id S2389035AbgJOR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 13:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732156AbgJOR6u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 13:58:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A34C061755;
+        Thu, 15 Oct 2020 10:58:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=x+XQ7VEyYNfvRvizRGPoAdTEAMGVk8qPQWatjzYSgQw=; b=m21slifxK1bGUo9NkuLnasLmGW
+        W7j1mSzLsl8lqkNcmNBEmyamMl2n/iSza8Fv9vJdGtVQIw2/kDlRcMmM4PWbe5eP6FTvI4xm0WOWP
+        4Adx+LchNEcYX2u8R/hnI8+L4xfRz5R7/ZW9gYaZ59Wva288nDtTL0QGvEDQcyQNBdTqXo87Bl3HW
+        E62GWuauRw2KoIGK3HW5V9LXG8lMy3MQUVaq3gY0yr4/hMeSjIpZfqFbIV5olX2c1do/vAiTNpYlO
+        890vukb4WHYvxnqK7wVoxPPIDsWceSIRHULvymZsZRjmZLVpToKJoS//KCJAy1r/TgDXANhlomCkj
+        PpgfwI1A==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT7Wa-00018B-31; Thu, 15 Oct 2020 17:58:48 +0000
+Date:   Thu, 15 Oct 2020 18:58:48 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 16/16] iomap: Make readpage synchronous
+Message-ID: <20201015175848.GA4145@infradead.org>
+References: <20201009143104.22673-1-willy@infradead.org>
+ <20201009143104.22673-17-willy@infradead.org>
+ <20201015094203.GA21420@infradead.org>
+ <20201015164333.GA20115@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015164333.GA20115@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 15 Oct 2020 11:33:08 +1000:
+On Thu, Oct 15, 2020 at 05:43:33PM +0100, Matthew Wilcox wrote:
+> On Thu, Oct 15, 2020 at 10:42:03AM +0100, Christoph Hellwig wrote:
+> > > +static void iomap_read_page_end_io(struct bio_vec *bvec,
+> > > +		struct completion *done, bool error)
+> > 
+> > I really don't like the parameters here.  Part of the problem is
+> > that ctx is only assigned to bi_private conditionally, which can
+> > easily be fixed.  The other part is the strange bool error when
+> > we can just pass on bi_stats.  See the patch at the end of what
+> > I'd do intead.
+> 
+> I prefer assigning ctx conditionally to propagating the knowledge
+> that !rac means synchronous.  I've gone with this:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-next-2020-10-15
+And I really hate these kinds of conditional assignments.  If the
+->rac check is too raw please just add an explicit
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/93b694d096cc10994c817730d4d50288f9ae3d66
+	bool synchronous : 1;
 
-Thank you!
+flag.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> @@ -340,16 +335,12 @@ iomap_readpage(struct page *page, const struct iomap_ops *
+> ops)
+>  
+>         if (ctx.bio) {
+>                 submit_bio(ctx.bio);
+> +               if (ret > 0)
+> +                       ret = blk_status_to_errno(ctx.status);
+>         }
+>  
+> -       wait_for_completion(&ctx.done);
+>         if (ret >= 0)
+> -               ret = blk_status_to_errno(ctx.status);
+> -       if (ret == 0)
+>                 return AOP_UPDATED_PAGE;
+>         unlock_page(page);
+>         return ret;
+> 
+> 
+> ... there's no need to call blk_status_to_errno if we never submitted a bio.
+
+True.  I'd still prefer the AOP_UPDATED_PAGE as the fallthrough case
+and an explicit goto out_unlock, though.
