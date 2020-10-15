@@ -2,192 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B08828F5E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA7F28F5E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731022AbgJOPc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:32:27 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:49835 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730951AbgJOPc1 (ORCPT
+        id S2389286AbgJOPdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:33:03 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:31198 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388749AbgJOPdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:32:27 -0400
-Received: from [192.168.1.155] ([95.114.97.143]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1N94uf-1kQf451Ty3-016Bd8; Thu, 15 Oct 2020 17:31:50 +0200
-Subject: Re: LPC 2020 Hackroom Session: summary and next steps for isolated
- user namespaces
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        containers@lists.linux-foundation.org
-Cc:     Alexander Mihalicyn <alexander@mihalicyn.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Joseph Christopher Sible <jcsible@cert.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        Wat Lim <watl@google.com>, Mrunal Patel <mpatel@redhat.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>
-References: <20200830143959.rhosiunyz5yqbr35@wittgenstein>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <cb6c6f1a-89ee-1762-3eec-4f69bd7739b1@metux.net>
-Date:   Thu, 15 Oct 2020 17:31:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 15 Oct 2020 11:33:03 -0400
+Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09FFWrnQ031557;
+        Thu, 15 Oct 2020 15:32:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=tsCv5a712czLA1nu4qAvu55PQpGk+2CkmwhjuDiy1lY=;
+ b=Ub6+qobNt/BbUjStNVakejVKlwCj2SwgZYdR+x1rcyaGuRV8TImVcDVEe/DDmx6zeNOG
+ iBwlX9sOz91eD63wXQsU6ZXm2M7u1U3KDg5g7j7faXN44ogPLO4Wffu+dzVI4c9PtPFn
+ iaa8haiBTgrNjkFIJtAw+gCafRdqmj47xH/TuFuIIGmsjBRFU3bF8ij96oasYEXbypBt
+ f+jr3ZdDUGKwlV3wEejZF5kGHINayHxN4tXDjXTrd3CT97oncj93uzREmBsgitM95jRk
+ bXr4LgQ5W165xGAMYEfLRCfBZIsFyOtIYhh+dWBp6jw4s6IkAbPJny1tm+SKsP/Zz7vW sw== 
+Received: from g2t2353.austin.hpe.com (g2t2353.austin.hpe.com [15.233.44.26])
+        by mx0b-002e3701.pphosted.com with ESMTP id 345gq7by1x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Oct 2020 15:32:53 +0000
+Received: from sarge.linuxathome.me (unknown [16.29.146.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by g2t2353.austin.hpe.com (Postfix) with ESMTPS id AC5138C;
+        Thu, 15 Oct 2020 15:32:36 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 16:32:33 +0100
+From:   Hedi Berriche <hedi.berriche@hpe.com>
+To:     Sinan Kaya <okaya@kernel.org>
+Cc:     sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Russ Anderson <rja@hpe.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Joerg Roedel <jroedel@suse.com>, stable@kernel.org
+Subject: Re: [RESEND PATCH v3 1/1] PCI/ERR: don't clobber status after
+ reset_link()
+Message-ID: <20201015153233.GE8203@sarge.linuxathome.me>
+Mail-Followup-To: Sinan Kaya <okaya@kernel.org>,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Russ Anderson <rja@hpe.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        Ashok Raj <ashok.raj@intel.com>, Joerg Roedel <jroedel@suse.com>,
+        stable@kernel.org
+References: <20201010221653.2782993-1-hedi.berriche@hpe.com>
+ <20201010221653.2782993-2-hedi.berriche@hpe.com>
+ <5f5eeaf4-4638-6718-1ec9-002d6753e73f@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200830143959.rhosiunyz5yqbr35@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:JA6LrJJtSGRZR2juLdm4r6JKn3coM8bLiyEwPxKL43OJpyW5TAK
- J+8ZvMhTAO1aRNlnib/d8GKkj/SyIGWSO01+uLmBY23inDY3ZZnH0q70b2/NO9Zj1hwde1p
- ExDmDdSBv2CzQ+KOWI4EhpneTYrbPugUhlYYpnxH8VTKaQhxy5Ie4nQ5Zy1z3uHBYXm2OjL
- dxshWEPytWFnQVucg2WNg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OhtmHqpQM3U=:+wU7b6OYAGZWFy8aQu6SiR
- pO1dU14WlDReGRfJBtpL9jhfeAZ9PdStOEdyZo9v+KP4oHzrMoNGc5cP22d6DhxL+SvskPEIG
- j/f1tk4ZWuo3EyG86p91ezAspBL1FWdCNzMYNY14kkE3kg0retCLHr5ZhuGlp9cufxZsSPX3N
- V1TDmgixBceXZnM1MuSxC3ZRYPG3h+bY8e58eCRWxi2IvLohiH4s7CitL7dkp9C5ElOft2BEE
- 6EDrwI7YCx/io9z8KN9DgKopIXFk0jl306iCc0yY8bGp6iYhC2pAyDXJV0jw3Wb8DkgUIrY+R
- rQC/4Z4whMTuM0e73T0uRhViJxgxjTjEC9xqZY4BXvIhY7Z1gYDlM18S8SpK/FPxIch2/+zRC
- rIXhtRls8fRSAKvP5SOOS3REAxkTsgy1s4HUFEM+5X0Xq/aeXvJctsFb22CV7
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <5f5eeaf4-4638-6718-1ec9-002d6753e73f@kernel.org>
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-15_09:2020-10-14,2020-10-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 malwarescore=0 spamscore=0 suspectscore=1 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 clxscore=1011 adultscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010150105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.20 16:39, Christian Brauner wrote:
+On Sun, Oct 11, 2020 at 18:56 Sinan Kaya wrote:
+>On 10/10/2020 6:16 PM, Hedi Berriche wrote:
+>> Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>> broke pcie_do_recovery(): updating status after reset_link() has the ill
+>> side effect of causing recovery to fail if the error status is
+>> PCI_ERS_RESULT_CAN_RECOVER or PCI_ERS_RESULT_NEED_RESET as the following
+>> code will *never* run in the case of a successful reset_link()
+>>
+>>    177         if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>    ...
+>>    181         }
+>>
+>>    183         if (status == PCI_ERS_RESULT_NEED_RESET) {
+>>    ...
+>>    192         }
+>>
+>> For instance in the case of PCI_ERS_RESULT_NEED_RESET we end up not
+>> calling ->slot_reset() (because we skip report_slot_reset()) thus
+>> breaking driver (re)initialisation.
+>>
+>> Don't clobber status with the return value of reset_link(); set status
+>> to PCI_ERS_RESULT_RECOVERED, in case of successful link reset, if and
+>> only if the initial value of error status is PCI_ERS_RESULT_DISCONNECT
+>> or PCI_ERS_RESULT_NO_AER_DRIVER.
+>>
+>> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
+>> Signed-off-by: Hedi Berriche <hedi.berriche@hpe.com>
+>> Cc: Russ Anderson <rja@hpe.com>
+>> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> Cc: Bjorn Helgaas <bhelgaas@google.com>
+>> Cc: Ashok Raj <ashok.raj@intel.com>
+>> Cc: Joerg Roedel <jroedel@suse.com>
+>>
+>> Cc: stable@kernel.org # v5.7+
+>> ---
+>>  drivers/pci/pcie/err.c | 7 +++++--
+>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>> index c543f419d8f9..2730826cfd8a 100644
+>> --- a/drivers/pci/pcie/err.c
+>> +++ b/drivers/pci/pcie/err.c
+>> @@ -165,10 +165,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  	pci_dbg(dev, "broadcast error_detected message\n");
+>>  	if (state == pci_channel_io_frozen) {
+>>  		pci_walk_bus(bus, report_frozen_detected, &status);
+>> -		status = reset_link(dev);
+>> -		if (status != PCI_ERS_RESULT_RECOVERED) {
+>> +		if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED) {
+>>  			pci_warn(dev, "link reset failed\n");
+>>  			goto failed;
+>> +		} else {
+>> +			if (status == PCI_ERS_RESULT_DISCONNECT ||
+>> +			    status == PCI_ERS_RESULT_NO_AER_DRIVER)
+>> +				status = PCI_ERS_RESULT_RECOVERED;
+>>  		}
+>>  	} else {
+>>  		pci_walk_bus(bus, report_normal_detected, &status);
+>>
+>
+>Reviewed-by: Sinan Kaya <okaya@kernel.org>
 
-Hi Christian,
+Thanks for the Reviewed-by, Sinan.
 
-> P1. Isolated id mappings can only be guaranteed to be locally isolated.
->     A container runtime/daemon can only guarantee non-overlapping id mappings
->     when no other users on the system create containers.
+Folks,
 
-Indeed. But couldn't we just record the mappings in some standardized
-place (eg. some file) which all engines maintain ?
+Any further comments or is this ripe for acceptance?
 
-I'd guess other solutions would need changes in the runtimes, too.
-
-Please keep in mind that some scenarios actually need some overlaps, eg.
-application containers that shall have direct access to home dirs.
-
-> P2. Enforcing isolated id mappings in userspace is difficult.
->     It is always possible to create other processes with overlapping id
->     mappings. Coordinating id mappings in userspace will always remain
->     optional. Quite a few tools nowadays (including systemd) don't care about
->     /etc/sub{g,u}id and actively advise against using it. This is made even
->     more problematic since sub{g,u}iid delegation is done per-user rather than
->     per-container-runtime.
-
-I believe subusers aren't meant for tyical containers (like docker or
-lxc), but unprivileged user programs that wanna have further isolation
-for subprocesses (eg. a browser's renderer or js engine).
-
-Correct me if I'm wrong.
-
-> P3. The range of the id mapping of a container can't be predetermined.
->     While POSIX mandates that a standard system should use a range of 65536 ids
->     reality is very different. Some programs allocate high ids for random
->     processes or for network authentication. This means, in practice it is
->     often necessary to assign a range of up to 10 million ids to a container.
->     This limits a system to less than 500 containers total.
-
-In 25+ years, haven't seen such an application in the field. I'd
-consider this a horrible and dangerous bug. Sane applications create
-specific user entries (/etc/passwd) for that.
-
-I'd say we're safe w/ max 2^16 users per container, which should give us
-space for about 2^16 containers.
-
-> P4. Isolated id mappings severely restrict the number of containers that can be
->     run on a system.
->     This ties back to the point about pre-determining the id range of a
->     container and how large range allocations tend to be on real systems. That
->     becomes even more relevant when nesting containers.
-
-IMHO, all we need is to maintain a list of active ranges (more precisely
-the 16bit prefixes, just like class B networks ;-)). As said, I'd
-declare the scenario #P3 as invalid and rather fix those few broken
-applications.
-
-> P5. Container runtimes cannot reuse overlayfs lower directories if each
->     container uses isolated ID mappings, leading to either needless storage
->     overhead (LXD -- though the LXD folks don’t really mind), completely
->     ignoring the benefits of isolating containers from each other (Docker), or
->     not using them at all (Kubernetes). (This is a more general issue but bears
->     repeating since it is closely tied to most userns proposals.)
-
-Indeed. That's IMHO the main problem. We somehow need to map the UIDs.
-Maybe a synthetic filesystem that just does exactly the same uid<->kuid
-translations we're already doing in other places ?
-
-> P6. Rlimits pose a problem for containers that share the same id mapping.
->     This means containers with overlapping id mappings can DOS each other by
->     exhausting their rlimits. The reason for this lies with the current
->     implementation of rlimits -- rlimits are currently tied to users and are
->     not hierarchically limited like inotify limits are. This is a severe
->     problem in unprivileged workloads. Eric and others identified that this
->     issue can be fixed independently of the isolated user namespace proposal.
-
-Is this really an practical isssue, when we're using uid namespaces ?
-
-> S2. Kernel-enforced user namespace isolation.
->     This means, there is no need for different container runtimes to
->     collaborate on id ranges with immediate benefits for everyone.
->     This solves P1 and P2.
-
-Okay, but how to support scenarios where some of the UIDs should
-overlap on purpose ? (eg. mounting some of the host's user homedirs
-into namespaces ?)
-
-> S5. The owning id concept of a user namespace makes monitoring and interacting
->     with such containers way easier.
-
-What exactly is the owning id ? How is it created and managed ?
-Some magic id or an cryptographic token =
-
-> 1. How are interactions across isolated user namespaces handled?
-
-What kind of interaction do you have in mind ?
-Data transfers ? Process manipulaton ? Namespace destruction ?
-
-Can you please illustrate some actual use cases ?
-
->    Proposal 1.1 semmed prefered since it would allow an unprivileged
->    user creating an isolated user namespace to kill/ptrace all processes
->    in the isolated namespace they spawned. 
-
-Don't we already have this if this user is mapped as root inside the
-container ?
-
->    The first consensus reached seemed to be to decouple isolated user
->    namespaces from shiftfs. The idea is to solely rely on tmpfs and fuse
->    at the beginning as filesystems which can be mounted inside isolated
->    user namespaces and so would have proper ownership. 
-
-So, I'd essentially have to run the whole rootfs through fuse and a
-userland fileserver, which probably has to track things like ownerships
-in its own db (when running under unprivileged user) ?
-
-> For mount points
->    that originate from outside the namespace, everything will show as
->    the overflow ids and access would be restricted to the most
->    restricted permission bit for any path that can be accessed.
-
-So, I can't just take a btrfs snapshot as rootfs anymore ?
-
-
---mtx
-
+Cheers,
+Hedi.
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Be careful of reading health books, you might die of a misprint.
+	-- Mark Twain
