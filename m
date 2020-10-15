@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D598C28FA20
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805FB28FA21
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732692AbgJOUaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 16:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        id S2392283AbgJOUbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 16:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731040AbgJOUaW (ORCPT
+        with ESMTP id S1730851AbgJOUbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 16:30:22 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852B9C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:30:21 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id y16so6260465ila.7
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:30:21 -0700 (PDT)
+        Thu, 15 Oct 2020 16:31:14 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB83C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:31:14 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id k1so6245394ilc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/jxSiXUFHPKoVWvB4Kho7bLX6BXoNLesB/In+yGJN0M=;
-        b=m6ii6kwgw2MTT+gIs1qNafQgE+1wC+HcGAAG5DVQ5N3c3MvWoIXwbtkLrgEcdSgU0l
-         cSfpLzmsmliwsAlSTufVFgaFTuvLQUpxLV4emLR/kOzjLAQ5hmhKZOeJsXwwdxtXlOgS
-         0TkZmDN3hxDZfKMgysOzQzhim1wrGGbaPvEhOtFYO4Ty6Orh+Ze0lHxl7/XoSWBSs1HY
-         +2vxlJbtwJUYtT2unuAe5so9kivgiAD0exdzlHNc9wcNnlv8K+3adk5y7C1N0sUz2yM3
-         Fgodn3vHy8t6uW/pyIjWMYNgGM11tmEJ2q4iTfDBaeS7izoo39dvGzZSqBJ4vlOjlLeQ
-         8/ow==
+        bh=KMEoBpSpf5ITv96lwr1E/oq/2FCY57jpAaduGuTPcdI=;
+        b=c0u0Re/dOCSPaDfhhy9zAOz8zbYQs1/ORCwhrN5/0vmsDvcgn6i3yy6b7/rbmWY/cF
+         69vGTKrvnq1NvAFGCeaa0mer8JhGOMG0/neIUwtuHP1DMlA+2X+u21nu6X2nmMJEocp9
+         aJj1dFh7UogkZAScFWdWOPmz9En2d2rttEIAZ+5/Wl1umvnhp+BcQibIgQEVjJmaja6t
+         jwnAGrfExUXeQf3xI4CpJVse2KZBsNEBajuW4GzWVtxXEBazAv3Y2s9RVIfmECugvMDR
+         J9+MRKV1gZhCKz8e5Ue93ZuwzW5XSfyr3UJhpFy83w2lyHvTJe+A9gxI43dMmirBf69J
+         /uqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/jxSiXUFHPKoVWvB4Kho7bLX6BXoNLesB/In+yGJN0M=;
-        b=qbVkzB2Tc6k+9NJQNoq6aGbf8J/y9Oqaa9FN4WJW2MRAtn/t0bFgbkjHXWPPKSzdpI
-         unqkQQP6EwQyd+ZCci10qagAPrLJ5NAJumi3lzlr5/UvLzfSr5JStOaHADyjbR6cbY9P
-         25bYmFODo1PfiS5M66x8KuF9FPFjdoMsv/vFAE4eYWmuuQT/PY+FZsWGF0gZPt/P8cDL
-         LY7c//hUQ404IUX3wdkJy0GbmFqI9TosQtxdYQ8CeQDhU4SPg43LfWHqhB1oFBO887NB
-         e595anj9j5tV/Af7Ys0NTiz6c7kWNlCPkZedruuGjNQb35V8qM1Vpp0kpY6qDIgNY26r
-         EYyA==
-X-Gm-Message-State: AOAM5335bvWrNOAV9d9YKKy1NRCUmYDN4q47P8zlyiTKPbCu4eQl3XHH
-        OgPemeYBJ90IEClgIGPlJLo3RQhswdsEScvRaYs=
-X-Google-Smtp-Source: ABdhPJxrvvur8NSNW89vwNQf2R2zgjfbt7aEEQH/uFDV4MhjdyOqjUYvpc8A3zFlbMc353x3cPkxpQ8F04dofE3zYAQ=
-X-Received: by 2002:a92:874a:: with SMTP id d10mr274971ilm.163.1602793820977;
- Thu, 15 Oct 2020 13:30:20 -0700 (PDT)
+        bh=KMEoBpSpf5ITv96lwr1E/oq/2FCY57jpAaduGuTPcdI=;
+        b=T4xYeQXSiC53c7KrGpk0SvTJ8GbjbNuywEEY+KOMNhV5YD3ysA1c7CwXVyRJMx4Hsw
+         mEUDunbzBKnKbVDfJOspLLIu4fdPGPoJgkxQsmixoywpHtZe59zNLeYH1XpPJxr4tBSe
+         F50ovXW0wHdQf4RYTHKuuOfsPL2LyC8K+1v/FtmyZzBnaswZo6VEiudEWDaPnnx6ymaA
+         DkK0pFxYFaJoRuR1LmLmo5wvIWDTBRZaZ/T1BYP4AdlU2DEXpotqw446ZV2uuB5mCzk8
+         MzKPDOAXpZpCEzgkfBCZPSHBQAKfL1FuXGWEOIf4AI8V6iXcRmwx3YVluGMUdp9X74LA
+         EBrw==
+X-Gm-Message-State: AOAM532ESyjhNx9fr4yqNblUzTK8i6MyhGxB3B5OUxRQjhxT0e+lJavC
+        Z0TwB34pYN6QeC48EnG4rr//mqJ39SHaklB/E6172zxH9TGvrA==
+X-Google-Smtp-Source: ABdhPJw27itUGJwpE6ecTiJLPMcG+8G7avBYojcFJaZYKj3gfLThWSK9B2UYHnLOzIVMPQddockt9gKmy3btJT/dxrI=
+X-Received: by 2002:a92:180b:: with SMTP id 11mr273536ily.89.1602793873755;
+ Thu, 15 Oct 2020 13:31:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-7-david@redhat.com>
-In-Reply-To: <20201012125323.17509-7-david@redhat.com>
+References: <20201012125323.17509-1-david@redhat.com> <20201012125323.17509-12-david@redhat.com>
+In-Reply-To: <20201012125323.17509-12-david@redhat.com>
 From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Thu, 15 Oct 2020 22:30:09 +0200
-Message-ID: <CAM9Jb+jY-kzPbbqTaYY=i1tjo=fEH0w_8kik17h90gH6ROso_w@mail.gmail.com>
-Subject: Re: [PATCH v1 06/29] virtio-mem: generalize virtio_mem_owned_mb()
+Date:   Thu, 15 Oct 2020 22:31:02 +0200
+Message-ID: <CAM9Jb+gS2dFO584KgHsx2Biw1ppCNqO8UB1om35Z1E8qaFUyPw@mail.gmail.com>
+Subject: Re: [PATCH v1 11/29] virtio-mem: use "unsigned long" for nr_pages
+ when fake onlining/offlining
 To:     David Hildenbrand <david@redhat.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         virtualization@lists.linux-foundation.org,
@@ -62,46 +63,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Avoid using memory block ids. Rename it to virtio_mem_contains_range().
+> No harm done, but let's be consistent.
 >
 > Cc: "Michael S. Tsirkin" <mst@redhat.com>
 > Cc: Jason Wang <jasowang@redhat.com>
 > Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
 > Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  drivers/virtio/virtio_mem.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  drivers/virtio/virtio_mem.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
 > diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> index 6bbd1cfd10d3..821143db14fe 100644
+> index cb2e8f254650..00d1cfca4713 100644
 > --- a/drivers/virtio/virtio_mem.c
 > +++ b/drivers/virtio/virtio_mem.c
-> @@ -500,12 +500,13 @@ static bool virtio_mem_overlaps_range(struct virtio_mem *vm,
->  }
->
->  /*
-> - * Test if a virtio-mem device owns a memory block. Can be called from
-> + * Test if a virtio-mem device contains a given range. Can be called from
->   * (notifier) callbacks lockless.
+> @@ -766,7 +766,7 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+>   * (via generic_online_page()) using PageDirty().
 >   */
-> -static bool virtio_mem_owned_mb(struct virtio_mem *vm, unsigned long mb_id)
-> +static bool virtio_mem_contains_range(struct virtio_mem *vm, uint64_t start,
-> +                                     uint64_t size)
+>  static void virtio_mem_set_fake_offline(unsigned long pfn,
+> -                                       unsigned int nr_pages, bool onlined)
+> +                                       unsigned long nr_pages, bool onlined)
 >  {
-> -       return mb_id >= vm->first_mb_id && mb_id <= vm->last_mb_id;
-> +       return start >= vm->addr && start + size <= vm->addr + vm->region_size;
->  }
+>         for (; nr_pages--; pfn++) {
+>                 struct page *page = pfn_to_page(pfn);
+> @@ -785,7 +785,7 @@ static void virtio_mem_set_fake_offline(unsigned long pfn,
+>   * (via generic_online_page()), clear PageDirty().
+>   */
+>  static void virtio_mem_clear_fake_offline(unsigned long pfn,
+> -                                         unsigned int nr_pages, bool onlined)
+> +                                         unsigned long nr_pages, bool onlined)
+>  {
+>         for (; nr_pages--; pfn++) {
+>                 struct page *page = pfn_to_page(pfn);
+> @@ -800,10 +800,10 @@ static void virtio_mem_clear_fake_offline(unsigned long pfn,
+>   * Release a range of fake-offline pages to the buddy, effectively
+>   * fake-onlining them.
+>   */
+> -static void virtio_mem_fake_online(unsigned long pfn, unsigned int nr_pages)
+> +static void virtio_mem_fake_online(unsigned long pfn, unsigned long nr_pages)
+>  {
+>         const unsigned long max_nr_pages = MAX_ORDER_NR_PAGES;
+> -       int i;
+> +       unsigned long i;
 >
->  static int virtio_mem_notify_going_online(struct virtio_mem *vm,
-> @@ -800,7 +801,7 @@ static void virtio_mem_online_page_cb(struct page *page, unsigned int order)
->          */
->         rcu_read_lock();
->         list_for_each_entry_rcu(vm, &virtio_mem_devices, next) {
-> -               if (!virtio_mem_owned_mb(vm, mb_id))
-> +               if (!virtio_mem_contains_range(vm, addr, PFN_PHYS(1 << order)))
->                         continue;
->
->                 sb_id = virtio_mem_phys_to_sb_id(vm, addr);
+>         /*
+>          * We are always called at least with MAX_ORDER_NR_PAGES
 
-Looks good.
 Reviewed-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
