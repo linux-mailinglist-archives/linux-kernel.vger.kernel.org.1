@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E4228EBA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE05728EBA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387837AbgJODhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 23:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387414AbgJODhz (ORCPT
+        id S2387888AbgJODiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 23:38:11 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57902 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387414AbgJODiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 23:37:55 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14213C061755;
-        Wed, 14 Oct 2020 20:37:55 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b19so856219pld.0;
-        Wed, 14 Oct 2020 20:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/mQ7jx+jeXIbaNrpQPCSMXM92HTMwnXaMr1S9Xsvdic=;
-        b=msNV6Orz5tIcLKfH6tSrRA8png2sZHaShdmQ1xxAJeQJLL6+BOcFhBDLCmQYy7Ccgk
-         CMfuUojr0tcTQEI2DZ5tqRQTnzMTKJLpfYdVdnEntexlbFyP4IiuRNcYpXCvlHQ7qZwP
-         aRvK/Za9yzAm8eDHzqHIfWJ5mCpBphYxO9fkGUEQOHbABi4tQg/J2foybXPm/y+42/tM
-         ouJWFMH95/rjDyMkdZVigErfi0FGaLW2dvYO73H70LMGb7YhQfzvoZnKk0zt+My/YkNt
-         Izqdj38ZzRRd2qXUJjZdvchXZMeBkkYPNjP8bvdGO3qbCR7cvHqmOBNSWRvAsaZM1X5h
-         a+Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/mQ7jx+jeXIbaNrpQPCSMXM92HTMwnXaMr1S9Xsvdic=;
-        b=VmCdVvj4S7nTOXcbQwB9CZ9/IoVFXDWqRJiH1QAOIOhyxZGNNOWhULfXZ0FavsUwr1
-         2mCIViPVB9AaxhuNoV9XWmx0S7VzkKVOwt77pHVrEYcy3cg3D4SM0UCZb4yLOE0qQdrJ
-         Z2h/o3HNqo9+/0K9uGmGWtjFz+lVvgDYyTk0Jit+6q86OullIk0D29BgLwBa/F8Efdh7
-         wMMdkBbhgSg4eARh2NGgYLjCpQNuMTKzVvSsJ9QQ7FdUcUYTTL1C+S1NZFKep6z1uNV0
-         0oyLevkoJDhxCbvAV5cuQqV77fYbTFj9hnetHXt7C7KP+sBNi43p2YO1LPIN6WQFIQCE
-         DUbA==
-X-Gm-Message-State: AOAM533QiAN/1m6hKsiGN8HiXUgQxRhUa9xo+tIg8R6W8yU5euVmrm4j
-        bwZOhgEF4rqH0yOohSRBe+s=
-X-Google-Smtp-Source: ABdhPJx5y3SL9k8GNspZ7+P3F73iyidQ4SjpBOapqyGYzsEDF50l6W/lTYfck8vz2QBQJsWYY3ImyA==
-X-Received: by 2002:a17:90b:11d6:: with SMTP id gv22mr2397850pjb.159.1602733074647;
-        Wed, 14 Oct 2020 20:37:54 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id a19sm1099267pjq.29.2020.10.14.20.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 20:37:53 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Thu, 15 Oct 2020 11:37:32 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 1/6] staging: qlge: Initialize devlink health dump
- framework for the dlge driver
-Message-ID: <20201015033732.qaihehernm2jzoln@Rk>
-References: <20201008115808.91850-1-coiby.xu@gmail.com>
- <20201008115808.91850-2-coiby.xu@gmail.com>
- <20201010073514.GA14495@f3>
- <20201010102416.hvbgx3mgyadmu6ui@Rk>
- <20201010134855.GB17351@f3>
- <20201012112406.6mxta2mapifkbeyw@Rk>
- <20201013003704.GA41031@f3>
+        Wed, 14 Oct 2020 23:38:11 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09F3V1VA164274;
+        Thu, 15 Oct 2020 03:37:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=TdkRaI1K2emwA4ULWa95up2TNJiDjREeVjcHKnTnlc8=;
+ b=Pao98oSADgnAZP4FqoZcmL520aM6F8URtxqADMzzibOeJu+0eMdV3tlmakSkxiSUJW8a
+ gVgTQyf5XgUqxCnE3afABhc8rdXc/wdAb4efSpga6qsrIMi/iQacxA18I3nUhJJVs54l
+ vJosugKlU/sgJpC3flxW7Z9CWUBfesGrbKztvMsret6XYq/Z1vRz2me1yxdDFogWVKak
+ W9DzHtSElGx6ZbwjwBtFlr0kDV3HZsv6d++0eLCX2psVaUxd3Sltrmud7+3G1eKy2LnD
+ tsLRzTBtPO/hMjSBL9oPStfCpo2EeFgGjU8/RNlS5mkfDOLLyCG0Rhb3H9sfloufUgWo 1w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 343vaegxm3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Oct 2020 03:37:52 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09F3TwkV122677;
+        Thu, 15 Oct 2020 03:37:51 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 343phqfj42-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Oct 2020 03:37:51 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09F3bmcK019734;
+        Thu, 15 Oct 2020 03:37:48 GMT
+Received: from [192.168.0.108] (/70.36.60.91)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 14 Oct 2020 20:37:48 -0700
+Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
+To:     Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-arch <linux-arch@vger.kernel.org>
+References: <20201014195823.GC18196@zn.tnic>
+ <22E29783-F1F5-43DA-B35F-D75FB247475D@amacapital.net>
+ <20201014211214.GD18196@zn.tnic>
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+Message-ID: <3de58840-1f4c-566b-3a66-46d57475820c@oracle.com>
+Date:   Wed, 14 Oct 2020 20:37:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201013003704.GA41031@f3>
+In-Reply-To: <20201014211214.GD18196@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150025
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
+ impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 09:37:04AM +0900, Benjamin Poirier wrote:
->On 2020-10-12 19:24 +0800, Coiby Xu wrote:
->[...]
->> > I think, but didn't check in depth, that in those drivers, the devlink
->> > device is tied to the pci device and can exist independently of the
->> > netdev, at least in principle.
->> >
->> You are right. Take drivers/net/ethernet/mellanox/mlxsw as an example,
->> devlink reload would first first unregister_netdev and then
->> register_netdev but struct devlink stays put. But I have yet to
->> understand when unregister/register_netdev is needed.
->
->Maybe it can be useful to manually recover if the hardware or driver
->gets in an erroneous state. I've used `modprobe -r qlge && modprobe
->qlge` for the same in the past.
+On 2020-10-14 2:12 p.m., Borislav Petkov wrote:
+> On Wed, Oct 14, 2020 at 02:07:30PM -0700, Andy Lutomirski wrote:
+>> I assume it’s for a little optimization of clearing more than one
+>> page per SFENCE.
+>>
+>> In any event, based on the benchmark data upthread, we only want to do
+>> NT clears when they’re rather large, so this shouldn’t be just an
+>> alternative. I assume this is because a page or two will fit in cache
+>> and, for most uses that allocate zeroed pages, we prefer cache-hot
+>> pages. When clearing 1G, on the other hand, cache-hot is impossible
+>> and we prefer the improved bandwidth and less cache trashing of NT
+>> clears.
+> 
+> Yeah, use case makes sense but people won't know what to use. At the
+> time I was experimenting with this crap, I remember Linus saying that
+> that selection should be made based on the size of the area cleared, so
+> users should not have to know the difference.
+I don't disagree but I think the selection of cached/uncached route should
+be made where we have enough context available to be able to choose to do
+this.
 
-Thank you for providing this user case!
->
->> Do we need to
->> add "devlink reload" for qlge?
->
->Not for this patchset. That would be a new feature.
+This could be for example, done in mm_populate() or gup where if say the
+extent is larger than LLC-size, it takes the uncached path.
 
-To implement this feature, it seems I need to understand how qlge work
-under the hood. For example, what's the difference between
-qlge_soft_reset_mpi_risc and qlge_hard_reset_mpi_risc? Or should we use
-a brute-force way like do the tasks in qlge_remove and then re-do the
-tasks in qlge_probe? Is a hardware reference manual for qlge device?
+> 
+> Which perhaps is the only sane use case I see for this.
+> 
+>> Perhaps SFENCE is so fast that this is a silly optimization, though,
+>> and we don’t lose anything measurable by SFENCEing once per page.
+> 
+> Yes, I'd like to see real use cases showing improvement from this, not
+> just microbenchmarks.
+Sure will add.
 
---
-Best regards,
-Coiby
+Thanks
+Ankur
+
+> 
