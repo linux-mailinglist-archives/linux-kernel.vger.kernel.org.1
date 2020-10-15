@@ -2,259 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9D228EE54
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9D828EE5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388072AbgJOIPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:15:17 -0400
-Received: from mail-bn8nam12on2045.outbound.protection.outlook.com ([40.107.237.45]:27468
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387764AbgJOIPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:15:12 -0400
+        id S2388133AbgJOIVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:21:46 -0400
+Received: from mx0b-00273201.pphosted.com ([67.231.152.164]:43820 "EHLO
+        mx0b-00273201.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726018AbgJOIVq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:21:46 -0400
+Received: from pps.filterd (m0108162.ppops.net [127.0.0.1])
+        by mx0b-00273201.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09F8LYWo015288;
+        Thu, 15 Oct 2020 01:21:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=juniper.net; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=PPS1017; bh=BHVIB6j3qGD2jCpb0woT1TIg6zDfSrCdZczDhIV5Lnc=;
+ b=Hzch9bQom8R3R9NBPaXyIvppOW3SKmE45ucQkoPgCgA0fvF7kAX0oQTvhK/XcMPXIQuF
+ PhQ1DkBwzmJpjMTN+iT65yNOyNSrqt5ZEQwPtO50/ADx4ja7CYe58sXJxMOui0wI3edq
+ +O28jyBZa6EVFSgGklu0diPAW0IfUDv4gvng4UXMOkRGtxHelHu/X0VsudvM1etxmRYX
+ qdmMktBV+MMH4KFW9NKOAbtsynkz4MFVRu+Lr2bpabtIy79pnmAdtH8GimWrXLiDcBY2
+ 53797N1wBQswqifEcHiC3XqIMRRrPn2B/uDmsvv344ZjJD2g4z80WQv9+D/irT8GdhSh 1Q== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2174.outbound.protection.outlook.com [104.47.58.174])
+        by mx0b-00273201.pphosted.com with ESMTP id 346f340a2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Oct 2020 01:21:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HqyRERjinDYG6ZQ8W4P2jqcZcjViVDuxCk4l+JWsX5DfB1DNEprqnYJMA9iZI6+2OT6NDUk8CW1tefF7/lUJoFrhv0VUIwM98GUDUt1+qRNwZCS1ego58bqoM5w4hjEoeGcCEiqYUJpulAsiVbyun/4eUUeqjP0sFDM+DmlNXQQL4vP14PKV81G2kV0OSqRaxgiHRqEDRHtoIbcOvTeauwZ6sPD3rhPa24YH0RS/i6WOngH9eT0iFPKmT97hATR5AzA0RzV+s5CKLDp9ddJK277knmCeCb5We7g7AH7CFkaQ2MvsaU0Q81UUAhhecFJjMwMp35yubHi06ucdDFuO9A==
+ b=hOlfiqEZvZ6lhmFo89W98hVGel74N1FAIm5JdRm8vXAiExszQBftG2kqYWc7wqg+7vw0Jmb2ssDQbdA9MhOclb86gzkw5xvGeGSawafk/DQnrRg3yZ40mURiXdX1xzUC7HbXr/zB/c9RxwrC47I+5XZJ9Cy2Y/14anYoBvy/l75LVvfeMycLAhC13gIX4rjdkqC41cYKqH+BvekMsoDhHe6cMDudgb1CGMAbW2D2KbvlLBm2f3Fwd6Q38koSqaNU6MNDn/j4pB4Uzqqe2CVuGDT1vLevQPmrDhBg9Ze9iybWdx8HvCUxxQMu0zwU1PaYb6xU2uf/HtUhrt0zoOOs1Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMdYs3IQjgX8UGFLApWXTD7kOXJXAgeLGTNDkZ2/T7c=;
- b=eGgQb5ftzlSwZCxYBEDpUCYg4Qeh3NbMeH80Zdavq9Zswl2s7d/phc6ZqenDw7vZrzYlacPd8ImVEKHTMyIG6VB42kzDKeBFoxuMlR6uU9XGtmOLiXByYsWLHJkVDxl0LSL7jHVjOQ8tnoly8Lu11c1Gs39lcGefeY4juxb9aPZdpWEWa2JfrmMHsXeC4iE2CQN8I/rQ98UI83Mf8H29D4BniUKoZc6go07W8dRpBiktbntyW16PYW753OT/UN3bYxcGaqiMQDqqjAwSza8+5GhKOFamXbdS1+/wyxuQwWFlDWrKy1AilYK6lGd4oyArzpTtEHG2H1pxhUn+b81Qdw==
+ bh=BHVIB6j3qGD2jCpb0woT1TIg6zDfSrCdZczDhIV5Lnc=;
+ b=Kbj4XJXGp6K7XbUlCm4uf0p+e+f96jy6UWO1s0WvEZ5A/NX5cDouAF/H4mIYqty6l+TYF9Jyx9csVy9+ajJkb48k8joXgQG0UhoG+2UdzsReS9LBnChTsCUIq0BTbZRK+gB5gZ1o9U1kzf0gFXFlw4Msk5llY1nfx5ZCAz8UxpwiIqh0YFBRGJhy9W9qz2l/nTsbSNOtV9Db721oi+o1fjrKqVbmrip4b7tEYJcSzeoVZ4dib/R2dtsu/TZTESnMs5t8oPc5wY61TMXdzm3xhy1B+ibmRU54wM0u3QeJdrXhVWCAXUgpcWG/HBvj/jwVB3Ukh9jhMN91/FzTANJhBw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ smtp.mailfrom=juniper.net; dmarc=pass action=none header.from=juniper.net;
+ dkim=pass header.d=juniper.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=juniper.net;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMdYs3IQjgX8UGFLApWXTD7kOXJXAgeLGTNDkZ2/T7c=;
- b=GlREe+9I3udy2EfgQaUZ50K1IA4E1NK62Vc1IIWsDYbj3MFEv2jvsVijc3GKMYM9gph6vqBHAK8SiAIFWr1FaGOqaViqNf6RJY1RK0Zl5sTpH+/mwMSshfZtizm9qYwdgwRfmGl17CzwqAmZuQMTPCB0mJDI53i/LosElX9/tyY=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DS7PR03MB5622.namprd03.prod.outlook.com (2603:10b6:5:2ca::14) with
+ bh=BHVIB6j3qGD2jCpb0woT1TIg6zDfSrCdZczDhIV5Lnc=;
+ b=aJO9MVC+5NPckZhnedysDQE26A3MHqjCET13X7c6Bi/bBFzMVUNgc9K6hvtjXi10YT85EU5HWQ9w+7N8Lm498HaiKSB9JSPeUG1xs+w7tlcf6qOGfVSVTnPfSRMo9CgZ/q5FnxM0zZSOR1dt/bpXAt995cuHK/i93+K802f5dmY=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=juniper.net;
+Received: from BYAPR05MB6709.namprd05.prod.outlook.com (2603:10b6:a03:e3::13)
+ by BYAPR05MB6613.namprd05.prod.outlook.com (2603:10b6:a03:f0::28) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Thu, 15 Oct
- 2020 08:15:08 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3477.020; Thu, 15 Oct 2020
- 08:15:08 +0000
-Date:   Thu, 15 Oct 2020 16:14:55 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: fw_devlink on will break all snps,dw-apb-gpio users
-Message-ID: <20201015161455.744d5041@xhacker.debian>
-In-Reply-To: <CAGETcx_jzF_iV5oJQ8BuDBu0b5Z8G=uL0DhA4uS5U9XLuYryjg@mail.gmail.com>
-References: <20201014191235.7f71fcb4@xhacker.debian>
-        <CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com>
-        <20201015120206.41b6a454@xhacker.debian>
-        <CAGETcx_jzF_iV5oJQ8BuDBu0b5Z8G=uL0DhA4uS5U9XLuYryjg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [124.74.246.114]
-X-ClientProxiedBy: TY2PR06CA0023.apcprd06.prod.outlook.com
- (2603:1096:404:42::35) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.11; Thu, 15 Oct
+ 2020 08:21:36 +0000
+Received: from BYAPR05MB6709.namprd05.prod.outlook.com
+ ([fe80::483:3663:5ffe:5470]) by BYAPR05MB6709.namprd05.prod.outlook.com
+ ([fe80::483:3663:5ffe:5470%6]) with mapi id 15.20.3477.020; Thu, 15 Oct 2020
+ 08:21:36 +0000
+From:   Reji Thomas <rejithomas@juniper.net>
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rejithomas@juniper.net,
+        rejithomas.d@gmail.com, kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] IPv6: sr: Fix End.X nexthop to use oif.
+Date:   Thu, 15 Oct 2020 13:51:19 +0530
+Message-Id: <20201015082119.68287-1-rejithomas@juniper.net>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [116.197.184.16]
+X-ClientProxiedBy: MA1PR01CA0164.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:71::34) To BYAPR05MB6709.namprd05.prod.outlook.com
+ (2603:10b6:a03:e3::13)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY2PR06CA0023.apcprd06.prod.outlook.com (2603:1096:404:42::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Thu, 15 Oct 2020 08:15:05 +0000
+Received: from rejithomas-mbp.jnpr.net (116.197.184.16) by MA1PR01CA0164.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:71::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3477.21 via Frontend Transport; Thu, 15 Oct 2020 08:21:33 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ab223ef3-adda-4155-ddc3-08d870e26deb
-X-MS-TrafficTypeDiagnostic: DS7PR03MB5622:
-X-Microsoft-Antispam-PRVS: <DS7PR03MB5622015FEA8A71E1B0A0BB3BED020@DS7PR03MB5622.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 03e5f8bc-d6e0-4625-3eef-08d870e3550e
+X-MS-TrafficTypeDiagnostic: BYAPR05MB6613:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR05MB6613A0815787D55336BBD77FCC020@BYAPR05MB6613.namprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VvS+Bh23lirTAfEMXzRBER01xDFr6/g2PXEeiqOu6XPc8pd2DeMoASfF0knBocKz12B0i+GSwWjBMFzh6IuYua1qwy03/kejufjaT6SpNQqluAlw0Y3MP8jNQqtQAkuUorfZuOGGbryf70Xo5EeIBVkP9KRMdE8QboSd4CZcuhqnL3bhGOLJ/3asiFxZ6wXKJtutwwMQTre2eDAUHHYl6v6ujWV2VfjHZqRVmMT0CMxJbQ6VRYMDsVJ9vdPW8uzizMoWwP0tK85y0WJ+8G06NjT+TDqRUR/Fv+j4d0ECgAdchlz4KHu64+5JjKSnZ/XZQsT4ng6zbX6BBSUsuVfZRPOyAu3k7CMRap93up26qfwobpryXdUyWFpbjWF+3f70kJk0sk2VBRnv1IZyEp5pPoBGOJOUlCr9bfid5pTZA8aG3XXGvpEKDoXyAY80IVYzZ+K1ZREnVMG4A48CnoqbiUxxQQjlMIndXW7loSBfAa5q9f4UtMo+Zc/yYl75KNRe0JiJ690ItWGa9MN9Q9lQJA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(5660300002)(52116002)(66556008)(7696005)(478600001)(66946007)(8676002)(83380400001)(966005)(66476007)(34490700002)(956004)(83080400001)(8936002)(110136005)(1076003)(54906003)(55016002)(86362001)(16526019)(6666004)(26005)(186003)(316002)(6506007)(9686003)(2906002)(4326008)(53546011)(26730200005)(19860200003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 0Hg1lVVddMeyXfO0OFYWQdQ8rHqPUgw4AnFk+BdOLLeE1ly3aErDQiSSMUjoIPT1QLoQmRyO1W/MFdFO8JZ15yRNCzcwICL5ztIYWCOTrShOocrzbnjfy3b9trbu6FKna5lx21rh3FSN2iXo2BpdiqUZG9M2A1Kong+en7TUqFWXtcFphoTrTBKlDJ28xWj6Do580SS9Xw+yDpSV9eopWDBluIERg4Q/mKT2ZM6DHOxjsc2Kf0BH6IBB8QUCOGgd8G6XZ9RJ+OIZewj12oAIp6RB0qzc2EH+9ge6bZ2ZFcAxewIYpupSCkOGYvR2iBwMwJAht+73BdvenZabiDQPIyEUMrJDWRjYHECpSm4pg8hirQhSKj+V8WshyOjs+iPmYkI6LUyg4Zfh+KUGEv7tLJ9xRSW2/PjaQjbJArn5Nt71wSi8D1olqVpUcGBusxwQmris47yrMxQyVqzFXKIzosd0S+ZuqA79AEX1AEcmx2z9vgrKUF3OFm/JZzET/oOovVWbygoBb+fWTiXrg+Ma8n1meHcAtvfJiXHYzUgV0wLyzKnqkmFoCb5MOFLBYx99QVGHdyyd1x17IUtcOWYuJSSiZW6/B+HR/KKWYqC1wOBrVCpT1wHl3hSTuE+W9F8pv3vw0kreCHjGxIrlHiagVw==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab223ef3-adda-4155-ddc3-08d870e26deb
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: WRGrYAecvTirRQ2PPEl0QnNwVp1/yorMhf5mWKErkudbhVaa+EhHD8c2Xwv7QTZT8Oj6655vjnO0lU2eBtRXiS7DWcDlj/UmEwp902yYxD3mdmcHzyA8ytzXlix7X7pH5sDvE2KSEyp17k4hpznDhehxIj/eqZjvMLbzR34qtjXRvpiW2/MLEEweXcLv6lKd3McBEFjifJy/TggWPc7ooULfuWnI2XmT5A+bMnHhX/M5vkhQipeDSS7CVIBe947asgLpbt3ugrQTRJLKEAOHK+8akW98iadH0GAYhbkF5KpfzI5Krn0Ra0mHyboWd7UgVKS2HQ+mVNWeWzOSJ8cuMKKdwd25qCFR+zUIqmbTr89bUZcAWa0AVXWGT+w0oxMi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB6709.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(4326008)(8936002)(6916009)(6506007)(2906002)(52116002)(956004)(2616005)(6666004)(26005)(16526019)(6486002)(186003)(83380400001)(478600001)(6512007)(36756003)(8676002)(66476007)(5660300002)(66946007)(1076003)(66556008)(34490700002)(316002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: W8YhaPBrFf8oB0pWVRKRdY9FPUYXPQgdfmen8iNi3c7z7qafztXL5dh20Xv8DxI878KYVKjinjIiDiGCBf+E93h7gCoZcwGc33SvKfxXDvGhmnsksMiseDRFngkcgbcSE8S+86ksiIGxR2Ts4kQ8dMWEo8FCQLxsimZR2rFhm+G6JKm+6iKls48jaozwKsV7jDczxNCKIIVtsgsiuDpEwvV09ZqYZPkxiAZeL61JbKqRI8FM0+EfyzHgI+HwKx2w1OTxi+9Du8K6IjIb9THVazRQv2ZcfURE2CAEizYYEZNy2qrvkra+2QHR4qJ8++MSsw8IljfdGiEUGm1kqcQwSUQMVrFRR88HysOILKK3U/2t9wz0OnxgHKrN5VNcBEE/B9JqrEhG7t23kRXXBsYpmX+RmvMMDe7fOktUTCgx7lVA6LNq5DJiMxkaUOIks4MpRsdw2TJfP5Cha7OjQcuN/x+4d4Dzzt0BGQ4U+hNMjklhH5Y62VL7badrsMmMMBQfS9KDUBaepuVNgysVuIT9nKlTtS5BsqU74ybOqFrrVXK94Kh80PYrDf0MyLXChOROLHSnYvIf+spyh9wU43U/OA7aH+qZ5ytEQkF21O9z9qDi1mTsmDttL1RkKz/SVHECYhaLP5j/5RkRGhMIr2PKTA==
+X-OriginatorOrg: juniper.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03e5f8bc-d6e0-4625-3eef-08d870e3550e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB6709.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2020 08:15:08.4947
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2020 08:21:36.3717
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-Id: bea78b3c-4cdb-4130-854a-1d193232e5f4
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dqspcoujp0y+ZmKVfZzX3Cow2e5mYAGL/S13/jT4YBc9ZtYkbU6w1Snh2AJeLTbF2kdL8/6TgAdVYjwiKInemQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR03MB5622
+X-MS-Exchange-CrossTenant-UserPrincipalName: vW1HYmzyj72omJcIRrkZfNXjOeSPUqU40NgGOHKyUf5eshmKDmR3UZHvgqRKcmb1wDfPY0pnNsVEXIiNrO0LwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB6613
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-15_03:2020-10-14,2020-10-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_notspam policy=outbound_spam score=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 spamscore=0 adultscore=0 impostorscore=0
+ priorityscore=1501 clxscore=1011 bulkscore=0 mlxlogscore=730
+ suspectscore=1 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010150059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 22:04:24 -0700 Saravana Kannan wrote:
+Currently End.X action doesn't consider the outgoing interface
+while looking up the nexthop.This breaks packet path functionality
+specifically while using link local address as the End.X nexthop.
+The patch fixes this by enforcing End.X action to have both nh6 and
+oif and using oif in lookup.It seems this is a day one issue.
 
-> 
-> 
-> On Wed, Oct 14, 2020 at 9:02 PM Jisheng Zhang
-> <Jisheng.Zhang@synaptics.com> wrote:
-> >
-> > On Wed, 14 Oct 2020 10:29:36 -0700
-> > Saravana Kannan <saravanak@google.com> wrote:
-> >  
-> > >
-> > >
-> > > On Wed, Oct 14, 2020 at 4:12 AM Jisheng Zhang
-> > > <Jisheng.Zhang@synaptics.com> wrote:  
-> > > >
-> > > > Hi,
-> > > >
-> > > > If set fw_devlink as on, any consumers of dw apb gpio won't probe.
-> > > >
-> > > > The related dts looks like:
-> > > >
-> > > > gpio0: gpio@2400 {
-> > > >        compatible = "snps,dw-apb-gpio";
-> > > >        #address-cells = <1>;
-> > > >        #size-cells = <0>;
-> > > >
-> > > >        porta: gpio-port@0 {
-> > > >               compatible = "snps,dw-apb-gpio-port";
-> > > >               gpio-controller;
-> > > >               #gpio-cells = <2>;
-> > > >               ngpios = <32>;
-> > > >               reg = <0>;
-> > > >        };
-> > > > };
-> > > >
-> > > > device_foo {
-> > > >         status = "okay"
-> > > >         ...;
-> > > >         reset-gpio = <&porta, 0, GPIO_ACTIVE_HIGH>;
-> > > > };
-> > > >
-> > > > If I change the reset-gpio property to use another kind of gpio phandle,
-> > > > e.g gpio expander, then device_foo can be probed successfully.
-> > > >
-> > > > The gpio expander dt node looks like:
-> > > >
-> > > >         expander3: gpio@44 {
-> > > >                 compatible = "fcs,fxl6408";
-> > > >                 pinctrl-names = "default";
-> > > >                 pinctrl-0 = <&expander3_pmux>;
-> > > >                 reg = <0x44>;
-> > > >                 gpio-controller;
-> > > >                 #gpio-cells = <2>;
-> > > >                 interrupt-parent = <&portb>;
-> > > >                 interrupts = <23 IRQ_TYPE_NONE>;
-> > > >                 interrupt-controller;
-> > > >                 #interrupt-cells = <2>;
-> > > >         };
-> > > >
-> > > > The common pattern looks like the devlink can't cope with suppliers from
-> > > > child dt node.  
-> > >
-> > > fw_devlink doesn't have any problem dealing with child devices being
-> > > suppliers. The problem with your case is that the
-> > > drivers/gpio/gpio-dwapb.c driver directly parses the child nodes and
-> > > never creates struct devices for them. If you have a node with
-> > > compatible string, fw_devlink expects you to create and probe a struct
-> > > device for it. So change your driver to add the child devices as
-> > > devices instead of just parsing the node directly and doing stuff with
-> > > it.
-> > >
-> > > Either that, or stop putting "compatible" string in a node if you
-> > > don't plan to actually treat it as a device -- but that's too late for
-> > > this driver (it needs to be backward compatible). So change the driver
-> > > to add of_platform_populate() and write a driver that probes
-> > > "snps,dw-apb-gpio-port".
-> > >  
-> >
-> > Thanks for the information. The "snps,dw-apb-gpio-port" is never used,
-> > so I just sent out a series to remove it.  
-> 
-> I'd actually prefer that you fix the kernel code to actually use it.
-> So that fw_devlink can be backward compatible (Older DT + new kernel).
-> The change is pretty trivial (I just have time to do it for you).
-> 
+Fixes: 140f04c33bbc ("ipv6: sr: implement several seg6local actions")
+Signed-off-by: Reji Thomas <rejithomas@juniper.net>
 
-I agree the change is trivial, but it will add some useless LoCs like below.
-I'm not sure whether this is acceptable.So add GPIO and DT maintainers to comment.
+---
+Changes in v2:
+- Fixed seg6_strict_lookup_nexthop() to be a static function
+Reported-by: kernel test robot <lkp@intel.com>
+- Fixed comments from Jakub Kicinski <kuba@kernel.org>
+	-Sorted the variable declarations from longest to shortest.
+        -fixes:tag and blank line fixed.
+---
+ net/ipv6/seg6_local.c | 32 +++++++++++++++++++++++++-------
+ 1 file changed, 25 insertions(+), 7 deletions(-)
 
-Hi Linus, Rob,
-
-Could you please comment? A simple introduction of the problem:
-
-As pointed out by Saravana, "gpio-dwapb.c driver directly parses the child
-nodes and never creates struct devices for them. If you have a node with
-compatible string, fw_devlink expects you to create and probe a struct
-device for it", so once we set fw_devlink=on, then any users of gpio-dwapb
-as below won't be probed.
-
-device_foo {
-         status = "okay"
-         ...;
-         reset-gpio = <&porta, 0, GPIO_ACTIVE_HIGH>;
-};
-
-The compatible string "snps,dw-apb-gpio-port" is never used, but it's in
-the dt-binding since the dw gpio mainlined. I believe the every dw apb
-users just copy the compatible string in to soc dtsi. So I submit a series
-to remove the unused "snps,dw-apb-gpio-port" https://lkml.org/lkml/2020/10/14/1186
-But this will break Older DT + new kernel with fw_devlink on. Which solution
-is better?
-
-If the following patch is acceptable, I can submit it once 5.10-rc1 is out.
-
-thanks
-
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index 1d8d55bd63aa..b8e012e48b59 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -19,6 +19,7 @@
- #include <linux/of_address.h>
- #include <linux/of_device.h>
- #include <linux/of_irq.h>
-+#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
- #include <linux/reset.h>
-@@ -694,6 +695,10 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
+diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
+index eba23279912d..4603daed9de6 100644
+--- a/net/ipv6/seg6_local.c
++++ b/net/ipv6/seg6_local.c
+@@ -153,7 +153,7 @@ static void advance_nextseg(struct ipv6_sr_hdr *srh, struct in6_addr *daddr)
+ 
+ static int
+ seg6_lookup_any_nexthop(struct sk_buff *skb, struct in6_addr *nhaddr,
+-			u32 tbl_id, bool local_delivery)
++			int oif, u32 tbl_id, bool local_delivery)
+ {
+ 	struct net *net = dev_net(skb->dev);
+ 	struct ipv6hdr *hdr = ipv6_hdr(skb);
+@@ -164,6 +164,7 @@ seg6_lookup_any_nexthop(struct sk_buff *skb, struct in6_addr *nhaddr,
+ 	int dev_flags = 0;
+ 
+ 	fl6.flowi6_iif = skb->dev->ifindex;
++	fl6.flowi6_oif = oif;
+ 	fl6.daddr = nhaddr ? *nhaddr : hdr->daddr;
+ 	fl6.saddr = hdr->saddr;
+ 	fl6.flowlabel = ip6_flowinfo(hdr);
+@@ -173,7 +174,10 @@ seg6_lookup_any_nexthop(struct sk_buff *skb, struct in6_addr *nhaddr,
+ 	if (nhaddr)
+ 		fl6.flowi6_flags = FLOWI_FLAG_KNOWN_NH;
+ 
+-	if (!tbl_id) {
++	if (oif)
++		flags |= RT6_LOOKUP_F_IFACE;
++
++	if (!tbl_id && !oif) {
+ 		dst = ip6_route_input_lookup(net, skb->dev, &fl6, skb, flags);
+ 	} else {
+ 		struct fib6_table *table;
+@@ -182,7 +186,7 @@ seg6_lookup_any_nexthop(struct sk_buff *skb, struct in6_addr *nhaddr,
+ 		if (!table)
+ 			goto out;
+ 
+-		rt = ip6_pol_route(net, table, 0, &fl6, skb, flags);
++		rt = ip6_pol_route(net, table, oif, &fl6, skb, flags);
+ 		dst = &rt->dst;
  	}
- 	platform_set_drvdata(pdev, gpio);
  
-+	err = devm_of_platform_populate(dev);
-+	if (err)
-+		goto out_unregister;
-+
- 	return 0;
- 
- out_unregister:
-@@ -820,6 +825,25 @@ static struct platform_driver dwapb_gpio_driver = {
- 
- module_platform_driver(dwapb_gpio_driver);
- 
-+static const struct of_device_id dwapb_port_of_match[] = {
-+	{ .compatible = "snps,dw-apb-gpio-port" },
-+	{ /* Sentinel */ }
-+};
-+
-+static int dwapb_gpio_port_probe(struct platform_device *pdev)
-+{
-+	return 0;
+@@ -212,7 +216,14 @@ seg6_lookup_any_nexthop(struct sk_buff *skb, struct in6_addr *nhaddr,
+ int seg6_lookup_nexthop(struct sk_buff *skb,
+ 			struct in6_addr *nhaddr, u32 tbl_id)
+ {
+-	return seg6_lookup_any_nexthop(skb, nhaddr, tbl_id, false);
++	return seg6_lookup_any_nexthop(skb, nhaddr, 0, tbl_id, false);
 +}
 +
-+static struct platform_driver dwapb_gpio_port_driver = {
-+	.driver		= {
-+		.name	= "gpio-dwapb-port",
-+		.of_match_table = dwapb_port_of_match,
-+	},
-+	.probe		= dwapb_gpio_port_probe,
-+};
-+module_platform_driver(dwapb_gpio_port_driver);
++static int
++seg6_strict_lookup_nexthop(struct sk_buff *skb,
++			   struct in6_addr *nhaddr, int oif, u32 tbl_id)
++{
++	return seg6_lookup_any_nexthop(skb, nhaddr, oif, tbl_id, false);
+ }
+ 
+ /* regular endpoint function */
+@@ -239,6 +250,8 @@ static int input_action_end(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+ static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+ {
+ 	struct ipv6_sr_hdr *srh;
++	struct net_device *odev;
++	struct net *net = dev_net(skb->dev);
+ 
+ 	srh = get_and_validate_srh(skb);
+ 	if (!srh)
+@@ -246,7 +259,11 @@ static int input_action_end_x(struct sk_buff *skb, struct seg6_local_lwt *slwt)
+ 
+ 	advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
+ 
+-	seg6_lookup_nexthop(skb, &slwt->nh6, 0);
++	odev = dev_get_by_index_rcu(net, slwt->oif);
++	if (!odev)
++		goto drop;
 +
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Jamie Iles");
- MODULE_DESCRIPTION("Synopsys DesignWare APB GPIO driver");
++	seg6_strict_lookup_nexthop(skb, &slwt->nh6, odev->ifindex, 0);
+ 
+ 	return dst_input(skb);
+ 
+@@ -412,7 +429,7 @@ static int input_action_end_dt6(struct sk_buff *skb,
+ 
+ 	skb_set_transport_header(skb, sizeof(struct ipv6hdr));
+ 
+-	seg6_lookup_any_nexthop(skb, NULL, slwt->table, true);
++	seg6_lookup_any_nexthop(skb, NULL, 0, slwt->table, true);
+ 
+ 	return dst_input(skb);
+ 
+@@ -566,7 +583,8 @@ static struct seg6_action_desc seg6_action_table[] = {
+ 	},
+ 	{
+ 		.action		= SEG6_LOCAL_ACTION_END_X,
+-		.attrs		= (1 << SEG6_LOCAL_NH6),
++		.attrs		= ((1 << SEG6_LOCAL_NH6) |
++				   (1 << SEG6_LOCAL_OIF)),
+ 		.input		= input_action_end_x,
+ 	},
+ 	{
+-- 
+2.17.1
 
