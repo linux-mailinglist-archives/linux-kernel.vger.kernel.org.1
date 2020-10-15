@@ -2,246 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05E728F5A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED1A28F5B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389629AbgJOPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388086AbgJOPPo (ORCPT
+        id S2389648AbgJOPSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:18:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25980 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388086AbgJOPSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:15:44 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C617C061755;
-        Thu, 15 Oct 2020 08:15:44 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s9so3942173wro.8;
-        Thu, 15 Oct 2020 08:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YIFgqJIvZsmeRtV2K8O58xOmfJpO6lYc6Fjxru8DXiQ=;
-        b=QA9VcerBtrSSn6LTddkzx9rBBCDBJKMc2M0PPRxQHXiKZCxSAQkBWJEqzG88aphHwM
-         NtBu9H6p+rIKe9PD/BEaH+l6XNAxeIYSok097kDm6TyYV5VQJdG7952JMcMVUiLHZI5z
-         ODvDZoxdgxNNXH3QifA8fiVI8FmKLj/PIkGC1dHJxdegwrmB1y6GCqHKCeylY75PJ1uy
-         OeHHdOuwfxCQ0oSVYDuwqDpXnT+RJX7fgV3SBhM9zZ98ERS8h8UBRVBCftEqEz9KhQQE
-         +HI7TrHs4Oxci154R/+CSBwdagvYShJ+/hoXjMwOmSBV0sAaSxXM9JxukAQT/MLS+zrk
-         rS/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YIFgqJIvZsmeRtV2K8O58xOmfJpO6lYc6Fjxru8DXiQ=;
-        b=O/1XSYronihjWHAlPT/cMZnL5i/ZdbQlZiNAop67GrxdL71xtUpZyk8aL+oS6Ybe0x
-         WDiqdhBksJNtRuygJPpvO5q441fRlVapfkhYaO8WEfgfkFoTKRVF9tb4MyUducV3P7eN
-         qkiZdMPTswcCTP2VNIMnW3HxQB2NTMzhBOTU74JItpGhz4qoPaTychpvYP6lFkQDogGl
-         tWEWUOphjmFgeVsK2W4KFIaMaqZ3a9whNv3wQBKVDitczkXFyfkkv6tae4S6hNy0Cc+x
-         Y+sfSZ0Oae73m7Z7ArU5Bg3PnZBWyvhpiYsDwgmDVa1lDoMoKehlGGF76j/gwRnX76dT
-         Rt1A==
-X-Gm-Message-State: AOAM532C48IvfVOYqCzP3er2swINp+2WVI7I4GZDKqaSDCWy8ff2lQ/F
-        RoxJ8iVruxAFMCg17NbVf11IMBK265CLjv+vklg=
-X-Google-Smtp-Source: ABdhPJzv0seZ4eeR8XIu7L9Q2J9C311t2z/alrYlN6Fe40zEkxrgTiVhUDea3rZfQ40QX3nJQ7eybie9w2iqnT+oIuE=
-X-Received: by 2002:adf:bc0f:: with SMTP id s15mr4965982wrg.83.1602774943141;
- Thu, 15 Oct 2020 08:15:43 -0700 (PDT)
+        Thu, 15 Oct 2020 11:18:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602775085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZmIzkd5uRDI24FvTtgkvnJd3MIzG72UtYvWuNQeQTr0=;
+        b=U124Ote6Xm8DhKndas43Bkaye6dzxEOweWd5X0daX7mR4uUejRSdaUYTFqMl1xf57eqPjt
+        X9fPp0V5V02DwXjTRYzj6pDkMSy1c6cPKqwf1025MnpRKyxGJcSbfoBGuwiTBt8eGW4DSu
+        QrvXTXaS0s6943DhELuTr/3QyIYWkyQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-bNInItiKNX-b_VsXjfsoGg-1; Thu, 15 Oct 2020 11:18:01 -0400
+X-MC-Unique: bNInItiKNX-b_VsXjfsoGg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D57618BE161;
+        Thu, 15 Oct 2020 15:17:59 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 31C4D73661;
+        Thu, 15 Oct 2020 15:17:57 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 15 Oct 2020 17:17:59 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 17:17:56 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, peterz@infradead.org
+Subject: Re: [PATCH 4/5] x86: wire up TIF_NOTIFY_SIGNAL
+Message-ID: <20201015151756.GK24156@redhat.com>
+References: <20201015143409.GC24156@redhat.com>
+ <87v9fbv8te.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1602753310-22105-1-git-send-email-mkrishn@codeaurora.org>
-In-Reply-To: <1602753310-22105-1-git-send-email-mkrishn@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 15 Oct 2020 08:15:31 -0700
-Message-ID: <CAF6AEGva6tqc3v5J62LhdZsb8mqKZ+NXFmaL-HwF355uct2d7g@mail.gmail.com>
-Subject: Re: [v2] drm/msm: Fix race condition in msm driver with async layer updates
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v9fbv8te.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 2:15 AM Krishna Manikandan
-<mkrishn@codeaurora.org> wrote:
+On 10/15, Thomas Gleixner wrote:
 >
-> When there are back to back commits with async cursor update,
-> there is a case where second commit can program the DPU hw
-> blocks while first didn't complete flushing config to HW.
+> On Thu, Oct 15 2020 at 16:34, Oleg Nesterov wrote:
+> > On 10/15, Thomas Gleixner wrote:
+> >> Instead of adding this to every architectures signal magic, we can
+> >> handle TIF_NOTIFY_SIGNAL in the core code:
+> >>
+> >> static void handle_singal_work(ti_work, regs)
+> >> {
+> >> 	if (ti_work & _TIF_NOTIFY_SIGNAL)
+> >>         	tracehook_notify_signal();
+> >>
+> >>         arch_do_signal(ti_work, regs);
+> >> }
+> >>
+> >>       loop {
+> >>       		if (ti_work & (SIGPENDING | NOTIFY_SIGNAL))
+> >>                 	handle_signal_work(ti_work, regs);
+> >>       }
+> >
+> > To me this looks like unnecessary complication. We need to change
+> > every architecture anyway, how can this helper help?
 >
-> Synchronize the compositions such that second commit waits
-> until first commit flushes the composition.
->
-> This change also introduces per crtc commit lock, such that
-> commits on different crtcs are not blocked by each other.
->
-> Changes in v2:
->         - Use an array of mutexes in kms to handle commit
->           lock per crtc. (Rob Clark)
->
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/msm_atomic.c | 32 +++++++++++++++++++-------------
->  drivers/gpu/drm/msm/msm_kms.h    |  6 ++++--
->  2 files changed, 23 insertions(+), 15 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
-> index 561bfa4..f9bd472 100644
-> --- a/drivers/gpu/drm/msm/msm_atomic.c
-> +++ b/drivers/gpu/drm/msm/msm_atomic.c
-> @@ -61,10 +61,10 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
->
->         trace_msm_atomic_async_commit_start(crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
-> +       mutex_lock(&kms->commit_lock[crtc_idx]);
->
->         if (!(kms->pending_crtc_mask & crtc_mask)) {
-> -               mutex_unlock(&kms->commit_lock);
-> +               mutex_unlock(&kms->commit_lock[crtc_idx]);
->                 goto out;
->         }
->
-> @@ -79,7 +79,6 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
->          */
->         trace_msm_atomic_flush_commit(crtc_mask);
->         kms->funcs->flush_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
->
->         /*
->          * Wait for flush to complete:
-> @@ -90,9 +89,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
->
->         vblank_put(kms, crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
->         kms->funcs->complete_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
-> +       mutex_unlock(&kms->commit_lock[crtc_idx]);
->         kms->funcs->disable_commit(kms);
->
->  out:
-> @@ -171,6 +169,16 @@ static unsigned get_crtc_mask(struct drm_atomic_state *state)
->         return mask;
->  }
->
-> +static int get_crtc_id(struct msm_kms *kms, unsigned int crtc_mask)
-> +{
-> +       struct drm_crtc *crtc;
-> +
-> +       for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-> +               return drm_crtc_index(crtc);
-> +
-> +       return 0;
-> +}
+> You need to change ONE architecture because nobody else uses the common
+> entry loop right now.
 
-this is closer, but a commit could still touch multiple CRTCs, I think
-what you should do is add a lock/unlock helper, similar to
-vblank_get/put(), ie:
+so we need to change other arches to use the common entry loop.
 
-static void lock_crtcs(struct msm_kms *kms, unsigned crtc_mask)
-{
-  struct drm_crtc *crtc;
+> For those who move over they have to supply
+> arch_do_signal() anyway,
 
-  for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-    mutex_lock(&kms->commit_lock[drm_crtc_index(crtc)]);
-}
+and this arch_do_signal() should be changed to check _TIF_SIGPENDING.
 
-and use that everywhere
 
-(Technically we only go down the async path if there is only a single
-crtc, but no reason not to use the lock/unlock helpers in both cases)
 
-BR,
--R
+See also my replies to 3/5. I strongly disagree with CONFIG_GENERIC_ENTRY.
+But even if we require CONFIG_GENERIC_ENTRY, why do we want this helper?
 
-> +
->  void msm_atomic_commit_tail(struct drm_atomic_state *state)
->  {
->         struct drm_device *dev = state->dev;
-> @@ -180,6 +188,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->         unsigned crtc_mask = get_crtc_mask(state);
->         bool async = kms->funcs->vsync_time &&
->                         can_do_async(state, &async_crtc);
-> +       int crtc_idx = get_crtc_id(kms, crtc_mask);
->
->         trace_msm_atomic_commit_tail_start(async, crtc_mask);
->
-> @@ -189,12 +198,11 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->          * Ensure any previous (potentially async) commit has
->          * completed:
->          */
-> +       mutex_lock(&kms->commit_lock[crtc_idx]);
->         trace_msm_atomic_wait_flush_start(crtc_mask);
->         kms->funcs->wait_flush(kms, crtc_mask);
->         trace_msm_atomic_wait_flush_finish(crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
-> -
->         /*
->          * Now that there is no in-progress flush, prepare the
->          * current update:
-> @@ -232,8 +240,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->                 }
->
->                 kms->funcs->disable_commit(kms);
-> -               mutex_unlock(&kms->commit_lock);
-> -
-> +               mutex_unlock(&kms->commit_lock[crtc_idx]);
->                 /*
->                  * At this point, from drm core's perspective, we
->                  * are done with the atomic update, so we can just
-> @@ -260,8 +267,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->          */
->         trace_msm_atomic_flush_commit(crtc_mask);
->         kms->funcs->flush_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
-> -
-> +       mutex_unlock(&kms->commit_lock[crtc_idx]);
->         /*
->          * Wait for flush to complete:
->          */
-> @@ -271,9 +277,9 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
->
->         vblank_put(kms, crtc_mask);
->
-> -       mutex_lock(&kms->commit_lock);
-> +       mutex_lock(&kms->commit_lock[crtc_idx]);
->         kms->funcs->complete_commit(kms, crtc_mask);
-> -       mutex_unlock(&kms->commit_lock);
-> +       mutex_unlock(&kms->commit_lock[crtc_idx]);
->         kms->funcs->disable_commit(kms);
->
->         drm_atomic_helper_commit_hw_done(state);
-> diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-> index 1cbef6b..2049847 100644
-> --- a/drivers/gpu/drm/msm/msm_kms.h
-> +++ b/drivers/gpu/drm/msm/msm_kms.h
-> @@ -155,7 +155,7 @@ struct msm_kms {
->          * For async commit, where ->flush_commit() and later happens
->          * from the crtc's pending_timer close to end of the frame:
->          */
-> -       struct mutex commit_lock;
-> +       struct mutex commit_lock[MAX_CRTCS];
->         unsigned pending_crtc_mask;
->         struct msm_pending_timer pending_timers[MAX_CRTCS];
->  };
-> @@ -165,7 +165,9 @@ static inline void msm_kms_init(struct msm_kms *kms,
->  {
->         unsigned i;
->
-> -       mutex_init(&kms->commit_lock);
-> +       for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
-> +               mutex_init(&kms->commit_lock[i]);
-> +
->         kms->funcs = funcs;
->
->         for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
-> --
-> 2.7.4
->
+We can just change exit_to_user_mode_loop() to do
+
+	if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL)) {
+		if (ti_work & _TIF_NOTIFY_SIGNAL)
+			tracehook_notify_signal();
+		arch_do_signal(ti_work, regs);
+	}
+
+but I'd prefer to handle SIGPENDING/NOTIFY_SIGNAL in one place.
+
+Oleg.
+
