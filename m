@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EDC28F819
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8F028F81F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732856AbgJOSES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52254 "EHLO mail.kernel.org"
+        id S1731214AbgJOSGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:06:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:54886 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgJOSER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:04:17 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E175720797;
-        Thu, 15 Oct 2020 18:04:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602785056;
-        bh=p+alG96VqUHzWl/iQOrip1ok4bKiK0HcnG43T8fhhoA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SJuoRfy0QJPz03+HW9k8/hBgyICGcRUzaf6H5MAk04x8J8qNw347acMyl8IYgQcMl
-         krZ7KvhGBcNBuT/HMQSRakPWnKwJU/OZvnIxpoMVK7J/69RFelISG5U4CCvRsv0NDw
-         4UHUH0lZKmTwVGpYLr3BWkkdhdtTVNACkC/gQQC4=
-Date:   Thu, 15 Oct 2020 11:04:14 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: bpf-next test error: BUG: program execution failed: executor 0:
- exit status 67
-Message-ID: <20201015110409.66a8a054@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201015110203.7cffc1d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <000000000000376ecf05b1b92848@google.com>
-        <CACT4Y+aTPCPRtJ2wJ5P58DijtG2pxXtZm6w=C838YKLKCEdSfw@mail.gmail.com>
-        <20201015110203.7cffc1d4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1726053AbgJOSGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:06:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7A0E13D5;
+        Thu, 15 Oct 2020 11:06:03 -0700 (PDT)
+Received: from bogus (unknown [10.57.17.164])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2879D3F71F;
+        Thu, 15 Oct 2020 11:06:01 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 19:05:55 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     ulf.hansson@linaro.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, nks@flawful.org,
+        georgi.djakov@linaro.org, Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] opp: Allow dev_pm_opp_get_opp_table() to return
+ -EPROBE_DEFER
+Message-ID: <20201015180555.gacdzkofpibkdn2e@bogus>
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 11:02:08 -0700 Jakub Kicinski wrote:
-> On Thu, 15 Oct 2020 19:46:35 +0200 Dmitry Vyukov wrote:
-> > On Thu, Oct 15, 2020 at 7:41 PM syzbot
-> > <syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com> wrote:  
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    e688c3db bpf: Fix register equivalence tracking.
-> > > git tree:       bpf-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=13d3c678500000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ea7dc57e899da16d
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=5609d37b3a926aad75b7
-> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+5609d37b3a926aad75b7@syzkaller.appspotmail.com
-> > >
-> > > executing program
-> > > 2020/10/15 14:32:51 BUG: program execution failed: executor 0: exit status 67
-> > > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
-> > > loop exited with status 67
-> > >
-> > > iptable checkpoint filter/2: getsockopt(IPT_SO_GET_INFO) (errno 22)
-> > > loop exited with status 67    
-> > 
-> > +netfilter maintainers
-> > 
-> > It seems one of these recent commits broke netfiler.
-> > Since syzkaller uses netfiler for sandboxing, syzbot is currently down
-> > on bpf-next and linux-next. Other trees will follow once they merge
-> > the breakage.  
+On Mon, Aug 24, 2020 at 02:39:32PM +0530, Viresh Kumar wrote:
+> From: Stephan Gerhold <stephan@gerhold.net>
 > 
-> Do you have this?
+> The OPP core manages various resources, e.g. clocks or interconnect paths.
+> These resources are looked up when the OPP table is allocated once
+> dev_pm_opp_get_opp_table() is called the first time (either directly
+> or indirectly through one of the many helper functions).
 > 
-> d25e2e9388ed ("netfilter: restore NF_INET_NUMHOOKS")
+> At this point, the resources may not be available yet, i.e. looking them
+> up will result in -EPROBE_DEFER. Unfortunately, dev_pm_opp_get_opp_table()
+> is currently unable to propagate this error code since it only returns
+> the allocated OPP table or NULL.
+>
 
-Ah, you're saying it's just linux-next and bpf-next that's down.
-I think the quoted fix will hit bpf-next in a few hours.
+OK, this breaks with SCMI which doesn't provide clocks but manage OPPs
+directly. Before this change clk_get(dev..) was allowed to fail and
+--EPROBE_DEFER was not an error. We use dev_pm_opp_add to add OPPs
+read from the firmware and this change is preventing that.
 
-Thanks!
+Sorry for checking this so late, but noticed only when this hit mainline.
+
+-- 
+Regards,
+Sudeep
