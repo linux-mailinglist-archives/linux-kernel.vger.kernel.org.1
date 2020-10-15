@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6117628ED40
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A5728ED45
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729609AbgJOGzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 02:55:16 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43482 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725208AbgJOGzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 02:55:15 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id DA764941533202C8BB5C;
-        Thu, 15 Oct 2020 14:55:11 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.134) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 15 Oct 2020
- 14:55:10 +0800
-Subject: Re: [PATCH 2/6] dt-bindings: mfd: google,cros-ec: explicitly allow
- additional properties
-To:     Rob Herring <robh@kernel.org>
-CC:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
- <20201013160845.1772-3-thunder.leizhen@huawei.com>
- <20201014133844.GA1555058@bogus>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <2ab384ce-9700-3673-299f-3b8ab302d387@huawei.com>
-Date:   Thu, 15 Oct 2020 14:55:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729663AbgJOGzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 02:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgJOGzh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 02:55:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D338C061755;
+        Wed, 14 Oct 2020 23:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1vZhw/JrbB2T8GVpb8VuLYmLoPDb9JW5DiEoY3ZRNZg=; b=Fycf1JgekT0YbewfwlGQNRxEiq
+        pJjRTzJhLS2LSjjnsUqAEHFvAs/UjhL1lG9jsBd3BRTuTCNFToaNXo2Jz84l6buTUGtzQU8nrm/eS
+        CzQz4jTRPnPfl6blS+u/Oj+MCPFeCSsHgXEXjatO5/9CZiNqsLLyVUT9J8ASYh/VhLRkC5XOs/XhU
+        VZVovGpVYzsa6HeIWVSq3wwywNKJXx4TCv86aLhltul6lPWtqHfE3yGQGewNXjPK9o4VGbk6tZaVk
+        qnOgou5uPSrnmd8aow5y9SZoBcJEqRePqY2hkKbPUtKsr1abESVw4BjKI+PENYB37As7agZTH6gkH
+        /Tfpr9xg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSxAi-0004Aa-6Z; Thu, 15 Oct 2020 06:55:32 +0000
+Date:   Thu, 15 Oct 2020 07:55:32 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        freedreno@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        iommu@lists.linux-foundation.org, Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
+ cache maintenance
+Message-ID: <20201015065532.GA15371@infradead.org>
+References: <20201001002709.21361-1-jonathan@marek.ca>
+ <20201001002709.21361-3-jonathan@marek.ca>
+ <20201002075321.GA7547@infradead.org>
+ <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
+ <20201005082914.GA31702@infradead.org>
+ <3e0b91be-e4a4-4ea5-7d58-6e71b8d51932@marek.ca>
+ <20201006072306.GA12834@infradead.org>
+ <148a1660-f0fc-7163-2240-6b94725342b5@marek.ca>
+ <20201007062519.GA23519@infradead.org>
+ <c3baadae-8e20-86a6-44f5-4571a8d3035e@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201014133844.GA1555058@bogus>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3baadae-8e20-86a6-44f5-4571a8d3035e@arm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 13, 2020 at 02:42:38PM +0100, Robin Murphy wrote:
+> I still think this situation would be best handled with a variant of
+> dma_ops_bypass that also guarantees to bypass SWIOTLB, and can be set
+> automatically when attaching to an unmanaged IOMMU domain.
 
+dma_ops_bypass should mostly do the right thing as-is.  swiotlb bouncing
+is triggered of two things:
 
-On 2020/10/14 21:38, Rob Herring wrote:
-> On Wed, Oct 14, 2020 at 12:08:41AM +0800, Zhen Lei wrote:
->> There are so many properties have not been described in this yaml file,
->> and a lot of errors will be reported. Especially, some yaml files such as
->> google,cros-ec-typec.yaml, extcon-usbc-cros-ec.yaml can not pass the
->> self-check, because of the examples. So temporarily allow additional
->> properties to keep the comprehensive dt_binding_check result clean.
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> There's proper fixes for these under review.
+ 1) the dma_mask.  This is under control of the driver, and obviously
+    if it is too small for a legit reason we can't just proceed
+ 2) force_dma_unencrypted() - we'd need to do an opt-out here, either
+    by a flag or by being smart and looking for an attached iommu on
+    the device
 
-That's a good news.
+> That way the
+> device driver can make DMA API calls in the appropriate places that do the
+> right thing either way, and only needs logic to decide whether to use the
+> returned DMA addresses directly or ignore them if it knows they're
+> overridden by its own IOMMU mapping.
 
-> 
-> Rob
-> 
-> .
-> 
-
+I'd be happy to review patches for this.
