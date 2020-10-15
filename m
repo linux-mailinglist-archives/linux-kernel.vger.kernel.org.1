@@ -2,264 +2,425 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43B728EF71
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F1C28EF73
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388780AbgJOJfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:35:50 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:35943 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727988AbgJOJft (ORCPT
+        id S1730801AbgJOJlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbgJOJlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:35:49 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 42A237C8;
-        Thu, 15 Oct 2020 05:35:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 15 Oct 2020 05:35:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=ibu+1PUER9AANYGGIJFs1bRW7pg
-        gTkYRUTQDX7a5JXE=; b=sfkuyoDpmZCq7xjeTEUFvN+8YBvvHT2kIZ99H1K/fM2
-        75Y3Ur1VKCaXUHg3EaSRJaPy+0846JtolSb9AY+GvPizvA2OPhwDTDP8hmBM+9Pu
-        5SZDAe9RaJLydKLUVEmAwDVjqvc4RiL6AsMQW+HtWQkPFZkmhulBTEQqTLdqHt0F
-        JWCb89aj7QvZwt+33cDmWYmlUy+TO8hFitq3grcceW136lgq1iXyKnbVFEEU8WTY
-        DlGhnaEvONG4NUjAoMZdjm3UJzDlfidKwddzA/MTN4e370JjMKVRUZZpKPQfPTBv
-        Vq9rxeWHa618stXxQg7JrPgQ39fw86vus/ammRPayVQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ibu+1P
-        UER9AANYGGIJFs1bRW7pggTkYRUTQDX7a5JXE=; b=p8fUgCcIrtQiAO4LdpNmoh
-        xccMlbDZvgDGMZt4BRy6SqHo+3wdkUku24aEWRCuHkUvMoByEA5zUJ6t5xBHkwd0
-        YNdpVVCU78EsFFDePgs4rIWaic6wpqCZ9dwk6XH8DirrGz3Asl8Y+O+p/F4cODhD
-        W8AqFb/djR1jeV1K12f/3tAA0+ZMMyONpTD5iBfKTHyW2L8ZZw8wph+7oK37u7CE
-        xwPpkLoz96OAnfW62kg8auRRlrxGOX/Ro1ju7FxKisVn0ewGfhNu2WaA5+FZJLAk
-        0shiwofuh4sXpGcLAWZbbXrGBusc+O7ZF3u4KVUNO6FRPYg0XnHOpSaEvRiLyrEA
-        ==
-X-ME-Sender: <xms:8heIX1771Q_QemB30VHWPJTpKBhL0BYxHSGeHpyGcLUtaMWK0UjsXA>
-    <xme:8heIXy6XkIR-ppfJIDmN31KIa6I-XW-M_TaFUdR1xNh-edA9qvg5vUi8bcE-oeAif
-    8oteyurz9WuaQVybDw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrieefgddukecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduleefveduuddtteejgeegfedvteevfedtjeetveeiffdufeegjeelgeetkeeg
-    veenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeltddrkeelrdeikedrje
-    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
-    gihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:8heIX8cKLJMZlaBhhybFIlZq7FTqoMB7drhEv3Xz3gSt4p20E676zg>
-    <xmx:8heIX-LMxgFSIqtAIBGuG6C5DYHWuZylasf53qZmr53sBjyFlkcUjw>
-    <xmx:8heIX5IMVHbK4GtGOjBVJJChxqXF68-x839yayaIg6pcRcBdI3vNbg>
-    <xmx:8heIX3hIjBgnb6sYOzfWsq98f3p36pfWXmlCNtLbpDQzA67lJMFPjQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B946D328005D;
-        Thu, 15 Oct 2020 05:35:45 -0400 (EDT)
-Date:   Thu, 15 Oct 2020 11:35:44 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
-Cc:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Subject: Re: [PATCH v2] arm64: dts: allwinner: h6: add eMMC voltage property
- for Beelink GS1
-Message-ID: <20201015093544.zwxjzwmu77jz55d7@gilmour.lan>
-References: <20201003092001.405238-1-peron.clem@gmail.com>
- <CAJiuCcf8rk4t2GrS3+ANEuCtRmXoCMyzP+-x_rKrAfR-FaMaWA@mail.gmail.com>
- <20201009073651.izvvjpqiqiivhknl@gilmour.lan>
- <2745255.UFgyrzHpml@kista>
+        Thu, 15 Oct 2020 05:41:23 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2762C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 02:41:22 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id c21so2497858ljj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 02:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ddSdR49iH8f9o5qh+eHFHVZPppy9ne/5LIx/jR9kBYg=;
+        b=vMwnRj/RnZqARcdWF7hGd1QMftwePwf9If27rUrb10Tc9J0E81TAIePmqTRMdzhF7l
+         Scj2WX6PjbYtB/u/rPlMDeBqVhofHDCj+qDd0y9tE7tFcB6UxNAi+J3JxiVxsFhP5SJu
+         4WDKJ9poMX7dhMVf4YIzeITRhG24nLzy7hZ50aWpXn+p7mOB/EXrNo883KbNPGNgrB/4
+         2xLMruJzlu4H7NpYsZI0o0XUkk/77MVQFfxGHgpE+eAvn9GMRFPKderQKe/33zlTK+O5
+         E6PGmKyGPyORTpjiYL6D2kG9nqNRf7BAv0vQUqQtkAOVNul8cuK/V3+hpvr/F+LumitM
+         zqcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ddSdR49iH8f9o5qh+eHFHVZPppy9ne/5LIx/jR9kBYg=;
+        b=HtYtYAXCljNLO8eYN8pT4/lTL84+QPoFCWEsbvWLxGO5TwEmT1Qcac6+zenHtpffbG
+         i+Kieh+CLfWWkerCqbwegcEPGBvrqBeciRsY9dqt2tiy/M0Em0vVWHHKEo/33Iyoz9zd
+         WFbKGwbTohRlfJjDaMFIzCMlHap0ijXwbJiMDDJ1vrT4fRx0rI5vGME5rYUyo6ll7WHC
+         sad021O6QlLPs1c1fkX/QxwcnBo7yXxsiXIQhmrSYZEEf/ZsJ/anCB7pLyvQ/WVRGWfN
+         +NR0B00VMSeqpjuj7ePtx74MXn7ZoYSEtgrPrqiCoWbsy2IMIDXQXJWPU5Y3K7u+R8Bc
+         VqFA==
+X-Gm-Message-State: AOAM53198m7dV80nttma78K6CsOkT8EAGMtWoWfIbAwbLWgcP0mTDIH7
+        ID0XWfeeG4fZmm/fyvDS64O7PiGQ3RWEEw4igeRO62YPsmGecA==
+X-Google-Smtp-Source: ABdhPJwLIAY1fiBth9jy8bR63Xg/HbiBRiPd5W2NGqgjCRYySwHBI1WN933hbfVEKe+hs8ty2ziq+A3/NfPx5/7p1PM=
+X-Received: by 2002:a2e:8787:: with SMTP id n7mr987142lji.111.1602754880866;
+ Thu, 15 Oct 2020 02:41:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mhkwnjfp2ntjybhi"
-Content-Disposition: inline
-In-Reply-To: <2745255.UFgyrzHpml@kista>
+References: <20201014150545.44807-1-cristian.marussi@arm.com> <20201014150545.44807-2-cristian.marussi@arm.com>
+In-Reply-To: <20201014150545.44807-2-cristian.marussi@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 15 Oct 2020 11:41:09 +0200
+Message-ID: <CAKfTPtCGQm14JcAn-Lb0o5yTjMrnPA59LcnC+L5WMwX6gTdm5w@mail.gmail.com>
+Subject: Re: [PATCH 01/11] firmware: arm_scmi: review protocol registration interface
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, james.quinlan@broadcom.com,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        f.fainelli@gmail.com,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Souvik Chakravarty <souvik.chakravarty@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 14 Oct 2020 at 17:06, Cristian Marussi <cristian.marussi@arm.com> wrote:
+>
+> Extend common protocol registration routines and provide some new generic
+> protocols' init/deinit helpers that tracks protocols' users and automatically
+> perform the proper initialization/de-initialization on demand.
+>
+> Convert all protocols to use new registration schema while modifying only Base
+> protocol to use also the new initialization helpers.
+>
+> All other standard protocols' initialization is still umodified and bound to
+> SCMI devices probing.
+>
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> ---
 
---mhkwnjfp2ntjybhi
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[...]
 
-On Tue, Oct 13, 2020 at 11:27:33PM +0200, Jernej =C5=A0krabec wrote:
-> Dne petek, 09. oktober 2020 ob 09:36:51 CEST je Maxime Ripard napisal(a):
-> > On Thu, Oct 08, 2020 at 10:00:06PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> > > Hi Maxime,
-> > >=20
-> > > Adding linux-sunxi and Jernej Skrabec to this discussion.
-> > >=20
-> > > On Thu, 8 Oct 2020 at 17:10, Maxime Ripard <maxime@cerno.tech> wrote:
-> > > >
-> > > > Hi Cl=C3=A9ment,
-> > > >
-> > > > On Mon, Oct 05, 2020 at 08:47:19PM +0200, Cl=C3=A9ment P=C3=A9ron w=
-rote:
-> > > > > On Mon, 5 Oct 2020 at 11:21, Maxime Ripard <maxime@cerno.tech> wr=
-ote:
-> > > > > >
-> > > > > > Hi Cl=C3=A9ment,
-> > > > > >
-> > > > > > On Sat, Oct 03, 2020 at 11:20:01AM +0200, Cl=C3=A9ment P=C3=A9r=
-on wrote:
-> > > > > > > Sunxi MMC driver can't distinguish at runtime what's the I/O=
-=20
-> voltage
-> > > > > > > for HS200 mode.
-> > > > > >
-> > > > > > Unfortunately, that's not true (or at least, that's not related=
- to=20
-> your patch).
-> > > > > >
-> > > > > > > Add a property in the device-tree to notify MMC core about th=
-is
-> > > > > > > configuration.
-> > > > > > >
-> > > > > > > Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Be=
-elink=20
-> GS1 board")
-> > > > > > > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > > > > > > ---
-> > > > > > >  arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
-> > > > > > >  1 file changed, 1 insertion(+)
-> > > > > > >
-> > > > > > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-
-> gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > > > > > > index 049c21718846..3f20d2c9bbbb 100644
-> > > > > > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > > > > > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-> > > > > > > @@ -145,6 +145,7 @@ &mmc2 {
-> > > > > > >       vqmmc-supply =3D <&reg_bldo2>;
-> > > > > > >       non-removable;
-> > > > > > >       cap-mmc-hw-reset;
-> > > > > > > +     mmc-hs200-1_8v;
-> > > > > > >       bus-width =3D <8>;
-> > > > > > >       status =3D "okay";
-> > > > > > >  };
-> > > > > >
-> > > > > > I'm not really sure what you're trying to fix here, but as far =
-as MMC
-> > > > > > goes, eMMC's can support io voltage of 3.3, 1.8 and 1.2V. Modes=
- up=20
-> until
-> > > > > > HS DDR (50MHz in DDR) will use an IO voltage of 3.3V, higher sp=
-eed=20
-> modes
-> > > > > > (HS200 and HS400) supporting 1.8V and 1.2V.
-> > > > >
-> > > > > Some users report that the eMMC is not working properly on their
-> > > > > Beelink GS1 boards.
-> > > > >
-> > > > > > The mmc-hs200-1_8v property states that the MMC controller supp=
-orts=20
-> the
-> > > > > > HS200 mode at 1.8V. Now, I can only assume that since BLDO2 is =
-set=20
-> up at
-> > > > > > 1.8V then otherwise, the MMC core will rightfully decide to use=
- the
-> > > > > > highest supported mode. In this case, since the driver sets it,=
- it=20
-> would
-> > > > > > be HS-DDR at 3.3V, which won't work with that fixed regulator.
-> > > > > >
-> > > > > > I can only assume that enabling HS200 at 1.8V only fixes the is=
-sue=20
-> you
-> > > > > > have because otherwise it would use HS-DDR at 3.3V, ie not actu=
-ally
-> > > > > > fixing the issue but sweeping it under the rug.
-> > > > > >
-> > > > > > Trying to add mmc-ddr-1_8v would be a good idea
-> > > > >
-> > > > > Thanks for the explanation, this is indeed the correct one.
-> > > > > So It looks like the SDIO controller has an issue on some boards =
-when
-> > > > > using HS-DDR mode.
-> > > > >
-> > > > > Is this patch acceptable with the proper commit log?
-> > > >
-> > > > If HS-DDR works, yes, but I assume it doesn't?
-> > >=20
-> > > After discussing with Jernej about this issue, I understood that:
-> > > - Automatic delay calibration is not implemented
-> > > - We also miss some handling of DDR related bits in control register
-> > >=20
-> > > So none of H5/H6 boards should actually work.
-> > > (Some 'lucky' boards seem to work enough to switch to HS200 mode...)
-> > >=20
-> > > To "fix" this the H5 disable the HS-DDR mode in sunxi mmc driver :
-> > > https://github.com/torvalds/linux/blob/master/drivers/mmc/host/sunxi-=
-mmc.c#L1409
-> >=20
-> > I find it suspicious that some boards would have traces not good enough
-> > for HS-DDR (50MHz in DDR) but would work fine in HS200 (200MHz in SDR).
-> > If there's some mismatch on the traces, it will only be worse in HS200.
->=20
-> FYI, similar situation is also with Tanix TX6 board. Mine works well in H=
-S-DDR=20
-> mode, but some people reported that it doesn't work for them. The only=20
-> possible difference could be different eMMC IC. I'll try to confirm that.
->=20
-> Anyway, I did some tests on OrangePi 3 board which also have eMMC. Both m=
-odes=20
-> (HS-DDR and HS200) are supported and work well.
+>
+> +/**
+> + * scmi_get_protocol_instance  - Protocol initialization helper.
+> + * @handle: A reference to the SCMI platform instance.
+> + * @protocol_id: The protocol being requested.
+> + *
+> + * In case the required protocol has never been requested before for this
+> + * instance, allocate and initialize all the needed structures while handling
+> + * resource allocation with a dedicated per-protocol devres subgroup.
+> + *
+> + * Return: A reference to an initialized protocol instance or error on failure.
+> + */
+> +static struct scmi_protocol_instance * __must_check
+> +scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
+> +{
+> +       int ret = -ENOMEM;
+> +       void *gid;
+> +       struct scmi_protocol_instance *pi;
+> +       struct scmi_info *info = handle_to_scmi_info(handle);
+> +
+> +       mutex_lock(&info->protocols_mtx);
+> +       /* Ensure protocols has been updated */
+> +       smp_rmb();
 
-The Orange Pi 3 has an HS400-capable eMMC ?!
+Why do you need this smp_rmb and the smp_wmb below ?
 
-That's really good news, I've initially done the HS200 support on a
-custom board I had to give back and couldn't find any board with
-HS200/HS400 since.
+Isn't the mutex not enough ?
 
-> Interesting observation is that speed test (hdparm -t) reported 80.58
-> MB/sec for HS-DDR mode and 43.40 MB/sec for HS200. As it can be seen
-> here, HS-DDR is quicker by a factor of 2, but it should be the other
-> way around. Reason for this is that both modes use same base clock and
-> thus HS-DDR produces higher speed. If I change f_max to 150 MHz (max.
-> per datasheet for SDR @ 1.8 V) then naturally HS200 mode is faster
-> (124.63 MB/sec) as HS-DDR as it should be.
-
-If it work fine on the H6, we should set the max-frequency property on
-the DT, just like I did on the A64.
-
-> This would be actually correct test for problematic boards but
-> unfortunately I don't have it. I also hacked in support for HS400
-> (~143 MB/s) and this mode is the only one which really needs
-> calibration on my board.
->=20
-> Two observations from BSP driver:
-> 1. Module clock is disabled before adjusting DDR bit and afterwards it's =
-re-
-> enabled . That could fix some kind of glitches.
-> 2. SDMMC peripheral runs on higher clock than on mainline.
->=20
-> > And for the delay calibration, iirc, that's only necessary for HS400
-> > that we don't support?
->=20
-> According to BSP driver and its DT, HS200 also needs calibration. However=
-, it=20
-> seems that using it on lower speed it isn't needed.
-
-Which calibration do you mean? IIRC, the data strobe signal is only used
-(optionally) in HS400. The controller might have some internal
-calibration for other modes though.
-
-Maxime
-
---mhkwnjfp2ntjybhi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX4gX8AAKCRDj7w1vZxhR
-xSExAQCHOsqyN6FMqDcrieLXfnK712XMkFqYxTjb8KMHTQankAEAxvik9vj3Z0Q+
-nfUXfEU5OHRno2yn42WwPSETP3ffbgQ=
-=RY3/
------END PGP SIGNATURE-----
-
---mhkwnjfp2ntjybhi--
+> +       pi = info->protocols[protocol_id];
+> +
+> +       if (!pi) {
+> +               const struct scmi_protocol *proto;
+> +
+> +               /* Fail if protocol not registered on bus */
+> +               proto = scmi_get_protocol(protocol_id);
+> +               if (!proto) {
+> +                       ret = -EINVAL;
+> +                       goto out;
+> +               }
+> +
+> +               /* Protocol specific devres group */
+> +               gid = devres_open_group(handle->dev, NULL, GFP_KERNEL);
+> +               if (!gid)
+> +                       goto out;
+> +
+> +               pi = devm_kzalloc(handle->dev, sizeof(*pi), GFP_KERNEL);
+> +               if (!pi)
+> +                       goto clean;
+> +
+> +               pi->gid = gid;
+> +               pi->proto = proto;
+> +               refcount_set(&pi->users, 1);
+> +               /* proto->init is assured NON NULL by scmi_protocol_register */
+> +               ret = pi->proto->init(handle);
+> +               if (ret)
+> +                       goto clean;
+> +
+> +               info->protocols[protocol_id] = pi;
+> +               /* Ensure initialized protocol is visible */
+> +               smp_wmb();
+> +
+> +               devres_close_group(handle->dev, pi->gid);
+> +               dev_dbg(handle->dev, "Initialized protocol: 0x%X\n",
+> +                       protocol_id);
+> +       } else {
+> +               refcount_inc(&pi->users);
+> +       }
+> +       mutex_unlock(&info->protocols_mtx);
+> +
+> +       return pi;
+> +
+> +clean:
+> +       devres_release_group(handle->dev, gid);
+> +out:
+> +       mutex_unlock(&info->protocols_mtx);
+> +       return ERR_PTR(ret);
+> +}
+> +
+> +/**
+> + * scmi_acquire_protocol  - Protocol acquire
+> + * @handle: A reference to the SCMI platform instance.
+> + * @protocol_id: The protocol being requested.
+> + *
+> + * Register a new user for the requested protocol on the specified SCMI
+> + * platform instance, possibly triggering its initialization on first user.
+> + *
+> + * Return: 0 if protocol was acquired successfully.
+> + */
+> +int scmi_acquire_protocol(struct scmi_handle *handle, u8 protocol_id)
+> +{
+> +       return IS_ERR(scmi_get_protocol_instance(handle, protocol_id));
+> +}
+> +
+> +/**
+> + * scmi_release_protocol  - Protocol de-initialization helper.
+> + * @handle: A reference to the SCMI platform instance.
+> + * @protocol_id: The protocol being requested.
+> + *
+> + * Remove one user for the specified protocol and triggers de-initialization
+> + * and resources de-allocation once the last user has gone.
+> + */
+> +void scmi_release_protocol(struct scmi_handle *handle, u8 protocol_id)
+> +{
+> +       struct scmi_info *info = handle_to_scmi_info(handle);
+> +       struct scmi_protocol_instance *pi;
+> +
+> +       mutex_lock(&info->protocols_mtx);
+> +       /* Ensure protocols has been updated */
+> +       smp_rmb();
+> +       pi = info->protocols[protocol_id];
+> +       if (WARN_ON(!pi)) {
+> +               mutex_unlock(&info->protocols_mtx);
+> +               return;
+> +       }
+> +
+> +       if (refcount_dec_and_test(&pi->users)) {
+> +               void *gid = pi->gid;
+> +
+> +               if (pi->proto->deinit)
+> +                       pi->proto->deinit(handle);
+> +
+> +               info->protocols[protocol_id] = NULL;
+> +               /* Ensure deinitialized protocol is visible */
+> +               smp_wmb();
+> +
+> +               devres_release_group(handle->dev, gid);
+> +               dev_dbg(handle->dev, "De-Initialized protocol: 0x%X\n",
+> +                       protocol_id);
+> +       }
+> +       mutex_unlock(&info->protocols_mtx);
+> +}
+> +
+>  void scmi_setup_protocol_implemented(const struct scmi_handle *handle,
+>                                      u8 *prot_imp)
+>  {
+> @@ -785,6 +934,7 @@ static int scmi_probe(struct platform_device *pdev)
+>         info->dev = dev;
+>         info->desc = desc;
+>         INIT_LIST_HEAD(&info->node);
+> +       mutex_init(&info->protocols_mtx);
+>
+>         platform_set_drvdata(pdev, info);
+>         idr_init(&info->tx_idr);
+> @@ -805,10 +955,14 @@ static int scmi_probe(struct platform_device *pdev)
+>         if (scmi_notification_init(handle))
+>                 dev_err(dev, "SCMI Notifications NOT available.\n");
+>
+> -       ret = scmi_base_protocol_init(handle);
+> -       if (ret) {
+> -               dev_err(dev, "unable to communicate with SCMI(%d)\n", ret);
+> -               return ret;
+> +       /*
+> +        * Trigger SCMI Base protocol initialization.
+> +        * It's mandatory and won't be ever released/deinit until the
+> +        * SCMI stack is shutdown/unloaded as a whole.
+> +        */
+> +       if (scmi_acquire_protocol(handle, SCMI_PROTOCOL_BASE)) {
+> +               dev_err(dev, "unable to communicate with SCMI\n");
+> +               return -ENODEV;
+>         }
+>
+>         mutex_lock(&scmi_list_mutex);
+> @@ -941,6 +1095,8 @@ static int __init scmi_driver_init(void)
+>  {
+>         scmi_bus_init();
+>
+> +       scmi_base_register();
+> +
+>         scmi_clock_register();
+>         scmi_perf_register();
+>         scmi_power_register();
+> @@ -954,7 +1110,7 @@ subsys_initcall(scmi_driver_init);
+>
+>  static void __exit scmi_driver_exit(void)
+>  {
+> -       scmi_bus_exit();
+> +       scmi_base_unregister();
+>
+>         scmi_clock_unregister();
+>         scmi_perf_unregister();
+> @@ -963,6 +1119,8 @@ static void __exit scmi_driver_exit(void)
+>         scmi_sensors_unregister();
+>         scmi_system_unregister();
+>
+> +       scmi_bus_exit();
+> +
+>         platform_driver_unregister(&scmi_driver);
+>  }
+>  module_exit(scmi_driver_exit);
+> diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
+> index c24e427dce0d..eae58b2a92cc 100644
+> --- a/drivers/firmware/arm_scmi/notify.c
+> +++ b/drivers/firmware/arm_scmi/notify.c
+> @@ -91,10 +91,9 @@
+>  #include <linux/types.h>
+>  #include <linux/workqueue.h>
+>
+> +#include "common.h"
+>  #include "notify.h"
+>
+> -#define SCMI_MAX_PROTO         256
+> -
+>  #define PROTO_ID_MASK          GENMASK(31, 24)
+>  #define EVT_ID_MASK            GENMASK(23, 16)
+>  #define SRC_ID_MASK            GENMASK(15, 0)
+> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> index 82fb3babff72..854460a051c2 100644
+> --- a/drivers/firmware/arm_scmi/perf.c
+> +++ b/drivers/firmware/arm_scmi/perf.c
+> @@ -2,7 +2,7 @@
+>  /*
+>   * System Control and Management Interface (SCMI) Performance Protocol
+>   *
+> - * Copyright (C) 2018 ARM Ltd.
+> + * Copyright (C) 2018-2020 ARM Ltd.
+>   */
+>
+>  #define pr_fmt(fmt) "SCMI Notifications PERF - " fmt
+> @@ -892,4 +892,10 @@ static int scmi_perf_protocol_init(struct scmi_handle *handle)
+>         return 0;
+>  }
+>
+> -DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_PERF, perf)
+> +static struct scmi_protocol scmi_perf = {
+> +       .id = SCMI_PROTOCOL_PERF,
+> +       .init = &scmi_perf_protocol_init,
+> +       .ops = &perf_ops,
+> +};
+> +
+> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(perf, scmi_perf)
+> diff --git a/drivers/firmware/arm_scmi/power.c b/drivers/firmware/arm_scmi/power.c
+> index 1f37258e9bee..42c9c88da07c 100644
+> --- a/drivers/firmware/arm_scmi/power.c
+> +++ b/drivers/firmware/arm_scmi/power.c
+> @@ -2,7 +2,7 @@
+>  /*
+>   * System Control and Management Interface (SCMI) Power Protocol
+>   *
+> - * Copyright (C) 2018 ARM Ltd.
+> + * Copyright (C) 2018-2020 ARM Ltd.
+>   */
+>
+>  #define pr_fmt(fmt) "SCMI Notifications POWER - " fmt
+> @@ -301,4 +301,10 @@ static int scmi_power_protocol_init(struct scmi_handle *handle)
+>         return 0;
+>  }
+>
+> -DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_POWER, power)
+> +static struct scmi_protocol scmi_power = {
+> +       .id = SCMI_PROTOCOL_POWER,
+> +       .init = &scmi_power_protocol_init,
+> +       .ops = &power_ops,
+> +};
+> +
+> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(power, scmi_power)
+> diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
+> index a981a22cfe89..2caf0bdb6fdc 100644
+> --- a/drivers/firmware/arm_scmi/reset.c
+> +++ b/drivers/firmware/arm_scmi/reset.c
+> @@ -2,7 +2,7 @@
+>  /*
+>   * System Control and Management Interface (SCMI) Reset Protocol
+>   *
+> - * Copyright (C) 2019 ARM Ltd.
+> + * Copyright (C) 2019-2020 ARM Ltd.
+>   */
+>
+>  #define pr_fmt(fmt) "SCMI Notifications RESET - " fmt
+> @@ -311,4 +311,10 @@ static int scmi_reset_protocol_init(struct scmi_handle *handle)
+>         return 0;
+>  }
+>
+> -DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_RESET, reset)
+> +static struct scmi_protocol scmi_reset = {
+> +       .id = SCMI_PROTOCOL_RESET,
+> +       .init = &scmi_reset_protocol_init,
+> +       .ops = &reset_ops,
+> +};
+> +
+> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(reset, scmi_reset)
+> diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+> index b4232d611033..dfe3076d2093 100644
+> --- a/drivers/firmware/arm_scmi/sensors.c
+> +++ b/drivers/firmware/arm_scmi/sensors.c
+> @@ -2,7 +2,7 @@
+>  /*
+>   * System Control and Management Interface (SCMI) Sensor Protocol
+>   *
+> - * Copyright (C) 2018 ARM Ltd.
+> + * Copyright (C) 2018-2020 ARM Ltd.
+>   */
+>
+>  #define pr_fmt(fmt) "SCMI Notifications SENSOR - " fmt
+> @@ -367,4 +367,10 @@ static int scmi_sensors_protocol_init(struct scmi_handle *handle)
+>         return 0;
+>  }
+>
+> -DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_SENSOR, sensors)
+> +static struct scmi_protocol scmi_sensors = {
+> +       .id = SCMI_PROTOCOL_SENSOR,
+> +       .init = &scmi_sensors_protocol_init,
+> +       .ops = &sensor_ops,
+> +};
+> +
+> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(sensors, scmi_sensors)
+> diff --git a/drivers/firmware/arm_scmi/system.c b/drivers/firmware/arm_scmi/system.c
+> index 283e12d5f24b..bcea18bf54ab 100644
+> --- a/drivers/firmware/arm_scmi/system.c
+> +++ b/drivers/firmware/arm_scmi/system.c
+> @@ -128,4 +128,10 @@ static int scmi_system_protocol_init(struct scmi_handle *handle)
+>         return 0;
+>  }
+>
+> -DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_SYSTEM, system)
+> +static struct scmi_protocol scmi_system = {
+> +       .id = SCMI_PROTOCOL_SYSTEM,
+> +       .init = &scmi_system_protocol_init,
+> +       .ops = NULL,
+> +};
+> +
+> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(system, scmi_system)
+> diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+> index 9cd312a1ff92..ca23d682941e 100644
+> --- a/include/linux/scmi_protocol.h
+> +++ b/include/linux/scmi_protocol.h
+> @@ -376,9 +376,9 @@ static inline void scmi_driver_unregister(struct scmi_driver *driver) {}
+>  #define module_scmi_driver(__scmi_driver)      \
+>         module_driver(__scmi_driver, scmi_register, scmi_unregister)
+>
+> -typedef int (*scmi_prot_init_fn_t)(struct scmi_handle *);
+> -int scmi_protocol_register(int protocol_id, scmi_prot_init_fn_t fn);
+> -void scmi_protocol_unregister(int protocol_id);
+> +struct scmi_protocol;
+> +int scmi_protocol_register(struct scmi_protocol *proto);
+> +void scmi_protocol_unregister(const struct scmi_protocol *proto);
+>
+>  /* SCMI Notification API - Custom Event Reports */
+>  enum scmi_notification_events {
+> --
+> 2.17.1
+>
