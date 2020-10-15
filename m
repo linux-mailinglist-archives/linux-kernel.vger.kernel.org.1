@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E02F28FB6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CFF28FB70
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732496AbgJOXId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 19:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732395AbgJOXIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732483AbgJOXIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 15 Oct 2020 19:08:32 -0400
-Subject: Re: [GIT PULL] integrity subsystem updates for v5.10
+Received: from mail.kernel.org ([198.145.29.99]:34752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729904AbgJOXIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 19:08:31 -0400
+Subject: Re: [GIT PULL] Hyper-V commits for 5.10, part 2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602803311;
-        bh=J+PmgdVeecsvfEK2XgwFvm6RwuRRjsnKgd3J2HF/3aI=;
+        bh=G/mg8bgpahf73EujAqlkITdjl49u9HIQ854QnUXdmAU=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=mU+tBPqCxpkf/YRvOqEFglKBjAhRYrTdpb9mpyGjNvGL+s9FJcN55qopU4GZS504l
-         VcndejMGlx4NShLuFWz9SPRmrfas3hYH1Wy5tRUem81+oOPckBb6WbKExA2brgdkEp
-         +Th0F7noXkVXk9wMGRpvlAysa+14qcNr1jXKWy88=
+        b=ouEExP6Lo6BqGyQIm3vmF6bvvyhnKvPRqkNnfTrnL6BrgBM9BZiVST/7WCaArbfJ4
+         nlx7lYfSlF3EHOhYoOK0ThQ65GPHJ97lUNCs1O9Z4K3kHA5Ff1hakIekSTQmOXloPP
+         wumo7UdNnnQT/XAYTV6NeK9fWGl4AvyB7Klz9mCo=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1bd027b4212db6f3630b8344efde4678fcd90088.camel@linux.ibm.com>
-References: <1bd027b4212db6f3630b8344efde4678fcd90088.camel@linux.ibm.com>
-X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1bd027b4212db6f3630b8344efde4678fcd90088.camel@linux.ibm.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.10
-X-PR-Tracked-Commit-Id: aa662fc04f5b290b3979332588bf8d812b189962
+In-Reply-To: <20201015163248.yo3ior67vxtvojra@liuwe-devbox-debian-v2>
+References: <20201015163248.yo3ior67vxtvojra@liuwe-devbox-debian-v2>
+X-PR-Tracked-List-Id: <linux-hyperv.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201015163248.yo3ior67vxtvojra@liuwe-devbox-debian-v2>
+X-PR-Tracked-Remote: ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
+X-PR-Tracked-Commit-Id: 626b901f60446355e35e8c76c6b391a7d7491203
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 840e5bb326bbcb16ce82dd2416d2769de4839aea
-Message-Id: <160280331167.7173.2869073053314550676.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 2d0f6b0aab9afbd6fdf3514cb4acc249d7aebf9c
+Message-Id: <160280331136.7173.12667080445747465305.pr-tracker-bot@kernel.org>
 Date:   Thu, 15 Oct 2020 23:08:31 +0000
-To:     Mimi Zohar <zohar@linux.ibm.com>
+To:     Wei Liu <wei.liu@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
+        sthemmin@microsoft.com, haiyangz@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 14 Oct 2020 13:19:31 -0400:
+The pull request you sent on Thu, 15 Oct 2020 16:32:48 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.10
+> ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/840e5bb326bbcb16ce82dd2416d2769de4839aea
+https://git.kernel.org/torvalds/c/2d0f6b0aab9afbd6fdf3514cb4acc249d7aebf9c
 
 Thank you!
 
