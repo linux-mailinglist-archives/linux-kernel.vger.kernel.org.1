@@ -2,84 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8F328F2C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0FB28F2CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgJOM6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:58:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60014 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726121AbgJOM6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:58:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD768ABD1;
-        Thu, 15 Oct 2020 12:58:53 +0000 (UTC)
+        id S1727711AbgJOM7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:59:16 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48002 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726121AbgJOM7Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:59:16 -0400
+X-UUID: 7ebbcc4d24df4cc0aaaaf8e598c67591-20201015
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Vc9yRjmF6mmhFDNgrymdNyS1AdEmPVc2ANX+0u/1G8s=;
+        b=udZW8GqPFWUf5n/3jNO410Wqip+96jfw2ogYtdb2FlBsa6UI8/yd+MjofnnYT4ppcOdQllT6qLAb79sgxiX8DxYhdj/JybYeIapXimowlH11ndOsZOfdnR1bSNo/QAKBDZ2kxjAMA33RBM93UnO/ChDzmFmrvqCBDFXaKWj0Hzk=;
+X-UUID: 7ebbcc4d24df4cc0aaaaf8e598c67591-20201015
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1949178758; Thu, 15 Oct 2020 20:59:11 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Oct 2020 20:59:09 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 15 Oct 2020 20:59:09 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Subject: [PATCH v3 0/2] Add SPMI support for Mediatek MT6873/8192 SoC IC
+Date:   Thu, 15 Oct 2020 20:59:06 +0800
+Message-ID: <1602766748-25490-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 15 Oct 2020 14:58:53 +0200
-From:   osalvador@suse.de
-To:     Shijie Luo <luoshijie1@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linmiaohe@huawei.com,
-        linfeilong@huawei.com
-Subject: Re: [PATCH] mm: fix potential pte_unmap_unlock pte error
-In-Reply-To: <20201015121534.50910-1-luoshijie1@huawei.com>
-References: <20201015121534.50910-1-luoshijie1@huawei.com>
-User-Agent: Roundcube Webmail
-Message-ID: <a220bf939f0c9aece318197881d6f092@suse.de>
-X-Sender: osalvador@suse.de
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-15 14:15, Shijie Luo wrote:
-> When flags don't have MPOL_MF_MOVE or MPOL_MF_MOVE_ALL bits, code 
-> breaks
->  and passing origin pte - 1 to pte_unmap_unlock seems like not a good 
-> idea.
-> 
-> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
-> Signed-off-by: linmiaohe <linmiaohe@huawei.com>
-> ---
->  mm/mempolicy.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 3fde772ef5ef..01f088630d1d 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -571,7 +571,11 @@ static int queue_pages_pte_range(pmd_t *pmd,
-> unsigned long addr,
->  		} else
->  			break;
->  	}
-> -	pte_unmap_unlock(pte - 1, ptl);
-> +
-> +	if (addr >= end)
-> +		pte = pte - 1;
-> +
-> +	pte_unmap_unlock(pte, ptl);
-
-But this is still wrong, isn't it?
-Unless I am missing something, this is "only" important under 
-CONFIG_HIGHPTE.
-
-We have:
-
-pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
-
-which under CONFIG_HIGHPTE does a kmap_atomoc.
-
-Now, we either break the loop in the first pass because of 
-!(MPOL_MF_MOVE | MPOL_MF_MOVE_ALL),
-or we keep incrementing pte by every pass.
-Either way is wrong, because the pointer kunmap_atomic gets will not be 
-the same (since we incremented pte).
-
-Or is the loop meant to be running only once, so pte - 1 will bring us 
-back to the original pte?
-
+VGhpcyBzZXJpZXMgYWRkcyBzdXBwb3J0IGZvciBuZXcgU29DIE1UNjg3My84MTkyIHRvIHRoZSBz
+cG1pIGRyaXZlci4NCg0KY2hhbmdlcyBzaW5jZSB2MjoNCi0gdXBkYXRlIGJpbmRpbmcgZG9jdW1l
+bnQgaW4gRFQgc2NoZW1hIGZvcm1hdC4NCg0KSHNpbi1Ic2l1bmcgV2FuZyAoMik6DQogIGR0LWJp
+bmRpbmdzOiBzcG1pOiBkb2N1bWVudCBiaW5kaW5nIGZvciB0aGUgTWVkaWF0ZWsgU1BNSSBjb250
+cm9sbGVyDQogIHNwbWk6IG1lZGlhdGVrOiBBZGQgc3VwcG9ydCBmb3IgTVQ2ODczLzgxOTINCg0K
+IC4uLi9iaW5kaW5ncy9zcG1pL3NwbWktbXRrLXBtaWYueWFtbCAgICAgICAgICB8ICA3MSArKysN
+CiBkcml2ZXJzL3NwbWkvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDkgKw0K
+IGRyaXZlcnMvc3BtaS9NYWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArDQog
+ZHJpdmVycy9zcG1pL3NwbWktbXRrLXBtaWYuYyAgICAgICAgICAgICAgICAgIHwgNDc0ICsrKysr
+KysrKysrKysrKysrKw0KIDQgZmlsZXMgY2hhbmdlZCwgNTU1IGluc2VydGlvbnMoKykNCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NwbWkvc3Bt
+aS1tdGstcG1pZi55YW1sDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc3BtaS9zcG1pLW10
+ay1wbWlmLmMNCg0KLS0gDQoyLjE4LjANCg==
 
