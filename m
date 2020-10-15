@@ -2,143 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDA628EDFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6372628EDFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729970AbgJOHzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 03:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729842AbgJOHzv (ORCPT
+        id S1729992AbgJOH4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 03:56:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729661AbgJOH4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 03:55:51 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C57CC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 00:55:50 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id d28so2139358ote.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 00:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SKpQn0FDypcCkXIOygWWNsNfWX2lsbxOB8uCbMksAIA=;
-        b=HQSl5QWfcvPbV2pGTi/CgSYNE6yrm43VcrDZdZgXfpSEZAPIWhWUaC3Z9+19ZGIOT/
-         L1FwUAUuyIWjzwGqR/YpO/MiPOAvkTi9v6qcb2Wcm3bTcyjMzBlJxDT1/tZLBuBLm3mU
-         NDzd8Hc1lCeymtif5yx0kEE4DAlngk2j4kC84=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SKpQn0FDypcCkXIOygWWNsNfWX2lsbxOB8uCbMksAIA=;
-        b=ssQqAVTdb0W0EeHHmmz17Qcbfc3qRrnytKylK2T/VEifDCA1K3iXhBqtOkclif049M
-         M4Tg6LiQ7hGKNW9gkhs0tn8oOLWB5tr39nfxoEC7TxEZRkJpXPWkk0gsrJYRoCrYUALw
-         1bFVxEeZGppcr3IAAfSCwFmFJsmG/IZcUOLnHtFtQRM3ciBG5g9CYsdmJPTvqicHq+cc
-         7O38O2c6qEMMRa5OqK4191bc66KSSdfJPtFyafUrYegURwUmJK+WAYG6ZM/vk6C/uzIe
-         LuEOVHjoY0kt/Jg9TztoZz7oS27OoPY/kG+SkojofEJ6Y+KOwJlBwOmIVOL34XULNc7S
-         n8OQ==
-X-Gm-Message-State: AOAM531CQL6Z44dU43DvNODX4HZjOqqZ98q01Y2qjwQUUhTvykmaPzy/
-        QQNv5lvwMWHkdIn5pHRy2IrN2qPQAA7p48UDxUj6iw==
-X-Google-Smtp-Source: ABdhPJxdSyalRqLRcx8/tcfIkmtSxIfRSiuYpFEh1r0/JAJixM8EE3XAGRAgngn5UADgaJioF6PuXkNghwu1P0DfUPk=
-X-Received: by 2002:a05:6830:8b:: with SMTP id a11mr1751471oto.303.1602748549701;
- Thu, 15 Oct 2020 00:55:49 -0700 (PDT)
+        Thu, 15 Oct 2020 03:56:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602748588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=zxiVGY8zmOtT4V/+Mgyln6LglAAn38tuFZjG/0KBPrQ=;
+        b=Ke9+NJY5L54pWOHYji/wFrh7G8gy/d9zbNl5xqhNLNEOUggUt5C4jJILi/UoOi1rC+fsLO
+        LPG39Yl6RLCwuB0sz9vIWMo0XLYIZufRGNRQb1kyVPlyTJTxf4thy+V8YVG8syP/4m05Yl
+        GTPJx7Puf/pNDOuga+iubNftEG27+/w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-L4YEsjwLPP64O8XvRxcIYw-1; Thu, 15 Oct 2020 03:56:26 -0400
+X-MC-Unique: L4YEsjwLPP64O8XvRxcIYw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 051FF9CC08;
+        Thu, 15 Oct 2020 07:56:25 +0000 (UTC)
+Received: from [10.36.114.207] (ovpn-114-207.ams2.redhat.com [10.36.114.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AD931001901;
+        Thu, 15 Oct 2020 07:56:17 +0000 (UTC)
+Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
+ mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Michal Privoznik <mprivozn@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>
+References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
+ <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
+ <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
+ <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
+ <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <32ea3107-b1bc-f39e-3cf8-f6ef427235ef@redhat.com>
+Date:   Thu, 15 Oct 2020 09:56:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-15-daniel.vetter@ffwll.ch> <20201009123109.GO5177@ziepe.ca>
- <CAKMK7uFpPP-Q0jC0vM7vYPEcg0m4NzTw+Ld=swdTF3BgMX5Qug@mail.gmail.com>
- <20201009143209.GS5177@ziepe.ca> <CAPcyv4j54O8ac6WB3LEeNud2r11V26gA0PRKK9bhyEMF67AXtQ@mail.gmail.com>
- <20201015000939.GD6763@ziepe.ca> <CAKMK7uGu8yWRAGZX-dz-sXHsGufXKm003J5zuQr2AwNMG4+DUw@mail.gmail.com>
-In-Reply-To: <CAKMK7uGu8yWRAGZX-dz-sXHsGufXKm003J5zuQr2AwNMG4+DUw@mail.gmail.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 15 Oct 2020 09:55:38 +0200
-Message-ID: <CAKMK7uHwi8_zurd59aX7ZDst+TGFB3TxyzPiWc8fmVvmomskMw@mail.gmail.com>
-Subject: Re: [PATCH v2 14/17] resource: Move devmem revoke code to resource framework
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 9:52 AM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
->
-> On Thu, Oct 15, 2020 at 2:09 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Fri, Oct 09, 2020 at 11:28:54AM -0700, Dan Williams wrote:
-> > > On Fri, Oct 9, 2020 at 7:32 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > On Fri, Oct 09, 2020 at 04:24:45PM +0200, Daniel Vetter wrote:
-> > > > > On Fri, Oct 9, 2020 at 2:31 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > > >
-> > > > > > On Fri, Oct 09, 2020 at 09:59:31AM +0200, Daniel Vetter wrote:
-> > > > > >
-> > > > > > > +struct address_space *iomem_get_mapping(void)
-> > > > > > > +{
-> > > > > > > +     return iomem_inode->i_mapping;
-> > > > > >
-> > > > > > This should pair an acquire with the release below
-> > > > > >
-> > > > > > > +     /*
-> > > > > > > +      * Publish /dev/mem initialized.
-> > > > > > > +      * Pairs with smp_load_acquire() in revoke_iomem().
-> > > > > > > +      */
-> > > > > > > +     smp_store_release(&iomem_inode, inode);
-> > > > > >
-> > > > > > However, this seems abnormal, initcalls rarely do this kind of stuff
-> > > > > > with global data..
-> > > > > >
-> > > > > > The kernel crashes if this fs_initcall is raced with
-> > > > > > iomem_get_mapping() due to the unconditional dereference, so I think
-> > > > > > it can be safely switched to a simple assignment.
-> > > > >
-> > > > > Ah yes I checked this all, but forgot to correctly annotate the
-> > > > > iomem_get_mapping access. For reference, see b34e7e298d7a ("/dev/mem:
-> > > > > Add missing memory barriers for devmem_inode").
-> > > >
-> > > > Oh yikes, so revoke_iomem can run concurrently during early boot,
-> > > > tricky.
-> > >
-> > > It runs early because request_mem_region() can run before fs_initcall.
-> > > Rather than add an unnecessary lock just arrange for the revoke to be
-> > > skipped before the inode is initialized. The expectation is that any
-> > > early resource reservations will block future userspace mapping
-> > > attempts.
-> >
-> > Actually, on this point a simple WRITE_ONCE/READ_ONCE pairing is OK,
-> > Paul once explained that the pointer chase on the READ_ONCE side is
-> > required to be like an acquire - this is why rcu_dereference is just
-> > READ_ONCE
->
-> Indeed this changed with the sm_read_barrier_depends() removal a year
-> ago. Before that READ_ONCE and rcu_dereference where not actually the
-> same. I guess I'll throw a patch on top to switch that over too.
+On 14.10.20 20:31, Mike Kravetz wrote:
+> On 10/14/20 11:18 AM, David Hildenbrand wrote:
+>> On 14.10.20 19:56, Mina Almasry wrote:
+>>> On Wed, Oct 14, 2020 at 9:15 AM David Hildenbrand <david@redhat.com> wrote:
+>>>>
+>>>> On 14.10.20 17:22, David Hildenbrand wrote:
+>>>>> Hi everybody,
+>>>>>
+>>>>> Michal Privoznik played with "free page reporting" in QEMU/virtio-balloon
+>>>>> with hugetlbfs and reported that this results in [1]
+>>>>>
+>>>>> 1. WARNING: CPU: 13 PID: 2438 at mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
+>>>>>
+>>>>> 2. Any hugetlbfs allocations failing. (I assume because some accounting is wrong)
+>>>>>
+>>>>>
+>>>>> QEMU with free page hinting uses fallocate(FALLOC_FL_PUNCH_HOLE)
+>>>>> to discard pages that are reported as free by a VM. The reporting
+>>>>> granularity is in pageblock granularity. So when the guest reports
+>>>>> 2M chunks, we fallocate(FALLOC_FL_PUNCH_HOLE) one huge page in QEMU.
+>>>>>
+>>>>> I was also able to reproduce (also with virtio-mem, which similarly
+>>>>> uses fallocate(FALLOC_FL_PUNCH_HOLE)) on latest v5.9
+>>>>> (and on v5.7.X from F32).
+>>>>>
+>>>>> Looks like something with fallocate(FALLOC_FL_PUNCH_HOLE) accounting
+>>>>> is broken with cgroups. I did *not* try without cgroups yet.
+>>>>>
+>>>>> Any ideas?
+>>>
+>>> Hi David,
+>>>
+>>> I may be able to dig in and take a look. How do I reproduce this
+>>> though? I just fallocate(FALLOC_FL_PUNCH_HOLE) one 2MB page in a
+>>> hugetlb region?
+>>>
+>>
+>> Hi Mina,
+>>
+>> thanks for having a look. I started poking around myself but,
+>> being new to cgroup code, I even failed to understand why that code gets
+>> triggered though the hugetlb controller isn't even enabled.
+>>
+>> I assume you at least have to make sure that there is
+>> a page populated (MMAP_POPULATE, or read/write it). But I am not
+>> sure yet if a single fallocate(FALLOC_FL_PUNCH_HOLE) is
+>> sufficient, or if it will require a sequence of
+>> populate+discard(punch) (or multi-threading).
+> 
+> FWIW - I ran libhugetlbfs tests which do a bunch of hole punching
+> with (and without) hugetlb controller enabled and did not see this issue.
+> 
+> May need to reproduce via QEMU as below.
 
-Actually 2019 landed just the clean-up, the read change landed in 2017 already:
+Not sure if relevant, but QEMU should be using
+memfd_create(MFD_HUGETLB|MFD_HUGE_2MB) to obtain a hugetlbfs file.
 
-commit 76ebbe78f7390aee075a7f3768af197ded1bdfbb
-Author: Will Deacon <will@kernel.org>
-Date:   Tue Oct 24 11:22:47 2017 +0100
+Also, QEMU fallocate(FALLOC_FL_PUNCH_HOLE)'s a significant of memory of
+the md (e.g., > 90%).
 
-   locking/barriers: Add implicit smp_read_barrier_depends() to READ_ONCE()
-
-Cheers, Daniel
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks,
+
+David / dhildenb
+
