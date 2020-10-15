@@ -2,176 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8794728EC7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F8F28EC85
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729765AbgJOE5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:57:11 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:24646 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729634AbgJOE5L (ORCPT
+        id S2387487AbgJOE6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 00:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726392AbgJOE6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:57:11 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09F4mD56024672;
-        Wed, 14 Oct 2020 21:57:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=vSYhxBy0qlLnCRYJLWLM8Csh0SP9vD8mwREyrEe3ics=;
- b=Z9TDcFKgy6BBYKTkMCHthJfhwma8CXfZwdvCCNv6b47I6bDD8yqRu+Dj6zyhi39d/mNj
- /lMIgDt3BjacqT8n7ZAzSPGqEaq5PLcTwx3JECJoVm3tJ1Iio+olSaUvacxsbOfo6itS
- jiQ3G5jutP4g6eYb+deZ2qMkPqXgWmkTznvOxFP74ZFtE8qHnRCFeAIFA4MRR/dIunz+
- wyEnncz275A9zIuk9CU08b0EwGSdZ6BjBhcO1UeJRZECl0X1fYSZSM3HxjLMTRQ63ev7
- 70HBVgWdshY1z3PjNi3+K/L/7IYVgEj9m43FbLpHqpwyfdJlQ+3TkOlOg9/rySbXZRvX 4w== 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2041.outbound.protection.outlook.com [104.47.74.41])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 3439gwadkq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Oct 2020 21:57:01 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oE0D9TjEXodt0ZMZRLmbsHmH0TvTe8O5lXuX9aXBOcqAt/+bLbL+BGh+pITpWgrzFwnN8GrniBsPnBplToAbYD/TaxAp5UB8ADQoQFt5ee2b+OUNOCXfT08yavLanwS/aDN/v6B08JMjv6+bQex424Wgk2WLNwNx5nx8mhPi3ieTBfMe5GhZhRvkPmtgkM/qiATF0zayqYhFLKqJoAeFadGIKN/qKC9Yi/Oae9B4eQHlPnOA+gueHqLDRdaxn/3rJWnY27R69UE/iSd0KJBZFefEtzbRLSV48LSZj8D2J0VDSIcXAE23plhmvfeLEXSMEUEl6j5zQGfO6oThpjx3SA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vSYhxBy0qlLnCRYJLWLM8Csh0SP9vD8mwREyrEe3ics=;
- b=fRJIu8lErHqzqhs7vjATb7Qnst1ZulYa5CMsOKzJvtdbvWiTQx/mBCpUco8aeZEzRBM3/MeEEiSUm99V5RKYOHSbyD9rf/KlHPYR9gLw/2go9TxhHkDbMLMM0Xciq3ZuWmjccMi4e9dT/2LbZrw2AM6zt3dZOu8tzXsGBbZbB3+l2n7QaVqjzvUeCPNQWK7ZOdG3sElW8Ky83tWNysIE8sjo5xIk0N/vctYILxcM6ceFSdbkH4xaSo0aqhGPASpT185DZ/iRhSpTb+q3tzPep8Si9DCc0Obx/dYO0lg1DC79GvAWQCKsAUWmar+gKdKPz0gv7HuZqZQPzYpjYojN1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.148) smtp.rcpttodomain=ti.com smtp.mailfrom=cadence.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=cadence.com; dkim=none
- (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vSYhxBy0qlLnCRYJLWLM8Csh0SP9vD8mwREyrEe3ics=;
- b=VDw6Kn1n3erC1qdU51Lom+hpHvWjOZx6J+VGm+Q0orsY7Har2swWuXMXD1T+3+KylajL/HRfXT9vs96mciN9nMBc0jvo2M5V8OK8pllBIwbjJDleQLvwyslBE0VVpxjkquXElBNmF9rlSmJerFbyphyeYN15ZASyGJ3CVl59vUQ=
-Received: from DM3PR11CA0012.namprd11.prod.outlook.com (2603:10b6:0:54::22) by
- BL0PR07MB5684.namprd07.prod.outlook.com (2603:10b6:208:84::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3455.24; Thu, 15 Oct 2020 04:56:58 +0000
-Received: from DM6NAM12FT064.eop-nam12.prod.protection.outlook.com
- (2603:10b6:0:54:cafe::21) by DM3PR11CA0012.outlook.office365.com
- (2603:10b6:0:54::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend
- Transport; Thu, 15 Oct 2020 04:56:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.148)
- smtp.mailfrom=cadence.com; ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.148 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.148; helo=sjmaillnx2.cadence.com;
-Received: from sjmaillnx2.cadence.com (158.140.1.148) by
- DM6NAM12FT064.mail.protection.outlook.com (10.13.178.114) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3499.7 via Frontend Transport; Thu, 15 Oct 2020 04:56:58 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 09F4uvqU028487
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Wed, 14 Oct 2020 21:56:58 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Thu, 15 Oct 2020 06:56:54 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Thu, 15 Oct 2020 06:56:54 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 09F4usZm002318;
-        Thu, 15 Oct 2020 06:56:54 +0200
-Received: (from pawell@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 09F4usXg002317;
-        Thu, 15 Oct 2020 06:56:54 +0200
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     <peter.chen@nxp.com>
-CC:     <balbi@kernel.org>, <rogerq@ti.com>, <nsekhar@ti.com>,
-        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kurahul@cadence.com>,
-        Pawel Laszczak <pawell@cadence.com>
-Subject: [PATCH v2] usb: cdns3: Add static to cdns3_gadget_exit function
-Date:   Thu, 15 Oct 2020 06:56:06 +0200
-Message-ID: <20201015045606.2084-1-pawell@cadence.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 15 Oct 2020 00:58:17 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C480C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:58:16 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id x16so1789714ljh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:58:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ARgqhuWJgBKVPlDxiUpgFCXHBc6+vc3xWY2ELMDeV+E=;
+        b=jlZHqT6sNfNMWBuwznhHHdxyJ0c02U+o6Csoo0lyR4588J9wbAkQfzLC28PFD9lClq
+         XsyTQNQiPnDGMbV1qthOuX4AIrFoOUVD5FiRIBU/zVODoGK/t06K0emws94Pk4viNbsV
+         u7BtZtk9paNaDDZSB2g8lhjvrcoHwBRIwFuO/vpZDUD42hL6LAT+u9yaup1Wpl6fMmVg
+         3/HJr43CdGGIKTBEdw5N2+0UioNiRw94BwhPdn/kFVm0fzcLxqydH0YvWLlZGf00qMwX
+         yABsUFpk67+29VKYaAe6GC/QVN3DjEol/X7BtcZ4CMQiMUMytMviNmY3OyCjcJspqcom
+         WYHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ARgqhuWJgBKVPlDxiUpgFCXHBc6+vc3xWY2ELMDeV+E=;
+        b=XoiiGietS4kz8+Ipv3pJsmyLoc6E6yNTBOCjc+LwzoS22WazEQt+H1dJgAZd0sc3t9
+         Rx2imhMV/E8jAc3fedkR+NdEupmc6CbZlgqRC47PF5kTLPodrCKPxtQXRUwiC/xjBJ5d
+         4qBaCPeMLAbBv84cudRsBeggCUWU1tm6kfQJA09jHHSjX8+kqTs7xH4O4YlZJ+MhnyhN
+         upjftg0EmTl5QvtcYldfQ7tVsJIgmH55nA6tFKgw2r+Lute2kyrAwevUhPgwQGYxIANW
+         1dPKVmn2mrR+sNFc3esscNKJSJo7XgDLQpJIN1LIrC0h3bClub/9LrSvLE32iTmXuug9
+         Tx5w==
+X-Gm-Message-State: AOAM531hoBjDpZ+OwnJfOagZZHCpF2pD6xd1gT2UMx5TGJito1TKMcro
+        9MyCj1yFBEIu4Kq1x/aeS1GgZhximOsPmPr3UqRLig==
+X-Google-Smtp-Source: ABdhPJyZNCn/C2YqRNcW/gqfGXjeYLfj+Z/ZOqGrssHEukXnkxVx6V70NcnazmxXOll+joqb2ca0vMizBXVcnRZjvXI=
+X-Received: by 2002:a2e:88cb:: with SMTP id a11mr585052ljk.304.1602737894449;
+ Wed, 14 Oct 2020 21:58:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 868e16eb-1e23-4e85-9838-08d870c6bf17
-X-MS-TrafficTypeDiagnostic: BL0PR07MB5684:
-X-Microsoft-Antispam-PRVS: <BL0PR07MB568425070C8AAC9129040766DD020@BL0PR07MB5684.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mF8aJEPafcgTCXxg5+A+i3dii6hGnj0TAZj5D/o1W4yFEeDSoiOd6icnc0WTMROIRLgChorUNeI7NEdgDVfWntw48m9q2ANkxepcBVnu1vbduh1ZtaU0BteqM0+mAb1rMp9iFxgNMrdg0lmy93JtU3aGVCR0s4/fE1Vkgb+0RPoYGMO77raeLTAPTvOKAkqtCjDBSJjvICvxkDuF0xK78MD2iN3R8ImMdf3+yXXOPiILBMWDufgv7YVtngiK6YML05j+CJC+Xt2DD5BZTzaLirMWyf9f+nSzGZypZbVIB7AGaClg7FiLflwUpF7ThAhpR1Auc25zM3pUMfZ3wACTeAuc7ldLzXRCVQVzrjkYepeNh+EKBqLVJfamvb45S4cOj7AOuPn2mkB+8pt0MfmwLNaHPDY+B0PffJh25TWINqs/PRJZIxNaBfNl3ekO74VJI+HMlfJRYwd2HpoeL28oXQ==
-X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(36092001)(46966005)(70206006)(86362001)(6666004)(107886003)(47076004)(5660300002)(54906003)(1076003)(36906005)(42186006)(83380400001)(82740400003)(34020700004)(8936002)(82310400003)(8676002)(316002)(186003)(356005)(4326008)(7636003)(336012)(478600001)(2616005)(426003)(70586007)(6916009)(36756003)(2906002)(26005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2020 04:56:58.3775
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 868e16eb-1e23-4e85-9838-08d870c6bf17
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT064.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR07MB5684
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-15_01:2020-10-14,2020-10-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 suspectscore=1
- phishscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0 bulkscore=0
- priorityscore=1501 mlxlogscore=742 clxscore=1015 spamscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010150034
+References: <20200902064407.30712-1-sumit.semwal@linaro.org>
+ <20200902064407.30712-2-sumit.semwal@linaro.org> <20201014184443.GA835495@ravnborg.org>
+In-Reply-To: <20201014184443.GA835495@ravnborg.org>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Thu, 15 Oct 2020 10:28:03 +0530
+Message-ID: <CAO_48GHy3KjSoxKigejG61Q5FdeTj-EebHjY8-2WAS_DAyJ1DA@mail.gmail.com>
+Subject: Re: [PATCH v7 1/2] dt-bindings: display: panel: Add bindings for
+ Novatek nt36672a
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function cdns3_gadget_exit is used only in gadget.c file.
-This patch removes declaration and definition of this
-function from gadget-export.h file and makes it static.
+Hi Sam,
 
-Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-Acked-by: Roger Quadros <rogerq@ti.com>
----
-Changelog:
-v2
-- added "Ackded-by" tag.
+On Thu, 15 Oct 2020 at 00:14, Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Sumit.
+> On Wed, Sep 02, 2020 at 12:14:06PM +0530, Sumit Semwal wrote:
+> > Novatek nt36672a is a display driver IC that can drive DSI panel. It
+> > is also present in the Tianma video mode panel, which is a FHD+ panel
+> > with a resolution of 1080x2246 and 6.18 inches size. It is found in
+> > some of the Poco F1 phones.
+> >
+> > This patch adds the display driver for the IC, with support added for
+> > this tianma fhd video mode panel.
+> >
+> > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> I assume you will apply the patch yourself.
 
- drivers/usb/cdns3/gadget-export.h | 3 ---
- drivers/usb/cdns3/gadget.c        | 2 +-
- 2 files changed, 1 insertion(+), 4 deletions(-)
+Thanks, I will.
 
-diff --git a/drivers/usb/cdns3/gadget-export.h b/drivers/usb/cdns3/gadget-export.h
-index 577469eee961..702c5a267a92 100644
---- a/drivers/usb/cdns3/gadget-export.h
-+++ b/drivers/usb/cdns3/gadget-export.h
-@@ -13,7 +13,6 @@
- #ifdef CONFIG_USB_CDNS3_GADGET
- 
- int cdns3_gadget_init(struct cdns3 *cdns);
--void cdns3_gadget_exit(struct cdns3 *cdns);
- #else
- 
- static inline int cdns3_gadget_init(struct cdns3 *cdns)
-@@ -21,8 +20,6 @@ static inline int cdns3_gadget_init(struct cdns3 *cdns)
- 	return -ENXIO;
- }
- 
--static inline void cdns3_gadget_exit(struct cdns3 *cdns) { }
--
- #endif
- 
- #endif /* __LINUX_CDNS3_GADGET_EXPORT */
-diff --git a/drivers/usb/cdns3/gadget.c b/drivers/usb/cdns3/gadget.c
-index 692acf7b9b14..6ff3aa3db497 100644
---- a/drivers/usb/cdns3/gadget.c
-+++ b/drivers/usb/cdns3/gadget.c
-@@ -3069,7 +3069,7 @@ static void cdns3_gadget_release(struct device *dev)
- 	kfree(priv_dev);
- }
- 
--void cdns3_gadget_exit(struct cdns3 *cdns)
-+static void cdns3_gadget_exit(struct cdns3 *cdns)
- {
- 	struct cdns3_device *priv_dev;
- 
--- 
-2.17.1
-
+>
+>         Sam
+Best,
+Sumit.
+> >
+> > ---
+> > v2: remove ports node, making port@0 directly under panel@0 node.
+> > v3: updated to replace port@0 to just 'port'.
+> > v5: renamed to novatek,nt36672a, since the binding is for the IC and not
+> >       the panel.
+> > v6: v5 review comments incorporated.
+> >     - added enum for the compatible part, since it can be extended in
+> >       future.
+> >     - few cosmetic updates.
+> > ---
+> >  .../display/panel/novatek,nt36672a.yaml       | 87 +++++++++++++++++++
+> >  1 file changed, 87 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
+> > new file mode 100644
+> > index 000000000000..d2170de6b723
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
+> > @@ -0,0 +1,87 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/display/panel/novatek,nt36672a.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Novatek NT36672A based DSI display Panels
+> > +
+> > +maintainers:
+> > +  - Sumit Semwal <sumit.semwal@linaro.org>
+> > +
+> > +description: |
+> > +  The nt36672a IC from Novatek is a generic DSI Panel IC used to drive dsi
+> > +  panels.
+> > +  Right now, support is added only for a Tianma FHD+ LCD display panel with a
+> > +  resolution of 1080x2246. It is a video mode DSI panel.
+> > +
+> > +allOf:
+> > +  - $ref: panel-common.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:
+> > +         - tianma,fhd-video
+> > +      - const: novatek,nt36672a
+> > +    description: This indicates the panel manufacturer of the panel that is
+> > +      in turn using the NT36672A panel driver. This compatible string
+> > +      determines how the NT36672A panel driver is configured for the indicated
+> > +      panel. The novatek,nt36672a compatible shall always be provided as a fallback.
+> > +
+> > +  reset-gpios:
+> > +    description: phandle of gpio for reset line - This should be 8mA, gpio
+> > +      can be configured using mux, pinctrl, pinctrl-names (active high)
+> > +
+> > +  vddio-supply:
+> > +    description: phandle of the regulator that provides the supply voltage
+> > +      Power IC supply
+> > +
+> > +  vddpos-supply:
+> > +    description: phandle of the positive boost supply regulator
+> > +
+> > +  vddneg-supply:
+> > +    description: phandle of the negative boost supply regulator
+> > +
+> > +  reg: true
+> > +  port: true
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - vddi0-supply
+> > +  - vddpos-supply
+> > +  - vddneg-supply
+> > +  - reset-gpios
+> > +  - port
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |+
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +
+> > +    dsi0 {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        panel@0 {
+> > +            compatible = "tianma,fhd-video", "novatek,nt36672a";
+> > +            reg = <0>;
+> > +            vddi0-supply = <&vreg_l14a_1p88>;
+> > +            vddpos-supply = <&lab>;
+> > +            vddneg-supply = <&ibb>;
+> > +
+> > +            reset-gpios = <&tlmm 6 GPIO_ACTIVE_HIGH>;
+> > +
+> > +            #address-cells = <1>;
+> > +            #size-cells = <0>;
+> > +            port {
+> > +                tianma_nt36672a_in_0: endpoint {
+> > +                    remote-endpoint = <&dsi0_out>;
+> > +                };
+> > +            };
+> > +        };
+> > +    };
+> > +
+> > +...
+> > --
+> > 2.28.0
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
