@@ -2,215 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA17128EFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5683128EFF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389195AbgJOKPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:15:17 -0400
-Received: from mga12.intel.com ([192.55.52.136]:8962 "EHLO mga12.intel.com"
+        id S2389227AbgJOKPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389099AbgJOKPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:15:16 -0400
-IronPort-SDR: s0Z05+15zwsxOvPr7FZo5R05XY80ZRjjC7bYWkCUBe60wfJpSZR64RU0CQqyyqH9N6QWKPI8jR
- d+XhF4Syc6eA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="145625145"
-X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
-   d="scan'208";a="145625145"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 03:15:15 -0700
-IronPort-SDR: K3xbiDQTEFyp2MVDFd76XuMB/v0vr0zwx97tkOA5Pg/9jY7ra37Pg0c/5eNaw+h+PQkc2Dshzd
- N5mucjiB3NvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
-   d="scan'208";a="318972914"
-Received: from lkp-server02.sh.intel.com (HELO 7220befbd762) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 15 Oct 2020 03:15:14 -0700
-Received: from kbuild by 7220befbd762 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kT0Hx-00005p-UF; Thu, 15 Oct 2020 10:15:13 +0000
-Date:   Thu, 15 Oct 2020 18:15:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- 80f92ca9b86c71450f003d39956fca4327cc5586
-Message-ID: <5f882128.OQUnDcw/c7qkkmEd%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2389099AbgJOKPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:15:53 -0400
+Received: from saruman (88-113-213-94.elisa-laajakaista.fi [88.113.213.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2533920BED;
+        Thu, 15 Oct 2020 10:15:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602756952;
+        bh=Z6L85tl0hUzxc/Wf2yAWwRbRBy0g42YVSMNsAOso/ic=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=WCURctuRAO7apKBpnigKSW4w0RrSEIpplBnDIjs+ve/o+8+46MlY5TmxYzakNSnGt
+         wshd18tKRcbQS+ist8JlaxoOpSixojILJcBphDceJNvzEVJ7nc77SPULh7DZu7zIN5
+         MdYW0FZqoioit4bvm377ZfhSD1iKvlH90Ra8372k=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Roger Quadros <rogerq@ti.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 20/20] arch: dts: Fix DWC USB3 DT nodes name
+In-Reply-To: <20201014143720.yny3jco5pkb7dr4b@mobilestation>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-21-Sergey.Semin@baikalelectronics.ru>
+ <878sc8lx0e.fsf@kernel.org>
+ <20201014143720.yny3jco5pkb7dr4b@mobilestation>
+Date:   Thu, 15 Oct 2020 13:15:37 +0300
+Message-ID: <875z7blrqu.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  auto-latest
-branch HEAD: 80f92ca9b86c71450f003d39956fca4327cc5586  Merge branch 'core/rcu'
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 1618m
+Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
 
-configs tested: 151
-configs skipped: 2
+> On Wed, Oct 14, 2020 at 05:09:37PM +0300, Felipe Balbi wrote:
+>>=20
+>> Hi Serge,
+>>=20
+>> Serge Semin <Sergey.Semin@baikalelectronics.ru> writes:
+>> > In accordance with the DWC USB3 bindings the corresponding node name is
+>> > suppose to comply with Generic USB HCD DT schema, which requires the U=
+SB
+>>=20
+>
+>> DWC3 is not a simple HDC, though.
+>
+> Yeah, strictly speaking it is equipped with a lot of vendor-specific stuf=
+f,
+> which are tuned by the DWC USB3 driver in the kernel. But after that the
+> controller is registered as xhci-hcd device so it's serviced by the xHCI =
+driver,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+in Dual-role or host-only builds, that's correct. We can also have
+peripheral-only builds (both SW or HW versions) which means xhci isn't
+even in the picture.
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-mips                         tb0287_defconfig
-sh                   sh7724_generic_defconfig
-s390                             allyesconfig
-arm                       netwinder_defconfig
-xtensa                              defconfig
-mips                            e55_defconfig
-mips                        omega2p_defconfig
-arm                           stm32_defconfig
-sh                            migor_defconfig
-arm                         orion5x_defconfig
-arc                     nsimosci_hs_defconfig
-arm                        spear3xx_defconfig
-arm                         cm_x300_defconfig
-arm                              zx_defconfig
-mips                        jmr3927_defconfig
-powerpc                     tqm8555_defconfig
-arm                              alldefconfig
-powerpc                 mpc8560_ads_defconfig
-arm                          pxa3xx_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                 mpc832x_mds_defconfig
-sh                        apsh4ad0a_defconfig
-mips                          ath79_defconfig
-arm                  colibri_pxa300_defconfig
-arm                            xcep_defconfig
-powerpc                       eiger_defconfig
-mips                           ip32_defconfig
-alpha                               defconfig
-mips                        workpad_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                           u8500_defconfig
-riscv                          rv32_defconfig
-arm                          prima2_defconfig
-m68k                             allmodconfig
-arm                           tegra_defconfig
-mips                      pistachio_defconfig
-ia64                      gensparse_defconfig
-sh                          rsk7203_defconfig
-powerpc                     powernv_defconfig
-sh                        edosk7760_defconfig
-arm                        mvebu_v7_defconfig
-sh                           se7619_defconfig
-powerpc                   motionpro_defconfig
-mips                          malta_defconfig
-arm                         lpc32xx_defconfig
-arm                          simpad_defconfig
-sh                               allmodconfig
-riscv                    nommu_k210_defconfig
-mips                           ip28_defconfig
-i386                             alldefconfig
-arc                        vdk_hs38_defconfig
-powerpc                      pmac32_defconfig
-mips                malta_kvm_guest_defconfig
-h8300                     edosk2674_defconfig
-mips                 pnx8335_stb225_defconfig
-mips                       bmips_be_defconfig
-arm                    vt8500_v6_v7_defconfig
-parisc                           alldefconfig
-sh                           se7751_defconfig
-mips                  maltasmvp_eva_defconfig
-microblaze                      mmu_defconfig
-powerpc                     mpc5200_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                       ebony_defconfig
-arm                            pleb_defconfig
-sh                   sh7770_generic_defconfig
-sh                          lboxre2_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                         axm55xx_defconfig
-arm                       aspeed_g5_defconfig
-sh                ecovec24-romimage_defconfig
-mips                         mpc30x_defconfig
-mips                     loongson1b_defconfig
-mips                      malta_kvm_defconfig
-mips                         tb0226_defconfig
-mips                 decstation_r4k_defconfig
-mips                     decstation_defconfig
-arm                          ixp4xx_defconfig
-m68k                            q40_defconfig
-powerpc                 linkstation_defconfig
-powerpc                      cm5200_defconfig
-arm                             rpc_defconfig
-arm                        trizeps4_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-arc                                 defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-parisc                              defconfig
-s390                                defconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20201014
-i386                 randconfig-a006-20201014
-i386                 randconfig-a001-20201014
-i386                 randconfig-a003-20201014
-i386                 randconfig-a004-20201014
-i386                 randconfig-a002-20201014
-x86_64               randconfig-a016-20201014
-x86_64               randconfig-a012-20201014
-x86_64               randconfig-a015-20201014
-x86_64               randconfig-a013-20201014
-x86_64               randconfig-a014-20201014
-x86_64               randconfig-a011-20201014
-i386                 randconfig-a016-20201014
-i386                 randconfig-a013-20201014
-i386                 randconfig-a015-20201014
-i386                 randconfig-a011-20201014
-i386                 randconfig-a012-20201014
-i386                 randconfig-a014-20201014
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+=2D-=20
+balbi
 
-clang tested configs:
-x86_64               randconfig-a004-20201014
-x86_64               randconfig-a002-20201014
-x86_64               randconfig-a006-20201014
-x86_64               randconfig-a001-20201014
-x86_64               randconfig-a005-20201014
-x86_64               randconfig-a003-20201014
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl+IIUoRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQZO3Q//SiuQrPc8kbjk55HntU2Nq2ql7KHubHOj
+ZhrcegAbPbzA0vqIIasxjkXAC8Abbz3Bn59kDuu0ohRtTG1sKXMrN1aqkIo1tTh+
+zkF7t+k5cdunzJ19jb0lohFu/eDK0JPuXRoByJfUhbxIZfWbacO7bG8TkClU7zhL
+denO6pfQG1nOetdAaHZV9imMuTKJOrnl+bcHx5tNcV9sH02sC6OVXBn4dN5ZnABf
+/FdDd671tZMcz43t7jm1vNk7yxgZPSqQ6myBeXQ45ZL2mn9i0gyi4eEWy29vLwu9
+kVUhb9nrliaBsf/X/+oh05qRACLg/noIcuSpXMtu8tmR2DIcwDijYG8XOsBaDLEj
+ZYSJju7/JQ2XUmrS2s/xWtjcqQN0ZxVsJx0Vy4JZNRQ404qs2cqjDeUFdclP+fdJ
+90W74TKzXS1/t52pQyG84LSM648I/7PhUWara2RV9jds7XPgFuFCwWTxEKkyQCSW
+ayPWVASHrKX0Kzp77GW2UUILCIo+luyMMd7V/BraTI6L+PMBL6+etB/O72UUXdb9
+E2hQyJojMpg7BZ6dnpLcvbtHetLtW1hLisTOfD3NbPUyJzPJAgLt8D77SN5ncTUy
+nC8/57GA0Bs2uzYEB6TlPV4i7c9tLT3MJrlVE/p4uziQ7R/b34xbHDX3xNcspk9Q
+vO7uMM8lF9I=
+=XrV0
+-----END PGP SIGNATURE-----
+--=-=-=--
