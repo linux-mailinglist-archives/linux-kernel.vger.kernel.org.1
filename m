@@ -2,167 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093E328F88C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE3E28F8A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729828AbgJOS2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728042AbgJOS2h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:28:37 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3635C061755;
-        Thu, 15 Oct 2020 11:28:37 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id q21so2406164pgi.13;
-        Thu, 15 Oct 2020 11:28:37 -0700 (PDT)
+        id S1730219AbgJOSb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:31:26 -0400
+Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:46351
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728820AbgJOSbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:31:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xfx84NtruvB24oZId+tAn98MDCd2hMQFZMU5aXCDAtmFOHmTwkRg+/90Djg4E2RM+/YdDX742TWMzN1LjvNWbGjVGrSp+NQkxuC+Y8OMQqG8eg2OoLnzSd6ZOaMbHJgShG3uYg5y63e1N+PnKTzXAgyfGpndyANb67dk11ZLuCeh2RyMtVUCoXthuCKNbzgtJYPRv8FvTJfFE7VzSxvFQMOPxD3LFlAcVPfQVSXLt5mIl6cdQUCKjVoWYdgmvcOR7rTcNMO6mZuZi0fDr/ncNPGJ9PflODgx0Z1UkJqVaHVkAhFcy17aneeEZvbu+FEWsw/zfwIyH0KOY/hRZ6ICYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D6JGVnlDhpWUuddY/MgZ0kLygQiHA/ZjLmKOOngw3D8=;
+ b=Vg+1nAcPkZQIRyQbqiYnvT1jJYgg4l8tH+s7J93IFOHUl9V2PEHl1/buoiZdqiKwB8y/ldt78QpLbmJYYOOYawvQA2YOcByuhAFFd8+1UJMWG6ahnw5adJmsoRDG9masfqOifoOmkFXrzkZAbbcr+1CPCCszNSS+8UI+sMKM/4VV/3fvCrmWD4GWo0eRb7VfhCQPFziIu5L3Ch8YsD3pR5wuF6v7who6EL0LLLjSALvS1ddp1dEVq2m/ljo6bAMSJJAC5KRiibeE7FZhaaD/CLeY8CeRroXjiLWeU+dtt4NL+jcX09mNOyB5Q53Xut6SmS2TtrV7HE+vDrSj0ecjmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QWq4RR483RrQf9qvcEwbqi4k6qhvE4kHX8NyfjGVvXA=;
-        b=suM0shAoEviw0J4mahfECH0DeTWgf4dZTp6LGEsWQzK/KSgZ+NC+40mf1I2SqIihzQ
-         r2xIiorWXvWrfrEpNp4gafT+LzAe9eFox9X9UPnP4GmZNw/7qQFtJYvBn+8fcs9BVKmn
-         7txz0gzyIWSDMZyhUwb9BAJQIRN4wZU1NVPoam1TMVygI/i5yc1uJsnFqcD7h2LNqUoc
-         IWqyf1YBx27sZmbwkCkX9ObUCK3Fx0OO5S+vfuUUP5CJuQbME3p+YQVlKJM3NYlUKW2b
-         W+vTovoe16ySBTvDkFdnu+oQnIsQOrAhYsiwQww9z+N5bBo+h7VNTWoBlvT57GsRVqpg
-         3Erw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QWq4RR483RrQf9qvcEwbqi4k6qhvE4kHX8NyfjGVvXA=;
-        b=SnSVIvTVzgGVwbX7bKLBD1kuz9mLc/F1pECpY845BWJw/X2C3sgQ+98dfGh55uy7aV
-         UVxc/fPNthwDCIdlJkExr0UPTpUiseQCeDFf5x+TbtYIy42gWSML5ItyaDT1lqoHBxUL
-         XfIyOZABHubhkWxUxBubS4AEfEXLTPjDkg5f6AjjGDI1jRxptLA6GE9w7T7i3ZcTfbYj
-         l/pmhGX60XyY412M0k6f7vP/MHuDCgUqvpIBVEkyuSmOO3h+BeU4FYUjB5x60FtP6eWh
-         wUft2Vr4sBAeKJRhvRrOP/dNgsw5vKu9BAu1+7M//wELb4RUe9DNgKXrG3HCMDahnuQx
-         kb3g==
-X-Gm-Message-State: AOAM531Dy75EpthgWw1WSbFdT2sfNhN8qYhY59vxKl2j8uRzpVocj5GB
-        dydLbrqyMvAL8v8ijm0MIAM=
-X-Google-Smtp-Source: ABdhPJwFgpj4yIvxdmNTRiStaRKsdkNCWiJ/L9B0sorGluXbb637Lm/bVOysyCqSimWb8YSk1QziHg==
-X-Received: by 2002:a63:f80c:: with SMTP id n12mr140183pgh.94.1602786516974;
-        Thu, 15 Oct 2020 11:28:36 -0700 (PDT)
-Received: from Thinkpad ([45.118.167.207])
-        by smtp.gmail.com with ESMTPSA id s66sm4070973pfb.25.2020.10.15.11.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 11:28:36 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 23:58:27 +0530
-From:   Anmol Karn <anmol.karan123@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     ralf@linux-mips.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        syzbot+a1c743815982d9496393@syzkaller.appspotmail.com,
-        linux-hams@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] net: rose: Fix Null pointer
- dereference in rose_send_frame()
-Message-ID: <20201015182827.GA84192@Thinkpad>
-References: <20201015001712.72976-1-anmol.karan123@gmail.com>
- <20201015051225.GA404970@kroah.com>
- <20201015141012.GB77038@Thinkpad>
- <20201015155051.GB66528@kroah.com>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D6JGVnlDhpWUuddY/MgZ0kLygQiHA/ZjLmKOOngw3D8=;
+ b=o0c2Mvxb+/3UxXQwMChmZ3zZxTyw7FPcOeeVBuBuGDXGZRbbP+eZA+5QS8FBdmg9mnfwt2cb1zgqK3Y25t2kpOuklODv9YdtcxV7mN9wqhw8ogCW3V+r1sHa+lt99ErxdAWQHTER2QY5nUjAPtc3YbrN8YBx33GmCsDJ4ZkLlD4=
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com (2603:10b6:a03:55::31)
+ by BY5PR02MB6420.namprd02.prod.outlook.com (2603:10b6:a03:1b2::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22; Thu, 15 Oct
+ 2020 18:31:21 +0000
+Received: from BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::113d:722:5f93:d29e]) by BYAPR02MB4407.namprd02.prod.outlook.com
+ ([fe80::113d:722:5f93:d29e%6]) with mapi id 15.20.3477.021; Thu, 15 Oct 2020
+ 18:31:21 +0000
+From:   Ben Levinsky <BLEVINSK@xilinx.com>
+To:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>
+CC:     "Ed T. Mooring" <emooring@xilinx.com>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Michal Simek <michals@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "michael.auchter@ni.com" <michael.auchter@ni.com>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: RE: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5
+ remoteproc driver
+Thread-Topic: RE: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5
+ remoteproc driver
+Thread-Index: AQHWmzGLZdXOwIwjxE6bV2X+UlYToKmJZsqAgAGMKFCAACbWgIAAAZmggAAMCYCADeKZ4A==
+Date:   Thu, 15 Oct 2020 18:31:20 +0000
+Message-ID: <BYAPR02MB44072A6C1ACAA0C459390895B5020@BYAPR02MB4407.namprd02.prod.outlook.com>
+References: <20201005160614.3749-1-ben.levinsky@xilinx.com>
+ <20201005160614.3749-6-ben.levinsky@xilinx.com>
+ <20201005193449.GA701433@xaphan>
+ <BYAPR02MB4407B7F06962DB30ED90761FB50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <20201006213143.GD701433@xaphan>
+ <BYAPR02MB4407B356B56B9A1D561950B7B50D0@BYAPR02MB4407.namprd02.prod.outlook.com>
+ <20201006222031.GA809209@xaphan>
+In-Reply-To: <20201006222031.GA809209@xaphan>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [149.199.62.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: de157a34-4a40-47ae-c7fb-08d871388393
+x-ms-traffictypediagnostic: BY5PR02MB6420:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR02MB64208AB10B762EC4E731C60FB5020@BY5PR02MB6420.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: I1TWjhW+62in+FO6J9xp5GyHCOnmG/Zt8CogH3q5N7IZeY9nwTKKBiJEhQeLpmlTYzLAWRSVObBgKydbp9oaVKmYFW8u1WqeLB2XxShfw0gKyrO87YmODAu256EZUUKrtbwx1mGFSCcLRZlaxeq+Xc7+x77jRIRwDKV7FDddagyyA72GMiiE/0wE3iBiG9g7Ss3sDbedo+FhAKbCXqFHnBgf+YAh1+i6qExZkJntUifw+G3wJ/MD0V39wuGnwPh8GXyeUJyQ2fSe/6mEwDHeuss+3YeChvr0EUnysBweNZI4/XMbgQl2PER/5f4/c7GbWraq4UgDLD6otguZfOJlKg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB4407.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(39860400002)(366004)(376002)(396003)(4326008)(9686003)(478600001)(2906002)(7696005)(86362001)(8676002)(186003)(26005)(54906003)(53546011)(6506007)(76116006)(8936002)(64756008)(316002)(66476007)(66556008)(66946007)(66446008)(83380400001)(52536014)(5660300002)(33656002)(55016002)(71200400001)(6916009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: JEMWLCRRr3jpinI463v41MfWMQEC2cJKRL+wKuRL9u7eUOIqde5lSSGNW1FoxgKexlsZep2+3g5uZeFgxW1uu1q0JcAUKMLiHJzCP93Fataqzx8ef/qnGPtwfA5eeWM3Q7yPS0gjCDXwCFE3Lcx4REqptAkS29anbDYPZdSCalSkIdLgVPx277I1L4s3Xma/bGK90YYmtQVfUJbP8rahUygbVcGlqbW1OWOqorZkZV8NFseGqQOtJWqQ01ZLkPIy3TqmUoup2TwNdjJUQXxxwliRhNw7a0zabd/WWG2pk3PSDwrRst6U6cIEovftZXzmGWlgBM9XvT0UcS2JLLxxhlCYyFgFeEK02QukR+FWn+WOqLc/bRU2rg0wr6BhtgWX9PEJHvRQHorZnvfu5bLH8jJ/mLX9Gv+3Gi3jRXFQNuIM7ySPDRv+RL+lfxonEQaB16j+EPDQJi9FSapEQ/BwtjC/OGmZNHrYVPJWnGDgLn38TWDRsHwPClqJeJV+DZQO4HYI7OWT6RWEtj0ypo/41ZEn4s+J+YdV7MA8VckGEPSuQ8GyMDlhrLCpgGOR0UCrDCZc1OEehqTGH62JpXUMGKoEUOpFBjWKNZrxuyFE83g2+ut2cSsiW21v78zhWA+kbI1hfUCcAXRDUBVMfM1vsA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015155051.GB66528@kroah.com>
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB4407.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de157a34-4a40-47ae-c7fb-08d871388393
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 18:31:21.0044
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9M+XqgW7tPzgBGMxzFhG5jG/fZDIWaQbo+Zg+DTVnEhpQW5JuV6Zf3pb0AKfxwEU2t14z5Ndl2RJ5+qYYKy9MA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6420
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 05:50:51PM +0200, Greg KH wrote:
-> On Thu, Oct 15, 2020 at 07:40:12PM +0530, Anmol Karn wrote:
-> > On Thu, Oct 15, 2020 at 07:12:25AM +0200, Greg KH wrote:
-> > > On Thu, Oct 15, 2020 at 05:47:12AM +0530, Anmol Karn wrote:
-> > > > In rose_send_frame(), when comparing two ax.25 addresses, it assigns rose_call to 
-> > > > either global ROSE callsign or default port, but when the former block triggers and 
-> > > > rose_call is assigned by (ax25_address *)neigh->dev->dev_addr, a NULL pointer is 
-> > > > dereferenced by 'neigh' when dereferencing 'dev'.
-> > > > 
-> > > > - net/rose/rose_link.c
-> > > > This bug seems to get triggered in this line:
-> > > > 
-> > > > rose_call = (ax25_address *)neigh->dev->dev_addr;
-> > > > 
-> > > > Prevent it by checking NULL condition for neigh->dev before comparing addressed for 
-> > > > rose_call initialization.
-> > > > 
-> > > > Reported-by: syzbot+a1c743815982d9496393@syzkaller.appspotmail.com 
-> > > > Link: https://syzkaller.appspot.com/bug?id=9d2a7ca8c7f2e4b682c97578dfa3f236258300b3 
-> > > > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
-> > > > ---
-> > > > I am bit sceptical about the error return code, please suggest if anything else is 
-> > > > appropriate in place of '-ENODEV'.
-> > > > 
-> > > >  net/rose/rose_link.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > > 
-> > > > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
-> > > > index f6102e6f5161..92ea6a31d575 100644
-> > > > --- a/net/rose/rose_link.c
-> > > > +++ b/net/rose/rose_link.c
-> > > > @@ -97,6 +97,9 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
-> > > >  	ax25_address *rose_call;
-> > > >  	ax25_cb *ax25s;
-> > > >  
-> > > > +	if (!neigh->dev)
-> > > > +		return -ENODEV;
-> > > 
-> > > How can ->dev not be set at this point in time?  Shouldn't that be
-> > > fixed, because it could change right after you check this, right?
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > Hello Sir,
-> > 
-> > Thanks for the review,
-> > After following the call trace i thought, if neigh->dev is NULL it should
-> > be checked, but I will figure out what is going on with the crash reproducer,
-> > and I think rose_loopback_timer() is the place where problem started. 
-> > 
-> > Also, I have created a diff for checking neigh->dev before assigning ROSE callsign
-> > , please give your suggestions on this.
-> > 
-> > 
-> > diff --git a/net/rose/rose_link.c b/net/rose/rose_link.c
-> > index f6102e6f5161..2ddd5e559442 100644
-> > --- a/net/rose/rose_link.c
-> > +++ b/net/rose/rose_link.c
-> > @@ -97,10 +97,14 @@ static int rose_send_frame(struct sk_buff *skb, struct rose_neigh *neigh)
-> >         ax25_address *rose_call;
-> >         ax25_cb *ax25s;
-> >  
-> > -       if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
-> > -               rose_call = (ax25_address *)neigh->dev->dev_addr;
-> > -       else
-> > -               rose_call = &rose_callsign;
-> > +       if (neigh->dev) {
-> > +               if (ax25cmp(&rose_callsign, &null_ax25_address) == 0)
-> > +                       rose_call = (ax25_address *)neigh->dev->dev_addr;
-> > +               else
-> > +                       rose_call = &rose_callsign;
-> > +       } else {
-> > +               return -ENODEV;
-> > +       }
-> 
-> The point I am trying to make is that if someone else is setting ->dev
-> to NULL in some other thread/context/whatever, while this is running,
-> checking for it like this will not work.
-> 
-> What is the lifetime rules of that pointer?  Who initializes it, and who
-> sets it to NULL.  Figure that out first please to determine how to check
-> for this properly.
-> 
-> thanks,
-> 
-> greg k-h
+Hi All,
 
-Sure sir, understood.
+> -----Original Message-----
+> From: Michael Auchter <michael.auchter@ni.com>
+> Sent: Tuesday, October 6, 2020 3:21 PM
+> To: Ben Levinsky <BLEVINSK@xilinx.com>
+> Cc: Ed T. Mooring <emooring@xilinx.com>; Stefano Stabellini
+> <stefanos@xilinx.com>; Michal Simek <michals@xilinx.com>;
+> devicetree@vger.kernel.org; mathieu.poirier@linaro.org; linux-
+> remoteproc@vger.kernel.org; linux-kernel@vger.kernel.org;
+> robh+dt@kernel.org; linux-arm-kernel@lists.infradead.org
+> Subject: Re: RE: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5
+> remoteproc driver
+>=20
+> On Tue, Oct 06, 2020 at 09:46:38PM +0000, Ben Levinsky wrote:
+> >
+> >
+> > > -----Original Message-----
+> > > From: Michael Auchter <michael.auchter@ni.com>
+> > > Sent: Tuesday, October 6, 2020 2:32 PM
+> > > To: Ben Levinsky <BLEVINSK@xilinx.com>
+> > > Cc: Ed T. Mooring <emooring@xilinx.com>; sunnyliangjy@gmail.com;
+> > > punit1.agrawal@toshiba.co.jp; Stefano Stabellini <stefanos@xilinx.com=
+>;
+> > > Michal Simek <michals@xilinx.com>; devicetree@vger.kernel.org;
+> > > mathieu.poirier@linaro.org; linux-remoteproc@vger.kernel.org; linux-
+> > > kernel@vger.kernel.org; robh+dt@kernel.org; linux-arm-
+> > > kernel@lists.infradead.org
+> > > Subject: Re: RE: [PATCH v18 5/5] remoteproc: Add initial zynqmp R5
+> > > remoteproc driver
+> > >
+> > > On Tue, Oct 06, 2020 at 07:15:49PM +0000, Ben Levinsky wrote:
+> > > >
+> > > > Hi Michael,
+> > > >
+> > > > Thanks for the review
+> > > >
+> > >
+> > > < ... snip ... >
+> > >
+> > > > > > +	z_rproc =3D rproc->priv;
+> > > > > > +	z_rproc->dev.release =3D zynqmp_r5_release;
+> > > > >
+> > > > > This is the only field of z_rproc->dev that's actually initialize=
+d, and
+> > > > > this device is not registered with the core at all, so zynqmp_r5_=
+release
+> > > > > will never be called.
+> > > > >
+> > > > > Since it doesn't look like there's a need to create this addition=
+al
+> > > > > device, I'd suggest:
+> > > > > 	- Dropping the struct device from struct zynqmp_r5_rproc
+> > > > > 	- Performing the necessary cleanup in the driver remove
+> > > > > 	  callback instead of trying to tie it to device release
+> > > >
+> > > > For the most part I agree. I believe the device is still needed for
+> > > > the mailbox client setup.
+> > > >
+> > > > As the call to mbox_request_channel_byname() requires its own devic=
+e
+> > > > that has the corresponding child node with the corresponding
+> > > > mbox-related properties.
+> > > >
+> > > > With that in mind, is it still ok to keep the device node?
+> > >
+> > > Ah, I see. Thanks for the clarification!
+> > >
+> > > Instead of manually dealing with the device node creation for the
+> > > individual processors, perhaps it makes more sense to use
+> > > devm_of_platform_populate() to create them. This is also consistent w=
+ith
+> > > the way the TI K3 R5F remoteproc driver does things.
+> > >
+> > > Cheers,
+> > >  Michael
+> >
+> > I've been working on this today for a way around it and found one that =
+I
+> think works with your initial suggestion,
+> > - in z_rproc, change dev from struct device to struct device*
+> > 	^ the above is shown the usage thereof below. It is there for the
+> mailbox setup.
+> > - in driver probe:
+> > 	- add list_head to keep track of each core's z_rproc and for the drive=
+r
+> remove clean up
+> > 	- in each core's probe (zynqmp_r5_probe) dothe following:
+> >
+> >
+> >        rproc_ptr =3D rproc_alloc(dev, dev_name(dev), &zynqmp_r5_rproc_o=
+ps,
+> >                                                   NULL, sizeof(struct z=
+ynqmp_r5_rproc));
+> >         if (!rproc_ptr)
+> >                 return -ENOMEM;
+> >         z_rproc =3D rproc_ptr->priv;
+> >         z_rproc->dt_node =3D node;
+> >         z_rproc->rproc =3D rproc_ptr;
+> >         z_rproc->dev =3D &rproc_ptr->dev;
+> >         z_rproc->dev->of_node =3D node;
+> > where node is the specific R5 core's of_node/ Device tree node.
+> >
+> > the above preserves most of the mailbox setup code.
+>=20
+> I see how this works, but it feels a bit weird to me to be overriding
+> the remoteproc dev's of_node ptr. Personally I find the
+> devm_of_platform_populate() approach a bit less confusing.
+>=20
+> But, it's also not my call to make ;). Perhaps a remoteproc maintainer
+> can chime in here.
+>=20
+> >
+
+Ping for comments here.
+
+I looked at the TI R5 remoteproc driver and from what I can see, it seems t=
+he crux of the line:=20
+z_rproc->dev->of_node =3D node;=20
+is as follows:
+
+the TI driver only has 1 R5-related remoteproc node. But in this it has inf=
+ormation for both cores so
+the rproc_alloc's device that is passed in is sufficient for subsequent mai=
+lbox calls. This is because the device
+here also has a device_node that has the mbox information.
+
+The Xilinx driver differs in that while there is a cluster device tree node=
+ that has the remoteproc-related
+Information, it ALSO has child R5 cores that have their own TCM bank and mb=
+ox information.=20
+
+As a result of this difference the use of devm_of_populate would not remove=
+ the use of the line of code in question because the mailbox setup calls la=
+ter on still require the device field to have a corresponding device tree n=
+ode that
+Has the mailbox information.
+
+If it is desired to see the use of devm_of_populate and more close alignmen=
+t to the TI driver that has been merged then the Xilinx R5 driver bindings =
+can instead have the TCM bank info, memory-regions, meta-memory-regions int=
+o R5 core-specific lists which resembles how the TI R5 driver has R5 core-s=
+pecific properties. At this point just trying to suss out some direction in=
+ this patch series.
+
+Your feedback and review is much appreciated,
+Ben
 
 
-Thanks,
-Anmol
+> >
+> > With this, I have already successfully done the following in a v19 patc=
+h
+> > - move all the previous driver release code to remove
+> > - able to probe, start/stop r5, driver remove repeatedly
+> >
+> > Also, this mimics the TI R5 driver code as each core's rproc has a list=
+_head
+> and they have a structure for the cluster which among other things mainta=
+ins
+> a linked list of the cores' specific rproc information.
+> >
+> > Thanks
+> > Ben
