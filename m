@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9933828F06A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE2028F066
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730098AbgJOKyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:54:13 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:32992 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727123AbgJOKyK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:54:10 -0400
-Received: from 187-26-179-30.3g.claro.net.br ([187.26.179.30] helo=mussarela)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1kT0ta-00072z-2p; Thu, 15 Oct 2020 10:54:06 +0000
-Date:   Thu, 15 Oct 2020 07:53:58 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kleber Sacilotto de Souza <kleber.souza@canonical.com>,
-        netdev@vger.kernel.org, Gerrit Renker <gerrit@erg.abdn.ac.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Kees Cook <keescook@chromium.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexey Kodanev <alexey.kodanev@oracle.com>,
-        dccp@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dccp: ccid: move timers to struct dccp_sock
-Message-ID: <20201015105358.GA367246@mussarela>
-References: <20201013171849.236025-1-kleber.souza@canonical.com>
- <20201013171849.236025-2-kleber.souza@canonical.com>
- <20201014204322.7a51c375@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1728616AbgJOKyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:54:09 -0400
+Received: from mga05.intel.com ([192.55.52.43]:2525 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728009AbgJOKyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:54:09 -0400
+IronPort-SDR: 5RfIHasnXjmCJZFiT5LLic1yMXiPzvVIPC+6t1A9tdBDChWneDZXRriddeIv7z3tkNHIZ8AE+v
+ nib7W2W1i0fg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="251010715"
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="251010715"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 03:54:08 -0700
+IronPort-SDR: oTlPNGogSA3vCiKBES+jH8XEQ+PM/jK/9DMxGEIHvWvzODG2XE7+vWO0m6lFarEv3eAll85fpP
+ QqXe1HlZUnXQ==
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="390936528"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 03:54:05 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kT0ua-007NHO-BV; Thu, 15 Oct 2020 13:55:08 +0300
+Date:   Thu, 15 Oct 2020 13:55:08 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
+        mika.westerberg@linux.intel.com, YehezkelShB@gmail.com,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] thunderbolt: Add the missed ida_simple_remove() in
+ ring_request_msix()
+Message-ID: <20201015105508.GT4077@smile.fi.intel.com>
+References: <20201015084053.56158-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014204322.7a51c375@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201015084053.56158-1-jingxiangfeng@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 08:43:22PM -0700, Jakub Kicinski wrote:
-> On Tue, 13 Oct 2020 19:18:48 +0200 Kleber Sacilotto de Souza wrote:
-> > From: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> > 
-> > When dccps_hc_tx_ccid is freed, ccid timers may still trigger. The reason
-> > del_timer_sync can't be used is because this relies on keeping a reference
-> > to struct sock. But as we keep a pointer to dccps_hc_tx_ccid and free that
-> > during disconnect, the timer should really belong to struct dccp_sock.
-> > 
-> > This addresses CVE-2020-16119.
-> > 
-> > Fixes: 839a6094140a (net: dccp: Convert timers to use timer_setup())
+On Thu, Oct 15, 2020 at 04:40:53PM +0800, Jing Xiangfeng wrote:
+> ring_request_msix() misses to call ida_simple_remove() in an error path.
+> Add a label 'err_ida_remove' and jump to it.
+
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Fixes: 046bee1f9ab8 ("thunderbolt: Add MSI-X support")
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+
+When new version is issued do not forget to add changelog here (after cutter '---' line).
+
+>  drivers/thunderbolt/nhi.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
 > 
-> Presumably you chose this commit because the fix won't apply beyond it?
-> But it really fixes 2677d2067731 (dccp: don't free.. right?
-
-Well, it should also fix cases where dccps_hc_tx_ccid{,_private} has been freed
-right after the timer is stopped.
-
-So, we could add:
-Fixes: 2a91aa396739 ([DCCP] CCID2: Initial CCID2 (TCP-Like) implementation)
-Fixes: 7c657876b63c ([DCCP]: Initial implementation)
-
-But I wouldn't say that this fixes 2677d2067731, unless there is argument to
-say that it fixes it because it claimed to fix what is being fixed here. But
-even the code that it removed was supposed to be stopping the timer, so how
-could it ever fix what it was claiming to fix?
-
-Thanks.
-Cascardo.
-
+> diff --git a/drivers/thunderbolt/nhi.c b/drivers/thunderbolt/nhi.c
+> index 5f7489fa1327..a331e52789e3 100644
+> --- a/drivers/thunderbolt/nhi.c
+> +++ b/drivers/thunderbolt/nhi.c
+> @@ -405,12 +405,23 @@ static int ring_request_msix(struct tb_ring *ring, bool no_suspend)
+>  
+>  	ring->vector = ret;
+>  
+> -	ring->irq = pci_irq_vector(ring->nhi->pdev, ring->vector);
+> -	if (ring->irq < 0)
+> -		return ring->irq;
+> +	ret = pci_irq_vector(ring->nhi->pdev, ring->vector);
+> +	if (ret < 0)
+> +		goto err_ida_remove;
+> +
+> +	ring->irq = ret;
+>  
+>  	irqflags = no_suspend ? IRQF_NO_SUSPEND : 0;
+> -	return request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
+> +	ret = request_irq(ring->irq, ring_msix, irqflags, "thunderbolt", ring);
+> +	if (ret)
+> +		goto err_ida_remove;
+> +
+> +	return 0;
+> +
+> +err_ida_remove:
+> +	ida_simple_remove(&nhi->msix_ida, ring->vector);
+> +
+> +	return ret;
+>  }
+>  
+>  static void ring_release_msix(struct tb_ring *ring)
+> -- 
+> 2.17.1
 > 
-> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> > Signed-off-by: Kleber Sacilotto de Souza <kleber.souza@canonical.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
