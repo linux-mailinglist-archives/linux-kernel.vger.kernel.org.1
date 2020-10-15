@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423D728FABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A9528FAC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731414AbgJOVk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:40:29 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:47218 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729626AbgJOVk3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:40:29 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FLSx7r181800;
-        Thu, 15 Oct 2020 21:40:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=A6pBae+uYiLsONLgce5yhTsLSTyZbn0WHCE5Ci0Sshk=;
- b=DJARA0rLF5hVYpDSE/cxv0FmPX3U7ZsoOPpQjmFk/iLXuuVgXpYvFu6F/DGjfxZ2N+o2
- aTlgzxHPeOxSca5/E5RChG+3nhV8+8n6Hz9SRatNHeFpSQFlByLkQojb2hjmBlJrHAei
- 9glfIEcLVp9JI9jp+XXkJpgWj8UpyfNn8nvCkn0udMQGITlNRoo4jdfBGb0Ah1m2OI+o
- F90QMy8Ha+uA1dzU4Na3t1a0BS3ve14wUyWRa2ZAIp+L0r9k4Bt+3OkGWBbvbRQVRHkC
- rYvePQMtrHBzDzSO3CS1Spadh0gh5uyl26GARvH1OryXHRrShLL0cXbglfPVKqYA3veI yQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 346g8gm9nk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Oct 2020 21:40:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FLUdcs035389;
-        Thu, 15 Oct 2020 21:40:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 343pw0wxya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Oct 2020 21:40:11 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09FLe8li020524;
-        Thu, 15 Oct 2020 21:40:08 GMT
-Received: from [192.168.0.108] (/70.36.60.91)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Oct 2020 14:40:08 -0700
-Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-References: <20201014195823.GC18196@zn.tnic>
- <22E29783-F1F5-43DA-B35F-D75FB247475D@amacapital.net>
- <50286c32-2869-cbd5-b178-0ad0c13584ea@oracle.com>
- <20201015104047.GD11838@zn.tnic>
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-Message-ID: <06032ba0-057e-3f56-c1bf-59373ae74e88@oracle.com>
-Date:   Thu, 15 Oct 2020 14:40:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728749AbgJOVoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:44:24 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:51873 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727278AbgJOVoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 17:44:23 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC2qS0xCTz9sTr;
+        Fri, 16 Oct 2020 08:44:20 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602798261;
+        bh=xxCONTbIooCLH5Bf98YyysiRr38oie6ZZ6U5FiXcbkI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OG8ho/Li0M4Gw+DaySwLdtwJ9q3QxzeGwHplZcYWDKBLkGbFNhpzJztM2HoMbnk/9
+         /yWB6fQiXNdZwE5cJ5lXNGGhOXsxChpn3X4qaELOKbgdsxierhrPrOqBTvqs/GeAYa
+         /ieYU7MkdNAdtwTpr0iBNUP2NUIe8KeYP+Re8rijFU91QMFIZGVn07QVSshAeLAPcU
+         Em9J2pVgSajphckrLeKXVQPUVLyy1jYw+xaWCBZFZN2AA/MeCQjUoAN0dN30laeVvL
+         dpf/CO5svJYAOO0gf71zyW2bTWiwxniurMYpDHhV4UQ7iBDT0/og26Hu0l/0/pggIn
+         Eg0vY+N8kpRkw==
+Date:   Fri, 16 Oct 2020 08:44:19 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Wireless <linux-wireless@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Ido Schimmel <idosch@mellanox.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Michael Jeanson <mjeanson@efficios.com>
+Subject: linux-next: manual merge of the wireless-drivers tree with the net
+ tree
+Message-ID: <20201016084419.3c6e048a@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201015104047.GD11838@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010150142
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 suspectscore=0
- priorityscore=1501 phishscore=0 clxscore=1015 spamscore=0 adultscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010150142
+Content-Type: multipart/signed; boundary="Sig_/gHa18ALDmab4h1Q=Y3a==d9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-15 3:40 a.m., Borislav Petkov wrote:
-> On Wed, Oct 14, 2020 at 08:21:57PM -0700, Ankur Arora wrote:
->> Also, if we did extend clear_page() to take the page-size as parameter
->> we still might not have enough information (ex. a 4K or a 2MB page that
->> clear_page() sees could be part of a GUP of a much larger extent) to
->> decide whether to go uncached or not.
-> 
-> clear_page* assumes 4K. All of the lowlevel asm variants do. So adding
-> the size there won't bring you a whole lot.
-> 
-> So you'd need to devise this whole thing differently. Perhaps have a
-> clear_pages() helper which decides based on size what to do: uncached
-> clearing or the clear_page() as is now in a loop.
+--Sig_/gHa18ALDmab4h1Q=Y3a==d9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I think that'll work well for GB pages, where the clear_pages() helper
-has enough information to make a decision.
+Hi all,
 
-But, unless I'm missing something, I'm not sure how that would work for
-say, a 1GB mm_populate() using 4K pages. The clear_page() (or clear_pages())
-in that case would only see the 4K size.
+Today's linux-next merge of the wireless-drivers tree got a conflict in:
 
-But let me think about this more (and look at the callsites as you suggest.)
+  tools/testing/selftests/net/Makefile
 
-> 
-> Looking at the callsites would give you a better idea I'd say.
-Thanks, yeah that's a good idea. Let me go do that.
+between commit:
 
-Ankur
+  1a01727676a8 ("selftests: Add VRF route leaking tests")
 
-> 
-> Thx.
-> 
+from the net tree and commit:
+
+  b7cc6d3c5c91 ("selftests: net: Add drop monitor test")
+
+from the wireless-drivers (presumably because it has merged part of the
+net-next tree) tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/net/Makefile
+index 3e7fb1e70c77,4773ce72edbd..000000000000
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@@ -19,7 -19,7 +19,8 @@@ TEST_PROGS +=3D txtimestamp.s
+  TEST_PROGS +=3D vrf-xfrm-tests.sh
+  TEST_PROGS +=3D rxtimestamp.sh
+  TEST_PROGS +=3D devlink_port_split.py
++ TEST_PROGS +=3D drop_monitor_tests.sh
+ +TEST_PROGS +=3D vrf_route_leaking.sh
+  TEST_PROGS_EXTENDED :=3D in_netns.sh
+  TEST_GEN_FILES =3D  socket nettest
+  TEST_GEN_FILES +=3D psock_fanout psock_tpacket msg_zerocopy reuseport_add=
+r_any
+
+--Sig_/gHa18ALDmab4h1Q=Y3a==d9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+IwrMACgkQAVBC80lX
+0GwW6Qf9GgMvt4wD9afGoWwR3PrZX5Fzbe5fqY+FJIrMG6yHYcyPxRG605Vl5gXo
+JwcjFo9xXxOtEb7EDC1uwLZouTpFtoArIyhJTa7ND1psay5yu3nrTKVljZeTE2ub
+DGZuF6NfGHQ7L1dE0szwqBVL99n17hF1Apvy9wRXd+lpMJllJs32orJ15h6aUdOa
+K7/r8yFN8GN0LEtIw5sgRZ/nArGn/aftRHUVv79jrEzTOYSCc8nS7IQWHNXl3aQH
+AQs7a5bEGg+GlI0AOCWwpDgFuCmzYFQyPlWfPEJzt9Y8+xiIiz3ep88IVKCHm5Kh
+2lhbecBDqNtsb+GZW/hgj5oCcYml8Q==
+=IQ4s
+-----END PGP SIGNATURE-----
+
+--Sig_/gHa18ALDmab4h1Q=Y3a==d9--
