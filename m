@@ -2,384 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A486628EEAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555FF28EEB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388217AbgJOImv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:42:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:47330 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387734AbgJOImv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:42:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1262031B;
-        Thu, 15 Oct 2020 01:42:50 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 852BC3F719;
-        Thu, 15 Oct 2020 01:42:48 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 09:42:38 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH 01/11] firmware: arm_scmi: review protocol registration
- interface
-Message-ID: <20201015084224.GA34395@e120937-lin>
-References: <20201014150545.44807-1-cristian.marussi@arm.com>
- <20201014150545.44807-2-cristian.marussi@arm.com>
- <1b461304-2c25-3206-5799-b561ac6e0bd2@gmail.com>
+        id S2388282AbgJOIpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:45:30 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:42581 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388233AbgJOIp3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:45:29 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20201015084517euoutp02dfbfcdd925304799c9f0cc58fd11e080~_HgNbS9NM1898818988euoutp02f
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:45:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20201015084517euoutp02dfbfcdd925304799c9f0cc58fd11e080~_HgNbS9NM1898818988euoutp02f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1602751517;
+        bh=y0oCq68YdRF8NXo3BoF+euePbj27PoHRi5+zdDHBL9E=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=sMvl/x85sFi4K4rR8Q+X771Rfd4XMVtb34n6mqgTiNUksRE3ilZdYDlZM6qbMO7zr
+         dgBqWVfQeLd9qel/mCE0EaqUIxwpXUuuLyhiJ5AU9T/jwDfadS+IopisvYnHSh/GkZ
+         LrJSIe3xZTVfGs+IoUV96X4DLCLVd1F/bC+fGwPg=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201015084514eucas1p233f9f5da7d4dc04178aab2ef3ba72461~_HgKoQEp-3079930799eucas1p2k;
+        Thu, 15 Oct 2020 08:45:14 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id A6.54.05997.A1C088F5; Thu, 15
+        Oct 2020 09:45:14 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201015084513eucas1p234e2fa7a42b973ee7feafbdac6267a84~_HgKNHJKM3079530795eucas1p2U;
+        Thu, 15 Oct 2020 08:45:13 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201015084513eusmtrp2766b126b06102e13b168439f659e7c4d~_HgKMfAzK0782407824eusmtrp2w;
+        Thu, 15 Oct 2020 08:45:13 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-d3-5f880c1ac3ef
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 5E.1D.06017.91C088F5; Thu, 15
+        Oct 2020 09:45:13 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201015084513eusmtip1cc1450371704605ce86930770bfe9efd~_HgKAupoJ2954629546eusmtip10;
+        Thu, 15 Oct 2020 08:45:13 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v2] net: phy: Prevent reporting advertised modes when
+ autoneg is off
+Date:   Thu, 15 Oct 2020 10:44:35 +0200
+Message-Id: <20201015084435.24368-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b461304-2c25-3206-5799-b561ac6e0bd2@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SfyyUcRzH+97zPHePy/F1LB9qpUurtPzol2e71mjZnvWX+iNNK108O4Zj
+        d4hqJUrY+V3IjxgLUURcDqlddSpxTEuaS5mxrFaNtur65Txn+e/9+Xxe7+/789m+NCHtoNzp
+        KFUCp1YpYmRCMakz/hjc5m6fGeZ7qYBiTGYDwbSWtlBMhekiydR8LqWYIV0uxYwZGhAz0lUh
+        ZAxX7yPm9mOziDFWrwoQsyOvhgm2/eaYgNWXmUVsW2OWkNV3zgnY3PZGxM61rQ0WhYr3RHAx
+        UUmc2mfvCXHkG+0DMl5rn1yr05KpqFOcjexowDvh5XAekY3EtBQ3IHgx2S3ki3kEtZZsAV/M
+        IXjYbUFLlrG+ChtVj6C48+PiQIpnEOTObrBqIQ6EvBtPKSvkgr8hmJq+g6wFgXsR6N9eIayU
+        Mz4MM01m0qpJvBGac8wLfZqWYDkM6Xz5tHVwuf6e0Kol2AmeXZtaxB2xF9xKG13UxAKT3lG+
+        eATgXhEUNRUJePN+yGoaJHntDLN97SJer4G/+iqBNQvweSgq3M17tQh0Fd9tvBzGB38KrQyB
+        t0BLlw/fDoT+4TSCtzrA609O/AoOUKgrsbUlkJkh5WlPaM7rsT3oDjmzDYhHWDDp2Xy0vmzZ
+        XWXLbin7H1uNiEbkyiVqYpWcZruKO+WtUcRqElVK7/C42Da08Jn6//TNd6KuXycNCNNIZi9Z
+        YckIk1KKJE1KrAEBTchcJPsG+o9LJRGKlNOcOi5MnRjDaQxoNU3KXCU7aj4ck2KlIoGL5rh4
+        Tr00FdB27qmoZb7uTJtx9t1WCzlafFSVlqPYpHJUojqL4+aQDD+3guGOoEOhNeW1PeboL1+N
+        uWbLo12ixEj/4umgSjqzxtx6N7zyXLrPiGyiashNXe8pTx0/S0RPyluemAYo1+uTKycOBIip
+        0iIjeTAZl9QfUV7wCHnuM+73/rdHvr+xJ7hARmoiFX5ehFqj+Ae8//lGSAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsVy+t/xu7qSPB3xBq+3qVqcv3uI2WLjjPWs
+        FnPOt7BYLHo/g9XiwrY+Voubh1YwWlzeNYfN4tDUvYwWa4/cZbc4tkDMgcvj8rWLzB5bVt5k
+        8tg56y67x6ZVnWweO3d8ZvLo27KK0ePzJrkA9ig9m6L80pJUhYz84hJbpWhDCyM9Q0sLPSMT
+        Sz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jFs9+1kKengqFm/rYWlg3MHVxcjJISFgInHz+By2
+        LkYuDiGBpYwS6953sHYxcgAlpCRWzk2HqBGW+HOtC6rmKaPE1YYHbCAJNgFHif6lJ1hBEiIC
+        vxklthydB+YwC+xjlNh/dDE7yCRhgRCJXbecQRpYBFQl1vXeZQYJ8wpYS1zYZgCxQF6iffl2
+        sJm8AoISJ2c+YQEpYRZQl1g/TwgkzC+gJbGm6ToLiM0MVN68dTbzBEaBWUg6ZiF0zEJStYCR
+        eRWjSGppcW56brGRXnFibnFpXrpecn7uJkZgXG079nPLDsaud8GHGAU4GJV4eBl+t8ULsSaW
+        FVfmHmKU4GBWEuF1Ons6Tog3JbGyKrUoP76oNCe1+BCjKdA3E5mlRJPzgTGfVxJvaGpobmFp
+        aG5sbmxmoSTO2yFwMEZIID2xJDU7NbUgtQimj4mDU6qBUcxbYpfb34+rNRZ+/R+yYvpPlm+R
+        ReGHc5UsotysA5+srHu24iL3vpC3LNECeqzyIfUFs++1vd4d+t66ccd7k+Ohj+4WSr1dwZMZ
+        pTd3d9bZkF9CDDN/fpnQcKjat5Nz2WV9DomML3rxl0QFwpi1qjoY/R5Fe59b6Ck/xbvubMzb
+        Ta0PNWfNVWIpzkg01GIuKk4EAKPQG6jBAgAA
+X-CMS-MailID: 20201015084513eucas1p234e2fa7a42b973ee7feafbdac6267a84
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201015084513eucas1p234e2fa7a42b973ee7feafbdac6267a84
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201015084513eucas1p234e2fa7a42b973ee7feafbdac6267a84
+References: <CGME20201015084513eucas1p234e2fa7a42b973ee7feafbdac6267a84@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+Do not report advertised link modes (local and remote) when
+autonegotiation is turned off. mii_ethtool_get_link_ksettings() exhibits
+the same behaviour and this patch aims at unifying the behavior of both
+functions.
 
-thanks for the review first of all !
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+Changes in v2:
+  - clear lp_advertising
+  - set ETHTOOL_LINK_MODE_TP_BIT and ETHTOOL_LINK_MODE_MII_BIT in advertising
 
-On Wed, Oct 14, 2020 at 12:03:45PM -0700, Florian Fainelli wrote:
-> On 10/14/20 8:05 AM, Cristian Marussi wrote:
-> > Extend common protocol registration routines and provide some new generic
-> > protocols' init/deinit helpers that tracks protocols' users and automatically
-> > perform the proper initialization/de-initialization on demand.
-> > 
-> > Convert all protocols to use new registration schema while modifying only Base
-> > protocol to use also the new initialization helpers.
-> > 
-> > All other standard protocols' initialization is still umodified and bound to
-> > SCMI devices probing.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> 
-> [snip]
-> 
-> > +static struct scmi_protocol scmi_base = {
-> > +	.id = SCMI_PROTOCOL_BASE,
-> > +	.init = &scmi_base_protocol_init,
-> > +	.ops = NULL,
-> > +};
-> 
-> This could be const I believe.
-> 
+ drivers/net/phy/phy.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Right, I thought that and finally I left it as it is because in the last
-patch of the series I introduce modularization and this struct gets an
-owner field which get set by scmi_protocol_register() transparently
-through a dance of macros wrapper carrying THIS_MODULE reference, the
-alternative would be to just make this const as you said and have the
-user explicitly set .owner = THIS_MODULE once the const struct is
-defined...it feels now this const approach would fit better even if
-requires the user defining a new protocol to explicitly set the .owner
-field.
+diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+index 35525a671400..6ede9c1c138c 100644
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -315,8 +315,17 @@ void phy_ethtool_ksettings_get(struct phy_device *phydev,
+ 			       struct ethtool_link_ksettings *cmd)
+ {
+ 	linkmode_copy(cmd->link_modes.supported, phydev->supported);
+-	linkmode_copy(cmd->link_modes.advertising, phydev->advertising);
+-	linkmode_copy(cmd->link_modes.lp_advertising, phydev->lp_advertising);
++	if (phydev->autoneg) {
++		linkmode_copy(cmd->link_modes.advertising, phydev->advertising);
++		linkmode_copy(cmd->link_modes.lp_advertising, phydev->lp_advertising);
++	} else {
++		linkmode_zero(cmd->link_modes.lp_advertising);
++		linkmode_zero(cmd->link_modes.advertising);
++		linkmode_set_bit(ETHTOOL_LINK_MODE_TP_BIT,
++				 cmd->link_modes.advertising);
++		linkmode_set_bit(ETHTOOL_LINK_MODE_MII_BIT,
++				 cmd->link_modes.advertising);
++	}
+ 
+ 	cmd->base.speed = phydev->speed;
+ 	cmd->base.duplex = phydev->duplex;
+-- 
+2.26.2
 
-> > +
-> > +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(base, scmi_base)
-> > diff --git a/drivers/firmware/arm_scmi/bus.c b/drivers/firmware/arm_scmi/bus.c
-> > index 1377ec76a45d..afa2e4818a2b 100644
-> > --- a/drivers/firmware/arm_scmi/bus.c
-> > +++ b/drivers/firmware/arm_scmi/bus.c
-> > @@ -16,7 +16,7 @@
-> >  #include "common.h"
-> >  
-> >  static DEFINE_IDA(scmi_bus_id);
-> > -static DEFINE_IDR(scmi_protocols);
-> > +static DEFINE_IDR(scmi_available_protocols);
-> >  static DEFINE_SPINLOCK(protocol_lock);
-> >  
-> >  static const struct scmi_device_id *
-> > @@ -51,13 +51,29 @@ static int scmi_dev_match(struct device *dev, struct device_driver *drv)
-> >  	return 0;
-> >  }
-> >  
-> > +const struct scmi_protocol *scmi_get_protocol(int protocol_id)
-> > +{
-> > +	const struct scmi_protocol *proto;
-> > +
-> > +	proto = idr_find(&scmi_available_protocols, protocol_id);
-> > +	if (!proto) {
-> > +		pr_warn("SCMI Protocol 0x%x not found!\n", protocol_id);
-> > +		return NULL;
-> > +	}
-> > +
-> > +	pr_debug("GOT SCMI Protocol 0x%x\n", protocol_id);
-> > +
-> > +	return proto;
-> > +}
-> > +
-> >  static int scmi_protocol_init(int protocol_id, struct scmi_handle *handle)
-> >  {
-> > -	scmi_prot_init_fn_t fn = idr_find(&scmi_protocols, protocol_id);
-> > +	const struct scmi_protocol *proto;
-> >  
-> > -	if (unlikely(!fn))
-> > +	proto = idr_find(&scmi_available_protocols, protocol_id);
-> > +	if (!proto)
-> >  		return -EINVAL;
-> > -	return fn(handle);
-> > +	return proto->init(handle);
-> >  }
-> >  
-> >  static int scmi_protocol_dummy_init(struct scmi_handle *handle)
-> > @@ -84,7 +100,7 @@ static int scmi_dev_probe(struct device *dev)
-> >  		return ret;
-> >  
-> >  	/* Skip protocol initialisation for additional devices */
-> > -	idr_replace(&scmi_protocols, &scmi_protocol_dummy_init,
-> > +	idr_replace(&scmi_available_protocols, &scmi_protocol_dummy_init,
-> >  		    scmi_dev->protocol_id);
-> >  
-> >  	return scmi_drv->probe(scmi_dev);
-> > @@ -194,26 +210,45 @@ void scmi_set_handle(struct scmi_device *scmi_dev)
-> >  	scmi_dev->handle = scmi_handle_get(&scmi_dev->dev);
-> >  }
-> >  
-> > -int scmi_protocol_register(int protocol_id, scmi_prot_init_fn_t fn)
-> > +int scmi_protocol_register(struct scmi_protocol *proto)
-> 
-> And this could probably take a const struct scmi_protocol here too as
-> you do not appear to be modifying proto, idr_alloc() may complain.
-> 
-> [snip]
-> 
-Ditto.
-> >  
-> > -DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_CLOCK, clock)
-> > +static struct scmi_protocol scmi_clock = {
-> 
-> static const here too and throughout your submission.
-> 
-> [snip]
-> 
-
-Ditto.
-
-> > +	struct scmi_protocol_instance *protocols[SCMI_MAX_PROTO];
-> 
-> Humm that would be 2048 bytes on a 64-bit platform and 1024 bytes on a
-> 32-bit platform, this is not so bad, but it is a bit wasteful given that
-> 6-7 standard protocols are typically found, and most often no
-> proprietary protocols are registered. Not necessarily to be addressed
-> right now.
-> 
-In fact Sudeep pointed out this, as of now I left this as it is for
-simplicity but I'll rework this to use some cheaper container data struct.
-
-> > +	/* Ensure mutual exclusive access to protocols instance array */
-> > +	struct mutex protocols_mtx;
-> >  	u8 *protocols_imp;
-> >  	struct list_head node;
-> >  	int users;
-> > @@ -519,6 +542,132 @@ int scmi_version_get(const struct scmi_handle *handle, u8 protocol,
-> >  	return ret;
-> >  }
-> >  
-> > +/**
-> > + * scmi_get_protocol_instance  - Protocol initialization helper.
-> > + * @handle: A reference to the SCMI platform instance.
-> > + * @protocol_id: The protocol being requested.
-> > + *
-> > + * In case the required protocol has never been requested before for this
-> > + * instance, allocate and initialize all the needed structures while handling
-> > + * resource allocation with a dedicated per-protocol devres subgroup.
-> > + *
-> > + * Return: A reference to an initialized protocol instance or error on failure.
-> > + */
-> > +static struct scmi_protocol_instance * __must_check
-> > +scmi_get_protocol_instance(struct scmi_handle *handle, u8 protocol_id)
-> > +{
-> > +	int ret = -ENOMEM;
-> > +	void *gid;
-> > +	struct scmi_protocol_instance *pi;
-> > +	struct scmi_info *info = handle_to_scmi_info(handle);
-> > +
-> > +	mutex_lock(&info->protocols_mtx);
-> > +	/* Ensure protocols has been updated */
-> > +	smp_rmb();
-> > +	pi = info->protocols[protocol_id];
-> > +
-> > +	if (!pi) {
-> > +		const struct scmi_protocol *proto;
-> > +
-> > +		/* Fail if protocol not registered on bus */
-> > +		proto = scmi_get_protocol(protocol_id);
-> > +		if (!proto) {
-> > +			ret = -EINVAL;
-> 
-> You could return -ENODEV here and propagate that error code for
-> scmi_probe() to use as -is.
-> 
-
-Yes right, here I return -EPROBEDEFER once I introduce modularization
-later on in the series, but is defintely better to return this err codes
-straight away from scmi_get_protocol() as you said.
-
-> > +			goto out;
-> > +		}
-> > +
-> > +		/* Protocol specific devres group */
-> > +		gid = devres_open_group(handle->dev, NULL, GFP_KERNEL);
-> > +		if (!gid)
-> > +			goto out;
-> > +
-> > +		pi = devm_kzalloc(handle->dev, sizeof(*pi), GFP_KERNEL);
-> > +		if (!pi)
-> > +			goto clean;
-> > +
-> > +		pi->gid = gid;
-> > +		pi->proto = proto;
-> > +		refcount_set(&pi->users, 1);
-> > +		/* proto->init is assured NON NULL by scmi_protocol_register */
-> > +		ret = pi->proto->init(handle);
-> > +		if (ret)
-> > +			goto clean;
-> > +
-> > +		info->protocols[protocol_id] = pi;
-> > +		/* Ensure initialized protocol is visible */
-> > +		smp_wmb();
-> > +
-> > +		devres_close_group(handle->dev, pi->gid);
-> > +		dev_dbg(handle->dev, "Initialized protocol: 0x%X\n",
-> > +			protocol_id);
-> > +	} else {
-> > +		refcount_inc(&pi->users);
-> > +	}
-> 
-> You may be able to re-arrange the indentation and do:
-> 
-> 	if (pi) {
-> 		refcount_inc(&pi->users);
-> 		mutex_unlock(&info->protocols_mtx);
-> 		return pi;
-> 	}
-> 
-> to reduce the indentation level, and this would also have the fast path
-> tested first.
-> 
-
-Of course, I'll do.
-
-> > +	mutex_unlock(&info->protocols_mtx);
-> > +
-> > +	return pi;
-> > +
-> > +clean:
-> > +	devres_release_group(handle->dev, gid);
-> > +out:
-> > +	mutex_unlock(&info->protocols_mtx);
-> > +	return ERR_PTR(ret);
-> > +}
-> > +
-> > +/**
-> > + * scmi_acquire_protocol  - Protocol acquire
-> > + * @handle: A reference to the SCMI platform instance.
-> > + * @protocol_id: The protocol being requested.
-> > + *
-> > + * Register a new user for the requested protocol on the specified SCMI
-> > + * platform instance, possibly triggering its initialization on first user.
-> > + *
-> > + * Return: 0 if protocol was acquired successfully.
-> > + */
-> > +int scmi_acquire_protocol(struct scmi_handle *handle, u8 protocol_id)
-> > +{
-> > +	return IS_ERR(scmi_get_protocol_instance(handle, protocol_id));
-> > +}
-> > +
-> > +/**
-> > + * scmi_release_protocol  - Protocol de-initialization helper.
-> > + * @handle: A reference to the SCMI platform instance.
-> > + * @protocol_id: The protocol being requested.
-> > + *
-> > + * Remove one user for the specified protocol and triggers de-initialization
-> > + * and resources de-allocation once the last user has gone.
-> > + */
-> > +void scmi_release_protocol(struct scmi_handle *handle, u8 protocol_id)
-> > +{
-> > +	struct scmi_info *info = handle_to_scmi_info(handle);
-> > +	struct scmi_protocol_instance *pi;
-> > +
-> > +	mutex_lock(&info->protocols_mtx);
-> > +	/* Ensure protocols has been updated */
-> > +	smp_rmb();
-> > +	pi = info->protocols[protocol_id];
-> > +	if (WARN_ON(!pi)) {
-> > +		mutex_unlock(&info->protocols_mtx);
-> > +		return;
-> 
-> Maybe define an "out" label just to avoid the repetition?
-> 
-
-I'll do.
-
-> > +	}
-> > +
-> > +	if (refcount_dec_and_test(&pi->users)) {
-> > +		void *gid = pi->gid;
-> > +
-> > +		if (pi->proto->deinit)
-> > +			pi->proto->deinit(handle);
-> > +
-> > +		info->protocols[protocol_id] = NULL;
-> > +		/* Ensure deinitialized protocol is visible */
-> > +		smp_wmb();
-> > +
-> > +		devres_release_group(handle->dev, gid);
-> > +		dev_dbg(handle->dev, "De-Initialized protocol: 0x%X\n",
-> > +			protocol_id);
-> > +	}
-> > +	mutex_unlock(&info->protocols_mtx);
-> > +}
-> > +
-> >  void scmi_setup_protocol_implemented(const struct scmi_handle *handle,
-> >  				     u8 *prot_imp)
-> >  {
-> > @@ -785,6 +934,7 @@ static int scmi_probe(struct platform_device *pdev)
-> >  	info->dev = dev;
-> >  	info->desc = desc;
-> >  	INIT_LIST_HEAD(&info->node);
-> > +	mutex_init(&info->protocols_mtx);
-> >  
-> >  	platform_set_drvdata(pdev, info);
-> >  	idr_init(&info->tx_idr);
-> > @@ -805,10 +955,14 @@ static int scmi_probe(struct platform_device *pdev)
-> >  	if (scmi_notification_init(handle))
-> >  		dev_err(dev, "SCMI Notifications NOT available.\n");
-> >  
-> > -	ret = scmi_base_protocol_init(handle);
-> > -	if (ret) {
-> > -		dev_err(dev, "unable to communicate with SCMI(%d)\n", ret);
-> > -		return ret;
-> > +	/*
-> > +	 * Trigger SCMI Base protocol initialization.
-> > +	 * It's mandatory and won't be ever released/deinit until the
-> > +	 * SCMI stack is shutdown/unloaded as a whole.
-> > +	 */
-> > +	if (scmi_acquire_protocol(handle, SCMI_PROTOCOL_BASE)) {
-> > +		dev_err(dev, "unable to communicate with SCMI\n");
-> > +		return -ENODEV;
-> 
-> and you could do:
-> 
-> ret = scmi_acquire_protocol(.., ...);
-> if (ret) {
-> 	dev_err(dev, "unable to communicate with SCMI\n");
-> 	return ret;
-> }
-> 
-
-Ok.
-
-> Everything else looked good to me, thanks!
-> -- 
-> Florian
-
-Thanks !
-
-Cristian
