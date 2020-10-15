@@ -2,168 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9664E28F95D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E7828F95F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391490AbgJOT0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 15:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390569AbgJOT0C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 15:26:02 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C702EC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:26:00 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e18so5042651wrw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:26:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BM5j8lFQHmLcRInx4ruZjAKix1kTSPiqlMHVrc6IXZk=;
-        b=RQ38oRb0HDdpyJFT4QueSLjg4Jba/1+K+imPMYvEzhEj8x0iJd4uroXsyHUp+xyEXE
-         p4Z/AgcUID1tuzqUpWPbP9GnN0pDXG/Z6h95HcmBgj5164uijucopL9B5+2ffsjsdZPI
-         zkcwLujawBscI0HizUBM9XECG8twNArBnGmjCZOxWygRrxa3vduez/Z5vtjetIrAcCfm
-         1W68d+tsSrfhFi4vioRPido2vmr1sWz1xpDarY3mBO1cwYnjHnWKfQU3Dhp2VPZ5nKz1
-         tdaDkT3x2fyS82L+C2pfrinntVs2HXorzxuNmLWtIvbR7fM2rbJgPxeo002IM9E73cua
-         9Zjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BM5j8lFQHmLcRInx4ruZjAKix1kTSPiqlMHVrc6IXZk=;
-        b=tinIIzgIWHLYxmHuA6Dr1ptjf4EBdK7Bxo7Qte6tBqzu+3jNfeREVT4PIwJP9Iar0C
-         hpNRJW09u11yaUPeuldxqVDmHqgO6c4qPN8w4RsgF7sh9oPWpiREMcXVD9m5CRr0fvcw
-         kHLnpN75HK+O8/sFT1wQ2aHeH32PAyyoIM63CwpQ1bk0dN9fD00b/IP/rlYNwiRdhlda
-         5sUNAM9G7wdmT2ylAsiKwCG4cpS5sZoHcKs8GQsJ5LUBgDOFdM/JGUSYRvlDnBf0xwzb
-         wkAifNx7KiTF4FhbMH0veFM7YJk0CJBBvJYNIlw+oD1UD3fgyE1lhWUxe8rRTQ1pskd9
-         sXlg==
-X-Gm-Message-State: AOAM530FApJjKMsrrHnAFlT08+eU1Ec2EjsgCA5PDnh5OSa42iUv4hF2
-        VqYvjEYh0xSKpnL3yQdpY/AprFYr1fC4/2O/CfT7uw==
-X-Google-Smtp-Source: ABdhPJxkkb+qmNoeoJdvu/rhJW682Savil74aegbnLYZMmBT7v7xPl/T9j5ZrOhc3OwiCZGEIMJOL5dRdwyqGVaBxVc=
-X-Received: by 2002:a5d:498a:: with SMTP id r10mr6072067wrq.106.1602789959057;
- Thu, 15 Oct 2020 12:25:59 -0700 (PDT)
+        id S2391507AbgJOT02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 15:26:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391493AbgJOT01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 15:26:27 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55A6E206B2;
+        Thu, 15 Oct 2020 19:26:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602789987;
+        bh=kSAb21hpwT1aCd33FktRvAwhXCN3mQbWCGEF448daDc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wYvXM3LElR+nLi1kXzzt1Tv+vEGEi1aXzwdWs0VVuZZzD3RNjbYz2UMGJYzUXyv3r
+         gw4QEVcwBRxGSZVUTDcmIP46vi6LluzwtL42/+pAGgIxZYqM5x5J6d4ve3EPkX2lYP
+         znJ7jfAWL4rllyd+QOGYMa+/9iTgJRpC5rn9wIis=
+Date:   Thu, 15 Oct 2020 12:26:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpfilter: Fix build error with CONFIG_BPFILTER_UMH
+Message-ID: <20201015122624.0ca7b58c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAADnVQLVvd_2zJTQJ7m=322H7M7NdTFfFE7f800XA=9HXVY28Q@mail.gmail.com>
+References: <20201014091749.25488-1-yuehaibing@huawei.com>
+        <20201015093748.587a72b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAADnVQKJ=iDMiJpELmuATsdf2vxGJ=Y9r+vjJG6m4BDRNPmP3g@mail.gmail.com>
+        <20201015115643.3a4d4820@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAADnVQLVvd_2zJTQJ7m=322H7M7NdTFfFE7f800XA=9HXVY28Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
- <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
- <20201014120937.GC4440@dhcp22.suse.cz> <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz>
-In-Reply-To: <20201015092030.GB22589@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 15 Oct 2020 12:25:43 -0700
-Message-ID: <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
-Subject: Re: [RFC]: userspace memory reaping
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 2:20 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 14-10-20 09:57:20, Suren Baghdasaryan wrote:
-> > On Wed, Oct 14, 2020 at 5:09 AM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > > > The need is similar to why oom-reaper was introduced - when a process
-> > > > > is being killed to free memory we want to make sure memory is freed
-> > > > > even if the victim is in uninterruptible sleep or is busy and reaction
-> > > > > to SIGKILL is delayed by an unpredictable amount of time. I
-> > > > > experimented with enabling process_madvise(MADV_DONTNEED) operation
-> > > > > and using it to force memory reclaim of the target process after
-> > > > > sending SIGKILL. Unfortunately this approach requires the caller to
-> > > > > read proc/pid/maps to extract the list of VMAs to pass as an input to
-> > > > > process_madvise().
-> > >
-> > > Well I would argue that this is not really necessary. You can simply
-> > > call process_madvise with the full address range and let the kernel
-> > > operated only on ranges which are safe to tear down asynchronously.
-> > > Sure that would require some changes to the existing code to not fail
-> > > on those ranges if they contain incompatible vmas but that should be
-> > > possible. If we are worried about backward compatibility then a
-> > > dedicated flag could override.
-> > >
+On Thu, 15 Oct 2020 12:03:14 -0700 Alexei Starovoitov wrote:
+> On Thu, Oct 15, 2020 at 11:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > How so? It's using in-tree headers instead of system ones.
+> > Many samples seem to be doing the same thing.  
+> 
+> There is no such thing as "usr/include" in the kernel build and source trees.
+
+Hm. I thought bpfilter somehow depends on make headers. But it doesn't
+seem to. Reverting now.
+
+> > > Also please don't take bpf patches.  
 > >
-> > IIUC this is very similar to the last option I proposed. I think this
-> > is doable if we treat it as a special case. process_madvise() return
-> > value not being able to handle a large range would still be a problem.
-> > Maybe we can return MAX_INT in those cases?
->
-> madvise is documented to return
->        On success, madvise() returns zero.  On error, it returns -1 and
->        errno is set appropriately.
-> [...]
-> NOTES
->    Linux notes
->        The Linux implementation requires that the address addr be
->        page-aligned, and allows length to be zero.  If there are some
->        parts of the specified address range that are not mapped, the
->        Linux version of madvise() ignores them and applies the call to
->        the rest (but returns ENOMEM from the system call, as it should).
->
-> I have learned about ENOMEM case only now. And it seems this is indeed
-> what we are implementing. So if we want to add a new mode to
-> opportunistically attempt madvise on the whole given range without a
-> failure then we need a specific flag for that. Advice is a number rather
-> than a bitmask but (ab)using the top bit or use negative number space
-> (e.g. -MADV_DONTNEED) for that sounds possible albeit bit hackish.
+> > You had it marked it as netdev in your patchwork :/  
+> 
+> It was delegated automatically by the patchwork system.
+> I didn't have time to reassign, but you should have known better
+> when you saw 'bpfilter' in the subject.
 
-process_madvise() has an additional flag parameter. Why not have a
-separate flag to denote that we want to just skip VMA gaps and proceed
-without error? Something like MADVF_SKIP_GAPS?
+The previous committers for bpfilter are almost all Dave, so I checked
+your patchwork to make sure and it was netdev...
 
->
-> [...]
-> > > I do have a vague recollection that we have discussed a kill(2) based
-> > > approach as well in the past. Essentially SIG_KILL_SYNC which would
-> > > not only send the signal but it would start a teardown of resources
-> > > owned by the task - at least those we can remove safely. The interface
-> > > would be much more simple and less tricky to use. You just make your
-> > > userspace oom killer or potentially other users call SIG_KILL_SYNC which
-> > > will be more expensive but you would at least know that as many
-> > > resources have been freed as the kernel can afford at the moment.
-> >
-> > Correct, my early RFC here
-> > https://patchwork.kernel.org/project/linux-mm/patch/20190411014353.113252-3-surenb@google.com
-> > was using a new flag for pidfd_send_signal() to request mm reaping by
-> > oom-reaper kthread. IIUC you propose to have a new SIG_KILL_SYNC
-> > signal instead of a new pidfd_send_signal() flag and otherwise a very
-> > similar solution. Is my understanding correct?
->
-> Well, I think you shouldn't focus too much on the oom-reaper aspect
-> of it. Sure it can be used for that but I believe that a new signal
-> should provide a sync behavior. People more familiar with the process
-> management would be better off defining what is possible for a new sync
-> signal.  Ideally not only pro-active process destruction but also sync
-> waiting until the target process is released so that you know that once
-> kill syscall returns the process is gone.
-
-If your suggestion is for SIG_KILL_SYNC to perform victim's resource
-cleanup in the context of the caller while the victim is in
-uninterruptible sleep that would definitely be useful. I assume there
-are some resources which can't be reclaimed until the process itself
-wakes up and handles the SIGKILL. If so, I hope kill(SIG_KILL_SYNC)
-would not have to wait for the victim to wake up and handle the
-signal. This would really complicate the userspace in cases when we
-just want to reclaim whatever we can without victim's involvement and
-continue. For cases when waiting is required waitid() with P_PIDFD can
-be used.
-Would this semantic work?
-
->
-> --
-> Michal Hocko
-> SUSE Labs
+I'll do better next time :)
