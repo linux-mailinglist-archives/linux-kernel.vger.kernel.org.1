@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D2A28FB1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B7D28FB17
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731874AbgJOWTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:19:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55172 "EHLO mail.kernel.org"
+        id S1731799AbgJOWTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:19:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731782AbgJOWT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 18:19:29 -0400
-Subject: Re: [GIT PULL] HID for 5.10
+        id S1731787AbgJOWTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 18:19:30 -0400
+Subject: Re: [GIT PULL] Kunit fixes update for Linux 5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602800369;
-        bh=NwDQdSJHJcvmvlIvxX6nLETSnz/fsYBgI6sqM8UKz7A=;
+        s=default; t=1602800370;
+        bh=Mf4fM4L/Vxw62qPGaTAmFsbvXkUt/1LTYplx5bOa+WE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=atAsFGrxdAr5OaV7NxgwmEYM7EIyLvWU+9T/Zrr84FyHH2qvZ2OHbszf2tQifiEZh
-         iXCfOVnZcG+LU5C9lx8p8q1LCoDRMbdze4e0AyKvW5BYfbylNySAp66fodfjg7AqPv
-         /Nv4ER/cku8VYuik+OC/H6+sE1xYV4wGxE3NHDTU=
+        b=FiOLghuS4d2uXiY6ApsxWdu9rIs40e2pOW6SbpbG/u6OS8mKF9Fp7vaw3C/MREwo5
+         T0y/YJo9/89HNqR1rCs0J2jYS+yqlDmf1NyUNrq4pyZyW9BxKSwopWDQYuJNBemeac
+         JGHS6jrs7Go00eMjWQjg0bImuiW18MBWrLPlQPS8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <nycvar.YFH.7.76.2010152048140.18859@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2010152048140.18859@cbobk.fhfr.pm>
+In-Reply-To: <18ef2c05-5e4e-bdb3-560b-847aada816c3@linuxfoundation.org>
+References: <18ef2c05-5e4e-bdb3-560b-847aada816c3@linuxfoundation.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <nycvar.YFH.7.76.2010152048140.18859@cbobk.fhfr.pm>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
-X-PR-Tracked-Commit-Id: 3504e85cd8b1d18005f1867aa2a72bd48bd472fd
+X-PR-Tracked-Message-Id: <18ef2c05-5e4e-bdb3-560b-847aada816c3@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-fixes-5.10-rc1
+X-PR-Tracked-Commit-Id: 1abdd39f14b25dd2d69096b624a4f86f158a9feb
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bf36c6b946c8895cf590f10dbd70b589b0dc101f
-Message-Id: <160280036923.16623.14874967976119371758.pr-tracker-bot@kernel.org>
-Date:   Thu, 15 Oct 2020 22:19:29 +0000
-To:     Jiri Kosina <jikos@kernel.org>
+X-PR-Merge-Commit-Id: 578a7155c5a1894a789d4ece181abf9d25dc6b0d
+Message-Id: <160280037009.16623.3214734245182391802.pr-tracker-bot@kernel.org>
+Date:   Thu, 15 Oct 2020 22:19:30 +0000
+To:     Shuah Khan <skhan@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 15 Oct 2020 20:52:36 +0200 (CEST):
+The pull request you sent on Thu, 15 Oct 2020 15:13:02 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-fixes-5.10-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bf36c6b946c8895cf590f10dbd70b589b0dc101f
+https://git.kernel.org/torvalds/c/578a7155c5a1894a789d4ece181abf9d25dc6b0d
 
 Thank you!
 
