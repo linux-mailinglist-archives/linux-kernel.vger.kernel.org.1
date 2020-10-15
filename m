@@ -2,141 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9744E28F46B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2010728F463
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730893AbgJOOIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:08:49 -0400
-Received: from mail-co1nam11on2076.outbound.protection.outlook.com ([40.107.220.76]:36868
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730801AbgJOOIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:08:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HuhCO+pvIoRcZNjJ8VjnOlXCIuuQEQD8bGu5Ew+vdp/Tk3oVk6/BjryPSQmgndg9uNs4eysdqtlQadjshb4iApgQf/L9sSEMarES8GJRnnjf+sw3klP8VjoushTA1qzFGjkAkKO2nrc8/pULrv4RscGZ/QLrlSNRD8uoMj2JM84IqIDRSXjSZFw+hWa2bxTgUnrPlubBrMxOsxccfvITdMj7DtPPObACrmXScId1PEeTGAZ10cSYKcCn58xucM3kU2o7AFunShAfTdCDq/sOFHjce/JXuoeuCf1Cmd+9TR9bKOtb5eLKCJJ7Kn1k5Q17XleiiseC4iihd6emasw6LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GLAiAcLFf/dYCOHCTMyVXRiKfcxCWF1jf/3HCZ8fcm8=;
- b=HEXkaw2+ekw5SXJswBd6CatdsFx1Q5XwuhBYKUbzCZL+wHnU1CZISxjdamIGKuIRZRpctxq2+APMLVATcU6nSQYLmsq4/K6wzLkViF6JyWuXRSAftB0H8BCqdd0FNooisCvWvxfIgx+wcgV6AsbdE1nViY7bUR6+QYrzvmGkKytU4+BaOX/tDkpbHzpLsw/xp1TX0YupC+SYz8m1PaczrDHx7UOXkVEt32TgnMrTHtcZ5k0sDSotkPZAkI7h3HBkqqPnxepuJRGwjncrtiNrCrGM5XRZQqIW+EI0PGBmVbC6HftTBMg0GlTaS/BJzPG3TiNsGfogdEA8H9v5F+SXPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=openfive.com; dmarc=pass action=none header.from=sifive.com;
- dkim=pass header.d=sifive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GLAiAcLFf/dYCOHCTMyVXRiKfcxCWF1jf/3HCZ8fcm8=;
- b=ovQi+cLnl8OsVt1IF5o87wbCA8dlla9/uIqNUDZqYIUYRQ6aJ7Qdgiwx2gb+nEGPYn+4V57AcAXErejyFnvKvoqrV0ouk7Naf29O9j2V2JS+mEdjZdE2gQSTo9TC1OyLLFgcBZtWU90K+Ys840bCag7u8YGj4baFr9tOxVlT+yQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=sifive.com;
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com (2603:10b6:5:1c3::10)
- by DM6PR13MB4067.namprd13.prod.outlook.com (2603:10b6:5:2a6::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.11; Thu, 15 Oct
- 2020 14:08:40 +0000
-Received: from DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::f49f:d6d6:4c97:e5d5]) by DM6PR13MB3451.namprd13.prod.outlook.com
- ([fe80::f49f:d6d6:4c97:e5d5%7]) with mapi id 15.20.3477.019; Thu, 15 Oct 2020
- 14:08:40 +0000
-From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-riscv@lists.infradead.org, linux-i2c@vger.kernel.org,
-        peter@korsgaard.com, andrew@lunn.ch, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Subject: [PATCH v3 1/1] i2c: ocores: fix polling mode workaround on FU540-C000 SoC
-Date:   Thu, 15 Oct 2020 07:08:27 -0700
-Message-Id: <1602770907-61852-2-git-send-email-sagar.kadam@sifive.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602770907-61852-1-git-send-email-sagar.kadam@sifive.com>
-References: <1602770907-61852-1-git-send-email-sagar.kadam@sifive.com>
-Content-Type: text/plain
-X-Originating-IP: [64.62.193.194]
-X-ClientProxiedBy: BYAPR05CA0069.namprd05.prod.outlook.com
- (2603:10b6:a03:74::46) To DM6PR13MB3451.namprd13.prod.outlook.com
- (2603:10b6:5:1c3::10)
+        id S1730762AbgJOOIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:08:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:44924 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727988AbgJOOIh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:08:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF6CC13D5;
+        Thu, 15 Oct 2020 07:08:36 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A16B63F719;
+        Thu, 15 Oct 2020 07:08:34 -0700 (PDT)
+Subject: Re: fw_devlink on will break all snps,dw-apb-gpio users
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20201014191235.7f71fcb4@xhacker.debian>
+ <CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com>
+ <20201015120206.41b6a454@xhacker.debian>
+ <CAGETcx_jzF_iV5oJQ8BuDBu0b5Z8G=uL0DhA4uS5U9XLuYryjg@mail.gmail.com>
+ <20201015161455.744d5041@xhacker.debian>
+ <CAGETcx_hORWf2HkcUP=Dj6noCUsbj9KsycZ-Hr80BUOwyZaQBg@mail.gmail.com>
+ <20201015175231.1a690c21@xhacker.debian>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d3e59e01-9921-5f8b-ef12-55baef420277@arm.com>
+Date:   Thu, 15 Oct 2020 15:08:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from gamma15.internal.sifive.com (64.62.193.194) by BYAPR05CA0069.namprd05.prod.outlook.com (2603:10b6:a03:74::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3477.13 via Frontend Transport; Thu, 15 Oct 2020 14:08:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: caf7d239-b84f-4e89-6a1a-08d87113d144
-X-MS-TrafficTypeDiagnostic: DM6PR13MB4067:
-X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR13MB4067735D44447E2FB2E937BF97020@DM6PR13MB4067.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CGRrBQ021PvAbEnoo5K/zWgDQTqR+892QykxyvENmNT09Cc++xKTGKouiLIzqsT1Mx4mX2AXFHkOGfmQVJ48IJxg4JGNIB06JqC4/8zGWzAEL631H+cy4LXmlfWfwEfwUbw5DNVAG67saJBRJu5hqZmppFhC8D3cGjwlxhBzBzCDRLZXgHG8flv/S7hSn4BiP7+gNo94RERtl1ah1dKGGuyLp6sDBCXbW6hyM4hlRB9kZ/uJ1LtBc42tMlCIjPhNfnwi22pj/272qOUBhfsLVcjFI2gLg7Qh5mHm82mhbcYUQL3gXMManLqUN1W5GwKa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB3451.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(366004)(396003)(346002)(376002)(136003)(36756003)(16526019)(5660300002)(83380400001)(83170400001)(2906002)(316002)(6486002)(107886003)(26005)(186003)(52116002)(8676002)(7696005)(956004)(66946007)(2616005)(66476007)(66556008)(6666004)(8936002)(6916009)(4326008)(478600001)(42882007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: xEUXK9uh7HiJ8mi7DTnY0gngay11cr8JyMddUmR1wt5iqwjLRjRxP9e5n5Vc88sog4cwvchMCtyljXWAvZEPs6GuB/lJtlpSXtuOLZmEu5nY8gKKFwt1t1jmKYeTXV5r7aznNTmfenJay9VK+X41QYCmSgZwMFPrVm+UXHWxD1vNelr/WYORJohIqjvk5E6sK4XJQ34UzVvBw+B4j/EtPLueXq7VXUyPVU13kZAAIecS4fEyV3VK9iMPvgMJuAuJQmj7OaBTUdzwkKH3ZJTfTnaBbk5Tct1DjYnNzoIdysxEYRonIL2sNW714xrerL70bLo4GPNfUGI9g3n9qFWRZlJN/btavJGXqCCUarbv5qhV9fDuI2j+HXqDzvTag7zrCmPa848IdQD+O5G6rCD0Ba4J4VsCoqlxv7VWBsgGVJ40gkjPO121qyJOq4b8yzeIedudU0iWyhIg7mmB+tkL+RAqDVIXRYxIjDY683RkhqUTnA0E0nmlGbPPYXJOkgFSjUnQ6Aj32z90r6yq1utclatYCpZOfkG+A3NppjxsV77OoM0RZIEAqATz/QgqBkIqchDNcPf32qYoZrpsNDl19iYTOHaXjhsrxOnDuO1KZIuHV6tKxFwBlbsxVZaI5b7tf45986fWNOrPNZtqIgwyxQ==
-X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: caf7d239-b84f-4e89-6a1a-08d87113d144
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB3451.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2020 14:08:40.3653
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8bOQ8PtLIBIIgqmMGEPXxVz9N5hIBx++PuT6DuCTVPUFeu8bJj2RI2lfxIoxfK9GCkp/f6SkQulDLTeUAAsfBg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR13MB4067
+In-Reply-To: <20201015175231.1a690c21@xhacker.debian>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FU540-C000 has a broken IRQ and support was added earlier
-so that it will operate in polling mode, but seems to work only
-in case interrupts property is missing from the i2c0 dt-node.
-This should not be the case and the driver should handle polling
-mode with the interrupt property present in i2c0 node of the
-device tree.
-So check if it's the FU540-C000 soc and enable polling mode master
-xfers, as the IRQ for this chip is broken.
+On 2020-10-15 10:52, Jisheng Zhang wrote:
+> On Thu, 15 Oct 2020 01:48:13 -0700
+> Saravana Kannan <saravanak@google.com> wrote:
+> 
+>> On Thu, Oct 15, 2020 at 1:15 AM Jisheng Zhang
+>> <Jisheng.Zhang@synaptics.com> wrote:
+>>>
+>>> On Wed, 14 Oct 2020 22:04:24 -0700 Saravana Kannan wrote:
+>>>   
+>>>>
+>>>>
+>>>> On Wed, Oct 14, 2020 at 9:02 PM Jisheng Zhang
+>>>> <Jisheng.Zhang@synaptics.com> wrote:
+>>>>>
+>>>>> On Wed, 14 Oct 2020 10:29:36 -0700
+>>>>> Saravana Kannan <saravanak@google.com> wrote:
+>>>>>   
+>>>>>>
+>>>>>>
+>>>>>> On Wed, Oct 14, 2020 at 4:12 AM Jisheng Zhang
+>>>>>> <Jisheng.Zhang@synaptics.com> wrote:
+>>>>>>>
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> If set fw_devlink as on, any consumers of dw apb gpio won't probe.
+>>>>>>>
+>>>>>>> The related dts looks like:
+>>>>>>>
+>>>>>>> gpio0: gpio@2400 {
+>>>>>>>         compatible = "snps,dw-apb-gpio";
+>>>>>>>         #address-cells = <1>;
+>>>>>>>         #size-cells = <0>;
+>>>>>>>
+>>>>>>>         porta: gpio-port@0 {
+>>>>>>>                compatible = "snps,dw-apb-gpio-port";
+>>>>>>>                gpio-controller;
+>>>>>>>                #gpio-cells = <2>;
+>>>>>>>                ngpios = <32>;
+>>>>>>>                reg = <0>;
+>>>>>>>         };
+>>>>>>> };
+>>>>>>>
+>>>>>>> device_foo {
+>>>>>>>          status = "okay"
+>>>>>>>          ...;
+>>>>>>>          reset-gpio = <&porta, 0, GPIO_ACTIVE_HIGH>;
+>>>>>>> };
+>>>>>>>
+>>>>>>> If I change the reset-gpio property to use another kind of gpio phandle,
+>>>>>>> e.g gpio expander, then device_foo can be probed successfully.
+>>>>>>>
+>>>>>>> The gpio expander dt node looks like:
+>>>>>>>
+>>>>>>>          expander3: gpio@44 {
+>>>>>>>                  compatible = "fcs,fxl6408";
+>>>>>>>                  pinctrl-names = "default";
+>>>>>>>                  pinctrl-0 = <&expander3_pmux>;
+>>>>>>>                  reg = <0x44>;
+>>>>>>>                  gpio-controller;
+>>>>>>>                  #gpio-cells = <2>;
+>>>>>>>                  interrupt-parent = <&portb>;
+>>>>>>>                  interrupts = <23 IRQ_TYPE_NONE>;
+>>>>>>>                  interrupt-controller;
+>>>>>>>                  #interrupt-cells = <2>;
+>>>>>>>          };
+>>>>>>>
+>>>>>>> The common pattern looks like the devlink can't cope with suppliers from
+>>>>>>> child dt node.
+>>>>>>
+>>>>>> fw_devlink doesn't have any problem dealing with child devices being
+>>>>>> suppliers. The problem with your case is that the
+>>>>>> drivers/gpio/gpio-dwapb.c driver directly parses the child nodes and
+>>>>>> never creates struct devices for them. If you have a node with
+>>>>>> compatible string, fw_devlink expects you to create and probe a struct
+>>>>>> device for it. So change your driver to add the child devices as
+>>>>>> devices instead of just parsing the node directly and doing stuff with
+>>>>>> it.
+>>>>>>
+>>>>>> Either that, or stop putting "compatible" string in a node if you
+>>>>>> don't plan to actually treat it as a device -- but that's too late for
+>>>>>> this driver (it needs to be backward compatible). So change the driver
+>>>>>> to add of_platform_populate() and write a driver that probes
+>>>>>> "snps,dw-apb-gpio-port".
+>>>>>>   
+>>>>>
+>>>>> Thanks for the information. The "snps,dw-apb-gpio-port" is never used,
+>>>>> so I just sent out a series to remove it.
+>>>>
+>>>> I'd actually prefer that you fix the kernel code to actually use it.
+>>>> So that fw_devlink can be backward compatible (Older DT + new kernel).
+>>>> The change is pretty trivial (I just have time to do it for you).
+>>>>   
+>>>
+>>> I agree the change is trivial, but it will add some useless LoCs like below.
+>>
+>> It's not useless if it preserves backward compatibility with DT.
+>>
+>>> I'm not sure whether this is acceptable.So add GPIO and DT maintainers to comment.
+>>>
+>>> Hi Linus, Rob,
+>>>
+>>> Could you please comment? A simple introduction of the problem:
+>>>
+>>> As pointed out by Saravana, "gpio-dwapb.c driver directly parses the child
+>>> nodes and never creates struct devices for them. If you have a node with
+>>> compatible string, fw_devlink expects you to create and probe a struct
+>>> device for it", so once we set fw_devlink=on, then any users of gpio-dwapb
+>>> as below won't be probed.
+>>>
+>>> device_foo {
+>>>           status = "okay"
+>>>           ...;
+>>>           reset-gpio = <&porta, 0, GPIO_ACTIVE_HIGH>;
+>>> };
+>>>
+>>> The compatible string "snps,dw-apb-gpio-port" is never used, but it's in
+>>> the dt-binding since the dw gpio mainlined. I believe the every dw apb
+>>> users just copy the compatible string in to soc dtsi. So I submit a series
+>>> to remove the unused "snps,dw-apb-gpio-port" https://lkml.org/lkml/2020/10/14/1186
+>>> But this will break Older DT + new kernel with fw_devlink on. Which solution
+>>> is better?
+>>>
+>>> If the following patch is acceptable, I can submit it once 5.10-rc1 is out.
+>>>
+>>> thanks
+>>>
+>>> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
+>>> index 1d8d55bd63aa..b8e012e48b59 100644
+>>> --- a/drivers/gpio/gpio-dwapb.c
+>>> +++ b/drivers/gpio/gpio-dwapb.c
+>>> @@ -19,6 +19,7 @@
+>>>   #include <linux/of_address.h>
+>>>   #include <linux/of_device.h>
+>>>   #include <linux/of_irq.h>
+>>> +#include <linux/of_platform.h>
+>>>   #include <linux/platform_device.h>
+>>>   #include <linux/property.h>
+>>>   #include <linux/reset.h>
+>>> @@ -694,6 +695,10 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
+>>>          }
+>>>          platform_set_drvdata(pdev, gpio);
+>>>
+>>> +       err = devm_of_platform_populate(dev);
+>>> +       if (err)
+>>> +               goto out_unregister;
+>>> +
+>>>          return 0;
+>>>
+>>>   out_unregister:
+>>> @@ -820,6 +825,25 @@ static struct platform_driver dwapb_gpio_driver = {
+>>>
+>>>   module_platform_driver(dwapb_gpio_driver);
+>>>
+>>> +static const struct of_device_id dwapb_port_of_match[] = {
+>>> +       { .compatible = "snps,dw-apb-gpio-port" },
+>>> +       { /* Sentinel */ }
+>>> +};
+>>> +
+>>> +static int dwapb_gpio_port_probe(struct platform_device *pdev)
+>>> +{
+>>> +       return 0;
+>>
+>> No, I'm not asking to do a stub/dummy probe. Move the stuff you do
+>> inside device_for_each_child_node{} and dwapb_gpio_add_port() into
+>> this probe function. Those two pieces of code together are effectively
+>> "probing" a separate gpio controller for each of the child nodes. So
+>> just create a real struct device (like we do for every other
+>> "compatible" DT node) and probe each of them properly using the device
+>> driver core.
+> 
+> Then I believe the modifications are non-trivial. Maybe Linus and Rob
+> can comment which way is better, fix the dts or modify the gpio-dwapb.c.
+> Personally, I prefer fixing dts, because this doesn't remove or modify
+> any used properties or compatible string, it just removes the unused
+> compatible string.
 
-Fixes commit c45d4ba86731 ("i2c: ocores: add polling mode workaround
-for Sifive FU540-C000 SoC")
+You appear to be assuming that:
 
-Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
----
- drivers/i2c/busses/i2c-ocores.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+A) There a no consumers of DTBs and DT bindings other than Linux.
+B) No Linux user ever updates their kernel image without also updating 
+their DTB.
 
-diff --git a/drivers/i2c/busses/i2c-ocores.c b/drivers/i2c/busses/i2c-ocores.c
-index f5fc75b..1dab02d 100644
---- a/drivers/i2c/busses/i2c-ocores.c
-+++ b/drivers/i2c/busses/i2c-ocores.c
-@@ -686,17 +686,21 @@ static int ocores_i2c_probe(struct platform_device *pdev)
- 
- 	init_waitqueue_head(&i2c->wait);
- 
-+	/*
-+	 * Set OCORES_FLAG_BROKEN_IRQ to enable workaround for
-+	 * FU540-C000 SoC in polling mode.
-+	 * Since the SoC does have interrupt its dt has the interrupt
-+	 * defined but it should be bypassed in driver as this SoC has
-+	 * a broken IRQ, hence update the master_xfer to use polling
-+	 * transfers.
-+	 */
-+	if (of_device_is_compatible(pdev->dev.of_node,
-+				    "sifive,fu540-c000-i2c"))
-+		i2c->flags |= OCORES_FLAG_BROKEN_IRQ;
-+
- 	irq = platform_get_irq(pdev, 0);
--	if (irq == -ENXIO) {
-+	if (i2c->flags & OCORES_FLAG_BROKEN_IRQ || irq == -ENXIO) {
- 		ocores_algorithm.master_xfer = ocores_xfer_polling;
--
--		/*
--		 * Set in OCORES_FLAG_BROKEN_IRQ to enable workaround for
--		 * FU540-C000 SoC in polling mode.
--		 */
--		match = of_match_node(ocores_i2c_match, pdev->dev.of_node);
--		if (match && (long)match->data == TYPE_SIFIVE_REV0)
--			i2c->flags |= OCORES_FLAG_BROKEN_IRQ;
- 	} else {
- 		if (irq < 0)
- 			return irq;
--- 
-2.7.4
+I can assure you that, in general, neither of those hold true. Hacking 
+DTs to work around internal implementation details in Linux is rarely if 
+ever a good or even viable idea.
 
+Robin.
+
+> 
+> Thanks
+> 
+> 
+>>
+>>> +}
+>>> +
+>>> +static struct platform_driver dwapb_gpio_port_driver = {
+>>> +       .driver         = {
+>>> +               .name   = "gpio-dwapb-port",
+>>> +               .of_match_table = dwapb_port_of_match,
+>>> +       },
+>>> +       .probe          = dwapb_gpio_port_probe,
+>>> +};
+>>> +module_platform_driver(dwapb_gpio_port_driver);
+>>> +
+>>>   MODULE_LICENSE("GPL");
+>>>   MODULE_AUTHOR("Jamie Iles");
+>>>   MODULE_DESCRIPTION("Synopsys DesignWare APB GPIO driver");
+>>>   
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
