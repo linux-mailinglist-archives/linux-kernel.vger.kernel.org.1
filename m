@@ -2,96 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9F328F7FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD63228F803
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389035AbgJOR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732156AbgJOR6u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:58:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A34C061755;
-        Thu, 15 Oct 2020 10:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=x+XQ7VEyYNfvRvizRGPoAdTEAMGVk8qPQWatjzYSgQw=; b=m21slifxK1bGUo9NkuLnasLmGW
-        W7j1mSzLsl8lqkNcmNBEmyamMl2n/iSza8Fv9vJdGtVQIw2/kDlRcMmM4PWbe5eP6FTvI4xm0WOWP
-        4Adx+LchNEcYX2u8R/hnI8+L4xfRz5R7/ZW9gYaZ59Wva288nDtTL0QGvEDQcyQNBdTqXo87Bl3HW
-        E62GWuauRw2KoIGK3HW5V9LXG8lMy3MQUVaq3gY0yr4/hMeSjIpZfqFbIV5olX2c1do/vAiTNpYlO
-        890vukb4WHYvxnqK7wVoxPPIDsWceSIRHULvymZsZRjmZLVpToKJoS//KCJAy1r/TgDXANhlomCkj
-        PpgfwI1A==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT7Wa-00018B-31; Thu, 15 Oct 2020 17:58:48 +0000
-Date:   Thu, 15 Oct 2020 18:58:48 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 16/16] iomap: Make readpage synchronous
-Message-ID: <20201015175848.GA4145@infradead.org>
-References: <20201009143104.22673-1-willy@infradead.org>
- <20201009143104.22673-17-willy@infradead.org>
- <20201015094203.GA21420@infradead.org>
- <20201015164333.GA20115@casper.infradead.org>
+        id S1732464AbgJOR7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 13:59:46 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:52124 "EHLO mailout08.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732412AbgJOR7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 13:59:45 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4CBxrF21QvzMnSt;
+        Thu, 15 Oct 2020 19:59:41 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CBxqy2x4Tz2TRlS;
+        Thu, 15 Oct 2020 19:59:26 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.13) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 15 Oct
+ 2020 19:58:53 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>
+Subject: Re: [PATCH net] net: dsa: ksz: fix padding size of skb
+Date:   Thu, 15 Oct 2020 19:58:52 +0200
+Message-ID: <1647199.FWNDY5eN7L@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201014173103.26nvgqtrpewqskg4@skbuf>
+References: <20201014161719.30289-1-ceggers@arri.de> <3253541.RgjG7ZtOS4@n95hx1g2> <20201014173103.26nvgqtrpewqskg4@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015164333.GA20115@casper.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.13]
+X-RMX-ID: 20201015-195932-4CBxqy2x4Tz2TRlS-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 05:43:33PM +0100, Matthew Wilcox wrote:
-> On Thu, Oct 15, 2020 at 10:42:03AM +0100, Christoph Hellwig wrote:
-> > > +static void iomap_read_page_end_io(struct bio_vec *bvec,
-> > > +		struct completion *done, bool error)
+Hi Vladimir,
+
+sorry for the delay, getting answers to all you questions seems to be 
+challenging for me. Unfortunately it's about 1 year ago when I was originally 
+working on this particular problem and obviously I didn't understand the full 
+problem...
+
+On Wednesday, 14 October 2020, 19:31:03 CEST, Vladimir Oltean wrote:
+> On Wed, Oct 14, 2020 at 07:02:13PM +0200, Christian Eggers wrote:
+> > > Otherwise said, the frame must be padded to
+> > > max(skb->len, ETH_ZLEN) + tail tag length.
 > > 
-> > I really don't like the parameters here.  Part of the problem is
-> > that ctx is only assigned to bi_private conditionally, which can
-> > easily be fixed.  The other part is the strange bool error when
-> > we can just pass on bi_stats.  See the patch at the end of what
-> > I'd do intead.
+> > At first I thought the same when working on this. But IMHO the padding
+> > must
+> > only ensure the minimum required size, there is no need to pad to the
+> > "real" size of the skb. The check for the tailroom above ensures that
+> > enough memory for the "real" size is available.
 > 
-> I prefer assigning ctx conditionally to propagating the knowledge
-> that !rac means synchronous.  I've gone with this:
+> Yes, that's right, that's the current logic, but what's the point of
+> your patch, then, if the call to __skb_put_padto is only supposed to
+> ensure ETH_ZLEN length?
+After checking __skb_put_padto, I realized that I didn't knew what it actually 
+does. The problem in my case is, that the condition
 
-And I really hate these kinds of conditional assignments.  If the
-->rac check is too raw please just add an explicit
+skb_tailroom(skb) >= padlen + len
 
-	bool synchronous : 1;
+may not be met anymore after __skb_put_padto(..., skb->len + padlen, ...) 
+returns. If skb has previously been cloned, __skb_put_padto() will allocate a 
+copy which may have a size of equal / only slightly more than skb->len + 
+padlen, which misses the full space for the tail tag. Further calls to 
+skb_put() may not find enough tailroom for placing the tail tag.
 
-flag.
+> In fact, __skb_put_padto fundamentally does:
+> - an extension of skb->len to the requested argument, via __skb_put
+> - a zero-filling of the extra area
+> So if you include the length of the tag in the call to __skb_put_padto,
+> then what's the other skb_put() from ksz8795_xmit, ksz9477_xmit,
+> ksz9893_xmit going to do? Aren't you increasing the frame length twice
+> by the length of one tag when you are doing this?
+I initially thought that __skb_put_padto() would perform some sort of 
+allocation which can later be used by skb_put(). You are right that my change 
+would increase the frame twice. The only reason why this worked for me was 
+because the newly allocated skb had enough tailroom due to alignment.
 
-> @@ -340,16 +335,12 @@ iomap_readpage(struct page *page, const struct iomap_ops *
-> ops)
->  
->         if (ctx.bio) {
->                 submit_bio(ctx.bio);
-> +               if (ret > 0)
-> +                       ret = blk_status_to_errno(ctx.status);
->         }
->  
-> -       wait_for_completion(&ctx.done);
->         if (ret >= 0)
-> -               ret = blk_status_to_errno(ctx.status);
-> -       if (ret == 0)
->                 return AOP_UPDATED_PAGE;
->         unlock_page(page);
->         return ret;
-> 
-> 
-> ... there's no need to call blk_status_to_errno if we never submitted a bio.
+> What problem are you actually trying to solve?
+After (hopefully) understanding the important bits, I would like to solve the 
+problem that after calling __skb_put_padto() there may be no tailroom for the 
+tail tag.
 
-True.  I'd still prefer the AOP_UPDATED_PAGE as the fallthrough case
-and an explicit goto out_unlock, though.
+The conditions where this can happen are quite special. You need a skb->len < 
+ETH_ZLEN and the skb must be marked as cloned. One condition where this 
+happens in practice is when the skb has been selected for TX time stamping in 
+dsa_skb_tx_timestamp() [cloned] and L2 is used as transport for PTP [size < 
+ETH_ZLEN]. But maybe cloned sk_buffs can also happen for other reasons.
+
+I now suggest the following:
+-	if (skb_tailroom(skb) >= padlen + len) {
++	if (skb_tailroom(skb) >= padlen + len && !skb_cloned(skb)) {
+
+This would avoid allocation of a new skb in __skb_put_padto() which may be 
+finally too small.
+
+> Can you show a skb_dump(KERN_ERR, skb, true) before and after your change?
+
+Best regards
+Christian
+
+
+
