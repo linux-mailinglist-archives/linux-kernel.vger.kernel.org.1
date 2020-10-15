@@ -2,138 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A599C28FB96
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C0128FB97
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387691AbgJOXRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 19:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732764AbgJOXRo (ORCPT
+        id S2387888AbgJOXT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 19:19:28 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44676 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387694AbgJOXT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 19:17:44 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30DEC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 16:17:43 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l18so268077pgg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 16:17:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+rVXmKyIACVLQAEQsLnR+KYW2Ry+sP13KrcdyTUrOvo=;
-        b=jOLIN5HGAQ/Dd0VHJBgok/wBN9gzJu/zsm5iFFXvoHhb226GshILExBojlROnv8b0y
-         r5Qxpf0c+WAaRHK4U7EJhKMsyczMGj2kGVGPSeEE7AnlvtVFXhfGcqxTHNhWMTJNC8pe
-         fWAz94cM13lQfVDHr9w87rM5WYM+J8Y3lu64A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+rVXmKyIACVLQAEQsLnR+KYW2Ry+sP13KrcdyTUrOvo=;
-        b=V9dDgPvA2KzYKw4wfgY8BE06FV1vLRlS9YwvAc8L6uZAQXXzh4kHBg8RYm6Ptrn4+2
-         f2Q0Y6VsF4OWMF7+AVdKnXcZDELznHBPnDOwPwfnmUfIMv8HdCZwNnjmRxQe9f+psAzd
-         pBwKzbiMsWCFb7J2XdEh8oRnvHGXp+vjQrBXXz3ks3UMma35ICwmPyFg1tHACETCAk3S
-         mVgF9G/73VGQd6tBN2SLESmc5z4L1GZgOkD+QUovo63mkyM6GJmU7Nrrelr1obEDFTNF
-         UxdtmncBTh8cSiBu3bW4Qev8fE0Mq8LTl+FtKcQFt9BGoUkUfX7jmlz3Aza8igFmQJKl
-         6tYA==
-X-Gm-Message-State: AOAM532tGhBFYub2MT3LTCnu4vefWlXa7kImdM+jkGz88Cq7vla+zkZ3
-        WBIM1EmpQVPOGqnucDOmoQTC1w==
-X-Google-Smtp-Source: ABdhPJwCXQmFNeXvfkclvNsvCCKyWIk69bItJtNIvSg3kfTgGBEqhu8/85bcvuFKCQkzMK69DfYVDA==
-X-Received: by 2002:a62:cfc2:0:b029:151:d47e:119b with SMTP id b185-20020a62cfc20000b0290151d47e119bmr889055pfg.46.1602803863416;
-        Thu, 15 Oct 2020 16:17:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a185sm405323pgc.46.2020.10.15.16.17.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 16:17:42 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-doc@vger.kernel.org
-Subject: [PATCH] docs: deprecated.rst: Expand str*cpy() replacement notes
-Date:   Thu, 15 Oct 2020 16:17:31 -0700
-Message-Id: <20201015231730.2138505-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 15 Oct 2020 19:19:28 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09FNJO8U079860;
+        Thu, 15 Oct 2020 18:19:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602803964;
+        bh=oO+JEQwbOCBhrKYSnbru4rgOHlGjLU4dzzwQRA3ruGg=;
+        h=From:To:CC:Subject:Date;
+        b=h51Hq+vU0lU6Ew7LRLTi8/cWGS70yPiSQwL8A+WWgzbm3CTu2gFINJYQn/vRdbJ1K
+         +3/HrnQDowa9RfWP5M4kD8tGADq29vXQ2YqC8W5fu4VNjAcukLejnED67rC5XNU57J
+         7lYuvuO7DfB3tRj0uiptR8kkNXmmCO+n2hqq5ujk=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09FNJO8j114447
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Oct 2020 18:19:24 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 15
+ Oct 2020 18:19:23 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 15 Oct 2020 18:19:23 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09FNJMhw093075;
+        Thu, 15 Oct 2020 18:19:23 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH net-next v2 0/9] net: ethernet: ti: am65-cpsw: add multi port support in mac-only mode
+Date:   Fri, 16 Oct 2020 02:19:04 +0300
+Message-ID: <20201015231913.30280-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The notes on replacing the deprecated str*cpy() functions didn't call
-enough attention to the change in return type. Add these details and
-clean up the language a bit more.
+Hi
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- Documentation/process/deprecated.rst | 44 ++++++++++++++++------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
+This series adds multi-port support in mac-only mode (multi MAC mode) to TI
+AM65x CPSW driver in preparation for enabling support for multi-port devices,
+like Main CPSW0 on K3 J721E SoC or future CPSW3g on K3 AM64x SoC.
 
-diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
-index ff71d802b53d..9d83b8db8874 100644
---- a/Documentation/process/deprecated.rst
-+++ b/Documentation/process/deprecated.rst
-@@ -106,23 +106,29 @@ NUL or newline terminated.
- 
- strcpy()
- --------
--strcpy() performs no bounds checking on the destination
--buffer. This could result in linear overflows beyond the
--end of the buffer, leading to all kinds of misbehaviors. While
--`CONFIG_FORTIFY_SOURCE=y` and various compiler flags help reduce the
--risk of using this function, there is no good reason to add new uses of
--this function. The safe replacement is strscpy().
-+strcpy() performs no bounds checking on the destination buffer. This
-+could result in linear overflows beyond the end of the buffer, leading to
-+all kinds of misbehaviors. While `CONFIG_FORTIFY_SOURCE=y` and various
-+compiler flags help reduce the risk of using this function, there is
-+no good reason to add new uses of this function. The safe replacement
-+is strscpy(), though care must be given to any cases where the return
-+value of strcpy() was used, since strscpy() does not return a pointer to
-+the destination, but rather a count of non-NUL bytes copied (or negative
-+errno when it truncates).
- 
- strncpy() on NUL-terminated strings
- -----------------------------------
--Use of strncpy() does not guarantee that the destination buffer
--will be NUL terminated. This can lead to various linear read overflows
--and other misbehavior due to the missing termination. It also NUL-pads the
--destination buffer if the source contents are shorter than the destination
--buffer size, which may be a needless performance penalty for callers using
--only NUL-terminated strings. The safe replacement is strscpy().
--(Users of strscpy() still needing NUL-padding should instead
--use strscpy_pad().)
-+Use of strncpy() does not guarantee that the destination buffer will
-+be NUL terminated. This can lead to various linear read overflows and
-+other misbehavior due to the missing termination. It also NUL-pads
-+the destination buffer if the source contents are shorter than the
-+destination buffer size, which may be a needless performance penalty
-+for callers using only NUL-terminated strings. The safe replacement is
-+strscpy(), though care must be given to any cases where the return value
-+of strncpy() was used, since strscpy() does not return a pointer to the
-+destination, but rather a count of non-NUL bytes copied (or negative
-+errno when it truncates). Any cases still needing NUL-padding should
-+instead use strscpy_pad().
- 
- If a caller is using non-NUL-terminated strings, strncpy() can
- still be used, but destinations should be marked with the `__nonstring
-@@ -131,10 +137,12 @@ attribute to avoid future compiler warnings.
- 
- strlcpy()
- ---------
--strlcpy() reads the entire source buffer first, possibly exceeding
--the given limit of bytes to copy. This is inefficient and can lead to
--linear read overflows if a source string is not NUL-terminated. The
--safe replacement is strscpy().
-+strlcpy() reads the entire source buffer first (since the return value
-+is meant to match that of strlen()). This read may exceed the destination
-+size limit. This is both inefficient and can lead to linear read overflows
-+if a source string is not NUL-terminated. The safe replacement is strscpy(),
-+though care must be given to any cases where the return value of strlcpy()
-+is used, since strscpy() will return negative errno values when it truncates.
- 
- %p format specifier
- -------------------
+The multi MAC mode is implemented by configuring every enabled port in "mac-only"
+mode (all ingress packets are sent only to the Host port and egress packets
+directed to target Ext. Port) and creating separate net_device for
+every enabled Ext. port.
+
+This series does not affect on existing CPSW2g one Ext. Port devices and xmit
+path changes are done only for multi-port devices by splitting xmit path for
+one-port and multi-port devices. 
+
+Patches 1-3: Preparation patches to improve K3 CPSW configuration depending on DT
+Patches 4-5: Fix VLAN offload for multi MAC mode
+Patch 6: Fixes CPTS context lose issue during PM runtime transition
+Patch 7: Fixes TX csum offload for multi MAC mode
+Patches 8-9: add multi-port support to TI AM65x CPSW
+
+changes in v2:
+- patch 8: xmit path split for one-port and multi-port devices to avoid
+  performance losses 
+- patch 9: fixed the case when Port 1 is disabled
+- Patch 7: added fix for TX csum offload 
+
+v1: https://lore.kernel.org/patchwork/cover/1315766/
+
+Grygorii Strashko (9):
+  net: ethernet: ti: am65-cpsw: move ale selection in pdata
+  net: ethernet: ti: am65-cpsw: move free desc queue mode selection in
+    pdata
+  net: ethernet: ti: am65-cpsw: use cppi5_desc_is_tdcm()
+  net: ethernet: ti: cpsw_ale: add cpsw_ale_vlan_del_modify()
+  net: ethernet: ti: am65-cpsw: fix vlan offload for multi mac mode
+  net: ethernet: ti: am65-cpsw: keep active if cpts enabled
+  net: ethernet: ti: am65-cpsw: fix tx csum offload for multi mac mode
+  net: ethernet: ti: am65-cpsw: prepare xmit/rx path for multi-port
+    devices in mac-only mode
+  net: ethernet: ti: am65-cpsw: add multi port support in mac-only mode
+
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c | 327 +++++++++++++++--------
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h |   5 +
+ drivers/net/ethernet/ti/cpsw_ale.c       |  41 ++-
+ drivers/net/ethernet/ti/cpsw_ale.h       |   1 +
+ drivers/net/ethernet/ti/cpsw_switchdev.c |   2 +-
+ 5 files changed, 251 insertions(+), 125 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
