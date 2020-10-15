@@ -2,165 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3145028F510
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8175E28F511
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388955AbgJOOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
+        id S2389039AbgJOOqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730793AbgJOOpT (ORCPT
+        with ESMTP id S2388305AbgJOOqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:45:19 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC390C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:45:18 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j17so1576687ilr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:45:18 -0700 (PDT)
+        Thu, 15 Oct 2020 10:46:09 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE23C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:09 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id e23so3461260wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fI/o5S8juNGYXFdI5b1qwY0a7V7eY5Ml3ywLDameOjQ=;
-        b=Lf/eU/22MxiEP6gKIgO6KHnpaQiOo4EQ85yhnHC4thfPT9Eg5niuG3h5HuDitvb/jQ
-         2gh5f8uldxtDG69AGNGkheNuIAUOkDJLSEzZKzQg043MDnbK3laPWVdc+mmgrBz2sh6u
-         tH/TqeidxlLCSKPJIufzCjzgZXTNXVLuMTZ0FP7Tmw+4FsH4+eGV/FdTm54LsCjtJRLW
-         k6PCQ2IvOQaqx8IvB3dGselUo/FFX662wKSOMWLif02mVjV17SYrX30bpWHNWixYrhGe
-         vOPiOIj0ByuzGMxyWlScR/IIr1zuuyaZ/tRscQPOAtrMYGy2EodZ6DGFMjWG2L6+XbbV
-         0Luw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=1sKt0qAbpSX+oBrhrT+egnfhYrLJVpycm37nkl3I/0k=;
+        b=Y/kIwOkkyXsI27pbuxbgvQMYt4S+5jdK5aWJ0o6f4AOzz3Qs4zygLJUHNIatdf3S8m
+         Klct29ul1a4dr2wlmTmV0nCje18POeRAQWUQiadka0Io5UjTEw0bEBrjWolMc8Gicr6H
+         ImjixASfGdl1fo+z7qRxq6AUQnK7edkgZlJ4wRh6um93EYqi/Y5KbQ7gnp9LxyQ2RzLp
+         ovJC/riVYR3VwUGjKQO29MaevATiFZkSPpT83WKgj0vBldqruCA+7VP5ycsPFbDcAKqS
+         rj3+ANnAOLsP+jfEjp419BfUoylnKVm5/Vl4yGwhstt1h6H/toHZ5LuxhhY91GKCVz2L
+         xN/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=fI/o5S8juNGYXFdI5b1qwY0a7V7eY5Ml3ywLDameOjQ=;
-        b=ZIhTXoDHIgeVJP9B7AnpXSN7EuKlxKnXl2VbzMRhihP7MNTlds6OPHq4cj7732Iiwd
-         xpU+wTlUxzrXw2pnB3OdwAe0aVtuHgc3u93ByRbAOY3UOq/M9oudu77hq9W9NvXWCwkx
-         kVgxv563zfevVYDB9dZkfxymP/H0Fbv1QKPk4Cx0xmY9/UJH/G/ddmzVeTd5eMj/IJZW
-         2OB6ozMXWOyEu3soEcVd+lRk6dJSsjYx5iWDrkTto/QAGtv8VsGOYu8Oma14oS3XokYs
-         rngI/2yKfS72UaEyyG/RFoLlKhdbJcOZhemiMTNQwO8kReddKG7gJ5P2U4KNN5NyNi2U
-         oKOA==
-X-Gm-Message-State: AOAM530wgsORnf0sy2iHDcXQ5MlbgLqfzUzn4l+8sHdtIxT+BehmFpyN
-        d4w83S1e4x1B2I+tcFBW38I=
-X-Google-Smtp-Source: ABdhPJxNeG5OHdDLh7lA+PmhMzkak2Vv/tuYzjj9ahUIkdTxQjmPWnyl8+TZQa0QZjOMdnlfpxqVAg==
-X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr3544032ilt.81.1602773118225;
-        Thu, 15 Oct 2020 07:45:18 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id v18sm2652622ilj.12.2020.10.15.07.45.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1sKt0qAbpSX+oBrhrT+egnfhYrLJVpycm37nkl3I/0k=;
+        b=UIv/oWhFwXzmEn32OaYX4wHu3O05Jg1/XEMACaE8IojyXYfKoBSycLv9S9I1sDJ69B
+         qfQqD4oji/33BTHPuqwYp5RToiIGveKWCCEPaeh8/qEf+bLkSjl04LLg76q7TD3k8OPH
+         ivigJf35zelJ/8zd9X5GiXno7bbvo+11uPq2JzHppo3u+C/tEhaz28KC9rGK+FSyr41x
+         Kk2zHaq4+bTXAHK253l20QAbnM9VWoTsLOtbBtDX6FGwM0Zorp7KBQ5pftyZ9khD6CHS
+         b2QowzYDSvNPR2zyVqqv8CbP1aWlfHPPHwo0wl60M3quwYu9LBdY08yun/vQz6yLZDhe
+         sX2w==
+X-Gm-Message-State: AOAM530GoS4/ol5QEjhf83dQlwFb8DphmBvDh2aotCgjX+Txaw29P5R6
+        Ru7lJq2DuO1ooblhHYWAJU3U0w==
+X-Google-Smtp-Source: ABdhPJzEIC6L7XdN5sFDpP2iR+uyiia6bGWJSrUpRIBQWMJplu9ryN4vryHu5jm5AxFDMZ8uKpH5Ag==
+X-Received: by 2002:a05:600c:2905:: with SMTP id i5mr4409473wmd.9.1602773167625;
+        Thu, 15 Oct 2020 07:46:07 -0700 (PDT)
+Received: from hackbox2.linaro.org ([81.128.185.34])
+        by smtp.gmail.com with ESMTPSA id q5sm5413421wrs.54.2020.10.15.07.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 07:45:17 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 15 Oct 2020 10:45:15 -0400
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] compiler.h: Fix barrier_data() on clang
-Message-ID: <20201015144515.GA572410@rani.riverdale.lan>
-References: <20201014212631.207844-1-nivedita@alum.mit.edu>
- <1653ace9164c4a3a8be50b3d2c9ff816@AcuMS.aculab.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1653ace9164c4a3a8be50b3d2c9ff816@AcuMS.aculab.com>
+        Thu, 15 Oct 2020 07:46:06 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Joe Mario <jmario@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
+        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v2 0/9] perf c2c: Refine the organization of metrics
+Date:   Thu, 15 Oct 2020 15:45:39 +0100
+Message-Id: <20201015144548.18482-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 08:50:05AM +0000, David Laight wrote:
-> From: Arvind Sankar
-> > Sent: 14 October 2020 22:27
-> ...
-> > +/*
-> > + * This version is i.e. to prevent dead stores elimination on @ptr
-> > + * where gcc and llvm may behave differently when otherwise using
-> > + * normal barrier(): while gcc behavior gets along with a normal
-> > + * barrier(), llvm needs an explicit input variable to be assumed
-> > + * clobbered. The issue is as follows: while the inline asm might
-> > + * access any memory it wants, the compiler could have fit all of
-> > + * @ptr into memory registers instead, and since @ptr never escaped
-> > + * from that, it proved that the inline asm wasn't touching any of
-> > + * it. This version works well with both compilers, i.e. we're telling
-> > + * the compiler that the inline asm absolutely may see the contents
-> > + * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
-> > + */
-> > +# define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
-> 
-> That comment doesn't actually match the asm statement.
-> Although the asm statement probably has the desired effect.
-> 
-> The "r"(ptr) constraint only passes the address of the buffer
-> into the asm - it doesn't say anything at all about the associated
-> memory.
-> 
-> What the "r"(ptr) actually does is to force the address of the
-> associated data to be taken.
-> This means that on-stack space must actually be allocated.
-> The "memory" clobber will then force the registers caching
-> the variable be written out to stack.
-> 
+This patch set is to refine metrics output organization.
 
-I think the comment is unclear now that you bring it up, but the problem
-it actually addresses is not that the data is held in registers: in the
-sha256_transform() case mentioned in the commit message, for example,
-the data is in fact in memory even before this change (it's a 256-byte
-array), and that together with the memory clobber is enough for gcc to
-assume that the asm might use it. But with clang, if the address of that
-data has never escaped -- in this case the data is a local variable
-whose address was never passed out of the function -- the compiler
-assumes that the asm cannot possibly depend on that memory, because it
-has no way of getting its address.
+If we reivew the current memory metrics in Perf c2c tool, it doesn't
+organize the metrics with directive approach; thus user needs to take
+time to dig into every statistics item.  On the other hand, if use the
+"summary and breakdown" approach, the output result will be easier for
+reviewing by users, e.g. the output result can firstly give out the
+summary values, and then the later items will breakdown into more
+detailed statistics.
 
-Passing ptr to the inline asm tells clang that the asm knows the
-address, and since it also has a memory clobber, that it may use the
-data. This is somewhat suboptimal, since if the data was some small
-structure that the compiler was just holding in registers originally,
-forcing it out to memory is a bad thing to do.
+For this reason, this patch is to reorganize the metrics and it only
+changes for the "Shared Data Cache Line Table": it firstly displays the
+summary values for total records, total loads, total stores; then it
+breaks these summary values into small values, with the order from the
+most near memory node ("CPU Load Hit") to more far nodes
+("LLC Load Hit", "RMT Load Hit", "Load Dram").
 
-> If you only want to force stores on a single data structure
-> you actually want:
-> #define barrier_data(ptr) asm volatile("" :: "m"(*ptr))
-> although it would be best then to add an explicit size
-> and associated cast.
-> 
+  "LLC Load Hit" = "LclHit" + "LclHitm"
 
-i.e. something like:
-	static inline void barrier_data(void *ptr, size_t size)
-	{
-		asm volatile("" : "+m"(*(char (*)[size])ptr));
-	}
-plus some magic to disable the VLA warning, otherwise it causes a build
-error.
+  "RMT Load Hit" = "RmtHit" + "RmtHitm" \
+                                         ->  LLC Load Miss
+  "Load Dram"    = "Lcl" + "Rmt"        /
 
-But I think that might lead to even more subtle issues by dropping the
-memory clobber. For example (and this is actually done in
-sha256_transform() as well, though the zero'ing simply doesn't work with
-any compiler, as it's missing the barrier_data()'s):
+Another main reason for this patch set is wanting to extend "perf c2c"
+to support Arm SPE memory event, but Arm SPE doesn't contain 'HTIM' tag
+in its default trace data, for this case if want to analyze cache false
+sharing issue, we need to rely on LLC metrics + multi-threading info.
+So this patch set can be friendly to show LLC related metrics in the
+"Shared Data Cache Line Table"; for sorting cache lines with LLC metrics
+which will be sent out with another separate patch set.
 
-	unsigned long x, y;
-	... do something secret with x/y ...
-	x = y = 0;
-	barrier_data(&x, sizeof(x));
-	barrier_data(&y, sizeof(y));
-	return;
+Before:
 
-Since x is not used after its barrier_data(), I think the compiler would
-be within its rights to turn that into:
+=================================================
+           Shared Data Cache Line Table          
+=================================================
+#
+#        ----------- Cacheline ----------    Total      Tot  ----- LLC Load Hitm -----  ---- Store Reference ----  --- Load Dram ----      LLC    Total  ----- Core Load Hit -----  -- LLC Load Hit --
+# Index             Address  Node  PA cnt  records     Hitm    Total      Lcl      Rmt    Total    L1Hit   L1Miss       Lcl       Rmt  Ld Miss    Loads       FB       L1       L2       Llc       Rmt
+# .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  ........  ........  .......  .......  .......  .......  .......  ........  ........
+#
+      0      0x55acdcc92100     0    8197    40716   52.18%     3170     3170        0    24466    24437       29         0         0        0    16250     3349     5909        0      3822         0
+      1      0x55acdcc920c0     0       1     4621   31.01%     1884     1884        0        0        0        0         0         0        0     4621      739        0        0      1998         0
+      2      0x55acdcc92080     0       1     4475   16.69%     1014     1014        0        0        0        0         0         0        0     4475     2405        0        0      1056         0
 
-	xorl	%eax, %eax
-	leaq	-16(%rbp), %rdx	// &x == -16(%rbp)
-	movq	%eax, (%rdx)	// x = 0;
-	// inline asm for barrier_data(&x, sizeof(x));
-	movq	%eax, (%rdx)	// y = 0; (!)
-	// inline asm for barrier_data(&y, sizeof(y));
 
-which saves one instruction by putting y at the same location as x, once
-x is dead.
+After:
 
-With a memory clobber, the compiler has to keep x and y at different
-addresses, since the first barrier_data() might have saved the address
-of x.
+=================================================
+           Shared Data Cache Line Table          
+=================================================
+#
+#        ----------- Cacheline ----------      Tot  ------- Load Hitm -------    Total    Total    Total  ---- Stores ----  ----- Core Load Hit -----  - LLC Load Hit --  - RMT Load Hit --  --- Load Dram ----
+# Index             Address  Node  PA cnt     Hitm    Total  LclHitm  RmtHitm  records    Loads   Stores    L1Hit   L1Miss       FB       L1       L2    LclHit  LclHitm    RmtHit  RmtHitm       Lcl       Rmt
+# .....  ..................  ....  ......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  .......  ........  .......  ........  .......  ........  ........
+#
+      0      0x55acdcc92100     0    8197   52.18%     3170     3170        0    40716    16250    24466    24437       29     3349     5909        0      3822     3170         0        0         0         0
+      1      0x55acdcc920c0     0       1   31.01%     1884     1884        0     4621     4621        0        0        0      739        0        0      1998     1884         0        0         0         0
+      2      0x55acdcc92080     0       1   16.69%     1014     1014        0     4475     4475        0        0        0     2405        0        0      1056     1014         0        0         0         0
+
+Changes from v1:
+* Added Joe's test tag for patches 01-08;
+* Added a new patch for updating documentation.
+
+
+Leo Yan (9):
+  perf c2c: Display the total numbers continuously
+  perf c2c: Display "Total Stores" as a standalone metrics
+  perf c2c: Organize metrics based on memory hierarchy
+  perf c2c: Change header from "LLC Load Hitm" to "Load Hitm"
+  perf c2c: Use more explicit headers for HITM
+  perf c2c: Change header for LLC local hit
+  perf c2c: Correct LLC load hit metrics
+  perf c2c: Add metrics "RMT Load Hit"
+  perf c2c: Update documentation for metrics reorganization
+
+ tools/perf/Documentation/perf-c2c.txt | 34 +++++------
+ tools/perf/builtin-c2c.c              | 83 ++++++---------------------
+ 2 files changed, 36 insertions(+), 81 deletions(-)
+
+-- 
+2.17.1
+
