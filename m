@@ -2,134 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BAD28F5D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D69828F5DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388549AbgJOP3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388357AbgJOP3R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:29:17 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CFEC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:29:17 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id x1so797497ooo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LJwfZvZzZbL3U3dsefi4j72Jm0TppMPnsxaVcVl6iT0=;
-        b=jiwyZuJU82zqfM3xXQZkNpewO6fCkqA7igabDZ79l9dEml7MlNt9/W6KspOKdTFMBv
-         l0ZZKLNyCyInH/bWkyXoNA3+A+JhbIMgDBR1thG0QOHKB4hsUrxgAlsNauv981ymHMte
-         aG33qVap5atzCP8H/NRFqSDXso79lnD2nYDfc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LJwfZvZzZbL3U3dsefi4j72Jm0TppMPnsxaVcVl6iT0=;
-        b=tIrqWqygLENficvjysb6vICggn2LgSd9Zz2cF3+WBIDE38rqXtjtmd2QPIM3Z6u21t
-         IOIkiAT65N4PXKz2i4WJx11i7r6e7wjt6wsSpieViAMGc9hsSofp1/0NHY2qO9K6KjXB
-         qA9RU4eCwARiteb+fmi5FO0RVKSRMyTeXplqZ5E9K8tldYFkG72X5aSERMOguevSdmnC
-         88pZZa1JuKus+up69PSI0Lx1XADLOIZa72F/njCFi+nPqcOMMsB5wQzYeSXuzqtONRMo
-         gTuimUqSWWHEyA5i1bJF5i+Nh58uH7VGpUW0pZVv1BJ66uQ2e6JFbsD+Ey4dSvlBhBZO
-         LmKQ==
-X-Gm-Message-State: AOAM530XuCz+XC60RPFPuL2t2IzVa0+HhXzZJjDIS6XWgI/7X7QI9N+Z
-        dcOtfdgq2mL8VTUo0AuQcfLCw1CIlVMcCN6iSoxPxg==
-X-Google-Smtp-Source: ABdhPJwHGqKFcBCVEj4Z9lD8mpPIRoQJxs6gS7mqbJLVOqKjzGL3o2Yivo5QSuS7JTOQT9EJ/KzY1r55eHOicMya4wY=
-X-Received: by 2002:a4a:e1d7:: with SMTP id n23mr2788554oot.85.1602775756786;
- Thu, 15 Oct 2020 08:29:16 -0700 (PDT)
+        id S1730934AbgJOPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:30:11 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:47584 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730085AbgJOPaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 11:30:11 -0400
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 505261105; Thu, 15 Oct 2020 10:30:09 -0500 (CDT)
+Date:   Thu, 15 Oct 2020 10:30:09 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Aleksandr Nogikh <a.nogikh@gmail.com>
+Cc:     jmorris@namei.org, serge@hallyn.com, akinobu.mita@gmail.com,
+        andreyknvl@google.com, dvyukov@google.com, elver@google.com,
+        glider@google.com, keescook@google.com,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: Re: [RFC PATCH 1/1] security: add fault injection capability
+Message-ID: <20201015153009.GA26517@mail.hallyn.com>
+References: <20201015104649.2104432-1-a.nogikh@gmail.com>
+ <20201015104649.2104432-2-a.nogikh@gmail.com>
 MIME-Version: 1.0
-References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
- <20201009075934.3509076-15-daniel.vetter@ffwll.ch> <20201009123109.GO5177@ziepe.ca>
- <CAKMK7uFpPP-Q0jC0vM7vYPEcg0m4NzTw+Ld=swdTF3BgMX5Qug@mail.gmail.com>
- <20201009143209.GS5177@ziepe.ca> <CAPcyv4j54O8ac6WB3LEeNud2r11V26gA0PRKK9bhyEMF67AXtQ@mail.gmail.com>
- <20201015000939.GD6763@ziepe.ca>
-In-Reply-To: <20201015000939.GD6763@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu, 15 Oct 2020 17:29:05 +0200
-Message-ID: <CAKMK7uGeVzbe3=FR=a5MEfzDsrog6D4+Bkiaj8FrVeOLu3-9Mw@mail.gmail.com>
-Subject: Re: [PATCH v2 14/17] resource: Move devmem revoke code to resource framework
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015104649.2104432-2-a.nogikh@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 2:09 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Oct 09, 2020 at 11:28:54AM -0700, Dan Williams wrote:
-> > On Fri, Oct 9, 2020 at 7:32 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Fri, Oct 09, 2020 at 04:24:45PM +0200, Daniel Vetter wrote:
-> > > > On Fri, Oct 9, 2020 at 2:31 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > >
-> > > > > On Fri, Oct 09, 2020 at 09:59:31AM +0200, Daniel Vetter wrote:
-> > > > >
-> > > > > > +struct address_space *iomem_get_mapping(void)
-> > > > > > +{
-> > > > > > +     return iomem_inode->i_mapping;
-> > > > >
-> > > > > This should pair an acquire with the release below
-> > > > >
-> > > > > > +     /*
-> > > > > > +      * Publish /dev/mem initialized.
-> > > > > > +      * Pairs with smp_load_acquire() in revoke_iomem().
-> > > > > > +      */
-> > > > > > +     smp_store_release(&iomem_inode, inode);
-> > > > >
-> > > > > However, this seems abnormal, initcalls rarely do this kind of stuff
-> > > > > with global data..
-> > > > >
-> > > > > The kernel crashes if this fs_initcall is raced with
-> > > > > iomem_get_mapping() due to the unconditional dereference, so I think
-> > > > > it can be safely switched to a simple assignment.
-> > > >
-> > > > Ah yes I checked this all, but forgot to correctly annotate the
-> > > > iomem_get_mapping access. For reference, see b34e7e298d7a ("/dev/mem:
-> > > > Add missing memory barriers for devmem_inode").
-> > >
-> > > Oh yikes, so revoke_iomem can run concurrently during early boot,
-> > > tricky.
-> >
-> > It runs early because request_mem_region() can run before fs_initcall.
-> > Rather than add an unnecessary lock just arrange for the revoke to be
-> > skipped before the inode is initialized. The expectation is that any
-> > early resource reservations will block future userspace mapping
-> > attempts.
->
-> Actually, on this point a simple WRITE_ONCE/READ_ONCE pairing is OK,
-> Paul once explained that the pointer chase on the READ_ONCE side is
-> required to be like an acquire - this is why rcu_dereference is just
-> READ_ONCE
+On Thu, Oct 15, 2020 at 10:46:49AM +0000, Aleksandr Nogikh wrote:
+> From: Aleksandr Nogikh <nogikh@google.com>
+> 
+> Add a fault injection capability to call_int_hook macro. This will
+> facilitate testing of fault tolerance of the code that invokes
+> security hooks as well as the fault tolerance of the LSM
+> implementations themselves.
+> 
+> Add a KConfig option (CONFIG_FAIL_LSM_HOOKS) that controls whether the
+> capability is enabled. In order to enable configuration from the user
+> space, add the standard debugfs entries for fault injection (if
+> CONFIG_FAULT_INJECTION_DEBUG_FS is enabled).
+> 
+> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+> ---
+>  lib/Kconfig.debug   |  6 +++++
+>  security/security.c | 53 ++++++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 56 insertions(+), 3 deletions(-)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 08c82666cf3e..0c9913ebe1c1 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1803,6 +1803,12 @@ config FAIL_MAKE_REQUEST
+>  	help
+>  	  Provide fault-injection capability for disk IO.
+>  
+> +config FAIL_LSM_HOOKS
+> +	bool "Fault-injection capability for LSM hooks"
+> +	depends on FAULT_INJECTION
+> +	help
+> +	  Provide fault-injection capability for LSM hooks.
+> +
+>  config FAIL_IO_TIMEOUT
+>  	bool "Fault-injection capability for faking disk interrupts"
+>  	depends on FAULT_INJECTION && BLOCK
+> diff --git a/security/security.c b/security/security.c
+> index 69ff6e2e2cd4..bd4dbe720098 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/backing-dev.h>
+>  #include <linux/string.h>
+>  #include <linux/msg.h>
+> +#include <linux/fault-inject.h>
+>  #include <net/flow.h>
+>  
+>  #define MAX_LSM_EVM_XATTR	2
+> @@ -669,6 +670,51 @@ static void __init lsm_early_task(struct task_struct *task)
+>  		panic("%s: Early task alloc failed.\n", __func__);
+>  }
+>  
+> +
+> +#ifdef CONFIG_FAIL_LSM_HOOKS
+> +
+> +static struct {
+> +	struct fault_attr attr;
+> +	int retval;
+> +} fail_lsm_hooks = {
+> +	.attr = FAULT_ATTR_INITIALIZER,
+> +	.retval = -EACCES
+> +};
+> +
+> +static int __init setup_fail_lsm_hooks(char *str)
+> +{
+> +	return setup_fault_attr(&fail_lsm_hooks.attr, str);
+> +}
+> +__setup("fail_lsm_hooks=", setup_fail_lsm_hooks);
+> +
+> +static int should_fail_lsm_hook(void)
+> +{
+> +	return should_fail(&fail_lsm_hooks.attr, 1) ? fail_lsm_hooks.retval : 0;
+> +}
+> +
+> +#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
+> +
+> +static int __init fail_lsm_hooks_debugfs(void)
+> +{
+> +	umode_t mode = S_IFREG | 0600;
+> +	struct dentry *dir;
+> +
+> +	dir = fault_create_debugfs_attr("fail_lsm_hooks", NULL,
+> +					&fail_lsm_hooks.attr);
+> +	debugfs_create_u32("retval", mode, dir, &fail_lsm_hooks.retval);
+> +	return 0;
+> +}
+> +
+> +late_initcall(fail_lsm_hooks_debugfs);
+> +
+> +#endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */
+> +
+> +#else
+> +
+> +static inline int should_fail_lsm_hook(void) { return 0; }
+> +
+> +#endif /* CONFIG_FAIL_LSM_HOOKS */
+> +
+>  /*
+>   * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
+>   * can be accessed with:
+> @@ -707,16 +753,17 @@ static void __init lsm_early_task(struct task_struct *task)
+>  	} while (0)
+>  
+>  #define call_int_hook(FUNC, IRC, ...) ({			\
+> -	int RC = IRC;						\
+> -	do {							\
+> +	int RC = should_fail_lsm_hook();			\
 
-Hm so WRITE_ONCE doesn't have any barriers, and we'd need that for
-updating the pointer. That would leave things rather inconsistent, so
-I think I'll just leave it as-is for symmetry reasons. None of this
-code matters for performance anyway, so micro-optimizing barriers
-seems a bit silly.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+seeing 'should_fail' here, kind of out of context, would be confusing to
+thousands of ppl reading the code and wondering why it should fail.  maybe
+"inject_fail_lsm_hook()" ?
+
+> +	if (RC == 0) {								\
+>  		struct security_hook_list *P;			\
+> +		RC = IRC;								\
+>  								\
+>  		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
+>  			RC = P->hook.FUNC(__VA_ARGS__);		\
+>  			if (RC != 0)				\
+>  				break;				\
+>  		}						\
+> -	} while (0);						\
+> +	}							\
+>  	RC;							\
+>  })
+>  
+> -- 
+> 2.28.0.1011.ga647a8990f-goog
