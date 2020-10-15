@@ -2,130 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C77428F09D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57E428F099
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730446AbgJOLC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:02:59 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:19296 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728513AbgJOLC6 (ORCPT
+        id S1728985AbgJOLCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgJOLCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:02:58 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 15 Oct 2020 04:02:55 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Oct 2020 04:02:54 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 15 Oct 2020 16:32:35 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 59352522C; Thu, 15 Oct 2020 16:32:34 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        ezequiel@collabora.com, stanimir.varbanov@linaro.org,
-        vgarodia@codeaurora.org, majja@codeaurora.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v3] media: v4l2-ctrl: add control for long term reference.
-Date:   Thu, 15 Oct 2020 16:31:56 +0530
-Message-Id: <1602759716-7584-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Thu, 15 Oct 2020 07:02:45 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C535C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cZ5KJwl3enbqMiNNlzxPmSSpX4m/HBPTKxa1fJqKL4k=; b=Qc3nYm0tanXxpEeRClitL08Zit
+        znc3dHafZITzDaTZt7nsIU+z2YKudRXlemhp4LpzxMKzZdbUeNJMEnBz91SlTWERTkAi5vo80gQcF
+        KXg9vFdp7RQ6NzcnLnpKVLcYsyuApicGDyFYlpZM5hPMc67pOpmBkIxPrByu0GsVmF3o/7vyzszZ2
+        rw5cN3nbC6vyMJvXc9LunpxkihueyfUtzgkgBlD9nccy1qISdHKbQ+tE0yKE8POWCQLJ5iHN1nF4A
+        d9UIyLkmUuF/40unS0M9tLy9yd/G82/cP8cqnZ3Af4yD40pGEyL0Y88F/MxW5dxpd7Ffe7MCQT/zK
+        jcDcpgMQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT11t-0007WP-5S; Thu, 15 Oct 2020 11:02:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C2ABA300446;
+        Thu, 15 Oct 2020 13:02:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B4B1D20325ECE; Thu, 15 Oct 2020 13:02:39 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 13:02:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     qianjun.kernel@gmail.com
+Cc:     mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH 1/1] Sched/fair: Improve the accuracy of sched_stat_wait
+ statistics
+Message-ID: <20201015110239.GD2611@hirez.programming.kicks-ass.net>
+References: <20201015064846.19809-1-qianjun.kernel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015064846.19809-1-qianjun.kernel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LTR (Long Term Reference) frames are the frames that are encoded
-sometime in the past and stored in the DPB buffer list to be used
-as reference to encode future frames.
-This change adds controls to enable this feature.
+On Thu, Oct 15, 2020 at 02:48:46PM +0800, qianjun.kernel@gmail.com wrote:
+> From: jun qian <qianjun.kernel@gmail.com>
+> 
+> When the sched_schedstat changes from 0 to 1, some sched se maybe
+> already in the runqueue, the se->statistics.wait_start will be 0.
+> So it will let the (rq_of(cfs_rq)) - se->statistics.wait_start)
+> wrong. We need to avoid this scenario.
+> 
+> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+> Reviewed-by: Yafang Shao <laoar.shao@gmail.com>
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 25 ++++++++++++++++++++++
- drivers/media/v4l2-core/v4l2-ctrls.c               | 12 +++++++++++
- include/uapi/linux/v4l2-controls.h                 |  3 +++
- 3 files changed, 40 insertions(+)
-
-diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-index ce728c75..6e9240a 100644
---- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-@@ -4382,3 +4382,28 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
-       - Selecting this value specifies that HEVC slices are expected
-         to be prefixed by Annex B start codes. According to :ref:`hevc`
-         valid start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001.
-+
-+``V4L2_CID_MPEG_VIDEO_LTR_COUNT (integer)``
-+       Specifies the number of LTR frames encoder needs to generate or keep.
-+       This control is used to query or configure the number of LTR frames.
-+       If LTR Count is more than max supported LTR count by driver,
-+       it will be rejected.
-+       This is applicable to H264 and HEVC encoder and can be applied using
-+       request api.
-+
-+``V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX (integer)``
-+       This control is used to mark current frame as LTR frame.
-+       this provides a LTR index that ranges from 0 to LTR count-1 and
-+       then the particular frame will be marked with that LTR index.
-+       This is applicable to H264 and HEVC encoder and can be applied using
-+       request api.
-+
-+``V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME (bitmask)``
-+       Specifies the LTR frame(s) to be used for encoding the current frame.
-+       This provides a bitmask which consists of bits [0, 15]. A total of N
-+       LSB bits of this field are valid, where N is the maximum number of
-+       LTRs supported. All the other bits are invalid and should be rejected.
-+       The LSB corresponds to the LTR index 0. Bit N-1 from the LSB corresponds
-+       to the LTR index max LTR count-1.
-+       This is applicable to H264 and HEVC encoder and can be applied using
-+       request api.
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index bd7f330..046198f 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -949,6 +949,9 @@ const char *v4l2_ctrl_get_name(u32 id)
- 	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
- 	case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:		return "Repeat Sequence Header";
- 	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:		return "Force Key Frame";
-+	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
-+	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Mark LTR frame index";
-+	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME:			return "Use LTR Frame";
- 	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
- 	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
- 	case V4L2_CID_MPEG_VIDEO_FWHT_PARAMS:			return "FWHT Stateless Parameters";
-@@ -1258,6 +1261,15 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
- 	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
- 		*type = V4L2_CTRL_TYPE_INTEGER;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-+	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-+		*type = V4L2_CTRL_TYPE_INTEGER;
-+		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME:
-+		*type = V4L2_CTRL_TYPE_BITMASK;
-+		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-+		break;
- 	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
- 	case V4L2_CID_PAN_RESET:
- 	case V4L2_CID_TILT_RESET:
-diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-index a184c49..3801372 100644
---- a/include/uapi/linux/v4l2-controls.h
-+++ b/include/uapi/linux/v4l2-controls.h
-@@ -415,6 +415,9 @@ enum v4l2_mpeg_video_multi_slice_mode {
- #define V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE		(V4L2_CID_MPEG_BASE+227)
- #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_MPEG_BASE+228)
- #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_MPEG_BASE+229)
-+#define V4L2_CID_MPEG_VIDEO_LTR_COUNT                  (V4L2_CID_MPEG_BASE+230)
-+#define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX            (V4L2_CID_MPEG_BASE+231)
-+#define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME              (V4L2_CID_MPEG_BASE+232)
- 
- /* CIDs for the MPEG-2 Part 2 (H.262) codec */
- #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_MPEG_BASE+270)
--- 
-1.9.1
-
+Thanks!
