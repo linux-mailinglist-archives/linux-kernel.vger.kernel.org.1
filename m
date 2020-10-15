@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB80828F298
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7145A28F2AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgJOMp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:45:28 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:57728 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727365AbgJOMpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:45:23 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id 17CB0412DF;
-        Thu, 15 Oct 2020 12:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-type:content-type:content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:date:subject
-        :subject:from:from:received:received:received; s=mta-01; t=
-        1602765917; x=1604580318; bh=q+DMAwUxCoKA/cnhU/1+G4a+glDSZeJ3qwt
-        SvRZ/UGk=; b=pye/LM6+ttlJp68h+Ie+x6sv1c7s/c3LpGp8X0LWM86RhJTGii/
-        r3OONBHtPeu21QNua8tyLyIqFMylftog6NSbTnPwopn2njGqZmr2Xy5MeNiPB17I
-        U7/njdHnKnzVXu6oKqY36k5roYRvHYpMdISitbk2weTnJpGrkJRqEpFw=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id J0eokKQHVLdq; Thu, 15 Oct 2020 15:45:17 +0300 (MSK)
-Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        id S1726662AbgJOMth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:49:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726019AbgJOMth (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:49:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602766176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rCIQX4TO8AhD+oV+mB3K9at6ZGKnl/odKYoHfmps0Cw=;
+        b=IlYs7FRmI2N0H1pUtatM1vly/05EFY375g9bxTkxpX2Fcqm8G3W2RtgUbcI7luUfCRu08T
+        qKRDH/jWoxMXYsO9kdOhWT6Lpt31BTyaBUwuTjoXB5daKlsoS95WuHAnVdFQU9+rKOXhCY
+        LXJgmyAzcMFvyW0GEZaLVLlTuZuJ5zo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-JX-BSF-cNqmw5C493U-tYg-1; Thu, 15 Oct 2020 08:49:32 -0400
+X-MC-Unique: JX-BSF-cNqmw5C493U-tYg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 307424139B;
-        Thu, 15 Oct 2020 15:45:16 +0300 (MSK)
-Received: from localhost.dev.yadro.com (10.199.2.186) by
- T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.669.32; Thu, 15 Oct 2020 15:45:11 +0300
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>
-CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Joel Stanley <joel@jms.id.au>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>
-Subject: [PATCH v1 2/2] net: ftgmac100: add handling of mdio/phy nodes for ast2400/2500
-Date:   Thu, 15 Oct 2020 15:49:17 +0300
-Message-ID: <20201015124917.8168-3-i.mikhaylov@yadro.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20201015124917.8168-1-i.mikhaylov@yadro.com>
-References: <20201015124917.8168-1-i.mikhaylov@yadro.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 487C188EF23;
+        Thu, 15 Oct 2020 12:49:30 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E7E535DA85;
+        Thu, 15 Oct 2020 12:49:27 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 15 Oct 2020 14:49:29 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 14:49:26 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     syzbot <syzbot+3485e3773f7da290eecc@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, christian@brauner.io,
+        linux-kernel@vger.kernel.org, liuzhiqiang26@huawei.com,
+        syzkaller-bugs@googlegroups.com, Tejun Heo <tj@kernel.org>
+Subject: Re: WARNING in get_signal
+Message-ID: <20201015124926.GA24156@redhat.com>
+References: <000000000000da06e405b0b20f1e@google.com>
+ <87zh54bp0n.fsf@x220.int.ebiederm.org>
+ <20201005134923.GA9995@redhat.com>
+ <20201005163016.GB9995@redhat.com>
+ <20201006170523.GC9995@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.199.2.186]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-04.corp.yadro.com (172.17.100.104)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201006170523.GC9995@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-phy-handle can't be handled well for ast2400/2500 which has an embedded
-MDIO controller. Add ftgmac100_mdio_setup for ast2400/2500 and initialize
-PHYs from mdio child node with of_mdiobus_register.
+On 10/06, Oleg Nesterov wrote:
+>
+> I still do not see a good fix. I am crying ;)
 
-Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
----
- drivers/net/ethernet/faraday/ftgmac100.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+Sorry for delay... Finally I think I have a simple and clean fix.
+We can leave ptrace_init_task() alone and fix task_join_group_stop().
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 6997e121824b..e32066519ec1 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1638,6 +1638,7 @@ static int ftgmac100_setup_mdio(struct net_device *netdev)
- 	struct ftgmac100 *priv = netdev_priv(netdev);
- 	struct platform_device *pdev = to_platform_device(priv->dev);
- 	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *mdio_np;
- 	int i, err = 0;
- 	u32 reg;
+I need to test it a bit and write the changelog, do you see any problem
+in the patch below?
+
+(TODO: SIGCONT should clear JOBCTL_STOP_SIGMASK, needs another patch)
+
+Oleg.
+
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -391,16 +391,17 @@ static bool task_participate_group_stop(struct task_struct *task)
  
-@@ -1669,12 +1670,20 @@ static int ftgmac100_setup_mdio(struct net_device *netdev)
- 	for (i = 0; i < PHY_MAX_ADDR; i++)
- 		priv->mii_bus->irq[i] = PHY_POLL;
- 
--	err = mdiobus_register(priv->mii_bus);
-+	mdio_np = of_get_child_by_name(np, "mdio");
-+	if (mdio_np)
-+		err = of_mdiobus_register(priv->mii_bus, mdio_np);
-+	else
-+		err = mdiobus_register(priv->mii_bus);
+ void task_join_group_stop(struct task_struct *task)
+ {
++	struct signal_struct *sig = current->signal;
++	unsigned long mask = current->jobctl & JOBCTL_STOP_SIGMASK;
 +
- 	if (err) {
- 		dev_err(priv->dev, "Cannot register MDIO bus!\n");
- 		goto err_register_mdiobus;
- 	}
- 
-+	if (mdio_np)
-+		of_node_put(mdio_np);
++	if (sig->group_stop_count) {
++		sig->group_stop_count++;
++		mask |= JOBCTL_STOP_CONSUME;
++	} else if (!(sig->flags & SIGNAL_STOP_STOPPED))
++		return;
 +
- 	return 0;
+ 	/* Have the new thread join an on-going signal group stop */
+-	unsigned long jobctl = current->jobctl;
+-	if (jobctl & JOBCTL_STOP_PENDING) {
+-		struct signal_struct *sig = current->signal;
+-		unsigned long signr = jobctl & JOBCTL_STOP_SIGMASK;
+-		unsigned long gstop = JOBCTL_STOP_PENDING | JOBCTL_STOP_CONSUME;
+-		if (task_set_jobctl_pending(task, signr | gstop)) {
+-			sig->group_stop_count++;
+-		}
+-	}
++	task_set_jobctl_pending(task, mask | JOBCTL_STOP_PENDING);
+ }
  
- err_register_mdiobus:
-@@ -1830,10 +1839,23 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 	} else if (np && of_get_property(np, "phy-handle", NULL)) {
- 		struct phy_device *phy;
- 
-+		/* Support "mdio"/"phy" child nodes for ast2400/2500 with
-+		 * an embedded MDIO controller. Automatically scan the DTS for
-+		 * available PHYs and register them.
-+		 */
-+		if (of_device_is_compatible(np, "aspeed,ast2400-mac") ||
-+		    of_device_is_compatible(np, "aspeed,ast2500-mac")) {
-+			err = ftgmac100_setup_mdio(netdev);
-+			if (err)
-+				goto err_setup_mdio;
-+		}
-+
- 		phy = of_phy_get_and_connect(priv->netdev, np,
- 					     &ftgmac100_adjust_link);
- 		if (!phy) {
- 			dev_err(&pdev->dev, "Failed to connect to phy\n");
-+			if (priv->mii_bus)
-+				mdiobus_unregister(priv->mii_bus);
- 			goto err_setup_mdio;
- 		}
- 
--- 
-2.21.1
+ /*
 
