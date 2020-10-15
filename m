@@ -2,196 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104C928FB5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE7B28FB5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732303AbgJOWzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:55:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728718AbgJOWzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 18:55:10 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95A0620714;
-        Thu, 15 Oct 2020 22:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602802509;
-        bh=MYaImY1TMO2dxt1Al7P3a4lN7JKH38iZlisNSRHpq+U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oSms8DnnezRvDafrFCtnckrgWqwccMI2pgNhqbH2blgHikOgu27ZPJ2nFoxjfgKkG
-         ansJ3k2zV0JmirnaLhdvvU90FYFn1XTvC68Xr8HMt/LU3CH2J8TMb8+kHa0aJI5zca
-         6s8G3NOZA+KeVOZjdPOSPRolGx8U+DQE91xacs/A=
-Date:   Thu, 15 Oct 2020 15:55:08 -0700
-From:   jaegeuk@kernel.org
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux F2FS Dev Mailing List 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] f2fs update for 5.10-rc1
-Message-ID: <20201015225508.GA2465821@google.com>
+        id S1732381AbgJOW4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732368AbgJOW4M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 18:56:12 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E62C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:56:12 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id j8so303836pjy.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:56:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KO6O4VPBvjWPVA3/jrUgJJqc+T9jqa0uJB/g40QuMaQ=;
+        b=HNI+KmZliGRiKd8sTnig2/Jz5c00PpK1Z0HQSgYOoDpmD8Dhp7pEzSfyVP5Bx9x7zR
+         x9EexyKeaNrOQzHJowtieianO7e564cYvgRIwONXEIPrnp5XVSVvHTMRQePdRpgyz4fB
+         CdVsJIeOGTHmQn7S53wZnA7XdLB/o/jJZfJfIPLL9hGrRz+Tovs95rRtdiJz5+gVG8s0
+         UL+9jPCQozSll83GDURAGaLMQRzczPGY47RfytSfeOhfYqTlIiZC8UpAZ0Hb7CwPa9W8
+         EJYf3OGdwo0v8t1ftqH5l8EG7rxlH6Pd9YjfKqklmkL1EIWit4uR8b2ir9aJjzgUhBbR
+         kX1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=KO6O4VPBvjWPVA3/jrUgJJqc+T9jqa0uJB/g40QuMaQ=;
+        b=hU/b8HnAsP6kWo5ktwGiBn6e6Zy0TUzVjaEq+5eFgxgyWqWP0nrTNgHwAiWgDvXPhV
+         zRbZXnw2CXLT+m2A5dljVvtN8WYHZTufsnfLENZiUcFWX20rISZ5caXmIy1eVRCknn5e
+         HhXrECv1+3ySjF96D4GDPcPXZ6hq5Js4Um9j5COcu0DtlnueiQ32qdspCV8FDeVRI/Ly
+         EH4qbtay7PecAmCmeBhZk50ezWSwiCnB4VNfK4K/drRUJC2VDSXRznxN2/bJ12iqNaSt
+         dJCvI5828b9uBHaSxvLo88rZAigtO84jquzJUnUi8Eu8GDh1oZiWMJfWsiUh3GE2HMLD
+         swGw==
+X-Gm-Message-State: AOAM532f47oxRaX4YHCCHWlh8nAJkAMefHPbDkQLHmvDEt5CVXPJhbb3
+        T1gxidyBlvX6jj2iLt3+yfM=
+X-Google-Smtp-Source: ABdhPJwkRMDxmiNxWgsoUEjCuvXnEICTHvqAGMWixEFiwoKdNt1AsGhUOf9UpZtU/WJtEV4UlA7+Uw==
+X-Received: by 2002:a17:90a:ee87:: with SMTP id i7mr905888pjz.25.1602802571711;
+        Thu, 15 Oct 2020 15:56:11 -0700 (PDT)
+Received: from ArchLinux (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id k127sm357066pgk.10.2020.10.15.15.56.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 15:56:10 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 04:25:58 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
+        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
+        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] scripts: spelling:  Remove space in the entry memry
+ to memory
+Message-ID: <20201015225558.GB1129531@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Joe Perches <joe@perches.com>, akpm@linux-foundation.org,
+        colin.king@canonical.com, sfr@canb.auug.org.au, wangqing@vivo.com,
+        david@redhat.com, xndchn@gmail.com, luca@lucaceresoli.net,
+        ebiggers@google.com, linux-kernel@vger.kernel.org
+References: <20201015132336.1770828-1-unixbhaskar@gmail.com>
+ <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
+ <20201015135407.GB1899805@ArchLinux>
+ <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
+ <20201015224919.GA1129531@ArchLinux>
+ <d8237d5151e108f969628302c22e27dda3860bdd.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="s/l3CgOIzMHHjg/5"
 Content-Disposition: inline
+In-Reply-To: <d8237d5151e108f969628302c22e27dda3860bdd.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Could you please consider this pull request?
+--s/l3CgOIzMHHjg/5
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Thanks,
+On 15:53 Thu 15 Oct 2020, Joe Perches wrote:
+>On Fri, 2020-10-16 at 04:19 +0530, Bhaskar Chowdhury wrote:
+>> On 14:10 Thu 15 Oct 2020, Joe Perches wrote:
+>> > On Thu, 2020-10-15 at 19:24 +0530, Bhaskar Chowdhury wrote:
+>> > > On 06:38 Thu 15 Oct 2020, Joe Perches wrote:
+>> > > > On Thu, 2020-10-15 at 18:53 +0530, Bhaskar Chowdhury wrote:
+>> > > > > Fix the space in the middle in below entry.
+>> > > > >
+>> > > > > memry||memory
+>> > > > []
+>> > > > > diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+>> > > > []
+>> > > > > @@ -885,7 +885,7 @@ meetign||meeting
+>> > > > >  memeory||memory
+>> > > > >  memmber||member
+>> > > > >  memoery||memory
+>> > > > > -memry ||memory
+>> > > > > +memry||memory
+>> > > >
+>> > > > No.  Don't post a bad patch, assume
+>> > > > it's applied and then post a fix to
+>> > > > the bad patch as v2.
+>> > > >
+>> > > > Send a single clean patch.
+>> > > >
+>> > >
+>> > > Not sure what you mean...could you elaborate...don't know what is going on..>
+>> >
+>> > You sent a patch with a defect
+>>
+>> Who doesn't???
+>
+>No one.
+>
+>> > You sent a V2 patch that just corrects the defect in the first patch.
+>>
+>> That's how it is working here for long time ...I am not sure about your
+>>   involvement.
+>
+>wrong.  Your first patch has not been, and should
+>not be applied, as it has a trivial known defect.
+>
+>> Please don't unnecessarily streach thing ...we have other things to do ...do
+>> not bringing "new rules" here for the sake of it.
+>
+>It's not a new rule.
+>Don't introduce patches with defects.
+>
+>
 
-The following changes since commit 581cb3a26baf846ee9636214afaa5333919875b1:
+You have all flawed understanding...please stay away ..if you don't understand
+something...>
 
-  Merge tag 'f2fs-for-5.9-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs (2020-09-10 13:12:46 -0700)
+--s/l3CgOIzMHHjg/5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-are available in the Git repository at:
+-----BEGIN PGP SIGNATURE-----
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.10-rc1
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl+I03sACgkQsjqdtxFL
+KRXGMAf9EjboQm3dL+RVdS9x5Xxwdz0ZXDHKchvAgTAp1cZDgHjvUzIJ/sOpxGq9
+BRPzHuZL4d+YjwjKcYH3lSAGkfbOf2o3fCrn1gOm/nWTNFmEo94a0ZAt5UCY0nUB
+Oh5MxFPfUvO4dW/aagcpq0EyMRmZ+WQfZ9cI5hdUmV8kcGSj2uyDLC5nZZ1Eg7rU
+Ss+Z9Ej9vRiSd7waTGEfTils8F5s1/lmWrjjkxdTPn8uhV/SR+HKwnqTi8kRVupU
+iLYkPk9KWYlEKwx5pUzhW2kRLDCvTdKNwNvHKVzl904OtBdWBOOAVr4LYz0JZVwE
+nEwZzQlngkp8dXVWt+dXwLwiQXEuEg==
+=Ecyw
+-----END PGP SIGNATURE-----
 
-for you to fetch changes up to 788e96d1d39949fc91457a816f4bda0d374c257b:
-
-  f2fs: code cleanup by removing unnecessary check (2020-10-14 13:23:41 -0700)
-
-----------------------------------------------------------------
-f2fs-for-5.10-rc1
-
-In this round, we've added new features such as zone capacity for ZNS and
-a new GC policy, ATGC, along with in-memory segment management. In addition,
-we could improve the decompression speed significantly by changing virtual
-mapping method. Even though we've fixed lots of small bugs in compression
-support, I feel that it becomes more stable so that I could give it a try in
-production.
-
-Enhancement:
- - suport zone capacity in NVMe Zoned Namespace devices
- - introduce in-memory current segment management
- - add standart casefolding support
- - support age threshold based garbage collection
- - improve decompression speed by changing virtual mapping method
-
-Bug fix:
- - fix condition checks in some ioctl() such as compression, move_range, etc
- - fix 32/64bits support in data structures
- - fix memory allocation in zstd decompress
- - add some boundary checks to avoid kernel panic on corrupted image
- - fix disallowing compression for non-empty file
- - fix slab leakage of compressed block writes
-
-In addition, it includes code refactoring for better readability and minor
-bug fixes for compression and zoned device support.
-
-----------------------------------------------------------------
-Aravind Ramesh (1):
-      f2fs: support zone capacity less than zone size
-
-Chao Yu (24):
-      f2fs: compress: remove unneeded code
-      f2fs: introduce inmem curseg
-      f2fs: record average update time of segment
-      f2fs: inherit mtime of original block during GC
-      f2fs: support 64-bits key in f2fs rb-tree node entry
-      f2fs: fix compile warning
-      f2fs: compress: use more readable atomic_t type for {cic,dic}.ref
-      f2fs: support age threshold based garbage collection
-      f2fs: allocate proper size memory for zstd decompress
-      f2fs: ignore compress mount option on image w/o compression feature
-      f2fs: trace: fix typo
-      f2fs: clean up kvfree
-      f2fs: do sanity check on zoned block device path
-      f2fs: relocate blkzoned feature check
-      f2fs: remove unneeded parameter in find_in_block()
-      f2fs: fix uninit-value in f2fs_lookup
-      f2fs: fix to check segment boundary during SIT page readahead
-      f2fs: fix to do sanity check on segment/section count
-      f2fs: compress: introduce page array slab cache
-      f2fs: compress: introduce cic/dic slab cache
-      f2fs: compress: fix to disallow enabling compress on non-empty file
-      f2fs: fix to set SBI_NEED_FSCK flag for inconsistent inode
-      f2fs: don't issue flush in f2fs_flush_device_cache() for nobarrier case
-      f2fs: introduce check_swap_activate_fast()
-
-Chengguang Xu (1):
-      f2fs: code cleanup by removing unnecessary check
-
-Daeho Jeong (6):
-      f2fs: add block address limit check to compressed file
-      f2fs: change compr_blocks of superblock info to 64bit
-      f2fs: change i_compr_blocks of inode to atomic value
-      f2fs: change return value of f2fs_disable_compressed_file to bool
-      f2fs: change virtual mapping way for compression pages
-      f2fs: fix writecount false positive in releasing compress blocks
-
-Dan Robertson (1):
-      f2fs: check position in move range ioctl
-
-Daniel Rosenberg (3):
-      unicode: Add utf8_casefold_hash
-      fs: Add standard casefolding support
-      f2fs: Use generic casefolding support
-
-Eric Biggers (1):
-      f2fs: reject CASEFOLD inode flag without casefold feature
-
-Jack Qiu (1):
-      f2fs: correct statistic of APP_DIRECT_IO/APP_DIRECT_READ_IO
-
-Jaegeuk Kim (4):
-      f2fs: point man pages for some f2fs utils
-      f2fs: fix slab leak of rpages pointer
-      f2fs: fix memory alignment to support 32bit
-      f2fs: handle errors of f2fs_get_meta_page_nofail
-
-Jamie Iles (1):
-      f2fs: wait for sysfs kobject removal before freeing f2fs_sb_info
-
-Matthew Wilcox (Oracle) (1):
-      f2fs: Simplify SEEK_DATA implementation
-
-Randy Dunlap (1):
-      f2fs: Documentation edits/fixes
-
-Wang Xiaojun (3):
-      f2fs: remove unused check on version_bitmap
-      f2fs: remove duplicated code in sanity_check_area_boundary
-      f2fs: fix wrong total_sections check and fsmeta check
-
-Xiaojun Wang (2):
-      f2fs: remove duplicated type casting
-      f2fs: change return value of reserved_segments to unsigned int
-
-Zhang Qilong (1):
-      f2fs: add trace exit in exception path
-
- Documentation/ABI/testing/sysfs-fs-f2fs |   3 +-
- Documentation/filesystems/f2fs.rst      |  82 ++++-
- fs/f2fs/acl.c                           |   6 +-
- fs/f2fs/checkpoint.c                    |  17 +-
- fs/f2fs/compress.c                      | 242 +++++++++++----
- fs/f2fs/data.c                          | 119 +++++++-
- fs/f2fs/debug.c                         |  18 +-
- fs/f2fs/dir.c                           | 109 ++-----
- fs/f2fs/extent_cache.c                  |  37 ++-
- fs/f2fs/f2fs.h                          | 118 +++++---
- fs/f2fs/file.c                          |  88 +++---
- fs/f2fs/gc.c                            | 413 +++++++++++++++++++++++--
- fs/f2fs/gc.h                            |  69 ++++-
- fs/f2fs/inline.c                        |   4 +-
- fs/f2fs/inode.c                         |  21 +-
- fs/f2fs/namei.c                         |   2 +-
- fs/f2fs/node.c                          |   7 +-
- fs/f2fs/segment.c                       | 522 ++++++++++++++++++++++++++------
- fs/f2fs/segment.h                       |  71 +++--
- fs/f2fs/super.c                         | 168 +++++++---
- fs/f2fs/sysfs.c                         |  22 +-
- fs/f2fs/xattr.c                         |   8 +-
- fs/libfs.c                              |  87 ++++++
- fs/unicode/utf8-core.c                  |  23 +-
- include/linux/f2fs_fs.h                 |   3 -
- include/linux/fs.h                      |  16 +
- include/linux/unicode.h                 |   3 +
- include/trace/events/f2fs.h             |  10 +-
- 28 files changed, 1795 insertions(+), 493 deletions(-)
+--s/l3CgOIzMHHjg/5--
