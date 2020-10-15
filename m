@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEC128F311
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EFA28F314
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgJONSw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Oct 2020 09:18:52 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:22484 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728418AbgJONSw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:18:52 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-tbMKmALHMZan0v96HjDSeQ-1; Thu, 15 Oct 2020 09:18:46 -0400
-X-MC-Unique: tbMKmALHMZan0v96HjDSeQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2123C18A822D;
-        Thu, 15 Oct 2020 13:18:44 +0000 (UTC)
-Received: from ovpn-112-177.rdu2.redhat.com (ovpn-112-177.rdu2.redhat.com [10.10.112.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 329766EF52;
-        Thu, 15 Oct 2020 13:18:36 +0000 (UTC)
-Message-ID: <df388727036a6ad85d5ad23f44da5420dda49b4d.camel@lca.pw>
-Subject: Re: Unbreakable loop in fuse_fill_write_pages()
-From:   Qian Cai <cai@lca.pw>
-To:     Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com
-Date:   Thu, 15 Oct 2020 09:18:36 -0400
-In-Reply-To: <20201013184026.GC142988@redhat.com>
-References: <7d350903c2aa8f318f8441eaffafe10b7796d17b.camel@redhat.com>
-         <20201013184026.GC142988@redhat.com>
-Mime-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: lca.pw
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S1729505AbgJONTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:19:16 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15220 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728418AbgJONTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 09:19:15 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E6C65124808B93566D67;
+        Thu, 15 Oct 2020 21:19:13 +0800 (CST)
+Received: from [10.174.177.6] (10.174.177.6) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 15 Oct 2020
+ 21:19:06 +0800
+Subject: Re: [PATCH] mm: fix potential pte_unmap_unlock pte error
+To:     <osalvador@suse.de>
+CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>,
+        <linfeilong@huawei.com>
+References: <20201015121534.50910-1-luoshijie1@huawei.com>
+ <a220bf939f0c9aece318197881d6f092@suse.de>
+From:   Shijie Luo <luoshijie1@huawei.com>
+Message-ID: <5cfdd51c-c539-5d30-6388-168dfd83f6b5@huawei.com>
+Date:   Thu, 15 Oct 2020 21:19:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <a220bf939f0c9aece318197881d6f092@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.6]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-10-13 at 14:40 -0400, Vivek Goyal wrote:
-> > == the thread is stuck in the loop ==
-> > [10813.290694] task:trinity-c33     state:D stack:25888 pid:254219 ppid:
-> > 87180
-> > flags:0x00004004
-> > [10813.292671] Call Trace:
-> > [10813.293379]  __schedule+0x71d/0x1b50
-> > [10813.294182]  ? __sched_text_start+0x8/0x8
-> > [10813.295146]  ? mark_held_locks+0xb0/0x110
-> > [10813.296117]  schedule+0xbf/0x270
-> > [10813.296782]  ? __lock_page_killable+0x276/0x830
-> > [10813.297867]  io_schedule+0x17/0x60
-> > [10813.298772]  __lock_page_killable+0x33b/0x830
-> 
-> This seems to suggest that filemap_fault() is blocked on page lock and
-> is sleeping. For some reason it never wakes up. Not sure why.
-> 
-> And this will be called from.
-> 
-> fuse_fill_write_pages()
->    iov_iter_fault_in_readable()
-> 
-> So fuse code will take inode_lock() and then looks like same process
-> is sleeping waiting on page lock. And rest of the processes get blocked
-> behind inode lock.
-> 
-> If we are woken up (while waiting on page lock), we should make forward
-> progress. Question is what page it is and why the entity which is
-> holding lock is not releasing lock.
 
-FYI, it was mentioned that this is likely a deadlock in FUSE:
+On 2020/10/15 20:58, osalvador@suse.de wrote:
+> On 2020-10-15 14:15, Shijie Luo wrote:
+>> When flags don't have MPOL_MF_MOVE or MPOL_MF_MOVE_ALL bits, code breaks
+>>  and passing origin pte - 1 to pte_unmap_unlock seems like not a good 
+>> idea.
+>>
+>> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+>> Signed-off-by: linmiaohe <linmiaohe@huawei.com>
+>> ---
+>>  mm/mempolicy.c | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+>> index 3fde772ef5ef..01f088630d1d 100644
+>> --- a/mm/mempolicy.c
+>> +++ b/mm/mempolicy.c
+>> @@ -571,7 +571,11 @@ static int queue_pages_pte_range(pmd_t *pmd,
+>> unsigned long addr,
+>>          } else
+>>              break;
+>>      }
+>> -    pte_unmap_unlock(pte - 1, ptl);
+>> +
+>> +    if (addr >= end)
+>> +        pte = pte - 1;
+>> +
+>> +    pte_unmap_unlock(pte, ptl);
+>
+> But this is still wrong, isn't it?
+> Unless I am missing something, this is "only" important under 
+> CONFIG_HIGHPTE.
+>
+> We have:
+>
+> pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+>
+> which under CONFIG_HIGHPTE does a kmap_atomoc.
+>
+> Now, we either break the loop in the first pass because of 
+> !(MPOL_MF_MOVE | MPOL_MF_MOVE_ALL),
+> or we keep incrementing pte by every pass.
+> Either way is wrong, because the pointer kunmap_atomic gets will not 
+> be the same (since we incremented pte).
+>
+> Or is the loop meant to be running only once, so pte - 1 will bring us 
+> back to the original pte?
+>
+> .
 
-https://lore.kernel.org/linux-fsdevel/CAHk-=wh9Eu-gNHzqgfvUAAiO=vJ+pWnzxkv+tX55xhGPFy+cOw@mail.gmail.com/
+Thanks for your reply, if we break the loop in the first pass, the pte 
+pointer will not be incremented,
 
-
+pte - 1 equals original pte - 1,  because we only increase pte pointer 
+when not break the loop.
 
