@@ -2,78 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A2328F1FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35ADF28F204
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728242AbgJOMWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:22:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35552 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728009AbgJOMWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:22:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602764568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O3E1pC9UGTTt4nprLSiUqABd2GQPiIsCgYSgfRuYliQ=;
-        b=Ykf3d86Z3+f9jbCUC7X8f0cbnMTdZA65/bvHBAhZVj869a4ZulOk456qdgRS3OqXlSMU4/
-        c6/z9DPUQcllBbXn4AVwCwcs7bPT9SKG3wIm7O39X4m3IDoGXjO/aGjszNcn4TsFeE7bvP
-        +fB2bScxULYBI2EiImGUd/IV4zGsiUk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EC176B27B;
-        Thu, 15 Oct 2020 12:22:47 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 14:22:46 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH] printk: ringbuffer: Wrong data pointer when appending
- small string
-Message-ID: <20201015122246.GD8871@alley>
-References: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com>
- <20201014140514.GB17231@alley>
- <20201014151311.GB13775@alley>
- <20201014175051.GC13775@alley>
+        id S1728264AbgJOMYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:24:38 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:51790 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727278AbgJOMYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:24:38 -0400
+X-UUID: 53b883c7ee9d4505861ab6a741f4bcf4-20201015
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=wdjBNkijPYMMZHKUrWNsISffoBU51QFiBWSakN5H1mc=;
+        b=tVO+S55dG4hdO3aOS5+rUpKx6oUoYjMG3xiE9gCuK2jAn5n0UslefEEm0yYd9+RdpqPP5oJ8uQwvIpr3RM3JWDlChJzoZ/LSMhmF5BRkNpmJYR9yDnOl4JB3pIKSmRQr3Sc8JWU9poYRLVqV6Sm6tT8MPiv1DLRGilr2NSzmHRs=;
+X-UUID: 53b883c7ee9d4505861ab6a741f4bcf4-20201015
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 845224773; Thu, 15 Oct 2020 20:24:34 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 15 Oct 2020 20:24:31 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 15 Oct 2020 20:24:31 +0800
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        <hector.yuan@mediatek.com>
+Subject: [PATCH v2] cpufreq: mediatek-hw: Register EM power table
+Date:   Thu, 15 Oct 2020 20:24:26 +0800
+Message-ID: <1602764667-29009-1-git-send-email-hector.yuan@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014175051.GC13775@alley>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 455D77DD171CE2BE108867FEFF583B5EC63FE1669ABAE732CA84722084A09EAA2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-10-14 19:50:54, Petr Mladek wrote:
-> data_realloc() returns wrong data pointer when the block is wrapped and
-> the size is not increased. It might happen when pr_cont() wants to
-> add only few characters and there is already a space for them because
-> of alignment.
-> 
-> It might cause writing outsite the buffer. It has been detected by LTP
-> tests with KASAN enabled:
-> 
-> Link: https://lore.kernel.org/r/CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com
-> Fixes: 4cfc7258f876a7feba673ac ("printk: ringbuffer: add finalization/extension support")
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Signed-off-by: Petr Mladek <pmladek@suse.com>
+UmVnaXN0ZXIgdG8gZW5lcmd5IG1vZGVsIGZyYW1ld29yayB3aXRoIENQVSBwb3dlciBlZmZpY2ll
+bmN5IHRhYmxlLg0KDQpUaGlzIHBhdGNoIGRlcGVuZHMgb24gTWVkaWF0ZWsgY3B1ZnJlcSBIVyBk
+cml2ZXIgcGF0Y2ggc3VibWl0dGVkIGJ5IEhlY3RvciBZdWFuLg0KIGh0dHBzOi8vbGttbC5vcmcv
+bGttbC8yMDIwLzkvMTAvMTMNCg0KDQpIZWN0b3IuWXVhbiAoMSk6DQogIGNwdWZyZXE6IG1lZGlh
+dGVrLWh3OiBSZWdpc3RlciBFTSBwb3dlciB0YWJsZQ0KDQogZHJpdmVycy9jcHVmcmVxL21lZGlh
+dGVrLWNwdWZyZXEtaHcuYyB8ICAgNTggKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0t
+DQogMSBmaWxlIGNoYW5nZWQsIDQ2IGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygtKQ==
 
-The patch is committed into printk/linux.git, branch for-5.10-fixup.
-
-I am going to send a pull request with it tomorrow unless something
-happens in the meantime.
-
-Best Regards,
-Petr
