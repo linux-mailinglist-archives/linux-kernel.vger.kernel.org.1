@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E2828ED18
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0B128ED1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727445AbgJOGbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 02:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOGbm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 02:31:42 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7551C061755;
-        Wed, 14 Oct 2020 23:31:41 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id n9so1249666pgf.9;
-        Wed, 14 Oct 2020 23:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=unLyiKTH/EkbVuJB3NBfpT/3LKUpTBhnwnEORQ/5hr0=;
-        b=cK+HkO9w4p08cFRZVKjDccvUHV16t2KsRQsSrIc/aUCeT0yKsdauSkBmys9AB3jU7O
-         uIN/8vZxH8UL6iFuysJe5Nx3x13xYtB5bG1RmmazcP64UAOsx4QBmyS/095/ay5cukhp
-         m29z8018Ou7kZoF9f1/X/C8aG0lBzKpujssMQkBrxXIeJDAlA578SPG2VDUsbSC4jCZF
-         DBkGyS1+jMx2/ZqxCcnBvc0ugesU6lwbNcxnQClvO7tBcHk2jr8JabRctNvH44D+96t4
-         OUWBH4Ie4NCGcYh9vnKbzpU/KVuBClSK8Ydi7wHven6eD6Usu7/vjR2sZgMLgZxo3Ynf
-         SwOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=unLyiKTH/EkbVuJB3NBfpT/3LKUpTBhnwnEORQ/5hr0=;
-        b=toNad3vgvFmP9KRI2nxLrxgUQFvQO6UU4j/hUSVkW+eUDkEQX8QpiULhVmbXoCsJ9+
-         KQdte96QTQQYQMiUrqSz/LQpHDDTNreMs+jNTkEgtfRFub9HltPhYcf2Jv884/qFWK8t
-         Om9qaBrZuv7Z8KIuHRa6neDQznlvi27YHUw/ewDcnJeiOJr0c4IRnL7BG+nu3ljlhdfJ
-         SSHHnrQqxxH4uOb2gCfSrSxZgBpLPasYHFyd7NrHl78XC6CcFR28KcNDR4zadXzp9T/k
-         iZebyUZcejUqRXNx99GqAh0e6cqV+8RkCigTNJ59vN/iRyuyPov487jkFU1nWQrlHzgT
-         1V2g==
-X-Gm-Message-State: AOAM530YPqJnBTVzxR1jmxvD5LHnZzguIXEttJnnLaXhnnt00xxl2LW+
-        WZX3aGhfTv70tuvKsGXHlo0=
-X-Google-Smtp-Source: ABdhPJy1Dmz68MUB/Zc05m4DGKww5Xa4EJ/OX4HoWgEwnKYuOf0rRVacq1aZQ8FnpCkqOzwv+zUojw==
-X-Received: by 2002:a63:5a0a:: with SMTP id o10mr2115126pgb.77.1602743501127;
-        Wed, 14 Oct 2020 23:31:41 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id z18sm1822440pfn.158.2020.10.14.23.31.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 23:31:40 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 15:31:37 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <mladek.petr@gmail.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH] printk: ringbuffer: Wrong data pointer when appending
- small string
-Message-ID: <20201015063137.GA3668@jagdpanzerIV.localdomain>
-References: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com>
- <20201014140514.GB17231@alley>
- <20201014151311.GB13775@alley>
- <20201014175051.GC13775@alley>
+        id S1728343AbgJOGby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 02:31:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgJOGbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 02:31:53 -0400
+Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB24921D7F;
+        Thu, 15 Oct 2020 06:31:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602743512;
+        bh=UbqtsMiwQlRKPA9UOVSwsEJWtdDTefpeP47lLEJ/s68=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=malaeoMC4a7ZQV1gOI7PmRoMYacz9SqqTP8Qb228LPsIc/kSwDSG5j/uWZqsN6z2h
+         /gqAkqfwOP2W9eVEfLqf2eW+n2s3ZNLuBqPuLf5QeRz7Zjnf3/1WcQj6DV/eGtZZyw
+         sckQNvuL6nG+Uy7II8tu3m2NJQ8T89/Paz8FQDuE=
+Date:   Thu, 15 Oct 2020 08:31:47 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
+Subject: Re: [PATCH v2 2/5] docs: automarkup.py: Fix regexes to solve sphinx
+ 3 warnings
+Message-ID: <20201015083147.56029afb@coco.lan>
+In-Reply-To: <20201014141616.63082d5d@lwn.net>
+References: <C6CVK7V449HT.12X5MRPR3R7TK@ArchWay>
+        <20201014141616.63082d5d@lwn.net>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014175051.GC13775@alley>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/10/14 19:50), Petr Mladek wrote:
-> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-> index 2493348a1631..24a960a89aa8 100644
-> --- a/kernel/printk/printk_ringbuffer.c
-> +++ b/kernel/printk/printk_ringbuffer.c
-> @@ -1125,7 +1125,10 @@ static char *data_realloc(struct printk_ringbuffer *rb,
->  
->  	/* If the data block does not increase, there is nothing to do. */
->  	if (head_lpos - next_lpos < DATA_SIZE(data_ring)) {
-> -		blk = to_block(data_ring, blk_lpos->begin);
-> +		if (wrapped)
-> +			blk = to_block(data_ring, 0);
-> +		else
-> +			blk = to_block(data_ring, blk_lpos->begin);
->  		return &blk->data[0];
->  	}
+Em Wed, 14 Oct 2020 14:16:16 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-Great catch.
+> On Wed, 14 Oct 2020 20:09:10 +0000
+> N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com> wrote:
+>=20
+> > One I had noted down was:
+> >=20
+> > WARNING: Unparseable C cross-reference: '=E8=B0=83=E7=94=A8debugfs_rena=
+me'
+> >=20
+> > which I believe occurred in the chinese translation.
+> >=20
+> > I think the problem is that in chinese there normally isn't space betwe=
+en the
+> > words, so even if I had made the regexes only match the beginning of th=
+e word
+> > (which I didn't, but I fixed this in this patch with the \b), it would =
+still try
+> > to cross-reference to that symbol containing chinese characters, which =
+is
+> > unparsable to sphinx.
+> >=20
+> > So since valid identifiers in C are only in ASCII anyway, I used the AS=
+CII flag
+> > to make \w, and \d only match ASCII characters, otherwise they match an=
+y unicode
+> > character. =20
+>=20
+> OK, this all makes sense, as does your fix.  The one thing I would ask
+> would be to put that warning into the changelog for future reference.
 
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+I added yesterday patches 1 to 4 from N=C3=ADcolas series on my -next tree:
 
-	-ss
+	https://git.linuxtv.org/mchehab/media-next.git/log/
+
+Today, I changed the changelog in order to better describe the ASCII issue:
+
+	https://git.linuxtv.org/mchehab/media-next.git/commit/?id=3Df66e47f98c1e82=
+7a85654a8cfa1ba539bb381a1b
+
+If this is enough, I'll likely send the PR to Linus later today or tomorrow,
+depending on next- merge results.
+
+Patch 5 can be added later, after we find a way to keep it safe for
+parallel reading.
+
+Thanks,
+Mauro
