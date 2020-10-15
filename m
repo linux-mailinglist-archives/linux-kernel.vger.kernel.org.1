@@ -2,143 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B459928ED0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34EE28ED0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgJOGYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 02:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728662AbgJOGYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 02:24:40 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3679AC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:24:40 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h5so1876345wrv.7
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PXzy1d3ckMk0Ny0gHfuwHvgJ6RXIhGLeAUjxyUMOj74=;
-        b=YZbkD9vMiz5BzYxugQodbY8GjIsUu9NZMMfVV6I+A0SuakkKwK87m8Mt6+3RgPHchE
-         8p0/mxoEh81CbftpKckrDFXk4zF+O3+fTs8kjsCiL+Prl6lFiAlEBVd3hnL1ELLihZu0
-         49zucOkSqjTj9l/Zb7mMAyvFgykwp+Dv25lOu4Qo5zkoCcNIL4GJlAu9mBS9LACtkNPe
-         x6KzG7b1i5DJvl1hvDKGNZUBB9AtOuxVtfQpwnW1maOLeTKwTB/avP7sy6d6Y2Wh2a8m
-         RP3+cr9MKuy/NLMQH+8nh+FtMT6g0DHF4ViKmATpr/SHP/V6CJZdTk7Gzq3BDX4/QMg0
-         D3hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PXzy1d3ckMk0Ny0gHfuwHvgJ6RXIhGLeAUjxyUMOj74=;
-        b=EyQ9nsBL28a7r+I6VNvYeURrLXqLhrtrU30mwYesLI9sExfG2GBp2o3wUwLNlbUY2e
-         zfyOENFqePWDXNrArtNtABsyTVTVCjHPNh+YVc4CfKSckHWq6ympSY/Nc3pJ11cb0dkq
-         jgfeLov2U6yZzXegCDL/XhPT5UYtdvRCoGSjs275Kb9xp5YY/jKa+dYbB1fvqIcTTvs4
-         P9/sPe1eDA49C///0rjFpOsFUTlKsKvz2/WCTVxWUpx3ZdQ7qU7LHFwNzEt8uPZVeaon
-         jvrZ54KlnTLkm2FqVRKYdDXd8oc4LIVcggAV5khToL54dT89Raqb86G43U4LUC3VSYF+
-         6/Hw==
-X-Gm-Message-State: AOAM5315QkCPngFWMUaUanJ0M6TuMYc4qPmr3mdbLdzdq1iiHZHGVwsg
-        dnadKd8phJsA3NC/E9v+6bl9vq4e58whTK6n05DOazwOtMfLZQ==
-X-Google-Smtp-Source: ABdhPJxBQX/QxK6pw7DKHu3C/wNzs8v0GZG0QDSdLbwtuGccZJwqO/VtMhCyAGnJcHarzcj3QQkcXqPhY9n4PXmtnIM=
-X-Received: by 2002:a5d:6407:: with SMTP id z7mr2524568wru.271.1602743078716;
- Wed, 14 Oct 2020 23:24:38 -0700 (PDT)
+        id S1729131AbgJOG1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 02:27:25 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53541 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgJOG1Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 02:27:25 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBfTP5HMzz9sT6;
+        Thu, 15 Oct 2020 17:27:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602743243;
+        bh=eqeJWAJfbVhFMvpv4QGHZeVSz1eFH5jHmY13Cc1Net8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AoWGO7wi2MIDH7mK3ex46Ln1Iq7WaLSVk4pBcWxc7xApcyF1FtTyJEbeOP9j7akYE
+         Qpw8Ql9m/Oj9FsDQ2Ga2RJ9VwYISNi7A3G1lkevWbXg5tPkSuAkDpQqTyWmSE7Y2Nl
+         saFY+cNDR2SMHAxhJRAnjut8Yavv+PH39E9S7vLKgE3k4dcNi5oKpiANWtJ2qQCODH
+         CaLqry4SzBsPoTeiWFl+9+Fq8lBTV9oW08eeqPMjOCiJUkDQtjGl7/K0XKNaG3S6fF
+         cmtga9F90eJ9Z/PCSn5G1vbj5dnfAnxlqjthfl40HTpRTPsI34VwnLWPo3FxLC9jry
+         Pd9QLGbk4Xjpg==
+Date:   Thu, 15 Oct 2020 17:27:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     David Howells <dhowells@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: linux-next: manual merge of the akpm-current tree with the block
+ tree
+Message-ID: <20201015172721.31ef7d5e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <160208761921.7002.1321765913567405137.tip-bot2@tip-bot2>
- <20201009203822.GA2974@worktop.programming.kicks-ass.net> <20201009204921.GB21731@zn.tnic>
- <20201010174415.zwopoy6vpficoqlr@treble> <20201012091236.0f9a64bfedb8825732b65ea5@kernel.org>
- <20201012153949.jfwa7rgpzu5b7ld4@treble> <20201014162859.987d5f71f5e5456ffb812abc@kernel.org>
-In-Reply-To: <20201014162859.987d5f71f5e5456ffb812abc@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 14 Oct 2020 23:24:26 -0700
-Message-ID: <CAP-5=fUoSGy3NAzTSbF3YLEPABSs7oPsxLkCx36XkEzzm341yw@mail.gmail.com>
-Subject: Re: [tip: objtool/core] x86/insn: Support big endian cross-compiles
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-tip-commits@vger.kernel.org,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, x86 <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/jwGMZOKqcoOcNuv7ejq1dbK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 12:29 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> On Mon, 12 Oct 2020 10:39:49 -0500
-> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> > On Mon, Oct 12, 2020 at 09:12:36AM +0900, Masami Hiramatsu wrote:
-> > > On Sat, 10 Oct 2020 12:44:15 -0500
-> > > Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > > On Fri, Oct 09, 2020 at 10:49:21PM +0200, Borislav Petkov wrote:
-> > > > > On Fri, Oct 09, 2020 at 10:38:22PM +0200, Peter Zijlstra wrote:
-> > > > > > On Wed, Oct 07, 2020 at 04:20:19PM -0000, tip-bot2 for Martin Schwidefsky wrote:
-> > > > > > > The following commit has been merged into the objtool/core branch of tip:
-> > > > > > >
-> > > > > > > Commit-ID:     2a522b53c47051d3bf98748418f4f8e5f20d2c04
-> > > > > > > Gitweb:        https://git.kernel.org/tip/2a522b53c47051d3bf98748418f4f8e5f20d2c04
-> > > > > > > Author:        Martin Schwidefsky <schwidefsky@de.ibm.com>
-> > > > > > > AuthorDate:    Mon, 05 Oct 2020 17:50:31 +02:00
-> > > > > > > Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > > > > CommitterDate: Tue, 06 Oct 2020 09:32:29 -05:00
-> > > > > > >
-> > > > > > > x86/insn: Support big endian cross-compiles
-> > > > > > >
-> > > > > > > x86 instruction decoder code is shared across the kernel source and the
-> > > > > > > tools. Currently objtool seems to be the only tool from build tools needed
-> > > > > > > which breaks x86 cross compilation on big endian systems. Make the x86
-> > > > > > > instruction decoder build host endianness agnostic to support x86 cross
-> > > > > > > compilation and enable objtool to implement endianness awareness for
-> > > > > > > big endian architectures support.
-> > > > > > >
-> > > > > > > Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
-> > > > > > > Co-developed-by: Vasily Gorbik <gor@linux.ibm.com>
-> > > > > > > Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-> > > > > > > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > > > > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > > >
-> > > > > > This commit breaks the x86 build with CONFIG_X86_DECODER_SELFTEST=y.
-> > > > > >
-> > > > > > I've asked Boris to truncate tip/objtool/core.
-> > > > >
-> > > > > Yeah, top 4 are gone until this is resolved.
-> > > >
-> > > > Masami, I wonder if we even need these selftests anymore?  Objtool
-> > > > already decodes the entire kernel.
-> > >
-> > > No, they have different roles. The selftest checks if the decoder
-> > > works correctly by comparing with the output of objdump.
-> > >
-> > > As far as I can see, the objtool relies on the sanity of the decoder
-> > > (it trusts the output of the decoder).
-> >
-> > Ok.  I wonder if we should move the decoder selftest to the 'tools'
-> > subdirectory.
->
-> It is in the arch/x86/tools, so it is already in a kind of tools :)
-> But yeah, it was considered to be used only on x86. But if someone
-> start trying to run it on non-x86, cross compiling, we need to
-> reconsider that.
->
-> Thank you,
->
-> --
-> Masami Hiramatsu <mhiramat@kernel.org>
+--Sig_/jwGMZOKqcoOcNuv7ejq1dbK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There is undefined behavior that is present in the x86 insn.c code as
-described in:
-https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+Hi all,
 
-I resent this patch fixing other potential undefined behavior:
-https://lore.kernel.org/lkml/20201015062148.1437894-1-irogers@google.com/T/#t
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-The misaligned loads will likely break on anything non-x86.
+  mm/readahead.c
 
-Thanks,
-Ian
+between commit:
+
+  fd0ec96ec35d ("readahead: use limited read-ahead to satisfy read")
+
+from the block tree and commits:
+
+  16681dc9dd92 ("mm/readahead: pass readahead_control to force_page_cache_r=
+a")
+  f65bd470e7ed ("mm/readahead: add page_cache_sync_ra and page_cache_async_=
+ra")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc mm/readahead.c
+index e5975f4e0ee5,c6ffb76827da..000000000000
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@@ -548,42 -545,23 +545,29 @@@ readit
+  		}
+  	}
+ =20
+- 	ra_submit(ra, mapping, filp);
++ 	ractl->_index =3D ra->start;
++ 	do_page_cache_ra(ractl, ra->size, ra->async_size);
+  }
+ =20
+- /**
+-  * page_cache_sync_readahead - generic file readahead
+-  * @mapping: address_space which holds the pagecache and I/O vectors
+-  * @ra: file_ra_state which holds the readahead state
+-  * @filp: passed on to ->readpage() and ->readpages()
+-  * @index: Index of first page to be read.
+-  * @req_count: Total number of pages being read by the caller.
+-  *
+-  * page_cache_sync_readahead() should be called when a cache miss happene=
+d:
+-  * it will submit the read.  The readahead logic may decide to piggyback =
+more
+-  * pages onto the read request if access patterns suggest it will improve
+-  * performance.
+-  */
+- void page_cache_sync_readahead(struct address_space *mapping,
+- 			       struct file_ra_state *ra, struct file *filp,
+- 			       pgoff_t index, unsigned long req_count)
++ void page_cache_sync_ra(struct readahead_control *ractl,
++ 		struct file_ra_state *ra, unsigned long req_count)
+  {
+- 	bool do_forced_ra =3D filp && (filp->f_mode & FMODE_RANDOM);
+ -	/* no read-ahead */
+ -	if (!ra->ra_pages)
+ -		return;
+++	bool do_forced_ra =3D ractl->file && (ractl->file->f_mode & FMODE_RANDOM=
+);
+ =20
+ -	if (blk_cgroup_congested())
+ -		return;
+ +	/*
+ +	 * Even if read-ahead is disabled, start this request as read-ahead.
+ +	 * This makes regular read-ahead disabled use the same path as normal
+ +	 * reads, instead of having to punt to ->readpage() manually. We limit
+ +	 * ourselves to 1 page for this case, to avoid causing problems if
+ +	 * we're congested or tight on memory.
+ +	 */
+ +	if (!ra->ra_pages || blk_cgroup_congested()) {
+ +		req_count =3D 1;
+ +		do_forced_ra =3D true;
+ +	}
+ =20
+ -	/* be dumb */
+ -	if (ractl->file && (ractl->file->f_mode & FMODE_RANDOM)) {
+ +	if (do_forced_ra) {
+- 		force_page_cache_readahead(mapping, filp, index, req_count);
++ 		force_page_cache_ra(ractl, ra, req_count);
+  		return;
+  	}
+ =20
+
+--Sig_/jwGMZOKqcoOcNuv7ejq1dbK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+H68kACgkQAVBC80lX
+0GzOYwf/X2RH5+5uO1Fo3UBHZx6M1rdO98rOPN0PpkaiyZcw5asOH5CEN6eCXkPW
+zUt80fTWyHJ53ZpKeFMTjHI2sDFyx++GWSdkFhlCajyTNlFnvAeCqPboLGzCxfY9
+GFm8jq4daVSOeGKyLnaePlX+ed/8hd72Aq/fYQcQkSilhr/K1umdHmN185Bmi1t5
+ATUrbKSdd5iCJN4sXuR6d9REpKV+XZTRiHADXSdyTmEkuhp9tHHY22KisJlmVYfl
+XtlfUlNKXZ7B81umTvqbTNOjuKtZqALXjGGd5Z6HszjuZWrVexnYvVMnpi7WIhNx
+J/4LiwDhFibiaXbvRJw28ibBgTp1Fg==
+=lJls
+-----END PGP SIGNATURE-----
+
+--Sig_/jwGMZOKqcoOcNuv7ejq1dbK--
