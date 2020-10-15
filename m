@@ -2,71 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFEB28F83D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBC228F844
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732886AbgJOSOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:14:21 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:39982 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgJOSOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:14:21 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6A27B200780;
-        Thu, 15 Oct 2020 20:14:19 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5E0FC200608;
-        Thu, 15 Oct 2020 20:14:19 +0200 (CEST)
-Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 10C3A20309;
-        Thu, 15 Oct 2020 20:14:19 +0200 (CEST)
-From:   Diana Craciun <diana.craciun@oss.nxp.com>
-To:     alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
-        colin.king@canonical.com, Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH] vfio/fsl-mc: Fix the dead code in vfio_fsl_mc_set_irq_trigger
-Date:   Thu, 15 Oct 2020 21:14:17 +0300
-Message-Id: <20201015181417.28427-1-diana.craciun@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1732898AbgJOSPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726053AbgJOSPb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:15:31 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFEBC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:15:30 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id qp15so4988525ejb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=hV2kzljzkPtlmabMiMR4tfaBM+VlAVmvUSlWLpICaPs=;
+        b=VQcnZxYNoqwWWKhsVR9IcKy7FA5LslWVlI7LkqdXV7QDISXJtrEr7hdM0qXaD18BvI
+         u1v5WkAly0t9EDxfyBHEDAqjyC9WOAsEb+d2sdss9TF/1NTLtysgYR/SYJsB4gbHDr03
+         MBlwWDi7RwFVCPkhqB3xjwh1dcr9zDvi9XVuA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=hV2kzljzkPtlmabMiMR4tfaBM+VlAVmvUSlWLpICaPs=;
+        b=RV8lyc2R4JR66lk3Htq7N7FY1/b0JOdcKdejT26eBD3jGBhXBerF56FgV07QAHG4+f
+         hzUkUk/crH5mYTihg5ojK7q+6m5QBBuqNKeJ2GWKythKhQ8KVNbp1waqzA9QSrZbwmU8
+         amyW0qJ0zUxYcIS4UA+pve2wsn5GtUBOZfQOeS/6aRBKnZ3H+SFDL4G1yiq4u4jaxXLc
+         a1NN6A5DFWj7a7cazM/KIdVL7NmBhPV6uT3UtZOrWn1dNP2kD/sqinB+AIoZyTloIGBH
+         /41wVuclctYk63U2J9RBlfs2mtRuVovwm71DTVk20Pk+2clBI9Y6oPIdhP7Ruk3JuUA0
+         eQbQ==
+X-Gm-Message-State: AOAM532iZwfNNQ0fzIFlEUpN5VSx2M3ML4kRKie5h+WKf4WKnspfQIvh
+        cTneo1+lSimpaevC5sMRjCfhDX6/Qpwz3unKrRF6NA==
+X-Google-Smtp-Source: ABdhPJy0H4kXoNR3cKvxKxNi/cMqUcFkeks5ROSvOXlaFHJgTp0Fq4kw3L79EnQiNzORlO6xBDY8GEyzvA/5x5lhPA4=
+X-Received: by 2002:a17:906:6d0c:: with SMTP id m12mr5820394ejr.498.1602785728757;
+ Thu, 15 Oct 2020 11:15:28 -0700 (PDT)
+MIME-Version: 1.0
+From:   Micah Morton <mortonm@chromium.org>
+Date:   Thu, 15 Oct 2020 11:15:18 -0700
+Message-ID: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
+Subject: [GIT PULL] SafeSetID changes for v5.10
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Static analysis discovered that some code in vfio_fsl_mc_set_irq_trigger
-is dead code. Fixed the code by changing the conditions order.
+The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
 
-Fixes: cc0ee20bd969 ("vfio/fsl-mc: trigger an interrupt via eventfd")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+  Linux 5.9 (2020-10-11 14:15:50 -0700)
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-index 2ce2acad3461..c80dceb46f79 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
-@@ -114,6 +114,9 @@ static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
- 	struct device *cont_dev = fsl_mc_cont_dev(&mc_dev->dev);
- 	struct fsl_mc_device *mc_cont = to_fsl_mc_device(cont_dev);
- 
-+	if (!count && (flags & VFIO_IRQ_SET_DATA_NONE))
-+		return vfio_set_trigger(vdev, index, -1);
-+
- 	if (start != 0 || count != 1)
- 		return -EINVAL;
- 
-@@ -128,9 +131,6 @@ static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
- 		goto unlock;
- 	mutex_unlock(&vdev->reflck->lock);
- 
--	if (!count && (flags & VFIO_IRQ_SET_DATA_NONE))
--		return vfio_set_trigger(vdev, index, -1);
--
- 	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
- 		s32 fd = *(s32 *)data;
- 
--- 
-2.17.1
+are available in the Git repository at:
 
+  https://github.com/micah-morton/linux.git tags/safesetid-5.10
+
+for you to fetch changes up to 03ca0ec138927b16fab0dad7b869f42eb2849c94:
+
+  LSM: SafeSetID: Fix warnings reported by test bot (2020-10-13 09:17:36 -0700)
+
+----------------------------------------------------------------
+SafeSetID changes for v5.10
+
+The changes in this pull request are mostly contained to within the
+SafeSetID LSM, with the exception of a few 1-line changes to change
+some ns_capable() calls to ns_capable_setid() -- causing a flag
+(CAP_OPT_INSETID) to be set that is examined by SafeSetID code and
+nothing else in the kernel. These changes have been baking in -next and
+actually were in -next for the entire v5.9 merge window but I didn't
+have a chance to send them.
+
+The changes to SafeSetID internally allow for setting up GID transition
+security policies, as already existed for UIDs.
+
+NOTE: I'm re-using my safesetid-next branch here as the branch for
+creating the pull request. I think that's fine, not sure if this is the
+normal workflow or not. Also, I use 'git rebase vX.X' to put my commits
+on top of the latest stable release. Again, I verified with gitk that I
+don't have any weird history in my branch that will mess things up so
+AFAICT that should be fine too.
+
+----------------------------------------------------------------
+
+Thomas Cedeno (3):
+      LSM: Signal to SafeSetID when setting group IDs
+      LSM: SafeSetID: Add GID security policy handling
+      LSM: SafeSetID: Fix warnings reported by test bot
+
+ Documentation/admin-guide/LSM/SafeSetID.rst |  29 +++--
+ kernel/capability.c                         |   2 +-
+ kernel/groups.c                             |   2 +-
+ kernel/sys.c                                |  10 +-
+ security/safesetid/lsm.c                    | 190 +++++++++++++++++++++-------
+ security/safesetid/lsm.h                    |  38 ++++--
+ security/safesetid/securityfs.c             | 190 ++++++++++++++++++++--------
+ 7 files changed, 336 insertions(+), 125 deletions(-)
