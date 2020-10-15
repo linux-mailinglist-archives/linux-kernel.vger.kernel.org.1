@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120AF28F58B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102CF28F58E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389258AbgJOPIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:08:54 -0400
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:4136 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388764AbgJOPIx (ORCPT
+        id S2389565AbgJOPJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:09:28 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6655 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388764AbgJOPJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:08:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1602774533;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=83CI7dEo4abtDvi3SxA31wt2De+c17XHCkaW0cRBP4E=;
-  b=PPueg4XnCasWC/tkgYGDl259eKePZvAalOCP9IxyU1cj/aM+Nqks3Nnh
-   yW0eP7R2uiQgRENqEbT+hhCMXDoGka1NrfRz+YYyL8gdJWwPX8HWC0XS3
-   PHQl8VoL2rm0Rnr3Ocjl/tKlOpPwFktEjVKdTq+4QKAASD6DmZxEJz/YN
-   Y=;
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: CjATV4Crrjol+n6HDirYBQsJMKcs7EyyWxNtiTk9h6eDIAlG6bdANvubnE/XRTJVY6tSS7bhhy
- CFUPRJ66GqBhVAau//zD8/EEAezobQHNRhXbyJN7D3J/SOUKqAorBdb+kR6InWVMOUK7zygELd
- wesJe14tWMEj5Qbkb2AaBJo2zq75S6QMpvJEDvZW4VE+cbl7RWTdSuJcNHl96WXz3Ixil7KYkK
- TvtRUO2KWXZQbGt9uSF9kaILv3XOFqkPPUaxQvgNB7K6Bj5n3KJyR/5TBcPXLSiAceyVLz8qsL
- 0DY=
-X-SBRS: 2.5
-X-MesageID: 29067109
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,379,1596513600"; 
-   d="scan'208";a="29067109"
-Date:   Thu, 15 Oct 2020 17:08:44 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Jan Beulich <jbeulich@suse.com>
-CC:     Jason Andryuk <jandryuk@gmail.com>,
+        Thu, 15 Oct 2020 11:09:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1602774568; x=1634310568;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=xI1wCRbxJCFX6yOdKgXcnKW1y6wTWNYIfl97uYZxpXE=;
+  b=Vsjkyc1fSH69yCRzbm7KZgLcZ4D5al/jk3pmbnVEPrp0v40cWisL8N4v
+   0uKrSD4N8yImivzTtD4aE07m/xbxepqapYq8lSiATPveM8XzwGKYLsGjQ
+   EMraV5CcP6eIqI1fdu2FEyopPBxnHdwXbU571dpJJad4bEr6mHWxeULiI
+   c=;
+X-IronPort-AV: E=Sophos;i="5.77,379,1596499200"; 
+   d="scan'208";a="59532495"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 15 Oct 2020 15:09:21 +0000
+Received: from EX13D31EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 65806A20A0;
+        Thu, 15 Oct 2020 15:09:18 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.125) by
+ EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 15 Oct 2020 15:09:13 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Roger Pau Monne <roger.pau@citrix.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] xen: Remove Xen PVH/PVHVM dependency on PCI
-Message-ID: <20201015150844.GF68032@Air-de-Roger>
-References: <20201014175342.152712-1-jandryuk@gmail.com>
- <20201014175342.152712-2-jandryuk@gmail.com>
- <b74a3f83-cd8a-34a3-b436-95141f01cb20@suse.com>
- <CAKf6xps+mAFdfk8uBw=aMsAFNYmt4ETPkB8dwT3sTv-qPbVENw@mail.gmail.com>
- <3919ef15-379b-cc1e-994c-c33b23865afd@suse.com>
+        SeongJae Park <sjpark@amazon.de>,
+        <xen-devel@lists.xenproject.org>, <linux-block@vger.kernel.org>,
+        "J . Roeleveld" <joost@antarean.org>,
+        =?UTF-8?q?J=C3=BCrgen=20Gro=C3=9F?= <jgross@suse.com>
+Subject: Re: [PATCH 1/2] xen/blkback: turn the cache purge LRU interval into a parameter
+Date:   Thu, 15 Oct 2020 17:08:49 +0200
+Message-ID: <20201015150849.3844-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <3919ef15-379b-cc1e-994c-c33b23865afd@suse.com>
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL06.citrite.net (10.13.108.179)
+In-Reply-To: <20201015142416.70294-2-roger.pau@citrix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.125]
+X-ClientProxiedBy: EX13D02UWC003.ant.amazon.com (10.43.162.199) To
+ EX13D31EUB001.ant.amazon.com (10.43.166.210)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 05:02:21PM +0200, Jan Beulich wrote:
-> On 15.10.2020 16:59, Jason Andryuk wrote:
-> > On Thu, Oct 15, 2020 at 4:10 AM Jan Beulich <jbeulich@suse.com> wrote:
-> >>
-> >> On 14.10.2020 19:53, Jason Andryuk wrote:
-> >>> @@ -76,7 +80,9 @@ config XEN_DEBUG_FS
-> >>>         Enabling this option may incur a significant performance overhead.
-> >>>
-> >>>  config XEN_PVH
-> >>> -     bool "Support for running as a Xen PVH guest"
-> >>> +     bool "Xen PVH guest support"
-> >>
-> >> Tangential question: Is "guest" here still appropriate, i.e.
-> >> isn't this option also controlling whether the kernel can be
-> >> used in a PVH Dom0?
-> > 
-> > Would you like something more generic like "Xen PVH support" and
-> > "Support for running in Xen PVH mode"?
+On Thu, 15 Oct 2020 16:24:15 +0200 Roger Pau Monne <roger.pau@citrix.com> wrote:
+
+> Assume that reads and writes to the variable will be atomic. The worse
+> that could happen is that one of the LRU intervals is not calculated
+> properly if a partially written value is read, but that would only be
+> a transient issue.
 > 
-> Yeah, just dropping "guest" would be fine with me. No idea how
-> to reflect that PVH Dom0 isn't supported, yet.
+> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+> ---
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: SeongJae Park <sjpark@amazon.de>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: linux-block@vger.kernel.org
+> Cc: J. Roeleveld <joost@antarean.org>
+> Cc: Jürgen Groß <jgross@suse.com>
+> ---
+>  Documentation/ABI/testing/sysfs-driver-xen-blkback | 10 ++++++++++
+>  drivers/block/xen-blkback/blkback.c                |  9 ++++++---
+>  2 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> index ecb7942ff146..776f25d335ca 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> @@ -35,3 +35,13 @@ Description:
+>                  controls the duration in milliseconds that blkback will not
+>                  cache any page not backed by a grant mapping.
+>                  The default is 10ms.
+> +
+> +What:           /sys/module/xen_blkback/parameters/lru_internval
+> +Date:           October 2020
+> +KernelVersion:  5.10
+> +Contact:        Roger Pau Monné <roger.pau@citrix.com>
+> +Description:
+> +                The LRU mechanism to clean the lists of persistent grants needs
+> +                to be executed periodically. This parameter controls the time
+> +                interval between consecutive executions of the purge mechanism
+> +                is set in ms.
 
-The fact that it isn't supported by Xen shouldn't be reflected on the
-Linux configuration, as it's independent. Ie: you could run this Linux
-kernel on a future version of Xen where PVH dom0 is supported.
+I think noticing the default value (100ms) here would be better.
 
-There's already a warning printed by Xen when booting PVH dom0 about
-not being a supported mode.
 
-Thanks, Roger.
+Thanks,
+SeongJae Park
