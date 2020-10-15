@@ -2,73 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6CF28EEB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E57728EEBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388315AbgJOIrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgJOIrA (ORCPT
+        id S2388330AbgJOIrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:47:33 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:52386 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726329AbgJOIrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:47:00 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5410C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 01:46:58 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id a72so2267570wme.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 01:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WfnRK5cVX6azZMqBqUfHbjQvOcd148r5sIa6MP8wh/A=;
-        b=JI3OP/nkE9bQKpG4ifkR4FVb7nHZOMWL3s8qxbyik9PVQ4XLBy9KO0qkeph94YyP6k
-         XdN0rsvdqpxChgu91LUssRKNl7ip1VnuhMGRkRKrDCF14x7AfGiOPtfexDHjO43qRT1o
-         t3lCdy92X7IKvSLpKBTe/StmAOTBSt+duPBco=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WfnRK5cVX6azZMqBqUfHbjQvOcd148r5sIa6MP8wh/A=;
-        b=EPsrXWmgTrxFKls+q6IGBMCaCsAo31u534SwQEfFwYOKL12tRb36LkNT7g1ccYaBnS
-         PZ0X0qqWOyOnljWwUMgRW8dX5ZsmtR7dcnHinCkpxQ6kwmruApk0xfmXh0NHVjBrX/Ju
-         ENuZQuCEsxKOr2/8N+zqkTfd2B8dg9crQpMEht3m63WelokXUug9pvCymk/pBWawnU5h
-         C9gvT5OhwZKm7fYBOAR4wRG8nYg0WJe3C1Cxjn/6YHRe2rSNKHYar0T9qYwOD2Sz3DU3
-         FPZFQpMpvuhbrZaPZVtkiMVYtVlAJhAQfWUwvz/8YYChw+n5nrf5QiRpbqwdwBGkkyLy
-         ZrtA==
-X-Gm-Message-State: AOAM531T13P2HM2GR/hrsHPc6tGyQcuDVQV5emi5DJik4RaIkDvj0VnE
-        daVzYSgoEuD/+soReg2gm67DAxgEchHqUB1t6vaH+A==
-X-Google-Smtp-Source: ABdhPJxNphEIA53NFxSRPBrfZeZ7M9POQUCzTal5jT3zSrlzJ58Sf7TBd3Eh0rkz0/EjjC/ILesmCAQSDCdKDvrKunM=
-X-Received: by 2002:a7b:cc89:: with SMTP id p9mr2998028wma.4.1602751617285;
- Thu, 15 Oct 2020 01:46:57 -0700 (PDT)
+        Thu, 15 Oct 2020 04:47:31 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09F8l00w024738;
+        Thu, 15 Oct 2020 10:47:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=qaKQ7vm55F6QJ99/turaG/tzg6NejvmTZRik8jUDc0M=;
+ b=tg8t9YyxgRdN/itBIJpkH8MChWuzYm2LfV5gOL3bAVJaIt/Vnin7DclGOh0PQPU4/c6W
+ er02BQEHj4ZPVWn23mujlLaBmPvkONhloyKr1B1o/J+GHhm3i5gCXUoi2YEL9qOnhOEm
+ 4ySC/0nYYp+3ckP6PCGZzuRFgbGhjILIZ1sNtQko2U47N0QRtjpVgkr9pvGCfyLB+hzY
+ rY2WBOI3a5M3fLHWGIqS16VFMRFOp0Y3CyosCOWt5x5iV+nMVKV/rYj8QVKCnDvIHSNa
+ VdlOr+r0i/6r/Nxrg2Qpbj2GR1MEVz7M8OzjIaGlzgEC4sEtOIFqcmwMgRUs2jXTnLf/ OA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3455c8r3k6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Oct 2020 10:47:24 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1EE94100039;
+        Thu, 15 Oct 2020 10:47:24 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0FEB0206646;
+        Thu, 15 Oct 2020 10:47:24 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.49) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 15 Oct
+ 2020 10:47:23 +0200
+Subject: Re: [PATCH v2 8/9] rpmsg: Make rpmsg_{register|unregister}_device()
+ public
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>
+CC:     "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
+ <20201013232519.1367542-9-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <b9cc4e3d-d6b7-8b2e-32b0-afc60ee3a2f1@st.com>
+Date:   Thu, 15 Oct 2020 10:47:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201014131703.18021-1-geert+renesas@glider.be>
-In-Reply-To: <20201014131703.18021-1-geert+renesas@glider.be>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Thu, 15 Oct 2020 17:46:46 +0900
-Message-ID: <CAFr9PXmv-2h9prVuuWe29ae15LPtk-k0XUA04ywv8P7oiJpbRA@mail.gmail.com>
-Subject: Re: [PATCH] irqchip: MST_IRQ should depend on ARCH_MEDIATEK or ARCH_MSTARV7
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201013232519.1367542-9-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-15_03:2020-10-14,2020-10-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
 
-This looks good to me.
 
-Acked-by: Daniel Palmer <daniel@thingy.jp>
+On 10/14/20 1:25 AM, Mathieu Poirier wrote:
+> Make function rpmsg_register_device() and rpmsg_unregister_device()
+> functions public so that they can be used by other clients.  While
+> doing so get rid of two obsolete function, i.e register_rpmsg_device()
+> and unregister_rpmsg_device(), to prevent confusion.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/rpmsg/rpmsg_internal.h |  4 ----
+>  include/linux/rpmsg.h          | 12 ++++++++----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+> index b9b34b416b7b..70de053581bd 100644
+> --- a/drivers/rpmsg/rpmsg_internal.h
+> +++ b/drivers/rpmsg/rpmsg_internal.h
+> @@ -49,10 +49,6 @@ struct rpmsg_endpoint_ops {
+>  			     poll_table *wait);
+>  };
+>  
+> -int rpmsg_register_device(struct rpmsg_device *rpdev);
+> -int rpmsg_unregister_device(struct device *parent,
+> -			    struct rpmsg_channel_info *chinfo);
+> -
+>  struct device *rpmsg_find_device(struct device *parent,
+>  				 struct rpmsg_channel_info *chinfo);
+>  
+> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+> index eb70463a9f2e..0b3ec18ddbaa 100644
+> --- a/include/linux/rpmsg.h
+> +++ b/include/linux/rpmsg.h
+> @@ -188,8 +188,9 @@ static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
+>  
+>  #if IS_ENABLED(CONFIG_RPMSG)
+>  
+> -int register_rpmsg_device(struct rpmsg_device *dev);
+> -void unregister_rpmsg_device(struct rpmsg_device *dev);
+> +int rpmsg_register_device(struct rpmsg_device *rpdev);
+> +int rpmsg_unregister_device(struct device *parent,
+> +			    struct rpmsg_channel_info *chinfo);
+>  int __register_rpmsg_driver(struct rpmsg_driver *drv, struct module *owner);
+>  void unregister_rpmsg_driver(struct rpmsg_driver *drv);
+>  void rpmsg_destroy_ept(struct rpmsg_endpoint *);
+> @@ -212,15 +213,18 @@ __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
+>  
+>  #else
+>  
+> -static inline int register_rpmsg_device(struct rpmsg_device *dev)
+> +static inline int rpmsg_register_device(struct rpmsg_device *rpdev)
+>  {
+>  	return -ENXIO;
+>  }
+>  
+> -static inline void unregister_rpmsg_device(struct rpmsg_device *dev)
+> +static inline int rpmsg_unregister_device(struct device *parent,
+> +					  struct rpmsg_channel_info *chinfo)
+>  {
+>  	/* This shouldn't be possible */
+>  	WARN_ON(1);
+> +
+> +	return -ENXIO;
+>  }
+>  
+>  static inline int __register_rpmsg_driver(struct rpmsg_driver *drv,
+> 
+
+
+Reviewed-by:  Arnaud Pouliquen <arnaud.pouliquen@st.com>
 
 Thanks,
-
-Daniel
+Arnaud
