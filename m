@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B3D28F158
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6D828F15B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728774AbgJOLc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:32:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:51945 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726996AbgJOLcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:32:02 -0400
-IronPort-SDR: uG6Rv/2onncRIPPeF8mtgQMuBtoLuEhE0JwRqksdMh/esurFtcw2FM7uBobPKmzqKe8O39M33c
- U2GuNnfEPE+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="162859527"
+        id S1729881AbgJOLeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:34:18 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:27797 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729372AbgJOLeR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 07:34:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1602761657; x=1634297657;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=K5125LgfPLC5YBwpxAqbylzaGWeeFwuMFZBxHzf/rTw=;
+  b=bQvRXvcj7pgPbw19sSkA/pzqbm0gH6VVHFa1HA53Ulp6vZZ3HieSUO+b
+   WOLr+l0UvFPJThCUdsj4GJDHqMOcu6fJa+YETGfU3wodZfmSGYDWtiPYv
+   SQ+klvN7ALMoDD+gSPIRrSJgwPyi3uw2J0NQye8WGYOqPUF1trI/HwjJD
+   ewhlPWhXSSCNIkWJjSVGUDQZXD02ELzlYZuDJlXuLw5AJmRueIjtE/lc3
+   v7x+1bs39+t5DjsU829+XiCAVcmSP8lrUFIU+ImcZsE0+mevBpfT52lLH
+   945J9R0M8vL49CQKl9Jw/3PTBVzgpvT1zpu6Myi+Y50G9SZvUtwbTdzCF
+   Q==;
+IronPort-SDR: silQg3D64j1zcpKN82/PLWHWwCF4ekn8C/wv8sZGx2x9JRF6qfuKmUb5leQtBeH/ltt6oklf+0
+ N/9WE4F1CDSkphzciApwDqc2YTUehlIw6asLkit9bNDvDbIVVDfqyCF22MJLju1yJ6DxPpPLPd
+ qhKnnLYfhbxpcObemiO52iFV7ieShceVAXNUdhhCu57wnQZDRWCPWwy2/I7kkhcQNPBgz6FvKb
+ uO86zTUoG8aPv2sGpN+KDqN8IiaeXMp3Q81RSU1W1pOlxtN8QVi9Na7rctYjRTPOdA37bWJ1w1
+ d8Q=
 X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
-   d="scan'208";a="162859527"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 04:31:59 -0700
-IronPort-SDR: gjXN4EMTaMtAsC6kyIaQL+CpHnMMbFXQGl2oEvfG+5m72mH7GcvHpMNdMkGNzkzZbT+hDoR3KX
- 9aXKPouyWisA==
-X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
-   d="scan'208";a="531219798"
-Received: from rjwysock-mobl1.ger.corp.intel.com (HELO [10.249.151.178]) ([10.249.151.178])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 04:31:58 -0700
-Subject: Re: DPTF_POWER and DPTF_PCH_FIVR
-To:     Borislav Petkov <bp@alien8.de>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>, rafael@kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-References: <20201015095311.GA11838@zn.tnic> <20201015095851.GB11838@zn.tnic>
-From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
- 173, 80-298 Gdansk
-Message-ID: <d6cdf27b-04ef-7bc8-03ef-2115ca08bffe@intel.com>
-Date:   Thu, 15 Oct 2020 13:31:55 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+   d="scan'208";a="29986693"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Oct 2020 04:34:17 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 15 Oct 2020 04:34:16 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 15 Oct 2020 04:34:16 -0700
+Date:   Thu, 15 Oct 2020 11:32:36 +0000
+From:   Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <roopa@nvidia.com>, <nikolay@nvidia.com>,
+        <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>,
+        <UNGLinuxDriver@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: Re: [PATCH net-next v5 00/10] net: bridge: cfm: Add support for
+ Connectivity Fault Management(CFM)
+Message-ID: <20201015113236.iubkh5brahbkttio@soft-test08>
+References: <20201012140428.2549163-1-henrik.bjoernlund@microchip.com>
+ <20201014155847.2eb150f5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
-In-Reply-To: <20201015095851.GB11838@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20201014155847.2eb150f5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/2020 11:58 AM, Borislav Petkov wrote:
-> On Thu, Oct 15, 2020 at 11:53:11AM +0200, Borislav Petkov wrote:
->> Dudes,
->>
->> what are those new symbols in Kconfig and why do they wanna get enabled
->> on my box when doing oldconfig? Depends on X86? Really, that widespread?
+Thanks for your review. Comments below.
+Regards
+Henrik
 
-Well, they depend on ACPI too and it doesn't look like there is anything 
-more fine grained that could be used here.
+The 10/14/2020 15:58, Jakub Kicinski wrote:> 
+> On Mon, 12 Oct 2020 14:04:18 +0000 Henrik Bjoernlund wrote:
+> > Connectivity Fault Management (CFM) is defined in 802.1Q section 12.14.
+> >
+> > Connectivity Fault Management (CFM) comprises capabilities for detecting, verifying,
+> > and isolating connectivity failures in Virtual Bridged Networks.
+> > These capabilities can be used in networks operated by multiple independent organizations,
+> > each with restricted management access to each other’s equipment.
+> 
+> Please wrap the cover letter and commit messages to 70 chars.
+> 
 
-Also I'm not sure if adding ACPI_DPTF (bool, disabled by default and 
-depending on x86) would help a lot.
+I will do that,
 
+> > Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
+> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
+> 
+> You have two spaces after the name in many tags.
 
->> The help text doesn't say why do I need this...
-> And that thing in sysfs:
->
-> "/sys/bus/platform/drivers/DPTF Platform Power"
->
-> has spaces in the name. What's going on?!
->
-Obviously an oversight on my part, sorry.
+I will change as requested.
 
-I think that changing it to "dptf_power" (and analogously for the FIVR 
-participant driver) should work.  Srinivas?
-
-
+-- 
+/Henrik
