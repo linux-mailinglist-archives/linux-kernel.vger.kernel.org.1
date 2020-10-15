@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3FB28F2BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8F328F2C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgJOMy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52478 "EHLO mail.kernel.org"
+        id S1727281AbgJOM6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:58:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60014 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726121AbgJOMy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:54:28 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48B7D22255;
-        Thu, 15 Oct 2020 12:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602766467;
-        bh=NcUL1CTctdE7P/Sj8XsgJi8V3Z0bZe+mgD0cuXp52DQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M1mYj4CzGCgMh9p2hUTnktuqWiAKyeNB7WQrv5jgEqX0PaMvspxq+c0nv6+BQ5rJ/
-         1FiRegvPIrZ8pVBCaGaohLiN51MH2T3yTqbBrv0tUP32dEZ0d9BlIw/lDu6gZJlfB4
-         jEf6ZUUniXW3Nr2GA7zO+JqjzUqA4b74kuBTC08o=
-Date:   Thu, 15 Oct 2020 14:55:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Some small cleanup/fixes for SPMI driver
-Message-ID: <20201015125500.GA4026727@kroah.com>
-References: <cover.1601360391.git.mchehab+huawei@kernel.org>
- <160167373743.310579.11803841154320142421@swboyd.mtv.corp.google.com>
- <20201003105653.GA117381@kroah.com>
- <160271079652.884498.2384315265584338952@swboyd.mtv.corp.google.com>
+        id S1726121AbgJOM6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:58:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DD768ABD1;
+        Thu, 15 Oct 2020 12:58:53 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160271079652.884498.2384315265584338952@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 15 Oct 2020 14:58:53 +0200
+From:   osalvador@suse.de
+To:     Shijie Luo <luoshijie1@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linmiaohe@huawei.com,
+        linfeilong@huawei.com
+Subject: Re: [PATCH] mm: fix potential pte_unmap_unlock pte error
+In-Reply-To: <20201015121534.50910-1-luoshijie1@huawei.com>
+References: <20201015121534.50910-1-luoshijie1@huawei.com>
+User-Agent: Roundcube Webmail
+Message-ID: <a220bf939f0c9aece318197881d6f092@suse.de>
+X-Sender: osalvador@suse.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 02:26:36PM -0700, Stephen Boyd wrote:
-> Quoting Greg Kroah-Hartman (2020-10-03 03:56:53)
-> > On Fri, Oct 02, 2020 at 02:22:17PM -0700, Stephen Boyd wrote:
-> > > Quoting Mauro Carvalho Chehab (2020-09-28 23:22:11)
-> > > > Hi Stephen,
-> > > > 
-> > > > While double-checking against yesterday's linux-next, I noticed
-> > > > that those two patches weren't merge yet. 
-> > > > 
-> > > > As you replied to both with your Reviewed-by:, are you expecting
-> > > > them to be merged via someone's tree, or are you intending
-> > > > to merge them via your tree?
-> > > 
-> > > Per the maintainers file I am a reviewer not a maintainer of SPMI.
-> > > Usually Greg applies patches here. I can collect patches and send them
-> > > on up if that helps.
-> > 
-> > Who is the maintainer?  Having a "reviewer only" is confusing to
-> > everyone involved, as you might have someone who can review patches, but
-> > no one to actually merge them anywhere?
-> > 
-> > Not a good situation :(
-> > 
+On 2020-10-15 14:15, Shijie Luo wrote:
+> When flags don't have MPOL_MF_MOVE or MPOL_MF_MOVE_ALL bits, code 
+> breaks
+>  and passing origin pte - 1 to pte_unmap_unlock seems like not a good 
+> idea.
 > 
-> Ok. I can spin up an SPMI tree on kernel.org and make this change to the
-> MAINTAINERS file (plus whatever tree path I can make). Do you want me to
-> send you patches in email form as a pull request? I imagine the patch
-> load will be fairly low.
+> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+> Signed-off-by: linmiaohe <linmiaohe@huawei.com>
+> ---
+>  mm/mempolicy.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 3fde772ef5ef..01f088630d1d 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -571,7 +571,11 @@ static int queue_pages_pte_range(pmd_t *pmd,
+> unsigned long addr,
+>  		} else
+>  			break;
+>  	}
+> -	pte_unmap_unlock(pte - 1, ptl);
+> +
+> +	if (addr >= end)
+> +		pte = pte - 1;
+> +
+> +	pte_unmap_unlock(pte, ptl);
 
-email form is great, I can handle those easily.  IF you really want to
-create a git tree, I can pull from that too, but for low-volume stuff,
-it's usually not worth it.
+But this is still wrong, isn't it?
+Unless I am missing something, this is "only" important under 
+CONFIG_HIGHPTE.
 
-thanks,
+We have:
 
-greg k-h
+pte = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
+
+which under CONFIG_HIGHPTE does a kmap_atomoc.
+
+Now, we either break the loop in the first pass because of 
+!(MPOL_MF_MOVE | MPOL_MF_MOVE_ALL),
+or we keep incrementing pte by every pass.
+Either way is wrong, because the pointer kunmap_atomic gets will not be 
+the same (since we incremented pte).
+
+Or is the loop meant to be running only once, so pte - 1 will bring us 
+back to the original pte?
+
+
