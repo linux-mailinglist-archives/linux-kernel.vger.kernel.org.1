@@ -2,207 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F8F28EC85
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9939B28EC8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 07:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387487AbgJOE6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S1726360AbgJOFFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 01:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgJOE6R (ORCPT
+        with ESMTP id S1725935AbgJOFFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:58:17 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C480C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:58:16 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id x16so1789714ljh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 21:58:15 -0700 (PDT)
+        Thu, 15 Oct 2020 01:05:03 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2685C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 22:05:01 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id c3so1243067ybl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 22:05:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ARgqhuWJgBKVPlDxiUpgFCXHBc6+vc3xWY2ELMDeV+E=;
-        b=jlZHqT6sNfNMWBuwznhHHdxyJ0c02U+o6Csoo0lyR4588J9wbAkQfzLC28PFD9lClq
-         XsyTQNQiPnDGMbV1qthOuX4AIrFoOUVD5FiRIBU/zVODoGK/t06K0emws94Pk4viNbsV
-         u7BtZtk9paNaDDZSB2g8lhjvrcoHwBRIwFuO/vpZDUD42hL6LAT+u9yaup1Wpl6fMmVg
-         3/HJr43CdGGIKTBEdw5N2+0UioNiRw94BwhPdn/kFVm0fzcLxqydH0YvWLlZGf00qMwX
-         yABsUFpk67+29VKYaAe6GC/QVN3DjEol/X7BtcZ4CMQiMUMytMviNmY3OyCjcJspqcom
-         WYHA==
+        bh=SbYl9bPJ1YMr8h9G4MVZE8ZI/swm1pBRzaskkoxVQl4=;
+        b=Pv5XYd5MEsJIt7d+VKpiLOS2ItM4KF4A1jy27GbClY9ZKzsSQzGojKsdwxaLojI+Ji
+         ObhRkNR85+1ain3IYJ2F/k8GwRld4+YIIyDh+1JpJ4/O4ZNz0ytYcutwG19hI1bveVAb
+         tcPTSt8Ojlu2hsewbefiNTF13B9kXN/kXTM/pjRsffj8odM1FC0RUultb3zl7k1dfdwy
+         TzFbXka3xtyoD3JbTG1lXZYzfcW28QEnF3G4CVvRt1GXCvpX5do9guOeNm6xPnGYIMRY
+         ph33uG6O3746d6tW+ggbOpULZa+wA1FLDEDo9KCwXC8vwmdMu6aYzsXhj8Vf4oEOpcVV
+         E84Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ARgqhuWJgBKVPlDxiUpgFCXHBc6+vc3xWY2ELMDeV+E=;
-        b=XoiiGietS4kz8+Ipv3pJsmyLoc6E6yNTBOCjc+LwzoS22WazEQt+H1dJgAZd0sc3t9
-         Rx2imhMV/E8jAc3fedkR+NdEupmc6CbZlgqRC47PF5kTLPodrCKPxtQXRUwiC/xjBJ5d
-         4qBaCPeMLAbBv84cudRsBeggCUWU1tm6kfQJA09jHHSjX8+kqTs7xH4O4YlZJ+MhnyhN
-         upjftg0EmTl5QvtcYldfQ7tVsJIgmH55nA6tFKgw2r+Lute2kyrAwevUhPgwQGYxIANW
-         1dPKVmn2mrR+sNFc3esscNKJSJo7XgDLQpJIN1LIrC0h3bClub/9LrSvLE32iTmXuug9
-         Tx5w==
-X-Gm-Message-State: AOAM531hoBjDpZ+OwnJfOagZZHCpF2pD6xd1gT2UMx5TGJito1TKMcro
-        9MyCj1yFBEIu4Kq1x/aeS1GgZhximOsPmPr3UqRLig==
-X-Google-Smtp-Source: ABdhPJyZNCn/C2YqRNcW/gqfGXjeYLfj+Z/ZOqGrssHEukXnkxVx6V70NcnazmxXOll+joqb2ca0vMizBXVcnRZjvXI=
-X-Received: by 2002:a2e:88cb:: with SMTP id a11mr585052ljk.304.1602737894449;
- Wed, 14 Oct 2020 21:58:14 -0700 (PDT)
+        bh=SbYl9bPJ1YMr8h9G4MVZE8ZI/swm1pBRzaskkoxVQl4=;
+        b=Yt1XNmByoJFqQb9Zzh2CExd7oCzB/nYVQwf4onS6kRYrTZPpjFNM91NClRINYqFUep
+         jfNqccJL0ny/Ol94Xxs+NMvrXYQkgs+IhDRWx9YpTdF20LBjQQQypc1arSaoHNJxLphR
+         7m/TkUxl5wawLrNSVyNIU/atN1b9pD349+i3tRMmb1OLRUIoIRNnjdafvgvvyoAb4Joo
+         z2J0pozEoVqYdUJUh+/po1m9qI0/s4r8K3csJB8Vfu4R6emH8NJMPAhYpF9DaIY2HsJy
+         G+GQzKrITW/BwSrkS6rn2mpU0pFGCBbBzBGrL6HecS09HYiWz3xSicN6cYIpfUIkPw66
+         vAxg==
+X-Gm-Message-State: AOAM531PkeCPSq1qanU6njHbOPYSuUr0LoCjDfLtralkyl62ifud1o8U
+        6fGus3w2VblJ7QE0jz7AWLNG10c3+ce/UgbFe5/IOQ==
+X-Google-Smtp-Source: ABdhPJwSQedKrg9WEVBvmocSg3JKU+bAer0Pc6/xAaf+qz4InDcuYXwPOx6pzs1eifNy6jhG9Ea/djkvL3XcbfQiOI0=
+X-Received: by 2002:a25:b9cc:: with SMTP id y12mr2981756ybj.228.1602738300624;
+ Wed, 14 Oct 2020 22:05:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200902064407.30712-1-sumit.semwal@linaro.org>
- <20200902064407.30712-2-sumit.semwal@linaro.org> <20201014184443.GA835495@ravnborg.org>
-In-Reply-To: <20201014184443.GA835495@ravnborg.org>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Thu, 15 Oct 2020 10:28:03 +0530
-Message-ID: <CAO_48GHy3KjSoxKigejG61Q5FdeTj-EebHjY8-2WAS_DAyJ1DA@mail.gmail.com>
-Subject: Re: [PATCH v7 1/2] dt-bindings: display: panel: Add bindings for
- Novatek nt36672a
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
+References: <20201014191235.7f71fcb4@xhacker.debian> <CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com>
+ <20201015120206.41b6a454@xhacker.debian>
+In-Reply-To: <20201015120206.41b6a454@xhacker.debian>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 14 Oct 2020 22:04:24 -0700
+Message-ID: <CAGETcx_jzF_iV5oJQ8BuDBu0b5Z8G=uL0DhA4uS5U9XLuYryjg@mail.gmail.com>
+Subject: Re: fw_devlink on will break all snps,dw-apb-gpio users
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
-
-On Thu, 15 Oct 2020 at 00:14, Sam Ravnborg <sam@ravnborg.org> wrote:
+On Wed, Oct 14, 2020 at 9:02 PM Jisheng Zhang
+<Jisheng.Zhang@synaptics.com> wrote:
 >
-> Hi Sumit.
-> On Wed, Sep 02, 2020 at 12:14:06PM +0530, Sumit Semwal wrote:
-> > Novatek nt36672a is a display driver IC that can drive DSI panel. It
-> > is also present in the Tianma video mode panel, which is a FHD+ panel
-> > with a resolution of 1080x2246 and 6.18 inches size. It is found in
-> > some of the Poco F1 phones.
-> >
-> > This patch adds the display driver for the IC, with support added for
-> > this tianma fhd video mode panel.
-> >
-> > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> I assume you will apply the patch yourself.
-
-Thanks, I will.
-
+> On Wed, 14 Oct 2020 10:29:36 -0700
+> Saravana Kannan <saravanak@google.com> wrote:
 >
->         Sam
-Best,
-Sumit.
+> > CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
 > >
-> > ---
-> > v2: remove ports node, making port@0 directly under panel@0 node.
-> > v3: updated to replace port@0 to just 'port'.
-> > v5: renamed to novatek,nt36672a, since the binding is for the IC and not
-> >       the panel.
-> > v6: v5 review comments incorporated.
-> >     - added enum for the compatible part, since it can be extended in
-> >       future.
-> >     - few cosmetic updates.
-> > ---
-> >  .../display/panel/novatek,nt36672a.yaml       | 87 +++++++++++++++++++
-> >  1 file changed, 87 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
 > >
-> > diff --git a/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml b/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
-> > new file mode 100644
-> > index 000000000000..d2170de6b723
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/display/panel/novatek,nt36672a.yaml
-> > @@ -0,0 +1,87 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/display/panel/novatek,nt36672a.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Novatek NT36672A based DSI display Panels
-> > +
-> > +maintainers:
-> > +  - Sumit Semwal <sumit.semwal@linaro.org>
-> > +
-> > +description: |
-> > +  The nt36672a IC from Novatek is a generic DSI Panel IC used to drive dsi
-> > +  panels.
-> > +  Right now, support is added only for a Tianma FHD+ LCD display panel with a
-> > +  resolution of 1080x2246. It is a video mode DSI panel.
-> > +
-> > +allOf:
-> > +  - $ref: panel-common.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:
-> > +         - tianma,fhd-video
-> > +      - const: novatek,nt36672a
-> > +    description: This indicates the panel manufacturer of the panel that is
-> > +      in turn using the NT36672A panel driver. This compatible string
-> > +      determines how the NT36672A panel driver is configured for the indicated
-> > +      panel. The novatek,nt36672a compatible shall always be provided as a fallback.
-> > +
-> > +  reset-gpios:
-> > +    description: phandle of gpio for reset line - This should be 8mA, gpio
-> > +      can be configured using mux, pinctrl, pinctrl-names (active high)
-> > +
-> > +  vddio-supply:
-> > +    description: phandle of the regulator that provides the supply voltage
-> > +      Power IC supply
-> > +
-> > +  vddpos-supply:
-> > +    description: phandle of the positive boost supply regulator
-> > +
-> > +  vddneg-supply:
-> > +    description: phandle of the negative boost supply regulator
-> > +
-> > +  reg: true
-> > +  port: true
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - vddi0-supply
-> > +  - vddpos-supply
-> > +  - vddneg-supply
-> > +  - reset-gpios
-> > +  - port
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |+
-> > +    #include <dt-bindings/gpio/gpio.h>
-> > +
-> > +    dsi0 {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        panel@0 {
-> > +            compatible = "tianma,fhd-video", "novatek,nt36672a";
-> > +            reg = <0>;
-> > +            vddi0-supply = <&vreg_l14a_1p88>;
-> > +            vddpos-supply = <&lab>;
-> > +            vddneg-supply = <&ibb>;
-> > +
-> > +            reset-gpios = <&tlmm 6 GPIO_ACTIVE_HIGH>;
-> > +
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +            port {
-> > +                tianma_nt36672a_in_0: endpoint {
-> > +                    remote-endpoint = <&dsi0_out>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> > +
-> > +...
-> > --
-> > 2.28.0
+> > On Wed, Oct 14, 2020 at 4:12 AM Jisheng Zhang
+> > <Jisheng.Zhang@synaptics.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > If set fw_devlink as on, any consumers of dw apb gpio won't probe.
+> > >
+> > > The related dts looks like:
+> > >
+> > > gpio0: gpio@2400 {
+> > >        compatible = "snps,dw-apb-gpio";
+> > >        #address-cells = <1>;
+> > >        #size-cells = <0>;
+> > >
+> > >        porta: gpio-port@0 {
+> > >               compatible = "snps,dw-apb-gpio-port";
+> > >               gpio-controller;
+> > >               #gpio-cells = <2>;
+> > >               ngpios = <32>;
+> > >               reg = <0>;
+> > >        };
+> > > };
+> > >
+> > > device_foo {
+> > >         status = "okay"
+> > >         ...;
+> > >         reset-gpio = <&porta, 0, GPIO_ACTIVE_HIGH>;
+> > > };
+> > >
+> > > If I change the reset-gpio property to use another kind of gpio phandle,
+> > > e.g gpio expander, then device_foo can be probed successfully.
+> > >
+> > > The gpio expander dt node looks like:
+> > >
+> > >         expander3: gpio@44 {
+> > >                 compatible = "fcs,fxl6408";
+> > >                 pinctrl-names = "default";
+> > >                 pinctrl-0 = <&expander3_pmux>;
+> > >                 reg = <0x44>;
+> > >                 gpio-controller;
+> > >                 #gpio-cells = <2>;
+> > >                 interrupt-parent = <&portb>;
+> > >                 interrupts = <23 IRQ_TYPE_NONE>;
+> > >                 interrupt-controller;
+> > >                 #interrupt-cells = <2>;
+> > >         };
+> > >
+> > > The common pattern looks like the devlink can't cope with suppliers from
+> > > child dt node.
 > >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > fw_devlink doesn't have any problem dealing with child devices being
+> > suppliers. The problem with your case is that the
+> > drivers/gpio/gpio-dwapb.c driver directly parses the child nodes and
+> > never creates struct devices for them. If you have a node with
+> > compatible string, fw_devlink expects you to create and probe a struct
+> > device for it. So change your driver to add the child devices as
+> > devices instead of just parsing the node directly and doing stuff with
+> > it.
+> >
+> > Either that, or stop putting "compatible" string in a node if you
+> > don't plan to actually treat it as a device -- but that's too late for
+> > this driver (it needs to be backward compatible). So change the driver
+> > to add of_platform_populate() and write a driver that probes
+> > "snps,dw-apb-gpio-port".
+> >
+>
+> Thanks for the information. The "snps,dw-apb-gpio-port" is never used,
+> so I just sent out a series to remove it.
+
+I'd actually prefer that you fix the kernel code to actually use it.
+So that fw_devlink can be backward compatible (Older DT + new kernel).
+The change is pretty trivial (I just have time to do it for you).
+
+-Saravana
