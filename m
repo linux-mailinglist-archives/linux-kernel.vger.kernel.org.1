@@ -2,115 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE4A28F867
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A90228F873
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732948AbgJOSWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:22:31 -0400
-Received: from mga18.intel.com ([134.134.136.126]:15889 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgJOSWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:22:31 -0400
-IronPort-SDR: g6db8tmLVNsA3WguSQbz1OaIiqLuG9+oAKN4lNVG2cU1NgneeezaaBTlApLUmFCy+g55NEcu3b
- p8AQjnw53t+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="154245935"
-X-IronPort-AV: E=Sophos;i="5.77,379,1596524400"; 
-   d="scan'208";a="154245935"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 11:22:30 -0700
-IronPort-SDR: r1XJlOIB6GjyjRP48YPoOq+HgmYrTrhpKoPNzRrPd0zwFUbHWNsgKJ7S2tMqjeVk5thVRFqjzL
- 0Qi5UeA0AOfg==
-X-IronPort-AV: E=Sophos;i="5.77,379,1596524400"; 
-   d="scan'208";a="521941691"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 11:22:25 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kT7uR-007d0I-CY; Thu, 15 Oct 2020 21:23:27 +0300
-Date:   Thu, 15 Oct 2020 21:23:27 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Marco Elver <elver@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        tglx@linutronix.de, geert@linux-m68k.org,
-        paul.gortmaker@windriver.com, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, arnd@arndb.de,
-        elfring@users.sourceforge.net, mhocko@suse.com
-Subject: Re: [PATCH v2] lib: kunit: add list_sort test conversion to KUnit
-Message-ID: <20201015182327.GA4077@smile.fi.intel.com>
-References: <20201015014616.309000-1-vitor@massaru.org>
- <20201015174823.GY4077@smile.fi.intel.com>
- <CADQ6JjVYiDQOJt1apsygEUK=530hfF9V+8QSZ_ntgvwYYoYqfQ@mail.gmail.com>
- <20201015182121.GZ4077@smile.fi.intel.com>
+        id S1728671AbgJOSZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbgJOSZS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:25:18 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED3FC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:25:17 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id j18so2546209pfa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/RIqn6irkqKDAEEWrlzQtXEDsj4m2zjqp4+RABIoG1Y=;
+        b=q7Gy3AiIP8tpjKySqh2jkBTHCO4bBXRCAl2e9B9yP9ygmxLfu3woG5/3GWx4pczdez
+         evqKQrknYNpvGxM3i0bRqZfAk8vxH1/sAOindvOXUvRPbBO+W387Q3w2ExfW6N4RoWCR
+         ahSM78Q0k22aC9DFV3rF2rCRCr+BvC5h3k8thewJfGY/CBwuJd2OT8CeVIKptRHHjRmP
+         o3i2xs4vCz/scFBi8keH3Q9GZWhSPAqwKFcG98CIzN4CnxEwy1pXRzeUel5QAkxgEbLT
+         2ZbWFRVZBfacKfgtK0Z5S4Td2tD9lZIRHeiZYEa3hdNqR6/iUigESA/V/WGeCOmUKhN9
+         td9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/RIqn6irkqKDAEEWrlzQtXEDsj4m2zjqp4+RABIoG1Y=;
+        b=Cx4wSnjqwzeLFmpKKAEG5Ofl4C+lYDukdO/u3jNH27+sKK93L1kWEBdRNHuqpn7aXx
+         o65IzPm7wXuRRA4ooTOMlk907VDREbUi7LmqC5njZw1NJ3b5pxDWxIeBDxzmGTgbeo3s
+         8ZKIGEo8Vrdna5PoegIdRFRJ1/Leq1pknN7J5fOSXNUfisqtjI1eteTH7yhRNfN1p9Nr
+         CcovwhgUjgMbNMhCBABiZk6MVVfSIAYdhzCuFBMhH09g+JIha5LrdALIooJzSHCkYASL
+         hwft+lekewMQlF4vcNDetsOfn3fvsiBLACMeocpiVUf+6r2CY2K+29WAf/rsUEAGgVJl
+         mZRw==
+X-Gm-Message-State: AOAM532Wd2IN30gfNqBg43QvYBCxLcClwOl40aZJxLGO/IbKKkApP2Ck
+        CxXzOSjK+32ee9mIdtiip0JRn0by0sTsTSzYp2xnGA==
+X-Google-Smtp-Source: ABdhPJxWnPRbwt3E1pCAQwD7pYH7Gyelsc4G0il2Hvng24uQ9bgykSOe2apeWF/aOnMIhD2k0Dgc7tFjhDrF58/bZqc=
+X-Received: by 2002:a65:6858:: with SMTP id q24mr143307pgt.10.1602786316973;
+ Thu, 15 Oct 2020 11:25:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015182121.GZ4077@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CAKwvOdkLvxeYeBh7Kx0gw7JPktPH8A4DomJTidUqA0jRQTR0FA@mail.gmail.com>
+ <20201015181340.653004-1-nivedita@alum.mit.edu>
+In-Reply-To: <20201015181340.653004-1-nivedita@alum.mit.edu>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 15 Oct 2020 11:25:05 -0700
+Message-ID: <CAKwvOdk_Zvqb_h7Dksu=x2QvxhLpr0rvaMSdshKKTV7NBrv9HA@mail.gmail.com>
+Subject: Re: [PATCH] compiler.h: Clarify comment about the need for barrier_data()
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@aculab.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 09:21:21PM +0300, Andy Shevchenko wrote:
-> On Thu, Oct 15, 2020 at 02:59:05PM -0300, Vitor Massaru Iha wrote:
-> > On Thu, Oct 15, 2020 at 2:47 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Wed, Oct 14, 2020 at 10:46:16PM -0300, Vitor Massaru Iha wrote:
-> > > > This adds the conversion of the runtime tests of test_list_sort,
-> > > > from `lib/test_list_sort.c` to KUnit tests.
-> > >
-> > > >  rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
-> > >
-> > > One more thing. The documentation [1] doesn't specify any name conventions.
-> > > So, please leave file name untouched.
-> > >
-> > > [1]: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
-> > 
-> > This convention hasn't yet entered the Torvaldos tree, but it is in
-> > the Shuah tree: [1]
-> > 
-> > +Test File and Module Names
-> > +==========================
-> > +
-> > +KUnit tests can often be compiled as a module. These modules should be named
-> > +after the test suite, followed by ``_test``. If this is likely to conflict with
-> > +non-KUnit tests, the suffix ``_kunit`` can also be used.
-> > +
-> > +The easiest way of achieving this is to name the file containing the test suite
-> > +``<suite>_test.c`` (or, as above, ``<suite>_kunit.c``). This file should be
-> > +placed next to the code under test.
-> > +
-> > +If the suite name contains some or all of the name of the test's parent
-> > +directory, it may make sense to modify the source filename to reduce
-> > redundancy.
-> > +For example, a ``foo_firmware`` suite could be in the ``foo/firmware_test.c``
-> > +file.
-> > 
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=2a41fc52c21b6ece49921716bd289bfebaadcc04
-> 
-> I see.
-> 
-> Can the rest of documentation be consistent with this? It seems half-baked,
-> since examples show something different.
-> 
-> (Entire documentation if full of example-test.c)
+On Thu, Oct 15, 2020 at 11:13 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> Be clear about @ptr vs the variable that @ptr points to, and add some
+> more details as to why the special barrier_data() macro is required.
+>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-Also it doesn't really clear about the test cases against header files, like
-for list.h or bits.h. (There is no c-file and I'm not sure one desires to have
-include/linux/*_kunit.c)
+Thanks for this distinct cleanup.
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>  include/linux/compiler.h | 33 ++++++++++++++++++++++-----------
+>  1 file changed, 22 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> index 93035d7fee0d..d8cee7c8968d 100644
+> --- a/include/linux/compiler.h
+> +++ b/include/linux/compiler.h
+> @@ -86,17 +86,28 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+>
+>  #ifndef barrier_data
+>  /*
+> - * This version is i.e. to prevent dead stores elimination on @ptr
+> - * where gcc and llvm may behave differently when otherwise using
+> - * normal barrier(): while gcc behavior gets along with a normal
+> - * barrier(), llvm needs an explicit input variable to be assumed
+> - * clobbered. The issue is as follows: while the inline asm might
+> - * access any memory it wants, the compiler could have fit all of
+> - * @ptr into memory registers instead, and since @ptr never escaped
+> - * from that, it proved that the inline asm wasn't touching any of
+> - * it. This version works well with both compilers, i.e. we're telling
+> - * the compiler that the inline asm absolutely may see the contents
+> - * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
+> + * This version is to prevent dead stores elimination on @ptr where gcc and
+> + * llvm may behave differently when otherwise using normal barrier(): while gcc
+> + * behavior gets along with a normal barrier(), llvm needs an explicit input
+> + * variable to be assumed clobbered.
+> + *
+> + * Its primary use is in implementing memzero_explicit(), which is used for
+> + * clearing temporary data that may contain secrets.
+> + *
+> + * The issue is as follows: while the inline asm might access any memory it
+> + * wants, the compiler could have fit all of the variable that @ptr points to
+> + * into registers instead, and if @ptr never escaped from the function, it
+> + * proved that the inline asm wasn't touching any of it. gcc only eliminates
+> + * dead stores if the variable was actually allocated in registers, but llvm
+> + * reasons that the variable _could_ have been in registers, so the inline asm
+> + * can't reliably access it anyway, and eliminates dead stores even if the
+> + * variable is actually in memory.
+> + *
+> + * This version works well with both compilers, i.e. we're telling the compiler
+> + * that the inline asm absolutely may see the contents of the variable pointed
+> + * to by @ptr.
+> + *
+> + * See also: https://llvm.org/bugs/show_bug.cgi?id=15495#c5
+>   */
+>  # define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
+>  #endif
+> --
+> 2.26.2
+>
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+~Nick Desaulniers
