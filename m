@@ -2,76 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296E528FAFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D3728FB00
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731165AbgJOWBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:01:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44169 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730833AbgJOWBI (ORCPT
+        id S1731403AbgJOWB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727518AbgJOWB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 18:01:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602799267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pDWmqUHLp8FIGfU/X7rfOUyiGs+RfGnhGhcKMN8cq6Q=;
-        b=IITYNeQFrsh506dWiAWp2hJfdbSfbaFOISZQ5YjcScgUs189+EifMmMferuHK9m1gHRuw9
-        QrKHAEH4x8zUA9Dpo2R3Sa6VuVEopgITfAFq3SXkUwx37lZqNbZAHQ8QMBs1NZxuDHDjg5
-        Hk+0L0qOqaRrI5shGSPzlB1lPXOYN4Y=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-465-yL2Wrpx9PYWrszoQ2VvMXw-1; Thu, 15 Oct 2020 18:01:05 -0400
-X-MC-Unique: yL2Wrpx9PYWrszoQ2VvMXw-1
-Received: by mail-ot1-f69.google.com with SMTP id e6so158874otl.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:01:05 -0700 (PDT)
+        Thu, 15 Oct 2020 18:01:29 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1975CC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:01:27 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id q9so1066785iow.6
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mzwJk/1YT7Qs2X5Zd056Q/R8AqhXJAI5UxwwaHjH+vs=;
+        b=Q5v+MJP2jA3lqaEUWV2NI39c+fTXkKRxXA+hTRgHLFAMpYP1fl7MExAjahQSLh6u3N
+         40GQxX+JMymhrdr7lsMKEWuatZHH59WXDhKeZZ7UoIj2rgwKn3EtG3W3kx1wc7BLEZl/
+         ar1Ku8iuHFIT2LAG1klKMDfTtZrvbTJrRXUJtWXkfYWpYb7peI3G/0QgLLAdqrlbbDyg
+         /zj9KC6C4fOfQAFUF4lEMzcS2qgXEmoMEi1XlVDyIwMBi8AT8afeERnRlp5F061Y+aqE
+         zVmPf8Qg8OucmbgmM897qdP//3vGX4QnOUhKGazUIllIx+RjXUVXT1tR6aE3m1goe1bl
+         s6GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=pDWmqUHLp8FIGfU/X7rfOUyiGs+RfGnhGhcKMN8cq6Q=;
-        b=CmGaUSfT2jlpIQ3CCboI7CGX9HdK+NjNsUl5F25b2OdH1NydFpeGCKkiVl7W8BL1RL
-         fN33dXM0pJsGbVVMhBA8wbwV0DLv9KFx1DDVlaW2Ulg/RFnuN39YiIsuG2fP54E4ryg9
-         TM8wKhDGOsEvt9iFTCOo8Wi4JTDtV9bsdX6bd5U137SeVlmAyVNB2CjXwzunx1/xu/OF
-         9JmJTPrCtO3Ci1x4UW1bBHIM6m8k39m//TbXCZp4Mi4610C4cf4EpzOHcuqKROrWiYWh
-         LSyLafkWrHQosdxPIJvPKRRNPEcX8uWk1RK+ISl3ZWehhrfcKOVmh42L7mSISugFrWlp
-         qfCw==
-X-Gm-Message-State: AOAM532YUErFEkrJpE6iinzTJqyjdJPxGbR/wgNxjUZz+sfl3qhdbUa5
-        fM2IxNGWvxJbEo+BFWcUp1EIRzcchJzUTVBlnZfF2HqxaZmkSqxqO5Li88AENQuqMTGtnrJnDC9
-        ymHU5IhZ2diwjTvh4lwTOnsFv
-X-Received: by 2002:a9d:6847:: with SMTP id c7mr417950oto.134.1602799264433;
-        Thu, 15 Oct 2020 15:01:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxux9nnpe8794oowHdNnMJ76DKX1MNKqZBhVeSffzj8tYw+EXRmhyjkJwc1tly4S0UqOUKlAQ==
-X-Received: by 2002:a9d:6847:: with SMTP id c7mr417936oto.134.1602799264234;
-        Thu, 15 Oct 2020 15:01:04 -0700 (PDT)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id v123sm178673oif.29.2020.10.15.15.01.03
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=mzwJk/1YT7Qs2X5Zd056Q/R8AqhXJAI5UxwwaHjH+vs=;
+        b=XVpHAgP+QZQqTXubfbFRy+MCe8uMIXhVcmieJSgZQ6BVx2X+OGMZjphAMlioJOQS+f
+         XzG+1FkAr7viNRzEpvph2aur3n73QaKeruxE0ZlLliAg9wFrVpKSHoUYAffivJaFN9rk
+         Ap3DafNDjn1rObSPcVr5fmAGgxI+lbu49+07nvin0s4VKqCt6L2iKvDd8M2G21yjWsaA
+         cpmTQPrCCLeg4Zp0XhgUQH35A1nOZiR/hzClotF4yv/SnPR+dMUWF25z0vIJ4Ja3RmV7
+         SYjfULCadlNWM0eT+XuGmpB/A8pAUZ23Dfy9BgxXFSZl6v10LRsK1InvWuwSnds+hOaB
+         Pwqg==
+X-Gm-Message-State: AOAM5337LenwOmY6GF5PuVbeKYF4TW0P+0g8fPhdE0l96M3zeIii+jSr
+        clvZSKWWNq+ZaAQGERnrMSs=
+X-Google-Smtp-Source: ABdhPJzp2cRPxsz0xe8MujS2MyCbunZ+VNlSPfH65gbodnJhAtohIzXiCht/MsdsO8fASXTGiBvciQ==
+X-Received: by 2002:a6b:1497:: with SMTP id 145mr205044iou.202.1602799286358;
+        Thu, 15 Oct 2020 15:01:26 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id h14sm267428ilc.38.2020.10.15.15.01.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 15:01:03 -0700 (PDT)
-References: <20201015214430.17937-1-jsnitsel@redhat.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     linux-kernel@vger.kernel.org, jarkko@kernel.org,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
-In-reply-to: <20201015214430.17937-1-jsnitsel@redhat.com>
-Date:   Thu, 15 Oct 2020 15:01:02 -0700
-Message-ID: <87imbbtaht.fsf@jsnitsel.users.ipa.redhat.com>
+        Thu, 15 Oct 2020 15:01:25 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 15 Oct 2020 18:01:23 -0400
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] compiler.h: Clarify comment about the need for
+ barrier_data()
+Message-ID: <20201015220123.GA919128@rani.riverdale.lan>
+References: <CAKwvOdkLvxeYeBh7Kx0gw7JPktPH8A4DomJTidUqA0jRQTR0FA@mail.gmail.com>
+ <20201015181340.653004-1-nivedita@alum.mit.edu>
+ <72958fd25e33490181b0df9413ec08b4@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <72958fd25e33490181b0df9413ec08b4@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 15, 2020 at 09:09:11PM +0000, David Laight wrote:
+> From: Arvind Sankar
+> > Sent: 15 October 2020 19:14
+> > 
+> > Be clear about @ptr vs the variable that @ptr points to, and add some
+> > more details as to why the special barrier_data() macro is required.
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > ---
+> >  include/linux/compiler.h | 33 ++++++++++++++++++++++-----------
+> >  1 file changed, 22 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> > index 93035d7fee0d..d8cee7c8968d 100644
+> > --- a/include/linux/compiler.h
+> > +++ b/include/linux/compiler.h
+> > @@ -86,17 +86,28 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+> > 
+> >  #ifndef barrier_data
+> >  /*
+> > - * This version is i.e. to prevent dead stores elimination on @ptr
+> > - * where gcc and llvm may behave differently when otherwise using
+> > - * normal barrier(): while gcc behavior gets along with a normal
+> > - * barrier(), llvm needs an explicit input variable to be assumed
+> > - * clobbered. The issue is as follows: while the inline asm might
+> > - * access any memory it wants, the compiler could have fit all of
+> > - * @ptr into memory registers instead, and since @ptr never escaped
+> > - * from that, it proved that the inline asm wasn't touching any of
+> > - * it. This version works well with both compilers, i.e. we're telling
+> > - * the compiler that the inline asm absolutely may see the contents
+> > - * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
+> > + * This version is to prevent dead stores elimination on @ptr where gcc and
+> > + * llvm may behave differently when otherwise using normal barrier(): while gcc
+> > + * behavior gets along with a normal barrier(), llvm needs an explicit input
+> > + * variable to be assumed clobbered.
+> > + *
+> > + * Its primary use is in implementing memzero_explicit(), which is used for
+> > + * clearing temporary data that may contain secrets.
+> > + *
+> > + * The issue is as follows: while the inline asm might access any memory it
+> > + * wants, the compiler could have fit all of the variable that @ptr points to
+> > + * into registers instead, and if @ptr never escaped from the function, it
+> > + * proved that the inline asm wasn't touching any of it. gcc only eliminates
+> > + * dead stores if the variable was actually allocated in registers, but llvm
+> > + * reasons that the variable _could_ have been in registers, so the inline asm
+> > + * can't reliably access it anyway, and eliminates dead stores even if the
+> > + * variable is actually in memory.
+> 
+> I think I'd just say something like:
+> 
+> Although the compiler must assume a "memory" clobber may affect all
+> memory, local variables (on stack) cannot actually be visible to the
+> asm unless their address has been passed to an external function.
+> So the compiler may assume such variables cannot be affected by
+> a normal asm volatile(::"memory") barrier().
+> Passing the address of the local variables to the asm barrier
+> is enough to tell the compiler that the asm can 'see' the variables
+> (and spill anything held in registers to the stack) so that
+> the "memory" clobber has the expected effect.
+> 
+> This is necessary to get llvm to do a memset() of on-stack data
+> at the end of a function to clear memory that contains secrets.
+> 
+> 	David
 
-James should this get tacked on the end of your patchset?
-
-Regards,
-Jerry
-
+I think it's helpful to have the more detailed explanation about
+register variables -- at first glance, it's a bit mystifying as to why
+the compiler would think that the asm can't access the stack. Spilling
+registers to the stack is actually an undesirable side-effect of the
+workaround.
