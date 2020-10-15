@@ -2,89 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D0528F797
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DA028F79C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404939AbgJORXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:23:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41736 "EHLO mail.kernel.org"
+        id S1728626AbgJOR0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 13:26:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404921AbgJORXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:23:20 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        id S1726147AbgJOR0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 13:26:34 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BADE22210;
-        Thu, 15 Oct 2020 17:23:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DB1822210;
+        Thu, 15 Oct 2020 17:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602782599;
-        bh=k4ODjt/wmgauVv2aKNMBrX9hKge0dnalAGGU9/9ApwA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=PyX5/uQkLInEUeWfvFCuetg3mdhDiWE+CBxibJM1pYL97/ddyLt+uy6pfOO/4LX6y
-         /ZZPSmQN0HTPaQrhdfbPP5fwaD/0tBsXryFdplErv12TK7jnGlNE5URFKJkhfNe0Lz
-         wpk/JCmCkZob7aOLRtuJf43z8K/BJzWbwZ+Gal3w=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A10D3352078F; Thu, 15 Oct 2020 10:23:18 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 10:23:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Qian Cai <cai@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
-Message-ID: <20201015172318.GA3705@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201013162650.GN3249@paulmck-ThinkPad-P72>
- <20201013193025.GA2424@paulmck-ThinkPad-P72>
- <20201014183405.GA27666@paulmck-ThinkPad-P72>
- <20201014215319.GF2974@worktop.programming.kicks-ass.net>
- <20201014221152.GS3249@paulmck-ThinkPad-P72>
- <20201014223954.GH2594@hirez.programming.kicks-ass.net>
- <20201014235553.GU3249@paulmck-ThinkPad-P72>
- <20201015034128.GA10260@paulmck-ThinkPad-P72>
- <20201015094926.GY2611@hirez.programming.kicks-ass.net>
- <20201015161501.GV3249@paulmck-ThinkPad-P72>
+        s=default; t=1602782793;
+        bh=3O/eM9/wBpQabvttClKuMGrs50v76YaYlpO9NRumXDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AZk+EfB5w2VcyWwWdRH6LPD8cCpS4IphLNnX7Om1oR33bkZPndkUmy9uwyrHk8edM
+         a2a/V4+t1Hfaf4s+/TPS7rPR7if7YnoeAWNkJKPHOeWRFOGmbTD/FXruAvsLxHeZcC
+         HCW1VYZmmBwCeOA+Sp9PdFSGL9WDhqjivei7Jg2I=
+Date:   Thu, 15 Oct 2020 19:27:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        linux-kernel@vger.kernel.org, stuyoder@gmail.com,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 00/13] bus/fsl-mc: Extend mc-bus driver
+ functionalities in preparation for mc-bus VFIO support
+Message-ID: <20201015172706.GA85496@kroah.com>
+References: <20200929085441.17448-1-diana.craciun@oss.nxp.com>
+ <8b3c1222-5dbd-5c51-ac10-8b1c1a69d2d5@nxp.com>
+ <20201002135512.GA3466738@kroah.com>
+ <9e5576fb-6e42-4216-286c-7afb7979ed0b@nxp.com>
+ <20201002140549.GA3492850@kroah.com>
+ <20201014202742.43b0ff18@x1.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015161501.GV3249@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201014202742.43b0ff18@x1.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 09:15:01AM -0700, Paul E. McKenney wrote:
-> On Thu, Oct 15, 2020 at 11:49:26AM +0200, Peter Zijlstra wrote:
-> > On Wed, Oct 14, 2020 at 08:41:28PM -0700, Paul E. McKenney wrote:
-
-[ . . . ]
-
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -1764,8 +1764,7 @@ static bool rcu_gp_init(void)
-> >  		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
-> >  		firstseq = READ_ONCE(rnp->ofl_seq);
-> >  		if (firstseq & 0x1)
-> > -			while (firstseq == smp_load_acquire(&rnp->ofl_seq))
-> > -				schedule_timeout_idle(1);  // Can't wake unless RCU is watching.
-> > +			smp_cond_load_relaxed(&rnp->ofl_seq, VAL == firstseq);
-> >  		smp_mb(); // Pair with barriers used when updating ->ofl_seq to even values.
-> >  		raw_spin_lock(&rcu_state.ofl_lock);
-> >  		raw_spin_lock_irq_rcu_node(rnp);
+On Wed, Oct 14, 2020 at 08:27:42PM -0600, Alex Williamson wrote:
+> On Fri, 2 Oct 2020 16:05:49 +0200
+> Greg KH <gregkh@linuxfoundation.org> wrote:
 > 
-> This would work, and would be absolutely necessary if grace periods
-> took only (say) 500 nanoseconds to complete.  But given that they take
-> multiple milliseconds at best, and given that this race is extremely
-> unlikely, and given the heavy use of virtualization, I have to stick
-> with the schedule_timeout_idle().
+> > On Fri, Oct 02, 2020 at 04:56:52PM +0300, Laurentiu Tudor wrote:
+> > > Hi Greg,
+> > > 
+> > > On 10/2/2020 4:55 PM, Greg KH wrote:  
+> > > > On Tue, Sep 29, 2020 at 02:06:41PM +0300, Laurentiu Tudor wrote:  
+> > > >>
+> > > >>
+> > > >> On 9/29/2020 11:54 AM, Diana Craciun wrote:  
+> > > >>> The vfio-mc bus driver needs some additional services to be exported by the
+> > > >>> mc-bus driver like:
+> > > >>> - a way to reset the DPRC container
+> > > >>> - driver_override support
+> > > >>> - functions to setup/tear down a DPRC
+> > > >>> - functions for allocating the pool of interrupts. In case of VFIO the
+> > > >>> interrupts are not configured at probe time, but later by userspace
+> > > >>> request
+> > > >>>
+> > > >>> v4 -> v5
+> > > >>> - dprc_celanup should not fail
+> > > >>>
+> > > >>> v3 -> v4
+> > > >>> - Rebased on the latest kernel.
+> > > >>> - Exported a dprc_remove function
+> > > >>>
+> > > >>> v2 -> v3
+> > > >>> - Add a new version for dprc_get_obj_region
+> > > >>> - Export the cacheability bus specific bits defines
+> > > >>>
+> > > >>> v1 -> v2
+> > > >>> - Remove driver_override propagation through various functions
+> > > >>> - Cache the DPRC API version
+> > > >>>
+> > > >>> The patches are related with "vfio/fsl-mc: VFIO support for FSL-MC
+> > > >>> devices" patches, but the series were split because they are targeting
+> > > >>> different subsystems. However, the mc-bus patches may suffer changes
+> > > >>> when addressing the VFIO review comments.
+> > > >>>
+> > > >>> The patches do not address the comment regarding moving driver_override
+> > > >>> in the core code. I prefer not to tie these patches on that change and
+> > > >>> address that separately.
+> > > >>>
+> > > >>> Bharat Bhushan (3):
+> > > >>>   bus/fsl-mc: add support for 'driver_override' in the mc-bus
+> > > >>>   bus/fsl-mc: Add dprc-reset-container support
+> > > >>>   bus/fsl-mc: Extend ICID size from 16bit to 32bit
+> > > >>>
+> > > >>> Diana Craciun (10):
+> > > >>>   bus/fsl-mc: Do no longer export the total number of irqs outside
+> > > >>>     dprc_scan_objects
+> > > >>>   bus/fsl-mc: Add a new parameter to dprc_scan_objects function
+> > > >>>   bus/fsl-mc: Set the QMAN/BMAN region flags
+> > > >>>   bus/fsl-mc: Cache the DPRC API version
+> > > >>>   bus/fsl-mc: Export dprc_scan/dprc_remove functions to be used by
+> > > >>>     multiple entities
+> > > >>>   bus/fsl-mc: Export a cleanup function for DPRC
+> > > >>>   bus/fsl-mc: Add a container setup function
+> > > >>>   bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
+> > > >>>   bus/fsl-mc: Export IRQ pool handling functions to be used by VFIO
+> > > >>>   bus/fsl-mc: Add a new version for dprc_get_obj_region command
+> > > >>>
+> > > >>>  drivers/bus/fsl-mc/dprc-driver.c      | 190 ++++++++++++++++----------
+> > > >>>  drivers/bus/fsl-mc/dprc.c             | 141 +++++++++++++++----
+> > > >>>  drivers/bus/fsl-mc/fsl-mc-allocator.c |  12 +-
+> > > >>>  drivers/bus/fsl-mc/fsl-mc-bus.c       |  64 ++++++++-
+> > > >>>  drivers/bus/fsl-mc/fsl-mc-private.h   |  31 ++---
+> > > >>>  drivers/bus/fsl-mc/mc-io.c            |   7 +-
+> > > >>>  include/linux/fsl/mc.h                |  41 +++++-
+> > > >>>  7 files changed, 359 insertions(+), 127 deletions(-)
+> > > >>>  
+> > > >>
+> > > >> For the series:
+> > > >> Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+> > > >> Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>  
+> > > > 
+> > > > Do you want me to take these patches in my tree, or are they going to
+> > > > Linus some other way?  
+> > > 
+> > > I'm prefectly fine with you picking up the patches through your tree.  
+> > 
+> > Great, now queued up.
 > 
-> In fact, I have on my list to force this race to happen on the grounds
-> that if it ain't tested, it don't work...
+> Hi Greg,
+> 
+> Diana has a vfio bus driver for fsl-mc devices queued up in my tree as
+> well.  After a linux-next build failure due to our branches being
+> applied in the wrong order, Stephen advised that the proper way to
+> handle this is to merge a shared branch with this series.  Do you have
+> a pull request imminent with this series or if not, would you mind
+> pushing such a branch?  Thanks,
 
-And it only too about 1000 seconds of TREE03 to make this happen, so we
-should be good just relying on rcutorture.  ;-)
+This should all now be in Linus's tree, so I don't think you need any
+shared branch anymore :)
 
-							Thanx, Paul
+thanks,
+
+greg k-h
