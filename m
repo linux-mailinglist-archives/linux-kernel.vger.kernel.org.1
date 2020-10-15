@@ -2,154 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6541928FA6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363E028FA70
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404916AbgJOVLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:11:11 -0400
-Received: from ozlabs.org ([203.11.71.1]:42139 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404899AbgJOVLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:11:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC2545Z67z9sTD;
-        Fri, 16 Oct 2020 08:11:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602796266;
-        bh=44fxF+oYrK483Ri1cbruRSDb4FKtT/C1VuszkiRraRw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J3zl6ox/h0n5QOD/mq3UcOmC213znPOBCHQ70JvBgPFvgIC7SobRR0uZVoExq8wB0
-         HJRBRL0HosYpUBwI8BAiIcITx1RO97vlTx9XOuhAGPcRuUNOh0ZwE4fArEBnw1Er/t
-         s4IfvRseq/cvv9QJFPLvB+/eEyLQoaXMhWbz9SkzJQnXQuxqpqd/pW0XfXeJPFhndx
-         vfUGJFeSvRGVuZrunSkXqsO60GNXygxMwrujsrftwfPqTeKjS7DSB7PzyV2t0ZUDow
-         qX6W3rMhVhHBEcubckhG4mPbAE+8mURN+qy94VEVNn01R1t+JxFs+KSb6vqhEHykWj
-         U1Rxml8E8rkMA==
-Date:   Fri, 16 Oct 2020 08:11:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the hmm tree
-Message-ID: <20201016081103.797fa111@canb.auug.org.au>
-In-Reply-To: <20201012151948.3a840c00@canb.auug.org.au>
-References: <20201006203508.3cb3d0e3@canb.auug.org.au>
-        <20201006164120.GI4734@nvidia.com>
-        <20201012151948.3a840c00@canb.auug.org.au>
+        id S2404942AbgJOVLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:11:52 -0400
+Received: from aer-iport-3.cisco.com ([173.38.203.53]:21778 "EHLO
+        aer-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404923AbgJOVLv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 17:11:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=5129; q=dns/txt; s=iport;
+  t=1602796309; x=1604005909;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QKebK94YF5cEd86XgeWb7fUHb+MisaI7RKCCk0/pS8w=;
+  b=WC8AHzlspHMLt62iZAc59DZhdmMcinFRGRz19KcyRKRRAqFtDlO9a1Rz
+   dqB6E0kkLFwuswdunGheEJRcg6pfMcuYqFhH9tlt580HE1fcuBapqf/yQ
+   h8+BnOFTPrUAiGH2Av0lSK0akz/0YvblE5ccUnkOxXyFx9BaSAJJPNrsa
+   o=;
+X-IPAS-Result: =?us-ascii?q?A0DeBADcuohf/xbLJq1ghFOBdAEgEiyNP4gXnCYLAQEBD?=
+ =?us-ascii?q?y8EAQGESoILJjgTAgMBAQEDAgMBAQEBBQEBAQIBBgRthWiFcgEBBCgLAUYFK?=
+ =?us-ascii?q?4EhgltLgl0grE+BdTOKW4E4iDeEYQEyBoFBP4ERgmJsijQEkCUEp0+CdJpfD?=
+ =?us-ascii?q?yKDFo9OjmaOSaU4gWsjgVdNIxU7gmlQGQ2OKxeOJj8DMAI2AgYKAQEDCY5IA?=
+ =?us-ascii?q?QE?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.77,380,1596499200"; 
+   d="scan'208";a="27953076"
+Received: from aer-iport-nat.cisco.com (HELO aer-core-1.cisco.com) ([173.38.203.22])
+  by aer-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 15 Oct 2020 21:11:30 +0000
+Received: from hce-anki.rd.cisco.com ([10.47.78.239])
+        by aer-core-1.cisco.com (8.15.2/8.15.2) with ESMTP id 09FLBSje020535;
+        Thu, 15 Oct 2020 21:11:28 GMT
+From:   Hans-Christian Noren Egtvedt <hegtvedt@cisco.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>, stable@vger.kernel.org
+Subject: [v5.8/bluetooth PATCH] Bluetooth: Disconnect if E0 is used for Level 4
+Date:   Thu, 15 Oct 2020 23:11:24 +0200
+Message-Id: <20201015211124.1187822-1-hegtvedt@cisco.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FBHmFb.fVVu/hjAcKh66QPz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Outbound-SMTP-Client: 10.47.78.239, [10.47.78.239]
+X-Outbound-Node: aer-core-1.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FBHmFb.fVVu/hjAcKh66QPz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-Hi all,
+E0 is not allowed with Level 4:
 
-On Mon, 12 Oct 2020 15:19:48 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Tue, 6 Oct 2020 13:41:20 -0300 Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Tue, Oct 06, 2020 at 08:35:08PM +1100, Stephen Rothwell wrote: =20
-> > > Hi all,
-> > >=20
-> > > After merging the hmm tree, today's linux-next build (arm
-> > > multi_v7_defconfig) failed like this:
-> > >=20
-> > >=20
-> > > Caused by commit
-> > >=20
-> > >   07da1223ec93 ("lib/scatterlist: Add support in dynamic allocation o=
-f SG table from pages")
-> > >=20
-> > > interacting with commit
-> > >=20
-> > >   707d561f77b5 ("drm: allow limiting the scatter list size.")
-> > >=20
-> > > from the drm tree.
-> > >=20
-> > > I have added the following merge fix patch
-> > >=20
-> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Date: Tue, 6 Oct 2020 20:22:51 +1100
-> > > Subject: [PATCH] lib/scatterlist: merge fix for "drm: allow limiting =
-the
-> > >  scatter list size."
-> > >=20
-> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > >  drivers/gpu/drm/drm_prime.c | 9 ++++++---
-> > >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > >=20
-> > > diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> > > index 11fe9ff76fd5..83ac901b65a2 100644
-> > > +++ b/drivers/gpu/drm/drm_prime.c
-> > > @@ -807,6 +807,7 @@ struct sg_table *drm_prime_pages_to_sg(struct drm=
-_device *dev,
-> > >  				       struct page **pages, unsigned int nr_pages)
-> > >  {
-> > >  	struct sg_table *sg =3D NULL;
-> > > +	struct scatterlist *sl;
-> > >  	size_t max_segment =3D 0;
-> > >  	int ret;
-> > > =20
-> > > @@ -820,11 +821,13 @@ struct sg_table *drm_prime_pages_to_sg(struct d=
-rm_device *dev,
-> > >  		max_segment =3D dma_max_mapping_size(dev->dev);
-> > >  	if (max_segment =3D=3D 0 || max_segment > SCATTERLIST_MAX_SEGMENT)
-> > >  		max_segment =3D SCATTERLIST_MAX_SEGMENT;
-> > > -	ret =3D __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
-> > > +	sl =3D __sg_alloc_table_from_pages(sg, pages, nr_pages, 0,
-> > >  					  nr_pages << PAGE_SHIFT,
-> > > -					  max_segment, GFP_KERNEL);
-> > > -	if (ret)
-> > > +					  max_segment, NULL, 0, GFP_KERNEL);
-> > > +	if (IS_ERR(sl)) {
-> > > +		ret =3D PTR_ERR(sl);
-> > >  		goto out;
-> > > +	}
-> > > =20
-> > >  	return sg;
-> > >  out:   =20
-> >=20
-> > This looks OK to me, thanks =20
->=20
-> This merge fix patch is now being applied to the merge of the drm tree
-> since the rdma tree (that is merged before the drm tree) has merged the
-> hmm tree.
+BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 3, Part C page 1319:
 
-This merge fix patch is now being applied to the merge of the rdma tree
-since the Linus has merged the drm tree.
+  '128-bit equivalent strength for link and encryption keys
+   required using FIPS approved algorithms (E0 not allowed,
+   SAFER+ not allowed, and P-192 not allowed; encryption key
+   not shortened'
 
---=20
-Cheers,
-Stephen Rothwell
+SC enabled:
 
---Sig_/FBHmFb.fVVu/hjAcKh66QPz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> HCI Event: Read Remote Extended Features (0x23) plen 13
+        Status: Success (0x00)
+        Handle: 256
+        Page: 1/2
+        Features: 0x0b 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+          Secure Simple Pairing (Host Support)
+          LE Supported (Host)
+          Secure Connections (Host Support)
+> HCI Event: Encryption Change (0x08) plen 4
+        Status: Success (0x00)
+        Handle: 256
+        Encryption: Enabled with AES-CCM (0x02)
 
------BEGIN PGP SIGNATURE-----
+SC disabled:
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+IuucACgkQAVBC80lX
-0Gximgf/f130z0WkHFE2Pb4vbcxFGAbA0iZNvgwg7M5P+skaaEmYFsqjkryS5DVH
-OH4CKxDm/tyjfJC4jyq3t6mRiNudTQzMyop/lUZVnIZVve7yYwv7dMm8cnZYFrzO
-aAmnCvGZdEyQAmoXIQWdCQkIWP64OxQ4ZpEoqLJ9r5dUaZuw3wdKv5HB4iA1JSzz
-+Vr0dwanRdZkF4SGLf8cMKTW4NulRSSwO8Ubt8mZwJV8fv1TMUGu97ManyEvKvPv
-vKTUCcwKyVknjFPKCMsn4mQm2MyjVVlt36MY2ltCrQsq79vUeY7AIfi4wb2hbloP
-PCPVYSaFFfutD7XfCoWtHDqRbXAMAA==
-=C3tT
------END PGP SIGNATURE-----
+> HCI Event: Read Remote Extended Features (0x23) plen 13
+        Status: Success (0x00)
+        Handle: 256
+        Page: 1/2
+        Features: 0x03 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+          Secure Simple Pairing (Host Support)
+          LE Supported (Host)
+> HCI Event: Encryption Change (0x08) plen 4
+        Status: Success (0x00)
+        Handle: 256
+        Encryption: Enabled with E0 (0x01)
+[May 8 20:23] Bluetooth: hci0: Invalid security: expect AES but E0 was used
+< HCI Command: Disconnect (0x01|0x0006) plen 3
+        Handle: 256
+        Reason: Authentication Failure (0x05)
 
---Sig_/FBHmFb.fVVu/hjAcKh66QPz--
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+(cherry picked from commit 8746f135bb01872ff412d408ea1aa9ebd328c1f5)
+Cc: stable@vger.kernel.org # 5.8
+---
+ include/net/bluetooth/hci_core.h | 10 ++++++----
+ net/bluetooth/hci_conn.c         | 17 +++++++++++++++++
+ net/bluetooth/hci_event.c        | 20 ++++++++------------
+ 3 files changed, 31 insertions(+), 16 deletions(-)
+
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index da3728871e85..78970afa96f9 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1402,11 +1402,13 @@ static inline void hci_encrypt_cfm(struct hci_conn *conn, __u8 status)
+ 	else
+ 		encrypt = 0x01;
+ 
+-	if (conn->sec_level == BT_SECURITY_SDP)
+-		conn->sec_level = BT_SECURITY_LOW;
++	if (!status) {
++		if (conn->sec_level == BT_SECURITY_SDP)
++			conn->sec_level = BT_SECURITY_LOW;
+ 
+-	if (conn->pending_sec_level > conn->sec_level)
+-		conn->sec_level = conn->pending_sec_level;
++		if (conn->pending_sec_level > conn->sec_level)
++			conn->sec_level = conn->pending_sec_level;
++	}
+ 
+ 	mutex_lock(&hci_cb_list_lock);
+ 	list_for_each_entry(cb, &hci_cb_list, list) {
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 307800fd18e6..b99b5c6de55a 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -1323,6 +1323,23 @@ int hci_conn_check_link_mode(struct hci_conn *conn)
+ 			return 0;
+ 	}
+ 
++	 /* AES encryption is required for Level 4:
++	  *
++	  * BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 3, Part C
++	  * page 1319:
++	  *
++	  * 128-bit equivalent strength for link and encryption keys
++	  * required using FIPS approved algorithms (E0 not allowed,
++	  * SAFER+ not allowed, and P-192 not allowed; encryption key
++	  * not shortened)
++	  */
++	if (conn->sec_level == BT_SECURITY_FIPS &&
++	    !test_bit(HCI_CONN_AES_CCM, &conn->flags)) {
++		bt_dev_err(conn->hdev,
++			   "Invalid security: Missing AES-CCM usage");
++		return 0;
++	}
++
+ 	if (hci_conn_ssp_enabled(conn) &&
+ 	    !test_bit(HCI_CONN_ENCRYPT, &conn->flags))
+ 		return 0;
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 6c6c9a81bee2..ff38f98988db 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3068,27 +3068,23 @@ static void hci_encrypt_change_evt(struct hci_dev *hdev, struct sk_buff *skb)
+ 
+ 	clear_bit(HCI_CONN_ENCRYPT_PEND, &conn->flags);
+ 
++	/* Check link security requirements are met */
++	if (!hci_conn_check_link_mode(conn))
++		ev->status = HCI_ERROR_AUTH_FAILURE;
++
+ 	if (ev->status && conn->state == BT_CONNECTED) {
+ 		if (ev->status == HCI_ERROR_PIN_OR_KEY_MISSING)
+ 			set_bit(HCI_CONN_AUTH_FAILURE, &conn->flags);
+ 
++		/* Notify upper layers so they can cleanup before
++		 * disconnecting.
++		 */
++		hci_encrypt_cfm(conn, ev->status);
+ 		hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
+ 		hci_conn_drop(conn);
+ 		goto unlock;
+ 	}
+ 
+-	/* In Secure Connections Only mode, do not allow any connections
+-	 * that are not encrypted with AES-CCM using a P-256 authenticated
+-	 * combination key.
+-	 */
+-	if (hci_dev_test_flag(hdev, HCI_SC_ONLY) &&
+-	    (!test_bit(HCI_CONN_AES_CCM, &conn->flags) ||
+-	     conn->key_type != HCI_LK_AUTH_COMBINATION_P256)) {
+-		hci_connect_cfm(conn, HCI_ERROR_AUTH_FAILURE);
+-		hci_conn_drop(conn);
+-		goto unlock;
+-	}
+-
+ 	/* Try reading the encryption key size for encrypted ACL links */
+ 	if (!ev->status && ev->encrypt && conn->type == ACL_LINK) {
+ 		struct hci_cp_read_enc_key_size cp;
+-- 
+2.27.0
+
