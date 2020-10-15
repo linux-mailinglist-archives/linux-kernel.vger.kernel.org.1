@@ -2,64 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A495028E987
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5C228E9F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgJOAmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 20:42:43 -0400
-Received: from smtprelay0136.hostedemail.com ([216.40.44.136]:52958 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726018AbgJOAmn (ORCPT
+        id S1732197AbgJOBZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730375AbgJOBYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 20:42:43 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0CDEA100E7B44;
-        Thu, 15 Oct 2020 00:42:42 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3871:4321:4605:5007:7576:10004:10400:10848:11026:11232:11473:11658:11914:12297:12740:12760:12895:13069:13071:13095:13311:13357:13439:14180:14181:14659:14721:21060:21080:21433:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: wave33_0e0ab4727210
-X-Filterd-Recvd-Size: 1611
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 15 Oct 2020 00:42:41 +0000 (UTC)
-Message-ID: <7983b5dcb7f589e31fb954cfc1472a93244984fb.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add a fixer for missing newline at eof
-From:   Joe Perches <joe@perches.com>
-To:     trix@redhat.com, apw@canonical.com
-Cc:     linux-kernel@vger.kernel.org
-Date:   Wed, 14 Oct 2020 17:42:40 -0700
-In-Reply-To: <20201014211540.15732-1-trix@redhat.com>
-References: <20201014211540.15732-1-trix@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 14 Oct 2020 21:24:37 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D63EC0F26EE
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:44:41 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBVsx1g0Bz9sT6;
+        Thu, 15 Oct 2020 11:44:37 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602722678;
+        bh=t8A6fO5tp/eZ5Re3BebrXOQ9Y1HSFZ6NL3ZxIK2cCE0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=obFqOmefSwuDllvrpb013ifEj6EHy8Hj72S2yQ48kfm9ydFc8fVCwY6ndRMlhQq8F
+         K3q3+MfVVhqIikGrA7N2k5Mv5FGppGjqiIRNggx5xtUXKn6xEBw7EpLPZcWAZ2PJQg
+         +7Cz0ii+/Q3d7Ivggv09myKN5vClHc0PDq/t5H942tWOAB12QfskAyaCThGzZ/a8VB
+         JkPUKoNzlcsoyY8dJXono6CcqtKRkQGawib428uF4KKjD9l4ndmtPMk2kN7fqKL+YQ
+         jmfMISLgHsusege2uf0WrcTKfLItUMgWch5cn6KcMZTwCJJ04fKhrqpiUu39W6txK7
+         MBwQ3ii4+ahtQ==
+Date:   Thu, 15 Oct 2020 11:44:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vasily Gorbik <gor@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
+Subject: Re: [GIT PULL v2] objtool changes for v5.10
+Message-ID: <20201015114436.1a08d112@canb.auug.org.au>
+In-Reply-To: <20201013103831.GB3933713@gmail.com>
+References: <20201013082625.GA775379@gmail.com>
+        <20201013204312.6052157d@canb.auug.org.au>
+        <20201013101056.GA3933713@gmail.com>
+        <20201013103831.GB3933713@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/VQjlC3hCiiHrx2kc=OgYB_J";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-14 at 14:15 -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Remove the trailing error message from the fixed lines
+--Sig_/VQjlC3hCiiHrx2kc=OgYB_J
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Tom.
+Hi Ingo,
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3393,8 +3393,11 @@ sub process {
->  
->  # check for adding lines without a newline.
->  		if ($line =~ /^\+/ && defined $lines[$linenr] && $lines[$linenr] =~ /^\\ No newline at end of file/) {
-> -			WARN("MISSING_EOF_NEWLINE",
-> -			     "adding a line without newline at end of file\n" . $herecurr);
-> +			if (WARN("MISSING_EOF_NEWLINE",
-> +			         "adding a line without newline at end of file\n" . $herecurr) &&
-> +			    $fix) {
-> +			    fix_delete_line($fixlinenr+1, "No newline at end of file");
+On Tue, 13 Oct 2020 12:38:31 +0200 Ingo Molnar <mingo@kernel.org> wrote:
+>
+> * Ingo Molnar <mingo@kernel.org> wrote:
+>=20
+> > > This seems to be missing
+> > >=20
+> > > https://lore.kernel.org/lkml/patch-1.thread-251403.git-2514037e9477.y=
+our-ad-here.call-01602244460-ext-7088@work.hours/
+> > >=20
+> > > or did that get sent in a previous pull request? =20
+> >=20
+> > No, that fix is still missing, thanks for the reminder. I overlooked it=
+=20
+> > thinking that it's a tooling patch - but this needs to be paired with:
+> >=20
+> >   2486baae2cf6: ("objtool: Allow nested externs to enable BUILD_BUG()")
+> >=20
+> > I'll send a v2 pull request in an hour or two. =20
 
-This is misindented, the 4 spaces before fix_delete_line
-should be a tab, otherwise this looks fine, thanks.
+Thanks for that.
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/VQjlC3hCiiHrx2kc=OgYB_J
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Hm3QACgkQAVBC80lX
+0GypZggAkSpDjR79HYNUU0g24TP6i+QtCvuMq031+2odhdiwIgCLvlb3tFlmrmeR
+Fi3oHijDcdXnEHU+yVLHqxNB2GiIXDwawCFnK0F5JdlLFFFvRLyeyxgwCUI8BTtn
+vCfEsSpZeouI2WvbHjyHGqgR+RhYw7ZisNhKHElsZhgvVwJiGKcqqKfrf+qPLEJP
+MK5ov2sWnQsheIBtOEc2hYcQv4Mai1GHUJMQtqKreOeLxpeig26P3HBqaaaqIwuQ
+CP0N7uKIrpPEBu02vpYoBTSNMKwuOc+d2g9IlecSxiisdm/A5op3A5FDr0WMJDLx
+tRQPgNfubBGtb8C39Z3LI21QVnPyGA==
+=iu2s
+-----END PGP SIGNATURE-----
+
+--Sig_/VQjlC3hCiiHrx2kc=OgYB_J--
