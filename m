@@ -2,145 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8244A28ED7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B63528ED80
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgJOHUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 03:20:38 -0400
-Received: from mout.gmx.net ([212.227.17.21]:35557 "EHLO mout.gmx.net"
+        id S1727878AbgJOHU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 03:20:56 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58991 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727119AbgJOHUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 03:20:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1602746429;
-        bh=TjiKD1ybPL6RrFzpezKiT7e3LIZK2s89ZT0rhem0VNI=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=DSY1VpbsHU4vzMPW3ATSdd0fv0LZ7TQzee9x+ofiRLWDpG83+k696JcAow8bzdmL7
-         OqKAPFgZxzSCOy0M6Aie4rqt6imromv+2S2YoInFfyJunI4ZIrm6z96Iegibc1XgOA
-         kzp8OzBGQE+yPBKiIW3j/hs8N7xuhuEOGUZ6AohY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.190.52]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MRTRN-1knVFI0pZF-00NOPG; Thu, 15
- Oct 2020 09:20:29 +0200
-Date:   Thu, 15 Oct 2020 09:20:25 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture updates for kernel v5.10-rc1
-Message-ID: <20201015072025.GA18655@ls3530.fritz.box>
+        id S1727112AbgJOHUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 03:20:55 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBgg93sf8z9sT6;
+        Thu, 15 Oct 2020 18:20:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602746453;
+        bh=fPES9oVN6qFtk/XxCC87jYUUfFDo8T6Id5MPOtE9TZM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GWhPmBthTyA6NR/D/Y2RBrOa9W3npQGWTktZSvIshU2J4PP/Uf1EPygW5581CYGeW
+         LZmKeDdVy0Dlzf9XGzKayFAW/mUqwY1SZS/SEZQSj0C+aOvWDsm44EUztPnaQcCOPk
+         iHHVk1PuJ0NJzxeQP3cKI8yOMbhQj+Qx/yODCHJT+1PH9gnEotSHNWr5FSRnNxIpOk
+         FP83R44LImABqSL2t/n7g3wQblN7xNE7rqiXifnT6EqQZYLJJ99J9ZbPsBSeAKYBTN
+         BobNPae7md83RrAbm7RNslWrPTs4ZUhXR+brJD+pO9hWheWd5vCl6QLGQTz/5kIYDN
+         KYdAqgfvHlHaA==
+Date:   Thu, 15 Oct 2020 18:20:47 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pm tree
+Message-ID: <20201015182047.28c739da@canb.auug.org.au>
+In-Reply-To: <20201008203559.735dd600@canb.auug.org.au>
+References: <20200922181126.3cae159a@canb.auug.org.au>
+        <20201001194337.35f881af@canb.auug.org.au>
+        <20201008203559.735dd600@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:X5dmF/O+HVchxB+VN4KvmQSqOdxwWeR5H5zn5Ta+pDuzx3I8oNS
- sy3pWi/NiJ0My43vH3H9uSY3njPb0cQdgNDlFL+anDNkE5EoB5fex7ygsXmMdRag/6txy9v
- h84XRhWe/B4mHeDUy7Yi3pSzf/cbscE8EU5EwmJKpSzQnal4IHTphjrMon2CMTyIGExiKXd
- TzODdcWjtyaIc560B8Rww==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Xwih3ZKuynI=:R6YMSQHj9vjnZR5w8u434S
- oDssbDnFocbgPl1JJrRVbQcvgEZxrDzItZbzoDNJMs94gY5f+/TlXthU1GNyOBQc8IgssLGJU
- zjwx17ATIWotZ9EcN9fyIAJXG5Sl4ZH4NUCzpXaQbSZbRkbelmBa0X27lk4nmR6LPXF9a41AN
- MoGCsS6RmkxqaQ2/NhugpLDQMawYRTz3zDSNWI46TI8UDf5nOZJtQ9kgMOf4c5DN3xtEuwGRI
- pScPfMrUWuwd93glHwSJpx8r9fnGDxEJ6Cy4v+CXoQ/yEgZiLvG0WqhpnBYF7nDBp5GFFSGqF
- CFg60rOYfFIt5jZS6KR6EDmTkI1uAj5kJuAst2A7zbTi+MmjsQ+iG+Tg7L6dPxpkO0geMd16G
- yjCK1fMzYFqhtSu4p5p1B7qlpRrzzpfiOkcLovvfU9A0zlqCKq1dFIUCHAXq/qB4escibJj7Q
- eCE1SzcSho9JME8YMQHm1Y8bYQgFrvH9U1cuooKxhIxf2X0JzO1dUuqAO9oinKUIbhqJOuaHU
- qQJIWvtVZ3+RZXWBM1kE0vk3Otp3HffpqpB5MEAzXX1DsjyJWJ66xWaMZQx1Sva6jDsw34jMN
- pRvQX98+42LWQCXXD1geQPfw5KBOLmOhTq3GGF8MnEOS874ZBwxcV/8P4EpfSTYvWe2Ue3AfJ
- Hp1mIfm+viWBOp2HHEk54S0sgLboD+lGlXM1bMOmGTvutQYug1H1CXF7bk/woM7rFKBhOB/tD
- 9b9cMLwMRcTAJcjvAqRvDAw/RFf+0tUNeoxIHBdkzMI/25xqe7llrsRhAEsIqnTAoTMRsQzPT
- 5MdDbNi341O5wFIizxXzQVKLiFAdJn54Ogn1sP59IjPaC/Jop04RIMwaIumxg08TbnDbVpd1w
- TkYZ/r7yRgZr12HYwBAA==
+Content-Type: multipart/signed; boundary="Sig_/PPDlN_Nm9zDeHq1d311joHt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--Sig_/PPDlN_Nm9zDeHq1d311joHt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-please pull the fixes and updates for the parisc architecture for kernel 5.10-rc1 from:
+Hi all,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-1
+On Thu, 8 Oct 2020 20:35:59 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+> On Thu, 1 Oct 2020 19:43:37 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+> >
+> > On Tue, 22 Sep 2020 18:11:26 +1000 Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote: =20
+> > >
+> > > After merging the pm tree, today's linux-next build (i386 defconfig)
+> > > produced this warning:
+> > >=20
+> > > In file included from include/acpi/acpi.h:24,
+> > >                  from drivers/acpi/acpica/hwgpe.c:10:
+> > > drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_read':
+> > > include/acpi/actypes.h:501:48: warning: cast to pointer from integer =
+of different size [-Wint-to-pointer-cast]
+> > >   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_=
+t) (p))
+> > >       |                                                ^
+> > > drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 'AC=
+PI_CAST_PTR'
+> > >    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (p=
+tr))
+> > >       |                                         ^~~~~~~~~~~~~
+> > > drivers/acpi/acpica/acmacros.h:22:43: note: in expansion of macro 'AC=
+PI_CAST8'
+> > >    22 | #define ACPI_GET8(ptr)                  (*ACPI_CAST8 (ptr))
+> > >       |                                           ^~~~~~~~~~
+> > > drivers/acpi/acpica/hwgpe.c:50:17: note: in expansion of macro 'ACPI_=
+GET8'
+> > >    50 |   *value =3D (u64)ACPI_GET8(reg->address);
+> > >       |                 ^~~~~~~~~
+> > > drivers/acpi/acpica/hwgpe.c: In function 'acpi_hw_gpe_write':
+> > > include/acpi/actypes.h:501:48: warning: cast to pointer from integer =
+of different size [-Wint-to-pointer-cast]
+> > >   501 | #define ACPI_CAST_PTR(t, p)             ((t *) (acpi_uintptr_=
+t) (p))
+> > >       |                                                ^
+> > > drivers/acpi/acpica/acmacros.h:18:41: note: in expansion of macro 'AC=
+PI_CAST_PTR'
+> > >    18 | #define ACPI_CAST8(ptr)                 ACPI_CAST_PTR (u8, (p=
+tr))
+> > >       |                                         ^~~~~~~~~~~~~
+> > > drivers/acpi/acpica/acmacros.h:26:43: note: in expansion of macro 'AC=
+PI_CAST8'
+> > >    26 | #define ACPI_SET8(ptr, val)             (*ACPI_CAST8 (ptr) =
+=3D (u8) (val))
+> > >       |                                           ^~~~~~~~~~
+> > > drivers/acpi/acpica/hwgpe.c:85:3: note: in expansion of macro 'ACPI_S=
+ET8'
+> > >    85 |   ACPI_SET8(reg->address, value);
+> > >       |   ^~~~~~~~~
+> > >=20
+> > > Introduced by commit
+> > >=20
+> > >   7a8379eb41a4 ("ACPICA: Add support for using logical addresses of G=
+PE blocks")   =20
+> >=20
+> > I am still getting these warnings ... =20
+>=20
+> Still there :-(
 
-This patchset includes:
-* Added fw_cfg support for parisc on qemu
-* Added font support in sti text console driver for byte- and word-mode ROMs
-* Switch to more fine grained lws locks and improve spinlock handling
-* Add ioread64_hi_lo() and iowrite64_hi_lo() to avoid 0-day linking errors
-* Mark pointers volatile in __xchg8(), __xchg32() and __xchg64() to help compiler
-* Header file cleanups, mostly removal of unused HP-UX compat defines
-* Drop one bit from our O_NONBLOCK define to become now 000200000
-* Add MAP_UNINITIALIZED define to avoid userspace compile errors
-* Drop CONFIG_IDE from defconfigs
-* Speed up synchronize_caches() on UP machines
-* Rewrite tlb flush threshold calculation
-* Comment fixes and cleanups
+This is now in Linus' tree :-(
 
-Thanks,
-Helge
+--=20
+Cheers,
+Stephen Rothwell
 
-----------------------------------------------------------------
-The following changes since commit 3e4fb4346c781068610d03c12b16c0cfb0fd24a3:
+--Sig_/PPDlN_Nm9zDeHq1d311joHt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  Merge tag 'spdx-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/spdx (2020-10-14 16:19:42 -0700)
+-----BEGIN PGP SIGNATURE-----
 
-are available in the Git repository at:
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+H+E8ACgkQAVBC80lX
+0Gy59QgAlFRpZRGahi6CmxwJ6Fwb2EsaAj+Rna/DkoUhaNZWuFWaFUlTCUDLGdjA
+1PEmNCoClakbOkpkVWPA8/C5U9fqhaX2HJSHsAvOU0Rwhb8R6dwyakMvzaRArT/Y
+lvxBFMg9Afe/Aue92spFnYELLktsVOElx3dcjFacde7O2/0gcYbwXJ6eycF5PPpN
+JlogI+xaFKdgmt4QGTq7jgS8uYNe3cGRaVsklqbiuTEDjdS9ILilJAwL547pZA+K
+osjwQ35SEKGaJ6rjkZbuowQsaJxKXv3l6nj9BkQ37YT3stp29m0UrDP6ERpjYLiP
+DPh+U1WthzBFhz7X6c59MeZ/lA2n6w==
+=KPa6
+-----END PGP SIGNATURE-----
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-1
-
-for you to fetch changes up to 7ff3f14ddc355bfbc94c766f43b90606b1f79e83:
-
-  parisc/sticon: Add user font support (2020-10-15 08:12:59 +0200)
-
-----------------------------------------------------------------
-Christoph Hellwig (1):
-      parisc: disable CONFIG_IDE in defconfigs
-
-Helge Deller (11):
-      fw_cfg: Add support for parisc architecture
-      parisc: Add qemu fw_cfg interface
-      parisc: Avoid external interrupts when IPI finishes
-      parisc: Drop HP-UX specific fcntl and signal flags
-      parisc: Define O_NONBLOCK to become 000200000
-      parisc: Drop useless comments in uapi/asm/signal.h
-      parisc: Add ioread64_hi_lo() and iowrite64_hi_lo()
-      parisc: Install vmlinuz instead of zImage file
-      parisc: Add MAP_UNINITIALIZED define
-      parisc/sticon: Always register sticon console driver
-      parisc/sticon: Add user font support
-
-John David Anglin (6):
-      parisc: Add alternative patching to synchronize_caches define
-      parisc: Fix comments and enable interrupts later
-      parisc: Mark pointers volatile in __xchg8(), __xchg32() and __xchg64()
-      parisc: Switch to more fine grained lws locks
-      parisc: Rewrite tlb flush threshold calculation
-      parisc: Improve spinlock handling
-
- arch/parisc/Kconfig                         |   1 +
- arch/parisc/configs/generic-32bit_defconfig |   6 +-
- arch/parisc/configs/generic-64bit_defconfig |   6 +-
- arch/parisc/include/asm/barrier.h           |   6 +-
- arch/parisc/include/asm/cmpxchg.h           |  14 +-
- arch/parisc/include/asm/futex.h             |   4 +-
- arch/parisc/include/asm/socket.h            |   4 +-
- arch/parisc/include/asm/spinlock.h          |  23 ++-
- arch/parisc/include/uapi/asm/fcntl.h        |   7 +-
- arch/parisc/include/uapi/asm/mman.h         |   1 +
- arch/parisc/include/uapi/asm/signal.h       |   5 +-
- arch/parisc/install.sh                      |   2 +-
- arch/parisc/kernel/cache.c                  |  18 +-
- arch/parisc/kernel/entry.S                  |  14 +-
- arch/parisc/kernel/inventory.c              |  30 +++
- arch/parisc/kernel/smp.c                    |   9 +-
- arch/parisc/kernel/syscall.S                |  10 +-
- arch/parisc/lib/bitops.c                    |   6 +-
- arch/parisc/lib/iomap.c                     |  18 ++
- drivers/firmware/Kconfig                    |   2 +-
- drivers/firmware/qemu_fw_cfg.c              |   3 +
- drivers/video/console/Kconfig               |   1 +
- drivers/video/console/sticon.c              | 297 ++++++++++++++++------------
- drivers/video/console/sticore.c             | 284 +++++++++++++-------------
- drivers/video/fbdev/sticore.h               |  27 ++-
- tools/arch/parisc/include/uapi/asm/mman.h   |   1 -
- 26 files changed, 453 insertions(+), 346 deletions(-)
+--Sig_/PPDlN_Nm9zDeHq1d311joHt--
