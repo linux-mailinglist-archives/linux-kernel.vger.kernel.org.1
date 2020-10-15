@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8E328F29B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334A328F294
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgJOMpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:45:42 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:51558 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728048AbgJOMpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:45:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602765940; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=tUBuuOkOpn8dlBCi3UTRT7w8MbxjgT0dLTMorbW/WKw=; b=nhHpg3LSppvTn1mnowGlHfWmum1X3cd1ATgYfOeSRSQ1h0epb9yLm3Fq8TJdOityX8Quh/c4
- 03xtgFNen2Ug17xh3NbMVfCfGpcSyYCJWdBYCwtjnZUuJ2HgonAWQaOi7+lN0JXxA+o5hQAZ
- WCvgzbEsFUiNVzMWDQnLKdjYrow=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f88447406d81bc48d36fb6e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Oct 2020 12:45:40
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 398E5C43391; Thu, 15 Oct 2020 12:45:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1727711AbgJOMpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:45:22 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:57694 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727348AbgJOMpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:45:21 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 101B241390;
+        Thu, 15 Oct 2020 12:45:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1602765916; x=
+        1604580317; bh=+7Dr+pURlSJhI4aulCo3AkEHIH1l+HVxkNQNAd53gtQ=; b=b
+        mcqledmAarqfxoItBwNvTFiPVSodCdeOjLITkYBirTlgSovjC8SomwkirbVoXfO6
+        Rvbh+0O7hBPGMIrAvSTQCYMig2g8aq2cp0jTWgC+lPjNVLsNvHdhzJ7QyuhnEwFe
+        vCr0cAATttkcc9+paeQ5BOdb2RixrvO/gdCswiL5lc=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dmC_QFkmc8_T; Thu, 15 Oct 2020 15:45:16 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C7A6C433FE;
-        Thu, 15 Oct 2020 12:45:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C7A6C433FE
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH] coresight: etm4x: Add config to exclude kernel mode tracing
-Date:   Thu, 15 Oct 2020 18:15:22 +0530
-Message-Id: <20201015124522.1876-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        by mta-01.yadro.com (Postfix) with ESMTPS id 2969A41397;
+        Thu, 15 Oct 2020 15:45:11 +0300 (MSK)
+Received: from localhost.dev.yadro.com (10.199.2.186) by
+ T-EXCH-04.corp.yadro.com (172.17.100.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Thu, 15 Oct 2020 15:45:10 +0300
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>
+CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Joel Stanley <joel@jms.id.au>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>
+Subject: [PATCH v1 0/2] add ast2400/2500 phy-handle support
+Date:   Thu, 15 Oct 2020 15:49:15 +0300
+Message-ID: <20201015124917.8168-1-i.mikhaylov@yadro.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.199.2.186]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On production systems with ETMs enabled, it is preferred to
-exclude kernel mode(NS EL1) tracing for security concerns and
-support only userspace(NS EL0) tracing. So provide an option
-via kconfig to exclude kernel mode tracing if it is required.
-This config is disabled by default and would not affect the
-current configuration which has both kernel and userspace
-tracing enabled by default.
+This patch introduces ast2400/2500 phy-handle support with an embedded
+MDIO controller. At the current moment it is not possible to set options
+with this format on ast2400/2500:
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/hwtracing/coresight/Kconfig                | 9 +++++++++
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 6 +++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+mac {
+	phy-handle = <&phy>;
+	phy-mode = "rgmii";
 
-diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-index c1198245461d..52435de8824c 100644
---- a/drivers/hwtracing/coresight/Kconfig
-+++ b/drivers/hwtracing/coresight/Kconfig
-@@ -110,6 +110,15 @@ config CORESIGHT_SOURCE_ETM4X
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called coresight-etm4x.
- 
-+config CORESIGHT_ETM4X_EXCL_KERN
-+	bool "Coresight ETM 4.x exclude kernel mode tracing"
-+	depends on CORESIGHT_SOURCE_ETM4X
-+	help
-+	  This will exclude kernel mode(NS EL1) tracing if enabled. This option
-+	  will be useful to provide more flexible options on production systems
-+	  where only userspace(NS EL0) tracing might be preferred for security
-+	  reasons.
-+
- config CORESIGHT_STM
- 	tristate "CoreSight System Trace Macrocell driver"
- 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index abd706b216ac..7e5669e5cd1f 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -832,6 +832,9 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
- {
- 	u64 access_type = 0;
- 
-+	if (IS_ENABLED(CONFIG_CORESIGHT_ETM4X_EXCL_KERN))
-+		config->mode |= ETM_MODE_EXCL_KERN;
-+
- 	/*
- 	 * EXLEVEL_NS, bits[15:12]
- 	 * The Exception levels are:
-@@ -849,7 +852,8 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
- 		access_type = ETM_EXLEVEL_NS_HYP;
- 	}
- 
--	if (config->mode & ETM_MODE_EXCL_USER)
-+	if (config->mode & ETM_MODE_EXCL_USER &&
-+	    !IS_ENABLED(CONFIG_CORESIGHT_ETM4X_EXCL_KERN))
- 		access_type |= ETM_EXLEVEL_NS_APP;
- 
- 	return access_type;
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-base-commit: 3477326277451000bc667dfcc4fd0774c039184c
+		phy: ethernet-phy@0 {
+			compatible = "ethernet-phy-idxxxx.yyyy";
+			reg = <0>;
+		};
+	};
+};
+
+The patch fixes it and gets possible PHYs and register them with
+of_mdiobus_register.
+
+Ivan Mikhaylov (2):
+  net: ftgmac100: move phy connect out from ftgmac100_setup_mdio
+  net: ftgmac100: add handling of mdio/phy nodes for ast2400/2500
+
+ drivers/net/ethernet/faraday/ftgmac100.c | 114 ++++++++++++++---------
+ 1 file changed, 69 insertions(+), 45 deletions(-)
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.21.1
 
