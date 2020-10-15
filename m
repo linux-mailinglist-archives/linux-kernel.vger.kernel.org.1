@@ -2,136 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5FE28F06E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDDC28F086
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbgJOKz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:55:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726654AbgJOKz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:55:56 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A66B22249;
-        Thu, 15 Oct 2020 10:55:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602759355;
-        bh=te9muqVH1TRG904u4JJ4FrQCvPp6MwdDgE/Yv30w3PU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ckJ3wyU5jbwGNq4/krnO1Iy1JWHTNJXBDCx/Edql4YEfgqOnqGc+7gvGYh77bhyG6
-         ZzO52I3qNsQ+7Ma4k76UevjKNz+Su710g/JPRn1RDafdL7bYn/BUxX+tX5YYYmcJWV
-         0h1zvbDXckgkqYAVWhf9Fo7QapayWowt7udV4KE0=
-Date:   Thu, 15 Oct 2020 11:55:43 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, minchan@google.com, joelaf@google.com,
-        lokeshgidra@google.com, kernel-team@android.com,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mark Brown <broonie@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Jia He <justin.he@arm.com>, John Hubbard <jhubbard@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Brian Geffon <bgeffon@google.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] arm64: mremap speedup - Enable HAVE_MOVE_PMD
-Message-ID: <20201015105542.GA5110@willie-the-truck>
-References: <20201014005320.2233162-1-kaleshsingh@google.com>
- <20201014005320.2233162-3-kaleshsingh@google.com>
+        id S1728114AbgJOLA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgJOLAZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 07:00:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889ACC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:00:25 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1kT0zb-0005EJ-GU; Thu, 15 Oct 2020 13:00:19 +0200
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1kT0za-0005Vw-FH; Thu, 15 Oct 2020 13:00:18 +0200
+Date:   Thu, 15 Oct 2020 13:00:18 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 3/3] ARM: dts: add Van der Laan LANMCU board
+Message-ID: <20201015110018.7u3v7kdsi5osmxs7@pengutronix.de>
+References: <20201014085316.11916-1-o.rempel@pengutronix.de>
+ <20201014085316.11916-3-o.rempel@pengutronix.de>
+ <20201014100501.djbfqzdeodowm4ov@pengutronix.de>
+ <20201015090245.ogtzxflo4icxbakv@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014005320.2233162-3-kaleshsingh@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201015090245.ogtzxflo4icxbakv@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 12:59:39 up 335 days,  2:18, 375 users,  load average: 0.11, 0.11,
+ 0.09
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 12:53:07AM +0000, Kalesh Singh wrote:
-> HAVE_MOVE_PMD enables remapping pages at the PMD level if both the
-> source and destination addresses are PMD-aligned.
+On 20-10-15 11:02, Oleksij Rempel wrote:
+> Hi Marco,
 > 
-> HAVE_MOVE_PMD is already enabled on x86. The original patch [1] that
-> introduced this config did not enable it on arm64 at the time because
-> of performance issues with flushing the TLB on every PMD move. These
-> issues have since been addressed in more recent releases with
-> improvements to the arm64 TLB invalidation and core mmu_gather code as
-> Will Deacon mentioned in [2].
+> thank you for review!
 > 
-> From the data below, it can be inferred that there is approximately
-> 8x improvement in performance when HAVE_MOVE_PMD is enabled on arm64.
+> On Wed, Oct 14, 2020 at 12:05:01PM +0200, Marco Felsch wrote:
+> > Hi Oleksij,
+> > 
+> > pls can you send a patch adding this board to:
+> > Documentation/devicetree/bindings/arm/fsl.yaml
+> > 
+> > infront of this patch?
 > 
-> --------- Test Results ----------
-> 
-> The following results were obtained on an arm64 device running a 5.4
-> kernel, by remapping a PMD-aligned, 1GB sized region to a PMD-aligned
-> destination. The results from 10 iterations of the test are given below.
-> All times are in nanoseconds.
-> 
-> Control    HAVE_MOVE_PMD
-> 
-> 9220833    1247761
-> 9002552    1219896
-> 9254115    1094792
-> 8725885    1227760
-> 9308646    1043698
-> 9001667    1101771
-> 8793385    1159896
-> 8774636    1143594
-> 9553125    1025833
-> 9374010    1078125
-> 
-> 9100885.4  1134312.6    <-- Mean Time in nanoseconds
-> 
-> Total mremap time for a 1GB sized PMD-aligned region drops from
-> ~9.1 milliseconds to ~1.1 milliseconds. (~8x speedup).
-> 
-> [1] https://lore.kernel.org/r/20181108181201.88826-3-joelaf@google.com
-> [2] https://www.mail-archive.com/linuxppc-dev@lists.ozlabs.org/msg140837.html
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> Changes in v4:
->   - Add Kirill's Acked-by.
+> This is patch 3/3 and fsl.yaml 2/3. Do I'm missing some thing?
 
-Argh, I thought we already enabled this for PMDs back in 2018! Looks like
-that we forgot to actually do that after I improved the performance of
-the TLB invalidation.
+Argh.. didn't saw this patch 2/3..
 
-I'll pick this one patch up for 5.10.
-
-Will
+Regards,
+  Marco
