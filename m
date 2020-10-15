@@ -2,249 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D238528EA17
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EB628E967
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388826AbgJOBa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732274AbgJOB3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:29:39 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9470C00217C
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:13:43 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id hk7so764220pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:13:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UlbiRK9FPIASJdWjbFlxZN7JKEjeG321ukcvNxoIW+Y=;
-        b=Vk9W4Mlu++ARKTCbhumJfJo840Ddq86v5pd4GoUMiZ/jn8R87NXlQrqOw7qIIGNcXt
-         fU1NlnVPlWdNDyyJJCP2gdIg/b1Y1ZHCDcU5ZC6iCuS+ZRcexPofZIeE4cKqhzUFoJJW
-         zRJktZcKqenkCO26pNfD4jRlhToWAoJ2wJrMs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UlbiRK9FPIASJdWjbFlxZN7JKEjeG321ukcvNxoIW+Y=;
-        b=i6GZqUonZwPyrtIkNpZbR8xoDlvWB9+mRv3s2Wy1WWm405Hf0VDOzZbRYVljhratbq
-         aN43GPIhtbSoL8ycPfajTLNqLJXw7W0DjNVgQ9aVu5YivEWamTpdeRdmfGnspH4t8RoC
-         7eQotvvQqwEQy2CAErV0jJ3/DeW2nLYRIIPcIHyFDj14WhqnwoFEmItLiV2/QvcwPPdJ
-         9japZBX1Ro4m1B0Ww9Owl4lS0SSlYjylUKqFjylaWKFHf28tQKa8LYG5/i96QWlLvwEL
-         9VkK5oyWwt4vm8kxOGOlONPC/fO/9L8Z+0sUUUzbYh1QghCxBwYSmXsxg9mTwjVfaBK0
-         JWFw==
-X-Gm-Message-State: AOAM532FRBFbCq77L5ZDWWvJPpLVIfnaTjs8Y+xnSVfroy9xKMj2hq5Z
-        QvMMEVxNYoS/SCIHmG1yzjHkUA==
-X-Google-Smtp-Source: ABdhPJzUyM8QxDdPbJVsk13aEs2SgZMLJmPvtbxWE6eGgQv8WrXmx97oZcbONE04yikGH3baniEedg==
-X-Received: by 2002:a17:90a:8c17:: with SMTP id a23mr1625454pjo.112.1602720823467;
-        Wed, 14 Oct 2020 17:13:43 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id r16sm726485pjo.19.2020.10.14.17.13.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 17:13:42 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     David Brown <david.brown@linaro.org>,
-        Taniya Das <tdas@codeaurora.org>, linux-soc@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/3] clk: qcom: lpass-sc7180: Disentangle the two clock devices
-Date:   Wed, 14 Oct 2020 17:13:28 -0700
-Message-Id: <20201014171259.v4.2.I75c409497d4dea9daefa53ec5f93824081c4ecbe@changeid>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-In-Reply-To: <20201014171259.v4.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
-References: <20201014171259.v4.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
+        id S1730371AbgJOANg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 20:13:36 -0400
+Received: from mga03.intel.com ([134.134.136.65]:4037 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726012AbgJOANg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 20:13:36 -0400
+IronPort-SDR: xUWvyZhHy6fnqvK1Cu6JPFbi0iEDQATuEHzopM7gPm84Vab433HfMrQRNA+ZosB+xoCugQ8K5f
+ N3kxrZwI26VQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="166284010"
+X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
+   d="scan'208";a="166284010"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 17:13:35 -0700
+IronPort-SDR: FxvRj/GMzbx1Ro7eyHNMx2as62crxY9JB5nZqdSTz5Tu9uB8iy6YnnkIfBLjvZeGwBRRqXr64P
+ kCXfz3/rYZsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
+   d="scan'208";a="314331522"
+Received: from lkp-server01.sh.intel.com (HELO 77f7a688d8fd) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 14 Oct 2020 17:13:33 -0700
+Received: from kbuild by 77f7a688d8fd with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kSqth-0000Mw-8l; Thu, 15 Oct 2020 00:13:33 +0000
+Date:   Thu, 15 Oct 2020 08:13:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Michael Auchter <michael.auchter@ni.com>,
+        srinivas.kandagatla@linaro.org, pantelis.antoniou@konsulko.com,
+        frowand.list@gmail.com
+Cc:     kbuild-all@lists.01.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Michael Auchter <michael.auchter@ni.com>
+Subject: [RFC PATCH] nvmem: core: nvmem_of_notifier can be static
+Message-ID: <20201015001328.GA31200@033f2984987c>
+References: <20201014214128.1091738-3-michael.auchter@ni.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014214128.1091738-3-michael.auchter@ni.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sc7180 lpass clock driver manages two different devices.  These
-two devices were tangled together, using one probe and a lookup to
-figure out the real probe.  I think it's cleaner to really separate
-the probe for these two devices since they're really different things,
-just both managed by the same driver.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: kernel test robot <lkp@intel.com>
 ---
+ core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(no changes since v3)
-
-Changes in v3:
-- ("clk: qcom: lpass-sc7180: Disentangle the two clock devices") new for v3.
-
- drivers/clk/qcom/lpasscorecc-sc7180.c | 101 ++++++++++++++++----------
- 1 file changed, 62 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
-index 2d15e33ec837..4ed766ca08bb 100644
---- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-+++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-@@ -366,12 +366,38 @@ static void lpass_pm_clk_destroy(void *data)
- 	pm_clk_destroy(data);
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 859431c15d5bc3..6dd79075fdd9b0 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -1671,7 +1671,7 @@ static int of_nvmem_notify(struct notifier_block *nb, unsigned long action,
+ 	return NOTIFY_OK;
  }
  
-+static int lpass_create_pm_clks(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	pm_runtime_enable(&pdev->dev);
-+	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_runtime_disable, &pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pm_clk_create(&pdev->dev);
-+	if (ret)
-+		return ret;
-+	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_clk_destroy, &pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pm_clk_add(&pdev->dev, "iface");
-+	if (ret < 0)
-+		dev_err(&pdev->dev, "failed to acquire iface clock\n");
-+	return ret;
-+}
-+
- static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
- {
- 	const struct qcom_cc_desc *desc;
- 	struct regmap *regmap;
- 	int ret;
- 
-+	ret = lpass_create_pm_clks(pdev);
-+	if (ret)
-+		return ret;
-+
- 	lpass_core_cc_sc7180_regmap_config.name = "lpass_audio_cc";
- 	desc = &lpass_audio_hm_sc7180_desc;
- 	ret = qcom_cc_probe_by_index(pdev, 1, desc);
-@@ -402,6 +428,11 @@ static int lpass_core_cc_sc7180_probe(struct platform_device *pdev)
- static int lpass_hm_core_probe(struct platform_device *pdev)
- {
- 	const struct qcom_cc_desc *desc;
-+	int ret;
-+
-+	ret = lpass_create_pm_clks(pdev);
-+	if (ret)
-+		return ret;
- 
- 	lpass_core_cc_sc7180_regmap_config.name = "lpass_hm_core";
- 	desc = &lpass_core_hm_sc7180_desc;
-@@ -409,55 +440,28 @@ static int lpass_hm_core_probe(struct platform_device *pdev)
- 	return qcom_cc_probe_by_index(pdev, 0, desc);
- }
- 
--static const struct of_device_id lpass_core_cc_sc7180_match_table[] = {
-+static const struct of_device_id lpass_hm_sc7180_match_table[] = {
- 	{
- 		.compatible = "qcom,sc7180-lpasshm",
--		.data = lpass_hm_core_probe,
- 	},
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lpass_hm_sc7180_match_table);
-+
-+static const struct of_device_id lpass_core_cc_sc7180_match_table[] = {
- 	{
- 		.compatible = "qcom,sc7180-lpasscorecc",
--		.data = lpass_core_cc_sc7180_probe,
- 	},
- 	{ }
+-struct notifier_block nvmem_of_notifier = {
++static struct notifier_block nvmem_of_notifier = {
+ 	.notifier_call = of_nvmem_notify,
  };
- MODULE_DEVICE_TABLE(of, lpass_core_cc_sc7180_match_table);
- 
--static int lpass_core_sc7180_probe(struct platform_device *pdev)
--{
--	int (*clk_probe)(struct platform_device *p);
--	int ret;
--
--	pm_runtime_enable(&pdev->dev);
--	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_runtime_disable, &pdev->dev);
--	if (ret)
--		return ret;
--
--	ret = pm_clk_create(&pdev->dev);
--	if (ret)
--		return ret;
--	ret = devm_add_action_or_reset(&pdev->dev, lpass_pm_clk_destroy, &pdev->dev);
--	if (ret)
--		return ret;
--
--	ret = pm_clk_add(&pdev->dev, "iface");
--	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to acquire iface clock\n");
--		return ret;
--	}
--
--	clk_probe = of_device_get_match_data(&pdev->dev);
--	if (!clk_probe)
--		return -EINVAL;
--
--	return clk_probe(pdev);
--}
--
- static const struct dev_pm_ops lpass_core_cc_pm_ops = {
- 	SET_RUNTIME_PM_OPS(pm_clk_suspend, pm_clk_resume, NULL)
- };
- 
- static struct platform_driver lpass_core_cc_sc7180_driver = {
--	.probe = lpass_core_sc7180_probe,
-+	.probe = lpass_core_cc_sc7180_probe,
- 	.driver = {
- 		.name = "lpass_core_cc-sc7180",
- 		.of_match_table = lpass_core_cc_sc7180_match_table,
-@@ -465,17 +469,36 @@ static struct platform_driver lpass_core_cc_sc7180_driver = {
- 	},
- };
- 
--static int __init lpass_core_cc_sc7180_init(void)
-+static const struct dev_pm_ops lpass_hm_pm_ops = {
-+	SET_RUNTIME_PM_OPS(pm_clk_suspend, pm_clk_resume, NULL)
-+};
-+
-+static struct platform_driver lpass_hm_sc7180_driver = {
-+	.probe = lpass_hm_core_probe,
-+	.driver = {
-+		.name = "lpass_hm-sc7180",
-+		.of_match_table = lpass_hm_sc7180_match_table,
-+		.pm = &lpass_hm_pm_ops,
-+	},
-+};
-+
-+static int __init lpass_sc7180_init(void)
- {
--	return platform_driver_register(&lpass_core_cc_sc7180_driver);
-+	int ret;
-+
-+	ret = platform_driver_register(&lpass_core_cc_sc7180_driver);
-+	if (ret)
-+		return ret;
-+	return platform_driver_register(&lpass_hm_sc7180_driver);
- }
--subsys_initcall(lpass_core_cc_sc7180_init);
-+subsys_initcall(lpass_sc7180_init);
- 
--static void __exit lpass_core_cc_sc7180_exit(void)
-+static void __exit lpass_sc7180_exit(void)
- {
-+	platform_driver_unregister(&lpass_hm_sc7180_driver);
- 	platform_driver_unregister(&lpass_core_cc_sc7180_driver);
- }
--module_exit(lpass_core_cc_sc7180_exit);
-+module_exit(lpass_sc7180_exit);
- 
- MODULE_DESCRIPTION("QTI LPASS_CORE_CC SC7180 Driver");
- MODULE_LICENSE("GPL v2");
--- 
-2.28.0.1011.ga647a8990f-goog
-
+ #endif /* CONFIG_OF_DYNAMIC */
