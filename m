@@ -2,121 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414FB28F0A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B5F28F0C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729554AbgJOLGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgJOLGO (ORCPT
+        id S1726908AbgJOLOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:14:40 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:6594 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725899AbgJOLOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:06:14 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2EBC061755;
-        Thu, 15 Oct 2020 04:06:12 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ds1so1626715pjb.5;
-        Thu, 15 Oct 2020 04:06:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3agPMtqAij1qga3Qozc4HBm1uOcDmeRGeVCYjoCjyCc=;
-        b=pLOQ8l/K7RgbgufocZ1NX2e0Ob/lMxvs2pThx5xdcjy7ggXY/fm1e+RWG1WbuqJkOE
-         f8bmhjW7x9DYWEeuLbn0nX1VhyNcPQH9XgIPweNJT2mTBgRqTa7mWwzkQ8tFtfO3OmQr
-         tqavvNlCC+yizHYNa7H4taKHnwHAUHEytGfa9CSr6ZQz9uWmBS4TXLYLQWnPGUWkQSpd
-         XCoLRKJIIBrLbxTaQTX7i9qMT4Gvayv8uQUzbTsyy3G3dFHaWWsV5OkbnfOSsi+B1iaH
-         VFTJd2/RQaYMMI2bAnITzJcZ+20h5A5lDoxxPBtC8S4zuwe1JtEkyXeXoxXmVISsOh6s
-         Tbmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3agPMtqAij1qga3Qozc4HBm1uOcDmeRGeVCYjoCjyCc=;
-        b=NJq4IGjOIVY8QMkEN2x/l7NCjgqCm1HDwAuXQlkGAuSoO6OZah2b/BpDBcq/gk1RXm
-         b7jaEXOWayU0beFLTsAqqg51e9idnwZ2tEiJT9Zd9yv2Eegw/UNMmw++SCERzyGJrFhK
-         zYfB4YMbr2LE2UOsC1A/7QZh/x0062SkwEpIK0sZ/l9gJ4nci29O6fyTK4fETKVhXd3q
-         eEPSG6G6RYCbP29EWRQBxiwviYYza7Z4hlmqtsuWCa6jWV25XdRyCCFgKXuSswpHd6xk
-         0X/9fk2US+V7K77TQrfa8iGcMWdSN2ud28QhchbN427W8KMpSELeZGmA8vHokrxXLdEr
-         uTIg==
-X-Gm-Message-State: AOAM532yFAe0DCnS9NaTt1pqPSkf5MT3widv4m0tNEasPp941ccpL+LG
-        0ggxx/6zEepd52VMZF0Ds8A=
-X-Google-Smtp-Source: ABdhPJzWgXIZMNd4WB1mQHIPBb1vFqXu9LmmgWEvLfa6xvXx7x5G6+/sLIRGlqorcO1F8OGG/+w0LA==
-X-Received: by 2002:a17:90b:ed3:: with SMTP id gz19mr3852073pjb.53.1602759972000;
-        Thu, 15 Oct 2020 04:06:12 -0700 (PDT)
-Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
-        by smtp.gmail.com with ESMTPSA id n203sm3253627pfd.81.2020.10.15.04.06.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 04:06:10 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 20:06:06 +0900
-From:   Benjamin Poirier <benjamin.poirier@gmail.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 1/6] staging: qlge: Initialize devlink health dump
- framework for the dlge driver
-Message-ID: <20201015110606.GA52981@f3>
-References: <20201008115808.91850-1-coiby.xu@gmail.com>
- <20201008115808.91850-2-coiby.xu@gmail.com>
- <20201010073514.GA14495@f3>
- <20201010102416.hvbgx3mgyadmu6ui@Rk>
- <20201010134855.GB17351@f3>
- <20201012112406.6mxta2mapifkbeyw@Rk>
- <20201013003704.GA41031@f3>
- <20201015033732.qaihehernm2jzoln@Rk>
+        Thu, 15 Oct 2020 07:14:39 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09FBDcLX003370;
+        Thu, 15 Oct 2020 06:14:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=6MtK5HTjl7O8ZLDUURV0+Pu2XnudzYXw1xSbOLCaSLM=;
+ b=NfTvKcNInwlTR4ftDqXW+H0MtdXOkDJ9YRN7ui0qYh6FdpD1DoiOw0n3EQBUs9OEcjoj
+ MaVy7+x0m6x5kRbgecOTnx2lQWkppeEmT26BLzu8TEARY2t1vstnO0qJkDz9J5zXige+
+ SDk92oG7Ay7XxZGS7KdANAdYITQaFlvbtmsKfncFNf/FOJu/eBJz43L1Z7fw35Ohb+Jb
+ yBS8oflfP6sJCzfYWr0OI+odh9708s1HpuEU+JEs7lfQKtEPJqoUwoyhEITBrtQEAS8W
+ 6lJfOk+yTt7G39/aOMO8mifWqtxqzQmpl6mYANTcK/6IL4rN8LY3Ecs6M4Xg2ADjX2Ma 8Q== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 343ac1xkvd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 15 Oct 2020 06:14:23 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 15 Oct
+ 2020 12:14:21 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 15 Oct 2020 12:14:21 +0100
+Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2AA3B2AA;
+        Thu, 15 Oct 2020 11:14:21 +0000 (UTC)
+Subject: Re: [PATCH 6/7] ARM: dts: Add dts for Raspberry Pi 4 + Cirrus Logic
+ Lochnagar2
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>
+CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rpi-kernel@lists.infradead.org>
+References: <20201014145418.31838-1-rf@opensource.cirrus.com>
+ <20201014145418.31838-7-rf@opensource.cirrus.com>
+ <e9db1a11519dce0938cef867179160a818ec4143.camel@suse.de>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <89913f8b-fe92-1a31-77ff-49ea3f3d3294@opensource.cirrus.com>
+Date:   Thu, 15 Oct 2020 12:14:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015033732.qaihehernm2jzoln@Rk>
+In-Reply-To: <e9db1a11519dce0938cef867179160a818ec4143.camel@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010150080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-15 11:37 +0800, Coiby Xu wrote:
-> On Tue, Oct 13, 2020 at 09:37:04AM +0900, Benjamin Poirier wrote:
-> > On 2020-10-12 19:24 +0800, Coiby Xu wrote:
-> > [...]
-> > > > I think, but didn't check in depth, that in those drivers, the devlink
-> > > > device is tied to the pci device and can exist independently of the
-> > > > netdev, at least in principle.
-> > > >
-> > > You are right. Take drivers/net/ethernet/mellanox/mlxsw as an example,
-> > > devlink reload would first first unregister_netdev and then
-> > > register_netdev but struct devlink stays put. But I have yet to
-> > > understand when unregister/register_netdev is needed.
-> > 
-> > Maybe it can be useful to manually recover if the hardware or driver
-> > gets in an erroneous state. I've used `modprobe -r qlge && modprobe
-> > qlge` for the same in the past.
+
+On 15/10/2020 11:25, Nicolas Saenz Julienne wrote:
+> Hi Richard,
+> your series is very welcome, upstream support for audio codecs on the RPi4 has
+> always been lackluster.
 > 
-> Thank you for providing this user case!
-> > 
-> > > Do we need to
-> > > add "devlink reload" for qlge?
-> > 
-> > Not for this patchset. That would be a new feature.
+> Could you provide more information on the actual products? Are there custom
+> made hats for the RPi4 or this wired into a generic development board.
 > 
-> To implement this feature, it seems I need to understand how qlge work
-> under the hood. For example, what's the difference between
-> qlge_soft_reset_mpi_risc and qlge_hard_reset_mpi_risc? Or should we use
-> a brute-force way like do the tasks in qlge_remove and then re-do the
-> tasks in qlge_probe?
+Info on the codecs is available from www.cirrus.com.
+The Lochnagar audio development board is not a hat, but it can be wired
+over to the RPi GPIO header. It is not specific to the RPi.
 
-I don't know. Like I've said before, I'd recommend testing on actual
-hardware. I don't have access to it anymore.
+> On Wed, 2020-10-14 at 15:54 +0100, Richard Fitzgerald wrote:
+>> This is based on the default bcm2711-rpi-4-b.dts.
+> 
+> Note that you could've included bcm2711-rpi-4.dts (as if it was a .dtsi).
+> 
+Ok, will change.
 
-> Is a hardware reference manual for qlge device?
+>> Configurations are provided for Cirrus Logic codecs CS42L92, CS47L15,
+>> CS47L24, CS47L35, CS47L90 and WM8998.
+>>
+>> For each codec there is a sound node and a codec device node and both
+>> default to disabled. Enable the pair for the codec in use.
+>>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>> ---
+> 
+> Sadly I don't think creating a new device tree is a good solution here. If we
+> were to do so for every RPi hat/usage it'd become unmanageable very fast. There
+> is a way to maintain this in the open nonetheless. I suggest you build a DT
+> overlay and submit it to https://github.com/raspberrypi/linux, see
+> 'arch/arm/boot/dts/overlays.' The Raspberry Pi engineers have a kernel branch
 
-I've never gotten access to one.
+We want something in mainline so that it can be used by people
+developing on mainline and taken as a starting point for configuring
+the codecs for other host platforms. The RPi is a convenient platform to
+use as the base because it is widely available and low-cost.
 
-The only noteworthy thing from Qlogic that I know of is the firmware
-update:
-http://driverdownloads.qlogic.com/QLogicDriverDownloads_UI/SearchByProduct.aspx?ProductCategory=322&Product=1104&Os=190
-
-It did fix some weird behavior when I applied it so I'd recommend doing
-the same if you get an adapter.
+> that tracks of the latest kernel release, so once you get the rest of patches
+> sorted out and they are included in a release it'll make sense to do so.
+> 
+> I can't tell for other distros, but opensuse packages overlays, so the effort
+> will ultimately be useful to users.
+> 
+> Regards,
+> Nicolas
+> 
+> 
