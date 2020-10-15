@@ -2,408 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2075628F6B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F075028F6B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389943AbgJOQaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 12:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388357AbgJOQaU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 12:30:20 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D72C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:30:20 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id n6so4236024wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ttqxgVQtjt4PeltEKMtq6H9Vye9Vp3+m9pWxL0tP6KU=;
-        b=abbZi4tZ++++AHFyU8yHGLLy+gY6+RAQpoJVUU4P9NQ1sCtDcJp42THa4MXxL7jPPZ
-         OyltNt4SNMc+MoLyvGSbOUIGg2NcX/GtNCISID4Zn7x93xJE3zlPcpKoauphQQo8KIVb
-         rRuv/vuqyBaKYvZKAbvT2bRUkYZgTXh89cQDLKYYJ3OfqRt49Nb3/d4O45JkG8bKdjRf
-         XaNCNLPwlVdrwDuPOC/bGS+aj745vO44TWmiQogB6SdUxXBzdfCXqxRWS+a93oUahxiX
-         iEuxy2FNNXxSmOL6msi5MgsmkeFvi5yzDWN4ZffgxTn1r2wjl1wzEojoBCh97pM94xKQ
-         rE5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ttqxgVQtjt4PeltEKMtq6H9Vye9Vp3+m9pWxL0tP6KU=;
-        b=mAfeZIobWCDXV0ry+ZLGJqIsibFLJFRL/EjSKr0QSMo5yp0kf8kpeNDj2MstEkMma2
-         7/YJybB1ute07HiZmdcamUZuEx3anN9/wzKQr7SmZnuX0ulet7rAn2VkTkgmE/Hdnvay
-         p3jXvuO5n53C3sd7TmxJK0eoUavl8r+YhlAJFU5hyoiKtRqy0XmUn9fps1OV9Am7NtDT
-         LwKpobrPt96q3gEAaMriJfhNZ12XfqFEAvsieixZ9+6P6HD2lcsTpuUa2hCdcY9aF3Ny
-         iBdL1ZqFuY7qE9vnvGeOSEQLbqbGaY2Wvfl4/gN6BXtDrXVOHPoYeR8ie+IujoW6FgsC
-         ZawQ==
-X-Gm-Message-State: AOAM530SHPnr5jy5Cpm007rvqZfUaNCNFtZPQbKAz7WqWo4iQu4QttTj
-        4D7ROl9Po1pgRpVW7PX87TdtselEu3UZY1J847hGSA==
-X-Google-Smtp-Source: ABdhPJzPieuQ0vNS8DtAGSwFoTESF/x0Fv3i+7WeGx0g8nDHXweYGgx74Tb9HZ9vOf6Nqe7JW1ZK+EruWxva2Ru3kwg=
-X-Received: by 2002:adf:b19c:: with SMTP id q28mr5122669wra.119.1602779418685;
- Thu, 15 Oct 2020 09:30:18 -0700 (PDT)
+        id S2389734AbgJOQan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388357AbgJOQan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 12:30:43 -0400
+Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEBD522240;
+        Thu, 15 Oct 2020 16:30:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602779442;
+        bh=UkrdZc47kC7Domj8uTDjSM10oqtJl1xRrFG4Y7ujeOg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jAycibV+0HW/YJR1j1AXWHsG+t4V70W9RF+Z7A1yJfkw1n/jtHkkNELqJN/8RorIK
+         6RLAypqatDkt6B2V0lD81QpVQPH19DRUrRKSqtvSYnIl8IpAC/tY9jZDjauex+Za4v
+         Iqn0/9Kl9fAYH2TQgN+TRGOIAnQYfaMBwhdy9zeE=
+Date:   Thu, 15 Oct 2020 18:30:36 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v6 00/80] htmldoc build fixes with Sphinx 2.x and 3.x
+Message-ID: <20201015183036.1f3dca65@coco.lan>
+In-Reply-To: <CAKMK7uH1uh+cO2=5ojtBhNYQmsrNOcM1qM8rsoHFaifx6v3dYA@mail.gmail.com>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+        <CAKMK7uH1uh+cO2=5ojtBhNYQmsrNOcM1qM8rsoHFaifx6v3dYA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200729201146.537433-1-vitor@massaru.org> <CAP-5=fWCMPyBYqn4p+_=Ra5_sXqUbr4h_OCuYS4iY-6fsnevvA@mail.gmail.com>
- <CADQ6JjWg70GcQJizwcHpL1bXE7rKYDdaEeQszKDVz4kf4+SVOA@mail.gmail.com>
-In-Reply-To: <CADQ6JjWg70GcQJizwcHpL1bXE7rKYDdaEeQszKDVz4kf4+SVOA@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 15 Oct 2020 09:30:06 -0700
-Message-ID: <CAP-5=fWA=1q=UV9Kr3fJ-0RfdsbufmKnVOcuGLkf8OdVecSu4A@mail.gmail.com>
-Subject: Re: [PATCH] lib: kunit: add test_min_heap test conversion to KUnit
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 4:49 PM Vitor Massaru Iha <vitor@massaru.org> wrote:
->
-> Hi Ian,
->
->
-> On Wed, Jul 29, 2020 at 7:57 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Wed, Jul 29, 2020 at 1:11 PM Vitor Massaru Iha <vitor@massaru.org> wrote:
-> > >
-> > > This adds the conversion of the runtime tests of test_min_heap,
-> > > from `lib/test_min_heap.c` to KUnit tests.
-> > >
-> > > Please apply this commit first (linux-kselftest/kunit-fixes):
-> > > 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
-> >
-> > Thanks for this, I'm a fan of testing frameworks :-)
-> >
-> > > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> > > ---
-> > >  lib/Kconfig.debug                         |  29 ++++--
-> > >  lib/Makefile                              |   2 +-
-> > >  lib/{test_min_heap.c => min_heap_kunit.c} | 117 ++++++++++++----------
-> > >  3 files changed, 83 insertions(+), 65 deletions(-)
-> > >  rename lib/{test_min_heap.c => min_heap_kunit.c} (60%)
-> > >
-> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > > index 9ad9210d70a1..46674fc4972c 100644
-> > > --- a/lib/Kconfig.debug
-> > > +++ b/lib/Kconfig.debug
-> > > @@ -1864,16 +1864,6 @@ config TEST_LIST_SORT
-> > >
-> > >           If unsure, say N.
-> > >
-> > > -config TEST_MIN_HEAP
-> > > -       tristate "Min heap test"
-> > > -       depends on DEBUG_KERNEL || m
-> > > -       help
-> > > -         Enable this to turn on min heap function tests. This test is
-> > > -         executed only once during system boot (so affects only boot time),
-> > > -         or at module load time.
-> > > -
-> > > -         If unsure, say N.
-> > > -
-> > >  config TEST_SORT
-> > >         tristate "Array-based sort test"
-> > >         depends on DEBUG_KERNEL || m
-> > > @@ -2185,6 +2175,25 @@ config LINEAR_RANGES_TEST
-> > >
-> > >           If unsure, say N.
-> > >
-> > > +config MIN_HEAP_KUNIT
-> > > +        tristate "KUnit test for Min heap"
-> > > +        depends on KUNIT
-> > > +        depends on DEBUG_KERNEL || m
-> > > +        help
-> > > +          Enable this to turn on min heap function tests. This test is
-> > > +          executed only once during system boot (so affects only boot time),
-> > > +          or at module load time.
-> > > +
-> > > +          KUnit tests run during boot and output the results to the debug log
-> > > +          in TAP format (http://testanything.org/). Only useful for kernel devs
-> > > +          running the KUnit test harness, and not intended for inclusion into a
-> > > +          production build.
-> > > +
-> > > +          For more information on KUnit and unit tests in general please refer
-> > > +          to the KUnit documentation in Documentation/dev-tools/kunit/.
-> > > +
-> > > +          If unsure, say N.
-> > > +
-> >
-> > It's a shame we need a config option for this. Could we have one
-> > option to cover all basic library tests?
-> >
-> > >  config TEST_UDELAY
-> > >         tristate "udelay test driver"
-> > >         help
-> > > diff --git a/lib/Makefile b/lib/Makefile
-> > > index b1c42c10073b..748f57063160 100644
-> > > --- a/lib/Makefile
-> > > +++ b/lib/Makefile
-> > > @@ -72,7 +72,6 @@ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
-> > >  UBSAN_SANITIZE_test_ubsan.o := y
-> > >  obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
-> > >  obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
-> > > -obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
-> > >  obj-$(CONFIG_TEST_LKM) += test_module.o
-> > >  obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
-> > >  obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
-> > > @@ -318,3 +317,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
-> > >  # KUnit tests
-> > >  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
-> > >  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
-> > > +obj-$(CONFIG_MIN_HEAP_KUNIT) += min_heap_kunit.o
-> > > diff --git a/lib/test_min_heap.c b/lib/min_heap_kunit.c
-> > > similarity index 60%
-> > > rename from lib/test_min_heap.c
-> > > rename to lib/min_heap_kunit.c
-> > > index d19c8080fd4d..398db1c63146 100644
-> > > --- a/lib/test_min_heap.c
-> > > +++ b/lib/min_heap_kunit.c
-> > > @@ -7,9 +7,8 @@
-> > >
-> > >  #include <linux/log2.h>
-> > >  #include <linux/min_heap.h>
-> > > -#include <linux/module.h>
-> > > -#include <linux/printk.h>
-> > >  #include <linux/random.h>
-> > > +#include <kunit/test.h>
-> > >
-> > >  static __init bool less_than(const void *lhs, const void *rhs)
-> > >  {
-> > > @@ -29,37 +28,34 @@ static __init void swap_ints(void *lhs, void *rhs)
-> > >         *(int *)rhs = temp;
-> > >  }
-> > >
-> > > -static __init int pop_verify_heap(bool min_heap,
-> > > +static __init void pop_verify_heap(struct kunit *context,
-> > > +                               bool min_heap,
-> > >                                 struct min_heap *heap,
-> > >                                 const struct min_heap_callbacks *funcs)
-> > >  {
-> > >         int *values = heap->data;
-> > > -       int err = 0;
-> > >         int last;
-> > >
-> > >         last = values[0];
-> > >         min_heap_pop(heap, funcs);
-> > >         while (heap->nr > 0) {
-> > >                 if (min_heap) {
-> > > -                       if (last > values[0]) {
-> > > -                               pr_err("error: expected %d <= %d\n", last,
-> > > -                                       values[0]);
-> > > -                               err++;
-> > > -                       }
-> > > +                       KUNIT_EXPECT_FALSE_MSG(context,
-> > > +                                              last > values[0],
-> > > +                                              "expected %d <= %d\n",
-> > > +                                              last, values[0]);
-> >
-> > I'm not familiar with kunit, is there a reason not to prefer:
-> > KUNIT_EXPECT_LT(context, last, values[0]);
-> >
-> > >                 } else {
-> > > -                       if (last < values[0]) {
-> > > -                               pr_err("error: expected %d >= %d\n", last,
-> > > -                                       values[0]);
-> > > -                               err++;
-> > > -                       }
-> > > +                       KUNIT_EXPECT_FALSE_MSG(context,
-> > > +                                              last < values[0],
-> > > +                                              "expected %d >= %d\n",
-> > > +                                              last, values[0]);
-> >
-> > Similarly KUNIT_EXPECT_GT.
->
-> In relation to this, instead of KUNIT_EXPECT_LT, we would have to have
-> something like KUNIT_EXPECT_LT_FALSE.
-> Otherwise the test will always fail.
+Em Thu, 15 Oct 2020 17:49:23 +0200
+Daniel Vetter <daniel@ffwll.ch> escreveu:
 
-Does KUNIT_EXPECT_GE not work? The error message suggests it should at least.
+> On Tue, Oct 13, 2020 at 01:53:15PM +0200, Mauro Carvalho Chehab wrote:
+> > This series actually folds the previous Sphinx 3.x patch series
+> > with the other patches I sent fixing warnings with Sphinx
+> > 2.x and with kernel-doc and that weren't merged yet via
+> > some other tree.
+> >
+> > It is based on the top of upstream, plus the media
+> > pull request I sent yesterday:
+> >
+> >       https://lore.kernel.org/lkml/20201012134139.0d58f5d7@coco.lan/
+> >
+> > My plan is to send a pull request with those patches after Thursday's
+> > linux next release.
+> >
+> > On this series, I removed the patches that depend on material
+> > currently found only at linux-next.  
+> 
+> Was a bit tricky to find the cover letter here and that you plan to
+> send these out this merge window. 
+
+Sorry for that. As this series touch lots of subsystems, just c/c
+the maintainers mean more than 50 c/c to patch 00. Some e-mail
+servers may not accept e-mails with too many c/c people. 
+
+Yet, checking at the c/c list of the original patch, you were
+copied on patch 00/80. So, maybe the e-mail server had silently
+dropped the original e-mail.
+
+> I think we'll have some confusion
+> now with Alex from amd having picked up a few already.
+
+I ended moving (at least part of) the drm patches from this
+series into a second one, as I'm intending to submit most of
+those patches today or tomorrow, and the remaining ones by the
+end of the merge window.
+
+> Anyway Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch> for the
+> remaining drm patches. 
+
+Thank you!
+
+> Although I can also pick them up to
+> drm-misc-next (but that's going to be 5.11 or so).
+
+It would be a way better to have them merged for 5.10, in
+order to have a clean html build there.
 
 Thanks,
-Ian
-
-> >
-> > Thanks,
-> > Ian
-> >
-> > >                 }
-> > >                 last = values[0];
-> > >                 min_heap_pop(heap, funcs);
-> > >         }
-> > > -       return err;
-> > >  }
-> > >
-> > > -static __init int test_heapify_all(bool min_heap)
-> > > +static __init void test_heapify_all(struct kunit *context, bool min_heap)
-> > >  {
-> > >         int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
-> > >                          -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
-> > > @@ -73,12 +69,11 @@ static __init int test_heapify_all(bool min_heap)
-> > >                 .less = min_heap ? less_than : greater_than,
-> > >                 .swp = swap_ints,
-> > >         };
-> > > -       int i, err;
-> > > +       int i;
-> > >
-> > >         /* Test with known set of values. */
-> > >         min_heapify_all(&heap, &funcs);
-> > > -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> > > -
-> > > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> > >
-> > >         /* Test with randomly generated values. */
-> > >         heap.nr = ARRAY_SIZE(values);
-> > > @@ -86,12 +81,10 @@ static __init int test_heapify_all(bool min_heap)
-> > >                 values[i] = get_random_int();
-> > >
-> > >         min_heapify_all(&heap, &funcs);
-> > > -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> > > -
-> > > -       return err;
-> > > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> > >  }
-> > >
-> > > -static __init int test_heap_push(bool min_heap)
-> > > +static __init void test_heap_push(struct kunit *context, bool min_heap)
-> > >  {
-> > >         const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
-> > >                              -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-> > > @@ -106,25 +99,22 @@ static __init int test_heap_push(bool min_heap)
-> > >                 .less = min_heap ? less_than : greater_than,
-> > >                 .swp = swap_ints,
-> > >         };
-> > > -       int i, temp, err;
-> > > +       int i, temp;
-> > >
-> > >         /* Test with known set of values copied from data. */
-> > >         for (i = 0; i < ARRAY_SIZE(data); i++)
-> > >                 min_heap_push(&heap, &data[i], &funcs);
-> > > -
-> > > -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> > > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> > >
-> > >         /* Test with randomly generated values. */
-> > >         while (heap.nr < heap.size) {
-> > >                 temp = get_random_int();
-> > >                 min_heap_push(&heap, &temp, &funcs);
-> > >         }
-> > > -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> > > -
-> > > -       return err;
-> > > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> > >  }
-> > >
-> > > -static __init int test_heap_pop_push(bool min_heap)
-> > > +static __init void test_heap_pop_push(struct kunit *context, bool min_heap)
-> > >  {
-> > >         const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
-> > >                              -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
-> > > @@ -139,7 +129,7 @@ static __init int test_heap_pop_push(bool min_heap)
-> > >                 .less = min_heap ? less_than : greater_than,
-> > >                 .swp = swap_ints,
-> > >         };
-> > > -       int i, temp, err;
-> > > +       int i, temp;
-> > >
-> > >         /* Fill values with data to pop and replace. */
-> > >         temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
-> > > @@ -149,8 +139,7 @@ static __init int test_heap_pop_push(bool min_heap)
-> > >         /* Test with known set of values copied from data. */
-> > >         for (i = 0; i < ARRAY_SIZE(data); i++)
-> > >                 min_heap_pop_push(&heap, &data[i], &funcs);
-> > > -
-> > > -       err = pop_verify_heap(min_heap, &heap, &funcs);
-> > > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> > >
-> > >         heap.nr = 0;
-> > >         for (i = 0; i < ARRAY_SIZE(data); i++)
-> > > @@ -161,34 +150,54 @@ static __init int test_heap_pop_push(bool min_heap)
-> > >                 temp = get_random_int();
-> > >                 min_heap_pop_push(&heap, &temp, &funcs);
-> > >         }
-> > > -       err += pop_verify_heap(min_heap, &heap, &funcs);
-> > > +       pop_verify_heap(context, min_heap, &heap, &funcs);
-> > > +}
-> > >
-> > > -       return err;
-> > > +static void __init test_heapify_all_true(struct kunit *context)
-> > > +{
-> > > +       test_heapify_all(context, true);
-> > >  }
-> > >
-> > > -static int __init test_min_heap_init(void)
-> > > +static void __init test_heapify_all_false(struct kunit *context)
-> > >  {
-> > > -       int err = 0;
-> > > -
-> > > -       err += test_heapify_all(true);
-> > > -       err += test_heapify_all(false);
-> > > -       err += test_heap_push(true);
-> > > -       err += test_heap_push(false);
-> > > -       err += test_heap_pop_push(true);
-> > > -       err += test_heap_pop_push(false);
-> > > -       if (err) {
-> > > -               pr_err("test failed with %d errors\n", err);
-> > > -               return -EINVAL;
-> > > -       }
-> > > -       pr_info("test passed\n");
-> > > -       return 0;
-> > > +       test_heapify_all(context, true);
-> > > +}
-> > > +
-> > > +static void __init test_heap_push_true(struct kunit *context)
-> > > +{
-> > > +       test_heap_push(context, true);
-> > > +}
-> > > +
-> > > +static void __init test_heap_push_false(struct kunit *context)
-> > > +{
-> > > +       test_heap_push(context, false);
-> > >  }
-> > > -module_init(test_min_heap_init);
-> > >
-> > > -static void __exit test_min_heap_exit(void)
-> > > +static void __init test_heap_pop_push_true(struct kunit *context)
-> > >  {
-> > > -       /* do nothing */
-> > > +       test_heap_pop_push(context, true);
-> > >  }
-> > > -module_exit(test_min_heap_exit);
-> > > +
-> > > +static void __init test_heap_pop_push_false(struct kunit *context)
-> > > +{
-> > > +       test_heap_pop_push(context, false);
-> > > +}
-> > > +
-> > > +static struct kunit_case __refdata min_heap_test_cases[] = {
-> > > +       KUNIT_CASE(test_heapify_all_true),
-> > > +       KUNIT_CASE(test_heapify_all_false),
-> > > +       KUNIT_CASE(test_heap_push_true),
-> > > +       KUNIT_CASE(test_heap_push_false),
-> > > +       KUNIT_CASE(test_heap_pop_push_true),
-> > > +       KUNIT_CASE(test_heap_pop_push_false),
-> > > +       {}
-> > > +};
-> > > +
-> > > +static struct kunit_suite min_heap_test_suite = {
-> > > +       .name = "min-heap",
-> > > +       .test_cases = min_heap_test_cases,
-> > > +};
-> > > +
-> > > +kunit_test_suites(&min_heap_test_suite);
-> > >
-> > >  MODULE_LICENSE("GPL");
-> > >
-> > > base-commit: d43c7fb05765152d4d4a39a8ef957c4ea14d8847
-> > > --
-> > > 2.26.2
-> > >
+Mauro
