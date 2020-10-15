@@ -2,140 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CA228F42D
+	by mail.lfdr.de (Postfix) with ESMTP id C835E28F42E
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388170AbgJON7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53328 "EHLO mail.kernel.org"
+        id S2388206AbgJON7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:59:49 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:64489 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387904AbgJON7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:59:43 -0400
-Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 235972222B;
-        Thu, 15 Oct 2020 13:59:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602770382;
-        bh=8haq88aRZfHa91NkLFfD9u6mDM75ZHqJEOPYsntrSQY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=2iq9s9GTaPhzIudb9GcF5p3xmUcmVbSjUGU2xk67+oQhOpriRYSmFg15PlnrUQWLu
-         v4/AdBckpjsdnVdBjNpQ7fFy036C+0jy4Koc6dduIrxbZTHd6NVlkypXBRy4cdAkHB
-         KxZojKlNi94M3QLikxj6Hvbf5gV8J08tZIcxWe68=
-Message-ID: <6cfecc21b67c5aa7e91dfa58b5e59f8545e6524f.camel@kernel.org>
-Subject: Re: [PATCH v3 7/7] selftests/ftrace: Add test case for synthetic
- event syntax errors
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 15 Oct 2020 08:59:40 -0500
-In-Reply-To: <20201014110636.139df7be275d40a23b523b84@kernel.org>
-References: <cover.1602598160.git.zanussi@kernel.org>
-         <af611928ce79f86eaf0af8654f1d7802d5cc21ff.1602598160.git.zanussi@kernel.org>
-         <20201014110636.139df7be275d40a23b523b84@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S2388133AbgJON7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 09:59:46 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CBrWM2FxTzB09bD;
+        Thu, 15 Oct 2020 15:59:43 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id l9LN1soMzp6U; Thu, 15 Oct 2020 15:59:43 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CBrWM1QpszB09bB;
+        Thu, 15 Oct 2020 15:59:43 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D0E878B813;
+        Thu, 15 Oct 2020 15:59:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id xOoSsjkuF602; Thu, 15 Oct 2020 15:59:44 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F16278B811;
+        Thu, 15 Oct 2020 15:59:43 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: force inlining of csum_partial() to avoid
+ multiple csum_partial() with GCC10
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <a1d31f84ddb0926813b17fcd5cc7f3fa7b4deac2.1602759123.git.christophe.leroy@csgroup.eu>
+ <20201015132512.GG2672@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <cb4602cc-bf06-ebdc-b6df-0e1ff902dfd5@csgroup.eu>
+Date:   Thu, 15 Oct 2020 15:59:44 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <20201015132512.GG2672@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masami,
 
-On Wed, 2020-10-14 at 11:06 +0900, Masami Hiramatsu wrote:
-> Hi Tom,
+
+Le 15/10/2020 à 15:25, Segher Boessenkool a écrit :
+> Hi!
 > 
-> On Tue, 13 Oct 2020 09:17:58 -0500
-> Tom Zanussi <zanussi@kernel.org> wrote:
+> On Thu, Oct 15, 2020 at 10:52:20AM +0000, Christophe Leroy wrote:
+>> With gcc9 I get:
 > 
-> > Add a selftest that verifies that the syntax error messages and
-> > caret
-> > positions are correct for most of the possible synthetic event
-> > syntax
-> > error cases.
-> > 
-> > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> > ---
-> >  .../trigger-synthetic_event_syntax_errors.tc  | 19
-> > +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >  create mode 100644
-> > tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-
-> > synthetic_event_syntax_errors.tc
-> > 
-> > diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-
-> > event/trigger-synthetic_event_syntax_errors.tc
-> > b/tools/testing/selftests/ftrace/test.d/trigger/inter-
-> > event/trigger-synthetic_event_syntax_errors.tc
-> > new file mode 100644
-> > index 000000000000..ada594fe16cb
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-
-> > event/trigger-synthetic_event_syntax_errors.tc
-> > @@ -0,0 +1,19 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# description: event trigger - test synthetic_events syntax parser
-> > errors
-> > +# requires: synthetic_events error_log
+> <snip>
 > 
-> This also requires dynamic strings support. So, its "requires" line
-> should be
+>> With gcc10 I get:
 > 
-> # requires: synthetic_events error_log "char name[]' >>
-> synthetic_events":README
+> <snip>
+> 
+>> gcc10 defines multiple versions of csum_partial() which are just
+>> an unconditionnal branch to __csum_partial().
+> 
+> It doesn't inline it, yes.
+> 
+> Could you open a GCC PR for this please?
 > 
 
-Yes, thanks for reminding me. ;-)
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97445
 
-> > +
-> > +check_error() { # command-with-error-pos-by-^
-> > +    ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
-> > +}
-> > +
-> 
-> BTW, some errors looks a bit odd.
-> 
-> > +check_error 'myevent ^chr arg'			# INVALID_TYPE
-> > +check_error 'myevent ^char str[];; int v'	# INVALID_TYPE
-> 
-> I think there is a wrong "void" argument between ";", instead of
-> invalid type.
-
-Yes, you're right.  I think the solution overall is to just treat
-semicolons as whitespace.
-
-> 
-> > +check_error 'myevent char ^str]; int v'		# INVALID_NAME
-> > +check_error 'myevent char ^str;[]'		# INVALID_NAME
-> 
-> This is also not an invalid name but '[]' is an invalid type. 
-> 
-> > +check_error 'myevent ^char str[; int v'		# INVALID_TYPE
-> > +check_error '^mye;vent char str[]'		# BAD_NAME
-> > +check_error 'myevent char str[]; ^int'		# INVALID_FIELD
-> 
-> Isn't it an incomplete command?
-
-Yes, but also an invalid field.  I'll try to refine these errors a bit
-and make these more consistent.
-
-Tom
-
-> 
-> > +check_error '^myevent'				#
-> > INCOMPLETE_CMD
-> > +
-> > +exit 0
-> 
-> Thank you,
-> 
-> > -- 
-> > 2.17.1
-> > 
-> 
-> 
-
+Christophe
