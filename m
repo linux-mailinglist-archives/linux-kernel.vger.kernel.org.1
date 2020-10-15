@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE6628F809
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4FD28F80D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732248AbgJOR7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
+        id S1731202AbgJOSBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732414AbgJOR7n (ORCPT
+        with ESMTP id S1726157AbgJOSB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:59:43 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66599C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 10:59:42 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id f140so2986453ybg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 10:59:42 -0700 (PDT)
+        Thu, 15 Oct 2020 14:01:29 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77747C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:01:29 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m11so3690511otk.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:01:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wKh+0HzGrAAmsHpcRBa9cGPedjwN4QDV3FOpmLuMWLo=;
-        b=nd45TYeMyASH3X2XxyTeQWZp5/vlwX5hzsc+o/t08Q0mcf3EzG7hfRG8B1D71kPDWv
-         P4L/Y/FlKsu2tu7Hh7zScMTUyOH5KveObkxyPvPnTPo/3YQGSGWyzfTpdlC9qrqlWW80
-         bU3Y+hf6NBmSUxGCm1Ea5ywrqXNTBbup7F7JrkVdmZ9fqWJaNqiiyv6oMVnxA0dD4DQW
-         yvRptvHtkPZeT1eKFJzz8kFPSjeuXpok189ISDQrsKGL9r0maF+t4jH6/iC/BDeO+yfW
-         0d/IgKhp2D1d8YfF4auBqFG/Y3OYKfTfzC5DI9/wE5eUDaA8XTJjRdP0Wmg7sWGTD/bd
-         gHHw==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FAglLW2wBpEzHjMtiXzBklSvY/GxHkePOLyeT8viwgw=;
+        b=KbCIbV86V0q6MPGXnuSbSDwhEIhEisoJmuPeyaSGapr4dBGdPJ6+8cPNg+2rdYBZB0
+         02QIgyAbj0XaqHKkxv4rm29sXy6PMavbw1XzGi+Qb9k0LHw4X4absBRbJgpy7Iyd66SO
+         gXjpeUE5slOsRsLr5lmFZlo6KiJlY9Sul2N48=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wKh+0HzGrAAmsHpcRBa9cGPedjwN4QDV3FOpmLuMWLo=;
-        b=FAJl3SJ0GQB9/45voY3d4MV6fvXvoIlzwye33EXzQz6Z1HMc9rWw468KqRtp83xOhE
-         vkESLFH8EdKO1yo9NVDk1+ptpLSC54+pTxNzu500vn/VqjhB/+AmFHh/5dMwjv6w2NMa
-         oqvrxRwd76RmvOdCq7OvbosT/sDJYXIFgBkbZoQMbHx4Hl805hyM82OpPClOzcgZsRwi
-         +WPV2yHoDQqwyl7MBzAIgcNMISJQ9bcK1NzL7AGCqMrcnHBk00qcTv+YirN4pb8BloFr
-         H5HbuD7pLW3a5QAmkyY5cgBPd7TVbkd6bNsx+nAnsF4rfctmlRmBA7US/l+CD/AcmbKQ
-         FGKw==
-X-Gm-Message-State: AOAM533RAl2rPiGBOg01GkJ8z4GhHq8k4BjxVSccQZG/qRbsWQ4qAVGq
-        cAABKzUN3dgYb/+ys45ouay+cupWotTHpz2yf4Phzw==
-X-Google-Smtp-Source: ABdhPJwyxXAnCsEWQ2qq755UXIZ0LSyCvR1SxEYGrAYoLnYYwsalh/yzr9VPcTnFL7XmNsATtfKUXWEohcxiY4aMEDw=
-X-Received: by 2002:a5b:1c4:: with SMTP id f4mr7199645ybp.205.1602784781497;
- Thu, 15 Oct 2020 10:59:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201015014616.309000-1-vitor@massaru.org> <20201015174823.GY4077@smile.fi.intel.com>
-In-Reply-To: <20201015174823.GY4077@smile.fi.intel.com>
-From:   Vitor Massaru Iha <vitor@massaru.org>
-Date:   Thu, 15 Oct 2020 14:59:05 -0300
-Message-ID: <CADQ6JjVYiDQOJt1apsygEUK=530hfF9V+8QSZ_ntgvwYYoYqfQ@mail.gmail.com>
-Subject: Re: [PATCH v2] lib: kunit: add list_sort test conversion to KUnit
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Marco Elver <elver@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FAglLW2wBpEzHjMtiXzBklSvY/GxHkePOLyeT8viwgw=;
+        b=N59SZMk8s51j5F9D1ghgg9NuuAqBYqFexPKUg94p6WnWYmLX7pb9LdIaVJa9bCwDgm
+         lMtxv8ZI8LWVs+U9cvxTnNFMZqjG0OdMNoNpqHlekT4ayqwQHzy4W/Izpicn4tQQ5Oni
+         7JeLdmXa9W5Lom2+CmfBBJKY2CDgTqAS1bdk5VoDoCgeUqSmdp6VqAQyvFIR9Lb6EQZX
+         wXD+/0oidlAIxfwE8ykKt4mDKpZsf3sjLKD7mI8FKryBjRh5DE2dUp2rXdNa/jDEofrQ
+         EzgHHKlOn+x7ZFUpGTNiHzc/EC3w6bXn/QTWS8FfUdxNFJgtxrlzaQNWLeTAGxGGjnyU
+         txhA==
+X-Gm-Message-State: AOAM531Yt1hab/gII8Wji+OlEviXcMWzTB3c7AzZpxvJHzf8POwSDpP7
+        6tbq/3Smbw1vGoe6zIQYRtLoJg==
+X-Google-Smtp-Source: ABdhPJwb63JYpnFg3xZRGWXuRuNmKUIHcbMrcMMtcv7eDW153uhSV/uUS/yLHSNjMxwF+fN7T8qfxw==
+X-Received: by 2002:a9d:4e86:: with SMTP id v6mr3612743otk.98.1602784888839;
+        Thu, 15 Oct 2020 11:01:28 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e3sm1744843ooq.0.2020.10.15.11.01.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 11:01:28 -0700 (PDT)
+Subject: Re: linux-next: build warnings after merge of the kunit-next tree
+To:     Vitor Massaru Iha <vitor@massaru.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        tglx@linutronix.de, geert@linux-m68k.org,
-        paul.gortmaker@windriver.com, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, arnd@arndb.de,
-        elfring@users.sourceforge.net, mhocko@suse.com
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201015163056.56fcc835@canb.auug.org.au>
+ <CADQ6JjX0tg51M0FsD+DmAaDcnWB0wrihj4WCq_z6En=tzL=wcg@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <2759fa81-630e-6395-b8e1-c743fb533700@linuxfoundation.org>
+Date:   Thu, 15 Oct 2020 12:01:27 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CADQ6JjX0tg51M0FsD+DmAaDcnWB0wrihj4WCq_z6En=tzL=wcg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 2:47 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Oct 14, 2020 at 10:46:16PM -0300, Vitor Massaru Iha wrote:
-> > This adds the conversion of the runtime tests of test_list_sort,
-> > from `lib/test_list_sort.c` to KUnit tests.
->
-> >  rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
->
-> One more thing. The documentation [1] doesn't specify any name conventions.
-> So, please leave file name untouched.
->
-> [1]: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
+On 10/15/20 4:43 AM, Vitor Massaru Iha wrote:
+> Hi Stephen,
+> 
+> On Thu, Oct 15, 2020 at 2:31 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Hi all,
+>>
+>> After merging the kunit-next tree, today's linux-next build (x86_64
+>> allmodconfig) produced this warning:
+>>
+>> lib/bitfield_kunit.c: In function 'test_bitfields_compile':
+>> lib/bitfield_kunit.c:136:21: warning: unsigned conversion from 'int' to 'u16' {aka 'short unsigned int'} changes value from '393216' to '0' [-Woverflow]
+>>    136 |  u16_encode_bits(0, 0x60000);
+>>        |                     ^~~~~~~
+>> At top level:
+>> lib/bitfield_kunit.c:129:20: warning: 'test_bitfields_compile' defined but not used [-Wunused-function]
+>>    129 | static void __init test_bitfields_compile(struct kunit *context)
+>>        |                    ^~~~~~~~~~~~~~~~~~~~~~
+>>
+>> Introduced by commit
+>>
+>>    d2585f5164c2 ("lib: kunit: add bitfield test conversion to KUnit")
+> 
+> I saw the problem, I will send the patch.
+> 
 
-This convention hasn't yet entered the Torvaldos tree, but it is in
-the Shuah tree: [1]
+Please send the fix in as soon as possible. I will go ahead and send the
+pull request and will apply the fix in rc2.
 
-+Test File and Module Names
-+==========================
-+
-+KUnit tests can often be compiled as a module. These modules should be named
-+after the test suite, followed by ``_test``. If this is likely to conflict with
-+non-KUnit tests, the suffix ``_kunit`` can also be used.
-+
-+The easiest way of achieving this is to name the file containing the test suite
-+``<suite>_test.c`` (or, as above, ``<suite>_kunit.c``). This file should be
-+placed next to the code under test.
-+
-+If the suite name contains some or all of the name of the test's parent
-+directory, it may make sense to modify the source filename to reduce
-redundancy.
-+For example, a ``foo_firmware`` suite could be in the ``foo/firmware_test.c``
-+file.
+thanks,
+-- Shuah
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=kunit&id=2a41fc52c21b6ece49921716bd289bfebaadcc04
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20201015174823.GY4077%40smile.fi.intel.com.
