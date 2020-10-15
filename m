@@ -2,123 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED4928F989
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916E228F98B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgJOTcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 15:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        id S2391685AbgJOTcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 15:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgJOTce (ORCPT
+        with ESMTP id S1730192AbgJOTcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 15:32:34 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA80C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:32:34 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id j136so198504wmj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:32:34 -0700 (PDT)
+        Thu, 15 Oct 2020 15:32:47 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309B1C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:32:46 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a1so199003pjd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:32:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t4HayBldfHnr9vzT+RQI1NZht7qEgetcfgLsh2qzQDc=;
-        b=c3ipEjBIGCQrkIDwRMsWKNjMrVyvyC8372nQq5KeA2TZ6YUB3EdnHp5+D6+1BYCsFl
-         zslNV27aKU0qEl6JWzc4IvaiRMoVOzL2xP58HqntHSxeJkcBzn+7eUyS0BsO3G5hYWdm
-         htlxDaxUXjrY7OTOtPwK93gRPUk154t2iSD5yV7dc53BDOvfO955ueahKQdHan2dEwNM
-         f8imtv8OTkaFuvm75kDp5eMpddgZSVc5sbTQJkpvM1wSrsJ0SQeJ5iILhKnH2PmMvBIi
-         xRO7tSjmhO/O0I3EkHFjxWVEanPvd0JTl6rmo6n5D7z+SPTiJ9HdxaXhuBJD+mDBfwLw
-         YTKw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w1x73aeVF4EkLTSqICXzgDqIALvOgzawfcc3sqn6vPQ=;
+        b=iviUzr7NZRtKUH3I6clYxSnWDP6+48L0qnDd46FIK30VhIEJjHqJQne9FNJYEHsn7O
+         TewtMVUsg+Ssl6JnP7FiofbkOEzSYoaRcSqCEnW1rTSUEAKsGNUWYV0/bvDtaWX9RdtS
+         YgbZOlDNDLzHl0VZtOjGm3phQdXgDm+4h4ldnP6Anp46fn+kOa/zXzCrgGe0wFBUjkHQ
+         +9gTo7EOWBYLLW/tcTVQRpazvgNYJCG39GTzM7+9j6UD/zCqIatn6jEivDXtNL4IGgje
+         MaFRJ+RnmqiCv1NWiwAV5Cp/hmeCrJTEvHwCOJNQNzCM1YZY9hOs8Eqqo01rk/PhFZeZ
+         +8zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t4HayBldfHnr9vzT+RQI1NZht7qEgetcfgLsh2qzQDc=;
-        b=SgI0bWFd/rMPAKQ6sEME5HeLbBZh7cATwa3dEeIFI8WW3YikBPidYAiLbi+8DOeLf/
-         2zwGcYjkbGEB9L9+DiqDYxrFySeweEKMHb/tpW36ZEfkMLdWYGx3x6LNVymY3SPBCQEj
-         bam0Vksmww1ZLCtHmpVIrZpkDBw3JnRn5x6kGbC3WItCuapxMQbBI/14WPw/1JbRGzSi
-         IYiyMNS5CF1GYLADdPHmaNjsqh3953dW/hUx6l4QRSrGyjWwn9EadQ+KAvxFE87P2u8o
-         rJFyh/VjI5SatgJr2jo4hhwM5IMKPF0A0cpwW47RnsA1lWLvYhiGq/XmvGtfxyGk+ErN
-         bblw==
-X-Gm-Message-State: AOAM531pAsjZT+12CswPk3vcDaF9imIkAqg8un4bOSqXQL9svyfiKBL/
-        zVTaBeFI4iXqIDLtUE66YE5Cl9aW4roqZIw94T3syw==
-X-Google-Smtp-Source: ABdhPJxXYX/Zl8p2deWeKmdwebpm8ejyMBd5EqRJXZoD2uNDwfMK5sT461+XZWIZ1ox7sntItqlyH+Vzw7IjUtinNN0=
-X-Received: by 2002:a1c:111:: with SMTP id 17mr213767wmb.126.1602790352867;
- Thu, 15 Oct 2020 12:32:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w1x73aeVF4EkLTSqICXzgDqIALvOgzawfcc3sqn6vPQ=;
+        b=Cr+M9ZNyHMvfrxdzdTW9bQb2HIQtW7WqqzHH/7WrzTrgZ2MbJKoLzDKcwxltyCndzd
+         0YhoGucBo0OnMdg0udeofXTYwjWGXwQldu64ccUlR62Li4KL2+/YykieC26RzPQoqZYi
+         16RnZwvi/qOQ67mceZa7NdcukQOgisaKCXGm2woiqREQQvAzLpnBDI+AuEe+eJFXnlxb
+         dhbBpA/zQZV2KdBItn+27QnHmDIBMpeTufOJrpzhlsA4lIjkYPXnuDgqHx32nOqLCvF5
+         VyctfwOy0YD3aVWUic36WSCyVhq1/PW9nuoAk2GqCUz9GxznD8oG/MryMVzr+lCGlkjv
+         SVYw==
+X-Gm-Message-State: AOAM532swttHn7fFEnKZ9iMZxKphJrRvEsYk0pk1HLyRjTf+L3vXJ9MA
+        7GyqwROi9lPRQrLh4XuGc2KFEw==
+X-Google-Smtp-Source: ABdhPJxwqd+LeNqpUUpKqYt+aCk43M6SKGHruqF+l60sOzOWsXKGKKWn/dKM2kWjLIwJ4RYtN6BoMw==
+X-Received: by 2002:a17:902:b7c3:b029:d4:bc6e:8aae with SMTP id v3-20020a170902b7c3b02900d4bc6e8aaemr296093plz.12.1602790365641;
+        Thu, 15 Oct 2020 12:32:45 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id y137sm54277pfc.77.2020.10.15.12.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 12:32:45 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 13:32:43 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/9] rpmsg: Introduce __rpmsg{16|32|64} types
+Message-ID: <20201015193243.GD1450102@xps15>
+References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
+ <20201013232519.1367542-3-mathieu.poirier@linaro.org>
+ <03448851-b959-3f56-5618-d31a7b712392@st.com>
 MIME-Version: 1.0
-References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
- <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
- <20201014120937.GC4440@dhcp22.suse.cz> <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
- <20201015092030.GB22589@dhcp22.suse.cz> <20201015184349.GA3930989@google.com>
-In-Reply-To: <20201015184349.GA3930989@google.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 15 Oct 2020 12:32:22 -0700
-Message-ID: <CAJuCfpF1MxHbUQ-eSGO5nPDVeGrFGUDrdvQgh7iVNX46-=0i4w@mail.gmail.com>
-Subject: Re: [RFC]: userspace memory reaping
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-api@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        kernel-team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <03448851-b959-3f56-5618-d31a7b712392@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 11:43 AM Minchan Kim <minchan@kernel.org> wrote:
->
-> On Thu, Oct 15, 2020 at 11:20:30AM +0200, Michal Hocko wrote:
->
-> > > > I do have a vague recollection that we have discussed a kill(2) based
-> > > > approach as well in the past. Essentially SIG_KILL_SYNC which would
-> > > > not only send the signal but it would start a teardown of resources
-> > > > owned by the task - at least those we can remove safely. The interface
-> > > > would be much more simple and less tricky to use. You just make your
-> > > > userspace oom killer or potentially other users call SIG_KILL_SYNC which
-> > > > will be more expensive but you would at least know that as many
-> > > > resources have been freed as the kernel can afford at the moment.
-> > >
-> > > Correct, my early RFC here
-> > > https://patchwork.kernel.org/project/linux-mm/patch/20190411014353.113252-3-surenb@google.com
-> > > was using a new flag for pidfd_send_signal() to request mm reaping by
-> > > oom-reaper kthread. IIUC you propose to have a new SIG_KILL_SYNC
-> > > signal instead of a new pidfd_send_signal() flag and otherwise a very
-> > > similar solution. Is my understanding correct?
-> >
-> > Well, I think you shouldn't focus too much on the oom-reaper aspect
-> > of it. Sure it can be used for that but I believe that a new signal
-> > should provide a sync behavior. People more familiar with the process
-> > management would be better off defining what is possible for a new sync
-> > signal.  Ideally not only pro-active process destruction but also sync
-> > waiting until the target process is released so that you know that once
-> > kill syscall returns the process is gone.
->
-> If we approach with signal, I am not sure we need to create new signal
-> rather than pidfd and fsync(2) semantic.
->
-> Furthermore, process_madvise makes the work in the caller context but
-> signal might work somewhere else context depending on implemenation(
-> oom reaper or CPU resumed the task). I am not sure it it fulfils Suren's
-> requirement.
->
-> One more thing to think over: Even though we spent some overhead to
-> read /proc/pid/maps, we could make zapping in parallel in userspace
-> with multi thread approach. I am not sure what's the win since Suren
-> also care about zapping performance.
+Good day,
 
-Sorry Minchan, I did not see your reply while replying to Michal...
-Even if we do the reading/reaping in parallel, we still have to issue
-10s of read() syscalls to consume the entire /proc/pid/maps file. Plus
-I'm not sure how much mmap_sem contention such parallel operation
-(reaping taking write lock and maps reading taking read lock) would
-generate. If we go this route I think a syscall to read a vector of
-VMAs would be way more performant and userspace usage would be much
-simpler.
+On Wed, Oct 14, 2020 at 06:31:49PM +0200, Arnaud POULIQUEN wrote:
+> Hi Mathieu,
+> 
+> On 10/14/20 1:25 AM, Mathieu Poirier wrote:
+> > Introduce __rpmsg{16|32|64} types along with byte order conversion
+> > functions based on an rpmsg_device operation as a foundation to
+> > make RPMSG modular and transport agnostic.
+> > 
+> > Suggested-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >  include/linux/rpmsg.h            | 51 ++++++++++++++++++++++++
+> >  include/linux/rpmsg_byteorder.h  | 67 ++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/rpmsg_types.h | 11 ++++++
+> >  3 files changed, 129 insertions(+)
+> >  create mode 100644 include/linux/rpmsg_byteorder.h
+> >  create mode 100644 include/uapi/linux/rpmsg_types.h
+> > 
+> > diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+> > index 9fe1c54ae995..165e4c6d4cd3 100644
+> > --- a/include/linux/rpmsg.h
+> > +++ b/include/linux/rpmsg.h
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/kref.h>
+> >  #include <linux/mutex.h>
+> >  #include <linux/poll.h>
+> > +#include <linux/rpmsg_byteorder.h>
+> >  
+> >  #define RPMSG_ADDR_ANY		0xFFFFFFFF
+> >  
+> > @@ -40,6 +41,7 @@ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
+> >  
+> >  /**
+> >   * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
+> > + * @is_little_endian:	returns true if using little endian byte ordering
+> >   * @create_ept:		create backend-specific endpoint, required
+> >   * @announce_create:	announce presence of new channel, optional
+> >   * @announce_destroy:	announce destruction of channel, optional
+> > @@ -49,6 +51,7 @@ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
+> >   * advertise new channels implicitly by creating the endpoints.
+> >   */
+> >  struct rpmsg_device_ops {
+> > +	bool (*is_little_endian)(struct rpmsg_device *rpdev);
+> >  	struct rpmsg_endpoint *(*create_ept)(struct rpmsg_device *rpdev,
+> >  					    rpmsg_rx_cb_t cb, void *priv,
+> >  					    struct rpmsg_channel_info chinfo);
+> > @@ -129,6 +132,54 @@ struct rpmsg_driver {
+> >  	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
+> >  };
+> >  
+> > +static inline u16 rpmsg16_to_cpu(struct rpmsg_device *rpdev, __rpmsg16 val)
+> > +{
+> > +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> > +		return __rpmsg16_to_cpu(rpmsg_is_little_endian(), val);
+> > +	else
+> > +		return __rpmsg16_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
+> > +}
+> > +
+> > +static inline __rpmsg16 cpu_to_rpmsg16(struct rpmsg_device *rpdev, u16 val)
+> > +{
+> > +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> > +		return __cpu_to_rpmsg16(rpmsg_is_little_endian(), val);
+> > +	else
+> > +		return __cpu_to_rpmsg16(rpdev->ops->is_little_endian(rpdev), val);
+> > +}
+> > +
+> > +static inline u32 rpmsg32_to_cpu(struct rpmsg_device *rpdev, __rpmsg32 val)
+> > +{
+> > +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> > +		return __rpmsg32_to_cpu(rpmsg_is_little_endian(), val);
+> > +	else
+> > +		return __rpmsg32_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
+> > +}
+> > +
+> > +static inline __rpmsg32 cpu_to_rpmsg32(struct rpmsg_device *rpdev, u32 val)
+> > +{
+> > +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> > +		return __cpu_to_rpmsg32(rpmsg_is_little_endian(), val);
+> > +	else
+> > +		return __cpu_to_rpmsg32(rpdev->ops->is_little_endian(rpdev), val);
+> > +}
+> > +
+> > +static inline u64 rpmsg64_to_cpu(struct rpmsg_device *rpdev, __rpmsg64 val)
+> > +{
+> > +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> > +		return __rpmsg64_to_cpu(rpmsg_is_little_endian(), val);
+> > +	else
+> > +		return __rpmsg64_to_cpu(rpdev->ops->is_little_endian(rpdev), val);
+> > +}
+> > +
+> > +static inline __rpmsg64 cpu_to_rpmsg64(struct rpmsg_device *rpdev, u64 val)
+> > +{
+> > +	if (!rpdev || !rpdev->ops || !rpdev->ops->is_little_endian)
+> > +		return __cpu_to_rpmsg64(rpmsg_is_little_endian(), val);
+> > +	else
+> > +		return __cpu_to_rpmsg64(rpdev->ops->is_little_endian(rpdev), val);
+> > +}
+> > +
+> >  #if IS_ENABLED(CONFIG_RPMSG)
+> >  
+> >  int register_rpmsg_device(struct rpmsg_device *dev);
+> > diff --git a/include/linux/rpmsg_byteorder.h b/include/linux/rpmsg_byteorder.h
+> > new file mode 100644
+> > index 000000000000..c0f565dbad6d
+> > --- /dev/null
+> > +++ b/include/linux/rpmsg_byteorder.h
+> > @@ -0,0 +1,67 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Follows implementation found in linux/virtio_byteorder.h
+> > + */
+> > +#ifndef _LINUX_RPMSG_BYTEORDER_H
+> > +#define _LINUX_RPMSG_BYTEORDER_H
+> > +#include <linux/types.h>
+> > +#include <uapi/linux/rpmsg_types.h>
+> > +
+> > +static inline bool rpmsg_is_little_endian(void)
+> > +{
+> > +#ifdef __LITTLE_ENDIAN
+> > +	return true;
+> > +#else
+> > +	return false;
+> > +#endif
+> > +}
+> 
+> A suggestion:
+> 
+> static inline bool rpmsg_is_little_endian(void)
+> #if defined(__BYTE_ORDER)
+> #  if __BYTE_ORDER == __BIG_ENDIAN
+> 	return true;
+> #  elif __BYTE_ORDER == __LITTLE_ENDIAN
+> 	return false;
+> #  else
+> #    warning "unknown endianess, set to little by default"
+> 	return true;
+> #  endif
+> #endif
+> }
+
+I found that __BYTE_ORDER is not defined stm32mp157 - have you used it before? 
+
+> 
+> Otherwise
+> 
+> Reviewed-by:  Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> 
+> Thanks,
+> Arnaud
+> 
+> > +
+> > +static inline u16 __rpmsg16_to_cpu(bool little_endian, __rpmsg16 val)
+> > +{
+> > +	if (little_endian)
+> > +		return le16_to_cpu((__force __le16)val);
+> > +	else
+> > +		return be16_to_cpu((__force __be16)val);
+> > +}
+> > +
+> > +static inline __rpmsg16 __cpu_to_rpmsg16(bool little_endian, u16 val)
+> > +{
+> > +	if (little_endian)
+> > +		return (__force __rpmsg16)cpu_to_le16(val);
+> > +	else
+> > +		return (__force __rpmsg16)cpu_to_be16(val);
+> > +}
+> > +
+> > +static inline u32 __rpmsg32_to_cpu(bool little_endian, __rpmsg32 val)
+> > +{
+> > +	if (little_endian)
+> > +		return le32_to_cpu((__force __le32)val);
+> > +	else
+> > +		return be32_to_cpu((__force __be32)val);
+> > +}
+> > +
+> > +static inline __rpmsg32 __cpu_to_rpmsg32(bool little_endian, u32 val)
+> > +{
+> > +	if (little_endian)
+> > +		return (__force __rpmsg32)cpu_to_le32(val);
+> > +	else
+> > +		return (__force __rpmsg32)cpu_to_be32(val);
+> > +}
+> > +
+> > +static inline u64 __rpmsg64_to_cpu(bool little_endian, __rpmsg64 val)
+> > +{
+> > +	if (little_endian)
+> > +		return le64_to_cpu((__force __le64)val);
+> > +	else
+> > +		return be64_to_cpu((__force __be64)val);
+> > +}
+> > +
+> > +static inline __rpmsg64 __cpu_to_rpmsg64(bool little_endian, u64 val)
+> > +{
+> > +	if (little_endian)
+> > +		return (__force __rpmsg64)cpu_to_le64(val);
+> > +	else
+> > +		return (__force __rpmsg64)cpu_to_be64(val);
+> > +}
+> > +
+> > +#endif /* _LINUX_RPMSG_BYTEORDER_H */
+> > diff --git a/include/uapi/linux/rpmsg_types.h b/include/uapi/linux/rpmsg_types.h
+> > new file mode 100644
+> > index 000000000000..36e3b9404391
+> > --- /dev/null
+> > +++ b/include/uapi/linux/rpmsg_types.h
+> > @@ -0,0 +1,11 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > +#ifndef _UAPI_LINUX_RPMSG_TYPES_H
+> > +#define _UAPI_LINUX_RPMSG_TYPES_H
+> > +
+> > +#include <linux/types.h>
+> > +
+> > +typedef __u16 __bitwise __rpmsg16;
+> > +typedef __u32 __bitwise __rpmsg32;
+> > +typedef __u64 __bitwise __rpmsg64;
+> > +
+> > +#endif /* _UAPI_LINUX_RPMSG_TYPES_H */
+> > 
