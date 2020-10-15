@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFA328F552
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A1B28F554
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389429AbgJOOyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388348AbgJOOyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:54:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE74C061755;
-        Thu, 15 Oct 2020 07:54:23 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602773662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=ubYf3uIUdQo/Q6bT+xRjgGp11qUFxlJTueT4HYtcveA=;
-        b=wSh6lUkYEO1tc7RiI88tbavWABCiJVEC6E3Kw0RReu+RntJxLXRtEVIuyng5FIs0U6lQb2
-        P9VxdfdOeWxt/YhxzbdSFvdfSmEHiFcS5OHxcyEkIZOOT5psTnoGXzJTRC49HDRK57Ni0L
-        RM1G/CroDEur8WHKZnsAbcI91/fIbjMweUGL2C/v4ldmTl+QXLMQo24Gd06EwC25LELvfb
-        AEs8aaiti+tvYYGOBR1CYN7bgE/24HrmzmxskTVBy4ctSpJ0zybfxpHPeTFaR5+lrrqein
-        xPok/m+ShBlgCitTumM2H4kSoHv+dq9i1umBO65QJuOYLlbhPfnDsdLk0SRofA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602773662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=ubYf3uIUdQo/Q6bT+xRjgGp11qUFxlJTueT4HYtcveA=;
-        b=Cp/bi64bNNhdtVgNKP9ydTyMRMnC2HdODscc295c+nChqeID73hDstALv1QQGkMxiwfGTC
-        OF27e7FgW7FIveAQ==
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, peterz@infradead.org
-Subject: Re: [PATCH 4/5] x86: wire up TIF_NOTIFY_SIGNAL
-In-Reply-To: <20201015143409.GC24156@redhat.com>
-Date:   Thu, 15 Oct 2020 16:54:21 +0200
-Message-ID: <87v9fbv8te.fsf@nanos.tec.linutronix.de>
+        id S2389389AbgJOOzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:55:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388348AbgJOOzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:55:02 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75EED21D7F;
+        Thu, 15 Oct 2020 14:55:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602773701;
+        bh=lVQ7C6pBsVUunmvy/tdWO14QnPFZ3yjaDeuWfe3EEGE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KICVOr3vEvzeYS83DjLC9fe6caJJsTmCHVzumWE5stHQn4AWcoFSHWZ1s7+Oxs0nB
+         NFCepT2mnku+J7uTBkXaTvwoKy0qmIP0yqnU2EV3R5k5BBxfjUVuKVvMzuQpQ9OjJg
+         daE7GTkGacdm+R2t18QXkUTNpDA3du2aqNhsQ3fo=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH v3 0/3] tracing: Show real address instead of hashed pointer
+Date:   Thu, 15 Oct 2020 23:54:58 +0900
+Message-Id: <160277369795.29307.6792451054602907237.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15 2020 at 16:34, Oleg Nesterov wrote:
-> On 10/15, Thomas Gleixner wrote:
->> Instead of adding this to every architectures signal magic, we can
->> handle TIF_NOTIFY_SIGNAL in the core code:
->> 
->> static void handle_singal_work(ti_work, regs)
->> {
->> 	if (ti_work & _TIF_NOTIFY_SIGNAL)
->>         	tracehook_notify_signal();
->> 
->>         arch_do_signal(ti_work, regs);
->> }
->> 
->>       loop {
->>       		if (ti_work & (SIGPENDING | NOTIFY_SIGNAL))
->>                 	handle_signal_work(ti_work, regs);
->>       }
->
-> To me this looks like unnecessary complication. We need to change
-> every architecture anyway, how can this helper help?
+Hi,
 
-You need to change ONE architecture because nobody else uses the common
-entry loop right now. For those who move over they have to supply
-arch_do_signal() anyway, so the extra TIF check is not a problem.
+Here is the 3rd version of the series for real address printing in trace log.
 
-We really don't want all architectures to have the same thing
-copy&pasta'd. That's the whole point of common code to avoid that.
+Here is the previous version, I've fixed [1/3] to use krealloc(), fix memory
+allocation error check and add __printf() attribute, according to Steve's
+comment.
 
-Thanks,
+https://lore.kernel.org/lkml/160275239876.115066.10891356497426857018.stgit@devnote2/
 
-        tglx
+
+Since trace_seq_printf() use in-kernel vsprintf() at last, the %p is always
+converted to the hash value instead of real address.
+
+For the dmesg it maybe secure, but for the ftrace, I think it is
+meaningless because
+
+- tracefs is used by root user, so no need to hide it.
+- tracefs user can access percpu/cpu*/trace_pipe_raw which stores real
+  address on the trace buffer.
+- external commands like perf doesn't convert to the hash value.
+
+And when debugging kernel, we would like to know real address which tells
+us the address is in which area in the kernel by comparing with kernel
+memory mapping.
+
+However, to compare the trace log with dmesg, we also need a bridging
+information. So 3/3 gives the options/hash-ptr knob which switches
+the output format.
+
+Thank you,
+
+---
+
+Masami Hiramatsu (3):
+      tracing: Show real address for trace event arguments
+      tracing: Update the stage 3 of trace event macro comment
+      tracing: Add ptr-hash option to show the hashed pointer value
+
+
+ Documentation/trace/ftrace.rst |    6 +++
+ include/linux/trace_events.h   |    4 ++
+ include/trace/trace_events.h   |   31 +++++++++++------
+ kernel/trace/trace.c           |   74 +++++++++++++++++++++++++++++++++++++++-
+ kernel/trace/trace.h           |    3 ++
+ kernel/trace/trace_output.c    |   12 ++++++
+ 6 files changed, 118 insertions(+), 12 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
