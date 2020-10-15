@@ -2,88 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A771028F7A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3FE28F7CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731133AbgJORcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:32:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725977AbgJORcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:32:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DA9C22243;
-        Thu, 15 Oct 2020 17:32:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602783143;
-        bh=7/ktMrN+y9RlPlNt0esVc1KuysNkY3EZ6vHms7U3vkI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LD45W9726yurL26MnLtgE/4TPDHPiyUFXea8r3OIhuyK+bTUokXp6nAYQf+SACX7V
-         X/bjtyJ+65dY+/V0mXFmOCRV/DNPxRTAgrxHcZUJ+w4qbX7/fX8MSgRkZ5EfYAchYT
-         cHsBHs7nN1KmigHWJTXNHVqFze2+ZD/Kzk15dsHw=
-Date:   Thu, 15 Oct 2020 18:32:16 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>, robh+dt@kernel.org,
-        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH 6/7] ARM: dts: Add dts for Raspberry Pi 4 + Cirrus Logic
- Lochnagar2
-Message-ID: <20201015173216.GH4390@sirena.org.uk>
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
- <20201014145418.31838-7-rf@opensource.cirrus.com>
- <e9db1a11519dce0938cef867179160a818ec4143.camel@suse.de>
- <89913f8b-fe92-1a31-77ff-49ea3f3d3294@opensource.cirrus.com>
- <5d2587193f0e99996445d5fa507a8acf7854fed3.camel@suse.de>
+        id S1731384AbgJORtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 13:49:19 -0400
+Received: from mail-eopbgr50057.outbound.protection.outlook.com ([40.107.5.57]:11681
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725977AbgJORtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 13:49:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S9fWfHIbUrZUZdWfVjT8dcPQj/403iww3M2jCbkzUHfsZddEladOOuQqfXOxy/ReN4R+gP1WMzqviEuuEXl1lRmh7Jps6FeKb0IjmqKH3OfCQvkZVLzvVCiNb/k1sR9Qbikf04nVniR7L0Wz68zf/CcYo/Gjyk5RvxHZd8Jsp/AKhEzdQP2hFziE+2yKXMdkcwnS1H30uz8iTsTcDvyvzfSvRS/LawGy5zD7PapRkcV0YdqimCcgohb5uBapG99gBDpSaqWvMiXAkezmdAPNjn6UduUa2kIEX3viG3OCkStJ7+sKWOTe0WMZoswvCNjRKIZXphDx0t9O9NFWil96fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SLOrV6s97Ry0iwdu3RpTJSfKFrcfcJmqEfZC/VKfwFk=;
+ b=QtWFuX6eEE/FVoUsCroQustyQqTW1fN/QkTmWZ95X7h0gJ4O6MMAvCpMX0i6HFB3H8R8GJxaYKwMUoBijFzsEhP3+zfSrE93w6/iTP5k2OWncR4vRcx8ik7Y9ANnvHQ2fgSIpvGNROkvP9cq1WaRvzbjoGxsuUgol40ALoaVsUM0OMHAh8Sgm4ZTcNjnFICy7HeLhXirPoOoJfWLdIbH/zfkQR5qRvEnLhCvZyYWceZuZTn07yV8OjUbj1UlAuDI5uIb5hpjv8pZ84YJH9580156LZlerXFu7yeTBkdy+6mRiiinshGouhUuz38gSguAMFaFRK7YOdwqygSXHdVMJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SLOrV6s97Ry0iwdu3RpTJSfKFrcfcJmqEfZC/VKfwFk=;
+ b=dlq6wYn855QwR8iGdp04H45PmM5H6c5BGsFxDQaf/0O34zOjL0O1sE3aPozO5M60jct+67G0jmVOGHMgEsRnwD5DzVcoE35GRlEOjNVSs211kiG1pVF0Oh83KwUC7Jc7bk+/gV1zhPBbBxnSbZmoPuevM+cUUxQoRSnHDzlnXoA=
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB6941.eurprd04.prod.outlook.com (2603:10a6:803:12e::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Thu, 15 Oct
+ 2020 17:34:11 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3477.020; Thu, 15 Oct 2020
+ 17:34:11 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] net: bridge: call br_multicast_del_port before the port leaves
+Date:   Thu, 15 Oct 2020 20:33:55 +0300
+Message-Id: <20201015173355.564934-1-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [188.26.174.215]
+X-ClientProxiedBy: AM0PR10CA0046.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:150::26) To VI1PR04MB5696.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::13)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Rn7IEEq3VEzCw+ji"
-Content-Disposition: inline
-In-Reply-To: <5d2587193f0e99996445d5fa507a8acf7854fed3.camel@suse.de>
-X-Cookie: Neutrinos have bad breadth.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (188.26.174.215) by AM0PR10CA0046.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Thu, 15 Oct 2020 17:34:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 64559137-636d-4dc9-7e50-08d8713086d3
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6941:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6941EEBBED26AD3F4DC67B80E0020@VI1PR04MB6941.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lS96LPO4y8JGFA+nXL0vE+1kb/wMuf4wYhvexxfmkRx6wpPiJk8ZFgkGu1guefrpyHnWuhIJ6ntZ9C8iIw0g83n9swksKjTUYNxF+Iocng892+JVQKXA2OpMYWyKp42A0PJurmJVndfrXuqKHbcM60az4hj/9/5c7kpTzFN3+nozHG52l7up+bOgD5sdfcIdkCK+1ubQZm//MOjGcdyiJELva7CaQMNEYv5gzRlrCm2I7Y9FXMeyZDv3TLQbu8kn1/VCY4LSau+Jbfk8C1OhrI7l6YvujS+tp3o7T5LnmMhpCH65hfxItnvsWBpnT4nV7EtzGfh0IJ61HhMeJYhBdiuO3WdeOELHMjDHvzRE4DB0V2IvYcsFu8b5TMO8M4AuJGU8SgC+tMwX27B9YyPfrCRmAMEO5Gelcj4QfaZW6bM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(36756003)(26005)(52116002)(86362001)(66476007)(69590400008)(8936002)(478600001)(16526019)(186003)(66946007)(66556008)(44832011)(6506007)(5660300002)(34490700002)(110136005)(2906002)(316002)(83380400001)(6512007)(8676002)(1076003)(2616005)(956004)(6666004)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 3vJwU860ZTgFGN0GlcrwkateYfub8nbJ0dVJ6Yd8HIgMuWYoYr4i/DW2fY/4dU+UpSIulj1K/ruKUVgmRwAvTy2a16Qf0Ykz4FvbkUWamYetPsovGcy7cu89nMN6kH+C+v7PbCI7TcAYn4D4K9mGHTxZLIyRDrtOtdfwbjD0gqTCMmsD5K0EhdbroMwzH7wbuq59w5TozDaZwfKkkz1z53dnt9JBrfIFKHgVhSsEx1IZv/qGu70pBBDay0eJ5NoXJWfi4hkV2WW9S6qvEiqu7o+NSUVcoOpNo4g+I1xWxLgwvvtT1gmrzIdECP/NzZwH09empvj5xlmpSdstHXwbltgjMBHOcDSsvqJz6nHFfT/fGyBLkTBIb1ZOQCkCVR877nsRrw+izT1yYGlEH7BlNhee85nXknOm7qpU5zVjJ3KZlIC0MrUd3iHLKewT+10A+YFLq87KNrKGbnN6wVOzUV0bPq/I3EZ1+TmlFmjTJGH8Jnr8zxHFgk1E9WwHF6Ln1VMQ+d3h9xLnfdX05CrJ1Cftpg+iO6Sr8yVSEJbMFlK6x/6idfVsF4cvJ7S4C8AiZAn17SvrJZPHxb5/va18CIshSqSDHmR1Q9YOr0nDwRgCVkm3P0G7scQUxcZccsLiQ1f6kcBaGGuqvEirbsk/Rw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 64559137-636d-4dc9-7e50-08d8713086d3
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Oct 2020 17:34:11.0899
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1bxS7WQsxf8jZmSTDGXhVEwcj7yOMdPvh0jS05ERMb+LZ+4yBwqSpOtgQuYGDKD1wmDjm1P2DMrlIKyEHkf3sA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6941
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Switchdev drivers often have different VLAN semantics than the bridge.
+For example, consider this:
 
---Rn7IEEq3VEzCw+ji
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ip link add br0 type bridge
+ip link set swp0 master br0
+bridge mdb add dev br0 port swp0 grp 01:02:03:04:05:06 permanent
+ip link del br0
+[   26.085816] mscc_felix 0000:00:00.5 swp0: failed (err=-2) to del object (id=2)
 
-On Thu, Oct 15, 2020 at 05:12:42PM +0200, Nicolas Saenz Julienne wrote:
-> On Thu, 2020-10-15 at 12:14 +0100, Richard Fitzgerald wrote:
+This is because the mscc_ocelot driver, when VLAN awareness is disabled,
+classifies all traffic to the port-based VLAN (pvid). The pvid is 0 when
+the port is standalone, and it is inherited from the bridge default pvid
+(which is 1 by default, but it may take other values) when it joins the
+VLAN-unaware bridge, and then the pvid resets to 0 when the port leaves
+the bridge again.
 
-> > We want something in mainline so that it can be used by people
-> > developing on mainline and taken as a starting point for configuring
-> > the codecs for other host platforms. The RPi is a convenient platform to
-> > use as the base because it is widely available and low-cost.
+Now because the mscc_ocelot switch classifies all traffic to its private
+pvid, it needs to translate between the vid that the mdb comes with, and
+the vid that will actually be programmed into hardware. The bridge uses
+the vid of 0 in VLAN-unaware mode, while the hardware uses the pvid
+inherited from the bridge, that's the difference.
 
-> If what you want to convey is the proper way of configuring your specific
-> device the way to go is writing a devicetree binding. See
-> Documentation/devicetree. It's even possible to validate a given devicetree
-> against the bindings (given they are written in yaml format).
+So what will happen is:
 
-These devices already have bindings, that doesn't really help with
-describing how a specific board is wired up.
+Step 1 (addition):
+br_mdb_notify(RTM_NEWMDB)
+-> ocelot_port_mdb_add(mdb->addr=01:02:03:04:05:06, mdb->vid=0)
+   -> mdb->vid is remapped from 0 to 1 and installed into ocelot->multicast
 
---Rn7IEEq3VEzCw+ji
-Content-Type: application/pgp-signature; name="signature.asc"
+Step 2 (removal):
+del_nbp
+-> netdev_upper_dev_unlink(dev, br->dev)
+   -> ocelot_port_bridge_leave
+      -> ocelot_port_set_pvid(ocelot, port, 0)
+-> br_multicast_del_port is called and the switchdev notifier is
+   deferred for some time later
+   -> ocelot_port_mdb_del(mdb->addr=01:02:03:04:05:06, mdb->vid=0)
+      -> mdb->vid is remapped from 0 to 0, the port pvid (!!!)
+      -> the remapped mdb (addr=01:02:03:04:05:06, vid=0) is not found
+         inside the ocelot->multicast list, and -ENOENT is returned
 
------BEGIN PGP SIGNATURE-----
+So the problem is that mscc_ocelot assumes that the port is removed
+_after_ the multicast entries have been deleted. And this is not an
+unreasonable assumption, presumably it isn't the only switchdev that
+needs to remap the vid. So we can reorder the teardown path in order
+for that assumption to hold true.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+Ih6AACgkQJNaLcl1U
-h9A9yQf8Dm2aPZjUMMPafvwdr+3w8pMcyoUheiSN5MklP1b8yRi2feJfIB5PqzQn
-bk13oOB7cxs4WNQgbZqLPLjJf8bgkutB5Kwga1mm2xDDIdt620GgvMrOosXH05io
-xcm3oyOP5mZrvhzHyBdQV6J9DTF6t/ITVF1pefQhP0JiyOsG+jgU+ScDHrLlqXcO
-yOpJiU0V2D9PEa38sCfBwHtvqBmYioIfDtAr9IZdoXgIRX+h6TQ2tnzpkrTUmXjY
-vDxYu6IRjpvtT6vSvN9I0hM5VS/2AmOE8+taDkVdLUriN13gPPpk5HVJoKv9/qzw
-nY4VIdhSllJWzlilek+ouj4S61KrwQ==
-=cCIV
------END PGP SIGNATURE-----
+Since br_mdb_notify() issues a SWITCHDEV_F_DEFER operation, we must move
+the call not only before netdev_upper_dev_unlink(), but in fact before
+switchdev_deferred_process().
 
---Rn7IEEq3VEzCw+ji--
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+ net/bridge/br_if.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
+index a0e9a7937412..cdbeaf203b0b 100644
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -344,6 +344,7 @@ static void del_nbp(struct net_bridge_port *p)
+ 
+ 	nbp_vlan_flush(p);
+ 	br_fdb_delete_by_port(br, p, 0, 1);
++	br_multicast_del_port(p);
+ 	switchdev_deferred_process();
+ 	nbp_backup_clear(p);
+ 
+@@ -355,8 +356,6 @@ static void del_nbp(struct net_bridge_port *p)
+ 
+ 	netdev_rx_handler_unregister(dev);
+ 
+-	br_multicast_del_port(p);
+-
+ 	kobject_uevent(&p->kobj, KOBJ_REMOVE);
+ 	kobject_del(&p->kobj);
+ 
+-- 
+2.25.1
+
