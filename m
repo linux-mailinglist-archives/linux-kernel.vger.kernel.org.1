@@ -2,113 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A9528FAC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEA628FAC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgJOVoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:44:24 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51873 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727278AbgJOVoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:44:23 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1729991AbgJOVoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:44:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50268 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729254AbgJOVoi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 17:44:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602798276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mpuNHZgzNVhYq85pnOEXEuCpteLYCDH+aPUQTLrccAI=;
+        b=W5CH9HZ0ol6EkKrRb9yLwofaXd3bTn4aC7rGn1B+TITBbd0x8PmuYfNuZvJOPdTnYJ0vM2
+        Exnw+iYTArvz26NOhcMLYMJPXq+69lboz063OtyJW6ITeTUfgNoFabXk40hcOcLyhjGG4k
+        IgPSDOsRbT5GiaM1sYzcmuwh9x9Pz0o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-Ftts9uMfPl-YR3YS8Fd97A-1; Thu, 15 Oct 2020 17:44:35 -0400
+X-MC-Unique: Ftts9uMfPl-YR3YS8Fd97A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CC2qS0xCTz9sTr;
-        Fri, 16 Oct 2020 08:44:20 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602798261;
-        bh=xxCONTbIooCLH5Bf98YyysiRr38oie6ZZ6U5FiXcbkI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OG8ho/Li0M4Gw+DaySwLdtwJ9q3QxzeGwHplZcYWDKBLkGbFNhpzJztM2HoMbnk/9
-         /yWB6fQiXNdZwE5cJ5lXNGGhOXsxChpn3X4qaELOKbgdsxierhrPrOqBTvqs/GeAYa
-         /ieYU7MkdNAdtwTpr0iBNUP2NUIe8KeYP+Re8rijFU91QMFIZGVn07QVSshAeLAPcU
-         Em9J2pVgSajphckrLeKXVQPUVLyy1jYw+xaWCBZFZN2AA/MeCQjUoAN0dN30laeVvL
-         dpf/CO5svJYAOO0gf71zyW2bTWiwxniurMYpDHhV4UQ7iBDT0/og26Hu0l/0/pggIn
-         Eg0vY+N8kpRkw==
-Date:   Fri, 16 Oct 2020 08:44:19 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Wireless <linux-wireless@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Ido Schimmel <idosch@mellanox.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Jeanson <mjeanson@efficios.com>
-Subject: linux-next: manual merge of the wireless-drivers tree with the net
- tree
-Message-ID: <20201016084419.3c6e048a@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3D34186841C;
+        Thu, 15 Oct 2020 21:44:33 +0000 (UTC)
+Received: from jsnitsel.users.ipa.redhat.com (ovpn-112-224.phx2.redhat.com [10.3.112.224])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F009176649;
+        Thu, 15 Oct 2020 21:44:32 +0000 (UTC)
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jarkko@kernel.org,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Subject: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
+Date:   Thu, 15 Oct 2020 14:44:30 -0700
+Message-Id: <20201015214430.17937-1-jsnitsel@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gHa18ALDmab4h1Q=Y3a==d9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gHa18ALDmab4h1Q=Y3a==d9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+There is a misconfiguration in the bios of the gpio pin used for the
+interrupt in the T490s. When interrupts are enabled in the tpm_tis
+driver code this results in an interrupt storm. This was initially
+reported when we attempted to enable the interrupt code in the tpm_tis
+driver, which previously wasn't setting a flag to enable it. Due to
+the reports of the interrupt storm that code was reverted and we went back
+to polling instead of using interrupts. Now that we know the T490s problem
+is a firmware issue, add code to check if the system is a T490s and
+disable interrupts if that is the case. This will allow us to enable
+interrupts for everyone else. If the user has a fixed bios they can
+force the enabling of interrupts with tpm_tis.interrupts=1 on the
+kernel command line.
 
-Hi all,
+Cc: jarkko@kernel.org
+Cc: Peter Huewe <peterhuewe@gmx.de>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
+---
+ drivers/char/tpm/tpm_tis.c | 29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
 
-Today's linux-next merge of the wireless-drivers tree got a conflict in:
+diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
+index 0b214963539d..4ed6e660273a 100644
+--- a/drivers/char/tpm/tpm_tis.c
++++ b/drivers/char/tpm/tpm_tis.c
+@@ -27,6 +27,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/kernel.h>
++#include <linux/dmi.h>
+ #include "tpm.h"
+ #include "tpm_tis_core.h"
+ 
+@@ -49,8 +50,8 @@ static inline struct tpm_tis_tcg_phy *to_tpm_tis_tcg_phy(struct tpm_tis_data *da
+ 	return container_of(data, struct tpm_tis_tcg_phy, priv);
+ }
+ 
+-static bool interrupts = true;
+-module_param(interrupts, bool, 0444);
++static int interrupts = -1;
++module_param(interrupts, int, 0444);
+ MODULE_PARM_DESC(interrupts, "Enable interrupts");
+ 
+ static bool itpm;
+@@ -63,6 +64,28 @@ module_param(force, bool, 0444);
+ MODULE_PARM_DESC(force, "Force device probe rather than using ACPI entry");
+ #endif
+ 
++static int tpm_tis_disable_irq(const struct dmi_system_id *d)
++{
++	if (interrupts == -1) {
++		pr_notice("tpm_tis: %s detected: disabling interrupts.\n", d->ident);
++		interrupts = 0;
++	}
++
++	return 0;
++}
++
++static const struct dmi_system_id tpm_tis_dmi_table[] = {
++	{
++		.callback = tpm_tis_disable_irq,
++		.ident = "ThinkPad T490s",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T490s"),
++		},
++	},
++	{}
++};
++
+ #if defined(CONFIG_PNP) && defined(CONFIG_ACPI)
+ static int has_hid(struct acpi_device *dev, const char *hid)
+ {
+@@ -192,6 +215,8 @@ static int tpm_tis_init(struct device *dev, struct tpm_info *tpm_info)
+ 	int irq = -1;
+ 	int rc;
+ 
++	dmi_check_system(tpm_tis_dmi_table);
++
+ 	rc = check_acpi_tpm2(dev);
+ 	if (rc)
+ 		return rc;
+-- 
+2.28.0
 
-  tools/testing/selftests/net/Makefile
-
-between commit:
-
-  1a01727676a8 ("selftests: Add VRF route leaking tests")
-
-from the net tree and commit:
-
-  b7cc6d3c5c91 ("selftests: net: Add drop monitor test")
-
-from the wireless-drivers (presumably because it has merged part of the
-net-next tree) tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/net/Makefile
-index 3e7fb1e70c77,4773ce72edbd..000000000000
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@@ -19,7 -19,7 +19,8 @@@ TEST_PROGS +=3D txtimestamp.s
-  TEST_PROGS +=3D vrf-xfrm-tests.sh
-  TEST_PROGS +=3D rxtimestamp.sh
-  TEST_PROGS +=3D devlink_port_split.py
-+ TEST_PROGS +=3D drop_monitor_tests.sh
- +TEST_PROGS +=3D vrf_route_leaking.sh
-  TEST_PROGS_EXTENDED :=3D in_netns.sh
-  TEST_GEN_FILES =3D  socket nettest
-  TEST_GEN_FILES +=3D psock_fanout psock_tpacket msg_zerocopy reuseport_add=
-r_any
-
---Sig_/gHa18ALDmab4h1Q=Y3a==d9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+IwrMACgkQAVBC80lX
-0GwW6Qf9GgMvt4wD9afGoWwR3PrZX5Fzbe5fqY+FJIrMG6yHYcyPxRG605Vl5gXo
-JwcjFo9xXxOtEb7EDC1uwLZouTpFtoArIyhJTa7ND1psay5yu3nrTKVljZeTE2ub
-DGZuF6NfGHQ7L1dE0szwqBVL99n17hF1Apvy9wRXd+lpMJllJs32orJ15h6aUdOa
-K7/r8yFN8GN0LEtIw5sgRZ/nArGn/aftRHUVv79jrEzTOYSCc8nS7IQWHNXl3aQH
-AQs7a5bEGg+GlI0AOCWwpDgFuCmzYFQyPlWfPEJzt9Y8+xiIiz3ep88IVKCHm5Kh
-2lhbecBDqNtsb+GZW/hgj5oCcYml8Q==
-=IQ4s
------END PGP SIGNATURE-----
-
---Sig_/gHa18ALDmab4h1Q=Y3a==d9--
