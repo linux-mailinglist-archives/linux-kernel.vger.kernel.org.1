@@ -2,200 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6E528EA8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4FF28EAB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 04:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732480AbgJOB7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S1732539AbgJOCFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 22:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732382AbgJOB7K (ORCPT
+        with ESMTP id S1732511AbgJOCFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:59:10 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB02C061755;
-        Wed, 14 Oct 2020 18:59:09 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id ce10so1288970ejc.5;
-        Wed, 14 Oct 2020 18:59:09 -0700 (PDT)
+        Wed, 14 Oct 2020 22:05:00 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038C0C0613D5
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 19:05:00 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id k9so1194489qki.6
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 19:04:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sHnR2XfJq/JDBqhwl8GNoJlKoubVCNL1H1SylztTjPw=;
-        b=ShVHc4AwsRGiPeMu67vv5weHKu3y/0tppIJlNm0AOv0DgzzHlKUXIGpVqE878pG3ns
-         ZzqVvdMOgn3nkntRoKS9kG+HsuRIxHJ52Odakz9dXNvQOnGN7rQcrDcMoL41a2CimkU4
-         kJF2LOuy8HJovBD1K1gQa81kWYeJveTxgbpxwcjABt7tAIOQxLxI+Doq5jLKq0NZ85PX
-         HDPNbNKr0RjT95tdPAfV5yD1+g3S3tLbEMn2kRrGclKwrsjrtFB3VqeGY5LawtoDl3Bt
-         vSclr5Jt5PPqVlZtMEloy14KWpTvZapc5cRbDwOY5elFseqrjYQ8jou4gt7/ggdoTxLP
-         /IMA==
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c0cFyvDYJwXB3yd+7/P2nUc5iqvNKygR8nPLmQrIdH4=;
+        b=PfUavVuKFuMrQYnPUE8cAHNGX9Ajpfjl8sqSbP0g5FfOiMufre5o65Yf72vIvGYaqs
+         aq1bwXyAYAg/F5xAbsjNtc3kM6YlodJedu5d2H7TWGgsnNuDPMM+/ho6dVKPBfWRiwge
+         aCwV6T1Uk13Hm7FKvLub2loYlwir1MvNZ+HjGnj0aOG06YzGD2G0TvH8C/jlcA2Ik8vP
+         Pk+GA/+uIFanTYYrepAybORZpIUvnbMU1H0gUTQXABFXM6nRW7M7N8uhfgqbB8NEnuME
+         AmmdziPe6gSPB09ro0G7WZWa0gmhjVACUSlYJKoa0PgFCrS6stALWX2NTTQqIAAjlgy2
+         FG0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sHnR2XfJq/JDBqhwl8GNoJlKoubVCNL1H1SylztTjPw=;
-        b=PVus1TeQEyJVU8xgqVYtdTa7NC94qh24toEYwXY4V1uPqiLsKAzPxQqieS8biNLOPT
-         veXguiT4SIHuOhyGjjLvhWyp4URncNBMw3jpwDPEgyrM+Se3q20xHlQT26updHXVh9rW
-         VV6bwAhhedEXvycPIFPCs9rP70lPB2peyk61LosknQloPc7hJm6W5+i/tnEv7TZd4/vB
-         KoVT/VJq1R78EXZ86jt9qaH1RJrbQdFaWEUYaCe8jCgfGPHsQ4yVPKihbfyh2lKzUSkL
-         TTSH8K3QtgeS7RqHNn5AeJK5u5lekxVPjodmSS7khP3D2l69RzRKPGG0k/2J4ENDvL6x
-         KkpQ==
-X-Gm-Message-State: AOAM5335XqZ1cGtrDactBp0d39qLTbmxzAzG2J517peGddd8OrrNx0Kd
-        Kk8nUZgbkjIBHcZyVc4bKWGCJ+pKIw3kQ58BTtg=
-X-Google-Smtp-Source: ABdhPJzMp6uWxPGZrCA4WnvSGL7juT8lkuub+71iSInGAwSJs0sFGvMBWIA63HE8lAip74i+paqY/NcE/jyv8LodZdg=
-X-Received: by 2002:a17:906:6dc6:: with SMTP id j6mr2135978ejt.354.1602727148383;
- Wed, 14 Oct 2020 18:59:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c0cFyvDYJwXB3yd+7/P2nUc5iqvNKygR8nPLmQrIdH4=;
+        b=Uag1w/HNNDXXVA9Way9RDSvUm3av0XYG2fYB6+8xkKmN/n3svxap/gQQuk5mTQ533a
+         RJC1ueCXZp0vEyxnK9hPMRXXy2QTKRrEBNfE1JwWHJNfWQJuX6USCUU42RVXkQTnFtzi
+         /CA3Yk3QOdGhFpewW9A1NYty+T2kg4pOhlkJq5V1jvkuDch+hYkUiNv8U1aCJRqtq3fV
+         QMl9058e9E3a6KDF0zDmxa7IljPuGIBidbYy2jnxN8qOPI+EuB0wgvBC321duNPGI+eW
+         Ug+dgGBxyisFWHV+x9PCucSkb/NCItT+7I2zlzwNRX5AdmOO3ETfMZz1P+BvbxQBko+z
+         knYQ==
+X-Gm-Message-State: AOAM5311KKsWzxKN2ToFSrNrGms3gfVpRgbdIG1uuUZOG3bFRyOnDYgO
+        Ynwn96NEXqzM5qi+6aiXABJAXA==
+X-Google-Smtp-Source: ABdhPJwQlM5OerP8i+GB+Itwc1WB76p7g7oRvfyXuDh/Fwjd85kNhXAdmLyw5Mwbcr9WWjoOXdj9EA==
+X-Received: by 2002:a37:9c4f:: with SMTP id f76mr1899894qke.403.1602727499071;
+        Wed, 14 Oct 2020 19:04:59 -0700 (PDT)
+Received: from localhost.localdomain ([2804:431:c7cb:5e0b:6f3d:fca0:306c:a15d])
+        by smtp.gmail.com with ESMTPSA id e4sm665386qkb.4.2020.10.14.19.04.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 19:04:58 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com, irogers@google.com,
+        brendanhiggins@google.com
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        peterz@infradead.org, mingo@kernel.org
+Subject: [RESEND PATCH v2] lib: kunit: add test_min_heap test conversion to KUnit
+Date:   Wed, 14 Oct 2020 23:04:54 -0300
+Message-Id: <20201015020454.314186-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <546d346644654915877365b19ea534378db0894d.1602663397.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <d97541df3b44822e0d085ffa058e9e7c0ba05214.1602663397.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAKF3qh3nnLaKUAbBdhdXwzknasTWmLFTjB7gz65vjzpHP4Y46Q@mail.gmail.com> <17e142b8-b19a-0ec7-833b-7a4ac2e76d0d@linux.intel.com>
-In-Reply-To: <17e142b8-b19a-0ec7-833b-7a4ac2e76d0d@linux.intel.com>
-From:   Ethan Zhao <xerces.zhao@gmail.com>
-Date:   Thu, 15 Oct 2020 09:58:56 +0800
-Message-ID: <CAKF3qh1fiqqRGvUB2Jxm8tM6Q06GntquGxzmcKe1vapONSPREA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] PCI/ERR: Split the fatal and non-fatal error
- recovery handling
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.nkuppuswamy@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sinan Kaya <okaya@kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ashok Raj <ashok.raj@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 1:06 AM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
->
->
-> On 10/14/20 8:07 AM, Ethan Zhao wrote:
-> > On Wed, Oct 14, 2020 at 5:00 PM Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.nkuppuswamy@gmail.com> wrote:
-> >>
-> >> Commit bdb5ac85777d ("PCI/ERR: Handle fatal error recovery")
-> >> merged fatal and non-fatal error recovery paths, and also made
-> >> recovery code depend on hotplug handler for "remove affected
-> >> device + rescan" support. But this change also complicated the
-> >> error recovery path and which in turn led to the following
-> >> issues.
-> >>
-> >> 1. We depend on hotplug handler for removing the affected
-> >> devices/drivers on DLLSC LINK down event (on DPC event
-> >> trigger) and DPC handler for handling the error recovery. Since
-> >> both handlers operate on same set of affected devices, it leads
-> >> to race condition, which in turn leads to  NULL pointer
-> >> exceptions or error recovery failures.You can find more details
-> >> about this issue in following link.
-> >>
-> >> https://lore.kernel.org/linux-pci/20201007113158.48933-1-haifeng.zhao@intel.com/T/#t
-> >>
-> >> 2. For non-hotplug capable devices fatal (DPC) error recovery
-> >> is currently broken. Current fatal error recovery implementation
-> >> relies on PCIe hotplug (pciehp) handler for detaching and
-> >> re-enumerating the affected devices/drivers. So when dealing with
-> >> non-hotplug capable devices, recovery code does not restore the state
-> >> of the affected devices correctly. You can find more details about
-> >> this issue in the following links.
-> >>
-> >> https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
-> >> https://lore.kernel.org/linux-pci/12115.1588207324@famine/
-> >> https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-> >>
-> >> In order to fix the above two issues, we should stop relying on hotplug
-> >    Yes, it doesn't rely on hotplug handler to remove and rescan the device,
-> > but it couldn't prevent hotplug drivers from doing another replicated
-> > removal/rescanning.
-> > it doesn't make sense to leave another useless removal/rescanning there.
-> > Maybe that's why these two paths were merged to one and made it rely on
-> > hotplug.
-> No, as per PCIe spec, hotplug and DPC has no functional dependency. Hence
-> depending on it to handle some of its recovery function is in-correct and
-> would lead to issues in non-hotplug capable platforms (which is true
-> currently).
-> >
->
-> >> +       else
-> >> +               udev = dev->bus->self;
-> >> +
-> >> +       parent = udev->subordinate;
-> >> +       pci_walk_bus(parent, pci_dev_set_disconnected, NULL);
-> >> +
-> >> +        pci_lock_rescan_remove();
-> >     Though here you have lock, but hotplug will do another
-> > 'pci_stop_and_remove_bus_device()'
-> >     without merging it with the hotplug driver, you have no way to
-> > remove the replicated actions in
-> >    hotplug handler.
-> No, the core operation (remove/add device) is syncronzied and done in
-> only one thread. Please check the following flow. Even in hotplug
- pci_lock_rescan_remove() is global lock for PCIe, the mal-functional
- device's port holds this lock, it prevents the whole system from doing
- hot-plug operation.
- Though pciehp is not so hot/scalable and performance critical, but there
- is per cpu thread to handle hot-plug operation. synchronize all threads
- make them walk backwards for scalability.
+This adds the conversion of the runtime tests of test_min_heap,
+from `lib/test_min_heap.c` to KUnit tests.
 
-> handler, before removing the device, it attempts to hold pci_lock_rescan_remove()
-> lock. So holding the same lock in DPC handler will syncronize the DPC/hotplug
-> handlers. Also if one of the thread (DPC or hotplug) removes/adds the affected devices,
-> other thread will not repeat the same action (since the device is already removed/added).
->
-> ->pciehp_ist()
->    ->pciehp_handle_presence_or_link_change()
->      ->pciehp_disable_slot()
->        ->__pciehp_disable_slot()
->          ->remove_board()
->            ->pciehp_unconfigure_device()
->              ->pci_lock_rescan_remove()
-> >
-> >
-> >    Thanks,
-> >    Ethan
-> >> +        pci_dev_get(dev);
-> >> +        list_for_each_entry_safe_reverse(pdev, temp, &parent->devices,
-> >> +                                        bus_list) {
-> >> +               pci_stop_and_remove_bus_device(pdev);
-> >> +       }
-> >> +
-> >> +       result = reset_link(udev);
-> >> +
-> >> +       if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
-> >> +               /*
-> >> +                * If the error is reported by a bridge, we think this error
-> >> +                * is related to the downstream link of the bridge, so we
-> >> +                * do error recovery on all subordinates of the bridge instead
-> >> +                * of the bridge and clear the error status of the bridge.
-> >> +                */
-> >> +               pci_aer_clear_fatal_status(dev);
-> >> +               if (pcie_aer_is_native(dev))
-> >> +                       pcie_clear_device_status(dev);
-> >> +       }
-> >> +
-> >> +       if (result == PCI_ERS_RESULT_RECOVERED) {
-> >> +               if (pcie_wait_for_link(udev, true))
-> >     And another  pci_rescan_bus() like in the hotplug handler.
-> As I have mentioned before, holding the same lock should make them synchronized
-> and not repeat the underlying functionality of pci_rescan_bus() in both threads
-> at the same time.
-   Yes, it blocked them all.
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+---
+  v2: 
+    * change Kconfig entries to be more adherent to KUnit documentation,
+      min_heap test runs when enabling full test coverage (KUNIT_ALL_TESTS).
+    * make kconfig help more concise;
+    * fix KUNIT_TEST sufix;
+---
+ lib/Kconfig.debug                         |  24 +++--
+ lib/Makefile                              |   2 +-
+ lib/{test_min_heap.c => min_heap_kunit.c} | 117 ++++++++++++----------
+ 3 files changed, 78 insertions(+), 65 deletions(-)
+ rename lib/{test_min_heap.c => min_heap_kunit.c} (60%)
 
-Thanks,
-Ethan
-> >> +                       pci_rescan_bus(udev->bus);
-> >> +               pci_info(dev, "Device recovery from fatal error successful\n");
-> >> +        } else {
-> >> +               pci_uevent_ers(dev, PCI_ERS_RESULT_DISCONNECT);
-> >> +               pci_info(dev, "Device recovery from fatal error failed\n");
->
-> >> --
-> >> 2.17.1
-> >>
->
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 4f09c6505a2e..0e10ef1176de 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1915,16 +1915,6 @@ config TEST_LIST_SORT
+ 
+ 	  If unsure, say N.
+ 
+-config TEST_MIN_HEAP
+-	tristate "Min heap test"
+-	depends on DEBUG_KERNEL || m
+-	help
+-	  Enable this to turn on min heap function tests. This test is
+-	  executed only once during system boot (so affects only boot time),
+-	  or at module load time.
+-
+-	  If unsure, say N.
+-
+ config TEST_SORT
+ 	tristate "Array-based sort test"
+ 	depends on DEBUG_KERNEL || m
+@@ -2256,6 +2246,20 @@ config BITS_TEST
+ 
+ 	  If unsure, say N.
+ 
++config MIN_HEAP_KUNIT_TEST
++	tristate "KUnit test for Min heap" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  Enable this to turn on min heap function tests. This test is
++	  executed only once during system boot (so affects only boot time),
++	  or at module load time.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
++
+ config TEST_UDELAY
+ 	tristate "udelay test driver"
+ 	help
+diff --git a/lib/Makefile b/lib/Makefile
+index d862d41fdc3d..03d12e672cf8 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -68,7 +68,6 @@ CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
+ UBSAN_SANITIZE_test_ubsan.o := y
+ obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
+ obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
+-obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
+ obj-$(CONFIG_TEST_LKM) += test_module.o
+ obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+ obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+@@ -343,3 +342,4 @@ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
+ obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+ obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+ obj-$(CONFIG_BITS_TEST) += test_bits.o
++obj-$(CONFIG_MIN_HEAP_KUNIT_TEST) += min_heap_kunit.o
+diff --git a/lib/test_min_heap.c b/lib/min_heap_kunit.c
+similarity index 60%
+rename from lib/test_min_heap.c
+rename to lib/min_heap_kunit.c
+index d19c8080fd4d..398db1c63146 100644
+--- a/lib/test_min_heap.c
++++ b/lib/min_heap_kunit.c
+@@ -7,9 +7,8 @@
+ 
+ #include <linux/log2.h>
+ #include <linux/min_heap.h>
+-#include <linux/module.h>
+-#include <linux/printk.h>
+ #include <linux/random.h>
++#include <kunit/test.h>
+ 
+ static __init bool less_than(const void *lhs, const void *rhs)
+ {
+@@ -29,37 +28,34 @@ static __init void swap_ints(void *lhs, void *rhs)
+ 	*(int *)rhs = temp;
+ }
+ 
+-static __init int pop_verify_heap(bool min_heap,
++static __init void pop_verify_heap(struct kunit *context,
++				bool min_heap,
+ 				struct min_heap *heap,
+ 				const struct min_heap_callbacks *funcs)
+ {
+ 	int *values = heap->data;
+-	int err = 0;
+ 	int last;
+ 
+ 	last = values[0];
+ 	min_heap_pop(heap, funcs);
+ 	while (heap->nr > 0) {
+ 		if (min_heap) {
+-			if (last > values[0]) {
+-				pr_err("error: expected %d <= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++			KUNIT_EXPECT_FALSE_MSG(context,
++					       last > values[0],
++					       "expected %d <= %d\n",
++					       last, values[0]);
+ 		} else {
+-			if (last < values[0]) {
+-				pr_err("error: expected %d >= %d\n", last,
+-					values[0]);
+-				err++;
+-			}
++			KUNIT_EXPECT_FALSE_MSG(context,
++					       last < values[0],
++					       "expected %d >= %d\n",
++					       last, values[0]);
+ 		}
+ 		last = values[0];
+ 		min_heap_pop(heap, funcs);
+ 	}
+-	return err;
+ }
+ 
+-static __init int test_heapify_all(bool min_heap)
++static __init void test_heapify_all(struct kunit *context, bool min_heap)
+ {
+ 	int values[] = { 3, 1, 2, 4, 0x8000000, 0x7FFFFFF, 0,
+ 			 -3, -1, -2, -4, 0x8000000, 0x7FFFFFF };
+@@ -73,12 +69,11 @@ static __init int test_heapify_all(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, err;
++	int i;
+ 
+ 	/* Test with known set of values. */
+ 	min_heapify_all(&heap, &funcs);
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
+-
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	/* Test with randomly generated values. */
+ 	heap.nr = ARRAY_SIZE(values);
+@@ -86,12 +81,10 @@ static __init int test_heapify_all(bool min_heap)
+ 		values[i] = get_random_int();
+ 
+ 	min_heapify_all(&heap, &funcs);
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ }
+ 
+-static __init int test_heap_push(bool min_heap)
++static __init void test_heap_push(struct kunit *context, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -106,25 +99,22 @@ static __init int test_heap_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Test with known set of values copied from data. */
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_push(&heap, &data[i], &funcs);
+-
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	/* Test with randomly generated values. */
+ 	while (heap.nr < heap.size) {
+ 		temp = get_random_int();
+ 		min_heap_push(&heap, &temp, &funcs);
+ 	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
+-
+-	return err;
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ }
+ 
+-static __init int test_heap_pop_push(bool min_heap)
++static __init void test_heap_pop_push(struct kunit *context, bool min_heap)
+ {
+ 	const int data[] = { 3, 1, 2, 4, 0x80000000, 0x7FFFFFFF, 0,
+ 			     -3, -1, -2, -4, 0x80000000, 0x7FFFFFFF };
+@@ -139,7 +129,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		.less = min_heap ? less_than : greater_than,
+ 		.swp = swap_ints,
+ 	};
+-	int i, temp, err;
++	int i, temp;
+ 
+ 	/* Fill values with data to pop and replace. */
+ 	temp = min_heap ? 0x80000000 : 0x7FFFFFFF;
+@@ -149,8 +139,7 @@ static __init int test_heap_pop_push(bool min_heap)
+ 	/* Test with known set of values copied from data. */
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+ 		min_heap_pop_push(&heap, &data[i], &funcs);
+-
+-	err = pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
+ 
+ 	heap.nr = 0;
+ 	for (i = 0; i < ARRAY_SIZE(data); i++)
+@@ -161,34 +150,54 @@ static __init int test_heap_pop_push(bool min_heap)
+ 		temp = get_random_int();
+ 		min_heap_pop_push(&heap, &temp, &funcs);
+ 	}
+-	err += pop_verify_heap(min_heap, &heap, &funcs);
++	pop_verify_heap(context, min_heap, &heap, &funcs);
++}
+ 
+-	return err;
++static void __init test_heapify_all_true(struct kunit *context)
++{
++	test_heapify_all(context, true);
+ }
+ 
+-static int __init test_min_heap_init(void)
++static void __init test_heapify_all_false(struct kunit *context)
+ {
+-	int err = 0;
+-
+-	err += test_heapify_all(true);
+-	err += test_heapify_all(false);
+-	err += test_heap_push(true);
+-	err += test_heap_push(false);
+-	err += test_heap_pop_push(true);
+-	err += test_heap_pop_push(false);
+-	if (err) {
+-		pr_err("test failed with %d errors\n", err);
+-		return -EINVAL;
+-	}
+-	pr_info("test passed\n");
+-	return 0;
++	test_heapify_all(context, true);
++}
++
++static void __init test_heap_push_true(struct kunit *context)
++{
++	test_heap_push(context, true);
++}
++
++static void __init test_heap_push_false(struct kunit *context)
++{
++	test_heap_push(context, false);
+ }
+-module_init(test_min_heap_init);
+ 
+-static void __exit test_min_heap_exit(void)
++static void __init test_heap_pop_push_true(struct kunit *context)
+ {
+-	/* do nothing */
++	test_heap_pop_push(context, true);
+ }
+-module_exit(test_min_heap_exit);
++
++static void __init test_heap_pop_push_false(struct kunit *context)
++{
++	test_heap_pop_push(context, false);
++}
++
++static struct kunit_case __refdata min_heap_test_cases[] = {
++	KUNIT_CASE(test_heapify_all_true),
++	KUNIT_CASE(test_heapify_all_false),
++	KUNIT_CASE(test_heap_push_true),
++	KUNIT_CASE(test_heap_push_false),
++	KUNIT_CASE(test_heap_pop_push_true),
++	KUNIT_CASE(test_heap_pop_push_false),
++	{}
++};
++
++static struct kunit_suite min_heap_test_suite = {
++	.name = "min-heap",
++	.test_cases = min_heap_test_cases,
++};
++
++kunit_test_suites(&min_heap_test_suite);
+ 
+ MODULE_LICENSE("GPL");
+
+base-commit: d2585f5164c298aaaed14c2c8d313cbe7bd5b253
+-- 
+2.26.2
+
