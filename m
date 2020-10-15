@@ -2,164 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C68F28EA0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F60728EA0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388758AbgJOBaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
+        id S1732277AbgJOB34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732278AbgJOB3j (ORCPT
+        with ESMTP id S2387861AbgJOB3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:29:39 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF697C002165
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:11:06 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id v23so470887vsp.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:11:06 -0700 (PDT)
+        Wed, 14 Oct 2020 21:29:40 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D127C00216A
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:13:16 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id v6so1411179lfa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:13:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vuT8pXckD4G5mqRoDaNZXfyEuBjKdvi4YHo538crQqA=;
-        b=kDj1thWfBp9ND5fsIRzzlQxx3hC0LGm7cEqbBEnwd+XGDqir5G+X1UucDnUoE80iky
-         Qqdu7RThHoo/lxJctjAGvQYixQMIk5qX6xV/XsPyg8LG/Ttk8lPGRAC/L1YHDHF4QNX6
-         ljvgAoqkK/ciKTKi0NaX4YCwned85FNcuxZzI=
+        bh=LURiEnBAw2K4z9zIAiaFYTyrr5u9bQTopZRlsHwZQ30=;
+        b=PgKjpNgrHeicAl8QzyJWoTs5A6rmp6R8Pmum8VjneOxNanE02C3iR0xMHPEKXRSwiA
+         hgbPuEmU4Y/KvHEeIBgVzlegtYfQL/e1IYCy/LveXiVHXjGwp6JSkRsgM1KwAIfKJcKw
+         xjiOyeSTmvlceona3bncz+d4u8W6hA+58+IV74pozmLNmVEOzj6zHtFH6BbvMPGb1Q1N
+         SCAyW7rDspMISGiSvIfRrqTnMCItj6RGBKiMdjZQs84SXB/tH/0v/+6ZNBKtXVi4giBx
+         5O+k8MWQSqRdXTBoaXJdV4Sbx9ykfhv8CIwDyMJZ5tK/7VE1ZpxXSBqDafewuTLQ+EfB
+         Zbrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vuT8pXckD4G5mqRoDaNZXfyEuBjKdvi4YHo538crQqA=;
-        b=B6PdyS+8VB6nGYTZzUEySp142qigevokuUwJEC1wszr6YYkCU6Q6gwQLea66JiMYRX
-         jdptHWqZMX1NzE+tZP5p7I88LTQnYJy7wWBWXECRCsYhXbWJUUCo2oGJ0dqhTXQgbPVu
-         oKFoMDidRDWmixVMfhzEx9UhBKLodebdgBlm9XtrDScKoXw0DAkhYC9o7kTQ1w20HrSH
-         +gBnGvP3WRcs1UZfUuhuhR8dtXEUYknLn2GP/00HVpBM+d6h2XdH0JpqAIH5jYgbrJU9
-         QjaS46kn8B3G2IesIj8H1twzIHAnAf5nUyd8NzUsUGN/LsnO0G7ClT1m7J5JO5QmA3ly
-         qCkA==
-X-Gm-Message-State: AOAM531OSyPeHXuL7QQq0+zomhbBm0C1uUj+VMOvBRk8qGc5shi7e9+b
-        OTWkXIR6mXpmnAbK4cTjcrkruCPjpOsPcg==
-X-Google-Smtp-Source: ABdhPJwsCjf7rs7TwN5imTqERuwPq7W2WUXBQc+1vy7AoEYcZDvzxlMjMlC1l8qJcrhsrnJuFk3r1Q==
-X-Received: by 2002:a67:444:: with SMTP id 65mr1283768vse.0.1602720665695;
-        Wed, 14 Oct 2020 17:11:05 -0700 (PDT)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id 23sm182512vkw.25.2020.10.14.17.11.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 17:11:04 -0700 (PDT)
-Received: by mail-ua1-f46.google.com with SMTP id r17so312720uaf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:11:04 -0700 (PDT)
-X-Received: by 2002:a9f:31ce:: with SMTP id w14mr875001uad.104.1602720663718;
- Wed, 14 Oct 2020 17:11:03 -0700 (PDT)
+        bh=LURiEnBAw2K4z9zIAiaFYTyrr5u9bQTopZRlsHwZQ30=;
+        b=qjXmvKyRi2jy5FCg4AvCwtWZ0Ha6lO//gRy4vlYoeMHfCoOnFDFPRK9aWUV9WCqtOS
+         kdLNvfaqcCVAKRRXrL4Q7xrwXm70QzZ+iiqAe12hXhxy8KP4w0Dco6uIqulyi4MRpaB5
+         nb0/SNqbRVX9H64XB03/sJyfzYrhJOeN4k42ysDG99olgbdc7f13Ed4HYCTo1fM+RMlv
+         6XbTAnDhGyJ96ZY8nnGCQaqbh5X4KjGEWrQra/fVE3PVl1HbTjxDRhrKHKXaf4M6mvL6
+         MebWFBl7cJ1FpD2lYlipzNrycnddj+IPJni18ce5XP/73DXLWfy+oLbaXRhjaYJXFdmY
+         9Trg==
+X-Gm-Message-State: AOAM530pDusxhwg+L1/KrpQZMABF5hjRMBwO9CNntai1TRc3DSfRFh+o
+        AMgo42JhvpzJA+j9WgXTU9ann5I6Gb6I6RdsS35Kvg==
+X-Google-Smtp-Source: ABdhPJzXFIHFpKtLKeaohPSTTFSTn1moPmFA2URXdVrEpwDK24AygeIW08WWsjsl1A8u32KKXSdaLbgxjj+v3FNFXjU=
+X-Received: by 2002:a05:6512:52f:: with SMTP id o15mr141586lfc.381.1602720794371;
+ Wed, 14 Oct 2020 17:13:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201014140507.v3.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid>
- <20201014140507.v3.2.I75c409497d4dea9daefa53ec5f93824081c4ecbe@changeid>
- <160271345117.884498.6375969749730135625@swboyd.mtv.corp.google.com>
- <CAD=FV=UipL42FLRARc4V34bqEukaB=WQzAdr2Si2RUjPaAmE4g@mail.gmail.com>
- <160271644762.884498.446447786516269652@swboyd.mtv.corp.google.com>
- <CAD=FV=VTEQMqnmC_OMtADTdrs+2zxCd8ODSRpxtxP6SKBnx2qg@mail.gmail.com> <160271840430.884498.12165227808003957407@swboyd.mtv.corp.google.com>
-In-Reply-To: <160271840430.884498.12165227808003957407@swboyd.mtv.corp.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 14 Oct 2020 17:10:51 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UUTTGLNHe2pESfbWaXSxs1u4BOVgru6ic4arGgYkZdVg@mail.gmail.com>
-Message-ID: <CAD=FV=UUTTGLNHe2pESfbWaXSxs1u4BOVgru6ic4arGgYkZdVg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] clk: qcom: lpass-sc7180: Disentangle the two clock devices
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Taniya Das <tdas@codeaurora.org>,
-        "ARM/QUALCOMM SUPPORT" <linux-soc@vger.kernel.org>,
-        David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201013003203.4168817-1-samitolvanen@google.com> <20201013003203.4168817-17-samitolvanen@google.com>
+In-Reply-To: <20201013003203.4168817-17-samitolvanen@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 15 Oct 2020 02:12:47 +0200
+Message-ID: <CAG48ez26uiRBKS06_DQXB_GSmNjJjRiT+YA6pgLBGYCbVi2NNg@mail.gmail.com>
+Subject: Re: [PATCH v6 16/25] init: lto: fix PREL32 relocations
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org,
+        "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Oct 13, 2020 at 2:34 AM Sami Tolvanen <samitolvanen@google.com> wrote:
+> With LTO, the compiler can rename static functions to avoid global
+> naming collisions. As initcall functions are typically static,
+> renaming can break references to them in inline assembly. This
+> change adds a global stub with a stable name for each initcall to
+> fix the issue when PREL32 relocations are used.
 
-On Wed, Oct 14, 2020 at 4:33 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Doug Anderson (2020-10-14 16:07:52)
-> > Hi,
-> >
-> > On Wed, Oct 14, 2020 at 4:00 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> > >
-> > > Quoting Doug Anderson (2020-10-14 15:28:58)
-> > > > Hi,
-> > > >
-> > > > On Wed, Oct 14, 2020 at 3:10 PM Stephen Boyd <sboyd@kernel.org> wrote:
-> > > > >
-> > > > > Quoting Douglas Anderson (2020-10-14 14:05:22)
-> > > > > > diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
-> > > > > > index abcf36006926..48d370e2108e 100644
-> > > > > > --- a/drivers/clk/qcom/lpasscorecc-sc7180.c
-> > > > > > +++ b/drivers/clk/qcom/lpasscorecc-sc7180.c
-> > > > > > @@ -356,12 +356,48 @@ static const struct qcom_cc_desc lpass_audio_hm_sc7180_desc = {
-> > > > > >         .num_gdscs = ARRAY_SIZE(lpass_audio_hm_sc7180_gdscs),
-> > > > > >  };
-> > > > > >
-> > > > > > +static void lpass_pm_runtime_disable(void *data)
-> > > > > > +{
-> > > > > > +       pm_runtime_disable(data);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static void lapss_pm_clk_destroy(void *data)
-> > > > > > +{
-> > > > > > +       pm_clk_destroy(data);
-> > > > > > +}
-> > > > >
-> > > > > Why are these helpers added again? And do we even need them? Can't we
-> > > > > just pass pm_runtime_disable or pm_clk_destroy to the
-> > > > > devm_add_action_or_reset() second parameter?
-> > > >
-> > > > Unfortunately, we can't due to the C specification.  Take a look at
-> > > > all the other users of devm_add_action_or_reset() and they all have
-> > > > pretty much the same stupid thing.
-> > >
-> > > Ok, but we don't need two of the same functions, right?
-> >
-> > How would you write it more cleanly?
->
-> Oh I see I'm making it confusing. Patch 1 has two functions for
-> pm_runtime_disable() and pm_clk_destroy(), called
-> lpass_pm_runtime_disable() and lapss_pm_clk_destroy() respectively
-> (please fix the lapss typo regardless).
-
-Oops, sorry for the typo.
-
-
-> Then this patch seems to introduce them again, but really the diff is
-> getting confused and it looks like the functions are introduced again.
-> Can you move them to this location (or at least near it) in the first
-> patch so that this doesn't look like they're being introduced again?
-
-Yeah.  v4 coming up soon then.
-
-
-> > > > ...actually, do we even need the runtime_disable in the error path?
-> > > > When the dev goes away does it matter if you left pm_runtime enabled
-> > > > on it?
-> > > >
-> > >
-> > > I don't know. The device isn't destroyed but maybe when the driver is
-> > > unbound it resets the runtime PM counters?
-> >
-> > Certainly it seems safest just to do it...
-> >
->
-> Can you confirm? I'd rather not carry extra code.
-
-Confirmed that we need it.  Specifically from
-"Documentation/power/runtime_pm.rst"
-
-> Drivers in ->remove() callback should undo the runtime PM changes done
-> in ->probe(). Usually this means calling pm_runtime_disable(),
-> pm_runtime_dont_use_autosuspend() etc.
-
-It's my assertion that having it in devm is as good as having it in
-the remove() callback because devres_release_all() follows the
-remove() calls in base/dd.c
+While I understand that this may be necessary for now, are there any
+plans to fix this in the compiler in the future? There was a thread
+about this issue at
+<http://lists.llvm.org/pipermail/llvm-dev/2016-April/thread.html#98047>,
+and possible solutions were discussed there, but it looks like that
+fizzled out...
