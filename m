@@ -2,100 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C5728F548
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D406228F54B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389259AbgJOOww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        id S2389194AbgJOOxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388348AbgJOOwv (ORCPT
+        with ESMTP id S2388348AbgJOOxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:52:51 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C936C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:52:51 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a4so3422533lji.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:52:51 -0700 (PDT)
+        Thu, 15 Oct 2020 10:53:41 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99BEC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:53:41 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id b127so4018288wmb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bB0aML9iHly6lbfGENfyVAF9mzhMQjNP2v7ZMJRbBXc=;
-        b=NYyuUoopM6Ye/9aTGGSOB131XjOnZjL/iS+3AOgzlbjqNBYntDH3hqF9Sa8z6T7qQO
-         TFbfBig10huD73ZxXtbp6+MdY78PqWl46lNCDHJM4oMUiyPL/JbUuvpvSBlkaqgZ+tnf
-         4zRprFMtakP7gVcQDwkAdzbbj2XVtPuDEL9MU8CfwnT1R/eg7qkNqGvCLhyf384K4Eut
-         b5SOmAz6vqebc7qQRJZYfeOlodwWqVbroH95UIzhduCysDyNOWbP7yByoNfEyMNtzxlG
-         STrJsFujUqu9tnOPCTY18x7xbvka2+B252zj3bRFlJvrvd7gKBrRxazqpkew1qU6YVZY
-         V1hg==
+         :cc;
+        bh=M+E7HunszzPZSotVNRgNcC7Nfy+vpMwTQ74FpdWH9JM=;
+        b=sLA+aCJEXSwtHlBJJzmLua1KG22wStLlb7ofOKhxgeNdjBAzu596rx2IbIMwrnB3ps
+         5bGPxHqmQZWqVkdslLY7Cam7xHB/fmD0W6JSSrbBTNpEPYHZfsGW/X9M1+dcxYX9w4au
+         dfGvCiNpJ/DSZMDkeyANmvgoMk4tua9uZw6A5zCOsxzzvxJpXN+EI2DbfQIvgYW83yjZ
+         om2L/YC8lsOWyvRJVJnmAG7EJKdTEJ92WfNEKuo0Ti0rfr+yeelhiKmQ8ZZ3q6Y8EXgs
+         9EU4KjGn/ww708Jz8tBSf9dViHOQtgxS8ieiiuLnU2yqmXKwBwHAxhWxaHWyalymzah+
+         gEtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bB0aML9iHly6lbfGENfyVAF9mzhMQjNP2v7ZMJRbBXc=;
-        b=NkqQeZedmhWjCIC0uNHQP/ZlBV+7HkNjm+Inu9mzo8076xN+Z4sIOE3z0BmOz9BLZF
-         KTi+OqNUFSoC6Q28y+bpFkNnJ97eseDoP6klHPZHY8li1TxVyBtjrDXmHjWV0MXHgRdt
-         F6U8zPmrKXt/2LJ/7t01XpVUWFyembYuFNukA0k+0tG4FQv/KVmzT3qRwnP/pyJba8+M
-         cxYpG4p4rUtjBjzAQFFnLTv0YYOhiuRXOimK8cHG8aAGVFuOX/9lzU3iHyHHVXs7jVAN
-         Wqm9uwcBWQnWzmt9Qh5sS2DzB70vZ5wzk+JIBsBenPiOs0IeGu3SCALYSQJM2VE5H0v7
-         n7oA==
-X-Gm-Message-State: AOAM532Do2D86QZAOMg6hKdKHWCnrSea47WlIP7bNgyuHqkSNhqaekst
-        if7E/pN7fRTtAQeOJwVDq5ZBqpbOI2ssd7mTpLU=
-X-Google-Smtp-Source: ABdhPJyx30xOfI/dCOEDwzdW1JN7ZaYBa0FLpSKwq8j154fT2ykNaCexw1AjUCzXXU/XmYTVCAGEXsCBq8BdXAsciwU=
-X-Received: by 2002:a2e:9ccd:: with SMTP id g13mr1537362ljj.127.1602773570017;
- Thu, 15 Oct 2020 07:52:50 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=M+E7HunszzPZSotVNRgNcC7Nfy+vpMwTQ74FpdWH9JM=;
+        b=VFwKSuvlH28KS/d09LM/mpHnEFLVz6GArcwy3IOjpTOF5zWII68JmQLAqcEO9FsVS6
+         eDmISVtKUWk6NFtAuR38UTgFs7RGFwkU6P3k8/eqdQCyXVQeTJ8M1umAGiB6zegk0FPu
+         oHPE+D68bYjytabdphLiPgicZvkHwtnfXXv6CLJOBIghK0/Gr9oClfzN7DIBI/Ah8sFI
+         juCihWWELXCQlEyk6YcLgnPOafCQsTS1Zp62B9R6nHUNCdJQJjuJkZtQnKbpWFI9zIZt
+         pg8qQKahok/Ao/c3eu2Y2NBpYFJX0MMMDmhjz07sYvIftxvjUg8lkNFTyxn/KJxRVn10
+         PONA==
+X-Gm-Message-State: AOAM530aNMxoYwhbUyWMy9/Vgc6RFFMbFnpgi3d9xJtd1VFs9pih78fW
+        P+w7msRY4msD7RAfvyj+L9B0xjAqCe2LvzPWjQ0=
+X-Google-Smtp-Source: ABdhPJxSVlYADlSa2G7Ly6zx6sWDW2MUAiGZDD0DOatN/musxqLz9Ij2aDC59rAdSqszHKz9juBSxDcxeCvNNcJTVcE=
+X-Received: by 2002:a1c:1d15:: with SMTP id d21mr4537548wmd.79.1602773620456;
+ Thu, 15 Oct 2020 07:53:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201014175342.152712-1-jandryuk@gmail.com> <20201014175342.152712-3-jandryuk@gmail.com>
- <d8a8ed95-ed55-4ccf-1b54-8d97db908742@suse.com>
-In-Reply-To: <d8a8ed95-ed55-4ccf-1b54-8d97db908742@suse.com>
-From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Thu, 15 Oct 2020 10:52:38 -0400
-Message-ID: <CAKf6xpv4Kborx8-0UvadyyzPRGg0TLfD1RWxmkM1PnfPKuXOaA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] xen: Kconfig: nest Xen guest options
-To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+ <20201015135932.GA277152@PWN>
+In-Reply-To: <20201015135932.GA277152@PWN>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 15 Oct 2020 10:53:28 -0400
+Message-ID: <CADnq5_PqhJFRDofb0pNsgrp7O8M_D9o3gz5_Nt8KL=0cgMWoKA@mail.gmail.com>
+Subject: Re: [git pull] drm next pull for 5.10-rc1
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 5:42 AM J=C3=BCrgen Gro=C3=9F <jgross@suse.com> wro=
-te:
+On Thu, Oct 15, 2020 at 9:59 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
 >
-> On 14.10.20 19:53, Jason Andryuk wrote:
-> > Moving XEN_512GB allows it to nest under XEN_PV.  That also allows
-> > XEN_PVH to nest under XEN as a sibling to XEN_PV and XEN_PVHVM giving:
-> >
-> > [*]   Xen guest support
-> > [*]     Xen PV guest support
-> > [*]       Limit Xen pv-domain memory to 512GB
-> > [*]       Xen PV Dom0 support
+> Hi all,
 >
-> This has currently a wrong text/semantics:
+> On Thu, Oct 15, 2020 at 11:33:08AM +1000, Dave Airlie wrote:
+> > Peilin Ye (1):
+> >       drm/amdgpu: Prevent kernel-infoleak in amdgpu_info_ioctl()
 >
-> It should be split to CONFIG_XEN_DOM0 and CONFIG_XEN_PV_DOM0.
+> This patch is already in mainline:
 >
-> Otherwise the backends won't be enabled per default for a PVH-only
-> config meant to be Dom0-capable.
+> commit 543e8669ed9bfb30545fd52bc0e047ca4df7fb31
+> Author: Peilin Ye <yepeilin.cs@gmail.com>
+> Date:   Tue Jul 28 15:29:24 2020 -0400
 >
-> You don't have to do that in your patches if you don't want to, but
-> I wanted to mention it with you touching this area of Kconfig.
+>     drm/amdgpu: Prevent kernel-infoleak in amdgpu_info_ioctl()
+>
+> It has been applied to linux-next twice, for unknown reasons. Thank you!
 
-Yes, good point.  I had not considered that.
+The patch was already in drm-next, but since it was a bug fix it was
+applied it to 5.9 as well.
 
-> > [*]     Xen PVHVM guest support
-> > [*]     Xen PVH guest support
-> >
-> > Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
->
-> Reviewed-by: Juergen Gross <jgross@suse.com>
-
-Thanks,
-Jason
+Alex
