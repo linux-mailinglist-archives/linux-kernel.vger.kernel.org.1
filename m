@@ -2,87 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA8728F9A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BD428F9AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391816AbgJOTlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 15:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60984 "EHLO mail.kernel.org"
+        id S2391862AbgJOTqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 15:46:14 -0400
+Received: from mga11.intel.com ([192.55.52.93]:38341 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391809AbgJOTle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 15:41:34 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 262B9206D9;
-        Thu, 15 Oct 2020 19:41:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602790894;
-        bh=+EMalpWr2Ka81KeEZ2XybfpF9n2q64cluqtKKXP/XXI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yRz4wRgxdQ1EfHnJNpYYmj4rE9Ezb70ZaiKj6v6QdCOr/F59VaErxZyPbljsKri/T
-         keAbZhMi08sQDrjL8DdA563p1SZSx8/FKgQqSpQXaYOCt9q9WiPjJd31H1Yof1NMDa
-         UFN6IuiT/+qRj5Ok6PYOWHdFnWY6zFsIIXrdaBkQ=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kT980-001TIX-6Q; Thu, 15 Oct 2020 20:41:32 +0100
+        id S2391854AbgJOTqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 15:46:14 -0400
+IronPort-SDR: s+hi2SqqKEQU4IkuYooKx2VJGN/dum//EDdeBLAqPsdBC3bYgkyT8EquYG/yguTPjmI1CP4sn+
+ veFZod+TLVbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="162973519"
+X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
+   d="scan'208";a="162973519"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 12:46:13 -0700
+IronPort-SDR: 1FNf/2Jt9eaIreCkupbrPpcxokjRoPlJPhb1fitGpc8/1ucG/gImZjH+wr1Y18zoyTbG3BelDh
+ 6QqovO61rssg==
+X-IronPort-AV: E=Sophos;i="5.77,380,1596524400"; 
+   d="scan'208";a="357110343"
+Received: from emcmulli-mobl1.amr.corp.intel.com ([10.212.199.190])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 12:46:12 -0700
+Message-ID: <3e4ca631b8fb85de570bf490e71dd71219c5a2c2.camel@linux.intel.com>
+Subject: Re: [PATCH 2/2] ACPI: DPTF: Add ACPI_DPTF Kconfig menu
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Borislav Petkov <bp@suse.de>
+Date:   Thu, 15 Oct 2020 12:46:10 -0700
+In-Reply-To: <35637045.pmxlVluP8t@kreacher>
+References: <2206290.MayQypTng0@kreacher> <35637045.pmxlVluP8t@kreacher>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 15 Oct 2020 20:41:32 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: 5.10-rc0: build error in ipi.c
-In-Reply-To: <20201015171829.GB5636@duo.ucw.cz>
-References: <20201015101222.GA32747@amd>
- <87imbba7qk.fsf@nanos.tec.linutronix.de>
- <3e6b7c98fd8221a7878aaaa6c1bf86f4@kernel.org>
- <20201015171829.GB5636@duo.ucw.cz>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <1d6af6a15b71e77c268428ffbc519d6a@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: pavel@ucw.cz, tglx@linutronix.de, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-15 18:18, Pavel Machek wrote:
-> Hi!
+On Thu, 2020-10-15 at 18:59 +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
->> > > I'm getting build problems in 5.10-rc0 in config for n900. ARM board.
->> > >
->> > > CONFIG_SMP=y
->> > > CONFIG_SMP_ON_UP=y
->> 
->> On its own, this doesn't break anything with multi_v7_defconfig.
+> Add a Kconfig menu for Intel DPTF (Dynamic Platform and Thermal
+> Framework), put both the existing participant drivers in it and set
+> them to be built as modules by default.
 > 
-> I sent config off-list. Let me know if it does not arrive or if you
-> need more info.
+> While at it, do a few assorted cleanups for a good measure.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-Try this for size:
+> ---
+>  drivers/acpi/dptf/Kconfig |   29 ++++++++++++++++++++++++-----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/dptf/Kconfig
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/dptf/Kconfig
+> +++ linux-pm/drivers/acpi/dptf/Kconfig
+> @@ -1,8 +1,25 @@
+>  # SPDX-License-Identifier: GPL-2.0
+> -config DPTF_POWER
+> -	tristate "DPTF Platform Power Participant"
+> +
+> +menuconfig ACPI_DPTF
+> +	bool "Intel DPTF (Dynamic Platform and Thermal Framework)
+> Support"
+>  	depends on X86
+>  	help
+> +	  Intel Dynamic Platform and Thermal Framework (DPTF) is a
+> platform
+> +	  level hardware/software solution for power and thermal
+> management.
+> +
+> +	  As a container for multiple power/thermal technologies, DPTF
+> provides
+> +	  a coordinated approach for different policies to effect the
+> hardware
+> +	  state of a system.
+> +
+> +	  For more information see:
+> +	  <
+> https://01.org/intel%C2%AE-dynamic-platform-and-thermal-framework-dptf-chromium-os/overview
+> >
+> +
+> +if ACPI_DPTF
+> +
+> +config DPTF_POWER
+> +	tristate "Platform Power DPTF Participant"
+> +	default m
+> +	help
+>  	  This driver adds support for Dynamic Platform and Thermal
+> Framework
+>  	  (DPTF) Platform Power Participant device (INT3407) support.
+>  	  This participant is responsible for exposing platform
+> telemetry:
+> @@ -16,15 +33,17 @@ config DPTF_POWER
+>  	  the module will be called dptf_power.
+>  
+>  config DPTF_PCH_FIVR
+> -	tristate "DPTF PCH FIVR Participant"
+> -	depends on X86
+> +	tristate "PCH FIVR DPTF Participant"
+> +	default m
+>  	help
+>  	  This driver adds support for Dynamic Platform and Thermal
+> Framework
+>  	  (DPTF) PCH FIVR Participant device support. This driver
+> allows to
+> -	  switch PCH FIVR (Fully Integrated Voltage Regulator)
+> frequency.
+> +	  switch the PCH FIVR (Fully Integrated Voltage Regulator)
+> frequency.
+>  	  This participant is responsible for exposing:
+>  		freq_mhz_low_clock
+>  		freq_mhz_high_clock
+>  
+>  	  To compile this driver as a module, choose M here:
+>  	  the module will be called dptf_pch_fivr.
+> +
+> +endif
+> 
+> 
+> 
 
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index 10a5aff4eecc..db923e0da162 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -81,6 +81,7 @@ config IRQ_FASTEOI_HIERARCHY_HANDLERS
-
-  # Generic IRQ IPI support
-  config GENERIC_IRQ_IPI
-+	select IRQ_DOMAIN_HIERARCHY
-  	bool
-
-  # Generic MSI interrupt support
-
-
-         N,
--- 
-Jazz is not dead. It just smells funny...
