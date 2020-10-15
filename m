@@ -2,152 +2,408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330CE28F6FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE6728F700
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390022AbgJOQjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 12:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388946AbgJOQjx (ORCPT
+        id S2389950AbgJOQmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:42:21 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:42596 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388946AbgJOQmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 12:39:53 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846C3C061755;
-        Thu, 15 Oct 2020 09:39:53 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o3so2233095pgr.11;
-        Thu, 15 Oct 2020 09:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gqWIMQYBUG7yq8NtnkvmW24LTsh1QU6pWh/+ugrYrxg=;
-        b=qQZd5xTUnsF3HRylAKoGTioMFW7uqnoMXRtBLq+c1p4V/aRRTXrGb8cTFAc3nvALjp
-         aquNHctfkqLrSvEdPhxpeTSHfctsGe2UI7sEhajhMS700kAS9Y5xnWGK1BfZupaY0PWN
-         Y7Yow4982zp9cphiZsHNFyV/jjhZCQ3xy/8lxe6JoYN93I4GDpYX4OoQOteSfMdEFtQX
-         RbYeMftNCsU9AahTo+KF8hh5DeHEdWySDzZmbfS3yW3blX1ceQcfA7DfKPts1+hoSdWY
-         15siQyc5iyGg71kJ9IQrBvubOFT2B1xxUMsoiffkxULFpacN7amxN/R35qegSCEu+VTQ
-         6X8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=gqWIMQYBUG7yq8NtnkvmW24LTsh1QU6pWh/+ugrYrxg=;
-        b=aOWqooLMWnFKczNCZttelJMtr+zJG5BSo8KCOgfY/5mvaQPLdXDxZvpV910gALIbrk
-         opIFoN1uNcWVEZXS8+vtaO6jgz1iBCiZIc5WxlNzpDOzgkvwJgdH48aeEm/z/LNZBICn
-         CB/sk1tjIzBjN7ob51+32DSwdi60CkAeWkdtUMtgKkgZ5jrD6HjMwHer3i5/mMAwwaJJ
-         S4zvN8Tiq1KkCsgWIqElsEBcx5gjyKyh8BQ4yl6HnC60QH0BySVW2VH9lfMsjme0P6Cm
-         SjcfY50iFNlgUuRzf7GKz0G0qWQO/ChzY1uhvZuIr04mdAQofkuPBB2H1lQukztMaKaN
-         PeUg==
-X-Gm-Message-State: AOAM531XRTzQ2gsMdM+P2DIEsituDk8Jq0bNT8LGTLKXSfvSdo4Y9ilP
-        pXDMr1AJDKoZoSyWL3DRRvQ=
-X-Google-Smtp-Source: ABdhPJwgDSuInYqELEMF2gM4bang7qs6+eCuObab8CoTswYVwtM747vlKk75TLuWENwkNpd4KmIYcw==
-X-Received: by 2002:a62:5b85:0:b029:142:2501:34e1 with SMTP id p127-20020a625b850000b0290142250134e1mr4860567pfb.58.1602779993043;
-        Thu, 15 Oct 2020 09:39:53 -0700 (PDT)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id y5sm3858293pgo.5.2020.10.15.09.39.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 09:39:51 -0700 (PDT)
-Subject: Re: [PATCH 07/20] dt-bindings: usb: xhci: Add Broadcom STB v2
- compatible device
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, Roger Quadros <rogerq@ti.com>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-8-Sergey.Semin@baikalelectronics.ru>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <385b0c37-a22f-3c13-71be-803f39c391af@gmail.com>
-Date:   Thu, 15 Oct 2020 09:39:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 15 Oct 2020 12:42:21 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FGcsqP129752;
+        Thu, 15 Oct 2020 16:42:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=cetU3b9BgFAp9dV2WNdrjegtKFI8rDiyBLl9+mzhj4Q=;
+ b=ZCSz+VKR9KX09omPuqsX/pELxQG2nXzcb8P3Wa1kzj8BzGjZ5JILoMGtne4P6hPAFCBB
+ joJXaDzCwP/t6AB0INZ+RVGDRJEpwlaG5hW6ncI5nETYTe74d+uD2u7GfnuDERhsIy3R
+ YKOyrrJST/s/fGUH6rGKzf/CMp0HlCdAyzSuXzZh8YRrNCVLKNOAcjkvtSimu4DL0/dW
+ FbYr65eE5GwHvu9Qkp1s6160HEuJUmh1DQRmE96MTBx7yfqOfuux0f6hiWjntb8Lo4fP
+ EpyWAttGxwY+lfIz44zufboLbsVbF0z4fsP9/B1vok11Yyrhtwl8Ci1FX1+flUY35bt0 tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 346g8gjwgm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Oct 2020 16:42:13 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FGfL97192925;
+        Thu, 15 Oct 2020 16:42:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 343pv22x2b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Oct 2020 16:42:13 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09FGgBKw014989;
+        Thu, 15 Oct 2020 16:42:11 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Oct 2020 09:42:11 -0700
+Date:   Thu, 15 Oct 2020 09:42:10 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        torvalds@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH 3/2] vfs: move the generic write and copy checks out of mm
+Message-ID: <20201015164210.GB9825@magnolia>
+References: <160272187483.913987.4254237066433242737.stgit@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20201014101402.18271-8-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160272187483.913987.4254237066433242737.stgit@magnolia>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=888 mlxscore=0 spamscore=0
+ adultscore=0 suspectscore=1 phishscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150110
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9775 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 suspectscore=1
+ priorityscore=1501 phishscore=0 clxscore=1015 spamscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=905 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/14/20 3:13 AM, Serge Semin wrote:
-> For some reason the "brcm,xhci-brcm-v2" compatible string has been missing
-> in the original bindings file. Add it to the Generic xHCI Controllers DT
-> schema since the controller driver expects it to be supported.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+The generic write check helpers also don't have much to do with the page
+cache, so move them to the vfs.
+
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+---
+ fs/read_write.c    |  143 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/fs.h |    3 -
+ mm/filemap.c       |  143 ----------------------------------------------------
+ 3 files changed, 143 insertions(+), 146 deletions(-)
+
+diff --git a/fs/read_write.c b/fs/read_write.c
+index f0877f1c0c49..016444255d3e 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -1701,6 +1701,59 @@ static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+ 				       flags);
+ }
+ 
++/*
++ * Performs necessary checks before doing a file copy
++ *
++ * Can adjust amount of bytes to copy via @req_count argument.
++ * Returns appropriate error code that caller should return or
++ * zero in case the copy should be allowed.
++ */
++static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
++				    struct file *file_out, loff_t pos_out,
++				    size_t *req_count, unsigned int flags)
++{
++	struct inode *inode_in = file_inode(file_in);
++	struct inode *inode_out = file_inode(file_out);
++	uint64_t count = *req_count;
++	loff_t size_in;
++	int ret;
++
++	ret = generic_file_rw_checks(file_in, file_out);
++	if (ret)
++		return ret;
++
++	/* Don't touch certain kinds of inodes */
++	if (IS_IMMUTABLE(inode_out))
++		return -EPERM;
++
++	if (IS_SWAPFILE(inode_in) || IS_SWAPFILE(inode_out))
++		return -ETXTBSY;
++
++	/* Ensure offsets don't wrap. */
++	if (pos_in + count < pos_in || pos_out + count < pos_out)
++		return -EOVERFLOW;
++
++	/* Shorten the copy to EOF */
++	size_in = i_size_read(inode_in);
++	if (pos_in >= size_in)
++		count = 0;
++	else
++		count = min(count, size_in - (uint64_t)pos_in);
++
++	ret = generic_write_check_limits(file_out, pos_out, &count);
++	if (ret)
++		return ret;
++
++	/* Don't allow overlapped copying within the same file. */
++	if (inode_in == inode_out &&
++	    pos_out + count > pos_in &&
++	    pos_out < pos_in + count)
++		return -EINVAL;
++
++	*req_count = count;
++	return 0;
++}
++
+ /*
+  * copy_file_range() differs from regular file read and write in that it
+  * specifically allows return partial success.  When it does so is up to
+@@ -1832,3 +1885,93 @@ SYSCALL_DEFINE6(copy_file_range, int, fd_in, loff_t __user *, off_in,
+ out2:
+ 	return ret;
+ }
++
++/*
++ * Don't operate on ranges the page cache doesn't support, and don't exceed the
++ * LFS limits.  If pos is under the limit it becomes a short access.  If it
++ * exceeds the limit we return -EFBIG.
++ */
++int generic_write_check_limits(struct file *file, loff_t pos, loff_t *count)
++{
++	struct inode *inode = file->f_mapping->host;
++	loff_t max_size = inode->i_sb->s_maxbytes;
++	loff_t limit = rlimit(RLIMIT_FSIZE);
++
++	if (limit != RLIM_INFINITY) {
++		if (pos >= limit) {
++			send_sig(SIGXFSZ, current, 0);
++			return -EFBIG;
++		}
++		*count = min(*count, limit - pos);
++	}
++
++	if (!(file->f_flags & O_LARGEFILE))
++		max_size = MAX_NON_LFS;
++
++	if (unlikely(pos >= max_size))
++		return -EFBIG;
++
++	*count = min(*count, max_size - pos);
++
++	return 0;
++}
++
++/*
++ * Performs necessary checks before doing a write
++ *
++ * Can adjust writing position or amount of bytes to write.
++ * Returns appropriate error code that caller should return or
++ * zero in case that write should be allowed.
++ */
++ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
++{
++	struct file *file = iocb->ki_filp;
++	struct inode *inode = file->f_mapping->host;
++	loff_t count;
++	int ret;
++
++	if (IS_SWAPFILE(inode))
++		return -ETXTBSY;
++
++	if (!iov_iter_count(from))
++		return 0;
++
++	/* FIXME: this is for backwards compatibility with 2.4 */
++	if (iocb->ki_flags & IOCB_APPEND)
++		iocb->ki_pos = i_size_read(inode);
++
++	if ((iocb->ki_flags & IOCB_NOWAIT) && !(iocb->ki_flags & IOCB_DIRECT))
++		return -EINVAL;
++
++	count = iov_iter_count(from);
++	ret = generic_write_check_limits(file, iocb->ki_pos, &count);
++	if (ret)
++		return ret;
++
++	iov_iter_truncate(from, count);
++	return iov_iter_count(from);
++}
++EXPORT_SYMBOL(generic_write_checks);
++
++/*
++ * Performs common checks before doing a file copy/clone
++ * from @file_in to @file_out.
++ */
++int generic_file_rw_checks(struct file *file_in, struct file *file_out)
++{
++	struct inode *inode_in = file_inode(file_in);
++	struct inode *inode_out = file_inode(file_out);
++
++	/* Don't copy dirs, pipes, sockets... */
++	if (S_ISDIR(inode_in->i_mode) || S_ISDIR(inode_out->i_mode))
++		return -EISDIR;
++	if (!S_ISREG(inode_in->i_mode) || !S_ISREG(inode_out->i_mode))
++		return -EINVAL;
++
++	if (!(file_in->f_mode & FMODE_READ) ||
++	    !(file_out->f_mode & FMODE_WRITE) ||
++	    (file_out->f_flags & O_APPEND))
++		return -EBADF;
++
++	return 0;
++}
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 073da53b59b0..8fb063ab7d50 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3012,9 +3012,6 @@ extern ssize_t generic_write_checks(struct kiocb *, struct iov_iter *);
+ extern int generic_write_check_limits(struct file *file, loff_t pos,
+ 		loff_t *count);
+ extern int generic_file_rw_checks(struct file *file_in, struct file *file_out);
+-extern int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+-				    struct file *file_out, loff_t pos_out,
+-				    size_t *count, unsigned int flags);
+ extern ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		struct iov_iter *to, ssize_t already_read);
+ extern ssize_t generic_file_read_iter(struct kiocb *, struct iov_iter *);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index cf20e5aeb11b..9962fd682f20 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3093,149 +3093,6 @@ struct page *read_cache_page_gfp(struct address_space *mapping,
+ }
+ EXPORT_SYMBOL(read_cache_page_gfp);
+ 
+-/*
+- * Don't operate on ranges the page cache doesn't support, and don't exceed the
+- * LFS limits.  If pos is under the limit it becomes a short access.  If it
+- * exceeds the limit we return -EFBIG.
+- */
+-int generic_write_check_limits(struct file *file, loff_t pos, loff_t *count)
+-{
+-	struct inode *inode = file->f_mapping->host;
+-	loff_t max_size = inode->i_sb->s_maxbytes;
+-	loff_t limit = rlimit(RLIMIT_FSIZE);
+-
+-	if (limit != RLIM_INFINITY) {
+-		if (pos >= limit) {
+-			send_sig(SIGXFSZ, current, 0);
+-			return -EFBIG;
+-		}
+-		*count = min(*count, limit - pos);
+-	}
+-
+-	if (!(file->f_flags & O_LARGEFILE))
+-		max_size = MAX_NON_LFS;
+-
+-	if (unlikely(pos >= max_size))
+-		return -EFBIG;
+-
+-	*count = min(*count, max_size - pos);
+-
+-	return 0;
+-}
+-
+-/*
+- * Performs necessary checks before doing a write
+- *
+- * Can adjust writing position or amount of bytes to write.
+- * Returns appropriate error code that caller should return or
+- * zero in case that write should be allowed.
+- */
+-inline ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
+-{
+-	struct file *file = iocb->ki_filp;
+-	struct inode *inode = file->f_mapping->host;
+-	loff_t count;
+-	int ret;
+-
+-	if (IS_SWAPFILE(inode))
+-		return -ETXTBSY;
+-
+-	if (!iov_iter_count(from))
+-		return 0;
+-
+-	/* FIXME: this is for backwards compatibility with 2.4 */
+-	if (iocb->ki_flags & IOCB_APPEND)
+-		iocb->ki_pos = i_size_read(inode);
+-
+-	if ((iocb->ki_flags & IOCB_NOWAIT) && !(iocb->ki_flags & IOCB_DIRECT))
+-		return -EINVAL;
+-
+-	count = iov_iter_count(from);
+-	ret = generic_write_check_limits(file, iocb->ki_pos, &count);
+-	if (ret)
+-		return ret;
+-
+-	iov_iter_truncate(from, count);
+-	return iov_iter_count(from);
+-}
+-EXPORT_SYMBOL(generic_write_checks);
+-
+-/*
+- * Performs common checks before doing a file copy/clone
+- * from @file_in to @file_out.
+- */
+-int generic_file_rw_checks(struct file *file_in, struct file *file_out)
+-{
+-	struct inode *inode_in = file_inode(file_in);
+-	struct inode *inode_out = file_inode(file_out);
+-
+-	/* Don't copy dirs, pipes, sockets... */
+-	if (S_ISDIR(inode_in->i_mode) || S_ISDIR(inode_out->i_mode))
+-		return -EISDIR;
+-	if (!S_ISREG(inode_in->i_mode) || !S_ISREG(inode_out->i_mode))
+-		return -EINVAL;
+-
+-	if (!(file_in->f_mode & FMODE_READ) ||
+-	    !(file_out->f_mode & FMODE_WRITE) ||
+-	    (file_out->f_flags & O_APPEND))
+-		return -EBADF;
+-
+-	return 0;
+-}
+-
+-/*
+- * Performs necessary checks before doing a file copy
+- *
+- * Can adjust amount of bytes to copy via @req_count argument.
+- * Returns appropriate error code that caller should return or
+- * zero in case the copy should be allowed.
+- */
+-int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+-			     struct file *file_out, loff_t pos_out,
+-			     size_t *req_count, unsigned int flags)
+-{
+-	struct inode *inode_in = file_inode(file_in);
+-	struct inode *inode_out = file_inode(file_out);
+-	uint64_t count = *req_count;
+-	loff_t size_in;
+-	int ret;
+-
+-	ret = generic_file_rw_checks(file_in, file_out);
+-	if (ret)
+-		return ret;
+-
+-	/* Don't touch certain kinds of inodes */
+-	if (IS_IMMUTABLE(inode_out))
+-		return -EPERM;
+-
+-	if (IS_SWAPFILE(inode_in) || IS_SWAPFILE(inode_out))
+-		return -ETXTBSY;
+-
+-	/* Ensure offsets don't wrap. */
+-	if (pos_in + count < pos_in || pos_out + count < pos_out)
+-		return -EOVERFLOW;
+-
+-	/* Shorten the copy to EOF */
+-	size_in = i_size_read(inode_in);
+-	if (pos_in >= size_in)
+-		count = 0;
+-	else
+-		count = min(count, size_in - (uint64_t)pos_in);
+-
+-	ret = generic_write_check_limits(file_out, pos_out, &count);
+-	if (ret)
+-		return ret;
+-
+-	/* Don't allow overlapped copying within the same file. */
+-	if (inode_in == inode_out &&
+-	    pos_out + count > pos_in &&
+-	    pos_out < pos_in + count)
+-		return -EINVAL;
+-
+-	*req_count = count;
+-	return 0;
+-}
+-
+ int pagecache_write_begin(struct file *file, struct address_space *mapping,
+ 				loff_t pos, unsigned len, unsigned flags,
+ 				struct page **pagep, void **fsdata)
