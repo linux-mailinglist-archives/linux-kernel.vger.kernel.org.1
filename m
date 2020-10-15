@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5879828F20A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F01028F20C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgJOM0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46246 "EHLO mail.kernel.org"
+        id S1728048AbgJOM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726103AbgJOM0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:26:46 -0400
+        id S1726103AbgJOM1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:27:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB5F62223F;
-        Thu, 15 Oct 2020 12:26:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C7E422255;
+        Thu, 15 Oct 2020 12:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602764801;
-        bh=Zl0Forar3MUYPsewEt9QP/1UF2WYBhhTm2IvlIq/0is=;
+        s=default; t=1602764869;
+        bh=Gp0eZLSliBCHObDs859PQFGEbyvwI2Pq9fahaq+5xJw=;
         h=Date:From:To:Cc:Subject:From;
-        b=2KyT4vYmrAzB9TRFVQzLxkZ6I4SC1eQxrmWOiUUG/whsEj91avn9m+5QoyeCDKDRG
-         iJfxI48ltYbZd0kgqmeeFSDEw0uMy2j4U8MdzIz7RYPp6g5Z+PVknnv4mdYLBsl+he
-         k8ny3dSwiwKMjqhKxZsy3k2PCIYuxbIJRHJD73AM=
-Date:   Thu, 15 Oct 2020 14:27:13 +0200
+        b=RfIzqfuOPu886C0njr7qHbu9dDq8zfDpLEzYa9NgE3ivE+ncFZxmMEooDg5KKIGiS
+         OFUMrV3WcrB/7U7w/X1S0LSxnBX7CZmJh300CTCJ24/3T7fib+Dvzv2hZIhMO+T1TR
+         ErPNAZFBrPTmOoRFbQOYokKM+6xhI+jjbWUjrTIc=
+Date:   Thu, 15 Oct 2020 14:28:22 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     devel@linuxdriverproject.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Staging/IIO driver update for 5.10-rc1
-Message-ID: <20201015122713.GA4021230@kroah.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB/PHY/Thunderbolt driver patches for 5.10-rc1
+Message-ID: <20201015122822.GA4021571@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -45,1214 +44,893 @@ The following changes since commit 549738f15da0e5a00275977623be199fbbf7df50:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.10-rc1
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.10-rc1
 
-for you to fetch changes up to e1f13c879a7c21bd207dc6242455e8e3a1e88b40:
+for you to fetch changes up to 93578a25d4e21603518daf27a5f9caa4bf79de68:
 
-  staging: comedi: check validity of wMaxPacketSize of usb endpoints found (2020-10-10 12:37:46 +0200)
+  usb: musb: gadget: Use fallthrough pseudo-keyword (2020-10-10 12:32:29 +0200)
 
 ----------------------------------------------------------------
-Staging / IIO driver updates for 5.10-rc1
+USB/PHY/Thunderbolt driver patches for 5.10-rc1
 
-Here is the large set of staging and IIO driver updates for 5.10-rc1.
+Here is the big set of USB, PHY, and Thunderbolt driver updates for
+5.10-rc1.
 
-Included in here are:
-	- new IIO drivers
-	- new IIO driver frameworks
-	- various IIO driver fixes and updates
-	- IIO device tree conversions to yaml
-	- so many minor staging driver coding style cleanups
-	- most cdev driver moved out of staging
-	- no new drivers added or removed
+Lots of tiny different things for these subsystems are in here,
+including:
+	- phy driver updates
+	- thunderbolt / USB 4 updates and additions
+	- USB gadget driver updates
+	- xhci fixes and updates
+	- typec driver additions and updates
+	- api conversions to various drivers for core kernel api changes
+	- new USB control message functions to make it harder to get
+	  wrong, as found by syzbot (took 2 tries to get it right)
+	- lots of tiny USB driver fixes and updates all over the place
 
-Full details are in the shortlog.
-
-All of these have been in linux-next for a while with no reported
-issues.
+All of these have been in linux-next for a while, with the exception of
+the last "obviously correct" patch that updated a FALLTHROUGH comment
+that got merged last weekend.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Abheek Dhawan (3):
-      staging: wlan-ng: Remove repeated word our
-      staging: fwserial: Remove repeated word and
-      staging: mt7621-pci: Update driver TODO file
+Alan Stern (5):
+      USB: UDC: Expand device model API interface
+      USB: UDC: net2280: Fix memory leaks
+      USB: UDC: net2272: Fix memory leaks
+      USB: hub: Clean up use of port initialization schemes and retries
+      USB: hub: Add Kconfig option to reduce number of port initialization retries
 
-Ahmad Fatoum (1):
-      Documentation: ABI: iio: fix some spelling mistakes
+Alex Dewar (1):
+      usb: atm: don't use snprintf() for sysfs attrs
 
-Alex Dewar (6):
-      staging: emxx_udc: Use standard BIT() macro
-      staging: emxx_udc: Allow for building on !ARM
-      staging: emxx_udc: Fix passing of NULL to dma_alloc_coherent()
-      staging/emxx_udc: Remove pointless variable assignments
-      iio: adc: rockchip_saradc: Allow compile-testing with !ARM
-      staging: hikey9xx: Fix incorrect assignment
+Allen Pais (7):
+      usb: atm: convert tasklets to use new tasklet_setup() API
+      usb: c67x00: convert tasklets to use new tasklet_setup() API
+      usb: hcd: convert tasklets to use new tasklet_setup() API
+      usb/gadget: f_midi: convert tasklets to use new tasklet_setup() API
+      usb/gadget: fsl_qe_udc: convert tasklets to use new tasklet_setup() API
+      usb: xhci: convert tasklets to use new tasklet_setup() API
+      usb: mos7720: convert tasklets to use new tasklet_setup() API
 
-Alexandru Ardelean (18):
-      iio: frequency: ad9523: convert rest of driver to device managed functions
-      iio: adxl372_spi: change indentation for of_table
-      iio: Kconfig: ad8366: add entry for HMC1119 chip
-      iio: buffer-dmaengine: adjust `bytes_used` with residue info
-      iio: adc: ad9467: refine mismatch vs unknown chip-id messages
-      iio: adc: ad9467: return ENODEV vs EINVAL in ad9467_setup()
-      iio: buffer: split buffer sysfs creation to take buffer as primary arg
-      iio: dac: ad5592r: un-indent code-block for scale read
-      iio: dac: ad5592r: localize locks only where needed in ad5592r_read_raw()
-      iio: event: use short-hand variable in iio_device_{un}register_eventset functions
-      iio: event: NULL-ify IIO device's event_interface ref during unregister
-      iio: buffer-dmaengine: remove non managed alloc/free
-      iio: adc: ad9467: wrap a axi-adc chip-info into a ad9467_chip_info type
-      dt-bindings: iio: ad9467: add entries for for AD9434 & AD9265 ADCs
-      iio: cros_ec: unify hw fifo attributes into the core file
-      iio: dma-buffer: Kconfig: Provide titles for IIO DMA Kconfig symbols
-      iio: Kconfig: Provide title for IIO_TRIGGERED_EVENT symbol
-      iio: buffer: Kconfig: add title for IIO_TRIGGERED_BUFFER symbol
+Amelie Delaunay (5):
+      dt-bindings: usb: dwc2: add optional usb-role-switch property
+      usb: dwc2: override PHY input signals with usb role switch support
+      usb: dwc2: don't use ID/Vbus detection if usb-role-switch on STM32MP15 SoCs
+      usb: typec: add typec_find_pwr_opmode
+      usb: typec: add support for STUSB160x Type-C controller family
 
-Alexandru Tachici (1):
-      iio: accel: adxl372: Add additional trigger ABI docs
+Anand Moon (1):
+      phy: samsung: Use readl_poll_timeout function
 
-Allen Pais (9):
-      staging: ks7010: convert tasklets to use new tasklet_setup() API
-      staging: mt7621-dma: convert tasklets to use new tasklet_setup() API
-      staging: ralink-gdma: convert tasklets to use new tasklet_setup() API
-      staging: rtl8188eu: convert tasklets to use new tasklet_setup() API
-      staging: rtl8192: convert tasklets to use new tasklet_setup() API
-      staging: rtl8192e: convert tasklets to use new tasklet_setup() API
-      staging: rtl8712: convert tasklets to use new tasklet_setup() API
-      staging: rtl8723bs: convert tasklets to use new tasklet_setup() API
-      staging: wlan-ng: convert tasklets to use new tasklet_setup() API
+Azhar Shaikh (1):
+      usb: typec: intel_pmc_mux: Pass correct USB Type-C port number to SoC
 
-Anant Thazhemadam (1):
-      staging: comedi: check validity of wMaxPacketSize of usb endpoints found
+Badhri Jagan Sridharan (12):
+      usb: typec: tcpm: During PR_SWAP, source caps should be sent only after tSwapSourceStart
+      usb: typec: pd: Fix formatting in pd.h header
+      usb: typec: tcpm: Migrate workqueue to RT priority for processing events
+      usb: typec: tcpci: Add register definitions to tcpci
+      usb: typec: tcpci: Add support when hidden tx registers are inaccessible
+      usb: typec: tcpci: update ROLE_CONTROL for DRP
+      usb: typec: tcpci: Add a getter method to retrieve tcpm_port reference
+      usb: typec: tcpci: Add set_vbus tcpci callback
+      usb: typec: tcpci_maxim: Chip level TCPC driver
+      usb: typec: tcpm: Add support for Sink Fast Role SWAP(FRS)
+      usb: typec: tcpci: Implement callbacks for FRS
+      usb: typec: tcpci_maxim: Add support for Sink FRS
 
-Andy Shevchenko (8):
-      iio: accel: bma220: Fix returned codes from bma220_init(), bma220_deinit()
-      iio: accel: bma220: Convert to use ->read_avail()
-      iio: accel: bma220: Use dev_get_drvdata() directly
-      iio: accel: bma220: Mark PM functions as __maybe_unused
-      iio: accel: bma220: Drop ACPI_PTR() and accompanying ifdeffery
-      iio: accel: bma220: Group IIO headers together
-      iio: accel: bma220: Use BIT() and GENMASK() macros
-      iio: accel: bma220: Remove unneeded blank lines
+Bastien Nocera (1):
+      USB: Better name for __check_usb_generic()
 
-Ankit Baluni (1):
-      Staging: iio: Fixed a punctuation and a spelling mistake.
+Biju Das (2):
+      dt-bindings: usb: renesas,usb3-peri: Document HS and SS data bus
+      usb: typec: hd3ss3220: Use OF graph API to get the connector fwnode
 
-Arnd Bergmann (7):
-      staging: vchiq: rework compat handling
-      staging: vchiq: convert compat create_service
-      staging: vchiq: convert compat dequeue_message
-      staging: vchiq: convert compat bulk transfer
-      staging: vchiq: convert compat await_completion
-      staging: vchiq: fix __user annotations
-      staging: vchiq: avoid mixing kernel and user pointers
+Bryan O'Donoghue (1):
+      USB: gadget: f_ncm: Fix NDP16 datagram validation
 
-Asif Talybov (1):
-      staging: greybus: Add identifier name to function definition argument
+ChiYuan Huang (2):
+      usb typec: mt6360: Add support for mt6360 Type-C driver
+      usb typec: mt6360: Add MT6360 Type-C DT binding documentation
 
-Bryan Brattlof (1):
-      staging: pi433: break long lines
+Chris Packham (1):
+      usb: host: ehci-platform: Add workaround for brcm, xgs-iproc-ehci
 
-Calvin Glisson (1):
-      staging: iio: ad9834: Remove excess blank line
-
-Chris Ruehl (1):
-      iio/dac: convert ltc2632.txt to lltc,ltc2632.yaml
-
-Christian Eggers (4):
-      dt-bindings: iio: light: add AMS AS73211 support
-      iio: light: as73211: New driver
-      iio: documentation: light: Add as73211 sysfs documentation
-      iio: light: as73211: Increase measurement timeout
-
-Christian Gromm (1):
-      drivers: most: add character device interface driver
+Christian Lamparter (2):
+      dt-bindings: usb: dwc2: add support for APM82181 SoCs USB OTG HS and FS
+      usb: dwc2: add support for APM82181 USB OTG
 
 Christophe JAILLET (1):
-      staging: rtl8192u: Do not use GFP_KERNEL in atomic context
+      usb: gadget: tegra-xudc: Avoid GFP_ATOMIC where it is not needed
 
-Coiby Xu (4):
-      staging: qlge: fix build breakage with dumping enabled
-      staging: greybus: fix warnings about endianness detected by sparse
-      staging: greybus: codecs: use SNDRV_PCM_FMTBIT_S16_LE for format bitmask
-      staging: greybus: use __force when assigning __u8 value to snd_ctl_elem_type_t
+Chunfeng Yun (18):
+      phy: phy-bcm-ns-usb3: convert to readl_poll_timeout_atomic()
+      phy: phy-bcm-ns2-usbdrd: convert to readl_poll_timeout_atomic()
+      phy: phy-bcm-sr-usb: convert to readl_poll_timeout_atomic()
+      phy: phy-qcom-apq8064-sata: convert to readl_relaxed_poll_timeout()
+      phy: phy-pxa-28nm-hsic: convert to readl_poll_timeout()
+      phy: phy-pxa-28nm-usb2: convert to readl_poll_timeout()
+      usb: early: convert to readl_poll_timeout_atomic()
+      usb: early: ehci-dbgp: convert to readl_poll_timeout_atomic()
+      usb: pci-quirks: convert to readl_poll_timeout_atomic()
+      usb: xhci-rcar: convert to readl_poll_timeout_atomic()
+      usb: oxu210hp-hcd: convert to readl_poll_timeout_atomic()
+      usb: fotg210-hcd: convert to readl_poll_timeout_atomic()
+      usb: isp1760-hcd: convert to readl_poll_timeout_atomic()
+      usb: phy-ulpi-viewport: convert to readl_poll_timeout_atomic()
+      usb: phy: phy-mv-usb: convert to readl_poll_timeout_atomic()
+      usb: udc: net2280: convert to readl_poll_timeout_atomic()
+      iopoll: update kerneldoc of read_poll_timeout_atomic()
+      usb: gadget: bcm63xx_udc: fix up the error of undeclared usb_debug_root
 
-Colin Ian King (5):
-      staging: ion: fix spelling mistake in function name "detatch" -> "detach"
-      staging: wfx: fix a handful of spelling mistakes
-      staging: kpc2000: kpc_dma: fix spelling mistake "for for" -> "for"
-      staging: spmi: hisi-spmi-controller: fix spelling mistake "controlller" -> "controller"
-      staging/emxx_udc: fix indenting issue on a couple of statements
+Claudiu Beznea (1):
+      usb: gadget: udc: atmel: use of_find_matching_node_and_match
 
-Crt Mori (6):
-      iio:temperature:mlx90632: Reduce number of equal calulcations
-      iio:temperature:mlx90632: Add kerneldoc to the internal struct
-      iio:temperature:mlx90632: Convert polling while loop to regmap
-      iio:temperature:mlx90632: Adding extended calibration option
-      iio:temperature:mlx90632: Some stylefixing leftovers
-      iio: temperature: mlx90632: Interface to change object ambient temperature
+Colin Ian King (2):
+      USB: storage: isd200: fix spelling mistake "removeable" -> "removable"
+      usb: gadget: fix spelling mistake "Dectected" -> "Detected"
 
-Dan Carpenter (4):
-      staging: spmi: hisi-spmi-controller: Use devm_ version of ioremap().
-      staging: rtl8712: Fix enqueue_reorder_recvframe()
-      staging: vchiq: Fix an uninitialized variable
-      staging: vchiq: Fix list_for_each exit tests
+Cristian Birsan (5):
+      dt-bindings: usb: atmel: Update DT bindings documentation for sam9x60
+      usb: gadget: udc: atmel: simplify endpoint allocation
+      usb: gadget: udc: atmel: use 1 bank endpoints for control transfers
+      usb: gadget: udc: atmel: update endpoint allocation for sam9x60
+      ARM: dts: at91: sam9x60ek: enable usb device
 
-Daniel Campello (12):
-      dt-bindings: iio: Add bindings for sx9310 sensor
-      iio: sx9310: Update macros declarations
-      iio: sx9310: Fix irq handling
-      iio: sx9310: Remove acpi and of table macros
-      iio: sx9310: Change from .probe to .probe_new
-      iio: sx9310: Fixes various memory handling
-      iio: sx9310: Use long instead of int for channel bitmaps
-      iio: sx9310: Use regmap_read_poll_timeout() for compensation
-      iio: sx9310: Update copyright
-      iio: sx9310: Simplify error return handling
-      iio: sx9310: Use variable to hold &client->dev
-      iio: sx9310: Miscellaneous format fixes
+Dan Carpenter (1):
+      thunderbolt: debugfs: Fix uninitialized return in counters_write()
 
-Dinghao Liu (1):
-      staging: wilc1000: Fix memleak in wilc_bus_probe
+Eli Billauer (1):
+      usb: core: Solve race condition in anchor cleanup functions
 
-Douglas Anderson (1):
-      iio: sx9310: Prefer async probe
+Ezequiel Garcia (1):
+      phy: Move phy-rockchip-dphy-rx0 out of staging
 
-Ethan Edwards (1):
-      drivers: staging: comedi: fixed duplicate words from checkpatch
+Felipe Balbi (11):
+      usb: dwc3: meson: fix coccinelle WARNING
+      usb: dwc3: debug: fix sparse warning
+      usb: dwc3: meson: fix checkpatch errors and warnings
+      usb: dwc3: ulpi: fix checkpatch warning
+      usb: dwc3: trace: fix checkpatch warnings
+      usb: dwc3: debug: fix checkpatch warning
+      usb: dwc3: ep0: fix checkpatch warnings
+      usb: dwc3: qcom: fix checkpatch warnings
+      usb: dwc3: debugfs: fix checkpatch warnings
+      usb: dwc3: core: fix checkpatch warnings
+      usb: dwc3: gadget: fix checkpatch warnings
 
-Eugen Hristev (1):
-      iio: adc: at91-sama5d2_adc: fix DMA conversion crash
+Florian Fainelli (1):
+      MAINTAINERS: Add entry for Broadcom BDC driver
 
-Eugene Zaikonnikov (2):
-      iio: humidity: Add TI HDC20x0 support
-      dt-bindings: iio: humidity: Add TI HDC20x0 support
+Frank Wunderlich (1):
+      usb: xhci-mtk: Fix typo
 
-Fabrice Gasnier (1):
-      iio: adc: stm32-adc: fix runtime autosuspend delay when slow polling
+Gil Fine (2):
+      thunderbolt: Introduce tb_switch_is_tiger_lake()
+      thunderbolt: Add debugfs interface
 
-Fan Fei (1):
-      staging: rtl8188eu: Fix long lines
+Greg Kroah-Hartman (27):
+      Merge 5.9-rc3 into usb-next
+      Merge 5.9-rc5 into usb-next
+      USB: move snd_usb_pipe_sanity_check into the USB core
+      USB: add usb_control_msg_send() and usb_control_msg_recv()
+      USB: core: message.c: use usb_control_msg_send() in a few places
+      USB: core: hub.c: use usb_control_msg_send() in a few places
+      USB: legousbtower: use usb_control_msg_recv()
+      sound: usx2y: move to use usb_control_msg_send()
+      sound: 6fire: move to use usb_control_msg_send() and usb_control_msg_recv()
+      sound: line6: move to use usb_control_msg_send() and usb_control_msg_recv()
+      sound: hiface: move to use usb_control_msg_send()
+      Bluetooth: ath3k: use usb_control_msg_send() and usb_control_msg_recv()
+      ALSA: remove calls to usb_pipe_type_check for control endpoints
+      Merge 5.0-rc6 into usb-next
+      Merge a31128384dfd ("Merge tag 'libnvdimm-fixes-5.9-rc7' of git://git.kernel.org/.../nvdimm/nvdimm") into usb-next
+      Merge tag 'usb-ci-v5.10-rc1' of git://git.kernel.org/.../peter.chen/usb into usb-next
+      sound: usx2y: move to use usb_control_msg_send()
+      sound: 6fire: move to use usb_control_msg_send() and usb_control_msg_recv()
+      USB: legousbtower: use usb_control_msg_recv()
+      sound: line6: move to use usb_control_msg_send() and usb_control_msg_recv()
+      sound: hiface: move to use usb_control_msg_send()
+      Bluetooth: ath3k: use usb_control_msg_send() and usb_control_msg_recv()
+      Merge tag 'thunderbolt-for-v5.10-rc1' of git://git.kernel.org/.../westeri/thunderbolt into usb-next
+      Merge tag 'phy-for-5.10' of git://git.kernel.org/.../phy/linux-phy into usb-next
+      Merge tag 'usb-for-v5.10' of git://git.kernel.org/.../balbi/usb into usb-next
+      Merge 5.9-rc8 into usb-next
+      Merge tag 'usb-serial-5.10-rc1' of https://git.kernel.org/.../johan/usb-serial into usb-next
 
-Greg Kroah-Hartman (7):
-      Merge tag 'iio-for-5.10a-take2' of https://git.kernel.org/.../jic23/iio into staging-next
-      Merge 5.9-rc5 into staging-next
-      Revert "staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_TKIP"
-      Revert "staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_WEP"
-      Merge tag 'iio-for-5.10b-take2' of https://git.kernel.org/.../jic23/iio into staging-next
-      Merge tag 'iio-for-5.10c' of https://git.kernel.org/.../jic23/iio into staging-next
-      Merge 5.9-rc8 into staging-next
+Grygorii Strashko (3):
+      phy: ti: gmii-sel: move phy init in separate function
+      phy: ti: gmii-sel: use features mask during init
+      phy: ti: gmii-sel: retrieve ports number and base offset from dt
 
-Gwendal Grignou (1):
-      docs: abi: iio: Use What: consistently
+Gustavo A. R. Silva (1):
+      usb: musb: gadget: Use fallthrough pseudo-keyword
 
-Igor Matheus Andrade Torrente (1):
-      staging: wlan-ng: Remove repeated words in comments
+Hamish Martin (2):
+      usb: ohci: Default to per-port over-current protection
+      usb: ohci: Make distrust_firmware param default to false
 
-Ioana Ciornei (2):
-      staging: dpaa2-switch: add a dpaa2_switch_ prefix to all functions in ethsw-ethtool.c
-      staging: dpaa2-switch: add a dpaa2_switch prefix to all functions in ethsw.c
+Heikki Krogerus (4):
+      usb: typec: intel_pmc_mux: Check the port status before connect
+      usb: typec: intel_pmc_mux: Support for device role (UFP)
+      usb: typec: intel_pmc_mux: Add dependency on ACPI
+      usb: typec: displayport: Reduce noise from the driver
 
-Ivan Drobyshevskyi (2):
-      dt-bindings: iio: proximity: vl53l0x: Add IRQ support
-      iio: proximity: vl53l0x: Add IRQ support
+JC Kuo (1):
+      usb: host: xhci-tegra: remove a duplicated entry
 
-Ivan Safonov (5):
-      staging: rtl8723bs: replace rtw_netdev_priv define with inline function
-      staging: r8188eu: remove unnecessary type cast of rtw_netdev_priv() result
-      staging: r8188eu: replace enum rtw_ieee80211_spectrum_mgmt_actioncode with ieee80211_spectrum_mgmt_actioncode
-      staging: r8188eu: replace WIFI_REASON_CODE enum with native ieee80211_reasoncode
-      staging: r8188eu: remove unnecessary type casts (struct wlan_bssid_ex *)
+Jing Xiangfeng (1):
+      USB: usblcd: Remove the superfluous break
 
-Jonathan Cameron (94):
-      dt-bindings: iio: adc: maxim,max11100 yaml conversion
-      dt-bindings: iio: adc: maxim,max9611 yaml conversions
-      dt-bindings: iio: adc: maxim,max1118 yaml conversion
-      iio:adc:bcm_iproc: Drop of_match_ptr protection and switch to mod_devicetable.h
-      iio:adc:ti-adc128s052: drop of_match_ptr protection
-      iio:adc:ti-adc108s102: Drop CONFIG_OF and of_match_ptr protections
-      iio:adc:ti-adc081c: Drop ACPI ids that seem very unlikely to be official.
-      iio:adc:axp20x: Convert from OF to generic fw / device properties
-      dt-bindings: trivial-devices: Add mcp342x ADCs and drop separate binding doc.
-      dt-bindings: iio: adc: ti,adc108s102 yaml conversion
-      dt-bindings: iio: adc: lltc,ltc2497 yaml conversion.
-      dt-bindings: iio: adc: ti,adc161s626 yaml conversion.
-      dt-bindings: iio: adc: ti,adc0832 yaml conversion.
-      dt-bindings: iio: adc: ti,adc128s052 yaml conversion.
-      dt-bindings: iio: adc: ti,ads8344 yaml conversion
-      dt-bindings: iio: adc: ti,tlc4541 binding conversion
-      dt-bindings: iio: adc: microchip,mcp3201 yaml conversion.
-      dt-bindings: iio: adc: ti,adc12138 yaml conversion.
-      dt-bindings: iio: adc: ti,ads7950 binding conversion
-      staging:iio:dac:max517 remove documentation
-      staging:iio:light: Move tsl2x7x ABI docs to correct location.
-      staging:iio:light: drop stale ABI docs
-      staging:iio:documentation: Drop most generic docs
-      iio:imu:adis16400: Sort out missing kernel doc.
-      iio:potentiometer:ad5272: Drop of_match_ptr and CONFIG_OF protections.
-      iio:potentiometer:ds1803: Drop of_match_ptr and CONFIG_OF protections
-      iio:potentiometer:max5432: Drop of_match_ptr and use generic fw accessors
-      iio:potentiometer:max5481: Drop of_match_ptr and CONFIG_OF protections.
-      iio:potentiometer:max5481: Drop invalid ACPI binding.
-      iio:potentiometer:mcp4018: Drop of_match_ptr and CONFIG_OF protections.
-      iio:potentiometer:mcp4131: Drop of_match_ptr and use generic fw interfaces.
-      iio:potentiometer:mcp4531: Drop of_match_ptr and CONFIG_OF protections.
-      iio:dac:ad5446: Drop of_match_ptr and CONFIG_OF protections
-      iio:dac:ad5592r: Drop of_match_ptr and ACPI_PTR protections.
-      iio:dac:ad5593r: Drop of_match_ptr and ACPI_PTR protections.
-      iio:dac:ad7303: Drop of_match_ptr protection
-      iio:dac:mcp4725: drop of_match_ptr and use generic fw properties
-      iio:dac:ti-dac082s085: Drop of_match_ptr and CONFIG_OF protections
-      iio:dac:ti-dac5571: Drop of_match_ptr and CONFIG_OF protections
-      iio:potentiostat:lmp91000: Drop of_match_ptr and use generic fw accessors
-      iio:pressure:icp10100: Drop of_match_ptr and CONFIG_OF protections
-      iio:pressure:ms5611: Drop of_match_ptr and CONFIG_OF protections
-      iio:pressure:ms5637: Drop of_match_ptr protection
-      iio:pressure:zpa2326: Drop of_match_ptr protection
-      iio:temperature:tsys01: Drop of_match_ptr protection
-      iio:temperature:tmp007: Drop of_match_ptr protection
-      iio:resolver:ad2s1200: Drop of_match_ptr protection
-      iio:chemical:ams-iaq-core: Drop of_match_ptr protection
-      iio:chemical:atlas-sensor: Drop of_match_ptr and use generic fw accessors
-      iio:chemical:sgp30: Use local variable dev to simplify code
-      iio:chemical:sgp30: Drop of_match_ptr and use generic fw accessors
-      iio:chemical:vz89x: Introduce local struct device pointer.
-      iio:chemical:vz89x: Drop of_match_ptr protection and use generic fw accessors
-      iio:humidity:hdc100x: Drop of_match_ptr protection.
-      iio:proximity:as3935: Use local struct device pointer to simplify code.
-      iio:proximity:as3935: Drop of_match_ptr and use generic fw accessors
-      iio:proximity:pulsedlight: Drop of_match_ptr protection
-      iio:magn:ak8975: Drop of_match_ptr and ACPI_PTR protections.
-      iio:magn:ak8974: Drop of_match_ptr protection
-      iio:humidity:htu21: Drop of_match_ptr protection
-      iio:humidity:si7020: Drop of_match_ptr protection
-      iio:health:max30102: Drop of_match_ptr and use generic fw accessors
-      iio:dac:ad5592r: Fix use of true for IIO_SHARED_BY_TYPE
-      iio:core: Tidy up kernel-doc.
-      iio: Add __printf() attributes to various allocation functions
-      iio:magn:hmc5843: Fix passing true where iio_shared_by enum required.
-      iio:accel:bma180: Fix use of true when should be iio_shared_by enum
-      dt-bindings:iio:adc:fsl,vf610-adc conversion to yaml.
-      dt-bindings:iio:adc:ti,twl4030-madc yaml conversion
-      dt-bindings:iio:adc:st,stmpe-adc yaml conversion
-      dt-bindings:iio:adc: aspeed,ast2400 yaml conversion
-      dt-bindings:iio:adc:marvell,berlin2-adc yaml conversion
-      dt-bindings:iio:adc:sprd,sc2720-adc yaml conversion.
-      dt-bindings:iio:adc:nuvoton,nau7802 yaml conversion
-      dt-bindings:iio:adc:nuvoton,npcm750-adc yaml conversion
-      dt-bindings:iio:adc:cosmic,10001-adc yaml conversion
-      dt-bindings:iio:adc:ti,ads1015 yaml conversion
-      dt-bindings:iio:adc:fsl,imx7d-adc yaml conversion
-      dt-bindings:iio:adc:fsl,imx25-gcq yaml conversion
-      dt-bindings:iio:adc:nxp,lpc1850-adc yaml conversion
-      dt-bindings:iio:adc:nxp,lpc3220-adc yaml conversion
-      dt-bindings:iio:adc:motorola,cpcap-adc yaml conversion
-      dt-bindings:iio:adc:dlg,da9150-gpadc yaml conversion
-      dt-bindings:iio:adc:adi,ad7949 yaml conversion
-      dt-bindings:iio:adc:adi,ad7768-1 yaml conversion
-      dt-bindings:iio:adc:holt,hi8435 yaml conversion
-      iio:gyro:itg3200: Fix timestamp alignment and prevent data leak.
-      iio:light:si1145: Fix timestamp alignment and prevent data leak.
-      iio:imu:st_lsm6dsx Fix alignment and data leak issues
-      iio:adc:ti-adc0832 Fix alignment issue with timestamp
-      iio:adc:ti-adc12138 Fix alignment issue with timestamp
-      iio:imu:inv_mpu6050 Fix dma and ts alignment and data leak issues.
-      iio:imu:inv_mpu6050: Use regmap_noinc_read for fifo reads.
-      dt-bindings:iio:adc:amlogic,meson-saradc yaml conversion
+Johan Hovold (6):
+      Revert "cdc-acm: hardening against malicious devices"
+      USB: cdc-acm: handle broken union descriptors
+      USB: cdc-acm: use common data-class define
+      USB: cdc-acm: clean up no-union-descriptor handling
+      USB: serial: ftdi_sio: clean up jtag quirks
+      USB: serial: qcserial: fix altsetting probing
 
-Julia Lawall (1):
-      counter: use semicolons rather than commas to separate statements
+Krzysztof Kozlowski (1):
+      usb: gadget: s3c: Remove unused 'udc' variable
 
-Jérôme Pouiller (57):
-      staging: wfx: fix BA when device is AP and MFP is enabled
-      staging: wfx: improve usage of hif_map_link()
-      staging: wfx: fix BA when MFP is disabled but BSS is MFP capable
-      staging: wfx: fix spaces around binary operators
-      staging: wfx: fix support for cipher AES_CMAC (multicast PMF)
-      staging: wfx: drop useless field from struct wfx_tx_priv
-      staging: wfx: fix frame reordering
-      staging: wfx: fix potential use before init
-      staging: wfx: scan while AP is supported
-      staging: wfx: enable powersave on probe
-      staging: wfx: remove useless extra jiffy
-      staging: wfx: add workaround for 'timeout while wake up chip'
-      staging: wfx: improve readability of association processing
-      staging: wfx: relocate wfx_join() beside wfx_join_finalize()
-      staging: wfx: simplify hif_set_association_mode()
-      staging: wfx: keep API error list up-to-date
-      staging: wfx: drop 'secure link' feature
-      staging: wfx: drop multicast filtering
-      staging: wfx: drop useless function
-      staging: wfx: drop useless enum hif_beacon
-      staging: wfx: drop useless union hif_commands_ids
-      staging: wfx: drop useless struct hif_reset_flags
-      staging: wfx: drop useless struct hif_ie_flags
-      staging: wfx: drop useless struct hif_join_flags
-      staging: wfx: drop useless struct hif_bss_flags
-      staging: wfx: drop useless struct hif_map_link_flags
-      staging: wfx: drop useless struct hif_suspend_resume_flags
-      staging: wfx: drop useless struct hif_pm_mode
-      staging: wfx: drop useless struct hif_rx_flags
-      staging: wfx: drop useless struct hif_tx_result_flags
-      staging: wfx: drop useless structs only used in hif_req_tx
-      staging: wfx: drop useless stricts only used in hif_req_start_scan_alt
-      staging: wfx: drop useless structs only used in hif_ind_startup
-      staging: wfx: drop useless union hif_privacy_key_data
-      staging: wfx: drop useless union hif_event_data
-      staging: wfx: drop useless union hif_indication_data
-      staging: wfx: drop struct hif_ie_tlv
-      staging: wfx: drop macro API_SSID_SIZE
-      staging: wfx: fix naming of hif_tx_rate_retry_policy
-      staging: wfx: fix spaces
-      staging: wfx: uniformize naming rules in hif_tx_mib.c
-      staging: wfx: drop async field from struct hif_cmd
-      staging: wfx: update TODO list
-      staging: wfx: fix handling of MMIC error
-      staging: wfx: remove remaining code of 'secure link' feature
-      staging: wfx: fix BA sessions for older firmwares
-      staging: wfx: fix QoS priority for slow buses
-      staging: wfx: update copyrights dates
-      dt-bindings: staging: wfx: silabs,wfx yaml conversion
-      staging: wfx: improve error handling of hif_join()
-      staging: wfx: check memory allocation
-      staging: wfx: standardize the error when vif does not exist
-      staging: wfx: wfx_init_common() returns NULL on error
-      staging: wfx: increase robustness of hif_generic_confirm()
-      staging: wfx: gpiod_get_value() can return an error
-      staging: wfx: drop unicode characters from strings
-      staging: wfx: improve robustness of wfx_get_hw_rate()
+Kunihiko Hayashi (2):
+      dt-bindings: phy: Add UniPhier AHCI PHY description
+      phy: socionext: Add UniPhier AHCI PHY driver support
 
-Krzysztof Kozlowski (25):
-      iio: accel: bma180: Simplify with dev_err_probe()
-      iio: accel: mma8452: Simplify with dev_err_probe()
-      iio: adc: envelope-detector: Simplify with dev_err_probe()
-      iio: adc: exynos_adc: Simplify with dev_err_probe()
-      iio: adc: ltc2497: Simplify with dev_err_probe()
-      iio: adc: meson_saradc: Simplify with dev_err_probe()
-      iio: adc: rcar-gyroadc: Simplify with dev_err_probe()
-      iio: adc: stm32: Simplify with dev_err_probe()
-      iio: afe: iio-rescale: Simplify with dev_err_probe()
-      iio: amplifiers: hmc425a: Simplify with dev_err_probe()
-      iio: chemical: scd30: Simplify with dev_err_probe()
-      iio: dac: dpot-dac: Simplify with dev_err_probe()
-      iio: imu: inv_mpu6050: Simplify with dev_err_probe()
-      iio: light: isl29018: Simplify with dev_err_probe()
-      iio: light: tsl2772: Simplify with dev_err_probe()
-      iio: magnetometer: ak8974: Simplify with dev_err_probe()
-      iio: magnetometer: mag3110: Simplify with dev_err_probe()
-      iio: multiplexer: iio-mux: Simplify with dev_err_probe()
-      MAINTAINERS: Consolidate Analog Devices IIO entries and remove Beniamin Bia
-      MAINTAINERS: Move Hartmut Knaack to Credits
-      iio: adc: stm32: Fix missing return in booster error path
-      dt-bindings: iio: adc: exynos-adc: require second interrupt with touch screen
-      dt-bindings: iio: adc: exynos-adc: do not require syscon on S5Pv210
-      dt-bindings: iio: vishay,vcnl4000: add interrupts property
-      iio: ssp: use PLATFORM_DEVID_NONE
+Lad Prabhakar (5):
+      dt-bindings: usb: renesas,usb-xhci: Document r8a774e1 support
+      dt-bindings: usb: renesas, usb3-peri: Document r8a774e1 support
+      dt-bindings: usb: renesas,usbhs: Add r8a774e1 support
+      dt-bindings: usb: renesas,usb-xhci: Document r8a774e1 support
+      dt-bindings: usb: convert ti,hd3ss3220 bindings to json-schema
 
-Lars-Peter Clausen (1):
-      iio: trigger: make stub functions static inline
+Leonid Bloch (1):
+      USB: serial: option: Add Telit FT980-KS composition
 
-Lee Jones (6):
-      iio: dac: ad7303: Complete 'struct ad7303_state' doc
-      iio: dac: ad5064: Fix a few kerneldoc misdemeanours
-      iio: adc: ad7949: Fix misspelling issue
-      iio: dummy: iio_dummy_evgen: Demote file header and supply description for 'irq_sim_domain'
-      iio: gyro: adis16080: Fix formatting issue
-      iio: chemical: sgp30: Add description for sgp_read_cmd()'s 'duration_us'
+Li Jun (7):
+      dt-bindings: phy-imx8mq-usb: add compatible string for imx8mp usb phy
+      phy: freescale: imx8mq-usb: add support for imx8mp usb phy
+      usb: xhci: add debugfs support for ep with stream
+      usb: dwc3: core: do not queue work if dr_mode is not USB_DR_MODE_OTG
+      usb: dwc3: core: don't trigger runtime pm when remove driver
+      usb: dwc3: core: add phy cleanup for probe error handling
+      usb: dwc3: debugfs: do not queue work if try to change mode on non-drd
 
-Linus Walleij (1):
-      staging: media: atomisp: Convert to GPIO descriptors
+Linus Walleij (2):
+      usb: gadget: udc: Drop surplus include
+      usb: gadget: pch_udc: Convert to use GPIO descriptors
 
-Liu Shixin (1):
-      iio: adc: palmas_gpadc: use module_platform_driver to simplify the code
+Liu Shixin (3):
+      usbip: simplify the return expression of usbip_core_init()
+      USB: bcma: use module_bcma_driver to simplify the code
+      usb: appledisplay: use module_usb_driver to simplify the code
 
-Lokesh Chebrolu (1):
-      Staging: comedi: pcl726: fixed a spelling mistake
+Lorenzo Colitti (4):
+      usb: gadget: f_ncm: fix ncm_bitrate for SuperSpeed and above.
+      usb: gadget: f_ncm: set SuperSpeed bulk descriptor bMaxBurst to 15
+      usb: gadget: f_ncm: allow using NCM in SuperSpeed Plus gadgets.
+      usb: gadget: u_ether: enable qmult on SuperSpeed Plus as well
 
-Marek Szyprowski (1):
-      staging: tegra-vde: fix common struct sg_table related issues
+Lukas Bulwahn (1):
+      MAINTAINERS: make linux-usb list remarks consistent
 
-Mario Tesi (1):
-      iio: imu: st_lsm6dsx: Scaling factor type set to IIO_VAL_INT_PLUS_NANO
+Marc Zyngier (2):
+      usb: dwc2: Always disable regulators on driver teardown
+      usb: dwc2: Always disable regulators on driver teardown
 
 Martin Blumenstingl (1):
-      iio: adc: meson-saradc: Make the of_device_id array style consistent
+      usb: dwc2: Add missing cleanups when usb_add_gadget_udc() fails
 
-Matt Ranostay (6):
-      iio: add IIO_MOD_O2 modifier
-      iio: chemical: atlas-ezo-sensor: add support for O2 sensor
-      dt-bindings: iio: chemical: add O2 EZO module documentation
-      iio: health: max30102: update author's email
-      dt-bindings: iio: chemical: add Atlas EZO Humidity module documentation
-      iio: chemical: atlas-ezo-sensor: add humidity sensor support
+Mathias Nyman (2):
+      xhci: Tune interrupt blocking for isochronous transfers
+      xhci: don't create endpoint debugfs entry before ring buffer is set.
 
-Mauro Carvalho Chehab (52):
-      staging: spmi: hisi-spmi-controller: coding style fixup
-      staging: spmi: hisi-spmi-controller: fix it to probe successfully
-      staging: spmi: hisi-spmi-controller: fix a typo
-      staging: spmi: hisi-spmi-controller: adjust whitespaces at defines
-      staging: spmi: hisi-spmi-controller: use le32 macros where needed
-      staging: spmi: hisi-spmi-controller: add debug when values are read/write
-      staging: spmi: hisi-spmi-controller: fix the dev_foo() logic
-      staging: spmi: hisi-spmi-controller: add it to the building system
-      staging: spmi: hisi-spmi-controller: do some code cleanups
-      staging: mfd: hi6421-spmi-pmic: get rid of unused code
-      staging: mfd: hi6421-spmi-pmic: deal with non-static functions
-      staging: mfd: hi6421-spmi-pmic: get rid of the static vars
-      staging: mfd: hi6421-spmi-pmic: cleanup hi6421-spmi-pmic.h header
-      staging: mfd: hi6421-spmi-pmic: change the binding logic
-      staging: mfd: hi6421-spmi-pmic: get rid of unused OF properties
-      staging: mfd: hi6421-spmi-pmic: cleanup OF properties
-      staging: mfd: hi6421-spmi-pmic: change namespace on its functions
-      staging: mfd: hi6421-spmi-pmic: fix some coding style issues
-      staging: mfd: hi6421-spmi-pmic: add it to the building system
-      staging: mfd: hi6421-spmi-pmic: cleanup the code
-      staging: regulator: hi6421v600-regulator: get rid of unused code
-      staging: regulator: hi6421v600-regulator: port it to upstream
-      staging: regulator: hi6421v600-regulator: coding style fixups
-      staging: regulator: hi6421v600-regulator: change the binding logic
-      staging: regulator: hi6421v600-regulator: cleanup struct hisi_regulator
-      staging: regulator: hi6421v600-regulator: cleanup debug messages
-      staging: regulator: hi6421v600-regulator: use shorter names for OF properties
-      staging: regulator: hi6421v600-regulator: better handle modes
-      staging: regulator: hi6421v600-regulator: change namespace
-      staging: regulator: hi6421v600-regulator: convert to use get/set voltage_sel
-      staging: regulator: hi6421v600-regulator: don't use usleep_range for off_on_delay
-      staging: regulator: hi6421v600-regulator: add a driver-specific debug macro
-      staging: regulator: hi6421v600-regulator: initialize ramp_delay
-      staging: regulator: hi6421v600-regulator: cleanup DT settings
-      staging: regulator: hi6421v600-regulator: fix some coding style issues
-      staging: regulator: hi6421v600-regulator: add it to the building system
-      staging: regulator: hi6421v600-regulator: code cleanup
-      staging: hikey9xx: add a TODO list
-      staging: hikey9xx: fix Kconfig dependency chain
-      staging: mfd: hi6421-spmi-pmic: get rid of interrupt properties
-      staging: spmi: hisi-spmi-controller: change compatible string
-      staging: mfd: hi6421-spmi-pmic: Simplify the compatible string
-      dt: document HiSilicon SPMI controller and mfd/regulator properties
-      MAINTAINERS: add an entry for HiSilicon 6421v600 drivers
-      staging: hikey9xx: Kconfig: add regulator dependency
-      staging: hikey9xx: update references inside the yaml files
-      staging: hikey9xx: add build for the Kirin 970 PHY driver
-      staging: hikey9xx: phy-hi3670-usb3: use a consistent namespace
-      staging: hikey9xx: phy-hi3670-usb3.txt: use a consistent namespace
-      staging: hikey9xx: phy-hi3670-usb3: fix coding style
-      staging: hikey9xx: phy-hi3670-usb3: change some DT properties
-      staging: hikey9xx: convert phy-kirin970-usb3.txt to yaml
+Mauro Carvalho Chehab (2):
+      usb: dwc3: simple: add support for Hikey 970
+      dt-bindings: document a new quirk for dwc3
 
-Mayulong (3):
-      staging: spmi: add Hikey 970 SPMI controller driver
-      staging: mfd: add a PMIC driver for HiSilicon 6421 SPMI version
-      staging: regulator: add a regulator driver for HiSilicon 6421v600 SPMI PMIC
+MichaÅ‚ MirosÅ‚aw (1):
+      usb: gadget: f_acm: don't disable disabled EP
 
-Michael Auchter (2):
-      iio: adc: ad7291: convert to device tree
-      dt-bindings: iio: adc: ad7291: add binding
+Mika Westerberg (31):
+      thunderbolt: Software CM only should set force power in Tiger Lake
+      thunderbolt: Use bit 31 to check if Firmware CM is running in Tiger Lake
+      thunderbolt: Do not program NFC buffers for USB4 router protocol adapters
+      thunderbolt: No need to log an error if tb_switch_lane_bonding_enable() fails
+      thunderbolt: Send reset only to first generation routers
+      thunderbolt: Tear down DP tunnels when suspending
+      thunderbolt: Initialize TMU again on resume
+      thunderbolt: Do not change default USB4 router notification timeout
+      thunderbolt: Configure link after lane bonding is enabled
+      thunderbolt: Set port configured for both ends of the link
+      thunderbolt: Configure port for XDomain
+      thunderbolt: Disable lane 1 for XDomain connection
+      thunderbolt: Enable wakes from system suspend
+      PCI / thunderbolt: Switch to use device links instead of PCI quirk
+      ACPI: Export acpi_get_first_physical_node() to modules
+      thunderbolt: Create device links from ACPI description
+      thunderbolt: Add runtime PM for Software CM
+      thunderbolt: Move struct tb_cap_any to tb_regs.h
+      thunderbolt: Introduce tb_port_next_cap()
+      thunderbolt: Introduce tb_switch_next_cap()
+      thunderbolt: Introduce tb_port_is_nhi()
+      thunderbolt: Check for Intel vendor ID when identifying controller
+      thunderbolt: Introduce tb_switch_is_ice_lake()
+      thunderbolt: No need to warn in TB_CFG_ERROR_INVALID_CONFIG_SPACE
+      thunderbolt: Only stop control channel when entering freeze
+      thunderbolt: Allow KUnit tests to be built also when CONFIG_USB4=m
+      thunderbolt: Use "if USB4" instead of "depends on" in Kconfig
+      thunderbolt: Handle ERR_LOCK notification
+      thunderbolt: Log correct zeroX entries in decode_error()
+      thunderbolt: Correct tb_check_quirks() kernel-doc
+      thunderbolt: Capitalize comment on top of QUIRK_FORCE_POWER_LINK_CONTROLLER
 
-Michael Hennerich (2):
-      iio: adc: ad9467: add support for AD9434 high-speed ADC
-      iio: adc: ad9467: add support for AD9265 high-speed ADC
+Minas Harutyunyan (1):
+      usb: dwc2: Fix INTR OUT transfers in DDMA mode.
 
-Michael Straube (25):
-      staging: rtl8723bs: remove 5 GHz code
-      staging: rtl8188eu: use __func__ in os_dep
-      staging: rtl8188eu: clean up whitespace in wpa_set_encryption()
-      staging: rtl8723bs: remove cckrates{only}_included()
-      staging: rtl8723bs: remove 5 GHz code
-      staging: rtl8188eu: remove extra indentations
-      staging: rtl8188eu: clean up blank line style issues
-      staging: rtl8188eu: use __func__ in hal directory
-      staging: rtl8188eu: clean up comparsion style issues
-      staging: rtl8712: clean up comparsions to NULL
-      staging: rtl8712: use shorter array initializations
-      staging: rtl8188eu: clean up block comment style issues
-      staging: rtl8188eu: clean up alignment style issues
-      staging: rtl8192u: clean up blank line style issues
-      staging: rtl8192u: correct placement of else if
-      staging: rtl8192u: clean up comparsions to NULL
-      staging: rtl8188eu: Reapply "staging:r8188eu: Use lib80211 to encrypt (CCMP) tx frames"
-      staging: rtl8188eu: remove unused macros and definitions
-      staging: rtl8188eu: clean up comparsions to NULL
-      staging: rtl8188eu: rename struct field Bssid -> bssid
-      staging: rtl8188eu: use ETH_ALEN
-      staging: rtl8188eu: rename struct field bUsed -> used
-      staging: rtl8188eu: remove cckrates{only}_included()
-      staging: rtl8188eu: remove unused variable ratelen
-      staging: rtl8188eu: clean up indent style issue
+Mychaela N. Falconia (2):
+      USB: serial: ftdi_sio: add support for FreeCalypso JTAG+UART adapters
+      USB: serial: ftdi_sio: use cur_altsetting for consistency
 
-Mikhail Gusarov (1):
-      staging: emxx_udc: Remove misplaced debugging aid
+Nathan Chancellor (1):
+      usb: dwc2: Fix parameter type in function pointer prototype
 
-Mohammed Rushad (2):
-      Staging: rtl8192e: fix indent coding style issue in rtllib_tx.c
-      staging: rtl8723bs: os_dep: fix brace coding style issue in sdio_intf.c
+Neil Armstrong (2):
+      dt-bindings: usb: amlogic,meson-g12a-usb-ctrl: add the Amlogic AXG Families USB Glue Bindings
+      usb: dwc-meson-g12a: Add support for USB on AXG SoCs
 
-Naveen Panwar (1):
-      drivers: staging: octeon-usb: fixed codestyle check warning
+Nicolas Saenz Julienne (9):
+      dt-bindings: reset: Add a binding for the RPi Firmware reset controller
+      reset: Add Raspberry Pi 4 firmware reset controller
+      ARM: dts: bcm2711: Add firmware usb reset node
+      ARM: dts: bcm2711: Add reset controller to xHCI node
+      usb: xhci-pci: Add support for reset controllers
+      Revert "USB: pci-quirks: Add Raspberry Pi 4 quirk"
+      usb: host: pci-quirks: Bypass xHCI quirks for Raspberry Pi 4
+      Revert "firmware: raspberrypi: Introduce vl805 init routine"
+      Revert "PCI: brcmstb: Wait for Raspberry Pi's firmware when present"
 
-Necip Fazil Yildiran (3):
-      staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_CCMP
-      staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_TKIP
-      staging: rtl8192e: fix kconfig dependency warning for RTLLIB_CRYPTO_WEP
+Oliver Neukum (14):
+      USB: microtek: use set_host_byte()
+      USB: UAS: fix disconnect by unplugging a hub
+      USB: UAS: use macro for reporting results
+      USB: adutux: fix debugging
+      USB: cdc-acm: cleanup of data structures
+      Revert "USB: core: hub.c: use usb_control_msg_send() in a few places"
+      Revert "Bluetooth: ath3k: use usb_control_msg_send() and usb_control_msg_recv()"
+      Revert "sound: hiface: move to use usb_control_msg_send()"
+      Revert "sound: line6: move to use usb_control_msg_send() and usb_control_msg_recv()"
+      Revert "sound: 6fire: move to use usb_control_msg_send() and usb_control_msg_recv()"
+      Revert "sound: usx2y: move to use usb_control_msg_send()"
+      Revert "USB: legousbtower: use usb_control_msg_recv()"
+      USB: correct API of usb_control_msg_send/recv
+      USB: cdc-wdm: Make wdm_flush() interruptible and add wdm_fsync().
 
-Nishant Malpani (7):
-      iio: gyro: Add driver support for ADXRS290
-      dt-bindings: iio: gyro: Add DT binding doc for ADXRS290
-      iio: gyro: adxrs290: Insert missing mutex initialization call
-      iio: gyro: adxrs290: use hook for devm resource unwinding
-      iio: gyro: adxrs290: Add triggered buffer support
-      dt-bindings: iio: gyro: adxrs290: Add interrupts support
-      iio: gyro: adxrs290: Add debugfs register access support
+Paul Cercueil (5):
+      usb/misc: usb4604: Use pm_ptr() macro
+      usb/misc: usb3503: Use pm_ptr() macro
+      usb/host: ehci-platform: Use pm_ptr() macro
+      usb/host: ehci-spear: Use pm_ptr() macro
+      usb/host: ehci-npcm7xx: Use pm_ptr() macro
 
-Nuno Sá (16):
-      iio: adis16201: Use Managed device functions
-      iio: adis16209: Use Managed device functions
-      iio: adis16136: Use Managed device functions
-      iio: adis16260: Use Managed device functions
-      iio: adis16400: Use Managed device functions
-      iio: adis16460: Use Managed device functions
-      iio: adis16480: Use Managed device functions
-      staging: iio: adis16203: Use Managed device functions
-      staging: iio: adis16240: Use Managed device functions
-      iio: adis: Drop non Managed device functions
-      iio: adis: Move burst mode into adis_data
-      iio: adis16400: Drop adis_burst usage
-      iio: adis16475: Drop adis_burst usage
-      iio: adis. Drop adis_burst struct
-      iio: ltc2983: Fix of_node refcounting
-      iio: ad7292: Fix of_node refcounting
+Pawel Laszczak (2):
+      usb: cdns3: Enable workaround for USB2.0 PHY Rx compliance test PHY lockup
+      usb: gadget: config_ep_by_speed_and_alt instead of config_ep_by_speed
 
-Nícolas F. R. A. Prado (1):
-      staging: most: dim2: Add missing identifier name to function argument
+Peter Chen (32):
+      doc: dt-binding: ci-hdrc-usb2: add property for samsung picophy
+      usb: chipidea: imx: add two samsung picophy parameters tuning implementation
+      usb: chipidea: ci_hdrc_imx: restore pinctrl
+      usb: host: xhci-plat: add platform data support
+      usb: host: xhci-plat: add .suspend_quirk for struct xhci_plat_priv
+      usb: host: xhci-plat: delete the unnecessary code
+      usb: host: xhci-plat: add priv quirk for skip PHY initialization
+      usb: host: xhci-plat: add wakeup entry at sysfs
+      usb: host: xhci-plat: improve the comments for xhci_plat_suspend
+      usb: xhci: omit duplicate actions when suspending a runtime suspended host.
+      usb: cdns3: gadget: free interrupt after gadget has deleted
+      MAINTAINERS: add Cadence USB3 DRD IP driver entry
+      usb: cdns3: introduce set_phy_power_on{off} APIs
+      usb: cdns3: add runtime PM support
+      usb: cdns3: imx: add glue layer runtime pm implementation
+      usb: cdns3: core: quit if it uses role switch class
+      usb: cdns3: gadget: set fast access bit
+      usb: cdns3: gadget: clear the interrupt status when disconnect the host
+      usb: cdns3: drd: call PHY .set_mode accordingly
+      usb: cdns3: gadget: move wait configuration operation
+      usb: cdns3: gadget: fix some endian issues
+      usb: cdns3: gadget: fix possible memory leak
+      usb: dwc3: allocate gadget structure dynamically
+      Revert "usb: udc: allow adding and removing the same gadget device"
+      usb: gadget: core: do not try to disconnect gadget if it is not connected
+      usb: cdns3: gadget: using correct sg operations
+      usb: cdns3: gadget: improve the dump TRB operation at cdns3_ep_run_transfer
+      usb: cdns3: gadget: add CHAIN and ISP bit for sg list use case
+      usb: cdns3: gadget: handle sg list use case at completion correctly
+      usb: cdns3: gadget: need to handle sg case for workaround 2 case
+      usb: cdns3: gadget: sg_support is only for DEV_VER_V2 or above
+      usb: cdns3: gadget: enlarge the TRB ring length
 
-Phil Reid (1):
-      dt-bindings: iio: adc: tlc4541 - recover accidentally dropped binding doc
+Petko Manolov (2):
+      net: rtl8150: Use the new usb control message API.
+      net: pegasus: Use the new usb control message API.
 
-Randy Dunlap (1):
-      platform_data: ad7793.h: drop a duplicated word
+Qinglang Miao (1):
+      usb: gadget: lpc32xx_udc: Convert to DEFINE_SHOW_ATTRIBUTE
 
-Rikard Falkeborn (2):
-      iio: dac: ad5686: Constify static struct iio_chan_spec
-      counter: microchip-tcb-capture: Constify mchp_tc_ops
+Rajmohan Mani (2):
+      thunderbolt: Optimize Force Power logic
+      thunderbolt: Optimize NHI LC mailbox command processing
 
-Ross Schmidt (13):
-      staging: rtl8723bs: os_dep: added blank line to fix coding style issue
-      staging: qlge: fix quoted string split across lines
-      staging: rtl8723bs: os_dep: fixed trailing statements
-      staging: rtl8723bs: os_dep: fixed bracing issue
-      staging: rtl8723bs: os_dep: fixed spacing around operators issue
-      staging: rtl8723bs: replace RND4 with round_up()
-      staging: rtl8723bs: replace _RND4 with round_up()
-      staging: rtl8723bs: replace _RND8 with round_up()
-      staging: rtl8723bs: remove unused macros
-      staging: rtl8723bs: replace RTW_GET_BE24 with get_unaligned_be24
-      staging: rtl8723bs: replace RTW_GET_LE16 with get_unaligned_le16
-      staging: rtl8723bs: replace RTW_GET_BE16 with get_unaligned_be16
-      staging: rtl8723bs: replace _cancel_timer with del_timer_sync
+Ramuthevar Vadivel Murugan (2):
+      dt-bindings: phy: Add USB PHY support for Intel LGM SoC
+      phy: Add USB3 PHY support for Intel LGM SoC
 
-Ryan Kosta (1):
-      Staging: nvec: Removes repeated word typo in comment
+Randy Dunlap (3):
+      usb: phy: phy-ab8500-usb: fix spello of "function"
+      phy: fix USB_LGM_PHY warning & build errors
+      usb: phy: phy-ab8500-usb: fix spello of "function"
 
-Sebastian Fuentes (3):
-      staging: qlge: qlge_mpi: Fix several CHECKs involving braces
-      staging: rts5208: rtsx_transport.c: Fix lines ending with parentheses
-      staging: vt6655: Add spaces around arithmetic operators
+Raymond Tan (1):
+      usb: dwc3: pci: Allow Elkhart Lake to utilize DSM method for PM functionality
 
-Sergiu Cuciurean (5):
-      iio: stm32-dac: Replace indio_dev->mlock with own device lock
-      iio: dac: ti-dac7612: Replace indio_dev->mlock with own device lock
-      iio: frequency: adf4350: Replace indio_dev->mlock with own device lock
-      iio: adc: fsl-imx25-gcq: Replace indio_dev->mlock with own device lock
-      iio: adc: exynos_adc: Replace indio_dev->mlock with own device lock
+Rikard Falkeborn (11):
+      phy: cadence: salvo: Constify cdns_salvo_phy_ops
+      phy: fsl-imx8mq-usb: Constify imx8mq_usb_phy_ops
+      phy: hisilicon; Constify hi3660_phy_ops
+      phy: lantiq: rcu-usb2: Constify ltq_rcu_usb2_phy_ops
+      phy: lantiq: vrx200-pcie: Constify ltq_vrx200_pcie_phy_ops
+      phy: ralink-usb: Constify ralink_usb_phy_ops
+      phy: samsung-ufs: Constify samsung_ufs_phy_ops
+      phy: qcom-ipq4019-usb: Constify static phy_ops structs
+      phy: cadence: Sierra: Constify static structs
+      phy: cadence: salvo: Constify cdns_nxp_sequence_pair
+      phy: cadence: torrent: Constify regmap_config structs
 
-Stefan Popa (2):
-      iio: adxl372_i2c: Add OF device ID table
-      iio: accel: adxl372: Add support for FIFO peak mode
+Roger Quadros (4):
+      phy: omap-usb2-phy: fix coding style issues
+      dt-binding: phy: convert ti,omap-usb2 to YAML
+      dt-bindings: usb: Convert cdns-usb3.txt to YAML schema
+      dt-bindings: usb: cdns,usb3: Add cdns,phyrst-a-enable property
 
-Steff Richards (1):
-      staging: wlan-ng: fix alignment to match open parentheses
+Sandeep Maheswaram (1):
+      usb: dwc3: qcom: Add interconnect support in dwc3 driver
 
-Stephen Boyd (3):
-      iio: sx9310: Drop channel_users[]
-      iio: sx9310: Enable vdd and svdd regulators at probe
-      iio: sx9310: Use irq trigger flags from firmware
+Scott Chen (1):
+      USB: serial: pl2303: add device-id for HP GC device
+
+Sekhar Nori (3):
+      phy: ti: am654: simplify regfield handling
+      phy: ti: am654: simplify return handling
+      phy: ti: am654: update PCIe serdes config
+
+Sergey Korolev (1):
+      USB: core: remove polling for /sys/kernel/debug/usb/devices
+
+Sergey Shtylyov (1):
+      usb: core: driver: fix stray tabs in error messages
+
+Shuah Khan (1):
+      usbip: vhci_hcd: fix calling usb_hcd_giveback_urb() with irqs enabled
+
+Stephen Boyd (8):
+      dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy information
+      phy: qcom-qmp: Move phy mode into struct qmp_phy
+      phy: qcom-qmp: Remove 'initialized' in favor of 'init_count'
+      phy: qcom-qmp: Move 'serdes' and 'cfg' into 'struct qcom_phy'
+      phy: qcom-qmp: Get dp_com I/O resource by index
+      phy: qcom-qmp: Use devm_platform_ioremap_resource() to simplify
+      phy: qcom-qmp: Add support for DP in USB3+DP combo phy
+      phy: qcom-qmp: Add support for sc7180 DP phy
+
+Swapnil Jakhade (22):
+      phy: Add new PHY attribute max_link_rate
+      phy: cadence-torrent: Set Torrent PHY attributes
+      phy: cadence-torrent: Use of_device_get_match_data() to get driver data
+      phy: cadence-torrent: Use devm_platform_ioremap_resource() to get reg addresses
+      phy: cadence-torrent: Enable support for multiple subnodes
+      phy: cadence-torrent: Add separate regmap functions for torrent and DP
+      phy: cadence-torrent: Check total lane count for all subnodes is within limit
+      dt-bindings: phy: cadence-torrent: Add binding to specify SSC mode
+      dt-bindings: phy: cadence-torrent: Update Torrent PHY bindings for generic use
+      phy: cadence-torrent: Add single link PCIe support
+      phy: cadence-torrent: Check cmn_ready assertion during PHY power on
+      phy: cadence-torrent: Add PHY APB reset support
+      dt-bindings: phy: Add PHY_TYPE_QSGMII definition
+      phy: cadence-torrent: Add support for PHY multilink configuration
+      phy: cadence-torrent: Update PHY reset for multilink configuration
+      phy: cadence-torrent: Add clk changes for multilink configuration
+      phy: cadence-torrent: Add PHY link configuration sequences for single link
+      phy: cadence-torrent: Configure PHY_PLL_CFG as part of link_cmn_vals
+      phy: cadence-torrent: Add single link SGMII/QSGMII register sequences
+      phy: cadence-torrent: Add single link USB register sequences
+      phy: cadence-torrent: Add PCIe + USB multilink configuration
+      phy: cadence-torrent: Add USB + SGMII/QSGMII multilink configuration
+
+Tang Bin (2):
+      usb: bdc: Fix unused assignment in bdc_probe()
+      usb: bdc: remove duplicated error message
+
+Tao Ren (1):
+      usb: gadget: aspeed: fixup vhub port irq handling
+
+Thierry Reding (5):
+      usb: common: usb-conn-gpio: Make VBUS supply optional
+      usb: common: usb-conn-gpio: Print error on failure to get VBUS
+      usb: gadget: tegra-xudc: Use consistent spelling and formatting
+      usb: gadget: tegra-xudc: Properly align parameters
+      usb: gadget: tegra-xudc: Do not print errors on probe deferral
+
+Thinh Nguyen (21):
+      usb: dwc3: gadget: Resume pending requests after CLEAR_STALL
+      usb: dwc3: gadget: END_TRANSFER before CLEAR_STALL command
+      usb: dwc3: core: Properly default unspecified speed
+      usb: dwc3: core: Print warning on unsupported speed
+      usb: dwc3: gadget: Refactor ep command completion
+      usb: dwc3: gadget: Check MPS of the request length
+      usb: dwc3: gadget: Reclaim extra TRBs after request completion
+      usb: dwc3: gadget: Refactor preparing extra TRB
+      usb: dwc3: gadget: Improve TRB ZLP setup
+      usb: dwc3: ep0: Fix ZLP for OUT ep0 requests
+      usb: dwc3: gadget: Return the number of prepared TRBs
+      usb: dwc3: gadget: Check for number of TRBs prepared
+      usb: dwc3: gadget: Set IOC if not enough for extra TRBs
+      usb: dwc3: gadget: Refactor preparing last TRBs
+      usb: dwc3: gadget: Rename misleading function names
+      usb: dwc3: gadget: Allow restarting a transfer
+      usb: dwc3: gadget: Look ahead when setting IOC
+      usb: dwc3: gadget: Revise setting IOC when no TRB left
+      usb: dwc3: gadget: Keep TRBs in request order
+      usb: dwc3: gadget: Return early if no TRB update
+      usb: dwc3: gadget: Support up to max stream id
 
 Tian Tao (1):
-      iio: adc: adi-axi-adc: Use kobj_to_dev() instead of container_of()
+      thunderbolt: Use kobj_to_dev() instead of container_of()
 
-Timo A. Aranjo (1):
-      Staging: sm750fb: Fix basic coding style issues
+Tom Yan (3):
+      usb-storage: fix sdev->host->dma_dev
+      uas: fix sdev->host->dma_dev
+      uas: bump hw_max_sectors to 2048 blocks for SS or faster drives
 
-Tobias Jordan (1):
-      iio: adc: gyroadc: fix leak of device node iterator
+Tomasz Figa (1):
+      phy: rockchip-dphy-rx0: Include linux/delay.h
 
-Tom Rix (2):
-      staging: wfx: simplify virt_addr_valid call
-      iio:imu:st_lsm6dsx: check st_lsm6dsx_shub_read_output return
+Tomi Valkeinen (2):
+      dt-bindings: phy: cdns,torrent-phy: add reset-names
+      dt-bindings: phy: ti,phy-j721e-wiz: fix bindings for torrent phy
 
-Tomer Samara (1):
-      staging: wfx: clear alignment style issues
+Vincent Mailhol (1):
+      usb: cdc-acm: add quirk to blacklist ETAS ES58X devices
 
-Vincent Whitchurch (1):
-      iio: dac: dac5571: Support powerdown for multi-channel
+Vinod Koul (3):
+      Merge branch 'fixes' into next
+      Merge branch 'topic/phy_attrs' into next
+      phy: qcom-qmp: initialize the pointer to NULL
 
-Wang Qing (1):
-      iio:light:gp2ap002 fix spelling typo in comments
+Wan Ahmad Zainie (5):
+      phy: intel: Rename phy-intel to phy-intel-lgm
+      dt-bindings: phy: intel: Add Keem Bay eMMC PHY bindings
+      phy: intel: Add Keem Bay eMMC PHY support
+      dt-bindings: usb: Add Intel Keem Bay USB controller bindings
+      usb: dwc3: of-simple: Add compatible string for Intel Keem Bay platform
 
-Wang ShaoBo (2):
-      iio: adc: at91-sama5d2_adc: Use devm_platform_get_and_ioremap_resource()
-      iio: adc: stm32-dfsdm: Use devm_platform_get_and_ioremap_resource()
+Wesley Cheng (2):
+      usb: dwc3: Stop active transfers before halting the controller
+      usb: typec: Add QCOM PMIC typec detection driver
 
-Yu Chen (2):
-      staging: hikey9xx: add USB physical layer for Kirin 3670
-      staging: hikey9xx: phy-hi3670-usb3: fix some issues at the init code
+Wilken Gottwalt (1):
+      USB: serial: option: add Cellient MPL200 card
 
-YueHaibing (3):
-      staging: rtl8723bs: os_dep: return errcode in cfg80211_rtw_leave_ibss()
-      staging: spmi: hisi-spmi-controller: Use proper format in call to dev_err()
-      staging: regulator: hi6421v600-regulator: Remove unused including <linux/version.h>
+Xu Wang (1):
+      USB: yurex: remove needless check before usb_free_coherent()
 
-kernel test robot (1):
-      drivers/iio/humidity/hdc2010.c:305:2-3: Unneeded semicolon
+Ye Bin (1):
+      usb: gadget: fsl: Fix unsigned expression compared with zero in fsl_udc_probe
 
- CREDITS                                            |    4 +
- Documentation/ABI/testing/sysfs-bus-iio            |   90 +-
- .../ABI/testing/sysfs-bus-iio-accel-adxl372        |    7 +
- .../ABI/testing/sysfs-bus-iio-humidity-hdc2010     |    9 +
- .../ABI/testing/sysfs-bus-iio-light-tsl2772        |    0
- .../devicetree/bindings/iio/adc/ad7949.txt         |   16 -
- .../devicetree/bindings/iio/adc/adi,ad7291.yaml    |   46 +
- .../devicetree/bindings/iio/adc/adi,ad7768-1.txt   |   41 -
- .../devicetree/bindings/iio/adc/adi,ad7768-1.yaml  |   89 ++
- .../devicetree/bindings/iio/adc/adi,ad7949.yaml    |   57 +
- .../devicetree/bindings/iio/adc/adi,ad9467.yaml    |   15 +-
- .../devicetree/bindings/iio/adc/ads1015.txt        |   73 --
- .../bindings/iio/adc/amlogic,meson-saradc.txt      |   48 -
- .../bindings/iio/adc/amlogic,meson-saradc.yaml     |  149 +++
- .../bindings/iio/adc/aspeed,ast2400-adc.yaml       |   55 +
- .../devicetree/bindings/iio/adc/aspeed_adc.txt     |   22 -
- .../devicetree/bindings/iio/adc/berlin2_adc.txt    |   19 -
- .../devicetree/bindings/iio/adc/cc10001_adc.txt    |   22 -
- .../bindings/iio/adc/cosmic,10001-adc.yaml         |   59 +
- .../devicetree/bindings/iio/adc/cpcap-adc.txt      |   17 -
- .../devicetree/bindings/iio/adc/da9150-gpadc.txt   |   16 -
- .../bindings/iio/adc/dlg,da9150-gpadc.yaml         |   35 +
- .../devicetree/bindings/iio/adc/fsl,imx25-gcq.txt  |   57 -
- .../devicetree/bindings/iio/adc/fsl,imx25-gcq.yaml |  131 ++
- .../devicetree/bindings/iio/adc/fsl,imx7d-adc.yaml |   62 +
- .../devicetree/bindings/iio/adc/fsl,vf610-adc.yaml |   81 ++
- .../devicetree/bindings/iio/adc/hi8435.txt         |   21 -
- .../devicetree/bindings/iio/adc/holt,hi8435.yaml   |   50 +
- .../devicetree/bindings/iio/adc/imx7d-adc.txt      |   24 -
- .../devicetree/bindings/iio/adc/lltc,ltc2497.yaml  |   44 +
- .../devicetree/bindings/iio/adc/lpc1850-adc.txt    |   20 -
- .../devicetree/bindings/iio/adc/lpc32xx-adc.txt    |   21 -
- .../devicetree/bindings/iio/adc/ltc2497.txt        |   13 -
- .../bindings/iio/adc/marvell,berlin2-adc.yaml      |   50 +
- .../devicetree/bindings/iio/adc/max11100.txt       |   18 -
- .../devicetree/bindings/iio/adc/max1118.txt        |   21 -
- .../devicetree/bindings/iio/adc/max9611.txt        |   27 -
- .../bindings/iio/adc/maxim,max11100.yaml           |   49 +
- .../devicetree/bindings/iio/adc/maxim,max1118.yaml |   62 +
- .../devicetree/bindings/iio/adc/maxim,max9611.yaml |   51 +
- .../devicetree/bindings/iio/adc/mcp320x.txt        |   57 -
- .../devicetree/bindings/iio/adc/mcp3422.txt        |   19 -
- .../bindings/iio/adc/microchip,mcp3201.yaml        |   77 ++
- .../bindings/iio/adc/motorola,cpcap-adc.yaml       |   53 +
- .../bindings/iio/adc/nuvoton,nau7802.yaml          |   50 +
- .../bindings/iio/adc/nuvoton,npcm-adc.txt          |   26 -
- .../bindings/iio/adc/nuvoton,npcm750-adc.yaml      |   64 +
- .../bindings/iio/adc/nuvoton-nau7802.txt           |   18 -
- .../bindings/iio/adc/nxp,lpc1850-adc.yaml          |   61 +
- .../bindings/iio/adc/nxp,lpc3220-adc.yaml          |   50 +
- .../bindings/iio/adc/samsung,exynos-adc.yaml       |   15 +-
- .../bindings/iio/adc/sprd,sc2720-adc.yaml          |   72 ++
- .../bindings/iio/adc/sprd,sc27xx-adc.txt           |   40 -
- .../devicetree/bindings/iio/adc/st,stmpe-adc.yaml  |   45 +
- .../devicetree/bindings/iio/adc/stmpe-adc.txt      |   21 -
- .../devicetree/bindings/iio/adc/ti,adc0832.yaml    |   56 +
- .../devicetree/bindings/iio/adc/ti,adc108s102.yaml |   47 +
- .../devicetree/bindings/iio/adc/ti,adc12138.yaml   |   86 ++
- .../devicetree/bindings/iio/adc/ti,adc128s052.yaml |   59 +
- .../devicetree/bindings/iio/adc/ti,adc161s626.yaml |   51 +
- .../devicetree/bindings/iio/adc/ti,ads1015.yaml    |  112 ++
- .../devicetree/bindings/iio/adc/ti,ads7950.yaml    |   65 +
- .../devicetree/bindings/iio/adc/ti,ads8344.yaml    |   51 +
- .../devicetree/bindings/iio/adc/ti,tlc4541.yaml    |   52 +
- .../bindings/iio/adc/ti,twl4030-madc.yaml          |   48 +
- .../devicetree/bindings/iio/adc/ti-adc0832.txt     |   19 -
- .../devicetree/bindings/iio/adc/ti-adc108s102.txt  |   18 -
- .../devicetree/bindings/iio/adc/ti-adc12138.txt    |   37 -
- .../devicetree/bindings/iio/adc/ti-adc128s052.txt  |   25 -
- .../devicetree/bindings/iio/adc/ti-adc161s626.txt  |   18 -
- .../devicetree/bindings/iio/adc/ti-ads7950.txt     |   23 -
- .../devicetree/bindings/iio/adc/ti-ads8344.txt     |   19 -
- .../devicetree/bindings/iio/adc/twl4030-madc.txt   |   24 -
- .../devicetree/bindings/iio/adc/vf610-adc.txt      |   36 -
- .../bindings/iio/chemical/atlas,sensor.yaml        |    4 +
- .../devicetree/bindings/iio/dac/lltc,ltc2632.yaml  |   77 ++
- .../devicetree/bindings/iio/dac/ltc2632.txt        |   49 -
- .../bindings/iio/gyroscope/adi,adxrs290.yaml       |   59 +
- .../bindings/iio/humidity/ti,hdc2010.yaml          |   45 +
- .../devicetree/bindings/iio/light/ams,as73211.yaml |   54 +
- .../bindings/iio/light/vishay,vcnl4000.yaml        |    4 +
- .../bindings/iio/proximity/semtech,sx9310.yaml     |   65 +
- .../devicetree/bindings/iio/proximity/vl53l0x.txt  |    6 +
- .../devicetree/bindings/trivial-devices.yaml       |   16 +
- MAINTAINERS                                        |   72 +-
- drivers/counter/microchip-tcb-capture.c            |    2 +-
- drivers/counter/ti-eqep.c                          |    2 +-
- drivers/iio/Kconfig                                |    2 +-
- drivers/iio/accel/adis16201.c                      |   26 +-
- drivers/iio/accel/adis16209.c                      |   25 +-
- drivers/iio/accel/adxl372.c                        |  311 ++++-
- drivers/iio/accel/adxl372_i2c.c                    |    8 +
- drivers/iio/accel/adxl372_spi.c                    |    4 +-
- drivers/iio/accel/bma180.c                         |   22 +-
- drivers/iio/accel/bma220_spi.c                     |   85 +-
- drivers/iio/accel/cros_ec_accel_legacy.c           |    2 +-
- drivers/iio/accel/mma8452.c                        |   20 +-
- drivers/iio/adc/Kconfig                            |    4 +-
- drivers/iio/adc/ad7291.c                           |   35 +-
- drivers/iio/adc/ad7292.c                           |    4 +-
- drivers/iio/adc/ad7949.c                           |    2 +-
- drivers/iio/adc/ad9467.c                           |  124 +-
- drivers/iio/adc/adi-axi-adc.c                      |    2 +-
- drivers/iio/adc/at91-sama5d2_adc.c                 |   26 +-
- drivers/iio/adc/axp20x_adc.c                       |   14 +-
- drivers/iio/adc/bcm_iproc_adc.c                    |    4 +-
- drivers/iio/adc/envelope-detector.c                |   16 +-
- drivers/iio/adc/exynos_adc.c                       |   30 +-
- drivers/iio/adc/fsl-imx25-gcq.c                    |   15 +-
- drivers/iio/adc/ltc2497-core.c                     |   10 +-
- drivers/iio/adc/meson_saradc.c                     |   18 +-
- drivers/iio/adc/palmas_gpadc.c                     |   13 +-
- drivers/iio/adc/rcar-gyroadc.c                     |   30 +-
- drivers/iio/adc/stm32-adc-core.c                   |   80 +-
- drivers/iio/adc/stm32-adc.c                        |   10 +-
- drivers/iio/adc/stm32-dfsdm-adc.c                  |   10 +-
- drivers/iio/adc/stm32-dfsdm-core.c                 |   20 +-
- drivers/iio/adc/ti-adc081c.c                       |   24 +-
- drivers/iio/adc/ti-adc0832.c                       |   11 +-
- drivers/iio/adc/ti-adc108s102.c                    |    5 +-
- drivers/iio/adc/ti-adc12138.c                      |   13 +-
- drivers/iio/adc/ti-adc128s052.c                    |    3 +-
- drivers/iio/afe/iio-rescale.c                      |    8 +-
- drivers/iio/amplifiers/Kconfig                     |    1 +
- drivers/iio/amplifiers/hmc425a.c                   |    9 +-
- drivers/iio/buffer/Kconfig                         |   10 +-
- drivers/iio/buffer/industrialio-buffer-dmaengine.c |   12 +-
- drivers/iio/chemical/ams-iaq-core.c                |    3 +-
- drivers/iio/chemical/atlas-ezo-sensor.c            |   88 +-
- drivers/iio/chemical/atlas-sensor.c                |   10 +-
- drivers/iio/chemical/scd30_core.c                  |    9 +-
- drivers/iio/chemical/sgp30.c                       |   29 +-
- drivers/iio/chemical/vz89x.c                       |   18 +-
- .../iio/common/cros_ec_sensors/cros_ec_lid_angle.c |    3 +-
- .../iio/common/cros_ec_sensors/cros_ec_sensors.c   |    5 +-
- .../common/cros_ec_sensors/cros_ec_sensors_core.c  |   11 +-
- drivers/iio/common/ssp_sensors/ssp_dev.c           |    3 +-
- drivers/iio/dac/ad5064.c                           |    6 +-
- drivers/iio/dac/ad5446.c                           |    5 +-
- drivers/iio/dac/ad5592r-base.c                     |   56 +-
- drivers/iio/dac/ad5592r.c                          |    7 +-
- drivers/iio/dac/ad5593r.c                          |    7 +-
- drivers/iio/dac/ad5686.c                           |    8 +-
- drivers/iio/dac/ad5686.h                           |    2 +-
- drivers/iio/dac/ad7303.c                           |    6 +-
- drivers/iio/dac/dpot-dac.c                         |   16 +-
- drivers/iio/dac/mcp4725.c                          |   29 +-
- drivers/iio/dac/stm32-dac-core.c                   |    5 +-
- drivers/iio/dac/stm32-dac.c                        |   13 +-
- drivers/iio/dac/ti-dac082s085.c                    |    5 +-
- drivers/iio/dac/ti-dac5571.c                       |   36 +-
- drivers/iio/dac/ti-dac7612.c                       |   14 +-
- drivers/iio/dummy/iio_dummy_evgen.c                |    4 +-
- drivers/iio/frequency/ad9523.c                     |   60 +-
- drivers/iio/frequency/adf4350.c                    |   21 +-
- drivers/iio/gyro/Kconfig                           |   12 +
- drivers/iio/gyro/Makefile                          |    1 +
- drivers/iio/gyro/adis16080.c                       |    2 +-
- drivers/iio/gyro/adis16136.c                       |   37 +-
- drivers/iio/gyro/adis16260.c                       |   33 +-
- drivers/iio/gyro/adxrs290.c                        |  710 +++++++++++
- drivers/iio/gyro/itg3200_buffer.c                  |   15 +-
- drivers/iio/health/max30102.c                      |   15 +-
- drivers/iio/humidity/Kconfig                       |   10 +
- drivers/iio/humidity/Makefile                      |    1 +
- drivers/iio/humidity/hdc100x.c                     |    3 +-
- drivers/iio/humidity/hdc2010.c                     |  353 ++++++
- drivers/iio/humidity/htu21.c                       |    3 +-
- drivers/iio/humidity/si7020.c                      |    3 +-
- drivers/iio/iio_core_trigger.h                     |    4 +-
- drivers/iio/imu/adis16400.c                        |   72 +-
- drivers/iio/imu/adis16460.c                        |   25 +-
- drivers/iio/imu/adis16475.c                        |   18 +-
- drivers/iio/imu/adis16480.c                        |   55 +-
- drivers/iio/imu/adis_buffer.c                      |   76 +-
- drivers/iio/imu/adis_trigger.c                     |   60 -
- drivers/iio/imu/inv_mpu6050/inv_mpu_core.c         |   20 +-
- drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h          |   12 +-
- drivers/iio/imu/inv_mpu6050/inv_mpu_ring.c         |   14 +-
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h            |    6 +
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c     |   42 +-
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c       |  134 ++-
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c       |    2 +
- drivers/iio/industrialio-buffer.c                  |   46 +-
- drivers/iio/industrialio-core.c                    |    5 +-
- drivers/iio/industrialio-event.c                   |   51 +-
- drivers/iio/industrialio-trigger.c                 |    3 +-
- drivers/iio/light/Kconfig                          |   15 +
- drivers/iio/light/Makefile                         |    1 +
- drivers/iio/light/as73211.c                        |  800 +++++++++++++
- drivers/iio/light/cros_ec_light_prox.c             |    5 +-
- drivers/iio/light/gp2ap002.c                       |    2 +-
- drivers/iio/light/isl29018.c                       |    9 +-
- drivers/iio/light/si1145.c                         |   19 +-
- drivers/iio/light/tsl2772.c                        |   10 +-
- drivers/iio/magnetometer/ak8974.c                  |   14 +-
- drivers/iio/magnetometer/ak8975.c                  |    8 +-
- drivers/iio/magnetometer/hmc5843_core.c            |    4 +-
- drivers/iio/magnetometer/mag3110.c                 |   20 +-
- drivers/iio/multiplexer/iio-mux.c                  |    8 +-
- drivers/iio/potentiometer/ad5272.c                 |    5 +-
- drivers/iio/potentiometer/ds1803.c                 |    6 +-
- drivers/iio/potentiometer/max5432.c                |    8 +-
- drivers/iio/potentiometer/max5481.c                |   23 +-
- drivers/iio/potentiometer/mcp4018.c                |   12 +-
- drivers/iio/potentiometer/mcp4131.c                |    8 +-
- drivers/iio/potentiometer/mcp4531.c                |   11 +-
- drivers/iio/potentiostat/lmp91000.c                |   11 +-
- drivers/iio/pressure/cros_ec_baro.c                |    5 +-
- drivers/iio/pressure/icp10100.c                    |    3 +-
- drivers/iio/pressure/ms5611_i2c.c                  |    6 +-
- drivers/iio/pressure/ms5611_spi.c                  |    6 +-
- drivers/iio/pressure/ms5637.c                      |    3 +-
- drivers/iio/pressure/zpa2326_i2c.c                 |    6 +-
- drivers/iio/pressure/zpa2326_spi.c                 |    6 +-
- drivers/iio/proximity/as3935.c                     |   44 +-
- drivers/iio/proximity/pulsedlight-lidar-lite-v2.c  |    3 +-
- drivers/iio/proximity/sx9310.c                     |  427 +++----
- drivers/iio/proximity/vl53l0x-i2c.c                |  104 +-
- drivers/iio/resolver/ad2s1200.c                    |    3 +-
- drivers/iio/temperature/ltc2983.c                  |   19 +-
- drivers/iio/temperature/mlx90632.c                 |  283 ++++-
- drivers/iio/temperature/tmp007.c                   |    4 +-
- drivers/iio/temperature/tsys01.c                   |    3 +-
- drivers/most/Kconfig                               |    9 +
- drivers/most/Makefile                              |    1 +
- .../{staging/most/cdev/cdev.c => most/most_cdev.c} |    0
- drivers/net/wireless/microchip/wilc1000/spi.c      |    5 +-
- drivers/staging/Kconfig                            |    2 +
- drivers/staging/Makefile                           |    1 +
- drivers/staging/android/ion/ion.c                  |    6 +-
- drivers/staging/comedi/comedi.h                    |    4 +-
- drivers/staging/comedi/comedidev.h                 |    2 +-
- drivers/staging/comedi/drivers/addi_apci_1564.c    |    4 +-
- drivers/staging/comedi/drivers/comedi_8255.c       |    2 +-
- drivers/staging/comedi/drivers/ni_tiocmd.c         |    2 +-
- drivers/staging/comedi/drivers/pcl726.c            |    2 +-
- drivers/staging/comedi/drivers/pcmuio.c            |    2 +-
- drivers/staging/comedi/drivers/quatech_daqp_cs.c   |    2 +-
- drivers/staging/comedi/drivers/vmk80xx.c           |    3 +
- drivers/staging/emxx_udc/Kconfig                   |    2 +-
- drivers/staging/emxx_udc/emxx_udc.c                |   19 +-
- drivers/staging/emxx_udc/emxx_udc.h                |  461 ++++---
- drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c    |   55 +-
- drivers/staging/fsl-dpaa2/ethsw/ethsw.c            |  441 ++++---
- drivers/staging/fsl-dpaa2/ethsw/ethsw.h            |    2 +-
- drivers/staging/fwserial/fwserial.c                |    2 +-
- drivers/staging/greybus/audio_codec.c              |    4 +-
- drivers/staging/greybus/audio_module.c             |    6 +-
- drivers/staging/greybus/audio_topology.c           |   20 +-
- drivers/staging/greybus/gbphy.h                    |    4 +-
- drivers/staging/hikey9xx/Kconfig                   |   49 +
- drivers/staging/hikey9xx/Makefile                  |    7 +
- drivers/staging/hikey9xx/TODO                      |    5 +
- drivers/staging/hikey9xx/hi6421-spmi-pmic.c        |  342 ++++++
- drivers/staging/hikey9xx/hi6421v600-regulator.c    |  478 ++++++++
- drivers/staging/hikey9xx/hisi-spmi-controller.c    |  358 ++++++
- .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml       |  159 +++
- .../hikey9xx/hisilicon,hisi-spmi-controller.yaml   |   62 +
- drivers/staging/hikey9xx/phy-hi3670-usb3.c         |  671 +++++++++++
- drivers/staging/hikey9xx/phy-hi3670-usb3.yaml      |   72 ++
- drivers/staging/iio/Documentation/dac/max517       |   41 -
- drivers/staging/iio/Documentation/device.txt       |   74 --
- drivers/staging/iio/Documentation/overview.txt     |   57 -
- drivers/staging/iio/Documentation/ring.txt         |   47 -
- .../staging/iio/Documentation/sysfs-bus-iio-light  |   79 --
- drivers/staging/iio/Documentation/trigger.txt      |   31 -
- drivers/staging/iio/accel/adis16203.c              |   26 +-
- drivers/staging/iio/accel/adis16240.c              |   25 +-
- drivers/staging/iio/frequency/ad9834.c             |    1 -
- drivers/staging/kpc2000/kpc_dma/fileops.c          |    4 +-
- drivers/staging/ks7010/ks7010_sdio.c               |    6 +-
- drivers/staging/ks7010/ks_hostif.c                 |    6 +-
- drivers/staging/media/atomisp/i2c/atomisp-lm3554.c |   68 +-
- .../staging/media/atomisp/include/media/lm3554.h   |    7 +-
- drivers/staging/media/tegra-vde/iommu.c            |    4 +-
- drivers/staging/most/Kconfig                       |    2 -
- drivers/staging/most/Makefile                      |    1 -
- drivers/staging/most/cdev/Kconfig                  |   13 -
- drivers/staging/most/cdev/Makefile                 |    4 -
- drivers/staging/most/dim2/dim2.c                   |    6 +-
- drivers/staging/mt7621-dma/mtk-hsdma.c             |    6 +-
- drivers/staging/mt7621-pci/TODO                    |    2 +-
- drivers/staging/nvec/nvec.c                        |    2 +-
- drivers/staging/octeon-usb/octeon-hcd.c            |    3 +-
- drivers/staging/pi433/pi433_if.h                   |   26 +-
- drivers/staging/qlge/qlge.h                        |   20 +-
- drivers/staging/qlge/qlge_dbg.c                    |   28 +-
- drivers/staging/qlge/qlge_main.c                   |   20 +-
- drivers/staging/qlge/qlge_mpi.c                    |   15 +-
- drivers/staging/ralink-gdma/ralink-gdma.c          |    6 +-
- drivers/staging/rtl8188eu/core/rtw_ap.c            |   10 +-
- drivers/staging/rtl8188eu/core/rtw_cmd.c           |   78 +-
- drivers/staging/rtl8188eu/core/rtw_debug.c         |    8 +-
- drivers/staging/rtl8188eu/core/rtw_mlme.c          |   14 +-
- drivers/staging/rtl8188eu/core/rtw_mlme_ext.c      |   58 +-
- drivers/staging/rtl8188eu/core/rtw_pwrctrl.c       |   12 +-
- drivers/staging/rtl8188eu/core/rtw_security.c      |  790 ++----------
- drivers/staging/rtl8188eu/core/rtw_wlan_util.c     |   92 +-
- drivers/staging/rtl8188eu/hal/hal_intf.c           |    4 +-
- drivers/staging/rtl8188eu/hal/odm.c                |   65 +-
- drivers/staging/rtl8188eu/hal/phy.c                |   49 +-
- drivers/staging/rtl8188eu/hal/pwrseqcmd.c          |   25 +-
- drivers/staging/rtl8188eu/hal/rf.c                 |    1 +
- drivers/staging/rtl8188eu/hal/rf_cfg.c             |    7 +-
- drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c  |    6 +-
- drivers/staging/rtl8188eu/hal/rtl8188eu_recv.c     |    3 +-
- drivers/staging/rtl8188eu/hal/rtl8188eu_xmit.c     |    5 +-
- drivers/staging/rtl8188eu/hal/usb_halinit.c        |   13 +-
- drivers/staging/rtl8188eu/include/ieee80211.h      |   10 -
- drivers/staging/rtl8188eu/include/osdep_service.h  |    1 +
- drivers/staging/rtl8188eu/include/rtl8188e_recv.h  |    2 +-
- drivers/staging/rtl8188eu/include/rtl8188e_xmit.h  |    3 +-
- drivers/staging/rtl8188eu/include/rtw_mlme.h       |    4 +-
- drivers/staging/rtl8188eu/include/rtw_mlme_ext.h   |    5 +-
- drivers/staging/rtl8188eu/include/rtw_recv.h       |    2 +
- drivers/staging/rtl8188eu/include/rtw_security.h   |   62 +-
- drivers/staging/rtl8188eu/include/wifi.h           |   34 +-
- drivers/staging/rtl8188eu/os_dep/ioctl_linux.c     |  329 +++--
- drivers/staging/rtl8188eu/os_dep/os_intfs.c        |   46 +-
- drivers/staging/rtl8188eu/os_dep/rtw_android.c     |   10 +-
- drivers/staging/rtl8188eu/os_dep/usb_intf.c        |   52 +-
- drivers/staging/rtl8188eu/os_dep/usb_ops_linux.c   |    8 +-
- drivers/staging/rtl8188eu/os_dep/xmit_linux.c      |    2 +-
- drivers/staging/rtl8192e/Kconfig                   |    1 +
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c       |   27 +-
- drivers/staging/rtl8192e/rtllib_softmac.c          |    6 +-
- drivers/staging/rtl8192e/rtllib_tx.c               |    2 +-
- drivers/staging/rtl8192u/ieee80211/ieee80211_rx.c  |    2 +-
- .../staging/rtl8192u/ieee80211/ieee80211_softmac.c |    6 +-
- drivers/staging/rtl8192u/r8192U_core.c             |    9 +-
- drivers/staging/rtl8192u/r8192U_dm.c               |   12 +-
- drivers/staging/rtl8192u/r8192U_hw.h               |    1 +
- drivers/staging/rtl8192u/r8192U_wx.c               |   41 +-
- drivers/staging/rtl8192u/r819xU_cmdpkt.c           |    5 +-
- drivers/staging/rtl8192u/r819xU_firmware.c         |    6 -
- drivers/staging/rtl8192u/r819xU_firmware_img.h     |    3 -
- drivers/staging/rtl8192u/r819xU_phy.c              |   30 +-
- drivers/staging/rtl8192u/r819xU_phyreg.h           |    3 -
- drivers/staging/rtl8712/rtl8712_recv.c             |   19 +-
- drivers/staging/rtl8712/rtl871x_cmd.c              |    4 +-
- drivers/staging/rtl8712/rtl871x_io.c               |    2 +-
- drivers/staging/rtl8712/rtl871x_ioctl_linux.c      |   16 +-
- drivers/staging/rtl8712/rtl871x_mlme.c             |   11 +-
- drivers/staging/rtl8712/rtl871x_mp_ioctl.c         |    2 +-
- drivers/staging/rtl8712/rtl871x_recv.c             |   20 +-
- drivers/staging/rtl8712/rtl871x_security.c         |    8 +-
- drivers/staging/rtl8712/rtl871x_sta_mgt.c          |    4 +-
- drivers/staging/rtl8712/rtl871x_xmit.c             |   34 +-
- drivers/staging/rtl8712/rtl871x_xmit.h             |    2 +-
- drivers/staging/rtl8712/usb_intf.c                 |    2 +-
- drivers/staging/rtl8712/usb_ops_linux.c            |    5 +-
- drivers/staging/rtl8723bs/core/rtw_ap.c            |    5 +-
- drivers/staging/rtl8723bs/core/rtw_cmd.c           |    5 +-
- drivers/staging/rtl8723bs/core/rtw_ieee80211.c     |   11 +-
- drivers/staging/rtl8723bs/core/rtw_mlme.c          |   16 +-
- drivers/staging/rtl8723bs/core/rtw_mlme_ext.c      |    7 +-
- drivers/staging/rtl8723bs/core/rtw_recv.c          |    3 +-
- drivers/staging/rtl8723bs/core/rtw_security.c      |    6 +-
- drivers/staging/rtl8723bs/core/rtw_wlan_util.c     |   74 +-
- drivers/staging/rtl8723bs/core/rtw_xmit.c          |    4 +-
- drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c     |   11 +-
- drivers/staging/rtl8723bs/hal/sdio_ops.c           |   11 +-
- drivers/staging/rtl8723bs/include/osdep_service.h  |   87 --
- .../rtl8723bs/include/osdep_service_linux.h        |   14 +-
- drivers/staging/rtl8723bs/include/rtw_mlme_ext.h   |    2 -
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c  |    2 +-
- drivers/staging/rtl8723bs/os_dep/recv_linux.c      |    3 +-
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c       |    4 +-
- drivers/staging/rtl8723bs/os_dep/sdio_ops_linux.c  |   42 +-
- drivers/staging/rts5208/rtsx_transport.c           |   24 +-
- drivers/staging/sm750fb/sm750.c                    |    3 +-
- .../vc04_services/bcm2835-audio/bcm2835-vchiq.c    |    2 +-
- .../include/linux/raspberrypi/vchiq.h              |   11 +-
- .../interface/vchiq_arm/vchiq_2835_arm.c           |   24 +-
- .../vc04_services/interface/vchiq_arm/vchiq_arm.c  | 1257 ++++++++++----------
- .../vc04_services/interface/vchiq_arm/vchiq_core.c |   25 +-
- .../vc04_services/interface/vchiq_arm/vchiq_core.h |   14 +-
- .../interface/vchiq_arm/vchiq_ioctl.h              |   29 +-
- .../staging/vc04_services/vchiq-mmal/mmal-vchiq.c  |    2 +-
- drivers/staging/vt6655/device_main.c               |    6 +-
- drivers/staging/vt6655/mac.h                       |    2 +-
- drivers/staging/vt6655/rxtx.c                      |   24 +-
- .../bindings/net/wireless/silabs,wfx.yaml          |  125 ++
- .../bindings/net/wireless/siliabs,wfx.txt          |   98 --
- drivers/staging/wfx/TODO                           |   19 -
- drivers/staging/wfx/bh.c                           |   75 +-
- drivers/staging/wfx/bh.h                           |    2 +-
- drivers/staging/wfx/bus.h                          |    2 +-
- drivers/staging/wfx/bus_sdio.c                     |    2 +-
- drivers/staging/wfx/bus_spi.c                      |    2 +-
- drivers/staging/wfx/data_rx.c                      |   11 +-
- drivers/staging/wfx/data_rx.h                      |    2 +-
- drivers/staging/wfx/data_tx.c                      |   74 +-
- drivers/staging/wfx/data_tx.h                      |    5 +-
- drivers/staging/wfx/debug.c                        |   27 +-
- drivers/staging/wfx/fwio.c                         |    4 +-
- drivers/staging/wfx/hif_api_cmd.h                  |  256 ++--
- drivers/staging/wfx/hif_api_general.h              |  131 +-
- drivers/staging/wfx/hif_api_mib.h                  |   50 +-
- drivers/staging/wfx/hif_rx.c                       |   91 +-
- drivers/staging/wfx/hif_tx.c                       |  116 +-
- drivers/staging/wfx/hif_tx.h                       |   12 +-
- drivers/staging/wfx/hif_tx_mib.c                   |  124 +-
- drivers/staging/wfx/hif_tx_mib.h                   |   13 +-
- drivers/staging/wfx/hwio.c                         |    2 +-
- drivers/staging/wfx/hwio.h                         |    2 +-
- drivers/staging/wfx/key.c                          |   12 +-
- drivers/staging/wfx/key.h                          |    2 +-
- drivers/staging/wfx/main.c                         |   33 +-
- drivers/staging/wfx/main.h                         |    4 +-
- drivers/staging/wfx/queue.c                        |   16 +-
- drivers/staging/wfx/queue.h                        |    3 +-
- drivers/staging/wfx/scan.c                         |    6 +-
- drivers/staging/wfx/scan.h                         |    2 +-
- drivers/staging/wfx/secure_link.h                  |   59 -
- drivers/staging/wfx/sta.c                          |  348 +++---
- drivers/staging/wfx/sta.h                          |    4 +-
- drivers/staging/wfx/traces.h                       |    2 +-
- drivers/staging/wfx/wfx.h                          |    7 +-
- drivers/staging/wlan-ng/hfa384x_usb.c              |   18 +-
- drivers/staging/wlan-ng/p80211netdev.c             |   11 +-
- drivers/staging/wlan-ng/prism2mgmt.c               |   24 +-
- drivers/staging/wlan-ng/prism2mib.c                |    2 +-
- drivers/staging/wlan-ng/prism2sta.c                |    4 +-
- include/linux/iio/buffer-dmaengine.h               |    4 -
- include/linux/iio/common/cros_ec_sensors_core.h    |    4 +-
- include/linux/iio/iio.h                            |    3 +-
- include/linux/iio/imu/adis.h                       |   53 +-
- include/linux/iio/trigger_consumer.h               |    2 +-
- include/linux/iio/types.h                          |    1 +
- include/linux/mfd/hi6421-spmi-pmic.h               |   53 +
- include/linux/platform_data/ad7291.h               |   13 -
- include/linux/platform_data/ad7793.h               |    2 +-
- include/uapi/linux/iio/types.h                     |    1 +
- tools/iio/iio_event_monitor.c                      |    2 +
- 436 files changed, 11422 insertions(+), 7211 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-accel-adxl372
- create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010
- rename drivers/staging/iio/Documentation/light/sysfs-bus-iio-light-tsl2x7x => Documentation/ABI/testing/sysfs-bus-iio-light-tsl2772 (100%)
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ad7949.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7291.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7768-1.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7949.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ads1015.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/amlogic,meson-saradc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/amlogic,meson-saradc.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/aspeed,ast2400-adc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/berlin2_adc.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/cc10001_adc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/cosmic,10001-adc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/cpcap-adc.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/da9150-gpadc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/dlg,da9150-gpadc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/fsl,imx25-gcq.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/fsl,imx25-gcq.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/fsl,imx7d-adc.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/fsl,vf610-adc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/hi8435.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/holt,hi8435.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/imx7d-adc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/lltc,ltc2497.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/lpc1850-adc.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/lpc32xx-adc.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ltc2497.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/marvell,berlin2-adc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/max11100.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/max1118.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/max9611.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max11100.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max1118.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max9611.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/mcp320x.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/mcp3422.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,mcp3201.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/motorola,cpcap-adc.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/nuvoton,nau7802.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/nuvoton,npcm-adc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/nuvoton,npcm750-adc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/nuvoton-nau7802.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,lpc1850-adc.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,lpc3220-adc.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/sprd,sc2720-adc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/sprd,sc27xx-adc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stmpe-adc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/stmpe-adc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,adc0832.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,adc12138.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,adc128s052.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,adc161s626.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads1015.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads7950.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads8344.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,tlc4541.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,twl4030-madc.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ti-adc0832.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ti-adc108s102.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ti-adc12138.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ti-adc128s052.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ti-adc161s626.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ti-ads7950.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/ti-ads8344.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/twl4030-madc.txt
- delete mode 100644 Documentation/devicetree/bindings/iio/adc/vf610-adc.txt
- create mode 100644 Documentation/devicetree/bindings/iio/dac/lltc,ltc2632.yaml
- delete mode 100644 Documentation/devicetree/bindings/iio/dac/ltc2632.txt
- create mode 100644 Documentation/devicetree/bindings/iio/gyroscope/adi,adxrs290.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/light/ams,as73211.yaml
- create mode 100644 Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
- create mode 100644 drivers/iio/gyro/adxrs290.c
- create mode 100644 drivers/iio/humidity/hdc2010.c
- create mode 100644 drivers/iio/light/as73211.c
- rename drivers/{staging/most/cdev/cdev.c => most/most_cdev.c} (100%)
- create mode 100644 drivers/staging/hikey9xx/Kconfig
- create mode 100644 drivers/staging/hikey9xx/Makefile
- create mode 100644 drivers/staging/hikey9xx/TODO
- create mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
- create mode 100644 drivers/staging/hikey9xx/hi6421v600-regulator.c
- create mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
- create mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
- create mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
- create mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.c
- create mode 100644 drivers/staging/hikey9xx/phy-hi3670-usb3.yaml
- delete mode 100644 drivers/staging/iio/Documentation/dac/max517
- delete mode 100644 drivers/staging/iio/Documentation/device.txt
- delete mode 100644 drivers/staging/iio/Documentation/overview.txt
- delete mode 100644 drivers/staging/iio/Documentation/ring.txt
- delete mode 100644 drivers/staging/iio/Documentation/sysfs-bus-iio-light
- delete mode 100644 drivers/staging/iio/Documentation/trigger.txt
- delete mode 100644 drivers/staging/most/cdev/Kconfig
- delete mode 100644 drivers/staging/most/cdev/Makefile
- create mode 100644 drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
- delete mode 100644 drivers/staging/wfx/Documentation/devicetree/bindings/net/wireless/siliabs,wfx.txt
- delete mode 100644 drivers/staging/wfx/secure_link.h
- create mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
- delete mode 100644 include/linux/platform_data/ad7291.h
+Yoshihiro Shimoda (1):
+      usb: gadget: u_serial: clear suspended flag when disconnecting
+
+Yu Chen (1):
+      usb: dwc3: Add splitdisable quirk for Hisilicon Kirin Soc
+
+YueHaibing (4):
+      usb: mtu3: Remove unsused inline function is_first_entry
+      phy: ti: j721e-wiz: Remove duplicate include
+      usb: host: ehci-sched: Remove ununsed function tt_start_uframe()
+      usb: mtu3: Remove unsused inline function is_first_entry
+
+Zqiang (2):
+      usb: gadget: function: printer: fix use-after-free in __lock_acquire
+      usb: gadget: uvc: Fix the wrong v4l2_device_unregister call
+
+ .../arm/bcm/raspberrypi,bcm2835-firmware.yaml      |   21 +
+ .../devicetree/bindings/phy/fsl,imx8mq-usb-phy.txt |    2 +-
+ .../bindings/phy/intel,lgm-emmc-phy.yaml           |   17 +-
+ .../devicetree/bindings/phy/intel,lgm-usb-phy.yaml |   58 +
+ .../bindings/phy/phy-cadence-torrent.yaml          |   96 +-
+ .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml         |   95 +-
+ .../bindings/phy/socionext,uniphier-ahci-phy.yaml  |   76 +
+ .../devicetree/bindings/phy/ti,omap-usb2.yaml      |   74 +
+ .../devicetree/bindings/phy/ti,phy-j721e-wiz.yaml  |   13 +-
+ Documentation/devicetree/bindings/phy/ti-phy.txt   |   37 -
+ .../bindings/usb/amlogic,meson-g12a-usb-ctrl.yaml  |   22 +-
+ .../devicetree/bindings/usb/atmel-usb.txt          |    1 +
+ .../devicetree/bindings/usb/cdns,usb3.yaml         |   96 +
+ .../devicetree/bindings/usb/cdns-usb3.txt          |   45 -
+ .../devicetree/bindings/usb/ci-hdrc-usb2.txt       |    9 +
+ Documentation/devicetree/bindings/usb/dwc2.yaml    |    5 +
+ Documentation/devicetree/bindings/usb/dwc3.txt     |    3 +
+ .../bindings/usb/intel,keembay-dwc3.yaml           |   77 +
+ .../bindings/usb/mediatek,mt6360-tcpc.yaml         |   95 +
+ .../devicetree/bindings/usb/renesas,usb-xhci.yaml  |    1 +
+ .../devicetree/bindings/usb/renesas,usb3-peri.yaml |   35 +-
+ .../devicetree/bindings/usb/renesas,usbhs.yaml     |    1 +
+ .../devicetree/bindings/usb/ti,hd3ss3220.txt       |   38 -
+ .../devicetree/bindings/usb/ti,hd3ss3220.yaml      |   82 +
+ MAINTAINERS                                        |   20 +-
+ arch/arm/boot/dts/at91-sam9x60ek.dts               |   13 +
+ arch/arm/boot/dts/bcm2711-rpi-4-b.dts              |   22 +
+ arch/arm/boot/dts/sam9x60.dtsi                     |   14 +
+ drivers/acpi/bus.c                                 |    1 +
+ drivers/bluetooth/ath3k.c                          |   93 +-
+ drivers/firmware/Kconfig                           |    3 +-
+ drivers/firmware/raspberrypi.c                     |   61 -
+ drivers/net/usb/pegasus.c                          |   61 +-
+ drivers/net/usb/rtl8150.c                          |   32 +-
+ drivers/pci/controller/pcie-brcmstb.c              |   17 -
+ drivers/pci/quirks.c                               |   57 -
+ drivers/phy/Kconfig                                |   11 +
+ drivers/phy/Makefile                               |    1 +
+ drivers/phy/broadcom/phy-bcm-ns-usb3.c             |   22 +-
+ drivers/phy/broadcom/phy-bcm-ns2-usbdrd.c          |   13 +-
+ drivers/phy/broadcom/phy-bcm-sr-usb.c              |   19 +-
+ drivers/phy/cadence/phy-cadence-salvo.c            |    8 +-
+ drivers/phy/cadence/phy-cadence-sierra.c           |   24 +-
+ drivers/phy/cadence/phy-cadence-torrent.c          | 2119 +++++++++++++++++++-
+ drivers/phy/freescale/phy-fsl-imx8mq-usb.c         |   79 +-
+ drivers/phy/hisilicon/phy-hi3660-usb3.c            |    2 +-
+ drivers/phy/intel/Kconfig                          |   22 +-
+ drivers/phy/intel/Makefile                         |    5 +-
+ drivers/phy/intel/phy-intel-keembay-emmc.c         |  307 +++
+ .../{phy-intel-combo.c => phy-intel-lgm-combo.c}   |    0
+ .../{phy-intel-emmc.c => phy-intel-lgm-emmc.c}     |    0
+ drivers/phy/lantiq/phy-lantiq-rcu-usb2.c           |    2 +-
+ drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c        |    2 +-
+ drivers/phy/marvell/phy-pxa-28nm-hsic.c            |   40 +-
+ drivers/phy/marvell/phy-pxa-28nm-usb2.c            |   33 +-
+ drivers/phy/phy-lgm-usb.c                          |  284 +++
+ drivers/phy/qualcomm/phy-qcom-apq8064-sata.c       |   21 +-
+ drivers/phy/qualcomm/phy-qcom-ipq4019-usb.c        |    4 +-
+ drivers/phy/qualcomm/phy-qcom-qmp.c                | 1053 ++++++++--
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |   80 +
+ drivers/phy/ralink/phy-ralink-usb.c                |    2 +-
+ drivers/phy/rockchip/Kconfig                       |   12 +
+ drivers/phy/rockchip/Makefile                      |    1 +
+ .../rockchip}/phy-rockchip-dphy-rx0.c              |    1 +
+ drivers/phy/samsung/phy-exynos5-usbdrd.c           |   39 +-
+ drivers/phy/samsung/phy-samsung-ufs.c              |    2 +-
+ drivers/phy/socionext/Kconfig                      |   10 +
+ drivers/phy/socionext/Makefile                     |    1 +
+ drivers/phy/socionext/phy-uniphier-ahci.c          |  321 +++
+ drivers/phy/ti/phy-am654-serdes.c                  |  325 +--
+ drivers/phy/ti/phy-gmii-sel.c                      |  159 +-
+ drivers/phy/ti/phy-j721e-wiz.c                     |    1 -
+ drivers/phy/ti/phy-omap-usb2.c                     |   36 +-
+ drivers/reset/Kconfig                              |   11 +
+ drivers/reset/Makefile                             |    1 +
+ drivers/reset/reset-raspberrypi.c                  |  122 ++
+ drivers/staging/media/Kconfig                      |    2 -
+ drivers/staging/media/Makefile                     |    1 -
+ .../staging/media/phy-rockchip-dphy-rx0/Kconfig    |   13 -
+ .../staging/media/phy-rockchip-dphy-rx0/Makefile   |    2 -
+ drivers/staging/media/phy-rockchip-dphy-rx0/TODO   |    6 -
+ drivers/thunderbolt/Kconfig                        |   14 +-
+ drivers/thunderbolt/Makefile                       |    4 +-
+ drivers/thunderbolt/acpi.c                         |  117 ++
+ drivers/thunderbolt/cap.c                          |  136 +-
+ drivers/thunderbolt/ctl.c                          |   23 +-
+ drivers/thunderbolt/debugfs.c                      |  701 +++++++
+ drivers/thunderbolt/domain.c                       |   48 +-
+ drivers/thunderbolt/icm.c                          |    5 +-
+ drivers/thunderbolt/lc.c                           |  151 +-
+ drivers/thunderbolt/nhi.c                          |   90 +-
+ drivers/thunderbolt/nhi_ops.c                      |   31 +-
+ drivers/thunderbolt/quirks.c                       |    2 +-
+ drivers/thunderbolt/switch.c                       |  216 +-
+ drivers/thunderbolt/tb.c                           |  207 +-
+ drivers/thunderbolt/tb.h                           |  160 +-
+ drivers/thunderbolt/tb_msgs.h                      |    1 +
+ drivers/thunderbolt/tb_regs.h                      |   34 +-
+ drivers/thunderbolt/test.c                         |   13 +-
+ drivers/thunderbolt/usb4.c                         |  251 ++-
+ drivers/usb/atm/cxacru.c                           |   27 +-
+ drivers/usb/atm/usbatm.c                           |   14 +-
+ drivers/usb/c67x00/c67x00-sched.c                  |    7 +-
+ drivers/usb/cdns3/cdns3-imx.c                      |  191 +-
+ drivers/usb/cdns3/core.c                           |  202 +-
+ drivers/usb/cdns3/core.h                           |   17 +
+ drivers/usb/cdns3/drd.c                            |   20 +
+ drivers/usb/cdns3/drd.h                            |    5 +-
+ drivers/usb/cdns3/ep0.c                            |   10 +-
+ drivers/usb/cdns3/gadget.c                         |  276 ++-
+ drivers/usb/cdns3/gadget.h                         |   11 +-
+ drivers/usb/cdns3/host.c                           |    7 +
+ drivers/usb/chipidea/ci_hdrc_imx.c                 |   13 +-
+ drivers/usb/chipidea/ci_hdrc_imx.h                 |    2 +
+ drivers/usb/chipidea/usbmisc_imx.c                 |   21 +
+ drivers/usb/class/cdc-acm.c                        |   79 +-
+ drivers/usb/class/cdc-acm.h                        |   19 +-
+ drivers/usb/class/cdc-wdm.c                        |   72 +-
+ drivers/usb/common/usb-conn-gpio.c                 |   32 +-
+ drivers/usb/core/Kconfig                           |   14 +
+ drivers/usb/core/devices.c                         |   41 -
+ drivers/usb/core/driver.c                          |    8 +-
+ drivers/usb/core/generic.c                         |    4 +-
+ drivers/usb/core/hcd.c                             |    6 +-
+ drivers/usb/core/hub.c                             |   62 +-
+ drivers/usb/core/message.c                         |  180 +-
+ drivers/usb/core/urb.c                             |  120 +-
+ drivers/usb/core/usb.h                             |    1 -
+ drivers/usb/dwc2/Kconfig                           |    1 +
+ drivers/usb/dwc2/Makefile                          |    2 +-
+ drivers/usb/dwc2/core.h                            |    9 +
+ drivers/usb/dwc2/drd.c                             |  180 ++
+ drivers/usb/dwc2/gadget.c                          |   42 +-
+ drivers/usb/dwc2/params.c                          |    5 +-
+ drivers/usb/dwc2/platform.c                        |   43 +-
+ drivers/usb/dwc3/core.c                            |   90 +-
+ drivers/usb/dwc3/core.h                            |   47 +-
+ drivers/usb/dwc3/debug.h                           |    8 +-
+ drivers/usb/dwc3/debugfs.c                         |   59 +-
+ drivers/usb/dwc3/dwc3-meson-g12a.c                 |   41 +-
+ drivers/usb/dwc3/dwc3-of-simple.c                  |    2 +
+ drivers/usb/dwc3/dwc3-pci.c                        |    3 +-
+ drivers/usb/dwc3/dwc3-qcom.c                       |  128 +-
+ drivers/usb/dwc3/ep0.c                             |   61 +-
+ drivers/usb/dwc3/gadget.c                          |  593 +++---
+ drivers/usb/dwc3/gadget.h                          |    3 +-
+ drivers/usb/dwc3/trace.h                           |   17 +-
+ drivers/usb/dwc3/ulpi.c                            |    2 +-
+ drivers/usb/early/ehci-dbgp.c                      |   15 +-
+ drivers/usb/early/xhci-dbc.c                       |   14 +-
+ drivers/usb/gadget/function/f_acm.c                |    8 +-
+ drivers/usb/gadget/function/f_midi.c               |    6 +-
+ drivers/usb/gadget/function/f_ncm.c                |   10 +-
+ drivers/usb/gadget/function/f_printer.c            |   16 +-
+ drivers/usb/gadget/function/f_tcm.c                |   12 +-
+ drivers/usb/gadget/function/f_uvc.c                |    8 +-
+ drivers/usb/gadget/function/u_ether.c              |    2 +-
+ drivers/usb/gadget/function/u_serial.c             |    1 +
+ drivers/usb/gadget/udc/aspeed-vhub/core.c          |   10 +-
+ drivers/usb/gadget/udc/aspeed-vhub/vhub.h          |    3 +
+ drivers/usb/gadget/udc/atmel_usba_udc.c            |   68 +-
+ drivers/usb/gadget/udc/atmel_usba_udc.h            |    3 +-
+ drivers/usb/gadget/udc/bcm63xx_udc.c               |    1 +
+ drivers/usb/gadget/udc/bdc/bdc_core.c              |    9 +-
+ drivers/usb/gadget/udc/core.c                      |   82 +-
+ drivers/usb/gadget/udc/fsl_qe_udc.c                |    7 +-
+ drivers/usb/gadget/udc/fsl_udc_core.c              |    9 +-
+ drivers/usb/gadget/udc/lpc32xx_udc.c               |   17 +-
+ drivers/usb/gadget/udc/net2272.c                   |   24 +-
+ drivers/usb/gadget/udc/net2272.h                   |    1 +
+ drivers/usb/gadget/udc/net2280.c                   |   32 +-
+ drivers/usb/gadget/udc/net2280.h                   |    1 +
+ drivers/usb/gadget/udc/pch_udc.c                   |   55 +-
+ drivers/usb/gadget/udc/s3c2410_udc.c               |    3 -
+ drivers/usb/gadget/udc/tegra-xudc.c                |   60 +-
+ drivers/usb/host/bcma-hcd.c                        |   13 +-
+ drivers/usb/host/ehci-npcm7xx.c                    |    8 +-
+ drivers/usb/host/ehci-platform.c                   |   16 +-
+ drivers/usb/host/ehci-sched.c                      |   20 -
+ drivers/usb/host/ehci-spear.c                      |    8 +-
+ drivers/usb/host/fotg210-hcd.c                     |   20 +-
+ drivers/usb/host/ohci-hcd.c                        |   18 +-
+ drivers/usb/host/oxu210hp-hcd.c                    |   21 +-
+ drivers/usb/host/pci-quirks.c                      |   35 +-
+ drivers/usb/host/xhci-dbgtty.c                     |    6 +-
+ drivers/usb/host/xhci-debugfs.c                    |  109 +-
+ drivers/usb/host/xhci-debugfs.h                    |   10 +
+ drivers/usb/host/xhci-mtk.c                        |    6 +-
+ drivers/usb/host/xhci-pci.c                        |   10 +
+ drivers/usb/host/xhci-plat.c                       |   44 +-
+ drivers/usb/host/xhci-plat.h                       |    1 +
+ drivers/usb/host/xhci-rcar.c                       |   43 +-
+ drivers/usb/host/xhci-ring.c                       |   23 +-
+ drivers/usb/host/xhci-tegra.c                      |    1 -
+ drivers/usb/host/xhci.c                            |   11 +-
+ drivers/usb/host/xhci.h                            |    3 +
+ drivers/usb/image/microtek.c                       |   14 +-
+ drivers/usb/isp1760/isp1760-hcd.c                  |   20 +-
+ drivers/usb/misc/adutux.c                          |    1 +
+ drivers/usb/misc/appledisplay.c                    |   14 +-
+ drivers/usb/misc/legousbtower.c                    |   61 +-
+ drivers/usb/misc/usb3503.c                         |   18 +-
+ drivers/usb/misc/usb4604.c                         |    8 +-
+ drivers/usb/misc/usblcd.c                          |    1 -
+ drivers/usb/misc/yurex.c                           |    6 +-
+ drivers/usb/mtu3/mtu3.h                            |    6 -
+ drivers/usb/musb/musb_gadget_ep0.c                 |    2 +-
+ drivers/usb/phy/phy-ab8500-usb.c                   |    2 +-
+ drivers/usb/phy/phy-mv-usb.c                       |   18 +-
+ drivers/usb/phy/phy-ulpi-viewport.c                |   12 +-
+ drivers/usb/serial/ftdi_sio.c                      |   37 +-
+ drivers/usb/serial/ftdi_sio_ids.h                  |    7 +
+ drivers/usb/serial/mos7720.c                       |    8 +-
+ drivers/usb/serial/option.c                        |    5 +
+ drivers/usb/serial/pl2303.c                        |    1 +
+ drivers/usb/serial/pl2303.h                        |    1 +
+ drivers/usb/serial/qcserial.c                      |    4 +-
+ drivers/usb/storage/isd200.c                       |    2 +-
+ drivers/usb/storage/scsiglue.c                     |    2 +-
+ drivers/usb/storage/uas.c                          |   31 +-
+ drivers/usb/storage/usb.c                          |    5 +-
+ drivers/usb/typec/Kconfig                          |   24 +
+ drivers/usb/typec/Makefile                         |    2 +
+ drivers/usb/typec/altmodes/displayport.c           |    2 +-
+ drivers/usb/typec/class.c                          |   15 +
+ drivers/usb/typec/hd3ss3220.c                      |   18 +-
+ drivers/usb/typec/mux/Kconfig                      |    1 +
+ drivers/usb/typec/mux/intel_pmc_mux.c              |  207 +-
+ drivers/usb/typec/qcom-pmic-typec.c                |  262 +++
+ drivers/usb/typec/stusb160x.c                      |  875 ++++++++
+ drivers/usb/typec/tcpm/Kconfig                     |   14 +
+ drivers/usb/typec/tcpm/Makefile                    |   14 +-
+ drivers/usb/typec/tcpm/tcpci.c                     |  113 +-
+ drivers/usb/typec/tcpm/tcpci.h                     |   25 +
+ drivers/usb/typec/tcpm/tcpci_maxim.c               |  503 +++++
+ drivers/usb/typec/tcpm/tcpci_mt6360.c              |  212 ++
+ drivers/usb/typec/tcpm/tcpm.c                      |  362 +++-
+ drivers/usb/usbip/usbip_common.c                   |    8 +-
+ drivers/usb/usbip/vhci_hcd.c                       |    8 +-
+ include/dt-bindings/phy/phy-cadence-torrent.h      |   13 +
+ include/dt-bindings/phy/phy.h                      |    1 +
+ .../dt-bindings/reset/raspberrypi,firmware-reset.h |   13 +
+ include/linux/iopoll.h                             |    4 +-
+ include/linux/phy/phy.h                            |    2 +
+ include/linux/usb.h                                |    9 +
+ include/linux/usb/gadget.h                         |   27 +-
+ include/linux/usb/pd.h                             |   26 +-
+ include/linux/usb/tcpm.h                           |    8 +-
+ include/linux/usb/typec.h                          |    1 +
+ include/soc/bcm2835/raspberrypi-firmware.h         |    7 -
+ sound/usb/6fire/firmware.c                         |   38 +-
+ sound/usb/helper.c                                 |   16 +-
+ sound/usb/helper.h                                 |    1 -
+ sound/usb/hiface/pcm.c                             |   14 +-
+ sound/usb/line6/driver.c                           |   72 +-
+ sound/usb/line6/podhd.c                            |   23 +-
+ sound/usb/line6/toneport.c                         |    9 +-
+ sound/usb/mixer_scarlett_gen2.c                    |    2 +-
+ sound/usb/quirks.c                                 |   12 +-
+ sound/usb/usx2y/us122l.c                           |   42 +-
+ 260 files changed, 12933 insertions(+), 2874 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,lgm-usb-phy.yaml
+ create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
+ create mode 100644 Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/cdns,usb3.yaml
+ delete mode 100644 Documentation/devicetree/bindings/usb/cdns-usb3.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/intel,keembay-dwc3.yaml
+ create mode 100644 Documentation/devicetree/bindings/usb/mediatek,mt6360-tcpc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/usb/ti,hd3ss3220.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/ti,hd3ss3220.yaml
+ create mode 100644 drivers/phy/intel/phy-intel-keembay-emmc.c
+ rename drivers/phy/intel/{phy-intel-combo.c => phy-intel-lgm-combo.c} (100%)
+ rename drivers/phy/intel/{phy-intel-emmc.c => phy-intel-lgm-emmc.c} (100%)
+ create mode 100644 drivers/phy/phy-lgm-usb.c
+ rename drivers/{staging/media/phy-rockchip-dphy-rx0 => phy/rockchip}/phy-rockchip-dphy-rx0.c (99%)
+ create mode 100644 drivers/phy/socionext/phy-uniphier-ahci.c
+ create mode 100644 drivers/reset/reset-raspberrypi.c
+ delete mode 100644 drivers/staging/media/phy-rockchip-dphy-rx0/Kconfig
+ delete mode 100644 drivers/staging/media/phy-rockchip-dphy-rx0/Makefile
+ delete mode 100644 drivers/staging/media/phy-rockchip-dphy-rx0/TODO
+ create mode 100644 drivers/thunderbolt/acpi.c
+ create mode 100644 drivers/thunderbolt/debugfs.c
+ create mode 100644 drivers/usb/dwc2/drd.c
+ create mode 100644 drivers/usb/typec/qcom-pmic-typec.c
+ create mode 100644 drivers/usb/typec/stusb160x.c
+ create mode 100644 drivers/usb/typec/tcpm/tcpci_maxim.c
+ create mode 100644 drivers/usb/typec/tcpm/tcpci_mt6360.c
+ create mode 100644 include/dt-bindings/phy/phy-cadence-torrent.h
+ create mode 100644 include/dt-bindings/reset/raspberrypi,firmware-reset.h
