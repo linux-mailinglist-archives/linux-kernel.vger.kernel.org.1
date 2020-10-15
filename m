@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5C228E9F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2281928E989
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732197AbgJOBZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730375AbgJOBYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:24:37 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D63EC0F26EE
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 17:44:41 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728431AbgJOAvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 20:51:53 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:54522 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726018AbgJOAvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 20:51:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602723112; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=z6t7HV4bH2v0mmuzaitSoFrMCe6hQz3tk9NSin7efdk=; b=DqyugyGAZveVYwMEB4ofTSYa46U210fjZR2n2Dh2/0LlkZ6xtzvBfABQgPKC8TDJLkXLODEq
+ nf2SyIAmkeEijycTSWXcKfpfunq5JrN8pY1jisw3wh2C1kQjRpsdVgh7euc5Eq+AuVW0yxMu
+ VCVB2SuIHi1jD8kJGyFE188fbrE=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f879d27319d4e9cb5c2720e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Oct 2020 00:51:51
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E6D94C433C9; Thu, 15 Oct 2020 00:51:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBVsx1g0Bz9sT6;
-        Thu, 15 Oct 2020 11:44:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602722678;
-        bh=t8A6fO5tp/eZ5Re3BebrXOQ9Y1HSFZ6NL3ZxIK2cCE0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=obFqOmefSwuDllvrpb013ifEj6EHy8Hj72S2yQ48kfm9ydFc8fVCwY6ndRMlhQq8F
-         K3q3+MfVVhqIikGrA7N2k5Mv5FGppGjqiIRNggx5xtUXKn6xEBw7EpLPZcWAZ2PJQg
-         +7Cz0ii+/Q3d7Ivggv09myKN5vClHc0PDq/t5H942tWOAB12QfskAyaCThGzZ/a8VB
-         JkPUKoNzlcsoyY8dJXono6CcqtKRkQGawib428uF4KKjD9l4ndmtPMk2kN7fqKL+YQ
-         jmfMISLgHsusege2uf0WrcTKfLItUMgWch5cn6KcMZTwCJJ04fKhrqpiUu39W6txK7
-         MBwQ3ii4+ahtQ==
-Date:   Thu, 15 Oct 2020 11:44:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [GIT PULL v2] objtool changes for v5.10
-Message-ID: <20201015114436.1a08d112@canb.auug.org.au>
-In-Reply-To: <20201013103831.GB3933713@gmail.com>
-References: <20201013082625.GA775379@gmail.com>
-        <20201013204312.6052157d@canb.auug.org.au>
-        <20201013101056.GA3933713@gmail.com>
-        <20201013103831.GB3933713@gmail.com>
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 22719C433CB;
+        Thu, 15 Oct 2020 00:51:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 22719C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH v3] arm64/mm: add fallback option to allocate virtually contiguous memory
+Date:   Wed, 14 Oct 2020 17:51:22 -0700
+Message-Id: <cover.1602722808.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VQjlC3hCiiHrx2kc=OgYB_J";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VQjlC3hCiiHrx2kc=OgYB_J
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+V1: The initial patch used the approach to abort at the first instance of PMD_SIZE
+allocation failure, unmaps all previously mapped sections using vmemmap_free
+and maps the entire request with vmemmap_populate_basepages to allocate 
+virtually contiguous memory.
+https://lkml.org/lkml/2020/9/10/66
 
-Hi Ingo,
+V2: Allocates virtually contiguous memory only for sections that failed
+PMD_SIZE allocation, and continous to allocate physically contiguous
+memory for other sections.
+https://lkml.org/lkml/2020/9/30/1489
 
-On Tue, 13 Oct 2020 12:38:31 +0200 Ingo Molnar <mingo@kernel.org> wrote:
->
-> * Ingo Molnar <mingo@kernel.org> wrote:
->=20
-> > > This seems to be missing
-> > >=20
-> > > https://lore.kernel.org/lkml/patch-1.thread-251403.git-2514037e9477.y=
-our-ad-here.call-01602244460-ext-7088@work.hours/
-> > >=20
-> > > or did that get sent in a previous pull request? =20
-> >=20
-> > No, that fix is still missing, thanks for the reminder. I overlooked it=
-=20
-> > thinking that it's a tooling patch - but this needs to be paired with:
-> >=20
-> >   2486baae2cf6: ("objtool: Allow nested externs to enable BUILD_BUG()")
-> >=20
-> > I'll send a v2 pull request in an hour or two. =20
+V3: Addressed trivial review comments. Pass in altmap to vmemmap_populate_basepages.
 
-Thanks for that.
+Sudarshan Rajagopalan (1):
+  arm64/mm: add fallback option to allocate virtually contiguous memory
 
---=20
-Cheers,
-Stephen Rothwell
+ arch/arm64/mm/mmu.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---Sig_/VQjlC3hCiiHrx2kc=OgYB_J
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+Hm3QACgkQAVBC80lX
-0GypZggAkSpDjR79HYNUU0g24TP6i+QtCvuMq031+2odhdiwIgCLvlb3tFlmrmeR
-Fi3oHijDcdXnEHU+yVLHqxNB2GiIXDwawCFnK0F5JdlLFFFvRLyeyxgwCUI8BTtn
-vCfEsSpZeouI2WvbHjyHGqgR+RhYw7ZisNhKHElsZhgvVwJiGKcqqKfrf+qPLEJP
-MK5ov2sWnQsheIBtOEc2hYcQv4Mai1GHUJMQtqKreOeLxpeig26P3HBqaaaqIwuQ
-CP0N7uKIrpPEBu02vpYoBTSNMKwuOc+d2g9IlecSxiisdm/A5op3A5FDr0WMJDLx
-tRQPgNfubBGtb8C39Z3LI21QVnPyGA==
-=iu2s
------END PGP SIGNATURE-----
-
---Sig_/VQjlC3hCiiHrx2kc=OgYB_J--
