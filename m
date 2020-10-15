@@ -2,78 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8EF28F034
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F5428F039
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbgJOKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727379AbgJOKa6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:30:58 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCF1C061755;
-        Thu, 15 Oct 2020 03:30:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O4GUwatL/SA++hNZdmVAzix9x94iEcyufXftp4wfECg=; b=1uV0QwkzVV+ezKEwvYO3W9UF7C
-        RCxyegvTcG/n2iZ381RyIkaoU6hOhoNmeBOxlZGKueJyiK3zedu3tQzTmgYWlSIf0l9uYTFAobcE3
-        ICBa7t9ciZCT8km35dDhRmLxv26P+OFLigFmW898f24MbBa8wJCtkhrALUkry5u7pI4pgP04cUuJE
-        RkwmX6GX8SBFvbmidj8IY2gc6ADjrE1QriwybXqAE8qAWbIt5rQ5vtkP/rNUhi/fbDJf/DInBw7gi
-        L4EPrrCHLr63K1Z8SqXUY9LAvi+iXKPX7WlsnGxF0mlXLP7Y4cCW3MA0HPCwN5SBBU1uCwY+U7tF7
-        l+wmFk0w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT0X1-00086c-1m; Thu, 15 Oct 2020 10:30:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 43D0A300DAE;
-        Thu, 15 Oct 2020 12:30:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3179020325EC4; Thu, 15 Oct 2020 12:30:45 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 12:30:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/24] tools: docs: memory-model: fix references for
- some files
-Message-ID: <20201015103045.GC2611@hirez.programming.kicks-ass.net>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <44baab3643aeefdb68f1682d89672fad44aa2c67.1602590106.git.mchehab+huawei@kernel.org>
- <20201013163354.GO3249@paulmck-ThinkPad-P72>
- <20201013163836.GC670875@rowland.harvard.edu>
- <20201014015840.GR3249@paulmck-ThinkPad-P72>
- <20201014185720.GA28761@paulmck-ThinkPad-P72>
- <20201015071518.5d9f8dc1@coco.lan>
+        id S1731190AbgJOKbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:31:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:56618 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731151AbgJOKbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:31:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08B94D6E;
+        Thu, 15 Oct 2020 03:31:14 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF34F3F66B;
+        Thu, 15 Oct 2020 03:31:11 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 11:31:06 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
+        ardb@kernel.org, linux-kernel@vger.kernel.org,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>, robin.murphy@arm.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 7/8] arm64: mm: Set ZONE_DMA size based on early IORT
+ scan
+Message-ID: <20201015103106.GA24739@e121166-lin.cambridge.arm.com>
+References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
+ <20201014191211.27029-8-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015071518.5d9f8dc1@coco.lan>
+In-Reply-To: <20201014191211.27029-8-nsaenzjulienne@suse.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 07:15:18AM +0200, Mauro Carvalho Chehab wrote:
-> I guess there might be some misunderstanding here. My fault. The plan
-> is to have zero doc warnings for 5.10[1].
+On Wed, Oct 14, 2020 at 09:12:09PM +0200, Nicolas Saenz Julienne wrote:
 
-I'd be glad to help and convert all the documentation under my
-maintainership to .txt files for you.
+[...]
+
+> +unsigned int __init acpi_iort_get_zone_dma_size(void)
+> +{
+> +	struct acpi_table_iort *iort;
+> +	struct acpi_iort_node *node, *end;
+> +	acpi_status status;
+> +	u8 limit = 32;
+> +	int i;
+> +
+> +	if (acpi_disabled)
+> +		return limit;
+> +
+> +	status = acpi_get_table(ACPI_SIG_IORT, 0,
+> +				(struct acpi_table_header **)&iort);
+> +	if (ACPI_FAILURE(status))
+> +		return limit;
+> +
+> +	node = ACPI_ADD_PTR(struct acpi_iort_node, iort, iort->node_offset);
+> +	end = ACPI_ADD_PTR(struct acpi_iort_node, iort, iort->header.length);
+> +
+> +	for (i = 0; i < iort->node_count; i++) {
+> +		if (node >= end)
+> +			break;
+> +
+> +		switch (node->type) {
+> +			struct acpi_iort_named_component *ncomp;
+> +			struct acpi_iort_root_complex *rc;
+> +
+> +		case ACPI_IORT_NODE_NAMED_COMPONENT:
+> +			ncomp = (struct acpi_iort_named_component *)node->node_data;
+> +			if (ncomp->memory_address_limit)
+> +				limit = min(limit, ncomp->memory_address_limit);
+> +			break;
+> +
+> +		case ACPI_IORT_NODE_PCI_ROOT_COMPLEX:
+> +			rc = (struct acpi_iort_root_complex *)node->node_data;
+> +			if (rc->memory_address_limit)
+
+You need to add a node revision check here, see rc_dma_get_range() in
+drivers/acpi/arm64/iort.c, otherwise we may be reading junk data
+in older IORT tables - acpica structures are always referring to the
+latest specs.
+
+Thanks,
+Lorenzo
+
+> +				limit = min(limit, rc->memory_address_limit);
+> +			break;
+> +		}
+> +		node = ACPI_ADD_PTR(struct acpi_iort_node, node, node->length);
+> +	}
+> +	acpi_put_table(&iort->header);
+> +	return limit;
+> +}
+> +#endif
+> diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
+> index 20a32120bb88..7d2e184f0d4d 100644
+> --- a/include/linux/acpi_iort.h
+> +++ b/include/linux/acpi_iort.h
+> @@ -38,6 +38,7 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *size);
+>  const struct iommu_ops *iort_iommu_configure_id(struct device *dev,
+>  						const u32 *id_in);
+>  int iort_iommu_msi_get_resv_regions(struct device *dev, struct list_head *head);
+> +unsigned int acpi_iort_get_zone_dma_size(void);
+>  #else
+>  static inline void acpi_iort_init(void) { }
+>  static inline u32 iort_msi_map_id(struct device *dev, u32 id)
+> @@ -55,6 +56,9 @@ static inline const struct iommu_ops *iort_iommu_configure_id(
+>  static inline
+>  int iort_iommu_msi_get_resv_regions(struct device *dev, struct list_head *head)
+>  { return 0; }
+> +
+> +static inline unsigned int acpi_iort_get_zone_dma_size(void)
+> +{ return 32; }
+>  #endif
+>  
+>  #endif /* __ACPI_IORT_H__ */
+> -- 
+> 2.28.0
+> 
