@@ -2,107 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F90528E996
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A495028E987
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387514AbgJOBAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:00:46 -0400
-Received: from mga11.intel.com ([192.55.52.93]:2377 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726684AbgJOBAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:00:45 -0400
-IronPort-SDR: vWNugVN8vFLWZmHUJKQZLXM3jP+uJWVdWfKR+12XTpjTVTl0LO/Ykdf3YvGAMRnxRl3jRiRD42
- 9kGLyZkWQ3GQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="162764460"
-X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
-   d="scan'208";a="162764460"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 18:00:45 -0700
-IronPort-SDR: FfdsxjRqp3q4f4etEQRl1TI5VTynO18vfKev9t2iOTvW0tZxScWrNfuysGf8rx03gz/Y/v7tG4
- l/NGqn36Tp+w==
-X-IronPort-AV: E=Sophos;i="5.77,376,1596524400"; 
-   d="scan'208";a="521643942"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 18:00:44 -0700
-Subject: [PATCH 2/2] xen/unpopulated-alloc: Consolidate pgmap manipulation
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        xen-devel@lists.xenproject.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        vishal.l.verma@intel.com, dave.hansen@linux.intel.com,
-        akpm@linux-foundation.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org
-Date:   Wed, 14 Oct 2020 17:42:14 -0700
-Message-ID: <160272253442.3136502.16683842453317773487.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <160272252400.3136502.13635752844548960833.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <160272252400.3136502.13635752844548960833.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1726980AbgJOAmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 20:42:43 -0400
+Received: from smtprelay0136.hostedemail.com ([216.40.44.136]:52958 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726018AbgJOAmn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 20:42:43 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0CDEA100E7B44;
+        Thu, 15 Oct 2020 00:42:42 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3871:4321:4605:5007:7576:10004:10400:10848:11026:11232:11473:11658:11914:12297:12740:12760:12895:13069:13071:13095:13311:13357:13439:14180:14181:14659:14721:21060:21080:21433:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: wave33_0e0ab4727210
+X-Filterd-Recvd-Size: 1611
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 15 Oct 2020 00:42:41 +0000 (UTC)
+Message-ID: <7983b5dcb7f589e31fb954cfc1472a93244984fb.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: add a fixer for missing newline at eof
+From:   Joe Perches <joe@perches.com>
+To:     trix@redhat.com, apw@canonical.com
+Cc:     linux-kernel@vger.kernel.org
+Date:   Wed, 14 Oct 2020 17:42:40 -0700
+In-Reply-To: <20201014211540.15732-1-trix@redhat.com>
+References: <20201014211540.15732-1-trix@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cleanup fill_list() to keep all the pgmap manipulations in a single
-location of the function. Update the exit unwind path accordingly.
+On Wed, 2020-10-14 at 14:15 -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> Remove the trailing error message from the fixed lines
 
-Link: http://lore.kernel.org/r/6186fa28-d123-12db-6171-a75cb6e615a5@oracle.com
+Hi Tom.
 
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: <xen-devel@lists.xenproject.org>
-Reported-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/xen/unpopulated-alloc.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3393,8 +3393,11 @@ sub process {
+>  
+>  # check for adding lines without a newline.
+>  		if ($line =~ /^\+/ && defined $lines[$linenr] && $lines[$linenr] =~ /^\\ No newline at end of file/) {
+> -			WARN("MISSING_EOF_NEWLINE",
+> -			     "adding a line without newline at end of file\n" . $herecurr);
+> +			if (WARN("MISSING_EOF_NEWLINE",
+> +			         "adding a line without newline at end of file\n" . $herecurr) &&
+> +			    $fix) {
+> +			    fix_delete_line($fixlinenr+1, "No newline at end of file");
 
-diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
-index 8c512ea550bb..75ab5de99868 100644
---- a/drivers/xen/unpopulated-alloc.c
-+++ b/drivers/xen/unpopulated-alloc.c
-@@ -27,11 +27,6 @@ static int fill_list(unsigned int nr_pages)
- 	if (!res)
- 		return -ENOMEM;
- 
--	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
--	if (!pgmap)
--		goto err_pgmap;
--
--	pgmap->type = MEMORY_DEVICE_GENERIC;
- 	res->name = "Xen scratch";
- 	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
- 
-@@ -43,6 +38,11 @@ static int fill_list(unsigned int nr_pages)
- 		goto err_resource;
- 	}
- 
-+	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
-+	if (!pgmap)
-+		goto err_pgmap;
-+
-+	pgmap->type = MEMORY_DEVICE_GENERIC;
- 	pgmap->range = (struct range) {
- 		.start = res->start,
- 		.end = res->end,
-@@ -91,10 +91,10 @@ static int fill_list(unsigned int nr_pages)
- 	return 0;
- 
- err_memremap:
--	release_resource(res);
--err_resource:
- 	kfree(pgmap);
- err_pgmap:
-+	release_resource(res);
-+err_resource:
- 	kfree(res);
- 	return ret;
- }
+This is misindented, the 4 spaces before fix_delete_line
+should be a tab, otherwise this looks fine, thanks.
+
 
