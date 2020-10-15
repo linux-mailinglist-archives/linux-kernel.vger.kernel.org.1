@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CFE28E9F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7248628E9FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731954AbgJOB15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727165AbgJOB14 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:27:56 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913EFC0613B3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:27:56 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id 67so2254745iob.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GLOACr1Upy7vf7oHVF5/pEcrKvzTlyyjv59H5BxHvSs=;
-        b=iQR8YlaJOmts+WjbEsLoEE9pSWvn3NDkUi0opGfDG7lGOa19zGlr1v5MITsSiA142y
-         Bg1h2TaJeaW14PzH05w8XhTZqujMlur7EOsX0qVQ69TcFzeHwJvR+3jxe3RiOPi2v8Tg
-         TFYYc1LhJEC2GZude+V2g1eAJhAa0chE8flEk3/BBs8gDHvtcBeQydQRgoBq3zYdYoE8
-         nXO0E9BvTol1LRq8Y4/Gub4zGiuS8EdG+xyqqO63KxG5gXvXU82/VE2hPhPJjrgXu5cD
-         dIgozcPO2+QbQrJx06anE9iZMvXC2WyL4T6vgTuB2p/Dihe9r7tuS4nkSKYPLZiolqPY
-         DexQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GLOACr1Upy7vf7oHVF5/pEcrKvzTlyyjv59H5BxHvSs=;
-        b=pqa+IycqQBKPKi3vCvi2PMsMiH+CIG05Xc7uCDh+/dYdwHKDJGF+Pdk1+/ij9wLLaf
-         90uKFm40jxqeO/aAYMz3I3C3A9gMJC9aH97TM6zxnccy0tml559KwwetqMnAZV4KGocp
-         JZ6on3A++tVe7z21L+Apd9OB6fBgNDepfRV1VilVgLukwBYH4RTNHAeSKOKfxtPnPNb8
-         5UADRP9QUdn9/pBS0oGYqke2livoRSRDnwumZtvrgM5HcSKdOj/3Xz+/lC8tczlS6VXA
-         5uDEnFOClJn6N9MnJTVq/8abN3EIbSbWftB5+4ffWY/+BdSgS9mcRY85tRs54vGfoPn5
-         wVPg==
-X-Gm-Message-State: AOAM532izRl1gpQgzTS8Wmdc/Ydjpk1wmEsoAtDAGrDVmhylVWnxplPK
-        //869m1q6lkA8FZpLv6aI2gIRQRhoNwDcRSATA==
-X-Google-Smtp-Source: ABdhPJyvPB6meL78JmDv9rMOfzr/KbOaz5tX8A1mXzcJwpE4ZMDyo8+1l3v4cHbL8LvZKNUj6/2EOkiZmOIAkYQNiPU=
-X-Received: by 2002:a05:6638:97:: with SMTP id v23mr1785476jao.7.1602725275951;
- Wed, 14 Oct 2020 18:27:55 -0700 (PDT)
+        id S1732219AbgJOB2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:28:46 -0400
+Received: from mail-eopbgr80083.outbound.protection.outlook.com ([40.107.8.83]:50503
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727165AbgJOB2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:28:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hJ1OWoB9vpvvco3BXdCV6bpqQs0L4i7QdhosHtiIvB0UE7Eas8mlPaDkt/jO1I9XkXtVuQ+xVx5s7ChgDG3d9c5+pmovZUpO7DNUczLIbdPICdnQQY9DtZA+h4IV0PztCP6907nc6aN1QGPUlwT2s6GOETpyTeo2JOOopNPjTmJNTHNa0U+xog6DMsZTJz81C0CLAzvjv8Bkfvel3cxkZKXnZ5F2+ykRZvf/Ekhz0+p5bv737zWE30AqozV2nG/H6F8XmsNVNTXuImArynEmW8MiP3WA+7YMdTNsH3+uEDj68N72d9sjxdshpGwwkg5pElFUMsdgioITHXKyAP2aqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=56ELpbfK29barcXOKo9eHiFHg5dgIyQnfxNDhsQWT5I=;
+ b=gL1CHGGgmDq0ivYxw1ZM8p/59YHZS/Un2VFouRQvEDZHWbAZZhoSIZ2F8EI0lx6azAGzFqKJhL4caL/RhUUPddCKWzayQxF9UqYxUrZSYTWlFyIQcGXLh1lJwrYbVRGF24igq8//krDNs3aEqkWHqJ9kDSIflf2Zwj/NVnXep7d5aP2iT/Jn2wReDusiCvtEFgJz4vNmfaMVLRGfdVAN5wSXWxXztsAlVJhdLAvvHU733eLA0aH0K4UMTqEbXFFbFT5rF8YQVXfbSO8BfM11PhcXlTieYMeR51DNhHtTXA/B7FgGwsywJg8lwqz0iZMwda+4AkCblhGJPE6UuZoe1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=56ELpbfK29barcXOKo9eHiFHg5dgIyQnfxNDhsQWT5I=;
+ b=TJ9V6yXACKZEvWzJK8eUjCdHgqlC4dCprxkU4wJpDOZHIvYlPymxvDcz0VITNUpsjuEWGfuEfs0TC0CGDCXwDhyPioYmUV2H4Q8TI5tsqnm2J6zW/5i7w0Gx2QdMIBuPhYgRn7HQU5u+4LpJYe/TRT0a3rxztOWWkbcq8JcQzS4=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4090.eurprd04.prod.outlook.com (2603:10a6:5:28::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Thu, 15 Oct
+ 2020 01:28:41 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::35c5:8c71:91f3:6bc6%12]) with mapi id 15.20.3455.031; Thu, 15 Oct
+ 2020 01:28:41 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 01/13] remoteproc: Re-check state in rproc_shutdown()
+Thread-Topic: [PATCH 01/13] remoteproc: Re-check state in rproc_shutdown()
+Thread-Index: AQHWe8jP8/+8ndV5lUW//Ng5RVV1N6mYLUFw
+Date:   Thu, 15 Oct 2020 01:28:40 +0000
+Message-ID: <DB6PR0402MB2760DB90DA376F4BB2DBB9D888020@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20200826164529.224476-1-mathieu.poirier@linaro.org>
+ <20200826164529.224476-2-mathieu.poirier@linaro.org>
+In-Reply-To: <20200826164529.224476-2-mathieu.poirier@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9f1f220e-cb78-42d5-c183-08d870a9a620
+x-ms-traffictypediagnostic: DB7PR04MB4090:
+x-microsoft-antispam-prvs: <DB7PR04MB4090D5AC07A03269A177609888020@DB7PR04MB4090.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PRKsmw++ELgfZnM9YhBzGpyUzdVa/htAfs+6xQShbGPhdUTsu66/i7bClfXlAHZtY78y1dVycQ8bKvVKx9KMUhl8vzLQPnq/IcCoAC3jYaM5QinjOrqV5QK+rowtXDT4wEuSm0ejX1XnmFwA36iEZxJ+wYsmMfcKtx7xuJQxreLP/TrRy4h3bPlDCLe4eLm23N1nWlqjUYQyHcB8smT79Cf0EufRAAIqI0OU8Gjs4aRkU7Tm+pBpzbYn3SLhYRW66Ds+4LtpJx3h78W+UuRaRT6k3fGT0jMXAP+VR/arnjrpX5JP+22IarduscZMBlpgaUQ4coKFm0WbN+Zb9ix8ug==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(366004)(346002)(376002)(55016002)(9686003)(26005)(478600001)(4326008)(8676002)(2906002)(7696005)(186003)(8936002)(52536014)(44832011)(64756008)(33656002)(4744005)(6506007)(54906003)(316002)(110136005)(66556008)(76116006)(66446008)(66476007)(5660300002)(86362001)(71200400001)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: FecdOnY0GJXkIp6nJKvqkovKUei3FU6wQ3ENJ89qJMQpubGJMgh9p8onssUJIdibEXlwdQIlEag+b/oNz+t4HP6d5zh5ZIL9V0cxhPDz/VI7vViPiNlwtuUfoz2YWID7Or6kAC4689crQuqPLJ/EXFxyYXriK3wkKIbXoTJq+6VdQU1ANxhoPSwj3M9jU7/b7SONiaMCaDvOJWrh8rbKeBzkLGI4UZLziV6Lga7USV+R8DmF6dUeCKIKgp4T/hkIXAlU/p2AEwZYmzJZF4dMUGU4/KH81eFhQX3Qm3euxWPMbCX0oLX5DuBdW91wn3s3HYSjBtnouKi9pJVSYvbg48Mq/ftlZR0JQmb0sUEpvKH7xlQntjODzWqAp1WF+t2ZWAEnstMd9/twm+kfQ1xAjF56Wot0Ns+m5drMOFGtDaFAE9hUiRLVwqIdrPTQg0AZqOUkfcmhbcYBptZ/juwSuLJ15qTBmd3Dimd2Wavb/NWRPSUyjQo6BV0n0suCBY0io0ENnw+5wX3feMwtU505Kd5WdJB0XtcuugEhQTi7Nys2NIGBWlmJgrZ6y2pTKNJVP4Gmpb8mGiOB/hj36WIUDAOLFASJOkTQ+dz2emrtd2z2XkL9yikHNfiVFl/temVGPMtEGHulHtok1Hb1x7HIlg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <1602510644-24536-1-git-send-email-kernelfans@gmail.com> <20201014130223.GF2628@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201014130223.GF2628@hirez.programming.kicks-ass.net>
-From:   Pingfan Liu <kernelfans@gmail.com>
-Date:   Thu, 15 Oct 2020 09:27:44 +0800
-Message-ID: <CAFgQCTvrEdk6WOEpJOX1_Q64PmjvpHq2qrWo_1d_4NBnus+7Fw@mail.gmail.com>
-Subject: Re: [PATCH] sched/cputime: correct account of irqtime
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Allen Pais <allen.lkml@gmail.com>,
-        Romain Perier <romain.perier@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f1f220e-cb78-42d5-c183-08d870a9a620
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 01:28:40.9964
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: a5oOvAO3bRRg0kESrPkSltRAifrdF1h43Fly1Y7zHMMdEPF7+GCRlPfEevsOUZIyWRzam22qgVOWu+66mm2tSQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 9:02 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Oct 12, 2020 at 09:50:44PM +0800, Pingfan Liu wrote:
-> > __do_softirq() may be interrupted by hardware interrupts. In this case,
-> > irqtime_account_irq() will account the time slice as CPUTIME_SOFTIRQ by
-> > mistake.
-> >
-> > By passing irqtime_account_irq() an extra param about either hardirq or
-> > softirq, irqtime_account_irq() can handle the above case.
->
-> I'm not sure I see the scenario in which it goes wrong.
->
-> irqtime_account_irq() is designed such that we're called with the old
-> preempt_count on enter and the new preempt_count on exit. This way we'll
-> accumuate the delta to the previous context.
->
-Oops! You are right, the time delta between a softirq and a
-interrupting hardirq should be accounted into the softrq.
+> Subject: [PATCH 01/13] remoteproc: Re-check state in rproc_shutdown()
+>=20
+> The state of the remote processor may have changed between the time a cal=
+l
+> to rproc_shutdown() was made and the time it is executed.  To avoid movin=
+g
+> forward with an operation that may have been cancelled, recheck while
+> holding the mutex.
+>=20
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/drivers/remoteproc/remoteproc_core.c
+> b/drivers/remoteproc/remoteproc_core.c
+> index 7f90eeea67e2..fb2632cbd2df 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1834,6 +1834,9 @@ void rproc_shutdown(struct rproc *rproc)
+>  		return;
+>  	}
+>=20
+> +	if (rproc->state !=3D RPROC_RUNNING)
+> +		goto out;
+> +
+>  	/* if the remote proc is still needed, bail out */
+>  	if (!atomic_dec_and_test(&rproc->power))
+>  		goto out;
+> --
 
-Thanks for your clear explanation.
-
-Regards,
-Pingfan
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
