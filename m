@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633DD28EFD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAB028EFD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731022AbgJOKFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:05:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46346 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727554AbgJOKFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:05:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C81D4AD6B;
-        Thu, 15 Oct 2020 10:05:12 +0000 (UTC)
-Message-ID: <eb355b9d3167d4c9575fe568d413ed4ff30078bb.camel@suse.de>
-Subject: Re: [PATCH v3 5/8] dma-direct: Turn zone_dma_bits default value
- into a define
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     robh+dt@kernel.org, catalin.marinas@arm.com, ardb@kernel.org,
+        id S1731042AbgJOKFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727554AbgJOKFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:05:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE590C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 03:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dJKybykAdpZHX+hMiVFGUu7Tughqzv0JYMXE+Vz1Rds=; b=B6Y6qc5uYKAMbn3C7uHAt0WtFm
+        Iuty8DRyK53iDecWN+XBIsrT40icgPDUTMiS8boZ+HiCxB8ubw+MXpmSOsLCTnuejM+7XzGXIgn0u
+        JYSvV7I0KBmKw32KE5HXYJEx0heYWPjH5zCVZysE1FSZfgZMrUt8oK1mmLaik0Q1DaPHKt59ChDdK
+        DANj5aGG+/L3Wra2uwqaPpHaX2kNzXrWraA7fyik7AZCVOUhCZvFkSpgPaSpVWJg3te5uFA1Gfoek
+        QbMKaW3zWwVM5fXv9D07l2dyEPuZVd3SJWK9naUDmsF0604VnOf3c5ZAdqu3di9Leowiv75/3e0KL
+        MSAhi+iw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT08S-00078Y-27; Thu, 15 Oct 2020 10:05:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 149B5300DB4;
+        Thu, 15 Oct 2020 12:05:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EEF8920325EC4; Thu, 15 Oct 2020 12:05:22 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 12:05:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org
-Date:   Thu, 15 Oct 2020 12:05:11 +0200
-In-Reply-To: <20201015053808.GA12218@lst.de>
-References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
-         <20201014191211.27029-6-nsaenzjulienne@suse.de>
-         <20201015053808.GA12218@lst.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ooBe/nz7Sn01MZB7Rrs+"
-User-Agent: Evolution 3.36.5 
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Numfor Mbiziwo-Tiapo <nums@google.com>
+Subject: Re: [PATCH 1/2] x86/insn: Fix some potential undefined behavior.
+Message-ID: <20201015100522.GZ2611@hirez.programming.kicks-ass.net>
+References: <20201015062148.1437894-1-irogers@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015062148.1437894-1-irogers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 14, 2020 at 11:21:47PM -0700, Ian Rogers wrote:
+> From: Numfor Mbiziwo-Tiapo <nums@google.com>
+> 
+> If insn_init is given a NULL kaddr and 0 buflen then validate_next will
+> perform arithmetic on NULL, add a guard to avoid this.
 
---=-ooBe/nz7Sn01MZB7Rrs+
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+How is this a problem? NULL is (void *)0, you can do arithmetic on that
+just fine.
 
-On Thu, 2020-10-15 at 07:38 +0200, Christoph Hellwig wrote:
-> On Wed, Oct 14, 2020 at 09:12:07PM +0200, Nicolas Saenz Julienne wrote:
-> > Set zone_dma_bits default value through a define so as for architecture=
-s
-> > to be able to override it with their default value.
->=20
-> Architectures can do that already by assigning a value to zone_dma_bits
-> at runtime.  I really do not want to add the extra clutter.
+Is UBSAN taking drugs again?
 
-I'll remove it then.
+> Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+> these are forms of undefined behavior.
+
+Fair enough; that could actually be a problem when we start to
+cross-build this stuff. A RISC hosted version of the x86 decoder could
+indeed trip this up.
 
 
---=-ooBe/nz7Sn01MZB7Rrs+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+IHtcACgkQlfZmHno8
-x/6RQAf9GxOfgIudy6fJqG6B49H9h6IDJ4zv4+4QQwBXduPrUsL/C3Y0sFDL3fYB
-60lEZWhAHKEvOCXo2nIUPE1mBXJwbMGEvvC6COTHvszK6mGKbtm/2tQF8ZTW3Vq0
-CW/yxdpH3bYmMv+SAHFwhVJlujIqEQztQ8nsULO1vqU0G1+LI+E5u4LRIc352ZXd
-zHi4ICHDOysIlB9I1OqICUDxnhPCUGXgqngrGYb6hrL/D/uiEv1e7kKdKHJU6Frz
-R+8GUJ3FxMx6etC5hdGCmkqontX65U2Tyd3PXbj7pLBPLXo90SZnOh4lxc/rKhgm
-bYh8stzAm1gcJzuYsOxrYy2qj1lWFg==
-=B+5L
------END PGP SIGNATURE-----
-
---=-ooBe/nz7Sn01MZB7Rrs+--
-
+But also, these are two changes in one patch.
