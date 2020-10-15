@@ -2,177 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6372628EDFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313B228EE0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 09:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgJOH4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 03:56:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54985 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729661AbgJOH4a (ORCPT
+        id S1730081AbgJOH7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 03:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730052AbgJOH7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 03:56:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602748588;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=zxiVGY8zmOtT4V/+Mgyln6LglAAn38tuFZjG/0KBPrQ=;
-        b=Ke9+NJY5L54pWOHYji/wFrh7G8gy/d9zbNl5xqhNLNEOUggUt5C4jJILi/UoOi1rC+fsLO
-        LPG39Yl6RLCwuB0sz9vIWMo0XLYIZufRGNRQb1kyVPlyTJTxf4thy+V8YVG8syP/4m05Yl
-        GTPJx7Puf/pNDOuga+iubNftEG27+/w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-L4YEsjwLPP64O8XvRxcIYw-1; Thu, 15 Oct 2020 03:56:26 -0400
-X-MC-Unique: L4YEsjwLPP64O8XvRxcIYw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 051FF9CC08;
-        Thu, 15 Oct 2020 07:56:25 +0000 (UTC)
-Received: from [10.36.114.207] (ovpn-114-207.ams2.redhat.com [10.36.114.207])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6AD931001901;
-        Thu, 15 Oct 2020 07:56:17 +0000 (UTC)
-Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
- mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Michal Privoznik <mprivozn@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Tejun Heo <tj@kernel.org>
-References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
- <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
- <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
- <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
- <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63W5Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAjwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <32ea3107-b1bc-f39e-3cf8-f6ef427235ef@redhat.com>
-Date:   Thu, 15 Oct 2020 09:56:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 15 Oct 2020 03:59:54 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79C0C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 00:59:53 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id k21so3155820ioa.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 00:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3iwCAX5npGCg/zxSeU8NRUPXRIk3oCwTQT9lW7fSAek=;
+        b=fZ9DK/wR5Q8YUrG20w9OUQzsdTlEfyeuToJdEqyFacXEV+lBftlXXjjyjCS6wZQwgc
+         /01SjIDNc3HRCZR4tg5qJk4JRwXrj1G9lNss5cENSApQhRF3wC4xi0uYfZf1fudpG1AO
+         oPJ1f/J6kf3roUEQk65x9Y1TpOfzGc5A1/1OY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3iwCAX5npGCg/zxSeU8NRUPXRIk3oCwTQT9lW7fSAek=;
+        b=IdhsDdq0+gh+negr7FjJ+wjAmRBPmkf2jqKjmSMGLaviTu30fCKy4hUvtfVhwLdFsy
+         lmZHpqAH07qPA4ES3hORoECGEMwgPh8qyLg7l17uHIMRpsiQCYN+dU4ZBWT7vgUgJ0D/
+         +dC0BsgepwPWZXQ8X7uuvf94/vwCGfqi/VIGL99tQe4EKvEcX/hhLByE90S99FY/uf03
+         JqjeouWFC5IgoNRUKhPU+n/KjjygXbdLppF1bPSzQrSmkeCRx+g/lq7Um3Vm0cccE6mx
+         XkwwVGnQHY2pLHRpf2cgCwcH6SrOoMNdESqEo6aMAT/z3awLiLla9o0p9HRiT76AMinD
+         eTtQ==
+X-Gm-Message-State: AOAM530RxTN3YF6TYz3W8pNQ40l3AdzRVMLQ2C2X8bQgUagLA/Qb0n5p
+        xuI391TIJYSNGHRiHCTtShLVE9T4nxuVrF7ASGZMlg==
+X-Google-Smtp-Source: ABdhPJxlbvqYnJWRiXtnH0q6kkDHMhsE5tUaF2RfBz9uwNRW1GQ7jLgiIgRHtQF+Fj5YaIUFSB0mJZezBcOKtKdorcI=
+X-Received: by 2002:a02:b617:: with SMTP id h23mr2508854jam.71.1602748792641;
+ Thu, 15 Oct 2020 00:59:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org> <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+In-Reply-To: <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Thu, 15 Oct 2020 15:59:26 +0800
+Message-ID: <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.10.20 20:31, Mike Kravetz wrote:
-> On 10/14/20 11:18 AM, David Hildenbrand wrote:
->> On 14.10.20 19:56, Mina Almasry wrote:
->>> On Wed, Oct 14, 2020 at 9:15 AM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 14.10.20 17:22, David Hildenbrand wrote:
->>>>> Hi everybody,
->>>>>
->>>>> Michal Privoznik played with "free page reporting" in QEMU/virtio-balloon
->>>>> with hugetlbfs and reported that this results in [1]
->>>>>
->>>>> 1. WARNING: CPU: 13 PID: 2438 at mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
->>>>>
->>>>> 2. Any hugetlbfs allocations failing. (I assume because some accounting is wrong)
->>>>>
->>>>>
->>>>> QEMU with free page hinting uses fallocate(FALLOC_FL_PUNCH_HOLE)
->>>>> to discard pages that are reported as free by a VM. The reporting
->>>>> granularity is in pageblock granularity. So when the guest reports
->>>>> 2M chunks, we fallocate(FALLOC_FL_PUNCH_HOLE) one huge page in QEMU.
->>>>>
->>>>> I was also able to reproduce (also with virtio-mem, which similarly
->>>>> uses fallocate(FALLOC_FL_PUNCH_HOLE)) on latest v5.9
->>>>> (and on v5.7.X from F32).
->>>>>
->>>>> Looks like something with fallocate(FALLOC_FL_PUNCH_HOLE) accounting
->>>>> is broken with cgroups. I did *not* try without cgroups yet.
->>>>>
->>>>> Any ideas?
->>>
->>> Hi David,
->>>
->>> I may be able to dig in and take a look. How do I reproduce this
->>> though? I just fallocate(FALLOC_FL_PUNCH_HOLE) one 2MB page in a
->>> hugetlb region?
->>>
->>
->> Hi Mina,
->>
->> thanks for having a look. I started poking around myself but,
->> being new to cgroup code, I even failed to understand why that code gets
->> triggered though the hugetlb controller isn't even enabled.
->>
->> I assume you at least have to make sure that there is
->> a page populated (MMAP_POPULATE, or read/write it). But I am not
->> sure yet if a single fallocate(FALLOC_FL_PUNCH_HOLE) is
->> sufficient, or if it will require a sequence of
->> populate+discard(punch) (or multi-threading).
-> 
-> FWIW - I ran libhugetlbfs tests which do a bunch of hole punching
-> with (and without) hugetlb controller enabled and did not see this issue.
-> 
-> May need to reproduce via QEMU as below.
+On Tue, Oct 13, 2020 at 6:36 PM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> Hi Cheng,
+>
+> Sorry for such late review w.r.t compatibles,
+>
+Hi Srini,
+Thank you for taking another look!
 
-Not sure if relevant, but QEMU should be using
-memfd_create(MFD_HUGETLB|MFD_HUGE_2MB) to obtain a hugetlbfs file.
+> On 14/09/2020 09:06, Cheng-Yi Chiang wrote:
+> > +---
+> > +$id:http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
+> > +$schema:http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
+> > +
+> > +maintainers:
+> > +  - Rohit kumar<rohitkr@codeaurora.org>
+> > +  - Cheng-Yi Chiang<cychiang@chromium.org>
+> > +
+> > +description:
+> > +  This binding describes the SC7180 sound card which uses LPASS for audio.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: qcom,sc7180-sndcard-rt5682-m98357-1mic
+>
+> This information can come from the dai link description itself, why
+> should compatible string have this information?
 
-Also, QEMU fallocate(FALLOC_FL_PUNCH_HOLE)'s a significant of memory of
-the md (e.g., > 90%).
 
--- 
-Thanks,
+I think dailink description is not enough to specify everything
+machine driver needs to know.
+E.g. there is a variation where there are front mic and rear mic. We
+need to tell the machine driver about it so
+it can create proper widget, route, and controls.
+The codec combination also matters. There will be a variation where
+rt5682 is replaced with adau7002 for dmic.
+Although machine driver can derive some information by looking at dailink,
+I think specifying it explicitly in the compatible string is easier to
+tell what machine driver should do, e.g.
+setting PLL related to rt5682 or not.
 
-David / dhildenb
+>
+> Can't we have better compatible string with actual board name or use the
+> same compatible name as used by other boards?
+>
+>
+> Can you give us some details on the advantages of doing this way?
 
+
+Machine driver can easily tell what is expected when it sees the
+compatible string (or model property, as you suggested below).
+E.g. in 1-mic v.s. 2-mic case, the patch by Ajye Huang:
+
+"[v1,2/2] ASoC: qcom: sc7180: Modify machine driver for 2mic"
+
+You can see widget, route, controls are used according to the configuration.
+The alternative approach is to check whether "dmic-gpio" property
+exists to decide adding these stuff or not.
+But it makes the intent less easier to understand.
+
+
+>
+> Or am I missing something?
+>
+> AFAIU, you should add proper board name / model name to the compatible
+> string rather than describe how its connected. Connection is already
+> part of dai link definition.
+>
+> On the other hand model property can include variant information.
+> This can also be used to set card long name which will help in UCM2.
+>
+>
+> The reason I had to bring this up is because the use-space (ucm in this
+> case) will not be in a position to differentiate between different board
+> variants to select correct mixer controls, so its going to be a pain!
+
+
+I think your suggestions makes sense since we need to consider UCM.
+Having the card with the same name doing different things will be
+confusing to user (and to UCM).
+I'll follow your suggestion to use the same compatible string, and put
+the board variation information in card name using model property.
+Thanks a lot for the great help!
+
+
+>
+>
+>
+> Thanks,
+> srini
