@@ -2,287 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE2D28F0C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F287128F0A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgJOLLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731251AbgJOLK0 (ORCPT
+        id S1728750AbgJOLFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:05:51 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:55499 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgJOLFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:10:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DD6C0613DA
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:10:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=UPhP6jNnoiENPNgu0BUJDKK+cwBkBTVOMPQuNogGnOU=; b=E/u149MgUIhvSJl8j1aimNOylW
-        BBg1HRkeeqIWmqLBTK6uPijfsP9OquWVLdB+6Q0TBdoIfpRIBkVJCFq/Cw5VCfT5CX58u6OYdPfHJ
-        Non7IpOd6iHOFLwzLjfs2rPAa9SxUwsVMqFCwcA2NanDh8oW/aSheChGq/COtBVh90KKSipBvPVUY
-        N5AWRK0HmRnlKDz5AFj8lZGY3XE126TTWOSgdQiQsUf8XzSiScE1SIXgzvwEybAsK+6lIseTJ5CAC
-        QMICO+lbYrU8f84SfmKHRdGPn9g1WhvWpcVpIIDLzX49AgOs2tALE+5SaRoa3rlJNXyjJPdEdflO6
-        tocenuYA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT18d-0002OF-1Y; Thu, 15 Oct 2020 11:09:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 87540300446;
-        Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 6E172235F4445; Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
-Message-ID: <20201015110923.485754414@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 15 Oct 2020 13:05:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
-        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
-        ouwen210@hotmail.com
-Subject: [PATCH v3 03/19] sched/hotplug: Ensure only per-cpu kthreads run during hotplug
-References: <20201015110532.738127234@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Thu, 15 Oct 2020 07:05:51 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 15 Oct 2020 04:05:50 -0700
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 15 Oct 2020 04:05:49 -0700
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 15 Oct 2020 16:35:46 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id 7A8B6522C; Thu, 15 Oct 2020 16:35:45 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        ezequiel@collabora.com, stanimir.varbanov@linaro.org,
+        vgarodia@codeaurora.org, majja@codeaurora.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v2] media: v4l2-ctrl: Add base layer priority id control.
+Date:   Thu, 15 Oct 2020 16:35:35 +0530
+Message-Id: <1602759935-12965-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for migrate_disable(), make sure only per-cpu kthreads
-are allowed to run on !active CPUs.
+This control indicates the priority id to be applied
+to base layer.
 
-This is ran (as one of the very first steps) from the cpu-hotplug
-task which is a per-cpu kthread and completion of the hotplug
-operation only requires such tasks.
-
-This constraint enables the migrate_disable() implementation to wait
-for completion of all migrate_disable regions on this CPU at hotplug
-time without fear of any new ones starting.
-
-This replaces the unlikely(rq->balance_callbacks) test at the tail of
-context_switch with an unlikely(rq->balance_work), the fast path is
-not affected.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 ---
- kernel/sched/core.c  |  114 ++++++++++++++++++++++++++++++++++++++++++++++++++-
- kernel/sched/sched.h |    7 ++-
- 2 files changed, 118 insertions(+), 3 deletions(-)
+ Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 9 +++++++++
+ drivers/media/v4l2-core/v4l2-ctrls.c                      | 1 +
+ include/uapi/linux/v4l2-controls.h                        | 1 +
+ 3 files changed, 11 insertions(+)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3509,8 +3509,10 @@ static inline struct callback_head *spli
- 	struct callback_head *head = rq->balance_callback;
+diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+index 6e9240a..aac1ea3 100644
+--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
++++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+@@ -4407,3 +4407,12 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+        to the LTR index max LTR count-1.
+        This is applicable to H264 and HEVC encoder and can be applied using
+        request api.
++
++``V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITYID (integer)``
++       Specifies a priority identifier for the NAL unit,
++       which will be applied to base layer.
++       By default this value is set to 0 for base layer.
++       And the next layer will have priority ID assigned as 1,2,3 and so on.
++       Video encode can't decide the priority id to be applied to a layer
++       so this has to come from client.
++       Valid Range: from 0 to 63
+diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+index 046198f..c973058 100644
+--- a/drivers/media/v4l2-core/v4l2-ctrls.c
++++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+@@ -952,6 +952,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+ 	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
+ 	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Mark LTR frame index";
+ 	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME:			return "Use LTR Frame";
++	case V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITYID:		return "Base Layer Priority ID";
+ 	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
+ 	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
+ 	case V4L2_CID_MPEG_VIDEO_FWHT_PARAMS:			return "FWHT Stateless Parameters";
+diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+index 3801372..433e119 100644
+--- a/include/uapi/linux/v4l2-controls.h
++++ b/include/uapi/linux/v4l2-controls.h
+@@ -418,6 +418,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+ #define V4L2_CID_MPEG_VIDEO_LTR_COUNT                  (V4L2_CID_MPEG_BASE+230)
+ #define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX            (V4L2_CID_MPEG_BASE+231)
+ #define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAME              (V4L2_CID_MPEG_BASE+232)
++#define V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITYID       (V4L2_CID_MPEG_BASE+233)
  
- 	lockdep_assert_held(&rq->lock);
--	if (head)
-+	if (head) {
- 		rq->balance_callback = NULL;
-+		rq->balance_flags &= ~BALANCE_WORK;
-+	}
- 
- 	return head;
- }
-@@ -3531,6 +3533,21 @@ static inline void balance_callbacks(str
- 	}
- }
- 
-+static void balance_push(struct rq *rq);
-+
-+static inline void balance_switch(struct rq *rq)
-+{
-+	if (likely(!rq->balance_flags))
-+		return;
-+
-+	if (rq->balance_flags & BALANCE_PUSH) {
-+		balance_push(rq);
-+		return;
-+	}
-+
-+	__balance_callbacks(rq);
-+}
-+
- #else
- 
- static inline void __balance_callbacks(struct rq *rq)
-@@ -3546,6 +3563,10 @@ static inline void balance_callbacks(str
- {
- }
- 
-+static inline void balance_switch(struct rq *rq)
-+{
-+}
-+
- #endif
- 
- static inline void
-@@ -3573,7 +3594,7 @@ static inline void finish_lock_switch(st
- 	 * prev into current:
- 	 */
- 	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
--	__balance_callbacks(rq);
-+	balance_switch(rq);
- 	raw_spin_unlock_irq(&rq->lock);
- }
- 
-@@ -6831,6 +6852,90 @@ static void migrate_tasks(struct rq *dea
- 
- 	rq->stop = stop;
- }
-+
-+static int __balance_push_cpu_stop(void *arg)
-+{
-+	struct task_struct *p = arg;
-+	struct rq *rq = this_rq();
-+	struct rq_flags rf;
-+	int cpu;
-+
-+	raw_spin_lock_irq(&p->pi_lock);
-+	rq_lock(rq, &rf);
-+
-+	update_rq_clock(rq);
-+
-+	if (task_rq(p) == rq && task_on_rq_queued(p)) {
-+		cpu = select_fallback_rq(rq->cpu, p);
-+		rq = __migrate_task(rq, &rf, p, cpu);
-+	}
-+
-+	rq_unlock(rq, &rf);
-+	raw_spin_unlock_irq(&p->pi_lock);
-+
-+	put_task_struct(p);
-+
-+	return 0;
-+}
-+
-+static DEFINE_PER_CPU(struct cpu_stop_work, push_work);
-+
-+/*
-+ * Ensure we only run per-cpu kthreads once the CPU goes !active.
-+ */
-+static void balance_push(struct rq *rq)
-+{
-+	struct task_struct *push_task = rq->curr;
-+
-+	lockdep_assert_held(&rq->lock);
-+	SCHED_WARN_ON(rq->cpu != smp_processor_id());
-+
-+	/*
-+	 * Both the cpu-hotplug and stop task are in this case and are
-+	 * required to complete the hotplug process.
-+	 */
-+	if (is_per_cpu_kthread(push_task))
-+		return;
-+
-+	get_task_struct(push_task);
-+	/*
-+	 * Temporarily drop rq->lock such that we can wake-up the stop task.
-+	 * Both preemption and IRQs are still disabled.
-+	 */
-+	raw_spin_unlock(&rq->lock);
-+	stop_one_cpu_nowait(rq->cpu, __balance_push_cpu_stop, push_task,
-+			    this_cpu_ptr(&push_work));
-+	/*
-+	 * At this point need_resched() is true and we'll take the loop in
-+	 * schedule(). The next pick is obviously going to be the stop task
-+	 * which is_per_cpu_kthread() and will push this task away.
-+	 */
-+	raw_spin_lock(&rq->lock);
-+}
-+
-+static void balance_push_set(int cpu, bool on)
-+{
-+	struct rq *rq = cpu_rq(cpu);
-+	struct rq_flags rf;
-+
-+	rq_lock_irqsave(rq, &rf);
-+	if (on)
-+		rq->balance_flags |= BALANCE_PUSH;
-+	else
-+		rq->balance_flags &= ~BALANCE_PUSH;
-+	rq_unlock_irqrestore(rq, &rf);
-+}
-+
-+#else
-+
-+static inline void balance_push(struct rq *rq)
-+{
-+}
-+
-+static inline void balance_push_set(int cpu, bool on)
-+{
-+}
-+
- #endif /* CONFIG_HOTPLUG_CPU */
- 
- void set_rq_online(struct rq *rq)
-@@ -6916,6 +7021,8 @@ int sched_cpu_activate(unsigned int cpu)
- 	struct rq *rq = cpu_rq(cpu);
- 	struct rq_flags rf;
- 
-+	balance_push_set(cpu, false);
-+
- #ifdef CONFIG_SCHED_SMT
- 	/*
- 	 * When going up, increment the number of cores with SMT present.
-@@ -6963,6 +7070,8 @@ int sched_cpu_deactivate(unsigned int cp
- 	 */
- 	synchronize_rcu();
- 
-+	balance_push_set(cpu, true);
-+
- #ifdef CONFIG_SCHED_SMT
- 	/*
- 	 * When going down, decrement the number of cores with SMT present.
-@@ -6976,6 +7085,7 @@ int sched_cpu_deactivate(unsigned int cp
- 
- 	ret = cpuset_cpu_inactive(cpu);
- 	if (ret) {
-+		balance_push_set(cpu, false);
- 		set_cpu_active(cpu, true);
- 		return ret;
- 	}
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -973,6 +973,7 @@ struct rq {
- 	unsigned long		cpu_capacity_orig;
- 
- 	struct callback_head	*balance_callback;
-+	unsigned char		balance_flags;
- 
- 	unsigned char		nohz_idle_balance;
- 	unsigned char		idle_balance;
-@@ -1385,6 +1386,9 @@ init_numa_balancing(unsigned long clone_
- 
- #ifdef CONFIG_SMP
- 
-+#define BALANCE_WORK	0x01
-+#define BALANCE_PUSH	0x02
-+
- static inline void
- queue_balance_callback(struct rq *rq,
- 		       struct callback_head *head,
-@@ -1392,12 +1396,13 @@ queue_balance_callback(struct rq *rq,
- {
- 	lockdep_assert_held(&rq->lock);
- 
--	if (unlikely(head->next))
-+	if (unlikely(head->next || (rq->balance_flags & BALANCE_PUSH)))
- 		return;
- 
- 	head->func = (void (*)(struct callback_head *))func;
- 	head->next = rq->balance_callback;
- 	rq->balance_callback = head;
-+	rq->balance_flags |= BALANCE_WORK;
- }
- 
- #define rcu_dereference_check_sched_domain(p) \
-
+ /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+ #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_MPEG_BASE+270)
+-- 
+1.9.1
 
