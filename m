@@ -2,54 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3A128EF20
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D72128EF2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388728AbgJOJIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S2388776AbgJOJKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgJOJIr (ORCPT
+        with ESMTP id S2388759AbgJOJKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:08:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55856C061755;
-        Thu, 15 Oct 2020 02:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=YDzw0FIaN7/YFvR16XfiWofJuH
-        nBmfIWvm4JMJjj7K9G5HeNS1Z/YDuhO0g0YvmnniYO+A5pRgJH0EQ00QRifWQ7/wFuOK66kQ+CHbl
-        VmHNK4vhJ2UeayscpW4LECX05RTGJY5IkFz+pz9nwSFIXfkyRPCrxcfeeKjpEbU9zcegEqPcECjRP
-        HqUXdlzRteT43Md67LRNqe+y+f4ibfLBMdmYo4nA2bw2pBrFMiIY+xhWHorLEVmlUHpngejo++Dr8
-        NFbDLjJ1gIQ7zhvChfWzoMnUsQjy8srPiPNP/XClAfLq47c8PtZaWykDYnT5T0gMHL7PfYb7kzf6Y
-        qzk2bIBA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSzFd-0003sL-RM; Thu, 15 Oct 2020 09:08:45 +0000
-Date:   Thu, 15 Oct 2020 10:08:45 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v2 15/16] iomap: Inline iomap_iop_set_range_uptodate into
- its one caller
-Message-ID: <20201015090845.GD12879@infradead.org>
-References: <20201009143104.22673-1-willy@infradead.org>
- <20201009143104.22673-16-willy@infradead.org>
+        Thu, 15 Oct 2020 05:10:04 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4072FC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 02:10:04 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kSzGP-0000hj-Sr; Thu, 15 Oct 2020 11:09:33 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kSzGP-0001ck-5K; Thu, 15 Oct 2020 11:09:33 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v2 0/3] mainline LANMCU board 
+Date:   Thu, 15 Oct 2020 11:09:21 +0200
+Message-Id: <20201015090924.6185-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009143104.22673-16-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,
+changes v2:
+- add phy-handle
+- rename node to touchscreen@38
+- reorder reg and status properties  
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Oleksij Rempel (3):
+  dt-bindings: vendor-prefixes: Add an entry for Van der Laan b.v.
+  dt-bindings: arm: fsl: add Van der Laan LANMCU board
+  ARM: dts: add Van der Laan LANMCU board
+
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/imx6dl-lanmcu.dts           | 469 ++++++++++++++++++
+ 4 files changed, 473 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-lanmcu.dts
+
+-- 
+2.28.0
+
