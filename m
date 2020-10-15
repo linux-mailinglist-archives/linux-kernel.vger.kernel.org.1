@@ -2,51 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817F628FB18
+	by mail.lfdr.de (Postfix) with ESMTP id EFF3B28FB19
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731815AbgJOWTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:19:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55204 "EHLO mail.kernel.org"
+        id S1731830AbgJOWTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:19:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731784AbgJOWTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731783AbgJOWTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Oct 2020 18:19:30 -0400
-Subject: Re: [GIT PULL] Kselftest next update for Linux 5.10-rc1
+Subject: Re: [GIT PULL] trivial for 5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1602800369;
-        bh=7Hs2/c0SuTxv8FWOInF6Cyfz9wWihCf+MKtfTXYrqFM=;
+        bh=mtLB4P10ZwWV0pleLcR2SLjAUcytl2ykfEmLYayzENE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=RzgEgY1UsqLS3iXV1MELy/u5/omJbBTRidMkp7tgShxCOydF94imD8mWVFGoI8Iez
-         AjFgtZLt5Qz8YL5arUn5Vd98MBvVtvxsJc78yuJu3wKJOn5L29RI6hLPrDq4+S0r2J
-         MCqZK5UFULK+hc9vz1UiqloyJPkOPAMWSgFkROGc=
+        b=A42fq4h0MdjtiqOmFQRrXiddMkb2zOwEbV/gND6u7btQ+KiSPz3BIYIUiQWZkaZub
+         5t1yh1VnNBJCSNYYen2d7wxbTMiY/+AxsGebeuqGFauRYl/pTPnoE0Rk9lUKDiVR8z
+         z7/h+VodsGnugXoszoxWgRRvsL/cCmHT0OddzKpg=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <e91227aa-4f7d-7a45-0b40-c6bbc72ea67f@linuxfoundation.org>
-References: <e91227aa-4f7d-7a45-0b40-c6bbc72ea67f@linuxfoundation.org>
+In-Reply-To: <nycvar.YFH.7.76.2010152055050.18859@cbobk.fhfr.pm>
+References: <nycvar.YFH.7.76.2010152055050.18859@cbobk.fhfr.pm>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <e91227aa-4f7d-7a45-0b40-c6bbc72ea67f@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.10-rc1
-X-PR-Tracked-Commit-Id: 4c8511317b4ec75cc3868f80a7b9fddb8322e512
+X-PR-Tracked-Message-Id: <nycvar.YFH.7.76.2010152055050.18859@cbobk.fhfr.pm>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial.git for-linus
+X-PR-Tracked-Commit-Id: 2a9b29b289833e42e13fdfb7e082499c1464f25c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0674324b16d40e14b9d8ea2d667627c010608c28
-Message-Id: <160280036978.16623.14806471272884269061.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: bbf625990371782370f6eacb3155dc1fe131ddfc
+Message-Id: <160280036949.16623.5973538217972035960.pr-tracker-bot@kernel.org>
 Date:   Thu, 15 Oct 2020 22:19:29 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
+To:     Jiri Kosina <jikos@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 15 Oct 2020 13:55:07 -0600:
+The pull request you sent on Thu, 15 Oct 2020 20:56:41 +0200 (CEST):
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.10-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/jikos/trivial.git for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0674324b16d40e14b9d8ea2d667627c010608c28
+https://git.kernel.org/torvalds/c/bbf625990371782370f6eacb3155dc1fe131ddfc
 
 Thank you!
 
