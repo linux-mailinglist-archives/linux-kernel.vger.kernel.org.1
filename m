@@ -2,179 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2690D28EF3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D2828EF48
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730659AbgJOJQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:16:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60660 "EHLO mx2.suse.de"
+        id S1730602AbgJOJSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:18:04 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:43814 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730587AbgJOJQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:16:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1FF6AAC97;
-        Thu, 15 Oct 2020 09:16:04 +0000 (UTC)
-Message-ID: <607e809796bc57ee649390824c4ab2bb767b00ba.camel@suse.de>
-Subject: Re: [PATCH v3 3/8] of/address: Introduce
- of_dma_get_max_cpu_address()
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Date:   Thu, 15 Oct 2020 11:16:02 +0200
-In-Reply-To: <CAMj1kXFnLEpNTZVq16YgBomkZwwdGsH89OSELsYeiee4P+GLPg@mail.gmail.com>
-References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
-         <20201014191211.27029-4-nsaenzjulienne@suse.de>
-         <CAL_JsqKMGSCTmKF2Lt8GQFx0DVFFH1bLVBw=bRDM7upahGvKDQ@mail.gmail.com>
-         <CAMj1kXFnLEpNTZVq16YgBomkZwwdGsH89OSELsYeiee4P+GLPg@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-sQ2v3OKZpIeLs71fPeU6"
-User-Agent: Evolution 3.36.5 
+        id S1729296AbgJOJSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 05:18:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602753482; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=iog80H5kgzzCUzTz3Y3JE52VmzSpGS6n8ZielLfUYZM=;
+ b=qebK3yS4UPO+3hZdzaly41kL4QGgVQgSt+8eT87xDPc9cOr7LBQJxEyrLDsRFbdPyisqdE/6
+ y4gS9/MfI0mOSlgmoXWax7syLC0oEf+oa+vTc/oVKlVYCGxO1vzt2BOMvAN1dKzHOSU/7X+L
+ OWjQmC4oYB9CNTpseEGNwPvL4h0=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f8813c957b88ccb565517b3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Oct 2020 09:18:01
+ GMT
+Sender: mkrishn=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 90AEDC43385; Thu, 15 Oct 2020 09:18:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkrishn)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D71AC433C9;
+        Thu, 15 Oct 2020 09:18:00 +0000 (UTC)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 15 Oct 2020 14:48:00 +0530
+From:   mkrishn@codeaurora.org
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [v1] drm/msm: Fix race condition in msm driver with async layer
+ updates
+In-Reply-To: <CAF6AEGtQEbGVQdNPSaHy41gqsiLV19X8kxMVCRUy8y1SzjTZGw@mail.gmail.com>
+References: <1602680296-8965-1-git-send-email-mkrishn@codeaurora.org>
+ <CAF6AEGtQEbGVQdNPSaHy41gqsiLV19X8kxMVCRUy8y1SzjTZGw@mail.gmail.com>
+Message-ID: <dda1ec958f188216b067fd40a36eb41d@codeaurora.org>
+X-Sender: mkrishn@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-14 20:55, Rob Clark wrote:
+> On Wed, Oct 14, 2020 at 5:58 AM Krishna Manikandan
+> <mkrishn@codeaurora.org> wrote:
+>> 
+>> When there are back to back commits with async cursor update,
+>> there is a case where second commit can program the DPU hw
+>> blocks while first didn't complete flushing config to HW.
+>> 
+>> Synchronize the compositions such that second commit waits
+>> until first commit flushes the composition.
+>> 
+>> This change also introduces per crtc commit lock, such that
+>> commits on different crtcs are not blocked by each other.
+>> 
+>> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+>> ---
+>>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c |  1 +
+>>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h |  1 +
+>>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  | 26 
+>> ++++++++++++++++++++++++
+>>  drivers/gpu/drm/msm/msm_atomic.c         | 35 
+>> ++++++++++++++++++++++----------
+>>  drivers/gpu/drm/msm/msm_kms.h            |  5 +++++
+>>  5 files changed, 57 insertions(+), 11 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+>> index c2729f7..9024719 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+>> @@ -1383,6 +1383,7 @@ struct drm_crtc *dpu_crtc_init(struct drm_device 
+>> *dev, struct drm_plane *plane,
+>> 
+>>         /* initialize event handling */
+>>         spin_lock_init(&dpu_crtc->event_lock);
+>> +       mutex_init(&dpu_crtc->commit_lock);
+>> 
+>>         DPU_DEBUG("%s: successfully initialized crtc\n", 
+>> dpu_crtc->name);
+>>         return crtc;
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
+>> index cec3474..1eeb73d 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.h
+>> @@ -169,6 +169,7 @@ struct dpu_crtc {
+>> 
+>>         /* for handling internal event thread */
+>>         spinlock_t event_lock;
+>> +       struct mutex commit_lock;
+>> 
+>>         struct dpu_core_perf_params cur_perf;
+>> 
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> index c0a4d4e..f99ae7a 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+>> @@ -445,6 +445,30 @@ static void dpu_kms_wait_flush(struct msm_kms 
+>> *kms, unsigned crtc_mask)
+>>                 dpu_kms_wait_for_commit_done(kms, crtc);
+>>  }
+>> 
+>> +static void dpu_kms_commit_lock(struct msm_kms *kms, unsigned int 
+>> crtc_mask)
+>> +{
+>> +       struct dpu_kms *dpu_kms = to_dpu_kms(kms);
+>> +       struct drm_crtc *crtc;
+>> +       struct dpu_crtc *dpu_crtc;
+>> +
+>> +       for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask) {
+>> +               dpu_crtc = to_dpu_crtc(crtc);
+>> +               mutex_lock(&dpu_crtc->commit_lock);
+>> +       }
+>> +}
+>> +
+>> +static void dpu_kms_commit_unlock(struct msm_kms *kms, unsigned int 
+>> crtc_mask)
+>> +{
+>> +       struct dpu_kms *dpu_kms = to_dpu_kms(kms);
+>> +       struct drm_crtc *crtc;
+>> +       struct dpu_crtc *dpu_crtc;
+>> +
+>> +       for_each_crtc_mask(dpu_kms->dev, crtc, crtc_mask) {
+>> +               dpu_crtc = to_dpu_crtc(crtc);
+>> +               mutex_unlock(&dpu_crtc->commit_lock);
+>> +       }
+>> +}
+>> +
+>>  static int _dpu_kms_initialize_dsi(struct drm_device *dev,
+>>                                     struct msm_drm_private *priv,
+>>                                     struct dpu_kms *dpu_kms)
+>> @@ -738,6 +762,8 @@ static const struct msm_kms_funcs kms_funcs = {
+>>  #ifdef CONFIG_DEBUG_FS
+>>         .debugfs_init    = dpu_kms_debugfs_init,
+>>  #endif
+>> +       .commit_lock     = dpu_kms_commit_lock,
+>> +       .commit_unlock   = dpu_kms_commit_unlock,
+>>  };
+>> 
+>>  static void _dpu_kms_mmu_destroy(struct dpu_kms *dpu_kms)
+>> diff --git a/drivers/gpu/drm/msm/msm_atomic.c 
+>> b/drivers/gpu/drm/msm/msm_atomic.c
+>> index 561bfa4..d33253f 100644
+>> --- a/drivers/gpu/drm/msm/msm_atomic.c
+>> +++ b/drivers/gpu/drm/msm/msm_atomic.c
+>> @@ -55,16 +55,32 @@ static void vblank_put(struct msm_kms *kms, 
+>> unsigned crtc_mask)
+>>         }
+>>  }
+>> 
+>> +static void msm_commit_lock(struct msm_kms *kms, unsigned int 
+>> crtc_mask)
+>> +{
+>> +       if (kms->funcs->commit_lock)
+>> +               kms->funcs->commit_lock(kms, crtc_mask);
+>> +       else
+>> +               mutex_lock(&kms->commit_lock);
+>> +}
+>> +
+>> +static void msm_commit_unlock(struct msm_kms *kms, unsigned int 
+>> crtc_mask)
+>> +{
+>> +       if (kms->funcs->commit_unlock)
+>> +               kms->funcs->commit_unlock(kms, crtc_mask);
+>> +       else
+>> +               mutex_unlock(&kms->commit_lock);
+>> +}
+> 
+> Hi, I think the per-crtc commit-lock, and the updated
+> locking/unlocking points are the right thing to do, but I don't think
+> we need to touch dpu for this.  Just change kms->commit_lock to an
+> array of mutexes, and drop the vfunc indirection.  All the same
+> locking logic applies to mdp4/mdp5 as well (ie. don't touch the hw
+> until it has flushed)
+> 
+> BR,
+> -R
+> 
 
---=-sQ2v3OKZpIeLs71fPeU6
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2020-10-15 at 08:56 +0200, Ard Biesheuvel wrote:
-> On Thu, 15 Oct 2020 at 00:03, Rob Herring <robh+dt@kernel.org> wrote:
-> > On Wed, Oct 14, 2020 at 2:12 PM Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
-> > > Introduce of_dma_get_max_cpu_address(), which provides the highest CP=
-U
-> > > physical address addressable by all DMA masters in the system. It's
-> > > specially useful for setting memory zones sizes at early boot time.
-> > >=20
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > >=20
-> > > ---
-> > >=20
-> > > Changes since v2:
-> > >  - Use PHYS_ADDR_MAX
-> > >  - return phys_dma_t
-> > >  - Rename function
-> > >  - Correct subject
-> > >  - Add support to start parsing from an arbitrary device node in orde=
-r
-> > >    for the function to work with unit tests
-> > >=20
-> > >  drivers/of/address.c | 42 ++++++++++++++++++++++++++++++++++++++++++
-> > >  include/linux/of.h   |  7 +++++++
-> > >  2 files changed, 49 insertions(+)
-> > >=20
-> > > diff --git a/drivers/of/address.c b/drivers/of/address.c
-> > > index eb9ab4f1e80b..b5a9695aaf82 100644
-> > > --- a/drivers/of/address.c
-> > > +++ b/drivers/of/address.c
-> > > @@ -1024,6 +1024,48 @@ int of_dma_get_range(struct device_node *np, c=
-onst struct bus_dma_region **map)
-> > >  }
-> > >  #endif /* CONFIG_HAS_DMA */
-> > >=20
-> > > +/**
-> > > + * of_dma_get_max_cpu_address - Gets highest CPU address suitable fo=
-r DMA
-> > > + * @np: The node to start searching from or NULL to start from the r=
-oot
-> > > + *
-> > > + * Gets the highest CPU physical address that is addressable by all =
-DMA masters
-> > > + * in the system (or subtree when np is non-NULL). If no DMA constra=
-ined device
-> > > + * is found, it returns PHYS_ADDR_MAX.
-> > > + */
-> > > +phys_addr_t __init of_dma_get_max_cpu_address(struct device_node *np=
-)
-> > > +{
-> > > +       phys_addr_t max_cpu_addr =3D PHYS_ADDR_MAX;
-> >=20
-> > One issue with using phys_addr_t is it may be 32-bit even though the
-> > DT is 64-bit addresses. LPAE capable system with LPAE disabled. Maybe
-> > the truncation is fine here? Maybe not.
-> >=20
->=20
-> PHYS_ADDR_MAX is the max addressable CPU address on the system, and so
-> it makes sense to use it for the return type, and for the preliminary
-> return value: this is actually what /prevents/ truncation, because we
-> will only overwrite max_cpu_addr if the new u64 value is lower.
->=20
-
-Actually I now see how things might go south.
-
-> > > +       if (ranges && len) {
-> > > +               of_dma_range_parser_init(&parser, np);
-> > > +               for_each_of_range(&parser, &range)
-> > > +                       if (range.cpu_addr + range.size > cpu_end)
-> > > +                               cpu_end =3D range.cpu_addr + range.si=
-ze;
-
-If cpu_end hits 0x1_00000000, it'll overflow to 0. This is possible on 32-b=
-it
-systems (LPAE or not). And something similar might happen on LPAE disabled
-systems.
-
-I could add some extra logic, something like:
-
-	/* We overflowed */
-	if (cpu_end < range.cpu_addr)
-		cpu_end =3D PHYS_ADDR_MAX;
-
-Which is not perfect but will cover most sensible cases.
-
-Or simply deal internally in u64s, and upon returning, check if "max_cpu_ad=
-dr"
-falls higher than PHYS_ADDR_MAX.
-
-> > > +
-> > > +               if (max_cpu_addr > cpu_end)
-> > > +                       max_cpu_addr =3D cpu_end;
-> > > +       }
-> > > +
-> > > +       for_each_available_child_of_node(np, child) {
-> > > +               subtree_max_addr =3D of_dma_get_max_cpu_address(child=
-);
-> > > +               if (max_cpu_addr > subtree_max_addr)
-> > > +                       max_cpu_addr =3D subtree_max_addr;
-> > > +       }
-> > > +
-> > > +       return max_cpu_addr;
-> > > +}
+Thanks for the comments Rob. I have addressed them in v2 patch.
 
 Regards,
-Nicolas
-
-
---=-sQ2v3OKZpIeLs71fPeU6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+IE1IACgkQlfZmHno8
-x/48cAf/f4EAh2ApzAtvkP3faJslUt27+oT3TMeyHfRGhMr3i4A+86Y9VRAHTnf6
-D8Cv30Frgv5i6wg3cTNmZKcjNF5fF6VV+qChZnKZjv+v2F8PDTr169C/c6hRINWD
-JgANJ6T7JV6okI5WkEJHD/j9YFtdvBFltt6NqXmds6VewS6mOLVXRxj+N9qP+V5P
-caGCEU9eJt9sqRRwL37RX80slzlHggLsjc4RigF61x/TDzjztg8UdFocYuUTvJCW
-bfYgyhq40knvU84wyiCvNhOVSKIVgtYXNf5usrKV/mm886P76nUx1LBek4X0aMKq
-9w/J+VYneK8lMET/YF6FKVHt/y5TcQ==
-=V7Cs
------END PGP SIGNATURE-----
-
---=-sQ2v3OKZpIeLs71fPeU6--
-
+Krishna
+>> +
+>>  static void msm_atomic_async_commit(struct msm_kms *kms, int 
+>> crtc_idx)
+>>  {
+>>         unsigned crtc_mask = BIT(crtc_idx);
+>> 
+>>         trace_msm_atomic_async_commit_start(crtc_mask);
+>> 
+>> -       mutex_lock(&kms->commit_lock);
+>> +       msm_commit_lock(kms, crtc_mask);
+>> 
+>>         if (!(kms->pending_crtc_mask & crtc_mask)) {
+>> -               mutex_unlock(&kms->commit_lock);
+>> +               msm_commit_unlock(kms, crtc_mask);
+>>                 goto out;
+>>         }
+>> 
+>> @@ -79,7 +95,6 @@ static void msm_atomic_async_commit(struct msm_kms 
+>> *kms, int crtc_idx)
+>>          */
+>>         trace_msm_atomic_flush_commit(crtc_mask);
+>>         kms->funcs->flush_commit(kms, crtc_mask);
+>> -       mutex_unlock(&kms->commit_lock);
+>> 
+>>         /*
+>>          * Wait for flush to complete:
+>> @@ -90,9 +105,8 @@ static void msm_atomic_async_commit(struct msm_kms 
+>> *kms, int crtc_idx)
+>> 
+>>         vblank_put(kms, crtc_mask);
+>> 
+>> -       mutex_lock(&kms->commit_lock);
+>>         kms->funcs->complete_commit(kms, crtc_mask);
+>> -       mutex_unlock(&kms->commit_lock);
+>> +       msm_commit_unlock(kms, crtc_mask);
+>>         kms->funcs->disable_commit(kms);
+>> 
+>>  out:
+>> @@ -189,12 +203,11 @@ void msm_atomic_commit_tail(struct 
+>> drm_atomic_state *state)
+>>          * Ensure any previous (potentially async) commit has
+>>          * completed:
+>>          */
+>> +       msm_commit_lock(kms, crtc_mask);
+>>         trace_msm_atomic_wait_flush_start(crtc_mask);
+>>         kms->funcs->wait_flush(kms, crtc_mask);
+>>         trace_msm_atomic_wait_flush_finish(crtc_mask);
+>> 
+>> -       mutex_lock(&kms->commit_lock);
+>> -
+>>         /*
+>>          * Now that there is no in-progress flush, prepare the
+>>          * current update:
+>> @@ -232,7 +245,7 @@ void msm_atomic_commit_tail(struct 
+>> drm_atomic_state *state)
+>>                 }
+>> 
+>>                 kms->funcs->disable_commit(kms);
+>> -               mutex_unlock(&kms->commit_lock);
+>> +               msm_commit_unlock(kms, crtc_mask);
+>> 
+>>                 /*
+>>                  * At this point, from drm core's perspective, we
+>> @@ -260,7 +273,7 @@ void msm_atomic_commit_tail(struct 
+>> drm_atomic_state *state)
+>>          */
+>>         trace_msm_atomic_flush_commit(crtc_mask);
+>>         kms->funcs->flush_commit(kms, crtc_mask);
+>> -       mutex_unlock(&kms->commit_lock);
+>> +       msm_commit_unlock(kms, crtc_mask);
+>> 
+>>         /*
+>>          * Wait for flush to complete:
+>> @@ -271,9 +284,9 @@ void msm_atomic_commit_tail(struct 
+>> drm_atomic_state *state)
+>> 
+>>         vblank_put(kms, crtc_mask);
+>> 
+>> -       mutex_lock(&kms->commit_lock);
+>> +       msm_commit_lock(kms, crtc_mask);
+>>         kms->funcs->complete_commit(kms, crtc_mask);
+>> -       mutex_unlock(&kms->commit_lock);
+>> +       msm_commit_unlock(kms, crtc_mask);
+>>         kms->funcs->disable_commit(kms);
+>> 
+>>         drm_atomic_helper_commit_hw_done(state);
+>> diff --git a/drivers/gpu/drm/msm/msm_kms.h 
+>> b/drivers/gpu/drm/msm/msm_kms.h
+>> index 1cbef6b..f02e73e 100644
+>> --- a/drivers/gpu/drm/msm/msm_kms.h
+>> +++ b/drivers/gpu/drm/msm/msm_kms.h
+>> @@ -126,6 +126,11 @@ struct msm_kms_funcs {
+>>         /* debugfs: */
+>>         int (*debugfs_init)(struct msm_kms *kms, struct drm_minor 
+>> *minor);
+>>  #endif
+>> +       /* commit lock for crtc */
+>> +       void (*commit_lock)(struct msm_kms *kms, unsigned int 
+>> crtc_mask);
+>> +
+>> +       /* commit unlock for crtc */
+>> +       void (*commit_unlock)(struct msm_kms *kms, unsigned int 
+>> crtc_mask);
+>>  };
+>> 
+>>  struct msm_kms;
+>> --
+>> 2.7.4
+>> 
