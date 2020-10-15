@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF3928F179
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2ECD28F18B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbgJOLn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:43:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48372 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727923AbgJOLn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:43:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52F4EABBE;
-        Thu, 15 Oct 2020 11:43:56 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     gregkh@linuxfoundation.org, rafael.j.wysocki@intel.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     f.fainelli@gmail.com, linux-rpi-kernel@lists.infradead.org,
-        saravanak@google.com, u.kleine-koenig@pengutronix.de,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] of/platform: Create device link between simple-mfd and its children
-Date:   Thu, 15 Oct 2020 13:43:46 +0200
-Message-Id: <20201015114346.15743-1-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.28.0
+        id S1729745AbgJOLzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726583AbgJOLtx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 07:49:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 703C7C061755;
+        Thu, 15 Oct 2020 04:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XLRuihqm3fAlHyAROY0lvBAgKqxOu9ggAgyL2LNoHgw=; b=VixR6nbubUCnsr4ZO2wy9wuxCn
+        lduZ4bu+AY2nVEOKTBe3JvtWf0PlYzWVbpiellQE6WWeKJ46G0qRMjoBJK9Zqxld+20RhqXCyTXW8
+        iIJ7jl6BzmDlIQEHhkYHBhTOphSFccJhtJ7PpwARQc60tLRYyOXI9J4I06bLQgXnncAM+vpCMN1TW
+        moWLhI0VJd33AOfpSmp24xN24NWqTOcT4f7uyXVJtcRgmtAdi8WW/5Tj8q5TbdPOmTEfJAcHjHHpN
+        vx2Me/S+s+qLI0dsDRm2ZiSRjkSNyE2miUVgJCU5cSIyqF0lNfp5SeuzMdGwwLIvbsLqhY94JNLFJ
+        JtXRqa5w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT1lV-0004fH-KR; Thu, 15 Oct 2020 11:49:49 +0000
+Date:   Thu, 15 Oct 2020 12:49:49 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/16] Allow readpage to return a locked page
+Message-ID: <20201015114949.GY20115@casper.infradead.org>
+References: <20201009143104.22673-1-willy@infradead.org>
+ <20201015090242.GA12879@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015090242.GA12879@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'simple-mfd' usage implies there might be some kind of resource sharing
-between the parent device and its children. By creating a device link
-with DL_FLAG_AUTOREMOVE_CONSUMER we make sure that at no point in time
-the parent device is unbound while leaving its children unaware that
-some of their resources disappeared.
+On Thu, Oct 15, 2020 at 10:02:42AM +0100, Christoph Hellwig wrote:
+> On Fri, Oct 09, 2020 at 03:30:48PM +0100, Matthew Wilcox (Oracle) wrote:
+> > Ideally all filesystems would return from ->readpage with the page
+> > Uptodate and Locked, but it's a bit painful to convert all the
+> > asynchronous readpage implementations to synchronous.  The first 14
+> > filesystems converted are already synchronous.  The last two patches
+> > convert iomap to synchronous readpage.
+> 
+> Is it really that bad?  It seems like a lot of the remainig file systems
+> use the generic mpage/buffer/nobh helpers.
+> 
+> But I guess this series is a good first step.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+I'm just testing a patch to mpage_readpage():
 
----
-
-Some questions:
-
-- To what extent do we care about cleanly unbinding platform devices at
-  runtime? My rationale here is: "It's a platform device, for all you
-  know you might be unbinding someting essential to the system. So if
-  you're doing it, you better know what you're doing."
-
-- Would this be an abuse of device links?
-
-- If applying this to all simple-mfd devices is a bit too much, would
-  this be acceptable for a specific device setup. For example RPi4's
-  firmware interface (simple-mfd user) is passed to consumer drivers
-  trough a custom API (see rpi_firmware_get()). So, when unbound,
-  consumers are left with a firmware handle that points to nothing.
-
- drivers/of/platform.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index b557a0fcd4ba..8d5b55b81764 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -390,8 +390,14 @@ static int of_platform_bus_create(struct device_node *bus,
- 	}
++++ b/fs/mpage.c
+@@ -406,11 +406,17 @@ int mpage_readpage(struct page *page, get_block_t get_block)
+                .nr_pages = 1,
+                .get_block = get_block,
+        };
++       int err;
  
- 	dev = of_platform_device_create_pdata(bus, bus_id, platform_data, parent);
--	if (!dev || !of_match_node(matches, bus))
--		return 0;
-+	if (!dev)
-+	       return 0;
-+
-+	if (parent && of_device_is_compatible(parent->of_node, "simple-mfd"))
-+	       device_link_add(&dev->dev, parent, DL_FLAG_AUTOREMOVE_CONSUMER);
-+
-+	if (!of_match_node(matches, bus))
-+	       return 0;
+        args.bio = do_mpage_readpage(&args);
+-       if (args.bio)
+-               mpage_bio_submit(REQ_OP_READ, 0, args.bio);
+-       return 0;
++       if (!args.bio)
++               return 0;
++       bio_set_op_attrs(args.bio, REQ_OP_READ, 0);
++       guard_bio_eod(args.bio);
++       err = submit_bio_wait(args.bio);
++       if (!err)
++               err = AOP_UPDATED_PAGE;
++       return err;
+ }
+ EXPORT_SYMBOL(mpage_readpage);
  
- 	for_each_child_of_node(bus, child) {
- 		pr_debug("   create child: %pOF\n", child);
--- 
-2.28.0
 
+but I'm not looking forward to block_read_full_page().
