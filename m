@@ -2,341 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1508B28F7CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58EE28F7C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731418AbgJORuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731310AbgJORuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:50:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0033C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 10:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=czYagtGSHmNwaWLLRuShjGY+XMb6ror0u4Ss+K7L9v8=; b=HuG1jJACIbB24KxRXnZwhl0pLb
-        ud9OeMhcUNTOjjDmzWcI9qv/5iuoARkpks0okru4PTc+utHZ9TKwK4yAgIFrmgVdkZhFXk04/23EY
-        MIh1imBcrCGUiTr2PxM5Rk99+TUOXv4IOOsGtXxf+6nR1kLPaABVwwlTzQAk3AMtGA0mCp0swZvAp
-        7WgD6lwL9KDU/VNQCfwm7xijjWHAv6sstTBUeFn2DLjCvdlqP2Z4BW3FYbZGuk4tDR8Xq9sCpxlO2
-        /sJ+meSMm7JrVkv7FX2LU8ZzWQE+oiCRVQThtfCqOcD9niiFDQiHSdVTv6YzJHJ5Tim+N0c2UI3Pf
-        5NeCjnFg==;
-Received: from 213-225-9-134.nat.highway.a1.net ([213.225.9.134] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT7O0-0000dJ-JQ; Thu, 15 Oct 2020 17:49:57 +0000
-Date:   Thu, 15 Oct 2020 19:47:43 +0200
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [GIT PULL] dma-mapping updates for 5.10
-Message-ID: <20201015174743.GA2648490@infradead.org>
+        id S1731339AbgJORr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 13:47:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32994 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727075AbgJORr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 13:47:26 -0400
+IronPort-SDR: igmKU7yu0+izzJKoDjQp/H2C/N8FsP369G8ePpY/xY8Ve7LzOAfsFdzhrCcRbcKdRIvcJPRnjz
+ JYnHbN47ur0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="230613597"
+X-IronPort-AV: E=Sophos;i="5.77,379,1596524400"; 
+   d="scan'208";a="230613597"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 10:47:25 -0700
+IronPort-SDR: uj7jgB5lvFEh0uZigekgd0cyAEwHYHRAu6g3y4YTb3ilDNYILx9xY9e8dOdFWCL2V/97kv346+
+ CcHtSY00NZKA==
+X-IronPort-AV: E=Sophos;i="5.77,379,1596524400"; 
+   d="scan'208";a="314597964"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 10:47:21 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kT7MV-007boE-5R; Thu, 15 Oct 2020 20:48:23 +0300
+Date:   Thu, 15 Oct 2020 20:48:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
+        elver@google.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        gregkh@linuxfoundation.org, tglx@linutronix.de,
+        geert@linux-m68k.org, paul.gortmaker@windriver.com,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        arnd@arndb.de, elfring@users.sourceforge.net, mhocko@suse.com
+Subject: Re: [PATCH v2] lib: kunit: add list_sort test conversion to KUnit
+Message-ID: <20201015174823.GY4077@smile.fi.intel.com>
+References: <20201015014616.309000-1-vitor@massaru.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201015014616.309000-1-vitor@massaru.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Oct 14, 2020 at 10:46:16PM -0300, Vitor Massaru Iha wrote:
+> This adds the conversion of the runtime tests of test_list_sort,
+> from `lib/test_list_sort.c` to KUnit tests.
 
-please pull the dma-mapping update for 5.10.  It contains a (clean) merge
-of a later 5.9-rc commit, as I had to pull in a media subsystem revert
-that is required for later commits.
+>  rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
 
-There are a few trivial contextual conflicts due to the dma-mapping.h
-split, for those simple keep both sides, that is the new headers added
-by other trees as well as the ones added here, or the entire file
-deletions in case of the arm tree.
+One more thing. The documentation [1] doesn't specify any name conventions.
+So, please leave file name untouched.
+
+[1]: https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-The following changes since commit 171d4ff79f965c1f164705ef0aaea102a6ad238b:
-
-  Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc (2020-09-24 09:09:47 -0700)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.10
-
-for you to fetch changes up to 2a410d09417b5344ab1f3cf001ac73a1daf8dcce:
-
-  ARM/ixp4xx: add a missing include of dma-map-ops.h (2020-10-13 13:28:22 +0200)
-
-----------------------------------------------------------------
-dma-mapping updates for 5.10
-
- - rework the non-coherent DMA allocator
- - move private definitions out of <linux/dma-mapping.h>
- - lower CMA_ALIGNMENT (Paul Cercueil)
- - remove the omap1 dma address translation in favor of the common
-   code
- - make dma-direct aware of multiple dma offset ranges (Jim Quinlan)
- - support per-node DMA CMA areas (Barry Song)
- - increase the default seg boundary limit (Nicolin Chen)
- - misc fixes (Robin Murphy, Thomas Tai, Xu Wang)
- - various cleanups
-
-----------------------------------------------------------------
-Barry Song (3):
-      dma-contiguous: provide the ability to reserve per-numa CMA
-      arm64: mm: reserve per-numa CMA to localize coherent dma buffers
-      mm: cma: use CMA_MAX_NAME to define the length of cma name array
-
-Christoph Hellwig (54):
-      dma-mapping: remove the dma_dummy_ops export
-      dma-debug: remove most exports
-      MIPS: make dma_sync_*_for_cpu a little less overzealous
-      MIPS/jazzdma: remove the unused vdma_remap function
-      MIPS/jazzdma: decouple from dma-direct
-      dma-mapping: fix DMA_OPS dependencies
-      dma-mapping: add (back) arch_dma_mark_clean for ia64
-      dma-direct: remove dma_direct_{alloc,free}_pages
-      dma-direct: lift gfp_t manipulation out of__dma_direct_alloc_pages
-      dma-direct: use phys_to_dma_direct in dma_direct_alloc
-      dma-direct: remove __dma_to_phys
-      dma-direct: rename and cleanup __phys_to_dma
-      dma-mapping: move dma_common_{mmap,get_sgtable} out of mapping.c
-      dma-mapping: move the dma_declare_coherent_memory documentation
-      ARM/dma-mapping: remove a __arch_page_to_dma #error
-      ARM/dma-mapping: remove dma_to_virt
-      ARM/dma-mapping: move various helpers from dma-mapping.h to dma-direct.h
-      ARM/keystone: move the DMA offset handling under ifdef CONFIG_ARM_LPAE
-      usb: don't inherity DMA properties for USB devices
-      dma-mapping: remove DMA_MASK_NONE
-      dma-mapping: move valid_dma_direction to dma-direction.h
-      dma-mapping: better document dma_addr_t and DMA_MAPPING_ERROR
-      ARM/omap1: switch to use dma_direct_set_offset for lbus DMA offsets
-      Merge branch 'master' of https://git.kernel.org/.../torvalds/linux into dma-mapping-for-next
-      mm: turn alloc_pages into an inline function
-      drm/exynos: stop setting DMA_ATTR_NON_CONSISTENT
-      drm/nouveau/gk20a: stop setting DMA_ATTR_NON_CONSISTENT
-      net/au1000-eth: stop using DMA_ATTR_NON_CONSISTENT
-      lib82596: move DMA allocation into the callers of i82596_probe
-      53c700: improve non-coherent DMA handling
-      dma-mapping: add a new dma_alloc_noncoherent API
-      sgiwd93: convert to dma_alloc_noncoherent
-      hal2: convert to dma_alloc_noncoherent
-      lib82596: convert to dma_alloc_noncoherent
-      sgiseeq: convert to dma_alloc_noncoherent
-      53c700: convert to dma_alloc_noncoherent
-      dma-mapping: remove dma_cache_sync
-      dma-mapping: add a new dma_alloc_pages API
-      dma-mapping: add new {alloc,free}_noncoherent dma_map_ops methods
-      dma-iommu: implement ->alloc_noncoherent
-      firewire-ohci: use dma_alloc_pages
-      dma-mapping: split <linux/dma-mapping.h>
-      dma-contiguous: remove dma_declare_contiguous
-      dma-contiguous: remove dev_set_cma_area
-      dma-contiguous: remove dma_contiguous_set_default
-      dma-mapping: merge <linux/dma-contiguous.h> into <linux/dma-map-ops.h>
-      dma-mapping: remove <asm/dma-contiguous.h>
-      dma-mapping: move dma-debug.h to kernel/dma/
-      dma-mapping: move large parts of <linux/dma-direct.h> to kernel/dma
-      dma-mapping: merge <linux/dma-noncoherent.h> into <linux/dma-map-ops.h>
-      dma-direct check for highmem pages in dma_direct_alloc_pages
-      dma-direct: factor out a dma_direct_alloc_from_pool helper
-      dma-direct: simplify the DMA_ATTR_NO_KERNEL_MAPPING handling
-      ARM/ixp4xx: add a missing include of dma-map-ops.h
-
-Jim Quinlan (1):
-      dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
-
-Nicolin Chen (2):
-      dma-mapping: introduce dma_get_seg_boundary_nr_pages()
-      dma-mapping: set default segment_boundary_mask to ULONG_MAX
-
-Paul Cercueil (1):
-      cma: decrease CMA_ALIGNMENT lower limit to 2
-
-Robin Murphy (1):
-      iommu/io-pgtable-arm: Clean up faulty sanity check
-
-Thomas Tai (1):
-      dma-direct: Fix potential NULL pointer dereference
-
-Xu Wang (1):
-      dma-debug: convert comma to semicolon
-
- Documentation/admin-guide/kernel-parameters.txt    |  13 +-
- Documentation/core-api/dma-api.rst                 |  99 +++----
- Documentation/core-api/dma-attributes.rst          |   8 -
- MAINTAINERS                                        |   2 +-
- arch/alpha/kernel/pci_iommu.c                      |  11 +-
- arch/arc/mm/dma.c                                  |   2 +-
- arch/arm/common/dmabounce.c                        |   3 +-
- arch/arm/include/asm/dma-contiguous.h              |  15 -
- arch/arm/include/asm/dma-direct.h                  |  35 ++-
- arch/arm/include/asm/dma-iommu.h                   |   1 -
- arch/arm/include/asm/dma-mapping.h                 |  71 -----
- arch/arm/mach-davinci/devices-da8xx.c              |  18 +-
- arch/arm/mach-highbank/highbank.c                  |   2 +-
- arch/arm/mach-imx/mach-imx27_visstrim_m10.c        |   2 +-
- arch/arm/mach-imx/mach-mx31moboard.c               |   2 +-
- arch/arm/mach-ixp4xx/common.c                      |   1 +
- arch/arm/mach-keystone/keystone.c                  |  21 +-
- arch/arm/mach-mvebu/coherency.c                    |   2 +-
- arch/arm/mach-omap1/include/mach/memory.h          |  31 --
- arch/arm/mach-omap1/usb.c                          |  22 ++
- arch/arm/mach-shmobile/setup-rcar-gen2.c           |   2 +-
- arch/arm/mm/dma-mapping-nommu.c                    |   3 +
- arch/arm/mm/dma-mapping.c                          |   9 +-
- arch/arm/mm/init.c                                 |   2 +-
- arch/arm/xen/mm.c                                  |   2 +-
- arch/arm64/mm/dma-mapping.c                        |   2 +-
- arch/arm64/mm/init.c                               |   5 +-
- arch/c6x/mm/dma-coherent.c                         |   2 +-
- arch/csky/kernel/setup.c                           |   2 +-
- arch/csky/mm/dma-mapping.c                         |   4 +-
- arch/hexagon/kernel/dma.c                          |   2 +-
- arch/ia64/Kconfig                                  |   3 +-
- arch/ia64/hp/common/sba_iommu.c                    |   7 +-
- arch/ia64/kernel/dma-mapping.c                     |  14 +-
- arch/ia64/mm/init.c                                |   5 +-
- arch/m68k/kernel/dma.c                             |   2 +-
- arch/microblaze/kernel/dma.c                       |   3 +-
- arch/microblaze/mm/consistent.c                    |   2 +-
- arch/microblaze/mm/init.c                          |   2 +-
- arch/mips/Kconfig                                  |   1 -
- arch/mips/bmips/dma.c                              |   4 +-
- arch/mips/cavium-octeon/dma-octeon.c               |   4 +-
- arch/mips/include/asm/dma-direct.h                 |   4 +-
- arch/mips/include/asm/jazzdma.h                    |   2 -
- arch/mips/jazz/jazzdma.c                           | 105 ++-----
- arch/mips/kernel/setup.c                           |   2 +-
- arch/mips/loongson2ef/fuloong-2e/dma.c             |   4 +-
- arch/mips/loongson2ef/lemote-2f/dma.c              |   4 +-
- arch/mips/loongson64/dma.c                         |   4 +-
- arch/mips/mm/dma-noncoherent.c                     |  51 ++--
- arch/mips/pci/pci-ar2315.c                         |   4 +-
- arch/mips/pci/pci-xtalk-bridge.c                   |   4 +-
- arch/mips/sgi-ip32/ip32-dma.c                      |   4 +-
- arch/nds32/kernel/dma.c                            |   2 +-
- arch/openrisc/kernel/dma.c                         |   2 +-
- arch/parisc/Kconfig                                |   1 -
- arch/parisc/kernel/drivers.c                       |   1 +
- arch/parisc/kernel/pci-dma.c                       |   8 +-
- arch/powerpc/include/asm/dma-direct.h              |   4 +-
- arch/powerpc/include/asm/iommu.h                   |   2 +-
- arch/powerpc/include/asm/pci.h                     |   2 +-
- arch/powerpc/kernel/dma-iommu.c                    |   2 +
- arch/powerpc/kernel/iommu.c                        |  11 +-
- arch/powerpc/mm/dma-noncoherent.c                  |   2 +-
- arch/powerpc/platforms/ps3/system-bus.c            |   6 +-
- arch/powerpc/platforms/pseries/ibmebus.c           |   2 +-
- arch/powerpc/platforms/pseries/vio.c               |   4 +-
- arch/s390/kernel/setup.c                           |   2 +-
- arch/s390/pci/pci_dma.c                            |  10 +-
- arch/sh/boards/mach-ap325rxa/setup.c               |   1 +
- arch/sh/boards/mach-ecovec24/setup.c               |   1 +
- arch/sh/boards/mach-kfr2r09/setup.c                |   2 +-
- arch/sh/boards/mach-migor/setup.c                  |   2 +-
- arch/sh/boards/mach-se/7724/setup.c                |   1 +
- arch/sh/drivers/pci/fixups-dreamcast.c             |   2 +-
- arch/sh/drivers/pci/pci.c                          |   1 -
- arch/sh/drivers/pci/pcie-sh7786.c                  |   9 +-
- arch/sh/kernel/dma-coherent.c                      |   2 +-
- arch/sparc/kernel/iommu-common.c                   |  10 +-
- arch/sparc/kernel/iommu.c                          |   5 +-
- arch/sparc/kernel/ioport.c                         |   2 +-
- arch/sparc/kernel/pci_sun4v.c                      |   4 +-
- arch/sparc/mm/io-unit.c                            |   2 +-
- arch/sparc/mm/iommu.c                              |   2 +-
- arch/x86/include/asm/dma-mapping.h                 |   2 -
- arch/x86/kernel/amd_gart_64.c                      |  12 +-
- arch/x86/kernel/pci-dma.c                          |   2 +-
- arch/x86/kernel/setup.c                            |   2 +
- arch/x86/pci/sta2x11-fixup.c                       |   6 +-
- arch/x86/xen/pci-swiotlb-xen.c                     |   2 +-
- arch/xtensa/kernel/pci-dma.c                       |   3 +-
- arch/xtensa/mm/init.c                              |   2 +-
- drivers/acpi/arm64/iort.c                          |   6 +-
- drivers/acpi/scan.c                                |   2 +-
- drivers/base/core.c                                |   2 +
- drivers/base/dd.c                                  |   2 +-
- drivers/dma-buf/heaps/cma_heap.c                   |   2 +-
- drivers/firewire/ohci.c                            |  26 +-
- drivers/gpu/drm/exynos/exynos_drm_dma.c            |   2 +-
- drivers/gpu/drm/exynos/exynos_drm_gem.c            |   2 -
- drivers/gpu/drm/msm/msm_gem.c                      |   1 +
- .../gpu/drm/nouveau/nvkm/subdev/instmem/gk20a.c    |   3 +-
- drivers/gpu/drm/sun4i/sun4i_backend.c              |   8 +-
- drivers/iommu/amd/iommu.c                          |   3 +-
- drivers/iommu/dma-iommu.c                          |  46 ++-
- drivers/iommu/intel/iommu.c                        |  10 +-
- drivers/iommu/io-pgtable-arm.c                     |   5 -
- drivers/media/platform/exynos4-is/fimc-is.c        |   1 -
- drivers/media/platform/sunxi/sun4i-csi/sun4i_csi.c |   9 +-
- drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c |  11 +-
- drivers/misc/mic/Kconfig                           |   1 +
- drivers/misc/mic/bus/mic_bus.c                     |   1 +
- drivers/misc/mic/bus/scif_bus.c                    |   2 +-
- drivers/misc/mic/bus/scif_bus.h                    |   2 +-
- drivers/misc/mic/bus/vop_bus.c                     |   2 +-
- drivers/misc/mic/host/mic_boot.c                   |   1 +
- drivers/net/ethernet/amd/au1000_eth.c              |  15 +-
- drivers/net/ethernet/i825xx/lasi_82596.c           |  37 +--
- drivers/net/ethernet/i825xx/lib82596.c             | 148 +++++-----
- drivers/net/ethernet/i825xx/sni_82596.c            |  23 +-
- drivers/net/ethernet/seeq/sgiseeq.c                |  28 +-
- drivers/of/address.c                               |  73 ++---
- drivers/of/device.c                                |  45 +--
- drivers/of/of_private.h                            |  11 +-
- drivers/of/unittest.c                              |  34 ++-
- drivers/parisc/ccio-dma.c                          |   6 +-
- drivers/parisc/sba_iommu.c                         |   6 +-
- drivers/pci/pci-driver.c                           |   1 +
- drivers/pci/xen-pcifront.c                         |   1 +
- drivers/pcmcia/ds.c                                |   2 +-
- drivers/remoteproc/remoteproc_core.c               |  25 +-
- drivers/remoteproc/remoteproc_virtio.c             |   2 +-
- drivers/scsi/53c700.c                              | 121 ++++----
- drivers/scsi/53c700.h                              |  17 +-
- drivers/scsi/sgiwd93.c                             |  14 +-
- drivers/staging/media/sunxi/cedrus/cedrus_hw.c     |  10 +-
- drivers/usb/core/message.c                         |   6 -
- drivers/usb/core/usb.c                             |  12 -
- drivers/vdpa/vdpa_sim/vdpa_sim.c                   |   2 +-
- drivers/xen/swiotlb-xen.c                          |   4 +-
- include/asm-generic/Kbuild                         |   1 -
- include/asm-generic/dma-contiguous.h               |  10 -
- include/linux/cma.h                                |   2 +
- include/linux/device.h                             |   4 +-
- include/linux/dma-contiguous.h                     | 176 -----------
- include/linux/dma-direct.h                         | 198 +++++--------
- include/linux/dma-direction.h                      |   8 +-
- include/linux/dma-map-ops.h                        | 326 +++++++++++++++++++++
- include/linux/dma-mapping.h                        | 240 ++++-----------
- include/linux/dma-noncoherent.h                    | 114 -------
- include/linux/gfp.h                                |   6 +-
- kernel/dma/Kconfig                                 |  25 +-
- kernel/dma/Makefile                                |   1 +
- kernel/dma/coherent.c                              |  25 +-
- kernel/dma/contiguous.c                            | 142 ++++++++-
- kernel/dma/debug.c                                 |  19 +-
- include/linux/dma-debug.h => kernel/dma/debug.h    |  44 +--
- kernel/dma/direct.c                                | 268 ++++++++++-------
- kernel/dma/direct.h                                | 119 ++++++++
- kernel/dma/dummy.c                                 |   3 +-
- kernel/dma/mapping.c                               | 159 ++++++----
- kernel/dma/ops_helpers.c                           |  85 ++++++
- kernel/dma/pool.c                                  |   5 +-
- kernel/dma/swiotlb.c                               |   6 +-
- kernel/dma/virt.c                                  |   4 +-
- mm/Kconfig                                         |   3 +-
- mm/cma.h                                           |   2 -
- mm/hugetlb.c                                       |   4 +-
- mm/memory.c                                        |   1 -
- sound/mips/hal2.c                                  |  58 ++--
- 170 files changed, 1921 insertions(+), 1699 deletions(-)
- delete mode 100644 arch/arm/include/asm/dma-contiguous.h
- delete mode 100644 include/asm-generic/dma-contiguous.h
- delete mode 100644 include/linux/dma-contiguous.h
- create mode 100644 include/linux/dma-map-ops.h
- delete mode 100644 include/linux/dma-noncoherent.h
- rename include/linux/dma-debug.h => kernel/dma/debug.h (81%)
- create mode 100644 kernel/dma/direct.h
- create mode 100644 kernel/dma/ops_helpers.c
