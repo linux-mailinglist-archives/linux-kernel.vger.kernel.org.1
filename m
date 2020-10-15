@@ -2,158 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B736828FB52
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A78128FB59
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732272AbgJOWtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
+        id S1732281AbgJOWxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731738AbgJOWte (ORCPT
+        with ESMTP id S1731828AbgJOWxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 18:49:34 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786CAC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:49:34 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o7so213861pgv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:49:34 -0700 (PDT)
+        Thu, 15 Oct 2020 18:53:17 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F68C061755;
+        Thu, 15 Oct 2020 15:53:17 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t18so356261ilo.12;
+        Thu, 15 Oct 2020 15:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7+gN5beWb7xuqtjFxy0mOY8Dj5aWNKV2raCCT+QivsA=;
-        b=kezZ/4VKA2aqU9lsNyWwpiS8RG4Ojfws+ON1DhdAcgNdBdZ6hekqsJahAlZfErewe5
-         YP9CQctdP2RmQWFy3fq0zW9yZf4+84y/gcfAsQsU65jCud84QIQl3SibQXXJOcexoHzn
-         zRXAupCKNl2vkkK28VvWkvViGhzQ9iClAf31jKEgcaLeztgweJygfN7uMJOZJDyloaFB
-         lQxPBoDnTTORrCcR+WA5YIl3OhSERw08KCvThArrPNEyo4+GoEXZsBoyTnhIxrl+Pt9x
-         vJO6feVXrwryVHpGPv3wo8uF4Mg9SG24ZmHokY9xCg1v+V/MH6FsEUMtSEQK7owExwbB
-         Z4tg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jFQtaxU4YUQNvbnqPeUAScf/xR6LM2zPZihZfrq6QrY=;
+        b=U655etZm+uaA0qNlVHA6zGPJdrQfeVf1LMdkzKJmwIXq5IQ5KH9idqK8R3cSf3vzyd
+         UM1uh2G2EjwGTZEOqP+7JbdPGP+HGw+uYQa5RLKV5+RbTsWE+NMqvIvCGHzdk/CXMiHB
+         M3Y7a+NathuX6h70CY1KtCCQpWXx9fpYfZ3hEpxG2Swp94ZwUHOwld+CTnpZZ0prILod
+         LzdkX37VJZiAo5ShXp8aEuIRDf6Ub6S3mkChRDTdPG710AOO8n0lesgl/Vao/xm2JIef
+         hg+4FsfwB3cSgf/CT+/mu/M83eGPn7p9Moh8BOn8xxwtbTI80EcVyECNc2Dw5cbhMMDt
+         AIcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=7+gN5beWb7xuqtjFxy0mOY8Dj5aWNKV2raCCT+QivsA=;
-        b=ew5CeYqpZzZ9IuLKTLdx/POFTDdZGAxN9N/4Qa3gHxXulvYzhgqjQsu+XPdKQ6OUfN
-         TmL7gRYesWd/IHOCV1UED6mUxt+9diFK0PaM+T7Y/llIJpauN0Z+2ECe8QcoYENtstkr
-         PY44PFLHAYy7HGPBdxXeI96rJx3R6Yi5Mt3WBFej8uGcEPSqw1eCcNDNyHgphjAX2FdH
-         tTvNHfQ7TS3EzgWPxluv8dH5doHR1GmbLklZYkJQsabJZFLrTt7iPDD2j1kIMEiuGAiV
-         /8txO3oTRMD/Bj8sZYROKRkCrZRvKENvUugZbegoTqLROIqz/d6R8hxrQjWRKLKbc7iN
-         P2uw==
-X-Gm-Message-State: AOAM530MidkcKz9KW8nX8L7VZw79yLhA3uX7EMuXtqfACCUVxgTZjVmx
-        foUA0ojV3C7UYRI1B7nXwkE=
-X-Google-Smtp-Source: ABdhPJzwYSWqtxW5zmlYRlkpepcQCiM+U9HCaOiKuKRvOWgJtGOAmSIRdArIjgvVHSl6jNw5qQM6wQ==
-X-Received: by 2002:a63:c57:: with SMTP id 23mr644458pgm.109.1602802173722;
-        Thu, 15 Oct 2020 15:49:33 -0700 (PDT)
-Received: from ArchLinux (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
-        by smtp.gmail.com with ESMTPSA id 198sm335393pfx.26.2020.10.15.15.49.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 15:49:32 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 04:19:19 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
-        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
-        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] scripts: spelling:  Remove space in the entry memry
- to memory
-Message-ID: <20201015224919.GA1129531@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Joe Perches <joe@perches.com>, akpm@linux-foundation.org,
-        colin.king@canonical.com, sfr@canb.auug.org.au, wangqing@vivo.com,
-        david@redhat.com, xndchn@gmail.com, luca@lucaceresoli.net,
-        ebiggers@google.com, linux-kernel@vger.kernel.org
-References: <20201015132336.1770828-1-unixbhaskar@gmail.com>
- <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
- <20201015135407.GB1899805@ArchLinux>
- <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jFQtaxU4YUQNvbnqPeUAScf/xR6LM2zPZihZfrq6QrY=;
+        b=CQLflPoL9KyS9ZtEwTsllog60Nn1SfgaCj+9gGSu+FBAE3iH1uvK2V4CHNgXkF9OMW
+         lOvexjQboJHt+0YY2f/0GjpfHy3bIg/CjIx7Pw+ZKkAI5AAUomVWiJj24qAJD+z6++O+
+         Xuyox/U7vBDQdZpFywVjqot72ctoRuqFgudLqJAnyXthdW7dl4j0fz+pbAOJ8MashHpv
+         p4grT7izh+EQ140IC960dWZOTCptCN0vcIfZjNG0Gr/Vca2a1NHgftqM74WNgYr7K3lV
+         4lVMQk31+TEJWdulvwEbR0NihiwFvurUR+wKs8hoczX0ZrDmCl+Pme0pnSSzXN04Gw0R
+         J9Ow==
+X-Gm-Message-State: AOAM530ez0E6p1VU7/utvYMJGYeajl2E01boduHOgynmt7Iz+h77bAxv
+        fpc0lrfjFhvxUNPi/d2pC3lmcO7uiQ0UDkd+pmAx7Vemwss=
+X-Google-Smtp-Source: ABdhPJyzlS0eGSXgzAREEgAtyv//yvyCHgB5cEz7Myw4qlwyHN9TDbpmrskpw5XBd86AhgXAe80XzmDtTRrBprGcsx0=
+X-Received: by 2002:a92:de0f:: with SMTP id x15mr631190ilm.164.1602802396528;
+ Thu, 15 Oct 2020 15:53:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
-Content-Disposition: inline
-In-Reply-To: <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
+References: <cover.1601974764.git.syednwaris@gmail.com> <33de236870f7d3cf56a55d747e4574cdd2b9686a.1601974764.git.syednwaris@gmail.com>
+ <20201006112745.GG4077@smile.fi.intel.com>
+In-Reply-To: <20201006112745.GG4077@smile.fi.intel.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Fri, 16 Oct 2020 04:23:05 +0530
+Message-ID: <CACG_h5pYL+HbJpPcCTp=dR8rDbm07RsRDaX8Uc0HYc2LG--w_Q@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] bitops: Introduce the for_each_set_clump macro
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 14:10 Thu 15 Oct 2020, Joe Perches wrote:
->On Thu, 2020-10-15 at 19:24 +0530, Bhaskar Chowdhury wrote:
->> On 06:38 Thu 15 Oct 2020, Joe Perches wrote:
->> > On Thu, 2020-10-15 at 18:53 +0530, Bhaskar Chowdhury wrote:
->> > > Fix the space in the middle in below entry.
->> > >
->> > > memry||memory
->> > []
->> > > diff --git a/scripts/spelling.txt b/scripts/spelling.txt
->> > []
->> > > @@ -885,7 +885,7 @@ meetign||meeting
->> > >  memeory||memory
->> > >  memmber||member
->> > >  memoery||memory
->> > > -memry ||memory
->> > > +memry||memory
->> >
->> > No.  Don't post a bad patch, assume
->> > it's applied and then post a fix to
->> > the bad patch as v2.
->> >
->> > Send a single clean patch.
->> >
->>
->> Not sure what you mean...could you elaborate...don't know what is going on..>
+On Tue, Oct 6, 2020 at 4:56 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
->You sent a patch with a defect
+> On Tue, Oct 06, 2020 at 02:52:16PM +0530, Syed Nayyar Waris wrote:
+> > This macro iterates for each group of bits (clump) with set bits,
+> > within a bitmap memory region. For each iteration, "start" is set to
+> > the bit offset of the found clump, while the respective clump value is
+> > stored to the location pointed by "clump". Additionally, the
+> > bitmap_get_value() and bitmap_set_value() functions are introduced to
+> > respectively get and set a value of n-bits in a bitmap memory region.
+> > The n-bits can have any size less than or equal to BITS_PER_LONG.
+> > Moreover, during setting value of n-bit in bitmap, if a situation arise
+> > that the width of next n-bit is exceeding the word boundary, then it
+> > will divide itself such that some portion of it is stored in that word,
+> > while the remaining portion is stored in the next higher word. Similar
+> > situation occurs while retrieving the value from bitmap.
+>
+> ...
+>
+> > @@ -75,7 +75,11 @@
+> >   *  bitmap_from_arr32(dst, buf, nbits)          Copy nbits from u32[] buf to dst
+> >   *  bitmap_to_arr32(buf, src, nbits)            Copy nbits from buf to u32[] dst
+> >   *  bitmap_get_value8(map, start)               Get 8bit value from map at start
+> > + *  bitmap_get_value(map, start, nbits)              Get bit value of size
+> > + *                                           'nbits' from map at start
+> >   *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
+> > + *  bitmap_set_value(map, value, start, nbits)       Set bit value of size 'nbits'
+> > + *                                           of map at start
+>
+> Formatting here is done with solely spaces, no TABs.
 
-Who doesn't???
+Okay. Done
 
->You sent a V2 patch that just corrects the defect in the first patch.
+>
+> ...
+>
+> > +/**
+> > + * bitmap_get_value - get a value of n-bits from the memory region
+> > + * @map: address to the bitmap memory region
+> > + * @start: bit offset of the n-bit value
+> > + * @nbits: size of value in bits (must be between 1 and BITS_PER_LONG inclusive).
+>
+>
+> > + *   nbits less than 1 or more than BITS_PER_LONG causes undefined behaviour.
+>
+> Please, detach this from field description and move to a main description.
 
-That's how it is working here for long time ...I am not sure about your
-  involvement.
+Okay. Done.
+>
+> > + *
+> > + * Returns value of nbits located at the @start bit offset within the @map
+> > + * memory region.
+> > + */
+>
+> ...
+>
+> > +             return (map[index] >> offset) & GENMASK(nbits - 1, 0);
+>
+> Have you considered to use rather BIT{_ULL}(nbits) - 1?
+> It maybe better for code generation.
 
->Instead send a v3 patch without any defect.
+Yes I have considered using BIT{_ULL} in earlier versions of patchset.
+It has a problem:
 
-No point ...I think your understanding takes a back seat...could you please
-rebrush it??
+This macro when used in both bitmap_get_value and
+bitmap_set_value functions, it will give unexpected results when nbits or clump
+size is BITS_PER_LONG (32 or 64 depending on arch).
 
-..and you are telling me something which isn't practice here ..maybe some
-other project with some other people you worked with...
+Actually when nbits (clump size) is 64 (BITS_PER_LONG is 64, for example),
+(BIT(nbits) - 1)
+gives a value of zero and when this zero is ANDed with any value, it
+makes it full zero. This is unexpected, and incorrect calculation occurs.
 
-certainly not here ...
+What actually happens is in the macro expansion of BIT(64), that is 1
+<< 64, the '1' overflows from leftmost bit position (most significant
+bit) and re-enters at the rightmost bit position (least significant
+bit), therefore 1 << 64 becomes '0x1', and when another '1' is
+subtracted from this, the final result becomes 0.
 
-Long story short, you found a flaw what I sent and I appreciate your review
-and corrected the trivialities ...but rest what you are asking is garbage .
+This is undefined behavior in the C standard (section 6.5.7 in the N1124)
 
-More ...I don't know why I am explaining this stuff to you...we have been here
-doing this stuff for a long time ... (not sure about you)
+>
+> ...
+>
+> > +/**
+> > + * bitmap_set_value - set n-bit value within a memory region
+> > + * @map: address to the bitmap memory region
+> > + * @value: value of nbits
+> > + * @start: bit offset of the n-bit value
+> > + * @nbits: size of value in bits (must be between 1 and BITS_PER_LONG inclusive).
+>
+> > + *   nbits less than 1 or more than BITS_PER_LONG causes undefined behaviour.
+>
+> Please, detach this from field description and move to a main description.
 
-Versioning is important for the person who maintain that file..because of lots
-of reason ...and I am sure either you have forgotten or it skipped your mind
-for the moment ..that is why I suggest ...please rebrush your understanding
-...
+Okay. Done
 
-Please don't unnecessarily streach thing ...we have other things to do ...do
-not bringing "new rules" here for the sake of it.
+>
+> > + */
+>
+> ...
+>
+> > +     value &= GENMASK(nbits - 1, 0);
+>
+> Ditto.
+>
+> > +             map[index] &= ~(GENMASK(nbits + offset - 1, offset));
+>
+> Last time I checked such GENMASK) use, it gave a lot of code when
+> GENMASK(nbits - 1, 0) << offset works much better, but see also above.
 
---2fHTh5uZTiUOsy+g
-Content-Type: application/pgp-signature; name="signature.asc"
+Yes I have incorporated your suggestion to use the '<<' operator. Thank You.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl+I0ewACgkQsjqdtxFL
-KRXUWgf/Siz0KYl6XDzIBkSGsP2b3PjggVQplz9257TzISyhL9/w7c5Ikl5KJG4k
-iteA49NrKsi6GkYSVuwdvngpWwVhT1ONlnSGlIZFkAcnU6uahvhK4AH1DKHmXSm2
-8mgjgY7hmq7lejNguZEVo1M8N5yj+WVGY/5dGZWkxb2tpp5DDubQUF41Jr/pPbY6
-yh7RrgHsBSKFJTGZ0gV7j0iSdNI5yN5V0bFF4qtj1OjJSomS8OGYN9ntuGAx3hFk
-8vsTL+HkxtJNI+JAlSbhwEGgiunQJsMGqpcix5Cuvxb/uKGkBlciFTXCUnMRXjk2
-CUH9aYXB1ShiiQDt/8qa6N00If5ZlQ==
-=lEhQ
------END PGP SIGNATURE-----
-
---2fHTh5uZTiUOsy+g--
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
