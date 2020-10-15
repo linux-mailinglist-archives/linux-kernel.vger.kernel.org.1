@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C90E28F1F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A2328F1FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgJOMWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:22:31 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35173 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727278AbgJOMWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:22:31 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kT2H4-0006lp-Q3; Thu, 15 Oct 2020 12:22:26 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] vfio/fsl-mc: fix the return of the uninitialized variable ret
-Date:   Thu, 15 Oct 2020 13:22:26 +0100
-Message-Id: <20201015122226.485911-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728242AbgJOMWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:22:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35552 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728009AbgJOMWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:22:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602764568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O3E1pC9UGTTt4nprLSiUqABd2GQPiIsCgYSgfRuYliQ=;
+        b=Ykf3d86Z3+f9jbCUC7X8f0cbnMTdZA65/bvHBAhZVj869a4ZulOk456qdgRS3OqXlSMU4/
+        c6/z9DPUQcllBbXn4AVwCwcs7bPT9SKG3wIm7O39X4m3IDoGXjO/aGjszNcn4TsFeE7bvP
+        +fB2bScxULYBI2EiImGUd/IV4zGsiUk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EC176B27B;
+        Thu, 15 Oct 2020 12:22:47 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 14:22:46 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, LTP List <ltp@lists.linux.it>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [PATCH] printk: ringbuffer: Wrong data pointer when appending
+ small string
+Message-ID: <20201015122246.GD8871@alley>
+References: <CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com>
+ <20201014140514.GB17231@alley>
+ <20201014151311.GB13775@alley>
+ <20201014175051.GC13775@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014175051.GC13775@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed 2020-10-14 19:50:54, Petr Mladek wrote:
+> data_realloc() returns wrong data pointer when the block is wrapped and
+> the size is not increased. It might happen when pr_cont() wants to
+> add only few characters and there is already a space for them because
+> of alignment.
+> 
+> It might cause writing outsite the buffer. It has been detected by LTP
+> tests with KASAN enabled:
+> 
+> Link: https://lore.kernel.org/r/CA+G9fYt46oC7-BKryNDaaXPJ9GztvS2cs_7GjYRjanRi4+ryCQ@mail.gmail.com
+> Fixes: 4cfc7258f876a7feba673ac ("printk: ringbuffer: add finalization/extension support")
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
-Currently the success path in function vfio_fsl_mc_reflck_attach is
-returning an uninitialized value in variable ret. Fix this by setting
-this to zero to indicate success.
+The patch is committed into printk/linux.git, branch for-5.10-fixup.
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: f2ba7e8c947b ("vfio/fsl-mc: Added lock support in preparation for interrupt handling")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
- 1 file changed, 1 insertion(+)
+I am going to send a pull request with it tomorrow unless something
+happens in the meantime.
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-index 80fc7f4ed343..42a5decb78d1 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-@@ -84,6 +84,7 @@ static int vfio_fsl_mc_reflck_attach(struct vfio_fsl_mc_device *vdev)
- 		vfio_fsl_mc_reflck_get(cont_vdev->reflck);
- 		vdev->reflck = cont_vdev->reflck;
- 		vfio_device_put(device);
-+		ret = 0;
- 	}
- 
- unlock:
--- 
-2.27.0
-
+Best Regards,
+Petr
