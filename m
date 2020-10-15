@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C2528F2EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B0F28F2F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728460AbgJONKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:10:49 -0400
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:60404 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728231AbgJONKt (ORCPT
+        id S1728619AbgJONMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:12:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54932 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726924AbgJONMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:10:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1602767449;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=f6Kamy1C8O875JTu/vLF90Ddc8FWBrVKHooa1uTjaeQ=;
-  b=GiwHxNBo3AM1dAKmOq+ocxQ12EWakbP8ln/kaGJjlJ52EMDN/Y6cZbkB
-   IA/R1iInSnZw+ESaqiNN8y0qv17WgiENehjA7NTxmvPyvUiEAHY21Si3C
-   z82oIZukBDcB7oDVkiJ1PDvxyKMpfTHhA/iKGrPAZ+sLUaxZhwqBxEBur
-   8=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: TsNzbLxMsk384nJy5Ma5vOQoKEjgU+ipNL1nJSmtDZ6qs87H2v+vbvQIN4MbbD72V2Ey2BJWzK
- DJ2By9UKxVmig34H8L3MwHOYlSQxz2DBF8RnLL026OOdZRjfNPY566lXkCEMWpefwuzoeGsvFt
- SnTPGz44+AtTSC4bBi08uZqWHQKJcn+DFJ+74bUEgEdXNlB7yWOUEr2CPons5/qNhxHYKojNNA
- H5bJ7MetpyQXJ0vK5ZCl6jO/6csbfhHTojPmAvbq5tYkHveVjp4yyTrmmaBCv2pnjkGKD8M7ZL
- 4Bg=
-X-SBRS: 2.5
-X-MesageID: 29078535
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,379,1596513600"; 
-   d="scan'208";a="29078535"
-Subject: Re: [PATCH 2/2] xen: Kconfig: nest Xen guest options
-To:     <boris.ostrovsky@oracle.com>, Jason Andryuk <jandryuk@gmail.com>,
-        "Juergen Gross" <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-References: <20201014175342.152712-1-jandryuk@gmail.com>
- <20201014175342.152712-3-jandryuk@gmail.com>
- <6cd9363c-ac0c-ea68-c8e7-9fd3cd30a89b@oracle.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <4e31301b-0e57-ac89-cd71-6ad5e1a66628@citrix.com>
-Date:   Thu, 15 Oct 2020 14:10:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 15 Oct 2020 09:12:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602767524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uAf/KQ6TAdYo1Wm4S00yfTFLig9CeJngAorlemy7WXc=;
+        b=AHB1/DTuknTF1tulbY5RCGYT+VPa9xN6UwG5sKlTQdwttoTjx7R4t8tO0sZNVOfqcCYLmB
+        W1Ooty3rm76QWLlf3LELxv99D8iI2/y4RPQQBrS5eC/ctSRdRenk/XLnlXZb9Asg4Lv9Xp
+        aANtiSH92d17iDFHsk4Co/roSG5r0Uk=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-V7xQ4Fh9OEua9Mj1uF9hng-1; Thu, 15 Oct 2020 09:12:00 -0400
+X-MC-Unique: V7xQ4Fh9OEua9Mj1uF9hng-1
+Received: by mail-wr1-f71.google.com with SMTP id m20so1862102wrb.21
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:12:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uAf/KQ6TAdYo1Wm4S00yfTFLig9CeJngAorlemy7WXc=;
+        b=H+OrZRTzo2LSruPcpnnNEM3on3N5al30hQ7uMv8A202a4Y3iNGymJSIUfRVhqvDjZW
+         drcblyaLYUKt9sD8LtMmC65PJ/qEJy7axITUwe0g5bt1pCqCJafUbRwtZ9Xs7fqcGLZr
+         P8ie6O6dURaJQKPD1ujrUnSTl92zA/7PeDh5v3HHoPrEPkQMohhnBRNAn3F3CXxWjdN4
+         dBrcE8G9fYpUFWO8G/pAVtSOSDvOTFXEAlwHFXL/8++IgUOxdKlE16rev1xcqzuuTD21
+         SHRG5iADndbwhKWkhtU5sm+YgqCYU9vE+R88KqhcWFask+5Yn+DMpPUQaJlU3R022+F/
+         o56w==
+X-Gm-Message-State: AOAM533WucHeF6eaarnRp0D3ePlbU50ZE0AYFgQ55ZoZRc/LL5qHNCks
+        1sjnxQejljHTEKQZ2VlOWObabMu0daj0NQ0C95eivHaRqH1xMBVKOXethN/r43L20ypSCBfEWYc
+        a81x5hw1OPW2wyOhbCZUEK6AY
+X-Received: by 2002:a7b:c148:: with SMTP id z8mr3896329wmi.135.1602767519257;
+        Thu, 15 Oct 2020 06:11:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLn1GAiAp1rVzj+T97VT2N5UZGZv+k9R+BhLp1TRQ1j526UPewTS8smKxID+OGAzZGSt3Z4g==
+X-Received: by 2002:a7b:c148:: with SMTP id z8mr3896295wmi.135.1602767519019;
+        Thu, 15 Oct 2020 06:11:59 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
+        by smtp.gmail.com with ESMTPSA id y7sm4331656wmg.40.2020.10.15.06.11.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 06:11:58 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 09:11:55 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     si-wei liu <si-wei.liu@oracle.com>, lingshan.zhu@intel.com,
+        joao.m.martins@oracle.com, boris.ostrovsky@oracle.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] vhost-vdpa: fix page pinning leakage in error path
+Message-ID: <20201015091150-mutt-send-email-mst@kernel.org>
+References: <1601701330-16837-1-git-send-email-si-wei.liu@oracle.com>
+ <1601701330-16837-3-git-send-email-si-wei.liu@oracle.com>
+ <574a64e3-8873-0639-fe32-248cb99204bc@redhat.com>
+ <5F863B83.6030204@oracle.com>
+ <835e79de-52d9-1d07-71dd-d9bee6b9f62e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <6cd9363c-ac0c-ea68-c8e7-9fd3cd30a89b@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
- FTLPEX02CL05.citrite.net (10.13.108.178)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <835e79de-52d9-1d07-71dd-d9bee6b9f62e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/10/2020 13:37, boris.ostrovsky@oracle.com wrote:
-> On 10/14/20 1:53 PM, Jason Andryuk wrote:
->> +config XEN_512GB
->> +	bool "Limit Xen pv-domain memory to 512GB"
->> +	depends on XEN_PV && X86_64
->
-> Why is X86_64 needed here?
+On Thu, Oct 15, 2020 at 02:15:32PM +0800, Jason Wang wrote:
+> 
+> On 2020/10/14 上午7:42, si-wei liu wrote:
+> > > 
+> > > 
+> > > So what I suggest is to fix the pinning leakage first and do the
+> > > possible optimization on top (which is still questionable to me).
+> > OK. Unfortunately, this was picked and got merged in upstream. So I will
+> > post a follow up patch set to 1) revert the commit to the original
+> > __get_free_page() implementation, and 2) fix the accounting and leakage
+> > on top. Will it be fine?
+> 
+> 
+> Fine.
+> 
+> Thanks
 
->512G support was implemented using a direct-mapped P2M, and is rather
-beyond the virtual address capabilities of 32bit.
+Fine by me too.
 
-~Andrew
