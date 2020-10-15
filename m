@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C420328EE2D
+	by mail.lfdr.de (Postfix) with ESMTP id E322528EE2E
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730409AbgJOIIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:08:12 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40770 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730385AbgJOIH2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:07:28 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09F810KF022265;
-        Thu, 15 Oct 2020 10:05:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=glhTCKVcnbc8lpjOZBjcwL/WddjOBnrvQMsvFgpIX9U=;
- b=0oTWPBOxS3dHCpvop3Yn8LtnhruTiBArA0yscaywKM5jRBukrtlORwr/OlTPsO/MuqpZ
- NxiXz4Nvydwfc6H86n+++QoVfKWlkVK6RwSl08U860IelLWDFi6VfYxV1c49lArFXN0l
- AFDe3yXM7+VozPw8LXqj2LRtKWO4kRrD6cgMmP7U9tLEM1gC6uz4J1P7UBVkolbWZPMC
- 0c23ip1jx4I4AYDVB506N+iPL276OKcmTrJwevYifEHpP48qXDA8TdK71per8cKZVT4H
- PfdxOAWlYV0XFPa9ElhEi0cBzBscOmgtycug9z9NV8KOyMMJP+rSe/YeUgH1QAaLqKx4 LA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34356ekf4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Oct 2020 10:05:56 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0884E100034;
-        Thu, 15 Oct 2020 10:05:47 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8D2CD20602D;
-        Thu, 15 Oct 2020 10:05:47 +0200 (CEST)
-Received: from lmecxl0995.lme.st.com (10.75.127.49) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 15 Oct
- 2020 10:05:44 +0200
-Subject: Re: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-mediatek@lists.infradead.org>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>
-From:   Amelie DELAUNAY <amelie.delaunay@st.com>
-Message-ID: <a68552c5-3284-7196-3873-61711aaf5007@st.com>
-Date:   Thu, 15 Oct 2020 10:05:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387688AbgJOIIL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Oct 2020 04:08:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41092 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728048AbgJOIGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:06:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03440AF84;
+        Thu, 15 Oct 2020 08:05:59 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 10:05:57 +0200
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     b.zolnierkie@samsung.com, jani.nikula@intel.com,
+        daniel.vetter@ffwll.ch, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] au1100fb: Remove NULL pointer check before
+ clk_enable/disable
+Message-ID: <20201015100557.402f831f@linux-uq9g>
+In-Reply-To: <20201014082137.23320-1-vulab@iscas.ac.cn>
+References: <20201014082137.23320-1-vulab@iscas.ac.cn>
+Organization: SUSE Software Solutions Germany GmbH
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-15_03:2020-10-14,2020-10-15 signatures=0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Serge,
+Hi
 
-On 10/14/20 12:14 PM, Serge Semin wrote:
-> In accordance with the Generic EHCI/OHCI bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?"  . Let's fix the DTS files, which have the nodes defined with
-> incompatible names.
+On Wed, 14 Oct 2020 08:21:37 +0000 Xu Wang <vulab@iscas.ac.cn> wrote:
+
+> Because clk_enable, clk_disable, clk_prepare, and clk_unprepare already
+> checked NULL clock parameter, so the additional checks are unnecessary,
+> just remove them.
+
+All clk_*() functions seem to handle NULL pointers gracefully, so you can
+also remove these checks from the driver's _probe and _remove functions.
+
+Best regards
+Thomas
+
 > 
-> Signed-off-by: Serge Semin<Sergey.Semin@baikalelectronics.ru>
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  drivers/video/fbdev/au1100fb.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
-> index bfe29023fbd5..576f7da564c5 100644
-> --- a/arch/arm/boot/dts/stm32mp151.dtsi
-> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
-> @@ -1404,7 +1404,7 @@ ethernet0: ethernet@5800a000 {
->   			status = "disabled";
->   		};
->   
-> -		usbh_ohci: usbh-ohci@5800c000 {
-> +		usbh_ohci: usb@5800c000 {
->   			compatible = "generic-ohci";
->   			reg = <0x5800c000 0x1000>;
->   			clocks = <&rcc USBH>;
-> @@ -1413,7 +1413,7 @@ usbh_ohci: usbh-ohci@5800c000 {
->   			status = "disabled";
->   		};
->   
-> -		usbh_ehci: usbh-ehci@5800d000 {
-> +		usbh_ehci: usb@5800d000 {
->   			compatible = "generic-ehci";
->   			reg = <0x5800d000 0x1000>;
->   			clocks = <&rcc USBH>;
+> diff --git a/drivers/video/fbdev/au1100fb.c b/drivers/video/fbdev/au1100fb.c
+> index 37a6512feda0..3659dfbb81c1 100644
+> --- a/drivers/video/fbdev/au1100fb.c
+> +++ b/drivers/video/fbdev/au1100fb.c
+> @@ -560,8 +560,7 @@ int au1100fb_drv_suspend(struct platform_device *dev,
+> pm_message_t state) /* Blank the LCD */
+>  	au1100fb_fb_blank(VESA_POWERDOWN, &fbdev->info);
+>  
+> -	if (fbdev->lcdclk)
+> -		clk_disable(fbdev->lcdclk);
+> +	clk_disable(fbdev->lcdclk);
+>  
+>  	memcpy(&fbregs, fbdev->regs, sizeof(struct au1100fb_regs));
+>  
+> @@ -577,8 +576,7 @@ int au1100fb_drv_resume(struct platform_device *dev)
+>  
+>  	memcpy(fbdev->regs, &fbregs, sizeof(struct au1100fb_regs));
+>  
+> -	if (fbdev->lcdclk)
+> -		clk_enable(fbdev->lcdclk);
+> +	clk_enable(fbdev->lcdclk);
+>  
+>  	/* Unblank the LCD */
+>  	au1100fb_fb_blank(VESA_NO_BLANKING, &fbdev->info);
 
-For STM32MP151:
 
-Acked-by: Amelie Delaunay <amelie.delaunay@st.com>
 
-Thanks,
-Amelie
+-- 
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
