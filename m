@@ -2,120 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AA728FAAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8481528FAAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731120AbgJOV3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgJOV3q (ORCPT
+        id S1730969AbgJOV3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:29:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32719 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726365AbgJOV3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:29:46 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5B5C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:29:45 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id ce10so204423ejc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=shNugDWCSFxMFaQhudWs8qBWQPZ07aTny77+Ie1FHlk=;
-        b=WsvessV78yuDktprTp/4iqa3Adv1XtNl2N/v19ZJnZoqVtqW3R89jenV6efR955q/r
-         w/t7xoaoNh7s+6TICZL6hGqJEjkuoQuGozFyTv0FDKf47JoY98kaBG86Az0J9yrlcxxG
-         WWCFFWYtDAiJztGSud9FB31svTcPtnbTB6Mhc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=shNugDWCSFxMFaQhudWs8qBWQPZ07aTny77+Ie1FHlk=;
-        b=QBMWfn3/NbzPeQEK9PVYDF0dKqH7Pgxfoue9yh6miHCBnz1ybu4Vnpovj20UQanghy
-         FjnbEt0TRWr3BltHRJfPY7cMi0Z1v6ZTQXIKLaLbMRLDgGpKIWESR1SURiJSFiJr8NRX
-         5Ksq8HPARuXJCCbKwu5Vj1SuzwKEd0105v0Wu9TPMCvq0b5VK6KyTD3lrMsA16vr/fN0
-         JqHAtXZ1iWGwsJG19k2Sha3cxTl+vW2pMrvmsRPClt9K/QAxDekQus3W+l1uPbexx3pB
-         UoCaHxYyMhWY0wmSTIPEBLzhPYgpiO7dH7oHVVIpW4pXbh4hskcP9npuD2ZZAQnZ2LSE
-         n6gw==
-X-Gm-Message-State: AOAM533lrYEz1fvUBv0WLcnUj4NE5b0rICqlEv8XBFYW2mG5oq7JsCSL
-        G66iFxmE266DeufgVcjS7Yvt/g4NySXOrg==
-X-Google-Smtp-Source: ABdhPJxaD7CyZ2/0M2VNLxFP8slYdbB8fGVvzW9Ka54sM7nxUac5yP0v9iA9S4v0oOMjRO2DSdSx/w==
-X-Received: by 2002:a17:906:350d:: with SMTP id r13mr337279eja.117.1602797383543;
-        Thu, 15 Oct 2020 14:29:43 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id i4sm235518ejz.62.2020.10.15.14.29.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 14:29:42 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id t20so197519edr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:29:42 -0700 (PDT)
-X-Received: by 2002:a50:e40b:: with SMTP id d11mr491296edm.198.1602797381996;
- Thu, 15 Oct 2020 14:29:41 -0700 (PDT)
+        Thu, 15 Oct 2020 17:29:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602797382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kx9DiDH08JaCe0i/mT8On9u7ra92vB1BVSutz2Qc+1Y=;
+        b=JRA2Me5GfW3ujJ7QGO893nj5/Doa+NCYWb0c7XJNhl2LIjr3/y9htOxyIsJgSxT4Dtgf2v
+        ez0EJQqPQ/Qig3mBecOaIMPfwXNsKoSMVSFbFUAnRsImazG2kplR6hp5AL7qbnzhay0o3f
+        bdMmdrlo2O19gZBvUEDcNRYm1WgIEho=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-MkcSJ-buO8aHZbvmQMrHsA-1; Thu, 15 Oct 2020 17:29:38 -0400
+X-MC-Unique: MkcSJ-buO8aHZbvmQMrHsA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D780B835B91;
+        Thu, 15 Oct 2020 21:29:36 +0000 (UTC)
+Received: from treble (ovpn-115-218.rdu2.redhat.com [10.10.115.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9B3961983;
+        Thu, 15 Oct 2020 21:29:34 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 16:29:31 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] arm64: Implement reliable stack trace
+Message-ID: <20201015212931.mh4a5jt7pxqlzxsg@treble>
+References: <20201012172605.10715-1-broonie@kernel.org>
+ <alpine.LSU.2.21.2010151533490.14094@pobox.suse.cz>
+ <20201015141612.GC50416@C02TD0UTHF1T.local>
+ <20201015154951.GD4390@sirena.org.uk>
 MIME-Version: 1.0
-References: <20201013080103.410133-1-amstan@chromium.org> <20201013010056.v2.2.I96b8d872ec51171f19274e43e96cadc092881271@changeid>
- <20201014141946.mkrvpkrttucffkhj@holly.lan>
-In-Reply-To: <20201014141946.mkrvpkrttucffkhj@holly.lan>
-From:   Alexandru M Stan <amstan@chromium.org>
-Date:   Thu, 15 Oct 2020 14:29:05 -0700
-X-Gmail-Original-Message-ID: <CAHNYxRx3J7XUE-hWa8-6_bOePsw1oeY9uuuehy=yCxN2RyqsjQ@mail.gmail.com>
-Message-ID: <CAHNYxRx3J7XUE-hWa8-6_bOePsw1oeY9uuuehy=yCxN2RyqsjQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] ARM: dts: rockchip: veyron: Remove 0 point from brightness-levels
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201015154951.GD4390@sirena.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 7:19 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> On Tue, Oct 13, 2020 at 01:01:02AM -0700, Alexandru Stan wrote:
-> > After the "PWM backlight interpolation adjustments" patches, the
-> > backlight interpolation works a little differently. The way these
-> > dts files were working before was relying on a bug (IMHO).
-> >
-> > Remove the 0-3 range since otherwise we would have a 252 long
-> > interpolation that would slowly go between 0 and 3, looking really bad
-> > in userspace.
-> >
-> > We don't need the 0% point, userspace seems to handle this just fine
-> > because it uses the bl_power property to turn off the display.
-> >
-> > Signed-off-by: Alexandru Stan <amstan@chromium.org>
->
-> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+I can't see the original patch.  Can the original poster (Mark B?) add
+me to Cc on the next version?
 
-Thank you!
+It's also good practice to add lkml as well.  That way, those of us not
+copied can at least find the patch in the archives.
 
->
-> Note also shouldn't this be patch 1 of the set. AFAICT it makes sense
-> whether or not the interpolation algorithm is changed.
+live-patching@vger.kernel.org would also be a good idea for this one.
 
-Yeah, I guess it could be. Sorry I didn't think of it that way before,
-I'm used to landing things in a group.
+On Thu, Oct 15, 2020 at 04:49:51PM +0100, Mark Brown wrote:
+> On Thu, Oct 15, 2020 at 03:16:12PM +0100, Mark Rutland wrote:
+> > On Thu, Oct 15, 2020 at 03:39:37PM +0200, Miroslav Benes wrote:
+> 
+> > > I'll just copy an excerpt from my notes about the required guarantees. 
+> > > Written by Josh (CCed, he has better idea about the problem than me 
+> > > anyway).
+> 
+> > > It also needs to:
+> > > - detect preemption / page fault frames and return an error
+> > > - only return success if it reaches the end of the task stack; for user
+> > >   tasks, that means the syscall barrier; for kthreads/idle tasks, that
+> > >   means finding a defined thread entry point
+> > > - make sure it can't get into a recursive loop
+> > > - make sure each return address is a valid text address
+> > > - properly detect generated code hacks like function graph tracing and
+> > >   kretprobes
+> > > "
+> 
+> > It would be great if we could put something like the above into the
+> > kernel tree, either under Documentation/ or in a comment somewhere for
+> > the reliable stacktrace functions.
+> 
+> Yes, please - the expecations are quite hard to follow at the minute,
+> implementing it involves quite a bit of guesswork and cargo culting to
+> figure out what the APIs are supposed to do.
 
-In particular on veyron I assume it will almost be a noop without
-having my driver patch (especially with the findings of 0% not being
-that important).
+Documentation is indeed long overdue.  I suppose everyone's looking at
+me.  I can do that, but my bandwidth's limited for at least a few weeks.
 
-Feel free to land this independently.
+[ Currently in week 4 of traveling cross-country with a camper
+  ("caravan" in British-speak?), National Lampoon vacation style. ]
 
->
->
-> Daniel.
+If by cargo culting, you mean reverse engineering the requirements due
+to lack of documentation, that's fair.
 
-Alexandru Stan (amstan)
+Otherwise, if you see anything that doesn't make sense or that can be
+improved, let me know.
+
+> > AFAICT, existing architectures don't always handle all of the above in
+> > arch_stack_walk_reliable(). For example, it looks like x86 assumes
+> > unwiding through exceptions is reliable for !CONFIG_FRAME_POINTER, but I
+> > think this might not always be true.
+
+Why not?
+
+What else are the existing arches missing from the above list?
+
+> I certainly wouldn't have inferred the list from what's there :/
+
+Fair, presumably because of missing documentation.
+
+> The searching for a defined thread entry point for example isn't
+> entirely visible in the implementations.
+
+For now I'll speak only of x86, because I don't quite remember how
+powerpc does it.
+
+For thread entry points, aka the "end" of the stack:
+
+- For ORC, the end of the stack is either pt_regs, or -- when unwinding
+  from kthreads, idle tasks, or irqs/exceptions in entry code --
+  UNWIND_HINT_EMPTY (found by the unwinder's check for orc->end.
+
+  [ Admittedly the implementation needs to be cleaned up a bit.  EMPTY
+    is too broad and needs to be split into UNDEFINED and ENTRY. ]
+
+- For frame pointers, by convention, the end of the stack for all tasks
+  is a defined stack offset: end of stack page - sizeof(pt_regs).
+
+And yes, all that needs to be documented.
+
+-- 
+Josh
+
