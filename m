@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AC528F608
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD24F28F610
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731140AbgJOPnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730957AbgJOPnH (ORCPT
+        id S1731174AbgJOPpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:45:46 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:32646 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731115AbgJOPpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:43:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC98C061755;
-        Thu, 15 Oct 2020 08:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UfF27sEhMEzOUuKtPSUEIOacG1Uky8VuZ8tGa3014PI=; b=qiOxssgQW83wNoO58DAw8tk3KM
-        6/ParIJvMZcFbEexanutV1KdiUSZOc3afV+2l385wIqUCM9Bql2GiliQ7M12ViBDqRZMTv6GsgZ7i
-        syWH7IiNDdCFjYdl9rmUk42ULFbtRTpf1BD1qC0MndqdpcL7hGW1qoHq9gVSH0A/HOkXMSTlwbcGf
-        PjGyBfbQF5bpNnaIkY8JQWQiX1CW8OPnbXw5euPHZvPN/fnOYCHsTQ2Kpoq6UaDpavzkVc5nbMwFX
-        GMHLA0c5pnv6/tjJra+LzV/VR7fzT+gd0EZL7JkRykOuyDTrvSIR6OOM8r+VjfPdu6RWp2HQ/8yDh
-        ebdqRieQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT5PA-00027N-RG; Thu, 15 Oct 2020 15:43:00 +0000
-Date:   Thu, 15 Oct 2020 16:43:00 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        David Airlie <airlied@linux.ie>,
-        freedreno@lists.freedesktop.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        iommu@lists.linux-foundation.org,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>
-Subject: Re: [PATCH 2/3] drm/msm: add DRM_MSM_GEM_SYNC_CACHE for non-coherent
- cache maintenance
-Message-ID: <20201015154300.GA8047@infradead.org>
-References: <20201002075321.GA7547@infradead.org>
- <b22fb797-67b0-a912-1d23-2b47c9a9e674@marek.ca>
- <20201005082914.GA31702@infradead.org>
- <3e0b91be-e4a4-4ea5-7d58-6e71b8d51932@marek.ca>
- <20201006072306.GA12834@infradead.org>
- <148a1660-f0fc-7163-2240-6b94725342b5@marek.ca>
- <20201007062519.GA23519@infradead.org>
- <c3baadae-8e20-86a6-44f5-4571a8d3035e@arm.com>
- <20201015065532.GA15371@infradead.org>
- <20201015153334.GF438822@phenom.ffwll.local>
+        Thu, 15 Oct 2020 11:45:46 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09FFXNYu030506;
+        Thu, 15 Oct 2020 17:45:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=FlUps5l1qHs3UktBsfAqXmT7hDBXF55BDMjiS5k1x7Y=;
+ b=NnlY2B+UeYSZo/SFQkGwmcD8r7wIyOUdTGpu3ltoloIfmHj9aJ2KHi4gO1LAbJMlrzCW
+ r08UwbkP0LdFAZl5S8155tLHSA1oaIoGlNuQ6KHEy3O55gkdlXC/6t9r1wW9Demx6SSM
+ +Pc0B3asM1TnVBD1FCtwwHpP9M9r9Q+5E0mRD/XUAABGPkldPVeL7DEem7Q/xh6BR1gF
+ Hk+FwUkMmU6PpCt3chbyfKACed64VSbHFsLkgGqzM/pY0JPycEwFQMZZOLRkqw86vA1g
+ r753221eIgs51gOmZ8uSyjoo8X6c/Qe55+/mDuJR0Sb13czfC3dfOEZDfeTpYsM7PToX 2Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34356enyr4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Oct 2020 17:45:30 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BA2CA10002A;
+        Thu, 15 Oct 2020 17:45:25 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 641392CA83C;
+        Thu, 15 Oct 2020 17:45:25 +0200 (CEST)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 15 Oct
+ 2020 17:45:24 +0200
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1473.003; Thu, 15 Oct 2020 17:45:24 +0200
+From:   Philippe CORNU <philippe.cornu@st.com>
+To:     Rob Herring <robh@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "Florian Fainelli" <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "bcm-kernel-feedback-list@broadcom.com" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        =?utf-8?B?R3VpZG8gR8O6bnRoZXI=?= <agx@sigxcpu.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Yannick FERTRE <yannick.fertre@st.com>
+Subject: Re: [PATCH] dt-bindings: display: Add dsi-controller.yaml in DSI
+ controller schemas
+Thread-Topic: [PATCH] dt-bindings: display: Add dsi-controller.yaml in DSI
+ controller schemas
+Thread-Index: AQHWmQ+ulgrOjTAQxEucP5u428qq1amYwL0A
+Date:   Thu, 15 Oct 2020 15:45:24 +0000
+Message-ID: <96cfe905-6d6b-646f-8b81-c4deb110d13c@st.com>
+References: <20201002225924.3513700-1-robh@kernel.org>
+In-Reply-To: <20201002225924.3513700-1-robh@kernel.org>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.45]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <554B802CDF0F7B47B9FA5FABAD1C4879@st.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015153334.GF438822@phenom.ffwll.local>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-15_09:2020-10-14,2020-10-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 05:33:34PM +0200, Daniel Vetter wrote:
-> On Thu, Oct 15, 2020 at 07:55:32AM +0100, Christoph Hellwig wrote:
-> > On Tue, Oct 13, 2020 at 02:42:38PM +0100, Robin Murphy wrote:
-> > > I still think this situation would be best handled with a variant of
-> > > dma_ops_bypass that also guarantees to bypass SWIOTLB, and can be set
-> > > automatically when attaching to an unmanaged IOMMU domain.
-> > 
-> > dma_ops_bypass should mostly do the right thing as-is.  swiotlb bouncing
-> > is triggered of two things:
-> > 
-> >  1) the dma_mask.  This is under control of the driver, and obviously
-> >     if it is too small for a legit reason we can't just proceed
-> 
-> Somewhat related, but is there a way to tell the dma-api to fail instead
-> of falling back to swiotlb? In many case for gpu drivers it's much better
-> if we fall back to dma_alloc_coherent and manage the copying ourselves
-> instead of abstracting this away in the dma-api. Currently that's "solved"
-> rather pessimistically by always allocating from dma_alloc_coherent if
-> swiotlb could be in the picture (at least for ttm based drivers, i915 just
-> falls over).
-
-Is this for the alloc_pages plus manually map logic in various drivers?
-
-They should switch to the new dma_alloc_pages API that I'll send to
-Linus for 5.10 soon.
+DQoNCk9uIDEwLzMvMjAgMTI6NTkgQU0sIFJvYiBIZXJyaW5nIHdyb3RlOg0KPiBTb21lIERTSSBj
+b250cm9sbGVycyBhcmUgbWlzc2luZyBhIHJlZmVyZW5jZSB0byB0aGUgcmVjZW50bHkgYWRkZWQN
+Cj4gZHNpLWNvbnRyb2xsZXIueWFtbCBzY2hlbWEuIEFkZCBpdCBhbmQgd2UgY2FuIGRyb3AgdGhl
+IGR1cGxpY2F0ZSBwYXJ0cy4NCj4gDQo+IENjOiBNYXhpbWUgUmlwYXJkIDxtcmlwYXJkQGtlcm5l
+bC5vcmc+DQo+IENjOiBDaGVuLVl1IFRzYWkgPHdlbnNAY3NpZS5vcmc+DQo+IENjOiBFcmljIEFu
+aG9sdCA8ZXJpY0BhbmhvbHQubmV0Pg0KPiBDYzogTmljb2xhcyBTYWVueiBKdWxpZW5uZSA8bnNh
+ZW56anVsaWVubmVAc3VzZS5kZT4NCj4gQ2M6IEZsb3JpYW4gRmFpbmVsbGkgPGYuZmFpbmVsbGlA
+Z21haWwuY29tPg0KPiBDYzogUmF5IEp1aSA8cmp1aUBicm9hZGNvbS5jb20+DQo+IENjOiBTY290
+dCBCcmFuZGVuIDxzYnJhbmRlbkBicm9hZGNvbS5jb20+DQo+IENjOiBiY20ta2VybmVsLWZlZWRi
+YWNrLWxpc3RAYnJvYWRjb20uY29tDQo+IENjOiBNYXhpbWUgQ29xdWVsaW4gPG1jb3F1ZWxpbi5z
+dG0zMkBnbWFpbC5jb20+DQo+IENjOiBBbGV4YW5kcmUgVG9yZ3VlIDxhbGV4YW5kcmUudG9yZ3Vl
+QHN0LmNvbT4NCj4gQ2M6ICJHdWlkbyBHw7pudGhlciIgPGFneEBzaWd4Y3B1Lm9yZz4NCj4gQ2M6
+IFJvYmVydCBDaGlyYXMgPHJvYmVydC5jaGlyYXNAbnhwLmNvbT4NCj4gQ2M6IFBoaWxpcHBlIENv
+cm51IDxwaGlsaXBwZS5jb3JudUBzdC5jb20+DQoNCg0KSGkgUm9iLA0KYW5kIG1hbnkgdGhhbmtz
+IGZvciB0aGUgcGF0Y2guDQpGb3IgdGhlIHN0bTMyIHBhcnQsDQpSZXZpZXdlZC1ieTogUGhpbGlw
+cGUgQ29ybnUgPHBoaWxpcHBlLmNvcm51QHN0LmNvbT4NCg0KUGhpbGlwcGUgOi0p
