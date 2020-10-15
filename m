@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEA628FAC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548A828FAD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729991AbgJOVoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:44:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50268 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729254AbgJOVoi (ORCPT
+        id S1731574AbgJOVq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731550AbgJOVqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:44:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602798276;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mpuNHZgzNVhYq85pnOEXEuCpteLYCDH+aPUQTLrccAI=;
-        b=W5CH9HZ0ol6EkKrRb9yLwofaXd3bTn4aC7rGn1B+TITBbd0x8PmuYfNuZvJOPdTnYJ0vM2
-        Exnw+iYTArvz26NOhcMLYMJPXq+69lboz063OtyJW6ITeTUfgNoFabXk40hcOcLyhjGG4k
-        IgPSDOsRbT5GiaM1sYzcmuwh9x9Pz0o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-Ftts9uMfPl-YR3YS8Fd97A-1; Thu, 15 Oct 2020 17:44:35 -0400
-X-MC-Unique: Ftts9uMfPl-YR3YS8Fd97A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3D34186841C;
-        Thu, 15 Oct 2020 21:44:33 +0000 (UTC)
-Received: from jsnitsel.users.ipa.redhat.com (ovpn-112-224.phx2.redhat.com [10.3.112.224])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F009176649;
-        Thu, 15 Oct 2020 21:44:32 +0000 (UTC)
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jarkko@kernel.org,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Subject: [PATCH] tpm_tis: Disable interrupts on ThinkPad T490s
-Date:   Thu, 15 Oct 2020 14:44:30 -0700
-Message-Id: <20201015214430.17937-1-jsnitsel@redhat.com>
+        Thu, 15 Oct 2020 17:46:54 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488F4C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:46:54 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id m20so357423ljj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 14:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a9gZ8lYF2EW505x+JyXeny8rTd7MbNGj3JLfR6MUhlo=;
+        b=kuR/AbH7x+hmbwvGfJ5+8q4/+6pF2yz6W0LrrDltCJUDKHZM4Kb1EVMuMgO0AhgfQa
+         uZBJJpPlTf/0SRt4QiehnBvwkPrbC0GAFy3B5Xgk/Ua8utj/kVRiVlF6fbaRf2eSRtUl
+         7Rj/ldq3FRLQKZIirGmFiNaBvaROil0RQll1Yxh8/A+A6xu2zsR+uEJNJTyMK+oUNHjR
+         J6y5b1EHXob+75GNg13CkosgyJ2vA5djfl0VnJZM6I7orPWjr/jqAYs93o0iJg1Oc27D
+         /JbrAMxE1d1c4ZXhRl/YTMtAI+D6AqMMK6LBu/b8wodBPRhZWw6Gf8GFu8eusJheDeqI
+         Gdng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a9gZ8lYF2EW505x+JyXeny8rTd7MbNGj3JLfR6MUhlo=;
+        b=sTFBS/5LlXm39PwfXEiqPI8OEC0COWqp6mT7ouevqQrTD1hhIEULjODPbPKYiTVzWn
+         SMFKVwpjInboUZ0ShrinVHZi+qmVmFnWZKZMiB6EFF15HKRDh4bHs7UQMWgTEZ7k6K1a
+         66TliXathYsE1EvP2OzsLrkL373rcTI6Teyc5GryzmN55rFnoPALM2xm3fwqhECgETx9
+         8J4bjdm6bYvYeT3fZ+uaXKiYUpcxo0evWd39ErzfgD+SiIBh7lefd5RwMu+iFeQZEZcB
+         bUWEUla/dGsoEsdTVpMJhCfArQve0VLkd4790DLCxTNz/goxMDkqhNgNpn9iJCmbliL0
+         14DQ==
+X-Gm-Message-State: AOAM531/uCydFmt3sedgZpNQGeU0rVxrriYnznUTPK8UhX1nT5kWcK95
+        Og8YIbfe7YZ2HrA8TN74JLSGy3e1RQJT6onG2ckoIA==
+X-Google-Smtp-Source: ABdhPJyzFrqu+sIWzpcIUx+uZBYMlQO3PmR/MAulNcxE1w150usYa/yZy5hTFe1IovBsXMrDQikCbAjUEBSsWCj5kog=
+X-Received: by 2002:a2e:9f13:: with SMTP id u19mr269106ljk.160.1602798412476;
+ Thu, 15 Oct 2020 14:46:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <202010160523.r8yMbvrW-lkp@intel.com>
+In-Reply-To: <202010160523.r8yMbvrW-lkp@intel.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 15 Oct 2020 23:46:26 +0200
+Message-ID: <CAG48ez3VixjDrMnz6+7JjGW_ZLZCD4+dTYWUD_tNOcfEfpu1Bg@mail.gmail.com>
+Subject: Re: [linux-stable-rc:linux-5.4.y 665/2391] drivers/android/binder.c:3776:
+ Error: unrecognized keyword/register name `l.lwz
+To:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org
+Cc:     kbuild-all@lists.01.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martijn Coenen <maco@android.com>,
+        kernel test robot <lkp@intel.com>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a misconfiguration in the bios of the gpio pin used for the
-interrupt in the T490s. When interrupts are enabled in the tpm_tis
-driver code this results in an interrupt storm. This was initially
-reported when we attempted to enable the interrupt code in the tpm_tis
-driver, which previously wasn't setting a flag to enable it. Due to
-the reports of the interrupt storm that code was reverted and we went back
-to polling instead of using interrupts. Now that we know the T490s problem
-is a firmware issue, add code to check if the system is a T490s and
-disable interrupts if that is the case. This will allow us to enable
-interrupts for everyone else. If the user has a fixed bios they can
-force the enabling of interrupts with tpm_tis.interrupts=1 on the
-kernel command line.
++openrisc folks
 
-Cc: jarkko@kernel.org
-Cc: Peter Huewe <peterhuewe@gmx.de>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
----
- drivers/char/tpm/tpm_tis.c | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
+On Thu, Oct 15, 2020 at 11:28 PM kernel test robot <lkp@intel.com> wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> head:   85b0841aab15c12948af951d477183ab3df7de14
+> commit: c5665cafbedd2e2a523fe933e452391a02d3adb3 [665/2391] binder: Prevent context manager from incrementing ref 0
+> config: openrisc-randconfig-r002-20201014 (attached as .config)
+> compiler: or1k-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=c5665cafbedd2e2a523fe933e452391a02d3adb3
+>         git remote add linux-stable-rc https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>         git fetch --no-tags linux-stable-rc linux-5.4.y
+>         git checkout c5665cafbedd2e2a523fe933e452391a02d3adb3
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=openrisc
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/android/binder.c: Assembler messages:
+> >> drivers/android/binder.c:3776: Error: unrecognized keyword/register name `l.lwz ?ap,4(r25)'
+>    drivers/android/binder.c:3781: Error: unrecognized keyword/register name `l.addi ?ap,r0,0'
 
-diff --git a/drivers/char/tpm/tpm_tis.c b/drivers/char/tpm/tpm_tis.c
-index 0b214963539d..4ed6e660273a 100644
---- a/drivers/char/tpm/tpm_tis.c
-+++ b/drivers/char/tpm/tpm_tis.c
-@@ -27,6 +27,7 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/kernel.h>
-+#include <linux/dmi.h>
- #include "tpm.h"
- #include "tpm_tis_core.h"
- 
-@@ -49,8 +50,8 @@ static inline struct tpm_tis_tcg_phy *to_tpm_tis_tcg_phy(struct tpm_tis_data *da
- 	return container_of(data, struct tpm_tis_tcg_phy, priv);
- }
- 
--static bool interrupts = true;
--module_param(interrupts, bool, 0444);
-+static int interrupts = -1;
-+module_param(interrupts, int, 0444);
- MODULE_PARM_DESC(interrupts, "Enable interrupts");
- 
- static bool itpm;
-@@ -63,6 +64,28 @@ module_param(force, bool, 0444);
- MODULE_PARM_DESC(force, "Force device probe rather than using ACPI entry");
- #endif
- 
-+static int tpm_tis_disable_irq(const struct dmi_system_id *d)
-+{
-+	if (interrupts == -1) {
-+		pr_notice("tpm_tis: %s detected: disabling interrupts.\n", d->ident);
-+		interrupts = 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct dmi_system_id tpm_tis_dmi_table[] = {
-+	{
-+		.callback = tpm_tis_disable_irq,
-+		.ident = "ThinkPad T490s",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad T490s"),
-+		},
-+	},
-+	{}
-+};
-+
- #if defined(CONFIG_PNP) && defined(CONFIG_ACPI)
- static int has_hid(struct acpi_device *dev, const char *hid)
- {
-@@ -192,6 +215,8 @@ static int tpm_tis_init(struct device *dev, struct tpm_info *tpm_info)
- 	int irq = -1;
- 	int rc;
- 
-+	dmi_check_system(tpm_tis_dmi_table);
-+
- 	rc = check_acpi_tpm2(dev);
- 	if (rc)
- 		return rc;
--- 
-2.28.0
+binder is basically doing this:
 
+u64 data_ptr;
+if (get_user(data_ptr, (u64 __user *)ptr))
+  return -EFAULT;
+
+and GCC complains that that doesn't turn into valid assembly on
+openrisc, where get_user() of size 8 expands into this:
+
+#define __get_user_asm2(x, addr, err)                   \
+{                                                       \
+        unsigned long long __gu_tmp;                    \
+        __asm__ __volatile__(                           \
+                "1:     l.lwz %1,0(%2)\n"               \
+                "2:     l.lwz %H1,4(%2)\n"              \
+                "3:\n"                                  \
+                ".section .fixup,\"ax\"\n"              \
+                "4:     l.addi %0,r0,%3\n"              \
+                "       l.addi %1,r0,0\n"               \
+                "       l.addi %H1,r0,0\n"              \
+                "       l.j 3b\n"                       \
+                "       l.nop\n"                        \
+                ".previous\n"                           \
+                ".section __ex_table,\"a\"\n"           \
+                "       .align 2\n"                     \
+                "       .long 1b,4b\n"                  \
+                "       .long 2b,4b\n"                  \
+                ".previous"                             \
+                : "=r"(err), "=&r"(__gu_tmp)            \
+                : "r"(addr), "i"(-EFAULT), "0"(err));   \
+        (x) = (__typeof__(*(addr)))(                    \
+                (__typeof__((x)-(x)))__gu_tmp);         \
+}
+
+and apparently the "l.lwz %H1,4(%2)" and "l.addi %H1,r0,0" don't turn
+into valid assembly when %H1 expands to "?ap"?
+
+I don't know anything about OpenRISC, but this seems like it's
+probably an issue in the get_user() implementation.
