@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA7628EE94
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2124D28EE9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgJOIfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:35:24 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45889 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727121AbgJOIfX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:35:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UC5QO15_1602750919;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UC5QO15_1602750919)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 15 Oct 2020 16:35:20 +0800
-Date:   Thu, 15 Oct 2020 16:35:19 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
+        id S1730367AbgJOIgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:36:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729723AbgJOIgM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:36:12 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 576012075B;
+        Thu, 15 Oct 2020 08:36:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602750971;
+        bh=hP94CwWS7xvhTtF8wHiWx81RZLTLeMuk1epq5z2bU60=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Txd/JrrpLD6X5BUFspoeQ16zqYuMvFY/nGUubsShJbaDZD/vXpFyWkRVj1Db6IsFt
+         sP2wBydRlaO/qSJTch7wm2jzfKeziqjJgYgqPtA5Z/sPQwdIOEOL6oree26WZRVPbN
+         z3oI29eBZ5kFodoa2KvHQwD5FsU9Q5D0mDLAr5VA=
+Date:   Thu, 15 Oct 2020 09:36:05 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gavin Shan <gshan@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        David Hildenbrand <david@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Subject: Re: [PATCH v1 08/29] virtio-mem: drop last_mb_id
-Message-ID: <20201015083519.GG86495@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-9-david@redhat.com>
+        Steven Price <steven.price@arm.com>
+Subject: Re: [PATCH v3] arm64/mm: add fallback option to allocate virtually
+ contiguous memory
+Message-ID: <20201015083605.GA4537@willie-the-truck>
+References: <cover.1602722808.git.sudaraja@codeaurora.org>
+ <d6c06f2ef39bbe6c715b2f6db76eb16155fdcee6.1602722808.git.sudaraja@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201012125323.17509-9-david@redhat.com>
+In-Reply-To: <d6c06f2ef39bbe6c715b2f6db76eb16155fdcee6.1602722808.git.sudaraja@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 02:53:02PM +0200, David Hildenbrand wrote:
->No longer used, let's drop it.
->
->Cc: "Michael S. Tsirkin" <mst@redhat.com>
->Cc: Jason Wang <jasowang@redhat.com>
->Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
->Signed-off-by: David Hildenbrand <david@redhat.com>
-
-If above two patches are merged.
-
-Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-
->---
-> drivers/virtio/virtio_mem.c | 4 ----
-> 1 file changed, 4 deletions(-)
->
->diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
->index 37a0e338ae4a..5c93f8a65eba 100644
->--- a/drivers/virtio/virtio_mem.c
->+++ b/drivers/virtio/virtio_mem.c
->@@ -84,8 +84,6 @@ struct virtio_mem {
+On Wed, Oct 14, 2020 at 05:51:23PM -0700, Sudarshan Rajagopalan wrote:
+> When section mappings are enabled, we allocate vmemmap pages from
+> physically continuous memory of size PMD_SIZE using
+> vmemmap_alloc_block_buf(). Section mappings are good to reduce TLB
+> pressure. But when system is highly fragmented and memory blocks are
+> being hot-added at runtime, its possible that such physically continuous
+> memory allocations can fail. Rather than failing the memory hot-add
+> procedure, add a fallback option to allocate vmemmap pages from
+> discontinuous pages using vmemmap_populate_basepages().
 > 
-> 	/* Id of the first memory block of this device. */
-> 	unsigned long first_mb_id;
->-	/* Id of the last memory block of this device. */
->-	unsigned long last_mb_id;
-> 	/* Id of the last usable memory block of this device. */
-> 	unsigned long last_usable_mb_id;
-> 	/* Id of the next memory bock to prepare when needed. */
->@@ -1689,8 +1687,6 @@ static int virtio_mem_init(struct virtio_mem *vm)
-> 	vm->first_mb_id = virtio_mem_phys_to_mb_id(vm->addr - 1 +
-> 						   memory_block_size_bytes());
-> 	vm->next_mb_id = vm->first_mb_id;
->-	vm->last_mb_id = virtio_mem_phys_to_mb_id(vm->addr +
->-			 vm->region_size) - 1;
-> 
-> 	dev_info(&vm->vdev->dev, "start address: 0x%llx", vm->addr);
-> 	dev_info(&vm->vdev->dev, "region size: 0x%llx", vm->region_size);
->-- 
->2.26.2
+> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Logan Gunthorpe <logang@deltatee.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Steven Price <steven.price@arm.com>
+> ---
+>  arch/arm64/mm/mmu.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 
--- 
-Wei Yang
-Help you, Help me
+Please can you fix the subject? I have three copies of "PATCH v3" from
+different days in my inbox. I know it sounds trivial, but getting these
+little things right really helps with review, especially when it's sitting
+amongst a sea of other patches.
+
+Thanks,
+
+Will
