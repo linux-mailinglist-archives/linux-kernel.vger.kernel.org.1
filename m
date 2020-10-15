@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC99828F5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BAD28F5D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389690AbgJOP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:27:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48030 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389212AbgJOP1P (ORCPT
+        id S2388549AbgJOP3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388357AbgJOP3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:27:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602775634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TG2AUrfxhLY/L3sbUtf1bcZcGZTtMmaOPuFCfyv4d/g=;
-        b=Cf0JTtnjRX/JUNdJ3m/MXzpk7AXLnnq8FTTBxci+s6YcP8EmS9lHrl8sW65cgEYISjrVn7
-        DIUFFDCCHEHibx265KsiSJvY0Sf+gyQmknZWF986Uv1nKGohu/4eNsSOsr7tkXvFnOFPOU
-        5RorA3i+mwLnbYx70w+BIiU+vGrSpdY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-OmhcBhRnMLCAHN0wX7eWAg-1; Thu, 15 Oct 2020 11:27:12 -0400
-X-MC-Unique: OmhcBhRnMLCAHN0wX7eWAg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E74451084D85;
-        Thu, 15 Oct 2020 15:27:10 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7D43C6EF54;
-        Thu, 15 Oct 2020 15:27:09 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 15 Oct 2020 17:27:10 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 17:27:08 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, peterz@infradead.org
-Subject: Re: [PATCH 3/5] kernel: add support for TIF_NOTIFY_SIGNAL
-Message-ID: <20201015152707.GL24156@redhat.com>
-References: <20201015131701.511523-1-axboe@kernel.dk>
- <20201015131701.511523-4-axboe@kernel.dk>
- <20201015143151.GB24156@redhat.com>
- <5d231aa1-b8c7-ae4e-90bb-211f82b57547@kernel.dk>
- <20201015143728.GE24156@redhat.com>
- <87r1pzv8hy.fsf@nanos.tec.linutronix.de>
+        Thu, 15 Oct 2020 11:29:17 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CFEC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:29:17 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id x1so797497ooo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LJwfZvZzZbL3U3dsefi4j72Jm0TppMPnsxaVcVl6iT0=;
+        b=jiwyZuJU82zqfM3xXQZkNpewO6fCkqA7igabDZ79l9dEml7MlNt9/W6KspOKdTFMBv
+         l0ZZKLNyCyInH/bWkyXoNA3+A+JhbIMgDBR1thG0QOHKB4hsUrxgAlsNauv981ymHMte
+         aG33qVap5atzCP8H/NRFqSDXso79lnD2nYDfc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LJwfZvZzZbL3U3dsefi4j72Jm0TppMPnsxaVcVl6iT0=;
+        b=tIrqWqygLENficvjysb6vICggn2LgSd9Zz2cF3+WBIDE38rqXtjtmd2QPIM3Z6u21t
+         IOIkiAT65N4PXKz2i4WJx11i7r6e7wjt6wsSpieViAMGc9hsSofp1/0NHY2qO9K6KjXB
+         qA9RU4eCwARiteb+fmi5FO0RVKSRMyTeXplqZ5E9K8tldYFkG72X5aSERMOguevSdmnC
+         88pZZa1JuKus+up69PSI0Lx1XADLOIZa72F/njCFi+nPqcOMMsB5wQzYeSXuzqtONRMo
+         gTuimUqSWWHEyA5i1bJF5i+Nh58uH7VGpUW0pZVv1BJ66uQ2e6JFbsD+Ey4dSvlBhBZO
+         LmKQ==
+X-Gm-Message-State: AOAM530XuCz+XC60RPFPuL2t2IzVa0+HhXzZJjDIS6XWgI/7X7QI9N+Z
+        dcOtfdgq2mL8VTUo0AuQcfLCw1CIlVMcCN6iSoxPxg==
+X-Google-Smtp-Source: ABdhPJwHGqKFcBCVEj4Z9lD8mpPIRoQJxs6gS7mqbJLVOqKjzGL3o2Yivo5QSuS7JTOQT9EJ/KzY1r55eHOicMya4wY=
+X-Received: by 2002:a4a:e1d7:: with SMTP id n23mr2788554oot.85.1602775756786;
+ Thu, 15 Oct 2020 08:29:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1pzv8hy.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-15-daniel.vetter@ffwll.ch> <20201009123109.GO5177@ziepe.ca>
+ <CAKMK7uFpPP-Q0jC0vM7vYPEcg0m4NzTw+Ld=swdTF3BgMX5Qug@mail.gmail.com>
+ <20201009143209.GS5177@ziepe.ca> <CAPcyv4j54O8ac6WB3LEeNud2r11V26gA0PRKK9bhyEMF67AXtQ@mail.gmail.com>
+ <20201015000939.GD6763@ziepe.ca>
+In-Reply-To: <20201015000939.GD6763@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu, 15 Oct 2020 17:29:05 +0200
+Message-ID: <CAKMK7uGeVzbe3=FR=a5MEfzDsrog6D4+Bkiaj8FrVeOLu3-9Mw@mail.gmail.com>
+Subject: Re: [PATCH v2 14/17] resource: Move devmem revoke code to resource framework
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15, Thomas Gleixner wrote:
+On Thu, Oct 15, 2020 at 2:09 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Thu, Oct 15 2020 at 16:37, Oleg Nesterov wrote:
-> > On 10/15, Jens Axboe wrote:
-> >> On 10/15/20 8:31 AM, Oleg Nesterov wrote:
-> >> > I don't understand why does this version requires CONFIG_GENERIC_ENTRY.
-> >> >
-> >> > Afaics, it is very easy to change all the non-x86 arches to support
-> >> > TIF_NOTIFY_SIGNAL, but it is not trivial to change them all to use
-> >> > kernel/entry/common.c ?
-> >>
-> >> I think that Thomas wants to gate TIF_NOTIFY_SIGNAL on conversion to
-> >> the generic entry code?
+> On Fri, Oct 09, 2020 at 11:28:54AM -0700, Dan Williams wrote:
+> > On Fri, Oct 9, 2020 at 7:32 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Fri, Oct 09, 2020 at 04:24:45PM +0200, Daniel Vetter wrote:
+> > > > On Fri, Oct 9, 2020 at 2:31 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > >
+> > > > > On Fri, Oct 09, 2020 at 09:59:31AM +0200, Daniel Vetter wrote:
+> > > > >
+> > > > > > +struct address_space *iomem_get_mapping(void)
+> > > > > > +{
+> > > > > > +     return iomem_inode->i_mapping;
+> > > > >
+> > > > > This should pair an acquire with the release below
+> > > > >
+> > > > > > +     /*
+> > > > > > +      * Publish /dev/mem initialized.
+> > > > > > +      * Pairs with smp_load_acquire() in revoke_iomem().
+> > > > > > +      */
+> > > > > > +     smp_store_release(&iomem_inode, inode);
+> > > > >
+> > > > > However, this seems abnormal, initcalls rarely do this kind of stuff
+> > > > > with global data..
+> > > > >
+> > > > > The kernel crashes if this fs_initcall is raced with
+> > > > > iomem_get_mapping() due to the unconditional dereference, so I think
+> > > > > it can be safely switched to a simple assignment.
+> > > >
+> > > > Ah yes I checked this all, but forgot to correctly annotate the
+> > > > iomem_get_mapping access. For reference, see b34e7e298d7a ("/dev/mem:
+> > > > Add missing memory barriers for devmem_inode").
+> > >
+> > > Oh yikes, so revoke_iomem can run concurrently during early boot,
+> > > tricky.
 > >
-> > Then I think TIF_NOTIFY_SIGNAL will be never fully supported ;)
+> > It runs early because request_mem_region() can run before fs_initcall.
+> > Rather than add an unnecessary lock just arrange for the revoke to be
+> > skipped before the inode is initialized. The expectation is that any
+> > early resource reservations will block future userspace mapping
+> > attempts.
 >
-> Yeah, we proliferate crap on that basis forever. _ALL_ architectures
-> have the very same entry/exit ordering problems (or subsets and
-> different ones) which we fixed on x86.
->
-> So no, we don't want to have 24 different variants of the same thing
-> again. That's what common code is for.
->
-> Not doing that is making the life of everyone working on core
-> infrastructure pointlessly harder. Architecture people still have enough
-> ways to screw everyone up.
+> Actually, on this point a simple WRITE_ONCE/READ_ONCE pairing is OK,
+> Paul once explained that the pointer chase on the READ_ONCE side is
+> required to be like an acquire - this is why rcu_dereference is just
+> READ_ONCE
 
-Sure, it would be nice to change them all to use kernel/entry/common.c.
-
-Until then (until never), how can we kill JOBCTL_TASK_WORK ?
-
-How can we remove freezing/klp_patch_pending from recalc_sigpending() ?
-
-Oleg.
-
+Hm so WRITE_ONCE doesn't have any barriers, and we'd need that for
+updating the pointer. That would leave things rather inconsistent, so
+I think I'll just leave it as-is for symmetry reasons. None of this
+code matters for performance anyway, so micro-optimizing barriers
+seems a bit silly.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
