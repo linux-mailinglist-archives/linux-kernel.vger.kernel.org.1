@@ -2,198 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4725728F309
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84BB28F30F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729236AbgJONRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728879AbgJONRL (ORCPT
+        id S1729355AbgJONRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:17:53 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:50468 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729250AbgJONRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:17:11 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD9DC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:17:11 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t18so3966257ilo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ySJmiV6pZ66encLr0ACqPd40Yi3LeN6xjC4l1TOnISo=;
-        b=cuMDln4JOHqPAw7CdzjmLn/iTyTCZbvI5OegfIljamRYynOsZJF258Zo0WBgr5B3Gl
-         9xOANGq9UC19YEd5vBqsLBAWr7JlgX2gJfO1YD2YOIdv0XefWlkFZoSaGI9VLKYLAs1q
-         MfJpT0dYe3ccWLqx/S+sQrSMgdSr2dqmLsvRnJHffDvp7XwFgnpkPfX49cJPLyQPgU7W
-         aJ19G08YWvThbbLaNk4PghTaIxcFNPcgxFKlfDu2m+lRgkmiyftPEI8bXukbVFgrPMLM
-         SF53F4yxeaOtzaegMSW6xCuAS1E/vX7Izqvu1Mww2zHNcZJqPsTmjXPJkZwW7Q76QwbU
-         7UQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ySJmiV6pZ66encLr0ACqPd40Yi3LeN6xjC4l1TOnISo=;
-        b=RXcIO6aLocJ0S5H4OqQ58Z0X9Ub04a196gOC+yFINqhwM4rAcQF5kTMpn14Lpl9rgC
-         DI1hv/4JCOJDzXbyyM0c8tH50shxj7p0WYnF8yQ+KQ1oV+RQ0WnF56+LidY546HwBmF+
-         qpEq0YeSEoZibIe5tWXrEbGMT1N4GubgqpbZhL3AoutdpsjuTggFdAz+3yuPyxsIjWdo
-         yvJIp5vR+gBHZ53Qj0wESFG2YLIqrkdM44xW2zftzXRLyrmjrihDzZnpHAa/GKXwoviQ
-         LpURS2jMLakxXUln5bUzhVF10c3apCP3DLSRhmwlTvxxk71T3vvujPMrtGGYRHebVbOj
-         cIiw==
-X-Gm-Message-State: AOAM533tdbp2ZgdHkaeyzZTEA64zuyfQYL4124AfgK45VdiJ4WcVKhzj
-        2+ZP4n+u6+gGDJVMj4YpYgZOFKUWZ647Rw==
-X-Google-Smtp-Source: ABdhPJwtRjttjEB+sPxJzGX2aecJn5FFPN8CcvG60eskaRhV1o/QypGaIs2YvQvfCMBXx6nji1dUVw==
-X-Received: by 2002:a05:6e02:d01:: with SMTP id g1mr2901622ilj.246.1602767830328;
-        Thu, 15 Oct 2020 06:17:10 -0700 (PDT)
-Received: from p1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id m13sm2486736ioo.9.2020.10.15.06.17.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 06:17:09 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de,
-        Jens Axboe <axboe@kernel.dk>,
-        Roman Gershman <romger@amazon.com>
-Subject: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
-Date:   Thu, 15 Oct 2020 07:17:01 -0600
-Message-Id: <20201015131701.511523-6-axboe@kernel.dk>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201015131701.511523-1-axboe@kernel.dk>
-References: <20201015131701.511523-1-axboe@kernel.dk>
+        Thu, 15 Oct 2020 09:17:53 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FDEf3v097962;
+        Thu, 15 Oct 2020 13:17:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=dOOcmqv3ORCOAQisi0SZNKKf+PzDDb3epMdS0uvDdiQ=;
+ b=VsOcvhb/uE1AkiuqhIwYpyoaN2Y0JlpwCeSOVkau9AH/4eZFn/KDGFORo2EHy2Ivp+0n
+ upg8dsUz8m1RWjevnlwLIFlufFPG82PUcLhzD90Kl3KKa22VgxVcHF/wVJ/WJhTOvSwV
+ SDt7rKpbcRth3EkaqnpwJweZcYo3ya1njakx1T8bz5ICbfAlJeFtR4UOJrq9WhKjJh9f
+ TN9wOifglj3rLEdZdK1rUeKtTFzErdMlr+8sQDGhvcW189z/Lh+fscQ0NYnwW4Pq/rCx
+ dkJfm75foKZUPaY1Wx10v/zryN9SqgraHQqv0Bd9vwDhZPga09HMwhxVtPivsGIzdx73 JQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 346g8ghsak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Oct 2020 13:17:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09FDEdKd025936;
+        Thu, 15 Oct 2020 13:17:17 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 343pw0brsa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Oct 2020 13:17:17 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09FDHEhc024698;
+        Thu, 15 Oct 2020 13:17:15 GMT
+Received: from [10.39.226.219] (/10.39.226.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Oct 2020 06:17:14 -0700
+Subject: Re: [PATCH 2/2] xen: Kconfig: nest Xen guest options
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Jason Andryuk <jandryuk@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <20201014175342.152712-1-jandryuk@gmail.com>
+ <20201014175342.152712-3-jandryuk@gmail.com>
+ <6cd9363c-ac0c-ea68-c8e7-9fd3cd30a89b@oracle.com>
+ <4e31301b-0e57-ac89-cd71-6ad5e1a66628@citrix.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <b097aec1-e549-a89a-ce43-e9c0a71179f2@oracle.com>
+Date:   Thu, 15 Oct 2020 09:17:12 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4e31301b-0e57-ac89-cd71-6ad5e1a66628@citrix.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150094
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 spamscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010150094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the arch supports TIF_NOTIFY_SIGNAL, then use that for TWA_SIGNAL as
-it's more efficient than using the signal delivery method. This is
-especially true on threaded applications, where ->sighand is shared
-across threads, but it's also lighter weight on non-shared cases.
 
-io_uring is a heavy consumer of TWA_SIGNAL based task_work. On my test
-box, even just using 16 threads shows a nice improvement running an
-io_uring based echo server.
+On 10/15/20 9:10 AM, Andrew Cooper wrote:
+> On 15/10/2020 13:37, boris.ostrovsky@oracle.com wrote:
+>> On 10/14/20 1:53 PM, Jason Andryuk wrote:
+>>> +config XEN_512GB
+>>> +	bool "Limit Xen pv-domain memory to 512GB"
+>>> +	depends on XEN_PV && X86_64
+>> Why is X86_64 needed here?
+>> 512G support was implemented using a direct-mapped P2M, and is rather
+> beyond the virtual address capabilities of 32bit.
+>
 
-stock kernel:
-0.01% <= 0.1 milliseconds
-95.86% <= 0.2 milliseconds
-98.27% <= 0.3 milliseconds
-99.71% <= 0.4 milliseconds
-100.00% <= 0.5 milliseconds
-100.00% <= 0.6 milliseconds
-100.00% <= 0.7 milliseconds
-100.00% <= 0.8 milliseconds
-100.00% <= 0.9 milliseconds
-100.00% <= 1.0 milliseconds
-100.00% <= 1.1 milliseconds
-100.00% <= 2 milliseconds
-100.00% <= 3 milliseconds
-100.00% <= 3 milliseconds
-1378930.00 requests per second
-~1600% CPU
+Yes, my point was that XEN_PV already depends on X86_64.
 
-1.38M requests/second, and all 16 CPUs are maxed out.
 
-patched kernel:
-0.01% <= 0.1 milliseconds
-98.24% <= 0.2 milliseconds
-99.47% <= 0.3 milliseconds
-99.99% <= 0.4 milliseconds
-100.00% <= 0.5 milliseconds
-100.00% <= 0.6 milliseconds
-100.00% <= 0.7 milliseconds
-100.00% <= 0.8 milliseconds
-100.00% <= 0.9 milliseconds
-100.00% <= 1.2 milliseconds
-1666111.38 requests per second
-~1450% CPU
-
-1.67M requests/second, and we're no longer just hammering on the sighand
-lock. The original reporter states:
-
-"For 5.7.15 my benchmark achieves 1.6M qps and system cpu is at ~80%.
- for 5.7.16 or later it achieves only 1M qps and the system cpu is is
- at ~100%"
-
-with the only difference there being that TWA_SIGNAL is used
-unconditionally in 5.7.16, since we need it to be able to solve an
-inability to run task_work if the application is waiting in the kernel
-already on an event that needs task_work run to be satisfied. Also
-see commit 0ba9c9edcd15.
-
-Reported-by: Roman Gershman <romger@amazon.com>
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- kernel/task_work.c | 41 +++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 613b2d634af8..81163b946224 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -5,6 +5,34 @@
- 
- static struct callback_head work_exited; /* all we need is ->next == NULL */
- 
-+/*
-+ * TWA_SIGNAL signaling - use TIF_NOTIFY_SIGNAL, if available, as it's faster
-+ * than TIF_SIGPENDING as there's no dependency on ->sighand. The latter is
-+ * shared for threads, and can cause contention on sighand->lock. Even for
-+ * the non-threaded case TIF_NOTIFY_SIGNAL is more efficient, as no locking
-+ * or IRQ disabling is involved for notification (or running) purposes.
-+ */
-+static void task_work_notify_signal(struct task_struct *task)
-+{
-+#if defined(CONFIG_GENERIC_ENTRY) && defined(TIF_NOTIFY_SIGNAL)
-+	set_notify_signal(task);
-+#else
-+	unsigned long flags;
-+
-+	/*
-+	 * Only grab the sighand lock if we don't already have some
-+	 * task_work pending. This pairs with the smp_store_mb()
-+	 * in get_signal(), see comment there.
-+	 */
-+	if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
-+	    lock_task_sighand(task, &flags)) {
-+		task->jobctl |= JOBCTL_TASK_WORK;
-+		signal_wake_up(task, 0);
-+		unlock_task_sighand(task, &flags);
-+	}
-+#endif
-+}
-+
- /**
-  * task_work_add - ask the @task to execute @work->func()
-  * @task: the task which should run the callback
-@@ -28,7 +56,6 @@ int
- task_work_add(struct task_struct *task, struct callback_head *work, int notify)
- {
- 	struct callback_head *head;
--	unsigned long flags;
- 
- 	do {
- 		head = READ_ONCE(task->task_works);
-@@ -42,17 +69,7 @@ task_work_add(struct task_struct *task, struct callback_head *work, int notify)
- 		set_notify_resume(task);
- 		break;
- 	case TWA_SIGNAL:
--		/*
--		 * Only grab the sighand lock if we don't already have some
--		 * task_work pending. This pairs with the smp_store_mb()
--		 * in get_signal(), see comment there.
--		 */
--		if (!(READ_ONCE(task->jobctl) & JOBCTL_TASK_WORK) &&
--		    lock_task_sighand(task, &flags)) {
--			task->jobctl |= JOBCTL_TASK_WORK;
--			signal_wake_up(task, 0);
--			unlock_task_sighand(task, &flags);
--		}
-+		task_work_notify_signal(task);
- 		break;
- 	}
- 
--- 
-2.28.0
+-boris
 
