@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF4B28F0C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4F628F0B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387628AbgJOLLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
+        id S1730634AbgJOLKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731126AbgJOLKJ (ORCPT
+        with ESMTP id S1729644AbgJOLKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:10:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D3FC0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:10:09 -0700 (PDT)
+        Thu, 15 Oct 2020 07:10:02 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E5CC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=0Qa6dypFY3aCt0zXCXiUEHXps4y20nSCKd5BjqpS2bY=; b=fJJ5xMrR/gCGHHfjr6SuTv9nzq
-        GNId8fbmi42VcURMNlam7ltGyyhCbceRNk1ebzAmCugItKQoNvvrsBMyVsXoA5PLeG1GNiyVpU4Q4
-        cXiqnDfsfoNvpjKMutEg6hryduA0qX4pRi1Gb+xzJokhX88K8RWnKOo3/pYt55IDzrUEFzy+aZ/WW
-        Her+goPLAetHmRgenBobX39F5gfTxmk5TON1dlXEamVNKuXQxbgma85rULwW4FeAQ0Ij+9jej9mTY
-        Tn99z66vt4DzqaDa7H/FaQgzdOEO6JBQKWt27OLz92Yf8ZT8OybJCO5JKTgbCYfMnWoWcdLbUk66h
-        h0IKjXww==;
+        bh=ep6k8OhKgXvZfDtdowtyg9c9pJ8pRIve4d4MDAqmrIo=; b=MncTkOlaY1jib6SzdTr1YcC0Jq
+        3dsVbUjr8AtcsEA/0ayOFGdmFkKSateuTMbw6W2szOIj6pNlRyKXiWQPKKE22FhVFtxWieXRji9F9
+        //euGx/bFKqqEqN+ksUjV65xBCx9YOhfkx7BAmTxkPSNZa6oHHMRkjecg/QWXmspoQrT04scTSIS5
+        y/aFiCqlLR70a0RS3uV4zbCdzPBpa5od0JuGjmZ2knqh0GpWnDy16zGoDf8nCs6eFmXJqbZnw8L4s
+        JSyNmf/2tVGUMNQenjor2VTuG/gmrbv1hp2oOruEtAb8lR4JzFfxRshFFUIoR9hXwPNfAdTHKwuf5
+        oijsfNQw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT18d-0002OO-R2; Thu, 15 Oct 2020 11:09:40 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT18e-0007w9-KM; Thu, 15 Oct 2020 11:09:40 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0FE00307590;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 11C63307691;
         Thu, 15 Oct 2020 13:09:37 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 89C86235F444A; Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
-Message-ID: <20201015110923.849580128@infradead.org>
+        id 9132F235F444D; Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
+Message-ID: <20201015110923.910090294@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 15 Oct 2020 13:05:41 +0200
+Date:   Thu, 15 Oct 2020 13:05:42 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
@@ -47,7 +47,7 @@ Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
         ouwen210@hotmail.com
-Subject: [PATCH v3 09/19] sched: Add migrate_disable()
+Subject: [PATCH v3 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
 References: <20201015110532.738127234@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,336 +55,266 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the base migrate_disable() support (under protest).
+Concurrent migrate_disable() and set_cpus_allowed_ptr() has
+interesting features. We rely on set_cpus_allowed_ptr() to not return
+until the task runs inside the provided mask. This expectation is
+exported to userspace.
 
-While migrate_disable() is (currently) required for PREEMPT_RT, it is
-also one of the biggest flaws in the system.
+This means that any set_cpus_allowed_ptr() caller must wait until
+migrate_enable() allows migrations.
 
-Notably this is just the base implementation, it is broken vs
-sched_setaffinity() and hotplug, both solved in additional patches for
-ease of review.
+At the same time, we don't want migrate_enable() to schedule, due to
+patterns like:
+
+	preempt_disable();
+	migrate_disable();
+	...
+	migrate_enable();
+	preempt_enable();
+
+And:
+
+	raw_spin_lock(&B);
+	spin_unlock(&A);
+
+this means that when migrate_enable() must restore the affinity
+mask, it cannot wait for completion thereof. Luck will have it that
+that is exactly the case where there is a pending
+set_cpus_allowed_ptr(), so let that provide storage for the async stop
+machine.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/preempt.h |   60 +++++++++++++++++++++++++
- include/linux/sched.h   |    3 +
- kernel/sched/core.c     |  112 +++++++++++++++++++++++++++++++++++++++++++++---
- kernel/sched/sched.h    |    6 +-
- lib/smp_processor_id.c  |    5 ++
- 5 files changed, 178 insertions(+), 8 deletions(-)
+ include/linux/sched.h |    1 
+ kernel/sched/core.c   |  161 ++++++++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 139 insertions(+), 23 deletions(-)
 
---- a/include/linux/preempt.h
-+++ b/include/linux/preempt.h
-@@ -322,6 +322,64 @@ static inline void preempt_notifier_init
- 
- #endif
- 
-+#if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)
-+
-+/*
-+ * Migrate-Disable and why it is (strongly) undesired.
-+ *
-+ * The premise of the Real-Time schedulers we have on Linux
-+ * (SCHED_FIFO/SCHED_DEADLINE) is that M CPUs can/will run M tasks
-+ * concurrently, provided there are sufficient runnable tasks, also known as
-+ * work-conserving. For instance SCHED_DEADLINE tries to schedule the M
-+ * earliest deadline threads, and SCHED_FIFO the M highest priority threads.
-+ *
-+ * The correctness of various scheduling models depends on this, but is it
-+ * broken by migrate_disable() that doesn't imply preempt_disable(). Where
-+ * preempt_disable() implies an immediate priority ceiling, preemptible
-+ * migrate_disable() allows nesting.
-+ *
-+ * The worst case is that all tasks preempt one another in a migrate_disable()
-+ * region and stack on a single CPU. This then reduces the available bandwidth
-+ * to a single CPU. And since Real-Time schedulability theory considers the
-+ * Worst-Case only, all Real-Time analysis shall revert to single-CPU
-+ * (instantly solving the SMP analysis problem).
-+ *
-+ *
-+ * The reason we have it anyway.
-+ *
-+ * PREEMPT_RT breaks a number of assumptions traditionally held. By forcing a
-+ * number of primitives into becoming preemptible, they would also allow
-+ * migration. This turns out to break a bunch of per-cpu usage. To this end,
-+ * all these primitives employ migirate_disable() to restore this implicit
-+ * assumption.
-+ *
-+ * This is a 'temporary' work-around at best. The correct solution is getting
-+ * rid of the above assumptions and reworking the code to employ explicit
-+ * per-cpu locking or short preempt-disable regions.
-+ *
-+ * The end goal must be to get rid of migrate_disable(), alternatively we need
-+ * a schedulability theory that does not depend on abritrary migration.
-+ *
-+ *
-+ * Notes on the implementation.
-+ *
-+ * The implementation is particularly tricky since existing code patterns
-+ * dictate neither migrate_disable() nor migrate_enable() is allowed to block.
-+ * This means that it cannot use cpus_read_lock() to serialize against hotplug,
-+ * nor can it easily migrate itself into a pending affinity mask change on
-+ * migrate_enable().
-+ *
-+ *
-+ * Note: even non-work-conserving schedulers like semi-partitioned depends on
-+ *       migration, so migrate_disable() is not only a problem for
-+ *       work-conserving schedulers.
-+ *
-+ */
-+extern void migrate_disable(void);
-+extern void migrate_enable(void);
-+
-+#else /* !(CONFIG_SMP && CONFIG_PREEMPT_RT) */
-+
- /**
-  * migrate_disable - Prevent migration of the current task
-  *
-@@ -352,4 +410,6 @@ static __always_inline void migrate_enab
- 	preempt_enable();
- }
- 
-+#endif /* CONFIG_SMP && CONFIG_PREEMPT_RT */
-+
- #endif /* __LINUX_PREEMPT_H */
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -713,6 +713,9 @@ struct task_struct {
+@@ -713,6 +713,7 @@ struct task_struct {
  	int				nr_cpus_allowed;
  	const cpumask_t			*cpus_ptr;
  	cpumask_t			cpus_mask;
-+#if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)
-+	int				migration_disabled;
-+#endif
- 
- #ifdef CONFIG_PREEMPT_RCU
- 	int				rcu_read_lock_nesting;
++	void				*migration_pending;
+ #if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)
+ 	int				migration_disabled;
+ #endif
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1700,6 +1700,61 @@ void check_preempt_curr(struct rq *rq, s
- 
- #ifdef CONFIG_SMP
- 
-+#ifdef CONFIG_PREEMPT_RT
-+
-+static void
-+__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
-+
-+static int __set_cpus_allowed_ptr(struct task_struct *p,
-+				  const struct cpumask *new_mask,
-+				  u32 flags);
-+
-+static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
-+{
-+	if (likely(!p->migration_disabled))
-+		return;
-+
-+	if (p->cpus_ptr != &p->cpus_mask)
-+		return;
-+
-+	/*
-+	 * Violates locking rules! see comment in __do_set_cpus_allowed().
-+	 */
-+	__do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
-+}
-+
-+void migrate_disable(void)
-+{
-+	if (current->migration_disabled++)
-+		return;
-+
-+	barrier();
-+}
-+EXPORT_SYMBOL_GPL(migrate_disable);
-+
-+void migrate_enable(void)
-+{
-+	struct task_struct *p = current;
-+
-+	if (--p->migration_disabled)
-+		return;
-+
-+	barrier();
-+
-+	if (p->cpus_ptr == &p->cpus_mask)
-+		return;
-+
-+	__set_cpus_allowed_ptr(p, &p->cpus_mask, SCA_MIGRATE_ENABLE);
-+}
-+EXPORT_SYMBOL_GPL(migrate_enable);
-+
-+static inline bool is_migration_disabled(struct task_struct *p)
-+{
-+	return p->migration_disabled;
-+}
-+
-+#endif
-+
- /*
-  * Per-CPU kthreads are allowed to run on !active && online CPUs, see
-  * __set_cpus_allowed_ptr() and select_fallback_rq().
-@@ -1709,7 +1764,7 @@ static inline bool is_cpu_allowed(struct
- 	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
- 		return false;
- 
--	if (is_per_cpu_kthread(p))
-+	if (is_per_cpu_kthread(p) || is_migration_disabled(p))
- 		return cpu_online(cpu);
- 
- 	return cpu_active(cpu);
-@@ -1830,6 +1885,11 @@ static int migration_cpu_stop(void *data
-  */
- void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
+@@ -1731,15 +1731,26 @@ void migrate_enable(void)
  {
-+	if (flags & (SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) {
-+		p->cpus_ptr = new_mask;
-+		return;
+ 	struct task_struct *p = current;
+ 
+-	if (--p->migration_disabled)
++	if (p->migration_disabled > 1) {
++		p->migration_disabled--;
+ 		return;
++	}
+ 
++	/*
++	 * Ensure stop_task runs either before or after this, and that
++	 * __set_cpus_allowed_ptr(SCA_MIGRATE_ENABLE) doesn't schedule().
++	 */
++	preempt_disable();
++	if (p->cpus_ptr != &p->cpus_mask)
++		__set_cpus_allowed_ptr(p, &p->cpus_mask, SCA_MIGRATE_ENABLE);
++	/*
++	 * Mustn't clear migration_disabled() until cpus_ptr points back at the
++	 * regular cpus_mask, otherwise things that race (eg.
++	 * select_fallback_rq) get confused.
++	 */
+ 	barrier();
+-
+-	if (p->cpus_ptr == &p->cpus_mask)
+-		return;
+-
+-	__set_cpus_allowed_ptr(p, &p->cpus_mask, SCA_MIGRATE_ENABLE);
++	p->migration_disabled = 0;
++	preempt_enable();
+ }
+ EXPORT_SYMBOL_GPL(migrate_enable);
+ 
+@@ -1806,6 +1817,7 @@ static struct rq *move_queued_task(struc
+ struct migration_arg {
+ 	struct task_struct *task;
+ 	int dest_cpu;
++	struct completion *done;
+ };
+ 
+ /*
+@@ -1840,6 +1852,7 @@ static int migration_cpu_stop(void *data
+ 	struct migration_arg *arg = data;
+ 	struct task_struct *p = arg->task;
+ 	struct rq *rq = this_rq();
++	bool complete = false;
+ 	struct rq_flags rf;
+ 
+ 	/*
+@@ -1862,15 +1875,27 @@ static int migration_cpu_stop(void *data
+ 	 * we're holding p->pi_lock.
+ 	 */
+ 	if (task_rq(p) == rq) {
++		if (is_migration_disabled(p))
++			goto out;
++
+ 		if (task_on_rq_queued(p))
+ 			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
+ 		else
+ 			p->wake_cpu = arg->dest_cpu;
++
++		if (arg->done) {
++			p->migration_pending = NULL;
++			complete = true;
++		}
+ 	}
++out:
+ 	rq_unlock(rq, &rf);
+ 	raw_spin_unlock(&p->pi_lock);
+-
+ 	local_irq_enable();
++
++	if (complete)
++		complete_all(arg->done);
++
+ 	return 0;
+ }
+ 
+@@ -1939,6 +1964,111 @@ void do_set_cpus_allowed(struct task_str
+ 	__do_set_cpus_allowed(p, new_mask, 0);
+ }
+ 
++struct set_affinity_pending {
++	refcount_t		refs;
++	struct completion	done;
++	struct cpu_stop_work	stop_work;
++	struct migration_arg	arg;
++};
++
++/*
++ * This function is wildly self concurrent, consider at least 3 times.
++ */
++static int affine_move_task(struct rq *rq, struct rq_flags *rf,
++			    struct task_struct *p, int dest_cpu, unsigned int flags)
++{
++	struct set_affinity_pending my_pending = { }, *pending = NULL;
++	struct migration_arg arg = {
++		.task = p,
++		.dest_cpu = dest_cpu,
++	};
++	bool complete = false;
++
++	/* Can the task run on the task's current CPU? If so, we're done */
++	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask)) {
++		pending = p->migration_pending;
++		if (pending) {
++			p->migration_pending = NULL;
++			complete = true;
++		}
++		task_rq_unlock(rq, p, rf);
++
++		if (complete)
++			goto do_complete;
++
++		return 0;
 +	}
 +
- 	cpumask_copy(&p->cpus_mask, new_mask);
- 	p->nr_cpus_allowed = cpumask_weight(new_mask);
- }
-@@ -1840,7 +1900,22 @@ __do_set_cpus_allowed(struct task_struct
- 	struct rq *rq = task_rq(p);
- 	bool queued, running;
- 
--	lockdep_assert_held(&p->pi_lock);
++	if (!(flags & SCA_MIGRATE_ENABLE)) {
++		/* serialized by p->pi_lock */
++		if (!p->migration_pending) {
++			refcount_set(&my_pending.refs, 1);
++			init_completion(&my_pending.done);
++			p->migration_pending = &my_pending;
++		} else {
++			pending = p->migration_pending;
++			refcount_inc(&pending->refs);
++		}
++	}
++	pending = p->migration_pending;
 +	/*
-+	 * This here violates the locking rules for affinity, since we're only
-+	 * supposed to change these variables while holding both rq->lock and
-+	 * p->pi_lock.
++	 * - !MIGRATE_ENABLE:
++	 *   we'll have installed a pending if there wasn't one already.
 +	 *
-+	 * HOWEVER, it magically works, because ttwu() is the only code that
-+	 * accesses these variables under p->pi_lock and only does so after
-+	 * smp_cond_load_acquire(&p->on_cpu, !VAL), and we're in __schedule()
-+	 * before finish_task().
++	 * - MIGRATE_ENABLE:
++	 *   we're here because the current CPU isn't matching anymore,
++	 *   the only way that can happen is because of a concurrent
++	 *   set_cpus_allowed_ptr() call, which should then still be
++	 *   pending completion.
 +	 *
-+	 * XXX do further audits, this smells like something putrid.
++	 * Either way, we really should have a @pending here.
 +	 */
-+	if (flags & SCA_MIGRATE_DISABLE)
-+		SCHED_WARN_ON(!p->on_cpu);
-+	else
-+		lockdep_assert_held(&p->pi_lock);
- 
- 	queued = task_on_rq_queued(p);
- 	running = task_current(rq, p);
-@@ -1891,9 +1966,14 @@ static int __set_cpus_allowed_ptr(struct
- 	rq = task_rq_lock(p, &rf);
- 	update_rq_clock(rq);
- 
--	if (p->flags & PF_KTHREAD) {
-+	if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
- 		/*
--		 * Kernel threads are allowed on online && !active CPUs
-+		 * Kernel threads are allowed on online && !active CPUs.
-+		 *
-+		 * Specifically, migration_disabled() tasks must not fail the
-+		 * cpumask_any_and_distribute() pick below, esp. so on
-+		 * SCA_MIGRATE_ENABLE, otherwise we'll not call
-+		 * set_cpus_allowed_common() and actually reset p->cpus_ptr.
- 		 */
- 		cpu_valid_mask = cpu_online_mask;
- 	}
-@@ -1907,7 +1987,7 @@ static int __set_cpus_allowed_ptr(struct
- 		goto out;
- 	}
- 
--	if (cpumask_equal(&p->cpus_mask, new_mask))
-+	if (!(flags & SCA_MIGRATE_ENABLE) && cpumask_equal(&p->cpus_mask, new_mask))
- 		goto out;
- 
- 	/*
-@@ -1999,6 +2079,8 @@ void set_task_cpu(struct task_struct *p,
- 	 * Clearly, migrating tasks to offline CPUs is a fairly daft thing.
- 	 */
- 	WARN_ON_ONCE(!cpu_online(new_cpu));
++	if (WARN_ON_ONCE(!pending))
++		return -EINVAL;
 +
-+	WARN_ON_ONCE(is_migration_disabled(p));
- #endif
- 
- 	trace_sched_migrate_task(p, new_cpu);
-@@ -2329,6 +2411,12 @@ static int select_fallback_rq(int cpu, s
- 			}
- 			fallthrough;
- 		case possible:
-+			/*
-+			 * XXX When called from select_task_rq() we only
-+			 * hold p->pi_lock and again violate locking order.
-+			 *
-+			 * More yuck to audit.
-+			 */
- 			do_set_cpus_allowed(p, cpu_possible_mask);
- 			state = fail;
- 			break;
-@@ -2363,7 +2451,7 @@ int select_task_rq(struct task_struct *p
- {
- 	lockdep_assert_held(&p->pi_lock);
- 
--	if (p->nr_cpus_allowed > 1)
-+	if (p->nr_cpus_allowed > 1 && !is_migration_disabled(p))
- 		cpu = p->sched_class->select_task_rq(p, cpu, sd_flags, wake_flags);
- 	else
- 		cpu = cpumask_any(p->cpus_ptr);
-@@ -2425,6 +2513,17 @@ static inline int __set_cpus_allowed_ptr
- 
- #endif /* CONFIG_SMP */
- 
-+#if !defined(CONFIG_SMP) || !defined(CONFIG_PREEMPT_RT)
++	arg.done = &pending->done;
 +
-+static inline void migrate_disable_switch(struct rq *rq, struct task_struct *p) { }
++	if (flags & SCA_MIGRATE_ENABLE) {
 +
-+static inline bool is_migration_disabled(struct task_struct *p)
-+{
-+	return false;
++		task_rq_unlock(rq, p, rf);
++		pending->arg = arg;
++		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
++				    &pending->arg, &pending->stop_work);
++
++		return 0;
++	}
++
++	if (task_running(rq, p) || p->state == TASK_WAKING) {
++
++		task_rq_unlock(rq, p, rf);
++		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
++
++	} else {
++
++		if (!is_migration_disabled(p)) {
++			if (task_on_rq_queued(p))
++				rq = move_queued_task(rq, rf, p, dest_cpu);
++
++			p->migration_pending = NULL;
++			complete = true;
++		}
++		task_rq_unlock(rq, p, rf);
++
++do_complete:
++		if (complete)
++			complete_all(&pending->done);
++	}
++
++	wait_for_completion(&pending->done);
++
++	if (refcount_dec_and_test(&pending->refs))
++		wake_up_var(&pending->refs);
++
++	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
++
++	return 0;
 +}
 +
-+#endif
-+
- static void
- ttwu_stat(struct task_struct *p, int cpu, int wake_flags)
- {
-@@ -4589,6 +4688,7 @@ static void __sched notrace __schedule(b
- 		 */
- 		++*switch_count;
+ /*
+  * Change a given task's CPU affinity. Migrate the thread to a
+  * proper CPU and schedule it away if the CPU it's executing on
+@@ -2008,23 +2138,8 @@ static int __set_cpus_allowed_ptr(struct
+ 			p->nr_cpus_allowed != 1);
+ 	}
  
-+		migrate_disable_switch(rq, prev);
- 		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
+-	/* Can the task run on the task's current CPU? If so, we're done */
+-	if (cpumask_test_cpu(task_cpu(p), new_mask))
+-		goto out;
++	return affine_move_task(rq, &rf, p, dest_cpu, flags);
  
- 		trace_sched_switch(preempt, prev, next);
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1895,14 +1895,16 @@ static inline bool sched_fair_runnable(s
- extern struct task_struct *pick_next_task_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf);
- extern struct task_struct *pick_next_task_idle(struct rq *rq);
+-	if (task_running(rq, p) || p->state == TASK_WAKING) {
+-		struct migration_arg arg = { p, dest_cpu };
+-		/* Need help from migration thread: drop lock and wait. */
+-		task_rq_unlock(rq, p, &rf);
+-		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
+-		return 0;
+-	} else if (task_on_rq_queued(p)) {
+-		/*
+-		 * OK, since we're going to drop the lock immediately
+-		 * afterwards anyway.
+-		 */
+-		rq = move_queued_task(rq, &rf, p, dest_cpu);
+-	}
+ out:
+ 	task_rq_unlock(rq, p, &rf);
  
-+#define SCA_CHECK		0x01
-+#define SCA_MIGRATE_DISABLE	0x02
-+#define SCA_MIGRATE_ENABLE	0x04
-+
- #ifdef CONFIG_SMP
- 
- extern void update_group_capacity(struct sched_domain *sd, int cpu);
- 
- extern void trigger_load_balance(struct rq *rq);
- 
--#define SCA_CHECK		0x01
--
- extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
- 
- #endif
---- a/lib/smp_processor_id.c
-+++ b/lib/smp_processor_id.c
-@@ -26,6 +26,11 @@ unsigned int check_preemption_disabled(c
- 	if (current->nr_cpus_allowed == 1)
- 		goto out;
- 
-+#if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)
-+	if (current->migration_disabled)
-+		goto out;
-+#endif
-+
- 	/*
- 	 * It is valid to assume CPU-locality during early bootup:
- 	 */
 
 
