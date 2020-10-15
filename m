@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693C628EED3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2216C28EED7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730445AbgJOIyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:54:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57748 "EHLO mx2.suse.de"
+        id S1730459AbgJOIzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:55:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34996 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730383AbgJOIyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:54:15 -0400
+        id S1726329AbgJOIzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:55:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E0BDEAEC2;
-        Thu, 15 Oct 2020 08:54:12 +0000 (UTC)
-Message-ID: <de5e33352782331cf0a6ee32c1c8c6bdfe20b6af.camel@suse.de>
-Subject: Re: [PATCH v3 3/8] of/address: Introduce
- of_dma_get_max_cpu_address()
+        by mx2.suse.de (Postfix) with ESMTP id 8886BAD07;
+        Thu, 15 Oct 2020 08:55:40 +0000 (UTC)
+Message-ID: <d2b9b819c3245d80964959ab9544ae83aee470de.camel@suse.de>
+Subject: Re: [PATCH v3 1/8] arm64: mm: Move reserve_crashkernel() into
+ mem_init()
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        devicetree@vger.kernel.org
-Date:   Thu, 15 Oct 2020 10:54:11 +0200
-In-Reply-To: <CAL_JsqKMGSCTmKF2Lt8GQFx0DVFFH1bLVBw=bRDM7upahGvKDQ@mail.gmail.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
+        ardb@kernel.org, linux-kernel@vger.kernel.org,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org
+Date:   Thu, 15 Oct 2020 10:55:39 +0200
+In-Reply-To: <20201015084008.GB4537@willie-the-truck>
 References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
-         <20201014191211.27029-4-nsaenzjulienne@suse.de>
-         <CAL_JsqKMGSCTmKF2Lt8GQFx0DVFFH1bLVBw=bRDM7upahGvKDQ@mail.gmail.com>
+         <20201014191211.27029-2-nsaenzjulienne@suse.de>
+         <20201015084008.GB4537@willie-the-truck>
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-YUQJ5U+i4xNz/NZrjBJR"
+        protocol="application/pgp-signature"; boundary="=-LqkvVPGxKWHS4SdfYKKx"
 User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
 Precedence: bulk
@@ -46,71 +39,53 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-YUQJ5U+i4xNz/NZrjBJR
+--=-LqkvVPGxKWHS4SdfYKKx
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2020-10-14 at 17:02 -0500, Rob Herring wrote:
-> On Wed, Oct 14, 2020 at 2:12 PM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > Introduce of_dma_get_max_cpu_address(), which provides the highest CPU
-> > physical address addressable by all DMA masters in the system. It's
-> > specially useful for setting memory zones sizes at early boot time.
+On Thu, 2020-10-15 at 09:40 +0100, Will Deacon wrote:
+> On Wed, Oct 14, 2020 at 09:12:03PM +0200, Nicolas Saenz Julienne wrote:
+> > crashkernel might reserve memory located in ZONE_DMA. We plan to delay
+> > ZONE_DMA's initialization after unflattening the devicetree and ACPI's
+> > boot table initialization, so move it later in the boot process.
+> > Specifically into mem_init(), this is the last place crashkernel will b=
+e
+> > able to reserve the memory before the page allocator kicks in and there=
+ is
+> > no need to do it earlier.
 > >=20
 > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> >=20
 > > ---
-
-[...]
-
-> > +       struct of_range_parser parser;
-> > +       phys_addr_t subtree_max_addr;
-> > +       struct device_node *child;
-> > +       phys_addr_t cpu_end =3D 0;
-> > +       struct of_range range;
-> > +       const __be32 *ranges;
-> > +       int len;
-> > +
-> > +       if (!np)
-> > +               np =3D of_root;
-> > +
-> > +       ranges =3D of_get_property(np, "dma-ranges", &len);
+> >  arch/arm64/mm/init.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 >=20
-> I'm not really following why you changed the algorithm here. You're
-> skipping disabled nodes which is good. Was there some other reason?
+> Please can you cc me on the whole series next time? I know different
+> maintainers have different preferences here, but I find it much easier to
+> figure out what's happening when I can see all of the changes together.
 
-Yes, it's a little more complex. But I had to change it in order to be able=
- to
-start parsing down from an arbitrary device node, which is needed for the u=
-nit
-tests.
-
-for_each_of_allnodes() and friends will traverse the whole tree, regardless=
- of
-the starting point. I couldn't find a similar function that would just iter=
-ate
-over a subsection of the tree, so I went with this recursive approach.
+Will do.
 
 Regards,
 Nicolas
 
 
---=-YUQJ5U+i4xNz/NZrjBJR
+
+--=-LqkvVPGxKWHS4SdfYKKx
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+IDjMACgkQlfZmHno8
-x/7rjAf+KrPaZm2zT8XfzDn5CDIf7492No2jTgiouPN9YLIyCBwWqNc3j9ApACr0
-Boxl6eP0BL49yAtVQJz+hq86/9a1TTbqs+xj1mdUG0KruCrKQvSm8sd8DexTFBaV
-zw7F1cvFs6HgYqAmNfK5ybVBoDy1Br0LVK5E05S2baUkID/HZDVSGEwhS3FSaRQP
-WcMPbmIvPgxNg1/Tk16wi9rX2FToZCJymwwil45nHAFnc4hSsudcTHFmX4Td8J01
-jd51b5qeWQ1mX3LY7a4xo0YiR18m69VB0ToPRpQKQvAb24nxMatXip9NtseykiQs
-4jVbFSQAT/FxsnzgjJRMVHJOBZFvAQ==
-=1G9v
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+IDosACgkQlfZmHno8
+x/5b8gf/WNSZvoD1xtpKjt8jTMpQspe3cPPxx3dpnpf7yyIFDV2xDx1fyq+Mpgad
+krP9EbmaQcdA3u87hnSWp1EdJ0b1fGQQooiORSHOG+aQk4sfG/pOtFMt0WtxPyPf
+r5KkkqLrh0x+ro0UB1BjEThi48JfY3mXrBjsohVFeytePlBk0HetZtyfWf5JxyCY
+ZEHDUqbeYqhpWS3CfAfu5R3o5QFD4j4duokshFeptOcz2qFULFMKDFhVPbIIQE8x
+Oydt2nCcFSDExbev7dHLEh0QmSY3vSd9F2c3nN0cw1y7M1MB2xc5XKLfLSgPgpY8
+LQ4wQNIocmuUtgHQR8Blet63XHBeNw==
+=Fb5G
 -----END PGP SIGNATURE-----
 
---=-YUQJ5U+i4xNz/NZrjBJR--
+--=-LqkvVPGxKWHS4SdfYKKx--
 
