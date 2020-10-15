@@ -2,95 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A36E28FA42
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A86328FA4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388575AbgJOUkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 16:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732543AbgJOUks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 16:40:48 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FA9E2074A;
-        Thu, 15 Oct 2020 20:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602794448;
-        bh=Qm9cC9KFu3xj9C59JMqjeE0ma0wxuVFp57tRrXta47c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TamyK5L6fQP69CxylBIxgKfLSRQt6xSti4Z7Olh056rWLBYYm8IVFBGLpt+WSMRls
-         fRGgoutQepv0FOH232SWDfRWM79EQE1jBRvAd4jx9BwOq7bvPr6HeRuFt0O95mgzbN
-         BA9HxzQlKTYMLFcOE6Ca07sXvBVEkKL4umVYOnEo=
-From:   Will Deacon <will@kernel.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Mina Almasry <almasrymina@google.com>, lokeshgidra@google.com,
-        Frederic Weisbecker <frederic@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "H. Peter Anvin" <hpa@zytor.com>, surenb@google.com,
-        Dave Hansen <dave.hansen@intel.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        joelaf@google.com, Masahiro Yamada <masahiroy@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-mm@kvack.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Price <steven.price@arm.com>, x86@kernel.org,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, minchan@google.com,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Gavin Shan <gshan@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Jia He <justin.he@arm.com>, Mike Rapoport <rppt@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kselftest@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v4 0/5] Speed up mremap on large regions
-Date:   Thu, 15 Oct 2020 21:40:30 +0100
-Message-Id: <160275767389.2776006.15931668564498606994.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201014005320.2233162-1-kaleshsingh@google.com>
-References: <20201014005320.2233162-1-kaleshsingh@google.com>
+        id S2392384AbgJOUst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 16:48:49 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:5804 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730418AbgJOUss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 16:48:48 -0400
+X-IronPort-AV: E=Sophos;i="5.77,380,1596492000"; 
+   d="scan'208";a="472842063"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 22:48:44 +0200
+Date:   Thu, 15 Oct 2020 22:48:44 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Denis Efremov <efremov@linux.com>
+cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7] coccinelle: api: add kfree_mismatch script
+In-Reply-To: <20200803183438.34685-1-efremov@linux.com>
+Message-ID: <alpine.DEB.2.22.394.2010152246260.2869@hadrien>
+References: <20200605204237.85055-1-efremov@linux.com> <20200803183438.34685-1-efremov@linux.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 00:53:05 +0000, Kalesh Singh wrote:
-> This is a repost of the mremap speed up patches, adding Kirill's
-> Acked-by's (from a separate discussion). The previous versions are
-> posted at:
-> v1 - https://lore.kernel.org/r/20200930222130.4175584-1-kaleshsingh@google.com
-> v2 - https://lore.kernel.org/r/20201002162101.665549-1-kaleshsingh@google.com
-> v3 - http://lore.kernel.org/r/20201005154017.474722-1-kaleshsingh@google.com
-> 
-> [...]
 
-Applied just the arm64 PMD patch to arm64 (for-next/core), thanks!
+[See below for a comment]
 
-[1/1] arm64: mremap speedup - Enable HAVE_MOVE_PMD
-      https://git.kernel.org/arm64/c/45544eee9606
+On Mon, 3 Aug 2020, Denis Efremov wrote:
 
-Cheers,
--- 
-Will
+> Check that alloc and free types of functions match each other.
+>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+> ---
+> Changes in v2:
+>  - Lines are limited to 80 characters where possible
+>  - Confidence changed from High to Medium because of
+>    fs/btrfs/send.c:1119 false-positive
+>  - __vmalloc_area_node() explicitly excluded from analysis
+>    instead of !(file in "mm/vmalloc.c") condition
+> Changes in v3:
+>  - prints style in org && report modes changed for python2
+> Changes in v4:
+>  - missing msg argument to print_todo fixed
+> Changes in v5:
+>  - fix position p in kfree rule
+>  - move @kok and @v positions in choice rule after the arguments
+>  - remove kvmalloc suggestions
+> Changes in v6:
+>  - more asterisks added in context mode
+>  - second @kok added to the choice rule
+> Changes in v7:
+>  - file renamed to kfree_mismatch.cocci
+>  - python function relevant() removed
+>  - additional rule for filtering free positions added
+>  - btrfs false-positive fixed
+>  - confidence level changed to high
+>  - kvfree_switch rule added
+>  - names for position variables changed to @a (alloc) and @f (free)
+>
+>  scripts/coccinelle/api/kfree_mismatch.cocci | 229 ++++++++++++++++++++
+>  1 file changed, 229 insertions(+)
+>  create mode 100644 scripts/coccinelle/api/kfree_mismatch.cocci
+>
+> diff --git a/scripts/coccinelle/api/kfree_mismatch.cocci b/scripts/coccinelle/api/kfree_mismatch.cocci
+> new file mode 100644
+> index 000000000000..9e9ef9fd7a25
+> --- /dev/null
+> +++ b/scripts/coccinelle/api/kfree_mismatch.cocci
+> @@ -0,0 +1,229 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +///
+> +/// Check that kvmalloc'ed memory is freed by kfree functions,
+> +/// vmalloc'ed by vfree functions and kvmalloc'ed by kvfree
+> +/// functions.
+> +///
+> +// Confidence: High
+> +// Copyright: (C) 2020 Denis Efremov ISPRAS
+> +// Options: --no-includes --include-headers
+> +//
+> +
+> +virtual patch
+> +virtual report
+> +virtual org
+> +virtual context
+> +
+> +@alloc@
+> +expression E, E1;
+> +position kok, vok;
+> +@@
+> +
+> +(
+> +  if (...) {
+> +    ...
+> +    E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|
+> +          kmalloc_node\|kzalloc_node\|kmalloc_array\|
+> +          kmalloc_array_node\|kcalloc_node\)(...)@kok
+> +    ...
+> +  } else {
+> +    ...
+> +    E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|
+> +          vzalloc_node\|vmalloc_exec\|vmalloc_32\|
+> +          vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|
+> +          __vmalloc_node\)(...)@vok
+> +    ...
+> +  }
+> +|
+> +  E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|kzalloc_node\|
+> +        kmalloc_array\|kmalloc_array_node\|kcalloc_node\)(...)@kok
+> +  ... when != E = E1
+> +      when any
+> +  if (E == NULL) {
+> +    ...
+> +    E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|
+> +          vzalloc_node\|vmalloc_exec\|vmalloc_32\|
+> +          vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|
+> +          __vmalloc_node\)(...)@vok
+> +    ...
+> +  }
+> +)
+> +
+> +@free@
+> +expression E;
+> +position fok;
+> +@@
+> +
+> +  E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
+> +        kvmalloc_array\)(...)
+> +  ...
+> +  kvfree(E)@fok
+> +
+> +@vfree depends on !patch@
+> +expression E;
+> +position a != alloc.kok;
+> +position f != free.fok;
+> +@@
+> +
+> +* E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|
+> +*       kzalloc_node\|kmalloc_array\|kmalloc_array_node\|
+> +*       kcalloc_node\)(...)@a
+> +  ... when != if (...) { ... E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|__vmalloc_node\)(...); ... }
+> +      when != is_vmalloc_addr(E)
+> +      when any
+> +* \(vfree\|vfree_atomic\|kvfree\)(E)@f
+> +
+> +@depends on patch exists@
+> +expression E;
+> +position a != alloc.kok;
+> +position f != free.fok;
+> +@@
+> +
+> +  E = \(kmalloc\|kzalloc\|krealloc\|kcalloc\|kmalloc_node\|
+> +        kzalloc_node\|kmalloc_array\|kmalloc_array_node\|
+> +        kcalloc_node\)(...)@a
+> +  ... when != if (...) { ... E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|__vmalloc_node_range\|__vmalloc_node\)(...); ... }
+> +      when != is_vmalloc_addr(E)
+> +      when any
+> +- \(vfree\|vfree_atomic\|kvfree\)(E)@f
+> ++ kfree(E)
+> +
+> +@kfree depends on !patch@
+> +expression E;
+> +position a != alloc.vok;
+> +position f != free.fok;
+> +@@
+> +
+> +* E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|
+> +*       vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|
+> +*       __vmalloc_node_range\|__vmalloc_node\)(...)@a
+> +  ... when != is_vmalloc_addr(E)
+> +      when any
+> +* \(kfree\|kzfree\|kvfree\)(E)@f
+> +
+> +@depends on patch exists@
+> +expression E;
+> +position a != alloc.vok;
+> +position f != free.fok;
+> +@@
+> +
+> +  E = \(vmalloc\|vzalloc\|vmalloc_user\|vmalloc_node\|vzalloc_node\|
+> +        vmalloc_exec\|vmalloc_32\|vmalloc_32_user\|__vmalloc\|
+> +        __vmalloc_node_range\|__vmalloc_node\)(...)@a
+> +  ... when != is_vmalloc_addr(E)
+> +      when any
+> +- \(kfree\|kvfree\)(E)@f
+> ++ vfree(E)
+> +
+> +@kvfree depends on !patch@
+> +expression E;
+> +position a, f;
+> +@@
+> +
+> +* E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
+> +*       kvmalloc_array\)(...)@a
+> +  ... when != is_vmalloc_addr(E)
+> +      when any
+> +* \(kfree\|kzfree\|vfree\|vfree_atomic\)(E)@f
+> +
+> +@depends on patch exists@
+> +expression E;
+> +@@
+> +
+> +  E = \(kvmalloc\|kvzalloc\|kvcalloc\|kvzalloc_node\|kvmalloc_node\|
+> +        kvmalloc_array\)(...)
+> +  ... when != is_vmalloc_addr(E)
+> +      when any
+> +- \(kfree\|vfree\)(E)
+> ++ kvfree(E)
+> +
+> +@kvfree_switch depends on !patch@
+> +expression alloc.E;
+> +position f != free.fok;
+> +@@
+> +
+> +  ... when != is_vmalloc_addr(E)
+> +      when any
+> +* \(kfree\|kzfree\|vfree\|vfree_atomic\)(E)@f
+> +
+> +@depends on patch exists@
+> +expression alloc.E;
+> +position f != free.fok;
+> +@@
+> +
+> +  ... when != is_vmalloc_addr(E)
+> +      when any
+> +(
+> +- \(kfree\|vfree\)(E)@f
+> ++ kvfree(E)
+> +|
+> +- kzfree(E)@f
+> ++ kvfree_sensitive(E)
+> +)
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+
+The above two rules refer to free.fok, but it is not clear why, because
+free.fok only occurs on a kvfree call.  Is there a mistake, or is it just
+an unnecessary copy-pasted constraint?
+
+julia
+
+
+> +
+> +@script: python depends on report@
+> +a << vfree.a;
+> +f << vfree.f;
+> +@@
+> +
+> +msg = "WARNING: kmalloc is used to allocate this memory at line %s" % (a[0].line)
+> +coccilib.report.print_report(f[0], msg)
+> +
+> +@script: python depends on org@
+> +a << vfree.a;
+> +f << vfree.f;
+> +@@
+> +
+> +msg = "WARNING: kmalloc is used to allocate this memory at line %s" % (a[0].line)
+> +coccilib.org.print_todo(f[0], msg)
+> +
+> +@script: python depends on report@
+> +a << kfree.a;
+> +f << kfree.f;
+> +@@
+> +
+> +msg = "WARNING: vmalloc is used to allocate this memory at line %s" % (a[0].line)
+> +coccilib.report.print_report(f[0], msg)
+> +
+> +@script: python depends on org@
+> +a << kfree.a;
+> +f << kfree.f;
+> +@@
+> +
+> +msg = "WARNING: vmalloc is used to allocate this memory at line %s" % (a[0].line)
+> +coccilib.org.print_todo(f[0], msg)
+> +
+> +@script: python depends on report@
+> +a << kvfree.a;
+> +f << kvfree.f;
+> +@@
+> +
+> +msg = "WARNING: kvmalloc is used to allocate this memory at line %s" % (a[0].line)
+> +coccilib.report.print_report(f[0], msg)
+> +
+> +@script: python depends on org@
+> +a << kvfree.a;
+> +f << kvfree.f;
+> +@@
+> +
+> +msg = "WARNING: kvmalloc is used to allocate this memory at line %s" % (a[0].line)
+> +coccilib.org.print_todo(f[0], msg)
+> +
+> +@script: python depends on report@
+> +ka << alloc.kok;
+> +va << alloc.vok;
+> +f << kvfree_switch.f;
+> +@@
+> +
+> +msg = "WARNING: kmalloc (line %s) && vmalloc (line %s) are used to allocate this memory" % (ka[0].line, va[0].line)
+> +coccilib.report.print_report(f[0], msg)
+> +
+> +@script: python depends on org@
+> +ka << alloc.kok;
+> +va << alloc.vok;
+> +f << kvfree_switch.f;
+> +@@
+> +
+> +msg = "WARNING: kmalloc (line %s) && vmalloc (line %s) are used to allocate this memory" % (ka[0].line, va[0].line)
+> +coccilib.org.print_todo(f[0], msg)
+> +
+> --
+> 2.26.2
+>
+>
