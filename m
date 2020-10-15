@@ -2,207 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4859928F50B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D12128F50D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388946AbgJOOox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388876AbgJOOos (ORCPT
+        id S2388998AbgJOOo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:44:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57199 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388948AbgJOOo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:44:48 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EF7C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:44:47 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 13so3464354wmf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=MntIS5hG5qKkJHF3dkjVLX64GnAHUT4P3HeNpPTIdo0=;
-        b=Gr9Mau/Xqu2Exr9oRxron8l1EirbsMrJtvhPHJxxDWRryiywuM/kvWWjRQ95PAtkkB
-         wmxbrBqyLWqMVgLQKWiEWfiy8ojRfHOXSfaOxLarzRwLE4Wsu5KHKNuUJm3vF7WZAVOc
-         Yav6uBclxqyBdl65J0iaDn4SJFrOD/OZkCnXh3F8thhugKVL21q6UV15GdEulgDsdOOb
-         et/xVCy5gUbtz9oX60ikqcEb7TNMWIDm0YuLG+sx8/X2P7pZwWv5x2YKtRDnX+jtLJOT
-         pIkJOKVd5NlgbJ5iqv5LTJSFGw4PkhzzVQbBbFn1SGpLqp/dHMfS+ib/Z2drZsf0IAmv
-         9EwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=MntIS5hG5qKkJHF3dkjVLX64GnAHUT4P3HeNpPTIdo0=;
-        b=M2VOFpHP4kpmN04mUKu6qMiq05sSPe+gdl0XHeok0bkeZMhz5Mg+OdUxFqLK2EDH+y
-         ZOeX9SZnN1huSqQOobwq95Ef5+KXv0cBN7YhzUBD26iUB1MhZELe68UulYzPrn+40fot
-         CPNXgfj83WgIdHcW7qnf8vGiJvtYtjubnwHu3ioJspekwhSYOXgjEXRcrXYtpOnmQuKc
-         CTmjBv8kadEyFLFnCBUK7xY+XqpHaRQp59UC7+twTRNKKw3yLsf57bdUN+4DccexsAAE
-         zzsp2JsZjXPyKZR+dIBo4mXNtcQSK1wxHJcMm6Cl2EJrhc7IGU+66P1JxwMx7LIUaCHz
-         IEbg==
-X-Gm-Message-State: AOAM532YpDYP9S0XJERcSbsj5ykMXpVhAmye4085EQXoz5HQq+imEGax
-        xZ0A1h3Pqg/cLiqoCvt37827Fw==
-X-Google-Smtp-Source: ABdhPJyCyD9y+3z7qx4BminOn3dgTANolTABtkUhDhQSFQf/2wyCDC/+bP77BUDkHaJ7HpScB0EXzQ==
-X-Received: by 2002:a1c:9d87:: with SMTP id g129mr4443850wme.30.1602773086172;
-        Thu, 15 Oct 2020 07:44:46 -0700 (PDT)
-Received: from localhost.localdomain (lns-bzn-59-82-252-134-136.adsl.proxad.net. [82.252.134.136])
-        by smtp.gmail.com with ESMTPSA id 40sm5053800wrc.46.2020.10.15.07.44.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 07:44:45 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rjw@rjwysocki.net
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        ilina@codeaurora.org
-Subject: [PATCH 5/5] cpuidle: governor: Convert governors to modules
-Date:   Thu, 15 Oct 2020 16:44:31 +0200
-Message-Id: <20201015144431.9979-5-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201015144431.9979-1-daniel.lezcano@linaro.org>
-References: <20201015144431.9979-1-daniel.lezcano@linaro.org>
+        Thu, 15 Oct 2020 10:44:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602773095;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tcPO3o/hYJXcAJ3J/Kqlj2k7Vj0IiF2WJJc9O8J4a5M=;
+        b=cRkk9jej/iiLYrjtpCIlB4W5eSfK3sQh2BfscVa2hDj30tYEyJwrn5BHYROGsMpUI+rtMo
+        GKILLd4HTwKqb8Mts1hdeOq1vXlI2dwiQyD8190SQ5R02kqSFuYMzeAVKfUDNIxg3Gwc2b
+        ouCGCsQb/xUZ2BQYTwpzduormVs5NKA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-0Ems7peUNB2-9fpNV66wRQ-1; Thu, 15 Oct 2020 10:44:51 -0400
+X-MC-Unique: 0Ems7peUNB2-9fpNV66wRQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CAB107AFC8;
+        Thu, 15 Oct 2020 14:44:50 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8594360C07;
+        Thu, 15 Oct 2020 14:44:48 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 15 Oct 2020 16:44:49 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 16:44:47 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de
+Subject: Re: [PATCH 4/5] x86: wire up TIF_NOTIFY_SIGNAL
+Message-ID: <20201015144446.GI24156@redhat.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-5-axboe@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015131701.511523-5-axboe@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch converts the cpuidle governors into modules. Even if it is
-not the utmost importance, that will be consistent with the devfreq,
-the watchdog and the cpufreq governors.
+On 10/15, Jens Axboe wrote:
+>
+> We already get the ti_work passed in arch_do_signal(), define
+> TIF_NOTIFY_SIGNAL and take the appropriate action in the signal handling
+> based on _TIF_NOTIFY_SIGNAL and _TIF_SIGPENDING being set.
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/cpuidle/Kconfig              |  8 ++++----
- drivers/cpuidle/governors/haltpoll.c |  9 ++++++++-
- drivers/cpuidle/governors/ladder.c   | 12 ++++++++++--
- drivers/cpuidle/governors/menu.c     | 10 +++++++++-
- drivers/cpuidle/governors/teo.c      | 10 +++++++++-
- 5 files changed, 40 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
-index c0aeedd66f02..ff83042edd50 100644
---- a/drivers/cpuidle/Kconfig
-+++ b/drivers/cpuidle/Kconfig
-@@ -19,13 +19,13 @@ config CPU_IDLE_MULTIPLE_DRIVERS
- 	bool
- 
- config CPU_IDLE_GOV_LADDER
--	bool "Ladder governor (for periodic timer tick)"
-+	tristate "Ladder governor (for periodic timer tick)"
- 
- config CPU_IDLE_GOV_MENU
--	bool "Menu governor (for tickless system)"
-+	tristate "Menu governor (for tickless system)"
- 
- config CPU_IDLE_GOV_TEO
--	bool "Timer events oriented (TEO) governor (for tickless systems)"
-+	tristate "Timer events oriented (TEO) governor (for tickless systems)"
- 	help
- 	  This governor implements a simplified idle state selection method
- 	  focused on timer events and does not do any interactivity boosting.
-@@ -34,7 +34,7 @@ config CPU_IDLE_GOV_TEO
- 	  to use.  Say Y here if you are not happy with the alternatives.
- 
- config CPU_IDLE_GOV_HALTPOLL
--	bool "Haltpoll governor (for virtualized systems)"
-+	tristate "Haltpoll governor (for virtualized systems)"
- 	depends on KVM_GUEST
- 	help
- 	  This governor implements haltpoll idle state selection, to be
-diff --git a/drivers/cpuidle/governors/haltpoll.c b/drivers/cpuidle/governors/haltpoll.c
-index cb2a96eafc02..4756b758c324 100644
---- a/drivers/cpuidle/governors/haltpoll.c
-+++ b/drivers/cpuidle/governors/haltpoll.c
-@@ -146,4 +146,11 @@ static int __init init_haltpoll(void)
- 	return 0;
- }
- 
--postcore_initcall(init_haltpoll);
-+static void __exit exit_haltpoll(void)
-+{
-+	cpuidle_unregister_governor(&haltpoll_governor);
-+}
-+
-+module_init(init_haltpoll);
-+module_exit(exit_haltpoll);
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/cpuidle/governors/ladder.c b/drivers/cpuidle/governors/ladder.c
-index 8e9058c4ea63..78b622b75ce7 100644
---- a/drivers/cpuidle/governors/ladder.c
-+++ b/drivers/cpuidle/governors/ladder.c
-@@ -14,6 +14,7 @@
- 
- #include <linux/kernel.h>
- #include <linux/cpuidle.h>
-+#include <linux/module.h>
- #include <linux/jiffies.h>
- #include <linux/tick.h>
- 
-@@ -188,10 +189,17 @@ static int __init init_ladder(void)
- 	 * governor is better so give it a higher rating than the menu
- 	 * governor.
- 	 */
--	if (!tick_nohz_enabled)
-+	if (!tick_nohz_is_enabled())
- 		ladder_governor.rating = 25;
- 
- 	return cpuidle_register_governor(&ladder_governor);
- }
- 
--postcore_initcall(init_ladder);
-+static void __exit exit_ladder(void)
-+{
-+	cpuidle_unregister_governor(&ladder_governor);
-+}
-+
-+module_init(init_ladder);
-+module_exit(exit_ladder);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/cpuidle/governors/menu.c b/drivers/cpuidle/governors/menu.c
-index b0a7ad566081..fc92a5b18a7b 100644
---- a/drivers/cpuidle/governors/menu.c
-+++ b/drivers/cpuidle/governors/menu.c
-@@ -13,6 +13,7 @@
- #include <linux/time.h>
- #include <linux/ktime.h>
- #include <linux/hrtimer.h>
-+#include <linux/module.h>
- #include <linux/tick.h>
- #include <linux/sched.h>
- #include <linux/sched/loadavg.h>
-@@ -571,4 +572,11 @@ static int __init init_menu(void)
- 	return cpuidle_register_governor(&menu_governor);
- }
- 
--postcore_initcall(init_menu);
-+static void __exit exit_menu(void)
-+{
-+	cpuidle_unregister_governor(&menu_governor);
-+}
-+
-+module_init(init_menu);
-+module_exit(exit_menu);
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/cpuidle/governors/teo.c b/drivers/cpuidle/governors/teo.c
-index 6deaaf5f05b5..d11dab61113c 100644
---- a/drivers/cpuidle/governors/teo.c
-+++ b/drivers/cpuidle/governors/teo.c
-@@ -48,6 +48,7 @@
- #include <linux/cpuidle.h>
- #include <linux/jiffies.h>
- #include <linux/kernel.h>
-+#include <linux/module.h>
- #include <linux/sched/clock.h>
- #include <linux/tick.h>
- 
-@@ -491,4 +492,11 @@ static int __init teo_governor_init(void)
- 	return cpuidle_register_governor(&teo_governor);
- }
- 
--postcore_initcall(teo_governor_init);
-+static void __exit teo_governor_exit(void)
-+{
-+	cpuidle_unregister_governor(&teo_governor);
-+}
-+
-+module_init(teo_governor_init);
-+module_exit(teo_governor_exit);
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
