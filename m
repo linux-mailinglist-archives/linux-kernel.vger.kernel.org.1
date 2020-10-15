@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021AA28ED06
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741BC28ED0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 08:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgJOGWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 02:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
+        id S1729001AbgJOGXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 02:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOGV6 (ORCPT
+        with ESMTP id S1728662AbgJOGXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 02:21:58 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A229C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:21:56 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id m62so1915055ybb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:21:56 -0700 (PDT)
+        Thu, 15 Oct 2020 02:23:55 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9BAC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:23:55 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id q21so1222670pgi.13
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 23:23:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=C80j7Nw7LdZVv12jD8G4UBrzvB65iIyHmBDpLMfgVHg=;
-        b=bvdjG2rQGHmMvr1DZqKC/RqeSBgJsM4YcQtisq+e/149HyeCkdRsgTBmRiQPOZ+flU
-         4rjxozmYVmI7FP1hKEqiP6QF3KnC7rANwP1A6MjfnqRTAFGenQFYz01XoNsgDrNsfRu3
-         TRBuESkoTOJmXSkrMFe+TUF9ouG3aJg171p2zGcs2UdK5t0n1TvoG/SsyTIEMadHQ7Va
-         6f0rVbjBAD6jVINB0JHwIlXzlCSPZa3MUdi5THBqMINYQFp6bnOXXrYD8MHHItuMFGea
-         zDvfjxgLXNKUxdcosI8ebxaGQcUhYm+dBWcu2mTE5zbWTmKuOZH9l2ir6RjyyRATGwvt
-         8ghg==
+        d=csie-ntu-edu-tw.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=rOybbcG2gzRHb5Bvm5WG6KUjxX79ZyS3rQJBpiyljFo=;
+        b=uH9p+ldiS0oDncC2bwZRnT3A6Ev/GJNL626t90SqFCGv+rK8+O2TF3TfmDy/nBTUHd
+         rBLxXzPbuUsxIzvVeK6KT4IeA/iBkq9p+kEOxcHLeKAKebLY/RUo5sh0kd7s+Y+MPJlz
+         3D7sviFfgC4s7dyJWiNYvGYWcNpwFlu12uRpoB84X2mwEcOIYXH8AgAi8DJ5vEyJPnm4
+         F3moBcG7VSlkCux3fX9LkR8rws1YvC4ObQXhMNxjbLk6jhzSEWWnq3IA+eLZ80+Nx6ta
+         OlZRqCiLHOz13KXBbt98Xb5+LFE70BFiPSm6J1Hr7TEpmWFNGxDbclEJCKLyGRFC+uYC
+         Wl3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=C80j7Nw7LdZVv12jD8G4UBrzvB65iIyHmBDpLMfgVHg=;
-        b=Q8wdUqVcOnLiYVbPLM6MmnxpbHHaNEFULkKULPW9Syq8dKzYayG7cIMlGpoQHXPj43
-         GsEq6g3k7ciIfgWMdfF0Y6bri7Bzn4qCLkaHt4ro1Gu2ykfyz0OBNOvosyBwLzQpAXby
-         0IlktB+eKFV21cn8WPW35u5AIoAEdQxK54NQqSyv2jplNXxasRSsxShaTa05E1zxNhzZ
-         ra0ShZWez8QNvllrEqFP18IZUIlsbwL+IYGv3uuRQt4uqEWcItw1JpmGtTeDnITXK0pG
-         ct04BEsjiUHsTp0yC+a/P9zToACpE+6v47zivByWpxy9FpgFeTw7oX9mdudWLJ804XSz
-         m/EQ==
-X-Gm-Message-State: AOAM530lA/iQ7q3b4+s/VvYj8B5mtt090lWlgc2T4XiR2clEPihGvI+T
-        eWBHBLCfP/KeRD53ANEzV5fU3Jj8rZO9
-X-Google-Smtp-Source: ABdhPJwRtI+sk5qFLEqcVagNij/+WCcI3F/UAqcAHx7xojDczOt86a6MCvQjP0wuKlFheas9VlRBvYhy4Ddr
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a25:b316:: with SMTP id
- l22mr3282909ybj.395.1602742915638; Wed, 14 Oct 2020 23:21:55 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 23:21:48 -0700
-In-Reply-To: <20201015062148.1437894-1-irogers@google.com>
-Message-Id: <20201015062148.1437894-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20201015062148.1437894-1-irogers@google.com>
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH 2/2] tools/x86: Fix some potential undefined behavior
-From:   Ian Rogers <irogers@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Numfor Mbiziwo-Tiapo <nums@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rOybbcG2gzRHb5Bvm5WG6KUjxX79ZyS3rQJBpiyljFo=;
+        b=e921aJJZ71pJaB+/yvbiQnQx6rxdHaXBUvQ+evR7ZXwof1tVRAHKX+bwhRp/2jFWoh
+         ZK1rdN3+5ZV2C2Ew+kW9Wfco5puVZXQtWsdD0hWy6lMnnMaWiruWMyHYt3Otv/71MnW0
+         SmfvegVJhHWm3IVccdBXsQL8Wof0gw74XkBVxhJvc/NeamHzFRb1LG6rZEvLH+I8lwne
+         6fw3xLz/02NcXDT9od5AZD1NsiAc1nfOb7B+NQPcdSl1MdTViBPSKnWLpQKGLxwFkt75
+         U99G7TxP7UfNOC7kaWqNq/SZTP3lowzeRkYNsk87ZVtW4+p5iQoK/nk2tPFx1gAOfCSq
+         HcSA==
+X-Gm-Message-State: AOAM532OP7Y89LombZ26yJWd+q10aBwSqfmN+gJlHefl6WOVGv3X0F4I
+        6qncbDyAlU8YRyfxY2zKZ28Nfd5vlsDowmhaY+8ZKZD2Dq4dc6EOtc6JoOoj6yeFQAnj5PPEsgO
+        1lIrySyC3lWcs6aseCelUbhq1l3vT5cklxvvFiIC50o2YIewG1M2h/OBtTKAe4Xqh21kl4aZeRx
+        6MAj0EGYWRpLTUPFKicLB/Db5ntDA=
+X-Google-Smtp-Source: ABdhPJwv6rRAJ77SdeNtpkBHlMRfLSwZQZSBPwXGuDk/FwwmlCigBkmh/ALTQyhN+00BMiFkHBx0HA==
+X-Received: by 2002:a63:d80e:: with SMTP id b14mr2139631pgh.114.1602743034692;
+        Wed, 14 Oct 2020 23:23:54 -0700 (PDT)
+Received: from localhost.localdomain (2001-b011-3803-1d24-853c-8d4c-9ff6-b9e6.dynamic-ip6.hinet.net. [2001:b011:3803:1d24:853c:8d4c:9ff6:b9e6])
+        by smtp.gmail.com with ESMTPSA id x23sm1787195pfc.47.2020.10.14.23.23.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 23:23:54 -0700 (PDT)
+From:   Wei Lin Chang <r09922117@csie.ntu.edu.tw>
+To:     corbet@lwn.net
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Wei Lin Chang <r09922117@csie.ntu.edu.tw>
+Subject: [PATCH] Documentation: x86: fix a missing word in x86_64/mm.rst.
+Date:   Thu, 15 Oct 2020 14:22:42 +0800
+Message-Id: <20201015062242.26296-1-r09922117@csie.ntu.edu.tw>
+X-Mailer: git-send-email 2.17.1
+X-Gm-Spam: 0
+X-Gm-Phishy: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Numfor Mbiziwo-Tiapo <nums@google.com>
+This patch adds a missing word in x86/x86_64/mm.rst, without which
+the note reads awkwardly.
 
-If insn_init is given a NULL kaddr and 0 buflen then validate_next will
-perform arithmetic on NULL, add a guard to avoid this.
-
-Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-these are forms of undefined behavior.
-
-These problems were identified using the undefined behavior sanitizer
-(ubsan) with  perf test. Part of this patch was previously posted here:
-https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
-
-Signed-off-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+Signed-off-by: Wei Lin Chang <r09922117@csie.ntu.edu.tw>
 ---
- tools/arch/x86/lib/insn.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/x86/x86_64/mm.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index 0151dfc6da61..e8874a8cac2c 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -17,13 +17,13 @@
+diff --git a/Documentation/x86/x86_64/mm.rst b/Documentation/x86/x86_64/mm.rst
+index e5053404a..ede187571 100644
+--- a/Documentation/x86/x86_64/mm.rst
++++ b/Documentation/x86/x86_64/mm.rst
+@@ -19,7 +19,7 @@ Complete virtual memory map with 4-level page tables
+    Note that as we get closer to the top of the address space, the notation changes
+    from TB to GB and then MB/KB.
  
- /* Verify next sizeof(t) bytes can be on the same instruction */
- #define validate_next(t, insn, n)	\
--	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
-+	((insn)->end_kaddr != 0 && (insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+- - "16M TB" might look weird at first sight, but it's an easier to visualize size
++ - "16M TB" might look weird at first sight, but it's an easier way to visualize size
+    notation than "16 EB", which few will recognize at first sight as 16 exabytes.
+    It also shows it nicely how incredibly large 64-bit address space is.
  
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); r; })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
 -- 
-2.28.0.1011.ga647a8990f-goog
+2.17.1
 
