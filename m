@@ -2,175 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCD928EA30
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9617D28E96E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732292AbgJOBei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbgJOBeh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:34:37 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F32C0F26CF;
-        Wed, 14 Oct 2020 17:15:07 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id p15so1274675ljj.8;
-        Wed, 14 Oct 2020 17:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d48UUfGdXFaIA+KwvnkR9fUosyR7sfTD+FB5b41Fqbw=;
-        b=ecBFiapZdn0gMgcXdIvjxSN6UPMihyoQBabVKiek3SiuGHvx5S+OBSh+51WrhnMCd5
-         dLzESU9uJstwusIMIA0mnTaRayQ5srG+PxIM4ABmclteScQsZ5cI3MrE4wpN2t1niEVJ
-         wr89JpuFz0UexHbejrkZki/AMorBpG/nNb3dPxP7QC26/XHtzX2UxDYU4IDYmlP19GTk
-         er8AmOZNcls9fI6d6vuCUTKYqfQ/zCnmPn6uuAjY4wJFuFW+a3p2BC0CoGSf2dFIuhqh
-         pSj+n5vK06e6RrpuUyFI3Qzoc6FfUrqU5Gi7oRtS4mMlDn6dj1MXaLn4Ru6PJ/F7SRRT
-         6mQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d48UUfGdXFaIA+KwvnkR9fUosyR7sfTD+FB5b41Fqbw=;
-        b=Fs75luQbm0gk3Ah78QJ4r3+HIKOYnqZ1UENXeE6zu7fZqelaaylF+P/kPQuwuWkG4r
-         cTvNLjUmOexAdkXFls8exH7DjVhTn6BOnjKFkOjxWCwsSY1bfPvGXC5WaAhSXNKrL0cw
-         ylvk5jPB5rnhu5pkh9q6HcD/iuZWrqJG9NIF82PDsoAAtd3ik/3TFtpwaYHgs+ksg/Z3
-         Z/R2OyBo29JQPu/d1Mz6OCkT6lzNUfH9Vo44C/JqJXrzhUB8s59MiLHhxq2jDWspNafA
-         fH4o0rjEiEi5RVZ+isT7r4aDFxTDAytYThB2UBC13wWUT18vYKCXJKS3ViT1JzoQ4Yr/
-         w3CA==
-X-Gm-Message-State: AOAM531J+CBOYoCLXgevezo/YdQNAJJv76973iXUdMriSOvwHZ45K+0L
-        W/rEUKg81qno4x6P06O+KwbeSlgKSDo=
-X-Google-Smtp-Source: ABdhPJxDyJM7FpN/RfQSfRa3LDIst+Ox6hSijWBeV3YpHvsmcZX9WgTcUiJIs4WvBb+WTBjydwtsvw==
-X-Received: by 2002:a2e:b70d:: with SMTP id j13mr212949ljo.400.1602720905974;
-        Wed, 14 Oct 2020 17:15:05 -0700 (PDT)
-Received: from mobilestation ([95.79.141.114])
-        by smtp.gmail.com with ESMTPSA id r10sm520707ljm.14.2020.10.14.17.15.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 17:15:05 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 03:15:03 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: DEC: Restore bootmem reservation for firmware
- working memory area
-Message-ID: <20201015001503.gouirlzmfourkuw2@mobilestation>
-References: <alpine.LFD.2.21.2010142230090.866917@eddie.linux-mips.org>
- <20201014223654.rntqmnrxldxovf3u@mobilestation>
- <alpine.LFD.2.21.2010150008460.866917@eddie.linux-mips.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.2010150008460.866917@eddie.linux-mips.org>
+        id S1732039AbgJOAQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 20:16:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730634AbgJOAQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 20:16:33 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66C29221FF;
+        Thu, 15 Oct 2020 00:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602720992;
+        bh=HGiBqzUWkqntE8fU1EZdxLl6YCsWiuRv5UJhNz7ST3o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BYrdwsZ7Xn/Zjavtp7qY8rDaXCu0OdTR5JxgivkC46n51JWXwgCAWDGyKJa422rQ2
+         IYXhK0a8aitH+YzRPprcFKtG4a0VLCDG0NxV683KBPxa6bpMR6FuBBr+R+StKXo25m
+         LARg18c0ZK1KNqTbaWZ8pn0FispCDUgVFhr6EEQU=
+Date:   Thu, 15 Oct 2020 09:16:29 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tom Zanussi <zanussi@kernel.org>, axelrasmussen@google.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] selftests/ftrace: Add test case for synthetic
+ event syntax errors
+Message-Id: <20201015091629.924b20723493d072ce14505c@kernel.org>
+In-Reply-To: <20201014133215.21d066e4@gandalf.local.home>
+References: <cover.1602598160.git.zanussi@kernel.org>
+        <af611928ce79f86eaf0af8654f1d7802d5cc21ff.1602598160.git.zanussi@kernel.org>
+        <20201014110636.139df7be275d40a23b523b84@kernel.org>
+        <20201014133215.21d066e4@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 01:03:10AM +0100, Maciej W. Rozycki wrote:
-> On Thu, 15 Oct 2020, Serge Semin wrote:
+Hi Steve,
+
+On Wed, 14 Oct 2020 13:32:15 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Wed, 14 Oct 2020 11:06:36 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > 
-> > > Table 2-2  REX Memory Regions
-> > > -------------------------------------------------------------------------
-> > >         Starting        Ending
-> > > Region  Address         Address         Use
-> > > -------------------------------------------------------------------------
-> > > 0       0xa0000000      0xa000ffff      Restart block, exception vectors,
-> > >                                         REX stack and bss
-> > > 1       0xa0010000      0xa0017fff      Keyboard or tty drivers
-> > > 
-> > > 2       0xa0018000      0xa001f3ff 1)   CRT driver
-> > > 
-> > > 3       0xa0020000      0xa002ffff      boot, cnfg, init and t objects
-> > > 
-> > > 4       0xa0020000      0xa002ffff      64KB scratch space
-> > > -------------------------------------------------------------------------
-> > > 1) Note that the last 3 Kbytes of region 2 are reserved for backward
-> > > compatibility with previous system software.
-> > > -------------------------------------------------------------------------
-> > > 
+> > Hi Tom,
 > > 
-> > ...
+> > On Tue, 13 Oct 2020 09:17:58 -0500
+> > Tom Zanussi <zanussi@kernel.org> wrote:
 > > 
-> > > @@ -146,6 +150,9 @@ void __init plat_mem_setup(void)
-> > >  
-> > >  	ioport_resource.start = ~0UL;
-> > >  	ioport_resource.end = 0UL;
+> > > Add a selftest that verifies that the syntax error messages and caret
+> > > positions are correct for most of the possible synthetic event syntax
+> > > error cases.
+> > > 
+> > > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> > > ---
+> > >  .../trigger-synthetic_event_syntax_errors.tc  | 19 +++++++++++++++++++
+> > >  1 file changed, 19 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> > > 
+> > > diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> > > new file mode 100644
+> > > index 000000000000..ada594fe16cb
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
+> > > @@ -0,0 +1,19 @@
+> > > +#!/bin/sh
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# description: event trigger - test synthetic_events syntax parser errors
+> > > +# requires: synthetic_events error_log  
+> > 
+> > This also requires dynamic strings support. So, its "requires" line should be
+> > 
+> > # requires: synthetic_events error_log "char name[]' >> synthetic_events":README
 > > 
 > > > +
-> > > +	/* Stay away from the firmware working memory area for now. */
-> > > +	memblock_reserve(PHYS_OFFSET, __pa_symbol(&_text) - PHYS_OFFSET);
+> > > +check_error() { # command-with-error-pos-by-^
+> > > +    ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
+> > > +}
+> > > +  
 > > 
-> > I am just wondering...
-> > Here we reserve a region within [PHYS_OFFSET, __pa_symbol(&_text)]. But then in
-> > the prom_free_prom_memory() method we'll get to free a region as either
-> > [PAGE_SIZE, __pa_symbol(&_text)] or [PAGE_SIZE, __pa_symbol(&_text) - 0x00020000].
+> > BTW, some errors looks a bit odd.
 > > 
-> > First of all the start address of the being freed region is PAGE_SIZE, which doesn't
-> > take the PHYS_OFFSET into account. I assume it won't cause problems because
-> > PHYS_OFFSET is set to 0 for DEC. If so then we either shouldn't use PHYS_OFFSET
-> > here or should take PHYS_OFFSET into account there on freeing or should just forget
-> > about that since other than confusion it won't cause any problem.)
-> > (I should have posted this question to v1 of this patch instead of pointing out
-> > on the confusing size argument of the memblock_reserve() method. Sorry about
-> > that.)
+> > > +check_error 'myevent ^chr arg'			# INVALID_TYPE
+> > > +check_error 'myevent ^char str[];; int v'	# INVALID_TYPE  
+> > 
+> > I think there is a wrong "void" argument between ";", instead of invalid type.
+> > 
+> > > +check_error 'myevent char ^str]; int v'		# INVALID_NAME
+> > > +check_error 'myevent char ^str;[]'		# INVALID_NAME  
+> > 
+> > This is also not an invalid name but '[]' is an invalid type. 
+> > 
+> > > +check_error 'myevent ^char str[; int v'		# INVALID_TYPE
+> > > +check_error '^mye;vent char str[]'		# BAD_NAME
+> > > +check_error 'myevent char str[]; ^int'		# INVALID_FIELD  
+> > 
+> > Isn't it an incomplete command?
+> > 
+> > > +check_error '^myevent'				# INCOMPLETE_CMD
+> > > +
+> > > +exit 0  
+> > 
 > 
->  Technically, yes, we could use PHYS_OFFSET here, though as a separate 
-> change, as it's not related to the regression addressed.
+> Hi Masami,
 > 
->  Please mind that this is very old code, which long predates the existence 
-> of PHYS_OFFSET, introduced with commit 6f284a2ce7b8 ("[MIPS] FLATMEM: 
-> introduce PHYS_OFFSET.") back in 2007 only.  While `prom_free_prom_memory' 
-> code dates back to commit b5766e7e6177 ("o bootmem fixes for DECstations") 
-> (no proper change heading here; this is from CVS repo days) from 2000, and 
-> I fiddled with it myself not so long afterwards with commit e25ac8bd2505 
-> ("DECstation fixes from Maciej") in 2001 (both in the old LMO GIT repo).  
-> So if anytime it should have been updated in the course of a code audit 
-> that was surely due across all platforms with the introduction of 
-> PHYS_OFFSET.
-> 
->  Of course it doesn't mean it must not or cannot be fixed now, but it has 
-> been functionally correct even if semantically broken, so no one saw the 
-> urge to change it (let alone notice the problem in the first place -- you 
-> are the first one).
-> 
-> > Secondly why is PAGE_SIZE selected as the start address? It belongs to the
-> > Region 1 in accordance with "Table 2-2 REX Memory Regions" cited above. Thus we
-> > get to keep reserved just a part of the Region 1. Most likely it's the restart
-> > block and the exception vectors. Even assuming that the DEC developers knew what
-> > they were doing, I am wondering can we be sure that a single page is enough for
-> > all that data?..
-> 
->  Again this is so old as to predate the existence of synthesised exception 
-> handlers we currently use (which has been a blessing BTW), which I reckon 
-> take a little less space than the preassembled handlers we previously had 
-> used to, and stay well within even the smallest supported page size of 
-> 4KiB.  Anything else we can just overwrite as we do not mean to call into 
-> the firmware at this point anymore; we couldn't trust it to do the right 
-> thing anyway once we have booted (e.g. not to keep interrupts masked for 
-> too long, etc.).
-> 
->  I've been occasionally thinking about a better solution in place of the 
-> LANCE hack here, needed because the chip has only its low 16 out of 24 
-> address lines wired, due to a limitation of the IOASIC DMA controller (it 
-> also drives one half of the IOASIC's 16-bit data bus only, communicating 
-> with every other byte of system memory only and hence the requirement for 
-> a 128KiB allocation, with every other byte wasted, rather than a 64KiB 
-> one).
-> 
->  Had all 24 lines been used, we could use dynamic ZONE_DMA buffers as with 
-> PC ISA DMA, as the LANCE implements proper DMA rings, but with low 16 only 
-> it would not really play.  I have not come up with any solution however 
-> that would be significantly better than what we have, and the current one 
-> works, so I have left it as it is.
-> 
+> I finished testing this series along with other patches (some from you),
+> and I'm ready to push this to next, and hopefully soon to Linus. You have a
+> "tested-by" for the entire series. Are you OK with this patch too? Can we
+> push this forward and fix up any issues you have later?
 
->  Do these explanations address your concerns?
+I think this is OK to push at least for the upstream kernel (unless backporting).
+The above issues can be fixed in another series :)
 
-Yep, completely. Thanks for the very detailed response.
+Thank you,
 
--Sergey
-
-> 
->   Maciej
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
