@@ -2,220 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA87128EEDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F4228EEE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388449AbgJOI7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:59:47 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:60924 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388339AbgJOI7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:59:42 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 107BDFBE44B0C4FE43B2;
-        Thu, 15 Oct 2020 16:59:39 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 15 Oct 2020 16:59:30 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH drm/hisilicon v2 1/2] drm/hisilicon: Use the same style of variable type in hibmc_drm_de
-Date:   Thu, 15 Oct 2020 17:00:16 +0800
-Message-ID: <1602752417-20598-2-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602752417-20598-1-git-send-email-tiantao6@hisilicon.com>
-References: <1602752417-20598-1-git-send-email-tiantao6@hisilicon.com>
+        id S2388534AbgJOJAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:00:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388330AbgJOJAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 05:00:21 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 333E32222E;
+        Thu, 15 Oct 2020 09:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602752420;
+        bh=8g4rnJL50+RWuyiZ98/LTN/270KBeiyldVTlJZ8PqN8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BY6LeF5Ec7P7gfxWTqa3vTEhQ9Bp8a1SiyQ6ZdJMfUSaMrqGg1ieNvoH3crOjQie3
+         /iH7acH4OQTXL+PIre3vxL707+Futd4+AccwIDnKmpkxrWYmyt9zrexjBLRuaK5Tbs
+         UjzOHZ9NVqKwJsfn2d1+ZSTJh5HZtTiQw+YPz7OI=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [RFC PATCH v2 2/3] tracing: Update the stage 3 of trace event macro comment
+Date:   Thu, 15 Oct 2020 18:00:17 +0900
+Message-Id: <160275241674.115066.16421925783973307130.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <160275239876.115066.10891356497426857018.stgit@devnote2>
+References: <160275239876.115066.10891356497426857018.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consistently Use the same style of variable type in hibmc_drm_de.c.
+Update the comment of the 3rd stage of trace event macro
+expansion code. Now there are 2 macros makes different
+trace_raw_output_<call>() functions.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c | 59 +++++++++++++-------------
- 1 file changed, 29 insertions(+), 30 deletions(-)
+ include/trace/trace_events.h |   29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-index 8478a84..a1eabad 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-@@ -23,15 +23,15 @@
- #include "hibmc_drm_regs.h"
- 
- struct hibmc_display_panel_pll {
--	unsigned long M;
--	unsigned long N;
--	unsigned long OD;
--	unsigned long POD;
-+	u64 M;
-+	u64 N;
-+	u64 OD;
-+	u64 POD;
- };
- 
- struct hibmc_dislay_pll_config {
--	unsigned long hdisplay;
--	unsigned long vdisplay;
-+	u64 hdisplay;
-+	u64 vdisplay;
- 	u32 pll1_config_value;
- 	u32 pll2_config_value;
- };
-@@ -102,7 +102,7 @@ static void hibmc_plane_atomic_update(struct drm_plane *plane,
- 	struct drm_plane_state	*state	= plane->state;
- 	u32 reg;
- 	s64 gpu_addr = 0;
--	unsigned int line_l;
-+	u32 line_l;
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(plane->dev);
- 	struct drm_gem_vram_object *gbo;
- 
-@@ -155,10 +155,10 @@ static const struct drm_plane_helper_funcs hibmc_plane_helper_funcs = {
- 	.atomic_update = hibmc_plane_atomic_update,
- };
- 
--static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
-+static void hibmc_crtc_dpms(struct drm_crtc *crtc, u32 dpms)
- {
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
--	unsigned int reg;
-+	u32 reg;
- 
- 	reg = readl(priv->mmio + HIBMC_CRT_DISP_CTL);
- 	reg &= ~HIBMC_CRT_DISP_CTL_DPMS_MASK;
-@@ -172,7 +172,7 @@ static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
- static void hibmc_crtc_atomic_enable(struct drm_crtc *crtc,
- 				     struct drm_atomic_state *state)
- {
--	unsigned int reg;
-+	u32 reg;
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 
- 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
-@@ -191,7 +191,7 @@ static void hibmc_crtc_atomic_enable(struct drm_crtc *crtc,
- static void hibmc_crtc_atomic_disable(struct drm_crtc *crtc,
- 				      struct drm_atomic_state *state)
- {
--	unsigned int reg;
-+	u32 reg;
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 
- 	hibmc_crtc_dpms(crtc, HIBMC_CRT_DPMS_OFF);
-@@ -212,7 +212,7 @@ static enum drm_mode_status
- hibmc_crtc_mode_valid(struct drm_crtc *crtc,
- 		      const struct drm_display_mode *mode)
- {
--	int i = 0;
-+	size_t i = 0;
- 	int vrefresh = drm_mode_vrefresh(mode);
- 
- 	if (vrefresh < 59 || vrefresh > 61)
-@@ -227,9 +227,9 @@ hibmc_crtc_mode_valid(struct drm_crtc *crtc,
- 	return MODE_BAD;
- }
- 
--static unsigned int format_pll_reg(void)
-+static u32 format_pll_reg(void)
- {
--	unsigned int pllreg = 0;
-+	u32 pllreg = 0;
- 	struct hibmc_display_panel_pll pll = {0};
- 
- 	/*
-@@ -249,7 +249,7 @@ static unsigned int format_pll_reg(void)
- 	return pllreg;
- }
- 
--static void set_vclock_hisilicon(struct drm_device *dev, unsigned long pll)
-+static void set_vclock_hisilicon(struct drm_device *dev, u64 pll)
- {
- 	u32 val;
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
-@@ -279,11 +279,10 @@ static void set_vclock_hisilicon(struct drm_device *dev, unsigned long pll)
- 	writel(val, priv->mmio + CRT_PLL1_HS);
- }
- 
--static void get_pll_config(unsigned long x, unsigned long y,
--			   u32 *pll1, u32 *pll2)
-+static void get_pll_config(u64 x, u64 y, u32 *pll1, u32 *pll2)
- {
--	int i;
--	int count = ARRAY_SIZE(hibmc_pll_table);
-+	size_t i;
-+	size_t count = ARRAY_SIZE(hibmc_pll_table);
- 
- 	for (i = 0; i < count; i++) {
- 		if (hibmc_pll_table[i].hdisplay == x &&
-@@ -306,11 +305,11 @@ static void get_pll_config(unsigned long x, unsigned long y,
-  * FPGA only supports 7 predefined pixel clocks, and clock select is
-  * in bit 4:0 of new register 0x802a8.
-  */
--static unsigned int display_ctrl_adjust(struct drm_device *dev,
--					struct drm_display_mode *mode,
--					unsigned int ctrl)
-+static u32 display_ctrl_adjust(struct drm_device *dev,
-+			       struct drm_display_mode *mode,
-+			       u32 ctrl)
- {
--	unsigned long x, y;
-+	u64 x, y;
- 	u32 pll1; /* bit[31:0] of PLL */
- 	u32 pll2; /* bit[63:32] of PLL */
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
-@@ -358,12 +357,12 @@ static unsigned int display_ctrl_adjust(struct drm_device *dev,
- 
- static void hibmc_crtc_mode_set_nofb(struct drm_crtc *crtc)
- {
--	unsigned int val;
-+	u32 val;
- 	struct drm_display_mode *mode = &crtc->state->mode;
- 	struct drm_device *dev = crtc->dev;
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
--	int width = mode->hsync_end - mode->hsync_start;
--	int height = mode->vsync_end - mode->vsync_start;
-+	u32 width = mode->hsync_end - mode->hsync_start;
-+	u32 height = mode->vsync_end - mode->vsync_start;
- 
- 	writel(format_pll_reg(), priv->mmio + HIBMC_CRT_PLL_CTRL);
- 	writel(HIBMC_FIELD(HIBMC_CRT_HORZ_TOTAL_TOTAL, mode->htotal - 1) |
-@@ -393,7 +392,7 @@ static void hibmc_crtc_mode_set_nofb(struct drm_crtc *crtc)
- static void hibmc_crtc_atomic_begin(struct drm_crtc *crtc,
- 				    struct drm_crtc_state *old_state)
- {
--	unsigned int reg;
-+	u32 reg;
- 	struct drm_device *dev = crtc->dev;
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 
-@@ -446,15 +445,15 @@ static void hibmc_crtc_load_lut(struct drm_crtc *crtc)
- 	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
- 	void __iomem   *mmio = priv->mmio;
- 	u16 *r, *g, *b;
--	unsigned int reg;
--	int i;
-+	u32 reg;
-+	u32 i;
- 
- 	r = crtc->gamma_store;
- 	g = r + crtc->gamma_size;
- 	b = g + crtc->gamma_size;
- 
- 	for (i = 0; i < crtc->gamma_size; i++) {
--		unsigned int offset = i << 2;
-+		u32 offset = i << 2;
- 		u8 red = *r++ >> 8;
- 		u8 green = *g++ >> 8;
- 		u8 blue = *b++ >> 8;
--- 
-2.7.4
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index 4ad9abf465b0..a96301317842 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -231,9 +231,11 @@ TRACE_MAKE_SYSTEM_STR();
+  * {
+  *	struct trace_seq *s = &iter->seq;
+  *	struct trace_event_raw_<call> *field; <-- defined in stage 1
+- *	struct trace_entry *entry;
+  *	struct trace_seq *p = &iter->tmp_seq;
+- *	int ret;
++ *
++ * -------(for event)-------
++ *
++ *	struct trace_entry *entry;
+  *
+  *	entry = iter->ent;
+  *
+@@ -245,14 +247,23 @@ TRACE_MAKE_SYSTEM_STR();
+  *	field = (typeof(field))entry;
+  *
+  *	trace_seq_init(p);
+- *	ret = trace_seq_printf(s, "%s: ", <call>);
+- *	if (ret)
+- *		ret = trace_seq_printf(s, <TP_printk> "\n");
+- *	if (!ret)
+- *		return TRACE_TYPE_PARTIAL_LINE;
++ *	return trace_output_call(iter, <call>, <TP_printk> "\n");
+  *
+- *	return TRACE_TYPE_HANDLED;
+- * }
++ * ------(or, for event class)------
++ *
++ *	int ret;
++ *
++ *	field = (typeof(field))iter->ent;
++ *
++ *	ret = trace_raw_output_prep(iter, trace_event);
++ *	if (ret != TRACE_TYPE_HANDLED)
++ *		return ret;
++ *
++ *	trace_event_printf(iter, <TP_printk> "\n");
++ *
++ *	return trace_handle_return(s);
++ * -------
++ *  }
+  *
+  * This is the method used to print the raw event to the trace
+  * output format. Note, this is not needed if the data is read
 
