@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B3E28F664
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19D6E28F677
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389067AbgJOQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 12:07:39 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:36610 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388461AbgJOQHj (ORCPT
+        id S2389207AbgJOQMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388461AbgJOQMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 12:07:39 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 7D5DE1F45C3D
-Subject: Re: [PATCH] arm64: dts: mediatek: Add smi_common node for MT8183
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, weiyi.lu@mediatek.com,
-        drinkcat@chromium.org, hsinyi@chromium.org, fparent@baylibre.com,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20201001162823.3592352-1-enric.balletbo@collabora.com>
- <d937daf7-469f-8d74-4267-057b89cf1dd1@gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <dbb00f05-6c1f-e5a2-12ae-aca494ecc6da@collabora.com>
-Date:   Thu, 15 Oct 2020 18:07:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <d937daf7-469f-8d74-4267-057b89cf1dd1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 15 Oct 2020 12:12:22 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AD8C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:12:21 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id w126so2420809qka.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=BdZDlc0VgpP2Ln7XZ/SJzkYEHvK/fd43ssyrqdMV8Lc=;
+        b=mW6Dp+96INwoUu0vyVN9WtCsrfLyXMNru/NIX528PPsBLkjCGONPtRuIrkY5rqMuVi
+         YPTIJms4p4xd2n5X3ZS5xAp47zvrv3sy+3ZsibOCcsBB1h2Nb9oLzrsQeKfNgXlD7EK9
+         XY7JBoE8kayWVwhbj7USCWhMw+b7kGKs51Z8ehZitV9gc/9YpR5eD8ktfIdqqhzm7+8i
+         3808CYJKywtpSXLuQ2nFgvoDHwE4UIE7At6lUy0Y2CCmGPGXNL9+mV6E7gTdeip2I6dU
+         PHSx7IKdL6gmMh5JbICbWvf4vMbCfppO+r8pReIRMMcsNV8WtPjWi/OqYFVNWQpAWjnx
+         w3Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=BdZDlc0VgpP2Ln7XZ/SJzkYEHvK/fd43ssyrqdMV8Lc=;
+        b=fz4Fw0hl5DjV9T6RF2M4mg9FQ9DK6vXPUZW9g9Y8p1rfJv51kuscZEgrSezJzNKSEO
+         f5e/cZkYm3OBr7KKzwi0M8EVQK3FNeKuuXe9PVlZ+E0KibVEF0xbwOIbdNABmSXZHrVp
+         EOsvDZXxIDh62ttgGptDCK4C7JVdZd2RpG1PUMAsWoz62wy7WQ59jcqqlEbuHEZHcRSG
+         y/fIfYIDstbNdkRtrySTlSeIfSLxo7Kf9nAxRLtyqBBOKjOVQpaFYxJz+pxLqjFcu9rr
+         qKeWbSTy8qpCQ4tJG1Fh5qU0ceNbfWxMJ9OHVfhzkk4+EZQNFFahBuuPvAqjyKsdi46M
+         SkVQ==
+X-Gm-Message-State: AOAM533I8HvpFq1CjPJeCGRGo4TarcjEGY3clW9pbBZPJ7jQch4zRl4O
+        LRyOe5QAIcZ4QSZXVREPhfWvW2E8t5pE
+X-Google-Smtp-Source: ABdhPJwL44cUfBhiz/kpQd9sl4Ph/ufdHDFZTNTTRmCidI/pDuveQJl7QSqPqnYe7uEEO9s8IFOcMEeihI4I
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a0c:a345:: with SMTP id
+ u63mr5556078qvu.17.1602778340129; Thu, 15 Oct 2020 09:12:20 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 09:12:16 -0700
+Message-Id: <20201015161216.1563600-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
+Subject: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined behavior.
+From:   Ian Rogers <irogers@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Numfor Mbiziwo-Tiapo <nums@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+From: Numfor Mbiziwo-Tiapo <nums@google.com>
 
-On 2/10/20 11:17, Matthias Brugger wrote:
-> 
-> 
-> On 01/10/2020 18:28, Enric Balletbo i Serra wrote:
->> The SMI (Smart Multimedia Interface) Common is a bridge between the m4u
->> (Multimedia Memory Management Unit) and the Multimedia HW. This block is
->> needed to support different multimedia features, like display, video
->> decode, and camera. Also is needed to control the power domains of such
->> HW blocks.
->>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->>
->>   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> index c2fd141afcf6..9082bc65e15e 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> @@ -916,6 +916,16 @@ mmsys: syscon@14000000 {
->>               #clock-cells = <1>;
->>           };
->>   +        smi_common: smi@14019000 {
->> +            compatible = "mediatek,mt8183-smi-common", "syscon";
->> +            reg = <0 0x14019000 0 0x1000>;
->> +            clocks = <&mmsys CLK_MM_SMI_COMMON>,
->> +                 <&mmsys CLK_MM_SMI_COMMON>,
->> +                 <&mmsys CLK_MM_GALS_COMM0>,
->> +                 <&mmsys CLK_MM_GALS_COMM1>;
->> +            clock-names = "apb", "smi", "gals0", "gals1";
->> +        };
->> +
-> 
-> Having a look at the bindings description, it states that the power-domains
-> phandle is a required property.
+Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+these are forms of undefined behavior.
 
-Hmmm, this makes me think that there is a kind of circular dependency for
-MT8183, so MT8183 power domains depends on smi_common and smi_common depends on
-MT8183 power domains. Will take a deeper look.
+These problems were identified using the undefined behavior sanitizer
+(ubsan) with the tools version of the code and perf test. Part of this
+patch was previously posted here:
+https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
 
-Thanks
-  Enric
+v2. removes the validate_next check and merges the 2 changes into one as
+requested by Masami Hiramatsu <mhiramat@kernel.org>
 
+Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+---
+ arch/x86/lib/insn.c       | 4 ++--
+ tools/arch/x86/lib/insn.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> So I suppose you have to base this on the power domains series.
-> 
-> Regards,
-> Matthias
-> 
->>           imgsys: syscon@15020000 {
->>               compatible = "mediatek,mt8183-imgsys", "syscon";
->>               reg = <0 0x15020000 0 0x1000>;
->>
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index 404279563891..be88ab250146 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -20,10 +20,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
++	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r = *(t*)((insn)->next_byte + n); r; })
++	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index 0151dfc6da61..92358c71a59e 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -20,10 +20,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
++	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r = *(t*)((insn)->next_byte + n); r; })
++	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+-- 
+2.28.0.1011.ga647a8990f-goog
+
