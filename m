@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A5B28F61C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F3928F61F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389811AbgJOPtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389713AbgJOPte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:49:34 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2389839AbgJOPuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:50:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59580 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389813AbgJOPuB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 11:50:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602777000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+KBQJxnzY9IJB92xwhkX7sURjnYMLbV8YEBAs4xU9Tg=;
+        b=iLvFBA73I2HiyCmNrrNj6LUrdfHAuCV5WtaUOtWUD/+IB4mbQtP2r9G9PTrBS1riMCIvun
+        FpLysMLV+sDnilEaXIci/+vQiGySE1BV3SsxPDB4kkWL3nxy6K+UilZk9kg4FSzOMlAApI
+        zU0sUhaeg1SQCO75HIJN3gGwJnwszvk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-sYJxVKzVPKWhB_A4sNAozQ-1; Thu, 15 Oct 2020 11:49:58 -0400
+X-MC-Unique: sYJxVKzVPKWhB_A4sNAozQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3AAA21D41;
-        Thu, 15 Oct 2020 15:49:33 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 11:49:31 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v3 0/3] tracing: Show real address instead of hashed
- pointer
-Message-ID: <20201015114931.1c9803ae@gandalf.local.home>
-In-Reply-To: <160277369795.29307.6792451054602907237.stgit@devnote2>
-References: <160277369795.29307.6792451054602907237.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 166C8EC50A;
+        Thu, 15 Oct 2020 15:49:57 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.8])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4F93376670;
+        Thu, 15 Oct 2020 15:49:55 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 15 Oct 2020 17:49:56 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 17:49:54 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, tglx@linutronix.de,
+        Roman Gershman <romger@amazon.com>
+Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
+Message-ID: <20201015154953.GM24156@redhat.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-6-axboe@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015131701.511523-6-axboe@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 23:54:58 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On 10/15, Jens Axboe wrote:
+>
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
-> Hi,
-> 
-> Here is the 3rd version of the series for real address printing in trace log.
-> 
-> Here is the previous version, I've fixed [1/3] to use krealloc(), fix memory
-> allocation error check and add __printf() attribute, according to Steve's
-> comment.
-> 
-> https://lore.kernel.org/lkml/160275239876.115066.10891356497426857018.stgit@devnote2/
-> 
-> 
-> Since trace_seq_printf() use in-kernel vsprintf() at last, the %p is always
-> converted to the hash value instead of real address.
-> 
-> For the dmesg it maybe secure, but for the ftrace, I think it is
-> meaningless because
-> 
-> - tracefs is used by root user, so no need to hide it.
-> - tracefs user can access percpu/cpu*/trace_pipe_raw which stores real
->   address on the trace buffer.
-> - external commands like perf doesn't convert to the hash value.
-> 
-> And when debugging kernel, we would like to know real address which tells
-> us the address is in which area in the kernel by comparing with kernel
-> memory mapping.
-> 
-> However, to compare the trace log with dmesg, we also need a bridging
-> information. So 3/3 gives the options/hash-ptr knob which switches
-> the output format.
-> 
+Yes, but ...
 
-Thanks Masami,
+> +static void task_work_notify_signal(struct task_struct *task)
+> +{
+> +#if defined(CONFIG_GENERIC_ENTRY) && defined(TIF_NOTIFY_SIGNAL)
 
-I'm going to hold off on adding this for this merge window, and look at
-applying it for the next window.
+as long as defined(CONFIG_GENERIC_ENTRY) goes away ;)
 
--- Steve
+Thomas, I strongly, strongly disagree with you. But even if you are right
+and only CONFIG_GENERIC_ENTRY arches should use TIF_NOTIFY_SIGNAL, why should
+this series check CONFIG_GENERIC_ENTRY ?
+
+You can simply nack the patch which adds TIF_NOTIFY_SIGNAL to
+arch/xxx/include/asm/thread_info.h.
+
+Oleg.
+
