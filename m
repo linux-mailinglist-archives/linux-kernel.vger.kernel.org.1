@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0C528EFA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BEF28EFA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730830AbgJOJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        id S1730855AbgJOJxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727165AbgJOJwp (ORCPT
+        with ESMTP id S1727165AbgJOJxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:52:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5722C061755;
-        Thu, 15 Oct 2020 02:52:45 -0700 (PDT)
+        Thu, 15 Oct 2020 05:53:15 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32531C061755;
+        Thu, 15 Oct 2020 02:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ChnsDW8RwOz+V4Lui6+w7vUUoPHqiMUgHcTcHpDBqRQ=; b=BMB+E6U++dgutmPA3qPWMcBBfJ
-        zVUmVqKmG02zDpFDN37KOTvG87NCwLcFA6PVxtZZuul/kVQS/n8UziTC9YGdjEfzrmEFbjsswhNEW
-        ZEXjc5zqSBOrL8XGaYnBc6Ftx/O5QgdWUNKjxvZ2zzWGlU/bGz/6kvbHJWjckG2ce82CgmXCpW7Sm
-        ACBjJo5d6Cav+gA8JTKeyVu8a7s9UpwMJ/xAozLQbOiSGPyJ9Q4xRg1XapOrpTc/vyouv/ByC3Y/a
-        Ste5VOj4eNisWZqpZ6DrKWKS/w2o5aeSpKtfiIRnE75iOPbcmMGskkeUAnfkq2jn0wuP39rLOpKPG
-        vI5t7XUw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kSzw3-0006Jw-J2; Thu, 15 Oct 2020 09:52:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3419B300DAE;
-        Thu, 15 Oct 2020 11:52:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 21F8620325EC4; Thu, 15 Oct 2020 11:52:35 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 11:52:35 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Qian Cai <cai@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
-Message-ID: <20201015095235.GT2651@hirez.programming.kicks-ass.net>
-References: <20201013112544.GZ2628@hirez.programming.kicks-ass.net>
- <20201013162650.GN3249@paulmck-ThinkPad-P72>
- <20201013193025.GA2424@paulmck-ThinkPad-P72>
- <20201014183405.GA27666@paulmck-ThinkPad-P72>
- <20201014215319.GF2974@worktop.programming.kicks-ass.net>
- <20201014221152.GS3249@paulmck-ThinkPad-P72>
- <20201014223954.GH2594@hirez.programming.kicks-ass.net>
- <20201014235553.GU3249@paulmck-ThinkPad-P72>
- <20201015034128.GA10260@paulmck-ThinkPad-P72>
- <20201015094926.GY2611@hirez.programming.kicks-ass.net>
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=dbmxkwYLeu14/trY1roq3k5j51cj5RLgD2hpnhpCK2o=; b=MGcuj9nZfh5vwyvI5PFOeDKax
+        MlpEaCmW/IPzj/OA2fFvrcZqSBAQcOuMPa03BhUV6ZbecBgLtiv1gxXFuYV3o5dHKd3osnZA52kUt
+        ka+3vXNgiMIKDnYIc/k+80HBYNsKc8/t2AA/t7C7h0qoeS/upy5XfPA8z75W0kO5mGy+3jRRKvc89
+        sj6I4flJyey9bXQTL7wt84RcIDWnbTKKefizDm3nGPLVgJZzquYJGAfN3z+Fso75lRmlNOORGaSHN
+        DkCf6Gg1orSkT4uSJOSDZqTbwplNRX9oJEk1YSUKwyX+UKLTumE/nj26eCftOdKQcxfcDRSWED3RE
+        +AKn1vY2Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46250)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kSzwc-0008Mq-DT; Thu, 15 Oct 2020 10:53:10 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kSzwZ-00005L-B1; Thu, 15 Oct 2020 10:53:07 +0100
+Date:   Thu, 15 Oct 2020 10:53:07 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 3/3] timekeeping: remove arch_gettimeoffset
+Message-ID: <20201015095307.GS1551@shell.armlinux.org.uk>
+References: <20201008154601.1901004-1-arnd@arndb.de>
+ <20201008154601.1901004-4-arnd@arndb.de>
+ <CACRpkdbc-Y6M+q8f7VEiee41ChUtP_5ygy_YN-wi873a+bN3yQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015094926.GY2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <CACRpkdbc-Y6M+q8f7VEiee41ChUtP_5ygy_YN-wi873a+bN3yQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 11:49:26AM +0200, Peter Zijlstra wrote:
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1764,8 +1764,7 @@ static bool rcu_gp_init(void)
->  		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
->  		firstseq = READ_ONCE(rnp->ofl_seq);
->  		if (firstseq & 0x1)
-> -			while (firstseq == smp_load_acquire(&rnp->ofl_seq))
-> -				schedule_timeout_idle(1);  // Can't wake unless RCU is watching.
-> +			smp_cond_load_relaxed(&rnp->ofl_seq, VAL == firstseq);
+On Thu, Oct 15, 2020 at 09:53:29AM +0200, Linus Walleij wrote:
+> On Thu, Oct 8, 2020 at 5:46 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> 
+> > With Arm EBSA110 gone, nothing uses it any more, so the corresponding
+> > code and the Kconfig option can be removed.
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> Very nice cleanup.
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> At some point we should do a retrospect about how hard it really is for
+> us to get rid of some really annoying core legacy codepaths and the best
+> strategy for doing so, even though this took 11+ years as Thomas
+> says it still looks like a solid path to move over to a generic framework,
+> only it requires enough gritty people (like you) to hang around and do the
+> work piece by piece.
 
-My bad, that should be: VAL != firstseq.
+Don't be misled. It was not a matter of "enough gritty people", it
+was a matter that EBSA110 was blocking it.
 
->  		smp_mb(); // Pair with barriers used when updating ->ofl_seq to even values.
->  		raw_spin_lock(&rcu_state.ofl_lock);
->  		raw_spin_lock_irq_rcu_node(rnp);
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
