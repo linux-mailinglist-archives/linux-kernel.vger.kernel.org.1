@@ -2,77 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AC428E983
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8470228E984
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732184AbgJOAfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 20:35:34 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33569 "EHLO ozlabs.org"
+        id S1732218AbgJOAfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 20:35:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727790AbgJOAfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 20:35:34 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727790AbgJOAff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 20:35:35 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBVgS1nSNz9sT6;
-        Thu, 15 Oct 2020 11:35:31 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602722132;
-        bh=AEUzDcNpseI0zKOcofSjki/FWqNB2DYfmUv1ZA64ZT0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZAGOU5MnMIDN+6LKnJTogH0NDfPeinbdSTa7Y18yG0Wyc+e/4RzG3DBHkq4mIo9Jc
-         S6lgdXwIB6zFI1/Ff8RrULv6p+H8yaKi+LYr2f7mjPKe4S67rihGViE7Q3Hpis8PVK
-         N/HTtqagwb/M66/oxbSedFAcA3GpzGQwMSEegjDBiydQFzZJqQ0wIKoWonUhZned36
-         TCBoH24zFMIV7NJrsZO37cWUBn+yLBkA9vB5ySWgYVfI3GwBqb9rR9Sx+7jtoO8Jo5
-         nXWfKJF0oeR7LbxvUN8jLrXayC6cWrrB1yUwGn4ZzQsIWlokcacTgLNy57iggydnTq
-         0PzOr2TdEw0gw==
-Date:   Thu, 15 Oct 2020 11:35:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: linux-next: manual merge of the btrfs tree with Linus' tree
-Message-ID: <20201015113530.115e0361@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id C9F1222242;
+        Thu, 15 Oct 2020 00:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602722135;
+        bh=Vcxh7W6YCHKYo3f4nMTdWacr0l0OOCs4P/U+xxv33L8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RH/Qq7AI9PYrQQCzCpCHMm50bzaPqpWVsN18rUxwYPp2L2AdrSQ9F5lLHgHUnLxIR
+         DMC6sgFhuutFcRZQ9l8zxj5fxVaY6tvU2hEIQzCjU/JBNikfmbT2zVipIqLXL91890
+         cZT+HmiYwHwkmYkap2+7tW91LXYjiHlZzawwcyuc=
+Date:   Wed, 14 Oct 2020 17:35:33 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] net: dsa: mv88e6xxx: serdes link without phy
+Message-ID: <20201014173533.75137c09@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201013021858.20530-1-chris.packham@alliedtelesis.co.nz>
+References: <20201013021858.20530-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/voInhO8v9bi.ZAxF+1MUQqx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/voInhO8v9bi.ZAxF+1MUQqx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 13 Oct 2020 15:18:56 +1300 Chris Packham wrote:
+> This small series gets my hardware into a working state. The key points are to
+> make sure we don't force the link and that we ask the MAC for the link status.
+> I also have updated my dts to say `phy-mode = "1000base-x";` and `managed =
+> "in-band-status";`
 
-Hi all,
-
-Please do *not* rebase/rewrite your linux-next included tree and then
-immediately send it to Linus.  Or if you do, the please also update
-what you have in linux-next (so you can sneak it past me :-().
-(mutter, mutter, unnecessary conflicts :-().
-
-I have dropped the brtfs tree from linux-next today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/voInhO8v9bi.ZAxF+1MUQqx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+HmVMACgkQAVBC80lX
-0GyiVwf+N2NmWlhEJR1ugr0XXH+JlSXRtJCu05zTfm4ODJFdPkS0ZmSnE0H0znZe
-IiN9aArnRWSJ5BUqCDWUMnQ3Tg/pKNn0ZlGiuXER23LsVhI45Jh1ktF9RWLg9Run
-89olNZJZdqwHzJeCPfST/pBs7CF6rUeuWKCpF2+KvySD4esi87FnWEald1xhH7AP
-evdhMfn/WsfT4Ms6k1ud/f9HKE3a7GzMLDYxPlGScepVdWcueK8jWbeI2L5HkYp6
-0O8ZgY1TeXj1Hcb1ngOZYjdZ3s5R1o0FkgKL9JJiGR9WpxpUS+Yrc3qqLGlbT2HV
-0EiWPoRSFQInZBg/wFFNMsO/v87q7Q==
-=5OB4
------END PGP SIGNATURE-----
-
---Sig_/voInhO8v9bi.ZAxF+1MUQqx--
+Russell, Andrew, PHY folks - does this look good to you?
