@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CFA28F451
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E7528F453
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgJOOGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:06:22 -0400
-Received: from m12-17.163.com ([220.181.12.17]:40720 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbgJOOGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:06:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=stzCj
-        44piycQ93b9gKxTr0jRV1BpnU5k9OyOPURNcxE=; b=jJVD7yBDezz+RvKYSJDEx
-        XDdj72wmM7ASUiFyt90OAx9b1vQvVaRVs7sK95ieMFs3lZ+ZevZdwQpHLGBraXKc
-        y+8ZzOoIuQ+9+DlLmN6n+82z4xEl712LRTWpH4lUbto4yLx/U+taeWEx4JGSxBCw
-        ScPw92ddQ1PJtkaB6E6aFY=
-Received: from localhost (unknown [101.228.30.83])
-        by smtp13 (Coremail) with SMTP id EcCowABH7XkWV4hfC1FMNw--.60761S2;
-        Thu, 15 Oct 2020 22:05:11 +0800 (CST)
-Date:   Thu, 15 Oct 2020 22:05:10 +0800
-From:   Hui Su <sh_def@163.com>
-To:     sh_def@163.com, leon@kernel.org, jgg@ziepe.ca,
-        keescook@chromium.org, kvalo@codeaurora.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] async.c: reduce the critical region in lowest_in_progress()
-Message-ID: <20201015140510.GA19561@rlk>
+        id S1730617AbgJOOGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729647AbgJOOGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:06:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB24C061755;
+        Thu, 15 Oct 2020 07:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Y78eONskpyGlU4hGu9lHbAxkXtJjFWlaahMgdLwji6I=; b=B6ppARpmYwCguqRCWuD1mChED9
+        0Ynel8CZX3dIMkGMZoYbet00r1q6dl7TVFrN72W9mH/FpfN+ODef1K3iXilMVq8tYAYphLYb8/VGu
+        PHTN8gt5nuuzPNOguHRpKav6gSgQOjR75Bkg6sv1yH6A+JtGCEHdNIvQvXxScJftqXb1Cl5dJqpXI
+        XWsI4YqRvnmF6acOelUUYNHxNmT1H3xye3fajByyN9b890hcmz5rUOLamoA+B8N262oSAy21FGroD
+        Gd7AJKsJRntHU6MURMWkyIrel4h2vcq0Zx/DOdYSjq3RJ8SZOnH+Pwj1hcWEpBYRjYMOMGMJ2pwi9
+        u502InRA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT3tn-0004lO-7n; Thu, 15 Oct 2020 14:06:31 +0000
+Date:   Thu, 15 Oct 2020 15:06:31 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ecryptfs@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v2 01/16] mm: Add AOP_UPDATED_PAGE return value
+Message-ID: <20201015140631.GZ20115@casper.infradead.org>
+References: <20201009143104.22673-1-willy@infradead.org>
+ <20201009143104.22673-2-willy@infradead.org>
+ <20201015090651.GB12879@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-CM-TRANSID: EcCowABH7XkWV4hfC1FMNw--.60761S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW5Kr4rGFW7Cw1rAry5JFyfXrb_yoWxXrb_Cr
-        y8Zr95Kr98GrW3ta15C3yfWr42qws5W3WI934UtFWDXr90qa1rXw15XFn3X398Gr4xGrW3
-        Aw1Dur9FyrnF9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjM5l7UUUUU==
-X-Originating-IP: [101.228.30.83]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbByx2+X1PAPRrvTQABsg
+In-Reply-To: <20201015090651.GB12879@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The judgement of first do not need to be in the critical region.
-So move it out.
+On Thu, Oct 15, 2020 at 10:06:51AM +0100, Christoph Hellwig wrote:
+> Don't we also need to handle the new return value in a few other places
+> like cachefiles_read_reissue swap_readpage?  Maybe those don't get
+> called on the currently converted instances, but just leaving them
+> without handling AOP_UPDATED_PAGE seems like a time bomb.
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- kernel/async.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Er, right.  And nobh_truncate_page(), and read_page().  And then I
+noticed the bug in cachefiles_read_reissue().  Sigh.
 
-diff --git a/kernel/async.c b/kernel/async.c
-index 33258e6e20f8..9d33ffcc84c7 100644
---- a/kernel/async.c
-+++ b/kernel/async.c
-@@ -96,10 +96,10 @@ static async_cookie_t lowest_in_progress(struct async_domain *domain)
- 					struct async_entry, global_list);
- 	}
- 
-+	spin_unlock_irqrestore(&async_lock, flags);
- 	if (first)
- 		ret = first->cookie;
- 
--	spin_unlock_irqrestore(&async_lock, flags);
- 	return ret;
- }
- 
--- 
-2.25.1
-
-
+Updated patch series coming soon.
