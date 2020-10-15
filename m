@@ -2,121 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AF428F3FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4BF28F3FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730474AbgJONyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729735AbgJONyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:54:23 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C086C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:54:23 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id q21so1939176pgi.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:54:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IDNF42bzSbtgyhpFqjahaVnSc6t4I3jNbHicdwJNMZk=;
-        b=qAVyvVppOWwoK4SGY8sXHjJIFRV3+qCLhXQXd1+QEIohJxgw6/vY4LxInmg+IkUfZ2
-         nF4hhzi4YsugigoaUa03mJ5BC9lyxpXVodVthzHaN1muxTvF52PKqiahtLQWL5Xz8lM9
-         7Xlv9OmDOxE2AH1asyfF4Lf6L8Kr5oTi12yGekaAiCnzSPcVbDvJ2oXo9mH/AdFI6DcI
-         ZThN0JGPq1xczLSOmSqtPb+ItX/Y3niCcE1mKq++tseKLPCdXpGwrz7O1GzenT80d8oh
-         9qjVGr/GId4LKKVbE5qC+W2PiGkIXYKlt15B2g4IyGm0ntrSKk+qBFtYp+guydpWOSJ6
-         n5qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=IDNF42bzSbtgyhpFqjahaVnSc6t4I3jNbHicdwJNMZk=;
-        b=BBfUARutrw0ERdhEWIy+bc8ThQSJR5rIoslAi1S3+hTrSS8cfMETyDnwFsLHQ+hmjX
-         ljPoATFZUeHaXgCyT7BPHMYcRSbWamlfAQuvEHg0Efgm67VXK75pE2IZHhRdI0bBgnkw
-         61ovXj00SS07Bug8lI0eKdccNG5j3fDQCxKZpJZs5TjQ8EWMGnnd8IbsAQEFOY4SB5YK
-         u2jlC9At9yHMtDVDC3/rj8XYkCBet1CnlH6aynGLLlPnL39bHNis9Rod6zyaNXcgKr7Z
-         W0yOG8JHYaitdLpHO4CplGNbhFrT1L3ths5xB2xN5DReAcS81aQAMYSxo2Jg1e78Mscc
-         4tXg==
-X-Gm-Message-State: AOAM533Yr6nOt+/Q3Tp83gPM16Fo0k2zOO+FPoPbz+zBRgoE85FDuVM2
-        0ZevoVm/DmfklZyNqfo9dBs=
-X-Google-Smtp-Source: ABdhPJwqEjgiu5lXhf1jHTpTQYsErpj/RqRs4A8aTtU+QoudHqM6djCnzLEnH4yQHRn11rsLc+d90g==
-X-Received: by 2002:a63:b245:: with SMTP id t5mr3368126pgo.328.1602770062877;
-        Thu, 15 Oct 2020 06:54:22 -0700 (PDT)
-Received: from ArchLinux (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
-        by smtp.gmail.com with ESMTPSA id f9sm3494394pjq.26.2020.10.15.06.54.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 06:54:21 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 19:24:07 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
-        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
-        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] scripts: spelling:  Remove space in the entry memry
- to memory
-Message-ID: <20201015135407.GB1899805@ArchLinux>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Joe Perches <joe@perches.com>, akpm@linux-foundation.org,
-        colin.king@canonical.com, sfr@canb.auug.org.au, wangqing@vivo.com,
-        david@redhat.com, xndchn@gmail.com, luca@lucaceresoli.net,
-        ebiggers@google.com, linux-kernel@vger.kernel.org
-References: <20201015132336.1770828-1-unixbhaskar@gmail.com>
- <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="U+BazGySraz5kW0T"
-Content-Disposition: inline
-In-Reply-To: <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
+        id S1730511AbgJONyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:54:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729647AbgJONyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 09:54:37 -0400
+Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6332522248;
+        Thu, 15 Oct 2020 13:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602770076;
+        bh=dYBHRuEaYycITXh0W7hcI6XJbIFBShads9fTbeIMlxM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=wf8DoI/YS8lVDKP88vlA+OKLJyFItcq+OlG0ySsV7w4Xl5XOaT7/AMWU7ubqQa0mn
+         g6QywlwfnKS/9C+kMlcO0psGEuTDQ+AvW/Py4pOKhY+OGGvKJN3CYSV0sj8ul3DMM0
+         vYbSDJSBD2CfplfWq/zDjAHoMjcqjpym4sccHekA=
+Message-ID: <53e8d16bd6da17d0c1759b0743ae44f104832ce4.camel@kernel.org>
+Subject: Re: [PATCH] tracing: Check return value of __create_val_fields()
+ before using its result
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Date:   Thu, 15 Oct 2020 08:54:34 -0500
+In-Reply-To: <20201013154852.3abd8702@gandalf.local.home>
+References: <20201013154852.3abd8702@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Steve,
 
---U+BazGySraz5kW0T
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+On Tue, 2020-10-13 at 15:48 -0400, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> After having a typo for writing a histogram trigger.
+> 
+> Wrote:
+>   echo 'hist:key=pid:ts=common_timestamp.usec' >
+> events/sched/sched_waking/trigger
+> 
+> Instead of:
+>   echo 'hist:key=pid:ts=common_timestamp.usecs' >
+> events/sched/sched_waking/trigger
+> 
+> and the following crash happened:
+> 
+>  BUG: kernel NULL pointer dereference, address: 0000000000000008
+>  #PF: supervisor read access in kernel mode
+>  #PF: error_code(0x0000) - not-present page
+>  PGD 0 P4D 0
+>  Oops: 0000 [#1] PREEMPT SMP PTI
+>  CPU: 4 PID: 1641 Comm: sh Not tainted 5.9.0-rc5-test+ #549
+>  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
+> v03.03 07/14/2016
+>  RIP: 0010:event_hist_trigger_func+0x70b/0x1ee0
+>  Code: 24 08 89 d5 49 89 cc e9 8c 00 00 00 4c 89 f2 41 b9 00 10 00 00
+> 4c 89 e1 44 89 ee 4c 89 ff e8 dc d3 ff ff 45 89 ea 4b 8b 14 d7 <f6>
+> 42 08 04 74 17 41 8b 8f c0 00 00 00 8d 71 01 41 89 b7 c0 00 00
+>  RSP: 0018:ffff959213d53db0 EFLAGS: 00010202
+>  RAX: ffffffffffffffea RBX: 0000000000000000 RCX: 0000000000084c04
+>  RDX: 0000000000000000 RSI: df7326aefebd174c RDI: 0000000000031080
+>  RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000001
+>  R10: 0000000000000001 R11: 0000000000000046 R12: ffff959211dcf690
+>  R13: 0000000000000001 R14: ffff95925a36e370 R15: ffff959251c89800
+>  FS:  00007fb9ea934740(0000) GS:ffff95925ab00000(0000)
+> knlGS:0000000000000000
+>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 0000000000000008 CR3: 00000000c976c005 CR4: 00000000001706e0
+>  Call Trace:
+>   ? trigger_process_regex+0x78/0x110
+>   trigger_process_regex+0xc5/0x110
+>   event_trigger_write+0x71/0xd0
+>   vfs_write+0xca/0x210
+>   ksys_write+0x70/0xf0
+>   do_syscall_64+0x33/0x40
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>  RIP: 0033:0x7fb9eaa29487
+>  Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f
+> 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48>
+> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+> 
+> This was caused by accessing the hlist_data fields after the call to
+> __create_val_fields() without checking if the creation succeed.
+> 
+> Fixes: 63a1e5de3006 ("tracing: Save normal string variables")
 
-On 06:38 Thu 15 Oct 2020, Joe Perches wrote:
->On Thu, 2020-10-15 at 18:53 +0530, Bhaskar Chowdhury wrote:
->> Fix the space in the middle in below entry.
->>
->> memry||memory
->[]
->> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
->[]
->> @@ -885,7 +885,7 @@ meetign||meeting
->>  memeory||memory
->>  memmber||member
->>  memoery||memory
->> -memry ||memory
->> +memry||memory
->
->No.  Don't post a bad patch, assume
->it's applied and then post a fix to
->the bad patch as v2.
->
->Send a single clean patch.
->
+Yes, this fixes the fix, sigh.
 
-Not sure what you mean...could you elaborate...don't know what is going on..>
+Reviewed-by: Tom Zanussi <zanussi@kernel.org>
 
---U+BazGySraz5kW0T
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
+Tom
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl+IVHkACgkQsjqdtxFL
-KRXDuAgAyqnA1EjtltjX9L4afZmAp+eJkvAhRoxXM8M5ly5087IFVl/8AfXS1DrW
-8i//d0ANltgxP498HqF6OP9CUjjXbZwcqN0QJgJvZsYVxHYWawqQQAn1ZR8Z0THR
-AHIZZFmAY+uVvRoZvLUv4tInPCjjr75YUkqrOj3CPoX4gX0FWQQuvoxFvwBRMbn0
-DPtw08CeMoD9t5oPgYWXV9OVtS2yadEvHHcn6DHJTjksPhZZIpPU14eIEwxuP5Ee
-lOZtOQEC/HIMpIBJQqvNzT9eSazaBBVfXZr8icehvGEOlNmhSFtxNs//RQWGnUpO
-5M5T1bmrzWfX77BBGgESR2/sh/SM5g==
-=Pl8S
------END PGP SIGNATURE-----
 
---U+BazGySraz5kW0T--
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_events_hist.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c
+> b/kernel/trace/trace_events_hist.c
+> index c74a7d157306..96c3f86b81c5 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -3687,7 +3687,7 @@ static int create_var_field(struct
+> hist_trigger_data *hist_data,
+>  
+>  	ret = __create_val_field(hist_data, val_idx, file, var_name,
+> expr_str, flags);
+>  
+> -	if (hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
+> +	if (!ret && hist_data->fields[val_idx]->flags &
+> HIST_FIELD_FL_STRING)
+>  		hist_data->fields[val_idx]->var_str_idx = hist_data-
+> >n_var_str++;
+>  
+>  	return ret;
+
