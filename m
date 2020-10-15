@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E8428F9E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2CC28F9EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388686AbgJOUGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 16:06:24 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:34432 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731107AbgJOUGY (ORCPT
+        id S2389207AbgJOUKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 16:10:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35656 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730724AbgJOUKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 16:06:24 -0400
-Date:   Thu, 15 Oct 2020 16:06:23 -0400
-From:   Rich Felker <dalias@aerifal.cx>
-To:     Petr Vorel <petr.vorel@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, musl@lists.openwall.com,
-        Peter Korsgaard <peter@korsgaard.com>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Florian Weimer <fweimer@redhat.com>, linux-api@vger.kernel.org,
-        libc-alpha@sourceware.org
-Subject: Re: [musl] [PATCH v3 1/1] uapi: Move constants from <linux/kernel.h>
- to <linux/const.h>
-Message-ID: <20201015200622.GY17637@brightrain.aerifal.cx>
-References: <20201015190013.8901-1-petr.vorel@gmail.com>
+        Thu, 15 Oct 2020 16:10:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602792615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JSZZdQFYiEF1TvfexFPRAVhe3w/8OtEerqz5dRK9QXg=;
+        b=Bq4WPG2kaLIR4kk9GJJ4JBxw+XX5grZ3bV4dLUCVT5qp9UxOX/jnD8NbjK/Okm4qfZtaGq
+        iA1J/CrjsYcQCfArvGbQ3gJb/V+4QOYms12j00s80fXvVRVAqjqLHYAemZ73LidRT/6Xra
+        F6oTXfCXRUl9KSUix3wwn1zTuMHyxUw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-te9p4b8XOfue84xzeHLT6w-1; Thu, 15 Oct 2020 16:10:10 -0400
+X-MC-Unique: te9p4b8XOfue84xzeHLT6w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59D8A803651;
+        Thu, 15 Oct 2020 20:10:07 +0000 (UTC)
+Received: from treble (ovpn-115-218.rdu2.redhat.com [10.10.115.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 233035C1BB;
+        Thu, 15 Oct 2020 20:10:02 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 15:10:00 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 02/25] objtool: Add a pass for generating __mcount_loc
+Message-ID: <20201015201000.poiepgn5fssnogtf@treble>
+References: <20201013003203.4168817-1-samitolvanen@google.com>
+ <20201013003203.4168817-3-samitolvanen@google.com>
+ <20201014165004.GA3593121@gmail.com>
+ <20201014182115.GF2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201015190013.8901-1-petr.vorel@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20201014182115.GF2594@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 09:00:13PM +0200, Petr Vorel wrote:
-> and include <linux/const.h> in UAPI headers instead of <linux/kernel.h>.
+On Wed, Oct 14, 2020 at 08:21:15PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 14, 2020 at 06:50:04PM +0200, Ingo Molnar wrote:
+> > Meh, adding --mcount as an option to 'objtool check' was a valid hack for a 
+> > prototype patchset, but please turn this into a proper subcommand, just 
+> > like 'objtool orc' is.
+> > 
+> > 'objtool check' should ... keep checking. :-)
 > 
-> The reason is to avoid indirect <linux/sysinfo.h> include when using
-> some network headers: <linux/netlink.h> or others -> <linux/kernel.h>
-> -> <linux/sysinfo.h>.
-> 
-> This indirect include causes on MUSL redefinition of struct sysinfo when
-> included both <sys/sysinfo.h> and some of UAPI headers:
-> 
-> In file included from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/kernel.h:5,
->                  from x86_64-buildroot-linux-musl/sysroot/usr/include/linux/netlink.h:5,
->                  from ../include/tst_netlink.h:14,
->                  from tst_crypto.c:13:
-> x86_64-buildroot-linux-musl/sysroot/usr/include/linux/sysinfo.h:8:8: error: redefinition of ‘struct sysinfo’
->  struct sysinfo {
->         ^~~~~~~
-> In file included from ../include/tst_safe_macros.h:15,
->                  from ../include/tst_test.h:93,
->                  from tst_crypto.c:11:
-> x86_64-buildroot-linux-musl/sysroot/usr/include/sys/sysinfo.h:10:8: note: originally defined here
-> 
-> Suggested-by: Rich Felker <dalias@aerifal.cx>
-> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
-> ---
-> Changes v2->v3:
-> * Move things to <linux/const.h> instead of creating new header
-> <linux/align.h>.
-> 
-> Kind regards,
-> Petr
-> 
->  include/uapi/linux/const.h              | 5 +++++
->  include/uapi/linux/ethtool.h            | 2 +-
->  include/uapi/linux/kernel.h             | 9 +--------
->  include/uapi/linux/lightnvm.h           | 2 +-
->  include/uapi/linux/mroute6.h            | 2 +-
->  include/uapi/linux/netfilter/x_tables.h | 2 +-
->  include/uapi/linux/netlink.h            | 2 +-
->  include/uapi/linux/sysctl.h             | 2 +-
->  8 files changed, 12 insertions(+), 14 deletions(-)
+> No, no subcommands. orc being a subcommand was a mistake.
 
-Acked-by: Rich Felker <dalias@libc.org>
+Yup, it gets real awkward when trying to combine subcommands.
+
+I proposed a more logical design:
+
+  https://lkml.kernel.org/r/20201002141303.hyl72to37wudoi66@treble
+
+-- 
+Josh
+
