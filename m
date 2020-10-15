@@ -2,70 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0690C28F4C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7639928F4C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388560AbgJOOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:32:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41758 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387861AbgJOOcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:32:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CBC8DAC24;
-        Thu, 15 Oct 2020 14:32:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9D5A5DA7C3; Thu, 15 Oct 2020 16:31:20 +0200 (CEST)
-Date:   Thu, 15 Oct 2020 16:31:20 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Sterba <dsterba@suse.com>, torvalds@linux-foundation.org,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] Btrfs updates for 5.10
-Message-ID: <20201015143120.GO6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Sterba <dsterba@suse.com>, torvalds@linux-foundation.org,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1602519695.git.dsterba@suse.com>
- <20201015114011.1f5f985a@canb.auug.org.au>
+        id S2388364AbgJOOb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387910AbgJOOb0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:31:26 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349B8C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:31:25 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id r4so4736543ioh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+VxgZKb2+vBYVr5mu5U+vAyYVzQnDkd2rjir40SUpEA=;
+        b=wmfWABbqo3HemXdCeFC8JjwtYMVMcOqE9QUYlqrs6kIICqYmX5HLawsRTaepxXapFy
+         OtPvrcqwp9c+ztSImnhCZrGMmZE9iNyMOBFQKzyJsdb2o7hmolKolIrbwuB0bsiM3IwO
+         CazZUQFxZGuU0Du5gfSqsxepg7sUoGwIg1jOp4pcNfY0qzJS6v7c3Mt48vhQCqHhiuTg
+         FgfxDkTMi1iLMos2obKUTavJRVz0+ZpLm1e14b1ZFwi2La0Ufog641obTV1myanJy036
+         s+KpN3vcdEHHDN+l3i78SozLAwCuF8H6XEjbSgHM+Jbs4HtS88qCXspNysGuOm1tygAp
+         aa2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+VxgZKb2+vBYVr5mu5U+vAyYVzQnDkd2rjir40SUpEA=;
+        b=VCiXJ9ucwd2aSE1VRk1ef0i2ju2CWPlh8FRkCBy2XWqZVMSLQtLgy+eGhDw+MygQJe
+         j11WgFO/CW4mSU4PH3Meh3fbBDtIycjKU81NVN6xD7NnKkBA6JJnI54/1zIYrs74M62m
+         MimiLulbkJKZaxNLqBTMuhOnxQ+VxebHZgKd0pTMjb8lYPo3caY5ZUm1NCqgjoFBygBx
+         naBM/MXLwUSyWzcl6M2Tv1WLLvOnJj2E99iDfVPbS+lR1Wbpa9pORwp+2mkWPpDjU68f
+         6KESxvzORQFVJGptQ4lBVh+bTvNErB/KYcw+v3wBaVpTjhsJjricFES3Nzy4RmE1ohAh
+         vW2g==
+X-Gm-Message-State: AOAM530WxHWEi6onpH53CDAPOCrQqbONmpCQaXj58oYQJGjWOEcERMw4
+        1i8UlNDg0Od1wRQF4HIzMWsvgA==
+X-Google-Smtp-Source: ABdhPJz7JhlRkCddlG+904l4LT6MuIyj9Z821h0UXA8vJhbHQS39HC6styoio37tALXXOoUKtqxPcA==
+X-Received: by 2002:a05:6638:3a7:: with SMTP id z7mr3877799jap.52.1602772284342;
+        Thu, 15 Oct 2020 07:31:24 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id y75sm2892759iof.36.2020.10.15.07.31.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 07:31:23 -0700 (PDT)
+Subject: Re: [PATCH 4/5] x86: wire up TIF_NOTIFY_SIGNAL
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org
+Cc:     peterz@infradead.org, oleg@redhat.com
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-5-axboe@kernel.dk>
+ <87o8l3a8af.fsf@nanos.tec.linutronix.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <da84a2a7-f94a-d0aa-14e0-3925f758aa0e@kernel.dk>
+Date:   Thu, 15 Oct 2020 08:31:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015114011.1f5f985a@canb.auug.org.au>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <87o8l3a8af.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Oct 15, 2020 at 11:40:11AM +1100, Stephen Rothwell wrote:
-> Hi David,
-> On Mon, 12 Oct 2020 22:25:02 +0200 David Sterba <dsterba@suse.com> wrote:
-> >
-> > Mishaps:
-> > 
-> > - commit 62cf5391209a ("btrfs: move btrfs_rm_dev_replace_free_srcdev
-> >   outside of all locks") is a rebase leftover after the patch got
-> >   merged to 5.9-rc8 as a466c85edc6f ("btrfs: move
-> >   btrfs_rm_dev_replace_free_srcdev outside of all locks"), the
-> >   remaining part is trivial and the patch is in the middle of the
-> >   series so I'm keeping it there instead of rebasing
+On 10/15/20 8:11 AM, Thomas Gleixner wrote:
+> On Thu, Oct 15 2020 at 07:17, Jens Axboe wrote:
+>> --- a/arch/x86/kernel/signal.c
+>> +++ b/arch/x86/kernel/signal.c
+>> @@ -808,7 +808,10 @@ void arch_do_signal(struct pt_regs *regs, unsigned long ti_work)
+>>  {
+>>  	struct ksignal ksig;
+>>  
+>> -	if (get_signal(&ksig)) {
+>> +	if (ti_work & _TIF_NOTIFY_SIGNAL)
+>> +		tracehook_notify_signal();
+>> +
+>> +	if ((ti_work & _TIF_SIGPENDING) && get_signal(&ksig)) {
+>>  		/* Whee! Actually deliver the signal.  */
+>>  		handle_signal(&ksig, regs);
+>>  		return;
 > 
-> And yet, this entire pull request has been rebased since what was in
-> linux-next on Tuesday (and what would still be there today except I
-> dropped it because of several conflicts) ...  it looks like it was
-> rebased a week ago, but then never included in your "for-next" branch.
-> So I supposed it has had your internal testing, at least.
+> Instead of adding this to every architectures signal magic, we can
+> handle TIF_NOTIFY_SIGNAL in the core code:
+> 
+> static void handle_singal_work(ti_work, regs)
+> {
+> 	if (ti_work & _TIF_NOTIFY_SIGNAL)
+>         	tracehook_notify_signal();
+> 
+>         arch_do_signal(ti_work, regs);
+> }
+> 
+>       loop {
+>       		if (ti_work & (SIGPENDING | NOTIFY_SIGNAL))
+>                 	handle_signal_work(ti_work, regs);
+>       }
 
-I was on vacation last week and rebased the to-be-pulled branch on top
-of v5.9-rc8 so there are at least a few days before the pull request is
-sent.
+We could, should probably make it:
 
-The patch queue was feature frozen for 2 weeks, there should be no
-surprises whether it's rc7 or rc8, but the latter contained a corruption
-fix so it was desirable to rebase the development queue. Due to my
-limited time I forgot to update the for-next branches, sorry. We do
-enough internal testing of course.
+static void handle_signal_work(ti_work, regs)
+{
+	if (ti_work & _TIF_NOTIFY_SIGNAL)
+        	tracehook_notify_signal();
+
+	if (ti_work & _TIF_SIGPENDING)
+        	arch_do_signal(regs);
+}
+
+and then we can skip modifying arch_do_signal() all together, as it'll
+only be called if _TIF_SIGPENDING is set.
+
+-- 
+Jens Axboe
+
