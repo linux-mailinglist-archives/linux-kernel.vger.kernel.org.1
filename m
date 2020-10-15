@@ -2,156 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6082A28E9C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CFE28E9F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387861AbgJOBTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:19:04 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:51716 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387621AbgJOBTB (ORCPT
+        id S1731954AbgJOB15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727165AbgJOB14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:19:01 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 902C22ACDE;
-        Wed, 14 Oct 2020 21:18:55 -0400 (EDT)
-Date:   Thu, 15 Oct 2020 12:18:57 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-ia64@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-In-Reply-To: <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
-Message-ID: <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet>
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de> <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
+        Wed, 14 Oct 2020 21:27:56 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913EFC0613B3
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:27:56 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id 67so2254745iob.8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GLOACr1Upy7vf7oHVF5/pEcrKvzTlyyjv59H5BxHvSs=;
+        b=iQR8YlaJOmts+WjbEsLoEE9pSWvn3NDkUi0opGfDG7lGOa19zGlr1v5MITsSiA142y
+         Bg1h2TaJeaW14PzH05w8XhTZqujMlur7EOsX0qVQ69TcFzeHwJvR+3jxe3RiOPi2v8Tg
+         TFYYc1LhJEC2GZude+V2g1eAJhAa0chE8flEk3/BBs8gDHvtcBeQydQRgoBq3zYdYoE8
+         nXO0E9BvTol1LRq8Y4/Gub4zGiuS8EdG+xyqqO63KxG5gXvXU82/VE2hPhPJjrgXu5cD
+         dIgozcPO2+QbQrJx06anE9iZMvXC2WyL4T6vgTuB2p/Dihe9r7tuS4nkSKYPLZiolqPY
+         DexQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GLOACr1Upy7vf7oHVF5/pEcrKvzTlyyjv59H5BxHvSs=;
+        b=pqa+IycqQBKPKi3vCvi2PMsMiH+CIG05Xc7uCDh+/dYdwHKDJGF+Pdk1+/ij9wLLaf
+         90uKFm40jxqeO/aAYMz3I3C3A9gMJC9aH97TM6zxnccy0tml559KwwetqMnAZV4KGocp
+         JZ6on3A++tVe7z21L+Apd9OB6fBgNDepfRV1VilVgLukwBYH4RTNHAeSKOKfxtPnPNb8
+         5UADRP9QUdn9/pBS0oGYqke2livoRSRDnwumZtvrgM5HcSKdOj/3Xz+/lC8tczlS6VXA
+         5uDEnFOClJn6N9MnJTVq/8abN3EIbSbWftB5+4ffWY/+BdSgS9mcRY85tRs54vGfoPn5
+         wVPg==
+X-Gm-Message-State: AOAM532izRl1gpQgzTS8Wmdc/Ydjpk1wmEsoAtDAGrDVmhylVWnxplPK
+        //869m1q6lkA8FZpLv6aI2gIRQRhoNwDcRSATA==
+X-Google-Smtp-Source: ABdhPJyvPB6meL78JmDv9rMOfzr/KbOaz5tX8A1mXzcJwpE4ZMDyo8+1l3v4cHbL8LvZKNUj6/2EOkiZmOIAkYQNiPU=
+X-Received: by 2002:a05:6638:97:: with SMTP id v23mr1785476jao.7.1602725275951;
+ Wed, 14 Oct 2020 18:27:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <1602510644-24536-1-git-send-email-kernelfans@gmail.com> <20201014130223.GF2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201014130223.GF2628@hirez.programming.kicks-ass.net>
+From:   Pingfan Liu <kernelfans@gmail.com>
+Date:   Thu, 15 Oct 2020 09:27:44 +0800
+Message-ID: <CAFgQCTvrEdk6WOEpJOX1_Q64PmjvpHq2qrWo_1d_4NBnus+7Fw@mail.gmail.com>
+Subject: Re: [PATCH] sched/cputime: correct account of irqtime
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Allen Pais <allen.lkml@gmail.com>,
+        Romain Perier <romain.perier@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020, Arnd Bergmann wrote:
-
-> > Perhaps patch 13 does not belong in this series (?).
+On Wed, Oct 14, 2020 at 9:02 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Oct 12, 2020 at 09:50:44PM +0800, Pingfan Liu wrote:
+> > __do_softirq() may be interrupted by hardware interrupts. In this case,
+> > irqtime_account_irq() will account the time slice as CPUTIME_SOFTIRQ by
+> > mistake.
 > >
-> > All m68k platforms will need conversion before the TODO can be removed 
-> > from Documentation/features/time/clockevents/arch-support.txt.
-> 
-> Yes, correct. I marked this patch as RFC instead of PATCH, as I'm just 
-> trying to find out where it should be headed. I would hope the other 
-> patches can just get merged.
-> 
+> > By passing irqtime_account_irq() an extra param about either hardirq or
+> > softirq, irqtime_account_irq() can handle the above case.
+>
+> I'm not sure I see the scenario in which it goes wrong.
+>
+> irqtime_account_irq() is designed such that we're called with the old
+> preempt_count on enter and the new preempt_count on exit. This way we'll
+> accumuate the delta to the previous context.
+>
+Oops! You are right, the time delta between a softirq and a
+interrupting hardirq should be accounted into the softrq.
 
-I wonder whether we can improve support for your proposed configuration 
-i.e. a system with no oneshot clockevent device.
+Thanks for your clear explanation.
 
-The 16 platforms you identified are not all in that category but I suspect 
-that there are others which are (though they don't appear in this series 
-because they already use GENERIC_CLOCKEVENTS).
-
-One useful optimization would be some way to elide oneshot clockevent 
-support (perhaps with the help of Link Time Optimization).
-
-> > On m68k, HZ is fixed at 100. Without addressing that, would there be 
-> > any benefit from adopting GENERIC_CLOCKEVENTS as per this RFC patch?
-> 
-> I don't think so, I mainly did it to see if there is a problem with 
-> mixing the two modes, and I couldn't find any. The behavior seems 
-> unchanged before and after my patch, the main difference being a few 
-> extra kilobytes in kernel .text for the generic clockevents code.
-> 
-
-I think that is a good reason to convert all m68k platforms at once and to 
-elide some of the dead code.
-
-> > On Thu, 8 Oct 2020, Arnd Bergmann wrote:
-> >
-> > > Now that the infrastructure allows kernels to have both legacy timer 
-> > > ticks and clockevent drivers in the same image, start by moving one 
-> > > platform to generic clockevents.
-> > >
-> > > As qemu only supports the q800 platform among the classic m68k, use 
-> > > that as an example.
-> > >
-> >
-> > Correct VIA emulation is suprisingly difficult, so this kind of work 
-> > should be tested on real hardware.
-> >
-> > I say that because when I did the clocksource conversion for m68k I 
-> > ran into a bug in QEMU (since fixed) and also because I once worked on 
-> > some of the bugs in the emulated VIA device used in MAME/MESS.
-> 
-> Good point, though I would be surprised if anything went wrong with this 
-> patch on real hardware but not in emulation, as all the register-level 
-> interactions with the timer are the same.
-> 
-
-On the subject of register accesses, via1[ACR] is shared with ADB drivers, 
-so this patch probably has to protect those accesses with 
-local_irq_save/restore or local_irq_disable/enable. (I can't be sure of 
-the contexts in which .set_state_shutdown and .set_state_periodic methods 
-are called.)
-
-> Adding oneshot mode is a completely different matter though, that 
-> clearly needs to be tested on real hardware.
-> 
-
-Right, and many emulators trade-off timing accuracy for performance which 
-makes them unsuitable for testing invasive changes of that sort.
-
-> > > I also tried adding oneshot mode, which was successful but broke the 
-> > > clocksource. It's probably not hard to make it work properly, but 
-> > > this is where I've stopped.
-> > >
-> >
-> > I'm not so sure that one timer is able to support both a clocksource 
-> > driver and a clockevent driver. In some cases we may have to drop the 
-> > clocksource driver (i.e. fall back on the jiffies clocksource).
-> >
-> > Anyway, even on Macs with only one VIA chip we still have two timers. 
-> > So I think we should try to use Timer 1 as a freerunning clocksource 
-> > and Timer 2 as a oneshot clock event. This may result in better 
-> > accuracy and simpler code. This may require some experimentation 
-> > though.
-> 
-> Ah, good. This is partly what I had been hoping for, as my patch can be 
-> used as a starting point for that if you want to give it a go.
-> 
-
-After looking at the chip documentation I don't think it's viable to use 
-the hardware timers in the way I proposed. A VIA register access requires 
-at least one full VIA clock cycle (about 1.3 us) which means register 
-accesses themselves cause timing delays. They also make clocksource reads 
-expensive.
-
-I think this rules out oneshot clockevent devices because if the system 
-offered such a device it would preferentially get used as a tick device.
-
-So I think your approach (periodic clockevent device driven by the 
-existing periodic tick interrupt) is best for this platform due to 
-simplicity (not much code) and performance (good accuracy, no additional 
-overhead).
-
-I suspect the same approach would work equally well on other platforms too 
-(even though they are probably be capable of oneshot clockevent devices).
-
->      Arnd
-> 
+Regards,
+Pingfan
