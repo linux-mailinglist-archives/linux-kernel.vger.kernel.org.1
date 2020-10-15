@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A8128F0A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3990B28F0B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgJOLEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
+        id S1731284AbgJOLK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727365AbgJOLEn (ORCPT
+        with ESMTP id S1730659AbgJOLKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:04:43 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA705C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:04:42 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a5so2656751ljj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:04:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=+b/YNm12GlyjKZkrJa+xNKLCvbZwV87rX2QqyldGjws=;
-        b=Fs8Ur5yfSGlhm3tkrS8CaTuEgOsMPvCDMHTtKy9DHInI+lZwRQhcOZh2hwlHQqaO7F
-         2X6ynm/BaHcMWsp22AP25p2+TmAtD/jrgb5gK5scngcc8AyGkE8U4u10sbpFyvCYlk95
-         Dmdy6P23JeOLfAlzCd20iyiEa+yCMdKmmiiN0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=+b/YNm12GlyjKZkrJa+xNKLCvbZwV87rX2QqyldGjws=;
-        b=a0/Q5gvhqR+j3iZCVPrUaSHktglMbc43LatKh51xBl/UWKvD73kzV7Wieu06HydWkR
-         QCAvAWY/Tog7Wme6YHyoXLmRfgKOw9f9EO48290WQEGJVKUXGI98Zn6cLOrefmDzrdc3
-         6LbX5Kyuk4ZzWLMOOxPhAuHy4n958hVFPgws/5uFJMLWFaap67mncUdJ7rRSzGVKg/gA
-         9sXw+7LHvpBjLGG5NVmVdMtve8zeYaIbvYyHBW0FBXdKjAZLUqg+3j5LI1mLav9PtEHq
-         6Ls70OulE1jR/kkYv2+Upcnc5f3y28/Tba2ZONU3LTu4+WMQ25505DJqjcU8rG3Na0tS
-         qMGw==
-X-Gm-Message-State: AOAM533ngnERKnveiv3MLBcFnLKPVNzKBd7AU9uebUWll79YgDpOahZm
-        urjLKnSjFiQ+u8QDZ5jwryWTeA==
-X-Google-Smtp-Source: ABdhPJwqoqunynjtcFWpGOq7Yf1tTxX9lASD0Qj/cwux40BxHvQAh3fld0SAKdqEZMLhkeSXHURtXQ==
-X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr1100477ljk.238.1602759881002;
-        Thu, 15 Oct 2020 04:04:41 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id j12sm929026lfb.28.2020.10.15.04.04.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 04:04:40 -0700 (PDT)
-References: <20201012170952.60750-1-alex.dewar90@gmail.com> <878sc9qi3c.fsf@cloudflare.com> <5f87d37225c32_b7602083@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: sockmap: Don't call bpf_prog_put() on NULL pointer
-In-reply-to: <5f87d37225c32_b7602083@john-XPS-13-9370.notmuch>
-Date:   Thu, 15 Oct 2020 13:04:39 +0200
-Message-ID: <875z7brbqw.fsf@cloudflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 15 Oct 2020 07:10:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE239C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=TtmRHLIX95xbXx5qC43nj9eDzT89CPl5wEDLzlxaBF0=; b=ODerkIWwMJlGbMxRyprvWhDllV
+        SkpcOT6glS9NQYM8TKi/NGG+1ZTiyJiTx0w2zwtXqx3Wc1LN6+Eq8TdGXt7h2zlg0nIAPVzKTQQJb
+        F6d7GjEzov6+XQ89iqYSdTQ7mxkZAFl7JyA+gTOECv1jxzQqM9fFTVHO1qbz2hVPIrf6ahfoiYjRF
+        gYlWSDONuO/3HVJAMVRbgif4WfOk0+x8uYci3yY7ll5MjPE2Y53cGWNw7Rf3NFwwDb0T7oozmRnDF
+        cuQHyEz1s1W4sBuFLZyeC74b2II7W1C3wyPFkccOvkHJ7bULoQBVn8fWi9ifADQKapTAvKvRRhj1Z
+        SSXbx60g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT18c-0002O9-00; Thu, 15 Oct 2020 11:09:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8606B30015A;
+        Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 63DDB235F4443; Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
+Message-ID: <20201015110532.738127234@infradead.org>
+User-Agent: quilt/0.66
+Date:   Thu, 15 Oct 2020 13:05:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, peterz@infradead.org,
+        valentin.schneider@arm.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
+        ouwen210@hotmail.com
+Subject: [PATCH v3 00/19] sched: Migrate disable support
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 06:43 AM CEST, John Fastabend wrote:
+Hi,
 
-[...]
+Third version of migrate_disable()... hopefully getting to the point where we're all happy with it.
 
-> Jakub, any opinions on if we should just throw an error if users try to
-> add a sock to a map with a parser but no verdict? At the moment we fall
-> through and add the socket, but it wont do any receive parsing/verdict.
-> At the moment I think its fine with above fix. The useful cases for RX
-> are parser+verdict, verdict, and empty. Where empty is just used for
-> redirects or other socket account tricks. Just something to keep in mind.
+---
+ fs/proc/array.c               |    4 
+ include/linux/cpuhotplug.h    |    1 
+ include/linux/cpumask.h       |    6 
+ include/linux/preempt.h       |   64 +++
+ include/linux/sched.h         |    5 
+ include/linux/sched/hotplug.h |    2 
+ include/linux/stop_machine.h  |    5 
+ include/trace/events/sched.h  |   12 
+ kernel/cpu.c                  |    9 
+ kernel/sched/core.c           |  852 +++++++++++++++++++++++++++++++++---------
+ kernel/sched/cpudeadline.c    |    4 
+ kernel/sched/cpupri.c         |    4 
+ kernel/sched/deadline.c       |   47 +-
+ kernel/sched/rt.c             |   81 +++
+ kernel/sched/sched.h          |   59 ++
+ kernel/stop_machine.c         |   23 -
+ kernel/workqueue.c            |    4 
+ lib/cpumask.c                 |   18 
+ lib/dump_stack.c              |    2 
+ lib/smp_processor_id.c        |    5 
+ 20 files changed, 985 insertions(+), 222 deletions(-)
 
-IMO we should not fail because map updates can interleave with sk_skb
-prog attachments, like so:
 
-	update_map(map_fd, sock_fd);
-	attach_prog(parser_fd, map_fd, BPF_SK_SKB_STREAM_PARSER);
-	update_map(map_fd, sock_fd); // OK
-	attach_prog(verdict_fd, map_fd, BPF_SK_SKB_STREAM_VERDICT);
-	update_map(map_fd, sock_fd);
-
-In practice, I would expect one process/thread to attach the programs,
-while another is allowed to update the map at the same time.
