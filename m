@@ -2,89 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4200A28F8E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C51628F8E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391063AbgJOSwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:52:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26965 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391033AbgJOSwU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:52:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602787938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uSej2UjMQRw9PUOU9ztxUjTXF07dstBYT40GdW1tXXg=;
-        b=ZUIU5w5JVKM0wLAjTP6F1zZs5vTIn8PXauT8BujSiCpcVm3anBelpNf5dRVrFPs9A/IxIW
-        2M7fi8oVT9MO2orX7QNXgo5K1KnFX0U8LwV0qKg0b7VNJNuzcn0tWFWCJGm3/0r2uD5RLS
-        FNouABPQFmVRDImyPeNfQitJdL1OdCY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-UdXtL369OZSRB1ZZs07CXw-1; Thu, 15 Oct 2020 14:52:16 -0400
-X-MC-Unique: UdXtL369OZSRB1ZZs07CXw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2391093AbgJOSwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:52:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391088AbgJOSwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:52:41 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CFEA86ABDC;
-        Thu, 15 Oct 2020 18:52:15 +0000 (UTC)
-Received: from w520.home (ovpn-113-35.phx2.redhat.com [10.3.113.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 20C351972A;
-        Thu, 15 Oct 2020 18:52:11 +0000 (UTC)
-Date:   Thu, 15 Oct 2020 12:52:11 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/fsl-mc: fix the return of the uninitialized
- variable ret
-Message-ID: <20201015125211.3ff46dc1@w520.home>
-In-Reply-To: <20201015122226.485911-1-colin.king@canonical.com>
-References: <20201015122226.485911-1-colin.king@canonical.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D0C221527;
+        Thu, 15 Oct 2020 18:52:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602787960;
+        bh=CE15LjRnhykVbExyoSlNN0OVh0Yp9xo9xl2GMjmJSl0=;
+        h=Date:From:To:cc:Subject:From;
+        b=URkPMyrBgJL2GkrNaITxiKgsb4WMCWDOWxV8+7FQy4yxxmDcugSI2yWLP+gCrOu4N
+         nICUjeWGCkEyywPmqXP2aQoLgFFmEq//mQU7NF8LqkTmedZYfhG6nUN6Y9iEwT1s6O
+         F9EXRaceCT5PM2KwxxMOKw+sn2DpIagG+Z/RLqGU=
+Date:   Thu, 15 Oct 2020 20:52:36 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] HID for 5.10
+Message-ID: <nycvar.YFH.7.76.2010152048140.18859@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 13:22:26 +0100
-Colin King <colin.king@canonical.com> wrote:
+Linus,
 
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently the success path in function vfio_fsl_mc_reflck_attach is
-> returning an uninitialized value in variable ret. Fix this by setting
-> this to zero to indicate success.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: f2ba7e8c947b ("vfio/fsl-mc: Added lock support in preparation for interrupt handling")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> index 80fc7f4ed343..42a5decb78d1 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> @@ -84,6 +84,7 @@ static int vfio_fsl_mc_reflck_attach(struct vfio_fsl_mc_device *vdev)
->  		vfio_fsl_mc_reflck_get(cont_vdev->reflck);
->  		vdev->reflck = cont_vdev->reflck;
->  		vfio_device_put(device);
-> +		ret = 0;
->  	}
->  
->  unlock:
+please pull from
 
-Looks correct to me, unless Diana would rather set the initial value to
-zero instead.  Thanks,
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
 
-Alex
+to receive HID subsystem queue for 5.10. Highlights:
+
+=====
+- Lenovo X1 Tablet support improvements from Mikael Wikström
+- "heartbeat" report fix for several Wacom devices from Jason Gerecke
+- bounds checking fix in hid-roccat from Dan Carpenter
+- stylus battery reporting fix from Dmitry Torokhov
+- i2c-hid support for wakeup from suspend-to-idle from Kai-Heng Feng
+- new driver for Vivaldi devices from Sean O'Brien
+- other assorted small fixes and device ID additions
+=====
+
+Thanks.
+
+----------------------------------------------------------------
+BALATON Zoltan (1):
+      HID: apple: Add support for Matias wireless keyboard
+
+Colin Ian King (1):
+      HID: alps: clean up indentation issue
+
+Dan Carpenter (1):
+      HID: roccat: add bounds checking in kone_sysfs_write_settings()
+
+Dmitry Torokhov (1):
+      HID: hid-input: fix stylus battery reporting
+
+Douglas Anderson (1):
+      HID: i2c-hid: Prefer asynchronous probe
+
+Hans de Goede (1):
+      HID: ite: Add USB id match for Acer One S1003 keyboard dock
+
+Ian Abbott (2):
+      HID: wiimote: make handlers[] const
+      HID: wiimote: narrow spinlock range in wiimote_hid_event()
+
+Jason Gerecke (1):
+      HID: wacom: Avoid entering wacom_wac_pen_report for pad / battery
+
+Kai-Heng Feng (1):
+      HID: i2c-hid: Enable wakeup capability from Suspend-to-Idle
+
+Laurent Gauthier (1):
+      HID: hid-debug: fix nonblocking read semantics wrt EIO/ERESTARTSYS
+
+Linus Walleij (1):
+      HID: cp2112: Use irqchip template
+
+Mikael Wikström (2):
+      HID: multitouch: Lenovo X1 Tablet Gen3 trackpoint and buttons
+      HID: multitouch: Lenovo X1 Tablet Gen2 trackpoint and buttons
+
+Qinglang Miao (1):
+      HID: intel-ish-hid: simplify the return expression of ishtp_bus_remove_device()
+
+Sean O'Brien (1):
+      HID: add vivaldi HID driver
+
+Xiaofei Tan (2):
+      HID: core: fix kerneldoc warnings in hid-core.c
+      HID: i2c-hid: fix kerneldoc warnings in i2c-hid-core.c
+
+ drivers/hid/Kconfig                   |   9 +++
+ drivers/hid/Makefile                  |   1 +
+ drivers/hid/hid-alps.c                |   2 +-
+ drivers/hid/hid-apple.c               |   2 +
+ drivers/hid/hid-core.c                |  15 +++-
+ drivers/hid/hid-cp2112.c              |  19 ++---
+ drivers/hid/hid-debug.c               |  10 +--
+ drivers/hid/hid-ids.h                 |   3 +
+ drivers/hid/hid-input.c               |   4 +-
+ drivers/hid/hid-ite.c                 |   4 +
+ drivers/hid/hid-multitouch.c          |  12 +++
+ drivers/hid/hid-roccat-kone.c         |  23 ++++--
+ drivers/hid/hid-vivaldi.c             | 144 ++++++++++++++++++++++++++++++++++
+ drivers/hid/hid-wiimote-core.c        |  10 +--
+ drivers/hid/i2c-hid/i2c-hid-core.c    |  15 +++-
+ drivers/hid/intel-ish-hid/ishtp/bus.c |   8 +-
+ drivers/hid/wacom_wac.c               |   4 +-
+ include/linux/hid.h                   |   2 +
+ 18 files changed, 244 insertions(+), 43 deletions(-)
+ create mode 100644 drivers/hid/hid-vivaldi.c
+
+-- 
+Jiri Kosina
+SUSE Labs
 
