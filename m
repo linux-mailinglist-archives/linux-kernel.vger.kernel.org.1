@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2263628F47E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1468928F828
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388188AbgJOOLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:11:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38108 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388046AbgJOOLX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:11:23 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602771081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jHGeCEqUZmG9i31fmtOcSWjMjHsE69IPNjR8XX1HdXM=;
-        b=0wxTtnry4mHe4O0b1PKyoPle0wbzA3kctap99mXkqVg5VaLNi2Pd2gqaHwYPyMuHJYID1b
-        bHTq20CKpuoTolEwIF1fhJCBWnsNJiXZeZyeZvPJmgKkFZj49IhFE6cleg//xVJQazGrwe
-        OZQErMXe6dnR6wUxvMBokSFD5MBRIvkfdA26CQpgOjjgY+tgFnpLdqQfIfNrM5sZQ/paw+
-        2uFhPhHGTGdZgYq5RBb2/uwCh1I0USdly7UowvMF257NYgkiV6qqfmwJBGHE3MHwjEmmJo
-        rftwSMVc6XNnPsFJrcTQynAlZJ8f1Z6h9003VkwLwJw7sARmNIjNCX8plRJMlA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602771081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jHGeCEqUZmG9i31fmtOcSWjMjHsE69IPNjR8XX1HdXM=;
-        b=MRTkE0lotfUsMH30PfGTyJxCAOuDNsVjiF61lwK3wk/E+lWFViycaHN4oIrMW0IhZOuzuE
-        YOGtG4YtY+PbD1DA==
-To:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 4/5] x86: wire up TIF_NOTIFY_SIGNAL
-In-Reply-To: <20201015131701.511523-5-axboe@kernel.dk>
-References: <20201015131701.511523-1-axboe@kernel.dk> <20201015131701.511523-5-axboe@kernel.dk>
-Date:   Thu, 15 Oct 2020 16:11:20 +0200
-Message-ID: <87o8l3a8af.fsf@nanos.tec.linutronix.de>
+        id S2388327AbgJOSJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:09:23 -0400
+Received: from m12-12.163.com ([220.181.12.12]:43031 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727518AbgJOSJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=fY1SD
+        dSOE9vgbQVlj+o4OQBPE0d3FUxwXztxRh1S/fU=; b=Sb+sw71VU8jWM2CIDKbVy
+        Df8WbcjDLp8U0c3VAUR3+8m1sqgtCrVlq1IdETib6RqadfTrIIASh3M73D714XyK
+        de3rY/1tOJLKxSlbBhMAfI0N4tg4qfbDIL98l4IDa/h6OYMgDQd9p1AAMQdC26Kq
+        XXceS0PDSyRIt2nqVgLJ/4=
+Received: from localhost (unknown [101.228.30.83])
+        by smtp8 (Coremail) with SMTP id DMCowADH32sOWYhfUYW+Rw--.35207S2;
+        Thu, 15 Oct 2020 22:13:34 +0800 (CST)
+Date:   Thu, 15 Oct 2020 22:13:34 +0800
+From:   Hui Su <sh_def@163.com>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, corbet@lwn.net, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sh_def@163.com
+Subject: [PATCH] docs/rcu: update the api of call_rcu()
+Message-ID: <20201015141334.GA20723@rlk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: DMCowADH32sOWYhfUYW+Rw--.35207S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xr13WF1ruF1fAF1rCw1kGrg_yoWfXrbEvr
+        45XF4Syw4UtFn7JF4UGrnakryrWayrCF18uw4kXa98ta4xKwsxuF1vvr9Fy348u3ya9r9x
+        G3s3Xr9rJwnxtjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUbrOzDUUUUU==
+X-Originating-IP: [101.228.30.83]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbByxa+X1PAPRsUFgAAsL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15 2020 at 07:17, Jens Axboe wrote:
-> --- a/arch/x86/kernel/signal.c
-> +++ b/arch/x86/kernel/signal.c
-> @@ -808,7 +808,10 @@ void arch_do_signal(struct pt_regs *regs, unsigned long ti_work)
->  {
->  	struct ksignal ksig;
->  
-> -	if (get_signal(&ksig)) {
-> +	if (ti_work & _TIF_NOTIFY_SIGNAL)
-> +		tracehook_notify_signal();
-> +
-> +	if ((ti_work & _TIF_SIGPENDING) && get_signal(&ksig)) {
->  		/* Whee! Actually deliver the signal.  */
->  		handle_signal(&ksig, regs);
->  		return;
+update the api of call_rcu()
 
-Instead of adding this to every architectures signal magic, we can
-handle TIF_NOTIFY_SIGNAL in the core code:
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ Documentation/RCU/whatisRCU.rst | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-static void handle_singal_work(ti_work, regs)
-{
-	if (ti_work & _TIF_NOTIFY_SIGNAL)
-        	tracehook_notify_signal();
+diff --git a/Documentation/RCU/whatisRCU.rst b/Documentation/RCU/whatisRCU.rst
+index c7f147b8034f..aa7d5ed20da5 100644
+--- a/Documentation/RCU/whatisRCU.rst
++++ b/Documentation/RCU/whatisRCU.rst
+@@ -497,8 +497,7 @@ long -- there might be other high-priority work to be done.
+ In such cases, one uses call_rcu() rather than synchronize_rcu().
+ The call_rcu() API is as follows::
+ 
+-	void call_rcu(struct rcu_head * head,
+-		      void (*func)(struct rcu_head *head));
++	void call_rcu(struct rcu_head *head, rcu_callback_t func);
+ 
+ This function invokes func(head) after a grace period has elapsed.
+ This invocation might happen from either softirq or process context,
+-- 
+2.25.1
 
-        arch_do_signal(ti_work, regs);
-}
 
-      loop {
-      		if (ti_work & (SIGPENDING | NOTIFY_SIGNAL))
-                	handle_signal_work(ti_work, regs);
-      }
-
-Hmm?
-
-Thanks,
-
-        tglx
