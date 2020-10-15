@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185E628F053
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145D428F05D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 12:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731126AbgJOKrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 06:47:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38578 "EHLO mail.kernel.org"
+        id S1727123AbgJOKuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 06:50:08 -0400
+Received: from mga02.intel.com ([134.134.136.20]:10477 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726121AbgJOKrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 06:47:02 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB1F322249;
-        Thu, 15 Oct 2020 10:47:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602758821;
-        bh=JORSMXuLZECMsQ20vdk1LTRYQd21BOsebzWiUTtOOx8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dqe5eNssYqdesVBxC1vNpS4kTT0TwoLRgtYpAYyDF5tH6FsYiCrVMv44mysAMrqvf
-         YoppYES+Lqz6O6phiUoRGlCygxdHQ95C5HLb6NLbn5+bJwr9wmR+7I+s1X3WsWcm9D
-         s1ThlWiuTseLmF7J7/ST0l+yazhfrXIUm3YUgryg=
-Date:   Thu, 15 Oct 2020 11:46:57 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] atomics.tbl: Remove executable permission bits
-Message-ID: <20201015104656.GC5064@willie-the-truck>
-References: <03974c13efba564224284cf3fe87fe955dbfa27f.camel@perches.com>
+        id S1726019AbgJOKuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 06:50:07 -0400
+IronPort-SDR: PWZsg1gTud0v72FYPadAcSHLG3n6z3eVlcDoz6GmB0dEkQKoln1e4o9+uzWp35G8vSdc+cJK4y
+ +gjbMLrgwGYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="153246165"
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="153246165"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 03:50:07 -0700
+IronPort-SDR: XRJgxpgsxB4D8wBiqZnKJX82Bk4f1AUWT+2R8p9xT6iB3rw/VzqF/BhBLRPBXaIElicUARBrwz
+ Ddg00+IephIg==
+X-IronPort-AV: E=Sophos;i="5.77,378,1596524400"; 
+   d="scan'208";a="330757409"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 03:50:03 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kT0qf-007N8B-4h; Thu, 15 Oct 2020 13:51:05 +0300
+Date:   Thu, 15 Oct 2020 13:51:05 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
+        elver@google.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        gregkh@linuxfoundation.org, tglx@linutronix.de,
+        geert@linux-m68k.org, paul.gortmaker@windriver.com,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        arnd@arndb.de, elfring@users.sourceforge.net, mhocko@suse.com
+Subject: Re: [PATCH v2] lib: kunit: add list_sort test conversion to KUnit
+Message-ID: <20201015105105.GS4077@smile.fi.intel.com>
+References: <20201015014616.309000-1-vitor@massaru.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <03974c13efba564224284cf3fe87fe955dbfa27f.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201015014616.309000-1-vitor@massaru.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 12:34:06PM -0700, Joe Perches wrote:
-> commit 4d8e5cd233db ("locking/atomics: Fix scripts/atomic/ script permissions")
-> set all files in this directory executable.
-> 
-> But this file is an input to those scripts and does not need to be executable.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  scripts/atomic/atomics.tbl | 0
->  1 file changed, 0 insertions(+), 0 deletions(-)
-> 
-> diff --git a/scripts/atomic/atomics.tbl b/scripts/atomic/atomics.tbl
-> old mode 100755
-> new mode 100644
+On Wed, Oct 14, 2020 at 10:46:16PM -0300, Vitor Massaru Iha wrote:
+> This adds the conversion of the runtime tests of test_list_sort,
+> from `lib/test_list_sort.c` to KUnit tests.
 
-Acked-by: Will Deacon <will@kernel.org>
+Please, provide better commit message. For example, add the output of _succeeded_
+*and* _failed_ test cases (yes, you have to break code manually to reproduce failed
+test cases) _before_ *and* _after_ the change.
 
-Will
+W/o above information I'm going to NAK this as I promised before.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
