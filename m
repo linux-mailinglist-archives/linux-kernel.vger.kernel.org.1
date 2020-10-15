@@ -2,147 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464FE28F15A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9664E28F95D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 21:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgJOLYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
+        id S2391490AbgJOT0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 15:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728033AbgJOLYY (ORCPT
+        with ESMTP id S2390569AbgJOT0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:24:24 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D61C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:24:22 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 10so1849084pfp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:24:22 -0700 (PDT)
+        Thu, 15 Oct 2020 15:26:02 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C702EC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:26:00 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e18so5042651wrw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 12:26:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=+SMSmOjqLeOGTKKum05qnKuvd7Q9+0WPozSVKp+7TKk=;
-        b=OEogEsYEm8fIVHz/dIQwcLZvAQlX+f/oQj6IUPviGjL3Vf16AO4AfmB4EBMZ0bQkw8
-         wl3ZAaAUrtpdB2TiFlqflES4lddYyG3opakwYOxWbMNW964Vq7xroj0G7hLBsDrF3y5j
-         1LAOk6YZag+Irs7ycSmB99iyBRjvx/a/wLF/HXSPg4wnLK52oh0jJUr0j7Jv5CYkYAGa
-         SSqd6BVq+7fuaGEi4LColhNlmox4aYgZo8B2t2+W1L3z+R5tzhuOIPNQYNTiq3IgPMsV
-         lCAQl6KQUuYV7SFArFNyedH/E3SY+FtBwsxBceaF6mcETWJyVr5x0M5SUBBW0aKZsTip
-         oTpQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BM5j8lFQHmLcRInx4ruZjAKix1kTSPiqlMHVrc6IXZk=;
+        b=RQ38oRb0HDdpyJFT4QueSLjg4Jba/1+K+imPMYvEzhEj8x0iJd4uroXsyHUp+xyEXE
+         p4Z/AgcUID1tuzqUpWPbP9GnN0pDXG/Z6h95HcmBgj5164uijucopL9B5+2ffsjsdZPI
+         zkcwLujawBscI0HizUBM9XECG8twNArBnGmjCZOxWygRrxa3vduez/Z5vtjetIrAcCfm
+         1W68d+tsSrfhFi4vioRPido2vmr1sWz1xpDarY3mBO1cwYnjHnWKfQU3Dhp2VPZ5nKz1
+         tdaDkT3x2fyS82L+C2pfrinntVs2HXorzxuNmLWtIvbR7fM2rbJgPxeo002IM9E73cua
+         9Zjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=+SMSmOjqLeOGTKKum05qnKuvd7Q9+0WPozSVKp+7TKk=;
-        b=aa2afKTl+/HQdPzYKZ+X81zfQZE0A5n0fPpbLqNVSWvovbjZdnYmQCVk54t8NTe51S
-         9asaLID+N0u99E2pqtB0QQcpQPiV6pLKa8IZYMnH1r2yoNiXqnOEQU5ZImc50R0XAp+n
-         UT0tvt+I0e4/gobR0Se2msnzVbv0aaejQjKbgjr04gEU1eF9lhEPThLQWiG5UvnnjMK0
-         4BXlODmnsDjkAEdVul/BD+UJGGaol9S2Ow5HlTI7WeZg0Ukd3seUK9Rq2oBVPvzCl7KV
-         j7VWxf8dCETnFCZaDnHcpuL3RhPZxS2Z98IRgqEDBiYDiDqwMOPd2ZsvNz2TtKqbG1nV
-         Nm5A==
-X-Gm-Message-State: AOAM5309BeyFQ10VrYjb0kRY9k59EjxG2922Bb92Q83H7Su6v5r8a5ij
-        ftVlorGWLu0WHaVqRafIWYlYSA==
-X-Google-Smtp-Source: ABdhPJxigQ1GlW/jOOkuZXTwRSWqIHmnzNOrt4zdlnaJ1LEUOgEAbkE1EKElmJQixhw/NHEwu9oxJQ==
-X-Received: by 2002:a62:870a:0:b029:156:641e:c6c7 with SMTP id i10-20020a62870a0000b0290156641ec6c7mr3761187pfe.78.1602761062429;
-        Thu, 15 Oct 2020 04:24:22 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id j37sm2955201pgi.20.2020.10.15.04.24.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Oct 2020 04:24:21 -0700 (PDT)
-Message-ID: <06ee8b1a3c14f855c6dc2a2c0dc996d33ca41f50.camel@areca.com.tw>
-Subject: [PATCH 1/1] scsi: arcmsr: Configure the default SCSI device command
- timeout value
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 16 Oct 2020 03:24:22 +0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BM5j8lFQHmLcRInx4ruZjAKix1kTSPiqlMHVrc6IXZk=;
+        b=tinIIzgIWHLYxmHuA6Dr1ptjf4EBdK7Bxo7Qte6tBqzu+3jNfeREVT4PIwJP9Iar0C
+         hpNRJW09u11yaUPeuldxqVDmHqgO6c4qPN8w4RsgF7sh9oPWpiREMcXVD9m5CRr0fvcw
+         kHLnpN75HK+O8/sFT1wQ2aHeH32PAyyoIM63CwpQ1bk0dN9fD00b/IP/rlYNwiRdhlda
+         5sUNAM9G7wdmT2ylAsiKwCG4cpS5sZoHcKs8GQsJ5LUBgDOFdM/JGUSYRvlDnBf0xwzb
+         wkAifNx7KiTF4FhbMH0veFM7YJk0CJBBvJYNIlw+oD1UD3fgyE1lhWUxe8rRTQ1pskd9
+         sXlg==
+X-Gm-Message-State: AOAM530FApJjKMsrrHnAFlT08+eU1Ec2EjsgCA5PDnh5OSa42iUv4hF2
+        VqYvjEYh0xSKpnL3yQdpY/AprFYr1fC4/2O/CfT7uw==
+X-Google-Smtp-Source: ABdhPJxkkb+qmNoeoJdvu/rhJW682Savil74aegbnLYZMmBT7v7xPl/T9j5ZrOhc3OwiCZGEIMJOL5dRdwyqGVaBxVc=
+X-Received: by 2002:a5d:498a:: with SMTP id r10mr6072067wrq.106.1602789959057;
+ Thu, 15 Oct 2020 12:25:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
+ <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
+ <20201014120937.GC4440@dhcp22.suse.cz> <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
+ <20201015092030.GB22589@dhcp22.suse.cz>
+In-Reply-To: <20201015092030.GB22589@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 15 Oct 2020 12:25:43 -0700
+Message-ID: <CAJuCfpHwXcq1PfzHgqyYBR3N53TtV2WMt_Oubz0JZkvJHbFKGw@mail.gmail.com>
+Subject: Re: [RFC]: userspace memory reaping
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+On Thu, Oct 15, 2020 at 2:20 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 14-10-20 09:57:20, Suren Baghdasaryan wrote:
+> > On Wed, Oct 14, 2020 at 5:09 AM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > > > The need is similar to why oom-reaper was introduced - when a process
+> > > > > is being killed to free memory we want to make sure memory is freed
+> > > > > even if the victim is in uninterruptible sleep or is busy and reaction
+> > > > > to SIGKILL is delayed by an unpredictable amount of time. I
+> > > > > experimented with enabling process_madvise(MADV_DONTNEED) operation
+> > > > > and using it to force memory reclaim of the target process after
+> > > > > sending SIGKILL. Unfortunately this approach requires the caller to
+> > > > > read proc/pid/maps to extract the list of VMAs to pass as an input to
+> > > > > process_madvise().
+> > >
+> > > Well I would argue that this is not really necessary. You can simply
+> > > call process_madvise with the full address range and let the kernel
+> > > operated only on ranges which are safe to tear down asynchronously.
+> > > Sure that would require some changes to the existing code to not fail
+> > > on those ranges if they contain incompatible vmas but that should be
+> > > possible. If we are worried about backward compatibility then a
+> > > dedicated flag could override.
+> > >
+> >
+> > IIUC this is very similar to the last option I proposed. I think this
+> > is doable if we treat it as a special case. process_madvise() return
+> > value not being able to handle a large range would still be a problem.
+> > Maybe we can return MAX_INT in those cases?
+>
+> madvise is documented to return
+>        On success, madvise() returns zero.  On error, it returns -1 and
+>        errno is set appropriately.
+> [...]
+> NOTES
+>    Linux notes
+>        The Linux implementation requires that the address addr be
+>        page-aligned, and allows length to be zero.  If there are some
+>        parts of the specified address range that are not mapped, the
+>        Linux version of madvise() ignores them and applies the call to
+>        the rest (but returns ENOMEM from the system call, as it should).
+>
+> I have learned about ENOMEM case only now. And it seems this is indeed
+> what we are implementing. So if we want to add a new mode to
+> opportunistically attempt madvise on the whole given range without a
+> failure then we need a specific flag for that. Advice is a number rather
+> than a bitmask but (ab)using the top bit or use negative number space
+> (e.g. -MADV_DONTNEED) for that sounds possible albeit bit hackish.
 
-Configure the default SCSI device command timeout value.
+process_madvise() has an additional flag parameter. Why not have a
+separate flag to denote that we want to just skip VMA gaps and proceed
+without error? Something like MADVF_SKIP_GAPS?
 
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
+>
+> [...]
+> > > I do have a vague recollection that we have discussed a kill(2) based
+> > > approach as well in the past. Essentially SIG_KILL_SYNC which would
+> > > not only send the signal but it would start a teardown of resources
+> > > owned by the task - at least those we can remove safely. The interface
+> > > would be much more simple and less tricky to use. You just make your
+> > > userspace oom killer or potentially other users call SIG_KILL_SYNC which
+> > > will be more expensive but you would at least know that as many
+> > > resources have been freed as the kernel can afford at the moment.
+> >
+> > Correct, my early RFC here
+> > https://patchwork.kernel.org/project/linux-mm/patch/20190411014353.113252-3-surenb@google.com
+> > was using a new flag for pidfd_send_signal() to request mm reaping by
+> > oom-reaper kthread. IIUC you propose to have a new SIG_KILL_SYNC
+> > signal instead of a new pidfd_send_signal() flag and otherwise a very
+> > similar solution. Is my understanding correct?
+>
+> Well, I think you shouldn't focus too much on the oom-reaper aspect
+> of it. Sure it can be used for that but I believe that a new signal
+> should provide a sync behavior. People more familiar with the process
+> management would be better off defining what is possible for a new sync
+> signal.  Ideally not only pro-active process destruction but also sync
+> waiting until the target process is released so that you know that once
+> kill syscall returns the process is gone.
 
-diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
-index 5d054d5..0f6abd2 100644
---- a/drivers/scsi/arcmsr/arcmsr.h
-+++ b/drivers/scsi/arcmsr/arcmsr.h
-@@ -83,6 +83,7 @@ struct device_attribute;
- #define PCI_DEVICE_ID_ARECA_1886	0x188A
- #define	ARCMSR_HOURS			(1000 * 60 * 60 * 4)
- #define	ARCMSR_MINUTES			(1000 * 60 * 60)
-+#define ARCMSR_DEFAULT_TIMEOUT		90
- /*
- **********************************************************************************
- **
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index 1e358d9..555f55f 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -99,6 +99,10 @@ static int set_date_time = 0;
- module_param(set_date_time, int, S_IRUGO);
- MODULE_PARM_DESC(set_date_time, " send date, time to iop(0 ~ 1), set_date_time=1(enable), default(=0) is disable");
- 
-+static int cmd_timeout = ARCMSR_DEFAULT_TIMEOUT;
-+module_param(cmd_timeout, int, S_IRUGO);
-+MODULE_PARM_DESC(cmd_timeout, " scsi cmd timeout(0 ~ 120 sec.), default is 90");
-+
- #define	ARCMSR_SLEEPTIME	10
- #define	ARCMSR_RETRYCOUNT	12
- 
-@@ -140,6 +144,7 @@ static irqreturn_t arcmsr_interrupt(struct AdapterControlBlock *acb);
- static void arcmsr_free_irq(struct pci_dev *, struct AdapterControlBlock *);
- static void arcmsr_wait_firmware_ready(struct AdapterControlBlock *acb);
- static void arcmsr_set_iop_datetime(struct timer_list *);
-+static int arcmsr_slave_config(struct scsi_device *sdev);
- static int arcmsr_adjust_disk_queue_depth(struct scsi_device *sdev, int queue_depth)
- {
- 	if (queue_depth > ARCMSR_MAX_CMD_PERLUN)
-@@ -155,6 +160,7 @@ static struct scsi_host_template arcmsr_scsi_host_template = {
- 	.eh_abort_handler	= arcmsr_abort,
- 	.eh_bus_reset_handler	= arcmsr_bus_reset,
- 	.bios_param		= arcmsr_bios_param,
-+	.slave_configure	= arcmsr_slave_config,
- 	.change_queue_depth	= arcmsr_adjust_disk_queue_depth,
- 	.can_queue		= ARCMSR_DEFAULT_OUTSTANDING_CMD,
- 	.this_id		= ARCMSR_SCSI_INITIATOR_ID,
-@@ -3156,10 +3162,12 @@ message_out:
- 
- static struct CommandControlBlock *arcmsr_get_freeccb(struct AdapterControlBlock *acb)
- {
--	struct list_head *head = &acb->ccb_free_list;
-+	struct list_head *head;
- 	struct CommandControlBlock *ccb = NULL;
- 	unsigned long flags;
-+
- 	spin_lock_irqsave(&acb->ccblist_lock, flags);
-+	head = &acb->ccb_free_list;
- 	if (!list_empty(head)) {
- 		ccb = list_entry(head->next, struct CommandControlBlock, list);
- 		list_del_init(&ccb->list);
-@@ -3256,6 +3264,16 @@ static int arcmsr_queue_command_lck(struct scsi_cmnd *cmd,
- 
- static DEF_SCSI_QCMD(arcmsr_queue_command)
- 
-+static int arcmsr_slave_config(struct scsi_device *sdev)
-+{
-+	unsigned int	dev_timeout;
-+
-+	dev_timeout = sdev->request_queue->rq_timeout;
-+	if ((cmd_timeout > 0) && ((cmd_timeout * HZ) > dev_timeout))
-+		blk_queue_rq_timeout(sdev->request_queue, cmd_timeout * HZ);
-+	return 0;
-+}
-+
- static void arcmsr_get_adapter_config(struct AdapterControlBlock *pACB, uint32_t *rwbuffer)
- {
- 	int count;
+If your suggestion is for SIG_KILL_SYNC to perform victim's resource
+cleanup in the context of the caller while the victim is in
+uninterruptible sleep that would definitely be useful. I assume there
+are some resources which can't be reclaimed until the process itself
+wakes up and handles the SIGKILL. If so, I hope kill(SIG_KILL_SYNC)
+would not have to wait for the victim to wake up and handle the
+signal. This would really complicate the userspace in cases when we
+just want to reclaim whatever we can without victim's involvement and
+continue. For cases when waiting is required waitid() with P_PIDFD can
+be used.
+Would this semantic work?
 
+>
+> --
+> Michal Hocko
+> SUSE Labs
