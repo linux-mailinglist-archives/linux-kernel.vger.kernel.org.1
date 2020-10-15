@@ -2,129 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24BCA28F206
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E687E28F208
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgJOMYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:24:41 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:51801 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727373AbgJOMYj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:24:39 -0400
-X-UUID: 2de67f72ebda43bbb27e61c558fd17db-20201015
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=21mTreiQdBYOc+BuUKZApw7GoJYgp/DZH/ohzMH+aOE=;
-        b=Tz7NR+uQbVwVhlVt9q+V5morKv2TdP2wDNuSUDsZ48n0K5Ju+/I18YS/7vF7RCFBZEwUXmgAyC+NoyNk4odZ+vsGTLFG/FDMMmthWSBCA3TfXBUaTZBNafU/YvOWQYdzNnowrV4vnUU1sgbqq2871LPwhfr51RtjuEhBwrUJyiE=;
-X-UUID: 2de67f72ebda43bbb27e61c558fd17db-20201015
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 77770749; Thu, 15 Oct 2020 20:24:35 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 15 Oct 2020 20:24:33 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 15 Oct 2020 20:24:33 +0800
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hector.yuan@mediatek.com>
-Subject: [PATCH v2 1/1] cpufreq: mediatek-hw: Register EM power table
-Date:   Thu, 15 Oct 2020 20:24:27 +0800
-Message-ID: <1602764667-29009-2-git-send-email-hector.yuan@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1602764667-29009-1-git-send-email-hector.yuan@mediatek.com>
-References: <1602764667-29009-1-git-send-email-hector.yuan@mediatek.com>
+        id S1727833AbgJOMZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:25:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726329AbgJOMZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:25:26 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EB3E2223F;
+        Thu, 15 Oct 2020 12:25:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602764725;
+        bh=4J1S7USanwZNN7qIzRrJ/hOpBggw7ss1lJF3WCHWT9c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vfo03Jz6KhYC+GYDC2xf5GsmdJ963zUpFR8Fiut0kz1gduMJtEry2+CQuqpTwwXBn
+         GAcdgGR5FxZKgAt9udqfp4434RFyz/KigCykp+dtoiWfib17yN+uzelc3rUu1sjJ47
+         kLnBqM20BZhNujmhi9Gh631ycnGkI7ARl5urrgLY=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 555D94047F; Thu, 15 Oct 2020 09:25:22 -0300 (-03)
+Date:   Thu, 15 Oct 2020 09:25:22 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        kjain@linux.ibm.com, irogers@google.com, yao.jin@linux.intel.com,
+        yeyunfeng@huawei.com, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] perf jevents: Fix event code for events referencing std
+ arch events
+Message-ID: <20201015122522.GA2896742@kernel.org>
+References: <1602170368-11892-1-git-send-email-john.garry@huawei.com>
+ <20201012105430.GH1099489@krava>
+ <5b0aefe2-e0d5-b5ff-654c-4e93c427050f@huawei.com>
+ <20201012112419.GJ1099489@krava>
+ <20201014164905.GN3100363@kernel.org>
+ <fa6351ab-4d2d-8de7-96e1-102d6fa0dd50@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa6351ab-4d2d-8de7-96e1-102d6fa0dd50@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogIkhlY3Rvci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KDQpSZWdpc3Rl
-ciBDUFUgcG93ZXIgdGFibGUgdG8gZW5lcmd5IG1vZGVsIGZyYW1ld29yaw0KDQpTaWduZWQtb2Zm
-LWJ5OiBIZWN0b3IuWXVhbiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVy
-cy9jcHVmcmVxL21lZGlhdGVrLWNwdWZyZXEtaHcuYyB8ICAgNTggKysrKysrKysrKysrKysrKysr
-KysrKysrKystLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDQ2IGluc2VydGlvbnMoKyksIDEyIGRl
-bGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9jcHVmcmVxL21lZGlhdGVrLWNwdWZy
-ZXEtaHcuYyBiL2RyaXZlcnMvY3B1ZnJlcS9tZWRpYXRlay1jcHVmcmVxLWh3LmMNCmluZGV4IDhm
-YTEyZTUuLjM3OWE1ZjQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2NwdWZyZXEvbWVkaWF0ZWstY3B1
-ZnJlcS1ody5jDQorKysgYi9kcml2ZXJzL2NwdWZyZXEvbWVkaWF0ZWstY3B1ZnJlcS1ody5jDQpA
-QCAtNSw2ICs1LDcgQEANCiANCiAjaW5jbHVkZSA8bGludXgvYml0ZmllbGQuaD4NCiAjaW5jbHVk
-ZSA8bGludXgvY3B1ZnJlcS5oPg0KKyNpbmNsdWRlIDxsaW51eC9lbmVyZ3lfbW9kZWwuaD4NCiAj
-aW5jbHVkZSA8bGludXgvaW5pdC5oPg0KICNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4NCiAjaW5j
-bHVkZSA8bGludXgvbW9kdWxlLmg+DQpAQCAtMTcsOSArMTgsMTAgQEANCiAjZGVmaW5lIExVVF9S
-T1dfU0laRQkJCTB4NA0KIA0KIGVudW0gew0KLQlSRUdfTFVUX1RBQkxFLA0KLQlSRUdfRU5BQkxF
-LA0KLQlSRUdfUEVSRl9TVEFURSwNCisJUkVHX0ZSRVFfTFVUX1RBQkxFLA0KKwlSRUdfRlJFUV9F
-TkFCTEUsDQorCVJFR19GUkVRX1BFUkZfU1RBVEUsDQorCVJFR19FTV9QT1dFUl9UQkwsDQogDQog
-CVJFR19BUlJBWV9TSVpFLA0KIH07DQpAQCAtMjcsMjMgKzI5LDQ0IEBAIGVudW0gew0KIHN0cnVj
-dCBjcHVmcmVxX210ayB7DQogCXN0cnVjdCBjcHVmcmVxX2ZyZXF1ZW5jeV90YWJsZSAqdGFibGU7
-DQogCXZvaWQgX19pb21lbSAqcmVnX2Jhc2VzW1JFR19BUlJBWV9TSVpFXTsNCisJaW50IG5yX29w
-cDsNCiAJY3B1bWFza190IHJlbGF0ZWRfY3B1czsNCiB9Ow0KIA0KIHN0YXRpYyBjb25zdCB1MTYg
-Y3B1ZnJlcV9tdGtfb2Zmc2V0c1tSRUdfQVJSQVlfU0laRV0gPSB7DQotCVtSRUdfTFVUX1RBQkxF
-XQkJPSAweDAsDQotCVtSRUdfRU5BQkxFXQkJPSAweDg0LA0KLQlbUkVHX1BFUkZfU1RBVEVdCT0g
-MHg4OCwNCisJW1JFR19GUkVRX0xVVF9UQUJMRV0JPSAweDAsDQorCVtSRUdfRlJFUV9FTkFCTEVd
-CT0gMHg4NCwNCisJW1JFR19GUkVRX1BFUkZfU1RBVEVdCT0gMHg4OCwNCisJW1JFR19FTV9QT1dF
-Ul9UQkxdCT0gMHgzRDAsDQogfTsNCiANCiBzdGF0aWMgc3RydWN0IGNwdWZyZXFfbXRrICptdGtf
-ZnJlcV9kb21haW5fbWFwW05SX0NQVVNdOw0KIA0KK3N0YXRpYyBpbnQgbXRrX2NwdWZyZXFfZ2V0
-X2NwdV9wb3dlcih1bnNpZ25lZCBsb25nICptVywNCisJCQkJICAgICB1bnNpZ25lZCBsb25nICpL
-SHosIHN0cnVjdCBkZXZpY2UgKmNwdV9kZXYpDQorew0KKwlzdHJ1Y3QgY3B1ZnJlcV9tdGsgKmMg
-PSBtdGtfZnJlcV9kb21haW5fbWFwW2NwdV9kZXYtPmlkXTsNCisJaW50IGk7DQorDQorCWZvciAo
-aSA9IDA7IGkgPCBjLT5ucl9vcHA7IGkrKykgew0KKwkJaWYgKGMtPnRhYmxlW2ldLmZyZXF1ZW5j
-eSA8ICpLSHopDQorCQkJYnJlYWs7DQorCX0NCisJaS0tOw0KKw0KKwkqS0h6ID0gYy0+dGFibGVb
-aV0uZnJlcXVlbmN5Ow0KKwkqbVcgPSByZWFkbF9yZWxheGVkKGMtPnJlZ19iYXNlc1tSRUdfRU1f
-UE9XRVJfVEJMXSArDQorCQkJICAgIGkgKiBMVVRfUk9XX1NJWkUpIC8gMTAwMDsNCisNCisJcmV0
-dXJuIDA7DQorfQ0KKw0KIHN0YXRpYyBpbnQgbXRrX2NwdWZyZXFfaHdfdGFyZ2V0X2luZGV4KHN0
-cnVjdCBjcHVmcmVxX3BvbGljeSAqcG9saWN5LA0KIAkJCQkgICAgICAgdW5zaWduZWQgaW50IGlu
-ZGV4KQ0KIHsNCiAJc3RydWN0IGNwdWZyZXFfbXRrICpjID0gcG9saWN5LT5kcml2ZXJfZGF0YTsN
-CiANCi0Jd3JpdGVsX3JlbGF4ZWQoaW5kZXgsIGMtPnJlZ19iYXNlc1tSRUdfUEVSRl9TVEFURV0p
-Ow0KKwl3cml0ZWxfcmVsYXhlZChpbmRleCwgYy0+cmVnX2Jhc2VzW1JFR19GUkVRX1BFUkZfU1RB
-VEVdKTsNCiANCiAJcmV0dXJuIDA7DQogfQ0KQEAgLTU1LDcgKzc4LDcgQEAgc3RhdGljIHVuc2ln
-bmVkIGludCBtdGtfY3B1ZnJlcV9od19nZXQodW5zaWduZWQgaW50IGNwdSkNCiANCiAJYyA9IG10
-a19mcmVxX2RvbWFpbl9tYXBbY3B1XTsNCiANCi0JaW5kZXggPSByZWFkbF9yZWxheGVkKGMtPnJl
-Z19iYXNlc1tSRUdfUEVSRl9TVEFURV0pOw0KKwlpbmRleCA9IHJlYWRsX3JlbGF4ZWQoYy0+cmVn
-X2Jhc2VzW1JFR19GUkVRX1BFUkZfU1RBVEVdKTsNCiAJaW5kZXggPSBtaW4oaW5kZXgsIExVVF9N
-QVhfRU5UUklFUyAtIDEpOw0KIA0KIAlyZXR1cm4gYy0+dGFibGVbaW5kZXhdLmZyZXF1ZW5jeTsN
-CkBAIC02NCw2ICs4NywxNCBAQCBzdGF0aWMgdW5zaWduZWQgaW50IG10a19jcHVmcmVxX2h3X2dl
-dCh1bnNpZ25lZCBpbnQgY3B1KQ0KIHN0YXRpYyBpbnQgbXRrX2NwdWZyZXFfaHdfY3B1X2luaXQo
-c3RydWN0IGNwdWZyZXFfcG9saWN5ICpwb2xpY3kpDQogew0KIAlzdHJ1Y3QgY3B1ZnJlcV9tdGsg
-KmM7DQorCXN0cnVjdCBkZXZpY2UgKmNwdV9kZXY7DQorCXN0cnVjdCBlbV9kYXRhX2NhbGxiYWNr
-IGVtX2NiID0gRU1fREFUQV9DQihtdGtfY3B1ZnJlcV9nZXRfY3B1X3Bvd2VyKTsNCisNCisJY3B1
-X2RldiA9IGdldF9jcHVfZGV2aWNlKHBvbGljeS0+Y3B1KTsNCisJaWYgKCFjcHVfZGV2KSB7DQor
-CQlwcl9lcnIoImZhaWxlZCB0byBnZXQgY3B1JWQgZGV2aWNlXG4iLCBwb2xpY3ktPmNwdSk7DQor
-CQlyZXR1cm4gLUVOT0RFVjsNCisJfQ0KIA0KIAljID0gbXRrX2ZyZXFfZG9tYWluX21hcFtwb2xp
-Y3ktPmNwdV07DQogCWlmICghYykgew0KQEAgLTc3LDcgKzEwOCw5IEBAIHN0YXRpYyBpbnQgbXRr
-X2NwdWZyZXFfaHdfY3B1X2luaXQoc3RydWN0IGNwdWZyZXFfcG9saWN5ICpwb2xpY3kpDQogCXBv
-bGljeS0+ZHJpdmVyX2RhdGEgPSBjOw0KIA0KIAkvKiBIVyBzaG91bGQgYmUgaW4gZW5hYmxlZCBz
-dGF0ZSB0byBwcm9jZWVkIG5vdyAqLw0KLQl3cml0ZWxfcmVsYXhlZCgweDEsIGMtPnJlZ19iYXNl
-c1tSRUdfRU5BQkxFXSk7DQorCXdyaXRlbF9yZWxheGVkKDB4MSwgYy0+cmVnX2Jhc2VzW1JFR19G
-UkVRX0VOQUJMRV0pOw0KKw0KKwllbV9kZXZfcmVnaXN0ZXJfcGVyZl9kb21haW4oY3B1X2Rldiwg
-Yy0+bnJfb3BwLCAmZW1fY2IsIHBvbGljeS0+Y3B1cyk7DQogDQogCXJldHVybiAwOw0KIH0NCkBA
-IC05Myw3ICsxMjYsNyBAQCBzdGF0aWMgaW50IG10a19jcHVmcmVxX2h3X2NwdV9leGl0KHN0cnVj
-dCBjcHVmcmVxX3BvbGljeSAqcG9saWN5KQ0KIAl9DQogDQogCS8qIEhXIHNob3VsZCBiZSBpbiBw
-YXVzZWQgc3RhdGUgbm93ICovDQotCXdyaXRlbF9yZWxheGVkKDB4MCwgYy0+cmVnX2Jhc2VzW1JF
-R19FTkFCTEVdKTsNCisJd3JpdGVsX3JlbGF4ZWQoMHgwLCBjLT5yZWdfYmFzZXNbUkVHX0ZSRVFf
-RU5BQkxFXSk7DQogDQogCXJldHVybiAwOw0KIH0NCkBAIC0xMjIsNyArMTU1LDcgQEAgc3RhdGlj
-IGludCBtdGtfY3B1X2NyZWF0ZV9mcmVxX3RhYmxlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBk
-ZXYsDQogCWlmICghYy0+dGFibGUpDQogCQlyZXR1cm4gLUVOT01FTTsNCiANCi0JYmFzZV90YWJs
-ZSA9IGMtPnJlZ19iYXNlc1tSRUdfTFVUX1RBQkxFXTsNCisJYmFzZV90YWJsZSA9IGMtPnJlZ19i
-YXNlc1tSRUdfRlJFUV9MVVRfVEFCTEVdOw0KIA0KIAlmb3IgKGkgPSAwOyBpIDwgTFVUX01BWF9F
-TlRSSUVTOyBpKyspIHsNCiAJCWRhdGEgPSByZWFkbF9yZWxheGVkKGJhc2VfdGFibGUgKyAoaSAq
-IExVVF9ST1dfU0laRSkpOw0KQEAgLTE0MCw2ICsxNzMsNyBAQCBzdGF0aWMgaW50IG10a19jcHVf
-Y3JlYXRlX2ZyZXFfdGFibGUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwNCiAJfQ0KIA0K
-IAljLT50YWJsZVtpXS5mcmVxdWVuY3kgPSBDUFVGUkVRX1RBQkxFX0VORDsNCisJYy0+bnJfb3Bw
-ID0gaTsNCiANCiAJcmV0dXJuIDA7DQogfQ0KQEAgLTE5Miw3ICsyMjYsNyBAQCBzdGF0aWMgaW50
-IG10a19jcHVfcmVzb3VyY2VzX2luaXQoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiwNCiAJ
-aWYgKElTX0VSUihiYXNlKSkNCiAJCXJldHVybiBQVFJfRVJSKGJhc2UpOw0KIA0KLQlmb3IgKGkg
-PSBSRUdfTFVUX1RBQkxFOyBpIDwgUkVHX0FSUkFZX1NJWkU7IGkrKykNCisJZm9yIChpID0gUkVH
-X0ZSRVFfTFVUX1RBQkxFOyBpIDwgUkVHX0FSUkFZX1NJWkU7IGkrKykNCiAJCWMtPnJlZ19iYXNl
-c1tpXSA9IGJhc2UgKyBvZmZzZXRzW2ldOw0KIA0KIAlyZXQgPSBtdGtfZ2V0X3JlbGF0ZWRfY3B1
-cyhpbmRleCwgYyk7DQotLSANCjEuNy45LjUNCg==
+Em Wed, Oct 14, 2020 at 06:46:12PM +0100, John Garry escreveu:
+> On 14/10/2020 17:49, Arnaldo Carvalho de Melo wrote:
+> > Ok, applied,
+> 
+> Thanks
+> 
+> > please consider adding a Fixes tag next time.
+> > 
+> 
+> Can do if it helps, but I only thought it appropriate when fixing something
+> merged to mainline.
 
+Please do, I think it appropriate in all cases, people doing backports
+may decide to pick something and if it has some subtle issue this can be
+automatically checked for by looking at any later Fixes for that
+specific cset.
+
+I decided not to do any rebase on perf/core, so those Fixes will remain
+valid.
+
+- Arnaldo
