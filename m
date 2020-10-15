@@ -2,102 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11AD28F757
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191CE28F75F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 19:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390000AbgJORAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 13:00:06 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:41578 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388946AbgJORAE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:00:04 -0400
-Received: from 89-64-88-192.dynamic.chello.pl (89.64.88.192) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
- id b914199718e2c358; Thu, 15 Oct 2020 19:00:02 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 2/2] ACPI: DPTF: Add ACPI_DPTF Kconfig menu
-Date:   Thu, 15 Oct 2020 18:59:52 +0200
-Message-ID: <35637045.pmxlVluP8t@kreacher>
-In-Reply-To: <2206290.MayQypTng0@kreacher>
-References: <2206290.MayQypTng0@kreacher>
+        id S2390048AbgJORAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 13:00:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388305AbgJORAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 13:00:52 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F4047206CA;
+        Thu, 15 Oct 2020 17:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602781251;
+        bh=DM6q/p4qmHRCt+hKln8abCi1RFmqHpOO4oDZOapg6+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=x+pWe4gfphCS1xKW8ELKqn83lTh5ZcRI+8Y+vhuODH2LP7BFIpAP6hx84DX8M2RMd
+         C7JykakjiwC/1DUZzBVmz/3V1p1RF4a88W14DsN6Oy+Xp2Vhai/HBLKW/XdHxQH7jq
+         z4PwV9/k06L04stmXifYakkfIyWFVWz0zKtfljLg=
+Date:   Thu, 15 Oct 2020 19:01:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devel@linuxdriverproject.org
+Subject: Re: [GIT PULL] Staging/IIO driver update for 5.10-rc1
+Message-ID: <20201015170123.GA81179@kroah.com>
+References: <20201015122713.GA4021230@kroah.com>
+ <CAHk-=wiwi70PmzxNeNUBiGTgQMDnRhHToTkQrhL7GQKdJyUQAw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiwi70PmzxNeNUBiGTgQMDnRhHToTkQrhL7GQKdJyUQAw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Thu, Oct 15, 2020 at 09:49:56AM -0700, Linus Torvalds wrote:
+> On Thu, Oct 15, 2020 at 5:26 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > Included in here are:
+> >         - new IIO drivers
+> [...]
+> >         - no new drivers added or removed
+> 
+> So which one is it?
+> 
+> New drivers, or no new drivers, that is the question: Whether 'tis
+> nobler in the mind to suffer..
+> 
+> I do understand what I think you meant (no _staging_ drivers added or
+> removed), but it really reads very oddly.
 
-Add a Kconfig menu for Intel DPTF (Dynamic Platform and Thermal
-Framework), put both the existing participant drivers in it and set
-them to be built as modules by default.
+Yes, you are right, I meant "no new staging drivers" were added or
+removed.  I forgot what I wrote above by the time I got to the bottom :)
 
-While at it, do a few assorted cleanups for a good measure.
+thanks,
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/dptf/Kconfig |   29 ++++++++++++++++++++++++-----
- 1 file changed, 24 insertions(+), 5 deletions(-)
-
-Index: linux-pm/drivers/acpi/dptf/Kconfig
-===================================================================
---- linux-pm.orig/drivers/acpi/dptf/Kconfig
-+++ linux-pm/drivers/acpi/dptf/Kconfig
-@@ -1,8 +1,25 @@
- # SPDX-License-Identifier: GPL-2.0
--config DPTF_POWER
--	tristate "DPTF Platform Power Participant"
-+
-+menuconfig ACPI_DPTF
-+	bool "Intel DPTF (Dynamic Platform and Thermal Framework) Support"
- 	depends on X86
- 	help
-+	  Intel Dynamic Platform and Thermal Framework (DPTF) is a platform
-+	  level hardware/software solution for power and thermal management.
-+
-+	  As a container for multiple power/thermal technologies, DPTF provides
-+	  a coordinated approach for different policies to effect the hardware
-+	  state of a system.
-+
-+	  For more information see:
-+	  <https://01.org/intel%C2%AE-dynamic-platform-and-thermal-framework-dptf-chromium-os/overview>
-+
-+if ACPI_DPTF
-+
-+config DPTF_POWER
-+	tristate "Platform Power DPTF Participant"
-+	default m
-+	help
- 	  This driver adds support for Dynamic Platform and Thermal Framework
- 	  (DPTF) Platform Power Participant device (INT3407) support.
- 	  This participant is responsible for exposing platform telemetry:
-@@ -16,15 +33,17 @@ config DPTF_POWER
- 	  the module will be called dptf_power.
- 
- config DPTF_PCH_FIVR
--	tristate "DPTF PCH FIVR Participant"
--	depends on X86
-+	tristate "PCH FIVR DPTF Participant"
-+	default m
- 	help
- 	  This driver adds support for Dynamic Platform and Thermal Framework
- 	  (DPTF) PCH FIVR Participant device support. This driver allows to
--	  switch PCH FIVR (Fully Integrated Voltage Regulator) frequency.
-+	  switch the PCH FIVR (Fully Integrated Voltage Regulator) frequency.
- 	  This participant is responsible for exposing:
- 		freq_mhz_low_clock
- 		freq_mhz_high_clock
- 
- 	  To compile this driver as a module, choose M here:
- 	  the module will be called dptf_pch_fivr.
-+
-+endif
-
-
-
+greg k-h
