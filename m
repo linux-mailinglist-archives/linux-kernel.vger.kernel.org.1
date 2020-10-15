@@ -2,160 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6B628FB50
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B736828FB52
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 00:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732263AbgJOWrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 18:47:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732248AbgJOWrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 18:47:41 -0400
-Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D926520678;
-        Thu, 15 Oct 2020 22:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602802060;
-        bh=FQC4/961KMXtP22m/MvNik1P6aTFyjCnetQFsH8dNvc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=UWk0BseHLS7r4KWh22uvjxdASarIPecY3SbBTQkaTIpvrq733pbPPa7Fr6FC1iGtj
-         sh7THGNsITVmIqRbRIFWOfd43QjJ2tubNHRoiljTi/JEubq/wiNxTRIGa9IQO1FZtk
-         4wPV+VWr0MDh5MBo/0Mgh19aiMs2F+CImz22TTWk=
-Date:   Thu, 15 Oct 2020 17:47:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        robh@kernel.org, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        gustavo.pimentel@synopsys.com
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Message-ID: <20201015224738.GA24466@bjorn-Precision-5520>
+        id S1732272AbgJOWtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 18:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731738AbgJOWte (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 18:49:34 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786CAC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:49:34 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id o7so213861pgv.6
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 15:49:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7+gN5beWb7xuqtjFxy0mOY8Dj5aWNKV2raCCT+QivsA=;
+        b=kezZ/4VKA2aqU9lsNyWwpiS8RG4Ojfws+ON1DhdAcgNdBdZ6hekqsJahAlZfErewe5
+         YP9CQctdP2RmQWFy3fq0zW9yZf4+84y/gcfAsQsU65jCud84QIQl3SibQXXJOcexoHzn
+         zRXAupCKNl2vkkK28VvWkvViGhzQ9iClAf31jKEgcaLeztgweJygfN7uMJOZJDyloaFB
+         lQxPBoDnTTORrCcR+WA5YIl3OhSERw08KCvThArrPNEyo4+GoEXZsBoyTnhIxrl+Pt9x
+         vJO6feVXrwryVHpGPv3wo8uF4Mg9SG24ZmHokY9xCg1v+V/MH6FsEUMtSEQK7owExwbB
+         Z4tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=7+gN5beWb7xuqtjFxy0mOY8Dj5aWNKV2raCCT+QivsA=;
+        b=ew5CeYqpZzZ9IuLKTLdx/POFTDdZGAxN9N/4Qa3gHxXulvYzhgqjQsu+XPdKQ6OUfN
+         TmL7gRYesWd/IHOCV1UED6mUxt+9diFK0PaM+T7Y/llIJpauN0Z+2ECe8QcoYENtstkr
+         PY44PFLHAYy7HGPBdxXeI96rJx3R6Yi5Mt3WBFej8uGcEPSqw1eCcNDNyHgphjAX2FdH
+         tTvNHfQ7TS3EzgWPxluv8dH5doHR1GmbLklZYkJQsabJZFLrTt7iPDD2j1kIMEiuGAiV
+         /8txO3oTRMD/Bj8sZYROKRkCrZRvKENvUugZbegoTqLROIqz/d6R8hxrQjWRKLKbc7iN
+         P2uw==
+X-Gm-Message-State: AOAM530MidkcKz9KW8nX8L7VZw79yLhA3uX7EMuXtqfACCUVxgTZjVmx
+        foUA0ojV3C7UYRI1B7nXwkE=
+X-Google-Smtp-Source: ABdhPJzwYSWqtxW5zmlYRlkpepcQCiM+U9HCaOiKuKRvOWgJtGOAmSIRdArIjgvVHSl6jNw5qQM6wQ==
+X-Received: by 2002:a63:c57:: with SMTP id 23mr644458pgm.109.1602802173722;
+        Thu, 15 Oct 2020 15:49:33 -0700 (PDT)
+Received: from ArchLinux (sau-465d4-or.servercontrol.com.au. [43.250.207.1])
+        by smtp.gmail.com with ESMTPSA id 198sm335393pfx.26.2020.10.15.15.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 15:49:32 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 04:19:19 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     akpm@linux-foundation.org, colin.king@canonical.com,
+        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
+        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] scripts: spelling:  Remove space in the entry memry
+ to memory
+Message-ID: <20201015224919.GA1129531@ArchLinux>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Joe Perches <joe@perches.com>, akpm@linux-foundation.org,
+        colin.king@canonical.com, sfr@canb.auug.org.au, wangqing@vivo.com,
+        david@redhat.com, xndchn@gmail.com, luca@lucaceresoli.net,
+        ebiggers@google.com, linux-kernel@vger.kernel.org
+References: <20201015132336.1770828-1-unixbhaskar@gmail.com>
+ <796974d4de89d1e8483d16f4f1f3d6324b49bf86.camel@perches.com>
+ <20201015135407.GB1899805@ArchLinux>
+ <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
 Content-Disposition: inline
-In-Reply-To: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
+In-Reply-To: <f479c3b907279ba79391ae1d4ec27773a79ffd15.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:41:30PM +0800, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> 
-> On NXP Layerscape platforms, it results in SError in the
-> enumeration of the PCIe controller, which is not connecting
-> with an Endpoint device. And it doesn't make sense to
-> enumerate the Endpoints when the PCIe link is down. So this
-> patch added the link up check to avoid to fire configuration
-> transactions on link down bus.
 
-Lorenzo already applied this, but a couple questions:
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-You call out NXP Layerscape specifically, but doesn't this affect
-other DWC-based platforms, too?  You later mentioned imx6, Kishon
-mentioned dra7xx, Michael mentioned ls1028a, Naresh mentioned ls2088
-(probably both the same as your "NXP Layerscape").
+On 14:10 Thu 15 Oct 2020, Joe Perches wrote:
+>On Thu, 2020-10-15 at 19:24 +0530, Bhaskar Chowdhury wrote:
+>> On 06:38 Thu 15 Oct 2020, Joe Perches wrote:
+>> > On Thu, 2020-10-15 at 18:53 +0530, Bhaskar Chowdhury wrote:
+>> > > Fix the space in the middle in below entry.
+>> > >
+>> > > memry||memory
+>> > []
+>> > > diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+>> > []
+>> > > @@ -885,7 +885,7 @@ meetign||meeting
+>> > >  memeory||memory
+>> > >  memmber||member
+>> > >  memoery||memory
+>> > > -memry ||memory
+>> > > +memry||memory
+>> >
+>> > No.  Don't post a bad patch, assume
+>> > it's applied and then post a fix to
+>> > the bad patch as v2.
+>> >
+>> > Send a single clean patch.
+>> >
+>>
+>> Not sure what you mean...could you elaborate...don't know what is going on..>
+>
+>You sent a patch with a defect
 
-The backtrace below contains a bunch of irrelevant info.  The
-timestamps are pointless.  The backtrace past
-pci_scan_single_device+0x80/0x100 or so really doesn't add anything
-either.
+Who doesn't???
 
-It'd be nice to have a comment in the code because the code *looks*
-wrong and racy.  Without a hint, everybody who sees it will have to
-dig through the history to see why we tolerate the race.
+>You sent a V2 patch that just corrects the defect in the first patch.
 
-> [    0.807773] SError Interrupt on CPU2, code 0xbf000002 -- SError
-> [    0.807775] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807776] Hardware name: LS1046A RDB Board (DT)
-> [    0.807777] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> [    0.807778] pc : pci_generic_config_read+0x3c/0xe0
-> [    0.807778] lr : pci_generic_config_read+0x24/0xe0
-> [    0.807779] sp : ffff80001003b7b0
-> [    0.807780] x29: ffff80001003b7b0 x28: ffff80001003ba74
-> [    0.807782] x27: ffff000971d96800 x26: ffff00096e77e0a8
-> [    0.807784] x25: ffff80001003b874 x24: ffff80001003b924
-> [    0.807786] x23: 0000000000000004 x22: 0000000000000000
-> [    0.807788] x21: 0000000000000000 x20: ffff80001003b874
-> [    0.807790] x19: 0000000000000004 x18: ffffffffffffffff
-> [    0.807791] x17: 00000000000000c0 x16: fffffe0025981840
-> [    0.807793] x15: ffffb94c75b69948 x14: 62203a383634203a
-> [    0.807795] x13: 666e6f635f726568 x12: 202c31203d207265
-> [    0.807797] x11: 626d756e3e2d7375 x10: 656877202c307830
-> [    0.807799] x9 : 203d206e66766564 x8 : 0000000000000908
-> [    0.807801] x7 : 0000000000000908 x6 : ffff800010900000
-> [    0.807802] x5 : ffff00096e77e080 x4 : 0000000000000000
-> [    0.807804] x3 : 0000000000000003 x2 : 84fa3440ff7e7000
-> [    0.807806] x1 : 0000000000000000 x0 : ffff800010034000
-> [    0.807808] Kernel panic - not syncing: Asynchronous SError Interrupt
-> [    0.807809] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> [    0.807810] Hardware name: LS1046A RDB Board (DT)
-> [    0.807811] Call trace:
-> [    0.807812]  dump_backtrace+0x0/0x1c0
-> [    0.807813]  show_stack+0x18/0x28
-> [    0.807814]  dump_stack+0xd8/0x134
-> [    0.807814]  panic+0x180/0x398
-> [    0.807815]  add_taint+0x0/0xb0
-> [    0.807816]  arm64_serror_panic+0x78/0x88
-> [    0.807817]  do_serror+0x68/0x180
-> [    0.807818]  el1_error+0x84/0x100
-> [    0.807818]  pci_generic_config_read+0x3c/0xe0
-> [    0.807819]  dw_pcie_rd_other_conf+0x78/0x110
-> [    0.807820]  pci_bus_read_config_dword+0x88/0xe8
-> [    0.807821]  pci_bus_generic_read_dev_vendor_id+0x30/0x1b0
-> [    0.807822]  pci_bus_read_dev_vendor_id+0x4c/0x78
-> [    0.807823]  pci_scan_single_device+0x80/0x100
-> [    0.807824]  pci_scan_slot+0x38/0x130
-> [    0.807825]  pci_scan_child_bus_extend+0x54/0x2a0
-> [    0.807826]  pci_scan_child_bus+0x14/0x20
-> [    0.807827]  pci_scan_bridge_extend+0x230/0x570
-> [    0.807828]  pci_scan_child_bus_extend+0x134/0x2a0
-> [    0.807829]  pci_scan_root_bus_bridge+0x64/0xf0
-> [    0.807829]  pci_host_probe+0x18/0xc8
-> [    0.807830]  dw_pcie_host_init+0x220/0x378
-> [    0.807831]  ls_pcie_probe+0x104/0x140
-> [    0.807832]  platform_drv_probe+0x54/0xa8
-> [    0.807833]  really_probe+0x118/0x3e0
-> [    0.807834]  driver_probe_device+0x5c/0xc0
-> [    0.807835]  device_driver_attach+0x74/0x80
-> [    0.807835]  __driver_attach+0x8c/0xd8
-> [    0.807836]  bus_for_each_dev+0x7c/0xd8
-> [    0.807837]  driver_attach+0x24/0x30
-> [    0.807838]  bus_add_driver+0x154/0x200
-> [    0.807839]  driver_register+0x64/0x120
-> [    0.807839]  __platform_driver_probe+0x7c/0x148
-> [    0.807840]  ls_pcie_driver_init+0x24/0x30
-> [    0.807841]  do_one_initcall+0x60/0x1d8
-> [    0.807842]  kernel_init_freeable+0x1f4/0x24c
-> [    0.807843]  kernel_init+0x14/0x118
-> [    0.807843]  ret_from_fork+0x10/0x34
-> [    0.807854] SMP: stopping secondary CPUs
-> [    0.807855] Kernel Offset: 0x394c64080000 from 0xffff800010000000
-> [    0.807856] PHYS_OFFSET: 0xffff8bfd40000000
-> [    0.807856] CPU features: 0x0240022,21806000
-> [    0.807857] Memory Limit: none
-> 
-> Fixes: c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index c01c9d2fb3f9..e82b518430c5 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -442,6 +442,9 @@ static void __iomem *dw_pcie_other_conf_map_bus(struct pci_bus *bus,
->  	struct pcie_port *pp = bus->sysdata;
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->  
-> +	if (!dw_pcie_link_up(pci))
-> +		return NULL;
-> +
->  	busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
->  		 PCIE_ATU_FUNC(PCI_FUNC(devfn));
->  
-> -- 
-> 2.17.1
-> 
+That's how it is working here for long time ...I am not sure about your
+  involvement.
+
+>Instead send a v3 patch without any defect.
+
+No point ...I think your understanding takes a back seat...could you please
+rebrush it??
+
+..and you are telling me something which isn't practice here ..maybe some
+other project with some other people you worked with...
+
+certainly not here ...
+
+Long story short, you found a flaw what I sent and I appreciate your review
+and corrected the trivialities ...but rest what you are asking is garbage .
+
+More ...I don't know why I am explaining this stuff to you...we have been here
+doing this stuff for a long time ... (not sure about you)
+
+Versioning is important for the person who maintain that file..because of lots
+of reason ...and I am sure either you have forgotten or it skipped your mind
+for the moment ..that is why I suggest ...please rebrush your understanding
+...
+
+Please don't unnecessarily streach thing ...we have other things to do ...do
+not bringing "new rules" here for the sake of it.
+
+--2fHTh5uZTiUOsy+g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAl+I0ewACgkQsjqdtxFL
+KRXUWgf/Siz0KYl6XDzIBkSGsP2b3PjggVQplz9257TzISyhL9/w7c5Ikl5KJG4k
+iteA49NrKsi6GkYSVuwdvngpWwVhT1ONlnSGlIZFkAcnU6uahvhK4AH1DKHmXSm2
+8mgjgY7hmq7lejNguZEVo1M8N5yj+WVGY/5dGZWkxb2tpp5DDubQUF41Jr/pPbY6
+yh7RrgHsBSKFJTGZ0gV7j0iSdNI5yN5V0bFF4qtj1OjJSomS8OGYN9ntuGAx3hFk
+8vsTL+HkxtJNI+JAlSbhwEGgiunQJsMGqpcix5Cuvxb/uKGkBlciFTXCUnMRXjk2
+CUH9aYXB1ShiiQDt/8qa6N00If5ZlQ==
+=lEhQ
+-----END PGP SIGNATURE-----
+
+--2fHTh5uZTiUOsy+g--
