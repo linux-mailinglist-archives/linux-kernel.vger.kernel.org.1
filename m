@@ -2,174 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A309828F577
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0115F28F594
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389301AbgJOPES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388743AbgJOPER (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:04:17 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D30DC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:04:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h7so3923253wre.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 08:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aM2rdd0kq3Z2pAcYt+iHv5sB+JPN3rjkl3TpYzl6xyc=;
-        b=UKAndxXHYto5P21FGeL51//alyDJpo5kZPud/VLYgQq0N3AMkjZx8Lk2sctmT6dujy
-         /DDzUg4xNokRkcYSOd8r8Ee3li5lhs1pZ35KRRkW2GSVSxLbf9PhvDGkMNoEnxDpk1pS
-         ZouASX6HTudRFi7bf7AIaEeIumeQzIkdRy1tK40IGjIw+H2s2t5aQu7x4vrGhJDASE9r
-         LYOzTGJWt6uH6EPhzDgWKDHHBzAQNnAP/SJQB661E2Umc1emtvMLwDs4BQq/sGSf27M0
-         lSkPoyj9JDnHWxgP5YNEr9V2NXKGYbCxUrsIUqcZYDqArO7afYzxk79A3I1tjVzOAgc5
-         zNRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aM2rdd0kq3Z2pAcYt+iHv5sB+JPN3rjkl3TpYzl6xyc=;
-        b=fU0l2qddM/wjoQng5Y6XsXevSJWDe6BUyNX/VSTIijd/gpK4zV7BHOGmnW0gKGOHuO
-         lCn9VZx/BSCIMVHKp95EOcCHUWsCpluHUKZkHeALU2E1MlGpaCyfETQVdKnsMouD4Pgj
-         1dHOqYTQx2r8WGaRTZSfPOiydCCWRdNI+y3f1f3lSuFRKqBkHoBRWWbN5cXJ/IlV4C8x
-         CiXGq/P4/A9rTBUwew9+ir5tkyJ+ALE31WEGjnMNwm+fPss16jNUpmiVFQSBvfeVRNNB
-         SKkFtLNsGUDb3eW692tjDlGL9NYTdlbmYd5Xzs17gxHXIUUJIa/VLOGevAf4mjQDDUNv
-         y2+Q==
-X-Gm-Message-State: AOAM532r6Nv8rZHdJuFpgJaRQq7bo5MjgHjECt5Mm7iu81QvNWt0Oky5
-        D0O2mp30xRnbc6FM1mhd+3HF4A==
-X-Google-Smtp-Source: ABdhPJxJMiuBO2wfbeo+8BN1kdMoWtXi/rlDqTUmwuk2W5nU946ZQ42veLZHYl+13YOi4BDx41lOig==
-X-Received: by 2002:adf:ce0b:: with SMTP id p11mr4801689wrn.318.1602774255908;
-        Thu, 15 Oct 2020 08:04:15 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id w4sm4612378wmi.10.2020.10.15.08.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 08:04:15 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 16:04:11 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Nayak, Rajendra" <rnayak@codeaurora.org>
-Subject: Re: [PATCH v2 0/3] Clarify abstract scale usage for power values in
- Energy Model, EAS and IPA
-Message-ID: <20201015150411.GA1859176@google.com>
-References: <20201002114426.31277-1-lukasz.luba@arm.com>
- <d2960f6a-1805-1fb4-98ae-4a756d20370b@arm.com>
- <765e6603-b614-fb72-64ff-248b42474803@linaro.org>
- <b19c1f12-b7cf-fcae-4ebb-617019effe2e@arm.com>
- <55d3fb0f-f7d8-63c5-2bdb-53eaa62380e0@linaro.org>
- <f660731e-132b-2514-f526-d7123ed3522c@arm.com>
- <d04019bd-9e85-5f3e-2a1b-66780b8df3dc@linaro.org>
- <3e3dd42c-48ac-7267-45c5-ca88205611bd@arm.com>
- <00ceec64-3273-bb4a-6f38-22de8d877ab5@linaro.org>
- <CAJZ5v0hV8fwRnADdjiiF=zapO3AE6=_W_PeOQ_WhUirCcFkgdA@mail.gmail.com>
+        id S2389578AbgJOPLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 11:11:02 -0400
+Received: from mx01-sz.bfs.de ([194.94.69.67]:38338 "EHLO mx02-sz.bfs.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388764AbgJOPLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 11:11:02 -0400
+X-Greylist: delayed 373 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Oct 2020 11:11:00 EDT
+Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
+        by mx02-sz.bfs.de (Postfix) with ESMTPS id A058220403;
+        Thu, 15 Oct 2020 17:04:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1602774286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Xuug+2hVFBm+B5UTc9CM6NcxF57zXPletFCWeaT4gw=;
+        b=cCGN8umA+LSkB9Eby1Bah6kZIRkI2t76DUyaG6XoQp0hAuOROgfwHJfLSCKAH+yBVziGVf
+        95DrTBeCqThRK0lCMby4VqmTF+0qPieg35O7Q3IgNDA1lOUoS7uaFr7NF7+rg3PtHrfU0j
+        S8UWH28pY7QgnMU7qMOAj1xsFj7hJ58ijyswr778PtG80M3uQ5Mo9F+EBAleMKwrx6l+t7
+        s7wwYa0zH92F/xPUc+8iBxmpnCrG3Z2syKYYKcF/BkK/jxq2k9T+wkoGXCrMx72EEm2/Rp
+        MpKfmZ/1+lfenDuJxgsjAMJPKC82GXvzXQSFUTau1yfc0u5tLacUdgPzfQDbaw==
+Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
+ (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2106.2; Thu, 15 Oct
+ 2020 17:04:46 +0200
+Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
+ SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
+ 15.01.2106.002; Thu, 15 Oct 2020 17:04:46 +0200
+From:   Walter Harms <wharms@bfs.de>
+To:     Fedor Tokarev <ftokarev@gmail.com>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "anna.schumaker@netapp.com" <anna.schumaker@netapp.com>,
+        "trond.myklebust@hammerspace.com" <trond.myklebust@hammerspace.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: AW: [PATCH] net: sunrpc: Fix 'snprintf' return value check in
+ 'do_xprt_debugfs'
+Thread-Topic: [PATCH] net: sunrpc: Fix 'snprintf' return value check in
+ 'do_xprt_debugfs'
+Thread-Index: AQHWovtnyQ5di/wyF0Kmy+Tq/adLsKmYwM+i
+Date:   Thu, 15 Oct 2020 15:04:46 +0000
+Message-ID: <b97379d3bf59487d8d0ca3bbf14ad0df@bfs.de>
+References: <20201015135341.GA16343@laptop>
+In-Reply-To: <20201015135341.GA16343@laptop>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.137.16.40]
+x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25728.000
+x-tm-as-result: No-10--5.425900-5.000000
+x-tmase-matchedrid: 1w4R1hu8EHXed0Ij9t5iQyEyJ8xFEVolPknazlXMVpV+SLLtNOiBhrLs
+        vs6J0rHdg5UXYAmrRiPQVBnHbDgUs6krm8GLHGyo52zh+cq/0Ju62wuq1giw0x3RY4pGTCyHfjc
+        dX7WMS/BFeoHCZIFQtCKkzMT7+4ooN9rojbjxBkwwwOrFPm3RDUpFpc3bJiMeEt/W/Pt5w8clC4
+        sxsYCYIvc4XRSNAau6vsp8E6m7CmMdrB57CzPAJj8Ckw9b/GFeTJDl9FKHbrl2/QXA1+sfBZ4CI
+        KY/Hg3AcmfM3DjaQLHEQdG7H66TyF82MXkEdQ77PZGkYTzNvZGv1nL/XchjCD2cE0BmbxnjEHAr
+        QLGCQG/e9xXzfruQvg==
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--5.425900-5.000000
+x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25728.000
+x-tm-snts-smtp: CF9EB13A45BC0FE4DCB7889F4C01F5288A58F5C7E6C89D543D611277CA13CB362000:9
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hV8fwRnADdjiiF=zapO3AE6=_W_PeOQ_WhUirCcFkgdA@mail.gmail.com>
+X-Spam-Status: No, score=-0.05
+Authentication-Results: mx02-sz.bfs.de;
+        none
+X-Spamd-Result: default: False [-0.05 / 7.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         HAS_XOIP(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         NEURAL_HAM(-0.00)[-1.069];
+         FREEMAIL_TO(0.00)[gmail.com,fieldses.org,oracle.com,netapp.com,hammerspace.com,davemloft.net,kernel.org];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-0.05)[60.08%]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 15 Oct 2020 at 15:40:16 (+0200), Rafael J. Wysocki wrote:
-> On Thu, Oct 15, 2020 at 12:22 PM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
-> >
-> > On 15/10/2020 11:00, Lukasz Luba wrote:
-> >
-> > [ ... ]
-> >
-> > >> There is the SCMI and the DT. Because there are two sources where it is
-> > >> impossible to know if they are using the same units, we are stuck to
-> > >> ensure a consistency for the kernel.
-> > >>
-> > >> The platform should use:
-> > >>   - the SCMI only (scaled or real)
-> > >>   - the DT only (real)
-> > >>   [ - the firmware file only (scaled or real) ]
-> > >>
-> > >
-> > > Do you mean by SCMI - registration using em_dev_register_perf_domain() ?
-> >
-> > It was high level description, but yes, I guess it is the case.
-> >
-> > >> As it is not possible to know if they are scaled or real, there is no
-> > >> choice except making them mutually exclusive.
-> > >
-> > > So you propose a bit more restriction in registration EM, to not get
-> > > lost in the future. I also have these doubts. Let's consider it and
-> > > maybe agree.
-> > >
-> > > I've recommended Qcom to use em_dev_register_perf_domain() when they
-> > > have this obfuscated power values. Then any developer in the future
-> > > who wants to add EM for a new device on that platform, should use the
-> > > em_dev_register_perf_domain().
-> > >
-> > > In this case the flag in EM that you have proposed makes sense.
-> > > We probably need an argument 'bool abstract_scale' in the
-> > > em_dev_register_perf_domain(..., bool abstract_scale)
-> > > as a source of information.
-> >
-> > I was suggesting to add a flag to the em_perf_domain structure giving
-> > the source of the power numbers.
-> >
-> > So if the IPA is having the 'sustainable-power' set in DT but the
-> > em_perf_domain is flagged with power number coming from SCMI, then they
-> > will be incompatible, the thermal zone will fail to register.
-> >
-> >
-> > > We would allow to co-exist em_dev_register_perf_domain(..., false)
-> > > with dev_pm_opp_of_register_em() EM devices.
-> > >
-> > > Is it make sense?
-> >
-> > Well, it does not change my opinion. We should assume the energy model
-> > is always milliwatts. If the SoC vendors find a way to get around with
-> > bogoWatts, then good to them and up to them to deal with in the future.
-> 
-> That sounds fair enough, but it also means that any kernel patches
-> using power units different from milliwatts for the EM should be
-> rejected in the future, doesn't it?
-> 
-> And the existing code using different power units for the EM (if any)
-> should be updated/fixed accordingly, shouldn't it?
-> 
-> Otherwise I don't see now this can be regarded as a hard rule.
+if  xprt->debugfs->d_name.name can be what ever long
+it is more clever to use kasprintf()
+the some for link (no idea how many xprt als possible)
 
-Sorry, jumping late in the discussion :)
+jm2c
+ wh
 
-To add a bit of background to this, it's been the plan from the very
-beginning to make PM_EM use an abstract scale. The only reason it was
-not merged like that is because the first version only worked for CPUs,
-and IPA was using a totally different source for other devices. So we
-had no choice but to specify PM_EM in mW to keep things compatible and
-allow to transition IPA. But that is no longer true, so I'm in favor of
-evolving PM_EM where it was supposed to be to begin with.
+________________________________________
+Von: Fedor Tokarev [ftokarev@gmail.com]
+Gesendet: Donnerstag, 15. Oktober 2020 15:59
+An: bfields@fieldses.org; chuck.lever@oracle.com; anna.schumaker@netapp.com=
+; trond.myklebust@hammerspace.com; davem@davemloft.net; kuba@kernel.org
+Cc: linux-nfs@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.ke=
+rnel.org; kernel-janitors@vger.kernel.org; ftokarev@gmail.com
+Betreff: [PATCH] net: sunrpc: Fix 'snprintf' return value check in 'do_xprt=
+_debugfs'
 
-IMO, the only thing the kernel cares about is consistency across power
-numbers, but not about the exact unit. And I agree with Rafael, we have
-code paths in the kernel that feed data in PM_EM but _cannot_ guarantee
-mW, SCMI being a prime example, so I don't think it is reasonable to
-mandate that.
+'snprintf' returns the number of characters which would have been written
+if enough space had been available, excluding the terminating null byte.
+Thus, the return value of 'sizeof(buf)' means that the last character
+has been dropped.
 
-Having that properly documented + an 'abstract_scale' parameter in
-dev_pm_opp_of_register_em() (or even a unit, which could be bogo-watts)
-should work IMO. What is the concern with this approach?
+Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
+---
+ net/sunrpc/debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Quentin
+diff --git a/net/sunrpc/debugfs.c b/net/sunrpc/debugfs.c
+index fd9bca2..56029e3 100644
+--- a/net/sunrpc/debugfs.c
++++ b/net/sunrpc/debugfs.c
+@@ -128,13 +128,13 @@ static int do_xprt_debugfs(struct rpc_clnt *clnt, str=
+uct rpc_xprt *xprt, void *n
+                return 0;
+        len =3D snprintf(name, sizeof(name), "../../rpc_xprt/%s",
+                       xprt->debugfs->d_name.name);
+-       if (len > sizeof(name))
++       if (len >=3D sizeof(name))
+                return -1;
+        if (*nump =3D=3D 0)
+                strcpy(link, "xprt");
+        else {
+                len =3D snprintf(link, sizeof(link), "xprt%d", *nump);
+-               if (len > sizeof(link))
++               if (len >=3D sizeof(link))
+                        return -1;
+        }
+        debugfs_create_symlink(link, clnt->cl_debugfs, name);
+--
+2.7.4
+
