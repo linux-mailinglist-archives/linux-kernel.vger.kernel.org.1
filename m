@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9AE28EEDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F3C28EEE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388428AbgJOI7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:59:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15295 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388315AbgJOI7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:59:41 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D4D048F5487FF12A17A7;
-        Thu, 15 Oct 2020 16:59:38 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 15 Oct 2020 16:59:30 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH drm/hisilicon v2 2/2] drm/hisilicon: Use the same style of variable type in hibmc_drm_drv
-Date:   Thu, 15 Oct 2020 17:00:17 +0800
-Message-ID: <1602752417-20598-3-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602752417-20598-1-git-send-email-tiantao6@hisilicon.com>
-References: <1602752417-20598-1-git-send-email-tiantao6@hisilicon.com>
+        id S2388550AbgJOJAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:00:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388539AbgJOJAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 05:00:30 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7860C2224A;
+        Thu, 15 Oct 2020 09:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602752429;
+        bh=/h5Hj5cakfLjz0WvklnXCC2R5p6l5iHsk2O5kqslFIE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=G91JCJSCqOb0+t87VtlJI7M4Uzzp9ymGx3ElnqKshICvu6sEx5yRrD+l3yfTW6M3n
+         g+CWm6HBb1JJI1fN4czsNTOdGvFP0rixdGsoshv0jvg+ASDCuTNed7139FbtGJoMGJ
+         VagzYzJfUlJDlTvCZyvWs8IshP9pXyaGDahbR7cY=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [RFC PATCH v2 3/3] tracing: Add ptr-hash option to show the hashed pointer value
+Date:   Thu, 15 Oct 2020 18:00:25 +0900
+Message-Id: <160275242575.115066.9883938548062917144.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <160275239876.115066.10891356497426857018.stgit@devnote2>
+References: <160275239876.115066.10891356497426857018.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consistently Use the same style of variable type in hibmc_drm_drv.c and
-hibmc_drm_drv.h.
+Add tracefs/options/hash-ptr option to show hashed pointer
+value by %p in event printk format string.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+For the security reason, normal printk will show the hashed
+pointer value (encrypted by random number) with %p to printk
+buffer to hide the real address. But the tracefs/trace always
+shows real address for debug. To bridge those outputs, add an
+option to switch the output format. Ftrace users can use it
+to find the hashed value corresponding to the real address
+in trace log.
+
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 13 ++++++-------
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h |  8 ++++----
- 2 files changed, 10 insertions(+), 11 deletions(-)
+ Documentation/trace/ftrace.rst |    6 ++++++
+ kernel/trace/trace.c           |    4 ++++
+ kernel/trace/trace.h           |    1 +
+ 3 files changed, 11 insertions(+)
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index 5632bce..0c1b40d 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -121,12 +121,11 @@ static void hibmc_kms_fini(struct hibmc_drm_private *priv)
- /*
-  * It can operate in one of three modes: 0, 1 or Sleep.
-  */
--void hibmc_set_power_mode(struct hibmc_drm_private *priv,
--			  unsigned int power_mode)
-+void hibmc_set_power_mode(struct hibmc_drm_private *priv, u32 power_mode)
- {
--	unsigned int control_value = 0;
-+	u32 control_value = 0;
- 	void __iomem   *mmio = priv->mmio;
--	unsigned int input = 1;
-+	u32 input = 1;
+diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
+index 87cf5c010d5d..62c98e9bbdd9 100644
+--- a/Documentation/trace/ftrace.rst
++++ b/Documentation/trace/ftrace.rst
+@@ -1159,6 +1159,12 @@ Here are the available options:
+ 	This simulates the original behavior of the trace file.
+ 	When the file is closed, tracing will be enabled again.
  
- 	if (power_mode > HIBMC_PW_MODE_CTL_MODE_SLEEP)
- 		return;
-@@ -144,8 +143,8 @@ void hibmc_set_power_mode(struct hibmc_drm_private *priv,
++  hash-ptr
++        When set, "%p" in the event printk format displays the
++        hashed pointer value instead of real address.
++        This will be useful if you want to find out which hashed
++        value is corresponding to the real value in trace log.
++
+   record-cmd
+ 	When any event or tracer is enabled, a hook is enabled
+ 	in the sched_switch trace point to fill comm cache
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 1ebcc83b1e23..414c40a579be 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3525,6 +3525,10 @@ const char *trace_event_format(struct trace_iterator *iter, const char *fmt)
  
- void hibmc_set_current_gate(struct hibmc_drm_private *priv, unsigned int gate)
- {
--	unsigned int gate_reg;
--	unsigned int mode;
-+	u32 gate_reg;
-+	u32 mode;
- 	void __iomem   *mmio = priv->mmio;
- 
- 	/* Get current power mode. */
-@@ -170,7 +169,7 @@ void hibmc_set_current_gate(struct hibmc_drm_private *priv, unsigned int gate)
- 
- static void hibmc_hw_config(struct hibmc_drm_private *priv)
- {
--	unsigned int reg;
-+	u32 reg;
- 
- 	/* On hardware reset, power mode 0 is default. */
- 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-index 6a63502..5c4030d 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-@@ -33,8 +33,8 @@ struct hibmc_drm_private {
- 	/* hw */
- 	void __iomem   *mmio;
- 	void __iomem   *fb_map;
--	unsigned long  fb_base;
--	unsigned long  fb_size;
-+	u64  fb_base;
-+	u64  fb_size;
- 
- 	/* drm */
- 	struct drm_device  *dev;
-@@ -56,9 +56,9 @@ static inline struct hibmc_drm_private *to_hibmc_drm_private(struct drm_device *
- }
- 
- void hibmc_set_power_mode(struct hibmc_drm_private *priv,
--			  unsigned int power_mode);
-+			  u32 power_mode);
- void hibmc_set_current_gate(struct hibmc_drm_private *priv,
--			    unsigned int gate);
-+			    u32 gate);
- 
- int hibmc_de_init(struct hibmc_drm_private *priv);
- int hibmc_vdac_init(struct hibmc_drm_private *priv);
--- 
-2.7.4
+ 	if (WARN_ON_ONCE(!fmt))
+ 		return fmt;
++
++	if (iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
++		return fmt;
++
+ retry:
+ 	p = fmt;
+ 	new_fmt = q = iter->fmt;
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 524502d1f60a..c34187bd22a9 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -1347,6 +1347,7 @@ extern int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
+ 		C(MARKERS,		"markers"),		\
+ 		C(EVENT_FORK,		"event-fork"),		\
+ 		C(PAUSE_ON_TRACE,	"pause-on-trace"),	\
++		C(HASH_PTR,		"hash-ptr"),	/* Print hashed pointer */ \
+ 		FUNCTION_FLAGS					\
+ 		FGRAPH_FLAGS					\
+ 		STACK_FLAGS					\
 
