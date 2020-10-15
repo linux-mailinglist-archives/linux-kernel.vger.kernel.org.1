@@ -2,854 +2,463 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BC728F6D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E30E28F6E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389938AbgJOQdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 12:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        id S2389962AbgJOQd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389907AbgJOQdH (ORCPT
+        with ESMTP id S2388946AbgJOQd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 12:33:07 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC048C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:33:06 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f19so2323596pfj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:33:06 -0700 (PDT)
+        Thu, 15 Oct 2020 12:33:59 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E345C061755;
+        Thu, 15 Oct 2020 09:33:57 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id l4so3473919ota.7;
+        Thu, 15 Oct 2020 09:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U/LBaAU/JoVewvfighEoyvC4ZLUOTdwGP4FTxVAaGlY=;
-        b=aTGZo3V5icBcIQNADJHBpyj5fr0waFMiTD1hbiVs2cB/Gwb6lfbNDJib2w9cDZXaNP
-         m0qzknkf+FZbXSSyKeu5Oh1jflNjItTXIOjI1Tfgg21YWm3t5b7Iv7SGXWqxk8FeRIPT
-         NQGEZMmMybkpoXS78Y3r2GbzQZXzlWAzeT+ed/dU2ZSamKod4xgYwOT3uS7n7kdYgE2S
-         1UFy/YYHsulSvDQ4wWQV56BVcJQz5Jce06XIwb2BN7PkbVr8ZHdl9ZIp/+cKq6dvMEu/
-         up8AnoEFHZ2owxp7E2ueIqN+APPcZRbi7w3o47uL3TUV7oUCuwloWSxzubzWysKuSNZB
-         BeMA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ob/UzcY/BrJGT6JVeMPR7qhCtT62XaOUUuXjEDF/Ni8=;
+        b=dMYwSJiQKEVvj+FM22zV7j99m+FhiIqCGNAA9LXdY/icp4KUwC4Vdothqws0OXPHh0
+         /Pe7/1MyuibiYA5sQOzYtTbQIHsFneJVFU6vJvTOBVkX4OFdFFF0evLLFWx9ix8+3EHG
+         CtIYmc+kMUvSoG3kSK1Qz4IIT0BM2xaVxOlzK+SQT4qMQ56V9JkK+Qf+IcuARAwcKDMl
+         5VRqFjrk/GIvzYob3UConoysjNNWXZeJ79Qw7DsqdMXsasbYFqNkpV5oV+GPJifYICB0
+         W0ejndagyMgHAH+xXfaIIbnMST/Nz+gz7YfE8W/mRMTT7HG11wAn0MfbOgDD6qSjyiqJ
+         Yo4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U/LBaAU/JoVewvfighEoyvC4ZLUOTdwGP4FTxVAaGlY=;
-        b=W1s/yRJ76Y9JWIF/tkIlMLirH35goV6Gca+6hHLaA7H+PGjOIn4P8PfY0J6wOyKGbZ
-         W3avmaffGn5yamuiUQQtw9y0WUu6pZQvIj300uGtgC233VltR0ot5jZM4BT7vZ2BN5m/
-         65virAPgohbG1KiZseNkBVol2noTsqYJlyNST1WuEa0L/QXZBLBr6Tafa4hgqlqyW55x
-         sWW36UI4iABb9GibF30P8K8u8hC2usfG7P3IajSxYDSFH4/Rf+9HT1xd9DqObAwH2cPT
-         4vMzqzYaYGy5bSmV8eNkQgpsZa2EeiTDfarldmzYnaZzDFEiaBpd5H7SSgxZ0Q7v4J/b
-         GVMg==
-X-Gm-Message-State: AOAM531SeiNJrz18r/tcZxxTmYCFmXimrSZDoqNAjwGeNZ7/5JKPcMYR
-        m/v30EsnVwugDT6ywdAsfNN3IA==
-X-Google-Smtp-Source: ABdhPJwj73s1oU/zumOoIAjdi6vnH1KYjQ9D57UBFshOv3h9fFxy+ilwE6jrdnw+vI/iYocjE4sOoA==
-X-Received: by 2002:a65:67d0:: with SMTP id b16mr4090937pgs.335.1602779586065;
-        Thu, 15 Oct 2020 09:33:06 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id f21sm4011397pfk.169.2020.10.15.09.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 09:33:05 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 10:33:03 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Alexandre Bailon <abailon@baylibre.com>
-Cc:     linux-remoteproc@vger.kernel.org, ohad@wizery.com,
-        bjorn.andersson@linaro.org, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, jstephan@baylibre.com,
-        stephane.leprovost@mediatek.com, gpain@baylibre.com,
-        mturquette@baylibre.com
-Subject: Re: [RFC PATCH 1/4] Add a RPMSG driver for the APU in the mt8183
-Message-ID: <20201015163303.GC1450102@xps15>
-References: <20200930115350.5272-1-abailon@baylibre.com>
- <20200930115350.5272-2-abailon@baylibre.com>
- <20201014225534.GA1416674@xps15>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ob/UzcY/BrJGT6JVeMPR7qhCtT62XaOUUuXjEDF/Ni8=;
+        b=NNCflBzxkWM7g+H1+FP0nvIVITQZ08XC3QvgRO0nCDtKi0zcS7pvrM5DT/5GzmqVnP
+         4zZ7QsAZL3AOP71rk5jUMncdrZDmqs8vvC5zUijb9I2xpG5xmZqvaBucfxhswQXJ3RH2
+         O7KIkVtDLbprokadS4gla1KNXc+wZu0QpgIRJZL4tTkAJYJqFymPVgVWoVy/obmfqc9u
+         gv1bdVrHjpjS8H0+pM5kz5RgA4ao0SnKrmDbEi84oRpOjbZpXr6vMH/flkZxaaaQf05N
+         fWtmXaA5weJrUqtdbeFske4HakXlQnO1CuQUD5l03SL0m3r3wYr6QcjX8WyaY2/VEhvM
+         H76Q==
+X-Gm-Message-State: AOAM530xLfOafSWqgFLwOQO9GkGXdKsCN4taS3zlrY+0oV+b7ZJELsjF
+        PiqOTJ6mv/6kZtp7W5FFQec=
+X-Google-Smtp-Source: ABdhPJxiq8tJ+ep+WvDBwaPorogFJPm2civkJbIBLcXsKlEroag+h88FThfMHeFhXm4eEq0nZ50zsw==
+X-Received: by 2002:a9d:1b06:: with SMTP id l6mr3158803otl.313.1602779636754;
+        Thu, 15 Oct 2020 09:33:56 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b17sm1598557oog.25.2020.10.15.09.33.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 15 Oct 2020 09:33:55 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 15 Oct 2020 09:33:54 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sergey Yasinsky <seregajsv@gmail.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] watchdog: repair pnx833x_wdt
+Message-ID: <20201015163354.GA174104@roeck-us.net>
+References: <20201014145633.25680-1-seregajsv@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014225534.GA1416674@xps15>
+In-Reply-To: <20201014145633.25680-1-seregajsv@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 04:55:34PM -0600, Mathieu Poirier wrote:
-> Hi Alexandre,
+On Wed, Oct 14, 2020 at 05:56:32PM +0300, Sergey Yasinsky wrote:
+> Using watchdog core functions instead of miscdevice.
 > 
-> On Wed, Sep 30, 2020 at 01:53:47PM +0200, Alexandre Bailon wrote:
-> > This adds a driver to communicate with the APU available
-> > in the mt8183. The driver is generic and could be used for other APU.
-> > It mostly provides a userspace interface to send messages and
-> > and share big buffers with the APU.
-> > 
-> > Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
-> > ---
-> >  drivers/rpmsg/Kconfig          |   9 +
-> >  drivers/rpmsg/Makefile         |   1 +
-> >  drivers/rpmsg/apu_rpmsg.c      | 606 +++++++++++++++++++++++++++++++++
-> >  drivers/rpmsg/apu_rpmsg.h      |  52 +++
-> >  include/uapi/linux/apu_rpmsg.h |  36 ++
-> >  5 files changed, 704 insertions(+)
-> >  create mode 100644 drivers/rpmsg/apu_rpmsg.c
-> >  create mode 100644 drivers/rpmsg/apu_rpmsg.h
-> >  create mode 100644 include/uapi/linux/apu_rpmsg.h
-> > 
-> > diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> > index f96716893c2a..3437c6fc8647 100644
-> > --- a/drivers/rpmsg/Kconfig
-> > +++ b/drivers/rpmsg/Kconfig
-> > @@ -64,4 +64,13 @@ config RPMSG_VIRTIO
-> >  	select RPMSG
-> >  	select VIRTIO
-> >  
-> > +config RPMSG_APU
-> > +	tristate "APU RPMSG driver"
-> > +	help
-> > +	  This provides a RPMSG driver that provides some facilities to
-> > +	  communicate with an accelerated processing unit (APU).
-> > +	  This creates one or more char files that could be used by userspace
-> > +	  to send a message to an APU. In addition, this also take care of
-> > +	  sharing the memory buffer with the APU.
-> > +
-> >  endmenu
-> > diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-> > index ffe932ef6050..93e0f3de99c9 100644
-> > --- a/drivers/rpmsg/Makefile
-> > +++ b/drivers/rpmsg/Makefile
-> > @@ -8,3 +8,4 @@ obj-$(CONFIG_RPMSG_QCOM_GLINK_RPM) += qcom_glink_rpm.o
-> >  obj-$(CONFIG_RPMSG_QCOM_GLINK_SMEM) += qcom_glink_smem.o
-> >  obj-$(CONFIG_RPMSG_QCOM_SMD)	+= qcom_smd.o
-> >  obj-$(CONFIG_RPMSG_VIRTIO)	+= virtio_rpmsg_bus.o
-> > +obj-$(CONFIG_RPMSG_APU)		+= apu_rpmsg.o
-> > diff --git a/drivers/rpmsg/apu_rpmsg.c b/drivers/rpmsg/apu_rpmsg.c
-> > new file mode 100644
-> > index 000000000000..5131b8b8e1f2
-> > --- /dev/null
-> > +++ b/drivers/rpmsg/apu_rpmsg.c
-> > @@ -0,0 +1,606 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +//
-> > +// Copyright 2020 BayLibre SAS
-> > +
-> > +#include <linux/cdev.h>
-> > +#include <linux/dma-buf.h>
-> > +#include <linux/iommu.h>
-> > +#include <linux/iova.h>
-> > +#include <linux/types.h>
-> > +#include <linux/module.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/remoteproc.h>
-> > +#include <linux/rpmsg.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +#include "rpmsg_internal.h"
-> > +
-> > +#include <uapi/linux/apu_rpmsg.h>
-> > +
-> > +#include "apu_rpmsg.h"
-> > +
-> > +/* Maximum of APU devices supported */
-> > +#define APU_DEV_MAX 2
-> > +
-> > +#define dev_to_apu(dev) container_of(dev, struct rpmsg_apu, dev)
-> > +#define cdev_to_apu(i_cdev) container_of(i_cdev, struct rpmsg_apu, cdev)
-> > +
-> > +struct rpmsg_apu {
-> > +	struct rpmsg_device *rpdev;
-> > +	struct cdev cdev;
-> > +	struct device dev;
-> > +
-> > +	struct rproc *rproc;
-> > +	struct iommu_domain *domain;
-> > +	struct iova_domain *iovad;
-> > +	int iova_limit_pfn;
-> > +};
-> > +
-> > +struct rpmsg_request {
-> > +	struct completion completion;
-> > +	struct list_head node;
-> > +	void *req;
-> > +};
-> > +
-> > +struct apu_buffer {
-> > +	int fd;
-> > +	struct dma_buf *dma_buf;
-> > +	struct dma_buf_attachment *attachment;
-> > +	struct sg_table *sg_table;
-> > +	u32 iova;
-> > +};
-> > +
-> > +/*
-> > + * Shared IOVA domain.
-> > + * The MT8183 has two VP6 core but they are sharing the IOVA.
-> > + * They could be used alone, or together. In order to avoid conflict,
-> > + * create an IOVA domain that could be shared by those two core.
-> > + * @iovad: The IOVA domain to share between the APU cores
-> > + * @refcount: Allow to automatically release the IOVA domain once all the APU
-> > + *            cores has been stopped
-> > + */
-> > +struct apu_iova_domain {
-> > +	struct iova_domain iovad;
-> > +	struct kref refcount;
-> > +};
-> > +
-> > +static dev_t rpmsg_major;
-> > +static DEFINE_IDA(rpmsg_ctrl_ida);
-> > +static DEFINE_IDA(rpmsg_minor_ida);
-> > +static DEFINE_IDA(req_ida);
-> > +static LIST_HEAD(requests);
-> > +static struct apu_iova_domain *apu_iovad;
-> > +
-> > +static int apu_rpmsg_callback(struct rpmsg_device *dev, void *data, int count,
-> > +			      void *priv, u32 addr)
-> > +{
-> > +	struct rpmsg_request *rpmsg_req;
-> > +	struct apu_dev_request *hdr = data;
-> > +
-> > +	list_for_each_entry(rpmsg_req, &requests, node) {
-> > +		struct apu_dev_request *tmp_hdr = rpmsg_req->req;
-> > +
-> > +		if (hdr->id == tmp_hdr->id) {
-> > +			memcpy(rpmsg_req->req, data, count);
-> > +			complete(&rpmsg_req->completion);
-> > +
-> > +			return 0;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int apu_device_memory_map(struct rpmsg_apu *apu,
-> > +				 struct apu_buffer *buffer)
-> > +{
-> > +	struct rpmsg_device *rpdev = apu->rpdev;
-> > +	phys_addr_t phys;
-> > +	int total_buf_space;
-> > +	int iova_pfn;
-> > +	int ret;
-> > +
-> > +	if (!buffer->fd)
-> > +		return 0;
-> > +
-> > +	buffer->dma_buf = dma_buf_get(buffer->fd);
-> > +	if (IS_ERR(buffer->dma_buf)) {
-> > +		dev_err(&rpdev->dev, "Failed to get dma_buf from fd: %ld\n",
-> > +			PTR_ERR(buffer->dma_buf));
-> > +		return PTR_ERR(buffer->dma_buf);
-> > +	}
-> > +
-> > +	buffer->attachment = dma_buf_attach(buffer->dma_buf, &rpdev->dev);
-> > +	if (IS_ERR(buffer->attachment)) {
-> > +		dev_err(&rpdev->dev, "Failed to attach dma_buf\n");
-> > +		ret = PTR_ERR(buffer->attachment);
-> > +		goto err_dma_buf_put;
-> > +	}
-> > +
-> > +	buffer->sg_table = dma_buf_map_attachment(buffer->attachment,
-> > +						   DMA_BIDIRECTIONAL);
-> > +	if (IS_ERR(buffer->sg_table)) {
-> > +		dev_err(&rpdev->dev, "Failed to map attachment\n");
-> > +		ret = PTR_ERR(buffer->sg_table);
-> > +		goto err_dma_buf_detach;
-> > +	}
-> > +	phys = page_to_phys(sg_page(buffer->sg_table->sgl));
-> > +	total_buf_space = sg_dma_len(buffer->sg_table->sgl);
-> > +
-> > +	iova_pfn = alloc_iova_fast(apu->iovad, total_buf_space >> PAGE_SHIFT,
-> > +				   apu->iova_limit_pfn, true);
-> > +	if (!iova_pfn) {
-> > +		dev_err(&rpdev->dev, "Failed to allocate iova address\n");
-> > +		ret = -ENOMEM;
-> > +		goto err_dma_unmap_attachment;
-> > +	}
-> > +
-> > +	buffer->iova = PFN_PHYS(iova_pfn);
-> > +	ret = iommu_map(apu->rproc->domain, buffer->iova, phys, total_buf_space,
-> > +			IOMMU_READ | IOMMU_WRITE | IOMMU_CACHE);
-> > +	if (ret) {
-> > +		dev_err(&rpdev->dev, "Failed to iommu map\n");
-> > +		goto err_free_iova;
-> > +	}
-> > +
-> > +	return 0;
-> > +
-> > +err_free_iova:
-> > +	free_iova(apu->iovad, iova_pfn);
-> > +err_dma_unmap_attachment:
-> > +	dma_buf_unmap_attachment(buffer->attachment,
-> > +				 buffer->sg_table,
-> > +				 DMA_BIDIRECTIONAL);
-> > +err_dma_buf_detach:
-> > +	dma_buf_detach(buffer->dma_buf, buffer->attachment);
-> > +err_dma_buf_put:
-> > +	dma_buf_put(buffer->dma_buf);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void apu_device_memory_unmap(struct rpmsg_apu *apu,
-> > +				    struct apu_buffer *buffer)
-> > +{
-> > +	int total_buf_space;
-> > +
-> > +	if (!buffer->fd)
-> > +		return;
-> > +
-> > +	total_buf_space = sg_dma_len(buffer->sg_table->sgl);
-> > +	iommu_unmap(apu->rproc->domain, buffer->iova, total_buf_space);
-> > +	free_iova(apu->iovad, PHYS_PFN(buffer->iova));
-> > +	dma_buf_unmap_attachment(buffer->attachment,
-> > +				 buffer->sg_table,
-> > +				 DMA_BIDIRECTIONAL);
-> > +	dma_buf_detach(buffer->dma_buf, buffer->attachment);
-> > +	dma_buf_put(buffer->dma_buf);
-> > +}
-> > +
-> > +static int _apu_send_request(struct rpmsg_apu *apu,
-> > +			     struct rpmsg_device *rpdev,
-> > +			     struct apu_dev_request *req, int len)
-> > +{
-> > +
-> > +	struct rpmsg_request *rpmsg_req;
-> > +	int ret = 0;
-> > +
-> > +	req->id = ida_simple_get(&req_ida, 0, 0xffff, GFP_KERNEL);
-> > +	if (req->id < 0)
-> > +		return ret;
-> > +
-> > +	rpmsg_req = kzalloc(sizeof(*rpmsg_req), GFP_KERNEL);
-> > +	if (!rpmsg_req)
-> > +		return -ENOMEM;
-> > +
-> > +	rpmsg_req->req = req;
-> > +	init_completion(&rpmsg_req->completion);
-> > +	list_add(&rpmsg_req->node, &requests);
-> > +
-> > +	ret = rpmsg_send(rpdev->ept, req, len);
-> > +	if (ret)
-> > +		goto free_req;
-> > +
-> > +	/* be careful with race here between timeout and callback*/
-> > +	ret = wait_for_completion_timeout(&rpmsg_req->completion,
-> > +					  msecs_to_jiffies(1000));
-> > +	if (!ret)
-> > +		ret = -ETIMEDOUT;
-> > +	else
-> > +		ret = 0;
-> > +
-> > +	ida_simple_remove(&req_ida, req->id);
-> > +
-> > +free_req:
-> > +
-> > +	list_del(&rpmsg_req->node);
-> > +	kfree(rpmsg_req);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int apu_send_request(struct rpmsg_apu *apu,
-> > +			    struct apu_request *req)
-> > +{
-> > +	int ret;
-> > +	struct rpmsg_device *rpdev = apu->rpdev;
-> > +	struct apu_dev_request *dev_req;
-> > +	struct apu_buffer *buffer;
-> > +
-> > +	int size = req->size_in + req->size_out +
-> > +		sizeof(u32) * req->count * 2 + sizeof(*dev_req);
-> > +	u32 *fd = (u32 *)(req->data + req->size_in + req->size_out);
-> > +	u32 *buffer_size = (u32 *)(fd + req->count);
-> > +	u32 *dev_req_da;
-> > +	u32 *dev_req_buffer_size;
-> > +	int i;
-> > +
-> > +	dev_req = kmalloc(size, GFP_KERNEL);
-> > +	if (!dev_req)
-> > +		return -ENOMEM;
-> > +
-> > +	dev_req->cmd = req->cmd;
-> > +	dev_req->size_in = req->size_in;
-> > +	dev_req->size_out = req->size_out;
-> > +	dev_req->count = req->count;
-> > +	dev_req_da = (u32 *)(dev_req->data + req->size_in + req->size_out);
-> 
-> I have started to review this set but it will take me more time to wrap my head
-> around what you are doing (the overall lack of comments in the code doesn't
-> help).
-> 
-> In the mean time the "dev_req->data" above is very puzzling to me - did you mean
-> to write "req-data"?  Otherwise I don't know how this can work since
-> dev_req->data is not initalised after the kmalloc(). 
+This is not a repair, this is a convertion to use the
+watchdog core (which also happens to fix a compile error).
 
-I haven't received an answer to the above question nor any feedback from the
-comments I made on your previous set.  As such I will halt the revision of
-this set until I hear back from you.
+The driver should also be converted to a platform device,
+and be instantiated from arch/mips/pnx833x/common/platform.c
+like the various other drivers in that syste,. As currently
+written, the driver would be instantiated whenever it is built
+into an image or loaded, which could result in a crash if
+it is loaded on a system where the IO addresses it uses are
+not mapped.
 
+More comments inline.
+
+Thanks,
+Guenter
+
+> Signed-off-by: Sergey Yasinsky <seregajsv@gmail.com>
+> ---
+>  drivers/watchdog/Kconfig       |   2 +-
+>  drivers/watchdog/pnx833x_wdt.c | 219 ++++++++-------------------------
+>  2 files changed, 53 insertions(+), 168 deletions(-)
 > 
-> More comments will come tomorrow.
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index ab7aad5a1e69..e9b86dbbb8fa 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1686,7 +1686,7 @@ config WDT_MTX1
+>  config PNX833X_WDT
+>  	tristate "PNX833x Hardware Watchdog"
+>  	depends on SOC_PNX8335
+> -	depends on BROKEN
+> +	select WATCHDOG_CORE
+>  	help
+>  	  Hardware driver for the PNX833x's watchdog. This is a
+>  	  watchdog timer that will reboot the machine after a programmable
+> diff --git a/drivers/watchdog/pnx833x_wdt.c b/drivers/watchdog/pnx833x_wdt.c
+> index 4097d076aab8..4ec852c423da 100644
+> --- a/drivers/watchdog/pnx833x_wdt.c
+> +++ b/drivers/watchdog/pnx833x_wdt.c
+> @@ -17,21 +17,11 @@
+>  
+>  #include <linux/module.h>
+>  #include <linux/moduleparam.h>
+> -#include <linux/types.h>
+> -#include <linux/kernel.h>
+> -#include <linux/fs.h>
+> -#include <linux/mm.h>
+> -#include <linux/miscdevice.h>
+>  #include <linux/watchdog.h>
+> -#include <linux/notifier.h>
+> -#include <linux/reboot.h>
+> -#include <linux/init.h>
+>  #include <asm/mach-pnx833x/pnx833x.h>
+>  
+> -#define WATCHDOG_TIMEOUT 30		/* 30 sec Maximum timeout */
+> +#define WATCHDOG_DEFAULT_TIMEOUT 30
+>  #define WATCHDOG_COUNT_FREQUENCY 68000000U /* Watchdog counts at 68MHZ. */
+> -#define	PNX_WATCHDOG_TIMEOUT	(WATCHDOG_TIMEOUT * WATCHDOG_COUNT_FREQUENCY)
+> -#define PNX_TIMEOUT_VALUE	2040000000U
+>  
+>  /** CONFIG block */
+>  #define PNX833X_CONFIG                      (0x07000U)
+> @@ -43,40 +33,37 @@
+>  #define PNX833X_RESET                       (0x08000U)
+>  #define PNX833X_RESET_CONFIG                (0x08)
+>  
+> -static int pnx833x_wdt_alive;
+> +struct pnx833x_wdt {
+> +	struct watchdog_device wdd;
+> +};
+
+This structure is unnecessary. You can use struct
+watchdog_device directly.
+
+>  
+> -/* Set default timeout in MHZ.*/
+> -static int pnx833x_wdt_timeout = PNX_WATCHDOG_TIMEOUT;
+> +/* Set default timeout */
+> +static int pnx833x_wdt_timeout = WATCHDOG_DEFAULT_TIMEOUT;
+
+The default should be set in struct watchdog_device.timeout,
+and the module parameter should (only) be used to override it,
+and be initialized with 0. More on that see below.
+
+>  module_param(pnx833x_wdt_timeout, int, 0);
+> -MODULE_PARM_DESC(timeout, "Watchdog timeout in Mhz. (68Mhz clock), default="
+> -			__MODULE_STRING(PNX_TIMEOUT_VALUE) "(30 seconds).");
+> +MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds (default="
+> +		__MODULE_STRING(WATCHDOG_DEFAULT_TIMEOUT) ")");
+>  
+>  static bool nowayout = WATCHDOG_NOWAYOUT;
+>  module_param(nowayout, bool, 0);
+>  MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
+>  					__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
+>  
+> -#define START_DEFAULT	1
+> -static int start_enabled = START_DEFAULT;
+> -module_param(start_enabled, int, 0);
+> -MODULE_PARM_DESC(start_enabled, "Watchdog is started on module insertion "
+> -				"(default=" __MODULE_STRING(START_DEFAULT) ")");
+
+Why drop this ? Someone may use it, and the watchdog core
+supports it.
+
+> -
+> -static void pnx833x_wdt_start(void)
+> +static int pnx833x_wdt_start(struct watchdog_device *wdd)
+>  {
+>  	/* Enable watchdog causing reset. */
+>  	PNX833X_REG(PNX833X_RESET + PNX833X_RESET_CONFIG) |= 0x1;
+>  	/* Set timeout.*/
+> -	PNX833X_REG(PNX833X_CONFIG +
+> -		PNX833X_CONFIG_CPU_WATCHDOG_COMPARE) = pnx833x_wdt_timeout;
+> +	PNX833X_REG(PNX833X_CONFIG + PNX833X_CONFIG_CPU_WATCHDOG_COMPARE) =
+> +		wdd->timeout * WATCHDOG_COUNT_FREQUENCY;
+>  	/* Enable watchdog. */
+>  	PNX833X_REG(PNX833X_CONFIG +
+>  				PNX833X_CONFIG_CPU_COUNTERS_CONTROL) |= 0x1;
+>  
+>  	pr_info("Started watchdog timer\n");
+
+Please drop this message.
+
+> +	return 0;
+>  }
+>  
+> -static void pnx833x_wdt_stop(void)
+> +static int pnx833x_wdt_stop(struct watchdog_device *wdd)
+>  {
+>  	/* Disable watchdog causing reset. */
+>  	PNX833X_REG(PNX833X_RESET + PNX833X_CONFIG) &= 0xFFFFFFFE;
+> @@ -85,149 +72,54 @@ static void pnx833x_wdt_stop(void)
+>  			PNX833X_CONFIG_CPU_COUNTERS_CONTROL) &= 0xFFFFFFFE;
+>  
+>  	pr_info("Stopped watchdog timer\n");
+
+Please drop this message (if you think it is useful for some reason,
+make it a debug message).
+
+> -}
+> -
+> -static void pnx833x_wdt_ping(void)
+> -{
+> -	PNX833X_REG(PNX833X_CONFIG +
+> -		PNX833X_CONFIG_CPU_WATCHDOG_COMPARE) = pnx833x_wdt_timeout;
+> -}
+> -
+> -/*
+> - *	Allow only one person to hold it open
+> - */
+> -static int pnx833x_wdt_open(struct inode *inode, struct file *file)
+> -{
+> -	if (test_and_set_bit(0, &pnx833x_wdt_alive))
+> -		return -EBUSY;
+> -
+> -	if (nowayout)
+> -		__module_get(THIS_MODULE);
+> -
+> -	/* Activate timer */
+> -	if (!start_enabled)
+> -		pnx833x_wdt_start();
+> -
+> -	pnx833x_wdt_ping();
+> -
+> -	pr_info("Started watchdog timer\n");
+> -
+> -	return stream_open(inode, file);
+> -}
+> -
+> -static int pnx833x_wdt_release(struct inode *inode, struct file *file)
+> -{
+> -	/* Shut off the timer.
+> -	 * Lock it in if it's a module and we defined ...NOWAYOUT */
+> -	if (!nowayout)
+> -		pnx833x_wdt_stop(); /* Turn the WDT off */
+> -
+> -	clear_bit(0, &pnx833x_wdt_alive);
+>  	return 0;
+>  }
+>  
+> -static ssize_t pnx833x_wdt_write(struct file *file, const char *data, size_t len, loff_t *ppos)
+> +static int pnx833x_wdt_ping(struct watchdog_device *wdd)
+>  {
+> -	/* Refresh the timer. */
+> -	if (len)
+> -		pnx833x_wdt_ping();
+> +	PNX833X_REG(PNX833X_CONFIG + PNX833X_CONFIG_CPU_WATCHDOG_COMPARE) =
+> +		wdd->timeout * WATCHDOG_COUNT_FREQUENCY;
+>  
+> -	return len;
+> +	return 0;
+>  }
+>  
+> -static long pnx833x_wdt_ioctl(struct file *file, unsigned int cmd,
+> -							unsigned long arg)
+> +static int pnx833x_wdt_set_timeout(struct watchdog_device *wdd, unsigned int t)
+>  {
+> -	int options, new_timeout = 0;
+> -	uint32_t timeout, timeout_left = 0;
+> -
+> -	static const struct watchdog_info ident = {
+> -		.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT,
+> -		.firmware_version = 0,
+> -		.identity = "Hardware Watchdog for PNX833x",
+> -	};
+> -
+> -	switch (cmd) {
+> -	default:
+> -		return -ENOTTY;
+> -
+> -	case WDIOC_GETSUPPORT:
+> -		if (copy_to_user((struct watchdog_info *)arg,
+> -				 &ident, sizeof(ident)))
+> -			return -EFAULT;
+> -		return 0;
+> -
+> -	case WDIOC_GETSTATUS:
+> -	case WDIOC_GETBOOTSTATUS:
+> -		return put_user(0, (int *)arg);
+> -
+> -	case WDIOC_SETOPTIONS:
+> -		if (get_user(options, (int *)arg))
+> -			return -EFAULT;
+> -
+> -		if (options & WDIOS_DISABLECARD)
+> -			pnx833x_wdt_stop();
+> -
+> -		if (options & WDIOS_ENABLECARD)
+> -			pnx833x_wdt_start();
+> -
+> -		return 0;
+> -
+> -	case WDIOC_KEEPALIVE:
+> -		pnx833x_wdt_ping();
+> -		return 0;
+> -
+> -	case WDIOC_SETTIMEOUT:
+> -	{
+> -		if (get_user(new_timeout, (int *)arg))
+> -			return -EFAULT;
+> -
+> -		pnx833x_wdt_timeout = new_timeout;
+> -		PNX833X_REG(PNX833X_CONFIG +
+> -			PNX833X_CONFIG_CPU_WATCHDOG_COMPARE) = new_timeout;
+> -		return put_user(new_timeout, (int *)arg);
+> -	}
+> -
+> -	case WDIOC_GETTIMEOUT:
+> -		timeout = PNX833X_REG(PNX833X_CONFIG +
+> -					PNX833X_CONFIG_CPU_WATCHDOG_COMPARE);
+> -		return put_user(timeout, (int *)arg);
+> -
+> -	case WDIOC_GETTIMELEFT:
+> -		timeout_left = PNX833X_REG(PNX833X_CONFIG +
+> -						PNX833X_CONFIG_CPU_WATCHDOG);
+> -		return put_user(timeout_left, (int *)arg);
+> -
+> -	}
+> +	PNX833X_REG(PNX833X_CONFIG + PNX833X_CONFIG_CPU_WATCHDOG_COMPARE) =
+> +		t * WATCHDOG_COUNT_FREQUENCY;
+> +	wdd->timeout = t;
+> +	return 0;
+>  }
+>  
+> -static int pnx833x_wdt_notify_sys(struct notifier_block *this,
+> -					unsigned long code, void *unused)
+> +static unsigned int pnx833x_wdt_get_timeleft(struct watchdog_device *wdd)
+>  {
+> -	if (code == SYS_DOWN || code == SYS_HALT)
+> -		pnx833x_wdt_stop(); /* Turn the WDT off */
+> +	unsigned int timeout = PNX833X_REG(PNX833X_CONFIG +
+> +		 PNX833X_CONFIG_CPU_WATCHDOG_COMPARE);
+> +	unsigned int curval = PNX833X_REG(PNX833X_CONFIG +
+> +		PNX833X_CONFIG_CPU_WATCHDOG);
+>  
+> -	return NOTIFY_DONE;
+> +	return (timeout - curval) / WATCHDOG_COUNT_FREQUENCY;
+>  }
+>  
+> -static const struct file_operations pnx833x_wdt_fops = {
+> -	.owner		= THIS_MODULE,
+> -	.llseek		= no_llseek,
+> -	.write		= pnx833x_wdt_write,
+> -	.unlocked_ioctl	= pnx833x_wdt_ioctl,
+> -	.compat_ioctl	= compat_ptr_ioctl,
+> -	.open		= pnx833x_wdt_open,
+> -	.release	= pnx833x_wdt_release,
+> +static const struct watchdog_info pnx833x_wdt_ident = {
+> +	.identity = "PNX833x Watchdog Timer",
+> +	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE
+>  };
+>  
+> -static struct miscdevice pnx833x_wdt_miscdev = {
+> -	.minor		= WATCHDOG_MINOR,
+> -	.name		= "watchdog",
+> -	.fops		= &pnx833x_wdt_fops,
+> +static struct watchdog_ops pnx833x_wdt_ops = {
+> +	.owner = THIS_MODULE,
+> +	.start = pnx833x_wdt_start,
+> +	.stop = pnx833x_wdt_stop,
+> +	.ping = pnx833x_wdt_ping,
+> +	.set_timeout = pnx833x_wdt_set_timeout,
+> +	.get_timeleft = pnx833x_wdt_get_timeleft,
+>  };
+>  
+> -static struct notifier_block pnx833x_wdt_notifier = {
+> -	.notifier_call = pnx833x_wdt_notify_sys,
+> +struct pnx833x_wdt pnx833x_wdd = {
+
+This should be static. Actually, it should be dynamically
+allocated, which is easy if/when the driver is converted
+to a platform driver.
+
+> +	.wdd = {
+> +		.info = &pnx833x_wdt_ident,
+> +		.ops = &pnx833x_wdt_ops,
+> +	},
+>  };
+>  
+>  static int __init watchdog_init(void)
+> @@ -237,36 +129,29 @@ static int __init watchdog_init(void)
+>  	/* Lets check the reason for the reset.*/
+>  	cause = PNX833X_REG(PNX833X_RESET);
+>  	/*If bit 31 is set then watchdog was cause of reset.*/
+> -	if (cause & 0x80000000) {
+> +	if (cause & 0x80000000)
+>  		pr_info("The system was previously reset due to the watchdog firing - please investigate...\n");
+> -	}
+
+This should set WDIOF_CARDRESET, and I would suggest to drop the message
+(no one is going to read it anyway).
+
+>  
+> -	ret = register_reboot_notifier(&pnx833x_wdt_notifier);
+> -	if (ret) {
+> -		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+> -		return ret;
+> -	}
+
+The above can be handled in the watchdog core if needed.
+
+> +	pnx833x_wdd.wdd.max_timeout = U32_MAX / WATCHDOG_COUNT_FREQUENCY;
+
+Also set min_timeout to 1.
+
+> +	pnx833x_wdd.wdd.timeout = pnx833x_wdt_timeout;
+> +	if (pnx833x_wdd.wdd.timeout > pnx833x_wdd.wdd.max_timeout)
+> +		pnx833x_wdd.wdd.timeout = pnx833x_wdd.wdd.max_timeout;
+>  
+pnx833x_wdd.wdd.timeout should be initialized with the
+default, and the new value should be set with
+	watchdog_init_timeout(&wdd, pnx833x_wdt_timeout, NULL);
+
+This also takes care of error handling.
+
+> -	ret = misc_register(&pnx833x_wdt_miscdev);
+> +	watchdog_set_nowayout(&pnx833x_wdd.wdd, nowayout);
+> +	ret = watchdog_register_device(&pnx833x_wdd.wdd);
+>  	if (ret) {
+> -		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+> -		       WATCHDOG_MINOR, ret);
+> -		unregister_reboot_notifier(&pnx833x_wdt_notifier);
+> +		pr_err("Failed to register watchdog device");
+>  		return ret;
+>  	}
+>  
+>  	pr_info("Hardware Watchdog Timer for PNX833x: Version 0.1\n");
+
+Sure this is not anymore version 0.1. I'd suggest to drop
+the version information since it is useless.
+>  
+> -	if (start_enabled)
+> -		pnx833x_wdt_start();
+> -
+
+As mentioned above, I don't see a reason for dropping this.
+The driver can call it prior to watchdog registration, and
+set WDOG_HW_RUNNING in wdd->status.
+
+>  	return 0;
+>  }
+>  
+>  static void __exit watchdog_exit(void)
+>  {
+> -	misc_deregister(&pnx833x_wdt_miscdev);
+> -	unregister_reboot_notifier(&pnx833x_wdt_notifier);
+> +	watchdog_unregister_device(&pnx833x_wdd.wdd);
+>  }
+>  
+>  module_init(watchdog_init);
+> -- 
+> 2.26.2
 > 
-> Thanks,
-> Mathieu
-> 
-> > +	dev_req_buffer_size = (u32 *)(dev_req_da + dev_req->count);
-> > +	memcpy(dev_req->data, req->data, req->size_in);
-> > +
-> > +	buffer = kmalloc_array(req->count, sizeof(*buffer), GFP_KERNEL);
-> > +	for (i = 0; i < req->count; i++) {
-> > +		buffer[i].fd = fd[i];
-> > +		ret = apu_device_memory_map(apu, &buffer[i]);
-> > +		if (ret)
-> > +			goto err_free_memory;
-> > +		dev_req_da[i] = buffer[i].iova;
-> > +		dev_req_buffer_size[i] = buffer_size[i];
-> > +	}
-> > +
-> > +	ret = _apu_send_request(apu, rpdev, dev_req, size);
-> > +
-> > +err_free_memory:
-> > +	for (i--; i >= 0; i--)
-> > +		apu_device_memory_unmap(apu, &buffer[i]);
-> > +
-> > +	req->result = dev_req->result;
-> > +	req->size_in = dev_req->size_in;
-> > +	req->size_out = dev_req->size_out;
-> > +	memcpy(req->data, dev_req->data, dev_req->size_in + dev_req->size_out +
-> > +	       sizeof(u32) * req->count);
-> > +
-> > +	kfree(buffer);
-> > +	kfree(dev_req);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +
-> > +static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
-> > +			       unsigned long arg)
-> > +{
-> > +	struct rpmsg_apu *apu = fp->private_data;
-> > +	struct apu_request apu_req;
-> > +	struct apu_request *apu_req_full;
-> > +	void __user *argp = (void __user *)arg;
-> > +	int len;
-> > +	int ret;
-> > +
-> > +	switch (cmd) {
-> > +	case APU_SEND_REQ_IOCTL:
-> > +		/* Get the header */
-> > +		if (copy_from_user(&apu_req, argp,
-> > +				   sizeof(apu_req)))
-> > +			return -EFAULT;
-> > +
-> > +		len = sizeof(*apu_req_full) + apu_req.size_in +
-> > +			apu_req.size_out + apu_req.count * sizeof(u32) * 2;
-> > +		apu_req_full = kzalloc(len, GFP_KERNEL);
-> > +		if (!apu_req_full)
-> > +			return -ENOMEM;
-> > +
-> > +		/* Get the whole request */
-> > +		if (copy_from_user(apu_req_full, argp, len)) {
-> > +			kfree(apu_req_full);
-> > +			return -EFAULT;
-> > +		}
-> > +
-> > +		ret = apu_send_request(apu, apu_req_full);
-> > +		if (ret) {
-> > +			kfree(apu_req_full);
-> > +			return ret;
-> > +		}
-> > +
-> > +		if (copy_to_user(argp, apu_req_full, sizeof(apu_req) +
-> > +				 sizeof(u32) * apu_req_full->count +
-> > +				 apu_req_full->size_in + apu_req_full->size_out))
-> > +			ret = -EFAULT;
-> > +
-> > +		kfree(apu_req_full);
-> > +		return ret;
-> > +
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
-> > +{
-> > +	struct rpmsg_apu *apu = cdev_to_apu(inode->i_cdev);
-> > +
-> > +	get_device(&apu->dev);
-> > +	filp->private_data = apu;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
-> > +{
-> > +	struct rpmsg_apu *apu = cdev_to_apu(inode->i_cdev);
-> > +
-> > +	put_device(&apu->dev);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct file_operations rpmsg_eptdev_fops = {
-> > +	.owner = THIS_MODULE,
-> > +	.open = rpmsg_eptdev_open,
-> > +	.release = rpmsg_eptdev_release,
-> > +	.unlocked_ioctl = rpmsg_eptdev_ioctl,
-> > +	.compat_ioctl = rpmsg_eptdev_ioctl,
-> > +};
-> > +
-> > +static void iova_domain_release(struct kref *ref)
-> > +{
-> > +	put_iova_domain(&apu_iovad->iovad);
-> > +	kfree(apu_iovad);
-> > +	apu_iovad = NULL;
-> > +}
-> > +
-> > +static struct fw_rsc_iova *apu_find_rcs_iova(struct rpmsg_apu *apu)
-> > +{
-> > +	struct rproc *rproc = apu->rproc;
-> > +	struct resource_table *table;
-> > +	struct fw_rsc_iova *rsc;
-> > +	int i;
-> > +
-> > +	table = rproc->table_ptr;
-> > +	for (i = 0; i < table->num; i++) {
-> > +		int offset = table->offset[i];
-> > +		struct fw_rsc_hdr *hdr = (void *)table + offset;
-> > +
-> > +		switch (hdr->type) {
-> > +		case RSC_VENDOR_IOVA:
-> > +			rsc = (void *)hdr + sizeof(*hdr);
-> > +				return rsc;
-> > +			break;
-> > +		default:
-> > +			continue;
-> > +		}
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +static int apu_reserve_iova(struct rpmsg_apu *apu, struct iova_domain *iovad)
-> > +{
-> > +	struct rproc *rproc = apu->rproc;
-> > +	struct resource_table *table;
-> > +	struct fw_rsc_carveout *rsc;
-> > +	int i;
-> > +
-> > +	table = rproc->table_ptr;
-> > +	for (i = 0; i < table->num; i++) {
-> > +		int offset = table->offset[i];
-> > +		struct fw_rsc_hdr *hdr = (void *)table + offset;
-> > +
-> > +		if (hdr->type == RSC_CARVEOUT) {
-> > +			struct iova *iova;
-> > +
-> > +			rsc = (void *)hdr + sizeof(*hdr);
-> > +			iova = reserve_iova(iovad, PHYS_PFN(rsc->da),
-> > +					    PHYS_PFN(rsc->da + rsc->len));
-> > +			if (!iova) {
-> > +				dev_err(&apu->dev, "failed to reserve iova\n");
-> > +				return -ENOMEM;
-> > +			}
-> > +			dev_dbg(&apu->dev, "Reserve: %x - %x\n",
-> > +				rsc->da, rsc->da + rsc->len);
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int apu_init_iovad(struct rpmsg_apu *apu)
-> > +{
-> > +	struct fw_rsc_iova *rsc;
-> > +
-> > +	if (!apu->rproc->table_ptr) {
-> > +		dev_err(&apu->dev,
-> > +			"No resource_table: has the firmware been loaded ?\n");
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	rsc = apu_find_rcs_iova(apu);
-> > +	if (!rsc) {
-> > +		dev_err(&apu->dev, "No iova range defined in resource_table\n");
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	if (!apu_iovad) {
-> > +		apu_iovad = kzalloc(sizeof(*apu_iovad), GFP_KERNEL);
-> > +		if (!apu_iovad)
-> > +			return -ENOMEM;
-> > +
-> > +		init_iova_domain(&apu_iovad->iovad, PAGE_SIZE,
-> > +				 PHYS_PFN(rsc->da));
-> > +		apu_reserve_iova(apu, &apu_iovad->iovad);
-> > +		kref_init(&apu_iovad->refcount);
-> > +	} else
-> > +		kref_get(&apu_iovad->refcount);
-> > +
-> > +	apu->iovad = &apu_iovad->iovad;
-> > +	apu->iova_limit_pfn = PHYS_PFN(rsc->da + rsc->len) - 1;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static struct rproc *apu_get_rproc(struct rpmsg_device *rpdev)
-> > +{
-> > +	/*
-> > +	 * To work, the APU RPMsg driver need to get the rproc device.
-> > +	 * Currently, we only use virtio so we could use that to find the
-> > +	 * remoteproc parent.
-> > +	 */
-> > +	if (!rpdev->dev.parent && rpdev->dev.parent->bus) {
-> > +		dev_err(&rpdev->dev, "invalid rpmsg device\n");
-> > +		return ERR_PTR(-EINVAL);
-> > +	}
-> > +
-> > +	if (strcmp(rpdev->dev.parent->bus->name, "virtio")) {
-> > +		dev_err(&rpdev->dev, "unsupported bus\n");
-> > +		return ERR_PTR(-EINVAL);
-> > +	}
-> > +
-> > +	return vdev_to_rproc(dev_to_virtio(rpdev->dev.parent));
-> > +}
-> > +
-> > +static void rpmsg_apu_release_device(struct device *dev)
-> > +{
-> > +	struct rpmsg_apu *apu = dev_to_apu(dev);
-> > +
-> > +	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
-> > +	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-> > +	cdev_del(&apu->cdev);
-> > +	kfree(apu);
-> > +}
-> > +
-> > +static int apu_rpmsg_probe(struct rpmsg_device *rpdev)
-> > +{
-> > +	struct rpmsg_apu *apu;
-> > +	struct device *dev;
-> > +	int ret;
-> > +
-> > +	apu = devm_kzalloc(&rpdev->dev, sizeof(*apu), GFP_KERNEL);
-> > +	if (!apu)
-> > +		return -ENOMEM;
-> > +	apu->rpdev = rpdev;
-> > +
-> > +	apu->rproc = apu_get_rproc(rpdev);
-> > +	if (IS_ERR_OR_NULL(apu->rproc))
-> > +		return PTR_ERR(apu->rproc);
-> > +
-> > +	dev = &apu->dev;
-> > +	device_initialize(dev);
-> > +	dev->parent = &rpdev->dev;
-> > +
-> > +	cdev_init(&apu->cdev, &rpmsg_eptdev_fops);
-> > +	apu->cdev.owner = THIS_MODULE;
-> > +
-> > +	ret = ida_simple_get(&rpmsg_minor_ida, 0, APU_DEV_MAX, GFP_KERNEL);
-> > +	if (ret < 0)
-> > +		goto free_apu;
-> > +	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
-> > +
-> > +	ret = ida_simple_get(&rpmsg_ctrl_ida, 0, 0, GFP_KERNEL);
-> > +	if (ret < 0)
-> > +		goto free_minor_ida;
-> > +	dev->id = ret;
-> > +	dev_set_name(&apu->dev, "apu%d", ret);
-> > +
-> > +	ret = cdev_add(&apu->cdev, dev->devt, 1);
-> > +	if (ret)
-> > +		goto free_ctrl_ida;
-> > +
-> > +	/* We can now rely on the release function for cleanup */
-> > +	dev->release = rpmsg_apu_release_device;
-> > +
-> > +	ret = device_add(dev);
-> > +	if (ret) {
-> > +		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
-> > +		put_device(dev);
-> > +	}
-> > +
-> > +	/* Make device dma capable by inheriting from parent's capabilities */
-> > +	set_dma_ops(&rpdev->dev, get_dma_ops(apu->rproc->dev.parent));
-> > +
-> > +	ret = dma_coerce_mask_and_coherent(&rpdev->dev,
-> > +					   dma_get_mask(apu->rproc->dev.parent));
-> > +	if (ret)
-> > +		goto err_put_device;
-> > +
-> > +	rpdev->dev.iommu_group = apu->rproc->dev.parent->iommu_group;
-> > +
-> > +	ret = apu_init_iovad(apu);
-> > +
-> > +	dev_set_drvdata(&rpdev->dev, apu);
-> > +
-> > +	return ret;
-> > +
-> > +err_put_device:
-> > +	put_device(dev);
-> > +free_ctrl_ida:
-> > +	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
-> > +free_minor_ida:
-> > +	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-> > +free_apu:
-> > +	put_device(dev);
-> > +	kfree(apu);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void apu_rpmsg_remove(struct rpmsg_device *rpdev)
-> > +{
-> > +	struct rpmsg_apu *apu = dev_get_drvdata(&rpdev->dev);
-> > +
-> > +	if (apu_iovad)
-> > +		kref_put(&apu_iovad->refcount, iova_domain_release);
-> > +
-> > +	device_del(&apu->dev);
-> > +	put_device(&apu->dev);
-> > +	kfree(apu);
-> > +}
-> > +
-> > +static const struct rpmsg_device_id apu_rpmsg_match[] = {
-> > +	{ APU_RPMSG_SERVICE_MT8183 },
-> > +	{}
-> > +};
-> > +
-> > +static struct rpmsg_driver apu_rpmsg_driver = {
-> > +	.probe = apu_rpmsg_probe,
-> > +	.remove = apu_rpmsg_remove,
-> > +	.callback = apu_rpmsg_callback,
-> > +	.id_table = apu_rpmsg_match,
-> > +	.drv  = {
-> > +		.name  = "apu_rpmsg",
-> > +	},
-> > +};
-> > +
-> > +static int __init apu_rpmsg_init(void)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = alloc_chrdev_region(&rpmsg_major, 0, APU_DEV_MAX, "apu");
-> > +	if (ret < 0) {
-> > +		pr_err("apu: failed to allocate char dev region\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	return register_rpmsg_driver(&apu_rpmsg_driver);
-> > +}
-> > +arch_initcall(apu_rpmsg_init);
-> > +
-> > +static void __exit apu_rpmsg_exit(void)
-> > +{
-> > +	unregister_rpmsg_driver(&apu_rpmsg_driver);
-> > +}
-> > +module_exit(apu_rpmsg_exit);
-> > +
-> > +
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_DESCRIPTION("APU RPMSG driver");
-> > diff --git a/drivers/rpmsg/apu_rpmsg.h b/drivers/rpmsg/apu_rpmsg.h
-> > new file mode 100644
-> > index 000000000000..54b5b7880750
-> > --- /dev/null
-> > +++ b/drivers/rpmsg/apu_rpmsg.h
-> > @@ -0,0 +1,52 @@
-> > +/* SPDX-License-Identifier: GPL-2.0
-> > + *
-> > + * Copyright 2020 BayLibre SAS
-> > + */
-> > +
-> > +#ifndef __APU_RPMSG_H__
-> > +#define __APU_RPMSG_H__
-> > +
-> > +/*
-> > + * Firmware request, must be aligned with the one defined in firmware.
-> > + * @id: Request id, used in the case of reply, to find the pending request
-> > + * @cmd: The command id to execute in the firmware
-> > + * @result: The result of the command executed on the firmware
-> > + * @size: The size of the data available in this request
-> > + * @count: The number of shared buffer
-> > + * @data: Contains the data attached with the request if size is greater than
-> > + *        zero, and the addresses of shared buffers if count is greater than
-> > + *        zero. Both the data and the shared buffer could be read and write
-> > + *        by the APU.
-> > + */
-> > +struct  apu_dev_request {
-> > +	u16 id;
-> > +	u16 cmd;
-> > +	u16 result;
-> > +	u16 size_in;
-> > +	u16 size_out;
-> > +	u16 count;
-> > +	u8 data[0];
-> > +} __packed;
-> > +
-> > +#define APU_RPMSG_SERVICE_MT8183 "rpmsg-mt8183-apu0"
-> > +#define APU_CTRL_SRC 1
-> > +#define APU_CTRL_DST 1
-> > +
-> > +/* Vendor specific resource table entry */
-> > +#define RSC_VENDOR_IOVA 128
-> > +
-> > +/*
-> > + * Firmware IOVA resource table entry
-> > + * Define a range of virtual device address that could mapped using the IOMMU.
-> > + * @da: Start virtual device address
-> > + * @len: Length of the virtual device address
-> > + * @name: name of the resource
-> > + */
-> > +struct fw_rsc_iova {
-> > +	u32 da;
-> > +	u32 len;
-> > +	u32 reserved;
-> > +	u8 name[32];
-> > +} __packed;
-> > +
-> > +#endif /* __APU_RPMSG_H__ */
-> > diff --git a/include/uapi/linux/apu_rpmsg.h b/include/uapi/linux/apu_rpmsg.h
-> > new file mode 100644
-> > index 000000000000..81c9e4af9a94
-> > --- /dev/null
-> > +++ b/include/uapi/linux/apu_rpmsg.h
-> > @@ -0,0 +1,36 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > +/*
-> > + * Copyright (c) 2020 BayLibre
-> > + */
-> > +
-> > +#ifndef _UAPI_RPMSG_APU_H_
-> > +#define _UAPI_RPMSG_APU_H_
-> > +
-> > +#include <linux/ioctl.h>
-> > +#include <linux/types.h>
-> > +
-> > +/*
-> > + * Structure containing the APU request from userspace application
-> > + * @cmd: The id of the command to execute on the APU
-> > + * @result: The result of the command executed on the APU
-> > + * @size: The size of the data available in this request
-> > + * @count: The number of shared buffer
-> > + * @data: Contains the data attached with the request if size is greater than
-> > + *        zero, and the files descriptors of shared buffers if count is greater
-> > + *        than zero. Both the data and the shared buffer could be read and write
-> > + *        by the APU.
-> > + */
-> > +struct apu_request {
-> > +	__u16 cmd;
-> > +	__u16 result;
-> > +	__u16 size_in;
-> > +	__u16 size_out;
-> > +	__u16 count;
-> > +	__u16 reserved;
-> > +	__u8 data[0];
-> > +};
-> > +
-> > +/* Send synchronous request to an APU */
-> > +#define APU_SEND_REQ_IOCTL	_IOWR(0xb7, 0x2, struct apu_request)
-> > +
-> > +#endif
-> > -- 
-> > 2.26.2
-> > 
