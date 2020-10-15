@@ -2,90 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5A928F1C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4614128F1CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 14:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730388AbgJOMCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 08:02:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726358AbgJOMCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 08:02:22 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6552120691;
-        Thu, 15 Oct 2020 12:02:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602763341;
-        bh=L4zRarBb0KLaucGa55Y4+DQfPRjFJ0GvajLvlotOR9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zTvJrAWNnkj1kwfW10uQZoYlR21+q7Lb9V55cZsTuKKMiWcB9LwL4vQEJPklGM+D3
-         ss39Huj+nR+1CCPGxhImnNuBQpziPHFRzfq9A77bYkIStfoWz4OTFIil1C1nd9Aorj
-         HvgEp1nk4J7I09iHGvu9CCNGibUocgff6X8/MVAo=
-Date:   Thu, 15 Oct 2020 14:02:54 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Hans-Christian Egtvedt (hegtvedt)" <hegtvedt@cisco.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: [PATCH v4.4/bluetooth 1/2] Bluetooth: Consolidate encryption
- handling in hci_encrypt_cfm
-Message-ID: <20201015120254.GA3958402@kroah.com>
-References: <20201015074333.445510-1-hegtvedt@cisco.com>
- <20201015095750.GA3935178@kroah.com>
- <0804be81-ebbf-8132-a619-c0c740a71f51@cisco.com>
+        id S1727281AbgJOMFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 08:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgJOMFI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 08:05:08 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD41DC061755;
+        Thu, 15 Oct 2020 05:05:07 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a5so2830754ljj.11;
+        Thu, 15 Oct 2020 05:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=b84hsRMoXS6GSIJgvfo2S0Egn1CWq+Hpix6sK2IAdUE=;
+        b=M9pJeRxWl/yzHIyVox8DH1/36P4oGErk7sMFdyEZekt4dWZSdmimLtSAx+AVZmf29u
+         j+8kssj4JNre8sIqmrLLZElE9YkOeSjXvejl/F1a5MryXWtsdg5I8BgEo+ospPwV+VwC
+         f7NVefdUm+SkIPSkOmoWF5fUjO/Ugjx37AgGm/sVpMVB5J3OsfSXF8RGdzVAFwb50oU1
+         ZXTRFtX3qtNLgoLtvewOvHwDDY7tPS7dyYA/Yye62dAhp40wo13id8JKWEq8jCkd8D21
+         RKerY4o82571VLersFP83OuHuOrND8iT1eME1mpPn0B4X+v90jcbB09ont9P3Bf5G1BE
+         baoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=b84hsRMoXS6GSIJgvfo2S0Egn1CWq+Hpix6sK2IAdUE=;
+        b=U3zRRhB62QQpvrt4s5z1dDsQliPw9jCgiUbuoDD6kyuTDY/sMsh8FApqxMM9QwYZB/
+         GbueC+OMdwOGTFxoIiLllR9K/pnaVyG7oEdiasJ4M17JDUZy5jN4tMhPwr7Dg/IR+Do7
+         UBIhnLZrmjjJXIpkLUJ5IEH9xAXZmcLxEY414f3tYW5taE98LIAucynsYrBNYRgGpmv+
+         GiMAM4BH8qqlrduZIKnKrLgRb5RNLY+XLY2dU3p6vRoOEa50573VomB5xf9xcAYwTn9f
+         lGlg81xTrV0aqxlgZkF8zGe0djW8inAKJcEjqkGJAVLgJCkCbsHw05c1SOruRSWf01rH
+         ZuBQ==
+X-Gm-Message-State: AOAM531ct0URv4LeyxkALFBwLnk9YWgL4PJup+WHJ0I6BXlOwzIJHQ3i
+        5AkUvFub1gmAN+BDVMJjUN0=
+X-Google-Smtp-Source: ABdhPJwwt3EyjuYq57Lukv1Wqv/KyjW0MQ9OTploRIduCcyLajK657qmY9eO1Kj6MoiwK7QuR74ZqQ==
+X-Received: by 2002:a2e:864c:: with SMTP id i12mr1075757ljj.396.1602763505518;
+        Thu, 15 Oct 2020 05:05:05 -0700 (PDT)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id x4sm1213347ljj.62.2020.10.15.05.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 05:05:04 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 15:04:57 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Wei Xu <xuwei5@hisilicon.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 8/8] dt-bindings: gpio: dw-apb: remove never-used
+ "snps,dw-apb-gpio-port"
+Message-ID: <20201015120457.qaooft5y5dzl4z7s@mobilestation>
+References: <20201015115524.24e3c36b@xhacker.debian>
+ <20201015115903.2a782f78@xhacker.debian>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0804be81-ebbf-8132-a619-c0c740a71f51@cisco.com>
+In-Reply-To: <20201015115903.2a782f78@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 11:18:39AM +0000, Hans-Christian Egtvedt (hegtvedt) wrote:
-> On 15/10/2020 11:57, Greg KH wrote:
-> > On Thu, Oct 15, 2020 at 09:43:32AM +0200, Hans-Christian Noren Egtvedt wrote:
-> >> From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> >>
-> >> This makes hci_encrypt_cfm calls hci_connect_cfm in case the connection
-> >> state is BT_CONFIG so callers don't have to check the state.
-> >>
-> >> Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> >> Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-> >> (cherry picked from commit 3ca44c16b0dcc764b641ee4ac226909f5c421aa3)
-> > 
-> > This is only in 5.8, what about all the other stable kernels?
-> > 
-> >> (cherry picked from commit 0a60996c7fa7010ea00d9b62fb6996d908a01ead)
-> > 
-> > Where is this commit from?  I don't see it in Linus's tree.
+On Thu, Oct 15, 2020 at 11:59:03AM +0800, Jisheng Zhang wrote:
+> The compatible string is never used.
+
+Before sending v2 could you run "make dt_binding_check" for the DT schema
+modified in this patch? Like this:
+
+make -j8 ARCH=mips CROSS_COMPILE=mipsel-baikal-linux- dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
+
 > 
-> Ops, my bad, I have a Linux 4.9 branch, which also includes the Android
-> 4.9 kernel changes from Google. And since I noticed the patches in my
-> (merged from Android latest) linux-4.9.y branch, I thought the patches
-> were applied through all stable releases 4.9 and up.
-
-I just looked at the google common android trees, and do not see this
-commit in the android-4.9-q branch.  What branch are you seeing it in?
-
-> >> ---
-> >> AFAICT, fixing CVE 2020-10135 Bluetooth impersonation attacks have been
-> >> left out for the 4.4 stable kernel. I cherry picked what I assume are
-> >> the appropriate two patches missing from the 4.9 stable kernel. Please
-> >> add them to upcoming 4.4 stable releases.
-> > 
-> > Why are you merging 2 commits together?  Please provide backports for
-> > all stable kernels, if you want to see this in the 4.4.y tree.  We can
-> > not have someone move from an older tree to a newer one and have a
-> > regression.
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> ---
+>  Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> Agreed, I have managed to trick myself into thinking the 4.4.y branch
-> was left out, but I assume these patches are required for all LTS branches.
+> diff --git a/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml b/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
+> index 1240f6289249..76e7b07d592f 100644
+> --- a/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
+> @@ -50,9 +50,6 @@ patternProperties:
+>    "^gpio-(port|controller)@[0-9a-f]+$":
+>      type: object
+>      properties:
 
-They are, but if you have copies of them, please feel free to share
-them.
+> -      compatible:
+> -        const: snps,dw-apb-gpio-port
+> -
 
-thanks,
+Yep, you've removed the "compatible" property but forgot to do the same from the
+"required:" property of the sub-nodes schema. That's why the suggested
+make-command above would have failed during the DT schema examples validation if
+you ran it. Please, fix it and resend the series.
 
-greg k-h
+>        reg:
+>          maxItems: 1
+
+Yeah. Here I've forgotten to add the "reg" property constraints. Since certainly
+the controller won't have more than four sub-nodes by design, could you add one
+in an additional patch of the series since you'll need to resend the patchset anyway?
+Like this:
+       reg:
+-        maxItems: 1
++        minimum: 0
++        maximum: 3
+
+-Sergey
+
+>  
+> @@ -111,7 +108,6 @@ examples:
+>        #size-cells = <0>;
+>  
+>        porta: gpio-port@0 {
+> -        compatible = "snps,dw-apb-gpio-port";
+>          reg = <0>;
+>          gpio-controller;
+>          #gpio-cells = <2>;
+> @@ -123,7 +119,6 @@ examples:
+>        };
+>  
+>        portb: gpio-port@1 {
+> -        compatible = "snps,dw-apb-gpio-port";
+>          reg = <1>;
+>          gpio-controller;
+>          #gpio-cells = <2>;
+> -- 
+> 2.28.0
+> 
