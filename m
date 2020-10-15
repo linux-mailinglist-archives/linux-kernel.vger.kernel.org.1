@@ -2,142 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71DF28FAB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4052E28FABA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731120AbgJOVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 17:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727664AbgJOVeu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 17:34:50 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE48C061755;
-        Thu, 15 Oct 2020 14:34:50 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id q26so409500qtb.5;
-        Thu, 15 Oct 2020 14:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8mdlzifETD7dDuA1V3YKKF+U9XTqlEODnK2lvnXX8zE=;
-        b=uKyqjiLAm8LXPyz0bkIR6peoreT/vMSjZlV3h7LzOA6c6I0uX7c/bIOEA7M+VRlB5t
-         4S6si8clfoTSqtAS4kuONir7ltmQQuz3YltaOsdCAz0KYm8om0D173SEaYm5Q7puVVLK
-         bQP7REoi9lKkPNT8z9KYLZ0u88dbXyAhhHAWQCRvuZK0HbITHfqhk8OXo8lt3izf0FxN
-         hdI8eprx8e9SKsAW9QwLmWNbqPylYENDoEG5NpHCd5DsP0I9qRBOE4uyvr5H9i/sRIjL
-         DVW53Lf+x+qHOdHy9svh3jqDf3TJLOwA96YD/RovKI1fIfAzoiyB9on/wWD9ibrAf5uu
-         3OWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8mdlzifETD7dDuA1V3YKKF+U9XTqlEODnK2lvnXX8zE=;
-        b=ji/rO/2/HeyfH3/b5JR4sfB2udZYtyvSt5VzvfHTfga+piIoCrnpwptotPrvtb4Lg/
-         JSnApvwKVmO+xq5+QsgAWOGyqJBkVUBgkDYkyuEdDj2HQ4YE5SAQegIMkVoCj5GBkX/f
-         mGpHGdxn8SZ7JABz1+XCMdT93xzWiIdGIYfqxgtaUfeNGFGJy9gV301mOfdA41gLKzUi
-         AKs6pJN33EHux6quIgfGqKliwNdTI6OHGhiCU5GKkQlosfw1fuhLp5J+Dxq7p/dCXAMl
-         LyFMONguOxVdr5TxkB8y6sIOCw+kELpqDEDMAAjYMiwF4C9uKF60dhDyevi8ezNciKqj
-         Tkwg==
-X-Gm-Message-State: AOAM530icO/GPWGDxhQMc4iafL6y8XBqTXmoqFoBfXxQ0Qi0sZMhOBHp
-        9gePK6Ow0SvwD4har3AQQMc=
-X-Google-Smtp-Source: ABdhPJxYVzslPxZmQVqTEb18qiPnUfZjT7AMkQGFO0v2P8KO5mXkcRKEvxEBsw1knmTlZfHSecuUMg==
-X-Received: by 2002:aed:2ce5:: with SMTP id g92mr364144qtd.107.1602797689037;
-        Thu, 15 Oct 2020 14:34:49 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id r8sm81317qkm.115.2020.10.15.14.34.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Oct 2020 14:34:48 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/3] Fix errors on DT overlay removal with devlinks
-To:     Michael Auchter <michael.auchter@ni.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     saravanak@google.com, robh+dt@kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-References: <20201014193615.1045792-1-michael.auchter@ni.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <8c123831-1a35-0a28-d583-5bab4735edfd@gmail.com>
-Date:   Thu, 15 Oct 2020 16:34:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731395AbgJOVfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 17:35:50 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:32983 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731375AbgJOVfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 17:35:50 -0400
+Received: from wld157.hos.anvin.org (c-24-6-168-49.hsd1.ca.comcast.net [24.6.168.49])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 09FLZ0WN196358
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Thu, 15 Oct 2020 14:35:00 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 09FLZ0WN196358
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020092401; t=1602797701;
+        bh=c86/D9gVtdvVpt57v/o95q7X9sRnRZYl1GfvTq4aHyg=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=BdXlUsqnHPsbsKNTloyFkkIlSTIewttnxooRTNMUaG1GZRJF1+Gup8dZVUR502IYk
+         YmJe6zXymmhHG0bUgAOLLoSh6WNWAS/eLUc1OpNz4BKYqsd9w47FKKvKh9gR6XRpN6
+         ph3Usln89aT7cM95dOX1PRDfBV5zEkEA796ipOxQw0fT5Asjp/EO/HXE6D7XaiRobX
+         gLQcf5BajKBG8d35Q0MrEtTZy5y+f4oSV2VegZEfiTUfLmBglTRT6qZTcEdI9BXpiZ
+         FggXYiTCFmecc0yWgeYkl/hVW8PEfgZ/7e0Y5TksIlLsjIwwlwtT+3u/u33CALRIAt
+         mNe3Blrvfkh+Q==
+Date:   Thu, 15 Oct 2020 14:34:57 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20201015161216.1563600-1-irogers@google.com>
+References: <20201015161216.1563600-1-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201014193615.1045792-1-michael.auchter@ni.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined behavior.
+To:     Ian Rogers <irogers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Numfor Mbiziwo-Tiapo <nums@google.com>
+From:   hpa@zytor.com
+Message-ID: <5E711F64-A9BF-48EC-83A3-3C644D80F848@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On October 15, 2020 9:12:16 AM PDT, Ian Rogers <irogers@google=2Ecom> wrote=
+:
+>From: Numfor Mbiziwo-Tiapo <nums@google=2Ecom>
+>
+>Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+>these are forms of undefined behavior=2E
+>
+>These problems were identified using the undefined behavior sanitizer
+>(ubsan) with the tools version of the code and perf test=2E Part of this
+>patch was previously posted here:
+>https://lore=2Ekernel=2Eorg/lkml/20190724184512=2E162887-4-nums@google=2E=
+com/
+>
+>v2=2E removes the validate_next check and merges the 2 changes into one
+>as
+>requested by Masami Hiramatsu <mhiramat@kernel=2Eorg>
+>
+>Signed-off-by: Ian Rogers <irogers@google=2Ecom>
+>Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google=2Ecom>
+>---
+> arch/x86/lib/insn=2Ec       | 4 ++--
+> tools/arch/x86/lib/insn=2Ec | 4 ++--
+> 2 files changed, 4 insertions(+), 4 deletions(-)
+>
+>diff --git a/arch/x86/lib/insn=2Ec b/arch/x86/lib/insn=2Ec
+>index 404279563891=2E=2Ebe88ab250146 100644
+>--- a/arch/x86/lib/insn=2Ec
+>+++ b/arch/x86/lib/insn=2Ec
+>@@ -20,10 +20,10 @@
+> 	((insn)->next_byte + sizeof(t) + n <=3D (insn)->end_kaddr)
+>=20
+> #define __get_next(t, insn)	\
+>-	({ t r =3D *(t*)insn->next_byte; insn->next_byte +=3D sizeof(t); r; })
+>+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte +=3D
+>sizeof(t); r; })
+>=20
+> #define __peek_nbyte_next(t, insn, n)	\
+>-	({ t r =3D *(t*)((insn)->next_byte + n); r; })
+>+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+>=20
+> #define get_next(t, insn)	\
+>	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out;
+>__get_next(t, insn); })
+>diff --git a/tools/arch/x86/lib/insn=2Ec b/tools/arch/x86/lib/insn=2Ec
+>index 0151dfc6da61=2E=2E92358c71a59e 100644
+>--- a/tools/arch/x86/lib/insn=2Ec
+>+++ b/tools/arch/x86/lib/insn=2Ec
+>@@ -20,10 +20,10 @@
+> 	((insn)->next_byte + sizeof(t) + n <=3D (insn)->end_kaddr)
+>=20
+> #define __get_next(t, insn)	\
+>-	({ t r =3D *(t*)insn->next_byte; insn->next_byte +=3D sizeof(t); r; })
+>+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte +=3D
+>sizeof(t); r; })
+>=20
+> #define __peek_nbyte_next(t, insn, n)	\
+>-	({ t r =3D *(t*)((insn)->next_byte + n); r; })
+>+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+>=20
+> #define get_next(t, insn)	\
+>	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out;
+>__get_next(t, insn); })
 
-On 10/14/20 2:36 PM, Michael Auchter wrote:
-> After updating to v5.9, I've started seeing errors in the kernel log
-> when using device tree overlays. Specifically, the problem seems to
-> happen when removing a device tree overlay that contains two devices
-> with some dependency between them (e.g., a device that provides a clock
-> and a device that consumes that clock). Removing such an overlay results
-> in:
-> 
->   OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy
->   OF: ERROR: memory leak, expected refcount 1 instead of 2, of_node_get()/of_node_put() unbalanced - destroy
-> 
-> followed by hitting some REFCOUNT_WARNs in refcount.c
-> 
-> In the first patch, I've included a unittest that can be used to
-> reproduce this when built with CONFIG_OF_UNITTEST [1].
-> 
-> I believe the issue is caused by the cleanup performed when releasing
-> the devlink device that's created to represent the dependency between
-> devices. The devlink device has references to the consumer and supplier
-> devices, which it drops in device_link_free; the devlink device's
-> release callback calls device_link_free via call_srcu.
-> 
-> When the overlay is being removed, all devices are removed, and
-> eventually the release callback for the devlink device run, and
-> schedules cleanup using call_srcu. Before device_link_free can and call
-> put_device on the consumer/supplier, the rest of the overlay removal
-> process runs, resulting in the error traces above.
-> 
-> Patches 2 and 3 are an attempt at fixing this: call srcu_barrier to wait
-> for any pending device_link_free's to execute before continuing on with
-> the removal process.
-> 
-> These patches resolve the issue, but probably not in the best way. In
-> particular, it seems strange to need to leak details of devlinks into
-> the device tree overlay code. So, I'd be curious to get some feedback or
-> hear any other ideas for how to resolve this issue.
+Wait, what?
 
-Thanks for finding the problem, analyzing it, creating a unittest, and
-creating a fix.
+You are taking about x86-specific code, and on x86 unaligned memory access=
+es are supported, well-defined, and ubiquitous=2E=20
 
-I agree with your analysis that there are issues with the implementation
-of the test and fix.  I'll dig into this to see if I can provide some
-useful improvements.
+This is B=2ES=2E at best, and unless the compiler turns the memcpy() right=
+ back into what you started with, deleterious for performance=2E
 
--Frank
+If you have a *very* good reason for this kind of churn, wrap it in the un=
+aligned access macros, but using memcpy() is insane=2E All you are doing is=
+ making the code worse=2E
 
-> 
-> Thanks,
->  Michael
-> 
-> 1. Note that this isn't a very good unit test: it will report a "pass"
->    even if it fails with the aforementioned errors, as these errors
->    aren't propogated.
-> 
-> Michael Auchter (3):
->   of: unittest: add test of overlay with devlinks
->   driver core: add device_links_barrier
->   of: dynamic: add device links barrier before detach
-> 
->  drivers/base/core.c                     | 10 ++++++++++
->  drivers/of/dynamic.c                    |  3 +++
->  drivers/of/unittest-data/Makefile       |  1 +
->  drivers/of/unittest-data/overlay_16.dts | 26 +++++++++++++++++++++++++
->  drivers/of/unittest.c                   | 16 +++++++++++++++
->  include/linux/device.h                  |  1 +
->  6 files changed, 57 insertions(+)
->  create mode 100644 drivers/of/unittest-data/overlay_16.dts
-> 
-
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
