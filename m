@@ -2,135 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A254528F4BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0690C28F4C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388401AbgJOOaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:30:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38210 "EHLO mx2.suse.de"
+        id S2388560AbgJOOcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:32:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41758 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727988AbgJOOaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:30:11 -0400
+        id S2387861AbgJOOcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:32:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602772209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KBFlgAaq0O3il+qQFEc0ZaY+TncdaaVKCCP2EAaai30=;
-        b=RzMr/0HWeuj8biN+UO6Kh2qtwi3d4LazBCd9n3G2hkvhC/lGbGLt0tK2AF+2ydDY7ZQXdL
-        PttM1r+Gx/Ul5tGU2FpVTaYSX8HKee47b3Ofbf6D2Vj/PfHao9RJzAJWSCH2IwwY0hcSzz
-        wdYUIRhmCiI74LYYvGo5zsX9LXk51Mo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8D379AC24;
-        Thu, 15 Oct 2020 14:30:09 +0000 (UTC)
-Subject: Re: [PATCH 1/2] xen/blkback: turn the cache purge LRU interval into a
- parameter
-To:     Roger Pau Monne <roger.pau@citrix.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
-        "J . Roeleveld" <joost@antarean.org>
-References: <20201015142416.70294-1-roger.pau@citrix.com>
- <20201015142416.70294-2-roger.pau@citrix.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <3441104d-7234-a0c3-8b15-7d5a1126182b@suse.com>
-Date:   Thu, 15 Oct 2020 16:30:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        by mx2.suse.de (Postfix) with ESMTP id CBC8DAC24;
+        Thu, 15 Oct 2020 14:32:48 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9D5A5DA7C3; Thu, 15 Oct 2020 16:31:20 +0200 (CEST)
+Date:   Thu, 15 Oct 2020 16:31:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Sterba <dsterba@suse.com>, torvalds@linux-foundation.org,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] Btrfs updates for 5.10
+Message-ID: <20201015143120.GO6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Sterba <dsterba@suse.com>, torvalds@linux-foundation.org,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1602519695.git.dsterba@suse.com>
+ <20201015114011.1f5f985a@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20201015142416.70294-2-roger.pau@citrix.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015114011.1f5f985a@canb.auug.org.au>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.10.20 16:24, Roger Pau Monne wrote:
-> Assume that reads and writes to the variable will be atomic. The worse
-> that could happen is that one of the LRU intervals is not calculated
-> properly if a partially written value is read, but that would only be
-> a transient issue.
+Hi,
+
+On Thu, Oct 15, 2020 at 11:40:11AM +1100, Stephen Rothwell wrote:
+> Hi David,
+> On Mon, 12 Oct 2020 22:25:02 +0200 David Sterba <dsterba@suse.com> wrote:
+> >
+> > Mishaps:
+> > 
+> > - commit 62cf5391209a ("btrfs: move btrfs_rm_dev_replace_free_srcdev
+> >   outside of all locks") is a rebase leftover after the patch got
+> >   merged to 5.9-rc8 as a466c85edc6f ("btrfs: move
+> >   btrfs_rm_dev_replace_free_srcdev outside of all locks"), the
+> >   remaining part is trivial and the patch is in the middle of the
+> >   series so I'm keeping it there instead of rebasing
 > 
-> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-> ---
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: SeongJae Park <sjpark@amazon.de>
-> Cc: xen-devel@lists.xenproject.org
-> Cc: linux-block@vger.kernel.org
-> Cc: J. Roeleveld <joost@antarean.org>
-> Cc: Jürgen Groß <jgross@suse.com>
-> ---
->   Documentation/ABI/testing/sysfs-driver-xen-blkback | 10 ++++++++++
->   drivers/block/xen-blkback/blkback.c                |  9 ++++++---
->   2 files changed, 16 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> index ecb7942ff146..776f25d335ca 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
-> @@ -35,3 +35,13 @@ Description:
->                   controls the duration in milliseconds that blkback will not
->                   cache any page not backed by a grant mapping.
->                   The default is 10ms.
-> +
-> +What:           /sys/module/xen_blkback/parameters/lru_internval
+> And yet, this entire pull request has been rebased since what was in
+> linux-next on Tuesday (and what would still be there today except I
+> dropped it because of several conflicts) ...  it looks like it was
+> rebased a week ago, but then never included in your "for-next" branch.
+> So I supposed it has had your internal testing, at least.
 
-s/lru_internval/lru_interval/
+I was on vacation last week and rebased the to-be-pulled branch on top
+of v5.9-rc8 so there are at least a few days before the pull request is
+sent.
 
-> +Date:           October 2020
-> +KernelVersion:  5.10
-> +Contact:        Roger Pau Monné <roger.pau@citrix.com>
-> +Description:
-> +                The LRU mechanism to clean the lists of persistent grants needs
-> +                to be executed periodically. This parameter controls the time
-> +                interval between consecutive executions of the purge mechanism
-> +                is set in ms.
-> diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
-> index adfc9352351d..6ad9b76fdb2b 100644
-> --- a/drivers/block/xen-blkback/blkback.c
-> +++ b/drivers/block/xen-blkback/blkback.c
-> @@ -117,7 +117,10 @@ MODULE_PARM_DESC(max_ring_page_order, "Maximum order of pages to be used for the
->    * be executed periodically. The time interval between consecutive executions
->    * of the purge mechanism is set in ms.
->    */
-> -#define LRU_INTERVAL 100
-> +static unsigned int lru_interval = 100;
-> +module_param_named(lru_interval, lru_interval, uint, 0644);
-> +MODULE_PARM_DESC(lru_internval,
-
-s/lru_internval/lru_interval/
-
-> +		 "Time interval between consecutive executions of the cache purge mechanism (in ms)");
->   
->   /*
->    * When the persistent grants list is full we will remove unused grants
-> @@ -620,7 +623,7 @@ int xen_blkif_schedule(void *arg)
->   		if (unlikely(vbd->size != vbd_sz(vbd)))
->   			xen_vbd_resize(blkif);
->   
-> -		timeout = msecs_to_jiffies(LRU_INTERVAL);
-> +		timeout = msecs_to_jiffies(lru_interval);
->   
->   		timeout = wait_event_interruptible_timeout(
->   			ring->wq,
-> @@ -650,7 +653,7 @@ int xen_blkif_schedule(void *arg)
->   		if (blkif->vbd.feature_gnt_persistent &&
->   		    time_after(jiffies, ring->next_lru)) {
->   			purge_persistent_gnt(ring);
-> -			ring->next_lru = jiffies + msecs_to_jiffies(LRU_INTERVAL);
-> +			ring->next_lru = jiffies + msecs_to_jiffies(lru_interval);
->   		}
->   
->   		/* Shrink the free pages pool if it is too large. */
-> 
-
-
-Juergen
+The patch queue was feature frozen for 2 weeks, there should be no
+surprises whether it's rc7 or rc8, but the latter contained a corruption
+fix so it was desirable to rebase the development queue. Due to my
+limited time I forgot to update the for-next branches, sorry. We do
+enough internal testing of course.
