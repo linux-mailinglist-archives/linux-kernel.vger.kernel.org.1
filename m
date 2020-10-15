@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D95E28F514
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6B828F517
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389147AbgJOOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        id S2389163AbgJOOqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389095AbgJOOqR (ORCPT
+        with ESMTP id S2389091AbgJOOqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:46:17 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806DAC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:15 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id t9so3782302wrq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:15 -0700 (PDT)
+        Thu, 15 Oct 2020 10:46:16 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E73C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:16 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id e2so3985027wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:46:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=W1kVa1CpWOjmXDcw6+jq28bwj+KPG1gzHFGZocNNsyw=;
-        b=AckG4y5wm/5+Heg1QSsfFaT1IhhgyWz8sr4B15VDFhj5LIPIGKEVqp4rkMaVZqzKL2
-         MCBGadgg0R8GiZI6ExdHgJI8HWspjrPPbCfTqVeQXJ89BnPuQfRtZPQbJmRKHqFjeq2M
-         tzk0F8Ttobvk9pCrZl6vzPvDtfNTg1k/6/aPlmqGhgpWsvOpAC5SagGG0FVoWOY8Ww11
-         Io9M3ozZSghxShxjf1V49V4Y9VTbeGASEy2uF08rx1V3JrN5jmzt6HFQ8RVO4tikqOnE
-         koVYeKApBrvf+zuZti7GpZgN9Y5ykRc78UvBDkCqB6EeyAil7rRl4njDFQ3tVH3HNe+V
-         +hjg==
+        bh=sZCd2bm+jjmLJLco12LHFroKrNFntcc2aoeaMWKeI8s=;
+        b=XA/Mky+L+9tMXT/+pp9fHvkjk0i+CC5F1MjQ4KKHxgvhTA3+3QNV4+sygrYxrZTOrz
+         Qyiot2n3Q/ca/uzLKZy4SreAeJkXBJ945e0xRJVO6SAyytIbW7FFUwPRw1cF16RJYXuO
+         xiea98EeFmH5WSWbuBpMEIzJZQKFz5AqDZucLgv3yQhKf0mt9QspSb94fMVw5onf7cPh
+         7armjkQfmNO3MKiM15GiM9KC84MpqEiD/w4N7bRi9c4GRfgx1b1aSUz3Gc9vmZI2wAcS
+         lzQG9QdEzRFks4gx2+9DYphKukAmvQYdtuE5rpGbF/KPsCELPrun8A9l/BVlkL0EEypF
+         UQZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=W1kVa1CpWOjmXDcw6+jq28bwj+KPG1gzHFGZocNNsyw=;
-        b=Qe7nPD7jo5MIWiGOY449AX3YFS7AzfPRn5AS12Q1huSTvTmAUb2j+a7YNPJYEgceLx
-         N/Rr11wH+kyxApEk0AyRYhTrtzdcvLH9jjb7KHpE2obFgk8IY8DGUKTffLnutfxFlHpk
-         +RW8lmW83RMYihIoM17N1DQIZgqGohwX72dKqa/VIVbHpgzzTI3d9EfW9at1fT3XG95I
-         EqVgL4A72kOzt1+MMI6dVlhbNqK3czZnyw4fMiSb6s+RITDWebXWv1Qyvq5lSpYX9nBq
-         v/S21MbkO4vR5mMFEa/wDPxr9IOUOWYxLB5T6DSP0kno4cFAHviW0/VoJ2R/4Rg15fMd
-         nRsg==
-X-Gm-Message-State: AOAM533htiGplUGMqY9tMuU601CAc/3nS//BN0To608gdRpWDCSYLN99
-        wVo7AaSiocvF9azSAF9WxKSWxw==
-X-Google-Smtp-Source: ABdhPJyVBYfKohwTrUWDovYlIEYfyLvx9lmpc9yqJnb3bxDFe4PbVo9RAdO466nivnwftkDVxe6ALg==
-X-Received: by 2002:adf:bc4a:: with SMTP id a10mr4791917wrh.253.1602773172204;
-        Thu, 15 Oct 2020 07:46:12 -0700 (PDT)
+        bh=sZCd2bm+jjmLJLco12LHFroKrNFntcc2aoeaMWKeI8s=;
+        b=siYpDvd/KaAuq/vDYID3EeYcPBrEkOxfFRrCCdsY6ALfzidK2/HUzrqdUikWP4hbuS
+         5QJAX98ocariXtlvckmtmwc48+6SjUiq6eZkfpSVbDlUKad4rGOy5TGJSnYCQ0a6C3sK
+         SKBWvxc1gpOFJcLIL4Sj8HrEXTcfH8rraCX0gVrpl/ls3zQD7AZ2kwXOpYUXh2gXUWK6
+         QzUC7VXY5Y92MJS7AxwS6zx3UFgMCP3O57AgDb67TIRiQhiFpKcwyzypgl6ipe1yyr0D
+         AVJJYn0qDkgBfD0FMnzdx0TqNMkQgiohjhxrhb7xypge1OoKTuIBGLM+hRbJeCZx/+9K
+         EX8g==
+X-Gm-Message-State: AOAM531Cx9xeLSKiyHHlmr1v6uSqq/8ADUgGJQiA2Es8U2JofJlJCvMe
+        giGbXRKK7ZHGmRobSDOjwZVmbA==
+X-Google-Smtp-Source: ABdhPJzplrE/dyv/eJhWl5xFIYtxbM2ebpA3UL9vVvHb7EAwADMWls3u3z34QqEXSTk2gA2b2dW9vQ==
+X-Received: by 2002:a1c:1f89:: with SMTP id f131mr4641401wmf.10.1602773174712;
+        Thu, 15 Oct 2020 07:46:14 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id q5sm5413421wrs.54.2020.10.15.07.46.10
+        by smtp.gmail.com with ESMTPSA id q5sm5413421wrs.54.2020.10.15.07.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 07:46:10 -0700 (PDT)
+        Thu, 15 Oct 2020 07:46:14 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -62,9 +62,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
         James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 3/9] perf c2c: Organize metrics based on memory hierarchy
-Date:   Thu, 15 Oct 2020 15:45:42 +0100
-Message-Id: <20201015144548.18482-4-leo.yan@linaro.org>
+Subject: [PATCH v2 4/9] perf c2c: Change header from "LLC Load Hitm" to "Load Hitm"
+Date:   Thu, 15 Oct 2020 15:45:43 +0100
+Message-Id: <20201015144548.18482-5-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201015144548.18482-1-leo.yan@linaro.org>
 References: <20201015144548.18482-1-leo.yan@linaro.org>
@@ -72,39 +72,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The metrics are not organized based on memory hierarchy, e.g. the tool
-doesn't organize the metrics order based on memory nodes from the close
-node (e.g. L1/L2 cache) to far node (e.g. L3 cache and DRAM).
+The metrics "LLC Load Hitm" contains two items: one is "local Hitm" and
+another is "remote Hitm".
 
-To output metrics with more friendly form, this patch refines the
-metrics order based on memory hierarchy:
+"local Hitm" means: L3 HIT and was serviced by another processor core
+with a cross core snoop where modified copies were found; it's no doubt
+that "local Hitm" belongs to LLC access.
 
-  "Core Load Hit" => "LLC Load Hit" => "LLC Ld Miss" => "Load Dram"
+But for "remote Hitm", based on the code in util/mem-events, it's the
+event for remote cache HIT and was serviced by another processor core
+with modified copies.  Thus the remote Hitm is a remote cache's hit and
+actually it's LLC load miss.
+
+Now the display format gives users the impression that "local Hitm" and
+"remote Hitm" both belong to the LLC load, but this is not the fact as
+described.
+
+This patch changes the header from "LLC Load Hitm" to "Load Hitm", this
+can avoid the give the wrong impression that all Hitm belong to LLC.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 Tested-by: Joe Mario <jmario@redhat.com>
 ---
- tools/perf/builtin-c2c.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/perf/builtin-c2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index a2ad24799aea..404d4739b8c1 100644
+index 404d4739b8c1..fa7a1c55b989 100644
 --- a/tools/perf/builtin-c2c.c
 +++ b/tools/perf/builtin-c2c.c
-@@ -2852,10 +2852,10 @@ static int perf_c2c__report(int argc, const char **argv)
- 			"tot_loads,"
- 			"tot_stores,"
- 			"stores_l1hit,stores_l1miss,"
--			"dram_lcl,dram_rmt,"
--			"ld_llcmiss,"
- 			"ld_fbhit,ld_l1hit,ld_l2hit,"
--			"ld_lclhit,ld_rmthit",
-+			"ld_lclhit,ld_rmthit,"
-+			"ld_llcmiss,"
-+			"dram_lcl,dram_rmt",
- 			c2c.display == DISPLAY_TOT ? "tot_hitm" :
- 			c2c.display == DISPLAY_LCL ? "lcl_hitm" : "rmt_hitm"
- 			);
+@@ -1328,7 +1328,7 @@ static struct c2c_dimension dim_iaddr = {
+ };
+ 
+ static struct c2c_dimension dim_tot_hitm = {
+-	.header		= HEADER_SPAN("----- LLC Load Hitm -----", "Total", 2),
++	.header		= HEADER_SPAN("------- Load Hitm -------", "Total", 2),
+ 	.name		= "tot_hitm",
+ 	.cmp		= tot_hitm_cmp,
+ 	.entry		= tot_hitm_entry,
 -- 
 2.17.1
 
