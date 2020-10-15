@@ -2,68 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8577628EE4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABB128EE4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 10:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387981AbgJOIM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 04:12:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728470AbgJOIMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 04:12:18 -0400
-Received: from mail.kernel.org (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20C472225F;
-        Thu, 15 Oct 2020 08:12:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602749538;
-        bh=Rrf1VCBA+6H+AvBz4ghy3QPFEp+YTsbvEvIh5bSjGOM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PSOmfreMm2peZmETjQIpLcMLucLerjuVC1bvHbARvxglt6rRjkfC6LUXm7YQUvzrA
-         v7oSY5x5kyqGKonhVwEMBeInKKMWuGITxsqZOf+IT41+QWg6EG+CFgFKNyOpQK4TrL
-         RMJ8/SPeKhLRplOy1CA90FAcsg4RQbxuP42awKMw=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kSyMw-000MSn-VT; Thu, 15 Oct 2020 10:12:14 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] sphinx: conf.py: properly handle Sphinx 4.0
-Date:   Thu, 15 Oct 2020 10:12:12 +0200
-Message-Id: <c8c01144fede9bd7209298bbeb185560eb60b94d.1602749214.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1602749214.git.mchehab+huawei@kernel.org>
-References: <cover.1602749214.git.mchehab+huawei@kernel.org>
+        id S2388027AbgJOIMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 04:12:43 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:17519 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728283AbgJOIMm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 04:12:42 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f88046d0000>; Thu, 15 Oct 2020 01:12:29 -0700
+Received: from [10.19.101.17] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 15 Oct
+ 2020 08:12:36 +0000
+Subject: Re: [PATCH v3 15/15] xhci: tegra: Enable ELPG for runtime/system PM
+To:     Thierry Reding <thierry.reding@gmail.com>
+CC:     <gregkh@linuxfoundation.org>, <robh@kernel.org>,
+        <jonathanh@nvidia.com>, <kishon@ti.com>,
+        <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nkristam@nvidia.com>
+References: <20200909081041.3190157-1-jckuo@nvidia.com>
+ <20200909081041.3190157-16-jckuo@nvidia.com> <20200928140653.GO3065790@ulmo>
+X-Nvconfidentiality: public
+From:   JC Kuo <jckuo@nvidia.com>
+Message-ID: <d9447d2e-d82d-57cb-b813-c883a502c2d1@nvidia.com>
+Date:   Thu, 15 Oct 2020 16:12:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+In-Reply-To: <20200928140653.GO3065790@ulmo>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602749549; bh=6PqcFwgSJ+dhMzTW5dj7WOiueaJtj942uzt9t8W6JAk=;
+        h=Subject:To:CC:References:X-Nvconfidentiality:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=kNLITBVk6U2GLyLLHIureiAdLBNtU9LXHo6GXPSBRzelmlZjpfqugnQWM/VvKLJsP
+         9keay22ksDEazKstTbrUwk2IZH0jSkxM2zAQDnYa7GVfTve7bWs/lShzbArq2JyJXX
+         LcpEBR93/fGPokAajQIXfrzlnWFb5R69rKNAI+PJPOmcVQIzG27l2OmHDpm+1Y2dUg
+         xa+mkBV1F20v5/kjIJDucHnEo6TAgxk0rLtflieniEudoWEabAJ429zmGUrLVHTROF
+         FIouBG/IeYx3kNAU6FhZJ2iEa8Gv4+RUSlEc4WfF/VPGgPo0MOzehPaLuJBbnv1lBh
+         BnX6hyu2TNSjA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One of the checks for Sphinx 3+ is broken, causing some
-C warnings to return back with Sphinx 4.0.x.
+I will amend accordingly and submit new patch.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/conf.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for review.
+JC
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 4f5d15abd047..a92442e70211 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -50,7 +50,7 @@ if major >= 3:
-         support for Sphinx v3.0 and above is brand new. Be prepared for
-         possible issues in the generated output.
-         ''')
--    if minor > 0 or patch >= 2:
-+    if (major > 3) or (minor > 0 or patch >= 2):
-         # Sphinx c function parser is more pedantic with regards to type
-         # checking. Due to that, having macros at c:function cause problems.
-         # Those needed to be scaped by using c_id_attributes[] array
--- 
-2.26.2
-
+On 9/28/20 10:06 PM, Thierry Reding wrote:
+> On Wed, Sep 09, 2020 at 04:10:41PM +0800, JC Kuo wrote:
+>> This commit implements the complete programming sequence for ELPG
+>> entry and exit.
+>>
+>>  1. At ELPG entry, invokes tegra_xusb_padctl_enable_phy_sleepwalk()
+>>     and tegra_xusb_padctl_enable_phy_wake() to configure XUSB PADCTL
+>>     sleepwalk and wake detection circuits to maintain USB lines level
+>>     and respond to wake events (wake-on-connect, wake-on-disconnect,
+>>     device-initiated-wake).
+>>
+>>  2. At ELPG exit, invokes tegra_xusb_padctl_disable_phy_sleepwalk()
+>>     and tegra_xusb_padctl_disable_phy_wake() to disarm sleepwalk and
+>>     wake detection circuits.
+>>
+>> At runtime suspend, XUSB host controller can enter ELPG to reduce
+>> power consumption. When XUSB PADCTL wake detection circuit detects
+>> a wake event, an interrupt will be raised. xhci-tegra driver then
+>> will invoke pm_runtime_resume() for xhci-tegra.
+>>
+>> Runtime resume could also be triggered by protocol drivers, this is
+>> the host-initiated-wake event. At runtime resume, xhci-tegra driver
+>> brings XUSB host controller out of ELPG to handle the wake events.
+>>
+>> The same ELPG enter/exit procedure will be performed for system
+>> suspend/resume path so USB devices can remain connected across SC7.
+>>
+>> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+>> ---
+>> v3:
+>>    use 'unsigned int' for PHY index
+>>    remove unnecessary 'else'
+>>    drop IRQF_TRIGGER_HIGH when invokes devm_request_threaded_irq()
+>>    
+>>  drivers/usb/host/xhci-tegra.c | 389 +++++++++++++++++++++++++++++++---
+>>  1 file changed, 360 insertions(+), 29 deletions(-)
+>>
+>> diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
+>> index aabff8ee0bb3..ba3f40e78171 100644
+>> --- a/drivers/usb/host/xhci-tegra.c
+>> +++ b/drivers/usb/host/xhci-tegra.c
+>> @@ -15,9 +15,11 @@
+>>  #include <linux/kernel.h>
+>>  #include <linux/module.h>
+>>  #include <linux/of_device.h>
+>> +#include <linux/of_irq.h>
+>>  #include <linux/phy/phy.h>
+>>  #include <linux/phy/tegra/xusb.h>
+>>  #include <linux/platform_device.h>
+>> +#include <linux/usb/ch9.h>
+>>  #include <linux/pm.h>
+>>  #include <linux/pm_domain.h>
+>>  #include <linux/pm_runtime.h>
+>> @@ -224,6 +226,7 @@ struct tegra_xusb {
+>>  
+>>  	int xhci_irq;
+>>  	int mbox_irq;
+>> +	int padctl_irq;
+>>  
+>>  	void __iomem *ipfs_base;
+>>  	void __iomem *fpci_base;
+>> @@ -269,10 +272,13 @@ struct tegra_xusb {
+>>  		dma_addr_t phys;
+>>  	} fw;
+>>  
+>> +	bool suspended;
+>>  	struct tegra_xusb_context context;
+>>  };
+>>  
+>>  static struct hc_driver __read_mostly tegra_xhci_hc_driver;
+>> +static int tegra_xusb_exit_elpg(struct tegra_xusb *tegra, bool runtime);
+>> +static int tegra_xusb_enter_elpg(struct tegra_xusb *tegra, bool runtime);
+> 
+> Can we reshuffle the code to avoid these predeclarations? Looks like
+> they're only used in tegra_xusb_runtime_{suspend,resume}(), so perhaps
+> move the implementations right before those?
+> 
+> Thierry
+> 
