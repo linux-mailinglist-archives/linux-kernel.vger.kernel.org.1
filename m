@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFC328FB73
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2445C28FB74
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732514AbgJOXIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 19:08:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34786 "EHLO mail.kernel.org"
+        id S1732537AbgJOXIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 19:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732395AbgJOXIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 19:08:34 -0400
-Subject: Re: [GIT PULL] parisc architecture updates for kernel v5.10-rc1
+        id S1732508AbgJOXIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 19:08:36 -0400
+Subject: Re: [GIT PULL] tracing: Updates for 5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602803313;
-        bh=WqQ0bB+ppe48oqRSyaUgLPUbMiAC3Z+q0QDdxMG8+CA=;
+        s=default; t=1602803315;
+        bh=rkjtMyhkY9hCjTlX/al28VHnYuhLNMYVjuzXnPgUJ1w=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=1djlJORgOVkKRGJ/P1n31pimVOxCL9aCZTQPWwAZzOBOQqcjfZbHcwA5d4rnH5e1z
-         bMApgcP8cdFG9GbDVizXQ3bL+GIF6YscSt+8RpjL7YJ8ZKwnMXUMzC98rCOhV67U/Y
-         bezJXlHt2Y1mc52CWvTOBHX+rA5pXonPkU+XotjA=
+        b=NWpnWvE55x1Tpqd1OwCatxeDtUE4MaGpfNsfPedqqaCLM1+AUexZqd5ZqSVIZr5Da
+         CmvfgjI33kb6F4UGaEjQd+Inwk5jiEPPIj7TOrhw7PkTpcZdcXlG8mWfqO72mvBkni
+         cWs8VcisP0h1yggQGetQeyhMLTZBzi9g3T7VnU/M=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201015072025.GA18655@ls3530.fritz.box>
-References: <20201015072025.GA18655@ls3530.fritz.box>
-X-PR-Tracked-List-Id: <linux-parisc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201015072025.GA18655@ls3530.fritz.box>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-1
-X-PR-Tracked-Commit-Id: 7ff3f14ddc355bfbc94c766f43b90606b1f79e83
+In-Reply-To: <20201015135345.6b29e8c0@gandalf.local.home>
+References: <20201015135345.6b29e8c0@gandalf.local.home>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201015135345.6b29e8c0@gandalf.local.home>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.10
+X-PR-Tracked-Commit-Id: 6107742d15832011cd0396d821f3225b52551f1f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7286d2a37eb955c5eeec2b042844f1c1b3ff0fe1
-Message-Id: <160280331378.7173.14528913365089023034.pr-tracker-bot@kernel.org>
-Date:   Thu, 15 Oct 2020 23:08:33 +0000
-To:     Helge Deller <deller@gmx.de>
+X-PR-Merge-Commit-Id: fefa636d815975b34afc45f50852a2810fb23ba9
+Message-Id: <160280331568.7173.12412024522883437119.pr-tracker-bot@kernel.org>
+Date:   Thu, 15 Oct 2020 23:08:35 +0000
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 15 Oct 2020 09:20:25 +0200:
+The pull request you sent on Thu, 15 Oct 2020 13:53:45 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.10
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7286d2a37eb955c5eeec2b042844f1c1b3ff0fe1
+https://git.kernel.org/torvalds/c/fefa636d815975b34afc45f50852a2810fb23ba9
 
 Thank you!
 
