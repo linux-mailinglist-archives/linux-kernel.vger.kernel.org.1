@@ -2,111 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C194028FA53
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 22:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B498628FA6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 23:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389170AbgJOU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 16:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732684AbgJOU7O (ORCPT
+        id S2389908AbgJOVKV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Oct 2020 17:10:21 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:58366 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389367AbgJOVKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 16:59:14 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF48C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:59:12 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gm14so121473pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 13:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/1qXJfImignGw1wL5PV6z2YsiCLHwApNbU3MNfvNx9M=;
-        b=AWVmH1e1V/GQJoTC1BfctRlJEENyBbEv+qJp6kVoqSbq2E9eLJxiXxkTpTIdR4u/v0
-         zUVCkrgF2zhfQFXLqbvfpG0zvLL4uGl15nmpzj2jXPihhYI5rgch3nqChR0dPU8s8rTk
-         m34xR8kkS7pSWZ3vSRpdLLtFTPqPO1AUGjxLHEcmwXfu18NluYc+3w939NAtpQKonMBi
-         Eo4fYDLqn2t9GiQbTuFlGpbL48hVIl5/zZZ7n0Jpl+ZsmGOFy7jaqYHzXGhGRGTKtq25
-         kFWNafqq1azyC/pSnyL2SH/fSqcImrTJX0zEzsjf5xxMfGcxnjcX0iQWMXlOqIaiNM/T
-         IigQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/1qXJfImignGw1wL5PV6z2YsiCLHwApNbU3MNfvNx9M=;
-        b=XPPl5pa02oC9u1xZbxof8sL5BgUs2SJDzNh4istitjlcOnAQnQFXTyhlYG+aC5w/TF
-         tzrUu5iBu1h6+rPnr2yNbTjFN8PjEvqZeHfRszA7dL6JH5V+qMTO1e87HuDwm3lpeBFc
-         m7QRFGv0o0/f9prUHEwHJpsakrHDw0MNH/IwB6oiGe2v5WlanepgWX89ZJ0KvtP1Ia73
-         baLYn3Y5Njy8f3Z0sDwzsiFOTQu4Ljf9uY2TA1DVRz223MEsdj32soDbRygP48GbGo1A
-         gWb9qiTzlj+VtbfMNV7NBy5Swxi/Q3A8ceKBAs8gFoTZTXbITGK4dAJpjKU02Jl0wOOz
-         B71g==
-X-Gm-Message-State: AOAM532It5rdcGH79BNHrCuQteYdD0ff/cqWM6szpgFsVCCcI1TGJjDU
-        GTDvauPR/4f+ZH4DrGImJs/DvxW+4yqX2Pyy+yaviA==
-X-Google-Smtp-Source: ABdhPJwSscU4ZmMyA8lU16OhsJSSW+elxe7OP6RVZHrq776WNa2n0roRm+jO2G+FjtjulAhizQWPBfyUmw4RqMzxo5U=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr546998pjj.101.1602795551749;
- Thu, 15 Oct 2020 13:59:11 -0700 (PDT)
+        Thu, 15 Oct 2020 17:10:21 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-2-EK-J9T8gPN6LLxYYxqipNw-1;
+ Thu, 15 Oct 2020 22:09:12 +0100
+X-MC-Unique: EK-J9T8gPN6LLxYYxqipNw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 15 Oct 2020 22:09:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 15 Oct 2020 22:09:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] compiler.h: Clarify comment about the need for
+ barrier_data()
+Thread-Topic: [PATCH] compiler.h: Clarify comment about the need for
+ barrier_data()
+Thread-Index: AQHWox7rJ5hC7vlNqk+GpAb0LFktmKmZJEvQ
+Date:   Thu, 15 Oct 2020 21:09:11 +0000
+Message-ID: <72958fd25e33490181b0df9413ec08b4@AcuMS.aculab.com>
+References: <CAKwvOdkLvxeYeBh7Kx0gw7JPktPH8A4DomJTidUqA0jRQTR0FA@mail.gmail.com>
+ <20201015181340.653004-1-nivedita@alum.mit.edu>
+In-Reply-To: <20201015181340.653004-1-nivedita@alum.mit.edu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <CGME20201008071628epcas5p24d196a6023a47a3b0bfa7b7f231ec811@epcas5p2.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com> <20201008083015.GK1551@shell.armlinux.org.uk>
-In-Reply-To: <20201008083015.GK1551@shell.armlinux.org.uk>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 15 Oct 2020 13:59:00 -0700
-Message-ID: <CAKwvOdnyFGWLpyBWX1nAY4veQucmzL509XqfqHj896hS+YJfYw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] IRQ stack support for ARM
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Maninder Singh <maninder1.s@samsung.com>,
-        Jian Cai <caij2003@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Will Deacon <will@kernel.org>, a.sahrawat@samsung.com,
-        v.narang@samsung.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 1:30 AM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Thu, Oct 08, 2020 at 12:45:30PM +0530, Maninder Singh wrote:
-> > Observed Stack Overflow on 8KB kernel stack on ARM specially
-> > incase on network interrupts, which results in undeterministic behaviour.
-> > So there is need for per cpu dedicated IRQ stack for ARM.
-> >
-> > As ARm does not have extra co-processor register
-> > to save thread info pointer, IRQ stack will be at some
-> > performance cost, so code is under CONFIG_IRQ_STACK.
-> >
-> > and we don't have much knowledge and set up for CLANG
-> > and ARM_UNWIND, so dependency added for both cases.
-> >
-> > Tested patch set with QEMU for latest kernel
-> > and 4.1 kernel for ARM target with same patch set.
->
-> You need to investigate and show where and why this is happening. My
-> guess is you have a network driver that uses a lot of kernel stack
-> space, which itself would be a bug.
->
-> Note that there are compiler versions out there that mis-optimise and
-> eat stack space - the kernel build should be warning if a function
-> uses a large amount of stack.
+From: Arvind Sankar
+> Sent: 15 October 2020 19:14
+> 
+> Be clear about @ptr vs the variable that @ptr points to, and add some
+> more details as to why the special barrier_data() macro is required.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> ---
+>  include/linux/compiler.h | 33 ++++++++++++++++++++++-----------
+>  1 file changed, 22 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> index 93035d7fee0d..d8cee7c8968d 100644
+> --- a/include/linux/compiler.h
+> +++ b/include/linux/compiler.h
+> @@ -86,17 +86,28 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+> 
+>  #ifndef barrier_data
+>  /*
+> - * This version is i.e. to prevent dead stores elimination on @ptr
+> - * where gcc and llvm may behave differently when otherwise using
+> - * normal barrier(): while gcc behavior gets along with a normal
+> - * barrier(), llvm needs an explicit input variable to be assumed
+> - * clobbered. The issue is as follows: while the inline asm might
+> - * access any memory it wants, the compiler could have fit all of
+> - * @ptr into memory registers instead, and since @ptr never escaped
+> - * from that, it proved that the inline asm wasn't touching any of
+> - * it. This version works well with both compilers, i.e. we're telling
+> - * the compiler that the inline asm absolutely may see the contents
+> - * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
+> + * This version is to prevent dead stores elimination on @ptr where gcc and
+> + * llvm may behave differently when otherwise using normal barrier(): while gcc
+> + * behavior gets along with a normal barrier(), llvm needs an explicit input
+> + * variable to be assumed clobbered.
+> + *
+> + * Its primary use is in implementing memzero_explicit(), which is used for
+> + * clearing temporary data that may contain secrets.
+> + *
+> + * The issue is as follows: while the inline asm might access any memory it
+> + * wants, the compiler could have fit all of the variable that @ptr points to
+> + * into registers instead, and if @ptr never escaped from the function, it
+> + * proved that the inline asm wasn't touching any of it. gcc only eliminates
+> + * dead stores if the variable was actually allocated in registers, but llvm
+> + * reasons that the variable _could_ have been in registers, so the inline asm
+> + * can't reliably access it anyway, and eliminates dead stores even if the
+> + * variable is actually in memory.
 
-For tracking down those not-super-helpful compiler warnings, I wrote a
-tool where if you rebuild with debug info, and give it the object file
-and string of the function the compiler warned about it will parse the
-DWARF to tell you the size of each local variable, and if it came from
-an inline frame.  Generally, it's possible to stack allocate something
-that's way too big; instead those should be allocated on the heap.
-https://github.com/ClangBuiltLinux/frame-larger-than
-(I haven't had time to sit down and use it to resolve all outstanding
-issues, but it has worked well for me in the past)
--- 
-Thanks,
-~Nick Desaulniers
+I think I'd just say something like:
+
+Although the compiler must assume a "memory" clobber may affect all
+memory, local variables (on stack) cannot actually be visible to the
+asm unless their address has been passed to an external function.
+So the compiler may assume such variables cannot be affected by
+a normal asm volatile(::"memory") barrier().
+Passing the address of the local variables to the asm barrier
+is enough to tell the compiler that the asm can 'see' the variables
+(and spill anything held in registers to the stack) so that
+the "memory" clobber has the expected effect.
+
+This is necessary to get llvm to do a memset() of on-stack data
+at the end of a function to clear memory that contains secrets.
+
+	David
+
+> + *
+> + * This version works well with both compilers, i.e. we're telling the compiler
+> + * that the inline asm absolutely may see the contents of the variable pointed
+> + * to by @ptr.
+> + *
+> + * See also: https://llvm.org/bugs/show_bug.cgi?id=15495#c5
+>   */
+>  # define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
+>  #endif
+> --
+> 2.26.2
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
