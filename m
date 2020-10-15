@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0882728EBEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FC828EBEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 06:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbgJOEEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 00:04:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55868 "EHLO mail.kernel.org"
+        id S2387736AbgJOEGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 00:06:46 -0400
+Received: from mga14.intel.com ([192.55.52.115]:54961 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgJOEEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:04:44 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87ABD221FF;
-        Thu, 15 Oct 2020 04:04:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602734683;
-        bh=SMk+hp4oh3UF1fUl7YouAMOuc2XW5qG6kfSb2Z+uKzA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aTEkAcFC98RK8nCk0vXzifTUJ3hJP1Ne7GhKEoTJNeQrYhKuFSkhH5ub5q5ggFoEQ
-         FMXHmKRyS6SFV9jCFDgUxUhSiH9uhTeHSJxOKPvlgJcC/e8+wcVqOislMv4lQalWOz
-         oJVy5zu4uF2YukTH+5sZ6wtOt7jlZyCgmFDLmKZE=
-Date:   Wed, 14 Oct 2020 21:04:41 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH 2/2] f2fs: add F2FS_IOC_SET_COMPRESS_OPTION
- ioctl
-Message-ID: <20201015040441.GA834@sol.localdomain>
-References: <20201013022429.454161-1-daeho43@gmail.com>
- <20201013022429.454161-2-daeho43@gmail.com>
- <20201013061150.GC1062@sol.localdomain>
- <CACOAw_y31yAu=AGAEqvyo2Ankt-ux80E6g6m_sWnz6LyUgBXSg@mail.gmail.com>
+        id S1725208AbgJOEGq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 00:06:46 -0400
+IronPort-SDR: f04DFpzhMv70t7ZqZ4PDbE+A+GFHOYt+aC8YqDCijkdbfzLyFv+qdxR03jEHtL1CAX4Nfim4D6
+ PpMPlaV8aVng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9774"; a="165475102"
+X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
+   d="scan'208";a="165475102"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 21:06:45 -0700
+IronPort-SDR: 8llCNNVFg/pwnYalAcGap2jzG4kRd1VH03d73DJ/rVUOvJu5WRBvRZXQYNPfk6mOkMTy603tWS
+ seE+lT/OxDKQ==
+X-IronPort-AV: E=Sophos;i="5.77,377,1596524400"; 
+   d="scan'208";a="357582709"
+Received: from bepietra-mobl.amr.corp.intel.com (HELO [10.209.69.215]) ([10.209.69.215])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2020 21:06:45 -0700
+Subject: Re: [PATCH RFC V3 7/9] x86/entry: Preserve PKRS MSR across exceptions
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20201009194258.3207172-1-ira.weiny@intel.com>
+ <20201009194258.3207172-8-ira.weiny@intel.com>
+ <6006a4c8-32bd-04ca-95cc-b2736a5cef72@intel.com>
+ <20201015034645.GQ2046448@iweiny-DESK2.sc.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a3cb045e-3d27-eaca-c78d-d30d9a045e02@intel.com>
+Date:   Wed, 14 Oct 2020 21:06:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACOAw_y31yAu=AGAEqvyo2Ankt-ux80E6g6m_sWnz6LyUgBXSg@mail.gmail.com>
+In-Reply-To: <20201015034645.GQ2046448@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 11:27:30AM +0900, Daeho Jeong wrote:
-> > f2fs_readonly() is redundant with mnt_want_write_file().
-> >
-> > Also, shouldn't this require a writable file descriptor?  As-is, this ioctl can
-> > be called on a file owned by another user, as long as the caller has read
-> > access.
-> >
-> > Note: if you change this to require a writable file descriptor, then
-> > f2fs_readonly(), mnt_want_write_file(), and IS_IMMUTABLE() all would no longer
-> > be needed.
-> 
-> I agree that f2fs_readonly() is redundant.
-> But, sorry, I don't get the rest. I thought mnt_want_write_file() is a
-> way to check whether the caller has a proper write permission or not.
-> I think just using mnt_want_write_file() is enough for this ioctl. Am
-> I missing something?
+On 10/14/20 8:46 PM, Ira Weiny wrote:
+> On Tue, Oct 13, 2020 at 11:52:32AM -0700, Dave Hansen wrote:
+>> On 10/9/20 12:42 PM, ira.weiny@intel.com wrote:
+>>> @@ -341,6 +341,9 @@ noinstr void irqentry_enter(struct pt_regs *regs, irqentry_state_t *state)
+>>>  	/* Use the combo lockdep/tracing function */
+>>>  	trace_hardirqs_off();
+>>>  	instrumentation_end();
+>>> +
+>>> +done:
+>>> +	irq_save_pkrs(state);
+>>>  }
+>> One nit: This saves *and* sets PKRS.  It's not obvious from the call
+>> here that PKRS is altered at this site.  Seems like there could be a
+>> better name.
+>>
+>> Even if we did:
+>>
+>> 	irq_save_set_pkrs(state, INIT_VAL);
+>>
+>> It would probably compile down to the same thing, but be *really*
+>> obvious what's going on.
+> I suppose that is true.  But I think it is odd having a parameter which is the
+> same for every call site.
 
-mnt_want_write_file() checks for write permission to the mount, not to the file.
-
-I think this ioctl wants what f2fs_sec_trim_file() does:
-
-	if (!(filp->f_mode & FMODE_WRITE))
-		return -EBADF;
-
-	file_start_write(filp);
-	inode_lock(inode);
-	...
-	inode_unlock(inode);
-	file_end_write(filp);
-
-
-After all you shouldn't be able to change the compression options of a file
-given only read access to it, right?
-
-> > I don't think the check for i_writecount == 1 accomplishes anything because it
-> > just means there are no *other* writable file descriptors.  It doesn't mean that
-> > some other thread isn't concurrently trying to write to this same file
-> > descriptor.  So the lock needs to be enough.  Is it?
-> 
-> This is to detect any possibility of other threads mmap-ing and
-> writing the file.
-> Using only inode lock is not enough to prevent them from making dirty pages.
-
-Well, as I said, i_writecount == 1 doesn't guarantee that other threads aren't
-mmap'ing or writing to the file.  It just guarantees that there aren't any other
-writable file descriptors.  (Actually, file descriptions.)  Multiple threads can
-be using the same file descriptor (or the same file description) concurrently.
-
-- Eric
+Well, it depends on what you optimize for.  I'm trying to optimize for
+the code being understood quickly the first time someone reads it.  To
+me, that's more important than minimizing the number of function
+parameters (which are essentially free).
