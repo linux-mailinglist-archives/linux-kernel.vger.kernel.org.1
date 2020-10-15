@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D6E28F677
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E87E28F67A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389207AbgJOQMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 12:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388461AbgJOQMW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 12:12:22 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AD8C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:12:21 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id w126so2420809qka.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=BdZDlc0VgpP2Ln7XZ/SJzkYEHvK/fd43ssyrqdMV8Lc=;
-        b=mW6Dp+96INwoUu0vyVN9WtCsrfLyXMNru/NIX528PPsBLkjCGONPtRuIrkY5rqMuVi
-         YPTIJms4p4xd2n5X3ZS5xAp47zvrv3sy+3ZsibOCcsBB1h2Nb9oLzrsQeKfNgXlD7EK9
-         XY7JBoE8kayWVwhbj7USCWhMw+b7kGKs51Z8ehZitV9gc/9YpR5eD8ktfIdqqhzm7+8i
-         3808CYJKywtpSXLuQ2nFgvoDHwE4UIE7At6lUy0Y2CCmGPGXNL9+mV6E7gTdeip2I6dU
-         PHSx7IKdL6gmMh5JbICbWvf4vMbCfppO+r8pReIRMMcsNV8WtPjWi/OqYFVNWQpAWjnx
-         w3Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=BdZDlc0VgpP2Ln7XZ/SJzkYEHvK/fd43ssyrqdMV8Lc=;
-        b=fz4Fw0hl5DjV9T6RF2M4mg9FQ9DK6vXPUZW9g9Y8p1rfJv51kuscZEgrSezJzNKSEO
-         f5e/cZkYm3OBr7KKzwi0M8EVQK3FNeKuuXe9PVlZ+E0KibVEF0xbwOIbdNABmSXZHrVp
-         EOsvDZXxIDh62ttgGptDCK4C7JVdZd2RpG1PUMAsWoz62wy7WQ59jcqqlEbuHEZHcRSG
-         y/fIfYIDstbNdkRtrySTlSeIfSLxo7Kf9nAxRLtyqBBOKjOVQpaFYxJz+pxLqjFcu9rr
-         qKeWbSTy8qpCQ4tJG1Fh5qU0ceNbfWxMJ9OHVfhzkk4+EZQNFFahBuuPvAqjyKsdi46M
-         SkVQ==
-X-Gm-Message-State: AOAM533I8HvpFq1CjPJeCGRGo4TarcjEGY3clW9pbBZPJ7jQch4zRl4O
-        LRyOe5QAIcZ4QSZXVREPhfWvW2E8t5pE
-X-Google-Smtp-Source: ABdhPJwL44cUfBhiz/kpQd9sl4Ph/ufdHDFZTNTTRmCidI/pDuveQJl7QSqPqnYe7uEEO9s8IFOcMEeihI4I
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a0c:a345:: with SMTP id
- u63mr5556078qvu.17.1602778340129; Thu, 15 Oct 2020 09:12:20 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 09:12:16 -0700
-Message-Id: <20201015161216.1563600-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.1011.ga647a8990f-goog
-Subject: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined behavior.
-From:   Ian Rogers <irogers@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Numfor Mbiziwo-Tiapo <nums@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2389414AbgJOQNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:13:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388461AbgJOQM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 12:12:59 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E68D421D7F;
+        Thu, 15 Oct 2020 16:12:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602778378;
+        bh=wYeGNA65xooghznt1NdP+AJ2P2uDRvjHr3QQlhRQdJE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zv64p4zBHeZ3PPxAhPoimJW4wUmg5nR1YqruXK6ydTfrKj6gxgDs/npmBfiBUDRPJ
+         nsmJobGaaDVM4rUT1Y/GTiitd3qgAuMtyxsJFK1Q7wbh8egz6TfyLLrxay9FmUCqOf
+         RgqjlfejcNXGsg3/jrusuIfun2/skkP3Alzhz6xA=
+Date:   Thu, 15 Oct 2020 17:12:51 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Cheng-yi Chiang <cychiang@chromium.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine
+ bindings
+Message-ID: <20201015161251.GF4390@sirena.org.uk>
+References: <20200914080619.4178587-1-cychiang@chromium.org>
+ <20200914080619.4178587-3-cychiang@chromium.org>
+ <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
+ <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Pgaa2uWPnPrfixyx"
+Content-Disposition: inline
+In-Reply-To: <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
+X-Cookie: Neutrinos have bad breadth.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Numfor Mbiziwo-Tiapo <nums@google.com>
 
-Don't perform unaligned loads in __get_next and __peek_nbyte_next as
-these are forms of undefined behavior.
+--Pgaa2uWPnPrfixyx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-These problems were identified using the undefined behavior sanitizer
-(ubsan) with the tools version of the code and perf test. Part of this
-patch was previously posted here:
-https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+On Thu, Oct 15, 2020 at 03:59:26PM +0800, Cheng-yi Chiang wrote:
+> On Tue, Oct 13, 2020 at 6:36 PM Srinivas Kandagatla
 
-v2. removes the validate_next check and merges the 2 changes into one as
-requested by Masami Hiramatsu <mhiramat@kernel.org>
+> > > +properties:
+> > > +  compatible:
+> > > +    const: qcom,sc7180-sndcard-rt5682-m98357-1mic
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
----
- arch/x86/lib/insn.c       | 4 ++--
- tools/arch/x86/lib/insn.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> > This information can come from the dai link description itself, why
+> > should compatible string have this information?
 
-diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
-index 404279563891..be88ab250146 100644
---- a/arch/x86/lib/insn.c
-+++ b/arch/x86/lib/insn.c
-@@ -20,10 +20,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); r; })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
-diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
-index 0151dfc6da61..92358c71a59e 100644
---- a/tools/arch/x86/lib/insn.c
-+++ b/tools/arch/x86/lib/insn.c
-@@ -20,10 +20,10 @@
- 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
- 
- #define __get_next(t, insn)	\
--	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
-+	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
- 
- #define __peek_nbyte_next(t, insn, n)	\
--	({ t r = *(t*)((insn)->next_byte + n); r; })
-+	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
- 
- #define get_next(t, insn)	\
- 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
--- 
-2.28.0.1011.ga647a8990f-goog
+> I think dailink description is not enough to specify everything
+> machine driver needs to know.
+> E.g. there is a variation where there are front mic and rear mic. We
+> need to tell the machine driver about it so
+> it can create proper widget, route, and controls.
 
+That sounds like something that could be better described with
+properties (including for example the existing bindings used for setting
+up things like analogue outputs and DAPM routes)?
+
+> The codec combination also matters. There will be a variation where
+> rt5682 is replaced with adau7002 for dmic.
+> Although machine driver can derive some information by looking at dailink,
+> I think specifying it explicitly in the compatible string is easier to
+> tell what machine driver should do, e.g.
+> setting PLL related to rt5682 or not.
+
+These feel more like things that fit with compatible, though please take
+a look at Morimoto-san's (CCed) work on generic sound cards for more
+complex devices:
+
+   https://lore.kernel.org/alsa-devel/87imbeybq5.wl-kuninori.morimoto.gx@renesas.com/
+
+This is not yet implemented but it'd be good to make sure that the
+Qualcomm systems can be handled too in future.
+
+> You can see widget, route, controls are used according to the configuration.
+> The alternative approach is to check whether "dmic-gpio" property
+> exists to decide adding these stuff or not.
+> But it makes the intent less easier to understand.
+
+OTOH if you have lots of compatibles then it can get hard to work out
+exactly which one corresponds to a given board.
+
+--Pgaa2uWPnPrfixyx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+IdQIACgkQJNaLcl1U
+h9Cs0gf/aR5zd1VPFM/nOmIp2Or27oiqOMSopuxWeT8ZLdCC0srj7gRTUI8522lz
+izypzvOW3riGLBh7X3uPWB5LyKHA80pa0yhNrAdJLBzmW0V5OlJ5Wt9VBz4V+qyq
+oIfmqS/jhFQ4pPGdKQDPhV2NPLK7NT40qcSmCuqrCPR49XcqvTUt7PmETCp1LuqC
+p5vUj1AqXOHLBRbmy6yc7svns2YEGkH3bxd5MED59nadECZl8QmCVWW+VHERFMnf
+r5J8EW8FiPMaE6WRwmzf7KdPDHmfFJrRbCGjq9SiwS1qGre7qUdXm0lGagA3YUIq
+KhE0K1VXxuMUGRohRmQ/sE555zuDBw==
+=ZOAb
+-----END PGP SIGNATURE-----
+
+--Pgaa2uWPnPrfixyx--
