@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720EB28E98F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 02:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3432B28E9E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730401AbgJOA7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 20:59:07 -0400
-Received: from ozlabs.org ([203.11.71.1]:39667 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728153AbgJOA7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 20:59:07 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBWBc4Yn7z9sTD;
-        Thu, 15 Oct 2020 11:59:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602723545;
-        bh=xec6CFJNV9KEE6VPmqvRfa9FGlrIRQOGjUIa0dPGn/o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hcgW0gdKxHSFu9woY4I/de1djrC3YaAGjuTuKaXK/ZFyQ1xpF0u+QF2JdF4YFscNR
-         WceoKV2J/FVFkFESZG4lugXUrqn7whnTaZGM+2rcwQxvTLEZ7NqhAuE0GZ/ijIJGNq
-         EKkD/rjfkayaD2q6IBllFs/mU5SkA8l1ECKW5liT5CUfcYOVKn27beHkOmBXvj4eLY
-         OFSCHVkyi7+4FqTYXpp1Ydi7+v8VHpRuVHDXho3C6pPuwZDbQnEbklrvJ1YXKXP2Nn
-         3RSMJDFcFBtJSiPFWvca7YFjQIUKa2yVLvwya8Flq6iYpb/5m1IhRoWfe/GExvrlaE
-         w7XybFlvUqYvA==
-Date:   Thu, 15 Oct 2020 11:59:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Diana Craciun OSS <diana.craciun@oss.nxp.com>,
-        Bharat Bhushan <Bharat.Bhushan@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the vfio tree
-Message-ID: <20201015115903.3399b116@canb.auug.org.au>
-In-Reply-To: <20201013132016.44af05f1@w520.home>
-References: <20201013140744.64937ecd@canb.auug.org.au>
-        <276bf3f3-108b-fe60-4d17-d3f314e61db4@oss.nxp.com>
-        <20201013132016.44af05f1@w520.home>
+        id S2388623AbgJOBUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387939AbgJOBTh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:19:37 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF95C0F26F1;
+        Wed, 14 Oct 2020 18:01:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id h2so622566pll.11;
+        Wed, 14 Oct 2020 18:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LwerkOdRsnCJHMpXddlyMckRobHsa+u7GtVSMhhS8lI=;
+        b=BRE6k+Vlxcm645Daww/9IQr9e9BY6KhXtwvPZlpEIhh0C2EpOyQJJV1s0DyVkUfAnW
+         lLUUxoRvG4PP+D3yINPpReSX12FcGN0zeOLAZQK6lqthjnaBlqfJu9zZvc9Wph5FwmQV
+         kqt59vRi7nRFgVW2OVpggU3ow0k1dBH2cTXAiZ0XGDK/pQbHa45AvBwvDL3CszbvqWnK
+         qHIpcUQrvn2h1NYYAOilf8NFXv5fvN2S3rVQaZGecrRRzBpVR5pWGQDC52M8cNUB/dD6
+         F2PzyrvKh+11CTndbIM1aUHsl2bUA/CNJDApYwpuVbszwGr9IsZ9oOYrUPXXl9W1yA9n
+         dXEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LwerkOdRsnCJHMpXddlyMckRobHsa+u7GtVSMhhS8lI=;
+        b=gSgBHAlmgplxJvJeKKA4RWaA9x2Cf+TDg50+CAw+62PCEi+5lOgr5Av1rQbuFdKKGB
+         wojRqx90hurJDalaXJsp5zYZ7Rf6Ppsm8LlbWwdU+rHfVd86MUpfZMkqHQ8oWSqREh1O
+         jxiM1uUBC7A2kGcL4F8ripXKUUhRdapN6cKQyvTZEdYeEMS2eQ0m3x5My32MeaRa8yNz
+         2UNK0SO1Xs99n6guSVsEzRbBW5F20+MWcue+VwO8U53VhL3zhdjJ832WuDpW8C1utp2y
+         VblTtq9Ol+VuJAow6tMCrB4tK3A3BCU04q8SZ4nDFFkrIiVhqd/fx8mD3036Ei08mmRa
+         A3Uw==
+X-Gm-Message-State: AOAM531eabsqJk9HCPC2BmuMV/Yx+YN3py6grgtgaYvTGA7deJL/jjxn
+        6qsMTtyFpsH6YM2H8c73Ahw=
+X-Google-Smtp-Source: ABdhPJwzGaRcZXELQQDsb0RL51HUB5jeCVJnKyJOaYKWfqyyAK9/uRi+xYiHOEOpXkfpn3UNqDhd/Q==
+X-Received: by 2002:a17:90b:1215:: with SMTP id gl21mr1714511pjb.132.1602723702701;
+        Wed, 14 Oct 2020 18:01:42 -0700 (PDT)
+Received: from f3 (ae055068.dynamic.ppp.asahi-net.or.jp. [14.3.55.68])
+        by smtp.gmail.com with ESMTPSA id m3sm792258pjv.52.2020.10.14.18.01.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Oct 2020 18:01:41 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 10:01:36 +0900
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/7] staging: qlge: replace ql_* with qlge_* to avoid
+ namespace clashes with other qlogic drivers
+Message-ID: <20201015010136.GB31835@f3>
+References: <20201014104306.63756-1-coiby.xu@gmail.com>
+ <20201014104306.63756-2-coiby.xu@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zR4_.Oj_lERxXh4PE_i3BJW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014104306.63756-2-coiby.xu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zR4_.Oj_lERxXh4PE_i3BJW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020-10-14 18:43 +0800, Coiby Xu wrote:
+> To avoid namespace clashes with other qlogic drivers and also for the
+> sake of naming consistency, use the "qlge_" prefix as suggested in
+> drivers/staging/qlge/TODO.
+> 
+> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/staging/qlge/TODO           |    4 -
+>  drivers/staging/qlge/qlge.h         |  190 ++--
+>  drivers/staging/qlge/qlge_dbg.c     | 1073 ++++++++++++-----------
+>  drivers/staging/qlge/qlge_ethtool.c |  231 ++---
+>  drivers/staging/qlge/qlge_main.c    | 1257 +++++++++++++--------------
+>  drivers/staging/qlge/qlge_mpi.c     |  352 ++++----
+>  6 files changed, 1551 insertions(+), 1556 deletions(-)
+> 
+> diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
+> index f93f7428f5d5..5ac55664c3e2 100644
+> --- a/drivers/staging/qlge/TODO
+> +++ b/drivers/staging/qlge/TODO
+> @@ -28,10 +28,6 @@
+>  * the driver has a habit of using runtime checks where compile time checks are
+>    possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
+>  * reorder struct members to avoid holes if it doesn't impact performance
+> -* in terms of namespace, the driver uses either qlge_, ql_ (used by
+> -  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
+> -  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
+> -  prefix.
 
-Hi Alex,
+You only renamed ql -> qlge. The prefix needs to be added where there is
+currently none like the second example of that text.
 
-On Tue, 13 Oct 2020 13:20:16 -0600 Alex Williamson <alex.williamson@redhat.=
-com> wrote:
->
-> Thanks, Stephen.  Diana has posted a 32bit build fix which I've merged,
-> maybe that was the error.  Also Diana's series in my branch is currently
-> dependent on fsl-bus support in GregKH's char-misc-next branch.  Looking
-> at the log from the successful build, I wonder if our branches are just
-> in the wrong order (vfio/next processed on line 341, char-misc-next
-> processed on 387).  I don't know if you regularly re-order for this
-> sort of thing, otherwise it should work out when Greg's branch gets
-> merged, but testing sooner in next would be preferred.
-
-I have put the vfio tree after the char-misc tree today (so hopefully
-it will build).  The proper way to do this is for you and Greg to have
-a shared branch with the commits you both depend on and bot merge that
-branch.  That way, it doesn't matter what order the tress are merged
-(by me or Linus).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/zR4_.Oj_lERxXh4PE_i3BJW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+HntcACgkQAVBC80lX
-0GxTtAf4yc7xWhoGoCFeGsRi2+kdzuflkHfcqGNZLuXhs6WYn9qJBdszO6/8K7O6
-U19EVm6oY7LJn4+DlAMNA0ldy7eaKntVEHZlIs6X+XudvnJULnd31drQVc/G7CxI
-rtAtjBGjkjTG+BQJkeXM7Szi2zqWOdjVeOMomc9an/F8kn7bLoOnX4svlYzus7d6
-+jWzwTNPO18DEChXaJo/YYPnQx2MgjsI91p2bEUksfz4a2QJF1X1uOPOpO2bSUkh
-iehFJOcpyF27s6l6cC+kUAP3Za4WxkFQ8b8ToXhsZmxFbEb/Fs6e2S4IvVNsmTnQ
-dnLsLNFtfki5/pCBGIIeFKhXJ2Ti
-=kcqa
------END PGP SIGNATURE-----
-
---Sig_/zR4_.Oj_lERxXh4PE_i3BJW--
+Besides, the next patch reintroduces the name struct ql_adapter.
