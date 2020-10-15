@@ -2,137 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2A728F72F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAE628F72A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgJOQw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 12:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730085AbgJOQwz (ORCPT
+        id S1731029AbgJOQwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:52:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22734 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730085AbgJOQwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 12:52:55 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8035BC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:52:55 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id c3so2835770ybl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 09:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kMr40LI/hXcWSQOOPZsCuoJBcw+0XKBqS6dhgqIQMko=;
-        b=SDoAAQkWLCC2CkjWAeHxvm15SKFsOztI8gbQF02ZA9606gUcHwv/NfHe/aWdYXy0f+
-         IIE0nZgGXJfdssTpvo3/MzvXFGaks0dvKHV4q37EbIQ6BrHTZXU704YMuo6PbLuv3UUU
-         JF66q1OHUVsABa2fRI0XBdDlKTcfCCmLfnsRq0Xj6PEPsp1f8zXXhx1fcf4nYXM6qqLN
-         H3mCx56zOs41I0md0TPtr5kz9jgePYIiaUn/iBc8ERntQ3FPbE+8sSng7BwJiZ+ND2vm
-         fOLBD3NmbEE9HMo0Ebq7Mg8PvMFcewF85ASCRWpQw9GkzTcNKUe/PSyIx9hb69Q52hFi
-         3oyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kMr40LI/hXcWSQOOPZsCuoJBcw+0XKBqS6dhgqIQMko=;
-        b=C6r78Z5+d5MWp7Zb4NdlFj7anumxF4S3NOGu3SRuhX80gmRycuQ2vuqxt4w+HVDzxC
-         /7SlJ865VjzzRnKaO3BeanZwBBQD8Wv8bwKVol1crVFJIIft7u5KPwkmJrHnbJw0LlbE
-         3imtn7uJUPkuR1uvpawuDf3JJWTD4/TCXCOX+EGXQKIDQt9qwr6hpSrx71P/3WkqAH8v
-         lsWu7bxtxhJtpKX3qCv19BySnSDPQxyeHGK2HvkKUr+Ie1yoe7oE6wvBdYZJaDEQ0VGz
-         S5qnRjSV3micawOmmvgXuiBvthqDuvGnIG+dhH2CE5ql8bvTmoWGv/IuSftGKTBj6ZMX
-         8Frg==
-X-Gm-Message-State: AOAM532mKveUXOj9YIo4siJY49yw74z5gLQ7dPfCMsdgBQ7h0jBUnQ2M
-        RujStYW/YAE5bICGrrXFd+8lyVdERFN+yax7diusRQ==
-X-Google-Smtp-Source: ABdhPJxCJTI4uchgyYaGQsVOXlattOcLY8lElgxdbtmYlmczpvbLirt51rqV00R+R7TNCDkQtdynZAIl6CZQmMot53U=
-X-Received: by 2002:a25:380c:: with SMTP id f12mr7111559yba.32.1602780774204;
- Thu, 15 Oct 2020 09:52:54 -0700 (PDT)
+        Thu, 15 Oct 2020 12:52:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602780758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BwZ2RO/PthchT0q2HhH4BHmetPcJkEk1Sez5Pbqx4Lk=;
+        b=LHWK8B7iC22fX4fI4JMW/ikHAClFrySFB1KpFZ4Hwva0gxwGGS3QS33LvDDRI6soTAl3dy
+        5/G8/tq8XueWbNbku/dVihi5tVQwCn+lZDODgqnfuS0MVT0iGirmK0kMFNSrAI8fX4zaot
+        ohI4CtCwSvg7GPkCFqMowAFE4mleOBM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-OQB3MFcmNKKVut8qKvf4jQ-1; Thu, 15 Oct 2020 12:52:36 -0400
+X-MC-Unique: OQB3MFcmNKKVut8qKvf4jQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C8DF835B74;
+        Thu, 15 Oct 2020 16:52:34 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A51DD76649;
+        Thu, 15 Oct 2020 16:52:30 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 12:52:29 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
+        Milan Broz <gmazyland@gmail.com>, dm-devel@redhat.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v2] dm verity: Add support for signature verification
+ with 2nd keyring
+Message-ID: <20201015165229.GA5513@redhat.com>
+References: <20201015150504.1319098-1-mic@digikod.net>
 MIME-Version: 1.0
-References: <20201015114346.15743-1-nsaenzjulienne@suse.de>
-In-Reply-To: <20201015114346.15743-1-nsaenzjulienne@suse.de>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 15 Oct 2020 09:52:18 -0700
-Message-ID: <CAGETcx9OxQKtYwYtHS7brKpUxfbcbd+VWju3tB1MSPR4dUYxQg@mail.gmail.com>
-Subject: Re: [RFC] of/platform: Create device link between simple-mfd and its children
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, f.fainelli@gmail.com,
-        linux-rpi-kernel@lists.infradead.org,
-        u.kleine-koenig@pengutronix.de,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201015150504.1319098-1-mic@digikod.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 4:43 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> 'simple-mfd' usage implies there might be some kind of resource sharing
-> between the parent device and its children. By creating a device link
-> with DL_FLAG_AUTOREMOVE_CONSUMER we make sure that at no point in time
-> the parent device is unbound while leaving its children unaware that
-> some of their resources disappeared.
+On Thu, Oct 15 2020 at 11:05am -0400,
+Mickaël Salaün <mic@digikod.net> wrote:
 
-Doesn't the parent child relationship already ensure that? If not,
-maybe that's what needs fixing?
-
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
->
+> From: Mickaël Salaün <mic@linux.microsoft.com>
+> 
+> Add a new configuration DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
+> to enable dm-verity signatures to be verified against the secondary
+> trusted keyring.  Instead of relying on the builtin trusted keyring
+> (with hard-coded certificates), the second trusted keyring can include
+> certificate authorities from the builtin trusted keyring and child
+> certificates loaded at run time.  Using the secondary trusted keyring
+> enables to use dm-verity disks (e.g. loop devices) signed by keys which
+> did not exist at kernel build time, leveraging the certificate chain of
+> trust model.  In practice, this makes it possible to update certificates
+> without kernel update and reboot, aligning with module and kernel
+> (kexec) signature verification which already use the secondary trusted
+> keyring.
+> 
+> Cc: Alasdair Kergon <agk@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Cc: Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>
+> Cc: Mike Snitzer <snitzer@redhat.com>
+> Cc: Milan Broz <gmazyland@gmail.com>
+> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
 > ---
->
-> Some questions:
->
-> - To what extent do we care about cleanly unbinding platform devices at
->   runtime? My rationale here is: "It's a platform device, for all you
->   know you might be unbinding someting essential to the system. So if
->   you're doing it, you better know what you're doing."
->
-> - Would this be an abuse of device links?
+> 
+> Previous version:
+> https://lore.kernel.org/lkml/20201002071802.535023-1-mic@digikod.net/
+> 
+> Changes since v1:
+> * Extend the commit message (asked by Jarkko Sakkinen).
+> * Rename the Kconfig "help" keyword according to commit 84af7a6194e4
+>   ("checkpatch: kconfig: prefer 'help' over '---help---'").
 
-Feels like it.
+Can you please explain why you've decided to make this a Kconfig CONFIG
+knob?  Why not either add: a dm-verity table argument? A dm-verity
+kernel module parameter? or both (to allow a particular default but then
+per-device override)?
 
->
-> - If applying this to all simple-mfd devices is a bit too much, would
->   this be acceptable for a specific device setup. For example RPi4's
->   firmware interface (simple-mfd user) is passed to consumer drivers
->   trough a custom API (see rpi_firmware_get()). So, when unbound,
->   consumers are left with a firmware handle that points to nothing.
+Otherwise, _all_ DM verity devices will be configured to use secondary
+keyring fallback.  Is that really desirable?
 
-You can always create device link between the real suppliers and consumers.
+Regardless, I really don't see why a Kconfig knob is appropriate.
 
->
->  drivers/of/platform.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> index b557a0fcd4ba..8d5b55b81764 100644
-> --- a/drivers/of/platform.c
-> +++ b/drivers/of/platform.c
-> @@ -390,8 +390,14 @@ static int of_platform_bus_create(struct device_node *bus,
->         }
->
->         dev = of_platform_device_create_pdata(bus, bus_id, platform_data, parent);
-> -       if (!dev || !of_match_node(matches, bus))
-> -               return 0;
-> +       if (!dev)
-> +              return 0;
+Mike
+
+
+> ---
+>  drivers/md/Kconfig                | 13 ++++++++++++-
+>  drivers/md/dm-verity-verify-sig.c |  9 +++++++--
+>  2 files changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> index 30ba3573626c..1d68935e45ef 100644
+> --- a/drivers/md/Kconfig
+> +++ b/drivers/md/Kconfig
+> @@ -530,11 +530,22 @@ config DM_VERITY_VERIFY_ROOTHASH_SIG
+>  	bool "Verity data device root hash signature verification support"
+>  	depends on DM_VERITY
+>  	select SYSTEM_DATA_VERIFICATION
+> -	  help
+> +	help
+>  	  Add ability for dm-verity device to be validated if the
+>  	  pre-generated tree of cryptographic checksums passed has a pkcs#7
+>  	  signature file that can validate the roothash of the tree.
+>  
+> +	  By default, rely on the builtin trusted keyring.
 > +
-> +       if (parent && of_device_is_compatible(parent->of_node, "simple-mfd"))
-> +              device_link_add(&dev->dev, parent, DL_FLAG_AUTOREMOVE_CONSUMER);
+> +	  If unsure, say N.
 > +
-> +       if (!of_match_node(matches, bus))
-> +              return 0;
-
-Even if we think we should add this between parent and child (this
-still seems like not a good place to do it). Matching it by compatible
-string and doing special stuff doesn't feel right inside here.
-
--Saravana
-
->
->         for_each_child_of_node(bus, child) {
->                 pr_debug("   create child: %pOF\n", child);
-> --
+> +config DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
+> +	bool "Verity data device root hash signature verification with secondary keyring"
+> +	depends on DM_VERITY_VERIFY_ROOTHASH_SIG
+> +	depends on SECONDARY_TRUSTED_KEYRING
+> +	help
+> +	  Rely on the secondary trusted keyring to verify dm-verity signatures.
+> +
+>  	  If unsure, say N.
+>  
+>  config DM_VERITY_FEC
+> diff --git a/drivers/md/dm-verity-verify-sig.c b/drivers/md/dm-verity-verify-sig.c
+> index 614e43db93aa..29385dc470d5 100644
+> --- a/drivers/md/dm-verity-verify-sig.c
+> +++ b/drivers/md/dm-verity-verify-sig.c
+> @@ -119,8 +119,13 @@ int verity_verify_root_hash(const void *root_hash, size_t root_hash_len,
+>  	}
+>  
+>  	ret = verify_pkcs7_signature(root_hash, root_hash_len, sig_data,
+> -				sig_len, NULL, VERIFYING_UNSPECIFIED_SIGNATURE,
+> -				NULL, NULL);
+> +				sig_len,
+> +#ifdef CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
+> +				VERIFY_USE_SECONDARY_KEYRING,
+> +#else
+> +				NULL,
+> +#endif
+> +				VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
+>  
+>  	return ret;
+>  }
+> 
+> base-commit: bbf5c979011a099af5dc76498918ed7df445635b
+> -- 
 > 2.28.0
->
+> 
+
