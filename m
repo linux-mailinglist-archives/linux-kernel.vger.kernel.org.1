@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AB328ECAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 07:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB96B28ECAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 07:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgJOFbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 01:31:01 -0400
-Received: from ozlabs.org ([203.11.71.1]:60057 "EHLO ozlabs.org"
+        id S1727892AbgJOFcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 01:32:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726323AbgJOFbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 01:31:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726307AbgJOFcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 01:32:13 -0400
+Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CBdDK6lj7z9sTK;
-        Thu, 15 Oct 2020 16:30:57 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602739858;
-        bh=6XjoihXamGwMpFOxHPeEL5mGgZsr5AN5KAvw5E5fVJc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=i64oOYojMhqPe+O/soumICNFh8MVePo9b1PR/FaP/aIRgmTU50heUtOFQ8Xp7TCnv
-         HMXX+IC86xKu2rZ9p7i0jmKsAoG1GRXVkQ8Vd5zUtnrvn7m4jiB/MPTKHIWDRqLv1y
-         /xEC4gGvvfH3mYxc7uTLWGJUtIae84UAJ0W7FwxvMN/RcDE1hKSYeGG8opuz12trsL
-         l02KaMTZIw9FbTskA7N1SGkmh7iilpiRn7DA7mYIxFE9YYT6nn6NasWW/YDlbrvhZj
-         M7aM4ZWMxonopUmjqCBAM3W2pW3d3ln57qeyDUYGQyvD1MZqLOII/ZOiSG9RcFbcFU
-         h4ylOoBirg4Ug==
-Date:   Thu, 15 Oct 2020 16:30:56 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Vitor Massaru Iha <vitor@massaru.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the kunit-next tree
-Message-ID: <20201015163056.56fcc835@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id DD27922247;
+        Thu, 15 Oct 2020 05:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602739932;
+        bh=tvTGnLhwyWTmpxEH0NnPzvKJR5lhY8hgxX9pTfDeJ7Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dOSxk4aSmgDgsx8kagXkXRcCPJbWMKyZNP8hTxYjqwgvfcr3x9h4N4ao6ekx1vw+5
+         cutUKSs1B2RbWfYgSC/kksDS3vPvbDhni8FcWbKfz8c7Ym9usMp4XTMwjQ4XGx7LlX
+         tNz/SwjvRAw48vIpXa1RTua8RfsYLYN+ivWThV34=
+Date:   Thu, 15 Oct 2020 07:32:07 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 35/80] docs: fs: fscrypt.rst: get rid of :c:type:
+ tags
+Message-ID: <20201015073207.7504a55b@coco.lan>
+In-Reply-To: <20201014215954.GB2545693@gmail.com>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+        <2ca36d4903a6c024c7605cd58eab417c8e5296b5.1602589096.git.mchehab+huawei@kernel.org>
+        <20201013172512.GA1306858@gmail.com>
+        <20201014085907.7da5bed3@coco.lan>
+        <20201014215954.GB2545693@gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uxRZX2wYv3FrujgAK1vr0pB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uxRZX2wYv3FrujgAK1vr0pB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Em Wed, 14 Oct 2020 14:59:54 -0700
+Eric Biggers <ebiggers@kernel.org> escreveu:
 
-Hi all,
+> On Wed, Oct 14, 2020 at 08:59:07AM +0200, Mauro Carvalho Chehab wrote:
+> > [PATCH v6.1 35/80] docs: fs: fscrypt.rst: get rid of :c:type: tags
+> > 
+> > The :c:type: tag has problems with Sphinx 3.x, as structs
+> > there should be declared with c:struct.
+> > 
+> > So, remove them, relying at automarkup.py extension to
+> > convert them into cross-references.
+> >
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> 
+> "relying at" => "relying on".
+> 
+> Otherwise looks fine, you can add:
+> 
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-After merging the kunit-next tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+Thank you for reviewing it!
 
-lib/bitfield_kunit.c: In function 'test_bitfields_compile':
-lib/bitfield_kunit.c:136:21: warning: unsigned conversion from 'int' to 'u1=
-6' {aka 'short unsigned int'} changes value from '393216' to '0' [-Woverflo=
-w]
-  136 |  u16_encode_bits(0, 0x60000);
-      |                     ^~~~~~~
-At top level:
-lib/bitfield_kunit.c:129:20: warning: 'test_bitfields_compile' defined but =
-not used [-Wunused-function]
-  129 | static void __init test_bitfields_compile(struct kunit *context)
-      |                    ^~~~~~~~~~~~~~~~~~~~~~
+> I do still wonder about your comment though:
+> 
+> > It should be said that, currently, if there's no documentation for "foo",
+> > automarkup will just keep using the regular text font, keeping the text
+> > untouched.  
+> 
+> That will apply to most (maybe all) of the structures mentioned in this file.
+> I expected that if the documentation system now automatically recognizes
+> 'struct foo', then it would render it in code font even when 'struct foo' isn't
+> documented.  Any particular reason why that isn't the case?  Not like I care
+> much myself, but it's a bit unexpected and it means this change actually makes
+> the rendered documentation look worse...
 
-Introduced by commit
+Yeah, I agree that using monospaced fonts on this case too would
+be nice. The C domain actually uses italic monospaced fonts for
+broken XREFs.
 
-  d2585f5164c2 ("lib: kunit: add bitfield test conversion to KUnit")
+I suspect that changing this at automarkup.py would be simple, but
+not sure if it would be safe.
 
---=20
-Cheers,
-Stephen Rothwell
+Jon can tell more about that, as he's the author of automarkup,
+but I suspect that the reason for the current behavior is to avoid 
+false-positives. 
 
---Sig_/uxRZX2wYv3FrujgAK1vr0pB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I mean, if "struct foo" symbol doesn't exist at the C domain, this
+might mean that the parser is doing something wrong. So, a more
+conservative approach is to keep the string as-is.
 
------BEGIN PGP SIGNATURE-----
+On the other hand, if one finds a valid "struct foo" using normal
+fonts, this would mean that either the doc is outdated, mentioning
+an struct that were removed/renamed or that there's a missing 
+kernel-doc markup.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+H3pEACgkQAVBC80lX
-0GyjnAf+I94zjO8B58HSHDRVEUZ0+tINq/CF7jB9nXKT0kA8ipwR5HxTyWOgWbDk
-NaRx+I6v7RwJRWdWjlyGU+nHEGYgTXHolDSb0m4N/VhyjNDOoS2nePI7q+j2acon
-iwfmF4wTOZIwQByipSkLBzqkn+tTNHGVWrq590HqcSozdnC+N8Do1adDEEKtKMQ9
-Uc1XlLCIxXwMlQQwdcTIxRYuHuCzH5mWbxAvk/NKb6wH7yyjOaEe2JaYD+BCWOwA
-pr4NEGLXONzM3hktLkSMticMNMZ2+27sODYWJ8ydN41EGqEX8pfGJDPBdlxB54xT
-M1iH3JSI6v9czM8vDqPWnui42aWYcA==
-=7KlZ
------END PGP SIGNATURE-----
+In any case, the fix is to simply fix the kernel-doc markup for
+struct foo.
 
---Sig_/uxRZX2wYv3FrujgAK1vr0pB--
+I guess in the future automarkup.py could issue a warning in
+order to warn about missing cross-references, perhaps when
+W=1 or W=2 is used.
+
+Thanks,
+Mauro
