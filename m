@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F58128E9F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5934828E9ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbgJOBZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:25:15 -0400
+        id S1732179AbgJOBYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:24:44 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728969AbgJOBYh (ORCPT
+        with ESMTP id S2387741AbgJOBYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 14 Oct 2020 21:24:37 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B2EC0F26F4
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:06:54 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u19so2239263ion.3
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:06:54 -0700 (PDT)
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB9AC045700;
+        Wed, 14 Oct 2020 18:07:59 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id h6so839991ybi.11;
+        Wed, 14 Oct 2020 18:07:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nuoA4nhqaT2r5Q46oH6MDqZrYkcrLiu5o7waToPeU4U=;
-        b=ZfM2dR1TVM9711DQqLS1u7B81AJpL280LQQTwlJw+3/gMKiDTmwBAI85Q+aCbOog6r
-         xyaCpCPr5oP/gIjJF4y8l7sZYHvPdjj6tGZuEZud6PFI7d6Gw154k4gtiTvQvaQho3TP
-         8LSCyi4Xajhw1knanNXpifLBMBtJd4S2L1MdM=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F+PgrjkcIkmu+076L7tWgIroll5ax17nHCM3RZy5YJY=;
+        b=WT2Rj2jw0/E5FIZbOZ0S882a+YX0FFzXV11/lzknamJ1ZSbdOQFQLRP8acyzhESnju
+         HerOSpCkFQsDI31snh3zgOEMCUddiS4ae2VNDilEqftnwDThN/oD0sfdnkaybjXckrQG
+         Hp4T2R4A8dHnk2JNMkle2mLly0Y+yiMxK4tyWci2fOp/TwMl8WN2fLL41CKUTig/UzkY
+         7pubICVz3XncFyDl/0CtZfJ5zVy/GJ7uX1ybvxF7wKqad6PavHwzBPo4jg8TtRN1SkoU
+         SCMsFjn4oC7Sxrg/PCVqFSDK0u0nlTWx4gUeqUcHCbLA39nwoKlORGvsLzgc0HJQ/qXN
+         7jvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nuoA4nhqaT2r5Q46oH6MDqZrYkcrLiu5o7waToPeU4U=;
-        b=jqacmAHor4TPBcQke41ih0Sg3xtLDktocJCTHWAP9q34sIHW41NmCw/wyZePbqJLq0
-         FKtTMYI21BZgsc6NatihHui+HTnKGowvG6vkBRWpE30nmOTTIh14QvHcvFq1aJfDBpGQ
-         P6zXAIHS1QLS4Sb1hA7VzndyLSUtRsCpnf+YcfqdWw91JztFPE8j9Wzq2Uke15XcZNIP
-         NvU7LyiBcMluNaznwMNg8LML/NBqt7MZ2IURFeenKcS0VXzUihExNLsRL54pZIdezhhA
-         axR04n8qh5HBxX75+WPJ7dWTSxerQS1KPr/GpMHb8bGezI537KhxIqxQgkXuEPwzY3bp
-         YQdg==
-X-Gm-Message-State: AOAM5305zRMppqtINa5n/HJNI04P0IVRsqyvcvHb0W3I14WHBo950nWH
-        xrLvCKYcLsdOTkr3ybypALpJ5A==
-X-Google-Smtp-Source: ABdhPJwZ8n+nuyRdHP5Sff3yx8mk/bObtC07yQCShDgVe4UfTBPTIBPbPI99IitZ3cn80JwKdFFEQg==
-X-Received: by 2002:a02:380c:: with SMTP id b12mr1734863jaa.9.1602724014000;
-        Wed, 14 Oct 2020 18:06:54 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id b2sm1042048ila.62.2020.10.14.18.06.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 18:06:53 -0700 (PDT)
-Subject: Re: [PATCH v2 24/24] counters: docs: add a missing include
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo?= <ricardo.canuelo@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <74814cc3d2b2ac3fe7c10ff2045c77691bacf64b.1602590106.git.mchehab+huawei@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <982ecabd-330d-7ef9-9287-0eda5ba399b3@linuxfoundation.org>
-Date:   Wed, 14 Oct 2020 19:06:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F+PgrjkcIkmu+076L7tWgIroll5ax17nHCM3RZy5YJY=;
+        b=dAjFh4VqZHziNqc2S2pnF2F/HPsOVr02j+MvcF3AcqlB6mJjo24aG7TU96ny80OaAq
+         I4zbIN2W/MzJiUTaS7GBowTd5twT/yfK0miQrR+vvQl9M7K8bM2VFUFEm05Egubzr5xD
+         KcB+hV36OLKaUz2zxtR6+S4ya2mpvGunVAJveGrINMw75SqXeNqCspdm+LR7/Gq3SVsu
+         WrMuCw3IF9a3BhAYcj0gHRq/kc5XGaeKNXjSI5eudb/dYgeJQkSn4nzY4qBuQZ/YeCoK
+         R8c25Aq5sCIIsdiMJUuJnW5DSg9EOue7Pi5Lum2Gp/m8MNM6ebmFhhU0TmRS8ARJFweQ
+         /djw==
+X-Gm-Message-State: AOAM5318jwmj4WOEeKoWA/HAdipskCUdBsoxgoOIMU2utJmBoQ24K3BC
+        zMw6Y1ixJEQkaBxDF8k7J8l3A583dhugpq9LuFs=
+X-Google-Smtp-Source: ABdhPJyn6PZb5Tce9qU8H9wCf29g15keBR5Bt+3V81qDyDp+sifB49fkwStSiZ4BgmTqR+i8EP8BJkwNrJBg144oHzI=
+X-Received: by 2002:a25:2687:: with SMTP id m129mr1993747ybm.425.1602724079004;
+ Wed, 14 Oct 2020 18:07:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <74814cc3d2b2ac3fe7c10ff2045c77691bacf64b.1602590106.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201014204529.934574-1-andrii@kernel.org> <20201014230812.GK3576660@ZenIV.linux.org.uk>
+In-Reply-To: <20201014230812.GK3576660@ZenIV.linux.org.uk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 14 Oct 2020 18:07:48 -0700
+Message-ID: <CAEf4BzZQdkJaaqx7CQ6kjA+_nKuE3N1sBzR933wohmB+a5GvpA@mail.gmail.com>
+Subject: Re: [PATCH] fs: fix NULL dereference due to data race in prepend_path()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kernel Team <kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/13/20 6:14 AM, Mauro Carvalho Chehab wrote:
-> Changeset 37a0dbf631f6 ("counters: Introduce counter_atomic* counters")
-> 
-> Is causing two new warnings:
-> 
-> 	.../Documentation/core-api/counters.rst:8: WARNING: Undefined substitution referenced: "copy".
-> 	.../Documentation/core-api/counters.rst:9: WARNING: Undefined substitution referenced: "copy".
-> 
-> Because it forgot to include isonum.txt, which defines |copy|
-> macro.
-> 
-> While here, also add it to core-api index file, in order to
-> solve this warning:
-> 
-> 	.../Documentation/core-api/counters.rst: WARNING: document isn't included in any toctree
-> 
-> Fixes: 37a0dbf631f6 ("counters: Introduce counter_atomic* counters")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   Documentation/core-api/counters.rst | 1 +
->   Documentation/core-api/index.rst    | 1 +
->   2 files changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/core-api/counters.rst b/Documentation/core-api/counters.rst
-> index 642d907f4d3a..2821aebf3f45 100644
-> --- a/Documentation/core-api/counters.rst
-> +++ b/Documentation/core-api/counters.rst
-> @@ -1,4 +1,5 @@
->   .. SPDX-License-Identifier: GPL-2.0
-> +.. include:: <isonum.txt>
->   
->   ======================
->   Simple atomic counters
-> diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-> index 69171b1799f2..cf9cd44c1191 100644
-> --- a/Documentation/core-api/index.rst
-> +++ b/Documentation/core-api/index.rst
-> @@ -43,6 +43,7 @@ Library functionality that is used throughout the kernel.
->      this_cpu_ops
->      timekeeping
->      errseq
-> +   counters
->   
->   Concurrency primitives
->   ======================
-> 
+On Wed, Oct 14, 2020 at 4:08 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Wed, Oct 14, 2020 at 01:45:28PM -0700, Andrii Nakryiko wrote:
+> > Fix data race in prepend_path() with re-reading mnt->mnt_ns twice without
+> > holding the lock. is_mounted() does check for NULL, but is_anon_ns(mnt->mnt_ns)
+> > might re-read the pointer again which could be NULL already, if in between
+> > reads one of kern_unmount()/kern_unmount_array()/umount_tree() sets mnt->mnt_ns
+> > to NULL.
+>
+> Cute...  What config/compiler has resulted in that?  I agree with the analysis, but
 
-Thank you for the patch. I will add this to my patch series.
+Don't know for sure, but nothing special or exotic, a typical Facebook
+production kernel config and some version of GCC (I didn't check
+exactly which one).
 
-thanks,
--- Shuah
+Just given enough servers in the fleet, with time and intensive
+workloads races like this, however unlikely, do surface up pretty
+regularly.
+
+> I really hate the open-coded (and completely unexplained) use of IS_ERR_OR_NULL()
+> there.
+>
+> > -                     if (is_mounted(vfsmnt) && !is_anon_ns(mnt->mnt_ns))
+> > +                     mnt_ns = READ_ONCE(mnt->mnt_ns);
+> > +                     /* open-coded is_mounted() to use local mnt_ns */
+> > +                     if (!IS_ERR_OR_NULL(mnt_ns) && !is_anon_ns(mnt_ns))
+> >                               error = 1;      // absolute root
+> >                       else
+> >                               error = 2;      // detached or not attached yet
+>
+> Better turn that into an inlined helper in fs/mount.h, next to is_mounted(), IMO,
+> and kill that IS_ERR_OR_NULL garbage there.  What that thing does is
+>         if (ns == NULL || ns == MNT_NS_INTERNAL)
+> and it's *not* on any kind of hot path to warrant that kind of microoptimizations.
+
+Sounds good. I didn't know code well enough to infer NULL ||
+MNT_NS_INTERNAL instead of IS_ERR_OR_NULL from is_mounted(), so just
+open-coded the latter.
+
+>
+> So let's make that
+>
+> static inline bool is_real_ns(struct mnt_namespace *mnt_ns)
+> {
+>         return mnt_ns && mnt_ns != MNT_NS_INTERNAL;
+> }
+>
+> turn is_mounted(m) into is_real_ns(m->mnt_ns) and replace that line in your fix
+> with
+>                         if (is_real_ns(mnt_ns) && !is_anon_ns(mnt_ns))
+>
+> Objections?
+
+Nope, I'll send a follow-up patch, thanks.
