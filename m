@@ -2,58 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A809A28F2F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE4428F2F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgJONMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:12:09 -0400
-Received: from smtprelay0190.hostedemail.com ([216.40.44.190]:46922 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728639AbgJONMH (ORCPT
+        id S1729009AbgJONMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 09:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728885AbgJONMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 09:12:07 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 28B93181D302B;
-        Thu, 15 Oct 2020 13:12:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1560:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3870:3876:4321:5007:6119:10004:10400:10848:11658:11914:12048:12297:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21092:21627:21972:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: crack74_231335c27214
-X-Filterd-Recvd-Size: 1287
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 15 Oct 2020 13:12:04 +0000 (UTC)
-Message-ID: <0efd61190d00eec9c76e0ca949f3488fab1ab7c7.camel@perches.com>
-Subject: Re: [PATCH] scripts: Spelling:  Fix spelling memry to memory in
- /tools/nolibc/include/nolibc.h
-From:   Joe Perches <joe@perches.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        akpm@linux-foundation.org, colin.king@canonical.com,
-        sfr@canb.auug.org.au, wangqing@vivo.com, david@redhat.com,
-        xndchn@gmail.com, luca@lucaceresoli.net, ebiggers@google.com
-Cc:     linux-kernel@vger.kernel.org
-Date:   Thu, 15 Oct 2020 06:12:02 -0700
-In-Reply-To: <20201015130525.381818-1-unixbhaskar@gmail.com>
-References: <20201015130525.381818-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 15 Oct 2020 09:12:20 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0D4C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:12:18 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id j17so1132151ilr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JrQAp+G/w/HRcUvrALtAjr5XUD+f148osx1+XDbx/fQ=;
+        b=TMPDsFEY6QcbJz9eph5zwMwK3REFYpu/Kf99wKKHvUNjeCFeqY6R4mTOZY23moUy26
+         rurYaAvGUoHOtOoW+PHtt5/hXy+/j9VbDMicj8j+TyBnkBB20/J6FDtPRzgBNL49uuyw
+         CWKU3iFSYQLEpKIJCE9vhLrdWLv518JmrDHPkYRnHhJBJYn3KupmFAlwk8OHpWXg1sQB
+         RMd0Ynbr9DG5O4vK98dJCSYrY1ArHTTIYOflX4lx35q3XLYxiaTm27ZFwkr6UDSxjlK8
+         92zMXuTRKuoSztsTjE3N0yJfnq4Jk7d7yGtKXx3fLeZqjL3rnL6PRpSFH9Cnynkba7fP
+         W4eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JrQAp+G/w/HRcUvrALtAjr5XUD+f148osx1+XDbx/fQ=;
+        b=JfZX7qkNxknvdXSd8ckHr9mM9rgbnNTHRIN4D5kzpwahova8xsb9xwS3FoHISH06t5
+         WTrdXyXUztdTUmANKx67t6BhzBuWxXaHkkzBK97C4F8PK4iTBc7PU9k5kVM5PmI6cKKt
+         uLYXO7eAQ4rLA7BJ7ZzXvnQNiPK8OSt1gzoFeNX7ZeRSCBWaZBhb5XbbcdemGn9gpFuA
+         +mepupaChNb5lqfPt/5hFe8tOypD+mTBL0ji/EXElrwhr5PFPRvRJvz51Op2mYMR7FQn
+         VhBwisvCCxqrJunprJYLlLYx3shXhxaIuKPCwHGI4hlHAELaHCPEyWTIMSfxKCjSvnDu
+         U9lw==
+X-Gm-Message-State: AOAM5303Yj4+v0GrxZ4EBM0AOM9lr/ZYjH3H3kuIraW9LljJiGXvjBkD
+        NQo3AfqkQtwsc80a6HA5Jnonc7Mdp0fenQ==
+X-Google-Smtp-Source: ABdhPJzckRjsyjtt2YkhjIXx9g5RUmeO3YBn9nUW/Tceos9xwTtJgiku1z+klmtZupOu/z8YA1c/QQ==
+X-Received: by 2002:a92:7742:: with SMTP id s63mr833462ilc.74.1602767537685;
+        Thu, 15 Oct 2020 06:12:17 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id h125sm793569iof.53.2020.10.15.06.12.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 06:12:17 -0700 (PDT)
+Subject: Re: [PATCH][next] io_uring: fix flags check for the
+ REQ_F_WORK_INITIALIZED setting
+To:     Colin King <colin.king@canonical.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201015115550.485235-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <fc06e668-e358-9009-441e-d70b64285536@kernel.dk>
+Date:   Thu, 15 Oct 2020 07:12:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20201015115550.485235-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-15 at 18:35 +0530, Bhaskar Chowdhury wrote:
-> s/memry/memory/p
-[]
-> diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-[]
-> @@ -885,6 +885,7 @@ meetign||meeting
->  memeory||memory
->  memmber||member
->  memoery||memory
-> +memry ||memory
+On 10/15/20 5:55 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently the check for REQ_F_WORK_INITIALIZED is always true because
+> the | operator is being used. I believe this check should be checking
+> if the bit is set using the & operator.
 
-Spaces are not used in these entries.
+It should - I folded in the incremental from Pavel. This just meant that
+we took the slow and safe path, but it obviously should be an AND here.
 
+-- 
+Jens Axboe
 
