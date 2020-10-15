@@ -2,164 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659D228EF4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F68128EF4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 11:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730623AbgJOJS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 05:18:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43194 "EHLO mail.kernel.org"
+        id S1730632AbgJOJUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 05:20:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38228 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729296AbgJOJS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 05:18:29 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EC7E22261;
-        Thu, 15 Oct 2020 09:18:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602753508;
-        bh=LcUjDS/UxFDzhKw9Qv4zxqtM0hewtDnElII8YgYlyfQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cBNJ6mVo6CxYOLvtq59I4vSYni922TnxPNEG+VJMSbZ0E4qPvh6FrhZEfZrtCDyZJ
-         D/7gFjqEpcf4ggWZBhegYDphrYNCyDaO+vrNJpt1ZmqQdrZpXw+Ojj2UBuMcpF9XmV
-         /pbXjLSC39JPB3x4XxzIxyVUDsskyGYY7fq09PpA=
-Received: by mail-ot1-f51.google.com with SMTP id 32so2298587otm.3;
-        Thu, 15 Oct 2020 02:18:28 -0700 (PDT)
-X-Gm-Message-State: AOAM5309PIEnhHQvR+93Seu6xFRyCWqQIGvA2aF932KfaFj4Boyke1C9
-        snvfEm6kijLZMSXZ7tdVlUMucVB7xHjEQ8NAyac=
-X-Google-Smtp-Source: ABdhPJxVK5ZG5Dzh8L6dNVEJ1qz4kLfzxYZdKoh8V+gGkE12YkKWyEtd7MRDVxEdTSv8kOFxzLNhDJAd5NhWC9YsMtI=
-X-Received: by 2002:a9d:6a85:: with SMTP id l5mr2110017otq.77.1602753507055;
- Thu, 15 Oct 2020 02:18:27 -0700 (PDT)
+        id S1726239AbgJOJUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 05:20:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602753631;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+dJHIbZ9xDbDoZCoYvRLfsd+h+MR29PHhVlxFEd7ZxQ=;
+        b=fHB7wxZ9rz6ZKMeSC1rrJZbwi1DedgVxNhXmpcvpDQj5EM0yZShkXfxsN0fvqe1JYzrvuj
+        5cG+muWpAY9sR2uMM3fFhVNJ4LkBaNEIRbtPQzfxdZ/1mvoXOujYabx4NUPA8pwJj1RIIq
+        yogQuWdzfLQxpaSBIERxFriPqWj5qJU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7DC1CAF4D;
+        Thu, 15 Oct 2020 09:20:31 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 11:20:30 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     linux-api@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        kernel-team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC]: userspace memory reaping
+Message-ID: <20201015092030.GB22589@dhcp22.suse.cz>
+References: <CAJuCfpGz1kPM3G1gZH+09Z7aoWKg05QSAMMisJ7H5MdmRrRhNQ@mail.gmail.com>
+ <CAJuCfpGjuUz5FPpR5iQ7oURJAhnP1ffBAnERuTUp9uPxQCRhDg@mail.gmail.com>
+ <20201014120937.GC4440@dhcp22.suse.cz>
+ <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201014191211.27029-1-nsaenzjulienne@suse.de>
- <20201014191211.27029-4-nsaenzjulienne@suse.de> <CAL_JsqKMGSCTmKF2Lt8GQFx0DVFFH1bLVBw=bRDM7upahGvKDQ@mail.gmail.com>
- <CAMj1kXFnLEpNTZVq16YgBomkZwwdGsH89OSELsYeiee4P+GLPg@mail.gmail.com> <607e809796bc57ee649390824c4ab2bb767b00ba.camel@suse.de>
-In-Reply-To: <607e809796bc57ee649390824c4ab2bb767b00ba.camel@suse.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 15 Oct 2020 11:18:16 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHwnfHZ9pU=AENmLZ7ZOeMjK04nMHv2N_Cv5Chmb3MNeg@mail.gmail.com>
-Message-ID: <CAMj1kXHwnfHZ9pU=AENmLZ7ZOeMjK04nMHv2N_Cv5Chmb3MNeg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/8] of/address: Introduce of_dma_get_max_cpu_address()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpEQ_ADYsMrF_zjfAeQ3d-FALSP+CeYsvgH2H1-FSoGGqg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Oct 2020 at 11:16, Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> On Thu, 2020-10-15 at 08:56 +0200, Ard Biesheuvel wrote:
-> > On Thu, 15 Oct 2020 at 00:03, Rob Herring <robh+dt@kernel.org> wrote:
-> > > On Wed, Oct 14, 2020 at 2:12 PM Nicolas Saenz Julienne
-> > > <nsaenzjulienne@suse.de> wrote:
-> > > > Introduce of_dma_get_max_cpu_address(), which provides the highest CPU
-> > > > physical address addressable by all DMA masters in the system. It's
-> > > > specially useful for setting memory zones sizes at early boot time.
-> > > >
-> > > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > >
-> > > > ---
-> > > >
-> > > > Changes since v2:
-> > > >  - Use PHYS_ADDR_MAX
-> > > >  - return phys_dma_t
-> > > >  - Rename function
-> > > >  - Correct subject
-> > > >  - Add support to start parsing from an arbitrary device node in order
-> > > >    for the function to work with unit tests
-> > > >
-> > > >  drivers/of/address.c | 42 ++++++++++++++++++++++++++++++++++++++++++
-> > > >  include/linux/of.h   |  7 +++++++
-> > > >  2 files changed, 49 insertions(+)
-> > > >
-> > > > diff --git a/drivers/of/address.c b/drivers/of/address.c
-> > > > index eb9ab4f1e80b..b5a9695aaf82 100644
-> > > > --- a/drivers/of/address.c
-> > > > +++ b/drivers/of/address.c
-> > > > @@ -1024,6 +1024,48 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
-> > > >  }
-> > > >  #endif /* CONFIG_HAS_DMA */
-> > > >
-> > > > +/**
-> > > > + * of_dma_get_max_cpu_address - Gets highest CPU address suitable for DMA
-> > > > + * @np: The node to start searching from or NULL to start from the root
-> > > > + *
-> > > > + * Gets the highest CPU physical address that is addressable by all DMA masters
-> > > > + * in the system (or subtree when np is non-NULL). If no DMA constrained device
-> > > > + * is found, it returns PHYS_ADDR_MAX.
-> > > > + */
-> > > > +phys_addr_t __init of_dma_get_max_cpu_address(struct device_node *np)
-> > > > +{
-> > > > +       phys_addr_t max_cpu_addr = PHYS_ADDR_MAX;
-> > >
-> > > One issue with using phys_addr_t is it may be 32-bit even though the
-> > > DT is 64-bit addresses. LPAE capable system with LPAE disabled. Maybe
-> > > the truncation is fine here? Maybe not.
-> > >
+On Wed 14-10-20 09:57:20, Suren Baghdasaryan wrote:
+> On Wed, Oct 14, 2020 at 5:09 AM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > > > The need is similar to why oom-reaper was introduced - when a process
+> > > > is being killed to free memory we want to make sure memory is freed
+> > > > even if the victim is in uninterruptible sleep or is busy and reaction
+> > > > to SIGKILL is delayed by an unpredictable amount of time. I
+> > > > experimented with enabling process_madvise(MADV_DONTNEED) operation
+> > > > and using it to force memory reclaim of the target process after
+> > > > sending SIGKILL. Unfortunately this approach requires the caller to
+> > > > read proc/pid/maps to extract the list of VMAs to pass as an input to
+> > > > process_madvise().
 > >
-> > PHYS_ADDR_MAX is the max addressable CPU address on the system, and so
-> > it makes sense to use it for the return type, and for the preliminary
-> > return value: this is actually what /prevents/ truncation, because we
-> > will only overwrite max_cpu_addr if the new u64 value is lower.
+> > Well I would argue that this is not really necessary. You can simply
+> > call process_madvise with the full address range and let the kernel
+> > operated only on ranges which are safe to tear down asynchronously.
+> > Sure that would require some changes to the existing code to not fail
+> > on those ranges if they contain incompatible vmas but that should be
+> > possible. If we are worried about backward compatibility then a
+> > dedicated flag could override.
 > >
->
-> Actually I now see how things might go south.
->
-> > > > +       if (ranges && len) {
-> > > > +               of_dma_range_parser_init(&parser, np);
-> > > > +               for_each_of_range(&parser, &range)
-> > > > +                       if (range.cpu_addr + range.size > cpu_end)
-> > > > +                               cpu_end = range.cpu_addr + range.size;
->
-> If cpu_end hits 0x1_00000000, it'll overflow to 0. This is possible on 32-bit
-> systems (LPAE or not). And something similar might happen on LPAE disabled
-> systems.
->
-> I could add some extra logic, something like:
->
->         /* We overflowed */
->         if (cpu_end < range.cpu_addr)
->                 cpu_end = PHYS_ADDR_MAX;
->
-> Which is not perfect but will cover most sensible cases.
->
-> Or simply deal internally in u64s, and upon returning, check if "max_cpu_addr"
-> falls higher than PHYS_ADDR_MAX.
->
+> 
+> IIUC this is very similar to the last option I proposed. I think this
+> is doable if we treat it as a special case. process_madvise() return
+> value not being able to handle a large range would still be a problem.
+> Maybe we can return MAX_INT in those cases?
 
-Just use a u64 for cpu_end
+madvise is documented to return 
+       On success, madvise() returns zero.  On error, it returns -1 and
+       errno is set appropriately.
+[...]
+NOTES
+   Linux notes
+       The Linux implementation requires that the address addr be
+       page-aligned, and allows length to be zero.  If there are some
+       parts of the specified address range that are not mapped, the
+       Linux version of madvise() ignores them and applies the call to
+       the rest (but returns ENOMEM from the system call, as it should).
 
-> > > > +
-> > > > +               if (max_cpu_addr > cpu_end)
-> > > > +                       max_cpu_addr = cpu_end;
+I have learned about ENOMEM case only now. And it seems this is indeed
+what we are implementing. So if we want to add a new mode to
+opportunistically attempt madvise on the whole given range without a
+failure then we need a specific flag for that. Advice is a number rather
+than a bitmask but (ab)using the top bit or use negative number space
+(e.g. -MADV_DONTNEED) for that sounds possible albeit bit hackish.
 
-... then this comparison and assignment will work as expected.
+[...]
+> > I do have a vague recollection that we have discussed a kill(2) based
+> > approach as well in the past. Essentially SIG_KILL_SYNC which would
+> > not only send the signal but it would start a teardown of resources
+> > owned by the task - at least those we can remove safely. The interface
+> > would be much more simple and less tricky to use. You just make your
+> > userspace oom killer or potentially other users call SIG_KILL_SYNC which
+> > will be more expensive but you would at least know that as many
+> > resources have been freed as the kernel can afford at the moment.
+> 
+> Correct, my early RFC here
+> https://patchwork.kernel.org/project/linux-mm/patch/20190411014353.113252-3-surenb@google.com
+> was using a new flag for pidfd_send_signal() to request mm reaping by
+> oom-reaper kthread. IIUC you propose to have a new SIG_KILL_SYNC
+> signal instead of a new pidfd_send_signal() flag and otherwise a very
+> similar solution. Is my understanding correct?
 
-> > > > +       }
-> > > > +
-> > > > +       for_each_available_child_of_node(np, child) {
-> > > > +               subtree_max_addr = of_dma_get_max_cpu_address(child);
-> > > > +               if (max_cpu_addr > subtree_max_addr)
-> > > > +                       max_cpu_addr = subtree_max_addr;
-> > > > +       }
-> > > > +
-> > > > +       return max_cpu_addr;
-> > > > +}
->
-> Regards,
-> Nicolas
->
+Well, I think you shouldn't focus too much on the oom-reaper aspect
+of it. Sure it can be used for that but I believe that a new signal
+should provide a sync behavior. People more familiar with the process
+management would be better off defining what is possible for a new sync
+signal.  Ideally not only pro-active process destruction but also sync
+waiting until the target process is released so that you know that once
+kill syscall returns the process is gone.
+
+-- 
+Michal Hocko
+SUSE Labs
