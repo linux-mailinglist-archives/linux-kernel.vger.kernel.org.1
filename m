@@ -2,229 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5636F28FB91
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A599C28FB96
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 01:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387608AbgJOXQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 19:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
+        id S2387691AbgJOXRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 19:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732872AbgJOXQe (ORCPT
+        with ESMTP id S1732764AbgJOXRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 19:16:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F124C061755;
-        Thu, 15 Oct 2020 16:16:34 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602803789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vjUedKRxgvfYMPV7hCjkN8m3z31Iq7E51pJ7H44Pj0s=;
-        b=jvaMb2FWyysyAuM4zwgrUWmKAVzz7LFxYs7aZtkIAlQQCQGaTQS0PCSrnzcO0oq1dWIMre
-        mUv+XOu6496lnJNyndNSQ0StMFzIZmP8taw7FDSVTVGS6RMY6zZ84Oy1uA8s8hQu4eTOw1
-        knbdQh843QNYc6VhlKmrnA01OPH4Qnv3iAY68r9xXihpj+q8yp5UMqSXLQjTk3EY192fFT
-        NiKpiAgSMJCCd63F4TwN0YwU6/pnju8BTO4Ub1BLZ7IQPMt79HZetzjLCOFfjgivcZP9FA
-        QLrUBCsgTkuG3R+c/eJrIGPZp6tkJDoQipMoKsQV9tTC26eDpZ2WPNWpYCU60g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602803789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vjUedKRxgvfYMPV7hCjkN8m3z31Iq7E51pJ7H44Pj0s=;
-        b=CBacvdxbYq+BPIvqZQNSV/dhhCJfkiEGVIkiHUx6YaniVlCBoHE53RNIpexQpmnYWZS7eQ
-        zUjRm7JEMQaPEiDg==
-To:     "Meisinger\, Andreas" <andreas.meisinger@siemens.com>,
-        "vinicius.gomes\@intel.com" <vinicius.gomes@intel.com>,
-        "Geva\, Erez" <erez.geva.ext@siemens.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "xiyou.wangcong\@gmail.com" <xiyou.wangcong@gmail.com>,
-        "davem\@davemloft.net" <davem@davemloft.net>,
-        "kuba\@kernel.org" <kuba@kernel.org>,
-        "jhs\@mojatatu.com" <jhs@mojatatu.com>,
-        "jiri\@resnulli.us" <jiri@resnulli.us>,
-        "avagin\@gmail.com" <avagin@gmail.com>,
-        "0x7f454c46\@gmail.com" <0x7f454c46@gmail.com>,
-        "ebiederm\@xmission.com" <ebiederm@xmission.com>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "john.stultz\@linaro.org" <john.stultz@linaro.org>,
-        "mkubecek\@suse.cz" <mkubecek@suse.cz>,
-        "oleg\@redhat.com" <oleg@redhat.com>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "richardcochran\@gmail.com" <richardcochran@gmail.com>,
-        "sboyd\@kernel.org" <sboyd@kernel.org>,
-        "vdronov\@redhat.com" <vdronov@redhat.com>,
-        "bigeasy\@linutronix.de" <bigeasy@linutronix.de>,
-        "frederic\@kernel.org" <frederic@kernel.org>,
-        "edumazet\@google.com" <edumazet@google.com>
-Cc:     "jesus.sanchez-palencia\@intel.com" 
-        <jesus.sanchez-palencia@intel.com>,
-        "vedang.patel\@intel.com" <vedang.patel@intel.com>,
-        "Sudler\, Simon" <simon.sudler@siemens.com>,
-        "Bucher\, Andreas" <andreas.bucher@siemens.com>,
-        "henning.schild\@siemens.com" <henning.schild@siemens.com>,
-        "jan.kiszka\@siemens.com" <jan.kiszka@siemens.com>,
-        "Zirkler\, Andreas" <andreas.zirkler@siemens.com>,
-        "Sakic\, Ermin" <ermin.sakic@siemens.com>,
-        "anninh.nguyen\@siemens.com" <anninh.nguyen@siemens.com>,
-        "Saenger\, Michael" <michael.saenger@siemens.com>,
-        "Maehringer\, Bernd" <bernd.maehringer@siemens.com>,
-        "gisela.greinert\@siemens.com" <gisela.greinert@siemens.com>,
-        "Geva\, Erez" <erez.geva.ext@siemens.com>,
-        "ErezGeva2\@gmail.com" <ErezGeva2@gmail.com>,
-        "guenter.steindl\@siemens.com" <guenter.steindl@siemens.com>
-Subject: Re: [PATCH 0/7] TC-ETF support PTP clocks series
-In-Reply-To: <AM0PR10MB3073F9694ECAD4F612A86FA7FA050@AM0PR10MB3073.EURPRD10.PROD.OUTLOOK.COM>
-References: <AM0PR10MB3073F9694ECAD4F612A86FA7FA050@AM0PR10MB3073.EURPRD10.PROD.OUTLOOK.COM>
-Date:   Fri, 16 Oct 2020 01:16:28 +0200
-Message-ID: <87ft6fulkj.fsf@nanos.tec.linutronix.de>
+        Thu, 15 Oct 2020 19:17:44 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30DEC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 16:17:43 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l18so268077pgg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 16:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+rVXmKyIACVLQAEQsLnR+KYW2Ry+sP13KrcdyTUrOvo=;
+        b=jOLIN5HGAQ/Dd0VHJBgok/wBN9gzJu/zsm5iFFXvoHhb226GshILExBojlROnv8b0y
+         r5Qxpf0c+WAaRHK4U7EJhKMsyczMGj2kGVGPSeEE7AnlvtVFXhfGcqxTHNhWMTJNC8pe
+         fWAz94cM13lQfVDHr9w87rM5WYM+J8Y3lu64A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+rVXmKyIACVLQAEQsLnR+KYW2Ry+sP13KrcdyTUrOvo=;
+        b=V9dDgPvA2KzYKw4wfgY8BE06FV1vLRlS9YwvAc8L6uZAQXXzh4kHBg8RYm6Ptrn4+2
+         f2Q0Y6VsF4OWMF7+AVdKnXcZDELznHBPnDOwPwfnmUfIMv8HdCZwNnjmRxQe9f+psAzd
+         pBwKzbiMsWCFb7J2XdEh8oRnvHGXp+vjQrBXXz3ks3UMma35ICwmPyFg1tHACETCAk3S
+         mVgF9G/73VGQd6tBN2SLESmc5z4L1GZgOkD+QUovo63mkyM6GJmU7Nrrelr1obEDFTNF
+         UxdtmncBTh8cSiBu3bW4Qev8fE0Mq8LTl+FtKcQFt9BGoUkUfX7jmlz3Aza8igFmQJKl
+         6tYA==
+X-Gm-Message-State: AOAM532tGhBFYub2MT3LTCnu4vefWlXa7kImdM+jkGz88Cq7vla+zkZ3
+        WBIM1EmpQVPOGqnucDOmoQTC1w==
+X-Google-Smtp-Source: ABdhPJwCXQmFNeXvfkclvNsvCCKyWIk69bItJtNIvSg3kfTgGBEqhu8/85bcvuFKCQkzMK69DfYVDA==
+X-Received: by 2002:a62:cfc2:0:b029:151:d47e:119b with SMTP id b185-20020a62cfc20000b0290151d47e119bmr889055pfg.46.1602803863416;
+        Thu, 15 Oct 2020 16:17:43 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a185sm405323pgc.46.2020.10.15.16.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 16:17:42 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] docs: deprecated.rst: Expand str*cpy() replacement notes
+Date:   Thu, 15 Oct 2020 16:17:31 -0700
+Message-Id: <20201015231730.2138505-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas,
+The notes on replacing the deprecated str*cpy() functions didn't call
+enough attention to the change in return type. Add these details and
+clean up the language a bit more.
 
-On Wed, Oct 14 2020 at 09:12, Andreas Meisinger wrote:
-> Sorry about the wrong format/style of my last mail, hope I did get it
-> right this time.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ Documentation/process/deprecated.rst | 44 ++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 18 deletions(-)
 
-No problem. Yes this looks better. The only thing which could be
-improved is that your mail client fails to add
-
- In-Reply-To: <messageid>
- References: <msgid1> <msgid2> ...
-
-headers and instead has the MS lookout specific
-
-Thread-Topic: [PATCH 0/7] TC-ETF support PTP clocks series
-Thread-Index: AdaiB8a+x+RhfhtwSZ+NKfvRdyiJkw=3D=3D
-
-headers. If you look at the lore archive you see the effect:
-
-  https://lore.kernel.org/r/AM0PR10MB3073F9694ECAD4F612A86FA7FA050@AM0PR10M=
-B3073.EURPRD10.PROD.OUTLOOK.COM
-
-and that happens to all mail clients which use threading based on the
-standard headers. There is config knob in lookout to enable them.
-
-> Let me first point at an important thing because we did have
-> discussions here about it too. As of the manpages Linux CLOCK_TAI
-> seems to be defined as an nonsettable clock which does have the same
-> behaviour as of international atomic time TAI. Yet if it's nonsettable
-> it can't be linked or synchronized to the value of International
-> Atomic Time?
->
-> On the other hand there seems to be code in place to change the
-> CLOCK_TAI offset thus making it basically sort of "setable"?
-
-It obviously needs to be modifiable in some way, otherwise
-synchronization to a master clock via PTP would not work at all.
-
-But it cannot be set in the way of settimeofday()/clock_settime() like
-CLOCK_REALTIME.
-
->> The user space daemon which does the correlation between these PTP
->> domains and TAI is required in any case, so the magic clock
->> TAI_PRIVATE is not having any advantage.
-
-> I think a userspace daemon handling the translation information
-> between different clocks would be fine. I think it's not really that
-> relevant who exactly does apply the translation. Kernel level might be
-> a little bit more precise but I guess it'd depend on other factors
-> too.
-
-Not really. The kernel still provides the timestamp pairs/triplets in the
-best way the underlying hardware provides it. Some hardware can even
-provide hardware assistet pairs of ART and PTP clock.
-
-> Yet all translation based approaches have in common, setting a clock,
-> renders translations done in past invalid. It would be required to fix
-> old translated values along with setting the clock. I assume we
-> couldn't distinguish between "translated" values and genuine values
-> after translation, so fixing them might not be possible at all.
-
-CLOCK_TAI is not really set after the initial sychronization. It's
-frequency corrected without causing jumps. PTP daemon uses a PLL based
-algorithm for that.
-
-Of course this adjustment has side effects for translation.
-
-> In our usecase we do have a clock for network operation which can't be
-> set. We can guarantee this because we are able to define the network
-> not being operational when the defined time is not available =F0=9F=98=89.
-> Having this defined the remaining option would be the target clock to
-> be set. As of your suggestion that would be CLOCK_TAI. So at this
-> point "setable" or "nonsettable" would become important. Here
-> "setable" would introduce a dependency between the clocks. Being
-> independent from clocks outside of our control was exactly the reason
-> to introduce the separate network clock. To me this means if CLOCK_TAI
-> could be changed by anything it couldn't be the base clock for our
-> usecase if it can't it might be a solution.
-
-It's under your control as system designer how you operate CLOCK_TAI.
-
-If you use the PTP daemon then it will sync CLOCK_TAI to the PTP clock
-of your choice. If you don't have PTP at all then you can use NTP to
-sync to a time server, which is less accurate. You can use PPS or just
-use nothing.
-
-The kernel does not care which non-standard base time or frequency you
-chose.
-
-Applications which communicate over network might care if the other side
-uses a differnet time universe. Log files which start at 1971 might be
-interesting to analyse against the log file of your other system which
-starts in 2020.
-
->> Depending on the frequency drift between CLOCK_TAI and clock PTP/$N
->> the timer expiry might be slightly inaccurate, but surely not more
->> inaccurate than if that conversion is done purely in user space.
->>
->> The self rearming posix timers would work too, but the self rearming
->> is based on CLOCK_TAI, so rounding errors and drift would be
->> accumulative. So I'd rather stay away from them.
->
-> As of the time ranges typically used in tsn networks the drift error
-> for single shot timers most likely isn't a big deal. But as you
-> suggest I'd stay away from long running timers as well rearming ones
-> too, I guess they'd be mostly unusable.
-
-Depends. It's a matter of hardware properties, system requirements,
-application/system designers decisions. So what you consider unusable
-for your system might be perfectly fine for others.
-
-If we add support for this type of correlation then of course these
-things need to be documented.
-
-> Right now there's only one timestamp in CLOCK_TAI format which is used
-> by ETF as well as by network card thus causing trouble if time is not
-> same there.
->
-> If we'd add an (optional) second timestamp to SKB which would have to
-> be set to network card time we could avoid the conversion error. As we
-> do know which network card will be used for sending the SKB we
-> wouldn't need a clock identifier for the second timestamp.  For
-> situations where the application is not aware of the network cards
-> timespace it wouldn't provide the second timestamp. In these
-> situations it'd behave identical to your suggestion. Here the
-> CLOCK_TAI timestamp would be translated to network card time based on
-> the information of the userspace daemon.
-
-That would work as long as the target PTP clock is correlated because
-the TAI timestamp is still required to make all of this work.
-
-There are probably quite some dragons lurking left and right if we go
-there, but it looks like a possible option.
-
-Thanks,
-
-        tglx
-
+diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+index ff71d802b53d..9d83b8db8874 100644
+--- a/Documentation/process/deprecated.rst
++++ b/Documentation/process/deprecated.rst
+@@ -106,23 +106,29 @@ NUL or newline terminated.
+ 
+ strcpy()
+ --------
+-strcpy() performs no bounds checking on the destination
+-buffer. This could result in linear overflows beyond the
+-end of the buffer, leading to all kinds of misbehaviors. While
+-`CONFIG_FORTIFY_SOURCE=y` and various compiler flags help reduce the
+-risk of using this function, there is no good reason to add new uses of
+-this function. The safe replacement is strscpy().
++strcpy() performs no bounds checking on the destination buffer. This
++could result in linear overflows beyond the end of the buffer, leading to
++all kinds of misbehaviors. While `CONFIG_FORTIFY_SOURCE=y` and various
++compiler flags help reduce the risk of using this function, there is
++no good reason to add new uses of this function. The safe replacement
++is strscpy(), though care must be given to any cases where the return
++value of strcpy() was used, since strscpy() does not return a pointer to
++the destination, but rather a count of non-NUL bytes copied (or negative
++errno when it truncates).
+ 
+ strncpy() on NUL-terminated strings
+ -----------------------------------
+-Use of strncpy() does not guarantee that the destination buffer
+-will be NUL terminated. This can lead to various linear read overflows
+-and other misbehavior due to the missing termination. It also NUL-pads the
+-destination buffer if the source contents are shorter than the destination
+-buffer size, which may be a needless performance penalty for callers using
+-only NUL-terminated strings. The safe replacement is strscpy().
+-(Users of strscpy() still needing NUL-padding should instead
+-use strscpy_pad().)
++Use of strncpy() does not guarantee that the destination buffer will
++be NUL terminated. This can lead to various linear read overflows and
++other misbehavior due to the missing termination. It also NUL-pads
++the destination buffer if the source contents are shorter than the
++destination buffer size, which may be a needless performance penalty
++for callers using only NUL-terminated strings. The safe replacement is
++strscpy(), though care must be given to any cases where the return value
++of strncpy() was used, since strscpy() does not return a pointer to the
++destination, but rather a count of non-NUL bytes copied (or negative
++errno when it truncates). Any cases still needing NUL-padding should
++instead use strscpy_pad().
+ 
+ If a caller is using non-NUL-terminated strings, strncpy() can
+ still be used, but destinations should be marked with the `__nonstring
+@@ -131,10 +137,12 @@ attribute to avoid future compiler warnings.
+ 
+ strlcpy()
+ ---------
+-strlcpy() reads the entire source buffer first, possibly exceeding
+-the given limit of bytes to copy. This is inefficient and can lead to
+-linear read overflows if a source string is not NUL-terminated. The
+-safe replacement is strscpy().
++strlcpy() reads the entire source buffer first (since the return value
++is meant to match that of strlen()). This read may exceed the destination
++size limit. This is both inefficient and can lead to linear read overflows
++if a source string is not NUL-terminated. The safe replacement is strscpy(),
++though care must be given to any cases where the return value of strlcpy()
++is used, since strscpy() will return negative errno values when it truncates.
+ 
+ %p format specifier
+ -------------------
+-- 
+2.25.1
 
