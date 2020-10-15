@@ -2,124 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE05728EBA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69FC28EBAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 05:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387888AbgJODiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 23:38:11 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57902 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387414AbgJODiL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 23:38:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09F3V1VA164274;
-        Thu, 15 Oct 2020 03:37:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=TdkRaI1K2emwA4ULWa95up2TNJiDjREeVjcHKnTnlc8=;
- b=Pao98oSADgnAZP4FqoZcmL520aM6F8URtxqADMzzibOeJu+0eMdV3tlmakSkxiSUJW8a
- gVgTQyf5XgUqxCnE3afABhc8rdXc/wdAb4efSpga6qsrIMi/iQacxA18I3nUhJJVs54l
- vJosugKlU/sgJpC3flxW7Z9CWUBfesGrbKztvMsret6XYq/Z1vRz2me1yxdDFogWVKak
- W9DzHtSElGx6ZbwjwBtFlr0kDV3HZsv6d++0eLCX2psVaUxd3Sltrmud7+3G1eKy2LnD
- tsLRzTBtPO/hMjSBL9oPStfCpo2EeFgGjU8/RNlS5mkfDOLLyCG0Rhb3H9sfloufUgWo 1w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 343vaegxm3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Oct 2020 03:37:52 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09F3TwkV122677;
-        Thu, 15 Oct 2020 03:37:51 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 343phqfj42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Oct 2020 03:37:51 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09F3bmcK019734;
-        Thu, 15 Oct 2020 03:37:48 GMT
-Received: from [192.168.0.108] (/70.36.60.91)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 14 Oct 2020 20:37:48 -0700
-Subject: Re: [PATCH 5/8] x86/clear_page: add clear_page_uncached()
-To:     Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-References: <20201014195823.GC18196@zn.tnic>
- <22E29783-F1F5-43DA-B35F-D75FB247475D@amacapital.net>
- <20201014211214.GD18196@zn.tnic>
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-Message-ID: <3de58840-1f4c-566b-3a66-46d57475820c@oracle.com>
-Date:   Wed, 14 Oct 2020 20:37:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729703AbgJODlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 23:41:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728934AbgJODla (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 23:41:30 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4617E20691;
+        Thu, 15 Oct 2020 03:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602733289;
+        bh=xFrCW4148ckM17ydN7CaAThkadlv2qP8pSAdSmybXcs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nlYLNSMFV4hSQCvImDl/Pa7ogKhAUZj91SvIV7C//M8i6DHpmZyD58tjzXAX4hwxa
+         GQirTEDNXtaXy4QJwgnNOVHzrHSa9XnZdqY0UVNshXjNRdU7YWnTXIe2XAtYlbP0h9
+         beYBQkVSXrzevxMxXdsA13HWlEwfT32hhtVAy5So=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D265E35229EB; Wed, 14 Oct 2020 20:41:28 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 20:41:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Qian Cai <cai@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [tip: locking/core] lockdep: Fix lockdep recursion
+Message-ID: <20201015034128.GA10260@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201013103406.GY2628@hirez.programming.kicks-ass.net>
+ <20201013104450.GQ2651@hirez.programming.kicks-ass.net>
+ <20201013112544.GZ2628@hirez.programming.kicks-ass.net>
+ <20201013162650.GN3249@paulmck-ThinkPad-P72>
+ <20201013193025.GA2424@paulmck-ThinkPad-P72>
+ <20201014183405.GA27666@paulmck-ThinkPad-P72>
+ <20201014215319.GF2974@worktop.programming.kicks-ass.net>
+ <20201014221152.GS3249@paulmck-ThinkPad-P72>
+ <20201014223954.GH2594@hirez.programming.kicks-ass.net>
+ <20201014235553.GU3249@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20201014211214.GD18196@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010150025
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9774 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 clxscore=1015
- impostorscore=0 phishscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010150025
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014235553.GU3249@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-14 2:12 p.m., Borislav Petkov wrote:
-> On Wed, Oct 14, 2020 at 02:07:30PM -0700, Andy Lutomirski wrote:
->> I assume it’s for a little optimization of clearing more than one
->> page per SFENCE.
->>
->> In any event, based on the benchmark data upthread, we only want to do
->> NT clears when they’re rather large, so this shouldn’t be just an
->> alternative. I assume this is because a page or two will fit in cache
->> and, for most uses that allocate zeroed pages, we prefer cache-hot
->> pages. When clearing 1G, on the other hand, cache-hot is impossible
->> and we prefer the improved bandwidth and less cache trashing of NT
->> clears.
+On Wed, Oct 14, 2020 at 04:55:53PM -0700, Paul E. McKenney wrote:
+> On Thu, Oct 15, 2020 at 12:39:54AM +0200, Peter Zijlstra wrote:
+> > On Wed, Oct 14, 2020 at 03:11:52PM -0700, Paul E. McKenney wrote:
+> > > On Wed, Oct 14, 2020 at 11:53:19PM +0200, Peter Zijlstra wrote:
+> > > > On Wed, Oct 14, 2020 at 11:34:05AM -0700, Paul E. McKenney wrote:
+> > > > > commit 7deaa04b02298001426730ed0e6214ac20d1a1c1
+> > > > > Author: Paul E. McKenney <paulmck@kernel.org>
+> > > > > Date:   Tue Oct 13 12:39:23 2020 -0700
+> > > > > 
+> > > > >     rcu: Prevent lockdep-RCU splats on lock acquisition/release
+> > > > >     
+> > > > >     The rcu_cpu_starting() and rcu_report_dead() functions transition the
+> > > > >     current CPU between online and offline state from an RCU perspective.
+> > > > >     Unfortunately, this means that the rcu_cpu_starting() function's lock
+> > > > >     acquisition and the rcu_report_dead() function's lock releases happen
+> > > > >     while the CPU is offline from an RCU perspective, which can result in
+> > > > >     lockdep-RCU splats about using RCU from an offline CPU.  In reality,
+> > > > >     aside from the splats, both transitions are safe because a new grace
+> > > > >     period cannot start until these functions release their locks.
+> > > > 
+> > > > But we call the trace_* crud before we acquire the lock. Are you sure
+> > > > that's a false-positive? 
+> > > 
+> > > You lost me on this one.
+> > > 
+> > > I am assuming that you are talking about rcu_cpu_starting(), because
+> > > that is the one where RCU is not initially watching, that is, the
+> > > case where tracing before the lock acquisition would be a problem.
+> > > You cannot be talking about rcu_cpu_starting() itself, because it does
+> > > not do any tracing before acquiring the lock.  But if you are talking
+> > > about the caller of rcu_cpu_starting(), then that caller should put the
+> > > rcu_cpu_starting() before the tracing.  But that would be the other
+> > > patch earlier in this thread that was proposing moving the call to
+> > > rcu_cpu_starting() much earlier in CPU bringup.
+> > > 
+> > > So what am I missing here?
+> > 
+> > rcu_cpu_starting();
+> >   raw_spin_lock_irqsave();
+> >     local_irq_save();
+> >     preempt_disable();
+> >     spin_acquire()
+> >       lock_acquire()
+> >         trace_lock_acquire() <--- *whoopsie-doodle*
+> > 	  /* uses RCU for tracing */
+> >     arch_spin_lock_flags() <--- the actual spinlock
 > 
-> Yeah, use case makes sense but people won't know what to use. At the
-> time I was experimenting with this crap, I remember Linus saying that
-> that selection should be made based on the size of the area cleared, so
-> users should not have to know the difference.
-I don't disagree but I think the selection of cached/uncached route should
-be made where we have enough context available to be able to choose to do
-this.
+> Gah!  Idiot here left out the most important part, so good catch!!!
+> Much easier this way than finding out about it the hard way...
+> 
+> I should have asked myself harder questions earlier today about moving
+> the counter from the rcu_node structure to the rcu_data structure.
+> 
+> Perhaps something like the following untested patch on top of the
+> earlier patch?
 
-This could be for example, done in mm_populate() or gup where if say the
-extent is larger than LLC-size, it takes the uncached path.
+Except that this is subtlely flawed also.  The delay cannot be at
+rcu_gp_cleanup() time because by the time we are working on the last
+leaf rcu_node structure, callbacks might already have started being
+invoked on CPUs corresponding to the earlier leaf rcu_node structures.
 
-> 
-> Which perhaps is the only sane use case I see for this.
-> 
->> Perhaps SFENCE is so fast that this is a silly optimization, though,
->> and we don’t lose anything measurable by SFENCEing once per page.
-> 
-> Yes, I'd like to see real use cases showing improvement from this, not
-> just microbenchmarks.
-Sure will add.
+So the (untested) patch below (on top of the other two) moves the delay
+to rcu_gp_init(), in particular, to the first loop that traverses only
+the leaf rcu_node structures handling CPU hotplug.
 
-Thanks
-Ankur
+Hopefully getting closer!
 
-> 
+Oh, and the second smp_mb() added to rcu_gp_init() is probably
+redundant given the full barrier implied by the later call to
+raw_spin_lock_irq_rcu_node().  But one thing at a time...
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 8b5215e..5904b63 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1725,6 +1725,7 @@ static void rcu_strict_gp_boundary(void *unused)
+  */
+ static bool rcu_gp_init(void)
+ {
++	unsigned long firstseq;
+ 	unsigned long flags;
+ 	unsigned long oldmask;
+ 	unsigned long mask;
+@@ -1768,6 +1769,12 @@ static bool rcu_gp_init(void)
+ 	 */
+ 	rcu_state.gp_state = RCU_GP_ONOFF;
+ 	rcu_for_each_leaf_node(rnp) {
++		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
++		firstseq = READ_ONCE(rnp->ofl_seq);
++		if (firstseq & 0x1)
++			while (firstseq == smp_load_acquire(&rnp->ofl_seq))
++				schedule_timeout_idle(1);  // Can't wake unless RCU is watching.
++		smp_mb(); // Pair with barriers used when updating ->ofl_seq to even values.
+ 		raw_spin_lock(&rcu_state.ofl_lock);
+ 		raw_spin_lock_irq_rcu_node(rnp);
+ 		if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
+@@ -1982,7 +1989,6 @@ static void rcu_gp_fqs_loop(void)
+ static void rcu_gp_cleanup(void)
+ {
+ 	int cpu;
+-	unsigned long firstseq;
+ 	bool needgp = false;
+ 	unsigned long gp_duration;
+ 	unsigned long new_gp_seq;
+@@ -2020,12 +2026,6 @@ static void rcu_gp_cleanup(void)
+ 	new_gp_seq = rcu_state.gp_seq;
+ 	rcu_seq_end(&new_gp_seq);
+ 	rcu_for_each_node_breadth_first(rnp) {
+-		smp_mb(); // Pair with barriers used when updating ->ofl_seq to odd values.
+-		firstseq = READ_ONCE(rnp->ofl_seq);
+-		if (firstseq & 0x1)
+-			while (firstseq == smp_load_acquire(&rnp->ofl_seq))
+-				schedule_timeout_idle(1);  // Can't wake unless RCU is watching.
+-		smp_mb(); // Pair with barriers used when updating ->ofl_seq to even values.
+ 		raw_spin_lock_irq_rcu_node(rnp);
+ 		if (WARN_ON_ONCE(rcu_preempt_blocked_readers_cgp(rnp)))
+ 			dump_blkd_tasks(rnp, 10);
