@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5FA28F538
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4ABC28F53E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389131AbgJOOvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S2388944AbgJOOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388858AbgJOOvD (ORCPT
+        with ESMTP id S2388856AbgJOOvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:51:03 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EB9C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:03 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id h7so3863715wre.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:03 -0700 (PDT)
+        Thu, 15 Oct 2020 10:51:05 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DC7C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:04 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id n6so3799678wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ltEepQfJJYFF/tnHzGoDFvOluoM+cKJwHQGC9JJmc2o=;
-        b=bJ60tqLJcD7BKUZ3NzvbmuetGHeNjiOK1vbinBh+G3lMO6ukhyw1ZAfgprMc3CbK8f
-         +iGRTLxSmBFtvFRgm5DyDsQjw6UFYjaaCZVdCvehjlZ5DjivpL6sVnLYP19BxasUjN2+
-         SSWngE7068+cmeNB9OdEoqK70V6IWuVZTf7MMWz3rvnKWkPH5LrzA/CkScHNG+cSoiL+
-         YfBApZTWq5fXBW3KKeYs4a/WxTTPDJXeD52/47UKJITpYMEIcPfbYXf3mvrYdSI+Epx7
-         AiZYdwPT7lYYiLBXPDtUHjY+OUGcLHUp5JcbGto5OC6C+B25pEHaRgbeL0KfqsjSpRue
-         QBvw==
+        bh=jCEMkqtW0at6OfkJYkXSC89pAhfBuQRiBO8vpzVxVyI=;
+        b=FDlDdVm6b8PUY+hsPwnFE7mB5rw0bQ2dVWlnZUneZxxJ1EJFfmMJB9HKhxszBxP37D
+         OH0m03x2I42XZdhJ5ehGczYC4UtEw4bkTdg59158z48ra9XJne6KCS0vXo9IVVLPR5tB
+         xxlWLv9CPCelz65Cj+qWj00jpel1xm3i4AnNaqOLaBXJzn3zMVxVXpCjcenGj0meQB+v
+         IAyk9zw8VpF/LSgdGDbiOifLfeDBz7gdLHIaxjR4nD7I8BomLp4p5P/uPweIAp1lslYd
+         QaFqxoxHfbyR6FKmDVJLWz/qsMFqXJdwMRHUsygs3ICP/yhgZs24Wuddmr6/krrQ96Q0
+         oeiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ltEepQfJJYFF/tnHzGoDFvOluoM+cKJwHQGC9JJmc2o=;
-        b=HrOuRBYmVwSqrfVvSO/dBhM4biqdhpa2siCiwY3u8B183i1pOD0RN6XjiT455GAD+f
-         t34+UqUseuQq/sbzYQfr+DEgPa4jlfIUcJwBGsWuWQ4vyjCcjimD7vo1nEo0SBUwJAGy
-         XGeklUkxQbAzux5Xh8V98tQE2vJygrgfwsV3TIYhWSp+a+wpRj+GGHCbw/EzVRQswKra
-         nBQ/zkMa1w3cieNRtjsLbfTJdEETSEsYeSoFLAUHOF14ilDegnLl0p5Eqt9v0aN8OnKz
-         gm+iIfu3qjMwEapAri/EfvUH7HLFYbOvsCWeIayL/STHxIHeDDCbLXGF3NCBWq+qkdMA
-         65+Q==
-X-Gm-Message-State: AOAM532phD5vwI4G3CIPtn0gm2bIRbDc+4kOdMLaVOUtTPC77GRiCt2h
-        ngs+qIErfVGreOK3LzwX3plf/A==
-X-Google-Smtp-Source: ABdhPJzbMFL+2I6x24urZeWK8V8hbNz0M6HQYZvIxR4ki8qHFg1LIFeRjn4HNXZoU6dT8dpaY2z3qA==
-X-Received: by 2002:a5d:5261:: with SMTP id l1mr5178029wrc.105.1602773461910;
-        Thu, 15 Oct 2020 07:51:01 -0700 (PDT)
+        bh=jCEMkqtW0at6OfkJYkXSC89pAhfBuQRiBO8vpzVxVyI=;
+        b=QO7F88zkof6C9yqboG56gtwJKA4s24vaJNlXykhK8N4Ou5iSvhkqz5zEWnXcsz3n2U
+         //ZOh1U4S0qtgDPDIm4QmbBH8I6hm+6JnFBqMFnXR4TVNC4xrOKX3KH9zmJWK8oATqhx
+         VNG13PVtzBOaLMblQLPiJ3OMw3mAVCdKp2kc50/AfGt/qL+RuPZPl5tXyIeTxrbnDOVM
+         3pdTcAzmXftTMg2pYTktsIA8bbbLUifnEr4+GUlIfsVxikD8ZZhAHft4FLPlU/PNuA11
+         A7C46/q+ZG+gO4mfEmt1qfrLASGuB6GjuMJGlGLirlN3Q2IEaWz4x1YXYJtR8Wx1OjFq
+         GnCQ==
+X-Gm-Message-State: AOAM531qCXOZ9hnDW1Oz9QRqM5MBIgZnKDQCQnjTld7tK+DQbTHSAsYF
+        DfTv1itJ4Z+48g5mVz2Lo8w4Ow==
+X-Google-Smtp-Source: ABdhPJx8TyLlDp1cDBu2i3c53tPkHOUPGNCDSrkfEbg9mqEv8n6/h+3i5U9TlPKbPZolEyvBhdKqqw==
+X-Received: by 2002:adf:cc88:: with SMTP id p8mr5172971wrj.201.1602773463353;
+        Thu, 15 Oct 2020 07:51:03 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id x65sm5144733wmg.1.2020.10.15.07.51.00
+        by smtp.gmail.com with ESMTPSA id x65sm5144733wmg.1.2020.10.15.07.51.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 07:51:01 -0700 (PDT)
+        Thu, 15 Oct 2020 07:51:02 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -62,9 +62,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
         James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 1/8] perf mem: Add structure field c2c_stats::tot_llchit
-Date:   Thu, 15 Oct 2020 15:50:34 +0100
-Message-Id: <20201015145041.10953-2-leo.yan@linaro.org>
+Subject: [PATCH v1 2/8] perf c2c: Add dimensions for total LLC hit
+Date:   Thu, 15 Oct 2020 15:50:35 +0100
+Message-Id: <20201015145041.10953-3-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201015145041.10953-1-leo.yan@linaro.org>
 References: <20201015145041.10953-1-leo.yan@linaro.org>
@@ -72,52 +72,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new field c2c_stats::tot_llchit to count total number for LLC hit:
+Since Arm64 SPE trace data doesn't support HITM, we still want to
+explore "perf c2c" tool to analyze cache false sharing.  If without HITM
+tag, the tool cannot give out accurate result for cache false sharing,
+a candidate solution is to sort the LLC hit and connect with the info of
+multiple threads, e.g. if multiple threads hit the LLC on the same
+cacheline for many times, this hints that it's likely to cause false
+sharing issue.  Though this solution is not perfect due to lacking HITM
+tag, it's pragmatic for detecting false sharing.
 
-  c2c_stats::tot_llchit = c2c_stats::lcl_hitm + c2c_stats::ld_llchit
-
-This is the preparation for additional sorting with total LLC hit, and
-will be used in perf c2c report in following patches.
+To support the sorting with LLC hit, this patch adds dimensions for
+total LLC hit and the associated percentage calculation.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/util/mem-events.c | 3 +++
- tools/perf/util/mem-events.h | 1 +
- 2 files changed, 4 insertions(+)
+ tools/perf/builtin-c2c.c | 76 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 76 insertions(+)
 
-diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-index ea0af0bc4314..0ad27bef0698 100644
---- a/tools/perf/util/mem-events.c
-+++ b/tools/perf/util/mem-events.c
-@@ -371,6 +371,8 @@ do {				\
- 					HITM_INC(lcl_hitm);
- 				else
- 					stats->ld_llchit++;
-+
-+				stats->tot_llchit++;
- 			}
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index 9c2183957c50..5fb77fcd3c9c 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -651,6 +651,7 @@ STAT_FN(ld_l1hit)
+ STAT_FN(ld_l2hit)
+ STAT_FN(ld_llchit)
+ STAT_FN(rmt_hit)
++STAT_FN(tot_llchit)
  
- 			if (lvl & P(LVL, LOC_RAM)) {
-@@ -455,6 +457,7 @@ void c2c_add_stats(struct c2c_stats *stats, struct c2c_stats *add)
- 	stats->ld_fbhit		+= add->ld_fbhit;
- 	stats->ld_l1hit		+= add->ld_l1hit;
- 	stats->ld_l2hit		+= add->ld_l2hit;
-+	stats->tot_llchit	+= add->tot_llchit;
- 	stats->ld_llchit	+= add->ld_llchit;
- 	stats->lcl_hitm		+= add->lcl_hitm;
- 	stats->rmt_hitm		+= add->rmt_hitm;
-diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
-index 904dad34f7f7..a1fa1c312ddb 100644
---- a/tools/perf/util/mem-events.h
-+++ b/tools/perf/util/mem-events.h
-@@ -68,6 +68,7 @@ struct c2c_stats {
- 	u32	ld_fbhit;            /* count of loads hitting Fill Buffer */
- 	u32	ld_l1hit;            /* count of loads that hit L1D */
- 	u32	ld_l2hit;            /* count of loads that hit L2D */
-+	u32	tot_llchit;          /* count of all loads that hit LLC */
- 	u32	ld_llchit;           /* count of loads that hit LLC */
- 	u32	lcl_hitm;            /* count of loads with local HITM  */
- 	u32	rmt_hitm;            /* count of loads with remote HITM */
+ static uint64_t total_records(struct c2c_stats *stats)
+ {
+@@ -856,6 +857,62 @@ percent_hitm_cmp(struct perf_hpp_fmt *fmt __maybe_unused,
+ 	return per_left - per_right;
+ }
+ 
++static double percent_llchit(struct c2c_hist_entry *c2c_he)
++{
++	struct c2c_hists *hists;
++	struct c2c_stats *stats;
++	struct c2c_stats *total;
++	int tot = 0, st = 0;
++
++	hists = container_of(c2c_he->he.hists, struct c2c_hists, hists);
++	stats = &c2c_he->stats;
++	total = &hists->stats;
++
++	st  = stats->tot_llchit;
++	tot = total->tot_llchit;
++
++	return tot ? (double) st * 100 / tot : 0;
++}
++
++static int
++percent_llchit_entry(struct perf_hpp_fmt *fmt, struct perf_hpp *hpp,
++		     struct hist_entry *he)
++{
++	struct c2c_hist_entry *c2c_he;
++	int width = c2c_width(fmt, hpp, he->hists);
++	char buf[10];
++	double per;
++
++	c2c_he = container_of(he, struct c2c_hist_entry, he);
++	per = percent_llchit(c2c_he);
++	return scnprintf(hpp->buf, hpp->size, "%*s", width, PERC_STR(buf, per));
++}
++
++static int
++percent_llchit_color(struct perf_hpp_fmt *fmt, struct perf_hpp *hpp,
++		     struct hist_entry *he)
++{
++	return percent_color(fmt, hpp, he, percent_llchit);
++}
++
++static int64_t
++percent_llchit_cmp(struct perf_hpp_fmt *fmt __maybe_unused,
++		   struct hist_entry *left, struct hist_entry *right)
++{
++	struct c2c_hist_entry *c2c_left;
++	struct c2c_hist_entry *c2c_right;
++	double per_left;
++	double per_right;
++
++	c2c_left  = container_of(left, struct c2c_hist_entry, he);
++	c2c_right = container_of(right, struct c2c_hist_entry, he);
++
++	per_left  = percent_llchit(c2c_left);
++	per_right = percent_llchit(c2c_right);
++
++	return per_left - per_right;
++}
++
+ static struct c2c_stats *he_stats(struct hist_entry *he)
+ {
+ 	struct c2c_hist_entry *c2c_he;
+@@ -1392,6 +1449,14 @@ static struct c2c_dimension dim_ld_l2hit = {
+ 	.width		= 7,
+ };
+ 
++static struct c2c_dimension dim_tot_llchit = {
++	.header		= HEADER_BOTH("LLC Hit", "Total"),
++	.name		= "tot_llchit",
++	.cmp		= tot_llchit_cmp,
++	.entry		= tot_llchit_entry,
++	.width		= 8,
++};
++
+ static struct c2c_dimension dim_ld_llchit = {
+ 	.header		= HEADER_SPAN("- LLC Load Hit --", "LclHit", 1),
+ 	.name		= "ld_lclhit",
+@@ -1438,6 +1503,15 @@ static struct c2c_dimension dim_percent_hitm = {
+ 	.width		= 7,
+ };
+ 
++static struct c2c_dimension dim_percent_llchit = {
++	.header         = HEADER_BOTH("LLC Hit", "Pct"),
++	.name		= "percent_llchit",
++	.cmp		= percent_llchit_cmp,
++	.entry		= percent_llchit_entry,
++	.color		= percent_llchit_color,
++	.width		= 7,
++};
++
+ static struct c2c_dimension dim_percent_rmt_hitm = {
+ 	.header		= HEADER_SPAN("----- HITM -----", "RmtHitm", 1),
+ 	.name		= "percent_rmt_hitm",
+@@ -1611,9 +1685,11 @@ static struct c2c_dimension *dimensions[] = {
+ 	&dim_ld_l2hit,
+ 	&dim_ld_llchit,
+ 	&dim_ld_rmthit,
++	&dim_tot_llchit,
+ 	&dim_tot_recs,
+ 	&dim_tot_loads,
+ 	&dim_percent_hitm,
++	&dim_percent_llchit,
+ 	&dim_percent_rmt_hitm,
+ 	&dim_percent_lcl_hitm,
+ 	&dim_percent_stores_l1hit,
 -- 
 2.17.1
 
