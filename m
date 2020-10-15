@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B864028F0BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F0428F0B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387861AbgJOLKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
+        id S1731300AbgJOLKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731256AbgJOLK0 (ORCPT
+        with ESMTP id S1730893AbgJOLKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:10:26 -0400
+        Thu, 15 Oct 2020 07:10:09 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C44C0613D9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:10:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15265C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:10:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=4hgDup+uLDAA6BxhPVYzQptfW5E+W82Xqngvc9Dnkyk=; b=MOePq+9IgmEM6S9B8nQOPnBqTf
-        bgOHrSfIxeOE/W7Ww1MbjLvZxkPw0zUQ7C8UAdZumzx075s1HO0c/wKKN2xPkQiqZOGERdAMFT1SY
-        e0aZ/qUfUcClw1uGFAGbsi8Dk0StjAaVC1b2QWSTkCiAI2yrVbumy3Ti8HmOhRg8aGiALCHIF5Nh5
-        jYBAD/3+YfBl/rTI1V/95+i2/a/+OJG6ibu1SDqRxSo2WHpeqQdfSvuJebyYDAjYBrTNeuC5lpTns
-        wJtHegckyfQ2iw7OJQ12zh7qfLCqKSOyYWW+eFrBUoTbYLklZGRrsZgI6ct1KtW0wctEUklWeMbO1
-        /fnFBYOw==;
+        bh=pwB07HLOjdLdHR1fwUU0rUBjwGriYzqrq3cRu9cgll0=; b=XaZBkITuOrx60MzsxD47/M4gyW
+        QbrBiMboBkDeq9JBo25PgFWJeLps5+iMBL2bfRChlh7+VidKrwwmpXww06KQT+uGG+1qh65tvmb0/
+        HDKrpxT9S9+og7eX8x/ll/FQebJGh4HtXKCTnATEJNEyY2ie2wjIdPbbvn2z8dleQqpq20jsCrc5y
+        /ng2yO8v3JzcFXCviJOUnmZ9nwVhtcMLXVKoIfw7xeAphx8JqEwFoZHVuF7epmPvi4YwTcRQj8rHe
+        CcPyqByWOHoFTM+PnqITXqQTgHaULM++6S0eTqGRasdZIhbDKGTgUmP+4/tby88gTR4+fIe3hJC4b
+        Is1b4+9A==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT18d-0002OR-VP; Thu, 15 Oct 2020 11:09:40 +0000
+        id 1kT18e-0002OU-3W; Thu, 15 Oct 2020 11:09:40 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18BA73077E1;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18B0D30769C;
         Thu, 15 Oct 2020 13:09:37 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id A3EA8235F4450; Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
-Message-ID: <20201015110924.091240051@infradead.org>
+        id A5EE5235F444C; Thu, 15 Oct 2020 13:09:36 +0200 (CEST)
+Message-ID: <20201015110924.153087713@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 15 Oct 2020 13:05:45 +0200
+Date:   Thu, 15 Oct 2020 13:05:46 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
@@ -47,7 +47,7 @@ Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
         ouwen210@hotmail.com
-Subject: [PATCH v3 13/19] sched,rt: Use the full cpumask for balancing
+Subject: [PATCH v3 14/19] sched, lockdep: Annotate ->pi_lock recursion
 References: <20201015110532.738127234@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,92 +55,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want migrate_disable() tasks to get PULLs in order for them to PUSH
-away the higher priority task.
+There's a valid ->pi_lock recursion issue where the actual PI code
+tries to wake up the stop task. Make lockdep aware so it doesn't
+complain about this.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/cpudeadline.c |    4 ++--
- kernel/sched/cpupri.c      |    4 ++--
- kernel/sched/deadline.c    |    4 ++--
- kernel/sched/rt.c          |    4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ kernel/sched/core.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
---- a/kernel/sched/cpudeadline.c
-+++ b/kernel/sched/cpudeadline.c
-@@ -120,7 +120,7 @@ int cpudl_find(struct cpudl *cp, struct
- 	const struct sched_dl_entity *dl_se = &p->dl;
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2602,6 +2602,7 @@ int select_task_rq(struct task_struct *p
  
- 	if (later_mask &&
--	    cpumask_and(later_mask, cp->free_cpus, p->cpus_ptr)) {
-+	    cpumask_and(later_mask, cp->free_cpus, &p->cpus_mask)) {
- 		unsigned long cap, max_cap = 0;
- 		int cpu, max_cpu = -1;
- 
-@@ -151,7 +151,7 @@ int cpudl_find(struct cpudl *cp, struct
- 
- 		WARN_ON(best_cpu != -1 && !cpu_present(best_cpu));
- 
--		if (cpumask_test_cpu(best_cpu, p->cpus_ptr) &&
-+		if (cpumask_test_cpu(best_cpu, &p->cpus_mask) &&
- 		    dl_time_before(dl_se->deadline, cp->elements[0].dl)) {
- 			if (later_mask)
- 				cpumask_set_cpu(best_cpu, later_mask);
---- a/kernel/sched/cpupri.c
-+++ b/kernel/sched/cpupri.c
-@@ -73,11 +73,11 @@ static inline int __cpupri_find(struct c
- 	if (skip)
- 		return 0;
- 
--	if (cpumask_any_and(p->cpus_ptr, vec->mask) >= nr_cpu_ids)
-+	if (cpumask_any_and(&p->cpus_mask, vec->mask) >= nr_cpu_ids)
- 		return 0;
- 
- 	if (lowest_mask) {
--		cpumask_and(lowest_mask, p->cpus_ptr, vec->mask);
-+		cpumask_and(lowest_mask, &p->cpus_mask, vec->mask);
- 
- 		/*
- 		 * We have to ensure that we have at least one bit
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1888,7 +1888,7 @@ static void task_fork_dl(struct task_str
- static int pick_dl_task(struct rq *rq, struct task_struct *p, int cpu)
+ void sched_set_stop_task(int cpu, struct task_struct *stop)
  {
- 	if (!task_running(rq, p) &&
--	    cpumask_test_cpu(cpu, p->cpus_ptr))
-+	    cpumask_test_cpu(cpu, &p->cpus_mask))
- 		return 1;
- 	return 0;
- }
-@@ -2038,7 +2038,7 @@ static struct rq *find_lock_later_rq(str
- 		/* Retry if something changed. */
- 		if (double_lock_balance(rq, later_rq)) {
- 			if (unlikely(task_rq(task) != rq ||
--				     !cpumask_test_cpu(later_rq->cpu, task->cpus_ptr) ||
-+				     !cpumask_test_cpu(later_rq->cpu, &task->cpus_mask) ||
- 				     task_running(rq, task) ||
- 				     !dl_task(task) ||
- 				     !task_on_rq_queued(task))) {
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1658,7 +1658,7 @@ static void put_prev_task_rt(struct rq *
- static int pick_rt_task(struct rq *rq, struct task_struct *p, int cpu)
- {
- 	if (!task_running(rq, p) &&
--	    cpumask_test_cpu(cpu, p->cpus_ptr))
-+	    cpumask_test_cpu(cpu, &p->cpus_mask))
- 		return 1;
++	static struct lock_class_key stop_pi_lock;
+ 	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
+ 	struct task_struct *old_stop = cpu_rq(cpu)->stop;
  
- 	return 0;
-@@ -1811,7 +1811,7 @@ static struct rq *find_lock_lowest_rq(st
- 			 * Also make sure that it wasn't scheduled on its rq.
- 			 */
- 			if (unlikely(task_rq(task) != rq ||
--				     !cpumask_test_cpu(lowest_rq->cpu, task->cpus_ptr) ||
-+				     !cpumask_test_cpu(lowest_rq->cpu, &task->cpus_mask) ||
- 				     task_running(rq, task) ||
- 				     !rt_task(task) ||
- 				     !task_on_rq_queued(task))) {
+@@ -2617,6 +2618,20 @@ void sched_set_stop_task(int cpu, struct
+ 		sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
+ 
+ 		stop->sched_class = &stop_sched_class;
++
++		/*
++		 * The PI code calls rt_mutex_setprio() with ->pi_lock held to
++		 * adjust the effective priority of a task. As a result,
++		 * rt_mutex_setprio() can trigger (RT) balancing operations,
++		 * which can then trigger wakeups of the stop thread to push
++		 * around the current task.
++		 *
++		 * The stop task itself will never be part of the PI-chain, it
++		 * never blocks, therefore that ->pi_lock recursion is safe.
++		 * Tell lockdep about this by placing the stop->pi_lock in its
++		 * own class.
++		 */
++		lockdep_set_class(&stop->pi_lock, &stop_pi_lock);
+ 	}
+ 
+ 	cpu_rq(cpu)->stop = stop;
 
 
