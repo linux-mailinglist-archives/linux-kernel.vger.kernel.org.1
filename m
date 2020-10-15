@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6119228F8E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4200A28F8E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 20:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390078AbgJOSvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 14:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgJOSvX (ORCPT
+        id S2391063AbgJOSwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 14:52:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26965 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391033AbgJOSwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:51:23 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE55C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:51:23 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l18so2491566pgg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 11:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4dzZ3wB+/l9v42S9FN6kIPBfKLyAk8Xfq7l5iS5T6+U=;
-        b=Vagho1/6kZJ5F1IOg3Y4OF0QZJsHQMNh5YIf9Cdbp2aOm1Ore4x2Ka5X0Yq9RsAv9r
-         k8RuBx32AHpVu9Ewd9TmzKeuzJy4LVbFQYuFX9FdbjXgiFoYSpJR1+KxeBPrssNy6s3e
-         HiitC5SXUvhBF8qjcC46vAjm5Bti+Y4cFzGLRy7rG126uqSXV/uLuO0LFTz5RUCI4XSS
-         rvf3rxE+bycYFJqAzAo9RFdPGuoN1XCBE5OyKRBD1Ym0FozcUalL9pYFbSdYoyCoAOcj
-         NptAvBE5mGGxad8L8M+jzGedzDO229fKmpk6J/nAoAADz9tPLT4d3g51/OnX5bok92yM
-         hEaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=4dzZ3wB+/l9v42S9FN6kIPBfKLyAk8Xfq7l5iS5T6+U=;
-        b=BqCX+9VtQA6ISuzy7BKe2jopvoWSl3lJ971R0nMlyInEoiWfxCl3KbMrBoUMAstTJ/
-         gTDqDGuTv3u4tDp0DFyh8LVTR6qczpRlp5qfn/Py7ImPrmRifWS2L5BgG547B3/cCj7X
-         KCGADyzhHZRNDkPo6lkVIWCNjLBN+HcRymOF9Hea46qCXCWWOiiWGNQgQM0L/SgTQXWM
-         fbkn0QB4t4eNdVMugrrsRXp67sBFLek84YiF4OBNOYtmdg9eKLFZvA3S1ldppsOHUVK6
-         7VaUAhhN8F9xMECZAhaHIG+eTNJcDYF1pOilKq+ujd8PZcGTQZMaqQhs/t8L8r2jShiP
-         KCNA==
-X-Gm-Message-State: AOAM533012fTHNvcCpDUSUoXbIEYiomTHtfIV4UMExyAihrd//580cfU
-        rboznWuoxHNkQKbDQFQECxKOfv40JLE=
-X-Google-Smtp-Source: ABdhPJyA8p7L530bJJxMOtHScL/lhtNd9K6Vg5quDuN3Jw+RAF2xcqhlHPJTWmdm097qSiJ+fJvxzQ==
-X-Received: by 2002:a62:d0c1:0:b029:155:2e17:ea0 with SMTP id p184-20020a62d0c10000b02901552e170ea0mr6529pfg.55.1602787883143;
-        Thu, 15 Oct 2020 11:51:23 -0700 (PDT)
-Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id c12sm8083pgd.57.2020.10.15.11.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 11:51:22 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 15 Oct 2020 11:51:20 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     <akpm@linux-foundation.org>, <ngupta@vflare.org>,
-        <sergey.senozhatsky.work@gmail.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] zsmalloc: Rework the list_add code in insert_zspage()
-Message-ID: <20201015185120.GB181691@google.com>
-References: <20201015130107.65195-1-linmiaohe@huawei.com>
+        Thu, 15 Oct 2020 14:52:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602787938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uSej2UjMQRw9PUOU9ztxUjTXF07dstBYT40GdW1tXXg=;
+        b=ZUIU5w5JVKM0wLAjTP6F1zZs5vTIn8PXauT8BujSiCpcVm3anBelpNf5dRVrFPs9A/IxIW
+        2M7fi8oVT9MO2orX7QNXgo5K1KnFX0U8LwV0qKg0b7VNJNuzcn0tWFWCJGm3/0r2uD5RLS
+        FNouABPQFmVRDImyPeNfQitJdL1OdCY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-UdXtL369OZSRB1ZZs07CXw-1; Thu, 15 Oct 2020 14:52:16 -0400
+X-MC-Unique: UdXtL369OZSRB1ZZs07CXw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CFEA86ABDC;
+        Thu, 15 Oct 2020 18:52:15 +0000 (UTC)
+Received: from w520.home (ovpn-113-35.phx2.redhat.com [10.3.113.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 20C351972A;
+        Thu, 15 Oct 2020 18:52:11 +0000 (UTC)
+Date:   Thu, 15 Oct 2020 12:52:11 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio/fsl-mc: fix the return of the uninitialized
+ variable ret
+Message-ID: <20201015125211.3ff46dc1@w520.home>
+In-Reply-To: <20201015122226.485911-1-colin.king@canonical.com>
+References: <20201015122226.485911-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015130107.65195-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 09:01:07AM -0400, Miaohe Lin wrote:
-> Rework the list_add code to make it more readable and simplicity.
+On Thu, 15 Oct 2020 13:22:26 +0100
+Colin King <colin.king@canonical.com> wrote:
+
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Acked-by: Minchan Kim <minchan@kernel.org>
+> Currently the success path in function vfio_fsl_mc_reflck_attach is
+> returning an uninitialized value in variable ret. Fix this by setting
+> this to zero to indicate success.
+> 
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: f2ba7e8c947b ("vfio/fsl-mc: Added lock support in preparation for interrupt handling")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> index 80fc7f4ed343..42a5decb78d1 100644
+> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> @@ -84,6 +84,7 @@ static int vfio_fsl_mc_reflck_attach(struct vfio_fsl_mc_device *vdev)
+>  		vfio_fsl_mc_reflck_get(cont_vdev->reflck);
+>  		vdev->reflck = cont_vdev->reflck;
+>  		vfio_device_put(device);
+> +		ret = 0;
+>  	}
+>  
+>  unlock:
+
+Looks correct to me, unless Diana would rather set the initial value to
+zero instead.  Thanks,
+
+Alex
+
