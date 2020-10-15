@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2841928F541
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B010328F540
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389436AbgJOOva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        id S2389414AbgJOOvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389236AbgJOOvP (ORCPT
+        with ESMTP id S2389055AbgJOOvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:51:15 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714C7C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:13 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id n6so3800236wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:13 -0700 (PDT)
+        Thu, 15 Oct 2020 10:51:09 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD7BC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:09 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id a9so3929096lfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:51:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IJCHZKXsHWszxVFgajcRhNjk7Pew+OgbybugT6SAaH8=;
-        b=buQmkRQXYnjLO/57VA7Rg89FldWSQ3Z9OaT6tdZt4NLT2sNCGk3APRfnEL4k+N1Hoz
-         FJpHMGbpwZsizItXmrRBAt0Kp5kVWPyrxhgAPAW72lgboUozcDXlZBtaWJZtjsmk0EFV
-         KWKXHqo2Bhl+HDWxJ6CKJCh8kiKgva8gBzvfTvoUBGn1sxFfluTqPvWfHYDbmYpupJ9D
-         /JzLB85g2YRXuiLYRM7qd+QOa0oLDofU9jm66mFXhMyqKpf8vaXggVsdGx+zW+PYr1BA
-         VAFl/CXw45CUD9fLsWfAItV/OL6U5jUKm2yXdkoSB6OVR4WipWpOWSMtwavRHeoRuCq8
-         hLXg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bV4f1Qg+4Gv35N2wit/f7NjVpNxZdd3YNwQ6SWe/ma0=;
+        b=OYat1tu/tT4xPSTOsQRpW6iStW0f2RAvrVqZM2wKYQ5qUpvTlkK0tW9fFDuKWCuYbx
+         Ncv0Ts6rNHB0uqaIpNXIlQ0S7DkES1kA/yhljcF4/ynUIzo2tM/o87WVzk1bRBbjMP4B
+         cSDdjZaLugIPplKKgZSVVV3mPnKPKuLVd8WksM8JbCG0OUG/fF4UUP3GMaKhdlwT/+zV
+         HsXGKLICg97DrPVSd3rJxLq7PJBzjYNu3PyZJmM3JVfYKMvtP01owdX2hLVjWhsfVufr
+         +rj+v3YZWE2VDHu65ilvtRlhbs8cnQqPZdBP9vlMVxEzgioF/fPt6CY7wLSadZ3WeNds
+         7rrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=IJCHZKXsHWszxVFgajcRhNjk7Pew+OgbybugT6SAaH8=;
-        b=n4XZWjf+3BJfc01JG2mkUSBeYFV6OnM96sMSlpMo1RNddwGvfEOT34vbnHu8XrXBnm
-         XwdkDGXA8Fthfj2VsGJX32vx7dvtwT4nj+KIEr3RiymOJSw3H4mYhAuPCGAmtdLY4gVz
-         XBDXJ9weA0yzWwnewv3Tdei6Ir+o3SZ9KO81d73nQJt6VTuaPPM6JzbxkV2i5Q/GuJsm
-         zGuiVEfzTmtHYcUfR/LA7hHe+GBl0So5cj8S2M+JGBDvgBOzcJaX6ibWt7IO/VVp6Xq9
-         POn01pWhgzcR7iZiMxsfYsgb+TWLnUsN9Q8/EouA5t9Rswgwd+dUglAnBZFvW0U0glhT
-         YhAQ==
-X-Gm-Message-State: AOAM531cEMAEiOcPHJN0i8lLekbpDSjqa8fymwLf9BhlkaooW0R2hm1F
-        7xGrMXPKrVtDqEnbO6lw/vmaMA==
-X-Google-Smtp-Source: ABdhPJz/ooIkeAhnSinOcptGIPhBZ65aKHuqHjWQ5jB7B/NBNfVjx6lwwtS/Qi3PUeBU0ssazF4deg==
-X-Received: by 2002:adf:fa05:: with SMTP id m5mr5191439wrr.57.1602773472176;
-        Thu, 15 Oct 2020 07:51:12 -0700 (PDT)
-Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id x65sm5144733wmg.1.2020.10.15.07.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 07:51:11 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Joe Mario <jmario@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
-        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 8/8] perf c2c: Update documentation for display option 'llc'
-Date:   Thu, 15 Oct 2020 15:50:41 +0100
-Message-Id: <20201015145041.10953-9-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201015145041.10953-1-leo.yan@linaro.org>
-References: <20201015145041.10953-1-leo.yan@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bV4f1Qg+4Gv35N2wit/f7NjVpNxZdd3YNwQ6SWe/ma0=;
+        b=gnaI1Vt4YTCa+X/QCUZxO4IiE+NgQQ7xSkmefWpD1rpbjWNZS6A914c7t3wAjQiz2V
+         utub7oBWhk/PJd72IhhSq/jKF6NTe0Z+em0Fo18YB6vP7mNXlLs+KqWcNlu8E2vsgCmn
+         LJASmWIjEFK84Ur4tiHj68zNLfTq9MmnJT59VIcjxsPbO4y4uo6XsIXY1aJWkDLLRnsr
+         OBAgyvx/3XNf93sU7H8Z+b2++RuGZe1MVnESI8KX9Ulvy0ebeE4C6kSvB4reKhvldUSL
+         7I/yT4XFGdQ+Q+Mdklj8uAIPUvZM/phpG8yu8fa+/Y3K6vu1KdE2bYXWbBYB3OpkZIBo
+         29Pg==
+X-Gm-Message-State: AOAM530wbvOt5rbzLLlAv6RFv69/DHsIQoFcps0wg5ocYL8RUNwKVFIt
+        OKzb0dKYKrzhaAVpDBABF9dsyYhPfpdQtGjMnz4=
+X-Google-Smtp-Source: ABdhPJz4cz6ryROltTYzKnZPApyMbINiaXN8B0RTQpbg1uR4m85nIpOyOyacfPQKPIETr+/AP5JTkJuMVSaTsmdK8zM=
+X-Received: by 2002:ac2:52b7:: with SMTP id r23mr1126232lfm.30.1602773467610;
+ Thu, 15 Oct 2020 07:51:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201014175342.152712-1-jandryuk@gmail.com> <20201014175342.152712-3-jandryuk@gmail.com>
+ <6cd9363c-ac0c-ea68-c8e7-9fd3cd30a89b@oracle.com> <4e31301b-0e57-ac89-cd71-6ad5e1a66628@citrix.com>
+ <b097aec1-e549-a89a-ce43-e9c0a71179f2@oracle.com>
+In-Reply-To: <b097aec1-e549-a89a-ce43-e9c0a71179f2@oracle.com>
+From:   Jason Andryuk <jandryuk@gmail.com>
+Date:   Thu, 15 Oct 2020 10:50:55 -0400
+Message-ID: <CAKf6xpuRZKF56yyOR-Q6oBSJUpRSr0P+XVJD7DvaS6GWnNcMTg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] xen: Kconfig: nest Xen guest options
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the new display option 'llc' is introduced, this patch is to
-update the documentation to reflect it.
+On Thu, Oct 15, 2020 at 9:17 AM <boris.ostrovsky@oracle.com> wrote:
+>
+>
+> On 10/15/20 9:10 AM, Andrew Cooper wrote:
+> > On 15/10/2020 13:37, boris.ostrovsky@oracle.com wrote:
+> >> On 10/14/20 1:53 PM, Jason Andryuk wrote:
+> >>> +config XEN_512GB
+> >>> +   bool "Limit Xen pv-domain memory to 512GB"
+> >>> +   depends on XEN_PV && X86_64
+> >> Why is X86_64 needed here?
+> >> 512G support was implemented using a direct-mapped P2M, and is rather
+> > beyond the virtual address capabilities of 32bit.
+> >
+>
+> Yes, my point was that XEN_PV already depends on X86_64.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/Documentation/perf-c2c.txt | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+Oh, thanks for catching this.  I re-introduced it by accident when
+rebasing the patches.
 
-diff --git a/tools/perf/Documentation/perf-c2c.txt b/tools/perf/Documentation/perf-c2c.txt
-index c81d72e3eecf..eadce62ecd28 100644
---- a/tools/perf/Documentation/perf-c2c.txt
-+++ b/tools/perf/Documentation/perf-c2c.txt
-@@ -109,7 +109,8 @@ REPORT OPTIONS
- 
- -d::
- --display::
--	Switch to HITM type (rmt, lcl) to display and sort on. Total HITMs as default.
-+	Switch to HITM type (rmt, lcl) or LLC load access (llc) to display
-+	and sort on. Total HITMs as default.
- 
- --stitch-lbr::
- 	Show callgraph with stitched LBRs, which may have more complete
-@@ -174,12 +175,18 @@ For each cacheline in the 1) list we display following data:
-   Cacheline
-   - cacheline address (hex number)
- 
--  Rmt/Lcl Hitm
-+  Rmt/Lcl Hitm (For display with HITM types)
-   - cacheline percentage of all Remote/Local HITM accesses
- 
--  LLC Load Hitm - Total, LclHitm, RmtHitm
-+  LLC Load Hitm - Total, LclHitm, RmtHitm (For display with HITM types)
-   - count of Total/Local/Remote load HITMs
- 
-+  LLC Hit Pct (For display 'llc')
-+  - cacheline percentage of all LLC load accesses
-+
-+  LLC Hit Total (For display 'llc')
-+  - sum of all LLC load accesses
-+
-   Total records
-   - sum of all cachelines accesses
- 
-@@ -207,9 +214,12 @@ For each cacheline in the 1) list we display following data:
- 
- For each offset in the 2) list we display following data:
- 
--  HITM - Rmt, Lcl
-+  HITM - Rmt, Lcl (For display with HITM types)
-   - % of Remote/Local HITM accesses for given offset within cacheline
- 
-+  LLC LD - LclHit, LclHitm (For display 'llc')
-+  - % of LLC hits and LLC HITMs accesses for given offset within cacheline
-+
-   Store Refs - L1 Hit, L1 Miss
-   - % of store accesses that hit/missed L1 for given offset within cacheline
- 
--- 
-2.17.1
-
+Regards,
+Jason
