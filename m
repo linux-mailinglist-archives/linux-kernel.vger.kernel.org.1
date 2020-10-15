@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D5428F171
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038D128F175
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 13:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729931AbgJOLiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 07:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
+        id S1729948AbgJOLkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 07:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728596AbgJOLiv (ORCPT
+        with ESMTP id S1726583AbgJOLk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 07:38:51 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C61C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:38:50 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id az3so1675150pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 04:38:50 -0700 (PDT)
+        Thu, 15 Oct 2020 07:40:26 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F97DC061755;
+        Thu, 15 Oct 2020 04:40:26 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id z2so3242753lfr.1;
+        Thu, 15 Oct 2020 04:40:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=oEgg+GHnVI81ERsOazeaUpRhipuhfwL3QLYTnBaZSHc=;
-        b=jXOtdFFwUpA768CjCKDDMA8HIkYgeCyhyz8srEb8G/oQ3qanocKPpPVV9f856M+SRL
-         If0aH1xF5lNVV/vcStmnsaNKU/3jJXVvDLDM4tDmlOI8AG67YNkYHvKmiJlx10JY7icc
-         owncJ0C0G2ZuPPtlKx5a/TDQ1gvgIP3e2FjNcJmbOJ3rRTqBTiRczFGbpnnyzjS9Wtq5
-         eC8KEVsQDkDJJKQVEQqlrSB6xLl3c7hpemyc7ctRleaP5oan8LZzs1RJwjBtfyFlp1eX
-         W+f9gHkalo7S6+NHtHm4sIsfQyySuaUXerS5XluSU4GFLBhWtrgrVpW9nDbIY/rLPchb
-         MyBw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WtpDL7/t1P9RuyMG5iZdjHg44W+tOwtfwZ3CIyCNFtY=;
+        b=WJqjGxcTtReAwTmTismmlgc3XYFbe/0XDUdSoAfVCRDkEdCotRuxEO360ojNV0AmAx
+         W0v+EVeEV2N8XJr+TnKIpCSIJUr/I0dK6BWzJ8jueAG2hGlZHbOSgpv9J3VzJD5jIYv+
+         74rUHzYeCUlo3jFbnIv7SKI5TO1gQRpRwanF28BXp7glwjx8tcFOl09e3slodAazzcDW
+         Z07SsUU0pW66Kzg0GSZzYrcwezguXD1VI2dZ/DpMXvt5RHqJAnjsBJl6BmErdYmSclps
+         Dc9HGR6/otIaZQDVzWy8UvfSwk4Aoqyod2oTWcBAVVPamvcP86Wi6PWNzpXnrdhoN8bP
+         YDoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=oEgg+GHnVI81ERsOazeaUpRhipuhfwL3QLYTnBaZSHc=;
-        b=IfUXYgBozC7CkQwNy0OtBTTz6uX19pXJ7fD6KpdkurohZwsc64VSpay8OoIqgeOEM1
-         2slXY2kUEpuQdwGaGWRj57TFqxIKAOpT+T2IOOGzXgXbfRpUvatZuQlhTqvk2S/Oxspl
-         Xazohe5yGnK5D49kBoKh1o3kPsNl3fRxkY/pei85/9V9yEOEYZdymoMt/zFC5WpHCL+T
-         V5/jnumyyCEwPgxP/A5/ZC3Je9bEcW0Cl96yT9XyeSGLPqCv0VKdy3WsX31TE/302OYW
-         B+jT5OMpaBu5cv6arymqWKr0KpTQdfvaxz+DVIwsp5qR1FCM3H3mH/Jg3qccfORCxNJU
-         4DDA==
-X-Gm-Message-State: AOAM533WnB2i6ei2QOKvIGzCOxVKY5VVEHp2HfCswq7y7/NDuwb4DLR1
-        ATXR5Ym3FQgk3vpPqN2uJOg=
-X-Google-Smtp-Source: ABdhPJyIg4I4jn4yHJqE2c7XD6TcvLWPfn6TtxkPiMbmp7mw+XdXHC36iYvji89xXJMOMjYyfy3Kzw==
-X-Received: by 2002:a17:90a:7303:: with SMTP id m3mr4159986pjk.190.1602761930219;
-        Thu, 15 Oct 2020 04:38:50 -0700 (PDT)
-Received: from localhost ([13.94.42.177])
-        by smtp.gmail.com with ESMTPSA id cv15sm3212211pjb.20.2020.10.15.04.38.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 15 Oct 2020 04:38:49 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH v2] ring-buffer: Add rb_check_bpage in __rb_allocate_pages
-Date:   Thu, 15 Oct 2020 19:38:42 +0800
-Message-Id: <20201015113842.2921-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WtpDL7/t1P9RuyMG5iZdjHg44W+tOwtfwZ3CIyCNFtY=;
+        b=DK187gjIF1ZxUkA0g/vC7hgTkrCLNoRFK2wt0LA8cyDabuglxFcET5gZWxvbMbaX0v
+         YpcUPXY4hpVk/JOJgA5TPw7/Xh8AcSwkmTHWfDbEpO1n4qu0vxioAvotc4utsdRPon/6
+         5/edYZGX4gG1L++JH3Pi6kHuSStLm7q1psl0g6hq6woScmIK08D5uNi5dzqByvNeBSt9
+         M4PAipG2qImeY48T+CfZy0qCxT/00OGOHvR03Pryq7a92kzv77JX66J/FC/u7iNBWj9z
+         JENZkfO+palxEDX+fQRI72C3PdZiihhUNeD8yKY1i0N7BWahrj/tecC/piUbgkTZlsd+
+         cUbg==
+X-Gm-Message-State: AOAM531lh67wvM1p00Q3STQaHG9+5OdLy3uIq/dZO2F8XqGlqT2WGCv5
+        UxnLR7TmCgvoSKZsf3S0GrA=
+X-Google-Smtp-Source: ABdhPJxdWyzLMLepBW0eaHJJRrTVeEBkEga/kaziR7QGiNzUHNTxM4iX4vRGyXT8LY5KW0GGD0E8jA==
+X-Received: by 2002:a19:f510:: with SMTP id j16mr972157lfb.91.1602762025040;
+        Thu, 15 Oct 2020 04:40:25 -0700 (PDT)
+Received: from mobilestation ([95.79.141.114])
+        by smtp.gmail.com with ESMTPSA id c21sm940835lfm.308.2020.10.15.04.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 04:40:24 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 14:40:22 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Wei Xu <xuwei5@hisilicon.com>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/8] remove never-used "snps,dw-apb-gpio-port"
+Message-ID: <20201015114022.7ptrl37g5d3lumyw@mobilestation>
+References: <20201015115524.24e3c36b@xhacker.debian>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015115524.24e3c36b@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It may be better to check each page is aligned by 4 bytes. The 2
-least significant bits of the address will be used as flags.
+Hello Jisheng,
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
-v2:
-remove passing the int cpu to __rb_allocate_pages.
----
- kernel/trace/ring_buffer.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+Thanks for sending this cleanup and for the work you've done in its framework.
+The compatible property is indeed redundant in the DW APB GPIO bindings, because
+any sub-node is considered as one of the device port from the set {A,B,C,D} and I
+don't see why would we need to be there for anything else. The port index is
+initialized by the reg property, which I've just realized lack of a proper
+constraints.
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 93ef0ab6ea20..b2c6f2546d69 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -1420,7 +1420,8 @@ static int rb_check_pages(struct ring_buffer_per_cpu *cpu_buffer)
- 	return 0;
- }
- 
--static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
-+static int __rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
-+		long nr_pages, struct list_head *pages)
- {
- 	struct buffer_page *bpage, *tmp;
- 	bool user_thread = current->mm != NULL;
-@@ -1460,13 +1461,15 @@ static int __rb_allocate_pages(long nr_pages, struct list_head *pages, int cpu)
- 		struct page *page;
- 
- 		bpage = kzalloc_node(ALIGN(sizeof(*bpage), cache_line_size()),
--				    mflags, cpu_to_node(cpu));
-+				    mflags, cpu_to_node(cpu_buffer->cpu));
- 		if (!bpage)
- 			goto free_pages;
- 
-+		rb_check_bpage(cpu_buffer, bpage);
-+
- 		list_add(&bpage->list, pages);
- 
--		page = alloc_pages_node(cpu_to_node(cpu), mflags, 0);
-+		page = alloc_pages_node(cpu_to_node(cpu_buffer->cpu), mflags, 0);
- 		if (!page)
- 			goto free_pages;
- 		bpage->page = page_address(page);
-@@ -1498,7 +1501,7 @@ static int rb_allocate_pages(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	WARN_ON(!nr_pages);
- 
--	if (__rb_allocate_pages(nr_pages, &pages, cpu_buffer->cpu))
-+	if (__rb_allocate_pages(cpu_buffer, nr_pages, &pages))
- 		return -ENOMEM;
- 
- 	/*
-@@ -2007,8 +2010,8 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
- 			 * allocated without receiving ENOMEM
- 			 */
- 			INIT_LIST_HEAD(&cpu_buffer->new_pages);
--			if (__rb_allocate_pages(cpu_buffer->nr_pages_to_update,
--						&cpu_buffer->new_pages, cpu)) {
-+			if (__rb_allocate_pages(cpu_buffer, cpu_buffer->nr_pages_to_update,
-+						&cpu_buffer->new_pages)) {
- 				/* not enough memory for new pages */
- 				err = -ENOMEM;
- 				goto out_err;
-@@ -2073,8 +2076,8 @@ int ring_buffer_resize(struct trace_buffer *buffer, unsigned long size,
- 
- 		INIT_LIST_HEAD(&cpu_buffer->new_pages);
- 		if (cpu_buffer->nr_pages_to_update > 0 &&
--			__rb_allocate_pages(cpu_buffer->nr_pages_to_update,
--					    &cpu_buffer->new_pages, cpu_id)) {
-+			__rb_allocate_pages(cpu_buffer, cpu_buffer->nr_pages_to_update,
-+					    &cpu_buffer->new_pages)) {
- 			err = -ENOMEM;
- 			goto out_err;
- 		}
--- 
-2.17.1
+Anyway see my comment to the DT binding file. The rest of the series is up to
+the corresponding subsystem maintainers.
 
+-Sergey
+
+On Thu, Oct 15, 2020 at 11:55:24AM +0800, Jisheng Zhang wrote:
+> The "snps,dw-apb-gpio-port" is never used.
+> 
+> Jisheng Zhang (8):
+>   ARM: dts: berlin: Remove compatible string from dw apb gpio port
+>   ARM: dts: socfpga: Remove compatible string from dw apb gpio port
+>   arm64: dts: apm: remove compatible string from dw apb gpio port
+>   arm64: dts: bitmain: Remove compatible string from dw apb gpio port
+>   arm64: dts: hip05: Remove compatible string from dw apb gpio port
+>   arm: dts: socfpga: Remove compatible string from dw apb gpio port
+>   arm64: dts: synaptics: Remove compatible string from dw apb gpio port
+>   dt-bindings: gpio: dw-apb: remove never-used "snps,dw-apb-gpio-port"
+> 
+>  .../devicetree/bindings/gpio/snps,dw-apb-gpio.yaml          | 5 -----
+>  arch/arm/boot/dts/berlin2.dtsi                              | 6 ------
+>  arch/arm/boot/dts/berlin2cd.dtsi                            | 6 ------
+>  arch/arm/boot/dts/berlin2q.dtsi                             | 6 ------
+>  arch/arm/boot/dts/socfpga.dtsi                              | 3 ---
+>  arch/arm/boot/dts/socfpga_arria10.dtsi                      | 3 ---
+>  arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi           | 2 --
+>  arch/arm64/boot/dts/apm/apm-shadowcat.dtsi                  | 1 -
+>  arch/arm64/boot/dts/apm/apm-storm.dtsi                      | 1 -
+>  arch/arm64/boot/dts/bitmain/bm1880.dtsi                     | 3 ---
+>  arch/arm64/boot/dts/hisilicon/hip05.dtsi                    | 2 --
+>  arch/arm64/boot/dts/intel/socfpga_agilex.dtsi               | 2 --
+>  arch/arm64/boot/dts/synaptics/as370.dtsi                    | 2 --
+>  arch/arm64/boot/dts/synaptics/berlin4ct.dtsi                | 6 ------
+>  14 files changed, 48 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
