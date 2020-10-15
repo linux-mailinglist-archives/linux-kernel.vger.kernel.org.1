@@ -2,325 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A53D28EA70
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AA328EA73
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 03:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732365AbgJOBq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Oct 2020 21:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729785AbgJOBqZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Oct 2020 21:46:25 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A48C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:46:24 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id f5so497117qvx.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Oct 2020 18:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=massaru-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M+KMDSMW+VIAL3mDePAVrUXUBl0wejFu1z7ayCtJdWE=;
-        b=cgW9/K3x93TgArMaMN1eVRDH8x6TsGW+2KFrqGZSm9nRochFWHsFWrkqVYLgqCVQzh
-         fGSY0sbngNPxQb9U2RwyZgA9E1PRHFUjDnnQmSVtZU3V9WYsa/sNrOtAs729lTc4+4HI
-         kLKnqg3FI47AtwWnBflb28IAKoRNhimAM/lwME8aq+hP7qnx1egmOvR5kTXpLKEDbXIm
-         OWheODEdG9FcdJxH/Pfv0wNsjpQ7yPxwAx07HCv+EggLm0lk3odFHCYZaiUAwJomClvC
-         rewmN3NMeHetnC+uvegWHUstXV/iIN6Sb1WZQqxR6aN5sRozaB4aiecYQ7bxSHqdkK6w
-         t76w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=M+KMDSMW+VIAL3mDePAVrUXUBl0wejFu1z7ayCtJdWE=;
-        b=Xa8gj79bHwuDjQSiOPOV3QistiS56GornJOvS8NJYyfojWnjZYGuYL37Fg4X79tYIB
-         j/jmNuAfHrq4W/h751iVRfqITnleFpg8pfizTDrXVe6vGLdVA5UTAbk5dauPN4BfmRha
-         +rROCpUBWNgdLL+qCy539LzHJ4yaKT4px3OM/3veXXSA/ZOy7650fx5xa97uUQjY9xWw
-         +ICm49B346Zd4Uo+3TXtp4iuoq1z6R5hxM8yTX5P0seWwjj6nNdZEloQuOdLFgMEuLfh
-         yATmPRgLTJsSUASXRkkZ0ZiUOyTOTRWm9bRxKou1WwH45Zj8MDvlCXyXegeuzcHrfO5O
-         p+9A==
-X-Gm-Message-State: AOAM531lZJN6FhMB1CyHSmuJDClt/aEMCTk1Nq+jXffmyPz+5BO08AiT
-        +N6+rPrj4BdIMAqc5pIccm9Mhw==
-X-Google-Smtp-Source: ABdhPJzYM/lcrs60DNosmH1aZkomG9f401VbNqKieHGPn3ss7ztP5CAqKfbf6uPnoTX8dE58FnKQwA==
-X-Received: by 2002:ad4:4f22:: with SMTP id fc2mr2288567qvb.28.1602726383312;
-        Wed, 14 Oct 2020 18:46:23 -0700 (PDT)
-Received: from localhost.localdomain ([2804:431:c7cb:5e0b:6f3d:fca0:306c:a15d])
-        by smtp.gmail.com with ESMTPSA id h9sm541448qth.78.2020.10.14.18.46.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 18:46:22 -0700 (PDT)
-From:   Vitor Massaru Iha <vitor@massaru.org>
-To:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
-        elver@google.com
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        andriy.shevchenko@linux.intel.com, geert@linux-m68k.org,
-        paul.gortmaker@windriver.com, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, arnd@arndb.de,
-        elfring@users.sourceforge.net, mhocko@suse.com
-Subject: [PATCH v2] lib: kunit: add list_sort test conversion to KUnit
-Date:   Wed, 14 Oct 2020 22:46:16 -0300
-Message-Id: <20201015014616.309000-1-vitor@massaru.org>
-X-Mailer: git-send-email 2.26.2
+        id S1729756AbgJOBtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Oct 2020 21:49:21 -0400
+Received: from mail-eopbgr1310114.outbound.protection.outlook.com ([40.107.131.114]:36814
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728240AbgJOBtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Oct 2020 21:49:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JNFO7g2jeAmFJjUS1chwH8Dv8IVpzskcGZ5Yo9G/MXDXHNC8sbFNebQaja3Vq3Dqz2OlEl/O513L8pverc5HGqheo+vFZPx97nbSL5EcfOuiG0y6hEzgboHONFtsg5rMAxZ6H3dokrESXR9P/6WniMqbxNvC2ZtwJGyYOPpDY1oi8lNCgBlMiu0h6/uygTniZO+skVD2gNFVBmMthyWBoD6I5CP2PKtW3GWVYsH7+6zJM/G6gwgmYXpjuepjhPrasfF6kWjg+Bm2A30hL2Qk2B9oJ9FV/31ENx0Ygn4iFlL0iGVeYr34btCoB+lnyiQDVyBWMtw8XQTUNMBQAub2PA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7lN1nUFvNQ0WUq5hDeHDeKP0Rp8h4JIWBnomOpYgES8=;
+ b=iUXnuf2FVfHj7JvLSk73uW2J6g/nAXK54WG4mPBNYbQ6XeKkfU6HpP0++Ci2LcSPfRb2byfgCUbHsMffUEkJUbCp0f6NoEzvNKLPOX0riRdc5NZ4idh7eyO0mS2aoDJhGIb5fnBrfHGGwgoxjwHfwr4NJMUjMfl7dGDrlxllev+jaym3rc4mxSp4LW3CYxm2SW4R53ywWWhIJ+TNM7L94HjxzI55lvFMfx1KUpJi9xfyCjhiAbdI/Dj6RbGy6a6VDEPWFtJ4iIKDYEtQ/ent8FYKESPQd5m7lO+5DYjs0qo0GMy2FaDLWMezm3yD3Vd9UYQWYbYFpmPYJTTOhlawTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com (2603:1096:803:6::17)
+ by PSAPR06MB3960.apcprd06.prod.outlook.com (2603:1096:301:3a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Thu, 15 Oct
+ 2020 01:49:14 +0000
+Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com
+ ([fe80::31d5:24c7:7ac6:a5cc]) by PS1PR0601MB1849.apcprd06.prod.outlook.com
+ ([fe80::31d5:24c7:7ac6:a5cc%7]) with mapi id 15.20.3477.022; Thu, 15 Oct 2020
+ 01:49:14 +0000
+From:   Dylan Hung <dylan_hung@aspeedtech.com>
+To:     Joel Stanley <joel@jms.id.au>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: RE: [PATCH 1/1] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
+Thread-Topic: [PATCH 1/1] net: ftgmac100: Fix Aspeed ast2600 TX hang issue
+Thread-Index: AQHWofAzDvWchifNuUyQtsmFJfPVT6mWpi2AgAAOHMCAAPs9AIAALjdQ
+Date:   Thu, 15 Oct 2020 01:49:14 +0000
+Message-ID: <PS1PR0601MB184990423661220EACDBF4BB9C020@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+References: <20201014060632.16085-1-dylan_hung@aspeedtech.com>
+ <20201014060632.16085-2-dylan_hung@aspeedtech.com>
+ <CACPK8Xe_O44BUaPCEm2j3ZN+d4q6JbjEttLsiCLbWF6GnaqSPg@mail.gmail.com>
+ <PS1PR0601MB1849DAC59EDA6A9DB62B4EE09C050@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+ <CACPK8Xd_DH+VeaPmXK2b5FXbrOpg_NmT_R4ENzY-=uNo=6HcyQ@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: jms.id.au; dkim=none (message not signed)
+ header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3b8b95b3-fb3a-40a5-f671-08d870ac851e
+x-ms-traffictypediagnostic: PSAPR06MB3960:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PSAPR06MB39606B643A45B613E874AB4F9C020@PSAPR06MB3960.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AcrsQ+Hv4nK59dOnWAj8nETeb37Wxyvso+/QtNTl9gykY2TR9Byj8qnvbYLhqY/qM1KtVaQDIrGbieW/mWgvXzcAN5VkRAPeVZNImeAszyLv5v+P87+xOgeaKdQqPMLlVJxa83RcnS3CVE6AM8X49O4FjBeyMUi3wzS07r754pKss9M6NYXrfnSN1c7rtQaPV+SVn94HlaJ4kd1xyWlBJrr1bQK9TS6uWZhzvkvPxI5hacFDD8ronIYw6yQj7rvmzAFU6L70w6Mm8Rynl+6eqwN6doqsrkHuFIvOZCDVL2YoAiG6ekG2fdDmgKsgnawqDoFNC5L8evFxZDgEqls47Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS1PR0601MB1849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39840400004)(366004)(136003)(346002)(376002)(478600001)(83380400001)(5660300002)(4326008)(107886003)(9686003)(86362001)(52536014)(2906002)(186003)(33656002)(26005)(8676002)(8936002)(6506007)(66946007)(71200400001)(64756008)(66476007)(66446008)(66556008)(54906003)(6916009)(316002)(55016002)(7696005)(91956017)(76116006)(55236004)(53546011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: MrDg3I8J8HcxtcpxKuH+Kw+aguCGwX71mlBeuHIZ5+cwTIvCnt4sRjYobj4MuUn2ytL3Jv+v0iO78B2sK7+Sv9/6XwvI7EJCNgeuo5mBhf+wNMf7+ws+wP7II9sGan7CVUj4HKBUWSCHzR+1p2RW46aqZPfp7BfGxGVosKnID8vA80Ooq/Yc7IOCYhP30xioZUzvAvX04Nvk8NTTXWw2kcf9FQWqX3KlzSardXo2/xEXBKWbBXSkq70tgkRh3p7gJ17pWNGdHtX13I2uqXk0olnZ80zYGmNNkbJzTA7KQaB2zNpEHgXTlqB3s62esRDDN8AYdiOaTwrTuZ39u7dRnZMQjoJJurta6L9LUf/9C6CwiEBO48Hw0HaGZPzlDBUhRBMowMEmOKHw8AFCAhvdPD5gpdLdk1j16NOgwj9Udw8pIsKOw3cKoCn9eoEVfaTeuEws37k02les8OnvMowCn2ow+usJlIVBqZMrbYN34HPsas5vApWHnL1jGJEvPzq+gReTC+bFuib1XnkoWNmtF1CJj5cyqfbIrDf4oO9bS/23Fi01dVNAr/uuLqTKoQW8bkpzrEVlhM/saoc/nvXIdg0sonPmdaqMMgi+FkLvFjm79cDBwWCVFF21BCLUZhfufKwjntJc5h/gSrRWCNRokA==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <03335D2BB8C33F4D84DD7CAE4019974A@apcprd06.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PS1PR0601MB1849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b8b95b3-fb3a-40a5-f671-08d870ac851e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2020 01:49:14.2180
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rEnSB6qrfa/Riy1iA9tgcgzW/f+/cvMmkmzXGBW7uIQb7dNqUFhkFVx9wxCVIr3QUf998D+TxoApNthwkg0dpjiC4AqUVlzAbbNm6xQ8Lx4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB3960
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the conversion of the runtime tests of test_list_sort,
-from `lib/test_list_sort.c` to KUnit tests.
-
-Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
----
-v2:
-  * fix  KUNIT_TEST sufix;
-  * make kconfig help more concise;
-  * remove obsolete commit comments;
-  * change Kconfig entries to be more adherent to KUnit documentation;
----
- lib/Kconfig.debug                           | 24 ++++---
- lib/Makefile                                |  2 +-
- lib/{test_list_sort.c => list_sort_kunit.c} | 73 +++++++++++----------
- 3 files changed, 53 insertions(+), 46 deletions(-)
- rename lib/{test_list_sort.c => list_sort_kunit.c} (62%)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 4f09c6505a2e..b4b1338c523a 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1905,16 +1905,6 @@ config LKDTM
- 	Documentation on how to use the module can be found in
- 	Documentation/fault-injection/provoke-crashes.rst
- 
--config TEST_LIST_SORT
--	tristate "Linked list sorting test"
--	depends on DEBUG_KERNEL || m
--	help
--	  Enable this to turn on 'list_sort()' function test. This test is
--	  executed only once during system boot (so affects only boot time),
--	  or at module load time.
--
--	  If unsure, say N.
--
- config TEST_MIN_HEAP
- 	tristate "Min heap test"
- 	depends on DEBUG_KERNEL || m
-@@ -2233,6 +2223,20 @@ config LIST_KUNIT_TEST
- 
- 	  If unsure, say N.
- 
-+config LIST_SORT_KUNIT_TEST
-+	tristate "KUnit Linked list sorting test" if !KUNIT_ALL_TESTS 
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Enable this to turn on 'list_sort()' function test. This test is
-+	  executed only once during system boot (so affects only boot time),
-+	  or at module load time.
-+
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  If unsure, say N.
-+
- config LINEAR_RANGES_TEST
- 	tristate "KUnit test for linear_ranges"
- 	depends on KUNIT
-diff --git a/lib/Makefile b/lib/Makefile
-index d862d41fdc3d..a00e26d34263 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -67,7 +67,6 @@ obj-$(CONFIG_TEST_UBSAN) += test_ubsan.o
- CFLAGS_test_ubsan.o += $(call cc-disable-warning, vla)
- UBSAN_SANITIZE_test_ubsan.o := y
- obj-$(CONFIG_TEST_KSTRTOX) += test-kstrtox.o
--obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
- obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
- obj-$(CONFIG_TEST_LKM) += test_module.o
- obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
-@@ -341,5 +340,6 @@ obj-$(CONFIG_PLDMFW) += pldmfw/
- # KUnit tests
- obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
- obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
-+obj-$(CONFIG_LIST_SORT_KUNIT_TEST) += list_sort_kunit.o
- obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
- obj-$(CONFIG_BITS_TEST) += test_bits.o
-diff --git a/lib/test_list_sort.c b/lib/list_sort_kunit.c
-similarity index 62%
-rename from lib/test_list_sort.c
-rename to lib/list_sort_kunit.c
-index 1f017d3b610e..20cbacbb7d6c 100644
---- a/lib/test_list_sort.c
-+++ b/lib/list_sort_kunit.c
-@@ -1,13 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0-only
--#define pr_fmt(fmt) "list_sort_test: " fmt
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
--#include <linux/kernel.h>
- #include <linux/list_sort.h>
- #include <linux/list.h>
--#include <linux/module.h>
--#include <linux/printk.h>
--#include <linux/slab.h>
- #include <linux/random.h>
-+#include <kunit/test.h>
- 
- /*
-  * The pattern of set bits in the list length determines which cases
-@@ -29,28 +26,28 @@ struct debug_el {
- /* Array, containing pointers to all elements in the test list */
- static struct debug_el **elts __initdata;
- 
--static int __init check(struct debug_el *ela, struct debug_el *elb)
-+static int __init check(struct kunit *context, struct debug_el *ela, struct debug_el *elb)
- {
- 	if (ela->serial >= TEST_LIST_LEN) {
--		pr_err("error: incorrect serial %d\n", ela->serial);
-+		KUNIT_FAIL(context, "incorrect serial %d", ela->serial);
- 		return -EINVAL;
- 	}
- 	if (elb->serial >= TEST_LIST_LEN) {
--		pr_err("error: incorrect serial %d\n", elb->serial);
-+		KUNIT_FAIL(context, "incorrect serial %d", elb->serial);
- 		return -EINVAL;
- 	}
- 	if (elts[ela->serial] != ela || elts[elb->serial] != elb) {
--		pr_err("error: phantom element\n");
-+		KUNIT_FAIL(context, "phantom element");
- 		return -EINVAL;
- 	}
- 	if (ela->poison1 != TEST_POISON1 || ela->poison2 != TEST_POISON2) {
--		pr_err("error: bad poison: %#x/%#x\n",
--			ela->poison1, ela->poison2);
-+		KUNIT_FAIL(context, "bad poison: %#x/%#x",
-+			   ela->poison1, ela->poison2);
- 		return -EINVAL;
- 	}
- 	if (elb->poison1 != TEST_POISON1 || elb->poison2 != TEST_POISON2) {
--		pr_err("error: bad poison: %#x/%#x\n",
--			elb->poison1, elb->poison2);
-+		KUNIT_FAIL(context, "bad poison: %#x/%#x",
-+			   elb->poison1, elb->poison2);
- 		return -EINVAL;
- 	}
- 	return 0;
-@@ -63,27 +60,26 @@ static int __init cmp(void *priv, struct list_head *a, struct list_head *b)
- 	ela = container_of(a, struct debug_el, list);
- 	elb = container_of(b, struct debug_el, list);
- 
--	check(ela, elb);
-+	check(priv, ela, elb);
- 	return ela->value - elb->value;
- }
- 
--static int __init list_sort_test(void)
-+static void __init test_list_sort(struct kunit *context)
- {
--	int i, count = 1, err = -ENOMEM;
-+	int i, count = 1;
- 	struct debug_el *el;
- 	struct list_head *cur;
- 	LIST_HEAD(head);
- 
--	pr_debug("start testing list_sort()\n");
--
- 	elts = kcalloc(TEST_LIST_LEN, sizeof(*elts), GFP_KERNEL);
--	if (!elts)
--		return err;
-+	KUNIT_ASSERT_FALSE_MSG(context, elts == NULL, "kcalloc failed");
- 
- 	for (i = 0; i < TEST_LIST_LEN; i++) {
- 		el = kmalloc(sizeof(*el), GFP_KERNEL);
--		if (!el)
-+		if (!el) {
-+			KUNIT_FAIL(context, "kmalloc failed");
- 			goto exit;
-+		}
- 
- 		 /* force some equivalencies */
- 		el->value = prandom_u32() % (TEST_LIST_LEN / 3);
-@@ -94,55 +90,62 @@ static int __init list_sort_test(void)
- 		list_add_tail(&el->list, &head);
- 	}
- 
--	list_sort(NULL, &head, cmp);
-+	list_sort(context, &head, cmp);
- 
--	err = -EINVAL;
- 	for (cur = head.next; cur->next != &head; cur = cur->next) {
- 		struct debug_el *el1;
- 		int cmp_result;
- 
- 		if (cur->next->prev != cur) {
--			pr_err("error: list is corrupted\n");
-+			KUNIT_FAIL(context, "list is corrupted");
- 			goto exit;
- 		}
- 
--		cmp_result = cmp(NULL, cur, cur->next);
-+		cmp_result = cmp(context, cur, cur->next);
- 		if (cmp_result > 0) {
--			pr_err("error: list is not sorted\n");
-+			KUNIT_FAIL(context, "list is not sorted");
- 			goto exit;
- 		}
- 
- 		el = container_of(cur, struct debug_el, list);
- 		el1 = container_of(cur->next, struct debug_el, list);
- 		if (cmp_result == 0 && el->serial >= el1->serial) {
--			pr_err("error: order of equivalent elements not "
--				"preserved\n");
-+			KUNIT_FAIL(context, "order of equivalent elements not preserved");
- 			goto exit;
- 		}
- 
--		if (check(el, el1)) {
--			pr_err("error: element check failed\n");
-+		if (check(context, el, el1)) {
- 			goto exit;
- 		}
- 		count++;
- 	}
- 	if (head.prev != cur) {
--		pr_err("error: list is corrupted\n");
-+		KUNIT_FAIL(context, "list is corrupted");
- 		goto exit;
- 	}
- 
- 
- 	if (count != TEST_LIST_LEN) {
--		pr_err("error: bad list length %d", count);
-+		KUNIT_FAIL(context, "bad list length %d", count);
- 		goto exit;
- 	}
- 
--	err = 0;
- exit:
- 	for (i = 0; i < TEST_LIST_LEN; i++)
- 		kfree(elts[i]);
- 	kfree(elts);
--	return err;
- }
--module_init(list_sort_test);
-+
-+static struct kunit_case __refdata list_sort_test_cases[] = {
-+	KUNIT_CASE(test_list_sort),
-+	{}
-+};
-+
-+static struct kunit_suite list_sort_test_suite = {
-+	.name = "list-sort",
-+	.test_cases = list_sort_test_cases,
-+};
-+
-+kunit_test_suites(&list_sort_test_suite);
-+
- MODULE_LICENSE("GPL");
-
-base-commit: d2585f5164c298aaaed14c2c8d313cbe7bd5b253
--- 
-2.26.2
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2VsIFN0YW5sZXkgW21haWx0
+bzpqb2VsQGptcy5pZC5hdV0NCj4gU2VudDogVGh1cnNkYXksIE9jdG9iZXIgMTUsIDIwMjAgNjoz
+MSBBTQ0KPiBUbzogRHlsYW4gSHVuZyA8ZHlsYW5faHVuZ0Bhc3BlZWR0ZWNoLmNvbT4NCj4gQ2M6
+IERhdmlkIFMgLiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyBKYWt1YiBLaWNpbnNraQ0K
+PiA8a3ViYUBrZXJuZWwub3JnPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgTGludXggS2VybmVs
+IE1haWxpbmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZz47IFBvLVl1IENo
+dWFuZyA8cmF0YmVydEBmYXJhZGF5LXRlY2guY29tPjsNCj4gbGludXgtYXNwZWVkIDxsaW51eC1h
+c3BlZWRAbGlzdHMub3psYWJzLm9yZz47IE9wZW5CTUMgTWFpbGxpc3QNCj4gPG9wZW5ibWNAbGlz
+dHMub3psYWJzLm9yZz47IEJNQy1TVyA8Qk1DLVNXQGFzcGVlZHRlY2guY29tPg0KPiBTdWJqZWN0
+OiBSZTogW1BBVENIIDEvMV0gbmV0OiBmdGdtYWMxMDA6IEZpeCBBc3BlZWQgYXN0MjYwMCBUWCBo
+YW5nIGlzc3VlDQo+IA0KPiBPbiBXZWQsIDE0IE9jdCAyMDIwIGF0IDEzOjMyLCBEeWxhbiBIdW5n
+IDxkeWxhbl9odW5nQGFzcGVlZHRlY2guY29tPg0KPiB3cm90ZToNCj4gPiA+ID4gVGhlIG5ldyBI
+VyBhcmJpdHJhdGlvbiBmZWF0dXJlIG9uIEFzcGVlZCBhc3QyNjAwIHdpbGwgY2F1c2UgTUFDIFRY
+DQo+ID4gPiA+IHRvIGhhbmcgd2hlbiBoYW5kbGluZyBzY2F0dGVyLWdhdGhlciBETUEuICBEaXNh
+YmxlIHRoZSBwcm9ibGVtYXRpYw0KPiA+ID4gPiBmZWF0dXJlIGJ5IHNldHRpbmcgTUFDIHJlZ2lz
+dGVyIDB4NTggYml0MjggYW5kIGJpdDI3Lg0KPiA+ID4NCj4gPiA+IEhpIER5bGFuLA0KPiA+ID4N
+Cj4gPiA+IFdoYXQgYXJlIHRoZSBzeW1wdG9tcyBvZiB0aGlzIGlzc3VlPyBXZSBhcmUgc2VlaW5n
+IHRoaXMgb24gb3VyIHN5c3RlbXM6DQo+ID4gPg0KPiA+ID4gWzI5Mzc2LjA5MDYzN10gV0FSTklO
+RzogQ1BVOiAwIFBJRDogOSBhdCBuZXQvc2NoZWQvc2NoX2dlbmVyaWMuYzo0NDINCj4gPiA+IGRl
+dl93YXRjaGRvZysweDJmMC8weDJmNA0KPiA+ID4gWzI5Mzc2LjA5OTg5OF0gTkVUREVWIFdBVENI
+RE9HOiBldGgwIChmdGdtYWMxMDApOiB0cmFuc21pdCBxdWV1ZSAwDQo+ID4gPiB0aW1lZCBvdXQN
+Cj4gPiA+DQo+ID4NCj4gPiBNYXkgSSBrbm93IHlvdXIgc29jIHZlcnNpb24/IFRoaXMgaXNzdWUg
+aGFwcGVucyBvbiBhc3QyNjAwIHZlcnNpb24gQTEuDQo+IFRoZSByZWdpc3RlcnMgdG8gZml4IHRo
+aXMgaXNzdWUgYXJlIG1lYW5pbmdsZXNzL3Jlc2VydmVkIG9uIEEwIGNoaXAsIHNvIGl0IGlzDQo+
+IG9rYXkgdG8gc2V0IHRoZW0gb24gZWl0aGVyIEEwIG9yIEExLg0KPiANCj4gV2UgYXJlIHJ1bm5p
+bmcgdGhlIEExLiBBbGwgb2Ygb3VyIEEwIHBhcnRzIGhhdmUgYmVlbiByZXBsYWNlZCB3aXRoIEEx
+Lg0KPiANCj4gPiBJIHdhcyBlbmNvdW50ZXJpbmcgdGhpcyBpc3N1ZSB3aGVuIEkgd2FzIHJ1bm5p
+bmcgdGhlIGlwZXJmIFRYIHRlc3QuICBUaGUNCj4gc3ltcHRvbSBpcyB0aGUgVFggZGVzY3JpcHRv
+cnMgYXJlIGNvbnN1bWVkLCBidXQgbm8gY29tcGxldGUgcGFja2V0IGlzIHNlbnQNCj4gb3V0Lg0K
+PiANCj4gV2hhdCBwYXJhbWV0ZXJzIGFyZSB5b3UgdXNpbmcgZm9yIGlwZXJmPyBJIGRpZCBhIGxv
+dCBvZiB0ZXN0aW5nIHdpdGgNCj4gaXBlcmYzIChhbmQgc3RyZXNzLW5nIHJ1bm5pbmcgYXQgdGhl
+IHNhbWUgdGltZSkgYW5kIGNvdWxkbid0IHJlcHJvZHVjZSB0aGUNCj4gZXJyb3IuDQo+IA0KDQpJ
+IHNpbXBseSB1c2UgImlwZXJmIC1jIDxzZXJ2ZXIgaXA+IiBvbiBhc3QyNjAwLiAgSXQgaXMgdmVy
+eSBlYXN5IHRvIHJlcHJvZHVjZS4gSSBhcHBlbmQgdGhlIGxvZyBiZWxvdzoNCk5vdGljZWQgdGhh
+dCB0aGlzIGlzc3VlIG9ubHkgaGFwcGVucyB3aGVuIEhXIHNjYXR0ZXItZ2F0aGVyIChORVRJRl9G
+X1NHKSBpcyBvbi4NCg0KW0FTVCAvXSQgaXBlcmYzIC1jIDE5Mi4xNjguMTAwLjg5DQpDb25uZWN0
+aW5nIHRvIGhvc3QgMTkyLjE2OC4xMDAuODksIHBvcnQgNTIwMQ0KWyAgNF0gbG9jYWwgMTkyLjE2
+OC4xMDAuNDUgcG9ydCA0NTM0NiBjb25uZWN0ZWQgdG8gMTkyLjE2OC4xMDAuODkgcG9ydCA1MjAx
+DQpbIElEXSBJbnRlcnZhbCAgICAgICAgICAgVHJhbnNmZXIgICAgIEJhbmR3aWR0aCAgICAgICBS
+ZXRyICBDd25kDQpbICA0XSAgIDAuMDAtMS4wMCAgIHNlYyAgNDQuOCBNQnl0ZXMgICAzNzUgTWJp
+dHMvc2VjICAgIDIgICAxLjQzIEtCeXRlcw0KWyAgNF0gICAxLjAwLTIuMDAgICBzZWMgIDAuMDAg
+Qnl0ZXMgIDAuMDAgYml0cy9zZWMgICAgMiAgIDEuNDMgS0J5dGVzDQpbICA0XSAgIDIuMDAtMy4w
+MCAgIHNlYyAgMC4wMCBCeXRlcyAgMC4wMCBiaXRzL3NlYyAgICAwICAgMS40MyBLQnl0ZXMNClsg
+IDRdICAgMy4wMC00LjAwICAgc2VjICAwLjAwIEJ5dGVzICAwLjAwIGJpdHMvc2VjICAgIDEgICAx
+LjQzIEtCeXRlcw0KWyAgNF0gICA0LjAwLTUuMDAgICBzZWMgIDAuMDAgQnl0ZXMgIDAuMDAgYml0
+cy9zZWMgICAgMCAgIDEuNDMgS0J5dGVzDQpeQ1sgIDRdICAgNS4wMC01Ljg4ICAgc2VjICAwLjAw
+IEJ5dGVzICAwLjAwIGJpdHMvc2VjICAgIDAgICAxLjQzIEtCeXRlcw0KLSAtIC0gLSAtIC0gLSAt
+IC0gLSAtIC0gLSAtIC0gLSAtIC0gLSAtIC0gLSAtIC0gLQ0KWyBJRF0gSW50ZXJ2YWwgICAgICAg
+ICAgIFRyYW5zZmVyICAgICBCYW5kd2lkdGggICAgICAgUmV0cg0KWyAgNF0gICAwLjAwLTUuODgg
+ICBzZWMgIDQ0LjggTUJ5dGVzICA2NC4wIE1iaXRzL3NlYyAgICA1ICAgICAgICAgICAgIHNlbmRl
+cg0KWyAgNF0gICAwLjAwLTUuODggICBzZWMgIDAuMDAgQnl0ZXMgIDAuMDAgYml0cy9zZWMgICAg
+ICAgICAgICAgICAgICByZWNlaXZlcg0KaXBlcmYzOiBpbnRlcnJ1cHQgLSB0aGUgY2xpZW50IGhh
+cyB0ZXJtaW5hdGVkDQoNCj4gV2UgY291bGQgb25seSByZXByb2R1Y2UgaXQgd2hlbiBwZXJmb3Jt
+aW5nIG90aGVyIGZ1bmN0aW9ucywgc3VjaCBhcw0KPiBkZWJ1Z2dpbmcvYm9vdGluZyB0aGUgaG9z
+dCBwcm9jZXNzb3IuDQo+IA0KQ291bGQgaXQgYmUgYW5vdGhlciBpc3N1ZT8NCg0KPiA+ID4gPiAr
+LyoNCj4gPiA+ID4gKyAqIHRlc3QgbW9kZSBjb250cm9sIHJlZ2lzdGVyDQo+ID4gPiA+ICsgKi8N
+Cj4gPiA+ID4gKyNkZWZpbmUgRlRHTUFDMTAwX1RNX1JRX1RYX1ZBTElEX0RJUyAoMSA8PCAyOCkg
+I2RlZmluZQ0KPiA+ID4gPiArRlRHTUFDMTAwX1RNX1JRX1JSX0lETEVfUFJFViAoMSA8PCAyNykg
+I2RlZmluZQ0KPiA+ID4gPiArRlRHTUFDMTAwX1RNX0RFRkFVTFQNCj4gPiA+IFwNCj4gPiA+ID4g
+KyAgICAgICAoRlRHTUFDMTAwX1RNX1JRX1RYX1ZBTElEX0RJUyB8DQo+ID4gPiBGVEdNQUMxMDBf
+VE1fUlFfUlJfSURMRV9QUkVWKQ0KPiA+ID4NCj4gPiA+IFdpbGwgYXNwZWVkIGlzc3VlIGFuIHVw
+ZGF0ZWQgZGF0YXNoZWV0IHdpdGggdGhpcyByZWdpc3RlciBkb2N1bWVudGVkPw0KPiANCj4gRGlk
+IHlvdSBzZWUgdGhpcyBxdWVzdGlvbj8NCj4gDQpTb3JyeSwgSSBtaXNzZWQgdGhpcyBxdWVzdGlv
+bi4gIEFzcGVlZCB3aWxsIHVwZGF0ZSB0aGUgZGF0YXNoZWV0IGFjY29yZGluZ2x5Lg0KDQo+IENo
+ZWVycywNCj4gDQo+IEpvZWwNCg0K
