@@ -2,139 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F02A28F4DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D7A28F4E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730757AbgJOOhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730279AbgJOOhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:37:48 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3A3C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:37:48 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t9so3744982wrq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atcomputing.nl; s=atcomputing-nl;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version;
-        bh=BlxdYyMIUCSA+6cNAex4SwzO8S5YCgvJxaaXIsMT2yk=;
-        b=hxblWQXDdL6Pknk5gfzyWCNGujyGqTDYiCpudBE/EPSclIPZ41n+wF9Jo8c0XITvIC
-         OL8ZRykRU2q4HRVLGDNTk2mZtfzkL89OqZZKT5ZFox8fToxxfF99kWo/CPMVIUsNSyXt
-         yXD5DC3RBkzNVOUQIHRgWDi7YimrYMcUdA9zY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version;
-        bh=BlxdYyMIUCSA+6cNAex4SwzO8S5YCgvJxaaXIsMT2yk=;
-        b=j1OmZI55X95GHaPgX2lJr085Xq2n9BbPSkdgQa+t7BQdoAm3ubrN+94T61/p7nfa2c
-         r7UKmYsnWtXweR83f9AdUnMDnaSEp8hccx6YgVq1wniFpt03lyqdxYT081DcgKLPi8QZ
-         UVvrUWq1HE9zzv5vHr0V4yA0/BXj9c1JejsEbiCUWh8RZfPnaT3wRXLqSDCF8PxJzNXt
-         EDhdzh1ULWj28gkRpHq4I/Hj5bYaGKhhO6VdlSrZPFNteBrJLLogeHz3KQ3kC+dfHonn
-         CttusTdwWVXhgci2w2jM5K5LF+KzexKeTa+/AcBd5PQ1WX1NhC8SQFNT0ChoIN7Tdsam
-         j+Cg==
-X-Gm-Message-State: AOAM533GzI1a3VmmkQ8sCDxtZKU3wFs35TPQVX9eWlQ4anJP5rif01g1
-        wo/WkubmIBB2eh7UPOANmM1PE0TR4uFlVwhR
-X-Google-Smtp-Source: ABdhPJwgqUnP8Mldpa0nrzDfaKpDs4xYqt1UEegfzQhzuJOOdHBy/bbgWWe996jWN8Hz/K5oGBUX+g==
-X-Received: by 2002:adf:e3cb:: with SMTP id k11mr4756640wrm.341.1602772666618;
-        Thu, 15 Oct 2020 07:37:46 -0700 (PDT)
-Received: from nyx ([2001:980:74ee:1:1ec4:4a28:e4c9:705c])
-        by smtp.gmail.com with ESMTPSA id j7sm5253004wrn.81.2020.10.15.07.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 07:37:45 -0700 (PDT)
-Message-ID: <b58d854afe42d45f499b978da96f0cf29c5e574c.camel@atcomputing.nl>
-Subject: Re: [Intel-gfx] [PATCH] Revert "drm/i915: Force state->modeset=true
- when distrust_bios_wm==true"
-From:   Stefan Joosten <stefan@atcomputing.nl>
-To:     Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        id S1731022AbgJOOh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:37:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45352 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728888AbgJOOhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:37:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1602772673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fyAdftOWPrn+xC9V3oziST8/L7BPDtEvR1vWQr/edYo=;
+        b=TKpn88v+tlHuc50Ohx8tQdnLNWyltTr3kRUlCiFRMIiRw5JoK3h+kl0jroxGx8ajrdnqig
+        hajS55X8gQIZxT1Ok5V/Jmb8v3EWIgbKZpPAXSSC/GhHePh1LGd/RWE/f5gXaszt5DqU+w
+        KSo1AK0tMG061dn3oGjEoWnb1+RXGZQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 61299ACDB;
+        Thu, 15 Oct 2020 14:37:53 +0000 (UTC)
+Subject: Re: [PATCH 2/2] xen/blkback: turn the cache purge percent into a
+ parameter
+To:     Roger Pau Monne <roger.pau@citrix.com>,
         linux-kernel@vger.kernel.org
-Date:   Thu, 15 Oct 2020 16:37:39 +0200
-In-Reply-To: <20201001152346.GR6112@intel.com>
-References: <60a804aa6357eb17daa1729f4bce25e762344e9f.camel@atcomputing.nl>
-         <20201001152346.GR6112@intel.com>
-Organization: AT Computing
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-1ehRlM2nvfRUqr5GDzRW"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        "J . Roeleveld" <joost@antarean.org>
+References: <20201015142416.70294-1-roger.pau@citrix.com>
+ <20201015142416.70294-3-roger.pau@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <0b7da9e1-6c59-5b8d-52aa-6293568613d1@suse.com>
+Date:   Thu, 15 Oct 2020 16:37:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20201015142416.70294-3-roger.pau@citrix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15.10.20 16:24, Roger Pau Monne wrote:
+> Assume that reads and writes to the variable will be atomic. The worse
+> that could happen is that one of the purges removes a partially
+> written percentage of grants, but the cache itself will recover.
+> 
+> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+> ---
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: SeongJae Park <sjpark@amazon.de>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: linux-block@vger.kernel.org
+> Cc: J. Roeleveld <joost@antarean.org>
+> Cc: Jürgen Groß <jgross@suse.com>
+> ---
+>   Documentation/ABI/testing/sysfs-driver-xen-blkback | 9 +++++++++
+>   drivers/block/xen-blkback/blkback.c                | 7 +++++--
+>   2 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-xen-blkback b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> index 776f25d335ca..7de791ad61f9 100644
+> --- a/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> +++ b/Documentation/ABI/testing/sysfs-driver-xen-blkback
+> @@ -45,3 +45,12 @@ Description:
+>                   to be executed periodically. This parameter controls the time
+>                   interval between consecutive executions of the purge mechanism
+>                   is set in ms.
+> +
+> +What:           /sys/module/xen_blkback/parameters/lru_percent_clean
+> +Date:           October 2020
+> +KernelVersion:  5.10
+> +Contact:        Roger Pau Monné <roger.pau@citrix.com>
+> +Description:
+> +                When the persistent grants list is full we will remove unused
+> +                grants from the list. The percent number of grants to be
+> +                removed at each LRU execution.
+> diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
+> index 6ad9b76fdb2b..772852d45a5a 100644
+> --- a/drivers/block/xen-blkback/blkback.c
+> +++ b/drivers/block/xen-blkback/blkback.c
+> @@ -127,7 +127,10 @@ MODULE_PARM_DESC(lru_internval,
+>    * from the list. The percent number of grants to be removed at each LRU
+>    * execution.
+>    */
+> -#define LRU_PERCENT_CLEAN 5
+> +static unsigned int lru_percent_clean = 5;
+> +module_param_named(lru_percent_clean, lru_percent_clean, uint, 0644);
+> +MODULE_PARM_DESC(lru_percent_clean,
+> +		 "Percentage of persistent grants to remove from the cache when full");
+>   
+>   /* Run-time switchable: /sys/module/blkback/parameters/ */
+>   static unsigned int log_stats;
+> @@ -404,7 +407,7 @@ static void purge_persistent_gnt(struct xen_blkif_ring *ring)
+>   	    !ring->blkif->vbd.overflow_max_grants)) {
+>   		num_clean = 0;
+>   	} else {
+> -		num_clean = (max_pgrants / 100) * LRU_PERCENT_CLEAN;
+> +		num_clean = (max_pgrants / 100) * lru_percent_clean;
 
---=-1ehRlM2nvfRUqr5GDzRW
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hmm, wouldn't it be better to use (max_grants * lru_percent_clean) / 100
+here in order to support max_grants values less than 100?
 
-Dear Ville Syrj=C3=A4l=C3=A4,
 
-Thank you for responding so quickly.
-I was occupied with work and life for the past two weeks, sorry about
-the wait, but have now managed to find some time to continue pursuing
-this issue again.
-
-On Thu, 2020-10-01 at 18:23 +0300, Ville Syrj=C3=A4l=C3=A4 wrote:
-> Argh. If only I had managed to land the full dbuf rework and nuke
-> this mess before it came back to bite us...
-
-Yeah... I know the feeling.
-
-> This is definitely going to break something else, so not great.
-
-I did expect that. The automated tests failing was a pretty good
-indicator.
-You put that code in to take care of something. All I did was just tear
-it down because it happens to work better for me... blunt but
-functional for my purposes.
-
-Seems to need some finesse or a condition to not cause my problem? Yet
-still function for the reason you put it in there for.
-
-I am more than willing to play guinea pig and test patches on my end to
-improve it with you.
-
-> Can you file an upstream bug at
-> https://gitlab.freedesktop.org/drm/intel/issues/new
-> and attach dmesgs from booting both good and bad kernels with
-> drm.debug=3D0x1e passed to the kernel cmdline? Bump log_buf_len=3D
-> if necessary to capture the full log.
-
-I have done so today.
-It's at: https://gitlab.freedesktop.org/drm/intel/-/issues/2579
-
---=20
-Stefan Joosten
-
-AT Computing BV              =20
-Sharing and growing together  Tel +31 24 352 72 82
-Arnhemsestraatweg 33          info@atcomputing.nl
-6881 ND Velp                  www.atcomputing.nl
-
---=-1ehRlM2nvfRUqr5GDzRW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQFKBAABCgA0FiEETjlf9HQ9GW2hDHJJSfQ+3gEWJQkFAl+IXrMWHHN0ZWZhbkBh
-dGNvbXB1dGluZy5ubAAKCRBJ9D7eARYlCdRQB/0UKaMEMiO/73Q8nqqd7wMxYfhB
-v5UqBk4fiG0bL1WnkW2nLq1AZ3OZWfrL+FuHp9uUC7qf6YXcAQYRlcxScMnCkdC6
-SiK1NdIf5B4DULfbxaeiIfkGf94/zUdX2WTtb5ch6MufmgYfGgIovnT1TE2EKnk8
-wNkZYiWMnZpffMJUU6qMHt+FR5YUdomuMGIwCDHHo7+YnLag0v+EpXBh8CNarUHa
-EZKa3pOLrNAUaLr5mhDpdtEmDlDQ8of89KQod339gmI+bE1G7h0jHk6TDaMdFipU
-uw8sp2MQiUWI6QJFulsIW6uwcPqCgNMKPJKWIDIlpqAxuhE5amOaJoQ0+2w5
-=c3uK
------END PGP SIGNATURE-----
-
---=-1ehRlM2nvfRUqr5GDzRW--
-
+Juergen
