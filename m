@@ -2,147 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0466028F63C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 17:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487F328F646
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 18:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389837AbgJOP5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 11:57:11 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43593 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389713AbgJOP5K (ORCPT
+        id S2388811AbgJOQAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 12:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388393AbgJOQAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 11:57:10 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n61so3326028ota.10;
-        Thu, 15 Oct 2020 08:57:08 -0700 (PDT)
+        Thu, 15 Oct 2020 12:00:41 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4831C061755;
+        Thu, 15 Oct 2020 09:00:41 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id y14so2155342pgf.12;
+        Thu, 15 Oct 2020 09:00:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=XWjeAwSwJUB4odQ/5eOsa55JFw248FhKheVyetCUznE=;
+        b=KDzaud37AeZ7EnsiAUPFvKVuyDGeZo3s4QeIstQAQs3yqxVYuRAHhtFV7u5vdmoi6I
+         2J3mFrIhSCok2XSvyWOSlQSN167RnlPfp78PQZTthfdH86i05Ccprk3SCwdnDkfUO15Z
+         MFor+el37FtaBbM3j3hXWb0kYCGwC79s4dZJdpoq0teQnL14WwJ4aJO8D+/ywf0rbgZk
+         GplQuqTFXY2at6UmONUXRvJZCzgCZQQLIg1HghVrZFKcQEAliz1DBA/5QXn30qB/FQ1u
+         xxpwHJLntzeFxFzUPfshZEjufRG2QTKp5zykcNZHNwheFE9OQruEFb+uXR9uuMu8U6BE
+         x8kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/4GgpJhvEPw5RrmkaieTPcF/Ng6iwVy7UMFgWDDaTjU=;
-        b=TJTDQ36rTUSbUG5hOOlDHPE0atfzD8ymRTXloqoWPFI2RNEzhC21z/g8dRzHsqthbD
-         QAu0RN+Lnje3WQ6l26b64GcX5PvuiTV5Hx3tfr+R90oCqvepTQjJyWreR1uX6wAlNlDl
-         5pRCAsCG0vhOuLbskdfr/yMcOUylfh/N/SpMqP+eh4lkUvnH06DA3TgfShcLXm31IFKR
-         9fazbrsYXbTleuDK12Ks1iCEOVzCfBC5taJtu0BLp0sBWRWkvo0Z0UftgXLNTQj6Zkqx
-         6FuBLYZp29lBFw+3iYRmUvOHe7bK70iWVwcZfpRFXvEFJmgufcqD0HusPXoC6a0m4xhl
-         axlA==
-X-Gm-Message-State: AOAM531pWBPEG8wetuMCr1rHgAPQAVukG5jQudc4VtVJZe/qdYXb1zYZ
-        XXbKYmn3OBIdCVKUtzGPOMN7wI8nLNqpgjXqsZ8=
-X-Google-Smtp-Source: ABdhPJyoltGbkt59n4Bo3l3lomRSlxR74vdWZMPehbXbYcmhXPVPGK9lsyyM/iMmR5AAB2q/h2XA+bsJcjxkwerJJsY=
-X-Received: by 2002:a9d:ac9:: with SMTP id 67mr3254584otq.321.1602777428385;
- Thu, 15 Oct 2020 08:57:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201009053921.pkq4pcyrv4r7ylzu@vireshk-i7> <42e3c8e9-cadc-d013-1e1f-fa06af4a45ff@arm.com>
- <20201009140141.GA4048593@bogus> <2b7b6486-2898-1279-ce9f-9e7bd3512152@arm.com>
- <20201012105945.GA9219@arm.com> <500510b9-58f3-90b3-8c95-0ac481d468b5@arm.com>
- <20201012163032.GA30838@arm.com> <9fe56600-ba7d-d3b6-eea3-885475d94d7a@arm.com>
- <20201012220132.GA1715@arm.com> <CAJZ5v0hMtPARYezJEZqeUZBsyaSggQvtvvfEvONhz6Z=Y32bhQ@mail.gmail.com>
- <20201013123901.GA4945@arm.com>
-In-Reply-To: <20201013123901.GA4945@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 15 Oct 2020 17:56:56 +0200
-Message-ID: <CAJZ5v0gDfzFpJTLYMD=HsWKm5ORpx=398v+3q9DDoBbAh-aEsg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] [RFC] CPUFreq: Add support for cpu-perf-dependencies
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Nicola Mazzucato <nicola.mazzucato@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Chris Redpath <chris.redpath@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XWjeAwSwJUB4odQ/5eOsa55JFw248FhKheVyetCUznE=;
+        b=QIdCRNNSe1QH3IuzlLQPbxQSsHS9q6B6Gq0wUf+C/DHys/lMM/ZrTUO/sNmmYnaOh+
+         o92stJJJ4/RKvprRFP+DH7PDyHC/MZ1n2csbNVnkbCSFU7i3G3JSdcHZiHj+HAfzMK+l
+         FM9V5BcPKRyc154ycUWeooQ3rqzFU7okpqRiutGDRvB1TyBpMNq7nmJIkmuem3S5fSWH
+         aHCzXL2TMZgkht/RNZvLMeMsUxqmeQH7vfXxoEIPCQuzNtHMYmvIoUzHSqvqIj0hDCsV
+         LtwXoPzD5GWbKBSxZbDPMOpgM49/O7VyHuRq3hcC0CFvw6Rvw5CQJEjdP6zKGgnbp+dW
+         mkMw==
+X-Gm-Message-State: AOAM530KVkm3Usr+hOps5aQpvzHpWOvB3FSaiaYYSLV0kSExO1xC4cwI
+        HysFKH+R3FCheOH5OcscwIQ=
+X-Google-Smtp-Source: ABdhPJwPJfuGmrcnnF6SiKM4DSH3uny1EY9OymBOtZdH+lnXjY8YzbMj43TDQ9S+wKeKqLJqsWlPrg==
+X-Received: by 2002:a63:5fca:: with SMTP id t193mr3794243pgb.261.1602777640967;
+        Thu, 15 Oct 2020 09:00:40 -0700 (PDT)
+Received: from laptop.hsd1.wa.comcast.net ([2601:600:9b7f:872e:a655:30fb:7373:c762])
+        by smtp.gmail.com with ESMTPSA id q24sm3664414pgb.12.2020.10.15.09.00.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 09:00:40 -0700 (PDT)
+From:   Andrei Vagin <avagin@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, Andrei Vagin <avagin@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH 1/2 v2] futex: adjust a futex timeout with a per-timens offset
+Date:   Thu, 15 Oct 2020 09:00:19 -0700
+Message-Id: <20201015160020.293748-1-avagin@gmail.com>
+X-Mailer: git-send-email 2.17.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 2:39 PM Ionela Voinescu <ionela.voinescu@arm.com> wrote:
->
-> Hi Rafael,
->
-> On Tuesday 13 Oct 2020 at 13:53:37 (+0200), Rafael J. Wysocki wrote:
-> > On Tue, Oct 13, 2020 at 12:01 AM Ionela Voinescu
-> > <ionela.voinescu@arm.com> wrote:
-> > >
-> > > Hey Lukasz,
-> > >
-> > > I think after all this discussion (in our own way of describing things)
-> > > we agree on how the current cpufreq based FIE implementation is affected
-> > > in systems that use hardware coordination.
-> > >
-> > > What we don't agree on is the location where that implementation (that
-> > > uses the new mask and aggregation) should be.
-> > >
-> > > On Monday 12 Oct 2020 at 19:19:29 (+0100), Lukasz Luba wrote:
-> > > [..]
-> > > > The previous FIE implementation where arch_set_freq_scale()
-> > > > was called from the drivers, was better suited for this issue.
-> > > > Driver could just use internal dependency cpumask or even
-> > > > do the aggregation to figure out the max freq for cluster
-> > > > if there is a need, before calling arch_set_freq_scale().
-> > > >
-> > > > It is not perfect solution for software FIE, but one of possible
-> > > > when there is no hw counters.
-> > > >
-> > > [..]
-> > >
-> > > > Difference between new FIE and old FIE (from v5.8) is that the new one
-> > > > purely relies on schedutil max freq value (which will now be missing),
-> > > > while the old FIE was called by the driver and thus it was an option to
-> > > > fix only the affected cpufreq driver [1][2].
-> > > >
-> > >
-> > > My final argument is that now you have 2 drivers that would need this
-> > > support, next you'll have 3 (the new mediatek driver), and in the future
-> > > there will be more. So why limit and duplicate this functionality in the
-> > > drivers? Why not make it generic for all drivers to use if the system
-> > > is using hardware coordination?
-> > >
-> > > Additionally, I don't think drivers should not even need to know about
-> > > these dependency/clock domains. They should act at the level of the
-> > > policy, which in this case will be at the level of each CPU.
-> >
-> > The policies come from the driver, though.
-> >
-> > The driver decides how many CPUs will be there in a policy and how to
-> > handle them at the initialization time.
->
-> Yes, policies are built based on information populated from the drivers
-> at .init(): what CPUs will belong to a policy, what methods to use for
-> setting and getting frequency, etc.
->
-> So they do pass this information to the cpufreq core to be stored at the
-> level of the policy, but later drivers (in the majority of cases) will
-> not need to store on their own information on what CPUs belong to a
-> frequency domain, they rely on having passed that information to the
-> core, and the core mechanisms hold this information on the clock domains
-> (currently through policy->cpus and policy->related_cpus).
+For all commands except FUTEX_WAIT, timeout is interpreted as an
+absolute value. This absolute value is inside the task's time namespace
+and has to be converted to the host's time.
 
-Strictly speaking, not quite.
+Cc: <stable@vger.kernel.org>
+Fixes: 5a590f35add9 ("posix-clocks: Wire up clock_gettime() with timens offsets")
+Reported-by: Hans van der Laan <j.h.vanderlaan@student.utwente.nl>
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
+---
 
-In fact policy->related_cpus is a set of CPUs that share a common perf
-control HW/FW interface which may or may not match the boundaries of
-clock domains etc.  That's what the entire cpufreq needs to know and
-cares about.
+v2:
+* check FUTEX_CLOCK_REALTIME properly
+* fix futex_time32 too
 
-AFAICS your scale invariance rework patches were based on the
-assumption that CPUs sharing an interface like that should also belong
-to the same frequency domain, which is reasonable and that's why I
-didn't have a problem with it, but if you were really assuming that
-policy->related_cpus must always reflect a frequency domain, then I'm
-afraid that you were not going in the right direction (the
-one-CPU-per-policy with HW coordination example should be sufficient
-to illustrate that).
+ kernel/futex.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-It is correct that drivers generally don't need to know about the HW
-clock (or voltage for that matter) coordination dependencies, but the
-rest of cpufreq doesn't need to know about them either.  If that
-information is needed for something else, I don't see a reason to put
-it into cpufreq.
+diff --git a/kernel/futex.c b/kernel/futex.c
+index a5876694a60e..32056d2d4171 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -39,6 +39,7 @@
+ #include <linux/freezer.h>
+ #include <linux/memblock.h>
+ #include <linux/fault-inject.h>
++#include <linux/time_namespace.h>
+ 
+ #include <asm/futex.h>
+ 
+@@ -3797,6 +3798,8 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
+ 		t = timespec64_to_ktime(ts);
+ 		if (cmd == FUTEX_WAIT)
+ 			t = ktime_add_safe(ktime_get(), t);
++		else if (!(op & FUTEX_CLOCK_REALTIME))
++			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+ 		tp = &t;
+ 	}
+ 	/*
+@@ -3989,6 +3992,8 @@ SYSCALL_DEFINE6(futex_time32, u32 __user *, uaddr, int, op, u32, val,
+ 		t = timespec64_to_ktime(ts);
+ 		if (cmd == FUTEX_WAIT)
+ 			t = ktime_add_safe(ktime_get(), t);
++		else if (!(op & FUTEX_CLOCK_REALTIME))
++			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
+ 		tp = &t;
+ 	}
+ 	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
+-- 
+2.26.2
+
