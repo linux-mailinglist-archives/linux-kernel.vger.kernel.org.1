@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D7928F558
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AEF28F55D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 16:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389477AbgJOOzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 10:55:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388086AbgJOOza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 10:55:30 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E100622256;
-        Thu, 15 Oct 2020 14:55:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602773729;
-        bh=JuI0+whuWWdpA9fXLSqAkUlHRbVV2U1yWDWx1KgyrDU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CjtbaP6nY3a7nLiih1JDei5QPEzLV7NE4nRVOSrG+N6r6LwDHiBZYWzwl2RhsIhIa
-         JXVEaa1AjL3031YaJ+41OzmNG3GYXONIOzjdXU85hbVMzu7RN9vAJRJQJTpZiHQLh5
-         qiy55pSjBeAn1yvSyf0gUppKqWh1bPybscH7eALA=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v3 3/3] tracing: Add ptr-hash option to show the hashed pointer value
-Date:   Thu, 15 Oct 2020 23:55:25 +0900
-Message-Id: <160277372504.29307.14909828808982012211.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <160277369795.29307.6792451054602907237.stgit@devnote2>
-References: <160277369795.29307.6792451054602907237.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S2389501AbgJOOzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 10:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388086AbgJOOzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 10:55:47 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E19AC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:55:46 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id j8so2211213pjy.5
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 07:55:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jKGNDvBuOCdT1yr1OAnStWIR39+3aQIsDj8WBAcZsDg=;
+        b=RzBbuNX55AkV0knsLOkGF9hT+iQ6TA9uXEJvnoqlxSSxOGJJ89WDKDAAO/jjsyKqhO
+         dixblUBWb8TfhnvOqW34Y5eI9bGggdwLzUABQftNtDgmuF8PgS96F1ziXoIU1GB+0Cl1
+         y82qBiLhx26ZU/QaA24dFeqHNwDouXb+36dCjHeQyLWXB41F1zY11G5wzpWF8NJtuolP
+         kZAOVxzer+TG9oFMfEZm5WITRtTRWe7OCofMGGqG2HN3X/xS8pnHznpClq5YSU7GXlTf
+         PJrg9cElpgG48eyYGNOgJkxPu0C04BgciMmsIzBVJFqx6hh+i1jRWc72mejrslWBwuDK
+         KEYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jKGNDvBuOCdT1yr1OAnStWIR39+3aQIsDj8WBAcZsDg=;
+        b=ORMnEYkGTdKGMd1wRDp57gTmszgHcvjyOCXtNPE23X4Y+nhYpuqLdID9UjgmFByFJ2
+         hcLMFj9sxFxElYuXaOKjOEEl4X2zNQtg/JCC4J89AOs+S7C6wfIhOEizY4vx6laIP8OY
+         xN1KUc2ceW7mbvTpr1QwckksJ3orNiFGWduRUwO4vTdo7bim08TSHSanD3RiSbGjygHm
+         W386AC1PYLacAjX/Bl06Zn7otdOsm2cFzsdoLc0AmyJ/LMU5oU5xwVWN5WnLXztB4MR4
+         w5O13XxCjCN6NcspLLUk9GYpk/kz1TlQAkkBLhBZFTBAuLir+fG+1Qqzu/XTqjXxtogF
+         A7gg==
+X-Gm-Message-State: AOAM533WYMbrp9FjqVRTiO1+9VdAp3zgbH1Gzi0Mi344CX0SdWtalRxi
+        cL2CY5LfBoLqmhuKUBoJ2A==
+X-Google-Smtp-Source: ABdhPJzG/yJAmivQvWbT3J44c3W+PvWfg/FLqG8LS60pD3/iqP34CghyZ4gJrChbSxgQnEnvf7AzJQ==
+X-Received: by 2002:a17:90a:d146:: with SMTP id t6mr4749223pjw.76.1602773745761;
+        Thu, 15 Oct 2020 07:55:45 -0700 (PDT)
+Received: from PWN ([161.117.80.159])
+        by smtp.gmail.com with ESMTPSA id x30sm4390288pge.59.2020.10.15.07.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 07:55:45 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 10:55:38 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: [git pull] drm next pull for 5.10-rc1
+Message-ID: <20201015145538.GA277615@PWN>
+References: <CAPM=9txyMmW1DWhS--SuYQu4qDK1GPzgHJwxbAfhHT=hUsPODA@mail.gmail.com>
+ <20201015135932.GA277152@PWN>
+ <CADnq5_PqhJFRDofb0pNsgrp7O8M_D9o3gz5_Nt8KL=0cgMWoKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADnq5_PqhJFRDofb0pNsgrp7O8M_D9o3gz5_Nt8KL=0cgMWoKA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tracefs/options/hash-ptr option to show hashed pointer
-value by %p in event printk format string.
+On Thu, Oct 15, 2020 at 10:53:28AM -0400, Alex Deucher wrote:
+> On Thu, Oct 15, 2020 at 9:59 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> > It has been applied to linux-next twice, for unknown reasons. Thank you!
+> 
+> The patch was already in drm-next, but since it was a bug fix it was
+> applied it to 5.9 as well.
 
-For the security reason, normal printk will show the hashed
-pointer value (encrypted by random number) with %p to printk
-buffer to hide the real address. But the tracefs/trace always
-shows real address for debug. To bridge those outputs, add an
-option to switch the output format. Ftrace users can use it
-to find the hashed value corresponding to the real address
-in trace log.
+Ah, I see. Thank you for the explanation!
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Documentation/trace/ftrace.rst |    6 ++++++
- kernel/trace/trace.c           |    3 +++
- kernel/trace/trace.h           |    1 +
- 3 files changed, 10 insertions(+)
-
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index 87cf5c010d5d..62c98e9bbdd9 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -1159,6 +1159,12 @@ Here are the available options:
- 	This simulates the original behavior of the trace file.
- 	When the file is closed, tracing will be enabled again.
- 
-+  hash-ptr
-+        When set, "%p" in the event printk format displays the
-+        hashed pointer value instead of real address.
-+        This will be useful if you want to find out which hashed
-+        value is corresponding to the real value in trace log.
-+
-   record-cmd
- 	When any event or tracer is enabled, a hook is enabled
- 	in the sched_switch trace point to fill comm cache
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 75395293d8df..b88cccf224cd 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3543,6 +3543,9 @@ const char *trace_event_format(struct trace_iterator *iter, const char *fmt)
- 	if (WARN_ON_ONCE(!fmt))
- 		return fmt;
- 
-+	if (iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
-+		return fmt;
-+
- 	p = fmt;
- 	new_fmt = q = iter->fmt;
- 	while (*p) {
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 524502d1f60a..c34187bd22a9 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1347,6 +1347,7 @@ extern int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
- 		C(MARKERS,		"markers"),		\
- 		C(EVENT_FORK,		"event-fork"),		\
- 		C(PAUSE_ON_TRACE,	"pause-on-trace"),	\
-+		C(HASH_PTR,		"hash-ptr"),	/* Print hashed pointer */ \
- 		FUNCTION_FLAGS					\
- 		FGRAPH_FLAGS					\
- 		STACK_FLAGS					\
+Peilin Ye
 
