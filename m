@@ -2,113 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F0328F395
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97A028F393
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Oct 2020 15:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387589AbgJONqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 09:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729498AbgJONqc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729961AbgJONqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 15 Oct 2020 09:46:32 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60FDC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:46:30 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id z2so3706587lfr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 06:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lpSXdaWuU/6COGOcHpr2bLNzbwX0ucQjW3uoyXQpUkY=;
-        b=VZfFogEfemTr56xl428GCHtrlFvPHfhh5dj8KtBbktrwjRkJi+4dgFayYmHCqkSqgi
-         tQKfTotWUZ8FPjZrJTAV7AP+O5nFRhbPeJFj83M+OTxv7pnYgBCvFz60tBRdkOxzUDB+
-         tOqMR5NX1erw+FWRkAk65Y2ErReviykrP6S+IlyTgiQ3mGuZ83SvxmeGoGciLYGvC/e3
-         AIP6pAOa1BvDIrUBHrqYHbR2VoF3ZGCv+bu4Wh+Kj6uqNkqAGeNSqEwwSYvd+QMG35+c
-         H3xBAn3vG24e/AJwiJxNhlNDjjKAoVrWrWLrLQOLzxsYLVUOPOsuP60xlNyU5hZUCagH
-         O1wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lpSXdaWuU/6COGOcHpr2bLNzbwX0ucQjW3uoyXQpUkY=;
-        b=OeveBuxis7cxLQQNfuW9hr56NX7J9rVHwz6yVdg1GiCeWB1HXNAFhRx/loIZygDVhX
-         Jk2XukOBjWtLGqGfys8IkodX9cLqaxLK8HnvqedtAWVDM3wHk1xEnVZSjQOAra7DQsX5
-         dBv5WHTfgiKiog+qb9PRIpJwYLCjol8/GPK9LnljSYRjDkeDLxy7aHkflVzUl4Zvh0Qa
-         GlGvkeXd1Oc6E2CU36w8QafQB8LbxCXuIJlSlxZHR6joTNW/HK7Xks+ICXuEewdqqgQz
-         SdpPBPfCqWnD6OKkbayys7Ld+up9w17y6ZE1nQxpRuYCoRwuGdDOJhXxRC8rvaxZgtOA
-         7/RQ==
-X-Gm-Message-State: AOAM5302lgHBa0mQ1OdNhKlOHGd8pe/TxvxVP+DMu90tuiuMl39DRudf
-        ORzvp/OeXnzRat0EhhLPM3+iHcpXccD3kBbI4waY4Q==
-X-Google-Smtp-Source: ABdhPJzQVhr0MMNzKgdiVR0noDJaHS0oQ/mwqQtAcL1VdTct7o7Hm7xA6/UXYjE4L9oM3GtTQnnlnCttl4RmK5sn+2M=
-X-Received: by 2002:a05:6512:3b6:: with SMTP id v22mr1043854lfp.536.1602769589120;
- Thu, 15 Oct 2020 06:46:29 -0700 (PDT)
+Received: from foss.arm.com ([217.140.110.172]:44358 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729498AbgJONqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 09:46:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85CE613D5;
+        Thu, 15 Oct 2020 06:46:30 -0700 (PDT)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2582E3F719;
+        Thu, 15 Oct 2020 06:46:30 -0700 (PDT)
+Date:   Thu, 15 Oct 2020 14:46:28 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, Da Xue <da@libre.computer>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mailbox: cancel timer before starting it
+Message-ID: <20201015134628.GA11989@arm.com>
+References: <20200923123916.1115962-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
-References: <20200928063744.525700-1-ajye_huang@compal.corp-partner.google.com>
- <20200928063744.525700-2-ajye_huang@compal.corp-partner.google.com>
- <20201009135231.GA6655@sirena.org.uk> <CALprXBZAFCOpWP2186RaP++613qnjPY3D3NbXEN5CToYsLNsRw@mail.gmail.com>
- <20201012135025.GF4332@sirena.org.uk>
-In-Reply-To: <20201012135025.GF4332@sirena.org.uk>
-From:   Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date:   Thu, 15 Oct 2020 21:46:18 +0800
-Message-ID: <CALprXBYfuqtJKtSrK=5pAS9N0V0Jb3CYv3EMZeGZ4OxF++dMAg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Modify sc7180 machine bindings
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Ajye Huang <ajye.huang@gmail.com>, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rohit kumar <rohitkr@codeaurora.org>, tzungbi@chromium.org,
-        linux-arm-kernel@lists.infradead.org,
-        Cheng-yi Chiang <cychiang@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923123916.1115962-1-jbrunet@baylibre.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 9:50 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Sat, Oct 10, 2020 at 12:07:54AM +0800, Ajye Huang wrote:
-> > On Fri, Oct 9, 2020 at 9:52 PM Mark Brown <broonie@kernel.org> wrote:
-> > > On Mon, Sep 28, 2020 at 02:37:43PM +0800, Ajye Huang wrote:
->
-> > > > Add compatible "qcom,sc7180-sndcard-rt5682-m98357-2mic"
-> > > > for 2mic case.
->
-> > > This doesn't apply against current code, please check and resend.
->
-> > Thank you for your reply,
-> > This patch depends on  Cheng-Yi's patch series
-> > https://patchwork.kernel.org/patch/11773221/.
->
-> That's "ASoC: qcom: dt-bindings: Add sc7180 machine bindings" for those
-> playing at home.
->
-> >   If I misunderstand what you mean, please correct me,
->
-> A version of some SC7180 patches was applied.  However it does seem like
-> that didn't include any machine driver bindings so it must've been a
-> different, similar looking series which is presumably waiting for a new
-> version - please resend based on that new version (ideally these patches
-> could be picked up as part of that series).
->
-> Please include human readable descriptions of things like commits and
-> issues being discussed in e-mail in your mails, this makes them much
-> easier for humans to read especially when they have no internet access.
-> I do frequently catch up on my mail on flights or while otherwise
-> travelling so this is even more pressing for me than just being about
-> making things a bit easier to read.
+Hi guys,
 
-Hi, Mark
+On Wednesday 23 Sep 2020 at 14:39:16 (+0200), Jerome Brunet wrote:
+> If the txdone is done by polling, it is possible for msg_submit() to start
+> the timer while txdone_hrtimer() callback is running. If the timer needs
+> recheduling, it could already be enqueued by the time hrtimer_forward_now()
+> is called, leading hrtimer to loudly complain.
+> 
+> WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
+> CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
+> Hardware name: Libre Computer AML-S805X-AC (DT)
+> Workqueue: events_freezable_power_ thermal_zone_device_check
+> pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+> pc : hrtimer_forward+0xc4/0x110
+> lr : txdone_hrtimer+0xf8/0x118
+> [...]
+> 
+> Canceling the timer before starting it ensure that the timer callback is
+> not running when the timer is started, solving this race condition.
+> 
+> Fixes: 0cc67945ea59 ("mailbox: switch to hrtimer for tx_complete polling")
+> Reported-by: Da Xue <da@libre.computer>
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>  drivers/mailbox/mailbox.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+> index 0b821a5b2db8..34f9ab01caef 100644
+> --- a/drivers/mailbox/mailbox.c
+> +++ b/drivers/mailbox/mailbox.c
+> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
+>  exit:
+>  	spin_unlock_irqrestore(&chan->lock, flags);
+>  
+> -	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
+> -		/* kick start the timer immediately to avoid delays */
+> +	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
+> +		/* Disable the timer if already active ... */
+> +		hrtimer_cancel(&chan->mbox->poll_hrt);
+> +
+> +		/* ... and kick start it immediately to avoid delays */
+>  		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
+> +	}
+>  }
+>  
+>  static void tx_tick(struct mbox_chan *chan, int r)
 
-Thank you for your reply, I understand you point now, I will resend
-when it is done.
+I've tracked a regression back to this commit. Details to reproduce:
 
-thank you.
+
+ - HEAD: (linux-next)
+   * 62c04453381e  Jerome Brunet   3 weeks ago mailbox: cancel timer before starting it
+
+ - Platform: arm64 Juno R0 and Juno R2 [1]
+
+ - Partial log:
+	[    0.000000] Booting Linux on physical CPU 0x0000000100 [0x410fd030]
+	[    0.000000] Linux version 5.9.0-rc8-01722-g62c04453381e () (aarch64-none-linux-gnu-gcc (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)) 9.2.1 20191025, GNU ld (GNU Toolchain for the A-profile Architecture 9.2-2019.12 (arm-9.10)) 2.33.1.20191209) #175 SMP PREEMPT Thu Oct 15 14:17:41 BST 2020
+	[    0.000000] Machine model: ARM Juno development board (r0)
+	[..]
+	[    1.714340] mhu 2b1f0000.mhu: ARM MHU Mailbox registered
+	[    1.722768] NET: Registered protocol family 17
+	[    1.727364] 9pnet: Installing 9P2000 support
+	[    1.731689] Key type dns_resolver registered
+	[    1.735474] usb 1-1: new high-speed USB device number 2 using ehci-platform
+	[    1.736407] registered taskstats version 1
+	[    1.747061] Loading compiled-in X.509 certificates
+	[    1.755885] scpi_protocol scpi: SCP Protocol 1.2 Firmware 1.21.0 version
+	[    1.770484] cpu cpu0: EM: created perf domain
+	[    1.778505] cpu cpu1: EM: created perf domain
+	[    1.807449] scpi_clocks scpi:clocks: failed to register clock 'pxlclk'
+	[    1.897593] hub 1-1:1.0: USB hub found
+	[    1.901656] hub 1-1:1.0: 4 ports detected
+	[    2.559453] atkbd serio0: keyboard reset failed on 1c060000.kmi
+	[   22.787431] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	[   22.793536] rcu:     1-...0: (1 ticks this GP) idle=222/1/0x4000000000000002 softirq=63/64 fqs=2626
+	[   22.802421]  (detected by 2, t=5255 jiffies, g=-991, q=9)
+	[   22.807823] Task dump for CPU 1:
+	[   22.811049] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
+	[   22.820980] Call trace:
+	[   22.823429]  __switch_to+0x138/0x198
+	[   23.583444] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 1-... } 5443 jiffies s: 49 root: 0x2/.
+	[   23.593995] rcu: blocking rcu_node structures:
+	[   23.598449] Task dump for CPU 1:
+	[   23.601680] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
+	[   23.611619] Call trace:
+	[   23.614064]  __switch_to+0x138/0x198
+	[   85.807430] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	[   85.813534] rcu:     1-...0: (1 ticks this GP) idle=222/1/0x4000000000000002 softirq=63/64 fqs=10502
+	[   85.822506]  (detected by 2, t=21009 jiffies, g=-991, q=9)
+	[   85.827994] Task dump for CPU 1:
+	[   85.831220] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
+	[   85.841150] Call trace:
+	[   85.843596]  __switch_to+0x138/0x198
+	[   87.071446] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 1-... } 21315 jiffies s: 49 root: 0x2/.
+	[   87.082088] rcu: blocking rcu_node structures:
+	[   87.086540] Task dump for CPU 1:
+	[   87.089773] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
+	[   87.099708] Call trace:
+	[   87.102155]  __switch_to+0x138/0x198
+	[  148.827442] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+	[  148.833565] rcu:     1-...0: (1 ticks this GP) idle=222/1/0x4000000000000002 softirq=63/64 fqs=18377
+	[  148.842543]  (detected by 4, t=36762 jiffies, g=-991, q=9)
+	[  148.848037] Task dump for CPU 1:
+	[  148.851268] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
+	[  148.861207] Call trace:
+	[  148.863663]  __switch_to+0x138/0x198
+	[  150.559443] rcu: INFO: rcu_preempt detected expedited stalls on CPUs/tasks: { 1-... } 37187 jiffies s: 49 root: 0x2/.
+	[  150.570082] rcu: blocking rcu_node structures:
+	[  150.574535] Task dump for CPU 1:
+	[  150.577767] task:swapper/1       state:R  running task     stack:    0 pid:    0 ppid:     1 flags:0x0000002a
+	[  150.587705] Call trace:
+	[  150.590151]  __switch_to+0x138/0x198
+
+ - Commit working as expected:
+   * 558e4c36ec9f  Krzysztof Kozlowski     7 weeks ago     maiblox: mediatek: Fix handling of platform_get_irq() error
+
+
+[1] https://developer.arm.com/tools-and-software/development-boards/juno-development-board
+
+Thank you,
+Ionela.
+
+> -- 
+> 2.25.4
+> 
+> 
+> _______________________________________________
+> linux-amlogic mailing list
+> linux-amlogic@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-amlogic
