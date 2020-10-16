@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DE229070E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9FC290712
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408771AbgJPOU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:20:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408769AbgJPOUz (ORCPT
+        id S2408790AbgJPOVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:21:38 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:44892 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406666AbgJPOVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:20:55 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E30C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:20:55 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id l16so2764766ilt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ILU1JiiWwmc95Pb/WWnMrCIUzuQZgL65VpWvlyy0uws=;
-        b=HEPkXoSC4+XViOa2NstBZBi5peIDrb80Thy9EpYPPQFO80kSOluTlFVunJ9q7XLi41
-         PPqK2THj7pyPrLghVLfFynw1npRcrsx6jx0Wgrfgyqg2brX8ZvopZSU7YSdH/0LkVpDO
-         JDE22r1UgDghP9r57+WICgOjhnO4KERaBTDhCVUqUaqDquxzefiNcEqHITD9Mjmgv5b5
-         40IbFKVTza9Er2Gz15cRfaJF4YHhV8o59A792eqKJ7sq/2zyOuZ7e5fpSaA3CJyWm7DS
-         7srxW9LYUi2hOcy39d6X4sgQNR4S94gbsuLgztiZqFFOuee8yzBElhn/1AHSiVKSaaxD
-         Ewrg==
+        Fri, 16 Oct 2020 10:21:38 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x62so2581518oix.11;
+        Fri, 16 Oct 2020 07:21:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ILU1JiiWwmc95Pb/WWnMrCIUzuQZgL65VpWvlyy0uws=;
-        b=s2t6z0H/+yuxOAcmfScTXr4N89/VWXWacKFBVxvZto419TmjcN0j6HL2qSwhlCOG9o
-         BWAY8lDhabLy7LBacr/i4BUeQSWBAQhP9aycxzpVzCA+i8zP0l1DiO1UBbIBJuhO2IzI
-         n4xI/mX8DeIjNitiBmNP7iA7EQjTqINMWIZY68RjNJA/l2bWOywhB3MdKKEZi/e0poxr
-         g++Iq7Y4mOE5tsdhztv2NoZqleNbfM9AKiPTva/c4/aHlzqKZkZqqnKsfjjGpPkKflAK
-         o6modqxSgwI64PthhGLB5pjFA+y1byvxJjj44fhJ6xAqIX9QJOnJhli7zjQ8cZdNZEWX
-         RRfQ==
-X-Gm-Message-State: AOAM530+ZgTSorIIuRkaWxYFWFX/aLVYwwCvNXAou/cAbET2fbRSxWgs
-        ab4me+Hbm0fZaHiWgnAlJ2sk9IfAsL36dS9S1KpqUQ==
-X-Google-Smtp-Source: ABdhPJxubq2fzGL00SIrDkBpOu8eo1lYW9KXkOhd7VAlU2NeWINOP4NjqVxzNovv5CI4q3PGv41TQKCIzUMr+AlwxJ8=
-X-Received: by 2002:a92:8404:: with SMTP id l4mr3069053ild.134.1602858054317;
- Fri, 16 Oct 2020 07:20:54 -0700 (PDT)
+        bh=3+Msx894Km+mStI8UCb+zmDoBuIzSy5hxYPbjtCgtYo=;
+        b=RvKeyIhW3I+bMdVxmpMTTBw1DHnLK7AQk6O0TX5htnWfFBT74y28Cu9Qa2V1LEqCOj
+         cy7o/CQI/Hbe2W86DxPbqSOuEXV+wcx8hnKwqClHaOWS5xGBgf5wN0SlQ0TATGe2OIT+
+         a5tf6M2xO22eZCP5oLO1cDiz0PFc14rklCYfA2ipV4YPKtfGwc4AvSdsgUYVi84lvAM0
+         jofu2TIYQJKV0wdrzUk4ID9K7QLHo1yB8I5DvCURrNRZqm0Gjb1jKcnmRRbc1w16FSSr
+         wXgENmeiIpPkN1CX5fD6ZMtwt9m3jJFOnn3TsgaW/EePcrBhDgCrBGObw/GbyTWxNHk+
+         LMhg==
+X-Gm-Message-State: AOAM533ZX4kXNbrV+FqDAsMEePy3wI1+hMoyDkZHOIhpffQPayLPmjSv
+        Yh7QF9AJSvLGcEgZWPa7VmzbsSziKJJ/aKb2tcw=
+X-Google-Smtp-Source: ABdhPJzUaqOCepfqqlp3XTiV86lgRQAGCRVZbjSYBQ6ueBWwAT7o0VYma1/tzOUrqQitO3OjUvbD5bL3BVao6/lPsJg=
+X-Received: by 2002:aca:fd52:: with SMTP id b79mr2648814oii.69.1602858096113;
+ Fri, 16 Oct 2020 07:21:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201007101726.3149375-1-a.nogikh@gmail.com> <20201007101726.3149375-2-a.nogikh@gmail.com>
- <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CACT4Y+ZF_umjBpyJiCb8YPQOOSofG-M9h0CB=xn3bCgK=Kr=9w@mail.gmail.com>
- <20201010081431.1f2d9d0d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CACT4Y+aEQoRMO6eA7iQZf4dhOu2cD1ZbbH6TT4Rs_uQwG0PWYg@mail.gmail.com>
- <CADpXja8i4YPT=vcuCr412RYqRMjTOGuaMW2dyV0j7BtEwNBgFA@mail.gmail.com>
- <20201013095038.61ba8f55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <CA+FuTSf2kfvdYydXYJNCCfE62q9DXXOBMh_ZSO5W=L9GK478HA@mail.gmail.com>
-In-Reply-To: <CA+FuTSf2kfvdYydXYJNCCfE62q9DXXOBMh_ZSO5W=L9GK478HA@mail.gmail.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Fri, 16 Oct 2020 17:20:42 +0300
-Message-ID: <CANp29Y69mvAuwdcNk8DyjYSjDMBkQupMh0JHHLkybg+rA2zCLw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: store KCOV remote handle in sk_buff
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Aleksandr Nogikh <a.nogikh@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        David Miller <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Florian Westphal <fw@strlen.de>
+References: <37c3f1f76c055b305d1bba2c2001ac5b1d7a9b5f.1602565964.git.viresh.kumar@linaro.org>
+In-Reply-To: <37c3f1f76c055b305d1bba2c2001ac5b1d7a9b5f.1602565964.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Oct 2020 16:21:25 +0200
+Message-ID: <CAJZ5v0iYWf=SFnVeVcrWpD40vR+axdX9NrXxftdVH4PDeiNz7g@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: Improve code around unlisted freq check
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Sumit Gupta <sumitg@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 10:04 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
+On Tue, Oct 13, 2020 at 7:12 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
 >
-> On Tue, Oct 13, 2020 at 12:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Tue, 13 Oct 2020 18:59:28 +0300 Aleksandr Nogikh wrote:
-> > > On Mon, 12 Oct 2020 at 09:04, Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > >
-> > > > On Sat, Oct 10, 2020 at 5:14 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > > > >
-> > > > > On Sat, 10 Oct 2020 09:54:57 +0200 Dmitry Vyukov wrote:
-> > > > > > On Sat, Oct 10, 2020 at 1:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > > [...]
-> > > > > > > Could you use skb_extensions for this?
-> > > > > >
-> > > > > > Why? If for space, this is already under a non-production ifdef.
-> > > > >
-> > > > > I understand, but the skb_ext infra is there for uncommon use cases
-> > > > > like this one. Any particular reason you don't want to use it?
-> > > > > The slight LoC increase?
-> > > > >
-> > > > > Is there any precedent for adding the kcov field to other performance
-> > > > > critical structures?
-> > >
-> > > It would be great to come to some conclusion on where exactly to store
-> > > kcov_handle. Technically, it is possible to use skb extensions for the
-> > > purpose, though it will indeed slightly increase the complexity.
-> > >
-> > > Jakub, you think that kcov_handle should be added as an skb extension,
-> > > right?
-> >
-> > That'd be preferable. I understand with current use cases it doesn't
-> > really matter, but history shows people come up with all sort of
-> > wonderful use cases down the line. And when they do they rarely go back
-> > and fix such fundamental minutiae.
-> >
-> > > Though I do not really object to moving the field, it still seems to
-> > > me that sk_buff itself is a better place. Right now skb extensions
-> > > store values that are local to specific protocols and that are only
-> > > meaningful in the context of these protocols (correct me if I'm
-> > > wrong). Although this patch only adds remote kcov coverage to the wifi
-> > > code, kcov_handle can be meaningful for other protocols as well - just
-> > > like the already existing sk_buff fields. So adding kcov_handle to skb
-> > > extensions will break this logical separation.
-> >
-> > It's not as much protocols as subsystems. The values are meaningful to
-> > a subsystem which inserts them, that doesn't mean single layer of the
-> > stack. If it was about storing layer's context we would just use
-> > skb->cb.
-> >
-> > So I think the kcov use matches pretty well.
+> The cpufreq core checks if the frequency programmed by the bootloaders
+> is not listed in the freq table and programs one from the table in such
+> a case. This is done only if the driver has set the
+> CPUFREQ_NEED_INITIAL_FREQ_CHECK flag.
 >
-> skb_extensions was the first thing that came to mind when I read this
-> patchset too. It is not specific to protocols.
+> Currently we print two separate messages, with almost the same content,
+> and do this with a pr_warn() which may be a bit too much as the driver
+> only asked us to check this as it expected this to be the case. Lower
+> down the severity of the print message by switching to pr_info() instead
+> and print a single message only.
 >
-> We have long stopped growing sk_buff size.
+> Reported-by: Sumit Gupta <sumitg@nvidia.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/cpufreq.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 2ea245a6c0c0..99864afac272 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -1461,14 +1461,13 @@ static int cpufreq_online(unsigned int cpu)
+>          */
+>         if ((cpufreq_driver->flags & CPUFREQ_NEED_INITIAL_FREQ_CHECK)
+>             && has_target()) {
+> +               unsigned int old_freq = policy->cur;
+> +
+>                 /* Are we running at unknown frequency ? */
+> -               ret = cpufreq_frequency_table_get_index(policy, policy->cur);
+> +               ret = cpufreq_frequency_table_get_index(policy, old_freq);
+>                 if (ret == -EINVAL) {
+> -                       /* Warn user and fix it */
+> -                       pr_warn("%s: CPU%d: Running at unlisted freq: %u KHz\n",
+> -                               __func__, policy->cpu, policy->cur);
+> -                       ret = __cpufreq_driver_target(policy, policy->cur - 1,
+> -                               CPUFREQ_RELATION_L);
+> +                       ret = __cpufreq_driver_target(policy, old_freq - 1,
+> +                                                     CPUFREQ_RELATION_L);
+>
+>                         /*
+>                          * Reaching here after boot in a few seconds may not
+> @@ -1476,8 +1475,8 @@ static int cpufreq_online(unsigned int cpu)
+>                          * frequency for longer duration. Hence, a BUG_ON().
+>                          */
+>                         BUG_ON(ret);
+> -                       pr_warn("%s: CPU%d: Unlisted initial frequency changed to: %u KHz\n",
+> -                               __func__, policy->cpu, policy->cur);
+> +                       pr_info("%s: CPU%d: Running at unlisted initial frequency: %u KHz, changing to: %u KHz\n",
+> +                               __func__, policy->cpu, old_freq, policy->cur);
+>                 }
+>         }
+>
+> --
 
-Thank you all for your comments. I'll use skb extensions in v3 of the series.
+Applied as 5.10-rc material, thanks!
