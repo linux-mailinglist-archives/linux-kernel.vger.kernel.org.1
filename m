@@ -2,170 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E9F28FD91
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 07:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A7028FD94
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 07:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732271AbgJPFOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 01:14:32 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:10312 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbgJPFOc (ORCPT
+        id S1732549AbgJPFPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 01:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732437AbgJPFPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 01:14:32 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f892c2b0000>; Thu, 15 Oct 2020 22:14:19 -0700
-Received: from [10.25.98.225] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
- 2020 05:14:19 +0000
-Subject: Re: [PATCH v3 09/13] ASoC: dt-bindings: tegra: Add schema for audio
- graph card
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
-        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
-        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
-        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
-        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
-References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
- <1601573587-15288-10-git-send-email-spujar@nvidia.com>
- <20201006203433.GA2786434@bogus>
- <a5bc07d8-fb2e-e86e-f0d3-be19166ad7bb@nvidia.com>
-Message-ID: <acbcd136-a933-e5e0-863b-f435dafe1697@nvidia.com>
-Date:   Fri, 16 Oct 2020 10:44:15 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 16 Oct 2020 01:15:03 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E667C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:15:03 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id k8so805855pfk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPRKGwCWlhzW2fZpjziEJb0M3iHjtjmgnX8F6uX861E=;
+        b=HyQm0F1Ds6YoQolTS544JgaLlzxxYxEJVA0HZFcTVEa0eKtX8IU2WfIKowIIlGlp80
+         jJD9su0lBNh7fhLAY6BbMfyVwJU7egk6MdA4xhSiH0oyD3325wjY2VWzJwBuIb+tmVSb
+         NVyHEx4eLTrfJ2+/P3klgnjbhwKdysoSnYyhJnL1Dvth5MiYz1RL7QZDwXzRB0hmYe71
+         x46P3b0bxBjoeEXQs8tzgK+NE45chbib18jZIbBP2pzgyt+8lpDTI3a2MicJxrn+QA6b
+         elUB4ZgQCym2YYWYlmWW8WEqOWfyO0IDjYPb8ZO+xYoGQ41lLTwlE8bhmxfsYr5bmZNd
+         f/fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPRKGwCWlhzW2fZpjziEJb0M3iHjtjmgnX8F6uX861E=;
+        b=GKuzncKI15wSiwET3sL6WZ+/AxxYSGhxpUfoXOKqlKIHjFXLSBi+0NjJt1v/Fj5wlS
+         MwU1Cb7ow8LS4J365T6FjadejSNFhWycfNXjAnZO+9Z24NKpM97Qf94LbTC8ZFzq1tTO
+         AEVe5RbbX+WJHTQJoeFZmJdUnKYRtJVkkCpDU0RGKuJc1APfc/pwdQssaAB5t4NxMOPW
+         WzfyrkmJrbWsTO5D3zrzBDiJ0uoI4elVy5boLd2UcMtjQ+MbYBO2lR9zoLulc5HSqvyt
+         AeD7z5bk5PWRV7HsMKNR0XTcwPjMPUSWwqXYKoksNsS1417VYpaB5zMiBQcVNcsFMYAe
+         0qgA==
+X-Gm-Message-State: AOAM533gnrNsnQr0Yiiqf9rVa3EfPBTr41Panvl5rFfzv451Rkjr7h39
+        7FzmCNSuj7N5KpwEJUrPLksZxZlKlPs=
+X-Google-Smtp-Source: ABdhPJzUutEPt92K6TaLg/1fFgd8kxj4nhUPYUPqPgwM9EbegeLWlstMp7eXArbq5ZNTTFQkLlSvxw==
+X-Received: by 2002:a62:5215:0:b029:156:6a80:a257 with SMTP id g21-20020a6252150000b02901566a80a257mr2003516pfb.63.1602825302319;
+        Thu, 15 Oct 2020 22:15:02 -0700 (PDT)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
+        by smtp.gmail.com with ESMTPSA id m3sm1139218pjv.52.2020.10.15.22.15.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Oct 2020 22:15:01 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs: add compr_inode and compr_blocks sysfs nodes
+Date:   Fri, 16 Oct 2020 14:14:55 +0900
+Message-Id: <20201016051455.1913795-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-In-Reply-To: <a5bc07d8-fb2e-e86e-f0d3-be19166ad7bb@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-GB
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602825259; bh=58G5hh5VTCRWNjS2NbwxGT+Sa6kUqX0udY4utQfHKx4=;
-        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=rkMkit/dwJWZjwBML9DdGRm+RNMv9B5Kz7OUNznxWxt1JLSqpH5lHP4OWCQNRdJf5
-         AvU6R5Buf8OP2UclEUIXoAAcYfYNqtLZCpZxiqF4Vr/t5ZyBOAvFO259diZQnwxnJ5
-         PJmLj17dQgUYtijjaRy7Do2j9Vh9oOKDAwkbsfnwQXY5XW5giTTuJZEAV4eRyc43/w
-         0jw6nBHxUXE6faiST7IY30d425/tOOWm01PXWSimZhXK8ylwk0U93tJCaanvdekoBw
-         EpmB7r5c/s+z2Wtg7z5FB+uZ+rhTx9Y7nKpHbzotX2CXRHWigkuDKq9OxDo6w9Dp0e
-         lqPyJ9p8O8KmQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Daeho Jeong <daehojeong@google.com>
 
->>> Add YAML schema for Tegra audio graph sound card DT bindings. It=20
->>> uses the
->>> same DT bindings provided by generic audio graph driver. Along with=20
->>> this
->>> few standard clock DT bindings are added which are specifically=20
->>> required
->>> for Tegra audio.
->>>
->>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->>> ---
->>> =C2=A0 .../sound/nvidia,tegra-audio-graph-card.yaml | 70=20
->>> ++++++++++++++++++++++
->>> =C2=A0 1 file changed, 70 insertions(+)
->>> =C2=A0 create mode 100644=20
->>> Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card.y=
-aml
->>>
->>> diff --git=20
->>> a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card=
-.yaml=20
->>> b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card=
-.yaml=20
->>>
->>> new file mode 100644
->>> index 0000000..b73fbe5
->>> --- /dev/null
->>> +++=20
->>> b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-graph-card=
-.yaml
->>> @@ -0,0 +1,70 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id:=20
->>> http://devicetree.org/schemas/sound/nvidia,tegra-audio-graph-card.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Audio Graph based Tegra sound card driver
->>> +
->>> +description: |
->>> +=C2=A0 This is based on generic audio graph card driver along with=20
->>> additional
->>> +=C2=A0 customizations for Tegra platforms. It uses the same bindings w=
-ith
->>> +=C2=A0 additional standard clock DT bindings required for Tegra.
->>> +
->>> +=20
->>> See{LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
->>> +
->>> +maintainers:
->>> +=C2=A0 - Jon Hunter <jonathanh@nvidia.com>
->>> +=C2=A0 - Sameer Pujar <spujar@nvidia.com>
->>> +
->>> +properties:
->>> +=C2=A0 compatible:
->>> +=C2=A0=C2=A0=C2=A0 oneOf:
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - const: nvidia,tegra210-audio-graph-ca=
-rd
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - const: nvidia,tegra186-audio-graph-ca=
-rd
->>> +
->>> +=C2=A0 clocks:
->>> +=C2=A0=C2=A0 minItems: 2
->>> +
->>> +=C2=A0 clock-names:
->>> +=C2=A0=C2=A0 minItems: 2
->>> +=C2=A0=C2=A0 items:
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 - const: pll_a
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 - const: plla_out0
->>> +
->>> +=C2=A0 assigned-clocks:
->>> +=C2=A0=C2=A0=C2=A0 minItems: 1
->>> +=C2=A0=C2=A0=C2=A0 maxItems: 3
->>> +
->>> +=C2=A0 assigned-clock-parents:
->>> +=C2=A0=C2=A0=C2=A0 minItems: 1
->>> +=C2=A0=C2=A0=C2=A0 maxItems: 3
->>> +
->>> +=C2=A0 assigned-clock-rates:
->>> +=C2=A0=C2=A0=C2=A0 minItems: 1
->>> +=C2=A0=C2=A0=C2=A0 maxItems: 3
->>> +
->>> +required:
->>> +=C2=A0 - compatible
->>> +=C2=A0 - clocks
->>> +=C2=A0 - clock-names
->>> +=C2=A0 - assigned-clocks
->>> +=C2=A0 - assigned-clock-parents
->> Where's the graph? You need to define the ports and reference the common
->> schema.
->
-> I am looking to reference the bindings used in below doc which is not=20
-> yet in YAML format. Only additional properties I listed here.
-> {LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
->
-> Should I keep this doc to *.txt format as well and later move to YAML=20
-> or is there a way to reference *.txt doc here?
+Added compr_inode to show compressed inode count and compr_blocks to
+show compressed block count in sysfs.
 
-The dependency here is like below,
-Tegra audio graph card -> generic audio graph card=20
-(audio-graph-card.txt) -> graph (graph.txt)
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ Documentation/ABI/testing/sysfs-fs-f2fs | 10 ++++++++++
+ fs/f2fs/sysfs.c                         | 17 +++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-I plan to convert dependencies to json-schema in next revision and then=20
-refer these for Tegra audio graph card.
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 834d0becae6d..a01c26484c69 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -350,3 +350,13 @@ Date:		April 2020
+ Contact:	"Daeho Jeong" <daehojeong@google.com>
+ Description:	Give a way to change iostat_period time. 3secs by default.
+ 		The new iostat trace gives stats gap given the period.
++
++What:		/sys/fs/f2fs/<disk>/compr_inode
++Date:		October 2020
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show compressed inode count
++
++What:		/sys/fs/f2fs/<disk>/compr_blocks
++Date:		October 2020
++Contact:	"Daeho Jeong" <daehojeong@google.com>
++Description:	Show compressed block count
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 94c98e412aa1..7139a29a00d3 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -223,6 +223,19 @@ static ssize_t avg_vblocks_show(struct f2fs_attr *a,
+ 	f2fs_update_sit_info(sbi);
+ 	return sprintf(buf, "%llu\n", (unsigned long long)(si->avg_vblocks));
+ }
++
++static ssize_t compr_inode_show(struct f2fs_attr *a,
++				struct f2fs_sb_info *sbi, char *buf)
++{
++	return sprintf(buf, "%u\n", atomic_read(&sbi->compr_inode));
++}
++
++static ssize_t compr_blocks_show(struct f2fs_attr *a,
++				struct f2fs_sb_info *sbi, char *buf)
++{
++	return sprintf(buf, "%llu\n", atomic64_read(&sbi->compr_blocks));
++}
++
+ #endif
+ 
+ static ssize_t main_blkaddr_show(struct f2fs_attr *a,
+@@ -591,6 +604,8 @@ F2FS_STAT_ATTR(STAT_INFO, f2fs_stat_info, gc_background_calls, bg_gc);
+ F2FS_GENERAL_RO_ATTR(moved_blocks_background);
+ F2FS_GENERAL_RO_ATTR(moved_blocks_foreground);
+ F2FS_GENERAL_RO_ATTR(avg_vblocks);
++F2FS_GENERAL_RO_ATTR(compr_inode);
++F2FS_GENERAL_RO_ATTR(compr_blocks);
+ #endif
+ 
+ #ifdef CONFIG_FS_ENCRYPTION
+@@ -675,6 +690,8 @@ static struct attribute *f2fs_attrs[] = {
+ 	ATTR_LIST(moved_blocks_foreground),
+ 	ATTR_LIST(moved_blocks_background),
+ 	ATTR_LIST(avg_vblocks),
++	ATTR_LIST(compr_inode),
++	ATTR_LIST(compr_blocks),
+ #endif
+ 	NULL,
+ };
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
