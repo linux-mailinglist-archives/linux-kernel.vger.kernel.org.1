@@ -2,59 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F86628FF1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2467828FF28
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404571AbgJPHcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394561AbgJPHcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:32:04 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1449720829;
-        Fri, 16 Oct 2020 07:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602833523;
-        bh=o3S76MaHCzIxa84z66Zm9RAV2KQ2dCgrMx32xNK2AWQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xqTBQwgR0gZhlGik4q/eyVNiJmp4Hzx+fDRzF84t73+XUGP7Ivs4kSljAtxCedlTl
-         WV2pNStfxWJ+TGFELT2fT8vlAXUhfOBpVOFT5kI6TWLvQ4phMmKhLfujQXlKfMA9mw
-         /dzrQNxoQC2fDJ8dyrxefpp8gY9O5JuKj5tyxmOI=
-Date:   Fri, 16 Oct 2020 09:32:34 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hans-Christian Noren Egtvedt <hegtvedt@cisco.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>, stable@vger.kernel.org
-Subject: Re: [v4.4/bluetooth PATCH 1/3] Bluetooth: Consolidate encryption
- handling in hci_encrypt_cfm
-Message-ID: <20201016073234.GB578349@kroah.com>
-References: <20201015211225.1188104-1-hegtvedt@cisco.com>
+        id S2404641AbgJPHdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404611AbgJPHd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:33:29 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0E8C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:33:29 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kTKEq-00064p-EO; Fri, 16 Oct 2020 09:33:20 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kTKEm-0004El-Dy; Fri, 16 Oct 2020 09:33:16 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     mkl@pengutronix.de, Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: [PATCH v2 0/2] convert flexcan to the yaml
+Date:   Fri, 16 Oct 2020 09:33:13 +0200
+Message-Id: <20201016073315.16232-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015211225.1188104-1-hegtvedt@cisco.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 11:12:23PM +0200, Hans-Christian Noren Egtvedt wrote:
-> From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> 
-> This makes hci_encrypt_cfm calls hci_connect_cfm in case the connection
-> state is BT_CONFIG so callers don't have to check the state.
-> 
-> Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-> (cherry picked from commit 3ca44c16b0dcc764b641ee4ac226909f5c421aa3)
-> Cc: stable@vger.kernel.org # 4.4
-> ---
->  include/net/bluetooth/hci_core.h | 20 ++++++++++++++++++--
->  net/bluetooth/hci_event.c        | 28 +++-------------------------
->  2 files changed, 21 insertions(+), 27 deletions(-)
+changes v2:
+- add can-controller.yaml for common patterns
+- use phandle-array instead of uint32-array
+- Drop the outer 'items' in fsl,stop-mode
+- use can@ instead of flexcan@
 
-What differs here from the other patch series you sent?  Looks the same
-to me...
+Oleksij Rempel (2):
+  dt-bindings: can: add can-controller.yaml
+  dt-bindings: can: flexcan: convert fsl,*flexcan bindings to yaml
+
+ .../bindings/net/can/can-controller.yaml      |  16 ++
+ .../bindings/net/can/fsl,flexcan.yaml         | 137 ++++++++++++++++++
+ .../bindings/net/can/fsl-flexcan.txt          |  57 --------
+ 3 files changed, 153 insertions(+), 57 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/can-controller.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+
+-- 
+2.28.0
+
