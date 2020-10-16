@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BA8290078
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44254290079
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404259AbgJPJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:03:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43274 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404106AbgJPJDa (ORCPT
+        id S2405245AbgJPJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404265AbgJPJFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:03:30 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602839009;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DlhML45alUVZOL1V9Q1TKHn+FPJpfatJ3TzBlDvnowU=;
-        b=B1jse21eG8p0HT5p7bLGobTjlNdrNznh+IeJUcYAHHNO921ekWlz5HnOJ2+ToN1e1BjLdj
-        D6msEAP0D8sI7qPJKNQTiYet3XwZaj2fzyXB9JC/X9D5RdQmgVqnfeIDDr1Jf+aZ3gGjcT
-        JsvFqc/Q8UV8C3BokgY0firLMPAoo88EsbxEsUFuu467++fBqFJeygF1I0ALkHTZZLMSE3
-        1ZzdgR4xofL+xCgzpgnQKZaGRt0cn70bBaF7wyY2vAj/ztoc2tiWBQEQCl5ejZu+SWtcgT
-        WWRKXx7+heI09+TeZuaxiAIyGT+OcUyCT3yYPTraQsQ483CyZhcjznv/AoAq1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602839009;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DlhML45alUVZOL1V9Q1TKHn+FPJpfatJ3TzBlDvnowU=;
-        b=1fo9AYUrf3V6YZVVnOgGYR/sUmPQAI+P0Jba70NYztooVeqkPggvMh9Evg9AUj/jfo1NPa
-        Y5lLCTQbsplUMZBw==
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: 5.10-rc0: build error in ipi.c
-In-Reply-To: <3ba522d1351445bc8a488ac10df80e7b@kernel.org>
-References: <20201015101222.GA32747@amd> <87imbba7qk.fsf@nanos.tec.linutronix.de> <3e6b7c98fd8221a7878aaaa6c1bf86f4@kernel.org> <20201015171829.GB5636@duo.ucw.cz> <1d6af6a15b71e77c268428ffbc519d6a@kernel.org> <87d01jul7x.fsf@nanos.tec.linutronix.de> <3ba522d1351445bc8a488ac10df80e7b@kernel.org>
-Date:   Fri, 16 Oct 2020 11:03:28 +0200
-Message-ID: <877drqv8yn.fsf@nanos.tec.linutronix.de>
+        Fri, 16 Oct 2020 05:05:31 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C70C061755;
+        Fri, 16 Oct 2020 02:05:30 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id md26so2036414ejb.10;
+        Fri, 16 Oct 2020 02:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kdEvLM24ShjG3wNe7OPqA0oEeaBKoO7Zc9qCuXiw5Co=;
+        b=rw6Q862j9e0sIhzDYZ3knhzfJ32UWPYURiSgJaA9UYdrWSD/gCAq5fXxsV49VbCa6N
+         xlb4HJ3EgMmk1R4KBu4iNc2NoWn6gKH2SOMj98ncY/jxFtvzi/XBuyZEbv81rDLB25YV
+         CdiPkVOAM0d2dlY4t4KPu9BicCikwB+qASHo+uTiviGHtq0Aleg7VZXQGg3Hxyyn8ojY
+         w2Sxx/kT9Grf8emddsJNU3p2CU5SQ5mgGoG3o4roXg+5yBV7TWlA44YSCj73o09CYEu7
+         XAwdm2Hg8lV7RG8rkEWXv1sMAibB3K9hX7c3254klNhjNL7OiV1JSHyTLJvvcUAi/wUb
+         uC2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kdEvLM24ShjG3wNe7OPqA0oEeaBKoO7Zc9qCuXiw5Co=;
+        b=P81N5IkFfvvGLdDC8GJj+RW+D5YXjx+oStNf2syJhd6iGH2qYLfDwZBv7ximxFoQUT
+         qUAmIT3XFpUU8uWVJrDqUH/OitTCghhSdvfjFVmUMju011tYPylgJF01ax0fCNg4YWea
+         AAARdld58IP60eBmnjE8ADc74Jmgd2pwjt/cjH8YsPggcO4pMdlO9MDVJc9bNN+sIL1e
+         qsz8k8uOPt6TTNGsc10i96ZT7YMhhzYZ02FqLwnBwpgPmTVdQbmMsoo3GszTLxe0sMf7
+         Hfi3J0+diPfrT4bLJ5pbOhjXjSJ0+n7DcaGXu+NUuV3qvye35PTxAB/mNukq0Y83Nvpa
+         on/A==
+X-Gm-Message-State: AOAM531cs62kyJ84YzKwn++6ES0ESOUNMzKoRmemWq1Ei9aQe8+YIRUy
+        CGsIV0xu3JKOC8rvk4AjJBk=
+X-Google-Smtp-Source: ABdhPJzVqiIBv+lNnb/onQp56fC/qDt9S2d7tJodghoSe00Q9F4qSbvBr2ma51/poCL4iW1V7cR27g==
+X-Received: by 2002:a17:906:bc42:: with SMTP id s2mr2587128ejv.251.1602839129464;
+        Fri, 16 Oct 2020 02:05:29 -0700 (PDT)
+Received: from skbuf ([188.26.174.215])
+        by smtp.gmail.com with ESMTPSA id qw1sm1099691ejb.44.2020.10.16.02.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 02:05:29 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 12:05:27 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: ksz: fix padding size of skb
+Message-ID: <20201016090527.tbzmjkraok5k7pwb@skbuf>
+References: <20201014161719.30289-1-ceggers@arri.de>
+ <1647199.FWNDY5eN7L@n95hx1g2>
+ <875z7asjfd.fsf@kurt>
+ <4467366.g9nP7YU7d8@n95hx1g2>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4467366.g9nP7YU7d8@n95hx1g2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16 2020 at 09:28, Marc Zyngier wrote:
+On Fri, Oct 16, 2020 at 11:00:20AM +0200, Christian Eggers wrote:
+> On Friday, 16 October 2020, 09:45:42 CEST, Kurt Kanzenbach wrote:
+> > On Thu Oct 15 2020, Christian Eggers wrote:
+> > > On Wednesday, 14 October 2020, 19:31:03 CEST, Vladimir Oltean wrote:
+> > >> What problem are you actually trying to solve?
+> > >
+> > > After (hopefully) understanding the important bits, I would like to solve
+> > > the problem that after calling __skb_put_padto() there may be no tailroom
+> > > for the tail tag.
+> > >
+> > > The conditions where this can happen are quite special. You need a
+> > > skb->len < ETH_ZLEN and the skb must be marked as cloned. One condition
+> > > where this happens in practice is when the skb has been selected for TX
+> > > time stamping in dsa_skb_tx_timestamp() [cloned] and L2 is used as
+> > > transport for PTP [size < ETH_ZLEN]. But maybe cloned sk_buffs can also
+> > > happen for other reasons.
+> > Hmm. I've never observed any problems using DSA with L2 PTP time
+> > stamping with this tail tag code. What's the impact exactly? Memory
+> > corruption?
+> It looks like skb_put_padto() is only used by the tag_ksz driver. So it's
+> unlikely that other drivers are affected by the same problem.
+> 
+> If I remember correctly, I got a skb_panic in skb_put() when adding the tail
+> tag. But with the current kernel I didn't manage to create packets where the
+> skb allocated by __skb_put_padto has not enough spare room for the tag tag.
+> Either I am trying with wrong packets, or something else has been changed in
+> between.
+> 
+> I just sent a new patch which should solve the problem correctly here:
+> https://patchwork.ozlabs.org/project/netdev/list/?series=208269
 
-> On 2020-10-16 00:24, Thomas Gleixner wrote:
->> On Thu, Oct 15 2020 at 20:41, Marc Zyngier wrote:
->>> On 2020-10-15 18:18, Pavel Machek wrote:
->>> diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
->>> index 10a5aff4eecc..db923e0da162 100644
->>> --- a/kernel/irq/Kconfig
->>> +++ b/kernel/irq/Kconfig
->>> @@ -81,6 +81,7 @@ config IRQ_FASTEOI_HIERARCHY_HANDLERS
->>> 
->>>   # Generic IRQ IPI support
->>>   config GENERIC_IRQ_IPI
->>> +	select IRQ_DOMAIN_HIERARCHY
->>>   	bool
->> 
->> which makes some of the MIPS GENERIC_IRQ_IPI/IRQ_DOMAIN_HIERARCHY
->> Kconfig magic in drivers/irqchip/Kconfig obsolete.
->
-> Good point. I'll queue this on top:
->
-> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-> index cd734df57c42..d2a651372e15 100644
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -180,7 +180,6 @@ config IRQ_MIPS_CPU
->   	select GENERIC_IRQ_CHIP
->   	select GENERIC_IRQ_IPI if SYS_SUPPORTS_MULTITHREADING
->   	select IRQ_DOMAIN
-> -	select IRQ_DOMAIN_HIERARCHY if GENERIC_IRQ_IPI
->   	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
->
->   config CLPS711X_IRQCHIP
-
-There's another one for MIPS_GIC :)
+Kurt is asking, and rightfully so, because his tag_hellcreek.c driver
+(for a 1588 switch with tail tags) is copied from tag_ksz.c.
+I have also attempted to replicate your issue at my end and failed to do
+so. In principle, it is indeed true that a cloned skb should not be
+modified without calling skb_unshare() first. The DSA core
+(dsa_slave_xmit) should do that. But that doesn't explain the symptoms
+you're seeing, which is why I asked for skb_dump.
