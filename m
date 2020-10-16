@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1E0290CAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB6D290CB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393600AbgJPUTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393350AbgJPUTe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:19:34 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1175BC061755;
-        Fri, 16 Oct 2020 13:19:34 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id md26so4941870ejb.10;
-        Fri, 16 Oct 2020 13:19:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FA2VjoAOVa3zI6J2opQjTrtgww1jO5eNYFEdgCxHx6w=;
-        b=M5YRjTwHGKRGb6866ns3452jEWgGy0LzwHZQVBj772EGLvAHUtvMAX7i/vTW9IJ6El
-         XWqIJVLmSsP4h+EnjED61eOct26U3+UJftJHcLp32bY8okG7TkKTTY+uigTAIIL7AklB
-         sjwOqHFrE9x8u3LcmBKQCd6Zt1lvFtEXAQYQ4Womo0WG+A+OyQhnPh5ejyLfsBoT0pEM
-         awai1DaWmcpx+ISh3HqllJWBm0a9QklxwTebmPf+5MYzyp+abu+XUa5wczuImyg/oEn8
-         snO0xhZjNqjf0YF4/pz+ALL74MMjeacMOGzJp/NmEl/EVXOR2IyRPNWAqw9Sv3zv5I2D
-         jV1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FA2VjoAOVa3zI6J2opQjTrtgww1jO5eNYFEdgCxHx6w=;
-        b=oY019FUpIDFAtYtEskYhYG8NVo+GCw+hiZ+ml37iY33piRM/sw49DzsMmUsRRaXIIT
-         eFzMfTTJxQuIDRRVIYhk50D0YWY7sM4TLalVht7Q1bGnUXUIPqyDHudXw6iSX4zTzsSn
-         4XrzDh5Igx//7aYeyWZsgeMGhjwYEtyi+k99+Y3+8m/V6rDDf2ZZouvatvyXspl0rpW1
-         LOOpSVxM5vFSXK8wvIFVWu5K7DY5rAf8ZFmMyFblUS4yE+keTQYrFQPy+KGNJUDr4yv1
-         ehGNXBcUbETfbrKvlE68MtF3YkAjutZ8Ed8tXADi0CJWAutRMRCuM/kPH5ThYhDwp7aC
-         48ow==
-X-Gm-Message-State: AOAM5337M6ZVZ0P32nI9FQB9bHsNnA2UA2k1koYuQTd/XoW3/7U5oYdD
-        4d/wmRlq08wZzaifFmHKhUQ=
-X-Google-Smtp-Source: ABdhPJycfqqRhRIEfhQWm6SCqKIuDZRiZgFaUAbcupXtKXwp6RB2pk9D65/0sSaJlebhr+Z7xt4Rmw==
-X-Received: by 2002:a17:906:11d3:: with SMTP id o19mr5381348eja.287.1602879572776;
-        Fri, 16 Oct 2020 13:19:32 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id v23sm2555507edq.86.2020.10.16.13.19.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 13:19:32 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 23:19:30 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     kernel test robot <lkp@intel.com>,
-        Christian Eggers <ceggers@arri.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        kbuild-all@lists.01.org,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: point out the tail taggers
-Message-ID: <20201016201930.2i2lw4aixklyg6j7@skbuf>
-References: <20201016162800.7696-1-ceggers@arri.de>
- <202010170153.fwOuks52-lkp@intel.com>
- <20201016173317.4ihhiamrv5w5am6y@skbuf>
- <20201016201428.GI139700@lunn.ch>
+        id S2393610AbgJPUWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:22:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393586AbgJPUWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 16:22:46 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5271720878;
+        Fri, 16 Oct 2020 20:22:44 +0000 (UTC)
+Date:   Fri, 16 Oct 2020 16:22:42 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [GIT PULL] tracing: Fix of mismatch section
+Message-ID: <20201016162242.16434e2b@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016201428.GI139700@lunn.ch>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 10:14:28PM +0200, Andrew Lunn wrote:
-> On Fri, Oct 16, 2020 at 08:33:17PM +0300, Vladimir Oltean wrote:
-> > On Sat, Oct 17, 2020 at 01:25:08AM +0800, kernel test robot wrote:
-> > > Hi Christian,
-> > >
-> > > Thank you for the patch! Yet something to improve:
-> > >
-> > > [auto build test ERROR on net/master]
-> > >
-> > > url:    https://github.com/0day-ci/linux/commits/Christian-Eggers/net-dsa-point-out-the-tail-taggers/20201017-003007
-> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git 2ecbc1f684482b4ed52447a39903bd9b0f222898
-> 
-> > Is the test bot being a bit "slow" today?
-> 
-> It is using the net.git commit from yesterday afternoon. net-next got
-> merged into net yesterday evening, so it is a bit behind, but not too
-> far behind.
 
-Exactly. The sha1sum it uses _does_ contain the tail_tag member inside
-struct dsa_device_ops. What's it complaining about?
+Linus,
+
+Tracing: Fix mismatch section of adding early trace events
+
+- Fixes the issue of a mismatch section that was missed due to gcc
+  inlining the offending function, while clang did not (and reported
+  the issue).
+
+
+Please pull the latest trace-v5.10-2 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.10-2
+
+Tag SHA1: 39abab2b445c7e77fa0932a45e150c90ede54bd8
+Head SHA1: ce66f6136460a51acfc32de4481fe8fd69dfd50b
+
+
+Masami Hiramatsu (1):
+      tracing: Remove __init from __trace_early_add_new_event()
+
+----
+ kernel/trace/trace_events.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+---------------------------
+commit ce66f6136460a51acfc32de4481fe8fd69dfd50b
+Author: Masami Hiramatsu <mhiramat@kernel.org>
+Date:   Fri Oct 16 13:20:02 2020 +0900
+
+    tracing: Remove __init from __trace_early_add_new_event()
+    
+    The commit 720dee53ad8d ("tracing/boot: Initialize per-instance event
+    list in early boot") removes __init from __trace_early_add_events()
+    but __trace_early_add_new_event() still has __init and will cause a
+    section mismatch.
+    
+    Remove __init from __trace_early_add_new_event() as same as
+    __trace_early_add_events().
+    
+    Link: https://lore.kernel.org/lkml/CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com/
+    
+    Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+    Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 851ab37058dd..e705f06c68c6 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2498,7 +2498,7 @@ __trace_add_new_event(struct trace_event_call *call, struct trace_array *tr)
+  * for enabling events at boot. We want to enable events before
+  * the filesystem is initialized.
+  */
+-static __init int
++static int
+ __trace_early_add_new_event(struct trace_event_call *call,
+ 			    struct trace_array *tr)
+ {
