@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9667B28FC49
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 03:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E0E28FC4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 03:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390142AbgJPBui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 21:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        id S2390154AbgJPByy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 21:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388885AbgJPBui (ORCPT
+        with ESMTP id S2389091AbgJPByy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 21:50:38 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0CEC061755;
-        Thu, 15 Oct 2020 18:50:38 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id n6so1763391ioc.12;
-        Thu, 15 Oct 2020 18:50:38 -0700 (PDT)
+        Thu, 15 Oct 2020 21:54:54 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B904FC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 18:54:53 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id z2so963851lfr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 18:54:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Lnz+3X498d+Pw84uYesLONlxmmcjlWUIkyxJu0l46jM=;
-        b=rm2viusRTPBp0TJU8pgk7dKrwSZHWURw3hbfsPPeR3W1h1/UsXUEwl1ioBQI2hRXd5
-         c+MohwMXmt+BxSgwzF7ygp+LFqAeVmopFAnrtD2hC99SzOgk93txz/QDDWzixmHAiYex
-         yg0pxm1zvDUy6H+HTvQcDRFnwDWirlfuAUEEUlgCv7BpcO11TnNbcC6MsW6JjiDtQGCe
-         9F70JUoWqvtzUAv6ztft/mNvBHokjZsYMnllOqdn+P6eM9CEMk9sPtrumniDcjOUFVLr
-         qMp1+PMhFjR0XPP17eX3ddc24kmOY/CfbICHLgqVSsWO5CG1oqTDd4O07mx2XeSYKhT5
-         CK4w==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pKnsFQ//Lnit/5S9885OaTWlOt0Pscm5EoW1kjf5fqc=;
+        b=g1JOh7Wc7WqjSRNetq9opmx3dTFmulVuvtDGgEPh21l+8IYIQMuvEQHOzDVSDLfLaW
+         LJtdIHcKacSvZ7MNJ+3NzP2DxMYA97q9ClUSCc+y1xqtsVByqUExdr8XaMNyT5kAdFPQ
+         QZkBocR2QofI0UyrjRawxkK9gx32mTS+wWPlA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Lnz+3X498d+Pw84uYesLONlxmmcjlWUIkyxJu0l46jM=;
-        b=m7kPTSr3yf/IqxzvOpLKMLF8BoNcOW0IDBsLddSj8jHrG0DfJb1cddCvvjYvDDqAWF
-         8uTegt9xwzgWonrnOd0qsaFDt3qIM3X2jatJAoewkxhN2MYQDL9Zg1wve0o2gzb8GFxn
-         t/fQ2233xV8HlDoDzfpcvjR6EAQMnO0uPPwxi+vAkLMcZAIKuzZD3a40p6+i8I1ppsev
-         yEhtoCBpY+VEWBHjeXsVgXFWb6EqZcjjWUoxmoHo9Jp6TAue3ZsqclS1p08SXGGFVwYA
-         ul3rqQZKLrHwz82W4t+SXeWOzqw/LmLtHy0feDJTL5Kuow83xH7AxhYuyvf4S9MvOY80
-         sU4g==
-X-Gm-Message-State: AOAM532sT9gMXZrBibfHzaEURDu3hQjkKrt3yuRwfOqkEgW1/3mpwFP/
-        mp0vlGQkK3hZthbcgza1v0w=
-X-Google-Smtp-Source: ABdhPJw58WzznEotpeyXbMPb7MnVHRD71RKnqhwSc4tdNfgdfsbrRRLZ/GSpcwJWk/nqYlTFXz2iEA==
-X-Received: by 2002:a6b:9243:: with SMTP id u64mr711338iod.197.1602813037247;
-        Thu, 15 Oct 2020 18:50:37 -0700 (PDT)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45d1:2600::3])
-        by smtp.gmail.com with ESMTPSA id s17sm793793ioa.38.2020.10.15.18.50.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 18:50:36 -0700 (PDT)
-Date:   Thu, 15 Oct 2020 18:50:34 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 8/8] staging: wfx: improve robustness of wfx_get_hw_rate()
-Message-ID: <20201016015034.GA2122229@ubuntu-m3-large-x86>
-References: <20201009171307.864608-1-Jerome.Pouiller@silabs.com>
- <20201009171307.864608-9-Jerome.Pouiller@silabs.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pKnsFQ//Lnit/5S9885OaTWlOt0Pscm5EoW1kjf5fqc=;
+        b=H1Pug/tUNz2ZWPvu0AsF9uvwnG34o5auxaVK3iBpAsid4kUb46gjvmA2QUwjqipQzg
+         DX/7wn7GMeqVYbjGRvXTniiEKd7TgUQuzBAo8C0CTqtR7DHP9JD56f1utMw0aoSX4Zit
+         x9qsONqBfcpnAdYu5HSpRwJTWccktVqDYGz2Xr0E54nk0Q6PoYa6K3TfeXPcrJM3F0Jk
+         61Nup31tD2azOL2hVYfj3P+4VzXJyKMJsD239HY5tW8CaftnegGUi4yXt4FBlnI5fGR9
+         A2EY7Hx5yZXMLcr/j0a3OLB60c+BPViAxCnsKaViZs2b+iI/iP4hh1q1C/g+VRLbF7y1
+         YEHA==
+X-Gm-Message-State: AOAM530M1n6TORLxiwd6Jdwyp6ai3kaA8A+MOleF7mXtX7xkrlv1TX/Z
+        LwNW9gjThGAvOBZxh3IaEv3Xl839F3UXJQ==
+X-Google-Smtp-Source: ABdhPJzqj/EAW8z5vkhdnoxujqmaxtKjRu9bnx7Cp8CahrYjFiG2ADX7OObrxLJxs7N+6NqwivlUuQ==
+X-Received: by 2002:ac2:519a:: with SMTP id u26mr470835lfi.73.1602813291634;
+        Thu, 15 Oct 2020 18:54:51 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id o23sm347005lji.68.2020.10.15.18.54.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Oct 2020 18:54:50 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id a4so770059lji.12
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 18:54:50 -0700 (PDT)
+X-Received: by 2002:a2e:8092:: with SMTP id i18mr514291ljg.314.1602813290254;
+ Thu, 15 Oct 2020 18:54:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201009171307.864608-9-Jerome.Pouiller@silabs.com>
+References: <20201015135345.6b29e8c0@gandalf.local.home>
+In-Reply-To: <20201015135345.6b29e8c0@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 15 Oct 2020 18:54:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
+Message-ID: <CAHk-=wjU86UhovK4XuwvCqTOfc+nvtpAuaN2PJBz15z=w=u0Xg@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Updates for 5.10
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 07:13:07PM +0200, Jerome Pouiller wrote:
-> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> 
-> Smatch complains:
-> 
->     data_tx.c:37 wfx_get_hw_rate() warn: constraint '(struct ieee80211_supported_band)->bitrates' overflow 'band->bitrates' 0 <= abs_rl '0-127' user_rl '' required = '(struct ieee80211_supported_band)->n_bitrates'
->     23          struct ieee80211_supported_band *band;
->     24
->     25          if (rate->idx < 0)
->     26                  return -1;
->     27          if (rate->flags & IEEE80211_TX_RC_MCS) {
->     28                  if (rate->idx > 7) {
->     29                          WARN(1, "wrong rate->idx value: %d", rate->idx);
->     30                          return -1;
->     31                  }
->     32                  return rate->idx + 14;
->     33          }
->     34          // WFx only support 2GHz, else band information should be retrieved
->     35          // from ieee80211_tx_info
->     36          band = wdev->hw->wiphy->bands[NL80211_BAND_2GHZ];
->     37          return band->bitrates[rate->idx].hw_value;
-> 
-> Add a simple check to make Smatch happy.
-> 
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-> ---
->  drivers/staging/wfx/data_tx.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/staging/wfx/data_tx.c b/drivers/staging/wfx/data_tx.c
-> index 8db0be08daf8..41f6a604a697 100644
-> --- a/drivers/staging/wfx/data_tx.c
-> +++ b/drivers/staging/wfx/data_tx.c
-> @@ -31,6 +31,10 @@ static int wfx_get_hw_rate(struct wfx_dev *wdev,
->  		}
->  		return rate->idx + 14;
->  	}
-> +	if (rate->idx >= band->n_bitrates) {
-> +		WARN(1, "wrong rate->idx value: %d", rate->idx);
-> +		return -1;
-> +	}
->  	// WFx only support 2GHz, else band information should be retrieved
->  	// from ieee80211_tx_info
->  	band = wdev->hw->wiphy->bands[NL80211_BAND_2GHZ];
-> -- 
-> 2.28.0
-> 
+On Thu, Oct 15, 2020 at 10:53 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Updates for tracing and bootconfig:
 
-This now causes a clang warning:
+Hmm. I haven't verified that this came from you, but it seems likely..
+Once again my clang build shows something that I don't see in my
+allmodconfig gcc build:
 
-drivers/staging/wfx/data_tx.c:34:19: warning: variable 'band' is uninitialized when used here [-Wuninitialized]
-        if (rate->idx >= band->n_bitrates) {
-                         ^~~~
-drivers/staging/wfx/data_tx.c:23:39: note: initialize the variable 'band' to silence this warning
-        struct ieee80211_supported_band *band;
-                                             ^
-                                              = NULL
-1 warning generated.
+   WARNING: modpost: vmlinux.o(.text+0x1e5b06): Section mismatch in
+reference from the function __trace_early_add_events() to the function
+.init.text:__trace_early_add_new_event()
+   The function __trace_early_add_events() references
+   the function __init __trace_early_add_new_event().
+   This is often because __trace_early_add_events lacks a __init
+   annotation or the annotation of __trace_early_add_new_event is wrong.
 
-Cheers,
-Nathan
+Hmm?
+
+               Linus
