@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCD02909E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570702909EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410581AbgJPQqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:46:02 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16106 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410569AbgJPQqB (ORCPT
+        id S2410590AbgJPQq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409258AbgJPQq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:46:01 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f89cdef0002>; Fri, 16 Oct 2020 09:44:31 -0700
-Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
- 2020 16:45:59 +0000
-Subject: Re: [PATCH 5.9 00/15] 5.9.1-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <pavel@denx.de>, <stable@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20201016090437.170032996@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <49d8a1d6-ca91-bc8f-2fe5-7189a9ad8ca7@nvidia.com>
-Date:   Fri, 16 Oct 2020 17:45:56 +0100
+        Fri, 16 Oct 2020 12:46:58 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8BDC061755;
+        Fri, 16 Oct 2020 09:46:59 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id x13so1778121pgp.7;
+        Fri, 16 Oct 2020 09:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m5QWZWggwQOfiTFdIHT047dSO1xGSGCvc+lVoqhnteg=;
+        b=t674aytrN92WXZ/AxkV7ukdP3KTiGI6seRYQeTSWdrbYPs7rvVI3AwhgoZ5J1qzQIX
+         hhLxyCl5ET34ISbOLHrTtAEnWcHKgmBk+ymz8BNiqZOWHT6gTYhL2Njrk+2G1AtJrpYS
+         uakg9tG0unPCqgz1avkw8M5baRyZAlndgyyCC+WhfypFGe3Covzw3GSoF9B5YK1CdUEv
+         d1Y/5xSQtWEzJDm3e13YMNoWWt1AHaR1xeu+OoD7CW70EwGTmnrG7yT9EryWn25WlvFM
+         ovZ0PVC3EimOkycRukpP5qoF7h/Rf2/Rput1YvBlwNDcEAAI4vbDZkSgXnr/znxosFdF
+         Cqqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=m5QWZWggwQOfiTFdIHT047dSO1xGSGCvc+lVoqhnteg=;
+        b=uZ0yyuADbAOpQESKa8Qsw8RzBNl1ON3xujKm8F9z9n1xH6PifxWqW8mipBAaEgwBQ6
+         zbryyPQCSUjTA1hpAnwyfmDMRI/Jdf4+D5c1SW6bjGB7R2x/GGDjNYXnFyeE+jBdegZ9
+         j/aUgABcRvaxXymcJCAhTg0TkpzvXfA04fVC0oeb0C4JtK4VHBDZ7qg9CYGiPrlWLtpp
+         7+Cci3Lrauw9ftQKqDBXC6zkhbspk+Uvu00Pn89kYEDxCITgZzSU74owYB2xjsmXCC53
+         fA0DXAuo4hmgW+OPghq4woY8TyZAmS6J2Jq8+6o3iqUz0UvoZ3XleTHnppvrIgX2pnN6
+         R+aw==
+X-Gm-Message-State: AOAM530JyZgMGwhpKtkqehMmPNYi9uQr5L01rzOW0faquZ1vc67WS5TJ
+        gtmsm8x/3APURIml3Urmah645o/5WZ4=
+X-Google-Smtp-Source: ABdhPJwT+4xAm1I+bPs9WmInxRZLMPCGJcZ9eH5D+/D9BtwG4nSwHe/iH5SqdQb6OKNsD1SK5Ea6PA==
+X-Received: by 2002:a63:3115:: with SMTP id x21mr4005304pgx.416.1602866818727;
+        Fri, 16 Oct 2020 09:46:58 -0700 (PDT)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id l82sm3798162pfd.102.2020.10.16.09.46.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 09:46:57 -0700 (PDT)
+Subject: Re: [PATCH net] net: dsa: point out the tail taggers
+To:     Christian Eggers <ceggers@arri.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201016162800.7696-1-ceggers@arri.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <cb420dee-2a35-b9f9-1256-e4e3e00dd0e0@gmail.com>
+Date:   Fri, 16 Oct 2020 09:46:55 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201016090437.170032996@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20201016162800.7696-1-ceggers@arri.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602866671; bh=+xvcxOhPyG5ELR2Ghp2UOyUyJTNNQxoBKvGco6Iymx0=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Z+1IeAQF3WCgPLPd3bRCTHD0GO59XohpyohGi7fFfs3j52AzWjNWjv8sL3Ei9DzR8
-         80U6X0iPKSExotUlBkrzua+C9FapAZUE2iZte1Dz0+zgcJTPJO/oxD404SzaWMK86G
-         Pgv8tX1terBnITdWbMTBF7ETpiyvjqbJWWzzqtTKb80KNjowyvOor5CqawbGNDm/W9
-         B7ubakbYKwxK0nrC7j2F+OSO1Uo2SxiCqJQLXlRZWP0AyoJ9FwXcXJjKOo5oKVntoR
-         G1XQHbiDO9JfnAAVISvzBkBdAn/168baCwvhXPa4l53kAxhA7PqVZF/2pTynIfT2x9
-         1kMelwastkcoA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 16/10/2020 10:08, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.9.1 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 10/16/20 9:28 AM, Christian Eggers wrote:
+> From a  recent commit with the same summary:
 > 
-> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-> Anything received after that time might be too late.
+> "The Marvell 88E6060 uses tag_trailer.c and the KSZ8795, KSZ9477 and
+> KSZ9893 switches also use tail tags."
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.1-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.9.y
-> and the diffstat can be found below.
+> Set "tail_tag" to true for KSZ8795 and KSZ9477 which were missing in the
+> original commit.
 > 
-> thanks,
-> 
-> greg k-h
+> Fixes: 7a6ffe764be3 [net] ("net: dsa: point out the tail taggers")
+> Signed-off-by: Christian Eggers <ceggers@arri.de>
 
-
-There is one test failure (new warning) for Tegra194 but this is a known
-issue for v5.9 and is fixed by Viresh's change [0]. Maybe we can pull
-into stable once it is merged to the mainline?	
-
-That said everything else looks good ...
-
-Test results for stable-v5.9:
-    15 builds:	15 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    61 tests:	60 pass, 1 fail
-
-Linux version:	5.9.1-rc1-g1cbc5f2d0eac
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
-
-[0]
-https://lore.kernel.org/linux-pm/37c3f1f76c055b305d1bba2c2001ac5b1d7a9b5f.1602565964.git.viresh.kumar@linaro.org/
-
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-nvpublic
+Florian
