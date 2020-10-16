@@ -2,214 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E877229014A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5387B290116
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406030AbgJPJMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:12:52 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:31656 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2395072AbgJPJKt (ORCPT
+        id S2405230AbgJPJLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:11:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49834 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405854AbgJPJLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:10:49 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09G9AUP9014238;
-        Fri, 16 Oct 2020 04:10:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=5GgvYFVOQXr2tlU+lzmQtw6n7e7CS2uC5plEf2o1xhA=;
- b=KvFvBNrKAIUA4F+g8fCFhfAZAXBPLdAhsDpajjHdZHzhvE+51PeJAaGFxsj00FAmf/yv
- cde1yIijg1JeLtvVO5Pp1IO0qYO3YWpNEWvgkS1o1me4exeIb7i4Twc07mPCk6Gcvry6
- xX+jS3bRJjFbRZPBr8bG5p6yiSIaevdcTpId4lSQLoaZZPrwgH0dN8FCozi8Mk0did7t
- oH1rvaK3nbRONs6JGOm4IaThtE3L9sCk9rovyjHFiMbDNK2IMU9WteroHSZ1484mDkTO
- z7g1op4W048AV19gagc/TILN4bu2lN2v/FYzCYMxaJlj1QGTJ50WNeO+gOkE+IIXOLyd vA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3439cnfx63-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Oct 2020 04:10:18 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
- 2020 10:10:16 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 16 Oct 2020 10:10:16 +0100
-Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2283145;
-        Fri, 16 Oct 2020 09:10:16 +0000 (UTC)
-Subject: Re: [PATCH 1/7] of: base: Add of_count_phandle_with_fixed_args()
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        - <patches@opensource.cirrus.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
- <20201014145418.31838-2-rf@opensource.cirrus.com>
- <CAL_Jsq+qdcHc9H7qUVwLieHrLM8E20HZXa8DkarMiuXfCh8WOQ@mail.gmail.com>
- <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <008108c4-952b-a8a3-af81-af9e40643f36@opensource.cirrus.com>
-Date:   Fri, 16 Oct 2020 10:10:16 +0100
+        Fri, 16 Oct 2020 05:11:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602839493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N0iuzsKV+en+co/Ft7zltRtGpfmCivUKMQYMYF4dZIE=;
+        b=aNB5vZr3C43v+Ylpr04BcuN+kwJHBJIhDoZl+qrC97AONeRrL6WMCWrowutQiNkJ4u3Dcp
+        DU29kNCTJuInLuByN1/GPSQe+luONZKZ3v3WS4P+Psy0tH4MXsJP8uWBaK4URBbJkJDUh4
+        RFBQOzBZAUj1XgpgGMRn0hc2iGmB4wA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-K1OXnZx8NnSMeViY6FHIoQ-1; Fri, 16 Oct 2020 05:11:31 -0400
+X-MC-Unique: K1OXnZx8NnSMeViY6FHIoQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5222F1020906;
+        Fri, 16 Oct 2020 09:11:30 +0000 (UTC)
+Received: from [10.36.113.23] (ovpn-113-23.ams2.redhat.com [10.36.113.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7EFE41992D;
+        Fri, 16 Oct 2020 09:11:25 +0000 (UTC)
+Subject: Re: [PATCH v1 05/29] virtio-mem: generalize check for added memory
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-6-david@redhat.com>
+ <20201015082808.GE86495@L-31X9LVDL-1304.local>
+ <994394f3-c16d-911c-c9fc-d2280f32e7b1@redhat.com>
+ <20201016021651.GI86495@L-31X9LVDL-1304.local>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5caec772-295c-436a-2b19-ca261ea1ad0c@redhat.com>
+Date:   Fri, 16 Oct 2020 11:11:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201016021651.GI86495@L-31X9LVDL-1304.local>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010160068
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>> That's an interesting corner case. Assume you have a 128MB memory block
+>> but only 64MB are plugged.
+> 
+> Since we just plug a part of memory block, this state is OFFLINE_PARTIAL
+> first. But then we would add these memory and online it. This means the state
+> of this memory block is ONLINE_PARTIAL.
+> 
+> When this state is changed to OFFLINE_PARTIAL again?
 
-On 15/10/2020 17:52, Robin Murphy wrote:
-> On 2020-10-14 19:39, Rob Herring wrote:
->> On Wed, Oct 14, 2020 at 9:54 AM Richard Fitzgerald
->> <rf@opensource.cirrus.com> wrote:
->>>
->>> Add an equivalent of of_count_phandle_with_args() for fixed argument
->>> sets, to pair with of_parse_phandle_with_fixed_args().
->>>
->>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->>> ---
->>>   drivers/of/base.c  | 42 ++++++++++++++++++++++++++++++++++++++++++
->>>   include/linux/of.h |  9 +++++++++
->>>   2 files changed, 51 insertions(+)
->>>
->>> diff --git a/drivers/of/base.c b/drivers/of/base.c
->>> index ea44fea99813..45d8b0e65345 100644
->>> --- a/drivers/of/base.c
->>> +++ b/drivers/of/base.c
->>> @@ -1772,6 +1772,48 @@ int of_count_phandle_with_args(const struct 
->>> device_node *np, const char *list_na
->>>   }
->>>   EXPORT_SYMBOL(of_count_phandle_with_args);
->>>
->>> +/**
->>> + * of_count_phandle_with_fixed_args() - Find the number of phandles 
->>> references in a property
->>> + * @np:                pointer to a device tree node containing a list
->>> + * @list_name: property name that contains a list
->>> + * @cell_count: number of argument cells following the phandle
->>> + *
->>> + * Returns the number of phandle + argument tuples within a 
->>> property. It
->>> + * is a typical pattern to encode a list of phandle and variable
->>> + * arguments into a single property.
->>> + */
->>> +int of_count_phandle_with_fixed_args(const struct device_node *np,
->>> +                                    const char *list_name,
->>> +                                    int cells_count)
->>> +{
->>
->> Looks to me like you can refactor of_count_phandle_with_args to handle
->> both case and then make this and of_count_phandle_with_args simple
->> wrapper functions.
-> 
-> Although for just counting the number of phandles each with n arguments 
-> that a property contains, isn't that simply a case of dividing the 
-> property length by n + 1? The phandles themselves will be validated by 
-> any subsequent of_parse_phandle*() call anyway, so there doesn't seem 
-> much point in doing more work then necessary here.
-> 
+Please note that memory onlining is *completely* controllable by user
+space. User space can offline/online memory blocks as it wants. Not
+saying this might actually be the right thing to do - but we cannot
+trust that user space does the right thing.
 
-As I'm not a DT expert, I'm reluctant to change existing algorithms that
-could break everything just for the trivial case of adding a fixed
-arguments count. I have a re-worked patch as suggested by Rob that
-re-uses the existing counting function for both cases.
+So at any point in time, you have to assume that
 
->>> +       struct of_phandle_iterator it;
->>> +       int rc, cur_index = 0;
->>> +
->>> +       if (!cells_count) {
->>> +               const __be32 *list;
->>> +               int size;
->>> +
->>> +               list = of_get_property(np, list_name, &size);
->>> +               if (!list)
->>> +                       return -ENOENT;
->>> +
->>> +               return size / sizeof(*list);
+a) added memory might not get onlined
+b) previously onlined memory might get offlined
+c) previously offline memory might get onlined
+
 > 
-> Case in point - if it's OK to do exactly that for n == 0, then clearly 
-> we're *aren't* fussed about validating anything, so the n > 0 code below 
-> is nothing more than a massively expensive way to check for a nonzero 
-> remainder :/
-> 
-> Robin.
-> 
->>> +       }
->>> +
->>> +       rc = of_phandle_iterator_init(&it, np, list_name, NULL, 
->>> cells_count);
->>> +       if (rc)
->>> +               return rc;
->>> +
->>> +       while ((rc = of_phandle_iterator_next(&it)) == 0)
->>> +               cur_index += 1;
->>> +
->>> +       if (rc != -ENOENT)
->>> +               return rc;
->>> +
->>> +       return cur_index;
->>> +}
->>> +EXPORT_SYMBOL(of_count_phandle_with_fixed_args);
->>> +
->>>   /**
->>>    * __of_add_property - Add a property to a node without lock 
->>> operations
->>>    */
->>> diff --git a/include/linux/of.h b/include/linux/of.h
->>> index 5cf7ae0465d1..9f315da4e9da 100644
->>> --- a/include/linux/of.h
->>> +++ b/include/linux/of.h
->>> @@ -377,6 +377,8 @@ extern int of_parse_phandle_with_fixed_args(const 
->>> struct device_node *np,
->>>          struct of_phandle_args *out_args);
->>>   extern int of_count_phandle_with_args(const struct device_node *np,
->>>          const char *list_name, const char *cells_name);
->>> +extern int of_count_phandle_with_fixed_args(const struct device_node 
->>> *np,
->>> +       const char *list_name, int cells_count);
->>>
->>>   /* phandle iterator functions */
->>>   extern int of_phandle_iterator_init(struct of_phandle_iterator *it,
->>> @@ -886,6 +888,13 @@ static inline int 
->>> of_count_phandle_with_args(struct device_node *np,
->>>          return -ENOSYS;
->>>   }
->>>
->>> +static inline int of_count_phandle_with_fixed_args(const struct 
->>> device_node *np,
->>> +                                                  const char 
->>> *list_name,
->>> +                                                  int cells_count)
->>> +{
->>> +       return -ENOSYS;
->>> +}
->>> +
->>>   static inline int of_phandle_iterator_init(struct 
->>> of_phandle_iterator *it,
->>>                                             const struct device_node 
->>> *np,
->>>                                             const char *list_name,
->>> -- 
->>> 2.20.1
->>>
 >>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>> As long as we have our online_pages callback in place, we can hinder the
+>> unplugged 64MB from getting exposed to the buddy
+>> (virtio_mem_online_page_cb()). However, once we unloaded the driver,
+> 
+> Yes,
+> 
+> virtio_mem_set_fake_offline() would __SetPageOffline() to those pages.
+> 
+>> this is no longer the case. If someone would online that memory block,
+>> we would expose unplugged memory to the buddy - very bad.
 >>
+> 
+> Per my understanding, at this point of time, the memory block is at online
+> state. Even part of it is set to *fake* offline.
+> 
+> So how could user trigger another online from sysfs interface?
+
+Assume we added a partially plugged memory block, which is now offline.
+Further assume user space did not online the memory block (e.g., no udev
+rules).
+
+User space could happily online the block after unloading the driver.
+Again, we have to assume user space could do crazy things.
+
+> 
+>> So we have to remove these partially plugged, offline memory blocks when
+>> losing control over them.
+>>
+>> I tried to document that via:
+>>
+>> "After we unregistered our callbacks, user space can online partially
+>> plugged offline blocks. Make sure to remove them."
+>>
+>>>
+>>> Also, during virtio_mem_remove(), we just handle OFFLINE_PARTIAL memory block.
+>>> How about memory block in other states? It is not necessary to remove
+>>> ONLINE[_PARTIAL] memroy blocks?
+>>
+>> Blocks that are fully plugged (ONLINE or OFFLINE) can get
+>> onlined/offlined without us having to care. Works fine - we only have to
+>> care about partially plugged blocks.
+>>
+>> While we *could* unplug OFFLINE blocks, there is no way we can
+>> deterministically offline+remove ONLINE blocks. So that memory has to
+>> stay, even after we unloaded the driver (similar to the dax/kmem driver).
+> 
+> For OFFLINE memory blocks, would that leave the situation:
+> 
+> Guest doesn't need those pages, while host still maps them?
+
+Yes, but the guest could online the memory and make use of it.
+
+(again, whoever decides to unload the driver better be knowing what he does)
+
+To do it even more cleanly, we would
+
+a) Have to remove completely plugged offline blocks (not done)
+b) Have to remove partially plugged offline blocks (done)
+c) Actually send unplug requests to the hypervisor
+
+Right now, only b) is done, because it might actually cause harm (as
+discussed). However, the problem is, that c) might actually fail.
+
+Long short: we could add a) if it turns out to be a real issue. But
+than, unloading the driver isn't really suggested, the current
+implementation just "keeps it working without crashes" - and I guess
+that's good enough for now.
+
+> 
+>>
+>> ONLINE_PARTIAL is already taken care of: it cannot get offlined anymore,
+>> as we still hold references to these struct pages
+>> (virtio_mem_set_fake_offline()), and as we no longer have the memory
+>> notifier in place, we can no longer agree to offline this memory (when
+>> going_offline).
+>>
+> 
+> Ok, I seems to understand the logic now.
+> 
+> But how we prevent ONLINE_PARTIAL memory block get offlined? There are three
+> calls in virtio_mem_set_fake_offline(), while all of them adjust page's flag.
+> How they hold reference to struct page?
+
+Sorry, I should have given you the right pointer. (similar to my other
+reply)
+
+We hold a reference either via
+
+1. alloc_contig_range()
+2. memmap init code, when not calling generic_online_page().
+
+So these fake-offline pages can never be actually offlined, because we
+no longer have the memory notifier registered to fix that up.
+
+-- 
+Thanks,
+
+David / dhildenb
+
