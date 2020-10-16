@@ -2,100 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15D8290673
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87797290676
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408216AbgJPNlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:41:25 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44160 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395255AbgJPNlY (ORCPT
+        id S2408341AbgJPNmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:42:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40107 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406784AbgJPNmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:41:24 -0400
-Received: by mail-ot1-f66.google.com with SMTP id e20so2386768otj.11;
-        Fri, 16 Oct 2020 06:41:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZDw6us/ymT1w8JQKh1+hOfSJ0DL7eGX/CDAwjYTDpuA=;
-        b=RV+r8AtuKpgXZO5PeAulS/PYymXiWw0b8YEy33PGrz1NpFuDGctqsCo6gyk/7yQiD6
-         Zp1tkMKtrhiflQSDtmGAy6FWM2zlZctJmkn6Lzn1SdJt/LviO79fdS7NK+qHTEvaA1TV
-         ztqgBWA2wLiMmVmWreVoSezj+W3fx7oYP6/SHNARVlkDuBjAKSZ6EtV3dgdMcU8XX7/+
-         EVJzpy5xnI31cfmcoMtoNyAOYdO3VSJgJHRjMfN80uF23I7bBkpXIBwFctLOQqlv9qPX
-         Pyzru+h3zOQHfRAANm0ejYk2tGZ4mqgtuw6uhpW1LykD9QfrnNuShkGO3TjmqJlF/kXh
-         se+A==
-X-Gm-Message-State: AOAM532fBxB3fWSHNby5srQn/7OGM6rkU8hoWj3/+AAeEHd676KL91FX
-        h9UwWZp3JuQgiBJwjakKADYbFrbpUMDTbZG3GBM=
-X-Google-Smtp-Source: ABdhPJxRyuvIqMQV3+EzV/OlzhrdUcDEUgjwsCnM/euQIUfl0/FUTZF8o0wdgj3jbQU9AkFDtIC6FSFyxcs+3/xiEXc=
-X-Received: by 2002:a9d:ac9:: with SMTP id 67mr2703887otq.321.1602855683757;
- Fri, 16 Oct 2020 06:41:23 -0700 (PDT)
+        Fri, 16 Oct 2020 09:42:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602855741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cbJxc+II0u6UP+GUu2KXn2UU9q29Ru3OPZf8OkjfGbk=;
+        b=XATsLnYsRhgavAXrFea7gmV9xjxfLuTTFveaKsW9fHwZktSy5yHlWzTIjsHG3c+6W6knuW
+        WWVOrxlnlD0eLT+wU+7BLxZlT22s8jrEk7i/JToEHnUk7lAR83tgNe8fkEeo6pMS0iQveZ
+        GvlDIYrBHWthdU++LmOLaPntbeYQJtY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-QGqHxhTANqSNKjJtY0fl-A-1; Fri, 16 Oct 2020 09:42:18 -0400
+X-MC-Unique: QGqHxhTANqSNKjJtY0fl-A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5172B18A0737;
+        Fri, 16 Oct 2020 13:42:16 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B75C16EF58;
+        Fri, 16 Oct 2020 13:42:08 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <000000000000b9f2ac05b05ae349@google.com>
+References: <000000000000b9f2ac05b05ae349@google.com>
+To:     syzbot <syzbot+b994ecf2b023f14832c1@syzkaller.appspotmail.com>
+Cc:     dhowells@redhat.com, davem@davemloft.net,
+        hchunhui@mail.ustc.edu.cn, ja@ssi.bg, jmorris@namei.org,
+        kaber@trash.net, kuznet@ms2.inr.ac.ru,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Subject: Re: WARNING: proc registration bug in afs_manage_cell
 MIME-Version: 1.0
-References: <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
- <20201006190322.GL3227@techsingularity.net> <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
- <20201006211820.GN3227@techsingularity.net> <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
- <20201008090909.GP3227@techsingularity.net> <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
- <20201008173436.GQ3227@techsingularity.net> <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
- <20201014223703.GT3227@techsingularity.net> <20201015183410.GU3227@techsingularity.net>
-In-Reply-To: <20201015183410.GU3227@techsingularity.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Oct 2020 15:41:12 +0200
-Message-ID: <CAJZ5v0jzZ6iQGYNnkgi-pPmdbq3aH+RoH+tBbEoBxFfmt_0MDg@mail.gmail.com>
-Subject: Re: ACPI _CST introduced performance regresions on Haswll
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1423870.1602855728.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 16 Oct 2020 14:42:08 +0100
+Message-ID: <1423871.1602855728@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 8:34 PM Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> > Yes, it's well hidden but it's there. If the profile is made custom, then
-> > the p-states can be selected and "custom" default enables C6 but not C3
-> > (there is a note saying that it's not recommended for that CPU). If I
-> > then switch it back to the normal profile, the c-states are not restored
-> > so this is a one-way trip even if you disable the c-state in custom,
-> > reboot, switch back, reboot. Same if the machine is reset to "optimal
-> > default settings". Yey for BIOS developers.
-> >
-> > This means I have a limited number of attempts to do something about
-> > this. 2 machines can no longer reproduce the problem reliably.
-> >
->
-> Turns out I didn't even have that. On another machine (same model,
-> same cpu, different BIOS that cannot be updated), enabling the C6 state
-> still did not enable it on boot and dmesg complained about CST not being
-> usable. This is weird because one would expect that if CST was unusable
-> that it would be the same as use_acpi == false.
->
-> This could potentially be if the ACPI tables are unsuitable due to bad
-> bad FFH information for a lower c-state. If _CST is not found or usable,
-> should acpi_state_table.count be reset to go back to the old behaviour?
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs=
+.git 7530d3eb3dcf1a30750e8e7f1f88b782b96b72b8
 
-Yes, it should, although I would reset it in intel_idle_cst_usable()
-right away before returning 'false'.
-
-I can send a patch to do the above or please submit the one below as
-it works too.
-
-> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-> index 13600c403035..3b84f8631b40 100644
-> --- a/drivers/idle/intel_idle.c
-> +++ b/drivers/idle/intel_idle.c
-> @@ -1261,6 +1261,7 @@ static bool intel_idle_acpi_cst_extract(void)
->                 return true;
->         }
->
-> +       acpi_state_table.count = 0;
->         pr_debug("ACPI _CST not found or not usable\n");
->         return false;
->  }
->
-> --
