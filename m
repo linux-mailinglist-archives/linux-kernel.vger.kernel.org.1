@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC5529092D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE6C290950
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410554AbgJPQEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:04:43 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45614 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409186AbgJPQEn (ORCPT
+        id S2409117AbgJPQHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:07:30 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:34356 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405432AbgJPQH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:04:43 -0400
-Received: by mail-ot1-f66.google.com with SMTP id f37so2824604otf.12;
-        Fri, 16 Oct 2020 09:04:42 -0700 (PDT)
+        Fri, 16 Oct 2020 12:07:29 -0400
+Received: by mail-oi1-f194.google.com with SMTP id w204so3014274oiw.1;
+        Fri, 16 Oct 2020 09:07:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=B5r1iVyK3g5LOaEPbQH7PWrVHl8ge6O5axWBuh2PZeE=;
-        b=l1EBPh/e8uhUIDn3cWc29EiMAzyQhyh9Hjy84EceuVl6uHyM99/xmDfLZrWqF0Lf2c
-         L6m/mLjPkf6z8mJZiD1wgJx3nzKwJAwHBDtNcnJlTJI6rkkd3mGbKpAC7VdWoUnY4Fwl
-         vpIJ3CT7eZZtbcc2cyPNl4aEdPIJTv2lePElY1RLgNmTWVdks3nKXY+XA6TgVY8UKeO2
-         r1lOUyyOUKrWjjfTCmaWB1jhjTUgzGLdSS57TC0AtQxcQwWFwUXcRCayGUorU9V01bN+
-         WqVswGiHIFj8wrMR5UYb80uNuw1IlEiwoSJzY2iW1fHkGQPmtJxe3/1N/V7yM00HEFZi
-         1wmg==
-X-Gm-Message-State: AOAM5325aEzJvGi9P7Svp6a0ZZNqEkNevl5sFx8n5TYszEqr7oYnOhBC
-        FVrmzdEjettVWyTaaf2i5w==
-X-Google-Smtp-Source: ABdhPJws7R2VvBCs0QwPLkKNqMNgdPLcfuPj1pTN4MciCqactZNQnAW0FdCyTT6OPwznRy+xGlaMOg==
-X-Received: by 2002:a9d:7850:: with SMTP id c16mr3017265otm.342.1602864278409;
-        Fri, 16 Oct 2020 09:04:38 -0700 (PDT)
+        bh=FdAnypayCNAEHSt2e5tstCFOMa3BUpSuCuXAQeatv68=;
+        b=A1ThBdD7D5p4MoiJUxd7H4ViG1/G3cwgrQJrrBZvkQKgKcs+tOPTPO5ORR5zY45em4
+         mw2BiN2nT/gg1iSWdREL0OG7CeN7MoWu0uQN3I4fjqQoSlD/sj+NiFPX8qcth1c3Jyqy
+         U87jN0FxGZG/Gvzy19oLwXYhy//mQ2oDjzDotludNfCVnpr4iiydoYwaFQthL9sWXzkY
+         ykwt76/dQF7P1V45Euu0mDnTHR0ymdX7yYJqafYo0lKzaNx6tfX+xn9qFx63qcD7Mc5Q
+         QHPsFjK0Qq+jl4pT9FQrALk3jHSirYmm+AbUQOxDDKa5NerjGYVXIHm+wU6QmzUz0LrA
+         jpHQ==
+X-Gm-Message-State: AOAM532EV9ewNwE3lQjbqg4o7ETU4ekHGJDv0/BTj6GwV6gCNlgCMdPH
+        Yqg86thr2uucfXas5NZ7Jg==
+X-Google-Smtp-Source: ABdhPJyueM8m+wzO38JzNm013LzdtBhgW4tkYxr+nxNYXJKypyowhgl+vsWfboUwF6MtrbhNisZWeg==
+X-Received: by 2002:aca:c54e:: with SMTP id v75mr2984866oif.134.1602864448669;
+        Fri, 16 Oct 2020 09:07:28 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k6sm1087596otp.33.2020.10.16.09.04.37
+        by smtp.gmail.com with ESMTPSA id t29sm1088993otd.51.2020.10.16.09.07.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 09:04:37 -0700 (PDT)
-Received: (nullmailer pid 1495855 invoked by uid 1000);
-        Fri, 16 Oct 2020 16:04:37 -0000
-Date:   Fri, 16 Oct 2020 11:04:37 -0500
+        Fri, 16 Oct 2020 09:07:28 -0700 (PDT)
+Received: (nullmailer pid 1499812 invoked by uid 1000);
+        Fri, 16 Oct 2020 16:07:27 -0000
+Date:   Fri, 16 Oct 2020 11:07:27 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Caesar Wang <wxt@rock-chips.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, heiko@sntech.de,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, Collabora Kernel ML <kernel@collabora.com>
+Cc:     Collabora Kernel ML <kernel@collabora.com>,
+        linux-rockchip@lists.infradead.org,
+        Caesar Wang <wxt@rock-chips.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        heiko@sntech.de, dianders@chromium.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
 Subject: Re: [PATCH v4] dt-bindings: power: rockchip: Convert to json-schema
-Message-ID: <20201016160437.GB1494813@bogus>
+Message-ID: <20201016160727.GA1499240@bogus>
 References: <20201015101944.407487-1-enric.balletbo@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -85,22 +86,7 @@ On Thu, 15 Oct 2020 12:19:44 +0200, Enric Balletbo i Serra wrote:
 >  2 files changed, 283 insertions(+), 136 deletions(-)
 >  create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
 >  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
-> 
 
+With the indentation fixed, 
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-./Documentation/devicetree/bindings/power/rockchip,power-controller.yaml:61:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
-./Documentation/devicetree/bindings/power/rockchip,power-controller.yaml:106:17: [warning] wrong indentation: expected 14 but found 16 (indentation)
-./Documentation/devicetree/bindings/power/rockchip,power-controller.yaml:138:21: [warning] wrong indentation: expected 18 but found 20 (indentation)
-
-
-See https://patchwork.ozlabs.org/patch/1382558
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+Reviewed-by: Rob Herring <robh@kernel.org>
