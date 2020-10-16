@@ -2,198 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1CE28FDCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 07:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398B928FDCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 07:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390759AbgJPFpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 01:45:02 -0400
-Received: from mga07.intel.com ([134.134.136.100]:26452 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387422AbgJPFpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 01:45:02 -0400
-IronPort-SDR: SajWX2LZhuc/zx08njxtFwJKSV/TSw5XU4l9AwGvnqs+822lx0D1ElUAtmDsctn5gITc+z33vG
- VkNkcMxF7f7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="230727228"
-X-IronPort-AV: E=Sophos;i="5.77,381,1596524400"; 
-   d="scan'208";a="230727228"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2020 22:45:01 -0700
-IronPort-SDR: 4v7sLjALilPeeLTvoT99ZmGbGiXLuvaoWp0Kg8U48FoFf7zwTumIIUjpKsjJ5M6fFGDek1TLSB
- hDOpUv7UtrRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,381,1596524400"; 
-   d="scan'208";a="531578941"
-Received: from lkp-server01.sh.intel.com (HELO 5003fa193bf3) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 15 Oct 2020 22:45:00 -0700
-Received: from kbuild by 5003fa193bf3 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kTIXz-0000EO-N2; Fri, 16 Oct 2020 05:44:59 +0000
-Date:   Fri, 16 Oct 2020 13:44:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2020.10.14a] BUILD SUCCESS
- 87fb0cc38d2583d4084e2ddaa937625fd2d876e0
-Message-ID: <5f893333.P+hiL4zllWvX+FWY%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2391030AbgJPFp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 01:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390920AbgJPFpz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 01:45:55 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3BAC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:45:55 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id c20so825306pfr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Iox0f97PdfROSzFUQgLo8vkQuUFWUr6O8qnG9IL8Hyo=;
+        b=dzDzI5F39hY8jXbyQBZeBkaEMQ1ZUu2e1PeEZomBUhHUTuegJIaMQuLDzZK29keBQN
+         y/+Y2kOqQrME1RTptt8nGbzY67cj2Ivtum+T9IY4u9Di7KotQn4AHSWZBvfUc0DkeYSK
+         YcmS5TctGoYCjmusCTu8YyybT2YnZFreqxOwVOYsTm7V2A9tJrnZ7GheC1qWBZJvh4dp
+         3O/zPxmFvAMNaKBdHjMfoBIQmHwxYRpYBg/fiNAo/PfThRgzmZYSrINfoqXPqGbihWv4
+         9ZWpXC/axXlmH6inBm+CihWnVZ0MnR3DJorNrvDXv1IHK8v1K126P4inwa0nP/z44rp9
+         zyEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Iox0f97PdfROSzFUQgLo8vkQuUFWUr6O8qnG9IL8Hyo=;
+        b=k94WxWlL8EXLm/iW5Mc9eesogrJSzj3YyQxnKNiMWcEPJDJs942HDl2ourRDS6XJPP
+         Quy9G+j3MJ7GqpcaX5MZP++USXWd7PKUaCs3OUhyE85WhZpD9WhMRMmT50Ho091Z1N1l
+         8NYCN2yfIzI65yi+RNWEG2UrwJdFazBNWzemiSINix25HQd6m9v7MAi/1/+0j5/XDgcJ
+         7qs6A+E5MHjAjBR3FpfEZ70j2f03ah/ZHGyFpG8ZimZzEwewZrSlUSClT/UwAd86q4Vg
+         wUjoNxstoewM9MM2UbxPNdpbCwoVbkJvm1z0yds+/hl2KwIjv00quqqVXlT8P5Q4mkae
+         Fv2w==
+X-Gm-Message-State: AOAM53231sfM7lnSiAMKnps9XyIThfH9BDCVXsU5CaEjN67k5C0Hri1q
+        YafrS68G6m8RhAZkf2tRXfYuHKcfJGp4YA==
+X-Google-Smtp-Source: ABdhPJxDK+1Ye5nb3j+GL6B1SPF/7OIW2+L+AYAcXw/CnPftBnCxVYjZGLx8agf1VuGO2xSgTrpNaQ==
+X-Received: by 2002:a63:2dc1:: with SMTP id t184mr1853195pgt.325.1602827154725;
+        Thu, 15 Oct 2020 22:45:54 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id i126sm1236775pfc.48.2020.10.15.22.45.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Oct 2020 22:45:53 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 11:15:51 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, sbhanu@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>, nm@ti.com
+Subject: Re: WARNING: at drivers/opp/core.c:678
+ dev_pm_opp_set_rate+0x4cc/0x5d4 - on arm x15
+Message-ID: <20201016054551.jwxk2xdvvnk7o5yy@vireshk-i7>
+References: <CA+G9fYvK5UkERLuBSRH5t2=j5==dbtw45GTMta9MafyJDqFsFA@mail.gmail.com>
+ <20200827094651.3grvs6ungv3dh7y3@vireshk-i7>
+ <20200827211832.3ebeda8a@canb.auug.org.au>
+ <20200828045128.y7ybkd7dnvn4h6dt@vireshk-i7>
+ <CA+G9fYsn1S-SieuP85-Z4qKO+aNyqJarrBR0xx0X-YbtF9eo0g@mail.gmail.com>
+ <20200831044132.jb7aflr2sfbart2z@vireshk-i7>
+ <CA+G9fYsLd77Wuz6Fdwr0w4eFvs=rX5ooewrztFtSe7MeyRJeGQ@mail.gmail.com>
+ <20200831060203.7guhirtxb72odow2@vireshk-i7>
+ <CA+G9fYv5WKQkDvjZsc+xth54X_MK3qUmuUTXhUDVUHpS3UhNpQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYv5WKQkDvjZsc+xth54X_MK3qUmuUTXhUDVUHpS3UhNpQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.10.14a
-branch HEAD: 87fb0cc38d2583d4084e2ddaa937625fd2d876e0  squash! rcu: Prevent lockdep-RCU splats on lock acquisition/release
++Dave,
 
-elapsed time: 723m
+On 15-10-20, 15:26, Naresh Kamboju wrote:
+> The arm x15 boot failed on Linus 's mainline version 5.9.0.
 
-configs tested: 134
-configs skipped: 2
+Don't mention the version as this doesn't give the right information.
+You tested it over 5.9 + 5.10-rc1 material.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> I have listed the latest commits on drivers/opp/ .
+> 
+> metadata:
+>   git branch: master
+>   git repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
+>   git commit: 3e4fb4346c781068610d03c12b16c0cfb0fd24a3
+>   git describe: v5.9-4105-g3e4fb4346c78
+>   make_kernelversion: 5.9.0
+>   kernel-config:
+> https://builds.tuxbuild.com/2BB2g61t29VaadVLXEl4cQ/kernel.config
+> 
+> 
+> ------------[ cut here ]------------
+> [   13.530971] sdhci-omap 4809c000.mmc: Got CD GPIO
+> [   13.535647] WARNING: CPU: 0 PID: 137 at drivers/opp/core.c:678
+> dev_pm_opp_set_rate+0x4cc/0x5d4
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                            zeus_defconfig
-m68k                        mvme16x_defconfig
-arm                       aspeed_g5_defconfig
-mips                        maltaup_defconfig
-h8300                               defconfig
-powerpc                         ps3_defconfig
-xtensa                generic_kc705_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                      katmai_defconfig
-sparc                       sparc32_defconfig
-sh                           se7780_defconfig
-xtensa                         virt_defconfig
-arm                         lpc18xx_defconfig
-arm                            u300_defconfig
-arm                          moxart_defconfig
-sh                               alldefconfig
-powerpc                     tqm5200_defconfig
-mips                      pic32mzda_defconfig
-m68k                          multi_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                 linkstation_defconfig
-arm                        vexpress_defconfig
-arm                            pleb_defconfig
-powerpc                mpc7448_hpc2_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                     ppa8548_defconfig
-nds32                               defconfig
-powerpc                   motionpro_defconfig
-arm                      tct_hammer_defconfig
-powerpc                     kilauea_defconfig
-mips                        nlm_xlp_defconfig
-sh                           se7206_defconfig
-sh                          r7780mp_defconfig
-ia64                                defconfig
-nios2                            allyesconfig
-ia64                         bigsur_defconfig
-powerpc                      ppc44x_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                           allnoconfig
-h8300                       h8s-sim_defconfig
-arm                           stm32_defconfig
-arm                           spitz_defconfig
-sh                  sh7785lcr_32bit_defconfig
-arc                        nsimosci_defconfig
-arm                       omap2plus_defconfig
-arm                            xcep_defconfig
-arm                        mini2440_defconfig
-xtensa                              defconfig
-powerpc                     mpc5200_defconfig
-arm                             pxa_defconfig
-m68k                          sun3x_defconfig
-sh                            shmin_defconfig
-arm                           sama5_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                        magician_defconfig
-sh                            migor_defconfig
-arm                           viper_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-i386                 randconfig-a005-20201014
-i386                 randconfig-a006-20201014
-i386                 randconfig-a001-20201014
-i386                 randconfig-a003-20201014
-i386                 randconfig-a004-20201014
-i386                 randconfig-a002-20201014
-x86_64               randconfig-a016-20201014
-x86_64               randconfig-a012-20201014
-x86_64               randconfig-a015-20201014
-x86_64               randconfig-a013-20201014
-x86_64               randconfig-a014-20201014
-x86_64               randconfig-a011-20201014
-i386                 randconfig-a016-20201014
-i386                 randconfig-a013-20201014
-i386                 randconfig-a015-20201014
-i386                 randconfig-a011-20201014
-i386                 randconfig-a012-20201014
-i386                 randconfig-a014-20201014
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Looks like the stuff from drivers/opp/ti-opp-supply.c supply didn't
+work as expected.
 
-clang tested configs:
-x86_64               randconfig-a004-20201014
-x86_64               randconfig-a002-20201014
-x86_64               randconfig-a006-20201014
-x86_64               randconfig-a001-20201014
-x86_64               randconfig-a005-20201014
-x86_64               randconfig-a003-20201014
-x86_64               randconfig-a016-20201015
-x86_64               randconfig-a012-20201015
-x86_64               randconfig-a015-20201015
-x86_64               randconfig-a013-20201015
-x86_64               randconfig-a014-20201015
-x86_64               randconfig-a011-20201015
+One of the major changes came with these patches:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+dc279ac6e5b4 cpufreq: dt: Refactor initialization to handle probe deferral properly
+dd461cd9183f opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER
+
+And that's where I think it may have gone wrong.
+
+Dave: Will you (or someone else from TI) can have a look at it as well
+?
+
+-- 
+viresh
