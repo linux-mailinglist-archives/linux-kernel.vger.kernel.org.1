@@ -2,62 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76C62901F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A1E290200
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406004AbgJPJdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:33:17 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:33668 "EHLO inva021.nxp.com"
+        id S2405856AbgJPJeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:34:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:60794 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394926AbgJPJdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:33:16 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 375B2200A16;
-        Fri, 16 Oct 2020 11:33:15 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2B014200A0D;
-        Fri, 16 Oct 2020 11:33:15 +0200 (CEST)
-Received: from fsr-ub1864-111.ea.freescale.net (fsr-ub1864-111.ea.freescale.net [10.171.82.141])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id CD09D20341;
-        Fri, 16 Oct 2020 11:33:14 +0200 (CEST)
-From:   Diana Craciun <diana.craciun@oss.nxp.com>
-To:     alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, laurentiu.tudor@nxp.com,
-        colin.king@canonical.com, Diana Craciun <diana.craciun@oss.nxp.com>
-Subject: [PATCH v2] vfio/fsl-mc: fix the return of the uninitialized variable ret
-Date:   Fri, 16 Oct 2020 12:32:32 +0300
-Message-Id: <20201016093232.12774-1-diana.craciun@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2404835AbgJPJeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:34:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8869A30E;
+        Fri, 16 Oct 2020 02:34:24 -0700 (PDT)
+Received: from bogus (unknown [10.57.17.164])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 43AB33F719;
+        Fri, 16 Oct 2020 02:34:23 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 10:34:21 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org, Da Xue <da@libre.computer>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mailbox: cancel timer before starting it
+Message-ID: <20201016093421.7hyiqrekiy6mtyso@bogus>
+References: <20200923123916.1115962-1-jbrunet@baylibre.com>
+ <20201015134628.GA11989@arm.com>
+ <1jlfg7k2ux.fsf@starbuckisacylon.baylibre.com>
+ <20201015142935.GA12516@arm.com>
+ <20201016084428.gthqj25wrvnqjsvz@bogus>
+ <1jimbak0hh.fsf@starbuckisacylon.baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1jimbak0hh.fsf@starbuckisacylon.baylibre.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vfio_fsl_mc_reflck_attach function may return, on success path,
-an uninitialized variable. Fix the problem by initializing the return
-variable to 0.
+On Fri, Oct 16, 2020 at 11:02:02AM +0200, Jerome Brunet wrote:
+> 
+> On Fri 16 Oct 2020 at 10:44, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> 
+> > On Thu, Oct 15, 2020 at 03:29:35PM +0100, Ionela Voinescu wrote:
+> >> Hi Jerome,
+> >> 
+> >> On Thursday 15 Oct 2020 at 15:58:30 (+0200), Jerome Brunet wrote:
+> >> > 
+> >> > On Thu 15 Oct 2020 at 15:46, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+> >> > 
+> >> > > Hi guys,
+> >> > >
+> >> > > On Wednesday 23 Sep 2020 at 14:39:16 (+0200), Jerome Brunet wrote:
+> >> > >> If the txdone is done by polling, it is possible for msg_submit() to start
+> >> > >> the timer while txdone_hrtimer() callback is running. If the timer needs
+> >> > >> recheduling, it could already be enqueued by the time hrtimer_forward_now()
+> >> > >> is called, leading hrtimer to loudly complain.
+> >> > >> 
+> >> > >> WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
+> >> > >> CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
+> >> > >> Hardware name: Libre Computer AML-S805X-AC (DT)
+> >> > >> Workqueue: events_freezable_power_ thermal_zone_device_check
+> >> > >> pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
+> >> > >> pc : hrtimer_forward+0xc4/0x110
+> >> > >> lr : txdone_hrtimer+0xf8/0x118
+> >> > >> [...]
+> >> > >> 
+> >> > >> Canceling the timer before starting it ensure that the timer callback is
+> >> > >> not running when the timer is started, solving this race condition.
+> >> > >> 
+> >> > >> Fixes: 0cc67945ea59 ("mailbox: switch to hrtimer for tx_complete polling")
+> >> > >> Reported-by: Da Xue <da@libre.computer>
+> >> > >> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> >> > >> ---
+> >> > >>  drivers/mailbox/mailbox.c | 8 ++++++--
+> >> > >>  1 file changed, 6 insertions(+), 2 deletions(-)
+> >> > >> 
+> >> > >> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+> >> > >> index 0b821a5b2db8..34f9ab01caef 100644
+> >> > >> --- a/drivers/mailbox/mailbox.c
+> >> > >> +++ b/drivers/mailbox/mailbox.c
+> >> > >> @@ -82,9 +82,13 @@ static void msg_submit(struct mbox_chan *chan)
+> >> > >>  exit:
+> >> > >>  	spin_unlock_irqrestore(&chan->lock, flags);
+> >> > >>  
+> >> > >> -	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
+> >> > >> -		/* kick start the timer immediately to avoid delays */
+> >> > >> +	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
+> >> > >> +		/* Disable the timer if already active ... */
+> >> > >> +		hrtimer_cancel(&chan->mbox->poll_hrt);
+> >> > >> +
+> >> > >> +		/* ... and kick start it immediately to avoid delays */
+> >> > >>  		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
+> >> > >> +	}
+> >> > >>  }
+> >> > >>  
+> >> > >>  static void tx_tick(struct mbox_chan *chan, int r)
+> >> > >
+> >> > > I've tracked a regression back to this commit. Details to reproduce:
+> >> > 
+> >> > Hi Ionela,
+> >> > 
+> >> > I don't have access to your platform and I don't get what is going on
+> >> > from the log below.
+> >> > 
+> >> > Could you please give us a bit more details about what is going on ?
+> >> > 
+> >> 
+> >> I'm not familiar with the mailbox subsystem, so the best I can do right
+> >> now is to add Sudeep to Cc, in case this conflicts in some way with the
+> >> ARM MHU patches [1].
+> >>
+> >
+> > Not it can't be doorbell driver as we use SCPI(old firmware) with upstream
+> > MHU driver as is limiting the number of channels to be used.
+> >
+> >> In the meantime I'll get some traces and get more familiar with the
+> >> code.
+> >>
+> >
+> > I will try that too.
+> 
+> BTW, this issue was originally reported on amlogic platforms which also
+> use arm,mhu mailbox driver.
+> 
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: f2ba7e8c947b ("vfio/fsl-mc: Added lock support in preparation for interrupt handling")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
----
- drivers/vfio/fsl-mc/vfio_fsl_mc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK. Anyway just noticed that hrtimer_cancel uses  hrtimer_try_to_cancel
+and hrtimer_cancel_wait_running. The latter is just cpu_relax() if
+PREEMPT_RT=n, so you may still have issue if the hrtimer is still active
+or restarts in the meantime.
 
-diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-index 80fc7f4ed343..0113a980f974 100644
---- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-+++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-@@ -58,7 +58,7 @@ static struct vfio_fsl_mc_reflck *vfio_fsl_mc_reflck_alloc(void)
- 
- static int vfio_fsl_mc_reflck_attach(struct vfio_fsl_mc_device *vdev)
- {
--	int ret;
-+	int ret = 0;
- 
- 	mutex_lock(&reflck_lock);
- 	if (is_fsl_mc_bus_dprc(vdev->mc_dev)) {
 -- 
-2.17.1
-
+Regards,
+Sudeep
