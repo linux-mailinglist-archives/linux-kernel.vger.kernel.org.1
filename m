@@ -2,101 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62FAD290A1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4F2290A1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436530AbgJPQ50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:57:26 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:28774 "EHLO nat-hk.nvidia.com"
+        id S2410729AbgJPQ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:58:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49366 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436511AbgJPQ5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:57:24 -0400
-Received: from HKMAIL101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f89d0f30000>; Sat, 17 Oct 2020 00:57:23 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
- 2020 16:57:23 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Fri, 16 Oct 2020 16:57:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fkyugQ1yhgP6qq3Qoo+t93JZK2mHwjKzTCG6c1EdMzOMBZEpMfxAoaI19NCTR4tE1kk9bId07GRjOOEKPMvpT/2v/1mVjU0zjEUk8xzaR2JqIuHJ6yZfv9g+FOitmT7hzEVSI/pH6bqbomNe+FsYSNLe1vFqKTSp8+1GZZg351e4IUBDIuHuh3RRgAIgVUEp4Q/w0rAmbQDGiDGzo6+VhDn81+yUznEYytdceeDBh7Vmyei8Lf+VWMiDUTi14kfO8hQ2WDxcsbVEjtPQoNMnj9O48SnIXjzlAUumlwLnB9g2aO3RnJ9zLKKq8LJ6xiNOB+B22XLiVQQ5s7/hBRLxZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=81vxbQdok0qt5mSZmFmNgbJS5iXaI6ochjSSAoxnAB0=;
- b=T3Ss134rLa9acx+g8fvc50o2YjC8oseR7hvR0l5OwLgcS8d7rCZ/GYhZXHv7RGyjQZXcAFuhxJM2z1kB2Sm1LX702feduNhNUS5IvO5ZTFiH+qG5GdD7kwW1yXqozleBDg647OFp+GTDS+pRfyM8KmLHGSk7S16ZGH80QM9d4Fl5xD/GoCp/vdgcApedPo10Z5i7x46Yeg4TrqQHMkLKkUPpQrccA90s46GR4lktOiWOSLGrcix4xQALEuiPDw/SFobqepsFTz+RF8JoGgpcrWq4RkNbpcvEql5C6B2guHZeZdbfxwPuCvf7okV2m8G4ImoRpgmuhN33m/st5h4NsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2940.namprd12.prod.outlook.com (2603:10b6:5:15f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.22; Fri, 16 Oct
- 2020 16:57:21 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.020; Fri, 16 Oct 2020
- 16:57:21 +0000
-Date:   Fri, 16 Oct 2020 13:57:18 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Kamal Heib <kamalheib1@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Parav Pandit <parav@mellanox.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v2 23/24] RDMA: add a missing kernel-doc parameter markup
-Message-ID: <20201016165718.GA160472@nvidia.com>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
- <6b2ed339933d066622d5715903870676d8cc523a.1602590106.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <6b2ed339933d066622d5715903870676d8cc523a.1602590106.git.mchehab+huawei@kernel.org>
-X-ClientProxiedBy: MN2PR15CA0041.namprd15.prod.outlook.com
- (2603:10b6:208:237::10) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2410160AbgJPQ6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:58:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E463EAE37;
+        Fri, 16 Oct 2020 16:58:33 +0000 (UTC)
+Subject: Re: [PATCH] mm/slub: make add_full() condition more explicit
+To:     wuyun.wu@huawei.com, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     liu.xiang6@zte.com.cn,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200811020240.1231-1-wuyun.wu@huawei.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <3ef24214-38c7-1238-8296-88caf7f48ab6@suse.cz>
+Date:   Fri, 16 Oct 2020 18:58:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR15CA0041.namprd15.prod.outlook.com (2603:10b6:208:237::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Fri, 16 Oct 2020 16:57:20 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kTT2c-000flH-R6; Fri, 16 Oct 2020 13:57:18 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602867443; bh=81vxbQdok0qt5mSZmFmNgbJS5iXaI6ochjSSAoxnAB0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=qTojcscn8ezpz4jqHN5zePNBW7xqerbheI5VgS2LNF4hyWyTqJ/N2k9v/85BDe5F/
-         4giEnbjpbZJOJcjmpH+w0uDcyTz7F//BbEfCOD5ffTVQ5t3o18LspH/I5IrCRKIHDb
-         vdWmOshBpzXY+YRiZ6fznPm6ErjhDVx3Yk4/XczT2NxR+SkJ/EKXQhuMpv25RAW9Ix
-         LC1uKxhKIzpVEmWrVcmkrPIffCGHqd5Pr3N6jLJjTOskAl1wRRySVaVfrtmJwwbRCt
-         DXJ6T+71WvGNCS2UQCMBwf6nP7qELNi3uu1PAakBrkJDiIhOV+VM8EK3MDYihGS5p7
-         xYYCqmNsfP0Hg==
+In-Reply-To: <20200811020240.1231-1-wuyun.wu@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 02:14:50PM +0200, Mauro Carvalho Chehab wrote:
-> Changeset 54816d3e69d1 ("RDMA: Explicitly pass in the dma_device to ib_register_device")
-> added a new parameter to ib_register_device().
+On 8/11/20 4:02 AM, wuyun.wu@huawei.com wrote:
+> From: Abel Wu <wuyun.wu@huawei.com>
 > 
-> Document it.
+> The commit below is incomplete, as it didn't handle the add_full() part.
+> commit a4d3f8916c65 ("slub: remove useless kmem_cache_debug() before remove_full()")
 > 
-> Fixes: 54816d3e69d1 ("RDMA: Explicitly pass in the dma_device to ib_register_device")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> This patch checks for SLAB_STORE_USER instead of kmem_cache_debug(),
+> since that should be the only context in which we need the list_lock for
+> add_full().
+> 
+> Signed-off-by: Abel Wu <wuyun.wu@huawei.com>
 > ---
->  drivers/infiniband/core/device.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>   mm/slub.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index f226d66408ee..df93a5a0e9a4 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2182,7 +2182,8 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+>   		}
+>   	} else {
+>   		m = M_FULL;
+> -		if (kmem_cache_debug(s) && !lock) {
+> +#ifdef CONFIG_SLUB_DEBUG
+> +		if ((s->flags & SLAB_STORE_USER) && !lock) {
+>   			lock = 1;
+>   			/*
+>   			 * This also ensures that the scanning of full
+> @@ -2191,6 +2192,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+>   			 */
+>   			spin_lock(&n->list_lock);
+>   		}
+> +#endif
+>   	}
+>   
+>   	if (l != m) {
+> 
 
-This is in linux-next, not Linus's tree.
+Hm I missed this, otherwise I would have suggested the following
 
-I've fixed it up in the rdma tree
+-----8<-----
+ From 0b43c7e20c81241f4b74cdb366795fc0b94a25c9 Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Fri, 16 Oct 2020 18:46:06 +0200
+Subject: [PATCH] mm, slub: use kmem_cache_debug_flags() in deactivate_slab()
 
-Thanks,
-Jason
+Commit 9cf7a1118365 ("mm/slub: make add_full() condition more explicit")
+replaced an unnecessarily generic kmem_cache_debug(s) check with an explicit
+check of SLAB_STORE_USER and #ifdef CONFIG_SLUB_DEBUG.
+
+We can achieve the same specific check with the recently added
+kmem_cache_debug_flags() which removes the #ifdef and restores the
+no-branch-overhead benefit of static key check when slub debugging is not
+enabled.
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+  mm/slub.c | 4 +---
+  1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 61d0d2968413..28d78238f31e 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2245,8 +2245,7 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+  		}
+  	} else {
+  		m = M_FULL;
+-#ifdef CONFIG_SLUB_DEBUG
+-		if ((s->flags & SLAB_STORE_USER) && !lock) {
++		if (kmem_cache_debug_flags(s, SLAB_STORE_USER) && !lock) {
+  			lock = 1;
+  			/*
+  			 * This also ensures that the scanning of full
+@@ -2255,7 +2254,6 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+  			 */
+  			spin_lock(&n->list_lock);
+  		}
+-#endif
+  	}
+
+  	if (l != m) {
+-- 
+2.28.0
+
