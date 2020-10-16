@@ -2,176 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1960F290488
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C509429049A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407067AbgJPL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:59:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:35812 "EHLO foss.arm.com"
+        id S2407135AbgJPMCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:02:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:35946 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407017AbgJPL7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:59:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A302D6E;
-        Fri, 16 Oct 2020 04:59:35 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39D113F66B;
-        Fri, 16 Oct 2020 04:59:34 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 12:59:29 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, robh@kernel.org, bhelgaas@google.com,
-        gustavo.pimentel@synopsys.com
-Subject: Re: [PATCH] PCI: dwc: Added link up check in map_bus of
- dw_child_pcie_ops
-Message-ID: <20201016115929.GA24915@e121166-lin.cambridge.arm.com>
-References: <20200916054130.8685-1-Zhiqiang.Hou@nxp.com>
- <20201015224738.GA24466@bjorn-Precision-5520>
+        id S2407059AbgJPMCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 08:02:33 -0400
+IronPort-SDR: wxj8eKn4Opm6LZ2yzSBM4WwFiF4FphkMzKvrWwVmgwjOQvQnKPsXU9ugnuN0fungufyO1lPcsY
+ meaBz1w1N4YQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="154392405"
+X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
+   d="scan'208";a="154392405"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 05:02:31 -0700
+IronPort-SDR: gIZfrsiE3LfGnWrpXs0G8b+34uHblssbdGNAZBUx8I5HlwvIXIPCMF2rqgzPrMrnmw6d5yLoyE
+ iaCFJiuD47Jg==
+X-IronPort-AV: E=Sophos;i="5.77,382,1596524400"; 
+   d="scan'208";a="531691310"
+Received: from wpross-mobl1.ger.corp.intel.com (HELO [10.249.36.186]) ([10.249.36.186])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 05:02:28 -0700
+Subject: Re: [PATCH v6 44/80] docs: gpu: i915.rst: Fix several C duplication
+ warnings
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+ <52a0dd42d3730d35b3ecd00d20a0601793e443e6.1602589096.git.mchehab+huawei@kernel.org>
+ <160284606673.11659.11178759979047002902@jlahtine-mobl.ger.corp.intel.com>
+ <20201016133724.1d578006@coco.lan>
+ <8dce8bc0-c83b-c256-aa35-229d4d583f74@intel.com> <87v9fa9yq9.fsf@intel.com>
+From:   Lionel Landwerlin <lionel.g.landwerlin@intel.com>
+Organization: Intel Corporation (UK) Ltd. - Co. Reg. #1134945 - Pipers Way,
+ Swindon SN3 1RJ
+Message-ID: <612ce5c4-ce6d-5342-213f-6cb3e2c7135e@intel.com>
+Date:   Fri, 16 Oct 2020 15:02:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201015224738.GA24466@bjorn-Precision-5520>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87v9fa9yq9.fsf@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 05:47:38PM -0500, Bjorn Helgaas wrote:
-> On Wed, Sep 16, 2020 at 01:41:30PM +0800, Zhiqiang Hou wrote:
-> > From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> > 
-> > On NXP Layerscape platforms, it results in SError in the
-> > enumeration of the PCIe controller, which is not connecting
-> > with an Endpoint device. And it doesn't make sense to
-> > enumerate the Endpoints when the PCIe link is down. So this
-> > patch added the link up check to avoid to fire configuration
-> > transactions on link down bus.
-> 
-> Lorenzo already applied this, but a couple questions:
+On 16/10/2020 14:50, Jani Nikula wrote:
+> On Fri, 16 Oct 2020, Lionel Landwerlin <lionel.g.landwerlin@intel.com> wrote:
+>> On 16/10/2020 14:37, Mauro Carvalho Chehab wrote:
+>>> Em Fri, 16 Oct 2020 14:01:07 +0300
+>>> Joonas Lahtinen <joonas.lahtinen@linux.intel.com> escreveu:
+>>>
+>>>> + Lionel
+>>>>
+>>>> Can you please take a look at best resolving the below problem.
+>>>>
+>>>> Maybe we should eliminate the duplicate declarations? Updating such
+>>>> a list manually seems error prone to me.
+>>> For Kernel 5.10, IMO the best is to apply this patch as-is, as any
+>>> other thing would need to be postponed, and we want 5.10 free of
+>>> doc warnings.
+>>
+>> That's odd... Most of the functions are documented. Is it that we're
+>> missing the "()" after the function name maybe?
+> The problem is we first include named functions, and then go on to
+> include everything again, duplicating the documentation for the named
+> functions.
+>
+> BR,
+> Jani.
 
-Happy to drop it - I merged it because it is a regression but
-that's certainly not a proper fix either.
 
-> You call out NXP Layerscape specifically, but doesn't this affect
-> other DWC-based platforms, too?  You later mentioned imx6, Kishon
-> mentioned dra7xx, Michael mentioned ls1028a, Naresh mentioned ls2088
-> (probably both the same as your "NXP Layerscape").
-> 
-> The backtrace below contains a bunch of irrelevant info.  The
-> timestamps are pointless.  The backtrace past
-> pci_scan_single_device+0x80/0x100 or so really doesn't add anything
-> either.
+Thanks, now the patch makes sense.
 
-I can trim the log message easily but I certainly agree with you
-the problem in this patch is the usual racy link check that still
-nobody can explains and that we were trying to remove.
 
-It would be very good if the respective platform maintainers went
-the extra mile to help here, Rob and I don't have this HW.
+-Lionel
 
-Shall we drop this patch and investigate further (possibly hitting
--rc1 with a fix containing a decent explanation ?)
 
-> 
-> It'd be nice to have a comment in the code because the code *looks*
-> wrong and racy.  Without a hint, everybody who sees it will have to
-> dig through the history to see why we tolerate the race.
+>
+>
+>>
+>> -Lionel
+>>
+>>
+>>> Yet, when I wrote this one, I almost took a different approach:
+>>> to implement something like @*group (or \*group) directives that
+>>> exists on doxygen:
+>>>
+>>> 	https://www.doxygen.nl/manual/grouping.html
+>>>
+>>> If something like that gets added to kernel-doc syntax, then
+>>> one could do something like:
+>>>
+>>> 	/**
+>>> 	 * DOC: some foo description
+>>> 	 * @group foo
+>>> 	 */
+>>>    
+>>> 	/**
+>>> 	 * foo1 - do some foo things
+>>> 	 * @group foo
+>>> 	...
+>>> 	 */
+>>>
+>>> 	/**
+>>> 	 * foo2 - do some other foo things
+>>> 	 * @group foo
+>>> 	...
+>>> 	 */
+>>>
+>>> 	/**
+>>> 	 * bar - do bar things
+>>> 	 * @group bar
+>>> 	...
+>>> 	 */
+>>>
+>>>
+>>> And then, at kernel-doc markup:
+>>>
+>>> 	FOO
+>>> 	===
+>>>
+>>> 	.. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+>>> 		:group: foo
+>>>
+>>>
+>>> 	BAR
+>>> 	===
+>>> 	.. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+>>> 		:group: bar
+>>>
+>>>
+>>> I suspect that something like that would be a lot easier to maintain.
+>>>
+>>> Once having someone like that implemented, it should be easy to also
+>>> have something like this:
+>>>
+>>> 	OTHERS
+>>> 	======
+>>> 	.. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+>>> 		:export:
+>>> 		:not-grouped:
+>>>
+>>> in order to pick other functions that aren't grouped.
+>>>
+>>> I suspect that implementing something like that at kernel-doc.pl
+>>> won't be hard.
+>>>
+>>> Regards,
+>>> Mauro
+>>>
+>>>> Regards, Joonas
+>>>>
+>>>> Quoting Mauro Carvalho Chehab (2020-10-13 14:53:59)
+>>>>> As reported by Sphinx:
+>>>>>
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1147: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_oa_wait_unlocked'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1169: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_oa_poll_wait'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1189: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_oa_read'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2669: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_oa_stream_enable'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2734: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_oa_stream_disable'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2820: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_oa_stream_init'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3010: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_read'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3098: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_poll_locked'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3129: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_poll'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3152: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_enable_locked'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3181: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_disable_locked'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3273: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_ioctl'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3296: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_destroy_locked'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3321: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_release'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3379: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_open_ioctl_locked'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3534: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'read_properties_unlocked'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3717: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_open_ioctl'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3760: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_register'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3789: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_unregister'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4009: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_add_config_ioctl'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4162: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_remove_config_ioctl'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4260: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_init'.
+>>>>>           ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4423: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+>>>>>           Declaration is 'i915_perf_fini'.
+>>>>>
+>>>>> With Sphinx 3, C declarations can't be duplicated anymore,
+>>>>> so let's exclude those from the other internals found on
+>>>>> i915_perf.c file.
+>>>>>
+>>>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>>>>> ---
+>>>>>    Documentation/gpu/i915.rst | 29 +++++++++++++++++++++++++----
+>>>>>    1 file changed, 25 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/Documentation/gpu/i915.rst b/Documentation/gpu/i915.rst
+>>>>> index 33cc6ddf8f64..cff1f154b473 100644
+>>>>> --- a/Documentation/gpu/i915.rst
+>>>>> +++ b/Documentation/gpu/i915.rst
+>>>>> @@ -636,15 +636,36 @@ i915 Perf Observation Architecture Stream
+>>>>>    .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+>>>>>       :functions: i915_oa_poll_wait
+>>>>>    
+>>>>> -All i915 Perf Internals
+>>>>> ------------------------
+>>>>> +Other i915 Perf Internals
+>>>>> +-------------------------
+>>>>>    
+>>>>> -This section simply includes all currently documented i915 perf internals, in
+>>>>> -no particular order, but may include some more minor utilities or platform
+>>>>> +This section simply includes all other currently documented i915 perf internals,
+>>>>> +in no particular order, but may include some more minor utilities or platform
+>>>>>    specific details than found in the more high-level sections.
+>>>>>    
+>>>>>    .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+>>>>>       :internal:
+>>>>> +   :no-identifiers:
+>>>>> +       i915_perf_init
+>>>>> +       i915_perf_fini
+>>>>> +       i915_perf_register
+>>>>> +       i915_perf_unregister
+>>>>> +       i915_perf_open_ioctl
+>>>>> +       i915_perf_release
+>>>>> +       i915_perf_add_config_ioctl
+>>>>> +       i915_perf_remove_config_ioctl
+>>>>> +       read_properties_unlocked
+>>>>> +       i915_perf_open_ioctl_locked
+>>>>> +       i915_perf_destroy_locked
+>>>>> +       i915_perf_read i915_perf_ioctl
+>>>>> +       i915_perf_enable_locked
+>>>>> +       i915_perf_disable_locked
+>>>>> +       i915_perf_poll i915_perf_poll_locked
+>>>>> +       i915_oa_stream_init i915_oa_read
+>>>>> +       i915_oa_stream_enable
+>>>>> +       i915_oa_stream_disable
+>>>>> +       i915_oa_wait_unlocked
+>>>>> +       i915_oa_poll_wait
+>>>>>    
+>>>>>    Style
+>>>>>    =====
+>>>>> -- 
+>>>>> 2.26.2
+>>>>>     
+>>>
+>>> Thanks,
+>>> Mauro
+>>
 
-+1, see above, ready to drop it.
-
-Lorenzo
-
-> > [    0.807773] SError Interrupt on CPU2, code 0xbf000002 -- SError
-> > [    0.807775] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> > [    0.807776] Hardware name: LS1046A RDB Board (DT)
-> > [    0.807777] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> > [    0.807778] pc : pci_generic_config_read+0x3c/0xe0
-> > [    0.807778] lr : pci_generic_config_read+0x24/0xe0
-> > [    0.807779] sp : ffff80001003b7b0
-> > [    0.807780] x29: ffff80001003b7b0 x28: ffff80001003ba74
-> > [    0.807782] x27: ffff000971d96800 x26: ffff00096e77e0a8
-> > [    0.807784] x25: ffff80001003b874 x24: ffff80001003b924
-> > [    0.807786] x23: 0000000000000004 x22: 0000000000000000
-> > [    0.807788] x21: 0000000000000000 x20: ffff80001003b874
-> > [    0.807790] x19: 0000000000000004 x18: ffffffffffffffff
-> > [    0.807791] x17: 00000000000000c0 x16: fffffe0025981840
-> > [    0.807793] x15: ffffb94c75b69948 x14: 62203a383634203a
-> > [    0.807795] x13: 666e6f635f726568 x12: 202c31203d207265
-> > [    0.807797] x11: 626d756e3e2d7375 x10: 656877202c307830
-> > [    0.807799] x9 : 203d206e66766564 x8 : 0000000000000908
-> > [    0.807801] x7 : 0000000000000908 x6 : ffff800010900000
-> > [    0.807802] x5 : ffff00096e77e080 x4 : 0000000000000000
-> > [    0.807804] x3 : 0000000000000003 x2 : 84fa3440ff7e7000
-> > [    0.807806] x1 : 0000000000000000 x0 : ffff800010034000
-> > [    0.807808] Kernel panic - not syncing: Asynchronous SError Interrupt
-> > [    0.807809] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc5-next-20200914-00001-gf965d3ec86fa #67
-> > [    0.807810] Hardware name: LS1046A RDB Board (DT)
-> > [    0.807811] Call trace:
-> > [    0.807812]  dump_backtrace+0x0/0x1c0
-> > [    0.807813]  show_stack+0x18/0x28
-> > [    0.807814]  dump_stack+0xd8/0x134
-> > [    0.807814]  panic+0x180/0x398
-> > [    0.807815]  add_taint+0x0/0xb0
-> > [    0.807816]  arm64_serror_panic+0x78/0x88
-> > [    0.807817]  do_serror+0x68/0x180
-> > [    0.807818]  el1_error+0x84/0x100
-> > [    0.807818]  pci_generic_config_read+0x3c/0xe0
-> > [    0.807819]  dw_pcie_rd_other_conf+0x78/0x110
-> > [    0.807820]  pci_bus_read_config_dword+0x88/0xe8
-> > [    0.807821]  pci_bus_generic_read_dev_vendor_id+0x30/0x1b0
-> > [    0.807822]  pci_bus_read_dev_vendor_id+0x4c/0x78
-> > [    0.807823]  pci_scan_single_device+0x80/0x100
-> > [    0.807824]  pci_scan_slot+0x38/0x130
-> > [    0.807825]  pci_scan_child_bus_extend+0x54/0x2a0
-> > [    0.807826]  pci_scan_child_bus+0x14/0x20
-> > [    0.807827]  pci_scan_bridge_extend+0x230/0x570
-> > [    0.807828]  pci_scan_child_bus_extend+0x134/0x2a0
-> > [    0.807829]  pci_scan_root_bus_bridge+0x64/0xf0
-> > [    0.807829]  pci_host_probe+0x18/0xc8
-> > [    0.807830]  dw_pcie_host_init+0x220/0x378
-> > [    0.807831]  ls_pcie_probe+0x104/0x140
-> > [    0.807832]  platform_drv_probe+0x54/0xa8
-> > [    0.807833]  really_probe+0x118/0x3e0
-> > [    0.807834]  driver_probe_device+0x5c/0xc0
-> > [    0.807835]  device_driver_attach+0x74/0x80
-> > [    0.807835]  __driver_attach+0x8c/0xd8
-> > [    0.807836]  bus_for_each_dev+0x7c/0xd8
-> > [    0.807837]  driver_attach+0x24/0x30
-> > [    0.807838]  bus_add_driver+0x154/0x200
-> > [    0.807839]  driver_register+0x64/0x120
-> > [    0.807839]  __platform_driver_probe+0x7c/0x148
-> > [    0.807840]  ls_pcie_driver_init+0x24/0x30
-> > [    0.807841]  do_one_initcall+0x60/0x1d8
-> > [    0.807842]  kernel_init_freeable+0x1f4/0x24c
-> > [    0.807843]  kernel_init+0x14/0x118
-> > [    0.807843]  ret_from_fork+0x10/0x34
-> > [    0.807854] SMP: stopping secondary CPUs
-> > [    0.807855] Kernel Offset: 0x394c64080000 from 0xffff800010000000
-> > [    0.807856] PHYS_OFFSET: 0xffff8bfd40000000
-> > [    0.807856] CPU features: 0x0240022,21806000
-> > [    0.807857] Memory Limit: none
-> > 
-> > Fixes: c2b0c098fbd1 ("PCI: dwc: Use generic config accessors")
-> > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-designware-host.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > index c01c9d2fb3f9..e82b518430c5 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > @@ -442,6 +442,9 @@ static void __iomem *dw_pcie_other_conf_map_bus(struct pci_bus *bus,
-> >  	struct pcie_port *pp = bus->sysdata;
-> >  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> >  
-> > +	if (!dw_pcie_link_up(pci))
-> > +		return NULL;
-> > +
-> >  	busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
-> >  		 PCIE_ATU_FUNC(PCI_FUNC(devfn));
-> >  
-> > -- 
-> > 2.17.1
-> > 
