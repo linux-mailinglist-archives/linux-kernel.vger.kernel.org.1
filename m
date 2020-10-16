@@ -2,125 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DE6290034
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61680290037
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405217AbgJPIwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:52:50 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:59940 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404319AbgJPIwu (ORCPT
+        id S2405206AbgJPIxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:53:25 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:46971 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404698AbgJPIxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:52:50 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 8039D8030808;
-        Fri, 16 Oct 2020 08:52:41 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id PNU5UTBKGSXE; Fri, 16 Oct 2020 11:52:40 +0300 (MSK)
-Date:   Fri, 16 Oct 2020 11:52:35 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Alexandre Torgue <alexandre.torgue@st.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Roger Quadros <rogerq@ti.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-snps-arc@lists.infradead.org>, <linux-mips@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH 18/20] arch: dts: Fix EHCI/OHCI DT nodes name
-Message-ID: <20201016085235.znzzbqxac4yvh3cz@mobilestation>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-19-Sergey.Semin@baikalelectronics.ru>
- <8a7af322-227b-9923-8fb6-f284af582b40@st.com>
+        Fri, 16 Oct 2020 04:53:24 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UCBd72l_1602838399;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCBd72l_1602838399)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Oct 2020 16:53:20 +0800
+Date:   Fri, 16 Oct 2020 16:53:19 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 20/29] virtio-mem: nb_sb_per_mb and subblock_size are
+ specific to Sub Block Mode (SBM)
+Message-ID: <20201016085319.GD44269@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-21-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a7af322-227b-9923-8fb6-f284af582b40@st.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20201012125323.17509-21-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexandre,
+On Mon, Oct 12, 2020 at 02:53:14PM +0200, David Hildenbrand wrote:
+>Let's rename to "sbs_per_mb" and "sb_size" and move accordingly.
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
 
-On Fri, Oct 16, 2020 at 09:08:23AM +0200, Alexandre Torgue wrote:
-> Hi Serge,
-> 
-> On 10/14/20 12:14 PM, Serge Semin wrote:
-> > In accordance with the Generic EHCI/OHCI bindings the corresponding node
-> > name is suppose to comply with the Generic USB HCD DT schema, which
-> > requires the USB nodes to have the name acceptable by the regexp:
-> > "^usb(@.*)?" . Let's fix the DTS files, which have the nodes defined with
-> > incompatible names.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > ---
-> > 
-> > Please, test the patch out to make sure it doesn't brake the dependent DTS
-> > files. I did only a manual grepping of the possible nodes dependencies.
-> > ---
-> >   arch/arc/boot/dts/axs10x_mb.dtsi               | 4 ++--
-> >   arch/arc/boot/dts/hsdk.dts                     | 4 ++--
-> >   arch/arc/boot/dts/vdk_axs10x_mb.dtsi           | 2 +-
-> >   arch/arm/boot/dts/bcm5301x.dtsi                | 4 ++--
-> >   arch/arm/boot/dts/bcm53573.dtsi                | 4 ++--
-> >   arch/arm/boot/dts/hisi-x5hd2.dtsi              | 4 ++--
-> >   arch/arm/boot/dts/lpc18xx.dtsi                 | 4 ++--
-> >   arch/arm/boot/dts/stm32mp151.dtsi              | 4 ++--
-> >   arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 4 ++--
-> >   arch/arm64/boot/dts/hisilicon/hip06.dtsi       | 4 ++--
-> >   arch/arm64/boot/dts/hisilicon/hip07.dtsi       | 4 ++--
-> >   arch/mips/boot/dts/ingenic/jz4740.dtsi         | 2 +-
-> >   arch/mips/boot/dts/ingenic/jz4770.dtsi         | 2 +-
-> >   arch/mips/boot/dts/mti/sead3.dts               | 2 +-
-> >   arch/mips/boot/dts/ralink/mt7628a.dtsi         | 2 +-
-> >   arch/powerpc/boot/dts/akebono.dts              | 6 +++---
-> >   16 files changed, 28 insertions(+), 28 deletions(-)
-> > 
-> 
+One trivial suggestion, could we move this patch close the data structure
+movement patch?
 
-> I surely missed something, but we have here in the same patch modifications
-> for different architectures and different vendors.
-> 
-> Do you plan to split this patch after getting some Acked-by / Tested-by ?
+I know this would be some work, since you have changed some of the code logic.
+This would take you some time to rebase.
 
-Yeah, I'll split this patch and two next ones up in v3.
+>---
+> drivers/virtio/virtio_mem.c | 96 ++++++++++++++++++-------------------
+> 1 file changed, 48 insertions(+), 48 deletions(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index fc2b1ff3beed..3a772714fec9 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -96,11 +96,6 @@ struct virtio_mem {
+> 	/* Maximum region size in bytes. */
+> 	uint64_t region_size;
+> 
+>-	/* The subblock size. */
+>-	uint64_t subblock_size;
+>-	/* The number of subblocks per memory block. */
+>-	uint32_t nb_sb_per_mb;
+>-
+> 	/* Id of the first memory block of this device. */
+> 	unsigned long first_mb_id;
+> 	/* Id of the last usable memory block of this device. */
+>@@ -126,6 +121,11 @@ struct virtio_mem {
+> 	uint64_t offline_threshold;
+> 
+> 	struct {
+>+		/* The subblock size. */
+>+		uint64_t sb_size;
+>+		/* The number of subblocks per Linux memory block. */
+>+		uint32_t sbs_per_mb;
+>+
+> 		/* Summary of all memory block states. */
+> 		unsigned long mb_count[VIRTIO_MEM_SBM_MB_COUNT];
+> 
+>@@ -256,7 +256,7 @@ static unsigned long virtio_mem_phys_to_sb_id(struct virtio_mem *vm,
+> 	const unsigned long mb_id = virtio_mem_phys_to_mb_id(addr);
+> 	const unsigned long mb_addr = virtio_mem_mb_id_to_phys(mb_id);
+> 
+>-	return (addr - mb_addr) / vm->subblock_size;
+>+	return (addr - mb_addr) / vm->sbm.sb_size;
+> }
+> 
+> /*
+>@@ -334,7 +334,7 @@ static int virtio_mem_sbm_mb_states_prepare_next_mb(struct virtio_mem *vm)
+> static int virtio_mem_sbm_sb_state_bit_nr(struct virtio_mem *vm,
+> 					  unsigned long mb_id, int sb_id)
+> {
+>-	return (mb_id - vm->first_mb_id) * vm->nb_sb_per_mb + sb_id;
+>+	return (mb_id - vm->first_mb_id) * vm->sbm.sbs_per_mb + sb_id;
+> }
+> 
+> /*
+>@@ -397,7 +397,7 @@ static bool virtio_mem_sbm_test_sb_unplugged(struct virtio_mem *vm,
+> }
+> 
+> /*
+>- * Find the first unplugged subblock. Returns vm->nb_sb_per_mb in case there is
+>+ * Find the first unplugged subblock. Returns vm->sbm.sbs_per_mb in case there is
+>  * none.
+>  */
+> static int virtio_mem_sbm_first_unplugged_sb(struct virtio_mem *vm,
+>@@ -406,7 +406,7 @@ static int virtio_mem_sbm_first_unplugged_sb(struct virtio_mem *vm,
+> 	const int bit = virtio_mem_sbm_sb_state_bit_nr(vm, mb_id, 0);
+> 
+> 	return find_next_zero_bit(vm->sbm.sb_states,
+>-				  bit + vm->nb_sb_per_mb, bit) - bit;
+>+				  bit + vm->sbm.sbs_per_mb, bit) - bit;
+> }
+> 
+> /*
+>@@ -415,8 +415,8 @@ static int virtio_mem_sbm_first_unplugged_sb(struct virtio_mem *vm,
+> static int virtio_mem_sbm_sb_states_prepare_next_mb(struct virtio_mem *vm)
+> {
+> 	const unsigned long old_nb_mb = vm->next_mb_id - vm->first_mb_id;
+>-	const unsigned long old_nb_bits = old_nb_mb * vm->nb_sb_per_mb;
+>-	const unsigned long new_nb_bits = (old_nb_mb + 1) * vm->nb_sb_per_mb;
+>+	const unsigned long old_nb_bits = old_nb_mb * vm->sbm.sbs_per_mb;
+>+	const unsigned long new_nb_bits = (old_nb_mb + 1) * vm->sbm.sbs_per_mb;
+> 	int old_pages = PFN_UP(BITS_TO_LONGS(old_nb_bits) * sizeof(long));
+> 	int new_pages = PFN_UP(BITS_TO_LONGS(new_nb_bits) * sizeof(long));
+> 	unsigned long *new_bitmap, *old_bitmap;
+>@@ -642,15 +642,15 @@ static void virtio_mem_notify_online(struct virtio_mem *vm, unsigned long mb_id)
+> static void virtio_mem_notify_going_offline(struct virtio_mem *vm,
+> 					    unsigned long mb_id)
+> {
+>-	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
+>+	const unsigned long nr_pages = PFN_DOWN(vm->sbm.sb_size);
+> 	unsigned long pfn;
+> 	int sb_id;
+> 
+>-	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
+>+	for (sb_id = 0; sb_id < vm->sbm.sbs_per_mb; sb_id++) {
+> 		if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+> 			continue;
+> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+>-			       sb_id * vm->subblock_size);
+>+			       sb_id * vm->sbm.sb_size);
+> 		virtio_mem_fake_offline_going_offline(pfn, nr_pages);
+> 	}
+> }
+>@@ -658,15 +658,15 @@ static void virtio_mem_notify_going_offline(struct virtio_mem *vm,
+> static void virtio_mem_notify_cancel_offline(struct virtio_mem *vm,
+> 					     unsigned long mb_id)
+> {
+>-	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size);
+>+	const unsigned long nr_pages = PFN_DOWN(vm->sbm.sb_size);
+> 	unsigned long pfn;
+> 	int sb_id;
+> 
+>-	for (sb_id = 0; sb_id < vm->nb_sb_per_mb; sb_id++) {
+>+	for (sb_id = 0; sb_id < vm->sbm.sbs_per_mb; sb_id++) {
+> 		if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+> 			continue;
+> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+>-			       sb_id * vm->subblock_size);
+>+			       sb_id * vm->sbm.sb_size);
+> 		virtio_mem_fake_offline_cancel_offline(pfn, nr_pages);
+> 	}
+> }
+>@@ -1079,8 +1079,8 @@ static int virtio_mem_sbm_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 				  int sb_id, int count)
+> {
+> 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id) +
+>-			      sb_id * vm->subblock_size;
+>-	const uint64_t size = count * vm->subblock_size;
+>+			      sb_id * vm->sbm.sb_size;
+>+	const uint64_t size = count * vm->sbm.sb_size;
+> 	int rc;
+> 
+> 	dev_dbg(&vm->vdev->dev, "plugging memory block: %lu : %i - %i\n", mb_id,
+>@@ -1100,8 +1100,8 @@ static int virtio_mem_sbm_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 				    int sb_id, int count)
+> {
+> 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id) +
+>-			      sb_id * vm->subblock_size;
+>-	const uint64_t size = count * vm->subblock_size;
+>+			      sb_id * vm->sbm.sb_size;
+>+	const uint64_t size = count * vm->sbm.sb_size;
+> 	int rc;
+> 
+> 	dev_dbg(&vm->vdev->dev, "unplugging memory block: %lu : %i - %i\n",
+>@@ -1128,7 +1128,7 @@ static int virtio_mem_sbm_unplug_any_sb(struct virtio_mem *vm,
+> 	int sb_id, count;
+> 	int rc;
+> 
+>-	sb_id = vm->nb_sb_per_mb - 1;
+>+	sb_id = vm->sbm.sbs_per_mb - 1;
+> 	while (*nb_sb) {
+> 		/* Find the next candidate subblock */
+> 		while (sb_id >= 0 &&
+>@@ -1163,7 +1163,7 @@ static int virtio_mem_sbm_unplug_any_sb(struct virtio_mem *vm,
+>  */
+> static int virtio_mem_sbm_unplug_mb(struct virtio_mem *vm, unsigned long mb_id)
+> {
+>-	uint64_t nb_sb = vm->nb_sb_per_mb;
+>+	uint64_t nb_sb = vm->sbm.sbs_per_mb;
+> 
+> 	return virtio_mem_sbm_unplug_any_sb(vm, mb_id, &nb_sb);
+> }
+>@@ -1203,7 +1203,7 @@ static int virtio_mem_sbm_prepare_next_mb(struct virtio_mem *vm,
+> static int virtio_mem_sbm_plug_and_add_mb(struct virtio_mem *vm,
+> 					  unsigned long mb_id, uint64_t *nb_sb)
+> {
+>-	const int count = min_t(int, *nb_sb, vm->nb_sb_per_mb);
+>+	const int count = min_t(int, *nb_sb, vm->sbm.sbs_per_mb);
+> 	int rc;
+> 
+> 	if (WARN_ON_ONCE(!count))
+>@@ -1221,7 +1221,7 @@ static int virtio_mem_sbm_plug_and_add_mb(struct virtio_mem *vm,
+> 	 * Mark the block properly offline before adding it to Linux,
+> 	 * so the memory notifiers will find the block in the right state.
+> 	 */
+>-	if (count == vm->nb_sb_per_mb)
+>+	if (count == vm->sbm.sbs_per_mb)
+> 		virtio_mem_sbm_set_mb_state(vm, mb_id,
+> 					    VIRTIO_MEM_SBM_MB_OFFLINE);
+> 	else
+>@@ -1271,11 +1271,11 @@ static int virtio_mem_sbm_plug_any_sb(struct virtio_mem *vm,
+> 
+> 	while (*nb_sb) {
+> 		sb_id = virtio_mem_sbm_first_unplugged_sb(vm, mb_id);
+>-		if (sb_id >= vm->nb_sb_per_mb)
+>+		if (sb_id >= vm->sbm.sbs_per_mb)
+> 			break;
+> 		count = 1;
+> 		while (count < *nb_sb &&
+>-		       sb_id + count < vm->nb_sb_per_mb &&
+>+		       sb_id + count < vm->sbm.sbs_per_mb &&
+> 		       !virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id + count, 1))
+> 			count++;
+> 
+>@@ -1288,12 +1288,12 @@ static int virtio_mem_sbm_plug_any_sb(struct virtio_mem *vm,
+> 
+> 		/* fake-online the pages if the memory block is online */
+> 		pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+>-			       sb_id * vm->subblock_size);
+>-		nr_pages = PFN_DOWN(count * vm->subblock_size);
+>+			       sb_id * vm->sbm.sb_size);
+>+		nr_pages = PFN_DOWN(count * vm->sbm.sb_size);
+> 		virtio_mem_fake_online(pfn, nr_pages);
+> 	}
+> 
+>-	if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	if (virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->sbm.sbs_per_mb)) {
+> 		if (online)
+> 			virtio_mem_sbm_set_mb_state(vm, mb_id,
+> 						    VIRTIO_MEM_SBM_MB_ONLINE);
+>@@ -1310,7 +1310,7 @@ static int virtio_mem_sbm_plug_any_sb(struct virtio_mem *vm,
+>  */
+> static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+> {
+>-	uint64_t nb_sb = diff / vm->subblock_size;
+>+	uint64_t nb_sb = diff / vm->sbm.sb_size;
+> 	unsigned long mb_id;
+> 	int rc;
+> 
+>@@ -1393,13 +1393,13 @@ static int virtio_mem_sbm_unplug_any_sb_offline(struct virtio_mem *vm,
+> 	rc = virtio_mem_sbm_unplug_any_sb(vm, mb_id, nb_sb);
+> 
+> 	/* some subblocks might have been unplugged even on failure */
+>-	if (!virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb))
+>+	if (!virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->sbm.sbs_per_mb))
+> 		virtio_mem_sbm_set_mb_state(vm, mb_id,
+> 					    VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL);
+> 	if (rc)
+> 		return rc;
+> 
+>-	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->sbm.sbs_per_mb)) {
+> 		/*
+> 		 * Remove the block from Linux - this should never fail.
+> 		 * Hinder the block from getting onlined by marking it
+>@@ -1426,12 +1426,12 @@ static int virtio_mem_sbm_unplug_sb_online(struct virtio_mem *vm,
+> 					   unsigned long mb_id, int sb_id,
+> 					   int count)
+> {
+>-	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size) * count;
+>+	const unsigned long nr_pages = PFN_DOWN(vm->sbm.sb_size) * count;
+> 	unsigned long start_pfn;
+> 	int rc;
+> 
+> 	start_pfn = PFN_DOWN(virtio_mem_mb_id_to_phys(mb_id) +
+>-			     sb_id * vm->subblock_size);
+>+			     sb_id * vm->sbm.sb_size);
+> 
+> 	rc = virtio_mem_fake_offline(start_pfn, nr_pages);
+> 	if (rc)
+>@@ -1467,19 +1467,19 @@ static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
+> 	int rc, sb_id;
+> 
+> 	/* If possible, try to unplug the complete block in one shot. */
+>-	if (*nb_sb >= vm->nb_sb_per_mb &&
+>-	    virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	if (*nb_sb >= vm->sbm.sbs_per_mb &&
+>+	    virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->sbm.sbs_per_mb)) {
+> 		rc = virtio_mem_sbm_unplug_sb_online(vm, mb_id, 0,
+>-						     vm->nb_sb_per_mb);
+>+						     vm->sbm.sbs_per_mb);
+> 		if (!rc) {
+>-			*nb_sb -= vm->nb_sb_per_mb;
+>+			*nb_sb -= vm->sbm.sbs_per_mb;
+> 			goto unplugged;
+> 		} else if (rc != -EBUSY)
+> 			return rc;
+> 	}
+> 
+> 	/* Fallback to single subblocks. */
+>-	for (sb_id = vm->nb_sb_per_mb - 1; sb_id >= 0 && *nb_sb; sb_id--) {
+>+	for (sb_id = vm->sbm.sbs_per_mb - 1; sb_id >= 0 && *nb_sb; sb_id--) {
+> 		/* Find the next candidate subblock */
+> 		while (sb_id >= 0 &&
+> 		       !virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id, 1))
+>@@ -1501,7 +1501,7 @@ static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
+> 	 * remove it. This will usually not fail, as no memory is in use
+> 	 * anymore - however some other notifiers might NACK the request.
+> 	 */
+>-	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>+	if (virtio_mem_sbm_test_sb_unplugged(vm, mb_id, 0, vm->sbm.sbs_per_mb)) {
+> 		mutex_unlock(&vm->hotplug_mutex);
+> 		rc = virtio_mem_mb_offline_and_remove(vm, mb_id);
+> 		mutex_lock(&vm->hotplug_mutex);
+>@@ -1518,7 +1518,7 @@ static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
+>  */
+> static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> {
+>-	uint64_t nb_sb = diff / vm->subblock_size;
+>+	uint64_t nb_sb = diff / vm->sbm.sb_size;
+> 	unsigned long mb_id;
+> 	int rc;
+> 
+>@@ -1805,11 +1805,11 @@ static int virtio_mem_init(struct virtio_mem *vm)
+> 	 * - Is required for now for alloc_contig_range() to work reliably -
+> 	 *   it doesn't properly handle smaller granularity on ZONE_NORMAL.
+> 	 */
+>-	vm->subblock_size = max_t(uint64_t, MAX_ORDER_NR_PAGES,
+>-				  pageblock_nr_pages) * PAGE_SIZE;
+>-	vm->subblock_size = max_t(uint64_t, vm->device_block_size,
+>-				  vm->subblock_size);
+>-	vm->nb_sb_per_mb = memory_block_size_bytes() / vm->subblock_size;
+>+	vm->sbm.sb_size = max_t(uint64_t, MAX_ORDER_NR_PAGES,
+>+				pageblock_nr_pages) * PAGE_SIZE;
+>+	vm->sbm.sb_size = max_t(uint64_t, vm->device_block_size,
+>+				vm->sbm.sb_size);
+>+	vm->sbm.sbs_per_mb = memory_block_size_bytes() / vm->sbm.sb_size;
+> 
+> 	/* Round up to the next full memory block */
+> 	vm->first_mb_id = virtio_mem_phys_to_mb_id(vm->addr - 1 +
+>@@ -1827,7 +1827,7 @@ static int virtio_mem_init(struct virtio_mem *vm)
+> 	dev_info(&vm->vdev->dev, "memory block size: 0x%lx",
+> 		 memory_block_size_bytes());
+> 	dev_info(&vm->vdev->dev, "subblock size: 0x%llx",
+>-		 (unsigned long long)vm->subblock_size);
+>+		 (unsigned long long)vm->sbm.sb_size);
+> 	if (vm->nid != NUMA_NO_NODE && IS_ENABLED(CONFIG_NUMA))
+> 		dev_info(&vm->vdev->dev, "nid: %d", vm->nid);
+> 
+>-- 
+>2.26.2
 
--Sergey
-
-> 
-> regards
-> Alex
-> 
-> 
+-- 
+Wei Yang
+Help you, Help me
