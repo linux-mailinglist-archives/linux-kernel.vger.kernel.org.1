@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF59B290BA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4CB290BAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403820AbgJPSr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393020AbgJPSr6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:47:58 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A924C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:47:58 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 32so3380237otm.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:47:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/6ZPAavAgIBaIj1gBG4jv7Gu9L4sN03UOtnPoYPnkGM=;
-        b=lP4NOv51TEXmx39salQG6uTSU8gkLmkF8p4KPDm1dBqsQhZGdByHYty0AxeWaPaWU8
-         IMBNfFJZEqSvFcX/JetY+udEH2E82sSSdgfZuuppOCDvedBZJjGbifYxGHw+S7eNMkl7
-         Q4yPOvK7BXm8r1/s/BzGQMn0sLvwN7kWFqYfrHSd+w3n665ToypEQlxLHvd/d1PUW4vB
-         lOcigsbdkdaso/ojnZ9YEwwCJDkWy14nmMFgohf3GDceQCc+WNSA+0TELgk0n2HJ8reg
-         s0X2GbNw/6VhfYupl1ci+c1/LDuzgv37IEaqsXpF4sHnYq/fMeKyFnBOZQamOHM/6axz
-         243Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/6ZPAavAgIBaIj1gBG4jv7Gu9L4sN03UOtnPoYPnkGM=;
-        b=qYFb/YVNaAoqphhTYZvI45MjZV4CkksDyAxOTZ+eNCeqnviUNemIGtGrqPYem058G+
-         aKdGQ8Lf0rP2R/k7Pj5yymAlF4dzfPuIj51Q2odEGBGSMXaTf6D9KZtciC3n24Pv/zxV
-         oaYx30y6BhLnJuc+umP6D+vq46C5iTWkvzX0MLBWPo0o4CeRMv5v/ekyvXn6WhMbk2XB
-         J729jpkexUIeMOrSuDfTv3DVaRXeOzy5UdFwMdilVgfnUgNjW3/ez4g9g/02+jVvJcJw
-         ELqbCDm0+AlxX1KjsfftwJ9y+RlRw1UCTqNqq/ATl1NFT9z9m4Qqaf3fizUfI/22j1KG
-         T0WQ==
-X-Gm-Message-State: AOAM531k6Ji9jbmiN5K4b4JOF3VrsQfWY/cfecUZ5BHtksEZRLKwP07J
-        jPBO03zxyDfuI3OpBzgOun5l/Y/9q9QRdDAi0ysbMA==
-X-Google-Smtp-Source: ABdhPJwH6XcBKPJDC1Mm7DKnG5P/EL1ztBMF0+cVOUi9cs5EKrO3sGguh+sEF+ZQIE3ke+UzdUEAW/qfG0BqWAz8nWs=
-X-Received: by 2002:a9d:2d81:: with SMTP id g1mr3546671otb.352.1602874077645;
- Fri, 16 Oct 2020 11:47:57 -0700 (PDT)
+        id S2403838AbgJPStE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:49:04 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:27257 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393025AbgJPStE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 14:49:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602874144; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=6kSIZLy2TJqD3zONMy0SK+wNFsehhz+E0UJjqKYOEJE=;
+ b=CYVXT2H6EjCqBxzErjAJBYFVPobo/9g7p6YIfKRHtDRYgB/EOkB1vdiAcGH/jQ3akmoLJdMB
+ XYy/DSk8xwHXMQcycK5USJRteAOoidawMLKBerNCQ5khaDQUlVbvfzpRS3T4kp4vkPyeKLU8
+ PhX0g3pjPwbcVAz2QWYOrnSyhC4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f89eb1ff9168450eab3f965 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 18:49:03
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 73619C43385; Fri, 16 Oct 2020 18:49:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED731C433F1;
+        Fri, 16 Oct 2020 18:49:02 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201003040257.62768-1-john.stultz@linaro.org> <20201008113602.n7ju2hu3j6qsaxve@DESKTOP-E1NTVVP.localdomain>
-In-Reply-To: <20201008113602.n7ju2hu3j6qsaxve@DESKTOP-E1NTVVP.localdomain>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 16 Oct 2020 11:47:44 -0700
-Message-ID: <CALAqxLUbL4ci4Vnwe6UM1OEFfLyirsQOr57nmx5NSe8Bb_yAwg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/7] dma-buf: Performance improvements for system heap
- & a system-uncached implementation
-To:     Brian Starkey <brian.starkey@arm.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 16 Oct 2020 11:49:02 -0700
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gavin Shan <gshan@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Price <steven.price@arm.com>
+Subject: Re: [PATCH v3] arm64/mm: add fallback option to allocate virtually
+ contiguous memory
+In-Reply-To: <20201015083605.GA4537@willie-the-truck>
+References: <cover.1602722808.git.sudaraja@codeaurora.org>
+ <d6c06f2ef39bbe6c715b2f6db76eb16155fdcee6.1602722808.git.sudaraja@codeaurora.org>
+ <20201015083605.GA4537@willie-the-truck>
+Message-ID: <541f79b6b5f3640c1e4978931ae93a38@codeaurora.org>
+X-Sender: sudaraja@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 4:36 AM Brian Starkey <brian.starkey@arm.com> wrote:
->
-> Hi John,
->
-> On Sat, Oct 03, 2020 at 04:02:50AM +0000, John Stultz wrote:
-> > Hey All,
->
-> ...
->
-> >
-> > I did add to this series a reworked version of my uncached
-> > system heap implementation I was submitting a few weeks back.
-> > Since it duplicated a lot of the now reworked system heap code,
-> > I realized it would be much simpler to add the functionality to
-> > the system_heap implementaiton itself.
->
-> That looks like a neat approach to me. Referencing your previous
-> thread, I like the separate heap (as you have done), rather than a
-> generic "cached"/"noncached" flag on all heaps.
->
+On 2020-10-15 01:36, Will Deacon wrote:
+> On Wed, Oct 14, 2020 at 05:51:23PM -0700, Sudarshan Rajagopalan wrote:
+>> When section mappings are enabled, we allocate vmemmap pages from
+>> physically continuous memory of size PMD_SIZE using
+>> vmemmap_alloc_block_buf(). Section mappings are good to reduce TLB
+>> pressure. But when system is highly fragmented and memory blocks are
+>> being hot-added at runtime, its possible that such physically 
+>> continuous
+>> memory allocations can fail. Rather than failing the memory hot-add
+>> procedure, add a fallback option to allocate vmemmap pages from
+>> discontinuous pages using vmemmap_populate_basepages().
+>> 
+>> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+>> Reviewed-by: Gavin Shan <gshan@redhat.com>
+>> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Logan Gunthorpe <logang@deltatee.com>
+>> Cc: David Hildenbrand <david@redhat.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Steven Price <steven.price@arm.com>
+>> ---
+>>  arch/arm64/mm/mmu.c | 7 +++++--
+>>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> Please can you fix the subject? I have three copies of "PATCH v3" from
+> different days in my inbox. I know it sounds trivial, but getting these
+> little things right really helps with review, especially when it's 
+> sitting
+> amongst a sea of other patches.
 
-Sounds good! I really appreciate the feedback on this.
+Yes sure, sorry about that - will change it to "PATCH v4" to make it 
+stand out from other patches.
 
-> > While not improving the core allocation performance, the
-> > uncached heap allocations do result in *much* improved
-> > performance on HiKey960 as it avoids a lot of flushing and
-> > invalidating buffers that the cpu doesn't touch often.
-> >
-> > Feedback on these would be great!
->
-> Minor nit: s/detatch/detach/ on both heaps, but other than that
-> you can add my r-b to patches 1-5.
+> 
+> Thanks,
+> 
+> Will
 
-Doh! Thanks for the spelling catch! Thanks again!
 
-> As you've said, it does feel like there's some room for
-> de-duplication, but that will be easier to work out once the
-> implementations settle.
->
-> I've a couple of comments for the uncached heap, but I'm not confident
-> I understand the implications of having the non-cached alias enough to
-> say if it looks OK or not.
+Sudarshan
 
-Thanks so much!
--john
+--
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
+Linux Foundation Collaborative Project
