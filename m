@@ -2,107 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793C628FD5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 06:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994BC28FD66
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 06:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732290AbgJPEgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 00:36:20 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:49385 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731897AbgJPEgT (ORCPT
+        id S1732977AbgJPEpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 00:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732681AbgJPEp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 00:36:19 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id EF479F8E;
-        Fri, 16 Oct 2020 00:36:17 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 16 Oct 2020 00:36:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=WXebYGUOxo1OO
-        laEW5dDl3iLC0qxgbnBraqL8r8/PQA=; b=ibn3w8QeOpGy5z6YxsRL4s7DugbjY
-        pcC2qXS0x5AsdKtiQZLbSoKE1TEDOz898Q7UwmaK5Xx4v9btkkqAeQ6f6TLIctm7
-        6iL53dDQjmBt0p3dX6hTXBcqDJfJuGGyeZBHQT2pBjeAbmGOrxhYSVfnahvEPVBi
-        egHW3ZYOQlkUXjy+xpfQ3psulga+ShRzdnyjiFe19RsXxzhIR5r9bgJguXOUjCNr
-        pB2W7n9m9rue2Z+funoiLx66P+RGBXJJTfQRTSC6aZiEZNWq5r8sX7so0h7Qmxd8
-        +iXJ6aCLI9zAGochRlwiJnz2jk/TUFz/TKWpTuhZZv4DSYkYHDDXYaU3w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=WXebYGUOxo1OOlaEW5dDl3iLC0qxgbnBraqL8r8/PQA=; b=W7ay5OM4
-        gZTxeKzs4zVaV3+LIL+QVsxtM055iwA08B2HcOxuHX3M5V2n/XDs9eizH0waIVyr
-        P19cfSmTT2CMMnXSjEdg3w1HmrYLcYdFT/l7mHkxdgFwNRJF/2M+fPr5qwHxoUwW
-        +myVNM/kS9gJoV+faPRbvW/COMkNCMJYAu7GAjhXixe0qHS5WYIMk1q0l/FAY3dS
-        02pcsGCp5D7HzKZu7nEIvkE8BPhegMSuyNo8Qij9/GUJM3hCrNanfgAJhjWuRosu
-        RRzVEe3FyLh40s5Tlnoi6Ic+wuRoJI6b6kvke/YcU1QEpmFCXpcR7YiI45MEIyJg
-        AHdsOQqAEn/aEQ==
-X-ME-Sender: <xms:QSOJX78dpbHmPOvuwIKe81TMf_JpNMDxBrJ83RWb05HRGfNql80acA>
-    <xme:QSOJX3tgEVJjzPV1-2RuDascabuw5eYzty82KAVzTrPLnppPERqlX4TbfZpBJVDW8
-    up2w4wJQsuW3s_Sjw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrieeggdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghj
-    rdhiugdrrghuqeenucggtffrrghtthgvrhhnpeejgfdvveehteekveeggeellefgleette
-    ejffelffdvudduveeiffegteelvefhteenucfkphepuddukedrvddutddrjedrudektden
-    ucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurh
-    gvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:QSOJX5Du2CDI9BOqQJ92pP72W5hVtXySe9rS9M6LFNiLX4atifAoHg>
-    <xmx:QSOJX3dfVvSj67SvFIVgHmmgRfyVBkd9CyoAfpPh5KYVrf6ejOEXGQ>
-    <xmx:QSOJXwNUgxLzj1IQkwpuXdlkuEaUxgj4jMvxEUc6JNyAkHIarLdjww>
-    <xmx:QSOJX1rzA80USFqw2VPqb3NjxQpT1Ny0284pluUMw6K-HW45yIneAg>
-Received: from localhost.localdomain (ppp118-210-7-180.adl-adc-lon-bras31.tpg.internode.on.net [118.210.7.180])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3F7483280059;
-        Fri, 16 Oct 2020 00:36:14 -0400 (EDT)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     joel@jms.id.au
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ARM: dts: tacoma: Add reserved memory for ramoops
-Date:   Fri, 16 Oct 2020 15:05:13 +1030
-Message-Id: <20201016043513.119841-3-andrew@aj.id.au>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201016043513.119841-1-andrew@aj.id.au>
-References: <20201016043513.119841-1-andrew@aj.id.au>
+        Fri, 16 Oct 2020 00:45:29 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACFDC061755;
+        Thu, 15 Oct 2020 21:45:29 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CCD9K0dycz9sTL;
+        Fri, 16 Oct 2020 15:45:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602823525;
+        bh=IZ9uxiJir1imi0VpApOxDxJVp70IayGufBk0hlupfX0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DWQ3Poap1yK08hABeSIUMGKyEFqN8LmOF22QUNnoS+CSCGf+T0t96W/F1gEuNZm3B
+         prCeI2fb6Abwqjhky52K76FV4nd17aZ0CnS4cpB9GcsJ0EeKNIMgUyE9Ss6Di0+QHB
+         FkMjq2UJHovboJ/DQLqnUB+1CTcD+0ujyoozZCaUi47xNtSCeNretxAIYe9mmGbC0J
+         pfH7IeUd1Y99NQGHwoxehOsVHUDJTpZLcqw/4QvVl8ror9zP1VldL6yCFMbeEglAgD
+         gx2qMv4PHm8/IsCF6k2oYSxb0ojuI1XMHu3l+hkAL49P27drsTfg2qY8hvov+ueTAa
+         DEy/Ktwf0OQ4w==
+Date:   Fri, 16 Oct 2020 15:45:23 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20201016154523.2c27a5b4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/dOmcBL72Qj7OshN1RDBYStd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reserve a 1.5MiB region of memory to record kmsg dumps, console and
-userspace message state into 16kiB ring-buffer slots. The sizing allows
-for up to 32 dumps to be captured and read out.
+--Sig_/dOmcBL72Qj7OshN1RDBYStd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Set max-reason to KMSG_DUMP_EMERG to capture bad-path reboots.
+Hi all,
 
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+After merging the akpm-current tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+mm/readahead.c: In function 'page_cache_sync_ra':
+mm/readahead.c:565:8: error: 'filp' undeclared (first use in this function)=
+; did you mean 'file'?
+  565 |   if (!filp)
+      |        ^~~~
+      |        file
+
+Caused by commit
+
+  f65bd470e7ed ("mm/readahead: add page_cache_sync_ra and page_cache_async_=
+ra")
+
+interacting with commit
+
+  09d008e3868e ("readahead: use limited read-ahead to satisfy read")
+
+from the block tree.
+
+I have added the following merge fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 16 Oct 2020 15:39:09 +1100
+Subject: [PATCH] mm/readahead: fix up for "readahead: use limited read-ahea=
+d to satisfy read"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ mm/readahead.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-index 46f2f538baba..4f7e9b490e1a 100644
---- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-@@ -26,6 +26,15 @@ reserved-memory {
- 		#size-cells = <1>;
- 		ranges;
- 
-+		ramoops@b9e80000 {
-+			compatible = "ramoops";
-+			reg = <0xb9e80000 0x180000>;
-+			record-size = <0x4000>;
-+			console-size = <0x4000>;
-+			pmsg-size = <0x4000>;
-+			max-reason = <3>; /* KMSG_DUMP_EMERG */
-+		};
-+
- 		flash_memory: region@ba000000 {
- 			no-map;
- 			reg = <0xb8000000 0x4000000>; /* 64M */
--- 
-2.25.1
+diff --git a/mm/readahead.c b/mm/readahead.c
+index a673ec53de37..b4d162b38bd6 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -562,7 +562,7 @@ void page_cache_sync_ra(struct readahead_control *ractl,
+ 	 * we're congested or tight on memory.
+ 	 */
+ 	if (!ra->ra_pages || blk_cgroup_congested()) {
+-		if (!filp)
++		if (!ractl->file)
+ 			return;
+ 		req_count =3D 1;
+ 		do_forced_ra =3D true;
+--=20
+2.28.0
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dOmcBL72Qj7OshN1RDBYStd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+JJWMACgkQAVBC80lX
+0GyMPgf/QGXeS1r/15Vd1sxX8vWFvDx6NZ6xgts3JIzdyIuyp4VKp/VoGP4enWDA
+TfHRY9y77VbubOI6QBz9mdwK84d4HjfgpVeKUs35Zqy7llydR/OLARrwy+pT50t6
+SQ5OKriyo8Kb4KX9Kj8VhvJkSvRqWI0CCpKoZoEIam7oAniS4sqxIQlnB67BuGt2
+rYbJAtqhSAJPezjakb4ai0QF8uoCGN//Rrw8X/XZT6m1TQCGPPzFPEKah3lv1qRf
+eNP+q++HIoO3UeJQy4yyM/OiV0drtP6G0S0qGt0hTDLK37zqThFrI3PJadz13ngW
+ub88glyZjYv2HwLVgxwUgjseRcNaKA==
+=Xfwt
+-----END PGP SIGNATURE-----
+
+--Sig_/dOmcBL72Qj7OshN1RDBYStd--
