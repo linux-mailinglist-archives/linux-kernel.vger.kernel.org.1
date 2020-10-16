@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DE92908B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7642908B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410361AbgJPPmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408608AbgJPPmf (ORCPT
+        id S2410374AbgJPPoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:44:10 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37991 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408644AbgJPPoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:42:35 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD2BC061755;
-        Fri, 16 Oct 2020 08:42:35 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id p11so1488249pld.5;
-        Fri, 16 Oct 2020 08:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AAbghpaYZHbkqxI5bowqjpAtc3NHNID3auCHmv5xSqY=;
-        b=YBw/HrTYRU7xNRlN50SRo3xTSr6CvOaTWR11dIoj758OomuykXmZQrt4O2via32RfP
-         kBgXsXcB2oy0bA8vsJ1U5rSchWi+zYSGO8p9Nl7yBgrrs9FWs5fulA4oLkTu5TUh1rnD
-         N8fsS7ByF1Fecx4UBgfCyVrswLTa5crXvo/Tz/SsTtaTmCoNLAE09U8XLYh+7f5x7xaW
-         1pBiAECVkIRNjlYyYGHUqvt1XlyZVJPmk4PRPt89I6Y0H6pzsC0xtiXUl6LdaDy3+16M
-         XTNwLBfNuup8F6JmsgZ9z9eXpRGyqaHkZEaf6J5HggwhYzevRtQiUT8nAopsQK5pZ44j
-         /qzw==
+        Fri, 16 Oct 2020 11:44:09 -0400
+Received: by mail-ot1-f67.google.com with SMTP id i12so2800149ota.5;
+        Fri, 16 Oct 2020 08:44:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AAbghpaYZHbkqxI5bowqjpAtc3NHNID3auCHmv5xSqY=;
-        b=i0bmYJ3VqZG9h4k4G96YXQVv645gnK/GIDb/w7goyKSqjkRvO+WWq3yTsrmA6qk93c
-         zbM/2O4bygpoYcuRp6zIL0rxR+0OmMxqf64OEovFFKqSODB/HqQ8D5XlMde2l1dQ99fz
-         bhJGQ0DeR2pDel9zneykEs66Qw8gjAoOOjcj0bgfHYsDY4iKyGK1H2BV30LHVZFZqarF
-         z8GowV0qqexwZMY3WQwWojJXnbAPx+//rVZwFidA2I7QqCxLbfB1dA9Gjvk0MKxJWzbD
-         JMnjoqWSZgX+BEKYVpJS11ZjTxo3WLXiNtKxK5wBmcVVn48PSV4YFBuKjupod43/h78s
-         xkRg==
-X-Gm-Message-State: AOAM530iRoh/xNnrkJT0BKF0MrLYe27CFvEWzSSWmcA37RBgk06G7QLT
-        yyUUU5yw5FdiCci4tEe9bBKVq+MuTXxLcBigUtU=
-X-Google-Smtp-Source: ABdhPJxAX6hiE7Ts8mpORicINnf0zOKVYKb8a3OLR81zMNfEeORtZGXKk2cYZpL4TX4PT7tdEMseGRQIX5sXuDY/OI4=
-X-Received: by 2002:a17:902:ea8c:b029:d2:8abd:c8de with SMTP id
- x12-20020a170902ea8cb02900d28abdc8demr4620759plb.21.1602862954641; Fri, 16
- Oct 2020 08:42:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y6uUrO47xJuekVbKZFp61eOF00usAMuQ8nla70UX51Q=;
+        b=bfDZdKMfUChC3ieC0oqXkGkkXdaml38F0N2cURVjGWfXPSVXFIus1hgl2LHdt5HihK
+         hlNITOROAV46r3pLknjiWtb3HapuWR+0gT9ZjdYPwUR+jMRe9L3XqOLauigKxB5OCs+j
+         f6MgwXOefI80oL3AUJxbtz2+H5R0RG5fVlk42nDp+5qqK5+FP4TBI39nhLXNq0Ea8aoJ
+         ALGzxcgupEPcEjL/Sj3CxrH6YDMkUyp88OpOBR73Gaz2bqhbIy0g4+dStcxZXKTz4uZN
+         3OrzUjHyv/lYU37P0hAm52VHz+tfTbgrliTlGANcx8KyrERBaF9Bidk7NWzNaV9ccw2x
+         rUvQ==
+X-Gm-Message-State: AOAM5337E0LJ+GwuXG3ypLikjIzjhAZYxnZoXxagjvC0q6Y19uy0sUY+
+        /DbkwkDWjeXyIjHb3cw+1g==
+X-Google-Smtp-Source: ABdhPJzyKW8ZO4qbCpHyH61FZ7oq0uCuGGIquis4K3Bt8t41p/hh05+oeioUYSSIX2RPEiqRi1znjQ==
+X-Received: by 2002:a9d:7387:: with SMTP id j7mr3154048otk.18.1602863048717;
+        Fri, 16 Oct 2020 08:44:08 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n23sm1257578oon.14.2020.10.16.08.44.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 08:44:08 -0700 (PDT)
+Received: (nullmailer pid 1466778 invoked by uid 1000);
+        Fri, 16 Oct 2020 15:44:06 -0000
+Date:   Fri, 16 Oct 2020 10:44:06 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        devicetree@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        linux-mips@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-usb@vger.kernel.org,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org,
+        Kevin Hilman <khilman@baylibre.com>
+Subject: Re: [PATCH 04/20] dt-bindings: usb: usb-hcd: Add "tpl-support"
+ property
+Message-ID: <20201016154406.GA1452617@bogus>
+References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
+ <20201014101402.18271-5-Sergey.Semin@baikalelectronics.ru>
+ <20201014132756.GA1538723@bogus>
+ <20201014172710.iay3lvb37saeksaj@mobilestation>
 MIME-Version: 1.0
-References: <20201016153544.162611-1-justin.he@arm.com>
-In-Reply-To: <20201016153544.162611-1-justin.he@arm.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 16 Oct 2020 18:43:23 +0300
-Message-ID: <CAHp75Vexk_He78uHN-o4Cev4aUYM_doK6g-bvwfqgKwHm3mTvA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: dwapb: Fix missing conversion to GPIO-lib-based IRQ-chip
-To:     Jia He <justin.he@arm.com>
-Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201014172710.iay3lvb37saeksaj@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 6:36 PM Jia He <justin.he@arm.com> wrote:
->
-> Commit 0ea683931adb ("gpio: dwapb: Convert driver to using the
-> GPIO-lib-based IRQ-chip") missed the case in dwapb_irq_set_wake().
->
-> Without this fix, probing the dwapb gpio driver will hit a error:
-> "address between user and kernel address ranges" on a Ampere armv8a
-> server and cause a panic.
+On Wed, Oct 14, 2020 at 08:27:10PM +0300, Serge Semin wrote:
+> On Wed, Oct 14, 2020 at 08:27:56AM -0500, Rob Herring wrote:
+> > On Wed, 14 Oct 2020 13:13:46 +0300, Serge Semin wrote:
+> > > The host controller device might be designed to work for the particular
+> > > products or applications. In that case its DT node is supposed to be
+> > > equipped with the tpl-support property.
+> > > 
+> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > 
+> > > ---
+> > > 
+> > > Changelog v2:
+> > > - Grammar fix: "s/it'/its"
+> > > - Discard '|' from the property description, since we don't need to preserve
+> > >   the text formatting.
+> > > ---
+> > >  Documentation/devicetree/bindings/usb/usb-hcd.yaml | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > > 
+> > 
+> > 
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> > 
+> > Traceback (most recent call last):
+> >   File "/usr/local/bin/dt-extract-example", line 45, in <module>
+> >     binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+> >   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+> >     return constructor.get_single_data()
+> >   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+> >     node = self.composer.get_single_node()
+> >   File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+> >   File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+> >   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+> >   File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
+> >   File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+> > ruamel.yaml.scanner.ScannerError: mapping values are not allowed in this context
+> >   in "<unicode string>", line 27, column 14
+> > make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/usb/usb-hcd.example.dts] Error 1
+> > make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/usb-hcd.example.dts'
+> > make[1]: *** Waiting for unfinished jobs....
+> > ./Documentation/devicetree/bindings/usb/usb-hcd.yaml:27:14: [error] syntax error: mapping values are not allowed here (syntax)
+> > make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
+> > make: *** [Makefile:1366: dt_binding_check] Error 2
+> > 
+> > 
+> > See https://patchwork.ozlabs.org/patch/1382001
+> > 
+> > If you already ran 'make dt_binding_check' and didn't see the above
+> > error(s), then make sure dt-schema is up to date:
+> > 
+> > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+> > 
+> > Please check and re-submit.
+> 
+> Hm, that's weird. Of course I did the dt_binding_check before submission, but
+> even after the dt-schema repo update I failed to see the error:
+> 
+> $ make -j8 ARCH=mips CROSS_COMPILE=mipsel-baikal-linux- dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/usb/usb-hcd.yaml
+>   CHKDT   Documentation/devicetree/bindings/usb/usb-hcd.yaml
+>   SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.yaml
+>   DTC     Documentation/devicetree/bindings/usb/usb-hcd.example.dt.yaml
+>   CHECK   Documentation/devicetree/bindings/usb/usb-hcd.example.dt.yaml
+> 
+> Rob, any idea why has the bot got mad at me?
 
-Thank you for a fix!
+Humm, I'm not sure. We'll see if it happens again when you send v2.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Note that yamllint is also run now and that's the line with '[error]'. 
+So neither yamllint nor ruamel are happy (could be the same parser code 
+ultimately).
 
-
-> Fixes: 0ea683931adb ("gpio: dwapb: Convert driver to using the
-> GPIO-lib-based IRQ-chip")
-
-Should be one line. But I think Bart or Linus may fix this problem if
-Serge is okay with a change in general.
-
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  drivers/gpio/gpio-dwapb.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-> index a5b326754124..2a9046c0fb16 100644
-> --- a/drivers/gpio/gpio-dwapb.c
-> +++ b/drivers/gpio/gpio-dwapb.c
-> @@ -343,8 +343,8 @@ static int dwapb_irq_set_type(struct irq_data *d, u32 type)
->  #ifdef CONFIG_PM_SLEEP
->  static int dwapb_irq_set_wake(struct irq_data *d, unsigned int enable)
->  {
-> -       struct irq_chip_generic *igc = irq_data_get_irq_chip_data(d);
-> -       struct dwapb_gpio *gpio = igc->private;
-> +       struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-> +       struct dwapb_gpio *gpio = to_dwapb_gpio(gc);
->         struct dwapb_context *ctx = gpio->ports[0].ctx;
->         irq_hw_number_t bit = irqd_to_hwirq(d);
->
-> --
-> 2.17.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Rob
