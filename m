@@ -2,125 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878B02909FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA302909FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410872AbgJPQu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:50:26 -0400
-Received: from mail-am6eur05on2072.outbound.protection.outlook.com ([40.107.22.72]:61792
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2409837AbgJPQu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:50:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V+bE0eSWejoLPebC8bJLUrs3bMd8JaTdHyXBg4rLaRRnFDQCwiJI+m/f7N+KAp9QIeZgh2MO369nri0AAG0I7sFRdTw1pcgxyL5Xu1Pqrn01SMWUVLWW6ezAW2MpZp/gpMxErB1TB3zuuoh82FA0sFtNE3DV6fyZisJ2gFjvEKD/i4wgfEHU6Twd4Fm7Hsd4d1Si5lQ+MNtBvncwUgR8tgUi+KscBs7PoPDMJbilqMY8TIrlzknMu7tzs6hOI45Hkg80cCtc0ttIKpP/WtZeEnGqM+wWp/L7l9aU1gNPamP2Z7zz6PHZXfo562vTsOOPZLghjprNT1mcjS2fCxESlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jiFr4UXVWRFb/6C8p7jnlDkwt3rG7oVdtJXfRKbpS0M=;
- b=ZD4lzl8v4ylIsqy9uIIbHxDbFrAN614ttLu/nIctcpnAdxKVJFlpCGNhBn1DKGZXMEJHdMJlbahkSIldcMAfTNPjDl8vRqf5nj7pXlqFMVzQOHh6xS9WqEM+dwqZNVON/8SS8UnKs4kFwALjpZJRpfaE/0iuLNAmTXGja0GmQR4vV+/yD5FRVUILhkZTpTT2u1opWvaRvjEprXHld7wKRiqAc0RiCOCXzkmq8/F42vnbLGLJS7qXb5G4cP1+9rNsUfs1JHGEBAETlsrRW7PQuY/SBMQwUjt5+R+0G9vgnt7OZ/ZchgqFfK6Wzt0P9zPLJCLGwg6+R37Aw+839je3Xw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jiFr4UXVWRFb/6C8p7jnlDkwt3rG7oVdtJXfRKbpS0M=;
- b=p0tvaTV/X0+RNgHLJ9m/n9RT+blHeMGQ+HP0Zoqro62XuDIEja/9hJ5bZQyj+6CuxtM+bqOPAJ8x+KqnxUhAGZdtJCGTaJce/SzpKYSKC4YiA2Bz+hMLwdHG9JHQbGz7c7Pd0bRBLCSnGsxjsEkbQ67OhssT8Z2Nh6k4BG3r6kw=
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
- by VE1PR04MB7343.eurprd04.prod.outlook.com (2603:10a6:800:1a2::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24; Fri, 16 Oct
- 2020 16:50:23 +0000
-Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
- ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3477.020; Fri, 16 Oct 2020
- 16:50:23 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-Subject: Re: [RFC PATCH] net: bridge: call br_multicast_del_port before the
- port leaves
-Thread-Topic: [RFC PATCH] net: bridge: call br_multicast_del_port before the
- port leaves
-Thread-Index: AQHWoxlk3CgJjcYqVUG5/aECg5LB0qmaPloAgAA0UYA=
-Date:   Fri, 16 Oct 2020 16:50:22 +0000
-Message-ID: <20201016165021.fjrxiwofwfqespei@skbuf>
-References: <20201015173355.564934-1-vladimir.oltean@nxp.com>
- <ed19387091755aee165c074983776f37f2b87892.camel@nvidia.com>
-In-Reply-To: <ed19387091755aee165c074983776f37f2b87892.camel@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.26.174.215]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6b901356-18ec-4e6d-4aec-08d871f39315
-x-ms-traffictypediagnostic: VE1PR04MB7343:
-x-microsoft-antispam-prvs: <VE1PR04MB73434973C7C2689C7A193882E0030@VE1PR04MB7343.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NKBX/mKebfYKEvIA3G7l0Y9pOY1OE2IfrbbDuyu2JsanVu6ikrp7/ENaIjaV92N/i5fFpWnuOkByt7IgcCsJHWt4D1Q8tcmLoFKn8cSAWHSYB8PtzQZyFoBDlfYGI807oPbV7Rg4NP+vhD5pgiPYSsB8yIEYjDcwK+VX11sId+Ti50ZrBoUbMbFeqe80t9UwB8rnOCXfJyPBEbW4VzI7JxmGgIEgZW2u0DXulWukTWl0ZK/EyCXkQMLZrb+YbcH9yaCMXFtEiY7eLqAFcVF6sTyUQ4PYnuDHAXtppyUQjLpspeM3IsFdfmKSDOuw3Xk2m1T+yPStN9kp7UyDX3ga3g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(366004)(39860400002)(396003)(376002)(346002)(186003)(6486002)(1076003)(4326008)(8676002)(8936002)(6506007)(2906002)(26005)(86362001)(71200400001)(6916009)(5660300002)(66556008)(316002)(33716001)(91956017)(478600001)(66476007)(6512007)(76116006)(66946007)(66446008)(44832011)(54906003)(3716004)(83380400001)(64756008)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: PuJ5Opea8tMIbWtYePpf06urNL2iJ4x4MfRAAga3RG7PGm8a/yV+R9M6JxtTiZFFgpKMc2/1LYXY6UmlzW1Qng4loaMCUPcxNMXrBopmAFljiqNxY4ZJd7xISpT3H/4CyTeYOo/4PMX4A20XZGmZiKahWF33J4eg7XGZkzQc47uEQXcUonIqb6sgJzXuGTV6yVNJCQoHVjDy6OLPepRHsRP/3QtRArWIOqOOpaJ+AE6CMQ0ZHyp1gHiK9DOK/1hT/wEv+Fhujj9ftmNgN+HYtApsKruplJ2IKGiOl7ft75mpTMMnQ/iLTR/mm0Mh2KLB7cb4jGDtfUCFad4wz5FxMdOreAG4bGjWw/fcqIi7a5A+MUIVBL+9YJMuXFjaiaYWta9uG+gn4qXAxlhQu4KoKEpHaAxncdc0vg/wCTMxCeXCJ9MJRHBEJuzAAG3bP/aghkYtmyFLMagMVzFVSsIQV8kAQpnbF0ux7hhUXxP2jv6R83LVnDO/kmPG8AOBVf9+NVsrJ5l0wRtXYGaaijx81Q7sJGiuGmz4mRGVukYKTd5TrFMg+RFApW8sg9NNDjxaf08mFMziIfSsZYMWfix3IIP1whHdjLRV+4R7Hyh62dTxLltw+giP7U2g2WIZZeb1pE6qE0eFZzU2zvapWLgtag==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <01BB5C912E1F944C867A03D3C92DBCC5@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2410884AbgJPQun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:50:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33303 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2410876AbgJPQum (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:50:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602867041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e/SbRCVepdQHgx0PPvFLUqgTx0YaGbhGi4UR5HEZ070=;
+        b=XMLHLyin1ooLHb9U7Fg6Q78KSp1IyxNG8mbIMKmLq97SYFQ5HgCWABwCVcxhshkJV2GHc+
+        xk1VrojQ2XA3n+1PhTy3KGov7GhVfUOvXH/eLF/gCSsUCyUmRSTCt1xnMnme0SjuCYN5gi
+        FXj9ko+PVqDPn0bjxRscN0d8vcQ0YpI=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-lSUJrAyUOUK7HjngvdLG5g-1; Fri, 16 Oct 2020 12:50:39 -0400
+X-MC-Unique: lSUJrAyUOUK7HjngvdLG5g-1
+Received: by mail-wr1-f72.google.com with SMTP id f11so1726784wro.15
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:50:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e/SbRCVepdQHgx0PPvFLUqgTx0YaGbhGi4UR5HEZ070=;
+        b=nImlQZi8E8GbDWu5wOqvqgBv+8o2sEDYugdDsJDbTrLx4zCKnNuAAaN7frZGx2HolA
+         34zXnR/5+ZUidPV35CaqteRcDhSFstX1OPGboIqu5CfPCxNSP9ubwb/ha+dmhwXnDZfd
+         Nd3aTWxpp2mUjBkWDcQmBaVN4GqdP5CRchqmu7fFvNHU8eCir6WJtjAQ0vf/OpO+QH8v
+         mKNzNx+E3E87qySULRNCy6ov+9g228KR4iVug8XJFAm6W4AN8kDvKmEu+1XKr4zTtLC0
+         yHEzF05zgErYww9+QR61TBk6LTlSjtMmTlPmoMp/Mzqnx5acNjx07eIKNT2QN9W51Ytu
+         X35A==
+X-Gm-Message-State: AOAM531BXoO0aqa8He/0MSYbTPWv+CqGZODDv2/lRGSmgbH6m7V1R8Ml
+        PNwseMpIu5wuA+oCbSlHpcajpyrvGG2MOx2J4tnhSTEfZ3JqOG8PsZQX65QOpRhZ4+khVt5g3C7
+        oRKXTzu43Sg1ijsUQvnvpJCe3
+X-Received: by 2002:adf:8462:: with SMTP id 89mr4838902wrf.389.1602867037701;
+        Fri, 16 Oct 2020 09:50:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrAt699f8g95/iijAhCiVcXOtOL9umsqKsfBeEXJsqDEPn8bEBcJQ5gT700mMk8p7ycuhh3Q==
+X-Received: by 2002:adf:8462:: with SMTP id 89mr4838872wrf.389.1602867037423;
+        Fri, 16 Oct 2020 09:50:37 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3? ([2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3])
+        by smtp.gmail.com with ESMTPSA id y190sm3696534wmc.27.2020.10.16.09.50.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 09:50:36 -0700 (PDT)
+Subject: Re: [PATCH v2 00/20] Introduce the TDP MMU
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20201014182700.2888246-1-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f19b7f9c-ff73-c2d2-19f9-173dc8a673c3@redhat.com>
+Date:   Fri, 16 Oct 2020 18:50:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b901356-18ec-4e6d-4aec-08d871f39315
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2020 16:50:23.0573
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iz9ByR2avXDSVJUV+fGRB/q/i9BH0Xfpic8Fb1dSYkFlS5+ZAq2QFoBWy+narTM/3jddh7riHbb1IHfHp46Gzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7343
+In-Reply-To: <20201014182700.2888246-1-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 01:43:06PM +0000, Nikolay Aleksandrov wrote:
-> It can potentially use after free, multicast resources (per-cpu stats) ar=
-e freed
-> in br_multicast_del_port() and can be used due to a race with port state
-> sync on other CPUs since the handler can still process packets. That has =
-a
-> chance of happening if vlans are not used.
+On 14/10/20 20:26, Ben Gardon wrote:
+>  arch/x86/include/asm/kvm_host.h |   14 +
+>  arch/x86/kvm/Makefile           |    3 +-
+>  arch/x86/kvm/mmu/mmu.c          |  487 +++++++------
+>  arch/x86/kvm/mmu/mmu_internal.h |  242 +++++++
+>  arch/x86/kvm/mmu/paging_tmpl.h  |    3 +-
+>  arch/x86/kvm/mmu/tdp_iter.c     |  181 +++++
+>  arch/x86/kvm/mmu/tdp_iter.h     |   60 ++
+>  arch/x86/kvm/mmu/tdp_mmu.c      | 1154 +++++++++++++++++++++++++++++++
+>  arch/x86/kvm/mmu/tdp_mmu.h      |   48 ++
+>  include/linux/kvm_host.h        |    2 +
+>  virt/kvm/kvm_main.c             |   12 +-
+>  11 files changed, 1944 insertions(+), 262 deletions(-)
+>  create mode 100644 arch/x86/kvm/mmu/tdp_iter.c
+>  create mode 100644 arch/x86/kvm/mmu/tdp_iter.h
+>  create mode 100644 arch/x86/kvm/mmu/tdp_mmu.c
+>  create mode 100644 arch/x86/kvm/mmu/tdp_mmu.h
+> 
 
-Interesting, thanks for pointing this out, I haven't observed
-use-after-free in my limited testing of this patch.
+My implementation of tdp_iter_set_spte was completely different, but
+of course that's not an issue; I would still like to understand and
+comment on why the bool arguments to __tdp_mmu_set_spte are needed.
 
-> Interesting that br_stp_disable_port() calls br_multicast_disable_port() =
-which
-> flushes all non-permanent mdb entries, so I'm guessing you have problem o=
-nly
-> with permanent ones?
+Apart from splitting tdp_mmu_iter_flush_cond_resched from
+tdp_mmu_iter_cond_resched, my remaining changes on top are pretty
+small and mostly cosmetic.  I'll give it another go next week
+and send it Linus's way if everything's all right.
 
-Indeed, I'm testing out your L2 multicast patch.
+Paolo
 
-> Perhaps we can flush them all before. Either by passing an argument to
-> br_stp_disable_port() that we're deleting the port which will be
-> passed down to br_multicast_disable_port() or by calling an additional
-> helper to flush all which can be re-used by both disable_port() and
-> stop_multicast() calls. Adding an argument to br_stp_disable_port() to
-> be passed down sounds cleaner to me. What do you think?
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index f8525c89fc95..baf260421a56 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -7,20 +7,15 @@
+ #include "tdp_mmu.h"
+ #include "spte.h"
+ 
++#ifdef CONFIG_X86_64
+ static bool __read_mostly tdp_mmu_enabled = false;
++module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
++#endif
+ 
+ static bool is_tdp_mmu_enabled(void)
+ {
+ #ifdef CONFIG_X86_64
+-	if (!READ_ONCE(tdp_mmu_enabled))
+-		return false;
+-
+-	if (WARN_ONCE(!tdp_enabled,
+-		      "Creating a VM with TDP MMU enabled requires TDP."))
+-		return false;
+-
+-	return true;
+-
++	return tdp_enabled && READ_ONCE(tdp_mmu_enabled);
+ #else
+ 	return false;
+ #endif /* CONFIG_X86_64 */
+@@ -277,8 +277,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 			unaccount_huge_nx_page(kvm, sp);
+ 
+ 		for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
+-			old_child_spte = *(pt + i);
+-			*(pt + i) = 0;
++			old_child_spte = READ_ONCE(*(pt + i));
++			WRITE_ONCE(*(pt + i), 0);
+ 			handle_changed_spte(kvm, as_id,
+ 				gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
+ 				old_child_spte, 0, level - 1);
+@@ -309,7 +309,7 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+ 	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
+ 	int as_id = kvm_mmu_page_as_id(root);
+ 
+-	*iter->sptep = new_spte;
++	WRITE_ONCE(*iter->sptep, new_spte);
+ 
+ 	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
+ 			      iter->level);
+@@ -361,16 +361,28 @@ static inline void tdp_mmu_set_spte_no_dirty_log(struct kvm *kvm,
+ 	for_each_tdp_pte(_iter, __va(_mmu->root_hpa),		\
+ 			 _mmu->shadow_root_level, _start, _end)
+ 
+-static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
++/*
++ * Flush the TLB if the process should drop kvm->mmu_lock.
++ * Return whether the caller still needs to flush the tlb.
++ */
++static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
+ {
+ 	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
+ 		kvm_flush_remote_tlbs(kvm);
+ 		cond_resched_lock(&kvm->mmu_lock);
+ 		tdp_iter_refresh_walk(iter);
++		return false;
++	} else {
+ 		return true;
+ 	}
++}
+ 
+-	return false;
++static void tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
++{
++	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
++		cond_resched_lock(&kvm->mmu_lock);
++		tdp_iter_refresh_walk(iter);
++	}
+ }
+ 
+ /*
+@@ -407,7 +419,7 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+ 
+ 		if (can_yield)
+-			flush_needed = !tdp_mmu_iter_cond_resched(kvm, &iter);
++			flush_needed = tdp_mmu_iter_flush_cond_resched(kvm, &iter);
+ 		else
+ 			flush_needed = true;
+ 	}
+@@ -479,7 +479,10 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+ 					 map_writable, !shadow_accessed_mask,
+ 					 &new_spte);
+ 
+-	tdp_mmu_set_spte(vcpu->kvm, iter, new_spte);
++	if (new_spte == iter->old_spte)
++		ret = RET_PF_SPURIOUS;
++	else
++		tdp_mmu_set_spte(vcpu->kvm, iter, new_spte);
+ 
+ 	/*
+ 	 * If the page fault was caused by a write but the page is write
+@@ -496,7 +496,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu, int write,
+ 	}
+ 
+ 	/* If a MMIO SPTE is installed, the MMIO will need to be emulated. */
+-	if (unlikely(is_mmio_spte(new_spte)))
++	else if (unlikely(is_mmio_spte(new_spte)))
+ 		ret = RET_PF_EMULATE;
+ 
+ 	trace_kvm_mmu_set_spte(iter->level, iter->gfn, iter->sptep);
+@@ -528,8 +528,10 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 	int level;
+ 	int req_level;
+ 
+-	BUG_ON(!VALID_PAGE(vcpu->arch.mmu->root_hpa));
+-	BUG_ON(!is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa));
++	if (WARN_ON(!VALID_PAGE(vcpu->arch.mmu->root_hpa)))
++		return RET_PF_ENTRY;
++	if (WARN_ON(!is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa)))
++		return RET_PF_ENTRY;
+ 
+ 	level = kvm_mmu_hugepage_adjust(vcpu, gfn, max_level, &pfn,
+ 					huge_page_disallowed, &req_level);
+@@ -579,7 +581,8 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 		}
+ 	}
+ 
+-	BUG_ON(iter.level != level);
++	if (WARN_ON(iter.level != level))
++		return RET_PF_RETRY;
+ 
+ 	ret = tdp_mmu_map_handle_target_level(vcpu, write, map_writable, &iter,
+ 					      pfn, prefault);
+@@ -817,9 +829,8 @@ bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		 */
+ 		kvm_mmu_get_root(kvm, root);
+ 
+-		spte_set = wrprot_gfn_range(kvm, root, slot->base_gfn,
+-				slot->base_gfn + slot->npages, min_level) ||
+-			   spte_set;
++		spte_set |= wrprot_gfn_range(kvm, root, slot->base_gfn,
++			     slot->base_gfn + slot->npages, min_level);
+ 
+ 		kvm_mmu_put_root(kvm, root);
+ 	}
+@@ -886,8 +897,8 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ 		 */
+ 		kvm_mmu_get_root(kvm, root);
+ 
+-		spte_set = clear_dirty_gfn_range(kvm, root, slot->base_gfn,
+-				slot->base_gfn + slot->npages) || spte_set;
++		spte_set |= clear_dirty_gfn_range(kvm, root, slot->base_gfn,
++				slot->base_gfn + slot->npages);
+ 
+ 		kvm_mmu_put_root(kvm, root);
+ 	}
+@@ -1009,8 +1020,8 @@ bool kvm_tdp_mmu_slot_set_dirty(struct kvm *kvm, struct kvm_memory_slot *slot)
+ 		 */
+ 		kvm_mmu_get_root(kvm, root);
+ 
+-		spte_set = set_dirty_gfn_range(kvm, root, slot->base_gfn,
+-				slot->base_gfn + slot->npages) || spte_set;
++		spte_set |= set_dirty_gfn_range(kvm, root, slot->base_gfn,
++				slot->base_gfn + slot->npages);
+ 
+ 		kvm_mmu_put_root(kvm, root);
+ 	}
+@@ -1042,9 +1053,9 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
+ 			continue;
+ 
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+-		spte_set = true;
+ 
+-		spte_set = !tdp_mmu_iter_cond_resched(kvm, &iter);
++		spte_set = tdp_mmu_iter_flush_cond_resched(kvm, &iter);
+ 	}
+ 
+ 	if (spte_set)
 
-That sounds a bit complicated, to be honest.
-In fact, the reason why I submitted this as RFC only is because it isn't
-solving all my problems. You know that saying "- it hurts when I do that
-- then don't do that"? I think I can just change the ocelot driver to
-stop remapping the untagged MDB entries to its pvid, and then I can drop
-all my charges to the bridge driver.=
