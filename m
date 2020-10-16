@@ -2,144 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189C3290A72
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04818290A76
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390453AbgJPRSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
+        id S1732641AbgJPRSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732580AbgJPRSI (ORCPT
+        with ESMTP id S1732571AbgJPRSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:18:08 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A595C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:08 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id h24so4255396ejg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:08 -0700 (PDT)
+        Fri, 16 Oct 2020 13:18:45 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321DEC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:44 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id b8so3828772wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n94Aye7p3JfVB9OWEVZfTsET/k6kwBnbW1NyhTebgm0=;
-        b=MXe/RlNtDcm7WmVWFKDrU32h37x7JqsxCQ0bYdYnCA8PwEMLhCFZDac8it5CjMwsj0
-         YRwzHriIDngcRdS6/ZMdt+d2U/KNGvr4TWgPvzTEWqLCeo1tQUGkKWGwkcINPz6JqX6n
-         elXBSN0v7qKAvTya4tu7H1T3//dv1GZFkj395XpcREj7uOSgac/8PWLmfm7qKEx1ZZhU
-         5Oxr52FoRFm0XrZcjXCqFh4vRriDbE18XLwtVXMAFMLXAPxW0O8GxZKpd/zozWK16nZ1
-         G3eBKVQ9uYhacdk23r4cxLPqrTN2iAqOm+zXa053vR2pxTe1jBi34ejoXIKpqTVH7kh/
-         cqkw==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QxRj1doknn/xUt9dt4A+Dfj/59qnD0jj+WzuGpoEtw8=;
+        b=OJHthVY2orfEBGnmd+zroB7jVXNM/DeKLqSGVpZ237xx+RcK4Jce1K71EzuBXxveCB
+         ntVMlr1EDOvkacSErILmcMMQ/8Nt1oC8Vl06ljz5KAqAzgzrm086j4KdS/LqFgo3XlOH
+         UIiTLYE/P9oOl0U6aivd+z0xxMLbuPEwfDFxjNINSoBeZ5AKFpWKpx2nnYuOO80jQ7Rj
+         dWzRPk3XLh3FKhAJlOHVy/+fY9t8gQuQviL02bQK1Ew8kAngA1Z2GIjFbtoVyKE8JSUj
+         RwEx4mNmjXS+DobDktwxFxVmyIcwuUCsTeVT/2MtvdjC5FWo0sFMbL2rLyV+8f0Y2qPm
+         Ry6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n94Aye7p3JfVB9OWEVZfTsET/k6kwBnbW1NyhTebgm0=;
-        b=XPpzfNu1RGEOgZBs9ZoJYVsX5xl8Ip/VeWCySUA3HGjVwxghDlpnwylZ6NSrNh9G5m
-         E1l3F7RE3r05TBG+YZY4qE8g2n6LsbGtAv0jlc5MT830rGi2mcT2S9d7o5WM/0qrPDrR
-         8j21pJPoqG+hMFA+22j81e5H+Wy7zhr/1EBHr4EagLF/VBvTFcGia2qnQsg4jndBiPiB
-         +hrWxjOlyJ6N4uKIQqkxBl+BsH2fwJ7B5OH5hW70lpOFjdtDSCL9b/Pakypq/JFD2HIj
-         DEnGcvYXFkqskdUx4QM2Nop0m+u+IBIr33ZutTxb99BQ8YLx+YCt3rmX5/5qSdyIT//A
-         DtLw==
-X-Gm-Message-State: AOAM530QdiFlMI7YYNKnnNPiK6XIt9hKmqhQjUJsfus/0fUkMo+QBBE9
-        5ojLEjVukII+GwDa0MWRB6/hy6SgEOTGD0YFVpuINQ==
-X-Google-Smtp-Source: ABdhPJyAzoyZlICBGj2MSFdlQ9NJbplP3tVCmOehRIBBsOBQBoOrZKgI5izJT0qAZTRS49+rvSI2+7/HVuRagRUNjQM=
-X-Received: by 2002:a17:906:364f:: with SMTP id r15mr4775896ejb.388.1602868685981;
- Fri, 16 Oct 2020 10:18:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QxRj1doknn/xUt9dt4A+Dfj/59qnD0jj+WzuGpoEtw8=;
+        b=Lz+jjMMVfHduXbKmTo5iN+mFBbC3+sRiro1ePcZJAOQPRTT7+FE9fWUwQLZ40VFb8E
+         PXBNFgRC3RhVm155WSbKDPMM8FXd8pwzEtbv8VXjKbukf3LUISLLTm5z1+NeBWtR0vGg
+         tHUKXNxoe1SFXgo0UF2hWXH+0OBmPtt/4pcTu1QW0xQZZu7pmq/PwcZTOsUG7EleM5BO
+         41Fqj3ktxpmrzWecTiqg+U0Rrcn3RniXK44E/IGRDJrf0SnHCHhh6DNe9DBtU7MWsl2o
+         B57yx6omu5IiL4nEQ9ti0eHx7MM/lGRx5qo+0fkk2UF4nhzYjRn3EnSACTKId+dMAruA
+         MELA==
+X-Gm-Message-State: AOAM530xj2OXsHTJx013SqK97BMbx1XzYVcT1eH4+VQtwYU0yBh4CWXF
+        LTrlatNH1RVbuq0liGXPKlWEiq6ak6nAGw==
+X-Google-Smtp-Source: ABdhPJxMMoIjZdN4eGMUPlC37fq6cmHIzrXVd95AulMRGp1cDZLxwZQQ6TAKQp45QX+vpzgJvkntmg==
+X-Received: by 2002:a05:6000:4c:: with SMTP id k12mr4887656wrx.278.1602868721280;
+        Fri, 16 Oct 2020 10:18:41 -0700 (PDT)
+Received: from localhost.localdomain (211.163.185.81.rev.sfr.net. [81.185.163.211])
+        by smtp.gmail.com with ESMTPSA id o6sm4177162wrm.69.2020.10.16.10.18.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 10:18:40 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org,
+        srinivas.kandagatla@linaro.org,
+        Fabien Parent <fparent@baylibre.com>
+Subject: [PATCH 1/2] dt-bindings: nvmem: mtk-efuse: add documentation for MT8516 SoC
+Date:   Fri, 16 Oct 2020 19:18:36 +0200
+Message-Id: <20201016171837.3261310-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201016163634.857573-1-wvw@google.com> <CAJZ5v0in0N6USFqvuLcccpirahj=oOki67+Lq9_5i_q7Ep7T6g@mail.gmail.com>
-In-Reply-To: <CAJZ5v0in0N6USFqvuLcccpirahj=oOki67+Lq9_5i_q7Ep7T6g@mail.gmail.com>
-From:   Wei Wang <wvw@google.com>
-Date:   Fri, 16 Oct 2020 10:17:54 -0700
-Message-ID: <CAGXk5yq_xcHYizG_z+FV14ieWya-4qeyVFz1gQZ9_gbJxUcQqg@mail.gmail.com>
-Subject: Re: [PATCH] sched: cpufreq_schedutil: maintain raw cache when next_f
- is not changed
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Wei Wang <wei.vince.wang@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Quentin Perret <qperret@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 10:01 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Fri, Oct 16, 2020 at 6:36 PM Wei Wang <wvw@google.com> wrote:
-> >
-> > Currently, raw cache will be reset when next_f is changed after
-> > get_next_freq for correctness. However, it may introduce more
-> > cycles. This patch changes it to maintain the cached value instead of
-> > dropping it.
->
-> IMV you need to be more specific about why this helps.
->
+Add binding documentation for MT8516 SoCs.
 
-I think the idea of cached_raw_freq is to reduce the chance of calling
-cpufreq drivers (in some arch those may be costly) but sometimes the
-cache will be wiped for correctness. The purpose of this patch is to
-still keep the cached value instead of wiping them.
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+ Documentation/devicetree/bindings/nvmem/mtk-efuse.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-thx
-wvw
+diff --git a/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt b/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt
+index 0668c45a156d..ef93c3b95424 100644
+--- a/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt
++++ b/Documentation/devicetree/bindings/nvmem/mtk-efuse.txt
+@@ -7,6 +7,7 @@ Required properties:
+ 	      "mediatek,mt7622-efuse", "mediatek,efuse": for MT7622
+ 	      "mediatek,mt7623-efuse", "mediatek,efuse": for MT7623
+ 	      "mediatek,mt8173-efuse" or "mediatek,efuse": for MT8173
++	      "mediatek,mt8516-efuse", "mediatek,efuse": for MT8516
+ - reg: Should contain registers location and length
+ 
+ = Data cells =
+-- 
+2.28.0
 
-
->
-> > This is adapted from https://android-review.googlesource.com/1352810/
-> >
-> > Signed-off-by: Wei Wang <wvw@google.com>
-> > ---
-> >  kernel/sched/cpufreq_schedutil.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 5ae7b4e6e8d6..ae3ae7fcd027 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -31,6 +31,7 @@ struct sugov_policy {
-> >         s64                     freq_update_delay_ns;
-> >         unsigned int            next_freq;
-> >         unsigned int            cached_raw_freq;
-> > +       unsigned int            prev_cached_raw_freq;
-> >
-> >         /* The next fields are only needed if fast switch cannot be used: */
-> >         struct                  irq_work irq_work;
-> > @@ -165,6 +166,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
-> >                 return sg_policy->next_freq;
-> >
-> >         sg_policy->need_freq_update = false;
-> > +       sg_policy->prev_cached_raw_freq = sg_policy->cached_raw_freq;
-> >         sg_policy->cached_raw_freq = freq;
-> >         return cpufreq_driver_resolve_freq(policy, freq);
-> >  }
-> > @@ -464,8 +466,8 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
-> >         if (busy && next_f < sg_policy->next_freq) {
-> >                 next_f = sg_policy->next_freq;
-> >
-> > -               /* Reset cached freq as next_freq has changed */
-> > -               sg_policy->cached_raw_freq = 0;
-> > +               /* Restore cached freq as next_freq has changed */
-> > +               sg_policy->cached_raw_freq = sg_policy->prev_cached_raw_freq;
-> >         }
-> >
-> >         /*
-> > @@ -828,6 +830,7 @@ static int sugov_start(struct cpufreq_policy *policy)
-> >         sg_policy->limits_changed               = false;
-> >         sg_policy->need_freq_update             = false;
-> >         sg_policy->cached_raw_freq              = 0;
-> > +       sg_policy->prev_cached_raw_freq         = 0;
-> >
-> >         for_each_cpu(cpu, policy->cpus) {
-> >                 struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
-> > --
-> > 2.29.0.rc1.297.gfa9743e501-goog
-> >
