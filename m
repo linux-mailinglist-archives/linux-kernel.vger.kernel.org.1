@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539D9290390
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5B8290393
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395544AbgJPKyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 06:54:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46364 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2395536AbgJPKyX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 06:54:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602845662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z9HCeHX+Y5YHXx5lFh8SFKBrNHGin0lf0jgV0vHxv1s=;
-        b=J86GaWMX0kXkSTt+LP0pdm1zO5PyUMUSwXeMwwkm2z1v9Dad0hh8hxPs47zTpBLjmaHzqh
-        ieNqB9XCCbW79HSw9wPZcnU3W4r5w2aqECOkzpDgbtzsUi3C2xTq/JGryqjYazEPop2OC6
-        o6RIGD2JGlw4T3Xj24qxk3ONPX+rdWY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-tpYhCG20MMOEkAV_4Slg5g-1; Fri, 16 Oct 2020 06:54:20 -0400
-X-MC-Unique: tpYhCG20MMOEkAV_4Slg5g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCCF16409B;
-        Fri, 16 Oct 2020 10:54:18 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.149])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7F7A21972B;
-        Fri, 16 Oct 2020 10:54:17 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 16 Oct 2020 12:54:18 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 12:54:16 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, peterz@infradead.org
-Subject: Re: [PATCH 4/5] x86: wire up TIF_NOTIFY_SIGNAL
-Message-ID: <20201016105415.GA21989@redhat.com>
-References: <20201015131701.511523-1-axboe@kernel.dk>
- <20201015131701.511523-5-axboe@kernel.dk>
- <87o8l3a8af.fsf@nanos.tec.linutronix.de>
- <20201015143409.GC24156@redhat.com>
- <87y2k6trzr.fsf@nanos.tec.linutronix.de>
+        id S2395561AbgJPK43 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Oct 2020 06:56:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35088 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395510AbgJPK42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 06:56:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CD1D7AF2C;
+        Fri, 16 Oct 2020 10:56:26 +0000 (UTC)
+Date:   Fri, 16 Oct 2020 12:56:25 +0200
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     linux-fbdev@vger.kernel.org, arnd@arndb.de,
+        b.zolnierkie@samsung.com, jani.nikula@intel.com,
+        daniel.vetter@ffwll.ch, gustavoars@kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] video: fbdev: sh_mobile_lcdcfb: Remove redundant null
+ check before clk_prepare_enable/clk_disable_unprepare
+Message-ID: <20201016125625.7d2b5bd7@linux-uq9g>
+In-Reply-To: <20201015101015.6dbd25ce@linux-uq9g>
+References: <20201014085722.26069-1-vulab@iscas.ac.cn>
+        <20201015101015.6dbd25ce@linux-uq9g>
+Organization: SUSE Software Solutions Germany GmbH
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y2k6trzr.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16, Thomas Gleixner wrote:
->
-> On Thu, Oct 15 2020 at 16:34, Oleg Nesterov wrote:
-> > On 10/15, Thomas Gleixner wrote:
-> >> Instead of adding this to every architectures signal magic, we can
-> >> handle TIF_NOTIFY_SIGNAL in the core code:
-> >>
-> >> static void handle_singal_work(ti_work, regs)
-> >> {
-> >> 	if (ti_work & _TIF_NOTIFY_SIGNAL)
-> >>         	tracehook_notify_signal();
-> >>
-> >>         arch_do_signal(ti_work, regs);
-> >> }
-> >>
-> >>       loop {
-> >>       		if (ti_work & (SIGPENDING | NOTIFY_SIGNAL))
-> >>                 	handle_signal_work(ti_work, regs);
-> >>       }
-> >
-> > To me this looks like unnecessary complication. We need to change
-> > every architecture anyway, how can this helper help?
->
-> This is about the generic entry code. For the users of that it makes
-> absolutely no sense to have that in architecture code.
->
-> Something which every architecture needs to do in the exactly same way
-> goes into the common code. If not, you can spare the exercise of having
-> common code in the first place.
->
-> Also arch_do_signal() becomes a misnomer with this new magic.
+On Thu, 15 Oct 2020 10:10:15 +0200 Thomas Zimmermann <tzimmermann@suse.de>
+wrote:
 
-Well, to me arch_do_signal() paths should handle the signal_pending() == T
-case.
+> On Wed, 14 Oct 2020 08:57:22 +0000 Xu Wang <vulab@iscas.ac.cn> wrote:
+> 
+> > Because clk_prepare_enable() and clk_disable_unprepare() already checked
+> > NULL clock parameter, so the additional checks are unnecessary, just
+> > remove them.
+> > 
+> > Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> 
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+> 
 
-But I won't argue, this is subjective.
+Merged into drm-misc-next. Thanks!
 
-> static void handle_signal_work(ti_work, regs)
-> {
-> 	if (ti_work & _TIF_NOTIFY_SIGNAL)
->         	tracehook_notify_signal();
->
->         arch_do_signal_or_restart(ti_work, regs);
-> }
->
-> which makes it entirely clear what this is about.
+> > ---
+> >  drivers/video/fbdev/sh_mobile_lcdcfb.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/video/fbdev/sh_mobile_lcdcfb.c
+> > b/drivers/video/fbdev/sh_mobile_lcdcfb.c index c1043420dbd3..c0952cc96bdb
+> > 100644 --- a/drivers/video/fbdev/sh_mobile_lcdcfb.c
+> > +++ b/drivers/video/fbdev/sh_mobile_lcdcfb.c
+> > @@ -341,8 +341,7 @@ static void lcdc_wait_bit(struct sh_mobile_lcdc_priv
+> > *priv, static void sh_mobile_lcdc_clk_on(struct sh_mobile_lcdc_priv *priv)
+> >  {
+> >  	if (atomic_inc_and_test(&priv->hw_usecnt)) {
+> > -		if (priv->dot_clk)
+> > -			clk_prepare_enable(priv->dot_clk);
+> > +		clk_prepare_enable(priv->dot_clk);
+> >  		pm_runtime_get_sync(priv->dev);
+> >  	}
+> >  }
+> > @@ -351,8 +350,7 @@ static void sh_mobile_lcdc_clk_off(struct
+> > sh_mobile_lcdc_priv *priv) {
+> >  	if (atomic_sub_return(1, &priv->hw_usecnt) == -1) {
+> >  		pm_runtime_put(priv->dev);
+> > -		if (priv->dot_clk)
+> > -			clk_disable_unprepare(priv->dot_clk);
+> > +		clk_disable_unprepare(priv->dot_clk);
+> >  	}
+> >  }
+> >  
+> 
+> 
+> 
 
-In this case I'd prefer to pass the "(ti_work & _TIF_SIGPENDING)" boolen
-to arch_do_signal_or_restart().
 
-But again, I won't argue. And to remind, we do not really need to touch
-arch_do_signal() at all. We can just add
 
-	if (test_thread_flag(TIF_NOTIFY_SIGNAL))
-		tracehook_notify_signal();
-
-	if (!task_sigpending(current))
-		return 0;
-
-at the start of get_signal() and avoid the code duplication automatically.
-
-Oleg.
-
+-- 
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
