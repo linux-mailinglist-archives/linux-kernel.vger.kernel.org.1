@@ -2,101 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284212908CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE372908C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410426AbgJPPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:46:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
+        id S2436481AbgJPPpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410407AbgJPPpx (ORCPT
+        with ESMTP id S2410386AbgJPPpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:45:53 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86102C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:45:52 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id h2so1476494pll.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:45:52 -0700 (PDT)
+        Fri, 16 Oct 2020 11:45:54 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A53C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:45:53 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id j8so1733029pjy.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qYbQaDMfS+fMZq0SRvCKUeB9Qm+Ttaw/Z4j/8qnPYOE=;
-        b=1s+Gq/VoGaNBXHCyTy3bIT3PcIMErPRCTXabyg86Jme4mJeO9Lc49fjNgMUDaPChO2
-         G1RJePs8H7z5f444uk+/xlJpDeHbLbiXk7gthvRaa69vJGi32Kj88/HGJd9KNFwr2SlD
-         KSFSQBEB1FIhSeXR2jtNkA8VKSfj5R9/AmAlfFd5GWn28p0hR8UBr/zWbJSsk9LDef/3
-         MsvvCxVwftCgfRFh2LpJJlqguLWGQgSCdvTzZebQpoh2kp3TUcv/TcoNPQHk5F9LMX50
-         WtI4G1pLMyaKVlizw/mFkzp2g7/QMideKKoaTuRgV4vqgdJfvijiKkGE3e1q/c3QW3s3
-         cB0g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0Yi4RdQAQ9dBaZZwuzCkTRlRDNjzOUHCMcuRAr32RQg=;
+        b=H45/etki4hZeM2JIyzBC/PYY2ozk4AVJyokSoVRhZnpWa9yLbziqFsHXcA7UieOrYt
+         2dkAFwVxXNtUr6PprN9vKyWLEcCugvWub+nCScnnKm7a8vC0lyYUdPB6RzufqlKckxSO
+         rQzjIcmO0zIRsJCetRXkCGa9TkatnfwbTv+KMi0mvrFvoS4yZQkUJiYBwm0o6EjE5nL+
+         /0OPYG3+pkYJX6tOdPaUsSaM2vx0R91Q3rt0M6p8uea0KjClpqYowGNvAzuENgQlquoB
+         tL3wyxLntBrWQQnXZm0eouaz/tJb6P3oiwh4jbHFyHru1oQpHGizs/b/p+e105gvP3wh
+         dvfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qYbQaDMfS+fMZq0SRvCKUeB9Qm+Ttaw/Z4j/8qnPYOE=;
-        b=jzYBaR0t3zuncoJmCeLjGRAXrnHrymQX5GaOwOTN/LPxH1v8Yc6VK2r88O1d62fNDK
-         qCPZqDaaItcGYZTzw1jWSVJw/66TGrI4R1Sx8dmT37HP21glcbl4kbdq7IK1h8fQDapZ
-         VYEaEmftOPGkQkxXt0ZIPZGDzGlHiPmrP2FrdQ6y+skp4is8jc8HF1gBP8wXJhhYA5j9
-         NLkFNNMl3PiykkJTqX03fKwKUwj8lAIMboJw9eqKQ5RKTMaoxySLvZThe3aw29IM5LYM
-         rVjRYTfM4IrrwXFtFFiExOerV7EgyO5IThrutvB2HbPdPvC9LGqi8H0R0Fyqq6zkbZxe
-         ieCQ==
-X-Gm-Message-State: AOAM530r79aKNq/iPKPMGxC7w+SRBMmCgNShC4QCnTn18Kk+Hlzatp1b
-        V5IZqzs0E2Tzell4BG+qSOGDXMi2Cyk07Tgj
-X-Google-Smtp-Source: ABdhPJwvF9FFrNcgFujKeZXR0opNZ/gKUbtuMLnGZMVFx3YChFqPX9AngahOT8+4q30PcCWhZDlfYw==
-X-Received: by 2002:a17:902:ec02:b029:d1:fc2b:fe95 with SMTP id l2-20020a170902ec02b02900d1fc2bfe95mr4839637pld.79.1602863151729;
-        Fri, 16 Oct 2020 08:45:51 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0Yi4RdQAQ9dBaZZwuzCkTRlRDNjzOUHCMcuRAr32RQg=;
+        b=Xspr2urUvU3w4uZj2hz/t+Kd0oGFkEIERY+CqpzlgqnEFsiXl5+7zg5qs6b6gfKqah
+         xU7qGfPlqjNahGpsXNMVBXvKCwkK2dRI5DS15KB2oZhfGCI86w5nC431qyC9oz2jmSQP
+         8BOuz8ML09FMDgyyxOZZ7+8NnioRJeHKfqLBDo/jeDp6klCfR12+hevVKgRpwt8N4Olf
+         zVt7hlAzz5Tmrl0D1s1nbrHfn20QuFYVQlvoJLyA3MvyUQxrsCA5J331NsdzIwlG7B6j
+         B5ZQsQuQ6tjrOE+YHi6agPwbkzDBuSUPLfP6bDp+pNVij9nF5EtnSGMAdDNHepcQWPMn
+         3/ww==
+X-Gm-Message-State: AOAM532Nsp7X+VEaRSJnxi9vBa0bdEDPS+AkmF1Urm/l4Z9eXKixm/oI
+        xLPTxUu+g4ZxF120bkHGAqGG1c/9ZLih0wal
+X-Google-Smtp-Source: ABdhPJzObwnGqH10n5NLOaQTS3HvykhrIDo04qbSwdLgxphTGD4JShDH4QbSQGIbktklqBZCKlsWeA==
+X-Received: by 2002:a17:902:bf41:b029:d5:c01a:4f4f with SMTP id u1-20020a170902bf41b02900d5c01a4f4fmr4677225pls.14.1602863153142;
+        Fri, 16 Oct 2020 08:45:53 -0700 (PDT)
 Received: from p1.localdomain ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id s11sm3346194pjz.29.2020.10.16.08.45.50
+        by smtp.gmail.com with ESMTPSA id s11sm3346194pjz.29.2020.10.16.08.45.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:45:51 -0700 (PDT)
+        Fri, 16 Oct 2020 08:45:52 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
 To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de
-Subject: [PATCHSET v6] Add support for TIF_NOTIFY_SIGNAL
-Date:   Fri, 16 Oct 2020 09:45:43 -0600
-Message-Id: <20201016154547.1573096-1-axboe@kernel.dk>
+Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 1/4] kernel: add task_sigpending() helper
+Date:   Fri, 16 Oct 2020 09:45:44 -0600
+Message-Id: <20201016154547.1573096-2-axboe@kernel.dk>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201016154547.1573096-1-axboe@kernel.dk>
+References: <20201016154547.1573096-1-axboe@kernel.dk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This is in preparation for maintaining signal_pending() as the decider
+of whether or not a schedule() loop should be broken, or continue
+sleeping. This is different than the core signal use cases, where we
+really want to know if an actual signal is pending or not.
+task_sigpending() returns non-zero if TIF_SIGPENDING is set.
 
-The goal is this patch series is to decouple TWA_SIGNAL based task_work
-from real signals and signal delivery. The motivation is speeding up
-TWA_SIGNAL based task_work, particularly for threaded setups where
-->sighand is shared across threads. See the last patch for numbers.
+Only core kernel use cases should care about the distinction between
+the two, make sure those use the task_sigpending() helper.
 
-Cleanups in this series, see changelog. But the arch and cleanup
-series that goes after this series is much simpler now that we handle
-TIF_NOTIFY_SIGNAL generically for !CONFIG_GENERIC_ENTRY.
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ include/linux/sched/signal.h | 9 +++++++--
+ kernel/events/uprobes.c      | 2 +-
+ kernel/signal.c              | 8 ++++----
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
-
-Changes since v5:
-- Don't make TIF_NOTIFY_SIGNAL dependent on CONFIG_GENERIC_ENTRY
-- Handle TIF_NOTIFY_SIGNAL in get_signal() for !CONFIG_GENERIC_ENTRY
-- Add handle_signal_work(), and change arch_do_signal() to
-  arch_do_signal_or_restart() and pass in a 'has_signal' bool for that
-- Dropped TIF_NOTIFY_RESUME patch from this series, sent out
-  separately.
-
-
- arch/x86/include/asm/thread_info.h |  2 ++
- arch/x86/kernel/signal.c           |  4 +--
- include/linux/entry-common.h       | 11 +++++---
- include/linux/entry-kvm.h          |  4 +--
- include/linux/sched/signal.h       | 20 ++++++++++++---
- include/linux/tracehook.h          | 27 ++++++++++++++++++++
- kernel/entry/common.c              | 14 +++++++---
- kernel/entry/kvm.c                 |  3 +++
- kernel/events/uprobes.c            |  2 +-
- kernel/signal.c                    | 22 +++++++++++++---
- kernel/task_work.c                 | 41 +++++++++++++++++++++---------
- 11 files changed, 120 insertions(+), 30 deletions(-)
-
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 1bad18a1d8ba..404145dc536e 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -353,11 +353,16 @@ static inline int restart_syscall(void)
+ 	return -ERESTARTNOINTR;
+ }
+ 
+-static inline int signal_pending(struct task_struct *p)
++static inline int task_sigpending(struct task_struct *p)
+ {
+ 	return unlikely(test_tsk_thread_flag(p,TIF_SIGPENDING));
+ }
+ 
++static inline int signal_pending(struct task_struct *p)
++{
++	return task_sigpending(p);
++}
++
+ static inline int __fatal_signal_pending(struct task_struct *p)
+ {
+ 	return unlikely(sigismember(&p->pending.signal, SIGKILL));
+@@ -365,7 +370,7 @@ static inline int __fatal_signal_pending(struct task_struct *p)
+ 
+ static inline int fatal_signal_pending(struct task_struct *p)
+ {
+-	return signal_pending(p) && __fatal_signal_pending(p);
++	return task_sigpending(p) && __fatal_signal_pending(p);
+ }
+ 
+ static inline int signal_pending_state(long state, struct task_struct *p)
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 0e18aaf23a7b..8bb26a338e06 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1973,7 +1973,7 @@ bool uprobe_deny_signal(void)
+ 
+ 	WARN_ON_ONCE(utask->state != UTASK_SSTEP);
+ 
+-	if (signal_pending(t)) {
++	if (task_sigpending(t)) {
+ 		spin_lock_irq(&t->sighand->siglock);
+ 		clear_tsk_thread_flag(t, TIF_SIGPENDING);
+ 		spin_unlock_irq(&t->sighand->siglock);
+diff --git a/kernel/signal.c b/kernel/signal.c
+index a38b3edc6851..9f86246a8637 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -983,7 +983,7 @@ static inline bool wants_signal(int sig, struct task_struct *p)
+ 	if (task_is_stopped_or_traced(p))
+ 		return false;
+ 
+-	return task_curr(p) || !signal_pending(p);
++	return task_curr(p) || !task_sigpending(p);
+ }
+ 
+ static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+@@ -2822,7 +2822,7 @@ static void retarget_shared_pending(struct task_struct *tsk, sigset_t *which)
+ 		/* Remove the signals this thread can handle. */
+ 		sigandsets(&retarget, &retarget, &t->blocked);
+ 
+-		if (!signal_pending(t))
++		if (!task_sigpending(t))
+ 			signal_wake_up(t, 0);
+ 
+ 		if (sigisemptyset(&retarget))
+@@ -2856,7 +2856,7 @@ void exit_signals(struct task_struct *tsk)
+ 
+ 	cgroup_threadgroup_change_end(tsk);
+ 
+-	if (!signal_pending(tsk))
++	if (!task_sigpending(tsk))
+ 		goto out;
+ 
+ 	unblocked = tsk->blocked;
+@@ -2900,7 +2900,7 @@ long do_no_restart_syscall(struct restart_block *param)
+ 
+ static void __set_task_blocked(struct task_struct *tsk, const sigset_t *newset)
+ {
+-	if (signal_pending(tsk) && !thread_group_empty(tsk)) {
++	if (task_sigpending(tsk) && !thread_group_empty(tsk)) {
+ 		sigset_t newblocked;
+ 		/* A set of now blocked but previously unblocked signals. */
+ 		sigandnsets(&newblocked, newset, &current->blocked);
 -- 
-Jens Axboe
-
-
+2.28.0
 
