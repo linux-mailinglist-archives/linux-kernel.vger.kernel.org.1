@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5403A290DFD
+	by mail.lfdr.de (Postfix) with ESMTP id C1366290DFE
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409056AbgJPXJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50260 "EHLO
+        id S2409430AbgJPXJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:09:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407671AbgJPXJp (ORCPT
+        with ESMTP id S2408340AbgJPXJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:09:45 -0400
+        Fri, 16 Oct 2020 19:09:48 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE70C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:44 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s9so4847654wro.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192F3C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:46 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id n6so4822058wrm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:09:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=J4AQ8wqNpjVt1ykz0FMlQ/Hn0cAH4pxEjRmJmEVEXzM=;
-        b=rClZn7/P2brEcbJ17hk3v5Ov20ONpnJc3N7mscK6TVtzEI4C2dZVcNCjb2UbK3GcrH
-         KOrmC+GfSAgf5CBO5WNij6aH3a293buv1EwV41bQyMSXwzh3MJn0iVkBEv+G7SWWNczj
-         vtzPCkqVAbbr0bjfD35ZzQpr1Lgn5CWWWEo3YXHFLlZ8tkf99ubo03jvazvBLhHOC1xP
-         8gQ+Xx3eR9NO0/YTyQOT7IdV6mTksrXqZTCaWg2l4hqnPa7E/QS3IEX9eLUnc7yluLWQ
-         xj88YsUnFOCQpCiwuPuGMsh2AevEdExmakr+DPQ/A9NSXLpx5p+Kxfi/o7cfTQtApJEc
-         NN4w==
+        bh=ZqE9YT9elxKHcuMev0eqxdSAa29MOpdvFBgbgr/Dw4c=;
+        b=LhDuPgReRaskA4lZJUuE4meGMw+AgSOBWcN0nqcL7KFy86acDGi8um3oRgd5CDOyyW
+         bJFG22PeRLjTWFTU0ukD0tLvCbDgdbDFYPyGitxBgX1xKbXiv598o0EuHa9yELSghqKw
+         VA4T4kdrHVqd88Cs852iMYBnFRMpkx301IXdoi39KfAj+zcBhsCDBtvTEc8dT3mQEW7T
+         7cylEg7GMWupAk7aZgn16x9jAZeU8zBSiMABrBnBpXTYtig7uF8ZJ7QptnUymL6udJDm
+         sSK7gfMVEBYedaoF17S5Y2Kt1jq2Ee3Ymywe0au8W2vWFh7Kb2xhY8Sfp9vAdq5IO04Z
+         rTDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=J4AQ8wqNpjVt1ykz0FMlQ/Hn0cAH4pxEjRmJmEVEXzM=;
-        b=YGKtQRkx/zqicM6sF3isrdzLrkPwCQqGsFt/dZZWZv+ID7e+gg1rv3m+Oozd59cSVU
-         Lu8sopGuLoY1nUcg3GxDt0xQTkbxPD7gTn6xVQ47hl60ethD5d/3wKRPyke+z+zTJhXP
-         7qHAqtegU77kYbVdi2TEp0bcRcBNtRvD35I8ApHzZmm15WN4v01bzOBbaxkByhmXaO8I
-         xbiif+w6NApgCxWe/4BKBwepMfk3vBiaVKZ9zg7d3jx4rCwQdnDwCKNOwEn6GpbLTteL
-         m6n4WiFTrXWDlyXSbGmm2m2Uq+6eUMaaVQMWZM5q8krGyTgpkhyCGZ/20Vi9Fp6tZh93
-         houA==
-X-Gm-Message-State: AOAM530fhKueHOWAl9tH1s0a+PzNBoGncJw65Wc5AyDGgM/fvaO6DogB
-        RSM3XQiB4NLZXjQbMGG4QGGDYQ==
-X-Google-Smtp-Source: ABdhPJzEacUrzZyN0193KfsbDyP+Nq2E/fuEoba3R3HJmfpoAO6isYjIW2vwr6uW3TdeSSNG7cYQgg==
-X-Received: by 2002:adf:e6c4:: with SMTP id y4mr6904873wrm.423.1602889783182;
-        Fri, 16 Oct 2020 16:09:43 -0700 (PDT)
+        bh=ZqE9YT9elxKHcuMev0eqxdSAa29MOpdvFBgbgr/Dw4c=;
+        b=rDAFlsBL9gnhueEfUlhHVK0gLMWaqL5W2jE+A+dp5Bt2JoYAcwpf8jg9SisjfkWfWS
+         5B756Qma4hF669FApJmMYP0X8W+Ux2vKdWBMMw5/0SbloTBJh+OMVnvBpoJ5HyZbOmLv
+         XWrNz7E6EHc2V6pFyWS3G0LApubsil2mqop3CbcCcAcbxeEvN+BG84bNzScgKsit1rei
+         rhM8fSMGAW6t2xjtGQuLU7g9Tu2EHW3v6/SYyloYEN15qCB4jaghvoDatXibH1wkKsK4
+         ayecmW+QM7e0YkvrJE24w1J0czbVNgPtUuVcE5AcMTSpBDJiER7umedyG0Ivw41lj4uI
+         APqw==
+X-Gm-Message-State: AOAM531hmw7StzltALHAvs/1FegldrgJnhNMaxTelPYd0QJDJQqAZL3a
+        +flsGEN5bUBDi3RR4fNIYKGReA==
+X-Google-Smtp-Source: ABdhPJxhjUYQmLunbOMgkbnTqMUJ/Am0yPCMEVT4RqDmKWTqbn4mCWM3hyiVNo2TJIXie6ukzbX0NA==
+X-Received: by 2002:a5d:4b49:: with SMTP id w9mr7015093wrs.41.1602889784661;
+        Fri, 16 Oct 2020 16:09:44 -0700 (PDT)
 Received: from localhost ([2a02:168:96c5:1:55ed:514f:6ad7:5bcc])
-        by smtp.gmail.com with ESMTPSA id q6sm4718202wma.0.2020.10.16.16.09.42
+        by smtp.gmail.com with ESMTPSA id v17sm6144214wrc.23.2020.10.16.16.09.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 16:09:42 -0700 (PDT)
+        Fri, 16 Oct 2020 16:09:44 -0700 (PDT)
 From:   Jann Horn <jannh@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Eric Biederman <ebiederm@xmission.com>,
@@ -55,9 +55,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
 Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
         Kees Cook <keescook@chromium.org>,
         Ingo Molnar <mingo@kernel.org>
-Subject: [RFC PATCH resend 4/6] mm, oom: Use mm_ref()/mm_unref() and avoid mmdrop_async()
-Date:   Sat, 17 Oct 2020 01:09:13 +0200
-Message-Id: <20201016230915.1972840-5-jannh@google.com>
+Subject: [RFC PATCH resend 5/6] ptrace: Use mm_ref() for ->exit_mm
+Date:   Sat, 17 Oct 2020 01:09:14 +0200
+Message-Id: <20201016230915.1972840-6-jannh@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201016230915.1972840-1-jannh@google.com>
 References: <20201016230915.1972840-1-jannh@google.com>
@@ -67,52 +67,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OOM killer uses MMF_OOM_SKIP to avoid running on an mm that has started
-__mmput(); it only uses the mmgrab() reference to ensure that the mm_struct
-itself stays alive.
-
-This means that we don't need a full mmgrab() reference, which will keep
-the pgd (and potentially also some pmd pages) alive and can't be cleaned up
-from RCU callback context; we can use an mm_ref() reference instead.
+We only use ->exit_mm to look up dumpability and the ->user_mm; we don't
+need to keep the PGD alive for this.
+mmgrab() is also inconvenient here, because it means that we need to use
+mmdrop_async() when dropping the reference to the mm from an RCU callback.
+Use mm_ref() instead of mmgrab() to make things neater.
 
 Signed-off-by: Jann Horn <jannh@google.com>
 ---
- kernel/fork.c | 6 +-----
- mm/oom_kill.c | 2 +-
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ kernel/exit.c | 2 +-
+ kernel/fork.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 97253ef33486..03ba6d13ef1e 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -476,7 +476,7 @@ static void exit_mm(void)
+ 	/* more a memory barrier than a real lock */
+ 	task_lock(current);
+ 	current->mm =3D NULL;
+-	mmgrab(mm); /* for current->exit_mm */
++	mm_ref(mm); /* for current->exit_mm */
+ 	current->exit_mm =3D mm;
+ 	mmap_read_unlock(mm);
+ 	enter_lazy_tlb(mm, current);
 diff --git a/kernel/fork.c b/kernel/fork.c
-index fcdd1ace79e4..59c119b03351 100644
+index 59c119b03351..4383bf055b40 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -686,12 +686,8 @@ static inline void free_signal_struct(struct signal_st=
-ruct *sig)
- {
- 	taskstats_tgid_free(sig);
- 	sched_autogroup_exit(sig);
--	/*
--	 * __mmdrop is not safe to call from softirq context on x86 due to
--	 * pgd_dtor so postpone it to the async context
--	 */
- 	if (sig->oom_mm)
--		mmdrop_async(sig->oom_mm);
-+		mm_unref(sig->oom_mm);
- 	kmem_cache_free(signal_cachep, sig);
+@@ -720,7 +720,7 @@ void free_task(struct task_struct *tsk)
+ 	if (tsk->flags & PF_KTHREAD)
+ 		free_kthread_struct(tsk);
+ 	if (tsk->exit_mm)
+-		mmdrop_async(tsk->exit_mm);
++		mm_unref(tsk->exit_mm);
+ 	free_task_struct(tsk);
  }
-=20
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index e90f25d6385d..12967f54fbcf 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -704,7 +704,7 @@ static void mark_oom_victim(struct task_struct *tsk)
-=20
- 	/* oom_mm is bound to the signal struct life time. */
- 	if (!cmpxchg(&tsk->signal->oom_mm, NULL, mm)) {
--		mmgrab(tsk->signal->oom_mm);
-+		mm_ref(tsk->signal->oom_mm);
- 		set_bit(MMF_OOM_VICTIM, &mm->flags);
- 	}
-=20
+ EXPORT_SYMBOL(free_task);
 --=20
 2.29.0.rc1.297.gfa9743e501-goog
 
