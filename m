@@ -2,129 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7347E29065B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7577129065E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408095AbgJPNcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408074AbgJPNcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:32:00 -0400
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D433E21527;
-        Fri, 16 Oct 2020 13:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602855120;
-        bh=jHgolZn+yVwazInZpUXsUIXLz+WFq+LCgt1cjWpEkcA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uI2me769AwM75eyyDkh95DsmJO9h6Qvu8z0Ayc7beFMa6u/y6sPTX58dfz9663RqB
-         2zP0XAvHzdeE75ZAtl270HHG5NqWq89oDsrxpoLa+652g3AM6k+qlqenzQba0AHyAX
-         Fk5C7pqNZ14YtAy/k6zL/cWuHXg3qD5gkOKP2phA=
-Received: by mail-oi1-f181.google.com with SMTP id 16so2411031oix.9;
-        Fri, 16 Oct 2020 06:31:59 -0700 (PDT)
-X-Gm-Message-State: AOAM531+LIxpTqrMmcL/XbCzmpoGptAhH0QLmFIKyG8bSoLXt/8YLBoH
-        MuYoHrJzKLiIuTsl5v29o+6kFpt6Qw74P+kGgQ==
-X-Google-Smtp-Source: ABdhPJxDzoh5TQYux51VfrCvIKr2H0fC6EMtKmXq9osyCrsQpVXMppGQGpG8GNPS7dXZ2wVY+84RyeI4fqmJDgomP0U=
-X-Received: by 2002:a54:4f89:: with SMTP id g9mr2514377oiy.106.1602855119044;
- Fri, 16 Oct 2020 06:31:59 -0700 (PDT)
+        id S2408115AbgJPNdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407424AbgJPNdU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 09:33:20 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529C6C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:33:19 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id j18so1534440pfa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:33:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XId5jF20WoJucd7UO/O4pOGAuuKjSwAQsDiyHWbeAK0=;
+        b=0bNM9NwPbtFkSdLDBoUo/aM0G5yRT9dB58kuUATJYEA+QUGkwEChc5rGMnj64wNBfN
+         e6ZW+CZTl+f4EA4jFl46ZxGdOQaROglNJPCMalxHq/XvwbbsniMMPPk2CcjnHRKOBbF+
+         T95R6sXAf+6TchEmAak4fWzVqSVxJYCNeBocnyg25iU+Xs9hG5tTcE5Fhuxk3yTo9ISH
+         Oy88F3tdBPv9XbUX9xyWTIDl/8RYO+DbXeetRLvmveStTW/E7E5a6vAnsXPZPmxaydb3
+         TluEKL8e+zjdrtKGRH+X2Zt2Nfp8Aub80XUqOr4HZqQcC7r7InD6Gz8oRYsevTkzBLy8
+         f1xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XId5jF20WoJucd7UO/O4pOGAuuKjSwAQsDiyHWbeAK0=;
+        b=XWfCTD3XA+kB7slET8IHIcq//46JgFOWh6tkB93QnhTdi6H3BlZYbRvkjlpXF3Njjv
+         sC4g8utLG2nwg9/0wdVpuA6rC8Xlin7UQL8ChXCpUQ0/c5XzKgJnz6LO+J0f5sUNMTGz
+         L6N0/OT+VD/IEI8T/wWYJvbnElJgAeof548YLZIH6a0qtzGiqVf5E5BOnPnD92U5YCD4
+         gfRp+Kclf4k0YO0063Ui9i00O5UX6LgCe8CHQBbqDYll6RsPq7NvF2AkK3roxl6e9GhB
+         uA6j/0+WOavLRxaAfa+fOgYarb3jzhOlp17YW2DiO879gLkcS8Dq+vihC/W3owN8CSFi
+         9ZTQ==
+X-Gm-Message-State: AOAM531mOgzmoqrQYjaYzVIW4/vRTv/UAWNyS3XXubpESeAwELXXnbP4
+        Wi3pT9vYrMUOal32wgd0T6CHqA==
+X-Google-Smtp-Source: ABdhPJyKqfI5qKnih+7nbP6TbkIQesNEOH+MdKaLZsEubZNXQk/tyXddMMNizkeyBJ6DPe9ocgaoEQ==
+X-Received: by 2002:a05:6a00:16d1:b029:157:7d81:432d with SMTP id l17-20020a056a0016d1b02901577d81432dmr3759531pfc.38.1602855198763;
+        Fri, 16 Oct 2020 06:33:18 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id k9sm2978122pfi.188.2020.10.16.06.33.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 06:33:18 -0700 (PDT)
+Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, Roman Gershman <romger@amazon.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com>
+ <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk>
+ <87a6wmv93v.fsf@nanos.tec.linutronix.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
+Date:   Fri, 16 Oct 2020 07:33:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201014145418.31838-1-rf@opensource.cirrus.com>
- <20201014145418.31838-2-rf@opensource.cirrus.com> <CAL_Jsq+qdcHc9H7qUVwLieHrLM8E20HZXa8DkarMiuXfCh8WOQ@mail.gmail.com>
- <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
-In-Reply-To: <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 16 Oct 2020 08:31:47 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKAvJ9fv9pm82iv5YjWVCJu1fmP-t+Fyc95pzUaCEL3XQ@mail.gmail.com>
-Message-ID: <CAL_JsqKAvJ9fv9pm82iv5YjWVCJu1fmP-t+Fyc95pzUaCEL3XQ@mail.gmail.com>
-Subject: Re: [PATCH 1/7] of: base: Add of_count_phandle_with_fixed_args()
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     devicetree@vger.kernel.org,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        - <patches@opensource.cirrus.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87a6wmv93v.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 11:52 AM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2020-10-14 19:39, Rob Herring wrote:
-> > On Wed, Oct 14, 2020 at 9:54 AM Richard Fitzgerald
-> > <rf@opensource.cirrus.com> wrote:
-> >>
-> >> Add an equivalent of of_count_phandle_with_args() for fixed argument
-> >> sets, to pair with of_parse_phandle_with_fixed_args().
-> >>
-> >> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> >> ---
-> >>   drivers/of/base.c  | 42 ++++++++++++++++++++++++++++++++++++++++++
-> >>   include/linux/of.h |  9 +++++++++
-> >>   2 files changed, 51 insertions(+)
-> >>
-> >> diff --git a/drivers/of/base.c b/drivers/of/base.c
-> >> index ea44fea99813..45d8b0e65345 100644
-> >> --- a/drivers/of/base.c
-> >> +++ b/drivers/of/base.c
-> >> @@ -1772,6 +1772,48 @@ int of_count_phandle_with_args(const struct device_node *np, const char *list_na
-> >>   }
-> >>   EXPORT_SYMBOL(of_count_phandle_with_args);
-> >>
-> >> +/**
-> >> + * of_count_phandle_with_fixed_args() - Find the number of phandles references in a property
-> >> + * @np:                pointer to a device tree node containing a list
-> >> + * @list_name: property name that contains a list
-> >> + * @cell_count: number of argument cells following the phandle
-> >> + *
-> >> + * Returns the number of phandle + argument tuples within a property. It
-> >> + * is a typical pattern to encode a list of phandle and variable
-> >> + * arguments into a single property.
-> >> + */
-> >> +int of_count_phandle_with_fixed_args(const struct device_node *np,
-> >> +                                    const char *list_name,
-> >> +                                    int cells_count)
-> >> +{
-> >
-> > Looks to me like you can refactor of_count_phandle_with_args to handle
-> > both case and then make this and of_count_phandle_with_args simple
-> > wrapper functions.
->
-> Although for just counting the number of phandles each with n arguments
-> that a property contains, isn't that simply a case of dividing the
-> property length by n + 1? The phandles themselves will be validated by
-> any subsequent of_parse_phandle*() call anyway, so there doesn't seem
-> much point in doing more work then necessary here.
->
-> >> +       struct of_phandle_iterator it;
-> >> +       int rc, cur_index = 0;
-> >> +
-> >> +       if (!cells_count) {
-> >> +               const __be32 *list;
-> >> +               int size;
-> >> +
-> >> +               list = of_get_property(np, list_name, &size);
-> >> +               if (!list)
-> >> +                       return -ENOENT;
-> >> +
-> >> +               return size / sizeof(*list);
->
-> Case in point - if it's OK to do exactly that for n == 0, then clearly
-> we're *aren't* fussed about validating anything, so the n > 0 code below
-> is nothing more than a massively expensive way to check for a nonzero
-> remainder :/
+On 10/16/20 3:00 AM, Thomas Gleixner wrote:
+> On Thu, Oct 15 2020 at 12:39, Jens Axboe wrote:
+>> On 10/15/20 9:49 AM, Oleg Nesterov wrote:
+>>> You can simply nack the patch which adds TIF_NOTIFY_SIGNAL to
+>>> arch/xxx/include/asm/thread_info.h.
+> 
+> As if that is going to change anything...
+> 
+>> This seems to be the biggest area of contention right now. Just to
+>> summarize, we have two options:
+>>
+>> 1) We leave the CONFIG_GENERIC_ENTRY requirement, which means that the
+>>    rest of the cleanups otherwise enabled by this series will not be
+>>    able to move forward until the very last arch is converted to the
+>>    generic entry code.
+>>
+>> 2) We go back to NOT having the CONFIG_GENERIC_ENTRY requirement, and
+>>    archs can easily opt-in to TIF_NOTIFY_SIGNAL independently of
+>>    switching to the generic entry code.
+>>
+>> I understand Thomas's reasoning in wanting to push archs towards the
+>> generic entry code, and I fully support that. However, it does seem like
+>> the road paved by #1 is long and potentially neverending, which would
+>> leave us with never being able to kill the various bits of code that we
+>> otherwise would be able to.
+>>
+>> Thomas, I do agree with Oleg on this one, I think we can make quicker
+>> progress on cleanups with option #2. This isn't really going to hinder
+>> any arch conversion to the generic entry code, as arch patches would be
+>> funeled through the arch trees anyway.
+> 
+> I completely understand the desire to remove the jobctl mess and it
+> looks like a valuable cleanup on it's own.
+> 
+> But I fundamentaly disagree with the wording of #2:
+> 
+>     'and archs can easily opt-in ....'
+> 
+> Just doing it on an opt-in base is not any different from making it
+> dependent on CONFIG_GENERIC_ENTRY. It's just painted differently and
+> makes it easy for you to bring the performance improvement to the less
+> than a handful architectures which actually care about io_uring.
 
-Indeed. We should just generalize this. It can still be refactored to
-shared code.
+It's a lot easier for me to add support for archs for TIF_NOTIFY_SIGNAL,
+than it is to convert them to CONFIG_GENERIC ENTRY. And in fact I
+already _did_ convert all archs, in a separate series. Is it perfect
+yet? No. arm needs a bit of love, powerpc should be cleaned up once the
+5.10 merge happens for that arch (dropping a bit), and s390 I need
+someone to verify. But apart from that, it is already done.
 
-It's probably worthwhile to check for a remainder here IMO.
+> So if you change #2 to:
+> 
+>    Drop the CONFIG_GENERIC_ENTRY dependency, make _all_ architectures
+>    use TIF_NOTIFY_SIGNAL and clean up the jobctl and whatever related
+>    mess.
+> 
+> and actually act apon it, then I'm fine with that approach.
 
-Rob
+Already did that too!
+
+https://git.kernel.dk/cgit/linux-block/log/?h=tif-task_work.arch
+
+It's sitting on top of this series. So the work is already done.
+
+> Anything else is just proliferating the existing mess and yet another
+> promise of great improvements which never materialize.
+> 
+> Just to prove my point:
+> 
+> e91b48162332 ("task_work: teach task_work_add() to do signal_wake_up()")
+> 
+> added TWA_SIGNAL in June with the following in the changelog:
+> 
+>     TODO: once this patch is merged we need to change all current users
+>     of task_work_add(notify = true) to use TWA_RESUME.
+
+Totally agree the ball was dropped on this one. I did actually write a
+patch, just never had time to get it out.
+ 
+> This features first and let others deal with the mess we create mindset
+> has to stop. I'm dead tired of it.
+
+I totally agree, and we're on the same page. I think you'll find that in
+the past I always carry through, the task_work notification was somewhat
+of a rush due to a hang related to it. For this particular case, the
+cleanups and arch additions are pretty much ready to go.
+
+-- 
+Jens Axboe
+
