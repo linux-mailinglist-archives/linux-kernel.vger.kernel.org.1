@@ -2,155 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B69290C5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FD3290C63
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436570AbgJPThz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 15:37:55 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:48487 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436556AbgJPThz (ORCPT
+        id S2411089AbgJPTos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 15:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405786AbgJPTos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 15:37:55 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201016193743euoutp0107c4bbc9860fa4f6497e3c9eee48d491~_kDJnuiuw2186621866euoutp01X;
-        Fri, 16 Oct 2020 19:37:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201016193743euoutp0107c4bbc9860fa4f6497e3c9eee48d491~_kDJnuiuw2186621866euoutp01X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1602877063;
-        bh=fAaURGxFxrxf5vT3aXwuCB6B61xvc3SkZQaHP8Bxw2c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c6XkpzyD37jVkF+ueKbbfEvrMfGqDMJEt2z7q8ZS4y/5O2QMaWgUhOV2t7Uvd6GYl
-         wFTWOfXzGXmAIBbjtoYjL6m8YsBDHCUea6rAg3zFsSfiG6RBVne9XeVoXea/jKwiCi
-         PJWpseKUb3klATWf4Q+fO1Wvd3dvPCZ9NSFPKDls=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201016193738eucas1p2287eb7f7921312b483df787ba1458f0b~_kDEmgLjf3236532365eucas1p2d;
-        Fri, 16 Oct 2020 19:37:38 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id F4.D1.06318.186F98F5; Fri, 16
-        Oct 2020 20:37:38 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275~_kDDg7Amv1985019850eucas1p1Y;
-        Fri, 16 Oct 2020 19:37:36 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201016193736eusmtrp2c14f92c698e38174eb337adfc0966d01~_kDDgTWdg0550405504eusmtrp2Q;
-        Fri, 16 Oct 2020 19:37:36 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-d6-5f89f681d2e1
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id E0.87.06314.086F98F5; Fri, 16
-        Oct 2020 20:37:36 +0100 (BST)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20201016193736eusmtip15ddc2e6638e98b652554b93c369ed722~_kDDSqUIB0611506115eusmtip1W;
-        Fri, 16 Oct 2020 19:37:36 +0000 (GMT)
-From:   Lukasz Stelmach <l.stelmach@samsung.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkie?= =?utf-8?Q?wicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2] net: phy: Prevent reporting advertised modes when
- autoneg is off
-Date:   Fri, 16 Oct 2020 21:37:22 +0200
-In-Reply-To: <20201016180935.GG139700@lunn.ch> (Andrew Lunn's message of
-        "Fri, 16 Oct 2020 20:09:35 +0200")
-Message-ID: <dleftjzh4m3qtp.fsf%l.stelmach@samsung.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 16 Oct 2020 15:44:48 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E79AC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:44:48 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id r24so2077571vsp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yRBOPQbN5dYhnvrLr9PYIKh/r7keyLtfCsfZgAWbDAY=;
+        b=lWyAZXcjg24uQCaK+mc5h2Cm4Ik2gWrdbgU8YGrpjwN5Da/R2Sdwsl+gOca4joaTAA
+         B+8WUwK+LckyAp1ViPfR7JczNVu3/5xE95YaaFLSIPBjlm1yhuPrDMThA3lTE6n4iVtE
+         ZApwQg/thvmFfYtxaf17wTERKwnbLGflalqBw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yRBOPQbN5dYhnvrLr9PYIKh/r7keyLtfCsfZgAWbDAY=;
+        b=cju1MEsh8XCm01ssOhvrxAW5JQ/fTQenE2MzuXbLqQNWTNhMfdDRizuyKvNN68js2z
+         8Aajkx7hYKePIMtTSQzuxjS0G4SebVQHINqpQe2LsBb4DDhHwaH7BkjSzovU7/uvWYnj
+         WFo/rXUAh+U7O7NLGsQ5qmEEbcOybyikgkPcaxCzorn0YAIEfJA4u7PKesEG3kpDoxL6
+         npXIQDz9IsIw/WRHAb4XgogqexJucXzZMW7GzeeX8Ee70ZQXrJaM6uDIQ6SuCC2vyfah
+         HncM8pvi/gdwQGxRjUZpy2u2FxoUtyfyOwJqG87OXvssvK9y3PPgVsibIQZFKUjlCe6/
+         37PQ==
+X-Gm-Message-State: AOAM5314ThZFGXHHApDLeJ0j7j4LD8YYA3MjmKiYs1M/WMEuyjMyRrYn
+        8MjojT9b8xE87dTMzkJc+oa5VV0aOlPMZ8KiDCZyBw==
+X-Google-Smtp-Source: ABdhPJz7JthFresIp4ZMmQ8zArHq2v2ngIrcX9HSohpE8S+a2uHuWpG3PfczgPBpEj5CLhCXBtN5LPzwar/wseymz04=
+X-Received: by 2002:a67:3241:: with SMTP id y62mr3559776vsy.47.1602877487310;
+ Fri, 16 Oct 2020 12:44:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
-        protocol="application/pgp-signature"
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRju2zlnO1vOjjPzxSJk6Q8VL2HUiSzKJEZRhGCUUbby4G2btqll
-        /cjSIsVLqJE3yntmOVPmnHafpZipqWVlukQMzTQRL5WJ5vEz6N/zPt/zPC/Py0cTsi7KgQ7T
-        RHNajVIlF0pIY9Pvdvcrs0lBXmPJBNvRbybY6uwqis3vSCTZoolsin1rTKPY7oZ8IWu++QSx
-        lS/7RWxTwbrdYkV3TyehMNz7JFDU5/aLFDUVSUJFvWlKoEgzVCDFVM3Gw6JAiU8wpwqL5bSe
-        u05JQlvrPgiiLNLzo+XVZDz6uToZiWlgtkBeZoowGUloGVOO4NliCYmHaQS3EuYEeJhC8N5S
-        hJIRvWz5URaM+bsISlI7VhzDCAay0pdFQsYDKiuP8ivWMo6Q1TJP8RqCGRbAr4EsgtfYMoEw
-        M+/La0jGGUay2iieFjNqqM3w5mkpsw0s+eOIx3bMdjCMfBFh3gZacoZIHhNL8pyOMcTHAzMu
-        ghxjL8LV/KDuq4XC2BZGmw0ijDfAYv0dAe5yCTIztmJvCgJj/i8Sa3ZAX/ucEGv2QF6fI4bW
-        8HHcBq+1hgzjLQLTUrh+TYaNTqBPf7wS4gCpo+UrR1OAfnLlTpcR9HROEDeQY+5/ZXL/K5O7
-        ZCEYF6hq8MS0G5QVficw3gl6/QRZgKgKZM/F6NQhnM5bw53z0CnVuhhNiMeZSHUNWvpdrQvN
-        Myb0dP60GTE0kltJ6dKkIBmljNXFqc3IaSlp8OH9t8iB1ERqOPlaqW9b60mZNFgZd4HTRgZp
-        Y1SczozW06TcXupd9O2EjAlRRnMRHBfFaf+9CmixQzxaNZXNJVb6q+THXM8W1kb8DPAhwEoQ
-        /+bIeCmx7/VEqWl41lV+/EWxirx46LPJL/P57ZBNWq+6A/sHH4zGL9woWSxqcp5ufHWwc7ac
-        7Z3rt9vrMtYo6XLvnYle49nl3xbT3Ta5MTHcJ+BR2R9/9XRgsSHVjXmXMFSXEm60ybgqHpCT
-        ulDlZldCq1P+BfKV0GZlAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsVy+t/xu7oN3zrjDbpvm1qcv3uI2WLjjPWs
-        FnPOt7BYLHo/g9XiwrY+VovLu+awWRyaupfRYu2Ru+wWxxaIOXB6XL52kdljy8qbTB47Z91l
-        99i0qpPNY+eOz0wefVtWMXp83iQXwB6lZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwe
-        a2VkqqRvZ5OSmpNZllqkb5egl3F6+3Wmgnu8Fa9WbGRpYPzO3cXIwSEhYCLxbllKFyMXh5DA
-        UkaJ0wcPskLEpSRWzk3vYuQEMoUl/lzrYoOoecoosfPkeiaQGjYBPYm1ayNAakQEFCSmnPzD
-        ClLDLPCCSWL9nj52kISwQITEpzdb2EBsIQFdiT+z+1lBbBYBVYkXU86C2ZwCuRLb224zgti8
-        AuYS9+a8BbNFBSwltry4zw4RF5Q4OfMJC4jNLJAt8XX1c+YJjAKzkKRmIUnNAjqPWUBTYv0u
-        fYiwtsSyha+ZIWxbiXXr3rMsYGRdxSiSWlqcm55bbKhXnJhbXJqXrpecn7uJERh924793LyD
-        8dLG4EOMAhyMSjy8GxZ1xguxJpYVV+YeYlQBGvNow+oLjFIsefl5qUoivE5nT8cJ8aYkVlal
-        FuXHF5XmpBYfYjQF+nMis5Rocj4wYeSVxBuaGppbWBqaG5sbm1koifN2CByMERJITyxJzU5N
-        LUgtgulj4uCUamBULTDSOn3jxZ2OrJNesfujbjcn5Xw1cJd8aPfW+MFs/aWXhM0m3C23PBSh
-        97hR39Nb9fAyh0Wm9gXXd3Z12mstXtI+b7eWgrb51mURF1q95jV8DZ349XFo8tTFawSEPN5o
-        Ps7Kvr9hTndTKl+rohdT6YIt5eHGDvtO5MZ36cZ+8rqjEKjvoqDEUpyRaKjFXFScCADqHMrz
-        4AIAAA==
-X-CMS-MailID: 20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275
-X-Msg-Generator: CA
-X-RootMTR: 20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275
-References: <20201016180935.GG139700@lunn.ch>
-        <CGME20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275@eucas1p1.samsung.com>
+References: <20200908200950.1368e71b@canb.auug.org.au> <23624101c03e9f60e66bac5c9739769931968c32.camel@intel.com>
+In-Reply-To: <23624101c03e9f60e66bac5c9739769931968c32.camel@intel.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 16 Oct 2020 21:44:36 +0200
+Message-ID: <CAJfpegsFb6SB74ezwqD=5YUw_8XaREm1q88ontkpWzQ+9V0OxQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the akpm-current tree
+To:     "Williams, Dan J" <dan.j.williams@intel.com>
+Cc:     "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "bo.liu@linux.alibaba.com" <bo.liu@linux.alibaba.com>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        "stefanha@redhat.com" <stefanha@redhat.com>,
+        "roger.pau@citrix.com" <roger.pau@citrix.com>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dgilbert@redhat.com" <dgilbert@redhat.com>,
+        "Boeuf, Sebastien" <sebastien.boeuf@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-It was <2020-10-16 pi=C4=85 20:09>, when Andrew Lunn wrote:
-> On Thu, Oct 15, 2020 at 10:44:35AM +0200, =C5=81ukasz Stelmach wrote:
->> Do not report advertised link modes (local and remote) when
->> autonegotiation is turned off. mii_ethtool_get_link_ksettings() exhibits
->> the same behaviour and this patch aims at unifying the behavior of both
->> functions.
+On Thu, Sep 24, 2020 at 3:40 AM Williams, Dan J
+<dan.j.williams@intel.com> wrote:
 >
-> Does ethtool allow you to configure advertised modes with autoneg off?
-> If it can, it would be useful to see what is being configured, before
-> it is actually turned on.
+> On Tue, 2020-09-08 at 20:09 +1000, Stephen Rothwell wrote:
+
+[...]
+
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date: Tue, 8 Sep 2020 20:00:20 +1000
+> > Subject: [PATCH] merge fix up for "mm/memremap_pages: convert to
+> > 'struct
+> >  range'"
+> >
+> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > ---
+> >  drivers/xen/unpopulated-alloc.c | 15 +++++++++------
+> >  fs/fuse/virtio_fs.c             |  3 +--
+> >  2 files changed, 10 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/xen/unpopulated-alloc.c
+> > b/drivers/xen/unpopulated-alloc.c
+> > index 3b98dc921426..9fa7ce330628 100644
+> > --- a/drivers/xen/unpopulated-alloc.c
+> > +++ b/drivers/xen/unpopulated-alloc.c
+> > @@ -18,6 +18,7 @@ static unsigned int list_count;
+> >  static int fill_list(unsigned int nr_pages)
+> >  {
+> >       struct dev_pagemap *pgmap;
+> > +     struct resource res;
+> >       void *vaddr;
+> >       unsigned int i, alloc_pages = round_up(nr_pages,
+> > PAGES_PER_SECTION);
+> >       int ret;
+> > @@ -27,10 +28,10 @@ static int fill_list(unsigned int nr_pages)
+> >               return -ENOMEM;
+> >
+> >       pgmap->type = MEMORY_DEVICE_GENERIC;
+> > -     pgmap->res.name = "Xen scratch";
+> > -     pgmap->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
 >
-> ethtool -s eth42 autoneg off advertise 0xf
->
-> does not give an error on an interface i have.
+> This is broken... it needs to be converted to 'struct range'. I'll take
+> care of that when I respin the series. Sorry for the thrash it seems
+> this is a new memremap_pages() user since the conversion patches
+> landed.
 
-Yes, this is a good point. Do you think I should change the if()[1] in=20
-mii_ethtool_get_link_ksettings() instead? I really think these two
-function should report the same.
+Hi Dan,
 
-[1] https://elixir.bootlin.com/linux/v5.9/source/drivers/net/mii.c#L174
-[2] https://elixir.bootlin.com/linux/v5.9/source/drivers/net/mii.c#L145
+I'd like to send this upstream and this conflict needs to be dealt
+with some way or another.   Can you send the correct fixup against
 
-Kind regards,
-=2D-=20
-=C5=81ukasz Stelmach
-Samsung R&D Institute Poland
-Samsung Electronics
+git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git#for-next
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl+J9nIACgkQsK4enJil
-gBA9Rwf/XFHX++6DgwEAyPDwfrsq28MTgViffjtzEIJp4EQRo9DrPF+vwu0neyHL
-G4pB7KhjIe8f4IbKiwNvnjgVbL1ukmaalb5tTqjYHVUHh4nnpqOdMJ7eMUI73tDy
-C74fpWifs3z8gxp7l6gBklpDGRzj9V4mwsRFrDarzyKjKhxnVpjCkKsWrxBnivTk
-lEGkPeB2r/0+7aeR74djxfu67OnTsnQcBYmmFZhq3TkR4gK7oGVCbR4WIWtPYcol
-DxNxluNLRPGHwp8v0y34wZU+AvsTbK0x82Mc6cve4MhdD1lCCWqGSFhd9NTFl/lo
-HnWngZjxSn35rC4VkHOzIdap0IDzjw==
-=/DVz
------END PGP SIGNATURE-----
---=-=-=--
+Thanks,
+Miklos
