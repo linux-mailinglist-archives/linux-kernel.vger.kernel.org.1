@@ -2,87 +2,467 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7744729080F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1148729080C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409846AbgJPPOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:14:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:10047 "EHLO mga07.intel.com"
+        id S2409842AbgJPPOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:14:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395540AbgJPPOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:14:16 -0400
-IronPort-SDR: 2DizwvBUhuWmJ8EyQBSdx4z8c408FNlxtJmDQLPXlQOLaYn7eYhD4G1Q+Ojd3eRzW2bDaVJKlB
- ykZ/Bq+T7IaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9776"; a="230817975"
-X-IronPort-AV: E=Sophos;i="5.77,383,1596524400"; 
-   d="scan'208";a="230817975"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 08:14:13 -0700
-IronPort-SDR: FIF5WfCWETsAWReYXNH+IIVmcS0AuT+c154fIAwTkaCjCiLGCgs3vaP9O/ffQx6b5mKKrZqUTJ
- Afvm+IYQUmPw==
-X-IronPort-AV: E=Sophos;i="5.77,383,1596524400"; 
-   d="scan'208";a="531752068"
-Received: from ddalessa-mobl.amr.corp.intel.com (HELO [10.254.202.122]) ([10.254.202.122])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 08:14:11 -0700
-Subject: Re: [PATCH] IB/hfi1: Avoid allocing memory on memoryless numa node
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Xianting Tian <tian.xianting@h3c.com>,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201010085732.20708-1-tian.xianting@h3c.com>
- <9ba33073-044c-9da6-a90d-4626e6441793@cornelisnetworks.com>
- <20201016141152.GC36674@ziepe.ca>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <c69d2429-25cc-75dc-d4de-3ee66e9aaa08@cornelisnetworks.com>
-Date:   Fri, 16 Oct 2020 11:14:09 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2409834AbgJPPOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 11:14:00 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9300E206A1;
+        Fri, 16 Oct 2020 15:13:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602861239;
+        bh=SU2uvwZI0LUxCNBQQdmpoJqsnGrJCAao6J5ggGoHKGM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=D8PZ2aOehRX66/L20VGYutaDVmvjtf1wcPtaFf+aXdEWrAMBOsY9TLf8VeOgqTCIy
+         OQ4bPsD+XbEZfa0QfZE2/1vkjf+yqfzwKbX/wrUEYdAFwde7j+lotBv37E80hgtrLP
+         QuZAwwxOdNK0SrrfGsqs1ImPevCBnL0uJ1fGRsEg=
+Date:   Fri, 16 Oct 2020 17:14:29 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Catangiu, Adrian Costin" <acatan@amazon.com>
+Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "Graf (AWS), Alexander" <graf@amazon.de>,
+        "MacCarthaigh, Colm" <colmmacc@amazon.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "bonzini@gnu.org" <bonzini@gnu.org>,
+        "Singh, Balbir" <sblbir@amazon.com>,
+        "Weiss, Radu" <raduweis@amazon.com>,
+        "oridgar@gmail.com" <oridgar@gmail.com>,
+        "ghammer@redhat.com" <ghammer@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>
+Subject: Re: [PATCH] drivers/virt: vmgenid: add vm generation id driver
+Message-ID: <20201016151429.GD1807983@kroah.com>
+References: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20201016141152.GC36674@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <788878CE-2578-4991-A5A6-669DCABAC2F2@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/2020 10:11 AM, Jason Gunthorpe wrote:
-> On Mon, Oct 12, 2020 at 08:36:57AM -0400, Dennis Dalessandro wrote:
->> On 10/10/2020 4:57 AM, Xianting Tian wrote:
->>> In architecture like powerpc, we can have cpus without any local memory
->>> attached to it. In such cases the node does not have real memory.
->>>
->>> Use local_memory_node(), which is guaranteed to have memory.
->>> local_memory_node is a noop in other architectures that does not support
->>> memoryless nodes.
->>>
->>> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
->>>    drivers/infiniband/hw/hfi1/file_ops.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
->>> index 8ca51e43c..79fa22cc7 100644
->>> +++ b/drivers/infiniband/hw/hfi1/file_ops.c
->>> @@ -965,7 +965,7 @@ static int allocate_ctxt(struct hfi1_filedata *fd, struct hfi1_devdata *dd,
->>>    	 */
->>>    	fd->rec_cpu_num = hfi1_get_proc_affinity(dd->node);
->>>    	if (fd->rec_cpu_num != -1)
->>> -		numa = cpu_to_node(fd->rec_cpu_num);
->>> +		numa = local_memory_node(cpu_to_node(fd->rec_cpu_num));
->>>    	else
->>>    		numa = numa_node_id();
->>>    	ret = hfi1_create_ctxtdata(dd->pport, numa, &uctxt);
->>>
->>
->> The hfi1 driver depends on X86_64. I'm not sure what this patch buys, can
->> you expand a bit?
-> 
-> Yikes, that is strongly discouraged.
+On Fri, Oct 16, 2020 at 02:33:15PM +0000, Catangiu, Adrian Costin wrote:
+> +config VMGENID
+> +	tristate "Virtual Machine Generation ID driver"
+> +	depends on ACPI
+> +	default M
 
-Hmm. This was never raised as an issue before. Regardless I can't recall 
-why we did this in the first place. I'll do some digging, try to jog my 
-memory.
+Unless this is required to boot a machine, this should be removed.
 
--Denny
+> +	help
+> +	  This is a Virtual Machine Generation ID driver which provides
+> +	  a virtual machine unique identifier. The provided UUID can be
+> +	  watched through the FS interface exposed by this driver, and
+> +	  thus can provide notifications for VM snapshot or cloning events.
+
+Where is the uuid exposed in the filesystem?
+
+> +	  This enables applications and libraries that store or cache
+> +	  sensitive information, to know that they need to regenerate it
+> +	  after process memory has been exposed to potential copying.
+
+Module name?
+
+> +
+>  config FSL_HV_MANAGER
+>  	tristate "Freescale hypervisor management driver"
+>  	depends on FSL_SOC
+> diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
+> index fd33124..a1f8dcc 100644
+> --- a/drivers/virt/Makefile
+> +++ b/drivers/virt/Makefile
+> @@ -4,4 +4,5 @@
+>  #
+>  
+>  obj-$(CONFIG_FSL_HV_MANAGER)	+= fsl_hypervisor.o
+> +obj-$(CONFIG_VMGENID)		+= vmgenid.o
+>  obj-y				+= vboxguest/
+> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
+> new file mode 100644
+> index 0000000..d314c72
+> --- /dev/null
+> +++ b/drivers/virt/vmgenid.c
+> @@ -0,0 +1,419 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Virtual Machine Generation ID driver
+> + *
+> + * Copyright (C) 2018 Red Hat Inc, Copyright (C) 2020 Amazon.com Inc
+
+That's not how you write copyright lines, please fix up.
+
+> + * All rights reserved.
+> + *	Authors:
+> + *	  Adrian Catangiu <acatan@amazon.com>
+> + *	  Or Idgar <oridgar@gmail.com>
+> + *	  Gal Hammer <ghammer@redhat.com>
+> + *
+> + */
+> +#include <linux/acpi.h>
+> +#include <linux/cdev.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mm.h>
+> +#include <linux/module.h>
+> +#include <linux/poll.h>
+> +#include <linux/uuid.h>
+> +#include <linux/vmgenid.h>
+> +
+> +#define DEV_NAME "vmgenid"
+> +ACPI_MODULE_NAME(DEV_NAME);
+> +
+> +struct dev_data {
+> +	struct cdev       cdev;
+> +	dev_t             dev_id;
+> +	unsigned long     map_buf;
+> +
+> +	void              *uuid_iomap;
+> +	uuid_t            uuid;
+> +	wait_queue_head_t read_wait;
+> +
+> +	atomic_t          watchers;
+> +	atomic_t          outdated_watchers;
+> +	wait_queue_head_t outdated_wait;
+> +};
+> +
+> +struct file_data {
+> +	struct dev_data  *dev_data;
+> +	uuid_t           acked_uuid;
+> +};
+> +
+> +static bool vmgenid_uuid_matches(struct dev_data *priv, uuid_t *uuid)
+> +{
+> +	return !memcmp(uuid, &priv->uuid, sizeof(uuid_t));
+> +}
+> +
+> +static void vmgenid_put_outdated_watchers(struct dev_data *priv)
+> +{
+> +	if (atomic_dec_and_test(&priv->outdated_watchers))
+> +		wake_up_interruptible(&priv->outdated_wait);
+> +}
+> +
+> +static int vmgenid_open(struct inode *inode, struct file *file)
+> +{
+> +	struct dev_data *priv =
+> +		container_of(inode->i_cdev, struct dev_data, cdev);
+> +	struct file_data *file_data =
+> +		kzalloc(sizeof(struct file_data), GFP_KERNEL);
+> +
+> +	if (!file_data)
+> +		return -ENOMEM;
+> +
+> +	file_data->acked_uuid = priv->uuid;
+> +	file_data->dev_data = priv;
+> +
+> +	file->private_data = file_data;
+> +	atomic_inc(&priv->watchers);
+> +
+> +	return 0;
+> +}
+> +
+> +static int vmgenid_close(struct inode *inode, struct file *file)
+> +{
+> +	struct file_data *file_data = (struct file_data *) file->private_data;
+> +	struct dev_data *priv = file_data->dev_data;
+> +
+> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid))
+> +		vmgenid_put_outdated_watchers(priv);
+> +	atomic_dec(&priv->watchers);
+> +	kfree(file->private_data);
+> +
+> +	return 0;
+> +}
+> +
+> +static ssize_t
+> +vmgenid_read(struct file *file, char __user *ubuf, size_t nbytes, loff_t *ppos)
+> +{
+> +	struct file_data *file_data =
+> +		(struct file_data *) file->private_data;
+> +	struct dev_data *priv = file_data->dev_data;
+> +	ssize_t ret;
+> +
+> +	if (nbytes == 0)
+> +		return 0;
+> +	/* disallow partial UUID reads */
+> +	if (nbytes < sizeof(uuid_t))
+> +		return -EINVAL;
+> +	nbytes = sizeof(uuid_t);
+> +
+> +	if (vmgenid_uuid_matches(priv, &file_data->acked_uuid)) {
+> +		if (file->f_flags & O_NONBLOCK)
+> +			return -EAGAIN;
+> +		ret = wait_event_interruptible(
+> +			priv->read_wait,
+> +			!vmgenid_uuid_matches(priv, &file_data->acked_uuid)
+> +		);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = copy_to_user(ubuf, &priv->uuid, nbytes);
+> +	if (ret)
+> +		return -EFAULT;
+> +
+> +	return nbytes;
+> +}
+> +
+> +static ssize_t vmgenid_write(struct file *file, const char __user *ubuf,
+> +				size_t count, loff_t *ppos)
+> +{
+> +	struct file_data *file_data = (struct file_data *) file->private_data;
+> +	struct dev_data *priv = file_data->dev_data;
+> +	uuid_t ack_uuid;
+> +
+> +	/* disallow partial UUID writes */
+> +	if (count != sizeof(uuid_t))
+> +		return -EINVAL;
+> +	if (copy_from_user(&ack_uuid, ubuf, count))
+> +		return -EFAULT;
+> +	/* wrong UUID acknowledged */
+> +	if (!vmgenid_uuid_matches(priv, &ack_uuid))
+> +		return -EINVAL;
+> +
+> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid)) {
+> +		/* update local view of UUID */
+> +		file_data->acked_uuid = ack_uuid;
+> +		vmgenid_put_outdated_watchers(priv);
+> +	}
+> +
+> +	return (ssize_t)count;
+> +}
+> +
+> +static __poll_t
+> +vmgenid_poll(struct file *file, poll_table *wait)
+> +{
+> +	__poll_t mask = 0;
+> +	struct file_data *file_data =
+> +		(struct file_data *) file->private_data;
+> +	struct dev_data *priv = file_data->dev_data;
+> +
+> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid))
+> +		return EPOLLIN | EPOLLRDNORM;
+> +
+> +	poll_wait(file, &priv->read_wait, wait);
+> +
+> +	if (!vmgenid_uuid_matches(priv, &file_data->acked_uuid))
+> +		mask = EPOLLIN | EPOLLRDNORM;
+> +
+> +	return mask;
+> +}
+> +
+> +static long vmgenid_ioctl(struct file *file,
+> +		unsigned int cmd, unsigned long arg)
+> +{
+> +	struct file_data *file_data =
+> +		(struct file_data *) file->private_data;
+> +	struct dev_data *priv = file_data->dev_data;
+> +	struct timespec __user *timeout = (void *) arg;
+> +	struct timespec kts;
+> +	ktime_t until;
+> +	int ret;
+> +
+> +	switch (cmd) {
+> +	case VMGENID_GET_OUTDATED_WATCHERS:
+> +		ret = atomic_read(&priv->outdated_watchers);
+> +		break;
+> +	case VMGENID_WAIT_WATCHERS:
+> +		if (timeout) {
+> +			ret = copy_from_user(&kts, timeout, sizeof(kts));
+> +			if (ret)
+> +				return -EFAULT;
+> +			until = timespec_to_ktime(kts);
+
+No validation of structure fields?
+
+And you are exposing a kernel structure to userspace?
+
+I don't see this function in Linus's tree right now, are you sure this
+builds?
+
+
+> +		} else {
+> +			until = KTIME_MAX;
+> +		}
+> +
+> +		ret = wait_event_interruptible_hrtimeout(
+> +			priv->outdated_wait,
+> +			!atomic_read(&priv->outdated_watchers),
+> +			until
+> +		);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static vm_fault_t vmgenid_vm_fault(struct vm_fault *vmf)
+> +{
+> +	struct page *page;
+> +	struct file_data *file_data =
+> +			(struct file_data *) vmf->vma->vm_private_data;
+
+You do know you don't need to cast stuff like this, right?
+
+Also run checkpatch.pl so maintainers are not grumpy and tell you to run
+checkpatch.pl.
+
+> +	struct dev_data *priv = file_data->dev_data;
+> +
+> +	if (priv->map_buf) {
+> +		page = virt_to_page(priv->map_buf);
+> +		get_page(page);
+> +		vmf->page = page;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct vm_operations_struct vmgenid_vm_ops = {
+> +	.fault = vmgenid_vm_fault,
+> +};
+> +
+> +static int vmgenid_mmap(struct file *file, struct vm_area_struct *vma)
+> +{
+> +	if (vma->vm_pgoff != 0 || vma_pages(vma) > 1)
+> +		return -EINVAL;
+> +
+> +	if ((vma->vm_flags & VM_WRITE) != 0)
+> +		return -EPERM;
+> +
+> +	vma->vm_ops = &vmgenid_vm_ops;
+> +	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+> +	vma->vm_private_data = file->private_data;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct file_operations fops = {
+> +	.owner          = THIS_MODULE,
+> +	.mmap           = vmgenid_mmap,
+> +	.open           = vmgenid_open,
+> +	.release        = vmgenid_close,
+> +	.read           = vmgenid_read,
+> +	.write          = vmgenid_write,
+> +	.poll           = vmgenid_poll,
+> +	.compat_ioctl   = vmgenid_ioctl,
+> +	.unlocked_ioctl = vmgenid_ioctl,
+> +};
+> +
+> +static int vmgenid_acpi_map(struct dev_data *priv, acpi_handle handle)
+> +{
+> +	int i;
+> +	phys_addr_t phys_addr;
+> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> +	acpi_status status;
+> +	union acpi_object *pss;
+> +	union acpi_object *element;
+> +
+> +	status = acpi_evaluate_object(handle, "ADDR", NULL, &buffer);
+> +	if (ACPI_FAILURE(status)) {
+> +		ACPI_EXCEPTION((AE_INFO, status, "Evaluating ADDR"));
+> +		return -ENODEV;
+> +	}
+> +	pss = buffer.pointer;
+> +	if (!pss || pss->type != ACPI_TYPE_PACKAGE || pss->package.count != 2)
+> +		return -EINVAL;
+> +
+> +	phys_addr = 0;
+> +	for (i = 0; i < pss->package.count; i++) {
+> +		element = &(pss->package.elements[i]);
+> +		if (element->type != ACPI_TYPE_INTEGER)
+> +			return -EINVAL;
+> +		phys_addr |= element->integer.value << i * 32;
+> +	}
+> +
+> +	priv->uuid_iomap = acpi_os_map_memory(phys_addr, sizeof(uuid_t));
+> +	if (!priv->uuid_iomap) {
+> +		pr_err("Could not map memory at 0x%llx, size %u",
+> +			   phys_addr,
+> +			   (u32)sizeof(uuid_t));
+> +		return -ENOMEM;
+> +	}
+> +
+> +	memcpy_fromio(&priv->uuid, priv->uuid_iomap, sizeof(uuid_t));
+> +	memcpy((void *) priv->map_buf, &priv->uuid, sizeof(uuid_t));
+> +
+> +	return 0;
+> +}
+> +
+> +static int vmgenid_acpi_add(struct acpi_device *device)
+> +{
+> +	int ret;
+> +	struct dev_data *priv;
+> +
+> +	if (!device)
+> +		return -EINVAL;
+> +
+> +	priv = kzalloc(sizeof(struct dev_data), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->map_buf = get_zeroed_page(GFP_KERNEL);
+> +	if (!priv->map_buf) {
+> +		ret = -ENOMEM;
+> +		goto free;
+> +	}
+> +
+> +	device->driver_data = priv;
+> +
+> +	init_waitqueue_head(&priv->read_wait);
+> +	atomic_set(&priv->watchers, 0);
+> +	atomic_set(&priv->outdated_watchers, 0);
+> +	init_waitqueue_head(&priv->outdated_wait);
+> +
+> +	ret = vmgenid_acpi_map(priv, device->handle);
+> +	if (ret < 0)
+> +		goto err;
+> +
+> +	ret = alloc_chrdev_region(&priv->dev_id, 0, 1, DEV_NAME);
+
+Why is this not a misc device driver instead of messing around with all
+of this "by hand"?
+
+By doing things this way, you are not creating a device node in /dev/
+automatically, right?  How did you test this?
+
+> @@ -0,0 +1,22 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+> +/*
+> + * Copyright (c) 2020, Amazon.com Inc.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version
+> + * 2 of the License, or (at your option) any later version.
+
+License boilerplate is not needed.
+
+> + */
+> +
+> +#ifndef _UAPI_LINUX_VMGENID_H
+> +#define _UAPI_LINUX_VMGENID_H
+> +
+> +#include <linux/ioctl.h>
+> +#include <linux/time.h>
+> +
+> +#define VMGENID_IOCTL 0x2d
+> +#define VMGENID_GET_OUTDATED_WATCHERS _IO(VMGENID_IOCTL, 1)
+> +#define VMGENID_WAIT_WATCHERS         _IOW(VMGENID_IOCTL, 2, struct timespec)
+
+Why do you need ioctls for this?  Why not just use read/write?
+
+thanks,
+
+greg k-h
