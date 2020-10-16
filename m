@@ -2,121 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A6B28FD7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 06:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A75928FD8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 07:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388876AbgJPExV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 00:53:21 -0400
-Received: from smtp.infotech.no ([82.134.31.41]:44940 "EHLO smtp.infotech.no"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388345AbgJPExK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 00:53:10 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.infotech.no (Postfix) with ESMTP id B2F60204238;
-        Fri, 16 Oct 2020 06:53:08 +0200 (CEST)
-X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
-Received: from smtp.infotech.no ([127.0.0.1])
-        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id l6GpIUqz6pps; Fri, 16 Oct 2020 06:53:07 +0200 (CEST)
-Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        by smtp.infotech.no (Postfix) with ESMTPA id 9A707204259;
-        Fri, 16 Oct 2020 06:53:05 +0200 (CEST)
-From:   Douglas Gilbert <dgilbert@interlog.com>
-To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     martin.petersen@oracle.com, axboe@kernel.dk, bvanassche@acm.org
-Subject: [PATCH 4/4] scatterlist: add sgl_memset()
-Date:   Fri, 16 Oct 2020 00:52:58 -0400
-Message-Id: <20201016045258.16246-5-dgilbert@interlog.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201016045258.16246-1-dgilbert@interlog.com>
-References: <20201016045258.16246-1-dgilbert@interlog.com>
+        id S1730321AbgJPFDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 01:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728261AbgJPFDv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 01:03:51 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605EEC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:03:51 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id p21so716522pju.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 22:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qtvV026HLCzz5NoDCyozzqnf4hHRYfc35Oyit81StQ4=;
+        b=Ite6O0sCdHz/TgSDObsypuRJ50z5WPXZKhRbHh9UISq6lAfUuYiP2/fxTwDz6y5Ybl
+         FzmVDWhO8+7+s2AonNYSGfsZpkyHMN+ZMH1DpakymkuZQ40z2PCL6ii3HREtm5QOkOe7
+         wUX1yTeE1uQKl9WSquqWA6niHRpgmmDLMngi0LALRWW/dMqvWdDcOEY7GgsyCy3Ck5S0
+         Xdas5bG2RjXOEXQh60p7Jn+86jyRQ6rkeNwGudEH1KCJew9Qu9t4snMdGkBrFXPgINeF
+         OAcPYABU9h8FTwtiUSsGsr7wIeaUyVzD7ppPGgkOUBACYyJyZk6vuk3380wzeTwDLdMX
+         RP2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qtvV026HLCzz5NoDCyozzqnf4hHRYfc35Oyit81StQ4=;
+        b=HZv0nIYprwxkNbgaB8GgDLoihAgyYheGPTkUYqg/oU6XClrPWfQ2/5J7jL6wn/VXpi
+         MGRdf3tRrHpoOUN+E+7pv2puIqTYqZEf6jLqI7v/KKaYdBEET2oOG0JEn8eAylmJhqKr
+         rtDfGcJjV070WOlSUUbLO5uPG26GkDskPji4JHsQQS0SNh6fxCsm7T76nltyVMbOW697
+         VY8a8NMoe5VX6lC6GcaQwkD3QkSO3RWjK2kaZkOQN7y1tIHFIYksJaQmnpapMQAEubo+
+         PpMHoaPSkDa/XJzPst+0Ar8uxHPOyPb0zRRsct7eD8m/RoWDyDH77KoWRTm8jP6JMptG
+         E+ZA==
+X-Gm-Message-State: AOAM533OBmWOD6E7/UdH/FQ+XWb2zjeHnDEoq5yuV2fjtsaEMadL5Gdu
+        uIntFxtEqLpHuMZYfkBqQ4aurQ==
+X-Google-Smtp-Source: ABdhPJwS+WvqHaiufqyl/oZWHRdnnVMhUffeS+VlYpnK2fAPQP12O+6RzLoANUPd82bd045uDJtZDA==
+X-Received: by 2002:a17:902:930c:b029:d3:b362:7939 with SMTP id bc12-20020a170902930cb02900d3b3627939mr2277168plb.54.1602824630725;
+        Thu, 15 Oct 2020 22:03:50 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id e4sm1097611pgg.37.2020.10.15.22.03.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Oct 2020 22:03:49 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 10:33:47 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        nks@flawful.org, Georgi Djakov <georgi.djakov@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH V2 2/2] cpufreq: dt: Refactor initialization to handle
+ probe deferral properly
+Message-ID: <20201016050347.ers54itzmxgijzsy@vireshk-i7>
+References: <24ff92dd1b0ee1b802b45698520f2937418f8094.1598260050.git.viresh.kumar@linaro.org>
+ <f75c61f193f396608d592ae2a9938264d582c038.1598260050.git.viresh.kumar@linaro.org>
+ <CAMuHMdXLQKN5n58NvOp43vhc3ryLXWurBSsmcW9Q=oW502PYOQ@mail.gmail.com>
+ <20201013095613.mbgmjwzojg5wxmau@vireshk-i7>
+ <CAMuHMdVAJdHVMtK3Sc4sJiJGAwz1J4dKODBFcNzgstaktyKkOw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVAJdHVMtK3Sc4sJiJGAwz1J4dKODBFcNzgstaktyKkOw@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing sg_zero_buffer() function is a bit restrictive.
-For example protection information (PI) blocks are usually
-initialized to 0xff bytes. As its name suggests sgl_memset()
-is modelled on memset(). One difference is the type of the
-val argument which is u8 rather than int.
+On 14-10-20, 18:40, Geert Uytterhoeven wrote:
+> On this platform (r8a7791-koelsch.dts), there is no opp table in DT.
+> 
+>   Before:
 
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
----
- include/linux/scatterlist.h |  3 +++
- lib/scatterlist.c           | 39 +++++++++++++++++++++++++++++++++++--
- 2 files changed, 40 insertions(+), 2 deletions(-)
+I assume this means before this patchset came in..
 
-diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-index ae260dc5fedb..e50dc9a6d887 100644
---- a/include/linux/scatterlist.h
-+++ b/include/linux/scatterlist.h
-@@ -329,6 +329,9 @@ bool sgl_compare_sgl(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_sk
- 		     struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
- 		     size_t n_bytes);
- 
-+void sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		u8 val, size_t n_bytes);
-+
- /*
-  * Maximum number of entries that will be allocated in one piece, if
-  * a list larger than this is required then chaining will be utilized.
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 344725990b9d..3ca66f0c949f 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -1083,8 +1083,8 @@ EXPORT_SYMBOL(sgl_copy_sgl);
-  *
-  **/
- bool sgl_compare_sgl(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_skip,
--		     struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
--		     size_t n_bytes)
-+		    struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
-+		    size_t n_bytes)
- {
- 	bool equ = true;
- 	size_t x_off, y_off, len, x_len, y_len;
-@@ -1140,3 +1140,38 @@ bool sgl_compare_sgl(struct scatterlist *x_sgl, unsigned int x_nents, off_t x_sk
- 	return equ;
- }
- EXPORT_SYMBOL(sgl_compare_sgl);
-+
-+/**
-+ * sgl_memset - set byte 'val' n_bytes times on SG list
-+ * @sgl:		 The SG list
-+ * @nents:		 Number of SG entries in sgl
-+ * @skip:		 Number of bytes to skip before starting
-+ * @val:		 byte value to write to sgl
-+ * @n_bytes:		 The number of bytes to modify
-+ *
-+ * Notes:
-+ *   Writes val n_bytes times or until sgl is exhausted.
-+ *
-+ **/
-+void sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-+		u8 val, size_t n_bytes)
-+{
-+	size_t offset = 0;
-+	size_t len;
-+	struct sg_mapping_iter miter;
-+	unsigned int sg_flags = SG_MITER_ATOMIC | SG_MITER_TO_SG;
-+
-+	if (n_bytes == 0)
-+		return;
-+	sg_miter_start(&miter, sgl, nents, sg_flags);
-+	if (!sg_miter_skip(&miter, skip))
-+		goto fini;
-+
-+	while ((offset < n_bytes) && sg_miter_next(&miter)) {
-+		len = min(miter.length, n_bytes - offset);
-+		memset(miter.addr, val, len);
-+		offset += len;
-+	}
-+fini:
-+	sg_miter_stop(&miter);
-+}
+>     boot:
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:362
+>       cpu cpu0: resources_available:95
+>       cpu cpu0: resources_available:102: clk_get() returned z
+>       cpu cpu0: resources_available:120:
+> dev_pm_opp_of_find_icc_paths() returned 0
+>       cpu cpu0: resources_available:125: find_supply_name() returned cpu0
+>       cpu cpu0: resources_available:132: regulator_get_optional()
+> returned -EPROBE_DEFER
+>       cpu cpu0: cpu0 regulator not ready, retry
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:371:
+> resources_available() returned -517
+
+we deferred probe once.
+
+>       ...
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:362
+>       cpu cpu0: resources_available:95
+>       cpu cpu0: resources_available:102: clk_get() returned z
+>       cpu cpu0: resources_available:120:
+> dev_pm_opp_of_find_icc_paths() returned 0
+>       cpu cpu0: resources_available:125: find_supply_name() returned cpu0
+>       cpu cpu0: resources_available:132: regulator_get_optional()
+> returned (ptrval)
+
+found regulator next time.
+
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:371:
+> resources_available() returned 0
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:375
+>       cpufreq_dt: cpufreq_init:162
+>       cpu cpu0: cpufreq_init:170: clk_get() returned z
+>       cpu cpu0: cpufreq_init:179: dev_pm_opp_of_get_sharing_cpus() returned -2
+>       cpu cpu0: cpufreq_init:198: find_supply_name() returned cpu0
+>       <i2c comm>
+>       cpu cpu0: cpufreq_init:201: dev_pm_opp_set_regulators() returned (ptrval)
+>       <i2c comm>
+>       cpu cpu0: cpufreq_init:230: dev_pm_opp_of_cpumask_add_table() returned 0
+>       cpu cpu0: cpufreq_init:239: dev_pm_opp_get_opp_count() returned 0
+>       cpu cpu0: OPP table is not ready, deferring probe
+
+This failed, as we couldn't have deferred probe from cpufreq_init.
+Which means that cpufreq didn't work here.
+
+>       cpufreq_dt: cpufreq_init:162
+>       cpu cpu1: cpufreq_init:170: clk_get() returned z
+>       cpu cpu1: cpufreq_init:179: dev_pm_opp_of_get_sharing_cpus() returned -2
+>       cpu cpu1: no regulator for cpu1
+>       cpu cpu1: cpufreq_init:198: find_supply_name() returned (null)
+>       cpu cpu1: cpufreq_init:230: dev_pm_opp_of_cpumask_add_table() returned 0
+>       cpu cpu1: cpufreq_init:239: dev_pm_opp_get_opp_count() returned 0
+>       cpu cpu1: OPP table is not ready, deferring probe
+
+Same for CPU1.
+
+> 
+>     s2ram:
+>       cpufreq_dt: cpufreq_init:162
+>       cpu cpu1: cpufreq_init:170: clk_get() returned z
+>       cpu cpu1: cpufreq_init:179: dev_pm_opp_of_get_sharing_cpus() returned -2
+>       cpu cpu1: no regulator for cpu1
+>       cpu cpu1: cpufreq_init:198: find_supply_name() returned (null)
+>       cpu cpu1: cpufreq_init:230: dev_pm_opp_of_cpumask_add_table() returned 0
+>       cpu cpu1: cpufreq_init:239: dev_pm_opp_get_opp_count() returned 0
+>       cpu cpu1: OPP table is not ready, deferring probe
+
+And same here.
+
+>       CPU1 is up
+> 
+>   After:
+>     boot:
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:356
+>       cpufreq_dt: dt_cpufreq_early_init:251
+>       cpu cpu0: dt_cpufreq_early_init:256
+>       cpu cpu0: dt_cpufreq_early_init:271: dev_pm_opp_get_opp_table()
+> returned (ptrval)
+>       cpu cpu0: dt_cpufreq_early_init:284: find_supply_name() returned cpu0
+>       cpu cpu0: dt_cpufreq_early_init:288: dev_pm_opp_set_regulators()
+> returned -EPROBE_DEFER
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:360:
+> dt_cpufreq_early_init() returned -517
+>       ...
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:356
+>       cpufreq_dt: dt_cpufreq_early_init:251
+>       cpu cpu0: dt_cpufreq_early_init:256
+>       cpu cpu0: dt_cpufreq_early_init:271: dev_pm_opp_get_opp_table()
+> returned (ptrval)
+>       cpu cpu0: dt_cpufreq_early_init:284: find_supply_name() returned cpu0
+>       cpu cpu0: dt_cpufreq_early_init:288: dev_pm_opp_set_regulators()
+> returned (ptrval)
+>       cpu cpu0: dt_cpufreq_early_init:301:
+> dev_pm_opp_of_get_sharing_cpus() returned -2
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:360:
+> dt_cpufreq_early_init() returned 0
+>       cpufreq_dt: dt_cpufreq_early_init:251
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:360:
+> dt_cpufreq_early_init() returned 0
+>       cpufreq-dt cpufreq-dt: dt_cpufreq_probe:365
+>       cpufreq_dt: cpufreq_init:114
+>       cpu cpu0: cpufreq_init:124: clk_get() returned z
+>       cpu cpu0: cpufreq_init:142: dev_pm_opp_of_cpumask_add_table() returned 0
+>       cpu cpu0: cpufreq_init:151: dev_pm_opp_get_opp_count() returned 0
+>       cpu cpu0: OPP table can't be empty
+
+Same issue here.
+
+>       cpufreq_dt: cpufreq_init:114
+>       cpu cpu0: cpufreq_init:124: clk_get() returned z
+>       <i2c comm>
+>       cpu cpu0: cpufreq_init:142: dev_pm_opp_of_cpumask_add_table() returned 0
+>       cpu cpu0: cpufreq_init:151: dev_pm_opp_get_opp_count() returned 0
+> 
+>     s2ram:
+> 
+>       cpufreq_dt: cpufreq_init:114
+>       cpu cpu0: cpufreq_init:124: clk_get() returned z
+>       WARNING: CPU: 1 PID: 14 at drivers/i2c/i2c-core.h:54
+> __i2c_transfer+0x2d8/0x310
+>       i2c i2c-6: Transfer while suspended
+>       cpu cpu0: cpufreq_init:142: dev_pm_opp_of_cpumask_add_table() returned 0
+>       cpu cpu0: cpufreq_init:151: dev_pm_opp_get_opp_count() returned 0
+>       cpu cpu0: OPP table can't be empty
+>       CPU1 is up
+> 
+> I hope this helps.
+
+Unfortunately it raised more questions than what it answered :(
+
 -- 
-2.25.1
-
+viresh
