@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DED7290D54
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1D8290D59
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411392AbgJPVfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 17:35:04 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:56648 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411382AbgJPVfC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 17:35:02 -0400
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 4FBBA20BE4BC;
-        Fri, 16 Oct 2020 14:35:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4FBBA20BE4BC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1602884102;
-        bh=PP8fzJsZM2/tnu0344Yrxpp1Zf5DPv6rUlSO+jHv0+I=;
+        id S1726903AbgJPVj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 17:39:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726074AbgJPVj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 17:39:28 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFA7E22200
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 21:39:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602884367;
+        bh=MXBdSxOof0HQgxlxhMM7NHOelApiLzd1XB6m/omkx3o=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=acrW9VgQAg57vtOho6Eoy5fMGetptStkrZb+O1ZldshPDbydifndM2+5a1+rmiPUR
-         nnAS2DwjGLjtwbL6URYfYwsXfBVjFWp9eS9k2kVzUxvVlOX0S2fVMbK8pUIUBUTd01
-         IvMnQLvzm5PtUj4EuxKWiQB7r4xyV0/ruAEfT4kU=
-Received: by mail-qk1-f175.google.com with SMTP id 140so3115934qko.2;
-        Fri, 16 Oct 2020 14:35:02 -0700 (PDT)
-X-Gm-Message-State: AOAM5311xNuTXuEKTeuFInhngYgZ0Oa8bEdSynxwEt4ng3U1ESLGu//c
-        T00jPDHk33o8R6BzLzbahD3KYh0SDejj0/CKDA0=
-X-Google-Smtp-Source: ABdhPJxQFqCgKm5rsFqzQtX6A7BOI5i02qVgsnqLoa7xal+AMdpRql8C839vr07TA/gQ9/xvE6hsP5llKMQM5AO8+AE=
-X-Received: by 2002:ae9:e108:: with SMTP id g8mr5887207qkm.220.1602884101304;
- Fri, 16 Oct 2020 14:35:01 -0700 (PDT)
+        b=Sg5U6uSIUn26qEyi+A1WsrKqK4cTDdVI13HGIIwUNKS/+7rC/twf7EULp823G3yGA
+         ddMHL/2X8d812wJye+cxh9+7Sgn8j7eZGF8IBvoPWmth8qtSozm7iC3/eRxGcpkSAZ
+         k/ahLTd/tYg8uvIqoDrEh/hw7s9ACCrf4HA82DTU=
+Received: by mail-ot1-f46.google.com with SMTP id t15so3910011otk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 14:39:27 -0700 (PDT)
+X-Gm-Message-State: AOAM533hTbuJXuzAueajEpvEX50wQmZMMf7VbFe8VoMT7lrbNjNzE/yf
+        ttdWJaOqeD9GyAaP8AnwsZKJGB3iHWInAZfvtg==
+X-Google-Smtp-Source: ABdhPJw+/zfaiQhjnKkx4JHL224P8sFLZNr0dl0+zpvRXoOwaHad7Wi3At2ecz3YFqjGo/JCv+IeSWuMrQ8anaO33KI=
+X-Received: by 2002:a9d:1c90:: with SMTP id l16mr4240754ota.192.1602884366849;
+ Fri, 16 Oct 2020 14:39:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201016180907.171957-1-mcroce@linux.microsoft.com>
- <20201016180907.171957-3-mcroce@linux.microsoft.com> <202010161226.B136CDC8@keescook>
-In-Reply-To: <202010161226.B136CDC8@keescook>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 16 Oct 2020 23:34:25 +0200
-X-Gmail-Original-Message-ID: <CAFnufp30qPaTgWSnoDkAGfwqhS+D7ov56M6g0u8jO0JQ4DPMXg@mail.gmail.com>
-Message-ID: <CAFnufp30qPaTgWSnoDkAGfwqhS+D7ov56M6g0u8jO0JQ4DPMXg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] reboot: fix parsing of reboot cpu number
-To:     Kees Cook <keescook@chromium.org>, Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Fabian Frederick <fabf@skynet.be>, stable@vger.kernel.org
+References: <20201001140116.651970-1-robh@kernel.org> <20201001140116.651970-5-robh@kernel.org>
+ <20201014110527.GA1349644@krava>
+In-Reply-To: <20201014110527.GA1349644@krava>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 16 Oct 2020 16:39:15 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+5_uzAdn+rq-rWVACeaMMd4q+ntxxOd5JisOiBzwvDbw@mail.gmail.com>
+Message-ID: <CAL_Jsq+5_uzAdn+rq-rWVACeaMMd4q+ntxxOd5JisOiBzwvDbw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/9] libperf: Add libperf_evsel__mmap()
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 9:26 PM Kees Cook <keescook@chromium.org> wrote:
+On Wed, Oct 14, 2020 at 6:05 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Fri, Oct 16, 2020 at 08:09:07PM +0200, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> >
-> > The kernel cmdline reboot= argument allows to specify the CPU used
-> > for rebooting, with the syntax `s####` among the other flags, e.g.
-> >
-> >   reboot=soft,s4
-> >   reboot=warm,s31,force
-> >
-> > In the early days the parsing was done with simple_strtoul(), later
-> > deprecated in favor of the safer kstrtoint() which handles overflow.
-> >
-> > But kstrtoint() returns -EINVAL if there are non-digit characters
-> > in a string, so if this flag is not the last given, it's silently
-> > ignored as well as the subsequent ones.
-> >
-> > To fix it, revert the usage of simple_strtoul(), which is no longer
-> > deprecated, and restore the old behaviour.
+> On Thu, Oct 01, 2020 at 09:01:11AM -0500, Rob Herring wrote:
 >
-> It is? Is there a reference, because this was never updated:
-> https://www.kernel.org/doc/html/latest/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
+> SNIP
 >
-> --
-> Kees Cook
+> >
+> > +void *perf_evsel__mmap(struct perf_evsel *evsel, int pages)
+> > +{
+> > +     int ret;
+> > +     struct perf_mmap *map;
+> > +     struct perf_mmap_param mp = {
+> > +             .prot = PROT_READ | PROT_WRITE,
+> > +     };
+> > +
+> > +     if (FD(evsel, 0, 0) < 0)
+> > +             return NULL;
+> > +
+> > +     mp.mask = (pages * page_size) - 1;
+> > +
+> > +     map = zalloc(sizeof(*map));
+> > +     if (!map)
+> > +             return NULL;
+> > +
+> > +     perf_mmap__init(map, NULL, false, NULL);
+> > +
+> > +     ret = perf_mmap__mmap(map, &mp, FD(evsel, 0, 0), 0);
+>
+> hum, so you map event for FD(0,0) but later in perf_evsel__read
+> you allow to read any cpu/thread combination ending up reading
+> data from FD(0,0) map:
+>
+>         int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+>                              struct perf_counts_values *count)
+>         {
+>                 size_t size = perf_evsel__read_size(evsel);
+>
+>                 memset(count, 0, sizeof(*count));
+>
+>                 if (FD(evsel, cpu, thread) < 0)
+>                         return -EINVAL;
+>
+>                 if (evsel->mmap && !perf_mmap__read_self(evsel->mmap, count))
+>                         return 0;
+>
+>
+> I think we should either check cpu == 0, thread == 0, or make it
+> general and store perf_evsel::mmap in xyarray as we do for fds
 
-Seems so, Petr Mladek replied to the previous patch:
+The mmapped read will actually fail and then we fallback here. My main
+concern though is adding more overhead on a feature that's meant to be
+low overhead (granted, it's not much). Maybe we could add checks on
+the mmap that we've opened the event with pid == 0 and cpu == -1 (so
+only 1 FD)?
 
-> I suggest to go back to simple_strtoul(). It is not longer obsolete.
-> It still exists because it is needed for exactly this purpose,
-> see the comment in include/linux/kernel.h
-
-The comment says:
-
-/*
- * Use kstrto<foo> instead.
- *
- * NOTE: simple_strto<foo> does not check for the range overflow and,
- * depending on the input, may give interesting results.
- *
- * Use these functions if and only if you cannot use kstrto<foo>, because
- * the conversion ends on the first non-digit character, which may be far
- * beyond the supported range. It might be useful to parse the strings like
- * 10x50 or 12:21 without altering original string or temporary buffer in use.
- * Keep in mind above caveat.
- */
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/kernel.h?h=v5.9#n452
-
-Cheers,
--- 
-per aspera ad upstream
+Rob
