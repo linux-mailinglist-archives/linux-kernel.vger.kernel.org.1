@@ -2,145 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB0B290476
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAF229047C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407027AbgJPL4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407009AbgJPL4A (ORCPT
+        id S2407037AbgJPL5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:57:23 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38418 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405338AbgJPL5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:56:00 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48290C061755;
-        Fri, 16 Oct 2020 04:56:00 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f19so1355765pfj.11;
-        Fri, 16 Oct 2020 04:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=b/okKq+QrnT7fTlMYrGGcVP8+PKscOM7yh3Mi27y/zs=;
-        b=IOYlgsf9KNrUyOJwzGtbKcoMsIMsV2eVHXbig9OgAsMKW3EmPyHZyoudqDa2PWillZ
-         yFjVJYEJBPzlVKpHjjxi8J529CDT5U4Fka/wt76moYKDs9wjRr9xIWQYuXeBSjL1ERDZ
-         rOBmOj4RCyIkeMt4uitjWo0+o7i/sDezz7KCsa2yZkDpcj7RpsVIOuE+JzL2pDLbnh0P
-         e4x0TtOtHu8mct+A96e2rPmIh7V3hG7dog8WyaZjDY8MaXw/I6B+v9I0YbPAXUBf9nL5
-         10iEfziJoaeKmj9CNvRrgL7oNqVixPKVtsqpcJOjUFY1A5B8u7YlNgwLAJr1V61GPI0f
-         7b5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=b/okKq+QrnT7fTlMYrGGcVP8+PKscOM7yh3Mi27y/zs=;
-        b=LdufjQpQa0SDB80BNkVJh8yEalMhFNeB6wqMRlFunAAIJOlVHr2PYHPUFL7pClayFY
-         aVrpc2dtkB+S09X8FZCdR1dqV/scj84rnyTV/uKsupjd+XQdItmWqJSRUG7zcaRO8MpC
-         ndP+K13KN9D8v39+WFwuExC/Yo0Le5dg0uOAFnAsm45w+MPZPULPnCRQ5rxfvSW2kHGA
-         5xzNj7RRQvQBiNHn93ENY+NatXdVp2A/xprAH5NfIwoLUi2ZXHNGX61XAchKzYbDQjz6
-         jOefXNfXdqHh0/XhGFlndMxZZC/XeYNvRGxClJfFf5BbhczdSswZjZeNwt0wrJwLn7h1
-         Zmxw==
-X-Gm-Message-State: AOAM531oLHE+RQ3n8PfPGsZqASJ+kWwYU/77e9di/UU+T/I2Kj0yscj1
-        DLcHYPOYrDflzWdsbUpRgwASk1KSiQghzsEVc/M=
-X-Google-Smtp-Source: ABdhPJx9XTId8G4jOroUkouJ1myNjMhceLg9sCH2ghhRtKnKFo8XiAaa8HSAm7Db8LHqeAFC1SW0Nw==
-X-Received: by 2002:a62:16ce:0:b029:155:2e1d:9c06 with SMTP id 197-20020a6216ce0000b02901552e1d9c06mr3334587pfw.6.1602849358955;
-        Fri, 16 Oct 2020 04:55:58 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.207.75])
-        by smtp.gmail.com with ESMTPSA id p12sm2616528pgm.29.2020.10.16.04.55.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 04:55:58 -0700 (PDT)
-Subject: Re: [PATCH v4] bluetooth: hci_h5: fix memory leak in h5_close
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
- <2a79ece2-c63b-a881-bc19-65b59952344f@redhat.com>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <dfa15c3a-6081-1072-8c73-ecebc983643d@gmail.com>
-Date:   Fri, 16 Oct 2020 17:25:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 16 Oct 2020 07:57:23 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09GBv5HT099566;
+        Fri, 16 Oct 2020 06:57:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1602849425;
+        bh=4pH+/woBUpBKSK9xeykEFihRWeBGnOvEESWTk+SR7eA=;
+        h=From:To:CC:Subject:Date;
+        b=VdMjyGZgzEnILaHORr6rJW0ZcWQ+fGDc2XMLTThUNupgPjUn1gFC4LeN48+Ol6HnJ
+         S4z3HqkkzwN+RgG07XIKG8ynNLyPL8CB4uPy/3VrTTRsj5IxlKtEVcFBg+LrDBm+UU
+         P3nPPTRkg1GLlXFZPdJ6d1DCO0nDMlb+2KsywhWE=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09GBv5hj080755
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Oct 2020 06:57:05 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 16
+ Oct 2020 06:57:04 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 16 Oct 2020 06:57:04 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09GBv4Ac004386;
+        Fri, 16 Oct 2020 06:57:04 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <pavel@ucw.cz>, <robh+dt@kernel.org>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v2] dt-bindings: leds: Update devicetree documents for ID_RGB
+Date:   Fri, 16 Oct 2020 06:57:03 -0500
+Message-ID: <20201016115703.30184-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <2a79ece2-c63b-a881-bc19-65b59952344f@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Update the leds/common.yaml to indicate that the max color ID is 9.
+Reflect the same change in the leds-class-multicolor.yaml
 
-Hi,
+Reported-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ Documentation/devicetree/bindings/leds/common.yaml       | 2 +-
+ .../devicetree/bindings/leds/leds-class-multicolor.yaml  | 9 +++++----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-On 16/10/20 4:58 pm, Hans de Goede wrote:
-> Hi,
->
-> On 10/7/20 5:48 AM, Anant Thazhemadam wrote:
->> If h5_close is called when !hu->serdev, h5 is directly freed.
->> However, h5->rx_skb is not freed, which causes a memory leak.
->>
->> Freeing h5->rx_skb fixes this memory leak.
->>
->> In case hu->serdev exists, h5->rx_skb is then set to NULL,
->> since we do not want to risk a potential NULL pointer 
->> dereference.
->>
->> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
->> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
->> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>h5_close v4
->> ---
->> Changes in v4:
->> 	* Free h5->rx_skb even when hu->serdev
->> 	(Suggested by Hans de Goede <hdegoede@redhat.com>)
->> 	* If hu->serdev, then assign h5->rx_skb = NULL
->>
->> Changes in v3:
->> 	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
->> 	* Do not incorrectly and unnecessarily call serdev_device_close()
->>
->> Changes in v2:
->> 	* Fixed the Fixes tag
->>
->>  drivers/bluetooth/hci_h5.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
->> index e41854e0d79a..39f9553caa5c 100644
->> --- a/drivers/bluetooth/hci_h5.c
->> +++ b/drivers/bluetooth/hci_h5.c
->> @@ -245,11 +245,15 @@ static int h5_close(struct hci_uart *hu)
->>  	skb_queue_purge(&h5->rel);
->>  	skb_queue_purge(&h5->unrel);
->>  
->> +	kfree_skb(h5->rx_skb);
->> +
->>  	if (h5->vnd && h5->vnd->close)
->>  		h5->vnd->close(h5);
->>  
->>  	if (!hu->serdev)
->>  		kfree(h5);
->> +	else
->> +		h5->rx_skb = NULL;
-> Please just do this unconditionally directly after
-> the kfree_skb()
+diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+index a2a541bca73c..0c9f912dfee6 100644
+--- a/Documentation/devicetree/bindings/leds/common.yaml
++++ b/Documentation/devicetree/bindings/leds/common.yaml
+@@ -43,7 +43,7 @@ properties:
+       LED_COLOR_ID available, add a new one.
+     $ref: /schemas/types.yaml#definitions/uint32
+     minimum: 0
+-    maximum: 8
++    maximum: 9
+ 
+   function-enumerator:
+     description:
+diff --git a/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+index b55e1f1308a4..5e2c850ec9c5 100644
+--- a/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+@@ -16,7 +16,7 @@ description: |
+   modules. This is achieved by adding multi-led nodes layer to the
+   monochrome LED bindings.
+   The nodes and properties defined in this document are unique to the multicolor
+-  LED class.  Common LED nodes and properties are inherited from the common.txt
++  LED class.  Common LED nodes and properties are inherited from the common.yaml
+   within this documentation directory.
+ 
+ patternProperties:
+@@ -25,10 +25,11 @@ patternProperties:
+     description: Represents the LEDs that are to be grouped.
+     properties:
+       color:
+-        const: 8  # LED_COLOR_ID_MULTI
+         description: |
+-          For multicolor LED support this property should be defined as
+-          LED_COLOR_ID_MULTI which can be found in include/linux/leds/common.h.
++          For multicolor LED support this property should be defined as either
++          LED_COLOR_ID_RGB or LED_COLOR_ID_MULTI which can be found in
++          include/linux/leds/common.h.
++        enum: [ 8, 9 ]
+ 
+     $ref: "common.yaml#"
+ 
+-- 
+2.28.0.585.ge1cfff676549
 
-Could you also please tell me why this might be necessary?
-The pointer value stored at h5->rx_skb would be freed anyways when we free h5 (since rx_skb is
-essentially a member of the structure that h5 points to).
-Also since we're performing the *if* check, the *else* condition wouldn't exactly be taxing either,
-right?
-Is there some performance metric that I'm missing where unconditionally setting it to NULL
-in this manner would be better? (I couldn't find any resources that had any similar analysis
-performed :/ )
-Or is this in interest of code readability?
-
-Also, how about we introduce a h5 = NULL, after freeing h5 when !hu->serdev?
-
-Thank you for your time.
-
-Thanks,
-Anant
