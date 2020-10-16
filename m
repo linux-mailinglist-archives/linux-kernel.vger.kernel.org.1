@@ -2,326 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B999F290C53
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B69290C5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411081AbgJPTdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 15:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408463AbgJPTdi (ORCPT
+        id S2436570AbgJPThz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 15:37:55 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:48487 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436556AbgJPThz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 15:33:38 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4814C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:33:37 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id i9so1040539wml.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 12:33:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=0xkOIUrMlpfAxYo59kbuN09qneusLJjvCEfygqYyq5g=;
-        b=YoWrrTqMR6FGVWYf9vxSc/bJ6pym6/saitpcXWksTRu1sE3OgyzHfdmX8MSy7pxGeC
-         ifeT/3X8PF2eq9IXs1ySvL/ITXLdD36eGLV5cyBtbzL3fdoBh/4RKOQRUEcNagbNR5f5
-         +3WhUVoryedtqTOzts5OAAMXaH9A++3CG2yjMfxfwvkjeKFdjhXjNfZgZPL6ReQdlgAp
-         rk7ouTKehCEpO/rIQpQYJKWOScv6XSsQJtNzYxub0Dzzrn1h5gv7pjhOPjexxo0i0+Lh
-         0qnQLkCMU+8BnAFOO7jYHPmOQyexTD0uZ2Ya2qU9iNOfg7Zu9fWoEWwId6GzwjfF66ZS
-         qiaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=0xkOIUrMlpfAxYo59kbuN09qneusLJjvCEfygqYyq5g=;
-        b=OFhiWCfL4itFaiSBAX4G1yg1G7Mkm1iWCXpacOWE0LHaW81jiKP1u3pydnT50oyAXX
-         Cf+0E9FfANUpag44l/QgIMiWRo6KZYg9R+QNhTn49A8cZwsgMjJHmt9qh56+lJc5g3+3
-         eGynxF+jRCOl14D2//9uchcHyrVgU55mPBxUsp+tCfuXhUlQl3exss5VS4FwQBTUsoVe
-         OY6ND2K+4bN6IqncmKXuqJRNfFVEMu9M6XmtYOHEfBR1LK75rgoOC830bw3N/oEqgoL4
-         GlKLPUc81+Jbis2XrRvLa9cEMjs3jpz76UsE++dH0y4r99nTd6n6N2i45rnyUpVPZJ0/
-         WYTw==
-X-Gm-Message-State: AOAM530QW4MvVAJZ9anXOGNM+rxKflrK6Qcbp5M0FKkRqJTD/UTj7c31
-        3LzxukLgO5pkH7eT89w/FEkgZ+I9vEmGYoEF
-X-Google-Smtp-Source: ABdhPJyPBIuS0bew93qU9jvTH/zkjUImvynyXNbeHOFcvhDuyBPWoiqjKIrjCIfnq9yqL9zBgONHjQPM/2thkExW
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:adf:f1c1:: with SMTP id
- z1mr5753170wro.331.1602876816443; Fri, 16 Oct 2020 12:33:36 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 21:33:30 +0200
-Message-Id: <44861eaca17ffbb51726473bc8e86ad9e130c67e.1602876780.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH] kasan: adopt KUNIT tests to SW_TAGS mode
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        David Gow <davidgow@google.com>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 16 Oct 2020 15:37:55 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201016193743euoutp0107c4bbc9860fa4f6497e3c9eee48d491~_kDJnuiuw2186621866euoutp01X;
+        Fri, 16 Oct 2020 19:37:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201016193743euoutp0107c4bbc9860fa4f6497e3c9eee48d491~_kDJnuiuw2186621866euoutp01X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1602877063;
+        bh=fAaURGxFxrxf5vT3aXwuCB6B61xvc3SkZQaHP8Bxw2c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=c6XkpzyD37jVkF+ueKbbfEvrMfGqDMJEt2z7q8ZS4y/5O2QMaWgUhOV2t7Uvd6GYl
+         wFTWOfXzGXmAIBbjtoYjL6m8YsBDHCUea6rAg3zFsSfiG6RBVne9XeVoXea/jKwiCi
+         PJWpseKUb3klATWf4Q+fO1Wvd3dvPCZ9NSFPKDls=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201016193738eucas1p2287eb7f7921312b483df787ba1458f0b~_kDEmgLjf3236532365eucas1p2d;
+        Fri, 16 Oct 2020 19:37:38 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id F4.D1.06318.186F98F5; Fri, 16
+        Oct 2020 20:37:38 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275~_kDDg7Amv1985019850eucas1p1Y;
+        Fri, 16 Oct 2020 19:37:36 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201016193736eusmtrp2c14f92c698e38174eb337adfc0966d01~_kDDgTWdg0550405504eusmtrp2Q;
+        Fri, 16 Oct 2020 19:37:36 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-d6-5f89f681d2e1
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id E0.87.06314.086F98F5; Fri, 16
+        Oct 2020 20:37:36 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201016193736eusmtip15ddc2e6638e98b652554b93c369ed722~_kDDSqUIB0611506115eusmtip1W;
+        Fri, 16 Oct 2020 19:37:36 +0000 (GMT)
+From:   Lukasz Stelmach <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkie?= =?utf-8?Q?wicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v2] net: phy: Prevent reporting advertised modes when
+ autoneg is off
+Date:   Fri, 16 Oct 2020 21:37:22 +0200
+In-Reply-To: <20201016180935.GG139700@lunn.ch> (Andrew Lunn's message of
+        "Fri, 16 Oct 2020 20:09:35 +0200")
+Message-ID: <dleftjzh4m3qtp.fsf%l.stelmach@samsung.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-="; micalg="pgp-sha256";
+        protocol="application/pgp-signature"
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRju2zlnO1vOjjPzxSJk6Q8VL2HUiSzKJEZRhGCUUbby4G2btqll
+        /cjSIsVLqJE3yntmOVPmnHafpZipqWVlukQMzTQRL5WJ5vEz6N/zPt/zPC/Py0cTsi7KgQ7T
+        RHNajVIlF0pIY9Pvdvcrs0lBXmPJBNvRbybY6uwqis3vSCTZoolsin1rTKPY7oZ8IWu++QSx
+        lS/7RWxTwbrdYkV3TyehMNz7JFDU5/aLFDUVSUJFvWlKoEgzVCDFVM3Gw6JAiU8wpwqL5bSe
+        u05JQlvrPgiiLNLzo+XVZDz6uToZiWlgtkBeZoowGUloGVOO4NliCYmHaQS3EuYEeJhC8N5S
+        hJIRvWz5URaM+bsISlI7VhzDCAay0pdFQsYDKiuP8ivWMo6Q1TJP8RqCGRbAr4EsgtfYMoEw
+        M+/La0jGGUay2iieFjNqqM3w5mkpsw0s+eOIx3bMdjCMfBFh3gZacoZIHhNL8pyOMcTHAzMu
+        ghxjL8LV/KDuq4XC2BZGmw0ijDfAYv0dAe5yCTIztmJvCgJj/i8Sa3ZAX/ucEGv2QF6fI4bW
+        8HHcBq+1hgzjLQLTUrh+TYaNTqBPf7wS4gCpo+UrR1OAfnLlTpcR9HROEDeQY+5/ZXL/K5O7
+        ZCEYF6hq8MS0G5QVficw3gl6/QRZgKgKZM/F6NQhnM5bw53z0CnVuhhNiMeZSHUNWvpdrQvN
+        Myb0dP60GTE0kltJ6dKkIBmljNXFqc3IaSlp8OH9t8iB1ERqOPlaqW9b60mZNFgZd4HTRgZp
+        Y1SczozW06TcXupd9O2EjAlRRnMRHBfFaf+9CmixQzxaNZXNJVb6q+THXM8W1kb8DPAhwEoQ
+        /+bIeCmx7/VEqWl41lV+/EWxirx46LPJL/P57ZBNWq+6A/sHH4zGL9woWSxqcp5ufHWwc7ac
+        7Z3rt9vrMtYo6XLvnYle49nl3xbT3Ta5MTHcJ+BR2R9/9XRgsSHVjXmXMFSXEm60ybgqHpCT
+        ulDlZldCq1P+BfKV0GZlAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsVy+t/xu7oN3zrjDbpvm1qcv3uI2WLjjPWs
+        FnPOt7BYLHo/g9XiwrY+VovLu+awWRyaupfRYu2Ru+wWxxaIOXB6XL52kdljy8qbTB47Z91l
+        99i0qpPNY+eOz0wefVtWMXp83iQXwB6lZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwe
+        a2VkqqRvZ5OSmpNZllqkb5egl3F6+3Wmgnu8Fa9WbGRpYPzO3cXIwSEhYCLxbllKFyMXh5DA
+        UkaJ0wcPskLEpSRWzk3vYuQEMoUl/lzrYoOoecoosfPkeiaQGjYBPYm1ayNAakQEFCSmnPzD
+        ClLDLPCCSWL9nj52kISwQITEpzdb2EBsIQFdiT+z+1lBbBYBVYkXU86C2ZwCuRLb224zgti8
+        AuYS9+a8BbNFBSwltry4zw4RF5Q4OfMJC4jNLJAt8XX1c+YJjAKzkKRmIUnNAjqPWUBTYv0u
+        fYiwtsSyha+ZIWxbiXXr3rMsYGRdxSiSWlqcm55bbKhXnJhbXJqXrpecn7uJERh924793LyD
+        8dLG4EOMAhyMSjy8GxZ1xguxJpYVV+YeYlQBGvNow+oLjFIsefl5qUoivE5nT8cJ8aYkVlal
+        FuXHF5XmpBYfYjQF+nMis5Rocj4wYeSVxBuaGppbWBqaG5sbm1koifN2CByMERJITyxJzU5N
+        LUgtgulj4uCUamBULTDSOn3jxZ2OrJNesfujbjcn5Xw1cJd8aPfW+MFs/aWXhM0m3C23PBSh
+        97hR39Nb9fAyh0Wm9gXXd3Z12mstXtI+b7eWgrb51mURF1q95jV8DZ349XFo8tTFawSEPN5o
+        Ps7Kvr9hTndTKl+rohdT6YIt5eHGDvtO5MZ36cZ+8rqjEKjvoqDEUpyRaKjFXFScCADqHMrz
+        4AIAAA==
+X-CMS-MailID: 20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275
+X-Msg-Generator: CA
+X-RootMTR: 20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275
+References: <20201016180935.GG139700@lunn.ch>
+        <CGME20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have KASAN-KUNIT tests integration, it's easy to see that
-some KASAN tests are not adopted to the SW_TAGS mode and are failing.
+--=-=-=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Adjust the allocation size for kasan_memchr() and kasan_memcmp() by
-roung it up to OOB_TAG_OFF so the bad access ends up in a separate
-memory granule.
+It was <2020-10-16 pi=C4=85 20:09>, when Andrew Lunn wrote:
+> On Thu, Oct 15, 2020 at 10:44:35AM +0200, =C5=81ukasz Stelmach wrote:
+>> Do not report advertised link modes (local and remote) when
+>> autonegotiation is turned off. mii_ethtool_get_link_ksettings() exhibits
+>> the same behaviour and this patch aims at unifying the behavior of both
+>> functions.
+>
+> Does ethtool allow you to configure advertised modes with autoneg off?
+> If it can, it would be useful to see what is being configured, before
+> it is actually turned on.
+>
+> ethtool -s eth42 autoneg off advertise 0xf
+>
+> does not give an error on an interface i have.
 
-Add new kmalloc_uaf_16() and kasan_bitops_uaf() tests that rely on UAFs,
-as it's hard to adopt the existing kmalloc_oob_16() and kasan_bitops_oob()
-(rename from kasan_bitops()) without losing the precision.
+Yes, this is a good point. Do you think I should change the if()[1] in=20
+mii_ethtool_get_link_ksettings() instead? I really think these two
+function should report the same.
 
-Disable kasan_global_oob() and kasan_alloca_oob_left/right() as SW_TAGS
-mode doesn't instrument globals nor dynamic allocas.
+[1] https://elixir.bootlin.com/linux/v5.9/source/drivers/net/mii.c#L174
+[2] https://elixir.bootlin.com/linux/v5.9/source/drivers/net/mii.c#L145
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- lib/test_kasan.c | 144 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 99 insertions(+), 45 deletions(-)
+Kind regards,
+=2D-=20
+=C5=81ukasz Stelmach
+Samsung R&D Institute Poland
+Samsung Electronics
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 63c26171a791..3bff25a7fdcc 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -216,6 +216,12 @@ static void kmalloc_oob_16(struct kunit *test)
- 		u64 words[2];
- 	} *ptr1, *ptr2;
- 
-+	/* This test is specifically crafted for the generic mode. */
-+	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-+		kunit_info(test, "CONFIG_KASAN_GENERIC required\n");
-+		return;
-+	}
-+
- 	ptr1 = kmalloc(sizeof(*ptr1) - 3, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
- 
-@@ -227,6 +233,23 @@ static void kmalloc_oob_16(struct kunit *test)
- 	kfree(ptr2);
- }
- 
-+static void kmalloc_uaf_16(struct kunit *test)
-+{
-+	struct {
-+		u64 words[2];
-+	} *ptr1, *ptr2;
-+
-+	ptr1 = kmalloc(sizeof(*ptr1), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
-+
-+	ptr2 = kmalloc(sizeof(*ptr2), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr2);
-+	kfree(ptr2);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, *ptr1 = *ptr2);
-+	kfree(ptr1);
-+}
-+
- static void kmalloc_oob_memset_2(struct kunit *test)
- {
- 	char *ptr;
-@@ -429,6 +452,12 @@ static void kasan_global_oob(struct kunit *test)
- 	volatile int i = 3;
- 	char *p = &global_array[ARRAY_SIZE(global_array) + i];
- 
-+	/* Only generic mode instruments globals. */
-+	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-+		kunit_info(test, "CONFIG_KASAN_GENERIC required");
-+		return;
-+	}
-+
- 	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
- }
- 
-@@ -467,6 +496,12 @@ static void kasan_alloca_oob_left(struct kunit *test)
- 	char alloca_array[i];
- 	char *p = alloca_array - 1;
- 
-+	/* Only generic mode instruments dynamic allocas. */
-+	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-+		kunit_info(test, "CONFIG_KASAN_GENERIC required");
-+		return;
-+	}
-+
- 	if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
- 		kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
- 		return;
-@@ -481,6 +516,12 @@ static void kasan_alloca_oob_right(struct kunit *test)
- 	char alloca_array[i];
- 	char *p = alloca_array + i;
- 
-+	/* Only generic mode instruments dynamic allocas. */
-+	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-+		kunit_info(test, "CONFIG_KASAN_GENERIC required");
-+		return;
-+	}
-+
- 	if (!IS_ENABLED(CONFIG_KASAN_STACK)) {
- 		kunit_info(test, "CONFIG_KASAN_STACK is not enabled");
- 		return;
-@@ -551,6 +592,9 @@ static void kasan_memchr(struct kunit *test)
- 		return;
- 	}
- 
-+	if (OOB_TAG_OFF)
-+		size = round_up(size, OOB_TAG_OFF);
-+
- 	ptr = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
-@@ -573,6 +617,9 @@ static void kasan_memcmp(struct kunit *test)
- 		return;
- 	}
- 
-+	if (OOB_TAG_OFF)
-+		size = round_up(size, OOB_TAG_OFF);
-+
- 	ptr = kmalloc(size, GFP_KERNEL | __GFP_ZERO);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 	memset(arr, 0, sizeof(arr));
-@@ -619,13 +666,50 @@ static void kasan_strings(struct kunit *test)
- 	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = strnlen(ptr, 1));
- }
- 
--static void kasan_bitops(struct kunit *test)
-+static void kasan_bitops_modify(struct kunit *test, int nr, void *addr)
-+{
-+	KUNIT_EXPECT_KASAN_FAIL(test, set_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, __set_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, clear_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, clear_bit_unlock(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit_unlock(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, change_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, __change_bit(nr, addr));
-+}
-+
-+static void kasan_bitops_test_and_modify(struct kunit *test, int nr, void *addr)
- {
-+	KUNIT_EXPECT_KASAN_FAIL(test, test_and_set_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, __test_and_set_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, test_and_set_bit_lock(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, test_and_clear_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, __test_and_clear_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, test_and_change_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, __test_and_change_bit(nr, addr));
-+	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = test_bit(nr, addr));
-+
-+#if defined(clear_bit_unlock_is_negative_byte)
-+	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result =
-+				clear_bit_unlock_is_negative_byte(nr, addr));
-+#endif
-+}
-+
-+static void kasan_bitops_oob(struct kunit *test)
-+{
-+	long *bits;
-+
-+	/* This test is specifically crafted for the generic mode. */
-+	if (!IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-+		kunit_info(test, "CONFIG_KASAN_GENERIC required\n");
-+		return;
-+	}
-+
- 	/*
- 	 * Allocate 1 more byte, which causes kzalloc to round up to 16-bytes;
- 	 * this way we do not actually corrupt other memory.
- 	 */
--	long *bits = kzalloc(sizeof(*bits) + 1, GFP_KERNEL);
-+	bits = kzalloc(sizeof(*bits) + 1, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, bits);
- 
- 	/*
-@@ -633,56 +717,24 @@ static void kasan_bitops(struct kunit *test)
- 	 * below accesses are still out-of-bounds, since bitops are defined to
- 	 * operate on the whole long the bit is in.
- 	 */
--	KUNIT_EXPECT_KASAN_FAIL(test, set_bit(BITS_PER_LONG, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test, __set_bit(BITS_PER_LONG, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test, clear_bit(BITS_PER_LONG, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit(BITS_PER_LONG, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test, clear_bit_unlock(BITS_PER_LONG, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test, __clear_bit_unlock(BITS_PER_LONG, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test, change_bit(BITS_PER_LONG, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test, __change_bit(BITS_PER_LONG, bits));
-+	kasan_bitops_modify(test, BITS_PER_LONG, bits);
- 
- 	/*
- 	 * Below calls try to access bit beyond allocated memory.
- 	 */
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		test_and_set_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		__test_and_set_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-+	kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, bits);
- 
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		test_and_set_bit_lock(BITS_PER_LONG + BITS_PER_BYTE, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		test_and_clear_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		__test_and_clear_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		test_and_change_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
--
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		__test_and_change_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-+	kfree(bits);
-+}
- 
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		kasan_int_result =
--			test_bit(BITS_PER_LONG + BITS_PER_BYTE, bits));
-+static void kasan_bitops_uaf(struct kunit *test)
-+{
-+	long *bits = kzalloc(sizeof(*bits), GFP_KERNEL);
- 
--#if defined(clear_bit_unlock_is_negative_byte)
--	KUNIT_EXPECT_KASAN_FAIL(test,
--		kasan_int_result = clear_bit_unlock_is_negative_byte(
--			BITS_PER_LONG + BITS_PER_BYTE, bits));
--#endif
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, bits);
- 	kfree(bits);
-+	kasan_bitops_modify(test, BITS_PER_LONG, bits);
-+	kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, bits);
- }
- 
- static void kmalloc_double_kzfree(struct kunit *test)
-@@ -728,6 +780,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kmalloc_oob_krealloc_more),
- 	KUNIT_CASE(kmalloc_oob_krealloc_less),
- 	KUNIT_CASE(kmalloc_oob_16),
-+	KUNIT_CASE(kmalloc_uaf_16),
- 	KUNIT_CASE(kmalloc_oob_in_memset),
- 	KUNIT_CASE(kmalloc_oob_memset_2),
- 	KUNIT_CASE(kmalloc_oob_memset_4),
-@@ -751,7 +804,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kasan_memchr),
- 	KUNIT_CASE(kasan_memcmp),
- 	KUNIT_CASE(kasan_strings),
--	KUNIT_CASE(kasan_bitops),
-+	KUNIT_CASE(kasan_bitops_oob),
-+	KUNIT_CASE(kasan_bitops_uaf),
- 	KUNIT_CASE(kmalloc_double_kzfree),
- 	KUNIT_CASE(vmalloc_oob),
- 	{}
--- 
-2.29.0.rc1.297.gfa9743e501-goog
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEXpuyqjq9kGEVr9UQsK4enJilgBAFAl+J9nIACgkQsK4enJil
+gBA9Rwf/XFHX++6DgwEAyPDwfrsq28MTgViffjtzEIJp4EQRo9DrPF+vwu0neyHL
+G4pB7KhjIe8f4IbKiwNvnjgVbL1ukmaalb5tTqjYHVUHh4nnpqOdMJ7eMUI73tDy
+C74fpWifs3z8gxp7l6gBklpDGRzj9V4mwsRFrDarzyKjKhxnVpjCkKsWrxBnivTk
+lEGkPeB2r/0+7aeR74djxfu67OnTsnQcBYmmFZhq3TkR4gK7oGVCbR4WIWtPYcol
+DxNxluNLRPGHwp8v0y34wZU+AvsTbK0x82Mc6cve4MhdD1lCCWqGSFhd9NTFl/lo
+HnWngZjxSn35rC4VkHOzIdap0IDzjw==
+=/DVz
+-----END PGP SIGNATURE-----
+--=-=-=--
