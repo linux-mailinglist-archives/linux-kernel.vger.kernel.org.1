@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91374290670
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15D8290673
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407844AbgJPNkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:40:40 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:38032 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407429AbgJPNkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:40:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602855638; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=0EkbgtKXVDdUgKR/UGs1OJ0eSmbYe9DtP3CJr71XdgM=;
- b=L5hP11MbaECG/2Q6FPjs8PvWrsyAUF35MwrQFP9LreeicZrki9BeoGin2nTFHDYjpMEAXS5s
- ueoz6DlqNh6UBGA+MH/P6XgFWI6wICANNw8cL6oD/YkFdbJRYRXiqnFEP9qsDxguKkg92x/L
- LxWceCllcWHHK0o5geObtV6ww38=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f89a2b90764f13b007b2203 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 13:40:09
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 92AD2C433FE; Fri, 16 Oct 2020 13:40:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CB91CC433CB;
-        Fri, 16 Oct 2020 13:40:07 +0000 (UTC)
+        id S2408216AbgJPNlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:41:25 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:44160 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395255AbgJPNlY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 09:41:24 -0400
+Received: by mail-ot1-f66.google.com with SMTP id e20so2386768otj.11;
+        Fri, 16 Oct 2020 06:41:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZDw6us/ymT1w8JQKh1+hOfSJ0DL7eGX/CDAwjYTDpuA=;
+        b=RV+r8AtuKpgXZO5PeAulS/PYymXiWw0b8YEy33PGrz1NpFuDGctqsCo6gyk/7yQiD6
+         Zp1tkMKtrhiflQSDtmGAy6FWM2zlZctJmkn6Lzn1SdJt/LviO79fdS7NK+qHTEvaA1TV
+         ztqgBWA2wLiMmVmWreVoSezj+W3fx7oYP6/SHNARVlkDuBjAKSZ6EtV3dgdMcU8XX7/+
+         EVJzpy5xnI31cfmcoMtoNyAOYdO3VSJgJHRjMfN80uF23I7bBkpXIBwFctLOQqlv9qPX
+         Pyzru+h3zOQHfRAANm0ejYk2tGZ4mqgtuw6uhpW1LykD9QfrnNuShkGO3TjmqJlF/kXh
+         se+A==
+X-Gm-Message-State: AOAM532fBxB3fWSHNby5srQn/7OGM6rkU8hoWj3/+AAeEHd676KL91FX
+        h9UwWZp3JuQgiBJwjakKADYbFrbpUMDTbZG3GBM=
+X-Google-Smtp-Source: ABdhPJxRyuvIqMQV3+EzV/OlzhrdUcDEUgjwsCnM/euQIUfl0/FUTZF8o0wdgj3jbQU9AkFDtIC6FSFyxcs+3/xiEXc=
+X-Received: by 2002:a9d:ac9:: with SMTP id 67mr2703887otq.321.1602855683757;
+ Fri, 16 Oct 2020 06:41:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 16 Oct 2020 19:10:07 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>, denik@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] coresight: etm4x: Skip setting LPOVERRIDE bit for
- qcom,skip-power-up
-In-Reply-To: <9e19d312-9de4-2ed8-75ca-c774b93bfe11@arm.com>
-References: <20201016101025.26505-1-saiprakash.ranjan@codeaurora.org>
- <5c4f6f5d-b07d-0816-331f-7c7463fa99b3@arm.com>
- <41bbcd43c2b016b6d785c3750622e9fe@codeaurora.org>
- <9e19d312-9de4-2ed8-75ca-c774b93bfe11@arm.com>
-Message-ID: <85ade254494144efc20c8c7512828654@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <c3566d2b-3da1-917b-2df6-f7dcfb33c8ed@intel.com>
+ <20201006190322.GL3227@techsingularity.net> <25f31d3e-7a67-935f-93ba-32216a5084e2@intel.com>
+ <20201006211820.GN3227@techsingularity.net> <2382d796-7c2f-665e-9169-5cdc437bf34c@intel.com>
+ <20201008090909.GP3227@techsingularity.net> <dcf4266a-5769-8a6b-d8e1-e77553126861@intel.com>
+ <20201008173436.GQ3227@techsingularity.net> <f6b04376-4214-ff5d-1069-890449a923e2@intel.com>
+ <20201014223703.GT3227@techsingularity.net> <20201015183410.GU3227@techsingularity.net>
+In-Reply-To: <20201015183410.GU3227@techsingularity.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Oct 2020 15:41:12 +0200
+Message-ID: <CAJZ5v0jzZ6iQGYNnkgi-pPmdbq3aH+RoH+tBbEoBxFfmt_0MDg@mail.gmail.com>
+Subject: Re: ACPI _CST introduced performance regresions on Haswll
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+On Thu, Oct 15, 2020 at 8:34 PM Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> > Yes, it's well hidden but it's there. If the profile is made custom, then
+> > the p-states can be selected and "custom" default enables C6 but not C3
+> > (there is a note saying that it's not recommended for that CPU). If I
+> > then switch it back to the normal profile, the c-states are not restored
+> > so this is a one-way trip even if you disable the c-state in custom,
+> > reboot, switch back, reboot. Same if the machine is reset to "optimal
+> > default settings". Yey for BIOS developers.
+> >
+> > This means I have a limited number of attempts to do something about
+> > this. 2 machines can no longer reproduce the problem reliably.
+> >
+>
+> Turns out I didn't even have that. On another machine (same model,
+> same cpu, different BIOS that cannot be updated), enabling the C6 state
+> still did not enable it on boot and dmesg complained about CST not being
+> usable. This is weird because one would expect that if CST was unusable
+> that it would be the same as use_acpi == false.
+>
+> This could potentially be if the ACPI tables are unsuitable due to bad
+> bad FFH information for a lower c-state. If _CST is not found or usable,
+> should acpi_state_table.count be reset to go back to the old behaviour?
 
-On 2020-10-16 18:45, Suzuki Poulose wrote:
-> On 10/16/20 12:47 PM, Sai Prakash Ranjan wrote:
->> Hi Suzuki,
->> 
->> On 2020-10-16 16:51, Suzuki Poulose wrote:
->>> Hi Sai,
->>> 
->>> On 10/16/20 11:10 AM, Sai Prakash Ranjan wrote:
->>>> There is a bug on the systems supporting to skip power up
->>>> (qcom,skip-power-up) where setting LPOVERRIDE bit(low-power
->>>> state override behaviour) will result in CPU hangs/lockups
->>>> even on the implementations which supports it. So skip
->>>> setting the LPOVERRIDE bit for such platforms.
->>>> 
->>>> Fixes: 02510a5aa78d ("coresight: etm4x: Add support to skip trace 
->>>> unit power up")
->>>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->>> 
->>> The fix is fine by me. Btw, is there a hardware Erratum assigned for
->>> this ? It would be good to have the Erratum documented somewhere,
->>> preferrably ( Documentation/arm64/silicon-errata.rst )
->>> 
->> 
->> No, afaik we don't have any erratum assigned to this bug.
-> 
-> Ok. Please double check, if there are any.
-> 
+Yes, it should, although I would reset it in intel_idle_cst_usable()
+right away before returning 'false'.
 
-Sure I will check again.
+I can send a patch to do the above or please submit the one below as
+it works too.
 
->> It was already present in downstream kernel and since we
->> support these targets with the previous HW bug
->> (qcom,skip-power-up) now in upstream, we would need this
->> fix in upstream kernel as well.
-> 
-> I understand the need for the fix and we must fix it. I was
-> looking to document this in the central place for errata's
-> handled in the kernel. And I missed asking this question
-> when the original patch was posted. So, thought of asking
-> the question now anyways. Better late than never ;-)
-> 
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-Thanks. One more thing, does the internal erratum
-number (if it exists) is good enough to be documented in
-the Documentation/arm64/silicon-errata.rst ? I ask this
-because outside qualcomm, it won't mean much right.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index 13600c403035..3b84f8631b40 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -1261,6 +1261,7 @@ static bool intel_idle_acpi_cst_extract(void)
+>                 return true;
+>         }
+>
+> +       acpi_state_table.count = 0;
+>         pr_debug("ACPI _CST not found or not usable\n");
+>         return false;
+>  }
+>
+> --
