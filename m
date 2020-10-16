@@ -2,101 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6820528FE22
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BC128FE26
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 08:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394010AbgJPGTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 02:19:10 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33818 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2393991AbgJPGTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 02:19:10 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 258D7E95BBEB13B85C01;
-        Fri, 16 Oct 2020 14:18:59 +0800 (CST)
-Received: from [10.174.176.180] (10.174.176.180) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 16 Oct 2020 14:18:54 +0800
-Subject: Re: [PATCH] bpfilter: Fix build error with CONFIG_BPFILTER_UMH
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20201014091749.25488-1-yuehaibing@huawei.com>
- <20201015093748.587a72b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQKJ=iDMiJpELmuATsdf2vxGJ=Y9r+vjJG6m4BDRNPmP3g@mail.gmail.com>
- <20201015115643.3a4d4820@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQLVvd_2zJTQJ7m=322H7M7NdTFfFE7f800XA=9HXVY28Q@mail.gmail.com>
- <20201015122624.0ca7b58c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQLiYfi3DvT=S_jgb+X=qD4GC1WJynWmh8988scUQJozWA@mail.gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <888cb447-dda7-dd1a-38ab-fbae08032e23@huawei.com>
-Date:   Fri, 16 Oct 2020 14:18:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S2404124AbgJPGTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 02:19:16 -0400
+Received: from mail.vivotek.com ([60.248.39.150]:34920 "EHLO mail.vivotek.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393991AbgJPGTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 02:19:15 -0400
+Received: from pps.filterd (vivotekpps.vivotek.com [127.0.0.1])
+        by vivotekpps.vivotek.com (8.16.0.42/8.16.0.42) with SMTP id 09G6JBQZ016677;
+        Fri, 16 Oct 2020 14:19:11 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivotek.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=dkim; bh=SH3JB8Hnm7I3OZukXm4oH8z94SJaF0Xmtq5npKXpRnU=;
+ b=GXEFTrL+th3vjEwohVzxAeI3lyyldSP2/ouTUaSZXjjOCGlTyj4onW4h4z2klr1I9ap7
+ 2NEnsdBWxWrOiX0kl4CRJU5Dd5r0IhDL7kIJtVV9sCIvAE6kQq2A7ndOtU6R82kmaH2S
+ OpOJteg6397TXJsjS9xJ3hok5fNWNJ5khvM= 
+Received: from cas02.vivotek.tw ([192.168.0.59])
+        by vivotekpps.vivotek.com with ESMTP id 342yd1ccvk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 16 Oct 2020 14:19:11 +0800
+Received: from MBS07.vivotek.tw ([fe80::2027:4d67:6c01:78d8]) by
+ CAS02.vivotek.tw ([fe80::157e:3677:ef5b:27a2%11]) with mapi id
+ 14.03.0487.000; Fri, 16 Oct 2020 14:19:10 +0800
+From:   <Michael.Wu@vatics.com>
+To:     <jarkko.nikula@linux.intel.com>,
+        <andriy.shevchenko@linux.intel.com>,
+        <mika.westerberg@linux.intel.com>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <morgan.chang@vatics.com>, <dean.hsiao@vatics.com>,
+        <paul.chen@vatics.com>, <Michael.Wu@vatics.com>
+Subject: Recall: [PATCH 1/2] i2c: designware: call
+ i2c_dw_read_clear_intrbits_slave() once
+Thread-Topic: [PATCH 1/2] i2c: designware: call
+ i2c_dw_read_clear_intrbits_slave() once
+Thread-Index: AdajhEKDyCta65MOGU2r9jDzeM1jyQ==
+X-CallingTelephoneNumber: IPM.Note
+X-VoiceMessageDuration: 35
+X-FaxNumberOfPages: 0
+Date:   Fri, 16 Oct 2020 06:19:10 +0000
+Message-ID: <5DB475451BAA174CB158B5E897FC1525B1294472@MBS07.vivotek.tw>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.17.134]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLiYfi3DvT=S_jgb+X=qD4GC1WJynWmh8988scUQJozWA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.180]
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-16_02:2020-10-16,2020-10-16 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/10/16 3:57, Alexei Starovoitov wrote:
-> On Thu, Oct 15, 2020 at 12:26 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Thu, 15 Oct 2020 12:03:14 -0700 Alexei Starovoitov wrote:
->>> On Thu, Oct 15, 2020 at 11:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>>> How so? It's using in-tree headers instead of system ones.
->>>> Many samples seem to be doing the same thing.
->>>
->>> There is no such thing as "usr/include" in the kernel build and source trees.
->>
->> Hm. I thought bpfilter somehow depends on make headers. But it doesn't
->> seem to. Reverting now.
-> 
-> Thanks!
-> Right. To explain it a bit further for the author of the patch:
-> Some samples makefiles use this -I usr/include pattern.
-> That's different. This local "usr/include" is a result of 'make
-> headers_install'.
-
-I didn't notice this, sorry for the wrong fix.
-
-> For samples and such it's ok to depend on that, but bpfilter is
-> the part of the kernel build.
-> It cannot depend on the 'make headers_install' step,
-> so the fix has to be different.
-
-Yes, this should rework.
-
-> 
->>>>> Also please don't take bpf patches.
->>>>
->>>> You had it marked it as netdev in your patchwork :/
->>>
->>> It was delegated automatically by the patchwork system.
->>> I didn't have time to reassign, but you should have known better
->>> when you saw 'bpfilter' in the subject.
->>
->> The previous committers for bpfilter are almost all Dave, so I checked
->> your patchwork to make sure and it was netdev...
-> 
-> It was my fault. I was sloppy in the past and didn't pay enough attention
-> to bpfilter and it started to bitrot because Dave was applying patches
-> with his normal SLAs while I was silent.
-> .
-> 
+TWljaGFlbC5XdSinZKm+r3EpIHdvdWxkIGxpa2UgdG8gcmVjYWxsIHRoZSBtZXNzYWdlLCAiW1BB
+VENIIDEvMl0gaTJjOiBkZXNpZ253YXJlOiBjYWxsIGkyY19kd19yZWFkX2NsZWFyX2ludHJiaXRz
+X3NsYXZlKCkgb25jZSIu
