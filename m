@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AE3290A6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8590290A63
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390164AbgJPRQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:16:57 -0400
-Received: from mailout08.rmx.de ([94.199.90.85]:48128 "EHLO mailout08.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730958AbgJPRQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:16:57 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout08.rmx.de (Postfix) with ESMTPS id 4CCXrN5QytzN1M8;
-        Fri, 16 Oct 2020 19:16:52 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4CCXqc07dDz2TTMX;
-        Fri, 16 Oct 2020 19:16:12 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.12) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Fri, 16 Oct
- 2020 19:16:11 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Christian Eggers <ceggers@arri.de>
-Subject: [PATCH net] net: dsa: tag_ksz: KSZ8795 and KSZ9477 also use tail tags
-Date:   Fri, 16 Oct 2020 19:16:03 +0200
-Message-ID: <20201016171603.10587-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
+        id S2390197AbgJPRQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:16:16 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34894 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728367AbgJPRQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 13:16:15 -0400
+Received: by mail-ot1-f65.google.com with SMTP id f22so481082ots.2;
+        Fri, 16 Oct 2020 10:16:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZmPWxKpDTknAmEe7UdqFdRj8Owf4EcjFeMtD8aGa6yA=;
+        b=aFQ1pb6TWRwo41XultgA2RQo9jXf8HphiX2utd1RfFHKeXeehO6pJzZOeaiPKt+ifR
+         yy8Z3mi3SXfOX33Hb2pGlZ3gvWLSPC1iypJFK8omK0LlWCzza2b9dJjgdE5qX55DBuXs
+         1QINw5GIy5Sogz2AMBY3OiAHF1I71R560c59aW+W34GBBMJzY4VUjQ63Qv/KXH0IO9mq
+         u5nrB6HKvrncJnuydtHsyKrwn2grlyFytfqW9Ce5BK3Peis2VOoZqKkHD5VLkXZDVaUo
+         fsypCHnsRii3xdLX0oJ2XxnVJhw97eaFJckCteIsXnEyK6B2IqGsq48ybFnqvt9EW4hE
+         XQLQ==
+X-Gm-Message-State: AOAM530jHjnxlQXV1FfYxEdeU+BDrUN5jLkkuyKAaa1YFrsLwNB0iuVM
+        VMyRnS8huymvLLrpYh9HOPT4Zt1Ygg==
+X-Google-Smtp-Source: ABdhPJwNFTc03Dpq8hQaQDs+x9At0y/IfS8Tw88Q4LOwNP/y70SOX0/J9aHLsKBqBo0dt8/jeyr6pw==
+X-Received: by 2002:a05:6830:13c5:: with SMTP id e5mr3209070otq.319.1602868574593;
+        Fri, 16 Oct 2020 10:16:14 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p11sm1158258otp.8.2020.10.16.10.16.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 10:16:13 -0700 (PDT)
+Received: (nullmailer pid 1595441 invoked by uid 1000);
+        Fri, 16 Oct 2020 17:16:12 -0000
+Date:   Fri, 16 Oct 2020 12:16:12 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        pmeerw@pmeerw.net, joel@jms.id.au, andrew@aj.id.au,
+        p.zabel@pengutronix.de, alexandru.ardelean@analog.com,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        BMC-SW@aspeedtech.com
+Subject: Re: [PATCH 3/3] iio: adc: aspeed: Setting ref_voltage in probe
+Message-ID: <20201016171612.GA1593560@bogus>
+References: <20201013103245.16723-1-billy_tsai@aspeedtech.com>
+ <20201013103245.16723-4-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.12]
-X-RMX-ID: 20201016-191612-4CCXqc07dDz2TTMX-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201013103245.16723-4-billy_tsai@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Marvell 88E6060 uses tag_trailer.c and the KSZ8795, KSZ9477 and
-KSZ9893 switches also use tail tags.
-
-Fixes: 7a6ffe764be3 ("net: dsa: point out the tail taggers")
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
----
-On Friday, 16 October 2020, 18:56:51 CEST, Vladimir Oltean wrote:
-> Hi Christian,
+On Tue, Oct 13, 2020 at 06:32:45PM +0800, Billy Tsai wrote:
+> At ast2600 ref_voltage becomes configurable and this property is board
+> dependency.
 > 
-> The idea is perfect but the commit isn't.
->  ...
-> Now if you run
-> "git show 7a6ffe764be35af0527d8cfd047945e8f8797ddf --pretty=fixes",
-> you'll see:
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../devicetree/bindings/iio/adc/aspeed_adc.txt   | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
 > 
-> Fixes: 7a6ffe764be3 ("net: dsa: point out the tail taggers")
-thanks for pointing out how to use this feature. I did this manually up to now.
+> diff --git a/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt b/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
+> index 034fc2ba100e..0ba1980c4e06 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
+> +++ b/Documentation/devicetree/bindings/iio/adc/aspeed_adc.txt
+> @@ -3,8 +3,11 @@ Aspeed ADC
+>  This device is a 10-bit converter for 16 voltage channels.  All inputs are
+>  single ended.
+>  
+> +At ast2600, this device split into two individual IPs and each contains 8 voltage channels.
+> +
+> +Chip level dtsi:
+>  Required properties:
+> -- compatible: Should be "aspeed,ast2400-adc" or "aspeed,ast2500-adc"
+> +- compatible: Should be "aspeed,ast2400-adc" or "aspeed,ast2500-adc" or "aspeed,ast2600-adc"
+>  - reg: memory window mapping address and length
+>  - clocks: Input clock used to derive the sample clock. Expected to be the
+>            SoC's APB clock.
+> @@ -20,3 +23,14 @@ Example:
+>  		resets = <&syscon ASPEED_RESET_ADC>;
+>  		#io-channel-cells = <1>;
+>  	};
+> +
+> +Board level dts:
 
-> Notice how there's no [net] tag?
-> People complain when the format of the Fixes: tag is not standardized.
-I added it manually because the commit ID is not from Linus' tree. Is there any
-value using Fixes tags with id's from other trees?
+This split is convention, but not relevant to the binding.
 
-regards
-Christian
+> +Required properties:
+> +- ref_voltage: (ast2600 only)
 
- net/dsa/tag_ksz.c | 2 ++
- 1 file changed, 2 insertions(+)
+s/_/-/
 
-diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
-index 945a9bd5ba35..0a5aa982c60d 100644
---- a/net/dsa/tag_ksz.c
-+++ b/net/dsa/tag_ksz.c
-@@ -123,6 +123,7 @@ static const struct dsa_device_ops ksz8795_netdev_ops = {
- 	.xmit	= ksz8795_xmit,
- 	.rcv	= ksz8795_rcv,
- 	.overhead = KSZ_INGRESS_TAG_LEN,
-+	.tail_tag = true,
- };
- 
- DSA_TAG_DRIVER(ksz8795_netdev_ops);
-@@ -199,6 +200,7 @@ static const struct dsa_device_ops ksz9477_netdev_ops = {
- 	.xmit	= ksz9477_xmit,
- 	.rcv	= ksz9477_rcv,
- 	.overhead = KSZ9477_INGRESS_TAG_LEN,
-+	.tail_tag = true,
- };
- 
- DSA_TAG_DRIVER(ksz9477_netdev_ops);
--- 
-Christian Eggers
-Embedded software developer
+And needs a vendor prefix.
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+> +	- Reference voltage in millivolts for the conversions.
+> +	- The range of value is 900 to 2700 mv.
+> +
+> +Example:
+> +&adc0 {
+> +	ref_voltage = <2500>;
+> +};
+> \ No newline at end of file
 
+Fix this.
+
+> -- 
+> 2.17.1
+> 
