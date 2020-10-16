@@ -2,44 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B52290D8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55430290D92
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388195AbgJPWCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 18:02:48 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60420 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387923AbgJPWCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 18:02:48 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kTXo8-00245K-TO; Sat, 17 Oct 2020 00:02:40 +0200
-Date:   Sat, 17 Oct 2020 00:02:40 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     davem@davemloft.net, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/2] net: phy: dp83td510: Add support for the
- DP83TD510 Ethernet PHY
-Message-ID: <20201016220240.GM139700@lunn.ch>
-References: <20201008162347.5290-1-dmurphy@ti.com>
- <20201008162347.5290-3-dmurphy@ti.com>
+        id S2388478AbgJPWF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 18:05:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59320 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388111AbgJPWF7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 18:05:59 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kTXrH-0007D2-94; Fri, 16 Oct 2020 22:05:55 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/nouveau/bios/init: make two const arrays static, makes object smaller
+Date:   Fri, 16 Oct 2020 23:05:55 +0100
+Message-Id: <20201016220555.686446-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008162347.5290-3-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 11:23:47AM -0500, Dan Murphy wrote:
-> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
-> that supports 10M single pair cable.
+From: Colin Ian King <colin.king@canonical.com>
 
-Hi Dan
+Don't populate const arrays on the stack but instead make them
+static. Makes the object code smaller by 7 bytes.
 
-I think you are going to have to add
-ETHTOOL_LINK_MODE_10baseT1_Full_BIT? We already have 100T1 and 1000T1,
-but not 10T1 :-(
+Before:
+   text	   data	    bss	    dec	    hex	filename
+ 104041	   8284	      0	 112325	  1b6c5	drm/nouveau/nvkm/subdev/bios/init.o
 
-     Andrew
+After:
+   text	   data	    bss	    dec	    hex	filename
+ 103874	   8444	      0	 112318	  1b6be	drm/nouveau/nvkm/subdev/bios/init.o
+
+(gcc version 10.2.0)
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
+index 9de74f41dcd2..dc8625eff20a 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
+@@ -546,9 +546,9 @@ init_tmds_reg(struct nvbios_init *init, u8 tmds)
+ 	 * CR58 for CR57 = 0 to index a table of offsets to the basic
+ 	 * 0x6808b0 address, and then flip the offset by 8.
+ 	 */
+-	const int pramdac_offset[13] = {
++	static const int pramdac_offset[13] = {
+ 		0, 0, 0x8, 0, 0x2000, 0, 0, 0, 0x2008, 0, 0, 0, 0x2000 };
+-	const u32 pramdac_table[4] = {
++	static const u32 pramdac_table[4] = {
+ 		0x6808b0, 0x6808b8, 0x6828b0, 0x6828b8 };
+ 
+ 	if (tmds >= 0x80) {
+-- 
+2.27.0
+
