@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC7D290CD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173E9290CD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 22:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407672AbgJPUoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 16:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55998 "EHLO
+        id S2408070AbgJPUqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 16:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407448AbgJPUoa (ORCPT
+        with ESMTP id S2407904AbgJPUqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 16:44:30 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E185BC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:44:29 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id k18so4332212wmj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:44:29 -0700 (PDT)
+        Fri, 16 Oct 2020 16:46:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BB6C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:46:18 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y12so4484174wrp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 13:46:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=5XhpSIxhw7frhhWif6TnITOoeBwLv9Zj9L9MaPglXfE=;
-        b=nLq4PCLnWAcna0PaJ322UevLhxmI/udpFGmNUyov5qb4+VvhuDEP4oBmVmMxHh5GZu
-         UJmh6XlDGncgqz7PzVQXuh2ueeTy1Mqk3Ik6k3MkhMlBCfAmvgpHibXuHvVlwybDm2xn
-         07BT1QtaWYfjedyh/kDAN7jClMLUdnxFYuzI7VzvsbdrfhoD/DSASiRI1ZSkkrPqDE/G
-         /0tt6HL+OxQjlZa2+pHkA0qQqtPv4XqAP5GRfjV9AQjxF3o32HI20G4Wo1SBn0U4bJCQ
-         B6vO0bqW2xc559jgjlwxkJwrCpoF8G1nOG1HUGX7XGJ/D8vqblxnDjwUcfJ/XhehkAgr
-         N18A==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z34pjZEl/yAj35BmeMPeQ2AuzmLDkr4JaiqOt/ocOb0=;
+        b=umGeLcj4PeucC6Uf/5Tp5/oxosbRT2cAL8LwYyMK7PC10/QkTWvNiOcD9zxdFYXYjF
+         lMZc31X6dH9HqmOiO7Yqx0H7Iu2F32wfIRiRQNEGhfDhJTgoEPbeYwaS0go5VQWFuTQa
+         fHHCUJkJ4Xj2x4Iwag48IxwTxiPPe4G5xT5QUy9KNfb3acQsEaZ3KDss+IwTacYSFc+C
+         RKXH9M6tAChIWYXw4VJ7WOB08uXWOjd7fbgoSypAdoKzYUDx59f7uXtTbgam+kvN38R7
+         KoV9gnJpp2nELz3qwI1rXL4lJPAQIOD62dpkDVibocadOgc5FQtM2wHPJ/15Xpc+nIG7
+         1p4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=5XhpSIxhw7frhhWif6TnITOoeBwLv9Zj9L9MaPglXfE=;
-        b=RpU1bS48UJ8+poFm4wZMMBKni2ARxibTBtkl+4eFhbkXKsj7jSqI+DhIVtlMoDuuS/
-         boXr989kglFI1ClRvqMsPIMqaIeX7eGx84RMkZAlbzquh+lwkaE2QNnn1ROfl5Ly8vFd
-         xwJK6YZy/Mm9QRX0zFZaU93H470HibMAa74WqDbawI4SKkhxl97sJGMLJoCiYP4rkBsu
-         FHqmeeB8kFOKozGKG5D6CNWUtLwg1UYClRYYSY6vDU3zkUBri7alhOkMUB7/Oin9qCb9
-         s/g3QAtOrFx5fvuVjXUlTkqcHL90iiNY+kg7Csrj6JC7NBwTNM40BOVo/TAgax76Fu/E
-         cIqw==
-X-Gm-Message-State: AOAM533L0gnA/EIZbgdqAKKmfyXUBl7q4K0fRblKwhKp6408qJRuQZga
-        lL1UxUdyTmEiITT3azTFaA3r9wBUrUQj3T2EPj0=
-X-Google-Smtp-Source: ABdhPJz/gQMlKhpXN309WQzLkG+ZLoJIfRABj2DFSggmC6KLOOX5BOV6MOJfENHwQRXwb1ZOdnCpFw==
-X-Received: by 2002:a1c:9d87:: with SMTP id g129mr5476965wme.30.1602881068479;
-        Fri, 16 Oct 2020 13:44:28 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id d2sm5001062wrq.34.2020.10.16.13.44.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z34pjZEl/yAj35BmeMPeQ2AuzmLDkr4JaiqOt/ocOb0=;
+        b=l3YmCGE6Gk9XaCvq42BXDALLqvw4pIVBh1IJ3RmCJLYHiGP8XHEFLUqNFIV9VwZ1NV
+         rMQeUINw0aCZ4Ogvj3dWoHRViJKzK6ZSDaCx1KZU3WnumdGMxMDlPuV1bV8JibJA5Ud0
+         vb5HijEMSm6FlZRzExsQI2jR93s11urqOdn421kcVnoHQrFWaIPCX6FQkP9rqbWBggn+
+         YsmegO4EUHHaoWJXlZc9RbR9gfDMuqfzjm4yi79WYwOQbqdfsNIq+ptmA6lfRMQo8Nz4
+         c9PxwPddCmqp/y5J+dxPNQYF+T6lf56iWXx7yqWjNxWkRgDOpiEe+QKKWUQvPRJdYDI2
+         Tzqg==
+X-Gm-Message-State: AOAM533ICunek2O/svCLXo9uTtjjw/ioupZ3r5b0Oz8GnkI1Htr9ClMU
+        Z0hyaETJNz4nmydw4MKo5gH04//1gMhi1g==
+X-Google-Smtp-Source: ABdhPJz36RkEVJGo8Lo+uuUMuw1zpTfpRfIeXeo6wreRRLSULo2sCHXOz8UUwuJxT9Iqbo+vH5Cj+w==
+X-Received: by 2002:adf:fe48:: with SMTP id m8mr5978231wrs.127.1602881176869;
+        Fri, 16 Oct 2020 13:46:16 -0700 (PDT)
+Received: from localhost.localdomain (dh207-98-181.xnet.hr. [88.207.98.181])
+        by smtp.googlemail.com with ESMTPSA id z5sm5143609wrw.37.2020.10.16.13.46.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 13:44:27 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>, p.zabel@pengutronix.de
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH] reset: meson: make it possible to build as a module
-In-Reply-To: <20201013133943.412119-1-narmstrong@baylibre.com>
-References: <20201013133943.412119-1-narmstrong@baylibre.com>
-Date:   Fri, 16 Oct 2020 13:44:24 -0700
-Message-ID: <7hd01h295j.fsf@baylibre.com>
+        Fri, 16 Oct 2020 13:46:16 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, vkoul@kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: [PATCH] MAINTAINERS: Add entry for Qualcomm IPQ4019 USB PHY
+Date:   Fri, 16 Oct 2020 22:46:10 +0200
+Message-Id: <20201016204610.2406075-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+Add maintainers entry for the Qualcomm IPQ4019 USB PHY driver.
 
-> In order to reduce the kernel Image size on multi-platform distributions,
-> make it possible to build the reset controller driver as a module.
->
-> This partially reverts 8290924e ("reset: meson: make it explicitly non-modular")
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> ---
->  drivers/reset/Kconfig       | 4 ++--
->  drivers/reset/reset-meson.c | 7 ++++++-
->  2 files changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index d9efbfd29646..ab315617565f 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -94,8 +94,8 @@ config RESET_LPC18XX
->  	  This enables the reset controller driver for NXP LPC18xx/43xx SoCs.
->  
->  config RESET_MESON
-> -	bool "Meson Reset Driver" if COMPILE_TEST
-> -	default ARCH_MESON
-> +	tristate "Meson Reset Driver"
-> +	default ARCH_MESON || COMPILE_TEST
->  	help
->  	  This enables the reset driver for Amlogic Meson SoCs.
->  
-> diff --git a/drivers/reset/reset-meson.c b/drivers/reset/reset-meson.c
-> index 94d7ba88d7d2..434d5c0f877e 100644
-> --- a/drivers/reset/reset-meson.c
-> +++ b/drivers/reset/reset-meson.c
-> @@ -9,6 +9,7 @@
->  #include <linux/init.h>
->  #include <linux/io.h>
->  #include <linux/of.h>
-> +#include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/reset-controller.h>
->  #include <linux/slab.h>
-> @@ -142,4 +143,8 @@ static struct platform_driver meson_reset_driver = {
->  		.of_match_table	= meson_reset_dt_ids,
->  	},
->  };
-> -builtin_platform_driver(meson_reset_driver);
-> +module_platform_driver(meson_reset_driver);
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+---
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I tried this as as a module, and it never probed because it's missing
-this on the compatible table:
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 867157311dc8..bc05bea8dda0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14411,6 +14411,14 @@ F:	Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+ F:	drivers/mailbox/qcom-ipcc.c
+ F:	include/dt-bindings/mailbox/qcom-ipcc.h
+ 
++QUALCOMM IPQ4019 USB PHY DRIVER
++M:	Robert Marko <robert.marko@sartura.hr>
++M:	Luka Perkov <luka.perkov@sartura.hr>
++L:	linux-arm-msm@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
++F:	drivers/phy/qualcomm/phy-qcom-ipq4019-usb.c
++
+ QUALCOMM RMNET DRIVER
+ M:	Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+ M:	Sean Tranchetti <stranche@codeaurora.org>
+-- 
+2.28.0
 
-   MODULE_DEVICE_TABLE(of, meson_reset_dt_ids);
-
-With that minor change:
-
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-Tested-by: Kevin Hilman <khilman@baylibre.com>
-
-Kevin
