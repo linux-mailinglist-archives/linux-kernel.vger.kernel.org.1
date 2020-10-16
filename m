@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26EB29005D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE2129006B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394856AbgJPJBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:01:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54744 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391070AbgJPJBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:01:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602838869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rvmgJYrPfDkJmNrTnzLB9ylTxrjfM8Kvwfsy9nroC+8=;
-        b=WZcljI8PQ7btAvIS1SycIt5IezMG5DIVCZtvLDiP1y8o+dZgwJrCEVQeMBulntEDiO0pA0
-        ph/uqT12pS9UQh5kyqt0jGbhsSOY5zi/vvVGeFMJCrrJGzmnnDpPif2qdtgpbYorE18DSt
-        gUxubKk2nwWjs0T9toKHMaj5JBM3wjs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8CE67ADE4;
-        Fri, 16 Oct 2020 09:01:09 +0000 (UTC)
-Date:   Fri, 16 Oct 2020 11:01:08 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Joseph Jang <josephjang@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com
-Subject: Re: [PATCH] power: suspend: Add suspend timeout handler
-Message-ID: <20201016090108.GG8871@alley>
-References: <20201016035109.3952356-1-josephjang@google.com>
+        id S2394877AbgJPJCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:02:07 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:30844 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2394475AbgJPJCG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:02:06 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09G8wG0j010538;
+        Fri, 16 Oct 2020 04:01:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=qbEy+RUlEXHlen/P4VXawLv+5FTJsE1+6IDxyiw8LTI=;
+ b=J/qVoHmAjZUMueeTEUwfSo4C1K2sxvsCu+l5VrkAfS98YfacpadkYPJ8lk0ETdddxq32
+ Z2C9xD9M89y/vYPS0rs8CP/rhzGuHk8X7oYFOLEL+5epQvCR45vilSWzDILJum0hV0rN
+ hdlLu8Lg/yft05iafyBOcx5T18vSrYRsWyAW0XMRTGqWqIOBN9g7QMamlBBi6/UJOijA
+ h1NoLmD1AQhLqQ/bbwD58aNWmdqivXJKbF24qvIXaRCaVhQ4V+WTw1agURSeoZ4dSZ/n
+ APT9Ka+Ir6UP6piwaSwwBWuCbGjo2OdKPjrMs+xhmVhAHRxJHGC7D7CQUEPmAJqw19vl pQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 343ac1yyfx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 16 Oct 2020 04:01:49 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
+ 2020 10:01:46 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 16 Oct 2020 10:01:46 +0100
+Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7F7DB45;
+        Fri, 16 Oct 2020 09:01:46 +0000 (UTC)
+Subject: Re: [PATCH 6/7] ARM: dts: Add dts for Raspberry Pi 4 + Cirrus Logic
+ Lochnagar2
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        <broonie@kernel.org>, <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20201014145418.31838-1-rf@opensource.cirrus.com>
+ <20201014145418.31838-7-rf@opensource.cirrus.com>
+ <e9db1a11519dce0938cef867179160a818ec4143.camel@suse.de>
+ <89913f8b-fe92-1a31-77ff-49ea3f3d3294@opensource.cirrus.com>
+ <5d2587193f0e99996445d5fa507a8acf7854fed3.camel@suse.de>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <72eb1414-0657-fd62-e0c7-fc5f53d6aa6c@opensource.cirrus.com>
+Date:   Fri, 16 Oct 2020 10:01:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016035109.3952356-1-josephjang@google.com>
+In-Reply-To: <5d2587193f0e99996445d5fa507a8acf7854fed3.camel@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010160065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-10-16 11:51:09, Joseph Jang wrote:
-> From: josephjang <josephjang@google.com>
+
+On 15/10/2020 16:12, Nicolas Saenz Julienne wrote:
+> On Thu, 2020-10-15 at 12:14 +0100, Richard Fitzgerald wrote:
+>>> Sadly I don't think creating a new device tree is a good solution here. If we
+>>> were to do so for every RPi hat/usage it'd become unmanageable very fast. There
+>>> is a way to maintain this in the open nonetheless. I suggest you build a DT
+>>> overlay and submit it to https://github.com/raspberrypi/linux, see
+>>> 'arch/arm/boot/dts/overlays.' The Raspberry Pi engineers have a kernel branch
+>>
+>> We want something in mainline so that it can be used by people
+>> developing on mainline and taken as a starting point for configuring
+>> the codecs for other host platforms. The RPi is a convenient platform to
+>> use as the base because it is widely available and low-cost.
 > 
-> Add suspend timeout handler to prevent device stuck during suspend/
-> resume process. Suspend timeout handler will dump disk sleep task
-> at first round timeout and trigger kernel panic at second round timeout.
-> The default timer for each round is 30 seconds.
+> If what you want to convey is the proper way of configuring your specific
+> device the way to go is writing a devicetree binding. See
 
-A better solution would be to resume instead of panic().
+If we have a working configuration it is unreasonable not to make this
+available for people who want to use it or examine it. A working example
+can be more helpful than a ton of documentation.
 
-> Note: Can use following command to simulate suspend hang for testing.
->     adb shell echo 1 > /sys/power/pm_hang
+It's also worth noting that setting up a working sound system involves
+configuring multiple drivers (for example you also need a properly
+configured ASoC machine driver at least) crossing multiple driver
+bindings. So a complete working example is valuable to see how
+it fits together.
 
-This looks dangerous. It adds a simple way to panic() the system.
+> Documentation/devicetree. It's even possible to validate a given devicetree
+> against the bindings (given they are written in yaml format).
+> 
 
-First, it should get enabled separately. e.g.
-CONFIG_TEST_PM_SLEEP_MONITOR.
+Validating only checks syntax and bounds. It doesn't prove that it will
+work.
 
-Second, I would add it as a module that might get loaded
-and unloaded.
-
-> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> index 8b1bb5ee7e5d..6f2679cfd9d1 100644
-> --- a/kernel/power/suspend.c
-> +++ b/kernel/power/suspend.c
-> +static int suspend_monitor_kthread(void *arg)
-> +{
-> +	long err;
-> +	struct sched_param param = {.sched_priority
-> +		= MAX_RT_PRIO-1};
-> +	static int timeout_count;
-> +	static long timeout;
-> +
-> +	pr_info("Init ksuspend_mon thread\n");
-> +
-> +	sched_setscheduler(current, SCHED_FIFO, &param);
-> +
-> +	timeout_count = 0;
-> +	timeout = MAX_SCHEDULE_TIMEOUT;
-> +
-> +	do {
-> +		/* Wait suspend timer timeout */
-> +		err = wait_event_interruptible_timeout(
-> +			power_suspend_waitqueue,
-> +			(suspend_mon_toggle != TOGGLE_NONE),
-> +			timeout);
-> +
-> +		mutex_lock(&suspend_mon_lock);
-> +		/* suspend monitor state change */
-> +		if (suspend_mon_toggle != TOGGLE_NONE) {
-> +			if (suspend_mon_toggle == TOGGLE_START) {
-> +				timeout = msecs_to_jiffies(
-> +					SUSPEND_TIMER_TIMEOUT_MS);
-> +				pr_info("Start suspend monitor\n");
-> +			} else if (suspend_mon_toggle == TOGGLE_STOP) {
-> +				timeout = MAX_SCHEDULE_TIMEOUT;
-> +				timeout_count = 0;
-> +				pr_info("Stop suspend monitor\n");
-> +			}
-> +			suspend_mon_toggle = TOGGLE_NONE;
-> +			mutex_unlock(&suspend_mon_lock);
-> +			continue;
-> +		}
-> +		mutex_unlock(&suspend_mon_lock);
-> +
-> +		/* suspend monitor event handler */
-> +		if (err == 0) {
-> +			timeout_count++;
-> +			suspend_timeout(timeout_count);
-> +		} else if (err == -ERESTARTSYS) {
-> +			pr_info("Exit ksuspend_mon!");
-> +			break;
-> +		}
-> +	} while (1);
-> +
-> +	return 0;
-> +}
-
-Using kthread looks like an overkill to me. I wonder how this actually
-works when the kthreads get freezed. It might be enough to implement
-just a timer callback. Start the timer in start_suspend_mon() and
-delete it in stop_suspend_mon(). Or do I miss anything?
-
-Anyway, the kthread implementation looks a but hairy. If you really
-need to use kthread, I suggest to use kthread_worker API. You would
-need to run an init work to setup the RT scheduling. Then you
-could just call kthread_queue_delayed_work(()
-and kthread_cancel_delayed_work_sync() to start and stop
-the monitor.
-
-
-> @@ -114,6 +251,10 @@ static void s2idle_enter(void)
->  	s2idle_state = S2IDLE_STATE_NONE;
->  	raw_spin_unlock_irq(&s2idle_lock);
->  
-> +#ifdef CONFIG_PM_SLEEP_MONITOR
-> +	start_suspend_mon();
-> +#endif
-
-It is better to solve this by defining start_suspend_mon() as empty
-function when the config option is disabled. For example, see
-how  vgacon_text_force() is defined in console.h.
-
-Best Regards,
-Petr
+> Regards,
+> Nicolas
+> 
