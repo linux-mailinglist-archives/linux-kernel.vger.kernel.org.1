@@ -2,373 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BB3290D6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41CC290D7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730317AbgJPVs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 17:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730139AbgJPVsz (ORCPT
+        id S1731854AbgJPVzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 17:55:14 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:42778 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731309AbgJPVzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 17:48:55 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A82C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 14:48:55 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id k12so2449684qkj.18
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 14:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=P6542iFjzIxhW/Ai7OlkTSTs7qsIdc5xSdhGTRbGtXc=;
-        b=S+El3eZyVaVSqlz4/J5tkU8vPyNZy99wptSxALbU6IfNKWagH1b9X/3lI7psn4XcVl
-         eKeoaVThIuCCMaltdOqct4ymIZjX3F3lyAqOVZVJzz3j/KfFtW3z64b0TCDQMPuUcPZA
-         +Ey9Kavce9oCy3Sc5p/E5P4ROiAq7SlTdCWduOuDbM0tx6Jq61jw0KAw4ImqH5DQiMYz
-         p+Pk7NaiCneFWkMhMWVWtlAABYb+U72i9F1Bf3/U74EPMkiBD/J0cExd3MDUlPCSZsTb
-         jjcyI0Cs28y7+JMMlwu8K6MTKMLBN5rgDH2L4M8RCqG1TDTtSnBYHOWtXCKG2PSjixJ9
-         GmSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=P6542iFjzIxhW/Ai7OlkTSTs7qsIdc5xSdhGTRbGtXc=;
-        b=KZOLfgO+Y9d9L+GwGFfUUBh7H5aC5y0IGWCU+JhHGqwiINEK0raikFYiX2/+bIBQdX
-         LwxZ1xTdcGoTteDWOlNbsqS1jbYbZaw3B4+/M44AEct4pgd73OnIv9bZe9H7pnmPNidF
-         KyM/UhVGYHMsO9FZVFJytFh0ipOg77XVs3xzenrLZWKnirD6gR1iVqpIGskfWGgFxT7C
-         ANP0ZjAo4tQH0yamK5XDRzHAxe+2sAB7mfmAvzLagrZC73a1Ub4zCzu0jCVLt0REQAgh
-         ZErLWDr0RGLOYxB1cAZ7DLMhHmLMGHuyK9GCC6Ktzjw+D7hMb9gig7emiVr6drYABLQu
-         8OUg==
-X-Gm-Message-State: AOAM5321c3NUbJ/um/qSegeskq0wQobDHn0Mksa+tjXYlqz1LIiZJqkS
-        rHH91O4729zUkwlzswhOelHq5IgFTsUdSdxSBkrO6A==
-X-Google-Smtp-Source: ABdhPJwJRry5vBRa1jfPAJOez+Y/ph2mkEMy723ZOXVSFN61OqeGxSgh+T4OCzOemdYUkmi46VcmmjE/4lQoh3AG38ZDnQ==
-Sender: "brendanhiggins via sendgmr" 
-        <brendanhiggins@mactruck.svl.corp.google.com>
-X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:c634:6bff:fe71:d8d1])
- (user=brendanhiggins job=sendgmr) by 2002:ad4:4e73:: with SMTP id
- ec19mr6256788qvb.58.1602884934546; Fri, 16 Oct 2020 14:48:54 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 14:48:48 -0700
-Message-Id: <20201016214848.1365719-1-brendanhiggins@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v1] i2c: aspeed: add KUnit tests for clock parameters
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     shuah@kernel.org, davidgow@google.com, benh@kernel.crashing.org,
-        joel@jms.id.au, andrew@aj.id.au, wsa@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-aspeed@lists.ozlabs.org,
-        benjaminfair@google.com,
-        Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 16 Oct 2020 17:55:13 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id DEF4180626;
+        Fri, 16 Oct 2020 23:55:09 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 23:55:08 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Qilong Zhang <zhangqilong3@huawei.com>
+Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH -next] dss:use devm_platform_ioremap_resource_byname
+Message-ID: <20201016215508.GD1962741@ravnborg.org>
+References: <20200916111353.105914-1-zhangqilong3@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916111353.105914-1-zhangqilong3@huawei.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=i0EeH86SAAAA:8 a=e5mUnYsNAAAA:8
+        a=j5AbMmh5N-F5ncrrDQQA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add KUnit tests for Aspeed I2C driver to test setting clock divider
-registers given an input clock speed.
+Hi Zhang Qilong 
 
-I wrote this test a while ago and it found a bug in the Aspeed I2C
-driver a couple years ago[1].
+On Wed, Sep 16, 2020 at 07:13:53PM +0800, Qilong Zhang wrote:
+> Use the devm_platform_ioremap_resource_byname() helper instead of
+> calling platform_get_resource_byname() and devm_ioremap_resource()
+> separately.
+> 
+> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
 
-Link[1]: https://lore.kernel.org/patchwork/patch/989312/
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- MAINTAINERS                          |   1 +
- drivers/i2c/busses/Kconfig           |  18 ++-
- drivers/i2c/busses/i2c-aspeed-test.c | 218 +++++++++++++++++++++++++++
- drivers/i2c/busses/i2c-aspeed.c      |   4 +
- 4 files changed, 240 insertions(+), 1 deletion(-)
- create mode 100644 drivers/i2c/busses/i2c-aspeed-test.c
+Thanks, applied to drm-misc-next. The patch will appear in -next in a
+few weeks.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index deaafb617361c..683382df2434a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1653,6 +1653,7 @@ L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
- S:	Maintained
- F:	Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
- F:	Documentation/devicetree/bindings/interrupt-controller/aspeed,ast2400-i2c-ic.txt
-+F:	drivers/i2c/busses/i2c-aspeed-test.c
- F:	drivers/i2c/busses/i2c-aspeed.c
- F:	drivers/irqchip/irq-aspeed-i2c-ic.c
- 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index 293e7a0760e77..0f12090f9fe26 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -379,7 +379,7 @@ config I2C_ALTERA
- 
- config I2C_ASPEED
- 	tristate "Aspeed I2C Controller"
--	depends on ARCH_ASPEED || COMPILE_TEST
-+	depends on ARCH_ASPEED || COMPILE_TEST || KUNIT=y
- 	help
- 	  If you say yes to this option, support will be included for the
- 	  Aspeed I2C controller.
-@@ -387,6 +387,22 @@ config I2C_ASPEED
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called i2c-aspeed.
- 
-+config I2C_ASPEED_KUNIT_TEST
-+	bool "Aspeed I2C Controller KUnit test"
-+	depends on I2C_ASPEED=y
-+	help
-+	  This builds the Aspeed I2C KUnit tests.
-+
-+	  KUnit tests run during boot and output the results to the debug log
-+	  in TAP format (https://testanything.org/). Only useful for kernel devs
-+	  running KUnit test harness and are not for inclusion into a
-+	  production build.
-+
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  If unsure, say N.
-+
- config I2C_AT91
- 	tristate "Atmel AT91 I2C Two-Wire interface (TWI)"
- 	depends on ARCH_AT91 || COMPILE_TEST
-diff --git a/drivers/i2c/busses/i2c-aspeed-test.c b/drivers/i2c/busses/i2c-aspeed-test.c
-new file mode 100644
-index 0000000000000..93e73af95b645
---- /dev/null
-+++ b/drivers/i2c/busses/i2c-aspeed-test.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Aspeed 24XX/25XX I2C Controller KUnit tests.
-+ *
-+ *  Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <kunit/test.h>
-+
-+#define ASPEED_I2C_MAX_BASE_DIVISOR		(1 << ASPEED_I2CD_TIME_BASE_DIVISOR_MASK)
-+#define ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK	GENMASK(2, 0)
-+#define ASPEED_I2C_24XX_CLK_HIGH_LOW_MAX	((ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK + 1) * 2)
-+#define ASPEED_I2C_24XX_MAX_DIVISOR		\
-+		(ASPEED_I2C_MAX_BASE_DIVISOR * ASPEED_I2C_24XX_CLK_HIGH_LOW_MAX)
-+#define ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK	GENMASK(3, 0)
-+#define ASPEED_I2C_25XX_CLK_HIGH_LOW_MAX	((ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK + 1) * 2)
-+#define ASPEED_I2C_25XX_MAX_DIVISOR		\
-+		(ASPEED_I2C_MAX_BASE_DIVISOR * ASPEED_I2C_25XX_CLK_HIGH_LOW_MAX)
-+
-+static u32 aspeed_i2c_get_base_clk(u32 reg_val)
-+{
-+	return reg_val & ASPEED_I2CD_TIME_BASE_DIVISOR_MASK;
-+}
-+
-+static u32 aspeed_i2c_get_clk_high(u32 reg_val)
-+{
-+	return (reg_val & ASPEED_I2CD_TIME_SCL_HIGH_MASK) >>
-+			ASPEED_I2CD_TIME_SCL_HIGH_SHIFT;
-+}
-+
-+static u32 aspeed_i2c_get_clk_low(u32 reg_val)
-+{
-+	return (reg_val & ASPEED_I2CD_TIME_SCL_LOW_MASK) >>
-+			ASPEED_I2CD_TIME_SCL_LOW_SHIFT;
-+}
-+
-+static void aspeed_i2c_get_clk_reg_val_params_test(struct kunit *test,
-+						   u32 (*get_clk_reg_val)(struct device *, u32),
-+						   u32 divisor,
-+						   u32 base_clk,
-+						   u32 clk_high,
-+						   u32 clk_low)
-+{
-+	u32 reg_val;
-+
-+	reg_val = get_clk_reg_val(NULL, divisor);
-+	KUNIT_ASSERT_EQ(test,
-+			(u32)(reg_val & ~(ASPEED_I2CD_TIME_SCL_HIGH_MASK |
-+					  ASPEED_I2CD_TIME_SCL_LOW_MASK |
-+					  ASPEED_I2CD_TIME_BASE_DIVISOR_MASK)),
-+			(u32)0);
-+	KUNIT_EXPECT_EQ(test, aspeed_i2c_get_base_clk(reg_val), base_clk);
-+	KUNIT_EXPECT_EQ(test, aspeed_i2c_get_clk_high(reg_val), clk_high);
-+	KUNIT_EXPECT_EQ(test, aspeed_i2c_get_clk_low(reg_val), clk_low);
-+}
-+
-+static void aspeed_i2c_24xx_get_clk_reg_val_params_test(struct kunit *test,
-+							u32 divisor,
-+							u32 base_clk,
-+							u32 clk_high,
-+							u32 clk_low)
-+{
-+	aspeed_i2c_get_clk_reg_val_params_test(test,
-+					       aspeed_i2c_24xx_get_clk_reg_val,
-+					       divisor,
-+					       base_clk,
-+					       clk_high,
-+					       clk_low);
-+}
-+
-+/*
-+ * Verify that smallest possible divisors are handled correctly.
-+ */
-+static void aspeed_i2c_24xx_get_clk_reg_val_test_min(struct kunit *test)
-+{
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 0, 0, 0, 0);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 1, 0, 0, 0);
-+}
-+
-+/*
-+ * Verify that largest possible divisors are handled correctly.
-+ */
-+static void aspeed_i2c_24xx_get_clk_reg_val_test_max(struct kunit *test)
-+{
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test,
-+						    ASPEED_I2C_24XX_MAX_DIVISOR,
-+						    ASPEED_I2CD_TIME_BASE_DIVISOR_MASK,
-+						    ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK,
-+						    ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test,
-+						    ASPEED_I2C_24XX_MAX_DIVISOR + 1,
-+						    ASPEED_I2CD_TIME_BASE_DIVISOR_MASK,
-+						    ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK,
-+						    ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test,
-+						    U32_MAX,
-+						    ASPEED_I2CD_TIME_BASE_DIVISOR_MASK,
-+						    ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK,
-+						    ASPEED_I2C_24XX_CLK_HIGH_LOW_MASK);
-+}
-+
-+/*
-+ * Spot check values from the datasheet table.
-+ */
-+static void aspeed_i2c_24xx_get_clk_reg_val_test_datasheet(struct kunit *test)
-+{
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 6, 0, 2, 2);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 7, 0, 3, 2);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 16, 0, 7, 7);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 18, 1, 4, 3);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 491520, 15, 7, 6);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 524288, 15, 7, 7);
-+}
-+
-+/*
-+ * Check that a divisor that cannot be represented exactly is rounded up to the
-+ * next divisor that can be represented.
-+ */
-+static void aspeed_i2c_24xx_get_clk_reg_val_test_round_up(struct kunit *test)
-+{
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 16, 0, 7, 7);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 17, 1, 4, 3);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 18, 1, 4, 3);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 19, 1, 4, 4);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 491519, 15, 7, 6);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 491520, 15, 7, 6);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 524287, 15, 7, 7);
-+	aspeed_i2c_24xx_get_clk_reg_val_params_test(test, 524288, 15, 7, 7);
-+}
-+
-+static void aspeed_i2c_25xx_get_clk_reg_val_params_test(struct kunit *test,
-+							u32 divisor,
-+							u32 base_clk,
-+							u32 clk_high,
-+							u32 clk_low)
-+{
-+	aspeed_i2c_get_clk_reg_val_params_test(test,
-+					       aspeed_i2c_25xx_get_clk_reg_val,
-+					       divisor,
-+					       base_clk,
-+					       clk_high,
-+					       clk_low);
-+}
-+
-+/*
-+ * Verify that smallest possible divisors are handled correctly.
-+ */
-+static void aspeed_i2c_25xx_get_clk_reg_val_test_min(struct kunit *test)
-+{
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 0, 0, 0, 0);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 1, 0, 0, 0);
-+}
-+
-+/*
-+ * Verify that largest possible divisors are handled correctly.
-+ */
-+static void aspeed_i2c_25xx_get_clk_reg_val_test_max(struct kunit *test)
-+{
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test,
-+						    ASPEED_I2C_25XX_MAX_DIVISOR,
-+						    ASPEED_I2CD_TIME_BASE_DIVISOR_MASK,
-+						    ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK,
-+						    ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test,
-+						    ASPEED_I2C_25XX_MAX_DIVISOR + 1,
-+						    ASPEED_I2CD_TIME_BASE_DIVISOR_MASK,
-+						    ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK,
-+						    ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test,
-+						    U32_MAX,
-+						    ASPEED_I2CD_TIME_BASE_DIVISOR_MASK,
-+						    ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK,
-+						    ASPEED_I2C_25XX_CLK_HIGH_LOW_MASK);
-+}
-+
-+/*
-+ * Spot check values from the datasheet table.
-+ */
-+static void aspeed_i2c_25xx_get_clk_reg_val_test_datasheet(struct kunit *test)
-+{
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 6, 0, 2, 2);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 7, 0, 3, 2);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 32, 0, 15, 15);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 34, 1, 8, 7);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 2048, 6, 15, 15);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 2176, 7, 8, 7);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 3072, 7, 11, 11);
-+}
-+
-+/*
-+ * Check that a divisor that cannot be represented exactly is rounded up to the
-+ * next divisor that can be represented.
-+ */
-+static void aspeed_i2c_25xx_get_clk_reg_val_test_round_up(struct kunit *test)
-+{
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 2047, 6, 15, 15);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 2048, 6, 15, 15);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 2175, 7, 8, 7);
-+	aspeed_i2c_25xx_get_clk_reg_val_params_test(test, 2176, 7, 8, 7);
-+}
-+
-+static struct kunit_case aspeed_i2c_test_cases[] = {
-+	KUNIT_CASE(aspeed_i2c_24xx_get_clk_reg_val_test_min),
-+	KUNIT_CASE(aspeed_i2c_24xx_get_clk_reg_val_test_max),
-+	KUNIT_CASE(aspeed_i2c_24xx_get_clk_reg_val_test_datasheet),
-+	KUNIT_CASE(aspeed_i2c_24xx_get_clk_reg_val_test_round_up),
-+	KUNIT_CASE(aspeed_i2c_25xx_get_clk_reg_val_test_min),
-+	KUNIT_CASE(aspeed_i2c_25xx_get_clk_reg_val_test_max),
-+	KUNIT_CASE(aspeed_i2c_25xx_get_clk_reg_val_test_datasheet),
-+	KUNIT_CASE(aspeed_i2c_25xx_get_clk_reg_val_test_round_up),
-+	{},
-+};
-+
-+static struct kunit_suite aspeed_i2c_test = {
-+	.name = "aspeed-i2c",
-+	.test_cases = aspeed_i2c_test_cases,
-+};
-+kunit_test_suite(aspeed_i2c_test);
-diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-index 31268074c4221..68c460b7d4def 100644
---- a/drivers/i2c/busses/i2c-aspeed.c
-+++ b/drivers/i2c/busses/i2c-aspeed.c
-@@ -1082,6 +1082,10 @@ static struct platform_driver aspeed_i2c_bus_driver = {
- };
- module_platform_driver(aspeed_i2c_bus_driver);
- 
-+#ifdef CONFIG_I2C_ASPEED_KUNIT_TEST
-+#include "i2c-aspeed-test.c"
-+#endif /* CONFIG_I2C_ASPEED_KUNIT_TEST */
-+
- MODULE_AUTHOR("Brendan Higgins <brendanhiggins@google.com>");
- MODULE_DESCRIPTION("Aspeed I2C Bus Driver");
- MODULE_LICENSE("GPL v2");
+While applying I had to update a few things:
+- checkpatch warning due to indent
+- warning for unused variable
+- subject, should start with "omapfb:" like other patches touching the
+  same driver.
 
-base-commit: 1abdd39f14b25dd2d69096b624a4f86f158a9feb
--- 
-2.29.0.rc1.297.gfa9743e501-goog
+I also got a warning because you name differs in your mail and your
+s-o-b. "Zhang Qilong" is not the same as "Qilong Zhang".
+It would be nice if you for next submission have the same name in both
+places.
 
+The patch itself was fine - nice simplifications.
+
+	Sam
+
+
+> ---
+>  .../video/fbdev/omap2/omapfb/dss/hdmi4_core.c | 10 +--------
+>  .../video/fbdev/omap2/omapfb/dss/hdmi5_core.c | 10 +--------
+>  .../video/fbdev/omap2/omapfb/dss/hdmi_phy.c   | 10 +--------
+>  .../video/fbdev/omap2/omapfb/dss/hdmi_pll.c   |  9 +-------
+>  .../video/fbdev/omap2/omapfb/dss/video-pll.c  | 21 +++----------------
+>  5 files changed, 7 insertions(+), 53 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c
+> index 7ca1803bf161..726c190862d4 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c
+> @@ -875,15 +875,7 @@ void hdmi4_audio_stop(struct hdmi_core_data *core, struct hdmi_wp_data *wp)
+>  
+>  int hdmi4_core_init(struct platform_device *pdev, struct hdmi_core_data *core)
+>  {
+> -	struct resource *res;
+> -
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "core");
+> -	if (!res) {
+> -		DSSERR("can't get CORE mem resource\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	core->base = devm_ioremap_resource(&pdev->dev, res);
+> +	core->base = devm_platform_ioremap_resource_byname(pdev, "core");
+>  	if (IS_ERR(core->base)) {
+>  		DSSERR("can't ioremap CORE\n");
+>  		return PTR_ERR(core->base);
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c
+> index 2f6ff14a48d9..eda29d3032e1 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c
+> @@ -887,15 +887,7 @@ int hdmi5_audio_config(struct hdmi_core_data *core, struct hdmi_wp_data *wp,
+>  
+>  int hdmi5_core_init(struct platform_device *pdev, struct hdmi_core_data *core)
+>  {
+> -	struct resource *res;
+> -
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "core");
+> -	if (!res) {
+> -		DSSERR("can't get CORE IORESOURCE_MEM HDMI\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	core->base = devm_ioremap_resource(&pdev->dev, res);
+> +	core->base = devm_platform_ioremap_resource_byname(pdev, "core");
+>  	if (IS_ERR(core->base)) {
+>  		DSSERR("can't ioremap HDMI core\n");
+>  		return PTR_ERR(core->base);
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c
+> index 9c645adba9e2..6fbfeb01b315 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c
+> @@ -207,19 +207,11 @@ static const struct hdmi_phy_features *hdmi_phy_get_features(void)
+>  
+>  int hdmi_phy_init(struct platform_device *pdev, struct hdmi_phy_data *phy)
+>  {
+> -	struct resource *res;
+> -
+>  	phy_feat = hdmi_phy_get_features();
+>  	if (!phy_feat)
+>  		return -ENODEV;
+>  
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "phy");
+> -	if (!res) {
+> -		DSSERR("can't get PHY mem resource\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	phy->base = devm_ioremap_resource(&pdev->dev, res);
+> +	phy->base = devm_platform_ioremap_resource_byname(pdev, "phy");
+>  	if (IS_ERR(phy->base)) {
+>  		DSSERR("can't ioremap TX PHY\n");
+>  		return PTR_ERR(phy->base);
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c
+> index 4991be031b0b..eb984d9999fe 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c
+> @@ -220,17 +220,10 @@ int hdmi_pll_init(struct platform_device *pdev, struct hdmi_pll_data *pll,
+>  	struct hdmi_wp_data *wp)
+>  {
+>  	int r;
+> -	struct resource *res;
+>  
+>  	pll->wp = wp;
+>  
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pll");
+> -	if (!res) {
+> -		DSSERR("can't get PLL mem resource\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	pll->base = devm_ioremap_resource(&pdev->dev, res);
+> +	pll->base = devm_platform_ioremap_resource_byname(pdev, "pll");
+>  	if (IS_ERR(pll->base)) {
+>  		DSSERR("can't ioremap PLLCTRL\n");
+>  		return PTR_ERR(pll->base);
+> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c b/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c
+> index f45fe60b9e7d..bff03d920722 100644
+> --- a/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c
+> +++ b/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c
+> @@ -129,7 +129,6 @@ struct dss_pll *dss_video_pll_init(struct platform_device *pdev, int id,
+>  	const char * const clkctrl_name[] = { "pll1_clkctrl", "pll2_clkctrl" };
+>  	const char * const clkin_name[] = { "video1_clk", "video2_clk" };
+>  
+> -	struct resource *res;
+>  	struct dss_video_pll *vpll;
+>  	void __iomem *pll_base, *clkctrl_base;
+>  	struct clk *clk;
+> @@ -138,14 +137,7 @@ struct dss_pll *dss_video_pll_init(struct platform_device *pdev, int id,
+>  
+>  	/* PLL CONTROL */
+>  
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, reg_name[id]);
+> -	if (!res) {
+> -		dev_err(&pdev->dev,
+> -			"missing platform resource data for pll%d\n", id);
+> -		return ERR_PTR(-ENODEV);
+> -	}
+> -
+> -	pll_base = devm_ioremap_resource(&pdev->dev, res);
+> +	pll_base = devm_platform_ioremap_resource_byname(pdev, reg_name[id]);
+>  	if (IS_ERR(pll_base)) {
+>  		dev_err(&pdev->dev, "failed to ioremap pll%d reg_name\n", id);
+>  		return ERR_CAST(pll_base);
+> @@ -153,15 +145,8 @@ struct dss_pll *dss_video_pll_init(struct platform_device *pdev, int id,
+>  
+>  	/* CLOCK CONTROL */
+>  
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+> -		clkctrl_name[id]);
+> -	if (!res) {
+> -		dev_err(&pdev->dev,
+> -			"missing platform resource data for pll%d\n", id);
+> -		return ERR_PTR(-ENODEV);
+> -	}
+> -
+> -	clkctrl_base = devm_ioremap_resource(&pdev->dev, res);
+> +	clkctrl_base = devm_platform_ioremap_resource_byname(pdev,
+> +					clkctrl_name[id]);
+>  	if (IS_ERR(clkctrl_base)) {
+>  		dev_err(&pdev->dev, "failed to ioremap pll%d clkctrl\n", id);
+>  		return ERR_CAST(clkctrl_base);
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
