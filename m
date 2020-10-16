@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51EB28FCA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C74F28FCA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 05:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393994AbgJPDQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 23:16:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393984AbgJPDQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 23:16:29 -0400
-Received: from kernel.org (unknown [104.132.1.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3ED4020789;
-        Fri, 16 Oct 2020 03:16:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602818189;
-        bh=GMH4QcLtf0P/Uy5xCC4w1mdakSGZ2iTT2OAbD7rN9e0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=yc5/+rUuZqYdtk9InqD6V17aMM4o7IH3iFieECnB/44Fvl1vDPn0M6lbEGkvTDZXu
-         MonH3wlavWI3Mua/tC0E1EG7kHzm6J/S343oFyWr//scyqicW9s3z7hnpjWu4+TJns
-         eWC5j+1sFo+RWch76cRkf+UHyIvg4z0cNlLq7FRM=
-Content-Type: text/plain; charset="utf-8"
+        id S2394004AbgJPDRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 23:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393997AbgJPDRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 23:17:01 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEF5C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 20:17:01 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id d15so725221ybl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Oct 2020 20:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KY/tuIGuq4k+2bQSU0FmKsN29zRHniIqcVg7NZ61R/w=;
+        b=WdDINPhfc57T68jqvUDdBWyWyVF/gEZyBeklwsbWxmE+KL4lP2IqLv0ppmMlVWZLE7
+         3PI+tKsw9Z9UtRWniYVXklX6XPKXNYE2ZPb2nM2RVHxTtsinV+hKpeOOoewHTFzkqpOM
+         Sia6Dx1U70HrNuyU72s/v4p2N1lEG/+4WhQywpCplQLh2aKGUG03j30Gowi6qspz9lCr
+         R/S47CTeRvP1SI98rm8CdS2Pc+toRswLoYn71T8eouELWSGvzkFtNtCAggC5PkezweHx
+         NJXRqgiB4HuH8ujT5GutJaxo3Af15Mds8ehlLKl50bw78RyP2qtaC/VBxEhVHO3oGU4Z
+         2WwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KY/tuIGuq4k+2bQSU0FmKsN29zRHniIqcVg7NZ61R/w=;
+        b=swLOP3VvKbSvOxrtEUgjB6njiazEGGR9M6Mg1bm8Nz1Z+7UXNl7DmD0Wgnc1pecN09
+         aF/lVXVZsZOrI5FDr4/F+QZIP4cIUMsoYhGtftdMk3MH8jiIm/NThhP8VK1lqSCP+iQH
+         B1+CUvKmrSDpDedpPS7Vzx9J81RbbL3Bx9I3zSyeEe4/28bD590olcV8APGGVHO1O4NG
+         siZF1TVPXmJYxAw2GKgQXb9hPpHIGe9aOohcuyC+0PWcjjvayzIWjrehkY94iRk47utJ
+         F7VFDW4F6oFtOGd4bzzwOTCCsLoE3CDDwTXlIBZDVqUINozvf2Advvyi7yoL79DnIAcF
+         QfzA==
+X-Gm-Message-State: AOAM532b5nktQN1NzG6Ny7eyDkQyXn3PkUaOKXV4a/Cqpx167LYfunGT
+        6A/uqMAeRIO7JwyiL8gg3zUl1sZmH6JtcZlacUM=
+X-Google-Smtp-Source: ABdhPJxMSITNjmBnTyi3xG0VOJPxLOesJx27+MDE6Ryjk86JDubfuTei1UgWRSUJAiKGYScqf9kQCeGp2CLeALaVEg8=
+X-Received: by 2002:a25:d441:: with SMTP id m62mr2141846ybf.422.1602818220915;
+ Thu, 15 Oct 2020 20:17:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201014171259.v4.3.Id0cc5d859e2422082a29a7909658932c857f5a81@changeid>
-References: <20201014171259.v4.1.I4567b5e7e17bbb15ef063d447cb83fd43746cb18@changeid> <20201014171259.v4.3.Id0cc5d859e2422082a29a7909658932c857f5a81@changeid>
-Subject: Re: [PATCH v4 3/3] clk: qcom: lpasscc-sc7180: Re-configure the PLL in case lost
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     David Brown <david.brown@linaro.org>, linux-soc@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Thu, 15 Oct 2020 20:16:27 -0700
-Message-ID: <160281818774.884498.11509417433655580732@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20201005130128.3430804-1-poeschel@lemonage.de> <20201005130128.3430804-2-poeschel@lemonage.de>
+In-Reply-To: <20201005130128.3430804-2-poeschel@lemonage.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 16 Oct 2020 05:16:49 +0200
+Message-ID: <CANiq72=mKdwhwAFRE57ddwywYoJ=tyQasADvxLuMJsABwt9CNw@mail.gmail.com>
+Subject: Re: [PATCH v4 14/32] auxdisplay: Move init_display to hd44780_common
+To:     Lars Poeschel <poeschel@lemonage.de>
+Cc:     Willy Tarreau <willy@haproxy.com>,
+        Ksenija Stanojevic <ksenija.stanojevic@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-10-14 17:13:29)
-> From: Taniya Das <tdas@codeaurora.org>
->=20
-> In the case where the PLL configuration is lost, then the pm runtime
-> resume will reconfigure before usage.
+On Mon, Oct 5, 2020 at 3:01 PM <poeschel@lemonage.de> wrote:
+>
+> The init_display function is moved over to hd44780_common. charlcd uses
+> it via it's ops function pointer and drivers initialize the ops with the
 
-Taniya, this commit needs a lot more describing than one sentence. I see
-that the PLL's L value is reset at boot, but only once. That seems to be
-because the bootloader I have doesn't set bit 11 for the RETAIN_FF bit
-on the lpass_core_hm_gdsc. Once the gdsc is turned off the first time,
-the PLL settings are lost and the L val is reset to 0. That makes sense
-because RETAIN_FF isn't set. This also means the other register writes
-during probe are lost during the first suspend of the lpass core clk
-controller. Then when the GDSC is turned on the next time for this clk
-controller  being runtime resumed we will set the retain bit and then
-configure the PLL again. BTW, I see that runtime PM is called for this
-clk controller for all the clk operations. Maybe there should be some
-auto suspend timeout so that we're not toggling the gdsc constantly?
+it's -> its
 
-I hacked up the GDSC code to set the bit at gdsc registration time and
-it seems to fix the problem I'm seeing (i.e. that the PLL is stuck,
-which should also be in the commit text here). When I try to set the bit
-in the bootloader though my kernel won't boot. I guess something is
-hanging the system if I enable the retain bit in the GDSC?
+(Already corrected in my queue)
 
->=20
-> Fixes: edab812d802d ("clk: qcom: lpass: Add support for LPASS clock contr=
-oller for SC7180")
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Cheers,
+Miguel
