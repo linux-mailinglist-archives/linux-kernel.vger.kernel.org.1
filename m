@@ -2,664 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86534290669
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA6B29066B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408208AbgJPNhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
+        id S2408223AbgJPNh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406604AbgJPNhE (ORCPT
+        with ESMTP id S2408149AbgJPNhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:37:04 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D915EC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:37:03 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id p5so3232906ejj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:37:03 -0700 (PDT)
+        Fri, 16 Oct 2020 09:37:55 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D174C061755;
+        Fri, 16 Oct 2020 06:37:55 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id p13so2398209edi.7;
+        Fri, 16 Oct 2020 06:37:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E7BQE9CwQ3+gScQHU7VgatFCiBUAJNB0TMNzLgWn4YM=;
-        b=LRgWv1AgDNpNn5H3k3bBUFo5ADtC3rWPRppeU5S8Ndj2/cFSDC/5+fFFfa1vRPrs2U
-         /zLkgBTc7wXtyH6V0FUmWVysnwSWmBW48YEPSh15tlMUqC13Q3HMAkXua2mB8URsvORN
-         GhS3xEXJRE3KpFEnyizqSr5BrJUUeyKYDqmmg9Y+GnUttgSD3tjZYfTt+TnwsUXmq1h2
-         jzFWnCwjafzkrW4IgIxB5z2mWcKFgc9NqkOH/fmRoEtckA8El6Wnips+og8qEFc7NtG7
-         DIGC2r0KlFeilmcbgqJyklEjpLye3SROjFE818bhD4FfoWkRcaVHh+4o0i5/+nwv6rKO
-         ayig==
+         :cc:content-transfer-encoding;
+        bh=dHr87aad4UMrOVMY7yZj11FACkVYkrGKt4jsCYJ3ucM=;
+        b=mHMH56xTGzovu6e/m7OnPpprJsyxBjnjBLE+g1Tt6WAq6CZqJ5dk5YykDqCkDTEGd3
+         kDnSJvlK+c+rBG9Za0l93g/UCpdQg5bYpbvN+rQpxv/K0rJEozBNG1H/5YZoxwcJYWbc
+         85IXGfxN3A51Zfae7rsxSM986eC6Y3+twxVPiDVw375R3NBprRVGkbGgrJuK3oxtHoeP
+         WR1HWWWmwxBwUmlNkmn/KTFfeBle+0rwSIR4VSj+Lf+B8HolFzllPaxVsBeHcDMhQHqh
+         XjhCudzVYwi6U9bXp+g66VIo9N3uO1rWTas0csqn8ZF8kKSHyj0rXyLZBmtabuDgq5xS
+         Rmyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E7BQE9CwQ3+gScQHU7VgatFCiBUAJNB0TMNzLgWn4YM=;
-        b=cWzrNoJcFF5dEDQigzJiR003Hsei6j3i9t0e0vHaw/S+vtT6Lsf/Jj4GAKiKiPawDR
-         1uRHeSBLpAsGLO6TbmdEde9FtbRTfz72der/jCx0PzEMkP+k21mG/JoJHVS5TwJyaLj0
-         pHjkWotLFGtfpjn5NA+mQ586gevO6hw/lzu1jaq74abosadBjVi+ydEDZu0MoWhzOD9/
-         cHy6KFNVRROxKZ6/pzmrns3RPBftMN9B/6YXZ6AB/kT8gtx531jm7k1fMoZydgkPeV2P
-         jydpb7Bqtw9M2H18BDCOT5onpr6oNfpasxzQ01wPkChPb1aRA8EkrpQHnfEdjXKdOGTg
-         OE7g==
-X-Gm-Message-State: AOAM530s/f8h/iNSSmXTPoxudGjj063xfCJQrdMuKycivMEaASPl+lxn
-        GzxKRsrJ18fW1LUsNLOAIYG74yyvuE4BcfY9Obwzxw==
-X-Google-Smtp-Source: ABdhPJx/5aVejSsgAxfNnHl9MWAuWMooAy28rWf1u/+j5Soq3nhcv3GthYgcQAKmHZ1g+ET9byAG0muRmHfPsJM3IDM=
-X-Received: by 2002:a17:906:4dc7:: with SMTP id f7mr3647172ejw.73.1602855422424;
- Fri, 16 Oct 2020 06:37:02 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dHr87aad4UMrOVMY7yZj11FACkVYkrGKt4jsCYJ3ucM=;
+        b=FEyIQXFB//JFCLYoCD7Ga/K/+pgiLyPFr0b0awkf6Ss9AaJo49PPgZhRZqcUOf7WPd
+         ybWpdyGKIFbtHYr3x8tquMHE8Tr72pY39Ol5yKJyDMcZEmLyV7raW2YOgb3f+y9/PGBo
+         /zWg1V7EguO+UUqJANCMkLzVBk1WHsfLX54etW4VkaWsEYGdPK1EP//IAN8dgyReKZQa
+         pupqkjtmDYaA1eLeJvNdzCIovDc7VYZbvYPlJInrB82Kdejx850xNbP6nVmXrED7+ThX
+         hQTk/iiqpae+qACScrvbl9fQjvT4zfCQthl/VEA/7pkHdxGogHA4MtL/TPMFDpX3KbIS
+         UfzA==
+X-Gm-Message-State: AOAM530d3IGs+8mk84A+5LXM/LHpYda4X8XqXuAeh3aVVOydJjIjcVL5
+        a4xBBbJxCDS7mLqdApLlpbi1jNiVvby5tJ4+s28=
+X-Google-Smtp-Source: ABdhPJw9epWZTzjymO4VPAEdHTYB4E3cHIur2W2o/upW8R+jp9YK7G5X1IIuMzjFwGzECl/kLZ5pweWvJJHZmX0F7qI=
+X-Received: by 2002:a05:6402:c12:: with SMTP id co18mr3925594edb.162.1602855474052;
+ Fri, 16 Oct 2020 06:37:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201015154001.8931-1-cristian.marussi@arm.com> <20201015154001.8931-2-cristian.marussi@arm.com>
-In-Reply-To: <20201015154001.8931-2-cristian.marussi@arm.com>
-From:   Etienne Carriere <etienne.carriere@linaro.org>
-Date:   Fri, 16 Oct 2020 15:36:51 +0200
-Message-ID: <CAN5uoS82-dhY1zLafghKi_gB_a2DdzrcfVfOQ-RcUL-zfg4AMw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] firmware: arm_scmi: Add Voltage Domain Support
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Sudeep Holla <sudeep.holla@arm.com>, lukasz.luba@arm.com,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan.Cameron@huawei.com, broonie@kernel.org,
-        Rob Herring <robh@kernel.org>, satyakim@qti.qualcomm.com,
-        f.fainelli@gmail.com, Vincent Guittot <vincent.guittot@linaro.org>,
-        Souvik Chakravarty <souvik.chakravarty@arm.com>
+References: <1601470479-26848-1-git-send-email-guomin_chen@sina.com>
+ <20200930080919.1a9c66f8@x1.home> <CAEEwsfRZt=r54SWOqbKvF60zPKu2tiTeQtFcFW14Hp92kT6M9Q@mail.gmail.com>
+ <20201009124423.2a8603f7@x1.home> <CAEEwsfRDLFxkV5ZwNy9+3N3u9RtiCtErC6CK3k+ft0=jQtTv_A@mail.gmail.com>
+ <20201010082603.1658be16@x1.home>
+In-Reply-To: <20201010082603.1658be16@x1.home>
+From:   gchen chen <gchen.guomin@gmail.com>
+Date:   Fri, 16 Oct 2020 21:38:20 +0800
+Message-ID: <CAEEwsfQvnVhhcnX=akVpMF8MQy-ddCy=VMApPdZfDuPSOqGX=w@mail.gmail.com>
+Subject: Re: [PATCH] irqbypass: fix error handle when irq_bypass_register_producer()
+ return fails
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     guomin_chen@sina.com, Cornelia Huck <cohuck@redhat.com>,
+        Jiang Yi <giangyi@amazon.com>, Marc Zyngier <maz@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Cristian,
+Hi Alex
 
-Thanks for the update.
-Some minor comments below.
-FYI I successfully tested this series.
+According to your suggestion, the final patch is as follows:
 
-Regards,
-Etienne
+diff --git a/drivers/vfio/pci/vfio_pci_intrs.c
+b/drivers/vfio/pci/vfio_pci_intrs.c
+index 1d9fb25..869dce5 100644
+--- a/drivers/vfio/pci/vfio_pci_intrs.c
++++ b/drivers/vfio/pci/vfio_pci_intrs.c
+@@ -352,11 +352,13 @@ static int vfio_msi_set_vector_signal(struct
+vfio_pci_device *vdev,
+        vdev->ctx[vector].producer.token =3D trigger;
+        vdev->ctx[vector].producer.irq =3D irq;
+        ret =3D irq_bypass_register_producer(&vdev->ctx[vector].producer);
+-       if (unlikely(ret))
++       if (unlikely(ret)) {
+                dev_info(&pdev->dev,
+                "irq bypass producer (token %p) registration fails: %d\n",
+                vdev->ctx[vector].producer.token, ret);
 
-On Thu, 15 Oct 2020 at 17:40, Cristian Marussi <cristian.marussi@arm.com> wrote:
++               vdev->ctx[vector].producer.token =3D NULL;
++       }
+        vdev->ctx[vector].trigger =3D trigger;
+
+        return 0;
+--
+
+I applied this patch, after several days of testing, it is now normal
+and the BUG no longer occurs.
+Now the kernel will only print the log of registration failure,
+
+Thanks Alex.
+
+Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B410=E6=9C=
+=8810=E6=97=A5=E5=91=A8=E5=85=AD =E4=B8=8B=E5=8D=8810:26=E5=86=99=E9=81=93=
+=EF=BC=9A
 >
-> Add SCMI Voltage Domain protocol support.
+> On Sat, 10 Oct 2020 19:01:30 +0800
+> gchen chen <gchen.guomin@gmail.com> wrote:
 >
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-> v1 --> v2
-> - fix voltage levels query loop to reload full cmd description
->   between iterations as reported by Etienne Carriere
-> - ensure rx buffer is properly sized calli scmi_reset_rx_to_maxsz
->   between transfers
-> ---
->  drivers/firmware/arm_scmi/Makefile  |   2 +-
->  drivers/firmware/arm_scmi/common.h  |   1 +
->  drivers/firmware/arm_scmi/driver.c  |   2 +
->  drivers/firmware/arm_scmi/voltage.c | 382 ++++++++++++++++++++++++++++
->  include/linux/scmi_protocol.h       |  64 +++++
->  5 files changed, 450 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/firmware/arm_scmi/voltage.c
+> > Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B410=
+=E6=9C=8810=E6=97=A5=E5=91=A8=E5=85=AD =E4=B8=8A=E5=8D=882:44=E5=86=99=E9=
+=81=93=EF=BC=9A
+> > >
+> > > On Fri, 9 Oct 2020 12:30:04 +0800
+> > > gchen chen <gchen.guomin@gmail.com> wrote:
+> > >
+> > > > Alex Williamson <alex.williamson@redhat.com> =E4=BA=8E2020=E5=B9=B4=
+9=E6=9C=8830=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8810:09=E5=86=99=E9=
+=81=93=EF=BC=9A
+> > > > >
+> > > > >
+> > > > > Please version your postings so we know which one to consider as =
+the
+> > > > > current proposal.
+> > > > >
+> > > > > On Wed, 30 Sep 2020 20:54:39 +0800
+> > > > > guomin_chen@sina.com wrote:
+> > > > >
+> > > > > > From: guomin chen <guomin_chen@sina.com>
+> > > > > >
+> > > > > > When the producer object registration fails,In the future, due =
+to
+> > > > > > incorrect matching when unregistering, list_del(&producer->node=
+)
+> > > > > > may still be called, then trigger a BUG:
+> > > > > >
+> > > > > >     vfio-pci 0000:db:00.0: irq bypass producer (token 000000006=
+0c8cda5) registration fails: -16
+> > > > > >     vfio-pci 0000:db:00.0: irq bypass producer (token 000000006=
+0c8cda5) registration fails: -16
+> > > > > >     vfio-pci 0000:db:00.0: irq bypass producer (token 000000006=
+0c8cda5) registration fails: -16
+> > > > > >     ...
+> > > > > >     list_del corruption, ffff8f7fb8ba0828->next is LIST_POISON1=
+ (dead000000000100)
+> > > > > >     ------------[ cut here ]------------
+> > > > > >     kernel BUG at lib/list_debug.c:47!
+> > > > > >     invalid opcode: 0000 [#1] SMP NOPTI
+> > > > > >     CPU: 29 PID: 3914 Comm: qemu-kvm Kdump: loaded Tainted: G  =
+    E
+> > > > > >     -------- - -4.18.0-193.6.3.el8.x86_64 #1
+> > > > > >     Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X=
+06CTO1WW]-,
+> > > > > >     BIOS -[IVE636Z-2.13]- 07/18/2019
+> > > > > >     RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
+> > > > > >     Code: ce ff 0f 0b 48 89 c1 4c 89 c6 48 c7 c7 40 85 4d 88 e8=
+ 8c bc
+> > > > > >           ce ff 0f 0b 48 89 fe 48 89 c2 48 c7 c7 d0 85 4d 88 e8=
+ 78 bc
+> > > > > >           ce ff <0f> 0b 48 c7 c7 80 86 4d 88 e8 6a bc ce ff 0f =
+0b 48
+> > > > > >           89 f2 48 89 fe
+> > > > > >     RSP: 0018:ffffaa9d60197d20 EFLAGS: 00010246
+> > > > > >     RAX: 000000000000004e RBX: ffff8f7fb8ba0828 RCX: 0000000000=
+000000
+> > > > > >     RDX: 0000000000000000 RSI: ffff8f7fbf4d6a08 RDI: ffff8f7fbf=
+4d6a08
+> > > > > >     RBP: 0000000000000000 R08: 000000000000084b R09: 0000000000=
+00005d
+> > > > > >     R10: 0000000000000000 R11: ffffaa9d60197bd0 R12: ffff8f4fbe=
+863000
+> > > > > >     R13: 00000000000000c2 R14: 0000000000000000 R15: 0000000000=
+000000
+> > > > > >     FS:  00007f7cb97fa700(0000) GS:ffff8f7fbf4c0000(0000)
+> > > > > >     knlGS:0000000000000000
+> > > > > >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > >     CR2: 00007fcf31da4000 CR3: 0000005f6d404001 CR4: 0000000000=
+7626e0
+> > > > > >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000=
+000000
+> > > > > >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000=
+000400
+> > > > > >     PKRU: 55555554
+> > > > > >     Call Trace:
+> > > > > >         irq_bypass_unregister_producer+0x9b/0xf0 [irqbypass]
+> > > > > >         vfio_msi_set_vector_signal+0x8c/0x290 [vfio_pci]
+> > > > > >         ? load_fixmap_gdt+0x22/0x30
+> > > > > >         vfio_msi_set_block+0x6e/0xd0 [vfio_pci]
+> > > > > >         vfio_pci_ioctl+0x218/0xbe0 [vfio_pci]
+> > > > > >         ? kvm_vcpu_ioctl+0xf2/0x5f0 [kvm]
+> > > > > >         do_vfs_ioctl+0xa4/0x630
+> > > > > >         ? syscall_trace_enter+0x1d3/0x2c0
+> > > > > >         ksys_ioctl+0x60/0x90
+> > > > > >         __x64_sys_ioctl+0x16/0x20
+> > > > > >         do_syscall_64+0x5b/0x1a0
+> > > > > >         entry_SYSCALL_64_after_hwframe+0x65/0xca
+> > > > > >
+> > > > > > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > > > > > Cc: Cornelia Huck <cohuck@redhat.com>
+> > > > > > Cc: Jiang Yi <giangyi@amazon.com>
+> > > > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > > > Cc: Peter Xu <peterx@redhat.com>
+> > > > > > Cc: Eric Auger <eric.auger@redhat.com>
+> > > > > > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> > > > > > Cc: Jason Wang <jasowang@redhat.com>
+> > > > > > Cc: kvm@vger.kernel.org
+> > > > > > Cc: linux-kernel@vger.kernel.org
+> > > > > > Signed-off-by: guomin chen <guomin_chen@sina.com>
+> > > > > > ---
+> > > > > >  drivers/vfio/pci/vfio_pci_intrs.c | 13 +++++++++++--
+> > > > > >  drivers/vhost/vdpa.c              |  7 +++++++
+> > > > > >  2 files changed, 18 insertions(+), 2 deletions(-)
+> > > > > >
+> > > > > > diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/p=
+ci/vfio_pci_intrs.c
+> > > > > > index 1d9fb25..c371943 100644
+> > > > > > --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> > > > > > +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> > > > > > @@ -352,12 +352,21 @@ static int vfio_msi_set_vector_signal(str=
+uct vfio_pci_device *vdev,
+> > > > > >       vdev->ctx[vector].producer.token =3D trigger;
+> > > > > >       vdev->ctx[vector].producer.irq =3D irq;
+> > > > > >       ret =3D irq_bypass_register_producer(&vdev->ctx[vector].p=
+roducer);
+> > > > > > -     if (unlikely(ret))
+> > > > > > +     if (unlikely(ret)) {
+> > > > > >               dev_info(&pdev->dev,
+> > > > > >               "irq bypass producer (token %p) registration fail=
+s: %d\n",
+> > > > > >               vdev->ctx[vector].producer.token, ret);
+> > > > > >
+> > > > > > -     vdev->ctx[vector].trigger =3D trigger;
+> > > > > > +             kfree(vdev->ctx[vector].name);
+> > > > > > +             eventfd_ctx_put(trigger);
+> > > > > > +
+> > > > > > +             cmd =3D vfio_pci_memory_lock_and_enable(vdev);
+> > > > > > +             free_irq(irq, trigger);
+> > > > > > +             vfio_pci_memory_unlock_and_restore(vdev, cmd);
+> > > > > > +
+> > > > > > +             vdev->ctx[vector].trigger =3D NULL;
+> > > > > > +     } else
+> > > > > > +             vdev->ctx[vector].trigger =3D trigger;
+> > > > > >
+> > > > > >       return 0;
+> > > > > >  }
+> > > > >
+> > > > > Once again, the irq bypass registration cannot cause the vector s=
+etup
+> > > > > to fail, either by returning an error code or failing to configur=
+e the
+> > > > > vector while returning success.  It's my assertion that we simply=
+ need
+> > > > > to set the producer.token to NULL on failure such that unregister=
+ing
+> > > > > the producer will not generate a match, as you've done below.  Th=
+e
+> > > > > vector still works even if this registration fails.
+> > > > >
+> > > > Yes,  the irq bypass registration cannot cause the vector setup to =
+fail.
+> > > > But if I simply set producer.token to NULL when fails, instead of
+> > > > cleaning up vector, it will trigger the following BUG:
+> > > >
+> > > > vfio_ecap_init: 0000:db:00.0 hiding ecap 0x1e@0x310
+> > > > vfio-pci 0000:db:00.0: irq bypass producer (token 000000004409229f)
+> > > > registration fails: -16
+> > > > ------------[ cut here ]------------
+> > > > kernel BUG at drivers/pci/msi.c:352!
+> > > > invalid opcode: 0000 [#1] SMP NOPTI
+> > > > CPU: 55 PID: 9389 Comm: qemu-kvm Kdump: loaded Tainted: G
+> > > > E    --------- -  - 4.18.0-193.irqb.r1.el8.x86_64 #1
+> > > > Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW=
+]-,
+> > > >   BIOS -[IVE636Z-2.13]- 07/18/2019
+> > > > RIP: 0010:free_msi_irqs+0x180/0x1b0
+> > > > Code: 14 85 c0 0f 84 d5 fe ff ff 31 ed eb 0f 83 c5 01 39 6b 14 0f 8=
+6
+> > > >       c5 fe ff ff 8b 7b 10 01 ef e8 d7 4a c9 ff 48 83 78 70 00 74 e=
+3
+> > > >   <0f> 0b 49 8d b5 b0 00 00 00 e8 e2 e3 c9 ff e9 c7 fe ff ff 48
+> > > >   8b 7b
+> > > > RSP: 0018:ffffaeca4f4bfcd8 EFLAGS: 00010286
+> > > > RAX: ffff8bec77441600 RBX: ffff8bbcdb637e40 RCX: 0000000000000000
+> > > > RDX: 0000000000000000 RSI: 00000000000001ab RDI: ffffffff8ea5b2a0
+> > > > RBP: 0000000000000000 R08: ffff8bec7e746828 R09: ffff8bec7e7466a8
+> > > > R10: 0000000000000000 R11: 0000000000000000 R12: ffff8bbcde921308
+> > > > R13: ffff8bbcde921000 R14: 000000000000000b R15: 0000000000000021
+> > > > FS:  00007fd18d7fa700(0000) GS:ffff8bec7f6c0000(0000) knlGS:0000000=
+000000000
+> > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > CR2: 00007f83650024a0 CR3: 000000476e70c001 CR4: 00000000007626e0
+> > > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > PKRU: 55555554
+> > > > Call Trace:
+> > > >  pci_disable_msix+0xf3/0x120
+> > > >  pci_free_irq_vectors+0xe/0x20
+> > > >  vfio_msi_disable+0x89/0xd0 [vfio_pci]
+> > > >  vfio_pci_set_msi_trigger+0x229/0x2d0 [vfio_pci]
+> > > >  vfio_pci_ioctl+0x24f/0xdb0 [vfio_pci]
+> > > >  ? pollwake+0x74/0x90
+> > > >  ? wake_up_q+0x70/0x70
+> > > >  do_vfs_ioctl+0xa4/0x630
+> > > >  ? __alloc_fd+0x33/0x140
+> > > >  ? syscall_trace_enter+0x1d3/0x2c0
+> > > >  ksys_ioctl+0x60/0x90
+> > > >  __x64_sys_ioctl+0x16/0x20
+> > > >  do_syscall_64+0x5b/0x1a0
+> > > >  entry_SYSCALL_64_after_hwframe+0x65/0xca
+> > >
+> > > Please post the patch that triggers this, I'm not yet convinced we're
+> > > speaking of the same solution.  The user ioctl cannot fail due to the
+> > > failure to setup a bypass accelerator, nor can the ioctl return succe=
+ss
+> > > without configuring all of the user requested vectors, which is what =
+I
+> > > understand the v2 patch above to do.  We simply want to configure the
+> > > failed producer such that when we unregister it at user request, we
+> > > avoid creating a bogus match.  It's not apparent to me why doing that
+> > > would cause any changes to the setup or teardown of the MSI vector in
+> > > PCI code.  Thanks,
+> > >
+> > > Alex
+> > >
+> > Hi Alex, as you said before, I only need to set the producer.token
+> > to NULL on failure such that unregistering the producer will not
+> > generate a match.
+> >
+> > So I wrote a patch (As you said patch v2), as follows:
+> >
+> > diff --git a/drivers/vfio/pci/vfio_pci_intrs.c
+> > b/drivers/vfio/pci/vfio_pci_intrs.c
+> > index 1d9fb25..1969cd0 100644
+> > --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> > +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> > @@ -352,12 +352,15 @@ static int vfio_msi_set_vector_signal(struct
+> > vfio_pci_device *vdev,
+> >         vdev->ctx[vector].producer.token =3D trigger;
+> >         vdev->ctx[vector].producer.irq =3D irq;
+> >         ret =3D irq_bypass_register_producer(&vdev->ctx[vector].produce=
+r);
+> > -       if (unlikely(ret))
+> > +       if (unlikely(ret)) {
+> >                 dev_info(&pdev->dev,
+> >                 "irq bypass producer (token %p) registration fails: %d\=
+n",
+> >                 vdev->ctx[vector].producer.token, ret);
+> >
+> > -       vdev->ctx[vector].trigger =3D trigger;
+> > +               eventfd_ctx_put(trigger);
+> > +               vdev->ctx[vector].trigger =3D NULL;
+> > +       } else
+> > +               vdev->ctx[vector].trigger =3D trigger;
+> >
+> >         return 0;
+> >  }
 >
-> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-> index bc0d54f8e861..6a2ef63306d6 100644
-> --- a/drivers/firmware/arm_scmi/Makefile
-> +++ b/drivers/firmware/arm_scmi/Makefile
-> @@ -4,7 +4,7 @@ scmi-driver-y = driver.o notify.o
->  scmi-transport-y = shmem.o
->  scmi-transport-$(CONFIG_MAILBOX) += mailbox.o
->  scmi-transport-$(CONFIG_HAVE_ARM_SMCCC_DISCOVERY) += smc.o
-> -scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o
-> +scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o
->  scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
->                     $(scmi-transport-y)
->  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
-> diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> index 65063fa948d4..c0fb45e7c3e8 100644
-> --- a/drivers/firmware/arm_scmi/common.h
-> +++ b/drivers/firmware/arm_scmi/common.h
-> @@ -169,6 +169,7 @@ DECLARE_SCMI_REGISTER_UNREGISTER(perf);
->  DECLARE_SCMI_REGISTER_UNREGISTER(power);
->  DECLARE_SCMI_REGISTER_UNREGISTER(reset);
->  DECLARE_SCMI_REGISTER_UNREGISTER(sensors);
-> +DECLARE_SCMI_REGISTER_UNREGISTER(voltage);
->  DECLARE_SCMI_REGISTER_UNREGISTER(system);
+> How does this remotely match "only need to set the producer.token to
+> NULL on failure"?  What I'm suggesting is:
 >
->  #define DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(id, name) \
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 3dfd8b6a0ebf..ada35e63feae 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -946,6 +946,7 @@ static int __init scmi_driver_init(void)
->         scmi_power_register();
->         scmi_reset_register();
->         scmi_sensors_register();
-> +       scmi_voltage_register();
->         scmi_system_register();
->
->         return platform_driver_register(&scmi_driver);
-> @@ -961,6 +962,7 @@ static void __exit scmi_driver_exit(void)
->         scmi_power_unregister();
->         scmi_reset_unregister();
->         scmi_sensors_unregister();
-> +       scmi_voltage_unregister();
->         scmi_system_unregister();
->
->         platform_driver_unregister(&scmi_driver);
-> diff --git a/drivers/firmware/arm_scmi/voltage.c b/drivers/firmware/arm_scmi/voltage.c
-> new file mode 100644
-> index 000000000000..a20da5128de1
-> --- /dev/null
-> +++ b/drivers/firmware/arm_scmi/voltage.c
-> @@ -0,0 +1,382 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * System Control and Management Interface (SCMI) Voltage Protocol
-> + *
-> + * Copyright (C) 2020 ARM Ltd.
-> + */
-> +
-> +#include <linux/scmi_protocol.h>
-> +
-> +#include "common.h"
-> +
-> +#define VOLTAGE_DOMS_NUM_MASK          GENMASK(15, 0)
-> +#define REMAINING_LEVELS_MASK          GENMASK(31, 16)
-> +#define RETURNED_LEVELS_MASK           GENMASK(11, 0)
-> +
-> +enum scmi_voltage_protocol_cmd {
-> +       VOLTAGE_DOMAIN_ATTRIBUTES = 0x3,
-> +       VOLTAGE_DESCRIBE_LEVELS = 0x4,
-> +       VOLTAGE_CONFIG_SET = 0x5,
-> +       VOLTAGE_CONFIG_GET = 0x6,
-> +       VOLTAGE_LEVEL_SET = 0x7,
-> +       VOLTAGE_LEVEL_GET = 0x8,
-> +};
-> +
-> +struct scmi_msg_resp_protocol_attributes {
-> +       __le32 attr;
-> +#define NUM_VOLTAGE_DOMAINS(x) (u16)(FIELD_GET(VOLTAGE_DOMS_NUM_MASK, (x)))
-> +};
-> +
-> +struct scmi_msg_resp_domain_attributes {
-> +       __le32 attr;
-> +       u8 name[SCMI_MAX_STR_SIZE];
-> +};
-> +
-> +struct scmi_msg_cmd_describe_levels {
-> +       __le32 domain_id;
-> +       __le32 level_index;
-> +};
-> +
-> +struct scmi_msg_resp_describe_levels {
-> +       __le32 flags;
-> +#define NUM_REMAINING_LEVELS(f)        (u16)(FIELD_GET(REMAINING_LEVELS_MASK, (f)))
-> +#define NUM_RETURNED_LEVELS(f) (u16)(FIELD_GET(RETURNED_LEVELS_MASK, (f)))
-> +#define SUPPORTS_SEGMENTED_LEVELS(f)   ((f) & BIT(12))
-> +       __le32 voltage[];
-> +};
-> +
-> +struct scmi_msg_cmd_config_set {
-> +       __le32 domain_id;
-> +       __le32 config;
-> +};
-> +
-> +struct scmi_msg_cmd_level_set {
-> +       __le32 domain_id;
-> +       __le32 flags;
-> +       __le32 voltage_level;
-> +};
-> +
-> +struct voltage_info {
-> +       u32 version;
-> +       u16 num_domains;
-> +       struct scmi_voltage_info **domains;
-> +};
-> +
-> +static int scmi_protocol_attributes_get(const struct scmi_handle *handle,
-> +                                       struct voltage_info *vinfo)
-> +{
-> +       int ret;
-> +       struct scmi_xfer *t;
-> +       struct scmi_msg_resp_protocol_attributes *resp;
-> +
-> +       ret = scmi_xfer_get_init(handle, PROTOCOL_ATTRIBUTES,
-> +                                SCMI_PROTOCOL_VOLTAGE, 0, sizeof(*resp), &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       resp = t->rx.buf;
-> +       ret = scmi_do_xfer(handle, t);
-> +       if (!ret)
-> +               vinfo->num_domains =
-> +                       NUM_VOLTAGE_DOMAINS(le32_to_cpu(resp->attr));
-> +
-> +       scmi_xfer_put(handle, t);
-> +       return ret;
-> +}
-> +
-> +static inline int scmi_init_voltage_levels(struct device *dev,
-> +                                          struct scmi_voltage_info *v,
-> +                                          u32 flags, u32 num_levels)
-> +{
-> +       bool segmented;
-> +
-> +       segmented = SUPPORTS_SEGMENTED_LEVELS(flags);
-> +       /* segmented levels array's entries must be multiple-of-3 */
-> +       if (!num_levels || (segmented && num_levels % 3))
-> +               return -EINVAL;
-
-I think segment levels are described by a single triplet.
-If right, should test (!num_levels || (segmented && num_levels == 3)).
-
-
-> +
-> +       v->levels_uv = devm_kcalloc(dev, num_levels, sizeof(u32), GFP_KERNEL);
-> +       if (!v->levels_uv)
-> +               return -ENOMEM;
-> +
-> +       v->num_levels = num_levels;
-> +       v->segmented = segmented;
-> +
-> +       return 0;
-> +}
-> +
-> +static int scmi_voltage_descriptors_get(const struct scmi_handle *handle,
-> +                                       struct voltage_info *vinfo)
-> +{
-> +       int ret, dom;
-> +       struct scmi_xfer *td, *tl;
-> +       struct device *dev = handle->dev;
-> +       struct scmi_msg_resp_domain_attributes *resp_dom;
-> +       struct scmi_msg_resp_describe_levels *resp_levels;
-> +
-> +       ret = scmi_xfer_get_init(handle, VOLTAGE_DOMAIN_ATTRIBUTES,
-> +                                SCMI_PROTOCOL_VOLTAGE, sizeof(__le32),
-> +                                sizeof(*resp_dom), &td);
-> +       if (ret)
-> +               return ret;
-> +       resp_dom = td->rx.buf;
-> +
-> +       ret = scmi_xfer_get_init(handle, VOLTAGE_DESCRIBE_LEVELS,
-> +                                SCMI_PROTOCOL_VOLTAGE, sizeof(__le64), 0, &tl);
-> +       if (ret)
-> +               goto outd;
-> +       resp_levels = tl->rx.buf;
-> +
-> +       for (dom = 0; dom < vinfo->num_domains; dom++) {
-> +               u32 desc_index = 0;
-> +               u16 num_returned = 0, num_remaining = 0;
-> +               struct scmi_msg_cmd_describe_levels *cmd;
-> +               struct scmi_voltage_info *v;
-> +
-> +               /* Retrieve domain attributes at first ... */
-> +               put_unaligned_le32(dom, td->tx.buf);
-> +               ret = scmi_do_xfer(handle, td);
-> +               if (ret)
-> +                       continue;
-
-Continue and break and report the error code?
-Seems you prefer to abort only on local error (ENOMEM), not comm error.
-Maybe state with nice inline comment as done below (/* Skip domain on error */).
-
-> +
-> +               v = devm_kzalloc(dev, sizeof(*v), GFP_KERNEL);
-> +               if (!v) {
-> +                       ret = -ENOMEM;
-> +                       break;
-> +               }
-> +
-> +               v->id = dom;
-> +               v->attributes = le32_to_cpu(resp_dom->attr);
-> +               strlcpy(v->name, resp_dom->name, SCMI_MAX_STR_SIZE);
-> +
-> +               cmd = tl->tx.buf;
-> +               /* ...then retrieve domain levels descriptions */
-> +               do {
-> +                       u32 flags;
-> +                       int cnt;
-> +
-> +                       cmd->domain_id = cpu_to_le32(v->id);
-> +                       cmd->level_index = desc_index;
-> +                       ret = scmi_do_xfer(handle, tl);
-> +                       if (ret)
-> +                               break;
-> +
-> +                       flags = le32_to_cpu(resp_levels->flags);
-> +                       num_returned = NUM_RETURNED_LEVELS(flags);
-> +                       num_remaining = NUM_REMAINING_LEVELS(flags);
-> +
-> +                       /* Allocate space for num_levels if not already done */
-> +                       if (!v->num_levels) {
-> +                               ret = scmi_init_voltage_levels(dev, v, flags,
-> +                                                              num_returned +
-> +                                                              num_remaining);
-> +                               if (ret)
-> +                                       break;
-> +                       }
-> +
-> +                       if (desc_index + num_returned > v->num_levels) {
-> +                               dev_err(handle->dev,
-> +                                       "No. of voltage levels can't exceed %d",
-
-Missing '\n'.
-
-> +                                       v->num_levels);
-> +                               ret = -EINVAL;
-> +                               break;
-> +                       }
-> +
-> +                       for (cnt = 0; cnt < num_returned; cnt++) {
-> +                               s32 val;
-> +
-> +                               val =
-> +                                   (s32)le32_to_cpu(resp_levels->voltage[cnt]);
-> +                               v->levels_uv[desc_index + cnt] = val;
-> +                               if (!v->negative_volts_allowed && val < 0)
-
-could skip testing v->negative_volts_allowed.
-        if (val < 0)
-                v->negative_volts_allowed = true;
-
-
-> +                                       v->negative_volts_allowed = true;
-> +                       }
-> +
-> +                       desc_index += num_returned;
-> +
-> +                       scmi_reset_rx_to_maxsz(handle, tl);
-> +                       /* check both to avoid infinite loop due to buggy fw */
-> +               } while (num_returned && num_remaining);
-> +
-> +               /*
-> +                * Bail out on memory errors, just skip domain on any
-> +                * other error.
-> +                */
-> +               if (!ret)
-> +                       vinfo->domains[dom] = v;
-> +               else if (ret == -ENOMEM)
-> +                       break;
-> +
-> +               scmi_reset_rx_to_maxsz(handle, td);
+> --- a/drivers/vfio/pci/vfio_pci_intrs.c
+> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
+> @@ -352,10 +352,12 @@ static int vfio_msi_set_vector_signal(struct vfio_p=
+ci_device *vdev,
+>         vdev->ctx[vector].producer.token =3D trigger;
+>         vdev->ctx[vector].producer.irq =3D irq;
+>         ret =3D irq_bypass_register_producer(&vdev->ctx[vector].producer)=
+;
+> -       if (unlikely(ret))
+> +       if (unlikely(ret)) {
+>                 dev_info(&pdev->dev,
+>                 "irq bypass producer (token %p) registration fails: %d\n"=
+,
+>                 vdev->ctx[vector].producer.token, ret);
+> +               vdev->ctx[vector].producer.token =3D NULL;
 > +       }
-> +
-> +       scmi_xfer_put(handle, tl);
-> +outd:
-> +       scmi_xfer_put(handle, td);
-> +
-> +       return ret;
-> +}
-> +
-> +static inline int __scmi_voltage_get_u32(const struct scmi_handle *handle,
-
-inline needed ?
-
-> +                                        u8 cmd_id, u32 domain_id, u32 *value)
-> +{
-> +       int ret;
-> +       struct scmi_xfer *t;
-> +       struct voltage_info *vinfo = handle->voltage_priv;
-> +
-> +       if (domain_id >= vinfo->num_domains)
-> +               return -EINVAL;
-> +
-> +       ret = scmi_xfer_get_init(handle, cmd_id,
-> +                                SCMI_PROTOCOL_VOLTAGE,
-> +                                sizeof(__le32), 0, &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       put_unaligned_le32(domain_id, t->tx.buf);
-> +       ret = scmi_do_xfer(handle, t);
-> +       if (!ret)
-> +               *value = get_unaligned_le32(t->rx.buf);
-> +
-> +       scmi_xfer_put(handle, t);
-> +       return ret;
-> +}
-> +
-> +static int scmi_voltage_config_set(const struct scmi_handle *handle,
-> +                                  u32 domain_id, u32 config)
-> +{
-> +       int ret;
-> +       struct scmi_xfer *t;
-> +       struct voltage_info *vinfo = handle->voltage_priv;
-> +       struct scmi_msg_cmd_config_set *cmd;
-> +
-> +       if (domain_id >= vinfo->num_domains)
-> +               return -EINVAL;
-> +
-> +       ret = scmi_xfer_get_init(handle, VOLTAGE_CONFIG_SET,
-> +                                SCMI_PROTOCOL_VOLTAGE,
-> +                                sizeof(*cmd), 0, &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       cmd = t->tx.buf;
-> +       cmd->domain_id = cpu_to_le32(domain_id);
-> +       cmd->config = cpu_to_le32(config & GENMASK(3, 0));
-> +
-> +       ret = scmi_do_xfer(handle, t);
-> +
-> +       scmi_xfer_put(handle, t);
-> +       return ret;
-> +}
-> +
-> +static int scmi_voltage_config_get(const struct scmi_handle *handle,
-> +                                  u32 domain_id, u32 *config)
-> +{
-> +       return __scmi_voltage_get_u32(handle, VOLTAGE_CONFIG_GET,
-> +                                     domain_id, config);
-> +}
-> +
-> +static int scmi_voltage_level_set(const struct scmi_handle *handle,
-> +                                 u32 domain_id, u32 flags, s32 volt_uV)
-> +{
-> +       int ret;
-> +       struct scmi_xfer *t;
-> +       struct voltage_info *vinfo = handle->voltage_priv;
-> +       struct scmi_msg_cmd_level_set *cmd;
-> +
-> +       if (domain_id >= vinfo->num_domains)
-> +               return -EINVAL;
-> +
-> +       ret = scmi_xfer_get_init(handle, VOLTAGE_LEVEL_SET,
-> +                                SCMI_PROTOCOL_VOLTAGE,
-> +                                sizeof(*cmd), 0, &t);
-> +       if (ret)
-> +               return ret;
-> +
-> +       cmd = t->tx.buf;
-> +       cmd->domain_id = cpu_to_le32(domain_id);
-> +       cmd->flags = cpu_to_le32(flags);
-> +       cmd->voltage_level = cpu_to_le32(volt_uV);
-> +
-> +       ret = scmi_do_xfer(handle, t);
-> +
-> +       scmi_xfer_put(handle, t);
-> +       return ret;
-> +}
-> +
-> +static int scmi_voltage_level_get(const struct scmi_handle *handle,
-> +                                 u32 domain_id, s32 *volt_uV)
-> +{
-> +       return __scmi_voltage_get_u32(handle, VOLTAGE_LEVEL_GET,
-> +                                     domain_id, (u32 *)volt_uV);
-> +}
-> +
-> +static const struct scmi_voltage_info *
-> +scmi_voltage_info_get(const struct scmi_handle *handle, u32 domain_id)
-> +{
-> +       struct voltage_info *vinfo = handle->voltage_priv;
-> +
-> +       if (domain_id >= vinfo->num_domains)
-> +               return NULL;
-> +
-> +       return vinfo->domains[domain_id];
-> +}
-> +
-> +static int scmi_voltage_domains_num_get(const struct scmi_handle *handle)
-> +{
-> +       struct voltage_info *vinfo = handle->voltage_priv;
-> +
-> +       return vinfo->num_domains;
-> +}
-> +
-> +static struct scmi_voltage_ops voltage_ops = {
-> +       .num_domains_get = scmi_voltage_domains_num_get,
-> +       .info_get = scmi_voltage_info_get,
-> +       .config_set = scmi_voltage_config_set,
-> +       .config_get = scmi_voltage_config_get,
-> +       .level_set = scmi_voltage_level_set,
-> +       .level_get = scmi_voltage_level_get,
-> +};
-> +
-> +static int scmi_voltage_protocol_init(struct scmi_handle *handle)
-> +{
-> +       int ret;
-> +       u32 version;
-> +       struct voltage_info *vinfo;
-> +
-> +       ret = scmi_version_get(handle, SCMI_PROTOCOL_VOLTAGE, &version);
-> +       if (ret)
-> +               return ret;
-> +
-> +       dev_dbg(handle->dev, "Voltage Version %d.%d\n",
-> +               PROTOCOL_REV_MAJOR(version), PROTOCOL_REV_MINOR(version));
-> +
-> +       vinfo = devm_kzalloc(handle->dev, sizeof(*vinfo), GFP_KERNEL);
-> +       if (!vinfo)
-> +               return -ENOMEM;
-> +       vinfo->version = version;
-> +
-> +       ret = scmi_protocol_attributes_get(handle, vinfo);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (vinfo->num_domains) {
-> +               vinfo->domains = devm_kcalloc(handle->dev, vinfo->num_domains,
-> +                                             sizeof(vinfo->domains),
-> +                                             GFP_KERNEL);
-> +               if (!vinfo->domains)
-> +                       return -ENOMEM;
-> +               ret = scmi_voltage_descriptors_get(handle, vinfo);
-> +               if (ret)
-> +                       return ret;
-> +       } else {
-> +               dev_warn(handle->dev, "No Voltage domains found.\n");
-> +       }
-> +
-> +       handle->voltage_ops = &voltage_ops;
-> +       handle->voltage_priv = vinfo;
-> +
-> +       return 0;
-> +}
-> +
-> +DEFINE_SCMI_PROTOCOL_REGISTER_UNREGISTER(SCMI_PROTOCOL_VOLTAGE, voltage)
-> diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-> index 9cd312a1ff92..032ad9bb2a53 100644
-> --- a/include/linux/scmi_protocol.h
-> +++ b/include/linux/scmi_protocol.h
-> @@ -209,6 +209,64 @@ struct scmi_reset_ops {
->         int (*deassert)(const struct scmi_handle *handle, u32 domain);
->  };
 >
-> +/**
-> + * struct scmi_voltage_info - describe one available SCMI Voltage Domain
-> + *
-> + * @id: the domain ID as advertised by the platform
-> + * @segmented: defines the layout of the entries of array @levels_uv.
-> + *            - when True the entries are to be interpreted as triplets,
-> + *              each defining a segment representing a range of equally
-> + *              space voltages: <lowest_volts>, <highest_volt>, <step_uV>
-> + *            - when False the entries simply represent a single discrete
-> + *              supported voltage level
-> + * @negative_volts_allowed: True if any of the entries of @levels_uv represent
-> + *                         a negative voltage.
-> + * @attributes: represents Voltage Domain advertised attributes
-> + * @name: name assigned to the Voltage Domain by platform
-> + * @num_levels: number of total entries in @levels_uv.
-> + * @levels_uv: array of entries describing the available voltage levels for
-> + *            this domain.
-> + */
-> +struct scmi_voltage_info {
-> +       u32 id;
-> +       bool segmented;
-> +#define SCMI_VOLTAGE_SEGMENT_LOW       0
-> +#define SCMI_VOLTAGE_SEGMENT_HIGH      1
-> +#define SCMI_VOLTAGE_SEGMENT_STEP      2
-> +       bool negative_volts_allowed;
-> +       u32 attributes;
-> +       char name[SCMI_MAX_STR_SIZE];
-> +       u16 num_levels;
-> +       s32 *levels_uv;
-> +};
-> +
-> +/**
-> + * struct scmi_voltage_ops - represents the various operations provided
-> + * by SCMI Voltage Protocol
-> + *
-> + * @num_domains_get: get the count of voltage domains provided by SCMI
-> + * @info_get: get the information of the specified domain
-> + * @config_set: set the config for the specified domain
-> + * @config_get: get the config of the specified domain
-> + * @level_set: set the voltage level for the specified domain
-> + * @level_get: get the voltage level of the specified domain
-> + */
-> +struct scmi_voltage_ops {
-> +       int (*num_domains_get)(const struct scmi_handle *handle);
-> +       const struct scmi_voltage_info *(*info_get)
-> +               (const struct scmi_handle *handle, u32 domain_id);
-> +       int (*config_set)(const struct scmi_handle *handle, u32 domain_id,
-> +                         u32 config);
-> +#define        SCMI_VOLTAGE_ARCH_STATE_OFF             0x0
-> +#define        SCMI_VOLTAGE_ARCH_STATE_ON              0x7
-> +       int (*config_get)(const struct scmi_handle *handle, u32 domain_id,
-> +                         u32 *config);
-> +       int (*level_set)(const struct scmi_handle *handle, u32 domain_id,
-> +                        u32 flags, s32 volt_uV);
-> +       int (*level_get)(const struct scmi_handle *handle, u32 domain_id,
-> +                        s32 *volt_uV);
-> +};
-> +
->  /**
->   * struct scmi_notify_ops  - represents notifications' operations provided by
->   * SCMI core
-> @@ -262,6 +320,7 @@ struct scmi_notify_ops {
->   * @clk_ops: pointer to set of clock protocol operations
->   * @sensor_ops: pointer to set of sensor protocol operations
->   * @reset_ops: pointer to set of reset protocol operations
-> + * @voltage_ops: pointer to set of voltage protocol operations
->   * @notify_ops: pointer to set of notifications related operations
->   * @perf_priv: pointer to private data structure specific to performance
->   *     protocol(for internal use only)
-> @@ -273,6 +332,8 @@ struct scmi_notify_ops {
->   *     protocol(for internal use only)
->   * @reset_priv: pointer to private data structure specific to reset
->   *     protocol(for internal use only)
-> + * @voltage_priv: pointer to private data structure specific to voltage
-> + *     protocol(for internal use only)
->   * @notify_priv: pointer to private data structure specific to notifications
->   *     (for internal use only)
->   */
-> @@ -284,6 +345,7 @@ struct scmi_handle {
->         const struct scmi_power_ops *power_ops;
->         const struct scmi_sensor_ops *sensor_ops;
->         const struct scmi_reset_ops *reset_ops;
-> +       const struct scmi_voltage_ops *voltage_ops;
->         const struct scmi_notify_ops *notify_ops;
->         /* for protocol internal use */
->         void *perf_priv;
-> @@ -291,6 +353,7 @@ struct scmi_handle {
->         void *power_priv;
->         void *sensor_priv;
->         void *reset_priv;
-> +       void *voltage_priv;
->         void *notify_priv;
->         void *system_priv;
->  };
-> @@ -303,6 +366,7 @@ enum scmi_std_protocol {
->         SCMI_PROTOCOL_CLOCK = 0x14,
->         SCMI_PROTOCOL_SENSOR = 0x15,
->         SCMI_PROTOCOL_RESET = 0x16,
-> +       SCMI_PROTOCOL_VOLTAGE = 0x17,
->  };
+>         vdev->ctx[vector].trigger =3D trigger;
 >
->  enum scmi_system_events {
-> --
-> 2.17.1
+> This is exactly what you proposed for vhost/vdpa.c, so I don't see why
+> you're playing with the trigger context, which will clearly cause
+> problems.  Thanks,
+>
+> Alex
+>
+> > --
+> >
+> > However, when I use this patch to testing, the following bugs are
+> > triggered when vfio_msi_disable() called because the msi vector
+> > is not cleaned up:
+> >
+> > vfio_ecap_init: 0000:db:00.0 hiding ecap 0x1e@0x310
+> > vfio-pci 0000:db:00.0: irq bypass producer (token 000000004409229f)
+> > registration fails: -16
+> > ------------[ cut here ]------------
+> > kernel BUG at drivers/pci/msi.c:352!
+> > invalid opcode: 0000 [#1] SMP NOPTI
+> > CPU: 55 PID: 9389 Comm: qemu-kvm Kdump: loaded Tainted: G
+> > E    --------- -  - 4.18.0-193.irqb.r1.el8.x86_64 #1
+> > Hardware name: Lenovo ThinkSystem SR650 -[7X06CTO1WW]-/-[7X06CTO1WW]-,
+> >   BIOS -[IVE636Z-2.13]- 07/18/2019
+> > RIP: 0010:free_msi_irqs+0x180/0x1b0
+> > Code: 14 85 c0 0f 84 d5 fe ff ff 31 ed eb 0f 83 c5 01 39 6b 14 0f 86
+> >       c5 fe ff ff 8b 7b 10 01 ef e8 d7 4a c9 ff 48 83 78 70 00 74 e3
+> >   <0f> 0b 49 8d b5 b0 00 00 00 e8 e2 e3 c9 ff e9 c7 fe ff ff 48
+> >   8b 7b
+> > RSP: 0018:ffffaeca4f4bfcd8 EFLAGS: 00010286
+> > RAX: ffff8bec77441600 RBX: ffff8bbcdb637e40 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: 00000000000001ab RDI: ffffffff8ea5b2a0
+> > RBP: 0000000000000000 R08: ffff8bec7e746828 R09: ffff8bec7e7466a8
+> > R10: 0000000000000000 R11: 0000000000000000 R12: ffff8bbcde921308
+> > R13: ffff8bbcde921000 R14: 000000000000000b R15: 0000000000000021
+> > FS:  00007fd18d7fa700(0000) GS:ffff8bec7f6c0000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00007f83650024a0 CR3: 000000476e70c001 CR4: 00000000007626e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > PKRU: 55555554
+> > Call Trace:
+> >  pci_disable_msix+0xf3/0x120
+> >  pci_free_irq_vectors+0xe/0x20
+> >  vfio_msi_disable+0x89/0xd0 [vfio_pci]
+> >  vfio_pci_set_msi_trigger+0x229/0x2d0 [vfio_pci]
+> >  vfio_pci_ioctl+0x24f/0xdb0 [vfio_pci]
+> >  ? pollwake+0x74/0x90
+> >  ? wake_up_q+0x70/0x70
+> >  do_vfs_ioctl+0xa4/0x630
+> >  ? __alloc_fd+0x33/0x140
+> >  ? syscall_trace_enter+0x1d3/0x2c0
+> >  ksys_ioctl+0x60/0x90
+> >  __x64_sys_ioctl+0x16/0x20
+> >  do_syscall_64+0x5b/0x1a0
+> >  entry_SYSCALL_64_after_hwframe+0x65/0xca
+> >
 >
