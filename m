@@ -2,314 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 193CE290576
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F0A290579
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407846AbgJPMqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 08:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407830AbgJPMqB (ORCPT
+        id S2407863AbgJPMq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:46:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38398 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407835AbgJPMqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 08:46:01 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1E1C0613D4
+        Fri, 16 Oct 2020 08:46:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602852363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7wF22TtTg52My8GhCH0JEYZmjtj4vDtDc64Kh1Nwbn8=;
+        b=Q9aH34y8gGbejbvleKT6vXY9lbBca1XGinD/2Us08zh/jfwmPlOZrmXr5LkYwaNYQIS/B9
+        TYcfsN+gpT2Ox6+oqabvzbXvAYIzTiDR2nXo2PAZvyNYl9YkcSVAFmd2M/yfGCX/AKC/VZ
+        b5uO4Ei3TjCAEi82TrE/vxiewJevxD4=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-paHSCaWdPyexwK0cGcLYug-1; Fri, 16 Oct 2020 08:46:02 -0400
+X-MC-Unique: paHSCaWdPyexwK0cGcLYug-1
+Received: by mail-ej1-f70.google.com with SMTP id z18so933532eji.1
         for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:46:01 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id c6so1215811plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:46:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pSm/g0kqVjlpnCUrgMA34WIyplgwS/+jMYU+gRHVlgw=;
-        b=yEtWgvz7p6jYnSHOfZ8SZ61XE6LNnfmjHq2tgg4W0HalfMsdO1fu7hLigiTmd3cPa1
-         Epme0Xmw7MhQIRTFwtwNQ10nfw/43wDopvOLVJfhEnYYQoSzBKcpSAzeFuEvB85Lc0Nk
-         IvaYD1A9N8146rLQPS6tGDPB4ns6JbD79//oY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pSm/g0kqVjlpnCUrgMA34WIyplgwS/+jMYU+gRHVlgw=;
-        b=CNFPAmXg3+t7jn13CcLmRMDlyxtItlVhG0Jfc6Gv1jUnRH7vCwnuU8NdZG528JA3eP
-         vRVDOOMjDx5cEDcrh+DjiLfs3zGz+N/+3IodSV6m3Ngi/0IuLsTbLiYP0qAiDqIBI74n
-         iqucEO+NH3Nhdw+WRZhWjzp5MkHGf5MjXBsssnxuzIi/c3zJZ4Ga4+6LSmUIvhfvOVOI
-         oII4WSfFKeFEX+ITWIYQVyMmPPniOIWjIbg+zvfp/ahBjqKVkzsvXSbY1dXwetsgtcCh
-         PtI5IKeQfOyuSHfQBgEHhSri+RUMIUYJDLWPWNgXfsusUNDFwimOMQfyHROHKR++ynUL
-         PhaA==
-X-Gm-Message-State: AOAM533fxXzQ7dnmoJKJpDtCICce8LBGA/1T9aB2Keoaak5xMmWfjVBM
-        47zQUDhxQgC/GSQLjPCUd0Q/Lw==
-X-Google-Smtp-Source: ABdhPJwopKhTcd5efvly6yqdL5APFJcFTFOl+PUbxxo8hSB6Y5ASyHdEt4/NsC+tZyTziioLvOti8Q==
-X-Received: by 2002:a17:90b:3109:: with SMTP id gc9mr3917023pjb.74.1602852360786;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7wF22TtTg52My8GhCH0JEYZmjtj4vDtDc64Kh1Nwbn8=;
+        b=ILhMFPN8bZHZrtLTBf7D5tP5SgBtroMxaOgIEpvcOaGaOZw+n8rThnmmOgZl1341hP
+         q2CpPN1HA+08sfL2Kwp2QIT6uRKSnNxcA1N2XtitNb9iV+Eh9G4HhsksZi9L/AsEZkaT
+         pNOaPl4vXbYBMmm0i4cZDOkQ8pZkqUJWQ5P032kQ9zL3ZAs9JXODwWl6HYB0HmsxegE+
+         oapJHB/A08+p4kVd3WWRWnwK0RjAF6OPcp2sZCdTOXMTdspgL8VlwU/9B3wfDzBeLGus
+         Twifk91tmEb4r2fcUR/U4fAXKQ1zdYJT4pAEPyw8/Nad++wXUxMLjyPFCkpRfjOEgsTa
+         1Xjg==
+X-Gm-Message-State: AOAM530wtRIEmZ7ig15fn6lv9KES7g25Oc/RV7qav31GGr6HhTSMHrhB
+        P0BD6FF8JqtwVO7PxKHilBoDvvn9iq89V13tQvJIRrUc5hQqiOF9yG/rWdVl5fGnimKWUWSZBz0
+        oUftHqGEFL4jbCwmrqWRxShPZ
+X-Received: by 2002:a50:a452:: with SMTP id v18mr3558750edb.143.1602852360550;
         Fri, 16 Oct 2020 05:46:00 -0700 (PDT)
-Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id q123sm2906732pfq.56.2020.10.16.05.45.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+X-Google-Smtp-Source: ABdhPJxugyAIP9+8mi74NlTjuPZGUD97J50mq+5lrgMH6SXx3HSGmqYhS1uys0MlOWVLz+5l4KUX+g==
+X-Received: by 2002:a50:a452:: with SMTP id v18mr3558722edb.143.1602852360301;
         Fri, 16 Oct 2020 05:46:00 -0700 (PDT)
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     Sargun Dhillon <sargun@sargun.me>, linux-nfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Kyle Anderson <kylea@netflix.com>
-Subject: [RESEND PATCH v2 3/3] samples/vfs: Add example leveraging NFS with new APIs and user namespaces
-Date:   Fri, 16 Oct 2020 05:45:50 -0700
-Message-Id: <20201016124550.10739-4-sargun@sargun.me>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201016124550.10739-1-sargun@sargun.me>
-References: <20201016124550.10739-1-sargun@sargun.me>
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id t25sm1345815edt.24.2020.10.16.05.45.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 05:45:59 -0700 (PDT)
+Subject: Re: [PATCH v4] bluetooth: hci_h5: fix memory leak in h5_close
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201007034803.7554-1-anant.thazhemadam@gmail.com>
+ <2a79ece2-c63b-a881-bc19-65b59952344f@redhat.com>
+ <dfa15c3a-6081-1072-8c73-ecebc983643d@gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d07b1280-7b5f-f0fd-2892-a89a95712c9b@redhat.com>
+Date:   Fri, 16 Oct 2020 14:45:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <dfa15c3a-6081-1072-8c73-ecebc983643d@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an example which assumes you already have an NFS server setup,
-but does the work of creating a user namespace, and an NFS mount from
-that user namespace which then exposes different UIDs than that of
-the init user namespace.
+Hi,
 
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-Cc: J. Bruce Fields <bfields@fieldses.org>
-Cc: Chuck Lever <chuck.lever@oracle.com>
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Kyle Anderson <kylea@netflix.com>
----
- fs/nfs/flexfilelayout/flexfilelayout.c |   1 +
- samples/vfs/.gitignore                 |   2 +
- samples/vfs/Makefile                   |   3 +-
- samples/vfs/test-nfs-userns.c          | 181 +++++++++++++++++++++++++
- 4 files changed, 186 insertions(+), 1 deletion(-)
- create mode 100644 samples/vfs/test-nfs-userns.c
+On 10/16/20 1:55 PM, Anant Thazhemadam wrote:
+> 
+> Hi,
+> 
+> On 16/10/20 4:58 pm, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 10/7/20 5:48 AM, Anant Thazhemadam wrote:
+>>> If h5_close is called when !hu->serdev, h5 is directly freed.
+>>> However, h5->rx_skb is not freed, which causes a memory leak.
+>>>
+>>> Freeing h5->rx_skb fixes this memory leak.
+>>>
+>>> In case hu->serdev exists, h5->rx_skb is then set to NULL,
+>>> since we do not want to risk a potential NULL pointer 
+>>> dereference.
+>>>
+>>> Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
+>>> Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+>>> Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+>>> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>h5_close v4
+>>> ---
+>>> Changes in v4:
+>>> 	* Free h5->rx_skb even when hu->serdev
+>>> 	(Suggested by Hans de Goede <hdegoede@redhat.com>)
+>>> 	* If hu->serdev, then assign h5->rx_skb = NULL
+>>>
+>>> Changes in v3:
+>>> 	* Free h5->rx_skb when !hu->serdev, and fix the memory leak
+>>> 	* Do not incorrectly and unnecessarily call serdev_device_close()
+>>>
+>>> Changes in v2:
+>>> 	* Fixed the Fixes tag
+>>>
+>>>  drivers/bluetooth/hci_h5.c | 4 ++++
+>>>  1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+>>> index e41854e0d79a..39f9553caa5c 100644
+>>> --- a/drivers/bluetooth/hci_h5.c
+>>> +++ b/drivers/bluetooth/hci_h5.c
+>>> @@ -245,11 +245,15 @@ static int h5_close(struct hci_uart *hu)
+>>>  	skb_queue_purge(&h5->rel);
+>>>  	skb_queue_purge(&h5->unrel);
+>>>  
+>>> +	kfree_skb(h5->rx_skb);
+>>> +
+>>>  	if (h5->vnd && h5->vnd->close)
+>>>  		h5->vnd->close(h5);
+>>>  
+>>>  	if (!hu->serdev)
+>>>  		kfree(h5);
+>>> +	else
+>>> +		h5->rx_skb = NULL;
+>> Please just do this unconditionally directly after
+>> the kfree_skb()
+> 
+> Could you also please tell me why this might be necessary?
+> The pointer value stored at h5->rx_skb would be freed anyways when we free h5 (since rx_skb is
+> essentially a member of the structure that h5 points to).
 
-diff --git a/fs/nfs/flexfilelayout/flexfilelayout.c b/fs/nfs/flexfilelayout/flexfilelayout.c
-index f9348ed1bcda..ee45ff7d75ac 100644
---- a/fs/nfs/flexfilelayout/flexfilelayout.c
-+++ b/fs/nfs/flexfilelayout/flexfilelayout.c
-@@ -361,6 +361,7 @@ ff_layout_alloc_lseg(struct pnfs_layout_hdr *lh,
- 		     struct nfs4_layoutget_res *lgr,
- 		     gfp_t gfp_flags)
- {
-+	struct user_namespace *user_ns = lh->plh_lc_cred->user_ns;
- 	struct pnfs_layout_segment *ret;
- 	struct nfs4_ff_layout_segment *fls = NULL;
- 	struct xdr_stream stream;
-diff --git a/samples/vfs/.gitignore b/samples/vfs/.gitignore
-index 8fdabf7e5373..1d09826b31a6 100644
---- a/samples/vfs/.gitignore
-+++ b/samples/vfs/.gitignore
-@@ -1,3 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
- test-fsmount
- test-statx
-+test-nfs-userns
-+
-diff --git a/samples/vfs/Makefile b/samples/vfs/Makefile
-index 7f76875eaa70..6a2926080c08 100644
---- a/samples/vfs/Makefile
-+++ b/samples/vfs/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- test-fsmount-objs := test-fsmount.o vfs-helper.o
--userprogs := test-fsmount test-statx
-+test-nfs-userns-objs := test-nfs-userns.o vfs-helper.o
-+userprogs := test-fsmount test-statx test-nfs-userns
- 
- always-y := $(userprogs)
- 
-diff --git a/samples/vfs/test-nfs-userns.c b/samples/vfs/test-nfs-userns.c
-new file mode 100644
-index 000000000000..108af924cbdd
---- /dev/null
-+++ b/samples/vfs/test-nfs-userns.c
-@@ -0,0 +1,181 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <linux/unistd.h>
-+#include <assert.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <sys/stat.h>
-+#include <stdlib.h>
-+#include <sys/socket.h>
-+#include <string.h>
-+#include <fcntl.h>
-+#include <sched.h>
-+#include <sys/prctl.h>
-+#include <sys/wait.h>
-+#include "vfs-helper.h"
-+
-+
-+#define WELL_KNOWN_FD	100
-+
-+static inline int pidfd_open(pid_t pid, unsigned int flags)
-+{
-+	return syscall(__NR_pidfd_open, pid, flags);
-+}
-+
-+static inline int pidfd_getfd(int pidfd, int fd, int flags)
-+{
-+	return syscall(__NR_pidfd_getfd, pidfd, fd, flags);
-+}
-+
-+static void write_to_path(const char *path, const char *str)
-+{
-+	int fd, len = strlen(str);
-+
-+	fd = open(path, O_WRONLY);
-+	if (fd < 0) {
-+		fprintf(stderr, "Can't open %s: %s\n", path, strerror(errno));
-+		exit(1);
-+	}
-+
-+	if (write(fd, str, len) != len) {
-+		fprintf(stderr, "Can't write string: %s\n", strerror(errno));
-+		exit(1);
-+	}
-+
-+	E(close(fd));
-+}
-+
-+static int do_work(int sk)
-+{
-+	int fsfd;
-+
-+	E(unshare(CLONE_NEWNS|CLONE_NEWUSER));
-+
-+	fsfd = fsopen("nfs4", 0);
-+	E(fsfd);
-+
-+	E(send(sk, &fsfd, sizeof(fsfd), 0));
-+	// Wait for the other side to close / finish / wrap up
-+	recv(sk, &fsfd, sizeof(fsfd), 0);
-+	E(close(sk));
-+
-+	return 0;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int pidfd, mntfd, fsfd, fsfdnum, status, sk_pair[2];
-+	struct statx statxbuf;
-+	char buf[1024];
-+	pid_t pid;
-+
-+	if (mkdir("/mnt/share", 0777) && errno != EEXIST) {
-+		perror("mkdir");
-+		return 1;
-+	}
-+
-+	E(chmod("/mnt/share", 0777));
-+
-+	if (mkdir("/mnt/nfs", 0755) && errno != EEXIST) {
-+		perror("mkdir");
-+		return 1;
-+	}
-+
-+	if (unlink("/mnt/share/newfile") && errno != ENOENT) {
-+		perror("unlink");
-+		return 1;
-+	}
-+
-+	E(creat("/mnt/share/testfile", 0644));
-+	E(chown("/mnt/share/testfile", 1001, 1001));
-+
-+	/* exportfs is idempotent, but expects nfs-server to be running */
-+	if (system("exportfs -o no_root_squash,no_subtree_check,rw 127.0.0.0/8:/mnt/share")) {
-+		fprintf(stderr,
-+			"Could not export /mnt/share. Is NFS the server running?\n");
-+		return 1;
-+	}
-+
-+	E(socketpair(PF_LOCAL, SOCK_SEQPACKET, 0, sk_pair));
-+
-+	pid = fork();
-+	E(pid);
-+	if (pid == 0) {
-+		E(close(sk_pair[0]));
-+		return do_work(sk_pair[1]);
-+	}
-+
-+	E(close(sk_pair[1]));
-+
-+	pidfd = pidfd_open(pid, 0);
-+	E(pidfd);
-+
-+	E(recv(sk_pair[0], &fsfdnum, sizeof(fsfdnum), 0));
-+
-+	fsfd = pidfd_getfd(pidfd, fsfdnum, 0);
-+	if (fsfd == -1) {
-+		perror("pidfd_getfd");
-+		return 1;
-+	}
-+
-+
-+	snprintf(buf, sizeof(buf) - 1, "/proc/%d/uid_map", pid);
-+	write_to_path(buf, "0 1000 2");
-+	snprintf(buf, sizeof(buf) - 1, "/proc/%d/setgroups", pid);
-+	write_to_path(buf, "deny");
-+	snprintf(buf, sizeof(buf) - 1, "/proc/%d/gid_map", pid);
-+	write_to_path(buf, "0 1000 2");
-+
-+	/* Now we can proceed to mount */
-+	E_fsconfig(fsfd, FSCONFIG_SET_STRING, "vers", "4.1", 0);
-+	E_fsconfig(fsfd, FSCONFIG_SET_STRING, "clientaddr", "127.0.0.1", 0);
-+	E_fsconfig(fsfd, FSCONFIG_SET_STRING, "addr", "127.0.0.1", 0);
-+	E_fsconfig(fsfd, FSCONFIG_SET_STRING, "source", "127.0.0.1:/mnt/share",
-+		   0);
-+	E_fsconfig(fsfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0);
-+
-+	/* Move into the namespace's of the worker */
-+	E(setns(pidfd, CLONE_NEWNS|CLONE_NEWUSER));
-+	E(close(pidfd));
-+
-+	/* Close our socket pair indicating the child should exit */
-+	E(close(sk_pair[0]));
-+	assert(waitpid(pid, &status, 0) == pid);
-+	if (!WIFEXITED(status) || WEXITSTATUS(status)) {
-+		fprintf(stderr, "worker exited nonzero\n");
-+		return 1;
-+	}
-+
-+	E(setuid(0));
-+	E(setgid(0));
-+
-+	/* Now do all the work of moving doing the mount in the child ns */
-+	E(syscall(__NR_mount, NULL, "/", NULL, MS_REC|MS_PRIVATE, NULL));
-+
-+	mntfd = fsmount(fsfd, 0, MS_NODEV);
-+	if (mntfd < 0) {
-+		E(close(fsfd));
-+		mount_error(fsfd, "fsmount");
-+	}
-+
-+	E(move_mount(mntfd, "", AT_FDCWD, "/mnt/nfs", MOVE_MOUNT_F_EMPTY_PATH));
-+	E(close(mntfd));
-+
-+	/* Create the file through NFS */
-+	E(creat("/mnt/nfs/newfile", 0644));
-+	/* Check what the file's status is on the disk, accessed directly */
-+	E(statx(AT_FDCWD, "/mnt/share/newfile", 0, STATX_UID|STATX_GID,
-+		&statxbuf));
-+	assert(statxbuf.stx_uid == 0);
-+	assert(statxbuf.stx_gid == 0);
-+
-+	E(statx(AT_FDCWD, "/mnt/nfs/testfile", 0, STATX_UID|STATX_GID,
-+		&statxbuf));
-+	assert(statxbuf.stx_uid == 1);
-+	assert(statxbuf.stx_gid == 1);
-+
-+
-+	return 0;
-+}
--- 
-2.25.1
+It is necessary in the path where the struct h5 points to is not
+free-ed and it is cleaner to just always do it then, as you
+indicate yourself 
+
+> Also since we're performing the *if* check, the *else* condition wouldn't exactly be taxing either,
+> right?
+
+For the computer it is not taxing, but for a human reading the code
+and trying to understand the flow it makes things extra complicated
+unnecessarily.
+
+> Is there some performance metric that I'm missing where unconditionally setting it to NULL
+> in this manner would be better? (I couldn't find any resources that had any similar analysis
+> performed :/ )
+> Or is this in interest of code readability?
+
+Yes, it is in interest of code readability?
+
+> Also, how about we introduce a h5 = NULL, after freeing h5 when !hu->serdev?
+
+That is not necessary, there is no reason to have that in either code path.
+
+Regards,
+
+Hans
 
