@@ -2,512 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9412907A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BFB290763
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409281AbgJPOpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:45:02 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5324 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409251AbgJPOpB (ORCPT
+        id S2406514AbgJPOmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395258AbgJPOmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:45:01 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f89b1e10001>; Fri, 16 Oct 2020 07:44:49 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
- 2020 14:44:56 +0000
-Received: from audio.nvidia.com (10.124.1.5) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Fri, 16 Oct 2020 14:44:50 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
-        <kuninori.morimoto.gx@renesas.com>,
-        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <p.zabel@pengutronix.de>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sharadg@nvidia.com>, <mkumard@nvidia.com>,
-        <viswanathl@nvidia.com>, <rlokhande@nvidia.com>,
-        <dramesh@nvidia.com>, <atalambedu@nvidia.com>,
-        <nwartikar@nvidia.com>, <swarren@nvidia.com>,
-        <nicoleotsuka@gmail.com>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH v4 15/15] arm64: tegra: Audio graph sound card for Jetson Nano and TX1
-Date:   Fri, 16 Oct 2020 20:13:02 +0530
-Message-ID: <1602859382-19505-16-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
-References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+        Fri, 16 Oct 2020 10:42:20 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E810CC061755;
+        Fri, 16 Oct 2020 07:42:19 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d6so1381813plo.13;
+        Fri, 16 Oct 2020 07:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WVM45nYJVMYXAbkTU2+ioyOUEwvIX/0R0Kb3UcZPgnk=;
+        b=JeLyn4hgNSIIGZC73c3UhHFxozOtnpIfoi0nUwxmg6LrS6uDS980DBnjM7oXH+2tK1
+         Nx6g41BJrtQvrbIkWWw0xcmeAZidQ3oVh5lJaA2PrOVAapDFb81YG1Jsu3jly8Ludqfw
+         aiOsb4/fQ4EOU5on/su8KWeMIym1YbbolriAQmG9kltZzo/dkHAP5OiWHZy/FHDwtJJt
+         3/JfpGjYpXV00q+o64k77bxxvKnI17RfV9n6eWiC+Abf0Wki365AFThqgQfd77CSF2Pw
+         CZU8VB96TnlaxPFMANZEm/i5XB82bz/H1n93nSslAYmzJETQaQKeoZu6cuwqJ5K5XhXH
+         sGtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WVM45nYJVMYXAbkTU2+ioyOUEwvIX/0R0Kb3UcZPgnk=;
+        b=KHROIZZsbmdbBJW7zBBvUKg3fj+aS+6skdWNLa75X+rokkQ73VBitU40Qe+O1JiBkd
+         2P94DpGKeavZUDVdKL9RD2txd7h9Cuejh2QcoRXTMXEViHcuyQVVgH1sTmMcxxxCj1B5
+         qtARuzXrHnBv6PGyfa6K6GiBNKPI0HL5hbK5sZyeGqvsg02fZz1E+hZE/n6SEh1AcMyT
+         FxkIaa3w+BqlTmuzJFpGb2UpjivRPBp+GcdkfHBHKFz02IPMdsatXfizA5mhGQdiSYcj
+         dNKbL3Om8JfcCbIJ7ATiPTiGqhQm7G4KUwrDqjvOw2SL8UuU692NVhO0PBg1rK33Xb6S
+         4ayA==
+X-Gm-Message-State: AOAM532xCOSqItRrUx4mt4FBwO7M36MDUE+xN165IqF7Q1gj2C+w1z8O
+        DY0vxGhw/hHtlW+CguHHLe69whM6bS1K5npCUj8=
+X-Google-Smtp-Source: ABdhPJyLwKUyWwiaVV/dwyfQRPP5pjP1t4ZC+NAL1cs1Ahz7ogeX0JAHYlPdk81DSe3t0c/0rb/A2lxSdXhi/qqk5Xk=
+X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr4443081pjb.129.1602859339375;
+ Fri, 16 Oct 2020 07:42:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602859489; bh=Zmo3gEQj1Q3iW8/ujdilA5fA/ZPa/RKFHm549VsxnfY=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
-         References:MIME-Version:Content-Type;
-        b=CTyvvR6Lx9YH+r3bSF2kJmkRpphh8Yv0KMn83L23xSqHPbA4QQ7IPLgtgHwht1LUF
-         3unP0MW5gTkvtdAk/VZq0788gpCeUe2lkWAdK55f7kaExZhL7aOC6sM5Me+i1eXC7W
-         zDTLFCaeedAQUe3Kc7B0q0GxTc8VIDO3+XtgGomTfbol9zTSIuXJbh4lPBIxSohpSP
-         9l+O0+fw9eylAKLYp1uNAIUNZd7xFudKsbEu13ng2mIF680kR7vEHQE80N8GlJKbMG
-         vx1+vpryG3k1oIcQcc3ITjsv/WX4x/WDJexH6Eyuyr/JtNKxG3l0fnA/L5D1Qzli0b
-         aZ+Wc1tpqi9ag==
+References: <20201015115524.24e3c36b@xhacker.debian> <20201015115903.2a782f78@xhacker.debian>
+ <20201015120457.qaooft5y5dzl4z7s@mobilestation>
+In-Reply-To: <20201015120457.qaooft5y5dzl4z7s@mobilestation>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 16 Oct 2020 17:43:08 +0300
+Message-ID: <CAHp75Vf2GZ_kQT3cdr2hRtGqe8vA8as4EP7qH0_9uCkrk5PP2A@mail.gmail.com>
+Subject: Re: [PATCH 8/8] dt-bindings: gpio: dw-apb: remove never-used "snps,dw-apb-gpio-port"
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for audio-graph based sound card on Jetson-Nano and
-Jetson-TX1. Depending on the platform, required I/O interfaces are
-enabled.
+On Thu, Oct 15, 2020 at 3:33 PM Serge Semin <fancer.lancer@gmail.com> wrote:
+> On Thu, Oct 15, 2020 at 11:59:03AM +0800, Jisheng Zhang wrote:
+> > The compatible string is never used.
+>
+> Before sending v2 could you run "make dt_binding_check" for the DT schema
+> modified in this patch? Like this:
+>
+> make -j8 ARCH=mips CROSS_COMPILE=mipsel-baikal-linux- dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
 
- * Jetson-Nano: Enable I2S3, I2S4, DMIC1 and DMIC2.
- * Jetson-TX1: Enable all I2S and DMIC interfaces.
+Do you really need to install all cross compilation tools for that?
+I think it should simple work as
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 262 +++++++++++++++++++++
- arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 146 ++++++++++++
- 2 files changed, 408 insertions(+)
+% make dt_binding_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/gpio/snps,dw-apb-gpio.yaml
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-index 4c9c2a0..dab24b4 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
-@@ -3,6 +3,7 @@
- 
- #include "tegra210-p2180.dtsi"
- #include "tegra210-p2597.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson TX1 Developer Kit";
-@@ -127,4 +128,265 @@
- 			status = "okay";
- 		};
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s1_port>, <&xbar_i2s2_port>, <&xbar_i2s3_port>,
-+		       <&xbar_i2s4_port>, <&xbar_i2s5_port>, <&xbar_dmic1_port>,
-+		       <&xbar_dmic2_port>, <&xbar_dmic3_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s1_port>, <&i2s2_port>, <&i2s3_port>, <&i2s4_port>,
-+		       <&i2s5_port>, <&dmic1_port>, <&dmic2_port>, <&dmic3_port>;
-+
-+		label = "jetson-tx1-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s1_port: port@a {
-+			reg = <0xa>;
-+			xbar_i2s1_ep: endpoint {
-+				remote-endpoint = <&i2s1_cif_ep>;
-+			};
-+		};
-+		xbar_i2s2_port: port@b {
-+			reg = <0xb>;
-+			xbar_i2s2_ep: endpoint {
-+				remote-endpoint = <&i2s2_cif_ep>;
-+			};
-+		};
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_i2s5_port: port@e {
-+			reg = <0xe>;
-+			xbar_i2s5_ep: endpoint {
-+				remote-endpoint = <&i2s5_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+		xbar_dmic3_port: port@11 {
-+			reg = <0x11>;
-+			xbar_dmic3_ep: endpoint {
-+				remote-endpoint = <&dmic3_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s1_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s1_ep>;
-+			};
-+		};
-+		i2s1_port: port@1 {
-+			reg = <1>;
-+			i2s1_dap: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s2_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s2_ep>;
-+			};
-+		};
-+		i2s2_port: port@1 {
-+			reg = <1>;
-+			i2s2_dap: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s3_ep>;
-+			};
-+		};
-+		i2s3_port: port@1 {
-+			reg = <1>;
-+			i2s3_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s4_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s4_ep>;
-+			};
-+		};
-+		i2s4_port: port@1 {
-+			reg = <1>;
-+			i2s4_dap: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s5 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s5_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s5_ep>;
-+			};
-+		};
-+		i2s5_port: port@1 {
-+			reg = <1>;
-+			i2s5_dap: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic1_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic1_ep>;
-+			};
-+		};
-+		dmic1_port: port@1 {
-+			reg = <1>;
-+			dmic1_dap: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic2_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic2_ep>;
-+			};
-+		};
-+		dmic2_port: port@1 {
-+			reg = <1>;
-+			dmic2_dap: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_dmic3_ep>;
-+			};
-+		};
-+		dmic3_port: port@1 {
-+			reg = <1>;
-+			dmic3_dap: endpoint {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
- };
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-index 859241d..1216b65c8 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
-@@ -6,6 +6,7 @@
- #include <dt-bindings/mfd/max77620.h>
- 
- #include "tegra210.dtsi"
-+#include "tegra210-audio-graph.dtsi"
- 
- / {
- 	model = "NVIDIA Jetson Nano Developer Kit";
-@@ -870,4 +871,149 @@
- 
- 		vin-supply = <&vdd_5v0_sys>;
- 	};
-+
-+	tegra_sound {
-+		status = "okay";
-+
-+		compatible = "nvidia,tegra210-audio-graph-card";
-+
-+		dais = /* FE */
-+		       <&admaif1_port>, <&admaif2_port>, <&admaif3_port>,
-+		       <&admaif4_port>, <&admaif5_port>, <&admaif6_port>,
-+		       <&admaif7_port>, <&admaif8_port>, <&admaif9_port>,
-+		       <&admaif10_port>,
-+		       /* Router */
-+		       <&xbar_i2s3_port>, <&xbar_i2s4_port>,
-+		       <&xbar_dmic1_port>, <&xbar_dmic2_port>,
-+		       /* I/O DAP Ports */
-+		       <&i2s3_port>, <&i2s4_port>,
-+		       <&dmic1_port>, <&dmic2_port>;
-+
-+		label = "jetson-nano-ape";
-+	};
-+};
-+
-+&tegra_admaif {
-+	status = "okay";
-+};
-+
-+&tegra_ahub {
-+	status = "okay";
-+
-+	ports {
-+		xbar_i2s3_port: port@c {
-+			reg = <0xc>;
-+			xbar_i2s3_ep: endpoint {
-+				remote-endpoint = <&i2s3_cif_ep>;
-+			};
-+		};
-+		xbar_i2s4_port: port@d {
-+			reg = <0xd>;
-+			xbar_i2s4_ep: endpoint {
-+				remote-endpoint = <&i2s4_cif_ep>;
-+			};
-+		};
-+		xbar_dmic1_port: port@f {
-+			reg = <0xf>;
-+			xbar_dmic1_ep: endpoint {
-+				remote-endpoint = <&dmic1_cif_ep>;
-+			};
-+		};
-+		xbar_dmic2_port: port@10 {
-+			reg = <0x10>;
-+			xbar_dmic2_ep: endpoint {
-+				remote-endpoint = <&dmic2_cif_ep>;
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s3 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s3_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s3_ep>;
-+			};
-+		};
-+		i2s3_port: port@1 {
-+			reg = <1>;
-+			i2s3_dap_ep: endpoint {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_i2s4 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			i2s4_cif_ep: endpoint {
-+				remote-endpoint = <&xbar_i2s4_ep>;
-+			};
-+		};
-+		i2s4_port: port@1 {
-+			reg = <1>;
-+			i2s4_dap: endpoint@0 {
-+				dai-format = "i2s";
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic1 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic1_cif_ep: endpoint@0 {
-+				remote-endpoint = <&xbar_dmic1_ep>;
-+			};
-+		};
-+		dmic1_port: port@1 {
-+			reg = <1>;
-+			dmic1_dap: endpoint@0 {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
-+};
-+
-+&tegra_dmic2 {
-+	status = "okay";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dmic2_cif_ep: endpoint@0 {
-+				remote-endpoint = <&xbar_dmic2_ep>;
-+			};
-+		};
-+		dmic2_port: port@1 {
-+			reg = <1>;
-+			dmic2_dap: endpoint@0 {
-+				/* Placeholder for external Codec */
-+			};
-+		};
-+	};
- };
 -- 
-2.7.4
-
+With Best Regards,
+Andy Shevchenko
