@@ -2,122 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E90290E0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496CF290E15
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410893AbgJPXPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S2411024AbgJPXRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393118AbgJPXPq (ORCPT
+        with ESMTP id S2393118AbgJPXQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:15:46 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4517C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:15:46 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id h62so266911oth.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:15:46 -0700 (PDT)
+        Fri, 16 Oct 2020 19:16:54 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9426EC061755;
+        Fri, 16 Oct 2020 16:16:54 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id p11so2053758pld.5;
+        Fri, 16 Oct 2020 16:16:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z/utRDTKVHmHoEv/2/0Wo96JPENEebgv5nLtf2BjNsM=;
-        b=Oi+V1WJt62DGA+OLvUtpmMrFw9shQt3hUS/kNEujvoDH0S+ng6vAYPzCIgge+f3w9u
-         TKWiYzRhkNSA9GoKq34ilGiHvwx6EY6aftODB89USCCvqSBrOF9Ahb1YH6AVXBZCgQig
-         4DlUkffsXOsF1pIm13wAFD7dnXVaJqoYN2sqj94xan8ytJ2xtxnef5agl5SMLLqg4NgB
-         QpAQQPmcmS3RUog/rS5HW2x/+33CWgbJZeTEULDKM2cMYyziRnQ50KtbeBtD/GX0MMx9
-         fEvYXSp+sAAsczFNL8AvoNylNDa3YEDww1jbOh3ovT1X6SZKJrjCeHi3LzO3cklJhFnp
-         KO+w==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=x6hSFVlaJgCB8hg2RJUELUmJfgX8zfnwtAOEG3X8KRk=;
+        b=GmE8xczXXqnrMh3MsLpg+HZZ9Er+EYhFt4ttU688FcVbfAZWL2aUg3lPGDBItpw2oR
+         el5T7eKC2o05aL0HbiSPsPh/XKeedj7iQPVheNZ1SgVUlk5d5lgSeMi8n/hC2sQKgXZR
+         +xMLQFwgJRI1t/UjNTsRl3q9uPKkzO9rElgGeKIhQsWhIl7/QBaRPg3UJg4MY5PnDP/w
+         +5/GF9W5QGBoPHSwLaprExL/4ZjYM1LwZMa2FYKKkfy6pjpHEcPXdtvYLcuwV1j8UiVt
+         WoXTqzwHLOSxZgUAmHgadE2iFEO9GFjv5ltQgjdSIMdZp2BtPJhF5HLXrO35APqf/xn9
+         zn1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z/utRDTKVHmHoEv/2/0Wo96JPENEebgv5nLtf2BjNsM=;
-        b=TKXyCk6VPmkFEGmZeRpf3+26Jm37pZr5TWyWwH3SsV6jje90IXXFd51k1GF8a1dF4y
-         b86KhIweeha9YolsrIexfYg5osW15PdNq9tyjqvUZVM2Ul8PjWIlCk6xmRnepfOfhgrY
-         q0QbeJJI60PFOj3q2dhcsj5TnZepGi4UFKKRPPyb76FeNphSW5HMFSTnAUS/BK1Ki9iA
-         7GpyNLwMG18FH+lFjV57qHEHUOVAe//QSE9urBvOJP1onUku5l3bnnCuhvf2QYT0hqdc
-         aE94K2vyQaOVKBe6KJd06Z2kZ6/qNy4fJE1gLNVskPHQCCf12bqTOap8KZk4shlkFNKy
-         ok4Q==
-X-Gm-Message-State: AOAM530A7PU+sc9Qg9toZA2DeSavCPynsUFtY8/QDyDNxEYgqO+c/czw
-        fr7WssWyMUT4sNBqUKtvkMjqEN/pESxYvORs5euZ0A==
-X-Google-Smtp-Source: ABdhPJx+Js3ydQFBUP7ACgCzkoV+mCC9MxMLL2meKWUMIA/Fue2cHeE5SzEFTuMIFXv2hDabWqdWiVicuLD7Dfqz5J4=
-X-Received: by 2002:a05:6830:1082:: with SMTP id y2mr4127841oto.221.1602890146021;
- Fri, 16 Oct 2020 16:15:46 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=x6hSFVlaJgCB8hg2RJUELUmJfgX8zfnwtAOEG3X8KRk=;
+        b=XrEr4igDYZoJEvt0rubdMkkpI4Dft3SuEaKNacRm0o1UuF37fpy2ofJ8CgzrQmwKnH
+         DfMy9rJ6UJbOcAMZXoj7zXEjLWcwe/tl+N+PSMbX2jlGwXMHg/BxXnyJgtxLDeNrgBpt
+         SePc+T6FPArfg5kUr3YXlmiGGPuojkpzLU2bZ8TpAD3Wz+7Ip3eP750v0wITSRTHh9rr
+         aFvsL+lIkVVxsYF1m0uk/fHDstqVjYf1n4yQeGXUA98uXrq9Syn7WPa/IPFqkhRid3y0
+         nfR1Sx5k3UrvFhPyd8tUURgT1/5/JW1z8ysD1xJh9sLl/GOEwPvUIAiEnHetVZmAWGdn
+         2xKg==
+X-Gm-Message-State: AOAM533VQX1ZbuA76JNTkYQ9pnWqww/kEY0mYbxgvxXH41VudtDP+6Tm
+        6SEperwUQn69ZAzM2Bed2RI=
+X-Google-Smtp-Source: ABdhPJyQi7b1KBOmbhj++1AhiYXfPqOsE3wSaoA35psvMQoboX5Xz1e04PbFQtYG9v9LtdvsL1bfPA==
+X-Received: by 2002:a17:90a:f0ca:: with SMTP id fa10mr6196925pjb.130.1602890214147;
+        Fri, 16 Oct 2020 16:16:54 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id z12sm3928887pfr.197.2020.10.16.16.16.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 16:16:53 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Sat, 17 Oct 2020 07:16:31 +0800
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/7] staging: qlge: replace ql_* with qlge_* to avoid
+ namespace clashes with other qlogic drivers
+Message-ID: <20201016231631.efwu5a4a5f3jnrzv@Rk>
+References: <20201014104306.63756-1-coiby.xu@gmail.com>
+ <20201014104306.63756-2-coiby.xu@gmail.com>
+ <20201015010136.GB31835@f3>
 MIME-Version: 1.0
-References: <20201003040257.62768-1-john.stultz@linaro.org>
- <20201003040257.62768-8-john.stultz@linaro.org> <20201008115101.4qi6wh3hhkb6krg5@DESKTOP-E1NTVVP.localdomain>
- <CALAqxLWrbgHoh=BCnuB4US77AOPMYmgGrE85WT6DYnEV-bad-A@mail.gmail.com>
-In-Reply-To: <CALAqxLWrbgHoh=BCnuB4US77AOPMYmgGrE85WT6DYnEV-bad-A@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 16 Oct 2020 16:15:32 -0700
-Message-ID: <CALAqxLUQkg1uDdLXoP4W7McxQUwFgsncnMxJSOE_VZ4dRRpzFg@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] dma-buf: system_heap: Add a system-uncached heap
- re-using the system heap
-To:     Brian Starkey <brian.starkey@arm.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201015010136.GB31835@f3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 12:03 PM John Stultz <john.stultz@linaro.org> wrote:
-> On Thu, Oct 8, 2020 at 4:51 AM Brian Starkey <brian.starkey@arm.com> wrote:
-> > On Sat, Oct 03, 2020 at 04:02:57AM +0000, John Stultz wrote:
-> > > @@ -426,6 +487,16 @@ static int system_heap_create(void)
-> > >       if (IS_ERR(sys_heap))
-> > >               return PTR_ERR(sys_heap);
-> > >
-> > > +     exp_info.name = "system-uncached";
-> > > +     exp_info.ops = &system_uncached_heap_ops;
-> > > +     exp_info.priv = NULL;
-> > > +
-> > > +     sys_uncached_heap = dma_heap_add(&exp_info);
-> > > +     if (IS_ERR(sys_uncached_heap))
-> > > +             return PTR_ERR(sys_heap);
-> > > +
-> >
-> > In principle, there's a race here between the heap getting registered
-> > to sysfs and the dma_mask getting updated.
-> >
-> > I don't think it would cause a problem in practice, but with the API
-> > as it is, there's no way to avoid it - so I wonder if the
-> > dma_heap_get_dev() accessor isn't the right API design.
+On Thu, Oct 15, 2020 at 10:01:36AM +0900, Benjamin Poirier wrote:
+>On 2020-10-14 18:43 +0800, Coiby Xu wrote:
+>> To avoid namespace clashes with other qlogic drivers and also for the
+>> sake of naming consistency, use the "qlge_" prefix as suggested in
+>> drivers/staging/qlge/TODO.
+>>
+>> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
+>> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+>> ---
+>>  drivers/staging/qlge/TODO           |    4 -
+>>  drivers/staging/qlge/qlge.h         |  190 ++--
+>>  drivers/staging/qlge/qlge_dbg.c     | 1073 ++++++++++++-----------
+>>  drivers/staging/qlge/qlge_ethtool.c |  231 ++---
+>>  drivers/staging/qlge/qlge_main.c    | 1257 +++++++++++++--------------
+>>  drivers/staging/qlge/qlge_mpi.c     |  352 ++++----
+>>  6 files changed, 1551 insertions(+), 1556 deletions(-)
+>>
+>> diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
+>> index f93f7428f5d5..5ac55664c3e2 100644
+>> --- a/drivers/staging/qlge/TODO
+>> +++ b/drivers/staging/qlge/TODO
+>> @@ -28,10 +28,6 @@
+>>  * the driver has a habit of using runtime checks where compile time checks are
+>>    possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
+>>  * reorder struct members to avoid holes if it doesn't impact performance
+>> -* in terms of namespace, the driver uses either qlge_, ql_ (used by
+>> -  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
+>> -  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
+>> -  prefix.
 >
-> Hrm.  I guess to address your concern we would need split
-> dma_heap_add() into something like:
->   dma_heap_create()
->   dma_heap_add()
+>You only renamed ql -> qlge. The prefix needs to be added where there is
+>currently none like the second example of that text.
+
+On second thoughts, these structs like ob_mac_iocb_req are defined in
+local headers and there is no mixed usage. So even when we want to
+build this diver and other qlogic drivers into the kernel instead of
+as separate modules, it won't lead to real problems, is it right?
 >
-> Which breaks the creation of the heap with the registering it to the
-> subsystem, so some attributes can be tweaked inbetween?
+>Besides, the next patch reintroduces the name struct ql_adapter.
 
-Looking at this some more, this approach isn't going to work. We
-create the device and then we call dma_coerce_mask_and_coherent() on
-it, but as soon as the device is created it seems possible for
-userland to directly access it. Again, though, as you mentioned this
-isn't terribly likely in practice.
-
-The best thing I can think of for now is to have the uncached heap's
-allocate pointer initially point to a dummy function that returns
-EBUSY and then after we update the dma mask then we can set it to the
-real alloc.  I'll go with that for now, but let me know if you have
-other suggestions.
-
-thanks
--john
+--
+Best regards,
+Coiby
