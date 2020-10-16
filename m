@@ -2,407 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE16290A26
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB27290A2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410847AbgJPRAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:00:08 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:41070 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409137AbgJPRAH (ORCPT
+        id S2410793AbgJPRBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:01:54 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35440 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408925AbgJPRBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:00:07 -0400
-Received: by mail-oo1-f66.google.com with SMTP id o184so769397ooo.8;
-        Fri, 16 Oct 2020 10:00:06 -0700 (PDT)
+        Fri, 16 Oct 2020 13:01:54 -0400
+Received: by mail-ot1-f68.google.com with SMTP id f22so439146ots.2;
+        Fri, 16 Oct 2020 10:01:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=03V5eadrj0h1F2pFsncYCDBW4/1TS8rmfiq/2NLYUyU=;
-        b=LgHJ5MDWbxgPqktpaKJP4924LMC6BxiTWZFYqjpv8wiAjxzbE9sB7anRSEtmsSzfSC
-         jDmplHNAErXzBmNpeza+GiehfZrcTzVhDHNckakiR+AXLnk3gsiZqLuVg7KkkXk4Pnxe
-         MY+jBL2YaOQARL6/cxSFGG/0zKX8Wp/zQEy3uyYJIYD//OcPOKlmRM86FzHRo+kzyKJS
-         e3hq8u2JppcXg+f+vPU55UYH21t2joeAfxHjou4bd2nkeCUroQnnrUBlxndedyK0yGSw
-         XwKd4ZtuuZN5yBQHjl5T5CaapldCupcXjSm04ezARwC1r3tqBvuSR557At/KWFFW28m4
-         xaug==
-X-Gm-Message-State: AOAM5331UsTYee0kjerIQXfbUDXhGo1CPtlPMgAzjzhMY+Xq3ce/9ZBD
-        SE0rQakPE9FZciAtkjl23Q==
-X-Google-Smtp-Source: ABdhPJymBTUe6iAsdy5LQo71U6LggVYOT2y9eqtpe/ffg/4HjlPRuMq1hKnFJ9O3LOVeycHTFsJt0w==
-X-Received: by 2002:a4a:972c:: with SMTP id u41mr3569279ooi.10.1602867605572;
-        Fri, 16 Oct 2020 10:00:05 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d64sm1181772oia.11.2020.10.16.10.00.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 10:00:04 -0700 (PDT)
-Received: (nullmailer pid 1573907 invoked by uid 1000);
-        Fri, 16 Oct 2020 17:00:03 -0000
-Date:   Fri, 16 Oct 2020 12:00:03 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        CK Hu <ck.hu@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 1/8] dt-bindings: phy: convert phy-mtk-xsphy.txt to
- YAML schema
-Message-ID: <20201016170003.GA1562276@bogus>
-References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Himune9w6PJjlJKnqlQ8/CdxmtO3vE0wktnjw8cHEI=;
+        b=DwF0RNFFQBbt+KIaH8w/5Z0LWk3GG/c/JcCtX/+bTDgWI0v1Cy4s9aC0AdstydWMZS
+         fK9ngfOxcswwQpNw84qVaTdyDIGuRYF4X34LSiUj3uAIyi4hTjBUM+XCsrbX6lWGggFi
+         sUEeqwbdoFtAhFXnFjwda9kaH5xTD48vlKVdHtXcHC3+JAE0Dh7LWjrYmAxzpzEzBntR
+         EbUO1H1TXwmZ+9rNdUafa5WR+l+wh4JgMEQIJNsNhndsKbeQU+RSrGJHevXjFHCQnfvh
+         8iU4MjsyVzxrIIaiLRybmGWLtJRbxOsjpmkaaD5X5lqqpMKTXoiScYPViAQivlg1YiNw
+         tayw==
+X-Gm-Message-State: AOAM533Qwd6KRxB/ghgOYtRa3oAaYC1G+D3QeJPxab/Sw8qY2VKFyXyr
+        KFZLSJ4rNrrz30ysajsYBygtPYs9YuTCIwSUxMI=
+X-Google-Smtp-Source: ABdhPJy1ZMEwozD7IMMR6Ns8d6xHA4hhNtBNd+yL9N+dy7uYrX2vdVdTA6czST7D+uoJm7fzTmjKGorqD62EXhlRx94=
+X-Received: by 2002:a05:6830:30ae:: with SMTP id g14mr3471060ots.206.1602867713251;
+ Fri, 16 Oct 2020 10:01:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
+References: <20201016163634.857573-1-wvw@google.com>
+In-Reply-To: <20201016163634.857573-1-wvw@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 16 Oct 2020 19:01:42 +0200
+Message-ID: <CAJZ5v0in0N6USFqvuLcccpirahj=oOki67+Lq9_5i_q7Ep7T6g@mail.gmail.com>
+Subject: Re: [PATCH] sched: cpufreq_schedutil: maintain raw cache when next_f
+ is not changed
+To:     Wei Wang <wvw@google.com>
+Cc:     wei.vince.wang@gmail.com, Viresh Kumar <viresh.kumar@linaro.org>,
+        Quentin Perret <qperret@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 04:52:00PM +0800, Chunfeng Yun wrote:
-> Convert phy-mtk-xsphy.txt to YAML schema mediatek,xsphy.yaml
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v2: modify description and compatible definition suggested by Rob
-> ---
->  .../bindings/phy/mediatek,xsphy.yaml          | 200 ++++++++++++++++++
->  .../devicetree/bindings/phy/phy-mtk-xsphy.txt | 109 ----------
->  2 files changed, 200 insertions(+), 109 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/mediatek,xsphy.yaml
->  delete mode 100644 Documentation/devicetree/bindings/phy/phy-mtk-xsphy.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/mediatek,xsphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,xsphy.yaml
-> new file mode 100644
-> index 000000000000..86511f19277a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/mediatek,xsphy.yaml
-> @@ -0,0 +1,200 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (c) 2020 MediaTek
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/mediatek,xsphy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek XS-PHY Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Chunfeng Yun <chunfeng.yun@mediatek.com>
-> +
-> +description: |
-> +  The XS-PHY controller supports physical layer functionality for USB3.1
-> +  GEN2 controller on MediaTek SoCs.
-> +
-> +  Banks layout of xsphy
-> +  ----------------------------------
-> +  port        offset    bank
-> +  u2 port0    0x0000    MISC
-> +              0x0100    FMREG
-> +              0x0300    U2PHY_COM
-> +  u2 port1    0x1000    MISC
-> +              0x1100    FMREG
-> +              0x1300    U2PHY_COM
-> +  u2 port2    0x2000    MISC
-> +              ...
-> +  u31 common  0x3000    DIG_GLB
-> +              0x3100    PHYA_GLB
-> +  u31 port0   0x3400    DIG_LN_TOP
-> +              0x3500    DIG_LN_TX0
-> +              0x3600    DIG_LN_RX0
-> +              0x3700    DIG_LN_DAIF
-> +              0x3800    PHYA_LN
-> +  u31 port1   0x3a00    DIG_LN_TOP
-> +              0x3b00    DIG_LN_TX0
-> +              0x3c00    DIG_LN_RX0
-> +              0x3d00    DIG_LN_DAIF
-> +              0x3e00    PHYA_LN
-> +              ...
-> +  DIG_GLB & PHYA_GLB are shared by U31 ports.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^xs-phy@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - mediatek,mt3611-xsphy
-> +          - mediatek,mt3612-xsphy
-> +      - const: mediatek,xsphy
-> +
-> +  reg:
-> +    description: |
-> +      Register shared by multiple U3 ports, exclude port's private register,
-> +      if only U2 ports provided, shouldn't use the property.
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +      enum: [1, 2]
-> +
-> +  "#size-cells":
-> +      enum: [1, 2]
-> +
-> +  ranges: true
-> +
-> +  mediatek,src-ref-clk-mhz:
-> +    description:
-> +      Frequency of reference clock for slew rate calibrate
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+On Fri, Oct 16, 2020 at 6:36 PM Wei Wang <wvw@google.com> wrote:
+>
+> Currently, raw cache will be reset when next_f is changed after
+> get_next_freq for correctness. However, it may introduce more
+> cycles. This patch changes it to maintain the cached value instead of
+> dropping it.
 
-Properties with a standard unit suffix don't need a type.
+IMV you need to be more specific about why this helps.
 
-> +    default: 26
-> +
-> +  mediatek,src-coef:
-> +    description:
-> +      Coefficient for slew rate calibrate, depends on SoC process
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 17
-> +
-> +# Required child node:
-> +patternProperties:
-> +  "^usb-phy@[0-9a-f]+$":
-> +    type: object
-> +    description: |
-> +      A sub-node is required for each port the controller provides.
-> +      Address range information including the usual 'reg' property
-> +      is used inside these nodes to describe the controller's topology.
-> +
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +
-> +      clocks:
-> +        items:
-> +          - description: Reference clock, (HS is 48Mhz, SS/P is 24~27Mhz)
-> +
-> +      clock-names:
-> +        items:
-> +          - const: ref
-> +
-> +      "#phy-cells":
-> +        const: 1
-> +        description: |
-> +          The cells contain the following arguments.
-> +
-> +          - description: The PHY type
-> +              enum:
-> +                - PHY_TYPE_USB2
-> +                - PHY_TYPE_USB3
-> +
-> +      #The following optional vendor properties are only for debug or HQA test
-> +      mediatek,eye-src:
-> +        description:
-> +          The value of slew rate calibrate (U2 phy)
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 1
-> +        maximum: 7
-> +
-> +      mediatek,eye-vrt:
-> +        description:
-> +          The selection of VRT reference voltage (U2 phy)
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 1
-> +        maximum: 7
-> +
-> +      mediatek,eye-term:
-> +        description:
-> +          The selection of HS_TX TERM reference voltage (U2 phy)
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 1
-> +        maximum: 7
-> +
-> +      mediatek,efuse-intr:
-> +        description:
-> +          The selection of Internal Resistor (U2/U3 phy)
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 1
-> +        maximum: 63
-> +
-> +      mediatek,efuse-tx-imp:
-> +        description:
-> +          The selection of TX Impedance (U3 phy)
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 1
-> +        maximum: 31
-> +
-> +      mediatek,efuse-rx-imp:
-> +        description:
-> +          The selection of RX Impedance (U3 phy)
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        minimum: 1
-> +        maximum: 31
-> +
-> +    required:
-> +      - reg
-> +      - clocks
-> +      - clock-names
-> +      - "#phy-cells"
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/phy/phy.h>
-> +
-> +    u3phy: xs-phy@11c40000 {
-> +        compatible = "mediatek,mt3611-xsphy", "mediatek,xsphy";
-> +        reg = <0x11c43000 0x0200>;
-> +        mediatek,src-ref-clk-mhz = <26>;
-> +        mediatek,src-coef = <17>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        ranges;
-> +
-> +        u2port0: usb-phy@11c40000 {
-> +            reg = <0x11c40000 0x0400>;
-> +            clocks = <&clk48m>;
-> +            clock-names = "ref";
-> +            mediatek,eye-src = <4>;
-> +            #phy-cells = <1>;
-> +        };
-> +
-> +        u3port0: usb-phy@11c43000 {
-> +            reg = <0x11c43400 0x0500>;
-> +            clocks = <&clk26m>;
-> +            clock-names = "ref";
-> +            mediatek,efuse-intr = <28>;
-> +            #phy-cells = <1>;
-> +        };
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/phy/phy-mtk-xsphy.txt b/Documentation/devicetree/bindings/phy/phy-mtk-xsphy.txt
-> deleted file mode 100644
-> index e7caefa0b9c2..000000000000
-> --- a/Documentation/devicetree/bindings/phy/phy-mtk-xsphy.txt
-> +++ /dev/null
-> @@ -1,109 +0,0 @@
-> -MediaTek XS-PHY binding
-> ---------------------------
-> -
-> -The XS-PHY controller supports physical layer functionality for USB3.1
-> -GEN2 controller on MediaTek SoCs.
-> -
-> -Required properties (controller (parent) node):
-> - - compatible	: should be "mediatek,<soc-model>-xsphy", "mediatek,xsphy",
-> -		  soc-model is the name of SoC, such as mt3611 etc;
-> -		  when using "mediatek,xsphy" compatible string, you need SoC specific
-> -		  ones in addition, one of:
-> -		  - "mediatek,mt3611-xsphy"
-> -
-> - - #address-cells, #size-cells : should use the same values as the root node
-> - - ranges: must be present
-> -
-> -Optional properties (controller (parent) node):
-> - - reg		: offset and length of register shared by multiple U3 ports,
-> -		  exclude port's private register, if only U2 ports provided,
-> -		  shouldn't use the property.
-> - - mediatek,src-ref-clk-mhz	: u32, frequency of reference clock for slew rate
-> -		  calibrate
-> - - mediatek,src-coef	: u32, coefficient for slew rate calibrate, depends on
-> -		  SoC process
-> -
-> -Required nodes	: a sub-node is required for each port the controller
-> -		  provides. Address range information including the usual
-> -		  'reg' property is used inside these nodes to describe
-> -		  the controller's topology.
-> -
-> -Required properties (port (child) node):
-> -- reg		: address and length of the register set for the port.
-> -- clocks	: a list of phandle + clock-specifier pairs, one for each
-> -		  entry in clock-names
-> -- clock-names	: must contain
-> -		  "ref": 48M reference clock for HighSpeed analog phy; and 26M
-> -			reference clock for SuperSpeedPlus analog phy, sometimes is
-> -			24M, 25M or 27M, depended on platform.
-> -- #phy-cells	: should be 1
-> -		  cell after port phandle is phy type from:
-> -			- PHY_TYPE_USB2
-> -			- PHY_TYPE_USB3
-> -
-> -The following optional properties are only for debug or HQA test
-> -Optional properties (PHY_TYPE_USB2 port (child) node):
-> -- mediatek,eye-src	: u32, the value of slew rate calibrate
-> -- mediatek,eye-vrt	: u32, the selection of VRT reference voltage
-> -- mediatek,eye-term	: u32, the selection of HS_TX TERM reference voltage
-> -- mediatek,efuse-intr	: u32, the selection of Internal Resistor
-> -
-> -Optional properties (PHY_TYPE_USB3 port (child) node):
-> -- mediatek,efuse-intr	: u32, the selection of Internal Resistor
-> -- mediatek,efuse-tx-imp	: u32, the selection of TX Impedance
-> -- mediatek,efuse-rx-imp	: u32, the selection of RX Impedance
-> -
-> -Banks layout of xsphy
-> --------------------------------------------------------------
-> -port        offset    bank
-> -u2 port0    0x0000    MISC
-> -            0x0100    FMREG
-> -            0x0300    U2PHY_COM
-> -u2 port1    0x1000    MISC
-> -            0x1100    FMREG
-> -            0x1300    U2PHY_COM
-> -u2 port2    0x2000    MISC
-> -            ...
-> -u31 common  0x3000    DIG_GLB
-> -            0x3100    PHYA_GLB
-> -u31 port0   0x3400    DIG_LN_TOP
-> -            0x3500    DIG_LN_TX0
-> -            0x3600    DIG_LN_RX0
-> -            0x3700    DIG_LN_DAIF
-> -            0x3800    PHYA_LN
-> -u31 port1   0x3a00    DIG_LN_TOP
-> -            0x3b00    DIG_LN_TX0
-> -            0x3c00    DIG_LN_RX0
-> -            0x3d00    DIG_LN_DAIF
-> -            0x3e00    PHYA_LN
-> -            ...
-> -
-> -DIG_GLB & PHYA_GLB are shared by U31 ports.
-> -
-> -Example:
-> -
-> -u3phy: usb-phy@11c40000 {
-> -	compatible = "mediatek,mt3611-xsphy", "mediatek,xsphy";
-> -	reg = <0 0x11c43000 0 0x0200>;
-> -	mediatek,src-ref-clk-mhz = <26>;
-> -	mediatek,src-coef = <17>;
-> -	#address-cells = <2>;
-> -	#size-cells = <2>;
-> -	ranges;
-> -
-> -	u2port0: usb-phy@11c40000 {
-> -		reg = <0 0x11c40000 0 0x0400>;
-> -		clocks = <&clk48m>;
-> -		clock-names = "ref";
-> -		mediatek,eye-src = <4>;
-> -		#phy-cells = <1>;
-> -	};
-> -
-> -	u3port0: usb-phy@11c43000 {
-> -		reg = <0 0x11c43400 0 0x0500>;
-> -		clocks = <&clk26m>;
-> -		clock-names = "ref";
-> -		mediatek,efuse-intr = <28>;
-> -		#phy-cells = <1>;
-> -	};
-> -};
-> -- 
-> 2.18.0
+> This is adapted from https://android-review.googlesource.com/1352810/
+>
+> Signed-off-by: Wei Wang <wvw@google.com>
+> ---
+>  kernel/sched/cpufreq_schedutil.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 5ae7b4e6e8d6..ae3ae7fcd027 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -31,6 +31,7 @@ struct sugov_policy {
+>         s64                     freq_update_delay_ns;
+>         unsigned int            next_freq;
+>         unsigned int            cached_raw_freq;
+> +       unsigned int            prev_cached_raw_freq;
+>
+>         /* The next fields are only needed if fast switch cannot be used: */
+>         struct                  irq_work irq_work;
+> @@ -165,6 +166,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+>                 return sg_policy->next_freq;
+>
+>         sg_policy->need_freq_update = false;
+> +       sg_policy->prev_cached_raw_freq = sg_policy->cached_raw_freq;
+>         sg_policy->cached_raw_freq = freq;
+>         return cpufreq_driver_resolve_freq(policy, freq);
+>  }
+> @@ -464,8 +466,8 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
+>         if (busy && next_f < sg_policy->next_freq) {
+>                 next_f = sg_policy->next_freq;
+>
+> -               /* Reset cached freq as next_freq has changed */
+> -               sg_policy->cached_raw_freq = 0;
+> +               /* Restore cached freq as next_freq has changed */
+> +               sg_policy->cached_raw_freq = sg_policy->prev_cached_raw_freq;
+>         }
+>
+>         /*
+> @@ -828,6 +830,7 @@ static int sugov_start(struct cpufreq_policy *policy)
+>         sg_policy->limits_changed               = false;
+>         sg_policy->need_freq_update             = false;
+>         sg_policy->cached_raw_freq              = 0;
+> +       sg_policy->prev_cached_raw_freq         = 0;
+>
+>         for_each_cpu(cpu, policy->cpus) {
+>                 struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);
+> --
+> 2.29.0.rc1.297.gfa9743e501-goog
+>
