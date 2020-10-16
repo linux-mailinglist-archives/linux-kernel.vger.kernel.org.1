@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B532B290E36
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF490290E39
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411457AbgJPXiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S2411475AbgJPXii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411448AbgJPXiO (ORCPT
+        with ESMTP id S2405965AbgJPXia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:38:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF29C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:39:01 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602891538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pwOu6iBSzHlI9OWkxQuAIUj1HnZVyXFzwEp+nY7kQxU=;
-        b=02tpDUqarze4p4jXvYJFnC6NbbagFdFCs9jXjSCi4r1KD5e9Bi9IM7tt4aoMrcWMBchX9o
-        OUJ6n3pe5pFO1UOYhhE6cUci8iEYxJ1n0Q4bNZKAVPfWkruROkd02jtPlGB/LVaiaZ/F/l
-        54LEJy4fqk/kEW8iAnhN+GgzdrSNT0A5cYH4KC6KTKm73/guWwadnZeoXhdGlAhyt8GHY5
-        V054xdVeMsPWigHEPs/7cDaEembQlznJOKUCoVgzR3H6MFcV1aFiCCgQsgn5H/GMWiz39/
-        enOOy7cj13J/Yp1Ty0oE2MQKuFXj+i6IG90Q3mix1778ezxuYxXyfA4gGw5O4Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602891538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pwOu6iBSzHlI9OWkxQuAIUj1HnZVyXFzwEp+nY7kQxU=;
-        b=9JJGj6uUGo4968MIPq19qjB2+WZqU+wyKWwB4cTdyrYM6K0Gs3+JkcBJQR64V3e41lGTan
-        +6i7926H847equCg==
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] task_work: cleanup notification modes
-In-Reply-To: <2ebe7e45-b4e5-1a6b-d3ee-4a790817a119@kernel.dk>
-References: <93292d5b-9124-d252-c81f-1f2cfbd60e7b@kernel.dk> <87tuutalre.fsf@nanos.tec.linutronix.de> <aaed79d1-972f-e4bd-f3ac-d589cd729163@kernel.dk> <87zh4lix8l.fsf@nanos.tec.linutronix.de> <2ebe7e45-b4e5-1a6b-d3ee-4a790817a119@kernel.dk>
-Date:   Sat, 17 Oct 2020 01:38:58 +0200
-Message-ID: <87wnzpivvx.fsf@nanos.tec.linutronix.de>
+        Fri, 16 Oct 2020 19:38:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3E2C061755;
+        Fri, 16 Oct 2020 16:39:19 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ds1so2177625pjb.5;
+        Fri, 16 Oct 2020 16:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gj5mB7zre0Qc9f9Jrd5bfLteHJQmqeFuJ23/FF59rNQ=;
+        b=JmH3Y7P5qKixFSi9ffYm03AL0mHYma37kKkoqc2GRKISoA47GVq0avN55zZXL0g4bY
+         YflOWVjRy8k6V3zDItvo2oQSF856001ywzRjk35G5ydkh7hDRfzuKC0pgG/2zRQW6nxi
+         VPY97bxfrlRdxKsDYko42rk4fGJrcXPefity0TKIVaWnV9IOPxAN13s5bQagnoNmsogn
+         Rva+Ykx4NtiOHKZ0KY2//l1PjTQ6xXP/fufaitB4qvRVjCwyBaMwjC/r2mnh12Moudtm
+         jNgxzRGETTs42L6enYFCIveE/U7QHQJShdpT8VmECHArYFjUPS7UTPi+SzZTPAbxK8Jr
+         NcuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gj5mB7zre0Qc9f9Jrd5bfLteHJQmqeFuJ23/FF59rNQ=;
+        b=hrGlj31h5xiNP3A2dec3rac1xJgKWtdVud3LU0kM1n5TNDqX8rpF/HBc62CPpJf4NG
+         qTMRtB6Ks3nCFh5zdr5XIhQCSz1xNHEJ694g9uchhWOHcf+RcrQumOx5t/IUMIFgXgr/
+         EKDaoOIi4trcqYnQH0NKjPFPur+/6TBtVwBuQTvVEBbyv7qK0qfI7+zEZaE6J1zP44sR
+         VE9wxkB46Y3LBdS1wcSWWNOppbq7ygTq3Po5pcuKr2VkkcTWEBA2IJyiJ8GGVCS/DrEH
+         SJRgKAEDIhXgV14K/kKct6HUNkmoN6yqk0UiZ/sQPo3/rSYZBoq954hz8RSGk+QPh9s+
+         1Tyw==
+X-Gm-Message-State: AOAM531GHX5JkUvsbGUINJ8LORg3/uN3re6jRaRMYnao3g1F8/h04BIK
+        QdpbsztNuTspAkxv6/FisDY=
+X-Google-Smtp-Source: ABdhPJwzV3Xa0csfjBReEuaLorhV3G4Dg1bAoVup75nn9kjXrhL27eHATG6iPkWFVgcxPgxKPSG/tQ==
+X-Received: by 2002:a17:90a:fa8c:: with SMTP id cu12mr6401417pjb.140.1602891558474;
+        Fri, 16 Oct 2020 16:39:18 -0700 (PDT)
+Received: from sol (106-69-182-59.dyn.iinet.net.au. [106.69.182.59])
+        by smtp.gmail.com with ESMTPSA id u65sm3839813pfc.11.2020.10.16.16.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 16:39:17 -0700 (PDT)
+Date:   Sat, 17 Oct 2020 07:39:13 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2] gpiolib: cdev: document that line eflags are shared
+Message-ID: <20201016233913.GB5143@sol>
+References: <20201014062921.79112-1-warthog618@gmail.com>
+ <CAHp75Ve7TspiCredTu48AwstS4YUnfKTHzvuxvhq_-c9697igg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve7TspiCredTu48AwstS4YUnfKTHzvuxvhq_-c9697igg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16 2020 at 17:13, Jens Axboe wrote:
-> /**
->  * task_work_add - ask the @task to execute @work->func()
->  * @task: the task which should run the callback
->  * @work: the callback to run
->  * @notify: how to notify the targeted task
->  *
->  * Queue @work for task_work_run() below and notify the @task if @notify
->  * is @TWA_RESUME or @TWA_SIGNAL. @TWA_SIGNAL work like signals, in that the
+On Fri, Oct 16, 2020 at 05:24:14PM +0300, Andy Shevchenko wrote:
+> On Wed, Oct 14, 2020 at 12:21 PM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > The line.eflags field is shared so document this fact and highlight it
+> > throughout using READ_ONCE() and WRITE_ONCE() accessors.
+> >
+> > Also use a local copy of the eflags in edge_irq_thread() to ensure
+> > consistent control flow even if eflags changes.  This is only a defensive
+> > measure as edge_irq_thread() is currently disabled when the eflags are
+> > changed.
+> 
+> > -       if (line->eflags == (GPIO_V2_LINE_FLAG_EDGE_RISING |
+> > -                            GPIO_V2_LINE_FLAG_EDGE_FALLING)) {
+> > +       eflags = READ_ONCE(line->eflags);
+> > +       if (eflags == (GPIO_V2_LINE_FLAG_EDGE_RISING |
+> > +                      GPIO_V2_LINE_FLAG_EDGE_FALLING)) {
+> 
+> Hmm... side note: perhaps at some point
+> 
+> #define GPIO_V2_LINE_FLAG_EDGE_BOTH  \
+>         (GPIO_V2_LINE_FLAG_EDGE_RISING | GPIO_V2_LINE_FLAG_EDGE_FALLING)
+> 
+>        if (eflags == GPIO_V2_LINE_FLAG_EDGE_BOTH) {
+> 
+> ?
 
-s/the//
+Yeah, that would make sense.  I think I used GPIO_V2_LINE_EDGE_FLAGS,
+which is defined the same as your GPIO_V2_LINE_FLAG_EDGE_BOTH, here at
+some point, but that just looked wrong.
 
->  * it will interrupt the targeted task and run the task_work. @TWA_RESUME
->  * work is run only when the task exits the kernel and returns to user mode.
->  * Fails if the @task is exiting/exited and thus it can't process this @work.
->  * Otherwise @work->func() will be called when the @task returns from kernel
->  * mode or exits.
+The GPIO_V2_LINE_FLAG_EDGE_BOTH does read better.  I'll add it to the
+todo list.
 
-Yes, that makes a lot more sense.
-
-What's still lacking is a description of the return value and how to act
-upon it.
-
-Most of the call sites ignore it, some are acting upon it but I can't
-make any sense of these actions:
-
-fs/io_uring.c-	notify = 0;
-fs/io_uring.c-	if (!(ctx->flags & IORING_SETUP_SQPOLL) && twa_signal_ok)
-fs/io_uring.c-		notify = TWA_SIGNAL;
-fs/io_uring.c-
-fs/io_uring.c:	ret = task_work_add(tsk, &req->task_work, notify);
-fs/io_uring.c-	if (!ret)
-fs/io_uring.c-		wake_up_process(tsk);
-
-???
-
-fs/io_uring.c-	if (unlikely(ret)) {
-fs/io_uring.c-		struct task_struct *tsk;
-fs/io_uring.c-
-fs/io_uring.c-		init_task_work(&req->task_work, io_req_task_cancel);
-fs/io_uring.c-		tsk = io_wq_get_task(req->ctx->io_wq);
-fs/io_uring.c:		task_work_add(tsk, &req->task_work, 0);
-fs/io_uring.c-		wake_up_process(tsk);
-
-yet more magic wakeup.
-
-fs/io_uring.c-
-fs/io_uring.c-	init_task_work(&req->task_work, io_req_task_submit);
-fs/io_uring.c-	percpu_ref_get(&req->ctx->refs);
-fs/io_uring.c-
-fs/io_uring.c-	/* submit ref gets dropped, acquire a new one */
-fs/io_uring.c-	refcount_inc(&req->refs);
-fs/io_uring.c:	ret = io_req_task_work_add(req, true);
-fs/io_uring.c-	if (unlikely(ret)) {
-fs/io_uring.c-		struct task_struct *tsk;
-fs/io_uring.c-
-fs/io_uring.c-		/* queue just for cancelation */
-fs/io_uring.c-		init_task_work(&req->task_work, io_req_task_cancel);
-fs/io_uring.c-		tsk = io_wq_get_task(req->ctx->io_wq);
-fs/io_uring.c:		task_work_add(tsk, &req->task_work, 0);
-fs/io_uring.c-		wake_up_process(tsk);
-
-Ditto. Why the heck is this wakeup making any sense? The initial
-task_work_add() within io_req_task_work_add() failed already ...
-
-fs/io_uring.c:	ret = io_req_task_work_add(req, twa_signal_ok);
-fs/io_uring.c-	if (unlikely(ret)) {
-fs/io_uring.c-		struct task_struct *tsk;
-fs/io_uring.c-
-fs/io_uring.c-		WRITE_ONCE(poll->canceled, true);
-fs/io_uring.c-		tsk = io_wq_get_task(req->ctx->io_wq);
-fs/io_uring.c:		task_work_add(tsk, &req->task_work, 0);
-fs/io_uring.c-		wake_up_process(tsk);
-
-...
-
-Thanks,
-
-        tglx
+Cheers,
+Kent.
