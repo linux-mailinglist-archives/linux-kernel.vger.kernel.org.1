@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA47290705
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B8E290707
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408715AbgJPORO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
+        id S2408724AbgJPORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395333AbgJPORO (ORCPT
+        with ESMTP id S2395420AbgJPORr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:17:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD97FC061755;
-        Fri, 16 Oct 2020 07:17:13 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602857832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xa3I34LAVRoUUNBS2HyMAtk2zTSqAOC3alxtWLiNXD4=;
-        b=d6NRaZrNNssH/jyNQVLdl0TVVZZ3yoCv0a6YEZl+hFwzZ4Tl4HqsFCCajGB+W1AyFu+rFN
-        Zchik3URLzFBxj2PuUPFNPhZHj+X++6Ol7SX2/GK2vQVhCFZLRDC9xHM337ojxLZqKRHKt
-        LtJomhXIUH6+TC4QZFf9RKhBDIlNrydNO0LVXDRqMoeoz4/HLbE7tT/XC3HVkZ3GK4IBeH
-        fZS10BH1JgOOw1XkYiKOasa6opTs9xbkBQtMRrw7uvxUNN1kJMh010ALOoYUNTHrxjT9oe
-        WfjD9swFOpSZedepfUm3hFGEurYx28uPC0Gnh46hmee7+ojjZI5lwJkfGeRucA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602857832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xa3I34LAVRoUUNBS2HyMAtk2zTSqAOC3alxtWLiNXD4=;
-        b=l5ziGxNNpoT5AZTEg0huk4dknE0uQz06cTMngvONtYdMkc7icfV+wgzk/XVzxVyi28gv+v
-        ZFDf4Rl8qej7EKCA==
-To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, Roman Gershman <romger@amazon.com>
-Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
-In-Reply-To: <fbaab94b-dd85-9756-7a99-06bf684b80a4@kernel.dk>
-References: <20201015131701.511523-1-axboe@kernel.dk> <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com> <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk> <87a6wmv93v.fsf@nanos.tec.linutronix.de> <871rhyv7a8.fsf@nanos.tec.linutronix.de> <fbaab94b-dd85-9756-7a99-06bf684b80a4@kernel.dk>
-Date:   Fri, 16 Oct 2020 16:17:12 +0200
-Message-ID: <87a6wmtfvb.fsf@nanos.tec.linutronix.de>
+        Fri, 16 Oct 2020 10:17:47 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08180C061755;
+        Fri, 16 Oct 2020 07:17:46 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id k9so2034059qki.6;
+        Fri, 16 Oct 2020 07:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y2N9Ts5N7CVt9wr/ePD+KSf8C8M4q1OtWt2aeh5wg8c=;
+        b=rS/jD8JMDzk/CgwwjSLV20MjwHgI1Uj3Et/bRjSP1Lw3GOCzh7bJun5b8O02chx2Mo
+         O9/r+jPj0iki9GZ6z4HDf6SMMZ0Vm8EYHkmncqiC2/tvwi+OBGLuL/CFF8KOU/PcTCHJ
+         8SsmxpfqgHWX68ROIVJkaxo+o6HwaSY4c6Zc5E3jNwk/c7CXVZ20kTtvXmdPa3rLWenW
+         5WbWN5x/oHDlOtuHYu6DpTfQ3PGSYA4nIBFtW71I6SJXydES3FnsmU8ryD4vWInWckju
+         2YxzyLhZp9YJ3tmuyB3SnuhLzYnQs+0ARCUQu1FnkFh29qUa/E6TgBvcWbui+cbR+oiO
+         AVHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y2N9Ts5N7CVt9wr/ePD+KSf8C8M4q1OtWt2aeh5wg8c=;
+        b=EnaIb0wYYXGCrnWH9ZBo/2yFJlPbIPBVzrvKulZ3tvGAnJchbieLImRBUBJrTMBb/0
+         MjnnNFMkUrESgkOo/oYBfHTMmBcDnljIj3/UtsMBXxSMxLyRZCSwt8ODAhtoN39dUEBx
+         46U2930V6k0R8wIw8uTZ0phVbkmwYtGdUD6iDJAnc5pssFOR+ICHrqB+LK6W1/uCbAqt
+         Sp7iw28VprA84FlIGs7SfK06tlzvd+xlnRkWhxWBaL40zysHmddsinExsTumrHIj07Ik
+         RHkb4mwjrySX6Ro0pDskHaLa9QFdGSasJ93+Q6UMqSlvjqBrR93UpyrrilFRe29zHIoX
+         3cZQ==
+X-Gm-Message-State: AOAM530aMMRgNc/I9izEjgIyS8ZEoSARAn3KNqQDdZf02SDF1WgULKR6
+        BNBnl0RJ5GwdRKOXWlG1Xro=
+X-Google-Smtp-Source: ABdhPJz5G8Tza/D8Encg3kY9Xb3jwdS2iwgKlNCDyfpMMg3WySO1kAPX0r7PHPGeDRZwfQmuPWrZRw==
+X-Received: by 2002:a05:620a:66d:: with SMTP id a13mr3973446qkh.301.1602857865155;
+        Fri, 16 Oct 2020 07:17:45 -0700 (PDT)
+Received: from [192.168.1.201] (pool-108-51-35-162.washdc.fios.verizon.net. [108.51.35.162])
+        by smtp.googlemail.com with ESMTPSA id n2sm1044448qtr.6.2020.10.16.07.17.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 07:17:44 -0700 (PDT)
+Subject: Re: [PATCH 0/4] clk: add driver for the SiFive FU740
+To:     Zong Li <zong.li@sifive.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, mturquette@baylibre.com,
+        sboyd@kernel.org, yash.shah@sifive.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <cover.1602838910.git.zong.li@sifive.com>
+From:   Sean Anderson <seanga2@gmail.com>
+Autocrypt: addr=seanga2@gmail.com; prefer-encrypt=mutual; keydata=
+ mQENBFe74PkBCACoLC5Zq2gwrDcCkr+EPGsT14bsxrW07GiYzQhLCgwnPdEpgU95pXltbFhw
+ 46GfyffABWxHKO2x+3L1S6ZxC5AiKbYXo7lpnTBYjamPWYouz+VJEVjUx9aaSEByBah5kX6a
+ lKFZWNbXLAJh+dE1HFaMi3TQXXaInaREc+aO1F7fCa2zNE75ja+6ah8L4TPRFZ2HKQzve0/Y
+ GXtoRw97qmnm3U36vKWT/m2AiLF619F4T1mHvlfjyd9hrVwjH5h/2rFyroXVXBZHGA9Aj8eN
+ F2si35dWSZlIwXkNu9bXp0/pIu6FD0bI+BEkD5S7aH1G1iAcMFi5Qq2RNa041DfQSDDHABEB
+ AAG0K1NlYW4gR2FsbGFnaGVyIEFuZGVyc29uIDxzZWFuZ2EyQGdtYWlsLmNvbT6JAVcEEwEK
+ AEECGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4ACGQEWIQSQYR1bzo1I0gPoYCg+6I/stKEQ
+ bgUCXT+S2AUJB2TlXwAKCRA+6I/stKEQbhNOB/9ooea0hU9Sgh7PBloU6CgaC5mlqPLB7NTp
+ +JkB+nh3Fqhk+qLZwzEynnuDLl6ESpVHIc0Ym1lyF4gT3DsrlGT1h0Gzw7vUwd1+ZfN0CuIx
+ Rn861U/dAUjvbtN5kMBqOI4/5ea+0r7MACcIVnKF/wMXBD8eypHsorT2sJTzwZ6DRCNP70C5
+ N1ahpqqNmXe0uLdP0pu55JCqhrGw2SinkRMdWyhSxT56uNwIVHGhLTqH7Q4t1N6G1EH626qa
+ SvIJsWlNpll6Y3AYLDw2/Spw/hqieS2PQ/Ky3rPZnvJt7/aSNYsKoFGX0yjkH67Uq8Lx0k1L
+ w8jpXnbEPQN3A2ZJCbeM
+Message-ID: <d0627c5b-1007-bca0-e6d6-0a3740eaf6a7@gmail.com>
+Date:   Fri, 16 Oct 2020 10:17:43 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <cover.1602838910.git.zong.li@sifive.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16 2020 at 07:35, Jens Axboe wrote:
-> On 10/16/20 3:39 AM, Thomas Gleixner wrote:
->> On Fri, Oct 16 2020 at 11:00, Thomas Gleixner wrote:
->> That's a truly great suggestion:
->> 
->>    X86 is going to have that TIF bit once the above is available.
->> 
->> I'm happy to help with the merge logistics of this.
->
-> Not really following this email...
+On 10/16/20 5:18 AM, Zong Li wrote:
+> Add a driver for the SiFive FU740 PRCI IP block, which handles more
+> clocks than FU540. These patches also refactor the original
+> implementation by spliting the dependent-code of fu540 and fu740
+> respectively.
+> 
+> Zong Li (4):
+>   clk: sifive: Extract prci core to common base
 
-What I tried to convey is, that the x86 tif bit is not going in before
-the complete thing (including cleanups) is available. I'm only half
-joking.
+I don't see this patch, and it isn't listed on the web archive. Was it
+not CC'd to this list?
 
-> But it seems to me that you're happy with approach 2, so I'll do
-> the following:
->
-> - Get rid of the CONFIG_GENERIC_ENTRY dependency for TIF_NOTIFY_SIGNAL
-> - Respin the arch additions and cleanups on top of that again
->
-> And hopefully we'll have something mergeable at that point. Once we
-> have this series merged somewhere (would be great if you could carry
-> it), I'll be talking to arch folks on the rest. Once archs have taken
-> the necessary bits, I'll be posting the third and final series which
-> is the cleanups that are currently sitting on top of the arch support.
+	--Sean
 
-Can you please just post the full thing after resolving #1 of the list
-items which I pointed out in the other reply?
-
-With moving the handling into get_signal() you don't need more changes
-to arch/* than adding the TIF bit, right? So there should not be much
-talking involved other than agreeing on the bit number to use.
-
-I might be missing something though.
-
-Thanks,
-
-        tglx
-
+>   clk: sifive: Use common name for prci configuration
+>   clk: sifive: Add a driver for the SiFive FU740 PRCI IP block
+>   clk: sifive: Refactor __prci_clock array by using macro
+> 
+>  arch/riscv/Kconfig.socs                       |   2 +-
+>  drivers/clk/sifive/Kconfig                    |   8 +-
+>  drivers/clk/sifive/Makefile                   |   5 +-
+>  drivers/clk/sifive/fu540-prci.c               | 618 +-----------------
+>  drivers/clk/sifive/fu540-prci.h               |  21 +
+>  drivers/clk/sifive/fu740-prci.c               | 102 +++
+>  drivers/clk/sifive/fu740-prci.h               |  21 +
+>  drivers/clk/sifive/sifive-prci.c              | 529 +++++++++++++++
+>  drivers/clk/sifive/sifive-prci.h              | 297 +++++++++
+>  include/dt-bindings/clock/sifive-fu740-prci.h |  23 +
+>  10 files changed, 1032 insertions(+), 594 deletions(-)
+>  create mode 100644 drivers/clk/sifive/fu540-prci.h
+>  create mode 100644 drivers/clk/sifive/fu740-prci.c
+>  create mode 100644 drivers/clk/sifive/fu740-prci.h
+>  create mode 100644 drivers/clk/sifive/sifive-prci.c
+>  create mode 100644 drivers/clk/sifive/sifive-prci.h
+>  create mode 100644 include/dt-bindings/clock/sifive-fu740-prci.h
+> 
 
