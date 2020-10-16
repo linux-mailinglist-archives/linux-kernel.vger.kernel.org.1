@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2B72903E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CFE2903E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405417AbgJPLQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:16:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57509 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405354AbgJPLQY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:16:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602846982;
+        id S2405552AbgJPLRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:17:14 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53042 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405440AbgJPLRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 07:17:14 -0400
+Received: from zn.tnic (p200300ec2f0d0d0089517c9ee4bbfe7f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d00:8951:7c9e:e4bb:fe7f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C21E01EC02FC;
+        Fri, 16 Oct 2020 13:17:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1602847032;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x10tOVtolquaTARTsDJ6mze3Z1Z5YmBSGNWKhKgumKQ=;
-        b=RYzzM0ro6syeg+C5MFbuNvfppoMcsnjKgbDgmuGfKCihSUc/0vBCh5iYRFIq79EmeZy4CE
-        cO47yxvfp4+fThFO4nxOeqkPUyBd9aZQAdfNfQOFo8r+ps0r+HY0wE+FWUbyLUXzYhTH9G
-        XqbR4ogibT9auLmDG9BAWFYQcLLucvc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-Svc81JtPOhm-aTbzeEzOvA-1; Fri, 16 Oct 2020 07:16:21 -0400
-X-MC-Unique: Svc81JtPOhm-aTbzeEzOvA-1
-Received: by mail-ed1-f69.google.com with SMTP id p7so852873edi.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:16:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x10tOVtolquaTARTsDJ6mze3Z1Z5YmBSGNWKhKgumKQ=;
-        b=SvMEE9P5w5/A8xkcj4EuBO+aPI5PVP6overR90FCXCqi+itc8KQx6QssGXpC8oqZGG
-         ANsK+dIHebfvq1KjOSg7YijqBhH1C5TH8UVhVchfO+uBmNEnNMGGJWTcuxIv8XSJ4t0h
-         mpu5OuiN1tj2xCRjFW2e05o63UlREGlYLGRz9Xer39xv/h4xoKasgrSsC9M+uoGNQubc
-         xyaioi1dDPZDOTG33nVZY1bdHvRolzuSAIwKCi4Ymdlf0jsfp3ewaENEOzlMQYqx9QfU
-         LIDLx2XSs/0IqPmggabUkB3yUDec0zXkVSjjot6iDckH0IwlKOrQsCN68Z8jPf8k0NdG
-         goKQ==
-X-Gm-Message-State: AOAM531DiVeDcRiqoIda4ezlfUQPz5kC8ppL9H2mp8v0dS4mkNZ6njOz
-        YEhj2TlsxyMV3ddf/q8ixLGhIVGaMRzjAIVvtEYG8iaevkHjA2iAXquY5p9Pf4T805fy7AYfcB+
-        d7LGTIb7xg8LX4Iu+HOKiG7qd
-X-Received: by 2002:aa7:dd11:: with SMTP id i17mr3223336edv.188.1602846979885;
-        Fri, 16 Oct 2020 04:16:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwuvprMrV+hqnX1T0y5+3fN1JRilnar9FML+MPU44c3eibJhR0OodM6ROgP40nhJisPLOe+tg==
-X-Received: by 2002:aa7:dd11:: with SMTP id i17mr3223308edv.188.1602846979647;
-        Fri, 16 Oct 2020 04:16:19 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id a31sm1169521ede.32.2020.10.16.04.16.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 04:16:18 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] i2c-hid: Save power by reducing i2c xfers with
- block reads
-To:     Jiri Kosina <jikos@kernel.org>,
-        Sultan Alsawaf <sultan@kerneltoast.com>
-Cc:     linux-i2c@vger.kernel.org, aaron.ma@canonical.com, admin@kryma.net,
-        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
-        hn.chen@weidahitech.com, jarkko.nikula@linux.intel.com,
-        kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mika.westerberg@linux.intel.com,
-        vicamo.yang@canonical.com, wsa@kernel.org
-References: <20200917052256.5770-1-sultan@kerneltoast.com>
- <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <b29e577e-7c10-1e28-ef01-22b00a9734e5@redhat.com>
-Date:   Fri, 16 Oct 2020 13:16:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DSp5jyhBz5lmcIE51/qc1HjvR3vKwfjV8Tl+WwYmWpc=;
+        b=PD6cu93G2MSWp99HVdE1p1Ci70myojYVHvMubArgWfmDidsri0msM3xn1Jwa0Y/1b8DPaT
+        EEUjIdwHBMghFWdMhs8NxqkdO3rmEWI0N81NuNtKCAyg/BZ9c2Zzb/s39Yryio7jRPEkLG
+        gA8nnh1Vh0DhHnnr+cX3kODuYnBUUIw=
+Date:   Fri, 16 Oct 2020 13:17:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] x86/head/64: Disable stack protection for
+ head$(BITS).o
+Message-ID: <20201016111703.GD8483@zn.tnic>
+References: <20201008191623.2881677-1-nivedita@alum.mit.edu>
+ <20201008191623.2881677-6-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <nycvar.YFH.7.76.2009221118150.3336@cbobk.fhfr.pm>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201008191623.2881677-6-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 08, 2020 at 03:16:23PM -0400, Arvind Sankar wrote:
+> On 64-bit, the startup_64_setup_env() function added in
+>   866b556efa12 ("x86/head/64: Install startup GDT")
+> has stack protection enabled because of set_bringup_idt_handler().
 
-On 9/22/20 11:19 AM, Jiri Kosina wrote:
-> On Wed, 16 Sep 2020, Sultan Alsawaf wrote:
-> 
->> From: Sultan Alsawaf <sultan@kerneltoast.com>
->>
->> This is a fixed resubmission of "[PATCH 0/2] i2c-hid: Save power by reducing i2c
->> xfers with block reads". That original patchset did not have enough fixes for
->> the designware i2c adapter's I2C_M_RECV_LEN feature, which is documented
->> extensively in the original email thread.
->>
->> Here is the original cover letter, which still applies:
->> "I noticed on my Dell Precision 15 5540 with an i9-9880H that simply putting my
->> finger on the touchpad would increase my system's power consumption by 4W, which
->> is quite considerable. Resting my finger on the touchpad would generate roughly
->> 4000 i2c irqs per second, or roughly 20 i2c irqs per touchpad irq.
->>
->> Upon closer inspection, I noticed that the i2c-hid driver would always transfer
->> the maximum report size over i2c (which is 60 bytes for my touchpad), but all of
->> my touchpad's normal touch events are only 32 bytes long according to the length
->> byte contained in the buffer sequence.
->>
->> Therefore, I was able to save about 2W of power by passing the I2C_M_RECV_LEN
->> flag in i2c-hid, which says to look for the payload length in the first byte of
->> the transfer buffer and adjust the i2c transaction accordingly. The only problem
->> though is that my i2c controller's driver allows bytes other than the first one
->> to be used to retrieve the payload length, which is incorrect according to the
->> SMBus spec, and would break my i2c-hid change since not *all* of the reports
->> from my touchpad are conforming SMBus block reads.
->>
->> This patchset fixes the I2C_M_RECV_LEN behavior in the designware i2c driver and
->> modifies i2c-hid to use I2C_M_RECV_LEN to save quite a bit of power. Even if the
->> peripheral controlled by i2c-hid doesn't support block reads, the i2c controller
->> drivers should cope with this and proceed with the i2c transfer using the
->> original requested length."
->>
->> Sultan
->>
->> Sultan Alsawaf (4):
->>   i2c: designware: Fix transfer failures for invalid SMBus block reads
->>   i2c: designware: Ensure tx_buf_len is nonzero for SMBus block reads
->>   i2c: designware: Allow SMBus block reads up to 255 bytes in length
->>   HID: i2c-hid: Use block reads when possible to save power
->>
->>  drivers/hid/i2c-hid/i2c-hid-core.c         |  5 ++++-
->>  drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++------
->>  2 files changed, 13 insertions(+), 7 deletions(-)
-> 
-> Hans, Benjamin, could you please give this patchset some smoke-testing? It 
-> looks good to me, but I'd like it to get some testing from your testing 
-> machinery before merging.
+Where? I don't see it.
 
-Sorry for being slow to respond to this. I have not gotten around to testing
-this, but I saw another email that this breaks things on at least AMD
-platforms, so I guess that this is on hold for now ?
+I have
 
-Regards,
+CONFIG_STACKPROTECTOR=y
+# CONFIG_STACKPROTECTOR_STRONG is not set
 
-Hans
+and a __stack_chk_fail call is nowhere to be found in the resulting
+head64.s file.
 
+startup_64_setup_env:
+# arch/x86/kernel/head64.c:91: 	return ptr - (void *)_text + (void *)physaddr;
+	leaq	startup_gdt(%rdi), %rax	#, tmp99
+# arch/x86/kernel/head64.c:91: 	return ptr - (void *)_text + (void *)physaddr;
+	subq	$_text, %rax	#, tmp101
+	movq	%rax, startup_gdt_descr+2(%rip)	# tmp101, startup_gdt_descr.address
+# ./arch/x86/include/asm/desc.h:209: 	asm volatile("lgdt %0"::"m" (*dtr));
+#APP
+# 209 "./arch/x86/include/asm/desc.h" 1
+	lgdt startup_gdt_descr(%rip)		# startup_gdt_descr
+# 0 "" 2
+# arch/x86/kernel/head64.c:600: 	asm volatile("movl %%eax, %%ds\n"
+#NO_APP
+	movl	$24, %eax	#, tmp102
+#APP
+# 600 "arch/x86/kernel/head64.c" 1
+	movl %eax, %ds
+movl %eax, %ss
+movl %eax, %es
+
+# 0 "" 2
+# arch/x86/kernel/head64.c:91: 	return ptr - (void *)_text + (void *)physaddr;
+#NO_APP
+	leaq	bringup_idt_table(%rdi), %r9	#, tmp105
+	leaq	bringup_idt_descr(%rdi), %r8	#, tmp103
+	leaq	vc_no_ghcb(%rdi), %rsi	#, tmp107
+# arch/x86/kernel/head64.c:91: 	return ptr - (void *)_text + (void *)physaddr;
+	subq	$_text, %r9	#, _11
+	subq	$_text, %r8	#, _8
+	subq	$_text, %rsi	#, tmp109
+# arch/x86/kernel/head64.c:572: 		set_bringup_idt_handler(idt, X86_TRAP_VC, handler);
+	movq	%r9, %rdi	# _11,
+	call	set_bringup_idt_handler.constprop.0	#
+# arch/x86/kernel/head64.c:575: 	desc->address = (unsigned long)idt;
+	movq	%r9, 2(%r8)	# _11, MEM[(struct desc_ptr *)_8].address
+# ./arch/x86/include/asm/desc.h:214: 	asm volatile("lidt %0"::"m" (*dtr));
+#APP
+# 214 "./arch/x86/include/asm/desc.h" 1
+	lidt (%r8)		# MEM[(const struct desc_ptr *)_8]
+# 0 "" 2
+# arch/x86/kernel/head64.c:605: }
+#NO_APP
+	ret
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
