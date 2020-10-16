@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0512905BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72B72905C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408058AbgJPNHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:07:16 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44512 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406681AbgJPNHP (ORCPT
+        id S2408106AbgJPNIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:08:11 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14300 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408092AbgJPNII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:07:15 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1602853634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HEz9VA+Ry8f6KJ6PxVCIFUNP+ITbnXQUT58CgkC8uJQ=;
-        b=JubGlHO3g8DwdoYooc1pglbREfYqaAamM4Hx9hRuoInagdD117RqKfkFKgMPnpqan5rUrV
-        Fhx5ueOIONbYhARvrMyaGW5UhzgD6pNs1qXOGVRYWjT6U+MbjOCE7C1uJTSkLRjJP4XtAi
-        R3f3ohp2++Xgkt225Wek3ggxZZxnxHx97bIKQVPXDOOSFExsl/lQcVCW5JzreItXPshroA
-        t10DnOXBJOqnuFPRUkKx5f9NmD8Jl4IVVPVJvyRfT9ssNOr8Pf7axprI2qwQ/05IgCcl8z
-        7qAUYdqs344YY8ApOArbeFnX2GbQVt0JcxC0vym7nCA6zd5qt0vF/btSVQKtaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1602853634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HEz9VA+Ry8f6KJ6PxVCIFUNP+ITbnXQUT58CgkC8uJQ=;
-        b=h57olXuDcrwiP6aHeH5PjiqOv39ZsphnB1BGJhV3NM7/Vf4REa5A5TRZJTGvNHZO5ZGDvO
-        Selt/I8hhgCJsPCA==
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, peterz@infradead.org
-Subject: Re: [PATCH 4/5] x86: wire up TIF_NOTIFY_SIGNAL
-In-Reply-To: <20201016105415.GA21989@redhat.com>
-References: <20201015131701.511523-1-axboe@kernel.dk> <20201015131701.511523-5-axboe@kernel.dk> <87o8l3a8af.fsf@nanos.tec.linutronix.de> <20201015143409.GC24156@redhat.com> <87y2k6trzr.fsf@nanos.tec.linutronix.de> <20201016105415.GA21989@redhat.com>
-Date:   Fri, 16 Oct 2020 15:07:14 +0200
-Message-ID: <87imbatj3x.fsf@nanos.tec.linutronix.de>
+        Fri, 16 Oct 2020 09:08:08 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f899b2b0000>; Fri, 16 Oct 2020 06:07:55 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
+ 2020 13:08:03 +0000
+Received: from jckuo-lt.nvidia.com (172.20.13.39) by mail.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Fri, 16 Oct 2020 13:08:01 +0000
+From:   JC Kuo <jckuo@nvidia.com>
+To:     <gregkh@linuxfoundation.org>, <thierry.reding@gmail.com>,
+        <robh@kernel.org>, <jonathanh@nvidia.com>, <kishon@ti.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <nkristam@nvidia.com>, JC Kuo <jckuo@nvidia.com>
+Subject: [PATCH v4 04/16] phy: tegra: xusb: tegra210: Do not reset UPHY PLL
+Date:   Fri, 16 Oct 2020 21:07:14 +0800
+Message-ID: <20201016130726.1378666-5-jckuo@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201016130726.1378666-1-jckuo@nvidia.com>
+References: <20201016130726.1378666-1-jckuo@nvidia.com>
 MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602853675; bh=kYsUJ4FyGjDkoNVvwMVBvmPB4cUQ0GzCPRz7BqifrqE=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+         References:MIME-Version:X-NVConfidentiality:
+         Content-Transfer-Encoding:Content-Type;
+        b=Euq5T/ZGdde9ifIjT3vFo6zFwZuEExTmvpPlZu0yH7ycx6KsYKjOxEtsUnQsEVwBK
+         0Yp9cKlCwfdU3LTYF70DkV4gkfMzB8FJh1mJYqHa2zfJ1iKKB9TFC3uaVkX9nkcg8e
+         Ra9FYyOZiruUXED/egee7S7JqqC0k27zBEtvcl4FwVQoPWtbCDRjs5UR8p5aipCaZT
+         kDHvcj9DDVoRY3VlYlEcd2jRBnHfyYl+jZc4xx37ayrybwDmdazsjqLbHgA3neXjTx
+         E8slGfMbusjHSfbiZndnlvFZLxa1bT7fsN5FDTmMoqedMlQ0khKpFTgMH8+chJ0R8k
+         4te61gpEMMceA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16 2020 at 12:54, Oleg Nesterov wrote:
-> On 10/16, Thomas Gleixner wrote:
->
-> But again, I won't argue. And to remind, we do not really need to touch
-> arch_do_signal() at all. We can just add
->
-> 	if (test_thread_flag(TIF_NOTIFY_SIGNAL))
-> 		tracehook_notify_signal();
->
-> 	if (!task_sigpending(current))
-> 		return 0;
->
-> at the start of get_signal() and avoid the code duplication automatically.
+Once UPHY PLL hardware power sequencer is enabled, do not assert
+reset to PEX/SATA PLLs, otherwise UPHY PLL operation will be broken.
+This commit removes reset_control_assert(pcie->rst) and
+reset_control_assert(sata->rst) from PEX/SATA UPHY disable procedure.
 
-That works as well and is smart, but it's completely non obvious while
+Signed-off-by: JC Kuo <jckuo@nvidia.com>
+---
+v4:
+   no change
+v3:
+   new, was a part of "phy: tegra: xusb: Rearrange UPHY init on Tegra210"
 
-     if (ti_work & _TIF_NOTIFY_SIGNAL)
-            tracehook_notify_signal();
+ drivers/phy/tegra/xusb-tegra210.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-     arch_do_signal_or_restart(ti_work & _TIF_SIGPENDING);
+diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-teg=
+ra210.c
+index 4dc9286ec1b8..9bfecdfecf35 100644
+--- a/drivers/phy/tegra/xusb-tegra210.c
++++ b/drivers/phy/tegra/xusb-tegra210.c
+@@ -502,7 +502,6 @@ static void tegra210_pex_uphy_disable(struct tegra_xusb=
+_padctl *padctl)
+ 	if (--pcie->enable > 0)
+ 		return;
+=20
+-	reset_control_assert(pcie->rst);
+ 	clk_disable_unprepare(pcie->pll);
+ }
+=20
+@@ -739,7 +738,6 @@ static void tegra210_sata_uphy_disable(struct tegra_xus=
+b_padctl *padctl)
+ 	if (--sata->enable > 0)
+ 		return;
+=20
+-	reset_control_assert(sata->rst);
+ 	clk_disable_unprepare(sata->pll);
+ }
+=20
+--=20
+2.25.1
 
-makes it entirely clear to follow the logic and it just operates on
-cached ti_work.
-
-You can still do this for the non generic entry architectures:
-
-     if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) &&
-     	 (test_thread_flag(TIF_NOTIFY_SIGNAL))
- 		tracehook_notify_signal();
-
-to avoid the churn in arch/*.
-
-Thanks,
-
-        tglx
