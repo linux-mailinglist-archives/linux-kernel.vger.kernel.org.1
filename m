@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107C12904F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF552904FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407449AbgJPMVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 08:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+        id S2407459AbgJPMV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 08:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405384AbgJPMVK (ORCPT
+        with ESMTP id S2407395AbgJPMVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 08:21:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8BBC061755;
-        Fri, 16 Oct 2020 05:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZUmWjNg65V6AiFrCgaLFBLQXLIVV8qim1PDjDYaGvo4=; b=KfVXg1CGrkJBMgna6XMAK92lmy
-        rZ2nMvNRNI6MsIvb7H6Ot9k6iXWvJDUsz4Nifz9deCLlH8Fc6JWNPrBEa69q20Xn8cg1w1GiS7ZD/
-        SlOv8NPpdHDXcyNfo1C6pWTC+kKcZHRwprCMys5LCGK87ukyg8NEtiodChPxwTz9t1uqNL5akXq52
-        OBBf6HNe1bua1XTzhReL2j3vae+lhlaZzjElMEmlD+X54wI1hd3LKbrz06HUpcZ8/iH75eyfKmOIh
-        D84WSri5aJOa64SHb+vddNKk82n2Hp41rbRUdJOHsLsxQfnmR2quEjFJXw/ZMyoCbIuUL7BdNOER6
-        9Edddoxw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kTOj4-0007HQ-FF; Fri, 16 Oct 2020 12:20:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DA3F13050F0;
-        Fri, 16 Oct 2020 14:20:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C6543203EB17E; Fri, 16 Oct 2020 14:20:46 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 14:20:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
- housekeeping CPUs
-Message-ID: <20201016122046.GP2611@hirez.programming.kicks-ass.net>
-References: <20200928183529.471328-1-nitesh@redhat.com>
- <20200928183529.471328-5-nitesh@redhat.com>
+        Fri, 16 Oct 2020 08:21:25 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5EAC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:21:24 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id 1so1200262ple.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 05:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=NMI1sFtLzmFm3k0JvXz7PfONg0lcw+c3PkRnORn4L1c=;
+        b=xs+TCkQ7Os08tggPr+Zx+DT1oAfLBiwXPDP8aJsIszDRhXOMtO2shEZ0kj9ntAjpmC
+         euuAvdgWzJRvWsS7mGtDx2wbmvRQnYkZeT/cgiJjNVqQ+LXRgV4/Nz8H8ik4gMSIn4lW
+         8dDuQLpUuWcoOM1uv/tiMOutHZDga3iNGTMaESuPV2q9tB+oYodtaKAMQj11QrBJ8dOT
+         H+nLdqrmDx9Nm5mLGLb1rdT5KxOs3zK+koPcX9Uk+nYt6LSdR6yFu+xv+ZUqxyOZpw8k
+         q3Qq2SvDw7Pz2Ka54WieH+qz+vjFBl65SHNvvZcSSp4ciwe4zCxEyeR5atZdfAAc+40G
+         JSBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=NMI1sFtLzmFm3k0JvXz7PfONg0lcw+c3PkRnORn4L1c=;
+        b=f2bVFw9hSKYkWVHnm8TxbkHYblGeaiHdxtWxmI4VUb0mgCQBFzrG0gaV881ZrIy1it
+         W4ce2zyPYIHzZgvNVs605Acu8JgYAJ1cJLA7sRiXssY2Df/DEiR1YEaZmKjK4Yu5L/TF
+         5w818oThPU29vlSB3uMDbQeY+CyDH2KnAAwIo3Vz6QOrEwbt7mJBvV9G4/0jPDQl/vlR
+         5ONkgovjIU8bZBOTf4iyhRYQogHYwNVtcXSUs1S20Lhy8X12OA+Et2djKXmdKTx0vJbP
+         bsCWXe95qTi+ua+0SAOh8cMWTiA815l/7jICeBI5TpwPkp74OJVmOsZMGY/As4yOiqVc
+         nNpw==
+X-Gm-Message-State: AOAM53021g+52GAjhk50deXxZY3sLxwUycO1uVdd2uP9qW4zmm5Go2yJ
+        Pn3GRwE4rDTD80B6JnbLXTXlZg==
+X-Google-Smtp-Source: ABdhPJx7dIUwIqI13LTYrLxyYi+ODJh8MMmAk3MQO3ExsLdnRixqVibKP9T5FDr58JtuQkM+Og4+Fw==
+X-Received: by 2002:a17:90b:11d6:: with SMTP id gv22mr3890864pjb.159.1602850883810;
+        Fri, 16 Oct 2020 05:21:23 -0700 (PDT)
+Received: from debian ([122.164.16.34])
+        by smtp.gmail.com with ESMTPSA id p6sm3055692pjd.1.2020.10.16.05.21.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 05:21:23 -0700 (PDT)
+Message-ID: <8b3c1958864decc8d1d9a70f4613b0e06cc6a0b2.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.9 00/15] 5.9.1-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Date:   Fri, 16 Oct 2020 17:51:18 +0530
+In-Reply-To: <20201016090437.170032996@linuxfoundation.org>
+References: <20201016090437.170032996@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928183529.471328-5-nitesh@redhat.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:35:29PM -0400, Nitesh Narayan Lal wrote:
-> If we have isolated CPUs dedicated for use by real-time tasks, we try to
-> move IRQs to housekeeping CPUs from the userspace to reduce latency
-> overhead on the isolated CPUs.
+On Fri, 2020-10-16 at 11:08 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.9.1 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
 > 
-> If we allocate too many IRQ vectors, moving them all to housekeeping CPUs
-> may exceed per-CPU vector limits.
+> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+> Anything received after that time might be too late.
 > 
-> When we have isolated CPUs, limit the number of vectors allocated by
-> pci_alloc_irq_vectors() to the minimum number required by the driver, or
-> to one per housekeeping CPU if that is larger.
+> The whole patch series can be found in one patch at:
+> 	
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.9.1-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.9.y
+> and the diffstat can be found below.
 > 
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> ---
->  drivers/pci/msi.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> thanks,
 > 
-> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> index 30ae4ffda5c1..8c156867803c 100644
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -23,6 +23,7 @@
->  #include <linux/slab.h>
->  #include <linux/irqdomain.h>
->  #include <linux/of_irq.h>
-> +#include <linux/sched/isolation.h>
->  
->  #include "pci.h"
->  
-> @@ -1191,8 +1192,25 @@ int pci_alloc_irq_vectors_affinity(struct pci_dev *dev, unsigned int min_vecs,
->  				   struct irq_affinity *affd)
->  {
->  	struct irq_affinity msi_default_affd = {0};
-> +	unsigned int hk_cpus;
->  	int nvecs = -ENOSPC;
->  
-> +	hk_cpus = housekeeping_num_online_cpus(HK_FLAG_MANAGED_IRQ);
-> +
-> +	/*
-> +	 * If we have isolated CPUs for use by real-time tasks, to keep the
-> +	 * latency overhead to a minimum, device-specific IRQ vectors are moved
-> +	 * to the housekeeping CPUs from the userspace by changing their
-> +	 * affinity mask. Limit the vector usage to keep housekeeping CPUs from
-> +	 * running out of IRQ vectors.
-> +	 */
-> +	if (hk_cpus < num_online_cpus()) {
-> +		if (hk_cpus < min_vecs)
-> +			max_vecs = min_vecs;
-> +		else if (hk_cpus < max_vecs)
-> +			max_vecs = hk_cpus;
+> greg k-h
 
-is that:
+hello,
 
-		max_vecs = clamp(hk_cpus, min_vecs, max_vecs);
+Compiled and booted 5.9.1-rc1+. Everything looks clean except "dmesg -l
+warn"
+This kernel like 5.8.13-rc1+  shows issue related in warning.
+Please see this...
 
-Also, do we really need to have that conditional on hk_cpus <
-num_online_cpus()? That is, why can't we do this unconditionally?
+--------------------x-------------------------x-------------x-----
 
-And what are the (desired) semantics vs hotplug? Using a cpumask without
-excluding hotplug is racy.
+$dmesg -l warn 
+[    0.589254] MDS CPU bug present and SMT on, data leak possible. See 
+https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/mds.html for
+more details.
+[    0.592523]  #3
+[    0.735219] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
+[   11.454156] i8042: PNP: PS/2 appears to have AUX port disabled, if
+this is incorrect please boot with i8042.nopnp
+[   13.519401] sdhci-pci 0000:00:1e.6: failed to setup card detect gpio
+[   15.518853] i2c_hid i2c-ELAN1300:00: supply vdd not found, using
+dummy regulator
+[   15.520777] i2c_hid i2c-ELAN1300:00: supply vddl not found, using
+dummy regulator
+[   24.934891] systemd[1]: /lib/systemd/system/plymouth-
+start.service:16: Unit configured to use KillMode=none. This is unsafe,
+as it disables systemd's process lifecycle management for the service.
+Please update your service to use a safer KillMode=, such as 'mixed' or
+'control-group'. Support for KillMode=none is deprecated and will
+eventually be removed.
+[   38.110160] uvcvideo 1-6:1.0: Entity type for entity Extension 4 was
+not initialized!
+[   38.110166] uvcvideo 1-6:1.0: Entity type for entity Processing 2
+was not initialized!
+[   38.110170] uvcvideo 1-6:1.0: Entity type for entity Camera 1 was
+not initialized!
+[   41.031588] FAT-fs (sda1): Volume was not properly unmounted. Some
+data may be corrupt. Please run fsck.
 
-> +	}
-> +
->  	if (flags & PCI_IRQ_AFFINITY) {
->  		if (!affd)
->  			affd = &msi_default_affd;
-> -- 
-> 2.18.2
-> 
+---------x--------------------x--------------------------------x---
+
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+
+-- 
+software engineer
+rajagiri school of engineering and technology
+
