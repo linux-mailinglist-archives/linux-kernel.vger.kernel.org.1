@@ -2,70 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680E4290D0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A72290D0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410534AbgJPVBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 17:01:03 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60348 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392572AbgJPVBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 17:01:02 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kTWqN-0023YY-3V; Fri, 16 Oct 2020 23:00:55 +0200
-Date:   Fri, 16 Oct 2020 23:00:55 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v2] net: phy: Prevent reporting advertised modes when
- autoneg is off
-Message-ID: <20201016210055.GK139700@lunn.ch>
-References: <20201016180935.GG139700@lunn.ch>
- <CGME20201016193736eucas1p1eb94190e16b194f473ade8c49ca34275@eucas1p1.samsung.com>
- <dleftjzh4m3qtp.fsf%l.stelmach@samsung.com>
+        id S2410572AbgJPVBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 17:01:21 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:34142 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410553AbgJPVBV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 17:01:21 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 10B9C20030;
+        Fri, 16 Oct 2020 23:01:17 +0200 (CEST)
+Date:   Fri, 16 Oct 2020 23:01:16 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Bernie Thompson <bernie@plugable.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] video: use kobj_to_dev()
+Message-ID: <20201016210116.GC1496366@ravnborg.org>
+References: <1600776867-24226-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dleftjzh4m3qtp.fsf%l.stelmach@samsung.com>
+In-Reply-To: <1600776867-24226-1-git-send-email-wangqing@vivo.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=1WtWmnkvAAAA:8 a=e5mUnYsNAAAA:8
+        a=S625N62x_EdrrIXL-UUA:9 a=4VdfB5lweFc2GgQk:21 a=SvyDWAbSgJdgMsRO:21
+        a=CjuIK1q_8ugA:10 a=-_UHfarfsM-RsASml2Jt:22 a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 09:37:22PM +0200, Lukasz Stelmach wrote:
-> It was <2020-10-16 pią 20:09>, when Andrew Lunn wrote:
-> > On Thu, Oct 15, 2020 at 10:44:35AM +0200, Łukasz Stelmach wrote:
-> >> Do not report advertised link modes (local and remote) when
-> >> autonegotiation is turned off. mii_ethtool_get_link_ksettings() exhibits
-> >> the same behaviour and this patch aims at unifying the behavior of both
-> >> functions.
-> >
-> > Does ethtool allow you to configure advertised modes with autoneg off?
-> > If it can, it would be useful to see what is being configured, before
-> > it is actually turned on.
-> >
-> > ethtool -s eth42 autoneg off advertise 0xf
-> >
-> > does not give an error on an interface i have.
+Hi Wang Qing
+
+On Tue, Sep 22, 2020 at 08:14:24PM +0800, Wang Qing wrote:
+> Use kobj_to_dev() instead of container_of()
 > 
-> Yes, this is a good point. Do you think I should change the if()[1] in 
-> mii_ethtool_get_link_ksettings() instead? I really think these two
-> function should report the same.
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-Yes, i would change mii. Ideally we want all drivers to use
-phylib/phylink, not mii. So i would modify mii to match
-phylib/phylink, not the other way around.
+Thanks, applied to drm-misc-next. Patch will appear in -next in a few
+weeks.
 
-And then there will be drivers which do their own PHY handling, hidden
-away in firmware, and not using either of mii or phylib/phylink. You
-can expect them to be inconsistent.
+	Sam
 
-    Andrew
+> ---
+>  drivers/video/fbdev/aty/radeon_base.c | 4 ++--
+>  drivers/video/fbdev/udlfb.c           | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/aty/radeon_base.c b/drivers/video/fbdev/aty/radeon_base.c
+> index 3fe509c..878c39a
+> --- a/drivers/video/fbdev/aty/radeon_base.c
+> +++ b/drivers/video/fbdev/aty/radeon_base.c
+> @@ -2200,7 +2200,7 @@ static ssize_t radeon_show_edid1(struct file *filp, struct kobject *kobj,
+>  				 struct bin_attribute *bin_attr,
+>  				 char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  	struct fb_info *info = dev_get_drvdata(dev);
+>          struct radeonfb_info *rinfo = info->par;
+>  
+> @@ -2212,7 +2212,7 @@ static ssize_t radeon_show_edid2(struct file *filp, struct kobject *kobj,
+>  				 struct bin_attribute *bin_attr,
+>  				 char *buf, loff_t off, size_t count)
+>  {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>  	struct fb_info *info = dev_get_drvdata(dev);
+>          struct radeonfb_info *rinfo = info->par;
+>  
+> diff --git a/drivers/video/fbdev/udlfb.c b/drivers/video/fbdev/udlfb.c
+> index 5b014b4..f9b3c1c
+> --- a/drivers/video/fbdev/udlfb.c
+> +++ b/drivers/video/fbdev/udlfb.c
+> @@ -1457,7 +1457,7 @@ static ssize_t edid_show(
+>  			struct file *filp,
+>  			struct kobject *kobj, struct bin_attribute *a,
+>  			 char *buf, loff_t off, size_t count) {
+> -	struct device *fbdev = container_of(kobj, struct device, kobj);
+> +	struct device *fbdev = kobj_to_dev(kobj);
+>  	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+>  	struct dlfb_data *dlfb = fb_info->par;
+>  
+> @@ -1479,7 +1479,7 @@ static ssize_t edid_store(
+>  			struct file *filp,
+>  			struct kobject *kobj, struct bin_attribute *a,
+>  			char *src, loff_t src_off, size_t src_size) {
+> -	struct device *fbdev = container_of(kobj, struct device, kobj);
+> +	struct device *fbdev = kobj_to_dev(kobj);
+>  	struct fb_info *fb_info = dev_get_drvdata(fbdev);
+>  	struct dlfb_data *dlfb = fb_info->par;
+>  	int ret;
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
