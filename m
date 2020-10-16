@@ -2,140 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146DF290750
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16982290757
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408927AbgJPOkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:40:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40031 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407597AbgJPOkV (ORCPT
+        id S2409059AbgJPOlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:41:13 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:28958 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2408896AbgJPOlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:40:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602859220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AJH2rQKiaPivnwScef349FvB7E5p9oHS8lm1FpKoy6Q=;
-        b=VKQ4vdqooF8E6bwECmWTortZEtGUpmo0TfC8sGRg/Yqo9mOECQbuwNlYqmx59lVyMnhRX1
-        lwWugqb6zhZU+PImIjfMkyjun58VfEv3JGxwSWL24k+PKtIRzaCAhyww8ogFn4drpHNTEQ
-        rNcM2+xA5AOMmD5YM7q/NfXzucMKw7w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-Qx8c6uYcNmaCF-64-nUZng-1; Fri, 16 Oct 2020 10:40:16 -0400
-X-MC-Unique: Qx8c6uYcNmaCF-64-nUZng-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB26D879516;
-        Fri, 16 Oct 2020 14:40:14 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D81181A837;
-        Fri, 16 Oct 2020 14:40:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, hdanton@sina.com,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] afs: Fix cell management, add tracepoint, downgrade assert
+        Fri, 16 Oct 2020 10:41:10 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09GEbTax028212;
+        Fri, 16 Oct 2020 16:40:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=+xoyFgWKF9M39CdJct5WeDHycIdVDU9Tp6gD7JbDFWc=;
+ b=uKNyqNJ2AOeJsSVMHI4yW8bTdNSOGr8huiK/mgyYPnQIAEy7lIk/LfI61fSQwnM8PHeV
+ e5cmskMgfaGeeQF/8FqNVuswWsDC+epTZqvr8c+ocf6RyIXrJT6Odn3NkBph2jMpQKW/
+ esG798Td+hmPCghum+39tRN1fPrgFVK+dLfI4NzZVZOwudyFPbrW9KADAxjujeYhULMB
+ 7J7XLVSu+yFb9Fe6b+0hCYckIuPEO/IpK/S9PieHMz4A1yc82OicP+sx8HTar6dUdvQc
+ nv6yf6r9idDGkV5bMRFUC08vl16G2w2+vRKYnbZ8yR2gydNuL9zpXUJTG2A5ejUoXqhV uA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 343587kw0u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Oct 2020 16:40:43 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DA13D10002A;
+        Fri, 16 Oct 2020 16:40:42 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B4E2A2AF739;
+        Fri, 16 Oct 2020 16:40:42 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct 2020 16:40:41
+ +0200
+From:   Fabrice Gasnier <fabrice.gasnier@st.com>
+To:     <tglx@linutronix.de>, <jason@lakedaemon.net>, <maz@kernel.org>,
+        <alexandre.torgue@st.com>
+CC:     <robh+dt@kernel.org>, <fabrice.gasnier@st.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] Add STM32 LP timer EXTI interrupts
+Date:   Fri, 16 Oct 2020 16:40:16 +0200
+Message-ID: <1602859219-15684-1-git-send-email-fabrice.gasnier@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1431073.1602859212.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 16 Oct 2020 15:40:12 +0100
-Message-ID: <1431074.1602859212@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-16_07:2020-10-16,2020-10-16 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+STM32 LP timer that's available on STM32MP15x can wakeup the platform
+using EXTI interrupts.
 
-Here are a collection of fixes to fix afs_cell struct refcounting, thereby
-fixing a slew of related syzbot bugs:
+This series add:
+- LP timer EXTI - GIC interrupt events to EXTI driver and device-tree
+- LP timer wakeup-source to device-tree
 
- (1) Fix the cell tree in the netns to use an rwsem rather than RCU.
+Fabrice Gasnier (3):
+  irqchip/stm32-exti: Add all LP timer exti direct events support
+  ARM: dts: stm32: Add LP timer irqs on stm32mp151
+  ARM: dts: stm32: Add LP timer wakeup-source on stm32mp151
 
-     There seem to be some problems deriving from the use of RCU and a
-     seqlock to walk the rbtree, but it's not entirely clear what since
-     there are several different failures being seen.
+ arch/arm/boot/dts/stm32mp151.dtsi | 10 ++++++++++
+ drivers/irqchip/irq-stm32-exti.c  |  4 ++++
+ 2 files changed, 14 insertions(+)
 
-     Changing things to use an rwsem instead makes it more robust.  The
-     extra performance derived from using RCU isn't necessary in this case
-     since the only time we're looking up a cell is during mount or when
-     cells are being manually added.
-
- (2) Fix the refcounting by splitting the usage counter into a memory
-     refcount and an active users counter.  The usage counter was doing
-     double duty, keeping track of whether a cell is still in use and
-     keeping track of when it needs to be destroyed - but this makes the
-     clean up tricky.  Separating these out simplifies the logic.
-
- (3) Fix purging a cell that has an alias.  A cell alias pins the cell it'=
-s
-     an alias of, but the alias is always later in the list.  Trying to
-     purge in a single pass causes rmmod to hang in such a case.
-
- (4) Fix cell removal.  If a cell's manager is requeued whilst it's
-     removing itself, the manager will run again and re-remove itself,
-     causing problems in various places.  Follow Hillf Danton's suggestion
-     to insert a more terminal state that causes the manager to do nothing
-     post-removal.
-
-In additional to the above, I've included two more patches:
-
- (1) Add a tracepoint for the cell refcount and active users count.  This
-     helped with debugging the above and may be useful again in future.
-
- (2) Downgrade an assertion to a print when a still-active server is seen
-     during purging.  This was happening as a consequence of incomplete
-     cell removal before the servers were cleaned up.
-
-David
----
-The following changes since commit bbf5c979011a099af5dc76498918ed7df445635=
-b:
-
-  Linux 5.9 (2020-10-11 14:15:50 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
-/afs-fixes-20201016
-
-for you to fetch changes up to 7530d3eb3dcf1a30750e8e7f1f88b782b96b72b8:
-
-  afs: Don't assert on unpurgeable server records (2020-10-16 14:39:34 +01=
-00)
-
-----------------------------------------------------------------
-afs fixes
-
-----------------------------------------------------------------
-David Howells (6):
-      afs: Fix rapid cell addition/removal by not using RCU on cells tree
-      afs: Fix cell refcounting by splitting the usage counter
-      afs: Fix cell purging with aliases
-      afs: Fix cell removal
-      afs: Add tracing for cell refcount and active user count
-      afs: Don't assert on unpurgeable server records
-
- fs/afs/cell.c              | 328 +++++++++++++++++++++++++++++-----------=
------
- fs/afs/dynroot.c           |  23 ++--
- fs/afs/internal.h          |  20 ++-
- fs/afs/main.c              |   2 +-
- fs/afs/mntpt.c             |   4 +-
- fs/afs/proc.c              |  23 ++--
- fs/afs/server.c            |   7 +-
- fs/afs/super.c             |  18 +--
- fs/afs/vl_alias.c          |   8 +-
- fs/afs/vl_rotate.c         |   2 +-
- fs/afs/volume.c            |   6 +-
- include/trace/events/afs.h | 109 +++++++++++++++
- 12 files changed, 378 insertions(+), 172 deletions(-)
+-- 
+2.7.4
 
