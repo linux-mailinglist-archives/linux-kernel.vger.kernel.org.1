@@ -2,144 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE556290620
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FFD2907D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406887AbgJPNQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:16:52 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:36876 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405352AbgJPNQw (ORCPT
+        id S2409640AbgJPO4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406998AbgJPO4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:16:52 -0400
-Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id ACBB63B4205;
-        Fri, 16 Oct 2020 12:56:44 +0000 (UTC)
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 397C5100008;
-        Fri, 16 Oct 2020 12:56:17 +0000 (UTC)
-Date:   Fri, 16 Oct 2020 16:56:03 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v3 2/7] dt-bindings: media: max9286: Document
- 'maxim,high-threshold'
-Message-ID: <20201016145603.bapqjxsvezn6flyv@uno.localdomain>
-References: <20201016120625.64337-1-jacopo+renesas@jmondi.org>
- <20201016120625.64337-3-jacopo+renesas@jmondi.org>
- <CAMuHMdUof5Yb=5notGDYycJtZyLzGp2RPjJ=m6GVodBRDxw9ow@mail.gmail.com>
+        Fri, 16 Oct 2020 10:56:31 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1113C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:56:30 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id l85so2713115oih.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o683JyDzGtCz8h08bH720Xzkdnsct+b153JAeeQ2q3A=;
+        b=Ymp3Z3Alkmll4V81zm2iA/funD9+iBwilvwYdSd9IX5hMZRv5M7byKXSK+PMkOp56A
+         +yYyeMN+OW4vBy4YOedRf8XjX4mA9LNxrHGmvVrkQ2/PnZSw12zAqipKc5ZExVnn1a+k
+         0o+3tuXvjoOf+ml2ynW9iAxrN5i1wfkPOKe8BNsnzj4Zl9a1yViKfBXoMkf13O8R9toq
+         O+EoBlUWfBjYm+ei9fZxzNzkD2FqsMsRvuPUEhk8BpX3NGo4Q6rKhrrOtXsCk+g/EYQ6
+         hkvAddoDwwCVKhyig9g52Gn5e8MAT0MxaPRma95tSkBJdMnMZ5lVP6fGnBryobfPcveD
+         SEJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o683JyDzGtCz8h08bH720Xzkdnsct+b153JAeeQ2q3A=;
+        b=NA8OzAuu7mKYn/9j+RCJk+ImUPvYnl/5504/tQI78FVXXQSmVFVAQA+DEclBszKR7c
+         X0cgYIwmjK897SILRLRJ5piAbrAnXosWKQzD/OA44SJqgADyfSp1IZa62SsQ2GjvKjcu
+         N69wIuEr6tBTFboFp+nohtWg7XEVKMk8fma7OpbX1YILsTm+cyE44b67TwGqZ0Nq7Mg9
+         wT+tTtvV9KmP0DP0McCR/1NJMko9+e98M6IL0apzPRMntf9lhqsN8qvsTN9I0l2w/eMq
+         XmORL+50aMQPr8iYFbcCNJL0o8Beiw2OmzYprbK1vMndDQZtFK0oIe6BH4t4UPU8tscq
+         IOJQ==
+X-Gm-Message-State: AOAM5303QHiSfQXph2wokW2o6KYxDmbyMbGU3uAFvVSAEdYWK0RqoZAp
+        8tMEEh6JTL1o7F30zNjzRnfYvYT1pkwWNazdVkpbQw==
+X-Google-Smtp-Source: ABdhPJwaOVXEFgE7MDb+P6rriQcnt5gJEF9iYQ95Wzrs+rMlfp6FglUJ6grrdHS4qDdHDbY3U7tDou8zkTfLCp3asy0=
+X-Received: by 2002:aca:6702:: with SMTP id z2mr2818623oix.140.1602860190126;
+ Fri, 16 Oct 2020 07:56:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUof5Yb=5notGDYycJtZyLzGp2RPjJ=m6GVodBRDxw9ow@mail.gmail.com>
+References: <cover.1602838910.git.zong.li@sifive.com> <d0627c5b-1007-bca0-e6d6-0a3740eaf6a7@gmail.com>
+In-Reply-To: <d0627c5b-1007-bca0-e6d6-0a3740eaf6a7@gmail.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Fri, 16 Oct 2020 22:56:19 +0800
+Message-ID: <CANXhq0pgeDZkWgwmZE+sFPjYhAmNBNoYGPRfij+Yz_Pc8hNN-Q@mail.gmail.com>
+Subject: Re: [PATCH 0/4] clk: add driver for the SiFive FU740
+To:     Sean Anderson <seanga2@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>, sboyd@kernel.org,
+        Yash Shah <yash.shah@sifive.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert
-   (and Kieran, as his question on the other patch is actually on
-   the same point)
-
-On Fri, Oct 16, 2020 at 01:50:34PM +0200, Geert Uytterhoeven wrote:
-> Hi Jacopo,
+On Fri, Oct 16, 2020 at 10:17 PM Sean Anderson <seanga2@gmail.com> wrote:
 >
-> On Fri, Oct 16, 2020 at 12:09 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
-> > Document the 'maxim,high-threshold' vendor property in the bindings
-> > document of the max9286 driver.
+> On 10/16/20 5:18 AM, Zong Li wrote:
+> > Add a driver for the SiFive FU740 PRCI IP block, which handles more
+> > clocks than FU540. These patches also refactor the original
+> > implementation by spliting the dependent-code of fu540 and fu740
+> > respectively.
 > >
-> > The newly introduced boolean property allows controlling the initial
-> > configuration of the GMSL reverse control channel to accommodate
-> > remote serializers pre-programmed with the high threshold power
-> > supply noise immunity enabled.
+> > Zong Li (4):
+> >   clk: sifive: Extract prci core to common base
+>
+> I don't see this patch, and it isn't listed on the web archive. Was it
+> not CC'd to this list?
+>
+>         --Sean
+>
+
+There is a problem on linux-riscv mailing list for the first one
+patch, the size of it is too big, it needs to be approved and posted
+on the list by moderator.
+
+This patch set is also sent to clk mailing list, and I can see it on that:
+https://patchwork.kernel.org/project/linux-clk/patch/b10784643665ad56ca41ea6754c7f28f8be1c7ca.1602838910.git.zong.li@sifive.com/
+
+
+
+
+> >   clk: sifive: Use common name for prci configuration
+> >   clk: sifive: Add a driver for the SiFive FU740 PRCI IP block
+> >   clk: sifive: Refactor __prci_clock array by using macro
 > >
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
->
-> Thanks for your patch!
->
-> > --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > @@ -51,6 +51,19 @@ properties:
-> >    '#gpio-cells':
-> >      const: 2
+> >  arch/riscv/Kconfig.socs                       |   2 +-
+> >  drivers/clk/sifive/Kconfig                    |   8 +-
+> >  drivers/clk/sifive/Makefile                   |   5 +-
+> >  drivers/clk/sifive/fu540-prci.c               | 618 +-----------------
+> >  drivers/clk/sifive/fu540-prci.h               |  21 +
+> >  drivers/clk/sifive/fu740-prci.c               | 102 +++
+> >  drivers/clk/sifive/fu740-prci.h               |  21 +
+> >  drivers/clk/sifive/sifive-prci.c              | 529 +++++++++++++++
+> >  drivers/clk/sifive/sifive-prci.h              | 297 +++++++++
+> >  include/dt-bindings/clock/sifive-fu740-prci.h |  23 +
+> >  10 files changed, 1032 insertions(+), 594 deletions(-)
+> >  create mode 100644 drivers/clk/sifive/fu540-prci.h
+> >  create mode 100644 drivers/clk/sifive/fu740-prci.c
+> >  create mode 100644 drivers/clk/sifive/fu740-prci.h
+> >  create mode 100644 drivers/clk/sifive/sifive-prci.c
+> >  create mode 100644 drivers/clk/sifive/sifive-prci.h
+> >  create mode 100644 include/dt-bindings/clock/sifive-fu740-prci.h
 > >
-> > +  maxim,high-threshold:
-> > +    description: |
-> > +      A boolean property to increase the initial amplitude of the reverse
-> > +      control channel to compensate for remote serializers pre-programmed with
-> > +      high threshold noise-immunity.
-> > +
-> > +      Some camera modules (in example the RDACM20 one) include an on-board MCU
-> > +      that pre-programs the embedded serializer with reverse channel power
-> > +      supply noise immunity enabled. The deserializer shall increase its
-> > +      reverse channel amplitude to compensate that and be able to communicate
-> > +      with the remote end.
-> > +    type: boolean
 >
-> Does this "high" threshold correspond to some numerical value?
-> I.e. could we run into a future need to support more values than just
-> true/false?
-> If yes, we may want to use a numerical value from the start.
-
-So, this boolean property controls the initial setting of the reverse
-channel amplitude, which has to be opportunely adjusted to be able to
-probe the remote devices as i2c messages are bridged on the reverse
-channel from the deserializer to the remote serializers.
-
-It also implies that if the initial setting is not "high" it has to be
-increased after the remotes have probed, as it is assumed at the end
-the remotes' probe() routine they have enabled their high threshold
-noise immunity feature.
-
-The register that controls the de-serializer reverse channel amplitude
-is not fully documented in the chip manual version I have, but the
-application developer guide shows that it can range from 30mV to
-200mV. The same developer guide shows 100mV and 170mV as "initial" and
-"high threshold" values to be used.
-
-On the serializer's side (MAX9271 at least) high threshold is a
-boolean control, it is either enabled or disabled.
-
-Hence I suspect that for the max9286-max9271 combo, using fixed 100mV
-and 170mV values is enough. Other serializers might allow a more fine
-grained control of the noise cancelling threshold, and might require a
-more precise adjustment of the deserializer side. I'm honestly not
-sure at this point not having seen any other one.
-
-So yes, this is a deserializer setting that depends on the serializer
-in use, and I'm not 100% comfortable expressing it as a deserializer
-property. That said, having an initial numerical value might serve the
-same purpose allowing more flexibility, if other serializers require a
-more precise control of the initial amplitude.
-
-After the remotes have probed, we could also re-explore the
-possibility of getting the bus configuration using get_mbus_config, as
-detailed in the v1 cover letter [1] as at that time their sub-devices
-have been registered and we can call operations on them. But again,
-this might be not required at all.
-
-Thanks
-   j
-
-[1] https://www.spinics.net/lists/linux-renesas-soc/msg52886.html
-
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
