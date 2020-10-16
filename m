@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB83A28FFCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412B228FFCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405093AbgJPIMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:12:46 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:55011 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405070AbgJPIMY (ORCPT
+        id S2405100AbgJPIMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:12:47 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41036 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405073AbgJPIM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:12:24 -0400
-Received: by mail-io1-f69.google.com with SMTP id f6so1002983ion.21
+        Fri, 16 Oct 2020 04:12:26 -0400
+Received: by mail-io1-f70.google.com with SMTP id j21so1018565iog.8
         for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:12:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Bm5SWSSR+OsZVNyMrrEA80pp6Iujuo2nZZDiousUxIE=;
-        b=Jz8s76Aj7rw/kg0X4nlg2679mzXYgSz1eInhMdmVH892dkO/5IXZ4vFghtdFlEfaVz
-         prcLJgXnfIhghgpd3JEW8nTHelwbQFjEmoK+bz4gm0JNs4UmhoPE7Dcy9I/Jru6Gjmtc
-         pX5NjPqu7CXMYF7TtVHxb2gPKb/IqLaVvGDf8vJPbhHJXGLk7cK7TQPVCZo6UKAb4Wo0
-         Nw0dMzBnHL0fylXqjwG1vlqsM6LeU37sq/aNJ7WOldEjm24hxAlPCgTiYlZY5SmKlmCD
-         MDr7DVHw77Mm9FUnNMwrlz1EdK1fuvgwggecIh3Sz7gZfPD6KysFjYLi3hKQrA0obymV
-         JqNQ==
-X-Gm-Message-State: AOAM530zVOaElc3pQZuEaj/U4ABrBhVyMgpM7VscN6AbeZazYZQ66yN2
-        ly3DK7PdJg4e0ZuUJKMMRJNGg5F2mEpVy7nGUOygG23CntTp
-X-Google-Smtp-Source: ABdhPJy3LJBD6x/8VkyDz94aY18nGxniV6nVha/uNNH6Dza+BQ6D5uZ0J9EKSFEFuqaj/qAA0FDyTdaa7Rr/9N4BWuttro+XA9Ui
+        bh=xcWA32PLfjx6w6sKv3bsQQXLERevMZycCbs2tAWwNCw=;
+        b=KdZ0m1N7LMm4c36fIzifFdLFVrwi4RjY6JItDkPbRgGYbtUF0NjzAZdb3BfCL3tEE/
+         JJTZiBPNd/y6bgaPIqGy57xmiWp62eCMI1/Yoygy3O+0NhxxwMxcn9mbA6daE7rRj+gB
+         sDNG79PfCFNttgTdTZSHK6u5UWGdaZF/T4unHoz/EQmUH7V9L8g8pUTTLbGyN16ZRZuE
+         kabnrjxhGhfwx8ITkIiUn9I/9qLyC3wmtONmywRmJ12azwyiIpDQ99/F2Q1sm1i3HWHa
+         UACoWfrrERSjQsBN+qe3fVaDGXMLTtSDmjSpFp2mvg6oXths/JUAekpQi27gOi3GSHXn
+         9XDA==
+X-Gm-Message-State: AOAM531DYPFxeTRYcQkKh4G8jy9LMXjGe4e9CewnocKStDag7CiUpeII
+        Vmwz4+kEgC7fXyjt/5WGGScaxAXSqta2aUlC6258TELA+rmF
+X-Google-Smtp-Source: ABdhPJzwvMF9v0pcHs6e2Uz/eGY/vdXVtzVUVGAUB+hmv0oGAXPqUsfIMO7RIxIVpqDYMb8sANNZ3w+yOogd+Wy10rAdqzMY3OO6
 MIME-Version: 1.0
-X-Received: by 2002:a6b:651a:: with SMTP id z26mr1572620iob.186.1602835943793;
- Fri, 16 Oct 2020 01:12:23 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 01:12:23 -0700
+X-Received: by 2002:a6b:fa07:: with SMTP id p7mr1543319ioh.124.1602835944057;
+ Fri, 16 Oct 2020 01:12:24 -0700 (PDT)
+Date:   Fri, 16 Oct 2020 01:12:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000010295205b1c553d5@google.com>
-Subject: WARNING: suspicious RCU usage in io_init_identity
-From:   syzbot <syzbot+4596e1fcf98efa7d1745@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <00000000000014370305b1c55370@google.com>
+Subject: UBSAN: array-index-out-of-bounds in alg_bind
+From:   syzbot <syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,55 +48,70 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    b2926c10 Add linux-next specific files for 20201016
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12fc877f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6160209582f55fb1
-dashboard link: https://syzkaller.appspot.com/bug?extid=4596e1fcf98efa7d1745
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+HEAD commit:    726eb70e Merge tag 'char-misc-5.10-rc1' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1011b678500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89a0a83d1be17a89
+dashboard link: https://syzkaller.appspot.com/bug?extid=92ead4eb8e26a26d465e
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4596e1fcf98efa7d1745@syzkaller.appspotmail.com
+Reported-by: syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com
 
-=============================
-WARNING: suspicious RCU usage
-5.9.0-next-20201016-syzkaller #0 Not tainted
------------------------------
-include/linux/cgroup.h:494 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by syz-executor.0/8301.
-
-stack backtrace:
-CPU: 0 PID: 8301 Comm: syz-executor.0 Not tainted 5.9.0-next-20201016-syzkaller #0
+================================================================================
+UBSAN: array-index-out-of-bounds in crypto/af_alg.c:166:2
+index 91 is out of range for type '__u8 [64]'
+CPU: 1 PID: 8236 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- task_css include/linux/cgroup.h:494 [inline]
- blkcg_css include/linux/blk-cgroup.h:224 [inline]
- blkcg_css include/linux/blk-cgroup.h:217 [inline]
- io_init_identity+0x3a9/0x450 fs/io_uring.c:1052
- io_uring_alloc_task_context+0x176/0x250 fs/io_uring.c:7730
- io_uring_add_task_file+0x10d/0x180 fs/io_uring.c:8653
- io_uring_get_fd fs/io_uring.c:9144 [inline]
- io_uring_create fs/io_uring.c:9308 [inline]
- io_uring_setup+0x2727/0x3660 fs/io_uring.c:9342
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ ubsan_epilogue lib/ubsan.c:148 [inline]
+ __ubsan_handle_out_of_bounds+0xdb/0x130 lib/ubsan.c:356
+ alg_bind+0x738/0x740 crypto/af_alg.c:166
+ __sys_bind+0x283/0x360 net/socket.c:1656
+ __do_sys_bind net/socket.c:1667 [inline]
+ __se_sys_bind net/socket.c:1665 [inline]
+ __x64_sys_bind+0x76/0x80 net/socket.c:1665
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 RIP: 0033:0x45de59
 Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f7e11fe1bf8 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
-RAX: ffffffffffffffda RBX: 0000000020000080 RCX: 000000000045de59
-RDX: 00000000206d4000 RSI: 0000000020000080 RDI: 0000000000000087
-RBP: 000000000118c020 R08: 0000000020000040 R09: 0000000020000040
-R10: 0000000020000000 R11: 0000000000000206 R12: 00000000206d4000
-R13: 0000000020ee7000 R14: 0000000020000040 R15: 0000000020000000
+RSP: 002b:00007f547948ec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 0000000000000ac0 RCX: 000000000045de59
+RDX: 0000000000000074 RSI: 0000000020000940 RDI: 0000000000000003
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffd6121d5bf R14: 00007f547948f9c0 R15: 000000000118bf2c
+================================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 8236 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ panic+0x316/0x910 kernel/panic.c:231
+ ubsan_epilogue lib/ubsan.c:162 [inline]
+ __ubsan_handle_out_of_bounds+0x12b/0x130 lib/ubsan.c:356
+ alg_bind+0x738/0x740 crypto/af_alg.c:166
+ __sys_bind+0x283/0x360 net/socket.c:1656
+ __do_sys_bind net/socket.c:1667 [inline]
+ __se_sys_bind net/socket.c:1665 [inline]
+ __x64_sys_bind+0x76/0x80 net/socket.c:1665
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45de59
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f547948ec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 0000000000000ac0 RCX: 000000000045de59
+RDX: 0000000000000074 RSI: 0000000020000940 RDI: 0000000000000003
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffd6121d5bf R14: 00007f547948f9c0 R15: 000000000118bf2c
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
 
 ---
