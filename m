@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FFD2907D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889792907D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409640AbgJPO4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:56:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406998AbgJPO4b (ORCPT
+        id S2409658AbgJPO4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:56:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60371 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2409649AbgJPO4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:56:31 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1113C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:56:30 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id l85so2713115oih.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:56:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o683JyDzGtCz8h08bH720Xzkdnsct+b153JAeeQ2q3A=;
-        b=Ymp3Z3Alkmll4V81zm2iA/funD9+iBwilvwYdSd9IX5hMZRv5M7byKXSK+PMkOp56A
-         +yYyeMN+OW4vBy4YOedRf8XjX4mA9LNxrHGmvVrkQ2/PnZSw12zAqipKc5ZExVnn1a+k
-         0o+3tuXvjoOf+ml2ynW9iAxrN5i1wfkPOKe8BNsnzj4Zl9a1yViKfBXoMkf13O8R9toq
-         O+EoBlUWfBjYm+ei9fZxzNzkD2FqsMsRvuPUEhk8BpX3NGo4Q6rKhrrOtXsCk+g/EYQ6
-         hkvAddoDwwCVKhyig9g52Gn5e8MAT0MxaPRma95tSkBJdMnMZ5lVP6fGnBryobfPcveD
-         SEJg==
+        Fri, 16 Oct 2020 10:56:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602860210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZxUU6wZzA0Ye/CuWQkpYe1eoVOOSpaLhnMPncnxgBso=;
+        b=cOEWCyaOk7MCM87D6E/u+LYCSu+SWYfKZwfA70Q/ORXGuEHTbrDdaM/pYhmZ/a0IL+afd2
+        9eK+nS6oSwFjdfn4K+vctYvSyN8WgIkM7GSVrStf/C6NUfGaWjrXxM/yugYHyvwP4loO/R
+        6PbHJNfpTJw2oNYpZjz5yJpdfzn17pg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-xi5W1cfvPkGiq3wfDlPTPQ-1; Fri, 16 Oct 2020 10:56:48 -0400
+X-MC-Unique: xi5W1cfvPkGiq3wfDlPTPQ-1
+Received: by mail-wr1-f72.google.com with SMTP id u15so1594078wrn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:56:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o683JyDzGtCz8h08bH720Xzkdnsct+b153JAeeQ2q3A=;
-        b=NA8OzAuu7mKYn/9j+RCJk+ImUPvYnl/5504/tQI78FVXXQSmVFVAQA+DEclBszKR7c
-         X0cgYIwmjK897SILRLRJ5piAbrAnXosWKQzD/OA44SJqgADyfSp1IZa62SsQ2GjvKjcu
-         N69wIuEr6tBTFboFp+nohtWg7XEVKMk8fma7OpbX1YILsTm+cyE44b67TwGqZ0Nq7Mg9
-         wT+tTtvV9KmP0DP0McCR/1NJMko9+e98M6IL0apzPRMntf9lhqsN8qvsTN9I0l2w/eMq
-         XmORL+50aMQPr8iYFbcCNJL0o8Beiw2OmzYprbK1vMndDQZtFK0oIe6BH4t4UPU8tscq
-         IOJQ==
-X-Gm-Message-State: AOAM5303QHiSfQXph2wokW2o6KYxDmbyMbGU3uAFvVSAEdYWK0RqoZAp
-        8tMEEh6JTL1o7F30zNjzRnfYvYT1pkwWNazdVkpbQw==
-X-Google-Smtp-Source: ABdhPJwaOVXEFgE7MDb+P6rriQcnt5gJEF9iYQ95Wzrs+rMlfp6FglUJ6grrdHS4qDdHDbY3U7tDou8zkTfLCp3asy0=
-X-Received: by 2002:aca:6702:: with SMTP id z2mr2818623oix.140.1602860190126;
- Fri, 16 Oct 2020 07:56:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZxUU6wZzA0Ye/CuWQkpYe1eoVOOSpaLhnMPncnxgBso=;
+        b=V7f9wVAXq1RGcI3BR2e5YFGBIcONqE7cuJeBCP6DgPzq84eopldOyWbXMFyhJC+6cC
+         atc7dFASBCOTbROtvZaoaUeq8WQlqYtbS2tti+YbZbWgau/l9IqnoQ17jEtdvFWMKC/l
+         0vDCNs4H0cMcWssXGGxAW68xxTzI9rKIYH1qYJsoDzMfepZ2VN8+rMuOyRyngdVfv3/b
+         s+fTFrMhV6xInUscRN8bONDV+/UsGc6ffTP1pPrQ6y267ppW3aLT4XHtQDBGATrQN76r
+         mzm2iSRs7s+pwG2QRipPpMec3u3JAU1/FPKfN0RDbuXkmXD4wSColKV6UQeHC8EXL1MV
+         0AHA==
+X-Gm-Message-State: AOAM530+OEiuRgNS3ZXQV1U+t3Yg74El4W2l6WIXTi8tMqwUQm3wi4AR
+        UpDp4O+aWEUJdT93gtlKZKjSOIv5rsCR6a0raSP2fdEppav9+xPX1cBmhFkequXy0f6I9vQcQ5R
+        Owh3nSl/UndFHaBE/CpGHif3S
+X-Received: by 2002:a5d:4802:: with SMTP id l2mr4289535wrq.282.1602860207144;
+        Fri, 16 Oct 2020 07:56:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwoJzs7daGcDiRqBnyLKbzuDcYdyikqUk1vi7RkoMxoJsfVfgPqrSfyEJMMiKVyoBIqrkmcAg==
+X-Received: by 2002:a5d:4802:: with SMTP id l2mr4289495wrq.282.1602860206865;
+        Fri, 16 Oct 2020 07:56:46 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3? ([2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3])
+        by smtp.gmail.com with ESMTPSA id c185sm3131302wma.44.2020.10.16.07.56.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 07:56:46 -0700 (PDT)
+Subject: Re: [PATCH v2 04/20] kvm: x86/mmu: Allocate and free TDP MMU roots
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20201014182700.2888246-1-bgardon@google.com>
+ <20201014182700.2888246-5-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8ee0477f-553a-d22d-a7e9-f2e9186ff27e@redhat.com>
+Date:   Fri, 16 Oct 2020 16:56:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <cover.1602838910.git.zong.li@sifive.com> <d0627c5b-1007-bca0-e6d6-0a3740eaf6a7@gmail.com>
-In-Reply-To: <d0627c5b-1007-bca0-e6d6-0a3740eaf6a7@gmail.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Fri, 16 Oct 2020 22:56:19 +0800
-Message-ID: <CANXhq0pgeDZkWgwmZE+sFPjYhAmNBNoYGPRfij+Yz_Pc8hNN-Q@mail.gmail.com>
-Subject: Re: [PATCH 0/4] clk: add driver for the SiFive FU740
-To:     Sean Anderson <seanga2@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>, sboyd@kernel.org,
-        Yash Shah <yash.shah@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201014182700.2888246-5-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 10:17 PM Sean Anderson <seanga2@gmail.com> wrote:
->
-> On 10/16/20 5:18 AM, Zong Li wrote:
-> > Add a driver for the SiFive FU740 PRCI IP block, which handles more
-> > clocks than FU540. These patches also refactor the original
-> > implementation by spliting the dependent-code of fu540 and fu740
-> > respectively.
-> >
-> > Zong Li (4):
-> >   clk: sifive: Extract prci core to common base
->
-> I don't see this patch, and it isn't listed on the web archive. Was it
-> not CC'd to this list?
->
->         --Sean
->
+On 14/10/20 20:26, Ben Gardon wrote:
+> +
+> +static void put_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> +{
+> +	if (kvm_mmu_put_root(root))
+> +		kvm_tdp_mmu_free_root(kvm, root);
+> +}
 
-There is a problem on linux-riscv mailing list for the first one
-patch, the size of it is too big, it needs to be approved and posted
-on the list by moderator.
+Unused...
 
-This patch set is also sent to clk mailing list, and I can see it on that:
-https://patchwork.kernel.org/project/linux-clk/patch/b10784643665ad56ca41ea6754c7f28f8be1c7ca.1602838910.git.zong.li@sifive.com/
+> +static void get_tdp_mmu_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> +{
+> +	lockdep_assert_held(&kvm->mmu_lock);
+> +
+> +	kvm_mmu_get_root(root);
+> +}
+> +
 
+... and duplicate with kvm_mmu_get_root itself since we can move the
+assertion there.
 
+Paolo
 
-
-> >   clk: sifive: Use common name for prci configuration
-> >   clk: sifive: Add a driver for the SiFive FU740 PRCI IP block
-> >   clk: sifive: Refactor __prci_clock array by using macro
-> >
-> >  arch/riscv/Kconfig.socs                       |   2 +-
-> >  drivers/clk/sifive/Kconfig                    |   8 +-
-> >  drivers/clk/sifive/Makefile                   |   5 +-
-> >  drivers/clk/sifive/fu540-prci.c               | 618 +-----------------
-> >  drivers/clk/sifive/fu540-prci.h               |  21 +
-> >  drivers/clk/sifive/fu740-prci.c               | 102 +++
-> >  drivers/clk/sifive/fu740-prci.h               |  21 +
-> >  drivers/clk/sifive/sifive-prci.c              | 529 +++++++++++++++
-> >  drivers/clk/sifive/sifive-prci.h              | 297 +++++++++
-> >  include/dt-bindings/clock/sifive-fu740-prci.h |  23 +
-> >  10 files changed, 1032 insertions(+), 594 deletions(-)
-> >  create mode 100644 drivers/clk/sifive/fu540-prci.h
-> >  create mode 100644 drivers/clk/sifive/fu740-prci.c
-> >  create mode 100644 drivers/clk/sifive/fu740-prci.h
-> >  create mode 100644 drivers/clk/sifive/sifive-prci.c
-> >  create mode 100644 drivers/clk/sifive/sifive-prci.h
-> >  create mode 100644 include/dt-bindings/clock/sifive-fu740-prci.h
-> >
->
