@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A105290BF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758B5290BFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 21:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393036AbgJPS5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:57:17 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:34332 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393030AbgJPS5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:57:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1602874636; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=suSOkA0SjPcV83KW6yROTbOM9b6DKVxYD50cZ3W7Ops=; b=dE43VsbzDEwqgA4VoHapvCyJaV6rWcqxhEZT7/9MF1AujiEcEUHnhsZbPxscFms0wg9rUt/R
- MZrrvgssqNEmU6DcXH9mNbVbOHHEhNX85oEoLzdMwPhwpNZx9l0TJha+WsQJcRNINR+cPvHA
- 6W6u1apy0WSFZja2VoHRYoYv0FE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f89ed0c3711fec7b1b9e968 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 18:57:16
- GMT
-Sender: sudaraja=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 61037C433FF; Fri, 16 Oct 2020 18:57:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sudaraja)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 14848C433C9;
-        Fri, 16 Oct 2020 18:57:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 14848C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
-From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
-        Gavin Shan <gshan@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>
-Subject: [PATCH v4] arm64/mm: add fallback option to allocate virtually contiguous memory
-Date:   Fri, 16 Oct 2020 11:56:56 -0700
-Message-Id: <d6c06f2ef39bbe6c715b2f6db76eb16155fdcee6.1602722808.git.sudaraja@codeaurora.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <cover.1602722808.git.sudaraja@codeaurora.org>
-References: <cover.1602722808.git.sudaraja@codeaurora.org>
+        id S2406526AbgJPTAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 15:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403821AbgJPTAd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 15:00:33 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C65C061755;
+        Fri, 16 Oct 2020 12:00:33 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id f37so3359251otf.12;
+        Fri, 16 Oct 2020 12:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8LFx9ARUF5T3aJVjq0szLzngeXVnAE/ijqfj2qFA//E=;
+        b=kp/4hSvLK+kLZYN7raFUlJtoy0D6zt1VbKWelI9tpDzvMuC5OVG+tlsXZ4YzCOeE/L
+         iW5z6CrIp/6lAv6OofqMJrqyUxX/UcibMZrxS4HLLqQx/PIFqu9o+uYhI1gJaLjNGjjF
+         x8nN1d1f4LAhOaHB7IEEz8OeuqEuioX4X4cNwvugqtjSE1gQeE0gTx5tanoX6YDw1OY8
+         vCUFKGTQHvk6zZhBqKVmYleMeZ9VGmIujEnCc40PbzGaBei0/y0HzyZol9KKTKbgtjt7
+         VW6dBpM69UxULf20MsC+CpzBCb7O/hYLb7S5nWOToNbx6UzAjR4J+VHOp4pibV5fEQl9
+         A/jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8LFx9ARUF5T3aJVjq0szLzngeXVnAE/ijqfj2qFA//E=;
+        b=SG9mf18m+SsyjTuhXbJ2oNxU3uNVWmRl1dJVIH670JuUVz5li1lhGMfuTn9JWTNjHL
+         O4zxMSgvNwg4J0PqQgMJd0RK6EfV4sITTFMLfLkqok1BjjBc0U8qYIzptqMdWM4zYFte
+         oiK7xOOT8VCx0mx8jr6FB1Dth1Db3lByyGRmns3f35VFuPg+86CVDy7Z4k5h69VUisa4
+         5kpo/L4xxSVz4CDR+7SWov02klM6thc5Zd1I0VQfoezRfTYfoBXWNG+9bdDfxStGO8dp
+         y4GruZXAS9gE3GJbJNsnrdCj8hU7Ih7kpduLOk8R3OW64eJaYlxAx2yRx2t2zZ3wC7tH
+         soAQ==
+X-Gm-Message-State: AOAM5312Zid+de1lb8wxE/hP858gkPQ91pypER6MOGjGX8e8siwADw3Y
+        D4yNax1A+CQbKCZS1i8kfI0=
+X-Google-Smtp-Source: ABdhPJzV/nSxU8k7+iRi+BpKE/FvGGHcjOTxi4VMWo/XKW0PmeN7jgukuHFzwIMZ0sk9JbE4x0IpxA==
+X-Received: by 2002:a9d:2384:: with SMTP id t4mr3468952otb.337.1602874832736;
+        Fri, 16 Oct 2020 12:00:32 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l5sm247093ooj.16.2020.10.16.12.00.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 16 Oct 2020 12:00:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 16 Oct 2020 12:00:30 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/16] 4.4.240-rc1 review
+Message-ID: <20201016190030.GA32893@roeck-us.net>
+References: <20201016090435.423923738@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016090435.423923738@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When section mappings are enabled, we allocate vmemmap pages from
-physically continuous memory of size PMD_SIZE using
-vmemmap_alloc_block_buf(). Section mappings are good to reduce TLB
-pressure. But when system is highly fragmented and memory blocks are
-being hot-added at runtime, its possible that such physically continuous
-memory allocations can fail. Rather than failing the memory hot-add
-procedure, add a fallback option to allocate vmemmap pages from
-discontinuous pages using vmemmap_populate_basepages().
+On Fri, Oct 16, 2020 at 11:06:53AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.240 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Logan Gunthorpe <logang@deltatee.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Steven Price <steven.price@arm.com>
----
- arch/arm64/mm/mmu.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 332 pass: 332 fail: 0
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 75df62fea1b6..44486fd0e883 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1121,8 +1121,11 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 			void *p = NULL;
- 
- 			p = vmemmap_alloc_block_buf(PMD_SIZE, node, altmap);
--			if (!p)
--				return -ENOMEM;
-+			if (!p) {
-+				if (vmemmap_populate_basepages(addr, next, node, altmap))
-+					return -ENOMEM;
-+				continue;
-+			}
- 
- 			pmd_set_huge(pmdp, __pa(p), __pgprot(PROT_SECT_NORMAL));
- 		} else
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
+Guenter
