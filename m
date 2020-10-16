@@ -2,120 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57115290A7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E15290A55
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390509AbgJPRSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390477AbgJPRSt (ORCPT
+        id S1732567AbgJPROg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:14:36 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:34496 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732484AbgJPROg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:18:49 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F125AC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:48 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id f37so3040980otf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mYW+PwysYhYMS+2uJ+6opFI9if/3+0MrY9QzZA2zMkA=;
-        b=SRT+T1RjlIijuy4sKekVlrNmDJMb02bqeETTgju/KIQ7MZC6qLiRhVUXYD5BEJ9hrC
-         jP9yaOUa/uREUccbW652cUyXgsBiy6liRc26ovoqBPxNvMdt0109ZnI3p3nl5Brwb9+8
-         LWSuTiEMXwcLdpeb1Te8kj3Fi+8P2Q3hyWSO7JtoZk3P8xgkJBMnahlnUHCw2Df7Qscm
-         S8x5O9ltgzd69ggWEID+l+2iOIr71aYk7spYZOWlfAYyTMgsfiX2YbMYGVLM96uAXJ/u
-         ntIH78uER8sypJ6/ZslRypKe996lwVNrmWfuEgQezgSNyCFJFuR2ks7FrHOU93rdc5Gr
-         9Xzg==
+        Fri, 16 Oct 2020 13:14:36 -0400
+Received: by mail-oo1-f66.google.com with SMTP id o20so788432ook.1;
+        Fri, 16 Oct 2020 10:14:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mYW+PwysYhYMS+2uJ+6opFI9if/3+0MrY9QzZA2zMkA=;
-        b=qcdcA/kRXMcj//zeKqOLUtoG5VcmkE0DkPNF6XjyG/lycrf0icZ5Emo/Zr41WGeuXD
-         dWMdAeZID8bHT3pNQIE8gadG0Xcyq+XLbzLiGRYywX8eTkU16a8XkQPdmy671glznBbU
-         R/Y9aOp+nEOJr9JqeJH75VDmO6nTAbHLzZhPcyzYCty61M7bMN4EdX2qJm0NU3IQzUdc
-         +OR1EJbBOJ9FSt/GvvCHf7sk4JsRzgQetVgZxNwS+zhkHNXc/Q1ankidkmeGgBLUFLwk
-         hbmisDWqDXwimSds4SVPeffSAvr/eeGgU+Gg/ZVFpOX8Zg6U6bPwKg36vnu9wS9n49zn
-         8XDw==
-X-Gm-Message-State: AOAM5301ugj+kD2sauERiWzYXRieDRFspfovuJ9OyyjTSSdkm7IyJguh
-        n56MsJePi3Kjf7ArEIro5E8JlA==
-X-Google-Smtp-Source: ABdhPJxBcu6t+ucNkpCAM+tjRv5gmJP66u9MCor/elLGt0c7cX9lSmy5tRNMLlFd4b473MuB4kmlkw==
-X-Received: by 2002:a9d:3787:: with SMTP id x7mr3362323otb.165.1602868728287;
-        Fri, 16 Oct 2020 10:18:48 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id i5sm1252465ooo.32.2020.10.16.10.18.47
+        bh=Cx3kdixfNY15+bkDWSXUmy0pMm0MYx3AfrDukLSG/n8=;
+        b=QBu1bKpNNm3TBLd40dcXFp4hvQfH3zLu0hcdJ30dH5Qh9ibCdR4co6zOF4VVdDNL1k
+         7vZRBj/252FZHTIyNUkh5vHgybSInmIxdreGsPwO1ojC2fmXBKZz8KATzysluYRCyHx4
+         TzDfeA5zvbXezk/cy25VxvCQuVyRr9VP5BjzM4Pq8CRnZhQFK8d6C8S8k/ARF6JVJFbR
+         Dog516tUfHCYbl5vQD6rqJP7e8KGMZcIl6LHzgeoQOONY7KV2CLd1GyOF25S6xRnQVLE
+         LRYLnP2Qwzh2vkMDMgVEZASc3qdRjuH+Obgx8+Be40i2wq7bUlfA/38ek2wgpk4f3Xwm
+         ClCw==
+X-Gm-Message-State: AOAM531cD27AnwxxVT9vWspMOpnw1Banpzrx5wc09EoLAwu5hQyBi3KX
+        FMxN7rJprfH2N66MqO+mUA==
+X-Google-Smtp-Source: ABdhPJyUYYpCf4fr775G5Nt5ObMp6uVb0vD24ss0jYA4zBxq25ZZHmkPUKeKvbIi12WGaFegdiIIeg==
+X-Received: by 2002:a4a:5182:: with SMTP id s124mr3543501ooa.88.1602868474952;
+        Fri, 16 Oct 2020 10:14:34 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m18sm1277107ooj.6.2020.10.16.10.14.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 10:18:47 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 12:13:37 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     Markus Elfring <elfring@users.sourceforge.net>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] soc: qcom: smp2p: Safely acquire spinlock without
- IRQs
-Message-ID: <20201016171337.GA241575@builder.lan>
-References: <20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid>
+        Fri, 16 Oct 2020 10:14:34 -0700 (PDT)
+Received: (nullmailer pid 1593243 invoked by uid 1000);
+        Fri, 16 Oct 2020 17:14:33 -0000
+Date:   Fri, 16 Oct 2020 12:14:33 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        CK Hu <ck.hu@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Min Guo <min.guo@mediatek.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 6/8] dt-bindings: usb: convert mediatek,mtk-xhci.txt
+ to YAML schema
+Message-ID: <20201016171433.GA1585924@bogus>
+References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
+ <20201013085207.17749-6-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid>
+In-Reply-To: <20201013085207.17749-6-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29 Sep 15:30 CDT 2020, Evan Green wrote:
-
-> smp2p_update_bits() should disable interrupts when it acquires its
-> spinlock. This is important because without the _irqsave, a priority
-> inversion can occur.
+On Tue, Oct 13, 2020 at 04:52:05PM +0800, Chunfeng Yun wrote:
+> Convert mediatek,mtk-xhci.txt to YAML schema mediatek,mtk-xhci.yaml
 > 
-> This function is called both with interrupts enabled in
-> qcom_q6v5_request_stop(), and with interrupts disabled in
-> ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
-> consistent to avoid the panic notifier deadlocking because it's
-> sitting on the thread that's already got the lock via _request_stop().
-> 
-> Found via lockdep.
-> 
-> Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to Point")
-> Signed-off-by: Evan Green <evgreen@chromium.org>
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+There's some refactoring of usb-hcd.yaml and XHCI schema under review 
+and this may need some refactoring on top of it.
 
-Regards,
-Bjorn
-
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
-> 
->  drivers/soc/qcom/smp2p.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/smp2p.c b/drivers/soc/qcom/smp2p.c
-> index 07183d731d747..a9709aae54abb 100644
-> --- a/drivers/soc/qcom/smp2p.c
-> +++ b/drivers/soc/qcom/smp2p.c
-> @@ -318,15 +318,16 @@ static int qcom_smp2p_inbound_entry(struct qcom_smp2p *smp2p,
->  static int smp2p_update_bits(void *data, u32 mask, u32 value)
->  {
->  	struct smp2p_entry *entry = data;
-> +	unsigned long flags;
->  	u32 orig;
->  	u32 val;
->  
-> -	spin_lock(&entry->lock);
-> +	spin_lock_irqsave(&entry->lock, flags);
->  	val = orig = readl(entry->value);
->  	val &= ~mask;
->  	val |= value;
->  	writel(val, entry->value);
-> -	spin_unlock(&entry->lock);
-> +	spin_unlock_irqrestore(&entry->lock, flags);
->  
->  	if (val != orig)
->  		qcom_smp2p_kick(entry->smp2p);
+> v2: new patch
+> ---
+>  .../bindings/usb/mediatek,mtk-xhci.txt        | 121 ------------
+>  .../bindings/usb/mediatek,mtk-xhci.yaml       | 180 ++++++++++++++++++
+>  2 files changed, 180 insertions(+), 121 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+
+
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> new file mode 100644
+> index 000000000000..ea696c8f1269
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> @@ -0,0 +1,180 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020 MediaTek
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/mediatek,mtk-xhci.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek USB3 xHCI Device Tree Bindings
+> +
+> +maintainers:
+> +  - Chunfeng Yun <chunfeng.yun@mediatek.com>
+> +
+> +allOf:
+> +  - $ref: "usb-hcd.yaml"
+> +
+> +description: |
+> +  There are two scenarios:
+> +  case 1: only supports xHCI driver;
+> +  case 2: supports dual-role mode, and the host is based on xHCI driver.
+> +
+> +properties:
+> +  #common properties for both case 1 and case 2
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - mediatek,mt2712-xhci
+> +          - mediatek,mt7622-xhci
+> +          - mediatek,mt7629-xhci
+> +          - mediatek,mt8173-xhci
+> +          - mediatek,mt8183-xhci
+> +      - const: mediatek,mtk-xhci
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - description: the registers of xHCI MAC
+> +      - description: the registers of IP Port Control
+> +
+> +  reg-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - const: mac
+> +      - const: ippc  #optional, only needed for case 1.
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    description: A phandle to USB power domain node to control USB's MTCMOS
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 5
+> +    items:
+> +      - description: Controller clock used by normal mode
+> +      - description: Reference clock used by low power mode etc
+> +      - description: Mcu bus clock for register access
+> +      - description: DMA bus clock for data transfer
+> +      - description: controller clock
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 5
+> +    items:
+> +      - const: sys_ck  #required, the following ones are optional
+> +      - const: ref_ck
+> +      - const: mcu_ck
+> +      - const: dma_ck
+> +      - const: xhci_ck
+> +
+> +  phys:
+> +    $ref: /usb/usb-hcd.yaml#
+
+That doesn't look right...
+
+> +
+> +  vusb33-supply:
+> +    description: Regulator of USB AVDD3.3v
+> +
+> +  vbus-supply:
+> +    description: Regulator of USB VBUS5v
+> +
+> +  usb3-lpm-capable:
+> +    description: supports USB3.0 LPM
+> +    type: boolean
+> +
+> +  imod-interval-ns:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      Interrupt moderation interval value, it is 8 times as much as that
+> +      defined in the xHCI spec on MTK's controller.
+> +    default: 5000
+> +
+> +  #the following properties are only used for case 1
+> +  pinctrl-0:
+> +    description: A phandle to the default pinctrl state.
+> +
+> +  pinctrl-names:
+> +    description: A pinctrl state named "default" must be defined.
+> +      See pinctrl/pinctrl-bindings.txt
+> +    const: default
+
+Don't need pinctrl-* properties. They are always allowed.
+
+> +
+> +  wakeup-source:
+> +    description: enable USB remote wakeup, see power/wakeup-source.txt
+> +    type: boolean
+> +
+> +  mediatek,syscon-wakeup:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    maxItems: 1
+> +    description: |
+> +      A phandle to syscon used to access the register of the USB wakeup glue
+> +      layer between xHCI and SPM, the field should always be a multiple of
+> +      3 cells long.
+
+A multiple of 3? How would there be more than 3 cells?
+
+> +
+> +      items:
+> +        - description:
+> +            The first cell represents a phandle to syscon
+> +        - description:
+> +            The second cell represents the register base address of the glue
+> +            layer in syscon
+> +        - description:
+> +            The third cell represents the hardware version of the glue layer,
+> +            1 is used by mt8173 etc, 2 is used by mt2712 etc
+> +          enum: [1, 2]
+> +
+> +  mediatek,u3p-dis-msk:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: The mask to disable u3ports, bit0 for u3port0,
+> +      bit1 for u3port1, ... etc
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +patternProperties:
+> +  "^[a-f]+@[0-9a-f]+$":
+> +    $ref: /usb/usb-hcd.yaml#
+> +    type: object
+> +    description: The hard wired USB devices.
+> +
+> +dependencies:
+> +  wakeup-source: [ 'mediatek,syscon-wakeup' ]
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/phy/phy.h>
+> +    #include <dt-bindings/power/mt8173-power.h>
+> +
+> +    usb3: usb@11270000 {
+> +        compatible = "mediatek,mt8173-xhci", "mediatek,mtk-xhci";
+> +        reg = <0x11270000 0x1000>, <0x11280700 0x0100>;
+> +        reg-names = "mac", "ippc";
+> +        interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_LOW>;
+> +        power-domains = <&scpsys MT8173_POWER_DOMAIN_USB>;
+> +        clocks = <&topckgen CLK_TOP_USB30_SEL>, <&clk26m>;
+> +        clock-names = "sys_ck", "ref_ck";
+> +        phys = <&u3port0 PHY_TYPE_USB3>, <&u2port1 PHY_TYPE_USB2>;
+> +        vusb33-supply = <&mt6397_vusb_reg>;
+> +        vbus-supply = <&usb_p1_vbus>;
+> +        imod-interval-ns = <10000>;
+> +        mediatek,syscon-wakeup = <&pericfg 0x400 1>;
+> +        wakeup-source;
+> +        usb3-lpm-capable;
+> +    };
+> +...
 > -- 
-> 2.26.2
-> 
+> 2.18.0
