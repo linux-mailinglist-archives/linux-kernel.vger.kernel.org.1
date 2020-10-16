@@ -2,121 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38492290E19
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFD7290E2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411394AbgJPXVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        id S2411406AbgJPX13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410893AbgJPXVk (ORCPT
+        with ESMTP id S2410982AbgJPX13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:21:40 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583F4C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:21:56 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j8so4554966ilk.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:21:56 -0700 (PDT)
+        Fri, 16 Oct 2020 19:27:29 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02773C061755;
+        Fri, 16 Oct 2020 16:28:00 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o7so2313713pgv.6;
+        Fri, 16 Oct 2020 16:28:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=8ulZ+tmdqBb+S0GzKOYD5fGwSZeOurFPRpc1Xyo7iyc=;
-        b=euz46EZxLI9Anl4rbigu2pBhX9aMKb3nLNFgytSoAzzEqHArebFezY2UQFuF6yZi78
-         7BV5knmNrMDGVavcJpxNx+rfC1XKoF67IV+kiB/vrFKgXWI8/Ha6V0blusE083OXVDbp
-         mVJWjIvA9cwEyqCjyBouIC4W2lsyqurDIAvKefJj0e+CZOwzKhd5aX50Yz/wOaJdmFBx
-         pdIrh/HLFlrHC8NR8zcr1N6shVvwtnP5gD/Q60zy6Yo694nxG8XYi4seRD14PxjJYGU1
-         KtfzdqUypV2SjOWNCUb4kq6vzGkHXadbDsnI8rFJcQ7knwhKrPgp2Fk9UbaKka1PL/fT
-         kdWQ==
+        bh=SP+KBYRsWAwNJ377jSWQRS8cBSibUjlr5j/m3lt9MG0=;
+        b=MmThpix+ZzyvfKh2AscddHdUT8I+PNiXIObhOGRWzqNIFPtkXUAqxBQK80QNXl9QxC
+         CNDqxePwK+kg2+mQA9VchRGLUwOOpoPAaTWz7qgpB/uFWoZ3TodF2ypMUeSVDeanymBX
+         AszBTkjTwu7gWiUGMVVNfj/2rUvWaGS3U3IXsaUwVU/7SrU/mBazUm3OcAtweUnV0Lma
+         UW/K9MDDhi0uSY5qupB49MDbT21qmCHXLuDy1CkvDkBxdGgiK2yr1y4HR8655VTG1VkT
+         W5P/cXVefZvnnERcIA3VN7Q8meZT3yP5FWeQe6PmhHC3ZiVqFg/bMnWoJHyXz4HokiQq
+         CM0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8ulZ+tmdqBb+S0GzKOYD5fGwSZeOurFPRpc1Xyo7iyc=;
-        b=Ssx5NoY3De3/AeswWH+UWgPipuH2SmIiWU8B+/Zrcc2JP7aZXBBsMyBLWzq6uyDnhv
-         qoCjPxVmoP2QbbBrSuXB2/1zcQ18nHHvoJ6HnNRRsgQfNj82d8D5XVKePdowAirAxdlQ
-         vgAPt/2BFFpt12imWASAA5qY8djiw7pedl55Vm5B+oKhxuIDsHQBdnWvPkZnYfoWnJW6
-         N3ucuLmGrFcer7oCrE07VKxF05aFWCgtJ9quMyZ8ZarklZq/xtHNJzgBlHpdQ4GcMLxF
-         +uZJgcjsqm0HS47bYi428h9DeaeeoPVf1Fd4TOQGfxBz3kNfZwJ18992sdojOTjBc92P
-         o1jg==
-X-Gm-Message-State: AOAM530e+y+gwfZloho9h/U1nz6UiAZis+Q2pOhWcuoLJ4MVBQUm1y5q
-        p/DNe1nOiJmnzjwQlJTb3AAX1Q==
-X-Google-Smtp-Source: ABdhPJzjFd8h3bHaBoh0ogIzaDiyMMdYUfkan6OvINr5ocgY2Acjoku40/3OIptHi7g/ZGy1gzm0Sg==
-X-Received: by 2002:a92:d5c1:: with SMTP id d1mr4372060ilq.212.1602890515637;
-        Fri, 16 Oct 2020 16:21:55 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 144sm4089074ila.42.2020.10.16.16.21.54
+        bh=SP+KBYRsWAwNJ377jSWQRS8cBSibUjlr5j/m3lt9MG0=;
+        b=gi+NwLt39czIgnsimFBA62EA2V3AxuEKR4X97EN14JFtpMNu9B7Vb8PnEUxevDAY2w
+         Q2glvCjrHaW9ZQ5J9CsXnxVPZ1fkNhpB1cLgZWKmra3rypv5IPkV7xK70lnNtzmAlPqg
+         R4mHUk4hVCbk6js4emzcmVMmwy8qDtsgIFNoC4YnszPQFwtFKNo/MoCH2qXuI8cX3uJY
+         UfG7naW6+VU3HJcyFBPmUchmtqc6mqDj7ECEE5aQrrzejdgUo0ChRqYFsDqbsTmxVleQ
+         B744tpadcj3o3MEcC4dWZpzG893aC4tZ9E60m96bBo0caycCTSkgjz4GHd3cR/Cju+W8
+         vKag==
+X-Gm-Message-State: AOAM531F0kMEmbvJdCMrq7Xku7wBXZp1nDNA/qbU0S4L1PzG3rTIqM4h
+        3c6lfW1M0m2boao1TlrZifk=
+X-Google-Smtp-Source: ABdhPJzcLLpKBCz8VLeE68GhB64WLBu2n95LN54HcIMuSvI2jQXTbJyfcONEoTwkGJRP2gwZ0fiI7g==
+X-Received: by 2002:a62:17c2:0:b029:158:ca2e:3cd7 with SMTP id 185-20020a6217c20000b0290158ca2e3cd7mr5868101pfx.43.1602890880311;
+        Fri, 16 Oct 2020 16:28:00 -0700 (PDT)
+Received: from sol (106-69-182-59.dyn.iinet.net.au. [106.69.182.59])
+        by smtp.gmail.com with ESMTPSA id y4sm3750502pgl.67.2020.10.16.16.27.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 16:21:54 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kTZ2n-001Abo-Uc; Fri, 16 Oct 2020 20:21:53 -0300
-Date:   Fri, 16 Oct 2020 20:21:53 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC PATCH resend 3/6] mm: Add refcount for preserving mm_struct
- without pgd
-Message-ID: <20201016232153.GD37159@ziepe.ca>
-References: <20201016230915.1972840-1-jannh@google.com>
- <20201016230915.1972840-4-jannh@google.com>
+        Fri, 16 Oct 2020 16:27:59 -0700 (PDT)
+Date:   Sat, 17 Oct 2020 07:27:53 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jack Winch <sunt.un.morcov@gmail.com>
+Subject: Re: [PATCH v2 1/3] gpiolib: cdev: allow edge event timestamps to be
+ configured as REALTIME
+Message-ID: <20201016232753.GA5143@sol>
+References: <20201014231158.34117-1-warthog618@gmail.com>
+ <20201014231158.34117-2-warthog618@gmail.com>
+ <CAHp75VcAf8i=jEdDFntpDfLBDMWoJh+ykHBTBRX53B9L+yFNUA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016230915.1972840-4-jannh@google.com>
+In-Reply-To: <CAHp75VcAf8i=jEdDFntpDfLBDMWoJh+ykHBTBRX53B9L+yFNUA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 17, 2020 at 01:09:12AM +0200, Jann Horn wrote:
-> Currently, mm_struct has two refcounts:
+On Fri, Oct 16, 2020 at 05:13:22PM +0300, Andy Shevchenko wrote:
+> On Thu, Oct 15, 2020 at 6:53 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > Using CLOCK_REALTIME as the source for event timestamps is crucial for
+> > some specific applications, particularly those requiring timetamps
+> > relative to a PTP clock, so provide an option to switch the event
+> > timestamp source from the default CLOCK_MONOTONIC to CLOCK_REALTIME.
+> >
+> > Note that CLOCK_REALTIME was the default source clock for GPIO until
+> > Linux 5.7 when it was changed to CLOCK_MONOTONIC due to issues with the
+> > shifting of the realtime clock.
+> > Providing this option maintains the CLOCK_MONOTONIC as the default,
+> > while also providing a path forward for those dependent on the pre-5.7
+> > behaviour.
 > 
->  - mm_users: preserves everything - the mm_struct, the page tables, the
->    memory mappings, and so on
->  - mm_count: preserves the mm_struct and pgd
+> ...
 > 
-> However, there are three types of users of mm_struct:
+> >          GPIO_V2_LINE_DIRECTION_FLAGS | \
+> >          GPIO_V2_LINE_DRIVE_FLAGS | \
+> >          GPIO_V2_LINE_EDGE_FLAGS | \
+> > +        GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME | \
 > 
-> 1. users that want page tables, memory mappings and so on
-> 2. users that want to preserve the pgd (for lazy TLB)
-> 3. users that just want to keep the mm_struct itself around (e.g. for
->    mmget_not_zero() or __ptrace_may_access())
+> Wondering if we would have something like
 > 
-> Dropping mm_count references can be messy because dropping mm_count to
-> zero deletes the pgd, which takes the pgd_lock on x86, meaning it doesn't
-> work from RCU callbacks (which run in IRQ context). In those cases,
-> mmdrop_async() must be used to punt the invocation of __mmdrop() to
-> workqueue context.
+>           GPIO_V2_LINE_CLOCK_FLAGS | \
 > 
-> That's fine when mmdrop_async() is a rare case, but the preceding patch
-> "ptrace: Keep mm around after exit_mm() for __ptrace_may_access()" makes it
-> the common case; we should probably avoid punting freeing to workqueue
-> context all the time if we can avoid it?
+> here for the sake of consistency.
 > 
-> To resolve this, add a third refcount that just protects the mm_struct and
-> the user_ns it points to, and which can be dropped with synchronous freeing
-> from (almost) any context.
-> 
-> Signed-off-by: Jann Horn <jannh@google.com>
-> ---
->  arch/x86/kernel/tboot.c    |  2 ++
->  drivers/firmware/efi/efi.c |  2 ++
->  include/linux/mm_types.h   | 13 +++++++++++--
->  include/linux/sched/mm.h   | 13 +++++++++++++
->  kernel/fork.c              | 14 ++++++++++----
->  mm/init-mm.c               |  2 ++
->  6 files changed, 40 insertions(+), 6 deletions(-)
 
-I think mmu notifiers and the stuff in drivers/infiniband/core/ can be
-converted to this as well..
+I considered it, but thought the chance of there ever being another
+CLOCK flag to be near zero - the remaining clocks relate to CPU or
+thread time which don't have any relevance for external events like
+GPIO.  If there ever is one we can split it out then.
 
-Actually I kind of wonder if you should go the reverse and find the
-few callers that care about the pgd and give them a new api with a
-better name (mmget_pgd?).
+And it is consistent with the GPIO_V2_LINE_FLAG_ACTIVE_LOW flag that you
+pruned out in your response. i.e. lone flags don't get grouped.
 
-Jason
+> >          GPIO_V2_LINE_BIAS_FLAGS)
+> 
+> ...
+> 
+> > +static u64 line_event_timestamp(struct line *line)
+> > +{
+> 
+> > +       if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
+> 
+> I dunno if we can actually drop the word EVENT from these definitions.
+> I don't think we would have in the near future something similar for
+> the non-event data.
+> 
+
+I considered this too, as another clock flag seems unlikely.
+But if we ever add a non-event clock flag then this one would become
+confusing, and the overhead of the long name seemed minor compared to
+the clarity it brings with it.
+
+Cheers,
+Kent.
