@@ -2,146 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7642908B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284212908CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410374AbgJPPoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:44:10 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:37991 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408644AbgJPPoJ (ORCPT
+        id S2410426AbgJPPqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410407AbgJPPpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:44:09 -0400
-Received: by mail-ot1-f67.google.com with SMTP id i12so2800149ota.5;
-        Fri, 16 Oct 2020 08:44:09 -0700 (PDT)
+        Fri, 16 Oct 2020 11:45:53 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86102C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:45:52 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id h2so1476494pll.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qYbQaDMfS+fMZq0SRvCKUeB9Qm+Ttaw/Z4j/8qnPYOE=;
+        b=1s+Gq/VoGaNBXHCyTy3bIT3PcIMErPRCTXabyg86Jme4mJeO9Lc49fjNgMUDaPChO2
+         G1RJePs8H7z5f444uk+/xlJpDeHbLbiXk7gthvRaa69vJGi32Kj88/HGJd9KNFwr2SlD
+         KSFSQBEB1FIhSeXR2jtNkA8VKSfj5R9/AmAlfFd5GWn28p0hR8UBr/zWbJSsk9LDef/3
+         MsvvCxVwftCgfRFh2LpJJlqguLWGQgSCdvTzZebQpoh2kp3TUcv/TcoNPQHk5F9LMX50
+         WtI4G1pLMyaKVlizw/mFkzp2g7/QMideKKoaTuRgV4vqgdJfvijiKkGE3e1q/c3QW3s3
+         cB0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y6uUrO47xJuekVbKZFp61eOF00usAMuQ8nla70UX51Q=;
-        b=bfDZdKMfUChC3ieC0oqXkGkkXdaml38F0N2cURVjGWfXPSVXFIus1hgl2LHdt5HihK
-         hlNITOROAV46r3pLknjiWtb3HapuWR+0gT9ZjdYPwUR+jMRe9L3XqOLauigKxB5OCs+j
-         f6MgwXOefI80oL3AUJxbtz2+H5R0RG5fVlk42nDp+5qqK5+FP4TBI39nhLXNq0Ea8aoJ
-         ALGzxcgupEPcEjL/Sj3CxrH6YDMkUyp88OpOBR73Gaz2bqhbIy0g4+dStcxZXKTz4uZN
-         3OrzUjHyv/lYU37P0hAm52VHz+tfTbgrliTlGANcx8KyrERBaF9Bidk7NWzNaV9ccw2x
-         rUvQ==
-X-Gm-Message-State: AOAM5337E0LJ+GwuXG3ypLikjIzjhAZYxnZoXxagjvC0q6Y19uy0sUY+
-        /DbkwkDWjeXyIjHb3cw+1g==
-X-Google-Smtp-Source: ABdhPJzyKW8ZO4qbCpHyH61FZ7oq0uCuGGIquis4K3Bt8t41p/hh05+oeioUYSSIX2RPEiqRi1znjQ==
-X-Received: by 2002:a9d:7387:: with SMTP id j7mr3154048otk.18.1602863048717;
-        Fri, 16 Oct 2020 08:44:08 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n23sm1257578oon.14.2020.10.16.08.44.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qYbQaDMfS+fMZq0SRvCKUeB9Qm+Ttaw/Z4j/8qnPYOE=;
+        b=jzYBaR0t3zuncoJmCeLjGRAXrnHrymQX5GaOwOTN/LPxH1v8Yc6VK2r88O1d62fNDK
+         qCPZqDaaItcGYZTzw1jWSVJw/66TGrI4R1Sx8dmT37HP21glcbl4kbdq7IK1h8fQDapZ
+         VYEaEmftOPGkQkxXt0ZIPZGDzGlHiPmrP2FrdQ6y+skp4is8jc8HF1gBP8wXJhhYA5j9
+         NLkFNNMl3PiykkJTqX03fKwKUwj8lAIMboJw9eqKQ5RKTMaoxySLvZThe3aw29IM5LYM
+         rVjRYTfM4IrrwXFtFFiExOerV7EgyO5IThrutvB2HbPdPvC9LGqi8H0R0Fyqq6zkbZxe
+         ieCQ==
+X-Gm-Message-State: AOAM530r79aKNq/iPKPMGxC7w+SRBMmCgNShC4QCnTn18Kk+Hlzatp1b
+        V5IZqzs0E2Tzell4BG+qSOGDXMi2Cyk07Tgj
+X-Google-Smtp-Source: ABdhPJwvF9FFrNcgFujKeZXR0opNZ/gKUbtuMLnGZMVFx3YChFqPX9AngahOT8+4q30PcCWhZDlfYw==
+X-Received: by 2002:a17:902:ec02:b029:d1:fc2b:fe95 with SMTP id l2-20020a170902ec02b02900d1fc2bfe95mr4839637pld.79.1602863151729;
+        Fri, 16 Oct 2020 08:45:51 -0700 (PDT)
+Received: from p1.localdomain ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id s11sm3346194pjz.29.2020.10.16.08.45.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:44:08 -0700 (PDT)
-Received: (nullmailer pid 1466778 invoked by uid 1000);
-        Fri, 16 Oct 2020 15:44:06 -0000
-Date:   Fri, 16 Oct 2020 10:44:06 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        devicetree@vger.kernel.org, Roger Quadros <rogerq@ti.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        linux-mips@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-usb@vger.kernel.org,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Andy Gross <agross@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-kernel@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH 04/20] dt-bindings: usb: usb-hcd: Add "tpl-support"
- property
-Message-ID: <20201016154406.GA1452617@bogus>
-References: <20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru>
- <20201014101402.18271-5-Sergey.Semin@baikalelectronics.ru>
- <20201014132756.GA1538723@bogus>
- <20201014172710.iay3lvb37saeksaj@mobilestation>
+        Fri, 16 Oct 2020 08:45:51 -0700 (PDT)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de
+Subject: [PATCHSET v6] Add support for TIF_NOTIFY_SIGNAL
+Date:   Fri, 16 Oct 2020 09:45:43 -0600
+Message-Id: <20201016154547.1573096-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014172710.iay3lvb37saeksaj@mobilestation>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 08:27:10PM +0300, Serge Semin wrote:
-> On Wed, Oct 14, 2020 at 08:27:56AM -0500, Rob Herring wrote:
-> > On Wed, 14 Oct 2020 13:13:46 +0300, Serge Semin wrote:
-> > > The host controller device might be designed to work for the particular
-> > > products or applications. In that case its DT node is supposed to be
-> > > equipped with the tpl-support property.
-> > > 
-> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > > 
-> > > ---
-> > > 
-> > > Changelog v2:
-> > > - Grammar fix: "s/it'/its"
-> > > - Discard '|' from the property description, since we don't need to preserve
-> > >   the text formatting.
-> > > ---
-> > >  Documentation/devicetree/bindings/usb/usb-hcd.yaml | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > 
-> > 
-> > My bot found errors running 'make dt_binding_check' on your patch:
-> > 
-> > Traceback (most recent call last):
-> >   File "/usr/local/bin/dt-extract-example", line 45, in <module>
-> >     binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-> >   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-> >     return constructor.get_single_data()
-> >   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-> >     node = self.composer.get_single_node()
-> >   File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-> >   File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-> >   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-> >   File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
-> >   File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-> > ruamel.yaml.scanner.ScannerError: mapping values are not allowed in this context
-> >   in "<unicode string>", line 27, column 14
-> > make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/usb/usb-hcd.example.dts] Error 1
-> > make[1]: *** Deleting file 'Documentation/devicetree/bindings/usb/usb-hcd.example.dts'
-> > make[1]: *** Waiting for unfinished jobs....
-> > ./Documentation/devicetree/bindings/usb/usb-hcd.yaml:27:14: [error] syntax error: mapping values are not allowed here (syntax)
-> > make[1]: *** [Documentation/devicetree/bindings/Makefile:59: Documentation/devicetree/bindings/processed-schema-examples.json] Error 123
-> > make: *** [Makefile:1366: dt_binding_check] Error 2
-> > 
-> > 
-> > See https://patchwork.ozlabs.org/patch/1382001
-> > 
-> > If you already ran 'make dt_binding_check' and didn't see the above
-> > error(s), then make sure dt-schema is up to date:
-> > 
-> > pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-> > 
-> > Please check and re-submit.
-> 
-> Hm, that's weird. Of course I did the dt_binding_check before submission, but
-> even after the dt-schema repo update I failed to see the error:
-> 
-> $ make -j8 ARCH=mips CROSS_COMPILE=mipsel-baikal-linux- dt_binding_check DT_SCHEMA_FILES=Documentation/devicetree/bindings/usb/usb-hcd.yaml
->   CHKDT   Documentation/devicetree/bindings/usb/usb-hcd.yaml
->   SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.yaml
->   DTC     Documentation/devicetree/bindings/usb/usb-hcd.example.dt.yaml
->   CHECK   Documentation/devicetree/bindings/usb/usb-hcd.example.dt.yaml
-> 
-> Rob, any idea why has the bot got mad at me?
+Hi,
 
-Humm, I'm not sure. We'll see if it happens again when you send v2.
+The goal is this patch series is to decouple TWA_SIGNAL based task_work
+from real signals and signal delivery. The motivation is speeding up
+TWA_SIGNAL based task_work, particularly for threaded setups where
+->sighand is shared across threads. See the last patch for numbers.
 
-Note that yamllint is also run now and that's the line with '[error]'. 
-So neither yamllint nor ruamel are happy (could be the same parser code 
-ultimately).
+Cleanups in this series, see changelog. But the arch and cleanup
+series that goes after this series is much simpler now that we handle
+TIF_NOTIFY_SIGNAL generically for !CONFIG_GENERIC_ENTRY.
 
-Rob
+
+Changes since v5:
+- Don't make TIF_NOTIFY_SIGNAL dependent on CONFIG_GENERIC_ENTRY
+- Handle TIF_NOTIFY_SIGNAL in get_signal() for !CONFIG_GENERIC_ENTRY
+- Add handle_signal_work(), and change arch_do_signal() to
+  arch_do_signal_or_restart() and pass in a 'has_signal' bool for that
+- Dropped TIF_NOTIFY_RESUME patch from this series, sent out
+  separately.
+
+
+ arch/x86/include/asm/thread_info.h |  2 ++
+ arch/x86/kernel/signal.c           |  4 +--
+ include/linux/entry-common.h       | 11 +++++---
+ include/linux/entry-kvm.h          |  4 +--
+ include/linux/sched/signal.h       | 20 ++++++++++++---
+ include/linux/tracehook.h          | 27 ++++++++++++++++++++
+ kernel/entry/common.c              | 14 +++++++---
+ kernel/entry/kvm.c                 |  3 +++
+ kernel/events/uprobes.c            |  2 +-
+ kernel/signal.c                    | 22 +++++++++++++---
+ kernel/task_work.c                 | 41 +++++++++++++++++++++---------
+ 11 files changed, 120 insertions(+), 30 deletions(-)
+
+-- 
+Jens Axboe
+
+
+
