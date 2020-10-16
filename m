@@ -2,82 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314D7290A13
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72D8290A11
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410956AbgJPQ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:56:43 -0400
-Received: from out28-98.mail.aliyun.com ([115.124.28.98]:47182 "EHLO
-        out28-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410941AbgJPQ4j (ORCPT
+        id S2410945AbgJPQ4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410935AbgJPQ4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:56:39 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1676304|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00444611-0.000252882-0.995301;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.IkJvY3r_1602867387;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IkJvY3r_1602867387)
-          by smtp.aliyun-inc.com(10.147.40.26);
-          Sat, 17 Oct 2020 00:56:36 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 1/1] dt-bindings: timer: Add new OST support for the upcoming new driver.
-Date:   Sat, 17 Oct 2020 00:56:02 +0800
-Message-Id: <20201016165602.55720-2-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201016165602.55720-1-zhouyanjie@wanyeetech.com>
-References: <20201016165602.55720-1-zhouyanjie@wanyeetech.com>
+        Fri, 16 Oct 2020 12:56:37 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5E7C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:56:35 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id z2so3832933lfr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UCDm/leIjbm6cLrDBLzkAxcbDZIxq5LPj31J47YI3rA=;
+        b=O6LseaGXZ01uMmh85FJbb8S6TDmvdQR1JiVmqSS2EeQkzJD00jfbHtD2//OXppDt6g
+         blta4vTt9oEaP8e5p8zLjFuNp/LK/1yVu96vmTIhtP2npu3I7Ubxtdi08mXBNxUA2tJG
+         gwguMYAuaTp+W8YQicdembgZ+5TCQBWd0TYcJzcBaippWvzZ5JCOomp+18GRd5jWQ24g
+         Oi/26AeDGsOHA4+Ml/dFpG1xo+QITxDwNBmDBvGJgB06s5wLBQncR0N8VP5t7PKQke/7
+         wwSguDm4IKVYt22wyUibb+bQSwjt/F+a1oa7y092pDDmwjt66IssANTGI+6w9CtWkR0I
+         +w7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UCDm/leIjbm6cLrDBLzkAxcbDZIxq5LPj31J47YI3rA=;
+        b=FLMlrVm4hW4JGgjmxR6JsnuFh6NryaA12mhEEGkF7OXQp0LpcId4S06/GlmJLkVlL/
+         GqeDatllSlqxH2gDku5wbI4mmX1OCrkBUgnQvosLEoklg9ihwEzIHJdJNwdhkH3Rn9s/
+         EKeouY1qLDT8EWBYX3RhlrM7WMANg5vfkxZsCLReq7KF0wpsVEh1qTdJPKpQEA+4/DM8
+         ytaSDZ0QjR3Ley7PQQVJM92JjA8Py8oz096vfHWU9e+706AKglDBnNLmAxVJwOC/eWTm
+         Tf7zZNf19Np8d30avEzfTkjnj9YEWpXpKuxCD+YVpl29k0sMNnXscuBe2RvjtMly+3NO
+         9wJQ==
+X-Gm-Message-State: AOAM5305eEM9LROlHPiqNo2u7NSr4AyNsNYIRdOv0TGl6nYoH0Se/tSD
+        aYX+uHKUNDoMErt6UrkBk+zEHoTu0PPqbo5YsZb+zA==
+X-Google-Smtp-Source: ABdhPJwBags0upoB0AtgWGyaHa1X1EFsEyDexUT9+94xT5o8Q/DQpH5sMpNWildjk23EtnIYZuNGjMJXWyVpJ2NDNXI=
+X-Received: by 2002:a19:824f:: with SMTP id e76mr1615966lfd.572.1602867394059;
+ Fri, 16 Oct 2020 09:56:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201011024831.3868571-1-daniel@0x0f.com> <20201011024831.3868571-4-daniel@0x0f.com>
+In-Reply-To: <20201011024831.3868571-4-daniel@0x0f.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 16 Oct 2020 18:56:23 +0200
+Message-ID: <CACRpkdYmdZ81q_tsXRQ56aFjGsvV3AwJ8_hiu31mD14DGiK84A@mail.gmail.com>
+Subject: Re: [PATCH 3/5] gpio: msc313: MStar MSC313 GPIO driver
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new OST has one global timer and two or four percpu timers, so there
-will be three combinations in the upcoming new OST driver: the original
-GLOBAL_TIMER + PERCPU_TIMER, the new GLOBAL_TIMER + PERCPU_TIMER0/1 and
-GLOBAL_TIMER + PERCPU_TIMER0/1/2/3, For this, add the macro definition
-about OST_CLK_PERCPU_TIMER0/1/2/3. And in order to ensure that all the
-combinations work normally, the original ABI values of OST_CLK_PERCPU_TIMER
-and OST_CLK_GLOBAL_TIMER need to be exchanged to ensure that in any
-combinations, the clock can be registered (by calling clk_hw_register())
-from index 0.
+Hi Daniel,
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+thanks for your patch!
 
-Notes:
-    v1->v2:
-    Rewrite the commit message so that each line is less than 80 characters.
+Some comments below, we need some work but keep at it.
 
- include/dt-bindings/clock/ingenic,sysost.h | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+On Sun, Oct 11, 2020 at 4:48 AM Daniel Palmer <daniel@0x0f.com> wrote:
 
-diff --git a/include/dt-bindings/clock/ingenic,sysost.h b/include/dt-bindings/clock/ingenic,sysost.h
-index 9ac88e90babf..063791b01ab3 100644
---- a/include/dt-bindings/clock/ingenic,sysost.h
-+++ b/include/dt-bindings/clock/ingenic,sysost.h
-@@ -1,12 +1,16 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * This header provides clock numbers for the ingenic,tcu DT binding.
-+ * This header provides clock numbers for the Ingenic OST DT binding.
-  */
- 
- #ifndef __DT_BINDINGS_CLOCK_INGENIC_OST_H__
- #define __DT_BINDINGS_CLOCK_INGENIC_OST_H__
- 
--#define OST_CLK_PERCPU_TIMER	0
--#define OST_CLK_GLOBAL_TIMER	1
-+#define OST_CLK_PERCPU_TIMER	1
-+#define OST_CLK_GLOBAL_TIMER	0
-+#define OST_CLK_PERCPU_TIMER0	1
-+#define OST_CLK_PERCPU_TIMER1	2
-+#define OST_CLK_PERCPU_TIMER2	3
-+#define OST_CLK_PERCPU_TIMER3	4
- 
- #endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
--- 
-2.11.0
+> This adds a driver that supports the GPIO block found in
+> MStar/SigmaStar ARMv7 SoCs.
+>
+> The controller seems to support 128 lines but where they
+> are wired up differs between chips and no currently known
+> chip uses anywhere near 128 lines so there needs to be some
+> per-chip data to collect together what lines actually have
+> physical pins attached and map the right names to them.
+>
+> The core peripherals seem to use the same lines on the
+> currently known chips but the lines used for the sensor
+> interface, lcd controller etc pins seem to be totally
+> different between the infinity and mercury chips
+>
+> The code tries to collect all of the re-usable names,
+> offsets etc together so that it's easy to build the extra
+> per-chip data for other chips in the future.
+>
+> So far this only supports the MSC313 and MSC313E chips.
+>
+> Support for the SSC8336N (mercury5) is trivial to add once
+> all of the lines have been mapped out.
+>
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 
+(...)
+
+> +config GPIO_MSC313
+> +       bool "MStar MSC313 GPIO support"
+> +       default y if ARCH_MSTARV7
+> +       depends on ARCH_MSTARV7
+> +       select GPIO_GENERIC
+
+Selecting GPIO_GENERIC, that is good.
+But you're not using it, because you can't.
+This chip does not have the bits lined up nicely
+in one register, instead there seems to be something
+like one register per line, right?
+So skip GPIO_GENERIC.
+
+> +#define MSC313_GPIO_IN  BIT(0)
+> +#define MSC313_GPIO_OUT BIT(4)
+> +#define MSC313_GPIO_OEN BIT(5)
+> +
+> +#define MSC313_GPIO_BITSTOSAVE (MSC313_GPIO_OUT | MSC313_GPIO_OEN)
+
+Some comment here telling us why these need saving and
+not others.
+
+> +#define FUART_NAMES                    \
+> +       MSC313_PINNAME_FUART_RX,        \
+> +       MSC313_PINNAME_FUART_TX,        \
+> +       MSC313_PINNAME_FUART_CTS,       \
+> +       MSC313_PINNAME_FUART_RTS
+> +
+> +#define OFF_FUART_RX   0x50
+> +#define OFF_FUART_TX   0x54
+> +#define OFF_FUART_CTS  0x58
+> +#define OFF_FUART_RTS  0x5c
+> +
+> +#define FUART_OFFSETS  \
+> +       OFF_FUART_RX,   \
+> +       OFF_FUART_TX,   \
+> +       OFF_FUART_CTS,  \
+> +       OFF_FUART_RTS
+
+This looks a bit strange. The GPIO driver should not really
+have to know about any other use cases for pins than
+GPIO. But I guess it is intuitive for the driver.
+
+> +#define SD_NAMES               \
+> +       MSC313_PINNAME_SD_CLK,  \
+> +       MSC313_PINNAME_SD_CMD,  \
+> +       MSC313_PINNAME_SD_D0,   \
+> +       MSC313_PINNAME_SD_D1,   \
+> +       MSC313_PINNAME_SD_D2,   \
+> +       MSC313_PINNAME_SD_D3
+> +
+> +#define OFF_SD_CLK     0x140
+> +#define OFF_SD_CMD     0x144
+> +#define OFF_SD_D0      0x148
+> +#define OFF_SD_D1      0x14cchild_to_parent_hwirq
+> +#define OFF_SD_D2      0x150
+> +#define OFF_SD_D3      0x154
+> +
+> +#define SD_OFFSETS     \
+> +       OFF_SD_CLK,     \
+> +       OFF_SD_CMD,     \
+> +       OFF_SD_D0,      \
+> +       OFF_SD_D1,      \
+> +       OFF_SD_D2,      \
+> +       OFF_SD_D3
+> +
+> +#define I2C1_NAMES                     \
+> +       MSC313_PINNAME_I2C1_SCL,        \
+> +       MSC313_PINNAME_I2C1_SCA
+> +
+> +#define OFF_I2C1_SCL   0x188
+> +#define OFF_I2C1_SCA   0x18c
+> +
+> +#define I2C1_OFFSETS   \
+> +       OFF_I2C1_SCL,   \
+> +       OFF_I2C1_SCA
+> +
+> +#define SPI0_NAMES             \
+> +       MSC313_PINNAME_SPI0_CZ, \
+> +       MSC313_PINNAME_SPI0_CK, \
+> +       MSC313_PINNAME_SPI0_DI, \
+> +       MSC313_PINNAME_SPI0_DO
+> +
+> +#define OFF_SPI0_CZ    0x1c0
+> +#define OFF_SPI0_CK    0x1c4
+> +#define OFF_SPI0_DI    0x1c8
+> +#define OFF_SPI0_DO    0x1cc
+> +
+> +#define SPI0_OFFSETS   \
+> +       OFF_SPI0_CZ,    \
+> +       OFF_SPI0_CK,    \
+> +       OFF_SPI0_DI,    \
+> +       OFF_SPI0_DO
+
+Same with all these. I suppose it is the offsets of stuff
+that would be there unless we were using it for GPIO.
+
+> +static int msc313_gpio_to_irq(struct gpio_chip *chip, unsigned int offset)
+> +{
+> +       struct msc313_gpio *gpio = gpiochip_get_data(chip);
+> +> +
+
+> +       return gpio->irqs[offset];
+> +}
+
+Please do not use custom IRQ handling like this.
+As there seems to be one IRQ per line, look into using
+
+        select GPIOLIB_IRQCHIP
+        select IRQ_DOMAIN_HIERARCHY
+
+See for example in gpio-ixp4xx.c how we deal with
+hiearchical GPIO IRQs.
+
+> +       gpiochip->to_irq = msc313_gpio_to_irq;
+> +       gpiochip->base = -1;
+> +       gpiochip->ngpio = gpio->gpio_data->num;
+> +       gpiochip->names = gpio->gpio_data->names;
+> +
+> +       for (i = 0; i < gpiochip->ngpio; i++)
+> +               gpio->irqs[i] = of_irq_get_byname(pdev->dev.of_node, gpio->gpio_data->names[i]);
+
+Use hierarchical generic GPIO IRQs for these.
+
+Assign ->fwnode, ->parent_domain, ->child_to_parent_hwirq,
+and probably also ->handler on the struct gpio_irq_chip *.
+
+Skip assigning gpiochip->to_irq, the generic code will
+handle that.
+
+Again see gpio-ixp4xx.c for an example.
+
+Yours,
+Linus Walleij
