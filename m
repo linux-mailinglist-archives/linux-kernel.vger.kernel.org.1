@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2AE2900CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D9E29019F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395011AbgJPJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37246 "EHLO mail.kernel.org"
+        id S2406338AbgJPJQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:16:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405528AbgJPJIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:08:41 -0400
+        id S2394266AbgJPJIt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:08:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 206AD212CC;
-        Fri, 16 Oct 2020 09:08:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 937402145D;
+        Fri, 16 Oct 2020 09:08:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839310;
-        bh=JLO0QHixhiiMTy3rjrTt/63ZS9JiB5dRkm3GGdJ+i1E=;
+        s=default; t=1602839313;
+        bh=D04i0g+UK00znTtAmvOVwYhxYciZc3WMNCx9qabNfHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dpJsBHQVtBgbOUfL+aPWg10XPjFhj7px7LQHg0vjKMeJzzApgj7Kobzwa6JLwe9ZW
-         CXQBGHNVfTVxek6IZKEq1WzTffKG+6TGmtxa/uFOMrxCzSWreJwhMhTcIGqXtjoHdG
-         2W2V8/1LxWbHx6l4xcVHYBVVl5UjoZ0OW6zIrkWI=
+        b=duBwmt+vNDGI4fqdgigsYPhrEhzdGCARtObtrB0jmsudQWV7bfRGfD+a8KIj9Ttd3
+         p407GuxcsmnJ5NlqumIr7K+ILloEFBz5TWm2+8jtOm1N2+qbcsaZ8S1il7+0MwjzqR
+         eBre/9du3lkbk0eMoXGyJJb0mpcrxmSqe/GlkyI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Patrick Steinhardt <ps@pks.im>,
         Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Hans-Christian Noren Egtvedt <hegtvedt@cisco.com>
-Subject: [PATCH 4.14 05/18] Bluetooth: Consolidate encryption handling in hci_encrypt_cfm
-Date:   Fri, 16 Oct 2020 11:07:15 +0200
-Message-Id: <20201016090437.542385523@linuxfoundation.org>
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.14 06/18] Bluetooth: Fix update of connection state in `hci_encrypt_cfm`
+Date:   Fri, 16 Oct 2020 11:07:16 +0200
+Message-Id: <20201016090437.593131956@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201016090437.265805669@linuxfoundation.org>
 References: <20201016090437.265805669@linuxfoundation.org>
@@ -44,104 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+From: Patrick Steinhardt <ps@pks.im>
 
-commit 3ca44c16b0dcc764b641ee4ac226909f5c421aa3 upstream.
+commit 339ddaa626995bc6218972ca241471f3717cc5f4 upstream.
 
-This makes hci_encrypt_cfm calls hci_connect_cfm in case the connection
-state is BT_CONFIG so callers don't have to check the state.
+Starting with the upgrade to v5.8-rc3, I've noticed I wasn't able to
+connect to my Bluetooth headset properly anymore. While connecting to
+the device would eventually succeed, bluetoothd seemed to be confused
+about the current connection state where the state was flapping hence
+and forth. Bisecting this issue led to commit 3ca44c16b0dc (Bluetooth:
+Consolidate encryption handling in hci_encrypt_cfm, 2020-05-19), which
+refactored `hci_encrypt_cfm` to also handle updating the connection
+state.
 
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+The commit in question changed the code to call `hci_connect_cfm` inside
+`hci_encrypt_cfm` and to change the connection state. But with the
+conversion, we now only update the connection state if a status was set
+already. In fact, the reverse should be true: the status should be
+updated if no status is yet set. So let's fix the isuse by reversing the
+condition.
+
+Fixes: 3ca44c16b0dc ("Bluetooth: Consolidate encryption handling in hci_encrypt_cfm")
+Signed-off-by: Patrick Steinhardt <ps@pks.im>
+Acked-by:  Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Cc: Hans-Christian Noren Egtvedt <hegtvedt@cisco.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/net/bluetooth/hci_core.h |   20 ++++++++++++++++++--
- net/bluetooth/hci_event.c        |   28 +++-------------------------
- 2 files changed, 21 insertions(+), 27 deletions(-)
+ include/net/bluetooth/hci_core.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/include/net/bluetooth/hci_core.h
 +++ b/include/net/bluetooth/hci_core.h
-@@ -1252,10 +1252,26 @@ static inline void hci_auth_cfm(struct h
- 		conn->security_cfm_cb(conn, status);
- }
+@@ -1258,7 +1258,7 @@ static inline void hci_encrypt_cfm(struc
+ 	__u8 encrypt;
  
--static inline void hci_encrypt_cfm(struct hci_conn *conn, __u8 status,
--								__u8 encrypt)
-+static inline void hci_encrypt_cfm(struct hci_conn *conn, __u8 status)
- {
- 	struct hci_cb *cb;
-+	__u8 encrypt;
-+
-+	if (conn->state == BT_CONFIG) {
-+		if (status)
-+			conn->state = BT_CONNECTED;
-+
-+		hci_connect_cfm(conn, status);
-+		hci_conn_drop(conn);
-+		return;
-+	}
-+
-+	if (!test_bit(HCI_CONN_ENCRYPT, &conn->flags))
-+		encrypt = 0x00;
-+	else if (test_bit(HCI_CONN_AES_CCM, &conn->flags))
-+		encrypt = 0x02;
-+	else
-+		encrypt = 0x01;
+ 	if (conn->state == BT_CONFIG) {
+-		if (status)
++		if (!status)
+ 			conn->state = BT_CONNECTED;
  
- 	if (conn->sec_level == BT_SECURITY_SDP)
- 		conn->sec_level = BT_SECURITY_LOW;
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -2493,7 +2493,7 @@ static void hci_auth_complete_evt(struct
- 				     &cp);
- 		} else {
- 			clear_bit(HCI_CONN_ENCRYPT_PEND, &conn->flags);
--			hci_encrypt_cfm(conn, ev->status, 0x00);
-+			hci_encrypt_cfm(conn, ev->status);
- 		}
- 	}
- 
-@@ -2579,22 +2579,7 @@ static void read_enc_key_size_complete(s
- 		conn->enc_key_size = rp->key_size;
- 	}
- 
--	if (conn->state == BT_CONFIG) {
--		conn->state = BT_CONNECTED;
--		hci_connect_cfm(conn, 0);
--		hci_conn_drop(conn);
--	} else {
--		u8 encrypt;
--
--		if (!test_bit(HCI_CONN_ENCRYPT, &conn->flags))
--			encrypt = 0x00;
--		else if (test_bit(HCI_CONN_AES_CCM, &conn->flags))
--			encrypt = 0x02;
--		else
--			encrypt = 0x01;
--
--		hci_encrypt_cfm(conn, 0, encrypt);
--	}
-+	hci_encrypt_cfm(conn, 0);
- 
- unlock:
- 	hci_dev_unlock(hdev);
-@@ -2691,14 +2676,7 @@ static void hci_encrypt_change_evt(struc
- 	}
- 
- notify:
--	if (conn->state == BT_CONFIG) {
--		if (!ev->status)
--			conn->state = BT_CONNECTED;
--
--		hci_connect_cfm(conn, ev->status);
--		hci_conn_drop(conn);
--	} else
--		hci_encrypt_cfm(conn, ev->status, ev->encrypt);
-+	hci_encrypt_cfm(conn, ev->status);
- 
- unlock:
- 	hci_dev_unlock(hdev);
+ 		hci_connect_cfm(conn, status);
 
 
