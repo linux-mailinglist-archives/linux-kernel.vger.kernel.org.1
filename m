@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AE3290DE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A273290DE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393101AbgJPWy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 18:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391461AbgJPWy2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 18:54:28 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BB1C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:54:28 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id b19so2048388pld.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ICYd57CoaTy1qGFozzh5HtqQudKTXEKY66Y/KKwo8Lk=;
-        b=VqlJmJeJpWv0jfshqm7uw5p/d/Crrw98Z+oE10biAfMK6x+/MB1Ue4y9OrUuMb1S19
-         NVBf0YH72PGjn6trqTsPBQU4VAblvBvPpx/VlhpjqfSCx9LzyiIz4rmKGiHcPvEhRPf3
-         aAvMrYjW2k0Ii1ot6r1dmHtwQoFpgg+DRFVY4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ICYd57CoaTy1qGFozzh5HtqQudKTXEKY66Y/KKwo8Lk=;
-        b=MXKvXhX4JNQiMpI/WHVv12lYEIBOo488HZkWnlFSbUiUTJPIVvmZBSjoYFqlAj+49G
-         kYPthugZCr5rhed9DCB76YCUPoLlu4clBswSOKQG+a/3ptFmWdrxrOa2RiyRCB4XEK7D
-         qUP0W5XVjCfuCf7KTKs+8jFReZxJfZkl9Rl1FwJ+Wnq93GNuR/U8HGBqYa1iFgKTkyx+
-         KA9AvGyeunD45t8aJwswKagJrQrvgKk0qIrtw1V8OHNtNe1ahOCb3laJ/kh4LUtSc01Z
-         z0K4rioRHHj87C/s9hh8G0pCj3HVMpakOaDZGUHs7AYxmTOlVj+PvimzKWFHME1LIKHt
-         WGAA==
-X-Gm-Message-State: AOAM532p08iLLN4zzF+XYe74yxJES8XYQ5xvu4eqr81EXWSLeY7xJkWt
-        5ls7dH6fJa8jaTlYuLa0yky6xQ==
-X-Google-Smtp-Source: ABdhPJztu1BrcI2AvRp/VvjJLHuh4P7B1CW+afiAMTqbl51L8NnUyyWVOosqEGO8gUPez74J93eSuw==
-X-Received: by 2002:a17:90b:4a10:: with SMTP id kk16mr6428298pjb.77.1602888867778;
-        Fri, 16 Oct 2020 15:54:27 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x18sm3788262pga.49.2020.10.16.15.54.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 15:54:26 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 15:54:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        WeiXiong Liao <liaoweixiong@allwinnertech.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: simplify pstore-blk
-Message-ID: <202010161553.F2BA6CF@keescook>
-References: <20201016132047.3068029-1-hch@lst.de>
+        id S2404618AbgJPW4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 18:56:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392489AbgJPW4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 18:56:35 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85FB920874;
+        Fri, 16 Oct 2020 22:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602888995;
+        bh=/lXhp6rLF5lFUokrwfRiKmnmoHe+zKZ44ar1nzyDehs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qD0jkJbzDmDM92q2qHE/ZB1DB//9dR5lAihvHP9lClMKNhAx6LZVTeinM9Z2i+UrA
+         0FTVCxqGc01Szmf4bf0np+Jz8SN6Wmu/0Qz4ZKW9mmrLTz97xUruR35zOiXRD4Q2E6
+         Pq2ec+VtcFBwS6uWVpcO72Q1gENuVzj7XwgdenOU=
+Date:   Fri, 16 Oct 2020 15:56:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, kernel test robot <lkp@intel.com>,
+        Christian Eggers <ceggers@arri.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        kbuild-all@lists.01.org,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: point out the tail taggers
+Message-ID: <20201016155632.395af75a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201016213302.yeesw4jbw3rzfluf@skbuf>
+References: <20201016162800.7696-1-ceggers@arri.de>
+        <202010170153.fwOuks52-lkp@intel.com>
+        <20201016173317.4ihhiamrv5w5am6y@skbuf>
+        <20201016201428.GI139700@lunn.ch>
+        <20201016201930.2i2lw4aixklyg6j7@skbuf>
+        <20201016210318.GL139700@lunn.ch>
+        <20201016211628.mw7jlvqx3audzo76@skbuf>
+        <20201016213302.yeesw4jbw3rzfluf@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201016132047.3068029-1-hch@lst.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 03:20:38PM +0200, Christoph Hellwig wrote:
-> this series cleans up and massively simplifies the pstore-blk code,
-> please take a look.
+On Sat, 17 Oct 2020 00:33:02 +0300 Vladimir Oltean wrote:
+> On Sat, Oct 17, 2020 at 12:16:28AM +0300, Vladimir Oltean wrote:
+> > On Fri, Oct 16, 2020 at 11:03:18PM +0200, Andrew Lunn wrote:  
+> > > 2ecbc1f684482b4ed52447a39903bd9b0f222898 does not have net-next, as
+> > > far as i see,  
+> > 
+> > Not sure what you mean by that.  
+> 
+> Ah, I do understand what you mean now. In git, that is what I see as
+> well. But in my cgit link, why would tail_tag be there?
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/tree/include/net/dsa.h#n93?id=2ecbc1f684482b4ed52447a39903bd9b0f222898
+> I think either cgit is plainly dumb at showing the kernel tree at a
+> particular commit, or I'm plainly incapable of using it.
 
-Cool! Thanks for doing this work. I have a few things I'd like to see
-done differently, and while I'm not a huge fan of the general reduction
-in utility, I can live with it as long as it doesn't make other things
-worse. :) I'll get this reviewed with specific feedback soon, but I'm
-about to be EOW. ;)
+The link is bamboozled.
 
--- 
-Kees Cook
+The #n93 needs to be after the ? parameters.
+
+Like this:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git/tree/include/net/dsa.h?id=2ecbc1f684482b4ed52447a39903bd9b0f222898#n86
