@@ -2,319 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5D5290197
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E877229014A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394676AbgJPJPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:15:48 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53962 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2394984AbgJPJJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:09:08 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 0A1A571744D69C447636;
-        Fri, 16 Oct 2020 17:09:06 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.134) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 16 Oct 2020 17:08:56 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "Florian Fainelli" <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
+        id S2406030AbgJPJMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:12:52 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:31656 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2395072AbgJPJKt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:10:49 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 09G9AUP9014238;
+        Fri, 16 Oct 2020 04:10:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=5GgvYFVOQXr2tlU+lzmQtw6n7e7CS2uC5plEf2o1xhA=;
+ b=KvFvBNrKAIUA4F+g8fCFhfAZAXBPLdAhsDpajjHdZHzhvE+51PeJAaGFxsj00FAmf/yv
+ cde1yIijg1JeLtvVO5Pp1IO0qYO3YWpNEWvgkS1o1me4exeIb7i4Twc07mPCk6Gcvry6
+ xX+jS3bRJjFbRZPBr8bG5p6yiSIaevdcTpId4lSQLoaZZPrwgH0dN8FCozi8Mk0did7t
+ oH1rvaK3nbRONs6JGOm4IaThtE3L9sCk9rovyjHFiMbDNK2IMU9WteroHSZ1484mDkTO
+ z7g1op4W048AV19gagc/TILN4bu2lN2v/FYzCYMxaJlj1QGTJ50WNeO+gOkE+IIXOLyd vA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3439cnfx63-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 16 Oct 2020 04:10:18 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 16 Oct
+ 2020 10:10:16 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 16 Oct 2020 10:10:16 +0100
+Received: from [10.0.2.15] (ausnpc0lsnw1.ad.cirrus.com [198.61.64.143])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2283145;
+        Fri, 16 Oct 2020 09:10:16 +0000 (UTC)
+Subject: Re: [PATCH 1/7] of: base: Add of_count_phandle_with_fixed_args()
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        - <patches@opensource.cirrus.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
         linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: clear the warnings caused by empty dma-ranges
-Date:   Fri, 16 Oct 2020 17:08:33 +0800
-Message-ID: <20201016090833.1892-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20201016090833.1892-1-thunder.leizhen@huawei.com>
-References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>
+References: <20201014145418.31838-1-rf@opensource.cirrus.com>
+ <20201014145418.31838-2-rf@opensource.cirrus.com>
+ <CAL_Jsq+qdcHc9H7qUVwLieHrLM8E20HZXa8DkarMiuXfCh8WOQ@mail.gmail.com>
+ <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <008108c4-952b-a8a3-af81-af9e40643f36@opensource.cirrus.com>
+Date:   Fri, 16 Oct 2020 10:10:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.134]
-X-CFilter-Loop: Reflected
+In-Reply-To: <90600a67-25e4-7933-35c3-f515deaee94f@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010160068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scripts/dtc/checks.c requires that the node have empty "dma-ranges"
-property must have the same "#address-cells" and "#size-cells" values as
-the parent node. Otherwise, the following warnings is reported:
 
-arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning \
-(dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but \
-its #address-cells (1) differs from / (2)
-arch/arm64/boot/dts/qcom/ipq6018.dtsi:185.3-14: Warning \
-(dma_ranges_format): /soc:dma-ranges: empty "dma-ranges" property but \
-its #size-cells (1) differs from / (2)
+On 15/10/2020 17:52, Robin Murphy wrote:
+> On 2020-10-14 19:39, Rob Herring wrote:
+>> On Wed, Oct 14, 2020 at 9:54 AM Richard Fitzgerald
+>> <rf@opensource.cirrus.com> wrote:
+>>>
+>>> Add an equivalent of of_count_phandle_with_args() for fixed argument
+>>> sets, to pair with of_parse_phandle_with_fixed_args().
+>>>
+>>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>>> ---
+>>>   drivers/of/base.c  | 42 ++++++++++++++++++++++++++++++++++++++++++
+>>>   include/linux/of.h |  9 +++++++++
+>>>   2 files changed, 51 insertions(+)
+>>>
+>>> diff --git a/drivers/of/base.c b/drivers/of/base.c
+>>> index ea44fea99813..45d8b0e65345 100644
+>>> --- a/drivers/of/base.c
+>>> +++ b/drivers/of/base.c
+>>> @@ -1772,6 +1772,48 @@ int of_count_phandle_with_args(const struct 
+>>> device_node *np, const char *list_na
+>>>   }
+>>>   EXPORT_SYMBOL(of_count_phandle_with_args);
+>>>
+>>> +/**
+>>> + * of_count_phandle_with_fixed_args() - Find the number of phandles 
+>>> references in a property
+>>> + * @np:                pointer to a device tree node containing a list
+>>> + * @list_name: property name that contains a list
+>>> + * @cell_count: number of argument cells following the phandle
+>>> + *
+>>> + * Returns the number of phandle + argument tuples within a 
+>>> property. It
+>>> + * is a typical pattern to encode a list of phandle and variable
+>>> + * arguments into a single property.
+>>> + */
+>>> +int of_count_phandle_with_fixed_args(const struct device_node *np,
+>>> +                                    const char *list_name,
+>>> +                                    int cells_count)
+>>> +{
+>>
+>> Looks to me like you can refactor of_count_phandle_with_args to handle
+>> both case and then make this and of_count_phandle_with_args simple
+>> wrapper functions.
+> 
+> Although for just counting the number of phandles each with n arguments 
+> that a property contains, isn't that simply a case of dividing the 
+> property length by n + 1? The phandles themselves will be validated by 
+> any subsequent of_parse_phandle*() call anyway, so there doesn't seem 
+> much point in doing more work then necessary here.
+> 
 
-Arnd Bergmann figured out why it's necessary:
-Also note that the #address-cells=<1> means that any device under
-this bus is assumed to only support 32-bit addressing, and DMA will
-have to go through a slow swiotlb in the absence of an IOMMU.
+As I'm not a DT expert, I'm reluctant to change existing algorithms that
+could break everything just for the trivial case of adding a fixed
+arguments count. I have a re-worked patch as suggested by Rob that
+re-uses the existing counting function for both cases.
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- arch/arm64/boot/dts/qcom/ipq6018.dtsi | 72 +++++++++++++++++------------------
- 1 file changed, 36 insertions(+), 36 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index a94dac76bf3fbdd..59e0cbfa2214305 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -179,22 +179,22 @@
- 	};
- 
- 	soc: soc {
--		#address-cells = <1>;
--		#size-cells = <1>;
--		ranges = <0 0 0 0xffffffff>;
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges = <0 0 0 0 0x0 0xffffffff>;
- 		dma-ranges;
- 		compatible = "simple-bus";
- 
- 		prng: qrng@e1000 {
- 			compatible = "qcom,prng-ee";
--			reg = <0xe3000 0x1000>;
-+			reg = <0x0 0xe3000 0x0 0x1000>;
- 			clocks = <&gcc GCC_PRNG_AHB_CLK>;
- 			clock-names = "core";
- 		};
- 
- 		cryptobam: dma@704000 {
- 			compatible = "qcom,bam-v1.7.0";
--			reg = <0x00704000 0x20000>;
-+			reg = <0x0 0x00704000 0x0 0x20000>;
- 			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&gcc GCC_CRYPTO_AHB_CLK>;
- 			clock-names = "bam_clk";
-@@ -206,7 +206,7 @@
- 
- 		crypto: crypto@73a000 {
- 			compatible = "qcom,crypto-v5.1";
--			reg = <0x0073a000 0x6000>;
-+			reg = <0x0 0x0073a000 0x0 0x6000>;
- 			clocks = <&gcc GCC_CRYPTO_AHB_CLK>,
- 				<&gcc GCC_CRYPTO_AXI_CLK>,
- 				<&gcc GCC_CRYPTO_CLK>;
-@@ -217,7 +217,7 @@
- 
- 		tlmm: pinctrl@1000000 {
- 			compatible = "qcom,ipq6018-pinctrl";
--			reg = <0x01000000 0x300000>;
-+			reg = <0x0 0x01000000 0x0 0x300000>;
- 			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
-@@ -235,7 +235,7 @@
- 
- 		gcc: gcc@1800000 {
- 			compatible = "qcom,gcc-ipq6018";
--			reg = <0x01800000 0x80000>;
-+			reg = <0x0 0x01800000 0x0 0x80000>;
- 			clocks = <&xo>, <&sleep_clk>;
- 			clock-names = "xo", "sleep_clk";
- 			#clock-cells = <1>;
-@@ -244,17 +244,17 @@
- 
- 		tcsr_mutex_regs: syscon@1905000 {
- 			compatible = "syscon";
--			reg = <0x01905000 0x8000>;
-+			reg = <0x0 0x01905000 0x0 0x8000>;
- 		};
- 
- 		tcsr_q6: syscon@1945000 {
- 			compatible = "syscon";
--			reg = <0x01945000 0xe000>;
-+			reg = <0x0 0x01945000 0x0 0xe000>;
- 		};
- 
- 		blsp_dma: dma@7884000 {
- 			compatible = "qcom,bam-v1.7.0";
--			reg = <0x07884000 0x2b000>;
-+			reg = <0x0 0x07884000 0x0 0x2b000>;
- 			interrupts = <GIC_SPI 238 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&gcc GCC_BLSP1_AHB_CLK>;
- 			clock-names = "bam_clk";
-@@ -264,7 +264,7 @@
- 
- 		blsp1_uart3: serial@78b1000 {
- 			compatible = "qcom,msm-uartdm-v1.4", "qcom,msm-uartdm";
--			reg = <0x078b1000 0x200>;
-+			reg = <0x0 0x078b1000 0x0 0x200>;
- 			interrupts = <GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&gcc GCC_BLSP1_UART3_APPS_CLK>,
- 				<&gcc GCC_BLSP1_AHB_CLK>;
-@@ -276,7 +276,7 @@
- 			compatible = "qcom,spi-qup-v2.2.1";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			reg = <0x078b5000 0x600>;
-+			reg = <0x0 0x078b5000 0x0 0x600>;
- 			interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
- 			spi-max-frequency = <50000000>;
- 			clocks = <&gcc GCC_BLSP1_QUP1_SPI_APPS_CLK>,
-@@ -291,7 +291,7 @@
- 			compatible = "qcom,spi-qup-v2.2.1";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			reg = <0x078b6000 0x600>;
-+			reg = <0x0 0x078b6000 0x0 0x600>;
- 			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
- 			spi-max-frequency = <50000000>;
- 			clocks = <&gcc GCC_BLSP1_QUP2_SPI_APPS_CLK>,
-@@ -306,7 +306,7 @@
- 			compatible = "qcom,i2c-qup-v2.2.1";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			reg = <0x078b6000 0x600>;
-+			reg = <0x0 0x078b6000 0x0 0x600>;
- 			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&gcc GCC_BLSP1_AHB_CLK>,
- 				<&gcc GCC_BLSP1_QUP2_I2C_APPS_CLK>;
-@@ -321,7 +321,7 @@
- 			compatible = "qcom,i2c-qup-v2.2.1";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			reg = <0x078b7000 0x600>;
-+			reg = <0x0 0x078b7000 0x0 0x600>;
- 			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
- 			clocks = <&gcc GCC_BLSP1_AHB_CLK>,
- 				<&gcc GCC_BLSP1_QUP3_I2C_APPS_CLK>;
-@@ -336,24 +336,24 @@
- 			compatible = "qcom,msm-qgic2";
- 			interrupt-controller;
- 			#interrupt-cells = <0x3>;
--			reg =   <0x0b000000 0x1000>,  /*GICD*/
--				<0x0b002000 0x1000>,  /*GICC*/
--				<0x0b001000 0x1000>,  /*GICH*/
--				<0x0b004000 0x1000>;  /*GICV*/
-+			reg =   <0x0 0x0b000000 0x0 0x1000>,  /*GICD*/
-+				<0x0 0x0b002000 0x0 0x1000>,  /*GICC*/
-+				<0x0 0x0b001000 0x0 0x1000>,  /*GICH*/
-+				<0x0 0x0b004000 0x0 0x1000>;  /*GICV*/
- 			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
- 		watchdog@b017000 {
- 			compatible = "qcom,kpss-wdt";
- 			interrupts = <GIC_SPI 3 IRQ_TYPE_EDGE_RISING>;
--			reg = <0x0b017000 0x40>;
-+			reg = <0x0 0x0b017000 0x0 0x40>;
- 			clocks = <&sleep_clk>;
- 			timeout-sec = <10>;
- 		};
- 
- 		apcs_glb: mailbox@b111000 {
- 			compatible = "qcom,ipq6018-apcs-apps-global";
--			reg = <0x0b111000 0x1000>;
-+			reg = <0x0 0x0b111000 0x0 0x1000>;
- 			#clock-cells = <1>;
- 			clocks = <&a53pll>, <&xo>;
- 			clock-names = "pll", "xo";
-@@ -362,7 +362,7 @@
- 
- 		a53pll: clock@b116000 {
- 			compatible = "qcom,ipq6018-a53pll";
--			reg = <0x0b116000 0x40>;
-+			reg = <0x0 0x0b116000 0x0 0x40>;
- 			#clock-cells = <0>;
- 			clocks = <&xo>;
- 			clock-names = "xo";
-@@ -377,68 +377,68 @@
- 		};
- 
- 		timer@b120000 {
--			#address-cells = <1>;
--			#size-cells = <1>;
-+			#address-cells = <2>;
-+			#size-cells = <2>;
- 			ranges;
- 			compatible = "arm,armv7-timer-mem";
--			reg = <0x0b120000 0x1000>;
-+			reg = <0x0 0x0b120000 0x0 0x1000>;
- 			clock-frequency = <19200000>;
- 
- 			frame@b120000 {
- 				frame-number = <0>;
- 				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
- 					     <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
--				reg = <0x0b121000 0x1000>,
--				      <0x0b122000 0x1000>;
-+				reg = <0x0 0x0b121000 0x0 0x1000>,
-+				      <0x0 0x0b122000 0x0 0x1000>;
- 			};
- 
- 			frame@b123000 {
- 				frame-number = <1>;
- 				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
--				reg = <0xb123000 0x1000>;
-+				reg = <0x0 0xb123000 0x0 0x1000>;
- 				status = "disabled";
- 			};
- 
- 			frame@b124000 {
- 				frame-number = <2>;
- 				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
--				reg = <0x0b124000 0x1000>;
-+				reg = <0x0 0x0b124000 0x0 0x1000>;
- 				status = "disabled";
- 			};
- 
- 			frame@b125000 {
- 				frame-number = <3>;
- 				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
--				reg = <0x0b125000 0x1000>;
-+				reg = <0x0 0x0b125000 0x0 0x1000>;
- 				status = "disabled";
- 			};
- 
- 			frame@b126000 {
- 				frame-number = <4>;
- 				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
--				reg = <0x0b126000 0x1000>;
-+				reg = <0x0 0x0b126000 0x0 0x1000>;
- 				status = "disabled";
- 			};
- 
- 			frame@b127000 {
- 				frame-number = <5>;
- 				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
--				reg = <0x0b127000 0x1000>;
-+				reg = <0x0 0x0b127000 0x0 0x1000>;
- 				status = "disabled";
- 			};
- 
- 			frame@b128000 {
- 				frame-number = <6>;
- 				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
--				reg = <0x0b128000 0x1000>;
-+				reg = <0x0 0x0b128000 0x0 0x1000>;
- 				status = "disabled";
- 			};
- 		};
- 
- 		q6v5_wcss: remoteproc@cd00000 {
- 			compatible = "qcom,ipq8074-wcss-pil";
--			reg = <0x0cd00000 0x4040>,
--				<0x004ab000 0x20>;
-+			reg = <0x0 0x0cd00000 0x0 0x4040>,
-+			      <0x0 0x004ab000 0x0 0x20>;
- 			reg-names = "qdsp6",
- 				    "rmb";
- 			interrupts-extended = <&intc GIC_SPI 325 IRQ_TYPE_EDGE_RISING>,
--- 
-1.8.3
-
-
+>>> +       struct of_phandle_iterator it;
+>>> +       int rc, cur_index = 0;
+>>> +
+>>> +       if (!cells_count) {
+>>> +               const __be32 *list;
+>>> +               int size;
+>>> +
+>>> +               list = of_get_property(np, list_name, &size);
+>>> +               if (!list)
+>>> +                       return -ENOENT;
+>>> +
+>>> +               return size / sizeof(*list);
+> 
+> Case in point - if it's OK to do exactly that for n == 0, then clearly 
+> we're *aren't* fussed about validating anything, so the n > 0 code below 
+> is nothing more than a massively expensive way to check for a nonzero 
+> remainder :/
+> 
+> Robin.
+> 
+>>> +       }
+>>> +
+>>> +       rc = of_phandle_iterator_init(&it, np, list_name, NULL, 
+>>> cells_count);
+>>> +       if (rc)
+>>> +               return rc;
+>>> +
+>>> +       while ((rc = of_phandle_iterator_next(&it)) == 0)
+>>> +               cur_index += 1;
+>>> +
+>>> +       if (rc != -ENOENT)
+>>> +               return rc;
+>>> +
+>>> +       return cur_index;
+>>> +}
+>>> +EXPORT_SYMBOL(of_count_phandle_with_fixed_args);
+>>> +
+>>>   /**
+>>>    * __of_add_property - Add a property to a node without lock 
+>>> operations
+>>>    */
+>>> diff --git a/include/linux/of.h b/include/linux/of.h
+>>> index 5cf7ae0465d1..9f315da4e9da 100644
+>>> --- a/include/linux/of.h
+>>> +++ b/include/linux/of.h
+>>> @@ -377,6 +377,8 @@ extern int of_parse_phandle_with_fixed_args(const 
+>>> struct device_node *np,
+>>>          struct of_phandle_args *out_args);
+>>>   extern int of_count_phandle_with_args(const struct device_node *np,
+>>>          const char *list_name, const char *cells_name);
+>>> +extern int of_count_phandle_with_fixed_args(const struct device_node 
+>>> *np,
+>>> +       const char *list_name, int cells_count);
+>>>
+>>>   /* phandle iterator functions */
+>>>   extern int of_phandle_iterator_init(struct of_phandle_iterator *it,
+>>> @@ -886,6 +888,13 @@ static inline int 
+>>> of_count_phandle_with_args(struct device_node *np,
+>>>          return -ENOSYS;
+>>>   }
+>>>
+>>> +static inline int of_count_phandle_with_fixed_args(const struct 
+>>> device_node *np,
+>>> +                                                  const char 
+>>> *list_name,
+>>> +                                                  int cells_count)
+>>> +{
+>>> +       return -ENOSYS;
+>>> +}
+>>> +
+>>>   static inline int of_phandle_iterator_init(struct 
+>>> of_phandle_iterator *it,
+>>>                                             const struct device_node 
+>>> *np,
+>>>                                             const char *list_name,
+>>> -- 
+>>> 2.20.1
+>>>
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>
