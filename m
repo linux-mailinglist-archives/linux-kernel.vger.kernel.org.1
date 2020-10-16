@@ -2,300 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3627828FF47
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F4B28FF4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404736AbgJPHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:40:21 -0400
-Received: from mail-dm6nam11on2076.outbound.protection.outlook.com ([40.107.223.76]:2273
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404630AbgJPHkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:40:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BxyOu7m5xLtifVmVzxUR9RVFTogB1+bu1x1ybXKkqNz7X99vHHu0VIuxttDGy0BM/bADxTcSpeYr9sr8RZMLn2ikGPZ1DgwJIUWIHcj5E2KHrFTjA8jeut/W6JHvyhgmjWGciEKMDmsr22SRJZU3hVPgU+3h5ehpJB5n02c5xUX5SAcw+J65NwXpWgoaBTpmvQ8XgyfFj0his6FsIEg+20wBketu6PVeB91tvIl3T2h/VlKu9/2eubibpW96iYgL53K7nkk2+azO/Zd3R4LJYuBEs75yzr/rZRPg4AGXRQ2Z0hGdSAER7/DuQy1vCtHPc2VM4ej8K2ima8izCNCIQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h93f/5IcVFknBzP0aviAtUP0iX4JRJ5aXtDEtdmuhXE=;
- b=khYewHjKjhZgZx08Cp01D/jakQweJTjzFOwUGhRykg5qG1H4YXJMEL9d+/2Vebhwo9jGZ0AkxhaAMfVGT1Du9y4KhP+FbYfyhOmOZ3NUfwQT6xvAitybLlYzNmuFAjYIjOOuQfM9+3YEYEe6s2aKq0sSGtd2Dl7VPw6mFo6z7GN7PHkOAfhIB6cOEBQSNeYhrmYbfWaF7zIPim69sBk9yeOn7F0Hv71K8GwQ9c3yroWqrE+Sb0EKQl2wJKSee2rkGpNzsSfU7IYN+i8IiiPcWBnJnDH9FWaL65qR26c8xoVaX2NUTsi8DFHC8O+x+nx25LBXxDX8tpotYc9YaHjARw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h93f/5IcVFknBzP0aviAtUP0iX4JRJ5aXtDEtdmuhXE=;
- b=mTlDzpWOLxAhxE7MMJ1bQ8IQU6bu0oLQR0bDkV0tvNUKx60D+6G5cFTIQgUjA4mbr4vFsXDT8SxUobnsIqg7Ot6cAMTmAoHXkYdtrI3yTEpa2hRh9k7NaP3cipMj3yYl49bZRrX3RUmiznyhRvhDjKOzJWwNknq1e8gK7yxcp+o=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3540.namprd12.prod.outlook.com (2603:10b6:408:6c::33)
- by BN6PR1201MB0212.namprd12.prod.outlook.com (2603:10b6:405:56::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Fri, 16 Oct
- 2020 07:40:17 +0000
-Received: from BN8PR12MB3540.namprd12.prod.outlook.com
- ([fe80::9d06:595:4be5:3af7]) by BN8PR12MB3540.namprd12.prod.outlook.com
- ([fe80::9d06:595:4be5:3af7%7]) with mapi id 15.20.3477.024; Fri, 16 Oct 2020
- 07:40:17 +0000
-From:   Sanjay R Mehta <Sanju.Mehta@amd.com>
-To:     vkoul@kernel.org
-Cc:     gregkh@linuxfoundation.org, dan.j.williams@intel.com,
-        Thomas.Lendacky@amd.com, Shyam-sundar.S-k@amd.com,
-        Nehal-bakulchandra.Shah@amd.com, robh@kernel.org,
-        mchehab+samsung@kernel.org, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        Sanjay R Mehta <sanju.mehta@amd.com>
-Subject: [PATCH v7 3/3] dmaengine: ptdma: Add debugfs entries for PTDMA information
-Date:   Fri, 16 Oct 2020 02:39:07 -0500
-Message-Id: <1602833947-82021-4-git-send-email-Sanju.Mehta@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1602833947-82021-1-git-send-email-Sanju.Mehta@amd.com>
-References: <1602833947-82021-1-git-send-email-Sanju.Mehta@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.156.251]
-X-ClientProxiedBy: MAXPR01CA0101.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::19) To BN8PR12MB3540.namprd12.prod.outlook.com
- (2603:10b6:408:6c::33)
+        id S2404761AbgJPHm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:42:27 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2632 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404710AbgJPHm1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:42:27 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f894ed60000>; Fri, 16 Oct 2020 00:42:14 -0700
+Received: from [10.2.49.77] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
+ 2020 07:42:17 +0000
+Subject: Re: [PATCH v2 01/17] drm/exynos: Stop using frame_vector helpers
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        "Seung-Woo Kim" <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-2-daniel.vetter@ffwll.ch>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <b1529241-a645-6e03-2031-cb2d0a6de493@nvidia.com>
+Date:   Fri, 16 Oct 2020 00:42:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from sanjuamdntb2.amd.com (165.204.156.251) by MAXPR01CA0101.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:5d::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 07:40:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 67271727-48d9-4b2e-266e-08d871a6b985
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0212:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB0212E32CC56B3DAFC1AC0CB0E5030@BN6PR1201MB0212.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:22;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MouukEC83madbk9BO087enzcWucKzXWUV9sNpBln6d2EbFOAtiNYnPh4df7rQ9iLSBhgpzrVMCa12YDsct+WGKN0nFo6n1xD3Nd71cjOeyZajqQG/LIPVCJmrS9n6gyjZZ2VQogTgQK2eLjIFO+Y/QStCe/G4kHo4RFq4VdgLzdMSO0XmFDkTZMPjz8tehZC0UlrOot341133DPtwCyveA4nGIyxJKvuKRUcdC3UrZUJ5OlBssQVZG5Yq6vDmfZhnnx1wjfQPhj/bfdgrKnHoLOR0oyaCdsYoqRgslr5BXRToSNuyIJB+NwX9oTy1F1qnRrWjzFVXMu+q3fCSY9w5VFcxMAzTmfj2jY2+ThZ2LgyVRFfaoKujiJ7VXS/QdjK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3540.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(346002)(39860400002)(396003)(366004)(478600001)(4326008)(6916009)(5660300002)(2616005)(956004)(34490700002)(6486002)(86362001)(316002)(7696005)(6666004)(16526019)(186003)(52116002)(26005)(8936002)(8676002)(66946007)(66556008)(36756003)(2906002)(66476007)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: JT59/mNZNRox3a7gmcHsPSO8ubA8PVQohycdhT4N9YI/N2XNNzrbgy20LPOS5KnyTbF+nMo88nm1hTjrtVkIirxqQYXRqtNsN4oM8FyZz5aWIClw38RKjxfADohb6+rN7/7J9AfuF79P39lGylKZXwd/LCOVfCpL09LbKDWMmI0sXD1IqfVRFfLgTyJpxNEPyL+9Mj/NNHyCUFDlqRPX8D+pChDgB9hnFhoqXK6tnBhzJZa7cagKInkZA5ZWLLiYMIleXoEePX2lMQliSAx06ndk05qqT/awo9LDBDqG/YShUFsVs1POVBBEC2V6f7xB557oPmX4jsB8FeO4ml+NSnAs17twZj3TPMrGfqHv+ZBRacupV5NAIKIdstSXp3msh9oK7Y3JX4lCYxuPmS1tXpYl4fnHwUpmc8sURUYIPby+LRVtp72g8p0aa/jZ687lKGUgGpoYHq82S940ezGsSX/m+zAyfdUL9gUuYjohJRnHRyZl44TTomN4tyQffswIgAY5N8aClPmsYF9DphCt6v1+Ni/Jv4GyA0EGUXB4TUBtthWkFOC2NZjCegsA6mrhxaFEe16aPfMYvs+ZHN4q+w6qkQ/8ZjtXYBb+dFTai76zQgPyXxnFeclfagJlahft6lveWNQ1qLwaO9/AGhf+Eg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67271727-48d9-4b2e-266e-08d871a6b985
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3540.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2020 07:40:16.8363
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O/3R0X3GEDuZKa3UpT7fcPCp3ae4+dsE6EE9GLr/gLTFXvlK5RIV1ESNy7tPr90YqlktE9pA8phxok/gmBUE2g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0212
+In-Reply-To: <20201009075934.3509076-2-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602834134; bh=0aE9d/+DUnCDZnC0MmsV9767F6olBrZ/z/bqT8CABIE=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=qafhaKQkqbDz6B1AQvEqkAlsZ2wvvxxy3liQgg/I2n/ULg20xCUiIlLAGKfOrDFbr
+         ceoOhJqnaFxeEBdV9ZyHoihaNP6Y7fwttq1CADxMzc02pGDu6VhiYT4r+niYN2SgmQ
+         uGmPACXn3SSz5j5dFYjRoZY/+Mrq7tjnF4FXvsh2m4wH2AH17u27/ZyvctCi5w00pi
+         0KLehFCXYJ589hr30t/KynvRtlNSSPHafzdq5WTQVzdi6M+21sKkrRvffEX2wbaeq0
+         VgPWKESwn1uBRAiy722SCSSUnBZPuT7/iCtsX1reQo7i7IUd5KtWfD+25tG5clM1pU
+         nny43JIsIiugw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay R Mehta <sanju.mehta@amd.com>
+On 10/9/20 12:59 AM, Daniel Vetter wrote:
+> All we need are a pages array, pin_user_pages_fast can give us that
+> directly. Plus this avoids the entire raw pfn side of get_vaddr_frames.
+>=20
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Inki Dae <inki.dae@samsung.com>
+> Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+> Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: Kukjin Kim <kgene@kernel.org>
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> --
+> v2: Use unpin_user_pages_dirty_lock (John)
+> ---
+>   drivers/gpu/drm/exynos/Kconfig          |  1 -
+>   drivers/gpu/drm/exynos/exynos_drm_g2d.c | 47 +++++++++++--------------
+>   2 files changed, 20 insertions(+), 28 deletions(-)
+>=20
 
-Expose data about the configuration and operation of the
-PTDMA through debugfs entries: device name, capabilities,
-configuration, statistics.
+Looks good.
 
-Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
----
- drivers/dma/ptdma/Makefile        |   2 +-
- drivers/dma/ptdma/ptdma-debugfs.c | 115 ++++++++++++++++++++++++++++++++++++++
- drivers/dma/ptdma/ptdma-dev.c     |   5 ++
- drivers/dma/ptdma/ptdma.h         |   5 ++
- 4 files changed, 126 insertions(+), 1 deletion(-)
- create mode 100644 drivers/dma/ptdma/ptdma-debugfs.c
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-diff --git a/drivers/dma/ptdma/Makefile b/drivers/dma/ptdma/Makefile
-index a528cb0..ce54102 100644
---- a/drivers/dma/ptdma/Makefile
-+++ b/drivers/dma/ptdma/Makefile
-@@ -5,6 +5,6 @@
- 
- obj-$(CONFIG_AMD_PTDMA) += ptdma.o
- 
--ptdma-objs := ptdma-dev.o ptdma-dmaengine.o
-+ptdma-objs := ptdma-dev.o ptdma-dmaengine.o ptdma-debugfs.o
- 
- ptdma-$(CONFIG_PCI) += ptdma-pci.o
-diff --git a/drivers/dma/ptdma/ptdma-debugfs.c b/drivers/dma/ptdma/ptdma-debugfs.c
-new file mode 100644
-index 0000000..03d47cd
---- /dev/null
-+++ b/drivers/dma/ptdma/ptdma-debugfs.c
-@@ -0,0 +1,115 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * AMD Passthrough DMA device driver
-+ * -- Based on the CCP driver
-+ *
-+ * Copyright (C) 2016,2020 Advanced Micro Devices, Inc.
-+ *
-+ * Author: Sanjay R Mehta <sanju.mehta@amd.com>
-+ * Author: Gary R Hook <gary.hook@amd.com>
-+ */
-+
-+#include <linux/debugfs.h>
-+#include <linux/seq_file.h>
-+
-+#include "ptdma.h"
-+
-+/* DebugFS helpers */
-+#define	MAX_NAME_LEN	20
-+#define	RI_VERSION_NUM	0x0000003F
-+
-+#define	RI_NUM_VQM	0x00078000
-+#define	RI_NVQM_SHIFT	15
-+
-+static DEFINE_MUTEX(pt_debugfs_lock);
-+
-+static int pt_debugfs_info_show(struct seq_file *s, void *p)
-+{
-+	struct pt_device *pt = s->private;
-+	unsigned int regval;
-+
-+	if (!pt)
-+		return 0;
-+
-+	seq_printf(s, "Device name: %s\n", pt->name);
-+	seq_printf(s, "   # Queues: %d\n", 1);
-+	seq_printf(s, "     # Cmds: %d\n", pt->cmd_count);
-+
-+	regval = ioread32(pt->io_regs + CMD_PT_VERSION);
-+
-+	seq_printf(s, "    Version: %d\n", regval & RI_VERSION_NUM);
-+	seq_puts(s, "    Engines:");
-+	seq_puts(s, "\n");
-+	seq_printf(s, "     Queues: %d\n", (regval & RI_NUM_VQM) >> RI_NVQM_SHIFT);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Return a formatted buffer containing the current
-+ * statistics of queue for PTDMA
-+ */
-+static int pt_debugfs_stats_show(struct seq_file *s, void *p)
-+{
-+	struct pt_device *pt = s->private;
-+
-+	seq_printf(s, "Total Interrupts Handled: %ld\n", pt->total_interrupts);
-+
-+	return 0;
-+}
-+
-+static int pt_debugfs_queue_show(struct seq_file *s, void *p)
-+{
-+	struct pt_cmd_queue *cmd_q = s->private;
-+	unsigned int regval;
-+
-+	if (!cmd_q)
-+		return 0;
-+
-+	seq_printf(s, "               Pass-Thru: %ld\n", cmd_q->total_pt_ops);
-+
-+	regval = ioread32(cmd_q->reg_int_enable);
-+
-+	seq_puts(s, "      Enabled Interrupts:");
-+	if (regval & INT_EMPTY_QUEUE)
-+		seq_puts(s, " EMPTY");
-+	if (regval & INT_QUEUE_STOPPED)
-+		seq_puts(s, " STOPPED");
-+	if (regval & INT_ERROR)
-+		seq_puts(s, " ERROR");
-+	if (regval & INT_COMPLETION)
-+		seq_puts(s, " COMPLETION");
-+	seq_puts(s, "\n");
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_info);
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_queue);
-+DEFINE_SHOW_ATTRIBUTE(pt_debugfs_stats);
-+
-+void ptdma_debugfs_setup(struct pt_device *pt)
-+{
-+	struct pt_cmd_queue *cmd_q;
-+	char name[MAX_NAME_LEN + 1];
-+	struct dentry *debugfs_q_instance;
-+
-+	if (!debugfs_initialized())
-+		return;
-+
-+	debugfs_create_file("info", 0400, pt->dma_dev.dbg_dev_root, pt,
-+			    &pt_debugfs_info_fops);
-+
-+	debugfs_create_file("stats", 0600, pt->dma_dev.dbg_dev_root, pt,
-+			    &pt_debugfs_stats_fops);
-+
-+	cmd_q = &pt->cmd_q;
-+
-+	snprintf(name, MAX_NAME_LEN - 1, "q");
-+
-+	debugfs_q_instance =
-+		debugfs_create_dir(name, pt->dma_dev.dbg_dev_root);
-+
-+	debugfs_create_file("stats", 0600, debugfs_q_instance, cmd_q,
-+			    &pt_debugfs_queue_fops);
-+}
-diff --git a/drivers/dma/ptdma/ptdma-dev.c b/drivers/dma/ptdma/ptdma-dev.c
-index 4bdad35..0f44944 100644
---- a/drivers/dma/ptdma/ptdma-dev.c
-+++ b/drivers/dma/ptdma/ptdma-dev.c
-@@ -106,6 +106,7 @@ int pt_core_perform_passthru(struct pt_cmd_queue *cmd_q,
- 	struct ptdma_desc desc;
- 
- 	cmd_q->cmd_error = 0;
-+	cmd_q->total_pt_ops++;
- 	memset(&desc, 0, sizeof(desc));
- 	desc.dw0.val = CMD_DESC_DW0_VAL;
- 	desc.length = pt_engine->src_len;
-@@ -154,6 +155,7 @@ static irqreturn_t pt_core_irq_handler(int irq, void *data)
- 	u32 status;
- 
- 	pt_core_disable_queue_interrupts(pt);
-+	pt->total_interrupts++;
- 
- 	status = ioread32(cmd_q->reg_interrupt_status);
- 	if (status) {
-@@ -279,6 +281,9 @@ int pt_core_init(struct pt_device *pt)
- 	if (ret)
- 		goto e_dmaengine;
- 
-+	/* Set up debugfs entries */
-+	ptdma_debugfs_setup(pt);
-+
- 	return 0;
- 
- e_dmaengine:
-diff --git a/drivers/dma/ptdma/ptdma.h b/drivers/dma/ptdma/ptdma.h
-index 67c24bd..67027d8 100644
---- a/drivers/dma/ptdma/ptdma.h
-+++ b/drivers/dma/ptdma/ptdma.h
-@@ -232,6 +232,8 @@ struct pt_cmd_queue {
- 	u32 q_status;
- 	u32 q_int_status;
- 	u32 cmd_error;
-+	/* queue Statistics */
-+	unsigned long total_pt_ops;
- } ____cacheline_aligned;
- 
- struct pt_device {
-@@ -270,6 +272,8 @@ struct pt_device {
- 
- 	wait_queue_head_t lsb_queue;
- 
-+	/* Device Statistics */
-+	unsigned long total_interrupts;
- 	struct pt_tasklet_data tdata;
- };
- 
-@@ -335,6 +339,7 @@ struct pt_dev_vdata {
- int pt_dmaengine_register(struct pt_device *pt);
- void pt_dmaengine_unregister(struct pt_device *pt);
- 
-+void ptdma_debugfs_setup(struct pt_device *pt);
- int pt_core_init(struct pt_device *pt);
- void pt_core_destroy(struct pt_device *pt);
- 
--- 
-2.7.4
+thanks,
+--=20
+John Hubbard
+NVIDIA
+
+> diff --git a/drivers/gpu/drm/exynos/Kconfig b/drivers/gpu/drm/exynos/Kcon=
+fig
+> index 6417f374b923..43257ef3c09d 100644
+> --- a/drivers/gpu/drm/exynos/Kconfig
+> +++ b/drivers/gpu/drm/exynos/Kconfig
+> @@ -88,7 +88,6 @@ comment "Sub-drivers"
+>   config DRM_EXYNOS_G2D
+>   	bool "G2D"
+>   	depends on VIDEO_SAMSUNG_S5P_G2D=3Dn || COMPILE_TEST
+> -	select FRAME_VECTOR
+>   	help
+>   	  Choose this option if you want to use Exynos G2D for DRM.
+>  =20
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/ex=
+ynos/exynos_drm_g2d.c
+> index 967a5cdc120e..ecede41af9b9 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> @@ -205,7 +205,8 @@ struct g2d_cmdlist_userptr {
+>   	dma_addr_t		dma_addr;
+>   	unsigned long		userptr;
+>   	unsigned long		size;
+> -	struct frame_vector	*vec;
+> +	struct page		**pages;
+> +	unsigned int		npages;
+>   	struct sg_table		*sgt;
+>   	atomic_t		refcount;
+>   	bool			in_pool;
+> @@ -378,7 +379,6 @@ static void g2d_userptr_put_dma_addr(struct g2d_data =
+*g2d,
+>   					bool force)
+>   {
+>   	struct g2d_cmdlist_userptr *g2d_userptr =3D obj;
+> -	struct page **pages;
+>  =20
+>   	if (!obj)
+>   		return;
+> @@ -398,15 +398,9 @@ static void g2d_userptr_put_dma_addr(struct g2d_data=
+ *g2d,
+>   	dma_unmap_sgtable(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt,
+>   			  DMA_BIDIRECTIONAL, 0);
+>  =20
+> -	pages =3D frame_vector_pages(g2d_userptr->vec);
+> -	if (!IS_ERR(pages)) {
+> -		int i;
+> -
+> -		for (i =3D 0; i < frame_vector_count(g2d_userptr->vec); i++)
+> -			set_page_dirty_lock(pages[i]);
+> -	}
+> -	put_vaddr_frames(g2d_userptr->vec);
+> -	frame_vector_destroy(g2d_userptr->vec);
+> +	unpin_user_pages_dirty_lock(g2d_userptr->pages, g2d_userptr->npages,
+> +				    true);
+> +	kvfree(g2d_userptr->pages);
+>  =20
+>   	if (!g2d_userptr->out_of_list)
+>   		list_del_init(&g2d_userptr->list);
+> @@ -474,35 +468,34 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct =
+g2d_data *g2d,
+>   	offset =3D userptr & ~PAGE_MASK;
+>   	end =3D PAGE_ALIGN(userptr + size);
+>   	npages =3D (end - start) >> PAGE_SHIFT;
+> -	g2d_userptr->vec =3D frame_vector_create(npages);
+> -	if (!g2d_userptr->vec) {
+> +	g2d_userptr->pages =3D kvmalloc_array(npages, sizeof(*g2d_userptr->page=
+s),
+> +					    GFP_KERNEL);
+> +	if (!g2d_userptr->pages) {
+>   		ret =3D -ENOMEM;
+>   		goto err_free;
+>   	}
+>  =20
+> -	ret =3D get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
+> -		g2d_userptr->vec);
+> +	ret =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE,
+> +				  g2d_userptr->pages);
+>   	if (ret !=3D npages) {
+>   		DRM_DEV_ERROR(g2d->dev,
+>   			      "failed to get user pages from userptr.\n");
+>   		if (ret < 0)
+> -			goto err_destroy_framevec;
+> -		ret =3D -EFAULT;
+> -		goto err_put_framevec;
+> -	}
+> -	if (frame_vector_to_pages(g2d_userptr->vec) < 0) {
+> +			goto err_destroy_pages;
+> +		npages =3D ret;
+>   		ret =3D -EFAULT;
+> -		goto err_put_framevec;
+> +		goto err_unpin_pages;
+>   	}
+> +	g2d_userptr->npages =3D npages;
+>  =20
+>   	sgt =3D kzalloc(sizeof(*sgt), GFP_KERNEL);
+>   	if (!sgt) {
+>   		ret =3D -ENOMEM;
+> -		goto err_put_framevec;
+> +		goto err_unpin_pages;
+>   	}
+>  =20
+>   	ret =3D sg_alloc_table_from_pages(sgt,
+> -					frame_vector_pages(g2d_userptr->vec),
+> +					g2d_userptr->pages,
+>   					npages, offset, size, GFP_KERNEL);
+>   	if (ret < 0) {
+>   		DRM_DEV_ERROR(g2d->dev, "failed to get sgt from pages.\n");
+> @@ -538,11 +531,11 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct =
+g2d_data *g2d,
+>   err_free_sgt:
+>   	kfree(sgt);
+>  =20
+> -err_put_framevec:
+> -	put_vaddr_frames(g2d_userptr->vec);
+> +err_unpin_pages:
+> +	unpin_user_pages(g2d_userptr->pages, npages);
+>  =20
+> -err_destroy_framevec:
+> -	frame_vector_destroy(g2d_userptr->vec);
+> +err_destroy_pages:
+> +	kvfree(g2d_userptr->pages);
+>  =20
+>   err_free:
+>   	kfree(g2d_userptr);
+>=20
 
