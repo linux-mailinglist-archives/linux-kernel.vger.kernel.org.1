@@ -2,139 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EE329007C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF3B2900A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405287AbgJPJGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:06:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34644 "EHLO mail.kernel.org"
+        id S2404890AbgJPJHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404570AbgJPJGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:06:08 -0400
+        id S2405403AbgJPJHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:07:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4087720723;
-        Fri, 16 Oct 2020 09:06:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F60F20872;
+        Fri, 16 Oct 2020 09:07:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839167;
-        bh=iHh+KLBBt7BpsQXhiDYwxCEnjCkkHel4kb+7focSrbY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X3w1uo9SLvhJ0kVnSAuSMBb2BIQtE7gIYT++5rzDRWaKfEv8OS9w6/xrSz/Kz4yiX
-         3Vqrq3cjqmPmB6st78wiqi7C+fISQGevw4oPnmfmdwSIunft1OOPo6ICDS3po8AmaY
-         z3iM/BLOdutEMU/CrfUCCNNf+oXFLh7p/DPQRQWQ=
-Date:   Fri, 16 Oct 2020 11:06:38 +0200
+        s=default; t=1602839242;
+        bh=PRP8aPf/qRM09DSHcjv2qzv1zmdG6YVEBteQhmWV4CI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RhpT9We69l61qGh6vhGD1u8VsTI7Q7W/dx4jeydoBAouYXaTxLXpRcRszX/nSYOft
+         AJ3LUAtSGJ4a5UX+11CGh33cQK8eMzXbabHB7jySwGHF8DOjWMaAT8qv4+jOPaNQUc
+         YaTGIO2x40LyHA2vAAQcE9QRD6AvzJzpY9x4mfNk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Jann Horn <jannh@google.com>, Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        openrisc@lists.librecores.org, kbuild-all@lists.01.org,
-        Martijn Coenen <maco@android.com>,
-        kernel test robot <lkp@intel.com>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [linux-stable-rc:linux-5.4.y 665/2391]
- drivers/android/binder.c:3776: Error: unrecognized keyword/register name
- `l.lwz
-Message-ID: <20201016090638.GA1749385@kroah.com>
-References: <202010160523.r8yMbvrW-lkp@intel.com>
- <CAG48ez3VixjDrMnz6+7JjGW_ZLZCD4+dTYWUD_tNOcfEfpu1Bg@mail.gmail.com>
- <CAAfxs77_h-DHOMFCJBWMuj1H5Rj8OiqC_U1Trs3A8gNCiPvo7w@mail.gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.4 00/16] 4.4.240-rc1 review
+Date:   Fri, 16 Oct 2020 11:06:53 +0200
+Message-Id: <20201016090435.423923738@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAfxs77_h-DHOMFCJBWMuj1H5Rj8OiqC_U1Trs3A8gNCiPvo7w@mail.gmail.com>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.240-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.4.240-rc1
+X-KernelTest-Deadline: 2020-10-18T09:04+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 08:05:17AM +0900, Stafford Horne wrote:
-> On Fri, Oct 16, 2020, 6:46 AM Jann Horn <jannh@google.com> wrote:
-> 
-> > +openrisc folks
-> >
-> > On Thu, Oct 15, 2020 at 11:28 PM kernel test robot <lkp@intel.com> wrote:
-> > > tree:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > linux-5.4.y
-> > > head:   85b0841aab15c12948af951d477183ab3df7de14
-> > > commit: c5665cafbedd2e2a523fe933e452391a02d3adb3 [665/2391] binder:
-> > Prevent context manager from incrementing ref 0
-> > > config: openrisc-randconfig-r002-20201014 (attached as .config)
-> > > compiler: or1k-linux-gcc (GCC) 9.3.0
-> > > reproduce (this is a W=1 build):
-> > >         wget
-> > https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
-> > -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         #
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=c5665cafbedd2e2a523fe933e452391a02d3adb3
-> > >         git remote add linux-stable-rc
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> > >         git fetch --no-tags linux-stable-rc linux-5.4.y
-> > >         git checkout c5665cafbedd2e2a523fe933e452391a02d3adb3
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
-> > ARCH=openrisc
-> > >
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > > All errors (new ones prefixed by >>):
-> > >
-> > >    drivers/android/binder.c: Assembler messages:
-> > > >> drivers/android/binder.c:3776: Error: unrecognized keyword/register
-> > name `l.lwz ?ap,4(r25)'
-> > >    drivers/android/binder.c:3781: Error: unrecognized keyword/register
-> > name `l.addi ?ap,r0,0'
-> >
-> > binder is basically doing this:
-> >
-> > u64 data_ptr;
-> > if (get_user(data_ptr, (u64 __user *)ptr))
-> >   return -EFAULT;
-> >
-> > and GCC complains that that doesn't turn into valid assembly on
-> > openrisc, where get_user() of size 8 expands into this:
-> >
-> > #define __get_user_asm2(x, addr, err)                   \
-> > {                                                       \
-> >         unsigned long long __gu_tmp;                    \
-> >         __asm__ __volatile__(                           \
-> >                 "1:     l.lwz %1,0(%2)\n"               \
-> >                 "2:     l.lwz %H1,4(%2)\n"              \
-> >                 "3:\n"                                  \
-> >                 ".section .fixup,\"ax\"\n"              \
-> >                 "4:     l.addi %0,r0,%3\n"              \
-> >                 "       l.addi %1,r0,0\n"               \
-> >                 "       l.addi %H1,r0,0\n"              \
-> >                 "       l.j 3b\n"                       \
-> >                 "       l.nop\n"                        \
-> >                 ".previous\n"                           \
-> >                 ".section __ex_table,\"a\"\n"           \
-> >                 "       .align 2\n"                     \
-> >                 "       .long 1b,4b\n"                  \
-> >                 "       .long 2b,4b\n"                  \
-> >                 ".previous"                             \
-> >                 : "=r"(err), "=&r"(__gu_tmp)            \
-> >                 : "r"(addr), "i"(-EFAULT), "0"(err));   \
-> >         (x) = (__typeof__(*(addr)))(                    \
-> >                 (__typeof__((x)-(x)))__gu_tmp);         \
-> > }
-> >
-> > and apparently the "l.lwz %H1,4(%2)" and "l.addi %H1,r0,0" don't turn
-> > into valid assembly when %H1 expands to "?ap"?
-> >
-> > I don't know anything about OpenRISC, but this seems like it's
-> > probably an issue in the get_user() implementation.
-> >
-> 
-> This is fixed in 5.9.  I think the patch can be cherry picked by itself.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/openrisc?h=v5.9&id=d877322bc1adcab9850732275670409e8bcca4c4
+This is the start of the stable review cycle for the 4.4.240 release.
+There are 16 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Does not apply cleanly to 5.8.y or 5.4.y, can someone please properly
-backport it and send it to stable@vger.kernel.org?
+Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+Anything received after that time might be too late.
+
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.240-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+and the diffstat can be found below.
 
 thanks,
 
 greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.4.240-rc1
+
+Dominik Przychodni <dominik.przychodni@intel.com>
+    crypto: qat - check cipher length for aead AES-CBC-HMAC-SHA
+
+yangerkun <yangerkun@huawei.com>
+    spi: unbinding slave before calling spi_destroy_queue
+
+Jan Kara <jack@suse.cz>
+    reiserfs: Fix oops during mount
+
+Jan Kara <jack@suse.cz>
+    reiserfs: Initialize inode keys properly
+
+Mychaela N. Falconia <falcon@freecalypso.org>
+    USB: serial: ftdi_sio: add support for FreeCalypso JTAG+UART adapters
+
+Scott Chen <scott@labau.com.tw>
+    USB: serial: pl2303: add device-id for HP GC device
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    staging: comedi: check validity of wMaxPacketSize of usb endpoints found
+
+Leonid Bloch <lb.workbox@gmail.com>
+    USB: serial: option: Add Telit FT980-KS composition
+
+Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+    USB: serial: option: add Cellient MPL200 card
+
+Oliver Neukum <oneukum@suse.com>
+    media: usbtv: Fix refcounting mixup
+
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: Disconnect if E0 is used for Level 4
+
+Patrick Steinhardt <ps@pks.im>
+    Bluetooth: Fix update of connection state in `hci_encrypt_cfm`
+
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: Consolidate encryption handling in hci_encrypt_cfm
+
+Alain Michaud <alainm@chromium.org>
+    Bluetooth: fix kernel oops in store_pending_adv_report
+
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: MGMT: Fix not checking if BT_HS is enabled
+
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: A2MP: Fix not initializing all members
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                 |  4 +-
+ drivers/crypto/qat/qat_common/qat_algs.c | 10 ++++-
+ drivers/media/usb/usbtv/usbtv-core.c     |  3 +-
+ drivers/spi/spi.c                        |  4 +-
+ drivers/staging/comedi/drivers/vmk80xx.c |  3 ++
+ drivers/usb/serial/ftdi_sio.c            |  5 +++
+ drivers/usb/serial/ftdi_sio_ids.h        |  7 ++++
+ drivers/usb/serial/option.c              |  5 +++
+ drivers/usb/serial/pl2303.c              |  1 +
+ drivers/usb/serial/pl2303.h              |  1 +
+ fs/reiserfs/inode.c                      |  6 +--
+ fs/reiserfs/xattr.c                      |  7 ++++
+ include/net/bluetooth/hci_core.h         | 30 +++++++++++---
+ net/bluetooth/a2mp.c                     | 22 +++++++++-
+ net/bluetooth/hci_conn.c                 | 17 ++++++++
+ net/bluetooth/hci_event.c                | 70 +++++++++++++-------------------
+ net/bluetooth/mgmt.c                     |  7 +++-
+ 17 files changed, 141 insertions(+), 61 deletions(-)
+
+
