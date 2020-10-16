@@ -2,109 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5552908D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5B32908D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408774AbgJPPuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:50:09 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:37459 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406693AbgJPPuJ (ORCPT
+        id S2410374AbgJPPu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408776AbgJPPu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:50:09 -0400
-Received: by mail-oi1-f196.google.com with SMTP id t77so2934197oie.4;
-        Fri, 16 Oct 2020 08:50:08 -0700 (PDT)
+        Fri, 16 Oct 2020 11:50:59 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4718FC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:50:59 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gv6so1744128pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 08:50:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9AggGaVcXWrDt7LOaJ51+MlVSwgTWD/C/vq9jiJpyPk=;
+        b=cRZGgrF2cTIxnmmVM/CTpG/kuezx8elx78s9FPcypq/Poglv4E/ofL5kM0jf6zLVYQ
+         ZVtTMJqcJOAx1iLxZlNDso+hiNJQ4eUqPxQVp+09e3qHKnwaS62IHsKJNH6j0Dm5AAYe
+         5MUw2kkOvjTEFukIY3XLuABttTSxNeeukt54E7PQFDmwGw6wr7FhmL11egycLmfK9g92
+         pCwm1JDipbqeSuzsnXkXpAUPo/YtZeVLxYmXl791dc9U4xACQ4fpXIX56eAjrVC/J/u/
+         IHPZuszLZJ5Wb8TdRP0eVIdN5rbAgSPqxYWJy1I2B+7Fg6sso1SnvjTGsN0V1IeoBivE
+         VeuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OutJAEBktoisySZZcByItl3Q7TUScJ10GyZHZCfE+J8=;
-        b=WBHnu0sdCeXQExMxfrAoTMM4WheW06fz5d47dHxqW0hgWRtXy5ItaJt5IJKlquY9hK
-         AMBfTkH5uw4V5JhDGYh5HIc6CgnDWApBtvUyDxP7jENDp7wATKZnFLQ7rSKunvnCipBD
-         HlGvg4ZIO2rEVV1UVlycIPki5+3Z1yH93qkGOwAs6Rk1LYSd/WQARR4l1FtQ3zSfKo2O
-         ms6x98YHiGn/aD36ziHH13PKobfB+OnoxwX/dV50cmTHRvgyNaFL4P+FA3Ppxq50Xvge
-         bniqCRtmkjup5AiLUxl0ShQZuqRNvq6hGO4zm2TpLGAQ+kPn2JXZCw0En49wg6G8MWiR
-         XG7A==
-X-Gm-Message-State: AOAM533aylxuP0ld8RduMhoRL+4mpqaeGiL6cB8oRKxdZaWOQYxDg7RQ
-        A2j1XFnQB+wvEJKM5cmO6A==
-X-Google-Smtp-Source: ABdhPJwLBfdFmgtP6mYMrzKLPn0KqWGaktsmZbu5Mz+71BRtAeCHaNgIuZl/yqNpm/RQeW/wtTsCIQ==
-X-Received: by 2002:aca:b642:: with SMTP id g63mr2743291oif.165.1602863408002;
-        Fri, 16 Oct 2020 08:50:08 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v22sm1164318oia.7.2020.10.16.08.50.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 08:50:07 -0700 (PDT)
-Received: (nullmailer pid 1475301 invoked by uid 1000);
-        Fri, 16 Oct 2020 15:50:06 -0000
-Date:   Fri, 16 Oct 2020 10:50:06 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-renesas-soc@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-media@vger.kernel.org,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>
-Subject: Re: [PATCH v4 2/5] media: dt-bindings: media: renesas,drif: Convert
- to json-schema
-Message-ID: <20201016155006.GA1474949@bogus>
-References: <20201014155719.15120-1-fabrizio.castro.jz@renesas.com>
- <20201014155719.15120-3-fabrizio.castro.jz@renesas.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9AggGaVcXWrDt7LOaJ51+MlVSwgTWD/C/vq9jiJpyPk=;
+        b=pZ7fnOvKho0vVc23nJMQV/P0HmpiXnaKDtj9Nz1Oqfb2fP41/Hik8DRyw6vjfQyvom
+         7zM9f+zpD0BtI4yn8OtPhA+kunl3k9DuFQttcE83byvN0cO5ZTJm0ooQtAtXj9IuKtDF
+         noQLDGc1NZO76T669sHj4BeP5G4tvKELQ/PYJWMcbqCIs975q61602px2HoyBhUFvfAj
+         J7i+JpX/leSmsxkDeBI2ANP9JLfFuXO5n8usaBGA+oPg6u6FfR5wPkicx/aYdcTu2rxL
+         VL2dBkkHYbWah0bGr6hUqyxRFRvcC7HVP0OYfQEqokGpB3BczWl7E7+cDG4v9fPAa8Bp
+         ipPw==
+X-Gm-Message-State: AOAM533RfyK5HVDc7JmaXF5xW2/TyGpEnB2HXB+eyhQyO9rPw8wlDY/d
+        mNNsVJCpJ0Cs4qfY0IdSot/DZMgEvvuBEWIeYFN4tg==
+X-Google-Smtp-Source: ABdhPJxSr6lGCeQFnWTUm7Kzi2II4QnqXIVspoTBOYMhWq36DGJj5igdwFQJ9LfLYX+j4UHUfLIQjdQ5uay+Xn6JkW8=
+X-Received: by 2002:a17:902:9681:b029:d5:cdbd:c38c with SMTP id
+ n1-20020a1709029681b02900d5cdbdc38cmr947918plp.85.1602863458402; Fri, 16 Oct
+ 2020 08:50:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014155719.15120-3-fabrizio.castro.jz@renesas.com>
+References: <cover.1602708025.git.andreyknvl@google.com>
+In-Reply-To: <cover.1602708025.git.andreyknvl@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 16 Oct 2020 17:50:47 +0200
+Message-ID: <CAAeHK+wxqe9bdJm6o914=_GqsArVOGazYEQRt6FQbXHCOduJOw@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/8] kasan: hardware tag-based mode for production use
+ on arm64
+To:     Kostya Serebryany <kcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 16:57:16 +0100, Fabrizio Castro wrote:
-> Convert the Renesas DRIF bindings to DT schema and update
-> MAINTAINERS accordingly.
-> 
-> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v3->v4:
-> * Replace "if" statement with "else" statement for the branch
->   rejecting pinctrl-0 and pinctrl-names properties, as suggested
->   by Geert
-> v2->v3:
-> * Removed the definition of pinctrl-0 and pinctrl-names, as
->   suggested by Geert
-> * Added "power-domains" to the list of required properties,
->   as suggested by Geert
-> v1->v2:
-> * s/controller/Controller/ in the title of renesas,drif.yaml
->   as suggested by Laurent.
-> 
->  .../bindings/media/renesas,drif.txt           | 177 -----------
->  .../bindings/media/renesas,drif.yaml          | 277 ++++++++++++++++++
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 278 insertions(+), 178 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/media/renesas,drif.txt
->  create mode 100644 Documentation/devicetree/bindings/media/renesas,drif.yaml
-> 
+On Wed, Oct 14, 2020 at 10:44 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> This patchset is not complete (see particular TODOs in the last patch),
+> and I haven't performed any benchmarking yet, but I would like to start the
+> discussion now and hear people's opinions regarding the questions mentioned
+> below.
+>
+> === Overview
+>
+> This patchset adopts the existing hardware tag-based KASAN mode [1] for
+> use in production as a memory corruption mitigation. Hardware tag-based
+> KASAN relies on arm64 Memory Tagging Extension (MTE) [2] to perform memory
+> and pointer tagging. Please see [3] and [4] for detailed analysis of how
+> MTE helps to fight memory safety problems.
+>
+> The current plan is reuse CONFIG_KASAN_HW_TAGS for production, but add a
+> boot time switch, that allows to choose between a debugging mode, that
+> includes all KASAN features as they are, and a production mode, that only
+> includes the essentials like tag checking.
+>
+> It is essential that switching between these modes doesn't require
+> rebuilding the kernel with different configs, as this is required by the
+> Android GKI initiative [5].
+>
+> The last patch of this series adds a new boot time parameter called
+> kasan_mode, which can have the following values:
+>
+> - "kasan_mode=on" - only production features
+> - "kasan_mode=debug" - all debug features
+> - "kasan_mode=off" - no checks at all (not implemented yet)
+>
+> Currently outlined differences between "on" and "debug":
+>
+> - "on" doesn't keep track of alloc/free stacks, and therefore doesn't
+>   require the additional memory to store those
+> - "on" uses asyncronous tag checking (not implemented yet)
+>
+> === Questions
+>
+> The intention with this kind of a high level switch is to hide the
+> implementation details. Arguably, we could add multiple switches that allow
+> to separately control each KASAN or MTE feature, but I'm not sure there's
+> much value in that.
+>
+> Does this make sense? Any preference regarding the name of the parameter
+> and its values?
+>
+> What should be the default when the parameter is not specified? I would
+> argue that it should be "debug" (for hardware that supports MTE, otherwise
+> "off"), as it's the implied default for all other KASAN modes.
+>
+> Should we somehow control whether to panic the kernel on a tag fault?
+> Another boot time parameter perhaps?
+>
+> Any ideas as to how properly estimate the slowdown? As there's no
+> MTE-enabled hardware yet, the only way to test these patches is use an
+> emulator (like QEMU). The delay that is added by the emulator (for setting
+> and checking the tags) is different from the hardware delay, and this skews
+> the results.
+>
+> A question to KASAN maintainers: what would be the best way to support the
+> "off" mode? I see two potential approaches: add a check into each kasan
+> callback (easier to implement, but we still call kasan callbacks, even
+> though they immediately return), or add inline header wrappers that do the
+> same.
 
+CC Kostya and Serban.
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-./Documentation/devicetree/bindings/media/renesas,drif.yaml:54:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-
-
-See https://patchwork.ozlabs.org/patch/1382223
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+>
+> === Notes
+>
+> This patchset is available here:
+>
+> https://github.com/xairy/linux/tree/up-prod-mte-rfc1
+>
+> and on Gerrit here:
+>
+> https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/3460
+>
+> This patchset is based on v5 of "kasan: add hardware tag-based mode for
+> arm64" patchset [1].
+>
+> For testing in QEMU hardware tag-based KASAN requires:
+>
+> 1. QEMU built from master [6] (use "-machine virt,mte=on -cpu max" arguments
+>    to run).
+> 2. GCC version 10.
+>
+> [1] https://lore.kernel.org/linux-arm-kernel/cover.1602535397.git.andreyknvl@google.com/
+> [2] https://community.arm.com/developer/ip-products/processors/b/processors-ip-blog/posts/enhancing-memory-safety
+> [3] https://arxiv.org/pdf/1802.09517.pdf
+> [4] https://github.com/microsoft/MSRC-Security-Research/blob/master/papers/2020/Security%20analysis%20of%20memory%20tagging.pdf
+> [5] https://source.android.com/devices/architecture/kernel/generic-kernel-image
+> [6] https://github.com/qemu/qemu
+>
+> Andrey Konovalov (8):
+>   kasan: simplify quarantine_put call
+>   kasan: rename get_alloc/free_info
+>   kasan: introduce set_alloc_info
+>   kasan: unpoison stack only with CONFIG_KASAN_STACK
+>   kasan: mark kasan_init_tags as __init
+>   kasan, arm64: move initialization message
+>   arm64: kasan: Add system_supports_tags helper
+>   kasan: add and integrate kasan_mode boot param
+>
+>  arch/arm64/include/asm/memory.h  |  1 +
+>  arch/arm64/kernel/sleep.S        |  2 +-
+>  arch/arm64/mm/kasan_init.c       |  3 ++
+>  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+>  include/linux/kasan.h            | 14 ++---
+>  mm/kasan/common.c                | 90 ++++++++++++++++++--------------
+>  mm/kasan/generic.c               | 18 ++++---
+>  mm/kasan/hw_tags.c               | 63 ++++++++++++++++++++--
+>  mm/kasan/kasan.h                 | 25 ++++++---
+>  mm/kasan/quarantine.c            |  5 +-
+>  mm/kasan/report.c                | 22 +++++---
+>  mm/kasan/report_sw_tags.c        |  2 +-
+>  mm/kasan/sw_tags.c               | 14 +++--
+>  13 files changed, 182 insertions(+), 79 deletions(-)
+>
+> --
+> 2.28.0.1011.ga647a8990f-goog
+>
