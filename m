@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F2A2900A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE92029019E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394912AbgJPJHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:07:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35936 "EHLO mail.kernel.org"
+        id S2406331AbgJPJQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:16:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405378AbgJPJHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:07:39 -0400
+        id S2394574AbgJPJIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:08:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39B3E20872;
-        Fri, 16 Oct 2020 09:07:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 859CF214DB;
+        Fri, 16 Oct 2020 09:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839258;
-        bh=Xs3UgQSYh54W2MdTbYCrFX0PD7eAZHMeoWxvebzHRHg=;
+        s=default; t=1602839316;
+        bh=O30KFM0sT94yUxPrvn+5GjyKvlRBQI2V7sZbwg9qHME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SzMygxpMMqyS8Kx79B8L49J4y8Ytw1tFlC5jLs9FVoOacRSd9RvU3w/EMir2lia5D
-         LZZ11/xQ1xht13E0A3bAGQO3xFkbSxulniH4/lHyRGUI8tP/IUUo8IdWGrRE4wT3D7
-         uN9iOIZFEk5CmevEMHhtW0Du3gNQ+o9OAWKf6hu4=
+        b=Sg78O65A5LflmwoPgkvGXSWKc9ybBIo3KScDAuvADmaEqFuZnO2nsnmDAJMOWVH6z
+         WjI27M/4Lyvopjxpvt2n9iRQxOksbb6/Q9gK79avPLS2MLMg9dmsoVvmajFE1ZqsZT
+         nl/vEMhrIpMdzNKsQyBrHBrwNIPSxFlwkp1nWuwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Scott Chen <scott@labau.com.tw>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 12/16] USB: serial: pl2303: add device-id for HP GC device
-Date:   Fri, 16 Oct 2020 11:07:16 +0200
-Message-Id: <20201016090437.818012099@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Hans-Christian Noren Egtvedt <hegtvedt@cisco.com>
+Subject: [PATCH 4.14 07/18] Bluetooth: Disconnect if E0 is used for Level 4
+Date:   Fri, 16 Oct 2020 11:07:17 +0200
+Message-Id: <20201016090437.644988101@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201016090437.205626543@linuxfoundation.org>
-References: <20201016090437.205626543@linuxfoundation.org>
+In-Reply-To: <20201016090437.265805669@linuxfoundation.org>
+References: <20201016090437.265805669@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +44,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Chen <scott@labau.com.tw>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-commit 031f9664f8f9356cee662335bc56c93d16e75665 upstream.
+commit 8746f135bb01872ff412d408ea1aa9ebd328c1f5 upstream.
 
-This is adds a device id for HP LD381 which is a pl2303GC-base device.
+E0 is not allowed with Level 4:
 
-Signed-off-by: Scott Chen <scott@labau.com.tw>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 3, Part C page 1319:
+
+  '128-bit equivalent strength for link and encryption keys
+   required using FIPS approved algorithms (E0 not allowed,
+   SAFER+ not allowed, and P-192 not allowed; encryption key
+   not shortened'
+
+SC enabled:
+
+> HCI Event: Read Remote Extended Features (0x23) plen 13
+        Status: Success (0x00)
+        Handle: 256
+        Page: 1/2
+        Features: 0x0b 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+          Secure Simple Pairing (Host Support)
+          LE Supported (Host)
+          Secure Connections (Host Support)
+> HCI Event: Encryption Change (0x08) plen 4
+        Status: Success (0x00)
+        Handle: 256
+        Encryption: Enabled with AES-CCM (0x02)
+
+SC disabled:
+
+> HCI Event: Read Remote Extended Features (0x23) plen 13
+        Status: Success (0x00)
+        Handle: 256
+        Page: 1/2
+        Features: 0x03 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+          Secure Simple Pairing (Host Support)
+          LE Supported (Host)
+> HCI Event: Encryption Change (0x08) plen 4
+        Status: Success (0x00)
+        Handle: 256
+        Encryption: Enabled with E0 (0x01)
+[May 8 20:23] Bluetooth: hci0: Invalid security: expect AES but E0 was used
+< HCI Command: Disconnect (0x01|0x0006) plen 3
+        Handle: 256
+        Reason: Authentication Failure (0x05)
+
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Cc: Hans-Christian Noren Egtvedt <hegtvedt@cisco.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/pl2303.c |    1 +
- drivers/usb/serial/pl2303.h |    1 +
- 2 files changed, 2 insertions(+)
+ include/net/bluetooth/hci_core.h |   10 ++++++----
+ net/bluetooth/hci_conn.c         |   17 +++++++++++++++++
+ net/bluetooth/hci_event.c        |   20 ++++++++------------
+ 3 files changed, 31 insertions(+), 16 deletions(-)
 
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -89,6 +89,7 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD220_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD220TA_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD381_PRODUCT_ID) },
-+	{ USB_DEVICE(HP_VENDOR_ID, HP_LD381GC_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD960_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD960TA_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LCM220_PRODUCT_ID) },
---- a/drivers/usb/serial/pl2303.h
-+++ b/drivers/usb/serial/pl2303.h
-@@ -125,6 +125,7 @@
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1273,11 +1273,13 @@ static inline void hci_encrypt_cfm(struc
+ 	else
+ 		encrypt = 0x01;
  
- /* Hewlett-Packard POS Pole Displays */
- #define HP_VENDOR_ID		0x03f0
-+#define HP_LD381GC_PRODUCT_ID	0x0183
- #define HP_LM920_PRODUCT_ID	0x026b
- #define HP_TD620_PRODUCT_ID	0x0956
- #define HP_LD960_PRODUCT_ID	0x0b39
+-	if (conn->sec_level == BT_SECURITY_SDP)
+-		conn->sec_level = BT_SECURITY_LOW;
++	if (!status) {
++		if (conn->sec_level == BT_SECURITY_SDP)
++			conn->sec_level = BT_SECURITY_LOW;
+ 
+-	if (conn->pending_sec_level > conn->sec_level)
+-		conn->sec_level = conn->pending_sec_level;
++		if (conn->pending_sec_level > conn->sec_level)
++			conn->sec_level = conn->pending_sec_level;
++	}
+ 
+ 	mutex_lock(&hci_cb_list_lock);
+ 	list_for_each_entry(cb, &hci_cb_list, list) {
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -1163,6 +1163,23 @@ int hci_conn_check_link_mode(struct hci_
+ 			return 0;
+ 	}
+ 
++	 /* AES encryption is required for Level 4:
++	  *
++	  * BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 3, Part C
++	  * page 1319:
++	  *
++	  * 128-bit equivalent strength for link and encryption keys
++	  * required using FIPS approved algorithms (E0 not allowed,
++	  * SAFER+ not allowed, and P-192 not allowed; encryption key
++	  * not shortened)
++	  */
++	if (conn->sec_level == BT_SECURITY_FIPS &&
++	    !test_bit(HCI_CONN_AES_CCM, &conn->flags)) {
++		bt_dev_err(conn->hdev,
++			   "Invalid security: Missing AES-CCM usage");
++		return 0;
++	}
++
+ 	if (hci_conn_ssp_enabled(conn) &&
+ 	    !test_bit(HCI_CONN_ENCRYPT, &conn->flags))
+ 		return 0;
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2626,26 +2626,22 @@ static void hci_encrypt_change_evt(struc
+ 
+ 	clear_bit(HCI_CONN_ENCRYPT_PEND, &conn->flags);
+ 
++	/* Check link security requirements are met */
++	if (!hci_conn_check_link_mode(conn))
++		ev->status = HCI_ERROR_AUTH_FAILURE;
++
+ 	if (ev->status && conn->state == BT_CONNECTED) {
+ 		if (ev->status == HCI_ERROR_PIN_OR_KEY_MISSING)
+ 			set_bit(HCI_CONN_AUTH_FAILURE, &conn->flags);
+ 
++		/* Notify upper layers so they can cleanup before
++		 * disconnecting.
++		 */
++		hci_encrypt_cfm(conn, ev->status);
+ 		hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
+ 		hci_conn_drop(conn);
+ 		goto unlock;
+ 	}
+-
+-	/* In Secure Connections Only mode, do not allow any connections
+-	 * that are not encrypted with AES-CCM using a P-256 authenticated
+-	 * combination key.
+-	 */
+-	if (hci_dev_test_flag(hdev, HCI_SC_ONLY) &&
+-	    (!test_bit(HCI_CONN_AES_CCM, &conn->flags) ||
+-	     conn->key_type != HCI_LK_AUTH_COMBINATION_P256)) {
+-		hci_connect_cfm(conn, HCI_ERROR_AUTH_FAILURE);
+-		hci_conn_drop(conn);
+-		goto unlock;
+-	}
+ 
+ 	/* Try reading the encryption key size for encrypted ACL links */
+ 	if (!ev->status && ev->encrypt && conn->type == ACL_LINK) {
 
 
