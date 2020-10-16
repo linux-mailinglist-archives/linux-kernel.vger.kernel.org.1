@@ -2,155 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E112290580
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB13290587
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 14:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406340AbgJPMs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 08:48:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:36742 "EHLO foss.arm.com"
+        id S2406442AbgJPMtM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Oct 2020 08:49:12 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:14142 "EHLO h3cspam02-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405891AbgJPMs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 08:48:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E05FD13D5;
-        Fri, 16 Oct 2020 05:48:24 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C794F3F66B;
-        Fri, 16 Oct 2020 05:48:22 -0700 (PDT)
-References: <20201015110532.738127234@infradead.org> <20201015110923.910090294@infradead.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com,
-        tj@kernel.org, ouwen210@hotmail.com
-Subject: Re: [PATCH v3 10/19] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
-In-reply-to: <20201015110923.910090294@infradead.org>
-Date:   Fri, 16 Oct 2020 13:48:17 +0100
-Message-ID: <jhjlfg6qqum.mognet@arm.com>
+        id S2394663AbgJPMtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 08:49:12 -0400
+Received: from DAG2EX02-BASE.srv.huawei-3com.com ([10.8.0.65])
+        by h3cspam02-ex.h3c.com with ESMTPS id 09GCmK77095507
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Oct 2020 20:48:20 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX02-BASE.srv.huawei-3com.com (10.8.0.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 16 Oct 2020 20:48:23 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Fri, 16 Oct 2020 20:48:23 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mm: vmscan: avoid a unnecessary reschedule in
+ shrink_slab()
+Thread-Topic: [PATCH] mm: vmscan: avoid a unnecessary reschedule in
+ shrink_slab()
+Thread-Index: AQHWo29cMaRbAMdQE0ycFn5GylDeeqmZnPOAgACJFdA=
+Date:   Fri, 16 Oct 2020 12:48:23 +0000
+Message-ID: <9a2b772b13f84bdd9517b17d8d72aa89@h3c.com>
+References: <20201016033952.1924-1-tian.xianting@h3c.com>
+ <20201016120749.GG22589@dhcp22.suse.cz>
+In-Reply-To: <20201016120749.GG22589@dhcp22.suse.cz>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 09GCmK77095507
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks, my understanding is,
+In shrink_slab(), do_shrink_slab() will do the real reclaim work, which will occupy current cpu and consume more cpu time, so we need to trigger a reschedule after reclaim.
+But if it jumps to 'out' label, that means we don't do the reclaim work at this time, it won't cause other thread getting starvation, so we don't need to call cond_resched() in this case.
+Is it right?
 
-On 15/10/20 12:05, Peter Zijlstra wrote:
-> @@ -1862,15 +1875,27 @@ static int migration_cpu_stop(void *data
->        * we're holding p->pi_lock.
->        */
->       if (task_rq(p) == rq) {
-> +		if (is_migration_disabled(p))
-> +			goto out;
+-----Original Message-----
+From: Michal Hocko [mailto:mhocko@suse.com] 
+Sent: Friday, October 16, 2020 8:08 PM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: akpm@linux-foundation.org; linux-mm@kvack.org; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: vmscan: avoid a unnecessary reschedule in shrink_slab()
+
+On Fri 16-10-20 11:39:52, Xianting Tian wrote:
+> In shrink_slab(), it directly goes to 'out' label only when it can't 
+> get the lock of shrinker_rwsew. In this case, it doesn't do the real 
+> work of shrinking slab, so we don't need trigger a reschedule by 
+> cond_resched().
+
+Your changelog doesn't explain why this is not needed or undesirable. Do you see any actual problem?
+
+The point of this code is to provide a deterministic scheduling point regardless of the shrinker_rwsew.
+
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  mm/vmscan.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c index 466fc3144..676e97b28 
+> 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -687,8 +687,9 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+>  	}
+>  
+>  	up_read(&shrinker_rwsem);
+> -out:
 > +
->               if (task_on_rq_queued(p))
->                       rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
->               else
->                       p->wake_cpu = arg->dest_cpu;
-> +
-> +		if (arg->done) {
-> +			p->migration_pending = NULL;
-> +			complete = true;
+>  	cond_resched();
+> +out:
+>  	return freed;
+>  }
+>  
+> --
+> 2.17.1
+> 
 
-Ok so nasty ahead:
-
-P0@CPU0             P1                    P2                      stopper
-
-migrate_disable();
-                   sca(P0, {CPU1});
-                     <installs pending>
-migrate_enable();
-  <kicks stopper>
-                                          sca(P0, {CPU0});
-                                             <locks>
-                                             <local, has pending:
-                                              goto do_complete>
-                                             <unlocks>
-                                             complete_all();
-                                             refcount_dec();
-                     refcount_dec();
-                   <done>
-                                           <done>
-
-                                                                  <locks>
-                                                                  <fiddles with pending->arg->done>
-
-First, P2 can clear p->migration_pending before the stopper gets to run.
-
-Second, the complete_all() is done without pi / rq locks held, but P2 might
-get to it before the stopper does. This may cause &pending to be popped off
-the stack before the stopper gets to it, so mayhaps we would need the below
-hunk.
-
-The move_queued_task() from the stopper is "safe" in that we won't kick a
-task outside of its allowed mask, although we may move it around for no
-reason - I tried to prevent that.
-
----
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a5b6eac07adb..1ebf653c2c2f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -1859,6 +1859,13 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
- 	return rq;
- }
- 
-+struct set_affinity_pending {
-+	refcount_t		refs;
-+	struct completion	done;
-+	struct cpu_stop_work	stop_work;
-+	struct migration_arg	arg;
-+};
-+
- /*
-  * migration_cpu_stop - this will be executed by a highprio stopper thread
-  * and performs thread migration by bumping thread off CPU then
-@@ -1866,6 +1873,7 @@ static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
-  */
- static int migration_cpu_stop(void *data)
- {
-+	struct set_affinity_pending *pending;
- 	struct migration_arg *arg = data;
- 	struct task_struct *p = arg->task;
- 	struct rq *rq = this_rq();
-@@ -1886,13 +1894,22 @@ static int migration_cpu_stop(void *data)
- 
- 	raw_spin_lock(&p->pi_lock);
- 	rq_lock(rq, &rf);
-+
-+	if (arg->done)
-+		pending = container_of(arg->done, struct set_affinity_pending, done);
- 	/*
- 	 * If task_rq(p) != rq, it cannot be migrated here, because we're
- 	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
- 	 * we're holding p->pi_lock.
- 	 */
- 	if (task_rq(p) == rq) {
--		if (is_migration_disabled(p))
-+		/*
-+		 * An affinity update may have raced with us.
-+		 * p->migration_pending could now be NULL, or could be pointing
-+		 * elsewhere entirely.
-+		 */
-+		if (is_migration_disabled(p) ||
-+		    (arg->done && p->migration_pending != pending))
- 			goto out;
- 
- 		if (task_on_rq_queued(p))
-@@ -2024,13 +2041,6 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
- 	__do_set_cpus_allowed(p, new_mask, 0);
- }
- 
--struct set_affinity_pending {
--	refcount_t		refs;
--	struct completion	done;
--	struct cpu_stop_work	stop_work;
--	struct migration_arg	arg;
--};
--
- /*
-  * This function is wildly self concurrent; here be dragons.
-  *
+-- 
+Michal Hocko
+SUSE Labs
