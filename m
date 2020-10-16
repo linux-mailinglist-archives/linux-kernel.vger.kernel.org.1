@@ -2,219 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41CC290D7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6656F290D82
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731854AbgJPVzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 17:55:14 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:42778 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731309AbgJPVzN (ORCPT
+        id S1732050AbgJPV46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 17:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731447AbgJPV44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 17:55:13 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id DEF4180626;
-        Fri, 16 Oct 2020 23:55:09 +0200 (CEST)
-Date:   Fri, 16 Oct 2020 23:55:08 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Qilong Zhang <zhangqilong3@huawei.com>
-Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH -next] dss:use devm_platform_ioremap_resource_byname
-Message-ID: <20201016215508.GD1962741@ravnborg.org>
-References: <20200916111353.105914-1-zhangqilong3@huawei.com>
+        Fri, 16 Oct 2020 17:56:56 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027D4C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 14:56:55 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r4so5834131ioh.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 14:56:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jzoItDulSDSlUxDGRw3G8TEwpiIBVU/vuUm7RuAsW+4=;
+        b=PYK3qHi0SlM4Ap5vtAD939+wmy/uc4NSYcNP6oAvg48Ng1dESdGw/FCNMGWrYwjM3E
+         mPKznaL5D82PF8qF4kbmvDw+x0h/IdSxdhi1DPBMKFr8nijFAdwJDxTwvzpolrbvgX4k
+         qmyYTqKA/kZk19UQGbDyLnBuVH5VapEnAriXw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jzoItDulSDSlUxDGRw3G8TEwpiIBVU/vuUm7RuAsW+4=;
+        b=XdbJuptYDvwTSLtqgSbUsMUL85nr+gd88CoPvEJjevQAXNGHVKKd9zZKpnHhyMeFB4
+         tEcJBFLd6rg/w5Hs5JzePHDRcFY39P/O5mklCjjf4CnNgSA20y9NU5L8zCMFRIYDUHMK
+         9I3qs+J2QZU6/q6pzTk4fT+0qq+aKcMyG2s5koJUQkB1H2WBTDuq3V02SOB5NwcSyKdS
+         6k5xmob3HJ5T7m2t7HYxpQ/6NEu5j1V14GfgMnDaSWSt/mzJIzR33v4CKgOPgPqHniTB
+         S8Sqpo16B7px8LX7RwyY4x2Z0971sXdLU0FvC8CJUM4Kr9eV+XoaMC1oClSUWwdhlT8R
+         ehAQ==
+X-Gm-Message-State: AOAM532GqfnOpxsqVUAE8LuLduSevx62KCLv51RXEM4iRXv0GkEhR+Vi
+        sV4lh4PEnvgI5xnA5VLc3uXyHg==
+X-Google-Smtp-Source: ABdhPJw+AlOetLRaoHdMMYZCU1cMviaNyYmSoxw13tfB/W1yAkmwJK6fIb63qn4IMWo3+S+lpkcr6w==
+X-Received: by 2002:a6b:4014:: with SMTP id k20mr4002080ioa.177.1602885415021;
+        Fri, 16 Oct 2020 14:56:55 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id d14sm3005594ilo.72.2020.10.16.14.56.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 14:56:54 -0700 (PDT)
+Subject: Re: [PATCH v3 00/11] Introduce Simple atomic counters
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, shuah@kernel.org, rafael@kernel.org,
+        johannes@sipsolutions.net, lenb@kernel.org, james.morse@arm.com,
+        tony.luck@intel.com, bp@alien8.de, arve@android.com,
+        tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+        christian@brauner.io, hridya@google.com, surenb@google.com,
+        minyard@acm.org, arnd@arndb.de, mchehab@kernel.org,
+        rric@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-edac@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1602209970.git.skhan@linuxfoundation.org>
+ <20201009193746.GA1073957@hirez.programming.kicks-ass.net>
+ <202010091255.246395A6@keescook>
+ <20201010110920.GQ2628@hirez.programming.kicks-ass.net>
+ <6e1dd408-653e-817e-b659-23649259a929@linuxfoundation.org>
+ <20201014091720.GC2628@hirez.programming.kicks-ass.net>
+ <202010141611.70B7A38@keescook>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <d09124e5-6eae-8515-5071-ac4d0dd669fe@linuxfoundation.org>
+Date:   Fri, 16 Oct 2020 15:56:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916111353.105914-1-zhangqilong3@huawei.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=fu7ymmwf c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=i0EeH86SAAAA:8 a=e5mUnYsNAAAA:8
-        a=j5AbMmh5N-F5ncrrDQQA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+In-Reply-To: <202010141611.70B7A38@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhang Qilong 
-
-On Wed, Sep 16, 2020 at 07:13:53PM +0800, Qilong Zhang wrote:
-> Use the devm_platform_ioremap_resource_byname() helper instead of
-> calling platform_get_resource_byname() and devm_ioremap_resource()
-> separately.
+On 10/14/20 5:31 PM, Kees Cook wrote:
+> On Wed, Oct 14, 2020 at 11:17:20AM +0200, Peter Zijlstra wrote:
+>> On Tue, Oct 13, 2020 at 08:12:20PM -0600, Shuah Khan wrote:
+>>
+>>> They don't add any new behavior, As Kees mentioned they do give us a
+>>> way to clearly differentiate atomic usages that can wrap.
+>>
+>> No it doesn't! atomic_t can wrap, this thing can wrap, no distinction.
+>>
+>> All it does is fragment the API and sow confusion. FOR NO BENEFIT.
 > 
-> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-
-Thanks, applied to drm-misc-next. The patch will appear in -next in a
-few weeks.
-
-While applying I had to update a few things:
-- checkpatch warning due to indent
-- warning for unused variable
-- subject, should start with "omapfb:" like other patches touching the
-  same driver.
-
-I also got a warning because you name differs in your mail and your
-s-o-b. "Zhang Qilong" is not the same as "Qilong Zhang".
-It would be nice if you for next submission have the same name in both
-places.
-
-The patch itself was fine - nice simplifications.
-
-	Sam
-
-
-> ---
->  .../video/fbdev/omap2/omapfb/dss/hdmi4_core.c | 10 +--------
->  .../video/fbdev/omap2/omapfb/dss/hdmi5_core.c | 10 +--------
->  .../video/fbdev/omap2/omapfb/dss/hdmi_phy.c   | 10 +--------
->  .../video/fbdev/omap2/omapfb/dss/hdmi_pll.c   |  9 +-------
->  .../video/fbdev/omap2/omapfb/dss/video-pll.c  | 21 +++----------------
->  5 files changed, 7 insertions(+), 53 deletions(-)
+> I really don't see it this way. It's a distinct subset of the atomic_t
+> API. The trouble that has existed here has been with an atomic_t being
+> originally used NOT for lifetime management, that mutates into something
+> like that because of the available API, but doing so without realizing
+> it. atomic_t gets used for all kinds of algorithms, and the "counter"
+> type is way too easily accidentally transformed into a "lifetime
+> tracker" and we get bugs.
 > 
-> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c
-> index 7ca1803bf161..726c190862d4 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi4_core.c
-> @@ -875,15 +875,7 @@ void hdmi4_audio_stop(struct hdmi_core_data *core, struct hdmi_wp_data *wp)
->  
->  int hdmi4_core_init(struct platform_device *pdev, struct hdmi_core_data *core)
->  {
-> -	struct resource *res;
-> -
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "core");
-> -	if (!res) {
-> -		DSSERR("can't get CORE mem resource\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	core->base = devm_ioremap_resource(&pdev->dev, res);
-> +	core->base = devm_platform_ioremap_resource_byname(pdev, "core");
->  	if (IS_ERR(core->base)) {
->  		DSSERR("can't ioremap CORE\n");
->  		return PTR_ERR(core->base);
-> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c
-> index 2f6ff14a48d9..eda29d3032e1 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi5_core.c
-> @@ -887,15 +887,7 @@ int hdmi5_audio_config(struct hdmi_core_data *core, struct hdmi_wp_data *wp,
->  
->  int hdmi5_core_init(struct platform_device *pdev, struct hdmi_core_data *core)
->  {
-> -	struct resource *res;
-> -
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "core");
-> -	if (!res) {
-> -		DSSERR("can't get CORE IORESOURCE_MEM HDMI\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	core->base = devm_ioremap_resource(&pdev->dev, res);
-> +	core->base = devm_platform_ioremap_resource_byname(pdev, "core");
->  	if (IS_ERR(core->base)) {
->  		DSSERR("can't ioremap HDMI core\n");
->  		return PTR_ERR(core->base);
-> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c
-> index 9c645adba9e2..6fbfeb01b315 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_phy.c
-> @@ -207,19 +207,11 @@ static const struct hdmi_phy_features *hdmi_phy_get_features(void)
->  
->  int hdmi_phy_init(struct platform_device *pdev, struct hdmi_phy_data *phy)
->  {
-> -	struct resource *res;
-> -
->  	phy_feat = hdmi_phy_get_features();
->  	if (!phy_feat)
->  		return -ENODEV;
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "phy");
-> -	if (!res) {
-> -		DSSERR("can't get PHY mem resource\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	phy->base = devm_ioremap_resource(&pdev->dev, res);
-> +	phy->base = devm_platform_ioremap_resource_byname(pdev, "phy");
->  	if (IS_ERR(phy->base)) {
->  		DSSERR("can't ioremap TX PHY\n");
->  		return PTR_ERR(phy->base);
-> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c
-> index 4991be031b0b..eb984d9999fe 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/dss/hdmi_pll.c
-> @@ -220,17 +220,10 @@ int hdmi_pll_init(struct platform_device *pdev, struct hdmi_pll_data *pll,
->  	struct hdmi_wp_data *wp)
->  {
->  	int r;
-> -	struct resource *res;
->  
->  	pll->wp = wp;
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pll");
-> -	if (!res) {
-> -		DSSERR("can't get PLL mem resource\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	pll->base = devm_ioremap_resource(&pdev->dev, res);
-> +	pll->base = devm_platform_ioremap_resource_byname(pdev, "pll");
->  	if (IS_ERR(pll->base)) {
->  		DSSERR("can't ioremap PLLCTRL\n");
->  		return PTR_ERR(pll->base);
-> diff --git a/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c b/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c
-> index f45fe60b9e7d..bff03d920722 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c
-> +++ b/drivers/video/fbdev/omap2/omapfb/dss/video-pll.c
-> @@ -129,7 +129,6 @@ struct dss_pll *dss_video_pll_init(struct platform_device *pdev, int id,
->  	const char * const clkctrl_name[] = { "pll1_clkctrl", "pll2_clkctrl" };
->  	const char * const clkin_name[] = { "video1_clk", "video2_clk" };
->  
-> -	struct resource *res;
->  	struct dss_video_pll *vpll;
->  	void __iomem *pll_base, *clkctrl_base;
->  	struct clk *clk;
-> @@ -138,14 +137,7 @@ struct dss_pll *dss_video_pll_init(struct platform_device *pdev, int id,
->  
->  	/* PLL CONTROL */
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, reg_name[id]);
-> -	if (!res) {
-> -		dev_err(&pdev->dev,
-> -			"missing platform resource data for pll%d\n", id);
-> -		return ERR_PTR(-ENODEV);
-> -	}
-> -
-> -	pll_base = devm_ioremap_resource(&pdev->dev, res);
-> +	pll_base = devm_platform_ioremap_resource_byname(pdev, reg_name[id]);
->  	if (IS_ERR(pll_base)) {
->  		dev_err(&pdev->dev, "failed to ioremap pll%d reg_name\n", id);
->  		return ERR_CAST(pll_base);
-> @@ -153,15 +145,8 @@ struct dss_pll *dss_video_pll_init(struct platform_device *pdev, int id,
->  
->  	/* CLOCK CONTROL */
->  
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> -		clkctrl_name[id]);
-> -	if (!res) {
-> -		dev_err(&pdev->dev,
-> -			"missing platform resource data for pll%d\n", id);
-> -		return ERR_PTR(-ENODEV);
-> -	}
-> -
-> -	clkctrl_base = devm_ioremap_resource(&pdev->dev, res);
-> +	clkctrl_base = devm_platform_ioremap_resource_byname(pdev,
-> +					clkctrl_name[id]);
->  	if (IS_ERR(clkctrl_base)) {
->  		dev_err(&pdev->dev, "failed to ioremap pll%d clkctrl\n", id);
->  		return ERR_CAST(clkctrl_base);
-> -- 
-> 2.17.1
+> If we have a distinct type for wrapping-counters that limits the API,
+> then it is much harder for folks to shoot themselves in the foot. I don't
+> see why this is so bad: we end up with safer usage, more easily auditable
+> code behavior ("how was this atomic_t instance _intended_ to be used?"),
+> and no change in binary size.
 > 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>>> There is no need to keep inc_return in this API as such. I included it
+>>> so it can be used for above cases 1 and 2, so the users don't have to
+>>> call inc() followed by read(). It can be left out of the API.
+> 
+> I go back and forth on this, but after looking at these instances,
+> it makes sense to have inc_return(), for where counters are actually
+> "serial numbers". An argument could be made[1], however, that such uses
+> should not end up in the position of _reusing_ earlier identifiers, which
+> means it's actually can't wrap. (And some cases just need u64 to make this
+> happen[2] -- and in that specific case, don't even need to be atomic_t).
+> 
+> [1] https://lore.kernel.org/lkml/202010071334.8298F3FA7@keescook/
+> [2] https://git.kernel.org/linus/d1e7fd6462ca9fc76650fbe6ca800e35b24267da
+> 
+>> Wrong! The atomic usage in mutex doesn't fall in any of those
+>> categories.
+> 
+> But the atomic usage in mutex is *IN* mutex -- it's a separate data
+> type, etc. We don't build mutexes manually, so why build counters
+> manually?
+> 
+>> The only thing you're all saying that makes sense is that unintentional
+>> wrapping can have bad consequences, the rest is pure confusion.
+>>
+>> Focus on the non-wrapping cases, _everything_ else is not going
+>> anywhere.
+> 
+> I view this as a way to do so: this subset of wrapping cases is being
+> identified and removed from the pool of all the atomic_t cases so that
+> they will have been classified, and we can continue to narrow down all
+> the atomic_t uses to find any potentially mis-used non-wrapping cases.
+> 
+> The other option is adding some kind of attribute to the declarations
+> (which gets us the annotation) but doesn't provide a limit to the API.
+> (e.g. no counter should ever call dec_return).
+> 
+
+Not sure about that. We have more than dec_return to deal with. More on
+this below.
+
+>> So audit the kernel, find the cases that should not wrap, categorize and
+>> create APIs for them that trap the wrapping. But don't go around
+>> confusing things that don't need confusion.
+> 
+> That's what's happening here. But as it turns out, it's easier to do
+> this by employing both the process of elimination (mark the counters)
+> and direct identification (mark the refcount_t). Then the pool of
+> "unannotated" atomic_t instances continues to shrink.
+> 
+
+Right auditing is what is happening now.
+
+Let me summarize the discussion:
+
+atomic_t api provides a wide range of atomic operations as a base
+api to implement atomic counters, bitops, spinlock interfaces.
+The usages also evolved into being used for resource lifetimes and
+state management. Then came refcount_t api to address resource lifetime
+problems related to atomic_t wrapping.
+
+There is a large overlap between the atomic_t api used for resource
+lifetimes and just counters. Not all counters used for resource
+lifetimes can be converted to refcount_t.
+
+A few quick "git grep" numbers on atomic_t interfaces usage:
+
+Common for all:
+
+atomic_set() - 3418
+atomic_read() - 5833
+atomic_inc() - 3376
+atomic_dec() - 2498
+atomic_inc_return() - 612
+
+Counters don't need these:
+
+atomic_dec_return() - 295
+atomic_add_return() - 209
+atomic_sub_return() - 144
+atomic_add() - 744
+atomic_sub() - 371
+atomic_dec_and_test() - 552
+
+You can see from these numbers, the volume of common usages that make
+it difficult to separate out counters vs. non-counter usages.
+
+The problem we are now running into is, it is becoming difficult
+weed out candidates for refcount_t conversion in this noise.
+
+Isolating a smaller subset of arithmetic atomic ops to address this
+specific counters use-case will help reduce noise. This way we can
+go through this work once and convert all counters to use this narrow
+scoped api and what is left is non-counter usages.
+
+The current situation is more confusing and adding a narrowly focused
+api for counters reduces it and makes it easier.
+
+thanks,
+-- Shuah
