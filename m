@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AA62909D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753132909DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410456AbgJPQkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409112AbgJPQkF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:40:05 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E038CC061755;
-        Fri, 16 Oct 2020 09:40:05 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id n9so1765326pgf.9;
-        Fri, 16 Oct 2020 09:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IckxrY+DJUgifghNLeuNR0thZvPKeVF++1zmyr1erYw=;
-        b=ESgt/PDnWql9lpWADVRcvJtTdx/yh6tAhrYC8ZbqFWYpenEaoveVB1MkC0MmzrYBkq
-         A2hcACvYNVxP+qeCOXAm6TAoHg/hA945fUoFPjZyDgwGUzM0gBZIAAgt2f2WdEixOwMc
-         MuvuXD0etsBBlcYQYZVQb0nnaZp6KJlo0Db6lw+kJqZnzH3zDaZxJ8q6h45XeRph8MCx
-         rDJyF81mIAxRxSew5JoQXhgwt1mXtnZ6p+gLQPRXbuD31FMcP8zYOHwfP4c+cBdpMPa/
-         g3a4a6g6G4qJAcV8hOS7BmEgZ9IbBpK/hWsUtfcO9d6EafuL7fBhEFwToR4bak2AEIOr
-         WedQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IckxrY+DJUgifghNLeuNR0thZvPKeVF++1zmyr1erYw=;
-        b=ZQZ7syF6ObbW2/ktYVm4DWNpDvLu3y6rjFWc2PXj/62SrFct7P8BaJJMFTJONq03MY
-         O+mHGh2RAu0YLR3OVezwATVRnDZxKNQAbiRk4ZfyPhQ8XLO/0SbFz7qoSUXUQ8vSEuf5
-         qnh2XHnqFFKMf5ZELakTo9pJThyZWZvPdllkdOOujZhSwl9N5SxXLzcTxaYqf73pj6aL
-         /sabuLrPbXIHVrVPpYqsjgY4HTe6zCaxUpbDy/2CfkpnRXNK4gjpTBrDiSrBbkY3Ccnh
-         ezVs5TYKR5vuXRCkpPcgLaZuCtAEBmY0Wz86O00LdjnpT1bQiPA9/S/1SrlKZd5q8lmo
-         2HCw==
-X-Gm-Message-State: AOAM533aUFtw8ySkRAmoysJY6n6RRmf84/dCjCzU8y/NeoiN2HTMB+ie
-        Y8MqcYCWSogu+OIBUbhrERWGwHzHOI+wsSx/3CkKziFATDl9AA==
-X-Google-Smtp-Source: ABdhPJx6pQLev1hrd9p9RQDKLQbYA4y9N4AoDM8hkHzN15gVHnEjk9hji9W0yK8afB4GH5dGC6kXh6x1X4qhgS5fHFQ=
-X-Received: by 2002:a63:308:: with SMTP id 8mr3912525pgd.203.1602866405342;
- Fri, 16 Oct 2020 09:40:05 -0700 (PDT)
+        id S2410482AbgJPQm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:42:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405198AbgJPQm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:42:58 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D995820848;
+        Fri, 16 Oct 2020 16:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602866578;
+        bh=jr84u8hTDw7KLKrQ9vFJzO0wHhG/H9Q/V0cChZLCaO4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i7kJtcFX1rlebxCP8OvS8KDC6rnqrJMllH/Ff9YX8pj76Dt61+nzSr2JzXKEgE5b3
+         nbWsuJxtsl8TAivQIiG8DJzZSW0KXNH8qJToutOcvptVIJ9ujOxaWvaAvLyvqFLfNR
+         CHpL4M5S6Vy8KfW5S/suGkcTyXLXZ5cSOwkemrSU=
+Date:   Fri, 16 Oct 2020 17:42:50 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     Rob Herring <robh@kernel.org>, lgirdwood@gmail.com,
+        kuninori.morimoto.gx@renesas.com,
+        pierre-louis.bossart@linux.intel.com, perex@perex.cz,
+        tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sharadg@nvidia.com, mkumard@nvidia.com, viswanathl@nvidia.com,
+        rlokhande@nvidia.com, dramesh@nvidia.com, atalambedu@nvidia.com,
+        nwartikar@nvidia.com, swarren@nvidia.com, nicoleotsuka@gmail.com
+Subject: Re: [PATCH v3 09/13] ASoC: dt-bindings: tegra: Add schema for audio
+ graph card
+Message-ID: <20201016164250.GK5274@sirena.org.uk>
+References: <1601573587-15288-1-git-send-email-spujar@nvidia.com>
+ <1601573587-15288-10-git-send-email-spujar@nvidia.com>
+ <20201006203433.GA2786434@bogus>
+ <a5bc07d8-fb2e-e86e-f0d3-be19166ad7bb@nvidia.com>
+ <acbcd136-a933-e5e0-863b-f435dafe1697@nvidia.com>
 MIME-Version: 1.0
-References: <20200917130920.6689-1-geert+renesas@glider.be>
-In-Reply-To: <20200917130920.6689-1-geert+renesas@glider.be>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 16 Oct 2020 19:40:54 +0300
-Message-ID: <CAHp75Vd3s1N_f9oM=MiMv6ZhtrOzYMKAQz+CURVkxG4JgGVw+Q@mail.gmail.com>
-Subject: Re: [PATCH v3] ata: sata_rcar: Fix DMA boundary mask
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-ide@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vbzKE9fGfpHIBC6T"
+Content-Disposition: inline
+In-Reply-To: <acbcd136-a933-e5e0-863b-f435dafe1697@nvidia.com>
+X-Cookie: Pournelle must die!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 4:12 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
->
-> Before commit 9495b7e92f716ab2 ("driver core: platform: Initialize
-> dma_parms for platform devices"), the R-Car SATA device didn't have DMA
-> parameters.  Hence the DMA boundary mask supplied by its driver was
-> silently ignored, as __scsi_init_queue() doesn't check the return value
-> of dma_set_seg_boundary(), and the default value of 0xffffffff was used.
->
-> Now the device has gained DMA parameters, the driver-supplied value is
-> used, and the following warning is printed on Salvator-XS:
->
->     DMA-API: sata_rcar ee300000.sata: mapping sg segment across boundary [start=0x00000000ffffe000] [end=0x00000000ffffefff] [boundary=0x000000001ffffffe]
->     WARNING: CPU: 5 PID: 38 at kernel/dma/debug.c:1233 debug_dma_map_sg+0x298/0x300
->
-> (the range of start/end values depend on whether IOMMU support is
->  enabled or not)
->
-> The issue here is that SATA_RCAR_DMA_BOUNDARY doesn't have bit 0 set, so
-> any typical end value, which is odd, will trigger the check.
->
-> Fix this by increasing the DMA boundary value by 1.
->
-> This also fixes the following WRITE DMA EXT timeout issue:
->
->     # dd if=/dev/urandom of=/mnt/de1/file1-1024M bs=1M count=1024
->     ata1.00: exception Emask 0x0 SAct 0x0 SErr 0x0 action 0x6 frozen
->     ata1.00: failed command: WRITE DMA EXT
->     ata1.00: cmd 35/00:00:00:e6:0c/00:0a:00:00:00/e0 tag 0 dma 1310720 out
->     res 40/00:01:00:00:00/00:00:00:00:00/00 Emask 0x4 (timeout)
->     ata1.00: status: { DRDY }
->
-> as seen by Shimoda-san since commit 429120f3df2dba2b ("block: fix
-> splitting segments on boundary masks").
->
-> Fixes: 8bfbeed58665dbbf ("sata_rcar: correct 'sata_rcar_sht'")
-> Fixes: 9495b7e92f716ab2 ("driver core: platform: Initialize dma_parms for platform devices")
-> Fixes: 429120f3df2dba2b ("block: fix splitting segments on boundary masks")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Cc: stable <stable@vger.kernel.org>
-> ---
-> v3:
->   - Add Reviewed-by, Tested-by,
->   - Augment description and Fixes: with Shimoda-san's problem report
->     https://lore.kernel.org/r/1600255098-21411-1-git-send-email-yoshihiro.shimoda.uh@renesas.com,
->
-> v2:
->   - Add Reviewed-by, Tested-by, Cc.
-> ---
->  drivers/ata/sata_rcar.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/ata/sata_rcar.c b/drivers/ata/sata_rcar.c
-> index 141ac600b64c87ef..44b0ed8f6bb8a120 100644
-> --- a/drivers/ata/sata_rcar.c
-> +++ b/drivers/ata/sata_rcar.c
-> @@ -120,7 +120,7 @@
->  /* Descriptor table word 0 bit (when DTA32M = 1) */
->  #define SATA_RCAR_DTEND                        BIT(0)
->
-> -#define SATA_RCAR_DMA_BOUNDARY         0x1FFFFFFEUL
-> +#define SATA_RCAR_DMA_BOUNDARY         0x1FFFFFFFUL
 
-Wondering if GENMASK() here will be better to avoid such mistakes.
+--vbzKE9fGfpHIBC6T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->  /* Gen2 Physical Layer Control Registers */
->  #define RCAR_GEN2_PHY_CTL1_REG         0x1704
-> --
-> 2.17.1
->
+On Fri, Oct 16, 2020 at 10:44:15AM +0530, Sameer Pujar wrote:
 
+> > I am looking to reference the bindings used in below doc which is not
+> > yet in YAML format. Only additional properties I listed here.
+> > {LINUX}/Documentation/devicetree/bindings/sound/audio-graph-card.txt
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > Should I keep this doc to *.txt format as well and later move to YAML or
+> > is there a way to reference *.txt doc here?
+
+> The dependency here is like below,
+> Tegra audio graph card -> generic audio graph card (audio-graph-card.txt) ->
+> graph (graph.txt)
+
+> I plan to convert dependencies to json-schema in next revision and then
+> refer these for Tegra audio graph card.
+
+Yeah, unfortunately you need to do it that way around - you can't
+reference text bindings from YAML ones as the tooling can't parse the
+text bindings for validation.
+
+--vbzKE9fGfpHIBC6T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+JzYkACgkQJNaLcl1U
+h9DbqAf8DYA4YLlsLe3VZcZ+MHzvpMsnsHwATSDyKbIzcuVEyS5py0YVyaL9jfsN
+wCv986CR6B7LLmAIo6TRfbbk7kDdHAgLDqFz6be5ypPoDkBrPk+PnQP/rPxZXMX3
+K5Vq4oZDL3vjdJ5I0K4OLw2xXVnSny/Y/GcKNytTbrb7uKmbl8AWFXF7WUq2sivV
+crmj6BSiKwt+pIrxeUDfWW5KdtatTanevhOx+d8lClG+mzCg0oGuUVjBzA8ZMGu8
+EfPRMTAqnrEo9xaAMEIxdVvsntV+ibFSqT8o5dXozhL7+nw86FH8DFEOIRzDBLYM
+hC5VtDA4CObZ/gwHIFkasu0/KOS1ew==
+=/9Pr
+-----END PGP SIGNATURE-----
+
+--vbzKE9fGfpHIBC6T--
