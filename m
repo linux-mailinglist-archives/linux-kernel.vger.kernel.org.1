@@ -2,97 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7ED28FC38
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 03:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3966128FC41
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 03:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388885AbgJPBZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Oct 2020 21:25:35 -0400
-Received: from sonic311-25.consmr.mail.ne1.yahoo.com ([66.163.188.206]:45895
-        "EHLO sonic311-25.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388752AbgJPBZf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Oct 2020 21:25:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602811534; bh=DPYuw2gUpgtMJzJhlH/AVmRGu2wSKCY1C+f8nOCoxu0=; h=Date:From:Reply-To:Subject:References:From:Subject; b=O4SOTwggkxbGZRCEBQdYM4Y5ia8xrLY2dPObp7VBWQz3g/TJrsLpVfru/Zwbm5h8MMWxnWQFEOYKsaqWCQoWiANnxbK1629a3om50b2BzfwJldnN6YkEyDmYyWutzfhxDwg8hGrdvCoXmBkqEYUm986tLFiJIXkzUjgmuQliktcRZaIE7NZ3JHQb9B/gaL/MhvW+42MJmfeVso02kTRu74uv2CUyXNZSKNKQew73naIxDziU7uRGRbHiwP2KiLvALvDl3ksxs94SgutoOYSynpiDbJXCAtL5BLMtEDTGvEe2piguwd/2n13cnC5javZr29p49S1TVChi2bxxWCcMzg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1602811534; bh=4CzD1PkLeZNZ6pR1FA98gdpP9o5pnmlxrKVENHEcDAB=; h=Date:From:Subject; b=jybkmuIf/DYZEGodEXdpOQKpTh7ywnYXnS8HiuO8wSgLwZnOlAECOPDYzzCMZu797lMTmdzylb7z8VEL/aiS4TEIF9CETa634zc5CkX9VeFcQ/fUHrMTDWhA8wHJnSQfYJlCY5tEu4b6RPJpwhrwrS2YqymHVdqre81XttVh8kDR1NKul/CmxeTD1UyW13kToW+2AcVHivmDaXMAxQVBmCkYh2sHdYK/K+346cHMnvvgEEmYLQdnign3Hn4mrMSGo5oDJVS4kCLxbWjtxDNw+PFyhaC9kyU1PJiJft+jAz0BTCDUNeiW4hNA6voEp2KKFrH3cAvRnuln9+4XoYKXGQ==
-X-YMail-OSG: gUgardcVM1m5so9aIgfN3QL.M8K3f64v7Jna3yJqQoHFn4UxfIdmwu76ufHlhVC
- EjduGyPQWolpp7WzqLM2dPS1ySIByqUnOCC7xNSnpoZAXubgz0v7DluQhp4lpFYyypDugML9mWu3
- fJSmFA_0H.hoQ_B33COYzmC6lzU3J2P2BdyxIur2rAe4vKuUjDeQa9keyhBJbz40MyhobncjuRGN
- hZWX8e3IiR2f.PwiU_VJBpJH9xoH5sdlpKOQH4E4dolyGik1yrfTPRGcOUHmv1sfK8Lh30o.Smhf
- c.vQ3eqWv3jryPUSxEi4Yqq6FVflkzAbWEv1dgHsosRmDxj4wnvANvY6Dpc3C_SEG0QdeeqAp1xG
- dHaHwk.T1CRdFPQIKLPMRlPeoucVAX_OYYRxV.5DFABffQbRCc8xW79yZFMaXdQ96QAA_bX7z5Pf
- if0VdYuImBdhsLNae.1wWhrWXmvebhyxKi_1wkjhGNGhRcXxtbpth1G4_mslKmgmOBhOujHNOwWK
- O_op_sQ6wsdvnL3aMnNnEl_lhk59r2nQ_SvUYWTkjPe8hVK7RdIPEGtwFlAZfejS7KS21S43g.ui
- MOTw2gcCERylo0E38G70reUooSgfHnHxNDVJqSgml3_mG7202lXJJRb0RZyzWpR1CwewAQ3rRJbq
- m.Hk2CGCoJ0WID.G92RAEDbhAfPiPN1cmBB4j6ad2gZvxtiZ0lNoJoPEdm4qZkPHZL4hxUAvcGra
- ahaYKMhfAkKy6gtCiCcIOwltLzdNEAKjOIrz7b4fl3aGU958GbTJ54F1NbRxadXNJ.wwjBX4NuuH
- HpThlmHIuPjpYKbami4CKAWpGBVPWVhE7jlquIAspp.FGYQjh2hrWWb031PcpyMRQ3sEHaVc19My
- wAmFS7R2k0gs6MYSAgNFYfM9v0K6xAVedkibK.t5iLioBN2K8CDo8oKoaemR14Qp1ZnB0xIelxGT
- LW3lHfr2c3imGNVLgdFCnRb6rLOV6sGjB1Q8qxKHAGuMd1gTp_Q6b2nLwLLhMiTbnld1CWrPlIgg
- 9fWYQRzhpsEfolMCj4DjRfQsQcauaoWPikz28h4LrIVezovr1AMA.sUXAdc0MTkBqJdcdNwjWHXz
- JOR80W9zfZA6nU_8eZ7W_ApCJWc3vgvxIaw3zVAsMTPxnkQnW9gZZtm0u_ACGWRKWf.UPZgpMYMn
- ca5a0rmXGxkrvY.LimnA6I4ILL_M9qeKmIQh71EzpDJdKQ6I2BRnQzY9CcSjHyyDgOUgj8oSsw4r
- k0nfGb5wzcT0E2ZsrXdN.oeK0GP1RpqWVbSdcXOknV5msG77jb9MEf3MT09ziso9aIXk5l_orjJb
- PPxrsN8GgV6zLbMjrq1.gJ8P7Aphry5KBaEyu7wYr.CnUs5cfb7Wt5SB_vOsQatcfxYQt.W4.BqA
- PH5GLSvKog5Zn7pHMbI_a.5MJpveg0C0SqbQj2DdsOefdeP6h
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Fri, 16 Oct 2020 01:25:34 +0000
-Date:   Fri, 16 Oct 2020 01:25:29 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <brunelminaa@gmail.com>
-Reply-To: mrsminaabrunel643@gmail.com
-Message-ID: <63239677.31209.1602811529963@mail.yahoo.com>
-Subject: My Dear in the lord
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <63239677.31209.1602811529963.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+        id S2389037AbgJPBdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Oct 2020 21:33:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388978AbgJPBdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Oct 2020 21:33:36 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC97120760;
+        Fri, 16 Oct 2020 01:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602812015;
+        bh=Gyq0Uk2XEfl9xmWYnLkSM9zvUTO4aNfnfhPhd5Y8Dyw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1Mlbr9r5bcAnUqGUfWwMD8DGKhMJgxyOMR+rHZeKITFbo1+QN6xLqfguFM4Au1Ffa
+         x7WVxZVJFg2GS/N1H9LufkM09Jo4ykEZBVbBg4Lu61FnoV6qMy8jBXwQgKLEmzoMEY
+         oiJdHOWokM8FXajrQsmzrA/Zp+s3sZuqD2NbOnGI=
+Date:   Fri, 16 Oct 2020 10:33:30 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Numfor Mbiziwo-Tiapo <nums@google.com>
+Subject: Re: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined
+ behavior.
+Message-Id: <20201016103330.668783f6d4e19ec2ac2ca1f8@kernel.org>
+In-Reply-To: <20201015161216.1563600-1-irogers@google.com>
+References: <20201015161216.1563600-1-irogers@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 15 Oct 2020 09:12:16 -0700
+Ian Rogers <irogers@google.com> wrote:
+
+> From: Numfor Mbiziwo-Tiapo <nums@google.com>
+> 
+> Don't perform unaligned loads in __get_next and __peek_nbyte_next as
+> these are forms of undefined behavior.
+> 
+> These problems were identified using the undefined behavior sanitizer
+> (ubsan) with the tools version of the code and perf test. Part of this
+> patch was previously posted here:
+> https://lore.kernel.org/lkml/20190724184512.162887-4-nums@google.com/
+> 
+> v2. removes the validate_next check and merges the 2 changes into one as
+> requested by Masami Hiramatsu <mhiramat@kernel.org>
+
+Looks good to me. This may be OK on x86, but now this code will be run
+on other arches for cross compilation.
+
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+> ---
+>  arch/x86/lib/insn.c       | 4 ++--
+>  tools/arch/x86/lib/insn.c | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index 404279563891..be88ab250146 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -20,10 +20,10 @@
+>  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+>  
+>  #define __get_next(t, insn)	\
+> -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
+> +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
+>  
+>  #define __peek_nbyte_next(t, insn, n)	\
+> -	({ t r = *(t*)((insn)->next_byte + n); r; })
+> +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+>  
+>  #define get_next(t, insn)	\
+>  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> index 0151dfc6da61..92358c71a59e 100644
+> --- a/tools/arch/x86/lib/insn.c
+> +++ b/tools/arch/x86/lib/insn.c
+> @@ -20,10 +20,10 @@
+>  	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+>  
+>  #define __get_next(t, insn)	\
+> -	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); r; })
+> +	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); r; })
+>  
+>  #define __peek_nbyte_next(t, insn, n)	\
+> -	({ t r = *(t*)((insn)->next_byte + n); r; })
+> +	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); r; })
+>  
+>  #define get_next(t, insn)	\
+>  	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+> -- 
+> 2.28.0.1011.ga647a8990f-goog
+> 
 
 
-My Dear in the lord
-
-
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politicians who owns a small=
- gold company in Burkina Faso; He died of Leprosy and Radesyge, in year Feb=
-ruary 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Milli=
-on Euro) Eight million, Five hundred thousand Euros in a bank in Ouagadougo=
-u the capital city of of Burkina in West Africa. The money was from the sal=
-e of his company and death benefits payment and entitlements of my deceased=
- husband by his company.
-
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
-
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
-
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
-
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
-
-Thanks
-Mrs. Mina A. Brunel
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
