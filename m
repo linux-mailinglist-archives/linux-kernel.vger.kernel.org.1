@@ -2,115 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BE62906E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483282906FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408647AbgJPOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408570AbgJPOMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:12:34 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B00C061755;
-        Fri, 16 Oct 2020 07:12:34 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w21so1575634pfc.7;
-        Fri, 16 Oct 2020 07:12:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WeJBT440qxGlWoOHusH1/zQt+ShlV28y2KKBM8Hjk6E=;
-        b=oNtP+ujg/ola3c0AjurY3soFKGDNIxJrL3i4VvoYBWoUeqQkoJ9ULSwzC3RjeSp6K0
-         mWrAih9qEXpoVtWIU0xAPTa5haWASD5MARoVoHxxfHlihRhERSlaDNKRfG/Qmxf03W7P
-         4Un/hYYzblZITTdVTJjxAWx1ufvirRaTh2sVHmwPIHAY87SC4Dxh8Ddqc63o0BGILuB/
-         ZK0D3lCkhi01DAwW3xsCGAT5FoUqNwtIwVjsJ1Uhqz3sAiNaoZGyRyeBZfxo2uO/o/O+
-         Dv2GUIeWd5JD2bmWV6Pj6e3Y7TqFz4vylXrMqykp4oE6/4CyPWFiU6khPpgSTMN8MYzg
-         kTyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WeJBT440qxGlWoOHusH1/zQt+ShlV28y2KKBM8Hjk6E=;
-        b=IDjm2jyD0XD6QOEYDRE/MPPAL0bxpBGwgH23ExmPikIxFDMSYfNOTfdFcoQKTx0X+t
-         5B6aUMKMo8djMgMjotp8YxqJEPZqnnDkuazd7VZiD80nMXngJAs6ColEd3DpSjo3MpDX
-         R69ydEaDTP7dzC7BDo1oQ0BBGyjd+CsmE/vnaqej2hiw3wOvchVZBwGQWgGQVq5wpQ8i
-         a2xuwty+g8JH0RMLGKASIkWtoyt9DdbmN0i/sXphHxkASfO+EoJRWLcCEiqZ1DJF5P0Q
-         YaruCilDSnnmoG8BAagnY9TTs7pZL+0SBgYmBcN+r1R9/QuFIpxc2fC008AEN9Na19nF
-         Yb+g==
-X-Gm-Message-State: AOAM532vnUuPI9k7dUoZfCsXB1ApdTTx62MXd+J+EjDFRWddzqvguSsn
-        zmE2OrnAOcOY6r6/69CSaIALYyMUSnsqh5myPfg=
-X-Google-Smtp-Source: ABdhPJx96m5FGgQj2qTgKwgmsWldccnNoDxBn9KwwuAFHi+iWmxsYquSLTJ/dgTiKzVW9DdGP6ySFvKwlx2Z2NTM94A=
-X-Received: by 2002:aa7:81d5:0:b029:142:2501:39fa with SMTP id
- c21-20020aa781d50000b0290142250139famr3986342pfn.73.1602857553516; Fri, 16
- Oct 2020 07:12:33 -0700 (PDT)
+        id S2406318AbgJPOOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:14:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395282AbgJPOOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 10:14:03 -0400
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7339321527;
+        Fri, 16 Oct 2020 14:14:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602857642;
+        bh=/Wy1dqxW7oC6Qye976pyOHB3NEyzVajEMIVxWnNoiWI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GvfirHosPoQlrZ9dHvK/MiR7ld0pnZ1gIqpgnPDdlppchrxHv71dL73zET/FkkRbX
+         tpqynbY8hwuhIjWFSMFkHjBO9r32xo2deIPkDs7E/9OfxpB5pjmz47kNzImHNVhmWP
+         Gky4SSBzFgYnYuDePGs3dGZiWfdwrzyOS730N2ug=
+Received: by mail-oi1-f180.google.com with SMTP id h10so2597082oie.5;
+        Fri, 16 Oct 2020 07:14:02 -0700 (PDT)
+X-Gm-Message-State: AOAM5332Zt9j9+/2e3ssCOcDCWxTZ2BFwwWZRU0xSKaHVO8SRA8RNBNQ
+        it5k5E9hTlDFu4inXIjklq1Mv4BeEcGzLm2SBg==
+X-Google-Smtp-Source: ABdhPJwvkvemmhvQLSwCQm4gpIYMftfka7WMIAmWLyZGAJSnJ52MchXcPRDmVK7L+Va3qkbuIITfwhAYwzEjNkMAFBA=
+X-Received: by 2002:aca:4c52:: with SMTP id z79mr2691947oia.147.1602857641568;
+ Fri, 16 Oct 2020 07:14:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201014231158.34117-1-warthog618@gmail.com> <20201014231158.34117-2-warthog618@gmail.com>
-In-Reply-To: <20201014231158.34117-2-warthog618@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 16 Oct 2020 17:13:22 +0300
-Message-ID: <CAHp75VcAf8i=jEdDFntpDfLBDMWoJh+ykHBTBRX53B9L+yFNUA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] gpiolib: cdev: allow edge event timestamps to be
- configured as REALTIME
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jack Winch <sunt.un.morcov@gmail.com>
+References: <20201013160845.1772-1-thunder.leizhen@huawei.com>
+ <20201013160845.1772-7-thunder.leizhen@huawei.com> <bda5f620-7140-51fb-fadd-6ebd3c0db935@ti.com>
+ <4f5f9b55-9fad-9318-82d4-6b258643738b@huawei.com> <20201014135019.GA1563910@bogus>
+ <49b680f8-d7d7-8ea3-894c-73cbfacc5ba4@huawei.com>
+In-Reply-To: <49b680f8-d7d7-8ea3-894c-73cbfacc5ba4@huawei.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 16 Oct 2020 09:13:49 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJKOeZybxnu+Z2ugaGwebrnbtmJ8n0st-=n3NbAf9_pyw@mail.gmail.com>
+Message-ID: <CAL_JsqJKOeZybxnu+Z2ugaGwebrnbtmJ8n0st-=n3NbAf9_pyw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] dt-bindings: misc: correct the property name
+ cmd-gpios to cmd-gpio
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Dan Murphy <dmurphy@ti.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 6:53 AM Kent Gibson <warthog618@gmail.com> wrote:
+On Wed, Oct 14, 2020 at 10:23 PM Leizhen (ThunderTown)
+<thunder.leizhen@huawei.com> wrote:
 >
-> Using CLOCK_REALTIME as the source for event timestamps is crucial for
-> some specific applications, particularly those requiring timetamps
-> relative to a PTP clock, so provide an option to switch the event
-> timestamp source from the default CLOCK_MONOTONIC to CLOCK_REALTIME.
 >
-> Note that CLOCK_REALTIME was the default source clock for GPIO until
-> Linux 5.7 when it was changed to CLOCK_MONOTONIC due to issues with the
-> shifting of the realtime clock.
-> Providing this option maintains the CLOCK_MONOTONIC as the default,
-> while also providing a path forward for those dependent on the pre-5.7
-> behaviour.
+>
+> On 2020/10/14 21:50, Rob Herring wrote:
+> > On Wed, Oct 14, 2020 at 09:29:26AM +0800, Leizhen (ThunderTown) wrote:
+> >>
+> >>
+> >> On 2020/10/14 1:32, Dan Murphy wrote:
+> >>> Zhen
+> >>>
+> >>> On 10/13/20 11:08 AM, Zhen Lei wrote:
+> >>>> The property name used in arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts is
+> >>>> cmd-gpio.
+> >>>>
+> >>>> arch/arm/boot/dts/mmp2-olpc-xo-1-75.dts:235:
+> >>>> cmd-gpio = <&gpio 155 GPIO_ACTIVE_HIGH>;
+> >>>>
+> >>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> >>>> ---
+> >>>>   Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml | 6 +++---
+> >>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+> >>>>
+> >>>> diff --git a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+> >>>> index b3c45c046ba5e37..c7a06a9650db2ed 100644
+> >>>> --- a/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+> >>>> +++ b/Documentation/devicetree/bindings/misc/olpc,xo1.75-ec.yaml
+> >>>> @@ -24,7 +24,7 @@ properties:
+> >>>>     compatible:
+> >>>>       const: olpc,xo1.75-ec
+> >>>>   -  cmd-gpios:
+> >>>> +  cmd-gpio:
+> >>>
+> >>> Preference is gpios not gpio. But Rob H accept or reject
+> >>
+> >> Look at the search result below. It seems that the driver have not been merged into mainline.
+> >
+> > Yes, in drivers/platform/olpc/olpc-xo175-ec.c.
+> >
+> > Your mistake is the gpiod api takes just 'cmd' as the GPIO core handles
+> > both forms.
+>
+> OK, thanks for your information. I have found that it defined by gpio_suffixes[].
+>
+> >
+> >> But the property name is really used as cmd-gpio at mmp2-olpc-xo-1-75.dts:235, I don't think
+> >> the mmp2-olpc-xo-1-75.dts can make a mistake. Otherwise, the driver will not work properly.
+> >> Meanwhile, Both names cmd-gpios and cmd-gpio seem to be in use. But I prefer cmd-gpio, after
+> >> all, only one gpio is assigned now. The motorola,cmd-gpios add "s" because it contains 3 gpio.
+> >
+> > The preference is it is always '-gpios' just like it's always
+> > 'interrupts' or 'clocks'.
+> >
+> > However, whether to change this is really up to the OLPC folks. Given
+> > the driver has always supported both forms, it should be okay to change
+> > the dts. Though there could be other users besides the kernel.
+>
+> If both "cmd-gpios" and "cmd-gpio" are supported, should we use enum to list both
+> of them in yaml? or use patternProperties?
 
-...
+No, we pick one or the other. Given Lubomir is okay with a dts change,
+we should use just 'cmd-gpios'.
 
->          GPIO_V2_LINE_DIRECTION_FLAGS | \
->          GPIO_V2_LINE_DRIVE_FLAGS | \
->          GPIO_V2_LINE_EDGE_FLAGS | \
-> +        GPIO_V2_LINE_FLAG_EVENT_CLOCK_REALTIME | \
-
-Wondering if we would have something like
-
-          GPIO_V2_LINE_CLOCK_FLAGS | \
-
-here for the sake of consistency.
-
->          GPIO_V2_LINE_BIAS_FLAGS)
-
-...
-
-> +static u64 line_event_timestamp(struct line *line)
-> +{
-
-> +       if (test_bit(FLAG_EVENT_CLOCK_REALTIME, &line->desc->flags))
-
-I dunno if we can actually drop the word EVENT from these definitions.
-I don't think we would have in the near future something similar for
-the non-event data.
-
-> +               return ktime_get_real_ns();
-> +
-> +       return ktime_get_ns();
-> +}
-
-In general it looks good, thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Rob
