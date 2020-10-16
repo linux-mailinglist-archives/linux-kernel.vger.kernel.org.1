@@ -2,155 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534472902F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBB32902F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 12:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395452AbgJPKlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 06:41:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50508 "EHLO mx2.suse.de"
+        id S2395462AbgJPKlq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Oct 2020 06:41:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50850 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395431AbgJPKlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 06:41:06 -0400
+        id S2395455AbgJPKlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 06:41:46 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B892DAB5C;
-        Fri, 16 Oct 2020 10:41:04 +0000 (UTC)
-To:     Zhenhua Huang <zhenhuah@codeaurora.org>, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm: fix page_owner initializing issue for arm32
-Message-ID: <1a1a80b8-2ce4-9346-f333-68f3bb8b25c0@suse.cz>
-Date:   Fri, 16 Oct 2020 12:41:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        by mx2.suse.de (Postfix) with ESMTP id 1DCC7AB5C;
+        Fri, 16 Oct 2020 10:41:45 +0000 (UTC)
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+User-agent: mu4e 1.4.13; emacs 27.1
+From:   Richard Palethorpe <rpalethorpe@suse.de>
+To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Roman Gushchin <guro@fb.com>, ltp@lists.linux.it,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+Reply-To: rpalethorpe@suse.de
+In-reply-to: <20201016094702.GA95052@blackbook>
+Date:   Fri, 16 Oct 2020 11:41:43 +0100
+Message-ID: <87sgaesba0.fsf@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/20 11:14 AM, Zhenhua Huang wrote:
-> Page owner of pages used by page owner itself used is missing on arm32 targets.
-> The reason is dummy_handle and failure_handle is not initialized correctly.
-> Buddy allocator is used to initialize these two handles. However, buddy
-> allocator is not ready when page owner calls it. This change fixed that by
-> initializing page owner after buddy initialization.
-> 
-> The working flow before and after this change are:
-> original logic:
-> 1. allocated memory for page_ext(using memblock).
-> 2. invoke the init callback of page_ext_ops like
-> page_owner(using buddy allocator).
-> 3. initialize buddy.
-> 
-> after this change:
-> 1. allocated memory for page_ext(using memblock).
-> 2. initialize buddy.
-> 3. invoke the init callback of page_ext_ops like
-> page_owner(using buddy allocator).
-> 
-> with the change, failure/dummy_handle can get its correct value and
-> page owner output for example has the one for page owner itself:
-> Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN), pid 1006, ts
-> 67278156558 ns
-> PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
->   init_page_owner+0x28/0x2f8
->   invoke_init_callbacks_flatmem+0x24/0x34
->   start_kernel+0x33c/0x5d8
->     (null)
+Hello Michal,
 
-register_dummy_stack should also appear in the above. Either one too many is 
-skipped in arm32 stack saving, or the noinline is not honoured. Could be 
-investigated separately.
+Michal Koutný <mkoutny@suse.com> writes:
 
-> 
-> Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
+> Hello.
+>
+> On Wed, Oct 14, 2020 at 08:07:49PM +0100, Richard Palethorpe <rpalethorpe@suse.com> wrote:
+>> SLAB objects which outlive their memcg are moved to their parent
+>> memcg where they may be uncharged. However if they are moved to the
+>> root memcg, uncharging will result in negative page counter values as
+>> root has no page counters.
+> Why do you think those are reparented objects? If those are originally
+> charged in a non-root cgroup, then the charge value should be propagated up the
+> hierarchy, including root memcg, so if they're later uncharged in root
+> after reparenting, it should still break even. (Or did I miss some stock
+> imbalance?)
 
-This should be safe, as the sparse variant page_ext_init() runs even later, so:
+I traced it and can see they are reparented objects and that the root
+groups counters are zero (or negative if I run madvise06 multiple times)
+before a drain takes place. I'm guessing this is because the root group
+has 'use_hierachy' set to false so that the childs page_counter parents
+are set to NULL. However I will check, because I'm not sure about
+either.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+>
+> (But the patch seems justifiable to me as objects (not)charged directly to
+> root memcg may be incorrectly uncharged.)
+>
+> Thanks,
+> Michal
 
-Nit below:
 
-> ---
->   include/linux/page_ext.h | 8 ++++++++
->   init/main.c              | 2 ++
->   mm/page_ext.c            | 8 +++++++-
->   3 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
-> index cfce186..aff81ba 100644
-> --- a/include/linux/page_ext.h
-> +++ b/include/linux/page_ext.h
-> @@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
->   {
->   }
->   extern void page_ext_init(void);
-> +static inline void page_ext_init_flatmem_late(void)
-> +{
-> +}
->   #else
->   extern void page_ext_init_flatmem(void);
-> +extern void page_ext_init_flatmem_late(void);
->   static inline void page_ext_init(void)
->   {
->   }
-> @@ -76,6 +80,10 @@ static inline void page_ext_init(void)
->   {
->   }
->   
-> +static inline void page_ext_init_flatmem_late(void)
-> +{
-> +}
-> +
->   static inline void page_ext_init_flatmem(void)
->   {
->   }
-> diff --git a/init/main.c b/init/main.c
-> index 130376e..b34c475 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -818,6 +818,8 @@ static void __init mm_init(void)
->   	init_debug_pagealloc();
->   	report_meminit();
->   	mem_init();
-> +	/* page_owner must be initialized after buddy is ready */
-> +	page_ext_init_flatmem_late();
->   	kmem_cache_init();
->   	kmemleak_init();
->   	pgtable_init();
-> diff --git a/mm/page_ext.c b/mm/page_ext.c
-> index a3616f7..373f7a1 100644
-> --- a/mm/page_ext.c
-> +++ b/mm/page_ext.c
-> @@ -99,6 +99,13 @@ static void __init invoke_init_callbacks(void)
->   	}
->   }
->   
-> +#if !defined(CONFIG_SPARSEMEM)
-
-#ifndef is more common if you don't need boolean ops on multiple configs
-
-> +void __init page_ext_init_flatmem_late(void)
-> +{
-> +	invoke_init_callbacks();
-> +}
-> +#endif
-> +
->   static inline struct page_ext *get_entry(void *base, unsigned long index)
->   {
->   	return base + page_ext_size * index;
-> @@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
->   			goto fail;
->   	}
->   	pr_info("allocated %ld bytes of page_ext\n", total_usage);
-> -	invoke_init_callbacks();
->   	return;
->   
->   fail:
-> 
-
+-- 
+Thank you,
+Richard.
