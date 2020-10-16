@@ -2,84 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50868290A4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F012F290A5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411037AbgJPRI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:08:56 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:38826 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410172AbgJPRIz (ORCPT
+        id S1732580AbgJPRO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:14:59 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:30146 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732539AbgJPRO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:08:55 -0400
-Received: by mail-ot1-f68.google.com with SMTP id i12so3046410ota.5;
-        Fri, 16 Oct 2020 10:08:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U1oGCHxCpJm+5c6m1olk8Wivcld4RJW5REIrPGu1ncw=;
-        b=ovUNDD46iOwVZcqPtGvuj29IlyaAkLkE7vKdKjS4oCVmqyDmmrwkUf7SDpmyXlKjL3
-         IqrgYV2o0IZ00ovjPB53M8jw9gPUTxb8O07HpJ8zuHnNer6jImZHEsEbKBljBvjGBTHq
-         h5c6EDe6jhxLtCMwHOGG4Q9u1lAXPWxqGF6je+SE1TXNS3BH5dJLUhVhHeGxVJY24Y66
-         iJhpfB2dOklyj5DBlqBqF9a5l3dYcHK/IBQZ8mHUPUC5oPxcg1zK3P0d8P2pZbKwPQ3R
-         02omzJyFgsE3ousxscy5X0mNrowDEtRmzRi720c71DV5laoC/S2I/AYrCM+Ar9XHd7eZ
-         8jmg==
-X-Gm-Message-State: AOAM532R3FumTNRPbzBaXoWZd3y88DLomTY4n08PFhg8otwr6FjBJ9Z5
-        Q+EmY7RQmFaJlbFMgLlH2Q==
-X-Google-Smtp-Source: ABdhPJx+aLbatJsSq+L6yfjjn87rPcGWBxhbJwGu/0E60QxhHUbgdcwHkFB0INfNENHq19He3zgWsA==
-X-Received: by 2002:a9d:2c4:: with SMTP id 62mr3455382otl.224.1602868134734;
-        Fri, 16 Oct 2020 10:08:54 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f124sm1214248oia.27.2020.10.16.10.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 10:08:54 -0700 (PDT)
-Received: (nullmailer pid 1585783 invoked by uid 1000);
-        Fri, 16 Oct 2020 17:08:53 -0000
-Date:   Fri, 16 Oct 2020 12:08:53 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-usb@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-mediatek@lists.infradead.org,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Min Guo <min.guo@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/8] dt-bindings: usb: convert mediatek, musb.txt to
- YAML schema
-Message-ID: <20201016170853.GA1585729@bogus>
-References: <20201013085207.17749-1-chunfeng.yun@mediatek.com>
- <20201013085207.17749-5-chunfeng.yun@mediatek.com>
+        Fri, 16 Oct 2020 13:14:58 -0400
+Received: from tomoyo.flets-east.jp ([153.230.197.127])
+        by mwinf5d46 with ME
+        id ghEh2300Y2lQRaH03hEsCJ; Fri, 16 Oct 2020 19:14:57 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 16 Oct 2020 19:14:57 +0200
+X-ME-IP: 153.230.197.127
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v4 0/4] can: add support for ETAS ES58X CAN USB
+Date:   Sat, 17 Oct 2020 02:13:29 +0900
+Message-Id: <20201016171402.229001-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013085207.17749-5-chunfeng.yun@mediatek.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Oct 2020 16:52:04 +0800, Chunfeng Yun wrote:
-> Convert mediatek,musb.txt to YAML schema mediatek,musb.yaml
-> 
-> Cc: Min Guo <min.guo@mediatek.com>
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v2: new patch
-> ---
->  .../devicetree/bindings/usb/mediatek,musb.txt |  57 ---------
->  .../bindings/usb/mediatek,musb.yaml           | 113 ++++++++++++++++++
->  2 files changed, 113 insertions(+), 57 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/usb/mediatek,musb.txt
->  create mode 100644 Documentation/devicetree/bindings/usb/mediatek,musb.yaml
-> 
+The purpose of this patch series is to introduce a new CAN USB
+driver to support ETAS USB interfaces (ES58X series).
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+During development, issues in drivers/net/can/dev.c were discovered,
+the fix for those issues are included in this patch series.
+
+We also propose to add one helper functions in include/linux/can/dev.h
+which we think can benefit other drivers: get_can_len().
+
+*Side notes*: scripts/checkpatch.pl returns 4 'checks' findings in
+[PATCH 4/4]. All those findings are of type: "Macro argument reuse 'x'
+possible side-effects?".  Those arguments reuse are actually made by
+calling either __stringify() or sizeof_field() which are both
+pre-processor constant. Furthermore, those macro are never called with
+arguments sensible to side-effects. So no actual side effect would
+occur.
+
+Changes in v4:
+  - Remove from the series the patches with have already been merged
+  into net-next.
+Reference: https://lkml.org/lkml/2020/10/4/78
+Reference: https://lkml.org/lkml/2020/10/5/355
+  - Modify [PATCH 4/4] according to comments from Marc.
+Reference: https://lkml.org/lkml/2020/10/4/80)
+
+Changes in v3:
+  - Added one additional patch: [PATCH v3 2/7] can: dev: fix type of
+ get_can_dlc() and get_canfd_dlc() macros.
+  - Make get_can_len() return u8 and make the skb const in PATCH 3/7.
+  - Remove all the calls to likely() and unlikely() in PATCH 6/7.
+
+Changes in v2:
+  - Fixed -W1 warnings in PATCH 6/7 (v1 was tested with GCC -WExtra
+  but not with -W1).
+  - Added lsusb -v information in PATCH 7/7 and rephrased the comment.
+  - Take care to put everyone in CC of each of the patch of the series
+  (sorry for the mess in v1...)
+
+Vincent Mailhol (4):
+  can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ
+    context
+  can: dev: add a helper function to get the correct length of Classical
+    frames
+  can: dev: __can_get_echo_skb(): fix the return length
+  can: usb: etas_es58X: add support for ETAS ES58X CAN USB interfaces
+
+ drivers/net/can/dev.c                       |   13 +-
+ drivers/net/can/usb/Kconfig                 |    9 +
+ drivers/net/can/usb/Makefile                |    1 +
+ drivers/net/can/usb/etas_es58x/Makefile     |    3 +
+ drivers/net/can/usb/etas_es58x/es581_4.c    |  556 ++++
+ drivers/net/can/usb/etas_es58x/es581_4.h    |  209 ++
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 2639 +++++++++++++++++++
+ drivers/net/can/usb/etas_es58x/es58x_core.h |  704 +++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.c   |  657 +++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.h   |  241 ++
+ include/linux/can/dev.h                     |   23 +
+ 11 files changed, 5048 insertions(+), 7 deletions(-)
+ create mode 100644 drivers/net/can/usb/etas_es58x/Makefile
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.h
+
+-- 
+2.26.2
+
