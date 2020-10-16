@@ -2,134 +2,1279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D102901D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBA12901E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405255AbgJPJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:27:07 -0400
-Received: from mail-eopbgr60084.outbound.protection.outlook.com ([40.107.6.84]:29595
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2395065AbgJPJ1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:27:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fGOgt/3yXyEaJxlwGR/8KLEPnaKAahYHoVHHjvSj28kbaf8Sd8lKZ9kdf4yJ/iTz7tzgONZVq2DYiT1z4IJJ9dFnrXPyEcPNHDdR3IrH//XSrws0fAJp8nnH2SyyCKw9f2FFrsytQvgZMTUyYkOYDpmXQkIpoM/YsR7369rgjzfz5miYYHsCoQOa9/QQrE2X6JUygKn8f47TRsF3/AsBiDw70NlB1//Q1T1VUMHGFeRKtuXB6RDZFpgVWQIveJAnz4SHwmhe3zkMu4yVD6b9mDum8hSMhOhaUuc8zQFHqaR5tfJrQHFrSHVOEZU1vR4VvG4nVnXxny2xuAHsdB+NAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i5WXxGMWfzdGX8GWWIRXUqQBgQnZjM5Z7GNJYs5QsMw=;
- b=ZU2TAPZzutNVtGC8DagWScDhN0LQBPZL/mify+Cg8lCutEhVf17z9GLjH3CxWq4ncc5/uSe8KsClOw/Es2pKhJDSLjE/08TYpuJ9y22ZRpvmQnS95Uc36XUwdbY4O8YWqCzncijc0KSSLp0pY8jem/PYf9zvdAuZQk5k4Me+wVNuWRK2FRbeg2pluCqUzPFWotNAkKVLmt9qjGXamJBvtXtAJalewkTGvJR/ZT1Pt1INureyJiCXM6KZ1++NCgNkHlIQ7Qp+rgSvb7JlTrJRpMnQuqK0e9G2dBFcogNV8zwR+xZNj6KzW8KnnYaWWmvG/p6BYG5/NFxTyMJhSiSygQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i5WXxGMWfzdGX8GWWIRXUqQBgQnZjM5Z7GNJYs5QsMw=;
- b=IjUekSPfBGJqoDkIGzRSlhyHHgSOCLCyRb4cvZUT8Jd+61mGxLxSqXb3c1wBOqrycdH7c28fZDoXsR5mwPLsl89d2fjiMAMk9UQ/jVkY4AKDi3Vdxt8T8TtHsHnnfMfVVxtV/72BNA5i/90rdUTPt/iBEUj6oR+Al0bfr9KhrY8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=oss.nxp.com;
-Received: from VI1PR0402MB2815.eurprd04.prod.outlook.com
- (2603:10a6:800:ae::16) by VI1PR0402MB3583.eurprd04.prod.outlook.com
- (2603:10a6:803:e::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Fri, 16 Oct
- 2020 09:27:03 +0000
-Received: from VI1PR0402MB2815.eurprd04.prod.outlook.com
- ([fe80::6cf3:a10a:8242:602f]) by VI1PR0402MB2815.eurprd04.prod.outlook.com
- ([fe80::6cf3:a10a:8242:602f%11]) with mapi id 15.20.3455.032; Fri, 16 Oct
- 2020 09:27:03 +0000
-Subject: Re: [PATCH] vfio/fsl-mc: fix the return of the uninitialized variable
- ret
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Colin King <colin.king@canonical.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, kvm@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201015122226.485911-1-colin.king@canonical.com>
- <20201015125211.3ff46dc1@w520.home>
-From:   Diana Craciun OSS <diana.craciun@oss.nxp.com>
-Message-ID: <65c7ffdb-fa92-102d-d7d1-29bb7d39fcb7@oss.nxp.com>
-Date:   Fri, 16 Oct 2020 12:26:52 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-In-Reply-To: <20201015125211.3ff46dc1@w520.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [188.27.189.94]
-X-ClientProxiedBy: AM3PR05CA0149.eurprd05.prod.outlook.com
- (2603:10a6:207:3::27) To VI1PR0402MB2815.eurprd04.prod.outlook.com
- (2603:10a6:800:ae::16)
+        id S2395261AbgJPJbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394894AbgJPJbH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:31:07 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567A9C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:31:07 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id n142so1388725ybf.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NylHuy2E9sMbdJrVABlQaT4XeLNozdHw6RfbvRR5x24=;
+        b=pSeuX7n+ql5pmA2CqwoEws6FiilusK46SL66ehTK12MaFiYhJ7ZDMTkEsFL9qIUwNV
+         iiyus8EGXdE5Ambpz1dRlwGiOjA4gW5t9FV0MnBNJ2xshfPdA741ua288CSFG7I5DBeV
+         07KKhmwVrfgj32WVzg3WHo5mpdLXYLQ/HVYuyQz8I6cNVpxMsVekCYaNpHogBDgM5u2J
+         0rWIQvrG1Pv/bQy1MR70rDis38vsOWD/zEw5KQ1JE0w4gVc/e/8kF5KeBPFx8yYHIYCl
+         Cq2Y/Br2LT+Yd5Mvu2w1gv1bTCL9w9DQw8LTTDV6oUtNNE/ZfplnZB3pzHjYxQKv6fJt
+         dcwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NylHuy2E9sMbdJrVABlQaT4XeLNozdHw6RfbvRR5x24=;
+        b=FB8PJ8Q3AYQIvBiapGpv4KNQiH6v0sCYUSHPcXDA09ovRCc7rMCH3slwPSbBd2wqKY
+         y8J3p2LXbWMWsXEL3J6VKyASh8AZJgVSNaONAMNScceR2Nv5sSJRXWqdQTb1bRu+Ob0+
+         s5LPZ9cRfGvJc1nprf/DgdA4tO3tcVSzBby/30PpZVd/0udjtak903RRBzOVozj8wVBu
+         mkmkor87UlmUv9xAkst112svX2vMQtCBOxjxLlXcTBI5WMkaTsV+DT//fqIPciANwGYH
+         L7AVnTVyKQGtG0BVPMpDiM7NdfCzprfNBBhVvNkwLE1BNg42Bg53PLfJe9tFhPS7Biq+
+         N07Q==
+X-Gm-Message-State: AOAM530JDOFqflm1Y6/DJsFWaPyOTVY83ynkZBCCNRe9+FZN9GvfkEhH
+        YaSgqD7u9vtQcF4c8PnWGQAGJLCUgEkTm1xA9pUcBQ==
+X-Google-Smtp-Source: ABdhPJxB2pEHqrtTuWbvpHNLtGKE7lTZOuuB2h0H5EnRb+ST/yI1M/SvNr5TVR/sCRV6KCpjyDGQqf9IlIT78ZU9cNA=
+X-Received: by 2002:a25:2155:: with SMTP id h82mr3759273ybh.321.1602840666169;
+ Fri, 16 Oct 2020 02:31:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.122] (188.27.189.94) by AM3PR05CA0149.eurprd05.prod.outlook.com (2603:10a6:207:3::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Fri, 16 Oct 2020 09:27:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c212ac43-92f6-4ee4-3335-08d871b5a3b2
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3583:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB35834F817E0E9CE33F72592EBE030@VI1PR0402MB3583.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o8LsS5EP8rgLa7sj6rpb+C2HNsA6ZRHXREey+UxXw0puH/9m1IC32GP2SK5hHBjoQdMihaMKejhtuCCCqfDwfRW/mopK0huQrodjDn7apKuoRLFxW6f+sMV8myZ99EhSSXDpWzMvYoNmxMDqhXQYrFbDiTSjIumEoJ1UL9QD/yPjTPrmWTTCMbFZHv36F2T8n+VM97g+S7Tq4GhyBCKQ9UYcWhc7geVAjqZKRSsEtlWVoN5UmdgvtJgprhYwgPOteYLlLfVmHUE4cgYD4nANKzQt63wOmWvZrPLaxTsyrKwKj8uFC6CUVSck3s5qcmQjh7EHmli6zC9eNzM2BZq+6tkXlBzRS9C8WJAmwv4v3yUl9Qde+7Ml9qLT7VFcJLHEYjM2a7uhiflMTZNT0MGAyQ0lvf3itoZgsMNmXctl9xA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB2815.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(31686004)(52116002)(478600001)(6666004)(34490700002)(53546011)(83380400001)(8936002)(2906002)(86362001)(8676002)(2616005)(956004)(4326008)(5660300002)(316002)(110136005)(6486002)(54906003)(66476007)(66556008)(186003)(66946007)(16526019)(16576012)(31696002)(26005)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 3mKLoDK3+UG5lOiBueH/cBq0N/NbKzQykocEci32iTRNkK/RPrkJzdhTTUfWveIEDxlXAj6UCbdGcMZmzG7zl4p/R8FLQpB4cAHYHP0SU6ovdo0XP9t1pMFusmYiDGM8ufX3/VGmRNW0h2B+tb9a08MiKz/7VcF8IX/2V79EZNAq4ugUqA+8wpjapsArLvmINWO14DTKMXvDdVMZW57sqlO2qPha3fubGVRGtuYPWyO+oyWcrxQJbxztc9ANQTc6YnwRwoRu6qaL9mD4LLShf/SWxTJacEhQmh0uOunNmMIpCYr7lZoOMbC+CNllaHKedw6+IVRj7ywkSWIUSi8Dyc1B3JrG5NoqxWMKZKi5OeAXXzHhw72WAvwwnhKC9il5s7cwPLu6MnmEiik8/MOaWmtH9h31JtlFxEIHI5vQacRUWwXg2nnfNjh9+ObJ8paZyLtI7jkDyoZhMwWuhXPBAYoqwwUhGwo5QXlihTxqkCwOfhJ/WyecWQlf0c2Y4uiJjFnp+q5Or+lTsvj0/cF4i/Q7oIzNi0VLWp+dNYpqTcE5BWGcAT1ozZa63Vjs65c1YKxXHi+zf5rL3HJrmoVjJzCu22nFf3C55w4zCEoB5GBcNzeJPeuVljzU2ulmU5HphqD9jINL4K+VBQabYBJRVQ==
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c212ac43-92f6-4ee4-3335-08d871b5a3b2
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB2815.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2020 09:27:02.9515
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KSbHUemUSSFcMIjcDwrEGXLt9oNzCKaVl0JGjVrGHrQ+vw3FLyHb6MWxdnogm0lm3MqyF4jPcXF8AFVhLToACg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3583
+References: <20201016035109.3952356-1-josephjang@google.com>
+ <20201016054412.GB155953@kroah.com> <CAPaOXERGzo8uF9gh4aAoicEAi_TtHn1M2Yno5LAWQPcWmq_evQ@mail.gmail.com>
+In-Reply-To: <CAPaOXERGzo8uF9gh4aAoicEAi_TtHn1M2Yno5LAWQPcWmq_evQ@mail.gmail.com>
+From:   Joseph Jang <josephjang@google.com>
+Date:   Fri, 16 Oct 2020 17:30:54 +0800
+Message-ID: <CAPaOXETzVfh-HPDMdUMQBvTh6ob8gGZ79huaqDYFzKsFq3GFGw@mail.gmail.com>
+Subject: Re: [PATCH] power: suspend: Add suspend timeout handler
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Jonglin Lee <jonglin@google.com>,
+        Woody Lin <woodylin@google.com>,
+        Mark Cheng <markcheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/15/2020 9:52 PM, Alex Williamson wrote:
-> On Thu, 15 Oct 2020 13:22:26 +0100
-> Colin King <colin.king@canonical.com> wrote:
-> 
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Currently the success path in function vfio_fsl_mc_reflck_attach is
->> returning an uninitialized value in variable ret. Fix this by setting
->> this to zero to indicate success.
->>
->> Addresses-Coverity: ("Uninitialized scalar variable")
->> Fixes: f2ba7e8c947b ("vfio/fsl-mc: Added lock support in preparation for interrupt handling")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>   drivers/vfio/fsl-mc/vfio_fsl_mc.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
->> index 80fc7f4ed343..42a5decb78d1 100644
->> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
->> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
->> @@ -84,6 +84,7 @@ static int vfio_fsl_mc_reflck_attach(struct vfio_fsl_mc_device *vdev)
->>   		vfio_fsl_mc_reflck_get(cont_vdev->reflck);
->>   		vdev->reflck = cont_vdev->reflck;
->>   		vfio_device_put(device);
->> +		ret = 0;
->>   	}
->>   
->>   unlock:
-> 
-> Looks correct to me, unless Diana would rather set the initial value to
-> zero instead.  Thanks,
-> 
-> Alex
-> 
+Thank you Greg's promptly reply.
+
+let me try to explain detail in following. Sorry I forgot to switch to
+plain text mode in gmail.
+
+On Fri, Oct 16, 2020 at 11:51:09AM +0800, Joseph Jang wrote:
+> From: josephjang <josephjang@google.com>
+
+Please use your name as spelled out like you did above in the email
+header.
+
+Sure, I will update the patch again like following.
+
+From b3afca8f3ee1d587c188b830d94c683fe66cbfb3 Mon Sep 17 00:00:00 2001
+From: Joseph Jang <josephjang@google.com>
+Date: Fri, 16 Oct 2020 16:31:38 +0800
+Subject: [PATCH] power: suspend: Add suspend timeout handler
+
+Add suspend timeout handler to prevent device stuck during suspend/
+resume process. Suspend timeout handler will dump disk sleep task
+at first round timeout and trigger kernel panic at second round timeout.
+The default timer for each round is 30 seconds.
 
 
-I prefer to initialize the variable to 0 when it's defined. I'll send a 
-patch for it.
+>
+> Add suspend timeout handler to prevent device stuck during suspend/
+> resume process. Suspend timeout handler will dump disk sleep task
+> at first round timeout and trigger kernel panic at second round timeout.
+> The default timer for each round is 30 seconds.
+>
+> Note: Can use following command to simulate suspend hang for testing.
+>     adb shell echo 1 > /sys/power/pm_hang
+>     adb shell echo mem > /sys/power/state
+> Signed-off-by: josephjang <josephjang@google.com>
 
-Thanks,
-Diana
+Need a blank line before the signed-off-by: and again, spell your name
+the same way.
+
+Sure, I will update the patch again like following.
+
+Note: Can use following command to simulate suspend hang for testing.
+    adb shell echo 1 > /sys/power/pm_hang
+    adb shell echo mem > /sys/power/state
+
+Signed-off-by: Joseph Jang <josephjang@google.com>
+---
+
+
+> ---
+>  include/linux/console.h |   1 +
+>  kernel/power/Kconfig    |   9 +++
+>  kernel/power/main.c     |  66 ++++++++++++++++
+>  kernel/power/suspend.c  | 162 ++++++++++++++++++++++++++++++++++++++++
+>  kernel/printk/printk.c  |   5 ++
+>  5 files changed, 243 insertions(+)
+>
+> diff --git a/include/linux/console.h b/include/linux/console.h
+> index 0670d3491e0e..ac468c602c0b 100644
+> --- a/include/linux/console.h
+> +++ b/include/linux/console.h
+> @@ -192,6 +192,7 @@ static inline void console_sysfs_notify(void)
+>  { }
+>  #endif
+>  extern bool console_suspend_enabled;
+> +extern int is_console_suspended(void);
+
+For global functions, how about:
+        bool console_is_suspended(void);
+?
+
+Agree, I will update like following.
+ extern bool console_suspend_enabled;
++extern int console_is_suspended(void);
+
+
+
+>
+>  /* Suspend and resume console messages over PM events */
+>  extern void suspend_console(void);
+> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+> index a7320f07689d..52b7a181b6d8 100644
+> --- a/kernel/power/Kconfig
+> +++ b/kernel/power/Kconfig
+> @@ -207,6 +207,15 @@ config PM_SLEEP_DEBUG
+>       def_bool y
+>       depends on PM_DEBUG && PM_SLEEP
+>
+> +config PM_SLEEP_MONITOR
+> +     bool "Linux kernel suspend/resume process monitor"
+> +     depends on PM_SLEEP
+> +     help
+> +     This option will enable suspend/resume monitor to prevent device
+> +     stuck during suspend/resume process. Suspend timeout handler will
+> +     dump disk sleep task at first round timeout and trigger kernel pani=
+c
+> +     at second round timeout. The default timer for each round is 30 sec=
+onds.
+
+Ouch, are you sure you want to panic?
+
+Yes, we would like to trigger kernel panic to reboot system and
+prevent system hang there.
+
+
+> +
+>  config DPM_WATCHDOG
+>       bool "Device suspend/resume watchdog"
+>       depends on PM_DEBUG && PSTORE && EXPERT
+> diff --git a/kernel/power/main.c b/kernel/power/main.c
+> index 40f86ec4ab30..f25b8a47583e 100644
+> --- a/kernel/power/main.c
+> +++ b/kernel/power/main.c
+> @@ -575,6 +575,69 @@ void __pm_pr_dbg(bool defer, const char *fmt, ...)
+>  static inline void pm_print_times_init(void) {}
+>  #endif /* CONFIG_PM_SLEEP_DEBUG */
+>
+> +#ifdef CONFIG_PM_SLEEP_MONITOR
+> +/* If set, devices will stuck at suspend for verification */
+> +static bool pm_hang_enabled;
+> +
+> +static int pm_notify_test(struct notifier_block *nb,
+> +                          unsigned long mode, void *_unused)
+> +{
+> +     pr_info("Jump into infinite loop now\n");
+
+Why do you have debugging code still enabled?
+
+Because we want to make sure system hang was cause by our test code here.
+
+
+> +
+> +     /* Suspend thread stuck at a loop forever */
+> +     for (;;)
+> +             ;
+> +
+
+Don't busy spin, that will burn power.
+
+Okay, I will add msleep() to prevent system burn power during testing.
+
++static int pm_notify_test(struct notifier_block *nb,
++     unsigned long mode, void *_unused)
++{
++ pr_info("Jump into infinite loop now\n");
++
++ /* Suspend thread stuck at a loop forever */
++ for (;;)
++ msleep(100);
++
++ pr_info("Fail to stuck at loop\n");
++
++ return 0;
++}
+
+
+> +     pr_info("Fail to stuck at loop\n");
+
+And how can this happen?
+
+I think we should not see this log unless the for loop has problem.
+
+
+Sure, I add some description in the document like following.
+--- a/Documentation/ABI/testing/sysfs-power
++++ b/Documentation/ABI/testing/sysfs-power
+@@ -420,3 +420,18 @@ Description:
+  disables it.  Reads from the file return the current value.
+  The default is "1" if the build-time "SUSPEND_SKIP_SYNC" config
+  flag is unset, or "0" otherwise.
++
++What: /sys/power/pm_hang
++Date: Oct 2020
++Contact: Joseph Jang <josephjang@google.com>
++Description:
++ The /sys/power/pm_hang file controls the variable pm_hang_enabled
++ which controls whether you need to simulate system hang during
++ suspend.
++
++ Writing a "1" to this file will set the pm_hang_enabled to "1" and
++ register a pm_notify function pm_notify_test() to simulate system
++ hang during suspend.
++ Writing a "0" to this file will set the pm_hang_enabled to "0" and
++ unregister a pm_notify function pm_notify_test().
++ Reads from this file return the current value of pm_hang_enabled.
+
+> +#endif
+>  #endif
+>  #ifdef CONFIG_FREEZER
+>       &pm_freeze_timeout_attr.attr,
+> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> index 8b1bb5ee7e5d..6f2679cfd9d1 100644
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+> @@ -30,6 +30,12 @@
+>  #include <trace/events/power.h>
+>  #include <linux/compiler.h>
+>  #include <linux/moduleparam.h>
+> +#ifdef CONFIG_PM_SLEEP_MONITOR
+> +#include <linux/sched/debug.h>
+> +#include <linux/kthread.h>
+> +#include <linux/sched.h>
+> +#include <uapi/linux/sched/types.h>
+> +#endif
+
+Don't #ifdef include files.
+
+And why the uapi file?
+
+
+I refer to linux-stable/kernel/rcu/tree.c source code.
+In order to prevent build error for MAX_RT_PRIO, I need to include
+this header file
+<uapi/linux/sched/types.h>.
+
+>
+>  #include "power.h"
+>
+> @@ -61,6 +67,133 @@ static DECLARE_SWAIT_QUEUE_HEAD(s2idle_wait_head);
+>  enum s2idle_states __read_mostly s2idle_state;
+>  static DEFINE_RAW_SPINLOCK(s2idle_lock);
+>
+> +#ifdef CONFIG_PM_SLEEP_MONITOR
+> +/* Suspend monitor thread toggle reason */
+> +enum toggle_reason {
+> +     TOGGLE_NONE,
+> +     TOGGLE_START,
+> +     TOGGLE_STOP,
+> +};
+> +
+> +#define SUSPEND_TIMER_TIMEOUT_MS 30000
+> +static struct task_struct *ksuspend_mon_tsk;
+> +static DECLARE_WAIT_QUEUE_HEAD(power_suspend_waitqueue);
+> +static enum toggle_reason suspend_mon_toggle;
+> +static DEFINE_MUTEX(suspend_mon_lock);
+> +
+> +static void start_suspend_mon(void)
+> +{
+> +     mutex_lock(&suspend_mon_lock);
+> +     suspend_mon_toggle =3D TOGGLE_START;
+> +     mutex_unlock(&suspend_mon_lock);
+
+Why do you need a lock for a single integer?
+
+Since we have two kernel thread may reference variable "suspend_mon_toggle"=
+,
+one is suspend thread, another is suspend_monitor_kthread. We use it
+to start/stop
+suspend monitor.
+
+Yes, in order to notify user this kernel panic was triggered by
+suspend_timeout(), I add debug code to prevent confused.
+
+
+> +
+> +     /* Trigger a NULL pointer dereference */
+> +     *null_pointer =3D 'a';
+
+Are you sure this will work on all platforms?  We do have a panic
+function if you really want to do that.
+
+I agree to change to use panic() like following.
++static void suspend_timeout(int timeout_count)
++{
++ pr_info("Suspend monitor timeout (timer is %d seconds)\n",
++ (SUSPEND_TIMER_TIMEOUT_MS/1000));
++
++ show_state_filter(TASK_UNINTERRUPTIBLE);
++
++ if (timeout_count < 2)
++ return;
++
++ if (console_is_suspended())
++ resume_console();
++
++ /* Trigger a NULL pointer dereference */
++ panic("suspend timeout and panic");
++}
+
+> +
+> +     /* Should not reach here */
+> +     pr_err("Trigger panic failed!\n");
+> +}
+> +
+> +static int suspend_monitor_kthread(void *arg)
+> +{
+> +     long err;
+> +     struct sched_param param =3D {.sched_priority
+> +             =3D MAX_RT_PRIO-1};
+
+Ick, no, call the scheduler functions properly, don't do this "by hand"
+
+ever.
+I refer to kernel/sched/core.c and they use MAX_RT_PRIO as thread
+priority directly.
+If you have other suggestion, I am willing to try.
+
+
+> +     static int timeout_count;
+> +     static long timeout;
+> +
+> +     pr_info("Init ksuspend_mon thread\n");
+
+Again, debugging code :(
+
+In order to make sure ksuspend_mon thread has been initialize, I add log he=
+re.
+If you think that is not necessary, I can remove it.
+
+Sure, I got it, could you help to review if we can use IS_ENABLED()
+like following?
++ if (IS_ENABLED(CONFIG_PM_SLEEP_MONITOR))
++ stop_suspend_mon();
++
+
+
+Thank you,
+Joseph.
+
+
+Joseph Jang <josephjang@google.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8816=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=884:58=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Thank you Greg's promptly reply.
+>
+> let me try to explain detail in following.
+>
+> On Fri, Oct 16, 2020 at 11:51:09AM +0800, Joseph Jang wrote:
+> > From: josephjang <josephjang@google.com>
+>
+> Please use your name as spelled out like you did above in the email
+> header.
+>
+> Sure, I will update the patch again like following.
+>
+> From b3afca8f3ee1d587c188b830d94c683fe66cbfb3 Mon Sep 17 00:00:00 2001
+> From: Joseph Jang <josephjang@google.com>
+> Date: Fri, 16 Oct 2020 16:31:38 +0800
+> Subject: [PATCH] power: suspend: Add suspend timeout handler
+>
+> Add suspend timeout handler to prevent device stuck during suspend/
+> resume process. Suspend timeout handler will dump disk sleep task
+> at first round timeout and trigger kernel panic at second round timeout.
+> The default timer for each round is 30 seconds.
+>
+>
+> >
+> > Add suspend timeout handler to prevent device stuck during suspend/
+> > resume process. Suspend timeout handler will dump disk sleep task
+> > at first round timeout and trigger kernel panic at second round timeout=
+.
+> > The default timer for each round is 30 seconds.
+> >
+> > Note: Can use following command to simulate suspend hang for testing.
+> >     adb shell echo 1 > /sys/power/pm_hang
+> >     adb shell echo mem > /sys/power/state
+> > Signed-off-by: josephjang <josephjang@google.com>
+>
+> Need a blank line before the signed-off-by: and again, spell your name
+> the same way.
+>
+> Sure, I will update the patch again like following.
+>
+> Note: Can use following command to simulate suspend hang for testing.
+>     adb shell echo 1 > /sys/power/pm_hang
+>     adb shell echo mem > /sys/power/state
+>
+> Signed-off-by: Joseph Jang <josephjang@google.com>
+> ---
+>
+>
+> > ---
+> >  include/linux/console.h |   1 +
+> >  kernel/power/Kconfig    |   9 +++
+> >  kernel/power/main.c     |  66 ++++++++++++++++
+> >  kernel/power/suspend.c  | 162 ++++++++++++++++++++++++++++++++++++++++
+> >  kernel/printk/printk.c  |   5 ++
+> >  5 files changed, 243 insertions(+)
+> >
+> > diff --git a/include/linux/console.h b/include/linux/console.h
+> > index 0670d3491e0e..ac468c602c0b 100644
+> > --- a/include/linux/console.h
+> > +++ b/include/linux/console.h
+> > @@ -192,6 +192,7 @@ static inline void console_sysfs_notify(void)
+> >  { }
+> >  #endif
+> >  extern bool console_suspend_enabled;
+> > +extern int is_console_suspended(void);
+>
+> For global functions, how about:
+>         bool console_is_suspended(void);
+> ?
+>
+> Agree, I will update like following.
+>  extern bool console_suspend_enabled;
+> +extern int console_is_suspended(void);
+>
+>
+>
+> >
+> >  /* Suspend and resume console messages over PM events */
+> >  extern void suspend_console(void);
+> > diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+> > index a7320f07689d..52b7a181b6d8 100644
+> > --- a/kernel/power/Kconfig
+> > +++ b/kernel/power/Kconfig
+> > @@ -207,6 +207,15 @@ config PM_SLEEP_DEBUG
+> >       def_bool y
+> >       depends on PM_DEBUG && PM_SLEEP
+> >
+> > +config PM_SLEEP_MONITOR
+> > +     bool "Linux kernel suspend/resume process monitor"
+> > +     depends on PM_SLEEP
+> > +     help
+> > +     This option will enable suspend/resume monitor to prevent device
+> > +     stuck during suspend/resume process. Suspend timeout handler will
+> > +     dump disk sleep task at first round timeout and trigger kernel pa=
+nic
+> > +     at second round timeout. The default timer for each round is 30 s=
+econds.
+>
+> Ouch, are you sure you want to panic?
+>
+> Yes, we would like to trigger kernel panic to reboot system and prevent s=
+ystem hang there.
+>
+>
+> > +
+> >  config DPM_WATCHDOG
+> >       bool "Device suspend/resume watchdog"
+> >       depends on PM_DEBUG && PSTORE && EXPERT
+> > diff --git a/kernel/power/main.c b/kernel/power/main.c
+> > index 40f86ec4ab30..f25b8a47583e 100644
+> > --- a/kernel/power/main.c
+> > +++ b/kernel/power/main.c
+> > @@ -575,6 +575,69 @@ void __pm_pr_dbg(bool defer, const char *fmt, ...)
+> >  static inline void pm_print_times_init(void) {}
+> >  #endif /* CONFIG_PM_SLEEP_DEBUG */
+> >
+> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+> > +/* If set, devices will stuck at suspend for verification */
+> > +static bool pm_hang_enabled;
+> > +
+> > +static int pm_notify_test(struct notifier_block *nb,
+> > +                          unsigned long mode, void *_unused)
+> > +{
+> > +     pr_info("Jump into infinite loop now\n");
+>
+> Why do you have debugging code still enabled?
+>
+> Because we want to make sure system hang was cause by our test code here.
+>
+>
+> > +
+> > +     /* Suspend thread stuck at a loop forever */
+> > +     for (;;)
+> > +             ;
+> > +
+>
+> Don't busy spin, that will burn power.
+>
+> Okay, I will add msleep() to prevent system burn power during testing.
+>
+> +static int pm_notify_test(struct notifier_block *nb,
+> +     unsigned long mode, void *_unused)
+> +{
+> + pr_info("Jump into infinite loop now\n");
+> +
+> + /* Suspend thread stuck at a loop forever */
+> + for (;;)
+> + msleep(100);
+> +
+> + pr_info("Fail to stuck at loop\n");
+> +
+> + return 0;
+> +}
+>
+>
+> > +     pr_info("Fail to stuck at loop\n");
+>
+> And how can this happen?
+>
+> I think we should not see this log unless the for loop has problem.
+>
+>
+>
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static struct notifier_block pm_notify_nb =3D {
+> > +     .notifier_call =3D pm_notify_test,
+> > +};
+> > +
+> > +static ssize_t pm_hang_show(struct kobject *kobj, struct kobj_attribut=
+e *attr,
+> > +                          char *buf)
+> > +{
+> > +     return snprintf(buf, 10, "%d\n", pm_hang_enabled);
+> > +}
+> > +
+> > +static ssize_t pm_hang_store(struct kobject *kobj, struct kobj_attribu=
+te *attr,
+> > +                           const char *buf, size_t n)
+> > +{
+> > +     unsigned long val;
+> > +     int result;
+> > +
+> > +     if (kstrtoul(buf, 10, &val))
+> > +             return -EINVAL;
+> > +
+> > +     if (val > 1)
+> > +             return -EINVAL;
+> > +
+> > +     pm_hang_enabled =3D !!val;
+> > +
+> > +     if (pm_hang_enabled =3D=3D true) {
+> > +
+> > +             result =3D register_pm_notifier(&pm_notify_nb);
+> > +             if (result)
+> > +                     pr_warn("Can not register suspend notifier, retur=
+n %d\n",
+> > +                             result);
+> > +
+> > +     } else {
+> > +
+> > +             result =3D unregister_pm_notifier(&pm_notify_nb);
+> > +             if (result)
+> > +                     pr_warn("Can not unregister suspend notifier, ret=
+urn %d\n",
+> > +                             result);
+> > +     }
+> > +
+> > +     return n;
+> > +}
+> > +
+> > +power_attr(pm_hang);
+> > +#endif
+> > +
+> >  struct kobject *power_kobj;
+> >
+> >  /**
+> > @@ -909,6 +972,9 @@ static struct attribute * g[] =3D {
+> >       &pm_wakeup_irq_attr.attr,
+> >       &pm_debug_messages_attr.attr,
+> >  #endif
+> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+> > +     &pm_hang_attr.attr,
+>
+> You added a sysfs file, but no Documentation/ABI/ update?  That's not
+> ok.
+>
+>
+> Sure, I add some description in the document like following.
+> --- a/Documentation/ABI/testing/sysfs-power
+> +++ b/Documentation/ABI/testing/sysfs-power
+> @@ -420,3 +420,18 @@ Description:
+>   disables it.  Reads from the file return the current value.
+>   The default is "1" if the build-time "SUSPEND_SKIP_SYNC" config
+>   flag is unset, or "0" otherwise.
+> +
+> +What: /sys/power/pm_hang
+> +Date: Oct 2020
+> +Contact: Joseph Jang <josephjang@google.com>
+> +Description:
+> + The /sys/power/pm_hang file controls the variable pm_hang_enabled
+> + which controls whether you need to simulate system hang during
+> + suspend.
+> +
+> + Writing a "1" to this file will set the pm_hang_enabled to "1" and
+> + register a pm_notify function pm_notify_test() to simulate system
+> + hang during suspend.
+> + Writing a "0" to this file will set the pm_hang_enabled to "0" and
+> + unregister a pm_notify function pm_notify_test().
+> + Reads from this file return the current value of pm_hang_enabled.
+>
+> > +#endif
+> >  #endif
+> >  #ifdef CONFIG_FREEZER
+> >       &pm_freeze_timeout_attr.attr,
+> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> > index 8b1bb5ee7e5d..6f2679cfd9d1 100644
+> > --- a/kernel/power/suspend.c
+> > +++ b/kernel/power/suspend.c
+> > @@ -30,6 +30,12 @@
+> >  #include <trace/events/power.h>
+> >  #include <linux/compiler.h>
+> >  #include <linux/moduleparam.h>
+> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+> > +#include <linux/sched/debug.h>
+> > +#include <linux/kthread.h>
+> > +#include <linux/sched.h>
+> > +#include <uapi/linux/sched/types.h>
+> > +#endif
+>
+> Don't #ifdef include files.
+>
+> And why the uapi file?
+>
+>
+> I refer to linux-stable/kernel/rcu/tree.c source code.
+> In order to prevent build error for MAX_RT_PRIO, I need to include this h=
+eader file
+> <uapi/linux/sched/types.h>.
+>
+> >
+> >  #include "power.h"
+> >
+> > @@ -61,6 +67,133 @@ static DECLARE_SWAIT_QUEUE_HEAD(s2idle_wait_head);
+> >  enum s2idle_states __read_mostly s2idle_state;
+> >  static DEFINE_RAW_SPINLOCK(s2idle_lock);
+> >
+> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+> > +/* Suspend monitor thread toggle reason */
+> > +enum toggle_reason {
+> > +     TOGGLE_NONE,
+> > +     TOGGLE_START,
+> > +     TOGGLE_STOP,
+> > +};
+> > +
+> > +#define SUSPEND_TIMER_TIMEOUT_MS 30000
+> > +static struct task_struct *ksuspend_mon_tsk;
+> > +static DECLARE_WAIT_QUEUE_HEAD(power_suspend_waitqueue);
+> > +static enum toggle_reason suspend_mon_toggle;
+> > +static DEFINE_MUTEX(suspend_mon_lock);
+> > +
+> > +static void start_suspend_mon(void)
+> > +{
+> > +     mutex_lock(&suspend_mon_lock);
+> > +     suspend_mon_toggle =3D TOGGLE_START;
+> > +     mutex_unlock(&suspend_mon_lock);
+>
+> Why do you need a lock for a single integer?
+>
+> Since we have two kernel thread may reference variable "suspend_mon_toggl=
+e",
+> one is suspend thread, another is suspend_monitor_kthread. We use it to s=
+tart/stop
+> suspend monitor.
+>
+>
+>
+> > +     wake_up(&power_suspend_waitqueue);
+> > +}
+> > +
+> > +static void stop_suspend_mon(void)
+> > +{
+> > +     mutex_lock(&suspend_mon_lock);
+> > +     suspend_mon_toggle =3D TOGGLE_STOP;
+> > +     mutex_unlock(&suspend_mon_lock);
+> > +     wake_up(&power_suspend_waitqueue);
+> > +}
+> > +
+> > +static void suspend_timeout(int timeout_count)
+> > +{
+> > +     char *null_pointer =3D NULL;
+> > +
+> > +     pr_info("Suspend monitor timeout (timer is %d seconds)\n",
+> > +             (SUSPEND_TIMER_TIMEOUT_MS/1000));
+> > +
+> > +     show_state_filter(TASK_UNINTERRUPTIBLE);
+> > +
+> > +     if (timeout_count < 2)
+> > +             return;
+> > +
+> > +     if (is_console_suspended())
+> > +             resume_console();
+> > +
+> > +     pr_info("Trigger a panic\n");
+>
+> Again, debugging code?
+>
+> Yes, in order to notify user this kernel panic was triggered by
+> suspend_timeout(), I add debug code to prevent confused.
+>
+>
+> > +
+> > +     /* Trigger a NULL pointer dereference */
+> > +     *null_pointer =3D 'a';
+>
+> Are you sure this will work on all platforms?  We do have a panic
+> function if you really want to do that.
+>
+> I agree to change to use panic() like following.
+> +static void suspend_timeout(int timeout_count)
+> +{
+> + pr_info("Suspend monitor timeout (timer is %d seconds)\n",
+> + (SUSPEND_TIMER_TIMEOUT_MS/1000));
+> +
+> + show_state_filter(TASK_UNINTERRUPTIBLE);
+> +
+> + if (timeout_count < 2)
+> + return;
+> +
+> + if (console_is_suspended())
+> + resume_console();
+> +
+> + /* Trigger a NULL pointer dereference */
+> + panic("suspend timeout and panic");
+> +}
+>
+> > +
+> > +     /* Should not reach here */
+> > +     pr_err("Trigger panic failed!\n");
+> > +}
+> > +
+> > +static int suspend_monitor_kthread(void *arg)
+> > +{
+> > +     long err;
+> > +     struct sched_param param =3D {.sched_priority
+> > +             =3D MAX_RT_PRIO-1};
+>
+> Ick, no, call the scheduler functions properly, don't do this "by hand"
+>
+> ever.
+> I refer to kernel/sched/core.c and they use MAX_RT_PRIO as thread priorit=
+y directly.
+> If you have other suggestion, I am willing to try.
+>
+>
+> > +     static int timeout_count;
+> > +     static long timeout;
+> > +
+> > +     pr_info("Init ksuspend_mon thread\n");
+>
+> Again, debugging code :(
+>
+> In order to make sure ksuspend_mon thread has been initialize, I add log =
+here.
+> If you think that is not necessary, I can remove it.
+>
+>
+>
+>
+> > +
+> > +     sched_setscheduler(current, SCHED_FIFO, &param);
+> > +
+> > +     timeout_count =3D 0;
+> > +     timeout =3D MAX_SCHEDULE_TIMEOUT;
+> > +
+> > +     do {
+> > +             /* Wait suspend timer timeout */
+> > +             err =3D wait_event_interruptible_timeout(
+> > +                     power_suspend_waitqueue,
+> > +                     (suspend_mon_toggle !=3D TOGGLE_NONE),
+> > +                     timeout);
+> > +
+> > +             mutex_lock(&suspend_mon_lock);
+> > +             /* suspend monitor state change */
+> > +             if (suspend_mon_toggle !=3D TOGGLE_NONE) {
+> > +                     if (suspend_mon_toggle =3D=3D TOGGLE_START) {
+> > +                             timeout =3D msecs_to_jiffies(
+> > +                                     SUSPEND_TIMER_TIMEOUT_MS);
+> > +                             pr_info("Start suspend monitor\n");
+> > +                     } else if (suspend_mon_toggle =3D=3D TOGGLE_STOP)=
+ {
+> > +                             timeout =3D MAX_SCHEDULE_TIMEOUT;
+> > +                             timeout_count =3D 0;
+> > +                             pr_info("Stop suspend monitor\n");
+> > +                     }
+> > +                     suspend_mon_toggle =3D TOGGLE_NONE;
+> > +                     mutex_unlock(&suspend_mon_lock);
+> > +                     continue;
+> > +             }
+> > +             mutex_unlock(&suspend_mon_lock);
+> > +
+> > +             /* suspend monitor event handler */
+> > +             if (err =3D=3D 0) {
+> > +                     timeout_count++;
+> > +                     suspend_timeout(timeout_count);
+> > +             } else if (err =3D=3D -ERESTARTSYS) {
+> > +                     pr_info("Exit ksuspend_mon!");
+> > +                     break;
+> > +             }
+> > +     } while (1);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void init_suspend_monitor_thread(void)
+> > +{
+> > +     int ret;
+> > +
+> > +     ksuspend_mon_tsk =3D kthread_create(suspend_monitor_kthread,
+> > +             NULL, "ksuspend_mon");
+> > +     if (IS_ERR(ksuspend_mon_tsk)) {
+> > +             ret =3D PTR_ERR(ksuspend_mon_tsk);
+> > +             ksuspend_mon_tsk =3D NULL;
+> > +             pr_err("Create suspend_monitor_kthread failed! ret =3D %d=
+\n",
+> > +                     ret);
+> > +             return;
+> > +     }
+> > +
+> > +     suspend_mon_toggle =3D TOGGLE_NONE;
+> > +     wake_up_process(ksuspend_mon_tsk);
+> > +
+> > +}
+> > +#endif
+> > +
+> >  /**
+> >   * pm_suspend_default_s2idle - Check if suspend-to-idle is the default=
+ suspend.
+> >   *
+> > @@ -89,6 +222,10 @@ static void s2idle_enter(void)
+> >  {
+> >       trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE, =
+true);
+> >
+> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+> > +     stop_suspend_mon();
+> > +#endif
+>
+> Do not put #ifdef in .c files, that's not the proper kernel coding
+> style.  Especially for single function calls.
+>
+> Sure, I got it, could you help to review if we can use IS_ENABLED() like =
+following?
+> + if (IS_ENABLED(CONFIG_PM_SLEEP_MONITOR))
+> + stop_suspend_mon();
+> +
+>
+>
+> Thank you,
+> Joseph.
+>
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> =E6=96=BC 2020=E5=B9=B410=
+=E6=9C=8816=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=881:43=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+>>
+>> On Fri, Oct 16, 2020 at 11:51:09AM +0800, Joseph Jang wrote:
+>> > From: josephjang <josephjang@google.com>
+>>
+>> Please use your name as spelled out like you did above in the email
+>> header.
+>>
+>> >
+>> > Add suspend timeout handler to prevent device stuck during suspend/
+>> > resume process. Suspend timeout handler will dump disk sleep task
+>> > at first round timeout and trigger kernel panic at second round timeou=
+t.
+>> > The default timer for each round is 30 seconds.
+>> >
+>> > Note: Can use following command to simulate suspend hang for testing.
+>> >     adb shell echo 1 > /sys/power/pm_hang
+>> >     adb shell echo mem > /sys/power/state
+>> > Signed-off-by: josephjang <josephjang@google.com>
+>>
+>> Need a blank line before the signed-off-by: and again, spell your name
+>> the same way.
+>>
+>>
+>>
+>> > ---
+>> >  include/linux/console.h |   1 +
+>> >  kernel/power/Kconfig    |   9 +++
+>> >  kernel/power/main.c     |  66 ++++++++++++++++
+>> >  kernel/power/suspend.c  | 162 +++++++++++++++++++++++++++++++++++++++=
++
+>> >  kernel/printk/printk.c  |   5 ++
+>> >  5 files changed, 243 insertions(+)
+>> >
+>> > diff --git a/include/linux/console.h b/include/linux/console.h
+>> > index 0670d3491e0e..ac468c602c0b 100644
+>> > --- a/include/linux/console.h
+>> > +++ b/include/linux/console.h
+>> > @@ -192,6 +192,7 @@ static inline void console_sysfs_notify(void)
+>> >  { }
+>> >  #endif
+>> >  extern bool console_suspend_enabled;
+>> > +extern int is_console_suspended(void);
+>>
+>> For global functions, how about:
+>>         bool console_is_suspended(void);
+>> ?
+>>
+>> >
+>> >  /* Suspend and resume console messages over PM events */
+>> >  extern void suspend_console(void);
+>> > diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+>> > index a7320f07689d..52b7a181b6d8 100644
+>> > --- a/kernel/power/Kconfig
+>> > +++ b/kernel/power/Kconfig
+>> > @@ -207,6 +207,15 @@ config PM_SLEEP_DEBUG
+>> >       def_bool y
+>> >       depends on PM_DEBUG && PM_SLEEP
+>> >
+>> > +config PM_SLEEP_MONITOR
+>> > +     bool "Linux kernel suspend/resume process monitor"
+>> > +     depends on PM_SLEEP
+>> > +     help
+>> > +     This option will enable suspend/resume monitor to prevent device
+>> > +     stuck during suspend/resume process. Suspend timeout handler wil=
+l
+>> > +     dump disk sleep task at first round timeout and trigger kernel p=
+anic
+>> > +     at second round timeout. The default timer for each round is 30 =
+seconds.
+>>
+>> Ouch, are you sure you want to panic?
+>>
+>>
+>> > +
+>> >  config DPM_WATCHDOG
+>> >       bool "Device suspend/resume watchdog"
+>> >       depends on PM_DEBUG && PSTORE && EXPERT
+>> > diff --git a/kernel/power/main.c b/kernel/power/main.c
+>> > index 40f86ec4ab30..f25b8a47583e 100644
+>> > --- a/kernel/power/main.c
+>> > +++ b/kernel/power/main.c
+>> > @@ -575,6 +575,69 @@ void __pm_pr_dbg(bool defer, const char *fmt, ...=
+)
+>> >  static inline void pm_print_times_init(void) {}
+>> >  #endif /* CONFIG_PM_SLEEP_DEBUG */
+>> >
+>> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+>> > +/* If set, devices will stuck at suspend for verification */
+>> > +static bool pm_hang_enabled;
+>> > +
+>> > +static int pm_notify_test(struct notifier_block *nb,
+>> > +                          unsigned long mode, void *_unused)
+>> > +{
+>> > +     pr_info("Jump into infinite loop now\n");
+>>
+>> Why do you have debugging code still enabled?
+>>
+>> > +
+>> > +     /* Suspend thread stuck at a loop forever */
+>> > +     for (;;)
+>> > +             ;
+>> > +
+>>
+>> Don't busy spin, that will burn power.
+>>
+>>
+>> > +     pr_info("Fail to stuck at loop\n");
+>>
+>> And how can this happen?
+>>
+>> > +
+>> > +     return 0;
+>> > +}
+>> > +
+>> > +static struct notifier_block pm_notify_nb =3D {
+>> > +     .notifier_call =3D pm_notify_test,
+>> > +};
+>> > +
+>> > +static ssize_t pm_hang_show(struct kobject *kobj, struct kobj_attribu=
+te *attr,
+>> > +                          char *buf)
+>> > +{
+>> > +     return snprintf(buf, 10, "%d\n", pm_hang_enabled);
+>> > +}
+>> > +
+>> > +static ssize_t pm_hang_store(struct kobject *kobj, struct kobj_attrib=
+ute *attr,
+>> > +                           const char *buf, size_t n)
+>> > +{
+>> > +     unsigned long val;
+>> > +     int result;
+>> > +
+>> > +     if (kstrtoul(buf, 10, &val))
+>> > +             return -EINVAL;
+>> > +
+>> > +     if (val > 1)
+>> > +             return -EINVAL;
+>> > +
+>> > +     pm_hang_enabled =3D !!val;
+>> > +
+>> > +     if (pm_hang_enabled =3D=3D true) {
+>> > +
+>> > +             result =3D register_pm_notifier(&pm_notify_nb);
+>> > +             if (result)
+>> > +                     pr_warn("Can not register suspend notifier, retu=
+rn %d\n",
+>> > +                             result);
+>> > +
+>> > +     } else {
+>> > +
+>> > +             result =3D unregister_pm_notifier(&pm_notify_nb);
+>> > +             if (result)
+>> > +                     pr_warn("Can not unregister suspend notifier, re=
+turn %d\n",
+>> > +                             result);
+>> > +     }
+>> > +
+>> > +     return n;
+>> > +}
+>> > +
+>> > +power_attr(pm_hang);
+>> > +#endif
+>> > +
+>> >  struct kobject *power_kobj;
+>> >
+>> >  /**
+>> > @@ -909,6 +972,9 @@ static struct attribute * g[] =3D {
+>> >       &pm_wakeup_irq_attr.attr,
+>> >       &pm_debug_messages_attr.attr,
+>> >  #endif
+>> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+>> > +     &pm_hang_attr.attr,
+>>
+>> You added a sysfs file, but no Documentation/ABI/ update?  That's not
+>> ok.
+>>
+>>
+>> > +#endif
+>> >  #endif
+>> >  #ifdef CONFIG_FREEZER
+>> >       &pm_freeze_timeout_attr.attr,
+>> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+>> > index 8b1bb5ee7e5d..6f2679cfd9d1 100644
+>> > --- a/kernel/power/suspend.c
+>> > +++ b/kernel/power/suspend.c
+>> > @@ -30,6 +30,12 @@
+>> >  #include <trace/events/power.h>
+>> >  #include <linux/compiler.h>
+>> >  #include <linux/moduleparam.h>
+>> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+>> > +#include <linux/sched/debug.h>
+>> > +#include <linux/kthread.h>
+>> > +#include <linux/sched.h>
+>> > +#include <uapi/linux/sched/types.h>
+>> > +#endif
+>>
+>> Don't #ifdef include files.
+>>
+>> And why the uapi file?
+>>
+>> >
+>> >  #include "power.h"
+>> >
+>> > @@ -61,6 +67,133 @@ static DECLARE_SWAIT_QUEUE_HEAD(s2idle_wait_head);
+>> >  enum s2idle_states __read_mostly s2idle_state;
+>> >  static DEFINE_RAW_SPINLOCK(s2idle_lock);
+>> >
+>> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+>> > +/* Suspend monitor thread toggle reason */
+>> > +enum toggle_reason {
+>> > +     TOGGLE_NONE,
+>> > +     TOGGLE_START,
+>> > +     TOGGLE_STOP,
+>> > +};
+>> > +
+>> > +#define SUSPEND_TIMER_TIMEOUT_MS 30000
+>> > +static struct task_struct *ksuspend_mon_tsk;
+>> > +static DECLARE_WAIT_QUEUE_HEAD(power_suspend_waitqueue);
+>> > +static enum toggle_reason suspend_mon_toggle;
+>> > +static DEFINE_MUTEX(suspend_mon_lock);
+>> > +
+>> > +static void start_suspend_mon(void)
+>> > +{
+>> > +     mutex_lock(&suspend_mon_lock);
+>> > +     suspend_mon_toggle =3D TOGGLE_START;
+>> > +     mutex_unlock(&suspend_mon_lock);
+>>
+>> Why do you need a lock for a single integer?
+>>
+>> > +     wake_up(&power_suspend_waitqueue);
+>> > +}
+>> > +
+>> > +static void stop_suspend_mon(void)
+>> > +{
+>> > +     mutex_lock(&suspend_mon_lock);
+>> > +     suspend_mon_toggle =3D TOGGLE_STOP;
+>> > +     mutex_unlock(&suspend_mon_lock);
+>> > +     wake_up(&power_suspend_waitqueue);
+>> > +}
+>> > +
+>> > +static void suspend_timeout(int timeout_count)
+>> > +{
+>> > +     char *null_pointer =3D NULL;
+>> > +
+>> > +     pr_info("Suspend monitor timeout (timer is %d seconds)\n",
+>> > +             (SUSPEND_TIMER_TIMEOUT_MS/1000));
+>> > +
+>> > +     show_state_filter(TASK_UNINTERRUPTIBLE);
+>> > +
+>> > +     if (timeout_count < 2)
+>> > +             return;
+>> > +
+>> > +     if (is_console_suspended())
+>> > +             resume_console();
+>> > +
+>> > +     pr_info("Trigger a panic\n");
+>>
+>> Again, debugging code?
+>>
+>> > +
+>> > +     /* Trigger a NULL pointer dereference */
+>> > +     *null_pointer =3D 'a';
+>>
+>> Are you sure this will work on all platforms?  We do have a panic
+>> function if you really want to do that.
+>>
+>> > +
+>> > +     /* Should not reach here */
+>> > +     pr_err("Trigger panic failed!\n");
+>> > +}
+>> > +
+>> > +static int suspend_monitor_kthread(void *arg)
+>> > +{
+>> > +     long err;
+>> > +     struct sched_param param =3D {.sched_priority
+>> > +             =3D MAX_RT_PRIO-1};
+>>
+>> Ick, no, call the scheduler functions properly, don't do this "by hand"
+>> ever.
+>>
+>> > +     static int timeout_count;
+>> > +     static long timeout;
+>> > +
+>> > +     pr_info("Init ksuspend_mon thread\n");
+>>
+>> Again, debugging code :(
+>>
+>> > +
+>> > +     sched_setscheduler(current, SCHED_FIFO, &param);
+>> > +
+>> > +     timeout_count =3D 0;
+>> > +     timeout =3D MAX_SCHEDULE_TIMEOUT;
+>> > +
+>> > +     do {
+>> > +             /* Wait suspend timer timeout */
+>> > +             err =3D wait_event_interruptible_timeout(
+>> > +                     power_suspend_waitqueue,
+>> > +                     (suspend_mon_toggle !=3D TOGGLE_NONE),
+>> > +                     timeout);
+>> > +
+>> > +             mutex_lock(&suspend_mon_lock);
+>> > +             /* suspend monitor state change */
+>> > +             if (suspend_mon_toggle !=3D TOGGLE_NONE) {
+>> > +                     if (suspend_mon_toggle =3D=3D TOGGLE_START) {
+>> > +                             timeout =3D msecs_to_jiffies(
+>> > +                                     SUSPEND_TIMER_TIMEOUT_MS);
+>> > +                             pr_info("Start suspend monitor\n");
+>> > +                     } else if (suspend_mon_toggle =3D=3D TOGGLE_STOP=
+) {
+>> > +                             timeout =3D MAX_SCHEDULE_TIMEOUT;
+>> > +                             timeout_count =3D 0;
+>> > +                             pr_info("Stop suspend monitor\n");
+>> > +                     }
+>> > +                     suspend_mon_toggle =3D TOGGLE_NONE;
+>> > +                     mutex_unlock(&suspend_mon_lock);
+>> > +                     continue;
+>> > +             }
+>> > +             mutex_unlock(&suspend_mon_lock);
+>> > +
+>> > +             /* suspend monitor event handler */
+>> > +             if (err =3D=3D 0) {
+>> > +                     timeout_count++;
+>> > +                     suspend_timeout(timeout_count);
+>> > +             } else if (err =3D=3D -ERESTARTSYS) {
+>> > +                     pr_info("Exit ksuspend_mon!");
+>> > +                     break;
+>> > +             }
+>> > +     } while (1);
+>> > +
+>> > +     return 0;
+>> > +}
+>> > +
+>> > +static void init_suspend_monitor_thread(void)
+>> > +{
+>> > +     int ret;
+>> > +
+>> > +     ksuspend_mon_tsk =3D kthread_create(suspend_monitor_kthread,
+>> > +             NULL, "ksuspend_mon");
+>> > +     if (IS_ERR(ksuspend_mon_tsk)) {
+>> > +             ret =3D PTR_ERR(ksuspend_mon_tsk);
+>> > +             ksuspend_mon_tsk =3D NULL;
+>> > +             pr_err("Create suspend_monitor_kthread failed! ret =3D %=
+d\n",
+>> > +                     ret);
+>> > +             return;
+>> > +     }
+>> > +
+>> > +     suspend_mon_toggle =3D TOGGLE_NONE;
+>> > +     wake_up_process(ksuspend_mon_tsk);
+>> > +
+>> > +}
+>> > +#endif
+>> > +
+>> >  /**
+>> >   * pm_suspend_default_s2idle - Check if suspend-to-idle is the defaul=
+t suspend.
+>> >   *
+>> > @@ -89,6 +222,10 @@ static void s2idle_enter(void)
+>> >  {
+>> >       trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE,=
+ true);
+>> >
+>> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+>> > +     stop_suspend_mon();
+>> > +#endif
+>>
+>> Do not put #ifdef in .c files, that's not the proper kernel coding
+>> style.  Especially for single function calls.
+>>
+>> I've stopped here...
+>>
+>> greg k-h
+>
+>
+>
+> --
+> Embedded Software engineer
+
+
+
+--=20
+Embedded Software engineer
