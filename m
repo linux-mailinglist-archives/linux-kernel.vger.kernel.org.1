@@ -2,119 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8AF2903EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5D92903ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405631AbgJPLRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:17:40 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13038 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405579AbgJPLRk (ORCPT
+        id S2405793AbgJPLRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405579AbgJPLRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:17:40 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f8981270000>; Fri, 16 Oct 2020 04:16:55 -0700
-Received: from [10.41.23.128] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
- 2020 11:17:37 +0000
-Subject: Re: [PATCH] cpufreq: Improve code around unlisted freq check
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>
-CC:     <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        <linux-kernel@vger.kernel.org>, Sumit Gupta <sumitg@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>
-References: <37c3f1f76c055b305d1bba2c2001ac5b1d7a9b5f.1602565964.git.viresh.kumar@linaro.org>
-From:   Sumit Gupta <sumitg@nvidia.com>
-Message-ID: <75176efa-a837-004f-c9ec-c9e2370834ae@nvidia.com>
-Date:   Fri, 16 Oct 2020 16:47:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Fri, 16 Oct 2020 07:17:44 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D66C061755;
+        Fri, 16 Oct 2020 04:17:43 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id dg9so1858977edb.12;
+        Fri, 16 Oct 2020 04:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZVAWWnJuB1h6iJ/WR3j/fBMynn7pxRiYmVRSmaXSQjk=;
+        b=qvCCNdi2wqM9ebEMjd6Rj7W2rwGZBCINZbBnU3h9Xc8SHckjn4oJvIbOrAVf55g2uN
+         imKxwGlWj6EnVFxsshqOnlExVfFDQRqC5WOZkMbxEHRe8sY4/8Xiaz0cCi5trdwZPaUh
+         YBGje9zECTNsXVY3PnxBKyKka3ur33CIoK+DMDAOu1Gf+T/ss4BXTteYQfTRAVoZg0B2
+         E6o0hYO75Xe5uKfcUWCLy7wYClCm8A58jZB1t7iisqsvnl6/0XFwCouSYD7jJMtEObej
+         3+NFTu4bWXH08bjDxqkACnOeNdsQlgr5bQ7Zpw/y0qce+2WHcEIzq1oYRq5VbA2jwU5H
+         ClVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZVAWWnJuB1h6iJ/WR3j/fBMynn7pxRiYmVRSmaXSQjk=;
+        b=eD1Cn6TlDQiG5AaJt9rJnf1t6NBSeHuJXD8NfHuEDn2nSRmHOiojR72ftug/pIGvBC
+         ccolIp1XN1D0TE6o55k5kT7hJNXf2QhYVEN863DKsAKavnWaV3hiH56aJ3phUnYoJJRR
+         VjDA+VFsjUXp6OPoDsBidYe1Gm/3hN1uHYAShxzu/logkNnhzBeJLAXugt5m6tCFCL3X
+         d2KgR5iRC1/Y1Yd8SZ+xD1iJRF1fbzen4hBR0Vsvr0FThnMFzSoqvempQ790qN4+jTJ/
+         lYfO1+x4hO9qMiUZCwmj6BrP30EEAfjFoKdkedXaf+kTuu0QixCEsU8nk/UoatCDosDf
+         FrNA==
+X-Gm-Message-State: AOAM532fP6XdK9SqB9XCGpN8tys9xgVxqgJoQAnSSW/LD2jdxjoqVCYv
+        Lv2ptYU0drcDBzAWllQu2teFvorT3tCoWg==
+X-Google-Smtp-Source: ABdhPJzx38B2WduBHZJ0ABz/TJnez3futcfvRkQvvfPtBOf89WGsQXx+OvMTTMpmP3PWCDEjm0xxHw==
+X-Received: by 2002:a05:6402:22d9:: with SMTP id dm25mr3159053edb.182.1602847061801;
+        Fri, 16 Oct 2020 04:17:41 -0700 (PDT)
+Received: from [192.168.178.40] (ipbcc08ad4.dynamic.kabel-deutschland.de. [188.192.138.212])
+        by smtp.gmail.com with ESMTPSA id a19sm1200024edb.84.2020.10.16.04.17.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 04:17:41 -0700 (PDT)
+Subject: Re: [PATCH 2/4] scatterlist: add sgl_copy_sgl() function
+To:     Douglas Gilbert <dgilbert@interlog.com>,
+        linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.petersen@oracle.com, axboe@kernel.dk, bvanassche@acm.org
+References: <20201016045258.16246-1-dgilbert@interlog.com>
+ <20201016045258.16246-3-dgilbert@interlog.com>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <e04e9a03-1bbc-54ad-659f-7ad176d81019@gmail.com>
+Date:   Fri, 16 Oct 2020 13:17:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <37c3f1f76c055b305d1bba2c2001ac5b1d7a9b5f.1602565964.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20201016045258.16246-3-dgilbert@interlog.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1602847015; bh=bmbZpnsVueT5P6vdVy7J6oHE188K2FYe5c+5IO6rybg=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=EZ6gTy1CF8YbzwdJ2bJAorKva+sDFfhxaZ3Kl2ePopgn7QKSgt5yz89nC2XP9VBjg
-         3DoBiPmIiBdwT2IBQ9jtIty6NL01+MgUYwmVcfaU4O67w7iv9Sle2jw4p3EhHdNEow
-         PA0G7cnQKiCQt5LiwYbb2xRFIXy37HRVBY8VcxrPI1VboIWPNhR7pU/yPdJK7CpRHK
-         p0TQzB9LZBf9Fz/iVb2haDj0P3BnyaOR4QC1YLly7T0pakWhXNE7x1NZYs9cbpgkvP
-         akyEKNlnkjcpLGBf2qFa2IFs4pF17ihW1wmYZdqkKC6Jg7ZLiGigSKRPxUHgIz6J80
-         Yrldz5NsudeeA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Douglas,
 
+AFAICS this patch - and also patch 3 - are not correct.
+When started with SG_MITER_ATOMIC, sg_miter_next and sg_miter_stop use
+the k(un)map_atomic calls. But these have to be used strictly nested
+according to docu and code.
+The below code uses the atomic mappings in overlapping mode.
 
-On 13/10/20 10:42 AM, Viresh Kumar wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> The cpufreq core checks if the frequency programmed by the bootloaders
-> is not listed in the freq table and programs one from the table in such
-> a case. This is done only if the driver has set the
-> CPUFREQ_NEED_INITIAL_FREQ_CHECK flag.
-> 
-> Currently we print two separate messages, with almost the same content,
-> and do this with a pr_warn() which may be a bit too much as the driver
-> only asked us to check this as it expected this to be the case. Lower
-> down the severity of the print message by switching to pr_info() instead
-> and print a single message only.
-> 
+Regards,
+Bodo
 
-Reviewed-by: Sumit Gupta <sumitg@nvidia.com>
-Tested-by: Sumit Gupta <sumitg@nvidia.com>
-
-> Reported-by: Sumit Gupta <sumitg@nvidia.com>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Am 16.10.20 um 06:52 schrieb Douglas Gilbert:
+> Both the SCSI and NVMe subsystems receive user data from the block
+> layer in scatterlist_s (aka scatter gather lists (sgl) which are
+> often arrays). If drivers in those subsystems represent storage
+> (e.g. a ramdisk) or cache "hot" user data then they may also
+> choose to use scatterlist_s. Currently there are no sgl to sgl
+> operations in the kernel. Start with a copy.
+> 
+> Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
 > ---
->   drivers/cpufreq/cpufreq.c | 15 +++++++--------
->   1 file changed, 7 insertions(+), 8 deletions(-)
+>   include/linux/scatterlist.h |  4 ++
+>   lib/scatterlist.c           | 86 +++++++++++++++++++++++++++++++++++++
+>   2 files changed, 90 insertions(+)
 > 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 2ea245a6c0c0..99864afac272 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1461,14 +1461,13 @@ static int cpufreq_online(unsigned int cpu)
->           */
->          if ((cpufreq_driver->flags & CPUFREQ_NEED_INITIAL_FREQ_CHECK)
->              && has_target()) {
-> +               unsigned int old_freq = policy->cur;
+> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
+> index 80178afc2a4a..6649414c0749 100644
+> --- a/include/linux/scatterlist.h
+> +++ b/include/linux/scatterlist.h
+> @@ -321,6 +321,10 @@ size_t sg_pcopy_to_buffer(struct scatterlist *sgl, unsigned int nents,
+>   size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
+>   		       size_t buflen, off_t skip);
+>   
+> +size_t sgl_copy_sgl(struct scatterlist *d_sgl, unsigned int d_nents, off_t d_skip,
+> +		    struct scatterlist *s_sgl, unsigned int s_nents, off_t s_skip,
+> +		    size_t n_bytes);
 > +
->                  /* Are we running at unknown frequency ? */
-> -               ret = cpufreq_frequency_table_get_index(policy, policy->cur);
-> +               ret = cpufreq_frequency_table_get_index(policy, old_freq);
->                  if (ret == -EINVAL) {
-> -                       /* Warn user and fix it */
-> -                       pr_warn("%s: CPU%d: Running at unlisted freq: %u KHz\n",
-> -                               __func__, policy->cpu, policy->cur);
-> -                       ret = __cpufreq_driver_target(policy, policy->cur - 1,
-> -                               CPUFREQ_RELATION_L);
-> +                       ret = __cpufreq_driver_target(policy, old_freq - 1,
-> +                                                     CPUFREQ_RELATION_L);
-> 
->                          /*
->                           * Reaching here after boot in a few seconds may not
-> @@ -1476,8 +1475,8 @@ static int cpufreq_online(unsigned int cpu)
->                           * frequency for longer duration. Hence, a BUG_ON().
->                           */
->                          BUG_ON(ret);
-> -                       pr_warn("%s: CPU%d: Unlisted initial frequency changed to: %u KHz\n",
-> -                               __func__, policy->cpu, policy->cur);
-> +                       pr_info("%s: CPU%d: Running at unlisted initial frequency: %u KHz, changing to: %u KHz\n",
-> +                               __func__, policy->cpu, old_freq, policy->cur);
->                  }
->          }
-> 
-> --
-> 2.25.0.rc1.19.g042ed3e048af
+>   /*
+>    * Maximum number of entries that will be allocated in one piece, if
+>    * a list larger than this is required then chaining will be utilized.
+> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+> index d5770e7f1030..1ec2c909c8d4 100644
+> --- a/lib/scatterlist.c
+> +++ b/lib/scatterlist.c
+> @@ -974,3 +974,89 @@ size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
+>   	return offset;
+>   }
+>   EXPORT_SYMBOL(sg_zero_buffer);
+> +
+> +/**
+> + * sgl_copy_sgl - Copy over a destination sgl from a source sgl
+> + * @d_sgl:		 Destination sgl
+> + * @d_nents:		 Number of SG entries in destination sgl
+> + * @d_skip:		 Number of bytes to skip in destination before copying
+> + * @s_sgl:		 Source sgl
+> + * @s_nents:		 Number of SG entries in source sgl
+> + * @s_skip:		 Number of bytes to skip in source before copying
+> + * @n_bytes:		 The number of bytes to copy
+> + *
+> + * Returns the number of copied bytes.
+> + *
+> + * Notes:
+> + *   Destination arguments appear before the source arguments, as with memcpy().
+> + *
+> + *   Stops copying if the end of d_sgl or s_sgl is reached.
+> + *
+> + *   Since memcpy() is used, overlapping copies (where d_sgl and s_sgl belong
+> + *   to the same sgl and the copy regions overlap) are not supported.
+> + *
+> + *   If d_skip is large, potentially spanning multiple d_nents then some
+> + *   integer arithmetic to adjust d_sgl may improve performance. For example
+> + *   if d_sgl is built using sgl_alloc_order(chainable=false) then the sgl
+> + *   will be an array with equally sized segments facilitating that
+> + *   arithmetic. The suggestion applies to s_skip, s_sgl and s_nents as well.
+> + *
+> + **/
+> +size_t sgl_copy_sgl(struct scatterlist *d_sgl, unsigned int d_nents, off_t d_skip,
+> +		    struct scatterlist *s_sgl, unsigned int s_nents, off_t s_skip,
+> +		    size_t n_bytes)
+> +{
+> +	size_t d_off, s_off, len, d_len, s_len;
+> +	size_t offset = 0;
+> +	struct sg_mapping_iter d_iter;
+> +	struct sg_mapping_iter s_iter;
+> +
+> +	if (n_bytes == 0)
+> +		return 0;
+> +	sg_miter_start(&d_iter, d_sgl, d_nents, SG_MITER_ATOMIC | SG_MITER_TO_SG);
+> +	sg_miter_start(&s_iter, s_sgl, s_nents, SG_MITER_ATOMIC | SG_MITER_FROM_SG);
+> +	if (!sg_miter_skip(&d_iter, d_skip))
+> +		goto fini;
+> +	if (!sg_miter_skip(&s_iter, s_skip))
+> +		goto fini;
+> +
+> +	for (d_off = 0, s_off = 0; true ; ) {
+> +		/* Assume d_iter.length and s_iter.length can never be 0 */
+> +		if (d_off == 0) {
+> +			if (!sg_miter_next(&d_iter))
+> +				break;
+> +			d_len = d_iter.length;
+> +		} else {
+> +			d_len = d_iter.length - d_off;
+> +		}
+> +		if (s_off == 0) {
+> +			if (!sg_miter_next(&s_iter))
+> +				break;
+> +			s_len = s_iter.length;
+> +		} else {
+> +			s_len = s_iter.length - s_off;
+> +		}
+> +		len = min3(d_len, s_len, n_bytes - offset);
+> +
+> +		memcpy(d_iter.addr + d_off, s_iter.addr + s_off, len);
+> +		offset += len;
+> +		if (offset >= n_bytes)
+> +			break;
+> +		if (d_len == s_len) {
+> +			d_off = 0;
+> +			s_off = 0;
+> +		} else if (d_len < s_len) {
+> +			d_off = 0;
+> +			s_off += len;
+> +		} else {
+> +			d_off += len;
+> +			s_off = 0;
+> +		}
+> +	}
+> +fini:
+> +	sg_miter_stop(&d_iter);
+> +	sg_miter_stop(&s_iter);
+> +	return offset;
+> +}
+> +EXPORT_SYMBOL(sgl_copy_sgl);
+> +
 > 
