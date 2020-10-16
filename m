@@ -2,193 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0720F2906D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4DB2906D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408602AbgJPOLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:11:13 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:56738 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408593AbgJPOLL (ORCPT
+        id S2408613AbgJPOLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408606AbgJPOLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:11:11 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 16 Oct 2020 07:11:09 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Oct 2020 07:11:07 -0700
-X-QCInternal: smtphost
-Received: from mkrishn-linux.qualcomm.com ([10.204.66.35])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Oct 2020 19:40:47 +0530
-Received: by mkrishn-linux.qualcomm.com (Postfix, from userid 438394)
-        id F2461213ED; Fri, 16 Oct 2020 19:40:45 +0530 (IST)
-From:   Krishna Manikandan <mkrishn@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        seanpaul@chromium.org, hoegsberg@chromium.org,
-        kalyan_t@codeaurora.org, dianders@chromium.org
-Subject: [v3] drm/msm: Fix race condition in msm driver with async layer updates
-Date:   Fri, 16 Oct 2020 19:40:43 +0530
-Message-Id: <1602857443-27317-1-git-send-email-mkrishn@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 16 Oct 2020 10:11:18 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE59C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:17 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x13so1565589pfa.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:11:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=sMQ2dMIgMKaSx58zvkJZR+Zaau89AWNULRIULAFQhWQ=;
+        b=BVs5BLt8c8o0TolmoLyLq5zl+Oh2F4C9/7OQX3Lmga+kuiMARfVa07ypjnDY8gPgqe
+         hYxLKcntwP/OuVYCkJth6rQWsP8K+2Wjqs3eikhad4j2J3R9GqrGTyPxc5l0o6C0BpuQ
+         d2Chf6HhGavHXOpZ5aAtjvrsDkmRa44OQG8xxwYeFbtuxK2dlUp45a8e/52h9isGkWYC
+         SnDx0MmV8brtesj//Rl583OqO+l3oX9z/eXc5EMfetwnwC/8C1ESIctWJFJofAFyBknF
+         ssZ0um/HfEoZuebvTu3uc1NLsBaIdcdw3SY4swj4xr5uXssYQV9FK1JZm9HmWCj555zV
+         xoTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=sMQ2dMIgMKaSx58zvkJZR+Zaau89AWNULRIULAFQhWQ=;
+        b=j1rs0ZWnuyaGXokUZo+SJXtSS9rBlJ1n4+exPvoNNKu3scStQGjec3etfLiqfYM8R2
+         iCNQnsre6hssIvmC96iGPuLqndqGhFNQIiY8/iRyVaS7W1Gkk+veaUR6Lv+VoQ4oI+ap
+         +DI3/4oyVQNFSbwzDJhmBpl6XHZv/v7lxINWmsa/k64zz49xEEnd+B4YhgeN5VBJqFkW
+         Dnbev5Tkd2gf2vEbB8JB8lAtqG+IKrWWXxOEb9wjEtSZk7cx8tq7LvhPxxE2T9Casaum
+         VfT0CEZ21M5G/CYcvW0zPDvn72CYfaGawBtT9xlRNL5mGWbkPNKyyiyFgYu/vHcj9sm9
+         JI8w==
+X-Gm-Message-State: AOAM531CObCxp/vBKtzWX8RS5tP9B8ZsoGRbDtqWll73v08ozy5QHSLt
+        9chpSOBKQTZMUQ6DOt9VymbrVg==
+X-Google-Smtp-Source: ABdhPJx29URNxem/t+30RTckmeM/Ez+G8pGRwfIwLRIMeQ7mkCeZXBhW0fQG0J8lzwEVBMYXApcCKg==
+X-Received: by 2002:aa7:9afc:0:b029:152:9d45:6723 with SMTP id y28-20020aa79afc0000b02901529d456723mr3770149pfp.35.1602857476462;
+        Fri, 16 Oct 2020 07:11:16 -0700 (PDT)
+Received: from debian ([122.164.16.34])
+        by smtp.gmail.com with ESMTPSA id 16sm3334138pjl.27.2020.10.16.07.11.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 07:11:15 -0700 (PDT)
+Message-ID: <7138d7bce8f8da009119f0107eeb7c85f67057b9.camel@rajagiritech.edu.in>
+Subject: Re: [PATCH 5.8 00/14] 5.8.16-rc1 review
+From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Date:   Fri, 16 Oct 2020 19:41:05 +0530
+In-Reply-To: <20201016090437.153175229@linuxfoundation.org>
+References: <20201016090437.153175229@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there are back to back commits with async cursor update,
-there is a case where second commit can program the DPU hw
-blocks while first didn't complete flushing config to HW.
+On Fri, 2020-10-16 at 11:07 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.16 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied,
+> please
+> let me know.
+> 
+> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	
+> https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.16-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
+> stable-rc.git linux-5.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Synchronize the compositions such that second commit waits
-until first commit flushes the composition.
+hello,
 
-This change also introduces per crtc commit lock, such that
-commits on different crtcs are not blocked by each other.
+Compiled and booted  5.8.16-rc1+ .Every thing looks clean except "dmesg
+-l warn"
 
-Changes in v2:
-	- Use an array of mutexes in kms to handle commit
-	  lock per crtc. (Rob Clark)
+------x--------------x-----------------------------x-----------
 
-Changes in v3:
-	- Add wrapper functions to handle lock and unlock of
-	  commit_lock for each crtc. (Rob Clark)
+$dmesg -l warn
+[    0.601699] MDS CPU bug present and SMT on, data leak possible. See 
+https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/mds.html for
+more details.
+[    0.603104]  #3
+[    0.749457] ENERGY_PERF_BIAS: Set to 'normal', was 'performance'
+[   10.718252] i8042: PNP: PS/2 appears to have AUX port disabled, if
+this is incorrect please boot with i8042.nopnp
+[   12.651483] sdhci-pci 0000:00:1e.6: failed to setup card detect gpio
+[   14.398378] i2c_hid i2c-ELAN1300:00: supply vdd not found, using
+dummy regulator
+[   14.399033] i2c_hid i2c-ELAN1300:00: supply vddl not found, using
+dummy regulator
+[   23.866580] systemd[1]: /lib/systemd/system/plymouth-
+start.service:16: Unit configured to use KillMode=none. This is unsafe,
+as it disables systemd's process lifecycle management for the service.
+Please update your service to use a safer KillMode=, such as 'mixed' or
+'control-group'. Support for KillMode=none is deprecated and will
+eventually be removed.
+[   37.208082] uvcvideo 1-6:1.0: Entity type for entity Extension 4 was
+not initialized!
+[   37.208092] uvcvideo 1-6:1.0: Entity type for entity Processing 2
+was not initialized!
+[   37.208098] uvcvideo 1-6:1.0: Entity type for entity Camera 1 was
+not initialized!
+[   40.088516] FAT-fs (sda1): Volume was not properly unmounted. Some
+data may be corrupt. Please run fsck.
+---------------x-------x-----------------x-------------------------
 
-Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
----
- drivers/gpu/drm/msm/msm_atomic.c | 37 ++++++++++++++++++++++++-------------
- drivers/gpu/drm/msm/msm_kms.h    |  6 ++++--
- 2 files changed, 28 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
-index 561bfa4..575e9af 100644
---- a/drivers/gpu/drm/msm/msm_atomic.c
-+++ b/drivers/gpu/drm/msm/msm_atomic.c
-@@ -55,16 +55,32 @@ static void vblank_put(struct msm_kms *kms, unsigned crtc_mask)
- 	}
- }
- 
-+static void lock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
-+{
-+	struct drm_crtc *crtc;
-+
-+	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-+		mutex_lock(&kms->commit_lock[drm_crtc_index(crtc)]);
-+}
-+
-+static void unlock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
-+{
-+	struct drm_crtc *crtc;
-+
-+	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-+		mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
-+}
-+
- static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
- {
- 	unsigned crtc_mask = BIT(crtc_idx);
- 
- 	trace_msm_atomic_async_commit_start(crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
-+	lock_crtcs(kms, crtc_mask);
- 
- 	if (!(kms->pending_crtc_mask & crtc_mask)) {
--		mutex_unlock(&kms->commit_lock);
-+		unlock_crtcs(kms, crtc_mask);
- 		goto out;
- 	}
- 
-@@ -79,7 +95,6 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
- 	 */
- 	trace_msm_atomic_flush_commit(crtc_mask);
- 	kms->funcs->flush_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
- 
- 	/*
- 	 * Wait for flush to complete:
-@@ -90,9 +105,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
- 
- 	vblank_put(kms, crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
- 	kms->funcs->complete_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
-+	unlock_crtcs(kms, crtc_mask);
- 	kms->funcs->disable_commit(kms);
- 
- out:
-@@ -189,12 +203,11 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 	 * Ensure any previous (potentially async) commit has
- 	 * completed:
- 	 */
-+	lock_crtcs(kms, crtc_mask);
- 	trace_msm_atomic_wait_flush_start(crtc_mask);
- 	kms->funcs->wait_flush(kms, crtc_mask);
- 	trace_msm_atomic_wait_flush_finish(crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
--
- 	/*
- 	 * Now that there is no in-progress flush, prepare the
- 	 * current update:
-@@ -232,8 +245,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 		}
- 
- 		kms->funcs->disable_commit(kms);
--		mutex_unlock(&kms->commit_lock);
--
-+		unlock_crtcs(kms, crtc_mask);
- 		/*
- 		 * At this point, from drm core's perspective, we
- 		 * are done with the atomic update, so we can just
-@@ -260,8 +272,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 	 */
- 	trace_msm_atomic_flush_commit(crtc_mask);
- 	kms->funcs->flush_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
--
-+	unlock_crtcs(kms, crtc_mask);
- 	/*
- 	 * Wait for flush to complete:
- 	 */
-@@ -271,9 +282,9 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 
- 	vblank_put(kms, crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
-+	lock_crtcs(kms, crtc_mask);
- 	kms->funcs->complete_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
-+	unlock_crtcs(kms, crtc_mask);
- 	kms->funcs->disable_commit(kms);
- 
- 	drm_atomic_helper_commit_hw_done(state);
-diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-index 1cbef6b..2049847 100644
---- a/drivers/gpu/drm/msm/msm_kms.h
-+++ b/drivers/gpu/drm/msm/msm_kms.h
-@@ -155,7 +155,7 @@ struct msm_kms {
- 	 * For async commit, where ->flush_commit() and later happens
- 	 * from the crtc's pending_timer close to end of the frame:
- 	 */
--	struct mutex commit_lock;
-+	struct mutex commit_lock[MAX_CRTCS];
- 	unsigned pending_crtc_mask;
- 	struct msm_pending_timer pending_timers[MAX_CRTCS];
- };
-@@ -165,7 +165,9 @@ static inline void msm_kms_init(struct msm_kms *kms,
- {
- 	unsigned i;
- 
--	mutex_init(&kms->commit_lock);
-+	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
-+		mutex_init(&kms->commit_lock[i]);
-+
- 	kms->funcs = funcs;
- 
- 	for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
+Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
 -- 
-2.7.4
+software engineer
+rajagiri school of engineering and technology
 
