@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EEC290984
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3408829098A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409973AbgJPQSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:18:31 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36158 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409855AbgJPQSa (ORCPT
+        id S2410736AbgJPQSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:18:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39965 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2410725AbgJPQSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:18:30 -0400
-Received: by mail-oi1-f195.google.com with SMTP id u17so3037400oie.3;
-        Fri, 16 Oct 2020 09:18:30 -0700 (PDT)
+        Fri, 16 Oct 2020 12:18:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602865123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=55IofThJBGGfI7Vv9n+rH5kFo9zSb3bSZ3YPS6/pa8g=;
+        b=AE022voPJzRYawmTidRcfWMYGPgr69jhjhG0Rg23oLCqLPxe2QggP41uRFybAqdkR2f2J8
+        3V0IiBcAlNNPMcmenHO7iUIQbQiy7I5v2Owb6hR0l9L0Kolo+CMLvCbMo8G5IIx7Ci0gDH
+        48KvoKbZOlXHfL2gdo8RnrLW6zmR+hA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-ELh-eVBLPXeIExnFukROLQ-1; Fri, 16 Oct 2020 12:18:41 -0400
+X-MC-Unique: ELh-eVBLPXeIExnFukROLQ-1
+Received: by mail-wm1-f69.google.com with SMTP id f2so877585wml.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:18:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uISo57yfUZpTzroMJhAVgeLo1/yelMiKsufW7Z+pWqo=;
-        b=m/FHxZAjzDw6+iURm5HXzRFnzv/1zD5JWvP2f4eMso4nTlQ4MTQKWoKUCdQnwaC5Bp
-         kdn4Q215XDh2i4xVHqfNXVvYX3ydimglgp9yUpPBAJ0wnr9bH05fftUrdLQ3toyJ0cnp
-         mleZ0bejFAOo0B/xSoTP47Kz60gOAjtzZEDsbnPBOp+Jh/W98/LvSlDBT7bSYZIOeR70
-         i0FneXckXDOR3H8BJDp4F9t4RZc1ntPMvSOtnF904dQNcuOTiaWCnV05bzHzYTXogUuS
-         fK4aflHqG2sGP0ExNU/rPI+A2n8YuhDZD8LQVIDbpNoqlr+qCWMDsjkTb0Bh1mGdDqoK
-         ZObw==
-X-Gm-Message-State: AOAM5314dMmyG5lv4Lnj+YgMVaB3cRqpU5GaUHwD5c8KuYXtMzlioHyp
-        DOe4/Lx1oGbYrkbrYmVcsg==
-X-Google-Smtp-Source: ABdhPJxXWV44wqWW/P4G+jW/m/jxEn6yv6aGQSaC4SmYzaJjQxINSxxLka7EviDs9inU1aAGasqeyA==
-X-Received: by 2002:aca:aa08:: with SMTP id t8mr3126702oie.129.1602865110271;
-        Fri, 16 Oct 2020 09:18:30 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u22sm1266354oor.13.2020.10.16.09.18.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 09:18:29 -0700 (PDT)
-Received: (nullmailer pid 1517766 invoked by uid 1000);
-        Fri, 16 Oct 2020 16:18:28 -0000
-Date:   Fri, 16 Oct 2020 11:18:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Wenbin Mei <wenbin.mei@mediatek.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mediatek@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        srv_heupstream@mediatek.com, devicetree@vger.kernel.org,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v7 2/4] mmc: dt-bindings: add support for MT8192 SoC
-Message-ID: <20201016161828.GA1517686@bogus>
-References: <20201014030846.12428-1-wenbin.mei@mediatek.com>
- <20201014030846.12428-3-wenbin.mei@mediatek.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=55IofThJBGGfI7Vv9n+rH5kFo9zSb3bSZ3YPS6/pa8g=;
+        b=iAKPTSW3hWn4XfLVg2EamlLjWvI6LZXO6+b5b1Wo1IpVbTnFFlbFRyeluxbRRnEcWS
+         CNR0EZ61atioTo28sMf+cvArnVJ6Ukh15Ck3OzOsDJR1NsEEuTlkktt83pRuU/BTZhYa
+         ClFtVmtQ37Hv6FVvTonRfI9iYMl3D/qvtvQ+fywFu0wHrr/k91ZIERmggt9f6xJG6Mip
+         ysPGaqy2SGVjBNdz+i1Ywti9rguckIw9N79mRMm50Tu7IAl4WVPaVVMU5L+rlE9WdFa3
+         /xOn87JBkDbb0woLsgt/YqeswYvT9BCIVphwTfTzgoggiBnubLoqiFKDUeJy6z57wgiL
+         KdUg==
+X-Gm-Message-State: AOAM532zON/yet0xagUlnlAkGRQrlxu87c3VhOewTB6eXHrZjISpuxsq
+        M7Ry1tFmJXGshXz0qfzuiMVNst18xXtiAgN5iyiApRrECgjrsFK8syUw5ofESXJYqSYlqimIWoU
+        wIGP12db9U6L+W3pTHanKoRFu
+X-Received: by 2002:a05:6000:1d1:: with SMTP id t17mr26433wrx.164.1602865120606;
+        Fri, 16 Oct 2020 09:18:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZtNUzSirPAkkrVoU2Weh+68oUbj2auD4X75K4G+0x8nXulbNuaSpOTcaEbzjCWmUvnOuMCw==
+X-Received: by 2002:a05:6000:1d1:: with SMTP id t17mr26403wrx.164.1602865120335;
+        Fri, 16 Oct 2020 09:18:40 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3? ([2001:b07:6468:f312:4e8a:ee8e:6ed5:4bc3])
+        by smtp.gmail.com with ESMTPSA id s185sm3450892wmf.3.2020.10.16.09.18.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 09:18:39 -0700 (PDT)
+Subject: Re: [PATCH v2 15/20] kvm: x86/mmu: Support dirty logging for the TDP
+ MMU
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20201014182700.2888246-1-bgardon@google.com>
+ <20201014182700.2888246-16-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f5e558b2-dab8-ca9e-6870-0c69d683703a@redhat.com>
+Date:   Fri, 16 Oct 2020 18:18:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014030846.12428-3-wenbin.mei@mediatek.com>
+In-Reply-To: <20201014182700.2888246-16-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020 11:08:44 +0800, Wenbin Mei wrote:
-> MT8192 mmc host ip is compatible with MT8183.
-> Add support for this.
-> 
-> Signed-off-by: Wenbin Mei <wenbin.mei@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
-> 
+On 14/10/20 20:26, Ben Gardon wrote:
+>  
+> +	if (kvm->arch.tdp_mmu_enabled)
+> +		kvm_tdp_mmu_clear_dirty_pt_masked(kvm, slot,
+> +				slot->base_gfn + gfn_offset, mask, true);
 
+This was "false" in v1, I need --verbose for this change. :)
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+>  	while (mask) {
+>  		rmap_head = __gfn_to_rmap(slot->base_gfn + gfn_offset + __ffs(mask),
 
-If a tag was not added on purpose, please state why and what changed.
+> +		spte_set = wrprot_gfn_range(kvm, root, slot->base_gfn,
+> +				slot->base_gfn + slot->npages, min_level) ||
+> +			   spte_set;
+
+A few remaining instances of ||.
+
+Paolo
 
