@@ -2,113 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44254290079
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EE329007C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405245AbgJPJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404265AbgJPJFb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:05:31 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C70C061755;
-        Fri, 16 Oct 2020 02:05:30 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id md26so2036414ejb.10;
-        Fri, 16 Oct 2020 02:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kdEvLM24ShjG3wNe7OPqA0oEeaBKoO7Zc9qCuXiw5Co=;
-        b=rw6Q862j9e0sIhzDYZ3knhzfJ32UWPYURiSgJaA9UYdrWSD/gCAq5fXxsV49VbCa6N
-         xlb4HJ3EgMmk1R4KBu4iNc2NoWn6gKH2SOMj98ncY/jxFtvzi/XBuyZEbv81rDLB25YV
-         CdiPkVOAM0d2dlY4t4KPu9BicCikwB+qASHo+uTiviGHtq0Aleg7VZXQGg3Hxyyn8ojY
-         w2Sxx/kT9Grf8emddsJNU3p2CU5SQ5mgGoG3o4roXg+5yBV7TWlA44YSCj73o09CYEu7
-         XAwdm2Hg8lV7RG8rkEWXv1sMAibB3K9hX7c3254klNhjNL7OiV1JSHyTLJvvcUAi/wUb
-         uC2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kdEvLM24ShjG3wNe7OPqA0oEeaBKoO7Zc9qCuXiw5Co=;
-        b=P81N5IkFfvvGLdDC8GJj+RW+D5YXjx+oStNf2syJhd6iGH2qYLfDwZBv7ximxFoQUT
-         qUAmIT3XFpUU8uWVJrDqUH/OitTCghhSdvfjFVmUMju011tYPylgJF01ax0fCNg4YWea
-         AAARdld58IP60eBmnjE8ADc74Jmgd2pwjt/cjH8YsPggcO4pMdlO9MDVJc9bNN+sIL1e
-         qsz8k8uOPt6TTNGsc10i96ZT7YMhhzYZ02FqLwnBwpgPmTVdQbmMsoo3GszTLxe0sMf7
-         Hfi3J0+diPfrT4bLJ5pbOhjXjSJ0+n7DcaGXu+NUuV3qvye35PTxAB/mNukq0Y83Nvpa
-         on/A==
-X-Gm-Message-State: AOAM531cs62kyJ84YzKwn++6ES0ESOUNMzKoRmemWq1Ei9aQe8+YIRUy
-        CGsIV0xu3JKOC8rvk4AjJBk=
-X-Google-Smtp-Source: ABdhPJzVqiIBv+lNnb/onQp56fC/qDt9S2d7tJodghoSe00Q9F4qSbvBr2ma51/poCL4iW1V7cR27g==
-X-Received: by 2002:a17:906:bc42:: with SMTP id s2mr2587128ejv.251.1602839129464;
-        Fri, 16 Oct 2020 02:05:29 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id qw1sm1099691ejb.44.2020.10.16.02.05.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 02:05:29 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 12:05:27 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Christian Eggers <ceggers@arri.de>
-Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: ksz: fix padding size of skb
-Message-ID: <20201016090527.tbzmjkraok5k7pwb@skbuf>
-References: <20201014161719.30289-1-ceggers@arri.de>
- <1647199.FWNDY5eN7L@n95hx1g2>
- <875z7asjfd.fsf@kurt>
- <4467366.g9nP7YU7d8@n95hx1g2>
+        id S2405287AbgJPJGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:06:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404570AbgJPJGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:06:08 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4087720723;
+        Fri, 16 Oct 2020 09:06:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602839167;
+        bh=iHh+KLBBt7BpsQXhiDYwxCEnjCkkHel4kb+7focSrbY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X3w1uo9SLvhJ0kVnSAuSMBb2BIQtE7gIYT++5rzDRWaKfEv8OS9w6/xrSz/Kz4yiX
+         3Vqrq3cjqmPmB6st78wiqi7C+fISQGevw4oPnmfmdwSIunft1OOPo6ICDS3po8AmaY
+         z3iM/BLOdutEMU/CrfUCCNNf+oXFLh7p/DPQRQWQ=
+Date:   Fri, 16 Oct 2020 11:06:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Jann Horn <jannh@google.com>, Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        openrisc@lists.librecores.org, kbuild-all@lists.01.org,
+        Martijn Coenen <maco@android.com>,
+        kernel test robot <lkp@intel.com>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [linux-stable-rc:linux-5.4.y 665/2391]
+ drivers/android/binder.c:3776: Error: unrecognized keyword/register name
+ `l.lwz
+Message-ID: <20201016090638.GA1749385@kroah.com>
+References: <202010160523.r8yMbvrW-lkp@intel.com>
+ <CAG48ez3VixjDrMnz6+7JjGW_ZLZCD4+dTYWUD_tNOcfEfpu1Bg@mail.gmail.com>
+ <CAAfxs77_h-DHOMFCJBWMuj1H5Rj8OiqC_U1Trs3A8gNCiPvo7w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4467366.g9nP7YU7d8@n95hx1g2>
+In-Reply-To: <CAAfxs77_h-DHOMFCJBWMuj1H5Rj8OiqC_U1Trs3A8gNCiPvo7w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 11:00:20AM +0200, Christian Eggers wrote:
-> On Friday, 16 October 2020, 09:45:42 CEST, Kurt Kanzenbach wrote:
-> > On Thu Oct 15 2020, Christian Eggers wrote:
-> > > On Wednesday, 14 October 2020, 19:31:03 CEST, Vladimir Oltean wrote:
-> > >> What problem are you actually trying to solve?
-> > >
-> > > After (hopefully) understanding the important bits, I would like to solve
-> > > the problem that after calling __skb_put_padto() there may be no tailroom
-> > > for the tail tag.
-> > >
-> > > The conditions where this can happen are quite special. You need a
-> > > skb->len < ETH_ZLEN and the skb must be marked as cloned. One condition
-> > > where this happens in practice is when the skb has been selected for TX
-> > > time stamping in dsa_skb_tx_timestamp() [cloned] and L2 is used as
-> > > transport for PTP [size < ETH_ZLEN]. But maybe cloned sk_buffs can also
-> > > happen for other reasons.
-> > Hmm. I've never observed any problems using DSA with L2 PTP time
-> > stamping with this tail tag code. What's the impact exactly? Memory
-> > corruption?
-> It looks like skb_put_padto() is only used by the tag_ksz driver. So it's
-> unlikely that other drivers are affected by the same problem.
+On Fri, Oct 16, 2020 at 08:05:17AM +0900, Stafford Horne wrote:
+> On Fri, Oct 16, 2020, 6:46 AM Jann Horn <jannh@google.com> wrote:
 > 
-> If I remember correctly, I got a skb_panic in skb_put() when adding the tail
-> tag. But with the current kernel I didn't manage to create packets where the
-> skb allocated by __skb_put_padto has not enough spare room for the tag tag.
-> Either I am trying with wrong packets, or something else has been changed in
-> between.
+> > +openrisc folks
+> >
+> > On Thu, Oct 15, 2020 at 11:28 PM kernel test robot <lkp@intel.com> wrote:
+> > > tree:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > linux-5.4.y
+> > > head:   85b0841aab15c12948af951d477183ab3df7de14
+> > > commit: c5665cafbedd2e2a523fe933e452391a02d3adb3 [665/2391] binder:
+> > Prevent context manager from incrementing ref 0
+> > > config: openrisc-randconfig-r002-20201014 (attached as .config)
+> > > compiler: or1k-linux-gcc (GCC) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >         wget
+> > https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> > -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         #
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/commit/?id=c5665cafbedd2e2a523fe933e452391a02d3adb3
+> > >         git remote add linux-stable-rc
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> > >         git fetch --no-tags linux-stable-rc linux-5.4.y
+> > >         git checkout c5665cafbedd2e2a523fe933e452391a02d3adb3
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross
+> > ARCH=openrisc
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > All errors (new ones prefixed by >>):
+> > >
+> > >    drivers/android/binder.c: Assembler messages:
+> > > >> drivers/android/binder.c:3776: Error: unrecognized keyword/register
+> > name `l.lwz ?ap,4(r25)'
+> > >    drivers/android/binder.c:3781: Error: unrecognized keyword/register
+> > name `l.addi ?ap,r0,0'
+> >
+> > binder is basically doing this:
+> >
+> > u64 data_ptr;
+> > if (get_user(data_ptr, (u64 __user *)ptr))
+> >   return -EFAULT;
+> >
+> > and GCC complains that that doesn't turn into valid assembly on
+> > openrisc, where get_user() of size 8 expands into this:
+> >
+> > #define __get_user_asm2(x, addr, err)                   \
+> > {                                                       \
+> >         unsigned long long __gu_tmp;                    \
+> >         __asm__ __volatile__(                           \
+> >                 "1:     l.lwz %1,0(%2)\n"               \
+> >                 "2:     l.lwz %H1,4(%2)\n"              \
+> >                 "3:\n"                                  \
+> >                 ".section .fixup,\"ax\"\n"              \
+> >                 "4:     l.addi %0,r0,%3\n"              \
+> >                 "       l.addi %1,r0,0\n"               \
+> >                 "       l.addi %H1,r0,0\n"              \
+> >                 "       l.j 3b\n"                       \
+> >                 "       l.nop\n"                        \
+> >                 ".previous\n"                           \
+> >                 ".section __ex_table,\"a\"\n"           \
+> >                 "       .align 2\n"                     \
+> >                 "       .long 1b,4b\n"                  \
+> >                 "       .long 2b,4b\n"                  \
+> >                 ".previous"                             \
+> >                 : "=r"(err), "=&r"(__gu_tmp)            \
+> >                 : "r"(addr), "i"(-EFAULT), "0"(err));   \
+> >         (x) = (__typeof__(*(addr)))(                    \
+> >                 (__typeof__((x)-(x)))__gu_tmp);         \
+> > }
+> >
+> > and apparently the "l.lwz %H1,4(%2)" and "l.addi %H1,r0,0" don't turn
+> > into valid assembly when %H1 expands to "?ap"?
+> >
+> > I don't know anything about OpenRISC, but this seems like it's
+> > probably an issue in the get_user() implementation.
+> >
 > 
-> I just sent a new patch which should solve the problem correctly here:
-> https://patchwork.ozlabs.org/project/netdev/list/?series=208269
+> This is fixed in 5.9.  I think the patch can be cherry picked by itself.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/arch/openrisc?h=v5.9&id=d877322bc1adcab9850732275670409e8bcca4c4
 
-Kurt is asking, and rightfully so, because his tag_hellcreek.c driver
-(for a 1588 switch with tail tags) is copied from tag_ksz.c.
-I have also attempted to replicate your issue at my end and failed to do
-so. In principle, it is indeed true that a cloned skb should not be
-modified without calling skb_unshare() first. The DSA core
-(dsa_slave_xmit) should do that. But that doesn't explain the symptoms
-you're seeing, which is why I asked for skb_dump.
+Does not apply cleanly to 5.8.y or 5.4.y, can someone please properly
+backport it and send it to stable@vger.kernel.org?
+
+thanks,
+
+greg k-h
