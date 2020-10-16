@@ -2,73 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4FA29074D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146DF290750
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408915AbgJPOil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405115AbgJPOil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:38:41 -0400
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2408927AbgJPOkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:40:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40031 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407597AbgJPOkV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 10:40:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602859220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AJH2rQKiaPivnwScef349FvB7E5p9oHS8lm1FpKoy6Q=;
+        b=VKQ4vdqooF8E6bwECmWTortZEtGUpmo0TfC8sGRg/Yqo9mOECQbuwNlYqmx59lVyMnhRX1
+        lwWugqb6zhZU+PImIjfMkyjun58VfEv3JGxwSWL24k+PKtIRzaCAhyww8ogFn4drpHNTEQ
+        rNcM2+xA5AOMmD5YM7q/NfXzucMKw7w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98-Qx8c6uYcNmaCF-64-nUZng-1; Fri, 16 Oct 2020 10:40:16 -0400
+X-MC-Unique: Qx8c6uYcNmaCF-64-nUZng-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BAD020897;
-        Fri, 16 Oct 2020 14:38:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602859120;
-        bh=Dj9uWqEbqW66sbMIJGFmXibyUPobFQVl5+7gB59p9n0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hvf3aS1MbT4THmpMjl+1T3sIdNl2DWV9lzy0OQvQ4cqSOtTJiLANqI/00SxctkNLS
-         6px5oPGWl5XxHnbt4InpAi++44DtdvoE2b/YNJVeQFJI1BG53hH1+WywRayu9S6bQB
-         seY/8OThcC2dKhIdgrIA4bRffhX09jbw++ST3l8Q=
-Received: by mail-ot1-f41.google.com with SMTP id l4so2599321ota.7;
-        Fri, 16 Oct 2020 07:38:40 -0700 (PDT)
-X-Gm-Message-State: AOAM533h/VcHKOwjjpihIkR6iafhjf/4hd2mg4mT8c1fEeuLsZNq+0/e
-        sECcfpJG0tvIQF5dOHBg+sbQSw9J/LSKWR0/Ww==
-X-Google-Smtp-Source: ABdhPJz6Bmpb+GYefONLDo54757hps1sVxCvdYy7l4YBZKUFvQQ0PRd2mAVdl5gWfI7QYLDcWRfuXbx3j4IZTce96rE=
-X-Received: by 2002:a9d:7993:: with SMTP id h19mr2889277otm.129.1602859119266;
- Fri, 16 Oct 2020 07:38:39 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB26D879516;
+        Fri, 16 Oct 2020 14:40:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D81181A837;
+        Fri, 16 Oct 2020 14:40:12 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+cc:     dhowells@redhat.com, hdanton@sina.com,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] afs: Fix cell management, add tracepoint, downgrade assert
 MIME-Version: 1.0
-References: <20201015114346.15743-1-nsaenzjulienne@suse.de>
-In-Reply-To: <20201015114346.15743-1-nsaenzjulienne@suse.de>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 16 Oct 2020 09:38:28 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLvzsdAfx56jQqPSd1r=P20C8DURKKZ9kke-L2owqr0fg@mail.gmail.com>
-Message-ID: <CAL_JsqLvzsdAfx56jQqPSd1r=P20C8DURKKZ9kke-L2owqr0fg@mail.gmail.com>
-Subject: Re: [RFC] of/platform: Create device link between simple-mfd and its children
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Saravana Kannan <saravanak@google.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1431073.1602859212.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 16 Oct 2020 15:40:12 +0100
+Message-ID: <1431074.1602859212@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 6:43 AM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
->
-> 'simple-mfd' usage implies there might be some kind of resource sharing
-> between the parent device and its children.
+Hi Linus,
 
-It does? No! The reason behind simple-mfd was specifically because
-there was no parent driver or dependency on the parent. No doubt
-simple-mfd has been abused.
+Here are a collection of fixes to fix afs_cell struct refcounting, thereby
+fixing a slew of related syzbot bugs:
 
-Rob
+ (1) Fix the cell tree in the netns to use an rwsem rather than RCU.
 
-> By creating a device link
-> with DL_FLAG_AUTOREMOVE_CONSUMER we make sure that at no point in time
-> the parent device is unbound while leaving its children unaware that
-> some of their resources disappeared.
->
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+     There seem to be some problems deriving from the use of RCU and a
+     seqlock to walk the rbtree, but it's not entirely clear what since
+     there are several different failures being seen.
+
+     Changing things to use an rwsem instead makes it more robust.  The
+     extra performance derived from using RCU isn't necessary in this case
+     since the only time we're looking up a cell is during mount or when
+     cells are being manually added.
+
+ (2) Fix the refcounting by splitting the usage counter into a memory
+     refcount and an active users counter.  The usage counter was doing
+     double duty, keeping track of whether a cell is still in use and
+     keeping track of when it needs to be destroyed - but this makes the
+     clean up tricky.  Separating these out simplifies the logic.
+
+ (3) Fix purging a cell that has an alias.  A cell alias pins the cell it'=
+s
+     an alias of, but the alias is always later in the list.  Trying to
+     purge in a single pass causes rmmod to hang in such a case.
+
+ (4) Fix cell removal.  If a cell's manager is requeued whilst it's
+     removing itself, the manager will run again and re-remove itself,
+     causing problems in various places.  Follow Hillf Danton's suggestion
+     to insert a more terminal state that causes the manager to do nothing
+     post-removal.
+
+In additional to the above, I've included two more patches:
+
+ (1) Add a tracepoint for the cell refcount and active users count.  This
+     helped with debugging the above and may be useful again in future.
+
+ (2) Downgrade an assertion to a print when a still-active server is seen
+     during purging.  This was happening as a consequence of incomplete
+     cell removal before the servers were cleaned up.
+
+David
+---
+The following changes since commit bbf5c979011a099af5dc76498918ed7df445635=
+b:
+
+  Linux 5.9 (2020-10-11 14:15:50 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
+/afs-fixes-20201016
+
+for you to fetch changes up to 7530d3eb3dcf1a30750e8e7f1f88b782b96b72b8:
+
+  afs: Don't assert on unpurgeable server records (2020-10-16 14:39:34 +01=
+00)
+
+----------------------------------------------------------------
+afs fixes
+
+----------------------------------------------------------------
+David Howells (6):
+      afs: Fix rapid cell addition/removal by not using RCU on cells tree
+      afs: Fix cell refcounting by splitting the usage counter
+      afs: Fix cell purging with aliases
+      afs: Fix cell removal
+      afs: Add tracing for cell refcount and active user count
+      afs: Don't assert on unpurgeable server records
+
+ fs/afs/cell.c              | 328 +++++++++++++++++++++++++++++-----------=
+-----
+ fs/afs/dynroot.c           |  23 ++--
+ fs/afs/internal.h          |  20 ++-
+ fs/afs/main.c              |   2 +-
+ fs/afs/mntpt.c             |   4 +-
+ fs/afs/proc.c              |  23 ++--
+ fs/afs/server.c            |   7 +-
+ fs/afs/super.c             |  18 +--
+ fs/afs/vl_alias.c          |   8 +-
+ fs/afs/vl_rotate.c         |   2 +-
+ fs/afs/volume.c            |   6 +-
+ include/trace/events/afs.h | 109 +++++++++++++++
+ 12 files changed, 378 insertions(+), 172 deletions(-)
+
