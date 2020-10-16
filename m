@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9E12900C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96AF2901A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394953AbgJPJIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:08:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36672 "EHLO mail.kernel.org"
+        id S2406374AbgJPJQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:16:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404886AbgJPJIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:08:13 -0400
+        id S2405027AbgJPJIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:08:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61E0F20848;
-        Fri, 16 Oct 2020 09:08:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 60ABC21556;
+        Fri, 16 Oct 2020 09:08:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839292;
-        bh=L0DVl83/01p656z7SEG8a3RokiIev1tEZapQIy4+URM=;
+        s=default; t=1602839302;
+        bh=16/TAZ8EDeUaBagtevxZ1bw/cNO+Dxs9T4s6oryzSFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rnWqJkwlo8Acz+226zzPJUDBWoab/lW+PJu/bDxJ5CA7ZQjX5r75a6gBrQxuBN7jo
-         /XQWMBp6ltKDCQK9NKPeL4eULEKhPL/w1bGKyYejJaY5DvnRg6zxMwsGfwgIgsIEwb
-         K50ohAJJf+xkfvno5xlgS0bPpDojX1jRN9brdSX8=
+        b=sgeTjRjHjUT95h6KZydA6eggEV5ArudDwcyQpF4WwCtuSwims+hYl1cKdxs2hHPfX
+         QHviJDAdZVg8m3oJm9iVr9G74za+m7KSUnXv50z9LV/66KJiHf0TXnjWYo37q4+6sW
+         UK+WyDHgOnDJJ3dHR1M+aj+7XuuStLsVObfX19CA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Nguyen <theflow@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Sonny Sasaka <sonnysasaka@chromium.org>,
+        stable@vger.kernel.org,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
         Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.14 01/18] Bluetooth: fix kernel oops in store_pending_adv_report
-Date:   Fri, 16 Oct 2020 11:07:11 +0200
-Message-Id: <20201016090437.342791374@linuxfoundation.org>
+Subject: [PATCH 4.14 02/18] Bluetooth: A2MP: Fix not initializing all members
+Date:   Fri, 16 Oct 2020 11:07:12 +0200
+Message-Id: <20201016090437.390458348@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201016090437.265805669@linuxfoundation.org>
 References: <20201016090437.265805669@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,112 +43,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Michaud <alainm@chromium.org>
+From: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 
-commit a2ec905d1e160a33b2e210e45ad30445ef26ce0e upstream.
+commit eddb7732119d53400f48a02536a84c509692faa8 upstream.
 
-Fix kernel oops observed when an ext adv data is larger than 31 bytes.
+This fixes various places where a stack variable is used uninitialized.
 
-This can be reproduced by setting up an advertiser with advertisement
-larger than 31 bytes.  The issue is not sensitive to the advertisement
-content.  In particular, this was reproduced with an advertisement of
-229 bytes filled with 'A'.  See stack trace below.
-
-This is fixed by not catching ext_adv as legacy adv are only cached to
-be able to concatenate a scanable adv with its scan response before
-sending it up through mgmt.
-
-With ext_adv, this is no longer necessary.
-
-  general protection fault: 0000 [#1] SMP PTI
-  CPU: 6 PID: 205 Comm: kworker/u17:0 Not tainted 5.4.0-37-generic #41-Ubuntu
-  Hardware name: Dell Inc. XPS 15 7590/0CF6RR, BIOS 1.7.0 05/11/2020
-  Workqueue: hci0 hci_rx_work [bluetooth]
-  RIP: 0010:hci_bdaddr_list_lookup+0x1e/0x40 [bluetooth]
-  Code: ff ff e9 26 ff ff ff 0f 1f 44 00 00 0f 1f 44 00 00 55 48 8b 07 48 89 e5 48 39 c7 75 0a eb 24 48 8b 00 48 39 f8 74 1c 44 8b 06 <44> 39 40 10 75 ef 44 0f b7 4e 04 66 44 39 48 14 75 e3 38 50 16 75
-  RSP: 0018:ffffbc6a40493c70 EFLAGS: 00010286
-  RAX: 4141414141414141 RBX: 000000000000001b RCX: 0000000000000000
-  RDX: 0000000000000000 RSI: ffff9903e76c100f RDI: ffff9904289d4b28
-  RBP: ffffbc6a40493c70 R08: 0000000093570362 R09: 0000000000000000
-  R10: 0000000000000000 R11: ffff9904344eae38 R12: ffff9904289d4000
-  R13: 0000000000000000 R14: 00000000ffffffa3 R15: ffff9903e76c100f
-  FS: 0000000000000000(0000) GS:ffff990434580000(0000) knlGS:0000000000000000
-  CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007feed125a000 CR3: 00000001b860a003 CR4: 00000000003606e0
-  Call Trace:
-    process_adv_report+0x12e/0x560 [bluetooth]
-    hci_le_meta_evt+0x7b2/0xba0 [bluetooth]
-    hci_event_packet+0x1c29/0x2a90 [bluetooth]
-    hci_rx_work+0x19b/0x360 [bluetooth]
-    process_one_work+0x1eb/0x3b0
-    worker_thread+0x4d/0x400
-    kthread+0x104/0x140
-
-Fixes: c215e9397b00 ("Bluetooth: Process extended ADV report event")
-Reported-by: Andy Nguyen <theflow@google.com>
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Reported-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
-Signed-off-by: Alain Michaud <alainm@chromium.org>
-Tested-by: Sonny Sasaka <sonnysasaka@chromium.org>
-Acked-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/bluetooth/hci_event.c |   22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ net/bluetooth/a2mp.c |   22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -1133,6 +1133,9 @@ static void store_pending_adv_report(str
+--- a/net/bluetooth/a2mp.c
++++ b/net/bluetooth/a2mp.c
+@@ -233,6 +233,9 @@ static int a2mp_discover_rsp(struct amp_
+ 			struct a2mp_info_req req;
+ 
+ 			found = true;
++
++			memset(&req, 0, sizeof(req));
++
+ 			req.id = cl->id;
+ 			a2mp_send(mgr, A2MP_GETINFO_REQ, __next_ident(mgr),
+ 				  sizeof(req), &req);
+@@ -312,6 +315,8 @@ static int a2mp_getinfo_req(struct amp_m
+ 	if (!hdev || hdev->dev_type != HCI_AMP) {
+ 		struct a2mp_info_rsp rsp;
+ 
++		memset(&rsp, 0, sizeof(rsp));
++
+ 		rsp.id = req->id;
+ 		rsp.status = A2MP_STATUS_INVALID_CTRL_ID;
+ 
+@@ -355,6 +360,8 @@ static int a2mp_getinfo_rsp(struct amp_m
+ 	if (!ctrl)
+ 		return -ENOMEM;
+ 
++	memset(&req, 0, sizeof(req));
++
+ 	req.id = rsp->id;
+ 	a2mp_send(mgr, A2MP_GETAMPASSOC_REQ, __next_ident(mgr), sizeof(req),
+ 		  &req);
+@@ -383,6 +390,8 @@ static int a2mp_getampassoc_req(struct a
+ 		struct a2mp_amp_assoc_rsp rsp;
+ 		rsp.id = req->id;
+ 
++		memset(&rsp, 0, sizeof(rsp));
++
+ 		if (tmp) {
+ 			rsp.status = A2MP_STATUS_COLLISION_OCCURED;
+ 			amp_mgr_put(tmp);
+@@ -471,7 +480,6 @@ static int a2mp_createphyslink_req(struc
+ 				   struct a2mp_cmd *hdr)
  {
- 	struct discovery_state *d = &hdev->discovery;
+ 	struct a2mp_physlink_req *req = (void *) skb->data;
+-
+ 	struct a2mp_physlink_rsp rsp;
+ 	struct hci_dev *hdev;
+ 	struct hci_conn *hcon;
+@@ -482,6 +490,8 @@ static int a2mp_createphyslink_req(struc
  
-+	if (len > HCI_MAX_AD_LENGTH)
-+		return;
+ 	BT_DBG("local_id %d, remote_id %d", req->local_id, req->remote_id);
+ 
++	memset(&rsp, 0, sizeof(rsp));
 +
- 	bacpy(&d->last_adv_addr, bdaddr);
- 	d->last_adv_addr_type = bdaddr_type;
- 	d->last_adv_rssi = rssi;
-@@ -4779,6 +4782,11 @@ static void process_adv_report(struct hc
+ 	rsp.local_id = req->remote_id;
+ 	rsp.remote_id = req->local_id;
+ 
+@@ -560,6 +570,8 @@ static int a2mp_discphyslink_req(struct
+ 
+ 	BT_DBG("local_id %d remote_id %d", req->local_id, req->remote_id);
+ 
++	memset(&rsp, 0, sizeof(rsp));
++
+ 	rsp.local_id = req->remote_id;
+ 	rsp.remote_id = req->local_id;
+ 	rsp.status = A2MP_STATUS_SUCCESS;
+@@ -682,6 +694,8 @@ static int a2mp_chan_recv_cb(struct l2ca
+ 	if (err) {
+ 		struct a2mp_cmd_rej rej;
+ 
++		memset(&rej, 0, sizeof(rej));
++
+ 		rej.reason = cpu_to_le16(0);
+ 		hdr = (void *) skb->data;
+ 
+@@ -905,6 +919,8 @@ void a2mp_send_getinfo_rsp(struct hci_de
+ 
+ 	BT_DBG("%s mgr %p", hdev->name, mgr);
+ 
++	memset(&rsp, 0, sizeof(rsp));
++
+ 	rsp.id = hdev->id;
+ 	rsp.status = A2MP_STATUS_INVALID_CTRL_ID;
+ 
+@@ -1002,6 +1018,8 @@ void a2mp_send_create_phy_link_rsp(struc
+ 	if (!mgr)
  		return;
- 	}
  
-+	if (len > HCI_MAX_AD_LENGTH) {
-+		pr_err_ratelimited("legacy adv larger than 31 bytes");
-+		return;
-+	}
++	memset(&rsp, 0, sizeof(rsp));
 +
- 	/* Find the end of the data in case the report contains padded zero
- 	 * bytes at the end causing an invalid length value.
- 	 *
-@@ -4839,7 +4847,7 @@ static void process_adv_report(struct hc
- 	 */
- 	conn = check_pending_le_conn(hdev, bdaddr, bdaddr_type, type,
- 								direct_addr);
--	if (conn && type == LE_ADV_IND) {
-+	if (conn && type == LE_ADV_IND && len <= HCI_MAX_AD_LENGTH) {
- 		/* Store report for later inclusion by
- 		 * mgmt_device_connected
- 		 */
-@@ -4964,10 +4972,14 @@ static void hci_le_adv_report_evt(struct
- 		struct hci_ev_le_advertising_info *ev = ptr;
- 		s8 rssi;
+ 	hs_hcon = hci_conn_hash_lookup_state(hdev, AMP_LINK, BT_CONNECT);
+ 	if (!hs_hcon) {
+ 		rsp.status = A2MP_STATUS_UNABLE_START_LINK_CREATION;
+@@ -1034,6 +1052,8 @@ void a2mp_discover_amp(struct l2cap_chan
  
--		rssi = ev->data[ev->length];
--		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
--				   ev->bdaddr_type, NULL, 0, rssi,
--				   ev->data, ev->length);
-+		if (ev->length <= HCI_MAX_AD_LENGTH) {
-+			rssi = ev->data[ev->length];
-+			process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
-+					   ev->bdaddr_type, NULL, 0, rssi,
-+					   ev->data, ev->length);
-+		} else {
-+			bt_dev_err(hdev, "Dropping invalid advertising data");
-+		}
+ 	mgr->bredr_chan = chan;
  
- 		ptr += sizeof(*ev) + ev->length + 1;
- 	}
++	memset(&req, 0, sizeof(req));
++
+ 	req.mtu = cpu_to_le16(L2CAP_A2MP_DEFAULT_MTU);
+ 	req.ext_feat = 0;
+ 	a2mp_send(mgr, A2MP_DISCOVER_REQ, 1, sizeof(req), &req);
 
 
