@@ -2,351 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EC4290426
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81D729042B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406361AbgJPLfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405097AbgJPLfP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:35:15 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B62C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:35:14 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id l23so2135904ybl.23
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 04:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:mime-version:message-id:date:subject:from:to:cc;
-        bh=mLnefFqm4XNTGAZuh8SK08mNoT3kzEMqh/Bo6hfoNX8=;
-        b=FUY+fl9sehf8Cts35O5qD6B4/4VRsmeL9zQ+BgZ/ixGdFkYD+3II74+OjF+ARL05IA
-         2q89lac5cmJGJYbia8xPn48g/GGXeqmZ1i0EJwvTeEMJD1KAg0tgV5Vj88jDYIX5l0TE
-         N5L+yFJCUju4Hwf3/QMg+DE6iRsXvP6DExET4ZhjCX0uSkRXIJA3ecjm/LJriM5VMHXt
-         qtB5WgJ6m/kty/2uI5cuiRrZ0VBbCDftnJu25JY09jzbTis7Rr/FtZOpRfZOnDLWi/wl
-         3PmY/MgG8Arhs6ltbQupvgaFArQYbjCePWU/776NWpnZdkZxsg/14WAEHjywnuqoTGD2
-         vP/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:mime-version:message-id:date:subject:from
-         :to:cc;
-        bh=mLnefFqm4XNTGAZuh8SK08mNoT3kzEMqh/Bo6hfoNX8=;
-        b=soYWMGuXzrCJL1MDt+FFrrqGJ2aJDWnYcba3/zOquUy+1jiQl+3H+Nihs4s6hYcM/A
-         6+RP46nDCBSoN8OLUE3XD0aeWOFOk7NgeWWuMYyiurDQqXaoyQvZIEw4Ivo3F/3U1+V4
-         z2P5pRgv2ThE1+uENW32jMUXjltCSaNeA+G13c56WxjILhLoZQwp+rl45DMJVOwj7yNN
-         Z+EKZXisN+KN96T169vb9ZYSN+h2PLNn6Kp5VkAGY/zmDQjgfOIAdSa4v21y5xnO+eza
-         Noyabc+CadvVtAGAj1xLdd4dfmQNc93uHAk+kxQZUlM2zIAlacYQbdk9VQaO+fXLxSJk
-         4vdA==
-X-Gm-Message-State: AOAM532BilXzVrwMjo2ce+LFzIXOYBvnUDZMNq08afYkqLKgKbf9e1qJ
-        KxVLHNx0TOQF39y+F09eZDQ+Zwj5iYn+IiNH
-X-Google-Smtp-Source: ABdhPJyh/bL4xzjWOOTBFsC9+iPVPMAs1+Flf9gozKyEepyJ1BJnn73FjaUzDXXUJ+x5NKJVnbnHNw90CpDhvmKS
-Sender: "josephjang via sendgmr" 
-        <josephjang@josephjang-p920.ntc.corp.google.com>
+        id S2406834AbgJPLhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:37:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406825AbgJPLhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 07:37:33 -0400
+Received: from coco.lan (ip5f5ad5ad.dynamic.kabel-deutschland.de [95.90.213.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02A6C2084C;
+        Fri, 16 Oct 2020 11:37:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602848251;
+        bh=9hpGPXNgAJZ13iqDGKTZVExjC2tLIrYDVAG4Kc6+p9A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yd/PILQ1+QOse2x/ZMV50JBlFiZCmkZzYMLbYEhSQJ/5nNx99s4kTUp3ig9MzqUK7
+         EdFHKCtM7ZPuFDdF7MsDh4ZsH4jQZQBDjp0/oStOWzMo2naKl2XjyF1uJ1tsZkZijs
+         9YEwKUsiX+JAWmNZRYl3F6xWVYEurg9nq5hMCLuQ=
+Date:   Fri, 16 Oct 2020 13:37:24 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 44/80] docs: gpu: i915.rst: Fix several C duplication
+ warnings
+Message-ID: <20201016133724.1d578006@coco.lan>
+In-Reply-To: <160284606673.11659.11178759979047002902@jlahtine-mobl.ger.corp.intel.com>
+References: <cover.1602589096.git.mchehab+huawei@kernel.org>
+        <52a0dd42d3730d35b3ecd00d20a0601793e443e6.1602589096.git.mchehab+huawei@kernel.org>
+        <160284606673.11659.11178759979047002902@jlahtine-mobl.ger.corp.intel.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
- (user=josephjang job=sendgmr) by 2002:a25:b709:: with SMTP id
- t9mr4054316ybj.182.1602848113293; Fri, 16 Oct 2020 04:35:13 -0700 (PDT)
-Message-ID: <0000000000006c8bd705b1c82896@google.com>
-Date:   Fri, 16 Oct 2020 11:35:13 +0000
-Subject: [PATCH] power: suspend: Add suspend timeout handler
-From:   <josephjang@google.com>
-To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net, pavel@ucw.cz,
-        len.brown@intel.com, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        jonglin@google.com, woodylin@google.com, markcheng@google.com,
-        josephjang@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you Greg's promptly reply.
+Em Fri, 16 Oct 2020 14:01:07 +0300
+Joonas Lahtinen <joonas.lahtinen@linux.intel.com> escreveu:
 
-let me try to explain detail in following.
+> + Lionel
+> 
+> Can you please take a look at best resolving the below problem.
+> 
+> Maybe we should eliminate the duplicate declarations? Updating such
+> a list manually seems error prone to me.
 
-On Fri, Oct 16, 2020 at 11:51:09AM +0800, Joseph Jang wrote:
-> From: josephjang <josephjang@google.com>
+For Kernel 5.10, IMO the best is to apply this patch as-is, as any
+other thing would need to be postponed, and we want 5.10 free of
+doc warnings.
 
-Please use your name as spelled out like you did above in the email
-header.
+Yet, when I wrote this one, I almost took a different approach:
+to implement something like @*group (or \*group) directives that
+exists on doxygen:
 
-Sure, I will update the patch again like following.
- From b3afca8f3ee1d587c188b830d94c683fe66cbfb3 Mon Sep 17 00:00:00 2001
-From: Joseph Jang <josephjang@google.com>
-Date: Fri, 16 Oct 2020 16:31:38 +0800
-Subject: [PATCH] power: suspend: Add suspend timeout handler
+	https://www.doxygen.nl/manual/grouping.html
 
-Add suspend timeout handler to prevent device stuck during suspend/
-resume process. Suspend timeout handler will dump disk sleep task
-at first round timeout and trigger kernel panic at second round timeout.
-The default timer for each round is 30 seconds.
+If something like that gets added to kernel-doc syntax, then
+one could do something like:
 
+	/**
+	 * DOC: some foo description
+	 * @group foo
+	 */
+ 
+	/**
+	 * foo1 - do some foo things 
+	 * @group foo
+	...
+	 */
 
-> Add suspend timeout handler to prevent device stuck during suspend/
-> resume process. Suspend timeout handler will dump disk sleep task
-> at first round timeout and trigger kernel panic at second round timeout.
-> The default timer for each round is 30 seconds.
+	/**
+	 * foo2 - do some other foo things
+	 * @group foo
+	...
+	 */
 
-> Note: Can use following command to simulate suspend hang for testing.
->      adb shell echo 1 > /sys/power/pm_hang
->      adb shell echo mem > /sys/power/state
-> Signed-off-by: josephjang <josephjang@google.com>
-
-Need a blank line before the signed-off-by: and again, spell your name
-the same way.
-
-Sure, I will update the patch again like following.
-
-Note: Can use following command to simulate suspend hang for testing.
-     adb shell echo 1 > /sys/power/pm_hang
-     adb shell echo mem > /sys/power/state
-
-Signed-off-by: Joseph Jang <josephjang@google.com>
----
-
-> ---
->   include/linux/console.h |   1 +
->   kernel/power/Kconfig    |   9 +++
->   kernel/power/main.c     |  66 ++++++++++++++++
->   kernel/power/suspend.c  | 162 ++++++++++++++++++++++++++++++++++++++++
->   kernel/printk/printk.c  |   5 ++
->   5 files changed, 243 insertions(+)
-
-> diff --git a/include/linux/console.h b/include/linux/console.h
-> index 0670d3491e0e..ac468c602c0b 100644
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -192,6 +192,7 @@ static inline void console_sysfs_notify(void)
->   { }
->   #endif
->   extern bool console_suspend_enabled;
-> +extern int is_console_suspended(void);
-
-For global functions, how about:
-         bool console_is_suspended(void);
-?
-
-Agree, I will update like following.
-  extern bool console_suspend_enabled;
-+extern int console_is_suspended(void);
+	/**
+	 * bar - do bar things
+	 * @group bar
+	...
+	 */
 
 
+And then, at kernel-doc markup:
 
->   /* Suspend and resume console messages over PM events */
->   extern void suspend_console(void);
-> diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> index a7320f07689d..52b7a181b6d8 100644
-> --- a/kernel/power/Kconfig
-> +++ b/kernel/power/Kconfig
-> @@ -207,6 +207,15 @@ config PM_SLEEP_DEBUG
->        def_bool y
->        depends on PM_DEBUG && PM_SLEEP
+	FOO
+	===
 
-> +config PM_SLEEP_MONITOR
-> +     bool "Linux kernel suspend/resume process monitor"
-> +     depends on PM_SLEEP
-> +     help
-> +     This option will enable suspend/resume monitor to prevent device
-> +     stuck during suspend/resume process. Suspend timeout handler will
-> +     dump disk sleep task at first round timeout and trigger kernel panic
-> +     at second round timeout. The default timer for each round is 30  
-> seconds.
+	.. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+		:group: foo
 
-Ouch, are you sure you want to panic?
-Yes, we would like to trigger kernel panic to reboot system and prevent  
-system hang there.
 
-> +
->   config DPM_WATCHDOG
->        bool "Device suspend/resume watchdog"
->        depends on PM_DEBUG && PSTORE && EXPERT
-> diff --git a/kernel/power/main.c b/kernel/power/main.c
-> index 40f86ec4ab30..f25b8a47583e 100644
-> --- a/kernel/power/main.c
-> +++ b/kernel/power/main.c
-> @@ -575,6 +575,69 @@ void __pm_pr_dbg(bool defer, const char *fmt, ...)
->   static inline void pm_print_times_init(void) {}
->   #endif /* CONFIG_PM_SLEEP_DEBUG */
+	BAR
+	===
+	.. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+		:group: bar
 
-> +#ifdef CONFIG_PM_SLEEP_MONITOR
-> +/* If set, devices will stuck at suspend for verification */
-> +static bool pm_hang_enabled;
-> +
-> +static int pm_notify_test(struct notifier_block *nb,
-> +                          unsigned long mode, void *_unused)
-> +{
-> +     pr_info("Jump into infinite loop now\n");
 
-Why do you have debugging code still enabled?
-Because we want to make sure system hang was cause by our test code here.
+I suspect that something like that would be a lot easier to maintain.
 
-> +
-> +     /* Suspend thread stuck at a loop forever */
-> +     for (;;)
-> +             ;
-> +
+Once having someone like that implemented, it should be easy to also
+have something like this:
 
-Don't busy spin, that will burn power.
-Okay, I will add msleep() to prevent system burn power during testing.
-+static int pm_notify_test(struct notifier_block *nb,
-+     unsigned long mode, void *_unused)
-+{
-+ pr_info("Jump into infinite loop now\n");
-+
-+ /* Suspend thread stuck at a loop forever */
-+ for (;;)
-+ msleep(100);
-+
-+ pr_info("Fail to stuck at loop\n");
-+
-+ return 0;
-+}
+	OTHERS
+	======
+	.. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+		:export:
+		:not-grouped:
 
-> +     pr_info("Fail to stuck at loop\n");
+in order to pick other functions that aren't grouped.
 
-And how can this happen?
-I think we should not see this log unless the for loop has problem.
+I suspect that implementing something like that at kernel-doc.pl
+won't be hard.
 
-Sure, I add some description in the document like following.
---- a/Documentation/ABI/testing/sysfs-power
-+++ b/Documentation/ABI/testing/sysfs-power
-@@ -420,3 +420,18 @@ Description:
-   disables it.  Reads from the file return the current value.
-   The default is "1" if the build-time "SUSPEND_SKIP_SYNC" config
-   flag is unset, or "0" otherwise.
-+
-+What: /sys/power/pm_hang
-+Date: Oct 2020
-+Contact: Joseph Jang <josephjang@google.com>
-+Description:
-+ The /sys/power/pm_hang file controls the variable pm_hang_enabled
-+ which controls whether you need to simulate system hang during
-+ suspend.
-+
-+ Writing a "1" to this file will set the pm_hang_enabled to "1" and
-+ register a pm_notify function pm_notify_test() to simulate system
-+ hang during suspend.
-+ Writing a "0" to this file will set the pm_hang_enabled to "0" and
-+ unregister a pm_notify function pm_notify_test().
-+ Reads from this file return the current value of pm_hang_enabled.
-> +#endif
->   #endif
->   #ifdef CONFIG_FREEZER
->        &pm_freeze_timeout_attr.attr,
-> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
-> index 8b1bb5ee7e5d..6f2679cfd9d1 100644
-> --- a/kernel/power/suspend.c
-> +++ b/kernel/power/suspend.c
-> @@ -30,6 +30,12 @@
->   #include <trace/events/power.h>
->   #include <linux/compiler.h>
->   #include <linux/moduleparam.h>
-> +#ifdef CONFIG_PM_SLEEP_MONITOR
-> +#include <linux/sched/debug.h>
-> +#include <linux/kthread.h>
-> +#include <linux/sched.h>
-> +#include <uapi/linux/sched/types.h>
-> +#endif
+Regards,
+Mauro
 
-Don't #ifdef include files.
+> 
+> Regards, Joonas
+> 
+> Quoting Mauro Carvalho Chehab (2020-10-13 14:53:59)
+> > As reported by Sphinx:
+> > 
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1147: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_oa_wait_unlocked'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1169: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_oa_poll_wait'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:1189: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_oa_read'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2669: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_oa_stream_enable'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2734: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_oa_stream_disable'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:2820: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_oa_stream_init'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3010: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_read'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3098: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_poll_locked'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3129: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_poll'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3152: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_enable_locked'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3181: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_disable_locked'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3273: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_ioctl'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3296: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_destroy_locked'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3321: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_release'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3379: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_open_ioctl_locked'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3534: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'read_properties_unlocked'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3717: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_open_ioctl'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3760: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_register'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:3789: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_unregister'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4009: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_add_config_ioctl'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4162: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_remove_config_ioctl'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4260: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_init'.
+> >         ./Documentation/gpu/i915:646: ./drivers/gpu/drm/i915/i915_perf.c:4423: WARNING: Duplicate C declaration, also defined in 'gpu/i915'.
+> >         Declaration is 'i915_perf_fini'.
+> > 
+> > With Sphinx 3, C declarations can't be duplicated anymore,
+> > so let's exclude those from the other internals found on
+> > i915_perf.c file.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  Documentation/gpu/i915.rst | 29 +++++++++++++++++++++++++----
+> >  1 file changed, 25 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/Documentation/gpu/i915.rst b/Documentation/gpu/i915.rst
+> > index 33cc6ddf8f64..cff1f154b473 100644
+> > --- a/Documentation/gpu/i915.rst
+> > +++ b/Documentation/gpu/i915.rst
+> > @@ -636,15 +636,36 @@ i915 Perf Observation Architecture Stream
+> >  .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+> >     :functions: i915_oa_poll_wait
+> >  
+> > -All i915 Perf Internals
+> > ------------------------
+> > +Other i915 Perf Internals
+> > +-------------------------
+> >  
+> > -This section simply includes all currently documented i915 perf internals, in
+> > -no particular order, but may include some more minor utilities or platform
+> > +This section simply includes all other currently documented i915 perf internals,
+> > +in no particular order, but may include some more minor utilities or platform
+> >  specific details than found in the more high-level sections.
+> >  
+> >  .. kernel-doc:: drivers/gpu/drm/i915/i915_perf.c
+> >     :internal:
+> > +   :no-identifiers:
+> > +       i915_perf_init
+> > +       i915_perf_fini
+> > +       i915_perf_register
+> > +       i915_perf_unregister
+> > +       i915_perf_open_ioctl
+> > +       i915_perf_release
+> > +       i915_perf_add_config_ioctl
+> > +       i915_perf_remove_config_ioctl
+> > +       read_properties_unlocked
+> > +       i915_perf_open_ioctl_locked
+> > +       i915_perf_destroy_locked
+> > +       i915_perf_read i915_perf_ioctl
+> > +       i915_perf_enable_locked
+> > +       i915_perf_disable_locked
+> > +       i915_perf_poll i915_perf_poll_locked
+> > +       i915_oa_stream_init i915_oa_read
+> > +       i915_oa_stream_enable
+> > +       i915_oa_stream_disable
+> > +       i915_oa_wait_unlocked
+> > +       i915_oa_poll_wait
+> >  
+> >  Style
+> >  =====
+> > -- 
+> > 2.26.2
+> >   
 
-And why the uapi file?
 
-I refer to linux-stable/kernel/rcu/tree.c source code.
-In order to prevent build error for MAX_RT_PRIO, I need to include this  
-header file
-<uapi/linux/sched/types.h>.
 
->   #include "power.h"
-
-> @@ -61,6 +67,133 @@ static DECLARE_SWAIT_QUEUE_HEAD(s2idle_wait_head);
->   enum s2idle_states __read_mostly s2idle_state;
->   static DEFINE_RAW_SPINLOCK(s2idle_lock);
-
-> +#ifdef CONFIG_PM_SLEEP_MONITOR
-> +/* Suspend monitor thread toggle reason */
-> +enum toggle_reason {
-> +     TOGGLE_NONE,
-> +     TOGGLE_START,
-> +     TOGGLE_STOP,
-> +};
-> +
-> +#define SUSPEND_TIMER_TIMEOUT_MS 30000
-> +static struct task_struct *ksuspend_mon_tsk;
-> +static DECLARE_WAIT_QUEUE_HEAD(power_suspend_waitqueue);
-> +static enum toggle_reason suspend_mon_toggle;
-> +static DEFINE_MUTEX(suspend_mon_lock);
-> +
-> +static void start_suspend_mon(void)
-> +{
-> +     mutex_lock(&suspend_mon_lock);
-> +     suspend_mon_toggle = TOGGLE_START;
-> +     mutex_unlock(&suspend_mon_lock);
-
-Why do you need a lock for a single integer?
-Since we have two kernel thread may reference variable "suspend_mon_toggle",
-one is suspend thread, another is suspend_monitor_kthread. We use it to  
-start/stop
-suspend monitor.
-Yes, in order to notify user this kernel panic was triggered by
-suspend_timeout(), I add debug code to prevent confused.
-
-> +
-> +     /* Trigger a NULL pointer dereference */
-> +     *null_pointer = 'a';
-
-Are you sure this will work on all platforms?  We do have a panic
-function if you really want to do that.
-I agree to change to use panic() like following.
-+static void suspend_timeout(int timeout_count)
-+{
-+ pr_info("Suspend monitor timeout (timer is %d seconds)\n",
-+ (SUSPEND_TIMER_TIMEOUT_MS/1000));
-+
-+ show_state_filter(TASK_UNINTERRUPTIBLE);
-+
-+ if (timeout_count < 2)
-+ return;
-+
-+ if (console_is_suspended())
-+ resume_console();
-+
-+ /* Trigger a NULL pointer dereference */
-+ panic("suspend timeout and panic");
-+}
-> +
-> +     /* Should not reach here */
-> +     pr_err("Trigger panic failed!\n");
-> +}
-> +
-> +static int suspend_monitor_kthread(void *arg)
-> +{
-> +     long err;
-> +     struct sched_param param = {.sched_priority
-> +             = MAX_RT_PRIO-1};
-
-Ick, no, call the scheduler functions properly, don't do this "by hand"
-ever.
-I refer to kernel/sched/core.c and they use MAX_RT_PRIO as thread priority  
-directly.
-If you have other suggestion, I am willing to try.
-
-> +     static int timeout_count;
-> +     static long timeout;
-> +
-> +     pr_info("Init ksuspend_mon thread\n");
-
-Again, debugging code :(
-In order to make sure ksuspend_mon thread has been initialize, I add log  
-here.
-If you think that is not necessary, I can remove it.
-Sure, I got it, could you help to review if we can use IS_ENABLED() like  
-following?
-+ if (IS_ENABLED(CONFIG_PM_SLEEP_MONITOR))
-+ stop_suspend_mon();
-+
-
-Thank you,
-Joseph.
+Thanks,
+Mauro
