@@ -2,325 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6102907E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321A42907E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409696AbgJPPBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 11:01:14 -0400
-Received: from mail-41104.protonmail.ch ([185.70.41.104]:16975 "EHLO
-        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409688AbgJPPBL (ORCPT
+        id S2409704AbgJPPCd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Oct 2020 11:02:33 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:50084 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2409658AbgJPPCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 11:01:11 -0400
-Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        Fri, 16 Oct 2020 11:02:30 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-Zr93FOkDPlGdmAsYydw_Cw-1; Fri, 16 Oct 2020 11:02:26 -0400
+X-MC-Unique: Zr93FOkDPlGdmAsYydw_Cw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 227142002EDB
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:01:04 +0000 (UTC)
-Authentication-Results: mail-41104.protonmail.ch;
-        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="CVyTAib1"
-Date:   Fri, 16 Oct 2020 15:00:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1602860456;
-        bh=Oq0wpmvGRC9hGW185tYRKgXrLh7BTScF8zS8kr+piaA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=CVyTAib1rCG/mIIKq/4zeVAAEP/QCMcHgTxRr0lDGwuV3lFEcDxqhg5WnliVrlI4s
-         jbYPam7zi+csX2bGlcaZ1xDt3GkQtH8v2+lVcb4iYNhhEEZiGAuPx+eyu3WSOq6A0b
-         gpeiTgCiPupV+4CmKudaxFM8Gcg8YrT5lH5ssAtE=
-To:     Coiby Xu <coiby.xu@gmail.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Helmut Stult <helmut.stult@schinfo.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v2] HID: i2c-hid: add polling mode based on connected GPIO chip's pin status
-Message-ID: <T2SIcFVxZ81NUwKLDbSESA7Wpm7DYowEiii8ZaxTPtrdXZZeHLq5iZPkN5BLlp-9C6PLwUZOVwNpMdEdPSRZcAG4MmDt-tfyKZoQYJ0KHOA=@protonmail.com>
-In-Reply-To: <20201016131335.8121-1-coiby.xu@gmail.com>
-References: <20201016131335.8121-1-coiby.xu@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 201BF1084C86;
+        Fri, 16 Oct 2020 15:02:25 +0000 (UTC)
+Received: from ovpn-112-203.rdu2.redhat.com (ovpn-112-203.rdu2.redhat.com [10.10.112.203])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 024056EF7B;
+        Fri, 16 Oct 2020 15:02:23 +0000 (UTC)
+Message-ID: <a7cac632aa89ed30c5c6deb9c67f428810aed9cb.camel@lca.pw>
+Subject: Re: WARNING: suspicious RCU usage in io_init_identity
+From:   Qian Cai <cai@lca.pw>
+To:     axboe@kernel.dk
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk,
+        syzbot <syzbot+4596e1fcf98efa7d1745@syzkaller.appspotmail.com>
+Date:   Fri, 16 Oct 2020 11:02:23 -0400
+In-Reply-To: <00000000000010295205b1c553d5@google.com>
+References: <00000000000010295205b1c553d5@google.com>
+Mime-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=cai@lca.pw
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: lca.pw
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 2020-10-16 at 01:12 -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    b2926c10 Add linux-next specific files for 20201016
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12fc877f900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6160209582f55fb1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4596e1fcf98efa7d1745
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+4596e1fcf98efa7d1745@syzkaller.appspotmail.com
+> 
+> =============================
+> WARNING: suspicious RCU usage
+> 5.9.0-next-20201016-syzkaller #0 Not tainted
+> -----------------------------
+> include/linux/cgroup.h:494 suspicious rcu_dereference_check() usage!
 
-I still think that `i2c_hid_resume()` and `i2c_hid_suspend()` are asymmetri=
-c and
-that might lead to issues.
+Introduced by the linux-next commits:
 
+07950f53f85b ("io_uring: COW io_identity on mismatch")
 
-> [...]
-> When polling mode is enabled, an I2C device can't wake up the suspended
-> system since enable/disable_irq_wake is invalid for polling mode.
->
+Can't find the patchset was posted anywhere. Anyway, this should fix it? 
 
-Excuse my ignorance, but could you elaborate this because I am not sure I u=
-nderstand.
-Aren't the two things orthogonal (polling and waking up the system)?
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1049,7 +1049,9 @@ static void io_init_identity(struct io_identity *id)
+        id->files = current->files;
+        id->mm = current->mm;
+ #ifdef CONFIG_BLK_CGROUP
++       rcu_read_lock();
+        id->blkcg_css = blkcg_css();
++       rcu_read_unlock();
+ #endif
+        id->creds = current_cred();
+        id->nsproxy = current->nsproxy;
 
+> 
+> other info that might help us debug this:
+> 
+> 
+> rcu_scheduler_active = 2, debug_locks = 1
+> no locks held by syz-executor.0/8301.
+> 
+> stack backtrace:
+> CPU: 0 PID: 8301 Comm: syz-executor.0 Not tainted 5.9.0-next-20201016-
+> syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google
+> 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x198/0x1fb lib/dump_stack.c:118
+>  task_css include/linux/cgroup.h:494 [inline]
+>  blkcg_css include/linux/blk-cgroup.h:224 [inline]
+>  blkcg_css include/linux/blk-cgroup.h:217 [inline]
+>  io_init_identity+0x3a9/0x450 fs/io_uring.c:1052
+>  io_uring_alloc_task_context+0x176/0x250 fs/io_uring.c:7730
+>  io_uring_add_task_file+0x10d/0x180 fs/io_uring.c:8653
+>  io_uring_get_fd fs/io_uring.c:9144 [inline]
+>  io_uring_create fs/io_uring.c:9308 [inline]
+>  io_uring_setup+0x2727/0x3660 fs/io_uring.c:9342
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45de59
+> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48
+> 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f
+> 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f7e11fe1bf8 EFLAGS: 00000206 ORIG_RAX: 00000000000001a9
+> RAX: ffffffffffffffda RBX: 0000000020000080 RCX: 000000000045de59
+> RDX: 00000000206d4000 RSI: 0000000020000080 RDI: 0000000000000087
+> RBP: 000000000118c020 R08: 0000000020000040 R09: 0000000020000040
+> R10: 0000000020000000 R11: 0000000000000206 R12: 00000000206d4000
+> R13: 0000000020ee7000 R14: 0000000020000040 R15: 0000000020000000
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-> [...]
->  #define I2C_HID_PWR_ON=09=090x00
->  #define I2C_HID_PWR_SLEEP=090x01
->
-> +/* polling mode */
-> +#define I2C_POLLING_DISABLED 0
-> +#define I2C_POLLING_GPIO_PIN 1
-
-This is a very small detail, but I personally think that these defines shou=
-ld be
-called I2C_HID_.... since they are only used here.
-
-
-> +#define POLLING_INTERVAL 10
-> +
-> +static u8 polling_mode;
-> +module_param(polling_mode, byte, 0444);
-> +MODULE_PARM_DESC(polling_mode, "How to poll - 0 disabled; 1 based on GPI=
-O pin's status");
-> +
-> +static unsigned int polling_interval_active_us =3D 4000;
-> +module_param(polling_interval_active_us, uint, 0644);
-> +MODULE_PARM_DESC(polling_interval_active_us,
-> +=09=09 "Poll every {polling_interval_active_us} us when the touchpad is =
-active. Default to 4000 us");
-> +
-> +static unsigned int polling_interval_idle_ms =3D 10;
-
-There is a define for this value, I don't really see why you don't use it h=
-ere.
-And if there is a define for one value, I don't really see why there isn't =
-one
-for the other. (As far as I see `POLLING_INTERVAL` is not even used anywher=
-e.)
-
-
-> +module_param(polling_interval_idle_ms, uint, 0644);
-> +MODULE_PARM_DESC(polling_interval_ms,
-> +=09=09 "Poll every {polling_interval_idle_ms} ms when the touchpad is id=
-le. Default to 10 ms");
->  /* debug option */
->  static bool debug;
->  module_param(debug, bool, 0444);
-> @@ -158,6 +178,8 @@ struct i2c_hid {
->
->  =09struct i2c_hid_platform_data pdata;
->
-> +=09struct task_struct *polling_thread;
-> +
->  =09bool=09=09=09irq_wake_enabled;
->  =09struct mutex=09=09reset_lock;
->  };
-> @@ -772,7 +794,9 @@ static int i2c_hid_start(struct hid_device *hid)
->  =09=09i2c_hid_free_buffers(ihid);
->
->  =09=09ret =3D i2c_hid_alloc_buffers(ihid, bufsize);
-> -=09=09enable_irq(client->irq);
-> +
-> +=09=09if (polling_mode =3D=3D I2C_POLLING_DISABLED)
-> +=09=09=09enable_irq(client->irq);
->
->  =09=09if (ret)
->  =09=09=09return ret;
-> @@ -814,6 +838,86 @@ struct hid_ll_driver i2c_hid_ll_driver =3D {
->  };
->  EXPORT_SYMBOL_GPL(i2c_hid_ll_driver);
->
-> +static int get_gpio_pin_state(struct irq_desc *irq_desc)
-> +{
-> +=09struct gpio_chip *gc =3D irq_data_get_irq_chip_data(&irq_desc->irq_da=
-ta);
-> +
-> +=09return gc->get(gc, irq_desc->irq_data.hwirq);
-> +}
-> +
-> +static bool interrupt_line_active(struct i2c_client *client)
-> +{
-> +=09unsigned long trigger_type =3D irq_get_trigger_type(client->irq);
-> +=09struct irq_desc *irq_desc =3D irq_to_desc(client->irq);
-> +
-> +=09/*
-> +=09 * According to Windows Precsiontion Touchpad's specs
-> +=09 * https://docs.microsoft.com/en-us/windows-hardware/design/component=
--guidelines/windows-precision-touchpad-device-bus-connectivity,
-> +=09 * GPIO Interrupt Assertion Leve could be either ActiveLow or
-> +=09 * ActiveHigh.
-> +=09 */
-> +=09if (trigger_type & IRQF_TRIGGER_LOW)
-> +=09=09return !get_gpio_pin_state(irq_desc);
-> +
-> +=09return get_gpio_pin_state(irq_desc);
-> +}
-
-Excuse my ignorance, but I think some kind of error handling regarding the =
-return
-value of `get_gpio_pin_state()` should be present here.
-
-
-> +
-> +static int i2c_hid_polling_thread(void *i2c_hid)
-> +{
-> +=09struct i2c_hid *ihid =3D i2c_hid;
-> +=09struct i2c_client *client =3D ihid->client;
-> +=09unsigned int polling_interval_idle;
-> +
-> +=09while (1) {
-> +=09=09/*
-> +=09=09 * re-calculate polling_interval_idle
-> +=09=09 * so the module parameters polling_interval_idle_ms can be
-> +=09=09 * changed dynamically through sysfs as polling_interval_active_us
-> +=09=09 */
-> +=09=09polling_interval_idle =3D polling_interval_idle_ms * 1000;
-> +=09=09if (test_bit(I2C_HID_READ_PENDING, &ihid->flags))
-> +=09=09=09usleep_range(50000, 100000);
-> +
-> +=09=09if (kthread_should_stop())
-> +=09=09=09break;
-> +
-> +=09=09while (interrupt_line_active(client)) {
-
-I realize it's quite unlikely, but can't this be a endless loop if data is =
-coming
-in at a high enough rate? Maybe the maximum number of iterations could be l=
-imited here?
-
-
-> +=09=09=09i2c_hid_get_input(ihid);
-> +=09=09=09usleep_range(polling_interval_active_us,
-> +=09=09=09=09     polling_interval_active_us + 100);
-> +=09=09}
-> +
-> +=09=09usleep_range(polling_interval_idle,
-> +=09=09=09     polling_interval_idle + 1000);
-> +=09}
-> +
-> +=09do_exit(0);
-> +=09return 0;
-> +}
-> +
-> +static int i2c_hid_init_polling(struct i2c_hid *ihid)
-> +{
-> +=09struct i2c_client *client =3D ihid->client;
-> +
-> +=09if (!irq_get_trigger_type(client->irq)) {
-> +=09=09dev_warn(&client->dev,
-> +=09=09=09 "Failed to get GPIO Interrupt Assertion Level, could not enabl=
-e polling mode for %s",
-> +=09=09=09 client->name);
-> +=09=09return -1;
-> +=09}
-> +
-> +=09ihid->polling_thread =3D kthread_create(i2c_hid_polling_thread, ihid,
-> +=09=09=09=09=09      "I2C HID polling thread");
-> +
-> +=09if (ihid->polling_thread) {
-
-`kthread_create()` returns an errno in a pointer, so this check is incorrec=
-t. It should be
-
- if (!IS_ERR(ihid->polling_thread))
-
-I think it's a bit inconsistent that in this function you do:
-
- if (err)
-   bail
-
- if (!err)
-   return ok
-
- return err
-
-moreover, I think the errno should be propagated, so use
-
- return PTR_ERR(ihid->polling_thread);
-
-for example, when bailing out.
-
-
-> +=09=09pr_info("I2C HID polling thread");
-> +=09=09wake_up_process(ihid->polling_thread);
-> +=09=09return 0;
-> +=09}
-> +
-> +=09return -1;
-> +}
-> +
-> [...]
->  #ifdef CONFIG_PM_SLEEP
-> @@ -1183,15 +1300,16 @@ static int i2c_hid_suspend(struct device *dev)
->  =09/* Save some power */
->  =09i2c_hid_set_power(client, I2C_HID_PWR_SLEEP);
->
-> -=09disable_irq(client->irq);
-> -
-> -=09if (device_may_wakeup(&client->dev)) {
-> -=09=09wake_status =3D enable_irq_wake(client->irq);
-> -=09=09if (!wake_status)
-> -=09=09=09ihid->irq_wake_enabled =3D true;
-> -=09=09else
-> -=09=09=09hid_warn(hid, "Failed to enable irq wake: %d\n",
-> -=09=09=09=09wake_status);
-> +=09if (polling_mode =3D=3D I2C_POLLING_DISABLED) {
-> +=09=09disable_irq(client->irq);
-> +=09=09if (device_may_wakeup(&client->dev)) {
-> +=09=09=09wake_status =3D enable_irq_wake(client->irq);
-> +=09=09=09if (!wake_status)
-> +=09=09=09=09ihid->irq_wake_enabled =3D true;
-> +=09=09=09else
-> +=09=09=09=09hid_warn(hid, "Failed to enable irq wake: %d\n",
-> +=09=09=09=09=09 wake_status);
-> +=09=09}
->  =09} else {
->  =09=09regulator_bulk_disable(ARRAY_SIZE(ihid->pdata.supplies),
->  =09=09=09=09       ihid->pdata.supplies);
-> @@ -1208,7 +1326,7 @@ static int i2c_hid_resume(struct device *dev)
->  =09struct hid_device *hid =3D ihid->hid;
->  =09int wake_status;
->
-> -=09if (!device_may_wakeup(&client->dev)) {
-> +=09if (!device_may_wakeup(&client->dev) || polling_mode !=3D I2C_POLLING=
-_DISABLED) {
->  =09=09ret =3D regulator_bulk_enable(ARRAY_SIZE(ihid->pdata.supplies),
->  =09=09=09=09=09    ihid->pdata.supplies);
->  =09=09if (ret)
-> @@ -1225,7 +1343,8 @@ static int i2c_hid_resume(struct device *dev)
->  =09=09=09=09wake_status);
->  =09}
->
-> -=09enable_irq(client->irq);
-> +=09if (polling_mode =3D=3D I2C_POLLING_DISABLED)
-> +=09=09enable_irq(client->irq);
-> [...]
-
-Before this patch, if a device cannot wake up, then the regulators are disa=
-bled
-when suspending, after this patch, regulators are only disabled if polling =
-is
-used. But they are enabled if the device cannot wake up *or* polling is use=
-d.
-
-Excuse my ignorance, but I do not understand why the following two changes =
-are not enough:
-
-in `i2c_hid_suspend()`:
- if (polling_mode =3D=3D I2C_POLLING_DISABLED)
-   disable_irq(client->irq);
-
-in `i2c_hid_resume()`:
- if (polling_mode =3D=3D I2C_POLLING_DISABLED)
-   enable_irq(client->irq);
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
