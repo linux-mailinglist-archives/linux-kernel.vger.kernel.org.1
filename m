@@ -2,156 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3906C2907BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526FB2907C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407825AbgJPOvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:51:16 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:46180 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407130AbgJPOvO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:51:14 -0400
-Received: by mail-oo1-f65.google.com with SMTP id c25so665059ooe.13;
-        Fri, 16 Oct 2020 07:51:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OvZLUwxXbsYt5GY0+KWs0O5JpZUG+90mhJIF+9eGBQQ=;
-        b=HZ5HjjaHeMqkRkQRGWyxpyLo6md2ywah9Am0X4mCz9PiwCvZkURHi2+JpDQAzMOHbJ
-         KvLg5zwcajmhlTaPZG3o+IQG8CPeWrHtnOYyHFDJNfPzydWbp1AtiwvpNXipG8ywBPdZ
-         ZpuJANiYeJIuELv3jttRnv4kXGMPOUMfbuqYhZuRHZb9mobhflEqxaNKaokltv9P60S1
-         yt+PU0IU6moOz8ZSYI1jjx1ii9U6tZ6NFe6I/PvNDFuWSt1blSu7jSsCpxVbHRGg8/Jt
-         MReHVK/ACfQNIShYaUGKGNDfRZB2CUj7IEoc/VccBQnC6ITPIFWG2Js2xHBws9syKOHW
-         FC3w==
-X-Gm-Message-State: AOAM532puJBVTm3DJeNjkiBQYrctGvAVkSLmyjSnTi9JERcs0G4ibG5k
-        kw2nqg89HVhcDulfhzq+QAt7KV0oSlLZThyqWnY=
-X-Google-Smtp-Source: ABdhPJw8jW44BfJvCmZodx50dYHRYCufqM/DoXtN34Tthnu+zshnry25BklsWhEZmu4o/uyug2ms+xRaxomIrI0Qr1s=
-X-Received: by 2002:a4a:dc0d:: with SMTP id p13mr3036465oov.2.1602859873680;
- Fri, 16 Oct 2020 07:51:13 -0700 (PDT)
+        id S2409205AbgJPOvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:51:38 -0400
+Received: from mga12.intel.com ([192.55.52.136]:28909 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409071AbgJPOvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 10:51:35 -0400
+IronPort-SDR: 2daS5uibJmiAUNHDk1JuG8ZkHLZ+JXyRWr6+B2bjUQixlAQ35fNfphL+DiO5k3DyKBwawlwTQp
+ YItzByGcVb3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9775"; a="145931156"
+X-IronPort-AV: E=Sophos;i="5.77,383,1596524400"; 
+   d="scan'208";a="145931156"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 07:51:34 -0700
+IronPort-SDR: W2gGSueEDce8Ckr4AlvPLkcTKsRAk8PchgmOKN5iW9AbLevJM5B/X9cShyyuB1ykN4sMC3536H
+ ztgaihoVXfcg==
+X-IronPort-AV: E=Sophos;i="5.77,383,1596524400"; 
+   d="scan'208";a="464702829"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.172.186]) ([10.249.172.186])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Oct 2020 07:51:29 -0700
+Subject: Re: [mm/writeback] 8d92890bd6: will-it-scale.per_process_ops -15.3%
+ regression
+To:     Jan Kara <jack@suse.cz>, NeilBrown <neilb@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com
+References: <20201014084706.GB11647@shao2-debian>
+ <20201014101904.GA11144@quack2.suse.cz>
+ <87pn5kfply.fsf@notabene.neil.brown.name>
+ <20201015090843.GA7037@quack2.suse.cz> <20201015091254.GB7037@quack2.suse.cz>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <08f0ec04-ab69-84ab-eadb-89f67c453b6b@intel.com>
+Date:   Fri, 16 Oct 2020 22:51:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <eb26a00d-eee0-a4d1-ed25-61a661ad5683@redhat.com> <8be66efd-7833-2c8a-427d-b0055c2f6ec1@linaro.org>
- <97e5368b-228d-eca1-85a5-b918dfcfd336@redhat.com> <CAJZ5v0gwc_d1vnwDVWXY+i4f0T2r0tAz8xuWV7oS_afsy7OocQ@mail.gmail.com>
- <63dfa6a1-0424-7985-7803-756c0c5cc4a5@redhat.com> <CAJZ5v0jpYpu3Tk7qq_MCVs0wUr-Dw0rY5EZELrVbQta0NZaoVA@mail.gmail.com>
- <87d9a808-39d6-4949-c4f9-6a80d14a3768@redhat.com> <CAJZ5v0iWmmu5WV7cX7uNb61NMYQ7s0dnhg1K+T0x90b3sBfU9w@mail.gmail.com>
- <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com>
-In-Reply-To: <943531a7-74d6-7c7f-67bc-2645b3ba7b8a@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Oct 2020 16:51:02 +0200
-Message-ID: <CAJZ5v0j8o5Ot-4U0HmUtckUUBSNqC+TRB6CCRzqdjeE0p_XfvA@mail.gmail.com>
-Subject: Re: [RFC] Documentation: Add documentation for new
- performance_profile sysfs class (Also Re: [PATCH 0/4] powercap/dtpm: Add the
- DTPM framework)
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Mark Pearson <mpearson@lenovo.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Elia Devito <eliadevito@gmail.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201015091254.GB7037@quack2.suse.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 1:11 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> <note folding the 2 threads we are having on this into one, adding every one from both threads to the Cc>
->
-> Hi,
->
-> On 10/14/20 5:42 PM, Rafael J. Wysocki wrote:
-> > On Wed, Oct 14, 2020 at 4:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
-> >> On 10/14/20 3:33 PM, Rafael J. Wysocki wrote:
->
-> <snip>
->
-> >>> First, a common place to register a DPTF system profile seems to be
-> >>> needed and, as I said above, I wouldn't expect more than one such
-> >>> thing to be present in the system at any given time, so it may be
-> >>> registered along with the list of supported profiles and user space
-> >>> will have to understand what they mean.
-> >>
-> >> Mostly Ack, I would still like to have an enum for DPTF system
-> >> profiles in the kernel and have a single piece of code map that
-> >> enum to profile names. This enum can then be extended as
-> >> necessary, but I want to avoid having one driver use
-> >> "Performance" and the other "performance" or one using
-> >> "performance-balanced" and the other "balanced-performance", etc.
-> >>
-> >> With the goal being that new drivers use existing values from
-> >> the enum as much as possible, but we extend it where necessary.
-> >
-> > IOW, just a table of known profile names with specific indices assigned to them.
->
-> Yes.
->
-> > This sounds reasonable.
-> >
-> >>> Second, irrespective of the above, it may be useful to have a
-> >>> consistent way to pass performance-vs-power preference information
-> >>> from user space to different parts of the kernel so as to allow them
-> >>> to adjust their operation and this could be done with a system-wide
-> >>> power profile attribute IMO.
-> >>
-> >> I agree, which is why I tried to tackle both things in one go,
-> >> but as you said doing both in 1 API is probably not the best idea.
-> >> So I believe we should park this second issue for now and revisit it
-> >> when we find a need for it.
-> >
-> > Agreed.
-> >
-> >> Do you have any specific userspace API in mind for the
-> >> DPTF system profile selection?
-> >
-> > Not really.
->
-> So before /sys/power/profile was mentioned, but that seems more like
-> a thing which should have a set of fixed possible values, iow that is
-> out of scope for this discussion.
 
-Yes.
 
-> Since we all seem to agree that this is something which we need
-> specifically for DPTF profiles maybe just add:
->
-> /sys/power/dptf_current_profile    (rw)
-> /sys/power/dptf_available_profiles (ro)
->
-> (which will only be visible if a dptf-profile handler
->  has been registered) ?
->
-> Or more generic and thus better (in case other platforms
-> later need something similar) I think, mirror the:
->
-> /sys/bus/cpu/devices/cpu#/cpufreq/energy_performance_* bits
-> for a system-wide energy-performance setting, so we get:
->
-> /sys/power/energy_performance_preference
-> /sys/power/energy_performance_available_preferences
+On 10/15/2020 5:12 PM, Jan Kara wrote:
+> On Thu 15-10-20 11:08:43, Jan Kara wrote:
+>> On Thu 15-10-20 08:46:01, NeilBrown wrote:
+>>> On Wed, Oct 14 2020, Jan Kara wrote:
+>>>
+>>>> On Wed 14-10-20 16:47:06, kernel test robot wrote:
+>>>>> Greeting,
+>>>>>
+>>>>> FYI, we noticed a -15.3% regression of will-it-scale.per_process_ops due
+>>>>> to commit:
+>>>>>
+>>>>> commit: 8d92890bd6b8502d6aee4b37430ae6444ade7a8c ("mm/writeback: discard
+>>>>> NR_UNSTABLE_NFS, use NR_WRITEBACK instead")
+>>>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>>>
+>>>> Thanks for report but it doesn't quite make sense to me. If we omit
+>>>> reporting & NFS changes in that commit (which is code not excercised by
+>>>> this benchmark), what remains are changes like:
+>>>>
+>>>>          nr_pages += node_page_state(pgdat, NR_FILE_DIRTY);
+>>>> -       nr_pages += node_page_state(pgdat, NR_UNSTABLE_NFS);
+>>>>          nr_pages += node_page_state(pgdat, NR_WRITEBACK);
+>>>> ...
+>>>> -               nr_reclaimable = global_node_page_state(NR_FILE_DIRTY) +
+>>>> -                                       global_node_page_state(NR_UNSTABLE_NFS);
+>>>> +               nr_reclaimable = global_node_page_state(NR_FILE_DIRTY);
+>>>> ...
+>>>> -       gdtc->dirty = global_node_page_state(NR_FILE_DIRTY) +
+>>>> -                     global_node_page_state(NR_UNSTABLE_NFS);
+>>>> +       gdtc->dirty = global_node_page_state(NR_FILE_DIRTY);
+>>>>
+>>>> So if there's any negative performance impact of these changes, they're
+>>>> likely due to code alignment changes or something like that... So I don't
+>>>> think there's much to do here since optimal code alignment is highly specific
+>>>> to a particular CPU etc.
+>>>
+>>> I agree, it seems odd.
+>>>
+>>> Removing NR_UNSTABLE_NFS from enum node_stat_item would renumber all the
+>>> following value and would, I think, change NR_DIRTIED from 32 to 31.
+>>> Might that move something to a different cache line and change some
+>>> contention?
+>>
+>> Interesting theory, it could be possible.
+>>
+>>> That would be easy enough to test: just re-add NR_UNSTABLE_NFS.
+>>
+>> Yeah, easy enough to test. Patch for this is attached. 0-day people, can
+>> you check whether applying this patch changes anything in your perf
+>> numbers?
+> 
+> Forgot the patch. Attached now.
+> 
+> 								Honza
+> 
 
-But this is not about energy vs performance only in general, is it?
+Hi,
 
-> (again only visible when applicable) ?
->
-> I personally like the second option best.
+We tested the patch and the regression became worse, but as you said the
+problem seems odd, so we tested v5.9 and regression already disappeared.
 
-But I would put it under /sys/firmware/ instead of /sys/power/ and I
-would call it something like platform_profile (and
-platform_profile_choices or similar).
+a37b0715ddf30077 8d92890bd6b8502d6aee4b37430                        v5.9
+---------------- --------------------------- ---------------------------
+          %stddev     %change         %stddev     %change         %stddev
+              \          |                \          |                \
+     341015 ±  9%     -18.4%     278292           +32.4%     451473 
+   will-it-scale.per_process_ops
+   65475001 ±  9%     -18.4%   53432256           +32.4%   86682938 
+   will-it-scale.workload
 
-Cheers!
+Best Regards,
+Rong Chen
+
