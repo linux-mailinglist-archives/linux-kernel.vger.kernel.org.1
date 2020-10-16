@@ -2,206 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907F8290021
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA164290023
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394786AbgJPIrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394779AbgJPIrF (ORCPT
+        id S2404520AbgJPIri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:47:38 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:21463 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404494AbgJPIri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:47:05 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21826C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:47:05 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id e18so1777670wrw.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=26IH4G1N/Js32Z6Db8oxyYdX3MbO7EjY0dLYS0HR0pY=;
-        b=wwixGbOeBb+X2TxLeHVlysxw0H3LCvLuAMJHZEhQYSIuxEghJrN6flDtshl8ua6JWp
-         36sTJWpk1fEkD5Kl33vc0MVwas7YoL2fQVdXbXZ/7xktJKRKPnk4q+P6goGcFmvrdhVj
-         ehIbgdtoagmToDKtRrZca4w6U8DdD1SOQbRfqVV6GWEHVKPewuamwoyOaV0xexhUMX2C
-         Aj4F841srlb5eGcXuyHs7vIcI1aJ0YPL/dSjNdidpmc81jr467KFncKdtXs1/1OSVI0o
-         11FMWtAXPeedH/Ny7khGk5qqUtyYLNQ+/Z6Q3VsiZkoRuuVU0sGeGIQTvqYwhgjY4gh5
-         AcsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=26IH4G1N/Js32Z6Db8oxyYdX3MbO7EjY0dLYS0HR0pY=;
-        b=WY1Wn47CMIKBs+jNlRIL39Sv3364hkw7seu48vpmrhARZfS9AzXFxpIlQwmD4E3IQI
-         Ze9oDNqmgw7fTvP5/KHoW2+l9tzpFm9+CdDRrecaGGTNLdZ/JbHd66cZe/CV+yEao2fg
-         ZudqJMZFCK1khLRt0V25tVM1+eLofxe7rickEfUrsxTfRNM6c8CXY9IXFB7P4Ke6bFwJ
-         QmsE9gAyTr4c41FQ6ZO1DKkWEjZHKAYE8wr4vVKMVdCgWJpV309CFkZ5NPZmAebSvjri
-         lx+xz5ZvG7RjvaEywqsjgKlkPvyOADzhtFYT4L92ytn+I1teEqQsR0NnjidUFStsPWRw
-         KRjg==
-X-Gm-Message-State: AOAM530+RHLBhOcdMcjtNJ3UiIrV4UNm/vRFMtdxJoTOJCO4AB9TzhVi
-        V9aVzs6+xfbxmHZ1ILn+4vyRpg==
-X-Google-Smtp-Source: ABdhPJwpxfPndPflMtom/crYO9+pMokVWyonyRJCg5829T7aatR+zjjeBAlinTCHGYbuauGU74zuaw==
-X-Received: by 2002:adf:ce8a:: with SMTP id r10mr2793141wrn.188.1602838023583;
-        Fri, 16 Oct 2020 01:47:03 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c9d8:1700:5168:39b? ([2a01:e34:ed2f:f020:c9d8:1700:5168:39b])
-        by smtp.googlemail.com with ESMTPSA id f14sm2602050wrt.53.2020.10.16.01.47.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 01:47:02 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Colin King <colin.king@canonical.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        zhuguangqing@xiaomi.com,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Adam Ford <aford173@gmail.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM mailing list <linux-pm@vger.kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] thermal for v5.10-rc1
-Message-ID: <ff1ca9b4-51fa-209a-b047-17dcc2e74720@linaro.org>
-Date:   Fri, 16 Oct 2020 10:47:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 16 Oct 2020 04:47:38 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-136-K_Wz6u3eNh-RXs0uWP6L0A-1; Fri, 16 Oct 2020 09:47:33 +0100
+X-MC-Unique: K_Wz6u3eNh-RXs0uWP6L0A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 16 Oct 2020 09:47:33 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 16 Oct 2020 09:47:33 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'hpa@zytor.com'" <hpa@zytor.com>, Ian Rogers <irogers@google.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Josh Poimboeuf" <jpoimboe@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Numfor Mbiziwo-Tiapo <nums@google.com>
+Subject: RE: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined
+ behavior.
+Thread-Topic: [PATCH v2] x86/insn, tools/x86: Fix some potential undefined
+ behavior.
+Thread-Index: AQHWozspACmNxqbsZUa1MzTBznNmCKmZ6SSw
+Date:   Fri, 16 Oct 2020 08:47:33 +0000
+Message-ID: <ba2fdf7e25f3476ca4a48b48065614f0@AcuMS.aculab.com>
+References: <20201015161216.1563600-1-irogers@google.com>
+ <5E711F64-A9BF-48EC-83A3-3C644D80F848@zytor.com>
+In-Reply-To: <5E711F64-A9BF-48EC-83A3-3C644D80F848@zytor.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+RnJvbTogaHBhQHp5dG9yLmNvbQ0KPiBTZW50OiAxNSBPY3RvYmVyIDIwMjAgMjI6MzUNCj4gPkRv
+bid0IHBlcmZvcm0gdW5hbGlnbmVkIGxvYWRzIGluIF9fZ2V0X25leHQgYW5kIF9fcGVla19uYnl0
+ZV9uZXh0IGFzDQo+ID50aGVzZSBhcmUgZm9ybXMgb2YgdW5kZWZpbmVkIGJlaGF2aW9yLg0KLi4u
+DQo+ID4gI2RlZmluZSBfX2dldF9uZXh0KHQsIGluc24pCVwNCj4gPi0JKHsgdCByID0gKih0Kilp
+bnNuLT5uZXh0X2J5dGU7IGluc24tPm5leHRfYnl0ZSArPSBzaXplb2YodCk7IHI7IH0pDQo+ID4r
+CSh7IHQgcjsgbWVtY3B5KCZyLCBpbnNuLT5uZXh0X2J5dGUsIHNpemVvZih0KSk7IGluc24tPm5l
+eHRfYnl0ZSArPSBzaXplb2YodCk7IHI7IH0pDQoNCkludGVyZXN0aW5nIG90aGVyIGlkZWEuDQpD
+YW4geW91IGFkZCBhbiAnYWxpZ25lZCgxKScgaW50byB0aGUgJyoodCAqKScgY2FzdD8NCkkgdGhp
+bmsgJyoodCBhbGlnbmVkKDEpICopJyBpcyB0aGUgcmlnaHQgY2FzdC4NCihnY2Mgc2VlbXMgdG8g
+YWNjZXB0IGl0IGVpdGhlciBzaXplIG9mIHRoZSB0eXBlLikNCg0KCURhdmlkDQoNCi0NClJlZ2lz
+dGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24g
+S2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
-
-are available in the Git repository at:
-
-
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.10-rc1
-
-for you to fetch changes up to 48b458591749d35c927351b4960b49e35af30fe6:
-
-  thermal: core: Adding missing nlmsg_free() in
-thermal_genl_sampling_temp() (2020-10-12 12:08:36 +0200)
-
-----------------------------------------------------------------
-- Fix Kconfig typo "acces" -> "access" (Colin Ian King)
-
-- Use dev_error_probe() to simplify the error handling on imx and imx8
-  platforms (Anson Huang)
-
-- Use dedicated kobj_to_dev() instead of container_of() in the sysfs
-  core code (Tian Tao)
-
-- Fix coding style by adding braces to a one line conditional
-  statement on rcar (Geert Uytterhoeven)
-
-- Add DT binding documentation for the r8a774e1 platform and update
-  the Kconfig description supporting RZ/G2 SoCs (Lad Prabhakar)
-
-- Simplify the return expression of stm_thermal_prepare on the stm32
-  platform (Qinglang Miao)
-
-- Fix the unit in the function documentation for the idle injection
-  cooling device (Zhuguang Qing)
-
-- Remove an unecessary mutex_init() in the core code (Qinglang Miao)
-
-- Add support for keep alive events in the core code and the specific
-  int340x (Srinivas Pandruvada)
-
-- Remove unused thermal zone variable in devfreq and cpufreq cooling
-  devices (Zhuguang Qing)
-
-- Add the A100's THS controller support (Yangtao Li)
-
-- Add power management on the omap3's bandgap sensor (Adam Ford)
-
-- Fix a missing nlmsg_free in the netlink core error path (Jing Xiangfeng)
-
-----------------------------------------------------------------
-Adam Ford (1):
-      thermal: ti-soc-thermal: Enable addition power management
-
-Anson Huang (2):
-      thermal: imx: Use dev_err_probe() to simplify error handling
-      thermal: imx8mm: Use dev_err_probe() to simplify error handling
-
-Colin Ian King (1):
-      drivers: thermal: Kconfig: fix spelling mistake "acces" -> "access"
-
-Geert Uytterhoeven (1):
-      thermal: rcar_thermal: Add missing braces to conditional statement
-
-Jing Xiangfeng (1):
-      thermal: core: Adding missing nlmsg_free() in
-thermal_genl_sampling_temp()
-
-Lad Prabhakar (2):
-      dt-bindings: thermal: rcar-gen3-thermal: Add r8a774e1 support
-      thermal: Kconfig: Update description for RCAR_GEN3_THERMAL config
-
-Qinglang Miao (2):
-      thermal: stm32: simplify the return expression of
-stm_thermal_prepare()
-      thermal: core: remove unnecessary mutex_init()
-
-Srinivas Pandruvada (3):
-      thermal: int340x: Provide notification for OEM variable change
-      thermal: core: Add new event for sending keep alive notifications
-      thermal: int340x: Add keep alive response method
-
-Tian Tao (1):
-      thermal: Use kobj_to_dev() instead of container_of()
-
-Yangtao Li (3):
-      dt-bindings: thermal: sun8i: Add binding for A100's THS controller
-      thermal: sun8i: add TEMP_CALIB_MASK for calibration data in
-sun50i_h6_ths_calibrate
-      thermal: sun8i: Add A100's THS controller support
-
-zhuguangqing (2):
-      thermal/idle_inject: Fix comment of idle_duration_us and name of
-latency_ns
-      thermal: cooling: Remove unused variable *tz
-
- .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |  6 ++-
- .../bindings/thermal/rcar-gen3-thermal.yaml        |  1 +
- drivers/thermal/Kconfig                            |  6 +--
- drivers/thermal/cpufreq_cooling.c                  |  8 +---
- drivers/thermal/cpuidle_cooling.c                  |  2 +-
- drivers/thermal/devfreq_cooling.c                  |  3 --
- drivers/thermal/gov_power_allocator.c              |  6 +--
- drivers/thermal/imx8mm_thermal.c                   | 10 ++--
- drivers/thermal/imx_thermal.c                      | 22 +++------
- .../intel/int340x_thermal/int3400_thermal.c        | 51
-+++++++++++++++-----
- drivers/thermal/rcar_thermal.c                     |  4 +-
- drivers/thermal/st/Kconfig                         |  2 +-
- drivers/thermal/st/stm_thermal.c                   |  7 +--
- drivers/thermal/sun8i_thermal.c                    | 16 ++++++-
- drivers/thermal/thermal_core.c                     | 13 ++----
- drivers/thermal/thermal_core.h                     |  4 +-
- drivers/thermal/thermal_netlink.c                  |  3 +-
- drivers/thermal/thermal_sysfs.c                    |  2 +-
- drivers/thermal/ti-soc-thermal/ti-bandgap.c        | 54
-+++++++++++++++++++++-
- drivers/thermal/ti-soc-thermal/ti-bandgap.h        |  6 +++
- include/linux/idle_inject.h                        |  2 +-
- include/linux/thermal.h                            | 10 ++--
- 22 files changed, 156 insertions(+), 82 deletions(-)
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
