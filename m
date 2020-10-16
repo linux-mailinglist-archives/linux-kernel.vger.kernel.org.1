@@ -2,240 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011CB28FF8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05C429024A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404910AbgJPHyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:54:45 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:57869 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404864AbgJPHyp (ORCPT
+        id S2406443AbgJPJzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406436AbgJPJzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:54:45 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id B3E9760003;
-        Fri, 16 Oct 2020 07:54:40 +0000 (UTC)
-Date:   Fri, 16 Oct 2020 11:54:25 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH v2 5/7] media: i2c: max9286: Configure reverse channel
- amplitude
-Message-ID: <20201016095425.ywmxsv5gjhoky7e2@uno.localdomain>
-References: <20201015182710.54795-1-jacopo+renesas@jmondi.org>
- <20201015182710.54795-6-jacopo+renesas@jmondi.org>
- <daa257eb-62a7-1996-082b-eecda8251b61@ideasonboard.com>
+        Fri, 16 Oct 2020 05:55:07 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7BEC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:55:07 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id x20so1433395ybs.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 02:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KAG00OU6I8ZSKVj+GjsDY5lnIf7cqlgqOKkytYnMQYA=;
+        b=dqC73mbifYSnjiynxQSRfPcV8neE4zGgBUukmpro4mix8nZi9JC8qw3lp9DB/n/xvV
+         6YJC5cd84A+TwsRmbGwBxkLQfz3P2f3m45ouXxSzrQG3FZkGVUn034/6ROWF7gOkjseo
+         FebJ6YvhIDXwZ5zHZ3EELH6thU2AqbgzWHQd4y3WiN4eUH66qy+bPlp6aKW1C3+O6tqv
+         uluAsBt6+p/Qhh9VESBzRPDEXBzle9omIbh6JIVp07asw61uAlp+oxrmbFw4ujkl1bgR
+         RT2kF3Lk6chjnuI27Pz3kOglB+TmQ/VYw/INOuuU2gB0J+/IUpE6PLQVE1HJkXF18h9s
+         5sIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KAG00OU6I8ZSKVj+GjsDY5lnIf7cqlgqOKkytYnMQYA=;
+        b=ukOtfIHEJklrxzdYAn9SK6S/+sso+YLr/uOTU7HAtM8uW84tW61LiJG8KjVrdiNniT
+         vesXq5CVrdsZ0tJ1D9Ljvh+/uP9kLtM38X5xaQLGMTAPpK+OTYhcWXp2FeIozpRZhCC8
+         aEbLOR6fg67ImBW+aIoUXQnKG6QldGIiYECLm0etTXx7WQcs9rntae84qwdviVECpJTM
+         HaLjTQv+vEwlUnwSwV2xHhMANgKFyFs/SuNs2VK3I02vdDFoMs+lL0Tnl0NLnhGaFAE9
+         kvE8MlXAOXM385PIjgV6IL3xDXDbyVrFmB2KHTb3BTfScMJsIJ8HhJOSemB8jytLQCXn
+         BSwQ==
+X-Gm-Message-State: AOAM531my+MFoa688ooq0DgCYSERFKfM4nSFmJ8oIiJsxds+wrghevdA
+        gpvmWJh2D1ITe4ZSGPbEvMve2SGX4l/ELFF5v2tAjA==
+X-Google-Smtp-Source: ABdhPJzrDKChDSgbRPUnqHVLxigY3990lB2Cf6/7Eyx/Kc+ZUDTPyGYgWd4tlAAwDr+fVdO0D1caZ7iOZT9mVPrFviE=
+X-Received: by 2002:a25:2389:: with SMTP id j131mr1711428ybj.25.1602842106593;
+ Fri, 16 Oct 2020 02:55:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <daa257eb-62a7-1996-082b-eecda8251b61@ideasonboard.com>
+References: <20201016035109.3952356-1-josephjang@google.com> <20201016090108.GG8871@alley>
+In-Reply-To: <20201016090108.GG8871@alley>
+From:   Joseph Jang <josephjang@google.com>
+Date:   Fri, 16 Oct 2020 17:54:55 +0800
+Message-ID: <CAPaOXEQadaDTVbwbi72Zw2yDHEKDgRNM-rLhoOzVMp_N0fyqMw@mail.gmail.com>
+Subject: Re: [PATCH] power: suspend: Add suspend timeout handler
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Jonglin Lee <jonglin@google.com>,
+        Woody Lin <woodylin@google.com>,
+        Mark Cheng <markcheng@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+Thanks Petr promptly response.
 
-On Thu, Oct 15, 2020 at 08:52:01PM +0100, Kieran Bingham wrote:
-> Hi Jacopo,
+On Fri 2020-10-16 11:51:09, Joseph Jang wrote:
+> From: josephjang <josephjang@google.com>
 >
-> On 15/10/2020 19:27, Jacopo Mondi wrote:
-> > Adjust reverse channel amplitude according to the presence of
-> > the 'high-threshold" DTS property.
-> >
-> > If no high threshold compensation is required, start with a low
-> > amplitude (100mV) and increase it after the remote serializers
-> > have probed and have enabled noise immunity on their reverse
-> > channels.
-> >
-> > If high threshold compensation is required, configure the reverse
-> > channel with a 170mV amplitude before the remote serializers have
-> > probed.
-> >
-> > This change is required for both rdacm20 and rdacm21 camera modules
-> > to be correctly probed when used in combination with the max9286
-> > deserializer.
-> >
-> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > ---
-> >  drivers/media/i2c/max9286.c | 74 +++++++++++++++++++++++--------------
-> >  1 file changed, 47 insertions(+), 27 deletions(-)
-> >
-> > diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> > index 163e102199e3..4b59a9e0228a 100644
-> > --- a/drivers/media/i2c/max9286.c
-> > +++ b/drivers/media/i2c/max9286.c
-> > @@ -163,6 +163,8 @@ struct max9286_priv {
-> >  	unsigned int mux_channel;
-> >  	bool mux_open;
-> >
-> > +	bool high_threshold;
-> > +
-> >  	struct v4l2_ctrl_handler ctrls;
-> >  	struct v4l2_ctrl *pixelrate;
-> >
-> > @@ -436,6 +438,32 @@ static int max9286_check_config_link(struct max9286_priv *priv,
-> >  	return 0;
-> >  }
-> >
-> > +static void max9286_reverse_channel_setup(struct max9286_priv *priv,
-> > +					  unsigned int chan_amplitude)
->
-> This looks like you're adding a new function - how about we add this
-> function here, in the first place when you add it in 3/7
->
+> Add suspend timeout handler to prevent device stuck during suspend/
+> resume process. Suspend timeout handler will dump disk sleep task
+> at first round timeout and trigger kernel panic at second round timeout.
+> The default timer for each round is 30 seconds.
 
-I'll move it up in 3/7
+A better solution would be to resume instead of panic().
 
+[Joseph] suspend_timeout() will trigger kernel panic() only when
+suspend thread stuck (deadlock/hang) for 2*30 seconds.
+At that moment, I don't know how to resume the suspend thread. So I
+just could trigger panic to reboot system.
+If you have better suggestions, I am willing to study it.
+
+
+> Note: Can use following command to simulate suspend hang for testing.
+>     adb shell echo 1 > /sys/power/pm_hang
+
+This looks dangerous. It adds a simple way to panic() the system.
+
+First, it should get enabled separately. e.g.
+CONFIG_TEST_PM_SLEEP_MONITOR.
+
+Second, I would add it as a module that might get loaded
+and unloaded.
+
+[Joseph] Agree to enable new compile flag for test module.
+I think it is better to create separate patch for the new test module right=
+?
+
+> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> index 8b1bb5ee7e5d..6f2679cfd9d1 100644
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+Using kthread looks like an overkill to me. I wonder how this actually
+works when the kthreads get freezed. It might be enough to implement
+just a timer callback. Start the timer in start_suspend_mon() and
+delete it in stop_suspend_mon(). Or do I miss anything?
+
+
+Anyway, the kthread implementation looks a but hairy. If you really
+need to use kthread, I suggest to use kthread_worker API. You would
+need to run an init work to setup the RT scheduling. Then you
+could just call kthread_queue_delayed_work(()
+and kthread_cancel_delayed_work_sync() to start and stop
+the monitor.
+
+[Joseph]
+Actually, I had ever think we just need to use
+add_timer()/del_timer_sync() for start_suspend_mon()/stop_suspend_mon() bef=
+ore.
+
+But I am not sure if add_timer() may cause any performance impact in
+suspend thread or not.
+So I try to create a suspend monitor kthread and just flip the flag in
+suspend thread.
+
+Thank you,
+Joseph.
+> @@ -114,6 +251,10 @@ static void s2idle_enter(void)
+>       s2idle_state =3D S2IDLE_STATE_NONE;
+>       raw_spin_unlock_irq(&s2idle_lock);
+>
+> +#ifdef CONFIG_PM_SLEEP_MONITOR
+> +     start_suspend_mon();
+> +#endif
+
+It is better to solve this by defining start_suspend_mon() as empty
+function when the config option is disabled. For example, see
+how  vgacon_text_force() is defined in console.h.
+
+[Joseph] Thank you for good suggestions.
+May I know if I could use IS_ENABLED() ?
+if (IS_ENABLED(CONFIG_PM_SLEEP_MONITOR))
+start_suspend_mon();
+
+
+Best Regards,
+Petr
+
+
+
+Thank you,
+Joseph.
+
+
+Petr Mladek <pmladek@suse.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8816=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=885:01=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Fri 2020-10-16 11:51:09, Joseph Jang wrote:
+> > From: josephjang <josephjang@google.com>
+> >
+> > Add suspend timeout handler to prevent device stuck during suspend/
+> > resume process. Suspend timeout handler will dump disk sleep task
+> > at first round timeout and trigger kernel panic at second round timeout=
+.
+> > The default timer for each round is 30 seconds.
+>
+> A better solution would be to resume instead of panic().
+>
+> > Note: Can use following command to simulate suspend hang for testing.
+> >     adb shell echo 1 > /sys/power/pm_hang
+>
+> This looks dangerous. It adds a simple way to panic() the system.
+>
+> First, it should get enabled separately. e.g.
+> CONFIG_TEST_PM_SLEEP_MONITOR.
+>
+> Second, I would add it as a module that might get loaded
+> and unloaded.
+>
+> > diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> > index 8b1bb5ee7e5d..6f2679cfd9d1 100644
+> > --- a/kernel/power/suspend.c
+> > +++ b/kernel/power/suspend.c
+> > +static int suspend_monitor_kthread(void *arg)
 > > +{
-> > +	/* Reverse channel transmission time: default to 1. */
-> > +	u8 chan_config = MAX9286_REV_TRF(1);
+> > +     long err;
+> > +     struct sched_param param =3D {.sched_priority
+> > +             =3D MAX_RT_PRIO-1};
+> > +     static int timeout_count;
+> > +     static long timeout;
 > > +
-> > +	/*
-> > +	 * Reverse channel setup.
-> > +	 *
-> > +	 * - Enable custom reverse channel configuration (through register 0x3f)
-> > +	 *   and set the first pulse length to 35 clock cycles.
-> > +	 * - Adjust reverse channel amplitude: values > 130 are programmed
-> > +	 *   using the additional +100mV REV_AMP_X boost flag
-> > +	 */
-> > +	max9286_write(priv, 0x3f, MAX9286_EN_REV_CFG | MAX9286_REV_FLEN(35));
+> > +     pr_info("Init ksuspend_mon thread\n");
 > > +
-> > +	if (chan_amplitude > 100) {
-> > +		/* It is not possible express values (100 < x < 130) */
-> > +		chan_amplitude = chan_amplitude < 130
-> > +			       ? 30 : chan_amplitude - 100;
-> > +		chan_config |= MAX9286_REV_AMP_X;
-> > +	}
-> > +	max9286_write(priv, 0x3b, chan_config | MAX9286_REV_AMP(chan_amplitude));
-> > +	usleep_range(2000, 2500);
+> > +     sched_setscheduler(current, SCHED_FIFO, &param);
+> > +
+> > +     timeout_count =3D 0;
+> > +     timeout =3D MAX_SCHEDULE_TIMEOUT;
+> > +
+> > +     do {
+> > +             /* Wait suspend timer timeout */
+> > +             err =3D wait_event_interruptible_timeout(
+> > +                     power_suspend_waitqueue,
+> > +                     (suspend_mon_toggle !=3D TOGGLE_NONE),
+> > +                     timeout);
+> > +
+> > +             mutex_lock(&suspend_mon_lock);
+> > +             /* suspend monitor state change */
+> > +             if (suspend_mon_toggle !=3D TOGGLE_NONE) {
+> > +                     if (suspend_mon_toggle =3D=3D TOGGLE_START) {
+> > +                             timeout =3D msecs_to_jiffies(
+> > +                                     SUSPEND_TIMER_TIMEOUT_MS);
+> > +                             pr_info("Start suspend monitor\n");
+> > +                     } else if (suspend_mon_toggle =3D=3D TOGGLE_STOP)=
+ {
+> > +                             timeout =3D MAX_SCHEDULE_TIMEOUT;
+> > +                             timeout_count =3D 0;
+> > +                             pr_info("Stop suspend monitor\n");
+> > +                     }
+> > +                     suspend_mon_toggle =3D TOGGLE_NONE;
+> > +                     mutex_unlock(&suspend_mon_lock);
+> > +                     continue;
+> > +             }
+> > +             mutex_unlock(&suspend_mon_lock);
+> > +
+> > +             /* suspend monitor event handler */
+> > +             if (err =3D=3D 0) {
+> > +                     timeout_count++;
+> > +                     suspend_timeout(timeout_count);
+> > +             } else if (err =3D=3D -ERESTARTSYS) {
+> > +                     pr_info("Exit ksuspend_mon!");
+> > +                     break;
+> > +             }
+> > +     } while (1);
+> > +
+> > +     return 0;
 > > +}
-> > +
-> >  /* -----------------------------------------------------------------------------
-> >   * V4L2 Subdev
-> >   */
-> > @@ -531,10 +559,14 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
-> >  	 * All enabled sources have probed and enabled their reverse control
-> >  	 * channels:
-> >  	 *
-> > +	 * - Increase the reverse channel amplitude to compensate for the
-> > +	 *   remote ends high threshold, if not done already
-> >  	 * - Verify all configuration links are properly detected
-> >  	 * - Disable auto-ack as communication on the control channel are now
-> >  	 *   stable.
-> >  	 */
-> > +	if (!priv->high_threshold)
-> > +		max9286_reverse_channel_setup(priv, 170);
 >
-> is it troublesome to re-set it if it's already set? I guess it's just
-> unnecessary. so that's fine.
+> Using kthread looks like an overkill to me. I wonder how this actually
+> works when the kthreads get freezed. It might be enough to implement
+> just a timer callback. Start the timer in start_suspend_mon() and
+> delete it in stop_suspend_mon(). Or do I miss anything?
 >
-> >  	max9286_check_config_link(priv, priv->source_mask);
+> Anyway, the kthread implementation looks a but hairy. If you really
+> need to use kthread, I suggest to use kthread_worker API. You would
+> need to run an init work to setup the RT scheduling. Then you
+> could just call kthread_queue_delayed_work(()
+> and kthread_cancel_delayed_work_sync() to start and stop
+> the monitor.
+>
+>
+> > @@ -114,6 +251,10 @@ static void s2idle_enter(void)
+> >       s2idle_state =3D S2IDLE_STATE_NONE;
+> >       raw_spin_unlock_irq(&s2idle_lock);
 > >
-> >  	/*
-> > @@ -906,32 +938,6 @@ static void max9286_v4l2_unregister(struct max9286_priv *priv)
-> >   * Probe/Remove
-> >   */
-> >
-> > -static void max9286_reverse_channel_setup(struct max9286_priv *priv,
-> > -					  unsigned int chan_amplitude)
-> > -{
-> > -	/* Reverse channel transmission time: default to 1. */
-> > -	u8 chan_config = MAX9286_REV_TRF(1);
-> > -
-> > -	/*
-> > -	 * Reverse channel setup.
-> > -	 *
-> > -	 * - Enable custom reverse channel configuration (through register 0x3f)
-> > -	 *   and set the first pulse length to 35 clock cycles.
-> > -	 * - Adjust reverse channel amplitude: values > 130 are programmed
-> > -	 *   using the additional +100mV REV_AMP_X boost flag
-> > -	 */
-> > -	max9286_write(priv, 0x3f, MAX9286_EN_REV_CFG | MAX9286_REV_FLEN(35));
-> > -
-> > -	if (chan_amplitude > 100) {
-> > -		/* It is not possible express values (100 < x < 130) */
-> > -		chan_amplitude = chan_amplitude < 130
-> > -			       ? 30 : chan_amplitude - 100;
-> > -		chan_config |= MAX9286_REV_AMP_X;
-> > -	}
-> > -	max9286_write(priv, 0x3b, chan_config | MAX9286_REV_AMP(chan_amplitude));
-> > -	usleep_range(2000, 2500);
-> > -}
-> > -
-> >  static int max9286_setup(struct max9286_priv *priv)
-> >  {
-> >  	/*
-> > @@ -967,7 +973,15 @@ static int max9286_setup(struct max9286_priv *priv)
-> >  	 * only. This should be disabled after the mux is initialised.
-> >  	 */
-> >  	max9286_configure_i2c(priv, true);
-> > -	max9286_reverse_channel_setup(priv, 170);
-> > +
-> > +	/*
-> > +	 * Compensate the remote end high threshold with a larger channel
-> > +	 * amplitude if necessary.
-> > +	 */
-> > +	if (priv->high_threshold)
-> > +		max9286_reverse_channel_setup(priv, 170);
-> > +	else
-> > +		max9286_reverse_channel_setup(priv, 100);
+> > +#ifdef CONFIG_PM_SLEEP_MONITOR
+> > +     start_suspend_mon();
+> > +#endif
 >
-> Hrm... ternery is more concise here, but is it helpful?
+> It is better to solve this by defining start_suspend_mon() as empty
+> function when the config option is disabled. For example, see
+> how  vgacon_text_force() is defined in console.h.
 >
+> Best Regards,
+> Petr
 
-Ternary is nicer, you're right!
 
->   max9286_reverse_channel_setup(priv, priv->high_threshold ? 170 : 100);
->
-> The high-threshold could also be parsed in
-> max9286_reverse_channel_setup(), but I like it being passed in.
->
-> >
-> >  	/*
-> >  	 * Enable GMSL links, mask unused ones and autodetect link
-> > @@ -1235,6 +1249,12 @@ static int max9286_parse_dt(struct max9286_priv *priv)
-> >  	}
-> >  	of_node_put(node);
-> >
-> > +	/*
-> > +	 * Parse 'high_threshold' property to configure the reverse channel
-> > +	 * amplitude.
-> > +	 */
-> > +	priv->high_threshold = device_property_present(dev, "high_threshold");
-> > +
->
-> Oh, I think I like this, it's a neat way to express what it needs to do
-> from the DT depending on the attached cameras.
->
-> It's sort of dependant upon the cameras though, I guess making this
-> something that we query from the remote endpoint isn't so easy ...?
 
-That's the real question. Is it fair to express as a deserializer
-property a setting of the remote serializer(s) ? What if the remotes
-have different configurations (we had to play with pre-programmed and
-non-pre-programmed RDACM20s in the past iirc).
-
-I've detailed a few possible way forward and their pros and cons in
-the v1 cover letter [1] and I'm happy to discuss them as I'm not sure
-this is the best possible way forward.
-
-Thanks
-  j
-
-[1] For reference: https://www.spinics.net/lists/linux-renesas-soc/msg52886.html
-
->
->
->
-> >  	priv->route_mask = priv->source_mask;
-> >
-> >  	return 0;
-> >
->
+--=20
+Embedded Software engineer
