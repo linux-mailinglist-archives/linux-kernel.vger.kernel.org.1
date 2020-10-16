@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107A5290990
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257F8290992
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410764AbgJPQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:18:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44428 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410751AbgJPQSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:18:53 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C4B6207BC;
-        Fri, 16 Oct 2020 16:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602865132;
-        bh=HtlLolkp5hR0VMPg+WOgBQp8RKSusLTKuW8c46vYJgs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p8k+vRIxvh61Veg2Pz/2x2LvRjPmAfLnbPI2iNgowenQOJ70GBvDl+swG2TyuLs0h
-         D+QDG8CafsI9cukSFGGmGitp8e6auM5WFBJ29IH0hdsCDqQdFX5DltteNIyGoF0Ti2
-         zbfPzBFxz4B0GShvjBu7klo7MtA9rVfVJtaOaw0Y=
-Date:   Fri, 16 Oct 2020 17:18:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-Subject: Re: [PATCH v1 2/6] dt-bindings: spi: Convert cadence-quadspi.txt to
- cadence-quadspi.yaml
-Message-ID: <20201016161844.GH5274@sirena.org.uk>
-References: <20201016093138.28871-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201016093138.28871-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S2410126AbgJPQUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:20:13 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:34588 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408124AbgJPQUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 12:20:13 -0400
+Received: by mail-ot1-f66.google.com with SMTP id d28so2933713ote.1;
+        Fri, 16 Oct 2020 09:20:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bg/ZEjUAQxpVo6DSmy7ehWLfv9K2VCGfCFh4744GjRc=;
+        b=S49QRK2fKLGU2K6EDau3kWnKFdWlILXt9zoc/ksEtfT35oRF72pvAwAjuCDq5K1eXx
+         2V4FUwZUTzRVy83Hobf5Lqhw27lvk9bNFFVkV9Hgfn7QnrIPWZytMGJRGVth1Y8Q4k51
+         gqy7lirI7XLyH6BjJyqKFbgvNCbMMudOaE6wDvFtzmB90wlhmTOnkfOGeLXt2GEGyqS+
+         L2cBhubTfGGl/RMKyc3VHPkAQcoYLFAJSG9Zpiwr/VWm+fia+SbWlAjPzWuDoTklcLo0
+         uR/WFN1aFhjZtTuwk88uPg8/uEysV/sWyTuxVxnIzqEkeJe4Q8++1cOCqp+mCWKrmHgx
+         1VvQ==
+X-Gm-Message-State: AOAM530GbmqX2uUTxuhP7jOHskMdtb3/lZOvj9yWuOvfqPzhCdBCgLul
+        F6bmz9W0lKNoXhVEHPO5Tw==
+X-Google-Smtp-Source: ABdhPJzwlRz1vTJgihHyEJSqFrbGp1k4E5FHdra55hue6dM2uq8YhIQh0z4TfoqKQBRF4dyEp0kc/Q==
+X-Received: by 2002:a9d:2a8a:: with SMTP id e10mr3150968otb.3.1602865212165;
+        Fri, 16 Oct 2020 09:20:12 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f2sm1174379oig.15.2020.10.16.09.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 09:20:11 -0700 (PDT)
+Received: (nullmailer pid 1520687 invoked by uid 1000);
+        Fri, 16 Oct 2020 16:20:10 -0000
+Date:   Fri, 16 Oct 2020 11:20:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 3/5] media: dt-bindings: media: renesas,drif: Add
+ r8a77990 support
+Message-ID: <20201016162010.GA1520090@bogus>
+References: <20201014155719.15120-1-fabrizio.castro.jz@renesas.com>
+ <20201014155719.15120-4-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bygAmIonOAIqBxQB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016093138.28871-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Cookie: Pournelle must die!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201014155719.15120-4-fabrizio.castro.jz@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 14 Oct 2020 16:57:17 +0100, Fabrizio Castro wrote:
+> The r8a77990 (a.k.a. R-Car E3) device tree schema is
+> compatible with R-Car H3 and M3-W schema.
+> 
+> Document r8a77990 support within renesas,drif.yaml.
+> 
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> ---
+> v3->v4:
+> * No change
+> v2->v3:
+> * No change
+> v1->v2:
+> * No change
+> 
+>  Documentation/devicetree/bindings/media/renesas,drif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
---bygAmIonOAIqBxQB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Oct 16, 2020 at 05:31:34PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel=
-=2Ecom>
->=20
-> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
-> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
-
-Please make YAML conversions the last thing in any patch series -
-there's sometimes a backlog on reviews as the DT maintainers are very
-busy so this means that delays with them don't hold the rest of the
-series up.
-
---bygAmIonOAIqBxQB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+Jx+MACgkQJNaLcl1U
-h9Dndgf/WIBohsik4TAsHbT7NjLwWhhyd6itL+7pmlPnRG87WCHo6txvKu/HYUxr
-dgYts7F7r8iGhaXdSgFVybwbdDOYPKMClFPAwDulQKt/ieAm86VS35Wu9i4hsgx8
-hsRg3aF7GsYTqqkMHRjVGPUxLiGfIbEHzG87WGVQVpSIdwwS8tubDD1sIUiQ6NaI
-szsC8tP5EMyz2aR+hsAXReAl3H3X/EWZkAiQLzqF40+DIb4r9ZTI7jvH256kHba0
-nfnsbFLq+N1hh5yNnbcRYARtusmhbuYRJN3qI3cFw8remiBsWXzVrAJFPhreCMrw
-2bWhyivezbTpl0HPqc+ZO+SUSDOWvg==
-=eZL+
------END PGP SIGNATURE-----
-
---bygAmIonOAIqBxQB--
+Acked-by: Rob Herring <robh@kernel.org>
