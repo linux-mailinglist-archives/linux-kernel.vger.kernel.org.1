@@ -2,185 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5387B290116
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792FE290178
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405230AbgJPJLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:11:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49834 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405854AbgJPJLf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:11:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602839493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N0iuzsKV+en+co/Ft7zltRtGpfmCivUKMQYMYF4dZIE=;
-        b=aNB5vZr3C43v+Ylpr04BcuN+kwJHBJIhDoZl+qrC97AONeRrL6WMCWrowutQiNkJ4u3Dcp
-        DU29kNCTJuInLuByN1/GPSQe+luONZKZ3v3WS4P+Psy0tH4MXsJP8uWBaK4URBbJkJDUh4
-        RFBQOzBZAUj1XgpgGMRn0hc2iGmB4wA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-K1OXnZx8NnSMeViY6FHIoQ-1; Fri, 16 Oct 2020 05:11:31 -0400
-X-MC-Unique: K1OXnZx8NnSMeViY6FHIoQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2405870AbgJPJO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:14:56 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:58170 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405458AbgJPJOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:14:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602839664; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=topCCkrpz2AqQ+CZCYhG4xvVcCTHpvc/ez0ukqnuMWA=; b=kAQzj6g7h8ptZN0Y36wfoGAbscMewAnhqkuqiuNNOsTz/RG+jNaS5wT6kkho+VYrune0EgWr
+ 1yI6vOqp/RuqR6yZQden3nSPY5Y2Z2znI6hfV2tq+b9jTlL7XtV4GEt19KaHkuYQZyOp2aJQ
+ 3tgnSYH59b+e0/bgXbdm9mPEkW4=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f89646f3711fec7b1a356e6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 09:14:23
+ GMT
+Sender: zhenhuah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C5F1EC433CB; Fri, 16 Oct 2020 09:14:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from zhenhuah-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5222F1020906;
-        Fri, 16 Oct 2020 09:11:30 +0000 (UTC)
-Received: from [10.36.113.23] (ovpn-113-23.ams2.redhat.com [10.36.113.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7EFE41992D;
-        Fri, 16 Oct 2020 09:11:25 +0000 (UTC)
-Subject: Re: [PATCH v1 05/29] virtio-mem: generalize check for added memory
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtualization@lists.linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-References: <20201012125323.17509-1-david@redhat.com>
- <20201012125323.17509-6-david@redhat.com>
- <20201015082808.GE86495@L-31X9LVDL-1304.local>
- <994394f3-c16d-911c-c9fc-d2280f32e7b1@redhat.com>
- <20201016021651.GI86495@L-31X9LVDL-1304.local>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5caec772-295c-436a-2b19-ca261ea1ad0c@redhat.com>
-Date:   Fri, 16 Oct 2020 11:11:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <20201016021651.GI86495@L-31X9LVDL-1304.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        (Authenticated sender: zhenhuah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3B1DDC433CB;
+        Fri, 16 Oct 2020 09:14:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3B1DDC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=zhenhuah@codeaurora.org
+From:   Zhenhua Huang <zhenhuah@codeaurora.org>
+To:     akpm@linux-foundation.org
+Cc:     Zhenhua Huang <zhenhuah@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH] mm: fix page_owner initializing issue for arm32
+Date:   Fri, 16 Oct 2020 17:14:00 +0800
+Message-Id: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> That's an interesting corner case. Assume you have a 128MB memory block
->> but only 64MB are plugged.
-> 
-> Since we just plug a part of memory block, this state is OFFLINE_PARTIAL
-> first. But then we would add these memory and online it. This means the state
-> of this memory block is ONLINE_PARTIAL.
-> 
-> When this state is changed to OFFLINE_PARTIAL again?
+Page owner of pages used by page owner itself used is missing on arm32 targets.
+The reason is dummy_handle and failure_handle is not initialized correctly.
+Buddy allocator is used to initialize these two handles. However, buddy
+allocator is not ready when page owner calls it. This change fixed that by
+initializing page owner after buddy initialization.
 
-Please note that memory onlining is *completely* controllable by user
-space. User space can offline/online memory blocks as it wants. Not
-saying this might actually be the right thing to do - but we cannot
-trust that user space does the right thing.
+The working flow before and after this change are:
+original logic:
+1. allocated memory for page_ext(using memblock).
+2. invoke the init callback of page_ext_ops like
+page_owner(using buddy allocator).
+3. initialize buddy.
 
-So at any point in time, you have to assume that
+after this change:
+1. allocated memory for page_ext(using memblock).
+2. initialize buddy.
+3. invoke the init callback of page_ext_ops like
+page_owner(using buddy allocator).
 
-a) added memory might not get onlined
-b) previously onlined memory might get offlined
-c) previously offline memory might get onlined
+with the change, failure/dummy_handle can get its correct value and
+page owner output for example has the one for page owner itself:
+Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN), pid 1006, ts
+67278156558 ns
+PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
+ init_page_owner+0x28/0x2f8
+ invoke_init_callbacks_flatmem+0x24/0x34
+ start_kernel+0x33c/0x5d8
+   (null)
 
-> 
->>
->> As long as we have our online_pages callback in place, we can hinder the
->> unplugged 64MB from getting exposed to the buddy
->> (virtio_mem_online_page_cb()). However, once we unloaded the driver,
-> 
-> Yes,
-> 
-> virtio_mem_set_fake_offline() would __SetPageOffline() to those pages.
-> 
->> this is no longer the case. If someone would online that memory block,
->> we would expose unplugged memory to the buddy - very bad.
->>
-> 
-> Per my understanding, at this point of time, the memory block is at online
-> state. Even part of it is set to *fake* offline.
-> 
-> So how could user trigger another online from sysfs interface?
+Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
+---
+ include/linux/page_ext.h | 8 ++++++++
+ init/main.c              | 2 ++
+ mm/page_ext.c            | 8 +++++++-
+ 3 files changed, 17 insertions(+), 1 deletion(-)
 
-Assume we added a partially plugged memory block, which is now offline.
-Further assume user space did not online the memory block (e.g., no udev
-rules).
-
-User space could happily online the block after unloading the driver.
-Again, we have to assume user space could do crazy things.
-
-> 
->> So we have to remove these partially plugged, offline memory blocks when
->> losing control over them.
->>
->> I tried to document that via:
->>
->> "After we unregistered our callbacks, user space can online partially
->> plugged offline blocks. Make sure to remove them."
->>
->>>
->>> Also, during virtio_mem_remove(), we just handle OFFLINE_PARTIAL memory block.
->>> How about memory block in other states? It is not necessary to remove
->>> ONLINE[_PARTIAL] memroy blocks?
->>
->> Blocks that are fully plugged (ONLINE or OFFLINE) can get
->> onlined/offlined without us having to care. Works fine - we only have to
->> care about partially plugged blocks.
->>
->> While we *could* unplug OFFLINE blocks, there is no way we can
->> deterministically offline+remove ONLINE blocks. So that memory has to
->> stay, even after we unloaded the driver (similar to the dax/kmem driver).
-> 
-> For OFFLINE memory blocks, would that leave the situation:
-> 
-> Guest doesn't need those pages, while host still maps them?
-
-Yes, but the guest could online the memory and make use of it.
-
-(again, whoever decides to unload the driver better be knowing what he does)
-
-To do it even more cleanly, we would
-
-a) Have to remove completely plugged offline blocks (not done)
-b) Have to remove partially plugged offline blocks (done)
-c) Actually send unplug requests to the hypervisor
-
-Right now, only b) is done, because it might actually cause harm (as
-discussed). However, the problem is, that c) might actually fail.
-
-Long short: we could add a) if it turns out to be a real issue. But
-than, unloading the driver isn't really suggested, the current
-implementation just "keeps it working without crashes" - and I guess
-that's good enough for now.
-
-> 
->>
->> ONLINE_PARTIAL is already taken care of: it cannot get offlined anymore,
->> as we still hold references to these struct pages
->> (virtio_mem_set_fake_offline()), and as we no longer have the memory
->> notifier in place, we can no longer agree to offline this memory (when
->> going_offline).
->>
-> 
-> Ok, I seems to understand the logic now.
-> 
-> But how we prevent ONLINE_PARTIAL memory block get offlined? There are three
-> calls in virtio_mem_set_fake_offline(), while all of them adjust page's flag.
-> How they hold reference to struct page?
-
-Sorry, I should have given you the right pointer. (similar to my other
-reply)
-
-We hold a reference either via
-
-1. alloc_contig_range()
-2. memmap init code, when not calling generic_online_page().
-
-So these fake-offline pages can never be actually offlined, because we
-no longer have the memory notifier registered to fix that up.
-
+diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
+index cfce186..aff81ba 100644
+--- a/include/linux/page_ext.h
++++ b/include/linux/page_ext.h
+@@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
+ {
+ }
+ extern void page_ext_init(void);
++static inline void page_ext_init_flatmem_late(void)
++{
++}
+ #else
+ extern void page_ext_init_flatmem(void);
++extern void page_ext_init_flatmem_late(void);
+ static inline void page_ext_init(void)
+ {
+ }
+@@ -76,6 +80,10 @@ static inline void page_ext_init(void)
+ {
+ }
+ 
++static inline void page_ext_init_flatmem_late(void)
++{
++}
++
+ static inline void page_ext_init_flatmem(void)
+ {
+ }
+diff --git a/init/main.c b/init/main.c
+index 130376e..b34c475 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -818,6 +818,8 @@ static void __init mm_init(void)
+ 	init_debug_pagealloc();
+ 	report_meminit();
+ 	mem_init();
++	/* page_owner must be initialized after buddy is ready */
++	page_ext_init_flatmem_late();
+ 	kmem_cache_init();
+ 	kmemleak_init();
+ 	pgtable_init();
+diff --git a/mm/page_ext.c b/mm/page_ext.c
+index a3616f7..373f7a1 100644
+--- a/mm/page_ext.c
++++ b/mm/page_ext.c
+@@ -99,6 +99,13 @@ static void __init invoke_init_callbacks(void)
+ 	}
+ }
+ 
++#if !defined(CONFIG_SPARSEMEM)
++void __init page_ext_init_flatmem_late(void)
++{
++	invoke_init_callbacks();
++}
++#endif
++
+ static inline struct page_ext *get_entry(void *base, unsigned long index)
+ {
+ 	return base + page_ext_size * index;
+@@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
+ 			goto fail;
+ 	}
+ 	pr_info("allocated %ld bytes of page_ext\n", total_usage);
+-	invoke_init_callbacks();
+ 	return;
+ 
+ fail:
 -- 
-Thanks,
-
-David / dhildenb
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
