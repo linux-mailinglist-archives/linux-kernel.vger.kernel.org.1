@@ -2,490 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE1828FEF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D8D28FEF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404486AbgJPHK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404477AbgJPHK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:10:57 -0400
-Received: from coco.lan (ip5f5ad5ad.dynamic.kabel-deutschland.de [95.90.213.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1774620720;
-        Fri, 16 Oct 2020 07:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602832256;
-        bh=0/Y7GXnBCgwZGITpUgIGF8pANj8GsvXkWenTv+Z0NyM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=wFQAzcOBaHZ/1jcqNQSOBfOTgiDm38Tm6iIUgnoDIDgs8T9csZ+nUIOs11IiNNCid
-         8+Dx9TYoA+4K60p01ClYjTelTImVFRgM1UY9wIDkO4QdE/yLNSxJAOEBJL4GPxmDp9
-         ejwssVsdyIowKQDsXAx8u8vN7Zmx+s1ZxEVZaWB0=
-Date:   Fri, 16 Oct 2020 09:10:48 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Docs Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [GIT PULL for v5.10-rc1] docs: fix building warnings and add
- support for Sphinx 3.1+
-Message-ID: <20201016091048.574b2eeb@coco.lan>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2404508AbgJPHLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394503AbgJPHLf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:11:35 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F92C061755;
+        Fri, 16 Oct 2020 00:11:34 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e18so1465161wrw.9;
+        Fri, 16 Oct 2020 00:11:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=/MMxUJ2bI7oUA9Bs+z3A1FPipfme7cLDpY+R3EOq+9k=;
+        b=SwFHJcr6Fmr+ydT1t1msx8gRZ3AdNO2vCL+MgrZG3t4RIPV2ujOUe8T89dNhgJEkFf
+         Fb3e2J/XxAQGzd7TXBMegF/zDU12YQaT0ro0yJRpKmZjS1HPA7aO+CDyNcww67AzCQhl
+         QOwm2j/75mtGumII1s6k5pq/FQ/HjFG7x5Hg4c0a4eXGlS4Ij9AJkV3ipXLzW1FbbndJ
+         P/mPZld5PeebzSEy0tMxNJTNLInK423ux8aJzkgrbZGMuaYVkeR5MK12/V+QkQBd9JdF
+         D4fv+LlG9C+I8acKgckrASNtVzfp+Z26Y3KddbgY+0u+0iOb7emBdUurbVNHfoECPJ+x
+         9o6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=/MMxUJ2bI7oUA9Bs+z3A1FPipfme7cLDpY+R3EOq+9k=;
+        b=LE/syYV2TTd0wy4aFLVsgfk1IadPkS8l63QWdwLZVKRBuMlJmelkbfvIIJVXcFRpO8
+         +R2QaOwmM1QpM6jQ5tl+B67UdDlbPWboeeeZwtfuyc9BO/v17URMIsThJneZmxkZ1e7Z
+         ePTHrJeRw8z0IMhDUV8zitpTnijiJdxSFByjDHobCj/WsfUGSr8jAxXsd2Gix6HnXZ40
+         9QWumcd6ZFgeYgNNz3zwFcS9c0G9zcHXpGDxrWmxY13eyvLaaKx9L6V/lDbWt8kOzD7X
+         nrRqGs2+4pcH/3edeLjEP+ogQoI/ZAibKdiJ8q2CJ0tk5HT2+PNslt2uNry8ASLeVy9/
+         IWfQ==
+X-Gm-Message-State: AOAM530MxCeZI8XJ7Tu7/CWnO9Ox9Y+bd0PVJkvjW8Lsgtr0b3w0gKxB
+        6KApOicR/fP4P77NV3DrF51WTE6vSCdjc4Wn3V6y+Ont9wkwwsZy
+X-Google-Smtp-Source: ABdhPJwH86ZJHEBGsKC2H+9yR2rEPDkFLCEftCvtupC9+xvq4TglL4Lg8T8/kifobuBUYzQOVSORDGEuiKGpa8Y51hk=
+X-Received: by 2002:a5d:504a:: with SMTP id h10mr2094750wrt.85.1602832292727;
+ Fri, 16 Oct 2020 00:11:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Fri, 16 Oct 2020 12:11:21 +0500
+Message-ID: <CABXGCsPd7Mz559CmUG0nLPGfKYZA-wp5vR8WJTd+xOOeeXEjuQ@mail.gmail.com>
+Subject: [bugreport] [5.10] warning at net/netfilter/nf_tables_api.c:622
+To:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi folks,
+today I joined to testing Kernel 5.10 and see that every boot happens
+this warning:
 
-Please pull from:
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media.git tag=
-s/docs/v5.10-1
+[   22.180180] ------------[ cut here ]------------
+[   22.180193] WARNING: CPU: 28 PID: 1205 at
+net/netfilter/nf_tables_api.c:622 nft_chain_parse_hook+0x224/0x330
+[nf_tables]
+[   22.180194] Modules linked in: nf_tables nfnetlink ip6table_filter
+ip6_tables iptable_filter cmac bnep sunrpc vfat fat
+snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio
+snd_hda_codec_hdmi mt76x2u mt76x2_common mt76x02_usb iwlmvm mt76_usb
+uvcvideo snd_hda_intel mt76x02_lib gspca_zc3xx snd_intel_dspcfg btusb
+gspca_main videobuf2_vmalloc btrtl mt76 edac_mce_amd snd_hda_codec
+btbcm videobuf2_memops btintel kvm_amd snd_usb_audio videobuf2_v4l2
+snd_hda_core mac80211 kvm bluetooth snd_usbmidi_lib joydev
+videobuf2_common iwlwifi snd_seq xpad snd_hwdep ff_memless videodev
+snd_rawmidi snd_seq_device libarc4 eeepc_wmi snd_pcm ecdh_generic
+irqbypass asus_wmi mc rapl sparse_keymap ecc snd_timer sp5100_tco
+video cfg80211 wmi_bmof pcspkr snd k10temp i2c_piix4 soundcore rfkill
+acpi_cpufreq binfmt_misc zram ip_tables hid_logitech_hidpp
+hid_logitech_dj amdgpu iommu_v2 gpu_sched ttm drm_kms_helper
+crct10dif_pclmul crc32_pclmul crc32c_intel cec drm ccp
+ghash_clmulni_intel igb nvme dca nvme_core
+[   22.180273]  i2c_algo_bit wmi pinctrl_amd fuse
+[   22.180279] CPU: 28 PID: 1205 Comm: ebtables Not tainted
+5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64 #1
+[   22.180281] Hardware name: System manufacturer System Product
+Name/ROG STRIX X570-I GAMING, BIOS 2606 08/13/2020
+[   22.180289] RIP: 0010:nft_chain_parse_hook+0x224/0x330 [nf_tables]
+[   22.180292] Code: a0 14 00 00 be ff ff ff ff e8 68 82 e1 e4 85 c0
+0f 85 21 fe ff ff 0f 0b bf 0a 00 00 00 e8 14 60 97 ff 84 c0 0f 84 1f
+fe ff ff <0f> 0b e9 18 fe ff ff 48 85 f6 74 61 4c 89 ef e8 78 d0 ff ff
+48 89
+[   22.180294] RSP: 0018:ffffa9850214f780 EFLAGS: 00010202
+[   22.180296] RAX: 0000000000000001 RBX: ffffa9850214f810 RCX: 0000000000000000
+[   22.180297] RDX: ffffa9850214f810 RSI: 00000000ffffffff RDI: ffffffffc0851c20
+[   22.180299] RBP: 0000000000000007 R08: 0000000000000001 R09: ffffa9850214f847
+[   22.180300] R10: 0000000000000000 R11: 0000000000000007 R12: ffffa9850214fa88
+[   22.180301] R13: ffffffffa6fdfcc0 R14: ffffa9850214fa88 R15: ffff993c5c12c800
+[   22.180304] FS:  00007ff92ed99540(0000) GS:ffff993c8a200000(0000)
+knlGS:0000000000000000
+[   22.180305] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   22.180307] CR2: 00007ff92ed1e000 CR3: 00000007d3714000 CR4: 0000000000350ee0
+[   22.180308] Call Trace:
+[   22.180319]  ? __rhashtable_lookup+0x11d/0x210 [nf_tables]
+[   22.180329]  nf_tables_addchain.constprop.0+0xab/0x5e0 [nf_tables]
+[   22.180337]  ? nft_chain_lookup.part.0+0x12c/0x1e0 [nf_tables]
+[   22.180344]  ? get_order+0x20/0x20 [nf_tables]
+[   22.180350]  ? nft_chain_hash+0x30/0x30 [nf_tables]
+[   22.180356]  ? nft_dump_register+0x40/0x40 [nf_tables]
+[   22.180368]  nf_tables_newchain+0x54d/0x730 [nf_tables]
+[   22.180376]  nfnetlink_rcv_batch+0x2a4/0x950 [nfnetlink]
+[   22.180385]  ? lock_acquire+0x175/0x400
+[   22.180387]  ? lock_release+0x1e7/0x400
+[   22.180391]  ? cred_has_capability.isra.0+0x68/0x100
+[   22.180395]  ? __nla_validate_parse+0x4f/0x8d0
+[   22.180401]  nfnetlink_rcv+0x115/0x130 [nfnetlink]
+[   22.180407]  netlink_unicast+0x16d/0x230
+[   22.180426]  netlink_sendmsg+0x23f/0x460
+[   22.180431]  sock_sendmsg+0x5e/0x60
+[   22.180434]  ____sys_sendmsg+0x231/0x270
+[   22.180438]  ? import_iovec+0x17/0x20
+[   22.180440]  ? sendmsg_copy_msghdr+0x5c/0x80
+[   22.180444]  ___sys_sendmsg+0x75/0xb0
+[   22.180450]  ? cred_has_capability.isra.0+0x68/0x100
+[   22.180452]  ? lock_acquire+0x175/0x400
+[   22.180454]  ? lock_acquire+0x93/0x400
+[   22.180457]  ? lock_release+0x1e7/0x400
+[   22.180459]  ? lock_release+0x1e7/0x400
+[   22.180462]  ? trace_hardirqs_on+0x1b/0xe0
+[   22.180465]  ? sock_setsockopt+0xdf/0x1010
+[   22.180467]  ? __local_bh_enable_ip+0x82/0xd0
+[   22.180470]  ? sock_setsockopt+0xdf/0x1010
+[   22.180473]  __sys_sendmsg+0x49/0x80
+[   22.180480]  do_syscall_64+0x33/0x40
+[   22.180483]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   22.180486] RIP: 0033:0x7ff92efdb087
+[   22.180488] Code: 0c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7
+0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 2e 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 89 54 24 1c 48 89 74
+24 10
+[   22.180490] RSP: 002b:00007fff54436b38 EFLAGS: 00000246 ORIG_RAX:
+000000000000002e
+[   22.180492] RAX: ffffffffffffffda RBX: 00007fff54436b40 RCX: 00007ff92efdb087
+[   22.180494] RDX: 0000000000000000 RSI: 00007fff54437be0 RDI: 0000000000000003
+[   22.180495] RBP: 00007fff544381e0 R08: 0000000000000004 R09: 000055b281bcf1d0
+[   22.180496] R10: 00007fff54437bcc R11: 0000000000000246 R12: 0000000000007000
+[   22.180497] R13: 0000000000000001 R14: 00007fff54436b50 R15: 00007fff54438200
+[   22.180503] irq event stamp: 0
+[   22.180505] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[   22.180507] hardirqs last disabled at (0): [<ffffffffa50d7683>]
+copy_process+0x723/0x1c80
+[   22.180509] softirqs last  enabled at (0): [<ffffffffa50d7683>]
+copy_process+0x723/0x1c80
+[   22.180511] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[   22.180512] ---[ end trace 6a0904ace1916b5d ]---
 
-For a series of patches addressing warnings produced by make htmldocs.
-This includes:
+reproductivity 100% reliable on my system
 
-- kernel-doc markup fixes;
-- ReST fixes;
-- Updates at the build system in order to support newer versions of the
-  docs build toolchain (Sphinx).
+$ /usr/src/kernels/`uname -r`/scripts/faddr2line
+/lib/debug/lib/modules/`uname
+-r`/kernel/net/netfilter/nf_tables.ko.debug nft_chain_parse_hook+0x224
+nft_chain_parse_hook+0x224/0x330:
+lockdep_nfnl_nft_mutex_not_held at
+/usr/src/debug/kernel-20201014gitb5fc7a89e58b/linux-5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64/net/netfilter/nf_tables_api.c:622
+(inlined by) lockdep_nfnl_nft_mutex_not_held at
+/usr/src/debug/kernel-20201014gitb5fc7a89e58b/linux-5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64/net/netfilter/nf_tables_api.c:619
+(inlined by) nft_chain_parse_hook at
+/usr/src/debug/kernel-20201014gitb5fc7a89e58b/linux-5.10.0-0.rc0.20201014gitb5fc7a89e58b.41.fc34.x86_64/net/netfilter/nf_tables_api.c:1816
 
-After this series, the number of html build warnings should reduce
-significantly, and building with Sphinx 3.1 or later should now
-be supported (although it is still recommended to use Sphinx 2.4.4).
+$ git blame -L 617,627 net/netfilter/nf_tables_api.c
+452238e8d5ffd (Florian Westphal  2018-07-11 13:45:10 +0200 617) #endif
+452238e8d5ffd (Florian Westphal  2018-07-11 13:45:10 +0200 618)
+f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 619) static
+void lockdep_nfnl_nft_mutex_not_held(void)
+f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 620) {
+f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 621) #ifdef
+CONFIG_PROVE_LOCKING
+f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 622)
+ WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
+f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 623) #endif
+f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 624) }
+f102d66b335a4 (Florian Westphal  2018-07-11 13:45:14 +0200 625)
+32537e91847a5 (Pablo Neira Ayuso 2018-03-27 11:53:05 +0200 626) static
+const struct nft_chain_type *
+452238e8d5ffd (Florian Westphal  2018-07-11 13:45:10 +0200 627)
+nf_tables_chain_type_lookup(struct net *net, const struct nlattr *nla,
 
-As agreed with Jon, I should be sending you a late pull request by
-the end of the merge window addressing remaining issues with docs
-build, as there are a number of warning fixes that depends on
-pull requests that should be happening along the merge window.
+$ git show f102d66b335a4
+commit f102d66b335a417d4848da9441f585695a838934
+Author: Florian Westphal <fw@strlen.de>
+Date:   Wed Jul 11 13:45:14 2018 +0200
 
-The end goal is to have a clean htmldocs build on Kernel 5.10.
+    netfilter: nf_tables: use dedicated mutex to guard transactions
 
-PS.: It should be noticed that Sphinx 3.0 is not currently
-supported, as it lacks support for C domain namespaces.
-Such feature, needed in order to document uAPI system calls
-with Sphinx 3.x, was added only on Sphinx 3.1.
+    Continue to use nftnl subsys mutex to protect (un)registration of
+hook types,
+    expressions and so on, but force batch operations to do their own
+    locking.
 
-Regards,
-Mauro
+    This allows distinct net namespaces to perform transactions in parallel.
 
--
+    Signed-off-by: Florian Westphal <fw@strlen.de>
+    Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
-The following changes since commit 3e4fb4346c781068610d03c12b16c0cfb0fd24a3:
+diff --git a/include/net/netns/nftables.h b/include/net/netns/nftables.h
+index 94767ea3a490..286fd960896f 100644
+--- a/include/net/netns/nftables.h
++++ b/include/net/netns/nftables.h
+@@ -7,6 +7,7 @@
+ struct netns_nftables {
+        struct list_head        tables;
+        struct list_head        commit_list;
++       struct mutex            commit_mutex;
+        unsigned int            base_seq;
+        u8                      gencursor;
+        u8                      validate_state;
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 68436edd9cdf..c0fb2bcd30fe 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -480,12 +480,19 @@ static void nft_request_module(struct net *net,
+const char *fmt, ...)
+        if (WARN(ret >= MODULE_NAME_LEN, "truncated: '%s' (len %d)",
+module_name, ret))
+                return;
 
-  Merge tag 'spdx-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/gi=
-t/gregkh/spdx (2020-10-14 16:19:42 -0700)
+-       nfnl_unlock(NFNL_SUBSYS_NFTABLES);
++       mutex_unlock(&net->nft.commit_mutex);
+        request_module("%s", module_name);
+-       nfnl_lock(NFNL_SUBSYS_NFTABLES);
++       mutex_lock(&net->nft.commit_mutex);
+ }
+ #endif
 
-are available in the Git repository at:
++static void lockdep_nfnl_nft_mutex_not_held(void)
++{
++#ifdef CONFIG_PROVE_LOCKING
++       WARN_ON_ONCE(lockdep_nfnl_is_held(NFNL_SUBSYS_NFTABLES));
++#endif
++}
++
+ static const struct nft_chain_type *
+ nf_tables_chain_type_lookup(struct net *net, const struct nlattr *nla,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media.git tag=
-s/docs/v5.10-1
+The last changes were made by Florian. That is why I invited you here,
+can you clarify the situation.
 
-for you to fetch changes up to 3e2ac9798e13ad1f52d735ea2ea1d252cb140ae5:
+Full dmesg output: https://pastebin.com/tZY3npHG
 
-  PM / devfreq: remove a duplicated kernel-doc markup (2020-10-16 07:28:20 =
-+0200)
-
-----------------------------------------------------------------
-docs updates for v5.10-rc1
-
-----------------------------------------------------------------
-Mauro Carvalho Chehab (71):
-      scripts: kernel-doc: add support for typedef enum
-      scripts: kernel-doc: make it more compatible with Sphinx 3.x
-      scripts: kernel-doc: use a less pedantic markup for funcs on Sphinx 3=
-.x
-      scripts: kernel-doc: fix troubles with line counts
-      scripts: kernel-doc: reimplement -nofunction argument
-      scripts: kernel-doc: fix typedef identification
-      scripts: kernel-doc: don't mangle with parameter list
-      scripts: kernel-doc: allow passing desired Sphinx C domain dialect
-      scripts: kernel-doc: fix line number handling
-      scripts: kernel-doc: try to use c:function if possible
-      docs: cdomain.py: add support for a new Sphinx 3.1+ tag
-      docs: cdomain.py: extend it to handle new Sphinx 3.x tags
-      docs: kerneldoc.py: append the name of the parsed doc file
-      docs: kerneldoc.py: add support for kerneldoc -nosymbol
-      media: docs: make CEC documents compatible with Sphinx 3.1+
-      media: docs: make V4L documents more compatible with Sphinx 3.1+
-      media: docs: make DVB documents more compatible with Sphinx 3.1+
-      media: docs: make MC documents more compatible with Sphinx 3.1+
-      media: docs: make RC documents more compatible with Sphinx 3.1+
-      media: cec-core.rst: don't use c:type for structs
-      docs: remove some replace macros like |struct foo|
-      docs: get rid of :c:type explicit declarations for structs
-      docs: trace-uses.rst: remove bogus c-domain tags
-      docs: it_IT: fix namespace collisions at locking.rst
-      docs: net: ieee802154.rst: fix C expressions
-      docs: genericirq.rst: don't document chip.c functions twice
-      docs: kernel-api.rst: drop kernel/irq/manage.c kernel-doc tag
-      docs: remove sound API duplication
-      docs: basics.rst: move kernel-doc workqueue markups to workqueue.rst
-      docs: scsi: target.rst: remove iSCSI transport class kernel-doc markup
-      docs: device_link.rst: remove duplicated kernel-doc include
-      docs: basics.rst: get rid of rcu kernel-doc macros
-      docs: pstore-blk.rst: fix kernel-doc tags
-      docs: fs: fscrypt.rst: get rid of :c:type: tags
-      docs: devices.rst: get rid of :c:type macros
-      docs: sound: writing-an-alsa-driver.rst: get rid of :c:type
-      docs: block: blk-mq.rst: get rid of :c:type
-      docs: writing-an-alsa-driver.rst: fix some bad c:func: markups
-      docs: fpga: replace :c:member: macros
-      docs: kgdb.rst: fix :c:type: usages
-      docs: libata.rst: fix a wrong usage of :c:type: tag
-      docs: infrastructure.rst: don't include firmware kernel-doc
-      docs: gpu: i915.rst: Fix several C duplication warnings
-      docs: devices.rst: fix a C reference markup
-      docs: it_IT: hacking.rst: fix a typo on a markup
-      docs: mei.rst: fix a C expression markup
-      docs: basics.rst: avoid duplicated C function declaration
-      docs: conf.py: fix c:function support with Sphinx 3.x
-      docs: conf.py: change the Sphinx 3.x+ text
-      docs: infrastructure.rst: exclude device_link_state from device.h
-      docs: zh_CN: amu.rst: fix document title markup
-      media: uAPI: buffer.rst: remove a left-over documentation
-      math64.h: kernel-docs: Convert some markups into normal comments
-      memblock: get rid of a :c:type leftover
-      dt-bindings: fix references to files converted to yaml
-      net: appletalk: Kconfig: Fix docs location
-      drivers: net: hamradio: fix document location
-      docs: powerpc: syscall64-abi.rst: fix a malformed table
-      block: bio: fix a warning at the kernel-doc markups
-      kunit: test.h: solve kernel-doc warnings
-      docs: bio: fix a kerneldoc markup
-      drivers: core: fix kernel-doc markup for dev_err_probe()
-      kunit: test.h: fix a bad kernel-doc markup
-      usb: docs: document altmode register/unregister functions
-      nl80211: docs: add a description for s1g_cap parameter
-      rcu/tree: docs: document bkvcache new members at struct kfree_rcu_cpu
-      Input: sparse-keymap: add a description for @sw
-      docs: virt: user_mode_linux_howto_v2.rst: fix a literal block markup
-      workqueue: fix a kernel-doc warning
-      mm/doc: fix a literal block markup
-      PM / devfreq: remove a duplicated kernel-doc markup
-
-N=C3=ADcolas F. R. A. Prado (4):
-      docs: automarkup.py: Use new C roles in Sphinx 3
-      docs: automarkup.py: Fix regexes to solve sphinx 3 warnings
-      docs: automarkup.py: Skip C reserved words when cross-referencing
-      docs: automarkup.py: Add cross-reference for parametrized C macros
-
- Documentation/admin-guide/pm/cpufreq.rst           |  11 +-
- Documentation/admin-guide/pstore-blk.rst           |  10 +-
- Documentation/block/blk-mq.rst                     |  12 +-
- Documentation/block/inline-encryption.rst          |   8 +-
- Documentation/conf.py                              |  65 ++++-
- Documentation/core-api/genericirq.rst              |   2 +
- Documentation/core-api/kernel-api.rst              |   6 -
- Documentation/core-api/workqueue.rst               |   2 +
- Documentation/dev-tools/kgdb.rst                   |   6 +-
- .../devicetree/bindings/display/tilcdc/tilcdc.txt  |   2 +-
- .../devicetree/bindings/mailbox/omap-mailbox.txt   |   2 +-
- .../devicetree/bindings/media/i2c/tvp5150.txt      |   2 +-
- .../bindings/pwm/google,cros-ec-pwm.yaml           |   2 +-
- .../devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml |   2 +-
- .../bindings/sound/google,cros-ec-codec.yaml       |   2 +-
- Documentation/doc-guide/kernel-doc.rst             |   8 +
- Documentation/driver-api/basics.rst                |  19 +-
- Documentation/driver-api/device_link.rst           |  13 +-
- Documentation/driver-api/fpga/fpga-bridge.rst      |   4 +-
- Documentation/driver-api/fpga/fpga-mgr.rst         |   6 +-
- Documentation/driver-api/fpga/fpga-programming.rst |   2 +-
- Documentation/driver-api/fpga/fpga-region.rst      |   6 +-
- Documentation/driver-api/iio/buffers.rst           |   2 +-
- Documentation/driver-api/iio/core.rst              |   6 +-
- Documentation/driver-api/iio/hw-consumer.rst       |   2 +-
- Documentation/driver-api/iio/triggered-buffers.rst |   2 +-
- Documentation/driver-api/iio/triggers.rst          |   4 +-
- Documentation/driver-api/index.rst                 |   1 -
- Documentation/driver-api/infrastructure.rst        |   4 +-
- Documentation/driver-api/libata.rst                |   2 +-
- Documentation/driver-api/media/cec-core.rst        |   2 +-
- Documentation/driver-api/media/dtv-frontend.rst    |   4 +-
- Documentation/driver-api/media/mc-core.rst         |  24 +-
- Documentation/driver-api/media/v4l2-controls.rst   |   2 +-
- Documentation/driver-api/media/v4l2-dev.rst        |   8 +-
- Documentation/driver-api/media/v4l2-device.rst     |   6 +-
- Documentation/driver-api/media/v4l2-event.rst      |  10 +-
- Documentation/driver-api/media/v4l2-fh.rst         |  16 +-
- Documentation/driver-api/media/v4l2-subdev.rst     |   2 +-
- Documentation/driver-api/mei/mei.rst               |   2 +-
- Documentation/driver-api/pm/cpuidle.rst            |  65 ++---
- Documentation/driver-api/pm/devices.rst            |  26 +-
- Documentation/driver-api/regulator.rst             |   4 +-
- Documentation/driver-api/sound.rst                 |  54 ----
- Documentation/driver-api/target.rst                |  12 -
- Documentation/driver-api/usb/URB.rst               |   2 +-
- Documentation/driver-api/usb/gadget.rst            |  10 +-
- Documentation/driver-api/usb/hotplug.rst           |   2 +-
- Documentation/driver-api/usb/typec_bus.rst         |   8 +-
- Documentation/filesystems/fscrypt.rst              |  74 +++--
- Documentation/filesystems/fsverity.rst             |   2 +-
- Documentation/gpu/i915.rst                         |  29 +-
- Documentation/networking/ieee802154.rst            |  18 +-
- Documentation/powerpc/syscall64-abi.rst            |  32 +--
- Documentation/sound/designs/tracepoints.rst        |  22 +-
- Documentation/sound/kernel-api/alsa-driver-api.rst |   1 +
- .../sound/kernel-api/writing-an-alsa-driver.rst    | 110 ++++----
- Documentation/sphinx/automarkup.py                 | 108 +++++++-
- Documentation/sphinx/cdomain.py                    |  93 ++++++-
- Documentation/sphinx/kerneldoc.py                  |  15 +-
- Documentation/sphinx/parse-headers.pl              |   2 +-
- Documentation/trace/ftrace-uses.rst                |  12 +-
- .../translations/it_IT/kernel-hacking/hacking.rst  |   2 +-
- .../translations/it_IT/kernel-hacking/locking.rst  |   2 +
- Documentation/translations/zh_CN/arm64/amu.rst     |   4 +-
- .../userspace-api/media/cec/cec-func-close.rst     |  10 +-
- .../userspace-api/media/cec/cec-func-ioctl.rst     |  11 +-
- .../userspace-api/media/cec/cec-func-open.rst      |  10 +-
- .../userspace-api/media/cec/cec-func-poll.rst      |  14 +-
- .../media/cec/cec-ioc-adap-g-caps.rst              |  10 +-
- .../media/cec/cec-ioc-adap-g-conn-info.rst         |  11 +-
- .../media/cec/cec-ioc-adap-g-log-addrs.rst         |  20 +-
- .../media/cec/cec-ioc-adap-g-phys-addr.rst         |  15 +-
- .../userspace-api/media/cec/cec-ioc-dqevent.rst    |  15 +-
- .../userspace-api/media/cec/cec-ioc-g-mode.rst     |  16 +-
- .../userspace-api/media/cec/cec-ioc-receive.rst    |  18 +-
- .../media/dvb/audio-bilingual-channel-select.rst   |   7 +-
- .../media/dvb/audio-channel-select.rst             |   8 +-
- .../userspace-api/media/dvb/audio-clear-buffer.rst |   8 +-
- .../userspace-api/media/dvb/audio-continue.rst     |   7 +-
- .../userspace-api/media/dvb/audio-fclose.rst       |   7 +-
- .../userspace-api/media/dvb/audio-fopen.rst        |   7 +-
- .../userspace-api/media/dvb/audio-fwrite.rst       |   7 +-
- .../media/dvb/audio-get-capabilities.rst           |   8 +-
- .../userspace-api/media/dvb/audio-get-status.rst   |   8 +-
- .../userspace-api/media/dvb/audio-pause.rst        |   9 +-
- .../userspace-api/media/dvb/audio-play.rst         |   7 +-
- .../media/dvb/audio-select-source.rst              |   8 +-
- .../userspace-api/media/dvb/audio-set-av-sync.rst  |   8 +-
- .../media/dvb/audio-set-bypass-mode.rst            |   9 +-
- .../userspace-api/media/dvb/audio-set-id.rst       |   9 +-
- .../userspace-api/media/dvb/audio-set-mixer.rst    |   9 +-
- .../userspace-api/media/dvb/audio-set-mute.rst     |   8 +-
- .../media/dvb/audio-set-streamtype.rst             |  10 +-
- .../userspace-api/media/dvb/audio-stop.rst         |   9 +-
- .../userspace-api/media/dvb/ca-fclose.rst          |   7 +-
- Documentation/userspace-api/media/dvb/ca-fopen.rst |   7 +-
- .../userspace-api/media/dvb/ca-get-cap.rst         |   8 +-
- .../userspace-api/media/dvb/ca-get-descr-info.rst  |   9 +-
- .../userspace-api/media/dvb/ca-get-msg.rst         |  10 +-
- .../userspace-api/media/dvb/ca-get-slot-info.rst   |   9 +-
- Documentation/userspace-api/media/dvb/ca-reset.rst |   9 +-
- .../userspace-api/media/dvb/ca-send-msg.rst        |   9 +-
- .../userspace-api/media/dvb/ca-set-descr.rst       |   8 +-
- .../userspace-api/media/dvb/dmx-add-pid.rst        |  10 +-
- .../userspace-api/media/dvb/dmx-expbuf.rst         |  11 +-
- .../userspace-api/media/dvb/dmx-fclose.rst         |   9 +-
- .../userspace-api/media/dvb/dmx-fopen.rst          |   5 +-
- .../userspace-api/media/dvb/dmx-fread.rst          |   7 +-
- .../userspace-api/media/dvb/dmx-fwrite.rst         |   6 +-
- .../userspace-api/media/dvb/dmx-get-pes-pids.rst   |  12 +-
- .../userspace-api/media/dvb/dmx-get-stc.rst        |  12 +-
- Documentation/userspace-api/media/dvb/dmx-mmap.rst |  15 +-
- .../userspace-api/media/dvb/dmx-munmap.rst         |  14 +-
- Documentation/userspace-api/media/dvb/dmx-qbuf.rst |  17 +-
- .../userspace-api/media/dvb/dmx-querybuf.rst       |   9 +-
- .../userspace-api/media/dvb/dmx-remove-pid.rst     |  10 +-
- .../userspace-api/media/dvb/dmx-reqbufs.rst        |   9 +-
- .../media/dvb/dmx-set-buffer-size.rst              |  10 +-
- .../userspace-api/media/dvb/dmx-set-filter.rst     |  12 +-
- .../userspace-api/media/dvb/dmx-set-pes-filter.rst |  13 +-
- .../userspace-api/media/dvb/dmx-start.rst          |  11 +-
- Documentation/userspace-api/media/dvb/dmx-stop.rst |   9 +-
- .../media/dvb/fe-diseqc-recv-slave-reply.rst       |   9 +-
- .../media/dvb/fe-diseqc-reset-overload.rst         |   9 +-
- .../media/dvb/fe-diseqc-send-burst.rst             |  10 +-
- .../media/dvb/fe-diseqc-send-master-cmd.rst        |   9 +-
- .../media/dvb/fe-dishnetwork-send-legacy-cmd.rst   |  10 +-
- .../media/dvb/fe-enable-high-lnb-voltage.rst       |  10 +-
- .../userspace-api/media/dvb/fe-get-event.rst       |  12 +-
- .../userspace-api/media/dvb/fe-get-frontend.rst    |  12 +-
- .../userspace-api/media/dvb/fe-get-info.rst        |  11 +-
- .../userspace-api/media/dvb/fe-get-property.rst    |  15 +-
- .../userspace-api/media/dvb/fe-read-ber.rst        |   9 +-
- .../media/dvb/fe-read-signal-strength.rst          |   9 +-
- .../userspace-api/media/dvb/fe-read-snr.rst        |   9 +-
- .../userspace-api/media/dvb/fe-read-status.rst     |  11 +-
- .../media/dvb/fe-read-uncorrected-blocks.rst       |   9 +-
- .../media/dvb/fe-set-frontend-tune-mode.rst        |  10 +-
- .../userspace-api/media/dvb/fe-set-frontend.rst    |  11 +-
- .../userspace-api/media/dvb/fe-set-tone.rst        |  10 +-
- .../userspace-api/media/dvb/fe-set-voltage.rst     |  10 +-
- .../userspace-api/media/dvb/frontend_f_close.rst   |   8 +-
- .../userspace-api/media/dvb/frontend_f_open.rst    |  10 +-
- .../userspace-api/media/dvb/net-add-if.rst         |   9 +-
- .../userspace-api/media/dvb/net-get-if.rst         |  10 +-
- .../userspace-api/media/dvb/net-remove-if.rst      |  10 +-
- .../userspace-api/media/dvb/video-clear-buffer.rst |   8 +-
- .../userspace-api/media/dvb/video-command.rst      |  10 +-
- .../userspace-api/media/dvb/video-continue.rst     |   8 +-
- .../userspace-api/media/dvb/video-fast-forward.rst |  10 +-
- .../userspace-api/media/dvb/video-fclose.rst       |   6 +-
- .../userspace-api/media/dvb/video-fopen.rst        |   6 +-
- .../userspace-api/media/dvb/video-freeze.rst       |   8 +-
- .../userspace-api/media/dvb/video-fwrite.rst       |   6 +-
- .../media/dvb/video-get-capabilities.rst           |   8 +-
- .../userspace-api/media/dvb/video-get-event.rst    |   8 +-
- .../media/dvb/video-get-frame-count.rst            |   8 +-
- .../userspace-api/media/dvb/video-get-pts.rst      |   8 +-
- .../userspace-api/media/dvb/video-get-size.rst     |   8 +-
- .../userspace-api/media/dvb/video-get-status.rst   |   7 +-
- .../userspace-api/media/dvb/video-play.rst         |   8 +-
- .../media/dvb/video-select-source.rst              |   7 +-
- .../userspace-api/media/dvb/video-set-blank.rst    |   8 +-
- .../media/dvb/video-set-display-format.rst         |   8 +-
- .../userspace-api/media/dvb/video-set-format.rst   |   9 +-
- .../media/dvb/video-set-streamtype.rst             |   8 +-
- .../userspace-api/media/dvb/video-slowmotion.rst   |  10 +-
- .../userspace-api/media/dvb/video-stillpicture.rst |   8 +-
- .../userspace-api/media/dvb/video-stop.rst         |   8 +-
- .../userspace-api/media/dvb/video-try-command.rst  |   8 +-
- .../media/mediactl/media-func-close.rst            |  10 +-
- .../media/mediactl/media-func-ioctl.rst            |  10 +-
- .../media/mediactl/media-func-open.rst             |  10 +-
- .../media/mediactl/media-ioc-device-info.rst       |  13 +-
- .../media/mediactl/media-ioc-enum-entities.rst     |  11 +-
- .../media/mediactl/media-ioc-enum-links.rst        |  13 +-
- .../media/mediactl/media-ioc-g-topology.rst        |  14 +-
- .../media/mediactl/media-ioc-request-alloc.rst     |  11 +-
- .../media/mediactl/media-ioc-setup-link.rst        |  10 +-
- .../media/mediactl/media-request-ioc-queue.rst     |   7 +-
- .../media/mediactl/media-request-ioc-reinit.rst    |   8 +-
- .../userspace-api/media/mediactl/request-api.rst   |   5 +-
- .../media/mediactl/request-func-close.rst          |   8 +-
- .../media/mediactl/request-func-ioctl.rst          |   8 +-
- .../media/mediactl/request-func-poll.rst           |  12 +-
- .../userspace-api/media/rc/lirc-get-features.rst   |   9 +-
- .../userspace-api/media/rc/lirc-get-rec-mode.rst   |  12 +-
- .../media/rc/lirc-get-rec-resolution.rst           |   8 +-
- .../userspace-api/media/rc/lirc-get-send-mode.rst  |  14 +-
- .../userspace-api/media/rc/lirc-get-timeout.rst    |  13 +-
- Documentation/userspace-api/media/rc/lirc-read.rst |  10 +-
- .../media/rc/lirc-set-measure-carrier-mode.rst     |   8 +-
- .../media/rc/lirc-set-rec-carrier-range.rst        |   6 +-
- .../media/rc/lirc-set-rec-carrier.rst              |   8 +-
- .../media/rc/lirc-set-rec-timeout-reports.rst      |   8 +-
- .../media/rc/lirc-set-rec-timeout.rst              |  13 +-
- .../media/rc/lirc-set-send-carrier.rst             |   8 +-
- .../media/rc/lirc-set-send-duty-cycle.rst          |   8 +-
- .../media/rc/lirc-set-transmitter-mask.rst         |   8 +-
- .../media/rc/lirc-set-wideband-receiver.rst        |   8 +-
- .../userspace-api/media/rc/lirc-write.rst          |   7 +-
- Documentation/userspace-api/media/v4l/buffer.rst   |  28 +-
- .../userspace-api/media/v4l/dev-capture.rst        |   7 +-
- .../userspace-api/media/v4l/dev-output.rst         |   7 +-
- .../userspace-api/media/v4l/dev-raw-vbi.rst        |  19 +-
- Documentation/userspace-api/media/v4l/dev-rds.rst  |  12 +-
- .../userspace-api/media/v4l/dev-sliced-vbi.rst     |  31 +--
- Documentation/userspace-api/media/v4l/diff-v4l.rst |  39 +--
- Documentation/userspace-api/media/v4l/dmabuf.rst   |   8 +-
- Documentation/userspace-api/media/v4l/format.rst   |   7 +-
- .../userspace-api/media/v4l/func-close.rst         |   8 +-
- .../userspace-api/media/v4l/func-ioctl.rst         |  10 +-
- .../userspace-api/media/v4l/func-mmap.rst          |  18 +-
- .../userspace-api/media/v4l/func-munmap.rst        |  14 +-
- .../userspace-api/media/v4l/func-open.rst          |  14 +-
- .../userspace-api/media/v4l/func-poll.rst          |  40 ++-
- .../userspace-api/media/v4l/func-read.rst          |  39 ++-
- .../userspace-api/media/v4l/func-select.rst        |  42 ++-
- .../userspace-api/media/v4l/func-write.rst         |  13 +-
- .../userspace-api/media/v4l/hist-v4l2.rst          |  70 +----
- Documentation/userspace-api/media/v4l/io.rst       |   6 +-
- .../media/v4l/libv4l-introduction.rst              |  30 +-
- Documentation/userspace-api/media/v4l/mmap.rst     |  26 +-
- Documentation/userspace-api/media/v4l/open.rst     |  15 +-
- Documentation/userspace-api/media/v4l/rw.rst       |  18 +-
- .../userspace-api/media/v4l/streaming-par.rst      |   5 +-
- Documentation/userspace-api/media/v4l/userp.rst    |  11 +-
- .../userspace-api/media/v4l/vidioc-create-bufs.rst |  11 +-
- .../userspace-api/media/v4l/vidioc-cropcap.rst     |  11 +-
- .../media/v4l/vidioc-dbg-g-chip-info.rst           |  13 +-
- .../media/v4l/vidioc-dbg-g-register.rst            |  18 +-
- .../userspace-api/media/v4l/vidioc-decoder-cmd.rst |  19 +-
- .../userspace-api/media/v4l/vidioc-dqevent.rst     |  19 +-
- .../media/v4l/vidioc-dv-timings-cap.rst            |  17 +-
- .../userspace-api/media/v4l/vidioc-encoder-cmd.rst |  25 +-
- .../media/v4l/vidioc-enum-dv-timings.rst           |  16 +-
- .../userspace-api/media/v4l/vidioc-enum-fmt.rst    |  12 +-
- .../media/v4l/vidioc-enum-frameintervals.rst       |  15 +-
- .../media/v4l/vidioc-enum-framesizes.rst           |  16 +-
- .../media/v4l/vidioc-enum-freq-bands.rst           |  12 +-
- .../userspace-api/media/v4l/vidioc-enumaudio.rst   |  10 +-
- .../media/v4l/vidioc-enumaudioout.rst              |  10 +-
- .../userspace-api/media/v4l/vidioc-enuminput.rst   |  14 +-
- .../userspace-api/media/v4l/vidioc-enumoutput.rst  |  13 +-
- .../userspace-api/media/v4l/vidioc-enumstd.rst     |  23 +-
- .../userspace-api/media/v4l/vidioc-expbuf.rst      |  14 +-
- .../userspace-api/media/v4l/vidioc-g-audio.rst     |  18 +-
- .../userspace-api/media/v4l/vidioc-g-audioout.rst  |  16 +-
- .../userspace-api/media/v4l/vidioc-g-crop.rst      |  16 +-
- .../userspace-api/media/v4l/vidioc-g-ctrl.rst      |  16 +-
- .../media/v4l/vidioc-g-dv-timings.rst              |  26 +-
- .../userspace-api/media/v4l/vidioc-g-edid.rst      |  25 +-
- .../userspace-api/media/v4l/vidioc-g-enc-index.rst |  13 +-
- .../userspace-api/media/v4l/vidioc-g-ext-ctrls.rst |  21 +-
- .../userspace-api/media/v4l/vidioc-g-fbuf.rst      |  18 +-
- .../userspace-api/media/v4l/vidioc-g-fmt.rst       |  22 +-
- .../userspace-api/media/v4l/vidioc-g-frequency.rst |  16 +-
- .../userspace-api/media/v4l/vidioc-g-input.rst     |  15 +-
- .../userspace-api/media/v4l/vidioc-g-jpegcomp.rst  |  17 +-
- .../userspace-api/media/v4l/vidioc-g-modulator.rst |  17 +-
- .../userspace-api/media/v4l/vidioc-g-output.rst    |  15 +-
- .../userspace-api/media/v4l/vidioc-g-parm.rst      |  30 +-
- .../userspace-api/media/v4l/vidioc-g-priority.rst  |  16 +-
- .../userspace-api/media/v4l/vidioc-g-selection.rst |  15 +-
- .../media/v4l/vidioc-g-sliced-vbi-cap.rst          |  12 +-
- .../userspace-api/media/v4l/vidioc-g-std.rst       |  24 +-
- .../userspace-api/media/v4l/vidioc-g-tuner.rst     |  19 +-
- .../userspace-api/media/v4l/vidioc-log-status.rst  |  10 +-
- .../userspace-api/media/v4l/vidioc-overlay.rst     |  10 +-
- .../userspace-api/media/v4l/vidioc-prepare-buf.rst |  10 +-
- .../userspace-api/media/v4l/vidioc-qbuf.rst        |  17 +-
- .../media/v4l/vidioc-query-dv-timings.rst          |  15 +-
- .../userspace-api/media/v4l/vidioc-querybuf.rst    |  10 +-
- .../userspace-api/media/v4l/vidioc-querycap.rst    |  16 +-
- .../userspace-api/media/v4l/vidioc-queryctrl.rst   |  22 +-
- .../userspace-api/media/v4l/vidioc-querystd.rst    |  15 +-
- .../userspace-api/media/v4l/vidioc-reqbufs.rst     |  10 +-
- .../media/v4l/vidioc-s-hw-freq-seek.rst            |  11 +-
- .../userspace-api/media/v4l/vidioc-streamon.rst    |  14 +-
- .../v4l/vidioc-subdev-enum-frame-interval.rst      |  10 +-
- .../media/v4l/vidioc-subdev-enum-frame-size.rst    |  11 +-
- .../media/v4l/vidioc-subdev-enum-mbus-code.rst     |  10 +-
- .../media/v4l/vidioc-subdev-g-crop.rst             |  16 +-
- .../media/v4l/vidioc-subdev-g-fmt.rst              |  17 +-
- .../media/v4l/vidioc-subdev-g-frame-interval.rst   |  16 +-
- .../media/v4l/vidioc-subdev-g-selection.rst        |  17 +-
- .../media/v4l/vidioc-subdev-querycap.rst           |   9 +-
- .../media/v4l/vidioc-subscribe-event.rst           |  17 +-
- .../virt/uml/user_mode_linux_howto_v2.rst          |   1 +
- Documentation/vm/hmm.rst                           |   2 +-
- Documentation/vm/ksm.rst                           |   2 +-
- Documentation/vm/memory-model.rst                  |   6 +-
- MAINTAINERS                                        |  16 +-
- block/bio.c                                        |   4 +-
- drivers/base/core.c                                |   7 +-
- drivers/net/appletalk/Kconfig                      |   2 +-
- drivers/net/hamradio/scc.c                         |   2 +-
- include/kunit/test.h                               |  14 +-
- include/linux/devfreq.h                            |   7 +-
- include/linux/input/sparse-keymap.h                |   1 +
- include/linux/math64.h                             |   8 +-
- include/linux/usb/typec_altmode.h                  |  16 ++
- include/net/cfg80211.h                             |   1 +
- kernel/rcu/tree.c                                  |  14 +-
- kernel/workqueue.c                                 |   3 +
- mm/ksm.c                                           |   2 +-
- mm/memblock.c                                      |   8 +-
- scripts/kernel-doc                                 | 305 +++++++++++++++--=
-----
- 309 files changed, 1952 insertions(+), 2275 deletions(-)
- delete mode 100644 Documentation/driver-api/sound.rst
-
+--
+Best Regards,
+Mike Gavrilov.
