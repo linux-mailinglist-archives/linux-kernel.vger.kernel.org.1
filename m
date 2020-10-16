@@ -2,125 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34E329070B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DE229070E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408746AbgJPOS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S2408771AbgJPOU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408737AbgJPOS0 (ORCPT
+        with ESMTP id S2408769AbgJPOUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:18:26 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3CCC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:18:26 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id n9so1533421pgf.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:18:26 -0700 (PDT)
+        Fri, 16 Oct 2020 10:20:55 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E30C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:20:55 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id l16so2764766ilt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4NhDInpW1iBikeTa4E3fQ1xw/szHYX7nD+T6Eo5XuV8=;
-        b=qetqLy2ITeJhMctzuRBOHZPup1bhJ4dpeQxx5CjJQ33nbh/txTQarwnaKmhXNX6dwN
-         RkjjZwmcqgxYz/AaglPMeKEpUKS/t9R5vt0T2Dv8DNiJL8yDlywYE5+Cbglqvcn0Op2U
-         Lyb8iKfVgZHU4QB82hg8Icy+brJZwQLiJ6UeVKibTDbBRYJ/JQ+StmPFsrLxfB8fzYcn
-         /gUeZCF4mfDyS+aD7peTERuePcPaIfssbbnPa8IwIp/Ln/Gf9YkHZcwbjN3f5MpdA0fP
-         TOH3K8eO70oDqcVbs6cPkDhGTXxSMSL/7NTcEl97AHDkCv/Cai2GHWz6a+AtIDrPz9wX
-         dg8A==
+        bh=ILU1JiiWwmc95Pb/WWnMrCIUzuQZgL65VpWvlyy0uws=;
+        b=HEPkXoSC4+XViOa2NstBZBi5peIDrb80Thy9EpYPPQFO80kSOluTlFVunJ9q7XLi41
+         PPqK2THj7pyPrLghVLfFynw1npRcrsx6jx0Wgrfgyqg2brX8ZvopZSU7YSdH/0LkVpDO
+         JDE22r1UgDghP9r57+WICgOjhnO4KERaBTDhCVUqUaqDquxzefiNcEqHITD9Mjmgv5b5
+         40IbFKVTza9Er2Gz15cRfaJF4YHhV8o59A792eqKJ7sq/2zyOuZ7e5fpSaA3CJyWm7DS
+         7srxW9LYUi2hOcy39d6X4sgQNR4S94gbsuLgztiZqFFOuee8yzBElhn/1AHSiVKSaaxD
+         Ewrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4NhDInpW1iBikeTa4E3fQ1xw/szHYX7nD+T6Eo5XuV8=;
-        b=TeWKHF+TNlUbOTD3UInkm8kzCF9oEPMWRRaYeeZj9OC/1VdoVraNMNf+Yo1Jil33/B
-         NPJ568hYc6Dt+YtEDdNK7X7XQeteDXUsQCST2sFgpeM9K28wdd7LYFmmb2lMQkJMvMuN
-         feJ9Y015PKQBIGqMwdu3HBFteJ5XpIhFL26b2n/Lm7ujWo9bgx/MFptyStolL9j+6Y7h
-         snX9xWpDagZDarecVpWSSYKtqfVY33D8vrPp0HqA4Mm8ZEUmjCoJNLvEOkI5XiKp6GkX
-         6w9Q4AT+AJt7uTyqk5suOeQVkR2UWRlZfsf3D8vzWdj26h758ATz3koFhQMDhxqVcwsB
-         Fcmw==
-X-Gm-Message-State: AOAM5330VFUsNgKCBG8AaE486XfkTuakBF3q2mZ7t/SoIJsB/60Ofm1Y
-        RqzqWhzL+g7BIU9hnDygAwKgxSOQhGATwOBu/HNxbA==
-X-Google-Smtp-Source: ABdhPJwDzYxUiG1nfH61t2+7V8ocz2R2c5m9j6wPWeA63DersAnWdOBpBhERgsjRfGKoF3ioVTT8q8XsuTBLPgTwgyY=
-X-Received: by 2002:a63:5d07:: with SMTP id r7mr3363475pgb.440.1602857905600;
- Fri, 16 Oct 2020 07:18:25 -0700 (PDT)
+        bh=ILU1JiiWwmc95Pb/WWnMrCIUzuQZgL65VpWvlyy0uws=;
+        b=s2t6z0H/+yuxOAcmfScTXr4N89/VWXWacKFBVxvZto419TmjcN0j6HL2qSwhlCOG9o
+         BWAY8lDhabLy7LBacr/i4BUeQSWBAQhP9aycxzpVzCA+i8zP0l1DiO1UBbIBJuhO2IzI
+         n4xI/mX8DeIjNitiBmNP7iA7EQjTqINMWIZY68RjNJA/l2bWOywhB3MdKKEZi/e0poxr
+         g++Iq7Y4mOE5tsdhztv2NoZqleNbfM9AKiPTva/c4/aHlzqKZkZqqnKsfjjGpPkKflAK
+         o6modqxSgwI64PthhGLB5pjFA+y1byvxJjj44fhJ6xAqIX9QJOnJhli7zjQ8cZdNZEWX
+         RRfQ==
+X-Gm-Message-State: AOAM530+ZgTSorIIuRkaWxYFWFX/aLVYwwCvNXAou/cAbET2fbRSxWgs
+        ab4me+Hbm0fZaHiWgnAlJ2sk9IfAsL36dS9S1KpqUQ==
+X-Google-Smtp-Source: ABdhPJxubq2fzGL00SIrDkBpOu8eo1lYW9KXkOhd7VAlU2NeWINOP4NjqVxzNovv5CI4q3PGv41TQKCIzUMr+AlwxJ8=
+X-Received: by 2002:a92:8404:: with SMTP id l4mr3069053ild.134.1602858054317;
+ Fri, 16 Oct 2020 07:20:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <c07a2deae7a75e394de272c1a33cfcc1f667af92.1602522185.git.andreyknvl@google.com>
- <dddca63c-088c-d87c-370f-e8f02d1b0d04@linuxfoundation.org>
-In-Reply-To: <dddca63c-088c-d87c-370f-e8f02d1b0d04@linuxfoundation.org>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 16 Oct 2020 16:18:14 +0200
-Message-ID: <CAAeHK+zdH0WqihL-394p88VM8tkMztdagR=_KuOSwteEdLsFgg@mail.gmail.com>
-Subject: Re: [PATCH v2] kcov, usbip: collect coverage from vhci_rx_loop
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
+References: <20201007101726.3149375-1-a.nogikh@gmail.com> <20201007101726.3149375-2-a.nogikh@gmail.com>
+ <20201009161558.57792e1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CACT4Y+ZF_umjBpyJiCb8YPQOOSofG-M9h0CB=xn3bCgK=Kr=9w@mail.gmail.com>
+ <20201010081431.1f2d9d0d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CACT4Y+aEQoRMO6eA7iQZf4dhOu2cD1ZbbH6TT4Rs_uQwG0PWYg@mail.gmail.com>
+ <CADpXja8i4YPT=vcuCr412RYqRMjTOGuaMW2dyV0j7BtEwNBgFA@mail.gmail.com>
+ <20201013095038.61ba8f55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <CA+FuTSf2kfvdYydXYJNCCfE62q9DXXOBMh_ZSO5W=L9GK478HA@mail.gmail.com>
+In-Reply-To: <CA+FuTSf2kfvdYydXYJNCCfE62q9DXXOBMh_ZSO5W=L9GK478HA@mail.gmail.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Fri, 16 Oct 2020 17:20:42 +0300
+Message-ID: <CANp29Y69mvAuwdcNk8DyjYSjDMBkQupMh0JHHLkybg+rA2zCLw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] net: store KCOV remote handle in sk_buff
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Aleksandr Nogikh <a.nogikh@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        David Miller <davem@davemloft.net>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
         Marco Elver <elver@google.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Nazime Hande Harputluoglu <handeharput@gmail.com>,
-        Nazime Hande Harputluoglu <handeharputlu@google.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 7:28 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+On Thu, Oct 15, 2020 at 10:04 PM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> On 10/12/20 11:10 AM, Andrey Konovalov wrote:
-> > From: Nazime Hande Harputluoglu <handeharputlu@google.com>
+> On Tue, Oct 13, 2020 at 12:50 PM Jakub Kicinski <kuba@kernel.org> wrote:
 > >
-> > Add kcov_remote_start()/kcov_remote_stop() annotations to the
-> > vhci_rx_loop() function, which is responsible for parsing USB/IP packets
-> > coming into USB/IP client.
+> > On Tue, 13 Oct 2020 18:59:28 +0300 Aleksandr Nogikh wrote:
+> > > On Mon, 12 Oct 2020 at 09:04, Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > >
+> > > > On Sat, Oct 10, 2020 at 5:14 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > > >
+> > > > > On Sat, 10 Oct 2020 09:54:57 +0200 Dmitry Vyukov wrote:
+> > > > > > On Sat, Oct 10, 2020 at 1:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > [...]
+> > > > > > > Could you use skb_extensions for this?
+> > > > > >
+> > > > > > Why? If for space, this is already under a non-production ifdef.
+> > > > >
+> > > > > I understand, but the skb_ext infra is there for uncommon use cases
+> > > > > like this one. Any particular reason you don't want to use it?
+> > > > > The slight LoC increase?
+> > > > >
+> > > > > Is there any precedent for adding the kcov field to other performance
+> > > > > critical structures?
+> > >
+> > > It would be great to come to some conclusion on where exactly to store
+> > > kcov_handle. Technically, it is possible to use skb extensions for the
+> > > purpose, though it will indeed slightly increase the complexity.
+> > >
+> > > Jakub, you think that kcov_handle should be added as an skb extension,
+> > > right?
 > >
-> > Since vhci_rx_loop() threads are spawned per vhci_hcd device instance, the
-> > common kcov handle is used for kcov_remote_start()/stop() annotations
-> > (see Documentation/dev-tools/kcov.rst for details). As the result kcov
-> > can now be used to collect coverage from vhci_rx_loop() threads.
+> > That'd be preferable. I understand with current use cases it doesn't
+> > really matter, but history shows people come up with all sort of
+> > wonderful use cases down the line. And when they do they rarely go back
+> > and fix such fundamental minutiae.
 > >
-> > Signed-off-by: Nazime Hande Harputluoglu <handeharputlu@google.com>
-> > ---
+> > > Though I do not really object to moving the field, it still seems to
+> > > me that sk_buff itself is a better place. Right now skb extensions
+> > > store values that are local to specific protocols and that are only
+> > > meaningful in the context of these protocols (correct me if I'm
+> > > wrong). Although this patch only adds remote kcov coverage to the wifi
+> > > code, kcov_handle can be meaningful for other protocols as well - just
+> > > like the already existing sk_buff fields. So adding kcov_handle to skb
+> > > extensions will break this logical separation.
 > >
-> > Changes v1->v2:
-> > - Fix spacing issues.
-> > - Add ifdef CONFIG_KCOV around kcov_handle in usbip_device struct.
+> > It's not as much protocols as subsystems. The values are meaningful to
+> > a subsystem which inserts them, that doesn't mean single layer of the
+> > stack. If it was about storing layer's context we would just use
+> > skb->cb.
 > >
+> > So I think the kcov use matches pretty well.
 >
-> Does this compile without CONFIG_KCOV?
+> skb_extensions was the first thing that came to mind when I read this
+> patchset too. It is not specific to protocols.
 >
-> > ---
-> >   drivers/usb/usbip/usbip_common.h |  4 ++++
-> >   drivers/usb/usbip/vhci_rx.c      |  3 +++
-> >   drivers/usb/usbip/vhci_sysfs.c   | 12 +++++++-----
-> >   3 files changed, 14 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
-> > index 8be857a4fa13..0906182011d6 100644
-> > --- a/drivers/usb/usbip/usbip_common.h
-> > +++ b/drivers/usb/usbip/usbip_common.h
-> > @@ -277,6 +277,10 @@ struct usbip_device {
-> >               void (*reset)(struct usbip_device *);
-> >               void (*unusable)(struct usbip_device *);
-> >       } eh_ops;
-> > +
-> > +#ifdef CONFIG_KCOV
-> > +     u64 kcov_handle;
-> > +#endif
+> We have long stopped growing sk_buff size.
 
-Hi Shuah,
-
-We could have this field always defined, which allows us to not check
-CONFIG_KCOV in the places where it's used (this is what we do for
-vhost; the kcov functions will be optimized away). Or we could keep
-the ifdef CONFIG_KCOV check here, and then add the same checks to
-other places.
-
-What would be your preference here?
-
-Thanks!
+Thank you all for your comments. I'll use skb extensions in v3 of the series.
