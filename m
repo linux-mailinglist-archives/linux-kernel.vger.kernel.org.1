@@ -2,143 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0198628FECE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85BA28FECC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394476AbgJPHDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391475AbgJPHDc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:03:32 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8035DC061755;
-        Fri, 16 Oct 2020 00:03:32 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x13so926975pfa.9;
-        Fri, 16 Oct 2020 00:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=content-transfer-encoding:mime-version:subject:from:in-reply-to
-         :date:cc:message-id:references:to;
-        bh=gZuqvmeZLiB4EetTt35Ahi6N1kjCZ4lqMWrOBCtfCBw=;
-        b=up3tNrQxBaE40+eqR/OR+ddHRuuz+YYuC7b7qxK7/TYAk0j4PiBoieKghL3hkrDtWo
-         HZpISr7SwtAJdn2lW/aVRBfH5NbGcYRr3tR4nbmP0AzxSKUi8PmQiHfwL4IKYaJ99tUM
-         k/wtnSc+InTj1VNBadeTBccPRWVCRVigfHt16YUUJpIoV4TjwKEveGtErheofOVbqn/h
-         oDo+Kj7rEWBXgWez2pwrQWfM19cUD71Wkzg2t7xCY1/SMWbktE402LXStCxtsvJhqVlh
-         r/BBJITIrmYBy+1pdxnBqr64PHRrA8Aqzfjo1aUMFYSXW05phnVIySlBxEFatUqJP70e
-         1zgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:mime-version:subject
-         :from:in-reply-to:date:cc:message-id:references:to;
-        bh=gZuqvmeZLiB4EetTt35Ahi6N1kjCZ4lqMWrOBCtfCBw=;
-        b=VwDbg4i2A7KI+W6LdqSC8ZZtn6SRM0MgZzI7cGUs06rnThn0Y7305tJ55zACaxdP+l
-         Z+yudciXhBYy32TtuRvnMZhEuYIIb6JzU1/5amvx1g9eQ8PsXS5r0J+eZh+119TVzJjv
-         steEBTHFWXuQo/1dNy/e88Dw5WDjhcOUfiYBfkCUsttexq/SU3MrDHX5gx1huF4Skd2F
-         NYwlxFTb1w/TIt3Vp/GajmA9sVCewuyzWGQ8h9LxO83LqV1dRP8/w9gJE41O1PnRhQQJ
-         2V/Ls9LGkcL3XRt8HdkZkh17fEGP5Sos2jor5Mh5ISofFagWWq4Ssb8a9ouYr2/pZu7J
-         2hdA==
-X-Gm-Message-State: AOAM531D9511dqQGYOLHyM/EvXInHi4aUv+BAoi9Goxi6FIRvLIVLo96
-        xlCxYTxGJMD2IOaUCfrSHcc=
-X-Google-Smtp-Source: ABdhPJz1CwgI2WS9NnLr3NQL/Qbp2ctqKJ8+y1sUimSFcDxbM+JFzvLgL2DBxP3iRIm7LnD/0ctNTw==
-X-Received: by 2002:a65:64cc:: with SMTP id t12mr2057175pgv.106.1602831811915;
-        Fri, 16 Oct 2020 00:03:31 -0700 (PDT)
-Received: from [102.164.189.252] ([175.223.34.209])
-        by smtp.gmail.com with ESMTPSA id g1sm1555127pfm.124.2020.10.16.00.03.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 00:03:30 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 1/2] MAINTAINERS: Move Kukjin Kim to credits
-From:   Kukjin Kim <kgene.kim@gmail.com>
-In-Reply-To: <20201016061848.6258-1-krzk@kernel.org>
-Date:   Fri, 16 Oct 2020 16:03:28 +0900
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, arm@kernel.org, soc@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Kukjin Kim <kgene@kernel.org>
-Message-Id: <4A6641A3-2D1A-47AE-8330-8E3F269145CB@gmail.com>
-References: <20201016061848.6258-1-krzk@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-X-Mailer: iPhone Mail (18A393)
+        id S2404368AbgJPHDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:03:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404283AbgJPHDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 03:03:18 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7270720720;
+        Fri, 16 Oct 2020 07:03:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602831798;
+        bh=uJukAECNIcAu+vYI+8UiJJJCKee4t90OZstWj3s7SQA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KIMCLAm6kqb4E2wfX7d9hU5qbspfnKRqy58AarCDaQIk/DGkkYQ+JOBDCDvYms6Ot
+         165I6XQRSKxhTV6eyeazosp5VFreC7aohAMVwqWwq73tm6EF3VmomX1OSHONN0eQDS
+         9XXV6p91JNsbuesd8/eloI/K9A53pI8dGRjdjJns=
+Date:   Fri, 16 Oct 2020 09:03:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Minh Yuan <yuanmingbuaa@gmail.com>,
+        oss-security@lists.openwall.com,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Subject: Re: [oss-security] CVE-2020-25656: Linux kernel concurrency UAF in
+ vt_do_kdgkb_ioctl
+Message-ID: <20201016070349.GA574432@kroah.com>
+References: <09826e03-525c-d307-5bfe-f51cb9298e1f@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09826e03-525c-d307-5bfe-f51cb9298e1f@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 16, 2020 at 08:58:34AM +0200, Jiri Slaby wrote:
+> Cc Greg.
+> 
+> On 16. 10. 20, 5:39, Minh Yuan wrote:
+> > Hi,
+> > 
+> > We recently discovered a uaf read in vt_do_kdgkb_ioctl from linux kernel
+> > version 3.4 to the latest version (v5.9 for now).
+> > 
+> > The root cause of this vulnerability is that there exits a race in
+> > KDGKBSENT and KDSKBSENT.
+> > 
+> > Here are details:
+> > 1. use  KDSKBSENT to allocate a lager heap buffer to funcbufptr;
+> > 2. use KDGKBSENT to obtain the allocated heap pointer in step1 by
+> > func_table, at the same time, due to KDGKBSENT has no lock, we can use
+> > KDSKBSENT again to allocate a larger buffer than step1, and the old
+> > funcbufptr will be freed. However, we've obtained the heap pointer in
+> > KDGKBSENT, so a uaf read will happen while executing put_user.
+> 
+> Hi,
+> 
+> this is likely the issue I am fixing at:
+> https://git.kernel.org/pub/scm/linux/kernel/git/jirislaby/linux.git/commit/?h=devel&id=57c85191e788e172a446e34ef77d34473cfb1e8d
+> 
+> I think, it won't apply cleanly as it's a part of a larger set. I will
+> reorder the patch and send something during the day.
 
-> 10/16/20 PM 3:19, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+Great, thanks for looking into this!
 
-Hi Krzysztof,
-
-Thanks for your maintaining :)
-I=E2=80=99m fine on this change.
-
-> =EF=BB=BFKukjin Kim has been maintaining the Samsung ARM architectures sin=
-ce 2010
-> up to 2016.  He contributed many patches for the S3C, S5P and Exynos
-> support.  However since 2016 there is little activity from him on the
-> LKML [1] so move his name to the CREDITS.
->=20
-> Dear Kukjin, thank you for all the effort you put in to the upstream
-> Samsung support.
->=20
-> [1] https://lore.kernel.org/lkml/?q=3Df%3A%22Kukjin+Kim%22
->=20
-> Cc: Kukjin Kim <kgene@kernel.org>
-Acked-by: Kukjin Kim <kgene@kernel.org>
-
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Olof Johansson <olof@lixom.net>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
-> CREDITS     | 4 ++++
-> MAINTAINERS | 2 --
-> 2 files changed, 4 insertions(+), 2 deletions(-)
->=20
-> diff --git a/CREDITS b/CREDITS
-> index cb02b9923a52..5df027e12ff7 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -1910,6 +1910,10 @@ S: 660 Harvard Ave. #7
-> S: Santa Clara, CA 95051
-> S: USA
->=20
-> +N: Kukjin Kim
-> +E: kgene@kernel.org
-> +D: Samsung S3C, S5P and Exynos ARM architectures
-> +
-> N: Russell King
-> E: rmk@arm.linux.org.uk
-> D: Linux/arm integrator, maintainer & hacker
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 4538378de6f5..c3976803057c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2375,7 +2375,6 @@ F:    sound/soc/rockchip/
-> N:    rockchip
->=20
-> ARM/SAMSUNG EXYNOS ARM ARCHITECTURES
-> -M:    Kukjin Kim <kgene@kernel.org>
-> M:    Krzysztof Kozlowski <krzk@kernel.org>
-> L:    linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)=
-
-> L:    linux-samsung-soc@vger.kernel.org
-> @@ -15497,7 +15496,6 @@ F:    include/linux/clk/samsung.h
-> F:    include/linux/platform_data/clk-s3c2410.h
->=20
-> SAMSUNG SPI DRIVERS
-> -M:    Kukjin Kim <kgene@kernel.org>
-> M:    Krzysztof Kozlowski <krzk@kernel.org>
-> M:    Andi Shyti <andi@etezian.org>
-> L:    linux-spi@vger.kernel.org
-> --=20
-> 2.25.1
->=20
+greg k-h
