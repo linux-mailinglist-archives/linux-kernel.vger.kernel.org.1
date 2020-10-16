@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FF4290D1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38C5290D21
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 23:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410923AbgJPVJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 17:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S2410991AbgJPVQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 17:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410572AbgJPVJp (ORCPT
+        with ESMTP id S2410939AbgJPVQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 17:09:45 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75664C061755;
-        Fri, 16 Oct 2020 14:09:45 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id f2so973079ooj.2;
-        Fri, 16 Oct 2020 14:09:45 -0700 (PDT)
+        Fri, 16 Oct 2020 17:16:31 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87526C061755;
+        Fri, 16 Oct 2020 14:16:31 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id o18so3943690edq.4;
+        Fri, 16 Oct 2020 14:16:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RC57eIG2T2wl6Dk1LjMezDDJ5l4KVUlGtYA8RMHXXLk=;
-        b=lSbbA6jIyQbfQH2/Sv8GOTdd36Ro3JSrxhkPjBntYz5YVfoBxf59AgIxc90fLkD2aL
-         oVXKcaev4yvWBxMCEtZHCQqB1S7AtjmcSsdsY7czF0FydJAcdyTf8DgnhuM7pxwq96wZ
-         anNIzVZnERw0CE3+EDd1FZGHa6lPURrHJASARLzKqNlYK0f/gu3/hzJ7YGPc/IBb7aKa
-         ssZ+c01Fy+ymxoxZewkbZnspksV+ZkLY0lRRISkzp/l1Ck34X0Z72Z6Jscu4ayLM3nPO
-         8lQTwkShIouL0dcwXEFXZLp+l6St5jh48xzwCKLXNOD6sDJQ8Ba21mRfxNbneq5Zu4Vm
-         YhCg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VSnWz88Q1YHtZWP5Yh8SPjKPcnS0NnqVe2qNoXSx430=;
+        b=eDE3g6WrBimI+exwbEkjL2MXMij8bGDLRIe9Y/3sFpqn/bLzoiROOdUZeXHCFJdisa
+         vR9BvD7iiMWzaFDeufJS6ZGBpp7TDe7dEaq8Gl6Kqv1VT4WqM7FOs5k2Tr1r/89DMVz6
+         07jdk8C94c7a+mgKMKXuuoy2cpIpdsRkDNkaqiUOj7dkNQwz7czK1LUXanoCIDz+vUoU
+         01/AgVyppJrHBuwdU9A8u9yIhaJgZlFfD+g0p0hA6SaXTMI1UjdKNdYI10x9VBgDzsAo
+         sWa5b2KOjG9NUz0yYzvJzQ72yif6H0gDaoiped/PzvzJErI90vCnhXVMu3p82+7EJcc1
+         FQLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RC57eIG2T2wl6Dk1LjMezDDJ5l4KVUlGtYA8RMHXXLk=;
-        b=fZ1X5Bj3Mlkun8y7P79HBIA+MVbcY2o3EHqQJ20a0HxKAHqNiaNwcsDhYZyXs5bXS5
-         cZXDvbRCVGTm9KTWk873qAASEfWHsR/Bdjl9RGEop1CHrPVkPE5e2JV99HgWiyvbo4jk
-         KFZS7yu5ucniPiq9tHAedQ0ND90Rk5eUAcFwkbqtLlG7zUftIOsQF26XaaBVqYXFUEba
-         tfiWDQq5ub7KFaPzZmVevuvmV7a9J1ldKj/YCeAqY4TeAdnUptAMJaWTYzJRbDcgvav5
-         ybOc1dYv1/R3GHCP0S8ulzb5pXsmstJ/0HlIZvVvgmf4n32Z+j7qXuXJJ0EDNlqr+iVl
-         b/MA==
-X-Gm-Message-State: AOAM532f4AuMje3zLbfeI2FAY8QtdmWL44BsC61MpEUyH6CwyV6mrmko
-        6Jv3V/XIoPNFhVaB6+4aamOdH3mZY/w=
-X-Google-Smtp-Source: ABdhPJzEZ+79uAbS0XlGub+jBEnpUoqeY+aPTGG1x4QN9XhBs1AxvX3x18Jb2nybzTLVpVoAqEXjRg==
-X-Received: by 2002:a4a:3b91:: with SMTP id s139mr4189612oos.34.1602882584668;
-        Fri, 16 Oct 2020 14:09:44 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u186sm1345631oia.51.2020.10.16.14.09.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Oct 2020 14:09:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 16 Oct 2020 14:09:42 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.9 00/15] 5.9.1-rc1 review
-Message-ID: <20201016210942.GA108535@roeck-us.net>
-References: <20201016090437.170032996@linuxfoundation.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VSnWz88Q1YHtZWP5Yh8SPjKPcnS0NnqVe2qNoXSx430=;
+        b=F8CMLw6evSWJzyO9J6TBF1+kXEmYqLmTJOtjvmKyoClNmskrBDPOQgHYBTG4nnr25N
+         s5vPqktNYPBiWQTuxulT4ldEIpWvcWaO1HK3lPc86xDJMnSHFsaFy4Bqf7YtO1YrbvMH
+         UwKgdFRLJ3oQK3MCMBAKxQkyOoGzyrvbiMG7ZM9IciusSODrgqyLFOI0NN4sWFKycgfr
+         Y121224DTQvQ7TqbBb/OmEpL3Cz2r/23ouPL48yk9O6eNAbUtpIUxsId814EvK9zsQDN
+         JeHGQFYhfiV4465vhSmxLNT+NHoc0KFN8nICnWQNKJZb/97GWuMB8uFRHUajg4NugvNn
+         IlFQ==
+X-Gm-Message-State: AOAM533ZP84kU3HGCimVwMXdIWyPIUtUy8pouySgnHPS+S/2Gija+fsc
+        tl3Tz4AsGY8h53tsdEzfCMg=
+X-Google-Smtp-Source: ABdhPJwpBpAdoWzh31W5pCqEMvMHo2F6Z7BDJES44AoW9PEB1rhb6lgj/TPE0IxXPE83jN1n8TdcLw==
+X-Received: by 2002:aa7:cd85:: with SMTP id x5mr6472017edv.0.1602882990288;
+        Fri, 16 Oct 2020 14:16:30 -0700 (PDT)
+Received: from skbuf ([188.26.174.215])
+        by smtp.gmail.com with ESMTPSA id v14sm2800800ejh.6.2020.10.16.14.16.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 14:16:29 -0700 (PDT)
+Date:   Sat, 17 Oct 2020 00:16:28 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     kernel test robot <lkp@intel.com>,
+        Christian Eggers <ceggers@arri.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        kbuild-all@lists.01.org,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: point out the tail taggers
+Message-ID: <20201016211628.mw7jlvqx3audzo76@skbuf>
+References: <20201016162800.7696-1-ceggers@arri.de>
+ <202010170153.fwOuks52-lkp@intel.com>
+ <20201016173317.4ihhiamrv5w5am6y@skbuf>
+ <20201016201428.GI139700@lunn.ch>
+ <20201016201930.2i2lw4aixklyg6j7@skbuf>
+ <20201016210318.GL139700@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016090437.170032996@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201016210318.GL139700@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 11:08:02AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.9.1 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 18 Oct 2020 09:04:25 +0000.
-> Anything received after that time might be too late.
-> 
+On Fri, Oct 16, 2020 at 11:03:18PM +0200, Andrew Lunn wrote:
+> 2ecbc1f684482b4ed52447a39903bd9b0f222898 does not have net-next, as
+> far as i see,
 
-Build results:
-	total: 154 pass: 153 fail: 1
-Failed builds:
-	mips:allmodconfig
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+Not sure what you mean by that.
 
-The mips build problem is inherited from mainline and still seen there.
+> and tail_tag only hit net when net-next was merged into
+> net.
 
-ERROR: modpost: "fw_arg3" [drivers/mtd/parsers/bcm63xxpart.ko] undefined!
+net-next is only merged into net via Linus Torvalds, as far as I
+understand.
 
-A fix is (finally) queued in -next.
+> Or i'm reading the git history wrong.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+So the only plausible scenario is that yesterday's 'net/master' did not
+contain 2ecbc1f684482b4ed52447a39903bd9b0f222898, but today it does, due
+to Linus Torvalds merging net-next and Jakub merging that merge into net.
