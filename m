@@ -2,203 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA55828FF6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECF728FF6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 09:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404828AbgJPHqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 03:46:44 -0400
-Received: from alln-iport-5.cisco.com ([173.37.142.92]:51521 "EHLO
-        alln-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404714AbgJPHqo (ORCPT
+        id S2404834AbgJPHr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 03:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404735AbgJPHr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 03:46:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=4576; q=dns/txt; s=iport;
-  t=1602834402; x=1604044002;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:mime-version;
-  bh=S+psG9w9omIhWHpRbtY+5BithGPMutnmUkd7jh+D8mk=;
-  b=UJ3Gn+zBl0MivrVB0xROjzcOhM66c2/WRW7FHSxNCpFlmfuigplm3Bz9
-   M+5DwZhs6Bmrue6uHZsCQITvUxMN/3hM5xxbRXT0QUzn2wsLj3s6EQx8t
-   SSOuQv8ABac+MFMtOeCbecvbL8hhdTFeR4nkg/Ye4oWHojxMzwt+jKmbC
-   Y=;
-X-Files: pEpkey.asc : 1813
-IronPort-PHdr: =?us-ascii?q?9a23=3AwH0FxRZjYZlt86FCnPFe7Q7/LSx94ef9IxIV55?=
- =?us-ascii?q?w7irlHbqWk+dH4MVfC4el21QSXD4Ha7e9Uhe3LtazpRW0H59CGqn9ROJBPVh?=
- =?us-ascii?q?pQj8IQkkRgBcOeEkT0IbbsaDByB8VNUlJpvhTZeUhYEcrzfRve93u16zNBHh?=
- =?us-ascii?q?T5KBp7IfnzFofOjsOxkeeo9M6bbwBBnjHoZ7R0IV2/phnQsc9Dh4xkJ8NTgh?=
- =?us-ascii?q?vEq3dFYaJY32RtcFmShB37oMy3+c1u?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0CvBwAuT4lf/5JdJa1gHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQGCD4FSUQeBSS8sCoQzg0YDjSMIJph7glMDVQQHAQEBCgMBAS0?=
- =?us-ascii?q?CBAEBhEoCF4FxAiU4EwIDAQELAQEFAQEBAgEGBG2FXAyFcgEBAQEDEhEdAQE?=
- =?us-ascii?q?3AQ8CAQgVAyoCAgIwJQIEDQEFAgEBChSDBAGCSwMuAQOiIQKBOYhhdoEygwE?=
- =?us-ascii?q?BAQWFJRiCCQcJgTiBU4Efg26GVhuBQT+BOAyCXT6EVIMAgmCQLYMjhw+BTJt?=
- =?us-ascii?q?RCoJqhE2CX5M2BQcCAR+hSi2zLAIEAgQFAg4BAQWBayOBV3AVgyRQFwINjh8?=
- =?us-ascii?q?MFxSDOopWdAI2AgYKAQEDCXyMOwGBEAEB?=
-X-IronPort-AV: E=Sophos;i="5.77,382,1596499200"; 
-   d="asc'?scan'208";a="577957962"
-Received: from rcdn-core-10.cisco.com ([173.37.93.146])
-  by alln-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 16 Oct 2020 07:46:41 +0000
-Received: from XCH-ALN-004.cisco.com (xch-aln-004.cisco.com [173.36.7.14])
-        by rcdn-core-10.cisco.com (8.15.2/8.15.2) with ESMTPS id 09G7kfgg000814
-        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
-        Fri, 16 Oct 2020 07:46:41 GMT
-Received: from xhs-rcd-002.cisco.com (173.37.227.247) by XCH-ALN-004.cisco.com
- (173.36.7.14) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Oct
- 2020 02:46:40 -0500
-Received: from xhs-rcd-002.cisco.com (173.37.227.247) by xhs-rcd-002.cisco.com
- (173.37.227.247) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Oct
- 2020 02:46:40 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (72.163.14.9) by
- xhs-rcd-002.cisco.com (173.37.227.247) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 16 Oct 2020 02:46:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1je/TBHLlP6HXqgmgsWrXr52K39I5ONvT0Xm9cxE8x4rkikpnm6KHXvNUmh0iSb+cYKYkq4Xna8n4UuFoktIuZdRIo2CVrNq/wtEKhTt7goTGlRhkVh6djhdVvxomE/GKY/dBUeUjElw2CSlPI/X32RL7vDuL3LFtUIDc1Mu4X95DRTJpc6MFQmV57hQJ5rF5e6+Q8M334ieAm+M3flozLD+XuLlfbHJu8GqRJ+t8otwqbOiKd13wAs0QB/dsB0VLk18Srr2cj3IgXsy0jnDW1atLztqF92KZF3uWf1XfieevTTceYAVsLWpWFzY+yKeM+LvvkIG8B2gfzCs5BMVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bvY3JRtOkK5ZsS2/I2BREavmd1LcUCsZbA2q8ziCgac=;
- b=CyIc/fknqznHAFtQf1Cy1mun+PSEZpI1PaZtJ5hKycJq9wSoGGsI+L+lv183sTAZ2psXauA63Vmd+lI5MS3nRCnerK/4trdzA0h/l0/aShicTI8K7XG/khGKANk4J3f+dPrKVYwYTcABcGxI41mD29CLeOde40TYtfri6GRuxKKm4HRkyzcsma5j/KrYr5fEddze4gDiIJy7iT1RF/BGmnS3KIXLPWaLtYETEJz72VHcDg8yZ8aPHkEYaKwQaKFBGhQVNQmEBgEe1QAy7GyxElH5ceAeigie6c4xv/B0YFDAq8m61HYvq/KfAAhr6cbEC5Gr2u3+4DreXAoexqQfVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
- s=selector2-cisco-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bvY3JRtOkK5ZsS2/I2BREavmd1LcUCsZbA2q8ziCgac=;
- b=MlivOHRMxFecmQLmInhGOTwIntSnq6mNliBiVD0JsoXl6wUcieOd0LxhAIdz4LePIkuwSx9lmW/dq9rMJNhUD3IwcH6dZZ8jCaMf8lEo1/mLvLdozV+kS9pMDGN/08HvTKg/NjJfYuTyVuqxyJpZH6u4F3KxCFkzJYP4R973J+E=
-Received: from DM6PR11MB3866.namprd11.prod.outlook.com (2603:10b6:5:199::33)
- by DM6PR11MB2540.namprd11.prod.outlook.com (2603:10b6:5:c5::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Fri, 16 Oct
- 2020 07:46:39 +0000
-Received: from DM6PR11MB3866.namprd11.prod.outlook.com
- ([fe80::c943:b491:e40e:4f02]) by DM6PR11MB3866.namprd11.prod.outlook.com
- ([fe80::c943:b491:e40e:4f02%7]) with mapi id 15.20.3477.025; Fri, 16 Oct 2020
- 07:46:39 +0000
-From:   "Hans-Christian Egtvedt (hegtvedt)" <hegtvedt@cisco.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Luiz Augusto von Dentz" <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [v4.4/bluetooth PATCH 1/3] Bluetooth: Consolidate encryption
- handling in hci_encrypt_cfm
-Thread-Topic: [v4.4/bluetooth PATCH 1/3] Bluetooth: Consolidate encryption
- handling in hci_encrypt_cfm
-Thread-Index: AQHWo450DurQMWnTIkuvQlvgtPbczamZ2dgA
-Date:   Fri, 16 Oct 2020 07:46:39 +0000
-Message-ID: <41626257-e150-e2dd-c6f2-ad586ec94c14@cisco.com>
-References: <20201015211225.1188104-1-hegtvedt@cisco.com>
- <20201016073234.GB578349@kroah.com>
-In-Reply-To: <20201016073234.GB578349@kroah.com>
-Accept-Language: en-DK, en-US
-Content-Language: aa
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=cisco.com;
-x-originating-ip: [31.45.31.45]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7bcbe870-cdaf-4bd3-5b21-08d871a79e06
-x-ms-traffictypediagnostic: DM6PR11MB2540:
-x-microsoft-antispam-prvs: <DM6PR11MB254070FCD329BA240D7457A0DD030@DM6PR11MB2540.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:813;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: u+CqcBLgtfLentQQ57sfoKni9Jfw/OB3dWtP9rM3zvoxltWnmUsJPUAuAAXF34xh6XPrzUGVBrcqg2QTP24xUlTeU23wUOObNaEtzrjCQ5Wz3C7uhfN02hL9dkFDtl9TJ/QT5AgPnnJlTT2r+2hrvIZ+bvMfg8nAXYW/RzXkOudwj/0mg1YyBxcWWXi/zkVMp5FMFqWpNac1OmNPGqInlocDpnX5ySAdPdSUyhTtre2JWrUmOGWxDIqcfvRQyJAl/ZYq3qohp7r6DAR3isa2f2HAzQS/SkMm9s6BEM6cFCI/lFKqJqQdAbTRyz/XEqfbTaQ8mSDXu4bfS+We90k4SKXJ3v+VCt6knE7K9Jgf5UKrFFsnx9sosNGtxn22ky5X
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3866.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(136003)(346002)(376002)(66946007)(99936003)(8676002)(66616009)(66476007)(91956017)(66446008)(66556008)(76116006)(26005)(478600001)(64756008)(31686004)(6512007)(53546011)(6506007)(4326008)(6486002)(5660300002)(2906002)(86362001)(6916009)(83380400001)(4744005)(8936002)(2616005)(71200400001)(54906003)(316002)(36756003)(186003)(31696002)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 1NbUNQJjzHInS7iHnmaXJiY1VCVEgexzPG7u9RU9xfThn6ThrEEgrGmd57LW7/DmX6U0sAWXymdGRJPOsgiMQ4E1FCci/ogbRxxN6J4BfAIyX8qdOBsr+wdCnvgOWJRizC2BbfluE7Ni3Gqsp5kkXzLJAwEqbkmSm0kuqD0c/pBpLWThIAFUcY4RG+PpIbGIqIClW+60nOkfgLJbsMJdJ9TRFvAj732KV2yGIMgxhH3raj90rBuSLe7lkG66D38u4Sdw246RlBEU+gQAFUwJT7H3dZqrCE2Rf2IrBBEF9zz2H+PhopA2UVn6njbG9MYORu6cHZYcPMGA2O0tlYQJRKE6mLiX+iEF//CacQGo7fW2j4P/Hu0dn7zA1PF0kx9gMnpn0hGKs56Lwq9Ah8v7wx/nBGajeawtSMTXS5wYoGhxJAc0bNkV632z9/xV5SybSem8X26AMTylQ0kwAIu67+u1uVhnffzhhtJKnZwBMQZSugg4BRRB+Eq+bSRXnTjvQ62JqHrgXdhX1CPLHy9IFqjEUxQFAabbq08vzvi5U7YtpMuaNtm4kWTRIWu0+LbdAt+r2MytVxztJRVI3ehiAJxhuXzA9UHzZzU0oUmgej0vhNZqoGCpRu/rtAxlfrLHYnF5kEMKxDw2jfPnsOnzcw==
-x-ms-exchange-transport-forked: True
-Content-Type: multipart/mixed;
-        boundary="_002_41626257e150e2ddc6f2ad586ec94c14ciscocom_"
+        Fri, 16 Oct 2020 03:47:29 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21BA8C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 00:47:29 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kTKSO-0007y9-Qh; Fri, 16 Oct 2020 09:47:20 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1] (unknown [IPv6:2a03:f580:87bc:d400:c4e8:c8ff:a41:29c1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DCAD257A739;
+        Fri, 16 Oct 2020 07:47:18 +0000 (UTC)
+Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index
+ property to indicate a resource
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>, Ying Liu <victor.liu@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
+ <20201016134320.20321-4-qiangqing.zhang@nxp.com>
+ <604a66f6-83ea-630e-f479-fe62189de42a@pengutronix.de>
+ <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
+ zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
+ QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
+ 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
+ Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
+ XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
+ nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
+ Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
+ eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
+ kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
+ ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
+ CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJfEWX4BQkQo2czAAoJECte4hHF
+ iupUvfMP/iNtiysSr5yU4tbMBzRkGov1/FjurfH1kPweLVHDwiQJOGBz9HgM5+n8boduRv36
+ 0lU32g3PehN0UHZdHWhygUd6J09YUi2mJo1l2Fz1fQ8elUGUOXpT/xoxNQjslZjJGItCjza8
+ +D1DO+0cNFgElcNPa7DFBnglatOCZRiMjo4Wx0i8njEVRU+4ySRU7rCI36KPts+uVmZAMD7V
+ 3qiR1buYklJaPCJsnXURXYsilBIE9mZRmQjTDVqjLWAit++flqUVmDjaD/pj2AQe2Jcmd2gm
+ sYW5P1moz7ACA1GzMjLDmeFtpJOIB7lnDX0F/vvsG3V713/701aOzrXqBcEZ0E4aWeZJzaXw
+ n1zVIrl/F3RKrWDhMKTkjYy7HA8hQ9SJApFXsgP334Vo0ea82H3dOU755P89+Eoj0y44MbQX
+ 7xUy4UTRAFydPl4pJskveHfg4dO6Yf0PGIvVWOY1K04T1C5dpnHAEMvVNBrfTA8qcahRN82V
+ /iIGB+KSC2xR79q1kv1oYn0GOnWkvZmMhqGLhxIqHYitwH4Jn5uRfanKYWBk12LicsjRiTyW
+ Z9cJf2RgAtQgvMPvmaOL8vB3U4ava48qsRdgxhXMagU618EszVdYRNxGLCqsKVYIDySTrVzu
+ ZGs2ibcRhN4TiSZjztWBAe1MaaGk05Ce4h5IdDLbOOxhuQENBF8SDLABCADohJLQ5yffd8Sq
+ 8Lo9ymzgaLcWboyZ46pY4CCCcAFDRh++QNOJ8l4mEJMNdEa/yrW4lDQDhBWV75VdBuapYoal
+ LFrSzDzrqlHGG4Rt4/XOqMo6eSeSLipYBu4Xhg59S9wZOWbHVT/6vZNmiTa3d40+gBg68dQ8
+ iqWSU5NhBJCJeLYdG6xxeUEtsq/25N1erxmhs/9TD0sIeX36rFgWldMwKmZPe8pgZEv39Sdd
+ B+ykOlRuHag+ySJxwovfdVoWT0o0LrGlHzAYo6/ZSi/Iraa9R/7A1isWOBhw087BMNkRYx36
+ B77E4KbyBPx9h3wVyD/R6T0Q3ZNPu6SQLnsWojMzABEBAAGJAjwEGAEKACYWIQTBQAugs5ie
+ b7x9W1wrXuIRxYrqVAUCXxIMsAIbDAUJAucGAAAKCRArXuIRxYrqVOu0D/48xSLyVZ5NN2Bb
+ yqo3zxdv/PMGJSzM3JqSv7hnMZPQGy9XJaTc5Iz/hyXaNRwpH5X0UNKqhQhlztChuAKZ7iu+
+ 2VKzq4JJe9qmydRUwylluc4HmGwlIrDNvE0N66pRvC3h8tOVIsippAQlt5ciH74bJYXr0PYw
+ Aksw1jugRxMbNRzgGECg4O6EBNaHwDzsVPX1tDj0d9t/7ClzJUy20gg8r9Wm/I/0rcNkQOpV
+ RJLDtSbGSusKxor2XYmVtHGauag4YO6Vdq+2RjArB3oNLgSOGlYVpeqlut+YYHjWpaX/cTf8
+ /BHtIQuSAEu/WnycpM3Z9aaLocYhbp5lQKL6/bcWQ3udd0RfFR/Gv7eR7rn3evfqNTtQdo4/
+ YNmd7P8TS7ALQV/5bNRe+ROLquoAZvhaaa6SOvArcmFccnPeyluX8+o9K3BCdXPwONhsrxGO
+ wrPI+7XKMlwWI3O076NqNshh6mm8NIC0mDUr7zBUITa67P3Q2VoPoiPkCL9RtsXdQx5BI9iI
+ h/6QlzDxcBdw2TVWyGkVTCdeCBpuRndOMVmfjSWdCXXJCLXO6sYeculJyPkuNvumxgwUiK/H
+ AqqdUfy1HqtzP2FVhG5Ce0TeMJepagR2CHPXNg88Xw3PDjzdo+zNpqPHOZVKpLUkCvRv1p1q
+ m1qwQVWtAwMML/cuPga78rkBDQRfEXGWAQgAt0Cq8SRiLhWyTqkf16Zv/GLkUgN95RO5ntYM
+ fnc2Tr3UlRq2Cqt+TAvB928lN3WHBZx6DkuxRM/Y/iSyMuhzL5FfhsICuyiBs5f3QG70eZx+
+ Bdj4I7LpnIAzmBdNWxMHpt0m7UnkNVofA0yH6rcpCsPrdPRJNOLFI6ZqXDQk9VF+AB4HVAJY
+ BDU3NAHoyVGdMlcxev0+gEXfBQswEcysAyvzcPVTAqmrDsupnIB2f0SDMROQCLO6F+/cLG4L
+ Stbz+S6YFjESyXblhLckTiPURvDLTywyTOxJ7Mafz6ZCene9uEOqyd/h81nZOvRd1HrXjiTE
+ 1CBw+Dbvbch1ZwGOTQARAQABiQNyBBgBCgAmFiEEwUALoLOYnm+8fVtcK17iEcWK6lQFAl8R
+ cZYCGwIFCQLnoRoBQAkQK17iEcWK6lTAdCAEGQEKAB0WIQQreQhYm33JNgw/d6GpyVqK+u3v
+ qQUCXxFxlgAKCRCpyVqK+u3vqatQCAC3QIk2Y0g/07xNLJwhWcD7JhIqfe7Qc5Vz9kf8ZpWr
+ +6w4xwRfjUSmrXz3s6e/vrQsfdxjVMDFOkyG8c6DWJo0TVm6Ucrf9G06fsjjE/6cbE/gpBkk
+ /hOVz/a7UIELT+HUf0zxhhu+C9hTSl8Nb0bwtm6JuoY5AW0LP2KoQ6LHXF9KNeiJZrSzG6WE
+ h7nf3KRFS8cPKe+trbujXZRb36iIYUfXKiUqv5xamhohy1hw+7Sy8nLmw8rZPa40bDxX0/Gi
+ 98eVyT4/vi+nUy1gF1jXgNBSkbTpbVwNuldBsGJsMEa8lXnYuLzn9frLdtufUjjCymdcV/iT
+ sFKziU9AX7TLZ5AP/i1QMP9OlShRqERH34ufA8zTukNSBPIBfmSGUe6G2KEWjzzNPPgcPSZx
+ Do4jfQ/m/CiiibM6YCa51Io72oq43vMeBwG9/vLdyev47bhSfMLTpxdlDJ7oXU9e8J61iAF7
+ vBwerBZL94I3QuPLAHptgG8zPGVzNKoAzxjlaxI1MfqAD9XUM80MYBVjunIQlkU/AubdvmMY
+ X7hY1oMkTkC5hZNHLgIsDvWUG0g3sACfqF6gtMHY2lhQ0RxgxAEx+ULrk/svF6XGDe6iveyc
+ z5Mg5SUggw3rMotqgjMHHRtB3nct6XqgPXVDGYR7nAkXitG+nyG5zWhbhRDglVZ0mLlW9hij
+ z3Emwa94FaDhN2+1VqLFNZXhLwrNC5mlA6LUjCwOL+zb9a07HyjekLyVAdA6bZJ5BkSXJ1CO
+ 5YeYolFjr4YU7GXcSVfUR6fpxrb8N+yH+kJhY3LmS9vb2IXxneE/ESkXM6a2YAZWfW8sgwTm
+ 0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
+ HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
+ xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
+Message-ID: <715a951f-5ed7-d5ee-f64e-f228cf6b9f87@pengutronix.de>
+Date:   Fri, 16 Oct 2020 09:47:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3866.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bcbe870-cdaf-4bd3-5b21-08d871a79e06
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2020 07:46:39.6319
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1vsJkrv2lAgiAxS/2JmltZpcC/TRAZQNOBN6gHHr7RgneGbPzt5c7/dehlrrwQsJp/tJTR/ucYRbHLP3PEIY+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2540
-X-OriginatorOrg: cisco.com
-X-Outbound-SMTP-Client: 173.36.7.14, xch-aln-004.cisco.com
-X-Outbound-Node: rcdn-core-10.cisco.com
+In-Reply-To: <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="84xmicyfAILlR4Bs14e1ExCBWjUXoSs64"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---_002_41626257e150e2ddc6f2ad586ec94c14ciscocom_
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2B84A33087160D4F9C6F0A548B0118A7@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--84xmicyfAILlR4Bs14e1ExCBWjUXoSs64
+Content-Type: multipart/mixed; boundary="GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Joakim Zhang <qiangqing.zhang@nxp.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Peng Fan <peng.fan@nxp.com>, Ying Liu <victor.liu@nxp.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Pankaj Bansal <pankaj.bansal@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+ dl-linux-imx <linux-imx@nxp.com>,
+ "kernel@pengutronix.de" <kernel@pengutronix.de>
+Message-ID: <715a951f-5ed7-d5ee-f64e-f228cf6b9f87@pengutronix.de>
+Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index
+ property to indicate a resource
+References: <20201016134320.20321-1-qiangqing.zhang@nxp.com>
+ <20201016134320.20321-4-qiangqing.zhang@nxp.com>
+ <604a66f6-83ea-630e-f479-fe62189de42a@pengutronix.de>
+ <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
+In-Reply-To: <DB8PR04MB67950ABB888D13416D20784BE6030@DB8PR04MB6795.eurprd04.prod.outlook.com>
 
-T24gMTYvMTAvMjAyMCAwOTozMiwgR3JlZyBLSCB3cm90ZToNCj4gT24gVGh1LCBPY3QgMTUsIDIw
-MjAgYXQgMTE6MTI6MjNQTSArMDIwMCwgSGFucy1DaHJpc3RpYW4gTm9yZW4gRWd0dmVkdCB3cm90
-ZToNCj4+IEZyb206IEx1aXogQXVndXN0byB2b24gRGVudHogPGx1aXoudm9uLmRlbnR6QGludGVs
-LmNvbT4NCj4+DQo+PiBUaGlzIG1ha2VzIGhjaV9lbmNyeXB0X2NmbSBjYWxscyBoY2lfY29ubmVj
-dF9jZm0gaW4gY2FzZSB0aGUgY29ubmVjdGlvbg0KPj4gc3RhdGUgaXMgQlRfQ09ORklHIHNvIGNh
-bGxlcnMgZG9uJ3QgaGF2ZSB0byBjaGVjayB0aGUgc3RhdGUuDQo+Pg0KPj4gU2lnbmVkLW9mZi1i
-eTogTHVpeiBBdWd1c3RvIHZvbiBEZW50eiA8bHVpei52b24uZGVudHpAaW50ZWwuY29tPg0KPj4g
-U2lnbmVkLW9mZi1ieTogTWFyY2VsIEhvbHRtYW5uIDxtYXJjZWxAaG9sdG1hbm4ub3JnPg0KPj4g
-KGNoZXJyeSBwaWNrZWQgZnJvbSBjb21taXQgM2NhNDRjMTZiMGRjYzc2NGI2NDFlZTRhYzIyNjkw
-OWY1YzQyMWFhMykNCj4+IENjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnICMgNC40DQo+PiAtLS0N
-Cj4+ICBpbmNsdWRlL25ldC9ibHVldG9vdGgvaGNpX2NvcmUuaCB8IDIwICsrKysrKysrKysrKysr
-KysrKy0tDQo+PiAgbmV0L2JsdWV0b290aC9oY2lfZXZlbnQuYyAgICAgICAgfCAyOCArKystLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+PiAgMiBmaWxlcyBjaGFuZ2VkLCAyMSBpbnNlcnRpb25z
-KCspLCAyNyBkZWxldGlvbnMoLSkNCj4gDQo+IFdoYXQgZGlmZmVycyBoZXJlIGZyb20gdGhlIG90
-aGVyIHBhdGNoIHNlcmllcyB5b3Ugc2VudD8gIExvb2tzIHRoZSBzYW1lDQo+IHRvIG1lLi4uDQoN
-ClBhdGNoIDEgYW5kIDIgaW4gdGhpcyBzZXJpZXMgaXMgaWRlbnRpY2FsLCBwYXRjaCAzLzMgaXMg
-YWRqdXN0ZWQgdG8NCnJlc29sdmUgYSBjb25mbGljdC4gU29ycnkgSSBkaWQgbm90IG1ha2UgdGhh
-dCBjbGVhcmVyLg0KDQotLSANCkJlc3QgcmVnYXJkcywgSGFucy1DaHJpc3RpYW4gTm9yZW4gRWd0
-dmVkdA0K
+--GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
---_002_41626257e150e2ddc6f2ad586ec94c14ciscocom_
-Content-Type: application/pgp-keys; name="pEpkey.asc"
-Content-Description: pEpkey.asc
-Content-Disposition: attachment; filename="pEpkey.asc"; size=1813;
-	creation-date="Fri, 16 Oct 2020 07:46:38 GMT";
-	modification-date="Fri, 16 Oct 2020 07:46:38 GMT"
-Content-ID: <305A068A3FFC6741A0704BA087076623@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+On 10/16/20 8:52 AM, Joakim Zhang wrote:
+>=20
+> Hi Marc,
+>=20
+>> -----Original Message-----
+>> From: Marc Kleine-Budde <mkl@pengutronix.de>
+>> Sent: 2020=E5=B9=B410=E6=9C=8816=E6=97=A5 14:20
+>> To: Joakim Zhang <qiangqing.zhang@nxp.com>; robh+dt@kernel.org;
+>> shawnguo@kernel.org; s.hauer@pengutronix.de
+>> Cc: devicetree@vger.kernel.org; Peng Fan <peng.fan@nxp.com>; Ying Liu
+>> <victor.liu@nxp.com>; netdev@vger.kernel.org; Pankaj Bansal
+>> <pankaj.bansal@nxp.com>; linux-kernel@vger.kernel.org;
+>> linux-can@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
+>> kernel@pengutronix.de
+>> Subject: Re: [PATCH 3/6] dt-bindings: can: flexcan: add fsl, can-index=
+ property
+>> to indicate a resource
+>>
+>> On 10/16/20 3:43 PM, Joakim Zhang wrote:
+>>> For SoCs with SCU support, need setup stop mode via SCU firmware, so
+>>> this property can help indicate a resource.
+>>>
+>>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/net/can/fsl-flexcan.txt | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.tx=
+t
+>>> b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+>>> index 6af67f5e581c..839c0c0064a2 100644
+>>> --- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+>>> +++ b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+>>> @@ -43,6 +43,10 @@ Optional properties:
+>>>  		  0: clock source 0 (oscillator clock)
+>>>  		  1: clock source 1 (peripheral clock)
+>>>
+>>> +- fsl,can-index: The index of CAN instance.
+>>> +                 For SoCs with SCU support, need setup stop mode via=
 
-LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tDQoNCm1RRU5CRjkyUTYwQkNBRERq
-dUxjNDlMSEQ2WmVsNW5xekxnclVWczRiSE94M3hlTkxRSVpGNXBIemxXa2VqMzYNCmtyRjltcFN1
-TGdUamtsd2dkN2ZzNE44NHlEVllZbXZIR0l0NVpzZVRqTW53aFVodUNNY2FHNERVUEFsMk9CNHkN
-CkxIUUFVY0QxdktKU2pEM21GWDYzR1hzajJTSzluTWthYmxCVDcxVXBCcUdSVVVyY2c3OVRreGg5
-b3VjblU3UnQNCnUzWTZzTWhDancvU1gwWmVJb2VxU1NaZWlDS3l4OXlSZ3JiNkJGSXFWMm16QUZB
-YWcyK1BZYVQ5dWs1NWlnUzgNCklhM2M0aVVxbllHeWNnQ2hYZ1NuVk91eGJwWC9LeEVsM3pmVTA3
-RzZVSTRMejcwR3lDOXRKMU1kUE1tWnhwTUMNCldZYWMwQSt5SEcrTGIrQ1lNVDBvQS9yK3dZZXgz
-RXBBODI1YkFCRUJBQUcwTVVoaGJuTXRRMmh5YVhOMGFXRnUNCklFNXZjbVZ1SUVWbmRIWmxaSFFn
-UEdobFozUjJaV1IwUUdOcGMyTnZMbU52YlQ2SkFWUUVFd0VJQUQ0V0lRUTgNClJJdmZkUXpWN3FB
-dmRvY3BqV0VUWUhyRE9RVUNYM1pEcmdJYkF3VUpBZUV6Z0FVTENRZ0hBZ1lWQ2drSUN3SUUNCkZn
-SURBUUllQVFJWGdBQUtDUkFwaldFVFlIckRPWklIQ0FDQjdncXMvSVdwTkU2TlNsS2l1eSs3SkR1
-ZEJaRkENCklMMVJFUlBsSU9uWkRTQm5TMkcyakkvQ25IL0NWYlAyaVdHSy9WdUx6ZUdVM2QrNy9R
-VkN4U2xXd0NHUmw5SnENCnYyaXFlemxpeHNrUVJRSVdGL2t2MWxKNVJXUzRFMzRLVUxiak44WTF2
-WGhwOExjRnA2WGtmMDEzSWZodHJRZlENCllLaW1zWjlvNzd6VDZJVHhiOTZsK0xabVZlWTdrNGd3
-MExQbEdFZkh1N25hNFNWS05xSTd3cHMzWEZhWGVJN00NCnp6MVlvZ2oxL0l2d1ZpczM2dmtickNV
-b2lVeWprSC9zRVhVdUI1amNXeXFaOGpYY2daZUN1dHlEQVNRVFJHSFgNClFPdkRoV3JFbUlZTzNl
-OE9hYjg3R1ZmVXNwd1pRWnY0STdCQnVCbkZySFFFL2RTcHFzOWtFdXhxdVFFTkJGOTINClE2NEJD
-QUMrd1JZZ1IxcEtuZDZWWGhRdWg1b3hqbXlLTkQ4Uy91SE9SOVVXeUZnUnBpSzhlWmFUMUdOc2ow
-c1UNCnZ1ZytZcVZMekZHWG04djg4STBWVEgydU1USmw5VHUzeEo0THhuYjJsdnFiaE1wQ2UzOG1O
-em1UOFh3cXJ4WjkNCms3cmx0a24vWjVBV1JoRHVoZFJORHVHWENmL0Zua1FFczIyVmpxN0JQTkZn
-Z0RCakliU3VGOVRWbnMvL0FVSkUNCk9GOE1uWFhuSWdEK3dKc25maDcwcTVRbFFjRURzMkhCMEFD
-R0g4NHovc3lWeGdpRGFlYklELy9SMXVzNDJyWEENCktETHZQZ2tmRDdRbUNlQ1JrRUt1SmorQWRM
-U3ZFRE5jUXhZSE13eTRBTC9qd0hNM0RwYjI5WFFRdnVMcm5RckwNClpGQzE5WXVpSTFMY2RkWUFi
-STM3UFV0cnhvZ0xBQkVCQUFHSkFUd0VHQUVJQUNZV0lRUThSSXZmZFF6VjdxQXYNCmRvY3BqV0VU
-WUhyRE9RVUNYM1pEcmdJYkRBVUpBZUV6Z0FBS0NSQXBqV0VUWUhyRE9TbzBCLzl3RDVTYVYxQWIN
-CnAvNVVuMHJvYy9nRGhteGsrT3dDcWpPKytMaEZNOVovK2grVVZYeEw1Y25MTE05NUZuQ0RWSngr
-dTIyQ1dkTnQNCnNlVDFWejVHLzVlaXZ6SXA2cSt5a3pOUFpPVUxaRVNoSmpQYnRDa1FyRDFIY3NO
-MTJNNXdKcm1TVFlOTXN1MC8NCkI4dDBxaVJ4WFpybi9uRlVaTXVsL2FLTmI4d0dDcVpUbWFEL1hQ
-b3Z5d2c0QW5DcDRRR2JFQlJFTjJMcis3NWwNClJmSlJSMkU2MENHaUpxdEZOUjZwUG5GSmg4ajR2
-dUVZS0MvY3QvRmxpRk1lTVVQWEl4YnYrUTdVUnI1all5SHUNCjVwVldrVWRvSU9ZcVc4THVsL2dZ
-RUY0MTgrdGJ1Qk13TG5maDhraFBGVGhmYjlUditGY0llZmR6Uk9KTzJOTncNClJuUFNJTzBYWkll
-Sw0KPU8vR1UNCi0tLS0tRU5EIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS0NCg==
+>> SCU firmware,
+>>> +                 so this property can help indicate a resource.
+>>
+>> This property is not CAN specific. So the name could be more general.
+>=20
+> How about "fsl,index"?
 
---_002_41626257e150e2ddc6f2ad586ec94c14ciscocom_--
+Maybe something with "scu", as it's specific to the SCU firmware.
+
+I think it's up to Rob's and the DT people.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+
+--GG5iOWp7CBqqr0CCKLzfjW0KgNqLUKaES--
+
+--84xmicyfAILlR4Bs14e1ExCBWjUXoSs64
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+JUAIACgkQqclaivrt
+76k39Af9GKMdUJduwNkE51ACE92N+qC/32WuSsSxd0N4AK2eEJZUS2qFrQSQmJ3R
+C8hVVevohxoIDW+F8YdFurdh9WGNzQIRFbUfk/m9BGotoODWYcCqUDkRG/Q3XNj+
+REhiMFZdi+VWyKaZ8aoWvXFZMw4Bff3mF7Mdghuv7nLA5fy9LxF4h4tr1YO8Y3zz
+KkbIDaia86EV3lhLfoTaNGFZpCresnfwBTz2HEZya3zBRI+l006v0uT+cQEr7gd4
+FrzJNioQR5HRHJdZzzIU0asu7EoymR3ZD5oILNg5VfBveFjnNaMCv4ywNBeZoKvn
+bIZ6EPrePS19x5nxdYvMj5qg8OQmVA==
+=1p8i
+-----END PGP SIGNATURE-----
+
+--84xmicyfAILlR4Bs14e1ExCBWjUXoSs64--
