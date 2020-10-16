@@ -2,249 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15C9290DB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95523290DB5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 00:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392712AbgJPWZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 18:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392704AbgJPWZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 18:25:39 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30998C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:25:39 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o9so1998187plx.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 15:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GUNYTlRoxTShJaXBCFij617nWR8IGqxqOLzeQGRazD4=;
-        b=TCAeUBm0XQYi0Dpmq68B8Y5RZD7LT9mGqyTRbYb/T24kBNMVwovZ7uarUCV4zmGNcw
-         eNlsTVm7DMIKWnyIg7WefzkTMuvrRxExKmz/EGXyfv5DU7MVNVbyRhP8tzSH1RbSrCyb
-         oZcM1KgtQWqr+vOUeEMbt/HeomdelJoU4OLBQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GUNYTlRoxTShJaXBCFij617nWR8IGqxqOLzeQGRazD4=;
-        b=NT4r3hkVgzqo7B35g4IQTwE6sxM0GVw/HAG1KlwWTvBl4xL/sSU0srChLOKXcdXOzu
-         tcH61jTvNjKKJ34J0nqamAa4z1BVffWE9YisWJtgBCAAPGXE4SdNErHV7pUiYDYfIZ6j
-         swUtwMNYNr+HVGqvQs5t7wnroGbHD+MwdSS8pxDNF4q1AhGlYHjXX5qUhV6M7fK5nmme
-         t9444f8nOtQn7hEkPqZ15jKtl6pvao1oEUxT+UsHQgiwrryZv00MWWP+gSa1LzxOD3KB
-         Hi/p6+EKrtyi2es6yevb9VPI3OAS8A8TVXDHkhktR8Nv2rynL3in4b/RxAE0pfKM0Qkc
-         r3tg==
-X-Gm-Message-State: AOAM530naqN+fE095Ib8SgzWsI3nYe6YjmlY+JDzkh854QZdDR3f6QlM
-        xtSyQkPwPtmXTOSrdoyO/RKw+w==
-X-Google-Smtp-Source: ABdhPJzhC3E/gZPPV2SrYHDtPD3saQaduE6/ojJTc+ODPz5xO4kWqtUIO6FobCZX/eWWdzQg5n/vlA==
-X-Received: by 2002:a17:90a:3f10:: with SMTP id l16mr6110730pjc.110.1602887138747;
-        Fri, 16 Oct 2020 15:25:38 -0700 (PDT)
-Received: from evgreen-glaptop.cheshire.ch ([2601:646:c780:1404:a2ce:c8ff:fec4:54a3])
-        by smtp.gmail.com with ESMTPSA id t10sm4099304pjr.37.2020.10.16.15.25.37
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Fri, 16 Oct 2020 15:25:38 -0700 (PDT)
-From:   Evan Green <evgreen@chromium.org>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Evan Green <evgreen@chromium.org>,
-        Peter Korsgaard <peter.korsgaard@barco.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] i2c: i2c-mux-gpio: Enable this driver in ACPI land
-Date:   Fri, 16 Oct 2020 15:25:23 -0700
-Message-Id: <20201016152454.v3.2.Idef164c23d326f5e5edecfc5d3eb2a68fcf18be1@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201016222523.364218-1-evgreen@chromium.org>
-References: <20201016222523.364218-1-evgreen@chromium.org>
+        id S2403850AbgJPW3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 18:29:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732630AbgJPW3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 18:29:06 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44F8722201;
+        Fri, 16 Oct 2020 22:29:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602887344;
+        bh=57jZQev6khFOlir44BK/u6v4ejlmSsH2k2aT3l2Og+w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=AUVydrnBeAGBJVpBEhrCSAxJsDIKCq7BmuHCmE/BlPZug/S9OxlF0iGO6rDRBCSVa
+         +N5XPfoyTIIKlp0Vs+2FOeDyOEC+BJeytb+C/hzveBaC0qWRTDGYr4JYiuLWAJjS97
+         flFWvcnA2BWio4WOHn3A8EkkptkewP9F4mLw3H48=
+Date:   Fri, 16 Oct 2020 17:29:02 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Sean V Kelley <seanvk.dev@oregontracks.org>,
+        Jonathan.Cameron@huawei.com
+Cc:     bhelgaas@google.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Ethan Zhao <xerces.zhao@gmail.com>,
+        Sinan Kaya <okaya@kernel.org>, Keith Busch <kbusch@kernel.org>
+Subject: Re: [PATCH v9 12/15] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+Message-ID: <20201016222902.GA112659@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201016203037.GA90074@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable i2c-mux-gpio devices to be defined via ACPI. The idle-state
-property translates directly to a fwnode_property_*() call. The child
-reg property translates naturally into _ADR in ACPI.
+[+cc Christoph, Ethan, Sinan, Keith; sorry should have cc'd you to
+begin with since you're looking at this code too.  Particularly
+interested in your thoughts about whether we should be touching
+PCI_ERR_ROOT_COMMAND and PCI_ERR_ROOT_STATUS when we don't own AER.]
 
-The i2c-parent binding is a relic from the days when the bindings
-dictated that all direct children of an I2C controller had to be I2C
-devices. These days that's no longer required. The i2c-mux can sit as a
-direct child of its parent controller, which is where it makes the most
-sense from a hardware description perspective. For the ACPI
-implementation we'll assume that's always how the i2c-mux-gpio is
-instantiated.
-
-Signed-off-by: Evan Green <evgreen@chromium.org>
----
-
-Changes in v3:
- - Update commit message again (Peter)
- - Added missing \n (Peter)
- - adr64 overflow check (Peter)
- - Don't initialize child (Peter)
- - Limit scope of dev_handle (Peter)
-
-Changes in v2:
- - Make it compile properly when !CONFIG_ACPI (Randy)
- - Update commit message regarding i2c-parent (Peter)
-
- drivers/i2c/muxes/i2c-mux-gpio.c | 107 +++++++++++++++++++++++--------
- 1 file changed, 79 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/i2c/muxes/i2c-mux-gpio.c b/drivers/i2c/muxes/i2c-mux-gpio.c
-index caaa782b50d83..bac415a52b780 100644
---- a/drivers/i2c/muxes/i2c-mux-gpio.c
-+++ b/drivers/i2c/muxes/i2c-mux-gpio.c
-@@ -49,35 +49,85 @@ static int i2c_mux_gpio_deselect(struct i2c_mux_core *muxc, u32 chan)
- 	return 0;
- }
- 
--#ifdef CONFIG_OF
--static int i2c_mux_gpio_probe_dt(struct gpiomux *mux,
--					struct platform_device *pdev)
-+#ifdef CONFIG_ACPI
-+
-+static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
-+				     struct fwnode_handle *fwdev,
-+				     unsigned int *adr)
-+
-+{
-+	unsigned long long adr64;
-+	acpi_status status;
-+
-+	status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwdev),
-+				       METHOD_NAME__ADR,
-+				       NULL, &adr64);
-+
-+	if (!ACPI_SUCCESS(status)) {
-+		dev_err(dev, "Cannot get address\n");
-+		return -EINVAL;
-+	}
-+
-+	*adr = adr64;
-+	if (*adr != adr64) {
-+		dev_err(dev, "Address out of range\n");
-+		return -ERANGE;
-+	}
-+
-+	return 0;
-+}
-+
-+#else
-+
-+static int i2c_mux_gpio_get_acpi_adr(struct device *dev,
-+				     struct fwnode_handle *fwdev,
-+				     unsigned int *adr)
-+{
-+	return -EINVAL;
-+}
-+
-+#endif
-+
-+static int i2c_mux_gpio_probe_fw(struct gpiomux *mux,
-+				 struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct device_node *np = pdev->dev.of_node;
--	struct device_node *adapter_np, *child;
--	struct i2c_adapter *adapter;
-+	struct device_node *np = dev->of_node;
-+	struct device_node *adapter_np;
-+	struct i2c_adapter *adapter = NULL;
-+	struct fwnode_handle *child;
- 	unsigned *values;
--	int i = 0;
-+	int rc, i = 0;
-+
-+	if (is_of_node(dev->fwnode)) {
-+		if (!np)
-+			return -ENODEV;
- 
--	if (!np)
--		return -ENODEV;
-+		adapter_np = of_parse_phandle(np, "i2c-parent", 0);
-+		if (!adapter_np) {
-+			dev_err(&pdev->dev, "Cannot parse i2c-parent\n");
-+			return -ENODEV;
-+		}
-+		adapter = of_find_i2c_adapter_by_node(adapter_np);
-+		of_node_put(adapter_np);
-+
-+	} else if (is_acpi_node(dev->fwnode)) {
-+		/*
-+		 * In ACPI land the mux should be a direct child of the i2c
-+		 * bus it muxes.
-+		 */
-+		acpi_handle dev_handle = ACPI_HANDLE(dev->parent);
- 
--	adapter_np = of_parse_phandle(np, "i2c-parent", 0);
--	if (!adapter_np) {
--		dev_err(&pdev->dev, "Cannot parse i2c-parent\n");
--		return -ENODEV;
-+		adapter = i2c_acpi_find_adapter_by_handle(dev_handle);
- 	}
--	adapter = of_find_i2c_adapter_by_node(adapter_np);
--	of_node_put(adapter_np);
-+
- 	if (!adapter)
- 		return -EPROBE_DEFER;
- 
- 	mux->data.parent = i2c_adapter_id(adapter);
- 	put_device(&adapter->dev);
- 
--	mux->data.n_values = of_get_child_count(np);
--
-+	mux->data.n_values = device_get_child_node_count(dev);
- 	values = devm_kcalloc(dev,
- 			      mux->data.n_values, sizeof(*mux->data.values),
- 			      GFP_KERNEL);
-@@ -86,24 +136,25 @@ static int i2c_mux_gpio_probe_dt(struct gpiomux *mux,
- 		return -ENOMEM;
- 	}
- 
--	for_each_child_of_node(np, child) {
--		of_property_read_u32(child, "reg", values + i);
-+	device_for_each_child_node(dev, child) {
-+		if (is_of_node(child)) {
-+			fwnode_property_read_u32(child, "reg", values + i);
-+
-+		} else if (is_acpi_node(child)) {
-+			rc = i2c_mux_gpio_get_acpi_adr(dev, child, values + i);
-+			if (rc)
-+				return rc;
-+		}
-+
- 		i++;
- 	}
- 	mux->data.values = values;
- 
--	if (of_property_read_u32(np, "idle-state", &mux->data.idle))
-+	if (fwnode_property_read_u32(dev->fwnode, "idle-state", &mux->data.idle))
- 		mux->data.idle = I2C_MUX_GPIO_NO_IDLE;
- 
- 	return 0;
- }
--#else
--static int i2c_mux_gpio_probe_dt(struct gpiomux *mux,
--					struct platform_device *pdev)
--{
--	return 0;
--}
--#endif
- 
- static int i2c_mux_gpio_probe(struct platform_device *pdev)
- {
-@@ -119,7 +170,7 @@ static int i2c_mux_gpio_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	if (!dev_get_platdata(&pdev->dev)) {
--		ret = i2c_mux_gpio_probe_dt(mux, pdev);
-+		ret = i2c_mux_gpio_probe_fw(mux, pdev);
- 		if (ret < 0)
- 			return ret;
- 	} else {
--- 
-2.26.2
-
+On Fri, Oct 16, 2020 at 03:30:37PM -0500, Bjorn Helgaas wrote:
+> [+to Jonathan]
+> 
+> On Thu, Oct 15, 2020 at 05:11:10PM -0700, Sean V Kelley wrote:
+> > From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > 
+> > When attempting error recovery for an RCiEP associated with an RCEC device,
+> > there needs to be a way to update the Root Error Status, the Uncorrectable
+> > Error Status and the Uncorrectable Error Severity of the parent RCEC.  In
+> > some non-native cases in which there is no OS-visible device associated
+> > with the RCiEP, there is nothing to act upon as the firmware is acting
+> > before the OS.
+> > 
+> > Add handling for the linked RCEC in AER/ERR while taking into account
+> > non-native cases.
+> > 
+> > Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+> > Link: https://lore.kernel.org/r/20201002184735.1229220-12-seanvk.dev@oregontracks.org
+> > Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> > Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> > Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > ---
+> >  drivers/pci/pcie/aer.c | 53 ++++++++++++++++++++++++++++++------------
+> >  drivers/pci/pcie/err.c | 20 ++++++++--------
+> >  2 files changed, 48 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> > index 65dff5f3457a..083f69b67bfd 100644
+> > --- a/drivers/pci/pcie/aer.c
+> > +++ b/drivers/pci/pcie/aer.c
+> > @@ -1357,27 +1357,50 @@ static int aer_probe(struct pcie_device *dev)
+> >   */
+> >  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+> >  {
+> > -	int aer = dev->aer_cap;
+> > +	int type = pci_pcie_type(dev);
+> > +	struct pci_dev *root;
+> > +	int aer = 0;
+> > +	int rc = 0;
+> >  	u32 reg32;
+> > -	int rc;
+> >  
+> > +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END)
+> 
+> "type == PCI_EXP_TYPE_RC_END"
+> 
+> > +		/*
+> > +		 * The reset should only clear the Root Error Status
+> > +		 * of the RCEC. Only perform this for the
+> > +		 * native case, i.e., an RCEC is present.
+> > +		 */
+> > +		root = dev->rcec;
+> > +	else
+> > +		root = dev;
+> >  
+> > -	/* Disable Root's interrupt in response to error messages */
+> > -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> > -	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+> > -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> > +	if (root)
+> > +		aer = dev->aer_cap;
+> >  
+> > -	rc = pci_bus_error_reset(dev);
+> > -	pci_info(dev, "Root Port link has been reset\n");
+> > +	if (aer) {
+> > +		/* Disable Root's interrupt in response to error messages */
+> > +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> > +		reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+> > +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> 
+> Not directly related to *this* patch, but my assumption was that in
+> the APEI case, the firmware should retain ownership of the AER
+> Capability, so the OS should not touch PCI_ERR_ROOT_COMMAND and
+> PCI_ERR_ROOT_STATUS.
+> 
+> But this code appears to ignore that ownership.  Jonathan, you must
+> have looked at this recently for 068c29a248b6 ("PCI/ERR: Clear PCIe
+> Device Status errors only if OS owns AER").  Do you have any insight
+> about this?
+> 
+> > -	/* Clear Root Error Status */
+> > -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+> > -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, reg32);
+> > +		/* Clear Root Error Status */
+> > +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_STATUS, &reg32);
+> > +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_STATUS, reg32);
+> >  
+> > -	/* Enable Root Port's interrupt in response to error messages */
+> > -	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> > -	reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
+> > -	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> > +		/* Enable Root Port's interrupt in response to error messages */
+> > +		pci_read_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+> > +		reg32 |= ROOT_PORT_INTR_ON_MESG_MASK;
+> > +		pci_write_config_dword(root, aer + PCI_ERR_ROOT_COMMAND, reg32);
+> > +	}
+> > +
+> > +	if ((type == PCI_EXP_TYPE_RC_EC) || (type == PCI_EXP_TYPE_RC_END)) {
+> > +		if (pcie_has_flr(root)) {
+> > +			rc = pcie_flr(root);
+> > +			pci_info(dev, "has been reset (%d)\n", rc);
+> > +		}
+> > +	} else {
+> > +		rc = pci_bus_error_reset(root);
+> 
+> Don't we want "dev" for both the FLR and pci_bus_error_reset()?  I
+> think "root == dev" except when dev is an RCiEP.  When dev is an
+> RCiEP, "root" is the RCEC (if present), and we want to reset the
+> RCiEP, not the RCEC.
+> 
+> > +		pci_info(dev, "Root Port link has been reset (%d)\n", rc);
+> > +	}
+> 
+> There are a couple changes here that I think should be split out.
+> 
+> Based on my theory that when firmware retains control of AER, the OS
+> should not touch PCI_ERR_ROOT_COMMAND and PCI_ERR_ROOT_STATUS, and any
+> updates to them would have to be done by firmware before we get here,
+> I suggested reordering this:
+> 
+>   - clear PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+>   - do reset
+>   - clear PCI_ERR_ROOT_STATUS (for APEI, presumably done by firmware?)
+>   - enable PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+> 
+> to this:
+> 
+>   - clear PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+>   - clear PCI_ERR_ROOT_STATUS
+>   - enable PCI_ERR_ROOT_COMMAND ROOT_PORT_INTR_ON_MESG_MASK
+>   - do reset
+> 
+> If my theory is correct, I think we should still reorder this, but:
+> 
+>   - It's a significant behavior change that deserves its own patch so
+>     we can document/bisect/revert.
+> 
+>   - I'm not sure why we clear the PCI_ERR_ROOT_COMMAND error reporting
+>     bits.  In the new "clear COMMAND, clear STATUS, enable COMMAND"
+>     order, it looks superfluous.  There's no reason to disable error
+>     reporting while clearing the status bits.
+> 
+>     The current "clear, reset, enable" order suggests that the reset
+>     might cause errors that we should ignore.  I don't know whether
+>     that's the case or not.  It dates from 6c2b374d7485 ("PCI-Express
+>     AER implemetation: AER core and aerdriver"), which doesn't
+>     elaborate.
+> 
+>   - Should we also test for OS ownership of AER before touching
+>     PCI_ERR_ROOT_STATUS?
+> 
+>   - If we remove the PCI_ERR_ROOT_COMMAND fiddling (and I tentatively
+>     think we *should* unless we can justify it), that would also
+>     deserve its own patch.  Possibly (1) remove PCI_ERR_ROOT_COMMAND
+>     fiddling, (2) reorder PCI_ERR_ROOT_STATUS clearing and reset, (3)
+>     test for OS ownership of AER (?), (4) the rest of this patch.
+> 
+> >  	return rc ? PCI_ERS_RESULT_DISCONNECT : PCI_ERS_RESULT_RECOVERED;
+> >  }
+> > diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> > index 7883c9791562..cbc5abfe767b 100644
+> > --- a/drivers/pci/pcie/err.c
+> > +++ b/drivers/pci/pcie/err.c
+> > @@ -148,10 +148,10 @@ static int report_resume(struct pci_dev *dev, void *data)
+> >  
+> >  /**
+> >   * pci_walk_bridge - walk bridges potentially AER affected
+> > - * @bridge:	bridge which may be a Port, an RCEC with associated RCiEPs,
+> > - *		or an RCiEP associated with an RCEC
+> > - * @cb:		callback to be called for each device found
+> > - * @userdata:	arbitrary pointer to be passed to callback
+> > + * @bridge   bridge which may be an RCEC with associated RCiEPs,
+> > + *           or a Port.
+> > + * @cb       callback to be called for each device found
+> > + * @userdata arbitrary pointer to be passed to callback.
+> >   *
+> >   * If the device provided is a bridge, walk the subordinate bus, including
+> >   * any bridged devices on buses under this bus.  Call the provided callback
+> > @@ -164,8 +164,14 @@ static void pci_walk_bridge(struct pci_dev *bridge,
+> >  			    int (*cb)(struct pci_dev *, void *),
+> >  			    void *userdata)
+> >  {
+> > +	/*
+> > +	 * In a non-native case where there is no OS-visible reporting
+> > +	 * device the bridge will be NULL, i.e., no RCEC, no Downstream Port.
+> > +	 */
+> >  	if (bridge->subordinate)
+> >  		pci_walk_bus(bridge->subordinate, cb, userdata);
+> > +	else if (bridge->rcec)
+> > +		cb(bridge->rcec, userdata);
+> >  	else
+> >  		cb(bridge, userdata);
+> >  }
+> > @@ -194,12 +200,6 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+> >  	pci_dbg(bridge, "broadcast error_detected message\n");
+> >  	if (state == pci_channel_io_frozen) {
+> >  		pci_walk_bridge(bridge, report_frozen_detected, &status);
+> > -		if (type == PCI_EXP_TYPE_RC_END) {
+> > -			pci_warn(dev, "subordinate device reset not possible for RCiEP\n");
+> > -			status = PCI_ERS_RESULT_NONE;
+> > -			goto failed;
+> > -		}
+> > -
+> >  		status = reset_subordinates(bridge);
+> >  		if (status != PCI_ERS_RESULT_RECOVERED) {
+> >  			pci_warn(bridge, "subordinate device reset failed\n");
+> > -- 
+> > 2.28.0
+> > 
