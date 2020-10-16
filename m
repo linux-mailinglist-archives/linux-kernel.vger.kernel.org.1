@@ -2,590 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311FB29022C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2137729022E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406341AbgJPJos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:44:48 -0400
-Received: from aclms1.advantech.com.tw ([61.58.41.199]:5781 "EHLO
-        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406321AbgJPJoo (ORCPT
+        id S2406375AbgJPJqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:46:23 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:1863 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2406361AbgJPJqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:44:44 -0400
-Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te23eec378cac14014b1a94@ACLMS1.advantech.com.tw>;
- Fri, 16 Oct 2020 17:44:37 +0800
-Received: from localhost (172.16.12.104) by taipei09.ADVANTECH.CORP
- (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 16 Oct
- 2020 17:44:36 +0800
-From:   Shihlun Lin <shihlun.lin@advantech.com.tw>
-To:     Lee Jones <lee.jones@linaro.org>, <linux-kernel@vger.kernel.org>,
-        Campion Kang <campion.kang@advantech.com.tw>,
-        Shihlun Lin <shihlun.lin@advantech.com.tw>,
-        AceLan Kao <chia-lin.kao@canonical.com>
-Subject: [PATCH v2 3/3] mfd: ahc1ec0-wdt: Add sub-device watchdog for Advantech embedded controller
-Date:   Fri, 16 Oct 2020 17:44:34 +0800
-Message-ID: <20201016094434.25667-3-shihlun.lin@advantech.com.tw>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201016094434.25667-1-shihlun.lin@advantech.com.tw>
-References: <20201016094434.25667-1-shihlun.lin@advantech.com.tw>
+        Fri, 16 Oct 2020 05:46:22 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09G9QYaV032671;
+        Fri, 16 Oct 2020 11:45:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=AZSaXji1dnZDbN7da3PpIqXn7e1Xkr4GWsefjZcToVA=;
+ b=gZpVo3DUUkpNDS3fitIGVcbK80+7Dm5QaT2XEY6ysdFaVDRNPhpI8bAPYKvUvbCpXUhG
+ X4cVsjg1e0NoNOrvqPv8U2yBKbSq6fTsB2u3wOF2k5ep1Cqwit9MvfTIhA7pmlsFoC1u
+ 41muJm8AwkbyI9sCgjJhPxWzc8CHrc0USWIYnF8lh9KnP5sOI3Y0T6zopJu3DyvBO/GC
+ WpbQQF1oyIl8Cd937qr1iIDHXUi62wSxzCR/3FlE71eku7c41CAJkzio/Ye2FVc6Fggk
+ x360f207AdZ/X03vtz3uKvs3fklTXwKjgy7zAmNggKjU0s7j3iursvkdA1z/KnIwzjTX OA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 34353wv6f2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Oct 2020 11:45:14 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5C9D110002A;
+        Fri, 16 Oct 2020 11:45:13 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4A4CD2AF318;
+        Fri, 16 Oct 2020 11:45:13 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 16 Oct
+ 2020 11:45:12 +0200
+Subject: Re: [PATCH v2 4/9] rpmsg: Move rpmsg_hr and rpmsg_ns_msg to header
+ file
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "guennadi.liakhovetski@linux.intel.com" 
+        <guennadi.liakhovetski@linux.intel.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201013232519.1367542-1-mathieu.poirier@linaro.org>
+ <20201013232519.1367542-5-mathieu.poirier@linaro.org>
+ <61c25983-a339-e5de-eaf7-d608a9b9771b@st.com>
+ <20201015201926.GF1450102@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <cce4b049-a210-7c1b-a842-5f238ef89fc0@st.com>
+Date:   Fri, 16 Oct 2020 11:45:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.12.104]
-X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
- taipei09.ADVANTECH.CORP (172.20.0.236)
-X-StopIT: No
+In-Reply-To: <20201015201926.GF1450102@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-16_05:2020-10-16,2020-10-16 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is one of sub-device driver for Advantech embedded controller
-AHC1EC0. This driver provide watchdog functionality for Advantech
-related applications to restart the system.
 
-Signed-off-by: Shihlun Lin <shihlun.lin@advantech.com.tw>
-Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/mfd/Kconfig       |   4 +
- drivers/mfd/Makefile      |   3 +-
- drivers/mfd/ahc1ec0-wdt.c | 502 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 508 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mfd/ahc1ec0-wdt.c
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 4945638ca6cb..662285afb42f 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -2135,5 +2135,9 @@ config MFD_AHC1EC0_HWMON
- 	  driver provides the sysfs attribues for applications to monitor
- 	  the system status.
- 
-+config MFD_AHC1EC0_WDT
-+	tristate "Advantech EC Watchdog Function"
-+	depends on MFD_AHC1EC0
-+
- endmenu
- endif
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 46168ac64903..d5ce7e7eaf21 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -265,5 +265,6 @@ obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
- 
- obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
- 
--obj-$(CONFIG_MFD_AHC1EC0) 	+= ahc1ec0.o
-+obj-$(CONFIG_MFD_AHC1EC0)	+= ahc1ec0.o
- obj-$(CONFIG_MFD_AHC1EC0_HWMON)	+= ahc1ec0-hwmon.o
-+obj-$(CONFIG_MFD_AHC1EC0_WDT)	+= ahc1ec0-wdt.o
-diff --git a/drivers/mfd/ahc1ec0-wdt.c b/drivers/mfd/ahc1ec0-wdt.c
-new file mode 100644
-index 000000000000..c275b41d873b
---- /dev/null
-+++ b/drivers/mfd/ahc1ec0-wdt.c
-@@ -0,0 +1,502 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*****************************************************************************
-+ *                 Copyright (c) 2018, Advantech Automation Corp.
-+ *     THIS IS AN UNPUBLISHED WORK CONTAINING CONFIDENTIAL AND PROPRIETARY
-+ *              INFORMATION WHICH IS THE PROPERTY OF ADVANTECH AUTOMATION CORP.
-+ *
-+ *   ANY DISCLOSURE, USE, OR REPRODUCTION, WITHOUT WRITTEN AUTHORIZATION FROM
-+ *              ADVANTECH AUTOMATION CORP., IS STRICTLY PROHIBITED.
-+ *****************************************************************************
-+ *
-+ * File:        ahc1ec0-wdt.c
-+ * Version:     1.00  <10/10/2014>
-+ * Author:      Sun.Lang
-+ *
-+ * Description: The ahc1ec0-wdt is driver for controlling EC watchdog.
-+ *
-+ *
-+ * Status:      working
-+ *
-+ * Change Log:
-+ *              Version 1.00 <10/10/2014> Sun.Lang
-+ *              - Initial version
-+ *              Version 1.01 <12/30/2015> Jiangwei.Zhu
-+ *              - Modify adv_watchdog_init function to install the driver to
-+ *              - the support devices.
-+ *              Version 1.02 <03/04/2016> Jiangwei.Zhu
-+ *              - Support UNO-1372G-E3AE, TPC-1782H-433AE, APAX-5580-433AE
-+ *              Version 1.03 <05/09/2016> Ji.Xu
-+ *              - Support EC watchdog mini-board on UNO-3083G/3085G-D44E/D64E
-+ *              - APAX-5580-473AE/4C3AE.
-+ *              - Modify the timeout unit to 1 second.
-+ *              - Modify the device name check method to fuzzy matching.
-+ *              Version 1.04 <06/28/2017> Ji.Xu
-+ *              - Support EC UNO-2271G-E2xAE.
-+ *              - Support EC UNO-2271G-E02xAE.
-+ *              - Support EC UNO-2473G-JxAE.
-+ *              - Support proc filesystem.
-+ *              Version 1.05 <09/20/2017> Ji.Xu
-+ *              - Support EC UNO-2484G-633xAE.
-+ *              - Support EC UNO-2484G-653xAE.
-+ *              - Support EC UNO-2484G-673xAE.
-+ *              - Support EC UNO-2484G-733xAE.
-+ *              - Support EC UNO-2484G-753xAE.
-+ *              - Support EC UNO-2484G-773xAE.
-+ *              Version 1.06 <10/26/2017> Ji.Xu
-+ *              - Support EC UNO-3283G-674AE
-+ *              - Support EC UNO-3285G-674AE
-+ *              Version 1.07 <11/16/2017> Zhang.Yang
-+ *              - Support EC UNO-1372G-J021AE/J031AE
-+ *              - Support EC UNO-2372G
-+ *              Version 1.08 <02/02/2018> Ji.Xu
-+ *              - Support EC TPC-B500-6??AE
-+ *              - Support EC TPC-5???T-6??AE
-+ *              - Support EC TPC-5???W-6??AE
-+ *              Version 1.09 <03/20/2018> Ji.Xu
-+ *              - Support for compiling in kernel-4.10 and below.
-+ *              Version 1.10 <02/20/2019> Ji.Xu
-+ *              - Support EC UNO-420
-+ *              - Support EC TPC-B200-???AE
-+ *              - Support EC TPC-2???T-???AE
-+ *              - Support EC TPC-2???W-???AE
-+ *              Version 1.11 <08/30/2019> Yao.Kang
-+ *				- Support 32-bit programs on 64-bit kernel
-+ *              Version 1.12 <12/03/2019> Jianfeng.dai
-+ *				- Support support UNO-2372G watchdog
-+ *              Version 1.13 <04/24/2020> Yao.Kang
-+ *				- Support support UNO-2473G
-+ ******************************************************************************/
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/errno.h>
-+#include <linux/kernel.h>
-+#include <linux/miscdevice.h>
-+#include <linux/watchdog.h>
-+#include <linux/ioport.h>
-+#include <linux/fcntl.h>
-+#include <linux/version.h>
-+#include <linux/ioctl.h>
-+#include <linux/io.h>
-+#include <linux/uaccess.h>
-+#include <linux/uaccess.h>
-+#include <asm/switch_to.h>
-+#include <linux/platform_device.h>
-+#include <linux/notifier.h>
-+#include <linux/reboot.h>
-+#include <linux/init.h>
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/mfd/ahc1ec0.h>
-+#include <linux/seq_file.h>
-+#include <linux/proc_fs.h>
-+
-+#define ADVANTECH_EC_WDT_VER        "1.12"
-+#define ADVANTECH_EC_WDT_DATE       "04/24/2020"
-+
-+#define PROCFS_MAX_SIZE     128
-+
-+static char adv_expect_close;
-+static unsigned long advwdt_is_open;
-+static unsigned short timeout = 450;
-+static unsigned int major;
-+struct mutex lock_ioctl;
-+
-+struct adv_wdt_info {
-+	unsigned char chip_name[32];
-+	unsigned char is_enable[8];
-+	unsigned long current_timeout;
-+};
-+
-+static struct adv_wdt_info wdt_data = {
-+	.chip_name = "Advantech Embedded Controller",
-+	.is_enable = "No",
-+	.current_timeout = 45,
-+};
-+
-+static int wdt_proc_read(struct seq_file *m, void *p);
-+
-+static void *c_start(struct seq_file *m, loff_t *pos)
-+{
-+	return *pos < 1 ? (void *)1 : NULL;
-+}
-+
-+static void *c_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	++*pos;
-+	return NULL;
-+}
-+
-+static void c_stop(struct seq_file *m, void *v)
-+{
-+	/*nothing to do*/
-+}
-+
-+static int c_show(struct seq_file *m, void *p)
-+{
-+	wdt_proc_read(m, p);
-+	return 0;
-+}
-+
-+static const struct seq_operations proc_seq_ops = {
-+	.show  = c_show,
-+	.start = c_start,
-+	.next  = c_next,
-+	.stop  = c_stop
-+};
-+
-+static int wdt_proc_open(struct inode *inode, struct file *file)
-+{
-+	int ret;
-+	struct seq_file *m;
-+
-+	ret = seq_open(file, &proc_seq_ops);
-+	m = file->private_data;
-+	m->private = file->f_path.dentry->d_iname;
-+
-+	return ret;
-+}
-+
-+static int wdt_proc_read(struct seq_file *m, void *p)
-+{
-+	unsigned char *chip_name, *is_enable;
-+	unsigned long current_timeout = 0;
-+
-+	chip_name = wdt_data.chip_name;
-+	current_timeout = wdt_data.current_timeout;
-+	is_enable = wdt_data.is_enable;
-+
-+	seq_printf(m, "name       : %s\n", chip_name);
-+	seq_printf(m, "timeout    : %ld\n", current_timeout);
-+	seq_printf(m, "is_enable  : %s\n", is_enable);
-+
-+	return 0;
-+}
-+
-+static const struct proc_ops fops = {
-+	.proc_open  = wdt_proc_open,
-+	.proc_read  = seq_read,
-+};
-+
-+static int wdt_create_proc(char *name)
-+{
-+	struct proc_dir_entry *wdt_proc_entries;
-+	unsigned char proc_name[64] = {0};
-+
-+	sprintf(proc_name, "%s", name);
-+
-+	wdt_proc_entries = proc_create(proc_name, 0644, NULL, &fops);
-+	if (wdt_proc_entries == NULL) {
-+		remove_proc_entry(proc_name, NULL);
-+		pr_err("Error: Could not initialize /proc/%s", proc_name);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+static void wdt_remove_proc(char *name)
-+{
-+	unsigned char proc_name[64] = {0};
-+
-+	sprintf(proc_name, "%s", name);
-+	remove_proc_entry(proc_name, NULL);
-+}
-+
-+static int set_delay(unsigned short delay_timeout)
-+{
-+	if (write_hw_ram(EC_RESET_DELAY_TIME_L, delay_timeout & 0x00FF)) {
-+		pr_err("Failed to set Watchdog Retset Time Low byte.");
-+		return -EINVAL;
-+	}
-+
-+	if (write_hw_ram(EC_RESET_DELAY_TIME_H, (delay_timeout & 0xFF00) >> 8)) {
-+		pr_err("Failed to set Watchdog Retset Time Hight byte.");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int advwdt_set_heartbeat(unsigned long t)
-+{
-+	if (t < 1 || t > 6553)
-+		return -EINVAL;
-+
-+	timeout = (t * 10);
-+
-+	return 0;
-+}
-+
-+static long advwdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	unsigned long new_timeout;
-+	void __user *argp = (void __user *)arg;
-+	int __user *p = argp;
-+	int options;
-+	static struct watchdog_info ident = {
-+		.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT | WDIOF_MAGICCLOSE,
-+		.firmware_version = 0,
-+		.identity = "Advantech WDT"
-+	};
-+
-+	mutex_lock(&lock_ioctl);
-+	if (advwdt_is_open < 1) {
-+		pr_err("watchdog does not open.");
-+		mutex_unlock(&lock_ioctl);
-+		return -1;
-+	}
-+
-+	switch (cmd) {
-+	case WDIOC_GETSUPPORT:
-+		if (copy_to_user(argp, &ident, sizeof(ident))) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+		break;
-+
-+	case WDIOC_GETSTATUS:
-+	case WDIOC_GETBOOTSTATUS:
-+		mutex_unlock(&lock_ioctl);
-+		return put_user(0, p);
-+
-+	case WDIOC_KEEPALIVE:
-+		if (write_hwram_command(EC_WDT_RESET)) {
-+			pr_err("Failed to set Watchdog reset.");
-+			return -EINVAL;
-+		}
-+		break;
-+
-+	case WDIOC_SETTIMEOUT:
-+		if (get_user(new_timeout, (unsigned long *)arg)) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+
-+		if (advwdt_set_heartbeat(new_timeout)) {
-+			pr_err("Advantch WDT: the input timeout is out of range.");
-+			pr_err("Please choose valid data between 1 ~ 6553.");
-+			mutex_unlock(&lock_ioctl);
-+			return -EINVAL;
-+		}
-+
-+		if (set_delay((unsigned short)(timeout - 1))) {
-+			pr_err("Failed to set Watchdog delay.");
-+			return -EINVAL;
-+		}
-+
-+		if (write_hwram_command(EC_WDT_START)) {
-+			pr_err("Failed to set Watchdog start.");
-+			return -EINVAL;
-+		}
-+
-+		wdt_data.is_enable[0] = 'Y';
-+		wdt_data.is_enable[1] = 'e';
-+		wdt_data.is_enable[2] = 's';
-+		wdt_data.current_timeout = timeout / 10;
-+		break;
-+
-+	case WDIOC_GETTIMEOUT:
-+		if (timeout == 0) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+		mutex_unlock(&lock_ioctl);
-+
-+		return put_user(timeout / 10, (unsigned long *)arg);
-+
-+	case WDIOC_SETOPTIONS:
-+		if (get_user(options, p)) {
-+			mutex_unlock(&lock_ioctl);
-+			return -EFAULT;
-+		}
-+
-+		if (options & WDIOS_DISABLECARD) {
-+			if (write_hwram_command(EC_WDT_STOP)) {
-+				pr_err("Failed to set Watchdog stop.");
-+				return -EINVAL;
-+			}
-+
-+			wdt_data.is_enable[0] = 'N';
-+			wdt_data.is_enable[1] = 'o';
-+			wdt_data.is_enable[2] = '\0';
-+		}
-+
-+		if (options & WDIOS_ENABLECARD) {
-+			if (write_hwram_command(EC_WDT_STOP)) {
-+				pr_err("Failed to set Watchdog stop");
-+				return -EINVAL;
-+			}
-+
-+			if (set_delay((unsigned short)(timeout-1))) {
-+				pr_err("Failed to set Watchdog delay.");
-+				return -EINVAL;
-+			}
-+
-+			if (write_hwram_command(EC_WDT_START)) {
-+				pr_err("Failed to set Watchdog start.");
-+				return -EINVAL;
-+			}
-+
-+			wdt_data.is_enable[0] = 'Y';
-+			wdt_data.is_enable[1] = 'e';
-+			wdt_data.is_enable[2] = 's';
-+		}
-+		mutex_unlock(&lock_ioctl);
-+
-+		return 0;
-+
-+	default:
-+		mutex_unlock(&lock_ioctl);
-+		return -ENOTTY;
-+	}
-+
-+	mutex_unlock(&lock_ioctl);
-+	return 0;
-+}
-+
-+static int advwdt_open(struct inode *inode, struct file *file)
-+{
-+	if (test_and_set_bit(0, &advwdt_is_open))
-+		return -EBUSY;
-+
-+	if (write_hwram_command(EC_WDT_STOP)) {
-+		pr_err("Failed to set Watchdog stop.");
-+		return -EINVAL;
-+	}
-+	wdt_data.is_enable[0] = 'N';
-+	wdt_data.is_enable[1] = 'o';
-+	wdt_data.is_enable[2] = '\0';
-+	return 0;
-+}
-+
-+static int advwdt_close(struct inode *inode, struct file *file)
-+{
-+	clear_bit(0, &advwdt_is_open);
-+	adv_expect_close = 0;
-+
-+	return 0;
-+}
-+
-+/* Notifier for system down */
-+static int advwdt_notify_sys(struct notifier_block *this, unsigned long code, void *unused)
-+{
-+	if (code == SYS_DOWN || code == SYS_HALT) {
-+		/* Turn the WDT off */
-+		if (write_hwram_command(EC_WDT_STOP)) {
-+			pr_err("Failed to set Watchdog stop.");
-+			return -EINVAL;
-+		}
-+		wdt_data.is_enable[0] = 'N';
-+		wdt_data.is_enable[1] = 'o';
-+		wdt_data.is_enable[2] = '\0';
-+		pr_info("%s: notify sys shutdown", __func__);
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
-+/* Kernel Interfaces */
-+static const struct file_operations advwdt_fops = {
-+	.owner = THIS_MODULE,
-+	.unlocked_ioctl = advwdt_ioctl,
-+	.compat_ioctl = advwdt_ioctl,
-+	.open = advwdt_open,
-+	.release = advwdt_close,
-+};
-+
-+/*
-+ *	The WDT needs to learn about soft shutdowns in order to
-+ *	turn the timebomb registers off.
-+ */
-+static struct notifier_block advwdt_notifier = {
-+	advwdt_notify_sys,
-+	NULL,
-+	0
-+};
-+
-+static struct class *adv_ec_class;
-+static dev_t devno;
-+
-+static int adv_ec_wdt_probe(struct platform_device *pdev)
-+{
-+	struct device *dev;
-+
-+	mutex_init(&lock_ioctl);
-+
-+	major = register_chrdev(0, "adv_watchdog", &advwdt_fops);
-+	if (major < 0) {
-+		pr_err("Advwdt register chrdev failed!");
-+		return major;
-+	}
-+	devno = MKDEV(major, 0);
-+	register_reboot_notifier(&advwdt_notifier);
-+
-+	/* Create /dev/watchdog for userspace access */
-+	adv_ec_class = class_create(THIS_MODULE, "adv_watchdog");
-+	if (IS_ERR(adv_ec_class)) {
-+		pr_err("%s: can't create class", __func__);
-+		unregister_chrdev_region(devno, 1);
-+		return -1;
-+	}
-+
-+	dev = device_create(adv_ec_class, NULL, devno, NULL, "watchdog");
-+	if (IS_ERR(dev)) {
-+		pr_err("%s: can't create device watchdog", __func__);
-+		unregister_chrdev_region(devno, 1);
-+		class_destroy(adv_ec_class);
-+		return -1;
-+	}
-+
-+	wdt_create_proc("advwdtinfo");
-+	wdt_data.current_timeout = timeout / 10;
-+	wdt_data.is_enable[0] = 'N';
-+	wdt_data.is_enable[1] = 'o';
-+	wdt_data.is_enable[2] = '\0';
-+
-+	dev_info(&pdev->dev, "Ver:%s, Data:%s, probe done",
-+			ADVANTECH_EC_WDT_VER, ADVANTECH_EC_WDT_DATE);
-+
-+	return 0;
-+}
-+
-+static int adv_ec_wdt_remove(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	ret = write_hwram_command(EC_WDT_STOP);
-+	if (ret) {
-+		pr_err("Failed to set Watchdog stop.");
-+		return ret;
-+	}
-+
-+	wdt_data.is_enable[0] = 'N';
-+	wdt_data.is_enable[1] = 'o';
-+	wdt_data.is_enable[2] = '\0';
-+	clear_bit(0, &advwdt_is_open);
-+	adv_expect_close = 0;
-+	pr_info("Driver uninstall, set Watchdog stop.");
-+
-+	device_destroy(adv_ec_class, devno);
-+	unregister_chrdev_region(devno, 1);
-+	class_destroy(adv_ec_class);
-+
-+	unregister_reboot_notifier(&advwdt_notifier);
-+	unregister_chrdev(major, "adv_watchdog");
-+
-+	wdt_remove_proc("advwdtinfo");
-+
-+	return 0;
-+}
-+
-+static struct platform_driver adv_wdt_drv = {
-+	.driver = {
-+		.name = "adv-ec-wdt",
-+	},
-+	.probe = adv_ec_wdt_probe,
-+	.remove = adv_ec_wdt_remove,
-+};
-+module_platform_driver(adv_wdt_drv);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Advantech EC Watchdog Driver.");
--- 
-2.17.1
+On 10/15/20 10:19 PM, Mathieu Poirier wrote:
+> On Thu, Oct 15, 2020 at 10:33:25AM +0200, Arnaud POULIQUEN wrote:
+>> Hi Mathieu,
+>>
+>> On 10/14/20 1:25 AM, Mathieu Poirier wrote:
+>>> Move structures rpmsg_hdr and rpmsg_ns_msg to their own header file
+>>> so that they can be used by other entities.
+>>>
+>>> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> ---
+>>>  drivers/rpmsg/virtio_rpmsg_bus.c | 58 ++----------------------------
+>>>  include/linux/rpmsg_ns.h         | 62 ++++++++++++++++++++++++++++++++
+>>>  include/uapi/linux/rpmsg.h       |  3 ++
+>>>  3 files changed, 67 insertions(+), 56 deletions(-)
+>>>  create mode 100644 include/linux/rpmsg_ns.h
+>>>
+>>> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+>>> index 793fe924671f..85f2acc4ed9f 100644
+>>> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+>>> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+>>> @@ -19,7 +19,7 @@
+>>>  #include <linux/mutex.h>
+>>>  #include <linux/of_device.h>
+>>>  #include <linux/rpmsg.h>
+>>> -#include <linux/rpmsg_byteorder.h>
+>>> +#include <linux/rpmsg_ns.h>
+>>>  #include <linux/scatterlist.h>
+>>>  #include <linux/slab.h>
+>>>  #include <linux/sched.h>
+>>> @@ -27,6 +27,7 @@
+>>>  #include <linux/virtio_ids.h>
+>>>  #include <linux/virtio_config.h>
+>>>  #include <linux/wait.h>
+>>> +#include <uapi/linux/rpmsg.h>
+>>>  
+>>>  #include "rpmsg_internal.h"
+>>>  
+>>> @@ -70,58 +71,6 @@ struct virtproc_info {
+>>>  	struct rpmsg_endpoint *ns_ept;
+>>>  };
+>>>  
+>>> -/* The feature bitmap for virtio rpmsg */
+>>> -#define VIRTIO_RPMSG_F_NS	0 /* RP supports name service notifications */
+>>> -
+>>> -/**
+>>> - * struct rpmsg_hdr - common header for all rpmsg messages
+>>> - * @src: source address
+>>> - * @dst: destination address
+>>> - * @reserved: reserved for future use
+>>> - * @len: length of payload (in bytes)
+>>> - * @flags: message flags
+>>> - * @data: @len bytes of message payload data
+>>> - *
+>>> - * Every message sent(/received) on the rpmsg bus begins with this header.
+>>> - */
+>>> -struct rpmsg_hdr {
+>>> -	__rpmsg32 src;
+>>> -	__rpmsg32 dst;
+>>> -	__rpmsg32 reserved;
+>>> -	__rpmsg16 len;
+>>> -	__rpmsg16 flags;
+>>> -	u8 data[];
+>>> -} __packed;
+>>> -
+>>> -/**
+>>> - * struct rpmsg_ns_msg - dynamic name service announcement message
+>>> - * @name: name of remote service that is published
+>>> - * @addr: address of remote service that is published
+>>> - * @flags: indicates whether service is created or destroyed
+>>> - *
+>>> - * This message is sent across to publish a new service, or announce
+>>> - * about its removal. When we receive these messages, an appropriate
+>>> - * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
+>>> - * or ->remove() handler of the appropriate rpmsg driver will be invoked
+>>> - * (if/as-soon-as one is registered).
+>>> - */
+>>> -struct rpmsg_ns_msg {
+>>> -	char name[RPMSG_NAME_SIZE];
+>>> -	__rpmsg32 addr;
+>>> -	__rpmsg32 flags;
+>>> -} __packed;
+>>> -
+>>> -/**
+>>> - * enum rpmsg_ns_flags - dynamic name service announcement flags
+>>> - *
+>>> - * @RPMSG_NS_CREATE: a new remote service was just created
+>>> - * @RPMSG_NS_DESTROY: a known remote service was just destroyed
+>>> - */
+>>> -enum rpmsg_ns_flags {
+>>> -	RPMSG_NS_CREATE		= 0,
+>>> -	RPMSG_NS_DESTROY	= 1,
+>>> -};
+>>> -
+>>>  /**
+>>>   * @vrp: the remote processor this channel belongs to
+>>>   */
+>>> @@ -162,9 +111,6 @@ struct virtio_rpmsg_channel {
+>>>   */
+>>>  #define RPMSG_RESERVED_ADDRESSES	(1024)
+>>>  
+>>> -/* Address 53 is reserved for advertising remote services */
+>>> -#define RPMSG_NS_ADDR			(53)
+>>> -
+>>>  static void virtio_rpmsg_destroy_ept(struct rpmsg_endpoint *ept);
+>>>  static int virtio_rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
+>>>  static int virtio_rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len,
+>>> diff --git a/include/linux/rpmsg_ns.h b/include/linux/rpmsg_ns.h
+>>> new file mode 100644
+>>> index 000000000000..3d836b8580b2
+>>> --- /dev/null
+>>> +++ b/include/linux/rpmsg_ns.h
+>>> @@ -0,0 +1,62 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +
+>>> +#ifndef _LINUX_RPMSG_NS_H
+>>> +#define _LINUX_RPMSG_NS_H
+>>> +
+>>> +#include <linux/mod_devicetable.h>
+>>> +#include <linux/types.h>
+>>> +#include <linux/rpmsg_byteorder.h>
+>>> +
+>>> +/**
+>>> + * struct rpmsg_hdr - common header for all rpmsg messages
+>>> + * @src: source address
+>>> + * @dst: destination address
+>>> + * @reserved: reserved for future use
+>>> + * @len: length of payload (in bytes)
+>>> + * @flags: message flags
+>>> + * @data: @len bytes of message payload data
+>>> + *
+>>> + * Every message sent(/received) on the rpmsg bus begins with this header.
+>>> + */
+>>> +struct rpmsg_hdr {
+>>> +	__rpmsg32 src;
+>>> +	__rpmsg32 dst;
+>>> +	__rpmsg32 reserved;
+>>> +	__rpmsg16 len;
+>>> +	__rpmsg16 flags;
+>>> +	u8 data[];
+>>> +} __packed;
+>>
+>> This structure is not related to the rpmsg ns service but to the rpmsg bus.
+>> If this structure has to be exposed to rpmsg client should be in rpmsg.h, but 
+>> Is there a need to expose it for now?
+>> I suppose that it is for vhost...As the need will depends on the implementation, 
+>> I would suggest leaving it internally and expose only if needed, in the
+>> related series.
+>>
+> 
+> I also thought about moving rpmsg_hdr to rpmsg.h but decided against because in
+> most cases using the name space service usually means that a message header will
+> be required.  I also thought it would be easier to use, i.e include one header
+> rather than two.  That too is a little thin because anyone using a name service
+> will also need to get access to rpmsg_device, which is in rpmsg.h.
+> 
+> I'm definitely not strongly opinionated on where it should go, or I can leave it
+> in virtio_rpmsg_bus.c too... 
 
+The rpmsg_ns service does not use this structure. So seems to me not at the good place
+
+The virtio_rpmsg.c does, and a vhost_rpmsg.c should do it as well.
+I would be in favor of moving it to rpmsg_internal.h to expose it to
+the rpmg_buses (e.g. rpmsg_vhost) as a generic message header.
+Leaving it in virtio_rpmsg_bus.c also seems also a good alternative.
+
+>  
+>>> +
+>>> +/**
+>>> + * struct rpmsg_ns_msg - dynamic name service announcement message
+>>> + * @name: name of remote service that is published
+>>> + * @addr: address of remote service that is published
+>>> + * @flags: indicates whether service is created or destroyed
+>>> + *
+>>> + * This message is sent across to publish a new service, or announce
+>>> + * about its removal. When we receive these messages, an appropriate
+>>> + * rpmsg channel (i.e device) is created/destroyed. In turn, the ->probe()
+>>> + * or ->remove() handler of the appropriate rpmsg driver will be invoked
+>>> + * (if/as-soon-as one is registered).
+>>> + */
+>>> +struct rpmsg_ns_msg {
+>>> +	char name[RPMSG_NAME_SIZE];
+>>> +	__rpmsg32 addr;
+>>> +	__rpmsg32 flags;
+>>> +} __packed;
+>>> +
+>>> +/**
+>>> + * enum rpmsg_ns_flags - dynamic name service announcement flags
+>>> + *
+>>> + * @RPMSG_NS_CREATE: a new remote service was just created
+>>> + * @RPMSG_NS_DESTROY: a known remote service was just destroyed
+>>> + */
+>>> +enum rpmsg_ns_flags {
+>>> +	RPMSG_NS_CREATE		= 0,
+>>> +	RPMSG_NS_DESTROY	= 1,
+>>> +};
+>>> +
+>>> +/* Address 53 is reserved for advertising remote services */
+>>> +#define RPMSG_NS_ADDR			(53)
+>>
+>> What about my proposal [1] to put this in rpmsg.h, to create a list of
+>> reserved Address
+> 
+> That too is a grey area... Moving RPMSG_NS_ADDR to rpmsg.h means we have a name
+> service #define in rpmsg.h.  I think that one should stay in rpmsg_ns.h. 
+
+That seems reasonable, very simple to change this in future if needed.
+
+Regards
+Arnaud
+
+> 
+>>
+>> [1] https://lkml.org/lkml/2020/7/31/442
+>>
+>>> +
+>>> +#endif
+>>> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
+>>> index e14c6dab4223..d669c04ef289 100644
+>>> --- a/include/uapi/linux/rpmsg.h
+>>> +++ b/include/uapi/linux/rpmsg.h
+>>> @@ -24,4 +24,7 @@ struct rpmsg_endpoint_info {
+>>>  #define RPMSG_CREATE_EPT_IOCTL	_IOW(0xb5, 0x1, struct rpmsg_endpoint_info)
+>>>  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
+>>>  
+>>> +/* The feature bitmap for virtio rpmsg */
+>>> +#define VIRTIO_RPMSG_F_NS	0 /* RP supports name service notifications */
+>>> +
+>>
+>> Same suggestion here,i would drop this from this series
+> 
+> Will do.
+> 
+> Thanks for the feedback,
+> Mathieu
+> 
+>>
+>> Thanks,
+>> Arnaud
+>>
+>>>  #endif
+>>>
