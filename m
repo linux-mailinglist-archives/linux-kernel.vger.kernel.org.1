@@ -2,142 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88552290027
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 651E329002A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 10:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404690AbgJPIt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 04:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404595AbgJPIt1 (ORCPT
+        id S2404816AbgJPIuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 04:50:01 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:47681 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404253AbgJPIuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 04:49:27 -0400
-Received: from smtp-bc08.mail.infomaniak.ch (smtp-bc08.mail.infomaniak.ch [IPv6:2001:1600:4:17::bc08])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D717CC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 01:49:26 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CCKZr08rQzlhNhB;
-        Fri, 16 Oct 2020 10:49:24 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CCKZq06Znzlh8T5;
-        Fri, 16 Oct 2020 10:49:22 +0200 (CEST)
-Subject: Re: [PATCH v2] dm verity: Add support for signature verification with
- 2nd keyring
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Alasdair Kergon <agk@redhat.com>,
+        Fri, 16 Oct 2020 04:50:01 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UCBSTQi_1602838193;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UCBSTQi_1602838193)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 16 Oct 2020 16:49:53 +0800
+Date:   Fri, 16 Oct 2020 16:49:53 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
-        Milan Broz <gmazyland@gmail.com>, dm-devel@redhat.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20201015150504.1319098-1-mic@digikod.net>
- <20201015165229.GA5513@redhat.com>
- <022e949e-00c4-d98a-b536-1c5f9e05c09c@digikod.net>
-Message-ID: <b7ba2ff9-5f5f-8c1e-dfaa-33da56d3d8de@digikod.net>
-Date:   Fri, 16 Oct 2020 10:49:22 +0200
-User-Agent: 
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Subject: Re: [PATCH v1 19/29] virito-mem: existing (un)plug functions are
+ specific to Sub Block Mode (SBM)
+Message-ID: <20201016084953.GB44269@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20201012125323.17509-1-david@redhat.com>
+ <20201012125323.17509-20-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <022e949e-00c4-d98a-b536-1c5f9e05c09c@digikod.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201012125323.17509-20-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 12, 2020 at 02:53:13PM +0200, David Hildenbrand wrote:
+>Let's rename them accordingly. virtio_mem_plug_request() and
+>virtio_mem_unplug_request() will be handled separately.
+>
+>Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>Cc: Jason Wang <jasowang@redhat.com>
+>Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
 
+The code is correct, while the naming is a bit long to understand...
 
-On 16/10/2020 10:29, Mickaël Salaün wrote:
-> 
-> On 15/10/2020 18:52, Mike Snitzer wrote:
->> On Thu, Oct 15 2020 at 11:05am -0400,
->> Mickaël Salaün <mic@digikod.net> wrote:
->>
->>> From: Mickaël Salaün <mic@linux.microsoft.com>
->>>
->>> Add a new configuration DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
->>> to enable dm-verity signatures to be verified against the secondary
->>> trusted keyring.  Instead of relying on the builtin trusted keyring
->>> (with hard-coded certificates), the second trusted keyring can include
->>> certificate authorities from the builtin trusted keyring and child
->>> certificates loaded at run time.  Using the secondary trusted keyring
->>> enables to use dm-verity disks (e.g. loop devices) signed by keys which
->>> did not exist at kernel build time, leveraging the certificate chain of
->>> trust model.  In practice, this makes it possible to update certificates
->>> without kernel update and reboot, aligning with module and kernel
->>> (kexec) signature verification which already use the secondary trusted
->>> keyring.
->>>
->>> Cc: Alasdair Kergon <agk@redhat.com>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
->>> Cc: Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>
->>> Cc: Mike Snitzer <snitzer@redhat.com>
->>> Cc: Milan Broz <gmazyland@gmail.com>
->>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->>> ---
->>>
->>> Previous version:
->>> https://lore.kernel.org/lkml/20201002071802.535023-1-mic@digikod.net/
->>>
->>> Changes since v1:
->>> * Extend the commit message (asked by Jarkko Sakkinen).
->>> * Rename the Kconfig "help" keyword according to commit 84af7a6194e4
->>>   ("checkpatch: kconfig: prefer 'help' over '---help---'").
->>
->> Can you please explain why you've decided to make this a Kconfig CONFIG
->> knob?  Why not either add: a dm-verity table argument? A dm-verity
->> kernel module parameter? or both (to allow a particular default but then
->> per-device override)?
-> 
-> The purpose of signed dm-verity images is to authenticate files, or said
-> in another way, to enable the kernel to trust disk images in a flexible
-> way (i.e. thanks to certificate's chain of trust). Being able to update
-> such chain at run time requires to use the second trusted keyring. This
-> keyring automatically includes the certificate authorities from the
-> builtin trusted keyring, which are required to dynamically populate the
-> secondary trusted keyring with certificates signed by an already trusted
-> authority. The roots of trust must then be included at build time in the
-> builtin trusted keyring.
-> 
-> To be meaningful, using dm-verity signatures implies to have a
-> restricted user space, i.e. even the root user has limited power over
-> the kernel and the rest of the system. Blindly trusting data provided by
-> user space (e.g. dm-verity table argument, kernel module parameter)
-> defeat the purpose of (mandatory) authenticated images.
-> 
->>
->> Otherwise, _all_ DM verity devices will be configured to use secondary
->> keyring fallback.  Is that really desirable?
-> 
-> That is already the current state (on purpose).
+Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-I meant that when DM_VERITY_VERIFY_ROOTHASH_SIG is set, dm-verity
-signature becomes mandatory. This new configuration
-DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING extend this trust to the
-secondary trusted keyring, which contains certificates signed (directly
-or indirectly) by CA from the builtin trusted keyring.
+>---
+> drivers/virtio/virtio_mem.c | 90 ++++++++++++++++++-------------------
+> 1 file changed, 43 insertions(+), 47 deletions(-)
+>
+>diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+>index 73ff6e9ba839..fc2b1ff3beed 100644
+>--- a/drivers/virtio/virtio_mem.c
+>+++ b/drivers/virtio/virtio_mem.c
+>@@ -1075,8 +1075,8 @@ static int virtio_mem_send_unplug_all_request(struct virtio_mem *vm)
+>  * Plug selected subblocks. Updates the plugged state, but not the state
+>  * of the memory block.
+>  */
+>-static int virtio_mem_mb_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+>-				 int sb_id, int count)
+>+static int virtio_mem_sbm_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+>+				  int sb_id, int count)
+> {
+> 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id) +
+> 			      sb_id * vm->subblock_size;
+>@@ -1096,8 +1096,8 @@ static int virtio_mem_mb_plug_sb(struct virtio_mem *vm, unsigned long mb_id,
+>  * Unplug selected subblocks. Updates the plugged state, but not the state
+>  * of the memory block.
+>  */
+>-static int virtio_mem_mb_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+>-				   int sb_id, int count)
+>+static int virtio_mem_sbm_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+>+				    int sb_id, int count)
+> {
+> 	const uint64_t addr = virtio_mem_mb_id_to_phys(mb_id) +
+> 			      sb_id * vm->subblock_size;
+>@@ -1122,8 +1122,8 @@ static int virtio_mem_mb_unplug_sb(struct virtio_mem *vm, unsigned long mb_id,
+>  *
+>  * Note: can fail after some subblocks were unplugged.
+>  */
+>-static int virtio_mem_mb_unplug_any_sb(struct virtio_mem *vm,
+>-				       unsigned long mb_id, uint64_t *nb_sb)
+>+static int virtio_mem_sbm_unplug_any_sb(struct virtio_mem *vm,
+>+					unsigned long mb_id, uint64_t *nb_sb)
+> {
+> 	int sb_id, count;
+> 	int rc;
+>@@ -1144,7 +1144,7 @@ static int virtio_mem_mb_unplug_any_sb(struct virtio_mem *vm,
+> 			sb_id--;
+> 		}
+> 
+>-		rc = virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, count);
+>+		rc = virtio_mem_sbm_unplug_sb(vm, mb_id, sb_id, count);
+> 		if (rc)
+> 			return rc;
+> 		*nb_sb -= count;
+>@@ -1161,18 +1161,18 @@ static int virtio_mem_mb_unplug_any_sb(struct virtio_mem *vm,
+>  *
+>  * Note: can fail after some subblocks were unplugged.
+>  */
+>-static int virtio_mem_mb_unplug(struct virtio_mem *vm, unsigned long mb_id)
+>+static int virtio_mem_sbm_unplug_mb(struct virtio_mem *vm, unsigned long mb_id)
+> {
+> 	uint64_t nb_sb = vm->nb_sb_per_mb;
+> 
+>-	return virtio_mem_mb_unplug_any_sb(vm, mb_id, &nb_sb);
+>+	return virtio_mem_sbm_unplug_any_sb(vm, mb_id, &nb_sb);
+> }
+> 
+> /*
+>  * Prepare tracking data for the next memory block.
+>  */
+>-static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+>-				      unsigned long *mb_id)
+>+static int virtio_mem_sbm_prepare_next_mb(struct virtio_mem *vm,
+>+					  unsigned long *mb_id)
+> {
+> 	int rc;
+> 
+>@@ -1200,9 +1200,8 @@ static int virtio_mem_prepare_next_mb(struct virtio_mem *vm,
+>  *
+>  * Will modify the state of the memory block.
+>  */
+>-static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+>-				      unsigned long mb_id,
+>-				      uint64_t *nb_sb)
+>+static int virtio_mem_sbm_plug_and_add_mb(struct virtio_mem *vm,
+>+					  unsigned long mb_id, uint64_t *nb_sb)
+> {
+> 	const int count = min_t(int, *nb_sb, vm->nb_sb_per_mb);
+> 	int rc;
+>@@ -1214,7 +1213,7 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+> 	 * Plug the requested number of subblocks before adding it to linux,
+> 	 * so that onlining will directly online all plugged subblocks.
+> 	 */
+>-	rc = virtio_mem_mb_plug_sb(vm, mb_id, 0, count);
+>+	rc = virtio_mem_sbm_plug_sb(vm, mb_id, 0, count);
+> 	if (rc)
+> 		return rc;
+> 
+>@@ -1241,7 +1240,7 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+> 		 * TODO: Linux MM does not properly clean up yet in all cases
+> 		 * where adding of memory failed - especially on -ENOMEM.
+> 		 */
+>-		if (virtio_mem_mb_unplug_sb(vm, mb_id, 0, count))
+>+		if (virtio_mem_sbm_unplug_sb(vm, mb_id, 0, count))
+> 			new_state = VIRTIO_MEM_SBM_MB_PLUGGED;
+> 		virtio_mem_sbm_set_mb_state(vm, mb_id, new_state);
+> 		return rc;
+>@@ -1259,8 +1258,9 @@ static int virtio_mem_mb_plug_and_add(struct virtio_mem *vm,
+>  *
+>  * Note: Can fail after some subblocks were successfully plugged.
+>  */
+>-static int virtio_mem_mb_plug_any_sb(struct virtio_mem *vm, unsigned long mb_id,
+>-				     uint64_t *nb_sb, bool online)
+>+static int virtio_mem_sbm_plug_any_sb(struct virtio_mem *vm,
+>+				      unsigned long mb_id, uint64_t *nb_sb,
+>+				      bool online)
+> {
+> 	unsigned long pfn, nr_pages;
+> 	int sb_id, count;
+>@@ -1279,7 +1279,7 @@ static int virtio_mem_mb_plug_any_sb(struct virtio_mem *vm, unsigned long mb_id,
+> 		       !virtio_mem_sbm_test_sb_plugged(vm, mb_id, sb_id + count, 1))
+> 			count++;
+> 
+>-		rc = virtio_mem_mb_plug_sb(vm, mb_id, sb_id, count);
+>+		rc = virtio_mem_sbm_plug_sb(vm, mb_id, sb_id, count);
+> 		if (rc)
+> 			return rc;
+> 		*nb_sb -= count;
+>@@ -1323,7 +1323,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+> 	/* Try to plug subblocks of partially plugged online blocks. */
+> 	virtio_mem_sbm_for_each_mb(vm, mb_id,
+> 				   VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL) {
+>-		rc = virtio_mem_mb_plug_any_sb(vm, mb_id, &nb_sb, true);
+>+		rc = virtio_mem_sbm_plug_any_sb(vm, mb_id, &nb_sb, true);
+> 		if (rc || !nb_sb)
+> 			goto out_unlock;
+> 		cond_resched();
+>@@ -1332,7 +1332,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+> 	/* Try to plug subblocks of partially plugged offline blocks. */
+> 	virtio_mem_sbm_for_each_mb(vm, mb_id,
+> 				   VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>-		rc = virtio_mem_mb_plug_any_sb(vm, mb_id, &nb_sb, false);
+>+		rc = virtio_mem_sbm_plug_any_sb(vm, mb_id, &nb_sb, false);
+> 		if (rc || !nb_sb)
+> 			goto out_unlock;
+> 		cond_resched();
+>@@ -1349,7 +1349,7 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+> 		if (!virtio_mem_could_add_memory(vm, memory_block_size_bytes()))
+> 			return -ENOSPC;
+> 
+>-		rc = virtio_mem_mb_plug_and_add(vm, mb_id, &nb_sb);
+>+		rc = virtio_mem_sbm_plug_and_add_mb(vm, mb_id, &nb_sb);
+> 		if (rc || !nb_sb)
+> 			return rc;
+> 		cond_resched();
+>@@ -1360,10 +1360,10 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+> 		if (!virtio_mem_could_add_memory(vm, memory_block_size_bytes()))
+> 			return -ENOSPC;
+> 
+>-		rc = virtio_mem_prepare_next_mb(vm, &mb_id);
+>+		rc = virtio_mem_sbm_prepare_next_mb(vm, &mb_id);
+> 		if (rc)
+> 			return rc;
+>-		rc = virtio_mem_mb_plug_and_add(vm, mb_id, &nb_sb);
+>+		rc = virtio_mem_sbm_plug_and_add_mb(vm, mb_id, &nb_sb);
+> 		if (rc)
+> 			return rc;
+> 		cond_resched();
+>@@ -1384,13 +1384,13 @@ static int virtio_mem_plug_request(struct virtio_mem *vm, uint64_t diff)
+>  *
+>  * Note: Can fail after some subblocks were successfully unplugged.
+>  */
+>-static int virtio_mem_mb_unplug_any_sb_offline(struct virtio_mem *vm,
+>-					       unsigned long mb_id,
+>-					       uint64_t *nb_sb)
+>+static int virtio_mem_sbm_unplug_any_sb_offline(struct virtio_mem *vm,
+>+						unsigned long mb_id,
+>+						uint64_t *nb_sb)
+> {
+> 	int rc;
+> 
+>-	rc = virtio_mem_mb_unplug_any_sb(vm, mb_id, nb_sb);
+>+	rc = virtio_mem_sbm_unplug_any_sb(vm, mb_id, nb_sb);
+> 
+> 	/* some subblocks might have been unplugged even on failure */
+> 	if (!virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb))
+>@@ -1422,9 +1422,9 @@ static int virtio_mem_mb_unplug_any_sb_offline(struct virtio_mem *vm,
+>  *
+>  * Will modify the state of the memory block.
+>  */
+>-static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+>-					  unsigned long mb_id, int sb_id,
+>-					  int count)
+>+static int virtio_mem_sbm_unplug_sb_online(struct virtio_mem *vm,
+>+					   unsigned long mb_id, int sb_id,
+>+					   int count)
+> {
+> 	const unsigned long nr_pages = PFN_DOWN(vm->subblock_size) * count;
+> 	unsigned long start_pfn;
+>@@ -1438,7 +1438,7 @@ static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+> 		return rc;
+> 
+> 	/* Try to unplug the allocated memory */
+>-	rc = virtio_mem_mb_unplug_sb(vm, mb_id, sb_id, count);
+>+	rc = virtio_mem_sbm_unplug_sb(vm, mb_id, sb_id, count);
+> 	if (rc) {
+> 		/* Return the memory to the buddy. */
+> 		virtio_mem_fake_online(start_pfn, nr_pages);
+>@@ -1460,17 +1460,17 @@ static int virtio_mem_mb_unplug_sb_online(struct virtio_mem *vm,
+>  * Note: Can fail after some subblocks were successfully unplugged. Can
+>  *       return 0 even if subblocks were busy and could not get unplugged.
+>  */
+>-static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+>-					      unsigned long mb_id,
+>-					      uint64_t *nb_sb)
+>+static int virtio_mem_sbm_unplug_any_sb_online(struct virtio_mem *vm,
+>+					       unsigned long mb_id,
+>+					       uint64_t *nb_sb)
+> {
+> 	int rc, sb_id;
+> 
+> 	/* If possible, try to unplug the complete block in one shot. */
+> 	if (*nb_sb >= vm->nb_sb_per_mb &&
+> 	    virtio_mem_sbm_test_sb_plugged(vm, mb_id, 0, vm->nb_sb_per_mb)) {
+>-		rc = virtio_mem_mb_unplug_sb_online(vm, mb_id, 0,
+>-						    vm->nb_sb_per_mb);
+>+		rc = virtio_mem_sbm_unplug_sb_online(vm, mb_id, 0,
+>+						     vm->nb_sb_per_mb);
+> 		if (!rc) {
+> 			*nb_sb -= vm->nb_sb_per_mb;
+> 			goto unplugged;
+>@@ -1487,7 +1487,7 @@ static int virtio_mem_mb_unplug_any_sb_online(struct virtio_mem *vm,
+> 		if (sb_id < 0)
+> 			break;
+> 
+>-		rc = virtio_mem_mb_unplug_sb_online(vm, mb_id, sb_id, 1);
+>+		rc = virtio_mem_sbm_unplug_sb_online(vm, mb_id, sb_id, 1);
+> 		if (rc == -EBUSY)
+> 			continue;
+> 		else if (rc)
+>@@ -1535,8 +1535,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> 	/* Try to unplug subblocks of partially plugged offline blocks. */
+> 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id,
+> 				       VIRTIO_MEM_SBM_MB_OFFLINE_PARTIAL) {
+>-		rc = virtio_mem_mb_unplug_any_sb_offline(vm, mb_id,
+>-							 &nb_sb);
+>+		rc = virtio_mem_sbm_unplug_any_sb_offline(vm, mb_id, &nb_sb);
+> 		if (rc || !nb_sb)
+> 			goto out_unlock;
+> 		cond_resched();
+>@@ -1544,8 +1543,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> 
+> 	/* Try to unplug subblocks of plugged offline blocks. */
+> 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id, VIRTIO_MEM_SBM_MB_OFFLINE) {
+>-		rc = virtio_mem_mb_unplug_any_sb_offline(vm, mb_id,
+>-							 &nb_sb);
+>+		rc = virtio_mem_sbm_unplug_any_sb_offline(vm, mb_id, &nb_sb);
+> 		if (rc || !nb_sb)
+> 			goto out_unlock;
+> 		cond_resched();
+>@@ -1559,8 +1557,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> 	/* Try to unplug subblocks of partially plugged online blocks. */
+> 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id,
+> 				       VIRTIO_MEM_SBM_MB_ONLINE_PARTIAL) {
+>-		rc = virtio_mem_mb_unplug_any_sb_online(vm, mb_id,
+>-							&nb_sb);
+>+		rc = virtio_mem_sbm_unplug_any_sb_online(vm, mb_id, &nb_sb);
+> 		if (rc || !nb_sb)
+> 			goto out_unlock;
+> 		mutex_unlock(&vm->hotplug_mutex);
+>@@ -1570,8 +1567,7 @@ static int virtio_mem_unplug_request(struct virtio_mem *vm, uint64_t diff)
+> 
+> 	/* Try to unplug subblocks of plugged online blocks. */
+> 	virtio_mem_sbm_for_each_mb_rev(vm, mb_id, VIRTIO_MEM_SBM_MB_ONLINE) {
+>-		rc = virtio_mem_mb_unplug_any_sb_online(vm, mb_id,
+>-							&nb_sb);
+>+		rc = virtio_mem_sbm_unplug_any_sb_online(vm, mb_id, &nb_sb);
+> 		if (rc || !nb_sb)
+> 			goto out_unlock;
+> 		mutex_unlock(&vm->hotplug_mutex);
+>@@ -1596,7 +1592,7 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
+> 	int rc;
+> 
+> 	virtio_mem_sbm_for_each_mb(vm, mb_id, VIRTIO_MEM_SBM_MB_PLUGGED) {
+>-		rc = virtio_mem_mb_unplug(vm, mb_id);
+>+		rc = virtio_mem_sbm_unplug_mb(vm, mb_id);
+> 		if (rc)
+> 			return rc;
+> 		virtio_mem_sbm_set_mb_state(vm, mb_id,
+>-- 
+>2.26.2
 
-So yes, this new (optional) configuration *extends* the source of trust
-for all dm-verity devices, and yes, it is desirable. I think it should
-have been this way from the beginning (as for other authentication
-mechanisms) but it wasn't necessary at that time.
-
-> 
->>
->> Regardless, I really don't see why a Kconfig knob is appropriate.
-> 
-> Moreover, a Kconfig knob makes sense as much as
-> DM_VERITY_VERIFY_ROOTHASH_SIG,
-> IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY, MODULE_SIG_FORCE and
-> other similar authentication mechanisms. Indeed, when using these
-> configurations, we want the kernel to enforce a specific policy.
-> 
-> Obviously, we can't make the DM_VERITY_VERIFY_ROOTHASH_SIG relies on the
-> secondary trusted keyring without important security implications for
-> systems already using this configuration (and then the builtin trusted
-> keyring as the unique source of trust).
-> 
+-- 
+Wei Yang
+Help you, Help me
