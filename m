@@ -2,169 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEDA29063F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF13290645
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 15:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408002AbgJPNZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 09:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
+        id S2408013AbgJPN1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 09:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407424AbgJPNZw (ORCPT
+        with ESMTP id S2407253AbgJPN1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 09:25:52 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C63CC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:25:52 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id a12so1900120ybg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 06:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iCwkZaf/CJExTKItTZS0YUHQy3kQsNwhFTOhb5qzSos=;
-        b=g+yeeBwCIOWo9vWLkEL/f5NhXHhQfSFeC/5mD2L53//eLKECA2+BWR7+l/YKdht24H
-         NcBn9VzALomR1qu3gKMKtoPSUKEEH88Rj3ZKv0kQnqes0ZJZOmirxLIM9Ka/f7L4Scji
-         HefVOlJV5sT4GsLUTN9j/XNqJ5XLaKKuKMo27LZGN2ZhgEL1iLrVxL942Dk5EzHpVJ9J
-         zroPKpl4EGYv9VhqZ9Scwplt48ovEvu35lcVE2hOEwblcxXL3HI4MqHXSjAQcNKaHWor
-         0iuhv36rf9rrGsykcEwODK5CiK9b3KrFtkMNlfGHiVcTDDTQB0mofE8uBk6mZermItrk
-         nO5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iCwkZaf/CJExTKItTZS0YUHQy3kQsNwhFTOhb5qzSos=;
-        b=lnTEyyHjEcu9m3tL8ilIughCRhFJclsEJCal/6B1pRYvkl8YeQRZkmXHEOdIV97SU6
-         OSCMpejkJfYOChuhcvhqNeHiwuc9kA2IMy4S9OJlj7G6DtZphSpE1QIQagZlEzZqGdTS
-         zFnoT2pWJbOb9nbjz63FxzKApVyjKcH38cJ+9Eq85Qj0jAddgT1HVBrbPUHgCgotqzcQ
-         HM/VaB3xY0TSNddlrhPjEnGaFExRE/B9jbD6XlmPpeDQnipcy/q688DJuOmDKqVH85Yq
-         sNSEfpO4V+Tz7jm3S9AO9rTXgQjiKlH8O2UZz4qzBZd8kfzrrhN2bJcNiOjKL7JWXtcR
-         cE6A==
-X-Gm-Message-State: AOAM533AYWDx3Cx9ai5Ko8lMIxn87mby2MQq9wdYv8UVRQs0PdqllFC0
-        P7ufQ/buGW9v9Xzp+7mZgd3a43dqRbtOwDyQsKEA/Q==
-X-Google-Smtp-Source: ABdhPJzy80GNTSODpCrlrVYYRB+McjTIHkBKpwU0lfkrRyF1AAgpJ7bpr7NU3lGt7qJHLWV8Jyd9OOdkgmBImj725PM=
-X-Received: by 2002:a25:7542:: with SMTP id q63mr5086409ybc.176.1602854751196;
- Fri, 16 Oct 2020 06:25:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000cafee605b1c9a745@google.com> <CAJZ5v0gFpt-N-VdwWLr0qkST3Tojxr3-t0BS35rcJxxV00fcCg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gFpt-N-VdwWLr0qkST3Tojxr3-t0BS35rcJxxV00fcCg@mail.gmail.com>
-From:   Joseph Jang <josephjang@google.com>
-Date:   Fri, 16 Oct 2020 21:25:40 +0800
-Message-ID: <CAPaOXESgeK9oJB_0fRVqZQFQWQKJ=Y-L7TAX2oBkLR4cv3Z7bQ@mail.gmail.com>
-Subject: Re: [PATCH] power: suspend: Add suspend timeout handler
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Fri, 16 Oct 2020 09:27:31 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC3FC0613D3;
+        Fri, 16 Oct 2020 06:27:31 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 30A74528;
+        Fri, 16 Oct 2020 15:27:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1602854849;
+        bh=HxEc82FtEItR3ZGOUen8zEBFZpr6AfpnCCwNtqxTMiI=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=f8apDp9MfctycBMrK19+YzBXEe15Vgd3jAvCWQPVpt/yG+iK01VQCrax8r8MGbUQO
+         YvFZGZaz0S9VSKPGjWPI7OsGpRPTUDRMMDWmH+0uraiod2eTVuHpxflkOvNt6ksbaQ
+         QIikFq+O+NDd7Cz7TmnmEGBZGDb6Cm4SI5ldjFeQ=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v3 2/7] dt-bindings: media: max9286: Document
+ 'maxim,high-threshold'
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Jonglin Lee <jonglin@google.com>,
-        Woody Lin <woodylin@google.com>,
-        Mark Cheng <markcheng@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+References: <20201016120625.64337-1-jacopo+renesas@jmondi.org>
+ <20201016120625.64337-3-jacopo+renesas@jmondi.org>
+ <CAMuHMdUof5Yb=5notGDYycJtZyLzGp2RPjJ=m6GVodBRDxw9ow@mail.gmail.com>
+ <20201016145603.bapqjxsvezn6flyv@uno.localdomain>
+ <CAMuHMdWwK=3yOQ8b5suN-U8YtGVomjOZ+gZrTHpUaix2xDP8hw@mail.gmail.com>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <cb3d0334-29c0-a79e-b716-6ab49480619d@ideasonboard.com>
+Date:   Fri, 16 Oct 2020 14:27:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdWwK=3yOQ8b5suN-U8YtGVomjOZ+gZrTHpUaix2xDP8hw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, I agree.
+Hi Jacopo,
 
-Rafael J. Wysocki <rafael@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=8816=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:24=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On Fri, Oct 16, 2020 at 3:22 PM <josephjang@google.com> wrote:
-> >
-> > Thank you Rafael's promptly response.
-> >
-> > > On Fri, Oct 16, 2020 at 5:51 AM Joseph Jang <josephjang@google.com> w=
-rote:
-> > > >
-> > > > From: josephjang <josephjang@google.com>
-> > > >
-> > > > Add suspend timeout handler to prevent device stuck during suspend/
-> > > > resume process. Suspend timeout handler will dump disk sleep task
-> > > > at first round timeout and trigger kernel panic at second round tim=
-eout.
-> > > > The default timer for each round is 30 seconds.
-> > > >
-> > > > Note: Can use following command to simulate suspend hang for testin=
-g.
-> > > >     adb shell echo 1 > /sys/power/pm_hang
-> > > >     adb shell echo mem > /sys/power/state
-> > > > Signed-off-by: josephjang <josephjang@google.com>
-> > > > ---
-> > > >  include/linux/console.h |   1 +
-> > > >  kernel/power/Kconfig    |   9 +++
-> > > >  kernel/power/main.c     |  66 ++++++++++++++++
-> > > >  kernel/power/suspend.c  | 162 ++++++++++++++++++++++++++++++++++++=
-++++
-> > > >  kernel/printk/printk.c  |   5 ++
-> > > >  5 files changed, 243 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/console.h b/include/linux/console.h
-> > > > index 0670d3491e0e..ac468c602c0b 100644
-> > > > --- a/include/linux/console.h
-> > > > +++ b/include/linux/console.h
-> > > > @@ -192,6 +192,7 @@ static inline void console_sysfs_notify(void)
-> > > >  { }
-> > > >  #endif
-> > > >  extern bool console_suspend_enabled;
-> > > > +extern int is_console_suspended(void);
-> > > >
-> > > >  /* Suspend and resume console messages over PM events */
-> > > >  extern void suspend_console(void);
-> > > > diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> > > > index a7320f07689d..52b7a181b6d8 100644
-> > > > --- a/kernel/power/Kconfig
-> > > > +++ b/kernel/power/Kconfig
-> > > > @@ -207,6 +207,15 @@ config PM_SLEEP_DEBUG
-> > > >         def_bool y
-> > > >         depends on PM_DEBUG && PM_SLEEP
-> > > >
-> > > > +config PM_SLEEP_MONITOR
-> > > > +       bool "Linux kernel suspend/resume process monitor"
-> > > > +       depends on PM_SLEEP
-> > > > +       help
-> > > > +       This option will enable suspend/resume monitor to prevent d=
-evice
-> > > > +       stuck during suspend/resume process. Suspend timeout handle=
-r
-> > > will
-> > > > +       dump disk sleep task at first round timeout and trigger ker=
-nel
-> > > panic
-> > > > +       at second round timeout. The default timer for each round i=
-s 30
-> > > seconds.
-> > > > +
-> >
-> > > The facility associated with the Kconfig entry right below is suppose=
-d
-> > > to do exactly the same thing.
-> >
-> > > What's the reason to add another one?  What is missing?
-> >
-> >
-> >
-> > > >  config DPM_WATCHDOG
-> > > >         bool "Device suspend/resume watchdog"
-> > > >         depends on PM_DEBUG && PSTORE && EXPERT
-> >
-> > Because we found some suspend hand issue that cannot be detected by
-> > "CONFIG_DPM_WATCHDOG" (which is focus on device PM).
->
-> What's that issue?
->
-> > Our suspend timeout monitor can cover PM core and Device PM hang issues=
-.
->
-> Then I'd suggest to extend the existing watchdog instead of adding a
-> whole new implementation.
+On 16/10/2020 14:04, Geert Uytterhoeven wrote:
+> Hi Jacopo,
+> 
+> On Fri, Oct 16, 2020 at 2:56 PM Jacopo Mondi <jacopo@jmondi.org> wrote:
+>> On Fri, Oct 16, 2020 at 01:50:34PM +0200, Geert Uytterhoeven wrote:
+>>> On Fri, Oct 16, 2020 at 12:09 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
+>>>> Document the 'maxim,high-threshold' vendor property in the bindings
+>>>> document of the max9286 driver.
+>>>>
+>>>> The newly introduced boolean property allows controlling the initial
+>>>> configuration of the GMSL reverse control channel to accommodate
+>>>> remote serializers pre-programmed with the high threshold power
+>>>> supply noise immunity enabled.
+>>>>
+>>>> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+>>>
+>>> Thanks for your patch!
+>>>
+>>>> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+>>>> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+>>>> @@ -51,6 +51,19 @@ properties:
+>>>>    '#gpio-cells':
+>>>>      const: 2
+>>>>
+>>>> +  maxim,high-threshold:
+>>>> +    description: |
+>>>> +      A boolean property to increase the initial amplitude of the reverse
+>>>> +      control channel to compensate for remote serializers pre-programmed with
+>>>> +      high threshold noise-immunity.
+>>>> +
+>>>> +      Some camera modules (in example the RDACM20 one) include an on-board MCU
+>>>> +      that pre-programs the embedded serializer with reverse channel power
+>>>> +      supply noise immunity enabled. The deserializer shall increase its
+>>>> +      reverse channel amplitude to compensate that and be able to communicate
+>>>> +      with the remote end.
+>>>> +    type: boolean
+>>>
+>>> Does this "high" threshold correspond to some numerical value?
+>>> I.e. could we run into a future need to support more values than just
+>>> true/false?
+>>> If yes, we may want to use a numerical value from the start.
+>>
+>> So, this boolean property controls the initial setting of the reverse
+>> channel amplitude, which has to be opportunely adjusted to be able to
+>> probe the remote devices as i2c messages are bridged on the reverse
+>> channel from the deserializer to the remote serializers.
+>>
+>> It also implies that if the initial setting is not "high" it has to be
+>> increased after the remotes have probed, as it is assumed at the end
+>> the remotes' probe() routine they have enabled their high threshold
+>> noise immunity feature.
+>>
+>> The register that controls the de-serializer reverse channel amplitude
+>> is not fully documented in the chip manual version I have, but the
+>> application developer guide shows that it can range from 30mV to
+>> 200mV. The same developer guide shows 100mV and 170mV as "initial" and
+>> "high threshold" values to be used.
+>>
+>> On the serializer's side (MAX9271 at least) high threshold is a
+>> boolean control, it is either enabled or disabled.
+>>
+>> Hence I suspect that for the max9286-max9271 combo, using fixed 100mV
+>> and 170mV values is enough. Other serializers might allow a more fine
+>> grained control of the noise cancelling threshold, and might require a
+>> more precise adjustment of the deserializer side. I'm honestly not
+>> sure at this point not having seen any other one.
+>>
+>> So yes, this is a deserializer setting that depends on the serializer
+>> in use, and I'm not 100% comfortable expressing it as a deserializer
+>> property. That said, having an initial numerical value might serve the
+>> same purpose allowing more flexibility, if other serializers require a
+>> more precise control of the initial amplitude.
+
+And one of the benefits of your series, is that you've codified the
+conversion from the input value to the register value, which is really
+helpful.
+
+I think the fact that you've implemented the required feature, means
+exposing the value here makes more sense.
+
+However, once exposed outside of the driver, I'd add some clamping on
+the allowed min/max values in the max9286_reverse_channel_setup() function.
+
+>>
+>> After the remotes have probed, we could also re-explore the
+>> possibility of getting the bus configuration using get_mbus_config, as
+>> detailed in the v1 cover letter [1] as at that time their sub-devices
+>> have been registered and we can call operations on them. But again,
+>> this might be not required at all.
+> 
+> Sounds like "maxim,<foo>-threshold-mV" is the way to go?
+> If you don't know the exact register configuration, and need to
+> convert to a boolean in the driver, you can still use something like
+> "threshold < 150 ? ... : ...".
+
+This sounds like a reasonable path to me - I'm still really weary that
+it's defining it on the deser, rather than the serialiser - but perhaps
+there's no current option to do that.
 
 
+I presume we can't wait until we can obtain a value through
+get_mbus_config() ?
 
---=20
-Embedded Software engineer
+That's going to be chicken and egg, as the camera can't probe until we
+have the i2c channels set up ... yet the information we want, doesn't
+need the bus to be configured... so there's indeed some missing pieces
+to the puzzle for that to happen ;-(
+
+also - I guess the other key issue that would make me believe we keep
+this as a deserialiser property, is that it affects the whole
+configuration right? It's not just one of the four links - it's all of
+them collectively.
+
+(well, unless we called max9286_reverse_channel_setup() separately for
+each link bring up ...)
+
+--
+Kieran
+
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+
