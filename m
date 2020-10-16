@@ -2,53 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ED12900DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D29D2900DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 11:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395007AbgJPJJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 05:09:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37244 "EHLO mail.kernel.org"
+        id S2390640AbgJPJJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 05:09:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395000AbgJPJJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 05:09:16 -0400
+        id S2395008AbgJPJJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 05:09:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A67721D81;
-        Fri, 16 Oct 2020 09:09:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29D0F22201;
+        Fri, 16 Oct 2020 09:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602839340;
-        bh=mproNZnamBATcM+ig0bwVL7EvJ1odgRY9i9o4w8Hy9c=;
+        s=default; t=1602839350;
+        bh=9/KavjPpjCjgC9Xo1z5AQ+wvlPqVxMJADq7ikWKfOQ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3Bm/q3AEijC2Lr/DP4ktYoDbiJY5MzMOHpxjRfEy8/gZfYZdHY7pNVJ2mkVsaq9l
-         iZwxZ8fdFCiPbN8Duuh4yh95idNP1IifD0A4o7n6b5+MSMrp7mUShWo9Q7cD7VcUDl
-         fjdwD2rT2qk4MuZZxGoNkHDrHSNKE6cL3EQ6nyA0=
+        b=rz0aA2tE8z/bPfZy4TDinc9HVA6qopVtf9E6rcUu45xDsAwIEIIrmJoq/hsL9xaMw
+         RtzZdMq4b0b5eLiEEIPaOhID08O+cSJfQ54ov/vTno6X1dHC37LngdTwPmhvjx/icq
+         uIJ06OHkbXmBsKKDLh2bsl6K4QA2yCxAuycriKJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Backlund <tmb@mageia.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suzuki Poulouse <suzuki.poulose@arm.com>,
-        Tor Jeremiassen <tor@ti.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Paul Barker <pbarker@konsulko.com>
-Subject: [PATCH 4.19 01/21] perf cs-etm: Move definition of traceid_list global variable from header file
-Date:   Fri, 16 Oct 2020 11:07:20 +0200
-Message-Id: <20201016090437.378858243@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 02/21] ARM: 8858/1: vdso: use $(LD) instead of $(CC) to link VDSO
+Date:   Fri, 16 Oct 2020 11:07:21 +0200
+Message-Id: <20201016090437.421644062@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201016090437.301376476@linuxfoundation.org>
 References: <20201016090437.301376476@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -56,65 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-commit 168200b6d6ea0cb5765943ec5da5b8149701f36a upstream.
+[ Upstream commit fe00e50b2db8c60e4ec90befad1f5bab8ca2c800 ]
 
-The variable 'traceid_list' is defined in the header file cs-etm.h,
-if multiple C files include cs-etm.h the compiler might complaint for
-multiple definition of 'traceid_list'.
+We use $(LD) to link vmlinux, modules, decompressors, etc.
 
-To fix multiple definition error, move the definition of 'traceid_list'
-into cs-etm.c.
+VDSO is the only exceptional case where $(CC) is used as the linker
+driver, but I do not know why we need to do so. VDSO uses a special
+linker script, and does not link standard libraries at all.
 
-Fixes: cd8bfd8c973e ("perf tools: Add processing of coresight metadata")
-Reported-by: Thomas Backlund <tmb@mageia.org>
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Reviewed-by: Mike Leach <mike.leach@linaro.org>
-Tested-by: Mike Leach <mike.leach@linaro.org>
-Tested-by: Thomas Backlund <tmb@mageia.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
-Cc: Tor Jeremiassen <tor@ti.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Link: http://lore.kernel.org/lkml/20200505133642.4756-1-leo.yan@linaro.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Paul Barker <pbarker@konsulko.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I changed the Makefile to use $(LD) rather than $(CC). I confirmed
+the same vdso.so.raw was still produced.
 
+Users will be able to use their favorite linker (e.g. lld instead of
+of bfd) by passing LD= from the command line.
+
+My plan is to rewrite all VDSO Makefiles to use $(LD), then delete
+
+cc-ldoption.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/cs-etm.c |    3 +++
- tools/perf/util/cs-etm.h |    3 ---
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/vdso/Makefile | 21 ++++++++-------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -87,6 +87,9 @@ struct cs_etm_queue {
- 	struct cs_etm_packet *packet;
- };
+diff --git a/arch/arm/vdso/Makefile b/arch/arm/vdso/Makefile
+index f4efff9d3afbb..fadf554d93917 100644
+--- a/arch/arm/vdso/Makefile
++++ b/arch/arm/vdso/Makefile
+@@ -10,12 +10,12 @@ obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
+ ccflags-y := -fPIC -fno-common -fno-builtin -fno-stack-protector
+ ccflags-y += -DDISABLE_BRANCH_PROFILING
  
-+/* RB tree for quick conversion between traceID and metadata pointers */
-+static struct intlist *traceid_list;
-+
- static int cs_etm__update_queues(struct cs_etm_auxtrace *etm);
- static int cs_etm__process_timeless_queues(struct cs_etm_auxtrace *etm,
- 					   pid_t tid, u64 time_);
---- a/tools/perf/util/cs-etm.h
-+++ b/tools/perf/util/cs-etm.h
-@@ -53,9 +53,6 @@ enum {
- 	CS_ETMV4_PRIV_MAX,
- };
+-VDSO_LDFLAGS := -Wl,-Bsymbolic -Wl,--no-undefined -Wl,-soname=linux-vdso.so.1
+-VDSO_LDFLAGS += -Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096
+-VDSO_LDFLAGS += -nostdlib -shared
+-VDSO_LDFLAGS += $(call cc-ldoption, -Wl$(comma)--hash-style=sysv)
+-VDSO_LDFLAGS += $(call cc-ldoption, -Wl$(comma)--build-id)
+-VDSO_LDFLAGS += $(call cc-ldoption, -fuse-ld=bfd)
++ldflags-y = -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
++	    -z max-page-size=4096 -z common-page-size=4096 \
++	    -nostdlib -shared \
++	    $(call ld-option, --hash-style=sysv) \
++	    $(call ld-option, --build-id) \
++	    -T
  
--/* RB tree for quick conversion between traceID and CPUs */
--struct intlist *traceid_list;
+ obj-$(CONFIG_VDSO) += vdso.o
+ extra-$(CONFIG_VDSO) += vdso.lds
+@@ -37,8 +37,8 @@ KCOV_INSTRUMENT := n
+ $(obj)/vdso.o : $(obj)/vdso.so
+ 
+ # Link rule for the .so file
+-$(obj)/vdso.so.raw: $(src)/vdso.lds $(obj-vdso) FORCE
+-	$(call if_changed,vdsold)
++$(obj)/vdso.so.raw: $(obj)/vdso.lds $(obj-vdso) FORCE
++	$(call if_changed,ld)
+ 
+ $(obj)/vdso.so.dbg: $(obj)/vdso.so.raw $(obj)/vdsomunge FORCE
+ 	$(call if_changed,vdsomunge)
+@@ -48,11 +48,6 @@ $(obj)/%.so: OBJCOPYFLAGS := -S
+ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ 	$(call if_changed,objcopy)
+ 
+-# Actual build commands
+-quiet_cmd_vdsold = VDSO    $@
+-      cmd_vdsold = $(CC) $(c_flags) $(VDSO_LDFLAGS) \
+-                   -Wl,-T $(filter %.lds,$^) $(filter %.o,$^) -o $@
 -
- #define KiB(x) ((x) * 1024)
- #define MiB(x) ((x) * 1024 * 1024)
+ quiet_cmd_vdsomunge = MUNGE   $@
+       cmd_vdsomunge = $(objtree)/$(obj)/vdsomunge $< $@
  
+-- 
+2.25.1
+
 
 
