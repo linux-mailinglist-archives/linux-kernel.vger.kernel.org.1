@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E25290967
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44ADE29096C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 18:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410666AbgJPQL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 12:11:29 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:35591 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407134AbgJPQL3 (ORCPT
+        id S2409695AbgJPQNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 12:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409197AbgJPQNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 12:11:29 -0400
-Received: by mail-oi1-f193.google.com with SMTP id w141so3012886oia.2;
-        Fri, 16 Oct 2020 09:11:28 -0700 (PDT)
+        Fri, 16 Oct 2020 12:13:13 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E619C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:13:13 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id b8so4443985ioh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 09:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=HoVWWsnJtF4ldfrPYdqvQFOpOJVhRuHffI82nRexcX8=;
+        b=Jw6H43NWctaQWddG+pghAvq2p766POaPQK67OavH9mxQ2H9IpE074eMaq6fsdxm87u
+         mYXexOncu0xIlG+cKVY1W4nYVRMtHcVLbnVI5ef52KknoCtpuRXs939C9jhj3B3QVAGP
+         qfiE26X3OtR2LAb7NWdzedtO/V/g077FEU04FmbuSzrCBv/v9wW90J90qpihp8tcjaeB
+         BMuwiJgKQny9OK6blmSzlTLIH1p+HFlRKXb7bO+x9vFGa38q/jaxdoIGKFnEIX4rMxBV
+         Cp6qNmIpW8jf9j8J/TJSpcYFlWo65G2qZjzlvU/KYrv8Fq4w4DyRvZP1UTYbZ2JkzHfN
+         983Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rEAPxl1KjgfwVme9xwT1MzPMtYY7qqr5iqswWViBBoA=;
-        b=bbFcIM5rX6uuJFdYkQ0K3HSej5LzoJsBuzalkzrCGjbZwpXWW0MWDaCKhWifVtNVKo
-         RMW4PE0PURhAvCExsoHBzj7FV7AyOsVRh7tZjU5GUnlVdoPfPQDtLj9dqfwKaVibklnb
-         xqxlcxhuBJ/0LxMm/YHOw7zxePUUGSXLCQLVlqQ4vq6qVa+A3N3oScvNcV1dHU/jFtMW
-         rND3l+h33WATlK/1Od/Uysh8nofrmI6B3069uYE0blD0p7PxXkB4gNESbmPW6r2JNngb
-         0GcYtFt4/7KTEGpznqPWhKDAoGl+wwcEZr4BP8LUWWl02MwImYT0neUVnHIO6kl7p4CC
-         tzTg==
-X-Gm-Message-State: AOAM531dLqg7vpY85NKMosAhr5r5xxL4AZg/q6vA+/Z1tU6fChDYOzlv
-        jtnYOhXsWQI4jetjFz2SZveWrdQTcA==
-X-Google-Smtp-Source: ABdhPJylcRl5VtXACVgCUXR3Yo/AvXoa+GOjkZt1qU4vIYR7pQmtadpwGpHRc3srxH8tyzjL0w9DTA==
-X-Received: by 2002:a05:6808:10e:: with SMTP id b14mr3083547oie.152.1602864688191;
-        Fri, 16 Oct 2020 09:11:28 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j10sm1082858ota.56.2020.10.16.09.11.27
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HoVWWsnJtF4ldfrPYdqvQFOpOJVhRuHffI82nRexcX8=;
+        b=JBAMeJWUJZPY4aRY9C8yMYwPRmsko/9uik1+HCdyxJ1t30rHbJ2v09cMUb6oCLZqSN
+         7AWXlcQBwX62+olJxsDG5SQAJ8YVlHYWqhDhnyeKum5Nh1stHsK/S4fN42ABAdAjlVG6
+         RWmsNJT788UUh8OaUVeCMJOGVQOYD2gQLkeT0TJzCga1IkAoB/2XVcDrftcSmsMFxxSg
+         0Cg78SpHCxsSJeaTZ4XwLoLug654Tv+J3+cDzbdQqzsiM3NN4Jo5ELqpxSiUYInmkjJ/
+         RqREZMj5IuZXkHZkx3YU3mujjhYSK6A8FK/NtcdAWQmYvZVEwW9PIqJ/TVthJa6iB0lq
+         1C7A==
+X-Gm-Message-State: AOAM531F6tRrHyg/Al+E2OQX/pR9PGX5d9TyVxHWvv+dnQCzzTbGz42M
+        FAPvlB1YUP737VSun/StrxfFog==
+X-Google-Smtp-Source: ABdhPJwNXo7iyWJ77FT+/0CMo9tudCck82Xc2qlsaYhuPEdloUxNeSLOdR9y5ZI15zE7xNsqmPrhXQ==
+X-Received: by 2002:a6b:b413:: with SMTP id d19mr3054559iof.10.1602864792525;
+        Fri, 16 Oct 2020 09:13:12 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id m66sm2702327ill.69.2020.10.16.09.13.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 09:11:27 -0700 (PDT)
-Received: (nullmailer pid 1505308 invoked by uid 1000);
-        Fri, 16 Oct 2020 16:11:26 -0000
-Date:   Fri, 16 Oct 2020 11:11:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        mkl@pengutronix.de, netdev@vger.kernel.org, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        devicetree@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 1/2] dt-bindings: can: add can-controller.yaml
-Message-ID: <20201016161126.GA1504381@bogus>
-References: <20201016073315.16232-1-o.rempel@pengutronix.de>
- <20201016073315.16232-2-o.rempel@pengutronix.de>
+        Fri, 16 Oct 2020 09:13:11 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kTSLu-000ecw-Lj; Fri, 16 Oct 2020 13:13:10 -0300
+Date:   Fri, 16 Oct 2020 13:13:10 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        chris@chris-wilson.co.uk, airlied@redhat.com, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, willy@infradead.org, jhubbard@nvidia.com,
+        linmiaohe@huawei.com
+Subject: Re: [PATCH 1/2] mm: mmap: fix fput in error path v2
+Message-ID: <20201016161310.GE36674@ziepe.ca>
+References: <20201012085203.56119-1-christian.koenig@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201016073315.16232-2-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201012085203.56119-1-christian.koenig@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 09:33:14 +0200, Oleksij Rempel wrote:
-> For now we have only node name as common rule for all CAN controllers
+On Mon, Oct 12, 2020 at 10:52:02AM +0200, Christian König wrote:
+> Patch "495c10cc1c0c CHROMIUM: dma-buf: restore args..."
+> adds a workaround for a bug in mmap_region.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> As the comment states ->mmap() callback can change
+> vma->vm_file and so we might call fput() on the wrong file.
+> 
+> Revert the workaround and proper fix this in mmap_region.
+> 
+> v2: drop the extra if in dma_buf_mmap as well
+> 
+> Signed-off-by: Christian König <christian.koenig@amd.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 > ---
->  .../bindings/net/can/can-controller.yaml         | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/can/can-controller.yaml
-> 
+>  drivers/dma-buf/dma-buf.c | 20 +++-----------------
+>  mm/mmap.c                 |  2 +-
+>  2 files changed, 4 insertions(+), 18 deletions(-)
 
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Probably should Fixes that other patch Andrew pointed at
 
-./Documentation/devicetree/bindings/net/can/can-controller.yaml: $id: relative path/filename doesn't match actual path or filename
-	expected: http://devicetree.org/schemas/net/can/can-controller.yaml#
-
-
-See https://patchwork.ozlabs.org/patch/1383115
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+Jason
