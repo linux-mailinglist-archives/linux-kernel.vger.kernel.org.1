@@ -2,134 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8376B290B71
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876DD290B72
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 20:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392382AbgJPSit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 14:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391980AbgJPSit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 14:38:49 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD3DC061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:38:48 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p15so4573142ejm.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 11:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=2zZ9Bi5ipiBfOedVgWs+s17XKliwMJJo2kx5NuQsO90=;
-        b=NkgS21FMAKTdY8KfT1dAj5/BSF3aJXAiiidrcKTHLpR+HeCQgP1u8BC6v1a7WCRcDq
-         l9xumpHbA3K1/ubMrowrA2PHr8aCyOQhwbhLDO8WcR1U5td02UK2KWdjaldMkfFwq4on
-         2T8LxW2E+LgAqt+l2+dIfTZDQcvMFhFjYUZR/AQjAEFjQxoDkgIBcOclq6WINpwDlrc4
-         otw8k5BzWxOi7Z4wQmcehzqik+2bpzbLkxVKqnDSZX3T0ezM6Oq+xTuoYVSaOsCcj6EC
-         yUU8fl2fYqJzS5Q2QT6JevqBRXef1CXibpcwiAwQnB6o7CvP3qlGxjifIhFFzoPT5PTu
-         FtlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=2zZ9Bi5ipiBfOedVgWs+s17XKliwMJJo2kx5NuQsO90=;
-        b=QruZnbne3olJjlqG0KqU9D5rSbCO+j6WspS2Z5hhzBDqkZqEyTDX90pyHvYoD5DXSo
-         8oEUaIU0W/C6G59LXfgOa1jwMwUUWKOzXzZYUKiX0382eY2DUpyqO2IvwUtHuHNaC1FK
-         00nM0ipYqHqF3Ar4iVJb408sPhl5NztjOcPnjfxT2SCvAc6bSbt/+D1/LOCg6/ojy1ZI
-         wWyeRKF46NAaBL1jbBTs7U2aAm88LyZg1VB3gwhcX3yKwfU8lBEvpP6vCuy5vNfUGOcY
-         vdmggMDsEApft4Ak96elKO1ZKu2aruv8VDw62ViF4bi0LmvExSzDBzon5BSAxtpvn9NF
-         AL0g==
-X-Gm-Message-State: AOAM533MclCAbLVE6SyKG89xGARSSgudWWdl8hfThviuWs57Ll+fB2gA
-        RrcQP4T2bjz7+i5IJ4l0hIaYIQ==
-X-Google-Smtp-Source: ABdhPJwvdBTERxVJGMwUofl3mCYol43bxTqtNRVxrOu8OGKxuymL0NyNUXYNtTPyp+cmdarLmQUpzQ==
-X-Received: by 2002:a17:906:72cb:: with SMTP id m11mr4941541ejl.348.1602873527174;
-        Fri, 16 Oct 2020 11:38:47 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id o13sm2397555ejr.120.2020.10.16.11.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 11:38:46 -0700 (PDT)
-References: <20201016173020.12686-1-jassisinghbrar@gmail.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Cc:     ionela.voinescu@arm.com, khilman@baylibre.com, da@libre.computer,
-        sudeep.holla@arm.com, Jassi Brar <jaswinder.singh@linaro.org>
-Subject: Re: [PATCH] mailbox: avoid timer start from callback
-In-reply-to: <20201016173020.12686-1-jassisinghbrar@gmail.com>
-Date:   Fri, 16 Oct 2020 20:38:45 +0200
-Message-ID: <1jh7quj9sa.fsf@starbuckisacylon.baylibre.com>
+        id S2392435AbgJPSjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 14:39:07 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:21426 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392388AbgJPSjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 14:39:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602873546; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=tghyBVUWLI7t5xbuuIwx+4+eBlmCinuuCN57kJKXtLE=; b=lDczr6lj/Jc5ev7JUOPnTZ95WzOVKs2/38d+S6a0YdufM+9k6cHVw5QDCFdl9/KKhFgNFgrA
+ UK0LRlhB52oSl5DJ7H21VU2CjNdZdkAO49MUe7X+4pPDYG+OU3AkgvmkSJ33E7cVNjLKHtoI
+ USJkxRmXOUZnX4VuRBR6nPJMvrc=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f89e8c94f8cc67c319bc9f8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 18:39:05
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EA502C433F1; Fri, 16 Oct 2020 18:39:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.105] (unknown [49.204.183.234])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34E4FC433CB;
+        Fri, 16 Oct 2020 18:39:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34E4FC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+Subject: Re: [PATCH v2 1/3] clk: qcom: clk-alpha-pll: Add support for
+ controlling Agera PLLs
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org
+References: <1602609110-11504-1-git-send-email-tdas@codeaurora.org>
+ <1602609110-11504-2-git-send-email-tdas@codeaurora.org>
+ <160264125446.310579.18150875025884105137@swboyd.mtv.corp.google.com>
+From:   Taniya Das <tdas@codeaurora.org>
+Message-ID: <1d969460-92c7-ce9a-d727-2c0a31c5d3c5@codeaurora.org>
+Date:   Sat, 17 Oct 2020 00:08:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <160264125446.310579.18150875025884105137@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks Stephen for the review comments.
 
-On Fri 16 Oct 2020 at 19:30, jassisinghbrar@gmail.com wrote:
+On 10/14/2020 7:37 AM, Stephen Boyd wrote:
+> Quoting Taniya Das (2020-10-13 10:11:48)
+>> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+>> index 26139ef..17e1fc0 100644
+>> --- a/drivers/clk/qcom/clk-alpha-pll.c
+>> +++ b/drivers/clk/qcom/clk-alpha-pll.c
+>> @@ -1561,3 +1571,73 @@ const struct clk_ops clk_alpha_pll_postdiv_lucid_ops = {
+>>          .set_rate = clk_alpha_pll_postdiv_fabia_set_rate,
+>>   };
+>>   EXPORT_SYMBOL_GPL(clk_alpha_pll_postdiv_lucid_ops);
+>> +
+>> +void clk_agera_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+>> +                       const struct alpha_pll_config *config)
+>> +{
+>> +       if (config->l)
+>> +               regmap_write(regmap, PLL_L_VAL(pll), config->l);
+> 
+> Maybe make a helper function for this too. That way we can't mix up the
+> if condition with the value in the write.
+> 
 
-> From: Jassi Brar <jaswinder.singh@linaro.org>
->
-> If the txdone is done by polling, it is possible for msg_submit() to start
-> the timer while txdone_hrtimer() callback is running. If the timer needs
-> recheduling, it could already be enqueued by the time hrtimer_forward_now()
-> is called, leading hrtimer to loudly complain.
->
-> WARNING: CPU: 3 PID: 74 at kernel/time/hrtimer.c:932 hrtimer_forward+0xc4/0x110
-> CPU: 3 PID: 74 Comm: kworker/u8:1 Not tainted 5.9.0-rc2-00236-gd3520067d01c-dirty #5
-> Hardware name: Libre Computer AML-S805X-AC (DT)
-> Workqueue: events_freezable_power_ thermal_zone_device_check
-> pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
-> pc : hrtimer_forward+0xc4/0x110
-> lr : txdone_hrtimer+0xf8/0x118
-> [...]
->
-> This can be fixed by not starting the timer from the callback path. Which
-> requires the timer reloading as long as any message is queued on the
-> channel, and not just when current tx is not done yet.
->
-> Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
-> ---
->  drivers/mailbox/mailbox.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-> index 0b821a5b2db8..a093a6ecaa66 100644
-> --- a/drivers/mailbox/mailbox.c
-> +++ b/drivers/mailbox/mailbox.c
-> @@ -82,9 +82,12 @@ static void msg_submit(struct mbox_chan *chan)
->  exit:
->  	spin_unlock_irqrestore(&chan->lock, flags);
->  
-> -	if (!err && (chan->txdone_method & TXDONE_BY_POLL))
-> -		/* kick start the timer immediately to avoid delays */
-> -		hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
-> +	/* kick start the timer immediately to avoid delays */
-> +	if (!err && (chan->txdone_method & TXDONE_BY_POLL)) {
-> +		/* but only if not already active */
+Sure, I will add a helper function.
 
-It would solve the problem I reported as well but instead of running the
-check immediately (timer with value 0), we will have to wait for the
-next of the timer, it is already started. IOW, there might be a delay
-now. I don't know if this important for the mailbox - the existing
-comments in the code suggested it was.
+> 	clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
+> 
+> static void clk_alpha_pll_write_config(struct regmap *regmap,
+> 				       unsigned int reg,
+> 				       unsigned int val) {
+> 	if (val)
+> 		regmap_write(regmap, reg, val);
+> }
+> 
+> and how are we so lucky that zero isn't a value that we may need to
+> write?
+> 
+>> +
+>> +       if (config->alpha)
+>> +               regmap_write(regmap, PLL_ALPHA_VAL(pll), config->alpha);
+>> +
+>> +       if (config->user_ctl_val)
+>> +               regmap_write(regmap, PLL_USER_CTL(pll), config->user_ctl_val);
+>> +
+>> +       if (config->config_ctl_val)
+>> +               regmap_write(regmap, PLL_CONFIG_CTL(pll),
+>> +                                               config->config_ctl_val);
+>> +
+>> +       if (config->config_ctl_hi_val)
+>> +               regmap_write(regmap, PLL_CONFIG_CTL_U(pll),
+>> +                                               config->config_ctl_hi_val);
+>> +
+>> +       if (config->test_ctl_val)
+>> +               regmap_write(regmap, PLL_TEST_CTL(pll),
+>> +                                               config->test_ctl_val);
+>> +
+>> +       if (config->test_ctl_hi_val)
+>> +               regmap_write(regmap,  PLL_TEST_CTL_U(pll),
+>> +                                               config->test_ctl_hi_val);
+>> +}
+>> +EXPORT_SYMBOL_GPL(clk_agera_pll_configure);
+>> +
+>> +static int clk_alpha_pll_agera_set_rate(struct clk_hw *hw, unsigned long rate,
+>> +                                                       unsigned long prate)
+>> +{
+>> +       struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+>> +       u32 l, alpha_width = pll_alpha_width(pll);
+>> +       unsigned long rrate, max = rate + PLL_RATE_MARGIN;
+>> +       u64 a;
+>> +
+>> +       rrate = alpha_pll_round_rate(rate, prate, &l, &a, alpha_width);
+>> +
+>> +       /*
+>> +        * Due to limited number of bits for fractional rate programming, the
+>> +        * rounded up rate could be marginally higher than the requested rate.
+>> +        */
+>> +       if (rrate > (rate + PLL_RATE_MARGIN) || rrate < rate) {
+>> +               pr_err("%s: Rounded rate %lu not within range [%lu, %lu)\n",
+>> +                      clk_hw_get_name(hw), rrate, rate, max);
+>> +               return -EINVAL;
+>> +       }
+> 
+> Can this be extracted into a helper function?
+> 
 
-> +		if (!hrtimer_active(&chan->mbox->poll_hrt))
-> +			hrtimer_start(&chan->mbox->poll_hrt, 0, HRTIMER_MODE_REL);
-> +	}
->  }
->  
->  static void tx_tick(struct mbox_chan *chan, int r)
-> @@ -122,11 +125,10 @@ static enum hrtimer_restart txdone_hrtimer(struct hrtimer *hrtimer)
->  		struct mbox_chan *chan = &mbox->chans[i];
->  
->  		if (chan->active_req && chan->cl) {
-> +			resched = true;
->  			txdone = chan->mbox->ops->last_tx_done(chan);
->  			if (txdone)
->  				tx_tick(chan, 0);
-> -			else
-> -				resched = true;
->  		}
->  	}
+Yes, I will add this too.
 
+>> +
+>> +       /* change L_VAL without having to go through the power on sequence */
+>> +       regmap_write(pll->clkr.regmap, PLL_L_VAL(pll), l);
+>> +       regmap_write(pll->clkr.regmap, PLL_ALPHA_VAL(pll), a);
+>> +
+>> +       if (clk_hw_is_enabled(hw))
+>> +               return wait_for_pll_enable_lock(pll);
+>> +
+>> +       return 0;
+>> +}
+>> +
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
+
+--
