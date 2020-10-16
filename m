@@ -2,144 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC3B290717
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B59290719
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408800AbgJPOXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
+        id S2408810AbgJPOX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394682AbgJPOXD (ORCPT
+        with ESMTP id S2405369AbgJPOX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:23:03 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE45C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:23:01 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id y1so1369920plp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:23:01 -0700 (PDT)
+        Fri, 16 Oct 2020 10:23:26 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1F4C061755;
+        Fri, 16 Oct 2020 07:23:25 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a1so1610208pjd.1;
+        Fri, 16 Oct 2020 07:23:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LHwdoU5xJRXsIFHp7RY/0oU3V0pjRfbeUgAFb2T1xW4=;
-        b=g6ZCIcDKP6R4Jph2TfTQkGUh70t6DdoVqS0y/TZvePe5JAvdrqdYp99+bjdZ5ASIR5
-         Wu2jxrKI/+NN45SEcyOeKbK12b/qPOWFBETR9q+sTATqpgSbNLOh1nGg3OkJ6LgRQ3W8
-         XVjhmnUxyRvN7l29NIsiaygfzCWCfCNIHccQqgrrTexiJVuro9dJ+TFCAV46Oi2lJTla
-         haxU9TxVcUcxe0nehaHeIO6BHE1g/B/lQYnhBRu1FlJP19uCqQUjUqjCRCcIeSAQnb8P
-         P76VZXN5kE3biSDHBA/mMrOjqSaYdPvp+SLeutRJ5dU9StA+nDEGigPdkrbu2kPj/ciw
-         xWZA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bDn8EvSa9x8an2wNno9ij6ESLlfjdp/gDnJjjs9WxmU=;
+        b=Cm0QDu+2zt7x2CsvysYIOUjnnYj2q/soy7Zqe6eZqQb+aAqbK65twV5wmNF1dKVQnn
+         knJHA961m5rK2ShudtgivBA4BQ5Q+TphtpNoplzdxZYl212CndoSc1byVmZ9BXkm+r45
+         huG6daoRdIDTe9DxY4gcl5r5JVlwD6hNxuTZ/1DHtu1M12jnc4jwT+fYeI+SbcmlbO3M
+         o5vwuPm1SfNBm51GlFNk7+QK8+Vku3eRGLF7ytMNTSVNKt3AqaRfavKa5DqVuBkXUwLN
+         wnQlYwQD2Rsd1WpFxcymfK5WZ/gYaJrmUkQPPmdiZyA+d0xeniy5NxqXfBFIOckOUR1x
+         OJIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LHwdoU5xJRXsIFHp7RY/0oU3V0pjRfbeUgAFb2T1xW4=;
-        b=Enfzujdt69q669kbfG6B1mjUim3aHvLrvwfoX5zS2zvniwIBQBXNDwzftGXhcg8Zrs
-         vkpNUTl5jZTwFm/Rauz9LhquMAZSBZTD7wkOTebuRd3WNiQHanKQ5zySB6xQ/W8zF0iK
-         F7oHECh1vKMqzSBGrpv32Cz4u1GLYdGgLNsn2G/mJROQO4zptm9kwFGWPn/WN+O4dpeF
-         Le0FxLuHcGppp+7eYQp3vQOlO0T1xJdh5YRijl30W+fsDyV2KKwO+lVQAYeW0jkhpIZS
-         eE6WtuZhy6iiZ5WwPRIvBhWbICe/lSucBsdwVcm4RLq+A4A4UUe2OD+4Yhp7+rFk7osg
-         UTsw==
-X-Gm-Message-State: AOAM532olvsQKn6FvaPWtLxot/0/dfoAH8Vw8WdPvs7btbWB+eUZaA+H
-        mOUwTlTuTmYX86rbe6hWIDRR5Q==
-X-Google-Smtp-Source: ABdhPJzJ0RVgSYxH+7F+93XvFAj/08Bjf+7yp4Jr7//ZJrpsUt8SWpsGJCSes2rz6rr7cBp65Qs+Dg==
-X-Received: by 2002:a17:902:ec02:b029:d1:fc2b:fe95 with SMTP id l2-20020a170902ec02b02900d1fc2bfe95mr4446705pld.79.1602858180993;
-        Fri, 16 Oct 2020 07:23:00 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id 66sm2882105pgd.84.2020.10.16.07.22.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Oct 2020 07:23:00 -0700 (PDT)
-Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        peterz@infradead.org, Roman Gershman <romger@amazon.com>
-References: <20201015131701.511523-1-axboe@kernel.dk>
- <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com>
- <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk>
- <87a6wmv93v.fsf@nanos.tec.linutronix.de>
- <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
- <87d01itg4z.fsf@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5b04c6c1-28df-4810-8382-f9a418d72267@kernel.dk>
-Date:   Fri, 16 Oct 2020 08:22:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bDn8EvSa9x8an2wNno9ij6ESLlfjdp/gDnJjjs9WxmU=;
+        b=LNTaJIlZ/6QEvUVu/h1DbZxJdm3nR4HkldYQQRhoa9HMb1rGE3eD97UdB86Y+5V8gV
+         xPwfb/Vqa5Bsl2YJPVy5/MjyuD8MEXvlnfGZ4mernshVtSzIHiT0dvjsGTYaaobgPqvb
+         UuXJL0Qo8fIw/Ro+afxUTMN2PKt77nX0LJm/35XBxLVBGhlXFZURR7Uy3rqR5Gv6WS0X
+         IBWO0mvArnTtlRCPW+PelWQTYo6x09ZHWs21Z53x9OEuZFKFifvVvUc+nyvDVydoXMVu
+         Z3ppkIimICwAGH/AoLaI99b+ir7yPItk22YF6wZAL94606HKYEkELnlwEz3x/q+YBE+z
+         FnvQ==
+X-Gm-Message-State: AOAM533WodrvmFOapIFyhiS+el46fVUlAzrWLJBGl+sNBGqrvXS1CFQa
+        pwS8TdrQVnd1OJCAVBAKOvvoTjIv1x1RuhKwGsvLKpq4F6CyR1Br
+X-Google-Smtp-Source: ABdhPJwwRTj7vSKIcksqdqRdeNJRiJuCowW8CKyw+E6kIGyswpUPhF3HMDpQTxqh6ySRsi7g0BT2PwS2bHIOUPOzl8g=
+X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr4090150pjs.181.1602858205436;
+ Fri, 16 Oct 2020 07:23:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87d01itg4z.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201014062921.79112-1-warthog618@gmail.com>
+In-Reply-To: <20201014062921.79112-1-warthog618@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 16 Oct 2020 17:24:14 +0300
+Message-ID: <CAHp75Ve7TspiCredTu48AwstS4YUnfKTHzvuxvhq_-c9697igg@mail.gmail.com>
+Subject: Re: [PATCH v2] gpiolib: cdev: document that line eflags are shared
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/20 8:11 AM, Thomas Gleixner wrote:
-> Jens,
-> 
-> On Fri, Oct 16 2020 at 07:33, Jens Axboe wrote:
->> On 10/16/20 3:00 AM, Thomas Gleixner wrote:
->> I totally agree, and we're on the same page. I think you'll find that in
->> the past I always carry through, the task_work notification was somewhat
->> of a rush due to a hang related to it. For this particular case, the
->> cleanups and arch additions are pretty much ready to go.
-> 
-> As we seem to be on the same page with this, let me suggest how this
-> should go:
-> 
-> 1) A cleanup for the task_work_add() mess. This is trivial enough and
->    should go in before rc1.
+On Wed, Oct 14, 2020 at 12:21 PM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> The line.eflags field is shared so document this fact and highlight it
+> throughout using READ_ONCE() and WRITE_ONCE() accessors.
+>
+> Also use a local copy of the eflags in edge_irq_thread() to ensure
+> consistent control flow even if eflags changes.  This is only a defensive
+> measure as edge_irq_thread() is currently disabled when the eflags are
+> changed.
 
-No problem, I'll get that posted shortly.
+> -       if (line->eflags == (GPIO_V2_LINE_FLAG_EDGE_RISING |
+> -                            GPIO_V2_LINE_FLAG_EDGE_FALLING)) {
+> +       eflags = READ_ONCE(line->eflags);
+> +       if (eflags == (GPIO_V2_LINE_FLAG_EDGE_RISING |
+> +                      GPIO_V2_LINE_FLAG_EDGE_FALLING)) {
 
-> 2) The TIF_NOTIFY_RESUME change is a nice cleanup on it's own and can go
->    before rc1 as well.
+Hmm... side note: perhaps at some point
 
-Would you mind taking that one? It's good to go.
+#define GPIO_V2_LINE_FLAG_EDGE_BOTH  \
+        (GPIO_V2_LINE_FLAG_EDGE_RISING | GPIO_V2_LINE_FLAG_EDGE_FALLING)
 
-> 3) Core infrastructure (patch 2 + 3 + 5) of this series
-> 
->    Please make the changes I asked for in the generic entry code and
->    moving the handling into get_signal() for everybody else.
-> 
->    So get_signal() gains:
-> 
->      if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) {
-> 	 (test_thread_flag(TIF_NOTIFY_SIGNAL))
-> 		tracehook_notify_signal();
-> 
->          if (!task_sigpending(current))
->  		return 0;
->      }
-> 
->    And with that you don't have to touch do_signal() in any architecture
->    except x86 which becomes:
-> 
->    arch_do_signal_or_restart(bool sigpending)
+       if (eflags == GPIO_V2_LINE_FLAG_EDGE_BOTH) {
 
-Already did most of this, just need to handle the !CONFIG_GENERIC_ENTRY
-for get_signal() and adapt the existing non-generic arch patches to
-this.
-
-> 4) Conversion of all architectures which means adding the TIF bit.
-> 
->    If the architecture folks are happy, then this can be collected in
->    tip, which would be preferred because then 
-
-Mostly done,
-> 
-> 5) Cleanups
-> 
->    can just go on top.
-> 
-> Hmm?
-
-Sounds good to me, as long as we keep the existing ordering with
-x86/generic TIF_NOTIFY_SIGNAL support being able to move forward
-before all archs have acked the arch specific change. Doesn't really
-change how I'll get it done, and we're mostly there. Just don't
-anything gated on potential slowest common denominator.
+?
 
 -- 
-Jens Axboe
-
+With Best Regards,
+Andy Shevchenko
