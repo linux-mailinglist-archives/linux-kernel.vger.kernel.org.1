@@ -2,114 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0144290AFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6F42908EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 17:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390689AbgJPRxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:53:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733113AbgJPRxn (ORCPT
+        id S2410470AbgJPPy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 11:54:28 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:42499 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408822AbgJPPy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:53:43 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA81C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:53:43 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id c196so3235455ybf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:53:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=q7DWLNuboaXQBizRCQAQyueFvatCQ/DSdeo5vJZMrAY=;
-        b=rgKPCbJGLgft+BSGYv5zU9/B8Fy2RR+adQX6+Xf0skJuSDykgcLy8PP/FGtBkOdBVH
-         AMijgr+kUt7Uh/XEvDxBd88PmIts4b//UJxphGkJZF1Ff9w+JakMuXNcWxSLmcVtB6pD
-         h1cZB00Da89unxkxHrGSVGS3k7Tmd1IruIE5WBsvfYvzRX1Cx7pGVub+I1oLAB5nPt07
-         PpAlbde98kNk23Fk9uikgX+xf9/rgGF7ohlQ0t4Tg2lSVlndiphVNJq326MpPER0xCQo
-         zRb0fcxyqIgFTxXVplWLPJVFPGERwp2nHs6Nfg0pms8kJHw1PNN2ixfEvAuY4C3w0biJ
-         8o2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=q7DWLNuboaXQBizRCQAQyueFvatCQ/DSdeo5vJZMrAY=;
-        b=Idw7GjOPfCtB6rJr9KGvznVKR6td1ibzWdq7dPc8GVHjhy9uh7ScBqfmetoJAfresM
-         esrVihXulYoNeJhLpNnLuPG0cCYgFuofaZRuQWkKT7dYR8eYKJZJiyaP02RCUmr45qpV
-         sYGPSx5k1cr9zQfeNSQKPWrdC4ob/qcQ3iPazrXd7AWUI4YvD2DL6NI4UG4Na5FLkqt+
-         njczo8ZOF4aBO10+B+tRlMe8TWao+JdXrURzhoX4LxvajPV4DSHKuuHciD/CRtLUTq7K
-         fUMriYKwL0kBeSOVC/Q6hRMcAPRj3ZuWly55ZMVNXh6X3fyFNhxq4BQv73xpeItVU6CM
-         SqdA==
-X-Gm-Message-State: AOAM532uoAXsYU8iG5Ejm940ffWhPMBFZKdRxZbmluJcnSRl6g3Wsmj9
-        BYPLdMUbB5r0baOqBxbPDmab0MnSoMCpLW+ChuI=
-X-Google-Smtp-Source: ABdhPJxSuVrQnN6q9GhwE9ZaMkTMGQu9k93WTjejDlDTW3Rfwy3zO1f9pPDT45mRIMg3cPkVRP6J9lEdwpAGYIN1t5Y=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:9009:: with SMTP id
- s9mr7105616ybl.471.1602870822453; Fri, 16 Oct 2020 10:53:42 -0700 (PDT)
-Date:   Fri, 16 Oct 2020 10:53:39 -0700
-Message-Id: <20201016175339.2429280-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH] arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Peter Smith <Peter.Smith@arm.com>,
-        "=?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?=" <maskray@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 16 Oct 2020 11:54:27 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 620264000A;
+        Fri, 16 Oct 2020 15:54:20 +0000 (UTC)
+Date:   Fri, 16 Oct 2020 19:54:06 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Eugen.Hristev@microchip.com
+Cc:     laurent.pinchart@ideasonboard.com, robh+dt@kernel.org,
+        sakari.ailus@iki.fi, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: media: atmel: csi2dc: add bindings
+ for microchip csi2dc
+Message-ID: <20201016175406.meg2wbsjmhj4xf7z@uno.localdomain>
+References: <20200826065142.205000-1-eugen.hristev@microchip.com>
+ <20201010211743.GB3939@pendragon.ideasonboard.com>
+ <c5d27d11-891b-afd8-0be1-02bf5eb8bef9@microchip.com>
+ <20201012130425.2rszhgd7eh7nffrv@uno.localdomain>
+ <c473748a-18f9-082a-9121-9c04c663e434@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c473748a-18f9-082a-9121-9c04c663e434@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_EXPERT=y, CONFIG_KASAN=y, CONFIG_RANDOMIZE_BASE=n,
-CONFIG_RELOCATABLE=n, we observe the following failure when trying to
-link the kernel image with LD=ld.lld:
+Hello Eugen,
 
-error: section: .exit.data is not contiguous with other relro sections
+On Fri, Oct 16, 2020 at 12:30:59PM +0000, Eugen.Hristev@microchip.com wrote:
+> On 12.10.2020 16:04, Jacopo Mondi wrote:
+> > Hello,
+> >     just my 2 cents, as I've noticed this patch skimming through the
+> >     list
+> >
+> > On Mon, Oct 12, 2020 at 07:19:43AM +0000, Eugen.Hristev@microchip.com wrote:
 
-ld.lld defaults to -z relro while ld.bfd defaults to -z norelro. This
-was previously fixed, but only for CONFIG_RELOCATABLE=y.
+[snip]
 
-Cc: stable@vger.kernel.org
-Fixes: commit 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker script and options")
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-While upgrading our toolchains for Android, we started seeing the above
-failure for a particular config that enabled KASAN but disabled KASLR.
-This was on a 5.4 stable branch.  It looks like
-commit dd4bc6076587 ("arm64: warn on incorrect placement of the kernel by the bootloader")
-made RELOCATABLE=y the default and depend on EXPERT=y. With those two
-enabled, we can then reproduce the same failure on mainline.
+>
+> Hi,
+>
+> Thanks for helping,
+> >
+> > Is this property describing the CSI-2 clock continuous, non-continuous
+> > mode configuration, or did I mis-interpreted it ?
+>
+> I think so. This is a setting inside the csi2dc regarding clock. If we
+> can obtain it from pads operations, then it's good, but the question is,
+> if the devices can provide this or not ?
 
+The transmitter can provide this information, as it knows which clock
+mode it is going to use (it's not clear from the CSI-2 spec which side
+is in charge of the selection, but it seems natural to me that it's up
+to the transmitter side). Whether they implement the right operation
+to do so, well... see below
 
- arch/arm64/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > We added support for retrieving run-time configuration of the media
+> > bus with the get_mbus_config pad operations recently. Among the
+> > configuration flags for MBUS_CSI2_DPHY there are inded CONTINUOUS and
+> > NON_CONTINUOUS clock flags.
+> >
+> >>>
+> >>>> +
+> >>>> +  microchip,inter-line-delay:
+> >>>> +    allOf:
+> >>>> +    - $ref: /schemas/types.yaml#/definitions/uint32
+> >>>> +    - minimum: 1
+> >>>> +    - maximum: 16
+> >>>> +    default: 16
+> >>>> +    description:
+> >>>> +      Indicates how many clock cycles should be introduced between each line.
+> >>>
+> >>> This also sounds like a configuration parameter. How does one compute
+> >>> the right value for this ?
+> >>
+> >> I think this is a delay that can be added inside the hardware block,
+> >> depending on the interface speed and bandwidth. I will try to understand
+> >> more details from the hardware design and come back with a more detailed
+> >> answer.
+> >>
+>
+> Regarding this, I will remove it. Our design team advised to have a
+> hardcoded value for this product.
+>
+> >>>
+> >>>> +
+> >>>> +
+> >>>> +        properties:
+> >>>> +          reg:
+> >>>> +            enum: [0, 1, 2, 3]
+> >>>> +            description: virtual channel for the endpoint
+> >>>
+> >>> The virtual channel used by the source is also something that needs to
+> >>> be queried from the source at runtime, it doesn't belong to this
+> >>> binding.
+> >>
+> >> The same question as for the gated clock configuration. How can we use
+> >> v4l2 subdevice API to obtain such information from the subdevice? And if
+> >> the subdevice does not offer such information ?
+> >
+> > I think the subdev driver should be instrumented to report it instead of
+> > hard-coding the information in DT which should be otherwise updated
+> > depending on which sensor is connected to the board. Does it make
+> > sense to you ?
+>
+> It does, but then, it won't work unless connected to instrumented
+> subdevices. Which is not really something I would do, since it would
+> completely limit the usability.
+> Do you have any example on how to get the virtual id from the subdev ?
 
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index f4717facf31e..674241df91ab 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -10,13 +10,13 @@
- #
- # Copyright (C) 1995-2001 by Russell King
- 
--LDFLAGS_vmlinux	:=--no-undefined -X
-+LDFLAGS_vmlinux	:=--no-undefined -X -z norelro
- 
- ifeq ($(CONFIG_RELOCATABLE), y)
- # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
- # for relative relocs, since this leads to better Image compression
- # with the relocation offsets always being zero.
--LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext -z norelro \
-+LDFLAGS_vmlinux		+= -shared -Bsymbolic -z notext \
- 			$(call ld-option, --no-apply-dynamic-relocs)
- endif
- 
--- 
-2.29.0.rc1.297.gfa9743e501-goog
+As examples of CSI-2 transmitters implementing get_mbus_config() we
+have tc358743 and adv748x reporting the number of active data lanes.
 
+Reporting the virtual channel in use is a matter of using one of the
+following flags:
+
+/* CSI-2 Virtual Channel identifiers. */
+#define V4L2_MBUS_CSI2_CHANNEL_0		BIT(4)
+#define V4L2_MBUS_CSI2_CHANNEL_1		BIT(5)
+#define V4L2_MBUS_CSI2_CHANNEL_2		BIT(6)
+#define V4L2_MBUS_CSI2_CHANNEL_3		BIT(7)
+
+As an example of a receiver driver rcar-csi2 uses the operation to
+dynamically negotiate the number of data lanes. To handle virtual
+channel you would need to inspect which of the above flags have been
+set by the subdevice.
+
+On deciding if this better handled by using a subdev operation or a DT
+property, I understand the subdev driver needs to implement
+get_mbus_config, but hardcoding it in DT I fear is a no-go for
+mainline and honestly it doesn't sound much more advantageous, as it
+needs to be adapted according to the connected sensor anyway, doesn't
+it ? But I'm happy to defer this call to the maintainers, I hope I
+just have provided some useful references.
+
+Cheers
+   j
+
+>
+> Thanks again,
+>
+> Eugen
+> >
+> > Cheers
+> >     j
+> >
+> >>
+> >> Thanks again,
+> >>
+> >> Eugen
+> >>>
+> >>>> +
+> >>>> +          remote-endpoint: true
+> >>>> +
+> >>>> +        required:
+> >>>> +          - remote-endpoint
+> >>>> +          - reg
+> >>>> +
+> >>>> +        additionalProperties: false
+> >>>> +
+> >>>> +    additionalProperties: false
+> >>>> +
+> >>>> +required:
+> >>>> +  - compatible
+> >>>> +  - reg
+> >>>> +  - clocks
+> >>>> +  - clock-names
+> >>>> +  - port@0
+> >>>> +
+> >>>> +examples:
+> >>>> +  - |
+> >>>> +    csi2dc@e1404000 {
+> >>>> +        compatible = "microchip,sama7g5-csi2dc";
+> >>>> +        #address-cells = <1>;
+> >>>> +        #size-cells = <0>;
+> >>>> +        reg = <0xe1404000 0x500>;
+> >>>> +        clocks = <&pclk>, <&scck>;
+> >>>> +        clock-names = "pclk", "scck";
+> >>>> +
+> >>>> +        port@0 {
+> >>>> +               reg = <0>; /* must be 0, first child port */
+> >>>> +               csi2dc_in: endpoint { /* input from IDI interface */
+> >>>> +                     remote-endpoint = <&csi2host_out>;
+> >>>> +               };
+> >>>> +        };
+> >>>> +
+> >>>> +        port@1 {
+> >>>> +                #address-cells = <1>;
+> >>>> +                #size-cells = <0>;
+> >>>> +                reg = <1>; /* must be 1, second child port */
+> >>>> +                csi2dc_out: endpoint@2 {
+> >>>> +                        reg = <2>;  /* virtual channel identifier */
+> >>>> +                        remote-endpoint = <&xisc_in>; /* output to sensor controller */
+> >>>> +                };
+> >>>> +        };
+> >>>> +    };
+> >>>> +
+> >>>> +...
+> >>>
+> >>> --
+> >>> Regards,
+> >>>
+> >>> Laurent Pinchart
+> >>>
+> >>
+>
