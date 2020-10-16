@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496CF290E15
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38492290E19
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Oct 2020 01:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411024AbgJPXRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 19:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        id S2411394AbgJPXVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 19:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393118AbgJPXQy (ORCPT
+        with ESMTP id S2410893AbgJPXVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 19:16:54 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9426EC061755;
-        Fri, 16 Oct 2020 16:16:54 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id p11so2053758pld.5;
-        Fri, 16 Oct 2020 16:16:54 -0700 (PDT)
+        Fri, 16 Oct 2020 19:21:40 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583F4C061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:21:56 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id j8so4554966ilk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 16:21:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=x6hSFVlaJgCB8hg2RJUELUmJfgX8zfnwtAOEG3X8KRk=;
-        b=GmE8xczXXqnrMh3MsLpg+HZZ9Er+EYhFt4ttU688FcVbfAZWL2aUg3lPGDBItpw2oR
-         el5T7eKC2o05aL0HbiSPsPh/XKeedj7iQPVheNZ1SgVUlk5d5lgSeMi8n/hC2sQKgXZR
-         +xMLQFwgJRI1t/UjNTsRl3q9uPKkzO9rElgGeKIhQsWhIl7/QBaRPg3UJg4MY5PnDP/w
-         +5/GF9W5QGBoPHSwLaprExL/4ZjYM1LwZMa2FYKKkfy6pjpHEcPXdtvYLcuwV1j8UiVt
-         WoXTqzwHLOSxZgUAmHgadE2iFEO9GFjv5ltQgjdSIMdZp2BtPJhF5HLXrO35APqf/xn9
-         zn1Q==
+        bh=8ulZ+tmdqBb+S0GzKOYD5fGwSZeOurFPRpc1Xyo7iyc=;
+        b=euz46EZxLI9Anl4rbigu2pBhX9aMKb3nLNFgytSoAzzEqHArebFezY2UQFuF6yZi78
+         7BV5knmNrMDGVavcJpxNx+rfC1XKoF67IV+kiB/vrFKgXWI8/Ha6V0blusE083OXVDbp
+         mVJWjIvA9cwEyqCjyBouIC4W2lsyqurDIAvKefJj0e+CZOwzKhd5aX50Yz/wOaJdmFBx
+         pdIrh/HLFlrHC8NR8zcr1N6shVvwtnP5gD/Q60zy6Yo694nxG8XYi4seRD14PxjJYGU1
+         KtfzdqUypV2SjOWNCUb4kq6vzGkHXadbDsnI8rFJcQ7knwhKrPgp2Fk9UbaKka1PL/fT
+         kdWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=x6hSFVlaJgCB8hg2RJUELUmJfgX8zfnwtAOEG3X8KRk=;
-        b=XrEr4igDYZoJEvt0rubdMkkpI4Dft3SuEaKNacRm0o1UuF37fpy2ofJ8CgzrQmwKnH
-         DfMy9rJ6UJbOcAMZXoj7zXEjLWcwe/tl+N+PSMbX2jlGwXMHg/BxXnyJgtxLDeNrgBpt
-         SePc+T6FPArfg5kUr3YXlmiGGPuojkpzLU2bZ8TpAD3Wz+7Ip3eP750v0wITSRTHh9rr
-         aFvsL+lIkVVxsYF1m0uk/fHDstqVjYf1n4yQeGXUA98uXrq9Syn7WPa/IPFqkhRid3y0
-         nfR1Sx5k3UrvFhPyd8tUURgT1/5/JW1z8ysD1xJh9sLl/GOEwPvUIAiEnHetVZmAWGdn
-         2xKg==
-X-Gm-Message-State: AOAM533VQX1ZbuA76JNTkYQ9pnWqww/kEY0mYbxgvxXH41VudtDP+6Tm
-        6SEperwUQn69ZAzM2Bed2RI=
-X-Google-Smtp-Source: ABdhPJyQi7b1KBOmbhj++1AhiYXfPqOsE3wSaoA35psvMQoboX5Xz1e04PbFQtYG9v9LtdvsL1bfPA==
-X-Received: by 2002:a17:90a:f0ca:: with SMTP id fa10mr6196925pjb.130.1602890214147;
-        Fri, 16 Oct 2020 16:16:54 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id z12sm3928887pfr.197.2020.10.16.16.16.53
+        bh=8ulZ+tmdqBb+S0GzKOYD5fGwSZeOurFPRpc1Xyo7iyc=;
+        b=Ssx5NoY3De3/AeswWH+UWgPipuH2SmIiWU8B+/Zrcc2JP7aZXBBsMyBLWzq6uyDnhv
+         qoCjPxVmoP2QbbBrSuXB2/1zcQ18nHHvoJ6HnNRRsgQfNj82d8D5XVKePdowAirAxdlQ
+         vgAPt/2BFFpt12imWASAA5qY8djiw7pedl55Vm5B+oKhxuIDsHQBdnWvPkZnYfoWnJW6
+         N3ucuLmGrFcer7oCrE07VKxF05aFWCgtJ9quMyZ8ZarklZq/xtHNJzgBlHpdQ4GcMLxF
+         +uZJgcjsqm0HS47bYi428h9DeaeeoPVf1Fd4TOQGfxBz3kNfZwJ18992sdojOTjBc92P
+         o1jg==
+X-Gm-Message-State: AOAM530e+y+gwfZloho9h/U1nz6UiAZis+Q2pOhWcuoLJ4MVBQUm1y5q
+        p/DNe1nOiJmnzjwQlJTb3AAX1Q==
+X-Google-Smtp-Source: ABdhPJzjFd8h3bHaBoh0ogIzaDiyMMdYUfkan6OvINr5ocgY2Acjoku40/3OIptHi7g/ZGy1gzm0Sg==
+X-Received: by 2002:a92:d5c1:: with SMTP id d1mr4372060ilq.212.1602890515637;
+        Fri, 16 Oct 2020 16:21:55 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 144sm4089074ila.42.2020.10.16.16.21.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2020 16:16:53 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Sat, 17 Oct 2020 07:16:31 +0800
-To:     Benjamin Poirier <benjamin.poirier@gmail.com>
-Cc:     devel@driverdev.osuosl.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/7] staging: qlge: replace ql_* with qlge_* to avoid
- namespace clashes with other qlogic drivers
-Message-ID: <20201016231631.efwu5a4a5f3jnrzv@Rk>
-References: <20201014104306.63756-1-coiby.xu@gmail.com>
- <20201014104306.63756-2-coiby.xu@gmail.com>
- <20201015010136.GB31835@f3>
+        Fri, 16 Oct 2020 16:21:54 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kTZ2n-001Abo-Uc; Fri, 16 Oct 2020 20:21:53 -0300
+Date:   Fri, 16 Oct 2020 20:21:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Eric Biederman <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC PATCH resend 3/6] mm: Add refcount for preserving mm_struct
+ without pgd
+Message-ID: <20201016232153.GD37159@ziepe.ca>
+References: <20201016230915.1972840-1-jannh@google.com>
+ <20201016230915.1972840-4-jannh@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201015010136.GB31835@f3>
+In-Reply-To: <20201016230915.1972840-4-jannh@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 10:01:36AM +0900, Benjamin Poirier wrote:
->On 2020-10-14 18:43 +0800, Coiby Xu wrote:
->> To avoid namespace clashes with other qlogic drivers and also for the
->> sake of naming consistency, use the "qlge_" prefix as suggested in
->> drivers/staging/qlge/TODO.
->>
->> Suggested-by: Benjamin Poirier <benjamin.poirier@gmail.com>
->> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
->> ---
->>  drivers/staging/qlge/TODO           |    4 -
->>  drivers/staging/qlge/qlge.h         |  190 ++--
->>  drivers/staging/qlge/qlge_dbg.c     | 1073 ++++++++++++-----------
->>  drivers/staging/qlge/qlge_ethtool.c |  231 ++---
->>  drivers/staging/qlge/qlge_main.c    | 1257 +++++++++++++--------------
->>  drivers/staging/qlge/qlge_mpi.c     |  352 ++++----
->>  6 files changed, 1551 insertions(+), 1556 deletions(-)
->>
->> diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
->> index f93f7428f5d5..5ac55664c3e2 100644
->> --- a/drivers/staging/qlge/TODO
->> +++ b/drivers/staging/qlge/TODO
->> @@ -28,10 +28,6 @@
->>  * the driver has a habit of using runtime checks where compile time checks are
->>    possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
->>  * reorder struct members to avoid holes if it doesn't impact performance
->> -* in terms of namespace, the driver uses either qlge_, ql_ (used by
->> -  other qlogic drivers, with clashes, ex: ql_sem_spinlock) or nothing (with
->> -  clashes, ex: struct ob_mac_iocb_req). Rename everything to use the "qlge_"
->> -  prefix.
->
->You only renamed ql -> qlge. The prefix needs to be added where there is
->currently none like the second example of that text.
+On Sat, Oct 17, 2020 at 01:09:12AM +0200, Jann Horn wrote:
+> Currently, mm_struct has two refcounts:
+> 
+>  - mm_users: preserves everything - the mm_struct, the page tables, the
+>    memory mappings, and so on
+>  - mm_count: preserves the mm_struct and pgd
+> 
+> However, there are three types of users of mm_struct:
+> 
+> 1. users that want page tables, memory mappings and so on
+> 2. users that want to preserve the pgd (for lazy TLB)
+> 3. users that just want to keep the mm_struct itself around (e.g. for
+>    mmget_not_zero() or __ptrace_may_access())
+> 
+> Dropping mm_count references can be messy because dropping mm_count to
+> zero deletes the pgd, which takes the pgd_lock on x86, meaning it doesn't
+> work from RCU callbacks (which run in IRQ context). In those cases,
+> mmdrop_async() must be used to punt the invocation of __mmdrop() to
+> workqueue context.
+> 
+> That's fine when mmdrop_async() is a rare case, but the preceding patch
+> "ptrace: Keep mm around after exit_mm() for __ptrace_may_access()" makes it
+> the common case; we should probably avoid punting freeing to workqueue
+> context all the time if we can avoid it?
+> 
+> To resolve this, add a third refcount that just protects the mm_struct and
+> the user_ns it points to, and which can be dropped with synchronous freeing
+> from (almost) any context.
+> 
+> Signed-off-by: Jann Horn <jannh@google.com>
+> ---
+>  arch/x86/kernel/tboot.c    |  2 ++
+>  drivers/firmware/efi/efi.c |  2 ++
+>  include/linux/mm_types.h   | 13 +++++++++++--
+>  include/linux/sched/mm.h   | 13 +++++++++++++
+>  kernel/fork.c              | 14 ++++++++++----
+>  mm/init-mm.c               |  2 ++
+>  6 files changed, 40 insertions(+), 6 deletions(-)
 
-On second thoughts, these structs like ob_mac_iocb_req are defined in
-local headers and there is no mixed usage. So even when we want to
-build this diver and other qlogic drivers into the kernel instead of
-as separate modules, it won't lead to real problems, is it right?
->
->Besides, the next patch reintroduces the name struct ql_adapter.
+I think mmu notifiers and the stuff in drivers/infiniband/core/ can be
+converted to this as well..
 
---
-Best regards,
-Coiby
+Actually I kind of wonder if you should go the reverse and find the
+few callers that care about the pgd and give them a new api with a
+better name (mmget_pgd?).
+
+Jason
