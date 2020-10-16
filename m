@@ -2,216 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99298290ADE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26034290AE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 19:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391990AbgJPRga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 13:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
+        id S2388449AbgJPRkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 13:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732266AbgJPRgY (ORCPT
+        with ESMTP id S1732250AbgJPRkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 13:36:24 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1386C061755
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:36:23 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id g16so1755042pjv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:36:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b0NxEiR9ivavFc0Jqy/jtl7ltzxrQHnl1HNNW0pqUTw=;
-        b=hS7kj0TplfyP1Xsxf+GvR6o8Q1+dUSCCUeVywv4xj3dNlGqTMlArTmTdQ2fchuFikv
-         zB0/H3LOTPHBdC2uXkIZvvE4OwGsKBOVF0GlUqG8/lLVdaUd/5EVl5HuVFF4qDCB+CEb
-         3hsxOPX1Tpka3rRW3QVWiSA2PR5YqFpkc9ofeoirgrHTnl23RxUWFQw+GHwDc7q1JCT6
-         sVqzkC3D6Da9Ye3DgTwvqtqeWP5mCnZgxEbfgRtu8+oJWLGnTekBOQqMShl1d84ia8vG
-         4o2BA99yCY7vr3f+0Flpln7E0cdJByTx5IU2WUe9hlZxOX6uyyH/aks5qmEdHPn4kUJP
-         7NIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b0NxEiR9ivavFc0Jqy/jtl7ltzxrQHnl1HNNW0pqUTw=;
-        b=RgqjhYQqSgXW4bZ1cveNK8hMHN4fWw8lUxQmT09FRcNiCDtWJSZ3k9nmjFYlHkgF4k
-         fpEcTcB+EpUZjwMOHSNoN7Sktju7LxT/vJkbYkD9hEm0aegQ3doLj1zUY4QGvQOosSLc
-         c1bl5T95ZgF0yIKV3uBQiS1C7T7yhA7QtRb8oZQkihsUy42crHmUJm4nID3q516CRTp8
-         +L8hsUMaIXWTonRnPvMoB18MqK73JbcBdk8NJCZc+fQJ/e+9foHEPVHekmYyWWI/vQh5
-         Wb0bAYFrCX48k4YYoKkdoIqknAH0+n0jCWx7SFosgYZEpEvUEVrZ8Z5ZBR+Fux9I7VXm
-         v7Ag==
-X-Gm-Message-State: AOAM533xIHWF8494tJ2MGBAJzYK4xS9IaW2vj1+1y6aoxswW54mL4Ipd
-        F+25mtIaEhrAQjA0UpjlVHJHzw==
-X-Google-Smtp-Source: ABdhPJwfPtalLr/bCxHuL1IwRgnEbvznCze5AWo10rbFuYNnABsfCtIq1/D1HANP9gHXMRYGugZvZg==
-X-Received: by 2002:a17:90b:3010:: with SMTP id hg16mr4856194pjb.21.1602869783273;
-        Fri, 16 Oct 2020 10:36:23 -0700 (PDT)
-Received: from [10.213.166.74] ([192.55.54.40])
-        by smtp.gmail.com with ESMTPSA id 8sm3554202pfj.44.2020.10.16.10.36.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 16 Oct 2020 10:36:22 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 10/15] PCI/ERR: Limit AER resets in pcie_do_recovery()
-Date:   Fri, 16 Oct 2020 10:36:19 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <7E259265-CE19-450D-A902-6C531690939D@intel.com>
-In-Reply-To: <20201016172210.GA86168@bjorn-Precision-5520>
-References: <20201016172210.GA86168@bjorn-Precision-5520>
+        Fri, 16 Oct 2020 13:40:01 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B06AC061755
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 10:40:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=R0mypQamIs9PrXy5bHGToqca7ODD6+Ny7S1/CFfb2yc=; b=I7mTumPXDmlb+ddOtYMIsVyKjn
+        qKb8I8MfJ5cxJTMLFcPFQoTsVO0Fl951lKjgPvGaL2ahtCyM9MOvPw9Cjji3yH4Mh8DkmQVYulDvE
+        Du2T4G1AsIneiXXcH04DxDeFqp3DBPBtadu70dDtq4FzQ4+EBV92sq/Exjzzl4EjFihAPJZfOyq/k
+        xH4M8XPM3QGtwElVYAKp8d+PdEOwmbezQD/D0EM3Hoq9gMV/y0jHjEzFXXm+0T7/u25oV+K6dLZqn
+        juN2MpQPKv6YLbFH1UDiKRnR8feur3yEYtgz8RbbYBBvVE2CBpKg/2bZF9dfKCYp5fsyw0FTLLC74
+        9Ue92Khw==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kTThn-00023v-8b; Fri, 16 Oct 2020 17:39:51 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        moderated for non-subscribers <alsa-devel@alsa-project.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] ASoC: qcom: MSM8996 depends on COMMON_CLK
+Message-ID: <548bb7f8-672d-3d95-0d78-cef1c9837a42@infradead.org>
+Date:   Fri, 16 Oct 2020 10:39:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16 Oct 2020, at 10:22, Bjorn Helgaas wrote:
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> On Thu, Oct 15, 2020 at 05:11:08PM -0700, Sean V Kelley wrote:
->> From: Sean V Kelley <sean.v.kelley@intel.com>
->>
->> In some cases a bridge may not exist as the hardware controlling may =
+Fix a kconfig warning in sound/soc/qcom:
 
->> be
->> handled only by firmware and so is not visible to the OS. This =
+WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y] && COMMON_CLK [=n]
+  Selected by [y]:
+  - SND_SOC_MSM8996 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=y]
 
->> scenario is
->> also possible in future use cases involving non-native use of RCECs =
+This is needed because 'select' does not follow dependency chains.
 
->> by
->> firmware.
->>
->> Explicitly apply conditional logic around these resets by limiting =
+Fixes: a6f933f63f2f ("ASoC: qcom: apq8096: Add db820c machine driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+---
+Found in linux-next but applies to mainline.
 
->> them to
->> Root Ports and Downstream Ports.
->>
->> Link: =
+ sound/soc/qcom/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
->> https://lore.kernel.org/r/20201002184735.1229220-8-seanvk.dev@oregontr=
-acks.org
->> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
->> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
->> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->> ---
->>  drivers/pci/pcie/err.c | 31 +++++++++++++++++++++++++------
->>  1 file changed, 25 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
->> index 8b53aecdb43d..7883c9791562 100644
->> --- a/drivers/pci/pcie/err.c
->> +++ b/drivers/pci/pcie/err.c
->> @@ -148,13 +148,17 @@ static int report_resume(struct pci_dev *dev, =
+--- linux-next-20201016.orig/sound/soc/qcom/Kconfig
++++ linux-next-20201016/sound/soc/qcom/Kconfig
+@@ -106,6 +106,7 @@ config SND_SOC_QDSP6
+ config SND_SOC_MSM8996
+ 	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
+ 	depends on QCOM_APR
++	depends on COMMON_CLK
+ 	select SND_SOC_QDSP6
+ 	select SND_SOC_QCOM_COMMON
+ 	help
 
->> void *data)
->>
->>  /**
->>   * pci_walk_bridge - walk bridges potentially AER affected
->> - * @bridge:	bridge which may be a Port
->> + * @bridge:	bridge which may be a Port, an RCEC with associated =
-
->> RCiEPs,
->> + *		or an RCiEP associated with an RCEC
->>   * @cb:		callback to be called for each device found
->>   * @userdata:	arbitrary pointer to be passed to callback
->>   *
->>   * If the device provided is a bridge, walk the subordinate bus, =
-
->> including
->>   * any bridged devices on buses under this bus.  Call the provided =
-
->> callback
->>   * on each device found.
->> + *
->> + * If the device provided has no subordinate bus, call the callback =
-
->> on the
->> + * device itself.
->>   */
->>  static void pci_walk_bridge(struct pci_dev *bridge,
->>  			    int (*cb)(struct pci_dev *, void *),
->> @@ -162,6 +166,8 @@ static void pci_walk_bridge(struct pci_dev =
-
->> *bridge,
->>  {
->>  	if (bridge->subordinate)
->>  		pci_walk_bus(bridge->subordinate, cb, userdata);
->> +	else
->> +		cb(bridge, userdata);
->
-> Looks like *this* is the patch where the "no subordinate bus" case
-> becomes possible?  If you agree, I can just move the test here, no
-> need to repost.
-
-Agree, this is the patch that the check is needed as we are opening =
-
-things up for walking RC_ECs and RC_ENDs as below.
-
-Sean
-
-
->
->>  }
->>
->>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->> @@ -174,10 +180,13 @@ pci_ers_result_t pcie_do_recovery(struct =
-
->> pci_dev *dev,
->>
->>  	/*
->>  	 * Error recovery runs on all subordinates of the bridge.  If the
->> -	 * bridge detected the error, it is cleared at the end.
->> +	 * bridge detected the error, it is cleared at the end.  For RCiEPs
->> +	 * we should reset just the RCiEP itself.
->>  	 */
->>  	if (type =3D=3D PCI_EXP_TYPE_ROOT_PORT ||
->> -	    type =3D=3D PCI_EXP_TYPE_DOWNSTREAM)
->> +	    type =3D=3D PCI_EXP_TYPE_DOWNSTREAM ||
->> +	    type =3D=3D PCI_EXP_TYPE_RC_EC ||
->> +	    type =3D=3D PCI_EXP_TYPE_RC_END)
->>  		bridge =3D dev;
->>  	else
->>  		bridge =3D pci_upstream_bridge(dev);
->> @@ -185,6 +194,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev =
-
->> *dev,
->>  	pci_dbg(bridge, "broadcast error_detected message\n");
->>  	if (state =3D=3D pci_channel_io_frozen) {
->>  		pci_walk_bridge(bridge, report_frozen_detected, &status);
->> +		if (type =3D=3D PCI_EXP_TYPE_RC_END) {
->> +			pci_warn(dev, "subordinate device reset not possible for =
-
->> RCiEP\n");
->> +			status =3D PCI_ERS_RESULT_NONE;
->> +			goto failed;
->> +		}
->> +
->>  		status =3D reset_subordinates(bridge);
->>  		if (status !=3D PCI_ERS_RESULT_RECOVERED) {
->>  			pci_warn(bridge, "subordinate device reset failed\n");
->> @@ -217,9 +232,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev =
-
->> *dev,
->>  	pci_dbg(bridge, "broadcast resume message\n");
->>  	pci_walk_bridge(bridge, report_resume, &status);
->>
->> -	if (pcie_aer_is_native(bridge))
->> -		pcie_clear_device_status(bridge);
->> -	pci_aer_clear_nonfatal_status(bridge);
->> +	if (type =3D=3D PCI_EXP_TYPE_ROOT_PORT ||
->> +	    type =3D=3D PCI_EXP_TYPE_DOWNSTREAM ||
->> +	    type =3D=3D PCI_EXP_TYPE_RC_EC) {
->> +		if (pcie_aer_is_native(bridge))
->> +			pcie_clear_device_status(bridge);
->> +		pci_aer_clear_nonfatal_status(bridge);
->> +	}
->>  	pci_info(bridge, "device recovery successful\n");
->>  	return status;
->>
->> -- =
-
->> 2.28.0
->>
