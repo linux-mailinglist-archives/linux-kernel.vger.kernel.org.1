@@ -2,106 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9FC290712
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC3B290717
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 16:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408790AbgJPOVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 10:21:38 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:44892 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406666AbgJPOVi (ORCPT
+        id S2408800AbgJPOXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 10:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394682AbgJPOXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 10:21:38 -0400
-Received: by mail-oi1-f195.google.com with SMTP id x62so2581518oix.11;
-        Fri, 16 Oct 2020 07:21:36 -0700 (PDT)
+        Fri, 16 Oct 2020 10:23:03 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE45C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:23:01 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y1so1369920plp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Oct 2020 07:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LHwdoU5xJRXsIFHp7RY/0oU3V0pjRfbeUgAFb2T1xW4=;
+        b=g6ZCIcDKP6R4Jph2TfTQkGUh70t6DdoVqS0y/TZvePe5JAvdrqdYp99+bjdZ5ASIR5
+         Wu2jxrKI/+NN45SEcyOeKbK12b/qPOWFBETR9q+sTATqpgSbNLOh1nGg3OkJ6LgRQ3W8
+         XVjhmnUxyRvN7l29NIsiaygfzCWCfCNIHccQqgrrTexiJVuro9dJ+TFCAV46Oi2lJTla
+         haxU9TxVcUcxe0nehaHeIO6BHE1g/B/lQYnhBRu1FlJP19uCqQUjUqjCRCcIeSAQnb8P
+         P76VZXN5kE3biSDHBA/mMrOjqSaYdPvp+SLeutRJ5dU9StA+nDEGigPdkrbu2kPj/ciw
+         xWZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3+Msx894Km+mStI8UCb+zmDoBuIzSy5hxYPbjtCgtYo=;
-        b=RvKeyIhW3I+bMdVxmpMTTBw1DHnLK7AQk6O0TX5htnWfFBT74y28Cu9Qa2V1LEqCOj
-         cy7o/CQI/Hbe2W86DxPbqSOuEXV+wcx8hnKwqClHaOWS5xGBgf5wN0SlQ0TATGe2OIT+
-         a5tf6M2xO22eZCP5oLO1cDiz0PFc14rklCYfA2ipV4YPKtfGwc4AvSdsgUYVi84lvAM0
-         jofu2TIYQJKV0wdrzUk4ID9K7QLHo1yB8I5DvCURrNRZqm0Gjb1jKcnmRRbc1w16FSSr
-         wXgENmeiIpPkN1CX5fD6ZMtwt9m3jJFOnn3TsgaW/EePcrBhDgCrBGObw/GbyTWxNHk+
-         LMhg==
-X-Gm-Message-State: AOAM533ZX4kXNbrV+FqDAsMEePy3wI1+hMoyDkZHOIhpffQPayLPmjSv
-        Yh7QF9AJSvLGcEgZWPa7VmzbsSziKJJ/aKb2tcw=
-X-Google-Smtp-Source: ABdhPJzUaqOCepfqqlp3XTiV86lgRQAGCRVZbjSYBQ6ueBWwAT7o0VYma1/tzOUrqQitO3OjUvbD5bL3BVao6/lPsJg=
-X-Received: by 2002:aca:fd52:: with SMTP id b79mr2648814oii.69.1602858096113;
- Fri, 16 Oct 2020 07:21:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LHwdoU5xJRXsIFHp7RY/0oU3V0pjRfbeUgAFb2T1xW4=;
+        b=Enfzujdt69q669kbfG6B1mjUim3aHvLrvwfoX5zS2zvniwIBQBXNDwzftGXhcg8Zrs
+         vkpNUTl5jZTwFm/Rauz9LhquMAZSBZTD7wkOTebuRd3WNiQHanKQ5zySB6xQ/W8zF0iK
+         F7oHECh1vKMqzSBGrpv32Cz4u1GLYdGgLNsn2G/mJROQO4zptm9kwFGWPn/WN+O4dpeF
+         Le0FxLuHcGppp+7eYQp3vQOlO0T1xJdh5YRijl30W+fsDyV2KKwO+lVQAYeW0jkhpIZS
+         eE6WtuZhy6iiZ5WwPRIvBhWbICe/lSucBsdwVcm4RLq+A4A4UUe2OD+4Yhp7+rFk7osg
+         UTsw==
+X-Gm-Message-State: AOAM532olvsQKn6FvaPWtLxot/0/dfoAH8Vw8WdPvs7btbWB+eUZaA+H
+        mOUwTlTuTmYX86rbe6hWIDRR5Q==
+X-Google-Smtp-Source: ABdhPJzJ0RVgSYxH+7F+93XvFAj/08Bjf+7yp4Jr7//ZJrpsUt8SWpsGJCSes2rz6rr7cBp65Qs+Dg==
+X-Received: by 2002:a17:902:ec02:b029:d1:fc2b:fe95 with SMTP id l2-20020a170902ec02b02900d1fc2bfe95mr4446705pld.79.1602858180993;
+        Fri, 16 Oct 2020 07:23:00 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 66sm2882105pgd.84.2020.10.16.07.22.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2020 07:23:00 -0700 (PDT)
+Subject: Re: [PATCH 5/5] task_work: use TIF_NOTIFY_SIGNAL if available
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        peterz@infradead.org, Roman Gershman <romger@amazon.com>
+References: <20201015131701.511523-1-axboe@kernel.dk>
+ <20201015131701.511523-6-axboe@kernel.dk> <20201015154953.GM24156@redhat.com>
+ <e17cd91e-97b2-1eae-964b-fc90f8f9ef31@kernel.dk>
+ <87a6wmv93v.fsf@nanos.tec.linutronix.de>
+ <c7da5280-f283-2c89-f6f2-be7d84c3675a@kernel.dk>
+ <87d01itg4z.fsf@nanos.tec.linutronix.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <5b04c6c1-28df-4810-8382-f9a418d72267@kernel.dk>
+Date:   Fri, 16 Oct 2020 08:22:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <37c3f1f76c055b305d1bba2c2001ac5b1d7a9b5f.1602565964.git.viresh.kumar@linaro.org>
-In-Reply-To: <37c3f1f76c055b305d1bba2c2001ac5b1d7a9b5f.1602565964.git.viresh.kumar@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 16 Oct 2020 16:21:25 +0200
-Message-ID: <CAJZ5v0iYWf=SFnVeVcrWpD40vR+axdX9NrXxftdVH4PDeiNz7g@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: Improve code around unlisted freq check
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Sumit Gupta <sumitg@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87d01itg4z.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 7:12 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> The cpufreq core checks if the frequency programmed by the bootloaders
-> is not listed in the freq table and programs one from the table in such
-> a case. This is done only if the driver has set the
-> CPUFREQ_NEED_INITIAL_FREQ_CHECK flag.
->
-> Currently we print two separate messages, with almost the same content,
-> and do this with a pr_warn() which may be a bit too much as the driver
-> only asked us to check this as it expected this to be the case. Lower
-> down the severity of the print message by switching to pr_info() instead
-> and print a single message only.
->
-> Reported-by: Sumit Gupta <sumitg@nvidia.com>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  drivers/cpufreq/cpufreq.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 2ea245a6c0c0..99864afac272 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1461,14 +1461,13 @@ static int cpufreq_online(unsigned int cpu)
->          */
->         if ((cpufreq_driver->flags & CPUFREQ_NEED_INITIAL_FREQ_CHECK)
->             && has_target()) {
-> +               unsigned int old_freq = policy->cur;
-> +
->                 /* Are we running at unknown frequency ? */
-> -               ret = cpufreq_frequency_table_get_index(policy, policy->cur);
-> +               ret = cpufreq_frequency_table_get_index(policy, old_freq);
->                 if (ret == -EINVAL) {
-> -                       /* Warn user and fix it */
-> -                       pr_warn("%s: CPU%d: Running at unlisted freq: %u KHz\n",
-> -                               __func__, policy->cpu, policy->cur);
-> -                       ret = __cpufreq_driver_target(policy, policy->cur - 1,
-> -                               CPUFREQ_RELATION_L);
-> +                       ret = __cpufreq_driver_target(policy, old_freq - 1,
-> +                                                     CPUFREQ_RELATION_L);
->
->                         /*
->                          * Reaching here after boot in a few seconds may not
-> @@ -1476,8 +1475,8 @@ static int cpufreq_online(unsigned int cpu)
->                          * frequency for longer duration. Hence, a BUG_ON().
->                          */
->                         BUG_ON(ret);
-> -                       pr_warn("%s: CPU%d: Unlisted initial frequency changed to: %u KHz\n",
-> -                               __func__, policy->cpu, policy->cur);
-> +                       pr_info("%s: CPU%d: Running at unlisted initial frequency: %u KHz, changing to: %u KHz\n",
-> +                               __func__, policy->cpu, old_freq, policy->cur);
->                 }
->         }
->
-> --
+On 10/16/20 8:11 AM, Thomas Gleixner wrote:
+> Jens,
+> 
+> On Fri, Oct 16 2020 at 07:33, Jens Axboe wrote:
+>> On 10/16/20 3:00 AM, Thomas Gleixner wrote:
+>> I totally agree, and we're on the same page. I think you'll find that in
+>> the past I always carry through, the task_work notification was somewhat
+>> of a rush due to a hang related to it. For this particular case, the
+>> cleanups and arch additions are pretty much ready to go.
+> 
+> As we seem to be on the same page with this, let me suggest how this
+> should go:
+> 
+> 1) A cleanup for the task_work_add() mess. This is trivial enough and
+>    should go in before rc1.
 
-Applied as 5.10-rc material, thanks!
+No problem, I'll get that posted shortly.
+
+> 2) The TIF_NOTIFY_RESUME change is a nice cleanup on it's own and can go
+>    before rc1 as well.
+
+Would you mind taking that one? It's good to go.
+
+> 3) Core infrastructure (patch 2 + 3 + 5) of this series
+> 
+>    Please make the changes I asked for in the generic entry code and
+>    moving the handling into get_signal() for everybody else.
+> 
+>    So get_signal() gains:
+> 
+>      if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) {
+> 	 (test_thread_flag(TIF_NOTIFY_SIGNAL))
+> 		tracehook_notify_signal();
+> 
+>          if (!task_sigpending(current))
+>  		return 0;
+>      }
+> 
+>    And with that you don't have to touch do_signal() in any architecture
+>    except x86 which becomes:
+> 
+>    arch_do_signal_or_restart(bool sigpending)
+
+Already did most of this, just need to handle the !CONFIG_GENERIC_ENTRY
+for get_signal() and adapt the existing non-generic arch patches to
+this.
+
+> 4) Conversion of all architectures which means adding the TIF bit.
+> 
+>    If the architecture folks are happy, then this can be collected in
+>    tip, which would be preferred because then 
+
+Mostly done,
+> 
+> 5) Cleanups
+> 
+>    can just go on top.
+> 
+> Hmm?
+
+Sounds good to me, as long as we keep the existing ordering with
+x86/generic TIF_NOTIFY_SIGNAL support being able to move forward
+before all archs have acked the arch specific change. Doesn't really
+change how I'll get it done, and we're mostly there. Just don't
+anything gated on potential slowest common denominator.
+
+-- 
+Jens Axboe
+
