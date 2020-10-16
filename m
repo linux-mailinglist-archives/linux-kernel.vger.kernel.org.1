@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2C4290447
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C29629044C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Oct 2020 13:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406876AbgJPLqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Oct 2020 07:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406868AbgJPLqE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Oct 2020 07:46:04 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AC5C061755;
-        Fri, 16 Oct 2020 04:46:02 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id p9so2270121ilr.1;
-        Fri, 16 Oct 2020 04:46:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y4tob09KVNT/yT+aT+mT1Cog8S7hbLpEBmGFyWWZcwA=;
-        b=B+hUCeB4/Sm0mE8SalFPQ67jhnQnKhPQj+VqoVVsoJltjWF4Qik6QVid3M8L17VGwC
-         MZne/s1rxQtMtCRk128P5/uMWtbUYlW3uD5/38CUm1H/SGEvvtvZ+eAcKbjaQ8X2Z9QY
-         VkE5qNhGPsQ1nA6QV9kCr9KL/NT6lOaMZqStHucHQGGWAs199yy/n0lkK7ej4IOmMMNk
-         1iqON4WaAgN3kLmuv2CUpEJA+Xnkrc8t3Jz2jJoBlkHcD1ETA7qJaXcSCASFA9YC+d3h
-         PMgCXDQleJ7t6fqnst6kcsLOaYg7sDHe11v8d6ByRI3O19q8Us12PFj6WV5uskcKqcd9
-         w4sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y4tob09KVNT/yT+aT+mT1Cog8S7hbLpEBmGFyWWZcwA=;
-        b=cQX6uOfG33FF/rZcTeLrRBewoTkpcOaikPs2zMNzn1uOSxuFyR161PcJgRprGRMpI6
-         ijZJKj5I1KY864slpUWOCp4c/Wh9H/M3/5PlTgud2SSQwf46iPuPYbUl4eUfsDu2qFc1
-         c4UDnt1UkVGVFmdglNEAVifrAnqC32qvHDMKz5JbvVhJ3diZsBWwn4byP1Mx/BPH5n2+
-         quDoFaGM6yiMn8ev/gvtvFdKomSEe6fwvd/FXX6340GFB+OmaXTrj2hwGUJcOX0RPrut
-         sU6uhKCWfc4IreDuPOVXrZtfoRCiI3KOPYuy58zP2U4Veo1+FHnq9lIEy1+9TH+EUK0i
-         k9/Q==
-X-Gm-Message-State: AOAM533exZTcfGRWjllwsTIi/lwmEemLX3p3mo3CsZrhJXkMxx1lP8gt
-        kemPLtHiSLpLwZrTPXMB9tBx3qTw2Xv5gNk1+F8=
-X-Google-Smtp-Source: ABdhPJz4YYVb5NM3Dgaqza0MP8X4+RjrS5C/GhQchr0yFEkZ68mpW2SCJa1fWQBnyPVXVT/7DE72Yn8sB8SZN8KWfTM=
-X-Received: by 2002:a92:bb58:: with SMTP id w85mr2401049ili.40.1602848761525;
- Fri, 16 Oct 2020 04:46:01 -0700 (PDT)
+        id S2406895AbgJPLrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Oct 2020 07:47:37 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:35392 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406879AbgJPLrg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Oct 2020 07:47:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1602848855; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=MMWbCx9d3yLwEKVcPZsuF+0hO2zdqzXyO4N7tPF4yGk=;
+ b=QRvwsPhWO2sZcioFteiYYDxCMXkS5WBBk9kNtYvrucvyjkCUavJQal5cErZqwzTOczD/TgJJ
+ wf0WwaEEEtvr3mq+ejrlVoCvxQNzvTUvzcW/l8nAhtsstnQL0v/szTaT+DJjf6VovXtWTlbS
+ ZgIyGLsSy/z92ADnfQTYJ30xaxw=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f89883fbfed2afaa68c0aa3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Oct 2020 11:47:11
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7F6C1C433CB; Fri, 16 Oct 2020 11:47:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CCC45C433F1;
+        Fri, 16 Oct 2020 11:47:09 +0000 (UTC)
 MIME-Version: 1.0
-References: <cover.1601974764.git.syednwaris@gmail.com> <33de236870f7d3cf56a55d747e4574cdd2b9686a.1601974764.git.syednwaris@gmail.com>
- <20201006112745.GG4077@smile.fi.intel.com> <CACG_h5pYL+HbJpPcCTp=dR8rDbm07RsRDaX8Uc0HYc2LG--w_Q@mail.gmail.com>
- <20201016091704.GE4077@smile.fi.intel.com>
-In-Reply-To: <20201016091704.GE4077@smile.fi.intel.com>
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-Date:   Fri, 16 Oct 2020 17:15:48 +0530
-Message-ID: <CACG_h5raZ5T3X2xHbB5NnPaRS0aqmFDigtjtdmFkmh94qCdNDg@mail.gmail.com>
-Subject: Re: [PATCH v11 1/4] bitops: Introduce the for_each_set_clump macro
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 16 Oct 2020 17:17:09 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>, denik@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] coresight: etm4x: Skip setting LPOVERRIDE bit for
+ qcom,skip-power-up
+In-Reply-To: <5c4f6f5d-b07d-0816-331f-7c7463fa99b3@arm.com>
+References: <20201016101025.26505-1-saiprakash.ranjan@codeaurora.org>
+ <5c4f6f5d-b07d-0816-331f-7c7463fa99b3@arm.com>
+Message-ID: <41bbcd43c2b016b6d785c3750622e9fe@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 2:46 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Oct 16, 2020 at 04:23:05AM +0530, Syed Nayyar Waris wrote:
-> > On Tue, Oct 6, 2020 at 4:56 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Tue, Oct 06, 2020 at 02:52:16PM +0530, Syed Nayyar Waris wrote:
->
-> ...
->
-> > > > +             return (map[index] >> offset) & GENMASK(nbits - 1, 0);
-> > >
-> > > Have you considered to use rather BIT{_ULL}(nbits) - 1?
-> > > It maybe better for code generation.
-> >
-> > Yes I have considered using BIT{_ULL} in earlier versions of patchset.
-> > It has a problem:
-> >
-> > This macro when used in both bitmap_get_value and
-> > bitmap_set_value functions, it will give unexpected results when nbits or clump
-> > size is BITS_PER_LONG (32 or 64 depending on arch).
-> >
-> > Actually when nbits (clump size) is 64 (BITS_PER_LONG is 64, for example),
-> > (BIT(nbits) - 1)
-> > gives a value of zero and when this zero is ANDed with any value, it
-> > makes it full zero. This is unexpected, and incorrect calculation occurs.
-> >
-> > What actually happens is in the macro expansion of BIT(64), that is 1
-> > << 64, the '1' overflows from leftmost bit position (most significant
-> > bit) and re-enters at the rightmost bit position (least significant
-> > bit), therefore 1 << 64 becomes '0x1', and when another '1' is
-> > subtracted from this, the final result becomes 0.
-> >
-> > This is undefined behavior in the C standard (section 6.5.7 in the N1124)
->
-> I see, indeed, for 64/32 it is like this.
->
-> ...
->
-> > Yes I have incorporated your suggestion to use the '<<' operator. Thank You.
->
-> One side note, consider the use round_up() vs. roundup(). I don't remember
-> which one is optimized to divisor being power of 2.
+Hi Suzuki,
 
-Yes. changed 'roundup' to 'round_up'. 'round_up' is optimized for
-power-of-2. Thank you.
+On 2020-10-16 16:51, Suzuki Poulose wrote:
+> Hi Sai,
+> 
+> On 10/16/20 11:10 AM, Sai Prakash Ranjan wrote:
+>> There is a bug on the systems supporting to skip power up
+>> (qcom,skip-power-up) where setting LPOVERRIDE bit(low-power
+>> state override behaviour) will result in CPU hangs/lockups
+>> even on the implementations which supports it. So skip
+>> setting the LPOVERRIDE bit for such platforms.
+>> 
+>> Fixes: 02510a5aa78d ("coresight: etm4x: Add support to skip trace unit 
+>> power up")
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> 
+> The fix is fine by me. Btw, is there a hardware Erratum assigned for
+> this ? It would be good to have the Erratum documented somewhere,
+> preferrably ( Documentation/arm64/silicon-errata.rst )
+> 
 
-Syed Nayyar Waris
+No, afaik we don't have any erratum assigned to this bug.
+It was already present in downstream kernel and since we
+support these targets with the previous HW bug
+(qcom,skip-power-up) now in upstream, we would need this
+fix in upstream kernel as well.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
